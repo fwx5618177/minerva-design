@@ -10,9 +10,11 @@
 //   `./web-components`, one `./web-components/<name>` entry per element
 //   (packages/web-components/src/elements/*.ts), the CDN bundle, the
 //   framework typings, the Custom Elements Manifest and the VS Code data.
-// - the native Vue 3 renderer (dist/vue/, ESM only): `./vue` and
-//   `./vue/global` typings (GlobalComponents of
-//   the `app.use(MinervaVue)` plugin).
+// - the native Vue 3 renderer (dist/vue/, ESM only): `./vue`, the optional
+//   `./vue/monaco` and `./vue/charts` (chart components + the opt-in
+//   `MinervaVueCharts` plugin), and the `./vue/global` / `./vue/charts-global`
+//   typings (GlobalComponents of the `app.use(MinervaVue)` /
+//   `app.use(MinervaVueCharts)` plugins).
 //   node scripts/sync-package.mjs          (write)
 //   node scripts/sync-package.mjs --check  (exit 1 when out of date)
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
@@ -50,7 +52,7 @@ export const DUAL_SUBPATHS = {
 };
 
 /** ESM-only entries of the Vue renderer (Are the Types Wrong? esm-only profile) */
-export const VUE_SUBPATHS = ["./vue", "./vue/monaco"];
+export const VUE_SUBPATHS = ["./vue", "./vue/monaco", "./vue/charts"];
 
 /** Reserved for unimplemented platform entries; all current renderers have an initial build. */
 export const PLANNED_RENDERERS = {};
@@ -156,7 +158,12 @@ export function expectedExports() {
       types: "./dist/vue/monaco.d.ts",
       default: "./dist/vue/monaco.js",
     },
+    "./vue/charts": {
+      types: "./dist/vue/charts.d.ts",
+      default: "./dist/vue/charts.js",
+    },
     "./vue/global": { types: "./dist/vue/global.d.ts" },
+    "./vue/charts-global": { types: "./dist/vue/charts-global.d.ts" },
     "./custom-elements.json": "./custom-elements.json",
     "./html-custom-data.json": "./dist/web-components/html-custom-data.json",
     "./package.json": "./package.json",

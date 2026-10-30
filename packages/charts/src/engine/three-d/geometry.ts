@@ -17,6 +17,9 @@ import {
   type SurfaceModel,
 } from "./model";
 import {
+  POINT_DISC,
+  POINT_GLOW,
+  POINT_SPHERE,
   POINT_STRIDE,
   SEGMENT_STRIDE,
   VERTEX_STRIDE,
@@ -46,10 +49,22 @@ export interface GeometryColors {
 export interface GeometryBudget {
   /** Largest surface grid side drawn (resampled above) */
   maxGridSide: number;
+  /**
+   * Largest number of scatter dots drawn (every series together): above,
+   * the clouds keep 1 point out of n, and only the kept points can be
+   * hovered
+   */
+  maxPoints: number;
 }
 
-export const GPU_BUDGET: GeometryBudget = { maxGridSide: 2048 };
-export const CPU_BUDGET: GeometryBudget = { maxGridSide: 72 };
+export const GPU_BUDGET: GeometryBudget = {
+  maxGridSide: 2048,
+  maxPoints: Infinity,
+};
+export const CPU_BUDGET: GeometryBudget = {
+  maxGridSide: 72,
+  maxPoints: 40_000,
+};
 
 /** Picking data of a point cloud (scatter dots, line vertices) */
 export interface PointTarget {
@@ -135,11 +150,21 @@ const scaleColor = (
 
 // ------------------------------------------------------------------ points
 
+/** `0xRRGGBB` -> packed opaque color (r in the low byte) */
+const packRgb = (rgb: number) =>
+  (0xff000000 |
+    ((rgb & 0xff) << 16) |
+    (rgb & 0xff00) |
+    ((rgb >>> 16) & 0xff)) >>>
+  0;
+
 const buildPoints = (
   m: ScatterModel | LineModel,
   model: Model3D,
   colors: GeometryColors,
   defaultSize: number,
+  /** Keeps 1 point out of `stride` (CPU backend) */
+  stride = 1,
 ): {
   data: ArrayBuffer;
   count: number;
@@ -147,7 +172,7 @@ const buildPoints = (
   sized: boolean;
 } => {
   const { cols } = m;
-  const n = cols.count;
+  const n = Math.ceil(cols.count / stride);
   const buffer = new ArrayBuffer(n * POINT_STRIDE);
   const f32 = new Float32Array(buffer);
   const u32 = new Uint32Array(buffer);
@@ -156,6 +181,7 @@ const buildPoints = (
   const scaleSource = m.colorBy === "value" && cols.value ? cols.value : cols.z;
   const cache = new Map<string, number>();
   let source: Uint32Array | null = null;
+  if (stride > 1) source = new Uint32Array(n);
   let count = 0;
   const { x: ax, y: ay, z: az } = model;
   // inline world mapping (hot loop for 1M points)
@@ -165,7 +191,7 @@ const buildPoints = (
   const ox = -ax.half - ax.domain[0] * sx;
   const oy = -ay.half - ay.domain[0] * sy;
   const oz = -az.half - az.domain[0] * sz;
-  for (let i = 0; i < n; i++) {
+  for (let i = 0; i < cols.count; i += stride) {
     const x = cols.x[i];
     const y = cols.y[i];
     const z = cols.z[i];
@@ -184,6 +210,7 @@ const buildPoints = (
     const size = cols.size ? cols.size[i] : NaN;
     f32[o + 3] = isFiniteNumber(size) ? size : defaultSize;
     const own = cols.colors?.[i];
+    const rgb = cols.rgb ? cols.rgb[i] : NaN;
     let color: number;
     if (own !== undefined) {
       let packed = cache.get(own);
@@ -192,6 +219,8 @@ const buildPoints = (
         cache.set(own, packed);
       }
       color = packed;
+    } else if (isFiniteNumber(rgb)) {
+      color = packRgb(rgb);
     } else if (byScale) {
       color = scaleColor(
         colors.lut,
@@ -675,6 +704,7 @@ export const createGeometryBuilder = () => {
     colors: GeometryColors,
     budget: GeometryBudget,
     lutId: number,
+    stride: number,
   ): string => {
     const s = m.series as unknown as Record<string, unknown>;
     const options = JSON.stringify({
@@ -682,6 +712,8 @@ export const createGeometryBuilder = () => {
       colorBy: m.colorBy,
       opacity: m.opacity,
       pointSize: s.pointSize,
+      pointStyle: s.pointStyle,
+      blend: s.blend,
       lineWidth: s.lineWidth,
       perspectiveSize: s.perspectiveSize,
       wireframe: s.wireframe,
@@ -700,6 +732,7 @@ export const createGeometryBuilder = () => {
       colorKey(colors.wire),
       lutId,
       budget.maxGridSide,
+      m.type === "scatter" ? stride : 1,
       // stacked bars depend on the other bar series
       m.type === "bar" ? stackHash(m) : "",
     ].join("|");
@@ -715,6 +748,11 @@ export const createGeometryBuilder = () => {
     const items: Item3D[] = [];
     const targets: PickTarget[] = [];
     const counts: number[] = [];
+    // the CPU backend thins every cloud by the same stride
+    let total = 0;
+    for (const m of model.series)
+      if (m.type === "scatter" && !m.hidden) total += m.cols.count;
+    const stride = Math.max(1, Math.ceil(total / budget.maxPoints));
     for (const m of model.series) {
       const id = `${m.index}:${m.id}`;
       if (m.hidden) {
@@ -724,7 +762,7 @@ export const createGeometryBuilder = () => {
         if (kept) next.set(id, kept);
         continue;
       }
-      const signature = signatureOf(m, model, colors, budget, lutId);
+      const signature = signatureOf(m, model, colors, budget, lutId, stride);
       let entry = cache.get(id);
       if (!entry || entry.signature !== signature) {
         entry = buildSeries(
@@ -735,6 +773,7 @@ export const createGeometryBuilder = () => {
           `s${id}`,
           ++version,
           signature,
+          stride,
         );
       }
       next.set(id, entry);
@@ -755,6 +794,8 @@ const buildSeries = (
   key: string,
   version: number,
   signature: string,
+  /** Thinning of the scatter clouds (CPU backend) */
+  stride = 1,
 ): CacheEntry => {
   switch (m.type) {
     case "surface": {
@@ -846,7 +887,8 @@ const buildSeries = (
     }
     default: {
       const size = m.series.pointSize ?? 6;
-      const points = buildPoints(m, model, colors, size);
+      const points = buildPoints(m, model, colors, size, stride);
+      const style = m.series.pointStyle;
       return {
         signature,
         items: [
@@ -858,10 +900,19 @@ const buildSeries = (
             data: points.data,
             count: points.count,
             perspective: m.series.perspectiveSize ?? true,
+            style:
+              style === "glow"
+                ? POINT_GLOW
+                : style === "disc"
+                  ? POINT_DISC
+                  : POINT_SPHERE,
+            additive: m.series.blend === "additive",
+            thinned: stride,
           },
         ],
         target: [pointTarget(m.index, points, size)],
-        count: points.count,
+        // the size of the data, thinned or not
+        count: stride > 1 ? m.cols.count : points.count,
       };
     }
   }

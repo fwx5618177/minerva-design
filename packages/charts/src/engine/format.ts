@@ -126,6 +126,41 @@ export const formatValue = (value: number, locale?: string): string => {
 export const valueFormatter = (locale: string) => (value: number) =>
   formatValue(value, locale);
 
+const MINUTE = 60_000;
+const HOUR = 3_600_000;
+const DAY = 86_400_000;
+
+/**
+ * Length of a time range in its natural unit, in the words of a locale:
+ * whole weeks (`4 weeks`, `4周`), else days (`26 days`, `26 jours`), hours
+ * or minutes
+ */
+export const formatDuration = (ms: number, locale: string): string => {
+  if (!Number.isFinite(ms)) return "–";
+  const abs = Math.abs(ms);
+  const days = abs / DAY;
+  const weeks = days / 7;
+  const [value, unit] =
+    days >= 7 && Math.abs(weeks - Math.round(weeks)) < 1e-6
+      ? [Math.round(weeks), "week"]
+      : days >= 1
+        ? [Math.round(days * 10) / 10, "day"]
+        : abs >= HOUR
+          ? [Math.round((abs / HOUR) * 10) / 10, "hour"]
+          : [Math.round(abs / MINUTE), "minute"];
+  try {
+    return numberFormat(locale, {
+      style: "unit",
+      unit,
+      unitDisplay: "long",
+      maximumFractionDigits: 1,
+    }).format(value);
+  } catch {
+    // engines without unit formatting (old mini-program runtimes)
+    return `${value} ${unit}${value === 1 ? "" : "s"}`;
+  }
+};
+
 /**
  * `12.5` -> `12.5%` (`12,5 %` in French): one decimal at most, exactly one
  * with `fixed` (`75.0%`)

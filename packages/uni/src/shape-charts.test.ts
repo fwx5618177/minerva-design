@@ -13,6 +13,7 @@ import SunburstChart from "./SunburstChart.vue";
 import RadialBarChart from "./RadialBarChart.vue";
 import CalendarHeatmap from "./CalendarHeatmap.vue";
 import BulletChart from "./BulletChart.vue";
+import ChordChart from "./ChordChart.vue";
 import type { ShapeChartHandle } from "./shape-chart-types";
 
 /** 2D context double recording the calls (like the engine tests) */
@@ -192,6 +193,56 @@ describe("uni shape charts (H5 canvas)", () => {
     wrapper.unmount();
   });
 
+  it("draws a chord diagram (ChordChart and ShapeChart)", async () => {
+    const groups = ["Apps", "Web", "Store"];
+    const matrix = [
+      [0, 5, 2],
+      [3, 0, 4],
+      [1, 2, 0],
+    ];
+    const named = mount(ChordChart, {
+      props: { groups, matrix, animation: false },
+    });
+    await flushPromises();
+    flushFrames();
+    expect(named.find("uni-canvas").attributes("aria-label")).toBe(
+      "Chord diagram",
+    );
+    expect(named.attributes("style")).toContain("height: 420px");
+    expect(calls.some((c) => c.name === "quadraticCurveTo")).toBe(true);
+    expect(texts()).toContain("Apps");
+    handleOf(named).getInstance()!.toggle(1);
+    expect(named.emitted("toggle")![0]![0]).toMatchObject({
+      index: 1,
+      hiddenIndexes: [1],
+    });
+    named.unmount();
+    const generic = mount(ShapeChart, {
+      props: { options: { type: "chord", groups, matrix, animation: false } },
+    });
+    await flushPromises();
+    expect(generic.attributes("style")).toContain("height: 420px");
+    expect(handleOf(generic).getInstance()).not.toBeNull();
+    generic.unmount();
+  });
+
+  it("forwards locale and texts to the engine", async () => {
+    const wrapper = mount(PieChart, {
+      props: { data: [], locale: "zh-CN", animation: false },
+    });
+    await flushPromises();
+    flushFrames();
+    expect(texts()).toContain("暂无数据");
+    const instance = handleOf(wrapper).getInstance()!;
+    const setOptions = vi.spyOn(instance, "setOptions");
+    await wrapper.setProps({ texts: { noData: "空" } });
+    expect(setOptions.mock.calls[0]![0]).toMatchObject({
+      locale: "zh-CN",
+      texts: { noData: "空" },
+    });
+    wrapper.unmount();
+  });
+
   it("draws radar and treemap charts, and any type with ShapeChart", async () => {
     const radar = mount(RadarChart, {
       props: {
@@ -267,6 +318,25 @@ describe("uni shape charts (H5 canvas)", () => {
       {
         component: CalendarHeatmap,
         props: { data: [{ date: "2026-03-02", value: 3 }], range: 2026 },
+        label: "Calendar heatmap",
+        height: "170px",
+      },
+      {
+        component: CalendarHeatmap,
+        props: {
+          data: [{ date: "2025-03-02", value: 3 }],
+          range: ["2025-01-01", "2026-12-31"],
+        },
+        label: "Calendar heatmap",
+        height: "290px",
+      },
+      {
+        // across new year but within 53 weeks: one strip
+        component: CalendarHeatmap,
+        props: {
+          data: [{ date: "2025-12-02", value: 3 }],
+          range: ["2025-11-01", "2026-02-28"],
+        },
         label: "Calendar heatmap",
         height: "170px",
       },

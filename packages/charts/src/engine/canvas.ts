@@ -13,7 +13,7 @@ import {
   type ChartPrimitive,
   type ChartScene,
 } from "./controller";
-import { buildItems, type Origin } from "./items";
+import { buildItems, cellStyleKey, type Origin } from "./items";
 import { drawBackground, drawForeground, font } from "./overlay";
 import { createCanvas2dPainter } from "./renderers/canvas2d";
 import type { RenderItem } from "./renderers/types";
@@ -186,17 +186,78 @@ export const drawPrimitives = (
       }
       ctx.globalAlpha = 1;
     } else {
-      ctx.globalAlpha = p.opacity;
+      const stroke = p.stroke ?? 0;
       for (let k = 0; k < p.dots.length; k += 3) {
-        ctx.fillStyle = p.colors[k / 3] ?? "#888";
+        const color = p.colors[k / 3] ?? "#888";
+        const r = p.dots[k + 2] / 2;
         ctx.beginPath();
-        ctx.arc(p.dots[k], p.dots[k + 1], p.dots[k + 2] / 2, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.arc(
+          p.dots[k],
+          p.dots[k + 1],
+          Math.max(0, r - stroke / 2),
+          0,
+          Math.PI * 2,
+        );
+        if (p.opacity > 0) {
+          ctx.globalAlpha = p.opacity;
+          ctx.fillStyle = color;
+          ctx.fill();
+        }
+        if (stroke > 0) {
+          // rings stay opaque (hollow box plot outliers)
+          ctx.globalAlpha = 1;
+          ctx.lineWidth = stroke;
+          ctx.strokeStyle = color;
+          ctx.stroke();
+        }
       }
       ctx.globalAlpha = 1;
     }
   }
   ctx.restore();
+};
+
+/** The visual map of a heatmap: gradient bar, value labels, hover caret */
+const drawColorLegend = (
+  ctx: CanvasRenderingContext2D,
+  ramp: NonNullable<NonNullable<ChartScene["legend"]>["colors"]>,
+  scene: ChartScene,
+) => {
+  const { theme } = scene;
+  const { bar, stops } = ramp;
+  const n = stops.length;
+  if (typeof ctx.createLinearGradient === "function") {
+    const gradient = ctx.createLinearGradient(bar.x, 0, bar.x + bar.width, 0);
+    stops.forEach((c, k) => gradient.addColorStop(k / Math.max(1, n - 1), c));
+    ctx.fillStyle = gradient;
+    roundedRect(ctx, bar.x, bar.y, bar.width, bar.height, bar.height / 2);
+    ctx.fill();
+  } else {
+    // contexts without gradients: even steps
+    const w = bar.width / n;
+    stops.forEach((c, k) => {
+      ctx.fillStyle = c;
+      ctx.fillRect(bar.x + k * w, bar.y, w + 0.5, bar.height);
+    });
+  }
+  ctx.fillStyle = toCss(theme.text, 0.35);
+  for (const t of ramp.ticks)
+    ctx.fillRect(Math.round(t), bar.y - 2, 1, bar.height + 4);
+  ctx.font = font(theme, 11);
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = toCss(theme.textMuted);
+  for (const l of ramp.labels) {
+    ctx.textAlign = l.align;
+    ctx.fillText(l.text, l.x, l.y);
+  }
+  if (ramp.caret !== null) {
+    roundedRect(ctx, ramp.caret - 2, bar.y - 3, 4, bar.height + 6, 2);
+    ctx.fillStyle = toCss(theme.text);
+    ctx.fill();
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = toCss(theme.background);
+    ctx.stroke();
+  }
 };
 
 /** Draws a scene (legend, axes, data, labels, hover) on a 2D context */
@@ -228,6 +289,9 @@ export const drawScene = (
     annotations: scene.annotations,
   });
 
+  // color legend of heatmaps
+  const ramp = scene.legend?.colors;
+  if (ramp) drawColorLegend(ctx, ramp, scene);
   // legend
   if (scene.legend) {
     ctx.font = font(theme, 12);
@@ -292,6 +356,12 @@ export const drawScene = (
   }
 
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  // soft row / column of a hovered heatmap cell, over the data
+  for (const mark of scene.hover?.marks ?? []) {
+    if (mark.kind !== "guide") continue;
+    ctx.fillStyle = toCss(theme.text, 0.06);
+    ctx.fillRect(mark.x, mark.y, mark.width, mark.height);
+  }
   drawForeground(ctx, {
     width,
     height,
@@ -300,6 +370,7 @@ export const drawScene = (
     annotations: scene.annotations,
     pointLabels: [],
     clear: false,
+    connectors: scene.connectors,
   });
   // dot labels placed by the scene
   if (scene.pointLabels.length) {
@@ -346,15 +417,40 @@ export const drawScene = (
       ctx.restore();
     }
     for (const mark of hover.marks) {
-      if (mark.kind === "band") continue;
+      if (mark.kind === "band" || mark.kind === "guide") continue;
       if (mark.kind === "cell") {
-        roundedRect(ctx, mark.x, mark.y, mark.width, mark.height, 3);
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = toCss(theme.background);
-        ctx.stroke();
-        ctx.lineWidth = 1.5;
-        ctx.strokeStyle = toCss(theme.text, 0.55);
-        ctx.stroke();
+        // lifted: a little larger, with a soft shadow and an inner ring
+        const grow = Math.min(3, mark.width * 0.06, mark.height * 0.06);
+        const r = Math.max(2, mark.radius);
+        ctx.save();
+        ctx.shadowColor = "rgba(15, 23, 42, 0.4)";
+        ctx.shadowBlur = 12;
+        ctx.shadowOffsetY = 4;
+        roundedRect(
+          ctx,
+          mark.x - grow,
+          mark.y - grow,
+          mark.width + grow * 2,
+          mark.height + grow * 2,
+          r,
+        );
+        ctx.fillStyle = mark.color;
+        ctx.fill();
+        ctx.restore();
+        const inset = Math.min(2.75, mark.width / 5, mark.height / 5);
+        if (mark.width > 8 && mark.height > 8) {
+          roundedRect(
+            ctx,
+            mark.x + inset,
+            mark.y + inset,
+            mark.width - inset * 2,
+            mark.height - inset * 2,
+            Math.max(1, r - inset / 2),
+          );
+          ctx.lineWidth = 1.5;
+          ctx.strokeStyle = mark.ring;
+          ctx.stroke();
+        }
         continue;
       }
       ctx.beginPath();
@@ -431,6 +527,12 @@ export const drawScene = (
       ctx.textAlign = "left";
       ctx.fillText(content.title, x, y);
       y += lineHeight;
+      if (content.subtitle) {
+        ctx.font = font(theme, 11);
+        ctx.fillStyle = toCss(theme.textMuted);
+        ctx.fillText(content.subtitle, x, y - 2);
+        y += lineHeight;
+      }
       for (const row of content.rows) {
         x = left;
         if (row.color) {
@@ -438,8 +540,9 @@ export const drawScene = (
           ctx.beginPath();
           ctx.arc(x + 4, y, 4, 0, Math.PI * 2);
           ctx.fill();
-          x += 14;
         }
+        // names in one column, values right-aligned in another
+        x += tip.swatchWidth;
         ctx.font = font(theme, 12);
         ctx.textAlign = "left";
         ctx.fillStyle = toCss(theme.textMuted);
@@ -472,6 +575,7 @@ export const createCanvasChart = (
   let frameId: number | null = null;
   let items: RenderItem[] = [];
   let itemsModel: unknown = null;
+  let itemsKey0 = "";
   let itemsKey = "";
   let options = config.options;
   /** Ids of the themes seen (the controller replaces its theme on changes) */
@@ -516,16 +620,20 @@ export const createCanvasChart = (
       itemsModel = scene.model;
       // a new model (any setOptions) keeps the items when nothing they
       // depend on changed
-      const key = itemsSignature(
+      itemsKey0 = itemsSignature(
         scene.model,
         themeId(scene.theme),
         (index) => options.series[index]?.stack,
       );
-      if (key !== itemsKey) {
-        itemsKey = key;
-        origin = { x: mid(scene.model.base.x), y: mid(scene.model.base.y) };
-        items = buildItems(scene.model, origin, ++version);
-      }
+    }
+    // heatmap cells: their gaps and corners follow their size on screen
+    const sc = scene.layout.scales;
+    const density = { x: 1 / Math.abs(sc.xPerPx), y: 1 / Math.abs(sc.yPerPx) };
+    const key = `${itemsKey0}|${cellStyleKey(scene.model, density)}`;
+    if (key !== itemsKey) {
+      itemsKey = key;
+      origin = { x: mid(scene.model.base.x), y: mid(scene.model.base.y) };
+      items = buildItems(scene.model, origin, ++version, density);
     }
     drawScene(ctx, scene, items, origin, dpr, painter);
     fontSet = "";

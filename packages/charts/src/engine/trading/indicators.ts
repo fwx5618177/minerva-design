@@ -3,11 +3,13 @@
 // `from` on, assuming the outputs before it are up to date: the chart
 // recomputes only the last bar on each tick, even with a million bars.
 
+import { offsetOf, zoneOffset, type UtcOffset } from "./format";
 import type {
   TradingBar,
   TradingBarColumns,
   TradingBarsInput,
   TradingTimeframe,
+  TradingVolumeProfile,
 } from "./types";
 
 type Values = ArrayLike<number>;
@@ -174,7 +176,11 @@ export const stdevInto = (
   }
 };
 
-/** Highest value of the window ending at each index */
+/**
+ * Highest (or lowest) value of the window ending at each index, NaN while
+ * the window is incomplete or holds a NaN. A monotonic queue of indices
+ * makes it O(1) per bar whatever the period (Ichimoku uses 52 bars).
+ */
 const extremeInto = (
   src: Values,
   n: number,
@@ -183,21 +189,31 @@ const extremeInto = (
   from: number,
   highest: boolean,
 ) => {
+  const queue = new Int32Array(p + 1);
+  let head = 0;
+  let tail = 0;
+  let lastNaN = -1;
+  const better = (a: number, b: number) => (highest ? a >= b : a <= b);
+  const push = (i: number) => {
+    const v = src[i];
+    if (!finite(v)) {
+      lastNaN = i;
+      head = tail = 0;
+      return;
+    }
+    while (tail > head && better(v, src[queue[(tail - 1) % (p + 1)]])) tail--;
+    queue[tail % (p + 1)] = i;
+    tail++;
+    while (queue[head % (p + 1)] <= i - p) head++;
+  };
+  // the window ending just before `from`
+  for (let i = Math.max(0, from - p + 1); i < from; i++) push(i);
   for (let i = from; i < n; i++) {
-    if (i < p - 1) {
-      out[i] = NaN;
-      continue;
-    }
-    let m = highest ? -Infinity : Infinity;
-    for (let k = i - p + 1; k <= i; k++) {
-      const v = src[k];
-      if (!finite(v)) {
-        m = NaN;
-        break;
-      }
-      if (highest ? v > m : v < m) m = v;
-    }
-    out[i] = m;
+    push(i);
+    out[i] =
+      i < p - 1 || lastNaN > i - p || tail === head
+        ? NaN
+        : src[queue[head % (p + 1)]];
   }
 };
 
@@ -312,10 +328,10 @@ const DAY = 86_400_000;
 export const sessionKey = (
   time: number,
   reset: "day" | "week" | "month" | "none",
-  utcOffset = 0,
+  utcOffset: UtcOffset = 0,
 ): number => {
   if (reset === "none") return 0;
-  const t = time + utcOffset * 60_000;
+  const t = time + offsetOf(utcOffset, time) * 60_000;
   const day = Math.floor(t / DAY);
   if (reset === "day") return day;
   // 1970-01-01 is a Thursday: weeks start on Monday
@@ -333,7 +349,7 @@ export const vwapInto = (
   time: Values | null,
   n: number,
   reset: "day" | "week" | "month" | "none",
-  utcOffset: number,
+  utcOffset: UtcOffset,
   out: Float64Array,
   pv: Float64Array,
   vol: Float64Array,
@@ -382,6 +398,466 @@ export const heikinAshiInto = (
     out.close[i] = c;
     out.high[i] = Math.max(high[i], o, c);
     out.low[i] = Math.min(low[i], o, c);
+  }
+};
+
+/** On-balance volume: the volume added on up closes, subtracted on down closes */
+export const obvInto = (
+  close: Values,
+  volume: Values,
+  n: number,
+  out: Float64Array,
+  from = 0,
+): void => {
+  for (let i = from; i < n; i++) {
+    if (i === 0) {
+      out[i] = 0;
+      continue;
+    }
+    const v = finite(volume[i]) ? volume[i] : 0;
+    const prev = finite(out[i - 1]) ? out[i - 1] : 0;
+    const change = close[i] - close[i - 1];
+    out[i] = prev + (change > 0 ? v : change < 0 ? -v : 0);
+  }
+};
+
+/** Typical price (high + low + close) / 3 */
+const typicalInto = (
+  high: Values,
+  low: Values,
+  close: Values,
+  n: number,
+  out: Float64Array,
+  from: number,
+) => {
+  for (let i = from; i < n; i++) out[i] = (high[i] + low[i] + close[i]) / 3;
+};
+
+/** Commodity channel index: distance of the typical price from its average, in mean deviations / 0.015 */
+export const cciInto = (
+  high: Values,
+  low: Values,
+  close: Values,
+  n: number,
+  period: number,
+  out: Float64Array,
+  typical: Float64Array,
+  mean: Float64Array,
+  from = 0,
+): void => {
+  const p = periodOf(period);
+  typicalInto(high, low, close, n, typical, from);
+  smaInto(typical, n, p, mean, from);
+  for (let i = from; i < n; i++) {
+    const m = mean[i];
+    if (!finite(m)) {
+      out[i] = NaN;
+      continue;
+    }
+    let deviation = 0;
+    for (let k = i - p + 1; k <= i; k++) deviation += Math.abs(typical[k] - m);
+    deviation /= p;
+    out[i] = deviation === 0 ? 0 : (typical[i] - m) / (0.015 * deviation);
+  }
+};
+
+/** Williams %R (−100 to 0): the close within the range of the window, from its high */
+export const williamsRInto = (
+  high: Values,
+  low: Values,
+  close: Values,
+  n: number,
+  period: number,
+  out: Float64Array,
+  highest: Float64Array,
+  lowest: Float64Array,
+  from = 0,
+): void => {
+  const p = periodOf(period);
+  extremeInto(high, n, p, highest, from, true);
+  extremeInto(low, n, p, lowest, from, false);
+  for (let i = from; i < n; i++) {
+    const hh = highest[i];
+    const ll = lowest[i];
+    out[i] =
+      !finite(hh) || !finite(ll)
+        ? NaN
+        : hh === ll
+          ? -50
+          : ((hh - close[i]) / (hh - ll)) * -100;
+  }
+};
+
+/** Money flow index (0-100): an RSI of the typical price weighted by the volume */
+export const mfiInto = (
+  high: Values,
+  low: Values,
+  close: Values,
+  volume: Values,
+  n: number,
+  period: number,
+  out: Float64Array,
+  typical: Float64Array,
+  from = 0,
+): void => {
+  const p = periodOf(period);
+  typicalInto(high, low, close, n, typical, Math.max(0, from - p - 1));
+  for (let i = from; i < n; i++) {
+    if (i < p) {
+      out[i] = NaN;
+      continue;
+    }
+    let positive = 0;
+    let negative = 0;
+    let ok = true;
+    for (let k = i - p + 1; k <= i; k++) {
+      const flow = typical[k] * (finite(volume[k]) ? volume[k] : 0);
+      if (!finite(flow) || !finite(typical[k - 1])) {
+        ok = false;
+        break;
+      }
+      if (typical[k] > typical[k - 1]) positive += flow;
+      else if (typical[k] < typical[k - 1]) negative += flow;
+    }
+    out[i] = !ok
+      ? NaN
+      : negative === 0
+        ? positive === 0
+          ? 50
+          : 100
+        : 100 - 100 / (1 + positive / negative);
+  }
+};
+
+/** Working columns of the stochastic RSI */
+export interface StochRsiWork {
+  rsi: Float64Array;
+  gain: Float64Array;
+  loss: Float64Array;
+  highest: Float64Array;
+  lowest: Float64Array;
+  raw: Float64Array;
+}
+
+/** Stochastic RSI: the stochastic of the RSI, smoothed into K and D */
+export const stochRsiInto = (
+  close: Values,
+  n: number,
+  rsiPeriod: number,
+  stochPeriod: number,
+  kPeriod: number,
+  dPeriod: number,
+  k: Float64Array,
+  d: Float64Array,
+  work: StochRsiWork,
+  from = 0,
+): void => {
+  const p = periodOf(stochPeriod);
+  rsiInto(close, n, rsiPeriod, work.rsi, work.gain, work.loss, from);
+  extremeInto(work.rsi, n, p, work.highest, from, true);
+  extremeInto(work.rsi, n, p, work.lowest, from, false);
+  for (let i = from; i < n; i++) {
+    const hh = work.highest[i];
+    const ll = work.lowest[i];
+    work.raw[i] =
+      !finite(hh) || !finite(ll)
+        ? NaN
+        : hh === ll
+          ? 50
+          : ((work.rsi[i] - ll) / (hh - ll)) * 100;
+  }
+  smaInto(work.raw, n, kPeriod, k, from);
+  smaInto(k, n, dPeriod, d, from);
+};
+
+/** Working columns of the DMI */
+export interface DmiWork {
+  tr: Float64Array;
+  plusDm: Float64Array;
+  minusDm: Float64Array;
+  smoothTr: Float64Array;
+  smoothPlus: Float64Array;
+  smoothMinus: Float64Array;
+  dx: Float64Array;
+}
+
+/** Directional movement index (Wilder): +DI, −DI and the ADX */
+export const dmiInto = (
+  high: Values,
+  low: Values,
+  close: Values,
+  n: number,
+  period: number,
+  adxPeriod: number,
+  plus: Float64Array,
+  minus: Float64Array,
+  adx: Float64Array,
+  work: DmiWork,
+  from = 0,
+): void => {
+  for (let i = from; i < n; i++) {
+    if (i === 0) {
+      work.tr[i] = work.plusDm[i] = work.minusDm[i] = NaN;
+      continue;
+    }
+    const up = high[i] - high[i - 1];
+    const down = low[i - 1] - low[i];
+    work.plusDm[i] = up > down && up > 0 ? up : 0;
+    work.minusDm[i] = down > up && down > 0 ? down : 0;
+    const pc = close[i - 1];
+    work.tr[i] = Math.max(
+      high[i] - low[i],
+      Math.abs(high[i] - pc),
+      Math.abs(low[i] - pc),
+    );
+  }
+  rmaInto(work.tr, n, period, work.smoothTr, from);
+  rmaInto(work.plusDm, n, period, work.smoothPlus, from);
+  rmaInto(work.minusDm, n, period, work.smoothMinus, from);
+  for (let i = from; i < n; i++) {
+    const tr = work.smoothTr[i];
+    plus[i] = tr ? (100 * work.smoothPlus[i]) / tr : NaN;
+    minus[i] = tr ? (100 * work.smoothMinus[i]) / tr : NaN;
+    const sum = plus[i] + minus[i];
+    work.dx[i] = !finite(sum)
+      ? NaN
+      : sum === 0
+        ? 0
+        : (100 * Math.abs(plus[i] - minus[i])) / sum;
+  }
+  rmaInto(work.dx, n, adxPeriod, adx, from);
+};
+
+/** Working columns of the parabolic SAR */
+export interface PsarWork {
+  /** Extreme point of the trend */
+  ep: Float64Array;
+  /** Acceleration factor */
+  af: Float64Array;
+  /** 1 rising, −1 falling */
+  trend: Float64Array;
+}
+
+/** Parabolic stop and reverse (Wilder) */
+export const psarInto = (
+  high: Values,
+  low: Values,
+  n: number,
+  start: number,
+  increment: number,
+  maximum: number,
+  out: Float64Array,
+  work: PsarWork,
+  from = 0,
+): void => {
+  const { ep, af, trend } = work;
+  for (let i = from; i < n; i++) {
+    if (i === 0) {
+      out[i] = ep[i] = af[i] = trend[i] = NaN;
+      continue;
+    }
+    if (!finite(trend[i - 1])) {
+      // the first two bars set the direction
+      const up = high[i] + low[i] >= high[i - 1] + low[i - 1];
+      out[i] = up
+        ? Math.min(low[i - 1], low[i])
+        : Math.max(high[i - 1], high[i]);
+      ep[i] = up
+        ? Math.max(high[i - 1], high[i])
+        : Math.min(low[i - 1], low[i]);
+      af[i] = start;
+      trend[i] = finite(out[i]) ? (up ? 1 : -1) : NaN;
+      continue;
+    }
+    const prevEp = ep[i - 1];
+    const prevAf = af[i - 1];
+    let sar = out[i - 1] + prevAf * (prevEp - out[i - 1]);
+    const before = i >= 2 ? i - 2 : i - 1;
+    if (trend[i - 1] === 1) {
+      sar = Math.min(sar, low[i - 1], low[before]);
+      if (low[i] < sar) {
+        trend[i] = -1;
+        sar = Math.max(prevEp, high[i]);
+        ep[i] = low[i];
+        af[i] = start;
+      } else {
+        trend[i] = 1;
+        ep[i] = Math.max(prevEp, high[i]);
+        af[i] =
+          high[i] > prevEp ? Math.min(prevAf + increment, maximum) : prevAf;
+      }
+    } else {
+      sar = Math.max(sar, high[i - 1], high[before]);
+      if (high[i] > sar) {
+        trend[i] = 1;
+        sar = Math.min(prevEp, low[i]);
+        ep[i] = high[i];
+        af[i] = start;
+      } else {
+        trend[i] = -1;
+        ep[i] = Math.min(prevEp, low[i]);
+        af[i] =
+          low[i] < prevEp ? Math.min(prevAf + increment, maximum) : prevAf;
+      }
+    }
+    out[i] = sar;
+  }
+};
+
+/** Working columns of the SuperTrend */
+export interface SupertrendWork {
+  tr: Float64Array;
+  atr: Float64Array;
+  upper: Float64Array;
+  lower: Float64Array;
+}
+
+/**
+ * SuperTrend: a trailing band `multiplier` ATRs from the median price,
+ * below the bars in an uptrend (`direction` 1), above them in a downtrend (−1)
+ */
+export const supertrendInto = (
+  high: Values,
+  low: Values,
+  close: Values,
+  n: number,
+  period: number,
+  multiplier: number,
+  out: Float64Array,
+  direction: Float64Array,
+  work: SupertrendWork,
+  from = 0,
+): void => {
+  const { tr, atr: range, upper, lower } = work;
+  trueRangeInto(high, low, close, n, tr, from);
+  rmaInto(tr, n, period, range, from);
+  for (let i = from; i < n; i++) {
+    const a = range[i];
+    if (!finite(a)) {
+      out[i] = direction[i] = upper[i] = lower[i] = NaN;
+      continue;
+    }
+    const mid = (high[i] + low[i]) / 2;
+    let up = mid + multiplier * a;
+    let down = mid - multiplier * a;
+    const pu = i > 0 ? upper[i - 1] : NaN;
+    const pl = i > 0 ? lower[i - 1] : NaN;
+    const pc = i > 0 ? close[i - 1] : NaN;
+    // the bands only tighten while the trend holds
+    if (finite(pl) && !(down > pl || pc < pl)) down = pl;
+    if (finite(pu) && !(up < pu || pc > pu)) up = pu;
+    upper[i] = up;
+    lower[i] = down;
+    const pd = i > 0 ? direction[i - 1] : NaN;
+    const d = !finite(pd)
+      ? -1
+      : pd === -1
+        ? close[i] > up
+          ? 1
+          : -1
+        : close[i] < down
+          ? -1
+          : 1;
+    direction[i] = d;
+    out[i] = d === 1 ? down : up;
+  }
+};
+
+/** Midpoint of the highest high and the lowest low of a window */
+const midpointInto = (
+  high: Values,
+  low: Values,
+  n: number,
+  period: number,
+  out: Float64Array,
+  highest: Float64Array,
+  lowest: Float64Array,
+  from: number,
+) => {
+  const p = periodOf(period);
+  extremeInto(high, n, p, highest, from, true);
+  extremeInto(low, n, p, lowest, from, false);
+  for (let i = from; i < n; i++) out[i] = (highest[i] + lowest[i]) / 2;
+};
+
+/** Working columns of Ichimoku */
+export interface IchimokuWork {
+  highest: Float64Array;
+  lowest: Float64Array;
+}
+
+/**
+ * Ichimoku lines at each bar (unshifted): conversion (Tenkan), base
+ * (Kijun), leading span A and B (drawn `displacement − 1` bars ahead)
+ */
+export const ichimokuInto = (
+  high: Values,
+  low: Values,
+  n: number,
+  conversionPeriod: number,
+  basePeriod: number,
+  spanBPeriod: number,
+  conversion: Float64Array,
+  base: Float64Array,
+  spanA: Float64Array,
+  spanB: Float64Array,
+  work: IchimokuWork,
+  from = 0,
+): void => {
+  const { highest, lowest } = work;
+  midpointInto(
+    high,
+    low,
+    n,
+    conversionPeriod,
+    conversion,
+    highest,
+    lowest,
+    from,
+  );
+  midpointInto(high, low, n, basePeriod, base, highest, lowest, from);
+  midpointInto(high, low, n, spanBPeriod, spanB, highest, lowest, from);
+  for (let i = from; i < n; i++) spanA[i] = (conversion[i] + base[i]) / 2;
+};
+
+/** Donchian channel: highest high, lowest low and their midpoint */
+export const donchianInto = (
+  high: Values,
+  low: Values,
+  n: number,
+  period: number,
+  upper: Float64Array,
+  lower: Float64Array,
+  middle: Float64Array,
+  from = 0,
+): void => {
+  const p = periodOf(period);
+  extremeInto(high, n, p, upper, from, true);
+  extremeInto(low, n, p, lower, from, false);
+  for (let i = from; i < n; i++) middle[i] = (upper[i] + lower[i]) / 2;
+};
+
+/** Keltner channel: an EMA of the close ± `multiplier` ATRs */
+export const keltnerInto = (
+  high: Values,
+  low: Values,
+  close: Values,
+  n: number,
+  period: number,
+  multiplier: number,
+  atrPeriod: number,
+  middle: Float64Array,
+  upper: Float64Array,
+  lower: Float64Array,
+  work: { tr: Float64Array; atr: Float64Array },
+  from = 0,
+): void => {
+  emaInto(close, n, period, middle, from);
+  trueRangeInto(high, low, close, n, work.tr, from);
+  rmaInto(work.tr, n, atrPeriod, work.atr, from);
+  for (let i = from; i < n; i++) {
+    upper[i] = middle[i] + multiplier * work.atr[i];
+    lower[i] = middle[i] - multiplier * work.atr[i];
   }
 };
 
@@ -494,8 +970,8 @@ export const atr = (
 
 /**
  * Volume-weighted average of the typical price (high + low + close) / 3,
- * restarting each `reset` period (UTC, or shifted by `utcOffset` minutes);
- * without `time`, a single cumulative average
+ * restarting each `reset` period (UTC, or shifted by `utcOffset` minutes,
+ * or in the IANA `timeZone`); without `time`, a single cumulative average
  */
 export const vwap = (
   high: Values,
@@ -506,10 +982,12 @@ export const vwap = (
     time?: Values;
     reset?: "day" | "week" | "month" | "none";
     utcOffset?: number;
+    timeZone?: string;
   } = {},
 ): Float64Array => {
   const n = close.length;
   const out = nanArray(n);
+  const zone = options.timeZone;
   vwapInto(
     high,
     low,
@@ -518,7 +996,7 @@ export const vwap = (
     options.time ?? null,
     n,
     options.reset ?? "day",
-    options.utcOffset ?? 0,
+    options.utcOffset ?? (zone ? (time: number) => zoneOffset(time, zone) : 0),
     out,
     nanArray(n),
     nanArray(n),
@@ -547,6 +1025,342 @@ export const heikinAshi = (bars: {
   };
   heikinAshiInto(bars.open, bars.high, bars.low, bars.close, n, out);
   return out;
+};
+
+/** On-balance volume: the running sum of the volume, signed by the close change */
+export const obv = (close: Values, volume: Values): Float64Array => {
+  const out = nanArray(close.length);
+  obvInto(close, volume, close.length, out);
+  return out;
+};
+
+/** Commodity channel index (typically between −100 and +100 in a range) */
+export const cci = (
+  high: Values,
+  low: Values,
+  close: Values,
+  period = 20,
+): Float64Array => {
+  const n = close.length;
+  const out = nanArray(n);
+  cciInto(high, low, close, n, period, out, nanArray(n), nanArray(n));
+  return out;
+};
+
+/** Williams %R, from −100 (close at the lowest low) to 0 (at the highest high) */
+export const williamsR = (
+  high: Values,
+  low: Values,
+  close: Values,
+  period = 14,
+): Float64Array => {
+  const n = close.length;
+  const out = nanArray(n);
+  williamsRInto(high, low, close, n, period, out, nanArray(n), nanArray(n));
+  return out;
+};
+
+/** Money flow index (0-100): a volume-weighted RSI of the typical price */
+export const mfi = (
+  high: Values,
+  low: Values,
+  close: Values,
+  volume: Values,
+  period = 14,
+): Float64Array => {
+  const n = close.length;
+  const out = nanArray(n);
+  mfiInto(high, low, close, volume, n, period, out, nanArray(n));
+  return out;
+};
+
+/** Stochastic RSI (0-100): the stochastic of the RSI, smoothed into K and D */
+export const stochRsi = (
+  close: Values,
+  options: {
+    rsiPeriod?: number;
+    stochPeriod?: number;
+    kPeriod?: number;
+    dPeriod?: number;
+  } = {},
+): { k: Float64Array; d: Float64Array } => {
+  const n = close.length;
+  const k = nanArray(n);
+  const d = nanArray(n);
+  stochRsiInto(
+    close,
+    n,
+    options.rsiPeriod ?? 14,
+    options.stochPeriod ?? 14,
+    options.kPeriod ?? 3,
+    options.dPeriod ?? 3,
+    k,
+    d,
+    {
+      rsi: nanArray(n),
+      gain: nanArray(n),
+      loss: nanArray(n),
+      highest: nanArray(n),
+      lowest: nanArray(n),
+      raw: nanArray(n),
+    },
+  );
+  return { k, d };
+};
+
+/** Directional movement (Wilder): +DI, −DI and the average directional index */
+export const dmi = (
+  high: Values,
+  low: Values,
+  close: Values,
+  period = 14,
+  adxPeriod = 14,
+): { plus: Float64Array; minus: Float64Array; adx: Float64Array } => {
+  const n = close.length;
+  const plus = nanArray(n);
+  const minus = nanArray(n);
+  const adx = nanArray(n);
+  dmiInto(high, low, close, n, period, adxPeriod, plus, minus, adx, {
+    tr: nanArray(n),
+    plusDm: nanArray(n),
+    minusDm: nanArray(n),
+    smoothTr: nanArray(n),
+    smoothPlus: nanArray(n),
+    smoothMinus: nanArray(n),
+    dx: nanArray(n),
+  });
+  return { plus, minus, adx };
+};
+
+/**
+ * Parabolic SAR (Wilder): a trailing stop below the bars in an uptrend,
+ * above them in a downtrend, accelerating with each new extreme
+ */
+export const psar = (
+  high: Values,
+  low: Values,
+  options: { start?: number; increment?: number; maximum?: number } = {},
+): Float64Array => {
+  const n = high.length;
+  const out = nanArray(n);
+  const start = options.start ?? 0.02;
+  psarInto(
+    high,
+    low,
+    n,
+    start,
+    options.increment ?? start,
+    options.maximum ?? 0.2,
+    out,
+    { ep: nanArray(n), af: nanArray(n), trend: nanArray(n) },
+  );
+  return out;
+};
+
+/**
+ * SuperTrend: the trailing band (`value`) and the trend (`direction`: 1 up,
+ * −1 down)
+ */
+export const supertrend = (
+  high: Values,
+  low: Values,
+  close: Values,
+  period = 10,
+  multiplier = 3,
+): { value: Float64Array; direction: Float64Array } => {
+  const n = close.length;
+  const value = nanArray(n);
+  const direction = nanArray(n);
+  supertrendInto(high, low, close, n, period, multiplier, value, direction, {
+    tr: nanArray(n),
+    atr: nanArray(n),
+    upper: nanArray(n),
+    lower: nanArray(n),
+  });
+  return { value, direction };
+};
+
+/**
+ * Ichimoku Kinkō Hyō, aligned on the bars that compute them: the leading
+ * spans are plotted `displacement − 1` bars ahead and the lagging span is
+ * the close plotted `displacement − 1` bars back
+ */
+export const ichimoku = (
+  high: Values,
+  low: Values,
+  options: {
+    conversionPeriod?: number;
+    basePeriod?: number;
+    spanBPeriod?: number;
+  } = {},
+): {
+  conversion: Float64Array;
+  base: Float64Array;
+  spanA: Float64Array;
+  spanB: Float64Array;
+} => {
+  const n = high.length;
+  const out = {
+    conversion: nanArray(n),
+    base: nanArray(n),
+    spanA: nanArray(n),
+    spanB: nanArray(n),
+  };
+  ichimokuInto(
+    high,
+    low,
+    n,
+    options.conversionPeriod ?? 9,
+    options.basePeriod ?? 26,
+    options.spanBPeriod ?? 52,
+    out.conversion,
+    out.base,
+    out.spanA,
+    out.spanB,
+    { highest: nanArray(n), lowest: nanArray(n) },
+  );
+  return out;
+};
+
+/** Keltner channel: EMA of the close ± `multiplier` average true ranges */
+export const keltner = (
+  high: Values,
+  low: Values,
+  close: Values,
+  options: { period?: number; multiplier?: number; atrPeriod?: number } = {},
+): { middle: Float64Array; upper: Float64Array; lower: Float64Array } => {
+  const n = close.length;
+  const out = { middle: nanArray(n), upper: nanArray(n), lower: nanArray(n) };
+  keltnerInto(
+    high,
+    low,
+    close,
+    n,
+    options.period ?? 20,
+    options.multiplier ?? 2,
+    options.atrPeriod ?? 10,
+    out.middle,
+    out.upper,
+    out.lower,
+    { tr: nanArray(n), atr: nanArray(n) },
+  );
+  return out;
+};
+
+/** Donchian channel: highest high, lowest low and their midpoint over `period` bars */
+export const donchian = (
+  high: Values,
+  low: Values,
+  period = 20,
+): { upper: Float64Array; lower: Float64Array; middle: Float64Array } => {
+  const n = high.length;
+  const out = { upper: nanArray(n), lower: nanArray(n), middle: nanArray(n) };
+  donchianInto(high, low, n, period, out.upper, out.lower, out.middle);
+  return out;
+};
+
+/**
+ * Volume profile: the volume of bars `from..to` (inclusive) spread over
+ * `rows` price rows (each bar evenly over its low-high range), split by
+ * rising / falling bars, with the point of control and the value area
+ * (the rows around it holding `valueArea` of the volume, 70% by default)
+ */
+export const volumeProfile = (
+  bars: {
+    open: Values;
+    high: Values;
+    low: Values;
+    close: Values;
+    volume: Values;
+  },
+  options: {
+    from?: number;
+    to?: number;
+    rows?: number;
+    valueArea?: number;
+  } = {},
+): TradingVolumeProfile => {
+  const count = bars.close.length;
+  const from = Math.max(0, Math.floor(options.from ?? 0));
+  const to = Math.min(count - 1, Math.floor(options.to ?? count - 1));
+  const rows = Math.max(1, Math.floor(options.rows ?? 24));
+  let lo = Infinity;
+  let hi = -Infinity;
+  for (let i = from; i <= to; i++) {
+    if (bars.low[i] < lo) lo = bars.low[i];
+    if (bars.high[i] > hi) hi = bars.high[i];
+  }
+  const up = new Float64Array(rows);
+  const down = new Float64Array(rows);
+  const empty = {
+    low: lo,
+    high: hi,
+    step: 0,
+    up,
+    down,
+    total: 0,
+    poc: -1,
+    valueAreaFrom: -1,
+    valueAreaTo: -1,
+  };
+  if (!finite(lo) || !finite(hi)) return empty;
+  if (hi === lo) {
+    hi += Math.abs(lo) * 1e-6 || 1e-6;
+    lo -= Math.abs(lo) * 1e-6 || 1e-6;
+  }
+  const step = (hi - lo) / rows;
+  let total = 0;
+  for (let i = from; i <= to; i++) {
+    const v = bars.volume[i];
+    const l = bars.low[i];
+    const h = bars.high[i];
+    if (!(v > 0) || !finite(l) || !finite(h)) continue;
+    const target = bars.close[i] >= bars.open[i] ? up : down;
+    total += v;
+    const r0 = Math.min(rows - 1, Math.max(0, Math.floor((l - lo) / step)));
+    const r1 = Math.min(rows - 1, Math.max(0, Math.floor((h - lo) / step)));
+    if (r0 === r1 || h <= l) {
+      target[r0] += v;
+      continue;
+    }
+    const span = h - l;
+    for (let r = r0; r <= r1; r++) {
+      const bottom = lo + r * step;
+      const overlap = Math.min(h, bottom + step) - Math.max(l, bottom);
+      if (overlap > 0) target[r] += (v * overlap) / span;
+    }
+  }
+  if (!(total > 0)) return { ...empty, low: lo, high: hi, step };
+  let poc = 0;
+  for (let r = 1; r < rows; r++)
+    if (up[r] + down[r] > up[poc] + down[poc]) poc = r;
+  // grow the value area from the point of control toward the larger side
+  const wanted = total * Math.min(1, Math.max(0, options.valueArea ?? 0.7));
+  let a = poc;
+  let b = poc;
+  let inside = up[poc] + down[poc];
+  while (inside < wanted && (a > 0 || b < rows - 1)) {
+    const below = a > 0 ? up[a - 1] + down[a - 1] : -1;
+    const above = b < rows - 1 ? up[b + 1] + down[b + 1] : -1;
+    if (above >= below) {
+      b++;
+      inside += up[b] + down[b];
+    } else {
+      a--;
+      inside += up[a] + down[a];
+    }
+  }
+  return {
+    low: lo,
+    high: hi,
+    step,
+    up,
+    down,
+    total,
+    poc,
+    valueAreaFrom: a,
+    valueAreaTo: b,
+  };
 };
 
 // -------------------------------------------------------------- timeframes
@@ -592,26 +1406,45 @@ export const parseTimeframe = (
   };
 };
 
+/**
+ * Key of the bucket of `time` in the shifted (displayed) time: weeks start
+ * on Monday, months on the 1st. Comparing keys rather than UTC starts keeps
+ * a day whole when its offset changes (daylight saving).
+ */
+export const bucketKey = (
+  time: number,
+  tf: ParsedTimeframe,
+  utcOffset: UtcOffset = 0,
+): number => {
+  const t = time + offsetOf(utcOffset, time) * 60_000;
+  if (tf.unit === "month") {
+    const date = new Date(t);
+    const months = date.getUTCFullYear() * 12 + date.getUTCMonth();
+    return months - (months % tf.count);
+  }
+  if (tf.count % (7 * DAY) === 0) {
+    // Monday-aligned weeks (the epoch is a Thursday)
+    return Math.floor((t - 4 * DAY) / tf.count);
+  }
+  return Math.floor(t / tf.count);
+};
+
 /** Start of the bucket of `time` (weeks start on Monday, months on the 1st) */
 export const bucketStart = (
   time: number,
   tf: ParsedTimeframe,
-  utcOffset = 0,
+  utcOffset: UtcOffset = 0,
 ): number => {
-  const shift = utcOffset * 60_000;
-  const t = time + shift;
-  if (tf.unit === "month") {
-    const date = new Date(t);
-    const months = date.getUTCFullYear() * 12 + date.getUTCMonth();
-    const start = months - (months % tf.count);
-    return Date.UTC(Math.floor(start / 12), start % 12, 1) - shift;
-  }
-  if (tf.count % (7 * DAY) === 0) {
-    // Monday-aligned weeks (the epoch is a Thursday)
-    const monday = 4 * DAY;
-    return Math.floor((t - monday) / tf.count) * tf.count + monday - shift;
-  }
-  return Math.floor(t / tf.count) * tf.count - shift;
+  const key = bucketKey(time, tf, utcOffset);
+  const shifted =
+    tf.unit === "month"
+      ? Date.UTC(Math.floor(key / 12), key % 12, 1)
+      : tf.count % (7 * DAY) === 0
+        ? key * tf.count + 4 * DAY
+        : key * tf.count;
+  // the offset at the start itself (it may differ from the one at `time`)
+  const guess = shifted - offsetOf(utcOffset, time) * 60_000;
+  return shifted - offsetOf(utcOffset, guess) * 60_000;
 };
 
 const isColumns = (bars: TradingBarsInput): bars is TradingBarColumns =>
@@ -620,26 +1453,31 @@ const isColumns = (bars: TradingBarsInput): bars is TradingBarColumns =>
 /**
  * Aggregates bars into a longer timeframe (`"5m"` bars into `"1H"`, ...):
  * first open, highest high, lowest low, last close, summed volume. Buckets
- * are aligned on UTC (or shifted by `utcOffset` minutes); weeks start on
- * Monday. Columns in, columns out (Float64Array).
+ * are aligned on UTC, or shifted by `timeZone` (minutes from UTC, or an
+ * IANA time zone such as `"America/New_York"`); weeks start on Monday.
+ * Columns in, columns out (Float64Array).
  */
 export function resampleBars(
   bars: readonly TradingBar[],
   timeframe: TradingTimeframe,
-  utcOffset?: number,
+  timeZone?: number | string,
 ): TradingBar[];
 export function resampleBars(
   bars: TradingBarColumns,
   timeframe: TradingTimeframe,
-  utcOffset?: number,
+  timeZone?: number | string,
 ): TradingBarColumns;
 export function resampleBars(
   bars: TradingBarsInput,
   timeframe: TradingTimeframe,
-  utcOffset = 0,
+  timeZone: number | string = 0,
 ): TradingBar[] | TradingBarColumns {
   const tf = parseTimeframe(timeframe);
   if (!tf) throw new Error(`Invalid timeframe: ${String(timeframe)}`);
+  const offset: UtcOffset =
+    typeof timeZone === "string"
+      ? (time: number) => zoneOffset(time, timeZone)
+      : timeZone;
   const columns = isColumns(bars);
   const n = columns ? bars.close.length : bars.length;
   const get = (i: number): TradingBar => {
@@ -656,13 +1494,15 @@ export function resampleBars(
   };
   const out: TradingBar[] = [];
   let current: TradingBar | null = null;
+  let currentKey = NaN;
   for (let i = 0; i < n; i++) {
     const bar = get(i);
-    const start = bucketStart(bar.time, tf, utcOffset);
-    if (!current || start !== current.time) {
+    const key = bucketKey(bar.time, tf, offset);
+    if (!current || key !== currentKey) {
       if (current) out.push(current);
+      currentKey = key;
       current = {
-        time: start,
+        time: bucketStart(bar.time, tf, offset),
         open: bar.open,
         high: bar.high,
         low: bar.low,

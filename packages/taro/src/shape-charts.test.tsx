@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   BulletChart,
   CalendarHeatmap,
+  ChordChart,
   DonutChart,
   FunnelChart,
   GaugeChart,
@@ -307,6 +308,27 @@ describe("shape charts", () => {
         "170px",
       ],
       [
+        <CalendarHeatmap
+          key="calendar-years"
+          data={[{ date: "2025-03-02", value: 3 }]}
+          range={["2025-01-01", "2026-12-31"]}
+          animation={false}
+        />,
+        "Calendar heatmap",
+        "290px",
+      ],
+      [
+        // across new year but within 53 weeks: one strip
+        <CalendarHeatmap
+          key="calendar-winter"
+          data={[{ date: "2025-12-02", value: 3 }]}
+          range={["2025-11-01", "2026-02-28"]}
+          animation={false}
+        />,
+        "Calendar heatmap",
+        "170px",
+      ],
+      [
         <BulletChart
           key="bullet"
           data={[{ name: "Revenue", value: 270, target: 250 }]}
@@ -372,6 +394,73 @@ describe("shape charts", () => {
       act(() => chart.drill(["Web"]));
       expect(onDrill, kind).toHaveBeenCalledWith({ path: ["Web"] });
       expect(chart.getDrillPath()).toEqual(["Web"]);
+      unmount();
+      vi.restoreAllMocks();
+    }
+  });
+
+  it("draws a chord diagram with ChordChart and ShapeChart", async () => {
+    for (const kind of ["named", "generic"]) {
+      const { node, calls, flush } = fakeNode();
+      mockQuery(node);
+      const ref = createRef<ShapeChartHandle>();
+      const onToggle = vi.fn();
+      const matrix = [
+        [0, 5, 2],
+        [3, 0, 4],
+        [1, 2, 0],
+      ];
+      const groups = ["Apps", "Web", "Store"];
+      const { container, unmount } = render(
+        kind === "named" ? (
+          <ChordChart
+            ref={ref}
+            groups={groups}
+            matrix={matrix}
+            animation={false}
+            onToggle={onToggle}
+          />
+        ) : (
+          <ShapeChart
+            ref={ref}
+            options={{ type: "chord", groups, matrix, animation: false }}
+            onToggle={onToggle}
+          />
+        ),
+      );
+      const root = container.firstElementChild as HTMLElement;
+      expect(root, kind).toHaveAttribute("aria-label", "Chord diagram");
+      expect(root, kind).toHaveStyle({ height: "420px" });
+      const chart = await ready(ref);
+      flush();
+      expect(
+        calls.some((c) => c.name === "quadraticCurveTo"),
+        kind,
+      ).toBe(true);
+      expect(texts(calls), kind).toContain("Apps");
+      act(() => chart.toggle(1));
+      expect(onToggle, kind).toHaveBeenCalledWith(
+        expect.objectContaining({ index: 1, hiddenIndexes: [1] }),
+      );
+      unmount();
+      vi.restoreAllMocks();
+    }
+  });
+
+  it("forwards locale and texts to the engine", async () => {
+    for (const [extra, expected] of [
+      [{ locale: "zh-CN" }, "暂无数据"],
+      [{ locale: "fr", texts: { noData: "Vide" } }, "Vide"],
+    ] as const) {
+      const { node, calls, flush } = fakeNode();
+      mockQuery(node);
+      const ref = createRef<ShapeChartHandle>();
+      const { unmount } = render(
+        <PieChart ref={ref} data={[]} animation={false} {...extra} />,
+      );
+      await ready(ref);
+      flush();
+      expect(texts(calls)).toContain(expected);
       unmount();
       vi.restoreAllMocks();
     }

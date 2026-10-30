@@ -28,6 +28,7 @@ export const SHAPE_LABELS: LabelDictionary<ShapeChartLabels> = {
     target: "Target",
     ofTarget: "Of target",
     range: "Range",
+    reverse: "Reverse",
     series: "Series {index}",
     pieChart: "Pie chart",
     donutChart: "Donut chart",
@@ -42,6 +43,7 @@ export const SHAPE_LABELS: LabelDictionary<ShapeChartLabels> = {
     radialBarChart: "Radial bar chart",
     calendarHeatmap: "Calendar heatmap",
     bulletChart: "Bullet chart",
+    chordChart: "Chord diagram",
   },
   zh: {
     noData: "暂无数据",
@@ -58,6 +60,7 @@ export const SHAPE_LABELS: LabelDictionary<ShapeChartLabels> = {
     target: "目标",
     ofTarget: "目标达成",
     range: "区间",
+    reverse: "反向",
     series: "系列 {index}",
     pieChart: "饼图",
     donutChart: "环形图",
@@ -72,6 +75,7 @@ export const SHAPE_LABELS: LabelDictionary<ShapeChartLabels> = {
     radialBarChart: "径向条形图",
     calendarHeatmap: "日历热力图",
     bulletChart: "子弹图",
+    chordChart: "弦图",
   },
   ja: {
     noData: "データなし",
@@ -88,6 +92,7 @@ export const SHAPE_LABELS: LabelDictionary<ShapeChartLabels> = {
     target: "目標",
     ofTarget: "目標達成率",
     range: "範囲",
+    reverse: "逆方向",
     series: "系列 {index}",
     pieChart: "円グラフ",
     donutChart: "ドーナツグラフ",
@@ -102,6 +107,7 @@ export const SHAPE_LABELS: LabelDictionary<ShapeChartLabels> = {
     radialBarChart: "円形棒グラフ",
     calendarHeatmap: "カレンダーヒートマップ",
     bulletChart: "ブレットグラフ",
+    chordChart: "コードダイアグラム",
   },
   fr: {
     noData: "Aucune donnée",
@@ -118,6 +124,7 @@ export const SHAPE_LABELS: LabelDictionary<ShapeChartLabels> = {
     target: "Objectif",
     ofTarget: "Atteinte de l’objectif",
     range: "Plage",
+    reverse: "Sens inverse",
     series: "Série {index}",
     pieChart: "Graphique circulaire",
     donutChart: "Graphique en anneau",
@@ -132,6 +139,7 @@ export const SHAPE_LABELS: LabelDictionary<ShapeChartLabels> = {
     radialBarChart: "Graphique à barres radiales",
     calendarHeatmap: "Calendrier thermique",
     bulletChart: "Graphique à puces",
+    chordChart: "Diagramme d’accords",
   },
 };
 

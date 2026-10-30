@@ -6,7 +6,10 @@ import type {
   CanvasChartInstance,
   ChartAnnotation,
   ChartAxisOptions,
+  ChartColorScheme,
+  ChartConnectorOptions,
   ChartInteractionOptions,
+  ChartLabels,
   ChartLegendOptions,
   ChartOrientation,
   ChartPadding,
@@ -33,6 +36,7 @@ export type {
   ChartHoverEvent,
   ChartHoverItem,
   ChartInteractionOptions,
+  ChartLabels,
   ChartLegendOptions,
   ChartPadding,
   ChartPlotClickEvent,
@@ -109,6 +113,15 @@ export const chartCommonProps = {
   palette: Array as PropType<readonly string[]>,
   /** Accessible name of the chart */
   ariaLabel: String,
+  /**
+   * Locale of the texts and numbers the chart writes (tooltip rows, compact
+   * units, separators, month and weekday names). Mini-programs have no
+   * `<html lang>`: pass the app language (default: the system language when
+   * the runtime has `navigator.language`, else English)
+   */
+  locale: String,
+  /** Overrides of the built-in texts of the `locale` */
+  labels: Object as PropType<Partial<ChartLabels>>,
   /** Keeps the page from scrolling while a finger moves on the chart */
   disableScroll: { type: Boolean, default: undefined },
 };
@@ -218,10 +231,12 @@ export const heatmapChartProps = {
   xCategories: Array as PropType<readonly string[]>,
   /** Row names from bottom to top (collected from the data when omitted) */
   yCategories: Array as PropType<readonly string[]>,
-  /** Colors from the lowest to the highest value */
-  colorScale: Array as PropType<readonly string[]>,
+  /** Colors from the lowest to the highest value, or a built-in ramp ("sequential" by default, "diverging") */
+  colorScale: [Array, String] as PropType<readonly string[] | ChartColorScheme>,
   /** Values at the ends of the color scale (default the data range) */
   valueRange: Array as unknown as PropType<readonly [number, number]>,
+  /** Value at the middle of the color scale (default 0 for diverging ramps spanning it, else the middle of the range) */
+  colorMidpoint: Number,
   /** Name of the value in the tooltip */
   name: String,
   /** Corner radius of the cells, in pixels */
@@ -288,6 +303,10 @@ export const boxPlotChartProps = {
   whisker: [Number, String] as PropType<BoxplotStatsOptions["whisker"]>,
   /** `horizontal` lays the boxes out in rows (default "vertical") */
   orientation: String as PropType<ChartOrientation>,
+  /** Outliers drawn as rings ("hollow", default) or as filled dots; series may set their own */
+  outlierShape: String as PropType<"hollow" | "filled">,
+  /** Diameter of the outliers in pixels (default 7) */
+  outlierSize: Number,
 } as const;
 
 /** Props of WaterfallChart (besides the common and axis ones) */
@@ -308,6 +327,11 @@ export const waterfallChartProps = {
   labels: { type: Boolean, default: true },
   /** Formats the values (labels, tooltip) */
   format: Function as PropType<(value: number) => string>,
+  /** Thin lines from the end of every bar to the next one; an object styles them (default `true`: dashed) */
+  connector: {
+    type: [Boolean, Object] as PropType<boolean | ChartConnectorOptions>,
+    default: undefined,
+  },
   /** Locale of the default name */
   locale: String,
   /** `horizontal` lays the steps out in rows (default "vertical") */
@@ -328,6 +352,8 @@ export const ganttChartProps = {
   milestoneName: String,
   /** Formats the progress shares (tooltip) */
   formatProgress: Function as PropType<(share: number) => string>,
+  /** Name of the tooltip row listing the dependencies of a task (default "Depends on") */
+  dependenciesName: String,
   /** Locale of the default names and of the progress shares */
   locale: String,
   /** Draws a line at this date (`true`: now) */
@@ -345,5 +371,7 @@ export const sparklineFrameProps = {
   tooltip: chartCommonProps.tooltip,
   palette: chartCommonProps.palette,
   ariaLabel: chartCommonProps.ariaLabel,
+  locale: chartCommonProps.locale,
+  labels: chartCommonProps.labels,
   disableScroll: chartCommonProps.disableScroll,
 };

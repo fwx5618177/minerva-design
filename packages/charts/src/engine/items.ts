@@ -2,6 +2,7 @@
 
 import { packColor, type Rgba } from "./color";
 import { curvePoints } from "./curve";
+import { heatCellStyle } from "./layout";
 import type { ChartModel, SeriesModel } from "./model";
 import {
   AREA_STRIDE,
@@ -81,11 +82,52 @@ const barItem = (
   };
 };
 
-/** Render items of the visible series, back to front */
+/** CSS pixels per data unit along each axis (sizes the heatmap cells) */
+export interface PixelDensity {
+  x: number;
+  y: number;
+}
+
+/**
+ * Inset and radius of the cells of a heatmap at a pixel density; the
+ * renderers fade small insets out and overlap tiny cells (no seams)
+ */
+const cellStyleOf = (s: SeriesModel, density?: PixelDensity) => {
+  if (!density) return { inset: 0.5, radius: Math.min(s.radius, 2) };
+  const style = heatCellStyle(
+    s.cellHalf.x * 2 * density.x,
+    s.cellHalf.y * 2 * density.y,
+    s.radius,
+  );
+  return { inset: Math.max(0.5, style.inset), radius: style.radius };
+};
+
+/**
+ * What the heatmap items depend on besides the model: their cell style at
+ * the current pixel density (`""` without heatmaps)
+ */
+export const cellStyleKey = (
+  model: ChartModel,
+  density?: PixelDensity,
+): string => {
+  let key = "";
+  for (const s of model.series) {
+    if (s.type !== "heatmap" || s.hidden) continue;
+    const style = cellStyleOf(s, density);
+    key += `${style.inset}/${style.radius};`;
+  }
+  return key;
+};
+
+/**
+ * Render items of the visible series, back to front; `density` sizes the
+ * gaps and corners of heatmap cells
+ */
 export const buildItems = (
   model: ChartModel,
   origin: Origin,
   version: number,
+  density?: PixelDensity,
 ): RenderItem[] => {
   const items: RenderItem[] = [];
   /** Outlines of the areas are drawn with the lines, above the bars */
@@ -281,6 +323,7 @@ export const buildItems = (
       case "heatmap": {
         const colors = s.cellColors;
         const hy = s.cellHalf.y;
+        const style = cellStyleOf(s, density);
         items.push(
           barItem(
             `${s.key}:cells`,
@@ -297,8 +340,8 @@ export const buildItems = (
             },
             {
               halfWidth: s.cellHalf.x,
-              radius: s.radius,
-              inset: 1,
+              radius: style.radius,
+              inset: style.inset,
               minHalf: 0,
               sorted,
             },
@@ -481,7 +524,7 @@ const boxItems = (
           const valid = Number.isFinite(v) && Number.isFinite(x[i]);
           f[j * 4] = valid ? ox(i) : GAP;
           f[j * 4 + 1] = valid ? oy(v) : GAP;
-          f[j * 4 + 2] = s.pointSize;
+          f[j * 4 + 2] = s.outlierSize;
           u[j * 4 + 3] = colorAt(i);
           j++;
         }
@@ -493,8 +536,9 @@ const boxItems = (
         color: s.color,
         instances: buffer,
         count: n,
-        opacity: 0.85,
-        stroke: n <= 5000 ? 1.25 : 0,
+        // rings of the series color (the box shows through), or dots
+        opacity: s.outlierShape === "hollow" ? 0 : 0.85,
+        stroke: s.outlierShape === "hollow" || n <= 5000 ? 1.25 : 0,
       });
     }
   }

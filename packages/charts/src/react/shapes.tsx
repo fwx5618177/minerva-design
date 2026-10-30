@@ -19,6 +19,9 @@ import type {
   CalendarDate,
   CalendarDatum,
   CalendarHeatmapOptions,
+  ChordChartOptions,
+  ChordGroup,
+  ChordLink,
   FunnelChartOptions,
   GaugeBand,
   GaugeChartOptions,
@@ -54,13 +57,13 @@ export interface ShapeChartHandle {
 
 /**
  * Props shared by PieChart, DonutChart, RadarChart, GaugeChart, FunnelChart,
- * TreemapChart, SankeyChart, SunburstChart, RadialBarChart, CalendarHeatmap
- * and BulletChart
+ * TreemapChart, SankeyChart, SunburstChart, RadialBarChart, CalendarHeatmap,
+ * BulletChart and ChordChart
  */
 export interface ShapeChartCommonProps {
   /**
    * Height of the chart (the legend included); numbers are pixels
-   * @default 320 (GaugeChart: 240, RadialBarChart: 300, CalendarHeatmap and BulletChart: from the data)
+   * @default 320 (GaugeChart: 240, RadialBarChart: 300, ChordChart: 420, CalendarHeatmap and BulletChart: from the data)
    */
   height?: number | string;
   /**
@@ -560,6 +563,85 @@ export interface BulletChartProps extends ShapeChartCommonProps {
    * @default true
    */
   ticks?: boolean;
+}
+
+/** Props of ChordChart */
+export interface ChordChartProps extends ShapeChartCommonProps {
+  /**
+   * Groups (names or `{ name, color }`), in their order around the circle;
+   * groups only named by `links` are appended. With `matrix`, unnamed rows
+   * are numbered from 1.
+   */
+  groups?: readonly (string | ChordGroup)[];
+  /** Square flow matrix: `matrix[i][j]` flows from group `i` to group `j` (used when `links` is absent) */
+  matrix?: readonly (readonly number[])[];
+  /** Flows as a list (by group name or index); takes precedence over `matrix` */
+  links?: readonly ChordLink[];
+  /**
+   * `false`: one ribbon per pair of groups, each end as wide as the flow
+   * leaving that end. `true`: one ribbon per direction, arcs sized by the
+   * outgoing plus the incoming flows (self flows ignored)
+   * @default false
+   */
+  directed?: boolean;
+  /**
+   * Arrowheads at the target end of the ribbons
+   * @default true when `directed`
+   */
+  arrows?: boolean;
+  /**
+   * Gap between the groups, in degrees
+   * @default 2
+   */
+  padAngle?: number;
+  /**
+   * Angle of the first group, degrees clockwise from 12 o'clock
+   * @default 0
+   */
+  startAngle?: number;
+  /**
+   * Order of the groups around the circle
+   * @default "none" (data order)
+   */
+  sortGroups?: "none" | "ascending" | "descending";
+  /**
+   * Order of the ribbon ends along an arc: `auto` minimizes the crossings;
+   * otherwise the order of the groups, or by value
+   * @default "auto"
+   */
+  sortSubgroups?: "auto" | "none" | "ascending" | "descending";
+  /**
+   * Color of the ribbons without `color`: a gradient from the source to the
+   * target color, one of the two, or a neutral gray
+   * @default "gradient"
+   */
+  ribbonColor?: "gradient" | "source" | "target" | "neutral";
+  /**
+   * Opacity of the ribbons, 0-1 (hovered ribbons are more opaque)
+   * @default 0.65
+   */
+  ribbonOpacity?: number;
+  /**
+   * Thickness of the group arcs, in pixels
+   * @default 6% of the radius (8-18 px)
+   */
+  arcWidth?: number;
+  /**
+   * Value ticks outside the arcs (labelled where there is room); a number sets the step between ticks
+   * @default true when the diagram is large enough
+   */
+  ticks?: boolean | number;
+  /**
+   * Formats the tick labels
+   * @default compact numbers of the `locale` (not `format`, whose units would crowd the ticks)
+   */
+  tickFormat?: (value: number) => string;
+  /**
+   * Group labels along the arc (`tangential`) or the radius (`radial`);
+   * `auto` picks tangential when every name fits; colliding labels are shortened or skipped
+   * @default "auto"
+   */
+  labels?: "auto" | "tangential" | "radial" | "none";
 }
 
 interface Handlers {
@@ -1195,6 +1277,71 @@ export function BulletChart(props: BulletChartProps) {
   return (
     <ShapeHost props={props} options={options} defaultHeight={defaultHeight} />
   );
+}
+
+/**
+ * Chord diagram: flows between groups around a circle; hovering a group
+ * highlights its ribbons, hovering a ribbon shows both directions
+ */
+export function ChordChart(props: ChordChartProps) {
+  const {
+    groups,
+    matrix,
+    links,
+    directed,
+    arrows,
+    padAngle,
+    startAngle,
+    sortGroups,
+    sortSubgroups,
+    ribbonColor,
+    ribbonOpacity,
+    arcWidth,
+    ticks,
+    tickFormat,
+    labels,
+  } = props;
+  const common = useCommonOptions(props);
+  const options = useMemo(
+    (): ChordChartOptions => ({
+      ...common,
+      type: "chord",
+      groups,
+      matrix,
+      links,
+      directed,
+      arrows,
+      padAngle,
+      startAngle,
+      sortGroups,
+      sortSubgroups,
+      ribbonColor,
+      ribbonOpacity,
+      arcWidth,
+      ticks,
+      tickFormat,
+      labels,
+    }),
+    [
+      common,
+      groups,
+      matrix,
+      links,
+      directed,
+      arrows,
+      padAngle,
+      startAngle,
+      sortGroups,
+      sortSubgroups,
+      ribbonColor,
+      ribbonOpacity,
+      arcWidth,
+      ticks,
+      tickFormat,
+      labels,
+    ],
+  );
+  return <ShapeHost props={props} options={options} defaultHeight={420} />;
 }
 
 function ShapeHost({

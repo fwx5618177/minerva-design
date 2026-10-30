@@ -49,6 +49,7 @@ try {
     "./uni",
     "./uni/monaco",
     "./vue/global",
+    "./vue/charts-global",
   ];
   run("pnpm", ["exec", "attw", tarball, "--entrypoints", ...dual]);
   run("pnpm", [

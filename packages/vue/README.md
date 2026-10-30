@@ -16,8 +16,16 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import "minerva-design/style.css"; // once: the same stylesheet as React
 import MinervaVue from "minerva-design/vue"; // optional: global <Mn*> components
-createApp(App).use(MinervaVue).mount("#app");
+// optional, opt-in: global <Mn*Chart> components (loads the chart engine)
+import { MinervaVueCharts } from "minerva-design/vue/charts";
+createApp(App).use(MinervaVue).use(MinervaVueCharts).mount("#app");
 ```
+
+`MinervaVue` registers every component but the charts, and never loads chart
+code (`src/plugins.test.ts`). The charts are registered by `MinervaVueCharts`
+(`minerva-design/vue/charts`, typings `minerva-design/vue/charts-global`); their
+named imports stay available from both `minerva-design/vue` and
+`minerva-design/vue/charts`.
 
 ```vue
 <script setup lang="ts">
@@ -33,7 +41,9 @@ import { Button, Modal } from "minerva-design/vue"; // tree-shaken
 | `src/groups/*.ts`               | barrels re-exported by `src/index.ts` (forms, pickers, overlays, navigation, display) |
 | `src/internal/`                 | composables over `@minerva/dom` / `@minerva/core`, `Portal`, `Slot`, dialog, icons    |
 | `src/config/`                   | `ConfigProvider` (nested scopes), `useConfig`, `useTheme`, `useI18n`, `useLocale`     |
-| `src/plugin.ts`                 | `MinervaVue` plugin (`app.use`), `src/global.d.ts`-style `GlobalComponents` typings   |
+| `src/plugin.ts`                 | `MinervaVue` plugin (`app.use`), every component but the charts                       |
+| `src/charts.ts`                 | `minerva-design/vue/charts`: the charts and the opt-in `MinervaVueCharts` plugin      |
+| `scripts/generate-global.mjs`   | Volar `GlobalComponents` typings: `src/global.ts`, `src/charts-global.ts`             |
 | `src/test-utils/styling-hooks/` | scenarios of the styling hooks contract (`src/styling-hooks.contract.test.ts`)        |
 | `scripts/generate-icons.mjs`    | `src/internal/icons.ts` from the shared icon set                                      |
 

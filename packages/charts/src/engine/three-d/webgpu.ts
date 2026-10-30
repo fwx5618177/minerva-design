@@ -104,17 +104,27 @@ export const createWebGpu3D = async (
       operation: "add",
     },
   };
+  // additive points: the colors add up, the coverage composites as usual
+  const additive: GPUBlendState = {
+    color: { srcFactor: "one", dstFactor: "one", operation: "add" },
+    alpha: blend.alpha,
+  };
   const pipeline = (
     code: string,
     buffers: GPUVertexBufferLayout[],
     topology: GPUPrimitiveTopology,
     depthWrite: boolean,
+    blending: GPUBlendState = blend,
   ) => {
     const module = device.createShaderModule({ code });
     return device.createRenderPipeline({
       layout,
       vertex: { module, entryPoint: "vs", buffers },
-      fragment: { module, entryPoint: "fs", targets: [{ format, blend }] },
+      fragment: {
+        module,
+        entryPoint: "fs",
+        targets: [{ format, blend: blending }],
+      },
       primitive: { topology, cullMode: "none" },
       depthStencil: {
         format: "depth24plus",
@@ -170,6 +180,21 @@ export const createWebGpu3D = async (
       pipeline(WGSL_LINES, lineBuffers, "triangle-strip", false),
       pipeline(WGSL_LINES, lineBuffers, "triangle-strip", true),
     ],
+  };
+  let additivePoints: GPURenderPipeline | null = null;
+  const pipelineOf = (item: Item3D) => {
+    if (item.kind === "points" && item.additive) {
+      additivePoints ??= pipeline(
+        WGSL_POINTS,
+        pointBuffers,
+        "triangle-strip",
+        false,
+        additive,
+      );
+      return additivePoints;
+    }
+    const variants = pipelines[item.kind];
+    return variants[writesDepth(item) ? variants.length - 1 : 0];
   };
 
   let targets: {
@@ -329,8 +354,7 @@ export const createWebGpu3D = async (
           0,
           itemUniforms(item, frame, uniformData),
         );
-        const variants = pipelines[item.kind];
-        const chosen = variants[writesDepth(item) ? variants.length - 1 : 0];
+        const chosen = pipelineOf(item);
         if (!chosen) continue;
         pass.setPipeline(chosen);
         pass.setBindGroup(0, res.bindGroup);

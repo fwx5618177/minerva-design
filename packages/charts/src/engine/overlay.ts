@@ -394,6 +394,16 @@ export interface ForegroundInput {
    * @default true
    */
   clear?: boolean;
+  /** Lines between consecutive bars (waterfall connectors), drawn first */
+  connectors?: readonly {
+    x0: number;
+    y0: number;
+    x1: number;
+    y1: number;
+    color: string;
+    width: number;
+    dash: readonly number[];
+  }[];
 }
 
 export const drawForeground = (
@@ -407,6 +417,21 @@ export const drawForeground = (
   ctx.beginPath();
   ctx.rect(plot.x, plot.y, plot.width, plot.height);
   ctx.clip();
+
+  for (const c of input.connectors ?? []) {
+    ctx.strokeStyle = c.color;
+    ctx.lineWidth = c.width;
+    ctx.setLineDash([...c.dash]);
+    ctx.beginPath();
+    // crisp hairlines along the pixel grid
+    const along = c.y0 === c.y1;
+    const x0 = along ? c.x0 : crisp(c.x0);
+    const y0 = along ? crisp(c.y0) : c.y0;
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(along ? c.x1 : x0, along ? y0 : c.y1);
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
 
   const halo = toCss(theme.background, 0.9);
   const occupied: Rect[] = [];

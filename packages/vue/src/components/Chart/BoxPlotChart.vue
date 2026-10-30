@@ -34,6 +34,10 @@ const props = defineProps({
   name: { type: String, default: "Values" },
   /** Reach of the whiskers in interquartile ranges beyond the box (Tukey: 1.5); `minmax` extends them to the extremes */
   whisker: [Number, String] as PropType<number | "minmax">,
+  /** Outliers drawn as rings of the series color or as filled dots; series may set their own (default `hollow`) */
+  outlierShape: String as PropType<"hollow" | "filled">,
+  /** Diameter of the outliers in CSS pixels (default 7) */
+  outlierSize: Number,
 });
 const emit = defineEmits<{
   /** The hovered (or keyboard-focused) boxes changed (`null`: none) */
@@ -68,6 +72,14 @@ const { setContainer, rootStyle, handle } = useCartesianChart(
           ...(props.series ?? []),
         ],
         "boxplot",
+      ).map((s) =>
+        s.type === "boxplot"
+          ? {
+              ...s,
+              outlierShape: s.outlierShape ?? props.outlierShape,
+              outlierSize: s.outlierSize ?? props.outlierSize,
+            }
+          : s,
       ),
     ),
   {

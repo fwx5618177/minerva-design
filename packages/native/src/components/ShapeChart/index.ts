@@ -1,6 +1,7 @@
 export {
   BulletChart,
   CalendarHeatmap,
+  ChordChart,
   DonutChart,
   FunnelChart,
   GaugeChart,

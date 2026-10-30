@@ -6,12 +6,15 @@ import type {
   CalendarDatum,
   CanvasShapeChartInstance,
   ChartPadding,
+  ChordGroup,
+  ChordLink,
   GaugeBand,
   RadarIndicator,
   RadarSeries,
   RadialBarDatum,
   SankeyLink,
   SankeyNode,
+  ShapeChartLabels,
   ShapeChartOptions,
   ShapeDatum,
   ShapeDrillEvent,
@@ -26,6 +29,8 @@ export type {
   BulletDatum,
   CalendarDate,
   CalendarDatum,
+  ChordGroup,
+  ChordLink,
   GaugeBand,
   RadarIndicator,
   RadarSeries,
@@ -53,7 +58,7 @@ export interface ShapeChartHandle {
 export interface ShapeChartFrameProps {
   /**
    * Height of the chart (the legend included)
-   * @default 320 (GaugeChart: 240, RadialBarChart: 300, SankeyChart and SunburstChart: 360, CalendarHeatmap and BulletChart: from the data)
+   * @default 320 (GaugeChart: 240, RadialBarChart: 300, SankeyChart and SunburstChart: 360, ChordChart: 420, CalendarHeatmap and BulletChart: from the data)
    */
   height?: DimensionValue;
   /**
@@ -80,7 +85,7 @@ export interface ShapeChartFrameProps {
   ref?: Ref<ShapeChartHandle>;
 }
 
-/** Props shared by every named shape chart (PieChart, DonutChart, RadarChart, GaugeChart, FunnelChart, TreemapChart, SankeyChart, SunburstChart, RadialBarChart, CalendarHeatmap and BulletChart) */
+/** Props shared by every named shape chart (PieChart, DonutChart, RadarChart, GaugeChart, FunnelChart, TreemapChart, SankeyChart, SunburstChart, RadialBarChart, CalendarHeatmap, BulletChart and ChordChart) */
 export interface ShapeChartCommonProps extends ShapeChartFrameProps {
   /** Colors of the marks without `color` (defaults to the `chart-series-1..8` tokens, then the theme colors) */
   palette?: readonly string[];
@@ -126,6 +131,13 @@ export interface ShapeChartCommonProps extends ShapeChartFrameProps {
    * @default the chart type, e.g. "Donut chart"
    */
   ariaLabel?: string;
+  /**
+   * BCP 47 locale of the built-in texts (tooltip rows, accessible names, "No data") and of the numbers
+   * @default the runtime's default locale, else English
+   */
+  locale?: string;
+  /** Replaces built-in texts of the `locale` */
+  texts?: Partial<ShapeChartLabels>;
 }
 
 /** Props of PieChart */
@@ -148,7 +160,7 @@ export interface PieChartProps extends ShapeChartCommonProps {
    */
   padAngle?: number;
   /**
-   * Corner radius of the slices, in pixels (drawn square on React Native)
+   * Corner radius of the slices, in pixels
    * @default 0 (pie), 4 (donut)
    */
   cornerRadius?: number;
@@ -371,7 +383,7 @@ export interface SunburstChartProps extends ShapeChartCommonProps {
    */
   padAngle?: number;
   /**
-   * Corner radius of the sectors, in pixels (drawn square on React Native)
+   * Corner radius of the sectors, in pixels
    * @default 2
    */
   cornerRadius?: number;
@@ -499,7 +511,7 @@ export interface CalendarHeatmapProps extends ShapeChartCommonProps {
    */
   gap?: number;
   /**
-   * Corner radius of the cells, in pixels (drawn square on React Native)
+   * Corner radius of the cells, in pixels
    * @default 2
    */
   radius?: number;
@@ -550,6 +562,85 @@ export interface BulletChartProps extends ShapeChartCommonProps {
    * @default true
    */
   ticks?: boolean;
+}
+
+/** Props of ChordChart */
+export interface ChordChartProps extends ShapeChartCommonProps {
+  /**
+   * Groups (names or `{ name, color }`), in their order around the circle;
+   * groups only named by `links` are appended. With `matrix`, unnamed rows
+   * are numbered from 1.
+   */
+  groups?: readonly (string | ChordGroup)[];
+  /** Square flow matrix: `matrix[i][j]` flows from group `i` to group `j` (used when `links` is absent) */
+  matrix?: readonly (readonly number[])[];
+  /** Flows as a list (by group name or index); takes precedence over `matrix` */
+  links?: readonly ChordLink[];
+  /**
+   * `false`: one ribbon per pair of groups, each end as wide as the flow
+   * leaving that end. `true`: one ribbon per direction, arcs sized by the
+   * outgoing plus the incoming flows (self flows ignored)
+   * @default false
+   */
+  directed?: boolean;
+  /**
+   * Arrowheads at the target end of the ribbons
+   * @default true when `directed`
+   */
+  arrows?: boolean;
+  /**
+   * Gap between the groups, in degrees
+   * @default 2
+   */
+  padAngle?: number;
+  /**
+   * Angle of the first group, degrees clockwise from 12 o'clock
+   * @default 0
+   */
+  startAngle?: number;
+  /**
+   * Order of the groups around the circle
+   * @default "none" (data order)
+   */
+  sortGroups?: "none" | "ascending" | "descending";
+  /**
+   * Order of the ribbon ends along an arc: `auto` minimizes the crossings;
+   * otherwise the order of the groups, or by value
+   * @default "auto"
+   */
+  sortSubgroups?: "auto" | "none" | "ascending" | "descending";
+  /**
+   * Color of the ribbons without `color`: a gradient from the source to the
+   * target color, one of the two, or a neutral gray
+   * @default "gradient"
+   */
+  ribbonColor?: "gradient" | "source" | "target" | "neutral";
+  /**
+   * Opacity of the ribbons, 0-1 (pressed ribbons are more opaque)
+   * @default 0.65
+   */
+  ribbonOpacity?: number;
+  /**
+   * Thickness of the group arcs, in pixels
+   * @default 6% of the radius (8-18 px)
+   */
+  arcWidth?: number;
+  /**
+   * Value ticks outside the arcs (labelled where there is room); a number sets the step between ticks
+   * @default true when the diagram is large enough
+   */
+  ticks?: boolean | number;
+  /**
+   * Formats the tick labels
+   * @default compact numbers of the `locale`
+   */
+  tickFormat?: (value: number) => string;
+  /**
+   * Group labels along the arc (`tangential`) or the radius (`radial`);
+   * `auto` picks tangential when every name fits; colliding labels are shortened or skipped
+   * @default "auto"
+   */
+  labels?: "auto" | "tangential" | "radial" | "none";
 }
 
 /** Props of ShapeChart: any shape chart type from its engine options */

@@ -16,7 +16,8 @@ import { CHARTS_DIST, REACT_DIST, VUE_DIST } from "../../tools/paths.mjs";
 const here = (path: string) => fileURLToPath(new URL(path, import.meta.url));
 
 // Built into `dist/vue/` of the published `minerva-design` package
-// (`minerva-design/vue` and `minerva-design/vue/monaco`), ESM only (the Vue 3
+// (`minerva-design/vue`, `minerva-design/vue/monaco` and
+// `minerva-design/vue/charts`), ESM only (the Vue 3
 // ecosystem: Vite, Nuxt, vue/server-renderer all load ESM).
 //
 // Dependencies (vue, dompurify, jsonc-parser, the optional monaco-editor)
@@ -150,7 +151,11 @@ export default defineConfig({
     target: "es2022",
     cssCodeSplit: false,
     lib: {
-      entry: { index: here("./src/index.ts"), monaco: here("./src/monaco.ts") },
+      entry: {
+        index: here("./src/index.ts"),
+        monaco: here("./src/monaco.ts"),
+        charts: here("./src/charts.ts"),
+      },
       formats: ["es"],
       fileName: (_format, entryName) => `${entryName}.js`,
     },

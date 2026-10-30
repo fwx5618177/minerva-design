@@ -14,6 +14,7 @@ import {
   sparklineOptions,
   type ChartAnnotation,
   type ChartAxisOptions,
+  type ChartColorScheme,
   type ChartCurve,
   type ChartDragEvent,
   type ChartHoverEvent,
@@ -389,10 +390,14 @@ export class MnHeatmapChart extends MnSeriesChartBase {
   readonly xCategories = input<readonly string[] | undefined>(undefined);
   /** Row names from bottom to top (collected from the data when omitted) */
   readonly yCategories = input<readonly string[] | undefined>(undefined);
-  /** Colors from the lowest to the highest value; a ramp of the first palette color by default */
-  readonly colorScale = input<readonly string[] | undefined>(undefined);
+  /** Colors from the lowest to the highest value (interpolated in OKLab), or a built-in theme-aware ramp of the first palette color (default `sequential`) */
+  readonly colorScale = input<readonly string[] | ChartColorScheme | undefined>(
+    undefined,
+  );
   /** Values at the ends of the color scale; the data range by default */
   readonly valueRange = input<readonly [number, number] | undefined>(undefined);
+  /** Value at the middle of the color scale (diverging data; default 0 for `diverging` ramps spanning it, else the middle of the range) */
+  readonly colorMidpoint = input<number | undefined>(undefined);
   /** Name of the value in the tooltip */
   readonly name = input<string | undefined>(undefined);
   /** Corner radius of the cells, in pixels */
@@ -408,6 +413,7 @@ export class MnHeatmapChart extends MnSeriesChartBase {
         yCategories: this.yCategories(),
         colorScale: this.colorScale(),
         valueRange: this.valueRange(),
+        colorMidpoint: this.colorMidpoint(),
         name: this.name(),
         radius: this.radius(),
         format: this.format(),

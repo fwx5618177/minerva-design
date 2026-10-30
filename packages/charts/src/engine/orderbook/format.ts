@@ -2,6 +2,7 @@
 
 import type { ChartTheme } from "../theme";
 import type { Rgba } from "../color";
+import type { ChartTimeZone } from "../types";
 import {
   compactUnits,
   numberFormat as intlNumberFormat,
@@ -119,12 +120,21 @@ export const createFormatters = (
 
 const pad = (value: number, length = 2) => String(value).padStart(length, "0");
 
-/** `HH:MM:SS` or `HH:MM:SS.mmm`, local time */
-export const formatClock = (time: number, milliseconds = true): string => {
+/** `HH:MM:SS` or `HH:MM:SS.mmm`, in the local time or UTC */
+export const formatClock = (
+  time: number,
+  milliseconds = true,
+  timeZone: ChartTimeZone = "local",
+): string => {
   const d = new Date(time);
   if (Number.isNaN(d.getTime())) return "–";
-  const base = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-  return milliseconds ? `${base}.${pad(d.getMilliseconds(), 3)}` : base;
+  const utc = timeZone === "utc";
+  const base = utc
+    ? `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}`
+    : `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  return milliseconds
+    ? `${base}.${pad(utc ? d.getUTCMilliseconds() : d.getMilliseconds(), 3)}`
+    : base;
 };
 
 export const DEFAULT_UP = "var(--success-color, #16a34a)";

@@ -33,6 +33,8 @@ const props = defineProps({
   milestoneName: String,
   /** Formats the progress shares (tooltip; default "60%") */
   formatProgress: Function as PropType<(share: number) => string>,
+  /** Name of the dependencies row of the tooltip (default "Depends on", in the `locale`) */
+  dependenciesName: String,
   /** Draws a line at this date (`true`: now) */
   today: {
     type: [Boolean, Number, Date] as PropType<boolean | number | Date>,
@@ -63,6 +65,8 @@ const { setContainer, rootStyle, handle } = useCartesianChart(
       progressName: props.progressName,
       milestoneName: props.milestoneName,
       formatProgress: props.formatProgress,
+      dependenciesName: props.dependenciesName,
+      locale: props.locale,
     });
     const today = props.today;
     const now =

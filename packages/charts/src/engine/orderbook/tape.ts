@@ -512,7 +512,11 @@ export const createTimeAndSales = (
             ctx.fillText(
               options.formatTime
                 ? options.formatTime(row.time)
-                : formatClock(row.time, options.milliseconds !== false),
+                : formatClock(
+                    row.time,
+                    options.milliseconds !== false,
+                    options.timeZone,
+                  ),
               x,
               ty,
             );

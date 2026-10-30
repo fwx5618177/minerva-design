@@ -106,11 +106,41 @@ function textView(
   );
 }
 
+/**
+ * Position of a view: rotated or curved views (and anything inside a clip)
+ * are placed with a translation, kept exact by the renderers, as layout
+ * offsets are rounded to the pixel grid before a rotation applies (up to
+ * half a pixel per nested clip: visible steps at the rounded corners);
+ * straight views keep the crisp edges of the rounded layout
+ */
+const placed = (
+  x: number,
+  y: number,
+  rotate: number,
+  exact: boolean,
+): ViewStyle =>
+  exact
+    ? {
+        left: 0,
+        top: 0,
+        transform: [
+          { translateX: x },
+          { translateY: y },
+          ...(rotate ? [{ rotate: `${rotate}rad` }] : []),
+        ],
+      }
+    : {
+        left: x,
+        top: y,
+        ...(rotate ? { transform: [{ rotate: `${rotate}rad` }] } : null),
+      };
+
 /** Elements of the primitives */
 export function renderPrims(
   prims: readonly Prim[],
   family: string | undefined,
   prefix = "",
+  inClip = false,
 ): ReactNode[] {
   return prims.map((p, i) => {
     const key = `${prefix}${i}`;
@@ -118,8 +148,12 @@ export function renderPrims(
       case "box": {
         const style: ViewStyle = {
           position: "absolute",
-          left: p.x,
-          top: p.y,
+          ...placed(
+            p.x,
+            p.y,
+            p.rotate ?? 0,
+            inClip || !!p.rotate || (p.radius ?? 0) > 0,
+          ),
           width: p.w,
           height: p.h,
           ...(p.color ? { backgroundColor: p.color } : null),
@@ -127,7 +161,6 @@ export function renderPrims(
           ...(p.borderWidth
             ? { borderWidth: p.borderWidth, borderColor: p.borderColor }
             : null),
-          ...(p.rotate ? { transform: [{ rotate: `${p.rotate}rad` }] } : null),
           ...(p.shadow ? SHADOW : null),
         };
         return <View key={key} style={style} />;
@@ -138,15 +171,13 @@ export function renderPrims(
             key={key}
             style={{
               position: "absolute",
-              left: p.x,
-              top: p.y,
+              ...placed(p.x, p.y, p.rotate, true),
               width: p.size,
               height: p.size,
               overflow: "hidden",
-              transform: [{ rotate: `${p.rotate}rad` }],
             }}
           >
-            {renderPrims(p.children, family, `${key}.`)}
+            {renderPrims(p.children, family, `${key}.`, true)}
           </View>
         );
       case "group":
@@ -158,7 +189,7 @@ export function renderPrims(
             }
             style={[StyleSheet.absoluteFill, { opacity: p.opacity }]}
           >
-            {renderPrims(p.children, family, `${key}.`)}
+            {renderPrims(p.children, family, `${key}.`, inClip)}
           </View>
         );
       case "text":

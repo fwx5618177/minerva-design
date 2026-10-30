@@ -15,6 +15,7 @@ export {
   scenePrimitives,
   type ChartAreaPrimitive,
   type ChartBarPrimitive,
+  type ChartColorLegendLayout,
   type ChartController,
   type ChartControllerConfig,
   type ChartControllerEventMap,
@@ -29,7 +30,7 @@ export {
   type ChartScene,
   type ChartTooltipLayout,
 } from "./engine/controller";
-export { formatCompact, formatValue } from "./engine/format";
+export { formatCompact, formatDuration, formatValue } from "./engine/format";
 export { chartAriaLabel } from "./engine/labels";
 export { drawPrimitives } from "./engine/canvas";
 export {

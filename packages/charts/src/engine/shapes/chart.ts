@@ -168,6 +168,10 @@ export const createShapeChart = (
       fontWeight: "600",
       marginBottom: "4px",
       color: "var(--text-color, #1f2937)",
+      // long titles (full names of truncated labels) wrap
+      whiteSpace: "normal",
+      maxWidth: "260px",
+      overflowWrap: "anywhere",
     });
     if (content.color) header.appendChild(swatch(doc, content.color, "dot"));
     header.appendChild(doc.createTextNode(content.title));

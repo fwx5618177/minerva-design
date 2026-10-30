@@ -10,6 +10,7 @@ import { lowerBound } from "./data";
 import { decimateMinMax } from "./decimate";
 import {
   createScales,
+  heatCellStyle,
   screenRect,
   toData,
   toScreen,
@@ -18,6 +19,9 @@ import {
 } from "./layout";
 import {
   buildModel,
+  fromPlotY,
+  heatPosition,
+  toPlotY,
   type ChartModel,
   type DataCache,
   type SeriesModel,
@@ -32,16 +36,20 @@ import {
 } from "./overlay";
 import {
   collectPointLabels,
+  colorLegend,
+  connectorSegments,
   crosshairAt,
   dotSize,
   hitTest,
   hoverMarks,
   layoutChart,
   legendShape,
+  legendShown,
   resolveAnnotations,
   sameHover,
   tooltipContent,
   type ChartLayout,
+  type ConnectorSegment,
   type HoverMark,
   type TooltipContent,
 } from "./scene";
@@ -87,8 +95,25 @@ export interface ChartLegendEntry {
   box: Rect;
 }
 
+/** Visual map of a heatmap: a gradient bar with the values at its ends */
+export interface ChartColorLegendLayout {
+  /** Box of the gradient bar, pixels of the chart */
+  bar: Rect;
+  /** CSS colors at even steps along the bar, from the lowest value */
+  stops: string[];
+  /** Value labels: `x` is the anchor, `align` the side of the text it touches */
+  labels: { text: string; x: number; y: number; align: "left" | "right" }[];
+  /** X pixels of the ticks on the bar (the middle of diverging ramps) */
+  ticks: number[];
+  /** X pixel of the hovered value on the bar (`null` when none) */
+  caret: number | null;
+}
+
 export interface ChartLegendLayout {
+  /** Series entries (empty when `colors` is set) */
   entries: ChartLegendEntry[];
+  /** Color legend of heatmap charts (instead of the entries) */
+  colors: ChartColorLegendLayout | null;
   position: "top" | "bottom";
   /** Whether a tap toggles the series */
   toggle: boolean;
@@ -106,6 +131,11 @@ export interface ChartTooltipLayout {
   /** Line height used to lay the box out */
   lineHeight: number;
   padding: number;
+  /**
+   * Width of the swatch column of the rows (0 when no row has a swatch):
+   * the names start after it, the values are right-aligned on the box
+   */
+  swatchWidth: number;
 }
 
 export interface ChartHoverLayout {
@@ -133,6 +163,8 @@ export interface ChartScene {
   hover: ChartHoverLayout | null;
   /** Point being dragged (`interaction.dragPoints`) */
   dragging: { x: number; y: number; color: string; size: number } | null;
+  /** Lines between consecutive bars (waterfall connectors) */
+  connectors: ConnectorSegment[];
 }
 
 export interface ChartPointerOptions {
@@ -269,7 +301,11 @@ export const createChartController = (
       };
       zoomed = !sameRange(view.x, base.x) || !sameRange(view.y, base.y);
     }
-    annotations = resolveAnnotations(options.annotations, theme);
+    annotations = resolveAnnotations(
+      options.annotations,
+      theme,
+      model.y.type === "log" ? Math.log10 : undefined,
+    );
     if (hover) {
       const stillThere = hover.event.items.every(
         (it) =>
@@ -287,10 +323,38 @@ export const createChartController = (
   const legendLayout = (): ChartLegendLayout | null => {
     const option = options.legend;
     const named = options.series.filter((s) => s.name).length;
-    const show = option === undefined ? named > 1 : !!option;
-    if (!show) return null;
+    if (!legendShown(option, model, named)) return null;
     const cfg = typeof option === "object" ? option : {};
     const position = cfg.position === "bottom" ? "bottom" : "top";
+    const ramp = colorLegend(model);
+    if (ramp) {
+      // [min] [gradient] [max], on the right
+      const first = ramp.labels[0]?.text ?? "";
+      const last = ramp.labels[ramp.labels.length - 1]?.text ?? "";
+      const barWidth = Math.max(60, Math.min(160, width * 0.32));
+      const right = width - 4 - measure(last, 11) - 8;
+      const barX = right - barWidth;
+      const rowY = position === "bottom" ? height - LEGEND_ROW : 0;
+      const cy = rowY + LEGEND_ROW / 2;
+      return {
+        entries: [],
+        colors: {
+          bar: { x: barX, y: cy - 4, width: barWidth, height: 8 },
+          stops: ramp.stops,
+          labels: [
+            { text: first, x: barX - 8, y: cy, align: "right" },
+            { text: last, x: right + 8, y: cy, align: "left" },
+          ],
+          ticks: ramp.labels
+            .filter((l) => l.at > 0 && l.at < 1)
+            .map((l) => barX + l.at * barWidth),
+          caret: null,
+        },
+        position,
+        toggle: false,
+        height: LEGEND_ROW + 6,
+      };
+    }
     const entries: ChartLegendEntry[] = [];
     let x = 4;
     let row = 0;
@@ -316,6 +380,7 @@ export const createChartController = (
     }
     return {
       entries,
+      colors: null,
       position,
       toggle: cfg.toggle ?? true,
       height: legendHeight,
@@ -348,21 +413,27 @@ export const createChartController = (
     const padding = 8;
     let w = 0;
     let lines: number;
+    const swatchWidth = content.rows.some((row) => row.color) ? 14 : 0;
     if (text) {
       for (const line of text) w = Math.max(w, measure(line, 12));
       lines = text.length;
     } else {
       w = measure(content.title, 12, 600) + (content.titleColor ? 14 : 0);
-      for (const row of content.rows) {
+      if (content.subtitle)
         w = Math.max(
           w,
-          (row.color ? 14 : 0) +
-            measure(row.name, 12) +
-            16 +
-            measure(row.value, 12, 600),
+          measure(content.subtitle, 11) + (content.titleColor ? 14 : 0),
         );
+      // a label column and a value column, at least 16px apart
+      let names = 0;
+      let values = 0;
+      for (const row of content.rows) {
+        names = Math.max(names, measure(row.name, 12));
+        values = Math.max(values, measure(row.value, 12, 600));
       }
-      lines = 1 + content.rows.length;
+      if (content.rows.length)
+        w = Math.max(w, swatchWidth + names + 16 + values);
+      lines = 1 + (content.subtitle ? 1 : 0) + content.rows.length;
     }
     const boxW = Math.ceil(Math.max(w, 96) + padding * 2 + 4);
     const boxH = lines * lineHeight + padding * 2;
@@ -376,6 +447,7 @@ export const createChartController = (
       box: { x: left, y: top, width: boxW, height: boxH },
       lineHeight,
       padding,
+      swatchWidth,
     };
   };
 
@@ -453,6 +525,7 @@ export const createChartController = (
       legend,
       hover: null,
       dragging: null,
+      connectors: connectorSegments(model, layout.scales),
     };
     scene = next;
     if (hover) {
@@ -473,6 +546,13 @@ export const createChartController = (
             ? null
             : tooltipLayout(hover.event, hover.x, hover.y),
       };
+      // the hovered value on the color legend
+      const colors = legend?.colors;
+      const it = hover.event.items[0];
+      const s = it ? model.series[it.seriesIndex] : undefined;
+      if (colors && it && s?.type === "heatmap" && it.value !== undefined)
+        colors.caret =
+          colors.bar.x + heatPosition(s, it.value) * colors.bar.width;
     }
     if (gesture?.kind === "point") {
       const s = model.series[gesture.item.seriesIndex];
@@ -533,7 +613,9 @@ export const createChartController = (
     const { plot } = sc;
     const cx = Math.max(plot.x, Math.min(plot.x + plot.width, x));
     const cy = Math.max(plot.y, Math.min(plot.y + plot.height, y));
-    return toData(sc, cx, cy);
+    const p = toData(sc, cx, cy);
+    // values of the axes (not logarithms)
+    return { x: p.x, y: fromPlotY(model, p.y) };
   };
 
   const setViewInternal = (next: ChartView, notify: boolean) => {
@@ -813,11 +895,13 @@ export const createChartController = (
     },
     toPixel(x, y) {
       const sc = scales();
-      return sc ? toScreen(sc, x, y) : null;
+      return sc ? toScreen(sc, x, toPlotY(model, y)) : null;
     },
     fromPixel(x, y) {
       const sc = scales();
-      return sc ? toData(sc, x, y) : null;
+      if (!sc) return null;
+      const p = toData(sc, x, y);
+      return { x: p.x, y: fromPlotY(model, p.y) };
     },
     on(type, listener) {
       let set = listeners[type] as Set<typeof listener> | undefined;
@@ -885,11 +969,14 @@ export interface ChartBarPrimitive {
 export interface ChartDotPrimitive {
   kind: "dots";
   seriesIndex: number;
+  /** Opacity of the fill (0: rings only) */
   opacity: number;
   /** Interleaved x, y, diameter */
   dots: number[];
   /** CSS color of every dot */
   colors: string[];
+  /** Width of a ring of the dot color around every dot, CSS pixels */
+  stroke?: number;
 }
 
 export type ChartPrimitive =
@@ -1199,7 +1286,8 @@ export const scenePrimitives = (
       const hh = Math.abs(s.cellHalf.y / sc.yPerPx);
       const rects: number[] = [];
       const colors: string[] = [];
-      const inset = hw > 3 && hh > 3 ? 1 : 0;
+      const style = heatCellStyle(hw * 2, hh * 2, s.radius);
+      const inset = style.inset;
       for (let i = 0; i < count && rects.length / 4 < maxBars * 4; i++) {
         const c = s.cellColors?.[i];
         if (!c) continue;
@@ -1231,7 +1319,7 @@ export const scenePrimitives = (
         color: s.colorCss,
         rects,
         colors,
-        radius: s.radius,
+        radius: style.radius,
       });
       continue;
     }
@@ -1351,7 +1439,7 @@ const boxPrimitives = (
         const p = sc.horizontal
           ? { x: sc.yToPx(v), y: cx }
           : { x: cx, y: sc.yToPx(v) };
-        dots.push(p.x, p.y, s.pointSize);
+        dots.push(p.x, p.y, s.outlierSize);
         dotColors.push(color);
       }
     }
@@ -1377,9 +1465,11 @@ const boxPrimitives = (
     prims.push({
       kind: "dots",
       seriesIndex: s.index,
-      opacity: 0.85,
+      // rings of the series color, or filled dots
+      opacity: s.outlierShape === "hollow" ? 0 : 0.85,
       dots,
       colors: dotColors,
+      stroke: 1.25,
     });
   return prims;
 };

@@ -3,7 +3,9 @@
 // machines, @minerva/dom primitives), styled by the same stylesheet as React
 // (`import "minerva-design/style.css"` once). Every export is side-effect
 // free: import what you use (tree-shaking), or install every component
-// globally with `app.use(MinervaVue)`.
+// globally with `app.use(MinervaVue)`. The chart components are exported here
+// too (named imports), but registered globally only by the opt-in
+// `MinervaVueCharts` plugin of `minerva-design/vue/charts`.
 export * from "./components/Button";
 export * from "./groups/forms-basic";
 export * from "./groups/forms-pickers";

@@ -16,6 +16,9 @@ export type {
   CalendarDate,
   CalendarDatum,
   CalendarHeatmapOptions,
+  ChordChartOptions,
+  ChordGroup,
+  ChordLink,
   FunnelChartOptions,
   GaugeBand,
   GaugeChartOptions,
@@ -56,6 +59,7 @@ export {
   scenePrimitives,
   type ChartAreaPrimitive,
   type ChartBarPrimitive,
+  type ChartColorLegendLayout,
   type ChartController,
   type ChartControllerConfig,
   type ChartControllerEventMap,
@@ -70,13 +74,20 @@ export {
   type ChartScene,
   type ChartTooltipLayout,
 } from "./engine/controller";
-export { formatCompact, formatValue } from "./engine/format";
+export { formatCompact, formatDuration, formatValue } from "./engine/format";
+export {
+  getDefaultChartRenderer,
+  setDefaultChartRenderer,
+  subscribeDefaultChartRenderer,
+} from "./engine/defaults";
 // trading (multi-pane price charts, indicators, drawings, streaming)
 export * from "./engine/trading";
 // order books (depth, ladder, liquidity heatmap, time and sales)
 export * from "./engine/orderbook";
 // 3D charts (scatter, surface, bars)
 export * from "./engine/three-d";
+// relationship charts (force-directed networks, dependency DAGs, trees)
+export * from "./engine/graph";
 export {
   areaSeries,
   barSeries,
@@ -128,7 +139,9 @@ export type {
   ChartAnnotation,
   ChartAxisOptions,
   ChartAxisType,
+  ChartColorScheme,
   ChartColumnData,
+  ChartConnectorOptions,
   ChartCurve,
   ChartDragEvent,
   ChartEventMap,
@@ -154,6 +167,7 @@ export type {
   ChartSeriesType,
   ChartTextAnnotation,
   ChartTimeZone,
+  ChartTooltipDetail,
   ChartTooltipLabels,
   ChartTooltipOptions,
   ChartView,

@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 import { createSSRApp, h } from "vue";
 import { renderToString } from "vue/server-renderer";
 import { allComponents } from "../src/plugin";
+import { chartComponents } from "../src/charts";
 
 /** Props a component cannot render without */
 const REQUIRED: Record<string, Record<string, unknown>> = {
@@ -29,7 +30,10 @@ const REQUIRED: Record<string, Record<string, unknown>> = {
 };
 
 describe("server rendering without a DOM", () => {
-  const components = Object.entries(allComponents());
+  const components = Object.entries({
+    ...allComponents(),
+    ...chartComponents(),
+  });
 
   it("finds the components", () => {
     expect(components.length).toBeGreaterThan(80);

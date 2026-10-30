@@ -31,7 +31,9 @@ export const itemsSignature = (
     signature += `\n${s.key}|${s.type}|${idOf(s.cols)}|${s.colorCss}|${s.hidden}|${s.lineWidth}|${s.pointSize}|${s.opacity}|${s.barOffset}|${s.barHalfWidth}|${stackOf(s.index) ?? ""}|${s.curve}|${s.radius}`;
     if (s.type === "candlestick") signature += `|${s.upColor}/${s.downColor}`;
     else if (s.type === "heatmap")
-      signature += `|${s.colorScale.join(";")}/${s.valueRange[0]},${s.valueRange[1]}/${s.cellHalf.x},${s.cellHalf.y}`;
+      signature += `|${s.colorScale.join(";")}/${s.valueRange[0]},${s.valueRange[1]}/${s.colorMidpoint}/${s.cellHalf.x},${s.cellHalf.y}`;
+    else if (s.type === "boxplot")
+      signature += `|${s.outlierShape}/${s.outlierSize}`;
   }
   return signature;
 };

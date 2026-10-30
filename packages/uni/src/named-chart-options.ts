@@ -20,6 +20,8 @@ import {
   type BoxplotStatsOptions,
   type ChartAnnotation,
   type ChartAxisOptions,
+  type ChartColorScheme,
+  type ChartConnectorOptions,
   type ChartCurve,
   type ChartOptions,
   type ChartOrientation,
@@ -134,8 +136,9 @@ export function heatmapOptions(
     data: readonly HeatmapCell[];
     xCategories?: readonly string[];
     yCategories?: readonly string[];
-    colorScale?: readonly string[];
+    colorScale?: readonly string[] | ChartColorScheme;
     valueRange?: readonly [number, number];
+    colorMidpoint?: number;
     name?: string;
     radius?: number;
     format?: (value: number) => string;
@@ -149,6 +152,7 @@ export function heatmapOptions(
       yCategories: plain(props.yCategories),
       colorScale: plain(props.colorScale),
       valueRange: plain(props.valueRange),
+      colorMidpoint: props.colorMidpoint,
       name: props.name,
       radius: props.radius,
       format: props.format,
@@ -168,6 +172,8 @@ export const sparklineChartOptions = (props: {
   tooltip?: boolean | ChartTooltipOptions;
   palette?: readonly string[];
   ariaLabel?: string;
+  locale?: string;
+  labels?: unknown;
 }): ChartOptions =>
   sparklineOptions(
     {
@@ -183,6 +189,13 @@ export const sparklineChartOptions = (props: {
       tooltip: plain(props.tooltip),
       palette: plain(props.palette),
       ariaLabel: props.ariaLabel,
+      ...defined({
+        locale: props.locale || undefined,
+        labels:
+          props.labels && typeof props.labels === "object"
+            ? (plain(props.labels) as ChartOptions["labels"])
+            : undefined,
+      }),
     },
   );
 
@@ -204,6 +217,7 @@ export const histogramChartOptions = (
       name: props.name,
       color: props.color,
       format: props.formatBin,
+      locale: props.locale || undefined,
     }),
     ...plainSeries(props.series),
   ]);
@@ -215,9 +229,12 @@ export const boxPlotChartOptions = (
       groups?: readonly BoxplotGroup[];
       name?: string;
       orientation?: ChartOrientation;
+      outlierShape?: "hollow" | "filled";
+      outlierSize?: number;
     },
 ): ChartOptions => {
   const groups = toRaw(props.groups);
+  const { outlierShape, outlierSize } = props;
   return {
     ...chartEngineOptions(
       props,
@@ -232,7 +249,15 @@ export const boxPlotChartOptions = (
             ]
           : []),
         ...plainSeries(props.series),
-      ]),
+      ]).map((s) =>
+        s.type === "boxplot"
+          ? {
+              ...s,
+              outlierShape: s.outlierShape ?? outlierShape,
+              outlierSize: s.outlierSize ?? outlierSize,
+            }
+          : s,
+      ),
     ),
     ...defined({ orientation: props.orientation }),
   };
@@ -248,6 +273,7 @@ export const waterfallChartOptions = (
     start?: number;
     labels?: boolean;
     format?: (value: number) => string;
+    connector?: boolean | ChartConnectorOptions;
     locale?: string;
     orientation?: ChartOrientation;
   },
@@ -261,6 +287,7 @@ export const waterfallChartOptions = (
       start: props.start,
       labels: props.labels ?? true,
       format: props.format,
+      connector: plain(props.connector),
       locale: props.locale,
     }),
   ]),
@@ -275,6 +302,7 @@ export function ganttChartOptions(
     progressName?: string;
     milestoneName?: string;
     formatProgress?: (share: number) => string;
+    dependenciesName?: string;
     locale?: string;
     today?: boolean | number | Date;
     todayLabel?: string;
@@ -287,6 +315,7 @@ export function ganttChartOptions(
     progressName: props.progressName,
     milestoneName: props.milestoneName,
     formatProgress: props.formatProgress,
+    dependenciesName: props.dependenciesName,
     locale: props.locale,
   });
   const today = props.today ?? false;

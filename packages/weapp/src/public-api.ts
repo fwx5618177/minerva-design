@@ -164,13 +164,14 @@ const SHAPE_CHARTS = [
   "radialBarChart",
   "calendarHeatmap",
   "bulletChart",
+  "chordChart",
   "shapeChart",
 ];
 for (const name of SHAPE_CHARTS)
   configurations[name] = method(
     "configure",
     "configure(config: NativeShapeChartConfig): void",
-    "Function options: format(value) and percentFormat(share) of the labels and the tooltip, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it.",
+    "Function options: format(value) and percentFormat(share) of the labels and the tooltip, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it, tickFormat(value) of the chord-chart ticks.",
   );
 const shapeChartMethods = [
   method(

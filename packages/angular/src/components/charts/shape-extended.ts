@@ -8,6 +8,8 @@ import type {
   BulletDatum,
   CalendarDate,
   CalendarDatum,
+  ChordGroup,
+  ChordLink,
   RadialBarDatum,
   SankeyLink,
   SankeyNode,
@@ -274,6 +276,93 @@ export class MnBulletChart extends MnShapeChartCommon {
       rangeLabels: this.rangeLabels(),
       rangeColors: this.rangeColors(),
       targetColor: this.targetColor(),
+    };
+  }
+}
+
+/**
+ * Chord diagram: flows between groups around a circle; hovering a group
+ * highlights its ribbons, hovering a ribbon shows both directions
+ * (`source`, `target` and `reverseValue` in the hover event)
+ */
+@Component({
+  selector: "mn-chord-chart",
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: CHART_SURFACE,
+})
+export class MnChordChart extends MnShapeChartCommon {
+  /** Groups (names or `{ name, color }`), in their order around the circle; groups only named by `links` are appended */
+  readonly groups = input<readonly (string | ChordGroup)[] | undefined>(
+    undefined,
+  );
+  /** Square flow matrix: `matrix[i][j]` flows from group `i` to group `j` (used when `links` is absent) */
+  readonly matrix = input<readonly (readonly number[])[] | undefined>(
+    undefined,
+  );
+  /** Flows as a list (by group name or index); takes precedence over `matrix` */
+  readonly links = input<readonly ChordLink[] | undefined>(undefined);
+  /** One ribbon per direction, arcs sized by the outgoing plus the incoming flows (default `false`) */
+  readonly directed = input<boolean | undefined, unknown>(undefined, {
+    transform: optionalBoolean,
+  });
+  /** Arrowheads at the target end of the ribbons (default `true` when `directed`) */
+  readonly arrows = input<boolean | undefined, unknown>(undefined, {
+    transform: optionalBoolean,
+  });
+  /** Gap between the groups, in degrees (default 2) */
+  readonly padAngle = input<number | undefined>(undefined);
+  /** Angle of the first group, degrees clockwise from 12 o'clock (default 0) */
+  readonly startAngle = input<number | undefined>(undefined);
+  /** Order of the groups around the circle (default `none`: data order) */
+  readonly sortGroups = input<"none" | "ascending" | "descending" | undefined>(
+    undefined,
+  );
+  /** Order of the ribbon ends along an arc: `auto` minimizes the crossings (default `auto`) */
+  readonly sortSubgroups = input<
+    "auto" | "none" | "ascending" | "descending" | undefined
+  >(undefined);
+  /** Color of the ribbons without `color` (default `gradient`) */
+  readonly ribbonColor = input<
+    "gradient" | "source" | "target" | "neutral" | undefined
+  >(undefined);
+  /** Opacity of the ribbons, 0-1 (default 0.65) */
+  readonly ribbonOpacity = input<number | undefined>(undefined);
+  /** Thickness of the group arcs, in pixels (default 6% of the radius) */
+  readonly arcWidth = input<number | undefined>(undefined);
+  /** Value ticks outside the arcs; a number sets the step between ticks (default `true` when large enough) */
+  readonly ticks = input<boolean | number | undefined>(undefined);
+  /** Formats the tick labels (default: compact numbers of the `locale`) */
+  readonly tickFormat = input<((value: number) => string) | undefined>(
+    undefined,
+  );
+  /** Group labels along the arc (`tangential`) or the radius (`radial`); `auto` picks the one that fits (default `auto`) */
+  readonly labels = input<
+    "auto" | "tangential" | "radial" | "none" | undefined
+  >(undefined);
+
+  protected override defaultHeight(): number {
+    return 420;
+  }
+
+  protected engineOptions(): ShapeChartOptions {
+    return {
+      ...this.commonOptions(),
+      type: "chord",
+      groups: this.groups(),
+      matrix: this.matrix(),
+      links: this.links(),
+      directed: this.directed(),
+      arrows: this.arrows(),
+      padAngle: this.padAngle(),
+      startAngle: this.startAngle(),
+      sortGroups: this.sortGroups(),
+      sortSubgroups: this.sortSubgroups(),
+      ribbonColor: this.ribbonColor(),
+      ribbonOpacity: this.ribbonOpacity(),
+      arcWidth: this.arcWidth(),
+      ticks: this.ticks(),
+      tickFormat: this.tickFormat(),
+      labels: this.labels(),
     };
   }
 }

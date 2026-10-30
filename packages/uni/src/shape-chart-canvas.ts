@@ -1,6 +1,6 @@
 // Shared runtime of the uni-app shape chart components (PieChart, DonutChart,
 // RadarChart, GaugeChart, FunnelChart, TreemapChart, SankeyChart,
-// SunburstChart, RadialBarChart, CalendarHeatmap, BulletChart, ShapeChart): finds the
+// SunburstChart, RadialBarChart, CalendarHeatmap, BulletChart, ChordChart, ShapeChart): finds the
 // `<canvas type="2d">` (the inner HTMLCanvasElement on H5, the SelectorQuery
 // node in mini-programs), draws with the DOM-free `createCanvasShapeChart`
 // (legend, tooltip and animations on the canvas) and forwards touches /
@@ -17,14 +17,15 @@ import {
   type ComputedRef,
 } from "vue";
 import {
+  calendarStrips,
   createCanvasShapeChart,
-  type CalendarDate,
   type CanvasShapeChartInstance,
   type ChartCanvas,
   type ChartPadding,
   type ChartTouch,
   type ShapeChartCommonOptions,
   type ShapeChartEventMap,
+  type ShapeChartLabels,
   type ShapeChartOptions,
   type ShapeLegendOptions,
   type ShapeTooltipOptions,
@@ -46,6 +47,8 @@ export interface ShapeOptionProps {
   animation?: boolean;
   padding?: ChartPadding;
   ariaLabel?: string;
+  locale?: string;
+  texts?: Partial<ShapeChartLabels>;
 }
 
 /** Engine options shared by every shape type, from the props */
@@ -62,6 +65,8 @@ export function shapeCommonOptions(
     animation: props.animation,
     padding: plain(props.padding),
     ariaLabel: props.ariaLabel,
+    locale: props.locale || undefined,
+    texts: plain(props.texts),
   };
 }
 
@@ -92,20 +97,12 @@ export function describeShapeChart(options: ShapeChartOptions): string {
       return "Calendar heatmap";
     case "bullet":
       return "Bullet chart";
+    case "chord":
+      return "Chord diagram";
     default:
       return "Chart";
   }
 }
-
-const yearOf = (date: CalendarDate) => {
-  const time =
-    date instanceof Date
-      ? date.getTime()
-      : typeof date === "number"
-        ? date
-        : Date.parse(date);
-  return Number.isFinite(time) ? new Date(time).getUTCFullYear() : NaN;
-};
 
 /** Default height of a shape chart (like the web components): by type, or from the data */
 export function shapeDefaultHeight(options: ShapeChartOptions): number {
@@ -117,18 +114,15 @@ export function shapeDefaultHeight(options: ShapeChartOptions): number {
     case "sankey":
     case "sunburst":
       return 360;
-    case "calendarHeatmap": {
-      if (options.layout === "months") return 560;
-      const range = options.range;
-      let strips = 1;
-      if (Array.isArray(range) && range.length >= 2) {
-        const [a, b] = range as readonly [CalendarDate, CalendarDate];
-        const from = Math.min(yearOf(a), yearOf(b));
-        const to = Math.max(yearOf(a), yearOf(b));
-        if (to > from) strips = to - from + 1;
-      }
-      return strips * 120 + (options.legend === false ? 0 : 34) + 16;
-    }
+    case "chord":
+      return 420;
+    case "calendarHeatmap":
+      // one strip of weeks per year when the range spans more than 53 weeks
+      return options.layout === "months"
+        ? 560
+        : calendarStrips(options) * 120 +
+            (options.legend === false ? 0 : 34) +
+            16;
     case "bullet":
       return options.orientation === "vertical"
         ? 320

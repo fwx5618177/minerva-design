@@ -22,6 +22,7 @@ import {
   type Color,
   type DrawOp,
   type FillOp,
+  type Quad,
   type Segment,
   type StrokeOp,
   type Subpath,
@@ -142,19 +143,20 @@ export const area = (P: readonly Pt[]) => {
 
 /** Segment of a subpath with explicit ends (implicit joins and closing included) */
 type Item =
-  | { t: "L"; from: Pt; to: Pt }
+  | { t: "L"; from: Pt; to: Pt; q?: Quad }
   | { t: "A"; cx: number; cy: number; r: number; a0: number; a1: number };
 
 /** Items of a filled (implicitly closed) or stroked subpath, zero-length segments dropped */
 function itemsOf(sub: Subpath, close: boolean): Item[] {
   const out: Item[] = [];
   let at: Pt = [sub.x, sub.y];
-  const line = (to: Pt) => {
-    if (dist(at, to) > 1e-3) out.push({ t: "L", from: at, to });
+  const line = (to: Pt, q?: Quad) => {
+    if (dist(at, to) > 1e-3)
+      out.push(q ? { t: "L", from: at, to, q } : { t: "L", from: at, to });
     at = to;
   };
   for (const s of sub.segs) {
-    if (s.t === "L") line([s.x, s.y]);
+    if (s.t === "L") line([s.x, s.y], s.q);
     else {
       line(polar(s.cx, s.cy, s.r, s.a0));
       out.push({ ...s });
@@ -482,7 +484,8 @@ function clipViews(
     kept.push(plane);
   }
   if (base.t === "plane" && !kept.length) return [];
-  const size = 2 * extent + 8;
+  // whole pixels: the layout keeps the size (and the center it turns around)
+  const size = Math.ceil(2 * extent + 8);
   const half = size / 2;
 
   const root: Prim[] = [];
@@ -658,6 +661,15 @@ function asConcentric(
         const d = dist(p, c);
         if (d > r1 + 0.5 || (r0 > 0 && d < r0 - 0.5)) return null;
       }
+  const base = { t: "disc", cx, cy, r0, r1 } as const;
+  return { base, outline: ringOutline(items, base) };
+}
+
+/** Outline of a region of a ring, its arcs replaced by polylines the ring view rounds */
+function ringOutline(
+  items: readonly Item[],
+  { cx, cy, r1 }: Extract<Base, { t: "disc" }>,
+): Pt[] {
   const outline: Pt[] = [];
   for (const it of items) {
     if (it.t === "L") {
@@ -682,7 +694,7 @@ function asConcentric(
         outline.push(polar(cx, cy, it.r, it.a0 + (sweep * k) / n));
     }
   }
-  return { base: { t: "disc", cx, cy, r0, r1 }, outline };
+  return outline;
 }
 
 const ringBox = (
@@ -704,8 +716,8 @@ const ringBox = (
 /**
  * A sector of a ring between two straight sides (pie slices, donut segments,
  * gauge arcs, with or without gaps): the ring clipped by the two sides (two
- * halves split on the bisector past half a turn). Corner roundings are
- * dropped. `null` when the outline is something else.
+ * halves split on the bisector past half a turn). Rounded corners are
+ * handled by `roundedWedge`. `null` when the outline is something else.
  */
 function wedgeViews(
   items: readonly Item[],
@@ -770,6 +782,174 @@ function wedgeViews(
   ];
 }
 
+/** A rounded corner: a circle tangent to a straight side and to a ring circle */
+interface Fillet {
+  o: Pt;
+  r: number;
+  /** Tangent points on the side and on the circle */
+  side: Pt;
+  ring: Pt;
+}
+
+/**
+ * The fillet of the corner between a side (the line through `p`, `n` its
+ * normal pointing inside) and the circle of radius `R` around `c` (the
+ * fillet inside it for the outer edge, outside it for the inner one),
+ * touching the side at `p`, its radius at most `limit`. `null` when too
+ * small to show.
+ */
+function filletAt(
+  c: Pt,
+  p: Pt,
+  n: Pt,
+  R: number,
+  outer: boolean,
+  limit: number,
+): Fillet | null {
+  const rel: Pt = [p[0] - c[0], p[1] - c[1]];
+  const sn = rel[0] * n[0] + rel[1] * n[1];
+  let u: Pt = [n[1], -n[0]];
+  if (rel[0] * u[0] + rel[1] * u[1] < 0) u = [-u[0], -u[1]];
+  const s2 = rel[0] * rel[0] + rel[1] * rel[1];
+  const den = 2 * (outer ? R + sn : R - sn);
+  if (den <= 1e-6) return null;
+  const r = Math.min(limit, (outer ? R * R - s2 : s2 - R * R) / den);
+  if (!(r > 0.5)) return null;
+  // |center - c| = R ∓ r, the center at r from the side
+  const reach = outer ? R - r : R + r;
+  const t2 = reach * reach - (sn + r) * (sn + r);
+  if (t2 <= 0) return null;
+  const t = Math.sqrt(t2);
+  const at = (k: number): Pt => [
+    c[0] + t * u[0] + k * n[0],
+    c[1] + t * u[1] + k * n[1],
+  ];
+  const o = at(sn + r);
+  const scale = R / reach;
+  return {
+    o,
+    r,
+    side: at(sn),
+    ring: [c[0] + (o[0] - c[0]) * scale, c[1] + (o[1] - c[1]) * scale],
+  };
+}
+
+/**
+ * The rounded corners of a sector (pie, donut and sunburst slices with a
+ * corner radius). The canvas path rounds each corner with a quadratic curve
+ * from a side to an arc (control point on the arc's circle), its radius
+ * already clamped to half the thickness and to the arc length: here a
+ * circle tangent to the side at the same point and to the arc's circle,
+ * within 7% of the radius of that curve. The outline with the corners cut
+ * by the chords of the fillets is clipped as convex pieces of the ring, and
+ * a disc per fillet covers its chord (both sides of the chord are painted:
+ * no seam). `null` without such corners or when something does not match
+ * (the caller then clips the flattened outline).
+ */
+function roundedWedge(
+  items: readonly Item[],
+  base: Extract<Base, { t: "disc" }>,
+  color: string,
+): Prim[] | null {
+  const { cx, cy, r0, r1 } = base;
+  const c: Pt = [cx, cy];
+  const limit = (r1 - r0) / 2;
+  /** Radius of the ring circle `p` is on, 0 if none */
+  const circleOf = (p: Pt) => {
+    const d = dist(p, c);
+    if (Math.abs(d - r1) <= 0.5) return r1;
+    return r0 > 0 && Math.abs(d - r0) <= 0.5 ? r0 : 0;
+  };
+  interface Corner {
+    fillet: Fillet;
+    plane: Plane;
+    /** The curve goes from the side to the circle */
+    sideFirst: boolean;
+  }
+  const corners = new Map<Quad, Corner>();
+  for (const it of items) {
+    if (it.t !== "L" || !it.q || corners.has(it.q)) continue;
+    const q = it.q;
+    const R = circleOf(q.ctrl);
+    if (!R) return null;
+    const sideFirst = circleOf(q.from) !== R;
+    const S = sideFirst ? q.from : q.to;
+    const E = sideFirst ? q.to : q.from;
+    if (circleOf(E) !== R || circleOf(S) === R) return null;
+    const plane = planeOf(S, q.ctrl, E, 0);
+    const fillet = plane && filletAt(c, S, plane.n, R, R === r1, limit);
+    if (!plane || !fillet) return null;
+    corners.set(q, { fillet, plane, sideFirst });
+  }
+  if (!corners.size) return null;
+
+  // the outline: each curve replaced by the chord of its fillet
+  const outline: Item[] = [];
+  let last: Quad | undefined;
+  for (const it of items) {
+    const q = it.t === "L" ? it.q : undefined;
+    if (q !== last && q) {
+      const { fillet, sideFirst } = corners.get(q) as Corner;
+      const [from, to] = sideFirst
+        ? [fillet.side, fillet.ring]
+        : [fillet.ring, fillet.side];
+      outline.push({ t: "L", from, to });
+    } else if (!q) outline.push(it);
+    last = q;
+  }
+  // the arcs now end at the fillets
+  const wrap = (a: number) => a - TAU * Math.round(a / TAU);
+  const angle = (p: Pt) => Math.atan2(p[1] - cy, p[0] - cx);
+  const ends = (it: Item): [Pt, Pt] =>
+    it.t === "L"
+      ? [it.from, it.to]
+      : [polar(it.cx, it.cy, it.r, it.a0), polar(it.cx, it.cy, it.r, it.a1)];
+  const n = outline.length;
+  const arcs = outline.map((it, i): Item => {
+    if (it.t !== "A") return it;
+    const before = ends(outline[(i - 1 + n) % n] as Item)[1];
+    const after = ends(outline[(i + 1) % n] as Item)[0];
+    const a0 =
+      Math.abs(dist(before, c) - it.r) <= 0.5
+        ? it.a0 + wrap(angle(before) - it.a0)
+        : it.a0;
+    const a1 =
+      Math.abs(dist(after, c) - it.r) <= 0.5
+        ? it.a1 + wrap(angle(after) - it.a1)
+        : it.a1;
+    return { ...it, a0, a1 };
+  });
+  if (
+    arcs.some(
+      (it, i) =>
+        it.t === "A" &&
+        (it.a1 - it.a0) *
+          ((outline[i] as ArcItem).a1 - (outline[i] as ArcItem).a0) <
+          0,
+    )
+  )
+    return null;
+
+  const views = piecesViews(convexPieces(ringOutline(arcs, base)), base, color);
+  const planes = [...corners.values()].map((k) => k.plane);
+  // a slice of at most half a turn is the intersection of its sides: there
+  // the other side may cut a fillet (thin slices)
+  const convex = [...corners.values()].every(({ fillet }) =>
+    planes.every((p) => side(p, fillet.side) >= -0.5),
+  );
+  for (const { fillet: f } of corners.values())
+    views.push(
+      ...clipViews(
+        convex ? planes : [],
+        { t: "disc", cx: f.o[0], cy: f.o[1], r0: 0, r1: f.r },
+        color,
+        f.o,
+        2 * f.r + SEAM,
+      ),
+    );
+  return views;
+}
+
 const roundBox = (r: RoundRect, color: string, shadow: boolean): Prim => ({
   t: "box",
   x: r.x,
@@ -828,6 +1008,7 @@ export function regionViews(
     const ring = asConcentric(firstSub.items);
     if (ring)
       return (
+        roundedWedge(firstSub.items, ring.base, color) ??
         wedgeViews(firstSub.items, ring.base, color) ??
         piecesViews(convexPieces(ring.outline), ring.base, color)
       );

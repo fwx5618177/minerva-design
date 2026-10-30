@@ -13,6 +13,7 @@ import {
   type BoxplotGroup,
   type ChartAnnotation,
   type ChartAxisOptions,
+  type ChartConnectorOptions,
   type ChartCurve,
   type ChartOptions,
   type ChartOrientation,
@@ -216,6 +217,10 @@ export class MnBoxPlotChart extends MnSeriesChartBase {
   readonly name = input("Values");
   /** Reach of the whiskers in interquartile ranges (Tukey: 1.5), or `minmax` */
   readonly whisker = input<number | "minmax" | undefined>(undefined);
+  /** Outliers drawn as rings of the series color or as filled dots; series may set their own (default `hollow`) */
+  readonly outlierShape = input<"hollow" | "filled" | undefined>(undefined);
+  /** Diameter of the outliers in CSS pixels (default 7) */
+  readonly outlierSize = input<number | undefined>(undefined);
   /** `horizontal` lays the boxes out in rows */
   readonly orientation = input<ChartOrientation | undefined>(undefined);
 
@@ -240,6 +245,14 @@ export class MnBoxPlotChart extends MnSeriesChartBase {
           ...(series ?? []),
         ],
         "boxplot",
+      ).map((s) =>
+        s.type === "boxplot"
+          ? {
+              ...s,
+              outlierShape: s.outlierShape ?? this.outlierShape(),
+              outlierSize: s.outlierSize ?? this.outlierSize(),
+            }
+          : s,
       ),
     };
   }
@@ -271,6 +284,10 @@ export class MnWaterfallChart extends MnSeriesChartBase {
   readonly labels = input(true, { transform: booleanAttribute });
   /** Formats the values (labels, tooltip) */
   readonly format = input<((value: number) => string) | undefined>(undefined);
+  /** Thin lines from the end of every bar to the next one; an object styles them (default `true`: dashed, secondary text color) */
+  readonly connector = input<boolean | ChartConnectorOptions | undefined>(
+    undefined,
+  );
   /** `horizontal` lays the steps out in rows */
   readonly orientation = input<ChartOrientation | undefined>(undefined);
 
@@ -287,6 +304,8 @@ export class MnWaterfallChart extends MnSeriesChartBase {
           start: this.start(),
           labels: this.labels(),
           format: this.format(),
+          connector: this.connector(),
+          locale: this.locale(),
         }),
       ],
     };
@@ -317,6 +336,8 @@ export class MnGanttChart extends MnSeriesChartBase {
   readonly formatProgress = input<((share: number) => string) | undefined>(
     undefined,
   );
+  /** Name of the dependencies row of the tooltip (default "Depends on", in the `locale`) */
+  readonly dependenciesName = input<string | undefined>(undefined);
   /** Draws a line at this date (`true`: now) */
   readonly today = input<boolean | number | Date>(false);
   /** Label of the today line */
@@ -331,6 +352,8 @@ export class MnGanttChart extends MnSeriesChartBase {
       progressName: this.progressName(),
       milestoneName: this.milestoneName(),
       formatProgress: this.formatProgress(),
+      dependenciesName: this.dependenciesName(),
+      locale: this.locale(),
     });
     const today = this.today();
     const now =

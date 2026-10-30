@@ -1,0 +1,356 @@
+// Edge geometry in layout units: curves sampled into polylines, trimming at
+// the node boundaries, arrowheads and dashes. Polylines are flat
+// `[x0, y0, x1, y1, …]` arrays.
+
+/** Points of a cubic Bézier (the start point excluded) */
+export const cubicPoints = (
+  out: number[],
+  x0: number,
+  y0: number,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  x3: number,
+  y3: number,
+): void => {
+  const length =
+    Math.hypot(x1 - x0, y1 - y0) +
+    Math.hypot(x2 - x1, y2 - y1) +
+    Math.hypot(x3 - x2, y3 - y2);
+  const segments = Math.max(4, Math.min(28, Math.ceil(length / 10)));
+  for (let i = 1; i <= segments; i++) {
+    const t = i / segments;
+    const u = 1 - t;
+    const a = u * u * u;
+    const b = 3 * u * u * t;
+    const c = 3 * u * t * t;
+    const d = t * t * t;
+    out.push(
+      a * x0 + b * x1 + c * x2 + d * x3,
+      a * y0 + b * y1 + c * y2 + d * y3,
+    );
+  }
+};
+
+/** Points of a quadratic Bézier (the start point included) */
+export const quadraticPath = (
+  x0: number,
+  y0: number,
+  cx: number,
+  cy: number,
+  x1: number,
+  y1: number,
+): number[] => {
+  const out = [x0, y0];
+  cubicPoints(
+    out,
+    x0,
+    y0,
+    x0 + ((cx - x0) * 2) / 3,
+    y0 + ((cy - y0) * 2) / 3,
+    x1 + ((cx - x1) * 2) / 3,
+    y1 + ((cy - y1) * 2) / 3,
+    x1,
+    y1,
+  );
+  return out;
+};
+
+/**
+ * Smooth path through waypoints whose tangents follow the flow axis
+ * (vertical for top → bottom layouts): C1 at every waypoint
+ */
+export const splinePath = (
+  points: readonly number[],
+  vertical: boolean,
+): number[] => {
+  const out = [points[0], points[1]];
+  for (let i = 2; i < points.length; i += 2) {
+    const x0 = points[i - 2];
+    const y0 = points[i - 1];
+    const x1 = points[i];
+    const y1 = points[i + 1];
+    if (vertical) {
+      const my = (y0 + y1) / 2;
+      cubicPoints(out, x0, y0, x0, my, x1, my, x1, y1);
+    } else {
+      const mx = (x0 + x1) / 2;
+      cubicPoints(out, x0, y0, mx, y0, mx, y1, x1, y1);
+    }
+  }
+  return out;
+};
+
+/** Rounded corner from the end of `out` through (cx, cy) towards (nx, ny) */
+const corner = (
+  out: number[],
+  cx: number,
+  cy: number,
+  nx: number,
+  ny: number,
+  radius: number,
+) => {
+  const px = out[out.length - 2];
+  const py = out[out.length - 1];
+  const inLen = Math.hypot(cx - px, cy - py);
+  const outLen = Math.hypot(nx - cx, ny - cy);
+  const r = Math.min(radius, inLen / 2, outLen / 2);
+  if (r < 0.5) {
+    out.push(cx, cy);
+    return;
+  }
+  const ax = cx - ((cx - px) / inLen) * r;
+  const ay = cy - ((cy - py) / inLen) * r;
+  const bx = cx + ((nx - cx) / outLen) * r;
+  const by = cy + ((ny - cy) / outLen) * r;
+  out.push(ax, ay);
+  // quadratic arc around the corner
+  for (let i = 1; i <= 4; i++) {
+    const t = i / 4;
+    const u = 1 - t;
+    out.push(
+      u * u * ax + 2 * u * t * cx + t * t * bx,
+      u * u * ay + 2 * u * t * cy + t * t * by,
+    );
+  }
+};
+
+/**
+ * Orthogonal path through waypoints: along the flow axis to the middle,
+ * across, then along the axis again, with rounded corners
+ */
+export const orthogonalPath = (
+  points: readonly number[],
+  vertical: boolean,
+  radius: number,
+): number[] => {
+  const corners: number[] = [points[0], points[1]];
+  for (let i = 2; i < points.length; i += 2) {
+    const x0 = points[i - 2];
+    const y0 = points[i - 1];
+    const x1 = points[i];
+    const y1 = points[i + 1];
+    if (Math.abs(vertical ? x1 - x0 : y1 - y0) > 0.5) {
+      if (vertical) {
+        const my = (y0 + y1) / 2;
+        corners.push(x0, my, x1, my);
+      } else {
+        const mx = (x0 + x1) / 2;
+        corners.push(mx, y0, mx, y1);
+      }
+    }
+    corners.push(x1, y1);
+  }
+  return roundCorners(corners, radius);
+};
+
+/** Polyline with rounded corners */
+export const roundCorners = (
+  corners: readonly number[],
+  radius: number,
+): number[] => {
+  const out = [corners[0], corners[1]];
+  const last = corners.length - 2;
+  for (let i = 2; i < last; i += 2) {
+    corner(
+      out,
+      corners[i],
+      corners[i + 1],
+      corners[i + 2],
+      corners[i + 3],
+      radius,
+    );
+  }
+  if (last >= 2) out.push(corners[last], corners[last + 1]);
+  return out;
+};
+
+/** Upper half circle between two points of the x axis (arc diagrams) */
+export const arcPath = (ax: number, bx: number, y: number): number[] => {
+  const cx = (ax + bx) / 2;
+  const r = Math.abs(bx - ax) / 2;
+  const segments = 2 * Math.max(4, Math.min(32, Math.ceil(r / 12)));
+  const out: number[] = [];
+  const from = ax < bx ? Math.PI : 0;
+  const to = ax < bx ? 0 : Math.PI;
+  for (let i = 0; i <= segments; i++) {
+    const a = from + ((to - from) * i) / segments;
+    out.push(cx + r * Math.cos(a), y - r * Math.sin(a));
+  }
+  return out;
+};
+
+/** Length of a polyline */
+export const pathLength = (points: readonly number[]): number => {
+  let length = 0;
+  for (let i = 2; i < points.length; i += 2)
+    length += Math.hypot(
+      points[i] - points[i - 2],
+      points[i + 1] - points[i - 1],
+    );
+  return length;
+};
+
+/** Removes `start` / `end` units from the ends of a polyline */
+export const trimPath = (
+  points: number[],
+  start: number,
+  end: number,
+): number[] => {
+  const total = pathLength(points);
+  if (total <= start + end + 1e-6) {
+    // too short: a zero-length segment in the middle keeps the direction
+    if (points.length < 4) return points;
+    const t = start + end > 0 ? start / (start + end) : 0.5;
+    const p = pointAt(points, t * total);
+    return [p[0], p[1], p[0], p[1]];
+  }
+  const out: number[] = [];
+  const startPoint = pointAt(points, start);
+  const endPoint = pointAt(points, total - end);
+  out.push(startPoint[0], startPoint[1]);
+  let walked = 0;
+  for (let i = 2; i < points.length; i += 2) {
+    walked += Math.hypot(
+      points[i] - points[i - 2],
+      points[i + 1] - points[i - 1],
+    );
+    if (walked > start && walked < total - end)
+      out.push(points[i], points[i + 1]);
+  }
+  out.push(endPoint[0], endPoint[1]);
+  return out;
+};
+
+/** Point and direction at a distance along a polyline */
+export const pointAt = (
+  points: readonly number[],
+  distance: number,
+): [number, number, number, number] => {
+  let walked = 0;
+  for (let i = 2; i < points.length; i += 2) {
+    const dx = points[i] - points[i - 2];
+    const dy = points[i + 1] - points[i - 1];
+    const l = Math.hypot(dx, dy);
+    if (walked + l >= distance && l > 0) {
+      const t = (distance - walked) / l;
+      return [points[i - 2] + dx * t, points[i - 1] + dy * t, dx / l, dy / l];
+    }
+    walked += l;
+  }
+  const k = points.length - 2;
+  const dx = k >= 2 ? points[k] - points[k - 2] : 1;
+  const dy = k >= 2 ? points[k + 1] - points[k - 1] : 0;
+  const l = Math.hypot(dx, dy) || 1;
+  return [points[k], points[k + 1], dx / l, dy / l];
+};
+
+/** Direction at the end of a polyline (unit vector) */
+export const endDirection = (points: readonly number[]): [number, number] => {
+  for (let i = points.length - 4; i >= 0; i -= 2) {
+    const dx = points[points.length - 2] - points[i];
+    const dy = points[points.length - 1] - points[i + 1];
+    const l = Math.hypot(dx, dy);
+    if (l > 1e-9) return [dx / l, dy / l];
+  }
+  return [1, 0];
+};
+
+/** Distance from the center of a node to its boundary in direction (ux, uy) */
+export const boundaryDistance = (
+  box: boolean,
+  width: number,
+  height: number,
+  ux: number,
+  uy: number,
+): number => {
+  if (!box) return width / 2;
+  const ax = Math.abs(ux);
+  const ay = Math.abs(uy);
+  const tx = ax > 1e-9 ? width / 2 / ax : Infinity;
+  const ty = ay > 1e-9 ? height / 2 / ay : Infinity;
+  return Math.min(tx, ty);
+};
+
+/**
+ * Arrowhead at (tx, ty) pointing along (ux, uy): the outline of a narrow
+ * triangle and its axis, drawn with the line width it looks solid
+ */
+export const arrowHead = (
+  out: number[],
+  tx: number,
+  ty: number,
+  ux: number,
+  uy: number,
+  length: number,
+  gap: number,
+): void => {
+  const w = length * 0.42;
+  const bx = tx - ux * length;
+  const by = ty - uy * length;
+  const lx = bx - uy * w;
+  const ly = by + ux * w;
+  const rx = bx + uy * w;
+  const ry = by - ux * w;
+  out.push(lx, ly, tx, ty, rx, ry, lx, ly, gap, gap);
+  out.push(tx, ty, bx, by, gap, gap);
+  const mx = (lx + bx) / 2;
+  const my = (ly + by) / 2;
+  const nx = (rx + bx) / 2;
+  const ny = (ry + by) / 2;
+  out.push(tx, ty, mx, my, gap, gap, tx, ty, nx, ny, gap, gap);
+};
+
+/** Splits a polyline into dashes (`dash` / `space` in layout units) */
+export const dashPath = (
+  points: readonly number[],
+  dash: number,
+  space: number,
+  gap: number,
+): number[] => {
+  const out: number[] = [];
+  const total = pathLength(points);
+  const period = dash + space;
+  if (period <= 0 || total <= 0) return points.slice();
+  for (let start = 0; start < total; start += period) {
+    const end = Math.min(total, start + dash);
+    const a = pointAt(points, start);
+    out.push(a[0], a[1]);
+    let walked = 0;
+    for (let i = 2; i < points.length; i += 2) {
+      walked += Math.hypot(
+        points[i] - points[i - 2],
+        points[i + 1] - points[i - 1],
+      );
+      if (walked > start && walked < end) out.push(points[i], points[i + 1]);
+    }
+    const b = pointAt(points, end);
+    out.push(b[0], b[1], gap, gap);
+  }
+  return out;
+};
+
+/** Squared distance from (px, py) to a polyline */
+export const distanceToPath = (
+  points: readonly number[],
+  px: number,
+  py: number,
+): number => {
+  let best = Infinity;
+  for (let i = 2; i < points.length; i += 2) {
+    const ax = points[i - 2];
+    const ay = points[i - 1];
+    const dx = points[i] - ax;
+    const dy = points[i + 1] - ay;
+    const l = dx * dx + dy * dy;
+    const t =
+      l > 0
+        ? Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / l))
+        : 0;
+    const qx = ax + dx * t - px;
+    const qy = ay + dy * t - py;
+    best = Math.min(best, qx * qx + qy * qy);
+  }
+  return best;
+};

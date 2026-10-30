@@ -1,16 +1,24 @@
 // Back-to-front order of the transparent meshes for the GPU backends:
 // transparent items are drawn without writing depth, so their triangles must
-// come farthest first to blend correctly where a surface folds over itself.
-// Meshes are made of quads (6 indices: two triangles sharing an edge, as
-// built for surface cells and bar faces); quads are sorted by the camera
-// depth of their center with a bucket sort (O(n)), and only again when the
-// camera moved. Canvas2D sorts every triangle itself (painter's algorithm).
+// come farthest first to blend correctly where a surface folds over itself
+// or where several transparent surfaces / bar series overlap. Meshes are
+// made of quads (6 indices: two triangles sharing an edge, as built for
+// surface cells and bar faces); quads are sorted by the camera depth of
+// their center with a bucket sort (O(n)), and only again when the camera
+// moved. Several transparent meshes are merged into one item (opacity baked
+// into the vertex colors) so that their quads are sorted together; above
+// the sort budget, the meshes are drawn by decreasing depth of their center
+// with their own quads sorted. Canvas2D sorts every triangle of every item
+// itself (painter's algorithm).
 
 import type { Frame3D, Item3D, MeshItem } from "./render-types";
-import { VERTEX_STRIDE } from "./render-types";
+import { VERTEX_STRIDE, writesDepth } from "./render-types";
 
-/** Largest transparent mesh sorted (quads): a 512 × 512 surface grid */
+/** Largest number of transparent quads sorted: a 512 × 512 surface grid */
 export const MAX_SORTED_QUADS = 1 << 18;
+
+/** Key of the merged transparent meshes */
+export const MERGED_KEY = "transparent";
 
 const BUCKETS = 1 << 16;
 const FLOATS = VERTEX_STRIDE / 4;
@@ -80,6 +88,58 @@ export const sortQuads = (
   }
 };
 
+/**
+ * One transparent item made of several meshes: vertices concatenated (the
+ * opacity of every mesh multiplies the alpha of its vertex colors), indices
+ * shifted. Drawn with opacity 1, without writing depth.
+ */
+export const mergeMeshes = (
+  meshes: readonly MeshItem[],
+  key: string,
+  version: number,
+): MeshItem => {
+  let vertexCount = 0;
+  let indexCount = 0;
+  for (const m of meshes) {
+    vertexCount += m.vertexCount;
+    indexCount += m.indices.length;
+  }
+  const vertices = new ArrayBuffer(vertexCount * VERTEX_STRIDE);
+  const bytes = new Uint8Array(vertices);
+  const indices = new Uint32Array(indexCount);
+  let base = 0;
+  let at = 0;
+  for (const m of meshes) {
+    const length = Math.min(
+      m.vertices.byteLength,
+      m.vertexCount * VERTEX_STRIDE,
+    );
+    bytes.set(new Uint8Array(m.vertices, 0, length), base * VERTEX_STRIDE);
+    const opacity = Math.max(0, Math.min(1, m.opacity));
+    if (opacity < 1) {
+      for (let v = 0; v < m.vertexCount; v++) {
+        const a = (base + v) * VERTEX_STRIDE + 27;
+        bytes[a] = Math.round((bytes[a] ?? 0) * opacity);
+      }
+    }
+    const source = m.indices;
+    for (let j = 0; j < source.length; j++)
+      indices[at + j] = (source[j] ?? 0) + base;
+    base += m.vertexCount;
+    at += source.length;
+  }
+  return {
+    kind: "mesh",
+    key,
+    version,
+    opacity: 1,
+    transparent: true,
+    vertices,
+    vertexCount,
+    indices,
+  };
+};
+
 interface SortedMesh {
   version: number;
   source: Uint32Array;
@@ -93,28 +153,121 @@ const sameMatrix = (a: Float32Array | null, b: Float32Array) => {
   return true;
 };
 
+const isTransparentMesh = (item: Item3D): item is MeshItem =>
+  item.kind === "mesh" && !writesDepth(item);
+
+/** Made of whole quads: its triangles can be sorted by pairs */
+const isQuadMesh = (item: MeshItem) =>
+  item.indices.length > 0 && item.indices.length % 6 === 0;
+
+/** Center of the bounding box of a mesh's vertices */
+const meshCenter = (item: MeshItem): [number, number, number] => {
+  const f = new Float32Array(
+    item.vertices,
+    0,
+    Math.min(item.vertices.byteLength / 4, item.vertexCount * FLOATS),
+  );
+  const min = [Infinity, Infinity, Infinity];
+  const max = [-Infinity, -Infinity, -Infinity];
+  for (let o = 0; o + 2 < f.length; o += FLOATS) {
+    for (let k = 0; k < 3; k++) {
+      const v = f[o + k] ?? 0;
+      if (v < (min[k] ?? 0)) min[k] = v;
+      if (v > (max[k] ?? 0)) max[k] = v;
+    }
+  }
+  return [0, 1, 2].map((k) =>
+    min[k]! <= max[k]! ? (min[k]! + max[k]!) / 2 : 0,
+  ) as [number, number, number];
+};
+
 /**
  * Sorter of the transparent meshes: returns the items with the transparent
- * meshes' indices in back-to-front order (`order` changes when only the
- * indices must be uploaded again)
+ * meshes merged into one item (`MERGED_KEY`) whose quads are in back-to-front
+ * order, or — above `MAX_SORTED_QUADS` or for meshes that aren't made of
+ * quads — the transparent meshes ordered by decreasing depth of their
+ * center, each with its own quads sorted. `order` changes when only the
+ * indices must be uploaded again.
  */
 export const createDepthSorter = () => {
   const sorted = new Map<string, SortedMesh>();
+  const centers = new Map<
+    string,
+    { version: number; center: [number, number, number] }
+  >();
+  let merged: { signature: string; item: MeshItem } | null = null;
+  let mergedVersion = 0;
   let view: Float32Array | null = null;
   let orthographic = false;
   let order = 0;
   let scratch: { keys: Float32Array; counts: Uint32Array } | null = null;
 
-  const sortable = (item: Item3D): item is MeshItem =>
-    item.kind === "mesh" &&
-    item.opacity < 1 &&
-    item.indices.length >= 12 &&
-    item.indices.length % 6 === 0 &&
-    item.indices.length / 6 <= MAX_SORTED_QUADS;
+  /** Sorts the quads of a mesh when stale or when the camera moved */
+  const sortMesh = (
+    item: MeshItem,
+    frame: Frame3D,
+    moved: boolean,
+    seen: Set<string>,
+  ): MeshItem => {
+    const quads = item.indices.length / 6;
+    if (!isQuadMesh(item) || quads < 2 || quads > MAX_SORTED_QUADS) return item;
+    seen.add(item.key);
+    let entry = sorted.get(item.key);
+    const stale =
+      !entry || entry.version !== item.version || entry.source !== item.indices;
+    if (stale || moved) {
+      if (!scratch || scratch.keys.length < quads)
+        scratch = {
+          keys: new Float32Array(Math.max(quads, 1024)),
+          counts: new Uint32Array(BUCKETS),
+        };
+      const out =
+        entry && !stale && entry.indices.length === item.indices.length
+          ? entry.indices
+          : new Uint32Array(item.indices.length);
+      sortQuads(
+        item.indices,
+        new Float32Array(item.vertices),
+        frame.viewProj,
+        frame.orthographic,
+        out,
+        scratch,
+      );
+      entry = {
+        version: item.version,
+        source: item.indices,
+        indices: out,
+        order: ++order,
+      };
+      sorted.set(item.key, entry);
+    }
+    return { ...item, indices: entry!.indices, order: entry!.order };
+  };
+
+  /** Camera depth of the center of a mesh (larger: farther) */
+  const centerDepth = (item: MeshItem, frame: Frame3D) => {
+    let entry = centers.get(item.key);
+    if (!entry || entry.version !== item.version) {
+      entry = { version: item.version, center: meshCenter(item) };
+      centers.set(item.key, entry);
+    }
+    const m = frame.viewProj;
+    const row = frame.orthographic ? 2 : 3;
+    const [x, y, z] = entry.center;
+    return (
+      (m[row] ?? 0) * x +
+      (m[row + 4] ?? 0) * y +
+      (m[row + 8] ?? 0) * z +
+      (m[row + 12] ?? 0)
+    );
+  };
 
   return (items: readonly Item3D[], frame: Frame3D): readonly Item3D[] => {
-    if (!items.some(sortable)) {
+    const transparent = items.filter(isTransparentMesh);
+    if (transparent.length === 0) {
       sorted.clear();
+      centers.clear();
+      merged = null;
       return items;
     }
     const moved =
@@ -124,44 +277,47 @@ export const createDepthSorter = () => {
       orthographic = frame.orthographic;
     }
     const seen = new Set<string>();
-    const result = items.map((item): Item3D => {
-      if (!sortable(item)) return item;
-      seen.add(item.key);
-      let entry = sorted.get(item.key);
-      const stale =
-        !entry ||
-        entry.version !== item.version ||
-        entry.source !== item.indices;
-      if (stale || moved) {
-        const quads = item.indices.length / 6;
-        if (!scratch || scratch.keys.length < quads)
-          scratch = {
-            keys: new Float32Array(Math.max(quads, 1024)),
-            counts: new Uint32Array(BUCKETS),
-          };
-        const out =
-          entry && !stale && entry.indices.length === item.indices.length
-            ? entry.indices
-            : new Uint32Array(item.indices.length);
-        sortQuads(
-          item.indices,
-          new Float32Array(item.vertices),
-          frame.viewProj,
-          frame.orthographic,
-          out,
-          scratch,
-        );
-        entry = {
-          version: item.version,
-          source: item.indices,
-          indices: out,
-          order: ++order,
+    let quads = 0;
+    for (const m of transparent) quads += m.indices.length / 6;
+    const result: Item3D[] = [];
+    if (
+      transparent.length >= 2 &&
+      quads <= MAX_SORTED_QUADS &&
+      transparent.every(isQuadMesh)
+    ) {
+      // one item: every transparent quad sorted together
+      const signature = transparent
+        .map((m) => `${m.key}@${m.version}@${m.opacity}`)
+        .join("|");
+      if (!merged || merged.signature !== signature) {
+        merged = {
+          signature,
+          item: mergeMeshes(transparent, MERGED_KEY, ++mergedVersion),
         };
-        sorted.set(item.key, entry);
       }
-      return { ...item, indices: entry!.indices, order: entry!.order };
-    });
+      const item = sortMesh(merged.item, frame, moved, seen);
+      let placed = false;
+      for (const it of items) {
+        if (!isTransparentMesh(it)) result.push(it);
+        else if (!placed) {
+          result.push(item);
+          placed = true;
+        }
+      }
+    } else {
+      merged = null;
+      // farthest mesh first, its own quads sorted
+      const ordered = transparent
+        .map((m) => ({ m, depth: centerDepth(m, frame) }))
+        .sort((a, b) => b.depth - a.depth)
+        .map((e) => sortMesh(e.m, frame, moved, seen));
+      let next = 0;
+      for (const it of items)
+        result.push(isTransparentMesh(it) ? ordered[next++]! : it);
+    }
     for (const key of sorted.keys()) if (!seen.has(key)) sorted.delete(key);
+    for (const key of centers.keys())
+      if (!transparent.some((m) => m.key === key)) centers.delete(key);
     return result;
   };
 };

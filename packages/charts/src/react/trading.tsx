@@ -15,10 +15,16 @@ import type {
   TradingClickEvent,
   TradingCrosshairEvent,
   TradingDrawing,
+  TradingDrawingPatch,
   TradingDrawingTool,
   TradingHistoryRequestEvent,
   TradingIndicatorToggleEvent,
+  TradingOrderCancelEvent,
+  TradingOrderCreateEvent,
   TradingOrderMoveEvent,
+  TradingReplayState,
+  TradingScaleMode,
+  TradingUndoState,
   TradingVisibleRange,
 } from "../engine/trading/types";
 import type { ChartRendererKind } from "../engine/types";
@@ -48,6 +54,14 @@ export interface TradingChartHandle {
   getVisibleRange(): TradingVisibleRange | null;
   /** Shows the bars between two logical indices */
   setVisibleRange(range: { from: number; to: number }): void;
+  /** Times at the edges of the plot, `null` before mounting */
+  getVisibleTimeRange(): { from: number; to: number } | null;
+  /** Shows the bars between two times */
+  setVisibleTimeRange(range: { from: number; to: number }): void;
+  /** Shows the crosshair at a time (and a price); `null` hides it */
+  setCrosshair(time: number | null, price?: number): void;
+  /** Sets the price scale of the price pane */
+  setScaleMode(mode: TradingScaleMode): void;
   /** Fits every price scale to the visible bars again */
   resetPriceScales(): void;
   /** Activates a drawing tool */
@@ -56,8 +70,36 @@ export interface TradingChartHandle {
   getDrawings(): readonly TradingDrawing[];
   /** Deletes a drawing */
   removeDrawing(id: string): void;
+  /** Changes the style or the content of a drawing (undoable) */
+  updateDrawing(id: string, patch: TradingDrawingPatch): void;
   /** Selects a drawing (`null` clears the selection) */
   selectDrawing(id: string | null): void;
+  /** Undoes the last change of the drawings */
+  undo(): void;
+  /** Redoes the last undone change of the drawings */
+  redo(): void;
+  /** Whether the drawings can be undone or redone */
+  getUndoState(): TradingUndoState;
+  /** Starts a bar replay after `time` (the user picks the bar without it) */
+  startReplay(time?: number): void;
+  /** Shows the next bars of the replay */
+  replayStep(count?: number): void;
+  /** Plays the replay at `speed` bars per second */
+  replayPlay(speed?: number): void;
+  /** Pauses the replay */
+  replayPause(): void;
+  /** Ends the replay and shows every bar */
+  stopReplay(): void;
+  /** State of the bar replay, `null` before mounting */
+  getReplayState(): TradingReplayState | null;
+  /** Image of the chart as a data URL (`""` before mounting) */
+  toDataURL(type?: string, quality?: number): string;
+  /** Image of the chart as a blob */
+  toBlob(type?: string, quality?: number): Promise<Blob | null>;
+  /** Shows the chart full screen */
+  requestFullscreen(): Promise<void>;
+  /** Leaves full screen */
+  exitFullscreen(): Promise<void>;
   /** Shows or hides an indicator */
   setIndicatorVisible(id: string, visible: boolean): void;
   /** Backend in use, `null` until ready */
@@ -92,12 +134,22 @@ export interface TradingChartProps extends TradingChartOptions {
   onVisibleRangeChange?: (range: TradingVisibleRange) => void;
   /** A draggable price line was dropped at a new price */
   onOrderMove?: (event: TradingOrderMoveEvent) => void;
+  /** The "+" order entry button was clicked (see `orderEntry`) */
+  onOrderCreate?: (event: TradingOrderCreateEvent) => void;
+  /** The close button of a `cancellable` price line was clicked */
+  onOrderCancel?: (event: TradingOrderCancelEvent) => void;
   /** The user added, moved or deleted drawings (pass them back as `drawings`) */
   onDrawingsChange?: (drawings: readonly TradingDrawing[]) => void;
   /** The selected drawing changed */
   onDrawingSelect?: (id: string | null) => void;
   /** The drawing tool changed (back to `cursor` after a drawing) */
   onDrawingToolChange?: (tool: TradingDrawingTool) => void;
+  /** Undo / redo of the drawings became possible or impossible */
+  onUndoChange?: (state: TradingUndoState) => void;
+  /** The bar replay started, stepped, played, paused or stopped */
+  onReplayChange?: (state: TradingReplayState) => void;
+  /** The chart entered (`true`) or left full screen */
+  onFullscreenChange?: (fullscreen: boolean) => void;
   /** An indicator was shown or hidden from its legend */
   onIndicatorToggle?: (event: TradingIndicatorToggleEvent) => void;
   /** The oldest bar came into view: load older bars (`prependBars`) */
@@ -112,9 +164,14 @@ type Handlers = Pick<
   | "onClick"
   | "onVisibleRangeChange"
   | "onOrderMove"
+  | "onOrderCreate"
+  | "onOrderCancel"
   | "onDrawingsChange"
   | "onDrawingSelect"
   | "onDrawingToolChange"
+  | "onUndoChange"
+  | "onReplayChange"
+  | "onFullscreenChange"
   | "onIndicatorToggle"
   | "onHistoryRequest"
   | "onRendererChange"
@@ -202,9 +259,14 @@ export function TradingChart(props: TradingChartProps) {
     onClick,
     onVisibleRangeChange,
     onOrderMove,
+    onOrderCreate,
+    onOrderCancel,
     onDrawingsChange,
     onDrawingSelect,
     onDrawingToolChange,
+    onUndoChange,
+    onReplayChange,
+    onFullscreenChange,
     onIndicatorToggle,
     onHistoryRequest,
     onRendererChange,
@@ -215,9 +277,14 @@ export function TradingChart(props: TradingChartProps) {
     onClick,
     onVisibleRangeChange,
     onOrderMove,
+    onOrderCreate,
+    onOrderCancel,
     onDrawingsChange,
     onDrawingSelect,
     onDrawingToolChange,
+    onUndoChange,
+    onReplayChange,
+    onFullscreenChange,
     onIndicatorToggle,
     onHistoryRequest,
     onRendererChange,
@@ -247,9 +314,14 @@ export function TradingChart(props: TradingChartProps) {
       chart.on("click", (e) => h().onClick?.(e)),
       chart.on("visibleRangeChange", (e) => h().onVisibleRangeChange?.(e)),
       chart.on("orderMove", (e) => h().onOrderMove?.(e)),
+      chart.on("orderCreate", (e) => h().onOrderCreate?.(e)),
+      chart.on("orderCancel", (e) => h().onOrderCancel?.(e)),
       chart.on("drawingsChange", (e) => h().onDrawingsChange?.(e)),
       chart.on("drawingSelect", (e) => h().onDrawingSelect?.(e)),
       chart.on("drawingToolChange", (e) => h().onDrawingToolChange?.(e)),
+      chart.on("undoChange", (e) => h().onUndoChange?.(e)),
+      chart.on("replayChange", (e) => h().onReplayChange?.(e)),
+      chart.on("fullscreenChange", (e) => h().onFullscreenChange?.(e)),
       chart.on("indicatorToggle", (e) => h().onIndicatorToggle?.(e)),
       chart.on("historyRequest", (e) => h().onHistoryRequest?.(e)),
       chart.on("renderer", (e) => h().onRendererChange?.(e)),
@@ -281,11 +353,37 @@ export function TradingChart(props: TradingChartProps) {
       fitContent: () => chartRef.current?.fitContent(),
       getVisibleRange: () => chartRef.current?.getVisibleRange() ?? null,
       setVisibleRange: (range) => chartRef.current?.setVisibleRange(range),
+      getVisibleTimeRange: () =>
+        chartRef.current?.getVisibleTimeRange() ?? null,
+      setVisibleTimeRange: (range) =>
+        chartRef.current?.setVisibleTimeRange(range),
+      setCrosshair: (time, price) =>
+        chartRef.current?.setCrosshair(time, price),
+      setScaleMode: (mode) => chartRef.current?.setScaleMode(mode),
       resetPriceScales: () => chartRef.current?.resetPriceScales(),
       setDrawingTool: (tool) => chartRef.current?.setDrawingTool(tool),
       getDrawings: () => chartRef.current?.getDrawings() ?? [],
       removeDrawing: (id) => chartRef.current?.removeDrawing(id),
+      updateDrawing: (id, patch) => chartRef.current?.updateDrawing(id, patch),
       selectDrawing: (id) => chartRef.current?.selectDrawing(id),
+      undo: () => chartRef.current?.undo(),
+      redo: () => chartRef.current?.redo(),
+      getUndoState: () =>
+        chartRef.current?.getUndoState() ?? { canUndo: false, canRedo: false },
+      startReplay: (time) => chartRef.current?.startReplay(time),
+      replayStep: (count) => chartRef.current?.replayStep(count),
+      replayPlay: (speed) => chartRef.current?.replayPlay(speed),
+      replayPause: () => chartRef.current?.replayPause(),
+      stopReplay: () => chartRef.current?.stopReplay(),
+      getReplayState: () => chartRef.current?.getReplayState() ?? null,
+      toDataURL: (type, quality) =>
+        chartRef.current?.toDataURL(type, quality) ?? "",
+      toBlob: (type, quality) =>
+        chartRef.current?.toBlob(type, quality) ?? Promise.resolve(null),
+      requestFullscreen: () =>
+        chartRef.current?.requestFullscreen() ?? Promise.resolve(),
+      exitFullscreen: () =>
+        chartRef.current?.exitFullscreen() ?? Promise.resolve(),
       setIndicatorVisible: (id, visible) =>
         chartRef.current?.setIndicatorVisible(id, visible),
       getRenderer: () => chartRef.current?.getRenderer() ?? null,

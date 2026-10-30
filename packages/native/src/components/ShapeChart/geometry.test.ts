@@ -102,6 +102,7 @@ function expectShape(
   prims: readonly Prim[],
   inside: (p: Pt) => boolean,
   margin: (p: Pt) => boolean,
+  label = "",
 ) {
   let checked = 0;
   for (let x = 0; x <= 200; x += 3)
@@ -109,10 +110,117 @@ function expectShape(
       const p: Pt = [x + 0.37, y + 0.61];
       if (margin(p)) continue;
       checked++;
-      expect(covers(prims, p), `point ${p.join(",")}`).toBe(inside(p));
+      expect(covers(prims, p), `${label} point ${p.join(",")}`).toBe(inside(p));
     }
   expect(checked).toBeGreaterThan(500);
 }
+
+/** The outline the canvas fills for a node, curves finely flattened */
+function canvasOutline(node: unknown): Pt[] {
+  const out: Pt[] = [];
+  let pen: Pt = [0, 0];
+  let done = false;
+  const to = (p: Pt) => {
+    if (!done) out.push(p);
+    pen = p;
+  };
+  const ctx = new Proxy(
+    {
+      moveTo: (x: number, y: number) => to([x, y]),
+      lineTo: (x: number, y: number) => to([x, y]),
+      arc(
+        cx: number,
+        cy: number,
+        r: number,
+        a0: number,
+        a1: number,
+        ccw?: boolean,
+      ) {
+        let sweep = a1 - a0;
+        if (!ccw && sweep < 0) sweep += Math.PI * 2;
+        if (ccw && sweep > 0) sweep -= Math.PI * 2;
+        for (let k = 0; k <= 400; k++) {
+          const a = a0 + (sweep * k) / 400;
+          to([cx + r * Math.cos(a), cy + r * Math.sin(a)]);
+        }
+      },
+      quadraticCurveTo(qx: number, qy: number, x: number, y: number) {
+        const [x0, y0] = pen;
+        for (let k = 1; k <= 100; k++) {
+          const t = k / 100;
+          const u = 1 - t;
+          to([
+            u * u * x0 + 2 * u * t * qx + t * t * x,
+            u * u * y0 + 2 * u * t * qy + t * t * y,
+          ]);
+        }
+      },
+      fill: () => {
+        done = true;
+      },
+    } as Record<string, unknown>,
+    {
+      get: (target, key) => (key in target ? target[key as string] : () => {}),
+    },
+  );
+  drawShapeScene(
+    ctx as unknown as CanvasRenderingContext2D,
+    {
+      type: "pie",
+      width: 400,
+      height: 400,
+      nodes: [node],
+      items: [],
+      dim: 0.3,
+      empty: false,
+    } as never,
+    null,
+  );
+  return out;
+}
+
+function insidePolygon(P: readonly Pt[], p: Pt) {
+  let inside = false;
+  for (let i = 0, j = P.length - 1; i < P.length; j = i++) {
+    const a = P[i] as Pt;
+    const b = P[j] as Pt;
+    if (
+      a[1] > p[1] !== b[1] > p[1] &&
+      p[0] < ((b[0] - a[0]) * (p[1] - a[1])) / (b[1] - a[1]) + a[0]
+    )
+      inside = !inside;
+  }
+  return inside;
+}
+
+function distanceToPolygon(P: readonly Pt[], p: Pt) {
+  let best = Infinity;
+  for (let i = 0; i < P.length; i++) {
+    const a = P[i] as Pt;
+    const b = P[(i + 1) % P.length] as Pt;
+    const dx = b[0] - a[0];
+    const dy = b[1] - a[1];
+    const l2 = dx * dx + dy * dy;
+    const t =
+      l2 > 0
+        ? Math.max(
+            0,
+            Math.min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / l2),
+          )
+        : 0;
+    best = Math.min(
+      best,
+      Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy),
+    );
+  }
+  return best;
+}
+
+/** Every view of a tree */
+const flat = (prims: readonly Prim[]): Prim[] =>
+  prims.flatMap((p) =>
+    p.t === "clip" || p.t === "group" ? [p, ...flat(p.children)] : [p],
+  );
 
 const angleIn = (a: number, a0: number, a1: number) => {
   let t = a - a0;
@@ -235,6 +343,67 @@ describe("shape chart geometry", () => {
     expect(covers(prims, [150, 105])).toBe(true);
     expect(covers(prims, [101.5, 150])).toBe(false);
     expect(covers(prims, [105, 150])).toBe(true);
+  });
+
+  it("rounds the corners of pie, donut and sunburst slices like the canvas", () => {
+    const cases = [
+      // donut segments, any span
+      { r0: 40, r1: 80, a0: 0.3, a1: 1.4, pad: 0, corner: 10 },
+      { r0: 40, r1: 80, a0: -0.4, a1: 2.9, pad: 0, corner: 8 },
+      { r0: 40, r1: 80, a0: 1, a1: 5.6, pad: 0, corner: 10 },
+      { r0: 50, r1: 90, a0: 0.2, a1: 1.9, pad: 4, corner: 8 },
+      // pie slices: the apex stays sharp
+      { r0: 0, r1: 90, a0: 0.5, a1: 2, pad: 3, corner: 12 },
+      { r0: 0, r1: 90, a0: 1, a1: 5.8, pad: 3, corner: 10 },
+      // clamped to half the thickness, then to the arc length
+      { r0: 70, r1: 85, a0: 0.4, a1: 2.2, pad: 0, corner: 30 },
+      { r0: 0, r1: 85, a0: 0.4, a1: 0.5, pad: 0, corner: 20 },
+      // the donut of the docs: 4 slices, padded
+      ...[
+        [0, 0.4307],
+        [0.4307, 0.7122],
+        [0.7122, 0.916],
+        [0.916, 1],
+      ].map(([s0, s1]) => ({
+        r0: 68,
+        r1: 110,
+        a0: -Math.PI / 2 + s0! * Math.PI * 2,
+        a1: -Math.PI / 2 + s1! * Math.PI * 2,
+        pad: 2,
+        corner: 10,
+      })),
+    ];
+    for (const c of cases) {
+      const node = {
+        kind: "sector",
+        cx: 100,
+        cy: 100,
+        ...c,
+        fill: "rgba(200, 0, 0, 1)",
+      };
+      const prims = framePrims(record([node]));
+      const outline = canvasOutline(node);
+      const margin = Math.max(
+        1.2,
+        Math.min(c.corner, (c.r1 - c.r0) / 2) * 0.08,
+      );
+      expectShape(
+        prims,
+        (p) => insidePolygon(outline, p),
+        (p) => distanceToPolygon(outline, p) < margin,
+        JSON.stringify(c),
+      );
+      // the fillets are anti-aliased discs (unless they would overlap: then
+      // the flattened outline)
+      if (c.a1 - c.a0 < 0.2) continue;
+      const discs = flat(prims).filter(
+        (p) => p.t === "box" && (p.radius ?? 0) > 0 && (p.radius ?? 0) < 20,
+      );
+      expect(discs.length, JSON.stringify(c)).toBeGreaterThanOrEqual(
+        c.r0 > 0 ? 3 : 2,
+      );
+      expect(depth(prims)).toBeLessThanOrEqual(8);
+    }
   });
 
   it("draws stroked arcs as bands with round caps", () => {

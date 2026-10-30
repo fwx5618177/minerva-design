@@ -14,6 +14,7 @@ import {
   radialBarChart,
   calendarHeatmap,
   bulletChart,
+  chordChart,
 } from "./index";
 
 type Control = typeof pieChart;
@@ -396,6 +397,25 @@ it("draws sankey, sunburst, radial bar, calendar heatmap and bullet charts", asy
       "170px",
     ],
     [
+      calendarHeatmap,
+      {
+        data: [{ date: "2025-03-02", value: 3 }],
+        range: ["2025-01-01", "2026-12-31"],
+      },
+      "Calendar heatmap",
+      "290px",
+    ],
+    [
+      // across new year but within 53 weeks: one strip
+      calendarHeatmap,
+      {
+        data: [{ date: "2025-12-02", value: 3 }],
+        range: ["2025-11-01", "2026-02-28"],
+      },
+      "Calendar heatmap",
+      "170px",
+    ],
+    [
       bulletChart,
       {
         data: [{ name: "Revenue", value: 270, target: 250 }],
@@ -434,4 +454,44 @@ it("sunburst: drill() emits drill and getDrillPath() follows it", async () => {
   w.instance.drill(["Web"]);
   expect(events).toEqual([{ name: "drill", detail: { path: ["Web"] } }]);
   expect(w.instance.getDrillPath()).toEqual(["Web"]);
+});
+
+it("chord-chart: draws arcs and ribbons, ticks via configure({ tickFormat }) and legend toggles", async () => {
+  const { w, fake } = await mount(chordChart, {
+    groups: ["Apps", "Web", "Store"],
+    matrix: [
+      [0, 5, 2],
+      [3, 0, 4],
+      [1, 2, 0],
+    ],
+    ticks: 2,
+    animation: false,
+  });
+  expect(w.instance.data.chartLabel).toBe("Chord diagram");
+  expect(w.instance.data.chartHeight).toBe("420px");
+  expect(fake.calls.some((c) => c.name === "quadraticCurveTo")).toBe(true);
+  expect(fake.texts()).toContain("Apps");
+  w.instance.configure({ tickFormat: (v: number) => `${v}u` });
+  await tick();
+  fake.flush();
+  expect(fake.texts().some((t) => /^\d+u$/.test(t))).toBe(true);
+  const events = listen(w, "toggle");
+  w.instance.toggle(1);
+  expect(events[0]).toMatchObject({
+    name: "toggle",
+    detail: { index: 1, hiddenIndexes: [1] },
+  });
+});
+
+it("forwards locale and texts to the engine", async () => {
+  const { w, fake } = await mount(pieChart, {
+    data: [],
+    locale: "zh-CN",
+    animation: false,
+  });
+  expect(fake.texts()).toContain("暂无数据");
+  w.setData({ texts: { noData: "空" } });
+  await tick();
+  fake.flush();
+  expect(fake.texts()).toContain("空");
 });

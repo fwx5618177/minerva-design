@@ -271,6 +271,7 @@ export const NATIVE_CHARTS: readonly string[] = [
   "RadialBarChart",
   "CalendarHeatmap",
   "BulletChart",
+  "ChordChart",
   "ShapeChart",
 ];
 

@@ -5,6 +5,9 @@ import type {
   ChartRendererKind,
   ChartView,
   DepthChartInstance,
+  GraphChartInstance,
+  GraphData,
+  GraphPoint,
   OrderBookDelta,
   OrderBookHeatmapInstance,
   OrderBookInstance,
@@ -16,7 +19,11 @@ import type {
   TradingBarsInput,
   TradingChartInstance,
   TradingDrawing,
+  TradingDrawingPatch,
   TradingDrawingTool,
+  TradingReplayState,
+  TradingScaleMode,
+  TradingUndoState,
   TradingVisibleRange,
 } from "minerva-design/charts/core";
 
@@ -45,6 +52,9 @@ export type {
   ChartSeries,
   ChartTooltipOptions,
   ChartView,
+  ChordChartOptions,
+  ChordGroup,
+  ChordLink,
   DepthChartHoverEvent,
   DepthChartInstance,
   DepthChartOptions,
@@ -52,6 +62,30 @@ export type {
   GanttTask,
   GaugeBand,
   GaugeChartOptions,
+  GraphChartInstance,
+  GraphChartLabels,
+  GraphChartOptions,
+  GraphCircularOptions,
+  GraphDagOptions,
+  GraphData,
+  GraphDirection,
+  GraphEdge,
+  GraphEdgeStyle,
+  GraphForceOptions,
+  GraphGroup,
+  GraphGroupToggleEvent,
+  GraphHoverEvent,
+  GraphInteractionOptions,
+  GraphLayoutEndEvent,
+  GraphLayoutType,
+  GraphLegendOptions,
+  GraphNode,
+  GraphNodeShape,
+  GraphPoint,
+  GraphSelectEvent,
+  GraphToggleEvent,
+  GraphTooltipOptions,
+  GraphTreeOptions,
   HeatmapCell,
   Line3DSeries,
   OrderBookDelta,
@@ -94,6 +128,10 @@ export type {
   TradingDrawing,
   TradingDrawingTool,
   TradingIndicator,
+  TradingOrderCancelEvent,
+  TradingOrderCreateEvent,
+  TradingReplayState,
+  TradingUndoState,
   TradingVisibleRange,
   TreemapChartOptions,
   TreemapNode,
@@ -146,6 +184,14 @@ export interface TradingChartHandle {
   getVisibleRange(): TradingVisibleRange | null;
   /** Shows the bars between two logical indices */
   setVisibleRange(range: { from: number; to: number }): void;
+  /** Times at the edges of the plot, `null` before mount */
+  getVisibleTimeRange(): { from: number; to: number } | null;
+  /** Shows the bars between two times */
+  setVisibleTimeRange(range: { from: number; to: number }): void;
+  /** Shows the crosshair at a time (and a price); `null` hides it */
+  setCrosshair(time: number | null, price?: number): void;
+  /** Sets the price scale of the price pane */
+  setScaleMode(mode: TradingScaleMode): void;
   /** Fits every price scale to the visible bars again */
   resetPriceScales(): void;
   /** Activates a drawing tool */
@@ -154,14 +200,70 @@ export interface TradingChartHandle {
   getDrawings(): readonly TradingDrawing[];
   /** Deletes a drawing */
   removeDrawing(id: string): void;
+  /** Changes the style or the content of a drawing (undoable) */
+  updateDrawing(id: string, patch: TradingDrawingPatch): void;
   /** Selects a drawing (`null` clears the selection) */
   selectDrawing(id: string | null): void;
+  /** Undoes the last change of the drawings */
+  undo(): void;
+  /** Redoes the last undone change of the drawings */
+  redo(): void;
+  /** Whether the drawings can be undone or redone */
+  getUndoState(): TradingUndoState;
+  /** Starts a bar replay after `time` (the user picks the bar without it) */
+  startReplay(time?: number): void;
+  /** Shows the next bars of the replay */
+  replayStep(count?: number): void;
+  /** Plays the replay at `speed` bars per second */
+  replayPlay(speed?: number): void;
+  /** Pauses the replay */
+  replayPause(): void;
+  /** Ends the replay and shows every bar */
+  stopReplay(): void;
+  /** State of the bar replay, `null` before mount */
+  getReplayState(): TradingReplayState | null;
+  /** Image of the chart as a data URL (`""` before mount) */
+  toDataURL(type?: string, quality?: number): string;
+  /** Image of the chart as a blob */
+  toBlob(type?: string, quality?: number): Promise<Blob | null>;
+  /** Shows the chart full screen */
+  requestFullscreen(): Promise<void>;
+  /** Leaves full screen */
+  exitFullscreen(): Promise<void>;
   /** Shows or hides an indicator */
   setIndicatorVisible(id: string, visible: boolean): void;
   /** Backend in use, `null` until ready */
   getRenderer(): ChartRendererKind | null;
   /** The underlying engine instance (minerva-design/charts/core), `null` before mount */
   getInstance(): TradingChartInstance | null;
+}
+
+/** Template ref handle of `GraphChart`, `DependencyGraph` and `TreeChart` */
+export interface GraphChartHandle {
+  /** Fits the visible nodes in the view */
+  fit(animate?: boolean): void;
+  /** Centers a node (expanding its collapsed ancestors), optionally zooming */
+  focusNode(id: string, options?: { zoom?: number; animate?: boolean }): void;
+  /** Replaces the data until the props change again */
+  setData(data: GraphData): void;
+  /** Selects nodes (`null` clears the selection) */
+  select(ids: readonly string[] | string | null): void;
+  /** Ids of the selected nodes */
+  getSelection(): string[];
+  /** Expands a node (all nodes without an id) */
+  expand(id?: string): void;
+  /** Collapses a node (all nodes with children without an id) */
+  collapse(id?: string): void;
+  /** Collapses / expands a node */
+  toggle(id: string): void;
+  /** Current positions of the nodes in layout units */
+  getPositions(): Record<string, GraphPoint>;
+  /** Computes the layout again */
+  relayout(): void;
+  /** Backend in use, `null` until ready */
+  getRenderer(): ChartRendererKind | null;
+  /** The underlying engine instance (minerva-design/charts/core), `null` before mount */
+  getInstance(): GraphChartInstance | null;
 }
 
 /** Trades of `TimeAndSales` and `OrderBookHeatmap`, oldest first */

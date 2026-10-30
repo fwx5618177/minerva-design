@@ -6,9 +6,9 @@ import * as overlays from "./groups/overlays";
 import * as navigation from "./groups/navigation";
 import * as display from "./groups/display";
 import * as config from "./groups/config";
-import * as charts from "./groups/charts";
+import { collectComponents, registerComponents } from "./internal/register";
 
-/** Options of the `MinervaVue` plugin */
+/** Options of the `MinervaVue` and `MinervaVueCharts` plugins */
 export interface MinervaVueOptions {
   /**
    * Prefix of the globally registered names (`<MnButton>`, `<MnModal>`...).
@@ -18,15 +18,14 @@ export interface MinervaVueOptions {
   prefix?: string;
 }
 
-/** Whether an export is a Vue component (SFC / defineComponent object) */
-export const isComponent = (value: unknown): value is Component =>
-  !!value &&
-  typeof value === "object" &&
-  ("setup" in value || "render" in value || "__name" in value);
-
-/** Every component of the Vue renderer, by export name */
+/**
+ * Every component registered by `MinervaVue`, by export name. The charts
+ * are not included: they belong to `MinervaVueCharts`
+ * (`minerva-design/vue/charts`), so that the plugin does not load the chart
+ * engine.
+ */
 export function allComponents(): Record<string, Component> {
-  const modules = [
+  return collectComponents([
     Button,
     formsBasic,
     formsPickers,
@@ -34,30 +33,21 @@ export function allComponents(): Record<string, Component> {
     navigation,
     display,
     config,
-    charts,
-  ] as Record<string, unknown>[];
-  const result: Record<string, Component> = {};
-  for (const module of modules) {
-    for (const [name, value] of Object.entries(module)) {
-      if (isComponent(value)) result[name] = value;
-    }
-  }
-  return result;
+  ]);
 }
 
 /**
  * Vue plugin registering every Minerva component globally:
  * `app.use(MinervaVue)` -> `<MnButton>`, `<MnModal>`... (add
  * `"types": ["minerva-design/vue/global"]` to tsconfig for Volar typings).
+ * The charts are opt-in: `app.use(MinervaVueCharts)` from
+ * `minerva-design/vue/charts`.
  * Optional: named imports (`import { Button } from "minerva-design/vue"`)
  * need no plugin and are tree-shaken.
  */
 export const MinervaVue = {
   install(app: App, options: MinervaVueOptions = {}): void {
-    const prefix = options.prefix ?? "Mn";
-    for (const [name, component] of Object.entries(allComponents())) {
-      app.component(`${prefix}${name}`, component);
-    }
+    registerComponents(app, allComponents(), options.prefix);
   },
 };
 

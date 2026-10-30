@@ -194,6 +194,7 @@ export const OPTIONAL_ENTRIES = [
   "trading-chart",
   "order-book",
   "chart-3d",
+  "graph",
 ];
 
 /** Optional entry of a manifest element (`undefined`: all-in-one). */

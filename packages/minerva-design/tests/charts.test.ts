@@ -51,6 +51,10 @@ const COMPONENTS = [
   "Surface3DChart",
   "Bar3DChart",
   "Line3DChart",
+  "ChordChart",
+  "GraphChart",
+  "DependencyGraph",
+  "TreeChart",
 ];
 const ENGINE = [
   "createChart",
@@ -75,6 +79,11 @@ const ENGINE = [
   "candlestickSeries",
   "boxplotSeries",
   "formatValue",
+  "formatDuration",
+  // global defaults
+  "getDefaultChartRenderer",
+  "setDefaultChartRenderer",
+  "subscribeDefaultChartRenderer",
   // statistics presets
   "binValues",
   "histogramSeries",
@@ -97,6 +106,19 @@ const ENGINE = [
   "vwap",
   "heikinAshi",
   "resampleBars",
+  "syncCharts",
+  "psar",
+  "ichimoku",
+  "supertrend",
+  "keltner",
+  "donchian",
+  "obv",
+  "cci",
+  "stochRsi",
+  "dmi",
+  "williamsR",
+  "mfi",
+  "volumeProfile",
   // order books
   "createDepthChart",
   "createOrderBook",
@@ -105,6 +127,16 @@ const ENGINE = [
   "createOrderBookStore",
   // 3D
   "createChart3D",
+  // graphs
+  "createGraphChart",
+  "createForceSimulation",
+  "forceLayout",
+  "dagLayout",
+  "countCrossings",
+  "criticalPath",
+  "treeLayout",
+  "circularLayout",
+  "arcLayout",
 ];
 
 describe("minerva-design/charts", () => {

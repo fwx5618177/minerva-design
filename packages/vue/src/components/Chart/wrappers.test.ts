@@ -27,6 +27,12 @@ const RETURNS: Record<string, unknown> = {
   getVisibleRange: { from: 0, to: 10, fromTime: 0, toTime: 1 },
   getDrawings: [{ id: "d1", type: "trendLine" }],
   getCamera: { azimuth: 30, elevation: 20 },
+  getVisibleTimeRange: { from: 10, to: 20 },
+  getUndoState: { canUndo: true, canRedo: false },
+  getReplayState: { active: true, index: 3 },
+  toDataURL: "data:image/png;base64,",
+  getSelection: ["a"],
+  getPositions: { a: { x: 1, y: 2 } },
 };
 
 vi.mock("minerva-design/charts/core", async (importOriginal) => {
@@ -74,6 +80,7 @@ vi.mock("minerva-design/charts/core", async (importOriginal) => {
     createOrderBookHeatmap: create("heatmap"),
     createTimeAndSales: create("tape"),
     createChart3D: create("3d"),
+    createGraphChart: create("graph"),
   };
 });
 
@@ -157,8 +164,22 @@ describe("cartesian components", () => {
     ],
     [
       "HeatmapChart",
-      { data: [{ x: "Mon", y: "AM", value: 3 }], name: "Load" },
-      { series: [{ type: "heatmap", name: "Load" }] },
+      {
+        data: [{ x: "Mon", y: "AM", value: 3 }],
+        name: "Load",
+        colorScale: "diverging",
+        colorMidpoint: 0,
+      },
+      {
+        series: [
+          {
+            type: "heatmap",
+            name: "Load",
+            colorScale: "diverging",
+            colorMidpoint: 0,
+          },
+        ],
+      },
     ],
     [
       "HorizontalBarChart",
@@ -196,8 +217,23 @@ describe("cartesian components", () => {
     ],
     [
       "BoxPlotChart",
-      { groups: [{ x: "A", values: [1, 2, 3, 4, 5] }] },
-      { series: [{ type: "boxplot", data: [{ x: "A", y: 3, q1: 2, q3: 4 }] }] },
+      {
+        groups: [{ x: "A", values: [1, 2, 3, 4, 5] }],
+        series: [{ name: "Target", type: "line", data: [["A", 3]] }],
+        outlierShape: "filled",
+        outlierSize: 10,
+      },
+      {
+        series: [
+          {
+            type: "boxplot",
+            data: [{ x: "A", y: 3, q1: 2, q3: 4 }],
+            outlierShape: "filled",
+            outlierSize: 10,
+          },
+          { type: "line" },
+        ],
+      },
     ],
     [
       "WaterfallChart",
@@ -206,10 +242,12 @@ describe("cartesian components", () => {
           { label: "Start", value: 10 },
           { label: "Cost", value: -4 },
         ],
+        connector: { dash: [2, 2] },
       },
       {
         series: [
           {
+            connector: { dash: [2, 2] },
             data: [
               { y0: 0, y: 10 },
               { y0: 10, y: 6 },
@@ -322,6 +360,32 @@ describe("shape components", () => {
       { data: [{ name: "Revenue", value: 3, target: 4 }] },
       { type: "bullet" },
     ],
+    [
+      "ChordChart",
+      {
+        groups: ["A", { name: "B", color: "red" }],
+        matrix: [
+          [0, 2],
+          [3, 0],
+        ],
+        directed: true,
+        ticks: 5,
+        labels: "radial",
+        ribbonColor: "source",
+      },
+      {
+        type: "chord",
+        groups: ["A", { name: "B" }],
+        matrix: [
+          [0, 2],
+          [3, 0],
+        ],
+        directed: true,
+        ticks: 5,
+        labels: "radial",
+        ribbonColor: "source",
+      },
+    ],
   ];
 
   it.each(cases)(
@@ -369,9 +433,14 @@ describe("TradingChart", () => {
       click: "click",
       visibleRangeChange: "visibleRangeChange",
       orderMove: "orderMove",
+      orderCreate: "orderCreate",
+      orderCancel: "orderCancel",
       drawingsChange: "drawingsChange",
       drawingSelect: "drawingSelect",
       drawingToolChange: "drawingToolChange",
+      undoChange: "undoChange",
+      replayChange: "replayChange",
+      fullscreenChange: "fullscreenChange",
       indicatorToggle: "indicatorToggle",
       historyRequest: "historyRequest",
       renderer: "rendererChange",
@@ -388,15 +457,61 @@ describe("TradingChart", () => {
       fitContent: [],
       getVisibleRange: [],
       setVisibleRange: [{ from: 2, to: 8 }],
+      getVisibleTimeRange: [],
+      setVisibleTimeRange: [{ from: 10, to: 20 }],
+      setCrosshair: [10, 1.5],
+      setScaleMode: ["log"],
       resetPriceScales: [],
       setDrawingTool: ["trendLine"],
       getDrawings: [],
       removeDrawing: ["d1"],
+      updateDrawing: ["d1", { color: "red" }],
       selectDrawing: [null],
+      undo: [],
+      redo: [],
+      getUndoState: [],
+      startReplay: [5],
+      replayStep: [2],
+      replayPlay: [4],
+      replayPause: [],
+      stopReplay: [],
+      getReplayState: [],
+      toDataURL: ["image/jpeg", 0.8],
+      toBlob: ["image/webp", 0.9],
+      requestFullscreen: [],
+      exitFullscreen: [],
       setIndicatorVisible: ["sma", false],
       getRenderer: [],
     });
     expect(handle.getInstance()).toBeTruthy();
+  });
+
+  it("passes the new trading options and has defaults before mount", async () => {
+    const { wrapper, engine } = mountChart("TradingChart", {
+      bars: [],
+      timeZone: "UTC",
+      sessionBreaks: true,
+      orderEntry: true,
+      volumeProfile: { rows: 24 },
+      drawingToolbar: false,
+    });
+    expect(engine.options).toEqual({
+      bars: [],
+      timeZone: "UTC",
+      sessionBreaks: true,
+      orderEntry: true,
+      volumeProfile: { rows: 24 },
+      drawingToolbar: false,
+    });
+    const handle = wrapper.vm as unknown as Handle;
+    wrapper.unmount();
+    expect(handle.getUndoState()).toEqual({ canUndo: false, canRedo: false });
+    expect(handle.getReplayState()).toBeNull();
+    expect(handle.getVisibleTimeRange()).toBeNull();
+    expect(handle.toDataURL()).toBe("");
+    await expect(handle.toBlob()).resolves.toBeNull();
+    await expect(handle.requestFullscreen()).resolves.toBeUndefined();
+    await expect(handle.exitFullscreen()).resolves.toBeUndefined();
   });
 });
 
@@ -543,4 +658,159 @@ describe("3D components", () => {
       expect(handle.getInstance()).toBeTruthy();
     },
   );
+});
+
+describe("graph components", () => {
+  const nodes = [
+    { id: "a", group: "g1" },
+    { id: "b", group: "g2" },
+  ];
+  const edges = [{ source: "a", target: "b" }];
+  const graphEvents = {
+    hover: "hover",
+    click: "itemClick",
+    toggle: "toggle",
+    groupToggle: "groupToggle",
+    layoutEnd: "layoutEnd",
+    renderer: "rendererChange",
+  };
+  const cases: Array<[string, Record<string, unknown>, object]> = [
+    [
+      "GraphChart",
+      { force: { charge: -200 }, edgeColor: "source", nodeSize: [8, 30] },
+      {
+        layout: "force",
+        force: { charge: -200 },
+        edgeColor: "source",
+        nodeSize: [8, 30],
+      },
+    ],
+    [
+      "DependencyGraph",
+      { dag: { layerGap: 80 }, criticalPath: true },
+      {
+        layout: "dag",
+        direction: "TB",
+        dag: { layerGap: 80, criticalPath: true },
+      },
+    ],
+    [
+      "TreeChart",
+      { layout: "org", tree: { root: "a" } },
+      { layout: "org", tree: { root: "a" } },
+    ],
+  ];
+
+  it.each(cases)(
+    "%s builds its options, emits the engine events and forwards its handle",
+    (name, props, expected) => {
+      const { wrapper, handle, engine } = mountChart(name, {
+        nodes,
+        edges,
+        groups: [{ id: "g1", name: "One" }],
+        highlight: "lineage",
+        selected: ["a"],
+        locale: "fr",
+        labels: { fit: "Ajuster" },
+        ...props,
+      });
+      expect(engine.kind).toBe("graph");
+      expect(engine.options).toMatchObject({
+        nodes,
+        edges,
+        groups: [{ id: "g1", name: "One" }],
+        highlight: "lineage",
+        selected: ["a"],
+        locale: "fr",
+        labels: { fit: "Ajuster" },
+        ...expected,
+      });
+      expectEvents(wrapper, engine, graphEvents);
+      engine.fire("select", { ids: ["a", "b"] });
+      expect(wrapper.emitted("selectionChange")).toEqual([[["a", "b"]]]);
+      expectForwarded(handle, engine, {
+        fit: [false],
+        focusNode: ["a", { zoom: 2 }],
+        setData: [{ nodes, edges }],
+        select: [["b"]],
+        getSelection: [],
+        expand: ["a"],
+        collapse: ["b"],
+        toggle: ["a"],
+        getPositions: [],
+        relayout: [],
+        getRenderer: [],
+      });
+      expect(handle.getInstance()).toBeTruthy();
+    },
+  );
+
+  it("GraphChart and DependencyGraph keep their defaults and let props override them", () => {
+    expect(
+      mountChart("GraphChart", { nodes, edges }).engine.options,
+    ).toMatchObject({
+      layout: "force",
+    });
+    const dag = mountChart("DependencyGraph", {
+      nodes,
+      edges,
+      direction: "LR",
+    }).engine.options;
+    expect(dag).toMatchObject({ layout: "dag", direction: "LR" });
+    expect(dag.dag).toBeUndefined();
+    expect(
+      mountChart("TreeChart", { nodes, edges }).engine.options,
+    ).toMatchObject({ layout: "tree" });
+  });
+
+  it("keeps the layout when the data is rebuilt with the same objects", async () => {
+    const { wrapper, engine } = mountChart("GraphChart", {
+      nodes,
+      edges,
+      force: { charge: -100 },
+    });
+    // same node / edge objects in new arrays, an equal inline object, the size
+    await wrapper.setProps({
+      nodes: [...nodes],
+      edges: [...edges],
+      force: { charge: -100 },
+      height: 300,
+    } as never);
+    expect(called(engine, "setOptions")).toEqual([]);
+    // a new node: new options
+    const more = [...nodes, { id: "c" }];
+    await wrapper.setProps({ nodes: more } as never);
+    expect(called(engine, "setOptions")).toHaveLength(1);
+    expect(engine.options.nodes).toBe(more);
+    // an option change
+    await wrapper.setProps({ edgeStyle: "orthogonal" } as never);
+    expect(called(engine, "setOptions")).toHaveLength(2);
+    expect(engine.options).toMatchObject({ edgeStyle: "orthogonal" });
+  });
+
+  it("follows in-place mutations with deep, passing copies of the data", async () => {
+    const data = [{ id: "a" }];
+    const { wrapper, engine } = mountChart("GraphChart", {
+      nodes: data,
+      edges: [],
+      groups: [],
+      deep: true,
+    });
+    await wrapper.setProps({ nodes: [...data, { id: "b" }] } as never);
+    const [[next]] = called(engine, "setOptions") as [
+      [Record<string, unknown>],
+    ];
+    expect(next.nodes).toEqual([{ id: "a" }, { id: "b" }]);
+    expect(next.groups).toEqual([]);
+  });
+
+  it("has empty defaults before mount", () => {
+    const { wrapper } = mountChart("TreeChart", { nodes, edges });
+    const handle = wrapper.vm as unknown as Handle;
+    wrapper.unmount();
+    expect(handle.getSelection()).toEqual([]);
+    expect(handle.getPositions()).toEqual({});
+    expect(handle.getRenderer()).toBeNull();
+    expect(handle.getInstance()).toBeNull();
+  });
 });

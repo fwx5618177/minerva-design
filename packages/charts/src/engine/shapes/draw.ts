@@ -11,6 +11,7 @@ import {
   TAU,
   type LinkNode,
   type PolygonNode,
+  type RibbonNode,
   type SectorNode,
   type ShapeHover,
   type ShapeNode,
@@ -253,6 +254,71 @@ const linkStyle = (ctx: CanvasRenderingContext2D, node: LinkNode) => {
   return gradient;
 };
 
+/** Whether a chord ribbon joins an arc to itself (a self flow) */
+export const ribbonIsLoop = (node: RibbonNode) =>
+  Math.abs(node.s0 - node.t0) < 1e-9 && Math.abs(node.s1 - node.t1) < 1e-9;
+
+/** Control point of the inward bulge of a self-flow ribbon */
+export const loopControl = (node: RibbonNode): [number, number] => {
+  const m = (node.s0 + node.s1) / 2;
+  return [
+    node.cx + node.r * 0.4 * Math.cos(m),
+    node.cy + node.r * 0.4 * Math.sin(m),
+  ];
+};
+
+/** Outline of a chord ribbon: source arc, curve, target arc or arrowhead, curve */
+const ribbonPath = (ctx: CanvasRenderingContext2D, node: RibbonNode) => {
+  const { cx, cy, r } = node;
+  const at = (a: number, radius = r): [number, number] => [
+    cx + radius * Math.cos(a),
+    cy + radius * Math.sin(a),
+  ];
+  ctx.beginPath();
+  const s = at(node.s0);
+  ctx.moveTo(s[0], s[1]);
+  if (node.s1 > node.s0) ctx.arc(cx, cy, r, node.s0, node.s1);
+  if (ribbonIsLoop(node)) {
+    const [qx, qy] = loopControl(node);
+    ctx.quadraticCurveTo(qx, qy, s[0], s[1]);
+    ctx.closePath();
+    return;
+  }
+  if (node.head > 0) {
+    const p0 = at(node.t0, r - node.head);
+    const tip = at((node.t0 + node.t1) / 2);
+    const p1 = at(node.t1, r - node.head);
+    ctx.quadraticCurveTo(cx, cy, p0[0], p0[1]);
+    ctx.lineTo(tip[0], tip[1]);
+    ctx.lineTo(p1[0], p1[1]);
+  } else {
+    const t = at(node.t0);
+    ctx.quadraticCurveTo(cx, cy, t[0], t[1]);
+    if (node.t1 > node.t0) ctx.arc(cx, cy, r, node.t0, node.t1);
+  }
+  ctx.quadraticCurveTo(cx, cy, s[0], s[1]);
+  ctx.closePath();
+};
+
+const ribbonStyle = (ctx: CanvasRenderingContext2D, node: RibbonNode) => {
+  if (
+    node.color0 === node.color1 ||
+    typeof ctx.createLinearGradient !== "function"
+  )
+    return node.color0;
+  const ms = (node.s0 + node.s1) / 2;
+  const mt = (node.t0 + node.t1) / 2;
+  const x0 = node.cx + node.r * Math.cos(ms);
+  const y0 = node.cy + node.r * Math.sin(ms);
+  const x1 = node.cx + node.r * Math.cos(mt);
+  const y1 = node.cy + node.r * Math.sin(mt);
+  if (Math.hypot(x1 - x0, y1 - y0) < 1) return node.color0;
+  const gradient = ctx.createLinearGradient(x0, y0, x1, y1);
+  gradient.addColorStop(0, node.color0);
+  gradient.addColorStop(1, node.color1);
+  return gradient;
+};
+
 /**
  * Draws a scene in CSS pixels (the caller sets the pixel-ratio transform and
  * clears the canvas). `hover` emphasizes an item and dims the others.
@@ -443,6 +509,19 @@ export const drawShapeScene = (
         ctx.lineCap = "round";
         break;
       }
+      case "ribbon": {
+        if (active && node.activeAlpha !== undefined)
+          ctx.globalAlpha = base * node.activeAlpha;
+        ribbonPath(ctx, node);
+        ctx.fillStyle = ribbonStyle(ctx, node);
+        ctx.fill();
+        if (focused) {
+          ctx.strokeStyle = node.color0;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+        break;
+      }
       case "guide": {
         const k = hover?.indicator;
         if (k === undefined || !node.ends[k]) break;
@@ -540,8 +619,10 @@ export const drawShapeTooltip = (
     ctx.font = font(theme, 12, 600);
     ctx.fillStyle = toCss(theme.text);
     ctx.textAlign = "left";
-    ctx.fillText(content.title, x, y);
-    y += lineHeight;
+    for (const line of box.titleLines ?? [content.title]) {
+      ctx.fillText(line, x, y);
+      y += lineHeight;
+    }
     for (const row of content.rows) {
       x = left;
       if (row.color) {

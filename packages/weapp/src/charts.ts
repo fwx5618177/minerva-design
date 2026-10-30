@@ -217,6 +217,11 @@ const baseOptions = (
     padding: unset(d.padding),
     palette: nonEmpty(d.palette as string[]),
     ariaLabel: d.ariaLabel || undefined,
+    locale: (d.locale as string) || undefined,
+    // HorizontalBarChart / WaterfallChart use a boolean `labels` (value labels)
+    labels: isRecord(d.labels)
+      ? (d.labels as ChartOptions["labels"])
+      : undefined,
   };
 };
 
@@ -318,8 +323,12 @@ const chartOptions = (self: Instance, state: ChartState): ChartOptions => {
           data: (d.data as []) ?? [],
           xCategories: nonEmpty(d.xCategories as string[]),
           yCategories: nonEmpty(d.yCategories as string[]),
-          colorScale: nonEmpty(d.colorScale as string[]),
+          colorScale:
+            typeof d.colorScale === "string"
+              ? (d.colorScale as "sequential" | "diverging") || undefined
+              : nonEmpty(d.colorScale as string[]),
           valueRange: unset(d.valueRange),
+          colorMidpoint: unset(d.colorMidpoint as number | null),
           name: d.name || undefined,
           radius: unset(d.radius),
           format,
@@ -341,6 +350,8 @@ const chartOptions = (self: Instance, state: ChartState): ChartOptions => {
           tooltip: base.tooltip,
           palette: base.palette,
           ariaLabel: base.ariaLabel,
+          ...(base.locale ? { locale: base.locale } : {}),
+          ...(base.labels ? { labels: base.labels } : {}),
         },
       );
     case "histogram":
@@ -360,6 +371,10 @@ const chartOptions = (self: Instance, state: ChartState): ChartOptions => {
       };
     case "boxplot": {
       const groups = nonEmpty(d.groups as []);
+      const outlierShape = unset(
+        d.outlierShape as "hollow" | "filled" | "" | null,
+      );
+      const outlierSize = unset(d.outlierSize as number | null);
       return {
         ...base,
         series: boxplotSeries([
@@ -373,7 +388,15 @@ const chartOptions = (self: Instance, state: ChartState): ChartOptions => {
               ]
             : []),
           ...input,
-        ]),
+        ]).map((s) =>
+          s.type === "boxplot"
+            ? {
+                ...s,
+                outlierShape: s.outlierShape ?? outlierShape,
+                outlierSize: s.outlierSize ?? outlierSize,
+              }
+            : s,
+        ),
         ...(orientation ? { orientation } : {}),
       };
     }
@@ -390,6 +413,9 @@ const chartOptions = (self: Instance, state: ChartState): ChartOptions => {
             start: unset(d.start),
             labels: d.labels !== false,
             format,
+            connector: unset(
+              d.connector as boolean | Record<string, unknown> | null,
+            ),
             locale,
           }),
         ],
@@ -402,6 +428,7 @@ const chartOptions = (self: Instance, state: ChartState): ChartOptions => {
         progressName: d.progressName || undefined,
         milestoneName: d.milestoneName || undefined,
         formatProgress,
+        dependenciesName: d.dependenciesName || undefined,
         locale,
       });
       const today = unset(d.today as boolean | number | null);
@@ -583,6 +610,8 @@ const COMMON_OPTIONS = [
   "padding",
   "palette",
   "ariaLabel",
+  "locale",
+  "labels",
 ];
 
 /** Properties of each kind besides the common ones and (series kinds) series / xAxis / yAxis */
@@ -601,8 +630,9 @@ const KIND_PROPERTIES: Partial<
     data: list(),
     xCategories: list(),
     yCategories: list(),
-    colorScale: list(),
+    colorScale: optional(),
     valueRange: optional(),
+    colorMidpoint: optional(),
     name: text(),
     radius: optional(),
   },
@@ -627,6 +657,8 @@ const KIND_PROPERTIES: Partial<
     name: text(),
     whisker: optional(),
     orientation: text(),
+    outlierShape: text(),
+    outlierSize: optional(),
   },
   waterfall: {
     steps: list(),
@@ -636,6 +668,7 @@ const KIND_PROPERTIES: Partial<
     totalColor: text(),
     start: optional(),
     labels: flag(true),
+    connector: optional(),
     locale: text(),
     orientation: text(),
   },
@@ -645,6 +678,7 @@ const KIND_PROPERTIES: Partial<
     taskName: text(),
     progressName: text(),
     milestoneName: text(),
+    dependenciesName: text(),
     locale: text(),
     today: optional(),
     todayLabel: text(),
@@ -698,10 +732,12 @@ function defineChart(kind: ChartKind): Control {
         }
       : { ...seriesProperties(kind), ...KIND_PROPERTIES[kind] };
   const optionNames = [
-    ...(kind === "sparkline"
-      ? ["tooltip", "palette", "ariaLabel"]
-      : COMMON_OPTIONS),
-    ...(kind === "quadrant" ? QUADRANT_OPTIONS : Object.keys(kindProperties)),
+    ...new Set([
+      ...(kind === "sparkline"
+        ? ["tooltip", "palette", "ariaLabel", "locale", "labels"]
+        : COMMON_OPTIONS),
+      ...(kind === "quadrant" ? QUADRANT_OPTIONS : Object.keys(kindProperties)),
+    ]),
   ];
   const fallbackHeight = kind === "sparkline" ? "48px" : "320px";
   return {
@@ -718,6 +754,8 @@ function defineChart(kind: ChartKind): Control {
         padding: optional(),
         palette: list(),
         ariaLabel: text(),
+        locale: text(),
+        labels: optional(),
         disableScroll: flag(),
         ...kindProperties,
       },

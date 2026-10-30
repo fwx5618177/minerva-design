@@ -316,6 +316,17 @@ export interface BoxPlotChartProps
    * @default "vertical"
    */
   orientation?: ChartOrientation;
+  /**
+   * Outliers drawn as rings of the series color or as filled dots (series
+   * may set their own `outlierShape`)
+   * @default "hollow"
+   */
+  outlierShape?: "hollow" | "filled";
+  /**
+   * Diameter of the outliers in CSS pixels
+   * @default 7
+   */
+  outlierSize?: number;
 }
 
 /** Props of WaterfallChart */

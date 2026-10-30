@@ -255,3 +255,89 @@ export const rampColor = (stops: readonly Rgba[], t: number): Rgba => {
 /** Relative luminance (sRGB approximation) */
 export const luminance = (c: Rgba): number =>
   0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+
+// ------------------------------------------------------------------ OKLab
+
+/** A color in OKLab: lightness 0-1, a, b, alpha */
+export type Oklab = [number, number, number, number];
+
+const toLinear = (v: number) =>
+  v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+const toGamma = (v: number) =>
+  v <= 0.0031308 ? v * 12.92 : 1.055 * Math.max(0, v) ** (1 / 2.4) - 0.055;
+
+/** sRGB -> OKLab (perceptually uniform: even steps look even) */
+export const toOklab = (c: Rgba): Oklab => {
+  const r = toLinear(c[0]);
+  const g = toLinear(c[1]);
+  const b = toLinear(c[2]);
+  const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+  const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+  const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+  return [
+    0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s,
+    1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s,
+    0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s,
+    c[3],
+  ];
+};
+
+/** OKLab -> sRGB, clamped to the gamut */
+export const fromOklab = (c: Oklab): Rgba => {
+  const l = (c[0] + 0.3963377774 * c[1] + 0.2158037573 * c[2]) ** 3;
+  const m = (c[0] - 0.1055613458 * c[1] - 0.0638541728 * c[2]) ** 3;
+  const s = (c[0] - 0.0894841775 * c[1] - 1.291485548 * c[2]) ** 3;
+  return [
+    clamp01(toGamma(4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s)),
+    clamp01(toGamma(-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s)),
+    clamp01(toGamma(-0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s)),
+    c[3],
+  ];
+};
+
+/** Mixes two colors in OKLab (no muddy gray middle) */
+export const mixOklab = (a: Rgba, b: Rgba, t: number): Rgba => {
+  const p = toOklab(a);
+  const q = toOklab(b);
+  return fromOklab([
+    p[0] + (q[0] - p[0]) * t,
+    p[1] + (q[1] - p[1]) * t,
+    p[2] + (q[2] - p[2]) * t,
+    p[3] + (q[3] - p[3]) * t,
+  ]);
+};
+
+/**
+ * A color with another OKLab lightness (0-1) and its chroma scaled by
+ * `chroma` (the hue is kept)
+ */
+export const withLightness = (c: Rgba, lightness: number, chroma = 1): Rgba => {
+  const [, a, b, alpha] = toOklab(c);
+  return fromOklab([lightness, a * chroma, b * chroma, alpha]);
+};
+
+/**
+ * Packed colors (`packColor`) of `size` even steps along a ramp through
+ * `stops`, interpolated in OKLab: a lookup table for many values
+ */
+export const oklabRamp = (stops: readonly Rgba[], size = 256): Uint32Array => {
+  const lut = new Uint32Array(size);
+  if (!stops.length) return lut;
+  const lab = stops.map(toOklab);
+  for (let k = 0; k < size; k++) {
+    const p = (k / Math.max(1, size - 1)) * (lab.length - 1);
+    const i = Math.min(lab.length - 2, Math.floor(p));
+    const a = lab[Math.max(0, i)];
+    const b = lab[Math.min(lab.length - 1, i + 1)];
+    const t = lab.length === 1 ? 0 : p - i;
+    const c = fromOklab([
+      a[0] + (b[0] - a[0]) * t,
+      a[1] + (b[1] - a[1]) * t,
+      a[2] + (b[2] - a[2]) * t,
+      a[3] + (b[3] - a[3]) * t,
+    ]);
+    // a transparent end still draws (0 means "no cell")
+    lut[k] = packColor(c) || 1;
+  }
+  return lut;
+};

@@ -5,12 +5,15 @@ import type {
   CalendarDatum,
   CanvasShapeChartInstance,
   ChartPadding,
+  ChordGroup,
+  ChordLink,
   GaugeBand,
   RadarIndicator,
   RadarSeries,
   RadialBarDatum,
   SankeyLink,
   SankeyNode,
+  ShapeChartLabels,
   ShapeChartOptions,
   ShapeDatum,
   ShapeLegendOptions,
@@ -23,12 +26,15 @@ export type {
   CalendarDate,
   CalendarDatum,
   CanvasShapeChartInstance,
+  ChordGroup,
+  ChordLink,
   GaugeBand,
   RadarIndicator,
   RadarSeries,
   RadialBarDatum,
   SankeyLink,
   SankeyNode,
+  ShapeChartLabels,
   ShapeChartOptions,
   ShapeChartType,
   ShapeDatum,
@@ -91,6 +97,14 @@ export const shapeCommonProps = {
   padding: Object as PropType<ChartPadding>,
   /** Accessible name of the chart (default: the chart type, e.g. "Donut chart") */
   ariaLabel: String,
+  /**
+   * Locale of the built-in texts and of the numbers (tooltip rows, "No data").
+   * Mini-programs have no `<html lang>`: pass the app language (default: the
+   * system language when the runtime has `navigator.language`, else English)
+   */
+  locale: String,
+  /** Overrides of the built-in texts of the `locale` */
+  texts: Object as PropType<Partial<ShapeChartLabels>>,
 };
 
 /** Props of PieChart / DonutChart (besides the common ones) */
@@ -308,6 +322,45 @@ export const bulletChartProps = {
   targetColor: String,
   /** Tick labels of the scales (default `true`) */
   ticks: { type: Boolean, default: undefined },
+} as const;
+
+/** Props of ChordChart (besides the common ones) */
+export const chordChartProps = {
+  /** Groups (names or `{ name, color }`) in their order around the circle; groups only named by `links` are appended */
+  groups: Array as PropType<readonly (string | ChordGroup)[]>,
+  /** Square flow matrix: `matrix[i][j]` flows from group `i` to group `j` (used when `links` is absent) */
+  matrix: Array as PropType<readonly (readonly number[])[]>,
+  /** Flows as a list (by group name or index); takes precedence over `matrix` */
+  links: Array as PropType<readonly ChordLink[]>,
+  /** One ribbon per direction, arcs sized by the outgoing plus the incoming flows (default `false`) */
+  directed: { type: Boolean, default: undefined },
+  /** Arrowheads at the target end of the ribbons (default `true` when `directed`) */
+  arrows: { type: Boolean, default: undefined },
+  /** Gap between the groups, in degrees (default 2) */
+  padAngle: Number,
+  /** Angle of the first group, degrees clockwise from 12 o'clock (default 0) */
+  startAngle: Number,
+  /** Order of the groups around the circle (default "none") */
+  sortGroups: String as PropType<"none" | "ascending" | "descending">,
+  /** Order of the ribbon ends along an arc (default "auto": fewest crossings) */
+  sortSubgroups: String as PropType<
+    "auto" | "none" | "ascending" | "descending"
+  >,
+  /** Color of the ribbons without `color` (default "gradient") */
+  ribbonColor: String as PropType<"gradient" | "source" | "target" | "neutral">,
+  /** Opacity of the ribbons, 0-1 (default 0.65) */
+  ribbonOpacity: Number,
+  /** Thickness of the group arcs, in pixels (default 6% of the radius, 8-18 px) */
+  arcWidth: Number,
+  /** Value ticks outside the arcs; a number sets the step (default `true` when large enough) */
+  ticks: {
+    type: [Boolean, Number] as PropType<boolean | number>,
+    default: undefined,
+  },
+  /** Formats the tick labels (default compact numbers of the `locale`) */
+  tickFormat: Function as PropType<(value: number) => string>,
+  /** Group labels along the arc or the radius (default "auto") */
+  labels: String as PropType<"auto" | "tangential" | "radial" | "none">,
 } as const;
 
 /** Height computed from the type and the data when the `height` prop is omitted */

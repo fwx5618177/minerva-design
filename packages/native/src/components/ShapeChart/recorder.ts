@@ -32,8 +32,16 @@ export interface Paint {
 }
 
 /** Straight segment to (x, y), or arc (implicitly joined by a segment to its start) */
+/** A quadratic curve (device coordinates) */
+export interface Quad {
+  from: [number, number];
+  ctrl: [number, number];
+  to: [number, number];
+}
+
 export type Segment =
-  | { t: "L"; x: number; y: number }
+  /** `q`: the curve this segment flattens, if any */
+  | { t: "L"; x: number; y: number; q?: Quad }
   | {
       t: "A";
       cx: number;
@@ -315,13 +323,15 @@ export function createRecorder(): Recorder {
   const ensure = (x: number, y: number) => {
     if (!current) moveTo(x, y);
   };
-  const lineTo = (x: number, y: number) => {
+  const lineTo = (x: number, y: number, q?: Quad) => {
     if (!current) {
       moveTo(x, y);
       return;
     }
     const [px, py] = map(x, y);
-    current.segs.push({ t: "L", x: px, y: py });
+    current.segs.push(
+      q ? { t: "L", x: px, y: py, q } : { t: "L", x: px, y: py },
+    );
     pen = [x, y];
   };
   const arc = (
@@ -354,10 +364,14 @@ export function createRecorder(): Recorder {
     });
     pen = [ex, ey];
   };
-  const curve = (point: (t: number) => [number, number], steps: number) => {
+  const curve = (
+    point: (t: number) => [number, number],
+    steps: number,
+    q?: Quad,
+  ) => {
     for (let i = 1; i <= steps; i++) {
       const [x, y] = point(i / steps);
-      lineTo(x, y);
+      lineTo(x, y, q);
     }
   };
   /** Segments of a flattened curve: ~6px each, 2 for the small corner roundings */
@@ -640,6 +654,7 @@ export function createRecorder(): Recorder {
         curveSteps(
           Math.hypot(cpx - x0, cpy - y0) + Math.hypot(x - cpx, y - cpy),
         ),
+        { from: map(x0, y0), ctrl: map(cpx, cpy), to: map(x, y) },
       );
     },
     bezierCurveTo(

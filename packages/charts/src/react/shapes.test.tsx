@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   BulletChart,
   CalendarHeatmap,
+  ChordChart,
   DonutChart,
   FunnelChart,
   GaugeChart,
@@ -237,6 +238,62 @@ describe("shape chart components", () => {
     expect(
       roots[3].querySelectorAll(".minerva-chart-legend button").length,
     ).toBe(4);
+  });
+
+  it("renders a chord diagram whose groups toggle from the legend", async () => {
+    const onToggle = vi.fn();
+    const onHover = vi.fn();
+    const ref = createRef<ShapeChartHandle>();
+    const { container, rerender } = render(
+      <ChordChart
+        ref={ref}
+        groups={["A", "B"]}
+        matrix={[
+          [0, 3],
+          [1, 0],
+        ]}
+        animation={false}
+        onToggle={onToggle}
+        onHover={onHover}
+      />,
+    );
+    const root = container.firstElementChild as HTMLElement;
+    expect(root.style.height).toBe("420px");
+    const stage = container.querySelector<HTMLElement>(".minerva-chart-stage")!;
+    expect(stage.getAttribute("aria-label")).toBe("Chord diagram");
+    const buttons = container.querySelectorAll<HTMLButtonElement>(
+      ".minerva-chart-legend button",
+    );
+    expect([...buttons].map((b) => b.textContent)).toEqual(["A", "B"]);
+    await flush();
+    // keyboard: the first group
+    act(() => {
+      stage.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }),
+      );
+    });
+    expect(onHover).toHaveBeenLastCalledWith(
+      expect.objectContaining({ name: "A", index: 0 }),
+    );
+    act(() => buttons[1].click());
+    expect(onToggle).toHaveBeenLastCalledWith({
+      index: 1,
+      hidden: true,
+      hiddenIndexes: [1],
+    });
+    await flush();
+    const spy = vi.spyOn(ref.current!.getInstance()!, "setOptions");
+    rerender(
+      <ChordChart
+        ref={ref}
+        links={[{ source: "A", target: "B", value: 2 }]}
+        directed
+        animation={false}
+      />,
+    );
+    expect(spy).toHaveBeenCalledWith(
+      expect.objectContaining({ type: "chord", directed: true }),
+    );
   });
 
   it("reports sunburst drill-downs, controlled or not", async () => {

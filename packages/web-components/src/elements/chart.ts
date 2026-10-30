@@ -2,9 +2,9 @@
 // <minerva-shape-chart>, <minerva-pie-chart>, <minerva-sankey-chart>...).
 // Optional entry: not part of the all-in-one entry nor of the CDN bundle,
 // since it loads the chart engine (minerva-design/charts/core, shared with
-// the other renderers). The trading, order book and 3D elements have entries
-// of their own (trading-chart, order-book, chart-3d): their engines are only
-// loaded by the pages that use them.
+// the other renderers). The trading, order book, 3D and graph elements have
+// entries of their own (trading-chart, order-book, chart-3d, graph): their
+// engines are only loaded by the pages that use them.
 import { MinervaChart } from "../components/chart/chart";
 import {
   MinervaAreaChart,
@@ -38,6 +38,7 @@ import {
 import {
   MinervaBulletChart,
   MinervaCalendarHeatmap,
+  MinervaChordChart,
   MinervaRadialBarChart,
   MinervaSankeyChart,
   MinervaSunburstChart,
@@ -74,6 +75,7 @@ for (const element of [
   MinervaRadialBarChart,
   MinervaCalendarHeatmap,
   MinervaBulletChart,
+  MinervaChordChart,
 ]) {
   defineElement(element);
 }
@@ -98,6 +100,8 @@ export type {
   ChartRendererKind,
   ChartSeries,
   ChartView,
+  ChordGroup,
+  ChordLink,
   GanttTask,
   GaugeBand,
   HeatmapCell,

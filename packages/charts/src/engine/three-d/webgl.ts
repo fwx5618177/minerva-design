@@ -293,6 +293,7 @@ export const createWebGl3D = (
       gl.depthFunc(gl.LEQUAL);
       gl.disable(gl.CULL_FACE);
       const seen = new Set<string>();
+      let additive = false;
       for (const item of drawOrder(items)) {
         seen.add(item.key);
         const count = item.kind === "mesh" ? item.indices.length : item.count;
@@ -311,6 +312,19 @@ export const createWebGl3D = (
         gl.uniform4fv(loc.u_params, u.subarray(32, 36));
         gl.uniform4fv(loc.u_fog, u.subarray(36, 40));
         gl.depthMask(writesDepth(item));
+        const add = item.kind === "points" && !!item.additive;
+        if (add !== additive) {
+          // additive points: the colors add up, the coverage composites as usual
+          if (add)
+            gl.blendFuncSeparate(
+              gl.ONE,
+              gl.ONE,
+              gl.ONE,
+              gl.ONE_MINUS_SRC_ALPHA,
+            );
+          else gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+          additive = add;
+        }
         bind(item, res);
         if (item.kind === "mesh") {
           gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, res.index);
@@ -320,6 +334,7 @@ export const createWebGl3D = (
         }
       }
       gl.depthMask(true);
+      if (additive) gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
       for (const [key, res] of resources) {
         if (!seen.has(key)) {
           gl.deleteBuffer(res.vertex);

@@ -261,9 +261,229 @@ export interface TradingAtrIndicator extends TradingPaneIndicatorBase {
   color?: string;
 }
 
+/** Parabolic stop and reverse: dots under rising bars, over falling ones */
+export interface TradingParabolicSarIndicator extends TradingIndicatorBase {
+  /** Parabolic SAR */
+  type: "psar";
+  /**
+   * Initial acceleration factor
+   * @default 0.02
+   */
+  start?: number;
+  /**
+   * Increase of the factor at each new extreme
+   * @default 0.02
+   */
+  increment?: number;
+  /**
+   * Largest acceleration factor
+   * @default 0.2
+   */
+  maximum?: number;
+  /** Color of the dots; the up / down colors by trend by default */
+  color?: string;
+}
+
+/** Ichimoku cloud: conversion and base lines, lagging span and the cloud between the leading spans */
+export interface TradingIchimokuIndicator extends TradingIndicatorBase {
+  /** Ichimoku Kinkō Hyō */
+  type: "ichimoku";
+  /**
+   * Bars of the conversion line (Tenkan-sen)
+   * @default 9
+   */
+  conversionPeriod?: number;
+  /**
+   * Bars of the base line (Kijun-sen)
+   * @default 26
+   */
+  basePeriod?: number;
+  /**
+   * Bars of the leading span B (Senkou span B)
+   * @default 52
+   */
+  spanBPeriod?: number;
+  /**
+   * Shift of the leading spans (ahead) and of the lagging span (back), in bars
+   * @default 26
+   */
+  displacement?: number;
+  /** Colors of the conversion, base, lagging, leading A and leading B lines */
+  colors?: readonly string[];
+  /**
+   * Fills the cloud between the leading spans: the up color while span A is
+   * above span B, the down color otherwise
+   * @default true
+   */
+  cloud?: boolean;
+}
+
+/** SuperTrend: a trailing band of average true ranges that flips with the trend */
+export interface TradingSupertrendIndicator extends TradingIndicatorBase {
+  /** SuperTrend */
+  type: "supertrend";
+  /**
+   * Bars of the average true range
+   * @default 10
+   */
+  period?: number;
+  /**
+   * Distance of the band, in average true ranges
+   * @default 3
+   */
+  multiplier?: number;
+  /** Color of the band in an uptrend; the up color by default */
+  upColor?: string;
+  /** Color of the band in a downtrend; the down color by default */
+  downColor?: string;
+}
+
+/** Keltner channel: an exponential average ± a multiple of the average true range */
+export interface TradingKeltnerIndicator extends TradingIndicatorBase {
+  /** Keltner channel */
+  type: "keltner";
+  /**
+   * Bars of the exponential average
+   * @default 20
+   */
+  period?: number;
+  /**
+   * Distance of the bands, in average true ranges
+   * @default 2
+   */
+  multiplier?: number;
+  /**
+   * Bars of the average true range
+   * @default 10
+   */
+  atrPeriod?: number;
+  /** Colors of the middle, upper and lower lines */
+  colors?: readonly string[];
+  /**
+   * Fills the channel
+   * @default true
+   */
+  fill?: boolean;
+}
+
+/** Donchian channel: the highest high and lowest low of a window, and their midpoint */
+export interface TradingDonchianIndicator extends TradingIndicatorBase {
+  /** Donchian channel */
+  type: "donchian";
+  /**
+   * Number of bars
+   * @default 20
+   */
+  period?: number;
+  /** Colors of the middle, upper and lower lines */
+  colors?: readonly string[];
+  /**
+   * Fills the channel
+   * @default true
+   */
+  fill?: boolean;
+}
+
+/** On-balance volume: the running volume of up closes minus down closes */
+export interface TradingObvIndicator extends TradingPaneIndicatorBase {
+  /** On-balance volume */
+  type: "obv";
+  /** Period of a moving average drawn over the line */
+  maPeriod?: number;
+  /** Line color */
+  color?: string;
+}
+
+/** Commodity channel index, with ±100 bands */
+export interface TradingCciIndicator extends TradingPaneIndicatorBase {
+  /** Commodity channel index */
+  type: "cci";
+  /**
+   * Number of bars
+   * @default 20
+   */
+  period?: number;
+  /** Line color */
+  color?: string;
+}
+
+/** Stochastic RSI: K and D lines between 0 and 100, with 20 / 80 bands */
+export interface TradingStochRsiIndicator extends TradingPaneIndicatorBase {
+  /** Stochastic RSI */
+  type: "stochRsi";
+  /**
+   * Bars of the RSI
+   * @default 14
+   */
+  rsiPeriod?: number;
+  /**
+   * Bars of the stochastic of the RSI
+   * @default 14
+   */
+  stochPeriod?: number;
+  /**
+   * Smoothing of K
+   * @default 3
+   */
+  kPeriod?: number;
+  /**
+   * Smoothing of D
+   * @default 3
+   */
+  dPeriod?: number;
+  /** Colors of the K and D lines */
+  colors?: readonly string[];
+}
+
+/** Directional movement index: +DI, −DI and ADX (trend strength) */
+export interface TradingDmiIndicator extends TradingPaneIndicatorBase {
+  /** Directional movement index */
+  type: "dmi";
+  /**
+   * Bars of the directional indicators
+   * @default 14
+   */
+  period?: number;
+  /**
+   * Smoothing of the ADX
+   * @default 14
+   */
+  adxPeriod?: number;
+  /** Colors of the +DI, −DI and ADX lines */
+  colors?: readonly string[];
+}
+
+/** Williams %R (−100 to 0), with −80 / −20 bands */
+export interface TradingWilliamsRIndicator extends TradingPaneIndicatorBase {
+  /** Williams %R */
+  type: "williamsR";
+  /**
+   * Number of bars
+   * @default 14
+   */
+  period?: number;
+  /** Line color */
+  color?: string;
+}
+
+/** Money flow index (0-100): a volume-weighted RSI, with 20 / 80 bands */
+export interface TradingMfiIndicator extends TradingPaneIndicatorBase {
+  /** Money flow index */
+  type: "mfi";
+  /**
+   * Number of bars
+   * @default 14
+   */
+  period?: number;
+  /** Line color */
+  color?: string;
+}
+
 /**
- * An indicator: averages, Bollinger bands and VWAP are drawn over the
- * price; volume (unless `overlay`), MACD, RSI, KDJ and ATR get a pane
+ * An indicator: averages, Bollinger / Keltner / Donchian channels, VWAP,
+ * parabolic SAR, Ichimoku and SuperTrend are drawn over the price; volume
+ * (unless `overlay`), MACD, RSI, KDJ, ATR, OBV, CCI, stochastic RSI, DMI,
+ * Williams %R and MFI get a pane
  */
 export type TradingIndicator =
   | TradingMovingAverageIndicator
@@ -273,7 +493,70 @@ export type TradingIndicator =
   | TradingMacdIndicator
   | TradingRsiIndicator
   | TradingKdjIndicator
-  | TradingAtrIndicator;
+  | TradingAtrIndicator
+  | TradingParabolicSarIndicator
+  | TradingIchimokuIndicator
+  | TradingSupertrendIndicator
+  | TradingKeltnerIndicator
+  | TradingDonchianIndicator
+  | TradingObvIndicator
+  | TradingCciIndicator
+  | TradingStochRsiIndicator
+  | TradingDmiIndicator
+  | TradingWilliamsRIndicator
+  | TradingMfiIndicator;
+
+/** Volume profile of the visible bars, drawn as a horizontal histogram on the price pane */
+export interface TradingVolumeProfileOptions {
+  /**
+   * Number of price rows
+   * @default 24
+   */
+  rows?: number;
+  /**
+   * Width of the longest row, as a fraction of the plot width
+   * @default 0.28
+   */
+  width?: number;
+  /**
+   * Share of the volume in the value area, around the point of control
+   * @default 0.7
+   */
+  valueArea?: number;
+  /**
+   * Side of the plot the rows grow from
+   * @default "right"
+   */
+  side?: "left" | "right";
+  /** Color of the volume of rising bars; the up color by default */
+  upColor?: string;
+  /** Color of the volume of falling bars; the down color by default */
+  downColor?: string;
+  /** Color of the point of control line */
+  pocColor?: string;
+}
+
+/** Volume by price of a range of bars, as computed by `volumeProfile` */
+export interface TradingVolumeProfile {
+  /** Price at the bottom of the first row */
+  low: number;
+  /** Price at the top of the last row */
+  high: number;
+  /** Height of a row, in price */
+  step: number;
+  /** Volume of rising bars per row, bottom row first */
+  up: Float64Array;
+  /** Volume of falling bars per row */
+  down: Float64Array;
+  /** Total volume */
+  total: number;
+  /** Row of the point of control (the largest volume); −1 without volume */
+  poc: number;
+  /** First row of the value area */
+  valueAreaFrom: number;
+  /** Last row of the value area */
+  valueAreaTo: number;
+}
 
 // ------------------------------------------------------------ annotations
 
@@ -327,6 +610,11 @@ export interface TradingPriceLine {
    * @default false
    */
   draggable?: boolean;
+  /**
+   * Shows a close button on the label (reported by `orderCancel`)
+   * @default false
+   */
+  cancellable?: boolean;
   /** Stroke of the line; dashed for orders, solid for positions by default */
   lineStyle?: TradingLineStyle;
 }
@@ -339,6 +627,11 @@ export interface TradingCompareSeries {
   data: readonly { time: number; value: number }[];
   /** Line color; a theme color by default */
   color?: string;
+  /**
+   * Line width in pixels
+   * @default 1.5
+   */
+  lineWidth?: number;
   /** Identifies the series (defaults to the name) */
   id?: string;
 }
@@ -351,28 +644,42 @@ export type TradingDrawingTool =
   | "trendLine"
   | "ray"
   | "extendedLine"
+  | "arrow"
   | "horizontalLine"
   | "verticalLine"
+  | "parallelChannel"
+  | "pitchfork"
   | "rectangle"
   | "fibRetracement"
+  | "text"
+  | "longPosition"
+  | "shortPosition"
   | "measure";
 
 /** Anchor of a drawing: a time and a price */
 export interface TradingDrawingPoint {
   /** Time (beyond the last bar, extrapolated with the bar duration) */
   time: number;
-  /** Price */
+  /** Price (or value of the indicator pane) */
   price: number;
 }
 
-/** A drawing on the price pane; plain data, so it can be saved and restored */
+/** A drawing; plain data, so it can be saved and restored */
 export interface TradingDrawing {
   /** Unique id */
   id: string;
   /** Tool that made it */
   type: Exclude<TradingDrawingTool, "cursor">;
-  /** Anchors: one for horizontal / vertical lines, two otherwise */
+  /**
+   * Anchors: one for horizontal / vertical lines and texts, three for
+   * channels, pitchforks and positions (entry, target, stop), two otherwise
+   */
   points: readonly TradingDrawingPoint[];
+  /**
+   * Pane of the drawing: `"price"` or the id of an indicator pane
+   * @default "price"
+   */
+  pane?: string;
   /** Color; the primary color by default */
   color?: string;
   /**
@@ -386,11 +693,28 @@ export interface TradingDrawing {
    */
   lineStyle?: TradingLineStyle;
   /**
+   * Fills the shape (rectangles, channels, pitchforks, Fibonacci levels)
+   * @default true
+   */
+  fill?: boolean;
+  /** Text of a `text` drawing (`\n` starts a new line) */
+  text?: string;
+  /**
+   * Font size of a `text` drawing, in pixels
+   * @default 13
+   */
+  fontSize?: number;
+  /** Quantity of a position drawing: shows the profit in price units */
+  quantity?: number;
+  /**
    * Can't be moved nor deleted by the user
    * @default false
    */
   locked?: boolean;
 }
+
+/** Style and content of a drawing, as changed by `updateDrawing` */
+export type TradingDrawingPatch = Partial<Omit<TradingDrawing, "id" | "type">>;
 
 // ---------------------------------------------------------------- options
 
@@ -443,6 +767,46 @@ export interface TradingChartLabels {
   announcement?: string;
   /** Timeframe shown after the symbol in the legend; the `timeframe` option when it is a string by default */
   timeframe?: string;
+  /** Legend title of the Ichimoku cloud @default "Ichimoku" */
+  ichimoku?: string;
+  /** Legend title of the SuperTrend @default "SuperTrend" */
+  supertrend?: string;
+  /** Default text of a new text drawing @default "Text" */
+  text?: string;
+  /** Color button of the drawing toolbar @default "Color" */
+  color?: string;
+  /** Line width button of the drawing toolbar @default "Line width" */
+  lineWidth?: string;
+  /** Line style button of the drawing toolbar @default "Line style" */
+  lineStyle?: string;
+  /** Fill button of the drawing toolbar @default "Fill" */
+  fill?: string;
+  /** Edit button of text drawings in the drawing toolbar @default "Edit text" */
+  editText?: string;
+  /** Lock button of the drawing toolbar @default "Lock" */
+  lock?: string;
+  /** Delete button of the drawing toolbar @default "Delete" */
+  remove?: string;
+  /** Target of the position tools; `{price}` and `{change}` are replaced @default "Target {price} ({change})" */
+  target?: string;
+  /** Stop of the position tools; `{price}` and `{change}` are replaced @default "Stop {price} ({change})" */
+  stop?: string;
+  /** Risk / reward ratio of the position tools; `{ratio}` is replaced @default "R:R {ratio}" */
+  riskReward?: string;
+  /** Profit of the position tools at the last price; `{value}` is replaced @default "P&L {value}" */
+  profit?: string;
+  /** Long position tool @default "Long" */
+  long?: string;
+  /** Short position tool @default "Short" */
+  short?: string;
+  /** Badge of the bar replay; `{time}` is replaced @default "Replay · {time}" */
+  replay?: string;
+  /** Hint while picking the first bar of a replay @default "Click a bar to start the replay" */
+  replayHint?: string;
+  /** Order entry button, below the last price; `{price}` is replaced @default "Buy limit {price}" */
+  buyLimit?: string;
+  /** Order entry button, above the last price; `{price}` is replaced @default "Sell limit {price}" */
+  sellLimit?: string;
 }
 
 /** Options of `createTradingChart` (and props of `<TradingChart>`) */
@@ -485,8 +849,19 @@ export interface TradingChartOptions {
    * (`<html lang>`, followed when it changes), else the browser's, by default
    */
   locale?: string;
-  /** Offset of the displayed times from UTC, in minutes (`480` for UTC+8); local time by default */
+  /** Offset of the displayed times from UTC, in minutes (`480` for UTC+8); overrides `timeZone` */
   utcOffset?: number;
+  /**
+   * Time zone of the time axis, the session breaks and the VWAP periods (an
+   * IANA name such as `"America/New_York"`, or `"UTC"`); the local time by
+   * default
+   */
+  timeZone?: string;
+  /**
+   * Dashed vertical lines where a day starts (intraday bars)
+   * @default false
+   */
+  sessionBreaks?: boolean;
   /**
    * Crosshair behaviour
    * @default "magnet"
@@ -516,6 +891,18 @@ export interface TradingChartOptions {
   markers?: readonly TradingMarker[];
   /** Order, position, take profit / stop loss and alert lines */
   priceLines?: readonly TradingPriceLine[];
+  /**
+   * A "+" button at the crosshair price, on the right of the price pane:
+   * clicking it reports a limit order (`orderCreate`) at that price
+   * @default false
+   */
+  orderEntry?: boolean;
+  /**
+   * Volume by price of the visible bars, with its point of control and
+   * value area (`true` for the defaults)
+   * @default false
+   */
+  volumeProfile?: boolean | TradingVolumeProfileOptions;
   /** Comparison series (best read with `scaleMode: "percent"`) */
   compare?: readonly TradingCompareSeries[];
   /** Drawings; replaced when a new array is passed (see `drawingsChange`) */
@@ -530,6 +917,12 @@ export interface TradingChartOptions {
    * @default false
    */
   keepDrawingMode?: boolean;
+  /**
+   * Floating toolbar over the selected drawing (color, width, style, fill,
+   * lock, delete)
+   * @default true
+   */
+  drawingToolbar?: boolean;
   /** Price of the `baseline` style; the close of the first visible bar by default */
   baselinePrice?: number;
   /**
@@ -627,6 +1020,62 @@ export interface TradingOrderMoveEvent {
   line: TradingPriceLine;
 }
 
+/** The "+" button of `orderEntry` was clicked */
+export interface TradingOrderCreateEvent {
+  /** Price of the order (rounded to the price precision) */
+  price: number;
+  /** `buy` below the last price, `sell` above it */
+  side: "buy" | "sell";
+}
+
+/** The close button of a `cancellable` price line was clicked */
+export interface TradingOrderCancelEvent {
+  /** Id of the line */
+  id: string;
+  /** The line */
+  line: TradingPriceLine;
+}
+
+/** State of the bar replay */
+export interface TradingReplayState {
+  /** Bars are being replayed (the later ones are hidden) */
+  active: boolean;
+  /** The user is picking the first bar */
+  picking: boolean;
+  /** Bars are added automatically */
+  playing: boolean;
+  /** Bars added per second while playing */
+  speed: number;
+  /** Number of bars shown */
+  index: number;
+  /** Number of bars of the whole history */
+  total: number;
+  /** Time of the last bar shown */
+  time: number;
+}
+
+/** Whether the drawings can be undone or redone */
+export interface TradingUndoState {
+  /** A change can be undone */
+  canUndo: boolean;
+  /** An undone change can be redone */
+  canRedo: boolean;
+}
+
+/** What `syncCharts` keeps in step */
+export interface TradingSyncOptions {
+  /**
+   * Shows the crosshair of the hovered chart on the others (at the same time)
+   * @default true
+   */
+  crosshair?: boolean;
+  /**
+   * Shows the same time range on every chart when one scrolls or zooms
+   * @default true
+   */
+  timeRange?: boolean;
+}
+
 /** The legend toggled an indicator */
 export interface TradingIndicatorToggleEvent {
   /** Id of the indicator */
@@ -655,16 +1104,26 @@ export interface TradingChartEventMap {
   visibleRangeChange: TradingVisibleRange;
   /** A draggable price line was dropped */
   orderMove: TradingOrderMoveEvent;
-  /** Drawings were added, moved or deleted by the user */
+  /** The "+" order entry button was clicked */
+  orderCreate: TradingOrderCreateEvent;
+  /** The close button of a price line was clicked */
+  orderCancel: TradingOrderCancelEvent;
+  /** Drawings were added, moved, restyled, deleted, undone or redone */
   drawingsChange: readonly TradingDrawing[];
   /** The selected drawing changed */
   drawingSelect: string | null;
   /** The drawing tool changed (back to `cursor` after a drawing) */
   drawingToolChange: TradingDrawingTool;
+  /** Undo / redo became possible or impossible */
+  undoChange: TradingUndoState;
   /** An indicator was shown or hidden from the legend */
   indicatorToggle: TradingIndicatorToggleEvent;
   /** The oldest bar came into view (see `prependBars`) */
   historyRequest: TradingHistoryRequestEvent;
+  /** The bar replay started, stepped, played, paused or stopped */
+  replayChange: TradingReplayState;
+  /** The chart entered (`true`) or left full screen */
+  fullscreenChange: boolean;
 }
 
 /** A trading chart mounted by `createTradingChart` */
@@ -694,6 +1153,15 @@ export interface TradingChartInstance {
   getVisibleRange(): TradingVisibleRange;
   /** Shows the bars between two logical indices */
   setVisibleRange(range: { from: number; to: number }): void;
+  /** Times at the edges of the plot (interpolated between bars) */
+  getVisibleTimeRange(): { from: number; to: number };
+  /** Shows the bars between two times */
+  setVisibleTimeRange(range: { from: number; to: number }): void;
+  /**
+   * Shows the crosshair at a time (and a price), as if the pointer were
+   * there; `null` hides it. Does not emit `crosshairMove`.
+   */
+  setCrosshair(time: number | null, price?: number): void;
   /** Sets the price scale of the price pane */
   setScaleMode(mode: TradingScaleMode): void;
   /** Fits every price scale to the visible bars again */
@@ -708,8 +1176,45 @@ export interface TradingChartInstance {
   setDrawings(drawings: readonly TradingDrawing[]): void;
   /** Deletes a drawing */
   removeDrawing(id: string): void;
+  /** Changes the style or the content of a drawing (undoable) */
+  updateDrawing(id: string, patch: TradingDrawingPatch): void;
   /** Selects a drawing (`null` clears the selection) */
   selectDrawing(id: string | null): void;
+  /** Undoes the last change of the drawings (also Ctrl / ⌘ + Z) */
+  undo(): void;
+  /** Redoes the last undone change (also Ctrl / ⌘ + Shift + Z) */
+  redo(): void;
+  /** Whether the drawings can be undone or redone */
+  getUndoState(): TradingUndoState;
+  /**
+   * Starts a bar replay: the bars after `time` are hidden, then added back
+   * by `replayStep` or `replayPlay`. Without `time`, the user picks the
+   * first bar with a click.
+   */
+  startReplay(time?: number): void;
+  /** Shows the next bars of the replay */
+  replayStep(count?: number): void;
+  /** Adds `speed` bars per second (the current speed by default) */
+  replayPlay(speed?: number): void;
+  /** Pauses the replay */
+  replayPause(): void;
+  /** Ends the replay and shows every bar */
+  stopReplay(): void;
+  /** State of the bar replay */
+  getReplayState(): TradingReplayState;
+  /**
+   * Image of the chart (bars, axes, drawings and legends) as a data URL
+   * @param type image type @default "image/png"
+   */
+  toDataURL(type?: string, quality?: number): string;
+  /** Image of the chart as a blob (`null` without canvas support) */
+  toBlob(type?: string, quality?: number): Promise<Blob | null>;
+  /** Shows the chart full screen */
+  requestFullscreen(): Promise<void>;
+  /** Leaves full screen */
+  exitFullscreen(): Promise<void>;
+  /** Whether the chart is full screen */
+  isFullscreen(): boolean;
   /** Shows or hides an indicator */
   setIndicatorVisible(id: string, visible: boolean): void;
   /** Backend in use (`null` until ready or without canvas support) */

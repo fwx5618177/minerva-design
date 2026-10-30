@@ -705,6 +705,7 @@ const chartFamilies: Array<{
       "RadialBarChart",
       "CalendarHeatmap",
       "BulletChart",
+      "ChordChart",
       "ShapeChart",
     ],
     scope:

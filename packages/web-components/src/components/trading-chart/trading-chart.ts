@@ -8,9 +8,13 @@ import {
   type TradingChartOptions,
   type TradingChartStyle,
   type TradingDrawing,
+  type TradingDrawingPatch,
   type TradingDrawingTool,
   type TradingIndicator,
+  type TradingReplayState,
+  type TradingScaleMode,
   type TradingTimeframe,
+  type TradingUndoState,
   type TradingVisibleRange,
 } from "minerva-design/charts/core";
 import { MinervaEngineElement } from "../chart/engine-element";
@@ -44,9 +48,14 @@ const timeframeConverter = {
  * @fires minerva-click - A pane was clicked; detail: { time, index, price, pane }
  * @fires minerva-visible-range-change - The visible bars changed; detail: { from, to, fromTime, toTime }
  * @fires minerva-order-move - A draggable price line was dropped; detail: { id, price, previousPrice, line }
+ * @fires minerva-order-create - The "+" order entry button was clicked (option `orderEntry`); detail: { price, side }
+ * @fires minerva-order-cancel - The close button of a `cancellable` price line was clicked; detail: { id, line }
  * @fires minerva-drawings-change - The user added, moved or deleted drawings; detail: { drawings }
  * @fires minerva-drawing-select - The selected drawing changed; detail: { id }
  * @fires minerva-drawing-tool-change - The drawing tool changed (back to `cursor` after a drawing); detail: { tool }
+ * @fires minerva-undo-change - Undo / redo of the drawings became possible or impossible; detail: { canUndo, canRedo }
+ * @fires minerva-replay-change - The bar replay started, stepped, played, paused or stopped; detail: { active, picking, playing, speed, index, total, time }
+ * @fires minerva-fullscreen-change - The chart entered or left full screen; detail: { fullscreen }
  * @fires minerva-indicator-toggle - An indicator was shown or hidden from its legend; detail: { id, visible }
  * @fires minerva-history-request - The oldest bar came into view (load older bars with `prependBars`); detail: { firstTime, count }
  * @fires minerva-renderer-change - The backend is ready (or fell back after a GPU loss); detail: { renderer }
@@ -81,7 +90,7 @@ export class MinervaTradingChart extends MinervaEngineElement<
   @property({ attribute: false })
   indicators?: readonly TradingIndicator[];
 
-  /** Other engine options (`TradingChartOptions`: markers, priceLines, drawings, colorConvention, locale, labels...); property only */
+  /** Other engine options (`TradingChartOptions`: markers, priceLines, drawings, colorConvention, locale, timeZone, sessionBreaks, orderEntry, volumeProfile, labels...); property only */
   @property({ attribute: false })
   options?: Partial<TradingChartOptions>;
 
@@ -113,6 +122,8 @@ export class MinervaTradingChart extends MinervaEngineElement<
         this.emit("minerva-visible-range-change", e),
       ),
       chart.on("orderMove", (e) => this.emit("minerva-order-move", e)),
+      chart.on("orderCreate", (e) => this.emit("minerva-order-create", e)),
+      chart.on("orderCancel", (e) => this.emit("minerva-order-cancel", e)),
       chart.on("drawingsChange", (drawings) =>
         this.emit("minerva-drawings-change", { drawings }),
       ),
@@ -121,6 +132,11 @@ export class MinervaTradingChart extends MinervaEngineElement<
       ),
       chart.on("drawingToolChange", (tool) =>
         this.emit("minerva-drawing-tool-change", { tool }),
+      ),
+      chart.on("undoChange", (e) => this.emit("minerva-undo-change", e)),
+      chart.on("replayChange", (e) => this.emit("minerva-replay-change", e)),
+      chart.on("fullscreenChange", (fullscreen) =>
+        this.emit("minerva-fullscreen-change", { fullscreen }),
       ),
       chart.on("indicatorToggle", (e) =>
         this.emit("minerva-indicator-toggle", e),
@@ -189,6 +205,26 @@ export class MinervaTradingChart extends MinervaEngineElement<
     this.instance?.setVisibleRange(range);
   }
 
+  /** Times at the edges of the plot, `null` before the engine is created */
+  getVisibleTimeRange(): { from: number; to: number } | null {
+    return this.instance?.getVisibleTimeRange() ?? null;
+  }
+
+  /** Shows the bars between two times */
+  setVisibleTimeRange(range: { from: number; to: number }): void {
+    this.instance?.setVisibleTimeRange(range);
+  }
+
+  /** Shows the crosshair at a time (and a price); `null` hides it */
+  setCrosshair(time: number | null, price?: number): void {
+    this.instance?.setCrosshair(time, price);
+  }
+
+  /** Sets the price scale of the price pane (`linear`, `log`, `percent`, `indexed`) */
+  setScaleMode(mode: TradingScaleMode): void {
+    this.instance?.setScaleMode(mode);
+  }
+
   /** Fits every price scale to the visible bars again */
   resetPriceScales(): void {
     this.instance?.resetPriceScales();
@@ -212,6 +248,76 @@ export class MinervaTradingChart extends MinervaEngineElement<
   /** Selects a drawing (`null` clears the selection) */
   selectDrawing(id: string | null): void {
     this.instance?.selectDrawing(id);
+  }
+
+  /** Changes the style or the content of a drawing (undoable) */
+  updateDrawing(id: string, patch: TradingDrawingPatch): void {
+    this.instance?.updateDrawing(id, patch);
+  }
+
+  /** Undoes the last change of the drawings */
+  undo(): void {
+    this.instance?.undo();
+  }
+
+  /** Redoes the last undone change of the drawings */
+  redo(): void {
+    this.instance?.redo();
+  }
+
+  /** Whether the drawings can be undone or redone */
+  getUndoState(): TradingUndoState {
+    return this.instance?.getUndoState() ?? { canUndo: false, canRedo: false };
+  }
+
+  /** Starts a bar replay after `time` (the user picks the bar without it) */
+  startReplay(time?: number): void {
+    this.instance?.startReplay(time);
+  }
+
+  /** Shows the next bars of the replay */
+  replayStep(count?: number): void {
+    this.instance?.replayStep(count);
+  }
+
+  /** Plays the replay at `speed` bars per second */
+  replayPlay(speed?: number): void {
+    this.instance?.replayPlay(speed);
+  }
+
+  /** Pauses the replay */
+  replayPause(): void {
+    this.instance?.replayPause();
+  }
+
+  /** Ends the replay and shows every bar */
+  stopReplay(): void {
+    this.instance?.stopReplay();
+  }
+
+  /** State of the bar replay, `null` before the engine is created */
+  getReplayState(): TradingReplayState | null {
+    return this.instance?.getReplayState() ?? null;
+  }
+
+  /** Image of the chart as a data URL (`""` before the engine is created) */
+  toDataURL(type?: string, quality?: number): string {
+    return this.instance?.toDataURL(type, quality) ?? "";
+  }
+
+  /** Image of the chart as a blob */
+  toBlob(type?: string, quality?: number): Promise<Blob | null> {
+    return this.instance?.toBlob(type, quality) ?? Promise.resolve(null);
+  }
+
+  /** Shows the chart full screen (the element's `requestFullscreen()` shows the element itself) */
+  requestChartFullscreen(): Promise<void> {
+    return this.instance?.requestFullscreen() ?? Promise.resolve();
+  }
+
+  /** Leaves full screen */
+  exitChartFullscreen(): Promise<void> {
+    return this.instance?.exitFullscreen() ?? Promise.resolve();
   }
 
   /** Shows or hides an indicator */

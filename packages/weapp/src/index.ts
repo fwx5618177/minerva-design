@@ -55,6 +55,7 @@ import {
   radialBarChart,
   calendarHeatmap,
   bulletChart,
+  chordChart,
   shapeChart,
 } from "./shape-charts";
 export {
@@ -69,6 +70,7 @@ export {
   radialBarChart,
   calendarHeatmap,
   bulletChart,
+  chordChart,
   shapeChart,
 };
 export type { NativeShapeChartConfig } from "./shape-charts";
@@ -3012,6 +3014,7 @@ enhanceConfiguration(
     radialBarChart,
     calendarHeatmap,
     bulletChart,
+    chordChart,
     shapeChart,
   ],
 );
@@ -3119,5 +3122,6 @@ annotateNativeApi({
   radialBarChart,
   calendarHeatmap,
   bulletChart,
+  chordChart,
   shapeChart,
 });

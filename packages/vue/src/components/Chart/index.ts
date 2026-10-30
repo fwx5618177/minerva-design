@@ -36,6 +36,10 @@ import Scatter3DChart from "./Scatter3DChart.vue";
 import Line3DChart from "./Line3DChart.vue";
 import Surface3DChart from "./Surface3DChart.vue";
 import Bar3DChart from "./Bar3DChart.vue";
+import ChordChart from "./ChordChart.vue";
+import GraphChart from "./GraphChart.vue";
+import DependencyGraph from "./DependencyGraph.vue";
+import TreeChart from "./TreeChart.vue";
 
 export {
   Chart,
@@ -76,6 +80,10 @@ export {
   Line3DChart,
   Surface3DChart,
   Bar3DChart,
+  ChordChart,
+  GraphChart,
+  DependencyGraph,
+  TreeChart,
 };
 export { useChartEngine, type EngineInstance } from "./engine";
 export type * from "./types";

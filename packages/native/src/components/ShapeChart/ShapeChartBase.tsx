@@ -98,6 +98,8 @@ export const describeShapeChart = (o: ShapeChartOptions): string => {
       return "Calendar heatmap";
     case "bullet":
       return "Bullet chart";
+    case "chord":
+      return "Chord diagram";
     default:
       return "Chart";
   }

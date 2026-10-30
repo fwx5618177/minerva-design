@@ -13,6 +13,7 @@ import {
   calendarValues,
   layoutCalendar,
 } from "./calendar";
+import { chordValues, layoutChord, resolveChord } from "./chord";
 import { funnelOrder, funnelValues, layoutFunnel } from "./funnel";
 import { gaugeValues, layoutGauge } from "./gauge";
 import {
@@ -30,6 +31,7 @@ import {
   clamp,
   inset,
   resolveWith,
+  wrapText,
   type LayoutContext,
   type LayoutResult,
   type MeasureText,
@@ -127,6 +129,9 @@ export const layoutShapeScene = (input: ShapeLayoutInput): ShapeScene => {
     case "bullet":
       result = layoutBullet(o, c);
       break;
+    case "chord":
+      result = layoutChord(o, c);
+      break;
     default:
       result = layoutTreemap(o, c);
       break;
@@ -168,6 +173,9 @@ export const shapeValues = (
       break;
     case "bullet":
       bulletValues(o, hidden, out);
+      break;
+    case "chord":
+      chordValues(o, hidden, out);
       break;
     default:
       treemapValues(o, hidden, out);
@@ -293,6 +301,17 @@ export const shapeLegend = (
       shown = true;
       entries = calendarLegend(o, theme, hidden);
       break;
+    case "chord": {
+      shown = true;
+      const m = resolveChord(o);
+      entries = m.names.map((name, i) => ({
+        index: i,
+        name,
+        color: color(m.colors[i], i),
+        hidden: hidden.has(i),
+      }));
+      break;
+    }
     default:
       break;
   }
@@ -301,7 +320,7 @@ export const shapeLegend = (
 
 /**
  * Number of toggleable entries (slices, stages, series, top-level nodes,
- * sankey nodes, bars, rows, calendar levels)
+ * sankey nodes, bars, rows, calendar levels, chord groups)
  */
 export const toggleCount = (o: ShapeChartOptions): number => {
   switch (o.type) {
@@ -313,6 +332,8 @@ export const toggleCount = (o: ShapeChartOptions): number => {
       return resolveSankey(o).names.length;
     case "calendarHeatmap":
       return calendarModel(o)?.count ?? 0;
+    case "chord":
+      return resolveChord(o).names.length;
     default:
       return o.data.length;
   }
@@ -417,6 +438,8 @@ export const describeChart = (o: ShapeChartOptions) => {
       return l.calendarHeatmap;
     case "bullet":
       return l.bulletChart;
+    case "chord":
+      return l.chordChart;
     default:
       return l.treemapChart;
   }
@@ -497,6 +520,8 @@ export interface ShapeTooltipBox {
   lineHeight: number;
   /** Default content */
   content?: ShapeTooltipContent;
+  /** Lines of the content's title (long titles wrap) */
+  titleLines?: string[];
   /** Custom text (`tooltip.render` returning a string) */
   text?: string[];
 }
@@ -617,6 +642,7 @@ export const layoutShapeTooltip = (
   let lines: number;
   let content: ShapeTooltipContent | undefined;
   let text: string[] | undefined;
+  let titleLines: string[] | undefined;
   if (typeof value === "string") {
     text = value.split("\n");
     const f = font(theme, 12);
@@ -624,7 +650,17 @@ export const layoutShapeTooltip = (
     lines = text.length;
   } else {
     content = value;
-    w = (value.color ? 14 : 0) + measure(value.title, font(theme, 12, 600));
+    // long titles (full names of truncated labels) wrap to 3 lines
+    const titleFont = font(theme, 12, 600);
+    const dot = value.color ? 14 : 0;
+    const maxTitle = Math.max(
+      60,
+      Math.min(260, width - 16 - padding * 2) - dot,
+    );
+    titleLines = wrapText(value.title, maxTitle, titleFont, measure, 3);
+    if (!titleLines.length) titleLines = [value.title];
+    for (const line of titleLines)
+      w = Math.max(w, dot + measure(line, titleFont));
     for (const row of value.rows) {
       w = Math.max(
         w,
@@ -634,7 +670,7 @@ export const layoutShapeTooltip = (
           measure(row.value, font(theme, 12, 600)),
       );
     }
-    lines = 1 + value.rows.length;
+    lines = titleLines.length + value.rows.length;
   }
   const bw = Math.max(96, Math.ceil(w + padding * 2 + 4));
   const bh = lines * lineHeight + padding * 2;
@@ -654,7 +690,7 @@ export const layoutShapeTooltip = (
     height: bh,
     padding,
     lineHeight,
-    ...(content ? { content } : {}),
+    ...(content ? { content, titleLines } : {}),
     ...(text ? { text } : {}),
   };
 };

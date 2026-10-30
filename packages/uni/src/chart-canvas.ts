@@ -132,6 +132,9 @@ export interface ChartOptionProps {
   padding?: ChartPadding;
   palette?: readonly string[];
   ariaLabel?: string;
+  locale?: string;
+  /** Built-in texts (objects only: bar charts use a boolean `labels`) */
+  labels?: unknown;
 }
 
 /** Engine options of the props (like `engineOptions` of the web charts) */
@@ -151,6 +154,11 @@ export function chartEngineOptions(
     padding: plain(props.padding),
     palette: plain(props.palette),
     ariaLabel: props.ariaLabel,
+    locale: props.locale || undefined,
+    labels:
+      props.labels && typeof props.labels === "object"
+        ? (plain(props.labels) as ChartOptions["labels"])
+        : undefined,
   };
 }
 

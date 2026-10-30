@@ -102,4 +102,83 @@ describe("TradingChart", () => {
       visible: false,
     });
   });
+
+  it("forwards the drawing, replay and view methods of the handle", async () => {
+    const ref = createRef<TradingChartHandle>();
+    const onDrawingsChange = vi.fn();
+    const onUndoChange = vi.fn();
+    const onReplayChange = vi.fn();
+    render(
+      <TradingChart
+        ref={ref}
+        bars={bars}
+        drawings={[
+          {
+            id: "h",
+            type: "horizontalLine",
+            points: [{ time: bars[10].time, price: 150 }],
+          },
+        ]}
+        onDrawingsChange={onDrawingsChange}
+        onUndoChange={onUndoChange}
+        onReplayChange={onReplayChange}
+        onOrderCreate={vi.fn()}
+        onOrderCancel={vi.fn()}
+        onFullscreenChange={vi.fn()}
+      />,
+    );
+    await flush();
+    const handle = ref.current!;
+    act(() => handle.updateDrawing("h", { color: "#f00" }));
+    expect(onDrawingsChange).toHaveBeenLastCalledWith([
+      expect.objectContaining({ id: "h", color: "#f00" }),
+    ]);
+    expect(handle.getUndoState()).toEqual({ canUndo: true, canRedo: false });
+    act(() => handle.undo());
+    expect(handle.getDrawings()[0].color).toBeUndefined();
+    act(() => handle.redo());
+    expect(onUndoChange).toHaveBeenCalled();
+
+    act(() => handle.startReplay(bars[59].time));
+    expect(handle.getBarCount()).toBe(60);
+    act(() => handle.replayStep(2));
+    expect(handle.getReplayState()?.index).toBe(62);
+    act(() => handle.replayPlay(5));
+    act(() => handle.replayPause());
+    act(() => handle.stopReplay());
+    expect(handle.getBarCount()).toBe(120);
+    expect(onReplayChange).toHaveBeenCalled();
+
+    act(() =>
+      handle.setVisibleTimeRange({ from: bars[20].time, to: bars[80].time }),
+    );
+    await flush();
+    expect(handle.getVisibleTimeRange()?.from).toBeCloseTo(bars[20].time, -3);
+    act(() => handle.setCrosshair(bars[30].time));
+    act(() => handle.setScaleMode("log"));
+    expect(typeof handle.toDataURL()).toBe("string");
+    await expect(handle.exitFullscreen()).resolves.toBeUndefined();
+
+    // the rest of the handle reaches the instance
+    act(() => {
+      handle.appendBars([{ ...bars[119], time: bars[119].time + 60_000 }]);
+      handle.prependBars([{ ...bars[0], time: bars[0].time - 60_000 }]);
+      handle.fitContent();
+      handle.scrollToRealtime(false);
+      handle.setVisibleRange({ from: 10, to: 60 });
+      handle.resetPriceScales();
+      handle.setDrawingTool("rectangle");
+      handle.selectDrawing("h");
+      handle.setIndicatorVisible("volume", false);
+    });
+    expect(handle.getBarCount()).toBe(122);
+    expect(handle.getBar(0)?.time).toBe(bars[0].time - 60_000);
+    expect(handle.getVisibleRange()?.from).toBeCloseTo(10, 0);
+    act(() => handle.removeDrawing("h"));
+    expect(handle.getDrawings()).toEqual([]);
+    act(() => handle.setBars(bars));
+    expect(handle.getBarCount()).toBe(120);
+    expect(handle.getRenderer()).toBeNull();
+    await expect(handle.toBlob()).resolves.toBeNull();
+  });
 });

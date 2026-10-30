@@ -192,7 +192,8 @@ describe("heatmaps", () => {
     const colors = m.series[0].cellColors!;
     expect(unpackColor(colors[0])[0]).toBe(0);
     expect(unpackColor(colors[1])[0]).toBe(1);
-    expect(unpackColor(colors[2])[0]).toBeCloseTo(0.5, 1);
+    // interpolated in OKLab: the perceptual middle gray (L = 0.5)
+    expect(unpackColor(colors[2])[0]).toBeCloseTo(0.39, 1);
     expect(colors[3]).toBe(0);
     const items = buildItems(m, { x: 0, y: 0 }, 1);
     const cells = items[0];
@@ -215,7 +216,13 @@ describe("heatmaps", () => {
     expect(hit?.items[0]).toMatchObject({ index: 1, value: 10 });
     const content = tooltipContent(m, hit!, null);
     expect(content.title).toContain("AM");
-    expect(hoverMarks(m, sc, hit!)[0].kind).toBe("cell");
+    // the row and the column, then the lifted cell with a contrasting ring
+    const marks = hoverMarks(m, sc, hit!);
+    expect(marks.map((mark) => mark.kind)).toEqual(["guide", "guide", "cell"]);
+    const cell = marks[2];
+    if (cell?.kind !== "cell") throw new Error("cell expected");
+    // white cell: a dark ring
+    expect(cell.ring).toContain("15, 23, 42");
     // the empty cell has no hit
     expect(hitTest(m, sc, null, sc.xToPx(1), sc.yToPx(1))).toBeNull();
   });

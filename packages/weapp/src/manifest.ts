@@ -1672,6 +1672,15 @@ export const weappChartManifest = [
     deviceE2E: false,
   },
   {
+    name: "ChordChart",
+    scope:
+      "Chord diagram: group arcs and ribbons from a matrix or links, directed flows with arrows, sorting, ribbon colors, value ticks (configure({ tickFormat })), legend toggles.",
+    limitations: ["Same as PieChart."],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
     name: "TradingChart",
     scope:
       "Not exported: needs a DOM and WebGPU / WebGL (virtualized DOM panels, GPU rendering), which mini-program views do not provide.",

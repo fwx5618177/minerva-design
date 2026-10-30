@@ -2,7 +2,11 @@
 // liquidity heatmap and time and sales (listed in
 // apps/docs/scripts/generate-api.mjs).
 
-import type { ChartRendererKind, ChartRendererPreference } from "../types";
+import type {
+  ChartRendererKind,
+  ChartRendererPreference,
+  ChartTimeZone,
+} from "../types";
 
 /** One price level: `[price, size]` */
 export type OrderBookLevel = readonly [price: number, size: number];
@@ -552,7 +556,11 @@ export interface OrderBookHeatmapOptions extends OrderBookCommonOptions {
   contrast?: number;
   /** Size drawn with the hottest color; follows the data when omitted */
   maxSize?: number;
-  /** Color ramp, coldest first (the background color is prepended); a heat ramp suited to the theme when omitted */
+  /**
+   * Color ramp, coldest first, interpolated in OKLab after the floor color
+   * (the background, a shade darker in dark themes, shown where there is no
+   * liquidity); a perceptual heat ramp suited to the theme when omitted
+   */
   colors?: readonly string[];
   /**
    * Trades drawn as bubbles sized by volume (buys / sells colors)
@@ -591,6 +599,12 @@ export interface OrderBookHeatmapOptions extends OrderBookCommonOptions {
    * @default "auto"
    */
   renderer?: ChartRendererPreference;
+  /**
+   * Clock of the time axis and the tooltip: the local time or UTC (the
+   * clock of most exchanges)
+   * @default "local"
+   */
+  timeZone?: ChartTimeZone;
   /**
    * Overrides of the built-in texts, which follow `locale` (English,
    * Chinese, Japanese and French built in)
@@ -739,6 +753,12 @@ export interface TimeAndSalesOptions extends OrderBookCommonOptions {
    * @default true
    */
   milliseconds?: boolean;
+  /**
+   * Clock of the default time format: the local time or UTC (the clock of
+   * most exchanges)
+   * @default "local"
+   */
+  timeZone?: ChartTimeZone;
   /** Formats the time of a trade (replaces the default `HH:MM:SS.mmm`) */
   formatTime?: (time: number) => string;
   /**

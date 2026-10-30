@@ -8,15 +8,19 @@ import {
   resolveLocale,
   type LabelDictionary,
 } from "./locale";
+import { chartLabels } from "./labels";
 import { tickStep } from "./scale";
 import type {
   ChartAnnotation,
+  ChartColorScheme,
+  ChartConnectorOptions,
   ChartCurve,
   ChartInteractionOptions,
   ChartOptions,
   ChartPointDatum,
   ChartSeries,
   ChartSeriesType,
+  ChartTooltipDetail,
   ChartXValue,
 } from "./types";
 
@@ -156,10 +160,19 @@ export interface HeatmapConfig {
   xCategories?: readonly string[];
   /** Row names from bottom to top (collected from the data when omitted) */
   yCategories?: readonly string[];
-  /** Colors from the lowest to the highest value; a ramp of the first palette color by default */
-  colorScale?: readonly string[];
+  /**
+   * Colors from the lowest to the highest value (interpolated in OKLab), or
+   * a built-in theme-aware ramp of the first palette color
+   * @default "sequential"
+   */
+  colorScale?: readonly string[] | ChartColorScheme;
   /** Values at the ends of the color scale; the data range by default */
   valueRange?: readonly [number, number];
+  /**
+   * Value at the middle of the color scale (diverging data)
+   * @default 0 for `diverging` ramps spanning it, else the middle of the range
+   */
+  colorMidpoint?: number;
   /** Name of the value in the tooltip */
   name?: string;
   /** Corner radius of the cells, in pixels */
@@ -185,6 +198,7 @@ export const heatmapChartOptions = (
         data: config.data.map((c) => ({ x: c.x, y: c.y, value: c.value })),
         colorScale: config.colorScale,
         valueRange: config.valueRange,
+        colorMidpoint: config.colorMidpoint,
         radius: config.radius,
         format: config.format,
       },
@@ -203,7 +217,8 @@ export const heatmapChartOptions = (
       grid: false,
       ...base.yAxis,
     },
-    legend: base.legend ?? false,
+    // the color legend (visual map)
+    legend: base.legend ?? true,
     interaction: base.interaction ?? { zoom: false },
     tooltip: base.tooltip ?? { mode: "nearest" },
   };
@@ -942,6 +957,12 @@ export interface WaterfallOptions {
   /** Formats the values (labels, tooltip) */
   format?: (value: number) => string;
   /**
+   * Thin lines from the end of every bar to the next one; an object styles
+   * them
+   * @default true (dashed, secondary text color)
+   */
+  connector?: boolean | ChartConnectorOptions;
+  /**
    * Locale of the default name
    * @default the page language
    */
@@ -982,6 +1003,7 @@ export const waterfallSeries = (
     data,
     showLabels: options.labels ?? false,
     format: options.format,
+    connector: options.connector ?? true,
   };
 };
 
@@ -1097,6 +1119,8 @@ export interface GanttTask {
   color?: string;
   /** Draws a dot at `start` instead of a bar */
   milestone?: boolean;
+  /** Names of the tasks this one waits for (shown in its tooltip) */
+  dependencies?: readonly string[];
 }
 
 /** Options of `ganttSeries` */
@@ -1120,6 +1144,11 @@ export interface GanttOptions {
   milestoneName?: string;
   /** Formats the progress shares (tooltip) @default "60%" */
   formatProgress?: (share: number) => string;
+  /**
+   * Name of the dependencies row of the tooltip
+   * @default "Depends on" (in the `locale`)
+   */
+  dependenciesName?: string;
   /**
    * Locale of the default names and of the progress shares
    * @default the page language
@@ -1178,7 +1207,10 @@ export const ganttSeries = (
 ): GanttSeries => {
   const locale = resolveLocale(options.locale);
   const names = presetLabels(locale);
+  const rows = chartLabels(locale);
   const taskName = options.taskName ?? names.tasks;
+  const progressName = options.progressName ?? names.progress;
+  const separator = /^(zh|ja)\b/i.test(locale) ? "、" : ", ";
   const groups: string[] = [];
   for (const t of tasks) {
     const g = t.group ?? taskName;
@@ -1206,12 +1238,27 @@ export const ganttSeries = (
     radius: 4,
     data: tasks
       .filter((t) => !t.milestone && (t.group ?? taskName) === g)
-      .map((t) => ({
-        x: t.name,
-        y0: time(t.start),
-        y: time(t.end ?? t.start),
-        ...(t.color ? { color: t.color } : {}),
-      })),
+      .map((t) => {
+        // the tooltip of a task: its progress and what it waits for
+        const details: ChartTooltipDetail[] = [];
+        if (t.progress !== undefined)
+          details.push({
+            name: progressName,
+            value: formatProgress(Math.min(1, Math.max(0, t.progress))),
+          });
+        if (t.dependencies?.length)
+          details.push({
+            name: options.dependenciesName ?? rows.dependencies,
+            value: t.dependencies.join(separator),
+          });
+        return {
+          x: t.name,
+          y0: time(t.start),
+          y: time(t.end ?? t.start),
+          ...(t.color ? { color: t.color } : {}),
+          ...(details.length ? { details } : {}),
+        };
+      }),
   }));
   const progress = tasks.filter(
     (t) => !t.milestone && t.progress !== undefined && t.progress > 0,
@@ -1219,9 +1266,11 @@ export const ganttSeries = (
   if (progress.length) {
     series.push({
       id: "gantt:progress",
-      name: options.progressName ?? names.progress,
+      name: progressName,
       type: "bar",
       stack: "gantt",
+      // shown in the tooltip of its task
+      tooltip: false,
       // every bar has the color of its task: a neutral legend swatch
       color: "var(--text-secondary-color, #6b7280)",
       radius: 4,

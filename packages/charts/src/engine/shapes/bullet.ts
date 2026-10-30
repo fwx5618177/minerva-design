@@ -14,6 +14,7 @@ import {
   resolveWith,
   sum,
   uniqueKeys,
+  wrapText,
   type LayoutContext,
   type LayoutResult,
   type ShapeItem,
@@ -89,6 +90,9 @@ const rangeFills = (
   });
 };
 
+/** Line height of the wrapped names */
+const NAME_LINE = 15;
+
 export const layoutBullet = (
   o: BulletChartOptions,
   c: LayoutContext,
@@ -119,18 +123,30 @@ export const layoutBullet = (
   const hasSubtitle = o.data.some((d, i) => !!d.subtitle && weights[i] > 0);
   const valueText = o.data.map((d) => c.format(finite(d.value)));
 
-  // shared columns (horizontal) / bands (vertical) of the labels and values
+  // shared columns (horizontal) / bands (vertical) of the labels and values:
+  // the label column fits the longest name up to a share of the width,
+  // longer names wrap to two lines
+  const nameW = o.data.map((d) => measure(d.name, nameFont));
+  const labelCap = area.width * (area.width < 420 ? 0.34 : 0.4);
+  // widest line of each name once wrapped (balanced) within the cap
+  const lineW = o.data.map((d, i) =>
+    nameW[i] <= labelCap - 14
+      ? nameW[i]
+      : Math.max(
+          0,
+          ...wrapText(d.name, labelCap - 14, nameFont, measure, 2).map((l) =>
+            measure(l, nameFont),
+          ),
+        ),
+  );
   const labelW = vertical
     ? 0
     : Math.min(
-        area.width * 0.32,
+        labelCap,
         Math.max(
           0,
-          ...o.data.map((d) =>
-            Math.max(
-              measure(d.name, nameFont),
-              d.subtitle ? measure(d.subtitle, subFont) : 0,
-            ),
+          ...o.data.map((d, i) =>
+            Math.max(lineW[i], d.subtitle ? measure(d.subtitle, subFont) : 0),
           ),
         ) + 14,
       );
@@ -140,7 +156,12 @@ export const layoutBullet = (
         area.width * 0.2,
         Math.max(0, ...valueText.map((t) => measure(t, valueFont))) + 12,
       );
-  const labelH = vertical ? 22 + (hasSubtitle ? 14 : 0) : 0;
+  const columnW = area.width / total;
+  const wraps =
+    vertical && o.data.some((_, i) => weights[i] > 0 && nameW[i] > columnW - 8);
+  const labelH = vertical
+    ? 22 + (wraps ? NAME_LINE : 0) + (hasSubtitle ? 14 : 0)
+    : 0;
   const valueH = vertical ? 20 : 0;
   const unit = (vertical ? area.width : area.height) / total;
 
@@ -277,21 +298,22 @@ export const layoutBullet = (
     // name, subtitle and value
     if (vertical) {
       const room = Math.max(0, slot - 8);
-      const name = ellipsize(d.name, room, nameFont, measure);
+      const lines = wrapText(d.name, room, nameFont, measure, wraps ? 2 : 1);
       const bottom = area.y + area.height;
-      if (name)
+      lines.forEach((line, k) =>
         nodes.push({
           kind: "text",
           x: mid,
-          y: bottom - labelH + 16,
-          text: name,
+          y: bottom - labelH + 16 + k * NAME_LINE,
+          text: line,
           font: nameFont,
           color: text,
           align: "center",
           baseline: "middle",
           hit: i,
           alpha,
-        });
+        }),
+      );
       const sub = d.subtitle
         ? ellipsize(d.subtitle, room, subFont, measure)
         : "";
@@ -299,7 +321,7 @@ export const layoutBullet = (
         nodes.push({
           kind: "text",
           x: mid,
-          y: bottom - labelH + 31,
+          y: bottom - labelH + 31 + (wraps ? NAME_LINE : 0),
           text: sub,
           font: subFont,
           color: muted,
@@ -324,30 +346,40 @@ export const layoutBullet = (
         });
     } else {
       const room = Math.max(0, labelW - 14);
-      const name = ellipsize(d.name, room, nameFont, measure);
+      const avail = slot - 4;
       const sub =
-        d.subtitle && slot >= 34
+        d.subtitle && avail >= NAME_LINE + 14
           ? ellipsize(d.subtitle, room, subFont, measure)
           : "";
+      const subH = sub ? 13 : 0;
+      const lines = wrapText(
+        d.name,
+        room,
+        nameFont,
+        measure,
+        avail >= 2 * NAME_LINE + subH ? 2 : 1,
+      );
+      const top = mid - (lines.length * NAME_LINE + subH) / 2;
       const x = area.x + labelW - 14;
-      if (name)
+      lines.forEach((line, k) =>
         nodes.push({
           kind: "text",
           x,
-          y: sub ? mid - 7 : mid,
-          text: name,
+          y: top + NAME_LINE / 2 + k * NAME_LINE,
+          text: line,
           font: nameFont,
           color: text,
           align: "right",
           baseline: "middle",
           hit: i,
           alpha,
-        });
+        }),
+      );
       if (sub)
         nodes.push({
           kind: "text",
           x,
-          y: mid + 8,
+          y: top + lines.length * NAME_LINE + subH / 2,
           text: sub,
           font: subFont,
           color: muted,

@@ -44,6 +44,7 @@ import {
   type ChartDragEvent,
   type ChartHoverEvent,
   type ChartInteractionOptions,
+  type ChartLabels,
   type ChartLegendOptions,
   type ChartOptions,
   type ChartOrientation,
@@ -79,6 +80,7 @@ export type {
   ChartHoverEvent,
   ChartHoverItem,
   ChartInteractionOptions,
+  ChartLabels,
   ChartLegendOptions,
   ChartOptions,
   ChartOrientation,
@@ -152,6 +154,15 @@ export interface ChartCommonProps {
   palette?: readonly string[];
   /** Accessible name of the chart */
   ariaLabel?: string;
+  /**
+   * Locale of the texts and numbers the chart writes (tooltip rows, compact
+   * units `k` / `万`, separators, month and weekday names of time axes).
+   * Mini-programs have no `<html lang>`: pass the app language
+   * @default the system language (`navigator.language` when there is one), else English
+   */
+  locale?: string;
+  /** Overrides of the built-in texts of the `locale` */
+  labels?: Partial<ChartLabels>;
   /**
    * Keeps the page from scrolling while a finger moves on the chart
    * (needed to pan a zoomed chart or drag points)
@@ -242,7 +253,10 @@ export interface AreaChartProps extends ChartCommonProps {
 }
 
 /** Props of HorizontalBarChart */
-export interface HorizontalBarChartProps extends ChartCommonProps {
+export interface HorizontalBarChartProps extends Omit<
+  ChartCommonProps,
+  "labels"
+> {
   /**
    * Series drawn as bars from the left unless they set a `type`; the x
    * values (categories) run from top to bottom
@@ -287,6 +301,8 @@ export interface SparklineProps
       | "tooltip"
       | "palette"
       | "ariaLabel"
+      | "locale"
+      | "labels"
       | "onHover"
       | "className"
       | "style"
@@ -366,12 +382,23 @@ export interface BoxPlotChartProps
    * @default "vertical"
    */
   orientation?: ChartOrientation;
+  /**
+   * Outliers drawn as rings of the series color or as filled dots (series
+   * may set their own `outlierShape`)
+   * @default "hollow"
+   */
+  outlierShape?: "hollow" | "filled";
+  /**
+   * Diameter of the outliers in pixels
+   * @default 7
+   */
+  outlierSize?: number;
 }
 
 /** Props of WaterfallChart */
 export interface WaterfallChartProps
   extends
-    Omit<ChartCommonProps, "crosshair">,
+    Omit<ChartCommonProps, "crosshair" | "labels">,
     Omit<WaterfallOptions, "labels"> {
   /** Changes, subtotals and totals, in order */
   steps: readonly WaterfallStep[];
@@ -488,13 +515,20 @@ const OPTION_KEYS = [
   "padding",
   "palette",
   "ariaLabel",
+  "locale",
+  "labels",
 ] as const;
 
 type OptionProps = Pick<ChartCommonProps, (typeof OPTION_KEYS)[number]>;
 
-const pickOptions = (props: OptionProps): OptionProps => {
+/** Props carrying the engine options (`labels` may be the value labels flag) */
+type PickableProps = Omit<OptionProps, "labels"> & { labels?: unknown };
+
+const pickOptions = (props: PickableProps): OptionProps => {
   const out: Record<string, unknown> = {};
   for (const key of OPTION_KEYS) out[key] = props[key];
+  // `labels` writes the values on bar and waterfall charts: texts are objects
+  if (typeof out.labels !== "object") delete out.labels;
   return out as OptionProps;
 };
 
@@ -934,7 +968,7 @@ function ChartBase({
   );
 }
 
-const frameProps = (props: ChartCommonProps) => ({
+const frameProps = (props: Omit<ChartCommonProps, "labels">) => ({
   height: props.height,
   width: props.width,
   className: props.className,
@@ -949,7 +983,7 @@ const frameProps = (props: ChartCommonProps) => ({
 });
 
 function useEngineOptions(
-  props: OptionProps,
+  props: PickableProps,
   series: readonly ChartSeries[],
   extra?: Partial<ChartOptions>,
 ): ChartOptions {
@@ -1171,6 +1205,7 @@ export const HeatmapChart = forwardRef<ChartHandle, HeatmapChartProps>(
       yCategories: props.yCategories,
       colorScale: props.colorScale,
       valueRange: props.valueRange,
+      colorMidpoint: props.colorMidpoint,
       name: props.name,
       radius: props.radius,
       format: props.format,
@@ -1202,13 +1237,15 @@ export const Sparkline = forwardRef<ChartHandle, SparklineProps>(
       tooltip,
       palette,
       ariaLabel,
+      locale,
+      labels,
       height = 48,
     } = props;
     const options = useMemo(
       () =>
         sparklineOptions(
           { data, type, color, curve, name, reference, format },
-          { tooltip, palette, ariaLabel },
+          { tooltip, palette, ariaLabel, locale, labels },
         ),
       [
         data,
@@ -1221,6 +1258,8 @@ export const Sparkline = forwardRef<ChartHandle, SparklineProps>(
         tooltip,
         palette,
         ariaLabel,
+        locale,
+        labels,
       ],
     );
     return (
@@ -1285,6 +1324,7 @@ export const HistogramChart = forwardRef<ChartHandle, HistogramChartProps>(
       color,
       formatBin,
       series: extra,
+      locale,
     } = props;
     const series = useMemo(
       () => [
@@ -1295,10 +1335,11 @@ export const HistogramChart = forwardRef<ChartHandle, HistogramChartProps>(
           name,
           color,
           format: formatBin,
+          locale,
         }),
         ...(extra ?? []),
       ],
-      [values, bins, domain, nice, name, color, formatBin, extra],
+      [values, bins, domain, nice, name, color, formatBin, extra, locale],
     );
     const options = useEngineOptions(props, series);
     return (
@@ -1319,6 +1360,8 @@ export const BoxPlotChart = forwardRef<ChartHandle, BoxPlotChartProps>(
       name = "Values",
       whisker,
       orientation,
+      outlierShape,
+      outlierSize,
     } = props;
     const series = useMemo(
       () =>
@@ -1327,8 +1370,16 @@ export const BoxPlotChart = forwardRef<ChartHandle, BoxPlotChartProps>(
             ? [{ id: "boxplot", name, data: boxplotData(groups, { whisker }) }]
             : []),
           ...(input ?? []),
-        ]),
-      [input, groups, name, whisker],
+        ]).map((s) =>
+          s.type === "boxplot"
+            ? {
+                ...s,
+                outlierShape: s.outlierShape ?? outlierShape,
+                outlierSize: s.outlierSize ?? outlierSize,
+              }
+            : s,
+        ),
+      [input, groups, name, whisker, outlierShape, outlierSize],
     );
     const options = useEngineOptions(props, series, compact({ orientation }));
     return (
@@ -1352,6 +1403,7 @@ export const WaterfallChart = forwardRef<ChartHandle, WaterfallChartProps>(
       start,
       labels = true,
       format,
+      connector,
       orientation,
       locale,
     } = props;
@@ -1365,6 +1417,7 @@ export const WaterfallChart = forwardRef<ChartHandle, WaterfallChartProps>(
           start,
           labels,
           format,
+          connector,
           locale,
         }),
       ],
@@ -1377,6 +1430,7 @@ export const WaterfallChart = forwardRef<ChartHandle, WaterfallChartProps>(
         start,
         labels,
         format,
+        connector,
         locale,
       ],
     );
@@ -1404,6 +1458,7 @@ export const GanttChart = forwardRef<ChartHandle, GanttChartProps>(
       progressName,
       milestoneName,
       formatProgress,
+      dependenciesName,
       locale,
       today = false,
       todayLabel,
@@ -1416,6 +1471,7 @@ export const GanttChart = forwardRef<ChartHandle, GanttChartProps>(
           progressName,
           milestoneName,
           formatProgress,
+          dependenciesName,
           locale,
         }),
       [
@@ -1425,6 +1481,7 @@ export const GanttChart = forwardRef<ChartHandle, GanttChartProps>(
         progressName,
         milestoneName,
         formatProgress,
+        dependenciesName,
         locale,
       ],
     );

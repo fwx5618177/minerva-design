@@ -1083,6 +1083,16 @@
         "description": "`horizontal` lays the boxes out in rows",
         "attribute": "orientation"
       },
+      {
+        "name": "outlierShape",
+        "kind": "enum",
+        "values": ["filled", "hollow"],
+        "default": "hollow",
+        "required": false,
+        "description": "Outliers drawn as rings of the series color or as filled dots (series may set their own `outlierShape`)",
+        "attribute": "outlier-shape"
+      },
+      { "name": "outlierSize", "kind": "number", "default": 7, "required": false, "description": "Diameter of the outliers in CSS pixels", "attribute": "outlier-size" },
       { "name": "height", "kind": "union", "default": 320, "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
       { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
       { "name": "xAxis", "kind": "object", "required": false, "description": "X axis", "only": "react" },
@@ -2380,6 +2390,150 @@
     }
   },
   {
+    "name": "ChordChart",
+    "tag": "minerva-chord-chart",
+    "docs": "chord-chart",
+    "descriptionKey": "docs.chord-chart.description",
+    "description": "Chord diagram of the flows between groups.",
+    "tracks": ["toB", "toC"],
+    "props": [
+      {
+        "name": "groups",
+        "kind": "array",
+        "required": false,
+        "description": "Groups (names or `{ name, color }`), in their order around the circle; groups only named by `links` are appended. With `matrix`, unnamed rows are numbered from 1."
+      },
+      { "name": "matrix", "kind": "array", "required": false, "description": "Square flow matrix: `matrix[i][j]` flows from group `i` to group `j` (used when `links` is absent)" },
+      { "name": "links", "kind": "array", "required": false, "description": "Flows as a list (by group name or index); takes precedence over `matrix`" },
+      {
+        "name": "directed",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "`false`: one ribbon per pair of groups, each end as wide as the flow leaving that end. `true`: one ribbon per direction, arcs sized by the outgoing plus the incoming flows (self flows ignored)",
+        "attribute": "directed"
+      },
+      { "name": "arrows", "kind": "boolean", "required": false, "description": "Arrowheads at the target end of the ribbons", "only": "react" },
+      { "name": "padAngle", "kind": "number", "default": 2, "required": false, "description": "Gap between the groups, in degrees", "only": "react" },
+      { "name": "startAngle", "kind": "number", "default": 0, "required": false, "description": "Angle of the first group, degrees clockwise from 12 o'clock", "only": "react" },
+      { "name": "sortGroups", "kind": "enum", "values": ["ascending", "descending", "none"], "required": false, "description": "Order of the groups around the circle", "only": "react" },
+      {
+        "name": "sortSubgroups",
+        "kind": "enum",
+        "values": ["ascending", "auto", "descending", "none"],
+        "default": "auto",
+        "required": false,
+        "description": "Order of the ribbon ends along an arc: `auto` minimizes the crossings; otherwise the order of the groups, or by value",
+        "only": "react"
+      },
+      {
+        "name": "ribbonColor",
+        "kind": "enum",
+        "values": ["gradient", "neutral", "source", "target"],
+        "default": "gradient",
+        "required": false,
+        "description": "Color of the ribbons without `color`: a gradient from the source to the target color, one of the two, or a neutral gray",
+        "attribute": "ribbon-color"
+      },
+      { "name": "ribbonOpacity", "kind": "number", "default": 0.65, "required": false, "description": "Opacity of the ribbons, 0-1 (hovered ribbons are more opaque)", "only": "react" },
+      { "name": "arcWidth", "kind": "number", "required": false, "description": "Thickness of the group arcs, in pixels", "only": "react" },
+      { "name": "ticks", "kind": "union", "required": false, "description": "Value ticks outside the arcs (labelled where there is room); a number sets the step between ticks", "only": "react" },
+      { "name": "tickFormat", "kind": "function", "required": false, "description": "Formats the tick labels" },
+      {
+        "name": "labels",
+        "kind": "enum",
+        "values": ["auto", "none", "radial", "tangential"],
+        "default": "auto",
+        "required": false,
+        "description": "Group labels along the arc (`tangential`) or the radius (`radial`); `auto` picks tangential when every name fits; colliding labels are shortened or skipped",
+        "attribute": "labels"
+      },
+      { "name": "height", "kind": "union", "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
+      { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
+      {
+        "name": "palette",
+        "kind": "array",
+        "required": false,
+        "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)",
+        "only": "react"
+      },
+      { "name": "legend", "kind": "union", "required": false, "description": "Legend; clicking an item hides / shows its slice, stage, series, node, bar, row or level", "only": "react" },
+      { "name": "tooltip", "kind": "union", "default": true, "required": false, "description": "Tooltip; `false` disables it", "only": "react" },
+      { "name": "format", "kind": "function", "required": false, "description": "Formats the values of the labels and the tooltip", "only": "react" },
+      { "name": "percentFormat", "kind": "function", "required": false, "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1", "only": "react" },
+      {
+        "name": "locale",
+        "kind": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the chart writes (tooltip rows, accessible names, number and percent formats, calendar dates); built-in texts in English, Chinese, Japanese and French (English otherwise)",
+        "only": "react"
+      },
+      { "name": "texts", "kind": "object", "required": false, "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")", "only": "react" },
+      {
+        "name": "hidden",
+        "kind": "array",
+        "required": false,
+        "description": "Hidden slices / stages / radar series / top-level treemap or sunburst nodes / sankey nodes / radial bars / bullet rows / calendar levels, by index. Makes the visibility controlled: legend clicks then only call `onToggle`, whose `hiddenIndexes` should be stored and passed back. Leave undefined to let the legend hide / show entries by itself.",
+        "only": "react"
+      },
+      { "name": "animation", "kind": "boolean", "default": true, "required": false, "description": "Entry and update animations (skipped when the user prefers reduced motion)", "only": "react" },
+      { "name": "padding", "kind": "object", "required": false, "description": "Space around the drawing, in pixels", "only": "react" },
+      { "name": "ariaLabel", "kind": "string", "required": false, "description": "Accessible name of the chart", "only": "react" },
+      { "name": "renderTooltip", "kind": "node", "required": false, "description": "React content of the tooltip (replaces the default content)", "only": "react" },
+      {
+        "name": "options",
+        "kind": "object",
+        "required": false,
+        "description": "Other engine options (`ChordChartOptions`: padAngle, startAngle, sortGroups, sortSubgroups, ribbonOpacity, arcWidth, ticks, arrows, palette, format, percentFormat...); property only",
+        "only": "wc"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "wc": "minerva-hover",
+        "detail": ["index", "name", "value", "share"],
+        "description": "The hovered (or keyboard-focused) mark changed; detail: { index, name, value, share }, `null` when nothing is hovered",
+        "react": "onHover"
+      },
+      {
+        "name": "minerva-click",
+        "wc": "minerva-click",
+        "detail": ["index", "name", "value", "share"],
+        "description": "A mark was clicked, tapped or activated with Enter; detail: { index, name, value, share }"
+      },
+      {
+        "name": "minerva-toggle",
+        "wc": "minerva-toggle",
+        "detail": ["index", "hidden", "hiddenIndexes"],
+        "description": "A legend item was clicked (or `toggle()` called); detail: { index, hidden, hiddenIndexes }",
+        "react": "onToggle"
+      },
+      { "name": "click", "wc": "click", "react": "onClick" }
+    ],
+    "slots": [],
+    "children": false,
+    "platforms": {
+      "react": { "status": "stable" },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnChordChart. Native standalone component/directive; see platform tests for validated scope." },
+      "native": { "status": "beta", "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles)." },
+      "taro": {
+        "status": "beta",
+        "notes": "Shape charts drawn on a Canvas 2D node by the DOM-free shape engine: legend toggles (controlled hidden), tap to highlight with the canvas tooltip, entry / update animations, sunburst drill-down with onDrill, and a generic ShapeChart taking any shape type's options. No keyboard navigation and no React tooltip content: tooltip.render may only return text. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "Chord diagram: group arcs and ribbons from a matrix or links, directed flows with arrows, sorting, ribbon colors, value ticks (configure({ tickFormat })), legend toggles. Same as PieChart. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "Shape chart drawn on a `<canvas type=\"2d\">` by the DOM-free shape engine: group arcs and ribbons, legend toggles (controlled hidden), tap to highlight with the canvas tooltip, animations, hover/click/toggle events; ShapeChart takes the options of any shape type. No keyboard navigation; tooltip.render may only return text. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      }
+    }
+  },
+  {
     "name": "CodeBlock",
     "tag": "minerva-code-block",
     "docs": "code-block",
@@ -3204,6 +3358,172 @@
       "taro": { "status": "n/a", "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component." },
       "weapp": { "status": "n/a", "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component." },
       "uni": { "status": "n/a", "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component." }
+    }
+  },
+  {
+    "name": "DependencyGraph",
+    "tag": "minerva-dependency-graph",
+    "docs": "dependency-graph",
+    "descriptionKey": "docs.dependency-graph.description",
+    "description": "Layered DAG with the critical path.",
+    "tracks": ["toB", "toC"],
+    "props": [
+      { "name": "direction", "kind": "enum", "values": ["BT", "LR", "RL", "TB"], "default": "TB", "required": false, "description": "Flow direction", "attribute": "direction" },
+      { "name": "dag", "kind": "object", "required": false, "description": "Layer / node spacing, crossing reduction sweeps", "only": "react" },
+      {
+        "name": "criticalPath",
+        "kind": "union",
+        "default": false,
+        "required": false,
+        "description": "Highlights the longest path (node `value` = duration); `true` computes it, a list of ids sets it",
+        "attribute": "critical-path"
+      },
+      { "name": "nodes", "kind": "array", "required": true, "description": "The nodes" },
+      { "name": "edges", "kind": "array", "required": true, "description": "The edges (parent → child in trees, prerequisite → dependent in DAGs)" },
+      { "name": "groups", "kind": "array", "required": false, "description": "Groups: legend order, names and colors" },
+      { "name": "height", "kind": "union", "default": 480, "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
+      { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
+      {
+        "name": "nodeShape",
+        "kind": "enum",
+        "values": ["box", "circle"],
+        "required": false,
+        "description": "Shape of the nodes without `shape` (boxes for DAGs, org charts and mind maps, circles otherwise)",
+        "attribute": "node-shape"
+      },
+      { "name": "nodeSize", "kind": "union", "required": false, "description": "Circle diameter in layout units, or `[min, max]` scaled by the node `value`", "only": "react" },
+      {
+        "name": "edgeStyle",
+        "kind": "enum",
+        "values": ["curve", "orthogonal", "spline", "straight"],
+        "required": false,
+        "description": "Edge shape; depends on the layout when omitted",
+        "attribute": "edge-style"
+      },
+      { "name": "edgeWidth", "kind": "union", "required": false, "description": "Edge width in CSS pixels, or `[min, max]` scaled by the edge `value`", "only": "react" },
+      {
+        "name": "edgeColor",
+        "kind": "enum",
+        "values": ["neutral", "source", "target"],
+        "default": "neutral",
+        "required": false,
+        "description": "Edge colors: neutral or tinted with the source / target node",
+        "attribute": "edge-color"
+      },
+      { "name": "arrows", "kind": "boolean", "required": false, "description": "Arrowheads on the edges without `directed`", "only": "react" },
+      {
+        "name": "nodeLabels",
+        "kind": "union",
+        "default": "auto",
+        "required": false,
+        "description": "Node labels; `auto` hides minor and overlapping labels when zoomed out. Text inside boxes keeps a readable minimum size and is shortened with an ellipsis; it is hidden only when the box is too small for any text, or with `false`",
+        "only": "react"
+      },
+      { "name": "edgeLabels", "kind": "union", "default": "auto", "required": false, "description": "Edge labels: always, `auto` (zoomed in or highlighted), only `hover`, or never", "only": "react" },
+      { "name": "highlight", "kind": "enum", "values": ["lineage", "neighbors", "none"], "required": false, "description": "What hovering / selecting a node highlights", "attribute": "highlight" },
+      { "name": "selected", "kind": "array", "required": false, "description": "Ids of the selected nodes (changing it updates the selection)" },
+      { "name": "animation", "kind": "union", "default": true, "required": false, "description": "Animates layout and data changes; a number is the duration in ms", "only": "react" },
+      { "name": "fitPadding", "kind": "number", "default": 24, "required": false, "description": "Padding around the graph when fitting it, in CSS pixels", "only": "react" },
+      { "name": "controls", "kind": "boolean", "default": true, "required": false, "description": "Zoom buttons (zoom in, zoom out, fit)", "only": "react" },
+      { "name": "legend", "kind": "union", "required": false, "description": "Legend of the groups; shown by default with several groups", "only": "react" },
+      { "name": "tooltip", "kind": "union", "required": false, "description": "Tooltip; `false` disables it", "only": "react" },
+      {
+        "name": "interaction",
+        "kind": "union",
+        "default": true,
+        "required": false,
+        "description": "Drag pans, Ctrl / ⌘ + wheel and pinch zoom, nodes can be dragged (force, circular), click selects, arrow keys move between nodes; `false` makes the chart static",
+        "only": "react"
+      },
+      {
+        "name": "renderer",
+        "kind": "enum",
+        "values": ["auto", "canvas2d", "webgl", "webgl2", "webgpu"],
+        "default": "auto",
+        "required": false,
+        "description": "Backend of the nodes and edges: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software",
+        "only": "react"
+      },
+      { "name": "palette", "kind": "array", "required": false, "description": "Group colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)", "only": "react" },
+      { "name": "ariaLabel", "kind": "string", "required": false, "description": "Accessible name of the chart", "only": "react" },
+      {
+        "name": "locale",
+        "kind": "string",
+        "required": false,
+        "description": "Language of the built-in texts (summary, announcements, tooltip, buttons); built-in texts in English, Chinese, Japanese and French",
+        "attribute": "locale"
+      },
+      { "name": "labels", "kind": "object", "required": false, "description": "Overrides of the built-in texts of the `locale`", "only": "react" },
+      {
+        "name": "options",
+        "kind": "object",
+        "required": false,
+        "description": "Other engine options (`GraphChartOptions`: force, circular, dag, tree, nodeSize, edgeWidth, arrows, nodeLabels, edgeLabels, animation, legend, tooltip, interaction, renderer, palette, ariaLabel, labels...); property only",
+        "only": "wc"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "wc": "minerva-hover",
+        "detail": ["type", "id", "node", "edge", "index", "group", "color", "degree", "clientX", "clientY"],
+        "description": "The hovered (or keyboard-focused) node / edge changed; detail: { type, id, node, edge, index, group, color, degree, clientX, clientY }, `null` when nothing is hovered",
+        "react": "onHover"
+      },
+      {
+        "name": "minerva-item-click",
+        "wc": "minerva-item-click",
+        "detail": ["type", "id", "node", "edge", "index", "group", "color", "degree", "clientX", "clientY"],
+        "description": "A node or an edge was clicked (or a node activated with Enter); detail: { type, id, node, edge, index, group, color, degree, clientX, clientY }",
+        "react": "onItemClick"
+      },
+      { "name": "minerva-selection-change", "wc": "minerva-selection-change", "detail": ["ids"], "description": "The selection changed; detail: { ids }", "react": "onSelectionChange" },
+      { "name": "minerva-toggle", "wc": "minerva-toggle", "detail": ["id", "collapsed"], "description": "A tree node was collapsed or expanded; detail: { id, collapsed }", "react": "onToggle" },
+      {
+        "name": "minerva-group-toggle",
+        "wc": "minerva-group-toggle",
+        "detail": ["group", "hidden"],
+        "description": "The legend showed / hid a group; detail: { group, hidden }",
+        "react": "onGroupToggle"
+      },
+      {
+        "name": "minerva-layout-end",
+        "wc": "minerva-layout-end",
+        "detail": ["layout"],
+        "description": "The layout is done (the force simulation cooled down); detail: { layout }",
+        "react": "onLayoutEnd"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "wc": "minerva-renderer-change",
+        "detail": ["renderer"],
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }",
+        "react": "onRendererChange"
+      }
+    ],
+    "slots": [],
+    "children": false,
+    "platforms": {
+      "react": { "status": "stable" },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnDependencyGraph. Native standalone component/directive; see platform tests for validated scope." },
+      "native": {
+        "status": "n/a",
+        "notes": "DOM / GPU widget of minerva-design/charts (WebGPU or WebGL canvases with DOM overlays): not drawn by the native canvas chart engine; show the web version in a web view."
+      },
+      "taro": {
+        "status": "n/a",
+        "notes": "DOM / GPU widget of minerva-design/charts (WebGPU or WebGL canvases with DOM overlays): not drawn by the native canvas chart engine; show the web version in a web view."
+      },
+      "weapp": {
+        "status": "n/a",
+        "notes": "DOM / GPU widget of minerva-design/charts (WebGPU or WebGL canvases with DOM overlays): not drawn by the native canvas chart engine; show the web version in a web view."
+      },
+      "uni": {
+        "status": "n/a",
+        "notes": "DOM / GPU widget of minerva-design/charts (WebGPU or WebGL canvases with DOM overlays): not drawn by the native canvas chart engine; show the web version in a web view."
+      }
     }
   },
   {
@@ -4467,6 +4787,7 @@
       { "name": "progressName", "kind": "string", "required": false, "description": "Name of the progress bars (legend, tooltip)", "attribute": "progress-name" },
       { "name": "milestoneName", "kind": "string", "required": false, "description": "Name of the milestones (legend, tooltip)", "attribute": "milestone-name" },
       { "name": "formatProgress", "kind": "function", "default": "60%", "required": false, "description": "Formats the progress shares (tooltip)" },
+      { "name": "dependenciesName", "kind": "string", "required": false, "description": "Name of the dependencies row of the tooltip", "attribute": "dependencies-name" },
       { "name": "options", "kind": "object", "required": false, "description": "Other engine options (axes, legend, annotations, interaction...); property only", "only": "wc" }
     ],
     "events": [
@@ -4614,6 +4935,176 @@
     }
   },
   {
+    "name": "GraphChart",
+    "tag": "minerva-graph-chart",
+    "docs": "graph-chart",
+    "descriptionKey": "docs.graph-chart.description",
+    "description": "GPU relationship network with force, circular and layered layouts.",
+    "tracks": ["toB", "toC"],
+    "props": [
+      {
+        "name": "layout",
+        "kind": "enum",
+        "values": ["arc", "circular", "dag", "force", "mindmap", "none", "org", "radial", "tree"],
+        "default": "force",
+        "required": false,
+        "description": "Placement of the nodes",
+        "attribute": "layout"
+      },
+      { "name": "direction", "kind": "enum", "values": ["BT", "LR", "RL", "TB"], "required": false, "description": "Direction of the `dag` and `tree` layouts", "attribute": "direction" },
+      { "name": "force", "kind": "object", "required": false, "description": "Force layout settings (Barnes–Hut, worker for large graphs)", "only": "react" },
+      { "name": "circular", "kind": "object", "required": false, "description": "Circular / arc layout settings", "only": "react" },
+      { "name": "dag", "kind": "object", "required": false, "description": "Layered layout settings (`layout=\"dag\"`)", "only": "react" },
+      { "name": "tree", "kind": "object", "required": false, "description": "Tree layout settings (tree layouts)", "only": "react" },
+      { "name": "nodes", "kind": "array", "required": true, "description": "The nodes" },
+      { "name": "edges", "kind": "array", "required": true, "description": "The edges (parent → child in trees, prerequisite → dependent in DAGs)" },
+      { "name": "groups", "kind": "array", "required": false, "description": "Groups: legend order, names and colors" },
+      { "name": "height", "kind": "union", "default": 480, "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
+      { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
+      {
+        "name": "nodeShape",
+        "kind": "enum",
+        "values": ["box", "circle"],
+        "required": false,
+        "description": "Shape of the nodes without `shape` (boxes for DAGs, org charts and mind maps, circles otherwise)",
+        "attribute": "node-shape"
+      },
+      { "name": "nodeSize", "kind": "union", "required": false, "description": "Circle diameter in layout units, or `[min, max]` scaled by the node `value`", "only": "react" },
+      {
+        "name": "edgeStyle",
+        "kind": "enum",
+        "values": ["curve", "orthogonal", "spline", "straight"],
+        "required": false,
+        "description": "Edge shape; depends on the layout when omitted",
+        "attribute": "edge-style"
+      },
+      { "name": "edgeWidth", "kind": "union", "required": false, "description": "Edge width in CSS pixels, or `[min, max]` scaled by the edge `value`", "only": "react" },
+      {
+        "name": "edgeColor",
+        "kind": "enum",
+        "values": ["neutral", "source", "target"],
+        "default": "neutral",
+        "required": false,
+        "description": "Edge colors: neutral or tinted with the source / target node",
+        "attribute": "edge-color"
+      },
+      { "name": "arrows", "kind": "boolean", "required": false, "description": "Arrowheads on the edges without `directed`", "only": "react" },
+      {
+        "name": "nodeLabels",
+        "kind": "union",
+        "default": "auto",
+        "required": false,
+        "description": "Node labels; `auto` hides minor and overlapping labels when zoomed out. Text inside boxes keeps a readable minimum size and is shortened with an ellipsis; it is hidden only when the box is too small for any text, or with `false`",
+        "only": "react"
+      },
+      { "name": "edgeLabels", "kind": "union", "default": "auto", "required": false, "description": "Edge labels: always, `auto` (zoomed in or highlighted), only `hover`, or never", "only": "react" },
+      { "name": "highlight", "kind": "enum", "values": ["lineage", "neighbors", "none"], "required": false, "description": "What hovering / selecting a node highlights", "attribute": "highlight" },
+      { "name": "selected", "kind": "array", "required": false, "description": "Ids of the selected nodes (changing it updates the selection)" },
+      { "name": "animation", "kind": "union", "default": true, "required": false, "description": "Animates layout and data changes; a number is the duration in ms", "only": "react" },
+      { "name": "fitPadding", "kind": "number", "default": 24, "required": false, "description": "Padding around the graph when fitting it, in CSS pixels", "only": "react" },
+      { "name": "controls", "kind": "boolean", "default": true, "required": false, "description": "Zoom buttons (zoom in, zoom out, fit)", "only": "react" },
+      { "name": "legend", "kind": "union", "required": false, "description": "Legend of the groups; shown by default with several groups", "only": "react" },
+      { "name": "tooltip", "kind": "union", "required": false, "description": "Tooltip; `false` disables it", "only": "react" },
+      {
+        "name": "interaction",
+        "kind": "union",
+        "default": true,
+        "required": false,
+        "description": "Drag pans, Ctrl / ⌘ + wheel and pinch zoom, nodes can be dragged (force, circular), click selects, arrow keys move between nodes; `false` makes the chart static",
+        "only": "react"
+      },
+      {
+        "name": "renderer",
+        "kind": "enum",
+        "values": ["auto", "canvas2d", "webgl", "webgl2", "webgpu"],
+        "default": "auto",
+        "required": false,
+        "description": "Backend of the nodes and edges: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software",
+        "only": "react"
+      },
+      { "name": "palette", "kind": "array", "required": false, "description": "Group colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)", "only": "react" },
+      { "name": "ariaLabel", "kind": "string", "required": false, "description": "Accessible name of the chart", "only": "react" },
+      {
+        "name": "locale",
+        "kind": "string",
+        "required": false,
+        "description": "Language of the built-in texts (summary, announcements, tooltip, buttons); built-in texts in English, Chinese, Japanese and French",
+        "attribute": "locale"
+      },
+      { "name": "labels", "kind": "object", "required": false, "description": "Overrides of the built-in texts of the `locale`", "only": "react" },
+      {
+        "name": "options",
+        "kind": "object",
+        "required": false,
+        "description": "Other engine options (`GraphChartOptions`: force, circular, dag, tree, nodeSize, edgeWidth, arrows, nodeLabels, edgeLabels, animation, legend, tooltip, interaction, renderer, palette, ariaLabel, labels...); property only",
+        "only": "wc"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "wc": "minerva-hover",
+        "detail": ["type", "id", "node", "edge", "index", "group", "color", "degree", "clientX", "clientY"],
+        "description": "The hovered (or keyboard-focused) node / edge changed; detail: { type, id, node, edge, index, group, color, degree, clientX, clientY }, `null` when nothing is hovered",
+        "react": "onHover"
+      },
+      {
+        "name": "minerva-item-click",
+        "wc": "minerva-item-click",
+        "detail": ["type", "id", "node", "edge", "index", "group", "color", "degree", "clientX", "clientY"],
+        "description": "A node or an edge was clicked (or a node activated with Enter); detail: { type, id, node, edge, index, group, color, degree, clientX, clientY }",
+        "react": "onItemClick"
+      },
+      { "name": "minerva-selection-change", "wc": "minerva-selection-change", "detail": ["ids"], "description": "The selection changed; detail: { ids }", "react": "onSelectionChange" },
+      { "name": "minerva-toggle", "wc": "minerva-toggle", "detail": ["id", "collapsed"], "description": "A tree node was collapsed or expanded; detail: { id, collapsed }", "react": "onToggle" },
+      {
+        "name": "minerva-group-toggle",
+        "wc": "minerva-group-toggle",
+        "detail": ["group", "hidden"],
+        "description": "The legend showed / hid a group; detail: { group, hidden }",
+        "react": "onGroupToggle"
+      },
+      {
+        "name": "minerva-layout-end",
+        "wc": "minerva-layout-end",
+        "detail": ["layout"],
+        "description": "The layout is done (the force simulation cooled down); detail: { layout }",
+        "react": "onLayoutEnd"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "wc": "minerva-renderer-change",
+        "detail": ["renderer"],
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }",
+        "react": "onRendererChange"
+      }
+    ],
+    "slots": [],
+    "children": false,
+    "platforms": {
+      "react": { "status": "stable" },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnGraphChart. Native standalone component/directive; see platform tests for validated scope." },
+      "native": {
+        "status": "n/a",
+        "notes": "DOM / GPU widget of minerva-design/charts (WebGPU or WebGL canvases with DOM overlays): not drawn by the native canvas chart engine; show the web version in a web view."
+      },
+      "taro": {
+        "status": "n/a",
+        "notes": "DOM / GPU widget of minerva-design/charts (WebGPU or WebGL canvases with DOM overlays): not drawn by the native canvas chart engine; show the web version in a web view."
+      },
+      "weapp": {
+        "status": "n/a",
+        "notes": "DOM / GPU widget of minerva-design/charts (WebGPU or WebGL canvases with DOM overlays): not drawn by the native canvas chart engine; show the web version in a web view."
+      },
+      "uni": {
+        "status": "n/a",
+        "notes": "DOM / GPU widget of minerva-design/charts (WebGPU or WebGL canvases with DOM overlays): not drawn by the native canvas chart engine; show the web version in a web view."
+      }
+    }
+  },
+  {
     "name": "Grid",
     "docs": "grid",
     "descriptionKey": "docs.grid.description",
@@ -4739,8 +5230,16 @@
       { "name": "data", "kind": "array", "required": true, "description": "Cells" },
       { "name": "xCategories", "kind": "array", "required": false, "description": "Column names in order (collected from the data when omitted)" },
       { "name": "yCategories", "kind": "array", "required": false, "description": "Row names from bottom to top (collected from the data when omitted)" },
-      { "name": "colorScale", "kind": "array", "required": false, "description": "Colors from the lowest to the highest value; a ramp of the first palette color by default" },
+      {
+        "name": "colorScale",
+        "kind": "union",
+        "default": "sequential",
+        "required": false,
+        "description": "Colors from the lowest to the highest value (interpolated in OKLab), or a built-in theme-aware ramp of the first palette color",
+        "attribute": "color-scale"
+      },
       { "name": "valueRange", "kind": "array", "required": false, "description": "Values at the ends of the color scale; the data range by default" },
+      { "name": "colorMidpoint", "kind": "number", "required": false, "description": "Value at the middle of the color scale (diverging data)", "attribute": "color-midpoint" },
       { "name": "name", "kind": "string", "required": false, "description": "Name of the value in the tooltip", "only": "react" },
       { "name": "radius", "kind": "number", "required": false, "description": "Corner radius of the cells, in pixels", "attribute": "radius" },
       { "name": "format", "kind": "function", "required": false, "description": "Formats the values in the tooltip" },
@@ -7318,7 +7817,7 @@
         "name": "colors",
         "kind": "array",
         "required": false,
-        "description": "Color ramp, coldest first (the background color is prepended); a heat ramp suited to the theme when omitted",
+        "description": "Color ramp, coldest first, interpolated in OKLab after the floor color (the background, a shade darker in dark themes, shown where there is no liquidity); a perceptual heat ramp suited to the theme when omitted",
         "only": "react"
       },
       { "name": "bubbles", "kind": "boolean", "default": true, "required": false, "description": "Trades drawn as bubbles sized by volume (buys / sells colors)", "only": "react" },
@@ -7335,6 +7834,15 @@
         "default": "auto",
         "required": false,
         "description": "Backend of the cells: the GPU when available",
+        "only": "react"
+      },
+      {
+        "name": "timeZone",
+        "kind": "enum",
+        "values": ["local", "utc"],
+        "default": "local",
+        "required": false,
+        "description": "Clock of the time axis and the tooltip: the local time or UTC (the clock of most exchanges)",
         "only": "react"
       },
       {
@@ -11822,6 +12330,15 @@
       { "name": "animate", "kind": "boolean", "default": true, "required": false, "description": "New trades slide in and flash", "only": "react" },
       { "name": "header", "kind": "boolean", "default": true, "required": false, "description": "Header row with the column names", "only": "react" },
       { "name": "milliseconds", "kind": "boolean", "default": true, "required": false, "description": "Milliseconds in the default time format", "only": "react" },
+      {
+        "name": "timeZone",
+        "kind": "enum",
+        "values": ["local", "utc"],
+        "default": "local",
+        "required": false,
+        "description": "Clock of the default time format: the local time or UTC (the clock of most exchanges)",
+        "only": "react"
+      },
       { "name": "formatTime", "kind": "function", "required": false, "description": "Formats the time of a trade (replaces the default `HH:MM:SS.mmm`)", "only": "react" },
       {
         "name": "labels",
@@ -12379,7 +12896,15 @@
         "description": "Locale of the texts, numbers and dates (`\"zh-CN\"`): the page language (`<html lang>`, followed when it changes), else the browser's, by default",
         "only": "react"
       },
-      { "name": "utcOffset", "kind": "number", "required": false, "description": "Offset of the displayed times from UTC, in minutes (`480` for UTC+8); local time by default", "only": "react" },
+      { "name": "utcOffset", "kind": "number", "required": false, "description": "Offset of the displayed times from UTC, in minutes (`480` for UTC+8); overrides `timeZone`", "only": "react" },
+      {
+        "name": "timeZone",
+        "kind": "string",
+        "required": false,
+        "description": "Time zone of the time axis, the session breaks and the VWAP periods (an IANA name such as `\"America/New_York\"`, or `\"UTC\"`); the local time by default",
+        "only": "react"
+      },
+      { "name": "sessionBreaks", "kind": "boolean", "default": false, "required": false, "description": "Dashed vertical lines where a day starts (intraday bars)", "only": "react" },
       { "name": "crosshair", "kind": "enum", "values": ["free", "magnet"], "default": "magnet", "required": false, "description": "Crosshair behaviour", "only": "react" },
       { "name": "legend", "kind": "boolean", "default": true, "required": false, "description": "Legends with the values at the crosshair (and the indicator toggles)", "only": "react" },
       { "name": "lastPriceLine", "kind": "boolean", "default": true, "required": false, "description": "Line and axis label at the last price", "only": "react" },
@@ -12387,12 +12912,44 @@
       { "name": "highLowMarkers", "kind": "boolean", "default": true, "required": false, "description": "Marks the highest and lowest prices of the visible bars", "only": "react" },
       { "name": "markers", "kind": "array", "required": false, "description": "Buy / sell markers", "only": "react" },
       { "name": "priceLines", "kind": "array", "required": false, "description": "Order, position, take profit / stop loss and alert lines", "only": "react" },
+      {
+        "name": "orderEntry",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "A \"+\" button at the crosshair price, on the right of the price pane: clicking it reports a limit order (`orderCreate`) at that price",
+        "only": "react"
+      },
+      {
+        "name": "volumeProfile",
+        "kind": "union",
+        "default": false,
+        "required": false,
+        "description": "Volume by price of the visible bars, with its point of control and value area (`true` for the defaults)",
+        "only": "react"
+      },
       { "name": "compare", "kind": "array", "required": false, "description": "Comparison series (best read with `scaleMode: \"percent\"`)", "only": "react" },
       { "name": "drawings", "kind": "array", "required": false, "description": "Drawings; replaced when a new array is passed (see `drawingsChange`)", "only": "react" },
       {
         "name": "drawingMode",
         "kind": "enum",
-        "values": ["cursor", "extendedLine", "fibRetracement", "horizontalLine", "measure", "ray", "rectangle", "trendLine", "verticalLine"],
+        "values": [
+          "arrow",
+          "cursor",
+          "extendedLine",
+          "fibRetracement",
+          "horizontalLine",
+          "longPosition",
+          "measure",
+          "parallelChannel",
+          "pitchfork",
+          "ray",
+          "rectangle",
+          "shortPosition",
+          "text",
+          "trendLine",
+          "verticalLine"
+        ],
         "default": "cursor",
         "required": false,
         "description": "Active drawing tool",
@@ -12404,6 +12961,14 @@
         "default": false,
         "required": false,
         "description": "Keeps the drawing tool after a drawing is made (back to `cursor` otherwise)",
+        "only": "react"
+      },
+      {
+        "name": "drawingToolbar",
+        "kind": "boolean",
+        "default": true,
+        "required": false,
+        "description": "Floating toolbar over the selected drawing (color, width, style, fill, lock, delete)",
         "only": "react"
       },
       { "name": "baselinePrice", "kind": "number", "required": false, "description": "Price of the `baseline` style; the close of the first visible bar by default", "only": "react" },
@@ -12436,7 +13001,7 @@
         "name": "options",
         "kind": "object",
         "required": false,
-        "description": "Other engine options (`TradingChartOptions`: markers, priceLines, drawings, colorConvention, locale, labels...); property only",
+        "description": "Other engine options (`TradingChartOptions`: markers, priceLines, drawings, colorConvention, locale, timeZone, sessionBreaks, orderEntry, volumeProfile, labels...); property only",
         "only": "wc"
       }
     ],
@@ -12464,6 +13029,20 @@
         "react": "onOrderMove"
       },
       {
+        "name": "minerva-order-create",
+        "wc": "minerva-order-create",
+        "detail": ["price", "side"],
+        "description": "The \"+\" order entry button was clicked (option `orderEntry`); detail: { price, side }",
+        "react": "onOrderCreate"
+      },
+      {
+        "name": "minerva-order-cancel",
+        "wc": "minerva-order-cancel",
+        "detail": ["id", "line"],
+        "description": "The close button of a `cancellable` price line was clicked; detail: { id, line }",
+        "react": "onOrderCancel"
+      },
+      {
         "name": "minerva-drawings-change",
         "wc": "minerva-drawings-change",
         "detail": ["drawings"],
@@ -12477,6 +13056,27 @@
         "detail": ["tool"],
         "description": "The drawing tool changed (back to `cursor` after a drawing); detail: { tool }",
         "react": "onDrawingToolChange"
+      },
+      {
+        "name": "minerva-undo-change",
+        "wc": "minerva-undo-change",
+        "detail": ["canUndo", "canRedo"],
+        "description": "Undo / redo of the drawings became possible or impossible; detail: { canUndo, canRedo }",
+        "react": "onUndoChange"
+      },
+      {
+        "name": "minerva-replay-change",
+        "wc": "minerva-replay-change",
+        "detail": ["active", "picking", "playing", "speed", "index", "total", "time"],
+        "description": "The bar replay started, stepped, played, paused or stopped; detail: { active, picking, playing, speed, index, total, time }",
+        "react": "onReplayChange"
+      },
+      {
+        "name": "minerva-fullscreen-change",
+        "wc": "minerva-fullscreen-change",
+        "detail": ["fullscreen"],
+        "description": "The chart entered or left full screen; detail: { fullscreen }",
+        "react": "onFullscreenChange"
       },
       {
         "name": "minerva-indicator-toggle",
@@ -12523,6 +13123,173 @@
       "uni": {
         "status": "n/a",
         "notes": "Not exported: needs a DOM and WebGPU / WebGL (virtualized DOM panels, GPU rendering), which mini-program views do not provide. Use a web-view page that renders the web component (minerva-design/charts) on mini-programs. Unsupported on this platform."
+      }
+    }
+  },
+  {
+    "name": "TreeChart",
+    "tag": "minerva-tree-chart",
+    "docs": "tree-chart",
+    "descriptionKey": "docs.tree-chart.description",
+    "description": "Tidy tree, radial tree, mind map or org chart.",
+    "tracks": ["toB", "toC"],
+    "props": [
+      {
+        "name": "layout",
+        "kind": "enum",
+        "values": ["mindmap", "org", "radial", "tree"],
+        "default": "tree",
+        "required": false,
+        "description": "Kind of tree: tidy tree, radial tree, two-sided mind map or org chart",
+        "attribute": "layout"
+      },
+      { "name": "direction", "kind": "enum", "values": ["BT", "LR", "RL", "TB"], "default": "LR", "required": false, "description": "Direction of `layout=\"tree\"`", "attribute": "direction" },
+      { "name": "tree", "kind": "object", "required": false, "description": "Root, spacing, collapsing, card size", "only": "react" },
+      { "name": "nodes", "kind": "array", "required": true, "description": "The nodes" },
+      { "name": "edges", "kind": "array", "required": true, "description": "The edges (parent → child in trees, prerequisite → dependent in DAGs)" },
+      { "name": "groups", "kind": "array", "required": false, "description": "Groups: legend order, names and colors" },
+      { "name": "height", "kind": "union", "default": 480, "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
+      { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
+      {
+        "name": "nodeShape",
+        "kind": "enum",
+        "values": ["box", "circle"],
+        "required": false,
+        "description": "Shape of the nodes without `shape` (boxes for DAGs, org charts and mind maps, circles otherwise)",
+        "attribute": "node-shape"
+      },
+      { "name": "nodeSize", "kind": "union", "required": false, "description": "Circle diameter in layout units, or `[min, max]` scaled by the node `value`", "only": "react" },
+      {
+        "name": "edgeStyle",
+        "kind": "enum",
+        "values": ["curve", "orthogonal", "spline", "straight"],
+        "required": false,
+        "description": "Edge shape; depends on the layout when omitted",
+        "attribute": "edge-style"
+      },
+      { "name": "edgeWidth", "kind": "union", "required": false, "description": "Edge width in CSS pixels, or `[min, max]` scaled by the edge `value`", "only": "react" },
+      {
+        "name": "edgeColor",
+        "kind": "enum",
+        "values": ["neutral", "source", "target"],
+        "default": "neutral",
+        "required": false,
+        "description": "Edge colors: neutral or tinted with the source / target node",
+        "attribute": "edge-color"
+      },
+      { "name": "arrows", "kind": "boolean", "required": false, "description": "Arrowheads on the edges without `directed`", "only": "react" },
+      {
+        "name": "nodeLabels",
+        "kind": "union",
+        "default": "auto",
+        "required": false,
+        "description": "Node labels; `auto` hides minor and overlapping labels when zoomed out. Text inside boxes keeps a readable minimum size and is shortened with an ellipsis; it is hidden only when the box is too small for any text, or with `false`",
+        "only": "react"
+      },
+      { "name": "edgeLabels", "kind": "union", "default": "auto", "required": false, "description": "Edge labels: always, `auto` (zoomed in or highlighted), only `hover`, or never", "only": "react" },
+      { "name": "highlight", "kind": "enum", "values": ["lineage", "neighbors", "none"], "required": false, "description": "What hovering / selecting a node highlights", "attribute": "highlight" },
+      { "name": "selected", "kind": "array", "required": false, "description": "Ids of the selected nodes (changing it updates the selection)" },
+      { "name": "animation", "kind": "union", "default": true, "required": false, "description": "Animates layout and data changes; a number is the duration in ms", "only": "react" },
+      { "name": "fitPadding", "kind": "number", "default": 24, "required": false, "description": "Padding around the graph when fitting it, in CSS pixels", "only": "react" },
+      { "name": "controls", "kind": "boolean", "default": true, "required": false, "description": "Zoom buttons (zoom in, zoom out, fit)", "only": "react" },
+      { "name": "legend", "kind": "union", "required": false, "description": "Legend of the groups; shown by default with several groups", "only": "react" },
+      { "name": "tooltip", "kind": "union", "required": false, "description": "Tooltip; `false` disables it", "only": "react" },
+      {
+        "name": "interaction",
+        "kind": "union",
+        "default": true,
+        "required": false,
+        "description": "Drag pans, Ctrl / ⌘ + wheel and pinch zoom, nodes can be dragged (force, circular), click selects, arrow keys move between nodes; `false` makes the chart static",
+        "only": "react"
+      },
+      {
+        "name": "renderer",
+        "kind": "enum",
+        "values": ["auto", "canvas2d", "webgl", "webgl2", "webgpu"],
+        "default": "auto",
+        "required": false,
+        "description": "Backend of the nodes and edges: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software",
+        "only": "react"
+      },
+      { "name": "palette", "kind": "array", "required": false, "description": "Group colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)", "only": "react" },
+      { "name": "ariaLabel", "kind": "string", "required": false, "description": "Accessible name of the chart", "only": "react" },
+      {
+        "name": "locale",
+        "kind": "string",
+        "required": false,
+        "description": "Language of the built-in texts (summary, announcements, tooltip, buttons); built-in texts in English, Chinese, Japanese and French",
+        "attribute": "locale"
+      },
+      { "name": "labels", "kind": "object", "required": false, "description": "Overrides of the built-in texts of the `locale`", "only": "react" },
+      {
+        "name": "options",
+        "kind": "object",
+        "required": false,
+        "description": "Other engine options (`GraphChartOptions`: force, circular, dag, tree, nodeSize, edgeWidth, arrows, nodeLabels, edgeLabels, animation, legend, tooltip, interaction, renderer, palette, ariaLabel, labels...); property only",
+        "only": "wc"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "wc": "minerva-hover",
+        "detail": ["type", "id", "node", "edge", "index", "group", "color", "degree", "clientX", "clientY"],
+        "description": "The hovered (or keyboard-focused) node / edge changed; detail: { type, id, node, edge, index, group, color, degree, clientX, clientY }, `null` when nothing is hovered",
+        "react": "onHover"
+      },
+      {
+        "name": "minerva-item-click",
+        "wc": "minerva-item-click",
+        "detail": ["type", "id", "node", "edge", "index", "group", "color", "degree", "clientX", "clientY"],
+        "description": "A node or an edge was clicked (or a node activated with Enter); detail: { type, id, node, edge, index, group, color, degree, clientX, clientY }",
+        "react": "onItemClick"
+      },
+      { "name": "minerva-selection-change", "wc": "minerva-selection-change", "detail": ["ids"], "description": "The selection changed; detail: { ids }", "react": "onSelectionChange" },
+      { "name": "minerva-toggle", "wc": "minerva-toggle", "detail": ["id", "collapsed"], "description": "A tree node was collapsed or expanded; detail: { id, collapsed }", "react": "onToggle" },
+      {
+        "name": "minerva-group-toggle",
+        "wc": "minerva-group-toggle",
+        "detail": ["group", "hidden"],
+        "description": "The legend showed / hid a group; detail: { group, hidden }",
+        "react": "onGroupToggle"
+      },
+      {
+        "name": "minerva-layout-end",
+        "wc": "minerva-layout-end",
+        "detail": ["layout"],
+        "description": "The layout is done (the force simulation cooled down); detail: { layout }",
+        "react": "onLayoutEnd"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "wc": "minerva-renderer-change",
+        "detail": ["renderer"],
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }",
+        "react": "onRendererChange"
+      }
+    ],
+    "slots": [],
+    "children": false,
+    "platforms": {
+      "react": { "status": "stable" },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnTreeChart. Native standalone component/directive; see platform tests for validated scope." },
+      "native": {
+        "status": "n/a",
+        "notes": "DOM / GPU widget of minerva-design/charts (WebGPU or WebGL canvases with DOM overlays): not drawn by the native canvas chart engine; show the web version in a web view."
+      },
+      "taro": {
+        "status": "n/a",
+        "notes": "DOM / GPU widget of minerva-design/charts (WebGPU or WebGL canvases with DOM overlays): not drawn by the native canvas chart engine; show the web version in a web view."
+      },
+      "weapp": {
+        "status": "n/a",
+        "notes": "DOM / GPU widget of minerva-design/charts (WebGPU or WebGL canvases with DOM overlays): not drawn by the native canvas chart engine; show the web version in a web view."
+      },
+      "uni": {
+        "status": "n/a",
+        "notes": "DOM / GPU widget of minerva-design/charts (WebGPU or WebGL canvases with DOM overlays): not drawn by the native canvas chart engine; show the web version in a web view."
       }
     }
   },
@@ -12952,6 +13719,7 @@
       { "name": "downColor", "kind": "string", "required": false, "description": "Color of the decreases", "attribute": "down-color" },
       { "name": "totalColor", "kind": "string", "required": false, "description": "Color of the totals and subtotals", "attribute": "total-color" },
       { "name": "format", "kind": "function", "required": false, "description": "Formats the values (labels, tooltip)" },
+      { "name": "connector", "kind": "union", "required": false, "description": "Thin lines from the end of every bar to the next one; an object styles them" },
       { "name": "valueName", "kind": "string", "required": false, "description": "Name of the series in the tooltip (default \"Change\")", "attribute": "value-name", "only": "wc" },
       {
         "name": "hideLabels",
@@ -12960,6 +13728,15 @@
         "required": false,
         "description": "Hides the change (or total) written at the end of every bar",
         "attribute": "hide-labels",
+        "only": "wc"
+      },
+      {
+        "name": "hideConnectors",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "Hides the thin lines from the end of every bar to the next one",
+        "attribute": "hide-connectors",
         "only": "wc"
       },
       { "name": "options", "kind": "object", "required": false, "description": "Other engine options (axes, tooltip, annotations...); property only", "only": "wc" }

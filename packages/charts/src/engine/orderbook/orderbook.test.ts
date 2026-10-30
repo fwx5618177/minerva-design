@@ -164,6 +164,12 @@ describe("helpers", () => {
       "09:05:07.042",
     );
     expect(formatClock(0, false)).toMatch(/^\d\d:\d\d:\d\d$/);
+    expect(formatClock(Date.UTC(2024, 0, 1, 9, 5, 7, 42), true, "utc")).toBe(
+      "09:05:07.042",
+    );
+    expect(formatClock(Date.UTC(2024, 0, 1, 23, 0, 1), false, "utc")).toBe(
+      "23:00:01",
+    );
   });
 
   it("swaps the side colors with the red-up convention", () => {
@@ -326,6 +332,94 @@ describe("order book heatmap", () => {
     heatmap.resetView();
     heatmap.destroy();
     expect(el.childElementCount).toBe(0);
+  });
+
+  it("draws tags, the profile scale, hovers cells and pans / zooms", async () => {
+    const el = mount();
+    const heatmap = createOrderBookHeatmap(el, {
+      interval: 100,
+      locale: "en-US",
+      renderer: "canvas2d",
+      pricePrecision: 1,
+    });
+    const hovers: (number | null)[] = [];
+    const follows: boolean[] = [];
+    heatmap.on("hover", (event) => hovers.push(event ? event.price : null));
+    heatmap.on("follow", (follow) => follows.push(follow));
+    heatmap.setBook({ ...BOOK, time: 1000 });
+    for (let i = 1; i < 30; i++) {
+      heatmap.applyDeltas({
+        bids: [[99.8, 1 + (i % 3)]],
+        asks: [[100.3, 2]],
+        time: 1000 + i * 100,
+      });
+      heatmap.addTrades([
+        { time: 1000 + i * 100, price: 100.1, size: 0.5 + i, side: "buy" },
+        { time: 1000 + i * 100, price: 100, size: 1, side: "sell" },
+      ]);
+    }
+    await heatmap.ready;
+    await frame();
+    // best bid / ask tags, the last trade, the price ticks, the size scale
+    expect(texts).toContain("100.0");
+    expect(texts).toContain("100.1");
+    expect(texts).toContain("0");
+    const root = el.firstElementChild as HTMLElement;
+    root.dispatchEvent(
+      new PointerEvent("pointermove", { clientX: 150, clientY: 120 }),
+    );
+    await frame();
+    expect(hovers.length).toBeGreaterThan(0);
+    expect(typeof hovers[hovers.length - 1]).toBe("number");
+    // drag: pan (stops following), double click: follow again
+    root.dispatchEvent(
+      new PointerEvent("pointerdown", { clientX: 150, clientY: 120 }),
+    );
+    root.dispatchEvent(
+      new PointerEvent("pointermove", { clientX: 190, clientY: 130 }),
+    );
+    root.dispatchEvent(new PointerEvent("pointerup"));
+    expect(follows).toEqual([false]);
+    root.dispatchEvent(new MouseEvent("dblclick"));
+    expect(follows).toEqual([false, true]);
+    // dragging the price axis scales the prices; ctrl + wheel zooms
+    root.dispatchEvent(
+      new PointerEvent("pointerdown", { clientX: 390, clientY: 100 }),
+    );
+    root.dispatchEvent(
+      new PointerEvent("pointermove", { clientX: 390, clientY: 140 }),
+    );
+    root.dispatchEvent(new PointerEvent("pointerup"));
+    root.dispatchEvent(
+      new WheelEvent("wheel", { deltaY: 100, ctrlKey: true, clientX: 100 }),
+    );
+    root.dispatchEvent(
+      new WheelEvent("wheel", { deltaY: -100, ctrlKey: true, clientX: 395 }),
+    );
+    for (const key of ["+", "-", "ArrowUp", "ArrowLeft", "0"])
+      root.dispatchEvent(new KeyboardEvent("keydown", { key }));
+    root.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "ArrowDown", shiftKey: true }),
+    );
+    expect(follows).toEqual([false, true, false, true]);
+    await frame();
+    root.dispatchEvent(new PointerEvent("pointerleave"));
+    await frame();
+    expect(hovers[hovers.length - 1]).toBeNull();
+    // light / dark ramps and options updates keep the history
+    heatmap.setOptions({
+      interval: 100,
+      locale: "zh-CN",
+      renderer: "canvas2d",
+      colors: ["#000000", "#ffffff"],
+      profile: false,
+      bestLines: false,
+      bubbles: false,
+    });
+    await frame();
+    heatmap.clear();
+    expect(heatmap.getStore().count("bid")).toBe(0);
+    heatmap.destroy();
   });
 });
 

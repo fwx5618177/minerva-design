@@ -63,9 +63,28 @@ export interface Chart3DColumnData {
   size?: ArrayLike<number>;
   /** Per-point values mapped to the color scale (`colorBy: "value"`) */
   value?: ArrayLike<number>;
+  /**
+   * Per-point colors as `0xRRGGBB` numbers (a `Uint32Array` for large
+   * clouds); win over the series color and the color scale
+   */
+  color?: ArrayLike<number>;
   /** Per-point texts shown in the tooltip */
   label?: readonly string[];
 }
+
+/**
+ * Look of the scatter dots: `"sphere"` shaded balls, `"disc"` flat
+ * anti-aliased discs, `"glow"` soft discs with a gaussian halo (stars,
+ * dense clouds; pairs well with `blend: "additive"`)
+ */
+export type Scatter3DPointStyle = "sphere" | "disc" | "glow";
+
+/**
+ * How the dots mix with what is behind them: `"normal"` alpha blending, or
+ * `"additive"` light accumulation (dense regions get brighter; meant for
+ * dark backgrounds, the dots don't hide each other)
+ */
+export type Scatter3DBlend = "normal" | "additive";
 
 /** Points of a scatter or line series: objects, `[x, y, z]` tuples or columns */
 export type Chart3DPointData =
@@ -120,6 +139,16 @@ export interface Scatter3DSeries extends Chart3DSeriesBase {
    * @default true
    */
   perspectiveSize?: boolean;
+  /**
+   * Look of the dots: shaded spheres, flat discs or glowing discs
+   * @default "sphere"
+   */
+  pointStyle?: Scatter3DPointStyle;
+  /**
+   * Blending of the dots: `"additive"` accumulates light (dark backgrounds)
+   * @default "normal"
+   */
+  blend?: Scatter3DBlend;
 }
 
 /** A 3D polyline (trajectory); `NaN` coordinates break the line */

@@ -1,18 +1,25 @@
-// Shaders of the 3D data layer: instanced point billboards shaded as small
-// spheres, lit triangles (two-sided Lambert + Blinn-Phong) and screen-space
-// wide line segments. WGSL for WebGPU, GLSL ES 1.0 for WebGL (turned into
-// GLSL ES 3.0 for WebGL2 by a macro prefix). Outputs are premultiplied.
+// Shaders of the 3D data layer: instanced point billboards (shaded spheres,
+// flat discs or glowing discs), lit triangles (two-sided Lambert +
+// Blinn-Phong) and screen-space wide line segments. WGSL for WebGPU, GLSL ES
+// 1.0 for WebGL (turned into GLSL ES 3.0 for WebGL2 by a macro prefix).
+// Outputs are premultiplied.
 //
 // Uniforms (WGSL struct, GLSL vec4 uniforms of the same names):
 //   viewProj  world -> clip (OpenGL depth convention)
 //   viewport  drawing buffer width, height (device px), dpr, orthographic
-//   eye       camera position, depth bias of the lines (NDC)
-//   light     unit vector towards the light
+//   eye       camera position, depth bias of the lines (NDC) | point style
+//   light     unit vector towards the light, additive points (0/1)
 //   material  ambient, diffuse, specular, shininess
 //   params    opacity, perspective sizes (0/1) | line width (CSS px), distance, radius
 //   fog       background color (far points fade towards it)
+//
+// Point sizes are CSS pixels times the device pixel ratio (billboards: no
+// point size limit). Dots thinner than the smallest drawn radius keep their
+// energy: their alpha scales with the area they would cover.
 
-import type { Frame3D, Item3D } from "./render-types";
+import { POINT_SPHERE, type Frame3D, type Item3D } from "./render-types";
+
+export { writesDepth } from "./render-types";
 
 /** Bytes of the WGSL uniform struct */
 export const UNIFORM_BYTES = 160;
@@ -60,17 +67,23 @@ export const itemUniforms = (
       frame.eye[0],
       frame.eye[1],
       frame.eye[2],
-      item.kind === "lines" ? item.bias : 0,
+      item.kind === "lines"
+        ? item.bias
+        : item.kind === "points"
+          ? (item.style ?? POINT_SPHERE)
+          : 0,
     ],
-    [frame.light[0], frame.light[1], frame.light[2], 0],
+    [
+      frame.light[0],
+      frame.light[1],
+      frame.light[2],
+      item.kind === "points" && item.additive ? 1 : 0,
+    ],
     frame.lighting,
     [item.opacity, second, frame.distance, frame.radius],
     [frame.fog[0], frame.fog[1], frame.fog[2], 1],
   );
 };
-
-/** Whether an item writes the depth buffer (opaque items) */
-export const writesDepth = (item: Item3D): boolean => item.opacity >= 1;
 
 // ------------------------------------------------------------------- WGSL
 
@@ -103,6 +116,7 @@ struct Out {
   @location(1) radius: f32,
   @location(2) color: vec4f,
   @location(3) fog: f32,
+  @location(4) coverage: f32,
 };
 
 @vertex
@@ -119,31 +133,48 @@ fn vs(
   if (u.params.y > 0.5 && u.viewport.w < 0.5) {
     factor = clamp(u.params.z / max(clip.w, 1e-6), 0.5, 2.0);
   }
-  let radius = max(0.5, size * u.viewport.z * factor * 0.5);
-  let reach = radius + 1.0;
+  let glow = u.eye.w > 1.5;
+  let raw = max(size, 0.0) * u.viewport.z * factor * 0.5;
+  let radius = max(raw, select(0.5, 0.75, glow));
+  let reach = select(radius + 1.0, radius * 2.2 + 1.0, glow);
   let shift = corner * reach * 2.0 / u.viewport.xy * clip.w;
   out.position = toWebGpuDepth(vec4f(clip.xy + shift, clip.z, clip.w));
   out.offset = corner * reach;
   out.radius = radius;
   out.color = color;
   out.fog = depthCue(pos) * 0.45;
+  out.coverage = min(1.0, raw * raw / (radius * radius));
   return out;
 }
 
 @fragment
 fn fs(in: Out) -> @location(0) vec4f {
   let d = length(in.offset);
-  var alpha = clamp(in.radius + 0.5 - d, 0.0, 1.0);
-  if (alpha <= 0.0) { discard; }
-  let q = min(d / in.radius, 1.0);
-  let n = vec3f(in.offset.x / in.radius, in.offset.y / in.radius, sqrt(max(0.0, 1.0 - q * q)));
-  let l = normalize(vec3f(-0.45, 0.55, 0.7));
-  let lambert = max(dot(n, l), 0.0);
-  let shaded = in.color.rgb * (0.62 + 0.45 * lambert) + vec3f(pow(lambert, 18.0) * 0.28);
-  let sphere = smoothstep(1.5, 3.5, in.radius);
-  var rgb = mix(in.color.rgb, shaded, sphere);
-  rgb = mix(rgb, u.fog.rgb, in.fog);
-  alpha = alpha * in.color.a * u.params.x;
+  let r = in.radius;
+  var alpha = clamp(r + 0.5 - d, 0.0, 1.0);
+  var rgb = in.color.rgb;
+  if (u.eye.w > 1.5) {
+    // glow: an anti-aliased core and a gaussian halo
+    let core = clamp(r * 0.6 + 0.5 - d, 0.0, 1.0);
+    let q = d / r;
+    alpha = core + (1.0 - core) * exp(-1.2 * q * q);
+    rgb = rgb + (vec3f(1.0) - rgb) * (0.2 * core);
+  } else if (u.eye.w < 0.5) {
+    let q = min(d / r, 1.0);
+    let n = vec3f(in.offset.x / r, in.offset.y / r, sqrt(max(0.0, 1.0 - q * q)));
+    let l = normalize(vec3f(-0.45, 0.55, 0.7));
+    let lambert = max(dot(n, l), 0.0);
+    let shaded = rgb * (0.62 + 0.45 * lambert) + vec3f(pow(lambert, 18.0) * 0.28);
+    rgb = mix(rgb, shaded, smoothstep(1.5, 3.5, r));
+  }
+  if (alpha <= 0.004) { discard; }
+  if (u.light.w > 0.5) {
+    // additive light fades with the distance
+    alpha = alpha * (1.0 - in.fog);
+  } else {
+    rgb = mix(rgb, u.fog.rgb, in.fog);
+  }
+  alpha = alpha * in.coverage * in.color.a * u.params.x;
   return vec4f(rgb * alpha, alpha);
 }
 `;
@@ -252,6 +283,7 @@ varying vec2 v_offset;
 varying float v_radius;
 varying vec4 v_color;
 varying float v_fog;
+varying float v_coverage;
 void main() {
   vec2 corner = a_corner * 2.0 - 1.0;
   vec4 clip = u_viewProj * vec4(a_pos, 1.0);
@@ -259,8 +291,10 @@ void main() {
   if (u_params.y > 0.5 && u_viewport.w < 0.5) {
     factor = clamp(u_params.z / max(clip.w, 1e-6), 0.5, 2.0);
   }
-  float radius = max(0.5, a_size * u_viewport.z * factor * 0.5);
-  float reach = radius + 1.0;
+  bool glow = u_eye.w > 1.5;
+  float raw = max(a_size, 0.0) * u_viewport.z * factor * 0.5;
+  float radius = max(raw, glow ? 0.75 : 0.5);
+  float reach = glow ? radius * 2.2 + 1.0 : radius + 1.0;
   vec2 shift = corner * reach * 2.0 / u_viewport.xy * clip.w;
   gl_Position = vec4(clip.xy + shift, clip.z, clip.w);
   v_offset = corner * reach;
@@ -268,6 +302,7 @@ void main() {
   v_color = a_color;
   float near = u_params.z - u_params.w;
   v_fog = clamp((length(a_pos - u_eye.xyz) - near) / (2.0 * u_params.w), 0.0, 1.0) * 0.45;
+  v_coverage = min(1.0, raw * raw / (radius * radius));
 }
 `;
 
@@ -276,19 +311,32 @@ varying vec2 v_offset;
 varying float v_radius;
 varying vec4 v_color;
 varying float v_fog;
+varying float v_coverage;
 void main() {
   float d = length(v_offset);
-  float alpha = clamp(v_radius + 0.5 - d, 0.0, 1.0);
-  if (alpha <= 0.0) discard;
-  float q = min(d / v_radius, 1.0);
-  vec3 n = vec3(v_offset / v_radius, sqrt(max(0.0, 1.0 - q * q)));
-  vec3 l = normalize(vec3(-0.45, 0.55, 0.7));
-  float lambert = max(dot(n, l), 0.0);
-  vec3 shaded = v_color.rgb * (0.62 + 0.45 * lambert) + vec3(pow(lambert, 18.0) * 0.28);
-  float sphere = smoothstep(1.5, 3.5, v_radius);
-  vec3 rgb = mix(v_color.rgb, shaded, sphere);
-  rgb = mix(rgb, u_fog.rgb, v_fog);
-  alpha = alpha * v_color.a * u_params.x;
+  float r = v_radius;
+  float alpha = clamp(r + 0.5 - d, 0.0, 1.0);
+  vec3 rgb = v_color.rgb;
+  if (u_eye.w > 1.5) {
+    float core = clamp(r * 0.6 + 0.5 - d, 0.0, 1.0);
+    float q = d / r;
+    alpha = core + (1.0 - core) * exp(-1.2 * q * q);
+    rgb = rgb + (vec3(1.0) - rgb) * (0.2 * core);
+  } else if (u_eye.w < 0.5) {
+    float q = min(d / r, 1.0);
+    vec3 n = vec3(v_offset / r, sqrt(max(0.0, 1.0 - q * q)));
+    vec3 l = normalize(vec3(-0.45, 0.55, 0.7));
+    float lambert = max(dot(n, l), 0.0);
+    vec3 shaded = rgb * (0.62 + 0.45 * lambert) + vec3(pow(lambert, 18.0) * 0.28);
+    rgb = mix(rgb, shaded, smoothstep(1.5, 3.5, r));
+  }
+  if (alpha <= 0.004) discard;
+  if (u_light.w > 0.5) {
+    alpha = alpha * (1.0 - v_fog);
+  } else {
+    rgb = mix(rgb, u_fog.rgb, v_fog);
+  }
+  alpha = alpha * v_coverage * v_color.a * u_params.x;
   FRAG = vec4(rgb * alpha, alpha);
 }
 `;

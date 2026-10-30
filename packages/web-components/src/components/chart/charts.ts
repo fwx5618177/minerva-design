@@ -246,13 +246,17 @@ export class MinervaHeatmapChart extends MinervaCartesianChartElement {
   @property({ attribute: false })
   yCategories?: readonly string[];
 
-  /** Colors from the lowest to the highest value (a ramp of the first palette color by default); property only */
-  @property({ attribute: false })
-  colorScale?: readonly string[];
+  /** Colors from the lowest to the highest value (interpolated in OKLab), or a built-in theme-aware ramp of the first palette color (`sequential` by default, or `diverging`); an array is property only */
+  @property({ attribute: "color-scale" })
+  colorScale: readonly string[] | "sequential" | "diverging" = "sequential";
 
   /** Values at the ends of the color scale (the data range by default); property only */
   @property({ attribute: false })
   valueRange?: readonly [number, number];
+
+  /** Value at the middle of the color scale (diverging data; 0 for `diverging` ramps spanning it, else the middle of the range, by default) */
+  @property({ type: Number, attribute: "color-midpoint" })
+  colorMidpoint?: number;
 
   /** Name of the value in the tooltip */
   @property({ attribute: "value-name" })
@@ -279,6 +283,7 @@ export class MinervaHeatmapChart extends MinervaCartesianChartElement {
         yCategories: this.yCategories,
         colorScale: this.colorScale,
         valueRange: this.valueRange,
+        colorMidpoint: this.colorMidpoint,
         name: this.valueName,
         radius: this.radius,
         format: this.format,

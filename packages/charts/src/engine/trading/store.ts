@@ -318,3 +318,91 @@ export const pyramidLevel = (
   level.valid = n % size === 0 ? groups : groups - 1;
   return level;
 };
+
+// ---------------------------------------------------------- value ranges
+
+/** Lowest, highest and last finite value of each group of 2^k values */
+export interface RangeLevel {
+  size: number;
+  min: Float64Array;
+  max: Float64Array;
+  last: Float64Array;
+  /** Groups up to date */
+  valid: number;
+}
+
+/**
+ * Aggregated levels of a column of indicator values: a zoomed-out chart
+ * draws the range of each group (min / max decimation), so spikes stay
+ * visible instead of being sampled away
+ */
+export interface RangePyramid {
+  levels: (RangeLevel | undefined)[];
+}
+
+export const createRangePyramid = (): RangePyramid => ({ levels: [] });
+
+export const invalidateRangePyramid = (
+  pyramid: RangePyramid,
+  from: number,
+): void => {
+  for (const level of pyramid.levels) {
+    if (level)
+      level.valid = Math.min(level.valid, Math.floor(from / level.size));
+  }
+};
+
+const lower = (a: number, b: number) =>
+  !Number.isFinite(a) ? b : !Number.isFinite(b) ? a : a < b ? a : b;
+const upper = (a: number, b: number) =>
+  !Number.isFinite(a) ? b : !Number.isFinite(b) ? a : a > b ? a : b;
+
+/** Level `k` (k >= 1) of the first `n` values, updated for the stale groups only */
+export const rangeLevel = (
+  pyramid: RangePyramid,
+  values: Float64Array,
+  n: number,
+  k: number,
+): RangeLevel => {
+  const size = 2 ** k;
+  const groups = Math.ceil(n / size);
+  let level = pyramid.levels[k];
+  if (!level || level.min.length < groups) {
+    const capacity = Math.max(16, Math.ceil(groups * 1.5));
+    const next: RangeLevel = {
+      size,
+      min: new Float64Array(capacity),
+      max: new Float64Array(capacity),
+      last: new Float64Array(capacity),
+      valid: 0,
+    };
+    if (level) {
+      next.min.set(level.min.subarray(0, level.valid));
+      next.max.set(level.max.subarray(0, level.valid));
+      next.last.set(level.last.subarray(0, level.valid));
+      next.valid = level.valid;
+    }
+    level = next;
+    pyramid.levels[k] = level;
+  }
+  if (level.valid >= groups) return level;
+  const prev = k > 1 ? rangeLevel(pyramid, values, n, k - 1) : null;
+  const prevCount = k > 1 ? Math.ceil(n / (size / 2)) : n;
+  const from = Math.max(0, Math.min(level.valid, groups - 1));
+  for (let g = from; g < groups; g++) {
+    const a = g * 2;
+    const b = a + 1;
+    const has = b < prevCount;
+    const minA = prev ? prev.min[a] : values[a];
+    const maxA = prev ? prev.max[a] : values[a];
+    const lastA = prev ? prev.last[a] : values[a];
+    const minB = has ? (prev ? prev.min[b] : values[b]) : NaN;
+    const maxB = has ? (prev ? prev.max[b] : values[b]) : NaN;
+    const lastB = has ? (prev ? prev.last[b] : values[b]) : NaN;
+    level.min[g] = lower(minA, minB);
+    level.max[g] = upper(maxA, maxB);
+    level.last[g] = Number.isFinite(lastB) ? lastB : lastA;
+  }
+  level.valid = n % size === 0 ? groups : groups - 1;
+  return level;
+};

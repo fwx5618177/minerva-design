@@ -179,12 +179,15 @@ export { default as SunburstChart } from "./SunburstChart.vue";
 export { default as RadialBarChart } from "./RadialBarChart.vue";
 export { default as CalendarHeatmap } from "./CalendarHeatmap.vue";
 export { default as BulletChart } from "./BulletChart.vue";
+export { default as ChordChart } from "./ChordChart.vue";
 export { default as ShapeChart } from "./ShapeChart.vue";
 export type {
   BulletDatum,
   CalendarDate,
   CalendarDatum,
   CanvasShapeChartInstance,
+  ChordGroup,
+  ChordLink,
   GaugeBand,
   RadarIndicator,
   RadarSeries,

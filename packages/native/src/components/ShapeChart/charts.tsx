@@ -1,24 +1,26 @@
 import { useMemo } from "react";
-import type {
-  BulletChartOptions,
-  CalendarDate,
-  CalendarHeatmapOptions,
-  FunnelChartOptions,
-  GaugeChartOptions,
-  PieChartOptions,
-  RadarChartOptions,
-  RadialBarChartOptions,
-  SankeyChartOptions,
-  ShapeChartCommonOptions,
-  ShapeChartOptions,
-  ShapeDrillEvent,
-  SunburstChartOptions,
-  TreemapChartOptions,
+import {
+  calendarStrips,
+  type BulletChartOptions,
+  type CalendarHeatmapOptions,
+  type ChordChartOptions,
+  type FunnelChartOptions,
+  type GaugeChartOptions,
+  type PieChartOptions,
+  type RadarChartOptions,
+  type RadialBarChartOptions,
+  type SankeyChartOptions,
+  type ShapeChartCommonOptions,
+  type ShapeChartOptions,
+  type ShapeDrillEvent,
+  type SunburstChartOptions,
+  type TreemapChartOptions,
 } from "@minerva/charts/canvas";
 import { ShapeChartBase } from "./ShapeChartBase";
 import type {
   BulletChartProps,
   CalendarHeatmapProps,
+  ChordChartProps,
   DonutChartProps,
   FunnelChartProps,
   GaugeChartProps,
@@ -44,6 +46,8 @@ function useCommonOptions({
   animation,
   padding,
   ariaLabel,
+  locale,
+  texts,
 }: ShapeChartCommonProps): ShapeChartCommonOptions {
   // a new array with the same indexes keeps the options (and the animation)
   const hiddenKey = hidden ? hidden.join(",") : null;
@@ -67,6 +71,8 @@ function useCommonOptions({
       animation,
       padding,
       ariaLabel,
+      locale,
+      texts,
     }),
     [
       palette,
@@ -78,6 +84,8 @@ function useCommonOptions({
       animation,
       padding,
       ariaLabel,
+      locale,
+      texts,
     ],
   );
 }
@@ -449,25 +457,6 @@ export function RadialBarChart(props: RadialBarChartProps) {
   return <ShapeHost frame={props} options={options} defaultHeight={300} />;
 }
 
-const yearOf = (date: CalendarDate) => {
-  const time =
-    date instanceof Date
-      ? date.getTime()
-      : typeof date === "number"
-        ? date
-        : Date.parse(date);
-  return Number.isFinite(time) ? new Date(time).getUTCFullYear() : NaN;
-};
-
-/** Strips of the `weeks` layout: one per year when a range spans more than 53 weeks */
-const calendarStrips = (range: CalendarHeatmapOptions["range"]) => {
-  if (!Array.isArray(range) || range.length < 2) return 1;
-  const [a, b] = range as readonly [CalendarDate, CalendarDate];
-  const from = Math.min(yearOf(a), yearOf(b));
-  const to = Math.max(yearOf(a), yearOf(b));
-  return to > from ? to - from + 1 : 1;
-};
-
 /** Calendar heatmap: daily values on a calendar, contributions-style */
 export function CalendarHeatmap(props: CalendarHeatmapProps) {
   const {
@@ -525,8 +514,9 @@ export function CalendarHeatmap(props: CalendarHeatmapProps) {
     ],
   );
   const legend = options.legend === false ? 0 : 34;
+  // one strip of weeks per year when the range spans more than 53 weeks
   const defaultHeight =
-    layout === "months" ? 560 : calendarStrips(range) * 120 + legend + 16;
+    layout === "months" ? 560 : calendarStrips(options) * 120 + legend + 16;
   return (
     <ShapeHost frame={props} options={options} defaultHeight={defaultHeight} />
   );
@@ -580,12 +570,78 @@ export function BulletChart(props: BulletChartProps) {
   );
 }
 
+/**
+ * Chord diagram: flows between groups around a circle; pressing a group
+ * highlights its ribbons, pressing a ribbon shows both directions
+ */
+export function ChordChart(props: ChordChartProps) {
+  const {
+    groups,
+    matrix,
+    links,
+    directed,
+    arrows,
+    padAngle,
+    startAngle,
+    sortGroups,
+    sortSubgroups,
+    ribbonColor,
+    ribbonOpacity,
+    arcWidth,
+    ticks,
+    tickFormat,
+    labels,
+  } = props;
+  const common = useCommonOptions(props);
+  const options = useMemo(
+    (): ChordChartOptions => ({
+      ...common,
+      type: "chord",
+      groups,
+      matrix,
+      links,
+      directed,
+      arrows,
+      padAngle,
+      startAngle,
+      sortGroups,
+      sortSubgroups,
+      ribbonColor,
+      ribbonOpacity,
+      arcWidth,
+      ticks,
+      tickFormat,
+      labels,
+    }),
+    [
+      common,
+      groups,
+      matrix,
+      links,
+      directed,
+      arrows,
+      padAngle,
+      startAngle,
+      sortGroups,
+      sortSubgroups,
+      ribbonColor,
+      ribbonOpacity,
+      arcWidth,
+      ticks,
+      tickFormat,
+      labels,
+    ],
+  );
+  return <ShapeHost frame={props} options={options} defaultHeight={420} />;
+}
+
 /** Default height of a shape chart type (ShapeChart) */
 const DEFAULT_HEIGHTS: Partial<Record<ShapeChartOptions["type"], number>> = {
   gauge: 240,
   radialBar: 300,
   sankey: 360,
   sunburst: 360,
+  chord: 420,
 };
 
 /**

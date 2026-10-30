@@ -7,6 +7,7 @@ import {
   waterfallSeries,
   type BoxplotGroup,
   type ChartAnnotation,
+  type ChartConnectorOptions,
   type ChartOptions,
   type ChartSeries,
   type GanttTask,
@@ -243,6 +244,14 @@ export class MinervaBoxPlotChart extends MinervaCartesianChartElement {
   @property({ converter: whiskerReach })
   whisker: number | "minmax" = 1.5;
 
+  /** Outliers drawn as rings of the series color or as filled dots (series may set their own) */
+  @property({ attribute: "outlier-shape" })
+  outlierShape: "hollow" | "filled" = "hollow";
+
+  /** Diameter of the outliers in CSS pixels */
+  @property({ type: Number, attribute: "outlier-size" })
+  outlierSize = 7;
+
   /** `horizontal` lays the boxes out in rows */
   @property()
   orientation: "vertical" | "horizontal" = "vertical";
@@ -270,6 +279,14 @@ export class MinervaBoxPlotChart extends MinervaCartesianChartElement {
           ...(this.series ?? []),
         ],
         "boxplot",
+      ).map((s) =>
+        s.type === "boxplot"
+          ? {
+              ...s,
+              outlierShape: s.outlierShape ?? this.outlierShape,
+              outlierSize: s.outlierSize ?? this.outlierSize,
+            }
+          : s,
       ),
     };
   }
@@ -322,6 +339,14 @@ export class MinervaWaterfallChart extends MinervaCartesianChartElement {
   @property({ attribute: false })
   format?: (value: number) => string;
 
+  /** Hides the thin lines from the end of every bar to the next one */
+  @property({ type: Boolean, attribute: "hide-connectors" })
+  hideConnectors = false;
+
+  /** Style of the connector lines `{ color, width, dash }` (dashed, secondary text color by default); property only */
+  @property({ attribute: false })
+  connector?: ChartConnectorOptions;
+
   /** `horizontal` lays the steps out in rows */
   @property()
   orientation: "vertical" | "horizontal" = "vertical";
@@ -344,6 +369,8 @@ export class MinervaWaterfallChart extends MinervaCartesianChartElement {
           start: this.start,
           labels: !this.hideLabels,
           format: this.format,
+          connector: this.hideConnectors ? false : (this.connector ?? true),
+          locale: this.options?.locale,
         }),
       ],
     };
@@ -373,17 +400,21 @@ export class MinervaGanttChart extends MinervaCartesianChartElement {
   @property({ attribute: false })
   colors?: readonly string[];
 
-  /** Name of the tasks without a group */
+  /** Name of the tasks without a group ("Tasks" in the locale by default) */
   @property({ attribute: "task-name" })
-  taskName = "Tasks";
+  taskName?: string;
 
-  /** Name of the progress bars (legend, tooltip) */
+  /** Name of the progress bars (legend, tooltip; "Progress" in the locale by default) */
   @property({ attribute: "progress-name" })
-  progressName = "Progress";
+  progressName?: string;
 
-  /** Name of the milestones (legend, tooltip) */
+  /** Name of the milestones (legend, tooltip; "Milestones" in the locale by default) */
   @property({ attribute: "milestone-name" })
-  milestoneName = "Milestones";
+  milestoneName?: string;
+
+  /** Name of the dependencies row of the tooltip ("Depends on" in the locale by default) */
+  @property({ attribute: "dependencies-name" })
+  dependenciesName?: string;
 
   /** Formats the progress shares (tooltip, default "60%"); property only */
   @property({ attribute: false })
@@ -411,6 +442,8 @@ export class MinervaGanttChart extends MinervaCartesianChartElement {
       progressName: this.progressName,
       milestoneName: this.milestoneName,
       formatProgress: this.formatProgress,
+      dependenciesName: this.dependenciesName,
+      locale: this.options?.locale,
     });
     const today = this.today;
     const now =

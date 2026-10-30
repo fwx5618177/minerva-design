@@ -47,8 +47,13 @@ export const priceFormatter = (
     minimumFractionDigits: p,
     maximumFractionDigits: p,
   });
-  return (value) => (Number.isFinite(value) ? format.format(value) : "–");
+  return (value) =>
+    Number.isFinite(value) ? typographicMinus(format.format(value)) : "–";
 };
+
+/** The minus sign (U+2212) instead of the hyphen-minus of `Intl` */
+export const typographicMinus = (text: string): string =>
+  text.replace("-", "−");
 
 /** `12345678` -> `12.35M` (`1234.57万` in Chinese and Japanese) */
 export const formatVolume = (value: number, locale?: string): string => {
@@ -58,9 +63,9 @@ export const formatVolume = (value: number, locale?: string): string => {
   for (const [unit, suffix] of compactUnits(locale)) {
     // 999,999 shows as 1M, not 1,000k
     if (abs >= unit * 0.999995)
-      return `${format.format(value / unit)}${suffix}`;
+      return typographicMinus(`${format.format(value / unit)}${suffix}`);
   }
-  return format.format(value);
+  return typographicMinus(format.format(value));
 };
 
 /** `+1.25%` */
@@ -85,10 +90,12 @@ export const formatFixed = (
   locale?: string,
 ): string =>
   Number.isFinite(value)
-    ? numberFormat(locale, {
-        minimumFractionDigits: decimals,
-        maximumFractionDigits: decimals,
-      }).format(value)
+    ? typographicMinus(
+        numberFormat(locale, {
+          minimumFractionDigits: decimals,
+          maximumFractionDigits: decimals,
+        }).format(value),
+      )
     : "–";
 
 // ------------------------------------------------------------------ times
@@ -117,6 +124,73 @@ export const dateFormat = (
 /** Offset of the displayed time from UTC, in minutes, at `time` */
 export const offsetAt = (time: number, utcOffset: number | undefined) =>
   utcOffset ?? -new Date(Number.isFinite(time) ? time : 0).getTimezoneOffset();
+
+/** Offset from UTC in minutes: fixed, or a function of the time (time zones) */
+export type UtcOffset = number | ((time: number) => number);
+
+export const offsetOf = (offset: UtcOffset, time: number): number =>
+  typeof offset === "number" ? offset : offset(time);
+
+const zoneFormats = new Map<string, Intl.DateTimeFormat | null>();
+const zoneOffsets = new Map<string, Map<number, number>>();
+const QUARTER = 15 * MINUTE;
+
+/** Whether `timeZone` is a time zone known to `Intl` (`"UTC"`, `"Asia/Shanghai"`) */
+export const isTimeZone = (timeZone: string): boolean =>
+  zoneFormat(timeZone) !== null;
+
+const zoneFormat = (timeZone: string) => {
+  let format = zoneFormats.get(timeZone);
+  if (format === undefined) {
+    try {
+      format = new Intl.DateTimeFormat("en-US", {
+        timeZone,
+        hourCycle: "h23",
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      });
+    } catch {
+      format = null;
+    }
+    zoneFormats.set(timeZone, format);
+  }
+  return format;
+};
+
+/**
+ * Offset of an IANA time zone from UTC at `time`, in minutes (daylight
+ * saving included). Cached per quarter of an hour: zones change their
+ * offset on quarter hours, and the time axis asks for every bar.
+ */
+export const zoneOffset = (time: number, timeZone: string): number => {
+  const format = zoneFormat(timeZone);
+  if (!format || !Number.isFinite(time))
+    return -new Date(Number.isFinite(time) ? time : 0).getTimezoneOffset();
+  let cache = zoneOffsets.get(timeZone);
+  if (!cache) zoneOffsets.set(timeZone, (cache = new Map()));
+  const bucket = Math.floor(time / QUARTER);
+  let offset = cache.get(bucket);
+  if (offset === undefined) {
+    const at = bucket * QUARTER;
+    const parts: Record<string, number> = {};
+    for (const part of format.formatToParts(at))
+      if (part.type !== "literal") parts[part.type] = Number(part.value);
+    const local = Date.UTC(
+      parts.year ?? 1970,
+      (parts.month ?? 1) - 1,
+      parts.day ?? 1,
+      (parts.hour ?? 0) % 24,
+      parts.minute ?? 0,
+    );
+    offset = Math.round((local - at) / MINUTE);
+    if (cache.size > 50_000) cache.clear();
+    cache.set(bucket, offset);
+  }
+  return offset;
+};
 
 /** Time shifted so that the UTC getters read the displayed time */
 export const shiftTime = (time: number, utcOffset: number | undefined) =>

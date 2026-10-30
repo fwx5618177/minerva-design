@@ -150,7 +150,8 @@ describe("named cartesian charts", () => {
     );
     const o = options();
     expect(o.series[0]!.type).toBe("heatmap");
-    expect(o.legend).toBe(false);
+    // the color legend (visual map) is shown by default
+    expect(o.legend).toBe(true);
     expect(screen.getByText("Mon")).toBeTruthy();
     expect(shapes().length).toBeGreaterThanOrEqual(3);
     await unmount();
@@ -271,5 +272,68 @@ describe("named cartesian charts", () => {
       </MinervaProvider>,
     );
     expect(options()).toBe(first);
+  });
+
+  it("passes the preset options connector, colorMidpoint, dependenciesName and the outlier style", async () => {
+    const r1 = await mount(
+      <WaterfallChart
+        connector={{ dash: [2, 2] }}
+        steps={[
+          { label: "Start", value: 10 },
+          { label: "End", kind: "total" },
+        ]}
+      />,
+    );
+    expect(options().series[0]).toMatchObject({ connector: { dash: [2, 2] } });
+    await r1.unmount();
+
+    const r2 = await mount(
+      <HeatmapChart
+        colorScale="diverging"
+        colorMidpoint={0}
+        data={[
+          { x: "a", y: "r", value: -1 },
+          { x: "b", y: "r", value: 1 },
+        ]}
+      />,
+    );
+    expect(options().series[0]).toMatchObject({ colorMidpoint: 0 });
+    await r2.unmount();
+
+    const r3 = await mount(
+      <GanttChart
+        dependenciesName="After"
+        tasks={[
+          { name: "Design", start: 0, end: 40 },
+          { name: "Build", start: 40, end: 100, dependencies: ["Design"] },
+        ]}
+      />,
+    );
+    expect(JSON.stringify(options().series)).toContain('"name":"After"');
+    await r3.unmount();
+
+    await mount(
+      <BoxPlotChart
+        outlierShape="filled"
+        outlierSize={10}
+        groups={[{ x: "a", values: [1, 2, 3, 4, 100] }]}
+        series={[
+          {
+            type: "boxplot",
+            name: "Own",
+            outlierSize: 4,
+            data: [{ x: "b", y: 2, q1: 1, q3: 3, low: 0, high: 4 }],
+          },
+        ]}
+      />,
+    );
+    expect(options().series[0]).toMatchObject({
+      outlierShape: "filled",
+      outlierSize: 10,
+    });
+    expect(options().series[1]).toMatchObject({
+      outlierShape: "filled",
+      outlierSize: 4,
+    });
   });
 });

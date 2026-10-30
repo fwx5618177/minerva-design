@@ -25,6 +25,12 @@ const RETURNS: Record<string, unknown> = {
   getVisibleRange: { from: 0, to: 10, fromTime: 0, toTime: 1 },
   getDrawings: [{ id: "d1", type: "trendLine" }],
   getCamera: { azimuth: 30, elevation: 20 },
+  getVisibleTimeRange: { from: 10, to: 20 },
+  getUndoState: { canUndo: true, canRedo: false },
+  getReplayState: { active: true, index: 3 },
+  toDataURL: "data:image/png;base64,",
+  getSelection: ["a"],
+  getPositions: { a: { x: 1, y: 2 } },
 };
 
 vi.mock("minerva-design/charts/core", async (importOriginal) => {
@@ -72,6 +78,7 @@ vi.mock("minerva-design/charts/core", async (importOriginal) => {
     createOrderBookHeatmap: create("heatmap"),
     createTimeAndSales: create("tape"),
     createChart3D: create("3d"),
+    createGraphChart: create("graph"),
   };
 });
 
@@ -79,6 +86,7 @@ await import("../../elements/chart");
 await import("../../elements/trading-chart");
 await import("../../elements/order-book");
 await import("../../elements/chart-3d");
+await import("../../elements/graph");
 const { mount, settle } = await import("../../../tests/utils");
 
 beforeEach(() => {
@@ -201,8 +209,17 @@ describe("cartesian elements", () => {
     [
       "minerva-heatmap-chart",
       { data: [{ x: "Mon", y: "AM", value: 3 }] },
-      'value-name="Load" radius="2"',
-      { series: [{ type: "heatmap", name: "Load" }] },
+      'value-name="Load" radius="2" color-scale="diverging" color-midpoint="0"',
+      {
+        series: [
+          {
+            type: "heatmap",
+            name: "Load",
+            colorScale: "diverging",
+            colorMidpoint: 0,
+          },
+        ],
+      },
     ],
     [
       "minerva-horizontal-bar-chart",
@@ -245,20 +262,47 @@ describe("cartesian elements", () => {
     ],
     [
       "minerva-box-plot-chart",
-      { groups: [{ x: "A", values: [1, 2, 3, 4, 5] }] },
-      'whisker="3"',
-      { series: [{ type: "boxplot", data: [{ x: "A", y: 3 }] }] },
+      {
+        groups: [{ x: "A", values: [1, 2, 3, 4, 5] }],
+        series: [{ name: "Target", type: "line", data: [["A", 3]] }],
+      },
+      'whisker="3" outlier-shape="filled" outlier-size="10"',
+      {
+        series: [
+          {
+            type: "boxplot",
+            data: [{ x: "A", y: 3 }],
+            outlierShape: "filled",
+            outlierSize: 10,
+          },
+          { type: "line" },
+        ],
+      },
     ],
     [
       "minerva-waterfall-chart",
       { steps: [{ label: "Start", value: 10 }] },
       'value-name="Cash"',
-      { series: [{ name: "Cash", data: [{ y0: 0, y: 10 }] }] },
+      {
+        series: [{ name: "Cash", connector: true, data: [{ y0: 0, y: 10 }] }],
+      },
+    ],
+    [
+      "minerva-waterfall-chart",
+      { steps: [{ label: "Start", value: 10 }], connector: { dash: [2, 2] } },
+      "",
+      { series: [{ connector: { dash: [2, 2] } }] },
+    ],
+    [
+      "minerva-waterfall-chart",
+      { steps: [{ label: "Start", value: 10 }], connector: { dash: [2, 2] } },
+      "hide-connectors",
+      { series: [{ connector: false }] },
     ],
     [
       "minerva-gantt-chart",
       { tasks: [{ name: "Build", start: 0, end: 10 }] },
-      'task-name="Task"',
+      'task-name="Task" dependencies-name="After"',
       { orientation: "horizontal", xAxis: { categories: ["Build"] } },
     ],
   ];
@@ -454,6 +498,50 @@ describe("shape elements", () => {
       { type: "bullet", orientation: "vertical" },
       "320px",
     ],
+    [
+      "minerva-chord-chart",
+      {
+        groups: ["A", "B"],
+        matrix: [
+          [0, 2],
+          [3, 0],
+        ],
+        tickFormat: String,
+        options: { ticks: 5, padAngle: 3 },
+      },
+      'directed ribbon-color="source" labels="radial"',
+      {
+        type: "chord",
+        groups: ["A", "B"],
+        matrix: [
+          [0, 2],
+          [3, 0],
+        ],
+        directed: true,
+        ribbonColor: "source",
+        labels: "radial",
+        tickFormat: String,
+        ticks: 5,
+        padAngle: 3,
+      },
+      "420px",
+    ],
+    [
+      "minerva-chord-chart",
+      {
+        links: [{ source: "A", target: "B", value: 2 }],
+        options: { directed: true },
+      },
+      "",
+      {
+        type: "chord",
+        links: [{ source: "A" }],
+        directed: true,
+        ribbonColor: "gradient",
+        labels: "auto",
+      },
+      "420px",
+    ],
   ];
 
   it.each(cases)(
@@ -510,9 +598,17 @@ describe("<minerva-trading-chart>", () => {
       click: "minerva-click",
       visibleRangeChange: "minerva-visible-range-change",
       orderMove: "minerva-order-move",
+      orderCreate: "minerva-order-create",
+      orderCancel: "minerva-order-cancel",
       drawingsChange: ["minerva-drawings-change", (drawings) => ({ drawings })],
       drawingSelect: ["minerva-drawing-select", (id) => ({ id })],
       drawingToolChange: ["minerva-drawing-tool-change", (tool) => ({ tool })],
+      undoChange: "minerva-undo-change",
+      replayChange: "minerva-replay-change",
+      fullscreenChange: [
+        "minerva-fullscreen-change",
+        (fullscreen) => ({ fullscreen }),
+      ],
       indicatorToggle: "minerva-indicator-toggle",
       historyRequest: "minerva-history-request",
       renderer: ["minerva-renderer-change", (renderer) => ({ renderer })],
@@ -532,15 +628,37 @@ describe("<minerva-trading-chart>", () => {
         fitContent: [],
         getVisibleRange: [],
         setVisibleRange: [{ from: 2, to: 8 }],
+        getVisibleTimeRange: [],
+        setVisibleTimeRange: [{ from: 10, to: 20 }],
+        setCrosshair: [10, 1.5],
+        setScaleMode: ["log"],
         resetPriceScales: [],
         setDrawingTool: ["trendLine"],
         getDrawings: [],
         removeDrawing: ["d1"],
+        updateDrawing: ["d1", { color: "red" }],
         selectDrawing: [null],
+        undo: [],
+        redo: [],
+        getUndoState: [],
+        startReplay: [5],
+        replayStep: [2],
+        replayPlay: [4],
+        replayPause: [],
+        stopReplay: [],
+        getReplayState: [],
+        toDataURL: ["image/jpeg", 0.8],
+        toBlob: ["image/webp", 0.9],
+        requestChartFullscreen: [],
+        exitChartFullscreen: [],
         setIndicatorVisible: ["sma", false],
         getRenderer: [],
       },
-      { updateBar: "update" },
+      {
+        updateBar: "update",
+        requestChartFullscreen: "requestFullscreen",
+        exitChartFullscreen: "exitFullscreen",
+      },
     );
   });
 
@@ -551,6 +669,13 @@ describe("<minerva-trading-chart>", () => {
     expect(chart.getVisibleRange()).toBeNull();
     expect(chart.getDrawings()).toEqual([]);
     expect(chart.getRenderer()).toBeNull();
+    expect(chart.getVisibleTimeRange()).toBeNull();
+    expect(chart.getUndoState()).toEqual({ canUndo: false, canRedo: false });
+    expect(chart.getReplayState()).toBeNull();
+    expect(chart.toDataURL()).toBe("");
+    await expect(chart.toBlob()).resolves.toBeNull();
+    await expect(chart.requestChartFullscreen()).resolves.toBeUndefined();
+    await expect(chart.exitChartFullscreen()).resolves.toBeUndefined();
     chart.updateBar({ time: 0, open: 1, high: 1, low: 1, close: 1 });
     expect(engines).toHaveLength(0);
   });
@@ -709,5 +834,142 @@ describe("3D chart elements", () => {
     const { el } = await create("minerva-line-3d-chart", {});
     expect(engines).toHaveLength(0);
     expect((el as unknown as { getCamera(): unknown }).getCamera()).toBeNull();
+  });
+});
+
+describe("graph elements", () => {
+  const nodes = [
+    { id: "a", group: "g1" },
+    { id: "b", group: "g2" },
+  ];
+  const edges = [{ source: "a", target: "b" }];
+  const cases: Array<[string, Record<string, unknown>, string, object]> = [
+    [
+      "minerva-graph-chart",
+      { options: { force: { charge: -200 }, nodeSize: [8, 30] } },
+      'layout="circular" direction="LR" node-shape="box" edge-style="curve" edge-color="source" highlight="lineage" locale="fr"',
+      {
+        layout: "circular",
+        direction: "LR",
+        force: { charge: -200 },
+        nodeSize: [8, 30],
+        nodeShape: "box",
+        edgeStyle: "curve",
+        edgeColor: "source",
+        highlight: "lineage",
+        locale: "fr",
+      },
+    ],
+    [
+      "minerva-dependency-graph",
+      { options: { dag: { layerGap: 80 } } },
+      "critical-path",
+      {
+        layout: "dag",
+        direction: "TB",
+        dag: { layerGap: 80, criticalPath: true },
+      },
+    ],
+    [
+      "minerva-tree-chart",
+      { options: { tree: { root: "a" } } },
+      'layout="org" edge-color="target"',
+      { layout: "org", edgeColor: "target", tree: { root: "a" } },
+    ],
+  ];
+
+  it.each(cases)(
+    "<%s> builds its options, re-dispatches the engine events and forwards its methods",
+    async (tag, props, attributes, expected) => {
+      const created = await create(
+        tag,
+        { nodes, edges, groups: [{ id: "g1" }], selected: ["a"], ...props },
+        attributes,
+      );
+      const { el, methods, engine } = created;
+      expect(engine.kind).toBe("graph");
+      expect(engine.options).toMatchObject({
+        nodes,
+        edges,
+        groups: [{ id: "g1" }],
+        selected: ["a"],
+        ...expected,
+      });
+      expect(created.height()).toBe("480px");
+      expectEvents(el, engine, {
+        hover: "minerva-hover",
+        click: "minerva-item-click",
+        select: [
+          "minerva-selection-change",
+          (payload) => ({ ids: (payload as { ids?: unknown }).ids }),
+        ],
+        toggle: "minerva-toggle",
+        groupToggle: "minerva-group-toggle",
+        layoutEnd: "minerva-layout-end",
+        renderer: ["minerva-renderer-change", (renderer) => ({ renderer })],
+      });
+      const listener = vi.fn();
+      el.addEventListener("minerva-selection-change", listener);
+      engine.fire("select", { ids: ["a", "b"] });
+      expect(listener.mock.calls[0][0].detail).toEqual({ ids: ["a", "b"] });
+      expectForwarded(methods, engine, {
+        fit: [false],
+        focusNode: ["a", { zoom: 2 }],
+        setData: [{ nodes, edges }],
+        select: [["b"]],
+        getSelection: [],
+        expand: ["a"],
+        collapse: ["b"],
+        toggle: ["a"],
+        getPositions: [],
+        relayout: [],
+        getRenderer: [],
+      });
+    },
+  );
+
+  it("keeps the layout when the data is rebuilt with the same objects", async () => {
+    const { el, engine } = await create("minerva-graph-chart", {
+      nodes,
+      edges,
+      options: { force: { charge: -100 } },
+    });
+    const chart = el as HTMLElement & Record<string, unknown>;
+    Object.assign(chart, {
+      nodes: [...nodes],
+      edges: [...edges],
+      options: { force: { charge: -100 } },
+      height: 300,
+    });
+    await settle();
+    expect(called(engine, "setOptions")).toEqual([]);
+    const more = [...nodes, { id: "c" }];
+    chart.nodes = more;
+    await settle();
+    expect(called(engine, "setOptions")).toHaveLength(1);
+    expect(engine.options.nodes).toBe(more);
+    chart.edgeStyle = "orthogonal";
+    await settle();
+    expect(called(engine, "setOptions")).toHaveLength(2);
+    expect(engine.options).toMatchObject({ edgeStyle: "orthogonal" });
+    // a reconnected element creates a new engine with the current options
+    const parent = el.parentElement!;
+    el.remove();
+    parent.append(el);
+    await settle();
+    expect(last()).not.toBe(engine);
+    expect(last().options.nodes).toBe(more);
+  });
+
+  it("waits for its data and returns empty values before it is connected", async () => {
+    const tree = await create("minerva-tree-chart", { nodes });
+    expect(engines).toHaveLength(0);
+    const element = tree.el as unknown as Record<string, () => unknown>;
+    expect(element.getSelection()).toEqual([]);
+    expect(element.getPositions()).toEqual({});
+    expect(element.getRenderer()).toBeNull();
+    (tree.el as unknown as { edges: unknown }).edges = edges;
+    await settle();
+    expect(last().options).toMatchObject({ layout: "tree", direction: "LR" });
   });
 });

@@ -14,6 +14,7 @@ import type {
   TradingPriceLine,
   TradingScaleMode,
   TradingTimeframe,
+  TradingVolumeProfileOptions,
 } from "minerva-design/charts/core";
 import { chartFrameProps } from "./props";
 import { raw } from "./engine";
@@ -47,8 +48,12 @@ export const tradingChartProps = {
   formatPrice: Function as PropType<(price: number) => string>,
   /** Locale of the texts, numbers and dates (`"zh-CN"`); the page language by default */
   locale: String,
-  /** Offset of the displayed times from UTC, in minutes (`480` for UTC+8); local time by default */
+  /** Offset of the displayed times from UTC, in minutes (`480` for UTC+8); overrides `timeZone` */
   utcOffset: Number,
+  /** Time zone of the time axis, the session breaks and the VWAP periods (IANA name such as `"America/New_York"`, or `"UTC"`); local time by default */
+  timeZone: String,
+  /** Dashed vertical lines where a day starts (intraday bars; default `false`) */
+  sessionBreaks: optionalBoolean,
   /** Crosshair behaviour (default `magnet`) */
   crosshair: String as PropType<TradingCrosshairMode>,
   /** Legends with the values at the crosshair and the indicator toggles (default `true`) */
@@ -63,6 +68,13 @@ export const tradingChartProps = {
   markers: Array as PropType<readonly TradingMarker[]>,
   /** Order, position, take profit / stop loss and alert lines */
   priceLines: Array as PropType<readonly TradingPriceLine[]>,
+  /** A "+" button at the crosshair price reporting a limit order (`orderCreate`; default `false`) */
+  orderEntry: optionalBoolean,
+  /** Volume by price of the visible bars, with its point of control and value area (`true` for the defaults; default `false`) */
+  volumeProfile: {
+    type: [Boolean, Object] as PropType<boolean | TradingVolumeProfileOptions>,
+    default: undefined,
+  },
   /** Comparison series (best read with `scaleMode: "percent"`) */
   compare: Array as PropType<readonly TradingCompareSeries[]>,
   /** Drawings; replaced when a new array is passed (see the `drawingsChange` event) */
@@ -71,6 +83,8 @@ export const tradingChartProps = {
   drawingMode: String as PropType<TradingDrawingTool>,
   /** Keeps the drawing tool after a drawing is made (default `false`) */
   keepDrawingMode: optionalBoolean,
+  /** Floating toolbar over the selected drawing: color, width, style, fill, lock, delete (default `true`) */
+  drawingToolbar: optionalBoolean,
   /** Price of the `baseline` style; the close of the first visible bar by default */
   baselinePrice: Number,
   /** Empty space after the last bar, in bars (default 8) */

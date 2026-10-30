@@ -6769,9 +6769,11 @@
               "kind": "field",
               "name": "colorScale",
               "type": {
-                "text": "readonly string[] | undefined"
+                "text": "readonly string[] | \"sequential\" | \"diverging\""
               },
-              "description": "Colors from the lowest to the highest value (a ramp of the first palette color by default); property only"
+              "default": "\"sequential\"",
+              "description": "Colors from the lowest to the highest value (interpolated in OKLab), or a built-in theme-aware ramp of the first palette color (`sequential` by default, or `diverging`); an array is property only",
+              "attribute": "color-scale"
             },
             {
               "kind": "field",
@@ -6780,6 +6782,15 @@
                 "text": "readonly [number, number] | undefined"
               },
               "description": "Values at the ends of the color scale (the data range by default); property only"
+            },
+            {
+              "kind": "field",
+              "name": "colorMidpoint",
+              "type": {
+                "text": "number | undefined"
+              },
+              "description": "Value at the middle of the color scale (diverging data; 0 for `diverging` ramps spanning it, else the middle of the range, by default)",
+              "attribute": "color-midpoint"
             },
             {
               "kind": "field",
@@ -6908,6 +6919,23 @@
             }
           ],
           "attributes": [
+            {
+              "name": "color-scale",
+              "type": {
+                "text": "readonly string[] | \"sequential\" | \"diverging\""
+              },
+              "default": "\"sequential\"",
+              "description": "Colors from the lowest to the highest value (interpolated in OKLab), or a built-in theme-aware ramp of the first palette color (`sequential` by default, or `diverging`); an array is property only",
+              "fieldName": "colorScale"
+            },
+            {
+              "name": "color-midpoint",
+              "type": {
+                "text": "number | undefined"
+              },
+              "description": "Value at the middle of the color scale (diverging data; 0 for `diverging` ramps spanning it, else the middle of the range, by default)",
+              "fieldName": "colorMidpoint"
+            },
             {
               "name": "value-name",
               "type": {
@@ -8977,6 +9005,26 @@
             },
             {
               "kind": "field",
+              "name": "outlierShape",
+              "type": {
+                "text": "\"hollow\" | \"filled\""
+              },
+              "default": "\"hollow\"",
+              "description": "Outliers drawn as rings of the series color or as filled dots (series may set their own)",
+              "attribute": "outlier-shape"
+            },
+            {
+              "kind": "field",
+              "name": "outlierSize",
+              "type": {
+                "text": "number"
+              },
+              "default": "7",
+              "description": "Diameter of the outliers in CSS pixels",
+              "attribute": "outlier-size"
+            },
+            {
+              "kind": "field",
               "name": "orientation",
               "type": {
                 "text": "\"vertical\" | \"horizontal\""
@@ -9102,6 +9150,24 @@
               "default": "1.5",
               "description": "Reach of the whiskers in interquartile ranges (Tukey: 1.5), or `minmax`",
               "fieldName": "whisker"
+            },
+            {
+              "name": "outlier-shape",
+              "type": {
+                "text": "\"hollow\" | \"filled\""
+              },
+              "default": "\"hollow\"",
+              "description": "Outliers drawn as rings of the series color or as filled dots (series may set their own)",
+              "fieldName": "outlierShape"
+            },
+            {
+              "name": "outlier-size",
+              "type": {
+                "text": "number"
+              },
+              "default": "7",
+              "description": "Diameter of the outliers in CSS pixels",
+              "fieldName": "outlierSize"
             },
             {
               "name": "orientation",
@@ -9258,6 +9324,24 @@
                 "text": "(value: number) => string | undefined"
               },
               "description": "Formats the values (labels, tooltip); property only"
+            },
+            {
+              "kind": "field",
+              "name": "hideConnectors",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Hides the thin lines from the end of every bar to the next one",
+              "attribute": "hide-connectors"
+            },
+            {
+              "kind": "field",
+              "name": "connector",
+              "type": {
+                "text": "ChartConnectorOptions | undefined"
+              },
+              "description": "Style of the connector lines `{ color, width, dash }` (dashed, secondary text color by default); property only"
             },
             {
               "kind": "field",
@@ -9421,6 +9505,15 @@
               "fieldName": "hideLabels"
             },
             {
+              "name": "hide-connectors",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Hides the thin lines from the end of every bar to the next one",
+              "fieldName": "hideConnectors"
+            },
+            {
               "name": "orientation",
               "type": {
                 "text": "\"vertical\" | \"horizontal\""
@@ -9524,31 +9617,37 @@
               "kind": "field",
               "name": "taskName",
               "type": {
-                "text": "string"
+                "text": "string | undefined"
               },
-              "default": "\"Tasks\"",
-              "description": "Name of the tasks without a group",
+              "description": "Name of the tasks without a group (\"Tasks\" in the locale by default)",
               "attribute": "task-name"
             },
             {
               "kind": "field",
               "name": "progressName",
               "type": {
-                "text": "string"
+                "text": "string | undefined"
               },
-              "default": "\"Progress\"",
-              "description": "Name of the progress bars (legend, tooltip)",
+              "description": "Name of the progress bars (legend, tooltip; \"Progress\" in the locale by default)",
               "attribute": "progress-name"
             },
             {
               "kind": "field",
               "name": "milestoneName",
               "type": {
-                "text": "string"
+                "text": "string | undefined"
               },
-              "default": "\"Milestones\"",
-              "description": "Name of the milestones (legend, tooltip)",
+              "description": "Name of the milestones (legend, tooltip; \"Milestones\" in the locale by default)",
               "attribute": "milestone-name"
+            },
+            {
+              "kind": "field",
+              "name": "dependenciesName",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Name of the dependencies row of the tooltip (\"Depends on\" in the locale by default)",
+              "attribute": "dependencies-name"
             },
             {
               "kind": "field",
@@ -9680,29 +9779,34 @@
             {
               "name": "task-name",
               "type": {
-                "text": "string"
+                "text": "string | undefined"
               },
-              "default": "\"Tasks\"",
-              "description": "Name of the tasks without a group",
+              "description": "Name of the tasks without a group (\"Tasks\" in the locale by default)",
               "fieldName": "taskName"
             },
             {
               "name": "progress-name",
               "type": {
-                "text": "string"
+                "text": "string | undefined"
               },
-              "default": "\"Progress\"",
-              "description": "Name of the progress bars (legend, tooltip)",
+              "description": "Name of the progress bars (legend, tooltip; \"Progress\" in the locale by default)",
               "fieldName": "progressName"
             },
             {
               "name": "milestone-name",
               "type": {
-                "text": "string"
+                "text": "string | undefined"
               },
-              "default": "\"Milestones\"",
-              "description": "Name of the milestones (legend, tooltip)",
+              "description": "Name of the milestones (legend, tooltip; \"Milestones\" in the locale by default)",
               "fieldName": "milestoneName"
+            },
+            {
+              "name": "dependencies-name",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Name of the dependencies row of the tooltip (\"Depends on\" in the locale by default)",
+              "fieldName": "dependenciesName"
             },
             {
               "name": "today-label",
@@ -12228,6 +12332,211 @@
               }
             }
           ]
+        },
+        {
+          "kind": "class",
+          "description": "Chord diagram of `minerva-design/charts/core` (the `<ChordChart>` of\nReact): flows between groups around a circle, as ribbons whose ends are\nproportional to the flow in each direction; hovering a group highlights\nits ribbons, hovering a ribbon shows both directions (the `minerva-hover`\ndetail of a ribbon also has `source`, `target` and `reverseValue`).\n\nPublished as the optional entry `minerva-design/web-components/chart`.",
+          "name": "MinervaChordChart",
+          "cssParts": [
+            {
+              "description": "The sized box of the chart",
+              "name": "root"
+            },
+            {
+              "description": "The element the engine renders into",
+              "name": "surface"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "groups",
+              "type": {
+                "text": "readonly (string | ChordGroup)[] | undefined"
+              },
+              "description": "Groups (names or `{ name, color }`), in their order around the circle; property only"
+            },
+            {
+              "kind": "field",
+              "name": "matrix",
+              "type": {
+                "text": "readonly (readonly number[])[] | undefined"
+              },
+              "description": "Square flow matrix: `matrix[i][j]` flows from group `i` to group `j` (used without `links`); property only"
+            },
+            {
+              "kind": "field",
+              "name": "links",
+              "type": {
+                "text": "readonly ChordLink[] | undefined"
+              },
+              "description": "Flows `{ source, target, value }` by group name or index; take precedence over `matrix`; property only"
+            },
+            {
+              "kind": "field",
+              "name": "directed",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "One ribbon per direction, arcs sized by the outgoing plus the incoming flows",
+              "attribute": "directed"
+            },
+            {
+              "kind": "field",
+              "name": "ribbonColor",
+              "type": {
+                "text": "\"gradient\" | \"source\" | \"target\" | \"neutral\""
+              },
+              "default": "\"gradient\"",
+              "description": "Color of the ribbons without `color`",
+              "attribute": "ribbon-color"
+            },
+            {
+              "kind": "field",
+              "name": "labels",
+              "type": {
+                "text": "\"auto\" | \"tangential\" | \"radial\" | \"none\""
+              },
+              "default": "\"auto\"",
+              "description": "Group labels along the arc (`tangential`), the radius (`radial`), whichever fits (`auto`), or none",
+              "attribute": "labels"
+            },
+            {
+              "kind": "field",
+              "name": "tickFormat",
+              "type": {
+                "text": "(value: number) => string | undefined"
+              },
+              "description": "Formats the tick labels (compact numbers of the locale by default); property only"
+            },
+            {
+              "kind": "field",
+              "name": "options",
+              "type": {
+                "text": "Partial<Omit<ChordChartOptions, \"type\">> | undefined"
+              },
+              "description": "Other engine options (`ChordChartOptions`: padAngle, startAngle, sortGroups, sortSubgroups, ribbonOpacity, arcWidth, ticks, arrows, palette, format, percentFormat...); property only"
+            },
+            {
+              "kind": "method",
+              "name": "toggle",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "index",
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ],
+              "description": "Hides / shows a slice, stage, radar series or top-level treemap node by index",
+              "inheritedFrom": {
+                "name": "MinervaShapeChartElement",
+                "module": "src/components/chart/shape-chart.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "height",
+              "type": {
+                "text": "string | number | undefined"
+              },
+              "description": "Height of the chart, the legend included: pixels or any CSS length (default 320, sparkline 48, gauge 240)",
+              "attribute": "height",
+              "inheritedFrom": {
+                "name": "MinervaEngineElement",
+                "module": "src/components/chart/engine-element.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "instance",
+              "type": {
+                "text": "I | null"
+              },
+              "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "MinervaEngineElement",
+                "module": "src/components/chart/engine-element.ts"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "directed",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "One ribbon per direction, arcs sized by the outgoing plus the incoming flows",
+              "fieldName": "directed"
+            },
+            {
+              "name": "ribbon-color",
+              "type": {
+                "text": "\"gradient\" | \"source\" | \"target\" | \"neutral\""
+              },
+              "default": "\"gradient\"",
+              "description": "Color of the ribbons without `color`",
+              "fieldName": "ribbonColor"
+            },
+            {
+              "name": "labels",
+              "type": {
+                "text": "\"auto\" | \"tangential\" | \"radial\" | \"none\""
+              },
+              "default": "\"auto\"",
+              "description": "Group labels along the arc (`tangential`), the radius (`radial`), whichever fits (`auto`), or none",
+              "fieldName": "labels"
+            },
+            {
+              "name": "height",
+              "type": {
+                "text": "string | number | undefined"
+              },
+              "description": "Height of the chart, the legend included: pixels or any CSS length (default 320, sparkline 48, gauge 240)",
+              "fieldName": "height",
+              "inheritedFrom": {
+                "name": "MinervaEngineElement",
+                "module": "src/components/chart/engine-element.ts"
+              }
+            }
+          ],
+          "tagName": "minerva-chord-chart",
+          "customElement": true,
+          "summary": "Chord diagram of the flows between groups.",
+          "events": [
+            {
+              "description": "The hovered (or keyboard-focused) mark changed; detail: { index, name, value, share }, `null` when nothing is hovered",
+              "name": "minerva-hover",
+              "inheritedFrom": {
+                "name": "MinervaShapeChartElement",
+                "module": "src/components/chart/shape-chart.ts"
+              }
+            },
+            {
+              "description": "A mark was clicked, tapped or activated with Enter; detail: { index, name, value, share }",
+              "name": "minerva-click",
+              "inheritedFrom": {
+                "name": "MinervaShapeChartElement",
+                "module": "src/components/chart/shape-chart.ts"
+              }
+            },
+            {
+              "description": "A legend item was clicked (or `toggle()` called); detail: { index, hidden, hiddenIndexes }",
+              "name": "minerva-toggle",
+              "inheritedFrom": {
+                "name": "MinervaShapeChartElement",
+                "module": "src/components/chart/shape-chart.ts"
+              }
+            }
+          ]
         }
       ],
       "exports": [
@@ -12268,6 +12577,14 @@
           "name": "MinervaBulletChart",
           "declaration": {
             "name": "MinervaBulletChart",
+            "module": "src/components/chart/shapes-extended.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "MinervaChordChart",
+          "declaration": {
+            "name": "MinervaChordChart",
             "module": "src/components/chart/shapes-extended.ts"
           }
         }
@@ -17544,6 +17861,1729 @@
           "declaration": {
             "name": "MinervaFormLayout",
             "module": "src/components/form-layout/form-layout.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/graph/graph.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Relationship network of `minerva-design/charts/core` (the\n`<GraphChart>` of React): force-directed by default (Barnes–Hut, a Web\nWorker for large graphs), or circular, arc diagram, layered or tree\nlayouts; GPU rendering, pan / zoom, drag, neighbor highlight, legend\ntoggles and keyboard navigation.\n\nPublished as the optional entry `minerva-design/web-components/graph`.",
+          "name": "MinervaGraphChart",
+          "cssParts": [
+            {
+              "description": "The sized box of the chart",
+              "name": "root"
+            },
+            {
+              "description": "The element the engine renders into",
+              "name": "surface"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "layout",
+              "type": {
+                "text": "GraphLayoutType"
+              },
+              "default": "\"force\"",
+              "description": "Placement of the nodes",
+              "attribute": "layout"
+            },
+            {
+              "kind": "field",
+              "name": "direction",
+              "type": {
+                "text": "GraphDirection | undefined"
+              },
+              "description": "Direction of the `dag` and `tree` layouts",
+              "attribute": "direction"
+            },
+            {
+              "kind": "field",
+              "name": "height",
+              "type": {
+                "text": "string | number | undefined"
+              },
+              "description": "Height of the chart, the legend included: pixels or any CSS length",
+              "attribute": "height",
+              "default": "480",
+              "inheritedFrom": {
+                "name": "MinervaEngineElement",
+                "module": "src/components/chart/engine-element.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "nodes",
+              "type": {
+                "text": "readonly GraphNode[] | undefined"
+              },
+              "description": "Nodes `{ id, label, group, value, ... }`; property only",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "edges",
+              "type": {
+                "text": "readonly GraphEdge[] | undefined"
+              },
+              "description": "Edges `{ source, target, value, label, ... }`; property only",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "groups",
+              "type": {
+                "text": "readonly GraphGroup[] | undefined"
+              },
+              "description": "Groups `{ id, name, color }`: legend order, names and colors; property only",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "nodeShape",
+              "type": {
+                "text": "GraphNodeShape | undefined"
+              },
+              "description": "Shape of the nodes without `shape` (boxes for DAGs, org charts and mind maps, circles otherwise)",
+              "attribute": "node-shape",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "edgeStyle",
+              "type": {
+                "text": "GraphEdgeStyle | undefined"
+              },
+              "description": "Edge shape; depends on the layout when omitted",
+              "attribute": "edge-style",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "edgeColor",
+              "type": {
+                "text": "\"neutral\" | \"source\" | \"target\""
+              },
+              "default": "\"neutral\"",
+              "description": "Edge colors: neutral or tinted with the source / target node",
+              "attribute": "edge-color",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "highlight",
+              "type": {
+                "text": "\"neighbors\" | \"lineage\" | \"none\" | undefined"
+              },
+              "description": "What hovering / selecting a node highlights",
+              "attribute": "highlight",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "locale",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Language of the built-in texts (summary, announcements, tooltip, buttons); the page language by default",
+              "attribute": "locale",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "selected",
+              "type": {
+                "text": "readonly string[] | undefined"
+              },
+              "description": "Ids of the selected nodes (changing it updates the selection); property only",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "options",
+              "type": {
+                "text": "GraphBaseOptions | undefined"
+              },
+              "description": "Other engine options (`GraphChartOptions`: force, circular, dag, tree, nodeSize, edgeWidth, arrows, nodeLabels, edgeLabels, animation, legend, tooltip, interaction, renderer, palette, ariaLabel, labels...); property only",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "fit",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "animate",
+                  "optional": true,
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ],
+              "description": "Fits the visible nodes in the view",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "focusNode",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "id",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "options",
+                  "optional": true,
+                  "type": {
+                    "text": "{ zoom?: number; animate?: boolean }"
+                  }
+                }
+              ],
+              "description": "Centers a node (expanding its collapsed ancestors), optionally zooming",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "setData",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "data",
+                  "type": {
+                    "text": "GraphData"
+                  }
+                }
+              ],
+              "description": "Replaces the data until the properties change again",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "select",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "ids",
+                  "type": {
+                    "text": "readonly string[] | string | null"
+                  }
+                }
+              ],
+              "description": "Selects nodes (`null` clears the selection)",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getSelection",
+              "return": {
+                "type": {
+                  "text": "string[]"
+                }
+              },
+              "description": "Ids of the selected nodes",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "expand",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "id",
+                  "optional": true,
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Expands a node (all nodes without an id)",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "collapse",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "id",
+                  "optional": true,
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Collapses a node (all nodes with children without an id)",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "toggle",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "id",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Collapses / expands a node",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getPositions",
+              "return": {
+                "type": {
+                  "text": "Record<string, GraphPoint>"
+                }
+              },
+              "description": "Current positions of the nodes in layout units",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "relayout",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Computes the layout again",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getRenderer",
+              "return": {
+                "type": {
+                  "text": "ChartRendererKind | null"
+                }
+              },
+              "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "instance",
+              "type": {
+                "text": "I | null"
+              },
+              "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "MinervaEngineElement",
+                "module": "src/components/chart/engine-element.ts"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "layout",
+              "type": {
+                "text": "GraphLayoutType"
+              },
+              "default": "\"force\"",
+              "description": "Placement of the nodes",
+              "fieldName": "layout"
+            },
+            {
+              "name": "direction",
+              "type": {
+                "text": "GraphDirection | undefined"
+              },
+              "description": "Direction of the `dag` and `tree` layouts",
+              "fieldName": "direction"
+            },
+            {
+              "name": "height",
+              "type": {
+                "text": "string | number | undefined"
+              },
+              "description": "Height of the chart, the legend included: pixels or any CSS length",
+              "fieldName": "height",
+              "default": "480",
+              "inheritedFrom": {
+                "name": "MinervaEngineElement",
+                "module": "src/components/chart/engine-element.ts"
+              }
+            },
+            {
+              "name": "node-shape",
+              "type": {
+                "text": "GraphNodeShape | undefined"
+              },
+              "description": "Shape of the nodes without `shape` (boxes for DAGs, org charts and mind maps, circles otherwise)",
+              "fieldName": "nodeShape",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "name": "edge-style",
+              "type": {
+                "text": "GraphEdgeStyle | undefined"
+              },
+              "description": "Edge shape; depends on the layout when omitted",
+              "fieldName": "edgeStyle",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "name": "edge-color",
+              "type": {
+                "text": "\"neutral\" | \"source\" | \"target\""
+              },
+              "default": "\"neutral\"",
+              "description": "Edge colors: neutral or tinted with the source / target node",
+              "fieldName": "edgeColor",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "name": "highlight",
+              "type": {
+                "text": "\"neighbors\" | \"lineage\" | \"none\" | undefined"
+              },
+              "description": "What hovering / selecting a node highlights",
+              "fieldName": "highlight",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "name": "locale",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Language of the built-in texts (summary, announcements, tooltip, buttons); the page language by default",
+              "fieldName": "locale",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            }
+          ],
+          "tagName": "minerva-graph-chart",
+          "customElement": true,
+          "summary": "GPU relationship network with force, circular and layered layouts.",
+          "events": [
+            {
+              "description": "The hovered (or keyboard-focused) node / edge changed; detail: { type, id, node, edge, index, group, color, degree, clientX, clientY }, `null` when nothing is hovered",
+              "name": "minerva-hover",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "description": "A node or an edge was clicked (or a node activated with Enter); detail: { type, id, node, edge, index, group, color, degree, clientX, clientY }",
+              "name": "minerva-item-click",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "description": "The selection changed; detail: { ids }",
+              "name": "minerva-selection-change",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "description": "A tree node was collapsed or expanded; detail: { id, collapsed }",
+              "name": "minerva-toggle",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "description": "The legend showed / hid a group; detail: { group, hidden }",
+              "name": "minerva-group-toggle",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "description": "The layout is done (the force simulation cooled down); detail: { layout }",
+              "name": "minerva-layout-end",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }",
+              "name": "minerva-renderer-change",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "description": "Dependency graph of `minerva-design/charts/core` (the\n`<DependencyGraph>` of React): layered (Sugiyama) layout of a DAG with\ncrossing reduction, spline or orthogonal edges with arrowheads, upstream\n/ downstream highlight and the critical path.\n\nPublished as the optional entry `minerva-design/web-components/graph`.",
+          "name": "MinervaDependencyGraph",
+          "cssParts": [
+            {
+              "description": "The sized box of the chart",
+              "name": "root"
+            },
+            {
+              "description": "The element the engine renders into",
+              "name": "surface"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "direction",
+              "type": {
+                "text": "GraphDirection"
+              },
+              "default": "\"TB\"",
+              "description": "Flow direction",
+              "attribute": "direction"
+            },
+            {
+              "kind": "field",
+              "name": "criticalPath",
+              "type": {
+                "text": "boolean | readonly string[] | undefined"
+              },
+              "description": "Highlights the longest path (node `value` = duration); a list of node ids (property) sets it",
+              "attribute": "critical-path"
+            },
+            {
+              "kind": "field",
+              "name": "height",
+              "type": {
+                "text": "string | number | undefined"
+              },
+              "description": "Height of the chart, the legend included: pixels or any CSS length",
+              "attribute": "height",
+              "default": "480",
+              "inheritedFrom": {
+                "name": "MinervaEngineElement",
+                "module": "src/components/chart/engine-element.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "nodes",
+              "type": {
+                "text": "readonly GraphNode[] | undefined"
+              },
+              "description": "Nodes `{ id, label, group, value, ... }`; property only",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "edges",
+              "type": {
+                "text": "readonly GraphEdge[] | undefined"
+              },
+              "description": "Edges `{ source, target, value, label, ... }`; property only",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "groups",
+              "type": {
+                "text": "readonly GraphGroup[] | undefined"
+              },
+              "description": "Groups `{ id, name, color }`: legend order, names and colors; property only",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "nodeShape",
+              "type": {
+                "text": "GraphNodeShape | undefined"
+              },
+              "description": "Shape of the nodes without `shape` (boxes for DAGs, org charts and mind maps, circles otherwise)",
+              "attribute": "node-shape",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "edgeStyle",
+              "type": {
+                "text": "GraphEdgeStyle | undefined"
+              },
+              "description": "Edge shape; depends on the layout when omitted",
+              "attribute": "edge-style",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "edgeColor",
+              "type": {
+                "text": "\"neutral\" | \"source\" | \"target\""
+              },
+              "default": "\"neutral\"",
+              "description": "Edge colors: neutral or tinted with the source / target node",
+              "attribute": "edge-color",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "highlight",
+              "type": {
+                "text": "\"neighbors\" | \"lineage\" | \"none\" | undefined"
+              },
+              "description": "What hovering / selecting a node highlights",
+              "attribute": "highlight",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "locale",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Language of the built-in texts (summary, announcements, tooltip, buttons); the page language by default",
+              "attribute": "locale",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "selected",
+              "type": {
+                "text": "readonly string[] | undefined"
+              },
+              "description": "Ids of the selected nodes (changing it updates the selection); property only",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "options",
+              "type": {
+                "text": "GraphBaseOptions | undefined"
+              },
+              "description": "Other engine options (`GraphChartOptions`: force, circular, dag, tree, nodeSize, edgeWidth, arrows, nodeLabels, edgeLabels, animation, legend, tooltip, interaction, renderer, palette, ariaLabel, labels...); property only",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "fit",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "animate",
+                  "optional": true,
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ],
+              "description": "Fits the visible nodes in the view",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "focusNode",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "id",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "options",
+                  "optional": true,
+                  "type": {
+                    "text": "{ zoom?: number; animate?: boolean }"
+                  }
+                }
+              ],
+              "description": "Centers a node (expanding its collapsed ancestors), optionally zooming",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "setData",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "data",
+                  "type": {
+                    "text": "GraphData"
+                  }
+                }
+              ],
+              "description": "Replaces the data until the properties change again",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "select",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "ids",
+                  "type": {
+                    "text": "readonly string[] | string | null"
+                  }
+                }
+              ],
+              "description": "Selects nodes (`null` clears the selection)",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getSelection",
+              "return": {
+                "type": {
+                  "text": "string[]"
+                }
+              },
+              "description": "Ids of the selected nodes",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "expand",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "id",
+                  "optional": true,
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Expands a node (all nodes without an id)",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "collapse",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "id",
+                  "optional": true,
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Collapses a node (all nodes with children without an id)",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "toggle",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "id",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Collapses / expands a node",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getPositions",
+              "return": {
+                "type": {
+                  "text": "Record<string, GraphPoint>"
+                }
+              },
+              "description": "Current positions of the nodes in layout units",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "relayout",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Computes the layout again",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getRenderer",
+              "return": {
+                "type": {
+                  "text": "ChartRendererKind | null"
+                }
+              },
+              "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "instance",
+              "type": {
+                "text": "I | null"
+              },
+              "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "MinervaEngineElement",
+                "module": "src/components/chart/engine-element.ts"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "direction",
+              "type": {
+                "text": "GraphDirection"
+              },
+              "default": "\"TB\"",
+              "description": "Flow direction",
+              "fieldName": "direction"
+            },
+            {
+              "name": "critical-path",
+              "type": {
+                "text": "boolean | readonly string[] | undefined"
+              },
+              "description": "Highlights the longest path (node `value` = duration); a list of node ids (property) sets it",
+              "fieldName": "criticalPath"
+            },
+            {
+              "name": "height",
+              "type": {
+                "text": "string | number | undefined"
+              },
+              "description": "Height of the chart, the legend included: pixels or any CSS length",
+              "fieldName": "height",
+              "default": "480",
+              "inheritedFrom": {
+                "name": "MinervaEngineElement",
+                "module": "src/components/chart/engine-element.ts"
+              }
+            },
+            {
+              "name": "node-shape",
+              "type": {
+                "text": "GraphNodeShape | undefined"
+              },
+              "description": "Shape of the nodes without `shape` (boxes for DAGs, org charts and mind maps, circles otherwise)",
+              "fieldName": "nodeShape",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "name": "edge-style",
+              "type": {
+                "text": "GraphEdgeStyle | undefined"
+              },
+              "description": "Edge shape; depends on the layout when omitted",
+              "fieldName": "edgeStyle",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "name": "edge-color",
+              "type": {
+                "text": "\"neutral\" | \"source\" | \"target\""
+              },
+              "default": "\"neutral\"",
+              "description": "Edge colors: neutral or tinted with the source / target node",
+              "fieldName": "edgeColor",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "name": "highlight",
+              "type": {
+                "text": "\"neighbors\" | \"lineage\" | \"none\" | undefined"
+              },
+              "description": "What hovering / selecting a node highlights",
+              "fieldName": "highlight",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "name": "locale",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Language of the built-in texts (summary, announcements, tooltip, buttons); the page language by default",
+              "fieldName": "locale",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            }
+          ],
+          "tagName": "minerva-dependency-graph",
+          "customElement": true,
+          "summary": "Layered DAG with the critical path.",
+          "events": [
+            {
+              "description": "The hovered (or keyboard-focused) node / edge changed; detail: { type, id, node, edge, index, group, color, degree, clientX, clientY }, `null` when nothing is hovered",
+              "name": "minerva-hover",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "description": "A node or an edge was clicked (or a node activated with Enter); detail: { type, id, node, edge, index, group, color, degree, clientX, clientY }",
+              "name": "minerva-item-click",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "description": "The selection changed; detail: { ids }",
+              "name": "minerva-selection-change",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "description": "A tree node was collapsed or expanded; detail: { id, collapsed }",
+              "name": "minerva-toggle",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "description": "The legend showed / hid a group; detail: { group, hidden }",
+              "name": "minerva-group-toggle",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "description": "The layout is done (the force simulation cooled down); detail: { layout }",
+              "name": "minerva-layout-end",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }",
+              "name": "minerva-renderer-change",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "description": "Tree chart of `minerva-design/charts/core` (the `<TreeChart>` of\nReact): tidy tree, radial tree, mind map or org chart, with animated\ncollapse / expand of the subtrees.\n\nPublished as the optional entry `minerva-design/web-components/graph`.",
+          "name": "MinervaTreeChart",
+          "cssParts": [
+            {
+              "description": "The sized box of the chart",
+              "name": "root"
+            },
+            {
+              "description": "The element the engine renders into",
+              "name": "surface"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "layout",
+              "type": {
+                "text": "\"tree\" | \"radial\" | \"mindmap\" | \"org\""
+              },
+              "default": "\"tree\"",
+              "description": "Kind of tree: tidy tree, radial tree, two-sided mind map or org chart",
+              "attribute": "layout"
+            },
+            {
+              "kind": "field",
+              "name": "direction",
+              "type": {
+                "text": "GraphDirection"
+              },
+              "default": "\"LR\"",
+              "description": "Direction of `layout=\"tree\"`",
+              "attribute": "direction"
+            },
+            {
+              "kind": "field",
+              "name": "height",
+              "type": {
+                "text": "string | number | undefined"
+              },
+              "description": "Height of the chart, the legend included: pixels or any CSS length",
+              "attribute": "height",
+              "default": "480",
+              "inheritedFrom": {
+                "name": "MinervaEngineElement",
+                "module": "src/components/chart/engine-element.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "nodes",
+              "type": {
+                "text": "readonly GraphNode[] | undefined"
+              },
+              "description": "Nodes `{ id, label, group, value, ... }`; property only",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "edges",
+              "type": {
+                "text": "readonly GraphEdge[] | undefined"
+              },
+              "description": "Edges `{ source, target, value, label, ... }`; property only",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "groups",
+              "type": {
+                "text": "readonly GraphGroup[] | undefined"
+              },
+              "description": "Groups `{ id, name, color }`: legend order, names and colors; property only",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "nodeShape",
+              "type": {
+                "text": "GraphNodeShape | undefined"
+              },
+              "description": "Shape of the nodes without `shape` (boxes for DAGs, org charts and mind maps, circles otherwise)",
+              "attribute": "node-shape",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "edgeStyle",
+              "type": {
+                "text": "GraphEdgeStyle | undefined"
+              },
+              "description": "Edge shape; depends on the layout when omitted",
+              "attribute": "edge-style",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "edgeColor",
+              "type": {
+                "text": "\"neutral\" | \"source\" | \"target\""
+              },
+              "default": "\"neutral\"",
+              "description": "Edge colors: neutral or tinted with the source / target node",
+              "attribute": "edge-color",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "highlight",
+              "type": {
+                "text": "\"neighbors\" | \"lineage\" | \"none\" | undefined"
+              },
+              "description": "What hovering / selecting a node highlights",
+              "attribute": "highlight",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "locale",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Language of the built-in texts (summary, announcements, tooltip, buttons); the page language by default",
+              "attribute": "locale",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "selected",
+              "type": {
+                "text": "readonly string[] | undefined"
+              },
+              "description": "Ids of the selected nodes (changing it updates the selection); property only",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "options",
+              "type": {
+                "text": "GraphBaseOptions | undefined"
+              },
+              "description": "Other engine options (`GraphChartOptions`: force, circular, dag, tree, nodeSize, edgeWidth, arrows, nodeLabels, edgeLabels, animation, legend, tooltip, interaction, renderer, palette, ariaLabel, labels...); property only",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "fit",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "animate",
+                  "optional": true,
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ],
+              "description": "Fits the visible nodes in the view",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "focusNode",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "id",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "options",
+                  "optional": true,
+                  "type": {
+                    "text": "{ zoom?: number; animate?: boolean }"
+                  }
+                }
+              ],
+              "description": "Centers a node (expanding its collapsed ancestors), optionally zooming",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "setData",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "data",
+                  "type": {
+                    "text": "GraphData"
+                  }
+                }
+              ],
+              "description": "Replaces the data until the properties change again",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "select",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "ids",
+                  "type": {
+                    "text": "readonly string[] | string | null"
+                  }
+                }
+              ],
+              "description": "Selects nodes (`null` clears the selection)",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getSelection",
+              "return": {
+                "type": {
+                  "text": "string[]"
+                }
+              },
+              "description": "Ids of the selected nodes",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "expand",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "id",
+                  "optional": true,
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Expands a node (all nodes without an id)",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "collapse",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "id",
+                  "optional": true,
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Collapses a node (all nodes with children without an id)",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "toggle",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "id",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Collapses / expands a node",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getPositions",
+              "return": {
+                "type": {
+                  "text": "Record<string, GraphPoint>"
+                }
+              },
+              "description": "Current positions of the nodes in layout units",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "relayout",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Computes the layout again",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "getRenderer",
+              "return": {
+                "type": {
+                  "text": "ChartRendererKind | null"
+                }
+              },
+              "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "instance",
+              "type": {
+                "text": "I | null"
+              },
+              "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "MinervaEngineElement",
+                "module": "src/components/chart/engine-element.ts"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "layout",
+              "type": {
+                "text": "\"tree\" | \"radial\" | \"mindmap\" | \"org\""
+              },
+              "default": "\"tree\"",
+              "description": "Kind of tree: tidy tree, radial tree, two-sided mind map or org chart",
+              "fieldName": "layout"
+            },
+            {
+              "name": "direction",
+              "type": {
+                "text": "GraphDirection"
+              },
+              "default": "\"LR\"",
+              "description": "Direction of `layout=\"tree\"`",
+              "fieldName": "direction"
+            },
+            {
+              "name": "height",
+              "type": {
+                "text": "string | number | undefined"
+              },
+              "description": "Height of the chart, the legend included: pixels or any CSS length",
+              "fieldName": "height",
+              "default": "480",
+              "inheritedFrom": {
+                "name": "MinervaEngineElement",
+                "module": "src/components/chart/engine-element.ts"
+              }
+            },
+            {
+              "name": "node-shape",
+              "type": {
+                "text": "GraphNodeShape | undefined"
+              },
+              "description": "Shape of the nodes without `shape` (boxes for DAGs, org charts and mind maps, circles otherwise)",
+              "fieldName": "nodeShape",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "name": "edge-style",
+              "type": {
+                "text": "GraphEdgeStyle | undefined"
+              },
+              "description": "Edge shape; depends on the layout when omitted",
+              "fieldName": "edgeStyle",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "name": "edge-color",
+              "type": {
+                "text": "\"neutral\" | \"source\" | \"target\""
+              },
+              "default": "\"neutral\"",
+              "description": "Edge colors: neutral or tinted with the source / target node",
+              "fieldName": "edgeColor",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "name": "highlight",
+              "type": {
+                "text": "\"neighbors\" | \"lineage\" | \"none\" | undefined"
+              },
+              "description": "What hovering / selecting a node highlights",
+              "fieldName": "highlight",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "name": "locale",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Language of the built-in texts (summary, announcements, tooltip, buttons); the page language by default",
+              "fieldName": "locale",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            }
+          ],
+          "tagName": "minerva-tree-chart",
+          "customElement": true,
+          "summary": "Tidy tree, radial tree, mind map or org chart.",
+          "events": [
+            {
+              "description": "The hovered (or keyboard-focused) node / edge changed; detail: { type, id, node, edge, index, group, color, degree, clientX, clientY }, `null` when nothing is hovered",
+              "name": "minerva-hover",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "description": "A node or an edge was clicked (or a node activated with Enter); detail: { type, id, node, edge, index, group, color, degree, clientX, clientY }",
+              "name": "minerva-item-click",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "description": "The selection changed; detail: { ids }",
+              "name": "minerva-selection-change",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "description": "A tree node was collapsed or expanded; detail: { id, collapsed }",
+              "name": "minerva-toggle",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "description": "The legend showed / hid a group; detail: { group, hidden }",
+              "name": "minerva-group-toggle",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "description": "The layout is done (the force simulation cooled down); detail: { layout }",
+              "name": "minerva-layout-end",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            },
+            {
+              "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }",
+              "name": "minerva-renderer-change",
+              "inheritedFrom": {
+                "name": "MinervaGraphElement",
+                "module": "src/components/graph/graph.ts"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "MinervaGraphChart",
+          "declaration": {
+            "name": "MinervaGraphChart",
+            "module": "src/components/graph/graph.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "MinervaDependencyGraph",
+          "declaration": {
+            "name": "MinervaDependencyGraph",
+            "module": "src/components/graph/graph.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "MinervaTreeChart",
+          "declaration": {
+            "name": "MinervaTreeChart",
+            "module": "src/components/graph/graph.ts"
           }
         }
       ]
@@ -35504,7 +37544,7 @@
               "type": {
                 "text": "Partial<TradingChartOptions> | undefined"
               },
-              "description": "Other engine options (`TradingChartOptions`: markers, priceLines, drawings, colorConvention, locale, labels...); property only"
+              "description": "Other engine options (`TradingChartOptions`: markers, priceLines, drawings, colorConvention, locale, timeZone, sessionBreaks, orderEntry, volumeProfile, labels...); property only"
             },
             {
               "kind": "method",
@@ -35665,6 +37705,77 @@
             },
             {
               "kind": "method",
+              "name": "getVisibleTimeRange",
+              "return": {
+                "type": {
+                  "text": "{ from: number; to: number } | null"
+                }
+              },
+              "description": "Times at the edges of the plot, `null` before the engine is created"
+            },
+            {
+              "kind": "method",
+              "name": "setVisibleTimeRange",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "range",
+                  "type": {
+                    "text": "{ from: number; to: number }"
+                  }
+                }
+              ],
+              "description": "Shows the bars between two times"
+            },
+            {
+              "kind": "method",
+              "name": "setCrosshair",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "time",
+                  "type": {
+                    "text": "number | null"
+                  }
+                },
+                {
+                  "name": "price",
+                  "optional": true,
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ],
+              "description": "Shows the crosshair at a time (and a price); `null` hides it"
+            },
+            {
+              "kind": "method",
+              "name": "setScaleMode",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "mode",
+                  "type": {
+                    "text": "TradingScaleMode"
+                  }
+                }
+              ],
+              "description": "Sets the price scale of the price pane (`linear`, `log`, `percent`, `indexed`)"
+            },
+            {
+              "kind": "method",
               "name": "resetPriceScales",
               "return": {
                 "type": {
@@ -35739,6 +37850,219 @@
             },
             {
               "kind": "method",
+              "name": "updateDrawing",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "id",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "patch",
+                  "type": {
+                    "text": "TradingDrawingPatch"
+                  }
+                }
+              ],
+              "description": "Changes the style or the content of a drawing (undoable)"
+            },
+            {
+              "kind": "method",
+              "name": "undo",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Undoes the last change of the drawings"
+            },
+            {
+              "kind": "method",
+              "name": "redo",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Redoes the last undone change of the drawings"
+            },
+            {
+              "kind": "method",
+              "name": "getUndoState",
+              "return": {
+                "type": {
+                  "text": "TradingUndoState"
+                }
+              },
+              "description": "Whether the drawings can be undone or redone"
+            },
+            {
+              "kind": "method",
+              "name": "startReplay",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "time",
+                  "optional": true,
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ],
+              "description": "Starts a bar replay after `time` (the user picks the bar without it)"
+            },
+            {
+              "kind": "method",
+              "name": "replayStep",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "count",
+                  "optional": true,
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ],
+              "description": "Shows the next bars of the replay"
+            },
+            {
+              "kind": "method",
+              "name": "replayPlay",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "speed",
+                  "optional": true,
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ],
+              "description": "Plays the replay at `speed` bars per second"
+            },
+            {
+              "kind": "method",
+              "name": "replayPause",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Pauses the replay"
+            },
+            {
+              "kind": "method",
+              "name": "stopReplay",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Ends the replay and shows every bar"
+            },
+            {
+              "kind": "method",
+              "name": "getReplayState",
+              "return": {
+                "type": {
+                  "text": "TradingReplayState | null"
+                }
+              },
+              "description": "State of the bar replay, `null` before the engine is created"
+            },
+            {
+              "kind": "method",
+              "name": "toDataURL",
+              "return": {
+                "type": {
+                  "text": "string"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "type",
+                  "optional": true,
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "quality",
+                  "optional": true,
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ],
+              "description": "Image of the chart as a data URL (`\"\"` before the engine is created)"
+            },
+            {
+              "kind": "method",
+              "name": "toBlob",
+              "return": {
+                "type": {
+                  "text": "Promise<Blob | null>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "type",
+                  "optional": true,
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "name": "quality",
+                  "optional": true,
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ],
+              "description": "Image of the chart as a blob"
+            },
+            {
+              "kind": "method",
+              "name": "requestChartFullscreen",
+              "return": {
+                "type": {
+                  "text": "Promise<void>"
+                }
+              },
+              "description": "Shows the chart full screen (the element's `requestFullscreen()` shows the element itself)"
+            },
+            {
+              "kind": "method",
+              "name": "exitChartFullscreen",
+              "return": {
+                "type": {
+                  "text": "Promise<void>"
+                }
+              },
+              "description": "Leaves full screen"
+            },
+            {
+              "kind": "method",
               "name": "setIndicatorVisible",
               "return": {
                 "type": {
@@ -35803,6 +38127,14 @@
               "name": "minerva-order-move"
             },
             {
+              "description": "The \"+\" order entry button was clicked (option `orderEntry`); detail: { price, side }",
+              "name": "minerva-order-create"
+            },
+            {
+              "description": "The close button of a `cancellable` price line was clicked; detail: { id, line }",
+              "name": "minerva-order-cancel"
+            },
+            {
               "description": "The user added, moved or deleted drawings; detail: { drawings }",
               "name": "minerva-drawings-change"
             },
@@ -35813,6 +38145,18 @@
             {
               "description": "The drawing tool changed (back to `cursor` after a drawing); detail: { tool }",
               "name": "minerva-drawing-tool-change"
+            },
+            {
+              "description": "Undo / redo of the drawings became possible or impossible; detail: { canUndo, canRedo }",
+              "name": "minerva-undo-change"
+            },
+            {
+              "description": "The bar replay started, stepped, played, paused or stopped; detail: { active, picking, playing, speed, index, total, time }",
+              "name": "minerva-replay-change"
+            },
+            {
+              "description": "The chart entered or left full screen; detail: { fullscreen }",
+              "name": "minerva-fullscreen-change"
             },
             {
               "description": "An indicator was shown or hidden from its legend; detail: { id, visible }",

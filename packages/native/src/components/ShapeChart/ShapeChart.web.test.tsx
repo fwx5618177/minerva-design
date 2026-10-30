@@ -36,12 +36,20 @@ describe("shape charts on react-native-web", () => {
     const divs = [...surface.querySelectorAll("div")];
     const css = (d: HTMLElement) => getComputedStyle(d);
     // half-plane clips of the segments
-    expect(
-      divs.some(
-        (d) =>
-          css(d).overflowX === "hidden" && css(d).transform.includes("rotate"),
-      ),
-    ).toBe(true);
+    const clips = divs.filter(
+      (d) =>
+        css(d).overflowX === "hidden" && css(d).transform.includes("rotate"),
+    );
+    expect(clips.length).toBeGreaterThan(0);
+    // placed by an exact translation, not by layout offsets the browser would
+    // round before the rotation (steps at the segment ends)
+    for (const clip of clips) {
+      expect(clip.style.left).toBe("0px");
+      expect(clip.style.transform).toMatch(
+        /^translateX\(-?[\d.]+px\) translateY\(-?[\d.]+px\) rotate\(/,
+      );
+      expect(Number.isInteger(parseFloat(clip.style.width))).toBe(true);
+    }
     // the ring of a segment: a round bordered element
     expect(
       divs.some(

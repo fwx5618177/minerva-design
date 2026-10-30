@@ -3,7 +3,12 @@ import { createCanvasChart, type ChartCanvas } from "./canvas";
 import { createChartController, scenePrimitives } from "./controller";
 import { buildItems } from "./items";
 import { axisTicks } from "./axis";
-import { formatCompact, formatValue, tickFormatter } from "./format";
+import {
+  formatCompact,
+  formatDuration,
+  formatValue,
+  tickFormatter,
+} from "./format";
 import { createScales, toData, toScreen } from "./layout";
 import { rectOf } from "./overlay";
 import { alignedDomain, buildModel, type DataCache } from "./model";
@@ -425,6 +430,76 @@ describe("statistics presets", () => {
       series: gantt.series,
     });
     expect(m.base.y).toEqual([0, 30]);
+  });
+
+  it("shows only the Gantt task under the pointer, with its dates and progress", () => {
+    const DAY = 86_400_000;
+    const gantt = ganttSeries(
+      [
+        { name: "Design", start: 0, end: 28 * DAY, progress: 0.35, group: "A" },
+        {
+          name: "Build",
+          start: 10 * DAY,
+          end: 36 * DAY,
+          group: "B",
+          dependencies: ["Design"],
+        },
+        { name: "Launch", start: 40 * DAY, milestone: true },
+      ],
+      { locale: "zh-CN" },
+    );
+    const options: ChartOptions = {
+      locale: "zh-CN",
+      orientation: "horizontal",
+      xAxis: { type: "category", categories: gantt.categories },
+      yAxis: { type: "time", timeZone: "utc" },
+      series: gantt.series,
+    };
+    const { model: m, scales, xTicks, yTicks } = layout(options);
+    expect(m.tooltipMode).toBe("item");
+    // on the solid progress part of Design: the task, not its progress
+    const p = toScreen(scales, 0, 5 * DAY);
+    const hit = hitTest(m, scales, xTicks, p.x, p.y)!;
+    expect(hit.items).toHaveLength(1);
+    expect(hit.items[0]!.seriesName).toBe("A");
+    const content = tooltipContent(m, hit, yTicks);
+    expect(content.title).toBe("Design");
+    expect(content.titleColor).toBeTruthy();
+    expect(content.subtitle).toBe("A");
+    expect(content.rows.map((r) => r.name)).toEqual([
+      "开始",
+      "结束",
+      "时长",
+      "进度",
+    ]);
+    expect(content.rows[2]!.value).toBe("4周");
+    expect(content.rows[3]!.value).toBe("35%");
+    // Build: 26 days and its dependencies
+    const b = toScreen(scales, 1, 20 * DAY);
+    const rows = tooltipContent(
+      m,
+      hitTest(m, scales, xTicks, b.x, b.y)!,
+      yTicks,
+    ).rows;
+    expect(rows[2]!.value).toBe("26天");
+    expect(rows[3]).toMatchObject({ name: "前置任务", value: "Design" });
+    // empty space of a row: nothing
+    const empty = toScreen(scales, 1, 2 * DAY);
+    expect(hitTest(m, scales, xTicks, empty.x, empty.y)).toBeNull();
+    // the milestone dot
+    const dot = toScreen(scales, 2, 40 * DAY);
+    expect(
+      tooltipContent(m, hitTest(m, scales, xTicks, dot.x, dot.y)!, yTicks)
+        .title,
+    ).toBe("Launch");
+  });
+
+  it("formats durations in weeks, days, hours and minutes", () => {
+    expect(formatDuration(14 * 86_400_000, "en")).toBe("2 weeks");
+    expect(formatDuration(3.5 * 86_400_000, "fr")).toMatch(/^3,5\sjours$/);
+    expect(formatDuration(5 * 3_600_000, "en")).toBe("5 hours");
+    expect(formatDuration(90_000, "en")).toBe("2 minutes");
+    expect(formatDuration(NaN, "en")).toBe("–");
   });
 });
 

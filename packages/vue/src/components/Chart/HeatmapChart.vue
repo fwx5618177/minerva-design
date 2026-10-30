@@ -2,6 +2,7 @@
 import type { PropType } from "vue";
 import {
   heatmapChartOptions,
+  type ChartColorScheme,
   type ChartHoverEvent,
   type ChartPlotClickEvent,
   type ChartRendererKind,
@@ -23,10 +24,12 @@ const props = defineProps({
   xCategories: Array as PropType<readonly string[]>,
   /** Row names from bottom to top (collected from the data when omitted) */
   yCategories: Array as PropType<readonly string[]>,
-  /** Colors from the lowest to the highest value; a ramp of the first palette color by default */
-  colorScale: Array as PropType<readonly string[]>,
+  /** Colors from the lowest to the highest value (interpolated in OKLab), or a built-in theme-aware ramp of the first palette color (default `sequential`) */
+  colorScale: [Array, String] as PropType<readonly string[] | ChartColorScheme>,
   /** Values at the ends of the color scale; the data range by default */
   valueRange: Array as unknown as PropType<readonly [number, number]>,
+  /** Value at the middle of the color scale (diverging data; default 0 for `diverging` ramps spanning it, else the middle of the range) */
+  colorMidpoint: Number,
   /** Name of the value in the tooltip */
   name: String,
   /** Corner radius of the cells, in pixels */
@@ -56,6 +59,7 @@ const { setContainer, rootStyle, handle } = useCartesianChart(
         yCategories: raw(props.yCategories),
         colorScale: raw(props.colorScale),
         valueRange: raw(props.valueRange),
+        colorMidpoint: props.colorMidpoint,
         name: props.name,
         radius: props.radius,
         format: props.format,

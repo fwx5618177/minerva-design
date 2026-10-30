@@ -471,17 +471,20 @@ function drawData(scene: ChartScene): ReactElement[] {
     const count = p.dots.length / 3;
     const stride =
       count > dotsLeft ? Math.ceil(count / Math.max(1, dotsLeft)) : 1;
+    const stroke = p.stroke ?? 0;
     for (let i = 0; i < count; i += stride) {
+      const color = p.colors[i] ?? "#888";
       out.push(
         dot(
           `${key}-${i}`,
           p.dots[i * 3] - ox,
           p.dots[i * 3 + 1] - oy,
           p.dots[i * 3 + 2],
-          p.colors[i],
-          {
-            opacity: p.opacity,
-          },
+          // rings (hollow box plot outliers): the border only
+          p.opacity > 0 ? color : "transparent",
+          stroke > 0 && p.opacity < 1
+            ? { borderWidth: stroke, borderColor: color, opacity: 1 }
+            : { opacity: p.opacity },
         ),
       );
     }
@@ -668,6 +671,62 @@ function drawBackground(scene: ChartScene, family?: string): ReactElement[] {
       );
   }
 
+  const ramp = scene.legend?.colors;
+  if (ramp) {
+    // visual map: the ramp in even steps, the values at its ends
+    const { bar, stops } = ramp;
+    const step = bar.width / Math.max(1, stops.length);
+    out.push(
+      <View
+        key="color-legend"
+        {...part(C, "color-legend")}
+        style={{
+          position: "absolute",
+          left: bar.x,
+          top: bar.y,
+          width: bar.width,
+          height: bar.height,
+          borderRadius: bar.height / 2,
+          overflow: "hidden",
+          flexDirection: "row",
+        }}
+      >
+        {stops.map((c, k) => (
+          <View
+            key={k}
+            style={{ width: step, height: bar.height, backgroundColor: c }}
+          />
+        ))}
+      </View>,
+    );
+    ramp.ticks.forEach((t, k) =>
+      out.push(
+        box(
+          `color-tick-${k}`,
+          Math.round(t),
+          bar.y - 2,
+          1,
+          bar.height + 4,
+          css(theme.text, 0.35),
+        ),
+      ),
+    );
+    ramp.labels.forEach((l, k) =>
+      out.push(
+        label(
+          `color-label-${k}`,
+          l.text,
+          l.x,
+          l.y,
+          l.align,
+          "middle",
+          { size: 11, color: css(theme.textMuted), family },
+          width,
+        ),
+      ),
+    );
+  }
+
   if (scene.legend) {
     for (const e of scene.legend.entries) {
       // coordinates relative to the entry box
@@ -722,6 +781,34 @@ function drawForeground(scene: ChartScene, family?: string): ReactElement[] {
   const halo = css(theme.background, 0.9);
   const labelHeight = fs + 4;
   const out: ReactElement[] = [];
+
+  // waterfall connectors: thin dashed lines between the bars
+  scene.connectors.forEach((c, i) => {
+    const along = c.y0 === c.y1;
+    out.push(
+      ...(along
+        ? dashedLine(
+            `connector-${i}`,
+            "y",
+            crisp(c.y0, c.width) - oy,
+            Math.min(c.x0, c.x1) - ox,
+            Math.abs(c.x1 - c.x0),
+            c.width,
+            c.color,
+            c.dash,
+          )
+        : dashedLine(
+            `connector-${i}`,
+            "x",
+            crisp(c.x0, c.width) - ox,
+            Math.min(c.y0, c.y1) - oy,
+            Math.abs(c.y1 - c.y0),
+            c.width,
+            c.color,
+            c.dash,
+          )),
+    );
+  });
 
   annotations.forEach((a, i) => {
     if (a.type !== "line") return;
@@ -943,22 +1030,51 @@ export function drawHover(
       );
       return;
     }
+    if (m.kind === "guide") {
+      // the row / column of the hovered heatmap cell
+      out.push(
+        box(`mark-${i}`, m.x, m.y, m.width, m.height, css(theme.text, 0.06)),
+      );
+      return;
+    }
     if (m.kind === "cell") {
+      // lifted: a little larger, a shadow, a ring inside its edge
+      const grow = Math.min(3, m.width * 0.06, m.height * 0.06);
+      const inset = Math.min(2, m.width / 5, m.height / 5);
       out.push(
         box(
           `mark-${i}`,
-          m.x - 1.5,
-          m.y - 1.5,
-          m.width + 3,
-          m.height + 3,
-          "transparent",
+          m.x - grow,
+          m.y - grow,
+          m.width + grow * 2,
+          m.height + grow * 2,
+          m.color,
           {
-            borderRadius: 4,
-            borderWidth: 1.5,
-            borderColor: css(theme.text, 0.55),
+            borderRadius: Math.max(2, m.radius),
+            shadowColor: "#0f172a",
+            shadowOpacity: 0.45,
+            shadowRadius: 6,
+            shadowOffset: { width: 0, height: 3 },
+            elevation: 4,
           },
         ),
       );
+      if (m.width > 8 && m.height > 8)
+        out.push(
+          box(
+            `ring-${i}`,
+            m.x - grow + inset,
+            m.y - grow + inset,
+            m.width + (grow - inset) * 2,
+            m.height + (grow - inset) * 2,
+            "transparent",
+            {
+              borderRadius: Math.max(1, m.radius - inset / 2),
+              borderWidth: 1.5,
+              borderColor: m.ring,
+            },
+          ),
+        );
       return;
     }
     // soft halo, then the dot with a thin ring in the background color
@@ -1049,9 +1165,32 @@ export function drawHover(
                   {content.title}
                 </Text>
               </View>,
+              ...(content.subtitle
+                ? [
+                    <View key="subtitle" style={row}>
+                      <Text
+                        numberOfLines={1}
+                        style={[
+                          font(400, muted),
+                          {
+                            fontSize: 11,
+                            paddingLeft: content.titleColor ? 14 : 0,
+                          },
+                        ]}
+                      >
+                        {content.subtitle}
+                      </Text>
+                    </View>,
+                  ]
+                : []),
+              // a label column (after the swatch column) and right-aligned values
               ...content.rows.map((r, i) => (
                 <View key={i} style={row}>
-                  {r.color ? swatch(r.color) : null}
+                  {tip.swatchWidth > 0 ? (
+                    <View style={{ width: tip.swatchWidth }}>
+                      {r.color ? swatch(r.color) : null}
+                    </View>
+                  ) : null}
                   <Text
                     numberOfLines={1}
                     style={[font(400, muted), { flexShrink: 1 }]}
@@ -1062,7 +1201,12 @@ export function drawHover(
                     numberOfLines={1}
                     style={[
                       font(600, text),
-                      { flexGrow: 1, marginLeft: 16, textAlign: "right" },
+                      {
+                        flexGrow: 1,
+                        marginLeft: 16,
+                        textAlign: "right",
+                        fontVariant: ["tabular-nums"],
+                      },
                     ]}
                   >
                     {r.value}

@@ -57,6 +57,8 @@ export interface PointColumns {
   size: ArrayLike<number> | null;
   value: ArrayLike<number> | null;
   colors: readonly (string | undefined)[] | null;
+  /** Per-point `0xRRGGBB` colors (column data) */
+  rgb: ArrayLike<number> | null;
   labels: readonly (string | undefined)[] | null;
   extent: Record<AxisKey | "value", Extent>;
 }
@@ -83,6 +85,7 @@ export const pointColumns = (data: Chart3DPointData): PointColumns => {
       size: data.size ?? null,
       value: data.value ?? null,
       colors: null,
+      rgb: data.color ?? null,
       labels: data.label ?? null,
     };
   } else {
@@ -127,7 +130,7 @@ export const pointColumns = (data: Chart3DPointData): PointColumns => {
         labels[i] = point.label;
       }
     }
-    columns = { count, x, y, z, size, value, colors, labels };
+    columns = { count, x, y, z, size, value, colors, rgb: null, labels };
   }
   const result: PointColumns = {
     ...columns,

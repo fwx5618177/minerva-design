@@ -9,6 +9,7 @@ import { htmlProblems } from "./html-check";
 
 const PATHS: Record<string, string[]> = {
   "minerva-design/vue": ["packages/vue/src/index.ts"],
+  "minerva-design/vue/charts": ["packages/vue/src/charts.ts"],
   "minerva-design/angular": ["packages/angular/src/index.ts"],
   "minerva-design": ["packages/react/src/index.ts"],
   "minerva-design/theme-utils": ["packages/react/src/theme-utils.ts"],

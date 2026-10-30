@@ -1768,6 +1768,17 @@ export const uniChartManifest = [
     deviceE2E: false,
   },
   {
+    name: "ChordChart",
+    scope:
+      'Shape chart drawn on a `<canvas type="2d">` by the DOM-free shape engine: group arcs and ribbons, legend toggles (controlled hidden), tap to highlight with the canvas tooltip, animations, hover/click/toggle events; ShapeChart takes the options of any shape type.',
+    limitations: [
+      "No keyboard navigation; tooltip.render may only return text.",
+    ],
+    tests: ["src/shape-charts.test.ts"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
     name: "ShapeChart",
     scope:
       'Shape chart drawn on a `<canvas type="2d">` by the DOM-free shape engine: legend toggles (controlled hidden), tap to highlight with the canvas tooltip, animations, hover/click/toggle events and the sunburst drill event; ShapeChart takes the options of any shape type.',

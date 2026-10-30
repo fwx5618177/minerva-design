@@ -2,7 +2,8 @@ import simulate from "miniprogram-simulate";
 import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { afterEach, expect, it } from "vitest";
+import { afterEach, expect, it, vi } from "vitest";
+import type { ChartOptions } from "@minerva/charts/canvas";
 import { chartTheme } from "./charts";
 import * as weapp from "./index";
 import {
@@ -26,6 +27,29 @@ import {
   waterfallChart,
 } from "./index";
 import { weappChartManifest } from "./manifest";
+
+/** Engine options the charts were created / updated with, latest last */
+const engineOptions: ChartOptions[] = [];
+vi.mock("@minerva/charts/canvas", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("@minerva/charts/canvas")>();
+  return {
+    ...actual,
+    createCanvasChart: (
+      config: Parameters<typeof actual.createCanvasChart>[0],
+    ) => {
+      engineOptions.push(config.options);
+      const chart = actual.createCanvasChart(config);
+      const setOptions = chart.setOptions.bind(chart);
+      chart.setOptions = (options) => {
+        engineOptions.push(options);
+        setOptions(options);
+      };
+      return chart;
+    },
+  };
+});
+const lastOptions = () => engineOptions[engineOptions.length - 1]!;
 
 type Control = typeof lineChart;
 type Root = simulate.RootComponent<
@@ -510,6 +534,7 @@ it("chart manifest lists every chart component with real tests", () => {
     "RadialBarChart",
     "CalendarHeatmap",
     "BulletChart",
+    "ChordChart",
     "TradingChart",
     "DepthChart",
     "OrderBook",
@@ -611,6 +636,72 @@ it("draws the named charts from their web props", async () => {
   }
   const { w } = await mount(sparkline, { data: [1, 2] });
   expect(w.instance.data.chartHeight).toBe("48px");
+});
+
+it("passes the preset options, locale and labels to the engine", async () => {
+  await mount(waterfallChart, {
+    steps: [{ label: "Start", value: 10 }],
+    connector: { dash: [2, 2] },
+    locale: "zh-CN",
+    labels: false,
+  });
+  expect(lastOptions().series[0]).toMatchObject({
+    connector: { dash: [2, 2] },
+    showLabels: false,
+  });
+  expect(lastOptions().locale).toBe("zh-CN");
+  // `labels` of the waterfall are the value labels, not the texts
+  expect(lastOptions().labels).toBeUndefined();
+  await mount(heatmapChart, {
+    data: [
+      { x: "a", y: "r", value: -1 },
+      { x: "b", y: "r", value: 1 },
+    ],
+    colorScale: "diverging",
+    colorMidpoint: 0,
+  });
+  expect(lastOptions().series[0]).toMatchObject({
+    colorScale: "diverging",
+    colorMidpoint: 0,
+  });
+  await mount(ganttChart, {
+    tasks: [
+      { name: "Design", start: 0, end: 40 },
+      { name: "Build", start: 40, end: 100, dependencies: ["Design"] },
+    ],
+    dependenciesName: "After",
+  });
+  expect(JSON.stringify(lastOptions().series)).toContain('"name":"After"');
+  await mount(boxPlotChart, {
+    groups: [{ x: "A", values: [1, 2, 3, 4, 20] }],
+    outlierShape: "filled",
+    outlierSize: 10,
+  });
+  expect(lastOptions().series[0]).toMatchObject({
+    outlierShape: "filled",
+    outlierSize: 10,
+  });
+  const { w } = await mount(areaChart, {
+    series: [{ data: [1, 2] }],
+    locale: "ja",
+    labels: { series: "系列" },
+  });
+  expect(lastOptions()).toMatchObject({
+    locale: "ja",
+    labels: { series: "系列" },
+  });
+  w.setData({ locale: "fr" });
+  await tick();
+  expect(lastOptions().locale).toBe("fr");
+  await mount(sparkline, {
+    data: [1, 2],
+    locale: "fr",
+    labels: { value: "V" },
+  });
+  expect(lastOptions()).toMatchObject({
+    locale: "fr",
+    labels: { value: "V" },
+  });
 });
 
 it("does not export the DOM / GPU-only charts", () => {

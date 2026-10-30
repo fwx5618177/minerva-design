@@ -20,13 +20,27 @@ interface ItemBase {
   opacity: number;
 }
 
-/** Instanced billboards shaded as small spheres */
+/** Shapes of the points (`PointsItem.style`) */
+export const POINT_SPHERE = 0;
+export const POINT_DISC = 1;
+export const POINT_GLOW = 2;
+
+/** Instanced billboards: shaded spheres, flat discs or glowing discs */
 export interface PointsItem extends ItemBase {
   kind: "points";
   data: ArrayBuffer;
   count: number;
   /** Scales the dots with the distance (perspective) */
   perspective: boolean;
+  /** `POINT_SPHERE`, `POINT_DISC` or `POINT_GLOW` (sphere when omitted) */
+  style?: number;
+  /** Adds the light of the dots (no depth writes, order independent) */
+  additive?: boolean;
+  /**
+   * The data was thinned to 1 point out of `thinned` (CPU backend): the
+   * drawn dots get denser to keep the look of the cloud
+   */
+  thinned?: number;
 }
 
 /** Lit triangles (surfaces, bars) */
@@ -40,6 +54,11 @@ export interface MeshItem extends ItemBase {
    * sorted back to front): the index buffer is rewritten, same length
    */
   order?: number;
+  /**
+   * Blended without writing depth whatever its `opacity` (merged transparent
+   * meshes: their opacity is baked into the vertex colors)
+   */
+  transparent?: boolean;
 }
 
 /** Screen-space wide segments (wireframes, contours, polylines) */
@@ -85,19 +104,31 @@ export interface Renderer3D {
   destroy(): void;
 }
 
+/** Whether an item writes the depth buffer (opaque items) */
+export const writesDepth = (item: Item3D): boolean => {
+  if (item.opacity < 1) return false;
+  if (item.kind === "mesh") return !item.transparent;
+  if (item.kind === "points")
+    return !item.additive && item.style !== POINT_GLOW;
+  return true;
+};
+
 /**
- * Order of the draws: opaque meshes, points, transparent meshes, then lines
- * (wireframes and contours stay visible over transparent surfaces)
+ * Order of the draws: opaque meshes, opaque points, blended points,
+ * transparent meshes, then lines (wireframes and contours stay visible over
+ * transparent surfaces). Stable: items of a rank keep their order.
  */
 export const drawOrder = (items: readonly Item3D[]): Item3D[] => {
   const rank = (item: Item3D) =>
     item.kind === "mesh"
-      ? item.opacity < 1
-        ? 2
-        : 0
+      ? writesDepth(item)
+        ? 0
+        : 3
       : item.kind === "points"
-        ? 1
-        : 3;
+        ? writesDepth(item)
+          ? 1
+          : 2
+        : 4;
   return items
     .map((item, i) => ({ item, i, r: rank(item) }))
     .sort((a, b) => a.r - b.r || a.i - b.i)

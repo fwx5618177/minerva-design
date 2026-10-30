@@ -146,6 +146,9 @@ const overlaps = (a: Rect, b: Rect, pad = 2) =>
   a.y < b.y + b.h + pad &&
   b.y < a.y + a.h + pad;
 
+/** Smallest gap (px) between tick labels of different axes */
+const CROSS_AXIS_GAP = 10;
+
 /** Edge (fixed coordinates of the two other axes) carrying the labels of an axis */
 export const labelEdge = (
   frame: CameraFrame,
@@ -262,7 +265,9 @@ export const drawAxes = (
     ctx.beginPath();
     labels.forEach((l, i) => {
       if (i % step) return;
-      if (placed.some((o) => overlaps(l.rect, o))) return;
+      // wider gap to the labels of the other axes: at the shared corner, two
+      // labels side by side would read as one ("-2 -2")
+      if (placed.some((o) => overlaps(l.rect, o, CROSS_AXIS_GAP))) return;
       placed.push(l.rect);
       ctx.moveTo(l.tick.x, l.tick.y);
       ctx.lineTo(l.tick.x + ox * 4, l.tick.y + oy * 4);
@@ -298,15 +303,28 @@ export const drawAxes = (
       ctx.fillText(axis.title, 0, 0);
       ctx.restore();
     } else {
+      const rectAt = (x: number, y: number): Rect => ({
+        x: align === "left" ? x : align === "right" ? x - tw : x - tw / 2,
+        y: baseline === "top" ? y : baseline === "bottom" ? y - th : y - th / 2,
+        w: tw,
+        h: th,
+      });
+      // slanted axes: long titles move out until they clear the labels
+      for (
+        let k = 0;
+        k < 12 && placed.some((o) => overlaps(rectAt(tx, ty), o));
+        k++
+      ) {
+        tx += ox * 3;
+        ty += oy * 3;
+      }
       // keep the whole title inside the bounds
-      const left =
-        align === "left" ? tx : align === "right" ? tx - tw : tx - tw / 2;
-      const top =
-        baseline === "top" ? ty : baseline === "bottom" ? ty - th : ty - th / 2;
+      const { x: left, y: top } = rectAt(tx, ty);
       tx +=
         Math.max(0, bounds.left - left) - Math.max(0, left + tw - bounds.right);
       ty +=
         Math.max(0, bounds.top - top) - Math.max(0, top + th - bounds.bottom);
+      placed.push(rectAt(tx, ty));
       ctx.textAlign = align;
       ctx.textBaseline = baseline;
       ctx.fillText(axis.title, tx, ty);

@@ -30,9 +30,14 @@ import type { ChartRendererKind } from "../types";
 import { localeLabels, resolveLocale } from "../locale";
 import {
   anchorCount,
+  handlePoints,
   hitDrawing,
+  isFillable,
+  isPosition,
+  moveHandle,
   paintDrawing,
   setDash,
+  type Box,
   type DrawingMapper,
 } from "./drawings";
 import {
@@ -47,10 +52,12 @@ import {
   formatPercent,
   formatVolume,
   inferTimeframe,
+  isTimeZone,
   pickTicks,
   priceFormatter,
-  shiftTime,
   tickText,
+  zoneOffset,
+  type UtcOffset,
 } from "./format";
 import {
   AreaBuffer,
@@ -60,7 +67,7 @@ import {
   clampRange,
   pixelRange,
 } from "./geometry";
-import { heikinAshiInto, parseTimeframe } from "./indicators";
+import { heikinAshiInto, parseTimeframe, volumeProfile } from "./indicators";
 import { TRADING_LABELS, fill, type TradingTexts } from "./labels";
 import {
   createScale,
@@ -79,19 +86,29 @@ import {
 import {
   appendBars as storeAppend,
   createPyramid,
+  createRangePyramid,
   createStore,
   indexOfTime,
   inputLength,
+  invalidateRangePyramid,
   barAt,
   prependBars as storePrepend,
   pyramidLevel,
+  rangeLevel,
   readBar,
   setBars as storeSet,
   updateBar as storeUpdate,
   lowerBoundTime,
+  type BarStore,
   type OhlcColumns,
+  type RangePyramid,
 } from "./store";
-import { LINE_COLORS, buildStudies, type Study } from "./studies";
+import {
+  LINE_COLORS,
+  buildStudies,
+  type Study,
+  type StudyOutput,
+} from "./studies";
 import type {
   TradingBarsInput,
   TradingChartEventMap,
@@ -99,11 +116,17 @@ import type {
   TradingChartOptions,
   TradingCrosshairEvent,
   TradingDrawing,
+  TradingDrawingPatch,
   TradingDrawingPoint,
   TradingDrawingTool,
+  TradingLineStyle,
   TradingPriceLine,
+  TradingReplayState,
   TradingScaleMode,
+  TradingUndoState,
   TradingVisibleRange,
+  TradingVolumeProfile,
+  TradingVolumeProfileOptions,
 } from "./types";
 
 const TIME_AXIS = 28;
@@ -115,6 +138,29 @@ const UP = "var(--success-color, #089981)";
 const DOWN = "var(--danger-color, #f23645)";
 const WARNING = "var(--warning-color, #f59e0b)";
 const PRIMARY = "var(--primary-color, #2962ff)";
+const HISTORY_LIMIT = 100;
+
+/** Colors of the drawing toolbar */
+const PALETTE = [
+  "#2962ff",
+  "#089981",
+  "#f23645",
+  "#f59e0b",
+  "#a855f7",
+  "#0ea5e9",
+  "#ec4899",
+  "#787b86",
+];
+const LINE_STYLES: readonly TradingLineStyle[] = ["solid", "dashed", "dotted"];
+
+/**
+ * Hooks used by `syncCharts` to follow another chart without echoing its
+ * events back (internal: not part of the public instance)
+ */
+export const syncHooks = new WeakMap<
+  TradingChartInstance,
+  { setTimeRange(range: { from: number; to: number }): void }
+>();
 
 const PRICE_LINE_TITLES: Record<string, keyof TradingTexts | undefined> = {
   order: "limit",
@@ -198,13 +244,15 @@ type Gesture =
   | {
       kind: "drawing";
       id: string;
+      pane: Pane;
       handle: number;
       x: number;
       y: number;
       original: TradingDrawing;
       moved: boolean;
     }
-  | { kind: "create"; x: number; y: number; moved: boolean };
+  | { kind: "create"; pane: Pane; x: number; y: number; moved: boolean }
+  | { kind: "button"; action: () => void };
 
 /** Mounts a trading chart in `container` (which should have a height) */
 export const createTradingChart = (
@@ -284,7 +332,52 @@ export const createTradingChart = (
     whiteSpace: "nowrap",
   });
   live.setAttribute("aria-live", "polite");
-  root.append(background, foreground, legends, jump, live);
+  // floating toolbar of the selected drawing, and the editor of text drawings
+  const toolbar = make("div", {
+    position: "absolute",
+    display: "none",
+    alignItems: "center",
+    gap: "1px",
+    padding: "3px",
+    borderRadius: "8px",
+    border:
+      "1px solid color-mix(in srgb, var(--border-color, #e5e7eb) 85%, transparent)",
+    background: "var(--surface-elevated-color, var(--surface-color, #fff))",
+    boxShadow: "0 8px 24px -8px rgba(15, 23, 42, 0.35)",
+    zIndex: "2",
+    cursor: "default",
+  });
+  toolbar.className = "minerva-trading-toolbar";
+  toolbar.setAttribute("role", "toolbar");
+  const editor = make("textarea", {
+    position: "absolute",
+    display: "none",
+    minWidth: "120px",
+    minHeight: "28px",
+    padding: "5px 9px",
+    resize: "none",
+    border: "1px solid var(--primary-color, #2962ff)",
+    borderRadius: "5px",
+    outline: "none",
+    background: "var(--surface-elevated-color, var(--surface-color, #fff))",
+    color: "var(--text-color, #1f2937)",
+    font: "500 13px var(--font-family-sans, system-ui, sans-serif)",
+    boxShadow: "0 6px 18px -6px rgba(15, 23, 42, 0.3)",
+    zIndex: "3",
+  });
+  editor.rows = 1;
+  const sheet = make("style", {});
+  sheet.textContent = `.minerva-trading-toolbar button{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;padding:0 5px;border-radius:5px;cursor:pointer;color:var(--text-color,#1f2937)}.minerva-trading-toolbar button:hover{background:color-mix(in srgb,var(--text-color,#1f2937) 9%,transparent)}.minerva-trading-toolbar button:focus-visible{box-shadow:inset 0 0 0 2px var(--primary-color,#2962ff)}.minerva-trading-toolbar button[aria-pressed="true"]{background:color-mix(in srgb,var(--primary-color,#2962ff) 16%,transparent);color:var(--primary-color,#2962ff)}.minerva-trading-toolbar .sep{width:1px;height:18px;margin:0 3px;background:var(--border-color,#e5e7eb)}`;
+  root.append(
+    sheet,
+    background,
+    foreground,
+    legends,
+    jump,
+    toolbar,
+    editor,
+    live,
+  );
   container.appendChild(root);
 
   // ----------------------------------------------------------------- data
@@ -309,12 +402,16 @@ export const createTradingChart = (
     id: string;
     name: string;
     color: string;
+    width: number;
     times: Float64Array;
     data: Float64Array;
     values: Float64Array;
     valid: number;
+    lod: RangePyramid;
   }
   let compares: CompareRuntime[] = [];
+  /** Min / max pyramids of the indicator outputs (zoomed-out decimation) */
+  const outputLods = new WeakMap<StudyOutput, RangePyramid>();
   /** Changes when bars other than the last one change */
   let dataVersion = 0;
   /** Changes when the last bar changes */
@@ -366,17 +463,54 @@ export const createTradingChart = (
 
   let drawings: readonly TradingDrawing[] = options.drawings ?? [];
   let emittedDrawings: readonly TradingDrawing[] | null = null;
+  /** Drawings of the last commit: the base of the undo history */
+  let committed: readonly TradingDrawing[] = drawings;
+  const undoStack: (readonly TradingDrawing[])[] = [];
+  const redoStack: (readonly TradingDrawing[])[] = [];
+  let undoKey = "false|false";
   let tool: TradingDrawingTool = options.drawingMode ?? "cursor";
   let selected: string | null = null;
   let hovered: string | null = null;
   let draft: TradingDrawing | null = null;
+  /** Clicks still needed by the drawing being made (three-anchor tools) */
+  let draftClicks = 0;
+  let draftPane: string = PRICE;
   let drawingCounter = 0;
+  /** Text boxes measured when painted (hit tests of text drawings) */
+  const textBoxes = new Map<string, Box>();
+  /** Drawing whose text is being edited */
+  let editing: { id: string; created: boolean } | null = null;
+  let toolbarKey = "";
+  let paletteOpen = false;
   const lineOverrides = new Map<string, number>();
   let hoveredLine: string | null = null;
+  /** Clickable areas painted on the canvas (close buttons, order entry) */
+  let canvasButtons: {
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+    action: () => void;
+  }[] = [];
+  let hoveredButton = -1;
   let lastRange: TradingVisibleRange | null = null;
+  /** The next view change comes from a synchronized chart: not reported */
+  let silentRange = false;
+  /** Crosshair set by `setCrosshair` (synchronized charts) */
+  let externalCross: { time: number; price: number } | null = null;
   let lastCrosshair = "";
   let historyFirst = NaN;
   let countdownTimer: ReturnType<typeof setInterval> | null = null;
+  /** Bar replay: the full history, and the bars shown so far */
+  let replay: {
+    source: BarStore;
+    playing: boolean;
+    speed: number;
+    timer: ReturnType<typeof setInterval> | null;
+  } | null = null;
+  let replayPicking = false;
+  let replaySpeed = 4;
+  let profile: { key: string; result: TradingVolumeProfile } | null = null;
 
   // ---------------------------------------------------------- listeners
 
@@ -453,6 +587,66 @@ export const createTradingChart = (
     return store.time[i];
   };
 
+  /** Time of a fractional index, interpolated between the bars */
+  const timeAtFrac = (index: number) => {
+    const count = n();
+    if (!count) return 0;
+    const i = Math.floor(index);
+    if (i < 0 || i >= count - 1) {
+      const edge = i < 0 ? 0 : count - 1;
+      return store.time[edge] + (index - edge) * tfMs();
+    }
+    const t = index - i;
+    return store.time[i] + t * (store.time[i + 1] - store.time[i]);
+  };
+
+  /** Fractional index of a time (the inverse of `timeAtFrac`) */
+  const indexAtTimeFrac = (time: number) => {
+    const count = n();
+    if (!count) return 0;
+    if (time >= store.time[count - 1])
+      return count - 1 + (time - store.time[count - 1]) / tfMs();
+    if (time <= store.time[0]) return (time - store.time[0]) / tfMs();
+    const i = indexOfTime(store.time, count, time);
+    const span = store.time[i + 1] - store.time[i];
+    return i + (span > 0 ? (time - store.time[i]) / span : 0);
+  };
+
+  // displayed time: a fixed offset, a time zone or the local time
+  let zone: string | undefined;
+  const offsetMinutes = (time: number) =>
+    options.utcOffset ??
+    (zone
+      ? zoneOffset(time, zone)
+      : -new Date(finite(time) ? time : 0).getTimezoneOffset());
+  const studyOffset: UtcOffset = (time) => offsetMinutes(time);
+  /** Time shifted so that the UTC getters read the displayed time */
+  const shift = (time: number) => time + offsetMinutes(time) * MINUTE;
+
+  /** CSS color of a study color: `up` / `down` stand for the bar colors */
+  const colorOf = (color: string) =>
+    color === "up" ? upCss() : color === "down" ? downCss() : color;
+
+  /** Min / max / last of each visible group of a column of values */
+  const groupRanges = (
+    v: Visible,
+    values: Float64Array,
+    lod: RangePyramid,
+  ): {
+    min: ArrayLike<number>;
+    max: ArrayLike<number>;
+    last: ArrayLike<number>;
+  } => {
+    if (!v.level) return { min: values, max: values, last: values };
+    const level = rangeLevel(lod, values, n(), v.level);
+    return level;
+  };
+  const lodOf = (out: StudyOutput) => {
+    let lod = outputLods.get(out);
+    if (!lod) outputLods.set(out, (lod = createRangePyramid()));
+    return lod;
+  };
+
   /** Logical index of a time (extrapolated outside the bars) */
   const indexOfTimeExt = (time: number) => {
     const count = n();
@@ -469,10 +663,19 @@ export const createTradingChart = (
   // ------------------------------------------------------- derived data
 
   const markDirty = (from: number) => {
-    for (const study of studies)
+    for (const study of studies) {
       studyValid.set(study, Math.min(studyValid.get(study) ?? 0, from));
+      for (const out of study.outputs) {
+        const lod = outputLods.get(out);
+        if (lod) invalidateRangePyramid(lod, from);
+      }
+    }
     haValid = Math.min(haValid, from);
-    for (const c of compares) c.valid = Math.min(c.valid, from);
+    for (const c of compares) {
+      c.valid = Math.min(c.valid, from);
+      invalidateRangePyramid(c.lod, from);
+    }
+    profile = null;
     const level = (p: typeof pyramid) => {
       for (const l of p.levels)
         if (l) l.valid = Math.min(l.valid, Math.floor(from / l.size));
@@ -548,7 +751,7 @@ export const createTradingChart = (
     const { studies: next, reused } = buildStudies(
       options.indicators ?? [],
       studies,
-      options.utcOffset ?? -new Date().getTimezoneOffset(),
+      studyOffset,
     );
     for (const study of studies)
       if (!reused.has(study)) studyValid.delete(study);
@@ -566,10 +769,12 @@ export const createTradingChart = (
         id: series.id ?? series.name,
         name: series.name,
         color: series.color ?? LINE_COLORS[(i + 2) % LINE_COLORS.length],
+        width: series.lineWidth ?? 1.5,
         times: Float64Array.from(data, (d) => d.time),
         data: Float64Array.from(data, (d) => d.value),
         values: new Float64Array(0),
         valid: 0,
+        lod: createRangePyramid(),
       };
     });
   };
@@ -754,9 +959,6 @@ export const createTradingChart = (
 
   /** Center index of a group */
   const groupCenter = (v: Visible, g: number) => g * v.size + (v.size - 1) / 2;
-  /** Value of a study output for a group (its last bar) */
-  const groupValue = (v: Visible, values: Float64Array, g: number) =>
-    values[Math.min(n() - 1, g * v.size + v.size - 1)];
   const groupBars = (v: Visible, g: number) =>
     Math.min(v.size, n() - g * v.size);
 
@@ -782,6 +984,24 @@ export const createTradingChart = (
   const baselinePrice = () =>
     options.baselinePrice ?? display().close[firstVisibleIndex()];
 
+  /** Extends `[lo, hi]` with the visible groups of an output (shift included) */
+  const outputExtent = (
+    v: Visible,
+    values: Float64Array,
+    lod: RangePyramid,
+    shiftBars: number,
+    range: [number, number],
+  ) => {
+    const r = groupRanges(v, values, lod);
+    const offset = Math.round(shiftBars / v.size);
+    const a = clamp(v.s0 - offset, 0, v.last);
+    const b = clamp(v.s1 - offset, 0, v.last);
+    for (let g = a; g <= b; g++) {
+      if (r.min[g] < range[0]) range[0] = r.min[g];
+      if (r.max[g] > range[1]) range[1] = r.max[g];
+    }
+  };
+
   const autoscale = (v: Visible | null) => {
     volumeOverlayMax = 0;
     for (const pane of panes) {
@@ -792,13 +1012,12 @@ export const createTradingChart = (
         const { cols } = v;
         const s = style();
         const closeOnly = s === "line" || s === "area" || s === "baseline";
-        let lo = Infinity;
-        let hi = -Infinity;
+        const range: [number, number] = [Infinity, -Infinity];
         for (let g = v.s0; g <= v.s1; g++) {
           const l = closeOnly ? cols.close[g] : cols.low[g];
           const h = closeOnly ? cols.close[g] : cols.high[g];
-          if (l < lo) lo = l;
-          if (h > hi) hi = h;
+          if (l < range[0]) range[0] = l;
+          if (h > range[1]) range[1] = h;
         }
         for (const study of studies) {
           if (!study.overlay || !isVisible(study)) continue;
@@ -809,14 +1028,10 @@ export const createTradingChart = (
             }
             continue;
           }
-          for (const out of study.outputs) {
-            for (let g = v.s0; g <= v.s1; g++) {
-              const value = groupValue(v, out.values, g);
-              if (value < lo) lo = value;
-              if (value > hi) hi = value;
-            }
-          }
+          for (const out of study.outputs)
+            outputExtent(v, out.values, lodOf(out), out.shift, range);
         }
+        let [lo, hi] = range;
         if (s === "baseline") {
           const b = baselinePrice();
           if (b < lo) lo = b;
@@ -829,15 +1044,18 @@ export const createTradingChart = (
           a = toScaled(scale, Math.max(hi * 1e-3, 1e-12));
         for (const c of compares) {
           const base = compareBase(c);
-          for (let g = v.s0; g <= v.s1; g++) {
-            const value = compareScaled(
-              scale,
-              groupValue(v, c.values, g),
-              base,
-            );
-            if (value < a) a = value;
-            if (value > b) b = value;
+          const extent: [number, number] = [Infinity, -Infinity];
+          outputExtent(v, c.values, c.lod, 0, extent);
+          for (const value of extent) {
+            const scaled = compareScaled(scale, value, base);
+            if (scaled < a) a = scaled;
+            if (scaled > b) b = scaled;
           }
+        }
+        if (scale.mode === "percent" && compares.length) {
+          // the 0% line of a comparison stays in view
+          a = Math.min(a, 0);
+          b = Math.max(b, 0);
         }
         fitScale(scale, a, b);
         continue;
@@ -848,21 +1066,27 @@ export const createTradingChart = (
         fitScale(scale, study.range[0], study.range[1]);
         continue;
       }
-      let lo = Infinity;
-      let hi = -Infinity;
-      if (study.type === "volume") lo = 0;
+      const range: [number, number] = [Infinity, -Infinity];
+      if (study.type === "volume") range[0] = 0;
       for (const out of study.outputs) {
-        for (let g = v.s0; g <= v.s1; g++) {
-          const value =
-            out.kind === "volume"
-              ? v.cols.volume[g] / groupBars(v, g)
-              : groupValue(v, out.values, g);
-          if (value < lo) lo = value;
-          if (value > hi) hi = value;
+        if (out.kind === "volume") {
+          for (let g = v.s0; g <= v.s1; g++) {
+            const value = v.cols.volume[g] / groupBars(v, g);
+            if (value > range[1]) range[1] = value;
+          }
+          continue;
+        }
+        outputExtent(v, out.values, lodOf(out), out.shift, range);
+      }
+      let [lo, hi] = range;
+      if (study.bands && finite(lo) && finite(hi)) {
+        // reference bands (CCI ±100, DMI 25) stay in view
+        for (const band of study.bands) {
+          lo = Math.min(lo, band);
+          hi = Math.max(hi, band);
         }
       }
-      if (study.type === "macd" && finite(lo) && finite(hi)) {
-        // keep the zero line in view
+      if (study.zero && finite(lo) && finite(hi)) {
         lo = Math.min(lo, 0);
         hi = Math.max(hi, 0);
       }
@@ -886,7 +1110,6 @@ export const createTradingChart = (
     if (!count || !v) return [];
     const tf = tfMs();
     const intraday = tf < DAY;
-    const offset = options.utcOffset;
     // groups up to the right edge, past the last bar too
     const gEnd = Math.floor(Math.max(0, Math.ceil(right)) / v.size);
     const groupTime = (g: number) => {
@@ -894,9 +1117,9 @@ export const createTradingChart = (
       return store.time[count - 1] + (g * v.size - (count - 1)) * tf;
     };
     const candidates: { x: number; weight: number; time: number }[] = [];
-    let prev = v.g0 > 0 ? shiftTime(groupTime(v.g0 - 1), offset) : NaN;
+    let prev = v.g0 > 0 ? shift(groupTime(v.g0 - 1)) : NaN;
     for (let g = v.g0; g <= gEnd; g++) {
-      const time = shiftTime(groupTime(g), offset);
+      const time = shift(groupTime(g));
       const x = xOf(groupCenter(v, g));
       const weight = boundaryWeight(prev, time);
       // no labels inside a second (tick charts)
@@ -983,6 +1206,54 @@ export const createTradingChart = (
           return buffer.count > 1 ? [buffer.item("", 0, color, lineWidth)] : [];
         };
 
+      /**
+       * Line of a column of values: one point per bar, or the low and high
+       * of each group once zoomed out (min / max decimation), drawn
+       * `shiftBars` later
+       */
+      const rangeLayer =
+        (
+          values: Float64Array,
+          lod: RangePyramid,
+          color: Rgba,
+          lineWidth: number,
+          shiftBars = 0,
+          toY: (value: number) => number = Y,
+        ): Layer =>
+        (ga, gb, isLive) => {
+          const r = groupRanges(v, values, lod);
+          const dx = shiftBars * spacing * dpr;
+          const extra = Math.ceil(Math.abs(shiftBars) / v.size) + 1;
+          let from = isLive ? Math.max(0, ga - 1) : ga;
+          let to = gb;
+          if (!isLive && shiftBars > 0) from = Math.max(0, from - extra);
+          if (!isLive && shiftBars < 0) to = Math.min(v.last - 1, to + extra);
+          const buffer = new LineBuffer(top, bottom);
+          let prevY = NaN;
+          for (let g = from; g <= to; g++) {
+            const x = X(g) + dx;
+            const lo = r.min[g];
+            const hi = r.max[g];
+            if (!v.level || lo === hi || !finite(lo) || !finite(hi)) {
+              prevY = toY(r.last[g]);
+              buffer.push(x, prevY);
+              continue;
+            }
+            const yLo = toY(lo);
+            const yHi = toY(hi);
+            // start with the extreme closest to the previous point
+            const first =
+              finite(prevY) && Math.abs(prevY - yHi) < Math.abs(prevY - yLo)
+                ? yHi
+                : yLo;
+            const second = first === yHi ? yLo : yHi;
+            buffer.push(x, first);
+            buffer.push(x, second);
+            prevY = second;
+          }
+          return buffer.count > 1 ? [buffer.item("", 0, color, lineWidth)] : [];
+        };
+
       if (pane.id === PRICE) {
         // volume at the bottom of the price pane
         const volumeStudy = studies.find(
@@ -1014,10 +1285,12 @@ export const createTradingChart = (
           const base = compareBase(c);
           const color = resolve(c.color);
           result.push(
-            lineLayer(
-              (g) => groupValue(v, c.values, g),
+            rangeLayer(
+              c.values,
+              c.lod,
               color,
-              1.5,
+              c.width,
+              0,
               (value) =>
                 yOfScaled(scale, compareScaled(scale, value, base)) * dpr,
             ),
@@ -1207,12 +1480,14 @@ export const createTradingChart = (
               up: packColor(mix(bg, up, 0.45)),
               down: packColor(mix(bg, down, 0.45)),
             };
+            const lod = lodOf(out);
             result.push((ga, gb) => {
+              const r = groupRanges(v, out.values, lod);
               const buffer = new BarBuffer();
               for (let g = ga; g <= gb; g++) {
-                const value = groupValue(v, out.values, g);
+                const value = r.last[g];
                 if (!finite(value)) continue;
-                const prev = g > 0 ? groupValue(v, out.values, g - 1) : value;
+                const prev = g > 0 ? r.last[g - 1] : value;
                 const color =
                   value >= 0
                     ? value >= prev
@@ -1221,8 +1496,13 @@ export const createTradingChart = (
                     : value <= prev
                       ? strong.down
                       : faded.down;
+                // a group spans its lowest and highest values (and zero)
+                const lo = Math.min(0, finite(r.min[g]) ? r.min[g] : value);
+                const hi = Math.max(0, finite(r.max[g]) ? r.max[g] : value);
                 const range = clampRange(
-                  ...pixelRange(Y(value), y0),
+                  ...(v.level
+                    ? pixelRange(Y(hi), Y(lo))
+                    : pixelRange(Y(value), y0)),
                   top,
                   bottom,
                 );
@@ -1231,12 +1511,35 @@ export const createTradingChart = (
               }
               return [buffer.item("", 0, histogramHalf)];
             });
+          } else if (out.kind === "dots") {
+            const fixed = out.color
+              ? packColor(resolve(colorOf(out.color)))
+              : 0;
+            const radius = clamp(spacing * v.size * 0.22, 1.25, 2.6);
+            const half = radius * dpr;
+            result.push((ga, gb) => {
+              const buffer = new BarBuffer();
+              for (let g = ga; g <= gb; g++) {
+                const value = v.level
+                  ? out.values[Math.min(n() - 1, g * v.size + v.size - 1)]
+                  : out.values[g];
+                if (!finite(value)) continue;
+                const y = Y(value);
+                if (y < top || y > bottom) continue;
+                const color = fixed || (value <= cols.close[g] ? upP : downP);
+                buffer.push(X(g), y - half, y + half, color);
+              }
+              return buffer.count ? [buffer.item("", 0, half, 0, radius)] : [];
+            });
           } else {
+            const color = resolve(colorOf(out.color));
             result.push(
-              lineLayer(
-                (g) => groupValue(v, out.values, g),
-                resolve(out.color),
+              rangeLayer(
+                out.values,
+                lodOf(out),
+                [color[0], color[1], color[2], color[3] * out.alpha],
                 out.width,
+                out.shift,
               ),
             );
           }
@@ -1352,6 +1655,193 @@ export const createTradingChart = (
     else ctx.rect(x, y, w, h);
   };
 
+  /** Area between two outputs of a study, colored by which one is above */
+  const paintFill = (
+    ctx: CanvasRenderingContext2D,
+    v: Visible,
+    pane: Pane,
+    study: Study,
+    f: Study["fills"][number],
+  ) => {
+    const outA = study.outputs[f.a];
+    const outB = study.outputs[f.b];
+    if (!outA || !outB) return;
+    const ra = groupRanges(v, outA.values, lodOf(outA));
+    const rb = groupRanges(v, outB.values, lodOf(outB));
+    const shiftBars = outA.shift;
+    const extra = Math.ceil(Math.abs(shiftBars) / v.size) + 1;
+    const from = Math.max(0, v.g0 - (shiftBars > 0 ? extra : 0));
+    const to = Math.min(v.last, v.g1 + (shiftBars < 0 ? extra : 0));
+    const above = css(colorOf(f.color), f.opacity);
+    const below = css(colorOf(f.colorBelow ?? f.color), f.opacity);
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, pane.top, plotW, pane.height);
+    ctx.clip();
+    let run: { x: number; ya: number; yb: number }[] = [];
+    let sign = 0;
+    const flush = () => {
+      if (run.length > 1) {
+        ctx.fillStyle = sign >= 0 ? above : below;
+        ctx.beginPath();
+        run.forEach((p, i) =>
+          i ? ctx.lineTo(p.x, p.ya) : ctx.moveTo(p.x, p.ya),
+        );
+        for (let k = run.length - 1; k >= 0; k--) {
+          const p = run[k];
+          if (p) ctx.lineTo(p.x, p.yb);
+        }
+        ctx.closePath();
+        ctx.fill();
+      }
+      run = [];
+    };
+    for (let g = from; g <= to; g++) {
+      const a = ra.last[g];
+      const b = rb.last[g];
+      if (!finite(a) || !finite(b)) {
+        flush();
+        sign = 0;
+        continue;
+      }
+      const x = xOf(groupCenter(v, g) + shiftBars);
+      const ya = yOf(pane.scale, a);
+      const yb = yOf(pane.scale, b);
+      const s = a >= b ? 1 : -1;
+      const prev = run[run.length - 1];
+      if (prev && s !== sign) {
+        // the lines cross: close the run at the crossing
+        const d0 = prev.ya - prev.yb;
+        const t = d0 / (d0 - (ya - yb));
+        const cx = prev.x + (x - prev.x) * t;
+        const cy = prev.ya + (ya - prev.ya) * t;
+        run.push({ x: cx, ya: cy, yb: cy });
+        flush();
+        run.push({ x: cx, ya: cy, yb: cy });
+      }
+      sign = s;
+      run.push({ x, ya, yb });
+    }
+    flush();
+    ctx.restore();
+  };
+
+  /** Dashed lines where a day starts (in the displayed time zone) */
+  const paintSessionBreaks = (ctx: CanvasRenderingContext2D, v: Visible) => {
+    if (!options.sessionBreaks || tfMs() >= DAY) return;
+    const xs: number[] = [];
+    let prevDay = NaN;
+    for (let g = Math.max(0, v.g0 - 1); g <= Math.min(v.g1, v.last); g++) {
+      const day = Math.floor(shift(v.cols.time[g]) / DAY);
+      if (finite(prevDay) && day !== prevDay) {
+        const x = Math.round(xOf(g * v.size - 0.5)) + 0.5;
+        if (x > 0 && x < plotW) xs.push(x);
+        // too dense to read: none at all
+        if (xs.length > plotW / 6) return;
+      }
+      prevDay = day;
+    }
+    if (!xs.length) return;
+    ctx.save();
+    ctx.strokeStyle = toCss(theme.textMuted, 0.4);
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    for (const x of xs) {
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, plotH);
+    }
+    ctx.stroke();
+    ctx.restore();
+  };
+
+  const profileOptions = (): TradingVolumeProfileOptions | null => {
+    const option = options.volumeProfile;
+    if (!option) return null;
+    return option === true ? {} : option;
+  };
+
+  /** Volume by price of the visible bars, from the right (or left) edge */
+  const paintVolumeProfile = (ctx: CanvasRenderingContext2D, v: Visible) => {
+    const o = profileOptions();
+    const price = panes[0];
+    if (!o || !price || !store.hasVolume) return;
+    const rows = clamp(Math.floor(o.rows ?? 24), 2, 400);
+    const key = [
+      v.level,
+      v.s0,
+      v.s1,
+      rows,
+      o.valueArea ?? 0.7,
+      dataVersion,
+      tailVersion,
+    ].join("|");
+    if (!profile || profile.key !== key) {
+      // real prices, also under Heikin-Ashi bars
+      const cols = v.level ? pyramidLevel(pyramid, store, n(), v.level) : store;
+      profile = {
+        key,
+        result: volumeProfile(cols, {
+          from: v.s0,
+          to: v.s1,
+          rows,
+          valueArea: o.valueArea,
+        }),
+      };
+    }
+    const r = profile.result;
+    if (r.poc < 0) return;
+    let largest = 0;
+    for (let i = 0; i < rows; i++)
+      largest = Math.max(largest, (r.up[i] ?? 0) + (r.down[i] ?? 0));
+    if (!(largest > 0)) return;
+    const span = plotW * clamp(o.width ?? 0.28, 0.05, 0.9);
+    const fromRight = (o.side ?? "right") === "right";
+    const upColor = resolve(colorOf(o.upColor ?? "up"));
+    const downColor = resolve(colorOf(o.downColor ?? "down"));
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, price.top, plotW, price.height);
+    ctx.clip();
+    for (let i = 0; i < rows; i++) {
+      const up = r.up[i] ?? 0;
+      const down = r.down[i] ?? 0;
+      if (!(up + down > 0)) continue;
+      const y0 = yOf(price.scale, r.low + i * r.step);
+      const y1 = yOf(price.scale, r.low + (i + 1) * r.step);
+      const top = Math.min(y0, y1);
+      const h = Math.max(
+        1,
+        Math.abs(y1 - y0) - (Math.abs(y1 - y0) > 4 ? 1 : 0),
+      );
+      const inside = i >= r.valueAreaFrom && i <= r.valueAreaTo;
+      const alpha = inside ? 0.42 : 0.17;
+      const upLength = (up / largest) * span;
+      const downLength = (down / largest) * span;
+      const edge = fromRight ? plotW : 0;
+      const dir = fromRight ? -1 : 1;
+      ctx.fillStyle = toCss(upColor, alpha);
+      ctx.fillRect(Math.min(edge, edge + dir * upLength), top, upLength, h);
+      ctx.fillStyle = toCss(downColor, alpha);
+      const start = edge + dir * upLength;
+      ctx.fillRect(
+        Math.min(start, start + dir * downLength),
+        top,
+        downLength,
+        h,
+      );
+    }
+    // point of control
+    const y =
+      Math.round(yOf(price.scale, r.low + (r.poc + 0.5) * r.step)) + 0.5;
+    ctx.strokeStyle = css(o.pocColor ?? WARNING, 0.9);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(plotW, y);
+    ctx.stroke();
+    ctx.restore();
+  };
+
   const paintBackground = (
     ctx: CanvasRenderingContext2D,
     v: Visible | null,
@@ -1389,13 +1879,13 @@ export const createTradingChart = (
       ctx.fillText(options.watermark, plotW / 2, price.top + price.height / 2);
       ctx.restore();
     }
-    // bands of the indicator panes, fill of the Bollinger bands
+    // bands of the indicator panes
     for (const pane of panes) {
       const study = pane.study;
       if (study?.bands && isVisible(study)) {
-        const color = resolve(study.outputs[0]?.color ?? PRIMARY);
+        const color = resolve(colorOf(study.outputs[0]?.color ?? PRIMARY));
         const ys = study.bands.map((b) => Math.round(yOf(pane.scale, b)) + 0.5);
-        if (study.type === "rsi" && ys.length === 2) {
+        if (study.bandFill && ys.length === 2) {
           ctx.fillStyle = toCss(color, 0.07);
           ctx.fillRect(
             0,
@@ -1418,45 +1908,31 @@ export const createTradingChart = (
       }
     }
     if (v) {
-      const price = panes[0];
+      paintSessionBreaks(ctx, v);
       for (const study of studies) {
-        if (study.type !== "boll" || !study.fill || !isVisible(study)) continue;
-        const [ui, li] = study.fill;
-        const upper = study.outputs[ui].values;
-        const lower = study.outputs[li].values;
-        ctx.save();
-        ctx.beginPath();
-        ctx.rect(0, price.top, plotW, price.height);
-        ctx.clip();
-        ctx.fillStyle = css(study.outputs[ui].color, 0.07);
-        ctx.beginPath();
-        let started = false;
-        const back: [number, number][] = [];
-        const flush = () => {
-          for (let k = back.length - 1; k >= 0; k--)
-            ctx.lineTo(back[k][0], back[k][1]);
-          if (started) ctx.closePath();
-          back.length = 0;
-          started = false;
-        };
-        for (let g = v.g0; g <= v.g1; g++) {
-          const a = groupValue(v, upper, g);
-          const b = groupValue(v, lower, g);
-          if (!finite(a) || !finite(b)) {
-            flush();
-            continue;
-          }
-          const x = xOf(groupCenter(v, g));
-          const ya = yOf(price.scale, a);
-          if (started) ctx.lineTo(x, ya);
-          else ctx.moveTo(x, ya);
-          started = true;
-          back.push([x, yOf(price.scale, b)]);
-        }
-        flush();
-        ctx.fill();
-        ctx.restore();
+        if (!study.fills.length || !isVisible(study)) continue;
+        const pane = study.overlay
+          ? panes[0]
+          : panes.find((p) => p.study === study);
+        if (pane)
+          for (const f of study.fills) paintFill(ctx, v, pane, study, f);
       }
+      const price = panes[0];
+      if (price && price.scale.mode === "percent" && compares.length) {
+        // the common origin of the compared series
+        const y = Math.round(yOfScaled(price.scale, 0)) + 0.5;
+        if (y > price.top && y < price.top + price.height) {
+          ctx.save();
+          ctx.strokeStyle = toCss(theme.textMuted, 0.6);
+          ctx.setLineDash([2, 3]);
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(plotW, y);
+          ctx.stroke();
+          ctx.restore();
+        }
+      }
+      paintVolumeProfile(ctx, v);
     }
     // separators and axis borders
     ctx.strokeStyle = toCss(theme.axis);
@@ -1523,6 +1999,16 @@ export const createTradingChart = (
       const bar = index >= 0 && index < n() ? display().close[index] : NaN;
       return { index, pane: panes[0], y: yOf(panes[0].scale, bar), price: bar };
     }
+    if (!pointer && externalCross) {
+      const index = Math.round(indexOfTimeExt(externalCross.time));
+      const price = externalCross.price;
+      return {
+        index,
+        pane: panes[0],
+        y: finite(price) ? yOf(panes[0].scale, price) : NaN,
+        price,
+      };
+    }
     if (!pointer || pointer.x > plotW || pointer.y > plotH) return null;
     const pane = paneAt(pointer.y);
     if (!pane) return null;
@@ -1555,17 +2041,19 @@ export const createTradingChart = (
     return { index, pane, y, price };
   };
 
-  const drawingMapper = (): DrawingMapper | null => {
-    const price = panes[0];
-    if (!price) return null;
+  const paneOf = (id: string | undefined) =>
+    panes.find((p) => p.id === (id ?? PRICE)) ?? null;
+
+  const drawingMapper = (pane: Pane | null): DrawingMapper | null => {
+    if (!pane) return null;
     return {
       x: xOf,
-      y: (p) => yOf(price.scale, p),
+      y: (p) => yOf(pane.scale, p),
       index: indexOfTimeExt,
       left: 0,
       right: plotW,
-      top: price.top,
-      bottom: price.top + price.height,
+      top: pane.top,
+      bottom: pane.top + pane.height,
     };
   };
 
@@ -1582,6 +2070,110 @@ export const createTradingChart = (
     return `${fill(labels().bars, { count: bars })}, ${parts.join(" ") || fill(l.minutes, { count: 0 })}`;
   };
 
+  /** A value of a pane as written by its axis (prices on the price pane) */
+  const paneValueText = (pane: Pane, value: number) =>
+    pane.id === PRICE ? formatPrice(value) : paneTickText(pane, value);
+
+  /** Price rounded to the precision of the prices */
+  const roundPrice = (price: number) => {
+    const step = 10 ** -precision();
+    return Number((Math.round(price / step) * step).toFixed(precision()));
+  };
+
+  /** A rounded label (pill) with text */
+  const pill = (
+    ctx: CanvasRenderingContext2D,
+    text: string,
+    x: number,
+    y: number,
+    fillColor: string,
+    align: "left" | "center" | "right" = "center",
+  ) => {
+    ctx.font = font(theme.fontSize, 500);
+    const w = ctx.measureText(text).width + 16;
+    const left = clamp(
+      align === "center" ? x - w / 2 : align === "right" ? x - w : x,
+      2,
+      Math.max(2, plotW - w - 2),
+    );
+    roundRect(ctx, left, y, w, 22, 11);
+    ctx.fillStyle = fillColor;
+    ctx.fill();
+    ctx.fillStyle = textOn(fillColor);
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(text, left + w / 2, y + 11.5);
+    return w;
+  };
+
+  /** Registers a clickable area of the canvas; returns whether it is hovered */
+  const canvasButton = (
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    action: () => void,
+  ) => {
+    canvasButtons.push({ x, y, w, h, action });
+    return hoveredButton === canvasButtons.length - 1;
+  };
+
+  const paintDrawings = (
+    ctx: CanvasRenderingContext2D,
+    colors: { text: string; background: string; up: string; down: string },
+  ) => {
+    const count = n();
+    const last = count ? store.close[count - 1] : NaN;
+    const all = draft ? [...drawings, draft] : drawings;
+    if (!all.length) return;
+    const l = labels();
+    const position = {
+      target: l.target,
+      stop: l.stop,
+      riskReward: l.riskReward,
+      profit: l.profit,
+      long: l.long,
+      short: l.short,
+    };
+    for (const pane of panes) {
+      const mapper = drawingMapper(pane);
+      if (!mapper) continue;
+      const own = all.filter((d) => (d.pane ?? PRICE) === pane.id);
+      if (!own.length) continue;
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, pane.top, plotW, pane.height);
+      ctx.clip();
+      for (const drawing of own) {
+        const box = paintDrawing(
+          ctx,
+          drawing,
+          mapper,
+          {
+            ...colors,
+            color: css(drawing.color ?? PRIMARY),
+            font: font(theme.fontSize, 500),
+            fontFamily: theme.fontFamily,
+            formatPrice: (value) => paneValueText(pane, value),
+            formatPercent: (value) => formatPercent(value, locale),
+            formatSpan,
+            textOn,
+            defaultText: l.text,
+            position,
+            last: pane.id === PRICE ? last : NaN,
+            fill,
+          },
+          {
+            selected: drawing === draft || drawing.id === selected,
+            hovered: drawing.id === hovered,
+          },
+        );
+        if (box) textBoxes.set(drawing.id, box);
+      }
+      ctx.restore();
+    }
+  };
+
   const paintForeground = (
     ctx: CanvasRenderingContext2D,
     v: Visible | null,
@@ -1589,12 +2181,14 @@ export const createTradingChart = (
   ) => {
     const price = panes[0];
     if (!price) return;
+    canvasButtons = [];
     const count = n();
     const text = toCss(theme.text);
     const muted = toCss(theme.textMuted);
     const bgCss = toCss(theme.background);
     const upC = css(upCss());
     const downC = css(downCss());
+    const l = labels();
 
     // ---- price pane contents (clipped)
     ctx.save();
@@ -1602,7 +2196,7 @@ export const createTradingChart = (
     ctx.rect(0, price.top, plotW, price.height);
     ctx.clip();
 
-    // high / low of the visible bars
+    // high / low of the visible bars, kept inside the plot
     if (
       v &&
       options.highLowMarkers !== false &&
@@ -1634,16 +2228,39 @@ export const createTradingChart = (
       ] as const) {
         if (g < 0 || !finite(value)) continue;
         const x = xOf(groupCenter(v, g));
-        const y = yOf(price.scale, value) + (below ? 9 : -9);
-        const leftSide = x > plotW * 0.6;
         const label = formatPrice(value);
+        const w = ctx.measureText(label).width;
+        let y = clamp(
+          yOf(price.scale, value) + (below ? 9 : -9),
+          price.top + 8,
+          price.top + price.height - 8,
+        );
+        // not under a row of the legend
+        const labelLeft = Math.min(x, x + (x > plotW * 0.6 ? -17 - w : 17 + w));
+        for (const row of priceLegend) {
+          if (
+            labelLeft < row.right &&
+            y - 7 < row.bottom &&
+            y + 7 > row.top &&
+            row.bottom + 10 < price.top + price.height - 8
+          )
+            y = row.bottom + 10;
+        }
+        // on the right of the bar, unless it does not fit there
+        const roomRight = plotW - 4 - (x + 17 + w);
+        const roomLeft = x - 17 - w - 4;
+        const leftSide =
+          (roomRight < 0 || x > plotW * 0.6) &&
+          roomLeft >= Math.min(0, roomRight);
+        const dir = leftSide ? -1 : 1;
         ctx.textBaseline = "middle";
-        ctx.textAlign = leftSide ? "right" : "left";
+        ctx.textAlign = "left";
         ctx.beginPath();
         ctx.moveTo(x, y);
-        ctx.lineTo(x + (leftSide ? -14 : 14), y);
+        ctx.lineTo(x + dir * 14, y);
         ctx.stroke();
-        ctx.fillText(label, x + (leftSide ? -17 : 17), y);
+        const tx = clamp(leftSide ? x - 17 - w : x + 17, 2, plotW - w - 2);
+        ctx.fillText(label, tx, y);
       }
     }
 
@@ -1692,35 +2309,15 @@ export const createTradingChart = (
         }
       }
     }
+    ctx.restore();
 
-    // drawings
-    const mapper = drawingMapper();
-    if (mapper) {
-      const context = (drawing: TradingDrawing) => ({
-        color: css(drawing.color ?? PRIMARY),
-        text,
-        background: bgCss,
-        up: upC,
-        down: downC,
-        font: font(theme.fontSize, 500),
-        formatPrice,
-        formatPercent: (value: number) => formatPercent(value, locale),
-        formatSpan,
-        textOn,
-      });
-      for (const drawing of drawings) {
-        paintDrawing(ctx, drawing, mapper, context(drawing), {
-          selected: drawing.id === selected,
-          hovered: drawing.id === hovered,
-        });
-      }
-      if (draft)
-        paintDrawing(ctx, draft, mapper, context(draft), {
-          selected: true,
-          hovered: false,
-        });
-    }
+    // drawings, each in its pane
+    paintDrawings(ctx, { text, background: bgCss, up: upC, down: downC });
 
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, price.top, plotW, price.height);
+    ctx.clip();
     // price lines (orders, positions, TP / SL, alerts)
     const lastClose = count ? store.close[count - 1] : NaN;
     for (const line of options.priceLines ?? []) {
@@ -1745,10 +2342,15 @@ export const createTradingChart = (
       ctx.lineTo(plotW, y);
       ctx.stroke();
       ctx.restore();
-      // label: [grip] title | quantity | profit
+      // label: [grip] title | quantity | profit | close
       const titleKey = PRICE_LINE_TITLES[kind];
-      const title = line.title ?? (titleKey ? labels()[titleKey] : "");
-      const parts: { text: string; fill: string; color: string }[] = [];
+      const title = line.title ?? (titleKey ? l[titleKey] : "");
+      const parts: {
+        text: string;
+        fill: string;
+        color: string;
+        cancel?: boolean;
+      }[] = [];
       if (title) parts.push({ text: title, fill: color, color: textOn(color) });
       if (line.quantity !== undefined && line.quantity !== "")
         parts.push({ text: String(line.quantity), fill: bgCss, color });
@@ -1766,9 +2368,13 @@ export const createTradingChart = (
           color: textOn(pnlFill),
         });
       }
+      if (line.cancellable)
+        parts.push({ text: "×", fill: bgCss, color, cancel: true });
       if (!parts.length && !line.draggable) continue;
       ctx.font = font(theme.fontSize, 600);
-      const widths = parts.map((part) => ctx.measureText(part.text).width + 12);
+      const widths = parts.map((part) =>
+        part.cancel ? 20 : ctx.measureText(part.text).width + 12,
+      );
       const grip = line.draggable ? 14 : 0;
       const total = widths.reduce((a, b) => a + b, 0) + grip;
       let x = Math.round(plotW - total - 56);
@@ -1789,20 +2395,39 @@ export const createTradingChart = (
       ctx.textBaseline = "middle";
       ctx.textAlign = "center";
       parts.forEach((part, k) => {
-        if (part.fill !== bgCss) {
-          ctx.fillStyle = part.fill;
-          ctx.fillRect(x, top, widths[k], 18);
+        const w = widths[k] ?? 0;
+        let partFill = part.fill;
+        if (part.cancel) {
+          const hover = canvasButton(x, top, w, 18, () =>
+            emit("orderCancel", { id: line.id, line }),
+          );
+          if (hover) partFill = color;
+          ctx.fillStyle = color;
+          ctx.fillRect(x, top + 3, 1, 12);
         }
-        ctx.fillStyle = part.color;
-        ctx.fillText(part.text, x + widths[k] / 2, top + 9.5);
-        x += widths[k];
+        if (partFill !== bgCss) {
+          ctx.fillStyle = partFill;
+          ctx.fillRect(x, top, w, 18);
+        }
+        ctx.fillStyle =
+          part.cancel && partFill !== bgCss ? textOn(color) : part.color;
+        if (part.cancel) ctx.font = font(theme.fontSize + 3, 500);
+        ctx.fillText(part.text, x + w / 2, top + (part.cancel ? 9 : 9.5));
+        ctx.font = font(theme.fontSize, 600);
+        x += w;
       });
     }
 
     // last price line
     const lastLine = options.lastPriceLine !== false && count > 0;
     const lastUp = count > 0 && store.close[count - 1] >= store.open[count - 1];
-    const lastColor = lastUp ? upC : downC;
+    // a line takes its own color; bars the color of the last bar
+    const lastColor =
+      style() === "line" || style() === "area"
+        ? css(PRIMARY)
+        : lastUp
+          ? upC
+          : downC;
     if (lastLine) {
       const y = Math.round(yOf(price.scale, lastClose)) + 0.5;
       ctx.save();
@@ -1816,16 +2441,45 @@ export const createTradingChart = (
     }
     ctx.restore();
 
-    // price axis ticks, except under the labels drawn over the axis
-    const covered: number[] = [];
-    for (const line of options.priceLines ?? [])
-      covered.push(yOf(price.scale, linePrice(line)));
-    for (const drawing of drawings) {
-      if (drawing.type === "horizontalLine" && drawing.points[0])
-        covered.push(yOf(price.scale, drawing.points[0].price));
+    // last values of the compared series
+    const compareLabels: { y: number; text: string; color: string }[] = [];
+    for (const c of compares) {
+      let i = count - 1;
+      while (i >= 0 && !finite(c.values[i])) i--;
+      if (i < 0) continue;
+      const value = c.values[i];
+      const scaled = compareScaled(price.scale, value, compareBase(c));
+      const y = yOfScaled(price.scale, scaled);
+      if (!finite(y) || y < price.top || y > price.top + price.height) continue;
+      compareLabels.push({
+        y,
+        text:
+          price.scale.mode === "percent"
+            ? formatPercent(scaled, locale)
+            : formatPrice(value),
+        color: css(c.color),
+      });
     }
+
+    // axis ticks, except under the labels drawn over the axis
+    const covered: { pane: string; y: number }[] = [];
+    for (const line of options.priceLines ?? [])
+      covered.push({ pane: PRICE, y: yOf(price.scale, linePrice(line)) });
+    for (const drawing of drawings) {
+      const pane = paneOf(drawing.pane);
+      if (pane && drawing.type === "horizontalLine" && drawing.points[0])
+        covered.push({
+          pane: pane.id,
+          y: yOf(pane.scale, drawing.points[0].price),
+        });
+    }
+    for (const label of compareLabels)
+      covered.push({ pane: PRICE, y: label.y });
     if (lastLine)
-      covered.push(yOf(price.scale, lastClose) + (options.countdown ? 7 : 0));
+      covered.push({
+        pane: PRICE,
+        y: yOf(price.scale, lastClose) + (options.countdown ? 7 : 0),
+      });
     ctx.font = font(theme.fontSize);
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
@@ -1834,8 +2488,8 @@ export const createTradingChart = (
       for (const t of pane.ticks) {
         const y = yOfScaled(pane.scale, t);
         if (y < pane.top + 8 || y > pane.top + pane.height - 8) continue;
-        const gap = options.countdown ? 18 : 14;
-        if (pane.id === PRICE && covered.some((c) => Math.abs(c - y) < gap))
+        const gap = options.countdown && pane.id === PRICE ? 18 : 14;
+        if (covered.some((c) => c.pane === pane.id && Math.abs(c.y - y) < gap))
           continue;
         ctx.fillText(paneTickText(pane, t), plotW + 8, y);
       }
@@ -1848,22 +2502,32 @@ export const createTradingChart = (
       ctx.fillText(t.text, t.x, plotH + TIME_AXIS / 2);
     }
 
-    // labels of the price lines and drawings
+    // labels of the price lines, the drawings and the compared series
     for (const line of options.priceLines ?? []) {
       const p = linePrice(line);
       const y = yOf(price.scale, p);
       if (!finite(y) || y < price.top || y > price.top + price.height) continue;
-      const fill = lineColor(line);
-      axisLabel(ctx, y, priceAxisText(p), fill, textOn(fill));
+      const fillColor = lineColor(line);
+      axisLabel(ctx, y, priceAxisText(p), fillColor, textOn(fillColor));
     }
     for (const drawing of drawings) {
-      if (drawing.type !== "horizontalLine" || !drawing.points[0]) continue;
+      const pane = paneOf(drawing.pane);
+      if (!pane || drawing.type !== "horizontalLine" || !drawing.points[0])
+        continue;
       const p = drawing.points[0].price;
-      const y = yOf(price.scale, p);
-      if (y < price.top || y > price.top + price.height) continue;
-      const fill = css(drawing.color ?? PRIMARY);
-      axisLabel(ctx, y, priceAxisText(p), fill, textOn(fill));
+      const y = yOf(pane.scale, p);
+      if (y < pane.top || y > pane.top + pane.height) continue;
+      const fillColor = css(drawing.color ?? PRIMARY);
+      axisLabel(
+        ctx,
+        y,
+        pane.id === PRICE ? priceAxisText(p) : paneValueText(pane, p),
+        fillColor,
+        textOn(fillColor),
+      );
     }
+    for (const label of compareLabels)
+      axisLabel(ctx, label.y, label.text, label.color, textOn(label.color));
     // last price label (with the countdown)
     if (lastLine) {
       let second: string | undefined;
@@ -1881,7 +2545,7 @@ export const createTradingChart = (
             date.getUTCMinutes(),
           );
         }
-        second = formatCountdown(end - Date.now(), labels());
+        second = formatCountdown(end - Date.now(), l);
       }
       axisLabel(
         ctx,
@@ -1893,9 +2557,41 @@ export const createTradingChart = (
       );
     }
 
+    // replay: the badge, or the picking of the first bar (at the bottom of
+    // the price pane: the legends cover its top)
+    const badgeY = price.top + price.height - 32;
+    if (replayPicking) {
+      const x = pointer && pointer.x <= plotW ? pointer.x : NaN;
+      if (finite(x)) {
+        ctx.fillStyle = toCss(theme.background, 0.62);
+        ctx.fillRect(x, 0, plotW - x, plotH);
+        ctx.strokeStyle = css(PRIMARY);
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(Math.round(x) + 0.5, 0);
+        ctx.lineTo(Math.round(x) + 0.5, plotH);
+        ctx.stroke();
+      }
+      pill(ctx, l.replayHint, plotW / 2, badgeY, css(PRIMARY));
+    } else if (replay && count) {
+      pill(
+        ctx,
+        fill(l.replay, {
+          time: formatCrosshairTime(
+            shift(store.time[count - 1]),
+            tfMs(),
+            locale,
+          ),
+        }),
+        plotW / 2,
+        badgeY,
+        css(PRIMARY),
+      );
+    }
+
     // crosshair
     const cross = crosshairState();
-    if (cross && v) {
+    if (cross && v && !replayPicking) {
       const x = Math.round(xOf(cross.index)) + 0.5;
       ctx.save();
       ctx.strokeStyle = toCss(theme.textMuted, 0.75);
@@ -1932,7 +2628,7 @@ export const createTradingChart = (
       }
       if (x >= 0 && x <= plotW && count) {
         const label = formatCrosshairTime(
-          shiftTime(timeAt(cross.index), options.utcOffset),
+          shift(timeAt(cross.index)),
           tfMs(),
           locale,
         );
@@ -1947,12 +2643,60 @@ export const createTradingChart = (
         ctx.textBaseline = "middle";
         ctx.fillText(label, left + w / 2, plotH + 14);
       }
+      // order entry: a "+" at the crosshair price
+      if (
+        options.orderEntry &&
+        pointer &&
+        cross.pane.id === PRICE &&
+        finite(cross.y) &&
+        tool === "cursor" &&
+        !gesture &&
+        count
+      ) {
+        const size = 18;
+        const bx = plotW - size - 4;
+        const by = clamp(
+          Math.round(cross.y - size / 2),
+          price.top + 1,
+          price.top + price.height - size - 1,
+        );
+        const orderPrice = roundPrice(cross.price);
+        const side = orderPrice < lastClose ? "buy" : "sell";
+        const hover = canvasButton(bx, by, size, size, () =>
+          emit("orderCreate", { price: orderPrice, side }),
+        );
+        roundRect(ctx, bx, by, size, size, 4);
+        ctx.fillStyle = hover ? css(PRIMARY) : labelBg;
+        ctx.fill();
+        ctx.strokeStyle = hover ? textOn(css(PRIMARY)) : bgCss;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(bx + 5, by + size / 2);
+        ctx.lineTo(bx + size - 5, by + size / 2);
+        ctx.moveTo(bx + size / 2, by + 5);
+        ctx.lineTo(bx + size / 2, by + size - 5);
+        ctx.stroke();
+        if (hover) {
+          pill(
+            ctx,
+            fill(side === "buy" ? l.buyLimit : l.sellLimit, {
+              price: formatPrice(orderPrice),
+            }),
+            bx - 6,
+            by - 2,
+            side === "buy" ? upC : downC,
+            "right",
+          );
+        }
+      }
     }
   };
 
   // -------------------------------------------------------------- legends
 
   let legendKey = "";
+  /** Rows of the legend of the price pane (labels painted under them are moved) */
+  let priceLegend: { right: number; top: number; bottom: number }[] = [];
   const legendRows = new Map<string, LegendRow>();
   const legendBoxes = new Map<string, HTMLDivElement>();
 
@@ -1987,8 +2731,9 @@ export const createTradingChart = (
   ) => {
     const row = make("div", {
       display: "flex",
+      flexWrap: "wrap",
       alignItems: "center",
-      gap: "6px",
+      columnGap: "6px",
       padding: "0 4px",
       marginLeft: "-4px",
       borderRadius: "4px",
@@ -2053,12 +2798,13 @@ export const createTradingChart = (
       .join(" · ");
     legendRows.set("ohlc", legendRow(priceBox, head, null, 1));
     for (const study of studies) {
+      const slots = study.mergeLegend ? 1 : study.outputs.length;
       if (study.overlay && study.type === "volume") {
         legendRows.set(study.id, legendRow(priceBox, titleOf(study), study, 1));
       } else if (study.overlay) {
         legendRows.set(
           study.id,
-          legendRow(priceBox, titleOf(study), study, study.outputs.length),
+          legendRow(priceBox, titleOf(study), study, slots),
         );
       }
     }
@@ -2072,15 +2818,19 @@ export const createTradingChart = (
           legendBox(study.id),
           titleOf(study),
           study,
-          study.outputs.length,
+          study.mergeLegend ? 1 : study.outputs.length,
         ),
       );
     }
   };
 
-  /** Legend title: indicator abbreviations, but a word for the volume */
+  /** Legend title: indicator abbreviations, but words for the volume and some indicators */
   const titleOf = (study: Study) =>
-    study.type === "volume" ? labels().volume : study.title;
+    study.type === "volume"
+      ? labels().volume
+      : study.titleKey
+        ? `${labels()[study.titleKey]} ${study.title}`
+        : study.title;
 
   const setSpan = (
     span: HTMLSpanElement | undefined,
@@ -2110,8 +2860,23 @@ export const createTradingChart = (
     if (options.legend === false) return;
     for (const pane of panes) {
       const box = legendBoxes.get(pane.id);
-      if (box) box.style.top = `${pane.top + 6}px`;
+      if (!box) continue;
+      box.style.top = `${pane.top + 6}px`;
+      // over the plot only, never over the price axis
+      const maxWidth = `${Math.max(80, Math.floor(plotW - 14))}px`;
+      if (box.style.maxWidth !== maxWidth) box.style.maxWidth = maxWidth;
     }
+    const priceBox = legendBoxes.get(PRICE);
+    priceLegend = priceBox
+      ? Array.from(
+          priceBox.children as HTMLCollectionOf<HTMLElement>,
+          (row) => ({
+            right: priceBox.offsetLeft + row.offsetLeft + row.offsetWidth,
+            top: priceBox.offsetTop + row.offsetTop,
+            bottom: priceBox.offsetTop + row.offsetTop + row.offsetHeight,
+          }),
+        )
+      : [];
     const count = n();
     const cross = crosshairState();
     const index = clamp(
@@ -2171,6 +2936,16 @@ export const createTradingChart = (
         row.button.style.textDecoration = shown ? "none" : "line-through";
       }
       const slots = study.outputs.length;
+      if (study.mergeLegend) {
+        // one value: the output in use (SuperTrend up or down)
+        const out = study.outputs.find((o) => finite(o.values[index]));
+        setSpan(
+          row.values[0],
+          shown && count && out ? studyValueText(study, out.values[index]) : "",
+          out ? css(colorOf(out.color)) : undefined,
+        );
+        continue;
+      }
       study.outputs.forEach((out, i) => {
         // the MACD histogram (drawn first, under the lines) is listed last
         const span =
@@ -2184,13 +2959,15 @@ export const createTradingChart = (
           setSpan(span, formatVolume(store.volume[index], locale), c);
           return;
         }
-        const value = out.values[index];
-        let color = out.color ? css(out.color) : undefined;
+        // a shifted output shows the value drawn at this bar
+        const source = index - out.shift;
+        const value = source >= 0 && source < count ? out.values[source] : NaN;
+        let color = out.color ? css(colorOf(out.color)) : undefined;
         if (out.kind === "histogram") color = value >= 0 ? upC : downC;
+        if (out.kind === "dots" && !out.color)
+          color = value <= store.close[index] ? upC : downC;
         const prefix =
-          study.outputs.length > 1 && study.type !== "boll"
-            ? `${out.label} `
-            : "";
+          study.outputs.length > 1 && !study.plainLegend ? `${out.label} ` : "";
         setSpan(span, `${prefix}${studyValueText(study, value)}`, color);
       });
     }
@@ -2326,7 +3103,18 @@ export const createTradingChart = (
     }
     updateLegends();
     updateJump();
+    updateToolbar();
+    positionEditor();
     emitView();
+    // buttons painted this frame may now be under the pointer
+    if (
+      pointer &&
+      !gesture &&
+      buttonAt(pointer.x, pointer.y) !== hoveredButton
+    ) {
+      updateCursor(pointer.x, pointer.y);
+      invalidate();
+    }
     if (animating) invalidate();
   }
 
@@ -2361,30 +3149,33 @@ export const createTradingChart = (
       Math.abs(lastRange.to - range.to) > 1e-6
     ) {
       lastRange = range;
-      emit("visibleRangeChange", range);
+      if (!silentRange) emit("visibleRangeChange", range);
     }
+    silentRange = false;
     if (range.from < 10 && historyFirst !== store.time[0]) {
       historyFirst = store.time[0];
       emit("historyRequest", { firstTime: store.time[0], count });
     }
     const cross = crosshairState();
-    const key = cross ? `${cross.index}|${cross.price}|${cross.pane.id}` : "";
+    // a crosshair set by `setCrosshair` is not reported
+    const own = cross && (pointer || keyboardIndex !== null) ? cross : null;
+    const key = own ? `${own.index}|${own.price}|${own.pane.id}` : "";
     if (key !== lastCrosshair) {
       lastCrosshair = key;
-      if (!cross) {
+      if (!own) {
         emit("crosshairMove", null);
       } else {
         const event: TradingCrosshairEvent = {
-          index: cross.index,
-          time: timeAt(cross.index),
+          index: own.index,
+          time: timeAt(own.index),
           bar:
-            cross.index >= 0 && cross.index < count
-              ? readBar(store, cross.index)
+            own.index >= 0 && own.index < count
+              ? readBar(store, own.index)
               : null,
-          price: cross.price,
-          pane: cross.pane.id,
-          x: xOf(cross.index),
-          y: cross.y,
+          price: own.price,
+          pane: own.pane.id,
+          x: xOf(own.index),
+          y: own.y,
         };
         emit("crosshairMove", event);
       }
@@ -2422,15 +3213,16 @@ export const createTradingChart = (
     invalidate();
   };
 
-  const anchorAt = (x: number, y: number): TradingDrawingPoint => {
+  const anchorAt = (x: number, y: number, pane: Pane): TradingDrawingPoint => {
     const index = Math.round(indexAt(x));
-    return { time: timeAt(index), price: valueAt(panes[0].scale, y) };
+    return { time: timeAt(index), price: valueAt(pane.scale, y) };
   };
 
   const setTool = (next: TradingDrawingTool, notify: boolean) => {
     if (next === tool) return;
     tool = next;
     draft = null;
+    draftClicks = 0;
     if (notify) emit("drawingToolChange", next);
     invalidate();
   };
@@ -2438,24 +3230,136 @@ export const createTradingChart = (
   const select = (id: string | null) => {
     if (id === selected) return;
     selected = id;
+    paletteOpen = false;
     emit("drawingSelect", id);
     invalidate();
   };
 
-  const commitDrawings = (next: readonly TradingDrawing[]) => {
+  // ------------------------------------------------------ drawing history
+
+  const undoState = (): TradingUndoState => ({
+    canUndo: undoStack.length > 0,
+    canRedo: redoStack.length > 0,
+  });
+
+  const emitUndo = () => {
+    const state = undoState();
+    const key = `${state.canUndo}|${state.canRedo}`;
+    if (key === undoKey) return;
+    undoKey = key;
+    emit("undoChange", state);
+  };
+
+  /** Records a change of the drawings: undoable, and reported unless `notify` is false */
+  const commitDrawings = (next: readonly TradingDrawing[], notify = true) => {
+    if (next !== committed) {
+      undoStack.push(committed);
+      if (undoStack.length > HISTORY_LIMIT) undoStack.shift();
+      redoStack.length = 0;
+      committed = next;
+    }
+    drawings = next;
+    if (notify) {
+      emittedDrawings = next;
+      emit("drawingsChange", next);
+    }
+    if (selected && !next.some((d) => d.id === selected)) select(null);
+    emitUndo();
+    invalidate();
+  };
+
+  /** Shows drawings of the history (undo / redo) */
+  const restoreDrawings = (next: readonly TradingDrawing[]) => {
+    committed = next;
     drawings = next;
     emittedDrawings = next;
+    draft = null;
+    if (selected && !next.some((d) => d.id === selected)) select(null);
     emit("drawingsChange", next);
+    emitUndo();
     invalidate();
+  };
+
+  const undo = () => {
+    const previous = undoStack.pop();
+    if (!previous) return;
+    if (editing) closeEditor(false);
+    redoStack.push(committed);
+    restoreDrawings(previous);
+  };
+
+  const redo = () => {
+    const next = redoStack.pop();
+    if (!next) return;
+    undoStack.push(committed);
+    restoreDrawings(next);
+  };
+
+  const updateDrawing = (id: string, patch: TradingDrawingPatch) => {
+    if (!drawings.some((d) => d.id === id)) return;
+    commitDrawings(
+      drawings.map((d) =>
+        d.id === id ? { ...d, ...patch, id: d.id, type: d.type } : d,
+      ),
+    );
+  };
+
+  const removeDrawing = (id: string) => {
+    if (!drawings.some((d) => d.id === id)) return;
+    if (selected === id) select(null);
+    commitDrawings(drawings.filter((d) => d.id !== id));
+  };
+
+  /** Default target and stop of a new position: a reward twice the risk */
+  const positionPoints = (
+    entry: TradingDrawingPoint,
+    pane: Pane,
+    long: boolean,
+  ): TradingDrawingPoint[] => {
+    const y = yOf(pane.scale, entry.price);
+    const risk = Math.max(12, pane.height * 0.07);
+    const target = valueAt(pane.scale, y + (long ? -2 : 2) * risk);
+    const stop = valueAt(pane.scale, y + (long ? 1 : -1) * risk);
+    const bars = Math.max(6, Math.round((plotW * 0.16) / spacing));
+    const end = timeAt(Math.round(indexOfTimeExt(entry.time)) + bars);
+    return [
+      entry,
+      { time: end, price: roundPrice(target) },
+      { time: end, price: roundPrice(stop) },
+    ];
   };
 
   const finishDraft = () => {
     if (!draft) return;
     const done = draft;
     draft = null;
+    draftClicks = 0;
     commitDrawings([...drawings, done]);
     select(done.id);
     if (!options.keepDrawingMode) setTool("cursor", true);
+    if (done.type === "text") openEditor(done.id, true);
+  };
+
+  /** Fixes the anchor following the pointer; the drawing is done after its last anchor */
+  const fixDraftAnchor = () => {
+    if (!draft) return;
+    draftClicks--;
+    if (draftClicks <= 0) {
+      finishDraft();
+      return;
+    }
+    const last = draft.points[draft.points.length - 1];
+    if (last) draft = { ...draft, points: [...draft.points, last] };
+  };
+
+  /** Moves the anchor of the drawing being made to the pointer */
+  const followDraft = (x: number, y: number) => {
+    const pane = paneOf(draftPane);
+    if (!draft || !pane || draftClicks <= 0) return;
+    draft = {
+      ...draft,
+      points: [...draft.points.slice(0, -1), anchorAt(x, y, pane)],
+    };
   };
 
   const hitLine = (x: number, y: number) => {
@@ -2469,15 +3373,29 @@ export const createTradingChart = (
   };
 
   const hitDrawingAt = (x: number, y: number) => {
-    const mapper = drawingMapper();
-    if (!mapper || y < mapper.top || y > mapper.bottom || x > plotW)
-      return null;
+    if (x > plotW) return null;
+    const pane = paneAt(y);
+    const mapper = drawingMapper(pane);
+    if (!pane || !mapper) return null;
     for (let i = drawings.length - 1; i >= 0; i--) {
-      const hit = hitDrawing(drawings[i], mapper, { x, y });
-      if (hit) return { drawing: drawings[i], hit };
+      const drawing = drawings[i];
+      if (!drawing || (drawing.pane ?? PRICE) !== pane.id) continue;
+      const hit = hitDrawing(
+        drawing,
+        mapper,
+        { x, y },
+        6,
+        textBoxes.get(drawing.id),
+      );
+      if (hit) return { drawing, hit, pane };
     }
     return null;
   };
+
+  const buttonAt = (x: number, y: number) =>
+    canvasButtons.findIndex(
+      (b) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h,
+    );
 
   const separatorAt = (y: number) => {
     for (let i = 1; i < panes.length; i++) {
@@ -2486,11 +3404,437 @@ export const createTradingChart = (
     return -1;
   };
 
+  // --------------------------------------------------------- text editor
+
+  const autosizeEditor = () => {
+    editor.style.height = "auto";
+    editor.style.height = `${Math.max(28, editor.scrollHeight + 2)}px`;
+  };
+
+  const positionEditor = () => {
+    if (!editing) return;
+    const id = editing.id;
+    const drawing = drawings.find((d) => d.id === id);
+    const pane = drawing ? paneOf(drawing.pane) : null;
+    const anchor = drawing?.points[0];
+    if (!drawing || !pane || !anchor) return;
+    const x = xOf(indexOfTimeExt(anchor.time));
+    const y = yOf(pane.scale, anchor.price);
+    editor.style.left = `${clamp(x, 2, Math.max(2, plotW - 160))}px`;
+    editor.style.top = `${clamp(y, 2, Math.max(2, plotH - 40))}px`;
+  };
+
+  function openEditor(id: string, created: boolean) {
+    const drawing = drawings.find((d) => d.id === id);
+    if (!drawing || drawing.locked) return;
+    editing = { id, created };
+    editor.value = created ? "" : (drawing.text ?? "");
+    editor.placeholder = labels().text;
+    editor.setAttribute("aria-label", labels().editText);
+    editor.style.display = "block";
+    positionEditor();
+    autosizeEditor();
+    editor.focus();
+    editor.select();
+    invalidate();
+  }
+
+  function closeEditor(commit: boolean) {
+    if (!editing) return;
+    const { id, created } = editing;
+    editing = null;
+    editor.style.display = "none";
+    const text = editor.value.replace(/\s+$/, "");
+    const drawing = drawings.find((d) => d.id === id);
+    if (drawing && created && (!commit || !text)) {
+      // a new text left empty or cancelled: as if it had never been made
+      const previous = undoStack.pop();
+      restoreDrawings(previous ?? drawings.filter((d) => d.id !== id));
+    } else if (drawing && commit && text !== (drawing.text ?? "")) {
+      if (created) {
+        // the text completes the creation (a single undo step)
+        const next = drawings.map((d) => (d.id === id ? { ...d, text } : d));
+        committed = next;
+        drawings = next;
+        emittedDrawings = next;
+        emit("drawingsChange", next);
+      } else {
+        updateDrawing(id, { text });
+      }
+    }
+    if (doc.activeElement === editor || doc.activeElement === doc.body)
+      root.focus();
+    invalidate();
+  }
+
+  editor.addEventListener("keydown", (event) => {
+    event.stopPropagation();
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      closeEditor(true);
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      closeEditor(false);
+    }
+  });
+  editor.addEventListener("input", autosizeEditor);
+  editor.addEventListener("blur", () => closeEditor(true));
+  editor.addEventListener("pointerdown", (event) => event.stopPropagation());
+  editor.addEventListener("dblclick", (event) => event.stopPropagation());
+
+  // ------------------------------------------------------ drawing toolbar
+
+  const icon = (path: string, dash = "", width = 1.5) =>
+    `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="${width}" stroke-linecap="round" stroke-linejoin="round"${dash ? ` stroke-dasharray="${dash}"` : ""} aria-hidden="true"><path d="${path}"/></svg>`;
+
+  const toolbarButton = (
+    label: string,
+    content: string,
+    onClick: () => void,
+    pressed?: boolean,
+  ) => {
+    const button = doc.createElement("button");
+    button.type = "button";
+    button.setAttribute("aria-label", label);
+    button.title = label;
+    if (pressed !== undefined)
+      button.setAttribute("aria-pressed", String(pressed));
+    button.innerHTML = content;
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      onClick();
+    });
+    return button;
+  };
+
+  const separator = () => {
+    const span = doc.createElement("span");
+    span.className = "sep";
+    return span;
+  };
+
+  const buildToolbar = (drawing: TradingDrawing) => {
+    toolbar.textContent = "";
+    const l = labels();
+    toolbar.setAttribute("aria-label", l.lineStyle);
+    const id = drawing.id;
+    const items: HTMLElement[] = [];
+    if (!drawing.locked) {
+      const color = css(drawing.color ?? PRIMARY);
+      const swatch = toolbarButton(
+        l.color,
+        `<span style="display:block;width:14px;height:14px;border-radius:50%;background:${color};box-shadow:inset 0 0 0 1px rgba(127,127,127,.35)"></span>`,
+        () => {
+          paletteOpen = !paletteOpen;
+          toolbarKey = "";
+          updateToolbar();
+        },
+      );
+      swatch.setAttribute("aria-expanded", String(paletteOpen));
+      items.push(swatch);
+      const width = drawing.lineWidth ?? 1.5;
+      const widths = [1, 2, 3, 4];
+      items.push(
+        toolbarButton(
+          `${l.lineWidth}: ${width}px`,
+          `${icon("M2 8h12", "", Math.min(4, width))}<span style="font-size:11px;margin-left:3px">${width}</span>`,
+          () =>
+            updateDrawing(id, {
+              lineWidth: widths.find((w) => w > width) ?? widths[0],
+            }),
+        ),
+      );
+      const lineStyle = drawing.lineStyle ?? "solid";
+      items.push(
+        toolbarButton(
+          l.lineStyle,
+          icon(
+            "M2 8h12",
+            lineStyle === "dashed"
+              ? "3.5 2.5"
+              : lineStyle === "dotted"
+                ? "0.1 3"
+                : "",
+            lineStyle === "dotted" ? 2.2 : 1.6,
+          ),
+          () =>
+            updateDrawing(id, {
+              lineStyle:
+                LINE_STYLES[
+                  (LINE_STYLES.indexOf(lineStyle) + 1) % LINE_STYLES.length
+                ],
+            }),
+        ),
+      );
+      if (isFillable(drawing.type)) {
+        items.push(
+          toolbarButton(
+            l.fill,
+            '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="3.5" width="11" height="9" rx="1.5" fill="currentColor" fill-opacity=".3" stroke="currentColor" stroke-width="1.3"/></svg>',
+            () => updateDrawing(id, { fill: drawing.fill === false }),
+            drawing.fill !== false,
+          ),
+        );
+      }
+      if (drawing.type === "text") {
+        items.push(
+          toolbarButton(l.editText, icon("M3 13h3l7-7-3-3-7 7zM9 4l3 3"), () =>
+            openEditor(id, false),
+          ),
+        );
+      }
+      items.push(separator());
+    }
+    items.push(
+      toolbarButton(
+        l.lock,
+        drawing.locked
+          ? icon("M4.5 7.5h7v6h-7zM6 7.5V5.5a2 2 0 0 1 4 0v2")
+          : icon("M4.5 7.5h7v6h-7zM6 7.5V5.5a2 2 0 0 1 3.8-.9"),
+        () => updateDrawing(id, { locked: !drawing.locked }),
+        !!drawing.locked,
+      ),
+    );
+    if (!drawing.locked) {
+      const remove = toolbarButton(
+        l.remove,
+        icon("M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.7 8.5h5.6l.7-8.5"),
+        () => removeDrawing(id),
+      );
+      remove.style.color = "var(--danger-color, #f23645)";
+      items.push(remove);
+    }
+    toolbar.append(...items);
+    if (paletteOpen && !drawing.locked) {
+      const palette = make("div", {
+        position: "absolute",
+        left: "0",
+        top: "calc(100% + 4px)",
+        display: "flex",
+        gap: "2px",
+        padding: "4px",
+        borderRadius: "8px",
+        border:
+          "1px solid color-mix(in srgb, var(--border-color, #e5e7eb) 85%, transparent)",
+        background: "var(--surface-elevated-color, var(--surface-color, #fff))",
+        boxShadow: "0 8px 24px -8px rgba(15, 23, 42, 0.35)",
+      });
+      for (const color of PALETTE) {
+        const button = toolbarButton(
+          `${l.color} ${color}`,
+          `<span style="display:block;width:16px;height:16px;border-radius:50%;background:${color}"></span>`,
+          () => {
+            paletteOpen = false;
+            updateDrawing(id, { color });
+          },
+          (drawing.color ?? "").toLowerCase() === color,
+        );
+        palette.appendChild(button);
+      }
+      toolbar.appendChild(palette);
+    }
+  };
+
+  function updateToolbar() {
+    const drawing = selected
+      ? drawings.find((d) => d.id === selected)
+      : undefined;
+    const pane = drawing ? paneOf(drawing.pane) : null;
+    const mapper = drawingMapper(pane);
+    const dragging = gesture?.kind === "drawing" && gesture.moved;
+    if (
+      !drawing ||
+      !pane ||
+      !mapper ||
+      options.drawingToolbar === false ||
+      editing ||
+      dragging ||
+      draft
+    ) {
+      toolbar.style.display = "none";
+      toolbarKey = "";
+      paletteOpen = false;
+      return;
+    }
+    const key = [
+      drawing.id,
+      drawing.color,
+      drawing.lineWidth,
+      drawing.lineStyle,
+      drawing.fill,
+      drawing.locked,
+      paletteOpen,
+      locale,
+      themeVersion,
+    ].join("|");
+    if (key !== toolbarKey) {
+      toolbarKey = key;
+      buildToolbar(drawing);
+    }
+    toolbar.style.display = "flex";
+    // above the drawing (below it when there is no room), inside the plot
+    const pts = handlePoints(drawing, mapper, textBoxes.get(drawing.id));
+    const box = textBoxes.get(drawing.id);
+    if (drawing.type === "text" && box)
+      pts.push({ x: box.x + box.w, y: box.y + box.h });
+    let x0 = Infinity;
+    let x1 = -Infinity;
+    let y0 = Infinity;
+    let y1 = -Infinity;
+    for (const p of pts) {
+      x0 = Math.min(x0, clamp(p.x, 0, plotW));
+      x1 = Math.max(x1, clamp(p.x, 0, plotW));
+      y0 = Math.min(y0, clamp(p.y, pane.top, pane.top + pane.height));
+      y1 = Math.max(y1, clamp(p.y, pane.top, pane.top + pane.height));
+    }
+    if (drawing.type === "horizontalLine") {
+      x0 = plotW * 0.35;
+      x1 = plotW * 0.65;
+    }
+    const w = toolbar.offsetWidth || 200;
+    const h = toolbar.offsetHeight || 34;
+    const left = clamp((x0 + x1) / 2 - w / 2, 4, Math.max(4, plotW - w - 4));
+    let top = y0 - h - 14;
+    // below, clear of the labels under the drawing (position stops, measures)
+    if (top < 4) top = y1 + 32;
+    toolbar.style.left = `${Math.round(left)}px`;
+    toolbar.style.top = `${Math.round(clamp(top, 4, Math.max(4, plotH - h - 4)))}px`;
+  }
+
+  toolbar.addEventListener("pointerdown", (event) => event.stopPropagation());
+  toolbar.addEventListener("dblclick", (event) => event.stopPropagation());
+  // the chart under the toolbar is not hovered
+  toolbar.addEventListener("pointermove", (event) => event.stopPropagation());
+  toolbar.addEventListener("pointerenter", () => {
+    pointer = null;
+    hovered = null;
+    root.style.cursor = "default";
+    invalidate();
+  });
+
+  // ---------------------------------------------------------------- replay
+
+  const replayState = (): TradingReplayState => ({
+    active: !!replay,
+    picking: replayPicking,
+    playing: !!replay?.playing,
+    speed: replay?.speed ?? replaySpeed,
+    index: n(),
+    total: replay ? replay.source.length : n(),
+    time: n() ? store.time[n() - 1] : NaN,
+  });
+
+  const emitReplay = () => emit("replayChange", replayState());
+
+  const columnsOf = (from: BarStore, count: number) => ({
+    time: from.time.subarray(0, count),
+    open: from.open.subarray(0, count),
+    high: from.high.subarray(0, count),
+    low: from.low.subarray(0, count),
+    close: from.close.subarray(0, count),
+    volume: from.volume.subarray(0, count),
+  });
+
+  /** Replaces the bars of the store by the first `count` bars of `source` */
+  const showBars = (source: BarStore, count: number) => {
+    const hasVolume = source.hasVolume;
+    storeSet(store, columnsOf(source, count));
+    store.hasVolume = hasVolume;
+    pyramid = createPyramid();
+    haPyramid = createPyramid();
+    haValid = 0;
+    historyFirst = NaN;
+    afterDataChange(0);
+  };
+
+  const stopReplayTimer = () => {
+    if (replay?.timer) clearInterval(replay.timer);
+    if (replay) {
+      replay.timer = null;
+      replay.playing = false;
+    }
+  };
+
+  const beginReplay = (index: number) => {
+    replayPicking = false;
+    if (!replay) {
+      if (!n()) return;
+      const source = createStore();
+      storeSet(source, columnsOf(store, n()));
+      source.hasVolume = store.hasVolume;
+      replay = { source, playing: false, speed: replaySpeed, timer: null };
+    }
+    stopReplayTimer();
+    const shown = clamp(Math.round(index) + 1, 1, replay.source.length);
+    showBars(replay.source, shown);
+    right = shown - 1 + (options.rightOffset ?? 8);
+    for (const scale of scales.values()) scale.auto = true;
+    emitReplay();
+  };
+
+  const replayStepBy = (count: number) => {
+    if (!replay) return;
+    const source = replay.source;
+    const before = n();
+    const follow = followsRealtime();
+    let from = -1;
+    for (let i = 0; i < count && n() < source.length; i++) {
+      const at = storeUpdate(store, readBar(source, n()));
+      if (from < 0) from = at;
+    }
+    store.hasVolume = source.hasVolume;
+    if (from >= 0) {
+      if (follow) right += n() - before;
+      afterDataChange(from);
+    }
+    if (n() >= source.length) stopReplayTimer();
+    emitReplay();
+  };
+
+  const playReplay = (speed?: number) => {
+    if (!replay) return;
+    if (speed !== undefined && speed > 0) replay.speed = replaySpeed = speed;
+    stopReplayTimer();
+    if (n() >= replay.source.length) {
+      emitReplay();
+      return;
+    }
+    const interval = Math.max(16, 1000 / replay.speed);
+    const perTick = Math.max(1, Math.round((replay.speed * interval) / 1000));
+    replay.playing = true;
+    replay.timer = setInterval(() => replayStepBy(perTick), interval);
+    emitReplay();
+  };
+
+  /** Ends the replay; `restore` shows every bar again */
+  const endReplay = (restore: boolean) => {
+    const wasPicking = replayPicking;
+    replayPicking = false;
+    if (!replay) {
+      if (wasPicking) {
+        emitReplay();
+        invalidate();
+      }
+      return;
+    }
+    stopReplayTimer();
+    const source = replay.source;
+    replay = null;
+    if (restore) showBars(source, source.length);
+    emitReplay();
+  };
+
+  // ----------------------------------------------------------- pointer
+
   const updateCursor = (x: number, y: number) => {
     let cursor = "crosshair";
     hoveredLine = null;
     let nextHover: string | null = null;
+    const button = gesture ? -1 : buttonAt(x, y);
+    if (button !== hoveredButton) hoveredButton = button;
     if (gesture?.kind === "pan" && gesture.moved) cursor = "grabbing";
+    else if (button >= 0) cursor = "pointer";
+    else if (replayPicking && x <= plotW && y <= plotH) cursor = "pointer";
     else if (separatorAt(y) > 0) cursor = "row-resize";
     else if (x > plotW && y < plotH) cursor = "ns-resize";
     else if (y > plotH) cursor = "ew-resize";
@@ -2522,6 +3866,11 @@ export const createTradingChart = (
     keyboardIndex = null;
     kinetic = null;
     scrollAnim = null;
+    if (editing) closeEditor(true);
+    if (paletteOpen) {
+      paletteOpen = false;
+      invalidate();
+    }
     if (event.pointerType === "touch") {
       touches.set(event.pointerId, { x, y });
       if (touches.size === 2) {
@@ -2535,6 +3884,16 @@ export const createTradingChart = (
       root.setPointerCapture(event.pointerId);
     } catch {
       // the pointer may already be released
+    }
+    const button = buttonAt(x, y);
+    const target = canvasButtons[button];
+    if (target) {
+      gesture = { kind: "button", action: target.action };
+      return;
+    }
+    if (replayPicking && x <= plotW && y <= plotH) {
+      beginReplay(Math.min(n() - 1, Math.round(indexAt(x))));
+      return;
     }
     const sep = separatorAt(y);
     if (sep > 0) {
@@ -2566,25 +3925,42 @@ export const createTradingChart = (
       return;
     }
     const pane = paneAt(y);
-    if (tool !== "cursor" && pane?.id === PRICE && n()) {
-      const point = anchorAt(x, y);
+    if (tool !== "cursor" && pane && n()) {
       if (draft) {
-        draft = { ...draft, points: [draft.points[0], point] };
-        finishDraft();
+        // the next anchor of a click-by-click drawing
+        followDraft(x, y);
+        fixDraftAnchor();
         gesture = null;
+        invalidate();
         return;
       }
       const type = tool;
+      const position = isPosition(type);
+      // positions need prices: on the price pane only
+      const at = position ? panes[0] : pane;
+      const point = anchorAt(x, clamp(y, at.top, at.top + at.height), at);
+      const anchors = anchorCount(type);
+      draftPane = at.id;
       draft = {
         id: `drawing-${Date.now().toString(36)}-${++drawingCounter}`,
         type,
-        points: anchorCount(type) === 1 ? [point] : [point, point],
+        points: position
+          ? positionPoints(
+              { ...point, price: roundPrice(point.price) },
+              at,
+              type === "longPosition",
+            )
+          : anchors === 1
+            ? [point]
+            : [point, point],
+        ...(at.id !== PRICE ? { pane: at.id } : {}),
       };
-      if (anchorCount(type) === 1) {
+      if (anchors === 1) {
         finishDraft();
         return;
       }
-      gesture = { kind: "create", x, y, moved: false };
+      draftClicks = anchors - 1;
+      gesture = { kind: "create", pane: at, x, y, moved: false };
       invalidate();
       return;
     }
@@ -2601,6 +3977,7 @@ export const createTradingChart = (
           gesture = {
             kind: "drawing",
             id: hit.drawing.id,
+            pane: hit.pane,
             handle: hit.hit.part === "handle" ? hit.hit.index : -1,
             x,
             y,
@@ -2649,6 +4026,7 @@ export const createTradingChart = (
     }
     const g = gesture;
     if (!g) {
+      if (draft) followDraft(x, y);
       updateCursor(x, y);
       invalidate();
       return;
@@ -2696,35 +4074,35 @@ export const createTradingChart = (
         break;
       }
       case "order": {
-        const price = valueAt(panes[0].scale, y);
-        const step = 10 ** -precision();
-        lineOverrides.set(g.line.id, Math.round(price / step) * step);
+        lineOverrides.set(g.line.id, roundPrice(valueAt(panes[0].scale, y)));
         break;
       }
       case "drawing": {
         if (!g.moved && Math.hypot(x - g.x, y - g.y) < 3) break;
         g.moved = true;
-        const scale = panes[0].scale;
-        const di = Math.round(indexAt(x) - indexAt(g.x));
-        const ds = scaledAt(scale, y) - scaledAt(scale, g.y);
-        const points = g.original.points.map((p, i) => {
-          if (g.handle >= 0 && i !== g.handle) return p;
-          if (g.handle >= 0) return anchorAt(x, y);
-          return {
+        const scale = g.pane.scale;
+        let points: TradingDrawingPoint[];
+        if (g.handle >= 0) {
+          points = moveHandle(g.original, g.handle, anchorAt(x, y, g.pane));
+        } else {
+          const di = Math.round(indexAt(x) - indexAt(g.x));
+          const ds = scaledAt(scale, y) - scaledAt(scale, g.y);
+          points = g.original.points.map((p) => ({
             time: timeAt(Math.round(indexOfTimeExt(p.time)) + di),
             price: fromScaled(scale, toScaled(scale, p.price) + ds),
-          };
-        });
+          }));
+        }
         drawings = drawings.map((d) => (d.id === g.id ? { ...d, points } : d));
         break;
       }
       case "create": {
-        if (draft) {
-          if (Math.hypot(x - g.x, y - g.y) >= 4) g.moved = true;
-          draft = { ...draft, points: [draft.points[0], anchorAt(x, y)] };
-        }
+        if (Math.hypot(x - g.x, y - g.y) >= 4) g.moved = true;
+        followDraft(x, y);
         break;
       }
+      default:
+        updateCursor(x, y);
+        break;
     }
     invalidate();
   };
@@ -2785,8 +4163,11 @@ export const createTradingChart = (
         if (g.moved) commitDrawings(drawings);
         break;
       case "create":
-        // a click starts a click-click drawing; a drag finishes it
-        if (g.moved) finishDraft();
+        // a click starts a click-by-click drawing; a drag fixes the anchor
+        if (g.moved) fixDraftAnchor();
+        break;
+      case "button":
+        if (buttonAt(x, y) >= 0) g.action();
         break;
       default:
         break;
@@ -2828,6 +4209,11 @@ export const createTradingChart = (
 
   const onDoubleClick = (event: MouseEvent) => {
     const { x, y } = local(event);
+    const hit = tool === "cursor" ? hitDrawingAt(x, y) : null;
+    if (hit?.drawing.type === "text") {
+      openEditor(hit.drawing.id, false);
+      return;
+    }
     if (x > plotW && y < plotH) {
       const pane = paneAt(y);
       if (pane) pane.scale.auto = true;
@@ -2845,11 +4231,7 @@ export const createTradingChart = (
     const d = display();
     const l = labels();
     live.textContent = fill(l.announcement, {
-      time: formatCrosshairTime(
-        shiftTime(store.time[index], options.utcOffset),
-        tfMs(),
-        locale,
-      ),
+      time: formatCrosshairTime(shift(store.time[index]), tfMs(), locale),
       open: formatPrice(d.open[index]),
       high: formatPrice(d.high[index]),
       low: formatPrice(d.low[index]),
@@ -2858,6 +4240,15 @@ export const createTradingChart = (
   };
 
   const onKeyDown = (event: KeyboardEvent) => {
+    if ((event.ctrlKey || event.metaKey) && !event.altKey) {
+      const key = event.key.toLowerCase();
+      if (key === "z" || key === "y") {
+        if (key === "y" || event.shiftKey) redo();
+        else undo();
+        event.preventDefault();
+      }
+      return;
+    }
     const count = n();
     const page = Math.max(1, Math.floor(plotW / spacing / 2));
     const move = (index: number) => {
@@ -2900,8 +4291,12 @@ export const createTradingChart = (
         zoomAt(keyboardIndex !== null ? xOf(keyboardIndex) : plotW, 1 / 1.2);
         break;
       case "Escape":
-        if (draft) draft = null;
-        else if (tool !== "cursor") setTool("cursor", true);
+        if (paletteOpen) paletteOpen = false;
+        else if (replayPicking) endReplay(false);
+        else if (draft) {
+          draft = null;
+          draftClicks = 0;
+        } else if (tool !== "cursor") setTool("cursor", true);
         else if (selected) select(null);
         else keyboardIndex = null;
         break;
@@ -2909,8 +4304,7 @@ export const createTradingChart = (
       case "Backspace": {
         const target = drawings.find((d) => d.id === selected);
         if (!target || target.locked) return;
-        select(null);
-        commitDrawings(drawings.filter((d) => d.id !== target.id));
+        removeDrawing(target.id);
         break;
       }
       default:
@@ -2986,6 +4380,73 @@ export const createTradingChart = (
     });
   }
 
+  // ----------------------------------------------------- image, full screen
+
+  /** Every layer of the chart (and the legends) drawn on one canvas */
+  const compose = (): HTMLCanvasElement | null => {
+    if (destroyed) return null;
+    // a fresh frame: the GPU canvas is read in the same task
+    if (frameId) {
+      if (win?.cancelAnimationFrame) win.cancelAnimationFrame(frameId);
+      else clearTimeout(frameId);
+      frameId = 0;
+    }
+    frame();
+    const dpr = win?.devicePixelRatio || 1;
+    const canvas = doc.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(width * dpr));
+    canvas.height = Math.max(1, Math.round(height * dpr));
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+    ctx.fillStyle = toCss(theme.background);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    try {
+      ctx.drawImage(background, 0, 0);
+      if (renderer)
+        ctx.drawImage(
+          renderer.canvas,
+          0,
+          0,
+          Math.round(plotW * dpr),
+          Math.round(plotH * dpr),
+        );
+      ctx.drawImage(foreground, 0, 0);
+    } catch {
+      // a canvas that can't be read (lost context): skipped
+    }
+    // the legends are DOM text: written at their place
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const origin = root.getBoundingClientRect();
+    const view = win ?? null;
+    legends.querySelectorAll("span, button").forEach((element) => {
+      const text = element.textContent ?? "";
+      if (element.children.length || !text.trim() || !view) return;
+      const rect = element.getBoundingClientRect();
+      const computed = view.getComputedStyle(element);
+      ctx.font = `${computed.fontWeight} ${computed.fontSize} ${computed.fontFamily}`;
+      ctx.fillStyle = computed.color || toCss(theme.text);
+      ctx.textAlign = "left";
+      ctx.textBaseline = "middle";
+      ctx.fillText(
+        text,
+        rect.left - origin.left,
+        rect.top - origin.top + rect.height / 2,
+      );
+    });
+    return canvas;
+  };
+
+  let fullscreen = false;
+  const onFullscreen = () => {
+    const next = doc.fullscreenElement === root;
+    if (next === fullscreen) return;
+    fullscreen = next;
+    root.style.background = next ? toCss(theme.background) : "";
+    emit("fullscreenChange", next);
+    invalidate();
+  };
+  doc.addEventListener("fullscreenchange", onFullscreen);
+
   // ------------------------------------------------------------- renderer
 
   const initRenderer = async (exclude: Set<ChartRendererKind> = new Set()) => {
@@ -3041,18 +4502,22 @@ export const createTradingChart = (
   const applyOptions = (previous: TradingChartOptions | null) => {
     const next = options;
     resolveTexts();
-    if (
-      !previous ||
-      next.indicators !== previous.indicators ||
-      next.utcOffset !== previous.utcOffset
-    ) {
-      rebuildStudies();
-    }
+    const nextZone =
+      next.timeZone && isTimeZone(next.timeZone) ? next.timeZone : undefined;
+    const timeChanged =
+      !!previous &&
+      (next.utcOffset !== previous.utcOffset || nextZone !== zone);
+    zone = nextZone;
+    if (!previous || next.indicators !== previous.indicators) rebuildStudies();
+    // session periods (VWAP) follow the displayed time
+    if (timeChanged) for (const study of studies) studyValid.set(study, 0);
     if (!previous || next.compare !== previous.compare) rebuildCompares();
     if (next.bars && (!previous || next.bars !== previous.bars)) {
+      if (replay) endReplay(false);
       if (previous) applyBarsOption(next.bars);
       else replaceBars(next.bars);
     } else if (!next.bars && previous?.bars) {
+      if (replay) endReplay(false);
       replaceBars([]);
     }
     if (previous && next.barSpacing !== previous.barSpacing && next.barSpacing)
@@ -3066,8 +4531,8 @@ export const createTradingChart = (
       next.drawings !== emittedDrawings &&
       (!previous || next.drawings !== previous.drawings)
     ) {
-      drawings = next.drawings;
-      if (selected && !drawings.some((d) => d.id === selected)) select(null);
+      if (previous) commitDrawings(next.drawings, false);
+      else drawings = committed = next.drawings;
     }
     if (
       previous &&
@@ -3099,9 +4564,15 @@ export const createTradingChart = (
         void initRenderer();
     },
     setBars(bars) {
+      if (replay) endReplay(false);
       replaceBars(bars);
     },
     update(bar) {
+      if (replay) {
+        // the stream goes on behind the replay
+        storeUpdate(replay.source, bar);
+        return;
+      }
       const before = n();
       const follow = followsRealtime();
       const at = storeUpdate(store, bar);
@@ -3110,6 +4581,10 @@ export const createTradingChart = (
       afterDataChange(at);
     },
     appendBars(bars) {
+      if (replay) {
+        storeAppend(replay.source, bars);
+        return;
+      }
       const before = n();
       const follow = followsRealtime();
       const at = storeAppend(store, bars);
@@ -3118,6 +4593,7 @@ export const createTradingChart = (
       afterDataChange(at);
     },
     prependBars(bars) {
+      if (replay) storePrepend(replay.source, bars);
       const added = storePrepend(store, bars);
       if (!added) return;
       pyramid = createPyramid();
@@ -3166,6 +4642,22 @@ export const createTradingChart = (
       applyRange(pendingRange);
       invalidate();
     },
+    getVisibleTimeRange() {
+      const range = visibleRange();
+      return { from: timeAtFrac(range.from), to: timeAtFrac(range.to) };
+    },
+    setVisibleTimeRange({ from, to }) {
+      if (!n() || !(to > from)) return;
+      instance.setVisibleRange({
+        from: indexAtTimeFrac(from),
+        to: indexAtTimeFrac(to),
+      });
+    },
+    setCrosshair(time, price) {
+      externalCross =
+        time === null || !finite(time) ? null : { time, price: price ?? NaN };
+      invalidate();
+    },
     setScaleMode(mode) {
       options = { ...options, scaleMode: mode };
       const price = scales.get(PRICE);
@@ -3180,16 +4672,57 @@ export const createTradingChart = (
     getDrawingTool: () => tool,
     getDrawings: () => drawings,
     setDrawings(next) {
-      drawings = next;
-      if (selected && !drawings.some((d) => d.id === selected)) select(null);
-      invalidate();
+      commitDrawings(next, false);
     },
-    removeDrawing(id) {
-      if (!drawings.some((d) => d.id === id)) return;
-      if (selected === id) select(null);
-      commitDrawings(drawings.filter((d) => d.id !== id));
-    },
+    removeDrawing,
+    updateDrawing,
     selectDrawing: (id) => select(id),
+    undo,
+    redo,
+    getUndoState: undoState,
+    startReplay(time) {
+      if (!n() && !replay) return;
+      if (time === undefined) {
+        if (replay) endReplay(true);
+        replayPicking = true;
+        emitReplay();
+        invalidate();
+        return;
+      }
+      const source = replay ? replay.source : store;
+      beginReplay(indexOfTime(source.time, source.length, time));
+    },
+    replayStep: (count = 1) => replayStepBy(Math.max(1, Math.floor(count))),
+    replayPlay: (speed) => playReplay(speed),
+    replayPause() {
+      if (!replay) return;
+      stopReplayTimer();
+      emitReplay();
+    },
+    stopReplay: () => endReplay(true),
+    getReplayState: replayState,
+    toDataURL(type = "image/png", quality) {
+      return compose()?.toDataURL(type, quality) ?? "";
+    },
+    toBlob(type = "image/png", quality) {
+      const canvas = compose();
+      return new Promise((resolve) => {
+        if (!canvas || typeof canvas.toBlob !== "function") resolve(null);
+        else canvas.toBlob(resolve, type, quality);
+      });
+    },
+    async requestFullscreen() {
+      if (typeof root.requestFullscreen === "function")
+        await root.requestFullscreen();
+    },
+    async exitFullscreen() {
+      if (
+        doc.fullscreenElement === root &&
+        typeof doc.exitFullscreen === "function"
+      )
+        await doc.exitFullscreen();
+    },
+    isFullscreen: () => doc.fullscreenElement === root,
     setIndicatorVisible(id, visible) {
       visibility.set(id, visible);
       invalidate();
@@ -3212,6 +4745,8 @@ export const createTradingChart = (
         else clearTimeout(frameId);
       }
       if (countdownTimer) clearInterval(countdownTimer);
+      if (replay?.timer) clearInterval(replay.timer);
+      doc.removeEventListener("fullscreenchange", onFullscreen);
       resizeObserver?.disconnect();
       unwatchTheme();
       langObserver?.disconnect();
@@ -3223,5 +4758,11 @@ export const createTradingChart = (
       root.remove();
     },
   };
+  syncHooks.set(instance, {
+    setTimeRange(range) {
+      silentRange = true;
+      instance.setVisibleTimeRange(range);
+    },
+  });
   return instance;
 };

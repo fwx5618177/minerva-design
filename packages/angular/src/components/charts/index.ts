@@ -8,3 +8,4 @@ export * from "./cartesian-extended";
 export * from "./shape-extended";
 export * from "./trading";
 export * from "./three-d";
+export * from "./graph";

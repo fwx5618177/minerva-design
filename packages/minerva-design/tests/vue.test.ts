@@ -32,13 +32,18 @@ const vueModules = () => walk(vueDist).filter((f) => f.endsWith(".js"));
 async function bundle(code: string) {
   const dir = mkdtempSync(join(tmpdir(), "minerva-vue-"));
   const input = join(dir, "entry.js");
-  // the published entry by path (the temp folder cannot resolve the package)
+  // the published entries by path (the temp folder cannot resolve the package)
   writeFileSync(
     input,
-    code.replace(
-      '"minerva-design/vue"',
-      JSON.stringify(join(vueDist, "index.js")),
-    ),
+    code
+      .replace(
+        '"minerva-design/vue"',
+        JSON.stringify(join(vueDist, "index.js")),
+      )
+      .replace(
+        '"minerva-design/vue/charts"',
+        JSON.stringify(join(vueDist, "charts.js")),
+      ),
   );
   const build = await rolldown({
     input,
@@ -89,9 +94,24 @@ describe("exports map", () => {
     expect(pkg.exports["./vue/global"]).toEqual({
       types: "./dist/vue/global.d.ts",
     });
-    expect(VUE_SUBPATHS).toEqual(["./vue", "./vue/monaco"]);
+    expect(pkg.exports["./vue/charts"]).toEqual({
+      types: "./dist/vue/charts.d.ts",
+      default: "./dist/vue/charts.js",
+    });
+    expect(pkg.exports["./vue/charts-global"]).toEqual({
+      types: "./dist/vue/charts-global.d.ts",
+    });
+    expect(VUE_SUBPATHS).toEqual(["./vue", "./vue/monaco", "./vue/charts"]);
     expect(Object.keys(PLANNED_RENDERERS)).not.toContain("vue");
-    for (const file of ["index.js", "index.d.ts", "monaco.js", "global.d.ts"])
+    for (const file of [
+      "index.js",
+      "index.d.ts",
+      "monaco.js",
+      "charts.js",
+      "charts.d.ts",
+      "global.d.ts",
+      "charts-global.d.ts",
+    ])
       expect(existsSync(join(vueDist, file)), file).toBe(true);
   });
 
@@ -108,6 +128,11 @@ describe("exports map", () => {
     const global = readFileSync(join(vueDist, "global.d.ts"), "utf8");
     expect(global).toContain('declare module "vue"');
     expect(global).toContain("MnButton: typeof Minerva.Button;");
+    expect(global).not.toContain("MnLineChart");
+    const charts = readFileSync(join(vueDist, "charts-global.d.ts"), "utf8");
+    expect(charts).toContain('declare module "vue"');
+    expect(charts).toContain("MnLineChart: typeof Minerva.LineChart;");
+    expect(charts).not.toContain("MnButton");
   });
 });
 
@@ -174,12 +199,20 @@ describe("server rendering in Node (vue/server-renderer)", () => {
     expect(html).not.toContain("Corps");
   });
 
-  it("installs every component globally with the plugin", async () => {
+  it("installs every component globally with the plugin, the charts with MinervaVueCharts", async () => {
     const vue = await import("minerva-design/vue");
     const app = createSSRApp({ template: "<div />" });
     app.use(vue.default);
     expect(app.component("MnButton")).toBe(vue.Button);
     expect(app.component("MnModal")).toBe(vue.Modal);
+    expect(app.component("MnLineChart")).toBeUndefined();
+    const charts = await import(
+      new URL("../dist/vue/charts.js", import.meta.url).href
+    );
+    app.use(charts.MinervaVueCharts);
+    expect(app.component("MnLineChart")).toBe(charts.LineChart);
+    // the same component as the named export of the main entry
+    expect(charts.LineChart).toBe(vue.LineChart);
   });
 });
 
@@ -207,5 +240,21 @@ describe("tree-shaking", () => {
       )
     ).size;
     expect(size).toBeGreaterThan(single * 5);
+  });
+
+  it("the plugin brings no chart code (MinervaVueCharts is opt-in)", async () => {
+    const { modules } = await bundle(
+      'import MinervaVue from "minerva-design/vue"; console.log(MinervaVue);',
+    );
+    for (const id of modules)
+      expect(id, "no chart component, no chart engine").not.toMatch(
+        /components[\\/]Chart[\\/]|[\\/]dist[\\/]charts[\\/]/,
+      );
+    const charts = await bundle(
+      'import { MinervaVueCharts } from "minerva-design/vue/charts"; console.log(MinervaVueCharts);',
+    );
+    expect(
+      charts.modules.some((id) => /[\\/]dist[\\/]charts[\\/]/.test(id)),
+    ).toBe(true);
   });
 });

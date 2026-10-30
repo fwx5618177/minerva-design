@@ -7,6 +7,7 @@ import {
   BubbleChart,
   Chart,
   GanttChart,
+  HeatmapChart,
   HistogramChart,
   HorizontalBarChart,
   LineChart,
@@ -361,10 +362,54 @@ describe("cartesian chart components", () => {
     expect(ref.current!.getView()?.y[1]).toBeGreaterThanOrEqual(100);
   });
 
+  it("BoxPlotChart outlier style, HeatmapChart color legend", async () => {
+    const box = await optionsOf((r) => (
+      <BoxPlotChart
+        ref={r}
+        locale="en"
+        outlierShape="filled"
+        outlierSize={10}
+        groups={[{ x: "a", values: [1, 2, 3, 4, 100] }]}
+        series={[{ type: "line", name: "Target", data: [["a", 3]] }]}
+      />
+    ));
+    // hovering the outlier shows its value
+    const p = box.instance.toPixel(0, 100)!;
+    box.container.querySelector(".minerva-chart-stage")!.dispatchEvent(
+      new PointerEvent("pointermove", {
+        clientX: p.x,
+        clientY: p.y,
+        bubbles: true,
+        pointerId: 1,
+      }),
+    );
+    expect(
+      box.container.querySelector(".minerva-chart-tooltip")?.textContent,
+    ).toContain("Outlier");
+    box.unmount();
+
+    const heat = await optionsOf((r) => (
+      <HeatmapChart
+        ref={r}
+        colorScale="diverging"
+        colorMidpoint={0}
+        data={[
+          { x: "a", y: "r", value: -1 },
+          { x: "b", y: "r", value: 1 },
+        ]}
+      />
+    ));
+    const legend = heat.container.querySelector(".minerva-chart-legend");
+    expect(legend?.innerHTML).toContain("linear-gradient");
+    expect(legend?.textContent).toContain("-1");
+    heat.unmount();
+  });
+
   it("WaterfallChart and GanttChart", async () => {
     const waterfall = await optionsOf((r) => (
       <WaterfallChart
         ref={r}
+        connector={{ dash: [2, 2] }}
         steps={[
           { label: "Start", value: 100 },
           { label: "Costs", value: -30 },
@@ -380,9 +425,10 @@ describe("cartesian chart components", () => {
       <GanttChart
         ref={r}
         today={50}
+        dependenciesName="After"
         tasks={[
           { name: "Design", start: 0, end: 40, progress: 0.5 },
-          { name: "Build", start: 40, end: 100 },
+          { name: "Build", start: 40, end: 100, dependencies: ["Design"] },
         ]}
       />
     ));

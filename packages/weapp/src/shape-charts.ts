@@ -1,16 +1,17 @@
 // Native WeChat shape chart components (pie-chart, donut-chart, radar-chart,
 // gauge-chart, funnel-chart, treemap-chart, sankey-chart, sunburst-chart,
-// radial-bar-chart, calendar-heatmap, bullet-chart and the generic
+// radial-bar-chart, calendar-heatmap, bullet-chart, chord-chart and the generic
 // shape-chart): the
 // DOM-free `createCanvasShapeChart` of minerva-design/charts drawn on a
 // `<canvas type="2d">`, legend, tooltip and animations included.
 import {
+  calendarStrips,
   createCanvasShapeChart,
-  type CalendarDate,
   type CanvasShapeChartInstance,
   type ChartCanvas,
   type ChartThemeInput,
   type ChartTouch,
+  type ChordChartOptions,
   type ShapeChartCommonOptions,
   type ShapeChartOptions,
   type ShapeHoverEvent,
@@ -39,6 +40,7 @@ type ShapeKind =
   | "radialBar"
   | "calendarHeatmap"
   | "bullet"
+  | "chord"
   | "shape";
 interface NativeTouch {
   x?: number;
@@ -69,16 +71,6 @@ const unset = <T>(value: T | null | undefined | ""): T | undefined =>
 const nonEmpty = <T>(value: readonly T[] | null | undefined) =>
   value && value.length ? value : undefined;
 
-const yearOf = (date: CalendarDate) => {
-  const time =
-    date instanceof Date
-      ? date.getTime()
-      : typeof date === "number"
-        ? date
-        : Date.parse(date);
-  return Number.isFinite(time) ? new Date(time).getUTCFullYear() : NaN;
-};
-
 /** Default height of a chart (like the web components): by type, or from the data */
 const defaultHeight = (options: ShapeChartOptions): string => {
   switch (options.type) {
@@ -89,18 +81,13 @@ const defaultHeight = (options: ShapeChartOptions): string => {
     case "sankey":
     case "sunburst":
       return "360px";
-    case "calendarHeatmap": {
-      if (options.layout === "months") return "560px";
-      const range = options.range;
-      let strips = 1;
-      if (Array.isArray(range) && range.length >= 2) {
-        const [a, b] = range as readonly [CalendarDate, CalendarDate];
-        const from = Math.min(yearOf(a), yearOf(b));
-        const to = Math.max(yearOf(a), yearOf(b));
-        if (to > from) strips = to - from + 1;
-      }
-      return `${strips * 120 + (options.legend === false ? 0 : 34) + 16}px`;
-    }
+    case "chord":
+      return "420px";
+    case "calendarHeatmap":
+      // one strip of weeks per year when the range spans more than 53 weeks
+      return options.layout === "months"
+        ? "560px"
+        : `${calendarStrips(options) * 120 + (options.legend === false ? 0 : 34) + 16}px`;
     case "bullet":
       return options.orientation === "vertical"
         ? "320px"
@@ -171,6 +158,8 @@ const describe = (o: ShapeChartOptions): string => {
       return "Calendar heatmap";
     case "bullet":
       return "Bullet chart";
+    case "chord":
+      return "Chord diagram";
     default:
       return "Chart";
   }
@@ -181,10 +170,12 @@ const withConfig = <T extends ShapeChartCommonOptions>(
   options: T,
   config: NativeShapeChartConfig,
 ): T => {
-  const { format, percentFormat, renderTooltip } = config;
+  const { format, percentFormat, renderTooltip, tickFormat } = config;
   const out: T = { ...options };
   if (format) out.format = format;
   if (percentFormat) out.percentFormat = percentFormat;
+  if (tickFormat && (out as { type?: string }).type === "chord")
+    (out as unknown as ChordChartOptions).tickFormat = tickFormat;
   if (renderTooltip && out.tooltip !== false)
     out.tooltip = {
       ...(typeof out.tooltip === "object" ? out.tooltip : {}),
@@ -205,6 +196,8 @@ const commonOptions = (self: Instance): ShapeChartCommonOptions => {
     animation: unset(d.animation),
     padding: unset(d.padding),
     ariaLabel: d.ariaLabel || undefined,
+    locale: (d.locale as string) || undefined,
+    texts: unset(d.texts as ShapeChartCommonOptions["texts"] | null),
   };
 };
 
@@ -358,6 +351,28 @@ const shapeOptions = (self: Instance, state: ShapeState): ShapeChartOptions => {
         ticks: unset(d.ticks),
       };
       break;
+    case "chord":
+      options = {
+        ...common,
+        type: "chord",
+        groups: nonEmpty(d.groups as string[]),
+        matrix: nonEmpty(d.matrix as number[][]),
+        links: nonEmpty(d.links as []),
+        directed: unset(d.directed as boolean | null),
+        arrows: unset(d.arrows as boolean | null),
+        padAngle: unset(d.padAngle as number | null),
+        startAngle: unset(d.startAngle as number | null),
+        sortGroups: unset(d.sortGroups as ChordChartOptions["sortGroups"]),
+        sortSubgroups: unset(
+          d.sortSubgroups as ChordChartOptions["sortSubgroups"],
+        ),
+        ribbonColor: unset(d.ribbonColor as ChordChartOptions["ribbonColor"]),
+        ribbonOpacity: unset(d.ribbonOpacity as number | null),
+        arcWidth: unset(d.arcWidth as number | null),
+        ticks: unset(d.ticks as boolean | number | null),
+        labels: unset(d.labels as ChordChartOptions["labels"]),
+      };
+      break;
     default:
       options = {
         ...common,
@@ -459,6 +474,8 @@ const COMMON_OPTIONS = [
   "animation",
   "padding",
   "ariaLabel",
+  "locale",
+  "texts",
 ];
 
 /** Properties of the shape types added after the first six */
@@ -528,6 +545,22 @@ const SHAPE_PROPERTIES: Partial<
     targetColor: text(),
     ticks: optional(),
   },
+  chord: {
+    groups: list(),
+    matrix: list(),
+    links: list(),
+    directed: optional(),
+    arrows: optional(),
+    padAngle: optional(),
+    startAngle: optional(),
+    sortGroups: text(),
+    sortSubgroups: text(),
+    ribbonColor: text(),
+    ribbonOpacity: optional(),
+    arcWidth: optional(),
+    ticks: optional(),
+    labels: text(),
+  },
 };
 
 function defineShapeChart(kind: ShapeKind): Control {
@@ -578,8 +611,10 @@ function defineShapeChart(kind: ShapeKind): Control {
               ? { data: list(), gap: optional(), headers: optional() }
               : (SHAPE_PROPERTIES[kind] ?? { options: optional() });
   const optionNames = [
-    ...(kind === "shape" ? [] : COMMON_OPTIONS),
-    ...Object.keys(kindProperties),
+    ...new Set([
+      ...(kind === "shape" ? [] : COMMON_OPTIONS),
+      ...Object.keys(kindProperties),
+    ]),
   ];
   /** CSS height of the chart: the property, else the default of the type / data */
   const chartHeight = (self: Instance) =>
@@ -605,6 +640,8 @@ function defineShapeChart(kind: ShapeKind): Control {
               animation: optional(),
               padding: optional(),
               ariaLabel: text(),
+              locale: text(),
+              texts: optional(),
             }),
         ...kindProperties,
       },
@@ -727,5 +764,7 @@ export const radialBarChart = defineShapeChart("radialBar");
 export const calendarHeatmap = defineShapeChart("calendarHeatmap");
 /** Bullet chart: KPI bars against qualitative ranges and a target */
 export const bulletChart = defineShapeChart("bullet");
+/** Chord diagram: flows between groups around a circle */
+export const chordChart = defineShapeChart("chord");
 /** Any shape type of the engine from its `options` */
 export const shapeChart = defineShapeChart("shape");

@@ -23,6 +23,7 @@ export {
 export {
   BulletChart,
   CalendarHeatmap,
+  ChordChart,
   DonutChart,
   FunnelChart,
   GaugeChart,
@@ -58,6 +59,7 @@ export type {
 export type {
   BulletChartProps,
   CalendarHeatmapProps,
+  ChordChartProps,
   DonutChartProps,
   FunnelChartProps,
   GaugeChartProps,
@@ -73,4 +75,5 @@ export type {
 export * from "./react/trading";
 export * from "./react/orderbook";
 export * from "./react/three-d";
+export * from "./react/graph";
 export * from "./core";

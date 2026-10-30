@@ -1,5 +1,5 @@
 // Shape charts: pie / donut / rose, radar, gauge, funnel, treemap, sankey,
-// sunburst, radial bar, calendar heatmap and bullet.
+// sunburst, radial bar, calendar heatmap, bullet and chord.
 
 export { createShapeChart } from "./chart";
 export {
@@ -13,6 +13,7 @@ export {
   hoverAnchor,
   pointInPolygon,
   pointInSector,
+  ribbonOutline,
   stepHover,
 } from "./hit";
 export {
@@ -36,6 +37,7 @@ export { squarify, treemapLeaves } from "./treemap";
 export { resolveSankey, sankeyColumns } from "./sankey";
 export { calendarDay, calendarIso, localeWeekStart } from "./calendar";
 export { bulletScale } from "./bullet";
+export { resolveChord, type ChordModel } from "./chord";
 export type {
   MeasureText,
   ShapeHover,
@@ -52,6 +54,9 @@ export type {
   CalendarDate,
   CalendarDatum,
   CalendarHeatmapOptions,
+  ChordChartOptions,
+  ChordGroup,
+  ChordLink,
   FunnelChartOptions,
   GaugeBand,
   GaugeChartOptions,

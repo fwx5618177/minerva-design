@@ -5,6 +5,9 @@ import type {
   CalendarDate,
   CalendarDatum,
   CalendarHeatmapOptions,
+  ChordChartOptions,
+  ChordGroup,
+  ChordLink,
   RadialBarChartOptions,
   RadialBarDatum,
   SankeyChartOptions,
@@ -349,6 +352,77 @@ export class MinervaBulletChart extends MinervaShapeChartElement {
   }
 }
 
+/**
+ * Chord diagram of `minerva-design/charts/core` (the `<ChordChart>` of
+ * React): flows between groups around a circle, as ribbons whose ends are
+ * proportional to the flow in each direction; hovering a group highlights
+ * its ribbons, hovering a ribbon shows both directions (the `minerva-hover`
+ * detail of a ribbon also has `source`, `target` and `reverseValue`).
+ *
+ * Published as the optional entry `minerva-design/web-components/chart`.
+ *
+ * @summary Chord diagram of the flows between groups.
+ * @tag minerva-chord-chart
+ * @csspart root - The sized box of the chart
+ * @csspart surface - The element the engine renders into
+ */
+export class MinervaChordChart extends MinervaShapeChartElement {
+  static override tagName = "minerva-chord-chart";
+
+  /** Groups (names or `{ name, color }`), in their order around the circle; property only */
+  @property({ attribute: false })
+  groups?: readonly (string | ChordGroup)[];
+
+  /** Square flow matrix: `matrix[i][j]` flows from group `i` to group `j` (used without `links`); property only */
+  @property({ attribute: false })
+  matrix?: readonly (readonly number[])[];
+
+  /** Flows `{ source, target, value }` by group name or index; take precedence over `matrix`; property only */
+  @property({ attribute: false })
+  links?: readonly ChordLink[];
+
+  /** One ribbon per direction, arcs sized by the outgoing plus the incoming flows */
+  @property({ type: Boolean })
+  directed = false;
+
+  /** Color of the ribbons without `color` */
+  @property({ attribute: "ribbon-color" })
+  ribbonColor: "gradient" | "source" | "target" | "neutral" = "gradient";
+
+  /** Group labels along the arc (`tangential`), the radius (`radial`), whichever fits (`auto`), or none */
+  @property()
+  labels: "auto" | "tangential" | "radial" | "none" = "auto";
+
+  /** Formats the tick labels (compact numbers of the locale by default); property only */
+  @property({ attribute: false })
+  tickFormat?: (value: number) => string;
+
+  /** Other engine options (`ChordChartOptions`: padAngle, startAngle, sortGroups, sortSubgroups, ribbonOpacity, arcWidth, ticks, arrows, palette, format, percentFormat...); property only */
+  @property({ attribute: false })
+  options?: Partial<Omit<ChordChartOptions, "type">>;
+
+  protected override get defaultHeight(): string | number {
+    return 420;
+  }
+
+  protected engineOptions(): ShapeChartOptions | null {
+    const links = this.links ?? this.options?.links;
+    const matrix = this.matrix ?? this.options?.matrix;
+    if (!links && !matrix) return null;
+    return {
+      ...this.options,
+      type: "chord",
+      groups: this.groups ?? this.options?.groups,
+      matrix,
+      links,
+      directed: this.directed || this.options?.directed,
+      ribbonColor: this.ribbonColor,
+      labels: this.labels,
+      tickFormat: this.tickFormat ?? this.options?.tickFormat,
+    };
+  }
+}
+
 declare global {
   interface HTMLElementTagNameMap {
     "minerva-sankey-chart": MinervaSankeyChart;
@@ -356,5 +430,6 @@ declare global {
     "minerva-radial-bar-chart": MinervaRadialBarChart;
     "minerva-calendar-heatmap": MinervaCalendarHeatmap;
     "minerva-bullet-chart": MinervaBulletChart;
+    "minerva-chord-chart": MinervaChordChart;
   }
 }

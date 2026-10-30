@@ -11,11 +11,23 @@ import {
   styleElement,
   swatch,
 } from "./dom";
-import { buildItems, type Origin } from "./items";
+import {
+  buildItems,
+  cellStyleKey,
+  type Origin,
+  type PixelDensity,
+} from "./items";
 import { chartAriaLabel } from "./labels";
 import { createScales, toData, toScreen, type Scales } from "./layout";
 import { watchLocale } from "./locale";
-import { buildModel, type ChartModel, type DataCache } from "./model";
+import {
+  buildModel,
+  fromPlotY,
+  heatPosition,
+  toPlotY,
+  type ChartModel,
+  type DataCache,
+} from "./model";
 import {
   drawBackground,
   drawForeground,
@@ -26,12 +38,15 @@ import { createRenderer } from "./renderers/detect";
 import type { ChartRenderer, RenderItem } from "./renderers/types";
 import {
   collectPointLabels,
+  colorLegend,
+  connectorSegments,
   crosshairAt,
   hitTest,
   hoverItemOf,
   hoverMarks,
   layoutChart,
   legendShape,
+  legendShown,
   pointOf,
   resolveAnnotations,
   sameHover,
@@ -133,6 +148,10 @@ export const createChart = (
   const markers: HTMLDivElement[] = [];
   const bands: HTMLDivElement[] = [];
   const cells: HTMLDivElement[] = [];
+  const guides: HTMLDivElement[] = [];
+  /** Hover caret of the color legend (heatmaps) */
+  let legendCaret: HTMLDivElement | null = null;
+  let cellKey = "";
   let themeVersion = 0;
   let itemsSignatureKey = "";
   let legendKey = "";
@@ -221,7 +240,11 @@ export const createChart = (
       itemsDirty = true;
       if (hover && !hover.keyboard) hover = null;
     }
-    annotations = resolveAnnotations(options.annotations, theme);
+    annotations = resolveAnnotations(
+      options.annotations,
+      theme,
+      model.y.type === "log" ? Math.log10 : undefined,
+    );
     renderLegend();
     updateAccessibility();
     invalidate();
@@ -242,13 +265,16 @@ export const createChart = (
   const renderLegend = () => {
     const legendOption = options.legend;
     const named = options.series.filter((s) => s.name).length;
-    const show = legendOption === undefined ? named > 1 : !!legendOption;
+    const show = legendShown(legendOption, model, named);
     const config = typeof legendOption === "object" ? legendOption : {};
     const toggle = config.toggle ?? true;
     const bottom = config.position === "bottom";
+    const colors = show ? colorLegend(model) : null;
     // rebuild the DOM only when what it shows changed
     let key = `${show}|${bottom}|${toggle}`;
-    if (show) {
+    if (colors) {
+      key += `\n${colors.stops.join(";")}|${colors.labels.map((l) => l.text).join(";")}`;
+    } else if (show) {
       for (const s of model.series)
         key += `\n${s.id}\u0001${s.name}\u0001${s.colorCss}\u0001${legendShape(s.type)}\u0001${s.hidden}`;
     }
@@ -258,10 +284,72 @@ export const createChart = (
       doc.activeElement as Element,
     );
     dom.legend.replaceChildren();
+    legendCaret = null;
     dom.legend.style.display = show ? "flex" : "none";
     if (!show) return;
     dom.legend.style.order = bottom ? "1" : "0";
     dom.legend.style.padding = bottom ? "8px 4px 0" : "0 4px 8px";
+    if (colors) {
+      // visual map: the ramp with its values, the hovered value marked
+      dom.legend.style.justifyContent = "flex-end";
+      const ramp = doc.createElement("div");
+      styleElement(ramp, {
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+        color: "var(--text-secondary-color, #6b7280)",
+        fontSize: "11px",
+        fontVariantNumeric: "tabular-nums",
+      });
+      const first = colors.labels[0];
+      const last = colors.labels[colors.labels.length - 1];
+      const bar = doc.createElement("div");
+      styleElement(bar, {
+        position: "relative",
+        width: "160px",
+        height: "8px",
+        borderRadius: "4px",
+        background: `linear-gradient(to right, ${colors.stops.join(", ")})`,
+        boxShadow:
+          "inset 0 0 0 1px color-mix(in srgb, var(--text-color, #1f2937) 8%, transparent)",
+      });
+      if (colors.labels.length > 2) {
+        const tick = doc.createElement("div");
+        styleElement(tick, {
+          position: "absolute",
+          left: "50%",
+          top: "-2px",
+          width: "1px",
+          height: "12px",
+          background:
+            "color-mix(in srgb, var(--text-color, #1f2937) 35%, transparent)",
+        });
+        bar.appendChild(tick);
+      }
+      legendCaret = doc.createElement("div");
+      styleElement(legendCaret, {
+        position: "absolute",
+        top: "-3px",
+        width: "4px",
+        height: "14px",
+        marginLeft: "-2px",
+        borderRadius: "2px",
+        background: "var(--text-color, #1f2937)",
+        boxShadow:
+          "0 0 0 1.5px var(--surface-color, var(--background-color, #fff))",
+        display: "none",
+      });
+      bar.appendChild(legendCaret);
+      const text = (value: string) => {
+        const el = doc.createElement("span");
+        el.textContent = value;
+        return el;
+      };
+      ramp.append(text(first?.text ?? ""), bar, text(last?.text ?? ""));
+      dom.legend.appendChild(ramp);
+      return;
+    }
+    dom.legend.style.justifyContent = "";
     for (const s of model.series) {
       const item = doc.createElement(toggle ? "button" : "span");
       if (item instanceof HTMLButtonElement) {
@@ -398,6 +486,7 @@ export const createChart = (
         theme,
         annotations,
         pointLabels: collectPointLabels(model, view, scales, yTicks),
+        connectors: connectorSegments(model, scales),
       });
     }
 
@@ -420,9 +509,19 @@ export const createChart = (
       const bh = Math.max(1, Math.round(ch * dpr));
       if (canvas.width !== bw || canvas.height !== bh) renderer.resize(bw, bh);
       ensureOrigin();
+      // heatmap cells: their gaps and corners follow their size on screen
+      const density: PixelDensity = {
+        x: 1 / Math.abs(scales.xPerPx),
+        y: 1 / Math.abs(scales.yPerPx),
+      };
+      const key = cellStyleKey(model, density);
+      if (key !== cellKey) {
+        cellKey = key;
+        itemsDirty = true;
+      }
       if (itemsDirty) {
         version++;
-        items = buildItems(model, origin, version);
+        items = buildItems(model, origin, version, density);
         itemsDirty = false;
       }
       const [xScale, xOffset] = transformFor(view.x, origin.x, model.x.reverse);
@@ -489,33 +588,67 @@ export const createChart = (
       alignItems: "center",
       gap: "6px",
       fontWeight: "600",
-      marginBottom: "4px",
+      marginBottom: content.subtitle ? "0" : "4px",
       color: "var(--text-color, #1f2937)",
     });
     if (content.titleColor)
       header.appendChild(swatch(doc, content.titleColor, "dot"));
     header.appendChild(doc.createTextNode(content.title));
     fragment.append(header);
+    if (content.subtitle) {
+      const sub = doc.createElement("div");
+      styleElement(sub, {
+        color: "var(--text-secondary-color, #6b7280)",
+        fontSize: "11px",
+        margin: "1px 0 6px",
+        paddingLeft: content.titleColor ? "14px" : "0",
+      });
+      sub.textContent = content.subtitle;
+      fragment.append(sub);
+    }
+    if (!content.rows.length) return fragment;
+    // a label column and a value column (right-aligned, tabular figures)
+    const swatches = content.rows.some((row) => row.color);
+    const grid = doc.createElement("div");
+    styleElement(grid, {
+      display: "grid",
+      gridTemplateColumns: swatches
+        ? "auto minmax(0, 1fr) auto"
+        : "minmax(0, 1fr) auto",
+      columnGap: "0",
+      rowGap: "2px",
+      alignItems: "center",
+    });
     for (const row of content.rows) {
-      const el = doc.createElement("div");
-      styleElement(el, { display: "flex", alignItems: "center", gap: "8px" });
-      if (row.color) el.appendChild(swatch(doc, row.color, "dot"));
+      if (swatches) {
+        const cell = doc.createElement("span");
+        styleElement(cell, {
+          display: "inline-flex",
+          width: "14px",
+          justifyContent: "flex-start",
+        });
+        if (row.color) cell.appendChild(swatch(doc, row.color, "dot"));
+        grid.appendChild(cell);
+      }
       const n = doc.createElement("span");
       styleElement(n, {
-        flex: "1 1 auto",
         color: "var(--text-secondary-color, #6b7280)",
+        paddingRight: "16px",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
       });
       n.textContent = row.name;
       const v = doc.createElement("span");
       styleElement(v, {
         fontWeight: "600",
         fontVariantNumeric: "tabular-nums",
-        marginLeft: "12px",
+        textAlign: "right",
+        color: "var(--text-color, #1f2937)",
       });
       v.textContent = row.value;
-      el.append(n, v);
-      fragment.append(el);
+      grid.append(n, v);
     }
+    fragment.append(grid);
     return fragment;
   };
 
@@ -593,11 +726,13 @@ export const createChart = (
     tip.style.transform = `translate(${Math.round(left)}px, ${Math.round(top)}px)`;
   }
 
-  /** Crosshair, point markers, bar bands and heatmap cell outlines */
+  /** Crosshair, point markers, bar bands and lifted heatmap cells */
   function renderMarks(sc: Scales | null) {
     let markerCount = 0;
     let bandCount = 0;
     let cellCount = 0;
+    let guideCount = 0;
+    renderLegendCaret();
     shownMarks = null;
     dom.crosshair.style.display = "none";
     if (hover && sc) {
@@ -633,16 +768,15 @@ export const createChart = (
         );
       }
       for (const mark of hoverMarks(model, sc, hover.event)) {
-        if (mark.kind === "band" || mark.kind === "cell") {
+        if (mark.kind === "band" || mark.kind === "guide") {
           const el =
             mark.kind === "band"
               ? pooled(bands, bandCount++, () => createBand(doc), dom.underlay)
-              : pooled(cells, cellCount++, () =>
+              : pooled(guides, guideCount++, () =>
                   styleElement(createBand(doc), {
-                    background: "transparent",
-                    borderRadius: "3px",
-                    boxShadow:
-                      "0 0 0 1.5px var(--surface-color, var(--background-color, #fff)), 0 0 0 3px color-mix(in srgb, var(--text-color, #1f2937) 55%, transparent)",
+                    borderRadius: "0",
+                    background:
+                      "color-mix(in srgb, var(--text-color, #1f2937) 6%, transparent)",
                   }),
                 );
           styleElement(el, {
@@ -650,6 +784,29 @@ export const createChart = (
             top: `${mark.y}px`,
             width: `${mark.width}px`,
             height: `${mark.height}px`,
+          });
+          continue;
+        }
+        if (mark.kind === "cell") {
+          // the cell lifted above its neighbours, a ring inside its edge
+          const el = pooled(cells, cellCount++, () =>
+            styleElement(createBand(doc), {
+              boxShadow:
+                "0 8px 18px -6px rgba(15, 23, 42, 0.6), 0 0 0 1px rgba(15, 23, 42, 0.12)",
+              outlineStyle: "solid",
+              outlineWidth: "1.5px",
+              outlineOffset: "-4px",
+              transform: "scale(1.12)",
+            }),
+          );
+          styleElement(el, {
+            left: `${mark.x}px`,
+            top: `${mark.y}px`,
+            width: `${mark.width}px`,
+            height: `${mark.height}px`,
+            background: mark.color,
+            borderRadius: `${Math.max(mark.radius, 2)}px`,
+            outlineColor: mark.ring,
           });
           continue;
         }
@@ -670,6 +827,22 @@ export const createChart = (
       bands[i].style.display = "none";
     for (let i = cellCount; i < cells.length; i++)
       cells[i].style.display = "none";
+    for (let i = guideCount; i < guides.length; i++)
+      guides[i].style.display = "none";
+  }
+
+  /** Marks the hovered heatmap value on the color legend */
+  function renderLegendCaret() {
+    const caret = legendCaret;
+    if (!caret) return;
+    const it = hover?.event.items[0];
+    const s = it ? model.series[it.seriesIndex] : undefined;
+    if (!it || !s || s.type !== "heatmap" || it.value === undefined) {
+      caret.style.display = "none";
+      return;
+    }
+    caret.style.display = "block";
+    caret.style.left = `${(heatPosition(s, it.value) * 100).toFixed(2)}%`;
   }
 
   // ---------------------------------------------------------- interaction
@@ -715,7 +888,9 @@ export const createChart = (
     const { plot } = sc;
     const cx = Math.max(plot.x, Math.min(plot.x + plot.width, x));
     const cy = Math.max(plot.y, Math.min(plot.y + plot.height, y));
-    return toData(sc, cx, cy);
+    const p = toData(sc, cx, cy);
+    // values of the axes (not logarithms)
+    return { x: p.x, y: fromPlotY(model, p.y) };
   };
 
   const moveGhost = (x: number, y: number, color: string | null) => {
@@ -1128,7 +1303,7 @@ export const createChart = (
     },
     toPixel(x, y) {
       if (!scales) return null;
-      const p = toScreen(scales, x, y);
+      const p = toScreen(scales, x, toPlotY(model, y));
       return {
         x: p.x + dom.stage.offsetLeft,
         y: p.y + dom.stage.offsetTop,
@@ -1136,7 +1311,12 @@ export const createChart = (
     },
     fromPixel(x, y) {
       if (!scales) return null;
-      return toData(scales, x - dom.stage.offsetLeft, y - dom.stage.offsetTop);
+      const p = toData(
+        scales,
+        x - dom.stage.offsetLeft,
+        y - dom.stage.offsetTop,
+      );
+      return { x: p.x, y: fromPlotY(model, p.y) };
     },
     ready,
     refreshTheme,

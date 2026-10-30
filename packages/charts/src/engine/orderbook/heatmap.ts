@@ -2,21 +2,18 @@
 // sampled every `interval` ms into a column of price rows; columns are
 // drawn by the GPU renderers of the chart engine as bar instances (one per
 // cell), in chunks of CHUNK columns uploaded once, so streaming costs one
-// small chunk per column. Trades are bubbles (scatter instances), the best
-// bid / ask are lines; axes, the book profile, the crosshair and the
+// small chunk per column, over a solid "floor" color (the coldest end of
+// the ramp). The best bid / ask step lines, the spread band, the trade
+// bubbles, the grid, the axes, the book profile, the crosshair and the
 // tooltip are drawn on a Canvas2D layer above.
 
-import { packColor, rampColor, toCss, luminance, type Rgba } from "../color";
+import { luminance, mixOklab, oklabRamp, toCss, type Rgba } from "../color";
 import { createRenderer } from "../renderers/detect";
 import {
   BAR_STRIDE,
-  GAP,
-  SCATTER_STRIDE,
   type BarItem,
   type ChartRenderer,
-  type LineItem,
   type RenderItem,
-  type ScatterItem,
 } from "../renderers/types";
 import { linearTicks } from "../scale";
 import { timeTicks } from "../time";
@@ -41,6 +38,13 @@ import {
 } from "./format";
 import { localeLabels, type LabelDictionary } from "../locale";
 import { createEmitter, createHost, localPoint, tooltipHtml } from "./host";
+import {
+  fitPriceRange,
+  fitTimeRange,
+  layoutAxisLabels,
+  niceCeil,
+  type AxisLabel,
+} from "./layout";
 import type {
   OrderBookDelta,
   OrderBookHeatmapEventMap,
@@ -58,25 +62,37 @@ const CHUNK = 32;
 /** Colors of the ramp lookup table */
 const LUT_SIZE = 128;
 
+/**
+ * Heat ramps after the floor color, interpolated in OKLab. Dark: lightness
+ * rises from deep blue through cyan and green to yellow, then the hottest
+ * walls turn orange / red (the Bookmap convention). Light: lightness falls
+ * from pale blue through blue and violet to crimson.
+ */
 const DARK_RAMP = [
-  "#0b2a4f",
-  "#12508f",
-  "#1c7fd0",
-  "#25b3d6",
-  "#4fd6a0",
-  "#e9e35a",
-  "#ffa23d",
-  "#ff5533",
+  "#0b2140",
+  "#0f3a70",
+  "#1259a3",
+  "#1585bd",
+  "#1fb3b0",
+  "#62cf73",
+  "#d9e04a",
+  "#ffb23a",
+  "#ff6a33",
 ];
 const LIGHT_RAMP = [
-  "#dbeafe",
-  "#93c5fd",
-  "#3b82f6",
-  "#4338ca",
-  "#9333ea",
-  "#db2777",
-  "#f97316",
+  "#dfecfb",
+  "#b3d2f5",
+  "#79abe8",
+  "#4580d6",
+  "#3b54b8",
+  "#5a33a0",
+  "#962a86",
+  "#cf2f55",
 ];
+/** Height of the price tags of the axis, in pixels */
+const TAG_HEIGHT = 16;
+/** Smallest distance between two trade bubbles' columns, in pixels */
+const BUBBLE_SPACING = 6;
 
 const LABELS: LabelDictionary<OrderBookHeatmapLabels> = {
   en: {
@@ -173,7 +189,10 @@ export const createOrderBookHeatmap = (
   const emitter = createEmitter<OrderBookHeatmapEventMap>();
   let fmt: Formatters = createFormatters(options, 2, 4);
   let colors = { up: [0, 0, 0, 1] as Rgba, down: [0, 0, 0, 1] as Rgba };
-  let lut = new Uint32Array(LUT_SIZE);
+  let lut: Uint32Array = new Uint32Array(LUT_SIZE);
+  /** Color under the cells (no liquidity) */
+  let floor: Rgba = [0, 0, 0, 1];
+  let dark = false;
 
   let tick = 0;
   let columns: Column[] = [];
@@ -189,6 +208,8 @@ export const createOrderBookHeatmap = (
 
   let scaleMax = 0;
   let bubbleRef = 0;
+  /** Size at the full width of the profile (eased) */
+  let profileMax = 0;
   const chunks = new Map<number, BarItem>();
   const dirtyChunks = new Set<number>();
   let itemVersion = 0;
@@ -209,10 +230,14 @@ export const createOrderBookHeatmap = (
   let windowSpan = NaN;
   let viewX: [number, number] = [0, 1];
   let viewY: [number, number] = [0, 1];
-  let yCenter = NaN;
+  /** `viewY` holds a fitted range (it eases toward `yTarget` afterwards) */
+  let viewYReady = false;
+  /** Price range the following view eases to */
+  let yTarget: [number, number] | null = null;
+  /** Price span chosen by the user (zoom), NaN for the auto fit */
   let ySpan = NaN;
-  /** The price range was zoomed by the user: no more auto fit */
-  let userSpan = false;
+  /** Monotonic clock of the view (no jitter back when data arrives) */
+  let shownTime = NaN;
   let lastFrame = 0;
   let plot = { x: 0, y: 0, w: 0, h: 0 };
   let hoverAt: [number, number] | null = null;
@@ -260,23 +285,40 @@ export const createOrderBookHeatmap = (
   function refreshColors() {
     const theme = host.theme;
     colors = sideColors(theme, options);
-    const resolve = (value: string) =>
-      theme.resolve ? theme.resolve(value, theme.primary) : theme.primary;
-    const dark = luminance(theme.background) < 0.4;
-    const stops: Rgba[] = [
-      theme.background,
-      ...(options.colors?.length
-        ? options.colors
-        : dark
-          ? DARK_RAMP
-          : LIGHT_RAMP
-      ).map(resolve),
+    const resolve = (value: string) => {
+      const c = theme.resolve
+        ? theme.resolve(value, theme.primary)
+        : theme.primary;
+      return [c[0], c[1], c[2], 1] as Rgba;
+    };
+    const background: Rgba = [
+      theme.background[0],
+      theme.background[1],
+      theme.background[2],
+      1,
     ];
-    lut = new Uint32Array(LUT_SIZE);
-    for (let i = 0; i < LUT_SIZE; i++) {
-      const c = rampColor(stops, i / (LUT_SIZE - 1));
-      lut[i] = packColor([c[0], c[1], c[2], 1]);
-    }
+    dark = theme.background[3] > 0 ? luminance(background) < 0.4 : false;
+    // the floor: a shade darker than the surface in dark themes (the cold
+    // end of the ramp stays visible on it), the surface in light ones
+    floor = dark
+      ? mixOklab(background, [0, 0, 0, 1], 0.4)
+      : mixOklab(
+          background,
+          [theme.text[0], theme.text[1], theme.text[2], 1],
+          0.02,
+        );
+    lut = oklabRamp(
+      [
+        floor,
+        ...(options.colors?.length
+          ? options.colors
+          : dark
+            ? DARK_RAMP
+            : LIGHT_RAMP
+        ).map(resolve),
+      ],
+      LUT_SIZE,
+    );
   }
 
   const refreshFormat = () => {
@@ -305,6 +347,7 @@ export const createOrderBookHeatmap = (
     origin = { x: NaN, y: NaN };
     scaleMax = 0;
     bubbleRef = 0;
+    shownTime = NaN;
     open.buyVolume = open.buyNotional = open.sellVolume = open.sellNotional = 0;
   };
 
@@ -567,95 +610,270 @@ export const createOrderBookHeatmap = (
     return out;
   };
 
-  const bubblesItem = (visible: readonly Column[]): ScatterItem | null => {
-    if (options.bubbles === false) return null;
+  /** Trade volumes of a group of columns */
+  interface Bubble {
+    time: number;
+    price: number;
+    volume: number;
+    buy: boolean;
+  }
+  type Flow = Pick<
+    Column,
+    "buyVolume" | "buyNotional" | "sellVolume" | "sellNotional"
+  >;
+
+  /**
+   * Trades of the visible columns as bubbles: columns are grouped (by their
+   * sequence, so groups stay put while the view scrolls) until a group is
+   * BUBBLE_SPACING px wide; one bubble per side at the average price
+   */
+  const tradeBubbles = (
+    visible: readonly Column[],
+    columnPx: number,
+  ): Bubble[] => {
     const step = interval();
-    const all: [number, number, number, boolean][] = [];
-    const push = (
-      time: number,
-      volume: number,
-      notional: number,
-      buy: boolean,
-    ) => {
-      if (volume > 0)
-        all.push([time + step / 2, notional / volume, volume, buy]);
+    const k = Math.max(1, Math.ceil(BUBBLE_SPACING / Math.max(1e-6, columnPx)));
+    const out: Bubble[] = [];
+    let group = NaN;
+    let t0 = 0;
+    let t1 = 0;
+    const sum = { bv: 0, bn: 0, sv: 0, sn: 0 };
+    const flush = () => {
+      const time = (t0 + t1) / 2;
+      if (sum.sv > 0)
+        out.push({ time, price: sum.sn / sum.sv, volume: sum.sv, buy: false });
+      if (sum.bv > 0)
+        out.push({ time, price: sum.bn / sum.bv, volume: sum.bv, buy: true });
+      sum.bv = sum.bn = sum.sv = sum.sn = 0;
     };
-    for (const c of visible) {
-      push(c.time, c.sellVolume, c.sellNotional, false);
-      push(c.time, c.buyVolume, c.buyNotional, true);
+    const add = (id: number, start: number, flow: Flow) => {
+      const g = Math.floor(id / k);
+      if (g !== group) {
+        if (Number.isFinite(group)) flush();
+        group = g;
+        t0 = start;
+      }
+      t1 = start + step;
+      sum.bv += flow.buyVolume;
+      sum.bn += flow.buyNotional;
+      sum.sv += flow.sellVolume;
+      sum.sn += flow.sellNotional;
+    };
+    for (const c of visible) add(c.seq, c.time, c);
+    if (Number.isFinite(openStart) && openStart <= viewX[1])
+      add(seq, openStart, open);
+    if (Number.isFinite(group)) flush();
+    return out;
+  };
+
+  const clipPlot = (ctx: CanvasRenderingContext2D) => {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(plot.x, plot.y, plot.w, plot.h);
+    ctx.clip();
+  };
+
+  /** Best bid / ask step lines and the translucent spread band between them */
+  const drawBest = (
+    ctx: CanvasRenderingContext2D,
+    visible: readonly Column[],
+    xOf: (t: number) => number,
+    yOf: (p: number) => number,
+    columnPx: number,
+  ) => {
+    if (options.bestLines === false) return;
+    const step = interval();
+    const rows: [number, number, number][] = visible.map((c) => [
+      c.time,
+      c.bestBid,
+      c.bestAsk,
+    ]);
+    if (Number.isFinite(openStart))
+      rows.push([openStart, store.bestBid(), store.bestAsk()]);
+    if (!rows.length) return;
+    // wide columns: steps; narrow ones: a line through the column centers
+    const steps = columnPx >= 2;
+    clipPlot(ctx);
+    ctx.beginPath();
+    for (const [t, bid, ask] of rows) {
+      if (!Number.isFinite(bid) || !Number.isFinite(ask) || !(ask > bid))
+        continue;
+      const xa = xOf(t);
+      const ya = yOf(ask);
+      ctx.rect(xa, ya, xOf(t + step) - xa, yOf(bid) - ya);
     }
-    if (Number.isFinite(openStart)) {
-      push(openStart, open.sellVolume, open.sellNotional, false);
-      push(openStart, open.buyVolume, open.buyNotional, true);
+    ctx.fillStyle = toCss(host.theme.text, dark ? 0.07 : 0.06);
+    ctx.fill();
+    ctx.lineJoin = "round";
+    for (const [index, color] of [
+      [1, colors.up],
+      [2, colors.down],
+    ] as const) {
+      ctx.beginPath();
+      let pen = false;
+      for (const row of rows) {
+        const price = row[index];
+        if (!Number.isFinite(price)) {
+          pen = false;
+          continue;
+        }
+        const y = yOf(price);
+        const xa = xOf(row[0]);
+        const xb = xOf(row[0] + step);
+        if (steps) {
+          if (pen) ctx.lineTo(xa, y);
+          else ctx.moveTo(xa, y);
+          ctx.lineTo(xb, y);
+        } else if (pen) ctx.lineTo((xa + xb) / 2, y);
+        else ctx.moveTo((xa + xb) / 2, y);
+        pen = true;
+      }
+      // a dark halo keeps the line readable on hot cells
+      ctx.strokeStyle = toCss(floor, 0.55);
+      ctx.lineWidth = 3.5;
+      ctx.stroke();
+      ctx.strokeStyle = toCss(color);
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
     }
-    if (!all.length) return null;
+    ctx.restore();
+  };
+
+  /** Trade bubbles, area ∝ volume, the largest with their volume */
+  const drawBubbles = (
+    ctx: CanvasRenderingContext2D,
+    bubbles: Bubble[],
+    xOf: (t: number) => number,
+    yOf: (p: number) => number,
+    fontSize: number,
+  ) => {
+    if (!bubbles.length) return;
     let max = 0;
-    for (const b of all) max = Math.max(max, b[2]);
+    for (const b of bubbles) max = Math.max(max, b.volume);
     bubbleRef = bubbleRef > 0 ? Math.max(max, bubbleRef * 0.995) : max;
     const ref = options.bubbleVolume ?? bubbleRef;
     const maxD = Math.max(4, options.bubbleSize ?? 28);
-    const buffer = new ArrayBuffer(all.length * SCATTER_STRIDE);
-    const f = new Float32Array(buffer);
-    const u = new Uint32Array(buffer);
-    const up = packColor([colors.up[0], colors.up[1], colors.up[2], 0.78]);
-    const down = packColor([
-      colors.down[0],
-      colors.down[1],
-      colors.down[2],
-      0.78,
-    ]);
-    all.forEach(([x, price, volume, buy], i) => {
-      f[i * 4] = x - origin.x;
-      f[i * 4 + 1] = price - origin.y;
-      f[i * 4 + 2] = clamp(Math.sqrt(volume / ref) * maxD, 3, maxD);
-      u[i * 4 + 3] = buy ? up : down;
-    });
-    return {
-      kind: "scatter",
-      key: "trades",
-      version: ++itemVersion,
-      color: colors.up,
-      instances: buffer,
-      count: all.length,
-      opacity: 1,
-      stroke: 1.25,
-    };
+    const sized = bubbles
+      .map((b) => ({
+        ...b,
+        d: clamp(Math.sqrt(b.volume / ref) * maxD, 3, maxD),
+      }))
+      .sort((a, b) => a.d - b.d);
+    clipPlot(ctx);
+    ctx.lineWidth = 1.25;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = fontOf(host.theme, options, 600, Math.max(8, fontSize - 1));
+    for (const b of sized) {
+      const x = xOf(b.time);
+      const y = yOf(b.price);
+      const r = b.d / 2;
+      if (x < plot.x - r || x > plot.x + plot.w + r) continue;
+      if (y < plot.y - r || y > plot.y + plot.h + r) continue;
+      const color = b.buy ? colors.up : colors.down;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fillStyle = toCss(color, 0.62);
+      ctx.fill();
+      ctx.strokeStyle = toCss(mixOklab(color, [1, 1, 1, 1], 0.25));
+      ctx.stroke();
+      if (b.d >= 26) {
+        const text = fmt.compact(b.volume);
+        if (ctx.measureText(text).width <= b.d - 6) {
+          ctx.fillStyle = "#fff";
+          ctx.fillText(text, x, y + 0.5);
+        }
+      }
+    }
+    ctx.restore();
   };
 
-  const lineItems = (visible: readonly Column[]): LineItem[] => {
-    if (options.bestLines === false) return [];
-    const step = interval();
-    const build = (key: string, pick: (c: Column) => number, color: Rgba) => {
-      const n = visible.length + (Number.isFinite(openStart) ? 1 : 0);
-      const points = new Float32Array(n * 4);
-      const write = (i: number, time: number, price: number) => {
-        const y = Number.isFinite(price) ? price - origin.y : GAP;
-        points[i * 4] = time - origin.x;
-        points[i * 4 + 1] = y;
-        points[i * 4 + 2] = time + step - origin.x;
-        points[i * 4 + 3] = y;
-      };
-      visible.forEach((c, i) => write(i, c.time, pick(c)));
-      if (Number.isFinite(openStart)) {
-        const price = key === "bid" ? store.bestBid() : store.bestAsk();
-        write(visible.length, openStart, price);
+  /** The current book as horizontal bars right of the plot, with a size scale */
+  const drawProfile = (
+    ctx: CanvasRenderingContext2D,
+    px: number,
+    profileW: number,
+    yOf: (p: number) => number,
+    fontSize: number,
+  ) => {
+    const theme = host.theme;
+    const [y0, y1] = viewY;
+    const rowPx = Math.max(1, (tick / (y1 - y0)) * plot.h);
+    let maxSize = 0;
+    const sides = (["bid", "ask"] as const).map((side) => {
+      const levels = store.levels(side, { step: tick, limit: depth() });
+      for (let i = 0; i < levels.count; i++) {
+        const p = levels.price[i]!;
+        if (p >= y0 && p <= y1) maxSize = Math.max(maxSize, levels.size[i]!);
       }
-      const item: LineItem = {
-        kind: "line",
-        key: `best:${key}`,
-        version: ++itemVersion,
-        color,
-        points,
-        count: n * 2,
-        width: 1.5,
-        sorted: true,
-      };
-      return item;
-    };
-    return [
-      build("bid", (c) => c.bestBid, colors.up),
-      build("ask", (c) => c.bestAsk, colors.down),
-    ];
+      return { side, ...levels };
+    });
+    // a nice scale, changed only on a clear change (no jumping bars)
+    if (
+      maxSize > profileMax ||
+      maxSize < profileMax * 0.35 ||
+      !(profileMax > 0)
+    )
+      profileMax = niceCeil(maxSize);
+    if (!(profileMax > 0)) return;
+    const left = px + 3;
+    const inner = profileW - 9;
+    // guides at half and full scale
+    ctx.strokeStyle = toCss(theme.text, 0.09);
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 3]);
+    ctx.beginPath();
+    for (const f of [0.5, 1]) {
+      const x = Math.round(left + inner * f) + 0.5;
+      ctx.moveTo(x, plot.y);
+      ctx.lineTo(x, plot.y + plot.h);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+    const gap = rowPx > 3 ? 1 : 0;
+    const height = Math.max(1, rowPx - gap);
+    for (const { side, price, size, count } of sides) {
+      const color = side === "bid" ? colors.up : colors.down;
+      ctx.beginPath();
+      for (let i = 1; i < count; i++) {
+        const p = price[i]!;
+        if (p < y0 || p > y1) continue;
+        const w = Math.max(1, Math.min(inner, (size[i]! / profileMax) * inner));
+        ctx.rect(left, yOf(p) - rowPx / 2 + gap / 2, w, height);
+      }
+      ctx.fillStyle = toCss(color, 0.55);
+      ctx.fill();
+      // the best level, solid
+      const best = price[0];
+      if (count && best !== undefined && best >= y0 && best <= y1) {
+        const w = Math.max(1, Math.min(inner, (size[0]! / profileMax) * inner));
+        ctx.fillStyle = toCss(color, 0.95);
+        ctx.fillRect(left, yOf(best) - rowPx / 2 + gap / 2, w, height);
+      }
+    }
+    // size scale below the panel
+    const y = Math.round(plot.y + plot.h + 4) + 0.5;
+    ctx.strokeStyle = toCss(theme.textMuted, 0.7);
+    ctx.beginPath();
+    ctx.moveTo(left, y);
+    ctx.lineTo(left + inner, y);
+    for (const f of [0, 0.5, 1]) {
+      const x = Math.round(left + inner * f) + 0.5;
+      ctx.moveTo(x, y);
+      ctx.lineTo(x, y + 3);
+    }
+    ctx.stroke();
+    ctx.font = fontOf(theme, options, 400, Math.max(8, fontSize - 1));
+    ctx.fillStyle = toCss(theme.textMuted);
+    ctx.textBaseline = "top";
+    const text = fmt.compact(profileMax);
+    const tw = ctx.measureText(text).width;
+    ctx.textAlign = "right";
+    ctx.fillText(text, left + inner + 2, y + 4);
+    if (tw + ctx.measureText("0").width + 8 < inner) {
+      ctx.textAlign = "left";
+      ctx.fillText("0", left - 1, y + 4);
+    }
   };
 
   const headCells = (): BarItem | null => {
@@ -668,6 +886,77 @@ export const createOrderBookHeatmap = (
     return headItem;
   };
 
+  /** Hovered cell: pointer, time, price row */
+  interface HoverCell {
+    hx: number;
+    hy: number;
+    /** Time under the pointer */
+    time: number;
+    /** Start of the hovered column (NaN outside the data) */
+    start: number;
+    column: Column | null;
+    bin: number;
+    rowPrice: number;
+  }
+
+  const hoverCell = (): HoverCell | null => {
+    if (!hoverAt || options.tooltip === false || !(tick > 0) || drag)
+      return null;
+    if (!viewYReady) return null;
+    const [hx, hy] = hoverAt;
+    if (
+      hx < plot.x ||
+      hx > plot.x + plot.w ||
+      hy < plot.y ||
+      hy > plot.y + plot.h
+    )
+      return null;
+    const [x0, x1] = viewX;
+    const [y0, y1] = viewY;
+    const time = x0 + ((hx - plot.x) / plot.w) * (x1 - x0);
+    const price = y0 + ((plot.y + plot.h - hy) / plot.h) * (y1 - y0);
+    const bin = Math.round(price / tick);
+    const rowPrice = +(bin * tick).toFixed(Math.min(12, decimalsOf(tick) + 2));
+    const column = columnAt(time);
+    const start = column
+      ? column.time
+      : Number.isFinite(openStart) && time >= openStart
+        ? openStart
+        : NaN;
+    return { hx, hy, time, start, column, bin, rowPrice };
+  };
+
+  /** Price / time tag: filled (best bid / ask, hover) or outlined (last trade) */
+  const drawTag = (
+    ctx: CanvasRenderingContext2D,
+    text: string,
+    x: number,
+    y: number,
+    maxWidth: number,
+    color: Rgba,
+    filled: boolean,
+    align: "left" | "center" = "left",
+  ) => {
+    const w = Math.min(ctx.measureText(text).width + 10, maxWidth);
+    const left = align === "center" ? x - w / 2 : x;
+    ctx.fillStyle = filled ? toCss(color) : toCss(floor);
+    roundRect(ctx, left, y - TAG_HEIGHT / 2, w, TAG_HEIGHT, 3);
+    ctx.fill();
+    if (!filled) {
+      ctx.strokeStyle = toCss(color);
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+    ctx.fillStyle = filled
+      ? luminance(color) > 0.6
+        ? "#111"
+        : "#fff"
+      : toCss(color);
+    ctx.textAlign = align;
+    ctx.textBaseline = "middle";
+    ctx.fillText(text, align === "center" ? x : left + 5, y + 0.5);
+  };
+
   // ---------------------------------------------------------------- draw
 
   function draw(now: number): boolean {
@@ -678,22 +967,32 @@ export const createOrderBookHeatmap = (
     lastFrame = now;
     const l = labels();
     const fontSize = options.fontSize ?? (width < 420 ? 10 : 11);
+    const regular = fontOf(theme, options, 400, fontSize);
+    const bold = fontOf(theme, options, 600, fontSize);
     const step = interval();
     const live = !Number.isFinite(dataTime);
     if (live && store.count("bid") + store.count("ask") > 0)
       advance(Date.now());
-    const time = nowTime();
+    // a monotonic clock: the view never jumps back when data arrives late
+    const clock = nowTime();
+    shownTime =
+      Number.isFinite(shownTime) && clock > shownTime - step * 4
+        ? Math.max(shownTime, clock)
+        : clock;
+    const time = shownTime;
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, width, height);
-    ctx.font = fontOf(theme, options, 400, fontSize);
 
     // layout
+    ensureTick();
     const mid = store.mid();
+    ctx.font = bold;
     const sample = fmt.price(Number.isFinite(mid) ? mid * 1.0001 : 0);
-    const axisW = Math.ceil(ctx.measureText(sample).width) + 16;
+    const axisW = Math.ceil(ctx.measureText(sample).width) + 18;
+    ctx.font = regular;
     const profileW =
-      options.profile === false ? 0 : Math.round(clamp(width * 0.1, 36, 84));
+      options.profile === false ? 0 : Math.round(clamp(width * 0.11, 44, 96));
     const timeH = fontSize + 12;
     plot = {
       x: 0,
@@ -701,52 +1000,62 @@ export const createOrderBookHeatmap = (
       w: Math.max(10, width - axisW - profileW),
       h: Math.max(10, height - timeH),
     };
+    const px = plot.x + plot.w;
+    const right = px + profileW;
 
-    // view
+    // view: the following view fits the data (history fills the plot from
+    // the left) and keeps the price range while the market stays inside it
     if (!Number.isFinite(windowSpan))
       windowSpan = Math.max(step * 10, options.window ?? 60_000);
-    if (!Number.isFinite(ySpan) || ySpan <= 0) {
-      ensureTick();
-      ySpan = options.priceSpan ?? (tick > 0 ? tick * 60 : NaN);
-    }
     if (follow) {
-      const right = time + step * 1.5;
-      viewX = [right - windowSpan, right];
-      // fit the prices traded in the window (best bid / ask), with room
+      const first = columns.length ? columns[0]!.time : openStart;
+      // the view ends at the live time: the open column (the live book) is
+      // cut by the right edge, so no gap opens while it is being sampled
+      viewX = fitTimeRange(
+        first,
+        time,
+        windowSpan,
+        Math.min(windowSpan, step * 60),
+      );
       let lo = store.bestBid();
       let hi = store.bestAsk();
+      for (const c of visibleColumns()) {
+        if (Number.isFinite(c.bestBid) && !(c.bestBid >= lo)) lo = c.bestBid;
+        if (Number.isFinite(c.bestAsk) && !(c.bestAsk <= hi)) hi = c.bestAsk;
+      }
       if (!Number.isFinite(lo)) lo = hi;
       if (!Number.isFinite(hi)) hi = lo;
-      for (const c of visibleColumns()) {
-        if (c.bestBid < lo) lo = c.bestBid;
-        if (c.bestAsk > hi) hi = c.bestAsk;
-      }
-      if (Number.isFinite(lo) && Number.isFinite(hi)) {
-        const k = Number.isFinite(yCenter) ? ease(dt, 260) : 1;
-        const center = (lo + hi) / 2;
-        yCenter = Number.isFinite(yCenter)
-          ? yCenter + (center - yCenter) * k
-          : center;
-        if (!userSpan && options.priceSpan === undefined && tick > 0) {
-          const target = Math.max(tick * 60, (hi - lo) * 1.5);
-          ySpan += (target - ySpan) * k;
+      const minSpan = tick > 0 ? tick * Math.max(40, plot.h / 6) : 0;
+      const fixed =
+        options.priceSpan ?? (Number.isFinite(ySpan) ? ySpan : undefined);
+      if (minSpan > 0 || fixed !== undefined) {
+        yTarget = fitPriceRange(yTarget, lo, hi, minSpan, fixed);
+        const [t0, t1] = yTarget;
+        if (Number.isFinite(t0) && Number.isFinite(t1)) {
+          if (!viewYReady) {
+            viewY = [t0, t1];
+            viewYReady = true;
+          } else {
+            const k = ease(dt, 280);
+            viewY = [
+              viewY[0] + (t0 - viewY[0]) * k,
+              viewY[1] + (t1 - viewY[1]) * k,
+            ];
+          }
         }
-      } else if (Number.isFinite(mid)) {
-        yCenter = Number.isFinite(yCenter)
-          ? yCenter + (mid - yCenter) * ease(dt, 220)
-          : mid;
       }
-      if (Number.isFinite(yCenter) && Number.isFinite(ySpan))
-        viewY = [yCenter - ySpan / 2, yCenter + ySpan / 2];
     }
     const [x0, x1] = viewX;
     const [y0, y1] = viewY;
     const xOf = (t: number) => plot.x + ((t - x0) / (x1 - x0)) * plot.w;
     const yOf = (p: number) =>
       plot.y + plot.h - ((p - y0) / (y1 - y0)) * plot.h;
-
-    // data layer
+    const ready = viewYReady && tick > 0;
     const visible = visibleColumns();
+    const columnPx = (step / (x1 - x0)) * plot.w;
+
+    // data layer: the cells on the GPU, over the floor color
+    const floorCss = toCss(floor);
     if (renderer && tick > 0) {
       ensureOrigin();
       const canvas = renderer.canvas;
@@ -754,15 +1063,16 @@ export const createOrderBookHeatmap = (
       canvas.style.top = `${plot.y}px`;
       canvas.style.width = `${plot.w}px`;
       canvas.style.height = `${plot.h}px`;
+      if (canvas.dataset.floor !== floorCss) {
+        canvas.dataset.floor = floorCss;
+        canvas.style.background = floorCss;
+      }
       const bw = Math.max(1, Math.round(plot.w * dpr));
       const bh = Math.max(1, Math.round(plot.h * dpr));
       if (canvas.width !== bw || canvas.height !== bh) renderer.resize(bw, bh);
       const items: RenderItem[] = chunkItems();
       const head = headCells();
       if (head) items.push(head);
-      items.push(...lineItems(visible));
-      const bubbles = bubblesItem(visible);
-      if (bubbles) items.push(bubbles);
       const xScale = 2 / (x1 - x0);
       const yScale = 2 / (y1 - y0);
       renderer.render(items, {
@@ -776,14 +1086,27 @@ export const createOrderBookHeatmap = (
         height: bh,
         dpr,
       });
+    } else {
+      ctx.fillStyle = floorCss;
+      ctx.fillRect(plot.x, plot.y, plot.w, plot.h);
+    }
+    if (profileW) {
+      ctx.fillStyle = floorCss;
+      ctx.fillRect(px, plot.y, profileW, plot.h);
     }
 
-    // price grid and axis
-    const right = plot.x + plot.w + profileW;
-    const yTicks = Number.isFinite(y0)
+    // grid over the cells
+    const yTicks = ready
       ? linearTicks(y0, y1, Math.max(2, Math.floor(plot.h / 44)))
       : [];
-    ctx.strokeStyle = toCss(theme.text, 0.07);
+    const xt = timeTicks(
+      x0,
+      x1,
+      Math.max(2, Math.floor(plot.w / 75)),
+      undefined,
+      options.timeZone ?? "local",
+    );
+    ctx.strokeStyle = toCss(theme.text, dark ? 0.07 : 0.09);
     ctx.lineWidth = 1;
     ctx.beginPath();
     for (const p of yTicks) {
@@ -791,166 +1114,171 @@ export const createOrderBookHeatmap = (
       ctx.moveTo(plot.x, y);
       ctx.lineTo(right, y);
     }
+    for (const t of xt.values) {
+      const x = Math.round(xOf(t)) + 0.5;
+      if (x <= plot.x + 1 || x >= px - 1) continue;
+      ctx.moveTo(x, plot.y);
+      ctx.lineTo(x, plot.y + plot.h);
+    }
     ctx.stroke();
-    ctx.fillStyle = toCss(theme.textMuted);
-    ctx.textAlign = "left";
-    ctx.textBaseline = "middle";
-    for (const p of yTicks) {
-      const y = yOf(p);
-      if (y < 6 || y > plot.h - 6) continue;
-      ctx.fillText(fmt.price(p), right + 6, y);
+
+    // best bid / ask, trades, the current book
+    if (ready) {
+      drawBest(ctx, visible, xOf, yOf, columnPx);
+      if (options.bubbles !== false)
+        drawBubbles(ctx, tradeBubbles(visible, columnPx), xOf, yOf, fontSize);
+      if (profileW) drawProfile(ctx, px, profileW, yOf, fontSize);
     }
 
-    // time axis
-    const xt = timeTicks(x0, x1, Math.max(2, Math.floor(plot.w / 90)));
+    // frame
+    ctx.strokeStyle = toCss(theme.axis);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, Math.round(plot.y + plot.h) + 0.5);
+    ctx.lineTo(width, Math.round(plot.y + plot.h) + 0.5);
+    if (profileW) {
+      ctx.moveTo(Math.round(px) + 0.5, plot.y);
+      ctx.lineTo(Math.round(px) + 0.5, plot.y + plot.h);
+    }
+    ctx.moveTo(Math.round(right) + 0.5, plot.y);
+    ctx.lineTo(Math.round(right) + 0.5, plot.y + plot.h);
+    ctx.stroke();
+
+    const cell = ready ? hoverCell() : null;
+
+    // time axis (the hover time tag hides the ticks it covers)
+    ctx.font = regular;
+    const hoverTime = cell
+      ? formatClock(
+          Number.isFinite(cell.start) ? cell.start : cell.time,
+          step < 1000,
+          options.timeZone,
+        )
+      : "";
+    const hoverHalf = cell ? ctx.measureText(hoverTime).width / 2 + 8 : 0;
+    ctx.fillStyle = toCss(theme.textMuted);
     ctx.textAlign = "center";
     ctx.textBaseline = "top";
     for (const t of xt.values) {
       const x = xOf(t);
-      if (x < 20 || x > plot.x + plot.w - 20) continue;
-      ctx.fillText(xt.format(t), x, plot.y + plot.h + 6);
+      if (x < 20 || x > px - 20) continue;
+      const text = xt.format(t);
+      if (
+        cell &&
+        Math.abs(x - cell.hx) < hoverHalf + ctx.measureText(text).width / 2
+      )
+        continue;
+      ctx.fillText(text, x, plot.y + plot.h + 6);
     }
-    ctx.strokeStyle = toCss(theme.axis);
-    ctx.beginPath();
-    ctx.moveTo(0, Math.round(plot.y + plot.h) + 0.5);
-    ctx.lineTo(width, Math.round(plot.y + plot.h) + 0.5);
-    ctx.moveTo(Math.round(right) + 0.5, 0);
-    ctx.lineTo(Math.round(right) + 0.5, plot.y + plot.h);
-    ctx.stroke();
 
-    // current book profile
-    if (profileW && tick > 0 && Number.isFinite(y0)) {
-      const px = plot.x + plot.w;
-      ctx.fillStyle = toCss(theme.background, 0.85);
-      ctx.fillRect(px, plot.y, profileW, plot.h);
-      const rowPx = Math.max(1, (tick / (y1 - y0)) * plot.h);
-      let maxSize = 0;
-      const sides = (["bid", "ask"] as const).map((side) => {
-        const { price, size, count } = store.levels(side, {
-          step: tick,
-          limit: depth(),
-        });
-        for (let i = 0; i < count; i++) {
-          if (price[i]! >= y0 && price[i]! <= y1)
-            maxSize = Math.max(maxSize, size[i]!);
-        }
-        return { side, price, size, count };
+    // price axis: pinned tags (best ask / bid, last trade) win over the
+    // ticks, the hover tag over everything
+    const last = lastTrade;
+    const pins: { price: number; color: Rgba; filled: boolean }[] = [
+      { price: store.bestAsk(), color: colors.down, filled: true },
+      { price: store.bestBid(), color: colors.up, filled: true },
+    ];
+    if (
+      last &&
+      last.price !== store.bestBid() &&
+      last.price !== store.bestAsk()
+    )
+      pins.push({
+        price: last.price,
+        color: last.side === "buy" ? colors.up : colors.down,
+        filled: false,
       });
-      for (const { side, price, size, count } of sides) {
-        ctx.fillStyle = toCss(side === "bid" ? colors.up : colors.down, 0.6);
-        for (let i = 0; i < count; i++) {
-          const p = price[i]!;
-          if (p < y0 || p > y1 || maxSize <= 0) continue;
-          const w = (size[i]! / maxSize) * (profileW - 4);
-          const y = yOf(p) - rowPx / 2;
-          ctx.fillRect(
-            px + 2,
-            y + (rowPx > 3 ? 0.5 : 0),
-            w,
-            Math.max(1, rowPx - (rowPx > 3 ? 1 : 0)),
-          );
-        }
-      }
-    }
-
-    // price tags: best bid / ask and the last trade
-    const tag = (price: number, color: Rgba, filled: boolean) => {
-      if (!Number.isFinite(price) || price < y0 || price > y1) return;
-      const y = clamp(yOf(price), 8, plot.h - 8);
-      const text = fmt.price(price);
-      ctx.font = fontOf(theme, options, 600, fontSize);
-      const w = ctx.measureText(text).width + 10;
-      ctx.fillStyle = filled ? toCss(color) : toCss(theme.background);
-      roundRect(ctx, right + 1, y - 8, Math.min(w, width - right - 2), 16, 3);
-      ctx.fill();
-      if (!filled) {
-        ctx.strokeStyle = toCss(color);
+    const shownPins = ready
+      ? pins.filter(
+          (p) => Number.isFinite(p.price) && p.price >= y0 && p.price <= y1,
+        )
+      : [];
+    const hoverY = cell ? Math.round(yOf(cell.rowPrice)) + 0.5 : NaN;
+    const layout = layoutAxisLabels(
+      shownPins.map((p): AxisLabel => ({ y: yOf(p.price), h: TAG_HEIGHT })),
+      cell ? { y: hoverY, h: TAG_HEIGHT } : null,
+      yTicks.map(yOf),
+      fontSize + 2,
+      [plot.y, plot.y + plot.h],
+    );
+    ctx.fillStyle = toCss(theme.textMuted);
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    yTicks.forEach((p, i) => {
+      if (layout.ticks[i]) ctx.fillText(fmt.price(p), right + 6, yOf(p));
+    });
+    ctx.font = bold;
+    shownPins.forEach((pin, i) => {
+      const y = layout.pinned[i];
+      if (y === null || y === undefined) return;
+      const at = yOf(pin.price);
+      if (Math.abs(y - at) > 1) {
+        // a moved tag points at its price
+        ctx.strokeStyle = toCss(pin.color);
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(right - 4, at);
+        ctx.lineTo(right + 1, y);
         ctx.stroke();
       }
-      ctx.fillStyle = filled ? "#fff" : toCss(color);
-      ctx.textAlign = "left";
-      ctx.textBaseline = "middle";
-      ctx.fillText(text, right + 6, y + 0.5);
-      ctx.font = fontOf(theme, options, 400, fontSize);
-    };
-    tag(store.bestBid(), colors.up, true);
-    tag(store.bestAsk(), colors.down, true);
-    // the last trade only when it does not cover the best bid / ask tags
-    const clear = (price: number) =>
-      !Number.isFinite(price) ||
-      Math.abs(yOf(price) - yOf(lastTrade?.price ?? NaN)) >= 17;
-    if (lastTrade && clear(store.bestBid()) && clear(store.bestAsk()))
-      tag(
-        lastTrade.price,
-        lastTrade.side === "buy" ? colors.up : colors.down,
-        false,
+      drawTag(
+        ctx,
+        fmt.price(pin.price),
+        right + 1,
+        y,
+        width - right - 2,
+        pin.color,
+        pin.filled,
       );
+    });
 
-    // crosshair and tooltip
-    drawHover(ctx, xOf, yOf, fontSize, right, l);
+    // crosshair, hover tags and tooltip
+    drawHover(ctx, xOf, yOf, right, l, cell, hoverY, hoverTime);
+    ctx.font = regular;
 
-    if (!renderer && !host.root.dataset.renderer) {
-      // no backend yet: nothing else to draw
-    }
     host.describe(
       `${options.ariaLabel ?? l.name}. ${l.bid} ${fmt.price(store.bestBid())}, ${l.ask} ${fmt.price(store.bestAsk())}.`,
     );
     // keep scrolling while following a live market
     const fresh = live || perfNow() - dataWall < 2000;
-    return follow && fresh && Number.isFinite(openStart);
+    return (
+      (follow && fresh && Number.isFinite(openStart)) ||
+      (viewYReady && yTarget !== null && Math.abs(viewY[0] - yTarget[0]) > 1e-9)
+    );
   }
 
   function drawHover(
     ctx: CanvasRenderingContext2D,
     xOf: (t: number) => number,
     yOf: (p: number) => number,
-    fontSize: number,
     right: number,
     l: OrderBookHeatmapLabels,
+    cell: HoverCell | null,
+    ry: number,
+    timeText: string,
   ) {
     const { theme } = host;
-    const hide = () => {
+    if (!cell) {
       host.tooltip.style.display = "none";
       if (hoverKey) {
         hoverKey = "";
         emitter.emit("hover", null);
       }
-    };
-    if (!hoverAt || options.tooltip === false || !(tick > 0) || drag) {
-      hide();
       return;
     }
-    const [hx, hy] = hoverAt;
-    if (
-      hx < plot.x ||
-      hx > plot.x + plot.w ||
-      hy < plot.y ||
-      hy > plot.y + plot.h
-    ) {
-      hide();
-      return;
-    }
-    const [x0, x1] = viewX;
-    const [y0, y1] = viewY;
-    const time = x0 + ((hx - plot.x) / plot.w) * (x1 - x0);
-    const price = y0 + ((plot.y + plot.h - hy) / plot.h) * (y1 - y0);
-    const bin = Math.round(price / tick);
-    const rowPrice = +(bin * tick).toFixed(Math.min(12, decimalsOf(tick) + 2));
-    const column = columnAt(time);
+    const { hx, hy, time, start, column, bin, rowPrice } = cell;
     const step = interval();
     let size = 0;
     let bestBid = NaN;
     let bestAsk = NaN;
     let buyVolume = 0;
     let sellVolume = 0;
-    let start = NaN;
     if (column) {
       for (let i = 0; i < column.bins.length; i++) {
         if (column.bins[i] === bin) size += column.sizes[i]!;
       }
       ({ bestBid, bestAsk, buyVolume, sellVolume } = column);
-      start = column.time;
-    } else if (Number.isFinite(openStart) && time >= openStart) {
+    } else if (Number.isFinite(start)) {
       const levels = (["bid", "ask"] as const).map((side) =>
         store.levels(side, { step: tick, limit: depth() }),
       );
@@ -963,18 +1291,17 @@ export const createOrderBookHeatmap = (
       bestAsk = store.bestAsk();
       buyVolume = open.buyVolume;
       sellVolume = open.sellVolume;
-      start = openStart;
     }
     const side: OrderBookSide | null =
       rowPrice <= bestBid ? "bid" : rowPrice >= bestAsk ? "ask" : null;
 
     // crosshair
-    ctx.strokeStyle = toCss(theme.text, 0.45);
+    ctx.strokeStyle = toCss(theme.text, 0.5);
+    ctx.lineWidth = 1;
     ctx.setLineDash([3, 3]);
     ctx.beginPath();
     ctx.moveTo(Math.round(hx) + 0.5, plot.y);
     ctx.lineTo(Math.round(hx) + 0.5, plot.y + plot.h);
-    const ry = Math.round(yOf(rowPrice)) + 0.5;
     ctx.moveTo(plot.x, ry);
     ctx.lineTo(right, ry);
     ctx.stroke();
@@ -988,21 +1315,32 @@ export const createOrderBookHeatmap = (
       ctx.strokeStyle = toCss(theme.text, 0.85);
       ctx.strokeRect(cx0, cy0, Math.max(2, cx1 - cx0), Math.max(2, cy1 - cy0));
     }
-    // price label on the axis
-    ctx.font = fontOf(theme, options, 600, fontSize);
-    const text = fmt.price(rowPrice);
-    const w = Math.min(
-      ctx.measureText(text).width + 10,
-      host.width - right - 2,
+    // price and time tags
+    ctx.font = fontOf(
+      theme,
+      options,
+      600,
+      options.fontSize ?? (host.width < 420 ? 10 : 11),
     );
-    ctx.fillStyle = toCss(theme.text);
-    roundRect(ctx, right + 1, ry - 8, w, 16, 3);
-    ctx.fill();
-    ctx.fillStyle = toCss(theme.background);
-    ctx.textAlign = "left";
-    ctx.textBaseline = "middle";
-    ctx.fillText(text, right + 6, ry + 0.5);
-    ctx.font = fontOf(theme, options, 400, fontSize);
+    drawTag(
+      ctx,
+      fmt.price(rowPrice),
+      right + 1,
+      ry,
+      host.width - right - 2,
+      theme.text,
+      true,
+    );
+    drawTag(
+      ctx,
+      timeText,
+      clamp(hx, plot.x + 40, plot.x + plot.w - 40),
+      plot.y + plot.h + TAG_HEIGHT / 2 + 2,
+      plot.w,
+      theme.text,
+      true,
+      "center",
+    );
 
     const sideColor =
       side === "bid" ? colors.up : side === "ask" ? colors.down : theme.text;
@@ -1010,7 +1348,11 @@ export const createOrderBookHeatmap = (
       doc,
       host.tooltip,
       {
-        text: Number.isFinite(start) ? formatClock(start) : formatClock(time),
+        text: formatClock(
+          Number.isFinite(start) ? start : time,
+          true,
+          options.timeZone,
+        ),
         color: undefined,
       },
       [
@@ -1096,6 +1438,17 @@ export const createOrderBookHeatmap = (
     emitter.emit("follow", value);
   };
 
+  /** Keeps a panned time range near the data (half a view of margin) */
+  const clampTime = (range: [number, number]): [number, number] => {
+    const first = columns.length ? columns[0]!.time : openStart;
+    if (!Number.isFinite(first)) return range;
+    const span = range[1] - range[0];
+    const latest = Number.isFinite(shownTime) ? shownTime : nowTime();
+    const max = latest + interval() + span / 2;
+    const start = Math.max(first - span / 2, Math.min(range[0], max - span));
+    return [start, start + span];
+  };
+
   const onPointerDown = (event: PointerEvent) => {
     if (options.interactive === false) return;
     const [x, y] = localPoint(root, event);
@@ -1120,14 +1473,13 @@ export const createOrderBookHeatmap = (
         const span = drag.span * Math.exp(dy * 0.006);
         const c = (drag.viewY[0] + drag.viewY[1]) / 2;
         ySpan = span;
-        userSpan = true;
         viewY = [c - span / 2, c + span / 2];
-        if (follow) yCenter = c;
+        yTarget = [viewY[0], viewY[1]];
       } else if (Math.abs(dx) + Math.abs(dy) > 3) {
         setFollow(false);
         const tx = ((drag.viewX[1] - drag.viewX[0]) / plot.w) * dx;
         const ty = ((drag.viewY[1] - drag.viewY[0]) / plot.h) * dy;
-        viewX = [drag.viewX[0] - tx, drag.viewX[1] - tx];
+        viewX = clampTime([drag.viewX[0] - tx, drag.viewX[1] - tx]);
         viewY = [drag.viewY[0] + ty, drag.viewY[1] + ty];
       }
     }
@@ -1145,12 +1497,16 @@ export const createOrderBookHeatmap = (
   };
   const zoomTime = (factor: number, anchorX: number) => {
     const [a, b] = viewX;
-    const span = clamp((b - a) * factor, interval() * 10, history());
+    const span = clamp(
+      (follow ? windowSpan : b - a) * factor,
+      interval() * 10,
+      history(),
+    );
     windowSpan = span;
     if (!follow) {
       const t = a + ((anchorX - plot.x) / plot.w) * (b - a);
       const r = (t - a) / (b - a);
-      viewX = [t - span * r, t + span * (1 - r)];
+      viewX = clampTime([t - span * r, t + span * (1 - r)]);
     }
     host.invalidate();
   };
@@ -1162,8 +1518,8 @@ export const createOrderBookHeatmap = (
     );
     const c = (viewY[0] + viewY[1]) / 2;
     ySpan = span;
-    userSpan = true;
     viewY = [c - span / 2, c + span / 2];
+    yTarget = [viewY[0], viewY[1]];
     host.invalidate();
   };
   const onWheel = (event: WheelEvent) => {
@@ -1207,7 +1563,7 @@ export const createOrderBookHeatmap = (
         setFollow(false);
         const d =
           (viewX[1] - viewX[0]) * 0.1 * (event.key === "ArrowLeft" ? -1 : 1);
-        viewX = [viewX[0] + d, viewX[1] + d];
+        viewX = clampTime([viewX[0] + d, viewX[1] + d]);
         host.invalidate();
         break;
       }
@@ -1291,9 +1647,9 @@ export const createOrderBookHeatmap = (
       lastTrade = null;
       dataTime = NaN;
       tick = 0;
-      yCenter = NaN;
       ySpan = NaN;
-      userSpan = false;
+      yTarget = null;
+      viewYReady = false;
       host.invalidate();
     },
     setOptions(next) {
@@ -1320,8 +1676,7 @@ export const createOrderBookHeatmap = (
     resetView() {
       windowSpan = NaN;
       ySpan = NaN;
-      userSpan = false;
-      yCenter = NaN;
+      yTarget = null;
       setFollow(true);
       host.invalidate();
     },

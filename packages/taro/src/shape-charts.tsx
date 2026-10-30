@@ -16,6 +16,7 @@ import { Canvas, View } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import { cn } from "@minerva/core";
 import {
+  calendarStrips,
   createCanvasShapeChart,
   type BulletChartOptions,
   type BulletDatum,
@@ -27,6 +28,9 @@ import {
   type ChartPadding,
   type ChartThemeInput,
   type ChartTouch,
+  type ChordChartOptions,
+  type ChordGroup,
+  type ChordLink,
   type FunnelChartOptions,
   type GaugeBand,
   type GaugeChartOptions,
@@ -40,6 +44,7 @@ import {
   type SankeyLink,
   type SankeyNode,
   type ShapeChartCommonOptions,
+  type ShapeChartLabels,
   type ShapeChartOptions,
   type ShapeDatum,
   type ShapeDrillEvent,
@@ -58,6 +63,8 @@ export type {
   CalendarDate,
   CalendarDatum,
   CanvasShapeChartInstance,
+  ChordGroup,
+  ChordLink,
   GaugeBand,
   RadarIndicator,
   RadarSeries,
@@ -87,7 +94,7 @@ export interface ShapeChartHandle {
 export interface ShapeChartFrameProps {
   /**
    * Height of the chart (the legend included); numbers are pixels
-   * @default 320 (GaugeChart: 240, RadialBarChart: 300, SankeyChart and SunburstChart: 360, CalendarHeatmap and BulletChart: from the data)
+   * @default 320 (GaugeChart: 240, RadialBarChart: 300, SankeyChart and SunburstChart: 360, ChordChart: 420, CalendarHeatmap and BulletChart: from the data)
    */
   height?: number | string;
   /**
@@ -117,7 +124,7 @@ export interface ShapeChartFrameProps {
   id?: string;
 }
 
-/** Props shared by every named shape chart (PieChart, DonutChart, RadarChart, GaugeChart, FunnelChart, TreemapChart, SankeyChart, SunburstChart, RadialBarChart, CalendarHeatmap and BulletChart) */
+/** Props shared by every named shape chart (PieChart, DonutChart, RadarChart, GaugeChart, FunnelChart, TreemapChart, SankeyChart, SunburstChart, RadialBarChart, CalendarHeatmap, BulletChart and ChordChart) */
 export interface ShapeChartCommonProps extends ShapeChartFrameProps {
   /** Colors of the marks without `color` (defaults to the `--chart-series-1..8` tokens, then the theme colors) */
   palette?: readonly string[];
@@ -163,6 +170,15 @@ export interface ShapeChartCommonProps extends ShapeChartFrameProps {
    * @default the chart type, e.g. "Donut chart"
    */
   ariaLabel?: string;
+  /**
+   * Locale of the texts and numbers the chart writes (tooltip rows,
+   * accessible names, number and percent formats, calendar dates).
+   * Mini-programs have no `<html lang>`: pass the app language
+   * @default the system language (`navigator.language` when there is one), else English
+   */
+  locale?: string;
+  /** Replaces built-in texts of the `locale` (tooltip rows, accessible names, "No data") */
+  texts?: Partial<ShapeChartLabels>;
 }
 
 /** Props of PieChart */
@@ -580,6 +596,85 @@ export interface BulletChartProps extends ShapeChartCommonProps {
   ticks?: boolean;
 }
 
+/** Props of ChordChart */
+export interface ChordChartProps extends ShapeChartCommonProps {
+  /**
+   * Groups (names or `{ name, color }`), in their order around the circle;
+   * groups only named by `links` are appended. With `matrix`, unnamed rows
+   * are numbered from 1.
+   */
+  groups?: readonly (string | ChordGroup)[];
+  /** Square flow matrix: `matrix[i][j]` flows from group `i` to group `j` (used when `links` is absent) */
+  matrix?: readonly (readonly number[])[];
+  /** Flows as a list (by group name or index); takes precedence over `matrix` */
+  links?: readonly ChordLink[];
+  /**
+   * `false`: one ribbon per pair of groups, each end as wide as the flow
+   * leaving that end. `true`: one ribbon per direction, arcs sized by the
+   * outgoing plus the incoming flows (self flows ignored)
+   * @default false
+   */
+  directed?: boolean;
+  /**
+   * Arrowheads at the target end of the ribbons
+   * @default true when `directed`
+   */
+  arrows?: boolean;
+  /**
+   * Gap between the groups, in degrees
+   * @default 2
+   */
+  padAngle?: number;
+  /**
+   * Angle of the first group, degrees clockwise from 12 o'clock
+   * @default 0
+   */
+  startAngle?: number;
+  /**
+   * Order of the groups around the circle
+   * @default "none" (data order)
+   */
+  sortGroups?: "none" | "ascending" | "descending";
+  /**
+   * Order of the ribbon ends along an arc: `auto` minimizes the crossings;
+   * otherwise the order of the groups, or by value
+   * @default "auto"
+   */
+  sortSubgroups?: "auto" | "none" | "ascending" | "descending";
+  /**
+   * Color of the ribbons without `color`: a gradient from the source to the
+   * target color, one of the two, or a neutral gray
+   * @default "gradient"
+   */
+  ribbonColor?: "gradient" | "source" | "target" | "neutral";
+  /**
+   * Opacity of the ribbons, 0-1 (highlighted ribbons are more opaque)
+   * @default 0.65
+   */
+  ribbonOpacity?: number;
+  /**
+   * Thickness of the group arcs, in pixels
+   * @default 6% of the radius (8-18 px)
+   */
+  arcWidth?: number;
+  /**
+   * Value ticks outside the arcs (labelled where there is room); a number sets the step between ticks
+   * @default true when the diagram is large enough
+   */
+  ticks?: boolean | number;
+  /**
+   * Formats the tick labels
+   * @default compact numbers of the `locale`
+   */
+  tickFormat?: (value: number) => string;
+  /**
+   * Group labels along the arc (`tangential`) or the radius (`radial`);
+   * `auto` picks tangential when every name fits; colliding labels are shortened or skipped
+   * @default "auto"
+   */
+  labels?: "auto" | "tangential" | "radial" | "none";
+}
+
 /** Props of ShapeChart: any shape chart type from its engine options */
 export interface ShapeChartProps extends ShapeChartFrameProps {
   /** Options of the chart, by `type` (every shape type of the engine) */
@@ -710,6 +805,8 @@ const describe = (o: ShapeChartOptions): string => {
       return "Calendar heatmap";
     case "bullet":
       return "Bullet chart";
+    case "chord":
+      return "Chord diagram";
     default:
       return "Chart";
   }
@@ -1043,6 +1140,8 @@ function useCommonOptions({
   animation,
   padding,
   ariaLabel,
+  locale,
+  texts,
 }: ShapeChartCommonProps): ShapeChartCommonOptions {
   // a new array with the same indexes keeps the options (and the animation)
   const hiddenKey = hidden ? hidden.join(",") : null;
@@ -1066,6 +1165,8 @@ function useCommonOptions({
       animation,
       padding,
       ariaLabel,
+      locale,
+      texts,
     }),
     [
       palette,
@@ -1077,6 +1178,8 @@ function useCommonOptions({
       animation,
       padding,
       ariaLabel,
+      locale,
+      texts,
     ],
   );
 }
@@ -1526,25 +1629,6 @@ export const RadialBarChart = forwardRef<ShapeChartHandle, RadialBarChartProps>(
   },
 );
 
-const yearOf = (date: CalendarDate) => {
-  const time =
-    date instanceof Date
-      ? date.getTime()
-      : typeof date === "number"
-        ? date
-        : Date.parse(date);
-  return Number.isFinite(time) ? new Date(time).getUTCFullYear() : NaN;
-};
-
-/** Strips of the `weeks` layout: one per year of a `[start, end]` range */
-const calendarStrips = (range: CalendarHeatmapOptions["range"]) => {
-  if (!Array.isArray(range) || range.length < 2) return 1;
-  const [a, b] = range as readonly [CalendarDate, CalendarDate];
-  const from = Math.min(yearOf(a), yearOf(b));
-  const to = Math.max(yearOf(a), yearOf(b));
-  return to > from ? to - from + 1 : 1;
-};
-
 /** Calendar heatmap: daily values on a calendar, contributions-style */
 export const CalendarHeatmap = forwardRef<
   ShapeChartHandle,
@@ -1605,12 +1689,13 @@ export const CalendarHeatmap = forwardRef<
     ],
   );
   const legend = options.legend === false ? 0 : 34;
+  // one strip of weeks per year when the range spans more than 53 weeks
   return (
     <ShapeHost
       frame={props}
       options={options}
       defaultHeight={
-        layout === "months" ? 560 : calendarStrips(range) * 120 + legend + 16
+        layout === "months" ? 560 : calendarStrips(options) * 120 + legend + 16
       }
       handleRef={ref}
     />
@@ -1672,12 +1757,87 @@ export const BulletChart = forwardRef<ShapeChartHandle, BulletChartProps>(
   },
 );
 
+/**
+ * Chord diagram: flows between groups around a circle; tapping a group
+ * highlights its ribbons, tapping a ribbon shows both directions
+ */
+export const ChordChart = forwardRef<ShapeChartHandle, ChordChartProps>(
+  function ChordChart(props, ref) {
+    const {
+      groups,
+      matrix,
+      links,
+      directed,
+      arrows,
+      padAngle,
+      startAngle,
+      sortGroups,
+      sortSubgroups,
+      ribbonColor,
+      ribbonOpacity,
+      arcWidth,
+      ticks,
+      tickFormat,
+      labels,
+    } = props;
+    const common = useCommonOptions(props);
+    const options = useMemo(
+      (): ChordChartOptions => ({
+        ...common,
+        type: "chord",
+        groups,
+        matrix,
+        links,
+        directed,
+        arrows,
+        padAngle,
+        startAngle,
+        sortGroups,
+        sortSubgroups,
+        ribbonColor,
+        ribbonOpacity,
+        arcWidth,
+        ticks,
+        tickFormat,
+        labels,
+      }),
+      [
+        common,
+        groups,
+        matrix,
+        links,
+        directed,
+        arrows,
+        padAngle,
+        startAngle,
+        sortGroups,
+        sortSubgroups,
+        ribbonColor,
+        ribbonOpacity,
+        arcWidth,
+        ticks,
+        tickFormat,
+        labels,
+      ],
+    );
+    return (
+      <ShapeHost
+        frame={props}
+        options={options}
+        defaultHeight={420}
+        handleRef={ref}
+      />
+    );
+  },
+);
+
 /** Default height of a shape chart type (ShapeChart) */
 const DEFAULT_HEIGHTS: Partial<Record<ShapeChartOptions["type"], number>> = {
   gauge: 240,
   radialBar: 300,
   sankey: 360,
   sunburst: 360,
+  chord: 420,
 };
 
 /**

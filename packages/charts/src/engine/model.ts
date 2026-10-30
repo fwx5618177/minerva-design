@@ -2,11 +2,12 @@
 // the full ranges of the axes. Pure (colors go through the theme's resolver).
 
 import {
-  mix,
-  packColor,
-  rampColor,
+  luminance,
+  mixOklab,
+  oklabRamp,
   resolveStaticColor,
   toCss,
+  withLightness,
   type ColorResolver,
   type Rgba,
 } from "./color";
@@ -27,6 +28,7 @@ import type { ChartTheme } from "./theme";
 import type {
   ChartAxisOptions,
   ChartAxisType,
+  ChartColorScheme,
   ChartCurve,
   ChartOptions,
   ChartSeries,
@@ -98,6 +100,17 @@ export interface SeriesModel {
   /** Heatmaps: ramp of the colors and the values at its ends */
   colorScale: Rgba[];
   valueRange: Range;
+  /** Heatmaps: value at the middle of the ramp (`null`: linear over the range) */
+  colorMidpoint: number | null;
+  /** Heatmaps: 256 packed colors along the ramp (OKLab) */
+  colorLut: Uint32Array | null;
+  /** Hit tests and tooltips include the series */
+  tooltip: boolean;
+  /** Box plots: outlier rings or dots, and their diameter */
+  outlierShape: "hollow" | "filled";
+  outlierSize: number;
+  /** Bars: lines from the end of every bar to the next one */
+  connector: { color: Rgba; dash: number[]; width: number } | null;
   /** Corner radius in CSS pixels (bars, heatmap cells) */
   radius: number;
   /** Tooltip format of the values */
@@ -106,11 +119,19 @@ export interface SeriesModel {
   valueName?: string;
 }
 
-/** Linear map of the right axis onto the left one: `left = right * scale + offset` */
+/**
+ * Map of the values of a series onto the plotted (left axis) units:
+ * `left = (log ? log10(value) : value) * scale + offset`
+ */
 export interface AxisMap {
   scale: number;
   offset: number;
+  /** Logarithmic axis: the values are plotted as their base-10 logarithm */
+  log?: boolean;
 }
+
+/** Plotted units of a log axis: the base-10 logarithm of the values */
+const LOG_MAP: AxisMap = { scale: 1, offset: 0, log: true };
 
 export interface ChartModel {
   series: SeriesModel[];
@@ -133,7 +154,7 @@ export interface ChartModel {
   /** Every series is a scatter (or a heatmap): nearest tooltips, xy zoom */
   allScatter: boolean;
   zoom: { x: boolean; y: boolean };
-  tooltipMode: "nearest" | "axis";
+  tooltipMode: "nearest" | "axis" | "item";
   /** Y value the areas are filled to */
   baseline: number;
   /** Smallest zoomed spans */
@@ -376,13 +397,11 @@ const mapped = new WeakMap<
 
 /** Columns of a right-axis series in left axis units (cached with the data) */
 const mapColumns = (raw: SeriesColumns, map: AxisMap): SeriesColumns => {
-  const key = `${map.scale},${map.offset}`;
+  const key = `${map.scale},${map.offset},${!!map.log}`;
   const hit = mapped.get(raw);
   if (hit && hit.key === key) return hit.cols;
-  const f = (v: number) => v * map.scale + map.offset;
+  const f = mapper(map);
   const column = (a: Float64Array | null) => (a ? a.map(f) : null);
-  const lo = f(raw.yMin);
-  const hi = f(raw.yMax);
   const cols: SeriesColumns = {
     ...raw,
     y: raw.y.map(f),
@@ -393,11 +412,144 @@ const mapColumns = (raw: SeriesColumns, map: AxisMap): SeriesColumns => {
     q1: column(raw.q1),
     q3: column(raw.q3),
     outliers: raw.outliers ? raw.outliers.map((list) => list?.map(f)) : null,
-    yMin: Math.min(lo, hi),
-    yMax: Math.max(lo, hi),
   };
+  if (map.log) {
+    // zeros and negatives have no logarithm: the extent of the others
+    const range: Range = [Infinity, -Infinity];
+    const add = (a: ArrayLike<number> | null | undefined) => {
+      if (!a) return;
+      for (let i = 0; i < a.length; i++) {
+        const v = a[i];
+        if (!Number.isFinite(v)) continue;
+        if (v < range[0]) range[0] = v;
+        if (v > range[1]) range[1] = v;
+      }
+    };
+    for (const c of [cols.y, cols.y0, cols.high, cols.low, cols.q1, cols.q3])
+      add(c);
+    cols.outliers?.forEach((list) => add(list));
+    cols.yMin = range[0] <= range[1] ? range[0] : NaN;
+    cols.yMax = range[0] <= range[1] ? range[1] : NaN;
+  } else {
+    const lo = f(raw.yMin);
+    const hi = f(raw.yMax);
+    cols.yMin = Math.min(lo, hi);
+    cols.yMax = Math.max(lo, hi);
+  }
   mapped.set(raw, { key, cols });
   return cols;
+};
+
+/** A log range widened to whole decades (`[0.3, 2.4]` -> `[0, 3]`) */
+const decades = (range: Range): Range => {
+  const lo = Math.floor(range[0] + 1e-9);
+  const hi = Math.ceil(range[1] - 1e-9);
+  return [lo, hi > lo ? hi : lo + 1];
+};
+
+/**
+ * Plots a series through a map: its columns, bars, stacks and lower
+ * edges (bars / areas of the right axis start at `zero`)
+ */
+const logColumns = (s: SeriesModel, map: AxisMap, zero = -Infinity) => {
+  const f = mapper(map);
+  const column = (a: Float64Array | null) => (a ? a.map(f) : null);
+  const rawBase = s.stackBase;
+  s.cols = mapColumns(s.raw, map);
+  s.barBase =
+    s.barBase && !s.floating
+      ? s.barBase.map((v) => (v === 0 ? (map.log ? -Infinity : f(0)) : f(v)))
+      : column(s.barBase);
+  s.barTop = column(s.barTop);
+  s.stackTop = column(s.stackTop);
+  s.stackBase =
+    rawBase && rawBase === s.raw.y0
+      ? s.cols.y0
+      : rawBase
+        ? column(rawBase)
+        : s.type === "area"
+          ? new Float64Array(s.cols.count).fill(zero)
+          : null;
+};
+
+/** Value -> plotted units of a map (`-Infinity` for 0 on log axes) */
+const mapper =
+  (map: AxisMap) =>
+  (v: number): number =>
+    (map.log ? Math.log10(v) : v) * map.scale + map.offset;
+
+/** Value of the y axis -> plotted y (the logarithm on log axes) */
+export const toPlotY = (model: { y: AxisModel }, value: number): number =>
+  model.y.type === "log" ? Math.log10(value) : value;
+
+/** Plotted y -> value of the y axis */
+export const fromPlotY = (model: { y: AxisModel }, value: number): number =>
+  model.y.type === "log" ? 10 ** value : value;
+
+/** Replaces the bases of bars / areas on log axes (`-Infinity`) by the bottom of the axis */
+const floorBases = (s: SeriesModel, floor: number) => {
+  for (const a of [s.barBase, s.stackBase]) {
+    if (!a) continue;
+    for (let i = 0; i < a.length; i++) if (a[i] === -Infinity) a[i] = floor;
+  }
+};
+
+/** Position (0-1) of a heatmap value on its color ramp */
+export const heatPosition = (
+  s: Pick<SeriesModel, "valueRange" | "colorMidpoint">,
+  v: number,
+): number => {
+  const [lo, hi] = s.valueRange;
+  const mid = s.colorMidpoint;
+  let t: number;
+  if (mid !== null && mid > lo && mid < hi) {
+    t =
+      v < mid
+        ? ((v - lo) / (mid - lo)) * 0.5
+        : 0.5 + ((v - mid) / (hi - mid)) * 0.5;
+  } else {
+    t = (v - lo) / (hi - lo || 1);
+  }
+  return t < 0 ? 0 : t > 1 ? 1 : t;
+};
+
+/**
+ * Built-in ramps of heatmaps, perceptual (OKLab) and theme-aware: light
+ * themes go from a near-white tint to a deep hue, dark themes from a dark
+ * tint of the surface to a bright saturated hue; diverging ramps meet in a
+ * neutral middle
+ */
+export const heatmapStops = (
+  scheme: ChartColorScheme,
+  color: Rgba,
+  theme: ChartTheme,
+  negative: Rgba,
+): Rgba[] => {
+  const dark = luminance(theme.background) < 0.4;
+  if (scheme === "diverging") {
+    const neutral = mixOklab(
+      theme.surface,
+      theme.textMuted,
+      dark ? 0.12 : 0.08,
+    );
+    const end = (c: Rgba) =>
+      dark ? withLightness(c, 0.7, 1.25) : withLightness(c, 0.5, 1.05);
+    const side = (c: Rgba) => mixOklab(neutral, end(c), 0.5);
+    return [end(negative), side(negative), neutral, side(color), end(color)];
+  }
+  return dark
+    ? [
+        mixOklab(theme.surface, color, 0.14),
+        withLightness(color, 0.46, 0.95),
+        withLightness(color, 0.64, 1.2),
+        withLightness(color, 0.8, 1.15),
+      ]
+    : [
+        mixOklab(theme.surface, color, 0.06),
+        withLightness(color, 0.8, 0.6),
+        withLightness(color, 0.58, 1),
+        withLightness(color, 0.36, 0.9),
+      ];
 };
 
 export const buildModel = (
@@ -443,7 +595,10 @@ export const buildModel = (
       ? "category"
       : yOpts?.type === "time" || (!yOpts?.type && hasDateY(datas))
         ? "time"
-        : "linear";
+        : yOpts?.type === "log"
+          ? "log"
+          : "linear";
+  const yLog = yType === "log";
   const yCategoryMap = new Map(yCategories.map((c, i) => [c, i]));
   const resolveY: YResolver = (v) =>
     typeof v === "number"
@@ -495,26 +650,50 @@ export const buildModel = (
     let colorScale: Rgba[] = [];
     let valueRange: Range = [0, 1];
     let cellColors: Uint32Array | null = null;
+    let colorMidpoint: number | null = null;
+    let colorLut: Uint32Array | null = null;
     if (type === "heatmap") {
+      const scale = s.colorScale;
+      const scheme: ChartColorScheme =
+        scale === "diverging" ? "diverging" : "sequential";
       colorScale =
-        s.colorScale && s.colorScale.length
-          ? s.colorScale.map((c) => resolve(c, color))
-          : [mix(theme.background, color, 0.08), color];
+        typeof scale === "object" && scale.length
+          ? scale.map((c) => resolve(c, color))
+          : heatmapStops(
+              scheme,
+              color,
+              theme,
+              resolve(DEFAULT_DOWN, [0.86, 0.15, 0.15, 1]),
+            );
       valueRange = s.valueRange
         ? [s.valueRange[0], s.valueRange[1]]
         : [cols.valueMin, cols.valueMax];
       if (!Number.isFinite(valueRange[0])) valueRange = [0, 1];
-      const values = cols.value ?? cols.y;
       const [lo, hi] = valueRange;
-      const span = hi - lo || 1;
+      colorMidpoint =
+        s.colorMidpoint ??
+        (scheme === "diverging" && typeof scale !== "object"
+          ? lo < 0 && hi > 0
+            ? 0
+            : (lo + hi) / 2
+          : null);
+      const lut = oklabRamp(colorScale);
+      colorLut = lut;
+      const values = cols.value ?? cols.y;
+      const ramp = { valueRange, colorMidpoint };
       cellColors = new Uint32Array(cols.count);
       for (let i = 0; i < cols.count; i++) {
         const v = values[i];
         if (!Number.isFinite(v) || !Number.isFinite(cols.y[i])) continue;
-        // 0 means "no cell": a fully transparent color packs to 0 as well
-        cellColors[i] = packColor(rampColor(colorScale, (v - lo) / span));
+        // 0 means "no cell": the ramp never packs to 0
+        cellColors[i] = lut[Math.round(heatPosition(ramp, v) * 255)];
       }
     }
+    const connector = s.connector
+      ? typeof s.connector === "object"
+        ? s.connector
+        : {}
+      : null;
     const id = s.id ?? String(index);
     return {
       index,
@@ -563,6 +742,21 @@ export const buildModel = (
       cellHalf: { x: 0.5, y: 0.5 },
       colorScale,
       valueRange,
+      colorMidpoint,
+      colorLut,
+      tooltip: s.tooltip !== false,
+      outlierShape: s.outlierShape ?? "hollow",
+      outlierSize: s.outlierSize ?? s.pointSize ?? 7,
+      connector:
+        connector && type === "bar"
+          ? {
+              color: connector.color
+                ? resolve(connector.color, theme.textMuted)
+                : theme.textMuted,
+              dash: [...(connector.dash ?? [3, 3])],
+              width: connector.width ?? 1,
+            }
+          : null,
       radius: s.radius ?? (type === "heatmap" ? 2 : type === "boxplot" ? 0 : 3),
       format: s.format,
       valueName: s.valueName,
@@ -710,8 +904,21 @@ export const buildModel = (
   if (xOpts?.max !== undefined) xRange[1] = xOpts.max;
   xRange = ensureSpan(xRange[0], xRange[1]);
 
+  // Log axis: the left series are plotted as logarithms (stacks are summed
+  // first); bars and areas from zero start at the bottom of the axis
+  if (yLog) {
+    for (const s of series) {
+      if (s.yAxis === "right" || s.type === "heatmap") continue;
+      logColumns(s, LOG_MAP);
+    }
+  }
+
   // Y range (left axis: the series of the right axis are mapped onto it)
-  const valuesOf = (list: SeriesModel[], zero: boolean | undefined) => {
+  const valuesOf = (
+    list: SeriesModel[],
+    zero: boolean | undefined,
+    log = false,
+  ) => {
     const values: number[] = [];
     for (const s of list) {
       if (s.type === "bar" && s.barBase && s.barTop) {
@@ -725,7 +932,7 @@ export const buildModel = (
       }
     }
     const listBars = list.filter((s) => s.type === "bar");
-    if (listBars.some((s) => !s.floating) || zero) values.push(0);
+    if (!log && (listBars.some((s) => !s.floating) || zero)) values.push(0);
     if (listBars.some((s) => s.showLabels)) {
       // room for the value labels above the tallest bar
       const [lo, hi] = extent(values);
@@ -741,7 +948,7 @@ export const buildModel = (
   if (yType === "category") {
     yRange = [-0.5, Math.max(1, yCategories.length) - 0.5];
   } else {
-    const yValues = valuesOf(leftSeries, yOpts?.zero);
+    const yValues = valuesOf(leftSeries, yOpts?.zero, yLog);
     const filled =
       leftBars.length > 0 || leftSeries.some((s) => s.type === "area");
     yRange = ensureSpan(...extent(yValues));
@@ -759,18 +966,23 @@ export const buildModel = (
     if ((yOpts?.nice ?? !heatmaps.length) && yType === "linear") {
       yRange = niceDomain(yRange[0], yRange[1], yOpts?.tickCount ?? 5);
     }
+    if (yLog && yOpts?.nice !== false) yRange = decades(yRange);
     if (percent && (bars.length || stackedLines.length)) {
       // 100% stacks: exactly 0-100 (or -100-100)
       yRange = [extent(yValues)[0] < 0 ? -100 : 0, 100];
     }
-    if (filled && !yOpts?.zero) {
+    if (filled && !yOpts?.zero && !yLog) {
       // bars start at zero: no padding below / above it
       if (yRange[0] < 0 && extent(yValues)[0] >= 0) yRange[0] = 0;
     }
   }
-  if (yOpts?.min !== undefined) yRange[0] = yOpts.min;
-  if (yOpts?.max !== undefined) yRange[1] = yOpts.max;
+  const yBound = (v: number) => (yLog ? Math.log10(v) : v);
+  if (yOpts?.min !== undefined) yRange[0] = yBound(yOpts.min);
+  if (yOpts?.max !== undefined) yRange[1] = yBound(yOpts.max);
   yRange = ensureSpan(yRange[0], yRange[1]);
+  if (yLog) {
+    for (const s of series) if (s.yAxis === "left") floorBases(s, yRange[0]);
+  }
 
   // Right axis: a range aligned on the left ticks; its series are mapped
   // onto the left axis
@@ -779,39 +991,49 @@ export const buildModel = (
   let y2Map: AxisMap | null = null;
   const rightSeries = series.filter((s) => s.yAxis === "right");
   if (rightSeries.length && yType !== "category") {
+    const y2Log = y2Opts?.type === "log";
     const rightVisible = rightSeries.filter((s) => !s.hidden);
-    const values = valuesOf(rightVisible, y2Opts?.zero);
+    // log: the extent of the logarithms
+    const values = y2Log
+      ? rightVisible.flatMap((s) => {
+          const c = mapColumns(s.raw, LOG_MAP);
+          return [c.yMin, c.yMax];
+        })
+      : valuesOf(rightVisible, y2Opts?.zero);
     const [lo, hi] = ensureSpan(...extent(values));
     let domain: Range =
       y2Opts?.nice === false
         ? [lo, hi]
-        : alignedDomain(lo, hi, yRange, yOpts?.tickCount ?? 5);
-    if (y2Opts?.min !== undefined) domain[0] = y2Opts.min;
-    if (y2Opts?.max !== undefined) domain[1] = y2Opts.max;
+        : y2Log
+          ? decades([lo, hi])
+          : alignedDomain(lo, hi, yRange, yOpts?.tickCount ?? 5);
+    const y2Bound = (v: number) => (y2Log ? Math.log10(v) : v);
+    if (y2Opts?.min !== undefined) domain[0] = y2Bound(y2Opts.min);
+    if (y2Opts?.max !== undefined) domain[1] = y2Bound(y2Opts.max);
     domain = ensureSpan(domain[0], domain[1]);
     const scale = (yRange[1] - yRange[0]) / (domain[1] - domain[0]);
-    const map: AxisMap = { scale, offset: yRange[0] - domain[0] * scale };
+    const map: AxisMap = {
+      scale,
+      offset: yRange[0] - domain[0] * scale,
+      log: y2Log,
+    };
     y2Map = map;
-    const f = (v: number) => v * map.scale + map.offset;
-    const column = (a: Float64Array | null) => (a ? a.map(f) : null);
-    const zero = f(Math.min(Math.max(0, domain[0]), domain[1]));
+    const zero = y2Log
+      ? yRange[0]
+      : mapper(map)(Math.min(Math.max(0, domain[0]), domain[1]));
     for (const s of rightSeries) {
-      const rawBase = s.stackBase;
-      s.cols = mapColumns(s.raw, map);
-      s.barBase = column(s.barBase);
-      s.barTop = column(s.barTop);
-      s.stackTop = column(s.stackTop);
-      s.stackBase =
-        rawBase && rawBase === s.raw.y0
-          ? s.cols.y0
-          : rawBase
-            ? column(rawBase)
-            : s.type === "area"
-              ? new Float64Array(s.cols.count).fill(zero)
-              : null;
+      logColumns(s, map, zero);
+      floorBases(s, yRange[0]);
     }
-    y2 = axisModel(y2Opts, "linear", [], false, locale);
+    y2 = axisModel(y2Opts, y2Log ? "log" : "linear", [], false, locale);
   }
+
+  // range bars on a time axis (Gantt charts): rows are unrelated, the
+  // tooltip shows the task under the pointer
+  const timeline =
+    yType === "time" &&
+    series.some((s) => s.type === "bar") &&
+    series.every((s) => (s.type === "bar" ? s.floating : s.type === "scatter"));
 
   const zoomOption =
     options.interaction === false
@@ -848,8 +1070,10 @@ export const buildModel = (
     base: { x: xRange, y: yRange },
     allScatter,
     zoom: zoomAxes,
-    tooltipMode: tooltipOptions?.mode ?? (allScatter ? "nearest" : "axis"),
-    baseline: Math.min(Math.max(0, yRange[0]), yRange[1]),
+    tooltipMode:
+      tooltipOptions?.mode ??
+      (allScatter ? "nearest" : timeline ? "item" : "axis"),
+    baseline: yLog ? yRange[0] : Math.min(Math.max(0, yRange[0]), yRange[1]),
     minSpan: {
       x: xType === "category" ? 1 : (xRange[1] - xRange[0]) * 1e-7,
       y: yType === "category" ? 1 : (yRange[1] - yRange[0]) * 1e-7,

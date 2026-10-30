@@ -3,6 +3,7 @@ import type { PropType } from "vue";
 import {
   waterfallSeries,
   type WaterfallStep,
+  type ChartConnectorOptions,
   type ChartHoverEvent,
   type ChartPlotClickEvent,
   type ChartRendererKind,
@@ -41,6 +42,11 @@ const props = defineProps({
   labels: { type: Boolean, default: true },
   /** Formats the values (labels, tooltip) */
   format: Function as PropType<(value: number) => string>,
+  /** Thin lines from the end of every bar to the next one; an object styles them (default `true`: dashed, secondary text color) */
+  connector: {
+    type: [Boolean, Object] as PropType<boolean | ChartConnectorOptions>,
+    default: undefined,
+  },
 });
 const emit = defineEmits<{
   /** The hovered (or keyboard-focused) bars changed (`null`: none) */
@@ -66,6 +72,8 @@ const { setContainer, rootStyle, handle } = useCartesianChart(
         start: props.start,
         labels: props.labels,
         format: props.format,
+        connector: raw(props.connector),
+        locale: props.locale,
       }),
     ]),
   {

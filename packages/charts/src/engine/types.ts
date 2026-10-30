@@ -10,8 +10,37 @@ export type ChartRendererKind = "webgpu" | "webgl2" | "webgl" | "canvas2d";
  */
 export type ChartRendererPreference = "auto" | ChartRendererKind;
 
-/** Scale of an axis */
-export type ChartAxisType = "linear" | "time" | "category";
+/**
+ * Scale of an axis; `log` (base 10, positive values only) applies to the
+ * value axes (`yAxis`, `yAxis2`)
+ */
+export type ChartAxisType = "linear" | "log" | "time" | "category";
+
+/**
+ * Built-in color ramps of heatmaps, theme-aware (light and dark):
+ * `sequential` goes from a tint of the surface to a deep (light theme) or
+ * bright (dark theme) series color; `diverging` from the danger color
+ * through a neutral middle to the series color
+ */
+export type ChartColorScheme = "sequential" | "diverging";
+
+/** An extra row of the default tooltip of a point */
+export interface ChartTooltipDetail {
+  /** Name (left column) */
+  name: string;
+  /** Value (right column) */
+  value: string;
+}
+
+/** Lines joining the end of every bar to the start of the next one */
+export interface ChartConnectorOptions {
+  /** Line color (any CSS color) @default the secondary text color */
+  color?: string;
+  /** Dash pattern in CSS pixels; `[]` draws solid lines @default [3, 3] */
+  dash?: readonly number[];
+  /** Line width in CSS pixels @default 1 */
+  width?: number;
+}
 
 /** How a series is drawn */
 export type ChartSeriesType =
@@ -67,6 +96,8 @@ export interface ChartPointDatum {
    * a value shown in the tooltip
    */
   value?: number | null;
+  /** Extra rows of the default tooltip of this point, after its values */
+  details?: readonly ChartTooltipDetail[];
 }
 
 /** Column-oriented data: the fastest form for large data sets (typed arrays are used as is) */
@@ -154,12 +185,19 @@ export interface ChartSeries {
   /** Candlestick: color of the falling candles; `--danger-color` by default */
   downColor?: string;
   /**
-   * Heatmap: colors from the lowest to the highest value (two or more)
-   * @default a ramp from the background to the series color
+   * Heatmap: colors from the lowest to the highest value (two or more,
+   * interpolated in OKLab) or a built-in theme-aware scheme
+   * @default "sequential"
    */
-  colorScale?: readonly string[];
+  colorScale?: readonly string[] | ChartColorScheme;
   /** Heatmap: values mapped to the ends of `colorScale`; the data range by default */
   valueRange?: readonly [number, number];
+  /**
+   * Heatmap: value at the middle of the color scale (diverging data such as
+   * correlations or changes); each half of the ramp covers one side
+   * @default 0 for `diverging` ramps spanning it, else the middle of the range
+   */
+  colorMidpoint?: number;
   /** Bar / heatmap: corner radius in CSS pixels (bars: 3, heatmap cells: 2) */
   radius?: number;
   /** Formats the values of this series in the tooltip (the y axis format by default) */
@@ -179,6 +217,28 @@ export interface ChartSeries {
   barWidth?: number;
   /** Scatter: name of the `value` of the points in the tooltip (bubble charts) */
   valueName?: string;
+  /**
+   * `false` leaves the series out of hit tests and tooltips (decorations,
+   * overlays such as the progress of Gantt tasks)
+   * @default true
+   */
+  tooltip?: boolean;
+  /**
+   * Box plot: outliers drawn as rings of the series color or as filled dots
+   * @default "hollow"
+   */
+  outlierShape?: "hollow" | "filled";
+  /**
+   * Box plot: diameter of the outliers in CSS pixels
+   * @default 7
+   */
+  outlierSize?: number;
+  /**
+   * Bars: thin lines from the end of every bar to the next bar (waterfall
+   * charts); `true` uses dashed lines of the secondary text color
+   * @default false
+   */
+  connector?: boolean | ChartConnectorOptions;
 }
 
 /** Options of an axis */
@@ -330,10 +390,13 @@ export interface ChartInteractionOptions {
 /** Tooltip options */
 export interface ChartTooltipOptions {
   /**
-   * `nearest` shows the closest point, `axis` all the series at the closest x
-   * @default "axis" ("nearest" when every series is a scatter)
+   * `nearest` shows the closest point, `axis` all the series at the closest
+   * x, `item` only the shape under the pointer (bar, box, cell or dot;
+   * nothing over empty space)
+   * @default "axis" ("nearest" when every series is a scatter, "item" for
+   *   range bars on a time axis such as Gantt charts)
    */
-  mode?: "nearest" | "axis";
+  mode?: "nearest" | "axis" | "item";
   /** Renders the tooltip content (a string is set as text) */
   render?: (event: ChartHoverEvent) => string | Node | null;
   /**
@@ -407,6 +470,18 @@ export interface ChartLabels {
   chart: string;
   /** Accessible name of a chart; `{series}` is the list of the series names @default "Chart: {series}" */
   chartOf: string;
+  /** Start of a range bar on a time axis (Gantt tasks) @default "Start" */
+  start: string;
+  /** End of a range bar on a time axis @default "End" */
+  end: string;
+  /** Length of a range bar on a time axis (`4 weeks`, `26 days`) @default "Duration" */
+  duration: string;
+  /** Done share of a Gantt task @default "Progress" */
+  progress: string;
+  /** Tasks a Gantt task waits for @default "Depends on" */
+  dependencies: string;
+  /** A hovered box plot outlier @default "Outlier" */
+  outlier: string;
 }
 
 /** Legend options */
@@ -515,6 +590,8 @@ export interface ChartHoverItem {
   q3?: number;
   /** Box plot: number of outliers */
   outliers?: number;
+  /** Box plot: value of the hovered outlier (the pointer is on an outlier) */
+  outlier?: number;
 }
 
 /** Hover / click payload */

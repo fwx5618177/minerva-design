@@ -3,30 +3,65 @@
 // bar only (a tick recomputes one value per output).
 
 import {
+  cciInto,
+  dmiInto,
+  donchianInto,
   emaInto,
+  ichimokuInto,
   kdjInto,
+  keltnerInto,
+  mfiInto,
+  obvInto,
+  psarInto,
   rmaInto,
   rsiInto,
   smaInto,
   stdevInto,
+  stochRsiInto,
+  supertrendInto,
   trueRangeInto,
   vwapInto,
+  williamsRInto,
   wmaInto,
 } from "./indicators";
+import type { UtcOffset } from "./format";
 import type { BarStore } from "./store";
 import type { TradingIndicator, TradingPriceSource } from "./types";
 
-/** How an output is drawn */
-export type StudyOutputKind = "line" | "histogram" | "volume";
+/**
+ * How an output is drawn: a line, a histogram around zero (colored by
+ * sign and slope), the volume bars, or dots (colored by their side of the
+ * close, like the parabolic SAR)
+ */
+export type StudyOutputKind = "line" | "histogram" | "volume" | "dots";
 
 export interface StudyOutput {
   /** Legend label (`"MA7"`, `"DIF"`) */
   label: string;
   values: Float64Array;
-  /** CSS color (may be a `var()`) */
+  /**
+   * CSS color (may be a `var()`); `"up"` / `"down"` stand for the colors
+   * of rising / falling bars
+   */
   color: string;
   kind: StudyOutputKind;
   width: number;
+  /** Drawn this many bars later (Ichimoku spans ahead, lagging span back) */
+  shift: number;
+  /** Opacity of the line (1: opaque) */
+  alpha: number;
+}
+
+/** Area filled between two outputs */
+export interface StudyFill {
+  /** Output indices */
+  a: number;
+  b: number;
+  /** Color while `a` is above `b` */
+  color: string;
+  /** Color while `a` is below `b` (the same color by default) */
+  colorBelow?: string;
+  opacity: number;
 }
 
 export interface Study {
@@ -35,15 +70,25 @@ export interface Study {
   config: TradingIndicator;
   /** Drawn over the price (else in its own pane) */
   overlay: boolean;
-  /** Legend title (`"MACD 12 26 9"`) */
+  /** Legend title (`"MACD 12 26 9"`); the parameters when `titleKey` is set */
   title: string;
+  /** Localized name before the parameters in the legend */
+  titleKey?: "ichimoku" | "supertrend";
   outputs: StudyOutput[];
   /** Fixed value range of the pane (RSI) */
   range?: readonly [number, number];
   /** Horizontal reference lines (RSI 30 / 70, KDJ 20 / 80, MACD 0) */
   bands?: readonly number[];
-  /** Output indices filled between (Bollinger bands) */
-  fill?: readonly [number, number];
+  /** Shades the space between the first two bands (RSI, MFI, CCI...) */
+  bandFill?: boolean;
+  /** Areas filled between outputs (channels, Ichimoku cloud) */
+  fills: StudyFill[];
+  /** Legend values without their labels (channels: the colors say it) */
+  plainLegend?: boolean;
+  /** A single legend value: the first finite output (SuperTrend) */
+  mergeLegend?: boolean;
+  /** The pane keeps 0 in view (MACD, OBV) */
+  zero?: boolean;
   /** Default height of its pane */
   height: number;
   /** Values formatted as volumes (compact) rather than prices */
@@ -66,6 +111,10 @@ export const LINE_COLORS = [
 const VIOLET = "#a855f7";
 const INFO = "#0ea5e9";
 const WARNING = "#f59e0b";
+const TEAL = "#14b8a6";
+const INDIGO = "#6366f1";
+const PINK = "#ec4899";
+const BLUE = "#2962ff";
 
 /** Default id of an indicator: its type and parameters */
 export const indicatorKey = (indicator: TradingIndicator): string => {
@@ -90,6 +139,28 @@ export const indicatorKey = (indicator: TradingIndicator): string => {
       return `rsi:${indicator.period ?? 14}`;
     case "kdj":
       return `kdj:${indicator.period ?? 9}:${indicator.kPeriod ?? 3}:${indicator.dPeriod ?? 3}`;
+    case "psar":
+      return `psar:${indicator.start ?? 0.02}:${indicator.increment ?? indicator.start ?? 0.02}:${indicator.maximum ?? 0.2}`;
+    case "ichimoku":
+      return `ichimoku:${indicator.conversionPeriod ?? 9}:${indicator.basePeriod ?? 26}:${indicator.spanBPeriod ?? 52}:${indicator.displacement ?? 26}`;
+    case "supertrend":
+      return `supertrend:${indicator.period ?? 10}:${indicator.multiplier ?? 3}`;
+    case "keltner":
+      return `keltner:${indicator.period ?? 20}:${indicator.multiplier ?? 2}:${indicator.atrPeriod ?? 10}`;
+    case "donchian":
+      return `donchian:${indicator.period ?? 20}`;
+    case "obv":
+      return "obv";
+    case "cci":
+      return `cci:${indicator.period ?? 20}`;
+    case "stochRsi":
+      return `stochRsi:${indicator.rsiPeriod ?? 14}:${indicator.stochPeriod ?? 14}:${indicator.kPeriod ?? 3}:${indicator.dPeriod ?? 3}`;
+    case "dmi":
+      return `dmi:${indicator.period ?? 14}:${indicator.adxPeriod ?? 14}`;
+    case "williamsR":
+      return `williamsR:${indicator.period ?? 14}`;
+    case "mfi":
+      return `mfi:${indicator.period ?? 14}`;
     default:
       return `atr:${indicator.period ?? 14}`;
   }
@@ -150,12 +221,16 @@ const output = (
   color: string,
   kind: StudyOutputKind = "line",
   width = 1.5,
+  shift = 0,
+  alpha = 1,
 ): StudyOutput => ({
   label,
   values: new Float64Array(0),
   color,
   kind,
   width,
+  shift,
+  alpha,
 });
 
 /**
@@ -166,7 +241,7 @@ export const createStudy = (
   config: TradingIndicator,
   id: string,
   colorIndex: number,
-  utcOffset: number,
+  utcOffset: UtcOffset,
 ): Study => {
   const column = columnPool();
   const paneHeight = "height" in config && config.height ? config.height : 110;
@@ -176,6 +251,7 @@ export const createStudy = (
     config,
     height: paneHeight,
     compact: false,
+    fills: [] as StudyFill[],
   };
   /** Attaches the output columns (grown with the store) before computing */
   const bind = (study: Study, store: BarStore, names: string[]) => {
@@ -229,12 +305,16 @@ export const createStudy = (
         ...base,
         overlay: true,
         title: `BOLL ${period} ${k}`,
+        plainLegend: true,
         outputs: [
           output("MID", mid ?? WARNING, "line", 1.25),
           output("UB", up ?? INFO, "line", 1.25),
           output("LB", low ?? up ?? INFO, "line", 1.25),
         ],
-        ...(config.fill === false ? {} : { fill: [1, 2] as const }),
+        fills:
+          config.fill === false
+            ? []
+            : [{ a: 1, b: 2, color: up ?? INFO, opacity: 0.07 }],
         compute(store, from) {
           bind(study, store, ["mid", "up", "low"]);
           const dev = column("dev", store.capacity);
@@ -306,6 +386,7 @@ export const createStudy = (
         overlay: false,
         title: `MACD ${fast} ${slow} ${signal}`,
         bands: [0],
+        zero: true,
         outputs: [
           output("MACD", "", "histogram"),
           output("DIF", lineColor ?? INFO, "line", 1.25),
@@ -334,6 +415,7 @@ export const createStudy = (
         title: `RSI ${period}`,
         range: [0, 100],
         bands: [config.oversold ?? 30, config.overbought ?? 70],
+        bandFill: true,
         outputs: [output(`RSI${period}`, config.color ?? VIOLET, "line", 1.5)],
         compute(store, from) {
           bind(study, store, ["value"]);
@@ -385,6 +467,380 @@ export const createStudy = (
       };
       return study;
     }
+    case "psar": {
+      const start = config.start ?? 0.02;
+      const increment = config.increment ?? start;
+      const maximum = config.maximum ?? 0.2;
+      const study: Study = {
+        ...base,
+        overlay: true,
+        title: `SAR ${start} ${increment} ${maximum}`,
+        outputs: [output("SAR", config.color ?? "", "dots", 1.5)],
+        compute(store, from) {
+          bind(study, store, ["value"]);
+          psarInto(
+            store.high,
+            store.low,
+            store.length,
+            start,
+            increment,
+            maximum,
+            study.outputs[0].values,
+            {
+              ep: column("ep", store.capacity),
+              af: column("af", store.capacity),
+              trend: column("trend", store.capacity),
+            },
+            from,
+          );
+        },
+      };
+      return study;
+    }
+    case "ichimoku": {
+      const cp = config.conversionPeriod ?? 9;
+      const bp = config.basePeriod ?? 26;
+      const sp = config.spanBPeriod ?? 52;
+      const shift = Math.max(1, Math.floor(config.displacement ?? 26)) - 1;
+      const [cc, bc, lc, ac, sc] = config.colors ?? [];
+      const study: Study = {
+        ...base,
+        overlay: true,
+        title: `${cp} ${bp} ${sp} ${shift + 1}`,
+        titleKey: "ichimoku",
+        plainLegend: true,
+        outputs: [
+          output("CONV", cc ?? BLUE, "line", 1.25),
+          output("BASE", bc ?? "#e65100", "line", 1.25),
+          output("LAG", lc ?? "#43a047", "line", 1.25, -shift),
+          output("A", ac ?? "up", "line", 1, shift, 0.55),
+          output("B", sc ?? "down", "line", 1, shift, 0.55),
+        ],
+        fills:
+          config.cloud === false
+            ? []
+            : [
+                {
+                  a: 3,
+                  b: 4,
+                  color: ac ?? "up",
+                  colorBelow: sc ?? "down",
+                  opacity: 0.12,
+                },
+              ],
+        compute(store, from) {
+          bind(study, store, ["conv", "base", "lag", "a", "b"]);
+          const [conv, kijun, lag, a, b] = study.outputs.map((o) => o.values);
+          ichimokuInto(
+            store.high,
+            store.low,
+            store.length,
+            cp,
+            bp,
+            sp,
+            conv,
+            kijun,
+            a,
+            b,
+            {
+              highest: column("highest", store.capacity),
+              lowest: column("lowest", store.capacity),
+            },
+            from,
+          );
+          lag.set(store.close.subarray(from, store.length), from);
+        },
+      };
+      return study;
+    }
+    case "supertrend": {
+      const period = config.period ?? 10;
+      const k = config.multiplier ?? 3;
+      const study: Study = {
+        ...base,
+        overlay: true,
+        title: `${period} ${k}`,
+        titleKey: "supertrend",
+        mergeLegend: true,
+        outputs: [
+          output("UP", config.upColor ?? "up", "line", 2),
+          output("DOWN", config.downColor ?? "down", "line", 2),
+        ],
+        compute(store, from) {
+          bind(study, store, ["up", "down"]);
+          const value = column("value", store.capacity);
+          const direction = column("direction", store.capacity);
+          supertrendInto(
+            store.high,
+            store.low,
+            store.close,
+            store.length,
+            period,
+            k,
+            value,
+            direction,
+            {
+              tr: column("tr", store.capacity),
+              atr: column("atr", store.capacity),
+              upper: column("upper", store.capacity),
+              lower: column("lower", store.capacity),
+            },
+            from,
+          );
+          const [up, down] = study.outputs.map((o) => o.values);
+          for (let i = from; i < store.length; i++) {
+            up[i] = direction[i] === 1 ? value[i] : NaN;
+            down[i] = direction[i] === -1 ? value[i] : NaN;
+          }
+        },
+      };
+      return study;
+    }
+    case "keltner":
+    case "donchian": {
+      const keltner = config.type === "keltner";
+      const period = config.period ?? 20;
+      const k = keltner ? (config.multiplier ?? 2) : 0;
+      const atrPeriod = keltner ? (config.atrPeriod ?? 10) : 0;
+      const band = keltner ? TEAL : INDIGO;
+      const [mid, up, low] = config.colors ?? [WARNING, band, band];
+      const study: Study = {
+        ...base,
+        overlay: true,
+        title: keltner ? `KC ${period} ${k} ${atrPeriod}` : `DC ${period}`,
+        plainLegend: true,
+        outputs: [
+          output("MID", mid ?? WARNING, "line", 1.25),
+          output("UB", up ?? band, "line", 1.25),
+          output("LB", low ?? up ?? band, "line", 1.25),
+        ],
+        fills:
+          config.fill === false
+            ? []
+            : [{ a: 1, b: 2, color: up ?? band, opacity: 0.07 }],
+        compute(store, from) {
+          bind(study, store, ["mid", "up", "low"]);
+          const [m, u, l] = study.outputs.map((o) => o.values);
+          if (keltner) {
+            keltnerInto(
+              store.high,
+              store.low,
+              store.close,
+              store.length,
+              period,
+              k,
+              atrPeriod,
+              m,
+              u,
+              l,
+              {
+                tr: column("tr", store.capacity),
+                atr: column("atr", store.capacity),
+              },
+              from,
+            );
+          } else {
+            donchianInto(
+              store.high,
+              store.low,
+              store.length,
+              period,
+              u,
+              l,
+              m,
+              from,
+            );
+          }
+        },
+      };
+      return study;
+    }
+    case "obv": {
+      const maPeriod = config.maPeriod;
+      const outputs = [output("OBV", config.color ?? INFO, "line", 1.5)];
+      if (maPeriod)
+        outputs.push(output(`MA${maPeriod}`, WARNING, "line", 1.25));
+      const study: Study = {
+        ...base,
+        overlay: false,
+        compact: true,
+        title: "OBV",
+        outputs,
+        compute(store, from) {
+          bind(study, store, ["obv", "ma"]);
+          const v = study.outputs[0].values;
+          obvInto(store.close, store.volume, store.length, v, from);
+          if (maPeriod)
+            smaInto(v, store.length, maPeriod, study.outputs[1].values, from);
+        },
+      };
+      return study;
+    }
+    case "cci": {
+      const period = config.period ?? 20;
+      const study: Study = {
+        ...base,
+        overlay: false,
+        title: `CCI ${period}`,
+        bands: [-100, 100],
+        bandFill: true,
+        outputs: [output(`CCI${period}`, config.color ?? TEAL, "line", 1.5)],
+        compute(store, from) {
+          bind(study, store, ["value"]);
+          cciInto(
+            store.high,
+            store.low,
+            store.close,
+            store.length,
+            period,
+            study.outputs[0].values,
+            column("typical", store.capacity),
+            column("mean", store.capacity),
+            from,
+          );
+        },
+      };
+      return study;
+    }
+    case "stochRsi": {
+      const rp = config.rsiPeriod ?? 14;
+      const sp = config.stochPeriod ?? 14;
+      const kp = config.kPeriod ?? 3;
+      const dp = config.dPeriod ?? 3;
+      const [kc, dc] = config.colors ?? [INFO, WARNING];
+      const study: Study = {
+        ...base,
+        overlay: false,
+        title: `Stoch RSI ${rp} ${sp} ${kp} ${dp}`,
+        range: [0, 100],
+        bands: [20, 80],
+        bandFill: true,
+        outputs: [
+          output("K", kc ?? INFO, "line", 1.25),
+          output("D", dc ?? WARNING, "line", 1.25),
+        ],
+        compute(store, from) {
+          bind(study, store, ["k", "d"]);
+          const [k, d] = study.outputs.map((o) => o.values);
+          stochRsiInto(
+            store.close,
+            store.length,
+            rp,
+            sp,
+            kp,
+            dp,
+            k,
+            d,
+            {
+              rsi: column("rsi", store.capacity),
+              gain: column("gain", store.capacity),
+              loss: column("loss", store.capacity),
+              highest: column("highest", store.capacity),
+              lowest: column("lowest", store.capacity),
+              raw: column("raw", store.capacity),
+            },
+            from,
+          );
+        },
+      };
+      return study;
+    }
+    case "dmi": {
+      const period = config.period ?? 14;
+      const adxPeriod = config.adxPeriod ?? 14;
+      const [pc, mc, ac] = config.colors ?? ["up", "down", WARNING];
+      const study: Study = {
+        ...base,
+        overlay: false,
+        title: `DMI ${period} ${adxPeriod}`,
+        bands: [25],
+        outputs: [
+          output("+DI", pc ?? "up", "line", 1.25),
+          output("−DI", mc ?? "down", "line", 1.25),
+          output("ADX", ac ?? WARNING, "line", 1.75),
+        ],
+        compute(store, from) {
+          bind(study, store, ["plus", "minus", "adx"]);
+          const [plus, minus, adx] = study.outputs.map((o) => o.values);
+          dmiInto(
+            store.high,
+            store.low,
+            store.close,
+            store.length,
+            period,
+            adxPeriod,
+            plus,
+            minus,
+            adx,
+            {
+              tr: column("tr", store.capacity),
+              plusDm: column("plusDm", store.capacity),
+              minusDm: column("minusDm", store.capacity),
+              smoothTr: column("smoothTr", store.capacity),
+              smoothPlus: column("smoothPlus", store.capacity),
+              smoothMinus: column("smoothMinus", store.capacity),
+              dx: column("dx", store.capacity),
+            },
+            from,
+          );
+        },
+      };
+      return study;
+    }
+    case "williamsR": {
+      const period = config.period ?? 14;
+      const study: Study = {
+        ...base,
+        overlay: false,
+        title: `%R ${period}`,
+        range: [-100, 0],
+        bands: [-80, -20],
+        bandFill: true,
+        outputs: [output(`%R${period}`, config.color ?? VIOLET, "line", 1.5)],
+        compute(store, from) {
+          bind(study, store, ["value"]);
+          williamsRInto(
+            store.high,
+            store.low,
+            store.close,
+            store.length,
+            period,
+            study.outputs[0].values,
+            column("highest", store.capacity),
+            column("lowest", store.capacity),
+            from,
+          );
+        },
+      };
+      return study;
+    }
+    case "mfi": {
+      const period = config.period ?? 14;
+      const study: Study = {
+        ...base,
+        overlay: false,
+        title: `MFI ${period}`,
+        range: [0, 100],
+        bands: [20, 80],
+        bandFill: true,
+        outputs: [output(`MFI${period}`, config.color ?? PINK, "line", 1.5)],
+        compute(store, from) {
+          bind(study, store, ["value"]);
+          mfiInto(
+            store.high,
+            store.low,
+            store.close,
+            store.volume,
+            store.length,
+            period,
+            study.outputs[0].values,
+            column("typical", store.capacity),
+            from,
+          );
+        },
+      };
+      return study;
+    }
     default: {
       const period = config.period ?? 14;
       const study: Study = {
@@ -418,7 +874,7 @@ export const createStudy = (
 export const buildStudies = (
   indicators: readonly TradingIndicator[],
   previous: readonly Study[],
-  utcOffset: number,
+  utcOffset: UtcOffset,
 ): { studies: Study[]; reused: Set<Study> } => {
   const used = new Set<string>();
   const reused = new Set<Study>();

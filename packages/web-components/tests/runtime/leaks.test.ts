@@ -13,6 +13,7 @@ import "../../src/elements/chart";
 import "../../src/elements/trading-chart";
 import "../../src/elements/order-book";
 import "../../src/elements/chart-3d";
+import "../../src/elements/graph";
 import { toast } from "../../src/index";
 import { settle } from "../utils";
 import { trackLeaks, type LeakTracker } from "../../../../tests/leak-tracker";

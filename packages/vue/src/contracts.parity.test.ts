@@ -8,11 +8,13 @@ import { describe, expect, it } from "vitest";
 import type { Component } from "vue";
 import { componentContracts } from "@minerva/core/contracts";
 import { allComponents } from "./plugin";
+import { chartComponents } from "./charts";
 import { MonacoCodeEditor } from "./monaco";
 import { PARITY_DIFFERENCES } from "./contracts.parity-differences";
 
 const components: Record<string, Component> = {
   ...allComponents(),
+  ...chartComponents(),
   MonacoCodeEditor,
 };
 

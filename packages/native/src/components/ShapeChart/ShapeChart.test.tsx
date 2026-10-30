@@ -7,6 +7,7 @@ import { hostElements, queryPart } from "../../../test/queries";
 import {
   BulletChart,
   CalendarHeatmap,
+  ChordChart,
   DonutChart,
   FunnelChart,
   GaugeChart,
@@ -335,5 +336,61 @@ describe("shape charts", () => {
     await flush();
     expect(views()).toBeGreaterThan(0);
     expect(first).toBeGreaterThan(0);
+  });
+
+  it("draws a chord diagram (arcs, ribbons, labels) and reports presses", async () => {
+    const onHover = vi.fn();
+    const onToggle = vi.fn();
+    const ref = createRef<ShapeChartHandle>();
+    await mount(
+      <ChordChart
+        ref={ref}
+        groups={["Apps", "Web", "Store"]}
+        matrix={[
+          [0, 5, 2],
+          [3, 0, 4],
+          [1, 2, 0],
+        ]}
+        legend={false}
+        animation={false}
+        onHover={onHover}
+        onToggle={onToggle}
+      />,
+    );
+    expect(surface().accessibilityLabel).toBe("Chord diagram");
+    expect(screen.getAllByText("Apps").length).toBeGreaterThan(0);
+    // arcs and ribbons are made of many views
+    expect(views()).toBeGreaterThan(20);
+    // from the label of a group toward the center: its arc, then its ribbons
+    const label = textCenter("Apps");
+    for (let t = 0.1; t < 0.9 && !onHover.mock.calls.length; t += 0.05)
+      await press(
+        label.x + (W / 2 - label.x) * t,
+        label.y + (H / 2 - label.y) * t,
+      );
+    expect(onHover).toHaveBeenCalledWith(
+      expect.objectContaining({ name: expect.any(String) }),
+    );
+    await act(async () => ref.current!.getInstance()!.toggle(1));
+    expect(onToggle).toHaveBeenCalledWith(
+      expect.objectContaining({ index: 1, hiddenIndexes: [1] }),
+    );
+  });
+
+  it("forwards locale and texts to the engine", async () => {
+    const zh = await mount(
+      <PieChart data={[]} locale="zh-CN" animation={false} />,
+    );
+    expect(screen.getByText("暂无数据")).toBeTruthy();
+    await zh.unmount();
+    await mount(
+      <PieChart
+        data={[]}
+        locale="fr"
+        texts={{ noData: "Vide" }}
+        animation={false}
+      />,
+    );
+    expect(screen.getByText("Vide")).toBeTruthy();
   });
 });

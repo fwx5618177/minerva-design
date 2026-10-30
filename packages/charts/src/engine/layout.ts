@@ -140,6 +140,24 @@ export const screenRect = (
 export const xLength = (s: Scales) =>
   s.horizontal ? s.plot.height : s.plot.width;
 
+/**
+ * Inset (per side) and corner radius of heatmap cells of `width` ×
+ * `height` CSS pixels: a hairline apart (1px, 2px on large cells), corners
+ * of `radius` at most 20% of the cell; tiny cells touch
+ */
+export const heatCellStyle = (
+  width: number,
+  height: number,
+  radius: number,
+): { inset: number; radius: number } => {
+  const size = Math.min(Math.abs(width), Math.abs(height));
+  if (!(size >= 4)) return { inset: 0, radius: 0 };
+  return {
+    inset: Math.round(Math.min(1, 0.5 + size / 96) * 4) / 4,
+    radius: Math.round(Math.max(0, Math.min(radius, size * 0.2)) * 4) / 4,
+  };
+};
+
 export interface LayoutInput {
   width: number;
   height: number;

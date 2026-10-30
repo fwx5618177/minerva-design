@@ -537,6 +537,14 @@ export interface NativeChartCommonProperties {
   padding?: NativeChartPadding;
   palette?: readonly string[];
   ariaLabel?: string;
+  /**
+   * Locale of the built-in texts, numbers and dates. Mini-programs have no
+   * `<html lang>`: pass the app language (e.g. `wx.getAppBaseInfo().language`)
+   * @default the system language when the runtime has `navigator.language`, else English
+   */
+  locale?: string;
+  /** Overrides of the built-in texts of the `locale` (`ChartLabels` keys, e.g. `{ open: "开盘" }`) */
+  labels?: Readonly<Record<string, string>>;
   /** Stops the page from scrolling while the canvas is touched @default false */
   disableScroll?: boolean;
 }
@@ -562,7 +570,10 @@ export interface NativeAreaChartProperties extends NativeChartProperties {
   /** 100% stacks (implies `stacked`) */
   percent?: boolean;
 }
-export interface NativeHorizontalBarChartProperties extends NativeChartProperties {
+export interface NativeHorizontalBarChartProperties extends Omit<
+  NativeChartProperties,
+  "labels"
+> {
   stacked?: boolean;
   percent?: boolean;
   /** Values at the end of the bars */
@@ -599,8 +610,10 @@ export interface NativeHeatmapChartProperties extends NativeChartCommonPropertie
   yAxis?: NativeChartAxisOptions;
   xCategories?: readonly string[];
   yCategories?: readonly string[];
-  colorScale?: readonly string[];
+  colorScale?: readonly string[] | "sequential" | "diverging";
   valueRange?: [number, number];
+  /** Value at the middle of the color scale (diverging data) */
+  colorMidpoint?: number;
   name?: string;
   radius?: number;
 }
@@ -620,6 +633,8 @@ export interface NativeSparklineProperties {
   tooltip?: boolean | NativeChartTooltipOptions;
   palette?: readonly string[];
   ariaLabel?: string;
+  locale?: string;
+  labels?: Readonly<Record<string, string>>;
   disableScroll?: boolean;
 }
 export interface NativeHistogramChartProperties extends NativeChartCommonProperties {
@@ -651,6 +666,10 @@ export interface NativeBoxPlotChartProperties extends NativeChartCommonPropertie
   whisker?: number | "minmax";
   /** @default "vertical" */
   orientation?: "vertical" | "horizontal";
+  /** Outliers as rings or filled dots @default "hollow" */
+  outlierShape?: "hollow" | "filled";
+  /** Diameter of the outliers in px @default 7 */
+  outlierSize?: number;
   xAxis?: NativeChartAxisOptions;
   yAxis?: NativeChartAxisOptions;
 }
@@ -661,7 +680,10 @@ export interface NativeWaterfallStep {
   kind?: "change" | "subtotal" | "total";
   color?: string;
 }
-export interface NativeWaterfallChartProperties extends NativeChartCommonProperties {
+export interface NativeWaterfallChartProperties extends Omit<
+  NativeChartCommonProperties,
+  "labels"
+> {
   steps: readonly NativeWaterfallStep[];
   name?: string;
   upColor?: string;
@@ -671,6 +693,9 @@ export interface NativeWaterfallChartProperties extends NativeChartCommonPropert
   start?: number;
   /** @default true */
   labels?: boolean;
+  /** Lines from bar to bar; an object styles them @default true */
+  connector?:
+    boolean | { color?: string; dash?: readonly number[]; width?: number };
   locale?: string;
   /** @default "vertical" */
   orientation?: "vertical" | "horizontal";
@@ -688,6 +713,8 @@ export interface NativeGanttTask {
   group?: string;
   color?: string;
   milestone?: boolean;
+  /** Names of the tasks this one waits for (tooltip row) */
+  dependencies?: readonly string[];
 }
 export interface NativeGanttChartProperties extends NativeChartCommonProperties {
   tasks: readonly NativeGanttTask[];
@@ -695,6 +722,8 @@ export interface NativeGanttChartProperties extends NativeChartCommonProperties 
   taskName?: string;
   progressName?: string;
   milestoneName?: string;
+  /** Tooltip row of the dependencies of a task @default "Depends on" */
+  dependenciesName?: string;
   locale?: string;
   /** Line at this timestamp (`true`: now) @default false */
   today?: boolean | number;
@@ -901,7 +930,7 @@ export interface NativeShapeLegendOptions {
 export interface NativeShapeChartFrameProperties {
   /** Numbers are px; any CSS length otherwise @default "100%" */
   width?: number | string;
-  /** Numbers are px; any CSS length otherwise @default 320 (gauge-chart: 240, radial-bar-chart: 300, sankey- and sunburst-chart: 360, calendar-heatmap and bullet-chart: from the data) */
+  /** Numbers are px; any CSS length otherwise @default 320 (gauge-chart: 240, radial-bar-chart: 300, sankey- and sunburst-chart: 360, chord-chart: 420, calendar-heatmap and bullet-chart: from the data) */
   height?: number | string;
   /** Stops the page from scrolling while the canvas is touched @default false */
   disableScroll?: boolean;
@@ -919,6 +948,14 @@ export interface NativeShapeChartCommonProperties extends NativeShapeChartFrameP
   animation?: boolean;
   padding?: NativeChartPadding;
   ariaLabel?: string;
+  /**
+   * Locale of the built-in texts and numbers. Mini-programs have no
+   * `<html lang>`: pass the app language
+   * @default the system language when the runtime has `navigator.language`, else English
+   */
+  locale?: string;
+  /** Overrides of the built-in texts (`noData`, `value`, `share`, ...) */
+  texts?: Readonly<Record<string, string>>;
 }
 export interface NativePieChartProperties extends NativeShapeChartCommonProperties {
   data: readonly NativeShapeDatum[];
@@ -1106,6 +1143,48 @@ export interface NativeBulletChartProperties extends NativeShapeChartCommonPrope
   /** @default true */
   ticks?: boolean;
 }
+export interface NativeChordGroup {
+  name: string;
+  color?: string;
+}
+export interface NativeChordLink {
+  /** Group name or index */
+  source: string | number;
+  /** Group name or index */
+  target: string | number;
+  value: number;
+  color?: string;
+}
+export interface NativeChordChartProperties extends NativeShapeChartCommonProperties {
+  /** Names or `{ name, color }` in their order around the circle */
+  groups?: readonly (string | NativeChordGroup)[];
+  /** Square flow matrix: `matrix[i][j]` flows from group i to group j */
+  matrix?: readonly (readonly number[])[];
+  /** Flows as a list; takes precedence over `matrix` */
+  links?: readonly NativeChordLink[];
+  /** One ribbon per direction @default false */
+  directed?: boolean;
+  /** Arrowheads at the target ends @default true when directed */
+  arrows?: boolean;
+  /** Degrees between the groups @default 2 */
+  padAngle?: number;
+  /** Degrees clockwise from 12 o'clock @default 0 */
+  startAngle?: number;
+  /** @default "none" */
+  sortGroups?: "none" | "ascending" | "descending";
+  /** @default "auto" */
+  sortSubgroups?: "auto" | "none" | "ascending" | "descending";
+  /** @default "gradient" */
+  ribbonColor?: "gradient" | "source" | "target" | "neutral";
+  /** @default 0.65 */
+  ribbonOpacity?: number;
+  /** Arc thickness in px @default 6% of the radius */
+  arcWidth?: number;
+  /** Value ticks; a number sets the step (labels: configure({ tickFormat })) @default true when large enough */
+  ticks?: boolean | number;
+  /** @default "auto" */
+  labels?: "auto" | "tangential" | "radial" | "none";
+}
 /** shape-chart: any shape type of the engine from its options */
 export interface NativeShapeChartProperties extends NativeShapeChartFrameProperties {
   /** Options by `type` ("pie", "radar", "gauge", "funnel", "treemap"...) without functions (see `configure`) */
@@ -1128,6 +1207,8 @@ export interface NativeShapeHoverEvent {
   /** Sankey link ends */
   source?: string;
   target?: string;
+  /** Chord ribbon: the flow from the target back to the source */
+  reverseValue?: number;
 }
 export interface NativeShapeToggleEvent {
   index: number;
@@ -1151,6 +1232,8 @@ export interface NativeShapeChartConfig {
   percentFormat?: (share: number) => string;
   /** Tooltip text (`\n` separates lines); `null` hides the tooltip */
   renderTooltip?: (event: NativeShapeHoverEvent) => string | null;
+  /** chord-chart: labels of the value ticks */
+  tickFormat?: (value: number) => string;
 }
 export interface NativeShapeChartInstance extends NativeConfigConsumer {
   configure(config: NativeShapeChartConfig): void;

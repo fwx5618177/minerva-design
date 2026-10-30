@@ -1,9 +1,10 @@
 // Hit testing of a ShapeScene and keyboard navigation between its items.
 
-import { padAngleAt, sectorPad } from "./draw";
+import { loopControl, padAngleAt, ribbonIsLoop, sectorPad } from "./draw";
 import {
   TAU,
   type LinkNode,
+  type RibbonNode,
   type ShapeHover,
   type ShapeNode,
   type ShapeScene,
@@ -103,6 +104,11 @@ const nodeContains = (node: ShapeNode, x: number, y: number): boolean => {
     }
     case "link":
       return pointNearLink(x, y, node);
+    case "ribbon":
+      return (
+        Math.hypot(x - node.cx, y - node.cy) <= node.r + 1 &&
+        pointInPolygon(x, y, ribbonOutline(node))
+      );
     default:
       return false;
   }
@@ -150,6 +156,54 @@ export const pointNearLink = (x: number, y: number, node: LinkNode) => {
 };
 
 const clampUnit = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
+
+/** Polygon (flat x, y list) approximating a chord ribbon, as drawn */
+export const ribbonOutline = (node: RibbonNode): number[] => {
+  const { cx, cy, r } = node;
+  const pts: number[] = [];
+  const arc = (a0: number, a1: number, radius = r) => {
+    const steps = Math.max(1, Math.ceil((a1 - a0) / 0.06));
+    for (let k = 0; k <= steps; k++) {
+      const a = a0 + ((a1 - a0) * k) / steps;
+      pts.push(cx + radius * Math.cos(a), cy + radius * Math.sin(a));
+    }
+  };
+  // quadratic from the last point to (x, y), control (qx, qy)
+  const quad = (qx: number, qy: number, x: number, y: number) => {
+    const x0 = pts[pts.length - 2];
+    const y0 = pts[pts.length - 1];
+    for (let k = 1; k <= 16; k++) {
+      const t = k / 16;
+      const u = 1 - t;
+      pts.push(
+        u * u * x0 + 2 * u * t * qx + t * t * x,
+        u * u * y0 + 2 * u * t * qy + t * t * y,
+      );
+    }
+  };
+  const at = (a: number, radius = r): [number, number] => [
+    cx + radius * Math.cos(a),
+    cy + radius * Math.sin(a),
+  ];
+  arc(node.s0, Math.max(node.s0, node.s1));
+  const s = at(node.s0);
+  if (ribbonIsLoop(node)) {
+    const [qx, qy] = loopControl(node);
+    quad(qx, qy, s[0], s[1]);
+    return pts;
+  }
+  if (node.head > 0) {
+    const p0 = at(node.t0, r - node.head);
+    quad(cx, cy, p0[0], p0[1]);
+    pts.push(...at((node.t0 + node.t1) / 2), ...at(node.t1, r - node.head));
+  } else {
+    const t = at(node.t0);
+    quad(cx, cy, t[0], t[1]);
+    arc(node.t0, Math.max(node.t0, node.t1));
+  }
+  quad(cx, cy, s[0], s[1]);
+  return pts;
+};
 
 /** Radar: the vertex under the pointer, else the smallest polygon containing it */
 const hitRadar = (

@@ -269,6 +269,7 @@ describe("WeChat chart engine (charts/core)", () => {
     "radial-bar-chart",
     "calendar-heatmap",
     "bullet-chart",
+    "chord-chart",
     "shape-chart",
   ])("registers the %s shape chart component", (name) => {
     const def = definition(name);

@@ -1,6 +1,7 @@
 import { watch, type PropType } from "vue";
 import type {
   ChartRendererPreference,
+  ChartTimeZone,
   DepthChartLabels,
   DepthChartPriceLine,
   OrderBookColorConvention,
@@ -166,6 +167,8 @@ export const orderBookHeatmapProps = {
   tooltip: optionalBoolean,
   /** Backend: WebGPU, then WebGL2, WebGL, Canvas2D (default `auto`) */
   renderer: String as PropType<ChartRendererPreference>,
+  /** Clock of the time axis and the tooltip: the local time or UTC, the clock of most exchanges (default `local`) */
+  timeZone: String as PropType<ChartTimeZone>,
   /** Overrides of the built-in texts of the `locale` */
   labels: Object as PropType<Partial<OrderBookHeatmapLabels>>,
 };
@@ -197,6 +200,8 @@ export const timeAndSalesProps = {
   header: optionalBoolean,
   /** Milliseconds in the times (default `true`) */
   milliseconds: optionalBoolean,
+  /** Clock of the default time format: the local time or UTC, the clock of most exchanges (default `local`) */
+  timeZone: String as PropType<ChartTimeZone>,
   /** Formats the times */
   formatTime: Function as PropType<(time: number) => string>,
   /** Overrides of the built-in texts of the `locale` */

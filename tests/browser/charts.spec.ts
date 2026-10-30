@@ -37,6 +37,7 @@ const SHAPE_PAGES = [
   "radial-bar-chart",
   "calendar-heatmap",
   "bullet-chart",
+  "chord-chart",
 ];
 
 /**
@@ -53,6 +54,9 @@ const WIDGET_PAGES = [
   "scatter-3d-chart",
   "surface-3d-chart",
   "bar-3d-chart",
+  "graph-chart",
+  "dependency-graph",
+  "tree-chart",
   "chart-performance",
 ];
 

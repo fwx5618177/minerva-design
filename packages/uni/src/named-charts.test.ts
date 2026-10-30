@@ -122,7 +122,8 @@ describe("named cartesian chart options", () => {
       data: [{ x: "Mon", y: "AM", value: 3 }],
     });
     expect(heatmap.series[0]?.type).toBe("heatmap");
-    expect(heatmap.legend).toBe(false);
+    // the color legend (visual map) is shown by default
+    expect(heatmap.legend).toBe(true);
     expect(sparklineChartOptions({ data: [1, 2] }).xAxis?.visible).toBe(false);
     const box = boxPlotChartOptions({
       groups: [{ x: "A", values: [1, 2, 3, 4, 20] }],
@@ -152,6 +153,71 @@ describe("named cartesian chart options", () => {
       label: "Today",
     });
     expect(gantt.interaction).toEqual({ zoom: "y" });
+  });
+
+  it("passes the preset options, locale and labels", () => {
+    expect(
+      heatmapOptions({
+        data: [{ x: "a", y: "r", value: -1 }],
+        colorScale: "diverging",
+        colorMidpoint: 0,
+      }).series[0],
+    ).toMatchObject({ colorScale: "diverging", colorMidpoint: 0 });
+    expect(
+      waterfallChartOptions({
+        steps: [{ label: "Start", value: 10 }],
+        connector: { dash: [2, 2] },
+      }).series[0],
+    ).toMatchObject({ connector: { dash: [2, 2] } });
+    const gantt = ganttChartOptions(
+      {
+        tasks: [
+          { name: "Design", start, end: start + day },
+          {
+            name: "Build",
+            start,
+            end: start + 2 * day,
+            dependencies: ["Design"],
+          },
+        ],
+        dependenciesName: "After",
+      },
+      start,
+    );
+    expect(JSON.stringify(gantt.series)).toContain('"name":"After"');
+    const box = boxPlotChartOptions({
+      groups: [{ x: "A", values: [1, 2, 3, 4, 20] }],
+      outlierShape: "filled",
+      outlierSize: 10,
+    });
+    expect(box.series[0]).toMatchObject({
+      outlierShape: "filled",
+      outlierSize: 10,
+    });
+    const area = areaChartOptions({
+      series: [{ data: [1, 2] }],
+      locale: "zh-CN",
+      labels: { series: "系列" },
+    });
+    expect(area).toMatchObject({
+      locale: "zh-CN",
+      labels: { series: "系列" },
+    });
+    // bar charts: `labels` are the value labels, not the texts
+    const bars = horizontalBarChartOptions({
+      series: [{ data: [["A", 1]] }],
+      labels: true,
+      locale: "fr",
+    });
+    expect(bars.locale).toBe("fr");
+    expect(bars.labels).toBeUndefined();
+    expect(
+      sparklineChartOptions({
+        data: [1, 2],
+        locale: "ja",
+        labels: { value: "値" },
+      }),
+    ).toMatchObject({ locale: "ja", labels: { value: "値" } });
   });
 });
 
@@ -239,7 +305,7 @@ describe("chart manifest", () => {
       import("./manifest"),
       import("./index"),
     ]);
-    expect(uniChartManifest.length).toBe(38);
+    expect(uniChartManifest.length).toBe(39);
     for (const entry of uniChartManifest) {
       if (entry.status === "n/a") {
         expect(entry.name in exports, entry.name).toBe(false);

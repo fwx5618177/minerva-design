@@ -150,6 +150,7 @@ export function HeatmapChart(props: HeatmapChartProps) {
     yCategories,
     colorScale,
     valueRange,
+    colorMidpoint,
     name,
     radius,
     format,
@@ -162,6 +163,7 @@ export function HeatmapChart(props: HeatmapChartProps) {
         yCategories,
         colorScale,
         valueRange,
+        colorMidpoint,
         name,
         radius,
         format,
@@ -172,6 +174,7 @@ export function HeatmapChart(props: HeatmapChartProps) {
       yCategories,
       colorScale,
       valueRange,
+      colorMidpoint,
       name,
       radius,
       format,
@@ -513,7 +516,16 @@ export function HistogramChart(props: HistogramChartProps) {
  * values (`groups`) or computed statistics (`series`)
  */
 export function BoxPlotChart(props: BoxPlotChartProps) {
-  const { series: input, groups, name, whisker, orientation, locale } = props;
+  const {
+    series: input,
+    groups,
+    name,
+    whisker,
+    orientation,
+    locale,
+    outlierShape,
+    outlierSize,
+  } = props;
   const groupName = name ?? presetLabels(resolveLocale(locale)).values;
   const series = useMemo(
     () =>
@@ -528,8 +540,16 @@ export function BoxPlotChart(props: BoxPlotChartProps) {
             ]
           : []),
         ...(input ?? []),
-      ]),
-    [input, groups, groupName, whisker],
+      ]).map((s) =>
+        s.type === "boxplot"
+          ? {
+              ...s,
+              outlierShape: s.outlierShape ?? outlierShape,
+              outlierSize: s.outlierSize ?? outlierSize,
+            }
+          : s,
+      ),
+    [input, groups, groupName, whisker, outlierShape, outlierSize],
   );
   return (
     <ChartBase
@@ -553,6 +573,7 @@ export function WaterfallChart(props: WaterfallChartProps) {
     start,
     labels = true,
     format,
+    connector,
     orientation,
     locale,
   } = props;
@@ -567,10 +588,22 @@ export function WaterfallChart(props: WaterfallChartProps) {
         start,
         labels,
         format,
+        connector,
         locale: lang,
       }),
     ],
-    [steps, name, upColor, downColor, totalColor, start, labels, format, lang],
+    [
+      steps,
+      name,
+      upColor,
+      downColor,
+      totalColor,
+      start,
+      labels,
+      format,
+      connector,
+      lang,
+    ],
   );
   return (
     <ChartBase
@@ -597,6 +630,7 @@ export function GanttChart(props: GanttChartProps) {
     progressName,
     milestoneName,
     formatProgress,
+    dependenciesName,
     today = false,
     todayLabel,
     xAxis,
@@ -615,6 +649,7 @@ export function GanttChart(props: GanttChartProps) {
         progressName,
         milestoneName,
         formatProgress,
+        dependenciesName,
         locale: lang,
       }),
     [
@@ -624,6 +659,7 @@ export function GanttChart(props: GanttChartProps) {
       progressName,
       milestoneName,
       formatProgress,
+      dependenciesName,
       lang,
     ],
   );

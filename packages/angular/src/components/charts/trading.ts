@@ -36,12 +36,18 @@ import {
   type TradingClickEvent,
   type TradingCrosshairEvent,
   type TradingDrawing,
+  type TradingDrawingPatch,
   type TradingDrawingTool,
   type TradingHistoryRequestEvent,
   type TradingIndicator,
   type TradingIndicatorToggleEvent,
+  type TradingOrderCancelEvent,
+  type TradingOrderCreateEvent,
   type TradingOrderMoveEvent,
+  type TradingReplayState,
+  type TradingScaleMode,
   type TradingTimeframe,
+  type TradingUndoState,
   type TradingVisibleRange,
 } from "minerva-design/charts/core";
 import { CHART_SURFACE, MnChartEngine, type EngineInstance } from "./engine";
@@ -78,7 +84,7 @@ export class MnTradingChart extends MnChartEngine<
   );
   /** Locale of the texts, numbers and dates (`"zh-CN"`); the page language by default */
   readonly locale = input<string | undefined>(undefined);
-  /** Other engine options (`TradingChartOptions`: markers, priceLines, drawings, colorConvention, labels...) */
+  /** Other engine options (`TradingChartOptions`: markers, priceLines, drawings, colorConvention, timeZone, sessionBreaks, orderEntry, volumeProfile, labels...) */
   readonly options = input<Partial<TradingChartOptions> | undefined>(undefined);
 
   /** The crosshair moved (`null` when it left the chart) */
@@ -89,12 +95,22 @@ export class MnTradingChart extends MnChartEngine<
   readonly visibleRangeChange = output<TradingVisibleRange>();
   /** A draggable price line was dropped at a new price */
   readonly orderMove = output<TradingOrderMoveEvent>();
+  /** The "+" order entry button was clicked (see `options.orderEntry`) */
+  readonly orderCreate = output<TradingOrderCreateEvent>();
+  /** The close button of a `cancellable` price line was clicked */
+  readonly orderCancel = output<TradingOrderCancelEvent>();
   /** The user added, moved or deleted drawings (pass them back in `options.drawings`) */
   readonly drawingsChange = output<readonly TradingDrawing[]>();
   /** The selected drawing changed */
   readonly drawingSelect = output<string | null>();
   /** The drawing tool changed (back to `cursor` after a drawing) */
   readonly drawingToolChange = output<TradingDrawingTool>();
+  /** Undo / redo of the drawings became possible or impossible */
+  readonly undoChange = output<TradingUndoState>();
+  /** The bar replay started, stepped, played, paused or stopped */
+  readonly replayChange = output<TradingReplayState>();
+  /** The chart entered (`true`) or left full screen */
+  readonly fullscreenChange = output<boolean>();
   /** An indicator was shown or hidden from its legend */
   readonly indicatorToggle = output<TradingIndicatorToggleEvent>();
   /** The oldest bar came into view: load older bars (`prependBars`) */
@@ -132,9 +148,14 @@ export class MnTradingChart extends MnChartEngine<
       chart.on("click", (e) => this.paneClick.emit(e)),
       chart.on("visibleRangeChange", (e) => this.visibleRangeChange.emit(e)),
       chart.on("orderMove", (e) => this.orderMove.emit(e)),
+      chart.on("orderCreate", (e) => this.orderCreate.emit(e)),
+      chart.on("orderCancel", (e) => this.orderCancel.emit(e)),
       chart.on("drawingsChange", (e) => this.drawingsChange.emit(e)),
       chart.on("drawingSelect", (e) => this.drawingSelect.emit(e)),
       chart.on("drawingToolChange", (e) => this.drawingToolChange.emit(e)),
+      chart.on("undoChange", (e) => this.undoChange.emit(e)),
+      chart.on("replayChange", (e) => this.replayChange.emit(e)),
+      chart.on("fullscreenChange", (e) => this.fullscreenChange.emit(e)),
       chart.on("indicatorToggle", (e) => this.indicatorToggle.emit(e)),
       chart.on("historyRequest", (e) => this.historyRequest.emit(e)),
       chart.on("renderer", (e) => this.rendererChange.emit(e)),
@@ -191,6 +212,26 @@ export class MnTradingChart extends MnChartEngine<
     this.instance()?.setVisibleRange(range);
   }
 
+  /** Times at the edges of the plot, `null` before the first render */
+  getVisibleTimeRange(): { from: number; to: number } | null {
+    return this.instance()?.getVisibleTimeRange() ?? null;
+  }
+
+  /** Shows the bars between two times */
+  setVisibleTimeRange(range: { from: number; to: number }): void {
+    this.instance()?.setVisibleTimeRange(range);
+  }
+
+  /** Shows the crosshair at a time (and a price); `null` hides it */
+  setCrosshair(time: number | null, price?: number): void {
+    this.instance()?.setCrosshair(time, price);
+  }
+
+  /** Sets the price scale of the price pane */
+  setScaleMode(mode: TradingScaleMode): void {
+    this.instance()?.setScaleMode(mode);
+  }
+
   /** Fits every price scale to the visible bars again */
   resetPriceScales(): void {
     this.instance()?.resetPriceScales();
@@ -214,6 +255,78 @@ export class MnTradingChart extends MnChartEngine<
   /** Selects a drawing (`null` clears the selection) */
   selectDrawing(id: string | null): void {
     this.instance()?.selectDrawing(id);
+  }
+
+  /** Changes the style or the content of a drawing (undoable) */
+  updateDrawing(id: string, patch: TradingDrawingPatch): void {
+    this.instance()?.updateDrawing(id, patch);
+  }
+
+  /** Undoes the last change of the drawings */
+  undo(): void {
+    this.instance()?.undo();
+  }
+
+  /** Redoes the last undone change of the drawings */
+  redo(): void {
+    this.instance()?.redo();
+  }
+
+  /** Whether the drawings can be undone or redone */
+  getUndoState(): TradingUndoState {
+    return (
+      this.instance()?.getUndoState() ?? { canUndo: false, canRedo: false }
+    );
+  }
+
+  /** Starts a bar replay after `time` (the user picks the bar without it) */
+  startReplay(time?: number): void {
+    this.instance()?.startReplay(time);
+  }
+
+  /** Shows the next bars of the replay */
+  replayStep(count?: number): void {
+    this.instance()?.replayStep(count);
+  }
+
+  /** Plays the replay at `speed` bars per second */
+  replayPlay(speed?: number): void {
+    this.instance()?.replayPlay(speed);
+  }
+
+  /** Pauses the replay */
+  replayPause(): void {
+    this.instance()?.replayPause();
+  }
+
+  /** Ends the replay and shows every bar */
+  stopReplay(): void {
+    this.instance()?.stopReplay();
+  }
+
+  /** State of the bar replay, `null` before the first render */
+  getReplayState(): TradingReplayState | null {
+    return this.instance()?.getReplayState() ?? null;
+  }
+
+  /** Image of the chart as a data URL (`""` before the first render) */
+  toDataURL(type?: string, quality?: number): string {
+    return this.instance()?.toDataURL(type, quality) ?? "";
+  }
+
+  /** Image of the chart as a blob */
+  toBlob(type?: string, quality?: number): Promise<Blob | null> {
+    return this.instance()?.toBlob(type, quality) ?? Promise.resolve(null);
+  }
+
+  /** Shows the chart full screen */
+  requestFullscreen(): Promise<void> {
+    return this.instance()?.requestFullscreen() ?? Promise.resolve();
+  }
+
+  /** Leaves full screen */
+  exitFullscreen(): Promise<void> {
+    return this.instance()?.exitFullscreen() ?? Promise.resolve();
   }
 
   /** Shows or hides an indicator */

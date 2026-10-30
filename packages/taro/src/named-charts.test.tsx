@@ -167,7 +167,8 @@ describe("named cartesian charts", () => {
       />,
     );
     expect(heatmap.options.series[0]?.type).toBe("heatmap");
-    expect(heatmap.options.legend).toBe(false);
+    // the color legend (visual map) is shown by default
+    expect(heatmap.options.legend).toBe(true);
     heatmap.unmount();
 
     const spark = await mount(<Sparkline data={[1, 3, 2]} type="bar" />);
@@ -185,6 +186,84 @@ describe("named cartesian charts", () => {
       />,
     );
     expect(mixed.options.yAxis2).toEqual({ title: "Growth" });
+  });
+
+  it("passes the preset options, locale and labels (bars keep their boolean value labels)", async () => {
+    const preset = await mount(
+      <WaterfallChart
+        connector={{ dash: [2, 2] }}
+        steps={[
+          { label: "Start", value: 10 },
+          { label: "End", kind: "total" },
+        ]}
+      />,
+    );
+    expect(preset.options.series[0]).toMatchObject({
+      connector: { dash: [2, 2] },
+    });
+    preset.unmount();
+    const heat = await mount(
+      <HeatmapChart
+        colorScale="diverging"
+        colorMidpoint={0}
+        data={[
+          { x: "a", y: "r", value: -1 },
+          { x: "b", y: "r", value: 1 },
+        ]}
+      />,
+    );
+    expect(heat.options.series[0]).toMatchObject({ colorMidpoint: 0 });
+    heat.unmount();
+    const gantt = await mount(
+      <GanttChart
+        dependenciesName="After"
+        tasks={[
+          { name: "Design", start: 0, end: 40 },
+          { name: "Build", start: 40, end: 100, dependencies: ["Design"] },
+        ]}
+      />,
+    );
+    expect(JSON.stringify(gantt.options.series)).toContain('"name":"After"');
+    gantt.unmount();
+    const box = await mount(
+      <BoxPlotChart
+        outlierShape="filled"
+        outlierSize={10}
+        groups={[{ x: "A", values: [1, 2, 3, 4, 20] }]}
+      />,
+    );
+    expect(box.options.series[0]).toMatchObject({
+      outlierShape: "filled",
+      outlierSize: 10,
+    });
+    box.unmount();
+    const area = await mount(
+      <AreaChart
+        locale="zh-CN"
+        labels={{ series: "系列" }}
+        series={[{ data: [["Q1", 1]] }]}
+      />,
+    );
+    expect(area.options).toMatchObject({
+      locale: "zh-CN",
+      labels: { series: "系列" },
+    });
+    area.unmount();
+
+    const bars = await mount(
+      <HorizontalBarChart locale="fr" labels series={[{ data: [["A", 1]] }]} />,
+    );
+    expect(bars.options.locale).toBe("fr");
+    expect(bars.options.labels).toBeUndefined();
+    bars.unmount();
+
+    const spark = await mount(
+      <Sparkline data={[1, 2]} locale="ja" labels={{ value: "値" }} />,
+    );
+    expect(spark.options).toMatchObject({
+      locale: "ja",
+      labels: { value: "値" },
+    });
   });
 
   it("WaterfallChart and GanttChart", async () => {
@@ -227,7 +306,7 @@ describe("chart manifest", () => {
       import("./manifest"),
       import("./index"),
     ]);
-    expect(taroChartManifest.length).toBe(38);
+    expect(taroChartManifest.length).toBe(39);
     for (const entry of taroChartManifest) {
       if (entry.status === "n/a") {
         expect(entry.name in exports, entry.name).toBe(false);

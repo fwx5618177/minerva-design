@@ -1,5 +1,5 @@
 // Public types of the shape charts: pie / donut, radar, gauge, funnel,
-// treemap, sankey, sunburst, radial bar, calendar heatmap and bullet. They
+// treemap, sankey, sunburst, radial bar, calendar heatmap, bullet and chord. They
 // have no cartesian axes and few marks, so they are drawn with Canvas2D
 // (crisp text, arcs and polygons) by the same code in the browser
 // (createShapeChart) and on any 2D canvas (createCanvasShapeChart).
@@ -17,7 +17,8 @@ export type ShapeChartType =
   | "sunburst"
   | "radialBar"
   | "calendarHeatmap"
-  | "bullet";
+  | "bullet"
+  | "chord";
 
 /** A named value (pie slice, funnel stage) */
 export interface ShapeDatum {
@@ -49,7 +50,9 @@ export interface ShapeHoverEvent {
    * Index of the slice / stage / series / leaf (treemap: in the flattened
    * leaves; sunburst: of the node, in depth-first order; sankey: of the node,
    * or the number of nodes + the link index for a link; calendar heatmap:
-   * days since the first day shown; radial bar / bullet: of the datum)
+   * days since the first day shown; radial bar / bullet: of the datum;
+   * chord: of the group, or the number of groups × (1 + source index) +
+   * target index for a ribbon)
    */
   index: number;
   /** Radar: index of the indicator closest to the pointer */
@@ -63,7 +66,7 @@ export interface ShapeHoverEvent {
    * treemap / sunburst: of the root, gauge: of the range, radial bar: of the
    * bar's max, bullet: of the target (else of the scale), sankey: of the
    * flow entering the diagram (links: of the source node), calendar heatmap:
-   * of the largest day)
+   * of the largest day, chord: of all the flows)
    */
   percent: number;
   /** Resolved CSS color of the mark */
@@ -72,10 +75,12 @@ export interface ShapeHoverEvent {
   path?: string[];
   /** Calendar heatmap: day of the cell, `YYYY-MM-DD` */
   date?: string;
-  /** Sankey: name of the source node of the hovered link */
+  /** Sankey / chord: name of the source node / group of the hovered link or ribbon */
   source?: string;
-  /** Sankey: name of the target node of the hovered link */
+  /** Sankey / chord: name of the target node / group of the hovered link or ribbon */
   target?: string;
+  /** Chord: flow from the target back to the source of the hovered ribbon */
+  reverseValue?: number;
 }
 
 /** Tooltip of a shape chart */
@@ -117,6 +122,8 @@ export interface ShapeChartLabels {
   ofTarget: string;
   /** Bullet tooltip row: name of the qualitative range of the value */
   range: string;
+  /** Chord tooltip row: the flow from the target back to the source */
+  reverse: string;
   /** Name of a radar series without `name`, `Series {index}` (1-based) */
   series: string;
   /** Accessible name of a pie chart */
@@ -145,6 +152,8 @@ export interface ShapeChartLabels {
   calendarHeatmap: string;
   /** Accessible name of a bullet chart */
   bulletChart: string;
+  /** Accessible name of a chord diagram */
+  chordChart: string;
 }
 
 /** Options shared by every shape chart */
@@ -177,7 +186,7 @@ export interface ShapeChartCommonOptions {
   /**
    * Indexes of the hidden slices / stages / radar series / top-level treemap
    * or sunburst nodes / sankey nodes / radial bars / bullet rows / calendar
-   * heatmap levels. When set, the chart is controlled: this list wins over
+   * heatmap levels / chord groups. When set, the chart is controlled: this list wins over
    * the legend state, and legend clicks (or `toggle()`) only emit the
    * `toggle` event, whose `hiddenIndexes` should be passed back here.
    */
@@ -701,6 +710,112 @@ export interface BulletChartOptions extends ShapeChartCommonOptions {
   ticks?: boolean;
 }
 
+/** A group (arc) of a chord diagram */
+export interface ChordGroup {
+  /** Name shown in the label, the legend and the tooltip; links refer to the group by this name (or by index) */
+  name: string;
+  /** Color of the arc (and of the ribbons' ends); the palette when omitted */
+  color?: string;
+}
+
+/** A flow between two groups of a chord diagram */
+export interface ChordLink {
+  /** Source group: its name, or its index in `groups` */
+  source: string | number;
+  /** Target group: its name, or its index in `groups` */
+  target: string | number;
+  /** Size of the flow (negative values count as 0; flows between the same ends add up) */
+  value: number;
+  /** Color of the ribbon; follows `ribbonColor` when omitted */
+  color?: string;
+}
+
+/**
+ * Chord diagram: flows between groups placed around a circle, as ribbons
+ * whose ends are proportional to the flow in each direction
+ */
+export interface ChordChartOptions extends ShapeChartCommonOptions {
+  type: "chord";
+  /**
+   * Groups (names or `{ name, color }`), in their order around the circle;
+   * groups only named by `links` are appended. With `matrix`, unnamed rows
+   * are numbered from 1.
+   */
+  groups?: readonly (string | ChordGroup)[];
+  /** Square flow matrix: `matrix[i][j]` flows from group `i` to group `j` (used when `links` is absent) */
+  matrix?: readonly (readonly number[])[];
+  /** Flows as a list (by group name or index); takes precedence over `matrix` */
+  links?: readonly ChordLink[];
+  /**
+   * `false`: one ribbon per pair of groups, each end as wide as the flow
+   * leaving that end, arcs sized by the outgoing flows. `true`: one ribbon
+   * per direction (same width at both ends), arcs sized by the outgoing plus
+   * the incoming flows; flows from a group to itself are ignored.
+   * @default false
+   */
+  directed?: boolean;
+  /**
+   * Arrowheads at the target end of the ribbons
+   * @default true when `directed`
+   */
+  arrows?: boolean;
+  /**
+   * Gap between the groups, in degrees
+   * @default 2
+   */
+  padAngle?: number;
+  /**
+   * Angle of the first group, degrees clockwise from 12 o'clock
+   * @default 0
+   */
+  startAngle?: number;
+  /**
+   * Order of the groups around the circle
+   * @default "none" (data order)
+   */
+  sortGroups?: "none" | "ascending" | "descending";
+  /**
+   * Order of the ribbon ends along an arc: `auto` puts the flows toward the
+   * next groups at the end of the arc (fewest crossings); otherwise the
+   * order of the groups, or by value
+   * @default "auto"
+   */
+  sortSubgroups?: "auto" | "none" | "ascending" | "descending";
+  /**
+   * Color of the ribbons without `color`: a gradient from the source to the
+   * target color, one of the two, or a neutral gray
+   * @default "gradient"
+   */
+  ribbonColor?: "gradient" | "source" | "target" | "neutral";
+  /**
+   * Opacity of the ribbons, 0-1 (hovered ribbons are more opaque)
+   * @default 0.65
+   */
+  ribbonOpacity?: number;
+  /**
+   * Thickness of the group arcs, in pixels
+   * @default 6% of the radius (8-18 px)
+   */
+  arcWidth?: number;
+  /**
+   * Value ticks outside the arcs (labelled where there is room); a number sets the step between ticks
+   * @default true when the diagram is large enough
+   */
+  ticks?: boolean | number;
+  /**
+   * Formats the tick labels
+   * @default compact numbers of the `locale` (not `format`, whose units would crowd the ticks)
+   */
+  tickFormat?: (value: number) => string;
+  /**
+   * Group labels: `tangential` along the arc, `radial` along the radius,
+   * `auto` tangential when every name fits its arc, radial otherwise;
+   * labels that would collide are shortened or skipped
+   * @default "auto"
+   */
+  labels?: "auto" | "tangential" | "radial" | "none";
+}
+
 /** Options of a shape chart, by `type` */
 export type ShapeChartOptions =
   | PieChartOptions
@@ -712,11 +827,12 @@ export type ShapeChartOptions =
   | SunburstChartOptions
   | RadialBarChartOptions
   | CalendarHeatmapOptions
-  | BulletChartOptions;
+  | BulletChartOptions
+  | ChordChartOptions;
 
 /** A legend item was clicked (or `toggle()` was called) */
 export interface ShapeToggleEvent {
-  /** Index of the toggled entry (slice, stage, series, top-level node, sankey node, bar, row or level) */
+  /** Index of the toggled entry (slice, stage, series, top-level node, sankey node, bar, row, level or chord group) */
   index: number;
   /** Whether that entry is (or, in a controlled chart, would be) hidden */
   hidden: boolean;

@@ -163,6 +163,30 @@ export interface LinkNode extends NodeBase {
   activeAlpha?: number;
 }
 
+/**
+ * Chord ribbon: the source arc (s0 to s1) and the target arc (t0 to t1) at
+ * radius `r`, joined by quadratic curves through the center, filled with a
+ * gradient from `color0` to `color1`; `head` > 0 replaces the target arc with
+ * an arrowhead of that length
+ */
+export interface RibbonNode extends NodeBase {
+  kind: "ribbon";
+  cx: number;
+  cy: number;
+  r: number;
+  /** Canvas angles (radians, clockwise from 3 o'clock) */
+  s0: number;
+  s1: number;
+  t0: number;
+  t1: number;
+  /** Arrowhead length, in pixels (0 = none) */
+  head: number;
+  color0: string;
+  color1: string;
+  /** Opacity while the ribbon (or one of its `also` items) is hovered */
+  activeAlpha?: number;
+}
+
 /** Radar: dashed guide from the center to the hovered indicator */
 export interface GuideNode extends NodeBase {
   kind: "guide";
@@ -182,7 +206,8 @@ export type ShapeNode =
   | LineNode
   | TextNode
   | GuideNode
-  | LinkNode;
+  | LinkNode
+  | RibbonNode;
 
 /** A row of the default tooltip */
 export interface ShapeTooltipRow {
@@ -215,8 +240,8 @@ export interface ShapeItem {
     x: number;
     y: number;
   }[];
-  /** Extra fields of the hover event (calendar date, sankey link ends) */
-  event?: Pick<ShapeHoverEvent, "date" | "source" | "target">;
+  /** Extra fields of the hover event (calendar date, sankey link / chord ribbon ends) */
+  event?: Pick<ShapeHoverEvent, "date" | "source" | "target" | "reverseValue">;
   /** Sunburst: path focused when the item is activated (click, Enter) */
   drill?: string[];
 }
@@ -366,6 +391,85 @@ export const ellipsize = (
     else hi = mid - 1;
   }
   return lo ? text.slice(0, lo).trimEnd() + "…" : "";
+};
+
+/** Characters that must not start a line (closing brackets and punctuation) */
+const NO_LINE_START = /^[)\]}、。，．：；！？）」』】》〉,.:;!?%…]/;
+
+/** Greedy line breaking at `max` pixels, without a line limit */
+const breakLines = (
+  text: string,
+  max: number,
+  font: string,
+  measure: MeasureText,
+): string[] | null => {
+  const lines: string[] = [];
+  let rest = text.trim();
+  while (rest) {
+    if (measure(rest, font) <= max) {
+      lines.push(rest);
+      break;
+    }
+    // longest prefix that fits
+    let lo = 0;
+    let hi = rest.length;
+    while (lo < hi) {
+      const mid = (lo + hi + 1) >> 1;
+      if (measure(rest.slice(0, mid), font) <= max) lo = mid;
+      else hi = mid - 1;
+    }
+    if (!lo) return null;
+    let cut = lo;
+    if (rest[lo] !== " ") {
+      const space = rest.lastIndexOf(" ", lo);
+      if (space > lo * 0.4) cut = space;
+      // keep closing punctuation with the word before it
+      else while (cut > 1 && NO_LINE_START.test(rest.slice(cut))) cut--;
+    }
+    lines.push(rest.slice(0, cut).trimEnd());
+    rest = rest.slice(cut).trimStart();
+  }
+  return lines;
+};
+
+/**
+ * Breaks a text into at most `maxLines` lines of `max` pixels, at spaces when
+ * possible (anywhere otherwise, e.g. CJK, never before closing punctuation);
+ * a text that fits is balanced across its lines, one that does not ends the
+ * last line with an ellipsis
+ */
+export const wrapText = (
+  text: string,
+  max: number,
+  font: string,
+  measure: MeasureText,
+  maxLines = 2,
+): string[] => {
+  const whole = text.trim();
+  if (!whole || maxLines < 1) return [];
+  const lines = breakLines(whole, max, font, measure);
+  if (!lines) {
+    const last = ellipsize(whole, max, font, measure);
+    return last ? [last] : [];
+  }
+  if (lines.length > maxLines) {
+    const head = lines.slice(0, maxLines - 1);
+    // the text after the kept lines (each line is a prefix of the rest)
+    let rest = whole;
+    for (const line of head) rest = rest.slice(line.length).trimStart();
+    const tail = ellipsize(rest, max, font, measure);
+    return tail ? [...head, tail] : head;
+  }
+  if (lines.length < 2) return lines;
+  // balance: the narrowest width that still needs as many lines
+  const total = measure(whole, font);
+  const lo = total / lines.length;
+  for (let k = 0; k <= 8; k++) {
+    const width = lo + ((max - lo) * k) / 8;
+    const balanced = breakLines(whole, width, font, measure);
+    if (balanced && balanced.length <= lines.length) return balanced;
+  }
+  return lines;
 };
 
 /** Stable keys of named values: the name, `name#2` for duplicates */

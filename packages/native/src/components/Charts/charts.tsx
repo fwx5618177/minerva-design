@@ -137,6 +137,7 @@ export function HeatmapChart(props: HeatmapChartProps) {
     yCategories,
     colorScale,
     valueRange,
+    colorMidpoint,
     name,
     radius,
     format,
@@ -154,6 +155,7 @@ export function HeatmapChart(props: HeatmapChartProps) {
           yCategories,
           colorScale,
           valueRange,
+          colorMidpoint,
           name,
           radius,
           format,
@@ -167,6 +169,7 @@ export function HeatmapChart(props: HeatmapChartProps) {
       yCategories,
       colorScale,
       valueRange,
+      colorMidpoint,
       name,
       radius,
       format,
@@ -332,6 +335,8 @@ export function BoxPlotChart(props: BoxPlotChartProps) {
     name = "Values",
     whisker,
     orientation,
+    outlierShape,
+    outlierSize,
   } = props;
   const base = useBaseOptions(props);
   const options = useMemo(
@@ -342,10 +347,27 @@ export function BoxPlotChart(props: BoxPlotChartProps) {
           ? [{ id: "boxplot", name, data: boxplotData(groups, { whisker }) }]
           : []),
         ...(input ?? []),
-      ]),
+      ]).map((s) =>
+        s.type === "boxplot"
+          ? {
+              ...s,
+              outlierShape: s.outlierShape ?? outlierShape,
+              outlierSize: s.outlierSize ?? outlierSize,
+            }
+          : s,
+      ),
       ...(orientation ? { orientation } : null),
     }),
-    [base, input, groups, name, whisker, orientation],
+    [
+      base,
+      input,
+      groups,
+      name,
+      whisker,
+      orientation,
+      outlierShape,
+      outlierSize,
+    ],
   );
   return <ChartBase options={options} {...frameProps(props)} />;
 }
@@ -364,6 +386,7 @@ export function WaterfallChart(props: WaterfallChartProps) {
     start,
     labels = true,
     format,
+    connector,
     orientation,
     locale,
   } = props;
@@ -381,6 +404,7 @@ export function WaterfallChart(props: WaterfallChartProps) {
           start,
           labels,
           format,
+          connector,
           locale: locale ?? base.locale,
         }),
       ],
@@ -397,6 +421,7 @@ export function WaterfallChart(props: WaterfallChartProps) {
       start,
       labels,
       format,
+      connector,
       orientation,
     ],
   );
@@ -415,6 +440,7 @@ export function GanttChart(props: GanttChartProps) {
     progressName,
     milestoneName,
     formatProgress,
+    dependenciesName,
     today = false,
     todayLabel,
     xAxis,
@@ -441,6 +467,7 @@ export function GanttChart(props: GanttChartProps) {
       progressName,
       milestoneName,
       formatProgress,
+      dependenciesName,
       locale: locale ?? base.locale,
     });
     const lines: ChartAnnotation[] =
@@ -481,6 +508,7 @@ export function GanttChart(props: GanttChartProps) {
     progressName,
     milestoneName,
     formatProgress,
+    dependenciesName,
     now,
     todayLabel,
     xAxis,

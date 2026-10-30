@@ -1,5 +1,6 @@
 // Backend selection: WebGPU -> WebGL2 -> WebGL -> Canvas2D.
 
+import { resolveRendererPreference } from "../defaults";
 import type { ChartRendererKind, ChartRendererPreference } from "../types";
 import { createCanvas2dRenderer } from "./canvas2d";
 import type { ChartRenderer, RendererLostHandler } from "./types";
@@ -48,13 +49,15 @@ const create = async (
  * of context, so every attempt uses a fresh canvas from `makeCanvas`.
  * With `auto`, GPU backends running in software (no hardware acceleration)
  * are skipped: the decimating Canvas2D backend is much faster there.
+ * `auto` starts from the global default (`setDefaultChartRenderer`).
  */
 export const createRenderer = async (
-  preference: ChartRendererPreference,
+  requested: ChartRendererPreference,
   makeCanvas: () => HTMLCanvasElement,
   onLost: (kind: ChartRendererKind) => void,
   exclude?: ReadonlySet<ChartRendererKind>,
 ): Promise<ChartRenderer | null> => {
+  const preference = resolveRendererPreference(requested);
   for (const kind of rendererCandidates(preference, exclude)) {
     let renderer: ChartRenderer | null;
     try {
