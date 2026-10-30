@@ -20,6 +20,9 @@ beforeAll(async () => {
 // Routes lazy-load their page module and per-page locale chunk; CI runs the
 // suite under coverage on slower machines, so route changes get a generous wait.
 const ROUTE_TIMEOUT = 15_000;
+// The first Vue tab loads the whole Vue renderer from its sources (the chart
+// wrappers and their engine included), instrumented for coverage on CI
+const VUE_TIMEOUT = 45_000;
 const h1 = () =>
   screen.findByRole("heading", { level: 1 }, { timeout: ROUTE_TIMEOUT });
 const pageHeading = (name: string) =>
@@ -28,7 +31,7 @@ const pageHeading = (name: string) =>
 describe("docs site", () => {
   it(
     "home → component page → framework selector → search → dark mode",
-    { timeout: 60_000 },
+    { timeout: 120_000 },
     async () => {
       const errors = vi.spyOn(console, "error");
       const warnings = vi.spyOn(console, "warn");
@@ -97,7 +100,7 @@ describe("docs site", () => {
         await screen.findByRole(
           "button",
           { name: "Click me" },
-          { timeout: ROUTE_TIMEOUT },
+          { timeout: VUE_TIMEOUT },
         ),
       );
       expect(within(basicPreview()).getByRole("status")).toHaveTextContent(
