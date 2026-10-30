@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Sparkline } from "minerva-design/charts";
 
 const weekly = [
@@ -11,12 +12,13 @@ const variants = [
   { caption: 'type="area"', props: { type: "area" as const } },
   { caption: 'type="bar"', props: { type: "bar" as const } },
   {
-    caption: "reference = average",
+    caption: "reference={average}",
     props: { reference: average, color: "var(--success-color)" },
   },
 ];
 
 export default function BasicDemo() {
+  const { t } = useTranslation("common", { keyPrefix: "docs.sparkline.data" });
   return (
     <div
       style={{
@@ -30,8 +32,8 @@ export default function BasicDemo() {
         <figure key={caption} style={{ margin: 0 }}>
           <Sparkline
             data={weekly}
-            name="Orders"
-            ariaLabel={`Weekly orders, ${caption}`}
+            name={t("orders")}
+            ariaLabel={t("ordersAria", { variant: caption })}
             {...props}
           />
           <figcaption

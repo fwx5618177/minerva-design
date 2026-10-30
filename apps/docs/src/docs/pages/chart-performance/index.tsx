@@ -1,21 +1,32 @@
+import React from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import CodeBlock from "@layout/CodeBlock";
-import DemoBlock from "@/docs/components/DemoBlock";
 import DocPage from "@/docs/components/DocPage";
 import styles from "@/docs/components/docs.module.scss";
-import Benchmark from "./Benchmark";
-import benchmarkSource from "./Benchmark.tsx?raw";
+import { collectDemos } from "@/docs/demos";
+
+const demos = collectDemos(
+  import.meta.glob<React.ComponentType>("./demos/*.tsx", {
+    eager: true,
+    import: "default",
+  }),
+  import.meta.glob<string>("./demos/*.tsx", {
+    eager: true,
+    query: "?raw",
+    import: "default",
+  }),
+);
 
 const rendererExample = `import { createChart } from "minerva-design/charts/core";
 
-// "auto" (default): WebGPU, then WebGL2, then Canvas2D
+// "auto" (default): WebGPU, then WebGL2, then WebGL, then Canvas2D
 const chart = createChart(container, { series, renderer: "auto" });
-chart.ready.then((kind) => showRenderer(kind)); // "webgpu" | "webgl2" | "canvas2d" | null
+chart.ready.then((kind) => showRenderer(kind)); // "webgpu" | "webgl2" | "webgl" | "canvas2d" | null
 // fired again when the GPU is lost and the chart falls back
 chart.on("renderer", (kind) => showRenderer(kind));
 
-// force a backend (also accepted on every React chart: renderer="canvas2d")
+// force a backend (also accepted on every React chart: renderer="webgl")
 createChart(other, { series, renderer: "canvas2d" });`;
 
 const dataExample = `const n = 1_000_000;
@@ -88,8 +99,9 @@ function draw() {
 
 export default function ChartPerformanceDoc() {
   const { t } = useTranslation();
-  return (
-    <DocPage id="chart-performance">
+
+  const intro = (
+    <>
       <section className={styles.section} aria-labelledby="perf-intro">
         <h2 id="perf-intro">{t("docs.chart-performance.intro.title")}</h2>
         <p className={styles.prose}>{t("docs.chart-performance.intro.text")}</p>
@@ -113,6 +125,7 @@ export default function ChartPerformanceDoc() {
         </p>
         <ul className={styles.prose}>
           <li>{t("docs.chart-performance.renderers.auto")}</li>
+          <li>{t("docs.chart-performance.renderers.webgl")}</li>
           <li>{t("docs.chart-performance.renderers.software")}</li>
           <li>{t("docs.chart-performance.renderers.forced")}</li>
           <li>{t("docs.chart-performance.renderers.lost")}</li>
@@ -120,17 +133,35 @@ export default function ChartPerformanceDoc() {
         <CodeBlock language="ts" code={rendererExample} />
       </section>
 
+      <section className={styles.section} aria-labelledby="perf-showcase">
+        <h2 id="perf-showcase">{t("docs.chart-performance.showcase.title")}</h2>
+        <p className={styles.prose}>
+          {t("docs.chart-performance.showcase.text")}
+        </p>
+        <ul className={styles.prose}>
+          <li>{t("docs.chart-performance.showcase.fps")}</li>
+          <li>{t("docs.chart-performance.showcase.work")}</li>
+          <li>{t("docs.chart-performance.showcase.startup")}</li>
+        </ul>
+      </section>
+    </>
+  );
+
+  return (
+    <DocPage id="chart-performance" demos={demos} intro={intro}>
       <section className={styles.section} aria-labelledby="perf-data">
-        <h2 id="perf-data">{t("docs.chart-performance.data.title")}</h2>
-        <p className={styles.prose}>{t("docs.chart-performance.data.text")}</p>
+        <h2 id="perf-data">{t("docs.chart-performance.formats.title")}</h2>
+        <p className={styles.prose}>
+          {t("docs.chart-performance.formats.text")}
+        </p>
         <ol className={styles.prose}>
-          <li>{t("docs.chart-performance.data.typed")}</li>
-          <li>{t("docs.chart-performance.data.columns")}</li>
-          <li>{t("docs.chart-performance.data.tuples")}</li>
-          <li>{t("docs.chart-performance.data.objects")}</li>
+          <li>{t("docs.chart-performance.formats.typed")}</li>
+          <li>{t("docs.chart-performance.formats.columns")}</li>
+          <li>{t("docs.chart-performance.formats.tuples")}</li>
+          <li>{t("docs.chart-performance.formats.objects")}</li>
         </ol>
         <p className={styles.prose}>
-          {t("docs.chart-performance.data.identity")}
+          {t("docs.chart-performance.formats.identity")}
         </p>
         <CodeBlock language="ts" code={dataExample} />
       </section>
@@ -169,14 +200,6 @@ export default function ChartPerformanceDoc() {
         <p className={styles.prose}>
           {t("docs.chart-performance.scale.guidance")}
         </p>
-        <DemoBlock
-          id="perf-benchmark"
-          title={t("docs.chart-performance.benchmark.title")}
-          description={t("docs.chart-performance.benchmark.description")}
-          source={benchmarkSource}
-        >
-          <Benchmark />
-        </DemoBlock>
       </section>
 
       <section className={styles.section} aria-labelledby="perf-react">

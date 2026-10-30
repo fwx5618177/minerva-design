@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "minerva-design";
 import {
   createChart,
@@ -19,27 +20,60 @@ function mulberry32(seed: number) {
 type Point = readonly [number, number];
 
 const WINDOW = 120;
+// placeholder until the texts are set (the effect that sets them runs first)
+const emptyLabels: Labels = {
+  cpu: "",
+  seconds: "",
+  aria: "",
+  percent: String,
+};
 
 const nextPoint = (random: () => number, previous?: Point): Point => {
   const [x, y] = previous ?? [0, 50];
   return [x + 0.5, Math.min(100, Math.max(0, y + (random() - 0.5) * 8))];
 };
 
-const optionsFor = (data: readonly Point[]): ChartOptions => ({
-  series: [{ name: "CPU (%)", type: "area", data, opacity: 0.2 }],
-  xAxis: { title: "Seconds" },
-  yAxis: { min: 0, max: 100 },
+/** Translated texts of the chart */
+interface Labels {
+  cpu: string;
+  seconds: string;
+  aria: string;
+  percent: (value: number) => string;
+}
+
+const optionsFor = (data: readonly Point[], labels: Labels): ChartOptions => ({
+  series: [{ name: labels.cpu, type: "area", data, opacity: 0.2 }],
+  xAxis: { title: labels.seconds },
+  yAxis: { min: 0, max: 100, format: labels.percent },
   interaction: false,
-  ariaLabel: "Live CPU usage",
+  ariaLabel: labels.aria,
 });
 
 export default function StreamingDemo() {
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.chart-engine.data",
+  });
+  const locale = i18n.language;
   const ref = useRef<HTMLDivElement>(null);
   const chartRef = useRef<ChartInstance | null>(null);
   const dataRef = useRef<readonly Point[]>([]);
   const randomRef = useRef(mulberry32(17));
   const [paused, setPaused] = useState(false);
   const [count, setCount] = useState(0);
+  const labelsRef = useRef<Labels | null>(null);
+
+  // texts in the reader's language, re-applied when it changes
+  useEffect(() => {
+    const percent = new Intl.NumberFormat(locale, { style: "percent" });
+    const labels: Labels = {
+      cpu: t("cpu"),
+      seconds: t("seconds"),
+      aria: t("cpuAria"),
+      percent: (value) => percent.format(value / 100),
+    };
+    labelsRef.current = labels;
+    chartRef.current?.setOptions(optionsFor(dataRef.current, labels));
+  }, [t, locale]);
 
   useEffect(() => {
     const container = ref.current;
@@ -51,7 +85,10 @@ export default function StreamingDemo() {
     for (let i = 0; i < 20; i++)
       initial.push(nextPoint(random, initial[i - 1]));
     dataRef.current = initial;
-    const chart = createChart(container, optionsFor(initial));
+    const chart = createChart(
+      container,
+      optionsFor(initial, labelsRef.current ?? emptyLabels),
+    );
     chartRef.current = chart;
     setCount(initial.length);
     return () => {
@@ -70,11 +107,15 @@ export default function StreamingDemo() {
         nextPoint(randomRef.current, data[data.length - 1]),
       ];
       dataRef.current = next;
-      chartRef.current?.setOptions(optionsFor(next));
+      chartRef.current?.setOptions(
+        optionsFor(next, labelsRef.current ?? emptyLabels),
+      );
       setCount((value) => value + 1);
     }, 500);
     return () => clearInterval(id);
   }, [paused]);
+
+  const number = new Intl.NumberFormat(locale);
 
   return (
     <div
@@ -82,10 +123,12 @@ export default function StreamingDemo() {
     >
       <div ref={ref} style={{ height: 300, width: "100%" }} />
       <Button variant="outline" onClick={() => setPaused((value) => !value)}>
-        {paused ? "Resume" : "Pause"}
+        {paused ? t("resume") : t("pause")}
       </Button>
       <p role="status">
-        {paused ? "Paused" : "Streaming"} · {count} points received
+        {paused
+          ? t("pausedStatus", { points: number.format(count) })
+          : t("streamingStatus", { points: number.format(count) })}
       </p>
     </div>
   );

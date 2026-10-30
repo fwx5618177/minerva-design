@@ -1,26 +1,47 @@
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { BarChart, type ChartSeries } from "minerva-design/charts";
 
-const quarters = ["Q1", "Q2", "Q3", "Q4"];
-// Revenue in thousands of dollars
+// Revenue in thousands of dollars, Q1 to Q4
 const revenue = {
   "2025": [312, 348, 365, 421],
   "2026": [356, 402, 431, 488],
 };
 
-const series: ChartSeries[] = Object.entries(revenue).map(([name, values]) => ({
-  name,
-  data: quarters.map((quarter, i) => [quarter, values[i]] as const),
-}));
-
 export default function LabelsDemo() {
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.bar-chart.data",
+  });
+  const locale = i18n.language;
+
+  const series = useMemo(
+    (): ChartSeries[] =>
+      Object.entries(revenue).map(([year, values]) => ({
+        name: year,
+        data: values.map(
+          (value, i) => [t("quarter", { n: i + 1 }), value] as const,
+        ),
+      })),
+    [t],
+  );
+  // "$356K", "35.6万 US$", "356 k $US"...
+  const usd = useMemo(() => {
+    const format = new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency: "USD",
+      notation: "compact",
+    });
+    return (value: number) => format.format(value * 1000);
+  }, [locale]);
+
   return (
     <BarChart
       series={series}
       labels
       // the labels use the y axis format
-      yAxis={{ format: (value) => (value === 0 ? "$0" : `$${value}k`) }}
+      yAxis={{ format: usd }}
       height={300}
-      ariaLabel="Quarterly revenue, 2025 and 2026"
+      ariaLabel={t("revenueAria")}
     />
   );
 }

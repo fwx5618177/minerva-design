@@ -1,31 +1,43 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 import { BarChart, useTheme } from "minerva-design/native";
 
-const quarters = ["Q1", "Q2", "Q3", "Q4"];
 const sales = [120, 180, 150, 220];
 
 export default function Basic() {
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.bar-chart.data",
+  });
   const { colors } = useTheme();
-  const [status, setStatus] = useState("Tap a bar");
+  const [status, setStatus] = useState<string | null>(null);
+  const number = new Intl.NumberFormat(i18n.language);
   return (
     <View style={{ width: "100%", gap: 8 }}>
       <BarChart
         height={220}
-        ariaLabel="Sales per quarter"
+        ariaLabel={t("salesAria")}
         series={[
           {
-            name: "Sales",
-            data: quarters.map((quarter, i) => [quarter, sales[i]] as const),
+            name: t("sales"),
+            data: sales.map(
+              (value, i) => [t("quarter", { n: i + 1 }), value] as const,
+            ),
           },
         ]}
         onPointClick={(event) => {
           const item = event.items[0];
-          if (item) setStatus(`${event.xLabel}: ${item.y} units`);
+          if (item)
+            setStatus(
+              t("unitsStatus", {
+                quarter: event.xLabel,
+                units: number.format(item.y),
+              }),
+            );
         }}
       />
       <Text role="status" style={{ color: colors["text-secondary-color"] }}>
-        {status}
+        {status ?? t("tapBar")}
       </Text>
     </View>
   );

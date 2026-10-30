@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { LineChart, type ChartSeries } from "minerva-design/charts";
 
 function mulberry32(seed: number) {
@@ -12,6 +13,11 @@ function mulberry32(seed: number) {
 }
 
 export default function AreaDemo() {
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.line-chart.data",
+  });
+  const locale = i18n.language;
+
   const series = useMemo((): ChartSeries[] => {
     const random = mulberry32(3);
     const data: number[] = [];
@@ -20,17 +26,22 @@ export default function AreaDemo() {
       used += random() * 12;
       data.push(Math.round(used));
     }
-    return [{ name: "Storage used (GB)", data, opacity: 0.25 }];
-  }, []);
+    return [{ name: t("storage"), data, opacity: 0.25 }];
+  }, [t]);
+  // "512 GB", "512 Go", ...
+  const gigabytes = useMemo(
+    () => new Intl.NumberFormat(locale, { style: "unit", unit: "gigabyte" }),
+    [locale],
+  );
 
   return (
     <LineChart
       series={series}
       area
-      xAxis={{ title: "Day" }}
-      yAxis={{ zero: true }}
+      xAxis={{ title: t("day") }}
+      yAxis={{ zero: true, format: (value) => gigabytes.format(value) }}
       height={280}
-      ariaLabel="Storage used over 60 days"
+      ariaLabel={t("storageAria")}
     />
   );
 }

@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { AreaChart, type ChartSeries } from "minerva-design/charts";
 
 function mulberry32(seed: number) {
@@ -17,6 +18,11 @@ const START = new Date(2026, 5, 15).getTime();
 const QUOTA = 14;
 
 export default function StepDemo() {
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.area-chart.data",
+  });
+  const locale = i18n.language;
+
   // Instances started by an autoscaler: the count holds until the next change
   const series = useMemo((): ChartSeries[] => {
     const random = mulberry32(8);
@@ -31,13 +37,19 @@ export default function StepDemo() {
       else if (target < instances && random() < 0.5) instances -= 1;
       data.push([new Date(START + i * QUARTER_HOUR), instances]);
     }
-    return [{ name: "Running instances", data }];
-  }, []);
+    return [{ name: t("instances"), data }];
+  }, [t]);
+  const time = useMemo(
+    () =>
+      new Intl.DateTimeFormat(locale, { hour: "2-digit", minute: "2-digit" }),
+    [locale],
+  );
 
   return (
     <AreaChart
       series={series}
       curve="step"
+      xAxis={{ type: "time", format: (value) => time.format(value) }}
       yAxis={{ zero: true, max: QUOTA + 2 }}
       annotations={[
         {
@@ -46,11 +58,11 @@ export default function StepDemo() {
           value: QUOTA,
           dash: [4, 4],
           color: "var(--danger-color)",
-          label: "Quota",
+          label: t("quota"),
         },
       ]}
       height={280}
-      ariaLabel="Instances started by the autoscaler over one day"
+      ariaLabel={t("instancesAria")}
     />
   );
 }

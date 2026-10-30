@@ -1,5 +1,5 @@
 {
-  "title": "BarChart",
+  "title": "Graphique à barres",
   "description": "Barres groupées côte à côte ou empilées, avec des lignes superposées en option.",
   "demos": {
     "basic": {
@@ -21,14 +21,82 @@
     "combo": {
       "title": "Barres et ligne",
       "description": "Une série avec type: \"line\" est tracée par-dessus les barres, ici une moyenne sur 7 jours."
+    },
+    "grouped": {
+      "title": "Groupées",
+      "description": "Plusieurs séries sans stacked se placent côte à côte dans chaque catégorie, ici les précipitations mensuelles de trois villes ; Intl.NumberFormat écrit l'unité."
+    },
+    "profit-loss": {
+      "title": "Pertes et profits",
+      "description": "Les valeurs négatives partent de zéro vers le bas ; chaque donnée fixe sa couleur, verte pour un bénéfice et rouge pour une perte, et le format y affiche le signe."
+    },
+    "ranking": {
+      "title": "Classement",
+      "description": "Triez les données avant de les passer pour classer les catégories ; Intl.DisplayNames donne les noms de pays dans la langue du lecteur et showLabels écrit les valeurs."
+    },
+    "target": {
+      "title": "Par rapport à un objectif",
+      "description": "Une ligne y en pointillés marque l'objectif hebdomadaire et les barres qui l'atteignent sont mises en avant par la couleur de leur donnée."
     }
+  },
+  "data": {
+    "quarter": "T{{n}}",
+    "ticketsClosed": "Tickets résolus",
+    "ticketsAria": "Tickets de support résolus par trimestre",
+    "orders": "Commandes",
+    "average7": "Moyenne sur 7 jours",
+    "day": "Jour",
+    "ordersAria": "Commandes quotidiennes et leur moyenne sur 7 jours",
+    "revenueAria": "Chiffre d'affaires trimestriel, 2025 et 2026",
+    "nps": {
+      "promoters": "Promoteurs",
+      "passives": "Passifs",
+      "detractors": "Détracteurs"
+    },
+    "regions": {
+      "northAmerica": "Amérique du Nord",
+      "europe": "Europe",
+      "asiaPacific": "Asie-Pacifique",
+      "latinAmerica": "Amérique latine",
+      "middleEast": "Moyen-Orient"
+    },
+    "npsAria": "Part des promoteurs, passifs et détracteurs par région",
+    "channels": {
+      "web": "Web",
+      "mobile": "Application mobile",
+      "partners": "Partenaires"
+    },
+    "channelsAria": "Commandes mensuelles par canal, empilées",
+    "sales": "Ventes",
+    "salesAria": "Ventes par trimestre",
+    "unitsStatus": "{{quarter}} : {{units}} unités",
+    "tapBar": "Touchez une barre",
+    "stacked": "Empilées",
+    "grouped": "Groupées",
+    "ordersPerChannelAria": "Commandes par canal et par mois",
+    "cities": {
+      "london": "Londres",
+      "tokyo": "Tokyo",
+      "paris": "Paris"
+    },
+    "rainfallAria": "Précipitations mensuelles moyennes à Londres, Tokyo et Paris",
+    "netResult": "Résultat net",
+    "profitAria": "Résultat net mensuel, bénéfices au-dessus de zéro et pertes en dessous",
+    "unitsSold": "Unités vendues",
+    "rankingAria": "Ventes en ligne par pays, de la plus forte à la plus faible",
+    "newCustomers": "Nouveaux clients",
+    "week": "S{{n}}",
+    "weeklyTarget": "Objectif hebdomadaire",
+    "targetAria": "Nouveaux clients par semaine face à l'objectif hebdomadaire",
+    "targetSummary": "Objectif atteint {{reached}} semaines sur {{total}} ({{rate}})."
   },
   "api": {
     "BarChartProps": {
       "series": "Séries tracées en barres sauf si elles définissent un type (p. ex. une ligne superposée)",
       "stacked": "Empile les barres de toutes les séries au lieu de les grouper",
       "percent": "Ramène les piles à 100 % (implique stacked)",
-      "labels": "Écrit la valeur au-dessus de chaque barre"
+      "labels": "Écrit la valeur au-dessus de chaque barre",
+      "orientation": "\"horizontal\" fait partir les barres de la gauche, les catégories le long du bord gauche"
     }
   },
   "native": {
@@ -40,6 +108,38 @@
       "stacked": {
         "title": "Empilées",
         "description": "Le Switch bascule stacked entre barres empilées et groupées."
+      }
+    }
+  },
+  "wc": {
+    "demos": {
+      "grouped": {
+        "title": "Barres groupées avec étiquettes",
+        "description": "Deux années côte à côte par région ; labels écrit la valeur au-dessus de chaque barre."
+      },
+      "stacked": {
+        "title": "Barres empilées",
+        "description": "Les sessions par appareil empilées pour chaque jour de la semaine."
+      }
+    },
+    "minerva-bar-chart": {
+      "props": {
+        "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+        "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+        "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+      },
+      "events": {
+        "minerva-hover": "Les points survolés (ou ciblés au clavier) ont changé ; detail : { x, xLabel, items }, null quand rien n'est survolé",
+        "minerva-point-click": "Un point ou une barre a été cliqué ; detail : { x, xLabel, items }",
+        "minerva-plot-click": "La zone de tracé a été cliquée hors des points ; detail : { x, y } en coordonnées de données",
+        "minerva-zoom": "L'utilisateur a zoomé ou s'est déplacé ; detail : { x, y } (les plages visibles)",
+        "minerva-renderer-change": "Le moteur de rendu est prêt, ou s'est replié après une perte du GPU ; detail : { renderer }"
+      },
+      "methods": {
+        "resetZoom": "Affiche toute la plage de données",
+        "getView": "Plage visible, null avant la création du moteur",
+        "setView": "Définit la plage visible",
+        "getRenderer": "Moteur de rendu utilisé (webgpu, webgl2, webgl, canvas2d), null tant qu'il n'est pas prêt"
       }
     }
   }

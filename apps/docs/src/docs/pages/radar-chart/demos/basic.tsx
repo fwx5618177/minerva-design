@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   RadarChart,
   type RadarIndicator,
@@ -5,29 +7,40 @@ import {
 } from "minerva-design/charts";
 
 // Interview scorecard of one candidate, each skill rated out of 10
-const indicators: RadarIndicator[] = [
-  { name: "Problem solving", max: 10 },
-  { name: "Coding", max: 10 },
-  { name: "System design", max: 10 },
-  { name: "Communication", max: 10 },
-  { name: "Collaboration", max: 10 },
-  { name: "Ownership", max: 10 },
+const skills = [
+  "problemSolving",
+  "coding",
+  "systemDesign",
+  "communication",
+  "collaboration",
+  "ownership",
 ];
-
-const series: RadarSeries[] = [
-  { name: "Candidate", values: [8.5, 9, 6.5, 7, 8, 9] },
-];
-
-const format = (value: number) => `${value} / 10`;
+const scores = [8.5, 9, 6.5, 7, 8, 9];
 
 export default function BasicDemo() {
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.radar-chart.data",
+  });
+  const locale = i18n.language;
+
+  const indicators = useMemo(
+    (): RadarIndicator[] =>
+      skills.map((skill) => ({ name: t(`skills.${skill}`), max: 10 })),
+    [t],
+  );
+  const series = useMemo(
+    (): RadarSeries[] => [{ name: t("candidate"), values: scores }],
+    [t],
+  );
+  const decimal = useMemo(() => new Intl.NumberFormat(locale), [locale]);
+
   return (
     <RadarChart
       indicators={indicators}
       series={series}
-      format={format}
+      format={(value) => t("outOf", { value: decimal.format(value), max: 10 })}
       height={340}
-      ariaLabel="Interview scorecard of a candidate"
+      ariaLabel={t("scorecardAria")}
     />
   );
 }

@@ -1,5 +1,5 @@
 {
-  "title": "FunnelChart",
+  "title": "Funnel chart",
   "description": "Stages of a process that lose volume along the way (sign-ups, sales pipeline, checkout), with the conversion rate from each stage to the next. Hover or use the arrow keys to highlight a stage; click a legend item to hide it.",
   "demos": {
     "basic": {
@@ -9,7 +9,81 @@
     "bars": {
       "title": "Bars and sorting",
       "description": "shape=\"bar\" draws centered bars for values that are not a sequence; sort orders them (animated) and conversion={false} hides the rates."
+    },
+    "ecommerce": {
+      "title": "E-commerce checkout",
+      "description": "A shop's checkout funnel next to a Table of the drop-off between stages; the stage that loses the most visitors is highlighted in red in both."
+    },
+    "recruiting": {
+      "title": "Hiring pipeline",
+      "description": "Candidates of one role from application to hire as bars with one color per stage; the tooltip adds the typical time spent in the stage and a click selects it."
+    },
+    "compare": {
+      "title": "Comparing segments",
+      "description": "The same funnel split by device, side by side with the same stages and one color per segment, to see where mobile users drop out."
     }
+  },
+  "data": {
+    "signup": {
+      "pricing": "Pricing page",
+      "started": "Started sign-up",
+      "verified": "Verified email",
+      "project": "Created project",
+      "invited": "Invited teammate",
+      "upgraded": "Upgraded to paid"
+    },
+    "users": "{{users}} users",
+    "ofVisitors": "{{share}} of the visitors",
+    "droppedSince": "{{users}} dropped since “{{stage}}”",
+    "signupAria": "Sign-up funnel",
+    "features": {
+      "alerts": "Alerts",
+      "dashboards": "Dashboards",
+      "integrations": "Integrations",
+      "reports": "Reports",
+      "api": "Public API"
+    },
+    "sortOrder": "Sort order",
+    "sorts": {
+      "descending": "Descending",
+      "ascending": "Ascending",
+      "none": "Data order"
+    },
+    "weeklyUsers": "{{users}} weekly users",
+    "featuresAria": "Weekly active users per feature",
+    "shop": {
+      "visits": "Visits",
+      "product": "Product page",
+      "cart": "Added to cart",
+      "checkout": "Checkout",
+      "payment": "Payment",
+      "order": "Order placed"
+    },
+    "stage": "Stage",
+    "visitors": "Visitors",
+    "dropOff": "Drop-off",
+    "conversionOverall": "{{share}} of the first stage",
+    "shopAria": "Checkout funnel of an online shop",
+    "dropOffTable": "Drop-off between the stages",
+    "hiring": {
+      "applied": "Applied",
+      "screened": "Screened",
+      "technical": "Technical interview",
+      "onsite": "On-site interview",
+      "offer": "Offer",
+      "hired": "Hired"
+    },
+    "candidates": "{{candidates}} candidates",
+    "stageTime": "Typical time in this stage: {{days}}",
+    "hiringAria": "Hiring pipeline of an engineering role",
+    "hiringSelected": "{{stage}}: {{candidates}} candidates ({{share}} of the applicants)",
+    "hiringSummary": "{{rate}} of the applicants are hired, after {{days}} on average",
+    "devices": {
+      "desktop": "Desktop",
+      "mobile": "Mobile"
+    },
+    "conversionRate": "{{rate}} conversion",
+    "deviceFunnelAria": "Checkout funnel on {{device}}"
   },
   "api": {
     "FunnelChartProps": {
@@ -18,6 +92,54 @@
       "gap": "Vertical gap between the stages, in pixels",
       "conversion": "Shows the conversion rate from the previous stage",
       "shape": "Shape of the stages: trapezoids that narrow to the next stage, or centered bars"
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "Basic",
+        "description": "Each stage narrows to the next one and shows the conversion from the previous stage; tap a stage to select it."
+      }
+    },
+    "data": {
+      "stages": {
+        "install": "Installed",
+        "open": "Opened",
+        "signup": "Signed up",
+        "trial": "Started a trial",
+        "paid": "Paid"
+      },
+      "signupAria": "Sign-up funnel of a mobile app",
+      "selectedStage": "{{stage}}: {{users}} users ({{share}} of the installs)",
+      "tapStage": "Tap a stage to select it"
+    }
+  },
+  "wc": {
+    "demos": {
+      "conversion": {
+        "title": "Conversion funnel",
+        "description": "Stages narrowing to the next one, each labelled with its conversion rate from the previous stage."
+      },
+      "bars": {
+        "title": "Sorted bars",
+        "description": "Centered bars instead of trapezoids, with the stages sorted by value."
+      }
+    },
+    "minerva-funnel-chart": {
+      "props": {
+        "hideConversion": "Hides the conversion rates from the previous stage",
+        "height": "Height of the chart, the legend included: pixels or any CSS length",
+        "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+        "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+      },
+      "events": {
+        "minerva-hover": "The hovered (or keyboard-focused) mark changed; detail: { index, name, value, share }, null when nothing is hovered",
+        "minerva-click": "A mark was clicked, tapped or activated with Enter; detail: { index, name, value, share }",
+        "minerva-toggle": "A legend item was clicked (or toggle() called); detail: { index, hidden, hiddenIndexes }"
+      },
+      "methods": {
+        "toggle": "Hides / shows a slice, stage, radar series or top-level treemap node by index"
+      }
     }
   }
 }

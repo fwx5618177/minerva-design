@@ -1,0 +1,183 @@
+{
+  "title": "Sunburst chart",
+  "description": "A hierarchy drawn as concentric rings: each ring is a level, each sector a share of its parent. Click a parent (or press Enter on it) to zoom in, click the center (or press Backspace) to go back up; the transition animates the angles and the rings. Hovering a sector highlights its ancestors and descendants, and the labels follow the arc or the radius, whichever fits.",
+  "demos": {
+    "disk-usage": {
+      "title": "Disk usage",
+      "description": "Folders and apps of a laptop, in GB. Click a folder to zoom into it and the center to go back up; onDrill reports the focused path, shown under the chart."
+    },
+    "drill-down": {
+      "title": "Controlled drill-down with a breadcrumb",
+      "description": "drillPath makes the focus controlled: clicks only call onDrill, and the breadcrumb owns the path, so its buttons can jump to any level. cornerRadius and padAngle round and separate the sectors."
+    },
+    "org": {
+      "title": "Organization",
+      "description": "Headcount by department, group and team. levels={2} shows two rings at a time (drill down to see the teams), and labels=\"radial\" writes the names along the radius."
+    },
+    "labels": {
+      "title": "Labels",
+      "description": "Population by continent and country. labels chooses how the names are written: auto picks the arc or the radius per sector, and names that do not fit are shortened or skipped. The legend hides / shows continents; country names come from Intl.DisplayNames."
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "Drill-down",
+        "description": "Disk usage by folder: tap a folder to zoom into it and the center to go back up; onDrill reports the path."
+      }
+    },
+    "data": {
+      "tapHint": "Tap a folder to zoom into it.",
+      "path": "Showing {{path}}. Tap the center to go back up."
+    }
+  },
+  "api": {
+    "SunburstChartProps": {
+      "data": "Nodes: leaves carry a value, parents sum their children",
+      "innerRadius": "Radius of the center circle as a fraction of the outer radius",
+      "levels": "Rings shown at once below the focused node (fewer when they would be thinner than 18 px)",
+      "startAngle": "Angle of the first node, in degrees clockwise from 12 o'clock",
+      "padAngle": "Gap between the sectors, in pixels",
+      "cornerRadius": "Corner radius of the sectors, in pixels",
+      "labels": "Sector labels: auto writes each name along the arc or the radius, whichever fits best; tangential, radial or none force a mode",
+      "drill": "Clicking (or pressing Enter on) a parent zooms into it; clicking the center (or Backspace) goes back up",
+      "drillPath": "Names from the root to the focused node ([] = the root); makes the drill-down controlled",
+      "onDrill": "Called when a parent or the center is clicked (or drill() is called), with the new path"
+    },
+    "TreemapNode": {
+      "name": "Name shown in the sector, the center and the tooltip",
+      "value": "Value of a leaf (parents sum their children)",
+      "color": "Color; top-level nodes take the palette when omitted, children get shades of their parent's",
+      "children": "Child nodes"
+    },
+    "ShapeDrillEvent": {
+      "path": "Names from the root to the new focused node ([] = the root)"
+    }
+  },
+  "data": {
+    "disk": {
+      "root": "Macintosh HD",
+      "applications": "Applications",
+      "documents": "Documents",
+      "projects": "Projects",
+      "archive": "Archive",
+      "pdfs": "PDFs",
+      "spreadsheets": "Spreadsheets",
+      "photos": "Photos",
+      "developer": "Developer",
+      "caches": "Package caches",
+      "simulators": "Simulators",
+      "system": "System",
+      "music": "Music",
+      "other": "Other apps"
+    },
+    "gb": "{{value}} GB",
+    "diskAria": "Disk usage by folder, in gigabytes",
+    "diskPath": "Showing {{path}}. Click the center to go back up.",
+    "diskHint": "Click a folder to zoom into it.",
+    "org": {
+      "engineering": "Engineering",
+      "platform": "Platform",
+      "infrastructure": "Infrastructure",
+      "security": "Security",
+      "devtools": "Developer tools",
+      "product": "Product engineering",
+      "web": "Web",
+      "mobile": "Mobile",
+      "payments": "Payments",
+      "data": "Data",
+      "analytics": "Analytics",
+      "ml": "Machine learning",
+      "sales": "Sales",
+      "emea": "EMEA",
+      "americas": "Americas",
+      "apac": "APAC",
+      "success": "Customer success",
+      "support": "Support",
+      "onboarding": "Onboarding",
+      "marketing": "Marketing",
+      "brand": "Brand",
+      "growth": "Growth",
+      "content": "Content",
+      "operations": "Operations",
+      "finance": "Finance",
+      "people": "People",
+      "legal": "Legal",
+      "it": "IT"
+    },
+    "people": "{{value}} people",
+    "orgAria": "Headcount by department, group and team",
+    "catalog": {
+      "all": "All products",
+      "electronics": "Electronics",
+      "phones": "Phones",
+      "flagship": "Flagship",
+      "midRange": "Mid-range",
+      "accessories": "Accessories",
+      "laptops": "Laptops",
+      "audio": "Audio",
+      "headphones": "Headphones",
+      "speakers": "Speakers",
+      "home": "Home",
+      "kitchen": "Kitchen",
+      "furniture": "Furniture",
+      "decor": "Decor",
+      "fashion": "Fashion",
+      "men": "Men",
+      "women": "Women",
+      "kids": "Kids",
+      "sports": "Sports",
+      "outdoor": "Outdoor",
+      "fitness": "Fitness"
+    },
+    "breadcrumb": "Category path",
+    "catalogAria": "Quarterly revenue by product category",
+    "world": {
+      "asia": "Asia",
+      "africa": "Africa",
+      "europe": "Europe",
+      "americas": "Americas",
+      "oceania": "Oceania",
+      "other": "Other countries"
+    },
+    "millions": "{{value}} M",
+    "labelsLabel": "Label mode",
+    "labels": {
+      "auto": "Auto",
+      "tangential": "Along the arc",
+      "radial": "Along the radius",
+      "none": "None"
+    },
+    "worldAria": "World population by continent and country, in millions"
+  },
+  "wc": {
+    "demos": {
+      "disk-usage": {
+        "title": "Disk usage",
+        "description": "Folders in the inner ring, their content outside; click a folder to zoom in, the center to go back."
+      },
+      "drill-down": {
+        "title": "Drill-down breadcrumb",
+        "description": "The drill event gives the path from the root to the focused node: a breadcrumb outside of the chart."
+      }
+    },
+    "minerva-sunburst-chart": {
+      "props": {
+        "noDrill": "Disables the drill-down (clicking a parent zooms into it by default)",
+        "height": "Height of the chart, the legend included: pixels or any CSS length",
+        "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+        "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+      },
+      "events": {
+        "minerva-drill": "A parent or the center was clicked (or drill() called); detail: { path }",
+        "minerva-hover": "The hovered (or keyboard-focused) mark changed; detail: { index, name, value, share }, null when nothing is hovered",
+        "minerva-click": "A mark was clicked, tapped or activated with Enter; detail: { index, name, value, share }",
+        "minerva-toggle": "A legend item was clicked (or toggle() called); detail: { index, hidden, hiddenIndexes }"
+      },
+      "methods": {
+        "drill": "Zooms into the node at a path (names from the root, [] = the root)",
+        "toggle": "Hides / shows a slice, stage, radar series or top-level treemap node by index"
+      }
+    }
+  }
+}

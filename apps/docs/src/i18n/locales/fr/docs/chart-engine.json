@@ -5,7 +5,7 @@
     "choose": {
       "title": "Quel point d’entrée choisir ?",
       "text": "Les trois points d’entrée partagent les mêmes options, la mise en page, la détection des points et les gestes ; ils diffèrent par ce qu’ils demandent à l’hôte :",
-      "createChart": "createChart(container, options) : les pages web. Il monte le graphique dans un élément du DOM, dessine les données avec WebGPU, puis WebGL2, puis Canvas2D, affiche une infobulle et une légende DOM accessibles, lit le thème dans les variables CSS et gère lui-même la molette, le pointeur et le clavier.",
+      "createChart": "createChart(container, options) : les pages web. Il monte le graphique dans un élément du DOM, dessine les données avec WebGPU, puis WebGL2, puis WebGL, puis Canvas2D, affiche une infobulle et une légende DOM accessibles, lit le thème dans les variables CSS et gère lui-même la molette, le pointeur et le clavier.",
       "createCanvasChart": "createCanvasChart({ canvas, width, height, pixelRatio, options, theme }) : n’importe quel canvas 2D, sans aucun DOM (canvas type=\"2d\" de WeChat / Taro / uni-app, OffscreenCanvas, simple <canvas>). Tout est dessiné sur le canvas, infobulle et légende comprises ; l’hôte transmet ses événements tactiles ou de pointeur et fournit le thème sous forme de valeurs. Les graphiques des mini-programmes reposent dessus.",
       "createChartController": "createChartController({ options, measureText }) : aucun canvas. Il calcule la scène (mise en page, graduations, légende, infobulle, mise en évidence) et gère les gestes ; scenePrimitives(scene) convertit les données en une liste bornée de formes en pixels pour les hôtes qui dessinent avec des vues ou du SVG. Les graphiques React Native reposent dessus."
     },
@@ -32,12 +32,54 @@
       "description": "createShapeChart dans un effet : les boutons appellent setOptions pour passer d’un graphique en secteurs à un anneau avec total central puis à un entonnoir (les formes s’animent depuis leurs valeurs précédentes), on(\"click\") indique le secteur ou l’étape cliqué, et destroy() est appelé au démontage."
     }
   },
+  "data": {
+    "downloads": "Téléchargements",
+    "downloadsAria": "Téléchargements par version",
+    "unsupported": "non pris en charge",
+    "downloadsStatus": "{{release}} : {{downloads}} téléchargements",
+    "clickBar": "Cliquez sur une barre",
+    "rendererLabel": "Moteur de rendu : {{renderer}}",
+    "visits": "Visites",
+    "signupsTimes10": "Inscriptions (×10)",
+    "visitsAria": "Visites et inscriptions par mois",
+    "clickPoint": "Cliquez sur un point",
+    "sources": {
+      "search": "Recherche",
+      "direct": "Accès direct",
+      "social": "Réseaux sociaux",
+      "email": "E-mail",
+      "referral": "Sites référents"
+    },
+    "stages": {
+      "visits": "Visites",
+      "signups": "Inscriptions",
+      "trials": "Essais",
+      "customers": "Clients"
+    },
+    "sourcesAria": "Visites par source",
+    "visitsLabel": "visites",
+    "funnelAria": "Entonnoir de conversion",
+    "views": {
+      "pie": "Secteurs",
+      "donut": "Anneau",
+      "funnel": "Entonnoir"
+    },
+    "picked": "{{name}} : {{value}} ({{share}})",
+    "clickShape": "Cliquez sur une part ou une étape",
+    "cpu": "Processeur",
+    "seconds": "Secondes",
+    "cpuAria": "Utilisation du processeur en direct",
+    "resume": "Reprendre",
+    "pause": "Pause",
+    "pausedStatus": "En pause · {{points}} points reçus",
+    "streamingStatus": "En direct · {{points}} points reçus"
+  },
   "api": {
     "ChartOptions": {
       "series": "Séries de données",
       "xAxis": "Options de l’axe X",
       "yAxis": "Options de l’axe Y",
-      "renderer": "Backend de la couche de données (auto, webgpu, webgl2, canvas2d)",
+      "renderer": "Backend de la couche de données (auto, webgpu, webgl2, webgl, canvas2d)",
       "legend": "Légende ; affichée par défaut s’il y a plusieurs séries nommées",
       "tooltip": "Infobulle ; false la désactive",
       "crosshair": "Ligne de repère verticale qui suit le pointeur",
@@ -46,7 +88,11 @@
       "padding": "Espace autour de la zone de tracé",
       "palette": "Couleurs des séries sans color",
       "ariaLabel": "Nom accessible du graphique",
-      "stackMode": "normal ou percent : percent ramène chaque pile à 100 % pour chaque x (l’axe affiche des pourcentages, l’infobulle les valeurs réelles)"
+      "stackMode": "normal ou percent : percent ramène chaque pile à 100 % pour chaque x (l’axe affiche des pourcentages, l’infobulle les valeurs réelles)",
+      "yAxis2": "Second axe des valeurs à droite pour les séries avec yAxis: \"right\" ; aligné sur les graduations de gauche, ignoré par les graphiques horizontaux",
+      "orientation": "\"horizontal\" échange les axes : l'axe x (catégories) à gauche, les valeurs en bas",
+      "locale": "Langue des textes et nombres écrits par le moteur (lignes de l'infobulle, unités compactes k / 万, séparateurs, noms des mois et des jours des axes temporels) ; résolue à chaque mise à jour des options, la langue de la page (<html lang>) par défaut",
+      "labels": "Remplace des textes intégrés de la langue (ChartLabels)"
     },
     "ChartInstance": {
       "setOptions": "Remplace les options ; les tableaux de données inchangés ne sont pas retraités",
@@ -188,7 +234,8 @@
       "opacity": "Opacité du remplissage, 0-1",
       "baseline": "Pixel y de la ligne de base",
       "segments": "Suites de points sans trou, en pixels x, y entrelacés",
-      "bottoms": "Aires empilées : pixel y du bord inférieur sous chaque point de segments"
+      "bottoms": "Aires empilées : pixel y du bord inférieur sous chaque point de segments",
+      "horizontal": "Graphiques horizontaux : l'aire est remplie vers le bord gauche (baseline et bottoms sont des pixels x)"
     },
     "ChartBarPrimitive": {
       "kind": "Type de forme",
@@ -196,7 +243,8 @@
       "color": "Couleur CSS",
       "rects": "x, y, largeur, hauteur entrelacés de chaque barre, en pixels",
       "colors": "Couleur CSS de chaque rectangle (chandeliers, cellules de carte de chaleur, barres colorées) ; color sinon",
-      "radius": "Rayon des coins en pixels"
+      "radius": "Rayon des coins en pixels",
+      "opacity": "Opacité du remplissage (boîtes des boîtes à moustaches, barres translucides)"
     },
     "ChartDotPrimitive": {
       "kind": "Type de forme",
@@ -212,12 +260,15 @@
       "toggle": "Masque / affiche un secteur, une étape ou une série radar par index",
       "on": "S’abonne à hover ou click ; renvoie la fonction de désabonnement",
       "destroy": "Retire le DOM et les écouteurs",
-      "getHidden": "Index des parts / étapes / séries masquées"
+      "getHidden": "Index des parts / étapes / séries masquées",
+      "drill": "Sunburst : zoome sur le nœud d’un chemin et émet drill",
+      "getDrillPath": "Sunburst : noms de la racine au nœud ciblé"
     },
     "ShapeChartEventMap": {
       "hover": "La forme survolée (ou ciblée au clavier) : index, name, value, percent, color (treemap : path) ; null quand le pointeur s’en va",
       "click": "La forme cliquée, touchée ou activée avec Entrée",
-      "toggle": "Un élément de légende (ou `toggle()`) a masqué ou affiché une part, une étape ou une série"
+      "toggle": "Un élément de légende (ou `toggle()`) a masqué ou affiché une part, une étape ou une série",
+      "drill": "Sunburst : le nœud ciblé a changé (ou va changer)"
     },
     "PieChartOptions": {
       "type": "\"pie\" (un anneau est un graphique en secteurs avec innerRadius)",
@@ -276,6 +327,8 @@
       "padding": "Espace autour du dessin, en pixels",
       "ariaLabel": "Nom accessible du graphique",
       "percentFormat": "Met en forme les parts (libellés, infobulle) ; une décimale par défaut",
+      "locale": "Locale BCP 47 des textes et nombres écrits par le graphique (lignes de l’infobulle, noms accessibles, formats des nombres et pourcentages, dates du calendrier) ; textes intégrés en anglais, chinois, japonais et français. Par défaut la langue de la page (`<html lang>`), puis celle du navigateur",
+      "texts": "Remplace des textes intégrés de la locale (lignes de l’infobulle comme `value`, `share`, `conversion`, noms accessibles comme `pieChart`, le message `noData`) ; `{name}`, `{label}` et `{index}` sont remplacés",
       "hidden": "Index des parts / étapes / séries masquées (contrôlé : un clic sur la légende émet seulement `toggle`)"
     },
     "CanvasShapeChartConfig": {
@@ -303,7 +356,9 @@
       "clearHover": "Retire le survol et l’infobulle",
       "on": "S’abonne à hover ou click ; renvoie la fonction de désabonnement",
       "destroy": "Arrête les animations et les écouteurs",
-      "getHidden": "Index des parts / étapes / séries masquées"
+      "getHidden": "Index des parts / étapes / séries masquées",
+      "drill": "Sunburst : zoome sur le nœud d’un chemin et émet drill",
+      "getDrillPath": "Sunburst : noms de la racine au nœud ciblé"
     }
   }
 }

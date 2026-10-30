@@ -1,0 +1,183 @@
+{
+  "title": "Diagramme en rayons de soleil",
+  "description": "Une hiérarchie dessinée en anneaux concentriques : chaque anneau est un niveau, chaque secteur une part de son parent. Cliquez sur un parent (ou appuyez sur Entrée) pour zoomer, sur le centre (ou Retour arrière) pour remonter ; la transition anime les angles et les anneaux. Survoler un secteur met en avant ses ancêtres et ses descendants, et les étiquettes suivent l'arc ou le rayon, selon la place.",
+  "demos": {
+    "disk-usage": {
+      "title": "Espace disque",
+      "description": "Dossiers et applications d'un ordinateur portable, en Go. Cliquez sur un dossier pour zoomer et sur le centre pour remonter ; onDrill renvoie le chemin affiché, indiqué sous le graphique."
+    },
+    "drill-down": {
+      "title": "Exploration contrôlée avec fil d'Ariane",
+      "description": "drillPath rend le focus contrôlé : les clics appellent seulement onDrill et le fil d'Ariane possède le chemin, ses boutons peuvent donc sauter à n'importe quel niveau. cornerRadius et padAngle arrondissent et séparent les secteurs."
+    },
+    "org": {
+      "title": "Organisation",
+      "description": "Effectifs par département, groupe et équipe. levels={2} n'affiche que deux anneaux à la fois (zoomez pour voir les équipes) et labels=\"radial\" écrit les noms le long du rayon."
+    },
+    "labels": {
+      "title": "Étiquettes",
+      "description": "Population par continent et par pays. labels choisit l'écriture des noms : auto prend l'arc ou le rayon pour chaque secteur, et les noms qui ne tiennent pas sont raccourcis ou omis. La légende masque / affiche les continents ; les noms de pays viennent d'Intl.DisplayNames."
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "Exploration",
+        "description": "Occupation du disque par dossier : touchez un dossier pour zoomer dessus et le centre pour remonter ; onDrill indique le chemin."
+      }
+    },
+    "data": {
+      "tapHint": "Touchez un dossier pour zoomer dessus.",
+      "path": "Affichage de {{path}}. Touchez le centre pour remonter."
+    }
+  },
+  "api": {
+    "SunburstChartProps": {
+      "data": "Nœuds : les feuilles portent une valeur, les parents additionnent leurs enfants",
+      "innerRadius": "Rayon du cercle central, en fraction du rayon extérieur",
+      "levels": "Anneaux affichés à la fois sous le nœud ciblé (moins s'ils feraient moins de 18 px)",
+      "startAngle": "Angle du premier nœud, en degrés dans le sens horaire depuis midi",
+      "padAngle": "Espace entre les secteurs, en pixels",
+      "cornerRadius": "Rayon des coins des secteurs, en pixels",
+      "labels": "Étiquettes des secteurs : auto écrit chaque nom le long de l'arc ou du rayon, selon ce qui tient le mieux ; tangential, radial ou none imposent un mode",
+      "drill": "Cliquer sur un parent (ou Entrée) zoome dessus ; cliquer sur le centre (ou Retour arrière) remonte",
+      "drillPath": "Noms de la racine au nœud ciblé ([] = la racine) ; rend l'exploration contrôlée",
+      "onDrill": "Appelé quand un parent ou le centre est cliqué (ou que drill() est appelé), avec le nouveau chemin"
+    },
+    "TreemapNode": {
+      "name": "Nom affiché dans le secteur, au centre et dans l'infobulle",
+      "value": "Valeur d'une feuille (les parents additionnent leurs enfants)",
+      "color": "Couleur ; les nœuds de premier niveau prennent la palette si absente, les enfants des nuances de leur parent",
+      "children": "Nœuds enfants"
+    },
+    "ShapeDrillEvent": {
+      "path": "Noms de la racine au nouveau nœud ciblé ([] = la racine)"
+    }
+  },
+  "data": {
+    "disk": {
+      "root": "Macintosh HD",
+      "applications": "Applications",
+      "documents": "Documents",
+      "projects": "Projets",
+      "archive": "Archives",
+      "pdfs": "PDF",
+      "spreadsheets": "Tableurs",
+      "photos": "Photos",
+      "developer": "Développement",
+      "caches": "Caches de paquets",
+      "simulators": "Simulateurs",
+      "system": "Système",
+      "music": "Musique",
+      "other": "Autres applications"
+    },
+    "gb": "{{value}} Go",
+    "diskAria": "Espace disque par dossier, en gigaoctets",
+    "diskPath": "Affichage de {{path}}. Cliquez sur le centre pour remonter.",
+    "diskHint": "Cliquez sur un dossier pour zoomer dessus.",
+    "org": {
+      "engineering": "Ingénierie",
+      "platform": "Plateforme",
+      "infrastructure": "Infrastructure",
+      "security": "Sécurité",
+      "devtools": "Outils développeurs",
+      "product": "Ingénierie produit",
+      "web": "Web",
+      "mobile": "Mobile",
+      "payments": "Paiements",
+      "data": "Données",
+      "analytics": "Analyse",
+      "ml": "Apprentissage automatique",
+      "sales": "Ventes",
+      "emea": "EMEA",
+      "americas": "Amériques",
+      "apac": "APAC",
+      "success": "Succès client",
+      "support": "Support",
+      "onboarding": "Intégration",
+      "marketing": "Marketing",
+      "brand": "Marque",
+      "growth": "Croissance",
+      "content": "Contenu",
+      "operations": "Opérations",
+      "finance": "Finance",
+      "people": "RH",
+      "legal": "Juridique",
+      "it": "Informatique"
+    },
+    "people": "{{value}} personnes",
+    "orgAria": "Effectifs par département, groupe et équipe",
+    "catalog": {
+      "all": "Tous les produits",
+      "electronics": "Électronique",
+      "phones": "Téléphones",
+      "flagship": "Haut de gamme",
+      "midRange": "Milieu de gamme",
+      "accessories": "Accessoires",
+      "laptops": "Ordinateurs portables",
+      "audio": "Audio",
+      "headphones": "Casques",
+      "speakers": "Enceintes",
+      "home": "Maison",
+      "kitchen": "Cuisine",
+      "furniture": "Mobilier",
+      "decor": "Décoration",
+      "fashion": "Mode",
+      "men": "Homme",
+      "women": "Femme",
+      "kids": "Enfant",
+      "sports": "Sport",
+      "outdoor": "Plein air",
+      "fitness": "Fitness"
+    },
+    "breadcrumb": "Chemin de la catégorie",
+    "catalogAria": "Chiffre d'affaires trimestriel par catégorie de produits",
+    "world": {
+      "asia": "Asie",
+      "africa": "Afrique",
+      "europe": "Europe",
+      "americas": "Amériques",
+      "oceania": "Océanie",
+      "other": "Autres pays"
+    },
+    "millions": "{{value}} M",
+    "labelsLabel": "Mode des étiquettes",
+    "labels": {
+      "auto": "Auto",
+      "tangential": "Le long de l'arc",
+      "radial": "Le long du rayon",
+      "none": "Aucune"
+    },
+    "worldAria": "Population mondiale par continent et par pays, en millions"
+  },
+  "wc": {
+    "demos": {
+      "disk-usage": {
+        "title": "Occupation du disque",
+        "description": "Les dossiers au centre, leur contenu autour ; cliquez sur un dossier pour zoomer, au centre pour remonter."
+      },
+      "drill-down": {
+        "title": "Fil d’Ariane de l’exploration",
+        "description": "L’évènement drill donne le chemin de la racine au nœud ciblé : un fil d’Ariane hors du graphique."
+      }
+    },
+    "minerva-sunburst-chart": {
+      "props": {
+        "noDrill": "Désactive l’exploration (par défaut, cliquer sur un parent zoome dessus)",
+        "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+        "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+        "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+      },
+      "events": {
+        "minerva-drill": "Un parent ou le centre a été cliqué (ou drill() appelé) ; detail : { path }",
+        "minerva-hover": "La marque survolée (ou ciblée au clavier) a changé ; detail : { index, name, value, share }, null quand rien n'est survolé",
+        "minerva-click": "Une marque a été cliquée, touchée ou activée avec Entrée ; detail : { index, name, value, share }",
+        "minerva-toggle": "Un élément de la légende a été cliqué (ou toggle() appelé) ; detail : { index, hidden, hiddenIndexes }"
+      },
+      "methods": {
+        "drill": "Zoome sur le nœud d’un chemin (noms depuis la racine, [] = la racine)",
+        "toggle": "Masque / affiche une part, une étape, une série radar ou un nœud de premier niveau du treemap par son index"
+      }
+    }
+  }
+}

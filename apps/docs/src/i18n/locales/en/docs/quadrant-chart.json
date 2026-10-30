@@ -1,5 +1,5 @@
 {
-  "title": "QuadrantChart",
+  "title": "Quadrant chart",
   "description": "A four-quadrant matrix (priority, Eisenhower, BCG...) with tinted, titled quadrants and labelled dots.",
   "demos": {
     "basic": {
@@ -13,7 +13,125 @@
     "draggable": {
       "title": "Draggable task matrix",
       "description": "showTicks={false} and axisLabels turn the chart into a task board: drag a task to another quadrant (onPointDrop updates its position), click an empty area or the + button (quadrantContent) to add one; renderTooltip shows a React tooltip."
+    },
+    "bcg": {
+      "title": "BCG matrix",
+      "description": "Product portfolio by relative market share and market growth: xDomain, yDomain, xSplit and ySplit place the dividing lines at a share of 1 and a growth of 10%, reverseX puts the leaders on the left and the dot size is the revenue."
+    },
+    "risk": {
+      "title": "Risk matrix",
+      "description": "Project risks scored from 1 to 5 by likelihood and impact, with quadrant colors from accept (green) to act now (red); click a risk to select it, an empty area to clear."
+    },
+    "positioning": {
+      "title": "Positioning map",
+      "description": "Price against perceived quality from a customer survey: axisLabels replace the ticks and our brand stands out with its own color and size."
     }
+  },
+  "data": {
+    "features": {
+      "darkMode": "Dark mode",
+      "sso": "Single sign-on",
+      "csvExport": "CSV export",
+      "offlineSync": "Offline sync",
+      "newIcons": "New icons",
+      "pluginApi": "Plugin API",
+      "customFonts": "Custom fonts",
+      "tooltips": "Tooltips",
+      "rewrite": "Rewrite",
+      "search": "Search"
+    },
+    "quickWins": "Quick wins",
+    "bigBets": "Big bets",
+    "fillIns": "Fill-ins",
+    "timeSinks": "Time sinks",
+    "moneyPits": "Money pits",
+    "effort": "Effort",
+    "impact": "Impact",
+    "feature": "Feature",
+    "featuresAria": "Features by effort and impact",
+    "featureStatus": "{{feature}}: effort {{effort}}, impact {{impact}}",
+    "tapFeature": "Tap a feature",
+    "tasks": {
+      "loginOutage": "Fix login outage",
+      "taxFiling": "Tax filing",
+      "quarterlyPlanning": "Quarterly planning",
+      "mentoring": "Mentoring",
+      "bookTravel": "Book travel",
+      "meetings": "Most meetings",
+      "inboxZero": "Inbox zero",
+      "socialMedia": "Social media"
+    },
+    "doFirst": "Do first",
+    "schedule": "Schedule",
+    "delegate": "Delegate",
+    "eliminate": "Eliminate",
+    "urgency": "Urgency",
+    "importance": "Importance",
+    "task": "Task",
+    "eisenhowerAria": "Eisenhower matrix of tasks",
+    "taskStatus": "{{task}}: urgency {{urgency}}, importance {{importance}}",
+    "clickTask": "Click a task",
+    "newTask": "Task {{n}}",
+    "taskAdded": "{{task}} added to “{{quadrant}}”",
+    "addTask": "Add a task to “{{quadrant}}”",
+    "important": "Important",
+    "notImportant": "Not important",
+    "urgent": "Urgent",
+    "notUrgent": "Not urgent",
+    "taskMoved": "{{task}} moved to “{{quadrant}}”",
+    "taskScores": "Urgency {{urgency}} · Importance {{importance}}",
+    "boardAria": "Task matrix: drag tasks between quadrants",
+    "dragHint": "Drag a task to another quadrant, or click an empty area to add one",
+    "quadrantTapped": "“{{quadrant}}” tapped",
+    "dragHintNative": "Drag a task to another quadrant",
+    "products": {
+      "cloud": "Cloud hosting",
+      "analytics": "Analytics",
+      "mobile": "Mobile SDK",
+      "licenses": "On-premise licenses",
+      "support": "Support plans",
+      "hardware": "Hardware",
+      "training": "Training"
+    },
+    "stars": "Stars",
+    "questionMarks": "Question marks",
+    "cashCows": "Cash cows",
+    "dogs": "Dogs",
+    "relativeShare": "Relative market share",
+    "marketGrowth": "Market growth (%)",
+    "product": "Product",
+    "bcgAria": "BCG matrix of the product portfolio",
+    "risks": {
+      "keyPerson": "Key person leaves",
+      "vendorDelay": "Vendor delay",
+      "dataBreach": "Data breach",
+      "scopeCreep": "Scope creep",
+      "budgetCut": "Budget cut",
+      "regulation": "New regulation",
+      "outage": "Cloud outage",
+      "turnover": "Office move"
+    },
+    "monitor": "Monitor",
+    "actNow": "Act now",
+    "accept": "Accept",
+    "mitigate": "Mitigate",
+    "likelihood": "Likelihood",
+    "severity": "Impact",
+    "risk": "Risk",
+    "riskSelected": "Selected: {{risk}}",
+    "clickRisk": "Click a risk",
+    "riskAria": "Risk matrix of the project by likelihood and impact",
+    "ourBrand": "{{name}} (us)",
+    "bestValue": "Best value",
+    "premium": "Premium",
+    "budget": "Budget",
+    "overpriced": "Overpriced",
+    "highQuality": "High quality",
+    "lowQuality": "Low quality",
+    "lowPrice": "Low price",
+    "highPrice": "High price",
+    "brand": "Brand",
+    "positioningAria": "Brands by price and perceived quality"
   },
   "api": {
     "QuadrantChartProps": {
@@ -78,6 +196,43 @@
       "draggable": {
         "title": "Drag between quadrants",
         "description": "Drag a task to another quadrant: onPointDrop receives the drop target; the + buttons are quadrantContent and the tooltip is a renderTooltip view."
+      }
+    }
+  },
+  "wc": {
+    "demos": {
+      "priorities": {
+        "title": "Priority matrix",
+        "description": "Features placed by effort and impact, with a title per quadrant and labels that never overlap."
+      },
+      "point-click": {
+        "title": "Clicked task and quadrant",
+        "description": "An Eisenhower matrix with the urgent tasks on the left (reversed x axis): click a task or the empty area of a quadrant."
+      }
+    },
+    "minerva-quadrant-chart": {
+      "props": {
+        "hideTicks": "Hides the numeric ticks of the axes (only the matrix remains)",
+        "hideLabels": "Hides the labels next to the dots",
+        "dragPoints": "Lets the user drag the dots (minerva-point-drop; update points to move them)",
+        "height": "Height of the chart, the legend included: pixels or any CSS length",
+        "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+        "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+      },
+      "events": {
+        "minerva-point-click": "A dot was clicked; detail: { point, index }",
+        "minerva-quadrant-click": "The empty area of a quadrant was clicked; detail: { quadrant, x, y }",
+        "minerva-point-drop": "A dragged dot was released; detail: { point, index, x, y, quadrant }",
+        "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
+        "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
+        "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",
+        "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+      },
+      "methods": {
+        "resetZoom": "Shows the whole data range",
+        "getView": "Visible range, null before the engine is created",
+        "setView": "Sets the visible range",
+        "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
       }
     }
   }

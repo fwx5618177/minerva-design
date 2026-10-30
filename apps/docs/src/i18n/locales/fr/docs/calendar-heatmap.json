@@ -1,0 +1,107 @@
+{
+  "title": "Calendrier thermique",
+  "description": "Des valeurs quotidiennes sur un calendrier, comme les graphiques de contributions : commits, séries d'apprentissage, entraînements, commandes. Chaque jour est une case colorée selon son niveau ; les noms des mois et des jours, les dates de l'infobulle et le premier jour de la semaine suivent la locale. La légende masque / affiche les niveaux ; les flèches se déplacent par jour et par semaine, et l'infobulle indique la date.",
+  "demos": {
+    "contributions": {
+      "title": "Contributions sur un an",
+      "description": "Sans range, le graphique montre les 53 semaines qui se terminent au dernier jour des données. color fixe la couleur du niveau le plus haut (les niveaux inférieurs sont plus clairs, en thème clair comme sombre) ; onClick renvoie le jour, avec sa date formatée dans name et sa date AAAA-MM-JJ dans date."
+    },
+    "streak": {
+      "title": "Série d'apprentissage",
+      "description": "range={2026} montre toute l'année, jours à venir compris. thresholds fixe les bornes des niveaux (1–15, 16–30, 31–60 et plus de 60 minutes) et format leurs noms ; les séries sont calculées à partir des mêmes données."
+    },
+    "multi-year": {
+      "title": "Plusieurs années",
+      "description": "Une plage de plus d'un an est dessinée en une bande par année, l'année à côté ; la hauteur par défaut augmente avec le nombre de bandes."
+    },
+    "months": {
+      "title": "Calendriers mensuels",
+      "description": "layout=\"months\" dessine un petit calendrier par mois, dans la grille qui donne les plus grandes cases. weekStart remplace le premier jour de la semaine donné par la locale ; les jours sans commande (fermé le lundi) restent vides."
+    },
+    "locale": {
+      "title": "Locales",
+      "description": "locale traduit les noms des mois et des jours et les dates de l'infobulle, et donne le premier jour de la semaine (dimanche aux États-Unis et au Japon, lundi en France et en Allemagne, samedi en Égypte). maxCellSize garde des cases petites sur les grands écrans."
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "Simple",
+        "description": "Commits par jour sur les quatre derniers mois, une période qui tient sur un téléphone ; les noms des mois et des jours suivent la langue de l'application, un toucher sélectionne un jour."
+      }
+    },
+    "data": {
+      "total": "{{total}} commits ces quatre derniers mois",
+      "tapDay": "Touchez un jour pour le sélectionner"
+    }
+  },
+  "api": {
+    "CalendarHeatmapProps": {
+      "data": "Valeurs quotidiennes : une date (chaîne AAAA-MM-JJ, Date ou horodatage) et une valeur ; les valeurs d'un même jour s'additionnent",
+      "range": "Jours affichés : une année (2026) ou une plage [début, fin] incluse ; par défaut les 53 semaines qui se terminent au dernier jour des données",
+      "layout": "weeks : une colonne par semaine et une ligne par jour de la semaine (une bande par année pour les longues plages) ; months : un petit calendrier par mois",
+      "weekStart": "Premier jour de la semaine, 0 = dimanche … 6 = samedi ; donné par locale par défaut",
+      "locale": "Locale BCP 47 des noms des mois et des jours, des dates de l’infobulle, du weekStart par défaut et des textes intégrés ; par défaut la langue de la page (`<html lang>`)",
+      "color": "Couleur du niveau le plus haut (les niveaux inférieurs sont plus clairs) ; la première couleur de la palette par défaut",
+      "colors": "Couleurs des niveaux, du plus bas au plus haut (remplace color et fixe le nombre de niveaux)",
+      "levels": "Nombre de niveaux de couleur au-dessus des jours vides",
+      "thresholds": "Bornes supérieures des niveaux sauf le dernier, croissantes ([2, 5, 10] : 1–2, 3–5, 6–10, plus) ; un partage égal de la plus grande valeur par défaut",
+      "gap": "Espace entre les cases, en pixels",
+      "radius": "Rayon des coins des cases, en pixels",
+      "maxCellSize": "Taille maximale d'une case, en pixels (les cases rétrécissent pour tenir dans la largeur)",
+      "monthLabels": "Affiche les noms des mois (et les années)",
+      "weekdayLabels": "Affiche les noms des jours à côté (weeks) ou au-dessus (months) des cases"
+    },
+    "CalendarDatum": {
+      "date": "Jour de la valeur : chaîne AAAA-MM-JJ, Date ou horodatage (jour du calendrier local)",
+      "value": "Valeur du jour (les valeurs négatives comptent pour 0)"
+    }
+  },
+  "data": {
+    "commitsTotal": "{{total}} commits sur la dernière année",
+    "commitsAria": "Commits par jour sur la dernière année",
+    "commitsDay": "{{date}} : {{value}} commits",
+    "commitsHint": "Cliquez sur un jour (ou donnez le focus au graphique, déplacez-vous avec les flèches et appuyez sur Entrée) pour le sélectionner",
+    "minutes": "{{value}} min",
+    "streaks": "Série en cours : {{current}} jours · plus longue série : {{longest}} jours",
+    "lessonsAria": "Minutes de pratique d'une langue par jour en 2026",
+    "lessonDay": "{{date}} : {{value}} de pratique",
+    "missedDay": "{{date}} : pas de pratique",
+    "lessonsHint": "Cliquez sur un jour pour voir son temps de pratique",
+    "km": "{{value}} km",
+    "runsAria": "Distance de course par jour de 2024 à 2026",
+    "runsYear": "{{year}} : {{value}}",
+    "weekStartLabel": "Premier jour de la semaine",
+    "fromLocale": "Selon la locale",
+    "ordersAria": "Commandes en ligne par jour en 2026, par mois",
+    "localeLabel": "Locale",
+    "deploysAria": "Déploiements par jour au premier semestre 2026"
+  },
+  "wc": {
+    "demos": {
+      "contributions": {
+        "title": "Une année de contributions",
+        "description": "Une valeur par jour de 2025 ; les noms des mois et des jours suivent la locale de la langue de la page."
+      },
+      "months": {
+        "title": "Calendriers mensuels",
+        "description": "Un petit calendrier par mois, cinq niveaux de couleur aux seuils explicites (pas par jour)."
+      }
+    },
+    "minerva-calendar-heatmap": {
+      "props": {
+        "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+        "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+        "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+      },
+      "events": {
+        "minerva-hover": "La marque survolée (ou ciblée au clavier) a changé ; detail : { index, name, value, share }, null quand rien n'est survolé",
+        "minerva-click": "Une marque a été cliquée, touchée ou activée avec Entrée ; detail : { index, name, value, share }",
+        "minerva-toggle": "Un élément de la légende a été cliqué (ou toggle() appelé) ; detail : { index, hidden, hiddenIndexes }"
+      },
+      "methods": {
+        "toggle": "Masque / affiche une part, une étape, une série radar ou un nœud de premier niveau du treemap par son index"
+      }
+    }
+  }
+}

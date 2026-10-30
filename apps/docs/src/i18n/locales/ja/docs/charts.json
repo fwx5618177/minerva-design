@@ -1,10 +1,10 @@
 {
   "title": "チャート",
-  "description": "数百万ポイントでも 60 fps を保つ GPU アクセラレーションのチャートと、Canvas2D で描く形状チャート。Chart は折れ線・面・棒・散布図・ローソク足・ヒートマップの系列を組み合わせられ、LineChart、AreaChart、BarChart、ScatterChart、CandlestickChart、HeatmapChart、Sparkline、QuadrantChart はそのプリセットです。PieChart、DonutChart、RadarChart、GaugeChart、FunnelChart、TreemapChart は構成比、プロファイル、KPI、階層を表します。ホバー時は点の周りに柔らかなハロー、棒の背後に柔らかな帯が表示され、ツールチップも軽やかになりました。",
+  "description": "数百万ポイントでも 60 fps を保つ GPU アクセラレーションのチャートと、Canvas2D で描く形状チャート：推移、比較、統計、構成比、階層とフロー、金融・トレーディング、3D をカバーします。Chart は折れ線・面・棒・散布図・ローソク足・ヒートマップの系列を組み合わせられ、その他のコンポーネントは 1 種類のチャートのプリセットです。まずは下のギャラリーから：すべてのチャートタイプをライブのサムネイルで紹介し、それぞれのページへリンクしています。",
   "intro": {
     "rendering": {
       "title": "描画のしくみ",
-      "text": "データレイヤーは WebGPU で描画し、使えない場合は WebGL2、次に Canvas2D にフォールバックします（renderer=\"auto\"）。準備ができるとルート要素に data-renderer が付きます。チャートは 4 つのレイヤーで構成されます：",
+      "text": "データレイヤーは WebGPU で描画し、使えない場合は WebGL2、WebGL、Canvas2D の順にフォールバックします（renderer=\"auto\"）。準備ができるとルート要素に data-renderer が付きます。チャートは 4 つのレイヤーで構成されます：",
       "background": "Canvas2D 背景：グリッド、軸、注釈エリア",
       "data": "GPU データレイヤー：線、面、棒、点",
       "labels": "Canvas2D オーバーレイ：目盛りラベル、ポイントラベル、ハイライト",
@@ -12,7 +12,7 @@
     },
     "largeData": {
       "title": "大量データ",
-      "text": "大きな系列は型付き配列の列（{ x: Float64Array, y: Float64Array }）で渡すと、ポイントごとのオブジェクトは作られません。x がソート済みならヒットテストは二分探索になり、表示範囲だけが描画されるため、100 万ポイントの折れ線や散布図も WebGPU と WebGL2 で 60 fps を保ちます。"
+      "text": "大きな系列は型付き配列の列（{ x: Float64Array, y: Float64Array }）で渡すと、ポイントごとのオブジェクトは作られません。x がソート済みならヒットテストは二分探索になり、表示範囲だけが描画されるため、100 万ポイントの折れ線や散布図も WebGPU、WebGL2、WebGL で 60 fps を保ちます。"
     },
     "interaction": {
       "title": "操作とキーボード",
@@ -23,9 +23,40 @@
       "title": "テーマとエンジン",
       "text": "色は Minerva の CSS 変数から取得します：定義されていれば --chart-series-1..8、なければテーマカラー（--primary-color、--success-color など）。テーマの切り替えは自動で反映されます。",
       "core": "minerva-design/charts/core は React を含まない同じエンジンです：createChart(container, options) はどのフレームワークでも動作します。"
+    },
+    "families": {
+      "title": "チャートの種類",
+      "text": "すべてのチャートタイプを 5 つのギャラリーに分けてライブのサムネイルで紹介します。各キャプションはそのチャートのページへリンクしています：",
+      "basic": "基本の 2D：<line>折れ線グラフ</line>、<area>面グラフ</area>、<rangeArea>範囲面グラフ</rangeArea>、<bar>棒グラフ</bar>、<horizontalBar>横棒グラフ</horizontalBar>、<mixed>複合 / 2 軸グラフ</mixed>、<scatter>散布図</scatter>、<bubble>バブルチャート</bubble>、<sparkline>スパークライン</sparkline>。",
+      "statistics": "統計・KPI・計画：<histogram>ヒストグラム</histogram>、<boxplot>箱ひげ図</boxplot>、<waterfall>ウォーターフォールチャート</waterfall>、<heatmap>ヒートマップ</heatmap>、<calendar>カレンダーヒートマップ</calendar>、<gauge>ゲージ</gauge>、<bullet>ブレットグラフ</bullet>、<radialBar>円形棒グラフ</radialBar>、<gantt>ガントチャート</gantt>。",
+      "relations": "構成比・関係・階層：<pie>円グラフとドーナツグラフ</pie>、<radar>レーダーチャート</radar>、<funnel>ファネルチャート</funnel>、<quadrant>4 象限チャート</quadrant>、<treemap>ツリーマップ</treemap>、<sunburst>サンバースト図</sunburst>、<sankey>サンキー図</sankey>。",
+      "finance": "金融・トレーディング：<candlestick>ローソク足</candlestick>、<trading>トレーディングチャート</trading>、<indicators>テクニカル指標</indicators>、<depth>デプスチャート</depth>、<orderBook>板情報</orderBook>、<orderBookHeatmap>板情報ヒートマップ</orderBookHeatmap>、<timeSales>歩み値</timeSales>。",
+      "threeD": "3D：<scatter>3D 散布図と 3D 折れ線グラフ</scatter>、<surface>3D サーフェスチャート</surface>、<bar>3D 棒グラフ</bar>。",
+      "lazy": "サムネイルはビューポートの近くにあるときだけマウントされます（IntersectionObserver）。ページは軽快なまま、ブラウザの上限を超える GPU コンテキストを使うこともありません。板情報系のウィジェットはシミュレーションの相場を流し、画面外では一時停止します。",
+      "fallback": "GPU チャートは WebGPU → WebGL2 → WebGL → Canvas2D の 4 段階でバックエンドを選ぶため、どのブラウザでも描画でき、GPU が失われても動き続けます。<engine>チャートエンジン</engine>と<performance>パフォーマンス</performance>のページを参照してください。"
     }
   },
   "demos": {
+    "gallery": {
+      "title": "ギャラリー：基本の 2D チャート",
+      "description": "折れ線、積み上げ面、月ごとの気温の範囲、値ラベル付きの棒、横向きのランキング、売上の棒と第 2 軸の成長率の線、散布図、リーチをサイズにしたキャンペーンのバブル、KPI のスパークライン。各キャプションはチャートのページへリンクしています。ホバーするとツールチップが表示されます。"
+    },
+    "gallery-statistics": {
+      "title": "ギャラリー：統計・KPI・計画",
+      "description": "レイテンシのヒストグラム、サービスごとの箱ひげ図、売上ブリッジのウォーターフォール、曜日別負荷のヒートマップ、コミットのカレンダー、帯付きのゲージ、目標と比べる KPI のブレットグラフ、進捗リング、リリース計画のガントチャート。"
+    },
+    "gallery-relations": {
+      "title": "ギャラリー：構成比・関係・階層",
+      "description": "ブラウザシェアの円グラフ、合計を中央に表示したプラン別ユーザーのドーナツ、ベンダー比較のレーダー、登録ファネル、優先度の 4 象限、予算のツリーマップ、人員構成のサンバースト、流入元から登録までのサンキー図。"
+    },
+    "gallery-finance": {
+      "title": "ギャラリー：金融・トレーディング",
+      "description": "ローソク足、移動平均と出来高付きのトレーディングチャート、ボリンジャーバンドと RSI、そしてシミュレーションの相場を流す板情報系ウィジェット（デプスチャート、価格ラダー、流動性ヒートマップ、歩み値）。スクロールして表示されたときにマウントされます。Ctrl / ⌘ + ホイールでズームします。"
+    },
+    "gallery-3d": {
+      "title": "ギャラリー：3D チャート",
+      "description": "ゆっくり回転する 3D 散布図のクラスター、らせんの軌跡、波紋のサーフェス、地域・四半期ごとの売上の 3D 棒グラフ。ドラッグで回転でき、表示中だけ描画されます。"
+    },
     "mixed": {
       "title": "混合系列",
       "description": "系列ごとに type を指定します：棒と折れ線がカテゴリ軸を共有し、下部に凡例を表示します。"
@@ -38,22 +69,406 @@
       "title": "注釈",
       "description": "破線の基準線、水平の帯（y0 / y1 のみの rect）、x の範囲。それぞれにラベル付き。"
     },
-    "gallery": {
-      "title": "ギャラリー",
-      "description": "すべてのチャートタイプの小さな例を、それぞれのページへリンクするカードで紹介します：折れ線、なめらかな積み上げ面グラフ、値ラベル付きの棒、散布図、ローソク足、ヒートマップ、スパークライン、円、ドーナツ、レーダー、ゲージ、ファネル、ツリーマップ、象限。ホバーすると、点には柔らかなハロー、棒には柔らかな帯が表示されます。"
+    "dashboard": {
+      "title": "分析ダッシュボード",
+      "description": "ネットショップの 30 日分のデータを複数のチャートで表示します。スパークライン付きの KPI カード、新規とリピーターの訪問者の積み上げ面グラフ、中央に合計を表示したデバイス別ドーナツ、ラベル付き棒グラフの人気ページです。"
+    },
+    "palette": {
+      "title": "パレット",
+      "description": "palette は GPU チャートでも図形チャートでも系列の色を置き換えます。テーマの色、色覚多様性に配慮した配色（Okabe-Ito）、青の連続配色、暖色系から選べます。未指定なら --chart-series-1..8 に従います。"
+    }
+  },
+  "data": {
+    "revenue": "売上",
+    "target": "目標",
+    "revenueAria": "月間売上と目標の比較",
+    "p95": "p95 レイテンシ",
+    "normalRange": "正常範囲",
+    "deploy": "デプロイ",
+    "slo": "SLO {{value}}",
+    "minutes": "分",
+    "latencyAria": "SLO と正常範囲を示した p95 レイテンシ",
+    "pointStatus": "{{month}}：{{value}}（{{series}}）",
+    "tapHint": "棒または線をタップしてください",
+    "randomWalk": "ランダムウォーク",
+    "renderer": "レンダラー",
+    "randomWalkAria": "50,000 点のランダムウォーク",
+    "rendererStatus": "指定：{{requested}} · 描画：{{active}}",
+    "visits": "訪問数",
+    "signups": "登録数",
+    "web": "Web",
+    "orders": "注文",
+    "quarter": "第{{n}}四半期",
+    "team": "チーム {{name}}",
+    "plans": {
+      "free": "無料",
+      "pro": "プロ",
+      "team": "チーム"
+    },
+    "criteria": {
+      "speed": "速度",
+      "quality": "品質",
+      "cost": "コスト",
+      "support": "サポート",
+      "scale": "規模"
+    },
+    "vendor": "ベンダー {{name}}",
+    "stages": {
+      "visited": "訪問",
+      "signedUp": "登録",
+      "activated": "利用開始",
+      "paid": "有料化"
+    },
+    "budget": {
+      "product": "プロダクト",
+      "design": "デザイン",
+      "engineering": "エンジニアリング",
+      "goToMarket": "市場開拓",
+      "sales": "営業",
+      "marketing": "マーケティング"
+    },
+    "tasks": {
+      "release": "リリース",
+      "roadmap": "ロードマップ",
+      "emails": "メール",
+      "cleanup": "整理"
+    },
+    "quadrants": {
+      "plan": "計画する",
+      "doFirst": "すぐやる",
+      "drop": "やめる",
+      "delegate": "任せる"
+    },
+    "cards": {
+      "line": {
+        "title": "折れ線グラフ",
+        "description": "推移",
+        "aria": "月ごとの訪問数と登録数"
+      },
+      "area": {
+        "title": "面グラフ",
+        "description": "なめらか、積み上げ",
+        "aria": "プラットフォーム別ユーザー数（積み上げ）"
+      },
+      "bar": {
+        "title": "棒グラフ",
+        "description": "値ラベル、棒ごとの色",
+        "aria": "四半期ごとの注文数"
+      },
+      "scatter": {
+        "title": "散布図",
+        "description": "相関、クラスター",
+        "aria": "2 つの測定値のクラスター"
+      },
+      "candlestick": {
+        "title": "ローソク足チャート",
+        "description": "始値、高値、安値、終値",
+        "aria": "日足の価格"
+      },
+      "heatmap": {
+        "title": "ヒートマップ",
+        "description": "グリッド上の値",
+        "aria": "曜日と時間帯別の負荷"
+      },
+      "sparkline": {
+        "title": "スパークライン",
+        "description": "単語サイズの推移"
+      },
+      "pie": {
+        "title": "円グラフ",
+        "description": "構成比",
+        "aria": "ブラウザのシェア"
+      },
+      "donut": {
+        "title": "ドーナツグラフ",
+        "description": "合計付きの構成比",
+        "aria": "プラン別ユーザー数"
+      },
+      "radar": {
+        "title": "レーダーチャート",
+        "description": "複数軸のプロファイル",
+        "aria": "ベンダーの比較"
+      },
+      "gauge": {
+        "title": "ゲージ",
+        "description": "目標に対する 1 つの値"
+      },
+      "funnel": {
+        "title": "ファネルチャート",
+        "description": "段階とコンバージョン",
+        "aria": "登録ファネル"
+      },
+      "treemap": {
+        "title": "ツリーマップ",
+        "description": "階層的な構成比",
+        "aria": "部門別予算"
+      },
+      "quadrant": {
+        "title": "4象限チャート",
+        "description": "優先度マトリクス",
+        "aria": "緊急度と重要度によるタスク"
+      },
+      "rangeArea": {
+        "title": "範囲面グラフ",
+        "description": "最小〜最大の帯、予測",
+        "aria": "月ごとの平均最低・最高気温"
+      },
+      "horizontalBar": {
+        "title": "横棒グラフ",
+        "description": "ランキング、長いラベル",
+        "aria": "言語ごとの開発者の利用率"
+      },
+      "mixed": {
+        "title": "複合グラフ",
+        "description": "2 軸の棒と線",
+        "aria": "四半期ごとの売上と成長率"
+      },
+      "bubble": {
+        "title": "バブルチャート",
+        "description": "3 つ目の値をサイズで表現",
+        "aria": "キャンペーンごとの費用・登録数・リーチ"
+      },
+      "histogram": {
+        "title": "ヒストグラム",
+        "description": "分布",
+        "aria": "応答時間の分布"
+      },
+      "boxplot": {
+        "title": "箱ひげ図",
+        "description": "四分位数と外れ値",
+        "aria": "サービスごとの応答時間"
+      },
+      "waterfall": {
+        "title": "ウォーターフォールチャート",
+        "description": "合計への寄与",
+        "aria": "年間経常収益のブリッジ"
+      },
+      "calendar": {
+        "title": "カレンダーヒートマップ",
+        "description": "日々のアクティビティ",
+        "aria": "日ごとのコミット数"
+      },
+      "bullet": {
+        "title": "ブレットグラフ",
+        "description": "KPI と目標の比較",
+        "aria": "四半期の KPI と目標"
+      },
+      "radialBar": {
+        "title": "円形棒グラフ",
+        "description": "進捗リング",
+        "aria": "四半期目標の進捗"
+      },
+      "gantt": {
+        "title": "ガントチャート",
+        "description": "スケジュールと進捗",
+        "aria": "リリース計画"
+      },
+      "sunburst": {
+        "title": "サンバースト図",
+        "description": "入れ子の階層",
+        "aria": "部門・チームごとの人数"
+      },
+      "sankey": {
+        "title": "サンキー図",
+        "description": "段階間のフロー",
+        "aria": "流入元ごとの訪問から登録まで"
+      },
+      "trading": {
+        "title": "トレーディングチャート",
+        "description": "ローソク足・出来高・パンとズーム",
+        "aria": "BTC/USDT の 1 時間足と出来高"
+      },
+      "indicators": {
+        "title": "テクニカル指標",
+        "description": "MA、MACD、RSI、ボリンジャーバンド…",
+        "aria": "BTC/USDT の日足とボリンジャーバンド、RSI"
+      },
+      "depth": {
+        "title": "デプスチャート",
+        "description": "買い・売りの累積数量",
+        "aria": "リアルタイムの市場の厚み"
+      },
+      "orderBook": {
+        "title": "板情報",
+        "description": "リアルタイムの価格ラダー",
+        "aria": "リアルタイムの板情報"
+      },
+      "orderBookHeatmap": {
+        "title": "板ヒートマップ",
+        "description": "流動性の推移",
+        "aria": "直近 30 秒の流動性ヒートマップ"
+      },
+      "timeSales": {
+        "title": "歩み値",
+        "description": "約定履歴",
+        "aria": "最新の約定"
+      },
+      "scatter3d": {
+        "title": "3D 散布図",
+        "description": "3 次元のクラスター",
+        "aria": "3D 空間の 3 つの点群"
+      },
+      "line3d": {
+        "title": "3D 折れ線グラフ",
+        "description": "軌跡",
+        "aria": "3D のらせん軌跡"
+      },
+      "surface3d": {
+        "title": "3D サーフェスチャート",
+        "description": "z = f(x, y)、地形",
+        "aria": "波紋のサーフェス"
+      },
+      "bar3d": {
+        "title": "3D 棒グラフ",
+        "description": "カテゴリ格子上の値",
+        "aria": "地域・四半期ごとの売上"
+      }
+    },
+    "load": "負荷",
+    "revenueLabel": "売上",
+    "revenueTrendAria": "売上の推移",
+    "errorsLabel": "エラー",
+    "errorsTrendAria": "エラーの推移",
+    "users": "ユーザー",
+    "uptimeScore": "稼働スコア",
+    "urgency": "緊急度",
+    "importance": "重要度",
+    "newVisitors": "新規訪問者",
+    "returningVisitors": "リピーター",
+    "devices": {
+      "mobile": "モバイル",
+      "desktop": "デスクトップ",
+      "tablet": "タブレット"
+    },
+    "pageViews": "ページビュー",
+    "visitors": "訪問者",
+    "ordersLabel": "注文",
+    "conversion": "コンバージョン率",
+    "last30Aria": "{{metric}}（過去 30 日）",
+    "trafficAria": "日別の新規訪問者とリピーター（積み上げ）",
+    "devicesAria": "デバイス別の訪問者",
+    "topPagesAria": "閲覧数の多いページ",
+    "channels": {
+      "email": "メール",
+      "chat": "チャット",
+      "phone": "電話",
+      "social": "SNS",
+      "community": "コミュニティ"
+    },
+    "palette": "パレット",
+    "palettes": {
+      "theme": "テーマ",
+      "colorblind": "色覚配慮",
+      "blues": "ブルー",
+      "warm": "暖色"
+    },
+    "requestsAria": "チャネル別・四半期ごとのサポート依頼",
+    "channelsAria": "チャネル別のサポート依頼の割合",
+    "temperature": "気温",
+    "developers": "開発者",
+    "growth": "成長率",
+    "reach": "リーチ",
+    "services": {
+      "gateway": "ゲートウェイ",
+      "search": "検索",
+      "checkout": "決済",
+      "images": "画像"
+    },
+    "bridge": {
+      "lastYear": "昨年",
+      "newCustomers": "新規顧客",
+      "expansion": "アップセル",
+      "churn": "解約",
+      "pricing": "価格改定",
+      "thisYear": "今年"
+    },
+    "kpis": {
+      "revenue": "売上（千ドル）",
+      "profit": "利益率（%）",
+      "satisfaction": "満足度"
+    },
+    "objectives": {
+      "revenue": "売上",
+      "users": "アクティブユーザー",
+      "retention": "継続率"
+    },
+    "plan": {
+      "research": "調査",
+      "design": "設計",
+      "build": "開発",
+      "test": "テスト"
+    },
+    "ranges": {
+      "poor": "不良",
+      "fair": "普通",
+      "good": "良好"
+    },
+    "stats": {
+      "max": "最大値",
+      "q3": "第 3 四分位数",
+      "median": "中央値",
+      "q1": "第 1 四分位数",
+      "min": "最小値",
+      "outliers": "外れ値"
+    },
+    "requests": "リクエスト数",
+    "responseTime": "応答時間",
+    "amount": "金額",
+    "today": "今日",
+    "taskName": "タスク",
+    "progress": "進捗",
+    "org": {
+      "engineering": "エンジニアリング",
+      "platform": "プラットフォーム",
+      "web": "Web",
+      "mobile": "モバイル",
+      "sales": "営業",
+      "emea": "EMEA",
+      "americas": "南北アメリカ",
+      "operations": "オペレーション",
+      "support": "サポート",
+      "finance": "財務"
+    },
+    "flow": {
+      "search": "検索",
+      "social": "ソーシャル",
+      "email": "メール",
+      "site": "ウェブサイト",
+      "signedUp": "登録済み",
+      "left": "離脱"
+    },
+    "people": "{{value}} 人",
+    "price": "価格",
+    "ohlcLabels": {
+      "open": "始値",
+      "high": "高値",
+      "low": "安値",
+      "close": "終値"
+    },
+    "cluster": "クラスター {{name}}",
+    "trajectory": "軌跡",
+    "ripple": "波紋",
+    "sales": "売上",
+    "regions": {
+      "north": "北部",
+      "south": "南部",
+      "east": "東部",
+      "west": "西部"
     }
   },
   "api": {
     "ChartProps": {
       "series": "データ系列。系列ごとに type を指定",
-      "stackMode": "normal は値を積み上げ、percent は各 x で積み上げ全体を 100% に換算します"
+      "stackMode": "normal は値を積み上げ、percent は各 x で積み上げ全体を 100% に換算します",
+      "yAxis2": "yAxis: \"right\" の系列の右側の値軸。範囲は左軸の目盛りに揃えられる（縦向きのグラフ）",
+      "orientation": "\"horizontal\" で x 軸（カテゴリ）を左側に、値を下側に配置"
     },
     "ChartCommonProps": {
       "height": "凡例を含むチャートの高さ。数値はピクセル",
       "width": "チャートの幅。数値はピクセル",
       "xAxis": "X 軸のオプション",
       "yAxis": "Y 軸のオプション",
-      "renderer": "データレイヤーのバックエンド：auto は WebGPU、WebGL2、Canvas2D の順に試行",
+      "renderer": "データレイヤーのバックエンド：auto は WebGPU、WebGL2、WebGL、Canvas2D の順に試行",
       "legend": "凡例。名前付きの系列が複数あるときは既定で表示",
       "tooltip": "ツールチップ。false で無効",
       "crosshair": "ポインターに追従する垂直のガイド線",
@@ -70,14 +485,19 @@
       "onRendererChange": "準備完了時と GPU のフォールバック後にバックエンドを渡して呼ばれます",
       "className": "ルート要素の追加のクラス名",
       "style": "ルート要素のインラインスタイル",
-      "ref": "命令的ハンドル（ChartHandle）"
+      "ref": "命令的ハンドル（ChartHandle）",
+      "locale": "グラフが書き出すテキストと数値のロケール（ツールチップの行名、短縮単位、区切り文字、月・曜日名）。既定はページの言語",
+      "labels": "ロケールの組み込みテキストの上書き（ChartLabels）",
+      "testID": "ルートビューのテスト用 ID（React Native）"
     },
     "ChartHandle": {
       "resetZoom": "データの全範囲を表示します",
       "getView": "表示範囲を返します",
       "setView": "表示範囲を設定します",
       "getRenderer": "使用中のバックエンド。準備前は null",
-      "getInstance": "内部のエンジンインスタンス"
+      "getInstance": "内部のエンジンインスタンス",
+      "getController": "グラフの DOM 非依存コントローラー（React Native）",
+      "getPlotRect": "グラフビュー内のプロット領域（ピクセル）"
     },
     "ChartSeries": {
       "id": "固定の識別子（既定はインデックス）",
@@ -97,7 +517,10 @@
       "colorScale": "ヒートマップ：最小値から最大値までの色（2 色以上）",
       "valueRange": "ヒートマップ：colorScale の両端に対応する値。既定はデータの範囲",
       "radius": "棒 / ヒートマップ：角丸の半径（ピクセル。棒は 3、セルは 2）",
-      "format": "ツールチップでのこの系列の値の書式（既定は y 軸の書式）"
+      "format": "ツールチップでのこの系列の値の書式（既定は y 軸の書式）",
+      "yAxis": "系列の値軸：\"right\" で yAxis2 に対して描画（2 軸グラフ、縦向き）",
+      "barWidth": "棒と箱ひげ図：カテゴリ幅に対する棒の割合、0〜1（1 で隣接、ヒストグラムなど）",
+      "valueName": "散布図：ツールチップに表示する点の value の名前（バブルチャート）"
     },
     "ChartPointDatum": {
       "x": "X 値（数値、Date、カテゴリ）。省略時はインデックス",
@@ -108,7 +531,11 @@
       "open": "ローソク足：始値",
       "high": "ローソク足：高値",
       "low": "ローソク足：安値",
-      "value": "ヒートマップ：セルの値（colorScale に対応）"
+      "value": "ヒートマップ：セルの値（colorScale に対応）",
+      "y0": "浮動棒の始点（ウォーターフォールのステップ、ガントのタスク）または範囲面の下端。日付はタイムスタンプ",
+      "q1": "箱ひげ図：第 1 四分位数（箱の下端。y は中央値）",
+      "q3": "箱ひげ図：第 3 四分位数（箱の上端）",
+      "outliers": "箱ひげ図：ひげの外側の値。点で描画"
     },
     "ChartColumnData": {
       "x": "X 値。省略時はインデックス",
@@ -117,7 +544,10 @@
       "open": "ローソク足：始値",
       "high": "ローソク足：高値",
       "low": "ローソク足：安値",
-      "value": "ヒートマップ：各セルの値"
+      "value": "ヒートマップ：各セルの値",
+      "y0": "浮動棒の始点 / 範囲面の下端（NaN / null：ゼロから）",
+      "q1": "箱ひげ図：第 1 四分位数",
+      "q3": "箱ひげ図：第 3 四分位数"
     },
     "ChartAxisOptions": {
       "type": "スケール：linear、time、category（データから判定）",
@@ -131,7 +561,8 @@
       "visible": "軸線、目盛り、ラベルを表示",
       "zero": "自動範囲に 0 を含める（棒では常に有効）",
       "reverse": "軸の向きを反転",
-      "nice": "自動範囲を目盛りの値に丸める"
+      "nice": "自動範囲を目盛りの値に丸める",
+      "timeZone": "時間軸のカレンダー：目盛りとツールチップをローカル時刻または UTC で表示（\"local\" | \"utc\"）"
     },
     "ChartRectAnnotation": {
       "type": "常に \"rect\"",
@@ -172,7 +603,8 @@
     },
     "ChartTooltipOptions": {
       "mode": "nearest は最も近いポイント、axis は最も近い x の全系列を表示",
-      "render": "ツールチップの内容を描画（文字列はテキストとして設定）"
+      "render": "ツールチップの内容を描画（文字列はテキストとして設定）",
+      "labels": "既定のツールチップの行名（箱ひげ図の統計量、OHLC、バブルの値）。翻訳用"
     },
     "ChartLegendOptions": {
       "position": "凡例の位置：top または bottom",
@@ -201,7 +633,11 @@
       "open": "ローソク足：始値",
       "high": "ローソク足：高値",
       "low": "ローソク足：安値",
-      "value": "ヒートマップ：セルの値"
+      "value": "ヒートマップ：セルの値",
+      "y0": "浮動棒と範囲面：始点（または下端）。y は終点",
+      "q1": "箱ひげ図：第 1 四分位数（y は中央値、low / high はひげ）",
+      "q3": "箱ひげ図：第 3 四分位数",
+      "outliers": "箱ひげ図：外れ値の数"
     },
     "ChartPlotClickEvent": {
       "x": "クリック位置の X データ座標",
@@ -217,6 +653,51 @@
       "mixed": {
         "title": "混合シリーズ",
         "description": "棒と折れ線がカテゴリ軸を共有し、通常の View で描画されます。棒または折れ線のポイントをタップしてください。"
+      }
+    }
+  },
+  "wc": {
+    "demos": {
+      "mixed-series": {
+        "title": "棒と折れ線",
+        "description": "エンジンのオプションを 1 つのオブジェクトで渡します。複数の種類の系列（ここでは棒と滑らかな折れ線）がカテゴリ軸を共有します。"
+      },
+      "events": {
+        "title": "エンジンのイベント",
+        "description": "ポイントにカーソルを合わせてクリックします。エンジンのイベント（ホバー、ポイントのクリック、ズーム、レンダラー）がエンジンのデータとともにフレームワークに届きます。"
+      }
+    },
+    "minerva-chart": {
+      "props": {
+        "options": "エンジンのオプション（minerva-design/charts/core の ChartOptions：系列、軸、凡例、ツールチップ、注釈…）。プロパティのみで、オブジェクトを置き換えるとチャートが更新されます",
+        "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+      },
+      "events": {
+        "minerva-hover": "ホバー（またはキーボードでフォーカス）しているポイントが変わりました。detail：{ x, xLabel, items }、何もない場合は null",
+        "minerva-point-click": "ポイントまたは棒がクリックされました。detail：{ x, xLabel, items }",
+        "minerva-plot-click": "ポイントのないプロット領域がクリックされました。detail：{ x, y }（データ座標）",
+        "minerva-zoom": "ユーザーがズームまたはパンしました。detail：{ x, y }（表示範囲）",
+        "minerva-renderer-change": "バックエンドの準備ができた、または GPU の喪失後にフォールバックしました。detail：{ renderer }"
+      },
+      "methods": {
+        "resetZoom": "データ範囲全体を表示します",
+        "getView": "表示範囲。エンジンが作成されるまでは null",
+        "setView": "表示範囲を設定します",
+        "getRenderer": "使用中のバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null"
+      }
+    },
+    "minerva-shape-chart": {
+      "props": {
+        "options": "エンジンのオプション（minerva-design/charts/core の ShapeChartOptions、type を含む：pie、radar、gauge、funnel、treemap、sankey…）。プロパティのみ",
+        "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+      },
+      "events": {
+        "minerva-hover": "ホバー（またはキーボードでフォーカス）している要素が変わりました。detail：{ index, name, value, share }、何もない場合は null",
+        "minerva-click": "要素がクリック、タップ、または Enter で選択されました。detail：{ index, name, value, share }",
+        "minerva-toggle": "凡例の項目がクリックされました（または toggle() が呼ばれました）。detail：{ index, hidden, hiddenIndexes }"
+      },
+      "methods": {
+        "toggle": "インデックスでスライス、段階、レーダーの系列、ツリーマップの最上位ノードを表示・非表示にします"
       }
     }
   }

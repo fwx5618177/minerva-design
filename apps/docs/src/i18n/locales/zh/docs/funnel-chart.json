@@ -1,5 +1,5 @@
 {
-  "title": "FunnelChart",
+  "title": "漏斗图",
   "description": "展示流程中逐级流失的各个阶段（注册、销售管道、结账），并显示每一阶段到下一阶段的转化率。悬停或使用方向键高亮阶段；点击图例项可将其隐藏。",
   "demos": {
     "basic": {
@@ -9,7 +9,81 @@
     "bars": {
       "title": "条形与排序",
       "description": "shape=\"bar\" 为非顺序流程的数值绘制居中条形；sort 对其排序（带动画），conversion={false} 隐藏转化率。"
+    },
+    "ecommerce": {
+      "title": "电商结账",
+      "description": "网店的结账漏斗，旁边的 Table 列出各阶段之间的流失率；流失最多的阶段在两处都以红色突出显示。"
+    },
+    "recruiting": {
+      "title": "招聘流程",
+      "description": "某个岗位从投递到录用的候选人，以条形显示，每个阶段一种颜色；提示框补充该阶段的典型耗时，点击可选中阶段。"
+    },
+    "compare": {
+      "title": "分群对比",
+      "description": "按设备拆分的同一漏斗并排显示，阶段相同、每个分群一种颜色，便于看出移动端用户在哪里流失。"
     }
+  },
+  "data": {
+    "signup": {
+      "pricing": "价格页",
+      "started": "开始注册",
+      "verified": "验证邮箱",
+      "project": "创建项目",
+      "invited": "邀请同事",
+      "upgraded": "升级为付费"
+    },
+    "users": "{{users}} 位用户",
+    "ofVisitors": "占访客的 {{share}}",
+    "droppedSince": "自“{{stage}}”以来流失 {{users}} 位",
+    "signupAria": "注册漏斗",
+    "features": {
+      "alerts": "告警",
+      "dashboards": "仪表板",
+      "integrations": "集成",
+      "reports": "报表",
+      "api": "开放 API"
+    },
+    "sortOrder": "排序方式",
+    "sorts": {
+      "descending": "降序",
+      "ascending": "升序",
+      "none": "数据顺序"
+    },
+    "weeklyUsers": "每周 {{users}} 位用户",
+    "featuresAria": "各功能的周活跃用户",
+    "shop": {
+      "visits": "访问",
+      "product": "商品页",
+      "cart": "加入购物车",
+      "checkout": "结账",
+      "payment": "支付",
+      "order": "下单成功"
+    },
+    "stage": "阶段",
+    "visitors": "访客",
+    "dropOff": "流失率",
+    "conversionOverall": "占第一阶段的 {{share}}",
+    "shopAria": "网店的结账漏斗",
+    "dropOffTable": "各阶段之间的流失率",
+    "hiring": {
+      "applied": "投递",
+      "screened": "简历筛选",
+      "technical": "技术面试",
+      "onsite": "现场面试",
+      "offer": "发放 Offer",
+      "hired": "录用"
+    },
+    "candidates": "{{candidates}} 位候选人",
+    "stageTime": "该阶段典型耗时：{{days}}",
+    "hiringAria": "工程岗位的招聘流程",
+    "hiringSelected": "{{stage}}：{{candidates}} 位候选人（占投递者的 {{share}}）",
+    "hiringSummary": "{{rate}} 的投递者被录用，平均耗时 {{days}}",
+    "devices": {
+      "desktop": "桌面端",
+      "mobile": "移动端"
+    },
+    "conversionRate": "转化率 {{rate}}",
+    "deviceFunnelAria": "{{device}}的结账漏斗"
   },
   "api": {
     "FunnelChartProps": {
@@ -18,6 +92,54 @@
       "gap": "阶段之间的垂直间距，单位为像素",
       "conversion": "显示相对上一阶段的转化率",
       "shape": "阶段形状：向下一阶段收窄的梯形，或居中的条形"
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "每个阶段收窄到下一阶段，并显示相对上一阶段的转化率；轻触阶段即可选中。"
+      }
+    },
+    "data": {
+      "stages": {
+        "install": "已安装",
+        "open": "已打开",
+        "signup": "已注册",
+        "trial": "开始试用",
+        "paid": "已付费"
+      },
+      "signupAria": "移动应用注册漏斗",
+      "selectedStage": "{{stage}}：{{users}} 位用户（占安装量的 {{share}}）",
+      "tapStage": "轻触阶段以选中"
+    }
+  },
+  "wc": {
+    "demos": {
+      "conversion": {
+        "title": "转化漏斗",
+        "description": "各阶段逐级收窄，并标注相对上一阶段的转化率。"
+      },
+      "bars": {
+        "title": "排序的条形",
+        "description": "使用居中的条形代替梯形，各阶段按数值排序。"
+      }
+    },
+    "minerva-funnel-chart": {
+      "props": {
+        "hideConversion": "隐藏相对上一阶段的转化率",
+        "height": "图表高度（包含图例）：像素值或任意 CSS 长度",
+        "options": "其他引擎选项（坐标轴、图例、提示框、调色板、格式化……），与元素自身的属性合并；仅作为属性设置",
+        "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null"
+      },
+      "events": {
+        "minerva-hover": "悬停（或键盘聚焦）的图形元素发生变化；detail：{ index, name, value, share }，无悬停时为 null",
+        "minerva-click": "点击、轻触或按 Enter 激活了一个图形元素；detail：{ index, name, value, share }",
+        "minerva-toggle": "点击了图例项（或调用了 toggle()）；detail：{ index, hidden, hiddenIndexes }"
+      },
+      "methods": {
+        "toggle": "按索引隐藏或显示扇区、阶段、雷达系列或树图的顶层节点"
+      }
     }
   }
 }

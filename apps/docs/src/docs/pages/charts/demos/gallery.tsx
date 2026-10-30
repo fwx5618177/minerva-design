@@ -1,37 +1,21 @@
-import type { ReactNode } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  TextLink,
-} from "minerva-design";
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   AreaChart,
   BarChart,
-  CandlestickChart,
-  DonutChart,
-  FunnelChart,
-  GaugeChart,
-  HeatmapChart,
+  BubbleChart,
+  HorizontalBarChart,
   LineChart,
-  PieChart,
-  QuadrantChart,
-  RadarChart,
+  MixedChart,
+  RangeAreaChart,
   ScatterChart,
   Sparkline,
-  TreemapChart,
   type ChartSeries,
-  type HeatmapCell,
-  type QuadrantPoint,
-  type RadarIndicator,
-  type RadarSeries,
-  type ShapeDatum,
-  type TreemapNode,
 } from "minerva-design/charts";
+import { GalleryCard, GalleryGrid } from "../gallery-card";
 
-// Every data set lives at module level: stable references never trigger updates.
+// The numbers live at module level; the names are translated in the
+// component (memoized, so the charts only update when the language changes)
 
 /** Small deterministic pseudo-random generator (same picture on every load) */
 const random = (seed: number) => () => {
@@ -39,382 +23,323 @@ const random = (seed: number) => () => {
   return (seed - 1) / 2147483646;
 };
 
-const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"];
-const pairs = (values: readonly number[]) =>
-  values.map((value, i) => [months[i], value] as const);
-
-const lineSeries: ChartSeries[] = [
-  { name: "Visits", data: pairs([32, 41, 38, 52, 49, 61, 66, 72]) },
-  { name: "Sign-ups", data: pairs([12, 15, 19, 18, 24, 27, 26, 34]) },
+const visits = [32, 41, 38, 52, 49, 61, 66, 72];
+const signups = [12, 15, 19, 18, 24, 27, 26, 34];
+const platforms = {
+  web: [20, 24, 22, 30, 34, 31, 38, 42],
+  ios: [12, 14, 18, 17, 20, 24, 23, 27],
+  android: [8, 11, 10, 14, 16, 15, 19, 22],
+};
+// average daily low and high of each month (°C)
+const lows = [-1, 0, 3, 6, 10, 13, 15, 15, 12, 8, 4, 1];
+const highs = [5, 7, 12, 16, 20, 24, 26, 26, 21, 16, 10, 6];
+const orders = [128, 164, 212, 187];
+// share of developers using each language (%)
+const languages: [string, number][] = [
+  ["JavaScript", 62],
+  ["Python", 51],
+  ["TypeScript", 43],
+  ["Java", 30],
+  ["Go", 18],
 ];
+// quarterly revenue (M$) and growth over the previous quarter
+const quarterRevenue = [18, 21, 24, 31];
+const growth = [0.04, 0.17, 0.14, 0.29];
 
-const areaSeries: ChartSeries[] = [
-  { name: "Web", data: pairs([20, 24, 22, 30, 34, 31, 38, 42]) },
-  { name: "iOS", data: pairs([12, 14, 18, 17, 20, 24, 23, 27]) },
-  { name: "Android", data: pairs([8, 11, 10, 14, 16, 15, 19, 22]) },
-];
-
-const barSeries: ChartSeries[] = [
-  {
-    name: "Orders",
-    data: [
-      { x: "Q1", y: 128 },
-      { x: "Q2", y: 164 },
-      { x: "Q3", y: 212, color: "var(--success-color)" },
-      { x: "Q4", y: 187 },
-    ],
-  },
-];
-
-const scatterSeries: ChartSeries[] = (() => {
+const scatterGroups = (() => {
   const next = random(7);
-  const group = (name: string, cx: number, cy: number) => ({
-    name,
-    data: Array.from({ length: 40 }, () => ({
+  const group = (cx: number, cy: number) =>
+    Array.from({ length: 40 }, () => ({
       x: cx + (next() - 0.5) * 30,
       y: cy + (next() - 0.5) * 30,
-      size: 4 + next() * 6,
-    })),
-  });
-  return [group("Team A", 35, 60), group("Team B", 65, 35)];
+    }));
+  return [group(35, 60), group(65, 35)];
 })();
 
-const candleSeries: ChartSeries[] = (() => {
-  const next = random(42);
-  let close = 100;
-  const data = Array.from({ length: 36 }, (_, x) => {
-    const open = close;
-    close = Math.max(60, open + (next() - 0.48) * 8);
-    const high = Math.max(open, close) + next() * 3;
-    const low = Math.min(open, close) - next() * 3;
-    return { x, open, high, low, y: close };
-  });
-  return [{ name: "ACME", data }];
-})();
-
-const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const slots = ["0h", "4h", "8h", "12h", "16h", "20h"];
-const heatmapCells: HeatmapCell[] = (() => {
-  const next = random(3);
-  return days.flatMap((day, d) =>
-    slots.map((slot, s) => ({
-      x: day,
-      y: slot,
-      value: Math.round(
-        (d < 5 ? 40 : 15) + (s >= 2 && s <= 4 ? 40 : 0) + next() * 20,
-      ),
-    })),
-  );
-})();
+// marketing campaigns: cost (k$), sign-ups and reach (people)
+const campaigns = {
+  email: [
+    [4, 320, 12_000],
+    [6, 410, 18_000],
+    [9, 380, 15_000],
+  ],
+  social: [
+    [12, 520, 90_000],
+    [18, 760, 140_000],
+    [25, 690, 210_000],
+  ],
+} as const;
 
 const revenueTrend = [18, 22, 19, 26, 24, 31, 29, 35, 33, 41, 38, 46];
 const errorTrend = [9, 7, 8, 5, 6, 4, 5, 3, 4, 2, 3, 2];
 
-const browsers: ShapeDatum[] = [
-  { name: "Chrome", value: 64 },
-  { name: "Safari", value: 19 },
-  { name: "Edge", value: 9 },
-  { name: "Firefox", value: 8 },
-];
-
-const plans: ShapeDatum[] = [
-  { name: "Free", value: 5400 },
-  { name: "Pro", value: 2100 },
-  { name: "Team", value: 860 },
-];
-
-const skills: RadarIndicator[] = [
-  { name: "Speed", max: 10 },
-  { name: "Quality", max: 10 },
-  { name: "Cost", max: 10 },
-  { name: "Support", max: 10 },
-  { name: "Scale", max: 10 },
-];
-const vendors: RadarSeries[] = [
-  { name: "Vendor A", values: [8, 6, 7, 5, 9] },
-  { name: "Vendor B", values: [5, 9, 6, 8, 6] },
-];
-
-const gaugeBands = [
-  { to: 60, color: "var(--danger-color)" },
-  { to: 85, color: "var(--warning-color)" },
-  { to: 100, color: "var(--success-color)" },
-];
-
-const stages: ShapeDatum[] = [
-  { name: "Visited", value: 12000 },
-  { name: "Signed up", value: 4800 },
-  { name: "Activated", value: 2600 },
-  { name: "Paid", value: 900 },
-];
-
-const budget: TreemapNode[] = [
-  {
-    name: "Product",
-    children: [
-      { name: "Design", value: 18 },
-      { name: "Engineering", value: 42 },
-    ],
-  },
-  {
-    name: "Go to market",
-    children: [
-      { name: "Sales", value: 24 },
-      { name: "Marketing", value: 16 },
-    ],
-  },
-];
-
-const tasks: QuadrantPoint[] = [
-  { x: 8, y: 8.5, label: "Release" },
-  { x: 3, y: 7.5, label: "Roadmap" },
-  { x: 7, y: 3, label: "Emails" },
-  { x: 2, y: 2, label: "Cleanup" },
-];
-const regions = {
-  topLeft: { label: "Plan" },
-  topRight: { label: "Do first" },
-  bottomLeft: { label: "Drop" },
-  bottomRight: { label: "Delegate" },
-};
-
-const HEIGHT = 180;
-const compactPercent = (value: number) => `${Math.round(value)}%`;
-
-function GalleryCard({
-  title,
-  page,
-  description,
-  children,
-}: {
-  title: string;
-  page: string;
-  description: string;
-  children: ReactNode;
-}) {
-  return (
-    <Card padding="small" style={{ minWidth: 0 }}>
-      <CardHeader>
-        <CardTitle>
-          <TextLink href={`#/${page}`}>{title}</TextLink>
-        </CardTitle>
-        <CardDescription>{description}</CardDescription>
-      </CardHeader>
-      <CardContent>{children}</CardContent>
-    </Card>
-  );
-}
-
 export default function GalleryDemo() {
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.charts.data",
+  });
+  const locale = i18n.language;
+
+  const formats = useMemo(() => {
+    const number = new Intl.NumberFormat(locale);
+    const usd = new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency: "USD",
+      notation: "compact",
+    });
+    const percent = new Intl.NumberFormat(locale, {
+      style: "percent",
+      maximumFractionDigits: 0,
+    });
+    const celsius = new Intl.NumberFormat(locale, {
+      style: "unit",
+      unit: "celsius",
+    });
+    return {
+      number: (value: number) => number.format(value),
+      // values in millions of dollars
+      millions: (value: number) => usd.format(value * 1e6),
+      thousands: (value: number) => usd.format(value * 1e3),
+      percent: (value: number) => percent.format(value),
+      // values given in percent (62 = 62%)
+      percentOf100: (value: number) => percent.format(value / 100),
+      celsius: (value: number) => celsius.format(value),
+    };
+  }, [locale]);
+
+  const data = useMemo(() => {
+    // "Jan", "janv.", "1月"...
+    const monthFormat = new Intl.DateTimeFormat(locale, { month: "short" });
+    const months = lows.map((_, m) => monthFormat.format(new Date(2026, m, 1)));
+    const pairs = (values: readonly number[]) =>
+      values.map((value, i) => [months[i], value] as const);
+    const quarters = quarterRevenue.map((_, i) => t("quarter", { n: i + 1 }));
+
+    const line: ChartSeries[] = [
+      { name: t("visits"), data: pairs(visits) },
+      { name: t("signups"), data: pairs(signups) },
+    ];
+    const area: ChartSeries[] = [
+      { name: t("web"), data: pairs(platforms.web) },
+      { name: "iOS", data: pairs(platforms.ios) },
+      { name: "Android", data: pairs(platforms.android) },
+    ];
+    const rangeArea: ChartSeries[] = [
+      {
+        name: t("temperature"),
+        format: formats.celsius,
+        data: months.map((x, i) => ({ x, y0: lows[i], y: highs[i] })),
+      },
+    ];
+    const bar: ChartSeries[] = [
+      {
+        name: t("orders"),
+        data: orders.map((y, i) => ({
+          x: quarters[i],
+          y,
+          color: i === 2 ? "var(--success-color)" : undefined,
+        })),
+      },
+    ];
+    const horizontalBar: ChartSeries[] = [
+      { name: t("developers"), format: formats.percentOf100, data: languages },
+    ];
+    const mixed: ChartSeries[] = [
+      {
+        name: t("revenue"),
+        type: "bar",
+        format: formats.millions,
+        data: quarters.map((q, i) => [q, quarterRevenue[i]] as const),
+      },
+      {
+        name: t("growth"),
+        type: "line",
+        yAxis: "right",
+        format: formats.percent,
+        color: "var(--chart-series-3, #f59e0b)",
+        data: quarters.map((q, i) => [q, growth[i]] as const),
+      },
+    ];
+    const scatter: ChartSeries[] = scatterGroups.map((group, i) => ({
+      name: t("team", { name: i === 0 ? "A" : "B" }),
+      data: group,
+    }));
+    const bubble: ChartSeries[] = (["email", "social"] as const).map(
+      (channel) => ({
+        name: t(`channels.${channel}`),
+        valueName: t("reach"),
+        format: (value: number) => formats.number(value),
+        data: campaigns[channel].map(([x, y, value]) => ({ x, y, value })),
+      }),
+    );
+    return {
+      line,
+      area,
+      rangeArea,
+      bar,
+      horizontalBar,
+      mixed,
+      scatter,
+      bubble,
+    };
+  }, [t, locale, formats]);
+
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-        gap: 16,
-        width: "100%",
-      }}
-    >
-      <GalleryCard title="LineChart" page="line-chart" description="Trends">
+    <GalleryGrid>
+      <GalleryCard
+        title={t("cards.line.title")}
+        component="LineChart"
+        page="line-chart"
+        description={t("cards.line.description")}
+      >
         <LineChart
-          series={lineSeries}
-          height={HEIGHT}
+          series={data.line}
+          height="100%"
           legend={false}
-          ariaLabel="Visits and sign-ups per month"
+          ariaLabel={t("cards.line.aria")}
         />
       </GalleryCard>
 
       <GalleryCard
-        title="AreaChart"
+        title={t("cards.area.title")}
+        component="AreaChart"
         page="area-chart"
-        description="Smooth, stacked"
+        description={t("cards.area.description")}
       >
         <AreaChart
-          series={areaSeries}
+          series={data.area}
           stacked
-          height={HEIGHT}
+          height="100%"
           legend={false}
-          ariaLabel="Users per platform, stacked"
+          ariaLabel={t("cards.area.aria")}
         />
       </GalleryCard>
 
       <GalleryCard
-        title="BarChart"
+        title={t("cards.rangeArea.title")}
+        component="RangeAreaChart"
+        page="range-area-chart"
+        description={t("cards.rangeArea.description")}
+      >
+        <RangeAreaChart
+          series={data.rangeArea}
+          yAxis={{ format: formats.celsius }}
+          height="100%"
+          legend={false}
+          ariaLabel={t("cards.rangeArea.aria")}
+        />
+      </GalleryCard>
+
+      <GalleryCard
+        title={t("cards.bar.title")}
+        component="BarChart"
         page="bar-chart"
-        description="Value labels, per-bar color"
+        description={t("cards.bar.description")}
       >
         <BarChart
-          series={barSeries}
+          series={data.bar}
           labels
-          height={HEIGHT}
+          yAxis={{ format: formats.number }}
+          height="100%"
           legend={false}
-          ariaLabel="Orders per quarter"
+          ariaLabel={t("cards.bar.aria")}
         />
       </GalleryCard>
 
       <GalleryCard
-        title="ScatterChart"
+        title={t("cards.horizontalBar.title")}
+        component="HorizontalBarChart"
+        page="horizontal-bar-chart"
+        description={t("cards.horizontalBar.description")}
+      >
+        <HorizontalBarChart
+          series={data.horizontalBar}
+          labels
+          yAxis={{ format: formats.percentOf100 }}
+          height="100%"
+          legend={false}
+          ariaLabel={t("cards.horizontalBar.aria")}
+        />
+      </GalleryCard>
+
+      <GalleryCard
+        title={t("cards.mixed.title")}
+        component="MixedChart"
+        page="mixed-chart"
+        description={t("cards.mixed.description")}
+      >
+        <MixedChart
+          series={data.mixed}
+          yAxis={{ format: formats.millions }}
+          yAxis2={{ format: formats.percent }}
+          height="100%"
+          legend={false}
+          ariaLabel={t("cards.mixed.aria")}
+        />
+      </GalleryCard>
+
+      <GalleryCard
+        title={t("cards.scatter.title")}
+        component="ScatterChart"
         page="scatter-chart"
-        description="Correlations, clusters"
+        description={t("cards.scatter.description")}
       >
         <ScatterChart
-          series={scatterSeries}
-          height={HEIGHT}
+          series={data.scatter}
+          height="100%"
           legend={false}
-          ariaLabel="Two clusters of measurements"
+          ariaLabel={t("cards.scatter.aria")}
         />
       </GalleryCard>
 
       <GalleryCard
-        title="CandlestickChart"
-        page="candlestick-chart"
-        description="Open, high, low, close"
+        title={t("cards.bubble.title")}
+        component="BubbleChart"
+        page="bubble-chart"
+        description={t("cards.bubble.description")}
       >
-        <CandlestickChart
-          series={candleSeries}
-          height={HEIGHT}
+        <BubbleChart
+          series={data.bubble}
+          maxSize={36}
+          xAxis={{ format: formats.thousands }}
+          yAxis={{ format: formats.number }}
+          height="100%"
           legend={false}
-          ariaLabel="Daily ACME prices"
+          ariaLabel={t("cards.bubble.aria")}
         />
       </GalleryCard>
 
       <GalleryCard
-        title="HeatmapChart"
-        page="heatmap-chart"
-        description="Values on a grid"
-      >
-        <HeatmapChart
-          data={heatmapCells}
-          xCategories={days}
-          yCategories={slots}
-          name="Load"
-          radius={2}
-          height={HEIGHT}
-          ariaLabel="Load by weekday and hour"
-        />
-      </GalleryCard>
-
-      <GalleryCard
-        title="Sparkline"
+        title={t("cards.sparkline.title")}
+        component="Sparkline"
         page="sparkline"
-        description="Word-sized trends"
+        description={t("cards.sparkline.description")}
       >
         <div style={{ display: "grid", gap: 12 }}>
           <div>
-            <strong style={{ fontSize: 22 }}>$46k</strong> revenue
+            <strong style={{ fontSize: 22 }}>{formats.thousands(46)}</strong>{" "}
+            {t("revenueLabel")}
             <Sparkline
               data={revenueTrend}
               type="area"
               reference={30}
-              name="Revenue"
-              ariaLabel="Revenue trend"
+              name={t("revenueLabel")}
+              format={formats.thousands}
+              ariaLabel={t("revenueTrendAria")}
             />
           </div>
           <div>
-            <strong style={{ fontSize: 22 }}>2</strong> errors
+            <strong style={{ fontSize: 22 }}>{formats.number(2)}</strong>{" "}
+            {t("errorsLabel")}
             <Sparkline
               data={errorTrend}
               type="bar"
-              name="Errors"
+              name={t("errorsLabel")}
               color="var(--danger-color)"
-              ariaLabel="Errors trend"
+              ariaLabel={t("errorsTrendAria")}
             />
           </div>
         </div>
       </GalleryCard>
-
-      <GalleryCard title="PieChart" page="pie-chart" description="Shares">
-        <PieChart
-          data={browsers}
-          height={HEIGHT}
-          legend={false}
-          format={compactPercent}
-          ariaLabel="Browser share"
-        />
-      </GalleryCard>
-
-      <GalleryCard
-        title="DonutChart"
-        page="pie-chart"
-        description="Shares with a total"
-      >
-        <DonutChart
-          data={plans}
-          height={HEIGHT}
-          labels="none"
-          centerValue="8.4k"
-          centerLabel="users"
-          legend={{ position: "bottom" }}
-          ariaLabel="Users per plan"
-        />
-      </GalleryCard>
-
-      <GalleryCard
-        title="RadarChart"
-        page="radar-chart"
-        description="Profiles over several axes"
-      >
-        <RadarChart
-          indicators={skills}
-          series={vendors}
-          height={HEIGHT}
-          legend={false}
-          ariaLabel="Vendor comparison"
-        />
-      </GalleryCard>
-
-      <GalleryCard
-        title="GaugeChart"
-        page="gauge-chart"
-        description="One value against a target"
-      >
-        <GaugeChart
-          value={78}
-          label="Uptime score"
-          bands={gaugeBands}
-          height={HEIGHT}
-          ariaLabel="Uptime score"
-        />
-      </GalleryCard>
-
-      <GalleryCard
-        title="FunnelChart"
-        page="funnel-chart"
-        description="Stages and conversion"
-      >
-        <FunnelChart
-          data={stages}
-          height={HEIGHT}
-          legend={false}
-          ariaLabel="Sign-up funnel"
-        />
-      </GalleryCard>
-
-      <GalleryCard
-        title="TreemapChart"
-        page="treemap-chart"
-        description="Hierarchical parts of a whole"
-      >
-        <TreemapChart
-          data={budget}
-          height={HEIGHT}
-          ariaLabel="Budget per department"
-        />
-      </GalleryCard>
-
-      <GalleryCard
-        title="QuadrantChart"
-        page="quadrant-chart"
-        description="Priority matrix"
-      >
-        <QuadrantChart
-          points={tasks}
-          quadrants={regions}
-          showTicks={false}
-          height={HEIGHT}
-          ariaLabel="Tasks by urgency and importance"
-        />
-      </GalleryCard>
-    </div>
+    </GalleryGrid>
   );
 }

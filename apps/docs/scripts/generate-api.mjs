@@ -71,6 +71,10 @@ const CHART_ENGINE_FILES = [
   // shape charts: pie / donut, radar, gauge, funnel, treemap
   "charts/src/engine/shapes/types.ts",
   "charts/src/engine/shapes/canvas.ts",
+  // trading, order books, 3D
+  "charts/src/engine/trading/types.ts",
+  "charts/src/engine/orderbook/types.ts",
+  "charts/src/engine/three-d/types.ts",
 ];
 
 /** All files that declare public types, with the key prefix to use */
@@ -95,6 +99,9 @@ const sourceFiles = () => [
   })),
   { file: join(PACKAGES_DIR, "charts/src/react/types.ts"), prefix: "" },
   { file: join(PACKAGES_DIR, "charts/src/react/shapes.tsx"), prefix: "" },
+  { file: join(PACKAGES_DIR, "charts/src/react/trading.tsx"), prefix: "" },
+  { file: join(PACKAGES_DIR, "charts/src/react/orderbook.tsx"), prefix: "" },
+  { file: join(PACKAGES_DIR, "charts/src/react/three-d.tsx"), prefix: "" },
 ];
 
 const clean = (text) => text.replace(/\s+/g, " ").trim();

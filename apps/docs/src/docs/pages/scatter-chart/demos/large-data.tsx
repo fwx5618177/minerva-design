@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ScatterChart,
   type ChartRendererKind,
@@ -18,6 +19,9 @@ function mulberry32(seed: number) {
 const PER_CLUSTER = 100_000;
 
 export default function LargeDataDemo() {
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.scatter-chart.data",
+  });
   const [renderer, setRenderer] = useState<ChartRendererKind | null>(null);
 
   const series = useMemo((): ChartSeries[] => {
@@ -35,10 +39,10 @@ export default function LargeDataDemo() {
       return { name, data: { x, y }, pointSize: 3, opacity: 0.5 };
     };
     return [
-      cluster("Cluster A", -2, -1, 1.2),
-      cluster("Cluster B", 2.5, 1.5, 0.9),
+      cluster(t("cluster", { name: "A" }), -2, -1, 1.2),
+      cluster(t("cluster", { name: "B" }), 2.5, 1.5, 0.9),
     ];
-  }, []);
+  }, [t]);
 
   return (
     <div style={{ display: "grid", gap: 8, width: "100%" }}>
@@ -46,11 +50,13 @@ export default function LargeDataDemo() {
         series={series}
         onRendererChange={setRenderer}
         height={320}
-        ariaLabel="Two clusters of 100,000 points each"
+        ariaLabel={t("clustersAria")}
       />
       <p role="status">
-        {(PER_CLUSTER * 2).toLocaleString("en")} points · drawn with{" "}
-        {renderer ?? "…"}
+        {t("largeStatus", {
+          points: new Intl.NumberFormat(i18n.language).format(PER_CLUSTER * 2),
+          renderer: renderer ?? "…",
+        })}
       </p>
     </div>
   );

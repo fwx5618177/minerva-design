@@ -1,0 +1,169 @@
+{
+  "title": "板ヒートマップ",
+  "description": "Bookmap 風の流動性ヒートマップ：時間と価格ごとの指値量を GPU で描画し、最良気配ライン、出来高に応じた約定バブル、現在の板のプロファイルを重ねます。ズーム・パン・十字カーソルでの読み取りに対応。ストリームは間隔ごとに列を追加し、スライドするウィンドウで表示します。",
+  "demos": {
+    "basic": {
+      "title": "履歴の補完とライブ",
+      "description": "履歴の開始時点の板を setBook に渡し、記録した更新を取引所の時刻付きで順に渡します（applyDeltas、addTrades）。ヒートマップは interval ごとに 1 列へサンプリングします。その後、同じ呼び出しでライブ配信します。ドラッグでパン、Ctrl/⌘ + ホイールで時間、Ctrl/⌘ + Shift + ホイールまたは価格軸のドラッグで価格をズームし、ダブルクリックで再び相場に追従します。"
+    },
+    "live": {
+      "title": "高頻度ストリーム",
+      "description": "毎秒 100 メッセージ。板を 50 ms ごとにサンプリングして GPU のバーインスタンス（WebGPU、WebGL、Canvas2D）に書き込み、1 バッファに 32 列をまとめます。各フレームで転送するのは最新の列だけです。onRendererChange は使用中のバックエンドを、onFollowChange は表示が相場に追従しているかを通知します。"
+    },
+    "color-scale": {
+      "title": "カラースケール",
+      "description": "colorScale は数量から色への対応を決めます。log は大口の隣の薄い流動性まで見せ、linear は大口だけを残します。contrast は先に数量を倍率で変えます。maxSize で最も熱い色の数量を固定します（省略時はデータに追従）。"
+    },
+    "large-trades": {
+      "title": "大口約定",
+      "description": "各列の約定は売買ごとに 1 つのバブルにまとめられ、面積は出来高に応じて大きくなります。bubbleVolume は最大バブル（bubbleSize ピクセル）の出来高です。contrast を下げると板が暗くなり、スイープが目立ちます。onHover はホバーした列の買い・売りの出来高を返します。"
+    },
+    "dark": {
+      "title": "ダークターミナル",
+      "description": "色はコンテナーの CSS 変数から読み取ります。colors でカラーランプ（冷たい色から。背景色が先頭に追加されます）を設定します。端末風の配色に、定番の青から赤への流動性ランプを使います。"
+    },
+    "compact": {
+      "title": "コンパクト（モバイル）",
+      "description": "スマートフォンのカード：30 秒、profile={false}、小さめのバブル。ドラッグでパン、ダブルタップで再び相場に追従します。"
+    },
+    "red-up": {
+      "title": "赤が上昇",
+      "description": "colorConvention=\"red-up\"：買いのバブルと最良買い気配ラインを赤、売りと最良売り気配ラインを緑で表示します。"
+    }
+  },
+  "data": {
+    "aria": "BTC/USDT の流動性ヒートマップ",
+    "rendererIs": "レンダラー：{{value}}",
+    "renderers": {
+      "webgpu": "WebGPU",
+      "webgl2": "WebGL 2",
+      "webgl": "WebGL",
+      "canvas2d": "Canvas 2D"
+    },
+    "following": "相場に追従中",
+    "panned": "自由表示（ズーム・パン済み）",
+    "followMarket": "相場に追従",
+    "scale": "カラースケール",
+    "scaleLog": "対数",
+    "scaleSqrt": "平方根",
+    "scaleLinear": "線形",
+    "contrast": "コントラスト",
+    "times": "×{{value}}",
+    "colors": "色の慣習",
+    "redUp": "赤が上昇・緑が下落",
+    "greenUp": "緑が上昇・赤が下落",
+    "volumeAt": "ホバー中の列：買い {{buys}} BTC、売り {{sells}} BTC",
+    "volumeHint": "列にホバーすると出来高を表示します。"
+  },
+  "api": {
+    "OrderBookHeatmapProps": {
+      "book": "板。オブジェクトが変わったときに適用（ストリームは ref 経由で）",
+      "trades": "約定。配列が伸びたときは追加分だけを加える",
+      "onHover": "ホバー中のセル（ポインターが離れると null）",
+      "onRendererChange": "使用中のバックエンド（GPU 喪失後も通知）",
+      "onFollowChange": "相場に追従中は true、ズームやパンの後は false",
+      "ref": "命令型ハンドル：setBook、applyDeltas、addTrades、resetView、getInstance"
+    },
+    "OrderBookHeatmapHandle": {
+      "setBook": "板を置き換えます（その時刻までの列を確定）",
+      "applyDeltas": "差分を適用します（その時刻までの列を確定）",
+      "addTrades": "約定（バブル）を追加",
+      "resetView": "再び相場に追従",
+      "getInstance": "内部のエンジンインスタンス（minerva-design/charts/core）"
+    },
+    "OrderBookHeatmapOptions": {
+      "tickSize": "価格行の高さ（気配は行にまとめられます）。省略時は板の呼値の切りのよい倍数（約 0.1 ベーシスポイント）",
+      "interval": "列と列の間隔（ミリ秒）。この間隔で板をサンプリング",
+      "window": "表示する時間幅（ミリ秒、ズーム可）",
+      "history": "保持する履歴（ミリ秒、古い列は破棄）",
+      "depth": "1 列あたり板の各側でサンプリングする価格行数",
+      "priceSpan": "表示する価格幅（上端 − 下端）。省略時はウィンドウ内の最良気配に合わせる",
+      "colorScale": "数量から色へのスケール：log は大口の隣の薄い流動性を見せる",
+      "contrast": "スケールの前に数量に掛ける倍率：1 より大きいと薄い流動性が明るく、1 未満で大口だけが残る",
+      "maxSize": "最も熱い色で描く数量。省略時はデータに追従",
+      "colors": "カラーランプ（冷たい色から。背景色が先頭に追加）。省略時はテーマに合うヒートランプ",
+      "bubbles": "約定を出来高に応じたバブルで描く（買い・売りの色）",
+      "bubbleSize": "最大バブルの直径（ピクセル）",
+      "bubbleVolume": "最大バブルの出来高。省略時はデータに追従",
+      "bestLines": "最良買い・売り気配のライン",
+      "profile": "右端に現在の板のプロファイル",
+      "interactive": "ズームとパン（ダブルクリックで再び相場に追従）",
+      "tooltip": "ホバー時の十字線とツールチップ",
+      "renderer": "セルのバックエンド：利用できれば GPU",
+      "labels": "組み込みテキストの上書き（組み込みテキストは locale に従う。英語・中国語・日本語・フランス語を内蔵）"
+    },
+    "OrderBookCommonOptions": {
+      "upColor": "買い板と買い約定（「上昇」側）の色。既定は --success-color、colorConvention が \"red-up\" のときは --danger-color",
+      "downColor": "売り板と売り約定（「下落」側）の色。既定は --danger-color、colorConvention が \"red-up\" のときは --success-color",
+      "colorConvention": "\"red-up\" で既定の色を入れ替えます。買いは赤、売りは緑（中国本土・日本・韓国の慣習）",
+      "pricePrecision": "価格の小数桁数。省略時はデータから推定",
+      "sizePrecision": "数量の小数桁数。省略時はデータから推定",
+      "locale": "数値（Intl.NumberFormat、k や 万 などの短縮単位）と組み込みテキスト（英・中・日・仏）のロケール。省略時はページの言語（html 要素の lang 属性）",
+      "formatPrice": "価格を書式化します（pricePrecision と locale の代わり）",
+      "formatSize": "数量を書式化します（sizePrecision と locale の代わり）",
+      "fontFamily": "文字のフォント。省略時はテーマのフォント（等幅フォントで数字が揃います）",
+      "fontSize": "文字サイズ（ピクセル）",
+      "ariaLabel": "ウィジェットのアクセシブルネーム。省略時はローカライズされた labels.name"
+    },
+    "OrderBookWidgetProps": {
+      "height": "ウィジェットの高さ。数値はピクセル",
+      "width": "ウィジェットの幅。数値はピクセル",
+      "className": "コンテナーのクラス",
+      "style": "コンテナーのスタイル"
+    },
+    "OrderBookHeatmapLabels": {
+      "time": "ツールチップの時刻行",
+      "price": "ツールチップの価格行",
+      "liquidity": "ホバー中のセルの指値量",
+      "buys": "ホバー中の列の買い出来高",
+      "sells": "ホバー中の列の売り出来高",
+      "bid": "最良買い気配（スクリーンリーダー向けの要約）",
+      "ask": "最良売り気配（スクリーンリーダー向けの要約）",
+      "name": "アクセシブルネーム（ariaLabel 未指定時に使用）"
+    },
+    "OrderBookHeatmapHoverEvent": {
+      "time": "ホバー中の列の開始時刻",
+      "price": "ホバー中の行の価格",
+      "size": "セルの指値量",
+      "side": "セルの側（スプレッド内は null）",
+      "buyVolume": "列の期間中の買い出来高",
+      "sellVolume": "列の期間中の売り出来高"
+    },
+    "MarketTrade": {
+      "time": "約定時刻（エポックからのミリ秒）",
+      "price": "約定価格",
+      "size": "約定数量（基軸通貨）",
+      "side": "アグレッサー側：\"buy\" は売り気配を買い、\"sell\" は買い気配に売り"
+    }
+  },
+  "wc": {
+    "demos": {
+      "liquidity": {
+        "title": "リアルタイムの流動性ヒートマップ",
+        "description": "200 ms ごとの新しい板で板の厚みの列を確定し、約定は出来高に応じたバブルで表示します。"
+      },
+      "red-up": {
+        "title": "赤が上昇の配色・平方根スケール",
+        "description": "中国本土の慣習（買いが赤）、平方根のカラースケール、右側の数量プロファイルなし。"
+      }
+    },
+    "minerva-order-book-heatmap": {
+      "props": {
+        "options": "その他のエンジンオプション（minerva-design/charts/core の OrderBookHeatmapOptions：色、テキスト、locale、labels など）；プロパティのみ",
+        "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+      },
+      "events": {
+        "minerva-hover": "セルにカーソルが乗った；detail: { time, price, size, side, buyVolume, sellVolume }、離れると null",
+        "minerva-renderer-change": "バックエンドの準備ができた、または GPU の喪失後にフォールバックしました。detail：{ renderer }",
+        "minerva-follow-change": "表示が相場に追従している（true）、またはズーム・パン後に追従していない（false）；detail: { follow }"
+      },
+      "methods": {
+        "addTrades": "約定（バブル）を追加します",
+        "resetView": "再び相場に追従します（最新時刻、仲値を中心に）",
+        "getRenderer": "使用中のバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null",
+        "setBook": "板を置き換えます（その時刻までの列を確定）",
+        "applyDeltas": "差分を適用します（その時刻までの列を確定）"
+      }
+    }
+  }
+}

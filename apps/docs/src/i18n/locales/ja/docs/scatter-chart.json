@@ -1,5 +1,5 @@
 {
-  "title": "ScatterChart",
+  "title": "散布図",
   "description": "2 つの値で配置する点。ポイントごとにサイズ、色、ラベルを指定でき、両軸でズームできます。",
   "demos": {
     "basic": {
@@ -13,7 +13,61 @@
     "large-data": {
       "title": "20 万ポイント",
       "description": "型付き配列の列による 2 つのガウス分布クラスター。ヒットテストには空間インデックスを使います。"
+    },
+    "trend": {
+      "title": "相関と傾向線",
+      "description": "キャンペーンの点に最小二乗法の傾向線（デモ内で計算した折れ線系列）を重ね、テキスト注釈で R² と傾きを示します。"
+    },
+    "categories": {
+      "title": "カテゴリ",
+      "description": "カテゴリごとに 1 系列にすると、各グループが独自の色と切り替え可能な凡例を持ちます。ここでは 3 種のペンギンのフリッパー長と体重です。"
+    },
+    "outliers": {
+      "title": "外れ値",
+      "description": "点ごとの色・サイズ・ラベルで、ペイロードに対して想定よりずっと遅いリクエストを示します。想定時間は折れ線系列です。"
     }
+  },
+  "data": {
+    "starter": "スターター",
+    "business": "ビジネス",
+    "seats": "シート数",
+    "monthlyBill": "月額料金",
+    "billAria": "プラン別のシート数と月額料金",
+    "countries": "国",
+    "gdp": "1 人あたり GDP",
+    "lifeExpectancy": "平均寿命",
+    "countriesAria": "1 人あたり GDP と平均寿命。点の大きさは人口",
+    "cluster": "クラスター {{name}}",
+    "clustersAria": "それぞれ 100,000 点からなる 2 つのクラスター",
+    "largeStatus": "{{points}} ポイント · {{renderer}} で描画",
+    "sessionAria": "セッション時間と閲覧ページ数",
+    "minutes": "分",
+    "pages": "ページ",
+    "free": "無料",
+    "pro": "プロ",
+    "sessionStatus": "{{plan}}：{{minutes}} 分、{{pages}} ページ",
+    "tapDot": "点をタップしてください",
+    "campaigns": "キャンペーン",
+    "trend": "傾向線",
+    "adSpend": "週間広告費",
+    "revenue": "週間売上",
+    "fit": "R² = {{r2}} · 広告費 1 ドルあたり売上 +{{slope}}",
+    "trendAria": "60 件のキャンペーンの広告費と売上、傾向線付き",
+    "penguins": {
+      "adelie": "アデリーペンギン",
+      "chinstrap": "ヒゲペンギン",
+      "gentoo": "ジェンツーペンギン"
+    },
+    "flipper": "フリッパー長",
+    "mass": "体重",
+    "penguinsAria": "3 種のペンギンのフリッパー長と体重",
+    "requests": "リクエスト",
+    "outlier": "外れ値",
+    "expected": "想定",
+    "payload": "ペイロードサイズ",
+    "responseTime": "応答時間",
+    "outliersAria": "ペイロードサイズと応答時間。外れ値は赤",
+    "outliersSummary": "{{total}} 件中 {{slow}} 件のリクエストが想定の 2 倍以上かかりました。"
   },
   "api": {
     "ScatterChartProps": {
@@ -25,6 +79,38 @@
       "basic": {
         "title": "基本",
         "description": "軸タイトル付きの 2 つの点の集まり。点をタップするとシリーズと値が表示されます。"
+      }
+    }
+  },
+  "wc": {
+    "demos": {
+      "clusters": {
+        "title": "2 つのクラスター",
+        "description": "2 つの系列の [x, y] の組と軸タイトル。Ctrl / ⌘ + ホイールで両方の軸をズームします。"
+      },
+      "point-click": {
+        "title": "クリックしたポイント",
+        "description": "ラベル付きのポイント。クリックするとラベルと値を表示します（ポイントのクリックイベント）。"
+      }
+    },
+    "minerva-scatter-chart": {
+      "props": {
+        "height": "チャートの高さ（凡例を含む）：ピクセルまたは任意の CSS の長さ",
+        "options": "その他のエンジンのオプション（軸、凡例、ツールチップ、パレット、書式…）。要素自身のプロパティとマージされます。プロパティのみ",
+        "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+      },
+      "events": {
+        "minerva-hover": "ホバー（またはキーボードでフォーカス）しているポイントが変わりました。detail：{ x, xLabel, items }、何もない場合は null",
+        "minerva-point-click": "ポイントまたは棒がクリックされました。detail：{ x, xLabel, items }",
+        "minerva-plot-click": "ポイントのないプロット領域がクリックされました。detail：{ x, y }（データ座標）",
+        "minerva-zoom": "ユーザーがズームまたはパンしました。detail：{ x, y }（表示範囲）",
+        "minerva-renderer-change": "バックエンドの準備ができた、または GPU の喪失後にフォールバックしました。detail：{ renderer }"
+      },
+      "methods": {
+        "resetZoom": "データ範囲全体を表示します",
+        "getView": "表示範囲。エンジンが作成されるまでは null",
+        "setView": "表示範囲を設定します",
+        "getRenderer": "使用中のバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null"
       }
     }
   }

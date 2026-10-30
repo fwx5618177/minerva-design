@@ -1,0 +1,221 @@
+{
+  "title": "テクニカル指標",
+  "description": "移動平均、ボリンジャーバンド、VWAP、MACD、RSI、KDJ、ATR、平均足：TradingChart に 1 行で宣言するか、通常の配列や Float64Array の列に対して純粋関数で計算します。",
+  "intro": {
+    "declarative": {
+      "title": "宣言的なインジケーター",
+      "text": "indicators オプションにインジケーターを順に並べます。移動平均、ボリンジャーバンド、VWAP は価格の上に、出来高（overlay を除く）、MACD、RSI、KDJ、ATR はそれぞれ下のペインに描かれます。凡例はクロスヘア位置の値を表示し、インジケーター名をクリックすると非表示になります。",
+      "ids": "インジケーターは id を指定しない限り種類とパラメーター（\"ma:7\"、\"macd:12:26:9\"）で識別され、indicatorToggle と setIndicatorVisible で使われます。一覧を変えても、変わらなかったインジケーターの計算結果は保持されます。"
+    },
+    "functions": {
+      "title": "純粋関数",
+      "text": "同じ計算が minerva-design/charts/core からエクスポートされています。通常の配列や型付き配列を受け取り、ウィンドウが埋まるまで NaN の Float64Array を返します。シグナル、スクリーナー、バックテスト、サーバーで、チャートが描くのと同じ値を使えます。"
+    },
+    "conventions": {
+      "title": "計算の決まり",
+      "averages": "MA は単純平均、WMA は最新の足に最も重みを置き、EMA は 2 / (期間 + 1) を使い、TradingView と同じく最初のウィンドウの単純平均から始めます。",
+      "wilder": "RSI と ATR はワイルダーの平滑化（1 / 期間）、ボリンジャーバンドは母標準偏差を使います。",
+      "kdj": "KDJ は K と D を 50 から始め、既定では 3 本で平滑化します。J = 3K − 2D は 0〜100 の範囲を外れることがあります。",
+      "vwap": "VWAP は utcOffset のタイムゾーンで毎日（または毎週、毎月、なし）リセットされます。",
+      "incremental": "ティックごとにチャートが再計算するのは最後の足の値だけなので、100 本でも 100 万本でも更新のコストは同じです。"
+    }
+  },
+  "demos": {
+    "moving-averages": {
+      "title": "MA・EMA・WMA",
+      "description": "同じ期間の 3 種類の平均：指数平均と加重平均は単純平均より速く価格に追従します。期間を変えると遅れが大きくなる様子がわかります。"
+    },
+    "bollinger": {
+      "title": "ボリンジャーバンド",
+      "description": "20 本の平均と、標準偏差の倍数だけ離れたバンド、その間の薄い塗りつぶし。ボラティリティが上がるとバンドが広がります。"
+    },
+    "vwap": {
+      "title": "VWAP",
+      "description": "5 営業日分の 5 分足：出来高加重平均価格はセッションごとにリセットされ、下に出来高ペインがあります。utcOffset={0} で取引所の時刻をそのまま表示します。"
+    },
+    "macd": {
+      "title": "MACD",
+      "description": "MACD ライン（12 本 EMA − 26 本 EMA）、9 本のシグナル、両者の差のヒストグラム：拡大中は鮮やか、縮小中は淡い色になります。両 EMA も価格の上に描いています。"
+    },
+    "rsi": {
+      "title": "RSI",
+      "description": "14 本と速い 6 本の RSI を、それぞれ買われすぎ / 売られすぎのバンド付きペインに表示。70 / 30 と 80 / 20 を切り替えられます。"
+    },
+    "kdj": {
+      "title": "KDJ",
+      "description": "中国市場で人気のストキャスティクス K、D、J ラインを、MA5 / 20 と赤が上昇の配色で表示。J が最初に 0〜100 の範囲を外れます。"
+    },
+    "atr": {
+      "title": "ATR",
+      "description": "ATR（平均真の値幅）はボラティリティを価格の単位で測ります。純粋関数 atr() で現在値から 2 ATR 離れた位置に損切りラインを引いています。"
+    },
+    "heikin-ashi": {
+      "title": "平均足",
+      "description": "ノイズをならした足：同じ色が続くとトレンドです。純粋関数 heikinAshi() で現在のトレンドの本数を数えています。"
+    },
+    "signals": {
+      "title": "純粋関数によるシグナル",
+      "description": "終値に ema() と rsi() を適用：9 本 EMA が 21 本 EMA を上抜け、RSI が 50 を超えたら買い、逆の交差で売り。取引はマーカーになり、結果を下にまとめています。"
+    },
+    "vanilla": {
+      "title": "React なしで",
+      "description": "minerva-design/charts/core の createTradingChart は同じチャートを任意の要素にマウントします：オプション、on() のイベント、destroy()。ここでは sma() で、ホバー中の終値が 50 日平均からどれだけ離れているかを示します。"
+    }
+  },
+  "data": {
+    "period": "期間",
+    "periodValue": "{{period}} 本",
+    "msft": "Microsoft MSFT",
+    "maAria": "単純・指数・加重移動平均付きの日足チャート",
+    "multiplier": "バンドの幅",
+    "deviations": "{{value}} σ",
+    "eth": "ETH/USDT",
+    "bollAria": "ボリンジャーバンド付きの 1 時間足チャート",
+    "nvda": "NVIDIA NVDA",
+    "vwapAria": "VWAP と出来高付きの 5 営業日分の 5 分足チャート",
+    "btc": "BTC/USDT",
+    "macdAria": "MACD ペイン付きの日足チャート",
+    "bands": "買われすぎ / 売られすぎ",
+    "bandValues": {
+      "70-30": "70 / 30",
+      "80-20": "80 / 20"
+    },
+    "sol": "SOL/USDT",
+    "rsiAria": "14 本と 6 本の RSI 付きの 4 時間足チャート",
+    "catl": "CATL 300750",
+    "kdjAria": "KDJ ペイン付きの日足チャート",
+    "longStop": "買いの損切り · 2 ATR",
+    "shortStop": "売りの損切り · 2 ATR",
+    "gold": "金 XAU/USD",
+    "atrAria": "ATR とボラティリティ損切り付きの金の 1 時間足チャート",
+    "chartStyle": "チャートスタイル",
+    "heikinAshi": "平均足",
+    "candles": "ローソク足",
+    "ada": "ADA/USDT",
+    "haAria": "平均足の 4 時間足チャート",
+    "haRising_one": "上昇トレンドが {{count}} 本継続中",
+    "haRising_other": "上昇トレンドが {{count}} 本継続中",
+    "haFalling_one": "下降トレンドが {{count}} 本継続中",
+    "haFalling_other": "下降トレンドが {{count}} 本継続中",
+    "buy": "買",
+    "sell": "売",
+    "signalsAria": "EMA クロスのシグナルと RSI 付きの 1 時間足チャート",
+    "signalsSummary": "決済済み {{trades}} 件 · 勝ち {{wins}} 件 · 合計 {{result}}",
+    "xom": "エクソンモービル XOM",
+    "vanillaAria": "createTradingChart で描いた日足チャート",
+    "vanillaWarmup": "50 日平均を計算するには足がまだ足りません",
+    "vanillaAbove": "終値は 50 日平均より {{value}} 上",
+    "vanillaBelow": "終値は 50 日平均より {{value}} 下"
+  },
+  "api": {
+    "TradingMovingAverageIndicator": {
+      "type": "ma 単純、ema 指数、wma 加重",
+      "period": "平均する足の本数",
+      "source": "平均する価格：open、high、low、close、hl2、hlc3、ohlc4",
+      "color": "ラインの色。既定はパレットの色",
+      "lineWidth": "線の太さ（ピクセル）"
+    },
+    "TradingBollingerIndicator": {
+      "type": "ボリンジャーバンド",
+      "period": "平均と標準偏差の本数",
+      "multiplier": "バンドまでの距離（標準偏差の倍数）",
+      "colors": "中央・上・下のラインの色",
+      "fill": "バンドの間を塗りつぶす"
+    },
+    "TradingVwapIndicator": {
+      "type": "出来高加重平均価格",
+      "reset": "リセットする周期：day、week、month、none",
+      "color": "ラインの色"
+    },
+    "TradingVolumeIndicator": {
+      "type": "足と同じ色の出来高バー",
+      "maPeriod": "出来高に重ねる移動平均の期間",
+      "overlay": "専用のペインではなく価格ペインの下部に出来高を描く"
+    },
+    "TradingMacdIndicator": {
+      "type": "MACD ライン、シグナルライン、ヒストグラム",
+      "fast": "短期 EMA の期間",
+      "slow": "長期 EMA の期間",
+      "signal": "シグナルラインの期間",
+      "colors": "MACD ラインとシグナルラインの色"
+    },
+    "TradingRsiIndicator": {
+      "type": "相対力指数（0〜100）",
+      "period": "足の本数",
+      "overbought": "上のバンド",
+      "oversold": "下のバンド",
+      "color": "ラインの色"
+    },
+    "TradingKdjIndicator": {
+      "type": "KDJ ストキャスティクス",
+      "period": "最高値 / 最安値ウィンドウの本数",
+      "kPeriod": "K の平滑化",
+      "dPeriod": "D の平滑化",
+      "colors": "K、D、J ラインの色"
+    },
+    "TradingAtrIndicator": {
+      "type": "平均真の値幅",
+      "period": "足の本数",
+      "color": "ラインの色"
+    },
+    "TradingIndicatorBase": {
+      "id": "凡例、イベント、ペインの高さでインジケーターを識別。既定は種類とパラメーター",
+      "visible": "インジケーターを描く。非表示でも凡例の項目は残り、再表示できます"
+    },
+    "TradingPaneIndicatorBase": {
+      "height": "ペインの高さ（ピクセル。区切り線はドラッグ可能）"
+    },
+    "TradingChartInstance": {
+      "setOptions": "オプションを置き換え。bars と drawings は参照が変わったときだけ適用",
+      "setBars": "足を置き換え",
+      "update": "足を配信：最後の足と同じ時刻なら置き換え、新しい時刻なら追加",
+      "appendBars": "最後の足より新しい足を追加",
+      "prependBars": "最初の足の前に古い足を挿入し、表示を保つ",
+      "getBarCount": "足の本数",
+      "getBar": "指定番号の足。範囲外は null",
+      "scrollToRealtime": "最新の足までスクロール",
+      "fitContent": "すべての足を表示",
+      "getVisibleRange": "表示中の足",
+      "setVisibleRange": "2 つの論理番号の間の足を表示",
+      "setScaleMode": "価格スケールを設定：linear、log、percent",
+      "resetPriceScales": "すべての価格スケールを表示中の足に合わせ直す",
+      "setDrawingTool": "描画ツールを有効にする",
+      "getDrawingTool": "使用中の描画ツール",
+      "getDrawings": "現在の描画",
+      "setDrawings": "描画を置き換え",
+      "removeDrawing": "描画を削除",
+      "selectDrawing": "描画を選択（null で選択解除）",
+      "setIndicatorVisible": "インジケーターを表示・非表示",
+      "getRenderer": "使用中のバックエンド。準備前は null",
+      "ready": "最初のフレームを描けるようになるとバックエンドで解決",
+      "refreshTheme": "CSS 変数を読み直す（テーマの変更は自動で検出）",
+      "resize": "コンテナのサイズで描き直す（リサイズは自動で検出）",
+      "on": "イベントを購読。購読解除の関数を返す",
+      "destroy": "チャートを削除して GPU リソースを解放"
+    },
+    "TradingChartEventMap": {
+      "renderer": "使用中のバックエンド。フォールバック後にも通知",
+      "crosshairMove": "クロスヘアが動いた。チャート外では null",
+      "click": "ペインがクリックされた",
+      "visibleRangeChange": "表示中の足が変わった",
+      "orderMove": "ドラッグ可能な価格ラインが離された",
+      "drawingsChange": "ユーザーが描画を追加・移動・削除した",
+      "drawingSelect": "選択中の描画が変わった",
+      "drawingToolChange": "描画ツールが変わった",
+      "indicatorToggle": "凡例からインジケーターが表示・非表示になった",
+      "historyRequest": "最も古い足が表示された"
+    }
+  },
+  "wc": {
+    "demos": {
+      "bollinger": {
+        "title": "純粋関数で求めるボリンジャーバンド",
+        "description": "minerva-design/charts/core の bollinger() と ema() で系列を計算し、レンジエリアチャートで描画します。"
+      },
+      "panes": {
+        "title": "インジケーターのペイン",
+        "description": "トレーディングチャートがボリンジャーバンド・MACD・RSI を計算し、macd() でチャート外に最新値を表示します。"
+      }
+    }
+  }
+}

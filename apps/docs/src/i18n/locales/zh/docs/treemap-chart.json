@@ -1,5 +1,5 @@
 {
-  "title": "TreemapChart",
+  "title": "矩形树图",
   "description": "以面积与数值成正比的嵌套矩形展示层级数据，一眼看出哪些部分占用最多（磁盘占用、预算、投资组合）。悬停或使用方向键高亮单元格；提示框会显示其路径。",
   "demos": {
     "basic": {
@@ -9,7 +9,58 @@
     "flat": {
       "title": "扁平",
       "description": "没有子节点时每个节点都是叶子；gap 加大单元格之间的间距。"
+    },
+    "market-map": {
+      "title": "股市热力图",
+      "description": "按板块分组的股票，面积表示市值，颜色从红到绿表示当日涨跌，就像财经网站上的市场全景图；涨跌幅写在每个单元格的名称中。"
+    },
+    "bundle": {
+      "title": "打包体积",
+      "description": "打包分析工具的视图：按压缩后体积展示 JavaScript 包中的模块，共三层，图表下方列出最大的依赖。"
     }
+  },
+  "data": {
+    "folders": {
+      "media": "媒体",
+      "videos": "视频",
+      "photos": "照片",
+      "music": "音乐",
+      "applications": "应用程序",
+      "projects": "项目",
+      "system": "系统",
+      "library": "资源库",
+      "caches": "缓存",
+      "logs": "日志",
+      "downloads": "下载",
+      "installers": "安装包",
+      "archives": "压缩包"
+    },
+    "diskAria": "按文件夹统计的磁盘用量",
+    "diskSelected": "{{path}}：{{size}}（占磁盘的 {{share}}）",
+    "clickCell": "点击一个单元格查看它的位置",
+    "departments": {
+      "engineering": "研发",
+      "sales": "销售",
+      "marketing": "市场",
+      "success": "客户成功",
+      "operations": "运营",
+      "finance": "财务",
+      "people": "人力资源",
+      "legal": "法务"
+    },
+    "budgetAria": "各部门的年度预算",
+    "sectors": {
+      "technology": "科技",
+      "finance": "金融",
+      "health": "医疗",
+      "energy": "能源",
+      "consumer": "消费"
+    },
+    "marketCap": "市值：{{value}}",
+    "marketAria": "按板块分组、按当日涨跌着色的股市热力图",
+    "ofBundle": "占打包体积的 {{share}}",
+    "bundleAria": "按模块统计的 JavaScript 打包体积",
+    "bundleSummary": "总计 {{size}}；超过 100 KB 的依赖：{{modules}}。"
   },
   "api": {
     "TreemapChartProps": {
@@ -22,6 +73,59 @@
       "value": "叶子节点的数值（父节点汇总其子节点）",
       "color": "单元格颜色；顶层节点省略时取自调色板，未设置颜色的子节点使用父节点颜色的浅色变体",
       "children": "子节点"
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "父节点（带标题）包含其子节点，单元格面积即其大小；轻触会以单元格路径调用 onClick。"
+      }
+    },
+    "data": {
+      "items": {
+        "media": "媒体",
+        "photos": "照片",
+        "videos": "视频",
+        "music": "音乐",
+        "apps": "应用",
+        "games": "游戏",
+        "social": "社交",
+        "maps": "地图",
+        "system": "系统",
+        "messages": "信息"
+      },
+      "storageAria": "按类别划分的手机存储",
+      "selectedItem": "{{path}}：{{size}}",
+      "tapCell": "轻触单元格查看其大小"
+    }
+  },
+  "wc": {
+    "demos": {
+      "nested": {
+        "title": "嵌套节点",
+        "description": "按文件夹统计的磁盘占用：父节点汇总子节点，并在其上方显示名称。"
+      },
+      "flat": {
+        "title": "平铺列表",
+        "description": "每个地区一个矩形，面积与人口成正比。"
+      }
+    },
+    "minerva-treemap-chart": {
+      "props": {
+        "hideHeaders": "隐藏子节点上方的父节点名称",
+        "height": "图表高度（包含图例）：像素值或任意 CSS 长度",
+        "options": "其他引擎选项（坐标轴、图例、提示框、调色板、格式化……），与元素自身的属性合并；仅作为属性设置",
+        "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null"
+      },
+      "events": {
+        "minerva-hover": "悬停（或键盘聚焦）的图形元素发生变化；detail：{ index, name, value, share }，无悬停时为 null",
+        "minerva-click": "点击、轻触或按 Enter 激活了一个图形元素；detail：{ index, name, value, share }",
+        "minerva-toggle": "点击了图例项（或调用了 toggle()）；detail：{ index, hidden, hiddenIndexes }"
+      },
+      "methods": {
+        "toggle": "按索引隐藏或显示扇区、阶段、雷达系列或树图的顶层节点"
+      }
     }
   }
 }

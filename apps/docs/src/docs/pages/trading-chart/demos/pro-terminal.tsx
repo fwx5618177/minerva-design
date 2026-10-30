@@ -1,0 +1,174 @@
+import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Button, Select, SelectItem } from "minerva-design";
+import {
+  TradingChart,
+  resampleBars,
+  type TradingChartStyle,
+  type TradingIndicator,
+  type TradingScaleMode,
+} from "minerva-design/charts";
+import { MINUTE, generateBars } from "../data";
+
+// 90 days of 1-minute bars (129,600), aggregated for the longer timeframes
+const minutes = generateBars(
+  {
+    count: 90 * 24 * 60,
+    timeframe: MINUTE,
+    seed: 42,
+    price: 61_850,
+    volatility: 0.0011,
+    volume: 14,
+  },
+  1,
+);
+
+const TIMEFRAMES = ["1m", "5m", "15m", "1H", "4H", "1D", "1W"] as const;
+type Timeframe = (typeof TIMEFRAMES)[number];
+
+const STYLES: TradingChartStyle[] = [
+  "candles",
+  "hollowCandles",
+  "heikinAshi",
+  "bars",
+  "line",
+  "area",
+  "baseline",
+];
+
+const STUDIES: Record<string, TradingIndicator[]> = {
+  ma: [
+    { type: "ma", period: 7 },
+    { type: "ma", period: 25 },
+    { type: "ma", period: 99 },
+  ],
+  boll: [{ type: "boll" }],
+  vol: [{ type: "volume", maPeriod: 20, height: 90 }],
+  macd: [{ type: "macd" }],
+  rsi: [{ type: "rsi" }],
+  kdj: [{ type: "kdj" }],
+};
+
+const bar: React.CSSProperties = {
+  display: "flex",
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: 4,
+  padding: "6px 8px",
+  borderBottom: "1px solid var(--border-color)",
+};
+
+const divider: React.CSSProperties = {
+  width: 1,
+  height: 20,
+  margin: "0 6px",
+  background: "var(--border-color)",
+};
+
+export default function ProTerminalDemo() {
+  const { t } = useTranslation("common", {
+    keyPrefix: "docs.trading-chart.data",
+  });
+  const [timeframe, setTimeframe] = useState<Timeframe>("15m");
+  const [chartStyle, setChartStyle] = useState<TradingChartStyle>("candles");
+  const [scaleMode, setScaleMode] = useState<TradingScaleMode>("linear");
+  const [studies, setStudies] = useState(["ma", "vol", "macd", "rsi"]);
+
+  const bars = useMemo(
+    () => (timeframe === "1m" ? minutes : resampleBars(minutes, timeframe)),
+    [timeframe],
+  );
+  const indicators = useMemo(
+    () =>
+      Object.keys(STUDIES).flatMap((key) =>
+        studies.includes(key) ? STUDIES[key] : [],
+      ),
+    [studies],
+  );
+  const toggle = (key: string) =>
+    setStudies((list) =>
+      list.includes(key) ? list.filter((k) => k !== key) : [...list, key],
+    );
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        border: "1px solid var(--border-color)",
+        borderRadius: 10,
+        overflow: "hidden",
+        background: "var(--surface-color)",
+      }}
+    >
+      <div style={bar} role="toolbar" aria-label={t("toolbar")}>
+        <strong style={{ padding: "0 8px 0 4px", fontSize: 14 }}>
+          {t("btc")}
+        </strong>
+        {TIMEFRAMES.map((tf) => (
+          <Button
+            key={tf}
+            size="small"
+            variant="ghost"
+            active={tf === timeframe}
+            aria-pressed={tf === timeframe}
+            onClick={() => setTimeframe(tf)}
+          >
+            {t(`timeframes.${tf}`)}
+          </Button>
+        ))}
+        <span style={divider} />
+        <Select
+          size="small"
+          style={{ width: 150 }}
+          aria-label={t("chartStyle")}
+          value={chartStyle}
+          onChange={(value) => setChartStyle(value as TradingChartStyle)}
+        >
+          {STYLES.map((style) => (
+            <SelectItem key={style} value={style}>
+              {t(`styles.${style}`)}
+            </SelectItem>
+          ))}
+        </Select>
+        <span style={divider} />
+        {Object.keys(STUDIES).map((key) => (
+          <Button
+            key={key}
+            size="small"
+            variant="ghost"
+            active={studies.includes(key)}
+            aria-pressed={studies.includes(key)}
+            onClick={() => toggle(key)}
+          >
+            {t(`studies.${key}`)}
+          </Button>
+        ))}
+        <span style={{ flex: 1 }} />
+        {(["linear", "percent", "log"] as const).map((mode) => (
+          <Button
+            key={mode}
+            size="small"
+            variant="ghost"
+            active={scaleMode === mode}
+            aria-pressed={scaleMode === mode}
+            onClick={() => setScaleMode(mode)}
+          >
+            {t(`scales.${mode}`)}
+          </Button>
+        ))}
+      </div>
+      <TradingChart
+        bars={bars}
+        timeframe={timeframe}
+        symbol={t("btc")}
+        chartStyle={chartStyle}
+        scaleMode={scaleMode}
+        indicators={indicators}
+        watermark={`${t("btc")} · ${t(`timeframes.${timeframe}`)}`}
+        labels={{ timeframe: t(`timeframes.${timeframe}`) }}
+        ariaLabel={t("terminalAria")}
+        height={600}
+      />
+    </div>
+  );
+}

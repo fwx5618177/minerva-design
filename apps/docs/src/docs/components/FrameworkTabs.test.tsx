@@ -11,6 +11,7 @@ import { resetStoredFramework } from "../frameworks/useFramework";
 
 // The custom elements themselves are not needed to test the selector
 vi.mock("minerva-design/web-components", () => ({}));
+vi.mock("minerva-design/web-components/chart", () => ({}));
 
 beforeAll(setupI18n);
 beforeEach(() => {
@@ -261,4 +262,49 @@ describe("global framework selector", () => {
       screen.queryByRole("tablist", { name: "Framework" }),
     ).not.toBeInTheDocument();
   });
+
+  it.each([
+    ["Vue", "vue", "minerva-design/vue"],
+    ["Svelte", "svelte", 'import "minerva-design/web-components/chart"'],
+    ["HTML", "html", 'import "minerva-design/web-components/chart"'],
+  ])(
+    "chart pages: %s shows live chart demos with their source",
+    async (label, id, entry) => {
+      const user = userEvent.setup();
+      renderPage("/line-chart", "line-chart");
+      await user.click(tabs().getByRole("tab", { name: label }));
+      expect(screen.getByRole("status", { name: "query" })).toHaveTextContent(
+        `?framework=${id}`,
+      );
+      const panel = screen.getByRole("tabpanel");
+      expect(
+        await within(panel).findByRole("heading", {
+          level: 3,
+          name: "Weekly trend",
+        }),
+      ).toBeInTheDocument();
+      expect(panel).toHaveTextContent(entry);
+      expect(screen.queryByTestId("chart-engine-fallback")).toBeNull();
+      // the chart entry is optional: no CDN bundle step
+      expect(panel).not.toHaveTextContent("cdn/minerva.js");
+    },
+  );
+
+  it.each(["Vue", "Angular", "Svelte", "Solid", "HTML"])(
+    "chart pages without %s examples show the engine wrapped in the framework",
+    async (label) => {
+      const user = userEvent.setup();
+      renderPage("/chart-engine", "chart-engine");
+      await user.click(tabs().getByRole("tab", { name: label }));
+      const fallback = await screen.findByTestId("chart-engine-fallback");
+      expect(fallback).toHaveTextContent(
+        'import { createChart } from "minerva-design/charts/core"',
+      );
+      expect(fallback).toHaveTextContent("setOptions");
+      expect(fallback).toHaveTextContent("destroy()");
+      expect(
+        within(fallback).getAllByRole("link", { name: /chart engine/i })[0],
+      ).toHaveAttribute("href", "/chart-engine");
+    },
+  );
 });

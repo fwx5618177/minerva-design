@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 import {
   QuadrantChart,
@@ -7,37 +8,51 @@ import {
 } from "minerva-design/native";
 
 // x: effort, y: impact (0-10)
-const features: QuadrantPoint[] = [
-  { label: "Dark mode", x: 2, y: 8 },
-  { label: "Offline sync", x: 8, y: 9 },
-  { label: "New icons", x: 2.5, y: 3 },
-  { label: "Rewrite", x: 8.5, y: 2.5 },
-  { label: "Search", x: 6, y: 7 },
+const features = [
+  { key: "darkMode", x: 2, y: 8 },
+  { key: "offlineSync", x: 8, y: 9 },
+  { key: "newIcons", x: 2.5, y: 3 },
+  { key: "rewrite", x: 8.5, y: 2.5 },
+  { key: "search", x: 6, y: 7 },
 ];
 
 export default function Basic() {
+  const { t } = useTranslation("common", {
+    keyPrefix: "docs.quadrant-chart.data",
+  });
   const { colors } = useTheme();
-  const [status, setStatus] = useState("Tap a feature");
+  const [status, setStatus] = useState<string | null>(null);
+  const points: QuadrantPoint[] = features.map(({ key, x, y }) => ({
+    label: t(`features.${key}`),
+    x,
+    y,
+  }));
   return (
     <View style={{ width: "100%", gap: 8 }}>
       <QuadrantChart
         height={300}
-        points={features}
-        xLabel="Effort"
-        yLabel="Impact"
+        points={points}
+        xLabel={t("effort")}
+        yLabel={t("impact")}
         quadrants={{
-          topLeft: { label: "Quick wins" },
-          topRight: { label: "Big bets" },
-          bottomLeft: { label: "Fill-ins" },
-          bottomRight: { label: "Money pits" },
+          topLeft: { label: t("quickWins") },
+          topRight: { label: t("bigBets") },
+          bottomLeft: { label: t("fillIns") },
+          bottomRight: { label: t("moneyPits") },
         }}
-        ariaLabel="Effort and impact of features"
+        ariaLabel={t("featuresAria")}
         onPointClick={(point) =>
-          setStatus(`${point.label}: effort ${point.x}, impact ${point.y}`)
+          setStatus(
+            t("featureStatus", {
+              feature: point.label,
+              effort: point.x,
+              impact: point.y,
+            }),
+          )
         }
       />
       <Text role="status" style={{ color: colors["text-secondary-color"] }}>
-        {status}
+        {status ?? t("tapFeature")}
       </Text>
     </View>
   );

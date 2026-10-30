@@ -1,20 +1,8 @@
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { PieChart, type ShapeDatum } from "minerva-design/charts";
 
-const months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
-// Average rainfall per month, in millimeters
+// Average rainfall per month (January to December), in millimeters
 const rainfall = [78, 61, 72, 58, 49, 37, 28, 34, 52, 86, 97, 92];
 
 // One color per season (Dec-Feb, Mar-May, Jun-Aug, Sep-Nov)
@@ -25,16 +13,27 @@ const seasons = [
   "var(--danger-color)",
 ];
 
-const data: ShapeDatum[] = months.map((name, i) => ({
-  name,
-  value: rainfall[i],
-  color: seasons[Math.floor(((i + 1) % 12) / 3)],
-}));
-
 const labelContent = ["name"] as const;
-const format = (value: number) => `${value} mm`;
 
 export default function RoseDemo() {
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.pie-chart.data",
+  });
+  const locale = i18n.language;
+
+  const data = useMemo((): ShapeDatum[] => {
+    const month = new Intl.DateTimeFormat(locale, { month: "short" });
+    return rainfall.map((value, i) => ({
+      name: month.format(new Date(2026, i, 1)),
+      value,
+      color: seasons[Math.floor(((i + 1) % 12) / 3)],
+    }));
+  }, [locale]);
+  const millimeters = useMemo(
+    () => new Intl.NumberFormat(locale, { style: "unit", unit: "millimeter" }),
+    [locale],
+  );
+
   return (
     <PieChart
       data={data}
@@ -44,9 +43,15 @@ export default function RoseDemo() {
       cornerRadius={4}
       labelContent={labelContent}
       legend={false}
-      format={format}
+      format={(value) => millimeters.format(value)}
+      renderTooltip={(slice) => (
+        <div style={{ display: "grid", gap: 2 }}>
+          <strong>{slice.name}</strong>
+          <span>{millimeters.format(slice.value)}</span>
+        </div>
+      )}
       height={360}
-      ariaLabel="Average monthly rainfall"
+      ariaLabel={t("rainfallAria")}
     />
   );
 }

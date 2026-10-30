@@ -1,5 +1,5 @@
 {
-  "title": "BarChart",
+  "title": "Bar chart",
   "description": "Bars grouped side by side or stacked, with optional line overlays.",
   "demos": {
     "basic": {
@@ -21,14 +21,82 @@
     "combo": {
       "title": "Bars and line",
       "description": "A series with type: \"line\" is drawn over the bars, here a 7-day average."
+    },
+    "grouped": {
+      "title": "Grouped",
+      "description": "Several series without stacked sit side by side in each category, here the monthly rainfall of three cities; Intl.NumberFormat writes the unit."
+    },
+    "profit-loss": {
+      "title": "Profit and loss",
+      "description": "Negative values grow downwards from zero; each datum sets its own color, green for a profit and red for a loss, and the y format shows the sign."
+    },
+    "ranking": {
+      "title": "Ranking",
+      "description": "Sort the data before passing it to rank the categories; Intl.DisplayNames gives the country names in the reader's language and showLabels writes the values."
+    },
+    "target": {
+      "title": "Against a target",
+      "description": "A dashed y line marks the weekly target and the bars that reach it are highlighted through their datum color."
     }
+  },
+  "data": {
+    "quarter": "Q{{n}}",
+    "ticketsClosed": "Tickets closed",
+    "ticketsAria": "Support tickets closed per quarter",
+    "orders": "Orders",
+    "average7": "7-day average",
+    "day": "Day",
+    "ordersAria": "Daily orders with their 7-day average",
+    "revenueAria": "Quarterly revenue, 2025 and 2026",
+    "nps": {
+      "promoters": "Promoters",
+      "passives": "Passives",
+      "detractors": "Detractors"
+    },
+    "regions": {
+      "northAmerica": "North America",
+      "europe": "Europe",
+      "asiaPacific": "Asia Pacific",
+      "latinAmerica": "Latin America",
+      "middleEast": "Middle East"
+    },
+    "npsAria": "Share of promoters, passives and detractors by region",
+    "channels": {
+      "web": "Web",
+      "mobile": "Mobile app",
+      "partners": "Partners"
+    },
+    "channelsAria": "Monthly orders by channel, stacked",
+    "sales": "Sales",
+    "salesAria": "Sales per quarter",
+    "unitsStatus": "{{quarter}}: {{units}} units",
+    "tapBar": "Tap a bar",
+    "stacked": "Stacked",
+    "grouped": "Grouped",
+    "ordersPerChannelAria": "Orders per channel and month",
+    "cities": {
+      "london": "London",
+      "tokyo": "Tokyo",
+      "paris": "Paris"
+    },
+    "rainfallAria": "Average monthly rainfall in London, Tokyo and Paris",
+    "netResult": "Net result",
+    "profitAria": "Monthly net result, profits above zero and losses below",
+    "unitsSold": "Units sold",
+    "rankingAria": "Online sales by country, from highest to lowest",
+    "newCustomers": "New customers",
+    "week": "W{{n}}",
+    "weeklyTarget": "Weekly target",
+    "targetAria": "New customers per week against the weekly target",
+    "targetSummary": "Target reached {{reached}} weeks out of {{total}} ({{rate}})."
   },
   "api": {
     "BarChartProps": {
       "series": "Series drawn as bars unless they set a type (e.g. a line overlay)",
       "stacked": "Stacks the bars of every series instead of grouping them",
       "percent": "Scales the stacks to 100% (implies stacked)",
-      "labels": "Writes the value above every bar"
+      "labels": "Writes the value above every bar",
+      "orientation": "\"horizontal\" draws the bars from the left, the categories down the left side"
     }
   },
   "native": {
@@ -40,6 +108,38 @@
       "stacked": {
         "title": "Stacked",
         "description": "The Switch toggles stacked between stacked and grouped bars."
+      }
+    }
+  },
+  "wc": {
+    "demos": {
+      "grouped": {
+        "title": "Grouped bars with labels",
+        "description": "Two years side by side per region; labels writes the value above every bar."
+      },
+      "stacked": {
+        "title": "Stacked bars",
+        "description": "Sessions per device piled up for each day of the week."
+      }
+    },
+    "minerva-bar-chart": {
+      "props": {
+        "height": "Height of the chart, the legend included: pixels or any CSS length",
+        "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+        "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+      },
+      "events": {
+        "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
+        "minerva-point-click": "A point or a bar was clicked; detail: { x, xLabel, items }",
+        "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
+        "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",
+        "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+      },
+      "methods": {
+        "resetZoom": "Shows the whole data range",
+        "getView": "Visible range, null before the engine is created",
+        "setView": "Sets the visible range",
+        "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
       }
     }
   }

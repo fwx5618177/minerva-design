@@ -1,10 +1,10 @@
 {
-  "title": "CandlestickChart",
+  "title": "ローソク足チャート",
   "description": "期間ごとの始値・高値・安値・終値を表すローソク足チャート。株式や暗号資産など、あらゆる OHLC データに使えます。陽線と陰線は別々の色で描かれ、移動平均などの折れ線系列を重ねられます。長い履歴でも GPU によりズームやパンがなめらかです。",
   "demos": {
     "basic": {
       "title": "基本",
-      "description": "データ点は open、high、low、y（終値）を持ちます。上昇で引けたローソクは緑、下落は赤で描かれます。逆の配色が慣例の市場では upColor / downColor で入れ替えます。系列の format でツールチップの価格をドル表示にしています。"
+      "description": "データ点は open、high、low、y（終値）を持ちます。上昇したローソク足は緑、下落は赤です。逆の慣習の市場では upColor / downColor で入れ替えます。renderTooltip が Intl.NumberFormat で四本値を読者の言語で表記します。"
     },
     "moving-average": {
       "title": "移動平均",
@@ -13,11 +13,83 @@
     "large-data": {
       "title": "5 万本のローソク足",
       "description": "型付き配列の列 { x, open, high, low, y } で渡した 1 分足を時間軸に表示します。Ctrl / ⌘ + ホイールで 1 本ずつ見えるまでズームし、ドラッグでパン、ダブルクリックでリセットします。"
+    },
+    "volume": {
+      "title": "価格と出来高",
+      "description": "ローソク足チャートの下に出来高の棒グラフを置き、各棒をローソク足と同じ色にします。一方の onZoom が他方の setView を呼ぶのでズームやパンをしても連動し、layout イベントでラベルの狭い軸に余白を足して、ローソク足をその出来高の真上にそろえます。"
+    },
+    "intraday": {
+      "title": "日中足",
+      "description": "1 セッションの 5 分足に VWAP を折れ線系列で重ね、ニュース発表を x の線で示します。時間軸は Intl.DateTimeFormat と timeZone で取引所の現地時刻を表示します。"
     }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "基本",
+        "description": "ACME の 40 取引日。陽線と陰線は成功色と危険色で描かれます。onHover はタッチした日の始値と終値をチャートの下に表示します。"
+      }
+    },
+    "data": {
+      "scrub": "ローソク足をタッチすると始値と終値が表示されます"
+    }
+  },
+  "data": {
+    "open": "始値",
+    "high": "高値",
+    "low": "安値",
+    "close": "終値",
+    "change": "騰落率",
+    "candleColors": "ローソク足の色",
+    "greenUp": "上昇は緑、下落は赤",
+    "redUp": "上昇は赤、下落は緑",
+    "acmeAria": "ACME の 60 営業日の日足",
+    "ma": "MA{{days}}",
+    "novaAria": "NOVA の 120 営業日の日足と 5 日・20 日移動平均",
+    "candlesAria": "50,000 本の 1 分足",
+    "largeStatus": "{{candles}} 本 · {{renderer}} で描画 · Ctrl / ⌘ + ホイールでズーム、ドラッグでパン、ダブルクリックでリセット",
+    "volume": "出来高",
+    "pricesAria": "ORBT の 90 営業日の日足",
+    "volumeAria": "ORBT の日次出来高",
+    "vwap": "VWAP",
+    "guidanceCut": "業績見通しの下方修正",
+    "intradayAria": "ORBT の 1 セッションの 5 分足と VWAP"
   },
   "api": {
     "CandlestickChartProps": {
       "series": "type を指定しない限りローソク足として描画する系列（例：移動平均の折れ線）。データ点は open、high、low、y（終値）を持ちます"
+    }
+  },
+  "wc": {
+    "demos": {
+      "ohlc": {
+        "title": "日足ローソク足",
+        "description": "各ポイントは始値・高値・安値・終値を持ち、陽線と陰線はそれぞれ成功色と危険色になります。"
+      },
+      "moving-average": {
+        "title": "移動平均の重ね表示",
+        "description": "ローソク足に重ねた折れ線系列：終値の 5 日移動平均です。"
+      }
+    },
+    "minerva-candlestick-chart": {
+      "props": {
+        "height": "チャートの高さ（凡例を含む）：ピクセルまたは任意の CSS の長さ",
+        "options": "その他のエンジンのオプション（軸、凡例、ツールチップ、パレット、書式…）。要素自身のプロパティとマージされます。プロパティのみ",
+        "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+      },
+      "events": {
+        "minerva-hover": "ホバー（またはキーボードでフォーカス）しているポイントが変わりました。detail：{ x, xLabel, items }、何もない場合は null",
+        "minerva-point-click": "ポイントまたは棒がクリックされました。detail：{ x, xLabel, items }",
+        "minerva-plot-click": "ポイントのないプロット領域がクリックされました。detail：{ x, y }（データ座標）",
+        "minerva-zoom": "ユーザーがズームまたはパンしました。detail：{ x, y }（表示範囲）",
+        "minerva-renderer-change": "バックエンドの準備ができた、または GPU の喪失後にフォールバックしました。detail：{ renderer }"
+      },
+      "methods": {
+        "resetZoom": "データ範囲全体を表示します",
+        "getView": "表示範囲。エンジンが作成されるまでは null",
+        "setView": "表示範囲を設定します",
+        "getRenderer": "使用中のバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null"
+      }
     }
   }
 }

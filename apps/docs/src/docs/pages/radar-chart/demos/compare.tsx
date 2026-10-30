@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   RadarChart,
   type RadarIndicator,
@@ -7,15 +8,14 @@ import {
 } from "minerva-design/charts";
 
 // Review scores (0-100) of three phones
-const indicators: RadarIndicator[] = [
-  { name: "Performance", max: 100 },
-  { name: "Battery", max: 100 },
-  { name: "Camera", max: 100 },
-  { name: "Display", max: 100 },
-  { name: "Value", max: 100 },
-  { name: "Build", max: 100 },
+const criteria = [
+  "performance",
+  "battery",
+  "camera",
+  "display",
+  "value",
+  "build",
 ];
-
 const series: RadarSeries[] = [
   { name: "Aurora X", values: [92, 68, 88, 90, 55, 86] },
   { name: "Nimbus 5", values: [74, 91, 70, 78, 88, 72] },
@@ -23,7 +23,16 @@ const series: RadarSeries[] = [
 ];
 
 export default function CompareDemo() {
+  const { t } = useTranslation("common", {
+    keyPrefix: "docs.radar-chart.data",
+  });
   const [hovered, setHovered] = useState<ShapeHoverEvent | null>(null);
+
+  const indicators = useMemo(
+    (): RadarIndicator[] =>
+      criteria.map((key) => ({ name: t(`criteria.${key}`), max: 100 })),
+    [t],
+  );
 
   return (
     <div style={{ display: "grid", gap: 8, width: "100%" }}>
@@ -32,12 +41,15 @@ export default function CompareDemo() {
         series={series}
         onHover={setHovered}
         height={380}
-        ariaLabel="Review scores of three phones"
+        ariaLabel={t("phonesAria")}
       />
       <p role="status">
         {hovered && hovered.indicator !== undefined
-          ? `${hovered.name} · ${indicators[hovered.indicator].name}: ${hovered.value} / 100`
-          : "Hover a polygon or use the arrow keys to compare the phones"}
+          ? `${hovered.name} · ${indicators[hovered.indicator].name}: ${t(
+              "outOf",
+              { value: hovered.value, max: 100 },
+            )}`
+          : t("hoverPolygon")}
       </p>
     </div>
   );

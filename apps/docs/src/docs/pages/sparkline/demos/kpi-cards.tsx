@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Card,
   CardContent,
@@ -34,59 +35,96 @@ const trend = (seed: number, from: number, to: number, noise: number) => {
 interface Kpi {
   label: string;
   value: string;
-  delta: string;
+  /** Change over the period, 0.125 = +12.5% */
+  delta: number;
   /** The change is good news (an increase is not always one) */
   good: boolean;
   spark: SparklineConfig;
 }
 
 export default function KpiCardsDemo() {
-  const kpis = useMemo(
-    (): Kpi[] => [
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.sparkline.data",
+  });
+  const locale = i18n.language;
+
+  const kpis = useMemo((): Kpi[] => {
+    const usd = new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency: "USD",
+      maximumFractionDigits: 0,
+    });
+    const compactUsd = new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency: "USD",
+      notation: "compact",
+      maximumFractionDigits: 1,
+    });
+    const number = new Intl.NumberFormat(locale);
+    const ms = new Intl.NumberFormat(locale, {
+      style: "unit",
+      unit: "millisecond",
+    });
+    return [
       {
-        label: "Revenue",
-        value: "$128.4k",
-        delta: "+12.5%",
+        label: t("revenue"),
+        value: compactUsd.format(128_400),
+        delta: 0.125,
         good: true,
         spark: {
           data: trend(1, 3600, 4400, 0.12),
           type: "area",
-          name: "Revenue ($)",
+          name: t("revenue"),
+          format: (v) => usd.format(v),
         },
       },
       {
-        label: "Active users",
-        value: "24,310",
-        delta: "+4.1%",
+        label: t("activeUsers"),
+        value: number.format(24_310),
+        delta: 0.041,
         good: true,
-        spark: { data: trend(2, 23_000, 24_300, 0.04), name: "Users" },
+        spark: {
+          data: trend(2, 23_000, 24_300, 0.04),
+          name: t("activeUsers"),
+          format: (v) => number.format(v),
+        },
       },
       {
-        label: "Signups",
-        value: "1,842",
-        delta: "−3.2%",
+        label: t("signups"),
+        value: number.format(1_842),
+        delta: -0.032,
         good: false,
         spark: {
           data: trend(3, 66, 58, 0.3),
           type: "bar",
-          name: "Signups",
+          name: t("signups"),
           color: "var(--warning-color)",
         },
       },
       {
-        label: "p95 latency",
-        value: "182 ms",
-        delta: "−8.0%",
+        label: t("p95"),
+        value: ms.format(182),
+        delta: -0.08,
         good: true,
         spark: {
           data: trend(4, 205, 180, 0.08),
-          name: "p95 (ms)",
+          name: t("p95"),
+          format: (v) => ms.format(v),
           reference: 200,
           color: "var(--success-color)",
         },
       },
-    ],
-    [],
+    ];
+  }, [t, locale]);
+  // "+12.5%", "-3.2 %"...
+  const percent = useMemo(
+    () =>
+      new Intl.NumberFormat(locale, {
+        style: "percent",
+        minimumFractionDigits: 1,
+        signDisplay: "exceptZero",
+      }),
+    [locale],
   );
 
   return (
@@ -112,7 +150,7 @@ export default function KpiCardsDemo() {
             >
               <CardTitle style={{ fontSize: 24 }}>{kpi.value}</CardTitle>
               <Tag size="small" color={kpi.good ? "success" : "danger"}>
-                {kpi.delta}
+                {percent.format(kpi.delta)}
               </Tag>
             </div>
           </CardHeader>
@@ -120,7 +158,7 @@ export default function KpiCardsDemo() {
             <Sparkline
               {...kpi.spark}
               height={56}
-              ariaLabel={`${kpi.label}, last 30 days`}
+              ariaLabel={t("last30Aria", { metric: kpi.label })}
             />
           </CardContent>
         </Card>

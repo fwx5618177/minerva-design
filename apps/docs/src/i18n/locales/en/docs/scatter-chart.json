@@ -1,5 +1,5 @@
 {
-  "title": "ScatterChart",
+  "title": "Scatter chart",
   "description": "Dots positioned by two values, with per-point size, color and label. Zooms on both axes.",
   "demos": {
     "basic": {
@@ -13,7 +13,61 @@
     "large-data": {
       "title": "200,000 points",
       "description": "Two Gaussian clusters as typed-array columns; hit testing uses a spatial index."
+    },
+    "trend": {
+      "title": "Correlation and trend",
+      "description": "A least-squares trend line (a line series computed in the demo) over the campaigns, with a text annotation giving R² and the slope."
+    },
+    "categories": {
+      "title": "Categories",
+      "description": "One series per category gives each group its own color and a legend entry that toggles it; here three penguin species by flipper length and body mass."
+    },
+    "outliers": {
+      "title": "Outliers",
+      "description": "Per-point color, size and label flag the requests much slower than expected for their payload; the expected time is a line series."
     }
+  },
+  "data": {
+    "starter": "Starter",
+    "business": "Business",
+    "seats": "Seats",
+    "monthlyBill": "Monthly bill",
+    "billAria": "Monthly bill by number of seats, per plan",
+    "countries": "Countries",
+    "gdp": "GDP per capita",
+    "lifeExpectancy": "Life expectancy",
+    "countriesAria": "Life expectancy by GDP per capita; dot size is the population",
+    "cluster": "Cluster {{name}}",
+    "clustersAria": "Two clusters of 100,000 points each",
+    "largeStatus": "{{points}} points · drawn with {{renderer}}",
+    "sessionAria": "Session length against pages viewed",
+    "minutes": "Minutes",
+    "pages": "Pages",
+    "free": "Free",
+    "pro": "Pro",
+    "sessionStatus": "{{plan}}: {{minutes}} min, {{pages}} pages",
+    "tapDot": "Tap a dot",
+    "campaigns": "Campaigns",
+    "trend": "Trend",
+    "adSpend": "Ad spend per week",
+    "revenue": "Revenue per week",
+    "fit": "R² = {{r2}} · +{{slope}} of revenue per dollar spent",
+    "trendAria": "Revenue against ad spend for 60 campaigns, with a trend line",
+    "penguins": {
+      "adelie": "Adélie",
+      "chinstrap": "Chinstrap",
+      "gentoo": "Gentoo"
+    },
+    "flipper": "Flipper length",
+    "mass": "Body mass",
+    "penguinsAria": "Flipper length against body mass of three penguin species",
+    "requests": "Requests",
+    "outlier": "Outlier",
+    "expected": "Expected",
+    "payload": "Payload size",
+    "responseTime": "Response time",
+    "outliersAria": "Response time against payload size, outliers in red",
+    "outliersSummary": "{{slow}} of {{total}} requests took more than twice the expected time."
   },
   "api": {
     "ScatterChartProps": {
@@ -25,6 +79,38 @@
       "basic": {
         "title": "Basic",
         "description": "Two clusters of dots with axis titles; tap a dot to read its series and values."
+      }
+    }
+  },
+  "wc": {
+    "demos": {
+      "clusters": {
+        "title": "Two clusters",
+        "description": "[x, y] pairs of two series with axis titles; zoom on both axes with Ctrl / ⌘ + wheel."
+      },
+      "point-click": {
+        "title": "Clicked point",
+        "description": "Labelled points; clicking one shows its label and values (point click event)."
+      }
+    },
+    "minerva-scatter-chart": {
+      "props": {
+        "height": "Height of the chart, the legend included: pixels or any CSS length",
+        "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+        "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+      },
+      "events": {
+        "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
+        "minerva-point-click": "A point or a bar was clicked; detail: { x, xLabel, items }",
+        "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
+        "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",
+        "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+      },
+      "methods": {
+        "resetZoom": "Shows the whole data range",
+        "getView": "Visible range, null before the engine is created",
+        "setView": "Sets the visible range",
+        "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
       }
     }
   }

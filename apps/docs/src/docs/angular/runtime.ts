@@ -8,7 +8,7 @@ import { compiledExamples } from "./.aot/examples.js";
 export interface AngularSettings {
   theme: minerva.ConfigTheme;
   palette: Parameters<minerva.MinervaScope["setPalette"]>[0];
-  language: "en" | "zh";
+  language: "en" | "zh" | "ja" | "fr";
 }
 export interface AngularIsland {
   update(settings: AngularSettings): void;
@@ -25,7 +25,9 @@ export async function mountAngularExample(
 ): Promise<AngularIsland> {
   const componentType = compiledExamples[example.key ?? ""];
   if (!componentType)
-    throw new Error(`Missing compiled Angular example: ${example.key}`);
+    throw new Error(
+      `Angular example not compiled: ${example.key} (it uses components missing from the built minerva-design/angular: run pnpm --filter minerva-design build)`,
+    );
   let engine: typeof import("monaco-editor") | undefined;
   if (example.monaco) {
     engine = (await import("../pages/monaco-code-editor/engine")).monaco;

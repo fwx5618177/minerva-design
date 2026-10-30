@@ -1,0 +1,107 @@
+{
+  "title": "日历热力图",
+  "description": "在日历上展示每日数值，类似贡献图：代码提交、学习打卡、运动、订单等。每天是一个按等级着色的格子；月份和星期名称、提示框中的日期以及每周第一天都遵循 locale。图例可隐藏 / 显示某个等级；方向键可按天和按周移动，提示框会显示日期。",
+  "demos": {
+    "contributions": {
+      "title": "一年的贡献",
+      "description": "不设置 range 时，图表显示截止到数据最后一天的 53 周。color 设置最高等级的颜色（较低等级更浅，在浅色和深色主题下都适用）；onClick 返回所点击的日期，name 为格式化后的日期，date 为 YYYY-MM-DD 格式。"
+    },
+    "streak": {
+      "title": "学习打卡",
+      "description": "range={2026} 显示全年，包括未来的日期。thresholds 设置各等级的上限（1–15、16–30、31–60 以及超过 60 分钟），format 决定等级名称的格式；连续天数由同一份数据计算得出。"
+    },
+    "multi-year": {
+      "title": "多年数据",
+      "description": "超过一年的范围会按年分成多条，每条旁边标注年份；默认高度会随条数增加。"
+    },
+    "months": {
+      "title": "月历",
+      "description": "layout=\"months\" 为每个月绘制一个小日历，并选择能让格子最大的网格排布。weekStart 会覆盖 locale 决定的每周第一天；没有订单的日子（每周一店休）保持为空。"
+    },
+    "locale": {
+      "title": "语言区域",
+      "description": "locale 会翻译月份和星期名称以及提示框中的日期，并决定每周第一天（美国和日本为周日，法国和德国为周一，埃及为周六）。maxCellSize 让格子在宽屏上也保持较小。"
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "最近四个月每天的提交次数，这个范围正好适合手机屏幕；月份与星期名称跟随应用语言，点击可选中某一天。"
+      }
+    },
+    "data": {
+      "total": "最近四个月共 {{total}} 次提交",
+      "tapDay": "点击某一天以选中"
+    }
+  },
+  "api": {
+    "CalendarHeatmapProps": {
+      "data": "每日数值：日期（YYYY-MM-DD 字符串、Date 或时间戳）和数值；同一天的多个数值会相加",
+      "range": "显示的日期：某一年（2026）或闭区间 [start, end]；默认为截止到数据最后一天的 53 周",
+      "layout": "weeks：每周一列、每个星期几一行（跨多年时每年一条）；months：每月一个小日历",
+      "weekStart": "每周第一天，0 = 周日 … 6 = 周六；默认由 locale 决定",
+      "locale": "月份和星期名称、提示框日期、默认 weekStart 以及内置文案所使用的 BCP 47 语言区域；默认取页面语言（`<html lang>`）",
+      "color": "最高等级的颜色（较低等级更浅）；默认为调色板的第一种颜色",
+      "colors": "各等级的颜色，从低到高（会替代 color，并决定等级数量）",
+      "levels": "空白日之外的颜色等级数量",
+      "thresholds": "除最后一级外各等级的上限，升序排列（[2, 5, 10] 表示 1–2、3–5、6–10 及以上）；默认按最大值均分",
+      "gap": "格子之间的间隙，单位为像素",
+      "radius": "格子的圆角半径，单位为像素",
+      "maxCellSize": "格子的最大尺寸，单位为像素（宽度不足时会缩小）",
+      "monthLabels": "显示月份名称（以及年份）",
+      "weekdayLabels": "在格子旁边（weeks）或上方（months）显示星期名称"
+    },
+    "CalendarDatum": {
+      "date": "数值所属的日期：YYYY-MM-DD 字符串、Date 或时间戳（按本地日历日计算）",
+      "value": "当天的数值（负数按 0 计）"
+    }
+  },
+  "data": {
+    "commitsTotal": "过去一年共 {{total}} 次提交",
+    "commitsAria": "过去一年每天的代码提交次数",
+    "commitsDay": "{{date}}：{{value}} 次提交",
+    "commitsHint": "点击某一天（或聚焦图表后用方向键移动并按 Enter）即可选中",
+    "minutes": "{{value}} 分钟",
+    "streaks": "当前连续 {{current}} 天 · 最长连续 {{longest}} 天",
+    "lessonsAria": "2026 年每天的语言练习分钟数",
+    "lessonDay": "{{date}}：练习 {{value}}",
+    "missedDay": "{{date}}：未练习",
+    "lessonsHint": "点击某一天查看练习时长",
+    "km": "{{value}} 公里",
+    "runsAria": "2024 至 2026 年每天的跑步距离",
+    "runsYear": "{{year}} 年：{{value}}",
+    "weekStartLabel": "每周第一天",
+    "fromLocale": "跟随语言区域",
+    "ordersAria": "2026 年每天的线上订单数，按月显示",
+    "localeLabel": "语言区域",
+    "deploysAria": "2026 年上半年每天的部署次数"
+  },
+  "wc": {
+    "demos": {
+      "contributions": {
+        "title": "一年的贡献",
+        "description": "2025 年每天一个数值；月份和星期名称跟随页面语言的 locale。"
+      },
+      "months": {
+        "title": "按月日历",
+        "description": "每月一个小日历，五个颜色等级并设置明确的阈值（每日步数）。"
+      }
+    },
+    "minerva-calendar-heatmap": {
+      "props": {
+        "height": "图表高度（包含图例）：像素值或任意 CSS 长度",
+        "options": "其他引擎选项（坐标轴、图例、提示框、调色板、格式化……），与元素自身的属性合并；仅作为属性设置",
+        "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null"
+      },
+      "events": {
+        "minerva-hover": "悬停（或键盘聚焦）的图形元素发生变化；detail：{ index, name, value, share }，无悬停时为 null",
+        "minerva-click": "点击、轻触或按 Enter 激活了一个图形元素；detail：{ index, name, value, share }",
+        "minerva-toggle": "点击了图例项（或调用了 toggle()）；detail：{ index, hidden, hiddenIndexes }"
+      },
+      "methods": {
+        "toggle": "按索引隐藏或显示扇区、阶段、雷达系列或树图的顶层节点"
+      }
+    }
+  }
+}

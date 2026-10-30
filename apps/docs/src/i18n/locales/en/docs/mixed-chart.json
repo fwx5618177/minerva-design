@@ -1,0 +1,129 @@
+{
+  "title": "Combination chart",
+  "description": "Bars, lines and areas in one chart, on one or two value axes: revenue and growth, rainfall and temperature, Pareto charts.",
+  "demos": {
+    "revenue-growth": {
+      "title": "Revenue and growth",
+      "description": "The growth line sets yAxis: \"right\" and is drawn against yAxis2 with its own format; the right range is aligned on the left ticks, so the grid fits both axes."
+    },
+    "climate": {
+      "title": "Climate chart",
+      "description": "Rainfall bars on the left axis and the temperature curve on the right axis; zero: true keeps zero in the right range."
+    },
+    "conversion": {
+      "title": "Traffic and conversion",
+      "description": "An area of daily sessions with the conversion rate on the right axis and a campaign highlighted by a rect annotation."
+    },
+    "pareto": {
+      "title": "Pareto chart",
+      "description": "Sorted causes with their cumulative share on a 0-100% right axis (min, max and nice: false); the causes behind 80% of the returns are highlighted."
+    },
+    "locale": {
+      "title": "Locales",
+      "description": "The same chart with locale=\"zh-CN\" and locale=\"fr-FR\": the engine writes the compact units (万 / k), the separators, the month names of the time axis and the tooltip dates of the locale. Without locale, charts follow the page language (<html lang>)."
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "Basic",
+        "description": "Rainfall bars on the left axis and the temperature line on the right axis (yAxis: \"right\" and yAxis2); tap to compare both."
+      }
+    }
+  },
+  "data": {
+    "quarter": "Q{{n}} {{year}}",
+    "revenue": "Revenue",
+    "growth": "Growth (YoY)",
+    "revenueAria": "Quarterly revenue with its year-over-year growth",
+    "rainfall": "Rainfall",
+    "temperature": "Temperature",
+    "climateAria": "Monthly rainfall and temperature in Tokyo",
+    "sessions": "Sessions",
+    "conversionRate": "Conversion rate",
+    "campaign": "Campaign",
+    "conversionAria": "Daily sessions and conversion rate over two months",
+    "returns": "Returns",
+    "cumulative": "Cumulative share",
+    "causes": {
+      "wrongSize": "Wrong size",
+      "damaged": "Damaged",
+      "notAsDescribed": "Not as described",
+      "late": "Arrived late",
+      "changedMind": "Changed mind",
+      "wrongItem": "Wrong item",
+      "other": "Other"
+    },
+    "paretoAria": "Returns by cause with their cumulative share",
+    "pageViews": "Page views",
+    "locales": {
+      "chinese": "Chinese (zh-CN)",
+      "french": "French (fr-FR)"
+    },
+    "localeAria": "Daily page views and conversion rate, {{locale}}"
+  },
+  "api": {
+    "MixedChartProps": {
+      "series": "Bars, lines, areas and dots, each with its type; yAxis: \"right\" plots a series against yAxis2",
+      "yAxis2": "Right value axis of the series with yAxis: \"right\"",
+      "stackMode": "\"percent\" scales every stack to 100%",
+      "orientation": "\"horizontal\" puts the categories down the left side"
+    },
+    "ChartProps": {
+      "series": "Data series; each sets its own type",
+      "stackMode": "\"percent\" scales every stack to 100% at each x",
+      "yAxis2": "Right value axis of the series with yAxis: \"right\"; its range is aligned on the left ticks",
+      "orientation": "\"horizontal\" puts the x axis (categories) down the left side and the values along the bottom"
+    },
+    "ChartLabels": {
+      "open": "Candlestick open row",
+      "high": "Candlestick high row",
+      "low": "Candlestick low row",
+      "close": "Candlestick close row",
+      "max": "Box plot upper whisker row",
+      "q3": "Box plot third quartile row",
+      "median": "Box plot median row",
+      "q1": "Box plot first quartile row",
+      "min": "Box plot lower whisker row",
+      "outliers": "Number of outliers of a box",
+      "value": "Scatter value (bubbles) when the series has no valueName",
+      "x": "Row of the x of a scatter point when the axis has no title",
+      "y": "Row of the y of a scatter point when the axis has no title",
+      "series": "Default series names (\"Series 1\", \"Series 2\"…)",
+      "chart": "Accessible name of a chart without series",
+      "chartOf": "Accessible name of a chart; {series} is the list of the series names"
+    }
+  },
+  "wc": {
+    "demos": {
+      "revenue-growth": {
+        "title": "Revenue and growth on two axes",
+        "description": "Revenue as bars on the left axis, the growth rate as a line on the right axis (yAxis: \"right\")."
+      },
+      "climate": {
+        "title": "Climate chart",
+        "description": "Monthly precipitation as bars and the mean temperature as a smooth line; the crosshair reads both."
+      }
+    },
+    "minerva-mixed-chart": {
+      "props": {
+        "height": "Height of the chart, the legend included: pixels or any CSS length",
+        "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+        "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+      },
+      "events": {
+        "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
+        "minerva-point-click": "A point or a bar was clicked; detail: { x, xLabel, items }",
+        "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
+        "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",
+        "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+      },
+      "methods": {
+        "resetZoom": "Shows the whole data range",
+        "getView": "Visible range, null before the engine is created",
+        "setView": "Sets the visible range",
+        "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
+      }
+    }
+  }
+}

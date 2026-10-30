@@ -78,6 +78,12 @@ const testAlias: Alias[] = [
     find: /^minerva-design\/vue$/,
     replacement: src("../../packages/vue/src/index.ts"),
   },
+  // the chart entries of the web components (chart, trading-chart,
+  // order-book, chart-3d)
+  {
+    find: /^minerva-design\/web-components\/(chart|trading-chart|order-book|chart-3d)$/,
+    replacement: src("../../packages/web-components/src/elements/$1.ts"),
+  },
   {
     find: /^minerva-design\/web-components$/,
     replacement: src("../../packages/web-components/src/index.ts"),
@@ -108,6 +114,29 @@ const testAlias: Alias[] = [
   },
 ];
 
+// `DOCS_SOURCE_CHARTS=1 pnpm dev`: the chart entries from their sources, so
+// chart work can be previewed without building the package
+const sourceChartsAlias: Alias[] = process.env.DOCS_SOURCE_CHARTS
+  ? testAlias.slice(0, 2)
+  : [];
+
+// `DOCS_SOURCE_FRAMEWORKS=1` (with DOCS_SOURCE_CHARTS=1): minerva-design/vue
+// and the web components from their sources too, to preview the chart
+// wrappers without a build (their other components are not styled by the
+// built stylesheet in this mode: chart previews only)
+const sourceFrameworksAlias: Alias[] = process.env.DOCS_SOURCE_FRAMEWORKS
+  ? [
+      "minerva-design/web-components/chart",
+      "minerva-design/web-components",
+      "minerva-design/vue",
+      "@react-styles/",
+      "@minerva/core",
+      "@minerva/dom",
+    ].map((specifier) =>
+      testAlias.find(({ find }) => (find as RegExp).test(specifier))!,
+    )
+  : [];
+
 export default defineConfig({
   base: "/minerva-design/",
   plugins: [
@@ -123,7 +152,12 @@ export default defineConfig({
   resolve: {
     alias: process.env.VITEST
       ? [...nativeAlias, ...testAlias, ...alias]
-      : [...nativeAlias, ...alias],
+      : [
+          ...nativeAlias,
+          ...sourceChartsAlias,
+          ...sourceFrameworksAlias,
+          ...alias,
+        ],
     // one React for the site and the native sources (packages/native pins
     // the Expo SDK's React for its own tests)
     dedupe: ["react", "react-dom"],

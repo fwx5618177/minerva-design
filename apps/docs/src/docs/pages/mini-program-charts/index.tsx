@@ -217,61 +217,352 @@ export function Charts() {
   );
 }`;
 
-const shapesExample = `import { useRef } from "react";
-import Taro, { useReady, useUnload } from "@tarojs/taro";
-import { Canvas } from "@tarojs/components";
+const CARTESIAN = [
+  "Chart",
+  "LineChart",
+  "AreaChart",
+  "BarChart",
+  "HorizontalBarChart",
+  "ScatterChart",
+  "QuadrantChart",
+  "CandlestickChart",
+  "HeatmapChart",
+  "Sparkline",
+  "RangeAreaChart",
+  "MixedChart",
+  "BubbleChart",
+  "HistogramChart",
+  "BoxPlotChart",
+  "WaterfallChart",
+  "GanttChart",
+];
+const SHAPES = [
+  "PieChart",
+  "DonutChart",
+  "RadarChart",
+  "GaugeChart",
+  "FunnelChart",
+  "TreemapChart",
+  "SankeyChart",
+  "SunburstChart",
+  "RadialBarChart",
+  "CalendarHeatmap",
+  "BulletChart",
+  "ShapeChart",
+];
+const DOM_ONLY = [
+  "TradingChart",
+  "DepthChart",
+  "OrderBook",
+  "OrderBookHeatmap",
+  "TimeAndSales",
+  "Scatter3DChart",
+  "Surface3DChart",
+  "Bar3DChart",
+  "Line3DChart",
+];
+/** WeChat component folder of a component: AreaChart -> area-chart */
+const kebab = (name: string) =>
+  name.replace(/[A-Z]/g, (c, i: number) => (i ? "-" : "") + c.toLowerCase());
+
+const taroNamed = `import { useState } from "react";
+import { Text, View } from "@tarojs/components";
 import {
-  createCanvasShapeChart,
-  type CanvasShapeChartInstance,
-} from "minerva-design/charts/core";
+  AreaChart,
+  GanttChart,
+  Sparkline,
+  SunburstChart,
+} from "minerva-design/taro";
+
+const day = 86_400_000;
+const start = Date.UTC(2026, 2, 2);
+
+export default function Overview() {
+  const [path, setPath] = useState<string[]>([]);
+  return (
+    <View>
+      <Sparkline data={[42, 47, 45, 52, 58, 61]} type="area" />
+      <AreaChart
+        percent
+        series={[
+          { name: "Web", data: [["Q1", 42], ["Q2", 48], ["Q3", 51]] },
+          { name: "App", data: [["Q1", 58], ["Q2", 52], ["Q3", 49]] },
+        ]}
+      />
+      <GanttChart
+        today={start + 10 * day}
+        tasks={[
+          { name: "Design", start, end: start + 12 * day, progress: 1 },
+          { name: "Build", start: start + 9 * day, end: start + 30 * day, progress: 0.4 },
+          { name: "Launch", start: start + 32 * day, milestone: true },
+        ]}
+      />
+      <SunburstChart
+        data={[
+          { name: "Photos", children: [{ name: "2025", value: 22 }, { name: "2026", value: 10 }] },
+          { name: "Apps", value: 18 },
+        ]}
+        onDrill={(event) => setPath(event.path)}
+      />
+      <Text>{path.join(" / ")}</Text>
+    </View>
+  );
+}`;
+
+const uniNamed = `<script setup lang="ts">
+import { ref } from "vue";
+import {
+  HeatmapChart,
+  SankeyChart,
+  SunburstChart,
+  WaterfallChart,
+  type ShapeDrillEvent,
+} from "minerva-design/uni";
+
+const cells = ref([
+  { x: "Mon", y: "AM", value: 12 },
+  { x: "Mon", y: "PM", value: 30 },
+  { x: "Tue", y: "AM", value: 18 },
+  { x: "Tue", y: "PM", value: 26 },
+]);
+const steps = ref([
+  { label: "Revenue", value: 420 },
+  { label: "Costs", value: -260 },
+  { label: "Profit", kind: "total" as const },
+]);
+const links = ref([
+  { source: "Ads", target: "Site", value: 60 },
+  { source: "Search", target: "Site", value: 40 },
+  { source: "Site", target: "Sign-up", value: 30 },
+]);
+const folders = ref([
+  { name: "Photos", children: [{ name: "2025", value: 22 }, { name: "2026", value: 10 }] },
+  { name: "Apps", value: 18 },
+]);
+const path = ref<string[]>([]);
+const onDrill = (event: ShapeDrillEvent) => (path.value = event.path);
+</script>
+
+<template>
+  <HeatmapChart :data="cells" height="400rpx" />
+  <WaterfallChart :steps="steps" orientation="horizontal" />
+  <SankeyChart :links="links" />
+  <SunburstChart :data="folders" @drill="onDrill" />
+  <text>{{ path.join(" / ") }}</text>
+</template>`;
+
+const weappNamedJson = `{
+  "usingComponents": {
+    "mn-gantt-chart": "minerva-design/gantt-chart/index",
+    "mn-sunburst-chart": "minerva-design/sunburst-chart/index",
+    "mn-bullet-chart": "minerva-design/bullet-chart/index"
+  }
+}`;
+
+const weappNamedWxml = `<mn-gantt-chart id="plan" tasks="{{tasks}}" today="{{today}}" />
+<mn-sunburst-chart data="{{folders}}" bind:drill="onDrill" />
+<text>{{path}}</text>
+<mn-bullet-chart data="{{kpis}}" ranges="{{ranges}}" />`;
+
+const weappNamedJs = `const day = 86400000;
+const start = Date.UTC(2026, 2, 2);
+
+Page({
+  data: {
+    // timestamps: Date objects do not survive setData
+    tasks: [
+      { name: "Design", start, end: start + 12 * day, progress: 1 },
+      { name: "Build", start: start + 9 * day, end: start + 30 * day, progress: 0.4 },
+    ],
+    today: start + 10 * day,
+    folders: [
+      { name: "Photos", children: [{ name: "2025", value: 22 }, { name: "2026", value: 10 }] },
+      { name: "Apps", value: 18 },
+    ],
+    path: "",
+    kpis: [{ name: "Revenue", value: 270, target: 250 }],
+    ranges: [150, 225, 300],
+  },
+  onReady() {
+    this.selectComponent("#plan").configure({
+      formatProgress: (share) => \`\${Math.round(share * 100)}%\`,
+    });
+  },
+  onDrill(event) {
+    this.setData({ path: event.detail.path.join(" / ") });
+  },
+});`;
+
+const taroShapes = `import { useState } from "react";
+import { Text, View } from "@tarojs/components";
+import {
+  DonutChart,
+  GaugeChart,
+  ShapeChart,
+  type ShapeHoverEvent,
+} from "minerva-design/taro";
+
+const plans = [
+  { name: "Free", value: 5400 },
+  { name: "Pro", value: 2100 },
+  { name: "Team", value: 860 },
+];
 
 export default function Plans() {
-  const chart = useRef<CanvasShapeChartInstance | null>(null);
+  const [picked, setPicked] = useState<ShapeHoverEvent | null>(null);
+  const [hidden, setHidden] = useState<number[]>([]);
+  return (
+    <View>
+      <DonutChart
+        data={plans}
+        height={260}
+        centerValue="8.4k"
+        centerLabel="users"
+        percentFormat={(share) => \`\${Math.round(share * 100)}%\`}
+        hidden={hidden}
+        onToggle={(event) => setHidden(event.hiddenIndexes)}
+        onClick={setPicked}
+      />
+      <Text>{picked ? \`\${picked.name}: \${picked.value}\` : "Tap a plan"}</Text>
+      <GaugeChart value={72} label="Storage" height={200} />
+      {/* any shape type of the engine, from its options */}
+      <ShapeChart
+        options={{
+          type: "funnel",
+          data: [
+            { name: "Visit", value: 1200 },
+            { name: "Sign up", value: 380 },
+            { name: "Paid", value: 95 },
+          ],
+        }}
+      />
+    </View>
+  );
+}`;
 
-  useReady(() => {
-    Taro.createSelectorQuery()
+const uniShapes = `<script setup lang="ts">
+import { ref } from "vue";
+import {
+  PieChart,
+  RadarChart,
+  type ShapeChartHandle,
+  type ShapeHoverEvent,
+} from "minerva-design/uni";
+
+const sources = ref([
+  { name: "Search", value: 48 },
+  { name: "Direct", value: 23 },
+  { name: "Social", value: 16 },
+]);
+const picked = ref("");
+const radar = ref<ShapeChartHandle>(); // radar.value?.getInstance()?.toggle(0)
+const pick = (slice: ShapeHoverEvent) => (picked.value = slice.name);
+</script>
+
+<template>
+  <PieChart :data="sources" labels="inside" height="520rpx" @click="pick" />
+  <text>{{ picked }}</text>
+  <RadarChart
+    ref="radar"
+    :indicators="[{ name: 'Speed' }, { name: 'Power' }, { name: 'Range' }]"
+    :series="[{ name: 'Model A', values: [3, 4, 2] }]"
+    shape="circle"
+  />
+</template>`;
+
+const weappShapesJson = `{
+  "usingComponents": {
+    "mn-pie-chart": "minerva-design/pie-chart/index",
+    "mn-gauge-chart": "minerva-design/gauge-chart/index",
+    "mn-shape-chart": "minerva-design/shape-chart/index"
+  }
+}`;
+
+const weappShapesWxml = `<mn-pie-chart
+  id="sources"
+  data="{{sources}}"
+  inner-radius="{{0.6}}"
+  center-value="87"
+  bind:click="onSlice"
+  bind:toggle="onToggle"
+/>
+<mn-gauge-chart value="{{cpu}}" label="CPU" bands="{{bands}}" needle />
+<mn-shape-chart options="{{treemap}}" height="300" />`;
+
+const weappShapesJs = `Page({
+  data: {
+    sources: [
+      { name: "Search", value: 48 },
+      { name: "Direct", value: 23 },
+      { name: "Social", value: 16 },
+    ],
+    cpu: 64,
+    bands: [
+      { to: 70, color: "var(--success-color)" },
+      { to: 100, color: "var(--danger-color)" },
+    ],
+    // shape-chart: any shape type, options without functions
+    treemap: {
+      type: "treemap",
+      data: [
+        { name: "Photos", value: 38 },
+        { name: "Apps", children: [{ name: "Games", value: 14 }, { name: "Maps", value: 3 }] },
+      ],
+    },
+    hiddenCount: 0,
+  },
+  onReady() {
+    // functions cannot go through setData: pass them with configure()
+    this.selectComponent("#sources").configure({
+      percentFormat: (share) => \`\${Math.round(share * 100)}%\`,
+      renderTooltip: (slice) => \`\${slice.name}\\n\${slice.value} visits\`,
+    });
+  },
+  onSlice(event) {
+    wx.showToast({ title: event.detail.name, icon: "none" });
+  },
+  onToggle(event) {
+    this.setData({ hiddenCount: event.detail.hiddenIndexes.length });
+  },
+});`;
+
+const weappCoreExample = `// pages/plans/index.js, with <canvas type="2d" id="plans" bindtouchstart="onTouchStart" ...>
+const { createCanvasShapeChart } = require("minerva-design/charts/core");
+
+Page({
+  onReady() {
+    wx.createSelectorQuery()
       .select("#plans")
       .fields({ node: true, size: true })
       .exec(([res]) => {
-        chart.current = createCanvasShapeChart({
+        this.chart = createCanvasShapeChart({
           canvas: res.node,
           width: res.width,
           height: res.height,
-          pixelRatio: Taro.getWindowInfo().pixelRatio,
+          pixelRatio: wx.getWindowInfo().pixelRatio,
           options: {
             type: "pie",
             innerRadius: 0.62,
-            centerValue: "8.4k",
-            centerLabel: "users",
             data: [
               { name: "Free", value: 5400 },
               { name: "Pro", value: 2100 },
-              { name: "Team", value: 860 },
             ],
           },
           // plain values of the Minerva CSS variables
           theme: { variables: { "--primary-color": "#4f46e5" } },
         });
-        chart.current.on("click", (slice) =>
-          Taro.showToast({ title: slice.name, icon: "none" }),
+        this.chart.on("click", (slice) =>
+          wx.showToast({ title: slice.name, icon: "none" }),
         );
       });
-  });
-  useUnload(() => chart.current?.destroy());
-
+  },
   // mini-program canvas touches carry x / y relative to the canvas
-  return (
-    <Canvas
-      type="2d"
-      id="plans"
-      style={{ width: "100%", height: "260px" }}
-      onTouchStart={(e) => chart.current?.touchStart(e.changedTouches)}
-      onTouchMove={(e) => chart.current?.touchMove(e.touches)}
-      onTouchEnd={(e) => chart.current?.touchEnd(e.changedTouches)}
-      onTouchCancel={(e) => chart.current?.touchCancel(e.changedTouches)}
-    />
-  );
-}`;
+  onTouchStart(e) { this.chart?.touchStart(e.changedTouches); },
+  onTouchMove(e) { this.chart?.touchMove(e.touches); },
+  onTouchEnd(e) { this.chart?.touchEnd(e.changedTouches); },
+  onTouchCancel(e) { this.chart?.touchCancel(e.changedTouches); },
+  onUnload() { this.chart?.destroy(); },
+});`;
 
 export default function MiniProgramChartsDoc() {
   const { t } = useTranslation();
@@ -330,6 +621,98 @@ export default function MiniProgramChartsDoc() {
         </p>
       </section>
 
+      <section className={styles.section} aria-labelledby="mini-charts-named">
+        <h2 id="mini-charts-named">
+          {t("docs.mini-program-charts.named.title")}
+        </h2>
+        <p className={styles.prose}>
+          {t("docs.mini-program-charts.named.text")}
+        </p>
+        <div
+          className={styles.tableWrapper}
+          tabIndex={0}
+          role="region"
+          aria-label={t("docs.mini-program-charts.named.title")}
+        >
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">{t("docs.mini-program-charts.named.group")}</th>
+                <th scope="col">
+                  {t("docs.mini-program-charts.named.taroUni")}
+                </th>
+                <th scope="col">
+                  {t("docs.mini-program-charts.named.weappColumn")}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {(
+                [
+                  ["cartesian", CARTESIAN],
+                  ["shape", SHAPES],
+                ] as const
+              ).map(([group, names]) => (
+                <tr key={group}>
+                  <th scope="row">
+                    {t(`docs.mini-program-charts.named.${group}`)}
+                  </th>
+                  <td>
+                    {names.map((name, i) => (
+                      <span key={name}>
+                        {i ? ", " : ""}
+                        <code>{name}</code>
+                      </span>
+                    ))}
+                  </td>
+                  <td>
+                    {names.map((name, i) => (
+                      <span key={name}>
+                        {i ? ", " : ""}
+                        <code>{kebab(name)}</code>
+                      </span>
+                    ))}
+                  </td>
+                </tr>
+              ))}
+              <tr>
+                <th scope="row">
+                  {t("docs.mini-program-charts.named.domOnly")}
+                </th>
+                <td colSpan={2}>
+                  {DOM_ONLY.map((name, i) => (
+                    <span key={name}>
+                      {i ? ", " : ""}
+                      <code>{name}</code>
+                    </span>
+                  ))}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p className={styles.prose}>
+          {t("docs.mini-program-charts.named.props")}
+        </p>
+        <h3>{t("docs.mini-program-charts.taro.title")}</h3>
+        <CodeBlock language="tsx" title="Overview.tsx" code={taroNamed} />
+        <h3>{t("docs.mini-program-charts.uni.title")}</h3>
+        <CodeBlock language="html" title="Overview.vue" code={uniNamed} />
+        <h3>{t("docs.mini-program-charts.weapp.title")}</h3>
+        <p className={styles.prose}>
+          {t("docs.mini-program-charts.named.weapp")}
+        </p>
+        <CodeBlock language="json" title="index.json" code={weappNamedJson} />
+        <CodeBlock language="html" title="index.wxml" code={weappNamedWxml} />
+        <CodeBlock language="js" title="index.js" code={weappNamedJs} />
+        <p className={styles.prose}>
+          {t("docs.mini-program-charts.named.drill")}
+        </p>
+        <p className={styles.prose}>
+          {t("docs.mini-program-charts.named.domOnlyText")}
+        </p>
+      </section>
+
       <section
         className={styles.section}
         aria-labelledby="mini-charts-new-types"
@@ -356,12 +739,33 @@ export default function MiniProgramChartsDoc() {
         <p className={styles.prose}>
           {t("docs.mini-program-charts.shapes.text")}
         </p>
-        <CodeBlock language="tsx" title="Plans.tsx" code={shapesExample} />
+        <h3>{t("docs.mini-program-charts.taro.title")}</h3>
         <p className={styles.prose}>
-          {t("docs.mini-program-charts.shapes.touches")}
+          {t("docs.mini-program-charts.shapes.taro")}
         </p>
+        <CodeBlock language="tsx" title="Plans.tsx" code={taroShapes} />
+        <h3>{t("docs.mini-program-charts.uni.title")}</h3>
+        <p className={styles.prose}>
+          {t("docs.mini-program-charts.shapes.uni")}
+        </p>
+        <CodeBlock language="html" title="Traffic.vue" code={uniShapes} />
+        <h3>{t("docs.mini-program-charts.weapp.title")}</h3>
         <p className={styles.prose}>
           {t("docs.mini-program-charts.shapes.weapp")}
+        </p>
+        <CodeBlock language="json" title="index.json" code={weappShapesJson} />
+        <CodeBlock language="html" title="index.wxml" code={weappShapesWxml} />
+        <CodeBlock language="js" title="index.js" code={weappShapesJs} />
+        <p className={styles.prose}>
+          {t("docs.mini-program-charts.shapes.events")}
+        </p>
+        <h3>{t("docs.mini-program-charts.shapes.coreTitle")}</h3>
+        <p className={styles.prose}>
+          {t("docs.mini-program-charts.shapes.core")}
+        </p>
+        <CodeBlock language="js" title="index.js" code={weappCoreExample} />
+        <p className={styles.prose}>
+          {t("docs.mini-program-charts.shapes.touches")}
         </p>
       </section>
 

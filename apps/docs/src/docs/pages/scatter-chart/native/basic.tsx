@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 import { ScatterChart, useTheme } from "minerva-design/native";
 
@@ -14,29 +15,36 @@ const cluster = (cx: number, cy: number, seed: number) =>
   });
 
 export default function Basic() {
+  const { t } = useTranslation("common", {
+    keyPrefix: "docs.scatter-chart.data",
+  });
   const { colors } = useTheme();
-  const [status, setStatus] = useState("Tap a dot");
+  const [status, setStatus] = useState<string | null>(null);
   return (
     <View style={{ width: "100%", gap: 8 }}>
       <ScatterChart
         height={240}
-        ariaLabel="Session length against pages viewed"
-        xAxis={{ title: "Minutes" }}
-        yAxis={{ title: "Pages" }}
+        ariaLabel={t("sessionAria")}
+        xAxis={{ title: t("minutes") }}
+        yAxis={{ title: t("pages") }}
         series={[
-          { name: "Free", data: cluster(20, 25, 1) },
-          { name: "Pro", data: cluster(45, 50, 2) },
+          { name: t("free"), data: cluster(20, 25, 1) },
+          { name: t("pro"), data: cluster(45, 50, 2) },
         ]}
         onPointClick={(event) => {
           const item = event.items[0];
           if (item)
             setStatus(
-              `${item.seriesName}: ${event.xLabel} min, ${item.y} pages`,
+              t("sessionStatus", {
+                plan: item.seriesName,
+                minutes: event.xLabel,
+                pages: item.y,
+              }),
             );
         }}
       />
       <Text role="status" style={{ color: colors["text-secondary-color"] }}>
-        {status}
+        {status ?? t("tapDot")}
       </Text>
     </View>
   );

@@ -1,5 +1,5 @@
 {
-  "title": "BarChart",
+  "title": "柱状图",
   "description": "并排分组或堆叠的柱状图，可叠加折线。",
   "demos": {
     "basic": {
@@ -21,14 +21,82 @@
     "combo": {
       "title": "柱与折线",
       "description": "type: \"line\" 的系列绘制在柱之上，这里是 7 日平均值。"
+    },
+    "grouped": {
+      "title": "分组",
+      "description": "未设置 stacked 时，多个系列在每个类目中并排显示，这里是三座城市的月降水量；单位由 Intl.NumberFormat 书写。"
+    },
+    "profit-loss": {
+      "title": "盈亏",
+      "description": "负值从零向下延伸；每个数据点设置自己的颜色，盈利为绿色、亏损为红色，y 轴格式显示正负号。"
+    },
+    "ranking": {
+      "title": "排行",
+      "description": "传入前先对数据排序即可得到排行；Intl.DisplayNames 按读者的语言给出国家名称，showLabels 写出数值。"
+    },
+    "target": {
+      "title": "对比目标",
+      "description": "虚线标出每周目标，达标的柱子通过数据点颜色高亮显示。"
     }
+  },
+  "data": {
+    "quarter": "第{{n}}季度",
+    "ticketsClosed": "已关闭工单",
+    "ticketsAria": "每季度关闭的支持工单数",
+    "orders": "订单",
+    "average7": "7 日均值",
+    "day": "天",
+    "ordersAria": "每日订单数及其 7 日均值",
+    "revenueAria": "2025 与 2026 年的季度收入",
+    "nps": {
+      "promoters": "推荐者",
+      "passives": "被动者",
+      "detractors": "贬损者"
+    },
+    "regions": {
+      "northAmerica": "北美",
+      "europe": "欧洲",
+      "asiaPacific": "亚太",
+      "latinAmerica": "拉丁美洲",
+      "middleEast": "中东"
+    },
+    "npsAria": "各地区推荐者、被动者与贬损者的占比",
+    "channels": {
+      "web": "网站",
+      "mobile": "移动应用",
+      "partners": "合作伙伴"
+    },
+    "channelsAria": "按渠道堆叠的每月订单数",
+    "sales": "销量",
+    "salesAria": "每季度销量",
+    "unitsStatus": "{{quarter}}：{{units}} 件",
+    "tapBar": "点按一根柱子",
+    "stacked": "堆叠",
+    "grouped": "分组",
+    "ordersPerChannelAria": "按渠道和月份的订单数",
+    "cities": {
+      "london": "伦敦",
+      "tokyo": "东京",
+      "paris": "巴黎"
+    },
+    "rainfallAria": "伦敦、东京与巴黎的月平均降水量",
+    "netResult": "净利润",
+    "profitAria": "每月净利润，盈利在零线以上，亏损在零线以下",
+    "unitsSold": "销量",
+    "rankingAria": "各国线上销量，从高到低",
+    "newCustomers": "新客户",
+    "week": "第{{n}}周",
+    "weeklyTarget": "每周目标",
+    "targetAria": "每周新客户数与每周目标对比",
+    "targetSummary": "{{total}} 周中有 {{reached}} 周达标（{{rate}}）。"
   },
   "api": {
     "BarChartProps": {
       "series": "未设置 type 的系列绘制为柱（可借 type 叠加折线等）",
       "stacked": "将所有系列的柱堆叠而非分组",
       "percent": "将堆叠缩放为 100%（隐含 stacked）",
-      "labels": "在每根柱子上方写出数值"
+      "labels": "在每根柱子上方写出数值",
+      "orientation": "\"horizontal\" 让柱子从左侧生长，类别沿左侧排列"
     }
   },
   "native": {
@@ -40,6 +108,38 @@
       "stacked": {
         "title": "堆叠",
         "description": "Switch 切换 stacked，在堆叠柱和分组柱之间切换。"
+      }
+    }
+  },
+  "wc": {
+    "demos": {
+      "grouped": {
+        "title": "带标签的分组柱形图",
+        "description": "每个地区两年的数据并排显示；labels 在每根柱子上方显示数值。"
+      },
+      "stacked": {
+        "title": "堆叠柱形图",
+        "description": "按设备划分的会话数在每周每天堆叠显示。"
+      }
+    },
+    "minerva-bar-chart": {
+      "props": {
+        "height": "图表高度（包含图例）：像素值或任意 CSS 长度",
+        "options": "其他引擎选项（坐标轴、图例、提示框、调色板、格式化……），与元素自身的属性合并；仅作为属性设置",
+        "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null"
+      },
+      "events": {
+        "minerva-hover": "悬停（或键盘聚焦）的数据点发生变化；detail：{ x, xLabel, items }，无悬停时为 null",
+        "minerva-point-click": "点击了数据点或柱子；detail：{ x, xLabel, items }",
+        "minerva-plot-click": "点击了绘图区中没有数据点的位置；detail：{ x, y }（数据坐标）",
+        "minerva-zoom": "用户进行了缩放或平移；detail：{ x, y }（可见范围）",
+        "minerva-renderer-change": "渲染后端已就绪，或在 GPU 丢失后回退；detail：{ renderer }"
+      },
+      "methods": {
+        "resetZoom": "显示完整的数据范围",
+        "getView": "可见范围，引擎创建之前为 null",
+        "setView": "设置可见范围",
+        "getRenderer": "正在使用的渲染后端（webgpu、webgl2、webgl、canvas2d），就绪前为 null"
       }
     }
   }

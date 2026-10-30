@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Radio, RadioGroup } from "minerva-design";
 import {
   Chart,
@@ -20,6 +21,7 @@ function mulberry32(seed: number) {
 const COUNT = 50_000;
 
 export default function RenderersDemo() {
+  const { t } = useTranslation("common", { keyPrefix: "docs.charts.data" });
   const [renderer, setRenderer] = useState<ChartRendererPreference>("auto");
   const [active, setActive] = useState<ChartRendererKind | null>(null);
 
@@ -31,13 +33,13 @@ export default function RenderersDemo() {
       value += random() - 0.5;
       y[i] = value;
     }
-    return [{ name: "Random walk", data: { y } }];
-  }, []);
+    return [{ name: t("randomWalk"), data: { y } }];
+  }, [t]);
 
   return (
     <div style={{ display: "grid", gap: 12, width: "100%" }}>
       <RadioGroup
-        aria-label="Renderer"
+        aria-label={t("renderer")}
         direction="horizontal"
         value={renderer}
         onChange={(value) => setRenderer(value as ChartRendererPreference)}
@@ -45,6 +47,7 @@ export default function RenderersDemo() {
         <Radio value="auto" label="auto" />
         <Radio value="webgpu" label="webgpu" />
         <Radio value="webgl2" label="webgl2" />
+        <Radio value="webgl" label="webgl" />
         <Radio value="canvas2d" label="canvas2d" />
       </RadioGroup>
       <Chart
@@ -52,10 +55,10 @@ export default function RenderersDemo() {
         renderer={renderer}
         onRendererChange={setActive}
         height={280}
-        ariaLabel="Random walk of 50,000 points"
+        ariaLabel={t("randomWalkAria")}
       />
       <p role="status">
-        Requested: {renderer} · drawn with: {active ?? "…"}
+        {t("rendererStatus", { requested: renderer, active: active ?? "…" })}
       </p>
     </div>
   );

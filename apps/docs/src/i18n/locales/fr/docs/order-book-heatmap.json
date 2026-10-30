@@ -1,0 +1,169 @@
+{
+  "title": "Carte de chaleur du carnet",
+  "description": "Carte de chaleur de liquidité à la Bookmap : quantité au repos par temps et prix dessinée par le GPU, lignes du meilleur achat et de la meilleure vente, transactions en bulles proportionnelles au volume, profil du carnet actuel, zoom, déplacement et lecture au réticule. Les flux ajoutent une colonne par intervalle dans une fenêtre glissante.",
+  "demos": {
+    "basic": {
+      "title": "Historique et direct",
+      "description": "Le carnet du début de l'historique va à setBook, puis chaque mise à jour enregistrée avec son heure d'exchange (applyDeltas, addTrades) : la carte l'échantillonne en une colonne par intervalle. Les mêmes appels diffusent ensuite en direct. Glissez pour vous déplacer, Ctrl/⌘ + molette zoome le temps, Ctrl/⌘ + Maj + molette ou glisser l'axe des prix zoome les prix, un double clic suit à nouveau le marché."
+    },
+    "live": {
+      "title": "Flux haute fréquence",
+      "description": "100 messages par seconde ; le carnet est échantillonné toutes les 50 ms en instances de barres GPU (WebGPU, WebGL ou Canvas2D), 32 colonnes par tampon : une image n'envoie que la dernière colonne. onRendererChange indique le moteur, onFollowChange si la vue suit le marché."
+    },
+    "color-scale": {
+      "title": "Échelle de couleurs",
+      "description": "colorScale associe les quantités aux couleurs : log révèle la liquidité fine près des murs, linear ne garde que les murs. contrast multiplie d'abord les quantités ; maxSize fixe la quantité la plus chaude (sinon elle suit les données)."
+    },
+    "large-trades": {
+      "title": "Grosses transactions",
+      "description": "Les transactions d'une colonne sont additionnées par sens en une bulle dont l'aire croît avec le volume ; bubbleVolume est le volume de la plus grosse bulle (bubbleSize pixels). Un contrast plus faible assombrit le carnet pour faire ressortir les balayages ; onHover lit les volumes achetés et vendus de la colonne survolée."
+    },
+    "dark": {
+      "title": "Terminal sombre",
+      "description": "Les couleurs viennent des variables CSS du conteneur ; colors fixe la rampe (du plus froid, la couleur de fond est ajoutée en tête) : la rampe classique bleu-rouge sur une palette de terminal."
+    },
+    "compact": {
+      "title": "Compact (mobile)",
+      "description": "Une carte de téléphone : 30 secondes, profile={false} et des bulles plus petites. Glissez pour vous déplacer, touchez deux fois pour suivre à nouveau le marché."
+    },
+    "red-up": {
+      "title": "Rouge à la hausse",
+      "description": "colorConvention=\"red-up\" : bulles d'achat et ligne du meilleur achat en rouge, ventes et ligne de la meilleure vente en vert."
+    }
+  },
+  "data": {
+    "aria": "Carte de liquidité BTC/USDT",
+    "rendererIs": "Moteur : {{value}}",
+    "renderers": {
+      "webgpu": "WebGPU",
+      "webgl2": "WebGL 2",
+      "webgl": "WebGL",
+      "canvas2d": "Canvas 2D"
+    },
+    "following": "Suit le marché",
+    "panned": "Vue libre (zoomée ou déplacée)",
+    "followMarket": "Suivre le marché",
+    "scale": "Échelle de couleurs",
+    "scaleLog": "Logarithmique",
+    "scaleSqrt": "Racine carrée",
+    "scaleLinear": "Linéaire",
+    "contrast": "Contraste",
+    "times": "×{{value}}",
+    "colors": "Convention de couleurs",
+    "redUp": "Rouge hausse, vert baisse",
+    "greenUp": "Vert hausse, rouge baisse",
+    "volumeAt": "Colonne survolée : {{buys}} BTC achetés, {{sells}} BTC vendus",
+    "volumeHint": "Survolez une colonne pour lire son volume échangé."
+  },
+  "api": {
+    "OrderBookHeatmapProps": {
+      "book": "Carnet, appliqué quand l'objet change (flux via la ref)",
+      "trades": "Transactions ; quand le tableau grandit, seules les nouvelles sont ajoutées",
+      "onHover": "Cellule survolée (null en sortant)",
+      "onRendererChange": "Moteur utilisé (aussi après une perte du GPU)",
+      "onFollowChange": "true tant que la vue suit le marché, false après un zoom ou un déplacement",
+      "ref": "Poignée impérative : setBook, applyDeltas, addTrades, resetView, getInstance"
+    },
+    "OrderBookHeatmapHandle": {
+      "setBook": "Remplace le carnet (ferme les colonnes jusqu'à son heure)",
+      "applyDeltas": "Applique des mises à jour (ferme les colonnes jusqu'à leur heure)",
+      "addTrades": "Ajoute des transactions (bulles)",
+      "resetView": "Suit à nouveau le marché",
+      "getInstance": "L'instance du moteur sous-jacent (minerva-design/charts/core)"
+    },
+    "OrderBookHeatmapOptions": {
+      "tickSize": "Hauteur d'une ligne de prix (les niveaux y sont agrégés) ; un multiple rond du pas du carnet, d'environ 0,1 point de base, si omise",
+      "interval": "Temps entre deux colonnes, en ms : le carnet est échantillonné à ce rythme",
+      "window": "Durée visible, en ms (zoomable)",
+      "history": "Historique conservé, en ms (les colonnes plus anciennes sont supprimées)",
+      "depth": "Lignes de prix échantillonnées de chaque côté du carnet par colonne",
+      "priceSpan": "Écart de prix visible (haut − bas) ; ajusté au meilleur achat et à la meilleure vente de la fenêtre si omis",
+      "colorScale": "Échelle des quantités vers les couleurs : log révèle la liquidité fine près des murs",
+      "contrast": "Multiplie les quantités avant l'échelle : au-dessus de 1 éclaire la liquidité fine, en dessous garde les murs",
+      "maxSize": "Quantité dessinée avec la couleur la plus chaude ; suit les données si omise",
+      "colors": "Rampe de couleurs, du plus froid (la couleur de fond est ajoutée en tête) ; une rampe adaptée au thème si omise",
+      "bubbles": "Transactions dessinées en bulles proportionnelles au volume (couleurs achat et vente)",
+      "bubbleSize": "Diamètre de la plus grosse bulle, en pixels",
+      "bubbleVolume": "Volume de la plus grosse bulle ; suit les données si omis",
+      "bestLines": "Lignes du meilleur achat et de la meilleure vente",
+      "profile": "Profil du carnet actuel sur le bord droit",
+      "interactive": "Zoom et déplacement (un double clic suit à nouveau le marché)",
+      "tooltip": "Réticule et infobulle au survol",
+      "renderer": "Moteur des cellules : le GPU si disponible",
+      "labels": "Remplace les textes intégrés, qui suivent locale (anglais, chinois, japonais et français intégrés)"
+    },
+    "OrderBookCommonOptions": {
+      "upColor": "Couleur des achats (le côté « hausse ») ; --success-color par défaut, --danger-color avec colorConvention \"red-up\"",
+      "downColor": "Couleur des ventes (le côté « baisse ») ; --danger-color par défaut, --success-color avec colorConvention \"red-up\"",
+      "colorConvention": "\"red-up\" inverse les couleurs par défaut : achats en rouge, ventes en vert (Chine continentale, Japon, Corée)",
+      "pricePrecision": "Décimales des prix ; déduites des données si omises",
+      "sizePrecision": "Décimales des quantités ; déduites des données si omises",
+      "locale": "Langue des nombres (Intl.NumberFormat, unités compactes comme k ou 万) et des textes intégrés (anglais, chinois, japonais, français) ; la langue de la page (attribut lang de l’élément html) par défaut",
+      "formatPrice": "Formate un prix (remplace pricePrecision et locale)",
+      "formatSize": "Formate une quantité (remplace sizePrecision et locale)",
+      "fontFamily": "Police des textes ; celle du thème si omise (une police à chasse fixe aligne les chiffres)",
+      "fontSize": "Taille des textes, en pixels",
+      "ariaLabel": "Nom accessible du widget ; labels.name localisé par défaut"
+    },
+    "OrderBookWidgetProps": {
+      "height": "Hauteur du widget ; les nombres sont des pixels",
+      "width": "Largeur du widget ; les nombres sont des pixels",
+      "className": "Classe du conteneur",
+      "style": "Style du conteneur"
+    },
+    "OrderBookHeatmapLabels": {
+      "time": "Ligne heure de l'infobulle",
+      "price": "Ligne prix de l'infobulle",
+      "liquidity": "Quantité au repos de la cellule survolée",
+      "buys": "Volume acheté de la colonne survolée",
+      "sells": "Volume vendu de la colonne survolée",
+      "bid": "Meilleur achat, dans le résumé pour lecteur d'écran",
+      "ask": "Meilleure vente, dans le résumé pour lecteur d'écran",
+      "name": "Nom accessible (sans ariaLabel)"
+    },
+    "OrderBookHeatmapHoverEvent": {
+      "time": "Début de la colonne survolée",
+      "price": "Prix de la ligne survolée",
+      "size": "Quantité au repos de la cellule",
+      "side": "Côté de la cellule (null dans l'écart)",
+      "buyVolume": "Volume acheté pendant la colonne",
+      "sellVolume": "Volume vendu pendant la colonne"
+    },
+    "MarketTrade": {
+      "time": "Heure d'exécution (ms depuis l'époque)",
+      "price": "Prix d'exécution",
+      "size": "Quantité exécutée (devise de base)",
+      "side": "Sens de l'agresseur : \"buy\" a pris une vente, \"sell\" a frappé un achat"
+    }
+  },
+  "wc": {
+    "demos": {
+      "liquidity": {
+        "title": "Carte de liquidité en direct",
+        "description": "Un nouveau carnet toutes les 200 ms ferme une colonne de liquidité ; les transactions sont des bulles selon le volume."
+      },
+      "red-up": {
+        "title": "Couleurs « rouge à la hausse », échelle racine",
+        "description": "La convention de Chine continentale (achats en rouge), une échelle racine carrée et sans profil de tailles."
+      }
+    },
+    "minerva-order-book-heatmap": {
+      "props": {
+        "options": "Autres options du moteur (OrderBookHeatmapOptions de minerva-design/charts/core : couleurs, textes, locale, labels…) ; propriété uniquement",
+        "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+      },
+      "events": {
+        "minerva-hover": "Une cellule est survolée ; detail : { time, price, size, side, buyVolume, sellVolume }, null quand le pointeur la quitte",
+        "minerva-renderer-change": "Le moteur de rendu est prêt, ou s'est replié après une perte du GPU ; detail : { renderer }",
+        "minerva-follow-change": "La vue suit le marché (true) ou non après un zoom ou un déplacement (false) ; detail : { follow }"
+      },
+      "methods": {
+        "addTrades": "Ajoute des transactions (bulles)",
+        "resetView": "Suit de nouveau le marché (dernière heure, centré sur le prix médian)",
+        "getRenderer": "Moteur de rendu utilisé (webgpu, webgl2, webgl, canvas2d), null tant qu'il n'est pas prêt",
+        "setBook": "Remplace le carnet (ferme les colonnes jusqu’à son heure)",
+        "applyDeltas": "Applique des mises à jour (ferme les colonnes jusqu’à leur heure)"
+      }
+    }
+  }
+}

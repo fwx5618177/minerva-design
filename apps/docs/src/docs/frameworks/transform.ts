@@ -31,6 +31,7 @@ import {
   type HtmlElement,
   type HtmlNode,
 } from "./html.ts";
+import { chartEntriesOf } from "./chartEntries.ts";
 
 import type { WcFrameworkId } from "./index.ts";
 
@@ -1818,7 +1819,13 @@ function solid(
 
 /** Plain HTML: the markup and a module script (types stripped) */
 function html(input: WcDemoInput, a: Analysis | null): string {
-  const registration = `// registers every <minerva-*> element (or import one entry per element)\nimport "minerva-design/web-components";`;
+  // the optional chart entries are not part of the all-in-one entry
+  const chartEntries = chartEntriesOf(input.html);
+  const registration = chartEntries.length
+    ? `// registers the chart elements (optional entries, load the chart engine)\n${chartEntries
+        .map((entry) => `import "minerva-design/web-components/${entry}";`)
+        .join("\n")}`
+    : `// registers every <minerva-*> element (or import one entry per element)\nimport "minerva-design/web-components";`;
   if (!input.script) {
     return `${input.html.trim()}\n\n<script type="module">\n  ${registration.replace(/\n/g, "\n  ")}\n</script>\n`;
   }

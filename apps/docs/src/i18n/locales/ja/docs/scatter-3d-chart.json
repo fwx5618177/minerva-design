@@ -1,0 +1,307 @@
+{
+  "title": "3D 散布図",
+  "description": "周囲を回転できる 3D ボックス内の点群：数十万〜数百万の点を GPU で描画し、系列ごと・点ごと・カラースケールで色分け。ホバー選択、凡例、カラーバー付き。Line3DChart は 3D の軌跡を描きます。",
+  "demos": {
+    "clusters": {
+      "title": "クラスター",
+      "description": "アヤメに似たデータセットの 3 品種を 3 つの特徴で測定：クラスごとに 1 系列で、凡例で切り替えられます。ドラッグで回転、Shift + ドラッグでパン、ダブルクリックでリセット。"
+    },
+    "galaxy": {
+      "title": "1,000,000 点",
+      "description": "型付き配列の列で表した 100 万個の星の渦巻銀河。中心からの距離でカスタムカラースケールに色分けし、box={false} で軸ボックスを隠しています。"
+    },
+    "color-by-value": {
+      "title": "値で色分け",
+      "description": "倉庫のセンサー：色が温度（value 列、colorScale \"coolwarm\"、カラーバー）、大きさが湿度（size 列）を表します。センサーにホバーすると値を表示。"
+    },
+    "auto-rotate": {
+      "title": "自動回転",
+      "description": "autoRotate で毎秒 24° 回転する DNA の二重らせん。ポインターがチャート上にあるとき、画面外のとき、視差効果を減らす設定では停止します。投影は透視と平行を切り替えられます。"
+    },
+    "camera": {
+      "title": "カメラ操作",
+      "description": "プリセットのビューはチャートの ref で setCamera を、リセットは resetCamera を呼びます。回転・ズーム・パンのたびに onCameraChange が角度を通知します。"
+    },
+    "trajectory": {
+      "title": "3D の軌跡",
+      "description": "Line3DChart でローレンツアトラクター（12,000 ステップ）を描き、value 列と colorScale \"plasma\" で時間ごとに色分けしています。"
+    },
+    "renderer": {
+      "title": "レンダラー",
+      "description": "データレイヤーのバックエンドを選択：auto は WebGPU、WebGL2、WebGL、Canvas2D（CPU 投影・間引き）の順に試し、ソフトウェア動作の GPU はスキップします。onRendererChange が実際のバックエンドを通知します。"
+    }
+  },
+  "data": {
+    "species": {
+      "setosa": "セトサ",
+      "versicolor": "バーシカラー",
+      "virginica": "バージニカ"
+    },
+    "sepalLength": "がく片の長さ（cm）",
+    "sepalWidth": "がく片の幅（cm）",
+    "petalLength": "花びらの長さ（cm）",
+    "clustersAria": "がく片の長さ・幅と花びらの長さによる 3 品種の花の 3D 散布図",
+    "stars": "星",
+    "distance": "中心からの距離",
+    "kiloparsecs": "{{value}} kpc",
+    "galaxyAria": "中心からの距離で色分けした 100 万個の星の渦巻銀河",
+    "sensors": "センサー",
+    "sensorLabel": "センサー {{id}} · 湿度 {{humidity}}%",
+    "celsius": "{{value}} °C",
+    "lengthM": "長さ（m）",
+    "widthM": "幅（m）",
+    "heightM": "高さ（m）",
+    "temperature": "温度",
+    "sensorsAria": "倉庫内の 300 個のセンサーの位置と高さごとの温度",
+    "backbone1": "骨格 1",
+    "backbone2": "骨格 2",
+    "basePairs": "塩基対",
+    "autoRotate": "自動回転",
+    "projection": "投影",
+    "perspective": "透視",
+    "orthographic": "平行投影",
+    "helixAria": "回転する DNA の二重らせん",
+    "knot": "トーラス結び目",
+    "knotAria": "高さで色分けしたトーラス結び目の周りの 200,000 点",
+    "renderer": "バックエンド",
+    "renderers": {
+      "auto": "自動",
+      "webgpu": "WebGPU",
+      "webgl2": "WebGL2",
+      "webgl": "WebGL",
+      "canvas2d": "Canvas2D"
+    },
+    "starting": "起動中…",
+    "rendererInUse": "使用中のバックエンド：{{backend}}",
+    "rendererFallback": "ここでは {{requested}} を使えないため {{backend}} で描画しています",
+    "trajectory": "軌跡",
+    "time": "時間",
+    "seconds": "{{value}} 秒",
+    "lorenzAria": "時間で色分けしたローレンツアトラクターの軌跡",
+    "roll": "スイスロール",
+    "position": "ロール上の位置",
+    "views": {
+      "front": "正面",
+      "side": "側面",
+      "top": "上面",
+      "reset": "リセット"
+    },
+    "cameraState": "方位角 {{azimuth}}°、仰角 {{elevation}}°、ズーム ×{{zoom}}",
+    "cameraHint": "ドラッグで回転、Shift + ドラッグでパン、Ctrl / ⌘ + ホイールでズーム、ダブルクリックでリセット。",
+    "rollAria": "ロール上の位置で色分けしたスイスロールの点群"
+  },
+  "api": {
+    "Scatter3DChartProps": {
+      "series": "点群：オブジェクト、[x, y, z] タプル、または型付き配列の列"
+    },
+    "Line3DChartProps": {
+      "series": "3D ポリライン（軌跡）。NaN の座標で線が途切れる"
+    },
+    "Chart3DCommonProps": {
+      "height": "チャートの高さ（凡例を含む）。数値はピクセル",
+      "width": "チャートの幅。数値はピクセル",
+      "xAxis": "X 軸（ボックスの幅）：タイトル、範囲、目盛り、書式、カテゴリ",
+      "yAxis": "Y 軸（ボックスの奥行き）",
+      "zAxis": "Z 軸（ボックスの高さ）",
+      "camera": "初期カメラ（方位角、仰角、ズーム、投影、視野）。ダブルクリックで復元され、変更するとカメラが移動します",
+      "autoRotate": "カメラをボックスの周りで回転：true で毎秒 12°、または毎秒の角度。ホバー中、画面外、視差効果を減らす設定では停止",
+      "aspect": "ボックスの縦横比（x、y、z）",
+      "box": "軸ボックス（背面の壁、グリッド線、目盛りラベル、軸タイトル）を描画",
+      "colorScale": "colorBy が \"z\" / \"value\" のときの色：組み込みのカラーランプ（viridis、plasma、inferno、magma、cividis、turbo、spectral、coolwarm、terrain、blues）または CSS カラー",
+      "valueRange": "カラースケールの両端に対応する値。既定はデータの範囲",
+      "colorBar": "カラースケールのカラーバー（タイトル、書式）。表示中の系列がスケールを使うときに表示",
+      "legend": "凡例。複数の系列に名前があるときに表示され、項目をクリックすると系列を切り替え",
+      "tooltip": "ツールチップ。false で無効、render で内容を置き換え",
+      "interaction": "ドラッグで回転、右ドラッグ / Shift + ドラッグでパン、Ctrl / ⌘ + ホイールとピンチでズーム、ダブルクリックでリセット、矢印キーで回転。false で静的なチャート",
+      "lighting": "サーフェスと棒の環境光、拡散光、鏡面ハイライト",
+      "renderer": "データレイヤーのバックエンド：auto は WebGPU、WebGL2、WebGL、Canvas2D の順に試し、ソフトウェア動作の GPU はスキップ",
+      "palette": "系列の色（既定は CSS 変数 --chart-series-1..8、次にテーマカラー）",
+      "ariaLabel": "チャートのアクセシブルな名前",
+      "locale": "組み込みテキスト（アクセシブルな概要、凡例の読み上げ、ツールチップの行名）と数値書式の言語。英語・中国語・日本語・フランス語を内蔵。既定はページの言語（<html lang>）、次にブラウザーの言語",
+      "labels": "ロケールの組み込みテキストの上書き（Chart3DLabels を参照）",
+      "onHover": "ホバー中の点・セル・棒が変わったときに呼ばれる",
+      "onPointClick": "点・セル・棒をクリックしたときに呼ばれる",
+      "onCameraChange": "ユーザーがカメラを回転・ズーム・パン・リセットした後に呼ばれる",
+      "onRendererChange": "バックエンドの準備ができたとき（およびフォールバック後）に呼ばれる",
+      "className": "外側の要素のクラス",
+      "style": "外側の要素のスタイル",
+      "ref": "命令型ハンドル：resetCamera、getCamera、setCamera、getRenderer、getInstance"
+    },
+    "Chart3DHandle": {
+      "resetCamera": "camera プロパティのカメラに戻す",
+      "getCamera": "現在のカメラ（マウント前は null）",
+      "setCamera": "カメラを移動（azimuth、elevation、zoom、pan、projection の任意の組み合わせ）",
+      "getRenderer": "使用中のバックエンド。準備完了までは null",
+      "getInstance": "内部のエンジンインスタンス（minerva-design/charts/core の createChart3D）"
+    },
+    "Scatter3DSeries": {
+      "type": "コンポーネントが設定。type のない系列は散布系列として扱われる",
+      "data": "点：オブジェクト、[x, y, z] タプル、または列（型付き配列はそのまま使用、NaN の点はスキップ）",
+      "pointSize": "点の直径（CSS ピクセル、点ごとの size が優先）",
+      "opacity": "点の不透明度（0〜1）",
+      "colorBy": "色の決め方：\"series\"、またはカラースケールを通した \"z\" / \"value\"",
+      "perspectiveSize": "距離に応じて点の大きさを変える（透視投影のみ）"
+    },
+    "Line3DSeries": {
+      "type": "Line3DChart が設定",
+      "data": "描画順の頂点",
+      "lineWidth": "線の太さ（CSS ピクセル）",
+      "opacity": "線の不透明度（0〜1）",
+      "colorBy": "色の決め方。\"z\" と \"value\" は線に沿ってグラデーションを描く",
+      "pointSize": "各頂点に描く点の直径（0 で描かない）"
+    },
+    "Chart3DSeriesBase": {
+      "id": "安定した識別子（既定はインデックス）",
+      "name": "凡例とツールチップに表示する名前",
+      "color": "系列の色（var(--x) を含む任意の CSS カラー）。省略時はパレット",
+      "hidden": "系列を非表示にする（凡例には残る）",
+      "format": "ツールチップでホバー項目の値（または高さ）を整形"
+    },
+    "Chart3DPoint": {
+      "x": "X 座標",
+      "y": "Y 座標",
+      "z": "高さ（垂直軸）",
+      "size": "点の直径（CSS ピクセル）",
+      "color": "点の色。系列の色とカラースケールより優先",
+      "value": "カラースケールに対応する値（colorBy \"value\"）",
+      "label": "ツールチップに表示するテキスト"
+    },
+    "Chart3DColumnData": {
+      "x": "X 座標",
+      "y": "Y 座標",
+      "z": "高さ",
+      "size": "点ごとの直径（CSS ピクセル）",
+      "value": "点ごとにカラースケールに対応する値",
+      "label": "点ごとにツールチップに表示するテキスト"
+    },
+    "Chart3DAxisOptions": {
+      "title": "軸タイトル",
+      "min": "下限。省略時はデータから算出",
+      "max": "上限。省略時はデータから算出",
+      "categories": "カテゴリ名（棒グラフの x / y 軸）。省略時はデータから収集",
+      "format": "目盛りやツールチップの値を整形（カテゴリ軸ではカテゴリのインデックス）",
+      "tickCount": "目盛りのおおよその数",
+      "grid": "ボックスの壁に目盛り位置のグリッド線を描く",
+      "visible": "目盛りラベルとタイトルを表示",
+      "nice": "自動範囲を目盛りの値に丸める"
+    },
+    "Chart3DCameraOptions": {
+      "azimuth": "水平角（度）。上から見て反時計回り（0 は y 軸方向を見る）",
+      "elevation": "仰角（度、-89〜89。正の値は上から見る）",
+      "zoom": "ズーム：1 でボックスが収まり、2 で 2 倍に拡大",
+      "projection": "\"perspective\"（透視、消失点あり）または \"orthographic\"（平行投影）",
+      "fov": "垂直方向の視野角（度、透視投影）"
+    },
+    "Chart3DCameraState": {
+      "azimuth": "水平角（度）",
+      "elevation": "仰角（度）",
+      "zoom": "ズーム倍率（1 でボックスが収まる）",
+      "pan": "画面上のボックス中心のずれ（プロット領域の高さに対する比率）",
+      "projection": "カメラの投影方法"
+    },
+    "Chart3DInteractionOptions": {
+      "rotate": "ドラッグ（1 本指）でカメラを回転",
+      "zoom": "ホイールとピンチでズーム",
+      "wheel": "ホイールズーム：Ctrl / ⌘ 押下時とトラックパッドのピンチのみ（\"modifier\"）、または常に",
+      "pan": "右ドラッグ、Shift + ドラッグ、2 本指ドラッグで視点をパン",
+      "keyboard": "矢印キーで回転、+/- でズーム、0 でリセット、Esc でハイライト解除"
+    },
+    "Chart3DColorBarOptions": {
+      "title": "バー上部のタイトル",
+      "format": "バーの値を整形（既定は z 軸の書式）"
+    },
+    "Chart3DHoverEvent": {
+      "seriesIndex": "系列のインデックス",
+      "seriesId": "系列の識別子",
+      "seriesName": "系列の名前",
+      "type": "系列の種類",
+      "index": "系列データ内の点 / 棒のインデックス。サーフェスは row × cols + col",
+      "row": "サーフェス：格子点の行",
+      "col": "サーフェス：格子点の列",
+      "x": "X の値（棒グラフはカテゴリのインデックス）",
+      "y": "Y の値（棒グラフはカテゴリのインデックス）",
+      "z": "高さ",
+      "value": "データのカラースケール値",
+      "xCategory": "棒グラフ：x のカテゴリ名",
+      "yCategory": "棒グラフ：y のカテゴリ名",
+      "color": "項目の解決済みの色",
+      "label": "データのラベル",
+      "clientX": "チャートのコンテナを基準にした水平位置（CSS ピクセル）",
+      "clientY": "チャートのコンテナを基準にした垂直位置（CSS ピクセル）"
+    },
+    "Chart3DLabels": {
+      "chart": "名前のないチャートのロール説明とアクセシブルな名前",
+      "chartNamed": "系列に名前があるときのアクセシブルな名前。{names}",
+      "series": "名前のない系列の名前。{n} は 1 から始まる位置",
+      "seriesCount": "概要：系列の数。{count}",
+      "seriesSummary": "系列の概要。{name}、{type}、{size}",
+      "seriesSummaryHidden": "非表示の系列の概要。{name}、{type}、{size}",
+      "scatter": "散布系列の種類名",
+      "line": "折れ線系列の種類名",
+      "surface": "曲面系列の種類名",
+      "bar": "棒系列の種類名",
+      "points": "散布系列の規模。{count}",
+      "vertices": "折れ線系列の規模。{count}",
+      "grid": "曲面系列の規模。{rows}、{cols}",
+      "bars": "棒系列の規模。{count}",
+      "axis": "タイトルのない軸の概要。{axis}、{range}",
+      "axisTitled": "タイトルのある軸の概要。{axis}、{title}、{range}",
+      "range": "数値軸の範囲。{min}、{max}",
+      "listSeparator": "リスト（系列名、カテゴリ）の区切り文字",
+      "shown": "凡例で系列を表示したときの読み上げ。{name}",
+      "hidden": "凡例で系列を非表示にしたときの読み上げ。{name}",
+      "value": "ツールチップの value の行名（カラーバーにタイトルがないとき）",
+      "x": "x 軸にタイトルがないときのツールチップの行名",
+      "y": "y 軸にタイトルがないときのツールチップの行名",
+      "z": "z 軸にタイトルがないときのツールチップの行名"
+    }
+  },
+  "wc": {
+    "demos": {
+      "clusters": {
+        "title": "3D の顧客セグメント",
+        "description": "3 つの点群（年齢・収入・支出）を列データで渡します。ドラッグで回転、Ctrl / ⌘ + ホイールでズームします。"
+      },
+      "trajectory": {
+        "title": "高さで色分けした軌跡",
+        "description": "3D の折れ線を高度に応じて色分けし、カラーバーを表示します。カメラはゆっくり周回します。"
+      }
+    },
+    "minerva-scatter-3d-chart": {
+      "props": {
+        "options": "その他のエンジンオプション（minerva-design/charts/core の Chart3DOptions：色、テキスト、locale、labels など）；プロパティのみ",
+        "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+      },
+      "events": {
+        "minerva-hover": "カーソル下の点・セル・バーが変わった；detail: { seriesIndex, seriesName, type, index, x, y, z, value, color, label }、なければ null",
+        "minerva-point-click": "点・セル・バーがクリックされた；detail: { seriesIndex, seriesName, type, index, x, y, z, value, color, label }",
+        "minerva-camera-change": "ユーザーがカメラを回転・ズーム・パン・リセットした；detail: { azimuth, elevation, zoom, pan, projection }",
+        "minerva-renderer-change": "バックエンドの準備ができた、または GPU の喪失後にフォールバックしました。detail：{ renderer }"
+      },
+      "methods": {
+        "resetCamera": "オプションのカメラに戻します",
+        "getCamera": "現在のカメラ、エンジン作成前は null",
+        "setCamera": "カメラを動かします",
+        "getRenderer": "使用中のバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null"
+      }
+    },
+    "minerva-line-3d-chart": {
+      "props": {
+        "options": "その他のエンジンオプション（minerva-design/charts/core の Chart3DOptions：色、テキスト、locale、labels など）；プロパティのみ",
+        "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+      },
+      "events": {
+        "minerva-hover": "カーソル下の点・セル・バーが変わった；detail: { seriesIndex, seriesName, type, index, x, y, z, value, color, label }、なければ null",
+        "minerva-point-click": "点・セル・バーがクリックされた；detail: { seriesIndex, seriesName, type, index, x, y, z, value, color, label }",
+        "minerva-camera-change": "ユーザーがカメラを回転・ズーム・パン・リセットした；detail: { azimuth, elevation, zoom, pan, projection }",
+        "minerva-renderer-change": "バックエンドの準備ができた、または GPU の喪失後にフォールバックしました。detail：{ renderer }"
+      },
+      "methods": {
+        "resetCamera": "オプションのカメラに戻します",
+        "getCamera": "現在のカメラ、エンジン作成前は null",
+        "setCamera": "カメラを動かします",
+        "getRenderer": "使用中のバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null"
+      }
+    }
+  }
+}

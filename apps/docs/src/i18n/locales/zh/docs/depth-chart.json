@@ -1,0 +1,173 @@
+{
+  "title": "深度图",
+  "description": "订单簿的累计深度：围绕中间价的阶梯状买卖面积，悬停时镜像显示两侧的数量、成交额与均价，可围绕中间价缩放，每秒数百次增量更新也能平滑过渡。",
+  "demos": {
+    "basic": {
+      "title": "基础",
+      "description": "通过 book 传入快照：每一侧为任意顺序的 [价格, 数量] 档位。悬停时，所在一侧的提示框显示累计数量、成交额与平均成交价，镜像的提示框显示另一侧距中间价相同距离处的数据。"
+    },
+    "live": {
+      "title": "实时行情",
+      "description": "模拟撮合引擎每秒约 100 次增量通过 ref 句柄传入（applyDeltas：价格 → 数量，0 表示删除该档）。React 不会重新渲染：图表把它们合并到一帧中绘制，并平滑过渡曲线与刻度；离开视口时停止绘制。"
+    },
+    "range": {
+      "title": "缩放范围",
+      "description": "range 是中间价两侧可见价格的半宽（0.005 = ±0.5%）；省略时按较短的一侧自适应。Ctrl/⌘ + 滚轮或双指捏合缩放，双击复位，onRangeChange 报告当前范围。amount=\"quote\" 累计成交额，curve=\"linear\" 用斜线连接各档。"
+    },
+    "walls": {
+      "title": "大单墙与冲击成本",
+      "description": "大额挂单表现为曲线上的陡峭台阶。onHover 提供到悬停价格为止的累计数量、成交额与均价，即一笔吃到该价位的市价单的成本。"
+    },
+    "dark": {
+      "title": "暗色交易终端",
+      "description": "颜色读取自 CSS 变量（--background-color、--text-color、--success-color、--danger-color 等）：在外层容器上设置，或将站点切换到暗色模式即可。priceLines 标出自己的挂单与强平价格。"
+    },
+    "compact": {
+      "title": "紧凑（移动端）",
+      "description": "手机卡片尺寸：legend={false}、更小的文字与固定范围。双指缩放，轻触读取深度。"
+    },
+    "red-up": {
+      "title": "红涨绿跌",
+      "description": "colorConvention=\"red-up\" 交换默认颜色：买盘为红色、卖盘为绿色，符合中国大陆、日本与韩国的习惯。upColor 与 downColor 可设置任意颜色。"
+    }
+  },
+  "data": {
+    "aria": "BTC/USDT 订单簿深度",
+    "stream": "实时推送",
+    "range": "可见范围",
+    "auto": "自适应",
+    "plusMinus": "±{{value}}",
+    "amountAxis": "累计方式",
+    "base": "数量 (BTC)",
+    "quote": "金额 (USDT)",
+    "curve": "曲线",
+    "step": "阶梯",
+    "linear": "直线",
+    "zoomHint": "Ctrl/⌘ + 滚轮或双指捏合围绕中间价缩放，双击复位。",
+    "zoomed": "已缩放至 {{value}}",
+    "myBid": "我的买单",
+    "myAsk": "我的卖单",
+    "liquidation": "强平价",
+    "colors": "涨跌颜色",
+    "redUp": "红涨绿跌",
+    "greenUp": "绿涨红跌",
+    "sweepBuy": "买入 {{amount}} BTC（{{total}}）将吃掉直到 {{price}} 的卖单，高于中间价 {{slippage}}，成交均价 {{average}}。",
+    "sweepSell": "卖出 {{amount}} BTC（{{total}}）将吃掉直到 {{price}} 的买单，低于中间价 {{slippage}}，成交均价 {{average}}。",
+    "sweepHint": "悬停在曲线上，估算一笔市价单的成本。"
+  },
+  "api": {
+    "DepthChartProps": {
+      "book": "要绘制的订单簿，对象变化时应用（实时更新请通过 ref）",
+      "onHover": "指针位于曲线上：悬停的一侧及其镜像（离开时为 null）",
+      "onClick": "点击或轻触曲线",
+      "onRangeChange": "缩放改变了可见范围（相对中间价的比例）",
+      "ref": "命令式句柄：setBook、applyDeltas、setRange、getInstance"
+    },
+    "DepthChartHandle": {
+      "setBook": "替换整个订单簿",
+      "applyDeltas": "应用增量更新（数量 0 删除该档），在下一帧统一绘制",
+      "setRange": "设置可见范围（相对中间价的比例）；null 表示自适应",
+      "getInstance": "底层引擎实例（minerva-design/charts/core）"
+    },
+    "DepthChartOptions": {
+      "range": "中间价两侧可见价格的半宽比例（0.01 = ±1%）；省略时按较短的一侧自适应",
+      "rangeLimits": "缩放可达到的最小与最大范围",
+      "zoomable": "通过 Ctrl/⌘ + 滚轮与双指捏合围绕中间价缩放",
+      "curve": "累计曲线的形状：阶梯或直线",
+      "amount": "累计数量（base）或成交额，即价格 × 数量（quote）",
+      "animate": "在更新之间平滑过渡曲线与刻度",
+      "fillOpacity": "面积填充的不透明度（渐变顶部）",
+      "midLine": "中间价处的竖线及中间价与价差标签",
+      "legend": "买盘与卖盘图例",
+      "grid": "网格线",
+      "axes": "价格轴与数量轴",
+      "tooltip": "悬停十字准线与提示框",
+      "mirror": "同时读取另一侧距中间价相同距离处的数据",
+      "priceLines": "竖直标记线：自己的挂单、强平价格等",
+      "labels": "覆盖内置文案；内置文案随 locale 切换（内置英文、中文、日文、法文）"
+    },
+    "OrderBookCommonOptions": {
+      "upColor": "买盘与主动买入（“涨”方）的颜色；默认为 --success-color，colorConvention 为 \"red-up\" 时为 --danger-color",
+      "downColor": "卖盘与主动卖出（“跌”方）的颜色；默认为 --danger-color，colorConvention 为 \"red-up\" 时为 --success-color",
+      "colorConvention": "\"red-up\" 交换默认颜色：买盘与买入为红色，卖盘与卖出为绿色（中国大陆、日本、韩国的习惯）",
+      "pricePrecision": "价格的小数位数；省略时根据数据推断",
+      "sizePrecision": "数量的小数位数；省略时根据数据推断",
+      "locale": "数字（Intl.NumberFormat，k、万 等紧凑单位）与内置文案（英、中、日、法）的语言区域；省略时取页面语言（html 元素的 lang 属性）",
+      "formatPrice": "格式化价格（取代 pricePrecision 与 locale）",
+      "formatSize": "格式化数量（取代 sizePrecision 与 locale）",
+      "fontFamily": "文字字体；省略时使用主题字体（等宽字体可让数字对齐）",
+      "fontSize": "文字字号，单位为像素",
+      "ariaLabel": "组件的无障碍名称；省略时使用本地化的 labels.name"
+    },
+    "OrderBookWidgetProps": {
+      "height": "组件高度；数字表示像素",
+      "width": "组件宽度；数字表示像素",
+      "className": "容器的类名",
+      "style": "容器的样式"
+    },
+    "DepthChartLabels": {
+      "bids": "买盘名称",
+      "asks": "卖盘名称",
+      "price": "提示框中的价格行",
+      "amount": "累计数量",
+      "total": "累计成交额（价格 × 数量）",
+      "average": "累计数量的平均成交价",
+      "distance": "距中间价的距离",
+      "mid": "中间价标签",
+      "spread": "价差标签",
+      "basisPoints": "价差标签中的基点单位",
+      "name": "无障碍名称（未设置 ariaLabel 时使用）"
+    },
+    "DepthChartPriceLine": {
+      "price": "标记线的价格",
+      "label": "标签文字",
+      "color": "线条颜色；省略时为文字颜色"
+    },
+    "DepthPoint": {
+      "side": "订单簿的一侧",
+      "price": "价格",
+      "amount": "最优价到 price 之间的挂单量",
+      "total": "amount 的成交额（Σ 价格 × 数量）",
+      "average": "amount 的平均成交价",
+      "distance": "距中间价的有符号距离比例（−0.01 = 低 1%）"
+    },
+    "OrderBookSnapshot": {
+      "bids": "买盘档位：[价格, 数量] 元组或 { price, size } 列，顺序不限",
+      "asks": "卖盘档位：[价格, 数量] 元组或 { price, size } 列，顺序不限",
+      "time": "快照的交易所时间（毫秒时间戳）；省略时使用本地时钟"
+    },
+    "OrderBookDelta": {
+      "bids": "变动的买盘档位：每个价格的新数量，0 表示删除该档",
+      "asks": "变动的卖盘档位：每个价格的新数量，0 表示删除该档",
+      "time": "更新的交易所时间（毫秒时间戳）；省略时使用本地时钟"
+    }
+  },
+  "wc": {
+    "demos": {
+      "book": {
+        "title": "累计深度",
+        "description": "买单和卖单围绕中间价累计；悬停时显示价格和累计数量。"
+      },
+      "live": {
+        "title": "实时订单簿",
+        "description": "每次更新少数几个档位（applyDeltas），每帧绘制一次并带平滑过渡。"
+      }
+    },
+    "minerva-depth-chart": {
+      "props": {
+        "options": "其他引擎选项（minerva-design/charts/core 的 DepthChartOptions：颜色、文本、locale、labels……）；仅作为属性设置",
+        "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null"
+      },
+      "events": {
+        "minerva-hover": "指针在曲线上移动；detail：{ side, price, amount, total, average, distance, mirror }，离开时为 null",
+        "minerva-click": "点击或轻触了曲线；detail：{ side, price, amount, total, average, distance, mirror }",
+        "minerva-range-change": "缩放改变了可见范围；detail：{ range }（中间价的比例）"
+      },
+      "methods": {
+        "setRange": "设置可见范围（中间价的比例）；null 表示适配整个订单簿",
+        "setBook": "替换整个订单簿",
+        "applyDeltas": "应用增量更新（数量为 0 表示删除该档位）；在下一帧统一绘制"
+      }
+    }
+  }
+}

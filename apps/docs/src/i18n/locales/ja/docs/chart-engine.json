@@ -5,7 +5,7 @@
     "choose": {
       "title": "どのエントリーポイントを使うか",
       "text": "3 つのエントリーポイントは同じオプション、レイアウト、ヒットテスト、ジェスチャーを共有します。違いはホストに求めるものです：",
-      "createChart": "createChart(container, options)：Web ページ向け。DOM 要素にチャートをマウントし、WebGPU、WebGL2、Canvas2D の順でデータを描画し、アクセシブルな DOM のツールチップと凡例を表示し、CSS 変数からテーマを読み取り、ホイール・ポインター・キーボード入力を自身で処理します。",
+      "createChart": "createChart(container, options)：Web ページ向け。DOM 要素にチャートをマウントし、WebGPU、WebGL2、WebGL、Canvas2D の順でデータを描画し、アクセシブルな DOM のツールチップと凡例を表示し、CSS 変数からテーマを読み取り、ホイール・ポインター・キーボード入力を自身で処理します。",
       "createCanvasChart": "createCanvasChart({ canvas, width, height, pixelRatio, options, theme })：DOM をまったく使わず任意の 2D キャンバスに描画します（WeChat / Taro / uni-app の canvas type=\"2d\"、OffscreenCanvas、通常の <canvas>）。ツールチップや凡例を含むすべてをキャンバスに描画し、ホストはタッチまたはポインターイベントを転送し、テーマを通常の値として渡します。ミニプログラムのチャートはこれを基にしています。",
       "createChartController": "createChartController({ options, measureText })：キャンバスを一切使いません。シーン（レイアウト、目盛り、凡例、ツールチップ、ハイライト）を計算してジェスチャーを処理します。scenePrimitives(scene) はデータを上限付きのピクセル図形のリストに変換し、ビューや SVG で描画するホストで使えます。React Native のチャートはこれを基にしています。"
     },
@@ -32,12 +32,54 @@
       "description": "effect 内で createShapeChart を使用します。ボタンは setOptions で円、中央に合計を表示するドーナツ、ファネルを切り替え（マークは前の値からアニメーションします）、on(\"click\") はクリックされた扇形や段階を通知し、アンマウント時に destroy() を呼びます。"
     }
   },
+  "data": {
+    "downloads": "ダウンロード数",
+    "downloadsAria": "リリースごとのダウンロード数",
+    "unsupported": "非対応",
+    "downloadsStatus": "{{release}}：{{downloads}} ダウンロード",
+    "clickBar": "棒をクリックしてください",
+    "rendererLabel": "レンダラー：{{renderer}}",
+    "visits": "訪問数",
+    "signupsTimes10": "登録数（×10）",
+    "visitsAria": "月ごとの訪問数と登録数",
+    "clickPoint": "点をクリックしてください",
+    "sources": {
+      "search": "検索",
+      "direct": "ダイレクト",
+      "social": "ソーシャル",
+      "email": "メール",
+      "referral": "参照元サイト"
+    },
+    "stages": {
+      "visits": "訪問",
+      "signups": "登録",
+      "trials": "トライアル",
+      "customers": "顧客"
+    },
+    "sourcesAria": "流入元別の訪問数",
+    "visitsLabel": "訪問",
+    "funnelAria": "コンバージョンファネル",
+    "views": {
+      "pie": "円",
+      "donut": "ドーナツ",
+      "funnel": "ファネル"
+    },
+    "picked": "{{name}}：{{value}}（{{share}}）",
+    "clickShape": "スライスまたは段階をクリックしてください",
+    "cpu": "CPU",
+    "seconds": "秒",
+    "cpuAria": "ライブの CPU 使用率",
+    "resume": "再開",
+    "pause": "一時停止",
+    "pausedStatus": "一時停止中 · {{points}} ポイント受信",
+    "streamingStatus": "受信中 · {{points}} ポイント受信"
+  },
   "api": {
     "ChartOptions": {
       "series": "データ系列",
       "xAxis": "X 軸のオプション",
       "yAxis": "Y 軸のオプション",
-      "renderer": "データレイヤーのバックエンド（auto、webgpu、webgl2、canvas2d）",
+      "renderer": "データレイヤーのバックエンド（auto、webgpu、webgl2、webgl、canvas2d）",
       "legend": "凡例。名前付きの系列が複数あるときは既定で表示",
       "tooltip": "ツールチップ。false で無効",
       "crosshair": "ポインターに追従する垂直のガイド線",
@@ -46,7 +88,11 @@
       "padding": "プロットエリアの周囲の余白",
       "palette": "color を持たない系列の色",
       "ariaLabel": "チャートのアクセシブルな名前",
-      "stackMode": "normal または percent。percent は各 x で積み上げ全体を 100% に換算します（軸はパーセント、ツールチップは実際の値を表示）"
+      "stackMode": "normal または percent。percent は各 x で積み上げ全体を 100% に換算します（軸はパーセント、ツールチップは実際の値を表示）",
+      "yAxis2": "yAxis: \"right\" の系列用の右側の 2 本目の値軸。左軸の目盛りに揃い、横向きのグラフでは無視",
+      "orientation": "\"horizontal\" で軸を入れ替え：x 軸（カテゴリ）を左側に、値を下側に",
+      "locale": "エンジンが書き出すテキストと数値のロケール（ツールチップの行名、短縮単位 k / 万、区切り文字、時間軸の月・曜日名）。オプション更新ごとに解決され、既定はページの言語（<html lang>）",
+      "labels": "ロケールの組み込みテキストの上書き（ChartLabels）"
     },
     "ChartInstance": {
       "setOptions": "オプションを置き換えます。変更のないデータ配列は再処理されません",
@@ -188,7 +234,8 @@
       "opacity": "塗りの不透明度（0〜1）",
       "baseline": "ベースラインの Y ピクセル",
       "segments": "途切れのない点の連なり。x, y ピクセルを交互に並べたもの",
-      "bottoms": "積み上げ面グラフ：segments の各点の下にある下端の Y ピクセル"
+      "bottoms": "積み上げ面グラフ：segments の各点の下にある下端の Y ピクセル",
+      "horizontal": "横向きのグラフ：面は左端に向かって塗られる（baseline と bottoms は x ピクセル）"
     },
     "ChartBarPrimitive": {
       "kind": "図形の種類",
@@ -196,7 +243,8 @@
       "color": "CSS カラー",
       "rects": "各棒の x, y, width, height を交互に並べたもの（ピクセル）",
       "colors": "各矩形の CSS カラー（ローソク足、ヒートマップのセル、個別に色付けした棒）。ない場合は color",
-      "radius": "角丸の半径（ピクセル）"
+      "radius": "角丸の半径（ピクセル）",
+      "opacity": "塗りの不透明度（箱ひげ図の箱、半透明の棒）"
     },
     "ChartDotPrimitive": {
       "kind": "図形の種類",
@@ -212,12 +260,15 @@
       "toggle": "インデックスで扇形・段階・レーダー系列を表示 / 非表示にします",
       "on": "hover または click を購読します。購読解除関数を返します",
       "destroy": "DOM とリスナーを削除します",
-      "getHidden": "非表示のスライス／段階／系列のインデックス"
+      "getHidden": "非表示のスライス／段階／系列のインデックス",
+      "drill": "サンバースト：パス上のノードへズームし drill を発火",
+      "getDrillPath": "サンバースト：ルートからフォーカス中のノードまでの名前"
     },
     "ShapeChartEventMap": {
       "hover": "ホバー中（またはキーボードでフォーカス中）のマーク：index、name、value、percent、color（ツリーマップは path も）。ポインターが離れると null",
       "click": "クリック、タップ、または Enter で操作されたマーク",
-      "toggle": "凡例項目（または `toggle()`）でスライス・段階・系列が表示／非表示になった"
+      "toggle": "凡例項目（または `toggle()`）でスライス・段階・系列が表示／非表示になった",
+      "drill": "サンバースト：フォーカス中のノードが変わった（変わろうとしている）"
     },
     "PieChartOptions": {
       "type": "\"pie\"（ドーナツは innerRadius を指定した円グラフ）",
@@ -276,6 +327,8 @@
       "padding": "描画の周囲の余白（ピクセル）",
       "ariaLabel": "チャートのアクセシブルな名前",
       "percentFormat": "割合（ラベル・ツールチップ）の書式。既定は小数第 1 位まで",
+      "locale": "チャートが自ら書き出すテキストと数値の BCP 47 ロケール（ツールチップの行名、アクセシブルネーム、数値・割合の書式、カレンダーの日付）。英語・中国語・日本語・フランス語の文言を内蔵。既定はページの言語（`<html lang>`）、次にブラウザーの言語",
+      "texts": "ロケールの組み込み文言を置き換えます（`value`・`share`・`conversion` などのツールチップ行名、`pieChart` などのアクセシブルネーム、データなしの表示 `noData`）。`{name}`・`{label}`・`{index}` は置換されます",
       "hidden": "非表示のスライス／段階／系列のインデックス（制御モード：凡例クリックは `toggle` イベントを発火するだけ）"
     },
     "CanvasShapeChartConfig": {
@@ -303,7 +356,9 @@
       "clearHover": "ホバーとツールチップを消します",
       "on": "hover または click を購読します。購読解除関数を返します",
       "destroy": "アニメーションとリスナーを停止します",
-      "getHidden": "非表示のスライス／段階／系列のインデックス"
+      "getHidden": "非表示のスライス／段階／系列のインデックス",
+      "drill": "サンバースト：パス上のノードへズームし drill を発火",
+      "getDrillPath": "サンバースト：ルートからフォーカス中のノードまでの名前"
     }
   }
 }

@@ -1,0 +1,414 @@
+{
+  "title": "Graphique de trading",
+  "description": "Le graphique d'un terminal de trading professionnel : chandeliers sur un axe du temps sans trous, panneaux d'indicateurs, outils de dessin, lignes d'ordres et flux en temps réel, dessinés par le GPU et fluides avec un million de bougies.",
+  "intro": {
+    "overview": {
+      "title": "Présentation",
+      "text": "TradingChart reçoit des bougies OHLCV (des objets, ou des colonnes de tableaux typés pour les très longs historiques) et les dessine avec les moteurs GPU du moteur de graphiques ; axes, étiquettes, dessins et réticule sont tracés sur une couche Canvas2D.",
+      "axis": "L'axe du temps est un index de bougies : week-ends, nuits et jours fériés ne laissent aucun trou, et les étiquettes suivent l'unité de temps (nouveaux jours et mois en gras).",
+      "panes": "Moyennes mobiles, bandes de Bollinger et VWAP se superposent au prix ; volume, MACD, RSI, KDJ et ATR ont chacun leur panneau, tous partageant le zoom et le réticule. Faites glisser un séparateur pour redimensionner un panneau.",
+      "trading": "Ligne du dernier prix avec le compte à rebours de la clôture, plus haut / plus bas des bougies visibles, flèches d'achat / vente, et lignes d'ordre, de position, de prise de bénéfice, de stop et d'alerte que l'on peut faire glisser.",
+      "drawings": "Lignes de tendance, demi-droites, lignes horizontales et verticales, rectangles, retracements de Fibonacci et outil de mesure : de simples données, enregistrées et restaurées avec drawings et onDrawingsChange."
+    },
+    "streaming": {
+      "title": "Temps réel",
+      "text": "Appelez update(bar) sur la ref à chaque transaction : une bougie à l'heure de la dernière la remplace, une plus récente s'ajoute. Tant que la dernière bougie est visible, le graphique la suit ; si le lecteur remonte l'historique, la vue reste en place et un bouton ramène à la dernière bougie.",
+      "performance": "Une mise à jour ne recalcule les indicateurs que pour la dernière bougie, n'envoie au GPU que cette bougie et dessine à la prochaine image : cinquante mises à jour par seconde ne coûtent presque rien. En vue large, les bougies sont agrégées par colonne de pixels : un million de bougies se dessinent aussi vite que mille."
+    },
+    "controls": {
+      "title": "Commandes",
+      "pointer": "Molette pour zoomer sous le pointeur (Maj ou balayage horizontal pour défiler), glisser pour se déplacer avec inertie.",
+      "axes": "Faites glisser l'axe des prix pour zoomer verticalement et l'axe du temps pour changer la largeur des bougies ; double-cliquez sur un axe pour le réinitialiser.",
+      "keyboard": "Une fois le graphique sélectionné : les flèches déplacent le réticule bougie par bougie (Maj : dix) et annoncent les prix, + / − zooment, Début / Fin vont à la première / dernière bougie, Suppr efface le dessin sélectionné, Échap annule.",
+      "touch": "Sur écran tactile : glisser pour se déplacer, pincer pour zoomer."
+    },
+    "languages": {
+      "title": "Langues",
+      "text": "Les textes écrits par le graphique (noms OHLC, titres des lignes d'ordre et d'alerte, compte à rebours, outil de mesure, noms accessibles) existent en anglais, chinois, japonais et français et suivent la langue de la page (<html lang>), y compris quand elle change. Les volumes utilisent les unités de la langue (k, M, Md en français). Choisissez une autre langue avec locale et remplacez n'importe quel texte avec labels.",
+      "colors": "Les couleurs ne suivent pas la langue : une page en chinois peut très bien afficher des actions américaines, la convention « rouge à la hausse » reste donc un colorConvention=\"redUp\" explicite."
+    }
+  },
+  "demos": {
+    "pro-terminal": {
+      "title": "Terminal pro",
+      "description": "Quatre-vingt-dix jours de bougies d'une minute agrégées avec resampleBars pour les boutons d'unité de temps ; la barre d'outils change le style, les indicateurs et l'échelle des prix (auto, pourcentage, logarithmique). Cliquez sur le nom d'un indicateur dans une légende pour le masquer, faites glisser un séparateur pour redimensionner les panneaux."
+    },
+    "streaming": {
+      "title": "Flux en direct",
+      "description": "Un WebSocket simulé envoie cinquante transactions par seconde ; chacune appelle update() sur la ref avec la bougie d'une minute en cours. Seule la dernière bougie est recalculée et envoyée au GPU. L'étiquette du dernier prix décompte jusqu'à la clôture ; remontez l'historique et le graphique reste en place jusqu'au clic sur la flèche."
+    },
+    "tick-chart": {
+      "title": "Graphique tick par tick",
+      "description": "Chaque transaction est un point d'une aire, une centaine par seconde, avec un VWAP cumulé et les tailles des transactions en dessous, colorées selon leur sens. Les étiquettes de temps passent d'elles-mêmes aux secondes."
+    },
+    "chart-styles": {
+      "title": "Styles de graphique",
+      "description": "chartStyle dessine les mêmes bougies en chandeliers, chandeliers creux (creux quand la clôture dépasse l'ouverture, colorés par rapport à la clôture précédente), Heikin-Ashi, barres OHLC, ligne, aire ou ligne de base séparée à la première clôture visible. L'année de bougies quotidiennes n'a pas de trous le week-end."
+    },
+    "drawing-tools": {
+      "title": "Outils de dessin",
+      "description": "Choisissez un outil, puis cliquez deux fois ou faites glisser sur le graphique. Avec le curseur, cliquez sur un dessin pour le sélectionner, faites-le glisser ou ses poignées pour le déplacer, Suppr pour l'effacer. drawings et onDrawingsChange les gardent dans l'état React, prêts à être enregistrés ; le retracement de Fibonacci et le support sont calculés à partir des données."
+    },
+    "orders": {
+      "title": "Ordres et positions",
+      "description": "priceLines trace la position ouverte avec sa plus-value latente, la prise de bénéfice, le stop, deux ordres à cours limité et une alerte. Faites glisser une ligne pointillée : onOrderMove donne le nouveau prix et le tableau suit. Les flèches sont les transactions de l'historique, via markers."
+    },
+    "compare": {
+      "title": "Comparer des actifs",
+      "description": "compare superpose d'autres actifs au prix ; avec l'échelle en pourcentage, chaque série part de 0 % à la première bougie visible, pour comparer les performances en faisant défiler. Les échelles logarithmique et linéaire montrent pourquoi."
+    },
+    "history": {
+      "title": "Historique infini",
+      "description": "Le graphique commence avec les 200 dernières bougies horaires. Quand la plus ancienne apparaît, onHistoryRequest charge les 200 précédentes et prependBars les insère sans déplacer la vue."
+    },
+    "million-bars": {
+      "title": "1 000 000 de bougies",
+      "description": "Deux ans de bougies d'une minute en colonnes Float64Array, avec une EMA 200. En vue large, les bougies sont agrégées par colonne de pixels : tout afficher est aussi rapide qu'afficher cent bougies."
+    },
+    "red-up": {
+      "title": "Rouge à la hausse, vert à la baisse",
+      "description": "colorConvention=\"redUp\" suit les conventions de Chine continentale, Hong Kong, du Japon et de Corée ; utcOffset affiche l'heure de la Bourse de Shanghai. MA5 / 10 / 20 / 60, volume avec sa MA5 et KDJ, comme dans une application de courtage chinoise. La convention n'est pas déduite de la langue de la page (une page en chinois peut afficher des actions américaines) : définissez-la explicitement."
+    },
+    "dark-terminal": {
+      "title": "Terminal sombre",
+      "description": "Le graphique prend ses couleurs dans des variables CSS : un conteneur les redéfinit pour un terminal sombre de plateforme d'échange, avec un bandeau de cotation, EMA 20 / 50, bandes de Bollinger, volume au bas du panneau des prix et RSI."
+    }
+  },
+  "data": {
+    "toolbar": "Réglages du graphique",
+    "btc": "BTC/USDT",
+    "chartStyle": "Style du graphique",
+    "timeframes": {
+      "1m": "1 min",
+      "5m": "5 min",
+      "15m": "15 min",
+      "1H": "1 h",
+      "4H": "4 h",
+      "1D": "1 J",
+      "1W": "1 S"
+    },
+    "styles": {
+      "candles": "Chandeliers",
+      "hollowCandles": "Chandeliers creux",
+      "heikinAshi": "Heikin-Ashi",
+      "bars": "Barres",
+      "line": "Ligne",
+      "area": "Aire",
+      "baseline": "Ligne de base"
+    },
+    "studies": {
+      "ma": "MA",
+      "boll": "BOLL",
+      "vol": "VOL",
+      "macd": "MACD",
+      "rsi": "RSI",
+      "kdj": "KDJ"
+    },
+    "scales": {
+      "linear": "Auto",
+      "percent": "%",
+      "log": "Log"
+    },
+    "terminalAria": "Graphique de trading BTC/USDT avec les panneaux volume, MACD et RSI",
+    "eth": "ETH/USDT",
+    "sol": "SOL/USDT",
+    "aapl": "AAPL",
+    "eurusd": "EUR/USD",
+    "nq": "Contrat à terme NQ",
+    "moutai": "Kweichow Moutai 600519",
+    "btcPerp": "BTCUSDT perpétuel",
+    "pause": "Pause",
+    "resume": "Reprendre",
+    "paused": "En pause : le graphique garde la dernière bougie jusqu'à la reprise du flux.",
+    "streamStatus": "{{rate}} mises à jour / s · dernier {{price}}",
+    "streamAria": "Graphique ETH/USDT en bougies d'une minute mis à jour en temps réel",
+    "tickStatus": "{{trades}} transactions",
+    "tickAria": "Chaque transaction SOL/USDT en temps réel",
+    "stylesAria": "Bougies quotidiennes d'AAPL",
+    "drawingTools": "Outils de dessin",
+    "tools": {
+      "cursor": "Curseur",
+      "trendLine": "Ligne de tendance",
+      "ray": "Demi-droite",
+      "extendedLine": "Droite prolongée",
+      "horizontalLine": "Ligne horizontale",
+      "verticalLine": "Ligne verticale",
+      "rectangle": "Rectangle",
+      "fibRetracement": "Retracement de Fibonacci",
+      "measure": "Mesure"
+    },
+    "keepDrawing": "Rester en mode dessin",
+    "clearDrawings": "Tout effacer",
+    "drawingsStatus": "Dessins : {{count}}",
+    "drawingAria": "Graphique ETH/USDT en quatre heures avec des dessins",
+    "lines": {
+      "position": "Achat",
+      "takeProfit": "TP",
+      "stopLoss": "SL",
+      "limitBuy": "Achat limite",
+      "limitSell": "Vente limite",
+      "alert": "Alerte"
+    },
+    "buyMarker": "A {{quantity}}",
+    "sellMarker": "V {{quantity}}",
+    "ordersAria": "Graphique horaire BTC/USDT avec une position, des ordres et des transactions",
+    "openOrders": "Position et ordres",
+    "orderMoved": "{{name}} déplacé de {{from}} à {{to}}",
+    "dragHint": "Faites glisser une ligne pointillée du graphique pour déplacer l'ordre.",
+    "priceScale": "Échelle des prix",
+    "scaleNames": {
+      "percent": "Pourcentage",
+      "log": "Logarithmique",
+      "linear": "Linéaire"
+    },
+    "compareAria": "BTC, ETH et SOL sur un an, comparés en pourcentage",
+    "historyAria": "Graphique horaire EUR/USD qui charge les bougies plus anciennes à la demande",
+    "historyLoading": "Chargement des bougies plus anciennes…",
+    "historyStatus": "{{loaded}} bougies chargées sur {{total}} : faites défiler vers la gauche pour la suite",
+    "showAll": "Tout afficher",
+    "latest": "Dernière",
+    "millionStatus": "{{bars}} bougies · dessinées avec {{renderer}}",
+    "millionAria": "Un million de bougies d'une minute du contrat NQ",
+    "redUpAria": "Graphique quotidien de Kweichow Moutai, hausses en rouge",
+    "change24h": "Variation 24 h",
+    "high24h": "Plus haut 24 h",
+    "low24h": "Plus bas 24 h",
+    "volume24h": "Volume 24 h",
+    "darkAria": "Graphique BTCUSDT perpétuel en 15 minutes dans un terminal sombre"
+  },
+  "api": {
+    "TradingChartProps": {
+      "height": "Hauteur en pixels ou toute longueur CSS",
+      "width": "Largeur en pixels ou toute longueur CSS",
+      "className": "Classe de l'élément racine",
+      "style": "Styles en ligne de l'élément racine",
+      "ref": "Poignée impérative : flux (update, appendBars, prependBars), défilement et dessins",
+      "onCrosshairMove": "Le réticule a changé de bougie ou de prix ; null quand il quitte le graphique",
+      "onClick": "Un panneau a été cliqué (hors dessin)",
+      "onVisibleRangeChange": "Les bougies visibles ont changé : défilement, zoom, redimensionnement ou nouvelles bougies",
+      "onOrderMove": "Une ligne de prix déplaçable a été lâchée à un nouveau prix : modifiez-y votre ordre",
+      "onDrawingsChange": "L'utilisateur a ajouté, déplacé ou effacé des dessins ; repassez le tableau dans drawings",
+      "onDrawingSelect": "Le dessin sélectionné a changé (son id, ou null)",
+      "onDrawingToolChange": "L'outil de dessin a changé, par exemple retour au curseur après un dessin",
+      "onIndicatorToggle": "Un indicateur a été affiché ou masqué depuis sa légende",
+      "onHistoryRequest": "La plus ancienne bougie est visible : chargez les précédentes et appelez prependBars",
+      "onRendererChange": "Le moteur utilisé, à nouveau après un repli (réinitialisation du GPU)"
+    },
+    "TradingChartOptions": {
+      "bars": "Bougies, de la plus ancienne à la plus récente : objets ou colonnes de tableaux typés. Un nouveau tableau avec le même historique et des bougies plus récentes est appliqué comme un flux",
+      "timeframe": "Durée d'une bougie (\"1m\", \"4H\", \"1D\" ou millisecondes) : étiquettes de temps, compte à rebours et dessins au-delà de la dernière bougie. Déduite des bougies par défaut",
+      "symbol": "Nom affiché dans la légende et l'étiquette accessible",
+      "chartStyle": "Dessin des bougies : candles, hollowCandles, heikinAshi, bars, line, area ou baseline",
+      "indicators": "Indicateurs : moyennes, bandes de Bollinger et VWAP sur le prix, les autres dans des panneaux en dessous, dans cet ordre",
+      "scaleMode": "Échelle du panneau des prix : linear, log ou percent (depuis la première bougie visible)",
+      "colorConvention": "greenUp (la plupart des marchés) ou redUp (Chine, Japon, Corée) : inverse les couleurs de hausse / baisse par défaut. Ne dépend pas de la langue : à définir explicitement",
+      "upColor": "Couleur des bougies haussières, toute couleur CSS, var() comprise",
+      "downColor": "Couleur des bougies baissières",
+      "precision": "Décimales des prix ; détectées dans les données par défaut",
+      "formatPrice": "Formate les prix de l'axe, de la légende et des étiquettes (remplace precision)",
+      "locale": "Langue des textes, des nombres et des dates : par défaut celle de la page (<html lang>, suivie quand elle change)",
+      "utcOffset": "Décalage des heures affichées par rapport à UTC, en minutes (480 pour UTC+8) ; heure locale par défaut",
+      "crosshair": "magnet aimante la ligne horizontale à l'ouverture, au plus haut, au plus bas ou à la clôture ; free suit le pointeur",
+      "legend": "Légendes avec les valeurs sous le réticule et les interrupteurs des indicateurs",
+      "lastPriceLine": "Ligne pointillée et étiquette d'axe au dernier prix",
+      "countdown": "Temps restant avant la clôture de la bougie en cours, sous l'étiquette du dernier prix",
+      "highLowMarkers": "Marque le plus haut et le plus bas des bougies visibles",
+      "markers": "Flèches d'achat / vente avec un texte et un prix de transaction facultatifs",
+      "priceLines": "Lignes d'ordre, de position, de prise de bénéfice, de stop et d'alerte ; les déplaçables signalent onOrderMove",
+      "compare": "Autres séries superposées au prix, à lire de préférence en pourcentage",
+      "drawings": "Dessins (contrôlés) : remplacés quand un nouveau tableau est passé",
+      "drawingMode": "Outil de dessin actif ; cursor sélectionne et déplace les dessins",
+      "keepDrawingMode": "Garde l'outil après un dessin au lieu de revenir au curseur",
+      "baselinePrice": "Prix qui sépare le style baseline ; la première clôture visible par défaut",
+      "rightOffset": "Espace libre après la dernière bougie, en bougies",
+      "barSpacing": "Largeur initiale d'une bougie en pixels",
+      "wheel": "Molette : zoom, modifier (avec Ctrl / ⌘ seulement, la page défile sinon) ou none",
+      "kineticScroll": "Continue le déplacement après un glissement rapide",
+      "grid": "Lignes de la grille",
+      "watermark": "Grand texte pâle derrière les bougies",
+      "labels": "Remplace des textes intégrés (anglais, chinois, japonais et français sont fournis)",
+      "renderer": "Moteur : auto essaie WebGPU, puis WebGL2, WebGL et Canvas2D",
+      "ariaLabel": "Étiquette accessible ; construite à partir du symbole par défaut"
+    },
+    "TradingChartHandle": {
+      "update": "Envoie une bougie : à l'heure de la dernière elle la remplace, plus récente elle s'ajoute",
+      "appendBars": "Ajoute des bougies plus récentes que la dernière",
+      "prependBars": "Insère des bougies plus anciennes avant la première ; la vue reste sur les mêmes bougies",
+      "setBars": "Remplace les bougies et défile jusqu'à la dernière",
+      "getBarCount": "Nombre de bougies",
+      "getBar": "Bougie à un index, null hors des données",
+      "scrollToRealtime": "Défile jusqu'à la dernière bougie (animé par défaut)",
+      "fitContent": "Affiche toutes les bougies",
+      "getVisibleRange": "Bougies visibles en index logiques et en heures",
+      "setVisibleRange": "Affiche les bougies entre deux index logiques",
+      "resetPriceScales": "Réajuste chaque échelle de prix aux bougies visibles",
+      "setDrawingTool": "Active un outil de dessin",
+      "getDrawings": "Dessins actuels",
+      "removeDrawing": "Efface un dessin par son id",
+      "selectDrawing": "Sélectionne un dessin (null annule la sélection)",
+      "setIndicatorVisible": "Affiche ou masque un indicateur par son id",
+      "getRenderer": "Moteur utilisé, null tant qu'il n'est pas prêt",
+      "getInstance": "L'instance du moteur de minerva-design/charts/core"
+    },
+    "TradingBar": {
+      "time": "Heure d'ouverture en millisecondes depuis l'epoch",
+      "open": "Premier prix échangé",
+      "high": "Prix le plus haut",
+      "low": "Prix le plus bas",
+      "close": "Dernier prix échangé",
+      "volume": "Volume échangé"
+    },
+    "TradingBarColumns": {
+      "time": "Heures d'ouverture en millisecondes, croissantes",
+      "open": "Prix d'ouverture",
+      "high": "Plus hauts",
+      "low": "Plus bas",
+      "close": "Prix de clôture",
+      "volume": "Volumes"
+    },
+    "TradingPriceLine": {
+      "id": "Identifie la ligne dans onOrderMove",
+      "price": "Prix de la ligne",
+      "kind": "order, position (avec sa plus-value latente), takeProfit, stopLoss, alert ou line : fixe l'apparence par défaut",
+      "side": "buy ou sell : colore ordres et positions comme les bougies haussières / baissières",
+      "title": "Étiquette de la ligne ; un texte court par défaut selon le type",
+      "quantity": "Quantité à côté de l'étiquette ; un nombre donne aussi le résultat d'une position",
+      "color": "Couleur ; déduite du type et du sens par défaut",
+      "draggable": "Peut être déplacée à un autre prix, signalé par onOrderMove",
+      "lineStyle": "solid, dashed ou dotted ; pointillée pour les ordres par défaut"
+    },
+    "TradingMarker": {
+      "time": "Heure de la bougie (celle qui la contient)",
+      "side": "buy dessine une flèche vers le haut sous la bougie, sell une flèche vers le bas au-dessus",
+      "price": "Prix de la transaction, marqué d'un point",
+      "text": "Texte court à côté de la flèche",
+      "color": "Couleur ; celle de la hausse / baisse par défaut",
+      "id": "Votre identifiant"
+    },
+    "TradingCompareSeries": {
+      "name": "Nom dans la légende",
+      "data": "Valeurs par heure, associées aux bougies par leur heure",
+      "color": "Couleur de la ligne ; une couleur du thème par défaut",
+      "id": "Identifiant ; le nom par défaut"
+    },
+    "TradingDrawing": {
+      "id": "Id unique",
+      "type": "Outil qui l'a créé",
+      "points": "Ancres (heure et prix) : une pour les lignes horizontales / verticales, deux sinon",
+      "color": "Couleur ; la couleur principale par défaut",
+      "lineWidth": "Épaisseur du trait en pixels",
+      "lineStyle": "solid, dashed ou dotted",
+      "locked": "Ne peut être ni déplacé ni effacé par l'utilisateur"
+    },
+    "TradingDrawingPoint": {
+      "time": "Heure ; au-delà de la dernière bougie, extrapolée avec la durée d'une bougie",
+      "price": "Prix"
+    },
+    "TradingChartLabels": {
+      "open": "Ouverture dans la légende",
+      "high": "Plus haut dans la légende",
+      "low": "Plus bas dans la légende",
+      "close": "Clôture dans la légende",
+      "change": "Nom avant la variation de la bougie dans la légende (aucun en anglais)",
+      "volume": "Volume dans la légende et titre du panneau de volume",
+      "limit": "Titre par défaut des lignes d'ordre",
+      "position": "Titre par défaut des lignes de position",
+      "takeProfit": "Titre par défaut des lignes de prise de profit",
+      "stopLoss": "Titre par défaut des lignes de stop loss",
+      "alert": "Titre par défaut des lignes d'alerte",
+      "scrollToRealtime": "Étiquette du bouton qui revient à la dernière bougie",
+      "toggleIndicator": "Étiquette accessible des interrupteurs de la légende ; {name} est remplacé",
+      "bars": "Nombre de bougies de l'outil de mesure ; {count} est remplacé",
+      "days": "Jours de l'outil de mesure et du compte à rebours ; {count} est remplacé",
+      "hours": "Heures de l'outil de mesure et du compte à rebours ; {count} est remplacé",
+      "minutes": "Minutes de l'outil de mesure ; {count} est remplacé",
+      "chart": "Étiquette accessible par défaut ; {symbol} est remplacé",
+      "announcement": "Bougie lue à voix haute quand le clavier déplace le réticule ; {time}, {open}, {high}, {low} et {close} sont remplacés",
+      "timeframe": "Unité de temps après le symbole dans la légende ; l’option timeframe quand c’est une chaîne par défaut"
+    },
+    "TradingCrosshairEvent": {
+      "index": "Index de la bougie survolée (peut dépasser la dernière)",
+      "time": "Heure de la bougie survolée",
+      "bar": "Bougie survolée, null hors des données",
+      "price": "Prix, ou valeur de l'indicateur, sur la ligne horizontale",
+      "pane": "Panneau survolé : price ou l'id de l'indicateur",
+      "x": "x du réticule en pixels",
+      "y": "y de la ligne horizontale en pixels"
+    },
+    "TradingClickEvent": {
+      "index": "Index de la bougie cliquée",
+      "time": "Heure de la bougie cliquée",
+      "price": "Prix, ou valeur de l'indicateur, sous le pointeur",
+      "pane": "Panneau cliqué"
+    },
+    "TradingOrderMoveEvent": {
+      "id": "Id de la ligne",
+      "price": "Nouveau prix, arrondi à la précision des prix",
+      "previousPrice": "Prix avant le déplacement",
+      "line": "La ligne"
+    },
+    "TradingVisibleRange": {
+      "from": "Index logique au bord gauche",
+      "to": "Index logique au bord droit",
+      "fromTime": "Heure au bord gauche",
+      "toTime": "Heure au bord droit"
+    },
+    "TradingIndicatorToggleEvent": {
+      "id": "Id de l'indicateur",
+      "visible": "S'il est maintenant dessiné"
+    },
+    "TradingHistoryRequestEvent": {
+      "firstTime": "Heure de la plus ancienne bougie",
+      "count": "Nombre de bougies"
+    }
+  },
+  "wc": {
+    "demos": {
+      "candles": {
+        "title": "Bougies, moyennes mobiles et panneaux",
+        "description": "Bougies quotidiennes, deux moyennes mobiles, panneaux de volume et de RSI ; textes et dates dans la langue de la page."
+      },
+      "streaming": {
+        "title": "Flux en temps réel",
+        "description": "Un tick toutes les 500 ms met à jour la dernière barre, un sur dix en ouvre une nouvelle, sans repasser les données."
+      }
+    },
+    "minerva-trading-chart": {
+      "props": {
+        "options": "Autres options du moteur (TradingChartOptions de minerva-design/charts/core : couleurs, textes, locale, labels…) ; propriété uniquement",
+        "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+      },
+      "events": {
+        "minerva-crosshair-move": "Le réticule a bougé ; detail : { time, index, bar, price, pane, x, y }, null quand il quitte le graphique",
+        "minerva-click": "Un panneau a été cliqué ; detail : { time, index, price, pane }",
+        "minerva-visible-range-change": "Les barres visibles ont changé ; detail : { from, to, fromTime, toTime }",
+        "minerva-order-move": "Une ligne de prix déplaçable a été lâchée à un nouveau prix ; detail : { id, price, previousPrice, line }",
+        "minerva-drawings-change": "L’utilisateur a ajouté, déplacé ou supprimé des tracés ; detail : { drawings }",
+        "minerva-drawing-select": "Le tracé sélectionné a changé ; detail : { id }",
+        "minerva-drawing-tool-change": "L’outil de tracé a changé (retour au curseur après un tracé) ; detail : { tool }",
+        "minerva-indicator-toggle": "Un indicateur a été affiché ou masqué depuis sa légende ; detail : { id, visible }",
+        "minerva-history-request": "La barre la plus ancienne est visible : chargez les précédentes avec prependBars ; detail : { firstTime, count }",
+        "minerva-renderer-change": "Le moteur de rendu est prêt, ou s'est replié après une perte du GPU ; detail : { renderer }"
+      },
+      "methods": {
+        "updateBar": "Diffuse une barre : la même heure que la dernière la remplace, une heure plus tardive l’ajoute (update(bar) du moteur)",
+        "appendBars": "Ajoute des barres plus récentes que la dernière",
+        "prependBars": "Insère des barres plus anciennes avant la première, sans déplacer la vue",
+        "setBars": "Remplace les barres",
+        "getBarCount": "Nombre de barres",
+        "getBar": "Barre d’un index, null hors des données",
+        "scrollToRealtime": "Défile jusqu’à la dernière barre",
+        "fitContent": "Affiche toutes les barres",
+        "getVisibleRange": "Barres visibles, null avant la création du moteur",
+        "setVisibleRange": "Affiche les barres entre deux indices logiques",
+        "resetPriceScales": "Réajuste toutes les échelles de prix aux barres visibles",
+        "setDrawingTool": "Active un outil de tracé (cursor, trendLine, horizontalLine, fibRetracement…)",
+        "getDrawings": "Tracés actuels",
+        "removeDrawing": "Supprime un tracé",
+        "selectDrawing": "Sélectionne un tracé (null efface la sélection)",
+        "setIndicatorVisible": "Affiche ou masque un indicateur",
+        "getRenderer": "Moteur de rendu utilisé (webgpu, webgl2, webgl, canvas2d), null tant qu'il n'est pas prêt"
+      }
+    }
+  }
+}

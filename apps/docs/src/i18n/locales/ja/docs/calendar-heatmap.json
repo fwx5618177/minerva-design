@@ -1,0 +1,107 @@
+{
+  "title": "カレンダーヒートマップ",
+  "description": "日ごとの値をカレンダー上に表示します。コントリビューショングラフのように、コミット、学習の継続、運動、注文などに使えます。各日はレベルで色分けされたセルで、月名・曜日名、ツールチップの日付、週の始まりはロケールに従います。凡例でレベルの表示を切り替えられ、矢印キーで日単位・週単位に移動でき、ツールチップに日付が表示されます。",
+  "demos": {
+    "contributions": {
+      "title": "1 年間のコントリビューション",
+      "description": "range を指定しないと、データの最終日までの 53 週を表示します。color で最上位レベルの色を設定します（下位レベルはライト・ダークどちらのテーマでも薄くなります）。onClick はクリックした日を返し、name に書式化された日付、date に YYYY-MM-DD 形式の日付が入ります。"
+    },
+    "streak": {
+      "title": "学習の継続記録",
+      "description": "range={2026} で未来の日を含む 1 年全体を表示します。thresholds でレベルの上限（1–15、16–30、31–60、60 分超）を、format でその名前の書式を設定します。継続日数は同じデータから計算します。"
+    },
+    "multi-year": {
+      "title": "複数年",
+      "description": "1 年より長い範囲は年ごとの帯で描かれ、横に年が表示されます。既定の高さは帯の数に応じて増えます。"
+    },
+    "months": {
+      "title": "月ごとのカレンダー",
+      "description": "layout=\"months\" で月ごとに小さなカレンダーを描き、セルが最も大きくなるグリッドに並べます。weekStart はロケールによる週の始まりを上書きします。注文のない日（毎週月曜は定休日）は空のままです。"
+    },
+    "locale": {
+      "title": "ロケール",
+      "description": "locale は月名・曜日名とツールチップの日付を翻訳し、週の始まり（米国と日本は日曜、フランスとドイツは月曜、エジプトは土曜）を決めます。maxCellSize で広い画面でもセルを小さく保ちます。"
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "基本",
+        "description": "直近 4 か月の 1 日ごとのコミット数。スマートフォンに収まる期間です。月と曜日の名前はアプリの言語に従い、タップで日を選択します。"
+      }
+    },
+    "data": {
+      "total": "直近 4 か月で {{total}} 件のコミット",
+      "tapDay": "日をタップして選択"
+    }
+  },
+  "api": {
+    "CalendarHeatmapProps": {
+      "data": "日ごとの値：日付（YYYY-MM-DD 文字列、Date、タイムスタンプ）と値。同じ日の値は合計されます",
+      "range": "表示する日：年（2026）または両端を含む [start, end]。既定はデータの最終日までの 53 週",
+      "layout": "weeks：週ごとに列、曜日ごとに行（長い範囲は年ごとの帯）。months：月ごとの小さなカレンダー",
+      "weekStart": "週の始まり（0 = 日曜 … 6 = 土曜）。既定は locale から決まります",
+      "locale": "月名・曜日名、ツールチップの日付、既定の weekStart、組み込み文言に使う BCP 47 ロケール。既定はページの言語（`<html lang>`）",
+      "color": "最上位レベルの色（下位レベルは薄くなります）。既定はパレットの最初の色",
+      "colors": "レベルの色（低い順）。color を置き換え、レベル数も決めます",
+      "levels": "空の日を除く色のレベル数",
+      "thresholds": "最後を除く各レベルの上限（昇順。[2, 5, 10] は 1–2、3–5、6–10、それ以上）。既定は最大値の等分",
+      "gap": "セル間の間隔（ピクセル）",
+      "radius": "セルの角の半径（ピクセル）",
+      "maxCellSize": "セルの最大サイズ（ピクセル、幅に収まるよう縮小されます）",
+      "monthLabels": "月名（と年）を表示します",
+      "weekdayLabels": "セルの横（weeks）または上（months）に曜日名を表示します"
+    },
+    "CalendarDatum": {
+      "date": "値の日付：YYYY-MM-DD 文字列、Date、またはタイムスタンプ（ローカルの暦日）",
+      "value": "その日の値（負の値は 0 として扱います）"
+    }
+  },
+  "data": {
+    "commitsTotal": "過去 1 年間のコミット数：{{total}}",
+    "commitsAria": "過去 1 年間の日ごとのコミット数",
+    "commitsDay": "{{date}}：{{value}} コミット",
+    "commitsHint": "日をクリック（またはチャートにフォーカスし、矢印キーで移動して Enter）すると選択できます",
+    "minutes": "{{value}} 分",
+    "streaks": "現在の連続記録：{{current}} 日 · 最長記録：{{longest}} 日",
+    "lessonsAria": "2026 年の日ごとの語学学習時間（分）",
+    "lessonDay": "{{date}}：{{value}} 学習",
+    "missedDay": "{{date}}：学習なし",
+    "lessonsHint": "日をクリックすると学習時間を表示します",
+    "km": "{{value}} km",
+    "runsAria": "2024〜2026 年の日ごとのランニング距離",
+    "runsYear": "{{year}} 年：{{value}}",
+    "weekStartLabel": "週の始まり",
+    "fromLocale": "ロケールに従う",
+    "ordersAria": "2026 年の日ごとのオンライン注文数（月別）",
+    "localeLabel": "ロケール",
+    "deploysAria": "2026 年上半期の日ごとのデプロイ回数"
+  },
+  "wc": {
+    "demos": {
+      "contributions": {
+        "title": "1 年間のコントリビューション",
+        "description": "2025 年の日ごとの値。月や曜日の名前はページの言語の locale に従います。"
+      },
+      "months": {
+        "title": "月ごとのカレンダー",
+        "description": "月ごとの小さなカレンダーに、しきい値を指定した 5 段階の色で表示します（1 日の歩数）。"
+      }
+    },
+    "minerva-calendar-heatmap": {
+      "props": {
+        "height": "チャートの高さ（凡例を含む）：ピクセルまたは任意の CSS の長さ",
+        "options": "その他のエンジンのオプション（軸、凡例、ツールチップ、パレット、書式…）。要素自身のプロパティとマージされます。プロパティのみ",
+        "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+      },
+      "events": {
+        "minerva-hover": "ホバー（またはキーボードでフォーカス）している要素が変わりました。detail：{ index, name, value, share }、何もない場合は null",
+        "minerva-click": "要素がクリック、タップ、または Enter で選択されました。detail：{ index, name, value, share }",
+        "minerva-toggle": "凡例の項目がクリックされました（または toggle() が呼ばれました）。detail：{ index, hidden, hiddenIndexes }"
+      },
+      "methods": {
+        "toggle": "インデックスでスライス、段階、レーダーの系列、ツリーマップの最上位ノードを表示・非表示にします"
+      }
+    }
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "title": "Aire de plage",
+  "description": "Des bandes entre un bord inférieur et un bord supérieur : intervalles de confiance, prévisions, plages min-max et éventails de percentiles.",
+  "demos": {
+    "forecast": {
+      "title": "Prévision et intervalles de confiance",
+      "description": "Chaque point d'une aire fixe son bord inférieur avec y0 : les intervalles à 80 % et 95 % s'élargissent avec l'horizon, l'historique et la prévision sont des lignes ; lineWidth: 0 masque les bords des bandes."
+    },
+    "temperature": {
+      "title": "Minimum et maximum quotidiens",
+      "description": "Une année de plages de températures quotidiennes avec la normale saisonnière : l'infobulle donne les deux bords de la bande, Ctrl / ⌘ + molette zoome jusqu'au jour."
+    },
+    "fan": {
+      "title": "Éventail de percentiles",
+      "description": "Des bandes imbriquées des 5e-95e et 25e-75e percentiles d'une latence autour de sa médiane : les heures chargées élargissent la distribution."
+    },
+    "price-range": {
+      "title": "Plage de cotation",
+      "description": "La plage bas-haut de chaque séance en bande et la clôture en ligne, une alternative légère aux chandeliers."
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "Exemple de base",
+        "description": "Les plages de températures mensuelles en bande (de y0 à y) avec la moyenne en ligne ; locale suit la langue de l'application."
+      }
+    }
+  },
+  "data": {
+    "interval95": "Intervalle à 95 %",
+    "interval80": "Intervalle à 80 %",
+    "actual": "Réel",
+    "forecast": "Prévision",
+    "orders": "Commandes",
+    "today": "Aujourd'hui",
+    "forecastAria": "Commandes mensuelles avec une prévision sur 12 mois et ses intervalles de confiance",
+    "dailyRange": "Min – max",
+    "normal": "Normale saisonnière",
+    "temperatureAria": "Températures minimales et maximales quotidiennes sur un an",
+    "p5p95": "5e – 95e percentile",
+    "p25p75": "25e – 75e percentile",
+    "median": "Médiane",
+    "latencyAria": "Percentiles du temps de réponse sur une journée",
+    "dayRange": "Bas – haut",
+    "close": "Clôture",
+    "priceAria": "Plage quotidienne et cours de clôture sur six mois"
+  },
+  "api": {
+    "RangeAreaChartProps": {
+      "series": "Bandes entre y0 (bord inférieur) et y (bord supérieur) de chaque point, sauf si une série fixe un type (une line par exemple)",
+      "curve": "Forme des bords : \"linear\", \"smooth\" (monotone) ou \"step\""
+    }
+  },
+  "wc": {
+    "demos": {
+      "forecast": {
+        "title": "Prévision avec une bande d’incertitude",
+        "description": "La bande de y0 à y s’élargit avec l’horizon ; les valeurs réelles et la prévision sont des lignes."
+      },
+      "temperature": {
+        "title": "Amplitude des températures",
+        "description": "Minimum et maximum de chaque jour en bande, la moyenne en ligne ; des bords droits gardent les mesures."
+      }
+    },
+    "minerva-range-area-chart": {
+      "props": {
+        "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+        "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+        "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+      },
+      "events": {
+        "minerva-hover": "Les points survolés (ou ciblés au clavier) ont changé ; detail : { x, xLabel, items }, null quand rien n'est survolé",
+        "minerva-point-click": "Un point ou une barre a été cliqué ; detail : { x, xLabel, items }",
+        "minerva-plot-click": "La zone de tracé a été cliquée hors des points ; detail : { x, y } en coordonnées de données",
+        "minerva-zoom": "L'utilisateur a zoomé ou s'est déplacé ; detail : { x, y } (les plages visibles)",
+        "minerva-renderer-change": "Le moteur de rendu est prêt, ou s'est replié après une perte du GPU ; detail : { renderer }"
+      },
+      "methods": {
+        "resetZoom": "Affiche toute la plage de données",
+        "getView": "Plage visible, null avant la création du moteur",
+        "setView": "Définit la plage visible",
+        "getRenderer": "Moteur de rendu utilisé (webgpu, webgl2, webgl, canvas2d), null tant qu'il n'est pas prêt"
+      }
+    }
+  }
+}

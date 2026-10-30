@@ -1,10 +1,10 @@
 {
   "title": "图表",
-  "description": "GPU 加速的图表，百万级数据点下仍保持 60 fps，另有基于 Canvas2D 的形状图表。Chart 可混合折线、面积、柱状、散点、K 线和热力图系列；LineChart、AreaChart、BarChart、ScatterChart、CandlestickChart、HeatmapChart、Sparkline 和 QuadrantChart 是预设；PieChart、DonutChart、RadarChart、GaugeChart、FunnelChart 和 TreemapChart 用于展示占比、多维画像、KPI 和层级结构。悬停时，数据点周围出现柔和光晕，柱后方出现柔和色带，提示框也更轻盈。",
+  "description": "GPU 加速的图表，百万级数据点下仍保持 60 fps，另有基于 Canvas2D 的形状图表：趋势、对比、统计、占比、层级与流向、金融与交易，以及 3D 图表。Chart 可混合折线、面积、柱状、散点、K 线和热力图系列；其余组件都是针对单一图表类型的预设。可以先浏览下方的图表一览：每种图表类型都有一个实时缩略图，并链接到对应页面。",
   "intro": {
     "rendering": {
       "title": "渲染方式",
-      "text": "数据层使用 WebGPU 绘制，依次回退到 WebGL2 和 Canvas2D（renderer=\"auto\"）；就绪后根元素会带上 data-renderer。图表由四层叠加而成：",
+      "text": "数据层使用 WebGPU 绘制，依次回退到 WebGL2、WebGL 和 Canvas2D（renderer=\"auto\"）；就绪后根元素会带上 data-renderer。图表由四层叠加而成：",
       "background": "Canvas2D 背景层：网格、坐标轴和标注区域",
       "data": "GPU 数据层：折线、面积、柱和散点",
       "labels": "Canvas2D 覆盖层：刻度标签、数据点标签、高亮",
@@ -12,7 +12,7 @@
     },
     "largeData": {
       "title": "大数据量",
-      "text": "将大型系列以类型化数组的列形式传入（{ x: Float64Array, y: Float64Array }）：不会为每个点创建对象。x 有序时，命中检测使用二分查找且只绘制可见范围，因此百万点的折线图或散点图在 WebGPU 和 WebGL2 上仍保持 60 fps。"
+      "text": "将大型系列以类型化数组的列形式传入（{ x: Float64Array, y: Float64Array }）：不会为每个点创建对象。x 有序时，命中检测使用二分查找且只绘制可见范围，因此百万点的折线图或散点图在 WebGPU、WebGL2 和 WebGL 上仍保持 60 fps。"
     },
     "interaction": {
       "title": "交互与键盘",
@@ -23,9 +23,40 @@
       "title": "主题与引擎",
       "text": "颜色来自 Minerva 的 CSS 变量：定义了 --chart-series-1..8 时使用它们，否则使用主题色（--primary-color、--success-color……）。切换主题会自动生效。",
       "core": "minerva-design/charts/core 是不依赖 React 的同一引擎：createChart(container, options) 可用于任意框架。"
+    },
+    "families": {
+      "title": "图表家族",
+      "text": "下方按五个分组展示了每种图表类型的实时缩略图，每个标题都链接到对应图表的页面：",
+      "basic": "基础 2D：<line>折线图</line>、<area>面积图</area>、<rangeArea>范围面积图</rangeArea>、<bar>柱状图</bar>、<horizontalBar>条形图</horizontalBar>、<mixed>组合图 / 双轴图</mixed>、<scatter>散点图</scatter>、<bubble>气泡图</bubble>和<sparkline>迷你图</sparkline>。",
+      "statistics": "统计、KPI 与计划：<histogram>直方图</histogram>、<boxplot>箱线图</boxplot>、<waterfall>瀑布图</waterfall>、<heatmap>热力图</heatmap>、<calendar>日历热力图</calendar>、<gauge>仪表盘</gauge>、<bullet>子弹图</bullet>、<radialBar>径向条形图</radialBar>和<gantt>甘特图</gantt>。",
+      "relations": "占比、关系与层级：<pie>饼图与环形图</pie>、<radar>雷达图</radar>、<funnel>漏斗图</funnel>、<quadrant>四象限图</quadrant>、<treemap>矩形树图</treemap>、<sunburst>旭日图</sunburst>和<sankey>桑基图</sankey>。",
+      "finance": "金融与交易：<candlestick>K 线图</candlestick>、<trading>交易图表</trading>、<indicators>技术指标</indicators>、<depth>深度图</depth>、<orderBook>订单簿</orderBook>、<orderBookHeatmap>订单簿热力图</orderBookHeatmap>和<timeSales>逐笔成交</timeSales>。",
+      "threeD": "3D：<scatter>3D 散点图与 3D 折线图</scatter>、<surface>3D 曲面图</surface>和<bar>3D 柱状图</bar>。",
+      "lazy": "缩略图只在接近可视区域时才挂载（IntersectionObserver）：页面保持流畅，同时占用的 GPU 上下文也不会超过浏览器的上限。订单簿类组件播放模拟行情，离开屏幕时自动暂停。",
+      "fallback": "GPU 图表按四级选择渲染后端：WebGPU → WebGL2 → WebGL → Canvas2D，因此能在所有浏览器中渲染，并能在 GPU 丢失后继续工作；详见<engine>图表引擎</engine>和<performance>性能</performance>页面。"
     }
   },
   "demos": {
+    "gallery": {
+      "title": "图表一览：基础 2D 图表",
+      "description": "折线、堆叠面积、每月气温范围、带数值标签的柱状图、横向排名、营收柱与第二坐标轴上的增长率折线、散点、按触达人数确定大小的营销活动气泡，以及 KPI 迷你图。每个标题都链接到对应图表的页面；悬停图表可查看提示框。"
+    },
+    "gallery-statistics": {
+      "title": "图表一览：统计、KPI 与计划",
+      "description": "延迟直方图、各服务的箱线图、营收桥接瀑布图、一周负载热力图、提交日历、带色带的仪表盘、KPI 与目标对比的子弹图、进度环和发布计划甘特图。"
+    },
+    "gallery-relations": {
+      "title": "图表一览：占比、关系与层级",
+      "description": "浏览器份额饼图、显示总数的各套餐用户环形图、供应商雷达图、注册漏斗、优先级四象限、预算矩形树图、人员构成旭日图，以及从流量来源到注册的桑基图。"
+    },
+    "gallery-finance": {
+      "title": "图表一览：金融与交易",
+      "description": "K 线图、带均线和成交量的专业交易图表、布林带与 RSI，以及播放模拟行情的订单簿类组件（深度图、价格档位、流动性热力图和逐笔成交）。它们在滚动到可视区域时才挂载；Ctrl / ⌘ + 滚轮可缩放。"
+    },
+    "gallery-3d": {
+      "title": "图表一览：3D 图表",
+      "description": "缓慢旋转的 3D 散点聚类、螺旋轨迹、波纹曲面，以及按地区和季度展示销售额的 3D 柱状图。拖动可旋转；只在可见时渲染。"
+    },
     "mixed": {
       "title": "混合系列",
       "description": "每个系列各自设置 type：柱和折线共用类目轴，图例位于底部。"
@@ -38,22 +69,406 @@
       "title": "标注",
       "description": "一条虚线参考线、一条水平带（只设 y0 / y1 的 rect）和一个 x 区间，各带标签。"
     },
-    "gallery": {
-      "title": "图表一览",
-      "description": "每种图表类型各一个小示例，每张卡片都链接到对应页面：折线、平滑堆叠面积、带数值标签的柱状图、散点、K 线、热力图、迷你图、饼图、环形图、雷达图、仪表盘、漏斗图、矩形树图和四象限图。悬停试试：数据点会出现柔和光晕，柱会出现柔和色带。"
+    "dashboard": {
+      "title": "分析仪表板",
+      "description": "多个图表协同展示网店 30 天的数据：带迷你图的 KPI 卡片、新老访客的堆叠面积图、中心显示总数的设备环形图，以及带数值标签的热门页面柱状图。"
+    },
+    "palette": {
+      "title": "调色板",
+      "description": "palette 可替换任意图表（GPU 图表或形状图表）的系列颜色：主题色、色盲友好配色（Okabe-Ito）、蓝色顺序色阶或暖色调。不设置时使用 --chart-series-1..8。"
+    }
+  },
+  "data": {
+    "revenue": "收入",
+    "target": "目标",
+    "revenueAria": "每月收入与目标对比",
+    "p95": "p95 延迟",
+    "normalRange": "正常范围",
+    "deploy": "部署",
+    "slo": "SLO {{value}}",
+    "minutes": "分钟",
+    "latencyAria": "p95 延迟，含 SLO 与正常范围",
+    "pointStatus": "{{month}}：{{value}}（{{series}}）",
+    "tapHint": "点按柱子或折线",
+    "randomWalk": "随机游走",
+    "renderer": "渲染器",
+    "randomWalkAria": "50,000 个点的随机游走",
+    "rendererStatus": "请求：{{requested}} · 实际绘制：{{active}}",
+    "visits": "访问量",
+    "signups": "注册数",
+    "web": "网页",
+    "orders": "订单",
+    "quarter": "第{{n}}季度",
+    "team": "团队 {{name}}",
+    "plans": {
+      "free": "免费版",
+      "pro": "专业版",
+      "team": "团队版"
+    },
+    "criteria": {
+      "speed": "速度",
+      "quality": "质量",
+      "cost": "成本",
+      "support": "支持",
+      "scale": "规模"
+    },
+    "vendor": "供应商 {{name}}",
+    "stages": {
+      "visited": "访问",
+      "signedUp": "注册",
+      "activated": "激活",
+      "paid": "付费"
+    },
+    "budget": {
+      "product": "产品",
+      "design": "设计",
+      "engineering": "研发",
+      "goToMarket": "市场推广",
+      "sales": "销售",
+      "marketing": "市场"
+    },
+    "tasks": {
+      "release": "发布",
+      "roadmap": "路线图",
+      "emails": "邮件",
+      "cleanup": "清理"
+    },
+    "quadrants": {
+      "plan": "计划",
+      "doFirst": "立即做",
+      "drop": "放弃",
+      "delegate": "委派"
+    },
+    "cards": {
+      "line": {
+        "title": "折线图",
+        "description": "趋势",
+        "aria": "每月访问量与注册数"
+      },
+      "area": {
+        "title": "面积图",
+        "description": "平滑、堆叠",
+        "aria": "各平台用户数（堆叠）"
+      },
+      "bar": {
+        "title": "柱状图",
+        "description": "数值标签、逐柱颜色",
+        "aria": "每季度订单数"
+      },
+      "scatter": {
+        "title": "散点图",
+        "description": "相关性、聚类",
+        "aria": "两组测量值"
+      },
+      "candlestick": {
+        "title": "K 线图",
+        "description": "开盘、最高、最低、收盘",
+        "aria": "日线行情"
+      },
+      "heatmap": {
+        "title": "热力图",
+        "description": "网格上的数值",
+        "aria": "按星期和时段的负载"
+      },
+      "sparkline": {
+        "title": "迷你图",
+        "description": "文字大小的趋势"
+      },
+      "pie": {
+        "title": "饼图",
+        "description": "占比",
+        "aria": "浏览器份额"
+      },
+      "donut": {
+        "title": "环形图",
+        "description": "带总数的占比",
+        "aria": "各套餐用户数"
+      },
+      "radar": {
+        "title": "雷达图",
+        "description": "多维度画像",
+        "aria": "供应商对比"
+      },
+      "gauge": {
+        "title": "仪表盘",
+        "description": "单个数值与目标"
+      },
+      "funnel": {
+        "title": "漏斗图",
+        "description": "阶段与转化",
+        "aria": "注册漏斗"
+      },
+      "treemap": {
+        "title": "矩形树图",
+        "description": "层级结构的占比",
+        "aria": "各部门预算"
+      },
+      "quadrant": {
+        "title": "四象限图",
+        "description": "优先级矩阵",
+        "aria": "按紧急和重要程度排列的任务"
+      },
+      "rangeArea": {
+        "title": "范围面积图",
+        "description": "最小–最大区间、预测",
+        "aria": "每月日均最低与最高气温"
+      },
+      "horizontalBar": {
+        "title": "条形图",
+        "description": "排名、长标签",
+        "aria": "各编程语言的开发者使用比例"
+      },
+      "mixed": {
+        "title": "组合图",
+        "description": "双轴上的柱与折线",
+        "aria": "各季度营收与增长率"
+      },
+      "bubble": {
+        "title": "气泡图",
+        "description": "用大小表示第三个数值",
+        "aria": "各营销活动的成本、注册数与触达人数"
+      },
+      "histogram": {
+        "title": "直方图",
+        "description": "分布",
+        "aria": "响应时间分布"
+      },
+      "boxplot": {
+        "title": "箱线图",
+        "description": "四分位数与异常值",
+        "aria": "各服务的响应时间"
+      },
+      "waterfall": {
+        "title": "瀑布图",
+        "description": "各项对总量的贡献",
+        "aria": "年度经常性收入桥接"
+      },
+      "calendar": {
+        "title": "日历热力图",
+        "description": "每日活跃度",
+        "aria": "每日提交次数"
+      },
+      "bullet": {
+        "title": "子弹图",
+        "description": "KPI 与目标对比",
+        "aria": "季度 KPI 与目标"
+      },
+      "radialBar": {
+        "title": "径向条形图",
+        "description": "进度环",
+        "aria": "季度目标完成进度"
+      },
+      "gantt": {
+        "title": "甘特图",
+        "description": "排期与进度",
+        "aria": "发布计划"
+      },
+      "sunburst": {
+        "title": "旭日图",
+        "description": "多层级结构",
+        "aria": "各部门及团队人数"
+      },
+      "sankey": {
+        "title": "桑基图",
+        "description": "阶段之间的流量",
+        "aria": "各来源访问到注册的流向"
+      },
+      "trading": {
+        "title": "专业交易图表",
+        "description": "K 线、成交量、平移与缩放",
+        "aria": "BTC/USDT 小时价格与成交量"
+      },
+      "indicators": {
+        "title": "技术指标",
+        "description": "MA、MACD、RSI、布林带…",
+        "aria": "BTC/USDT 日线价格、布林带与 RSI"
+      },
+      "depth": {
+        "title": "深度图",
+        "description": "买卖盘累计量",
+        "aria": "实时市场深度"
+      },
+      "orderBook": {
+        "title": "订单簿",
+        "description": "实时价格档位",
+        "aria": "实时订单簿"
+      },
+      "orderBookHeatmap": {
+        "title": "订单簿热力图",
+        "description": "流动性随时间的变化",
+        "aria": "最近 30 秒的流动性热力图"
+      },
+      "timeSales": {
+        "title": "逐笔成交",
+        "description": "成交明细",
+        "aria": "最新成交"
+      },
+      "scatter3d": {
+        "title": "3D 散点图",
+        "description": "三维空间中的聚类",
+        "aria": "三维空间中的三组点"
+      },
+      "line3d": {
+        "title": "3D 折线图",
+        "description": "运动轨迹",
+        "aria": "三维螺旋轨迹"
+      },
+      "surface3d": {
+        "title": "3D 曲面图",
+        "description": "z = f(x, y)、地形",
+        "aria": "波纹曲面"
+      },
+      "bar3d": {
+        "title": "3D 柱状图",
+        "description": "类别网格上的数值",
+        "aria": "各地区各季度销售额"
+      }
+    },
+    "load": "负载",
+    "revenueLabel": "收入",
+    "revenueTrendAria": "收入趋势",
+    "errorsLabel": "错误",
+    "errorsTrendAria": "错误趋势",
+    "users": "用户",
+    "uptimeScore": "可用性评分",
+    "urgency": "紧急程度",
+    "importance": "重要程度",
+    "newVisitors": "新访客",
+    "returningVisitors": "回访访客",
+    "devices": {
+      "mobile": "手机",
+      "desktop": "桌面",
+      "tablet": "平板"
+    },
+    "pageViews": "页面浏览量",
+    "visitors": "访客",
+    "ordersLabel": "订单",
+    "conversion": "转化率",
+    "last30Aria": "{{metric}}，最近 30 天",
+    "trafficAria": "每日新访客与回访访客（堆叠）",
+    "devicesAria": "按设备统计的访客",
+    "topPagesAria": "浏览量最高的页面",
+    "channels": {
+      "email": "电子邮件",
+      "chat": "在线聊天",
+      "phone": "电话",
+      "social": "社交媒体",
+      "community": "社区"
+    },
+    "palette": "调色板",
+    "palettes": {
+      "theme": "主题",
+      "colorblind": "色盲友好",
+      "blues": "蓝色系",
+      "warm": "暖色系"
+    },
+    "requestsAria": "按渠道统计的每季度支持请求",
+    "channelsAria": "各渠道支持请求的占比",
+    "temperature": "气温",
+    "developers": "开发者",
+    "growth": "增长率",
+    "reach": "触达人数",
+    "services": {
+      "gateway": "网关",
+      "search": "搜索",
+      "checkout": "结账",
+      "images": "图片"
+    },
+    "bridge": {
+      "lastYear": "去年",
+      "newCustomers": "新客户",
+      "expansion": "增购",
+      "churn": "流失",
+      "pricing": "调价",
+      "thisYear": "今年"
+    },
+    "kpis": {
+      "revenue": "营收（千美元）",
+      "profit": "利润率（%）",
+      "satisfaction": "满意度"
+    },
+    "objectives": {
+      "revenue": "营收",
+      "users": "活跃用户",
+      "retention": "留存率"
+    },
+    "plan": {
+      "research": "调研",
+      "design": "设计",
+      "build": "开发",
+      "test": "测试"
+    },
+    "ranges": {
+      "poor": "差",
+      "fair": "一般",
+      "good": "良好"
+    },
+    "stats": {
+      "max": "最大值",
+      "q3": "上四分位数",
+      "median": "中位数",
+      "q1": "下四分位数",
+      "min": "最小值",
+      "outliers": "异常值"
+    },
+    "requests": "请求数",
+    "responseTime": "响应时间",
+    "amount": "金额",
+    "today": "今天",
+    "taskName": "任务",
+    "progress": "进度",
+    "org": {
+      "engineering": "研发",
+      "platform": "平台",
+      "web": "Web",
+      "mobile": "移动端",
+      "sales": "销售",
+      "emea": "欧洲、中东和非洲",
+      "americas": "美洲",
+      "operations": "运营",
+      "support": "客服",
+      "finance": "财务"
+    },
+    "flow": {
+      "search": "搜索",
+      "social": "社交媒体",
+      "email": "邮件",
+      "site": "网站",
+      "signedUp": "已注册",
+      "left": "离开"
+    },
+    "people": "{{value}} 人",
+    "price": "价格",
+    "ohlcLabels": {
+      "open": "开盘",
+      "high": "最高",
+      "low": "最低",
+      "close": "收盘"
+    },
+    "cluster": "簇 {{name}}",
+    "trajectory": "轨迹",
+    "ripple": "波纹",
+    "sales": "销售额",
+    "regions": {
+      "north": "北区",
+      "south": "南区",
+      "east": "东区",
+      "west": "西区"
     }
   },
   "api": {
     "ChartProps": {
       "series": "数据系列；每个系列各自设置 type",
-      "stackMode": "normal 按数值堆叠；percent 将每个 x 处的堆叠缩放到 100%"
+      "stackMode": "normal 按数值堆叠；percent 将每个 x 处的堆叠缩放到 100%",
+      "yAxis2": "yAxis: \"right\" 的系列所用的右侧数值轴；其范围与左轴刻度对齐（垂直图表）",
+      "orientation": "\"horizontal\" 将 x 轴（类别）放在左侧，数值沿底部排列"
     },
     "ChartCommonProps": {
       "height": "图表高度（含图例）；数字表示像素",
       "width": "图表宽度；数字表示像素",
       "xAxis": "X 轴选项",
       "yAxis": "Y 轴选项",
-      "renderer": "数据层后端：auto 依次尝试 WebGPU、WebGL2、Canvas2D",
+      "renderer": "数据层后端：auto 依次尝试 WebGPU、WebGL2、WebGL、Canvas2D",
       "legend": "图例；多个系列有名称时默认显示",
       "tooltip": "提示框；false 禁用",
       "crosshair": "跟随指针的竖直辅助线",
@@ -70,14 +485,19 @@
       "onRendererChange": "就绪后以及 GPU 回退后以当前后端调用",
       "className": "根元素的额外类名",
       "style": "根元素的内联样式",
-      "ref": "命令式句柄（ChartHandle）"
+      "ref": "命令式句柄（ChartHandle）",
+      "locale": "图表自身输出的文字和数字所用的语言区域（提示框行名、紧凑单位、分隔符、月份和星期名称）；默认使用页面语言",
+      "labels": "覆盖该语言内置文字（ChartLabels）",
+      "testID": "根视图的测试标识（React Native）"
     },
     "ChartHandle": {
       "resetZoom": "显示完整数据范围",
       "getView": "返回可见范围",
       "setView": "设置可见范围",
       "getRenderer": "当前使用的后端，就绪前为 null",
-      "getInstance": "底层引擎实例"
+      "getInstance": "底层引擎实例",
+      "getController": "图表的无 DOM 控制器（React Native）",
+      "getPlotRect": "绘图区域在图表视图中的像素矩形"
     },
     "ChartSeries": {
       "id": "稳定标识（默认为索引）",
@@ -97,7 +517,10 @@
       "colorScale": "热力图：从最小值到最大值的颜色（至少两个）",
       "valueRange": "热力图：映射到 colorScale 两端的数值；默认为数据范围",
       "radius": "柱 / 热力图：圆角半径，单位为像素（柱为 3，单元格为 2）",
-      "format": "格式化该系列在提示框中的数值（默认使用 y 轴格式）"
+      "format": "格式化该系列在提示框中的数值（默认使用 y 轴格式）",
+      "yAxis": "系列的数值轴：\"right\" 让系列使用 yAxis2（双轴图，垂直方向）",
+      "barWidth": "柱子与箱线图：柱子占类别宽度的比例，0-1（1 表示相互紧贴，如直方图）",
+      "valueName": "散点：提示框中数据点 value 的名称（气泡图）"
     },
     "ChartPointDatum": {
       "x": "X 值（数字、Date 或类目）；省略时为索引",
@@ -108,7 +531,11 @@
       "open": "K 线：开盘价",
       "high": "K 线：最高价",
       "low": "K 线：最低价",
-      "value": "热力图：单元格的值，映射到 colorScale"
+      "value": "热力图：单元格的值，映射到 colorScale",
+      "y0": "浮动柱的起点（瀑布图步骤、甘特图任务）或范围面积的下边界；日期为时间戳",
+      "q1": "箱线图：下四分位数（箱体底部；y 为中位数）",
+      "q3": "箱线图：上四分位数（箱体顶部）",
+      "outliers": "箱线图：超出须线的值，绘制为圆点"
     },
     "ChartColumnData": {
       "x": "X 值；省略时为索引",
@@ -117,7 +544,10 @@
       "open": "K 线：开盘价",
       "high": "K 线：最高价",
       "low": "K 线：最低价",
-      "value": "热力图：各单元格的值"
+      "value": "热力图：各单元格的值",
+      "y0": "浮动柱的起点 / 范围面积的下边界（NaN / null：从零开始）",
+      "q1": "箱线图：下四分位数",
+      "q3": "箱线图：上四分位数"
     },
     "ChartAxisOptions": {
       "type": "比例尺：linear、time 或 category（根据数据推断）",
@@ -131,7 +561,8 @@
       "visible": "显示轴线、刻度和标签",
       "zero": "自动范围始终包含零（柱状图始终开启）",
       "reverse": "反转坐标轴方向",
-      "nice": "将自动范围取整到刻度值"
+      "nice": "将自动范围取整到刻度值",
+      "timeZone": "时间轴的日历：刻度和提示框按本地时间或 UTC 显示（\"local\" | \"utc\"）"
     },
     "ChartRectAnnotation": {
       "type": "固定为 \"rect\"",
@@ -172,7 +603,8 @@
     },
     "ChartTooltipOptions": {
       "mode": "nearest 显示最近的点，axis 显示最近 x 处的所有系列",
-      "render": "渲染提示框内容（字符串会作为文本设置）"
+      "render": "渲染提示框内容（字符串会作为文本设置）",
+      "labels": "默认提示框中各行的名称（箱线图统计量、OHLC、气泡数值），用于翻译"
     },
     "ChartLegendOptions": {
       "position": "图例位置：top 或 bottom",
@@ -201,7 +633,11 @@
       "open": "K 线：开盘价",
       "high": "K 线：最高价",
       "low": "K 线：最低价",
-      "value": "热力图：单元格的值"
+      "value": "热力图：单元格的值",
+      "y0": "浮动柱与范围面积：起点（或下边界）；y 为终点",
+      "q1": "箱线图：下四分位数（y 为中位数，low / high 为须线）",
+      "q3": "箱线图：上四分位数",
+      "outliers": "箱线图：离群值的数量"
     },
     "ChartPlotClickEvent": {
       "x": "点击位置的 X 数据坐标",
@@ -217,6 +653,51 @@
       "mixed": {
         "title": "混合系列",
         "description": "柱状和折线共用分类轴，由普通 View 绘制；点击柱子或折线上的点。"
+      }
+    }
+  },
+  "wc": {
+    "demos": {
+      "mixed-series": {
+        "title": "柱形与折线",
+        "description": "以一个对象传入引擎选项：多种类型的系列（这里是柱形和平滑折线）共享类目轴。"
+      },
+      "events": {
+        "title": "引擎事件",
+        "description": "悬停并点击数据点：引擎事件（悬停、点击数据点、缩放、渲染器）携带引擎的数据传递给框架。"
+      }
+    },
+    "minerva-chart": {
+      "props": {
+        "options": "引擎选项（minerva-design/charts/core 的 ChartOptions：系列、坐标轴、图例、提示框、标注……）；仅作为属性设置，替换对象即可更新图表",
+        "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null"
+      },
+      "events": {
+        "minerva-hover": "悬停（或键盘聚焦）的数据点发生变化；detail：{ x, xLabel, items }，无悬停时为 null",
+        "minerva-point-click": "点击了数据点或柱子；detail：{ x, xLabel, items }",
+        "minerva-plot-click": "点击了绘图区中没有数据点的位置；detail：{ x, y }（数据坐标）",
+        "minerva-zoom": "用户进行了缩放或平移；detail：{ x, y }（可见范围）",
+        "minerva-renderer-change": "渲染后端已就绪，或在 GPU 丢失后回退；detail：{ renderer }"
+      },
+      "methods": {
+        "resetZoom": "显示完整的数据范围",
+        "getView": "可见范围，引擎创建之前为 null",
+        "setView": "设置可见范围",
+        "getRenderer": "正在使用的渲染后端（webgpu、webgl2、webgl、canvas2d），就绪前为 null"
+      }
+    },
+    "minerva-shape-chart": {
+      "props": {
+        "options": "引擎选项（minerva-design/charts/core 的 ShapeChartOptions，包含 type：pie、radar、gauge、funnel、treemap、sankey……）；仅作为属性设置",
+        "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null"
+      },
+      "events": {
+        "minerva-hover": "悬停（或键盘聚焦）的图形元素发生变化；detail：{ index, name, value, share }，无悬停时为 null",
+        "minerva-click": "点击、轻触或按 Enter 激活了一个图形元素；detail：{ index, name, value, share }",
+        "minerva-toggle": "点击了图例项（或调用了 toggle()）；detail：{ index, hidden, hiddenIndexes }"
+      },
+      "methods": {
+        "toggle": "按索引隐藏或显示扇区、阶段、雷达系列或树图的顶层节点"
       }
     }
   }

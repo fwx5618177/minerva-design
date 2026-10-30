@@ -5,7 +5,7 @@
     "choose": {
       "title": "Which entry point?",
       "text": "The three entry points share the same options, layout, hit testing and gestures; they differ in what they need from the host:",
-      "createChart": "createChart(container, options): web pages. It mounts the chart in a DOM element, draws the data with WebGPU, then WebGL2, then Canvas2D, renders an accessible DOM tooltip and legend, reads the theme from the CSS variables and handles wheel, pointer and keyboard input itself.",
+      "createChart": "createChart(container, options): web pages. It mounts the chart in a DOM element, draws the data with WebGPU, then WebGL2, then WebGL, then Canvas2D, renders an accessible DOM tooltip and legend, reads the theme from the CSS variables and handles wheel, pointer and keyboard input itself.",
       "createCanvasChart": "createCanvasChart({ canvas, width, height, pixelRatio, options, theme }): any 2D canvas, with no DOM at all (WeChat / Taro / uni-app canvas type=\"2d\", OffscreenCanvas, a plain <canvas>). Everything, tooltip and legend included, is drawn on the canvas; the host forwards its touch or pointer events and passes the theme as plain values. The mini-program charts are built on it.",
       "createChartController": "createChartController({ options, measureText }): no canvas at all. It computes the scene (layout, ticks, legend, tooltip, highlight) and handles the gestures; scenePrimitives(scene) turns the data into a bounded list of pixel shapes for hosts that draw with views or SVG. The React Native charts are built on it."
     },
@@ -32,12 +32,54 @@
       "description": "createShapeChart in an effect: the buttons call setOptions to switch between a pie, a donut with a center total and a funnel (the marks animate from their previous values), on(\"click\") reports the clicked slice or stage, and destroy() runs on unmount."
     }
   },
+  "data": {
+    "downloads": "Downloads",
+    "downloadsAria": "Downloads per release",
+    "unsupported": "unsupported",
+    "downloadsStatus": "{{release}}: {{downloads}} downloads",
+    "clickBar": "Click a bar",
+    "rendererLabel": "Renderer: {{renderer}}",
+    "visits": "Visits",
+    "signupsTimes10": "Sign-ups (×10)",
+    "visitsAria": "Visits and sign-ups per month",
+    "clickPoint": "Click a point",
+    "sources": {
+      "search": "Search",
+      "direct": "Direct",
+      "social": "Social",
+      "email": "Email",
+      "referral": "Referral"
+    },
+    "stages": {
+      "visits": "Visits",
+      "signups": "Sign-ups",
+      "trials": "Trials",
+      "customers": "Customers"
+    },
+    "sourcesAria": "Visits per source",
+    "visitsLabel": "visits",
+    "funnelAria": "Conversion funnel",
+    "views": {
+      "pie": "Pie",
+      "donut": "Donut",
+      "funnel": "Funnel"
+    },
+    "picked": "{{name}}: {{value}} ({{share}})",
+    "clickShape": "Click a slice or a stage",
+    "cpu": "CPU",
+    "seconds": "Seconds",
+    "cpuAria": "Live CPU usage",
+    "resume": "Resume",
+    "pause": "Pause",
+    "pausedStatus": "Paused · {{points}} points received",
+    "streamingStatus": "Streaming · {{points}} points received"
+  },
   "api": {
     "ChartOptions": {
       "series": "Data series",
       "xAxis": "X axis options",
       "yAxis": "Y axis options",
-      "renderer": "Backend of the data layer (auto, webgpu, webgl2, canvas2d)",
+      "renderer": "Backend of the data layer (auto, webgpu, webgl2, webgl, canvas2d)",
       "legend": "Legend; shown by default when there are several named series",
       "tooltip": "Tooltip; false disables it",
       "crosshair": "Vertical guide line following the pointer",
@@ -46,7 +88,11 @@
       "padding": "Space around the plot area",
       "palette": "Colors of the series without color",
       "ariaLabel": "Accessible name of the chart",
-      "stackMode": "normal or percent: percent scales every stack to 100% at each x (the axis shows percents, the tooltip the actual values)"
+      "stackMode": "normal or percent: percent scales every stack to 100% at each x (the axis shows percents, the tooltip the actual values)",
+      "yAxis2": "Second value axis on the right for the series with yAxis: \"right\"; aligned on the left ticks, ignored by horizontal charts",
+      "orientation": "\"horizontal\" swaps the axes: the x axis (categories) down the left side, the values along the bottom",
+      "locale": "Locale of the texts and numbers the engine writes (tooltip rows, compact units k / 万, separators, month and weekday names of time axes); resolved at every options update, the page language (<html lang>) by default",
+      "labels": "Overrides of the built-in texts of the locale (ChartLabels)"
     },
     "ChartInstance": {
       "setOptions": "Replaces the options; unchanged data arrays are not processed again",
@@ -188,7 +234,8 @@
       "opacity": "Fill opacity, 0-1",
       "baseline": "Y pixel of the baseline",
       "segments": "Runs of points without gaps, as interleaved x, y pixels",
-      "bottoms": "Stacked areas: y pixel of the bottom edge under every point of segments"
+      "bottoms": "Stacked areas: y pixel of the bottom edge under every point of segments",
+      "horizontal": "Horizontal charts: the area is filled toward the left edge (baseline and bottoms are x pixels)"
     },
     "ChartBarPrimitive": {
       "kind": "Kind of shape",
@@ -196,7 +243,8 @@
       "color": "CSS color",
       "rects": "Interleaved x, y, width, height of every bar, in pixels",
       "colors": "CSS color of every rect (candlesticks, heatmap cells, colored bars); color otherwise",
-      "radius": "Corner radius in pixels"
+      "radius": "Corner radius in pixels",
+      "opacity": "Opacity of the fill (box plot boxes, translucent bars)"
     },
     "ChartDotPrimitive": {
       "kind": "Kind of shape",
@@ -212,12 +260,15 @@
       "toggle": "Hides / shows a slice, stage or radar series by index",
       "on": "Subscribes to hover or click; returns the unsubscribe function",
       "destroy": "Removes the DOM and the listeners",
-      "getHidden": "Indexes of the hidden slices / stages / series"
+      "getHidden": "Indexes of the hidden slices / stages / series",
+      "drill": "Sunburst: zooms into the node at a path and emits drill",
+      "getDrillPath": "Sunburst: names from the root to the focused node"
     },
     "ShapeChartEventMap": {
       "hover": "The hovered (or keyboard-focused) mark: index, name, value, percent, color (treemap: path); null when the pointer leaves",
       "click": "The mark clicked, tapped or activated with Enter",
-      "toggle": "A legend item (or `toggle()`) hid or showed a slice, stage or series"
+      "toggle": "A legend item (or `toggle()`) hid or showed a slice, stage or series",
+      "drill": "Sunburst: the focused node changed (or would change)"
     },
     "PieChartOptions": {
       "type": "\"pie\" (a donut is a pie with innerRadius)",
@@ -276,6 +327,8 @@
       "padding": "Space around the drawing, in pixels",
       "ariaLabel": "Accessible name of the chart",
       "percentFormat": "Formats the shares (labels, tooltip); one decimal by default",
+      "locale": "BCP 47 locale of the texts and numbers the chart writes (tooltip rows, accessible names, number and percent formats, calendar dates); built-in texts in English, Chinese, Japanese and French. Defaults to the page language (`<html lang>`), then the browser language",
+      "texts": "Replaces built-in texts of the locale (tooltip rows such as `value`, `share`, `conversion`, accessible names such as `pieChart`, the `noData` placeholder); `{name}`, `{label}` and `{index}` are replaced",
       "hidden": "Indexes of the hidden slices / stages / series (controlled: legend clicks only emit `toggle`)"
     },
     "CanvasShapeChartConfig": {
@@ -303,7 +356,9 @@
       "clearHover": "Removes the hover and the tooltip",
       "on": "Subscribes to hover or click; returns the unsubscribe function",
       "destroy": "Stops the animations and the listeners",
-      "getHidden": "Indexes of the hidden slices / stages / series"
+      "getHidden": "Indexes of the hidden slices / stages / series",
+      "drill": "Sunburst: zooms into the node at a path and emits drill",
+      "getDrillPath": "Sunburst: names from the root to the focused node"
     }
   }
 }

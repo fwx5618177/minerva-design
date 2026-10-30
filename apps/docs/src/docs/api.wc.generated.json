@@ -481,6 +481,115 @@
       }
     ]
   },
+  "wc:minerva-area-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/charts.ts",
+    "className": "MinervaAreaChart",
+    "summary": "GPU area chart: smooth, stacked or 100% stacked.",
+    "description": "Area chart of `minerva-design/charts/core`: smooth by default, stacked or 100% stacked (the `<AreaChart>` of React). The series without a `type` are drawn as areas. Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "curve",
+        "attribute": "curve",
+        "type": "\"linear\" | \"smooth\" | \"step\"",
+        "default": "\"smooth\"",
+        "description": "Shape of the edges: straight, smooth (monotone) or steps"
+      },
+      {
+        "name": "stacked",
+        "attribute": "stacked",
+        "type": "boolean",
+        "default": "false",
+        "description": "Stacks the areas on top of each other"
+      },
+      {
+        "name": "percent",
+        "attribute": "percent",
+        "type": "boolean",
+        "default": "false",
+        "description": "Scales the stacks to 100% (implies `stacked`)"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "320",
+        "description": "Height of the chart, the legend included: pixels or any CSS length"
+      },
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[] | undefined",
+        "description": "Data series (`ChartSeries[]`); each may set its own `type`. Replace the array (or a `data` array) to update the chart; property only"
+      },
+      {
+        "name": "options",
+        "type": "ChartBaseOptions | undefined",
+        "description": "Other engine options (`ChartOptions` of minerva-design/charts/core: axes, legend, tooltip, annotations...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "resetZoom",
+        "signature": "() => void",
+        "description": "Shows the whole data range"
+      },
+      {
+        "name": "getView",
+        "signature": "() => ChartView | null",
+        "description": "Visible range, `null` before the engine is created"
+      },
+      {
+        "name": "setView",
+        "signature": "(view: Partial<ChartView>) => void",
+        "description": "Sets the visible range"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-point-click",
+        "description": "A point or a bar was clicked; detail: { x, xLabel, items }"
+      },
+      {
+        "name": "minerva-plot-click",
+        "description": "The plot area was clicked where there is no point; detail: { x, y }"
+      },
+      {
+        "name": "minerva-zoom",
+        "description": "The user zoomed or panned; detail: { x, y } (the visible ranges)"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
   "wc:minerva-autocomplete": {
     "kind": "element",
     "source": "web-components/src/components/autocomplete/autocomplete.ts",
@@ -1210,6 +1319,206 @@
       }
     ]
   },
+  "wc:minerva-bar-3d-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart-3d/chart-3d.ts",
+    "className": "MinervaBar3DChart",
+    "summary": "GPU 3D bars over a category grid.",
+    "description": "3D bars of `minerva-design/charts/core` (the `<Bar3DChart>` of React) over an x × y category grid, lit, stacked across series. Published as the optional entry `minerva-design/web-components/chart-3d`.",
+    "properties": [
+      {
+        "name": "barWidth",
+        "attribute": "bar-width",
+        "type": "number",
+        "default": "0.7",
+        "description": "Width of the bars of the series that do not set one, as a fraction of a cell"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "400",
+        "description": "Height of the chart, the legend included: pixels or any CSS length"
+      },
+      {
+        "name": "series",
+        "type": "readonly S[] | undefined",
+        "description": "Data series; replace the array (or a data array) to update the chart; property only"
+      },
+      {
+        "name": "options",
+        "type": "Chart3DBaseOptions | undefined",
+        "description": "Other engine options (`Chart3DOptions`: xAxis, yAxis, zAxis, camera, autoRotate, colorScale, colorBar, legend, tooltip, locale...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "resetCamera",
+        "signature": "() => void",
+        "description": "Restores the camera of the options"
+      },
+      {
+        "name": "getCamera",
+        "signature": "() => Chart3DCameraState | null",
+        "description": "Current camera, `null` before the engine is created"
+      },
+      {
+        "name": "setCamera",
+        "signature": "(camera: Partial<Chart3DCameraState>) => void",
+        "description": "Moves the camera"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered point, cell or bar changed; detail: { seriesIndex, seriesName, type, index, x, y, z, value, color, label }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-point-click",
+        "description": "A point, cell or bar was clicked; detail: { seriesIndex, seriesName, type, index, x, y, z, value, color, label }"
+      },
+      {
+        "name": "minerva-camera-change",
+        "description": "The user rotated, zoomed, panned or reset the camera; detail: { azimuth, elevation, zoom, pan, projection }"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
+  "wc:minerva-bar-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/charts.ts",
+    "className": "MinervaBarChart",
+    "summary": "GPU bar chart: grouped, stacked or 100%, with value labels.",
+    "description": "Bar chart of `minerva-design/charts/core`: grouped side by side, stacked or 100% stacked, with optional value labels (the `<BarChart>` of React). The series without a `type` are drawn as bars (set `type: \"line\"` on a series for an overlay). Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "stacked",
+        "attribute": "stacked",
+        "type": "boolean",
+        "default": "false",
+        "description": "Stacks the bars of every series (otherwise they are grouped side by side)"
+      },
+      {
+        "name": "percent",
+        "attribute": "percent",
+        "type": "boolean",
+        "default": "false",
+        "description": "Scales the stacks to 100% (implies `stacked`)"
+      },
+      {
+        "name": "labels",
+        "attribute": "labels",
+        "type": "boolean",
+        "default": "false",
+        "description": "Writes the value above every bar"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "320",
+        "description": "Height of the chart, the legend included: pixels or any CSS length"
+      },
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[] | undefined",
+        "description": "Data series (`ChartSeries[]`); each may set its own `type`. Replace the array (or a `data` array) to update the chart; property only"
+      },
+      {
+        "name": "options",
+        "type": "ChartBaseOptions | undefined",
+        "description": "Other engine options (`ChartOptions` of minerva-design/charts/core: axes, legend, tooltip, annotations...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "resetZoom",
+        "signature": "() => void",
+        "description": "Shows the whole data range"
+      },
+      {
+        "name": "getView",
+        "signature": "() => ChartView | null",
+        "description": "Visible range, `null` before the engine is created"
+      },
+      {
+        "name": "setView",
+        "signature": "(view: Partial<ChartView>) => void",
+        "description": "Sets the visible range"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-point-click",
+        "description": "A point or a bar was clicked; detail: { x, xLabel, items }"
+      },
+      {
+        "name": "minerva-plot-click",
+        "description": "The plot area was clicked where there is no point; detail: { x, y }"
+      },
+      {
+        "name": "minerva-zoom",
+        "description": "The user zoomed or panned; detail: { x, y } (the visible ranges)"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
   "wc:minerva-box": {
     "kind": "element",
     "source": "web-components/src/components/box/box.ts",
@@ -1371,6 +1680,314 @@
       }
     ],
     "parts": [],
+    "cssProperties": []
+  },
+  "wc:minerva-box-plot-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/extended.ts",
+    "className": "MinervaBoxPlotChart",
+    "summary": "GPU box plot of raw samples or computed quartiles.",
+    "description": "Box plot of `minerva-design/charts/core` (the `<BoxPlotChart>` of React): medians, quartiles, whiskers and outliers of samples, from raw values (`groups`) or computed statistics (`series`). Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "valueName",
+        "attribute": "value-name",
+        "type": "string | undefined",
+        "description": "Name of the series built from `groups` (default \"Values\")"
+      },
+      {
+        "name": "whisker",
+        "attribute": "whisker",
+        "type": "number | \"minmax\"",
+        "default": "1.5",
+        "description": "Reach of the whiskers in interquartile ranges (Tukey: 1.5), or `minmax`"
+      },
+      {
+        "name": "orientation",
+        "attribute": "orientation",
+        "type": "\"vertical\" | \"horizontal\"",
+        "default": "\"vertical\"",
+        "description": "`horizontal` lays the boxes out in rows"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "320",
+        "description": "Height of the chart, the legend included: pixels or any CSS length"
+      },
+      {
+        "name": "groups",
+        "type": "readonly BoxplotGroup[] | undefined",
+        "description": "Raw samples `{ x, values, color }`, one box each; property only"
+      },
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[] | undefined",
+        "description": "Series of computed box plots (`low`, `q1`, `y` the median, `q3`, `high`, `outliers`); property only"
+      },
+      {
+        "name": "options",
+        "type": "ChartBaseOptions | undefined",
+        "description": "Other engine options (axes, legend, tooltip, annotations...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "resetZoom",
+        "signature": "() => void",
+        "description": "Shows the whole data range"
+      },
+      {
+        "name": "getView",
+        "signature": "() => ChartView | null",
+        "description": "Visible range, `null` before the engine is created"
+      },
+      {
+        "name": "setView",
+        "signature": "(view: Partial<ChartView>) => void",
+        "description": "Sets the visible range"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-point-click",
+        "description": "A point or a bar was clicked; detail: { x, xLabel, items }"
+      },
+      {
+        "name": "minerva-plot-click",
+        "description": "The plot area was clicked where there is no point; detail: { x, y }"
+      },
+      {
+        "name": "minerva-zoom",
+        "description": "The user zoomed or panned; detail: { x, y } (the visible ranges)"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
+  "wc:minerva-bubble-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/extended.ts",
+    "className": "MinervaBubbleChart",
+    "summary": "GPU bubble chart: x, y and a value sized by area.",
+    "description": "Bubble chart of `minerva-design/charts/core` (the `<BubbleChart>` of React): x, y and a `value` per point sized by area (√value diameters, one scale for every series). The series without a `type` are drawn as bubbles. Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "minSize",
+        "attribute": "min-size",
+        "type": "number",
+        "default": "6",
+        "description": "Diameter in pixels of the smallest bubbles"
+      },
+      {
+        "name": "maxSize",
+        "attribute": "max-size",
+        "type": "number",
+        "default": "48",
+        "description": "Diameter in pixels of the largest value"
+      },
+      {
+        "name": "maxValue",
+        "attribute": "max-value",
+        "type": "number | undefined",
+        "description": "Value drawn with `max-size` (share a scale between charts); the largest value by default"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "320",
+        "description": "Height of the chart, the legend included: pixels or any CSS length"
+      },
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[] | undefined",
+        "description": "Data series (`ChartSeries[]`); each may set its own `type`. Replace the array (or a `data` array) to update the chart; property only"
+      },
+      {
+        "name": "options",
+        "type": "ChartBaseOptions | undefined",
+        "description": "Other engine options (`ChartOptions` of minerva-design/charts/core: axes, legend, tooltip, annotations...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "resetZoom",
+        "signature": "() => void",
+        "description": "Shows the whole data range"
+      },
+      {
+        "name": "getView",
+        "signature": "() => ChartView | null",
+        "description": "Visible range, `null` before the engine is created"
+      },
+      {
+        "name": "setView",
+        "signature": "(view: Partial<ChartView>) => void",
+        "description": "Sets the visible range"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-point-click",
+        "description": "A point or a bar was clicked; detail: { x, xLabel, items }"
+      },
+      {
+        "name": "minerva-plot-click",
+        "description": "The plot area was clicked where there is no point; detail: { x, y }"
+      },
+      {
+        "name": "minerva-zoom",
+        "description": "The user zoomed or panned; detail: { x, y } (the visible ranges)"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
+  "wc:minerva-bullet-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/shapes-extended.ts",
+    "className": "MinervaBulletChart",
+    "summary": "KPI bars against qualitative ranges and a target.",
+    "description": "Bullet chart of `minerva-design/charts/core` (the `<BulletChart>` of React): KPI bars against qualitative ranges and a target marker. Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "orientation",
+        "attribute": "orientation",
+        "type": "\"horizontal\" | \"vertical\"",
+        "default": "\"horizontal\"",
+        "description": "Horizontal rows or vertical columns"
+      },
+      {
+        "name": "targetColor",
+        "attribute": "target-color",
+        "type": "string | undefined",
+        "description": "Color of the target markers (the text color by default)"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "description": "Height of the chart, the legend included: pixels or any CSS length (default 320, sparkline 48, gauge 240)"
+      },
+      {
+        "name": "data",
+        "type": "readonly BulletDatum[] | undefined",
+        "description": "Rows `{ name, value, target, ranges, max }` (columns when vertical); property only"
+      },
+      {
+        "name": "ranges",
+        "type": "readonly number[] | undefined",
+        "description": "Qualitative ranges of the rows without `ranges`: upper bounds, ascending; property only"
+      },
+      {
+        "name": "rangeLabels",
+        "type": "readonly string[] | undefined",
+        "description": "Names of the qualitative ranges, lowest first (tooltip); property only"
+      },
+      {
+        "name": "options",
+        "type": "Partial<Omit<BulletChartOptions, \"type\">> | undefined",
+        "description": "Other engine options (`BulletChartOptions`: rangeColors, barSize, ticks, palette, format...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "toggle",
+        "signature": "(index: number) => void",
+        "description": "Hides / shows a slice, stage, radar series or top-level treemap node by index"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) mark changed; detail: { index, name, value, share }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-click",
+        "description": "A mark was clicked, tapped or activated with Enter; detail: { index, name, value, share }"
+      },
+      {
+        "name": "minerva-toggle",
+        "description": "A legend item was clicked (or `toggle()` called); detail: { index, hidden, hiddenIndexes }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
     "cssProperties": []
   },
   "wc:minerva-button": {
@@ -1540,6 +2157,189 @@
         "description": "White-space of the label: nowrap (default, truncates) or normal (wraps)"
       }
     ]
+  },
+  "wc:minerva-calendar-heatmap": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/shapes-extended.ts",
+    "className": "MinervaCalendarHeatmap",
+    "summary": "Daily values on a calendar, contributions-style.",
+    "description": "Calendar heatmap of `minerva-design/charts/core` (the `<CalendarHeatmap>` of React): daily values on a calendar, contributions-style, as weeks or as small monthly calendars. Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "layout",
+        "attribute": "layout",
+        "type": "\"weeks\" | \"months\"",
+        "default": "\"weeks\"",
+        "description": "`weeks`: a column per week and a row per weekday; `months`: a small calendar per month"
+      },
+      {
+        "name": "locale",
+        "attribute": "locale",
+        "type": "string | undefined",
+        "description": "BCP 47 locale of the month and weekday names, of the tooltip dates and of the first day of the week"
+      },
+      {
+        "name": "color",
+        "attribute": "color",
+        "type": "string | undefined",
+        "description": "Color of the highest level (lower levels are lighter); the first palette color by default"
+      },
+      {
+        "name": "levels",
+        "attribute": "levels",
+        "type": "number",
+        "default": "4",
+        "description": "Number of color levels above the empty days"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "description": "Height of the chart, the legend included: pixels or any CSS length (default 320, sparkline 48, gauge 240)"
+      },
+      {
+        "name": "data",
+        "type": "readonly CalendarDatum[] | undefined",
+        "description": "Daily values `{ date, value }` (several entries of the same day add up); property only"
+      },
+      {
+        "name": "range",
+        "type": "number | readonly [CalendarDate, CalendarDate] | undefined",
+        "description": "Days shown: a year (`2026`) or an inclusive `[start, end]` range; the 53 weeks ending on the last day of the data by default; property only"
+      },
+      {
+        "name": "options",
+        "type": "Partial<Omit<CalendarHeatmapOptions, \"type\">> | undefined",
+        "description": "Other engine options (`CalendarHeatmapOptions`: weekStart, colors, thresholds, gap, radius...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "toggle",
+        "signature": "(index: number) => void",
+        "description": "Hides / shows a slice, stage, radar series or top-level treemap node by index"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) mark changed; detail: { index, name, value, share }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-click",
+        "description": "A mark was clicked, tapped or activated with Enter; detail: { index, name, value, share }"
+      },
+      {
+        "name": "minerva-toggle",
+        "description": "A legend item was clicked (or `toggle()` called); detail: { index, hidden, hiddenIndexes }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
+  "wc:minerva-candlestick-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/charts.ts",
+    "className": "MinervaCandlestickChart",
+    "summary": "GPU candlestick chart of rising and falling candles.",
+    "description": "Candlestick (OHLC) chart of `minerva-design/charts/core` (the `<CandlestickChart>` of React): data points carry `open`, `high`, `low` and `y` (the close). The series without a `type` are drawn as candles (e.g. add a moving average with `type: \"line\"`). Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "320",
+        "description": "Height of the chart, the legend included: pixels or any CSS length"
+      },
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[] | undefined",
+        "description": "Data series (`ChartSeries[]`); each may set its own `type`. Replace the array (or a `data` array) to update the chart; property only"
+      },
+      {
+        "name": "options",
+        "type": "ChartBaseOptions | undefined",
+        "description": "Other engine options (`ChartOptions` of minerva-design/charts/core: axes, legend, tooltip, annotations...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "resetZoom",
+        "signature": "() => void",
+        "description": "Shows the whole data range"
+      },
+      {
+        "name": "getView",
+        "signature": "() => ChartView | null",
+        "description": "Visible range, `null` before the engine is created"
+      },
+      {
+        "name": "setView",
+        "signature": "(view: Partial<ChartView>) => void",
+        "description": "Sets the visible range"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-point-click",
+        "description": "A point or a bar was clicked; detail: { x, xLabel, items }"
+      },
+      {
+        "name": "minerva-plot-click",
+        "description": "The plot area was clicked where there is no point; detail: { x, y }"
+      },
+      {
+        "name": "minerva-zoom",
+        "description": "The user zoomed or panned; detail: { x, y } (the visible ranges)"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
   },
   "wc:minerva-card": {
     "kind": "element",
@@ -2316,6 +3116,89 @@
         "description": "Horizontal padding of an option (follows the density's row padding)"
       }
     ]
+  },
+  "wc:minerva-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/chart.ts",
+    "className": "MinervaChart",
+    "summary": "GPU chart of any mix of series, configured by the engine options.",
+    "description": "GPU chart of `minerva-design/charts/core` (WebGPU, then WebGL2, WebGL, Canvas2D) mixing line, area, bar, scatter, candlestick and heatmap series: the `<Chart>` of React. Set the engine options (`ChartOptions`: `series`, `xAxis`, `yAxis`, `legend`, `tooltip`, `annotations`...) as the `options` property; replace the object (or a `data` array) to update the chart. Zoomable, keyboard accessible and themed by the Minerva CSS variables of its scope. Published as the optional entry `minerva-design/web-components/chart` (not part of the all-in-one entry nor the CDN bundle: it loads the chart engine `minerva-design/charts/core`).",
+    "properties": [
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "320",
+        "description": "Height of the chart, the legend included: pixels or any CSS length"
+      },
+      {
+        "name": "options",
+        "type": "ChartOptions | undefined",
+        "description": "Engine options (`ChartOptions` of minerva-design/charts/core); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "resetZoom",
+        "signature": "() => void",
+        "description": "Shows the whole data range"
+      },
+      {
+        "name": "getView",
+        "signature": "() => ChartView | null",
+        "description": "Visible range, `null` before the engine is created"
+      },
+      {
+        "name": "setView",
+        "signature": "(view: Partial<ChartView>) => void",
+        "description": "Sets the visible range"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-point-click",
+        "description": "A point or a bar was clicked; detail: { x, xLabel, items }"
+      },
+      {
+        "name": "minerva-plot-click",
+        "description": "The plot area was clicked where there is no point; detail: { x, y }"
+      },
+      {
+        "name": "minerva-zoom",
+        "description": "The user zoomed or panned; detail: { x, y } (the visible ranges)"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
   },
   "wc:minerva-checkbox": {
     "kind": "element",
@@ -4319,6 +5202,80 @@
       }
     ]
   },
+  "wc:minerva-depth-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/order-book/order-book.ts",
+    "className": "MinervaDepthChart",
+    "summary": "Cumulative bid / ask depth around the mid price.",
+    "description": "Cumulative depth of an order book (the `<DepthChart>` of React, engine `createDepthChart` of `minerva-design/charts/core`): stepped bid / ask areas around the mid price, mirrored hover readout, zoom around the mid, eased updates. Published as the optional entry `minerva-design/web-components/order-book`.",
+    "properties": [
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "description": "Height of the chart, the legend included: pixels or any CSS length (default 320, sparkline 48, gauge 240)"
+      },
+      {
+        "name": "options",
+        "type": "O | undefined",
+        "description": "Engine options (`DepthChartOptions`: range, curve, amount, priceLines, colorConvention, locale, labels...); property only"
+      },
+      {
+        "name": "book",
+        "type": "OrderBookSnapshot | undefined",
+        "description": "Book `{ bids, asks, time }` (levels `[price, size]`), applied when the object changes; stream updates through `applyDeltas`; property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "setRange",
+        "signature": "(range: number | null) => void",
+        "description": "Sets the visible range (fraction of the mid); `null` fits the book"
+      },
+      {
+        "name": "setBook",
+        "signature": "(snapshot: OrderBookSnapshot) => void",
+        "description": "Replaces the book"
+      },
+      {
+        "name": "applyDeltas",
+        "signature": "(deltas: OrderBookDelta | readonly OrderBookDelta[]) => void",
+        "description": "Applies updates (size 0 removes a level); drawn once at the next frame"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The pointer moved over the curves; detail: { side, price, amount, total, average, distance, mirror }, `null` when it left"
+      },
+      {
+        "name": "minerva-click",
+        "description": "The curves were clicked or tapped; detail: { side, price, amount, total, average, distance, mirror }"
+      },
+      {
+        "name": "minerva-range-change",
+        "description": "The visible range changed by zooming; detail: { range } (fraction of the mid)"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
   "wc:minerva-description-item": {
     "kind": "element",
     "source": "web-components/src/components/description-list/description-list.ts",
@@ -4578,6 +5535,102 @@
         "description": "Font size of the text"
       }
     ]
+  },
+  "wc:minerva-donut-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/shape-chart.ts",
+    "className": "MinervaDonutChart",
+    "summary": "Donut chart with center texts and legend toggles.",
+    "description": "Donut chart of `minerva-design/charts/core` (the `<DonutChart>` of React): a pie chart with a hole (`inner-radius` 0.62 by default) and optional center texts. Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "innerRadius",
+        "attribute": "inner-radius",
+        "type": "number",
+        "default": "0.62",
+        "description": "Inner radius as a fraction of the outer radius"
+      },
+      {
+        "name": "rose",
+        "attribute": "rose",
+        "type": "boolean",
+        "default": "false",
+        "description": "Nightingale rose: the radius (instead of the angle) shows the value"
+      },
+      {
+        "name": "labels",
+        "attribute": "labels",
+        "type": "\"outside\" | \"inside\" | \"none\" | undefined",
+        "description": "Slice labels: outside with leader lines, inside the slices, or none"
+      },
+      {
+        "name": "centerValue",
+        "attribute": "center-value",
+        "type": "string | undefined",
+        "description": "Big text in the hole of a donut (e.g. the total)"
+      },
+      {
+        "name": "centerLabel",
+        "attribute": "center-label",
+        "type": "string | undefined",
+        "description": "Small text under `center-value`"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "description": "Height of the chart, the legend included: pixels or any CSS length (default 320, sparkline 48, gauge 240)"
+      },
+      {
+        "name": "data",
+        "type": "readonly ShapeDatum[] | undefined",
+        "description": "Slices `{ name, value, color }`; property only"
+      },
+      {
+        "name": "options",
+        "type": "Partial<Omit<PieChartOptions, \"type\">> | undefined",
+        "description": "Other engine options (`PieChartOptions`: palette, legend, startAngle, labelContent, format...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "toggle",
+        "signature": "(index: number) => void",
+        "description": "Hides / shows a slice, stage, radar series or top-level treemap node by index"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) mark changed; detail: { index, name, value, share }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-click",
+        "description": "A mark was clicked, tapped or activated with Enter; detail: { index, name, value, share }"
+      },
+      {
+        "name": "minerva-toggle",
+        "description": "A legend item was clicked (or `toggle()` called); detail: { index, hidden, hiddenIndexes }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
   },
   "wc:minerva-drawer": {
     "kind": "element",
@@ -5134,6 +6187,320 @@
       }
     ]
   },
+  "wc:minerva-funnel-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/shape-chart.ts",
+    "className": "MinervaFunnelChart",
+    "summary": "Funnel of the stages of a process, with conversion rates.",
+    "description": "Funnel chart of `minerva-design/charts/core`: the stages of a process with conversion rates (the `<FunnelChart>` of React). Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "sort",
+        "attribute": "sort",
+        "type": "\"descending\" | \"ascending\" | \"none\"",
+        "default": "\"none\"",
+        "description": "Order of the stages (`none`: the data order)"
+      },
+      {
+        "name": "shape",
+        "attribute": "shape",
+        "type": "\"trapezoid\" | \"bar\"",
+        "default": "\"trapezoid\"",
+        "description": "Shape of the stages: trapezoids narrowing to the next stage, or centered bars"
+      },
+      {
+        "name": "hideConversion",
+        "attribute": "hide-conversion",
+        "type": "boolean",
+        "default": "false",
+        "description": "Hides the conversion rates from the previous stage"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "description": "Height of the chart, the legend included: pixels or any CSS length (default 320, sparkline 48, gauge 240)"
+      },
+      {
+        "name": "data",
+        "type": "readonly ShapeDatum[] | undefined",
+        "description": "Stages `{ name, value, color }`; property only"
+      },
+      {
+        "name": "options",
+        "type": "Partial<Omit<FunnelChartOptions, \"type\">> | undefined",
+        "description": "Other engine options (`FunnelChartOptions`: gap, palette, legend, format...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "toggle",
+        "signature": "(index: number) => void",
+        "description": "Hides / shows a slice, stage, radar series or top-level treemap node by index"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) mark changed; detail: { index, name, value, share }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-click",
+        "description": "A mark was clicked, tapped or activated with Enter; detail: { index, name, value, share }"
+      },
+      {
+        "name": "minerva-toggle",
+        "description": "A legend item was clicked (or `toggle()` called); detail: { index, hidden, hiddenIndexes }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
+  "wc:minerva-gantt-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/extended.ts",
+    "className": "MinervaGanttChart",
+    "summary": "GPU Gantt chart of tasks, progress and milestones.",
+    "description": "Gantt chart of `minerva-design/charts/core` (the `<GanttChart>` of React): tasks as bars on a time axis with their progress, groups, milestones and a today line; zooms and pans along the time. Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "taskName",
+        "attribute": "task-name",
+        "type": "string",
+        "default": "\"Tasks\"",
+        "description": "Name of the tasks without a group"
+      },
+      {
+        "name": "progressName",
+        "attribute": "progress-name",
+        "type": "string",
+        "default": "\"Progress\"",
+        "description": "Name of the progress bars (legend, tooltip)"
+      },
+      {
+        "name": "milestoneName",
+        "attribute": "milestone-name",
+        "type": "string",
+        "default": "\"Milestones\"",
+        "description": "Name of the milestones (legend, tooltip)"
+      },
+      {
+        "name": "todayLabel",
+        "attribute": "today-label",
+        "type": "string | undefined",
+        "description": "Label of the today line"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "320",
+        "description": "Height of the chart, the legend included: pixels or any CSS length"
+      },
+      {
+        "name": "tasks",
+        "type": "readonly GanttTask[] | undefined",
+        "description": "Tasks and milestones `{ name, start, end, progress, group, color, milestone }`, from top to bottom; property only"
+      },
+      {
+        "name": "colors",
+        "type": "readonly string[] | undefined",
+        "description": "Colors of the groups in order of appearance (the chart palette by default); property only"
+      },
+      {
+        "name": "formatProgress",
+        "type": "(share: number) => string | undefined",
+        "description": "Formats the progress shares (tooltip, default \"60%\"); property only"
+      },
+      {
+        "name": "today",
+        "type": "boolean | number | Date",
+        "default": "false",
+        "description": "Draws a line at this date (`true`: now); property only"
+      },
+      {
+        "name": "options",
+        "type": "ChartBaseOptions | undefined",
+        "description": "Other engine options (axes, legend, annotations, interaction...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "resetZoom",
+        "signature": "() => void",
+        "description": "Shows the whole data range"
+      },
+      {
+        "name": "getView",
+        "signature": "() => ChartView | null",
+        "description": "Visible range, `null` before the engine is created"
+      },
+      {
+        "name": "setView",
+        "signature": "(view: Partial<ChartView>) => void",
+        "description": "Sets the visible range"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-point-click",
+        "description": "A point or a bar was clicked; detail: { x, xLabel, items }"
+      },
+      {
+        "name": "minerva-plot-click",
+        "description": "The plot area was clicked where there is no point; detail: { x, y }"
+      },
+      {
+        "name": "minerva-zoom",
+        "description": "The user zoomed or panned; detail: { x, y } (the visible ranges)"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
+  "wc:minerva-gauge-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/shape-chart.ts",
+    "className": "MinervaGaugeChart",
+    "summary": "Gauge showing one value on an arc, with colored bands.",
+    "description": "Gauge (speedometer) of `minerva-design/charts/core` showing one value on an arc with colored bands (the `<GaugeChart>` of React). Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "value",
+        "attribute": "value",
+        "type": "number",
+        "default": "0",
+        "description": "Value shown by the arc (clamped to min - max for the drawing)"
+      },
+      {
+        "name": "min",
+        "attribute": "min",
+        "type": "number",
+        "default": "0",
+        "description": "Value at the start of the arc"
+      },
+      {
+        "name": "max",
+        "attribute": "max",
+        "type": "number",
+        "default": "100",
+        "description": "Value at the end of the arc"
+      },
+      {
+        "name": "label",
+        "attribute": "label",
+        "type": "string | undefined",
+        "description": "Caption under the value"
+      },
+      {
+        "name": "needle",
+        "attribute": "needle",
+        "type": "boolean",
+        "default": "false",
+        "description": "Draws a needle in addition to the value arc"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "description": "Height of the chart, the legend included: pixels or any CSS length (default 320, sparkline 48, gauge 240)"
+      },
+      {
+        "name": "bands",
+        "type": "readonly GaugeBand[] | undefined",
+        "description": "Colored ranges `{ to, color, label }` of the track; property only"
+      },
+      {
+        "name": "options",
+        "type": "Partial<Omit<GaugeChartOptions, \"type\">> | undefined",
+        "description": "Other engine options (`GaugeChartOptions`: sweep, thickness, color, ticks, format...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "toggle",
+        "signature": "(index: number) => void",
+        "description": "Hides / shows a slice, stage, radar series or top-level treemap node by index"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) mark changed; detail: { index, name, value, share }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-click",
+        "description": "A mark was clicked, tapped or activated with Enter; detail: { index, name, value, share }"
+      },
+      {
+        "name": "minerva-toggle",
+        "description": "A legend item was clicked (or `toggle()` called); detail: { index, hidden, hiddenIndexes }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
   "wc:minerva-grid-item": {
     "kind": "element",
     "source": "web-components/src/components/responsive-grid/responsive-grid.ts",
@@ -5168,6 +6535,368 @@
         "description": "Horizontal alignment of the items in their column (default: stretch)"
       }
     ]
+  },
+  "wc:minerva-heatmap-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/charts.ts",
+    "className": "MinervaHeatmapChart",
+    "summary": "GPU heatmap: a grid of cells colored by value.",
+    "description": "Heatmap of `minerva-design/charts/core` (the `<HeatmapChart>` of React): a grid of cells colored by value, categories (or numbers) on both axes. Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "valueName",
+        "attribute": "value-name",
+        "type": "string | undefined",
+        "description": "Name of the value in the tooltip"
+      },
+      {
+        "name": "radius",
+        "attribute": "radius",
+        "type": "number | undefined",
+        "description": "Corner radius of the cells, in pixels"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "320",
+        "description": "Height of the chart, the legend included: pixels or any CSS length"
+      },
+      {
+        "name": "data",
+        "type": "readonly HeatmapCell[] | undefined",
+        "description": "Cells `{ x, y, value }`; property only"
+      },
+      {
+        "name": "xCategories",
+        "type": "readonly string[] | undefined",
+        "description": "Column names in order (collected from the data when omitted); property only"
+      },
+      {
+        "name": "yCategories",
+        "type": "readonly string[] | undefined",
+        "description": "Row names from bottom to top (collected from the data when omitted); property only"
+      },
+      {
+        "name": "colorScale",
+        "type": "readonly string[] | undefined",
+        "description": "Colors from the lowest to the highest value (a ramp of the first palette color by default); property only"
+      },
+      {
+        "name": "valueRange",
+        "type": "readonly [number, number] | undefined",
+        "description": "Values at the ends of the color scale (the data range by default); property only"
+      },
+      {
+        "name": "format",
+        "type": "(value: number) => string | undefined",
+        "description": "Formats the values in the tooltip; property only"
+      },
+      {
+        "name": "options",
+        "type": "ChartBaseOptions | undefined",
+        "description": "Other engine options (axes, legend, tooltip, padding...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "resetZoom",
+        "signature": "() => void",
+        "description": "Shows the whole data range"
+      },
+      {
+        "name": "getView",
+        "signature": "() => ChartView | null",
+        "description": "Visible range, `null` before the engine is created"
+      },
+      {
+        "name": "setView",
+        "signature": "(view: Partial<ChartView>) => void",
+        "description": "Sets the visible range"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-point-click",
+        "description": "A point or a bar was clicked; detail: { x, xLabel, items }"
+      },
+      {
+        "name": "minerva-plot-click",
+        "description": "The plot area was clicked where there is no point; detail: { x, y }"
+      },
+      {
+        "name": "minerva-zoom",
+        "description": "The user zoomed or panned; detail: { x, y } (the visible ranges)"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
+  "wc:minerva-histogram-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/extended.ts",
+    "className": "MinervaHistogramChart",
+    "summary": "GPU histogram of raw samples, binned automatically.",
+    "description": "Histogram of `minerva-design/charts/core` (the `<HistogramChart>` of React): the distribution of raw samples in bins of equal width (Freedman-Diaconis, Sturges or a count); millions of samples are binned in milliseconds. Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "bins",
+        "attribute": "bins",
+        "type": "HistogramBinning",
+        "default": "\"auto\"",
+        "description": "Number of bins, or the rule choosing it: `auto`, `sturges`, `freedman-diaconis`"
+      },
+      {
+        "name": "valueName",
+        "attribute": "value-name",
+        "type": "string | undefined",
+        "description": "Name of the counts (legend, tooltip; default \"Count\")"
+      },
+      {
+        "name": "color",
+        "attribute": "color",
+        "type": "string | undefined",
+        "description": "Bar color (any CSS color)"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "320",
+        "description": "Height of the chart, the legend included: pixels or any CSS length"
+      },
+      {
+        "name": "values",
+        "type": "ArrayLike<number> | undefined",
+        "description": "Raw samples (typed arrays are counted without copies); property only"
+      },
+      {
+        "name": "domain",
+        "type": "readonly [number, number] | undefined",
+        "description": "Range covered by the bins (the data range by default); property only"
+      },
+      {
+        "name": "nice",
+        "type": "boolean",
+        "default": "true",
+        "description": "Rounds the bin width to 1, 2 or 5 × 10^k and aligns the edges on it; property only"
+      },
+      {
+        "name": "formatBin",
+        "type": "(value: number) => string | undefined",
+        "description": "Formats the edges of the bins in the tooltip; property only"
+      },
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[] | undefined",
+        "description": "More series drawn over the bins (e.g. a density `line`); property only"
+      },
+      {
+        "name": "options",
+        "type": "ChartBaseOptions | undefined",
+        "description": "Other engine options (axes, legend, tooltip, annotations...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "resetZoom",
+        "signature": "() => void",
+        "description": "Shows the whole data range"
+      },
+      {
+        "name": "getView",
+        "signature": "() => ChartView | null",
+        "description": "Visible range, `null` before the engine is created"
+      },
+      {
+        "name": "setView",
+        "signature": "(view: Partial<ChartView>) => void",
+        "description": "Sets the visible range"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-point-click",
+        "description": "A point or a bar was clicked; detail: { x, xLabel, items }"
+      },
+      {
+        "name": "minerva-plot-click",
+        "description": "The plot area was clicked where there is no point; detail: { x, y }"
+      },
+      {
+        "name": "minerva-zoom",
+        "description": "The user zoomed or panned; detail: { x, y } (the visible ranges)"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
+  "wc:minerva-horizontal-bar-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/extended.ts",
+    "className": "MinervaHorizontalBarChart",
+    "summary": "GPU bar chart drawn from the left: rankings and long names.",
+    "description": "Horizontal bar chart of `minerva-design/charts/core` (the `<HorizontalBarChart>` of React): categories down the left side, values from the left (rankings, long names, diverging surveys, stacked progress). The series without a `type` are drawn as bars. Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "stacked",
+        "attribute": "stacked",
+        "type": "boolean",
+        "default": "false",
+        "description": "Stacks the bars of every series (otherwise they are grouped side by side)"
+      },
+      {
+        "name": "percent",
+        "attribute": "percent",
+        "type": "boolean",
+        "default": "false",
+        "description": "Scales the stacks to 100% (implies `stacked`)"
+      },
+      {
+        "name": "labels",
+        "attribute": "labels",
+        "type": "boolean",
+        "default": "false",
+        "description": "Writes the value above every bar"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "320",
+        "description": "Height of the chart, the legend included: pixels or any CSS length"
+      },
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[] | undefined",
+        "description": "Data series (`ChartSeries[]`); each may set its own `type`. Replace the array (or a `data` array) to update the chart; property only"
+      },
+      {
+        "name": "options",
+        "type": "ChartBaseOptions | undefined",
+        "description": "Other engine options (`ChartOptions` of minerva-design/charts/core: axes, legend, tooltip, annotations...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "resetZoom",
+        "signature": "() => void",
+        "description": "Shows the whole data range"
+      },
+      {
+        "name": "getView",
+        "signature": "() => ChartView | null",
+        "description": "Visible range, `null` before the engine is created"
+      },
+      {
+        "name": "setView",
+        "signature": "(view: Partial<ChartView>) => void",
+        "description": "Sets the visible range"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-point-click",
+        "description": "A point or a bar was clicked; detail: { x, xLabel, items }"
+      },
+      {
+        "name": "minerva-plot-click",
+        "description": "The plot area was clicked where there is no point; detail: { x, y }"
+      },
+      {
+        "name": "minerva-zoom",
+        "description": "The user zoomed or panned; detail: { x, y } (the visible ranges)"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
   },
   "wc:minerva-hstack": {
     "kind": "element",
@@ -6380,6 +8109,206 @@
       }
     ]
   },
+  "wc:minerva-line-3d-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart-3d/chart-3d.ts",
+    "className": "MinervaLine3DChart",
+    "summary": "GPU 3D polylines (trajectories, paths).",
+    "description": "3D polylines of `minerva-design/charts/core` (the `<Line3DChart>` of React): trajectories and paths, optionally colored along the line. Published as the optional entry `minerva-design/web-components/chart-3d`.",
+    "properties": [
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "400",
+        "description": "Height of the chart, the legend included: pixels or any CSS length"
+      },
+      {
+        "name": "series",
+        "type": "readonly S[] | undefined",
+        "description": "Data series; replace the array (or a data array) to update the chart; property only"
+      },
+      {
+        "name": "options",
+        "type": "Chart3DBaseOptions | undefined",
+        "description": "Other engine options (`Chart3DOptions`: xAxis, yAxis, zAxis, camera, autoRotate, colorScale, colorBar, legend, tooltip, locale...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "resetCamera",
+        "signature": "() => void",
+        "description": "Restores the camera of the options"
+      },
+      {
+        "name": "getCamera",
+        "signature": "() => Chart3DCameraState | null",
+        "description": "Current camera, `null` before the engine is created"
+      },
+      {
+        "name": "setCamera",
+        "signature": "(camera: Partial<Chart3DCameraState>) => void",
+        "description": "Moves the camera"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered point, cell or bar changed; detail: { seriesIndex, seriesName, type, index, x, y, z, value, color, label }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-point-click",
+        "description": "A point, cell or bar was clicked; detail: { seriesIndex, seriesName, type, index, x, y, z, value, color, label }"
+      },
+      {
+        "name": "minerva-camera-change",
+        "description": "The user rotated, zoomed, panned or reset the camera; detail: { azimuth, elevation, zoom, pan, projection }"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
+  "wc:minerva-line-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/charts.ts",
+    "className": "MinervaLineChart",
+    "summary": "GPU line chart: straight, smooth or stepped, stacked or 100%.",
+    "description": "Line chart (or area chart with `area`) of `minerva-design/charts/core`, handling millions of points on the GPU: the `<LineChart>` of React. The series without a `type` are drawn as lines. Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "area",
+        "attribute": "area",
+        "type": "boolean",
+        "default": "false",
+        "description": "Fills the area under the lines"
+      },
+      {
+        "name": "curve",
+        "attribute": "curve",
+        "type": "\"linear\" | \"smooth\" | \"step\"",
+        "default": "\"linear\"",
+        "description": "Shape of the lines: straight, smooth (monotone) or steps"
+      },
+      {
+        "name": "stacked",
+        "attribute": "stacked",
+        "type": "boolean",
+        "default": "false",
+        "description": "Stacks the series on top of each other"
+      },
+      {
+        "name": "percent",
+        "attribute": "percent",
+        "type": "boolean",
+        "default": "false",
+        "description": "Scales the stacks to 100% (implies `stacked`)"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "320",
+        "description": "Height of the chart, the legend included: pixels or any CSS length"
+      },
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[] | undefined",
+        "description": "Data series (`ChartSeries[]`); each may set its own `type`. Replace the array (or a `data` array) to update the chart; property only"
+      },
+      {
+        "name": "options",
+        "type": "ChartBaseOptions | undefined",
+        "description": "Other engine options (`ChartOptions` of minerva-design/charts/core: axes, legend, tooltip, annotations...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "resetZoom",
+        "signature": "() => void",
+        "description": "Shows the whole data range"
+      },
+      {
+        "name": "getView",
+        "signature": "() => ChartView | null",
+        "description": "Visible range, `null` before the engine is created"
+      },
+      {
+        "name": "setView",
+        "signature": "(view: Partial<ChartView>) => void",
+        "description": "Sets the visible range"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-point-click",
+        "description": "A point or a bar was clicked; detail: { x, xLabel, items }"
+      },
+      {
+        "name": "minerva-plot-click",
+        "description": "The plot area was clicked where there is no point; detail: { x, y }"
+      },
+      {
+        "name": "minerva-zoom",
+        "description": "The user zoomed or panned; detail: { x, y } (the visible ranges)"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
   "wc:minerva-list": {
     "kind": "element",
     "source": "web-components/src/components/list/list.ts",
@@ -7078,6 +9007,94 @@
     "events": [],
     "slots": [],
     "parts": [],
+    "cssProperties": []
+  },
+  "wc:minerva-mixed-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/extended.ts",
+    "className": "MinervaMixedChart",
+    "summary": "GPU combination of bars, lines and areas on two value axes.",
+    "description": "Combination chart of `minerva-design/charts/core` (the `<MixedChart>` of React): bars, lines, areas and dots, each series with its `type`, on one or two value axes (`yAxis: \"right\"` series use `options.yAxis2`). Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "320",
+        "description": "Height of the chart, the legend included: pixels or any CSS length"
+      },
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[] | undefined",
+        "description": "Data series (`ChartSeries[]`); each may set its own `type`. Replace the array (or a `data` array) to update the chart; property only"
+      },
+      {
+        "name": "options",
+        "type": "ChartBaseOptions | undefined",
+        "description": "Other engine options (`ChartOptions` of minerva-design/charts/core: axes, legend, tooltip, annotations...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "resetZoom",
+        "signature": "() => void",
+        "description": "Shows the whole data range"
+      },
+      {
+        "name": "getView",
+        "signature": "() => ChartView | null",
+        "description": "Visible range, `null` before the engine is created"
+      },
+      {
+        "name": "setView",
+        "signature": "(view: Partial<ChartView>) => void",
+        "description": "Sets the visible range"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-point-click",
+        "description": "A point or a bar was clicked; detail: { x, xLabel, items }"
+      },
+      {
+        "name": "minerva-plot-click",
+        "description": "The plot area was clicked where there is no point; detail: { x, y }"
+      },
+      {
+        "name": "minerva-zoom",
+        "description": "The user zoomed or panned; detail: { x, y } (the visible ranges)"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
     "cssProperties": []
   },
   "wc:minerva-modal": {
@@ -8102,6 +10119,171 @@
       }
     ]
   },
+  "wc:minerva-order-book": {
+    "kind": "element",
+    "source": "web-components/src/components/order-book/order-book.ts",
+    "className": "MinervaOrderBook",
+    "summary": "Order book ladder with depth bars and flashes.",
+    "description": "Order book ladder (the `<OrderBook>` of React, engine `createOrderBook` of `minerva-design/charts/core`): asks above the spread row, bids below, with depth bars, price grouping, change flashes and large order highlight. Published as the optional entry `minerva-design/web-components/order-book`.",
+    "properties": [
+      {
+        "name": "lastPrice",
+        "attribute": "last-price",
+        "type": "number | null | undefined",
+        "description": "Price of the spread row, colored by its last move (the mid price when unset)"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "description": "Height of the chart, the legend included: pixels or any CSS length (default 320, sparkline 48, gauge 240)"
+      },
+      {
+        "name": "options",
+        "type": "O | undefined",
+        "description": "Engine options (`OrderBookOptions`: mode, grouping, rows, columns, depthBars, locale, labels...); property only"
+      },
+      {
+        "name": "book",
+        "type": "OrderBookSnapshot | undefined",
+        "description": "Book `{ bids, asks, time }` (levels `[price, size]`), applied when the object changes; stream updates through `applyDeltas`; property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "setLastPrice",
+        "signature": "(price: number | null) => void",
+        "description": "Price of the spread row (the mid price when `null`)"
+      },
+      {
+        "name": "setBook",
+        "signature": "(snapshot: OrderBookSnapshot) => void",
+        "description": "Replaces the book"
+      },
+      {
+        "name": "applyDeltas",
+        "signature": "(deltas: OrderBookDelta | readonly OrderBookDelta[]) => void",
+        "description": "Applies updates (size 0 removes a level); drawn once at the next frame"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "A row is hovered; detail: { side, index, price, size, sum, notional, average }, `null` when the pointer left"
+      },
+      {
+        "name": "minerva-level-click",
+        "description": "A row was clicked, tapped or activated with Enter; detail: { side, index, price, size, sum, notional, average }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the ladder"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
+  "wc:minerva-order-book-heatmap": {
+    "kind": "element",
+    "source": "web-components/src/components/order-book/order-book.ts",
+    "className": "MinervaOrderBookHeatmap",
+    "summary": "GPU liquidity heatmap of an order book over time.",
+    "description": "Liquidity heatmap (the `<OrderBookHeatmap>` of React, engine `createOrderBookHeatmap` of `minerva-design/charts/core`): resting size over time and price drawn by the GPU, best bid / ask lines and trades as bubbles sized by volume. Published as the optional entry `minerva-design/web-components/order-book`.",
+    "properties": [
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "description": "Height of the chart, the legend included: pixels or any CSS length (default 320, sparkline 48, gauge 240)"
+      },
+      {
+        "name": "trades",
+        "type": "Trades | undefined",
+        "description": "Trades `{ time, price, size, side }`; when the array grows, only the appended ones are added; property only"
+      },
+      {
+        "name": "options",
+        "type": "O | undefined",
+        "description": "Engine options (`OrderBookHeatmapOptions`: tickSize, interval, window, colorScale, bubbles, locale, labels...); property only"
+      },
+      {
+        "name": "book",
+        "type": "OrderBookSnapshot | undefined",
+        "description": "Book `{ bids, asks, time }` (levels `[price, size]`), applied when the object changes; stream updates through `applyDeltas`; property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "addTrades",
+        "signature": "(trades: Trades[number] | Trades) => void",
+        "description": "Adds trades (bubbles)"
+      },
+      {
+        "name": "resetView",
+        "signature": "() => void",
+        "description": "Follows the market again (latest time, centered on the mid price)"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      },
+      {
+        "name": "setBook",
+        "signature": "(snapshot: OrderBookSnapshot) => void",
+        "description": "Replaces the book"
+      },
+      {
+        "name": "applyDeltas",
+        "signature": "(deltas: OrderBookDelta | readonly OrderBookDelta[]) => void",
+        "description": "Applies updates (size 0 removes a level); drawn once at the next frame"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "A cell is hovered; detail: { time, price, size, side, buyVolume, sellVolume }, `null` when the pointer left"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      },
+      {
+        "name": "minerva-follow-change",
+        "description": "The view follows the market (`true`) or not after a zoom / pan (`false`); detail: { follow }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the heatmap"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
   "wc:minerva-page": {
     "kind": "element",
     "source": "web-components/src/components/page/page.ts",
@@ -8979,6 +11161,102 @@
       }
     ]
   },
+  "wc:minerva-pie-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/shape-chart.ts",
+    "className": "MinervaPieChart",
+    "summary": "Pie chart (or donut, or rose) with labels and legend toggles.",
+    "description": "Pie chart of `minerva-design/charts/core` (the `<PieChart>` of React): slices with gaps, outside labels with leader lines, legend toggles; a donut with `inner-radius`, a Nightingale rose with `rose`. Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "innerRadius",
+        "attribute": "inner-radius",
+        "type": "number",
+        "default": "0",
+        "description": "Inner radius as a fraction of the outer radius: 0 = pie, 0.6 = donut"
+      },
+      {
+        "name": "rose",
+        "attribute": "rose",
+        "type": "boolean",
+        "default": "false",
+        "description": "Nightingale rose: the radius (instead of the angle) shows the value"
+      },
+      {
+        "name": "labels",
+        "attribute": "labels",
+        "type": "\"outside\" | \"inside\" | \"none\" | undefined",
+        "description": "Slice labels: outside with leader lines, inside the slices, or none"
+      },
+      {
+        "name": "centerValue",
+        "attribute": "center-value",
+        "type": "string | undefined",
+        "description": "Big text in the hole of a donut (e.g. the total)"
+      },
+      {
+        "name": "centerLabel",
+        "attribute": "center-label",
+        "type": "string | undefined",
+        "description": "Small text under `center-value`"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "description": "Height of the chart, the legend included: pixels or any CSS length (default 320, sparkline 48, gauge 240)"
+      },
+      {
+        "name": "data",
+        "type": "readonly ShapeDatum[] | undefined",
+        "description": "Slices `{ name, value, color }`; property only"
+      },
+      {
+        "name": "options",
+        "type": "Partial<Omit<PieChartOptions, \"type\">> | undefined",
+        "description": "Other engine options (`PieChartOptions`: palette, legend, startAngle, labelContent, format...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "toggle",
+        "signature": "(index: number) => void",
+        "description": "Hides / shows a slice, stage, radar series or top-level treemap node by index"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) mark changed; detail: { index, name, value, share }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-click",
+        "description": "A mark was clicked, tapped or activated with Enter; detail: { index, name, value, share }"
+      },
+      {
+        "name": "minerva-toggle",
+        "description": "A legend item was clicked (or `toggle()` called); detail: { index, hidden, hiddenIndexes }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
   "wc:minerva-popover": {
     "kind": "element",
     "source": "web-components/src/components/popover/popover.ts",
@@ -9281,6 +11559,360 @@
       }
     ],
     "parts": [],
+    "cssProperties": []
+  },
+  "wc:minerva-quadrant-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/charts.ts",
+    "className": "MinervaQuadrantChart",
+    "summary": "Four-quadrant matrix of labelled, draggable dots.",
+    "description": "Four-quadrant matrix (priority matrix, Eisenhower, BCG...) of `minerva-design/charts/core` (the `<QuadrantChart>` of React): tinted quadrants with titles, dividers and labelled dots placed without overlapping labels. With `drag-points`, dots can be dragged to another quadrant (`minerva-point-drop`; update `points` to move them). Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "xLabel",
+        "attribute": "x-label",
+        "type": "string | undefined",
+        "description": "Title of the horizontal axis"
+      },
+      {
+        "name": "yLabel",
+        "attribute": "y-label",
+        "type": "string | undefined",
+        "description": "Title of the vertical axis"
+      },
+      {
+        "name": "xSplit",
+        "attribute": "x-split",
+        "type": "number | undefined",
+        "description": "X value of the vertical divider (the middle of the x domain by default)"
+      },
+      {
+        "name": "ySplit",
+        "attribute": "y-split",
+        "type": "number | undefined",
+        "description": "Y value of the horizontal divider (the middle of the y domain by default)"
+      },
+      {
+        "name": "reverseX",
+        "attribute": "reverse-x",
+        "type": "boolean",
+        "default": "false",
+        "description": "Reverses the horizontal axis (e.g. \"urgent\" on the left)"
+      },
+      {
+        "name": "hideTicks",
+        "attribute": "hide-ticks",
+        "type": "boolean",
+        "default": "false",
+        "description": "Hides the numeric ticks of the axes (only the matrix remains)"
+      },
+      {
+        "name": "hideLabels",
+        "attribute": "hide-labels",
+        "type": "boolean",
+        "default": "false",
+        "description": "Hides the labels next to the dots"
+      },
+      {
+        "name": "pointSize",
+        "attribute": "point-size",
+        "type": "number",
+        "default": "12",
+        "description": "Dot diameter in pixels"
+      },
+      {
+        "name": "dragPoints",
+        "attribute": "drag-points",
+        "type": "boolean",
+        "default": "false",
+        "description": "Lets the user drag the dots (`minerva-point-drop`)"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "320",
+        "description": "Height of the chart, the legend included: pixels or any CSS length"
+      },
+      {
+        "name": "points",
+        "type": "readonly QuadrantPoint[] | undefined",
+        "description": "Points `{ x, y, label, color, size }` to place; property only"
+      },
+      {
+        "name": "quadrants",
+        "type": "QuadrantRegions | undefined",
+        "description": "Titles and colors of the quadrants (`topLeft`, `topRight`, `bottomLeft`, `bottomRight`); property only"
+      },
+      {
+        "name": "axisLabels",
+        "type": "QuadrantAxisLabels | undefined",
+        "description": "Texts at the ends of the dividers, drawn inside the plot; property only"
+      },
+      {
+        "name": "xDomain",
+        "type": "[number, number] | undefined",
+        "description": "Range of the horizontal axis (default [0, 10]); property only"
+      },
+      {
+        "name": "yDomain",
+        "type": "[number, number] | undefined",
+        "description": "Range of the vertical axis (default [0, 10]); property only"
+      },
+      {
+        "name": "options",
+        "type": "Omit<ChartOptions, \"series\"> | undefined",
+        "description": "Other engine options (legend, tooltip, padding, palette...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "resetZoom",
+        "signature": "() => void",
+        "description": "Shows the whole data range"
+      },
+      {
+        "name": "getView",
+        "signature": "() => ChartView | null",
+        "description": "Visible range, `null` before the engine is created"
+      },
+      {
+        "name": "setView",
+        "signature": "(view: Partial<ChartView>) => void",
+        "description": "Sets the visible range"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-point-click",
+        "description": "A dot was clicked; detail: { point, index }"
+      },
+      {
+        "name": "minerva-quadrant-click",
+        "description": "The empty area of a quadrant was clicked; detail: { quadrant, x, y }"
+      },
+      {
+        "name": "minerva-point-drop",
+        "description": "A dragged dot was released; detail: { point, index, x, y, quadrant }"
+      },
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-plot-click",
+        "description": "The plot area was clicked where there is no point; detail: { x, y }"
+      },
+      {
+        "name": "minerva-zoom",
+        "description": "The user zoomed or panned; detail: { x, y } (the visible ranges)"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
+  "wc:minerva-radar-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/shape-chart.ts",
+    "className": "MinervaRadarChart",
+    "summary": "Radar chart comparing series over several indicators.",
+    "description": "Radar (spider) chart of `minerva-design/charts/core` comparing series over several indicators (the `<RadarChart>` of React). Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "shape",
+        "attribute": "shape",
+        "type": "\"polygon\" | \"circle\"",
+        "default": "\"polygon\"",
+        "description": "Grid shape"
+      },
+      {
+        "name": "levels",
+        "attribute": "levels",
+        "type": "number",
+        "default": "4",
+        "description": "Number of grid rings"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "description": "Height of the chart, the legend included: pixels or any CSS length (default 320, sparkline 48, gauge 240)"
+      },
+      {
+        "name": "indicators",
+        "type": "readonly RadarIndicator[] | undefined",
+        "description": "Axes `{ name, max }`, clockwise from 12 o'clock; property only"
+      },
+      {
+        "name": "series",
+        "type": "readonly RadarSeries[] | undefined",
+        "description": "Polygons `{ name, values }`: one value per indicator; property only"
+      },
+      {
+        "name": "options",
+        "type": "Partial<Omit<RadarChartOptions, \"type\">> | undefined",
+        "description": "Other engine options (`RadarChartOptions`: palette, legend, dots, format...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "toggle",
+        "signature": "(index: number) => void",
+        "description": "Hides / shows a slice, stage, radar series or top-level treemap node by index"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) mark changed; detail: { index, name, value, share }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-click",
+        "description": "A mark was clicked, tapped or activated with Enter; detail: { index, name, value, share }"
+      },
+      {
+        "name": "minerva-toggle",
+        "description": "A legend item was clicked (or `toggle()` called); detail: { index, hidden, hiddenIndexes }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
+  "wc:minerva-radial-bar-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/shapes-extended.ts",
+    "className": "MinervaRadialBarChart",
+    "summary": "Concentric progress rings with center texts.",
+    "description": "Radial bar chart of `minerva-design/charts/core` (the `<RadialBarChart>` of React): concentric progress rings (activity rings, KPI completion). Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "max",
+        "attribute": "max",
+        "type": "number | undefined",
+        "description": "Value of a full bar for the data without `max` (the largest value by default)"
+      },
+      {
+        "name": "innerRadius",
+        "attribute": "inner-radius",
+        "type": "number",
+        "default": "0.3",
+        "description": "Radius of the innermost ring's inner edge, as a fraction of the outer radius"
+      },
+      {
+        "name": "sweep",
+        "attribute": "sweep",
+        "type": "number",
+        "default": "270",
+        "description": "Angle of a full bar, degrees (360: full rings)"
+      },
+      {
+        "name": "centerValue",
+        "attribute": "center-value",
+        "type": "string | undefined",
+        "description": "Big text in the center (e.g. the overall completion)"
+      },
+      {
+        "name": "centerLabel",
+        "attribute": "center-label",
+        "type": "string | undefined",
+        "description": "Small text under `center-value`"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "description": "Height of the chart, the legend included: pixels or any CSS length (default 320, sparkline 48, gauge 240)"
+      },
+      {
+        "name": "data",
+        "type": "readonly RadialBarDatum[] | undefined",
+        "description": "Bars `{ name, value, max, color }`, from the outermost ring inward; property only"
+      },
+      {
+        "name": "options",
+        "type": "Partial<Omit<RadialBarChartOptions, \"type\">> | undefined",
+        "description": "Other engine options (`RadialBarChartOptions`: startAngle, gap, track, rounded, labels, palette...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "toggle",
+        "signature": "(index: number) => void",
+        "description": "Hides / shows a slice, stage, radar series or top-level treemap node by index"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) mark changed; detail: { index, name, value, share }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-click",
+        "description": "A mark was clicked, tapped or activated with Enter; detail: { index, name, value, share }"
+      },
+      {
+        "name": "minerva-toggle",
+        "description": "A legend item was clicked (or `toggle()` called); detail: { index, hidden, hiddenIndexes }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
     "cssProperties": []
   },
   "wc:minerva-radio": {
@@ -9658,6 +12290,101 @@
         "description": "Space between the radios of a RadioGroup"
       }
     ]
+  },
+  "wc:minerva-range-area-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/extended.ts",
+    "className": "MinervaRangeAreaChart",
+    "summary": "GPU bands between a lower and an upper edge.",
+    "description": "Range area chart of `minerva-design/charts/core` (the `<RangeAreaChart>` of React): bands between a lower (`y0`) and an upper edge (`y`) of every point (confidence intervals, min-max ranges), mixable with lines. The series without a `type` are drawn as bands. Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "curve",
+        "attribute": "curve",
+        "type": "\"linear\" | \"smooth\" | \"step\"",
+        "default": "\"smooth\"",
+        "description": "Shape of the edges: straight, smooth (monotone) or steps"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "320",
+        "description": "Height of the chart, the legend included: pixels or any CSS length"
+      },
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[] | undefined",
+        "description": "Data series (`ChartSeries[]`); each may set its own `type`. Replace the array (or a `data` array) to update the chart; property only"
+      },
+      {
+        "name": "options",
+        "type": "ChartBaseOptions | undefined",
+        "description": "Other engine options (`ChartOptions` of minerva-design/charts/core: axes, legend, tooltip, annotations...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "resetZoom",
+        "signature": "() => void",
+        "description": "Shows the whole data range"
+      },
+      {
+        "name": "getView",
+        "signature": "() => ChartView | null",
+        "description": "Visible range, `null` before the engine is created"
+      },
+      {
+        "name": "setView",
+        "signature": "(view: Partial<ChartView>) => void",
+        "description": "Sets the visible range"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-point-click",
+        "description": "A point or a bar was clicked; detail: { x, xLabel, items }"
+      },
+      {
+        "name": "minerva-plot-click",
+        "description": "The plot area was clicked where there is no point; detail: { x, y }"
+      },
+      {
+        "name": "minerva-zoom",
+        "description": "The user zoomed or panned; detail: { x, y } (the visible ranges)"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
   },
   "wc:minerva-rating": {
     "kind": "element",
@@ -10064,6 +12791,268 @@
       }
     ]
   },
+  "wc:minerva-sankey-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/shapes-extended.ts",
+    "className": "MinervaSankeyChart",
+    "summary": "Sankey diagram of flows between nodes.",
+    "description": "Sankey diagram of `minerva-design/charts/core` (the `<SankeyChart>` of React): flows between nodes in columns, link thickness proportional to the flow; hovering a node or a link highlights its flows. Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "align",
+        "attribute": "align",
+        "type": "\"justify\" | \"left\" | \"right\" | \"center\"",
+        "default": "\"justify\"",
+        "description": "Column of the nodes without a `column`"
+      },
+      {
+        "name": "linkColor",
+        "attribute": "link-color",
+        "type": "\"gradient\" | \"source\" | \"target\" | \"neutral\"",
+        "default": "\"gradient\"",
+        "description": "Color of the links without `color`"
+      },
+      {
+        "name": "hideLabels",
+        "attribute": "hide-labels",
+        "type": "boolean",
+        "default": "false",
+        "description": "Hides the node labels"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "description": "Height of the chart, the legend included: pixels or any CSS length (default 320, sparkline 48, gauge 240)"
+      },
+      {
+        "name": "nodes",
+        "type": "readonly SankeyNode[] | undefined",
+        "description": "Nodes `{ name, color, column }` in their initial order (nodes only named by a link are appended); property only"
+      },
+      {
+        "name": "links",
+        "type": "readonly SankeyLink[] | undefined",
+        "description": "Flows `{ source, target, value }` between the nodes (by name or index); property only"
+      },
+      {
+        "name": "options",
+        "type": "Partial<Omit<SankeyChartOptions, \"type\">> | undefined",
+        "description": "Other engine options (`SankeyChartOptions`: nodeWidth, nodePadding, iterations, palette, format...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "toggle",
+        "signature": "(index: number) => void",
+        "description": "Hides / shows a slice, stage, radar series or top-level treemap node by index"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) mark changed; detail: { index, name, value, share }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-click",
+        "description": "A mark was clicked, tapped or activated with Enter; detail: { index, name, value, share }"
+      },
+      {
+        "name": "minerva-toggle",
+        "description": "A legend item was clicked (or `toggle()` called); detail: { index, hidden, hiddenIndexes }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
+  "wc:minerva-scatter-3d-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart-3d/chart-3d.ts",
+    "className": "MinervaScatter3DChart",
+    "summary": "GPU 3D point clouds with an orbit camera.",
+    "description": "3D scatter plot of `minerva-design/charts/core` (the `<Scatter3DChart>` of React): point clouds of up to millions of points on the GPU, colored per series, per point or through a color scale; orbit camera, hover picking and color bar. Published as the optional entry `minerva-design/web-components/chart-3d`.",
+    "properties": [
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "400",
+        "description": "Height of the chart, the legend included: pixels or any CSS length"
+      },
+      {
+        "name": "series",
+        "type": "readonly S[] | undefined",
+        "description": "Data series; replace the array (or a data array) to update the chart; property only"
+      },
+      {
+        "name": "options",
+        "type": "Chart3DBaseOptions | undefined",
+        "description": "Other engine options (`Chart3DOptions`: xAxis, yAxis, zAxis, camera, autoRotate, colorScale, colorBar, legend, tooltip, locale...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "resetCamera",
+        "signature": "() => void",
+        "description": "Restores the camera of the options"
+      },
+      {
+        "name": "getCamera",
+        "signature": "() => Chart3DCameraState | null",
+        "description": "Current camera, `null` before the engine is created"
+      },
+      {
+        "name": "setCamera",
+        "signature": "(camera: Partial<Chart3DCameraState>) => void",
+        "description": "Moves the camera"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered point, cell or bar changed; detail: { seriesIndex, seriesName, type, index, x, y, z, value, color, label }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-point-click",
+        "description": "A point, cell or bar was clicked; detail: { seriesIndex, seriesName, type, index, x, y, z, value, color, label }"
+      },
+      {
+        "name": "minerva-camera-change",
+        "description": "The user rotated, zoomed, panned or reset the camera; detail: { azimuth, elevation, zoom, pan, projection }"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
+  "wc:minerva-scatter-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/charts.ts",
+    "className": "MinervaScatterChart",
+    "summary": "GPU scatter chart zooming on both axes.",
+    "description": "Scatter chart of `minerva-design/charts/core`: zooms on both axes, hit testing through a spatial index (the `<ScatterChart>` of React). The series without a `type` are drawn as dots. Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "320",
+        "description": "Height of the chart, the legend included: pixels or any CSS length"
+      },
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[] | undefined",
+        "description": "Data series (`ChartSeries[]`); each may set its own `type`. Replace the array (or a `data` array) to update the chart; property only"
+      },
+      {
+        "name": "options",
+        "type": "ChartBaseOptions | undefined",
+        "description": "Other engine options (`ChartOptions` of minerva-design/charts/core: axes, legend, tooltip, annotations...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "resetZoom",
+        "signature": "() => void",
+        "description": "Shows the whole data range"
+      },
+      {
+        "name": "getView",
+        "signature": "() => ChartView | null",
+        "description": "Visible range, `null` before the engine is created"
+      },
+      {
+        "name": "setView",
+        "signature": "(view: Partial<ChartView>) => void",
+        "description": "Sets the visible range"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-point-click",
+        "description": "A point or a bar was clicked; detail: { x, xLabel, items }"
+      },
+      {
+        "name": "minerva-plot-click",
+        "description": "The plot area was clicked where there is no point; detail: { x, y }"
+      },
+      {
+        "name": "minerva-zoom",
+        "description": "The user zoomed or panned; detail: { x, y } (the visible ranges)"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
   "wc:minerva-select": {
     "kind": "element",
     "source": "web-components/src/components/select/select.ts",
@@ -10427,6 +13416,65 @@
       }
     ]
   },
+  "wc:minerva-shape-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/shape-chart.ts",
+    "className": "MinervaShapeChart",
+    "summary": "Any shape chart of the engine, configured by its options.",
+    "description": "Pie, donut, radar, gauge, funnel, treemap, sankey, sunburst... chart of `minerva-design/charts/core`, chosen by the `type` of its engine options (`ShapeChartOptions`), set as the `options` property; replace the object to update the chart (it animates from the previous values). Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "description": "Height of the chart, the legend included: pixels or any CSS length (default 320, sparkline 48, gauge 240)"
+      },
+      {
+        "name": "options",
+        "type": "ShapeChartOptions | undefined",
+        "description": "Engine options (`ShapeChartOptions` of minerva-design/charts/core, `type` included); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "toggle",
+        "signature": "(index: number) => void",
+        "description": "Hides / shows a slice, stage, radar series or top-level treemap node by index"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) mark changed; detail: { index, name, value, share }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-click",
+        "description": "A mark was clicked, tapped or activated with Enter; detail: { index, name, value, share }"
+      },
+      {
+        "name": "minerva-toggle",
+        "description": "A legend item was clicked (or `toggle()` called); detail: { index, hidden, hiddenIndexes }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
   "wc:minerva-skeleton": {
     "kind": "element",
     "source": "web-components/src/components/skeleton/skeleton.ts",
@@ -10663,6 +13711,131 @@
         "description": "Space between the lines of a paragraph and next to the avatar"
       }
     ]
+  },
+  "wc:minerva-sparkline": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/charts.ts",
+    "className": "MinervaSparkline",
+    "summary": "Small line, area or bar trend without axes.",
+    "description": "Word-sized chart without axes (a trend in a table cell, a KPI card...) of `minerva-design/charts/core`: the `<Sparkline>` of React. Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "48",
+        "description": "Height of the sparkline: pixels or any CSS length"
+      },
+      {
+        "name": "type",
+        "attribute": "type",
+        "type": "\"line\" | \"area\" | \"bar\"",
+        "default": "\"line\"",
+        "description": "How the values are drawn"
+      },
+      {
+        "name": "color",
+        "attribute": "color",
+        "type": "string | undefined",
+        "description": "Color (any CSS color); the first palette color by default"
+      },
+      {
+        "name": "curve",
+        "attribute": "curve",
+        "type": "\"linear\" | \"smooth\" | \"step\"",
+        "default": "\"smooth\"",
+        "description": "Shape of the line"
+      },
+      {
+        "name": "reference",
+        "attribute": "reference",
+        "type": "number | undefined",
+        "description": "Draws a dashed reference line at this value (a target, the average...)"
+      },
+      {
+        "name": "valueName",
+        "attribute": "value-name",
+        "type": "string | undefined",
+        "description": "Name of the value in the tooltip"
+      },
+      {
+        "name": "data",
+        "type": "ChartSeries[\"data\"] | undefined",
+        "description": "Values (or `[x, y]` pairs, typed arrays...); property only"
+      },
+      {
+        "name": "format",
+        "type": "(value: number) => string | undefined",
+        "description": "Formats the value in the tooltip; property only"
+      },
+      {
+        "name": "options",
+        "type": "ChartBaseOptions | undefined",
+        "description": "Other engine options (tooltip, palette, renderer...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "resetZoom",
+        "signature": "() => void",
+        "description": "Shows the whole data range"
+      },
+      {
+        "name": "getView",
+        "signature": "() => ChartView | null",
+        "description": "Visible range, `null` before the engine is created"
+      },
+      {
+        "name": "setView",
+        "signature": "(view: Partial<ChartView>) => void",
+        "description": "Sets the visible range"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-point-click",
+        "description": "A point or a bar was clicked; detail: { x, xLabel, items }"
+      },
+      {
+        "name": "minerva-plot-click",
+        "description": "The plot area was clicked where there is no point; detail: { x, y }"
+      },
+      {
+        "name": "minerva-zoom",
+        "description": "The user zoomed or panned; detail: { x, y } (the visible ranges)"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
   },
   "wc:minerva-split-layout": {
     "kind": "element",
@@ -11005,6 +14178,199 @@
         "description": "Minimum length of the line joining two steps"
       }
     ]
+  },
+  "wc:minerva-sunburst-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/shapes-extended.ts",
+    "className": "MinervaSunburstChart",
+    "summary": "Sunburst of a hierarchy, with drill-down.",
+    "description": "Sunburst chart of `minerva-design/charts/core` (the `<SunburstChart>` of React): a hierarchy as concentric rings; clicking a parent zooms into it, clicking the center goes back up. Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "innerRadius",
+        "attribute": "inner-radius",
+        "type": "number",
+        "default": "0.26",
+        "description": "Radius of the center circle as a fraction of the outer radius"
+      },
+      {
+        "name": "labels",
+        "attribute": "labels",
+        "type": "\"auto\" | \"tangential\" | \"radial\" | \"none\"",
+        "default": "\"auto\"",
+        "description": "Sector labels along the arc or the radius, whichever fits best (`auto`), or none"
+      },
+      {
+        "name": "noDrill",
+        "attribute": "no-drill",
+        "type": "boolean",
+        "default": "false",
+        "description": "Disables the drill-down (clicking a parent zooms into it by default)"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "description": "Height of the chart, the legend included: pixels or any CSS length (default 320, sparkline 48, gauge 240)"
+      },
+      {
+        "name": "data",
+        "type": "readonly TreemapNode[] | undefined",
+        "description": "Nodes `{ name, value, children }`: leaves carry a value, parents sum their children; property only"
+      },
+      {
+        "name": "drillPath",
+        "type": "readonly string[] | undefined",
+        "description": "Names from the root to the focused node (`[]`: the root); makes the drill-down controlled; property only"
+      },
+      {
+        "name": "options",
+        "type": "Partial<Omit<SunburstChartOptions, \"type\">> | undefined",
+        "description": "Other engine options (`SunburstChartOptions`: levels, startAngle, padAngle, palette, format...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "drill",
+        "signature": "(path: readonly string[]) => void",
+        "description": "Zooms into the node at `path` (names from the root, `[]`: the root)"
+      },
+      {
+        "name": "toggle",
+        "signature": "(index: number) => void",
+        "description": "Hides / shows a slice, stage, radar series or top-level treemap node by index"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-drill",
+        "description": "A parent or the center was clicked (or `drill()` called); detail: { path }"
+      },
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) mark changed; detail: { index, name, value, share }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-click",
+        "description": "A mark was clicked, tapped or activated with Enter; detail: { index, name, value, share }"
+      },
+      {
+        "name": "minerva-toggle",
+        "description": "A legend item was clicked (or `toggle()` called); detail: { index, hidden, hiddenIndexes }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
+  "wc:minerva-surface-3d-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart-3d/chart-3d.ts",
+    "className": "MinervaSurface3DChart",
+    "summary": "GPU 3D surface with wireframe and contour lines.",
+    "description": "3D surface `z = f(x, y)` of `minerva-design/charts/core` (the `<Surface3DChart>` of React) over a regular grid: lit, colored by a color map, with an optional wireframe, contour lines and transparency. Published as the optional entry `minerva-design/web-components/chart-3d`.",
+    "properties": [
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "400",
+        "description": "Height of the chart, the legend included: pixels or any CSS length"
+      },
+      {
+        "name": "wireframe",
+        "type": "boolean | Surface3DWireframeOptions | undefined",
+        "description": "Wireframe of the series that do not set one; property only"
+      },
+      {
+        "name": "contours",
+        "type": "boolean | Surface3DContourOptions | undefined",
+        "description": "Contour lines of the series that do not set them; property only"
+      },
+      {
+        "name": "series",
+        "type": "readonly S[] | undefined",
+        "description": "Data series; replace the array (or a data array) to update the chart; property only"
+      },
+      {
+        "name": "options",
+        "type": "Chart3DBaseOptions | undefined",
+        "description": "Other engine options (`Chart3DOptions`: xAxis, yAxis, zAxis, camera, autoRotate, colorScale, colorBar, legend, tooltip, locale...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "resetCamera",
+        "signature": "() => void",
+        "description": "Restores the camera of the options"
+      },
+      {
+        "name": "getCamera",
+        "signature": "() => Chart3DCameraState | null",
+        "description": "Current camera, `null` before the engine is created"
+      },
+      {
+        "name": "setCamera",
+        "signature": "(camera: Partial<Chart3DCameraState>) => void",
+        "description": "Moves the camera"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered point, cell or bar changed; detail: { seriesIndex, seriesName, type, index, x, y, z, value, color, label }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-point-click",
+        "description": "A point, cell or bar was clicked; detail: { seriesIndex, seriesName, type, index, x, y, z, value, color, label }"
+      },
+      {
+        "name": "minerva-camera-change",
+        "description": "The user rotated, zoomed, panned or reset the camera; detail: { azimuth, elevation, zoom, pan, projection }"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
   },
   "wc:minerva-switch": {
     "kind": "element",
@@ -12730,6 +16096,85 @@
       }
     ]
   },
+  "wc:minerva-time-and-sales": {
+    "kind": "element",
+    "source": "web-components/src/components/order-book/order-book.ts",
+    "className": "MinervaTimeAndSales",
+    "summary": "Virtualized tape of the latest trades.",
+    "description": "Time and sales tape (the `<TimeAndSales>` of React, engine `createTimeAndSales` of `minerva-design/charts/core`): newest trades on top, virtualized (hundreds of thousands of rows), large trades highlighted, paused while hovered. Published as the optional entry `minerva-design/web-components/order-book`.",
+    "properties": [
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "description": "Height of the chart, the legend included: pixels or any CSS length (default 320, sparkline 48, gauge 240)"
+      },
+      {
+        "name": "trades",
+        "type": "Trades | undefined",
+        "description": "Trades `{ time, price, size, side }`, oldest first; when the array grows, only the appended ones are added (other changes replace the tape); property only"
+      },
+      {
+        "name": "options",
+        "type": "TimeAndSalesOptions | undefined",
+        "description": "Engine options (`TimeAndSalesOptions`: columns, minSize, largeTradeThreshold, aggregate, locale, labels...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "addTrades",
+        "signature": "(trades: Trades[number] | Trades) => void",
+        "description": "Appends trades (oldest first)"
+      },
+      {
+        "name": "setTrades",
+        "signature": "(trades: Trades) => void",
+        "description": "Replaces every trade"
+      },
+      {
+        "name": "clear",
+        "signature": "() => void",
+        "description": "Removes every trade"
+      },
+      {
+        "name": "scrollToLatest",
+        "signature": "() => void",
+        "description": "Scrolls back to the newest trade and resumes"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "A row is hovered; detail: { trade, count, index }, `null` when the pointer left"
+      },
+      {
+        "name": "minerva-trade-click",
+        "description": "A row was clicked, tapped or activated with Enter; detail: { trade, count, index }"
+      },
+      {
+        "name": "minerva-pause",
+        "description": "The tape paused (pointer over it, scrolled down) or resumed; detail: { paused }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the tape"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
   "wc:minerva-time-picker": {
     "kind": "element",
     "source": "web-components/src/components/time-picker/time-picker.ts",
@@ -13596,6 +17041,281 @@
       }
     ]
   },
+  "wc:minerva-trading-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/trading-chart/trading-chart.ts",
+    "className": "MinervaTradingChart",
+    "summary": "GPU trading chart: candles, indicators, drawings, streaming.",
+    "description": "Professional trading chart of `minerva-design/charts/core` (the `<TradingChart>` of React, engine `createTradingChart`): candles (hollow, Heikin-Ashi, bars, line, area, baseline) over a gap-free time axis, indicator panes, drawing tools, order lines and real-time streaming, drawn on the GPU. Stream ticks with `updateBar(bar)`; replace `bars` for a new data set. Published as the optional entry `minerva-design/web-components/trading-chart` (it loads the trading engine only).",
+    "properties": [
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "480",
+        "description": "Height of the chart: pixels or any CSS length"
+      },
+      {
+        "name": "symbol",
+        "attribute": "symbol",
+        "type": "string | undefined",
+        "description": "Symbol shown in the legend (e.g. \"BTC/USDT\")"
+      },
+      {
+        "name": "timeframe",
+        "attribute": "timeframe",
+        "type": "TradingTimeframe | undefined",
+        "description": "Duration of a bar: milliseconds, or a count and a unit (`1m`, `15m`, `4H`, `1D`, `1W`)"
+      },
+      {
+        "name": "chartStyle",
+        "attribute": "chart-style",
+        "type": "TradingChartStyle",
+        "default": "\"candles\"",
+        "description": "How the bars of the price pane are drawn"
+      },
+      {
+        "name": "bars",
+        "type": "TradingBarsInput | undefined",
+        "description": "Bars `{ time, open, high, low, close, volume }` (or columns of typed arrays), oldest first; property only"
+      },
+      {
+        "name": "indicators",
+        "type": "readonly TradingIndicator[] | undefined",
+        "description": "Indicators `{ type, period, ... }` (overlays on the price pane, or panes of their own); property only"
+      },
+      {
+        "name": "options",
+        "type": "Partial<TradingChartOptions> | undefined",
+        "description": "Other engine options (`TradingChartOptions`: markers, priceLines, drawings, colorConvention, locale, labels...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "updateBar",
+        "signature": "(bar: TradingBar) => void",
+        "description": "Streams a bar: the time of the last bar replaces it, a later time appends it (cheap: call it on every tick). The `update(bar)` of the engine instance and of the React handle (`update` is a Lit lifecycle method of the element)"
+      },
+      {
+        "name": "appendBars",
+        "signature": "(bars: TradingBarsInput) => void",
+        "description": "Appends bars newer than the last one"
+      },
+      {
+        "name": "prependBars",
+        "signature": "(bars: TradingBarsInput) => void",
+        "description": "Inserts older bars before the first one, keeping the view"
+      },
+      {
+        "name": "setBars",
+        "signature": "(bars: TradingBarsInput) => void",
+        "description": "Replaces the bars"
+      },
+      {
+        "name": "getBarCount",
+        "signature": "() => number",
+        "description": "Number of bars"
+      },
+      {
+        "name": "getBar",
+        "signature": "(index: number) => TradingBar | null",
+        "description": "Bar at an index, `null` outside the data"
+      },
+      {
+        "name": "scrollToRealtime",
+        "signature": "(animate?: boolean) => void",
+        "description": "Scrolls to the latest bar"
+      },
+      {
+        "name": "fitContent",
+        "signature": "() => void",
+        "description": "Shows every bar"
+      },
+      {
+        "name": "getVisibleRange",
+        "signature": "() => TradingVisibleRange | null",
+        "description": "Visible bars, `null` before the engine is created"
+      },
+      {
+        "name": "setVisibleRange",
+        "signature": "(range: { from: number; to: number }) => void",
+        "description": "Shows the bars between two logical indices"
+      },
+      {
+        "name": "resetPriceScales",
+        "signature": "() => void",
+        "description": "Fits every price scale to the visible bars again"
+      },
+      {
+        "name": "setDrawingTool",
+        "signature": "(tool: TradingDrawingTool) => void",
+        "description": "Activates a drawing tool (`cursor`, `trendLine`, `horizontalLine`, `fibRetracement`...)"
+      },
+      {
+        "name": "getDrawings",
+        "signature": "() => readonly TradingDrawing[]",
+        "description": "Current drawings"
+      },
+      {
+        "name": "removeDrawing",
+        "signature": "(id: string) => void",
+        "description": "Deletes a drawing"
+      },
+      {
+        "name": "selectDrawing",
+        "signature": "(id: string | null) => void",
+        "description": "Selects a drawing (`null` clears the selection)"
+      },
+      {
+        "name": "setIndicatorVisible",
+        "signature": "(id: string, visible: boolean) => void",
+        "description": "Shows or hides an indicator"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-crosshair-move",
+        "description": "The crosshair moved; detail: { time, index, bar, price, pane, x, y }, `null` when it left the chart"
+      },
+      {
+        "name": "minerva-click",
+        "description": "A pane was clicked; detail: { time, index, price, pane }"
+      },
+      {
+        "name": "minerva-visible-range-change",
+        "description": "The visible bars changed; detail: { from, to, fromTime, toTime }"
+      },
+      {
+        "name": "minerva-order-move",
+        "description": "A draggable price line was dropped; detail: { id, price, previousPrice, line }"
+      },
+      {
+        "name": "minerva-drawings-change",
+        "description": "The user added, moved or deleted drawings; detail: { drawings }"
+      },
+      {
+        "name": "minerva-drawing-select",
+        "description": "The selected drawing changed; detail: { id }"
+      },
+      {
+        "name": "minerva-drawing-tool-change",
+        "description": "The drawing tool changed (back to `cursor` after a drawing); detail: { tool }"
+      },
+      {
+        "name": "minerva-indicator-toggle",
+        "description": "An indicator was shown or hidden from its legend; detail: { id, visible }"
+      },
+      {
+        "name": "minerva-history-request",
+        "description": "The oldest bar came into view (load older bars with `prependBars`); detail: { firstTime, count }"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
+  "wc:minerva-treemap-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/shape-chart.ts",
+    "className": "MinervaTreemapChart",
+    "summary": "Treemap of nested rectangles sized by value.",
+    "description": "Treemap of `minerva-design/charts/core`: nested rectangles of areas proportional to the values (the `<TreemapChart>` of React). Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "gap",
+        "attribute": "gap",
+        "type": "number",
+        "default": "2",
+        "description": "Gap between the cells, in pixels"
+      },
+      {
+        "name": "hideHeaders",
+        "attribute": "hide-headers",
+        "type": "boolean",
+        "default": "false",
+        "description": "Hides the names of the parents above their children"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "description": "Height of the chart, the legend included: pixels or any CSS length (default 320, sparkline 48, gauge 240)"
+      },
+      {
+        "name": "data",
+        "type": "readonly TreemapNode[] | undefined",
+        "description": "Nodes `{ name, value, children }`: leaves carry a value, parents sum their children; property only"
+      },
+      {
+        "name": "options",
+        "type": "Partial<Omit<TreemapChartOptions, \"type\">> | undefined",
+        "description": "Other engine options (`TreemapChartOptions`: palette, tooltip, format...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "toggle",
+        "signature": "(index: number) => void",
+        "description": "Hides / shows a slice, stage, radar series or top-level treemap node by index"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) mark changed; detail: { index, name, value, share }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-click",
+        "description": "A mark was clicked, tapped or activated with Enter; detail: { index, name, value, share }"
+      },
+      {
+        "name": "minerva-toggle",
+        "description": "A legend item was clicked (or `toggle()` called); detail: { index, hidden, hiddenIndexes }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
+  },
   "wc:minerva-upload": {
     "kind": "element",
     "source": "web-components/src/components/upload/upload.ts",
@@ -14157,5 +17877,143 @@
         "description": "Space between the children when the gap prop is not set (default: 0)"
       }
     ]
+  },
+  "wc:minerva-waterfall-chart": {
+    "kind": "element",
+    "source": "web-components/src/components/chart/extended.ts",
+    "className": "MinervaWaterfallChart",
+    "summary": "GPU bridge of changes, subtotals and totals.",
+    "description": "Waterfall (bridge) chart of `minerva-design/charts/core` (the `<WaterfallChart>` of React): how changes take a value from a start to an end, with subtotals and totals (P&L bridges, budget variances). Published as the optional entry `minerva-design/web-components/chart`.",
+    "properties": [
+      {
+        "name": "valueName",
+        "attribute": "value-name",
+        "type": "string | undefined",
+        "description": "Name of the series in the tooltip (default \"Change\")"
+      },
+      {
+        "name": "upColor",
+        "attribute": "up-color",
+        "type": "string | undefined",
+        "description": "Color of the increases (the success color by default)"
+      },
+      {
+        "name": "downColor",
+        "attribute": "down-color",
+        "type": "string | undefined",
+        "description": "Color of the decreases (the danger color by default)"
+      },
+      {
+        "name": "totalColor",
+        "attribute": "total-color",
+        "type": "string | undefined",
+        "description": "Color of the totals and subtotals (the primary color by default)"
+      },
+      {
+        "name": "start",
+        "attribute": "start",
+        "type": "number",
+        "default": "0",
+        "description": "Value the first change starts from"
+      },
+      {
+        "name": "hideLabels",
+        "attribute": "hide-labels",
+        "type": "boolean",
+        "default": "false",
+        "description": "Hides the change (or total) written at the end of every bar"
+      },
+      {
+        "name": "orientation",
+        "attribute": "orientation",
+        "type": "\"vertical\" | \"horizontal\"",
+        "default": "\"vertical\"",
+        "description": "`horizontal` lays the steps out in rows"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "default": "320",
+        "description": "Height of the chart, the legend included: pixels or any CSS length"
+      },
+      {
+        "name": "steps",
+        "type": "readonly WaterfallStep[] | undefined",
+        "description": "Changes, subtotals and totals `{ label, value, kind, color }`, in order; property only"
+      },
+      {
+        "name": "format",
+        "type": "(value: number) => string | undefined",
+        "description": "Formats the values (labels, tooltip); property only"
+      },
+      {
+        "name": "options",
+        "type": "ChartBaseOptions | undefined",
+        "description": "Other engine options (axes, tooltip, annotations...); property only"
+      },
+      {
+        "name": "instance",
+        "type": "I | null",
+        "readonly": true,
+        "description": "The engine instance (`minerva-design/charts/core`), `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "resetZoom",
+        "signature": "() => void",
+        "description": "Shows the whole data range"
+      },
+      {
+        "name": "getView",
+        "signature": "() => ChartView | null",
+        "description": "Visible range, `null` before the engine is created"
+      },
+      {
+        "name": "setView",
+        "signature": "(view: Partial<ChartView>) => void",
+        "description": "Sets the visible range"
+      },
+      {
+        "name": "getRenderer",
+        "signature": "() => ChartRendererKind | null",
+        "description": "Backend in use (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until ready"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-point-click",
+        "description": "A point or a bar was clicked; detail: { x, xLabel, items }"
+      },
+      {
+        "name": "minerva-plot-click",
+        "description": "The plot area was clicked where there is no point; detail: { x, y }"
+      },
+      {
+        "name": "minerva-zoom",
+        "description": "The user zoomed or panned; detail: { x, y } (the visible ranges)"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The sized box of the chart"
+      },
+      {
+        "name": "surface",
+        "description": "The element the engine renders into"
+      }
+    ],
+    "cssProperties": []
   }
 }

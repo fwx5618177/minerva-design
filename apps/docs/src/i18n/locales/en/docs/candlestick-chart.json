@@ -1,10 +1,10 @@
 {
-  "title": "CandlestickChart",
+  "title": "Candlestick chart",
   "description": "Open, high, low and close prices per period, for stocks, crypto or any OHLC data. Rising and falling candles get their own colors, line series can be added (moving averages) and long histories stay smooth to zoom and pan on the GPU.",
   "demos": {
     "basic": {
       "title": "Basic",
-      "description": "Points carry open, high, low and y (the close). Candles are green when they close up and red when they close down; upColor / downColor swap them for markets that use the opposite convention. The series format shows prices in dollars in the tooltip."
+      "description": "Points carry open, high, low and y (the close). Candles are green when they close up and red when they close down; upColor / downColor swap them for markets that use the opposite convention. renderTooltip writes the OHLC values with Intl.NumberFormat in the reader's language."
     },
     "moving-average": {
       "title": "Moving averages",
@@ -13,11 +13,83 @@
     "large-data": {
       "title": "50,000 candles",
       "description": "One-minute candles as typed-array columns { x, open, high, low, y } on a time axis. Ctrl / ⌘ + wheel to zoom until single candles appear, drag to pan, double-click to reset."
+    },
+    "volume": {
+      "title": "Prices and volume",
+      "description": "A CandlestickChart over a BarChart of the volumes, each bar colored like its candle. onZoom of one chart calls setView on the other so both stay aligned when you zoom or pan, and the layout event pads the axis with the narrower labels so the candles sit right above their bars."
+    },
+    "intraday": {
+      "title": "Intraday session",
+      "description": "5-minute candles of one session with the VWAP as a line series and an x line marking a news release; the time axis shows the exchange's local time with Intl.DateTimeFormat and timeZone."
     }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "Basic",
+        "description": "40 trading days of ACME: rising and falling candles in the success and danger colors; onHover writes the open and close of the touched day below the chart."
+      }
+    },
+    "data": {
+      "scrub": "Touch a candle to read its open and close"
+    }
+  },
+  "data": {
+    "open": "Open",
+    "high": "High",
+    "low": "Low",
+    "close": "Close",
+    "change": "Change",
+    "candleColors": "Candle colors",
+    "greenUp": "Green up, red down",
+    "redUp": "Red up, green down",
+    "acmeAria": "ACME daily prices over 60 trading days",
+    "ma": "MA {{days}}",
+    "novaAria": "NOVA daily prices over 120 trading days with 5 and 20 day moving averages",
+    "candlesAria": "50,000 one-minute candles",
+    "largeStatus": "{{candles}} candles · drawn with {{renderer}} · Ctrl / ⌘ + wheel to zoom, drag to pan, double-click to reset",
+    "volume": "Volume",
+    "pricesAria": "ORBT daily prices over 90 trading days",
+    "volumeAria": "ORBT daily traded volume",
+    "vwap": "VWAP",
+    "guidanceCut": "Guidance cut",
+    "intradayAria": "ORBT 5-minute candles over one session with the VWAP"
   },
   "api": {
     "CandlestickChartProps": {
       "series": "Series drawn as candles unless they set a type (e.g. a moving average line); points carry open, high, low and y (the close)"
+    }
+  },
+  "wc": {
+    "demos": {
+      "ohlc": {
+        "title": "Daily candles",
+        "description": "Each point carries open, high, low and close; rising and falling candles take the success and danger colors."
+      },
+      "moving-average": {
+        "title": "Moving average overlay",
+        "description": "A series of type line drawn over the candles: the 5-day moving average of the closes."
+      }
+    },
+    "minerva-candlestick-chart": {
+      "props": {
+        "height": "Height of the chart, the legend included: pixels or any CSS length",
+        "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+        "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+      },
+      "events": {
+        "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
+        "minerva-point-click": "A point or a bar was clicked; detail: { x, xLabel, items }",
+        "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
+        "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",
+        "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+      },
+      "methods": {
+        "resetZoom": "Shows the whole data range",
+        "getView": "Visible range, null before the engine is created",
+        "setView": "Sets the visible range",
+        "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
+      }
     }
   }
 }

@@ -1,6 +1,8 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   CandlestickChart,
+  type ChartHoverEvent,
   type ChartPointDatum,
   type ChartSeries,
 } from "minerva-design/charts";
@@ -17,14 +19,18 @@ function mulberry32(seed: number) {
 
 const DAY = 24 * 60 * 60 * 1000;
 
-/** Daily candles on trading days (weekends skipped), labelled "Mar 3" */
-function dailyCandles(seed: number, count: number, price: number) {
+/** Daily candles on trading days (weekends skipped), labelled with `date` */
+function dailyCandles(
+  seed: number,
+  count: number,
+  price: number,
+  date: Intl.DateTimeFormat,
+) {
   const random = mulberry32(seed);
   const candles: ChartPointDatum[] = [];
   let close = price;
   for (let t = Date.UTC(2026, 0, 5); candles.length < count; t += DAY) {
-    const date = new Date(t);
-    if (date.getUTCDay() % 6 === 0) continue;
+    if (new Date(t).getUTCDay() % 6 === 0) continue;
     // a slow regime change: rally, pullback, recovery
     const day = candles.length;
     const drift = day < 50 ? 0.004 : day < 80 ? -0.005 : 0.003;
@@ -32,17 +38,7 @@ function dailyCandles(seed: number, count: number, price: number) {
     close = open * (1 + (random() + random() - 1) * 0.032 + drift);
     const high = Math.max(open, close) * (1 + random() * 0.014);
     const low = Math.min(open, close) * (1 - random() * 0.014);
-    candles.push({
-      x: date.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        timeZone: "UTC",
-      }),
-      open,
-      high,
-      low,
-      y: close,
-    });
+    candles.push({ x: date.format(t), open, high, low, y: close });
   }
   return candles;
 }
@@ -56,40 +52,95 @@ const movingAverage = (candles: ChartPointDatum[], window: number) =>
     return [candle.x as string, sum / window] as const;
   });
 
-const usd = (value: number) => `$${value.toFixed(2)}`;
-
 export default function MovingAverageDemo() {
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.candlestick-chart.data",
+  });
+  const locale = i18n.language;
+
+  const usd = useMemo(
+    () => new Intl.NumberFormat(locale, { style: "currency", currency: "USD" }),
+    [locale],
+  );
+  const change = useMemo(
+    () =>
+      new Intl.NumberFormat(locale, {
+        style: "percent",
+        minimumFractionDigits: 2,
+        signDisplay: "exceptZero",
+      }),
+    [locale],
+  );
   const series = useMemo((): ChartSeries[] => {
-    const candles = dailyCandles(7, 120, 64);
+    const date = new Intl.DateTimeFormat(locale, {
+      month: "short",
+      day: "numeric",
+      timeZone: "UTC",
+    });
+    const candles = dailyCandles(7, 120, 64, date);
     return [
-      { name: "NOVA", data: candles, format: usd },
+      { name: "NOVA", data: candles },
       {
-        name: "MA 5",
+        name: t("ma", { days: 5 }),
         type: "line",
         data: movingAverage(candles, 5),
         curve: "smooth",
         lineWidth: 1.5,
         color: "var(--warning-color)",
-        format: usd,
       },
       {
-        name: "MA 20",
+        name: t("ma", { days: 20 }),
         type: "line",
         data: movingAverage(candles, 20),
         curve: "smooth",
         lineWidth: 2,
         color: "var(--primary-color)",
-        format: usd,
       },
     ];
-  }, []);
+  }, [t, locale]);
+
+  // OHLC values, the change of the day and the averages
+  const tooltip = (event: ChartHoverEvent) => {
+    const rows: [string, string][] = [];
+    for (const item of event.items) {
+      if (item.open !== undefined) {
+        rows.push(
+          [t("open"), usd.format(item.open)],
+          [t("high"), usd.format(item.high ?? item.y)],
+          [t("low"), usd.format(item.low ?? item.y)],
+          [t("close"), usd.format(item.y)],
+          [t("change"), change.format(item.y / item.open - 1)],
+        );
+      } else {
+        rows.push([item.seriesName, usd.format(item.y)]);
+      }
+    }
+    return (
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "auto auto",
+          gap: "2px 12px",
+        }}
+      >
+        <strong style={{ gridColumn: "1 / -1" }}>{event.xLabel}</strong>
+        {rows.map(([label, value]) => (
+          <span key={label} style={{ display: "contents" }}>
+            <span>{label}</span>
+            <span style={{ textAlign: "end" }}>{value}</span>
+          </span>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <CandlestickChart
       series={series}
-      yAxis={{ format: (value) => `$${value}` }}
+      yAxis={{ format: (value) => usd.format(value) }}
+      renderTooltip={tooltip}
       height={360}
-      ariaLabel="NOVA daily prices over 120 trading days with 5 and 20 day moving averages"
+      ariaLabel={t("novaAria")}
     />
   );
 }

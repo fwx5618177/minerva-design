@@ -1,5 +1,5 @@
 {
-  "title": "AreaChart",
+  "title": "面积图",
   "description": "用填充面积展示随时间变化的量：默认平滑，可相互重叠、堆叠成总量，或显示为 100% 占比。悬停可查看同一 x 处的所有系列；按住 Ctrl / ⌘ 滚动滚轮或双指捏合即可缩放。",
   "demos": {
     "basic": {
@@ -17,7 +17,59 @@
     "step": {
       "title": "阶梯",
       "description": "curve=\"step\" 让每个值保持到下一个点为止，适合在离散时刻变化的计数；一条标注线标出配额上限。"
+    },
+    "energy-mix": {
+      "title": "能源结构",
+      "description": "一天内按能源类型堆叠的发电量：顶边即总需求，光伏的隆起显示了其他能源何时减少出力。每个系列可设置自己的颜色。"
+    },
+    "cumulative": {
+      "title": "累计值与计划",
+      "description": "销售额的累计值对比均匀增长的计划（以折线系列绘制）；null 值让尚未到来的月份留空。"
+    },
+    "mirrored": {
+      "title": "上下镜像",
+      "description": "下载在零线以上、上传在零线以下，共用同一刻度，这是网络监控中常见的布局；y 轴格式去掉了负号。"
     }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "时间轴上 90 天的日活跃用户：面积默认平滑；在图表上滑动读取每一天，双指缩放。"
+      }
+    }
+  },
+  "data": {
+    "dau": "日活跃用户",
+    "dauAria": "2026 年 4 月至 6 月的日活跃用户",
+    "others": "其他",
+    "shareAria": "2016 至 2026 年各厂商的市场份额",
+    "sources": {
+      "organic": "自然搜索",
+      "direct": "直接访问",
+      "referral": "外链引荐",
+      "social": "社交媒体"
+    },
+    "visitsAria": "按流量来源堆叠的每月访问量",
+    "instances": "运行中的实例",
+    "quota": "配额",
+    "instancesAria": "一天内自动扩缩容启动的实例数",
+    "energy": {
+      "nuclear": "核能",
+      "hydro": "水电",
+      "wind": "风电",
+      "solar": "光伏",
+      "gas": "燃气"
+    },
+    "gw": "{{value}} 吉瓦",
+    "power": "功率",
+    "energyAria": "一天内按能源类型堆叠的发电量",
+    "actual": "实际",
+    "plan": "计划",
+    "cumulativeAria": "本年度累计销售额与计划对比",
+    "download": "下载",
+    "upload": "上传",
+    "bandwidthAria": "两小时内的服务器带宽，下载在零线以上，上传在零线以下"
   },
   "api": {
     "AreaChartProps": {
@@ -25,6 +77,38 @@
       "curve": "边缘形状：\"linear\"、\"smooth\"（单调平滑）或 \"step\"",
       "stacked": "将各面积逐层堆叠",
       "percent": "将每个 x 处的堆叠缩放为 100%（隐含 stacked）"
+    }
+  },
+  "wc": {
+    "demos": {
+      "stacked": {
+        "title": "堆叠面积图",
+        "description": "三个流量来源以平滑边缘（默认曲线）堆叠。"
+      },
+      "percent": {
+        "title": "百分比堆叠",
+        "description": "percent 将每个堆叠缩放到 100%：一天中各能源的占比，使用直线边缘。"
+      }
+    },
+    "minerva-area-chart": {
+      "props": {
+        "height": "图表高度（包含图例）：像素值或任意 CSS 长度",
+        "options": "其他引擎选项（坐标轴、图例、提示框、调色板、格式化……），与元素自身的属性合并；仅作为属性设置",
+        "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null"
+      },
+      "events": {
+        "minerva-hover": "悬停（或键盘聚焦）的数据点发生变化；detail：{ x, xLabel, items }，无悬停时为 null",
+        "minerva-point-click": "点击了数据点或柱子；detail：{ x, xLabel, items }",
+        "minerva-plot-click": "点击了绘图区中没有数据点的位置；detail：{ x, y }（数据坐标）",
+        "minerva-zoom": "用户进行了缩放或平移；detail：{ x, y }（可见范围）",
+        "minerva-renderer-change": "渲染后端已就绪，或在 GPU 丢失后回退；detail：{ renderer }"
+      },
+      "methods": {
+        "resetZoom": "显示完整的数据范围",
+        "getView": "可见范围，引擎创建之前为 null",
+        "setView": "设置可见范围",
+        "getRenderer": "正在使用的渲染后端（webgpu、webgl2、webgl、canvas2d），就绪前为 null"
+      }
     }
   }
 }

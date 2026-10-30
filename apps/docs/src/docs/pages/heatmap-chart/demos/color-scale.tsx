@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { HeatmapChart, type HeatmapCell } from "minerva-design/charts";
 
 function mulberry32(seed: number) {
@@ -11,20 +12,13 @@ function mulberry32(seed: number) {
   };
 }
 
-const months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
+/** Short month names in the reader's language */
+const monthNames = (locale: string) => {
+  const format = new Intl.DateTimeFormat(locale, { month: "short" });
+  return Array.from({ length: 12 }, (_, m) =>
+    format.format(new Date(2026, m, 1)),
+  );
+};
 const years = Array.from({ length: 30 }, (_, i) => String(1995 + i));
 // warm years of strong El Niño events
 const elNino: Record<string, number> = {
@@ -43,6 +37,12 @@ const diverging = [
 ];
 
 export default function ColorScaleDemo() {
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.heatmap-chart.data",
+  });
+  const locale = i18n.language;
+  const months = useMemo(() => monthNames(locale), [locale]);
+
   const data = useMemo((): HeatmapCell[] => {
     const random = mulberry32(1995);
     return years.flatMap((year, i) =>
@@ -53,7 +53,19 @@ export default function ColorScaleDemo() {
         return { x: year, y: month, value: Math.round(value * 100) / 100 };
       }),
     );
-  }, []);
+  }, [months]);
+  // "+0.42 °C", "+0,42 °C"...
+  const celsius = useMemo(
+    () =>
+      new Intl.NumberFormat(locale, {
+        style: "unit",
+        unit: "celsius",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+        signDisplay: "exceptZero",
+      }),
+    [locale],
+  );
 
   return (
     <HeatmapChart
@@ -63,11 +75,11 @@ export default function ColorScaleDemo() {
       colorScale={diverging}
       // symmetric range: 0 stays in the middle of the scale
       valueRange={[-2, 2]}
-      name="Anomaly"
-      format={(value) => `${value > 0 ? "+" : ""}${value.toFixed(2)} °C`}
+      name={t("anomaly")}
+      format={(value) => celsius.format(value)}
       radius={1}
       height={340}
-      ariaLabel="Monthly temperature anomaly, 1995 to 2024"
+      ariaLabel={t("anomalyAria")}
     />
   );
 }

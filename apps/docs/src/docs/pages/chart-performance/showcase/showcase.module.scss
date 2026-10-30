@@ -1,0 +1,197 @@
+.stage {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background: var(--surface-color);
+  overflow: hidden;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.hud {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  gap: 1px;
+  margin: 0;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--border-color);
+}
+
+.stat {
+  min-width: 0;
+  padding: 8px 10px;
+  background: var(--surface-subtle-color);
+
+  dt {
+    overflow: hidden;
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--text-muted-color);
+  }
+
+  dd {
+    margin: 2px 0 0;
+    overflow: hidden;
+    font-family: var(--font-family-mono);
+    font-size: 16px;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-color);
+  }
+}
+
+.good {
+  color: var(--success-color) !important;
+}
+
+.fair {
+  color: var(--warning-color) !important;
+}
+
+.poor {
+  color: var(--danger-color) !important;
+}
+
+.chart {
+  position: relative;
+  padding: 8px 8px 0;
+}
+
+.loading {
+  display: grid;
+  place-items: center;
+  height: 100%;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 16px;
+  padding: 8px 14px 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary-color);
+
+  p {
+    margin: 0;
+  }
+}
+
+.fallback {
+  color: var(--warning-color);
+}
+
+.hint {
+  color: var(--text-muted-color);
+}
+
+// ------------------------------------------------------------ comparison
+
+.compareGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1px;
+  background: var(--border-color);
+}
+
+.panel {
+  min-width: 0;
+  padding: 10px 12px 8px;
+  background: var(--surface-color);
+}
+
+.panelActive {
+  box-shadow: inset 0 0 0 2px var(--primary-color);
+}
+
+.panelNote {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  min-height: 28px;
+  padding-top: 4px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-secondary-color);
+}
+
+.panelHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 8px;
+  margin-bottom: 4px;
+  font-size: 13px;
+
+  strong {
+    font-size: 14px;
+    color: var(--text-color);
+  }
+}
+
+.result {
+  font-family: var(--font-family-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary-color);
+}
+
+.results {
+  padding: 12px 14px;
+  border-top: 1px solid var(--border-color);
+}
+
+.bars {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+
+.barsTitle {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: var(--text-muted-color);
+}
+
+.bar {
+  display: grid;
+  grid-template-columns: minmax(84px, 120px) 1fr minmax(120px, auto);
+  align-items: center;
+  gap: 10px;
+  color: var(--text-secondary-color);
+}
+
+.barTrack {
+  display: block;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--surface-muted-color);
+  overflow: hidden;
+}
+
+.barFill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--primary-color);
+  transition: width 0.4s ease;
+}

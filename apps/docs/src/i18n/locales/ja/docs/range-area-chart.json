@@ -1,0 +1,87 @@
+{
+  "title": "範囲面グラフ",
+  "description": "下端と上端の間を塗る帯：信頼区間、予測、最小・最大の範囲、パーセンタイルのファンチャートに。",
+  "demos": {
+    "forecast": {
+      "title": "信頼区間付きの予測",
+      "description": "面の各点が y0 で下端を指定します。80% と 95% の区間は予測期間とともに広がり、実績と予測は折れ線です。lineWidth: 0 で帯の縁を隠します。"
+    },
+    "temperature": {
+      "title": "日ごとの最低・最高気温",
+      "description": "1 年分の日ごとの気温の幅と平年値：ツールチップに帯の両端が表示され、Ctrl / ⌘ + ホイールで 1 日単位まで拡大できます。"
+    },
+    "fan": {
+      "title": "パーセンタイルのファン",
+      "description": "中央値を囲む 5〜95 と 25〜75 パーセンタイルの入れ子の帯：混雑する時間帯ほど分布が広がります。"
+    },
+    "price-range": {
+      "title": "値幅",
+      "description": "各取引日の安値〜高値を帯で、終値を折れ線で表示する、ローソク足の軽い代替です。"
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "基本",
+        "description": "月ごとの気温の範囲を帯（y0 から y）で、平均を折れ線で表示。locale はアプリの言語に合わせます。"
+      }
+    }
+  },
+  "data": {
+    "interval95": "95% 区間",
+    "interval80": "80% 区間",
+    "actual": "実績",
+    "forecast": "予測",
+    "orders": "注文数",
+    "today": "今日",
+    "forecastAria": "月間注文数と 12 か月の予測、その信頼区間",
+    "dailyRange": "最低 – 最高",
+    "normal": "平年値",
+    "temperatureAria": "1 年間の日ごとの最低・最高気温",
+    "p5p95": "5 – 95 パーセンタイル",
+    "p25p75": "25 – 75 パーセンタイル",
+    "median": "中央値",
+    "latencyAria": "1 日の応答時間のパーセンタイル",
+    "dayRange": "安値 – 高値",
+    "close": "終値",
+    "priceAria": "6 か月間の日ごとの値幅と終値"
+  },
+  "api": {
+    "RangeAreaChartProps": {
+      "series": "各点の y0（下端）と y（上端）の間の帯。系列が type（line など）を指定した場合を除く",
+      "curve": "縁の形：\"linear\"、\"smooth\"（単調）、\"step\""
+    }
+  },
+  "wc": {
+    "demos": {
+      "forecast": {
+        "title": "不確実性の帯付き予測",
+        "description": "y0 から y までの帯は予測期間とともに広がり、実績と予測は折れ線系列です。"
+      },
+      "temperature": {
+        "title": "日ごとの気温の幅",
+        "description": "各日の最低・最高気温を帯で、平均を線で表示します。直線の縁で実測値をそのまま示します。"
+      }
+    },
+    "minerva-range-area-chart": {
+      "props": {
+        "height": "チャートの高さ（凡例を含む）：ピクセルまたは任意の CSS の長さ",
+        "options": "その他のエンジンのオプション（軸、凡例、ツールチップ、パレット、書式…）。要素自身のプロパティとマージされます。プロパティのみ",
+        "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+      },
+      "events": {
+        "minerva-hover": "ホバー（またはキーボードでフォーカス）しているポイントが変わりました。detail：{ x, xLabel, items }、何もない場合は null",
+        "minerva-point-click": "ポイントまたは棒がクリックされました。detail：{ x, xLabel, items }",
+        "minerva-plot-click": "ポイントのないプロット領域がクリックされました。detail：{ x, y }（データ座標）",
+        "minerva-zoom": "ユーザーがズームまたはパンしました。detail：{ x, y }（表示範囲）",
+        "minerva-renderer-change": "バックエンドの準備ができた、または GPU の喪失後にフォールバックしました。detail：{ renderer }"
+      },
+      "methods": {
+        "resetZoom": "データ範囲全体を表示します",
+        "getView": "表示範囲。エンジンが作成されるまでは null",
+        "setView": "表示範囲を設定します",
+        "getRenderer": "使用中のバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null"
+      }
+    }
+  }
+}

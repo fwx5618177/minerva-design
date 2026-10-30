@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Table, Tag, type TableColumn } from "minerva-design";
 import { Sparkline } from "minerva-design/charts";
 
@@ -14,91 +15,109 @@ function mulberry32(seed: number) {
 
 interface Service {
   id: string;
-  name: string;
   requests: number;
   /** p95 latency of the last 30 days, in ms */
   latency: number[];
 }
 
 const services: [string, number, number, number][] = [
-  // name, requests / min, latency 30 days ago, latency today
-  ["API gateway", 48_200, 96, 88],
-  ["Auth", 12_900, 64, 71],
-  ["Search", 8_400, 210, 162],
-  ["Payments", 2_150, 320, 395],
-  ["Notifications", 5_600, 140, 138],
+  // translation key, requests / min, latency 30 days ago, latency today
+  ["gateway", 48_200, 96, 88],
+  ["auth", 12_900, 64, 71],
+  ["search", 8_400, 210, 162],
+  ["payments", 2_150, 320, 395],
+  ["notifications", 5_600, 140, 138],
 ];
+
+const random = mulberry32(30);
+const data: Service[] = services.map(([id, requests, from, to]) => {
+  const latency = Array.from({ length: 30 }, (_, i) => {
+    const value = from + ((to - from) * i) / 29;
+    return Math.round(value * (1 + (random() - 0.5) * 0.14));
+  });
+  latency[0] = from;
+  latency[29] = to;
+  return { id, requests, latency };
+});
 
 const change = (latency: number[]) =>
-  (latency[latency.length - 1] / latency[0] - 1) * 100;
-
-const columns: TableColumn<Service>[] = [
-  { key: "name", header: "Service" },
-  {
-    key: "requests",
-    header: "Requests / min",
-    align: "right",
-    render: (row) => row.requests.toLocaleString("en"),
-  },
-  {
-    key: "trend",
-    header: "p95 latency, 30 days",
-    width: 180,
-    render: (row) => (
-      <Sparkline
-        data={row.latency}
-        name="p95 (ms)"
-        // rising latency is bad news
-        color={
-          change(row.latency) > 0
-            ? "var(--danger-color)"
-            : "var(--success-color)"
-        }
-        width={150}
-        height={32}
-        ariaLabel={`${row.name} p95 latency over 30 days`}
-      />
-    ),
-  },
-  {
-    key: "latency",
-    header: "Today",
-    align: "right",
-    render: (row) => `${row.latency[row.latency.length - 1]} ms`,
-  },
-  {
-    key: "change",
-    header: "Change",
-    align: "right",
-    render: (row) => {
-      const value = change(row.latency);
-      return (
-        <Tag size="small" color={value > 0 ? "danger" : "success"}>
-          {value > 0 ? "+" : "−"}
-          {Math.abs(value).toFixed(1)}%
-        </Tag>
-      );
-    },
-  },
-];
+  latency[latency.length - 1] / latency[0] - 1;
 
 export default function TableDemo() {
-  const data = useMemo((): Service[] => {
-    const random = mulberry32(30);
-    return services.map(([name, requests, from, to]) => {
-      const latency = Array.from({ length: 30 }, (_, i) => {
-        const value = from + ((to - from) * i) / 29;
-        return Math.round(value * (1 + (random() - 0.5) * 0.14));
-      });
-      latency[0] = from;
-      latency[29] = to;
-      return { id: name, name, requests, latency };
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.sparkline.data",
+  });
+  const locale = i18n.language;
+
+  const columns = useMemo((): TableColumn<Service>[] => {
+    const number = new Intl.NumberFormat(locale);
+    const ms = new Intl.NumberFormat(locale, {
+      style: "unit",
+      unit: "millisecond",
     });
-  }, []);
+    const percent = new Intl.NumberFormat(locale, {
+      style: "percent",
+      minimumFractionDigits: 1,
+      signDisplay: "exceptZero",
+    });
+    return [
+      {
+        key: "name",
+        header: t("service"),
+        render: (row) => t(`services.${row.id}`),
+      },
+      {
+        key: "requests",
+        header: t("requestsPerMin"),
+        align: "right",
+        render: (row) => number.format(row.requests),
+      },
+      {
+        key: "trend",
+        header: t("latency30"),
+        width: 180,
+        render: (row) => (
+          <Sparkline
+            data={row.latency}
+            name={t("p95")}
+            format={(value) => ms.format(value)}
+            // rising latency is bad news
+            color={
+              change(row.latency) > 0
+                ? "var(--danger-color)"
+                : "var(--success-color)"
+            }
+            width={150}
+            height={32}
+            ariaLabel={t("latencyAria", { service: t(`services.${row.id}`) })}
+          />
+        ),
+      },
+      {
+        key: "latency",
+        header: t("today"),
+        align: "right",
+        render: (row) => ms.format(row.latency[row.latency.length - 1]),
+      },
+      {
+        key: "change",
+        header: t("change"),
+        align: "right",
+        render: (row) => {
+          const value = change(row.latency);
+          return (
+            <Tag size="small" color={value > 0 ? "danger" : "success"}>
+              {percent.format(value)}
+            </Tag>
+          );
+        },
+      },
+    ];
+  }, [t, locale]);
 
   return (
     <Table
-      aria-label="Service latency"
+      aria-label={t("serviceLatency")}
       columns={columns}
       data={data}
       rowKey={(row) => row.id}

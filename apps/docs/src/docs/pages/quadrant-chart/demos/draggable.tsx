@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { IconButton } from "minerva-design";
 import {
   QuadrantChart,
@@ -13,11 +14,12 @@ type Corner = QuadrantCorner;
 // x: urgency, y: importance (0-10); reverseX puts urgent tasks on the left
 const geometry = { reverseX: true };
 
-const titles: Record<Corner, string> = {
-  topLeft: "Do first",
-  topRight: "Schedule",
-  bottomLeft: "Delegate",
-  bottomRight: "Eliminate",
+// translation keys of the quadrant titles
+const titleKeys: Record<Corner, string> = {
+  topLeft: "doFirst",
+  topRight: "schedule",
+  bottomLeft: "delegate",
+  bottomRight: "eliminate",
 };
 
 // Same tints as the default quadrant colors
@@ -28,35 +30,47 @@ const colors: Record<Corner, string> = {
   bottomRight: "var(--text-secondary-color, #64748b)",
 };
 
-const initial: QuadrantPoint[] = [
-  { label: "Fix login outage", x: 9, y: 8 },
-  { label: "Quarterly planning", x: 3, y: 8.5 },
-  { label: "Book travel", x: 8, y: 3 },
-  { label: "Inbox zero", x: 2.5, y: 2 },
+// task names are translated when rendered (`key`), added tasks are numbered
+type Task = { key?: string; n?: number; x: number; y: number };
+const initial: Task[] = [
+  { key: "loginOutage", x: 9, y: 8 },
+  { key: "quarterlyPlanning", x: 3, y: 8.5 },
+  { key: "bookTravel", x: 8, y: 3 },
+  { key: "inboxZero", x: 2.5, y: 2 },
 ];
 
 const clamp = (value: number) => Math.min(9.5, Math.max(0.5, value));
 
 export default function DraggableDemo() {
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.quadrant-chart.data",
+  });
   const [tasks, setTasks] = useState(initial);
-  const [status, setStatus] = useState(
-    "Drag a task to another quadrant, or click an empty area to add one",
-  );
+  const [status, setStatus] = useState<string | null>(null);
+  const title = (corner: Corner) => t(titleKeys[corner]);
+  const name = (task: Task) =>
+    task.key ? t(`tasks.${task.key}`) : t("newTask", { n: task.n });
+  const points: QuadrantPoint[] = tasks.map((task) => ({
+    label: name(task),
+    x: task.x,
+    y: task.y,
+  }));
+  const decimal = new Intl.NumberFormat(i18n.language, {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  });
 
   const add = (corner: Corner, at?: { x: number; y: number }) => {
     const center = quadrantCenter(geometry, corner);
     // Offset new tasks a little so they do not stack on the same spot
     const jitter = (tasks.length % 3) - 1;
-    const label = `Task ${tasks.length + 1}`;
-    setTasks((current) => [
-      ...current,
-      {
-        label,
-        x: clamp(at?.x ?? center.x + jitter),
-        y: clamp(at?.y ?? center.y + jitter),
-      },
-    ]);
-    setStatus(`${label} added to "${titles[corner]}"`);
+    const task: Task = {
+      n: tasks.length + 1,
+      x: clamp(at?.x ?? center.x + jitter),
+      y: clamp(at?.y ?? center.y + jitter),
+    };
+    setTasks((current) => [...current, task]);
+    setStatus(t("taskAdded", { task: name(task), quadrant: title(corner) }));
   };
 
   // Title + add button drawn over each quadrant, in its outer corner
@@ -78,11 +92,11 @@ export default function DraggableDemo() {
           color: colors[corner],
         }}
       >
-        <span>{titles[corner]}</span>
+        <span>{title(corner)}</span>
         <IconButton
           size="xsmall"
           variant="ghost"
-          label={`Add a task to "${titles[corner]}"`}
+          label={t("addTask", { quadrant: title(corner) })}
           icon={<LuPlus />}
           onClick={() => add(corner)}
           style={{ pointerEvents: "auto" }}
@@ -94,7 +108,7 @@ export default function DraggableDemo() {
   return (
     <div style={{ display: "grid", gap: 8, width: "100%" }}>
       <QuadrantChart
-        points={tasks}
+        points={points}
         quadrants={{
           topLeft: { color: colors.topLeft },
           topRight: { color: colors.topRight },
@@ -104,10 +118,10 @@ export default function DraggableDemo() {
         reverseX
         showTicks={false}
         axisLabels={{
-          top: "Important",
-          bottom: "Not important",
-          left: "Urgent",
-          right: "Not urgent",
+          top: t("important"),
+          bottom: t("notImportant"),
+          left: t("urgent"),
+          right: t("notUrgent"),
         }}
         onPointDrop={(point, index, target) => {
           setTasks((current) =>
@@ -117,7 +131,12 @@ export default function DraggableDemo() {
                 : task,
             ),
           );
-          setStatus(`${point.label} moved to "${titles[target.quadrant]}"`);
+          setStatus(
+            t("taskMoved", {
+              task: point.label,
+              quadrant: title(target.quadrant),
+            }),
+          );
         }}
         onQuadrantClick={(corner, at) => add(corner, at)}
         quadrantContent={{
@@ -130,14 +149,17 @@ export default function DraggableDemo() {
           <div style={{ display: "grid", gap: 2 }}>
             <strong>{point.label}</strong>
             <span>
-              Urgency {point.x.toFixed(1)} · Importance {point.y.toFixed(1)}
+              {t("taskScores", {
+                urgency: decimal.format(point.x),
+                importance: decimal.format(point.y),
+              })}
             </span>
           </div>
         )}
         height={360}
-        ariaLabel="Task matrix: drag tasks between quadrants"
+        ariaLabel={t("boardAria")}
       />
-      <p role="status">{status}</p>
+      <p role="status">{status ?? t("dragHint")}</p>
     </div>
   );
 }

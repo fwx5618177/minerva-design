@@ -9,13 +9,16 @@
       { "name": "height", "type": "any", "required": false, "default": "320" },
       { "name": "interaction", "type": "any", "required": false, "default": "null" },
       { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "orientation", "type": "string", "required": false, "default": "\"\"" },
       { "name": "padding", "type": "any", "required": false, "default": "null" },
       { "name": "palette", "type": "array", "required": false, "default": "[]" },
       { "name": "series", "type": "array", "required": false, "default": "[]" },
+      { "name": "stackMode", "type": "string", "required": false, "default": "\"\"" },
       { "name": "tooltip", "type": "any", "required": false, "default": "null" },
       { "name": "width", "type": "any", "required": false, "default": "\"100%\"" },
       { "name": "xAxis", "type": "any", "required": false, "default": "null" },
-      { "name": "yAxis", "type": "any", "required": false, "default": "null" }
+      { "name": "yAxis", "type": "any", "required": false, "default": "null" },
+      { "name": "yAxis2", "type": "any", "required": false, "default": "null" }
     ],
     "events": [
       {
@@ -36,7 +39,7 @@
       {
         "name": "configure",
         "type": "configure(config: NativeChartConfig): void",
-        "description": "Function options: xAxis.format / yAxis.format tick formatters and renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it."
+        "description": "Function options: xAxis.format / yAxis.format tick formatters, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it, format(value) (heatmap-chart, sparkline, waterfall-chart), formatBin(value) (histogram-chart) and formatProgress(share) (gantt-chart)."
       },
       { "name": "fromPixel", "type": "fromPixel(x: number, y: number): { x: number; y: number } | null", "description": "Px of the chart to data coordinates." },
       { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
@@ -87,7 +90,60 @@
       {
         "name": "configure",
         "type": "configure(config: NativeChartConfig): void",
-        "description": "Function options: xAxis.format / yAxis.format tick formatters and renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it."
+        "description": "Function options: xAxis.format / yAxis.format tick formatters, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it, format(value) (heatmap-chart, sparkline, waterfall-chart), formatBin(value) (histogram-chart) and formatProgress(share) (gantt-chart)."
+      },
+      { "name": "fromPixel", "type": "fromPixel(x: number, y: number): { x: number; y: number } | null", "description": "Px of the chart to data coordinates." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getPlotRect", "type": "getPlotRect(): NativeChartRect | null", "description": "Plot area in px of the chart, for host overlays." },
+      { "name": "getView", "type": "getView(): NativeChartView | null", "description": "Visible axis ranges; null before the canvas is ready." },
+      { "name": "resetZoom", "type": "resetZoom(): void", "description": "Show the whole data range." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "setView", "type": "setView(view: Partial<NativeChartView>): void", "description": "Set the visible axis ranges." },
+      { "name": "toPixel", "type": "toPixel(x: number, y: number): { x: number; y: number } | null", "description": "Data coordinates to px of the chart." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "AreaChart": {
+    "entry": "minerva-design/area-chart/index",
+    "props": [
+      { "name": "annotations", "type": "array", "required": false, "default": "[]" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "crosshair", "type": "any", "required": false, "default": "null" },
+      { "name": "curve", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "height", "type": "any", "required": false, "default": "320" },
+      { "name": "interaction", "type": "any", "required": false, "default": "null" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "percent", "type": "boolean", "required": false, "default": "false" },
+      { "name": "series", "type": "array", "required": false, "default": "[]" },
+      { "name": "stacked", "type": "boolean", "required": false, "default": "false" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" },
+      { "name": "xAxis", "type": "any", "required": false, "default": "null" },
+      { "name": "yAxis", "type": "any", "required": false, "default": "null" }
+    ],
+    "events": [
+      {
+        "name": "hover",
+        "type": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+        "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+      },
+      { "name": "layout", "type": "{ x: number; y: number; width: number; height: number }", "description": "The plot area moved or was resized (px of the chart)." },
+      { "name": "plotclick", "type": "{ x: number; y: number }", "description": "The plot area was tapped where there is no point (data coordinates)." },
+      { "name": "pointclick", "type": "{ items: NativeChartHoverItem[]; x: number; xLabel: string }", "description": "A point or bar was tapped." },
+      { "name": "pointdrag", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A scatter point is dragged (interaction.dragPoints); the data is not changed." },
+      { "name": "pointdrop", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A dragged scatter point was released; update the series to move it." },
+      { "name": "zoom", "type": "{ x: [number, number]; y: [number, number] }", "description": "Visible range after a pinch, a pan or a double-tap reset." }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeChartConfig): void",
+        "description": "Function options: xAxis.format / yAxis.format tick formatters, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it, format(value) (heatmap-chart, sparkline, waterfall-chart), formatBin(value) (histogram-chart) and formatProgress(share) (gantt-chart)."
       },
       { "name": "fromPixel", "type": "fromPixel(x: number, y: number): { x: number; y: number } | null", "description": "Px of the chart to data coordinates." },
       { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
@@ -138,7 +194,60 @@
       {
         "name": "configure",
         "type": "configure(config: NativeChartConfig): void",
-        "description": "Function options: xAxis.format / yAxis.format tick formatters and renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it."
+        "description": "Function options: xAxis.format / yAxis.format tick formatters, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it, format(value) (heatmap-chart, sparkline, waterfall-chart), formatBin(value) (histogram-chart) and formatProgress(share) (gantt-chart)."
+      },
+      { "name": "fromPixel", "type": "fromPixel(x: number, y: number): { x: number; y: number } | null", "description": "Px of the chart to data coordinates." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getPlotRect", "type": "getPlotRect(): NativeChartRect | null", "description": "Plot area in px of the chart, for host overlays." },
+      { "name": "getView", "type": "getView(): NativeChartView | null", "description": "Visible axis ranges; null before the canvas is ready." },
+      { "name": "resetZoom", "type": "resetZoom(): void", "description": "Show the whole data range." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "setView", "type": "setView(view: Partial<NativeChartView>): void", "description": "Set the visible axis ranges." },
+      { "name": "toPixel", "type": "toPixel(x: number, y: number): { x: number; y: number } | null", "description": "Data coordinates to px of the chart." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "HorizontalBarChart": {
+    "entry": "minerva-design/horizontal-bar-chart/index",
+    "props": [
+      { "name": "annotations", "type": "array", "required": false, "default": "[]" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "crosshair", "type": "any", "required": false, "default": "null" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "height", "type": "any", "required": false, "default": "320" },
+      { "name": "interaction", "type": "any", "required": false, "default": "null" },
+      { "name": "labels", "type": "boolean", "required": false, "default": "false" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "percent", "type": "boolean", "required": false, "default": "false" },
+      { "name": "series", "type": "array", "required": false, "default": "[]" },
+      { "name": "stacked", "type": "boolean", "required": false, "default": "false" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" },
+      { "name": "xAxis", "type": "any", "required": false, "default": "null" },
+      { "name": "yAxis", "type": "any", "required": false, "default": "null" }
+    ],
+    "events": [
+      {
+        "name": "hover",
+        "type": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+        "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+      },
+      { "name": "layout", "type": "{ x: number; y: number; width: number; height: number }", "description": "The plot area moved or was resized (px of the chart)." },
+      { "name": "plotclick", "type": "{ x: number; y: number }", "description": "The plot area was tapped where there is no point (data coordinates)." },
+      { "name": "pointclick", "type": "{ items: NativeChartHoverItem[]; x: number; xLabel: string }", "description": "A point or bar was tapped." },
+      { "name": "pointdrag", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A scatter point is dragged (interaction.dragPoints); the data is not changed." },
+      { "name": "pointdrop", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A dragged scatter point was released; update the series to move it." },
+      { "name": "zoom", "type": "{ x: [number, number]; y: [number, number] }", "description": "Visible range after a pinch, a pan or a double-tap reset." }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeChartConfig): void",
+        "description": "Function options: xAxis.format / yAxis.format tick formatters, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it, format(value) (heatmap-chart, sparkline, waterfall-chart), formatBin(value) (histogram-chart) and formatProgress(share) (gantt-chart)."
       },
       { "name": "fromPixel", "type": "fromPixel(x: number, y: number): { x: number; y: number } | null", "description": "Px of the chart to data coordinates." },
       { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
@@ -188,7 +297,7 @@
       {
         "name": "configure",
         "type": "configure(config: NativeChartConfig): void",
-        "description": "Function options: xAxis.format / yAxis.format tick formatters and renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it."
+        "description": "Function options: xAxis.format / yAxis.format tick formatters, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it, format(value) (heatmap-chart, sparkline, waterfall-chart), formatBin(value) (histogram-chart) and formatProgress(share) (gantt-chart)."
       },
       { "name": "fromPixel", "type": "fromPixel(x: number, y: number): { x: number; y: number } | null", "description": "Px of the chart to data coordinates." },
       { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
@@ -260,6 +369,1141 @@
       { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
       { "name": "setView", "type": "setView(view: Partial<NativeChartView>): void", "description": "Set the visible axis ranges." },
       { "name": "toPixel", "type": "toPixel(x: number, y: number): { x: number; y: number } | null", "description": "Data coordinates to px of the chart." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "CandlestickChart": {
+    "entry": "minerva-design/candlestick-chart/index",
+    "props": [
+      { "name": "annotations", "type": "array", "required": false, "default": "[]" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "crosshair", "type": "any", "required": false, "default": "null" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "height", "type": "any", "required": false, "default": "320" },
+      { "name": "interaction", "type": "any", "required": false, "default": "null" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "series", "type": "array", "required": false, "default": "[]" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" },
+      { "name": "xAxis", "type": "any", "required": false, "default": "null" },
+      { "name": "yAxis", "type": "any", "required": false, "default": "null" }
+    ],
+    "events": [
+      {
+        "name": "hover",
+        "type": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+        "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+      },
+      { "name": "layout", "type": "{ x: number; y: number; width: number; height: number }", "description": "The plot area moved or was resized (px of the chart)." },
+      { "name": "plotclick", "type": "{ x: number; y: number }", "description": "The plot area was tapped where there is no point (data coordinates)." },
+      { "name": "pointclick", "type": "{ items: NativeChartHoverItem[]; x: number; xLabel: string }", "description": "A point or bar was tapped." },
+      { "name": "pointdrag", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A scatter point is dragged (interaction.dragPoints); the data is not changed." },
+      { "name": "pointdrop", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A dragged scatter point was released; update the series to move it." },
+      { "name": "zoom", "type": "{ x: [number, number]; y: [number, number] }", "description": "Visible range after a pinch, a pan or a double-tap reset." }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeChartConfig): void",
+        "description": "Function options: xAxis.format / yAxis.format tick formatters, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it, format(value) (heatmap-chart, sparkline, waterfall-chart), formatBin(value) (histogram-chart) and formatProgress(share) (gantt-chart)."
+      },
+      { "name": "fromPixel", "type": "fromPixel(x: number, y: number): { x: number; y: number } | null", "description": "Px of the chart to data coordinates." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getPlotRect", "type": "getPlotRect(): NativeChartRect | null", "description": "Plot area in px of the chart, for host overlays." },
+      { "name": "getView", "type": "getView(): NativeChartView | null", "description": "Visible axis ranges; null before the canvas is ready." },
+      { "name": "resetZoom", "type": "resetZoom(): void", "description": "Show the whole data range." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "setView", "type": "setView(view: Partial<NativeChartView>): void", "description": "Set the visible axis ranges." },
+      { "name": "toPixel", "type": "toPixel(x: number, y: number): { x: number; y: number } | null", "description": "Data coordinates to px of the chart." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "HeatmapChart": {
+    "entry": "minerva-design/heatmap-chart/index",
+    "props": [
+      { "name": "annotations", "type": "array", "required": false, "default": "[]" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "colorScale", "type": "array", "required": false, "default": "[]" },
+      { "name": "crosshair", "type": "any", "required": false, "default": "null" },
+      { "name": "data", "type": "array", "required": false, "default": "[]" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "height", "type": "any", "required": false, "default": "320" },
+      { "name": "interaction", "type": "any", "required": false, "default": "null" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "name", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "radius", "type": "any", "required": false, "default": "null" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "valueRange", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" },
+      { "name": "xAxis", "type": "any", "required": false, "default": "null" },
+      { "name": "xCategories", "type": "array", "required": false, "default": "[]" },
+      { "name": "yAxis", "type": "any", "required": false, "default": "null" },
+      { "name": "yCategories", "type": "array", "required": false, "default": "[]" }
+    ],
+    "events": [
+      {
+        "name": "hover",
+        "type": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+        "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+      },
+      { "name": "layout", "type": "{ x: number; y: number; width: number; height: number }", "description": "The plot area moved or was resized (px of the chart)." },
+      { "name": "plotclick", "type": "{ x: number; y: number }", "description": "The plot area was tapped where there is no point (data coordinates)." },
+      { "name": "pointclick", "type": "{ items: NativeChartHoverItem[]; x: number; xLabel: string }", "description": "A point or bar was tapped." },
+      { "name": "pointdrag", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A scatter point is dragged (interaction.dragPoints); the data is not changed." },
+      { "name": "pointdrop", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A dragged scatter point was released; update the series to move it." },
+      { "name": "zoom", "type": "{ x: [number, number]; y: [number, number] }", "description": "Visible range after a pinch, a pan or a double-tap reset." }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeChartConfig): void",
+        "description": "Function options: xAxis.format / yAxis.format tick formatters, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it, format(value) (heatmap-chart, sparkline, waterfall-chart), formatBin(value) (histogram-chart) and formatProgress(share) (gantt-chart)."
+      },
+      { "name": "fromPixel", "type": "fromPixel(x: number, y: number): { x: number; y: number } | null", "description": "Px of the chart to data coordinates." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getPlotRect", "type": "getPlotRect(): NativeChartRect | null", "description": "Plot area in px of the chart, for host overlays." },
+      { "name": "getView", "type": "getView(): NativeChartView | null", "description": "Visible axis ranges; null before the canvas is ready." },
+      { "name": "resetZoom", "type": "resetZoom(): void", "description": "Show the whole data range." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "setView", "type": "setView(view: Partial<NativeChartView>): void", "description": "Set the visible axis ranges." },
+      { "name": "toPixel", "type": "toPixel(x: number, y: number): { x: number; y: number } | null", "description": "Data coordinates to px of the chart." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "Sparkline": {
+    "entry": "minerva-design/sparkline/index",
+    "props": [
+      { "name": "annotations", "type": "array", "required": false, "default": "[]" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "color", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "crosshair", "type": "any", "required": false, "default": "null" },
+      { "name": "curve", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "data", "type": "array", "required": false, "default": "[]" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "height", "type": "any", "required": false, "default": "48" },
+      { "name": "interaction", "type": "any", "required": false, "default": "null" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "name", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "reference", "type": "any", "required": false, "default": "null" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "type", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" }
+    ],
+    "events": [
+      {
+        "name": "hover",
+        "type": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+        "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+      },
+      { "name": "layout", "type": "{ x: number; y: number; width: number; height: number }", "description": "The plot area moved or was resized (px of the chart)." },
+      { "name": "plotclick", "type": "{ x: number; y: number }", "description": "The plot area was tapped where there is no point (data coordinates)." },
+      { "name": "pointclick", "type": "{ items: NativeChartHoverItem[]; x: number; xLabel: string }", "description": "A point or bar was tapped." },
+      { "name": "pointdrag", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A scatter point is dragged (interaction.dragPoints); the data is not changed." },
+      { "name": "pointdrop", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A dragged scatter point was released; update the series to move it." },
+      { "name": "zoom", "type": "{ x: [number, number]; y: [number, number] }", "description": "Visible range after a pinch, a pan or a double-tap reset." }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeChartConfig): void",
+        "description": "Function options: xAxis.format / yAxis.format tick formatters, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it, format(value) (heatmap-chart, sparkline, waterfall-chart), formatBin(value) (histogram-chart) and formatProgress(share) (gantt-chart)."
+      },
+      { "name": "fromPixel", "type": "fromPixel(x: number, y: number): { x: number; y: number } | null", "description": "Px of the chart to data coordinates." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getPlotRect", "type": "getPlotRect(): NativeChartRect | null", "description": "Plot area in px of the chart, for host overlays." },
+      { "name": "getView", "type": "getView(): NativeChartView | null", "description": "Visible axis ranges; null before the canvas is ready." },
+      { "name": "resetZoom", "type": "resetZoom(): void", "description": "Show the whole data range." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "setView", "type": "setView(view: Partial<NativeChartView>): void", "description": "Set the visible axis ranges." },
+      { "name": "toPixel", "type": "toPixel(x: number, y: number): { x: number; y: number } | null", "description": "Data coordinates to px of the chart." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "RangeAreaChart": {
+    "entry": "minerva-design/range-area-chart/index",
+    "props": [
+      { "name": "annotations", "type": "array", "required": false, "default": "[]" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "crosshair", "type": "any", "required": false, "default": "null" },
+      { "name": "curve", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "height", "type": "any", "required": false, "default": "320" },
+      { "name": "interaction", "type": "any", "required": false, "default": "null" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "series", "type": "array", "required": false, "default": "[]" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" },
+      { "name": "xAxis", "type": "any", "required": false, "default": "null" },
+      { "name": "yAxis", "type": "any", "required": false, "default": "null" }
+    ],
+    "events": [
+      {
+        "name": "hover",
+        "type": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+        "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+      },
+      { "name": "layout", "type": "{ x: number; y: number; width: number; height: number }", "description": "The plot area moved or was resized (px of the chart)." },
+      { "name": "plotclick", "type": "{ x: number; y: number }", "description": "The plot area was tapped where there is no point (data coordinates)." },
+      { "name": "pointclick", "type": "{ items: NativeChartHoverItem[]; x: number; xLabel: string }", "description": "A point or bar was tapped." },
+      { "name": "pointdrag", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A scatter point is dragged (interaction.dragPoints); the data is not changed." },
+      { "name": "pointdrop", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A dragged scatter point was released; update the series to move it." },
+      { "name": "zoom", "type": "{ x: [number, number]; y: [number, number] }", "description": "Visible range after a pinch, a pan or a double-tap reset." }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeChartConfig): void",
+        "description": "Function options: xAxis.format / yAxis.format tick formatters, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it, format(value) (heatmap-chart, sparkline, waterfall-chart), formatBin(value) (histogram-chart) and formatProgress(share) (gantt-chart)."
+      },
+      { "name": "fromPixel", "type": "fromPixel(x: number, y: number): { x: number; y: number } | null", "description": "Px of the chart to data coordinates." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getPlotRect", "type": "getPlotRect(): NativeChartRect | null", "description": "Plot area in px of the chart, for host overlays." },
+      { "name": "getView", "type": "getView(): NativeChartView | null", "description": "Visible axis ranges; null before the canvas is ready." },
+      { "name": "resetZoom", "type": "resetZoom(): void", "description": "Show the whole data range." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "setView", "type": "setView(view: Partial<NativeChartView>): void", "description": "Set the visible axis ranges." },
+      { "name": "toPixel", "type": "toPixel(x: number, y: number): { x: number; y: number } | null", "description": "Data coordinates to px of the chart." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "MixedChart": {
+    "entry": "minerva-design/mixed-chart/index",
+    "props": [
+      { "name": "annotations", "type": "array", "required": false, "default": "[]" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "crosshair", "type": "any", "required": false, "default": "null" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "height", "type": "any", "required": false, "default": "320" },
+      { "name": "interaction", "type": "any", "required": false, "default": "null" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "orientation", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "series", "type": "array", "required": false, "default": "[]" },
+      { "name": "stackMode", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" },
+      { "name": "xAxis", "type": "any", "required": false, "default": "null" },
+      { "name": "yAxis", "type": "any", "required": false, "default": "null" },
+      { "name": "yAxis2", "type": "any", "required": false, "default": "null" }
+    ],
+    "events": [
+      {
+        "name": "hover",
+        "type": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+        "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+      },
+      { "name": "layout", "type": "{ x: number; y: number; width: number; height: number }", "description": "The plot area moved or was resized (px of the chart)." },
+      { "name": "plotclick", "type": "{ x: number; y: number }", "description": "The plot area was tapped where there is no point (data coordinates)." },
+      { "name": "pointclick", "type": "{ items: NativeChartHoverItem[]; x: number; xLabel: string }", "description": "A point or bar was tapped." },
+      { "name": "pointdrag", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A scatter point is dragged (interaction.dragPoints); the data is not changed." },
+      { "name": "pointdrop", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A dragged scatter point was released; update the series to move it." },
+      { "name": "zoom", "type": "{ x: [number, number]; y: [number, number] }", "description": "Visible range after a pinch, a pan or a double-tap reset." }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeChartConfig): void",
+        "description": "Function options: xAxis.format / yAxis.format tick formatters, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it, format(value) (heatmap-chart, sparkline, waterfall-chart), formatBin(value) (histogram-chart) and formatProgress(share) (gantt-chart)."
+      },
+      { "name": "fromPixel", "type": "fromPixel(x: number, y: number): { x: number; y: number } | null", "description": "Px of the chart to data coordinates." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getPlotRect", "type": "getPlotRect(): NativeChartRect | null", "description": "Plot area in px of the chart, for host overlays." },
+      { "name": "getView", "type": "getView(): NativeChartView | null", "description": "Visible axis ranges; null before the canvas is ready." },
+      { "name": "resetZoom", "type": "resetZoom(): void", "description": "Show the whole data range." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "setView", "type": "setView(view: Partial<NativeChartView>): void", "description": "Set the visible axis ranges." },
+      { "name": "toPixel", "type": "toPixel(x: number, y: number): { x: number; y: number } | null", "description": "Data coordinates to px of the chart." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "BubbleChart": {
+    "entry": "minerva-design/bubble-chart/index",
+    "props": [
+      { "name": "annotations", "type": "array", "required": false, "default": "[]" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "crosshair", "type": "any", "required": false, "default": "null" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "height", "type": "any", "required": false, "default": "320" },
+      { "name": "interaction", "type": "any", "required": false, "default": "null" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "maxSize", "type": "any", "required": false, "default": "null" },
+      { "name": "maxValue", "type": "any", "required": false, "default": "null" },
+      { "name": "minSize", "type": "any", "required": false, "default": "null" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "series", "type": "array", "required": false, "default": "[]" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" },
+      { "name": "xAxis", "type": "any", "required": false, "default": "null" },
+      { "name": "yAxis", "type": "any", "required": false, "default": "null" }
+    ],
+    "events": [
+      {
+        "name": "hover",
+        "type": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+        "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+      },
+      { "name": "layout", "type": "{ x: number; y: number; width: number; height: number }", "description": "The plot area moved or was resized (px of the chart)." },
+      { "name": "plotclick", "type": "{ x: number; y: number }", "description": "The plot area was tapped where there is no point (data coordinates)." },
+      { "name": "pointclick", "type": "{ items: NativeChartHoverItem[]; x: number; xLabel: string }", "description": "A point or bar was tapped." },
+      { "name": "pointdrag", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A scatter point is dragged (interaction.dragPoints); the data is not changed." },
+      { "name": "pointdrop", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A dragged scatter point was released; update the series to move it." },
+      { "name": "zoom", "type": "{ x: [number, number]; y: [number, number] }", "description": "Visible range after a pinch, a pan or a double-tap reset." }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeChartConfig): void",
+        "description": "Function options: xAxis.format / yAxis.format tick formatters, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it, format(value) (heatmap-chart, sparkline, waterfall-chart), formatBin(value) (histogram-chart) and formatProgress(share) (gantt-chart)."
+      },
+      { "name": "fromPixel", "type": "fromPixel(x: number, y: number): { x: number; y: number } | null", "description": "Px of the chart to data coordinates." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getPlotRect", "type": "getPlotRect(): NativeChartRect | null", "description": "Plot area in px of the chart, for host overlays." },
+      { "name": "getView", "type": "getView(): NativeChartView | null", "description": "Visible axis ranges; null before the canvas is ready." },
+      { "name": "resetZoom", "type": "resetZoom(): void", "description": "Show the whole data range." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "setView", "type": "setView(view: Partial<NativeChartView>): void", "description": "Set the visible axis ranges." },
+      { "name": "toPixel", "type": "toPixel(x: number, y: number): { x: number; y: number } | null", "description": "Data coordinates to px of the chart." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "HistogramChart": {
+    "entry": "minerva-design/histogram-chart/index",
+    "props": [
+      { "name": "annotations", "type": "array", "required": false, "default": "[]" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "bins", "type": "any", "required": false, "default": "null" },
+      { "name": "color", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "crosshair", "type": "any", "required": false, "default": "null" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "domain", "type": "any", "required": false, "default": "null" },
+      { "name": "height", "type": "any", "required": false, "default": "320" },
+      { "name": "interaction", "type": "any", "required": false, "default": "null" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "name", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "nice", "type": "any", "required": false, "default": "null" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "series", "type": "array", "required": false, "default": "[]" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "values", "type": "array", "required": false, "default": "[]" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" },
+      { "name": "xAxis", "type": "any", "required": false, "default": "null" },
+      { "name": "yAxis", "type": "any", "required": false, "default": "null" }
+    ],
+    "events": [
+      {
+        "name": "hover",
+        "type": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+        "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+      },
+      { "name": "layout", "type": "{ x: number; y: number; width: number; height: number }", "description": "The plot area moved or was resized (px of the chart)." },
+      { "name": "plotclick", "type": "{ x: number; y: number }", "description": "The plot area was tapped where there is no point (data coordinates)." },
+      { "name": "pointclick", "type": "{ items: NativeChartHoverItem[]; x: number; xLabel: string }", "description": "A point or bar was tapped." },
+      { "name": "pointdrag", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A scatter point is dragged (interaction.dragPoints); the data is not changed." },
+      { "name": "pointdrop", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A dragged scatter point was released; update the series to move it." },
+      { "name": "zoom", "type": "{ x: [number, number]; y: [number, number] }", "description": "Visible range after a pinch, a pan or a double-tap reset." }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeChartConfig): void",
+        "description": "Function options: xAxis.format / yAxis.format tick formatters, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it, format(value) (heatmap-chart, sparkline, waterfall-chart), formatBin(value) (histogram-chart) and formatProgress(share) (gantt-chart)."
+      },
+      { "name": "fromPixel", "type": "fromPixel(x: number, y: number): { x: number; y: number } | null", "description": "Px of the chart to data coordinates." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getPlotRect", "type": "getPlotRect(): NativeChartRect | null", "description": "Plot area in px of the chart, for host overlays." },
+      { "name": "getView", "type": "getView(): NativeChartView | null", "description": "Visible axis ranges; null before the canvas is ready." },
+      { "name": "resetZoom", "type": "resetZoom(): void", "description": "Show the whole data range." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "setView", "type": "setView(view: Partial<NativeChartView>): void", "description": "Set the visible axis ranges." },
+      { "name": "toPixel", "type": "toPixel(x: number, y: number): { x: number; y: number } | null", "description": "Data coordinates to px of the chart." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "BoxPlotChart": {
+    "entry": "minerva-design/box-plot-chart/index",
+    "props": [
+      { "name": "annotations", "type": "array", "required": false, "default": "[]" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "crosshair", "type": "any", "required": false, "default": "null" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "groups", "type": "array", "required": false, "default": "[]" },
+      { "name": "height", "type": "any", "required": false, "default": "320" },
+      { "name": "interaction", "type": "any", "required": false, "default": "null" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "name", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "orientation", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "series", "type": "array", "required": false, "default": "[]" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "whisker", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" },
+      { "name": "xAxis", "type": "any", "required": false, "default": "null" },
+      { "name": "yAxis", "type": "any", "required": false, "default": "null" }
+    ],
+    "events": [
+      {
+        "name": "hover",
+        "type": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+        "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+      },
+      { "name": "layout", "type": "{ x: number; y: number; width: number; height: number }", "description": "The plot area moved or was resized (px of the chart)." },
+      { "name": "plotclick", "type": "{ x: number; y: number }", "description": "The plot area was tapped where there is no point (data coordinates)." },
+      { "name": "pointclick", "type": "{ items: NativeChartHoverItem[]; x: number; xLabel: string }", "description": "A point or bar was tapped." },
+      { "name": "pointdrag", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A scatter point is dragged (interaction.dragPoints); the data is not changed." },
+      { "name": "pointdrop", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A dragged scatter point was released; update the series to move it." },
+      { "name": "zoom", "type": "{ x: [number, number]; y: [number, number] }", "description": "Visible range after a pinch, a pan or a double-tap reset." }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeChartConfig): void",
+        "description": "Function options: xAxis.format / yAxis.format tick formatters, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it, format(value) (heatmap-chart, sparkline, waterfall-chart), formatBin(value) (histogram-chart) and formatProgress(share) (gantt-chart)."
+      },
+      { "name": "fromPixel", "type": "fromPixel(x: number, y: number): { x: number; y: number } | null", "description": "Px of the chart to data coordinates." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getPlotRect", "type": "getPlotRect(): NativeChartRect | null", "description": "Plot area in px of the chart, for host overlays." },
+      { "name": "getView", "type": "getView(): NativeChartView | null", "description": "Visible axis ranges; null before the canvas is ready." },
+      { "name": "resetZoom", "type": "resetZoom(): void", "description": "Show the whole data range." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "setView", "type": "setView(view: Partial<NativeChartView>): void", "description": "Set the visible axis ranges." },
+      { "name": "toPixel", "type": "toPixel(x: number, y: number): { x: number; y: number } | null", "description": "Data coordinates to px of the chart." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "WaterfallChart": {
+    "entry": "minerva-design/waterfall-chart/index",
+    "props": [
+      { "name": "annotations", "type": "array", "required": false, "default": "[]" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "crosshair", "type": "any", "required": false, "default": "null" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "downColor", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "height", "type": "any", "required": false, "default": "320" },
+      { "name": "interaction", "type": "any", "required": false, "default": "null" },
+      { "name": "labels", "type": "boolean", "required": false, "default": "true" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "locale", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "name", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "orientation", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "start", "type": "any", "required": false, "default": "null" },
+      { "name": "steps", "type": "array", "required": false, "default": "[]" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "totalColor", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "upColor", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" },
+      { "name": "xAxis", "type": "any", "required": false, "default": "null" },
+      { "name": "yAxis", "type": "any", "required": false, "default": "null" }
+    ],
+    "events": [
+      {
+        "name": "hover",
+        "type": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+        "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+      },
+      { "name": "layout", "type": "{ x: number; y: number; width: number; height: number }", "description": "The plot area moved or was resized (px of the chart)." },
+      { "name": "plotclick", "type": "{ x: number; y: number }", "description": "The plot area was tapped where there is no point (data coordinates)." },
+      { "name": "pointclick", "type": "{ items: NativeChartHoverItem[]; x: number; xLabel: string }", "description": "A point or bar was tapped." },
+      { "name": "pointdrag", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A scatter point is dragged (interaction.dragPoints); the data is not changed." },
+      { "name": "pointdrop", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A dragged scatter point was released; update the series to move it." },
+      { "name": "zoom", "type": "{ x: [number, number]; y: [number, number] }", "description": "Visible range after a pinch, a pan or a double-tap reset." }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeChartConfig): void",
+        "description": "Function options: xAxis.format / yAxis.format tick formatters, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it, format(value) (heatmap-chart, sparkline, waterfall-chart), formatBin(value) (histogram-chart) and formatProgress(share) (gantt-chart)."
+      },
+      { "name": "fromPixel", "type": "fromPixel(x: number, y: number): { x: number; y: number } | null", "description": "Px of the chart to data coordinates." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getPlotRect", "type": "getPlotRect(): NativeChartRect | null", "description": "Plot area in px of the chart, for host overlays." },
+      { "name": "getView", "type": "getView(): NativeChartView | null", "description": "Visible axis ranges; null before the canvas is ready." },
+      { "name": "resetZoom", "type": "resetZoom(): void", "description": "Show the whole data range." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "setView", "type": "setView(view: Partial<NativeChartView>): void", "description": "Set the visible axis ranges." },
+      { "name": "toPixel", "type": "toPixel(x: number, y: number): { x: number; y: number } | null", "description": "Data coordinates to px of the chart." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "GanttChart": {
+    "entry": "minerva-design/gantt-chart/index",
+    "props": [
+      { "name": "annotations", "type": "array", "required": false, "default": "[]" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "colors", "type": "array", "required": false, "default": "[]" },
+      { "name": "crosshair", "type": "any", "required": false, "default": "null" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "height", "type": "any", "required": false, "default": "320" },
+      { "name": "interaction", "type": "any", "required": false, "default": "null" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "locale", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "milestoneName", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "progressName", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "taskName", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "tasks", "type": "array", "required": false, "default": "[]" },
+      { "name": "today", "type": "any", "required": false, "default": "null" },
+      { "name": "todayLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" },
+      { "name": "xAxis", "type": "any", "required": false, "default": "null" },
+      { "name": "yAxis", "type": "any", "required": false, "default": "null" }
+    ],
+    "events": [
+      {
+        "name": "hover",
+        "type": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+        "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+      },
+      { "name": "layout", "type": "{ x: number; y: number; width: number; height: number }", "description": "The plot area moved or was resized (px of the chart)." },
+      { "name": "plotclick", "type": "{ x: number; y: number }", "description": "The plot area was tapped where there is no point (data coordinates)." },
+      { "name": "pointclick", "type": "{ items: NativeChartHoverItem[]; x: number; xLabel: string }", "description": "A point or bar was tapped." },
+      { "name": "pointdrag", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A scatter point is dragged (interaction.dragPoints); the data is not changed." },
+      { "name": "pointdrop", "type": "{ item: NativeChartHoverItem; x: number; y: number }", "description": "A dragged scatter point was released; update the series to move it." },
+      { "name": "zoom", "type": "{ x: [number, number]; y: [number, number] }", "description": "Visible range after a pinch, a pan or a double-tap reset." }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeChartConfig): void",
+        "description": "Function options: xAxis.format / yAxis.format tick formatters, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it, format(value) (heatmap-chart, sparkline, waterfall-chart), formatBin(value) (histogram-chart) and formatProgress(share) (gantt-chart)."
+      },
+      { "name": "fromPixel", "type": "fromPixel(x: number, y: number): { x: number; y: number } | null", "description": "Px of the chart to data coordinates." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getPlotRect", "type": "getPlotRect(): NativeChartRect | null", "description": "Plot area in px of the chart, for host overlays." },
+      { "name": "getView", "type": "getView(): NativeChartView | null", "description": "Visible axis ranges; null before the canvas is ready." },
+      { "name": "resetZoom", "type": "resetZoom(): void", "description": "Show the whole data range." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "setView", "type": "setView(view: Partial<NativeChartView>): void", "description": "Set the visible axis ranges." },
+      { "name": "toPixel", "type": "toPixel(x: number, y: number): { x: number; y: number } | null", "description": "Data coordinates to px of the chart." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "PieChart": {
+    "entry": "minerva-design/pie-chart/index",
+    "props": [
+      { "name": "animation", "type": "any", "required": false, "default": "null" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "centerLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "centerValue", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "cornerRadius", "type": "any", "required": false, "default": "null" },
+      { "name": "data", "type": "array", "required": false, "default": "[]" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "height", "type": "any", "required": false, "default": "null" },
+      { "name": "hidden", "type": "any", "required": false, "default": "null" },
+      { "name": "innerRadius", "type": "any", "required": false, "default": "null" },
+      { "name": "labelContent", "type": "any", "required": false, "default": "null" },
+      { "name": "labels", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "padAngle", "type": "any", "required": false, "default": "null" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "rose", "type": "any", "required": false, "default": "null" },
+      { "name": "startAngle", "type": "any", "required": false, "default": "null" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" }
+    ],
+    "events": [
+      { "name": "click", "type": "NativeShapeHoverEvent", "description": "A mark was tapped." },
+      { "name": "drill", "type": "{ path: string[] }", "description": "Sunburst: a parent or the center was tapped (or drill() called); controlled charts must publish path through drillPath." },
+      { "name": "hover", "type": "NativeShapeHoverEvent", "description": "Highlighted mark after a tap (index -1 when cleared)." },
+      {
+        "name": "toggle",
+        "type": "{ index: number; hidden: boolean; hiddenIndexes: number[] }",
+        "description": "A legend item was tapped (or toggle() called); controlled charts must publish hiddenIndexes through hidden."
+      }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      { "name": "clearHover", "type": "clearHover(): void", "description": "Remove the highlight and the tooltip." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeShapeChartConfig): void",
+        "description": "Function options: format(value) and percentFormat(share) of the labels and the tooltip, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it."
+      },
+      { "name": "drill", "type": "drill(path: string[]): void", "description": "Sunburst: focus the node at this path ([] = the root) and emit drill (controlled with drillPath: only emit)." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getDrillPath", "type": "getDrillPath(): string[]", "description": "Sunburst: names from the root to the focused node." },
+      { "name": "getHidden", "type": "getHidden(): number[]", "description": "Indexes of the hidden entries, ascending." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "toggle", "type": "toggle(index: number): void", "description": "Hide / show a slice, stage, series or top-level node and emit toggle (controlled with hidden: only emit)." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "DonutChart": {
+    "entry": "minerva-design/donut-chart/index",
+    "props": [
+      { "name": "animation", "type": "any", "required": false, "default": "null" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "centerLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "centerValue", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "cornerRadius", "type": "any", "required": false, "default": "null" },
+      { "name": "data", "type": "array", "required": false, "default": "[]" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "height", "type": "any", "required": false, "default": "null" },
+      { "name": "hidden", "type": "any", "required": false, "default": "null" },
+      { "name": "innerRadius", "type": "any", "required": false, "default": "null" },
+      { "name": "labelContent", "type": "any", "required": false, "default": "null" },
+      { "name": "labels", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "padAngle", "type": "any", "required": false, "default": "null" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "rose", "type": "any", "required": false, "default": "null" },
+      { "name": "startAngle", "type": "any", "required": false, "default": "null" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" }
+    ],
+    "events": [
+      { "name": "click", "type": "NativeShapeHoverEvent", "description": "A mark was tapped." },
+      { "name": "drill", "type": "{ path: string[] }", "description": "Sunburst: a parent or the center was tapped (or drill() called); controlled charts must publish path through drillPath." },
+      { "name": "hover", "type": "NativeShapeHoverEvent", "description": "Highlighted mark after a tap (index -1 when cleared)." },
+      {
+        "name": "toggle",
+        "type": "{ index: number; hidden: boolean; hiddenIndexes: number[] }",
+        "description": "A legend item was tapped (or toggle() called); controlled charts must publish hiddenIndexes through hidden."
+      }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      { "name": "clearHover", "type": "clearHover(): void", "description": "Remove the highlight and the tooltip." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeShapeChartConfig): void",
+        "description": "Function options: format(value) and percentFormat(share) of the labels and the tooltip, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it."
+      },
+      { "name": "drill", "type": "drill(path: string[]): void", "description": "Sunburst: focus the node at this path ([] = the root) and emit drill (controlled with drillPath: only emit)." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getDrillPath", "type": "getDrillPath(): string[]", "description": "Sunburst: names from the root to the focused node." },
+      { "name": "getHidden", "type": "getHidden(): number[]", "description": "Indexes of the hidden entries, ascending." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "toggle", "type": "toggle(index: number): void", "description": "Hide / show a slice, stage, series or top-level node and emit toggle (controlled with hidden: only emit)." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "RadarChart": {
+    "entry": "minerva-design/radar-chart/index",
+    "props": [
+      { "name": "animation", "type": "any", "required": false, "default": "null" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "dots", "type": "any", "required": false, "default": "null" },
+      { "name": "height", "type": "any", "required": false, "default": "null" },
+      { "name": "hidden", "type": "any", "required": false, "default": "null" },
+      { "name": "indicators", "type": "array", "required": false, "default": "[]" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "levels", "type": "any", "required": false, "default": "null" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "series", "type": "array", "required": false, "default": "[]" },
+      { "name": "shape", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" }
+    ],
+    "events": [
+      { "name": "click", "type": "NativeShapeHoverEvent", "description": "A mark was tapped." },
+      { "name": "drill", "type": "{ path: string[] }", "description": "Sunburst: a parent or the center was tapped (or drill() called); controlled charts must publish path through drillPath." },
+      { "name": "hover", "type": "NativeShapeHoverEvent", "description": "Highlighted mark after a tap (index -1 when cleared)." },
+      {
+        "name": "toggle",
+        "type": "{ index: number; hidden: boolean; hiddenIndexes: number[] }",
+        "description": "A legend item was tapped (or toggle() called); controlled charts must publish hiddenIndexes through hidden."
+      }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      { "name": "clearHover", "type": "clearHover(): void", "description": "Remove the highlight and the tooltip." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeShapeChartConfig): void",
+        "description": "Function options: format(value) and percentFormat(share) of the labels and the tooltip, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it."
+      },
+      { "name": "drill", "type": "drill(path: string[]): void", "description": "Sunburst: focus the node at this path ([] = the root) and emit drill (controlled with drillPath: only emit)." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getDrillPath", "type": "getDrillPath(): string[]", "description": "Sunburst: names from the root to the focused node." },
+      { "name": "getHidden", "type": "getHidden(): number[]", "description": "Indexes of the hidden entries, ascending." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "toggle", "type": "toggle(index: number): void", "description": "Hide / show a slice, stage, series or top-level node and emit toggle (controlled with hidden: only emit)." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "GaugeChart": {
+    "entry": "minerva-design/gauge-chart/index",
+    "props": [
+      { "name": "animation", "type": "any", "required": false, "default": "null" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "bands", "type": "array", "required": false, "default": "[]" },
+      { "name": "color", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "height", "type": "any", "required": false, "default": "null" },
+      { "name": "hidden", "type": "any", "required": false, "default": "null" },
+      { "name": "label", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "max", "type": "any", "required": false, "default": "null" },
+      { "name": "min", "type": "any", "required": false, "default": "null" },
+      { "name": "needle", "type": "any", "required": false, "default": "null" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "sweep", "type": "any", "required": false, "default": "null" },
+      { "name": "thickness", "type": "any", "required": false, "default": "null" },
+      { "name": "ticks", "type": "any", "required": false, "default": "null" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "value", "type": "number", "required": false, "default": "0" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" }
+    ],
+    "events": [
+      { "name": "click", "type": "NativeShapeHoverEvent", "description": "A mark was tapped." },
+      { "name": "drill", "type": "{ path: string[] }", "description": "Sunburst: a parent or the center was tapped (or drill() called); controlled charts must publish path through drillPath." },
+      { "name": "hover", "type": "NativeShapeHoverEvent", "description": "Highlighted mark after a tap (index -1 when cleared)." },
+      {
+        "name": "toggle",
+        "type": "{ index: number; hidden: boolean; hiddenIndexes: number[] }",
+        "description": "A legend item was tapped (or toggle() called); controlled charts must publish hiddenIndexes through hidden."
+      }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      { "name": "clearHover", "type": "clearHover(): void", "description": "Remove the highlight and the tooltip." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeShapeChartConfig): void",
+        "description": "Function options: format(value) and percentFormat(share) of the labels and the tooltip, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it."
+      },
+      { "name": "drill", "type": "drill(path: string[]): void", "description": "Sunburst: focus the node at this path ([] = the root) and emit drill (controlled with drillPath: only emit)." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getDrillPath", "type": "getDrillPath(): string[]", "description": "Sunburst: names from the root to the focused node." },
+      { "name": "getHidden", "type": "getHidden(): number[]", "description": "Indexes of the hidden entries, ascending." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "toggle", "type": "toggle(index: number): void", "description": "Hide / show a slice, stage, series or top-level node and emit toggle (controlled with hidden: only emit)." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "FunnelChart": {
+    "entry": "minerva-design/funnel-chart/index",
+    "props": [
+      { "name": "animation", "type": "any", "required": false, "default": "null" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "conversion", "type": "any", "required": false, "default": "null" },
+      { "name": "data", "type": "array", "required": false, "default": "[]" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "gap", "type": "any", "required": false, "default": "null" },
+      { "name": "height", "type": "any", "required": false, "default": "null" },
+      { "name": "hidden", "type": "any", "required": false, "default": "null" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "shape", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "sort", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" }
+    ],
+    "events": [
+      { "name": "click", "type": "NativeShapeHoverEvent", "description": "A mark was tapped." },
+      { "name": "drill", "type": "{ path: string[] }", "description": "Sunburst: a parent or the center was tapped (or drill() called); controlled charts must publish path through drillPath." },
+      { "name": "hover", "type": "NativeShapeHoverEvent", "description": "Highlighted mark after a tap (index -1 when cleared)." },
+      {
+        "name": "toggle",
+        "type": "{ index: number; hidden: boolean; hiddenIndexes: number[] }",
+        "description": "A legend item was tapped (or toggle() called); controlled charts must publish hiddenIndexes through hidden."
+      }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      { "name": "clearHover", "type": "clearHover(): void", "description": "Remove the highlight and the tooltip." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeShapeChartConfig): void",
+        "description": "Function options: format(value) and percentFormat(share) of the labels and the tooltip, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it."
+      },
+      { "name": "drill", "type": "drill(path: string[]): void", "description": "Sunburst: focus the node at this path ([] = the root) and emit drill (controlled with drillPath: only emit)." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getDrillPath", "type": "getDrillPath(): string[]", "description": "Sunburst: names from the root to the focused node." },
+      { "name": "getHidden", "type": "getHidden(): number[]", "description": "Indexes of the hidden entries, ascending." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "toggle", "type": "toggle(index: number): void", "description": "Hide / show a slice, stage, series or top-level node and emit toggle (controlled with hidden: only emit)." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "TreemapChart": {
+    "entry": "minerva-design/treemap-chart/index",
+    "props": [
+      { "name": "animation", "type": "any", "required": false, "default": "null" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "data", "type": "array", "required": false, "default": "[]" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "gap", "type": "any", "required": false, "default": "null" },
+      { "name": "headers", "type": "any", "required": false, "default": "null" },
+      { "name": "height", "type": "any", "required": false, "default": "null" },
+      { "name": "hidden", "type": "any", "required": false, "default": "null" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" }
+    ],
+    "events": [
+      { "name": "click", "type": "NativeShapeHoverEvent", "description": "A mark was tapped." },
+      { "name": "drill", "type": "{ path: string[] }", "description": "Sunburst: a parent or the center was tapped (or drill() called); controlled charts must publish path through drillPath." },
+      { "name": "hover", "type": "NativeShapeHoverEvent", "description": "Highlighted mark after a tap (index -1 when cleared)." },
+      {
+        "name": "toggle",
+        "type": "{ index: number; hidden: boolean; hiddenIndexes: number[] }",
+        "description": "A legend item was tapped (or toggle() called); controlled charts must publish hiddenIndexes through hidden."
+      }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      { "name": "clearHover", "type": "clearHover(): void", "description": "Remove the highlight and the tooltip." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeShapeChartConfig): void",
+        "description": "Function options: format(value) and percentFormat(share) of the labels and the tooltip, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it."
+      },
+      { "name": "drill", "type": "drill(path: string[]): void", "description": "Sunburst: focus the node at this path ([] = the root) and emit drill (controlled with drillPath: only emit)." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getDrillPath", "type": "getDrillPath(): string[]", "description": "Sunburst: names from the root to the focused node." },
+      { "name": "getHidden", "type": "getHidden(): number[]", "description": "Indexes of the hidden entries, ascending." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "toggle", "type": "toggle(index: number): void", "description": "Hide / show a slice, stage, series or top-level node and emit toggle (controlled with hidden: only emit)." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "SankeyChart": {
+    "entry": "minerva-design/sankey-chart/index",
+    "props": [
+      { "name": "align", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "animation", "type": "any", "required": false, "default": "null" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "height", "type": "any", "required": false, "default": "null" },
+      { "name": "hidden", "type": "any", "required": false, "default": "null" },
+      { "name": "iterations", "type": "any", "required": false, "default": "null" },
+      { "name": "labels", "type": "any", "required": false, "default": "null" },
+      { "name": "labelValues", "type": "any", "required": false, "default": "null" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "linkColor", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "linkOpacity", "type": "any", "required": false, "default": "null" },
+      { "name": "links", "type": "array", "required": false, "default": "[]" },
+      { "name": "nodePadding", "type": "any", "required": false, "default": "null" },
+      { "name": "nodes", "type": "array", "required": false, "default": "[]" },
+      { "name": "nodeWidth", "type": "any", "required": false, "default": "null" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" }
+    ],
+    "events": [
+      { "name": "click", "type": "NativeShapeHoverEvent", "description": "A mark was tapped." },
+      { "name": "drill", "type": "{ path: string[] }", "description": "Sunburst: a parent or the center was tapped (or drill() called); controlled charts must publish path through drillPath." },
+      { "name": "hover", "type": "NativeShapeHoverEvent", "description": "Highlighted mark after a tap (index -1 when cleared)." },
+      {
+        "name": "toggle",
+        "type": "{ index: number; hidden: boolean; hiddenIndexes: number[] }",
+        "description": "A legend item was tapped (or toggle() called); controlled charts must publish hiddenIndexes through hidden."
+      }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      { "name": "clearHover", "type": "clearHover(): void", "description": "Remove the highlight and the tooltip." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeShapeChartConfig): void",
+        "description": "Function options: format(value) and percentFormat(share) of the labels and the tooltip, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it."
+      },
+      { "name": "drill", "type": "drill(path: string[]): void", "description": "Sunburst: focus the node at this path ([] = the root) and emit drill (controlled with drillPath: only emit)." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getDrillPath", "type": "getDrillPath(): string[]", "description": "Sunburst: names from the root to the focused node." },
+      { "name": "getHidden", "type": "getHidden(): number[]", "description": "Indexes of the hidden entries, ascending." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "toggle", "type": "toggle(index: number): void", "description": "Hide / show a slice, stage, series or top-level node and emit toggle (controlled with hidden: only emit)." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "SunburstChart": {
+    "entry": "minerva-design/sunburst-chart/index",
+    "props": [
+      { "name": "animation", "type": "any", "required": false, "default": "null" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "cornerRadius", "type": "any", "required": false, "default": "null" },
+      { "name": "data", "type": "array", "required": false, "default": "[]" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "drill", "type": "any", "required": false, "default": "null" },
+      { "name": "drillPath", "type": "any", "required": false, "default": "null" },
+      { "name": "height", "type": "any", "required": false, "default": "null" },
+      { "name": "hidden", "type": "any", "required": false, "default": "null" },
+      { "name": "innerRadius", "type": "any", "required": false, "default": "null" },
+      { "name": "labels", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "levels", "type": "any", "required": false, "default": "null" },
+      { "name": "padAngle", "type": "any", "required": false, "default": "null" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "startAngle", "type": "any", "required": false, "default": "null" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" }
+    ],
+    "events": [
+      { "name": "click", "type": "NativeShapeHoverEvent", "description": "A mark was tapped." },
+      { "name": "drill", "type": "{ path: string[] }", "description": "Sunburst: a parent or the center was tapped (or drill() called); controlled charts must publish path through drillPath." },
+      { "name": "hover", "type": "NativeShapeHoverEvent", "description": "Highlighted mark after a tap (index -1 when cleared)." },
+      {
+        "name": "toggle",
+        "type": "{ index: number; hidden: boolean; hiddenIndexes: number[] }",
+        "description": "A legend item was tapped (or toggle() called); controlled charts must publish hiddenIndexes through hidden."
+      }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      { "name": "clearHover", "type": "clearHover(): void", "description": "Remove the highlight and the tooltip." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeShapeChartConfig): void",
+        "description": "Function options: format(value) and percentFormat(share) of the labels and the tooltip, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it."
+      },
+      { "name": "drill", "type": "drill(path: string[]): void", "description": "Sunburst: focus the node at this path ([] = the root) and emit drill (controlled with drillPath: only emit)." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getDrillPath", "type": "getDrillPath(): string[]", "description": "Sunburst: names from the root to the focused node." },
+      { "name": "getHidden", "type": "getHidden(): number[]", "description": "Indexes of the hidden entries, ascending." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "toggle", "type": "toggle(index: number): void", "description": "Hide / show a slice, stage, series or top-level node and emit toggle (controlled with hidden: only emit)." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "RadialBarChart": {
+    "entry": "minerva-design/radial-bar-chart/index",
+    "props": [
+      { "name": "animation", "type": "any", "required": false, "default": "null" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "centerLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "centerValue", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "data", "type": "array", "required": false, "default": "[]" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "gap", "type": "any", "required": false, "default": "null" },
+      { "name": "height", "type": "any", "required": false, "default": "null" },
+      { "name": "hidden", "type": "any", "required": false, "default": "null" },
+      { "name": "innerRadius", "type": "any", "required": false, "default": "null" },
+      { "name": "labelContent", "type": "any", "required": false, "default": "null" },
+      { "name": "labels", "type": "any", "required": false, "default": "null" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "max", "type": "any", "required": false, "default": "null" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "rounded", "type": "any", "required": false, "default": "null" },
+      { "name": "startAngle", "type": "any", "required": false, "default": "null" },
+      { "name": "sweep", "type": "any", "required": false, "default": "null" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "track", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" }
+    ],
+    "events": [
+      { "name": "click", "type": "NativeShapeHoverEvent", "description": "A mark was tapped." },
+      { "name": "drill", "type": "{ path: string[] }", "description": "Sunburst: a parent or the center was tapped (or drill() called); controlled charts must publish path through drillPath." },
+      { "name": "hover", "type": "NativeShapeHoverEvent", "description": "Highlighted mark after a tap (index -1 when cleared)." },
+      {
+        "name": "toggle",
+        "type": "{ index: number; hidden: boolean; hiddenIndexes: number[] }",
+        "description": "A legend item was tapped (or toggle() called); controlled charts must publish hiddenIndexes through hidden."
+      }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      { "name": "clearHover", "type": "clearHover(): void", "description": "Remove the highlight and the tooltip." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeShapeChartConfig): void",
+        "description": "Function options: format(value) and percentFormat(share) of the labels and the tooltip, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it."
+      },
+      { "name": "drill", "type": "drill(path: string[]): void", "description": "Sunburst: focus the node at this path ([] = the root) and emit drill (controlled with drillPath: only emit)." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getDrillPath", "type": "getDrillPath(): string[]", "description": "Sunburst: names from the root to the focused node." },
+      { "name": "getHidden", "type": "getHidden(): number[]", "description": "Indexes of the hidden entries, ascending." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "toggle", "type": "toggle(index: number): void", "description": "Hide / show a slice, stage, series or top-level node and emit toggle (controlled with hidden: only emit)." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "CalendarHeatmap": {
+    "entry": "minerva-design/calendar-heatmap/index",
+    "props": [
+      { "name": "animation", "type": "any", "required": false, "default": "null" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "color", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "colors", "type": "array", "required": false, "default": "[]" },
+      { "name": "data", "type": "array", "required": false, "default": "[]" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "gap", "type": "any", "required": false, "default": "null" },
+      { "name": "height", "type": "any", "required": false, "default": "null" },
+      { "name": "hidden", "type": "any", "required": false, "default": "null" },
+      { "name": "layout", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "levels", "type": "any", "required": false, "default": "null" },
+      { "name": "locale", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "maxCellSize", "type": "any", "required": false, "default": "null" },
+      { "name": "monthLabels", "type": "any", "required": false, "default": "null" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "radius", "type": "any", "required": false, "default": "null" },
+      { "name": "range", "type": "any", "required": false, "default": "null" },
+      { "name": "thresholds", "type": "array", "required": false, "default": "[]" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "weekdayLabels", "type": "any", "required": false, "default": "null" },
+      { "name": "weekStart", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" }
+    ],
+    "events": [
+      { "name": "click", "type": "NativeShapeHoverEvent", "description": "A mark was tapped." },
+      { "name": "drill", "type": "{ path: string[] }", "description": "Sunburst: a parent or the center was tapped (or drill() called); controlled charts must publish path through drillPath." },
+      { "name": "hover", "type": "NativeShapeHoverEvent", "description": "Highlighted mark after a tap (index -1 when cleared)." },
+      {
+        "name": "toggle",
+        "type": "{ index: number; hidden: boolean; hiddenIndexes: number[] }",
+        "description": "A legend item was tapped (or toggle() called); controlled charts must publish hiddenIndexes through hidden."
+      }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      { "name": "clearHover", "type": "clearHover(): void", "description": "Remove the highlight and the tooltip." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeShapeChartConfig): void",
+        "description": "Function options: format(value) and percentFormat(share) of the labels and the tooltip, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it."
+      },
+      { "name": "drill", "type": "drill(path: string[]): void", "description": "Sunburst: focus the node at this path ([] = the root) and emit drill (controlled with drillPath: only emit)." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getDrillPath", "type": "getDrillPath(): string[]", "description": "Sunburst: names from the root to the focused node." },
+      { "name": "getHidden", "type": "getHidden(): number[]", "description": "Indexes of the hidden entries, ascending." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "toggle", "type": "toggle(index: number): void", "description": "Hide / show a slice, stage, series or top-level node and emit toggle (controlled with hidden: only emit)." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "BulletChart": {
+    "entry": "minerva-design/bullet-chart/index",
+    "props": [
+      { "name": "animation", "type": "any", "required": false, "default": "null" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "barSize", "type": "any", "required": false, "default": "null" },
+      { "name": "data", "type": "array", "required": false, "default": "[]" },
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "height", "type": "any", "required": false, "default": "null" },
+      { "name": "hidden", "type": "any", "required": false, "default": "null" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "orientation", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "rangeColors", "type": "array", "required": false, "default": "[]" },
+      { "name": "rangeLabels", "type": "array", "required": false, "default": "[]" },
+      { "name": "ranges", "type": "array", "required": false, "default": "[]" },
+      { "name": "targetColor", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "ticks", "type": "any", "required": false, "default": "null" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" }
+    ],
+    "events": [
+      { "name": "click", "type": "NativeShapeHoverEvent", "description": "A mark was tapped." },
+      { "name": "drill", "type": "{ path: string[] }", "description": "Sunburst: a parent or the center was tapped (or drill() called); controlled charts must publish path through drillPath." },
+      { "name": "hover", "type": "NativeShapeHoverEvent", "description": "Highlighted mark after a tap (index -1 when cleared)." },
+      {
+        "name": "toggle",
+        "type": "{ index: number; hidden: boolean; hiddenIndexes: number[] }",
+        "description": "A legend item was tapped (or toggle() called); controlled charts must publish hiddenIndexes through hidden."
+      }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      { "name": "clearHover", "type": "clearHover(): void", "description": "Remove the highlight and the tooltip." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeShapeChartConfig): void",
+        "description": "Function options: format(value) and percentFormat(share) of the labels and the tooltip, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it."
+      },
+      { "name": "drill", "type": "drill(path: string[]): void", "description": "Sunburst: focus the node at this path ([] = the root) and emit drill (controlled with drillPath: only emit)." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getDrillPath", "type": "getDrillPath(): string[]", "description": "Sunburst: names from the root to the focused node." },
+      { "name": "getHidden", "type": "getHidden(): number[]", "description": "Indexes of the hidden entries, ascending." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "toggle", "type": "toggle(index: number): void", "description": "Hide / show a slice, stage, series or top-level node and emit toggle (controlled with hidden: only emit)." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "ShapeChart": {
+    "entry": "minerva-design/shape-chart/index",
+    "props": [
+      { "name": "disableScroll", "type": "boolean", "required": false, "default": "false" },
+      { "name": "height", "type": "any", "required": false, "default": "null" },
+      { "name": "options", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" }
+    ],
+    "events": [
+      { "name": "click", "type": "NativeShapeHoverEvent", "description": "A mark was tapped." },
+      { "name": "drill", "type": "{ path: string[] }", "description": "Sunburst: a parent or the center was tapped (or drill() called); controlled charts must publish path through drillPath." },
+      { "name": "hover", "type": "NativeShapeHoverEvent", "description": "Highlighted mark after a tap (index -1 when cleared)." },
+      {
+        "name": "toggle",
+        "type": "{ index: number; hidden: boolean; hiddenIndexes: number[] }",
+        "description": "A legend item was tapped (or toggle() called); controlled charts must publish hiddenIndexes through hidden."
+      }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      { "name": "clearHover", "type": "clearHover(): void", "description": "Remove the highlight and the tooltip." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeShapeChartConfig): void",
+        "description": "Function options: format(value) and percentFormat(share) of the labels and the tooltip, renderTooltip(event) returning the tooltip text (lines separated by \\n) or null to hide it."
+      },
+      { "name": "drill", "type": "drill(path: string[]): void", "description": "Sunburst: focus the node at this path ([] = the root) and emit drill (controlled with drillPath: only emit)." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getDrillPath", "type": "getDrillPath(): string[]", "description": "Sunburst: names from the root to the focused node." },
+      { "name": "getHidden", "type": "getHidden(): number[]", "description": "Indexes of the hidden entries, ascending." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "toggle", "type": "toggle(index: number): void", "description": "Hide / show a slice, stage, series or top-level node and emit toggle (controlled with hidden: only emit)." },
       { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
     ]
   },

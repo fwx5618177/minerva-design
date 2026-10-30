@@ -18,7 +18,8 @@
 // an existing one plus a source dialect (`WC_FRAMEWORKS` in ./transform.ts).
 // Angular has a native package; this selector currently demonstrates its
 // separate Web Components integration and links to the native guide.
-import type { WcMeta } from "../registry";
+import type { DocPageMeta, WcMeta } from "../registry";
+import { CHART_ENTRIES } from "./chartEntries";
 
 export type FrameworkId =
   "react" | "react-native" | "vue" | "angular" | "svelte" | "solid" | "html";
@@ -56,6 +57,15 @@ export interface FrameworkDef {
 const PKG = "minerva-design/web-components";
 /** Paths inside the published package (node_modules / CDN) */
 const CDN_FILE = "minerva-design/dist/web-components/cdn/minerva.js";
+/**
+ * Optional define entries: not part of the all-in-one entry nor of the CDN
+ * bundle (they need an optional peer dependency, or load the chart engine)
+ */
+const OPTIONAL_ENTRIES = new Set<string>(["code-editor", ...CHART_ENTRIES]);
+
+/** A page of minerva-design/charts (or its engine, minerva-design/charts/core) */
+export const isChartPage = (meta: DocPageMeta) =>
+  !!meta.package?.startsWith("minerva-design/charts");
 
 const register = (wc: WcMeta, file: string, extra = ""): SetupSnippet => ({
   step: "register",
@@ -63,7 +73,7 @@ const register = (wc: WcMeta, file: string, extra = ""): SetupSnippet => ({
   language: "ts",
   code: `${extra}// registers ${wc.tags.map((tag) => `<${tag}>`).join(", ")} (and only them)
 import "${PKG}/${wc.entry}";
-// or every element at once: import "${PKG}";
+${OPTIONAL_ENTRIES.has(wc.entry) ? `// optional entry: not part of "${PKG}" nor of the CDN bundle` : `// or every element at once: import "${PKG}";`}
 `,
 });
 
@@ -147,13 +157,17 @@ export const FRAMEWORKS: readonly FrameworkDef[] = [
   import "${PKG}/${wc.entry}";
 </script>`,
       },
-      {
-        step: "htmlCdn",
-        file: "index.html",
-        language: "html",
-        code: `<!-- no build step: the self-contained bundle registers every element -->
+      ...(OPTIONAL_ENTRIES.has(wc.entry)
+        ? []
+        : [
+            {
+              step: "htmlCdn",
+              file: "index.html",
+              language: "html",
+              code: `<!-- no build step: the self-contained bundle registers every element -->
 <script type="module" src="https://cdn.jsdelivr.net/npm/${CDN_FILE}"></script>`,
-      },
+            },
+          ]),
     ],
   },
 ];

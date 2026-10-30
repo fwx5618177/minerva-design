@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   QuadrantChart,
   type QuadrantPoint,
@@ -6,44 +7,59 @@ import {
 } from "minerva-design/charts";
 
 // x: urgency, y: importance (0-10)
-const tasks: QuadrantPoint[] = [
-  { label: "Fix login outage", x: 9, y: 7.2 },
-  { label: "Tax filing", x: 7.5, y: 8.6 },
-  { label: "Quarterly planning", x: 3, y: 8.5 },
-  { label: "Mentoring", x: 2, y: 7 },
-  { label: "Book travel", x: 8.5, y: 3 },
-  { label: "Most meetings", x: 7, y: 2 },
-  { label: "Inbox zero", x: 3, y: 2.5 },
-  { label: "Social media", x: 1.5, y: 1 },
+const tasks = [
+  { key: "loginOutage", x: 9, y: 7.2 },
+  { key: "taxFiling", x: 7.5, y: 8.6 },
+  { key: "quarterlyPlanning", x: 3, y: 8.5 },
+  { key: "mentoring", x: 2, y: 7 },
+  { key: "bookTravel", x: 8.5, y: 3 },
+  { key: "meetings", x: 7, y: 2 },
+  { key: "inboxZero", x: 3, y: 2.5 },
+  { key: "socialMedia", x: 1.5, y: 1 },
 ];
 
-const quadrants: QuadrantRegions = {
-  topLeft: { label: "Do first" },
-  topRight: { label: "Schedule" },
-  bottomLeft: { label: "Delegate" },
-  bottomRight: { label: "Eliminate" },
-};
-
 export default function EisenhowerDemo() {
+  const { t } = useTranslation("common", {
+    keyPrefix: "docs.quadrant-chart.data",
+  });
   const [selected, setSelected] = useState<QuadrantPoint | null>(null);
+
+  const points = useMemo(
+    (): QuadrantPoint[] =>
+      tasks.map(({ key, x, y }) => ({ label: t(`tasks.${key}`), x, y })),
+    [t],
+  );
+  const quadrants = useMemo(
+    (): QuadrantRegions => ({
+      topLeft: { label: t("doFirst") },
+      topRight: { label: t("schedule") },
+      bottomLeft: { label: t("delegate") },
+      bottomRight: { label: t("eliminate") },
+    }),
+    [t],
+  );
 
   return (
     <div style={{ display: "grid", gap: 8, width: "100%" }}>
       <QuadrantChart
-        points={tasks}
+        points={points}
         quadrants={quadrants}
         reverseX
-        xLabel="Urgency"
-        yLabel="Importance"
-        name="Task"
+        xLabel={t("urgency")}
+        yLabel={t("importance")}
+        name={t("task")}
         onPointClick={(point) => setSelected(point)}
         height={320}
-        ariaLabel="Eisenhower matrix of tasks"
+        ariaLabel={t("eisenhowerAria")}
       />
       <p role="status">
         {selected
-          ? `${selected.label}: urgency ${selected.x}, importance ${selected.y}`
-          : "Click a task"}
+          ? t("taskStatus", {
+              task: selected.label,
+              urgency: selected.x,
+              importance: selected.y,
+            })
+          : t("clickTask")}
       </p>
     </div>
   );

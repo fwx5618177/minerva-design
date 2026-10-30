@@ -1,5 +1,5 @@
 {
-  "title": "FunnelChart",
+  "title": "ファネルチャート",
   "description": "途中で数が減っていくプロセスの各段階（登録、営業パイプライン、購入手続き）を、段階ごとのコンバージョン率とともに示します。ホバーまたは矢印キーでステージをハイライトし、凡例の項目をクリックすると非表示にできます。",
   "demos": {
     "basic": {
@@ -9,7 +9,81 @@
     "bars": {
       "title": "バーと並べ替え",
       "description": "shape=\"bar\" は順序のない値を中央揃えのバーで描きます。sort で並べ替え（アニメーション付き）、conversion={false} で率を非表示にします。"
+    },
+    "ecommerce": {
+      "title": "EC の購入フロー",
+      "description": "ネットショップの購入ファネルの横に、段階間の離脱率を Table で示します。最も離脱の多い段階は両方で赤く強調されます。"
+    },
+    "recruiting": {
+      "title": "採用パイプライン",
+      "description": "1 つの職種の応募から採用までの候補者を段階ごとに色を変えた棒で表示します。ツールチップに段階の標準的な所要時間を加え、クリックで選択できます。"
+    },
+    "compare": {
+      "title": "セグメントの比較",
+      "description": "同じファネルをデバイス別に分けて並べ、段階をそろえてセグメントごとに色を変え、モバイルのユーザーがどこで離脱するかを確認します。"
     }
+  },
+  "data": {
+    "signup": {
+      "pricing": "料金ページ",
+      "started": "登録開始",
+      "verified": "メール確認",
+      "project": "プロジェクト作成",
+      "invited": "メンバー招待",
+      "upgraded": "有料プランへ移行"
+    },
+    "users": "{{users}} 人",
+    "ofVisitors": "訪問者の {{share}}",
+    "droppedSince": "「{{stage}}」から {{users}} 人が離脱",
+    "signupAria": "登録ファネル",
+    "features": {
+      "alerts": "アラート",
+      "dashboards": "ダッシュボード",
+      "integrations": "連携",
+      "reports": "レポート",
+      "api": "公開 API"
+    },
+    "sortOrder": "並び順",
+    "sorts": {
+      "descending": "降順",
+      "ascending": "昇順",
+      "none": "データの順"
+    },
+    "weeklyUsers": "週 {{users}} 人",
+    "featuresAria": "機能別の週間アクティブユーザー",
+    "shop": {
+      "visits": "訪問",
+      "product": "商品ページ",
+      "cart": "カート追加",
+      "checkout": "購入手続き",
+      "payment": "支払い",
+      "order": "注文完了"
+    },
+    "stage": "段階",
+    "visitors": "訪問者",
+    "dropOff": "離脱率",
+    "conversionOverall": "最初の段階の {{share}}",
+    "shopAria": "ネットショップの購入ファネル",
+    "dropOffTable": "段階間の離脱率",
+    "hiring": {
+      "applied": "応募",
+      "screened": "書類選考",
+      "technical": "技術面接",
+      "onsite": "最終面接",
+      "offer": "内定",
+      "hired": "入社"
+    },
+    "candidates": "{{candidates}} 人",
+    "stageTime": "この段階の標準的な所要時間：{{days}}",
+    "hiringAria": "エンジニア職の採用パイプライン",
+    "hiringSelected": "{{stage}}：{{candidates}} 人（応募者の {{share}}）",
+    "hiringSummary": "応募者の {{rate}} が採用され、平均 {{days}} かかります",
+    "devices": {
+      "desktop": "デスクトップ",
+      "mobile": "モバイル"
+    },
+    "conversionRate": "コンバージョン率 {{rate}}",
+    "deviceFunnelAria": "{{device}}の購入ファネル"
   },
   "api": {
     "FunnelChartProps": {
@@ -18,6 +92,54 @@
       "gap": "ステージ間の縦の間隔（ピクセル）",
       "conversion": "前のステージからのコンバージョン率を表示する",
       "shape": "ステージの形：次のステージへ細くなる台形、または中央揃えのバー"
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "基本",
+        "description": "各ステージは次のステージへ狭まり、前のステージからのコンバージョン率を表示します。ステージをタップすると選択できます。"
+      }
+    },
+    "data": {
+      "stages": {
+        "install": "インストール",
+        "open": "起動",
+        "signup": "登録",
+        "trial": "トライアル開始",
+        "paid": "有料化"
+      },
+      "signupAria": "モバイルアプリの登録ファネル",
+      "selectedStage": "{{stage}}：{{users}} 人（インストールの {{share}}）",
+      "tapStage": "ステージをタップして選択"
+    }
+  },
+  "wc": {
+    "demos": {
+      "conversion": {
+        "title": "コンバージョンファネル",
+        "description": "各段階は次の段階へ向かって狭まり、前の段階からのコンバージョン率を表示します。"
+      },
+      "bars": {
+        "title": "並べ替えた棒",
+        "description": "台形の代わりに中央揃えの棒を使い、段階を値で並べ替えます。"
+      }
+    },
+    "minerva-funnel-chart": {
+      "props": {
+        "hideConversion": "前の段階からのコンバージョン率を非表示にします",
+        "height": "チャートの高さ（凡例を含む）：ピクセルまたは任意の CSS の長さ",
+        "options": "その他のエンジンのオプション（軸、凡例、ツールチップ、パレット、書式…）。要素自身のプロパティとマージされます。プロパティのみ",
+        "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+      },
+      "events": {
+        "minerva-hover": "ホバー（またはキーボードでフォーカス）している要素が変わりました。detail：{ index, name, value, share }、何もない場合は null",
+        "minerva-click": "要素がクリック、タップ、または Enter で選択されました。detail：{ index, name, value, share }",
+        "minerva-toggle": "凡例の項目がクリックされました（または toggle() が呼ばれました）。detail：{ index, hidden, hiddenIndexes }"
+      },
+      "methods": {
+        "toggle": "インデックスでスライス、段階、レーダーの系列、ツリーマップの最上位ノードを表示・非表示にします"
+      }
     }
   }
 }

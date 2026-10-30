@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   HeatmapChart,
   type ChartRendererKind,
@@ -28,6 +29,10 @@ const WALLS = [70, 140];
 const plasma = ["#0d0887", "#7e03a8", "#cc4778", "#f89540", "#f0f921"];
 
 export default function LargeGridDemo() {
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.heatmap-chart.data",
+  });
+  const locale = i18n.language;
   const [renderer, setRenderer] = useState<ChartRendererKind | null>(null);
 
   // Wi-Fi signal strength on a 200 × 100 m floor, one cell per square meter
@@ -47,6 +52,11 @@ export default function LargeGridDemo() {
     }
     return cells;
   }, []);
+  const meters = useMemo(
+    () => new Intl.NumberFormat(locale, { style: "unit", unit: "meter" }),
+    [locale],
+  );
+  const number = useMemo(() => new Intl.NumberFormat(locale), [locale]);
 
   return (
     <div style={{ display: "grid", gap: 8, width: "100%" }}>
@@ -54,20 +64,21 @@ export default function LargeGridDemo() {
         data={data}
         colorScale={plasma}
         valueRange={[-90, -30]}
-        name="Signal"
-        format={(value) => `${value.toFixed(0)} dBm`}
+        name={t("signal")}
+        format={(value) => `${number.format(Math.round(value))} dBm`}
         radius={0}
-        xAxis={{ title: "x (m)" }}
-        yAxis={{ title: "y (m)" }}
+        xAxis={{ format: (value) => meters.format(value) }}
+        yAxis={{ format: (value) => meters.format(value) }}
         interaction={{ zoom: "xy" }}
         onRendererChange={setRenderer}
         height={340}
-        ariaLabel="Wi-Fi signal strength over a 200 by 100 meter floor"
+        ariaLabel={t("wifiAria")}
       />
       <p role="status">
-        {(WIDTH * DEPTH).toLocaleString("en")} cells · drawn with{" "}
-        {renderer ?? "…"} · Ctrl / ⌘ + wheel to zoom, drag to pan, double-click
-        to reset
+        {t("largeStatus", {
+          cells: number.format(WIDTH * DEPTH),
+          renderer: renderer ?? "…",
+        })}
       </p>
     </div>
   );

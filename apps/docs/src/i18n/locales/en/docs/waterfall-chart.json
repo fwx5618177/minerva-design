@@ -1,0 +1,130 @@
+{
+  "title": "Waterfall chart",
+  "description": "How a series of increases and decreases takes a value from a start to an end, with subtotals and totals: P&L bridges, cash flow, variances.",
+  "demos": {
+    "pnl": {
+      "title": "Profit and loss bridge",
+      "description": "From revenue to net income: each change starts where the previous bar ended, subtotal and total bars show the running total from zero; the labels show the changes."
+    },
+    "cash-flow": {
+      "title": "Cash flow",
+      "description": "start sets the opening balance shown by the first subtotal, the months add their net flows and the closing balance ends the chart; yAxis.min zooms on the changes."
+    },
+    "variance": {
+      "title": "Budget variance",
+      "description": "With orientation: \"horizontal\", the drivers explaining the gap between the budgeted and the actual margin are listed in rows."
+    },
+    "headcount": {
+      "title": "Headcount bridge",
+      "description": "upColor, downColor and totalColor replace the default colors, here arrivals in blue and departures in amber."
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "Basic",
+        "description": "An income statement laid out in rows (orientation=\"horizontal\"), which leaves room for the line names on a phone."
+      }
+    }
+  },
+  "data": {
+    "pnl": {
+      "revenue": "Revenue",
+      "costOfSales": "Cost of sales",
+      "grossProfit": "Gross profit",
+      "research": "R&D",
+      "marketing": "Marketing",
+      "admin": "G&A",
+      "operatingIncome": "Operating income",
+      "interest": "Interest",
+      "tax": "Tax",
+      "netIncome": "Net income"
+    },
+    "amount": "Amount",
+    "pnlAria": "Income statement from revenue to net income",
+    "opening": "Opening",
+    "closing": "Closing",
+    "cashFlow": "Net cash flow",
+    "cashAria": "Monthly net cash flows from the opening to the closing balance",
+    "budget": "Budget",
+    "actual": "Actual",
+    "drivers": {
+      "volume": "Volume",
+      "price": "Price",
+      "mix": "Product mix",
+      "exchangeRates": "Exchange rates",
+      "rawMaterials": "Raw materials",
+      "savings": "Savings"
+    },
+    "variance": "Variance",
+    "varianceAria": "Drivers of the variance between the budgeted and the actual margin",
+    "startOfYear": "Start of year",
+    "endOfYear": "End of year",
+    "movements": {
+      "hires": "Hires",
+      "internalIn": "Transfers in",
+      "resignations": "Resignations",
+      "internalOut": "Transfers out",
+      "retirements": "Retirements"
+    },
+    "people": "People",
+    "headcountAria": "Headcount changes over the year"
+  },
+  "api": {
+    "WaterfallChartProps": {
+      "steps": "Changes, subtotals and totals, in order",
+      "labels": "Writes the change (or the total) at the end of every bar",
+      "orientation": "\"horizontal\" lays the steps out in rows"
+    },
+    "WaterfallStep": {
+      "label": "Category name of the bar",
+      "value": "Change (positive or negative); ignored by totals",
+      "kind": "\"subtotal\" and \"total\" bars show the running total from zero",
+      "color": "Color of this bar (any CSS color)"
+    },
+    "WaterfallOptions": {
+      "name": "Name of the series (tooltip)",
+      "upColor": "Color of the increases",
+      "downColor": "Color of the decreases",
+      "totalColor": "Color of the totals and subtotals",
+      "start": "Value the first change starts from",
+      "labels": "Writes the change (or the total) at the end of every bar",
+      "format": "Formats the values (labels, tooltip)",
+      "locale": "Locale of the default series name; the page language by default"
+    }
+  },
+  "wc": {
+    "demos": {
+      "pnl": {
+        "title": "Profit and loss bridge",
+        "description": "Changes float from the running total, the gross profit is a subtotal and the net income the total."
+      },
+      "cash-flow": {
+        "title": "Cash flow from an opening balance",
+        "description": "Monthly inflows and outflows in rows, from the opening balance to the closing total; values in the tooltip."
+      }
+    },
+    "minerva-waterfall-chart": {
+      "props": {
+        "valueName": "Name of the value in the tooltip",
+        "hideLabels": "Hides the change (or total) written at the end of every bar",
+        "height": "Height of the chart, the legend included: pixels or any CSS length",
+        "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+        "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+      },
+      "events": {
+        "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
+        "minerva-point-click": "A point or a bar was clicked; detail: { x, xLabel, items }",
+        "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
+        "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",
+        "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+      },
+      "methods": {
+        "resetZoom": "Shows the whole data range",
+        "getView": "Visible range, null before the engine is created",
+        "setView": "Sets the visible range",
+        "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
+      }
+    }
+  }
+}

@@ -1,0 +1,173 @@
+{
+  "title": "Graphique de profondeur",
+  "description": "Profondeur cumulée d'un carnet d'ordres : aires en escalier des achats et ventes autour du prix médian, lecture au survol symétrique (quantité, coût, prix moyen), zoom autour du médian et transitions fluides à des centaines de deltas par seconde.",
+  "demos": {
+    "basic": {
+      "title": "Base",
+      "description": "Passez un instantané avec book : niveaux [prix, quantité] de chaque côté, dans n'importe quel ordre. Au survol, l'infobulle du côté survolé donne la quantité cumulée, son coût et le prix moyen d'exécution ; l'infobulle symétrique, l'autre côté à la même distance du médian."
+    },
+    "live": {
+      "title": "Flux en direct",
+      "description": "Une centaine de deltas par seconde d'un moteur d'appariement simulé passent par la poignée ref (applyDeltas : prix → quantité, 0 supprime le niveau). React ne refait pas de rendu : le graphique les regroupe en une image et adoucit courbes et échelle ; il ne dessine plus hors de l'écran."
+    },
+    "range": {
+      "title": "Plage affichée",
+      "description": "range est la demi-largeur des prix visibles autour du médian (0.005 = ±0,5 %) ; sans elle, le côté le plus court est ajusté. Ctrl/⌘ + molette ou un pincement zooment, un double clic réinitialise, onRangeChange signale la plage. amount=\"quote\" cumule les montants, curve=\"linear\" relie les niveaux par des pentes."
+    },
+    "walls": {
+      "title": "Murs et impact de marché",
+      "description": "Les gros ordres au repos forment des falaises. onHover donne la quantité cumulée, le montant et le prix moyen jusqu'au prix survolé : le coût d'un ordre au marché qui balaierait le carnet jusque-là."
+    },
+    "dark": {
+      "title": "Terminal sombre",
+      "description": "Les couleurs viennent des variables CSS (--background-color, --text-color, --success-color, --danger-color…) : définissez-les sur un conteneur ou passez le site en mode sombre. priceLines marque vos ordres et un prix de liquidation."
+    },
+    "compact": {
+      "title": "Compact (mobile)",
+      "description": "Une carte de téléphone : legend={false}, textes plus petits et plage fixe. Pincez pour zoomer, touchez pour lire la profondeur."
+    },
+    "red-up": {
+      "title": "Rouge à la hausse",
+      "description": "colorConvention=\"red-up\" inverse les couleurs par défaut : achats en rouge, ventes en vert, comme en Chine continentale, au Japon et en Corée. upColor et downColor acceptent toute couleur."
+    }
+  },
+  "data": {
+    "aria": "Profondeur du carnet BTC/USDT",
+    "stream": "Flux en direct",
+    "range": "Plage visible",
+    "auto": "Ajustée",
+    "plusMinus": "±{{value}}",
+    "amountAxis": "Cumul",
+    "base": "Quantité (BTC)",
+    "quote": "Montant (USDT)",
+    "curve": "Courbe",
+    "step": "Escalier",
+    "linear": "Linéaire",
+    "zoomHint": "Ctrl/⌘ + molette ou pincement pour zoomer autour du médian, double clic pour réinitialiser.",
+    "zoomed": "Zoom : {{value}}",
+    "myBid": "Mon achat",
+    "myAsk": "Ma vente",
+    "liquidation": "Liquidation",
+    "colors": "Convention de couleurs",
+    "redUp": "Rouge hausse, vert baisse",
+    "greenUp": "Vert hausse, rouge baisse",
+    "sweepBuy": "Acheter {{amount}} BTC ({{total}}) balaie les ventes jusqu'à {{price}}, {{slippage}} au-dessus du médian : prix moyen {{average}}.",
+    "sweepSell": "Vendre {{amount}} BTC ({{total}}) balaie les achats jusqu'à {{price}}, {{slippage}} sous le médian : prix moyen {{average}}.",
+    "sweepHint": "Survolez les courbes pour chiffrer un ordre au marché."
+  },
+  "api": {
+    "DepthChartProps": {
+      "book": "Carnet à dessiner, appliqué quand l'objet change (flux via la ref)",
+      "onHover": "Pointeur sur les courbes : le côté survolé et son symétrique (null en sortant)",
+      "onClick": "Clic ou toucher sur les courbes",
+      "onRangeChange": "La plage visible a changé par zoom (fraction du médian)",
+      "ref": "Poignée impérative : setBook, applyDeltas, setRange, getInstance"
+    },
+    "DepthChartHandle": {
+      "setBook": "Remplace le carnet",
+      "applyDeltas": "Applique des mises à jour (quantité 0 supprime le niveau), dessinées une fois à l'image suivante",
+      "setRange": "Fixe la plage visible (fraction du médian) ; null ajuste au carnet",
+      "getInstance": "L'instance du moteur sous-jacent (minerva-design/charts/core)"
+    },
+    "DepthChartOptions": {
+      "range": "Demi-largeur des prix visibles autour du médian, en fraction (0.01 = ±1 %) ; ajuste le côté le plus court si omise",
+      "rangeLimits": "Plus petite et plus grande plage atteintes par zoom",
+      "zoomable": "Zoome autour du médian avec Ctrl/⌘ + molette et pincement",
+      "curve": "Forme des courbes cumulées : escalier ou segments",
+      "amount": "Cumule les quantités (base) ou les montants, prix × quantité (quote)",
+      "animate": "Adoucit courbes et échelle entre les mises à jour",
+      "fillOpacity": "Opacité des aires (haut du dégradé)",
+      "midLine": "Ligne verticale au prix médian avec l'étiquette médian et écart",
+      "legend": "Légende achats et ventes",
+      "grid": "Lignes de grille",
+      "axes": "Axes des prix et des quantités",
+      "tooltip": "Réticule et infobulles au survol",
+      "mirror": "Lit aussi l'autre côté à la même distance du médian",
+      "priceLines": "Repères verticaux : vos ordres, un prix de liquidation…",
+      "labels": "Remplace les textes intégrés, qui suivent locale (anglais, chinois, japonais et français intégrés)"
+    },
+    "OrderBookCommonOptions": {
+      "upColor": "Couleur des achats (le côté « hausse ») ; --success-color par défaut, --danger-color avec colorConvention \"red-up\"",
+      "downColor": "Couleur des ventes (le côté « baisse ») ; --danger-color par défaut, --success-color avec colorConvention \"red-up\"",
+      "colorConvention": "\"red-up\" inverse les couleurs par défaut : achats en rouge, ventes en vert (Chine continentale, Japon, Corée)",
+      "pricePrecision": "Décimales des prix ; déduites des données si omises",
+      "sizePrecision": "Décimales des quantités ; déduites des données si omises",
+      "locale": "Langue des nombres (Intl.NumberFormat, unités compactes comme k ou 万) et des textes intégrés (anglais, chinois, japonais, français) ; la langue de la page (attribut lang de l’élément html) par défaut",
+      "formatPrice": "Formate un prix (remplace pricePrecision et locale)",
+      "formatSize": "Formate une quantité (remplace sizePrecision et locale)",
+      "fontFamily": "Police des textes ; celle du thème si omise (une police à chasse fixe aligne les chiffres)",
+      "fontSize": "Taille des textes, en pixels",
+      "ariaLabel": "Nom accessible du widget ; labels.name localisé par défaut"
+    },
+    "OrderBookWidgetProps": {
+      "height": "Hauteur du widget ; les nombres sont des pixels",
+      "width": "Largeur du widget ; les nombres sont des pixels",
+      "className": "Classe du conteneur",
+      "style": "Style du conteneur"
+    },
+    "DepthChartLabels": {
+      "bids": "Nom des achats",
+      "asks": "Nom des ventes",
+      "price": "Ligne prix de l'infobulle",
+      "amount": "Quantité cumulée",
+      "total": "Montant cumulé (prix × quantité)",
+      "average": "Prix moyen d'exécution de la quantité cumulée",
+      "distance": "Distance au prix médian",
+      "mid": "Étiquette du prix médian",
+      "spread": "Étiquette de l'écart",
+      "basisPoints": "Unité des points de base de l’étiquette d’écart",
+      "name": "Nom accessible (sans ariaLabel)"
+    },
+    "DepthChartPriceLine": {
+      "price": "Prix de la ligne",
+      "label": "Texte de son étiquette",
+      "color": "Couleur de la ligne ; celle du texte si omise"
+    },
+    "DepthPoint": {
+      "side": "Côté du carnet",
+      "price": "Prix",
+      "amount": "Quantité au repos entre le meilleur prix et price",
+      "total": "Montant (Σ prix × quantité) de amount",
+      "average": "Prix moyen d'exécution de amount",
+      "distance": "Distance signée au médian, en fraction (−0.01 = 1 % en dessous)"
+    },
+    "OrderBookSnapshot": {
+      "bids": "Niveaux d'achat : tuples [prix, quantité] ou colonnes { price, size }, dans n'importe quel ordre",
+      "asks": "Niveaux de vente : tuples [prix, quantité] ou colonnes { price, size }, dans n'importe quel ordre",
+      "time": "Heure d'exchange de l'instantané (ms depuis l'époque) ; l'horloge locale si omise"
+    },
+    "OrderBookDelta": {
+      "bids": "Niveaux d'achat modifiés : nouvelle quantité de chaque prix, 0 supprime le niveau",
+      "asks": "Niveaux de vente modifiés : nouvelle quantité de chaque prix, 0 supprime le niveau",
+      "time": "Heure d'exchange de la mise à jour (ms depuis l'époque) ; l'horloge locale si omise"
+    }
+  },
+  "wc": {
+    "demos": {
+      "book": {
+        "title": "Profondeur cumulée",
+        "description": "Offres et demandes cumulées autour du prix médian ; le survol indique le prix et la quantité cumulée."
+      },
+      "live": {
+        "title": "Carnet en direct",
+        "description": "Mises à jour de quelques niveaux à la fois (applyDeltas), dessinées une fois par image avec des transitions."
+      }
+    },
+    "minerva-depth-chart": {
+      "props": {
+        "options": "Autres options du moteur (DepthChartOptions de minerva-design/charts/core : couleurs, textes, locale, labels…) ; propriété uniquement",
+        "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+      },
+      "events": {
+        "minerva-hover": "Le pointeur survole les courbes ; detail : { side, price, amount, total, average, distance, mirror }, null quand il les quitte",
+        "minerva-click": "Les courbes ont été cliquées ou touchées ; detail : { side, price, amount, total, average, distance, mirror }",
+        "minerva-range-change": "La plage visible a changé par un zoom ; detail : { range } (fraction du prix médian)"
+      },
+      "methods": {
+        "setRange": "Définit la plage visible (fraction du prix médian) ; null ajuste au carnet",
+        "setBook": "Remplace le carnet",
+        "applyDeltas": "Applique des mises à jour (une taille 0 retire un niveau) ; dessinées une fois à l’image suivante"
+      }
+    }
+  }
+}

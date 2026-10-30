@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 import {
   IconButton,
@@ -8,11 +9,12 @@ import {
   type QuadrantPoint,
 } from "minerva-design/native";
 
-const titles: Record<QuadrantCorner, string> = {
-  topLeft: "Do first",
-  topRight: "Schedule",
-  bottomLeft: "Delegate",
-  bottomRight: "Eliminate",
+// translation keys of the quadrant titles
+const titleKeys: Record<QuadrantCorner, string> = {
+  topLeft: "doFirst",
+  topRight: "schedule",
+  bottomLeft: "delegate",
+  bottomRight: "eliminate",
 };
 
 // x: urgency, y: importance (0-10); reverseX puts urgent tasks on the left,
@@ -24,32 +26,46 @@ const centers: Record<QuadrantCorner, { x: number; y: number }> = {
   bottomRight: { x: 2.5, y: 2.5 },
 };
 
-const initial: QuadrantPoint[] = [
-  { label: "Fix outage", x: 9, y: 8 },
-  { label: "Plan Q3", x: 3, y: 8.5 },
-  { label: "Book travel", x: 8, y: 3 },
-  { label: "Inbox", x: 2.5, y: 2 },
+// task names are translated when rendered (`key`), added tasks are numbered
+type Task = { key?: string; n?: number; x: number; y: number };
+const initial: Task[] = [
+  { key: "loginOutage", x: 9, y: 8 },
+  { key: "quarterlyPlanning", x: 3, y: 8.5 },
+  { key: "bookTravel", x: 8, y: 3 },
+  { key: "inboxZero", x: 2.5, y: 2 },
 ];
 
 const clamp = (value: number) => Math.min(9.5, Math.max(0.5, value));
 
 export default function Draggable() {
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.quadrant-chart.data",
+  });
   const { colors } = useTheme();
   const [tasks, setTasks] = useState(initial);
-  const [status, setStatus] = useState("Drag a task to another quadrant");
+  const [status, setStatus] = useState<string | null>(null);
+  const title = (corner: QuadrantCorner) => t(titleKeys[corner]);
+  const name = (task: Task) =>
+    task.key ? t(`tasks.${task.key}`) : t("newTask", { n: task.n });
+  const points: QuadrantPoint[] = tasks.map((task) => ({
+    label: name(task),
+    x: task.x,
+    y: task.y,
+  }));
+  const decimal = new Intl.NumberFormat(i18n.language, {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  });
 
   const add = (corner: QuadrantCorner) => {
-    const label = `Task ${tasks.length + 1}`;
     const jitter = (tasks.length % 3) - 1;
-    setTasks((current) => [
-      ...current,
-      {
-        label,
-        x: clamp(centers[corner].x + jitter),
-        y: clamp(centers[corner].y + jitter),
-      },
-    ]);
-    setStatus(`${label} added to "${titles[corner]}"`);
+    const task: Task = {
+      n: tasks.length + 1,
+      x: clamp(centers[corner].x + jitter),
+      y: clamp(centers[corner].y + jitter),
+    };
+    setTasks((current) => [...current, task]);
+    setStatus(t("taskAdded", { task: name(task), quadrant: title(corner) }));
   };
 
   const tint: Record<QuadrantCorner, string> = {
@@ -75,11 +91,11 @@ export default function Draggable() {
         }}
       >
         <Text style={{ color: tint[corner], fontSize: 12, fontWeight: "600" }}>
-          {titles[corner]}
+          {title(corner)}
         </Text>
         <IconButton
           size="small"
-          label={`Add a task to "${titles[corner]}"`}
+          label={t("addTask", { quadrant: title(corner) })}
           onPress={() => add(corner)}
         >
           <Text style={{ color: tint[corner], fontSize: 16 }}>+</Text>
@@ -92,16 +108,16 @@ export default function Draggable() {
     <View style={{ width: "100%", gap: 8 }}>
       <QuadrantChart
         height={320}
-        points={tasks}
+        points={points}
         reverseX
         showTicks={false}
         axisLabels={{
-          top: "Important",
-          bottom: "Not important",
-          left: "Urgent",
-          right: "Not urgent",
+          top: t("important"),
+          bottom: t("notImportant"),
+          left: t("urgent"),
+          right: t("notUrgent"),
         }}
-        ariaLabel="Task matrix: drag tasks between quadrants"
+        ariaLabel={t("boardAria")}
         onPointDrop={(point, index, target) => {
           setTasks((current) =>
             current.map((task, i) =>
@@ -110,16 +126,26 @@ export default function Draggable() {
                 : task,
             ),
           );
-          setStatus(`${point.label} moved to "${titles[target.quadrant]}"`);
+          setStatus(
+            t("taskMoved", {
+              task: point.label,
+              quadrant: title(target.quadrant),
+            }),
+          );
         }}
-        onQuadrantClick={(corner) => setStatus(`"${titles[corner]}" tapped`)}
+        onQuadrantClick={(corner) =>
+          setStatus(t("quadrantTapped", { quadrant: title(corner) }))
+        }
         renderTooltip={(point) => (
           <View>
             <Text style={{ color: colors["text-color"], fontWeight: "600" }}>
               {point.label}
             </Text>
             <Text style={{ color: colors["text-secondary-color"] }}>
-              Urgency {point.x.toFixed(1)} · Importance {point.y.toFixed(1)}
+              {t("taskScores", {
+                urgency: decimal.format(point.x),
+                importance: decimal.format(point.y),
+              })}
             </Text>
           </View>
         )}
@@ -131,7 +157,7 @@ export default function Draggable() {
         }}
       />
       <Text role="status" style={{ color: colors["text-secondary-color"] }}>
-        {status}
+        {status ?? t("dragHintNative")}
       </Text>
     </View>
   );

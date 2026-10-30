@@ -1,15 +1,21 @@
+import { useTranslation } from "react-i18next";
 import { GaugeChart } from "minerva-design/charts";
 
 // Resource usage of a server, in percent
 const metrics = [
-  { label: "CPU", value: 68, color: "var(--primary-color)" },
-  { label: "Memory", value: 82, color: "var(--warning-color)" },
-  { label: "Disk", value: 41, color: "var(--success-color)" },
+  { key: "cpu", value: 68, color: "var(--primary-color)" },
+  { key: "memory", value: 82, color: "var(--warning-color)" },
+  { key: "disk", value: 41, color: "var(--success-color)" },
 ];
 
-const percent = (value: number) => `${Math.round(value)}%`;
-
 export default function BasicDemo() {
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.gauge-chart.data",
+  });
+  // "68%", "68 %"...: the values are percents, Intl expects ratios
+  const percent = new Intl.NumberFormat(i18n.language, { style: "percent" });
+  const format = (value: number) => percent.format(value / 100);
+
   return (
     <div
       style={{
@@ -21,13 +27,18 @@ export default function BasicDemo() {
     >
       {metrics.map((metric) => (
         <GaugeChart
-          key={metric.label}
+          key={metric.key}
           value={metric.value}
-          label={metric.label}
+          label={t(`metrics.${metric.key}`)}
           color={metric.color}
-          format={percent}
+          format={format}
+          renderTooltip={(event) => (
+            <span>
+              {t(`metrics.${metric.key}`)} · {format(event.value)}
+            </span>
+          )}
           height={200}
-          ariaLabel={`${metric.label} usage`}
+          ariaLabel={t("usageAria", { metric: t(`metrics.${metric.key}`) })}
         />
       ))}
     </div>

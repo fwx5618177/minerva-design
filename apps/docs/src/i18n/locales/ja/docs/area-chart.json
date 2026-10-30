@@ -1,5 +1,5 @@
 {
-  "title": "AreaChart",
+  "title": "面グラフ",
   "description": "時間とともに変化する量を塗りつぶした面で表します。既定でなめらかな曲線になり、重ねて表示するほか、合計として積み上げたり 100% の構成比として表示したりできます。ホバーすると同じ x の全系列を読み取れ、Ctrl / ⌘ + ホイールやピンチでズームできます。",
   "demos": {
     "basic": {
@@ -17,7 +17,59 @@
     "step": {
       "title": "ステップ",
       "description": "curve=\"step\" は次の点まで値を保持するため、特定の時点で変化する数に向いています。注釈線で上限（クォータ）を示しています。"
+    },
+    "energy-mix": {
+      "title": "電源構成",
+      "description": "1 日の電源別発電量を積み上げます。上端が総需要で、太陽光のふくらみが他の電源の出力が下がる時間帯を示します。系列ごとに色を指定しています。"
+    },
+    "cumulative": {
+      "title": "累計と計画",
+      "description": "売上の累計を、均等に伸びる計画（折れ線系列）と比較します。null 値でまだ来ていない月を空欄にします。"
+    },
+    "mirrored": {
+      "title": "上下ミラー",
+      "description": "ダウンロードをゼロの上、アップロードをゼロの下に同じスケールで描く、ネットワーク監視でよく使うレイアウトです。y の書式で符号を外しています。"
     }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "基本",
+        "description": "時間軸上の 90 日間のデイリーアクティブユーザー。面は既定で滑らかです。なぞると各日の値を読み取り、ピンチでズームします。"
+      }
+    }
+  },
+  "data": {
+    "dau": "デイリーアクティブユーザー",
+    "dauAria": "2026 年 4 月〜6 月のデイリーアクティブユーザー",
+    "others": "その他",
+    "shareAria": "2016〜2026 年のベンダー別市場シェア",
+    "sources": {
+      "organic": "自然検索",
+      "direct": "ダイレクト",
+      "referral": "参照元サイト",
+      "social": "ソーシャル"
+    },
+    "visitsAria": "流入元別の月間訪問数（積み上げ）",
+    "instances": "稼働中のインスタンス",
+    "quota": "上限",
+    "instancesAria": "1 日にオートスケーラーが起動したインスタンス数",
+    "energy": {
+      "nuclear": "原子力",
+      "hydro": "水力",
+      "wind": "風力",
+      "solar": "太陽光",
+      "gas": "ガス"
+    },
+    "gw": "{{value}} GW",
+    "power": "出力",
+    "energyAria": "1 日の電源別発電量（積み上げ）",
+    "actual": "実績",
+    "plan": "計画",
+    "cumulativeAria": "年間の売上累計と計画の比較",
+    "download": "ダウンロード",
+    "upload": "アップロード",
+    "bandwidthAria": "2 時間のサーバー帯域幅。ダウンロードはゼロの上、アップロードは下"
   },
   "api": {
     "AreaChartProps": {
@@ -25,6 +77,38 @@
       "curve": "縁の形状：\"linear\"、\"smooth\"（単調）、\"step\"",
       "stacked": "面を積み重ねます",
       "percent": "各 x で積み上げを 100% に揃えます（stacked を含意）"
+    }
+  },
+  "wc": {
+    "demos": {
+      "stacked": {
+        "title": "積み上げ面グラフ",
+        "description": "3 つの流入元を滑らかな縁（既定の曲線）で積み上げます。"
+      },
+      "percent": {
+        "title": "100% 積み上げ",
+        "description": "percent で各スタックを 100% に拡大縮小します。1 日の各エネルギー源の割合を直線の縁で表示します。"
+      }
+    },
+    "minerva-area-chart": {
+      "props": {
+        "height": "チャートの高さ（凡例を含む）：ピクセルまたは任意の CSS の長さ",
+        "options": "その他のエンジンのオプション（軸、凡例、ツールチップ、パレット、書式…）。要素自身のプロパティとマージされます。プロパティのみ",
+        "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+      },
+      "events": {
+        "minerva-hover": "ホバー（またはキーボードでフォーカス）しているポイントが変わりました。detail：{ x, xLabel, items }、何もない場合は null",
+        "minerva-point-click": "ポイントまたは棒がクリックされました。detail：{ x, xLabel, items }",
+        "minerva-plot-click": "ポイントのないプロット領域がクリックされました。detail：{ x, y }（データ座標）",
+        "minerva-zoom": "ユーザーがズームまたはパンしました。detail：{ x, y }（表示範囲）",
+        "minerva-renderer-change": "バックエンドの準備ができた、または GPU の喪失後にフォールバックしました。detail：{ renderer }"
+      },
+      "methods": {
+        "resetZoom": "データ範囲全体を表示します",
+        "getView": "表示範囲。エンジンが作成されるまでは null",
+        "setView": "表示範囲を設定します",
+        "getRenderer": "使用中のバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null"
+      }
     }
   }
 }

@@ -1,0 +1,221 @@
+{
+  "title": "Indicateurs techniques",
+  "description": "Moyennes mobiles, bandes de Bollinger, VWAP, MACD, RSI, KDJ, ATR et Heikin-Ashi : déclarés en une ligne sur un TradingChart, ou calculés par des fonctions pures sur des tableaux simples et des colonnes Float64Array.",
+  "intro": {
+    "declarative": {
+      "title": "Indicateurs déclaratifs",
+      "text": "L'option indicators liste les indicateurs dans l'ordre : moyennes mobiles, bandes de Bollinger et VWAP se superposent au prix ; volume (sauf overlay), MACD, RSI, KDJ et ATR ont chacun un panneau en dessous. Chaque légende affiche les valeurs sous le réticule, et un clic sur le nom d'un indicateur le masque.",
+      "ids": "Un indicateur est identifié par son type et ses paramètres (\"ma:7\", \"macd:12:26:9\") sauf s'il fixe un id : indicatorToggle et setIndicatorVisible l'utilisent. Modifier la liste conserve les valeurs calculées des indicateurs inchangés."
+    },
+    "functions": {
+      "title": "Fonctions pures",
+      "text": "Les mêmes calculs sont exportés par minerva-design/charts/core : ils prennent des tableaux simples ou typés et renvoient des colonnes Float64Array, NaN tant que la fenêtre n'est pas pleine. Utilisez-les pour des signaux, des filtres, des back-tests ou un serveur, avec exactement les valeurs que dessine le graphique."
+    },
+    "conventions": {
+      "title": "Conventions",
+      "averages": "MA est la moyenne simple, WMA donne le plus de poids à la bougie la plus récente, EMA utilise 2 / (période + 1) et part de la moyenne simple de la première fenêtre, comme TradingView.",
+      "wilder": "RSI et ATR utilisent le lissage de Wilder (1 / période) ; les bandes de Bollinger utilisent l'écart type de la population.",
+      "kdj": "KDJ démarre K et D à 50 et les lisse sur 3 bougies par défaut ; J = 3K − 2D peut sortir de l'intervalle 0-100.",
+      "vwap": "Le VWAP repart chaque jour (ou semaine, mois, jamais) dans le fuseau horaire de utcOffset.",
+      "incremental": "À chaque mise à jour, le graphique ne recalcule que les valeurs de la dernière bougie : un flux coûte autant avec cent bougies qu'avec un million."
+    }
+  },
+  "demos": {
+    "moving-averages": {
+      "title": "MA, EMA et WMA",
+      "description": "Les trois moyennes sur la même période : l'exponentielle et la pondérée suivent le prix plus vite que la simple. Changez la période pour voir le retard augmenter."
+    },
+    "bollinger": {
+      "title": "Bandes de Bollinger",
+      "description": "Une moyenne sur 20 bougies, des bandes à un nombre d'écarts types et un remplissage léger entre elles ; les bandes s'élargissent quand la volatilité monte."
+    },
+    "vwap": {
+      "title": "VWAP",
+      "description": "Cinq séances de bougies de cinq minutes : le prix moyen pondéré par le volume repart à chaque séance, avec le panneau du volume en dessous. utcOffset={0} affiche les heures de la Bourse telles qu'elles sont écrites."
+    },
+    "macd": {
+      "title": "MACD",
+      "description": "La ligne MACD (EMA 12 moins EMA 26), son signal sur 9 bougies et l'histogramme de leur écart : vif quand il grandit, pâle quand il diminue. Les deux EMA sont aussi tracées sur le prix."
+    },
+    "rsi": {
+      "title": "RSI",
+      "description": "Un RSI 14 et un RSI 6 plus rapide, chacun dans son panneau avec sa zone de surachat / survente. Basculez entre les seuils 70 / 30 et 80 / 20."
+    },
+    "kdj": {
+      "title": "KDJ",
+      "description": "Les lignes stochastiques K, D et J prisées sur les marchés chinois, avec MA5 / 20 et la convention rouge à la hausse. J sort le premier de l'intervalle 0-100."
+    },
+    "atr": {
+      "title": "ATR",
+      "description": "L'Average True Range mesure la volatilité en unités de prix. La fonction pure atr() place des stops à deux ATR du dernier prix."
+    },
+    "heikin-ashi": {
+      "title": "Heikin-Ashi",
+      "description": "Des bougies moyennées qui lissent le bruit : de longues séries d'une même couleur sont des tendances. La fonction pure heikinAshi() compte les bougies de la série en cours."
+    },
+    "signals": {
+      "title": "Signaux avec les fonctions pures",
+      "description": "ema() et rsi() sur les clôtures : un achat quand l'EMA 9 croise l'EMA 21 à la hausse avec un RSI au-dessus de 50, une vente au croisement inverse. Les transactions deviennent des flèches et leurs résultats sont résumés en dessous."
+    },
+    "vanilla": {
+      "title": "Sans React",
+      "description": "createTradingChart de minerva-design/charts/core monte le même graphique dans n'importe quel élément : options, événements on() et destroy(). Ici sma() indique l'écart de la clôture survolée avec sa moyenne sur 50 jours."
+    }
+  },
+  "data": {
+    "period": "Période",
+    "periodValue": "{{period}} bougies",
+    "msft": "MSFT",
+    "maAria": "Graphique quotidien avec moyennes mobiles simple, exponentielle et pondérée",
+    "multiplier": "Largeur des bandes",
+    "deviations": "{{value}} σ",
+    "eth": "ETH/USDT",
+    "bollAria": "Graphique horaire avec les bandes de Bollinger",
+    "nvda": "NVDA",
+    "vwapAria": "Graphique en cinq minutes sur cinq séances avec le VWAP et le volume",
+    "btc": "BTC/USDT",
+    "macdAria": "Graphique quotidien avec le panneau MACD",
+    "bands": "Surachat / survente",
+    "bandValues": {
+      "70-30": "70 / 30",
+      "80-20": "80 / 20"
+    },
+    "sol": "SOL/USDT",
+    "rsiAria": "Graphique en quatre heures avec un RSI 14 et un RSI 6",
+    "catl": "CATL 300750",
+    "kdjAria": "Graphique quotidien avec le panneau KDJ",
+    "longStop": "Stop achat · 2 ATR",
+    "shortStop": "Stop vente · 2 ATR",
+    "gold": "XAU/USD",
+    "atrAria": "Graphique horaire de l'or avec l'ATR et des stops de volatilité",
+    "chartStyle": "Style du graphique",
+    "heikinAshi": "Heikin-Ashi",
+    "candles": "Chandeliers",
+    "ada": "ADA/USDT",
+    "haAria": "Graphique en quatre heures en bougies Heikin-Ashi",
+    "haRising_one": "Tendance haussière depuis {{count}} bougie",
+    "haRising_other": "Tendance haussière depuis {{count}} bougies",
+    "haFalling_one": "Tendance baissière depuis {{count}} bougie",
+    "haFalling_other": "Tendance baissière depuis {{count}} bougies",
+    "buy": "Achat",
+    "sell": "Vente",
+    "signalsAria": "Graphique horaire avec les signaux de croisement d'EMA et le RSI",
+    "signalsSummary": "{{trades}} transactions clôturées · {{wins}} gagnantes · {{result}} au total",
+    "xom": "XOM",
+    "vanillaAria": "Graphique quotidien dessiné avec createTradingChart",
+    "vanillaWarmup": "Pas encore assez de bougies pour la moyenne sur 50 jours",
+    "vanillaAbove": "La clôture est {{value}} au-dessus de sa moyenne sur 50 jours",
+    "vanillaBelow": "La clôture est {{value}} en dessous de sa moyenne sur 50 jours"
+  },
+  "api": {
+    "TradingMovingAverageIndicator": {
+      "type": "ma simple, ema exponentielle, wma pondérée",
+      "period": "Nombre de bougies moyennées",
+      "source": "Prix moyenné : open, high, low, close, hl2, hlc3 ou ohlc4",
+      "color": "Couleur de la ligne ; une couleur de la palette par défaut",
+      "lineWidth": "Épaisseur de la ligne en pixels"
+    },
+    "TradingBollingerIndicator": {
+      "type": "Bandes de Bollinger",
+      "period": "Bougies de la moyenne et de l'écart type",
+      "multiplier": "Distance des bandes en écarts types",
+      "colors": "Couleurs des lignes médiane, haute et basse",
+      "fill": "Remplit l'espace entre les bandes"
+    },
+    "TradingVwapIndicator": {
+      "type": "Prix moyen pondéré par le volume",
+      "reset": "Période après laquelle la moyenne repart : day, week, month ou none",
+      "color": "Couleur de la ligne"
+    },
+    "TradingVolumeIndicator": {
+      "type": "Barres de volume colorées comme leurs bougies",
+      "maPeriod": "Période d'une moyenne mobile tracée sur le volume",
+      "overlay": "Dessine le volume au bas du panneau des prix plutôt que dans son propre panneau"
+    },
+    "TradingMacdIndicator": {
+      "type": "Ligne MACD, ligne de signal et histogramme",
+      "fast": "Période de l'EMA rapide",
+      "slow": "Période de l'EMA lente",
+      "signal": "Période de la ligne de signal",
+      "colors": "Couleurs des lignes MACD et signal"
+    },
+    "TradingRsiIndicator": {
+      "type": "Indice de force relative (0-100)",
+      "period": "Nombre de bougies",
+      "overbought": "Seuil haut",
+      "oversold": "Seuil bas",
+      "color": "Couleur de la ligne"
+    },
+    "TradingKdjIndicator": {
+      "type": "Stochastique KDJ",
+      "period": "Bougies de la fenêtre du plus haut / plus bas",
+      "kPeriod": "Lissage de K",
+      "dPeriod": "Lissage de D",
+      "colors": "Couleurs des lignes K, D et J"
+    },
+    "TradingAtrIndicator": {
+      "type": "Average True Range",
+      "period": "Nombre de bougies",
+      "color": "Couleur de la ligne"
+    },
+    "TradingIndicatorBase": {
+      "id": "Identifie l'indicateur dans la légende, les événements et les tailles de panneau ; le type et les paramètres par défaut",
+      "visible": "Dessine l'indicateur ; masqué, il garde son entrée de légende pour être réaffiché"
+    },
+    "TradingPaneIndicatorBase": {
+      "height": "Hauteur du panneau en pixels (les séparateurs se déplacent)"
+    },
+    "TradingChartInstance": {
+      "setOptions": "Remplace les options ; bars et drawings ne sont appliqués que si leur référence change",
+      "setBars": "Remplace les bougies",
+      "update": "Envoie une bougie : à l'heure de la dernière elle la remplace, plus récente elle s'ajoute",
+      "appendBars": "Ajoute des bougies plus récentes que la dernière",
+      "prependBars": "Insère des bougies plus anciennes avant la première, sans déplacer la vue",
+      "getBarCount": "Nombre de bougies",
+      "getBar": "Bougie à un index, null hors des données",
+      "scrollToRealtime": "Défile jusqu'à la dernière bougie",
+      "fitContent": "Affiche toutes les bougies",
+      "getVisibleRange": "Bougies visibles",
+      "setVisibleRange": "Affiche les bougies entre deux index logiques",
+      "setScaleMode": "Choisit l'échelle des prix : linear, log ou percent",
+      "resetPriceScales": "Réajuste chaque échelle de prix aux bougies visibles",
+      "setDrawingTool": "Active un outil de dessin",
+      "getDrawingTool": "Outil de dessin actif",
+      "getDrawings": "Dessins actuels",
+      "setDrawings": "Remplace les dessins",
+      "removeDrawing": "Efface un dessin",
+      "selectDrawing": "Sélectionne un dessin (null annule la sélection)",
+      "setIndicatorVisible": "Affiche ou masque un indicateur",
+      "getRenderer": "Moteur utilisé, null tant qu'il n'est pas prêt",
+      "ready": "Se résout avec le moteur dès que la première image peut être dessinée",
+      "refreshTheme": "Relit les variables CSS (les changements de thème sont détectés automatiquement)",
+      "resize": "Redessine à la taille du conteneur (les redimensionnements sont détectés automatiquement)",
+      "on": "S'abonne à un événement ; renvoie la fonction de désabonnement",
+      "destroy": "Retire le graphique et libère les ressources GPU"
+    },
+    "TradingChartEventMap": {
+      "renderer": "Le moteur utilisé, à nouveau après un repli",
+      "crosshairMove": "Le réticule a bougé ; null quand il quitte le graphique",
+      "click": "Un panneau a été cliqué",
+      "visibleRangeChange": "Les bougies visibles ont changé",
+      "orderMove": "Une ligne de prix déplaçable a été lâchée",
+      "drawingsChange": "L'utilisateur a ajouté, déplacé ou effacé des dessins",
+      "drawingSelect": "Le dessin sélectionné a changé",
+      "drawingToolChange": "L'outil de dessin a changé",
+      "indicatorToggle": "Un indicateur a été affiché ou masqué depuis sa légende",
+      "historyRequest": "La plus ancienne bougie est visible"
+    }
+  },
+  "wc": {
+    "demos": {
+      "bollinger": {
+        "title": "Bandes de Bollinger avec les fonctions pures",
+        "description": "bollinger() et ema() de minerva-design/charts/core calculent les séries, dessinées par un graphique de plages."
+      },
+      "panes": {
+        "title": "Panneaux d’indicateurs",
+        "description": "Le graphique de trading calcule lui-même Bollinger, MACD et RSI ; macd() donne les dernières valeurs à l’extérieur."
+      }
+    }
+  }
+}

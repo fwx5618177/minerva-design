@@ -1,0 +1,158 @@
+{
+  "title": "ガントチャート",
+  "description": "時間軸上にタスクを棒で表し、進捗、グループ、マイルストーン、今日の線を表示。時間方向に拡大・移動できます。",
+  "demos": {
+    "project": {
+      "title": "プロジェクト計画",
+      "description": "グループごとに色と凡例項目が付き、進捗はタスクに重ねた塗りの棒、マイルストーンは点で表示されます。today で日付に線を引きます。"
+    },
+    "roadmap": {
+      "title": "ロードマップ",
+      "description": "チームごとの年間ロードマップ：yAxis.min と max で期間を固定します。Ctrl / ⌘ + ホイール（またはピンチ）で時間方向に拡大し、ドラッグで移動します。"
+    },
+    "sprint": {
+      "title": "スプリント",
+      "description": "時間単位のタスクを開発者ごとの色で。onPointClick でクリックした行を受け取り、詳細を表示します。"
+    },
+    "locale": {
+      "title": "ロケールと UTC 日付",
+      "description": "locale で月・曜日名、進捗率、既定の名前（タスク、進捗、マイルストーン）が決まります。yAxis.timeZone: \"utc\" は日付を UTC で並べるため、UTC のデータはどのタイムゾーンでも揃います。"
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "基本",
+        "description": "フェーズ別のタスクと進捗、リリースのマイルストーン。ピンチで時間軸をズーム、ドラッグでパンします。"
+      }
+    }
+  },
+  "data": {
+    "tasks": {
+      "research": "ユーザー調査",
+      "interviews": "関係者インタビュー",
+      "kickoff": "キックオフ",
+      "wireframes": "ワイヤーフレーム",
+      "visualDesign": "ビジュアルデザイン",
+      "designSystem": "デザインシステム",
+      "frontend": "フロントエンド",
+      "backend": "バックエンドと CMS",
+      "contentMigration": "コンテンツ移行",
+      "qa": "QA とアクセシビリティ",
+      "launch": "公開"
+    },
+    "phases": {
+      "discovery": "調査",
+      "design": "設計",
+      "build": "開発",
+      "launch": "公開"
+    },
+    "today": "今日",
+    "progress": "進捗",
+    "milestones": "マイルストーン",
+    "projectAria": "Web サイトリニューアルの計画",
+    "roadmap": {
+      "mobileRedesign": "モバイル刷新",
+      "offlineSync": "オフライン同期",
+      "widgets": "ホーム画面ウィジェット",
+      "searchV2": "検索 v2",
+      "multiRegion": "マルチリージョン",
+      "publicApi": "公開 API",
+      "onboarding": "新オンボーディング",
+      "referrals": "紹介プログラム",
+      "pricingPage": "料金ページ"
+    },
+    "teams": {
+      "mobile": "モバイル",
+      "platform": "プラットフォーム",
+      "growth": "グロース"
+    },
+    "roadmapAria": "チームごとの年間プロダクトロードマップ",
+    "sprint": {
+      "loginPage": "ログイン画面",
+      "passwordReset": "パスワード再設定",
+      "profileApi": "プロフィール API",
+      "avatarUpload": "アバターのアップロード",
+      "emailTemplates": "メールテンプレート",
+      "notifications": "通知",
+      "e2eTests": "E2E テスト"
+    },
+    "people": {
+      "ana": "アナ",
+      "ben": "ベン",
+      "chen": "チェン",
+      "dara": "ダラ"
+    },
+    "taskStatus": "{{task}}（{{owner}}）：{{start}} – {{end}}、{{progress}}% 完了",
+    "clickTask": "タスクをクリックしてください",
+    "sprintAria": "開発者ごとのスプリントのタスク",
+    "release": {
+      "specs": "仕様策定",
+      "build": "開発",
+      "translation": "翻訳",
+      "beta": "公開ベータ",
+      "launch": "リリース"
+    },
+    "locales": {
+      "chinese": "中国語（zh-CN）",
+      "french": "フランス語（fr-FR）"
+    },
+    "localeAria": "リリース計画、{{locale}}"
+  },
+  "api": {
+    "GanttChartProps": {
+      "tasks": "上から順に並べるタスクとマイルストーン",
+      "today": "この日付に線を引く（true：現在時刻）",
+      "todayLabel": "今日の線のラベル"
+    },
+    "GanttTask": {
+      "name": "行の名前（一意）",
+      "start": "開始（タイムスタンプまたは日付）",
+      "end": "終了。マイルストーンでは省略",
+      "progress": "完了割合（0〜1）：タスクに重ねた塗りの棒で表示",
+      "group": "グループ（フェーズ、チーム）：グループごとに色と凡例項目",
+      "color": "タスクの色（任意の CSS カラー）。既定はグループの色",
+      "milestone": "棒の代わりに start に点を描く"
+    },
+    "GanttOptions": {
+      "colors": "出現順のグループの色（任意の CSS カラー）。既定はグラフのパレット",
+      "taskName": "グループのないタスクの名前",
+      "progressName": "進捗の棒の名前（凡例、ツールチップ）",
+      "milestoneName": "マイルストーンの名前（凡例、ツールチップ）",
+      "formatProgress": "進捗の割合の書式（ツールチップ）",
+      "locale": "既定の名前と進捗率のロケール。既定はページの言語"
+    }
+  },
+  "wc": {
+    "demos": {
+      "project": {
+        "title": "フェーズ別のプロジェクト計画",
+        "description": "タスクをフェーズでグループ化（色分け）し、進捗と公開のマイルストーンを表示します。時間軸でズームできます。"
+      },
+      "sprint": {
+        "title": "今日の線付きスプリント",
+        "description": "2 週間のスプリント。グループのないタスクは同じ色で、破線が今日を示します。"
+      }
+    },
+    "minerva-gantt-chart": {
+      "props": {
+        "height": "チャートの高さ（凡例を含む）：ピクセルまたは任意の CSS の長さ",
+        "options": "その他のエンジンのオプション（軸、凡例、ツールチップ、パレット、書式…）。要素自身のプロパティとマージされます。プロパティのみ",
+        "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+      },
+      "events": {
+        "minerva-hover": "ホバー（またはキーボードでフォーカス）しているポイントが変わりました。detail：{ x, xLabel, items }、何もない場合は null",
+        "minerva-point-click": "ポイントまたは棒がクリックされました。detail：{ x, xLabel, items }",
+        "minerva-plot-click": "ポイントのないプロット領域がクリックされました。detail：{ x, y }（データ座標）",
+        "minerva-zoom": "ユーザーがズームまたはパンしました。detail：{ x, y }（表示範囲）",
+        "minerva-renderer-change": "バックエンドの準備ができた、または GPU の喪失後にフォールバックしました。detail：{ renderer }"
+      },
+      "methods": {
+        "resetZoom": "データ範囲全体を表示します",
+        "getView": "表示範囲。エンジンが作成されるまでは null",
+        "setView": "表示範囲を設定します",
+        "getRenderer": "使用中のバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null"
+      }
+    }
+  }
+}

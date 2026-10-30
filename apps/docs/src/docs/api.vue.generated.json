@@ -84,6 +84,60 @@
       { "name": "default", "type": "any", "description": "Page content, rendered inside the single `main` landmark" }
     ]
   },
+  "AreaChart": {
+    "file": "packages/vue/src/components/Chart/AreaChart.vue",
+    "props": [
+      { "name": "curve", "type": "ChartCurve", "default": "\"smooth\"", "required": false, "description": "Shape of the edges: straight, smooth (monotone) or steps (default `smooth`)" },
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "stacked", "type": "boolean", "default": "false", "required": false, "description": "Stacks the series on top of each other (default `false`)" },
+      { "name": "percent", "type": "boolean", "default": "false", "required": false, "description": "Scales the stacks to 100% (implies `stacked`; default `false`)" },
+      { "name": "legend", "type": "boolean | ChartLegendOptions", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      { "name": "crosshair", "type": "boolean", "required": false, "description": "Vertical guide line following the pointer" },
+      {
+        "name": "interaction",
+        "type": "boolean | ChartInteractionOptions",
+        "required": false,
+        "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)"
+      },
+      { "name": "labels", "type": "Partial<ChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      {
+        "name": "renderer",
+        "type": "ChartRendererPreference",
+        "required": false,
+        "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "series", "type": "readonly ChartSeries[]", "required": true, "description": "Data series (replace the array or a `data` array to update the chart)" },
+      { "name": "xAxis", "type": "ChartAxisOptions", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions", "required": false, "description": "Y axis" },
+      { "name": "annotations", "type": "readonly ChartAnnotation[]", "required": false, "description": "Background areas and reference lines" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes, accessible names); the page language by default"
+      }
+    ],
+    "events": [
+      { "name": "zoom", "type": "[view: ChartView]" },
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" }
+    ],
+    "slots": []
+  },
   "AutoComplete": {
     "file": "packages/vue/src/components/AutoComplete/AutoComplete.vue",
     "props": [
@@ -252,6 +306,112 @@
       { "name": "icon", "type": "any", "description": "Icon displayed before the content" }
     ]
   },
+  "Bar3DChart": {
+    "file": "packages/vue/src/components/Chart/Bar3DChart.vue",
+    "props": [
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "legend", "type": "boolean | Chart3DLegendOptions", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "tooltip", "type": "boolean | Chart3DTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      {
+        "name": "interaction",
+        "type": "boolean | Chart3DInteractionOptions",
+        "required": false,
+        "description": "Drag rotates, right / Shift + drag pans, Ctrl / ⌘ + wheel and pinch zoom; `false` makes the chart static (default `true`)"
+      },
+      { "name": "barWidth", "type": "number", "default": "0.7", "required": false, "description": "Width of the bars of the series that do not set one, as a fraction of a cell" },
+      { "name": "autoRotate", "type": "number | boolean", "required": false, "description": "Turns the camera around the box: `true` at 12°/s or a speed in degrees per second (default `false`)" },
+      { "name": "box", "type": "boolean", "required": false, "description": "Draws the axis box: back walls, grid lines, tick labels and axis titles (default `true`)" },
+      { "name": "colorBar", "type": "boolean | Chart3DColorBarOptions", "required": false, "description": "Color bar; shown by default when a visible series uses the color scale" },
+      { "name": "labels", "type": "Partial<Chart3DLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      { "name": "renderer", "type": "ChartRendererPreference", "required": false, "description": "Backend of the data layer: WebGPU, then WebGL2, WebGL, Canvas2D (default `auto`)" },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "series", "type": "readonly Bar3DSeries[]", "required": true, "description": "Bars over the x × y category grid (bars of the same cell are stacked)" },
+      { "name": "xAxis", "type": "Chart3DAxisOptions", "required": false, "description": "X axis (width of the box)" },
+      { "name": "yAxis", "type": "Chart3DAxisOptions", "required": false, "description": "Y axis (depth of the box)" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      { "name": "locale", "type": "string", "required": false, "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes); the page language by default" },
+      { "name": "camera", "type": "Chart3DCameraOptions", "required": false, "description": "Initial camera, also restored by a double click (changing it moves the camera)" },
+      { "name": "zAxis", "type": "Chart3DAxisOptions", "required": false, "description": "Z axis (height of the box)" },
+      { "name": "aspect", "type": "readonly [number, number, number]", "required": false, "description": "Proportions of the box (x, y, z; default `[1, 1, 0.7]`)" },
+      { "name": "colorScale", "type": "Chart3DColorScale", "required": false, "description": "Colors of `colorBy: \"z\"` / `\"value\"`: a built-in ramp or CSS colors (default `viridis`)" },
+      { "name": "valueRange", "type": "readonly [number, number]", "required": false, "description": "Values mapped to the ends of the color scale; the data range by default" },
+      { "name": "lighting", "type": "Chart3DLightingOptions", "required": false, "description": "Lighting of the surfaces and bars" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: Chart3DHoverEvent | null]" },
+      { "name": "pointClick", "type": "[event: Chart3DHoverEvent]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" },
+      { "name": "cameraChange", "type": "[camera: Chart3DCameraState]" }
+    ],
+    "slots": []
+  },
+  "BarChart": {
+    "file": "packages/vue/src/components/Chart/BarChart.vue",
+    "props": [
+      { "name": "labels", "type": "boolean", "default": "false", "required": false, "description": "Writes the value above every bar (default `false`)" },
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "stacked", "type": "boolean", "default": "false", "required": false, "description": "Stacks the series on top of each other (default `false`)" },
+      { "name": "percent", "type": "boolean", "default": "false", "required": false, "description": "Scales the stacks to 100% (implies `stacked`; default `false`)" },
+      { "name": "legend", "type": "boolean | ChartLegendOptions", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      { "name": "crosshair", "type": "boolean", "required": false, "description": "Vertical guide line following the pointer" },
+      {
+        "name": "interaction",
+        "type": "boolean | ChartInteractionOptions",
+        "required": false,
+        "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)"
+      },
+      {
+        "name": "renderer",
+        "type": "ChartRendererPreference",
+        "required": false,
+        "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "series", "type": "readonly ChartSeries[]", "required": true, "description": "Data series (replace the array or a `data` array to update the chart)" },
+      { "name": "xAxis", "type": "ChartAxisOptions", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions", "required": false, "description": "Y axis" },
+      { "name": "annotations", "type": "readonly ChartAnnotation[]", "required": false, "description": "Background areas and reference lines" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes, accessible names); the page language by default"
+      },
+      {
+        "name": "orientation",
+        "type": "ChartOrientation",
+        "required": false,
+        "description": "`horizontal` puts the x axis (categories) down the left side and the values along the bottom (default `vertical`)"
+      }
+    ],
+    "events": [
+      { "name": "zoom", "type": "[view: ChartView]" },
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" }
+    ],
+    "slots": []
+  },
   "Box": {
     "file": "packages/vue/src/components/Box/Box.vue",
     "props": [
@@ -289,6 +449,189 @@
     "events": [],
     "slots": [{ "name": "default", "type": "any" }]
   },
+  "BoxPlotChart": {
+    "file": "packages/vue/src/components/Chart/BoxPlotChart.vue",
+    "props": [
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "legend", "type": "boolean | ChartLegendOptions", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      { "name": "crosshair", "type": "boolean", "required": false, "description": "Vertical guide line following the pointer" },
+      {
+        "name": "interaction",
+        "type": "boolean | ChartInteractionOptions",
+        "required": false,
+        "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)"
+      },
+      { "name": "name", "type": "string", "default": "\"Values\"", "required": false, "description": "Name of the series built from `groups`" },
+      { "name": "labels", "type": "Partial<ChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      {
+        "name": "renderer",
+        "type": "ChartRendererPreference",
+        "required": false,
+        "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "series", "type": "readonly ChartSeries[]", "required": false, "description": "Series of box plots: data points with `low`, `q1`, `y` (the median), `q3`, `high` and `outliers`" },
+      { "name": "xAxis", "type": "ChartAxisOptions", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions", "required": false, "description": "Y axis" },
+      { "name": "annotations", "type": "readonly ChartAnnotation[]", "required": false, "description": "Background areas and reference lines" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes, accessible names); the page language by default"
+      },
+      {
+        "name": "orientation",
+        "type": "ChartOrientation",
+        "required": false,
+        "description": "`horizontal` puts the x axis (categories) down the left side and the values along the bottom (default `vertical`)"
+      },
+      { "name": "groups", "type": "readonly BoxplotGroup[]", "required": false, "description": "Raw samples, one box each (an alternative to `series`)" },
+      {
+        "name": "whisker",
+        "type": "number | \"minmax\"",
+        "required": false,
+        "description": "Reach of the whiskers in interquartile ranges beyond the box (Tukey: 1.5); `minmax` extends them to the extremes"
+      }
+    ],
+    "events": [
+      { "name": "zoom", "type": "[view: ChartView]" },
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" }
+    ],
+    "slots": []
+  },
+  "BubbleChart": {
+    "file": "packages/vue/src/components/Chart/BubbleChart.vue",
+    "props": [
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "legend", "type": "boolean | ChartLegendOptions", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      { "name": "crosshair", "type": "boolean", "required": false, "description": "Vertical guide line following the pointer" },
+      {
+        "name": "interaction",
+        "type": "boolean | ChartInteractionOptions",
+        "required": false,
+        "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)"
+      },
+      { "name": "labels", "type": "Partial<ChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      {
+        "name": "renderer",
+        "type": "ChartRendererPreference",
+        "required": false,
+        "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "series", "type": "readonly ChartSeries[]", "required": true, "description": "Data series (replace the array or a `data` array to update the chart)" },
+      { "name": "xAxis", "type": "ChartAxisOptions", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions", "required": false, "description": "Y axis" },
+      { "name": "annotations", "type": "readonly ChartAnnotation[]", "required": false, "description": "Background areas and reference lines" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes, accessible names); the page language by default"
+      },
+      { "name": "minSize", "type": "number", "required": false, "description": "Diameter in pixels of the smallest bubbles (default 6)" },
+      { "name": "maxSize", "type": "number", "required": false, "description": "Diameter in pixels of the largest value (default 48)" },
+      { "name": "maxValue", "type": "number", "required": false, "description": "Value drawn with `maxSize` (share a scale between charts); the largest value by default" }
+    ],
+    "events": [
+      { "name": "zoom", "type": "[view: ChartView]" },
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" }
+    ],
+    "slots": []
+  },
+  "BulletChart": {
+    "file": "packages/vue/src/components/Chart/BulletChart.vue",
+    "props": [
+      { "name": "animation", "type": "boolean", "required": false, "description": "Entry and update animations, skipped when the user prefers reduced motion (default `true`)" },
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      {
+        "name": "legend",
+        "type": "boolean | ShapeLegendOptions",
+        "required": false,
+        "description": "Legend; clicking an item hides / shows its slice, stage or series (shown by default for pie, donut, funnel and multi-series radar charts)"
+      },
+      { "name": "tooltip", "type": "boolean | ShapeTooltipOptions", "required": false, "description": "Tooltip; `false` disables it (default `true`)" },
+      { "name": "ticks", "type": "boolean", "required": false, "description": "Tick labels of the scales, when there is room (default `true`)" },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
+      {
+        "name": "palette",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+      },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip rows, accessible names, compact numbers); the page language by default"
+      },
+      {
+        "name": "hidden",
+        "type": "readonly number[]",
+        "required": false,
+        "description": "Hidden slices / stages / radar series / top-level treemap nodes, by\nindex. Makes the visibility controlled: legend clicks then only emit\n`toggle`, whose `hiddenIndexes` should be stored and passed back."
+      },
+      { "name": "orientation", "type": "\"vertical\" | \"horizontal\"", "required": false, "description": "Horizontal rows or vertical columns (default `horizontal`)" },
+      { "name": "texts", "type": "Partial<ShapeChartLabels>", "required": false, "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")" },
+      { "name": "barSize", "type": "number", "required": false, "description": "Thickness of the value bar as a fraction of the ranges' thickness (default 0.4)" },
+      { "name": "targetColor", "type": "string", "required": false, "description": "Color of the target markers (default: the text color)" },
+      { "name": "data", "type": "readonly BulletDatum[]", "required": true, "description": "Rows (columns when vertical): name, value, target, ranges and scale" },
+      { "name": "ranges", "type": "readonly number[]", "required": false, "description": "Qualitative ranges of the rows without `ranges`: upper bounds, ascending" },
+      { "name": "rangeLabels", "type": "readonly string[]", "required": false, "description": "Names of the qualitative ranges, lowest first (tooltip)" },
+      { "name": "rangeColors", "type": "readonly string[]", "required": false, "description": "Colors of the qualitative ranges, lowest first; shades of gray by default" },
+      { "name": "format", "type": "((value: number) => string)", "required": false, "description": "Formats the values of the labels and the tooltip (default: compact numbers, 1.2k, 3.4M)" },
+      {
+        "name": "percentFormat",
+        "type": "((share: number) => string)",
+        "required": false,
+        "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1 (default: one decimal, \"40.0%\")"
+      }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": []
+  },
   "Button": {
     "file": "packages/vue/src/components/Button/Button.vue",
     "props": [
@@ -311,6 +654,136 @@
       { "name": "end-icon", "type": "any", "description": "Icon after the label" },
       { "name": "loading-text", "type": "any", "description": "Label while loading (replaces the content; the `loadingText` prop)" }
     ]
+  },
+  "CalendarHeatmap": {
+    "file": "packages/vue/src/components/Chart/CalendarHeatmap.vue",
+    "props": [
+      { "name": "animation", "type": "boolean", "required": false, "description": "Entry and update animations, skipped when the user prefers reduced motion (default `true`)" },
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      {
+        "name": "legend",
+        "type": "boolean | ShapeLegendOptions",
+        "required": false,
+        "description": "Legend; clicking an item hides / shows its slice, stage or series (shown by default for pie, donut, funnel and multi-series radar charts)"
+      },
+      { "name": "tooltip", "type": "boolean | ShapeTooltipOptions", "required": false, "description": "Tooltip; `false` disables it (default `true`)" },
+      { "name": "monthLabels", "type": "boolean", "required": false, "description": "Month names (and years) around the cells (default `true`)" },
+      { "name": "weekdayLabels", "type": "boolean", "required": false, "description": "Weekday names beside (weeks) or above (months) the cells (default `true`)" },
+      { "name": "color", "type": "string", "required": false, "description": "Color of the highest level (lower levels are lighter; default: the first palette color)" },
+      {
+        "name": "layout",
+        "type": "\"weeks\" | \"months\"",
+        "required": false,
+        "description": "`weeks`: a column per week and a row per weekday; `months`: a small calendar per month (default `weeks`)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
+      {
+        "name": "palette",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+      },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip rows, accessible names, compact numbers); the page language by default"
+      },
+      {
+        "name": "range",
+        "type": "number | readonly [CalendarDate, CalendarDate]",
+        "required": false,
+        "description": "Days shown: a year (`2026`) or an inclusive `[start, end]` range (default: the 53 weeks ending on the last day of the data)"
+      },
+      {
+        "name": "hidden",
+        "type": "readonly number[]",
+        "required": false,
+        "description": "Hidden slices / stages / radar series / top-level treemap nodes, by\nindex. Makes the visibility controlled: legend clicks then only emit\n`toggle`, whose `hiddenIndexes` should be stored and passed back."
+      },
+      { "name": "texts", "type": "Partial<ShapeChartLabels>", "required": false, "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")" },
+      { "name": "data", "type": "readonly CalendarDatum[]", "required": true, "description": "Daily values (several entries of the same day add up)" },
+      { "name": "format", "type": "((value: number) => string)", "required": false, "description": "Formats the values of the labels and the tooltip (default: compact numbers, 1.2k, 3.4M)" },
+      {
+        "name": "percentFormat",
+        "type": "((share: number) => string)",
+        "required": false,
+        "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1 (default: one decimal, \"40.0%\")"
+      },
+      { "name": "weekStart", "type": "number", "required": false, "description": "First day of the week, 0 = Sunday … 6 = Saturday (default: from `locale`)" },
+      { "name": "levels", "type": "number", "required": false, "description": "Number of color levels above the empty days (default 4)" },
+      { "name": "gap", "type": "number", "required": false, "description": "Gap between the cells, in pixels (default 3)" },
+      { "name": "radius", "type": "number", "required": false, "description": "Corner radius of the cells, in pixels (default 2)" },
+      { "name": "maxCellSize", "type": "number", "required": false, "description": "Largest cell size, in pixels (default 16 weeks, 28 months)" },
+      { "name": "colors", "type": "readonly string[]", "required": false, "description": "Colors of the levels, lowest first (replaces `color` and sets the number of levels)" },
+      { "name": "thresholds", "type": "readonly number[]", "required": false, "description": "Upper bounds of the levels but the last, ascending; an even split of the largest value by default" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": []
+  },
+  "CandlestickChart": {
+    "file": "packages/vue/src/components/Chart/CandlestickChart.vue",
+    "props": [
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "legend", "type": "boolean | ChartLegendOptions", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      { "name": "crosshair", "type": "boolean", "required": false, "description": "Vertical guide line following the pointer" },
+      {
+        "name": "interaction",
+        "type": "boolean | ChartInteractionOptions",
+        "required": false,
+        "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)"
+      },
+      { "name": "labels", "type": "Partial<ChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      {
+        "name": "renderer",
+        "type": "ChartRendererPreference",
+        "required": false,
+        "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "series", "type": "readonly ChartSeries[]", "required": true, "description": "Data series (replace the array or a `data` array to update the chart)" },
+      { "name": "xAxis", "type": "ChartAxisOptions", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions", "required": false, "description": "Y axis" },
+      { "name": "annotations", "type": "readonly ChartAnnotation[]", "required": false, "description": "Background areas and reference lines" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes, accessible names); the page language by default"
+      }
+    ],
+    "events": [
+      { "name": "zoom", "type": "[view: ChartView]" },
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" }
+    ],
+    "slots": []
   },
   "Card": {
     "file": "packages/vue/src/components/Card/Card.vue",
@@ -386,7 +859,7 @@
       { "name": "disabled", "type": "boolean", "required": false, "description": "Disables the cascader; defaults to the enclosing FormControl's state" },
       { "name": "placeholder", "type": "string", "required": false, "description": "Placeholder of the input" },
       { "name": "allowClear", "type": "boolean", "default": "true", "required": false, "description": "Shows a clear button when a value is selected" },
-      { "name": "expandTrigger", "type": "\"click\" | \"hover\"", "default": "\"click\"", "required": false, "description": "How sub-menus are expanded" },
+      { "name": "expandTrigger", "type": "\"hover\" | \"click\"", "default": "\"click\"", "required": false, "description": "How sub-menus are expanded" },
       { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible label of the input (`aria-label`); overrides `label` and the\nlabel of an enclosing FormControl" },
       { "name": "ariaLabelledby", "type": "string", "required": false, "description": "Id(s) of the element(s) labelling the input (`aria-labelledby`)" },
       {
@@ -428,6 +901,70 @@
       { "name": "change", "type": "[value: CascaderValue, selectedOptions: CascaderOption[]]" }
     ],
     "slots": [{ "name": "option", "type": "{ option: CascaderOption; level: number; }", "description": "Custom option content (the React `optionRender`)" }]
+  },
+  "Chart": {
+    "file": "packages/vue/src/components/Chart/Chart.vue",
+    "props": [
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "legend", "type": "boolean | ChartLegendOptions", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      { "name": "crosshair", "type": "boolean", "required": false, "description": "Vertical guide line following the pointer" },
+      {
+        "name": "interaction",
+        "type": "boolean | ChartInteractionOptions",
+        "required": false,
+        "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)"
+      },
+      { "name": "labels", "type": "Partial<ChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      {
+        "name": "renderer",
+        "type": "ChartRendererPreference",
+        "required": false,
+        "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "series", "type": "readonly ChartSeries[]", "required": true, "description": "Data series (replace the array or a `data` array to update the chart)" },
+      { "name": "xAxis", "type": "ChartAxisOptions", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions", "required": false, "description": "Y axis" },
+      { "name": "annotations", "type": "readonly ChartAnnotation[]", "required": false, "description": "Background areas and reference lines" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes, accessible names); the page language by default"
+      },
+      {
+        "name": "orientation",
+        "type": "ChartOrientation",
+        "required": false,
+        "description": "`horizontal` puts the x axis (categories) down the left side and the values along the bottom (default `vertical`)"
+      },
+      { "name": "stackMode", "type": "\"percent\" | \"normal\"", "required": false, "description": "`percent` scales every stack to 100% at each x (default `normal`)" },
+      {
+        "name": "yAxis2",
+        "type": "ChartAxisOptions",
+        "required": false,
+        "description": "Right value axis of the series with `yAxis: \"right\"`; its range is aligned on the left ticks (vertical charts)"
+      }
+    ],
+    "events": [
+      { "name": "zoom", "type": "[view: ChartView]" },
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" }
+    ],
+    "slots": []
   },
   "Checkbox": {
     "file": "packages/vue/src/components/Checkbox/Checkbox.vue",
@@ -741,6 +1278,53 @@
     ],
     "slots": []
   },
+  "DepthChart": {
+    "file": "packages/vue/src/components/Chart/DepthChart.vue",
+    "props": [
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "legend", "type": "boolean", "required": false, "description": "Legend with the spread (default `true`)" },
+      { "name": "tooltip", "type": "boolean", "required": false, "description": "Hover readout (default `true`)" },
+      { "name": "grid", "type": "boolean", "required": false, "description": "Grid lines (default `true`)" },
+      { "name": "zoomable", "type": "boolean", "required": false, "description": "Zoom around the mid with the wheel / pinch (default `true`)" },
+      { "name": "animate", "type": "boolean", "required": false, "description": "Eased transitions between books (default `true`)" },
+      { "name": "midLine", "type": "boolean", "required": false, "description": "Line and label at the mid price (default `true`)" },
+      { "name": "axes", "type": "boolean", "required": false, "description": "Price and amount axes (default `true`)" },
+      { "name": "mirror", "type": "boolean", "required": false, "description": "Mirrored readout on the other side (default `true`)" },
+      { "name": "labels", "type": "Partial<DepthChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      { "name": "curve", "type": "\"linear\" | \"step\"", "required": false, "description": "Stepped or straight curves (default `step`)" },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible label" },
+      { "name": "locale", "type": "string", "required": false, "description": "Locale of the numbers and texts (`\"zh-CN\"`); the page language by default" },
+      { "name": "range", "type": "number", "required": false, "description": "Visible range on each side of the mid price, as a fraction of the mid; fits the book by default" },
+      { "name": "book", "type": "OrderBookSnapshot", "required": false, "description": "Book to draw, applied when the object changes (stream updates through the handle's `applyDeltas`)" },
+      { "name": "rangeLimits", "type": "readonly [number, number]", "required": false, "description": "Smallest and largest `range` reachable by zooming (default `[0.0005, 0.5]`)" },
+      { "name": "amount", "type": "\"base\" | \"quote\"", "required": false, "description": "Cumulative amount in the base asset or the quote notional (default `base`)" },
+      { "name": "fillOpacity", "type": "number", "required": false, "description": "Opacity of the areas, 0-1 (default 0.28)" },
+      { "name": "priceLines", "type": "readonly DepthChartPriceLine[]", "required": false, "description": "Reference lines at prices (an order, a liquidation)" },
+      { "name": "upColor", "type": "string", "required": false, "description": "Color of the bids / buys (any CSS color); from `colorConvention` by default" },
+      { "name": "downColor", "type": "string", "required": false, "description": "Color of the asks / sells" },
+      { "name": "colorConvention", "type": "OrderBookColorConvention", "required": false, "description": "`red-up` swaps the default colors (default `green-up`)" },
+      { "name": "pricePrecision", "type": "number", "required": false, "description": "Decimals of the prices; detected from the data by default" },
+      { "name": "sizePrecision", "type": "number", "required": false, "description": "Decimals of the sizes; detected from the data by default" },
+      { "name": "formatPrice", "type": "((price: number) => string)", "required": false, "description": "Formats the prices; overrides `pricePrecision`" },
+      { "name": "formatSize", "type": "((size: number) => string)", "required": false, "description": "Formats the sizes; overrides `sizePrecision`" },
+      { "name": "fontFamily", "type": "string", "required": false, "description": "Font family of the texts (default: the theme font)" },
+      { "name": "fontSize", "type": "number", "required": false, "description": "Font size of the texts, in pixels (default 12)" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: DepthChartHoverEvent | null]" },
+      { "name": "click", "type": "[event: DepthChartHoverEvent]" },
+      { "name": "rangeChange", "type": "[range: number]" }
+    ],
+    "slots": []
+  },
   "DescriptionList": {
     "file": "packages/vue/src/components/DescriptionList/DescriptionList.vue",
     "props": [
@@ -774,6 +1358,82 @@
     ],
     "events": [],
     "slots": [{ "name": "default", "type": "any", "description": "Text rendered inside a horizontal divider (ignored when vertical)" }]
+  },
+  "DonutChart": {
+    "file": "packages/vue/src/components/Chart/DonutChart.vue",
+    "props": [
+      { "name": "animation", "type": "boolean", "required": false, "description": "Entry and update animations, skipped when the user prefers reduced motion (default `true`)" },
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      {
+        "name": "legend",
+        "type": "boolean | ShapeLegendOptions",
+        "required": false,
+        "description": "Legend; clicking an item hides / shows its slice, stage or series (shown by default for pie, donut, funnel and multi-series radar charts)"
+      },
+      { "name": "tooltip", "type": "boolean | ShapeTooltipOptions", "required": false, "description": "Tooltip; `false` disables it (default `true`)" },
+      { "name": "rose", "type": "boolean", "required": false, "description": "Nightingale rose: the radius (instead of the angle) shows the value" },
+      {
+        "name": "labels",
+        "type": "\"none\" | \"outside\" | \"inside\"",
+        "required": false,
+        "description": "Slice labels: `outside` with leader lines, `inside` the slices, or none (default `outside` up to 12 slices)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
+      {
+        "name": "palette",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+      },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip rows, accessible names, compact numbers); the page language by default"
+      },
+      {
+        "name": "hidden",
+        "type": "readonly number[]",
+        "required": false,
+        "description": "Hidden slices / stages / radar series / top-level treemap nodes, by\nindex. Makes the visibility controlled: legend clicks then only emit\n`toggle`, whose `hiddenIndexes` should be stored and passed back."
+      },
+      { "name": "texts", "type": "Partial<ShapeChartLabels>", "required": false, "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")" },
+      { "name": "data", "type": "readonly ShapeDatum[]", "required": true, "description": "Slices: a name, a value (negative values count as 0) and an optional color" },
+      { "name": "format", "type": "((value: number) => string)", "required": false, "description": "Formats the values of the labels and the tooltip (default: compact numbers, 1.2k, 3.4M)" },
+      {
+        "name": "percentFormat",
+        "type": "((share: number) => string)",
+        "required": false,
+        "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1 (default: one decimal, \"40.0%\")"
+      },
+      { "name": "innerRadius", "type": "number", "required": false, "description": "Inner radius as a fraction of the outer radius: 0 = pie, 0.6 = donut (default 0, DonutChart 0.62)" },
+      { "name": "startAngle", "type": "number", "required": false, "description": "Angle of the first slice, degrees clockwise from 12 o'clock (default 0)" },
+      { "name": "padAngle", "type": "number", "required": false, "description": "Gap between the slices, in pixels (default 1, donut 2)" },
+      { "name": "cornerRadius", "type": "number", "required": false, "description": "Corner radius of the slices, in pixels (default 0, donut 4)" },
+      {
+        "name": "labelContent",
+        "type": "readonly (\"percent\" | \"value\" | \"name\")[]",
+        "required": false,
+        "description": "What a label shows: name, value, percent (default `[\"name\", \"percent\"]`)"
+      },
+      { "name": "centerValue", "type": "string", "required": false, "description": "Big text in the hole of a donut (e.g. the total)" },
+      { "name": "centerLabel", "type": "string", "required": false, "description": "Small text under `centerValue`" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": []
   },
   "Drawer": {
     "file": "packages/vue/src/components/Drawer/Drawer.vue",
@@ -997,6 +1657,191 @@
     "events": [],
     "slots": [{ "name": "default", "type": "any", "description": "Fields" }]
   },
+  "FunnelChart": {
+    "file": "packages/vue/src/components/Chart/FunnelChart.vue",
+    "props": [
+      { "name": "animation", "type": "boolean", "required": false, "description": "Entry and update animations, skipped when the user prefers reduced motion (default `true`)" },
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      {
+        "name": "legend",
+        "type": "boolean | ShapeLegendOptions",
+        "required": false,
+        "description": "Legend; clicking an item hides / shows its slice, stage or series (shown by default for pie, donut, funnel and multi-series radar charts)"
+      },
+      { "name": "tooltip", "type": "boolean | ShapeTooltipOptions", "required": false, "description": "Tooltip; `false` disables it (default `true`)" },
+      { "name": "conversion", "type": "boolean", "required": false, "description": "Shows the conversion rate from the previous stage (default `true`)" },
+      { "name": "sort", "type": "\"none\" | \"descending\" | \"ascending\"", "required": false, "description": "Order of the stages (default `none`: the data order)" },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
+      {
+        "name": "palette",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+      },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip rows, accessible names, compact numbers); the page language by default"
+      },
+      { "name": "shape", "type": "\"bar\" | \"trapezoid\"", "required": false, "description": "Shape of the stages: trapezoids narrowing to the next stage, or centered bars (default `trapezoid`)" },
+      {
+        "name": "hidden",
+        "type": "readonly number[]",
+        "required": false,
+        "description": "Hidden slices / stages / radar series / top-level treemap nodes, by\nindex. Makes the visibility controlled: legend clicks then only emit\n`toggle`, whose `hiddenIndexes` should be stored and passed back."
+      },
+      { "name": "texts", "type": "Partial<ShapeChartLabels>", "required": false, "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")" },
+      { "name": "data", "type": "readonly ShapeDatum[]", "required": true, "description": "Stages: a name, a value and an optional color" },
+      { "name": "format", "type": "((value: number) => string)", "required": false, "description": "Formats the values of the labels and the tooltip (default: compact numbers, 1.2k, 3.4M)" },
+      {
+        "name": "percentFormat",
+        "type": "((share: number) => string)",
+        "required": false,
+        "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1 (default: one decimal, \"40.0%\")"
+      },
+      { "name": "gap", "type": "number", "required": false, "description": "Vertical gap between the stages, in pixels (default 4)" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": []
+  },
+  "GanttChart": {
+    "file": "packages/vue/src/components/Chart/GanttChart.vue",
+    "props": [
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "legend", "type": "boolean | ChartLegendOptions", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      { "name": "crosshair", "type": "boolean", "required": false, "description": "Vertical guide line following the pointer" },
+      {
+        "name": "interaction",
+        "type": "boolean | ChartInteractionOptions",
+        "required": false,
+        "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)"
+      },
+      { "name": "today", "type": "number | boolean | Date", "default": "false", "required": false, "description": "Draws a line at this date (`true`: now)" },
+      { "name": "labels", "type": "Partial<ChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      {
+        "name": "renderer",
+        "type": "ChartRendererPreference",
+        "required": false,
+        "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "xAxis", "type": "ChartAxisOptions", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions", "required": false, "description": "Y axis" },
+      { "name": "annotations", "type": "readonly ChartAnnotation[]", "required": false, "description": "Background areas and reference lines" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes, accessible names); the page language by default"
+      },
+      { "name": "colors", "type": "readonly string[]", "required": false, "description": "Colors of the groups in order of appearance (any CSS colors); the chart palette by default" },
+      { "name": "taskName", "type": "string", "required": false, "description": "Name of the tasks without a group (default \"Tasks\")" },
+      { "name": "progressName", "type": "string", "required": false, "description": "Name of the progress bars (legend, tooltip; default \"Progress\")" },
+      { "name": "milestoneName", "type": "string", "required": false, "description": "Name of the milestones (legend, tooltip; default \"Milestones\")" },
+      { "name": "todayLabel", "type": "string", "required": false, "description": "Label of the today line" },
+      { "name": "tasks", "type": "readonly GanttTask[]", "required": true, "description": "Tasks and milestones, from top to bottom" },
+      { "name": "formatProgress", "type": "((share: number) => string)", "required": false, "description": "Formats the progress shares (tooltip; default \"60%\")" }
+    ],
+    "events": [
+      { "name": "zoom", "type": "[view: ChartView]" },
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" }
+    ],
+    "slots": []
+  },
+  "GaugeChart": {
+    "file": "packages/vue/src/components/Chart/GaugeChart.vue",
+    "props": [
+      { "name": "animation", "type": "boolean", "required": false, "description": "Entry and update animations, skipped when the user prefers reduced motion (default `true`)" },
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      {
+        "name": "legend",
+        "type": "boolean | ShapeLegendOptions",
+        "required": false,
+        "description": "Legend; clicking an item hides / shows its slice, stage or series (shown by default for pie, donut, funnel and multi-series radar charts)"
+      },
+      { "name": "tooltip", "type": "boolean | ShapeTooltipOptions", "required": false, "description": "Tooltip; `false` disables it (default `true`)" },
+      { "name": "ticks", "type": "boolean", "required": false, "description": "Tick labels at the ends and at the band bounds (default `true`)" },
+      { "name": "needle", "type": "boolean", "required": false, "description": "Draws a needle in addition to the value arc" },
+      { "name": "color", "type": "string", "required": false, "description": "Color of the value arc when there are no bands (default: the first palette color)" },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
+      {
+        "name": "palette",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+      },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip rows, accessible names, compact numbers); the page language by default"
+      },
+      { "name": "max", "type": "number", "required": false, "description": "Value at the end of the arc (default 100)" },
+      { "name": "min", "type": "number", "required": false, "description": "Value at the start of the arc (default 0)" },
+      { "name": "value", "type": "number", "required": true, "description": "Value shown by the arc (clamped to `min` - `max` for the drawing)" },
+      { "name": "label", "type": "string", "required": false, "description": "Caption under the value" },
+      {
+        "name": "hidden",
+        "type": "readonly number[]",
+        "required": false,
+        "description": "Hidden slices / stages / radar series / top-level treemap nodes, by\nindex. Makes the visibility controlled: legend clicks then only emit\n`toggle`, whose `hiddenIndexes` should be stored and passed back."
+      },
+      { "name": "texts", "type": "Partial<ShapeChartLabels>", "required": false, "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")" },
+      { "name": "format", "type": "((value: number) => string)", "required": false, "description": "Formats the values of the labels and the tooltip (default: compact numbers, 1.2k, 3.4M)" },
+      {
+        "name": "percentFormat",
+        "type": "((share: number) => string)",
+        "required": false,
+        "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1 (default: one decimal, \"40.0%\")"
+      },
+      { "name": "thickness", "type": "number", "required": false, "description": "Thickness of the arc as a fraction of the radius (default 0.16)" },
+      { "name": "sweep", "type": "number", "required": false, "description": "Total angle of the arc, degrees (default 240)" },
+      { "name": "bands", "type": "readonly GaugeBand[]", "required": false, "description": "Colored ranges of the track; the value arc takes the color of its band" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": []
+  },
   "GridItem": {
     "file": "packages/vue/src/components/ResponsiveGrid/GridItem.vue",
     "props": [
@@ -1006,17 +1851,186 @@
     "events": [],
     "slots": [{ "name": "default", "type": "any" }]
   },
+  "HeatmapChart": {
+    "file": "packages/vue/src/components/Chart/HeatmapChart.vue",
+    "props": [
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "legend", "type": "boolean | ChartLegendOptions", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      { "name": "crosshair", "type": "boolean", "required": false, "description": "Vertical guide line following the pointer" },
+      {
+        "name": "interaction",
+        "type": "boolean | ChartInteractionOptions",
+        "required": false,
+        "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)"
+      },
+      { "name": "labels", "type": "Partial<ChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      {
+        "name": "renderer",
+        "type": "ChartRendererPreference",
+        "required": false,
+        "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "xAxis", "type": "ChartAxisOptions", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions", "required": false, "description": "Y axis" },
+      { "name": "annotations", "type": "readonly ChartAnnotation[]", "required": false, "description": "Background areas and reference lines" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes, accessible names); the page language by default"
+      },
+      { "name": "name", "type": "string", "required": false, "description": "Name of the value in the tooltip" },
+      { "name": "colorScale", "type": "readonly string[]", "required": false, "description": "Colors from the lowest to the highest value; a ramp of the first palette color by default" },
+      { "name": "valueRange", "type": "readonly [number, number]", "required": false, "description": "Values at the ends of the color scale; the data range by default" },
+      { "name": "data", "type": "readonly HeatmapCell[]", "required": true, "description": "Cells `{ x, y, value }`" },
+      { "name": "format", "type": "((value: number) => string)", "required": false, "description": "Formats the values in the tooltip" },
+      { "name": "radius", "type": "number", "required": false, "description": "Corner radius of the cells, in pixels" },
+      { "name": "xCategories", "type": "readonly string[]", "required": false, "description": "Column names in order (collected from the data when omitted)" },
+      { "name": "yCategories", "type": "readonly string[]", "required": false, "description": "Row names from bottom to top (collected from the data when omitted)" }
+    ],
+    "events": [
+      { "name": "zoom", "type": "[view: ChartView]" },
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" }
+    ],
+    "slots": []
+  },
+  "HistogramChart": {
+    "file": "packages/vue/src/components/Chart/HistogramChart.vue",
+    "props": [
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "legend", "type": "boolean | ChartLegendOptions", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      { "name": "crosshair", "type": "boolean", "required": false, "description": "Vertical guide line following the pointer" },
+      {
+        "name": "interaction",
+        "type": "boolean | ChartInteractionOptions",
+        "required": false,
+        "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)"
+      },
+      { "name": "nice", "type": "boolean", "default": "true", "required": false, "description": "Rounds the bin width to 1, 2 or 5 × 10^k and aligns the edges on it" },
+      { "name": "color", "type": "string", "required": false, "description": "Bar color (any CSS color)" },
+      { "name": "values", "type": "ArrayLike<number>", "required": true, "description": "Raw samples (typed arrays are counted without copies)" },
+      { "name": "labels", "type": "Partial<ChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      {
+        "name": "renderer",
+        "type": "ChartRendererPreference",
+        "required": false,
+        "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "series", "type": "readonly ChartSeries[]", "required": false, "description": "More series drawn over the bins (e.g. a density `line`)" },
+      { "name": "xAxis", "type": "ChartAxisOptions", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions", "required": false, "description": "Y axis" },
+      { "name": "annotations", "type": "readonly ChartAnnotation[]", "required": false, "description": "Background areas and reference lines" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes, accessible names); the page language by default"
+      },
+      { "name": "name", "type": "string", "required": false, "description": "Name of the counts (legend, tooltip; default \"Count\")" },
+      { "name": "bins", "type": "HistogramBinning", "required": false, "description": "Number of bins, or the rule choosing it: `auto`, `sturges`, `freedman-diaconis` (default `auto`)" },
+      { "name": "domain", "type": "readonly [number, number]", "required": false, "description": "Range covered by the bins (values outside are not counted); the data range by default" },
+      { "name": "formatBin", "type": "((value: number) => string)", "required": false, "description": "Formats the edges of the bins in the tooltip" }
+    ],
+    "events": [
+      { "name": "zoom", "type": "[view: ChartView]" },
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" }
+    ],
+    "slots": []
+  },
+  "HorizontalBarChart": {
+    "file": "packages/vue/src/components/Chart/HorizontalBarChart.vue",
+    "props": [
+      { "name": "labels", "type": "boolean", "default": "false", "required": false, "description": "Writes the value at the end of every bar (default `false`)" },
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "stacked", "type": "boolean", "default": "false", "required": false, "description": "Stacks the series on top of each other (default `false`)" },
+      { "name": "percent", "type": "boolean", "default": "false", "required": false, "description": "Scales the stacks to 100% (implies `stacked`; default `false`)" },
+      { "name": "legend", "type": "boolean | ChartLegendOptions", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      { "name": "crosshair", "type": "boolean", "required": false, "description": "Vertical guide line following the pointer" },
+      {
+        "name": "interaction",
+        "type": "boolean | ChartInteractionOptions",
+        "required": false,
+        "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)"
+      },
+      {
+        "name": "renderer",
+        "type": "ChartRendererPreference",
+        "required": false,
+        "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "series", "type": "readonly ChartSeries[]", "required": true, "description": "Data series (replace the array or a `data` array to update the chart)" },
+      { "name": "xAxis", "type": "ChartAxisOptions", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions", "required": false, "description": "Y axis" },
+      { "name": "annotations", "type": "readonly ChartAnnotation[]", "required": false, "description": "Background areas and reference lines" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes, accessible names); the page language by default"
+      }
+    ],
+    "events": [
+      { "name": "zoom", "type": "[view: ChartView]" },
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" }
+    ],
+    "slots": []
+  },
   "HStack": {
     "file": "packages/vue/src/components/Stack/HStack.vue",
     "props": [
       { "name": "as", "type": "string | Component", "default": "\"div\"", "required": false, "description": "Element or component to render" },
-      { "name": "wrap", "type": "boolean", "default": "false", "required": false, "description": "Wraps items onto multiple lines" },
       {
         "name": "gap",
         "type": "string | number",
         "required": false,
         "description": "Gap between items: numbers and numeric strings select spacing tokens\n(`2` -> `var(--space-2)`), other strings are CSS values. No gap when omitted."
       },
+      { "name": "wrap", "type": "boolean", "default": "false", "required": false, "description": "Wraps items onto multiple lines" },
       { "name": "align", "type": "StackAlign", "required": false, "description": "Cross-axis alignment (`align-items`); unset when omitted" },
       { "name": "justify", "type": "StackJustify", "required": false, "description": "Main-axis distribution (`justify-content`); unset when omitted" },
       {
@@ -1152,9 +2166,9 @@
       { "name": "spellCheck", "type": "boolean", "default": "false", "required": false, "description": "Spell checking of the textarea" },
       { "name": "variant", "type": "TextareaVariant", "default": "\"outline\"", "required": false, "description": "Visual style" },
       { "name": "size", "type": "TextareaSize", "default": "\"medium\"", "required": false, "description": "Font size and minimum height" },
+      { "name": "required", "type": "boolean", "default": "false", "required": false, "description": "Marks the field as required." },
       { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Disables the field (also set by FormControl)." },
       { "name": "id", "type": "string", "required": false, "description": "id of the textarea (defaults to the enclosing FormControl's id)" },
-      { "name": "required", "type": "boolean", "default": "false", "required": false, "description": "Marks the field as required." },
       { "name": "readOnly", "type": "boolean", "default": "false", "required": false, "description": "Read-only field (also set by FormControl)." },
       { "name": "invalid", "type": "boolean", "default": "false", "required": false, "description": "Error state (also set by an invalid FormControl); sets aria-invalid" }
     ],
@@ -1179,6 +2193,107 @@
     "events": [
       { "name": "update:modelValue", "type": "[entries: KeyValueEntry[]]" },
       { "name": "change", "type": "[entries: KeyValueEntry[]]" }
+    ],
+    "slots": []
+  },
+  "Line3DChart": {
+    "file": "packages/vue/src/components/Chart/Line3DChart.vue",
+    "props": [
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "legend", "type": "boolean | Chart3DLegendOptions", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "tooltip", "type": "boolean | Chart3DTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      {
+        "name": "interaction",
+        "type": "boolean | Chart3DInteractionOptions",
+        "required": false,
+        "description": "Drag rotates, right / Shift + drag pans, Ctrl / ⌘ + wheel and pinch zoom; `false` makes the chart static (default `true`)"
+      },
+      { "name": "autoRotate", "type": "number | boolean", "required": false, "description": "Turns the camera around the box: `true` at 12°/s or a speed in degrees per second (default `false`)" },
+      { "name": "box", "type": "boolean", "required": false, "description": "Draws the axis box: back walls, grid lines, tick labels and axis titles (default `true`)" },
+      { "name": "colorBar", "type": "boolean | Chart3DColorBarOptions", "required": false, "description": "Color bar; shown by default when a visible series uses the color scale" },
+      { "name": "labels", "type": "Partial<Chart3DLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      { "name": "renderer", "type": "ChartRendererPreference", "required": false, "description": "Backend of the data layer: WebGPU, then WebGL2, WebGL, Canvas2D (default `auto`)" },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "series", "type": "readonly Line3DSeries[]", "required": true, "description": "3D polylines (trajectories)" },
+      { "name": "xAxis", "type": "Chart3DAxisOptions", "required": false, "description": "X axis (width of the box)" },
+      { "name": "yAxis", "type": "Chart3DAxisOptions", "required": false, "description": "Y axis (depth of the box)" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      { "name": "locale", "type": "string", "required": false, "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes); the page language by default" },
+      { "name": "camera", "type": "Chart3DCameraOptions", "required": false, "description": "Initial camera, also restored by a double click (changing it moves the camera)" },
+      { "name": "zAxis", "type": "Chart3DAxisOptions", "required": false, "description": "Z axis (height of the box)" },
+      { "name": "aspect", "type": "readonly [number, number, number]", "required": false, "description": "Proportions of the box (x, y, z; default `[1, 1, 0.7]`)" },
+      { "name": "colorScale", "type": "Chart3DColorScale", "required": false, "description": "Colors of `colorBy: \"z\"` / `\"value\"`: a built-in ramp or CSS colors (default `viridis`)" },
+      { "name": "valueRange", "type": "readonly [number, number]", "required": false, "description": "Values mapped to the ends of the color scale; the data range by default" },
+      { "name": "lighting", "type": "Chart3DLightingOptions", "required": false, "description": "Lighting of the surfaces and bars" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: Chart3DHoverEvent | null]" },
+      { "name": "pointClick", "type": "[event: Chart3DHoverEvent]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" },
+      { "name": "cameraChange", "type": "[camera: Chart3DCameraState]" }
+    ],
+    "slots": []
+  },
+  "LineChart": {
+    "file": "packages/vue/src/components/Chart/LineChart.vue",
+    "props": [
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "stacked", "type": "boolean", "default": "false", "required": false, "description": "Stacks the series on top of each other (default `false`)" },
+      { "name": "percent", "type": "boolean", "default": "false", "required": false, "description": "Scales the stacks to 100% (implies `stacked`; default `false`)" },
+      { "name": "legend", "type": "boolean | ChartLegendOptions", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      { "name": "crosshair", "type": "boolean", "required": false, "description": "Vertical guide line following the pointer" },
+      {
+        "name": "interaction",
+        "type": "boolean | ChartInteractionOptions",
+        "required": false,
+        "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)"
+      },
+      { "name": "area", "type": "boolean", "default": "false", "required": false, "description": "Fills the area under the lines (default `false`)" },
+      { "name": "labels", "type": "Partial<ChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      { "name": "curve", "type": "ChartCurve", "required": false, "description": "Shape of the lines: straight, smooth (monotone) or steps" },
+      {
+        "name": "renderer",
+        "type": "ChartRendererPreference",
+        "required": false,
+        "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "series", "type": "readonly ChartSeries[]", "required": true, "description": "Data series (replace the array or a `data` array to update the chart)" },
+      { "name": "xAxis", "type": "ChartAxisOptions", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions", "required": false, "description": "Y axis" },
+      { "name": "annotations", "type": "readonly ChartAnnotation[]", "required": false, "description": "Background areas and reference lines" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes, accessible names); the page language by default"
+      }
+    ],
+    "events": [
+      { "name": "zoom", "type": "[view: ChartView]" },
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" }
     ],
     "slots": []
   },
@@ -1265,6 +2380,70 @@
       { "name": "trigger", "type": "any", "description": "The trigger element (its single child gets the trigger props)" },
       { "name": "default", "type": "any", "description": "Alternative to the `trigger` slot" }
     ]
+  },
+  "MixedChart": {
+    "file": "packages/vue/src/components/Chart/MixedChart.vue",
+    "props": [
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "legend", "type": "boolean | ChartLegendOptions", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      { "name": "crosshair", "type": "boolean", "required": false, "description": "Vertical guide line following the pointer" },
+      {
+        "name": "interaction",
+        "type": "boolean | ChartInteractionOptions",
+        "required": false,
+        "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)"
+      },
+      { "name": "labels", "type": "Partial<ChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      {
+        "name": "renderer",
+        "type": "ChartRendererPreference",
+        "required": false,
+        "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "series", "type": "readonly ChartSeries[]", "required": true, "description": "Data series (replace the array or a `data` array to update the chart)" },
+      { "name": "xAxis", "type": "ChartAxisOptions", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions", "required": false, "description": "Y axis" },
+      { "name": "annotations", "type": "readonly ChartAnnotation[]", "required": false, "description": "Background areas and reference lines" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes, accessible names); the page language by default"
+      },
+      {
+        "name": "orientation",
+        "type": "ChartOrientation",
+        "required": false,
+        "description": "`horizontal` puts the x axis (categories) down the left side and the values along the bottom (default `vertical`)"
+      },
+      { "name": "stackMode", "type": "\"percent\" | \"normal\"", "required": false, "description": "`percent` scales every stack to 100% at each x (default `normal`)" },
+      {
+        "name": "yAxis2",
+        "type": "ChartAxisOptions",
+        "required": false,
+        "description": "Right value axis of the series with `yAxis: \"right\"`; its range is aligned on the left ticks (vertical charts)"
+      }
+    ],
+    "events": [
+      { "name": "zoom", "type": "[view: ChartView]" },
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" }
+    ],
+    "slots": []
   },
   "Modal": {
     "file": "packages/vue/src/components/Modal/Modal.vue",
@@ -1470,6 +2649,105 @@
     ],
     "slots": []
   },
+  "OrderBook": {
+    "file": "packages/vue/src/components/Chart/OrderBook.vue",
+    "props": [
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "tooltip", "type": "boolean", "required": false, "description": "Hover summary of the cumulative levels (default `true`)" },
+      { "name": "header", "type": "boolean", "required": false, "description": "Column headers (default `true`)" },
+      { "name": "lastPrice", "type": "number | null", "required": false, "description": "Price of the spread row, colored by its last move; the mid price when omitted" },
+      { "name": "flash", "type": "boolean", "required": false, "description": "Flashes the changed sizes (default `true`)" },
+      { "name": "spreadRow", "type": "boolean", "required": false, "description": "Spread row between the sides (default `true`)" },
+      { "name": "imbalance", "type": "boolean", "required": false, "description": "Bid / ask imbalance bar (default `true`)" },
+      { "name": "labels", "type": "Partial<OrderBookLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible label" },
+      { "name": "locale", "type": "string", "required": false, "description": "Locale of the numbers and texts (`\"zh-CN\"`); the page language by default" },
+      { "name": "mode", "type": "OrderBookMode", "required": false, "description": "Sides shown (default `both`)" },
+      { "name": "columns", "type": "readonly (\"size\" | \"price\" | \"total\")[]", "required": false, "description": "Columns, in order (default `[\"price\", \"size\", \"total\"]`)" },
+      { "name": "book", "type": "OrderBookSnapshot", "required": false, "description": "Book to draw, applied when the object changes (stream updates through the handle's `applyDeltas`)" },
+      { "name": "total", "type": "\"base\" | \"quote\"", "required": false, "description": "Total column in the base asset or the quote notional (default `base`)" },
+      { "name": "upColor", "type": "string", "required": false, "description": "Color of the bids / buys (any CSS color); from `colorConvention` by default" },
+      { "name": "downColor", "type": "string", "required": false, "description": "Color of the asks / sells" },
+      { "name": "colorConvention", "type": "OrderBookColorConvention", "required": false, "description": "`red-up` swaps the default colors (default `green-up`)" },
+      { "name": "pricePrecision", "type": "number", "required": false, "description": "Decimals of the prices; detected from the data by default" },
+      { "name": "sizePrecision", "type": "number", "required": false, "description": "Decimals of the sizes; detected from the data by default" },
+      { "name": "formatPrice", "type": "((price: number) => string)", "required": false, "description": "Formats the prices; overrides `pricePrecision`" },
+      { "name": "formatSize", "type": "((size: number) => string)", "required": false, "description": "Formats the sizes; overrides `sizePrecision`" },
+      { "name": "fontFamily", "type": "string", "required": false, "description": "Font family of the texts (default: the theme font)" },
+      { "name": "fontSize", "type": "number", "required": false, "description": "Font size of the texts, in pixels (default 12)" },
+      { "name": "rows", "type": "number", "required": false, "description": "Rows per side; fills the height by default" },
+      { "name": "grouping", "type": "number", "required": false, "description": "Price step the levels are grouped by (default 0: none)" },
+      { "name": "rowHeight", "type": "number", "required": false, "description": "Height of a row, in pixels (default 20)" },
+      { "name": "depthBars", "type": "\"none\" | \"cumulative\" | \"level\"", "required": false, "description": "Depth bars behind the rows (default `cumulative`)" },
+      { "name": "flashDuration", "type": "number", "required": false, "description": "Duration of a flash, in ms (default 450)" },
+      { "name": "largeOrderThreshold", "type": "number", "required": false, "description": "Highlights the levels at or above this size" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[level: OrderBookLevelEvent | null]" },
+      { "name": "levelClick", "type": "[level: OrderBookLevelEvent]" }
+    ],
+    "slots": []
+  },
+  "OrderBookHeatmap": {
+    "file": "packages/vue/src/components/Chart/OrderBookHeatmap.vue",
+    "props": [
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "tooltip", "type": "boolean", "required": false, "description": "Hover readout (default `true`)" },
+      { "name": "interactive", "type": "boolean", "required": false, "description": "Zoom and pan (default `true`)" },
+      { "name": "bubbles", "type": "boolean", "required": false, "description": "Trades as bubbles (default `true`)" },
+      { "name": "bestLines", "type": "boolean", "required": false, "description": "Best bid / ask lines (default `true`)" },
+      { "name": "profile", "type": "boolean", "required": false, "description": "Size profile of the current book at the right (default `true`)" },
+      { "name": "labels", "type": "Partial<OrderBookHeatmapLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      { "name": "renderer", "type": "ChartRendererPreference", "required": false, "description": "Backend: WebGPU, then WebGL2, WebGL, Canvas2D (default `auto`)" },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible label" },
+      { "name": "locale", "type": "string", "required": false, "description": "Locale of the numbers and texts (`\"zh-CN\"`); the page language by default" },
+      { "name": "colorScale", "type": "OrderBookHeatmapScale", "required": false, "description": "Scale of the sizes to the colors (default `log`)" },
+      { "name": "maxSize", "type": "number", "required": false, "description": "Size drawn with the last color; follows the data by default" },
+      { "name": "colors", "type": "readonly string[]", "required": false, "description": "Colors from no liquidity to `maxSize` (any CSS colors)" },
+      { "name": "book", "type": "OrderBookSnapshot", "required": false, "description": "Book, applied when the object changes (stream updates through the handle's `applyDeltas`)" },
+      { "name": "upColor", "type": "string", "required": false, "description": "Color of the bids / buys (any CSS color); from `colorConvention` by default" },
+      { "name": "downColor", "type": "string", "required": false, "description": "Color of the asks / sells" },
+      { "name": "colorConvention", "type": "OrderBookColorConvention", "required": false, "description": "`red-up` swaps the default colors (default `green-up`)" },
+      { "name": "pricePrecision", "type": "number", "required": false, "description": "Decimals of the prices; detected from the data by default" },
+      { "name": "sizePrecision", "type": "number", "required": false, "description": "Decimals of the sizes; detected from the data by default" },
+      { "name": "formatPrice", "type": "((price: number) => string)", "required": false, "description": "Formats the prices; overrides `pricePrecision`" },
+      { "name": "formatSize", "type": "((size: number) => string)", "required": false, "description": "Formats the sizes; overrides `sizePrecision`" },
+      { "name": "fontFamily", "type": "string", "required": false, "description": "Font family of the texts (default: the theme font)" },
+      { "name": "fontSize", "type": "number", "required": false, "description": "Font size of the texts, in pixels (default 12)" },
+      { "name": "trades", "type": "readonly MarketTrade[]", "required": false, "description": "Trades; when the array grows, only the appended ones are added" },
+      { "name": "tickSize", "type": "number", "required": false, "description": "Price step of the rows; detected from the book by default" },
+      { "name": "interval", "type": "number", "required": false, "description": "Duration of a column, in ms (default 100)" },
+      { "name": "window", "type": "number", "required": false, "description": "Time shown, in ms (default 60000)" },
+      { "name": "history", "type": "number", "required": false, "description": "Time kept for panning back, in ms (default 300000)" },
+      { "name": "depth", "type": "number", "required": false, "description": "Price levels kept on each side (default 160)" },
+      { "name": "priceSpan", "type": "number", "required": false, "description": "Price range shown around the mid; from `depth` by default" },
+      { "name": "contrast", "type": "number", "required": false, "description": "Contrast of the colors (default 1)" },
+      { "name": "bubbleSize", "type": "number", "required": false, "description": "Diameter of the largest bubble, in pixels (default 28)" },
+      { "name": "bubbleVolume", "type": "number", "required": false, "description": "Trade volume of the largest bubble; follows the data by default" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: OrderBookHeatmapHoverEvent | null]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" },
+      { "name": "followChange", "type": "[follow: boolean]" }
+    ],
+    "slots": []
+  },
   "Page": {
     "file": "packages/vue/src/components/Page/Page.vue",
     "props": [{ "name": "maxWidth", "type": "string | number", "required": false, "description": "Maximum width: numbers are pixels, strings are CSS lengths (`style` wins)" }],
@@ -1609,6 +2887,82 @@
     "events": [],
     "slots": []
   },
+  "PieChart": {
+    "file": "packages/vue/src/components/Chart/PieChart.vue",
+    "props": [
+      { "name": "animation", "type": "boolean", "required": false, "description": "Entry and update animations, skipped when the user prefers reduced motion (default `true`)" },
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      {
+        "name": "legend",
+        "type": "boolean | ShapeLegendOptions",
+        "required": false,
+        "description": "Legend; clicking an item hides / shows its slice, stage or series (shown by default for pie, donut, funnel and multi-series radar charts)"
+      },
+      { "name": "tooltip", "type": "boolean | ShapeTooltipOptions", "required": false, "description": "Tooltip; `false` disables it (default `true`)" },
+      { "name": "rose", "type": "boolean", "required": false, "description": "Nightingale rose: the radius (instead of the angle) shows the value" },
+      {
+        "name": "labels",
+        "type": "\"none\" | \"outside\" | \"inside\"",
+        "required": false,
+        "description": "Slice labels: `outside` with leader lines, `inside` the slices, or none (default `outside` up to 12 slices)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
+      {
+        "name": "palette",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+      },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip rows, accessible names, compact numbers); the page language by default"
+      },
+      {
+        "name": "hidden",
+        "type": "readonly number[]",
+        "required": false,
+        "description": "Hidden slices / stages / radar series / top-level treemap nodes, by\nindex. Makes the visibility controlled: legend clicks then only emit\n`toggle`, whose `hiddenIndexes` should be stored and passed back."
+      },
+      { "name": "texts", "type": "Partial<ShapeChartLabels>", "required": false, "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")" },
+      { "name": "data", "type": "readonly ShapeDatum[]", "required": true, "description": "Slices: a name, a value (negative values count as 0) and an optional color" },
+      { "name": "format", "type": "((value: number) => string)", "required": false, "description": "Formats the values of the labels and the tooltip (default: compact numbers, 1.2k, 3.4M)" },
+      {
+        "name": "percentFormat",
+        "type": "((share: number) => string)",
+        "required": false,
+        "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1 (default: one decimal, \"40.0%\")"
+      },
+      { "name": "innerRadius", "type": "number", "required": false, "description": "Inner radius as a fraction of the outer radius: 0 = pie, 0.6 = donut (default 0, DonutChart 0.62)" },
+      { "name": "startAngle", "type": "number", "required": false, "description": "Angle of the first slice, degrees clockwise from 12 o'clock (default 0)" },
+      { "name": "padAngle", "type": "number", "required": false, "description": "Gap between the slices, in pixels (default 1, donut 2)" },
+      { "name": "cornerRadius", "type": "number", "required": false, "description": "Corner radius of the slices, in pixels (default 0, donut 4)" },
+      {
+        "name": "labelContent",
+        "type": "readonly (\"percent\" | \"value\" | \"name\")[]",
+        "required": false,
+        "description": "What a label shows: name, value, percent (default `[\"name\", \"percent\"]`)"
+      },
+      { "name": "centerValue", "type": "string", "required": false, "description": "Big text in the hole of a donut (e.g. the total)" },
+      { "name": "centerLabel", "type": "string", "required": false, "description": "Small text under `centerValue`" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": []
+  },
   "Popover": {
     "file": "packages/vue/src/components/Popover/Popover.vue",
     "props": [
@@ -1735,6 +3089,204 @@
     "events": [],
     "slots": [{ "name": "default", "type": "any" }]
   },
+  "QuadrantChart": {
+    "file": "packages/vue/src/components/Chart/QuadrantChart.vue",
+    "props": [
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "legend", "type": "boolean | ChartLegendOptions", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      { "name": "crosshair", "type": "boolean", "required": false, "description": "Vertical guide line following the pointer" },
+      {
+        "name": "interaction",
+        "type": "boolean | ChartInteractionOptions",
+        "required": false,
+        "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)"
+      },
+      { "name": "showTicks", "type": "boolean", "required": false, "description": "Shows the numeric ticks of the axes (default `true`)" },
+      { "name": "reverseX", "type": "boolean", "required": false, "description": "Reverses the horizontal axis (e.g. \"urgent\" on the left)" },
+      { "name": "showLabels", "type": "boolean", "required": false, "description": "Draws the labels next to the dots (default `true`)" },
+      { "name": "draggable", "type": "boolean", "required": false, "description": "Lets the user drag the dots (default: when a `pointDrop` listener is set)" },
+      { "name": "labels", "type": "Partial<ChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      {
+        "name": "renderer",
+        "type": "ChartRendererPreference",
+        "required": false,
+        "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "annotations", "type": "readonly ChartAnnotation[]", "required": false, "description": "Background areas and reference lines" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes, accessible names); the page language by default"
+      },
+      { "name": "name", "type": "string", "required": false, "description": "Name of the points in the tooltip" },
+      { "name": "points", "type": "readonly QuadrantPoint[]", "required": true, "description": "Points to place (replace the array to update the chart)" },
+      { "name": "xSplit", "type": "number", "required": false, "description": "X value of the vertical divider (the middle of `xDomain` by default)" },
+      { "name": "ySplit", "type": "number", "required": false, "description": "Y value of the horizontal divider (the middle of `yDomain` by default)" },
+      { "name": "xLabel", "type": "string", "required": false, "description": "Title of the horizontal axis" },
+      { "name": "yLabel", "type": "string", "required": false, "description": "Title of the vertical axis" },
+      { "name": "pointSize", "type": "number", "required": false, "description": "Dot diameter in pixels (default 12)" },
+      { "name": "xDomain", "type": "[number, number]", "required": false, "description": "Range of the horizontal axis (default `[0, 10]`)" },
+      { "name": "yDomain", "type": "[number, number]", "required": false, "description": "Range of the vertical axis (default `[0, 10]`)" },
+      { "name": "quadrants", "type": "QuadrantRegions", "required": false, "description": "Titles and colors of the quadrants" },
+      { "name": "axisLabels", "type": "QuadrantAxisLabels", "required": false, "description": "Texts at the ends of the dividers, drawn inside the plot" }
+    ],
+    "events": [
+      { "name": "zoom", "type": "[view: ChartView]" },
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "pointClick", "type": "[point: QuadrantPoint, index: number]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" },
+      { "name": "quadrantClick", "type": "[quadrant: keyof QuadrantRegions, position: { x: number; y: number; }]" },
+      { "name": "pointDrop", "type": "[point: QuadrantPoint, index: number, target: QuadrantDropTarget]" }
+    ],
+    "slots": []
+  },
+  "RadarChart": {
+    "file": "packages/vue/src/components/Chart/RadarChart.vue",
+    "props": [
+      { "name": "animation", "type": "boolean", "required": false, "description": "Entry and update animations, skipped when the user prefers reduced motion (default `true`)" },
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      {
+        "name": "legend",
+        "type": "boolean | ShapeLegendOptions",
+        "required": false,
+        "description": "Legend; clicking an item hides / shows its slice, stage or series (shown by default for pie, donut, funnel and multi-series radar charts)"
+      },
+      { "name": "tooltip", "type": "boolean | ShapeTooltipOptions", "required": false, "description": "Tooltip; `false` disables it (default `true`)" },
+      { "name": "dots", "type": "boolean", "required": false, "description": "Dots on the vertices (default `true`)" },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "series", "type": "readonly RadarSeries[]", "required": true, "description": "Polygons `{ name, values }`: one value per indicator" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
+      {
+        "name": "palette",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+      },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip rows, accessible names, compact numbers); the page language by default"
+      },
+      { "name": "shape", "type": "\"circle\" | \"polygon\"", "required": false, "description": "Grid shape (default `polygon`)" },
+      {
+        "name": "hidden",
+        "type": "readonly number[]",
+        "required": false,
+        "description": "Hidden slices / stages / radar series / top-level treemap nodes, by\nindex. Makes the visibility controlled: legend clicks then only emit\n`toggle`, whose `hiddenIndexes` should be stored and passed back."
+      },
+      { "name": "texts", "type": "Partial<ShapeChartLabels>", "required": false, "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")" },
+      { "name": "format", "type": "((value: number) => string)", "required": false, "description": "Formats the values of the labels and the tooltip (default: compact numbers, 1.2k, 3.4M)" },
+      {
+        "name": "percentFormat",
+        "type": "((share: number) => string)",
+        "required": false,
+        "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1 (default: one decimal, \"40.0%\")"
+      },
+      { "name": "levels", "type": "number", "required": false, "description": "Number of grid rings (default 4)" },
+      { "name": "indicators", "type": "readonly RadarIndicator[]", "required": true, "description": "Axes of the chart `{ name, max }`, clockwise from 12 o'clock" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": []
+  },
+  "RadialBarChart": {
+    "file": "packages/vue/src/components/Chart/RadialBarChart.vue",
+    "props": [
+      { "name": "animation", "type": "boolean", "required": false, "description": "Entry and update animations, skipped when the user prefers reduced motion (default `true`)" },
+      { "name": "rounded", "type": "boolean", "required": false, "description": "Rounded bar ends (default `true`)" },
+      { "name": "labels", "type": "boolean", "required": false, "description": "Labels before the start of the bars (default: when `sweep` leaves room for them)" },
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      {
+        "name": "legend",
+        "type": "boolean | ShapeLegendOptions",
+        "required": false,
+        "description": "Legend; clicking an item hides / shows its slice, stage or series (shown by default for pie, donut, funnel and multi-series radar charts)"
+      },
+      { "name": "tooltip", "type": "boolean | ShapeTooltipOptions", "required": false, "description": "Tooltip; `false` disables it (default `true`)" },
+      { "name": "track", "type": "boolean", "required": false, "description": "Background tracks behind the bars (default `true`)" },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
+      {
+        "name": "palette",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+      },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip rows, accessible names, compact numbers); the page language by default"
+      },
+      { "name": "max", "type": "number", "required": false, "description": "Value of a full bar for the data without `max` (default: the largest value)" },
+      {
+        "name": "hidden",
+        "type": "readonly number[]",
+        "required": false,
+        "description": "Hidden slices / stages / radar series / top-level treemap nodes, by\nindex. Makes the visibility controlled: legend clicks then only emit\n`toggle`, whose `hiddenIndexes` should be stored and passed back."
+      },
+      { "name": "texts", "type": "Partial<ShapeChartLabels>", "required": false, "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")" },
+      { "name": "data", "type": "readonly RadialBarDatum[]", "required": true, "description": "Bars, from the outermost ring inward: a name, a value, an optional `max` and color" },
+      { "name": "format", "type": "((value: number) => string)", "required": false, "description": "Formats the values of the labels and the tooltip (default: compact numbers, 1.2k, 3.4M)" },
+      {
+        "name": "percentFormat",
+        "type": "((share: number) => string)",
+        "required": false,
+        "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1 (default: one decimal, \"40.0%\")"
+      },
+      { "name": "gap", "type": "number", "required": false, "description": "Gap between the rings, as a fraction of a ring's slot (default 0.28)" },
+      { "name": "innerRadius", "type": "number", "required": false, "description": "Radius of the innermost ring's inner edge, as a fraction of the outer radius (default 0.3)" },
+      { "name": "startAngle", "type": "number", "required": false, "description": "Angle where the bars start, degrees clockwise from 12 o'clock (default 0)" },
+      {
+        "name": "labelContent",
+        "type": "readonly (\"percent\" | \"value\" | \"name\")[]",
+        "required": false,
+        "description": "What a label shows: name, value, percent of the bar's max (default `[\"name\", \"value\"]`)"
+      },
+      { "name": "centerValue", "type": "string", "required": false, "description": "Big text in the center (e.g. the overall completion)" },
+      { "name": "centerLabel", "type": "string", "required": false, "description": "Small text under `centerValue`" },
+      { "name": "sweep", "type": "number", "required": false, "description": "Angle of a full bar, degrees; 360 = full rings (default 270)" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": []
+  },
   "Radio": {
     "file": "packages/vue/src/components/Radio/Radio.vue",
     "props": [
@@ -1788,7 +3340,7 @@
       { "name": "label", "type": "string", "required": false, "description": "Visible label of the group, also its accessible name (or the `label` slot)" },
       { "name": "id", "type": "string", "required": false, "description": "id of the element with role=\"radiogroup\"" },
       { "name": "disabled", "type": "boolean", "required": false, "description": "Disables every radio in the group (inherited from an enclosing\nFormControl when not set)" },
-      { "name": "direction", "type": "\"horizontal\" | \"vertical\"", "default": "\"vertical\"", "required": false, "description": "Layout direction of the radios" },
+      { "name": "direction", "type": "\"vertical\" | \"horizontal\"", "default": "\"vertical\"", "required": false, "description": "Layout direction of the radios" },
       { "name": "size", "type": "\"medium\" | \"small\" | \"large\"", "required": false, "description": "Size applied to every radio in the group; when not set each radio uses\nits own size" },
       { "name": "error", "type": "boolean", "default": "false", "required": false, "description": "Shows the error state (also set by an invalid enclosing FormControl)" },
       { "name": "helperText", "type": "string", "required": false, "description": "Helper text shown below the group (linked with aria-describedby)" },
@@ -1808,6 +3360,58 @@
       { "name": "default", "type": "any", "description": "Radio elements" },
       { "name": "label", "type": "any", "description": "Visible label (the `label` prop)" }
     ]
+  },
+  "RangeAreaChart": {
+    "file": "packages/vue/src/components/Chart/RangeAreaChart.vue",
+    "props": [
+      { "name": "curve", "type": "ChartCurve", "default": "\"smooth\"", "required": false, "description": "Shape of the edges: straight, smooth (monotone) or steps" },
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "legend", "type": "boolean | ChartLegendOptions", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      { "name": "crosshair", "type": "boolean", "required": false, "description": "Vertical guide line following the pointer" },
+      {
+        "name": "interaction",
+        "type": "boolean | ChartInteractionOptions",
+        "required": false,
+        "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)"
+      },
+      { "name": "labels", "type": "Partial<ChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      {
+        "name": "renderer",
+        "type": "ChartRendererPreference",
+        "required": false,
+        "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "series", "type": "readonly ChartSeries[]", "required": true, "description": "Data series (replace the array or a `data` array to update the chart)" },
+      { "name": "xAxis", "type": "ChartAxisOptions", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions", "required": false, "description": "Y axis" },
+      { "name": "annotations", "type": "readonly ChartAnnotation[]", "required": false, "description": "Background areas and reference lines" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes, accessible names); the page language by default"
+      }
+    ],
+    "events": [
+      { "name": "zoom", "type": "[view: ChartView]" },
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" }
+    ],
+    "slots": []
   },
   "Rating": {
     "file": "packages/vue/src/components/Rating/Rating.vue",
@@ -1873,6 +3477,169 @@
     "events": [],
     "slots": [{ "name": "default", "type": "any" }]
   },
+  "SankeyChart": {
+    "file": "packages/vue/src/components/Chart/SankeyChart.vue",
+    "props": [
+      { "name": "animation", "type": "boolean", "required": false, "description": "Entry and update animations, skipped when the user prefers reduced motion (default `true`)" },
+      { "name": "labels", "type": "boolean", "required": false, "description": "Node labels (name and value; default `true`)" },
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      {
+        "name": "legend",
+        "type": "boolean | ShapeLegendOptions",
+        "required": false,
+        "description": "Legend; clicking an item hides / shows its slice, stage or series (shown by default for pie, donut, funnel and multi-series radar charts)"
+      },
+      { "name": "tooltip", "type": "boolean | ShapeTooltipOptions", "required": false, "description": "Tooltip; `false` disables it (default `true`)" },
+      { "name": "labelValues", "type": "boolean", "required": false, "description": "Shows the value after the name in the labels (default `true`)" },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
+      {
+        "name": "palette",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+      },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip rows, accessible names, compact numbers); the page language by default"
+      },
+      {
+        "name": "hidden",
+        "type": "readonly number[]",
+        "required": false,
+        "description": "Hidden slices / stages / radar series / top-level treemap nodes, by\nindex. Makes the visibility controlled: legend clicks then only emit\n`toggle`, whose `hiddenIndexes` should be stored and passed back."
+      },
+      { "name": "texts", "type": "Partial<ShapeChartLabels>", "required": false, "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")" },
+      { "name": "format", "type": "((value: number) => string)", "required": false, "description": "Formats the values of the labels and the tooltip (default: compact numbers, 1.2k, 3.4M)" },
+      {
+        "name": "percentFormat",
+        "type": "((share: number) => string)",
+        "required": false,
+        "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1 (default: one decimal, \"40.0%\")"
+      },
+      { "name": "align", "type": "\"left\" | \"right\" | \"center\" | \"justify\"", "required": false, "description": "Column of the nodes without a `column` (default `justify`)" },
+      { "name": "nodeWidth", "type": "number", "required": false, "description": "Width of the node bars, in pixels (default 12)" },
+      { "name": "nodePadding", "type": "number", "required": false, "description": "Vertical gap between the nodes of a column, in pixels (default 12)" },
+      { "name": "iterations", "type": "number", "required": false, "description": "Relaxation passes that straighten the flows and reduce crossings (default 32)" },
+      { "name": "linkOpacity", "type": "number", "required": false, "description": "Opacity of the links, 0-1 (default 0.4)" },
+      { "name": "links", "type": "readonly SankeyLink[]", "required": true, "description": "Flows between the nodes (by name or index); links closing a cycle are ignored" },
+      { "name": "nodes", "type": "readonly SankeyNode[]", "required": false, "description": "Nodes, in their initial order; nodes only named by a link are appended" },
+      { "name": "linkColor", "type": "\"neutral\" | \"target\" | \"source\" | \"gradient\"", "required": false, "description": "Color of the links without `color` (default `gradient`)" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": []
+  },
+  "Scatter3DChart": {
+    "file": "packages/vue/src/components/Chart/Scatter3DChart.vue",
+    "props": [
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "legend", "type": "boolean | Chart3DLegendOptions", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "tooltip", "type": "boolean | Chart3DTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      {
+        "name": "interaction",
+        "type": "boolean | Chart3DInteractionOptions",
+        "required": false,
+        "description": "Drag rotates, right / Shift + drag pans, Ctrl / ⌘ + wheel and pinch zoom; `false` makes the chart static (default `true`)"
+      },
+      { "name": "autoRotate", "type": "number | boolean", "required": false, "description": "Turns the camera around the box: `true` at 12°/s or a speed in degrees per second (default `false`)" },
+      { "name": "box", "type": "boolean", "required": false, "description": "Draws the axis box: back walls, grid lines, tick labels and axis titles (default `true`)" },
+      { "name": "colorBar", "type": "boolean | Chart3DColorBarOptions", "required": false, "description": "Color bar; shown by default when a visible series uses the color scale" },
+      { "name": "labels", "type": "Partial<Chart3DLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      { "name": "renderer", "type": "ChartRendererPreference", "required": false, "description": "Backend of the data layer: WebGPU, then WebGL2, WebGL, Canvas2D (default `auto`)" },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "series", "type": "readonly Scatter3DSeries[]", "required": true, "description": "Point clouds (objects, `[x, y, z]` tuples or typed-array columns)" },
+      { "name": "xAxis", "type": "Chart3DAxisOptions", "required": false, "description": "X axis (width of the box)" },
+      { "name": "yAxis", "type": "Chart3DAxisOptions", "required": false, "description": "Y axis (depth of the box)" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      { "name": "locale", "type": "string", "required": false, "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes); the page language by default" },
+      { "name": "camera", "type": "Chart3DCameraOptions", "required": false, "description": "Initial camera, also restored by a double click (changing it moves the camera)" },
+      { "name": "zAxis", "type": "Chart3DAxisOptions", "required": false, "description": "Z axis (height of the box)" },
+      { "name": "aspect", "type": "readonly [number, number, number]", "required": false, "description": "Proportions of the box (x, y, z; default `[1, 1, 0.7]`)" },
+      { "name": "colorScale", "type": "Chart3DColorScale", "required": false, "description": "Colors of `colorBy: \"z\"` / `\"value\"`: a built-in ramp or CSS colors (default `viridis`)" },
+      { "name": "valueRange", "type": "readonly [number, number]", "required": false, "description": "Values mapped to the ends of the color scale; the data range by default" },
+      { "name": "lighting", "type": "Chart3DLightingOptions", "required": false, "description": "Lighting of the surfaces and bars" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: Chart3DHoverEvent | null]" },
+      { "name": "pointClick", "type": "[event: Chart3DHoverEvent]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" },
+      { "name": "cameraChange", "type": "[camera: Chart3DCameraState]" }
+    ],
+    "slots": []
+  },
+  "ScatterChart": {
+    "file": "packages/vue/src/components/Chart/ScatterChart.vue",
+    "props": [
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "legend", "type": "boolean | ChartLegendOptions", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      { "name": "crosshair", "type": "boolean", "required": false, "description": "Vertical guide line following the pointer" },
+      {
+        "name": "interaction",
+        "type": "boolean | ChartInteractionOptions",
+        "required": false,
+        "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)"
+      },
+      { "name": "labels", "type": "Partial<ChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      {
+        "name": "renderer",
+        "type": "ChartRendererPreference",
+        "required": false,
+        "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "series", "type": "readonly ChartSeries[]", "required": true, "description": "Data series (replace the array or a `data` array to update the chart)" },
+      { "name": "xAxis", "type": "ChartAxisOptions", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions", "required": false, "description": "Y axis" },
+      { "name": "annotations", "type": "readonly ChartAnnotation[]", "required": false, "description": "Background areas and reference lines" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes, accessible names); the page language by default"
+      }
+    ],
+    "events": [
+      { "name": "zoom", "type": "[view: ChartView]" },
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" }
+    ],
+    "slots": []
+  },
   "Select": {
     "file": "packages/vue/src/components/Select/Select.vue",
     "props": [
@@ -1926,6 +3693,32 @@
   },
   "SelectLabel": { "file": "packages/vue/src/components/Select/SelectLabel.vue", "props": [], "events": [], "slots": [{ "name": "default", "type": "any", "description": "Label content" }] },
   "SelectSeparator": { "file": "packages/vue/src/components/Select/SelectSeparator.vue", "props": [], "events": [], "slots": [] },
+  "ShapeChart": {
+    "file": "packages/vue/src/components/Chart/ShapeChart.vue",
+    "props": [
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      {
+        "name": "options",
+        "type": "ShapeChartOptions",
+        "required": true,
+        "description": "Engine options, `type` included (replace the object to update the chart: it animates from the previous values)"
+      }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": []
+  },
   "Skeleton": {
     "file": "packages/vue/src/components/Skeleton/Skeleton.vue",
     "props": [
@@ -1964,6 +3757,35 @@
       { "name": "animation", "type": "SkeletonAnimation", "default": "\"pulse\"", "required": false, "description": "Loading animation; \"false\" disables it" }
     ],
     "events": [],
+    "slots": []
+  },
+  "Sparkline": {
+    "file": "packages/vue/src/components/Chart/Sparkline.vue",
+    "props": [
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      { "name": "color", "type": "string", "required": false, "description": "Color (any CSS color); the first palette color by default" },
+      { "name": "type", "type": "\"line\" | \"bar\" | \"area\"", "required": false, "description": "How the values are drawn (default `line`)" },
+      { "name": "labels", "type": "Partial<ChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      { "name": "curve", "type": "ChartCurve", "required": false, "description": "Shape of the line (default `smooth`)" },
+      { "name": "renderer", "type": "ChartRendererPreference", "required": false, "description": "Backend of the data layer (default `auto`)" },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Colors (defaults to the `--chart-series-1..8` CSS variables)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      { "name": "locale", "type": "string", "required": false, "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, accessible name); the page language by default" },
+      { "name": "name", "type": "string", "required": false, "description": "Name shown in the tooltip" },
+      { "name": "data", "type": "ChartSeriesData", "required": true, "description": "Values (or `[x, y]` pairs, typed arrays, ...)" },
+      { "name": "format", "type": "((value: number) => string)", "required": false, "description": "Formats the value in the tooltip" },
+      { "name": "reference", "type": "number", "required": false, "description": "Draws a reference line at this value (e.g. a target or the average)" }
+    ],
+    "events": [{ "name": "hover", "type": "[event: ChartHoverEvent | null]" }],
     "slots": []
   },
   "SplitLayout": {
@@ -2070,6 +3892,130 @@
       { "name": "change", "type": "[value: string]" }
     ],
     "slots": [{ "name": "label", "type": "{ item: StepsItem; index: number; }", "description": "Label of a step (defaults to `item.label`)" }]
+  },
+  "SunburstChart": {
+    "file": "packages/vue/src/components/Chart/SunburstChart.vue",
+    "props": [
+      { "name": "animation", "type": "boolean", "required": false, "description": "Entry and update animations, skipped when the user prefers reduced motion (default `true`)" },
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      {
+        "name": "legend",
+        "type": "boolean | ShapeLegendOptions",
+        "required": false,
+        "description": "Legend; clicking an item hides / shows its slice, stage or series (shown by default for pie, donut, funnel and multi-series radar charts)"
+      },
+      { "name": "tooltip", "type": "boolean | ShapeTooltipOptions", "required": false, "description": "Tooltip; `false` disables it (default `true`)" },
+      { "name": "drill", "type": "boolean", "required": false, "description": "Clicking (or Enter on) a parent zooms into it; clicking the center goes back up (default `true`)" },
+      {
+        "name": "labels",
+        "type": "\"auto\" | \"none\" | \"tangential\" | \"radial\"",
+        "required": false,
+        "description": "Sector labels along the arc or the radius, whichever fits best (`auto`), or none (default `auto`)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
+      {
+        "name": "palette",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+      },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip rows, accessible names, compact numbers); the page language by default"
+      },
+      {
+        "name": "hidden",
+        "type": "readonly number[]",
+        "required": false,
+        "description": "Hidden slices / stages / radar series / top-level treemap nodes, by\nindex. Makes the visibility controlled: legend clicks then only emit\n`toggle`, whose `hiddenIndexes` should be stored and passed back."
+      },
+      { "name": "texts", "type": "Partial<ShapeChartLabels>", "required": false, "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")" },
+      { "name": "data", "type": "readonly TreemapNode[]", "required": true, "description": "Nodes: leaves carry a value, parents sum their children" },
+      { "name": "format", "type": "((value: number) => string)", "required": false, "description": "Formats the values of the labels and the tooltip (default: compact numbers, 1.2k, 3.4M)" },
+      {
+        "name": "percentFormat",
+        "type": "((share: number) => string)",
+        "required": false,
+        "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1 (default: one decimal, \"40.0%\")"
+      },
+      { "name": "levels", "type": "number", "required": false, "description": "Rings shown at once below the focused node (default: every level)" },
+      { "name": "innerRadius", "type": "number", "required": false, "description": "Radius of the center circle as a fraction of the outer radius (default 0.26)" },
+      { "name": "startAngle", "type": "number", "required": false, "description": "Angle of the first node, degrees clockwise from 12 o'clock (default 0)" },
+      { "name": "padAngle", "type": "number", "required": false, "description": "Gap between the sectors, in pixels (default 1)" },
+      { "name": "cornerRadius", "type": "number", "required": false, "description": "Corner radius of the sectors, in pixels (default 2)" },
+      {
+        "name": "drillPath",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Names from the root to the focused node (`[]` = the root); makes the drill-down controlled (clicks only emit `drill`)"
+      }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" },
+      { "name": "drill", "type": "[event: ShapeDrillEvent]" }
+    ],
+    "slots": []
+  },
+  "Surface3DChart": {
+    "file": "packages/vue/src/components/Chart/Surface3DChart.vue",
+    "props": [
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "legend", "type": "boolean | Chart3DLegendOptions", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "tooltip", "type": "boolean | Chart3DTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      {
+        "name": "interaction",
+        "type": "boolean | Chart3DInteractionOptions",
+        "required": false,
+        "description": "Drag rotates, right / Shift + drag pans, Ctrl / ⌘ + wheel and pinch zoom; `false` makes the chart static (default `true`)"
+      },
+      { "name": "autoRotate", "type": "number | boolean", "required": false, "description": "Turns the camera around the box: `true` at 12°/s or a speed in degrees per second (default `false`)" },
+      { "name": "box", "type": "boolean", "required": false, "description": "Draws the axis box: back walls, grid lines, tick labels and axis titles (default `true`)" },
+      { "name": "colorBar", "type": "boolean | Chart3DColorBarOptions", "required": false, "description": "Color bar; shown by default when a visible series uses the color scale" },
+      { "name": "wireframe", "type": "boolean | Surface3DWireframeOptions", "required": false, "description": "Wireframe of the series that do not set one" },
+      { "name": "contours", "type": "boolean | Surface3DContourOptions", "required": false, "description": "Contour lines of the series that do not set them" },
+      { "name": "labels", "type": "Partial<Chart3DLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      { "name": "renderer", "type": "ChartRendererPreference", "required": false, "description": "Backend of the data layer: WebGPU, then WebGL2, WebGL, Canvas2D (default `auto`)" },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "series", "type": "readonly Surface3DSeries[]", "required": true, "description": "Surfaces over regular grids" },
+      { "name": "xAxis", "type": "Chart3DAxisOptions", "required": false, "description": "X axis (width of the box)" },
+      { "name": "yAxis", "type": "Chart3DAxisOptions", "required": false, "description": "Y axis (depth of the box)" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      { "name": "locale", "type": "string", "required": false, "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes); the page language by default" },
+      { "name": "camera", "type": "Chart3DCameraOptions", "required": false, "description": "Initial camera, also restored by a double click (changing it moves the camera)" },
+      { "name": "zAxis", "type": "Chart3DAxisOptions", "required": false, "description": "Z axis (height of the box)" },
+      { "name": "aspect", "type": "readonly [number, number, number]", "required": false, "description": "Proportions of the box (x, y, z; default `[1, 1, 0.7]`)" },
+      { "name": "colorScale", "type": "Chart3DColorScale", "required": false, "description": "Colors of `colorBy: \"z\"` / `\"value\"`: a built-in ramp or CSS colors (default `viridis`)" },
+      { "name": "valueRange", "type": "readonly [number, number]", "required": false, "description": "Values mapped to the ends of the color scale; the data range by default" },
+      { "name": "lighting", "type": "Chart3DLightingOptions", "required": false, "description": "Lighting of the surfaces and bars" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: Chart3DHoverEvent | null]" },
+      { "name": "pointClick", "type": "[event: Chart3DHoverEvent]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" },
+      { "name": "cameraChange", "type": "[camera: Chart3DCameraState]" }
+    ],
+    "slots": []
   },
   "Switch": {
     "file": "packages/vue/src/components/Switch/Switch.vue",
@@ -2413,6 +4359,56 @@
     "events": [],
     "slots": []
   },
+  "TimeAndSales": {
+    "file": "packages/vue/src/components/Chart/TimeAndSales.vue",
+    "props": [
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "animate", "type": "boolean", "required": false, "description": "Slides the new rows in (default `true`)" },
+      { "name": "header", "type": "boolean", "required": false, "description": "Column headers (default `true`)" },
+      { "name": "aggregate", "type": "boolean", "required": false, "description": "Merges the consecutive trades of the same side and price (default `false`)" },
+      { "name": "pauseOnHover", "type": "boolean", "required": false, "description": "Pauses the tape while hovered (default `true`)" },
+      { "name": "milliseconds", "type": "boolean", "required": false, "description": "Milliseconds in the times (default `true`)" },
+      { "name": "labels", "type": "Partial<TimeAndSalesLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible label" },
+      { "name": "locale", "type": "string", "required": false, "description": "Locale of the numbers and texts (`\"zh-CN\"`); the page language by default" },
+      { "name": "minSize", "type": "number", "required": false, "description": "Hides the trades below this size (default 0)" },
+      { "name": "columns", "type": "readonly TimeAndSalesColumn[]", "required": false, "description": "Columns, in order (default `[\"time\", \"price\", \"size\"]`)" },
+      { "name": "upColor", "type": "string", "required": false, "description": "Color of the bids / buys (any CSS color); from `colorConvention` by default" },
+      { "name": "downColor", "type": "string", "required": false, "description": "Color of the asks / sells" },
+      { "name": "colorConvention", "type": "OrderBookColorConvention", "required": false, "description": "`red-up` swaps the default colors (default `green-up`)" },
+      { "name": "pricePrecision", "type": "number", "required": false, "description": "Decimals of the prices; detected from the data by default" },
+      { "name": "sizePrecision", "type": "number", "required": false, "description": "Decimals of the sizes; detected from the data by default" },
+      { "name": "formatPrice", "type": "((price: number) => string)", "required": false, "description": "Formats the prices; overrides `pricePrecision`" },
+      { "name": "formatSize", "type": "((size: number) => string)", "required": false, "description": "Formats the sizes; overrides `sizePrecision`" },
+      { "name": "fontFamily", "type": "string", "required": false, "description": "Font family of the texts (default: the theme font)" },
+      { "name": "fontSize", "type": "number", "required": false, "description": "Font size of the texts, in pixels (default 12)" },
+      { "name": "rowHeight", "type": "number", "required": false, "description": "Height of a row, in pixels (default 20)" },
+      {
+        "name": "trades",
+        "type": "readonly MarketTrade[]",
+        "required": false,
+        "description": "Trades, oldest first; when the array grows, only the appended ones are added (other changes replace the tape)"
+      },
+      { "name": "capacity", "type": "number", "required": false, "description": "Trades kept (default 200000)" },
+      { "name": "largeTradeThreshold", "type": "number", "required": false, "description": "Highlights the trades at or above this size" },
+      { "name": "priceColor", "type": "\"side\" | \"tick\"", "required": false, "description": "Price color: the side of the trade or the tick direction (default `side`)" },
+      { "name": "formatTime", "type": "((time: number) => string)", "required": false, "description": "Formats the times" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[row: TimeAndSalesRowEvent | null]" },
+      { "name": "tradeClick", "type": "[row: TimeAndSalesRowEvent]" },
+      { "name": "pause", "type": "[paused: boolean]" }
+    ],
+    "slots": []
+  },
   "TimePicker": {
     "file": "packages/vue/src/components/TimePicker/TimePicker.vue",
     "props": [
@@ -2603,6 +4599,126 @@
     "events": [],
     "slots": [{ "name": "default", "type": "any", "description": "Content containing tooltips" }]
   },
+  "TradingChart": {
+    "file": "packages/vue/src/components/Chart/TradingChart.vue",
+    "props": [
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "legend", "type": "boolean", "required": false, "description": "Legends with the values at the crosshair and the indicator toggles (default `true`)" },
+      { "name": "grid", "type": "boolean", "required": false, "description": "Grid lines (default `true`)" },
+      { "name": "lastPriceLine", "type": "boolean", "required": false, "description": "Line and axis label at the last price (default `true`)" },
+      { "name": "countdown", "type": "boolean", "required": false, "description": "Time left until the current bar closes, under the last price label (default `false`)" },
+      { "name": "highLowMarkers", "type": "boolean", "required": false, "description": "Marks the highest and lowest prices of the visible bars (default `true`)" },
+      { "name": "keepDrawingMode", "type": "boolean", "required": false, "description": "Keeps the drawing tool after a drawing is made (default `false`)" },
+      { "name": "kineticScroll", "type": "boolean", "required": false, "description": "Keeps panning after a quick drag (default `true`)" },
+      { "name": "symbol", "type": "string", "required": false, "description": "Name shown in the legend and the accessible label (`\"BTC/USDT\"`)" },
+      { "name": "labels", "type": "Partial<TradingChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
+      { "name": "renderer", "type": "ChartRendererPreference", "required": false, "description": "Backend of the bars and lines: WebGPU, then WebGL2, WebGL, Canvas2D (default `auto`)" },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "crosshair", "type": "TradingCrosshairMode", "required": false, "description": "Crosshair behaviour (default `magnet`)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible label; built from the symbol by default" },
+      { "name": "locale", "type": "string", "required": false, "description": "Locale of the texts, numbers and dates (`\"zh-CN\"`); the page language by default" },
+      { "name": "bars", "type": "TradingBarsInput", "required": false, "description": "Bars, oldest first; replaced when a new array / object is passed (stream with the handle's `update`)" },
+      { "name": "priceLines", "type": "readonly TradingPriceLine[]", "required": false, "description": "Order, position, take profit / stop loss and alert lines" },
+      { "name": "upColor", "type": "string", "required": false, "description": "Color of rising bars (any CSS color, `var(--x)` included)" },
+      { "name": "downColor", "type": "string", "required": false, "description": "Color of falling bars" },
+      { "name": "colorConvention", "type": "TradingColorConvention", "required": false, "description": "Colors of rising / falling bars: `redUp` swaps the defaults (default `greenUp`)" },
+      { "name": "formatPrice", "type": "((price: number) => string)", "required": false, "description": "Formats the prices (axis, legend, labels); overrides `precision`" },
+      { "name": "precision", "type": "number", "required": false, "description": "Decimals of the prices; detected from the data by default" },
+      { "name": "indicators", "type": "readonly TradingIndicator[]", "required": false, "description": "Indicators, over the price or in panes below it, in this order" },
+      { "name": "timeframe", "type": "TradingTimeframe", "required": false, "description": "Duration of a bar; inferred from the bar times by default" },
+      { "name": "chartStyle", "type": "TradingChartStyle", "required": false, "description": "How the bars are drawn (default `candles`)" },
+      { "name": "scaleMode", "type": "TradingScaleMode", "required": false, "description": "Price scale of the price pane (default `linear`)" },
+      { "name": "utcOffset", "type": "number", "required": false, "description": "Offset of the displayed times from UTC, in minutes (`480` for UTC+8); local time by default" },
+      { "name": "markers", "type": "readonly TradingMarker[]", "required": false, "description": "Buy / sell markers" },
+      { "name": "compare", "type": "readonly TradingCompareSeries[]", "required": false, "description": "Comparison series (best read with `scaleMode: \"percent\"`)" },
+      { "name": "drawings", "type": "readonly TradingDrawing[]", "required": false, "description": "Drawings; replaced when a new array is passed (see the `drawingsChange` event)" },
+      { "name": "drawingMode", "type": "TradingDrawingTool", "required": false, "description": "Active drawing tool (default `cursor`)" },
+      { "name": "baselinePrice", "type": "number", "required": false, "description": "Price of the `baseline` style; the close of the first visible bar by default" },
+      { "name": "rightOffset", "type": "number", "required": false, "description": "Empty space after the last bar, in bars (default 8)" },
+      { "name": "barSpacing", "type": "number", "required": false, "description": "Initial width of a bar, in pixels (default 8)" },
+      { "name": "wheel", "type": "\"zoom\" | \"none\" | \"modifier\"", "required": false, "description": "Mouse wheel: `zoom`, `modifier` (zoom with Ctrl / ⌘ only) or `none` (default `zoom`)" },
+      { "name": "watermark", "type": "string", "required": false, "description": "Large faint text behind the bars (`\"BTCUSDT · 1H\"`)" }
+    ],
+    "events": [
+      { "name": "click", "type": "[event: TradingClickEvent]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" },
+      { "name": "crosshairMove", "type": "[event: TradingCrosshairEvent | null]" },
+      { "name": "visibleRangeChange", "type": "[range: TradingVisibleRange]" },
+      { "name": "orderMove", "type": "[event: TradingOrderMoveEvent]" },
+      { "name": "drawingsChange", "type": "[drawings: readonly TradingDrawing[]]" },
+      { "name": "drawingSelect", "type": "[id: string | null]" },
+      { "name": "drawingToolChange", "type": "[tool: TradingDrawingTool]" },
+      { "name": "indicatorToggle", "type": "[event: TradingIndicatorToggleEvent]" },
+      { "name": "historyRequest", "type": "[event: TradingHistoryRequestEvent]" }
+    ],
+    "slots": []
+  },
+  "TreemapChart": {
+    "file": "packages/vue/src/components/Chart/TreemapChart.vue",
+    "props": [
+      { "name": "animation", "type": "boolean", "required": false, "description": "Entry and update animations, skipped when the user prefers reduced motion (default `true`)" },
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      {
+        "name": "legend",
+        "type": "boolean | ShapeLegendOptions",
+        "required": false,
+        "description": "Legend; clicking an item hides / shows its slice, stage or series (shown by default for pie, donut, funnel and multi-series radar charts)"
+      },
+      { "name": "tooltip", "type": "boolean | ShapeTooltipOptions", "required": false, "description": "Tooltip; `false` disables it (default `true`)" },
+      { "name": "headers", "type": "boolean", "required": false, "description": "Draws the names of the parents above their children (default `true`)" },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
+      {
+        "name": "palette",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+      },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip rows, accessible names, compact numbers); the page language by default"
+      },
+      {
+        "name": "hidden",
+        "type": "readonly number[]",
+        "required": false,
+        "description": "Hidden slices / stages / radar series / top-level treemap nodes, by\nindex. Makes the visibility controlled: legend clicks then only emit\n`toggle`, whose `hiddenIndexes` should be stored and passed back."
+      },
+      { "name": "texts", "type": "Partial<ShapeChartLabels>", "required": false, "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")" },
+      { "name": "data", "type": "readonly TreemapNode[]", "required": true, "description": "Nodes `{ name, value, children }`: leaves carry a value, parents sum their children" },
+      { "name": "format", "type": "((value: number) => string)", "required": false, "description": "Formats the values of the labels and the tooltip (default: compact numbers, 1.2k, 3.4M)" },
+      {
+        "name": "percentFormat",
+        "type": "((share: number) => string)",
+        "required": false,
+        "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1 (default: one decimal, \"40.0%\")"
+      },
+      { "name": "gap", "type": "number", "required": false, "description": "Gap between the cells, in pixels (default 2)" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": []
+  },
   "Upload": {
     "file": "packages/vue/src/components/Upload/Upload.vue",
     "props": [
@@ -2664,13 +4780,13 @@
     "file": "packages/vue/src/components/Stack/VStack.vue",
     "props": [
       { "name": "as", "type": "string | Component", "default": "\"div\"", "required": false, "description": "Element or component to render" },
-      { "name": "wrap", "type": "boolean", "default": "false", "required": false, "description": "Wraps items onto multiple lines" },
       {
         "name": "gap",
         "type": "string | number",
         "required": false,
         "description": "Gap between items: numbers and numeric strings select spacing tokens\n(`2` -> `var(--space-2)`), other strings are CSS values. No gap when omitted."
       },
+      { "name": "wrap", "type": "boolean", "default": "false", "required": false, "description": "Wraps items onto multiple lines" },
       { "name": "align", "type": "StackAlign", "required": false, "description": "Cross-axis alignment (`align-items`); unset when omitted" },
       { "name": "justify", "type": "StackJustify", "required": false, "description": "Main-axis distribution (`justify-content`); unset when omitted" },
       {
@@ -2692,5 +4808,68 @@
       { "name": "default", "type": "any", "description": "Items" },
       { "name": "separator", "type": "any", "description": "Rendered between every two items (the `separator` prop as content)" }
     ]
+  },
+  "WaterfallChart": {
+    "file": "packages/vue/src/components/Chart/WaterfallChart.vue",
+    "props": [
+      { "name": "labels", "type": "boolean", "default": "true", "required": false, "description": "Writes the change (or the total) at the end of every bar" },
+      {
+        "name": "deep",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)"
+      },
+      { "name": "legend", "type": "boolean | ChartLegendOptions", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions", "required": false, "description": "Tooltip; `false` disables it" },
+      { "name": "crosshair", "type": "boolean", "required": false, "description": "Vertical guide line following the pointer" },
+      {
+        "name": "interaction",
+        "type": "boolean | ChartInteractionOptions",
+        "required": false,
+        "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)"
+      },
+      {
+        "name": "renderer",
+        "type": "ChartRendererPreference",
+        "required": false,
+        "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)"
+      },
+      { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
+      { "name": "xAxis", "type": "ChartAxisOptions", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions", "required": false, "description": "Y axis" },
+      { "name": "annotations", "type": "readonly ChartAnnotation[]", "required": false, "description": "Background areas and reference lines" },
+      { "name": "padding", "type": "ChartPadding", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[]", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
+      { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes, accessible names); the page language by default"
+      },
+      { "name": "name", "type": "string", "required": false, "description": "Name of the series (tooltip; default \"Change\")" },
+      {
+        "name": "orientation",
+        "type": "ChartOrientation",
+        "required": false,
+        "description": "`horizontal` puts the x axis (categories) down the left side and the values along the bottom (default `vertical`)"
+      },
+      { "name": "format", "type": "((value: number) => string)", "required": false, "description": "Formats the values (labels, tooltip)" },
+      { "name": "start", "type": "number", "required": false, "description": "Value the first change starts from (default 0)" },
+      { "name": "upColor", "type": "string", "required": false, "description": "Color of the increases (the success color by default)" },
+      { "name": "downColor", "type": "string", "required": false, "description": "Color of the decreases (the danger color by default)" },
+      { "name": "totalColor", "type": "string", "required": false, "description": "Color of the totals and subtotals (the primary color by default)" },
+      { "name": "steps", "type": "readonly WaterfallStep[]", "required": true, "description": "Changes, subtotals and totals, in order" }
+    ],
+    "events": [
+      { "name": "zoom", "type": "[view: ChartView]" },
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" }
+    ],
+    "slots": []
   }
 }

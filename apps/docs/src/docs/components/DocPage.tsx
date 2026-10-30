@@ -18,6 +18,7 @@ import { vueDemosOf } from "../vueDemos";
 import {
   FRAMEWORKS,
   getFramework,
+  isChartPage,
   type FrameworkDef,
   type WcFrameworkId,
 } from "../frameworks";
@@ -30,6 +31,7 @@ import WcDemo from "./WcDemo";
 import VueDemo from "./VueDemo";
 import VueApiTables from "./VueApiTables";
 import StylingHooks from "./StylingHooks";
+import ChartFrameworkFallback from "./ChartFrameworkFallback";
 import styles from "./docs.module.scss";
 
 // react-native-web and the native demos load with the React Native tab only
@@ -177,9 +179,13 @@ const VueSection: React.FC<{ meta: DocPageMeta; framework: FrameworkDef }> = ({
 }) => {
   const { t } = useTranslation();
   const demos = useMemo(() => vueDemosOf(meta.id), [meta.id]);
+  // chart pages share the demo ids (and titles) of their Web Component demos
+  const charts = isChartPage(meta);
   const demoIds = [
     ...new Set([
-      ...(meta.demos ?? meta.wc?.demos ?? []),
+      ...(charts
+        ? (meta.wc?.demos ?? [])
+        : (meta.demos ?? meta.wc?.demos ?? [])),
       ...Object.keys(demos),
     ]),
   ].filter((id) => demos[id]);
@@ -231,18 +237,25 @@ const VueSection: React.FC<{ meta: DocPageMeta; framework: FrameworkDef }> = ({
             <DemoBlock
               key={demoId}
               id={`vue-demo-${demoId}`}
-              title={t(`docs.${meta.id}.demos.${demoId}.title`, {
-                defaultValue: t(`docs.${meta.id}.wc.demos.${demoId}.title`),
-              })}
-              description={t(
-                `docs.${meta.id}.vue.demos.${demoId}.description`,
-                {
-                  defaultValue: t(
-                    `docs.${meta.id}.demos.${demoId}.description`,
-                    { defaultValue: "" },
-                  ),
-                },
-              )}
+              title={
+                charts
+                  ? t(`docs.${meta.id}.wc.demos.${demoId}.title`)
+                  : t(`docs.${meta.id}.demos.${demoId}.title`, {
+                      defaultValue: t(
+                        `docs.${meta.id}.wc.demos.${demoId}.title`,
+                      ),
+                    })
+              }
+              description={
+                charts
+                  ? t(`docs.${meta.id}.wc.demos.${demoId}.description`)
+                  : t(`docs.${meta.id}.vue.demos.${demoId}.description`, {
+                      defaultValue: t(
+                        `docs.${meta.id}.demos.${demoId}.description`,
+                        { defaultValue: "" },
+                      ),
+                    })
+              }
               source={loaded[demoId] ?? ""}
               language={framework.language}
             >
@@ -386,7 +399,7 @@ const DocPage: React.FC<DocPageProps> = ({
           <NativeContent meta={meta} />
           {children}
         </>
-      ) : meta.wc || meta.native ? (
+      ) : meta.wc || meta.native || isChartPage(meta) ? (
         <FrameworkTabs meta={meta} react={reactContent} />
       ) : (
         reactContent
@@ -406,8 +419,13 @@ const FrameworkTabs: React.FC<{
 }> = ({ meta, react }) => {
   const { t } = useTranslation();
   const [framework, setFramework] = useFramework();
-  // the charts are React (web), React Native and framework-free only
-  const charts = !!meta.package?.startsWith("minerva-design/charts");
+  // chart pages without examples for a framework show how to wrap the
+  // framework-free engine there
+  const charts = isChartPage(meta);
+  const vueDemos = useMemo(
+    () => Object.keys(vueDemosOf(meta.id)).length > 0,
+    [meta.id],
+  );
   return (
     <Tabs
       value={framework}
@@ -444,22 +462,15 @@ const FrameworkTabs: React.FC<{
             react
           ) : fw.renderer === "native" ? (
             <NativeContent meta={meta} />
-          ) : charts ? (
-            <p className={styles.callout} data-testid="charts-unavailable">
-              <Trans
-                i18nKey="doc.fw.chartsUnavailable"
-                values={{ framework: fw.label }}
-                components={{
-                  engine: <Link to="/chart-engine" />,
-                  mini: <Link to="/mini-program-charts" />,
-                }}
-              />
-            </p>
           ) : fw.renderer === "vue" ? (
-            <VueSection meta={meta} framework={fw} />
+            charts && !vueDemos ? (
+              <ChartFrameworkFallback meta={meta} framework={fw} />
+            ) : (
+              <VueSection meta={meta} framework={fw} />
+            )
           ) : fw.renderer === "angular" ? (
             <Suspense fallback={<p role="status">{t("doc.loading")}</p>}>
-              <AngularSection meta={meta} />
+              <AngularSection meta={meta} framework={fw} />
             </Suspense>
           ) : meta.wc ? (
             <WebComponentSection
@@ -470,6 +481,8 @@ const FrameworkTabs: React.FC<{
                 }
               }
             />
+          ) : charts ? (
+            <ChartFrameworkFallback meta={meta} framework={fw} />
           ) : (
             <p className={styles.callout} data-testid="wc-unavailable">
               <Trans

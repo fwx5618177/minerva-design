@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   LineChart,
   type ChartRendererKind,
@@ -19,6 +20,9 @@ const COUNT = 1_000_000;
 const START = Date.UTC(2026, 0, 1);
 
 export default function LargeDataDemo() {
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.line-chart.data",
+  });
   const [renderer, setRenderer] = useState<ChartRendererKind | null>(null);
 
   // Columns of typed arrays: no per-point objects, sorted x (one sample per second)
@@ -32,8 +36,8 @@ export default function LargeDataDemo() {
       x[i] = START + i * 1000;
       y[i] = value;
     }
-    return [{ name: "Sensor", data: { x, y }, lineWidth: 1 }];
-  }, []);
+    return [{ name: t("sensor"), data: { x, y }, lineWidth: 1 }];
+  }, [t]);
 
   return (
     <div style={{ display: "grid", gap: 8, width: "100%" }}>
@@ -42,11 +46,13 @@ export default function LargeDataDemo() {
         xAxis={{ type: "time" }}
         onRendererChange={setRenderer}
         height={300}
-        ariaLabel="One million sensor readings"
+        ariaLabel={t("sensorAria")}
       />
       <p role="status">
-        {COUNT.toLocaleString("en")} points · drawn with {renderer ?? "…"} ·
-        Ctrl / ⌘ + wheel to zoom, drag to pan, double-click to reset
+        {t("largeStatus", {
+          points: new Intl.NumberFormat(i18n.language).format(COUNT),
+          renderer: renderer ?? "…",
+        })}
       </p>
     </div>
   );

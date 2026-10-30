@@ -1,0 +1,158 @@
+{
+  "title": "Diagramme de Gantt",
+  "description": "Des tâches en barres sur un axe du temps, avec leur avancement, leurs groupes, les jalons et une ligne du jour ; zoom et déplacement le long du temps.",
+  "demos": {
+    "project": {
+      "title": "Plan de projet",
+      "description": "Chaque groupe a sa couleur et son entrée de légende, l'avancement est une barre pleine sur la tâche, les jalons sont des points et today trace une ligne à une date."
+    },
+    "roadmap": {
+      "title": "Feuille de route",
+      "description": "Une feuille de route annuelle par équipe : yAxis.min et max fixent la période ; Ctrl / ⌘ + molette (ou un pincement) zoome le long du temps et un glissement déplace la vue."
+    },
+    "sprint": {
+      "title": "Sprint",
+      "description": "Des tâches à l'heure près, une couleur par développeur ; onPointClick reçoit la ligne cliquée pour en afficher le détail."
+    },
+    "locale": {
+      "title": "Langues et dates UTC",
+      "description": "locale fixe les noms des mois et des jours, les pourcentages d'avancement et les noms par défaut (tâches, avancement, jalons) ; yAxis.timeZone: \"utc\" place les dates en UTC pour que des données UTC restent alignées dans tous les fuseaux horaires."
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "Exemple de base",
+        "description": "Tâches par phase avec leur avancement et le jalon du lancement ; pincez pour zoomer sur le temps et faites glisser pour vous déplacer."
+      }
+    }
+  },
+  "data": {
+    "tasks": {
+      "research": "Recherche utilisateur",
+      "interviews": "Entretiens avec les parties prenantes",
+      "kickoff": "Lancement",
+      "wireframes": "Maquettes fonctionnelles",
+      "visualDesign": "Design graphique",
+      "designSystem": "Design system",
+      "frontend": "Front-end",
+      "backend": "Back-end et CMS",
+      "contentMigration": "Migration des contenus",
+      "qa": "Recette et accessibilité",
+      "launch": "Mise en ligne"
+    },
+    "phases": {
+      "discovery": "Découverte",
+      "design": "Conception",
+      "build": "Réalisation",
+      "launch": "Mise en ligne"
+    },
+    "today": "Aujourd'hui",
+    "progress": "Avancement",
+    "milestones": "Jalons",
+    "projectAria": "Plan de la refonte du site",
+    "roadmap": {
+      "mobileRedesign": "Refonte mobile",
+      "offlineSync": "Synchronisation hors ligne",
+      "widgets": "Widgets d'écran d'accueil",
+      "searchV2": "Recherche v2",
+      "multiRegion": "Hébergement multirégion",
+      "publicApi": "API publique",
+      "onboarding": "Nouvel accueil",
+      "referrals": "Programme de parrainage",
+      "pricingPage": "Page de tarifs"
+    },
+    "teams": {
+      "mobile": "Mobile",
+      "platform": "Plateforme",
+      "growth": "Croissance"
+    },
+    "roadmapAria": "Feuille de route produit de l'année par équipe",
+    "sprint": {
+      "loginPage": "Page de connexion",
+      "passwordReset": "Réinitialisation du mot de passe",
+      "profileApi": "API de profil",
+      "avatarUpload": "Envoi d'avatar",
+      "emailTemplates": "Modèles d'e-mails",
+      "notifications": "Notifications",
+      "e2eTests": "Tests de bout en bout"
+    },
+    "people": {
+      "ana": "Ana",
+      "ben": "Ben",
+      "chen": "Chen",
+      "dara": "Dara"
+    },
+    "taskStatus": "{{task}} ({{owner}}) : {{start}} – {{end}}, {{progress}} % fait",
+    "clickTask": "Cliquez sur une tâche",
+    "sprintAria": "Tâches du sprint par développeur",
+    "release": {
+      "specs": "Spécifications",
+      "build": "Développement",
+      "translation": "Traduction",
+      "beta": "Bêta publique",
+      "launch": "Lancement"
+    },
+    "locales": {
+      "chinese": "Chinois (zh-CN)",
+      "french": "Français (fr-FR)"
+    },
+    "localeAria": "Plan de sortie, {{locale}}"
+  },
+  "api": {
+    "GanttChartProps": {
+      "tasks": "Tâches et jalons, de haut en bas",
+      "today": "Trace une ligne à cette date (true : maintenant)",
+      "todayLabel": "Libellé de la ligne du jour"
+    },
+    "GanttTask": {
+      "name": "Nom de la ligne (unique)",
+      "start": "Début (un horodatage ou une date)",
+      "end": "Fin ; omise pour les jalons",
+      "progress": "Part réalisée, 0-1 : une barre pleine sur la tâche",
+      "group": "Groupe (phase, équipe) : une couleur et une entrée de légende par groupe",
+      "color": "Couleur de la tâche (toute couleur CSS) ; celle de son groupe par défaut",
+      "milestone": "Dessine un point au début au lieu d'une barre"
+    },
+    "GanttOptions": {
+      "colors": "Couleurs des groupes dans l'ordre d'apparition (toutes couleurs CSS) ; la palette du graphique par défaut",
+      "taskName": "Nom des tâches sans groupe",
+      "progressName": "Nom des barres d'avancement (légende, infobulle)",
+      "milestoneName": "Nom des jalons (légende, infobulle)",
+      "formatProgress": "Formate les parts réalisées (infobulle)",
+      "locale": "Langue des noms par défaut et des pourcentages d'avancement ; la langue de la page par défaut"
+    }
+  },
+  "wc": {
+    "demos": {
+      "project": {
+        "title": "Planning de projet par phase",
+        "description": "Tâches groupées par phase (une couleur chacune) avec leur avancement et un jalon de mise en ligne ; zoom sur le temps."
+      },
+      "sprint": {
+        "title": "Sprint avec la ligne d’aujourd’hui",
+        "description": "Un sprint de deux semaines : les tâches sans groupe partagent une couleur, une ligne pointillée marque aujourd’hui."
+      }
+    },
+    "minerva-gantt-chart": {
+      "props": {
+        "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+        "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+        "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+      },
+      "events": {
+        "minerva-hover": "Les points survolés (ou ciblés au clavier) ont changé ; detail : { x, xLabel, items }, null quand rien n'est survolé",
+        "minerva-point-click": "Un point ou une barre a été cliqué ; detail : { x, xLabel, items }",
+        "minerva-plot-click": "La zone de tracé a été cliquée hors des points ; detail : { x, y } en coordonnées de données",
+        "minerva-zoom": "L'utilisateur a zoomé ou s'est déplacé ; detail : { x, y } (les plages visibles)",
+        "minerva-renderer-change": "Le moteur de rendu est prêt, ou s'est replié après une perte du GPU ; detail : { renderer }"
+      },
+      "methods": {
+        "resetZoom": "Affiche toute la plage de données",
+        "getView": "Plage visible, null avant la création du moteur",
+        "setView": "Définit la plage visible",
+        "getRenderer": "Moteur de rendu utilisé (webgpu, webgl2, webgl, canvas2d), null tant qu'il n'est pas prêt"
+      }
+    }
+  }
+}

@@ -439,6 +439,43 @@
     "kind": "alias",
     "type": "\"expanded\" | \"compact\""
   },
+  "native:AreaChartProps": {
+    "source": "native/src/components/Charts/types.ts",
+    "description": "Props of AreaChart",
+    "kind": "interface",
+    "extends": [
+      "ChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[]",
+        "required": true,
+        "description": "Series drawn as areas unless they set a `type`"
+      },
+      {
+        "name": "curve",
+        "type": "ChartCurve",
+        "required": false,
+        "default": "\"smooth\"",
+        "description": "Shape of the edges: straight, smooth (monotone) or steps"
+      },
+      {
+        "name": "stacked",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Stacks the areas on top of each other"
+      },
+      {
+        "name": "percent",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Scales the stacks to 100% (implies `stacked`)"
+      }
+    ]
+  },
   "native:AutoCompleteOption": {
     "source": "native/src/components/AutoComplete/index.tsx",
     "kind": "interface",
@@ -878,11 +915,181 @@
       }
     ]
   },
+  "native:BinOptions": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Options of `binValues`",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "bins",
+        "type": "HistogramBinning",
+        "required": false,
+        "default": "\"auto\"",
+        "description": "Number of bins, or the rule choosing it: `sturges` (log2 n + 1, for small normal-ish samples), `freedman-diaconis` (bin width from the interquartile range, robust to outliers); `auto` uses Freedman-Diaconis and Sturges when the spread is zero"
+      },
+      {
+        "name": "domain",
+        "type": "readonly [number, number]",
+        "required": false,
+        "description": "Range covered by the bins (values outside are not counted); the data range by default"
+      },
+      {
+        "name": "nice",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Rounds the bin width to 1, 2 or 5 × 10^k and aligns the edges on it"
+      }
+    ]
+  },
   "native:BottomSheetProps": {
     "source": "native/src/components/Popup/Popup.tsx",
     "description": "Props of `BottomSheet` (a `Popup` from the bottom edge)",
     "kind": "alias",
     "type": "Omit<PopupProps, \"placement\" | \"side\">"
+  },
+  "native:BoxPlotChartProps": {
+    "source": "native/src/components/Charts/types.ts",
+    "description": "Props of BoxPlotChart",
+    "kind": "interface",
+    "extends": [
+      "ChartCommonProps",
+      "BoxplotStatsOptions"
+    ],
+    "props": [
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[]",
+        "required": false,
+        "description": "Series of box plots: data points with `low`, `q1`, `y` (the median), `q3`, `high` and `outliers` (see `boxplotData` / `boxplotStats`)"
+      },
+      {
+        "name": "groups",
+        "type": "readonly BoxplotGroup[]",
+        "required": false,
+        "description": "Raw samples, one box each (an alternative to `series`)"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "default": "\"Values\"",
+        "description": "Name of the series built from `groups`"
+      },
+      {
+        "name": "orientation",
+        "type": "ChartOrientation",
+        "required": false,
+        "default": "\"vertical\"",
+        "description": "`horizontal` lays the boxes out in rows"
+      }
+    ]
+  },
+  "native:BoxplotGroup": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "A sample of a box plot",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "x",
+        "type": "ChartXValue",
+        "required": true,
+        "description": "Category (or position) of the box"
+      },
+      {
+        "name": "values",
+        "type": "ArrayLike<number>",
+        "required": true,
+        "description": "Raw values: their quartiles, whiskers and outliers are computed"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "Color of the box (any CSS color)"
+      }
+    ]
+  },
+  "native:BoxplotStats": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Five-number summary of a sample, with the outliers",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "low",
+        "type": "number",
+        "required": true,
+        "description": "Lower whisker: the smallest value within reach"
+      },
+      {
+        "name": "q1",
+        "type": "number",
+        "required": true,
+        "description": "First quartile"
+      },
+      {
+        "name": "median",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "q3",
+        "type": "number",
+        "required": true,
+        "description": "Third quartile"
+      },
+      {
+        "name": "high",
+        "type": "number",
+        "required": true,
+        "description": "Upper whisker: the largest value within reach"
+      },
+      {
+        "name": "outliers",
+        "type": "number[]",
+        "required": true,
+        "description": "Values beyond the whiskers"
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "mean",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "count",
+        "type": "number",
+        "required": true,
+        "description": "Number of finite values"
+      }
+    ]
+  },
+  "native:BoxplotStatsOptions": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Options of `boxplotStats`",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "whisker",
+        "type": "number | \"minmax\"",
+        "required": false,
+        "default": "1.5",
+        "description": "Reach of the whiskers in interquartile ranges beyond the box (Tukey: 1.5); `\"minmax\"` extends them to the extremes (no outliers)"
+      }
+    ]
   },
   "native:BoxProps": {
     "source": "native/src/components/Layout/index.tsx",
@@ -1018,6 +1225,113 @@
     "kind": "alias",
     "type": "number | string"
   },
+  "native:BubbleChartProps": {
+    "source": "native/src/components/Charts/types.ts",
+    "description": "Props of BubbleChart",
+    "kind": "interface",
+    "extends": [
+      "ChartCommonProps",
+      "BubbleOptions"
+    ],
+    "props": [
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[]",
+        "required": true,
+        "description": "Series of points with a `value` sizing their bubble (area ∝ value)"
+      }
+    ]
+  },
+  "native:BubbleOptions": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Options of `bubbleSeries`",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "minSize",
+        "type": "number",
+        "required": false,
+        "default": "6",
+        "description": "Diameter in pixels of the smallest bubbles"
+      },
+      {
+        "name": "maxSize",
+        "type": "number",
+        "required": false,
+        "default": "48",
+        "description": "Diameter in pixels of the largest value"
+      },
+      {
+        "name": "maxValue",
+        "type": "number",
+        "required": false,
+        "description": "Value drawn with `maxSize` (share a scale between charts); the largest value by default"
+      }
+    ]
+  },
+  "native:BulletChartProps": {
+    "source": "native/src/components/ShapeChart/types.ts",
+    "description": "Props of BulletChart",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "data",
+        "type": "readonly BulletDatum[]",
+        "required": true,
+        "description": "Rows (columns when vertical): name, value, target, ranges and scale"
+      },
+      {
+        "name": "orientation",
+        "type": "\"horizontal\" | \"vertical\"",
+        "required": false,
+        "default": "\"horizontal\"",
+        "description": "Horizontal rows or vertical columns"
+      },
+      {
+        "name": "ranges",
+        "type": "readonly number[]",
+        "required": false,
+        "description": "Qualitative ranges of the rows without `ranges`: upper bounds, ascending"
+      },
+      {
+        "name": "rangeLabels",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Names of the qualitative ranges, lowest first (tooltip)"
+      },
+      {
+        "name": "rangeColors",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Colors of the qualitative ranges, lowest first; shades of gray by default"
+      },
+      {
+        "name": "barSize",
+        "type": "number",
+        "required": false,
+        "default": "0.4",
+        "description": "Thickness of the value bar as a fraction of the ranges' thickness"
+      },
+      {
+        "name": "targetColor",
+        "type": "string",
+        "required": false,
+        "default": "the text color",
+        "description": "Color of the target markers"
+      },
+      {
+        "name": "ticks",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Tick labels of the scales (when there is room)"
+      }
+    ]
+  },
   "native:ButtonProps": {
     "source": "native/src/components/Button/Button.tsx",
     "kind": "interface",
@@ -1140,6 +1454,111 @@
     "description": "Why a poppable calendar closed",
     "kind": "alias",
     "type": "OverlayCloseReason"
+  },
+  "native:CalendarHeatmapProps": {
+    "source": "native/src/components/ShapeChart/types.ts",
+    "description": "Props of CalendarHeatmap",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "data",
+        "type": "readonly CalendarDatum[]",
+        "required": true,
+        "description": "Daily values (several entries of the same day add up)"
+      },
+      {
+        "name": "range",
+        "type": "number | readonly [CalendarDate, CalendarDate]",
+        "required": false,
+        "default": "the 53 weeks ending on the last day of the data",
+        "description": "Days shown: a year (`2026`) or an inclusive `[start, end]` range"
+      },
+      {
+        "name": "layout",
+        "type": "\"weeks\" | \"months\"",
+        "required": false,
+        "default": "\"weeks\"",
+        "description": "`weeks`: a column per week and a row per weekday (one strip per year when the range spans several years); `months`: a small calendar per month"
+      },
+      {
+        "name": "weekStart",
+        "type": "number",
+        "required": false,
+        "default": "from `locale`",
+        "description": "First day of the week, 0 = Sunday … 6 = Saturday"
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "default": "the runtime's default locale",
+        "description": "BCP 47 locale of the month and weekday names, of the tooltip dates and of the default `weekStart`"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "default": "the first palette color",
+        "description": "Color of the highest level (lower levels are lighter)"
+      },
+      {
+        "name": "colors",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Colors of the levels, lowest first (replaces `color` and sets the number of levels)"
+      },
+      {
+        "name": "levels",
+        "type": "number",
+        "required": false,
+        "default": "4",
+        "description": "Number of color levels above the empty days"
+      },
+      {
+        "name": "thresholds",
+        "type": "readonly number[]",
+        "required": false,
+        "description": "Upper bounds of the levels but the last, ascending (`[2, 5, 10]`: 1-2, 3-5, 6-10, more); an even split of the largest value by default"
+      },
+      {
+        "name": "gap",
+        "type": "number",
+        "required": false,
+        "default": "3",
+        "description": "Gap between the cells, in pixels"
+      },
+      {
+        "name": "radius",
+        "type": "number",
+        "required": false,
+        "default": "2",
+        "description": "Corner radius of the cells, in pixels (drawn square on React Native)"
+      },
+      {
+        "name": "maxCellSize",
+        "type": "number",
+        "required": false,
+        "default": "16 (weeks), 28 (months)",
+        "description": "Largest cell size, in pixels (cells shrink to fit the width)"
+      },
+      {
+        "name": "monthLabels",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Month names (and years) around the cells"
+      },
+      {
+        "name": "weekdayLabels",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Weekday names beside (weeks) or above (months) the cells"
+      }
+    ]
   },
   "native:CalendarProps": {
     "source": "native/src/components/Calendar/Calendar.tsx",
@@ -1323,6 +1742,22 @@
     "description": "Value of `Calendar`: a day (`single`, `null`: none), days (`multiple`) or a `[start, end]` range (`range`); every date is local midnight",
     "kind": "alias",
     "type": "Date | Date[] | [Date, Date] | null"
+  },
+  "native:CandlestickChartProps": {
+    "source": "native/src/components/Charts/types.ts",
+    "description": "Props of CandlestickChart",
+    "kind": "interface",
+    "extends": [
+      "ChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[]",
+        "required": true,
+        "description": "Series drawn as candles unless they set a `type` (e.g. a moving average `line`); data points carry `open`, `high`, `low` and `y` (the close)"
+      }
+    ]
   },
   "native:CardPadding": {
     "source": "native/src/components/Card/Card.tsx",
@@ -1826,6 +2261,19 @@
         "description": "Accessible name of the chart"
       },
       {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "default": "the device language when the runtime exposes it, else English",
+        "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)"
+      },
+      {
+        "name": "labels",
+        "type": "Partial<ChartLabels>",
+        "required": false,
+        "description": "Overrides of the built-in texts of the `locale`"
+      },
+      {
         "name": "onHover",
         "type": "(event: ChartHoverEvent | null) => void",
         "required": false,
@@ -1915,7 +2363,7 @@
   },
   "native:ChartProps": {
     "source": "native/src/components/Chart/types.ts",
-    "description": "Props of Chart: any mix of line, area, bar and scatter series",
+    "description": "Props of Chart: any mix of line, area, bar, scatter and box plot series",
     "kind": "interface",
     "extends": [
       "ChartCommonProps"
@@ -1926,6 +2374,19 @@
         "type": "readonly ChartSeries[]",
         "required": true,
         "description": "Data series; each sets its own `type`"
+      },
+      {
+        "name": "yAxis2",
+        "type": "ChartAxisOptions",
+        "required": false,
+        "description": "Right value axis of the series with `yAxis: \"right\"` (dual axis charts)"
+      },
+      {
+        "name": "orientation",
+        "type": "ChartOrientation",
+        "required": false,
+        "default": "\"vertical\"",
+        "description": "`horizontal` puts the x axis (categories) down the left side"
       }
     ]
   },
@@ -2432,6 +2893,39 @@
         "type": "StyleProp<ViewStyle>",
         "required": false,
         "description": "Style of the list"
+      }
+    ]
+  },
+  "native:Color": {
+    "source": "native/src/components/ShapeChart/recorder.ts",
+    "description": "A color: channels 0-255, alpha 0-1 (`raw`: a CSS color that could not be parsed)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "r",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "g",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "b",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "a",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "raw",
+        "type": "string",
+        "required": false
       }
     ]
   },
@@ -3215,6 +3709,28 @@
     "kind": "alias",
     "type": "\"solid\" | \"dashed\" | \"dotted\""
   },
+  "native:DonutChartProps": {
+    "source": "native/src/components/ShapeChart/types.ts",
+    "description": "Props of DonutChart: a PieChart with a hole",
+    "kind": "interface",
+    "extends": [
+      "PieChartProps"
+    ],
+    "props": [
+      {
+        "name": "innerRadius",
+        "type": "number",
+        "required": false,
+        "default": "0.62",
+        "description": "Inner radius as a fraction of the outer radius"
+      }
+    ]
+  },
+  "native:DrawOp": {
+    "source": "native/src/components/ShapeChart/recorder.ts",
+    "kind": "alias",
+    "type": "FillOp | StrokeOp | TextOp"
+  },
   "native:EdgeInsets": {
     "source": "native/src/theme/types.ts",
     "description": "Safe-area insets (status bar, notch, home indicator), in dp",
@@ -3331,6 +3847,39 @@
     "source": "native/src/components/Empty/Empty.tsx",
     "kind": "alias",
     "type": "\"small\" | \"medium\" | \"large\""
+  },
+  "native:FillOp": {
+    "source": "native/src/components/ShapeChart/recorder.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "kind",
+        "type": "\"fill\"",
+        "required": true
+      },
+      {
+        "name": "paths",
+        "type": "Subpath[]",
+        "required": true
+      },
+      {
+        "name": "paint",
+        "type": "Paint",
+        "required": true
+      },
+      {
+        "name": "alpha",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "shadow",
+        "type": "boolean",
+        "required": true,
+        "description": "Drawn with a shadow"
+      }
+    ]
   },
   "native:FormApi": {
     "source": "native/src/components/Form/formStore.ts",
@@ -3888,6 +4437,315 @@
     "kind": "alias",
     "type": "Record<string, unknown>"
   },
+  "native:FunnelChartProps": {
+    "source": "native/src/components/ShapeChart/types.ts",
+    "description": "Props of FunnelChart",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "data",
+        "type": "readonly ShapeDatum[]",
+        "required": true,
+        "description": "Stages: a name, a value and an optional color"
+      },
+      {
+        "name": "sort",
+        "type": "\"descending\" | \"ascending\" | \"none\"",
+        "required": false,
+        "default": "\"none\" (data order)",
+        "description": "Order of the stages"
+      },
+      {
+        "name": "gap",
+        "type": "number",
+        "required": false,
+        "default": "4",
+        "description": "Vertical gap between the stages, in pixels"
+      },
+      {
+        "name": "conversion",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Shows the conversion rate from the previous stage"
+      },
+      {
+        "name": "shape",
+        "type": "\"trapezoid\" | \"bar\"",
+        "required": false,
+        "default": "\"trapezoid\"",
+        "description": "Shape of the stages: trapezoids that narrow to the next stage, or centered bars"
+      }
+    ]
+  },
+  "native:GanttChartProps": {
+    "source": "native/src/components/Charts/types.ts",
+    "description": "Props of GanttChart",
+    "kind": "interface",
+    "extends": [
+      "Omit<ChartCommonProps, \"crosshair\">",
+      "GanttOptions"
+    ],
+    "props": [
+      {
+        "name": "tasks",
+        "type": "readonly GanttTask[]",
+        "required": true,
+        "description": "Tasks and milestones, from top to bottom"
+      },
+      {
+        "name": "today",
+        "type": "boolean | number | Date",
+        "required": false,
+        "default": "false",
+        "description": "Draws a line at this date (`true`: now)"
+      },
+      {
+        "name": "todayLabel",
+        "type": "string",
+        "required": false,
+        "description": "Label of the today line"
+      }
+    ]
+  },
+  "native:GanttOptions": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Options of `ganttSeries`",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "colors",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Colors of the groups in order of appearance (any CSS colors); the chart palette by default"
+      },
+      {
+        "name": "taskName",
+        "type": "string",
+        "required": false,
+        "default": "\"Tasks\" (in the `locale`)",
+        "description": "Name of the tasks without a group"
+      },
+      {
+        "name": "progressName",
+        "type": "string",
+        "required": false,
+        "default": "\"Progress\" (in the `locale`)",
+        "description": "Name of the progress bars (legend, tooltip)"
+      },
+      {
+        "name": "milestoneName",
+        "type": "string",
+        "required": false,
+        "default": "\"Milestones\" (in the `locale`)",
+        "description": "Name of the milestones (legend, tooltip)"
+      },
+      {
+        "name": "formatProgress",
+        "type": "(share: number) => string",
+        "required": false,
+        "default": "\"60%\"",
+        "description": "Formats the progress shares (tooltip)"
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "default": "the page language",
+        "description": "Locale of the default names and of the progress shares"
+      }
+    ]
+  },
+  "native:GanttSeries": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Series of a Gantt chart and the row names in order",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "series",
+        "type": "ChartSeries[]",
+        "required": true
+      },
+      {
+        "name": "categories",
+        "type": "string[]",
+        "required": true,
+        "description": "Task names from top to bottom (the `categories` of the x axis)"
+      },
+      {
+        "name": "domain",
+        "type": "[number, number]",
+        "required": true,
+        "description": "Time range of the tasks with a small margin (the `min` / `max` of the value axis)"
+      }
+    ]
+  },
+  "native:GanttTask": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "A task (or milestone) of a Gantt chart",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "Row name (unique)"
+      },
+      {
+        "name": "start",
+        "type": "number | Date",
+        "required": true,
+        "description": "Start (a timestamp or a date)"
+      },
+      {
+        "name": "end",
+        "type": "number | Date",
+        "required": false,
+        "description": "End; omitted for milestones"
+      },
+      {
+        "name": "progress",
+        "type": "number",
+        "required": false,
+        "description": "Share done, 0-1: drawn as a solid bar over the task"
+      },
+      {
+        "name": "group",
+        "type": "string",
+        "required": false,
+        "description": "Group (phase, team): a color and a legend entry per group"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "Color of the task (any CSS color); the color of its group by default"
+      },
+      {
+        "name": "milestone",
+        "type": "boolean",
+        "required": false,
+        "description": "Draws a dot at `start` instead of a bar"
+      }
+    ]
+  },
+  "native:GaugeChartProps": {
+    "source": "native/src/components/ShapeChart/types.ts",
+    "description": "Props of GaugeChart",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Value shown by the arc (clamped to `min` - `max` for the drawing)"
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Value at the start of the arc"
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "default": "100",
+        "description": "Value at the end of the arc"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": "Caption under the value"
+      },
+      {
+        "name": "sweep",
+        "type": "number",
+        "required": false,
+        "default": "240",
+        "description": "Total angle of the arc, degrees"
+      },
+      {
+        "name": "thickness",
+        "type": "number",
+        "required": false,
+        "default": "0.16",
+        "description": "Thickness of the arc as a fraction of the radius"
+      },
+      {
+        "name": "bands",
+        "type": "readonly GaugeBand[]",
+        "required": false,
+        "description": "Colored ranges of the track; the value arc takes the color of its band"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "default": "the first palette color",
+        "description": "Color of the value arc (when there are no bands)"
+      },
+      {
+        "name": "needle",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Draws a needle in addition to the value arc"
+      },
+      {
+        "name": "ticks",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Tick labels at the ends (and at the band bounds)"
+      }
+    ]
+  },
+  "native:Gradient": {
+    "source": "native/src/components/ShapeChart/recorder.ts",
+    "description": "A linear gradient in chart pixels",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "x0",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "y0",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "x1",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "y1",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "stops",
+        "type": "{ offset: number; color: Color }[]",
+        "required": true
+      }
+    ]
+  },
   "native:GridDirection": {
     "source": "native/src/components/Grid/Grid.tsx",
     "kind": "alias",
@@ -4042,6 +4900,16 @@
       }
     ]
   },
+  "native:HeatmapChartProps": {
+    "source": "native/src/components/Charts/types.ts",
+    "description": "Props of HeatmapChart",
+    "kind": "interface",
+    "extends": [
+      "Omit<ChartCommonProps, \"crosshair\">",
+      "HeatmapConfig"
+    ],
+    "props": []
+  },
   "native:HeatmapConfig": {
     "source": "charts/src/engine/presets.ts",
     "description": "Settings of a heatmap (the props of HeatmapChart)",
@@ -4095,6 +4963,144 @@
         "type": "(value: number) => string",
         "required": false,
         "description": "Formats the values in the tooltip"
+      }
+    ]
+  },
+  "native:HistogramBinning": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "How the bins of a histogram are chosen: a count, or a rule",
+    "kind": "alias",
+    "type": "number | \"auto\" | \"sturges\" | \"freedman-diaconis\""
+  },
+  "native:HistogramBins": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Bins of a histogram",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "edges",
+        "type": "number[]",
+        "required": true,
+        "description": "Edges of the bins: one more than the bins"
+      },
+      {
+        "name": "counts",
+        "type": "number[]",
+        "required": true,
+        "description": "Number of values in every bin"
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "required": true,
+        "description": "Width of a bin"
+      },
+      {
+        "name": "total",
+        "type": "number",
+        "required": true,
+        "description": "Number of values counted (finite, inside the domain)"
+      }
+    ]
+  },
+  "native:HistogramChartProps": {
+    "source": "native/src/components/Charts/types.ts",
+    "description": "Props of HistogramChart",
+    "kind": "interface",
+    "extends": [
+      "ChartCommonProps",
+      "BinOptions"
+    ],
+    "props": [
+      {
+        "name": "values",
+        "type": "ArrayLike<number>",
+        "required": true,
+        "description": "Raw samples (typed arrays are counted without copies)"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "default": "\"Count\"",
+        "description": "Name of the counts (legend, tooltip)"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "Bar color (any CSS color)"
+      },
+      {
+        "name": "formatBin",
+        "type": "(value: number) => string",
+        "required": false,
+        "description": "Formats the edges of the bins in the tooltip"
+      },
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[]",
+        "required": false,
+        "description": "More series drawn over the bins (e.g. a density `line`)"
+      }
+    ]
+  },
+  "native:HistogramSeriesOptions": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Options of `histogramSeries`",
+    "kind": "interface",
+    "extends": [
+      "BinOptions"
+    ],
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "Name of the series (legend, tooltip)"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "Bar color (any CSS color)"
+      },
+      {
+        "name": "format",
+        "type": "(value: number) => string",
+        "required": false,
+        "description": "Formats the edges of the bins in the tooltip"
+      },
+      {
+        "name": "binned",
+        "type": "HistogramBins",
+        "required": false,
+        "description": "Bins already computed (`binValues`): `values` are then ignored"
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "default": "the page language",
+        "description": "Locale of the default name and of the bin edges"
+      }
+    ]
+  },
+  "native:HorizontalBarChartProps": {
+    "source": "native/src/components/Chart/types.ts",
+    "description": "Props of HorizontalBarChart",
+    "kind": "interface",
+    "extends": [
+      "Omit<BarChartProps, \"labels\">"
+    ],
+    "props": [
+      {
+        "name": "labels",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Writes the value at the end of every bar"
       }
     ]
   },
@@ -5358,6 +6364,42 @@
       }
     ]
   },
+  "native:MixedChartProps": {
+    "source": "native/src/components/Charts/types.ts",
+    "description": "Props of MixedChart",
+    "kind": "interface",
+    "extends": [
+      "ChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[]",
+        "required": true,
+        "description": "Bars, lines, areas and dots, each with its `type`; `yAxis: \"right\"` plots a series against `yAxis2`"
+      },
+      {
+        "name": "yAxis2",
+        "type": "ChartAxisOptions",
+        "required": false,
+        "description": "Right value axis of the series with `yAxis: \"right\"` (dual axis charts)"
+      },
+      {
+        "name": "stackMode",
+        "type": "\"normal\" | \"percent\"",
+        "required": false,
+        "default": "\"normal\"",
+        "description": "`percent` scales every stack to 100% at each x"
+      },
+      {
+        "name": "orientation",
+        "type": "ChartOrientation",
+        "required": false,
+        "default": "\"vertical\"",
+        "description": "`horizontal` puts the x axis (categories) down the left side"
+      }
+    ]
+  },
   "native:ModalRootProps": {
     "source": "native/src/components/Parts/index.tsx",
     "kind": "interface",
@@ -6105,6 +7147,24 @@
     "kind": "alias",
     "type": "\"ghost\" | \"outline\" | \"solid\""
   },
+  "native:Paint": {
+    "source": "native/src/components/ShapeChart/recorder.ts",
+    "description": "Fill or stroke style: a color, or a gradient (and its first color)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "color",
+        "type": "Color",
+        "required": true
+      },
+      {
+        "name": "gradient",
+        "type": "Gradient",
+        "required": false
+      }
+    ]
+  },
   "native:PaletteToggleProps": {
     "source": "native/src/components/ThemeToggle/ThemeToggle.tsx",
     "kind": "interface",
@@ -6321,6 +7381,83 @@
         "name": "testID",
         "type": "string",
         "required": false
+      }
+    ]
+  },
+  "native:PieChartProps": {
+    "source": "native/src/components/ShapeChart/types.ts",
+    "description": "Props of PieChart",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "data",
+        "type": "readonly ShapeDatum[]",
+        "required": true,
+        "description": "Slices: a name, a value (negative values count as 0) and an optional color"
+      },
+      {
+        "name": "innerRadius",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Inner radius as a fraction of the outer radius: 0 = pie, 0.6 = donut"
+      },
+      {
+        "name": "startAngle",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Angle of the first slice, degrees clockwise from 12 o'clock"
+      },
+      {
+        "name": "padAngle",
+        "type": "number",
+        "required": false,
+        "default": "1 (pie), 2 (donut)",
+        "description": "Gap between the slices, in pixels"
+      },
+      {
+        "name": "cornerRadius",
+        "type": "number",
+        "required": false,
+        "default": "0 (pie), 4 (donut)",
+        "description": "Corner radius of the slices, in pixels (drawn square on React Native)"
+      },
+      {
+        "name": "rose",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Nightingale rose: the radius (instead of the angle) shows the value"
+      },
+      {
+        "name": "labels",
+        "type": "\"outside\" | \"inside\" | \"none\"",
+        "required": false,
+        "default": "\"outside\" (up to 12 slices), \"none\" otherwise",
+        "description": "Slice labels: `outside` with leader lines, `inside` the slices, or none"
+      },
+      {
+        "name": "labelContent",
+        "type": "readonly (\"name\" | \"value\" | \"percent\")[]",
+        "required": false,
+        "default": "[\"name\", \"percent\"]",
+        "description": "What a label shows: name, value, percent (combinable)"
+      },
+      {
+        "name": "centerValue",
+        "type": "string",
+        "required": false,
+        "description": "Big text in the hole of a donut (e.g. the total)"
+      },
+      {
+        "name": "centerLabel",
+        "type": "string",
+        "required": false,
+        "description": "Small text under `centerValue`"
       }
     ]
   },
@@ -6554,6 +7691,12 @@
       }
     ]
   },
+  "native:Prim": {
+    "source": "native/src/components/ShapeChart/geometry.ts",
+    "description": "A drawable view",
+    "kind": "alias",
+    "type": "{ t: \"box\"; x: number; y: number; w: number; h: number; color?: string; radius?: number; borderWidth?: number; borderColor?: string; /** Rotation around the center, radians */ rotate?: number; shadow?: boolean; } | { /** Square clipping its children (`overflow: hidden`), rotated around its center */ t: \"clip\"; x: number; y: number; size: number; rotate: number; children: Prim[]; } | { t: \"group\"; opacity: number; children: Prim[] } | { t: \"text\"; text: string; x: number; y: number; size: number; weight: number; align: TextOp[\"align\"]; baseline: TextOp[\"baseline\"]; color: string; rotate: number; maxWidth?: number; halo?: string; }"
+  },
   "native:ProgressProps": {
     "source": "native/src/components/Progress/Progress.tsx",
     "kind": "interface",
@@ -6653,6 +7796,11 @@
         "required": false
       }
     ]
+  },
+  "native:Pt": {
+    "source": "native/src/components/ShapeChart/geometry.ts",
+    "kind": "alias",
+    "type": "[number, number]"
   },
   "native:PullRefreshProps": {
     "source": "native/src/components/PullRefresh/PullRefresh.tsx",
@@ -7018,6 +8166,140 @@
       }
     ]
   },
+  "native:RadarChartProps": {
+    "source": "native/src/components/ShapeChart/types.ts",
+    "description": "Props of RadarChart",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "indicators",
+        "type": "readonly RadarIndicator[]",
+        "required": true,
+        "description": "Axes of the chart, clockwise from 12 o'clock"
+      },
+      {
+        "name": "series",
+        "type": "readonly RadarSeries[]",
+        "required": true,
+        "description": "Polygons: one value per indicator"
+      },
+      {
+        "name": "shape",
+        "type": "\"polygon\" | \"circle\"",
+        "required": false,
+        "default": "\"polygon\"",
+        "description": "Grid shape"
+      },
+      {
+        "name": "levels",
+        "type": "number",
+        "required": false,
+        "default": "4",
+        "description": "Number of grid rings"
+      },
+      {
+        "name": "dots",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Dots on the vertices"
+      }
+    ]
+  },
+  "native:RadialBarChartProps": {
+    "source": "native/src/components/ShapeChart/types.ts",
+    "description": "Props of RadialBarChart",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "data",
+        "type": "readonly RadialBarDatum[]",
+        "required": true,
+        "description": "Bars, from the outermost ring inward: a name, a value, an optional `max` and color"
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "default": "the largest value",
+        "description": "Value of a full bar for the data without `max`"
+      },
+      {
+        "name": "innerRadius",
+        "type": "number",
+        "required": false,
+        "default": "0.3",
+        "description": "Radius of the innermost ring's inner edge, as a fraction of the outer radius"
+      },
+      {
+        "name": "startAngle",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Angle where the bars start, degrees clockwise from 12 o'clock"
+      },
+      {
+        "name": "sweep",
+        "type": "number",
+        "required": false,
+        "default": "270",
+        "description": "Angle of a full bar, degrees (360 = full rings)"
+      },
+      {
+        "name": "gap",
+        "type": "number",
+        "required": false,
+        "default": "0.28",
+        "description": "Gap between the rings, as a fraction of a ring's slot (0-0.9)"
+      },
+      {
+        "name": "track",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Background tracks behind the bars"
+      },
+      {
+        "name": "rounded",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Rounded bar ends"
+      },
+      {
+        "name": "labels",
+        "type": "boolean",
+        "required": false,
+        "default": "true when `sweep` leaves room for them (up to 300°)",
+        "description": "Labels before the start of the bars (in the empty part of the circle)"
+      },
+      {
+        "name": "labelContent",
+        "type": "readonly (\"name\" | \"value\" | \"percent\")[]",
+        "required": false,
+        "default": "[\"name\", \"value\"]",
+        "description": "What a label shows: name, value, percent of the bar's max (combinable)"
+      },
+      {
+        "name": "centerValue",
+        "type": "string",
+        "required": false,
+        "description": "Big text in the center (e.g. the overall completion)"
+      },
+      {
+        "name": "centerLabel",
+        "type": "string",
+        "required": false,
+        "description": "Small text under `centerValue`"
+      }
+    ]
+  },
   "native:RadioColor": {
     "source": "native/src/components/Radio/Radio.tsx",
     "kind": "alias",
@@ -7286,6 +8568,29 @@
     "kind": "alias",
     "type": "NativeSize"
   },
+  "native:RangeAreaChartProps": {
+    "source": "native/src/components/Charts/types.ts",
+    "description": "Props of RangeAreaChart",
+    "kind": "interface",
+    "extends": [
+      "ChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "series",
+        "type": "readonly ChartSeries[]",
+        "required": true,
+        "description": "Bands between `y0` (lower edge) and `y` (upper edge) of every point, unless a series sets a `type` (e.g. a `line` for the forecast itself)"
+      },
+      {
+        "name": "curve",
+        "type": "ChartCurve",
+        "required": false,
+        "default": "\"smooth\"",
+        "description": "Shape of the edges: straight, smooth (monotone) or steps"
+      }
+    ]
+  },
   "native:RatingDimension": {
     "source": "native/src/components/Parts/index.tsx",
     "kind": "interface",
@@ -7442,6 +8747,25 @@
     "kind": "alias",
     "type": "NativeSize"
   },
+  "native:Recorder": {
+    "source": "native/src/components/ShapeChart/recorder.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "context",
+        "type": "unknown",
+        "required": true,
+        "description": "The 2D context handed to the engine"
+      },
+      {
+        "name": "ops",
+        "type": "() => DrawOp[]",
+        "required": true,
+        "description": "Operations of the last frame (a new array per frame)"
+      }
+    ]
+  },
   "native:ResponsiveGridColumns": {
     "source": "native/src/components/Layout/index.tsx",
     "kind": "alias",
@@ -7475,6 +8799,84 @@
         "name": "columnGap",
         "type": "BoxSpace",
         "required": false
+      }
+    ]
+  },
+  "native:SankeyChartProps": {
+    "source": "native/src/components/ShapeChart/types.ts",
+    "description": "Props of SankeyChart",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "nodes",
+        "type": "readonly SankeyNode[]",
+        "required": false,
+        "description": "Nodes, in their initial order; nodes only named by a link are appended"
+      },
+      {
+        "name": "links",
+        "type": "readonly SankeyLink[]",
+        "required": true,
+        "description": "Flows between the nodes (by name or index); links closing a cycle are ignored"
+      },
+      {
+        "name": "nodeWidth",
+        "type": "number",
+        "required": false,
+        "default": "12",
+        "description": "Width of the node bars, in pixels"
+      },
+      {
+        "name": "nodePadding",
+        "type": "number",
+        "required": false,
+        "default": "12",
+        "description": "Vertical gap between the nodes of a column, in pixels (reduced when space is short)"
+      },
+      {
+        "name": "align",
+        "type": "\"justify\" | \"left\" | \"right\" | \"center\"",
+        "required": false,
+        "default": "\"justify\"",
+        "description": "Column of the nodes without a `column`: `justify` puts the sinks in the last column, `left` / `right` align on the sources / sinks, `center` puts the sources next to their first target"
+      },
+      {
+        "name": "iterations",
+        "type": "number",
+        "required": false,
+        "default": "32",
+        "description": "Relaxation passes that straighten the flows and reduce crossings"
+      },
+      {
+        "name": "linkColor",
+        "type": "\"gradient\" | \"source\" | \"target\" | \"neutral\"",
+        "required": false,
+        "default": "\"gradient\"",
+        "description": "Color of the links without `color`: a gradient from the source to the target color, one of the two, or a neutral gray"
+      },
+      {
+        "name": "linkOpacity",
+        "type": "number",
+        "required": false,
+        "default": "0.4",
+        "description": "Opacity of the links, 0-1 (pressed flows are more opaque)"
+      },
+      {
+        "name": "labels",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Node labels (name and value); overlapping labels are skipped"
+      },
+      {
+        "name": "labelValues",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Shows the value after the name in the labels"
       }
     ]
   },
@@ -7634,6 +9036,12 @@
     "source": "native/src/components/SearchBar/SearchBar.tsx",
     "kind": "alias",
     "type": "NativeSize"
+  },
+  "native:Segment": {
+    "source": "native/src/components/ShapeChart/recorder.ts",
+    "description": "Straight segment to (x, y), or arc (implicitly joined by a segment to its start)",
+    "kind": "alias",
+    "type": "{ t: \"L\"; x: number; y: number } | { t: \"A\"; cx: number; cy: number; r: number; /** Start angle and end angle (`a1 - a0` is the signed sweep) */ a0: number; a1: number; }"
   },
   "native:SelectCloseReason": {
     "source": "native/src/components/Select/Select.tsx",
@@ -7800,6 +9208,221 @@
         "type": "(value: string) => void",
         "required": false,
         "description": "Called with the picked value (the sheet then closes)"
+      }
+    ]
+  },
+  "native:ShapeChartBaseProps": {
+    "source": "native/src/components/ShapeChart/ShapeChartBase.tsx",
+    "kind": "interface",
+    "extends": [
+      "Handlers"
+    ],
+    "props": [
+      {
+        "name": "options",
+        "type": "ShapeChartOptions",
+        "required": true
+      },
+      {
+        "name": "height",
+        "type": "DimensionValue",
+        "required": false
+      },
+      {
+        "name": "width",
+        "type": "DimensionValue",
+        "required": false
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false
+      },
+      {
+        "name": "testID",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "handleRef",
+        "type": "Ref<ShapeChartHandle>",
+        "required": false
+      },
+      {
+        "name": "renderTooltip",
+        "type": "(event: ShapeHoverEvent) => ReactNode",
+        "required": false
+      }
+    ]
+  },
+  "native:ShapeChartCommonProps": {
+    "source": "native/src/components/ShapeChart/types.ts",
+    "description": "Props shared by every named shape chart (PieChart, DonutChart, RadarChart, GaugeChart, FunnelChart, TreemapChart, SankeyChart, SunburstChart, RadialBarChart, CalendarHeatmap and BulletChart)",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartFrameProps"
+    ],
+    "props": [
+      {
+        "name": "palette",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Colors of the marks without `color` (defaults to the `chart-series-1..8` tokens, then the theme colors)"
+      },
+      {
+        "name": "legend",
+        "type": "boolean | ShapeLegendOptions",
+        "required": false,
+        "default": "shown for pie, donut, funnel, multi-series radar charts, calendar heatmaps and radial bar charts without labels",
+        "description": "Legend; tapping an item hides / shows its slice, stage, series, node, bar, row or level"
+      },
+      {
+        "name": "tooltip",
+        "type": "boolean | ShapeTooltipOptions",
+        "required": false,
+        "default": "true",
+        "description": "Tooltip shown while a mark is pressed; `false` disables it"
+      },
+      {
+        "name": "format",
+        "type": "(value: number) => string",
+        "required": false,
+        "default": "compact numbers (1.2k, 3.4M)",
+        "description": "Formats the values of the labels and the tooltip"
+      },
+      {
+        "name": "percentFormat",
+        "type": "(share: number) => string",
+        "required": false,
+        "default": "one decimal, e.g. \"40.0%\"",
+        "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1"
+      },
+      {
+        "name": "hidden",
+        "type": "readonly number[]",
+        "required": false,
+        "description": "Hidden slices / stages / radar series / top-level treemap or sunburst nodes / sankey nodes / radial bars / bullet rows / calendar levels, by index. Makes the visibility controlled: legend taps then only call `onToggle`, whose `hiddenIndexes` should be stored and passed back."
+      },
+      {
+        "name": "animation",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Entry and update animations (skipped when the theme reduces motion)"
+      },
+      {
+        "name": "padding",
+        "type": "ChartPadding",
+        "required": false,
+        "default": "8 on every side",
+        "description": "Space around the drawing, in pixels"
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string",
+        "required": false,
+        "default": "the chart type, e.g. \"Donut chart\"",
+        "description": "Accessible name of the chart"
+      }
+    ]
+  },
+  "native:ShapeChartFrameProps": {
+    "source": "native/src/components/ShapeChart/types.ts",
+    "description": "Props of every shape chart that are not chart options",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "height",
+        "type": "DimensionValue",
+        "required": false,
+        "default": "320 (GaugeChart: 240, RadialBarChart: 300, SankeyChart and SunburstChart: 360, CalendarHeatmap and BulletChart: from the data)",
+        "description": "Height of the chart (the legend included)"
+      },
+      {
+        "name": "width",
+        "type": "DimensionValue",
+        "required": false,
+        "default": "\"100%\"",
+        "description": "Width of the chart"
+      },
+      {
+        "name": "onHover",
+        "type": "(event: ShapeHoverEvent | null) => void",
+        "required": false,
+        "description": "Called when the highlighted mark changes (press and drag over the chart)"
+      },
+      {
+        "name": "onClick",
+        "type": "(event: ShapeHoverEvent) => void",
+        "required": false,
+        "description": "Called when a mark is tapped"
+      },
+      {
+        "name": "onToggle",
+        "type": "(event: ShapeToggleEvent) => void",
+        "required": false,
+        "description": "Called when a legend item is tapped (or the instance's `toggle()` is called), with the toggled index and every hidden index after the toggle"
+      },
+      {
+        "name": "renderTooltip",
+        "type": "(event: ShapeHoverEvent) => ReactNode",
+        "required": false,
+        "description": "React content of the tooltip (replaces the default content)"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Styles of the root view"
+      },
+      {
+        "name": "testID",
+        "type": "string",
+        "required": false,
+        "description": "Test identifier of the root view"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<ShapeChartHandle>",
+        "required": false,
+        "description": "Imperative handle"
+      }
+    ]
+  },
+  "native:ShapeChartHandle": {
+    "source": "native/src/components/ShapeChart/types.ts",
+    "description": "Imperative handle of the shape chart components (`ref`)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "getInstance",
+        "type": "() => CanvasShapeChartInstance | null",
+        "required": true,
+        "description": "The platform-free engine instance drawing the chart (`toggle`, `getHidden`, `clearHover`...)"
+      }
+    ]
+  },
+  "native:ShapeChartProps": {
+    "source": "native/src/components/ShapeChart/types.ts",
+    "description": "Props of ShapeChart: any shape chart type from its engine options",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartFrameProps"
+    ],
+    "props": [
+      {
+        "name": "options",
+        "type": "ShapeChartOptions",
+        "required": true,
+        "description": "Options of the chart, by `type` (pie, radar, gauge, funnel, treemap and every other shape type of the engine)"
+      },
+      {
+        "name": "onDrill",
+        "type": "(event: ShapeDrillEvent) => void",
+        "required": false,
+        "description": "Called when a sunburst drills into a parent or back up"
       }
     ]
   },
@@ -7999,6 +9622,24 @@
         "type": "(value: number) => string",
         "required": false,
         "description": "Formats the value in the tooltip"
+      }
+    ]
+  },
+  "native:SparklineProps": {
+    "source": "native/src/components/Charts/types.ts",
+    "description": "Props of Sparkline",
+    "kind": "interface",
+    "extends": [
+      "Pick<ChartCommonProps, | \"width\" | \"tooltip\" | \"palette\" | \"ariaLabel\" | \"locale\" | \"labels\" | \"onHover\" | \"renderTooltip\" | \"style\" | \"testID\" | \"ref\">",
+      "SparklineConfig"
+    ],
+    "props": [
+      {
+        "name": "height",
+        "type": "DimensionValue",
+        "required": false,
+        "default": "48",
+        "description": "Height of the sparkline"
       }
     ]
   },
@@ -8254,6 +9895,157 @@
     "source": "native/src/components/Steps/Steps.tsx",
     "kind": "alias",
     "type": "\"finish\" | \"process\" | \"wait\" | \"error\""
+  },
+  "native:StrokeOp": {
+    "source": "native/src/components/ShapeChart/recorder.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "kind",
+        "type": "\"stroke\"",
+        "required": true
+      },
+      {
+        "name": "paths",
+        "type": "Subpath[]",
+        "required": true
+      },
+      {
+        "name": "paint",
+        "type": "Paint",
+        "required": true
+      },
+      {
+        "name": "alpha",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "cap",
+        "type": "\"butt\" | \"round\" | \"square\"",
+        "required": true
+      },
+      {
+        "name": "join",
+        "type": "\"round\" | \"bevel\" | \"miter\"",
+        "required": true
+      },
+      {
+        "name": "dash",
+        "type": "number[]",
+        "required": true
+      }
+    ]
+  },
+  "native:Subpath": {
+    "source": "native/src/components/ShapeChart/recorder.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "x",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "y",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "segs",
+        "type": "Segment[]",
+        "required": true
+      },
+      {
+        "name": "closed",
+        "type": "boolean",
+        "required": true
+      }
+    ]
+  },
+  "native:SunburstChartProps": {
+    "source": "native/src/components/ShapeChart/types.ts",
+    "description": "Props of SunburstChart",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "data",
+        "type": "readonly TreemapNode[]",
+        "required": true,
+        "description": "Nodes: leaves carry a value, parents sum their children"
+      },
+      {
+        "name": "innerRadius",
+        "type": "number",
+        "required": false,
+        "default": "0.26",
+        "description": "Radius of the center circle as a fraction of the outer radius"
+      },
+      {
+        "name": "levels",
+        "type": "number",
+        "required": false,
+        "default": "every level",
+        "description": "Rings shown at once below the focused node (fewer when they would be thinner than 18 px)"
+      },
+      {
+        "name": "startAngle",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Angle of the first node, degrees clockwise from 12 o'clock"
+      },
+      {
+        "name": "padAngle",
+        "type": "number",
+        "required": false,
+        "default": "1",
+        "description": "Gap between the sectors, in pixels"
+      },
+      {
+        "name": "cornerRadius",
+        "type": "number",
+        "required": false,
+        "default": "2",
+        "description": "Corner radius of the sectors, in pixels (drawn square on React Native)"
+      },
+      {
+        "name": "labels",
+        "type": "\"auto\" | \"tangential\" | \"radial\" | \"none\"",
+        "required": false,
+        "default": "\"auto\"",
+        "description": "Sector labels: `auto` writes each name along the arc or along the radius, whichever fits best; labels that do not fit are shortened or skipped"
+      },
+      {
+        "name": "drill",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Tapping a parent zooms into it; tapping the center goes back up"
+      },
+      {
+        "name": "drillPath",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Names from the root to the focused node (`[]` = the root). Makes the drill-down controlled: taps then only call `onDrill`, whose `path` should be stored and passed back."
+      },
+      {
+        "name": "onDrill",
+        "type": "(event: ShapeDrillEvent) => void",
+        "required": false,
+        "description": "Called when a parent or the center is tapped (or the instance's `drill()` is called)"
+      }
+    ]
   },
   "native:SwipeCellAction": {
     "source": "native/src/components/SwipeCell/SwipeCell.tsx",
@@ -9508,6 +11300,80 @@
       }
     ]
   },
+  "native:TextOp": {
+    "source": "native/src/components/ShapeChart/recorder.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "kind",
+        "type": "\"text\"",
+        "required": true
+      },
+      {
+        "name": "text",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "x",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "y",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "size",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "weight",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "align",
+        "type": "\"left\" | \"center\" | \"right\"",
+        "required": true
+      },
+      {
+        "name": "baseline",
+        "type": "\"top\" | \"middle\" | \"bottom\" | \"alphabetic\"",
+        "required": true
+      },
+      {
+        "name": "color",
+        "type": "Color",
+        "required": true
+      },
+      {
+        "name": "alpha",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "rotate",
+        "type": "number",
+        "required": true,
+        "description": "Rotation around (x, y), radians clockwise"
+      },
+      {
+        "name": "maxWidth",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "halo",
+        "type": "Color",
+        "required": false,
+        "description": "Outline color (`strokeText` under the same text)"
+      }
+    ]
+  },
   "native:ThemeToggleProps": {
     "source": "native/src/components/ThemeToggle/ThemeToggle.tsx",
     "kind": "interface",
@@ -10057,6 +11923,36 @@
       }
     ]
   },
+  "native:TreemapChartProps": {
+    "source": "native/src/components/ShapeChart/types.ts",
+    "description": "Props of TreemapChart",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "data",
+        "type": "readonly TreemapNode[]",
+        "required": true,
+        "description": "Nodes: leaves carry a value, parents sum their children"
+      },
+      {
+        "name": "gap",
+        "type": "number",
+        "required": false,
+        "default": "2",
+        "description": "Gap between the cells, in pixels"
+      },
+      {
+        "name": "headers",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Draws the names of the parents above their children"
+      }
+    ]
+  },
   "native:UploadItem": {
     "source": "native/src/components/Upload/index.tsx",
     "kind": "interface",
@@ -10386,5 +12282,131 @@
     "source": "native/src/components/Layout/index.tsx",
     "kind": "alias",
     "type": "HStackProps"
+  },
+  "native:WaterfallChartProps": {
+    "source": "native/src/components/Charts/types.ts",
+    "description": "Props of WaterfallChart",
+    "kind": "interface",
+    "extends": [
+      "Omit<ChartCommonProps, \"crosshair\" | \"labels\">",
+      "Omit<WaterfallOptions, \"labels\">"
+    ],
+    "props": [
+      {
+        "name": "steps",
+        "type": "readonly WaterfallStep[]",
+        "required": true,
+        "description": "Changes, subtotals and totals, in order"
+      },
+      {
+        "name": "labels",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Writes the change (or the total) at the end of every bar"
+      },
+      {
+        "name": "orientation",
+        "type": "ChartOrientation",
+        "required": false,
+        "default": "\"vertical\"",
+        "description": "`horizontal` lays the steps out in rows"
+      }
+    ]
+  },
+  "native:WaterfallOptions": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Options of `waterfallSeries`",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "Name of the series (tooltip)"
+      },
+      {
+        "name": "upColor",
+        "type": "string",
+        "required": false,
+        "default": "the success color",
+        "description": "Color of the increases"
+      },
+      {
+        "name": "downColor",
+        "type": "string",
+        "required": false,
+        "default": "the danger color",
+        "description": "Color of the decreases"
+      },
+      {
+        "name": "totalColor",
+        "type": "string",
+        "required": false,
+        "default": "the primary color",
+        "description": "Color of the totals and subtotals"
+      },
+      {
+        "name": "start",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Value the first change starts from"
+      },
+      {
+        "name": "labels",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Writes the change (or the total) at the end of every bar"
+      },
+      {
+        "name": "format",
+        "type": "(value: number) => string",
+        "required": false,
+        "description": "Formats the values (labels, tooltip)"
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "default": "the page language",
+        "description": "Locale of the default name"
+      }
+    ]
+  },
+  "native:WaterfallStep": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "A bar of a waterfall chart",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "description": "Category name of the bar"
+      },
+      {
+        "name": "value",
+        "type": "number",
+        "required": false,
+        "description": "Change (positive or negative); ignored by totals"
+      },
+      {
+        "name": "kind",
+        "type": "\"change\" | \"subtotal\" | \"total\"",
+        "required": false,
+        "default": "\"change\"",
+        "description": "`subtotal` and `total` bars show the running total, from zero"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "description": "Color of this bar (any CSS color)"
+      }
+    ]
   }
 }

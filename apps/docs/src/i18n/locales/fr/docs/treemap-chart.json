@@ -1,5 +1,5 @@
 {
-  "title": "TreemapChart",
+  "title": "Treemap",
   "description": "Des rectangles imbriqués dont l’aire est proportionnelle aux valeurs : on voit d’un coup d’œil ce qui prend le plus de place dans une hiérarchie (espace disque, budgets, portefeuilles). Survolez ou utilisez les flèches pour mettre une cellule en évidence ; l’infobulle affiche son chemin.",
   "demos": {
     "basic": {
@@ -9,7 +9,58 @@
     "flat": {
       "title": "À plat",
       "description": "Sans enfants, chaque nœud est une feuille ; gap élargit l’espace entre les cellules."
+    },
+    "market-map": {
+      "title": "Carte du marché boursier",
+      "description": "Des actions groupées par secteur, dimensionnées par capitalisation et colorées du rouge au vert selon la variation du jour, comme les cartes de marché des sites financiers ; la variation fait partie du nom de chaque cellule."
+    },
+    "bundle": {
+      "title": "Taille du bundle",
+      "description": "Ce que montre un analyseur de bundle : les modules d'un bundle JavaScript selon leur taille minifiée, sur trois niveaux, et les dépendances les plus lourdes listées sous le graphique."
     }
+  },
+  "data": {
+    "folders": {
+      "media": "Médias",
+      "videos": "Vidéos",
+      "photos": "Photos",
+      "music": "Musique",
+      "applications": "Applications",
+      "projects": "Projets",
+      "system": "Système",
+      "library": "Bibliothèque",
+      "caches": "Caches",
+      "logs": "Journaux",
+      "downloads": "Téléchargements",
+      "installers": "Programmes d'installation",
+      "archives": "Archives"
+    },
+    "diskAria": "Utilisation du disque par dossier",
+    "diskSelected": "{{path}} : {{size}} ({{share}} du disque)",
+    "clickCell": "Cliquez sur une cellule pour voir où elle se trouve",
+    "departments": {
+      "engineering": "Ingénierie",
+      "sales": "Ventes",
+      "marketing": "Marketing",
+      "success": "Succès client",
+      "operations": "Opérations",
+      "finance": "Finance",
+      "people": "Ressources humaines",
+      "legal": "Juridique"
+    },
+    "budgetAria": "Budget annuel par service",
+    "sectors": {
+      "technology": "Technologie",
+      "finance": "Finance",
+      "health": "Santé",
+      "energy": "Énergie",
+      "consumer": "Consommation"
+    },
+    "marketCap": "Capitalisation : {{value}}",
+    "marketAria": "Carte du marché boursier par secteur, colorée selon la variation du jour",
+    "ofBundle": "{{share}} du bundle",
+    "bundleAria": "Taille du bundle JavaScript par module",
+    "bundleSummary": "Total {{size}} ; dépendances de plus de 100 Ko : {{modules}}."
   },
   "api": {
     "TreemapChartProps": {
@@ -22,6 +73,59 @@
       "value": "Valeur d’une feuille (les parents additionnent leurs enfants)",
       "color": "Couleur de la cellule ; les nœuds de premier niveau sans couleur prennent la palette, les enfants sans couleur des nuances plus claires de celle de leur parent",
       "children": "Nœuds enfants"
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "Basique",
+        "description": "Les parents (avec un en-tête) regroupent leurs enfants et l'aire d'une cellule est sa taille ; un tap appelle onClick avec le chemin de la cellule."
+      }
+    },
+    "data": {
+      "items": {
+        "media": "Médias",
+        "photos": "Photos",
+        "videos": "Vidéos",
+        "music": "Musique",
+        "apps": "Applications",
+        "games": "Jeux",
+        "social": "Réseaux sociaux",
+        "maps": "Cartes",
+        "system": "Système",
+        "messages": "Messages"
+      },
+      "storageAria": "Stockage du téléphone par catégorie",
+      "selectedItem": "{{path}} : {{size}}",
+      "tapCell": "Touchez une cellule pour voir sa taille"
+    }
+  },
+  "wc": {
+    "demos": {
+      "nested": {
+        "title": "Nœuds imbriqués",
+        "description": "L'espace disque par dossier : les parents additionnent leurs enfants et affichent leur nom au-dessus."
+      },
+      "flat": {
+        "title": "Liste plate",
+        "description": "Un rectangle par région, d'aire proportionnelle à la population."
+      }
+    },
+    "minerva-treemap-chart": {
+      "props": {
+        "hideHeaders": "Masque le nom des parents au-dessus de leurs enfants",
+        "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+        "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+        "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+      },
+      "events": {
+        "minerva-hover": "La marque survolée (ou ciblée au clavier) a changé ; detail : { index, name, value, share }, null quand rien n'est survolé",
+        "minerva-click": "Une marque a été cliquée, touchée ou activée avec Entrée ; detail : { index, name, value, share }",
+        "minerva-toggle": "Un élément de la légende a été cliqué (ou toggle() appelé) ; detail : { index, hidden, hiddenIndexes }"
+      },
+      "methods": {
+        "toggle": "Masque / affiche une part, une étape, une série radar ou un nœud de premier niveau du treemap par son index"
+      }
     }
   }
 }

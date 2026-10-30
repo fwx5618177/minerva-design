@@ -1,0 +1,414 @@
+{
+  "title": "Trading chart",
+  "description": "A professional trading terminal chart: candles over a gap-free time axis, indicator panes, drawing tools, order lines and real-time streaming, drawn on the GPU and smooth with a million bars.",
+  "intro": {
+    "overview": {
+      "title": "Overview",
+      "text": "TradingChart takes OHLCV bars (objects, or typed-array columns for very long histories) and draws them with the GPU backends of the chart engine; axes, labels, drawings and the crosshair are drawn on a Canvas2D overlay.",
+      "axis": "The time axis is an index of bars: weekends, nights and holidays leave no holes, and the labels follow the timeframe (new days and months in bold).",
+      "panes": "Moving averages, Bollinger bands and VWAP go over the price; volume, MACD, RSI, KDJ and ATR get their own pane, all sharing the zoom and the crosshair. Drag a separator to resize a pane.",
+      "trading": "Last price line with the countdown to the bar close, high / low of the visible bars, buy / sell markers, and order, position, take-profit, stop-loss and alert lines that can be dragged.",
+      "drawings": "Trend lines, rays, horizontal and vertical lines, rectangles, Fibonacci retracements and a measure tool: plain data, saved and restored through drawings and onDrawingsChange."
+    },
+    "streaming": {
+      "title": "Streaming",
+      "text": "Call update(bar) on the ref for every tick: a bar at the time of the last one replaces it, a later one appends it. When the latest bar is in view, the chart keeps following it; when the reader scrolled back in history, it stays where it is and a button scrolls back to the latest bar.",
+      "performance": "A tick recomputes the indicators for the last bar only and uploads only the last candle to the GPU, drawing on the next animation frame: fifty updates a second cost almost nothing. Zoomed out, bars are aggregated per pixel column, so a million bars draw as fast as a thousand."
+    },
+    "controls": {
+      "title": "Controls",
+      "pointer": "Wheel to zoom at the pointer (Shift or a horizontal swipe to scroll), drag to pan with inertia.",
+      "axes": "Drag the price axis to zoom it vertically and the time axis to change the bar width; double-click an axis to reset it.",
+      "keyboard": "Focus the chart: arrows move the crosshair bar by bar (Shift: ten bars) and announce its prices, + / − zoom, Home / End jump to the first / latest bar, Delete removes the selected drawing, Escape cancels.",
+      "touch": "On touch screens: drag to pan, pinch to zoom."
+    },
+    "languages": {
+      "title": "Languages",
+      "text": "The texts the chart writes (OHLC names, order and alert line titles, countdown, measure tool, accessible names) are built in for English, Chinese, Japanese and French and follow the page language (<html lang>), also when it changes. Volumes use the units of the language (万 / 亿 in Chinese). Set locale to pick another language and labels to replace any text.",
+      "colors": "Colors don't follow the language: a Chinese page may well show US stocks, so the red-up convention of mainland China stays an explicit colorConvention=\"redUp\"."
+    }
+  },
+  "demos": {
+    "pro-terminal": {
+      "title": "Pro terminal",
+      "description": "Ninety days of one-minute bars aggregated with resampleBars for the timeframe buttons; the toolbar switches the chart style, the indicators and the price scale (auto, percent, logarithmic). Click an indicator name in a legend to hide it, drag a pane separator to resize the panes."
+    },
+    "streaming": {
+      "title": "Live streaming",
+      "description": "A simulated WebSocket sends fifty trades a second; each one calls update() on the ref with the current one-minute bar. Only the last bar is recomputed and uploaded. The last-price label counts down to the bar close; scroll back in history and the chart stays put until you press the arrow button."
+    },
+    "tick-chart": {
+      "title": "Tick chart",
+      "description": "Every trade is a point of an area chart, about a hundred a second, with a running VWAP and the trade sizes below, colored by the direction of the trade. The time labels switch to seconds on their own."
+    },
+    "chart-styles": {
+      "title": "Chart styles",
+      "description": "chartStyle draws the same bars as candles, hollow candles (hollow when the close is above the open, colored against the previous close), Heikin-Ashi, OHLC bars, a line, an area or a baseline split at the first visible close. The year of daily bars has no weekend gaps."
+    },
+    "drawing-tools": {
+      "title": "Drawing tools",
+      "description": "Pick a tool, then click twice or drag on the chart. With the cursor, click a drawing to select it, drag it or its handles to move it, press Delete to remove it. drawings and onDrawingsChange keep them in React state, ready to be saved; the Fibonacci retracement and the support line are computed from the data."
+    },
+    "orders": {
+      "title": "Orders and positions",
+      "description": "priceLines draw the open position with its unrealized profit, take profit, stop loss, two limit orders and an alert. Drag a dashed line: onOrderMove reports the new price and the table follows. The arrows are the trades of the history, from markers."
+    },
+    "compare": {
+      "title": "Compare symbols",
+      "description": "compare draws other symbols over the price; with the percent scale every series starts at 0% on the first visible bar, so performances can be compared while scrolling. The logarithmic and linear scales are there to see why."
+    },
+    "history": {
+      "title": "Infinite history",
+      "description": "The chart starts with the last 200 hourly bars. When the oldest bar comes into view, onHistoryRequest fetches the 200 before it and prependBars inserts them without moving the view."
+    },
+    "million-bars": {
+      "title": "1,000,000 bars",
+      "description": "Two years of one-minute bars as Float64Array columns, with a 200-period EMA. Zoomed out, the bars are aggregated per pixel column, so showing all of them is as fast as showing a hundred."
+    },
+    "red-up": {
+      "title": "Red up, green down",
+      "description": "colorConvention=\"redUp\" follows the mainland China, Hong Kong, Japan and Korea conventions; utcOffset shows the times of the Shanghai exchange. MA5 / 10 / 20 / 60, volume with its MA5 and KDJ, as on a Chinese brokerage app. The convention is not inferred from the page language (a Chinese page can show US stocks): set it explicitly."
+    },
+    "dark-terminal": {
+      "title": "Dark terminal",
+      "description": "The chart takes its colors from CSS variables: a wrapper redefines them for an exchange-style dark terminal with a ticker header, EMA 20 / 50, Bollinger bands, volume at the bottom of the price pane and RSI."
+    }
+  },
+  "data": {
+    "toolbar": "Chart settings",
+    "btc": "BTC/USDT",
+    "chartStyle": "Chart style",
+    "timeframes": {
+      "1m": "1m",
+      "5m": "5m",
+      "15m": "15m",
+      "1H": "1H",
+      "4H": "4H",
+      "1D": "1D",
+      "1W": "1W"
+    },
+    "styles": {
+      "candles": "Candles",
+      "hollowCandles": "Hollow candles",
+      "heikinAshi": "Heikin-Ashi",
+      "bars": "Bars",
+      "line": "Line",
+      "area": "Area",
+      "baseline": "Baseline"
+    },
+    "studies": {
+      "ma": "MA",
+      "boll": "BOLL",
+      "vol": "VOL",
+      "macd": "MACD",
+      "rsi": "RSI",
+      "kdj": "KDJ"
+    },
+    "scales": {
+      "linear": "Auto",
+      "percent": "%",
+      "log": "Log"
+    },
+    "terminalAria": "BTC/USDT trading chart with volume, MACD and RSI panes",
+    "eth": "ETH/USDT",
+    "sol": "SOL/USDT",
+    "aapl": "AAPL",
+    "eurusd": "EUR/USD",
+    "nq": "NQ futures",
+    "moutai": "Kweichow Moutai 600519",
+    "btcPerp": "BTCUSDT Perpetual",
+    "pause": "Pause",
+    "resume": "Resume",
+    "paused": "Paused: the chart keeps the last bar until the feed resumes.",
+    "streamStatus": "{{rate}} updates / s · last {{price}}",
+    "streamAria": "ETH/USDT one-minute chart updated in real time",
+    "tickStatus": "{{trades}} trades",
+    "tickAria": "Every SOL/USDT trade in real time",
+    "stylesAria": "AAPL daily bars",
+    "drawingTools": "Drawing tools",
+    "tools": {
+      "cursor": "Cursor",
+      "trendLine": "Trend line",
+      "ray": "Ray",
+      "extendedLine": "Extended line",
+      "horizontalLine": "Horizontal line",
+      "verticalLine": "Vertical line",
+      "rectangle": "Rectangle",
+      "fibRetracement": "Fibonacci retracement",
+      "measure": "Measure"
+    },
+    "keepDrawing": "Stay in drawing mode",
+    "clearDrawings": "Remove all",
+    "drawingsStatus": "Drawings: {{count}}",
+    "drawingAria": "ETH/USDT four-hour chart with drawings",
+    "lines": {
+      "position": "Long",
+      "takeProfit": "TP",
+      "stopLoss": "SL",
+      "limitBuy": "Buy limit",
+      "limitSell": "Sell limit",
+      "alert": "Alert"
+    },
+    "buyMarker": "B {{quantity}}",
+    "sellMarker": "S {{quantity}}",
+    "ordersAria": "BTC/USDT hourly chart with a position, orders and trades",
+    "openOrders": "Position and orders",
+    "orderMoved": "{{name}} moved from {{from}} to {{to}}",
+    "dragHint": "Drag a dashed line on the chart to move the order.",
+    "priceScale": "Price scale",
+    "scaleNames": {
+      "percent": "Percent",
+      "log": "Logarithmic",
+      "linear": "Linear"
+    },
+    "compareAria": "BTC, ETH and SOL over a year, compared in percent",
+    "historyAria": "EUR/USD hourly chart loading older bars on demand",
+    "historyLoading": "Loading older bars…",
+    "historyStatus": "{{loaded}} of {{total}} bars loaded: scroll to the left for more",
+    "showAll": "Show all",
+    "latest": "Latest",
+    "millionStatus": "{{bars}} bars · drawn with {{renderer}}",
+    "millionAria": "One million one-minute bars of NQ futures",
+    "redUpAria": "Kweichow Moutai daily chart, rising bars in red",
+    "change24h": "24h change",
+    "high24h": "24h high",
+    "low24h": "24h low",
+    "volume24h": "24h volume",
+    "darkAria": "BTCUSDT perpetual 15-minute chart in a dark terminal"
+  },
+  "api": {
+    "TradingChartProps": {
+      "height": "Height in pixels or any CSS length",
+      "width": "Width in pixels or any CSS length",
+      "className": "Class of the root element",
+      "style": "Inline styles of the root element",
+      "ref": "Imperative handle: streaming (update, appendBars, prependBars), scrolling and drawings",
+      "onCrosshairMove": "The crosshair moved to another bar or price; null when it left the chart",
+      "onClick": "A pane was clicked (not while drawing)",
+      "onVisibleRangeChange": "The visible bars changed: scroll, zoom, resize or new bars",
+      "onOrderMove": "A draggable price line was dropped at a new price: update your order there",
+      "onDrawingsChange": "The user added, moved or deleted drawings; pass the array back as drawings",
+      "onDrawingSelect": "The selected drawing changed (its id, or null)",
+      "onDrawingToolChange": "The drawing tool changed, e.g. back to cursor after a drawing",
+      "onIndicatorToggle": "An indicator was shown or hidden from its legend",
+      "onHistoryRequest": "The oldest bar came into view: load older bars and call prependBars",
+      "onRendererChange": "The backend in use, again after a fallback (GPU reset)"
+    },
+    "TradingChartOptions": {
+      "bars": "Bars, oldest first: objects or typed-array columns. A new array with the same history and newer bars is applied as a stream",
+      "timeframe": "Duration of a bar (\"1m\", \"4H\", \"1D\" or milliseconds): time labels, countdown and drawings beyond the last bar. Inferred from the bars by default",
+      "symbol": "Name shown in the legend and the accessible label",
+      "chartStyle": "How the bars are drawn: candles, hollowCandles, heikinAshi, bars, line, area or baseline",
+      "indicators": "Indicators: averages, Bollinger bands and VWAP over the price, the others in panes below, in this order",
+      "scaleMode": "Price scale of the price pane: linear, log or percent (from the first visible bar)",
+      "colorConvention": "greenUp (most markets) or redUp (China, Japan, Korea): swaps the default up / down colors. Not derived from the locale: set it explicitly",
+      "upColor": "Color of rising bars, any CSS color including var()",
+      "downColor": "Color of falling bars",
+      "precision": "Decimals of the prices; detected from the data by default",
+      "formatPrice": "Formats the prices of the axis, legend and labels (overrides precision)",
+      "locale": "Locale of the texts, numbers and dates: the page language (<html lang>, followed when it changes) by default",
+      "utcOffset": "Offset of the displayed times from UTC in minutes (480 for UTC+8); local time by default",
+      "crosshair": "magnet snaps the horizontal line to the open, high, low or close; free follows the pointer",
+      "legend": "Legends with the values at the crosshair and the indicator toggles",
+      "lastPriceLine": "Dotted line and axis label at the last price",
+      "countdown": "Time left until the current bar closes, under the last price label",
+      "highLowMarkers": "Marks the highest and lowest prices of the visible bars",
+      "markers": "Buy / sell arrows with an optional text and trade price",
+      "priceLines": "Order, position, take-profit, stop-loss and alert lines; draggable ones report onOrderMove",
+      "compare": "Other series drawn over the price, best read with the percent scale",
+      "drawings": "Drawings (controlled): replaced when a new array is passed",
+      "drawingMode": "Active drawing tool; cursor selects and moves drawings",
+      "keepDrawingMode": "Keeps the tool after a drawing instead of going back to cursor",
+      "baselinePrice": "Price splitting the baseline style; the first visible close by default",
+      "rightOffset": "Empty space after the last bar, in bars",
+      "barSpacing": "Initial width of a bar in pixels",
+      "wheel": "Mouse wheel: zoom, modifier (Ctrl / ⌘ only, the page scrolls otherwise) or none",
+      "kineticScroll": "Keeps panning after a quick drag",
+      "grid": "Grid lines",
+      "watermark": "Large faint text behind the bars",
+      "labels": "Overrides of the built-in texts (English, Chinese, Japanese and French are built in)",
+      "renderer": "Backend: auto picks WebGPU, then WebGL2, WebGL and Canvas2D",
+      "ariaLabel": "Accessible label; built from the symbol by default"
+    },
+    "TradingChartHandle": {
+      "update": "Streams a bar: the time of the last bar replaces it, a later time appends it",
+      "appendBars": "Appends bars newer than the last one",
+      "prependBars": "Inserts older bars before the first one; the view stays on the same bars",
+      "setBars": "Replaces the bars and scrolls to the latest one",
+      "getBarCount": "Number of bars",
+      "getBar": "Bar at an index, null outside the data",
+      "scrollToRealtime": "Scrolls to the latest bar (animated by default)",
+      "fitContent": "Shows every bar",
+      "getVisibleRange": "Visible bars as logical indices and times",
+      "setVisibleRange": "Shows the bars between two logical indices",
+      "resetPriceScales": "Fits every price scale to the visible bars again",
+      "setDrawingTool": "Activates a drawing tool",
+      "getDrawings": "Current drawings",
+      "removeDrawing": "Deletes a drawing by id",
+      "selectDrawing": "Selects a drawing (null clears the selection)",
+      "setIndicatorVisible": "Shows or hides an indicator by id",
+      "getRenderer": "Backend in use, null until ready",
+      "getInstance": "The engine instance of minerva-design/charts/core"
+    },
+    "TradingBar": {
+      "time": "Opening time in milliseconds since the epoch",
+      "open": "First traded price",
+      "high": "Highest traded price",
+      "low": "Lowest traded price",
+      "close": "Last traded price",
+      "volume": "Traded volume"
+    },
+    "TradingBarColumns": {
+      "time": "Opening times in milliseconds, ascending",
+      "open": "Opening prices",
+      "high": "Highest prices",
+      "low": "Lowest prices",
+      "close": "Closing prices",
+      "volume": "Volumes"
+    },
+    "TradingPriceLine": {
+      "id": "Identifies the line in onOrderMove",
+      "price": "Price of the line",
+      "kind": "order, position (with its unrealized profit), takeProfit, stopLoss, alert or line: sets the default look",
+      "side": "buy or sell: colors orders and positions like rising / falling bars",
+      "title": "Label of the line; a short default per kind",
+      "quantity": "Quantity next to the label; numbers also give positions their profit",
+      "color": "Color; from the kind and side by default",
+      "draggable": "Can be dragged to another price, reported by onOrderMove",
+      "lineStyle": "solid, dashed or dotted; dashed for orders by default"
+    },
+    "TradingMarker": {
+      "time": "Time of the bar (the bar containing it)",
+      "side": "buy draws an up arrow under the bar, sell a down arrow above it",
+      "price": "Trade price, marked with a dot",
+      "text": "Short text next to the arrow",
+      "color": "Color; the up / down color by default",
+      "id": "Your identifier"
+    },
+    "TradingCompareSeries": {
+      "name": "Name in the legend",
+      "data": "Values by time, matched with the bars",
+      "color": "Line color; a theme color by default",
+      "id": "Identifier; the name by default"
+    },
+    "TradingDrawing": {
+      "id": "Unique id",
+      "type": "Tool that made it",
+      "points": "Anchors (time and price): one for horizontal / vertical lines, two otherwise",
+      "color": "Color; the primary color by default",
+      "lineWidth": "Line width in pixels",
+      "lineStyle": "solid, dashed or dotted",
+      "locked": "Can't be moved nor deleted by the user"
+    },
+    "TradingDrawingPoint": {
+      "time": "Time; past the last bar it is extrapolated with the bar duration",
+      "price": "Price"
+    },
+    "TradingChartLabels": {
+      "open": "Open in the legend",
+      "high": "High in the legend",
+      "low": "Low in the legend",
+      "close": "Close in the legend",
+      "change": "Name before the change of the bar in the legend (none in English)",
+      "volume": "Volume in the legend and title of the volume pane",
+      "limit": "Default title of order lines",
+      "position": "Default title of position lines",
+      "takeProfit": "Default title of take-profit lines",
+      "stopLoss": "Default title of stop-loss lines",
+      "alert": "Default title of alert lines",
+      "scrollToRealtime": "Label of the button scrolling back to the latest bar",
+      "toggleIndicator": "Accessible label of the legend toggles; {name} is replaced",
+      "bars": "Bar count of the measure tool; {count} is replaced",
+      "days": "Days of the measure tool and the countdown; {count} is replaced",
+      "hours": "Hours of the measure tool and the countdown; {count} is replaced",
+      "minutes": "Minutes of the measure tool; {count} is replaced",
+      "chart": "Default accessible label; {symbol} is replaced",
+      "announcement": "Bar read aloud when the keyboard moves the crosshair; {time}, {open}, {high}, {low} and {close} are replaced",
+      "timeframe": "Timeframe after the symbol in the legend; the timeframe option when it is a string by default"
+    },
+    "TradingCrosshairEvent": {
+      "index": "Index of the hovered bar (may be past the last bar)",
+      "time": "Time of the hovered bar",
+      "bar": "Hovered bar, null outside the data",
+      "price": "Price, or indicator value, at the horizontal line",
+      "pane": "Hovered pane: price or the indicator id",
+      "x": "x of the crosshair in pixels",
+      "y": "y of the horizontal line in pixels"
+    },
+    "TradingClickEvent": {
+      "index": "Index of the clicked bar",
+      "time": "Time of the clicked bar",
+      "price": "Price, or indicator value, at the pointer",
+      "pane": "Clicked pane"
+    },
+    "TradingOrderMoveEvent": {
+      "id": "Id of the line",
+      "price": "New price, rounded to the price precision",
+      "previousPrice": "Price before the drag",
+      "line": "The line"
+    },
+    "TradingVisibleRange": {
+      "from": "Logical index at the left edge",
+      "to": "Logical index at the right edge",
+      "fromTime": "Time at the left edge",
+      "toTime": "Time at the right edge"
+    },
+    "TradingIndicatorToggleEvent": {
+      "id": "Id of the indicator",
+      "visible": "Whether it is now drawn"
+    },
+    "TradingHistoryRequestEvent": {
+      "firstTime": "Time of the oldest bar",
+      "count": "Number of bars"
+    }
+  },
+  "wc": {
+    "demos": {
+      "candles": {
+        "title": "Candles, moving averages and panes",
+        "description": "Daily candles with two moving averages, volume and RSI panes; texts and dates follow the page language."
+      },
+      "streaming": {
+        "title": "Real-time streaming",
+        "description": "A tick every 500 ms updates the last bar and every tenth opens a new one, without passing the data again."
+      }
+    },
+    "minerva-trading-chart": {
+      "props": {
+        "options": "Other engine options (TradingChartOptions of minerva-design/charts/core: colors, texts, locale, labels…); property only",
+        "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+      },
+      "events": {
+        "minerva-crosshair-move": "The crosshair moved; detail: { time, index, bar, price, pane, x, y }, null when it left the chart",
+        "minerva-click": "A pane was clicked; detail: { time, index, price, pane }",
+        "minerva-visible-range-change": "The visible bars changed; detail: { from, to, fromTime, toTime }",
+        "minerva-order-move": "A draggable price line was dropped at a new price; detail: { id, price, previousPrice, line }",
+        "minerva-drawings-change": "The user added, moved or deleted drawings; detail: { drawings }",
+        "minerva-drawing-select": "The selected drawing changed; detail: { id }",
+        "minerva-drawing-tool-change": "The drawing tool changed (back to cursor after a drawing); detail: { tool }",
+        "minerva-indicator-toggle": "An indicator was shown or hidden from its legend; detail: { id, visible }",
+        "minerva-history-request": "The oldest bar came into view: load older bars with prependBars; detail: { firstTime, count }",
+        "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+      },
+      "methods": {
+        "updateBar": "Streams a bar: the time of the last bar replaces it, a later time appends it (the update(bar) of the engine)",
+        "appendBars": "Appends bars newer than the last one",
+        "prependBars": "Inserts older bars before the first one, keeping the view",
+        "setBars": "Replaces the bars",
+        "getBarCount": "Number of bars",
+        "getBar": "Bar at an index, null outside the data",
+        "scrollToRealtime": "Scrolls to the latest bar",
+        "fitContent": "Shows every bar",
+        "getVisibleRange": "Visible bars, null before the engine is created",
+        "setVisibleRange": "Shows the bars between two logical indices",
+        "resetPriceScales": "Fits every price scale to the visible bars again",
+        "setDrawingTool": "Activates a drawing tool (cursor, trendLine, horizontalLine, fibRetracement…)",
+        "getDrawings": "Current drawings",
+        "removeDrawing": "Deletes a drawing",
+        "selectDrawing": "Selects a drawing (null clears the selection)",
+        "setIndicatorVisible": "Shows or hides an indicator",
+        "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
+      }
+    }
+  }
+}

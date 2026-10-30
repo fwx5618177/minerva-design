@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   FunnelChart,
   type ShapeDatum,
@@ -5,44 +7,65 @@ import {
 } from "minerva-design/charts";
 
 // Sign-up funnel of a SaaS product over one month
-const stages: ShapeDatum[] = [
-  { name: "Pricing page", value: 24000 },
-  { name: "Started sign-up", value: 9600 },
-  { name: "Verified email", value: 6850 },
-  { name: "Created project", value: 4100 },
-  { name: "Invited teammate", value: 1720 },
-  { name: "Upgraded to paid", value: 640 },
+const stages = [
+  { key: "pricing", value: 24000 },
+  { key: "started", value: 9600 },
+  { key: "verified", value: 6850 },
+  { key: "project", value: 4100 },
+  { key: "invited", value: 1720 },
+  { key: "upgraded", value: 640 },
 ];
 
-const format = (value: number) => value.toLocaleString("en-US");
-const pct = (ratio: number) => `${(ratio * 100).toFixed(1)}%`;
-
-// The data is not sorted by the chart (sort="none"), so the event index
-// is also the index in `stages`
-function StageTooltip({ event }: { event: ShapeHoverEvent }) {
-  const previous = event.index > 0 ? stages[event.index - 1] : null;
-  return (
-    <div style={{ display: "grid", gap: 2 }}>
-      <strong>{event.name}</strong>
-      <span>{format(event.value)} users</span>
-      <span>{pct(event.percent)} of the visitors</span>
-      {previous && (
-        <span>
-          {format(previous.value - event.value)} dropped since “{previous.name}”
-        </span>
-      )}
-    </div>
-  );
-}
-
 export default function BasicDemo() {
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.funnel-chart.data",
+  });
+  const locale = i18n.language;
+
+  const data = useMemo(
+    (): ShapeDatum[] =>
+      stages.map(({ key, value }) => ({ name: t(`signup.${key}`), value })),
+    [t],
+  );
+  const number = useMemo(() => new Intl.NumberFormat(locale), [locale]);
+  const percent = useMemo(
+    () =>
+      new Intl.NumberFormat(locale, {
+        style: "percent",
+        maximumFractionDigits: 1,
+      }),
+    [locale],
+  );
+
+  // The data is not sorted by the chart (sort="none"), so the event index
+  // is also the index in `data`
+  const tooltip = (event: ShapeHoverEvent) => {
+    const previous = event.index > 0 ? data[event.index - 1] : null;
+    return (
+      <div style={{ display: "grid", gap: 2 }}>
+        <strong>{event.name}</strong>
+        <span>{t("users", { users: number.format(event.value) })}</span>
+        <span>{t("ofVisitors", { share: percent.format(event.percent) })}</span>
+        {previous && (
+          <span>
+            {t("droppedSince", {
+              users: number.format(previous.value - event.value),
+              stage: previous.name,
+            })}
+          </span>
+        )}
+      </div>
+    );
+  };
+
   return (
     <FunnelChart
-      data={stages}
-      format={format}
-      renderTooltip={(event) => <StageTooltip event={event} />}
+      data={data}
+      format={(value) => number.format(value)}
+      percentFormat={(share) => percent.format(share)}
+      renderTooltip={tooltip}
       height={360}
-      ariaLabel="Sign-up funnel"
+      ariaLabel={t("signupAria")}
     />
   );
 }

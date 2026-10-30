@@ -1,9 +1,6 @@
 import { useMemo } from "react";
-import {
-  AreaChart,
-  formatCompact,
-  type ChartSeries,
-} from "minerva-design/charts";
+import { useTranslation } from "react-i18next";
+import { AreaChart, type ChartSeries } from "minerva-design/charts";
 
 function mulberry32(seed: number) {
   let a = seed;
@@ -19,6 +16,11 @@ const DAY = 24 * 60 * 60 * 1000;
 const START = new Date(2026, 3, 1).getTime();
 
 export default function BasicDemo() {
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.area-chart.data",
+  });
+  const locale = i18n.language;
+
   const series = useMemo((): ChartSeries[] => {
     const random = mulberry32(21);
     const data: [Date, number][] = [];
@@ -29,15 +31,24 @@ export default function BasicDemo() {
       const value = level * seasonal * (0.985 + random() * 0.03);
       data.push([new Date(START + i * DAY), Math.round(value)]);
     }
-    return [{ name: "Daily active users", data }];
-  }, []);
+    return [{ name: t("dau"), data }];
+  }, [t]);
+  const compact = useMemo(
+    () => new Intl.NumberFormat(locale, { notation: "compact" }),
+    [locale],
+  );
+  const date = useMemo(
+    () => new Intl.DateTimeFormat(locale, { month: "short", day: "numeric" }),
+    [locale],
+  );
 
   return (
     <AreaChart
       series={series}
-      yAxis={{ format: (value) => formatCompact(value) }}
+      xAxis={{ type: "time", format: (value) => date.format(value) }}
+      yAxis={{ format: (value) => compact.format(value) }}
       height={280}
-      ariaLabel="Daily active users, April to June 2026"
+      ariaLabel={t("dauAria")}
     />
   );
 }

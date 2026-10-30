@@ -438,8 +438,14 @@ describe("i18n", () => {
     for (const file of walk(SRC).filter((f) => /\.tsx?$/.test(f))) {
       if (file.endsWith(".test.ts")) continue;
       const text = readFileSync(file, "utf8");
+      // `useTranslation("common", { keyPrefix: "docs.<page>.data" })`
+      const prefixes = Array.from(
+        text.matchAll(/keyPrefix:\s*["'`]([^"'`$]+)["'`]/g),
+        (m) => `${m[1]}.`,
+      );
       for (const match of text.matchAll(pattern)) {
-        if (!en.has(match[2])) {
+        const key = match[2]!;
+        if (!en.has(key) && !prefixes.some((p) => en.has(p + key))) {
           missing.push(`${relative(SRC, file)}: ${match[2]}`);
         }
       }

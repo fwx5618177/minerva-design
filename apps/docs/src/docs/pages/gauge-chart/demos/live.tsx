@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "minerva-design";
 import { GaugeChart, type GaugeBand } from "minerva-design/charts";
 
@@ -20,9 +21,10 @@ const bands: GaugeBand[] = [
   { to: MAX, color: "var(--danger-color)" },
 ];
 
-const rps = (value: number) => Math.round(value).toLocaleString("en-US");
-
 export default function LiveDemo() {
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.gauge-chart.data",
+  });
   const [value, setValue] = useState(640);
   const [running, setRunning] = useState(true);
   const random = useRef(mulberry32(42));
@@ -39,6 +41,11 @@ export default function LiveDemo() {
     return () => window.clearInterval(timer);
   }, [running]);
 
+  const number = new Intl.NumberFormat(i18n.language, {
+    maximumFractionDigits: 0,
+  });
+  const rps = (requests: number) => number.format(requests);
+
   return (
     <div style={{ display: "grid", gap: 12, width: "100%" }}>
       <GaugeChart
@@ -48,10 +55,15 @@ export default function LiveDemo() {
         sweep={180}
         thickness={0.22}
         needle
-        label="Requests / s"
+        label={t("requestsPerSecond")}
         format={rps}
+        renderTooltip={(event) => (
+          <span>
+            {t("requestsPerSecond")} · {rps(event.value)}
+          </span>
+        )}
         height={260}
-        ariaLabel="Requests per second, updated live"
+        ariaLabel={t("liveAria")}
       />
       <div style={{ display: "flex", justifyContent: "center" }}>
         <Button
@@ -59,7 +71,7 @@ export default function LiveDemo() {
           size="small"
           onClick={() => setRunning((r) => !r)}
         >
-          {running ? "Pause updates" : "Resume updates"}
+          {running ? t("pause") : t("resume")}
         </Button>
       </div>
     </div>

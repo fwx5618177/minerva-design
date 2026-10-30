@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Chart,
   type ChartAnnotation,
@@ -15,51 +16,70 @@ function mulberry32(seed: number) {
   };
 }
 
-const annotations: ChartAnnotation[] = [
-  {
-    type: "rect",
-    y0: 80,
-    y1: 150,
-    color: "var(--success-color)",
-    label: "Normal range",
-  },
-  {
-    type: "rect",
-    x0: 70,
-    x1: 82,
-    color: "var(--warning-color)",
-    opacity: 0.12,
-    label: "Deploy",
-    labelPosition: "top-right",
-  },
-  {
-    type: "line",
-    axis: "y",
-    value: 200,
-    color: "var(--danger-color)",
-    dash: [4, 4],
-    label: "SLO 200 ms",
-  },
-];
+// p95 latency (ms) per minute, with an incident during a deploy
+const random = mulberry32(42);
+const latency = Array.from({ length: 120 }, (_, minute) => {
+  const incident = minute >= 70 && minute <= 82 ? 90 : 0;
+  return [minute, 105 + random() * 40 + incident] as const;
+});
 
 export default function AnnotationsDemo() {
-  const series = useMemo((): ChartSeries[] => {
-    const random = mulberry32(42);
-    const data = Array.from({ length: 120 }, (_, minute) => {
-      const incident = minute >= 70 && minute <= 82 ? 90 : 0;
-      return [minute, 105 + random() * 40 + incident] as const;
-    });
-    return [{ name: "p95 latency (ms)", data }];
-  }, []);
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.charts.data",
+  });
+  const locale = i18n.language;
+
+  const ms = useMemo(
+    () =>
+      new Intl.NumberFormat(locale, {
+        style: "unit",
+        unit: "millisecond",
+        maximumFractionDigits: 0,
+      }),
+    [locale],
+  );
+  const series = useMemo(
+    (): ChartSeries[] => [{ name: t("p95"), data: latency }],
+    [t],
+  );
+  const annotations = useMemo(
+    (): ChartAnnotation[] => [
+      {
+        type: "rect",
+        y0: 80,
+        y1: 150,
+        color: "var(--success-color)",
+        label: t("normalRange"),
+      },
+      {
+        type: "rect",
+        x0: 70,
+        x1: 82,
+        color: "var(--warning-color)",
+        opacity: 0.12,
+        label: t("deploy"),
+        labelPosition: "top-right",
+      },
+      {
+        type: "line",
+        axis: "y",
+        value: 200,
+        color: "var(--danger-color)",
+        dash: [4, 4],
+        label: t("slo", { value: ms.format(200) }),
+      },
+    ],
+    [t, ms],
+  );
 
   return (
     <Chart
       series={series}
       annotations={annotations}
-      xAxis={{ title: "Minutes" }}
-      yAxis={{ min: 0, max: 260 }}
+      xAxis={{ title: t("minutes") }}
+      yAxis={{ min: 0, max: 260, format: (value) => ms.format(value) }}
       height={300}
-      ariaLabel="p95 latency with the SLO and the normal range"
+      ariaLabel={t("latencyAria")}
     />
   );
 }

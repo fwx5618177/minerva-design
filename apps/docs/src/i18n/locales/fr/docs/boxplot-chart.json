@@ -1,0 +1,148 @@
+{
+  "title": "Boîte à moustaches",
+  "description": "Médianes, quartiles, moustaches et valeurs extrêmes pour comparer des distributions, à partir d'échantillons bruts ou de statistiques calculées.",
+  "demos": {
+    "services": {
+      "title": "Temps de réponse par service",
+      "description": "groups prend les échantillons bruts de chaque boîte : les quartiles, les moustaches (1,5 écart interquartile) et les valeurs extrêmes sont calculés ; tooltip.labels traduit les lignes de l'infobulle."
+    },
+    "horizontal": {
+      "title": "Horizontal",
+      "description": "Des statistiques déjà calculées (une donnée avec low, q1, y pour la médiane, q3, high et outliers par boîte) en lignes avec orientation: \"horizontal\"."
+    },
+    "grouped": {
+      "title": "Groupé",
+      "description": "boxplotData transforme des échantillons en données de boîtes : une série par période, les boîtes de chaque ville côte à côte."
+    },
+    "temperatures": {
+      "title": "Avec une ligne",
+      "description": "boxplotStats donne les cinq nombres et la moyenne de chaque mois : whisker: \"minmax\" étend les moustaches aux extrêmes et une ligne relie les moyennes."
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "Exemple de base",
+        "description": "Temps de réponse bruts par service : quartiles, moustaches et valeurs aberrantes sont calculés ; les lignes de l'infobulle sont dans la langue de locale."
+      }
+    }
+  },
+  "data": {
+    "services": {
+      "gateway": "Passerelle",
+      "auth": "Authentification",
+      "search": "Recherche",
+      "checkout": "Paiement",
+      "recommendations": "Recommandations",
+      "images": "Images"
+    },
+    "responseTime": "Temps de réponse",
+    "stats": {
+      "max": "Max",
+      "q3": "Q3",
+      "median": "Médiane",
+      "q1": "Q1",
+      "min": "Min",
+      "outliers": "Valeurs extrêmes"
+    },
+    "servicesAria": "Distribution du temps de réponse de chaque service",
+    "salary": "Salaire annuel",
+    "roles": {
+      "junior": "Développeur junior",
+      "developer": "Développeur",
+      "senior": "Développeur senior",
+      "lead": "Responsable technique",
+      "manager": "Responsable d'équipe"
+    },
+    "salariesAria": "Distribution des salaires par poste",
+    "periods": {
+      "weekdays": "En semaine",
+      "weekends": "Le week-end"
+    },
+    "cities": {
+      "paris": "Paris",
+      "lyon": "Lyon",
+      "marseille": "Marseille",
+      "lille": "Lille"
+    },
+    "hours": "Délai de livraison (heures)",
+    "deliveryAria": "Délais de livraison par ville en semaine et le week-end",
+    "dailyHigh": "Maximale du jour",
+    "mean": "Moyenne",
+    "temperaturesAria": "Distribution des températures maximales quotidiennes par mois"
+  },
+  "api": {
+    "BoxPlotChartProps": {
+      "series": "Séries de boîtes : points avec low, q1, y (la médiane), q3, high et outliers (voir boxplotData / boxplotStats)",
+      "groups": "Échantillons bruts, une boîte chacun (une alternative à series)",
+      "name": "Nom de la série construite à partir de groups",
+      "orientation": "\"horizontal\" dispose les boîtes en lignes"
+    },
+    "BoxplotGroup": {
+      "x": "Catégorie (ou position) de la boîte",
+      "values": "Valeurs brutes : leurs quartiles, moustaches et valeurs extrêmes sont calculés",
+      "color": "Couleur de la boîte (toute couleur CSS)"
+    },
+    "BoxplotStats": {
+      "low": "Moustache basse : la plus petite valeur à portée",
+      "q1": "Premier quartile",
+      "median": "Médiane",
+      "q3": "Troisième quartile",
+      "high": "Moustache haute : la plus grande valeur à portée",
+      "outliers": "Valeurs au-delà des moustaches",
+      "min": "Plus petite valeur",
+      "max": "Plus grande valeur",
+      "mean": "Moyenne",
+      "count": "Nombre de valeurs finies"
+    },
+    "BoxplotStatsOptions": {
+      "whisker": "Portée des moustaches au-delà de la boîte, en écarts interquartiles (Tukey : 1,5) ; \"minmax\" les étend aux extrêmes (sans valeurs extrêmes)"
+    },
+    "ChartTooltipLabels": {
+      "open": "Nom de la ligne du cours d'ouverture (chandeliers)",
+      "high": "Nom de la ligne du plus haut (chandeliers)",
+      "low": "Nom de la ligne du plus bas (chandeliers)",
+      "close": "Nom de la ligne de clôture (chandeliers)",
+      "max": "Nom de la ligne de la moustache haute (boîtes)",
+      "q3": "Nom de la ligne du troisième quartile",
+      "median": "Nom de la ligne de la médiane",
+      "q1": "Nom de la ligne du premier quartile",
+      "min": "Nom de la ligne de la moustache basse (boîtes)",
+      "outliers": "Nom du nombre de valeurs extrêmes",
+      "value": "Nom de la valeur des bulles quand la série n'a pas de valueName"
+    }
+  },
+  "wc": {
+    "demos": {
+      "services": {
+        "title": "Temps de réponse par service",
+        "description": "Échantillons bruts par service : quartiles, moustaches de Tukey et valeurs aberrantes calculés par le graphique."
+      },
+      "horizontal": {
+        "title": "Boîtes horizontales, moustaches min-max",
+        "description": "Boîtes disposées en lignes ; moustaches jusqu’au minimum et au maximum (pas de valeurs aberrantes)."
+      }
+    },
+    "minerva-box-plot-chart": {
+      "props": {
+        "valueName": "Nom de la valeur dans l'info-bulle",
+        "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+        "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+        "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+      },
+      "events": {
+        "minerva-hover": "Les points survolés (ou ciblés au clavier) ont changé ; detail : { x, xLabel, items }, null quand rien n'est survolé",
+        "minerva-point-click": "Un point ou une barre a été cliqué ; detail : { x, xLabel, items }",
+        "minerva-plot-click": "La zone de tracé a été cliquée hors des points ; detail : { x, y } en coordonnées de données",
+        "minerva-zoom": "L'utilisateur a zoomé ou s'est déplacé ; detail : { x, y } (les plages visibles)",
+        "minerva-renderer-change": "Le moteur de rendu est prêt, ou s'est replié après une perte du GPU ; detail : { renderer }"
+      },
+      "methods": {
+        "resetZoom": "Affiche toute la plage de données",
+        "getView": "Plage visible, null avant la création du moteur",
+        "setView": "Définit la plage visible",
+        "getRenderer": "Moteur de rendu utilisé (webgpu, webgl2, webgl, canvas2d), null tant qu'il n'est pas prêt"
+      }
+    }
+  }
+}

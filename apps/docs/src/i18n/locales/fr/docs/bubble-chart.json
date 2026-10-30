@@ -1,0 +1,108 @@
+{
+  "title": "Graphique à bulles",
+  "description": "Des nuages de points avec une troisième valeur dessinée par la taille des points : l'aire d'une bulle est proportionnelle à sa valeur.",
+  "demos": {
+    "countries": {
+      "title": "Pays",
+      "description": "Le PIB par habitant face à l'espérance de vie, les bulles dimensionnées par la population et colorées par continent ; valueName et format nomment et formatent la valeur dans l'infobulle."
+    },
+    "portfolio": {
+      "title": "Portefeuille de produits",
+      "description": "Part de marché, croissance du marché et chiffre d'affaires des produits, en quatre quadrants séparés par deux lignes de référence ; showLabels écrit les noms autour des bulles."
+    },
+    "pipeline": {
+      "title": "Pipeline commercial",
+      "description": "Les affaires en cours selon leur ancienneté et leur probabilité de gain, dimensionnées par leur montant ; onPointClick reçoit la valeur de la bulle cliquée."
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "Exemple de base",
+        "description": "PIB par habitant, espérance de vie et population : l'aire des bulles est proportionnelle à la population, écrite avec les unités compactes de la langue dans l'infobulle."
+      }
+    }
+  },
+  "data": {
+    "continents": {
+      "asia": "Asie",
+      "europe": "Europe",
+      "americas": "Amériques",
+      "africa": "Afrique"
+    },
+    "population": "Population",
+    "gdp": "PIB par habitant",
+    "lifeExpectancy": "Espérance de vie (ans)",
+    "countriesAria": "PIB par habitant, espérance de vie et population des pays",
+    "products": "Produits",
+    "revenue": "Chiffre d'affaires",
+    "portfolio": {
+      "cloudStorage": "Stockage cloud",
+      "analytics": "Analytique",
+      "mobileSdk": "SDK mobile",
+      "payments": "Paiements",
+      "desktop": "Application de bureau",
+      "hardware": "Matériel",
+      "consulting": "Conseil"
+    },
+    "marketShare": "Part de marché relative",
+    "marketGrowth": "Croissance du marché",
+    "leader": "Leader",
+    "highGrowth": "Forte croissance",
+    "portfolioAria": "Part de marché, croissance et chiffre d'affaires des produits",
+    "stages": {
+      "qualified": "Qualifiée",
+      "proposal": "Proposition",
+      "negotiation": "Négociation"
+    },
+    "amount": "Montant",
+    "deal": "Affaire n° {{id}}",
+    "daysInPipeline": "Jours dans le pipeline",
+    "winProbability": "Probabilité de gain",
+    "dealStatus": "{{deal}} ({{stage}}) : {{amount}}",
+    "clickBubble": "Cliquez sur une bulle",
+    "pipelineAria": "Affaires en cours par ancienneté, probabilité de gain et montant"
+  },
+  "api": {
+    "BubbleChartProps": {
+      "series": "Séries de points dont la value dimensionne la bulle (aire proportionnelle à la valeur)"
+    },
+    "BubbleOptions": {
+      "minSize": "Diamètre en pixels des plus petites bulles",
+      "maxSize": "Diamètre en pixels de la plus grande valeur",
+      "maxValue": "Valeur dessinée avec maxSize, pour partager une échelle entre graphiques ; la plus grande valeur par défaut"
+    }
+  },
+  "wc": {
+    "demos": {
+      "countries": {
+        "title": "Richesse, santé et population",
+        "description": "PIB par habitant et espérance de vie, bulles dimensionnées par la population (aire proportionnelle)."
+      },
+      "portfolio": {
+        "title": "Risque et rendement d’un portefeuille",
+        "description": "Une série par actif, dimensionnée par sa part ; cliquer sur une bulle indique l’actif."
+      }
+    },
+    "minerva-bubble-chart": {
+      "props": {
+        "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+        "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+        "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+      },
+      "events": {
+        "minerva-hover": "Les points survolés (ou ciblés au clavier) ont changé ; detail : { x, xLabel, items }, null quand rien n'est survolé",
+        "minerva-point-click": "Un point ou une barre a été cliqué ; detail : { x, xLabel, items }",
+        "minerva-plot-click": "La zone de tracé a été cliquée hors des points ; detail : { x, y } en coordonnées de données",
+        "minerva-zoom": "L'utilisateur a zoomé ou s'est déplacé ; detail : { x, y } (les plages visibles)",
+        "minerva-renderer-change": "Le moteur de rendu est prêt, ou s'est replié après une perte du GPU ; detail : { renderer }"
+      },
+      "methods": {
+        "resetZoom": "Affiche toute la plage de données",
+        "getView": "Plage visible, null avant la création du moteur",
+        "setView": "Définit la plage visible",
+        "getRenderer": "Moteur de rendu utilisé (webgpu, webgl2, webgl, canvas2d), null tant qu'il n'est pas prêt"
+      }
+    }
+  }
+}

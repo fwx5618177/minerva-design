@@ -6,6 +6,17 @@ import type { AngularExample } from "./examples";
 import type { AngularIsland, AngularSettings } from "./runtime";
 import styles from "../components/docs.module.scss";
 
+const LANGUAGES: readonly AngularSettings["language"][] = [
+  "en",
+  "zh",
+  "ja",
+  "fr",
+];
+const languageOf = (
+  language: string | undefined,
+): AngularSettings["language"] =>
+  LANGUAGES.find((supported) => supported === language) ?? "en";
+
 export default function AngularDemo({ example }: { example: AngularExample }) {
   const { t } = useTranslation();
   const root = useRef<HTMLDivElement>(null);
@@ -16,7 +27,7 @@ export default function AngularDemo({ example }: { example: AngularExample }) {
     () => ({
       theme: (config.theme ?? "system") as ConfigTheme,
       palette: config.palette ?? null,
-      language: config.locale?.language === "zh" ? "zh" : "en",
+      language: languageOf(config.locale?.language),
     }),
     [config.theme, config.palette, config.locale?.language],
   );

@@ -1,0 +1,104 @@
+{
+  "title": "Histogramme",
+  "description": "La distribution d'échantillons bruts en classes de même largeur, de quelques centaines de valeurs à des millions.",
+  "demos": {
+    "latency": {
+      "title": "Distribution des latences",
+      "description": "Un million de latences classées en quelques millisecondes ; quantiles donne les p50, p95 et p99 exacts, dessinés en lignes de référence x."
+    },
+    "binning": {
+      "title": "Règles de classes",
+      "description": "bins prend un nombre ou une règle : auto (Freedman-Diaconis, robuste aux valeurs extrêmes), sturges (log2 n + 1) ou un nombre fixe ; les deux groupes de niveaux apparaissent avec assez de classes."
+    },
+    "ages": {
+      "title": "Classes fixes",
+      "description": "Un domaine et un nombre donnent des classes rondes, une par tranche de 5 ans ici ; formatBin écrit les bornes dans l'infobulle, les tableaux typés sont classés sans copie."
+    },
+    "comparison": {
+      "title": "Comparer deux échantillons",
+      "description": "histogramSeries construit les barres d'un échantillon : avec le même domaine et le même nombre, deux échantillons partagent leurs classes et se placent côte à côte dans un Chart."
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "Exemple de base",
+        "description": "5 000 âges répartis en 14 classes de 5 ans ; l'infobulle montre l'intervalle et l'effectif de la classe touchée."
+      }
+    }
+  },
+  "data": {
+    "requests": "Requêtes",
+    "latencyAria": "Distribution d'un million de latences avec p50, p95 et p99",
+    "binning": "Règle de classes",
+    "rules": {
+      "auto": "Auto",
+      "sturges": "Sturges",
+      "ten": "10 classes",
+      "forty": "40 classes"
+    },
+    "students": "Étudiants",
+    "score": "Note",
+    "scoresAria": "Distribution des notes de l'examen",
+    "customers": "Clients",
+    "age": "Âge",
+    "agesAria": "Distribution des âges des clients",
+    "control": "Contrôle",
+    "variant": "Nouvel accueil",
+    "minutes": "Durée de session (minutes)",
+    "abAria": "Durées de session des deux groupes d'un test A/B"
+  },
+  "api": {
+    "HistogramChartProps": {
+      "values": "Échantillons bruts (les tableaux typés sont comptés sans copie)",
+      "name": "Nom des effectifs (légende, infobulle)",
+      "color": "Couleur des barres (toute couleur CSS)",
+      "formatBin": "Formate les bornes des classes dans l'infobulle",
+      "series": "Séries supplémentaires dessinées sur les classes (une line de densité par exemple)"
+    },
+    "BinOptions": {
+      "bins": "Nombre de classes, ou la règle qui le choisit : \"auto\" (Freedman-Diaconis, Sturges quand la dispersion est nulle), \"sturges\" ou \"freedman-diaconis\"",
+      "domain": "Plage couverte par les classes (les valeurs hors plage ne sont pas comptées) ; la plage des données par défaut",
+      "nice": "Arrondit la largeur des classes à 1, 2 ou 5 × 10^k et aligne les bornes dessus"
+    },
+    "HistogramBins": {
+      "edges": "Bornes des classes : une de plus que les classes",
+      "counts": "Nombre de valeurs de chaque classe",
+      "width": "Largeur d'une classe",
+      "total": "Nombre de valeurs comptées (finies, dans le domaine)"
+    }
+  },
+  "wc": {
+    "demos": {
+      "latency": {
+        "title": "Distribution des temps de réponse",
+        "description": "5 000 échantillons bruts regroupés par le graphique (Freedman-Diaconis) : la longue traîne apparaît aussitôt."
+      },
+      "binning": {
+        "title": "Règles de regroupement",
+        "description": "Les mêmes âges en classes de Sturges, 10 ou 40 classes : les deux groupes de clients apparaissent avec assez de classes."
+      }
+    },
+    "minerva-histogram-chart": {
+      "props": {
+        "valueName": "Nom de la valeur dans l'info-bulle",
+        "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+        "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+        "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+      },
+      "events": {
+        "minerva-hover": "Les points survolés (ou ciblés au clavier) ont changé ; detail : { x, xLabel, items }, null quand rien n'est survolé",
+        "minerva-point-click": "Un point ou une barre a été cliqué ; detail : { x, xLabel, items }",
+        "minerva-plot-click": "La zone de tracé a été cliquée hors des points ; detail : { x, y } en coordonnées de données",
+        "minerva-zoom": "L'utilisateur a zoomé ou s'est déplacé ; detail : { x, y } (les plages visibles)",
+        "minerva-renderer-change": "Le moteur de rendu est prêt, ou s'est replié après une perte du GPU ; detail : { renderer }"
+      },
+      "methods": {
+        "resetZoom": "Affiche toute la plage de données",
+        "getView": "Plage visible, null avant la création du moteur",
+        "setView": "Définit la plage visible",
+        "getRenderer": "Moteur de rendu utilisé (webgpu, webgl2, webgl, canvas2d), null tant qu'il n'est pas prêt"
+      }
+    }
+  }
+}

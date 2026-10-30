@@ -2498,6 +2498,49 @@
       { "name": "setView", "type": "(view: Partial<ChartView>) => void", "description": "Sets the visible range" }
     ]
   },
+  "AreaChart": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "annotations", "type": "readonly ChartAnnotation[] | undefined", "required": false, "description": "Background areas and reference lines" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the chart" },
+      { "name": "crosshair", "type": "boolean | undefined", "required": false, "description": "Vertical guide line following the finger" },
+      { "name": "curve", "type": "\"step\" | \"linear\" | \"smooth\" | undefined", "required": false, "description": "Shape of the edges (default \"smooth\")" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      {
+        "name": "height",
+        "type": "string | number | undefined",
+        "required": false,
+        "default": "320",
+        "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length (rpx included)"
+      },
+      { "name": "interaction", "type": "boolean | ChartInteractionOptions | undefined", "required": false, "description": "Pinch zoom, pan, double tap reset; `false` makes the chart static" },
+      { "name": "legend", "type": "boolean | ChartLegendOptions | undefined", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "padding", "type": "ChartPadding | undefined", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Series colors (defaults to the theme colors)" },
+      { "name": "percent", "type": "boolean | undefined", "required": false, "default": "false", "description": "Scales the stacks to 100% (implies `stacked`)" },
+      { "name": "series", "type": "readonly ChartSeries[]", "required": true, "description": "Data series (replace the array or a `data` array to update the chart)" },
+      { "name": "stacked", "type": "boolean | undefined", "required": false, "default": "false", "description": "Stacks the areas on top of each other" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions | undefined", "required": false, "description": "Tooltip; `false` disables it (`render` may return a string)" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" },
+      { "name": "xAxis", "type": "ChartAxisOptions | undefined", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions | undefined", "required": false, "description": "Y axis" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "zoom", "type": "[view: ChartView]" }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "getInstance", "type": "() => CanvasChartInstance | null", "description": "The underlying canvas chart, `null` until the canvas is ready" },
+      { "name": "getRenderer", "type": "() => \"canvas2d\" | null", "description": "Always `canvas2d` once the canvas is ready, `null` before" },
+      { "name": "getView", "type": "() => ChartView | null", "description": "Visible range, `null` until the canvas is ready" },
+      { "name": "resetZoom", "type": "() => void", "description": "Shows the whole data range" },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" },
+      { "name": "setView", "type": "(view: Partial<ChartView>) => void", "description": "Sets the visible range" }
+    ]
+  },
   "BarChart": {
     "entry": "minerva-design/uni",
     "props": [
@@ -2518,6 +2561,49 @@
       { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Series colors (defaults to the theme colors)" },
       { "name": "series", "type": "readonly ChartSeries[]", "required": true, "description": "Data series (replace the array or a `data` array to update the chart)" },
       { "name": "stacked", "type": "boolean | undefined", "required": false, "default": "false", "description": "Stacks the bars of every series (otherwise they are grouped)" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions | undefined", "required": false, "description": "Tooltip; `false` disables it (`render` may return a string)" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" },
+      { "name": "xAxis", "type": "ChartAxisOptions | undefined", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions | undefined", "required": false, "description": "Y axis" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "zoom", "type": "[view: ChartView]" }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "getInstance", "type": "() => CanvasChartInstance | null", "description": "The underlying canvas chart, `null` until the canvas is ready" },
+      { "name": "getRenderer", "type": "() => \"canvas2d\" | null", "description": "Always `canvas2d` once the canvas is ready, `null` before" },
+      { "name": "getView", "type": "() => ChartView | null", "description": "Visible range, `null` until the canvas is ready" },
+      { "name": "resetZoom", "type": "() => void", "description": "Shows the whole data range" },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" },
+      { "name": "setView", "type": "(view: Partial<ChartView>) => void", "description": "Sets the visible range" }
+    ]
+  },
+  "HorizontalBarChart": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "annotations", "type": "readonly ChartAnnotation[] | undefined", "required": false, "description": "Background areas and reference lines" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the chart" },
+      { "name": "crosshair", "type": "boolean | undefined", "required": false, "description": "Vertical guide line following the finger" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      {
+        "name": "height",
+        "type": "string | number | undefined",
+        "required": false,
+        "default": "320",
+        "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length (rpx included)"
+      },
+      { "name": "interaction", "type": "boolean | ChartInteractionOptions | undefined", "required": false, "description": "Pinch zoom, pan, double tap reset; `false` makes the chart static" },
+      { "name": "labels", "type": "boolean | undefined", "required": false, "default": "false", "description": "Writes the value at the end of every bar" },
+      { "name": "legend", "type": "boolean | ChartLegendOptions | undefined", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "padding", "type": "ChartPadding | undefined", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Series colors (defaults to the theme colors)" },
+      { "name": "percent", "type": "boolean | undefined", "required": false, "default": "false", "description": "Scales the stacks to 100% (implies `stacked`)" },
+      { "name": "series", "type": "readonly ChartSeries[]", "required": true, "description": "Data series (replace the array or a `data` array to update the chart)" },
+      { "name": "stacked", "type": "boolean | undefined", "required": false, "default": "false", "description": "Stacks the bars of every series" },
       { "name": "tooltip", "type": "boolean | ChartTooltipOptions | undefined", "required": false, "description": "Tooltip; `false` disables it (`render` may return a string)" },
       { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" },
       { "name": "xAxis", "type": "ChartAxisOptions | undefined", "required": false, "description": "X axis" },
@@ -2635,6 +2721,1033 @@
       { "name": "resetZoom", "type": "() => void", "description": "Shows the whole data range" },
       { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" },
       { "name": "setView", "type": "(view: Partial<ChartView>) => void", "description": "Sets the visible range" }
+    ]
+  },
+  "CandlestickChart": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "annotations", "type": "readonly ChartAnnotation[] | undefined", "required": false, "description": "Background areas and reference lines" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the chart" },
+      { "name": "crosshair", "type": "boolean | undefined", "required": false, "description": "Vertical guide line following the finger" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      {
+        "name": "height",
+        "type": "string | number | undefined",
+        "required": false,
+        "default": "320",
+        "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length (rpx included)"
+      },
+      { "name": "interaction", "type": "boolean | ChartInteractionOptions | undefined", "required": false, "description": "Pinch zoom, pan, double tap reset; `false` makes the chart static" },
+      { "name": "legend", "type": "boolean | ChartLegendOptions | undefined", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "padding", "type": "ChartPadding | undefined", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Series colors (defaults to the theme colors)" },
+      { "name": "series", "type": "readonly ChartSeries[]", "required": true, "description": "Data series (replace the array or a `data` array to update the chart)" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions | undefined", "required": false, "description": "Tooltip; `false` disables it (`render` may return a string)" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" },
+      { "name": "xAxis", "type": "ChartAxisOptions | undefined", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions | undefined", "required": false, "description": "Y axis" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "zoom", "type": "[view: ChartView]" }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "getInstance", "type": "() => CanvasChartInstance | null", "description": "The underlying canvas chart, `null` until the canvas is ready" },
+      { "name": "getRenderer", "type": "() => \"canvas2d\" | null", "description": "Always `canvas2d` once the canvas is ready, `null` before" },
+      { "name": "getView", "type": "() => ChartView | null", "description": "Visible range, `null` until the canvas is ready" },
+      { "name": "resetZoom", "type": "() => void", "description": "Shows the whole data range" },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" },
+      { "name": "setView", "type": "(view: Partial<ChartView>) => void", "description": "Sets the visible range" }
+    ]
+  },
+  "HeatmapChart": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "annotations", "type": "readonly ChartAnnotation[] | undefined", "required": false, "description": "Background areas and reference lines" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the chart" },
+      { "name": "colorScale", "type": "readonly string[] | undefined", "required": false, "description": "Colors from the lowest to the highest value" },
+      { "name": "crosshair", "type": "boolean | undefined", "required": false, "description": "Vertical guide line following the finger" },
+      { "name": "data", "type": "readonly HeatmapCell[]", "required": true, "description": "Cells: a column, a row and a value" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      { "name": "format", "type": "((value: number) => string) | undefined", "required": false, "description": "Formats the values in the tooltip" },
+      {
+        "name": "height",
+        "type": "string | number | undefined",
+        "required": false,
+        "default": "320",
+        "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length (rpx included)"
+      },
+      { "name": "interaction", "type": "boolean | ChartInteractionOptions | undefined", "required": false, "description": "Pinch zoom, pan, double tap reset; `false` makes the chart static" },
+      { "name": "legend", "type": "boolean | ChartLegendOptions | undefined", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "name", "type": "string | undefined", "required": false, "description": "Name of the value in the tooltip" },
+      { "name": "padding", "type": "ChartPadding | undefined", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Series colors (defaults to the theme colors)" },
+      { "name": "radius", "type": "number | undefined", "required": false, "description": "Corner radius of the cells, in pixels" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions | undefined", "required": false, "description": "Tooltip; `false` disables it (`render` may return a string)" },
+      { "name": "valueRange", "type": "readonly [number, number] | undefined", "required": false, "description": "Values at the ends of the color scale (default the data range)" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" },
+      { "name": "xAxis", "type": "ChartAxisOptions | undefined", "required": false, "description": "X axis" },
+      { "name": "xCategories", "type": "readonly string[] | undefined", "required": false, "description": "Column names in order (collected from the data when omitted)" },
+      { "name": "yAxis", "type": "ChartAxisOptions | undefined", "required": false, "description": "Y axis" },
+      { "name": "yCategories", "type": "readonly string[] | undefined", "required": false, "description": "Row names from bottom to top (collected from the data when omitted)" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "zoom", "type": "[view: ChartView]" }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "getInstance", "type": "() => CanvasChartInstance | null", "description": "The underlying canvas chart, `null` until the canvas is ready" },
+      { "name": "getRenderer", "type": "() => \"canvas2d\" | null", "description": "Always `canvas2d` once the canvas is ready, `null` before" },
+      { "name": "getView", "type": "() => ChartView | null", "description": "Visible range, `null` until the canvas is ready" },
+      { "name": "resetZoom", "type": "() => void", "description": "Shows the whole data range" },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" },
+      { "name": "setView", "type": "(view: Partial<ChartView>) => void", "description": "Sets the visible range" }
+    ]
+  },
+  "Sparkline": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "color", "type": "string | undefined", "required": false, "description": "Color (any CSS color)" },
+      { "name": "curve", "type": "\"step\" | \"linear\" | \"smooth\" | undefined", "required": false, "description": "Shape of the line (default \"smooth\")" },
+      { "name": "data", "type": "ChartSeriesData", "required": true, "description": "Values (or `[x, y]` pairs)" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false },
+      { "name": "format", "type": "((value: number) => string) | undefined", "required": false, "description": "Formats the value in the tooltip" },
+      { "name": "height", "type": "string | number | undefined", "required": false, "default": "48", "description": "Height of the sparkline; numbers are pixels" },
+      { "name": "name", "type": "string | undefined", "required": false, "description": "Name shown in the tooltip" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false },
+      { "name": "reference", "type": "number | undefined", "required": false, "description": "Draws a reference line at this value" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions | undefined", "required": false },
+      { "name": "type", "type": "\"bar\" | \"line\" | \"area\" | undefined", "required": false, "description": "How the values are drawn (default \"line\")" },
+      { "name": "width", "type": "string | number | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "zoom", "type": "[view: ChartView]" }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "getInstance", "type": "() => CanvasChartInstance | null", "description": "The underlying canvas chart, `null` until the canvas is ready" },
+      { "name": "getRenderer", "type": "() => \"canvas2d\" | null", "description": "Always `canvas2d` once the canvas is ready, `null` before" },
+      { "name": "getView", "type": "() => ChartView | null", "description": "Visible range, `null` until the canvas is ready" },
+      { "name": "resetZoom", "type": "() => void", "description": "Shows the whole data range" },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" },
+      { "name": "setView", "type": "(view: Partial<ChartView>) => void", "description": "Sets the visible range" }
+    ]
+  },
+  "RangeAreaChart": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "annotations", "type": "readonly ChartAnnotation[] | undefined", "required": false, "description": "Background areas and reference lines" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the chart" },
+      { "name": "crosshair", "type": "boolean | undefined", "required": false, "description": "Vertical guide line following the finger" },
+      { "name": "curve", "type": "\"step\" | \"linear\" | \"smooth\" | undefined", "required": false, "description": "Shape of the edges (default \"smooth\")" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      {
+        "name": "height",
+        "type": "string | number | undefined",
+        "required": false,
+        "default": "320",
+        "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length (rpx included)"
+      },
+      { "name": "interaction", "type": "boolean | ChartInteractionOptions | undefined", "required": false, "description": "Pinch zoom, pan, double tap reset; `false` makes the chart static" },
+      { "name": "legend", "type": "boolean | ChartLegendOptions | undefined", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "padding", "type": "ChartPadding | undefined", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Series colors (defaults to the theme colors)" },
+      { "name": "series", "type": "readonly ChartSeries[]", "required": true, "description": "Data series (replace the array or a `data` array to update the chart)" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions | undefined", "required": false, "description": "Tooltip; `false` disables it (`render` may return a string)" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" },
+      { "name": "xAxis", "type": "ChartAxisOptions | undefined", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions | undefined", "required": false, "description": "Y axis" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "zoom", "type": "[view: ChartView]" }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "getInstance", "type": "() => CanvasChartInstance | null", "description": "The underlying canvas chart, `null` until the canvas is ready" },
+      { "name": "getRenderer", "type": "() => \"canvas2d\" | null", "description": "Always `canvas2d` once the canvas is ready, `null` before" },
+      { "name": "getView", "type": "() => ChartView | null", "description": "Visible range, `null` until the canvas is ready" },
+      { "name": "resetZoom", "type": "() => void", "description": "Shows the whole data range" },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" },
+      { "name": "setView", "type": "(view: Partial<ChartView>) => void", "description": "Sets the visible range" }
+    ]
+  },
+  "MixedChart": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "annotations", "type": "readonly ChartAnnotation[] | undefined", "required": false, "description": "Background areas and reference lines" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the chart" },
+      { "name": "crosshair", "type": "boolean | undefined", "required": false, "description": "Vertical guide line following the finger" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      {
+        "name": "height",
+        "type": "string | number | undefined",
+        "required": false,
+        "default": "320",
+        "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length (rpx included)"
+      },
+      { "name": "interaction", "type": "boolean | ChartInteractionOptions | undefined", "required": false, "description": "Pinch zoom, pan, double tap reset; `false` makes the chart static" },
+      { "name": "legend", "type": "boolean | ChartLegendOptions | undefined", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "orientation", "type": "ChartOrientation | undefined", "required": false, "description": "`horizontal` puts the categories down the left side (default \"vertical\")" },
+      { "name": "padding", "type": "ChartPadding | undefined", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Series colors (defaults to the theme colors)" },
+      { "name": "series", "type": "readonly ChartSeries[]", "required": true, "description": "Data series (replace the array or a `data` array to update the chart)" },
+      { "name": "stackMode", "type": "\"percent\" | \"normal\" | undefined", "required": false, "description": "`percent` scales every stack to 100% at each x (default \"normal\")" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions | undefined", "required": false, "description": "Tooltip; `false` disables it (`render` may return a string)" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" },
+      { "name": "xAxis", "type": "ChartAxisOptions | undefined", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions | undefined", "required": false, "description": "Y axis" },
+      { "name": "yAxis2", "type": "ChartAxisOptions | undefined", "required": false, "description": "Right value axis of the series with `yAxis: \"right\"`" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "zoom", "type": "[view: ChartView]" }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "getInstance", "type": "() => CanvasChartInstance | null", "description": "The underlying canvas chart, `null` until the canvas is ready" },
+      { "name": "getRenderer", "type": "() => \"canvas2d\" | null", "description": "Always `canvas2d` once the canvas is ready, `null` before" },
+      { "name": "getView", "type": "() => ChartView | null", "description": "Visible range, `null` until the canvas is ready" },
+      { "name": "resetZoom", "type": "() => void", "description": "Shows the whole data range" },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" },
+      { "name": "setView", "type": "(view: Partial<ChartView>) => void", "description": "Sets the visible range" }
+    ]
+  },
+  "BubbleChart": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "annotations", "type": "readonly ChartAnnotation[] | undefined", "required": false, "description": "Background areas and reference lines" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the chart" },
+      { "name": "crosshair", "type": "boolean | undefined", "required": false, "description": "Vertical guide line following the finger" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      {
+        "name": "height",
+        "type": "string | number | undefined",
+        "required": false,
+        "default": "320",
+        "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length (rpx included)"
+      },
+      { "name": "interaction", "type": "boolean | ChartInteractionOptions | undefined", "required": false, "description": "Pinch zoom, pan, double tap reset; `false` makes the chart static" },
+      { "name": "legend", "type": "boolean | ChartLegendOptions | undefined", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "maxSize", "type": "number | undefined", "required": false, "description": "Diameter in pixels of the largest bubbles (default 48)" },
+      { "name": "maxValue", "type": "number | undefined", "required": false, "description": "Value drawn at `maxSize` (default the largest value)" },
+      { "name": "minSize", "type": "number | undefined", "required": false, "description": "Diameter in pixels of the smallest bubbles (default 6)" },
+      { "name": "padding", "type": "ChartPadding | undefined", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Series colors (defaults to the theme colors)" },
+      { "name": "series", "type": "readonly ChartSeries[]", "required": true, "description": "Data series (replace the array or a `data` array to update the chart)" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions | undefined", "required": false, "description": "Tooltip; `false` disables it (`render` may return a string)" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" },
+      { "name": "xAxis", "type": "ChartAxisOptions | undefined", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions | undefined", "required": false, "description": "Y axis" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "zoom", "type": "[view: ChartView]" }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "getInstance", "type": "() => CanvasChartInstance | null", "description": "The underlying canvas chart, `null` until the canvas is ready" },
+      { "name": "getRenderer", "type": "() => \"canvas2d\" | null", "description": "Always `canvas2d` once the canvas is ready, `null` before" },
+      { "name": "getView", "type": "() => ChartView | null", "description": "Visible range, `null` until the canvas is ready" },
+      { "name": "resetZoom", "type": "() => void", "description": "Shows the whole data range" },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" },
+      { "name": "setView", "type": "(view: Partial<ChartView>) => void", "description": "Sets the visible range" }
+    ]
+  },
+  "HistogramChart": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "annotations", "type": "readonly ChartAnnotation[] | undefined", "required": false, "description": "Background areas and reference lines" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the chart" },
+      { "name": "bins", "type": "HistogramBinning | undefined", "required": false, "description": "Number of bins or the rule choosing it (default \"auto\")" },
+      { "name": "color", "type": "string | undefined", "required": false, "description": "Bar color" },
+      { "name": "crosshair", "type": "boolean | undefined", "required": false, "description": "Vertical guide line following the finger" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      { "name": "domain", "type": "readonly [number, number] | undefined", "required": false, "description": "Range binned (default the data range)" },
+      { "name": "formatBin", "type": "((value: number) => string) | undefined", "required": false, "description": "Formats the edges of the bins in the tooltip" },
+      {
+        "name": "height",
+        "type": "string | number | undefined",
+        "required": false,
+        "default": "320",
+        "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length (rpx included)"
+      },
+      { "name": "interaction", "type": "boolean | ChartInteractionOptions | undefined", "required": false, "description": "Pinch zoom, pan, double tap reset; `false` makes the chart static" },
+      { "name": "legend", "type": "boolean | ChartLegendOptions | undefined", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "name", "type": "string | undefined", "required": false, "description": "Name of the counts (default \"Count\")" },
+      { "name": "nice", "type": "boolean | undefined", "required": false, "description": "Rounds the bin edges (default `true`)" },
+      { "name": "padding", "type": "ChartPadding | undefined", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Series colors (defaults to the theme colors)" },
+      { "name": "series", "type": "readonly ChartSeries[] | undefined", "required": false, "description": "More series drawn over the bins (e.g. a density `line`)" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions | undefined", "required": false, "description": "Tooltip; `false` disables it (`render` may return a string)" },
+      { "name": "values", "type": "ArrayLike<number>", "required": true, "description": "Raw samples" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" },
+      { "name": "xAxis", "type": "ChartAxisOptions | undefined", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions | undefined", "required": false, "description": "Y axis" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "zoom", "type": "[view: ChartView]" }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "getInstance", "type": "() => CanvasChartInstance | null", "description": "The underlying canvas chart, `null` until the canvas is ready" },
+      { "name": "getRenderer", "type": "() => \"canvas2d\" | null", "description": "Always `canvas2d` once the canvas is ready, `null` before" },
+      { "name": "getView", "type": "() => ChartView | null", "description": "Visible range, `null` until the canvas is ready" },
+      { "name": "resetZoom", "type": "() => void", "description": "Shows the whole data range" },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" },
+      { "name": "setView", "type": "(view: Partial<ChartView>) => void", "description": "Sets the visible range" }
+    ]
+  },
+  "BoxPlotChart": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "annotations", "type": "readonly ChartAnnotation[] | undefined", "required": false, "description": "Background areas and reference lines" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the chart" },
+      { "name": "crosshair", "type": "boolean | undefined", "required": false, "description": "Vertical guide line following the finger" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      { "name": "groups", "type": "readonly BoxplotGroup[] | undefined", "required": false, "description": "Raw samples, one box each (an alternative to `series`)" },
+      {
+        "name": "height",
+        "type": "string | number | undefined",
+        "required": false,
+        "default": "320",
+        "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length (rpx included)"
+      },
+      { "name": "interaction", "type": "boolean | ChartInteractionOptions | undefined", "required": false, "description": "Pinch zoom, pan, double tap reset; `false` makes the chart static" },
+      { "name": "legend", "type": "boolean | ChartLegendOptions | undefined", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "name", "type": "string | undefined", "required": false, "description": "Name of the series built from `groups` (default \"Values\")" },
+      { "name": "orientation", "type": "ChartOrientation | undefined", "required": false, "description": "`horizontal` lays the boxes out in rows (default \"vertical\")" },
+      { "name": "padding", "type": "ChartPadding | undefined", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Series colors (defaults to the theme colors)" },
+      { "name": "series", "type": "readonly ChartSeries[] | undefined", "required": false, "description": "Series of box plots (computed statistics)" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions | undefined", "required": false, "description": "Tooltip; `false` disables it (`render` may return a string)" },
+      { "name": "whisker", "type": "number | \"minmax\" | undefined", "required": false, "description": "Reach of the whiskers in interquartile ranges, or \"minmax\" (default 1.5)" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" },
+      { "name": "xAxis", "type": "ChartAxisOptions | undefined", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions | undefined", "required": false, "description": "Y axis" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "zoom", "type": "[view: ChartView]" }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "getInstance", "type": "() => CanvasChartInstance | null", "description": "The underlying canvas chart, `null` until the canvas is ready" },
+      { "name": "getRenderer", "type": "() => \"canvas2d\" | null", "description": "Always `canvas2d` once the canvas is ready, `null` before" },
+      { "name": "getView", "type": "() => ChartView | null", "description": "Visible range, `null` until the canvas is ready" },
+      { "name": "resetZoom", "type": "() => void", "description": "Shows the whole data range" },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" },
+      { "name": "setView", "type": "(view: Partial<ChartView>) => void", "description": "Sets the visible range" }
+    ]
+  },
+  "WaterfallChart": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "annotations", "type": "readonly ChartAnnotation[] | undefined", "required": false, "description": "Background areas and reference lines" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the chart" },
+      { "name": "crosshair", "type": "boolean | undefined", "required": false, "description": "Vertical guide line following the finger" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      { "name": "downColor", "type": "string | undefined", "required": false, "description": "Color of the decreases" },
+      { "name": "format", "type": "((value: number) => string) | undefined", "required": false, "description": "Formats the values (labels, tooltip)" },
+      {
+        "name": "height",
+        "type": "string | number | undefined",
+        "required": false,
+        "default": "320",
+        "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length (rpx included)"
+      },
+      { "name": "interaction", "type": "boolean | ChartInteractionOptions | undefined", "required": false, "description": "Pinch zoom, pan, double tap reset; `false` makes the chart static" },
+      { "name": "labels", "type": "boolean | undefined", "required": false, "default": "true", "description": "Writes the change (or the total) at the end of every bar" },
+      { "name": "legend", "type": "boolean | ChartLegendOptions | undefined", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "locale", "type": "string | undefined", "required": false, "description": "Locale of the default name" },
+      { "name": "name", "type": "string | undefined", "required": false, "description": "Name of the series (tooltip)" },
+      { "name": "orientation", "type": "ChartOrientation | undefined", "required": false, "description": "`horizontal` lays the steps out in rows (default \"vertical\")" },
+      { "name": "padding", "type": "ChartPadding | undefined", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Series colors (defaults to the theme colors)" },
+      { "name": "start", "type": "number | undefined", "required": false, "description": "Value the first change starts from (default 0)" },
+      { "name": "steps", "type": "readonly WaterfallStep[]", "required": true, "description": "Changes, subtotals and totals, in order" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions | undefined", "required": false, "description": "Tooltip; `false` disables it (`render` may return a string)" },
+      { "name": "totalColor", "type": "string | undefined", "required": false, "description": "Color of the totals and subtotals" },
+      { "name": "upColor", "type": "string | undefined", "required": false, "description": "Color of the increases" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" },
+      { "name": "xAxis", "type": "ChartAxisOptions | undefined", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions | undefined", "required": false, "description": "Y axis" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "zoom", "type": "[view: ChartView]" }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "getInstance", "type": "() => CanvasChartInstance | null", "description": "The underlying canvas chart, `null` until the canvas is ready" },
+      { "name": "getRenderer", "type": "() => \"canvas2d\" | null", "description": "Always `canvas2d` once the canvas is ready, `null` before" },
+      { "name": "getView", "type": "() => ChartView | null", "description": "Visible range, `null` until the canvas is ready" },
+      { "name": "resetZoom", "type": "() => void", "description": "Shows the whole data range" },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" },
+      { "name": "setView", "type": "(view: Partial<ChartView>) => void", "description": "Sets the visible range" }
+    ]
+  },
+  "GanttChart": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "annotations", "type": "readonly ChartAnnotation[] | undefined", "required": false, "description": "Background areas and reference lines" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the chart" },
+      { "name": "colors", "type": "readonly string[] | undefined", "required": false, "description": "Colors of the groups in order of appearance" },
+      { "name": "crosshair", "type": "boolean | undefined", "required": false, "description": "Vertical guide line following the finger" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      { "name": "formatProgress", "type": "((share: number) => string) | undefined", "required": false, "description": "Formats the progress shares (tooltip)" },
+      {
+        "name": "height",
+        "type": "string | number | undefined",
+        "required": false,
+        "default": "320",
+        "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length (rpx included)"
+      },
+      { "name": "interaction", "type": "boolean | ChartInteractionOptions | undefined", "required": false, "description": "Pinch zoom, pan, double tap reset; `false` makes the chart static" },
+      { "name": "legend", "type": "boolean | ChartLegendOptions | undefined", "required": false, "description": "Legend; shown by default when several series have a name" },
+      { "name": "locale", "type": "string | undefined", "required": false, "description": "Locale of the default names and of the progress shares" },
+      { "name": "milestoneName", "type": "string | undefined", "required": false, "description": "Name of the milestones" },
+      { "name": "padding", "type": "ChartPadding | undefined", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Series colors (defaults to the theme colors)" },
+      { "name": "progressName", "type": "string | undefined", "required": false, "description": "Name of the progress bars" },
+      { "name": "taskName", "type": "string | undefined", "required": false, "description": "Name of the tasks without a group" },
+      { "name": "tasks", "type": "readonly GanttTask[]", "required": true, "description": "Tasks and milestones, from top to bottom" },
+      { "name": "today", "type": "number | boolean | Date | undefined", "required": false, "default": "false", "description": "Draws a line at this date (`true`: now)" },
+      { "name": "todayLabel", "type": "string | undefined", "required": false, "description": "Label of the today line" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions | undefined", "required": false, "description": "Tooltip; `false` disables it (`render` may return a string)" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" },
+      { "name": "xAxis", "type": "ChartAxisOptions | undefined", "required": false, "description": "X axis" },
+      { "name": "yAxis", "type": "ChartAxisOptions | undefined", "required": false, "description": "Y axis" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
+      { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
+      { "name": "zoom", "type": "[view: ChartView]" }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "getInstance", "type": "() => CanvasChartInstance | null", "description": "The underlying canvas chart, `null` until the canvas is ready" },
+      { "name": "getRenderer", "type": "() => \"canvas2d\" | null", "description": "Always `canvas2d` once the canvas is ready, `null` before" },
+      { "name": "getView", "type": "() => ChartView | null", "description": "Visible range, `null` until the canvas is ready" },
+      { "name": "resetZoom", "type": "() => void", "description": "Shows the whole data range" },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" },
+      { "name": "setView", "type": "(view: Partial<ChartView>) => void", "description": "Sets the visible range" }
+    ]
+  },
+  "PieChart": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "animation", "type": "boolean | undefined", "required": false, "description": "Entry and update animations (default `true`)" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")" },
+      { "name": "centerLabel", "type": "string | undefined", "required": false, "description": "Small text under `centerValue`" },
+      { "name": "centerValue", "type": "string | undefined", "required": false, "description": "Big text in the hole of a donut" },
+      { "name": "cornerRadius", "type": "number | undefined", "required": false, "description": "Corner radius of the slices, in pixels" },
+      { "name": "data", "type": "readonly ShapeDatum[]", "required": true, "description": "Slices: a name, a value and an optional color" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      { "name": "format", "type": "((value: number) => string) | undefined", "required": false, "description": "Formats the values of the labels and the tooltip (compact numbers by default)" },
+      {
+        "name": "height",
+        "type": "string | number | undefined",
+        "required": false,
+        "default": "320",
+        "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length (rpx included)"
+      },
+      { "name": "hidden", "type": "readonly number[] | undefined", "required": false, "description": "Hidden entries by index (controlled: legend taps then only emit `toggle`)" },
+      { "name": "innerRadius", "type": "number | undefined", "required": false, "description": "Inner radius as a fraction of the outer radius: 0 = pie (DonutChart: 0.62)" },
+      { "name": "labelContent", "type": "readonly (\"value\" | \"name\" | \"percent\")[] | undefined", "required": false, "description": "What a label shows: name, value, percent" },
+      { "name": "labels", "type": "\"none\" | \"outside\" | \"inside\" | undefined", "required": false, "description": "Slice labels: outside with leader lines, inside the slices, or none" },
+      { "name": "legend", "type": "boolean | ShapeLegendOptions | undefined", "required": false, "description": "Legend; tapping an item hides / shows its slice, stage or series" },
+      { "name": "padAngle", "type": "number | undefined", "required": false, "description": "Gap between the slices, in pixels" },
+      { "name": "padding", "type": "ChartPadding | undefined", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` tokens)" },
+      {
+        "name": "percentFormat",
+        "type": "((share: number) => string) | undefined",
+        "required": false,
+        "description": "Formats the shares (0-1) of the labels and the tooltip (one decimal by default)"
+      },
+      { "name": "rose", "type": "boolean | undefined", "required": false, "description": "Nightingale rose: the radius shows the value" },
+      { "name": "startAngle", "type": "number | undefined", "required": false, "description": "Angle of the first slice, degrees clockwise from 12 o'clock" },
+      { "name": "tooltip", "type": "boolean | ShapeTooltipOptions | undefined", "required": false, "description": "Tooltip drawn on the canvas; `false` disables it (`render` may return a string)" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" }
+    ],
+    "events": [
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": [],
+    "methods": [
+      {
+        "name": "getInstance",
+        "type": "() => CanvasShapeChartInstance | null",
+        "description": "The underlying canvas chart (`toggle`, `getHidden`, `clearHover`...), `null` until the canvas is ready"
+      },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" }
+    ]
+  },
+  "DonutChart": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "animation", "type": "boolean | undefined", "required": false, "description": "Entry and update animations (default `true`)" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")" },
+      { "name": "centerLabel", "type": "string | undefined", "required": false, "description": "Small text under `centerValue`" },
+      { "name": "centerValue", "type": "string | undefined", "required": false, "description": "Big text in the hole of a donut" },
+      { "name": "cornerRadius", "type": "number | undefined", "required": false, "description": "Corner radius of the slices, in pixels" },
+      { "name": "data", "type": "readonly ShapeDatum[]", "required": true, "description": "Slices: a name, a value and an optional color" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      { "name": "format", "type": "((value: number) => string) | undefined", "required": false, "description": "Formats the values of the labels and the tooltip (compact numbers by default)" },
+      {
+        "name": "height",
+        "type": "string | number | undefined",
+        "required": false,
+        "default": "320",
+        "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length (rpx included)"
+      },
+      { "name": "hidden", "type": "readonly number[] | undefined", "required": false, "description": "Hidden entries by index (controlled: legend taps then only emit `toggle`)" },
+      { "name": "innerRadius", "type": "number | undefined", "required": false, "description": "Inner radius as a fraction of the outer radius: 0 = pie (DonutChart: 0.62)" },
+      { "name": "labelContent", "type": "readonly (\"value\" | \"name\" | \"percent\")[] | undefined", "required": false, "description": "What a label shows: name, value, percent" },
+      { "name": "labels", "type": "\"none\" | \"outside\" | \"inside\" | undefined", "required": false, "description": "Slice labels: outside with leader lines, inside the slices, or none" },
+      { "name": "legend", "type": "boolean | ShapeLegendOptions | undefined", "required": false, "description": "Legend; tapping an item hides / shows its slice, stage or series" },
+      { "name": "padAngle", "type": "number | undefined", "required": false, "description": "Gap between the slices, in pixels" },
+      { "name": "padding", "type": "ChartPadding | undefined", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` tokens)" },
+      {
+        "name": "percentFormat",
+        "type": "((share: number) => string) | undefined",
+        "required": false,
+        "description": "Formats the shares (0-1) of the labels and the tooltip (one decimal by default)"
+      },
+      { "name": "rose", "type": "boolean | undefined", "required": false, "description": "Nightingale rose: the radius shows the value" },
+      { "name": "startAngle", "type": "number | undefined", "required": false, "description": "Angle of the first slice, degrees clockwise from 12 o'clock" },
+      { "name": "tooltip", "type": "boolean | ShapeTooltipOptions | undefined", "required": false, "description": "Tooltip drawn on the canvas; `false` disables it (`render` may return a string)" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" }
+    ],
+    "events": [
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": [],
+    "methods": [
+      {
+        "name": "getInstance",
+        "type": "() => CanvasShapeChartInstance | null",
+        "description": "The underlying canvas chart (`toggle`, `getHidden`, `clearHover`...), `null` until the canvas is ready"
+      },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" }
+    ]
+  },
+  "RadarChart": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "animation", "type": "boolean | undefined", "required": false, "description": "Entry and update animations (default `true`)" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      { "name": "dots", "type": "boolean | undefined", "required": false, "description": "Dots on the vertices (default `true`)" },
+      { "name": "format", "type": "((value: number) => string) | undefined", "required": false, "description": "Formats the values of the labels and the tooltip (compact numbers by default)" },
+      {
+        "name": "height",
+        "type": "string | number | undefined",
+        "required": false,
+        "default": "320",
+        "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length (rpx included)"
+      },
+      { "name": "hidden", "type": "readonly number[] | undefined", "required": false, "description": "Hidden entries by index (controlled: legend taps then only emit `toggle`)" },
+      { "name": "indicators", "type": "readonly RadarIndicator[]", "required": true, "description": "Axes of the chart, clockwise from 12 o'clock" },
+      { "name": "legend", "type": "boolean | ShapeLegendOptions | undefined", "required": false, "description": "Legend; tapping an item hides / shows its slice, stage or series" },
+      { "name": "levels", "type": "number | undefined", "required": false, "description": "Number of grid rings (default 4)" },
+      { "name": "padding", "type": "ChartPadding | undefined", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` tokens)" },
+      {
+        "name": "percentFormat",
+        "type": "((share: number) => string) | undefined",
+        "required": false,
+        "description": "Formats the shares (0-1) of the labels and the tooltip (one decimal by default)"
+      },
+      { "name": "series", "type": "readonly RadarSeries[]", "required": true, "description": "Polygons: one value per indicator" },
+      { "name": "shape", "type": "\"circle\" | \"polygon\" | undefined", "required": false, "description": "Grid shape (default \"polygon\")" },
+      { "name": "tooltip", "type": "boolean | ShapeTooltipOptions | undefined", "required": false, "description": "Tooltip drawn on the canvas; `false` disables it (`render` may return a string)" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" }
+    ],
+    "events": [
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": [],
+    "methods": [
+      {
+        "name": "getInstance",
+        "type": "() => CanvasShapeChartInstance | null",
+        "description": "The underlying canvas chart (`toggle`, `getHidden`, `clearHover`...), `null` until the canvas is ready"
+      },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" }
+    ]
+  },
+  "GaugeChart": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "animation", "type": "boolean | undefined", "required": false, "description": "Entry and update animations (default `true`)" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")" },
+      { "name": "bands", "type": "readonly GaugeBand[] | undefined", "required": false, "description": "Colored ranges of the track" },
+      { "name": "color", "type": "string | undefined", "required": false, "description": "Color of the value arc (when there are no bands)" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      { "name": "format", "type": "((value: number) => string) | undefined", "required": false, "description": "Formats the values of the labels and the tooltip (compact numbers by default)" },
+      { "name": "height", "type": "string | number | undefined", "required": false, "default": "240", "description": "Height of the chart; numbers are pixels, strings any CSS length (rpx included)" },
+      { "name": "hidden", "type": "readonly number[] | undefined", "required": false, "description": "Hidden entries by index (controlled: legend taps then only emit `toggle`)" },
+      { "name": "label", "type": "string | undefined", "required": false, "description": "Caption under the value" },
+      { "name": "legend", "type": "boolean | ShapeLegendOptions | undefined", "required": false, "description": "Legend; tapping an item hides / shows its slice, stage or series" },
+      { "name": "max", "type": "number | undefined", "required": false, "description": "Value at the end of the arc (default 100)" },
+      { "name": "min", "type": "number | undefined", "required": false, "description": "Value at the start of the arc (default 0)" },
+      { "name": "needle", "type": "boolean | undefined", "required": false, "description": "Draws a needle (default `false`)" },
+      { "name": "padding", "type": "ChartPadding | undefined", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` tokens)" },
+      {
+        "name": "percentFormat",
+        "type": "((share: number) => string) | undefined",
+        "required": false,
+        "description": "Formats the shares (0-1) of the labels and the tooltip (one decimal by default)"
+      },
+      { "name": "sweep", "type": "number | undefined", "required": false, "description": "Total angle of the arc, degrees (default 240)" },
+      { "name": "thickness", "type": "number | undefined", "required": false, "description": "Thickness of the arc as a fraction of the radius (default 0.16)" },
+      { "name": "ticks", "type": "boolean | undefined", "required": false, "description": "Tick labels at the ends and at the band bounds (default `true`)" },
+      { "name": "tooltip", "type": "boolean | ShapeTooltipOptions | undefined", "required": false, "description": "Tooltip drawn on the canvas; `false` disables it (`render` may return a string)" },
+      { "name": "value", "type": "number", "required": true, "description": "Value shown by the arc" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" }
+    ],
+    "events": [
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": [],
+    "methods": [
+      {
+        "name": "getInstance",
+        "type": "() => CanvasShapeChartInstance | null",
+        "description": "The underlying canvas chart (`toggle`, `getHidden`, `clearHover`...), `null` until the canvas is ready"
+      },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" }
+    ]
+  },
+  "FunnelChart": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "animation", "type": "boolean | undefined", "required": false, "description": "Entry and update animations (default `true`)" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")" },
+      { "name": "conversion", "type": "boolean | undefined", "required": false, "description": "Shows the conversion rate from the previous stage (default `true`)" },
+      { "name": "data", "type": "readonly ShapeDatum[]", "required": true, "description": "Stages: a name, a value and an optional color" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      { "name": "format", "type": "((value: number) => string) | undefined", "required": false, "description": "Formats the values of the labels and the tooltip (compact numbers by default)" },
+      { "name": "gap", "type": "number | undefined", "required": false, "description": "Vertical gap between the stages, in pixels (default 4)" },
+      {
+        "name": "height",
+        "type": "string | number | undefined",
+        "required": false,
+        "default": "320",
+        "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length (rpx included)"
+      },
+      { "name": "hidden", "type": "readonly number[] | undefined", "required": false, "description": "Hidden entries by index (controlled: legend taps then only emit `toggle`)" },
+      { "name": "legend", "type": "boolean | ShapeLegendOptions | undefined", "required": false, "description": "Legend; tapping an item hides / shows its slice, stage or series" },
+      { "name": "padding", "type": "ChartPadding | undefined", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` tokens)" },
+      {
+        "name": "percentFormat",
+        "type": "((share: number) => string) | undefined",
+        "required": false,
+        "description": "Formats the shares (0-1) of the labels and the tooltip (one decimal by default)"
+      },
+      { "name": "shape", "type": "\"bar\" | \"trapezoid\" | undefined", "required": false, "description": "Trapezoids that narrow to the next stage, or centered bars" },
+      { "name": "sort", "type": "\"none\" | \"descending\" | \"ascending\" | undefined", "required": false, "description": "Order of the stages (default \"none\": data order)" },
+      { "name": "tooltip", "type": "boolean | ShapeTooltipOptions | undefined", "required": false, "description": "Tooltip drawn on the canvas; `false` disables it (`render` may return a string)" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" }
+    ],
+    "events": [
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": [],
+    "methods": [
+      {
+        "name": "getInstance",
+        "type": "() => CanvasShapeChartInstance | null",
+        "description": "The underlying canvas chart (`toggle`, `getHidden`, `clearHover`...), `null` until the canvas is ready"
+      },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" }
+    ]
+  },
+  "TreemapChart": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "animation", "type": "boolean | undefined", "required": false, "description": "Entry and update animations (default `true`)" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")" },
+      { "name": "data", "type": "readonly TreemapNode[]", "required": true, "description": "Nodes: leaves carry a value, parents sum their children" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      { "name": "format", "type": "((value: number) => string) | undefined", "required": false, "description": "Formats the values of the labels and the tooltip (compact numbers by default)" },
+      { "name": "gap", "type": "number | undefined", "required": false, "description": "Gap between the cells, in pixels (default 2)" },
+      { "name": "headers", "type": "boolean | undefined", "required": false, "description": "Draws the names of the parents above their children (default `true`)" },
+      {
+        "name": "height",
+        "type": "string | number | undefined",
+        "required": false,
+        "default": "320",
+        "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length (rpx included)"
+      },
+      { "name": "hidden", "type": "readonly number[] | undefined", "required": false, "description": "Hidden entries by index (controlled: legend taps then only emit `toggle`)" },
+      { "name": "legend", "type": "boolean | ShapeLegendOptions | undefined", "required": false, "description": "Legend; tapping an item hides / shows its slice, stage or series" },
+      { "name": "padding", "type": "ChartPadding | undefined", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` tokens)" },
+      {
+        "name": "percentFormat",
+        "type": "((share: number) => string) | undefined",
+        "required": false,
+        "description": "Formats the shares (0-1) of the labels and the tooltip (one decimal by default)"
+      },
+      { "name": "tooltip", "type": "boolean | ShapeTooltipOptions | undefined", "required": false, "description": "Tooltip drawn on the canvas; `false` disables it (`render` may return a string)" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" }
+    ],
+    "events": [
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": [],
+    "methods": [
+      {
+        "name": "getInstance",
+        "type": "() => CanvasShapeChartInstance | null",
+        "description": "The underlying canvas chart (`toggle`, `getHidden`, `clearHover`...), `null` until the canvas is ready"
+      },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" }
+    ]
+  },
+  "SankeyChart": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "align", "type": "\"left\" | \"right\" | \"center\" | \"justify\" | undefined", "required": false, "description": "Column of the nodes without a `column` (default \"justify\")" },
+      { "name": "animation", "type": "boolean | undefined", "required": false, "description": "Entry and update animations (default `true`)" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      { "name": "format", "type": "((value: number) => string) | undefined", "required": false, "description": "Formats the values of the labels and the tooltip (compact numbers by default)" },
+      {
+        "name": "height",
+        "type": "string | number | undefined",
+        "required": false,
+        "description": "Height of the chart; numbers are pixels, strings any CSS length (rpx included); computed from the type / data by default"
+      },
+      { "name": "hidden", "type": "readonly number[] | undefined", "required": false, "description": "Hidden entries by index (controlled: legend taps then only emit `toggle`)" },
+      { "name": "iterations", "type": "number | undefined", "required": false, "description": "Relaxation passes that straighten the flows (default 32)" },
+      { "name": "labels", "type": "boolean | undefined", "required": false, "description": "Node labels (default `true`)" },
+      { "name": "labelValues", "type": "boolean | undefined", "required": false, "description": "Shows the value after the name in the labels (default `true`)" },
+      { "name": "legend", "type": "boolean | ShapeLegendOptions | undefined", "required": false, "description": "Legend; tapping an item hides / shows its slice, stage or series" },
+      {
+        "name": "linkColor",
+        "type": "\"neutral\" | \"gradient\" | \"source\" | \"target\" | undefined",
+        "required": false,
+        "description": "Color of the links without `color` (default \"gradient\")"
+      },
+      { "name": "linkOpacity", "type": "number | undefined", "required": false, "description": "Opacity of the links, 0-1 (default 0.4)" },
+      { "name": "links", "type": "readonly SankeyLink[]", "required": true, "description": "Flows between the nodes (by name or index); links closing a cycle are ignored" },
+      { "name": "nodePadding", "type": "number | undefined", "required": false, "description": "Vertical gap between the nodes of a column, in pixels (default 12)" },
+      { "name": "nodes", "type": "readonly SankeyNode[] | undefined", "required": false, "description": "Nodes, in their initial order; nodes only named by a link are appended" },
+      { "name": "nodeWidth", "type": "number | undefined", "required": false, "description": "Width of the node bars, in pixels (default 12)" },
+      { "name": "padding", "type": "ChartPadding | undefined", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` tokens)" },
+      {
+        "name": "percentFormat",
+        "type": "((share: number) => string) | undefined",
+        "required": false,
+        "description": "Formats the shares (0-1) of the labels and the tooltip (one decimal by default)"
+      },
+      { "name": "tooltip", "type": "boolean | ShapeTooltipOptions | undefined", "required": false, "description": "Tooltip drawn on the canvas; `false` disables it (`render` may return a string)" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" }
+    ],
+    "events": [
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": [],
+    "methods": [
+      {
+        "name": "getInstance",
+        "type": "() => CanvasShapeChartInstance | null",
+        "description": "The underlying canvas chart (`toggle`, `getHidden`, `clearHover`...), `null` until the canvas is ready"
+      },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" }
+    ]
+  },
+  "SunburstChart": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "animation", "type": "boolean | undefined", "required": false, "description": "Entry and update animations (default `true`)" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")" },
+      { "name": "cornerRadius", "type": "number | undefined", "required": false, "description": "Corner radius of the sectors, in pixels (default 2)" },
+      { "name": "data", "type": "readonly TreemapNode[]", "required": true, "description": "Nodes: leaves carry a value, parents sum their children" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      { "name": "drill", "type": "boolean | undefined", "required": false, "description": "Tapping a parent zooms into it, the center goes back up (default `true`)" },
+      {
+        "name": "drillPath",
+        "type": "readonly string[] | undefined",
+        "required": false,
+        "description": "Names from the root to the focused node; makes the drill-down controlled (listen to `drill`)"
+      },
+      { "name": "format", "type": "((value: number) => string) | undefined", "required": false, "description": "Formats the values of the labels and the tooltip (compact numbers by default)" },
+      {
+        "name": "height",
+        "type": "string | number | undefined",
+        "required": false,
+        "description": "Height of the chart; numbers are pixels, strings any CSS length (rpx included); computed from the type / data by default"
+      },
+      { "name": "hidden", "type": "readonly number[] | undefined", "required": false, "description": "Hidden entries by index (controlled: legend taps then only emit `toggle`)" },
+      { "name": "innerRadius", "type": "number | undefined", "required": false, "description": "Radius of the center circle as a fraction of the outer radius (default 0.26)" },
+      { "name": "labels", "type": "\"none\" | \"auto\" | \"tangential\" | \"radial\" | undefined", "required": false, "description": "Sector labels (default \"auto\")" },
+      { "name": "legend", "type": "boolean | ShapeLegendOptions | undefined", "required": false, "description": "Legend; tapping an item hides / shows its slice, stage or series" },
+      { "name": "levels", "type": "number | undefined", "required": false, "description": "Rings shown at once below the focused node (default every level)" },
+      { "name": "padAngle", "type": "number | undefined", "required": false, "description": "Gap between the sectors, in pixels (default 1)" },
+      { "name": "padding", "type": "ChartPadding | undefined", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` tokens)" },
+      {
+        "name": "percentFormat",
+        "type": "((share: number) => string) | undefined",
+        "required": false,
+        "description": "Formats the shares (0-1) of the labels and the tooltip (one decimal by default)"
+      },
+      { "name": "startAngle", "type": "number | undefined", "required": false, "description": "Angle of the first node, degrees clockwise from 12 o'clock (default 0)" },
+      { "name": "tooltip", "type": "boolean | ShapeTooltipOptions | undefined", "required": false, "description": "Tooltip drawn on the canvas; `false` disables it (`render` may return a string)" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" }
+    ],
+    "events": [
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "drill", "type": "[event: ShapeDrillEvent]" },
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": [],
+    "methods": [
+      {
+        "name": "getInstance",
+        "type": "() => CanvasShapeChartInstance | null",
+        "description": "The underlying canvas chart (`toggle`, `getHidden`, `clearHover`...), `null` until the canvas is ready"
+      },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" }
+    ]
+  },
+  "RadialBarChart": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "animation", "type": "boolean | undefined", "required": false, "description": "Entry and update animations (default `true`)" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")" },
+      { "name": "centerLabel", "type": "string | undefined", "required": false, "description": "Small text under `centerValue`" },
+      { "name": "centerValue", "type": "string | undefined", "required": false, "description": "Big text in the center" },
+      { "name": "data", "type": "readonly RadialBarDatum[]", "required": true, "description": "Bars, from the outermost ring inward: a name, a value, an optional `max` and color" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      { "name": "format", "type": "((value: number) => string) | undefined", "required": false, "description": "Formats the values of the labels and the tooltip (compact numbers by default)" },
+      { "name": "gap", "type": "number | undefined", "required": false, "description": "Gap between the rings, as a fraction of a ring's slot (default 0.28)" },
+      {
+        "name": "height",
+        "type": "string | number | undefined",
+        "required": false,
+        "description": "Height of the chart; numbers are pixels, strings any CSS length (rpx included); computed from the type / data by default"
+      },
+      { "name": "hidden", "type": "readonly number[] | undefined", "required": false, "description": "Hidden entries by index (controlled: legend taps then only emit `toggle`)" },
+      { "name": "innerRadius", "type": "number | undefined", "required": false, "description": "Radius of the innermost ring's inner edge, as a fraction of the outer radius (default 0.3)" },
+      {
+        "name": "labelContent",
+        "type": "readonly (\"value\" | \"name\" | \"percent\")[] | undefined",
+        "required": false,
+        "description": "What a label shows: name, value, percent (default [\"name\", \"value\"])"
+      },
+      { "name": "labels", "type": "boolean | undefined", "required": false, "description": "Labels before the start of the bars" },
+      { "name": "legend", "type": "boolean | ShapeLegendOptions | undefined", "required": false, "description": "Legend; tapping an item hides / shows its slice, stage or series" },
+      { "name": "max", "type": "number | undefined", "required": false, "description": "Value of a full bar for the data without `max` (default the largest value)" },
+      { "name": "padding", "type": "ChartPadding | undefined", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` tokens)" },
+      {
+        "name": "percentFormat",
+        "type": "((share: number) => string) | undefined",
+        "required": false,
+        "description": "Formats the shares (0-1) of the labels and the tooltip (one decimal by default)"
+      },
+      { "name": "rounded", "type": "boolean | undefined", "required": false, "description": "Rounded bar ends (default `true`)" },
+      { "name": "startAngle", "type": "number | undefined", "required": false, "description": "Angle where the bars start, degrees clockwise from 12 o'clock (default 0)" },
+      { "name": "sweep", "type": "number | undefined", "required": false, "description": "Angle of a full bar, degrees (default 270)" },
+      { "name": "tooltip", "type": "boolean | ShapeTooltipOptions | undefined", "required": false, "description": "Tooltip drawn on the canvas; `false` disables it (`render` may return a string)" },
+      { "name": "track", "type": "boolean | undefined", "required": false, "description": "Background tracks behind the bars (default `true`)" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" }
+    ],
+    "events": [
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": [],
+    "methods": [
+      {
+        "name": "getInstance",
+        "type": "() => CanvasShapeChartInstance | null",
+        "description": "The underlying canvas chart (`toggle`, `getHidden`, `clearHover`...), `null` until the canvas is ready"
+      },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" }
+    ]
+  },
+  "CalendarHeatmap": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "animation", "type": "boolean | undefined", "required": false, "description": "Entry and update animations (default `true`)" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")" },
+      { "name": "color", "type": "string | undefined", "required": false, "description": "Color of the highest level (default the first palette color)" },
+      { "name": "colors", "type": "readonly string[] | undefined", "required": false, "description": "Colors of the levels, lowest first" },
+      { "name": "data", "type": "readonly CalendarDatum[]", "required": true, "description": "Daily values (several entries of the same day add up)" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      { "name": "format", "type": "((value: number) => string) | undefined", "required": false, "description": "Formats the values of the labels and the tooltip (compact numbers by default)" },
+      { "name": "gap", "type": "number | undefined", "required": false, "description": "Gap between the cells, in pixels (default 3)" },
+      {
+        "name": "height",
+        "type": "string | number | undefined",
+        "required": false,
+        "description": "Height of the chart; numbers are pixels, strings any CSS length (rpx included); computed from the type / data by default"
+      },
+      { "name": "hidden", "type": "readonly number[] | undefined", "required": false, "description": "Hidden entries by index (controlled: legend taps then only emit `toggle`)" },
+      { "name": "layout", "type": "\"weeks\" | \"months\" | undefined", "required": false, "description": "`weeks` (default) or `months`" },
+      { "name": "legend", "type": "boolean | ShapeLegendOptions | undefined", "required": false, "description": "Legend; tapping an item hides / shows its slice, stage or series" },
+      { "name": "levels", "type": "number | undefined", "required": false, "description": "Number of color levels above the empty days (default 4)" },
+      { "name": "locale", "type": "string | undefined", "required": false, "description": "BCP 47 locale of the month and weekday names and of the tooltip dates" },
+      { "name": "maxCellSize", "type": "number | undefined", "required": false, "description": "Largest cell size, in pixels (default 16 weeks, 28 months)" },
+      { "name": "monthLabels", "type": "boolean | undefined", "required": false, "description": "Month names around the cells (default `true`)" },
+      { "name": "padding", "type": "ChartPadding | undefined", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` tokens)" },
+      {
+        "name": "percentFormat",
+        "type": "((share: number) => string) | undefined",
+        "required": false,
+        "description": "Formats the shares (0-1) of the labels and the tooltip (one decimal by default)"
+      },
+      { "name": "radius", "type": "number | undefined", "required": false, "description": "Corner radius of the cells, in pixels (default 2)" },
+      { "name": "range", "type": "number | readonly [CalendarDate, CalendarDate] | undefined", "required": false, "description": "Days shown: a year (`2026`) or an inclusive `[start, end]` range" },
+      { "name": "thresholds", "type": "readonly number[] | undefined", "required": false, "description": "Upper bounds of the levels but the last, ascending" },
+      { "name": "tooltip", "type": "boolean | ShapeTooltipOptions | undefined", "required": false, "description": "Tooltip drawn on the canvas; `false` disables it (`render` may return a string)" },
+      { "name": "weekdayLabels", "type": "boolean | undefined", "required": false, "description": "Weekday names beside or above the cells (default `true`)" },
+      { "name": "weekStart", "type": "number | undefined", "required": false, "description": "First day of the week, 0 = Sunday … 6 = Saturday (default from `locale`)" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" }
+    ],
+    "events": [
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": [],
+    "methods": [
+      {
+        "name": "getInstance",
+        "type": "() => CanvasShapeChartInstance | null",
+        "description": "The underlying canvas chart (`toggle`, `getHidden`, `clearHover`...), `null` until the canvas is ready"
+      },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" }
+    ]
+  },
+  "BulletChart": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "animation", "type": "boolean | undefined", "required": false, "description": "Entry and update animations (default `true`)" },
+      { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")" },
+      { "name": "barSize", "type": "number | undefined", "required": false, "description": "Thickness of the value bar as a fraction of the ranges' thickness (default 0.4)" },
+      { "name": "data", "type": "readonly BulletDatum[]", "required": true, "description": "Rows (columns when vertical): name, value, target, ranges and scale" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      { "name": "format", "type": "((value: number) => string) | undefined", "required": false, "description": "Formats the values of the labels and the tooltip (compact numbers by default)" },
+      {
+        "name": "height",
+        "type": "string | number | undefined",
+        "required": false,
+        "description": "Height of the chart; numbers are pixels, strings any CSS length (rpx included); computed from the type / data by default"
+      },
+      { "name": "hidden", "type": "readonly number[] | undefined", "required": false, "description": "Hidden entries by index (controlled: legend taps then only emit `toggle`)" },
+      { "name": "legend", "type": "boolean | ShapeLegendOptions | undefined", "required": false, "description": "Legend; tapping an item hides / shows its slice, stage or series" },
+      { "name": "orientation", "type": "\"vertical\" | \"horizontal\" | undefined", "required": false, "description": "Horizontal rows (default) or vertical columns" },
+      { "name": "padding", "type": "ChartPadding | undefined", "required": false, "description": "Space around the drawing, in pixels (default 8 on every side)" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` tokens)" },
+      {
+        "name": "percentFormat",
+        "type": "((share: number) => string) | undefined",
+        "required": false,
+        "description": "Formats the shares (0-1) of the labels and the tooltip (one decimal by default)"
+      },
+      { "name": "rangeColors", "type": "readonly string[] | undefined", "required": false, "description": "Colors of the qualitative ranges, lowest first" },
+      { "name": "rangeLabels", "type": "readonly string[] | undefined", "required": false, "description": "Names of the qualitative ranges, lowest first (tooltip)" },
+      { "name": "ranges", "type": "readonly number[] | undefined", "required": false, "description": "Qualitative ranges of the rows without `ranges`: upper bounds, ascending" },
+      { "name": "targetColor", "type": "string | undefined", "required": false, "description": "Color of the target markers (default the text color)" },
+      { "name": "ticks", "type": "boolean | undefined", "required": false, "description": "Tick labels of the scales (default `true`)" },
+      { "name": "tooltip", "type": "boolean | ShapeTooltipOptions | undefined", "required": false, "description": "Tooltip drawn on the canvas; `false` disables it (`render` may return a string)" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" }
+    ],
+    "events": [
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": [],
+    "methods": [
+      {
+        "name": "getInstance",
+        "type": "() => CanvasShapeChartInstance | null",
+        "description": "The underlying canvas chart (`toggle`, `getHidden`, `clearHover`...), `null` until the canvas is ready"
+      },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" }
+    ]
+  },
+  "ShapeChart": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      {
+        "name": "height",
+        "type": "string | number | undefined",
+        "required": false,
+        "description": "Height of the chart (default 320; gauges 240, radial bars 300, sankey and sunburst 360, calendars and bullets from the data); numbers are pixels, strings any CSS length (rpx included)"
+      },
+      { "name": "options", "type": "ShapeChartOptions", "required": true, "description": "Options of the chart, by `type` (pie, radar, gauge, funnel, treemap...)" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" }
+    ],
+    "events": [
+      { "name": "click", "type": "[event: ShapeHoverEvent]" },
+      { "name": "drill", "type": "[event: ShapeDrillEvent]" },
+      { "name": "hover", "type": "[event: ShapeHoverEvent | null]" },
+      { "name": "toggle", "type": "[event: ShapeToggleEvent]" }
+    ],
+    "slots": [],
+    "methods": [
+      {
+        "name": "getInstance",
+        "type": "() => CanvasShapeChartInstance | null",
+        "description": "The underlying canvas chart (`toggle`, `getHidden`, `clearHover`...), `null` until the canvas is ready"
+      },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" }
     ]
   }
 }

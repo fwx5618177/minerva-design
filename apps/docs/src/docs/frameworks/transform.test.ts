@@ -351,7 +351,10 @@ describe("transformWcDemo: every docs demo", () => {
         "</script>",
       )!;
       expect(syntaxErrors(htmlScript, "a.js")).toEqual([]);
-      expect(htmlScript).toContain('import "minerva-design/web-components";');
+      expect(htmlScript).toMatch(
+        // the chart elements are optional entries
+        /import "minerva-design\/web-components(\/(chart|trading-chart|order-book|chart-3d))?";/,
+      );
 
       // framework sources never reach into the DOM through the demo root
       for (const fw of ["vue", "angular", "svelte", "solid"] as const) {

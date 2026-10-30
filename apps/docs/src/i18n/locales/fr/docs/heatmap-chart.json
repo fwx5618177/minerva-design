@@ -1,5 +1,5 @@
 {
-  "title": "HeatmapChart",
+  "title": "Carte de chaleur",
   "description": "Une grille de cellules colorées selon leur valeur, avec des catégories ou des nombres sur les deux axes : activité par jour et par heure, matrices de corrélation, cartes d’une mesure. Survolez une cellule pour la cerner et lire sa valeur.",
   "demos": {
     "basic": {
@@ -13,7 +13,52 @@
     "large-grid": {
       "title": "20 000 cellules",
       "description": "Une grille de 200 × 100 avec des nombres sur les deux axes. interaction={{ zoom: \"xy\" }} active le zoom (désactivé par défaut pour les heatmaps) : Ctrl / ⌘ + molette, glisser pour se déplacer, double-clic pour réinitialiser."
+    },
+    "activity": {
+      "title": "Calendrier de contributions",
+      "description": "Une année de contributions quotidiennes comme sur un profil GitHub : les semaines en colonnes numériques, les jours en lignes, un format x qui transforme le numéro de semaine en mois et un colorScale vert par paliers."
+    },
+    "correlation": {
+      "title": "Matrice de corrélation",
+      "description": "Corrélations deux à deux d'indicateurs produit sur une échelle divergente de -1 à 1 ; les mêmes noms traduits servent aux deux axes."
+    },
+    "retention": {
+      "title": "Rétention par cohorte",
+      "description": "Part de chaque cohorte mensuelle d'inscrits encore active après N mois : des valeurs null laissent vides les cellules futures, d'où le triangle classique."
     }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "Simple",
+        "description": "Sessions par jour de la semaine et par tranche de 3 heures, avec les noms des jours et des heures dans la langue de l'application ; touchez une case pour lire sa valeur."
+      }
+    }
+  },
+  "data": {
+    "sessions": "Sessions",
+    "sessionsAria": "Sessions par jour de la semaine et heure de la journée",
+    "anomaly": "Anomalie",
+    "anomalyAria": "Anomalie de température mensuelle, de 1995 à 2024",
+    "signal": "Signal",
+    "wifiAria": "Puissance du signal Wi-Fi sur un étage de 200 m sur 100 m",
+    "largeStatus": "{{cells}} cellules · dessinées avec {{renderer}} · Ctrl / ⌘ + molette pour zoomer, glisser pour se déplacer, double-clic pour réinitialiser",
+    "contributions": "Contributions",
+    "activityAria": "Contributions par jour sur un an",
+    "activityTotal": "{{total}} contributions au cours de la dernière année",
+    "metrics": {
+      "sessions": "Sessions",
+      "pageViews": "Pages vues",
+      "signups": "Inscriptions",
+      "revenue": "Chiffre d'affaires",
+      "churn": "Attrition",
+      "tickets": "Tickets de support"
+    },
+    "correlation": "Corrélation",
+    "correlationAria": "Matrice de corrélation de six indicateurs produit",
+    "monthN": "Mois {{n}}",
+    "retained": "Retenus",
+    "retentionAria": "Rétention des cohortes mensuelles d'inscrits"
   },
   "api": {
     "HeatmapConfig": {
@@ -30,6 +75,39 @@
       "x": "Colonne : un nom de catégorie ou un nombre",
       "y": "Ligne : un nom de catégorie ou un nombre",
       "value": "Valeur placée sur l’échelle de couleurs ; null laisse la cellule vide"
+    }
+  },
+  "wc": {
+    "demos": {
+      "weekly-activity": {
+        "title": "Activité hebdomadaire",
+        "description": "Les commits par jour et par tranche horaire ; les catégories fixent l'ordre des colonnes et des lignes."
+      },
+      "color-scale": {
+        "title": "Échelle de couleurs divergente",
+        "description": "Une matrice de corrélation sur une plage fixe de -1 à 1 : bleu pour les valeurs négatives, rouge pour les positives, cellules arrondies."
+      }
+    },
+    "minerva-heatmap-chart": {
+      "props": {
+        "valueName": "Nom de la valeur dans l'info-bulle",
+        "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+        "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+        "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+      },
+      "events": {
+        "minerva-hover": "Les points survolés (ou ciblés au clavier) ont changé ; detail : { x, xLabel, items }, null quand rien n'est survolé",
+        "minerva-point-click": "Un point ou une barre a été cliqué ; detail : { x, xLabel, items }",
+        "minerva-plot-click": "La zone de tracé a été cliquée hors des points ; detail : { x, y } en coordonnées de données",
+        "minerva-zoom": "L'utilisateur a zoomé ou s'est déplacé ; detail : { x, y } (les plages visibles)",
+        "minerva-renderer-change": "Le moteur de rendu est prêt, ou s'est replié après une perte du GPU ; detail : { renderer }"
+      },
+      "methods": {
+        "resetZoom": "Affiche toute la plage de données",
+        "getView": "Plage visible, null avant la création du moteur",
+        "setView": "Définit la plage visible",
+        "getRenderer": "Moteur de rendu utilisé (webgpu, webgl2, webgl, canvas2d), null tant qu'il n'est pas prêt"
+      }
     }
   }
 }

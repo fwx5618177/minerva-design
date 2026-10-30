@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { HeatmapChart, type HeatmapCell } from "minerva-design/charts";
 
 function mulberry32(seed: number) {
@@ -11,13 +12,34 @@ function mulberry32(seed: number) {
   };
 }
 
-const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const hours = Array.from({ length: 24 }, (_, h) => `${h}:00`);
+/** Short weekday names in the reader's language, Monday first */
+const weekdays = (locale: string) => {
+  const format = new Intl.DateTimeFormat(locale, { weekday: "short" });
+  // 5 January 2026 is a Monday
+  return Array.from({ length: 7 }, (_, i) =>
+    format.format(new Date(2026, 0, 5 + i)),
+  );
+};
+
+/** Hours of the day: "9 AM", "9時", "09 h"... */
+const hoursOfDay = (locale: string) => {
+  const format = new Intl.DateTimeFormat(locale, { hour: "numeric" });
+  return Array.from({ length: 24 }, (_, h) =>
+    format.format(new Date(2026, 0, 5, h)),
+  );
+};
 
 const bump = (hour: number, center: number, width: number) =>
   Math.exp(-((hour - center) ** 2) / (2 * width ** 2));
 
 export default function BasicDemo() {
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.heatmap-chart.data",
+  });
+  const locale = i18n.language;
+  const days = useMemo(() => weekdays(locale), [locale]);
+  const hours = useMemo(() => hoursOfDay(locale), [locale]);
+
   const data = useMemo((): HeatmapCell[] => {
     const random = mulberry32(24);
     return days.flatMap((day, d) => {
@@ -34,7 +56,8 @@ export default function BasicDemo() {
         return { x: hour, y: day, value: Math.round(value) };
       });
     });
-  }, []);
+  }, [days, hours]);
+  const number = useMemo(() => new Intl.NumberFormat(locale), [locale]);
 
   return (
     <HeatmapChart
@@ -42,10 +65,10 @@ export default function BasicDemo() {
       xCategories={hours}
       // rows go from bottom to top: reverse them to read Monday first
       yCategories={[...days].reverse()}
-      name="Sessions"
-      format={(value) => value.toLocaleString("en")}
+      name={t("sessions")}
+      format={(value) => number.format(value)}
       height={280}
-      ariaLabel="Sessions by weekday and hour of the day"
+      ariaLabel={t("sessionsAria")}
     />
   );
 }

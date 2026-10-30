@@ -1,5 +1,5 @@
 {
-  "title": "LineChart",
+  "title": "Line chart",
   "description": "Lines or filled areas over numbers, dates or categories. Handles millions of points on the GPU.",
   "demos": {
     "basic": {
@@ -20,12 +20,92 @@
     },
     "time-series": {
       "title": "Time series",
-      "description": "Date x values switch to a time axis; formatCompact shortens the y ticks."
+      "description": "Date x values switch to a time axis; Intl.DateTimeFormat and Intl.NumberFormat write the dates and the compact y ticks in the reader's language."
     },
     "large-data": {
       "title": "1,000,000 points",
       "description": "Typed-array columns with sorted timestamps: only the visible range is drawn. Ctrl / ⌘ + wheel to zoom."
+    },
+    "traffic-events": {
+      "title": "Traffic with events",
+      "description": "Daily visitors with a dashed x line for a product launch and a shaded area for an outage: annotations take the same timestamps as the data."
+    },
+    "gaps": {
+      "title": "Missing data",
+      "description": "A null y value leaves a gap instead of drawing a misleading line through the missing readings."
+    },
+    "thresholds": {
+      "title": "Thresholds",
+      "description": "Server latency percentiles with a dashed y line for the objective and a red area above the critical level, so breaches stand out at a glance."
+    },
+    "zoom": {
+      "title": "Range selector",
+      "description": "Period buttons call setView on the chart ref with the visible window and a y range fitted to the prices inside it; Ctrl / ⌘ + wheel and drag still work."
     }
+  },
+  "data": {
+    "thisWeek": "This week",
+    "lastWeek": "Last week",
+    "visitorsAria": "Visitors per day, this week and last week",
+    "storage": "Storage used",
+    "day": "Day",
+    "storageAria": "Storage used over 60 days",
+    "lisbon": "Lisbon",
+    "oslo": "Oslo",
+    "curve": "Curve",
+    "curves": {
+      "linear": "Linear",
+      "smooth": "Smooth",
+      "step": "Step"
+    },
+    "temperatureAria": "Average monthly temperatures in Lisbon and Oslo",
+    "services": {
+      "compute": "Compute",
+      "storage": "Storage",
+      "network": "Network",
+      "databases": "Databases"
+    },
+    "stackMode": "Stack mode",
+    "stacked": "Stacked",
+    "spendAria": "Monthly cloud spend by service, stacked",
+    "pageViews": "Page views",
+    "sessions": "Sessions",
+    "trafficAria": "Daily page views and sessions, first half of 2026",
+    "sensor": "Sensor",
+    "sensorAria": "One million sensor readings",
+    "largeStatus": "{{points}} points · drawn with {{renderer}} · Ctrl / ⌘ + wheel to zoom, drag to pan, double-click to reset",
+    "visitors": "Visitors",
+    "launch": "Product launch",
+    "outage": "Outage",
+    "eventsAria": "Daily visitors over 90 days with a product launch and an outage",
+    "indoor": "Indoor",
+    "outdoor": "Outdoor",
+    "gapsAria": "Hourly indoor and outdoor temperatures with missing readings",
+    "gapsNote": "The sensors were offline for a few hours: the line stops instead of guessing.",
+    "median": "Median",
+    "p95": "95th percentile",
+    "critical": "Critical",
+    "target": "Target {{value}}",
+    "latencyAria": "API latency over six hours, median and 95th percentile",
+    "close": "Close",
+    "period": "Period",
+    "ranges": {
+      "1m": "1M",
+      "3m": "3M",
+      "6m": "6M",
+      "1y": "1Y",
+      "all": "All"
+    },
+    "priceAria": "Daily closing price over two years",
+    "steps": "Steps",
+    "stepsAria": "Steps per day",
+    "stepsStatus": "{{day}}: {{steps}} steps",
+    "scrubHint": "Tap or scrub the line",
+    "cpu": "CPU",
+    "memory": "Memory",
+    "hour": "{{hour}}h",
+    "usageAria": "CPU and memory usage over the day",
+    "pinchHint": "Pinch to zoom, double tap to reset; tap the legend to hide a series."
   },
   "api": {
     "LineChartProps": {
@@ -45,6 +125,38 @@
       "area": {
         "title": "Area",
         "description": "area fills under the lines; pinch to zoom, double tap to reset, tap the legend to hide a series."
+      }
+    }
+  },
+  "wc": {
+    "demos": {
+      "trend": {
+        "title": "Weekly trend",
+        "description": "Two smooth lines on category axes; the series names and days follow the page language."
+      },
+      "reset-zoom": {
+        "title": "Zoom and reset",
+        "description": "2,000 points: Ctrl / ⌘ + wheel or pinch zooms, dragging pans, the button calls resetZoom() on the chart."
+      }
+    },
+    "minerva-line-chart": {
+      "props": {
+        "height": "Height of the chart, the legend included: pixels or any CSS length",
+        "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+        "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+      },
+      "events": {
+        "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
+        "minerva-point-click": "A point or a bar was clicked; detail: { x, xLabel, items }",
+        "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
+        "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",
+        "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+      },
+      "methods": {
+        "resetZoom": "Shows the whole data range",
+        "getView": "Visible range, null before the engine is created",
+        "setView": "Sets the visible range",
+        "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
       }
     }
   }

@@ -13,7 +13,74 @@
     "table": {
       "title": "In a table",
       "description": "A Sparkline per row in a Table column, with a fixed width and height; the color says whether the latency rises or falls."
+    },
+    "watchlist": {
+      "title": "Stock watchlist",
+      "description": "A trading-app watchlist: each row has an intraday area sparkline colored by the change of the day, with a dashed reference at the previous close; prices use Intl.NumberFormat with each stock's currency."
+    },
+    "inline": {
+      "title": "Inside a sentence",
+      "description": "Word-sized sparklines placed inline in text with a fixed width and height and display: inline-block, the original use of sparklines."
+    },
+    "servers": {
+      "title": "Live server monitor",
+      "description": "Bar sparklines updated every second with a new CPU sample; the color and the tag turn red above the alert threshold."
     }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "KPI rows",
+        "description": "Word-sized area, bar and line charts next to the value of today; touch a sparkline to read a day in its tooltip."
+      }
+    }
+  },
+  "data": {
+    "orders": "Orders",
+    "ordersAria": "Weekly orders, {{variant}}",
+    "revenue": "Revenue",
+    "activeUsers": "Active users",
+    "signups": "Sign-ups",
+    "p95": "p95 latency",
+    "last30Aria": "{{metric}}, last 30 days",
+    "service": "Service",
+    "services": {
+      "gateway": "API gateway",
+      "auth": "Authentication",
+      "search": "Search",
+      "payments": "Payments",
+      "notifications": "Notifications"
+    },
+    "requestsPerMin": "Requests / min",
+    "latency30": "p95 latency, 30 days",
+    "latencyAria": "{{service}} p95 latency over 30 days",
+    "today": "Today",
+    "change": "Change",
+    "serviceLatency": "Service latency",
+    "symbol": "Symbol",
+    "companies": {
+      "ACME": "Acme Corporation",
+      "NOVA": "Nova Biotech",
+      "ORBT": "Orbit Aerospace",
+      "KITE": "Kite Robotics",
+      "LUMA": "Luma Energy"
+    },
+    "intradayAria": "{{symbol}} price today",
+    "price": "Price",
+    "watchlist": "Watchlist",
+    "inlineVisits": "Visits over the last 14 days:",
+    "visits": "Visits",
+    "visitsAria": "Visits over the last 14 days",
+    "inlineErrors": "Errors spiked after the deployment of day 7, then went back to normal:",
+    "errors": "Errors",
+    "errorsAria": "Errors per day over the last 14 days",
+    "inlineTemperature": "Afternoon temperature these two weeks:",
+    "temperature": "Temperature",
+    "temperatureAria": "Afternoon temperature over the last 14 days",
+    "cpu": "CPU",
+    "cpuAria": "CPU usage of {{server}}",
+    "alert": "Alert",
+    "healthy": "Healthy"
   },
   "api": {
     "SparklineProps": {
@@ -27,6 +94,38 @@
       "name": "Name shown in the tooltip",
       "reference": "Draws a dashed reference line at this value (e.g. a target or the average)",
       "format": "Formats the value in the tooltip"
+    }
+  },
+  "wc": {
+    "demos": {
+      "kpi": {
+        "title": "KPI cards",
+        "description": "Word-sized trends under key figures, drawn as a line, an area and bars."
+      },
+      "reference": {
+        "title": "Target line and hover",
+        "description": "reference draws a dashed target line; hovering shows the value under the pointer."
+      }
+    },
+    "minerva-sparkline": {
+      "props": {
+        "valueName": "Name of the value in the tooltip",
+        "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+        "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+      },
+      "events": {
+        "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
+        "minerva-point-click": "A point or a bar was clicked; detail: { x, xLabel, items }",
+        "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
+        "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",
+        "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+      },
+      "methods": {
+        "resetZoom": "Shows the whole data range",
+        "getView": "Visible range, null before the engine is created",
+        "setView": "Sets the visible range",
+        "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
+      }
     }
   }
 }

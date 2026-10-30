@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   PieChart,
   type ShapeDatum,
@@ -6,35 +7,66 @@ import {
 } from "minerva-design/charts";
 
 // Website sessions over the last 30 days, by traffic source
-const sessions: ShapeDatum[] = [
-  { name: "Organic search", value: 48200 },
-  { name: "Direct", value: 23100 },
-  { name: "Social", value: 16400 },
-  { name: "Paid ads", value: 12700 },
-  { name: "Referral", value: 9800 },
-  { name: "Email", value: 6100 },
+const sessions = [
+  { key: "organic", value: 48200 },
+  { key: "direct", value: 23100 },
+  { key: "social", value: 16400 },
+  { key: "paid", value: 12700 },
+  { key: "referral", value: 9800 },
+  { key: "email", value: 6100 },
 ];
 
-const format = (value: number) => value.toLocaleString("en-US");
-
 export default function BasicDemo() {
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.pie-chart.data",
+  });
+  const locale = i18n.language;
   const [selected, setSelected] = useState<ShapeHoverEvent | null>(null);
+
+  const data = useMemo(
+    (): ShapeDatum[] =>
+      sessions.map(({ key, value }) => ({ name: t(`sources.${key}`), value })),
+    [t],
+  );
+  const number = useMemo(() => new Intl.NumberFormat(locale), [locale]);
+  const percent = useMemo(
+    () =>
+      new Intl.NumberFormat(locale, {
+        style: "percent",
+        maximumFractionDigits: 1,
+      }),
+    [locale],
+  );
 
   return (
     <div style={{ display: "grid", gap: 8, width: "100%" }}>
       <PieChart
-        data={sessions}
-        format={format}
+        data={data}
+        format={(value) => number.format(value)}
+        percentFormat={(share) => percent.format(share)}
+        renderTooltip={(slice) => (
+          <div style={{ display: "grid", gap: 2 }}>
+            <strong>{slice.name}</strong>
+            <span>
+              {t("sessionsShare", {
+                sessions: number.format(slice.value),
+                share: percent.format(slice.percent),
+              })}
+            </span>
+          </div>
+        )}
         onClick={setSelected}
         height={320}
-        ariaLabel="Website sessions by traffic source, last 30 days"
+        ariaLabel={t("sessionsAria")}
       />
       <p role="status">
         {selected
-          ? `${selected.name}: ${format(selected.value)} sessions (${(
-              selected.percent * 100
-            ).toFixed(1)}% of the traffic)`
-          : "Click a slice (or focus the chart and press Enter) to select a source"}
+          ? t("selectedSource", {
+              source: selected.name,
+              sessions: number.format(selected.value),
+              share: percent.format(selected.percent),
+            })
+          : t("clickSlice")}
       </p>
     </div>
   );
