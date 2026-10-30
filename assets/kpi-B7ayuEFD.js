@@ -1,0 +1,24 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t;function n(){return(n=e((()=>{t=`<div
+  style="
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+  "
+>
+  <div style="display: grid; gap: 4px">
+    <span id="orders-label"></span>
+    <strong>1,284</strong>
+    <minerva-sparkline id="orders"></minerva-sparkline>
+  </div>
+  <div style="display: grid; gap: 4px">
+    <span id="revenue-label"></span>
+    <strong>€48.2k</strong>
+    <minerva-sparkline id="revenue" type="area"></minerva-sparkline>
+  </div>
+  <div style="display: grid; gap: 4px">
+    <span id="signups-label"></span>
+    <strong>312</strong>
+    <minerva-sparkline id="signups" type="bar"></minerva-sparkline>
+  </div>
+</div>
+`})))()}n();export{t as default};

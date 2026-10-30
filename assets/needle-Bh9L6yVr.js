@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";function t(e){let t=e.querySelector(`#speed`);t.label=n[document.documentElement.lang]??n.en,t.options={sweep:270,thickness:.1}}var n;function r(){return(r=e((()=>{n={en:`Speed (km/h)`,zh:`速度（公里/小时）`,ja:`速度（km/h）`,fr:`Vitesse (km/h)`}})))()}r();export{t as setup};

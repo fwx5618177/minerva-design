@@ -1,0 +1,2 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t;function n(){return(n=e((()=>{t=`<minerva-bar-3d-chart id="sales" height="420"></minerva-bar-3d-chart>
+`})))()}n();export{t as default};
