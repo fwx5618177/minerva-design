@@ -1,5 +1,14 @@
 # minerva-design
 
+## 1.4.0
+
+### Minor Changes
+
+- test(docs): give the first vue tab load more time under ci coverage
+  test(charts): cover the framework chart wrappers and steady ci timing budgets
+  docs(charts): localize chart docs, add new chart pages, showcases and framework demos
+  feat(charts): add trading, order book, 3d charts, 13 chart types, webgl backend and wrappers
+
 ## 1.3.0
 
 ### Minor Changes
