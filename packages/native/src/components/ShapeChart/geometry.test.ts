@@ -345,66 +345,71 @@ describe("shape chart geometry", () => {
     expect(covers(prims, [105, 150])).toBe(true);
   });
 
-  it("rounds the corners of pie, donut and sunburst slices like the canvas", () => {
-    const cases = [
-      // donut segments, any span
-      { r0: 40, r1: 80, a0: 0.3, a1: 1.4, pad: 0, corner: 10 },
-      { r0: 40, r1: 80, a0: -0.4, a1: 2.9, pad: 0, corner: 8 },
-      { r0: 40, r1: 80, a0: 1, a1: 5.6, pad: 0, corner: 10 },
-      { r0: 50, r1: 90, a0: 0.2, a1: 1.9, pad: 4, corner: 8 },
-      // pie slices: the apex stays sharp
-      { r0: 0, r1: 90, a0: 0.5, a1: 2, pad: 3, corner: 12 },
-      { r0: 0, r1: 90, a0: 1, a1: 5.8, pad: 3, corner: 10 },
-      // clamped to half the thickness, then to the arc length
-      { r0: 70, r1: 85, a0: 0.4, a1: 2.2, pad: 0, corner: 30 },
-      { r0: 0, r1: 85, a0: 0.4, a1: 0.5, pad: 0, corner: 20 },
-      // the donut of the docs: 4 slices, padded
-      ...[
-        [0, 0.4307],
-        [0.4307, 0.7122],
-        [0.7122, 0.916],
-        [0.916, 1],
-      ].map(([s0, s1]) => ({
-        r0: 68,
-        r1: 110,
-        a0: -Math.PI / 2 + s0! * Math.PI * 2,
-        a1: -Math.PI / 2 + s1! * Math.PI * 2,
-        pad: 2,
-        corner: 10,
-      })),
-    ];
-    for (const c of cases) {
-      const node = {
-        kind: "sector",
-        cx: 100,
-        cy: 100,
-        ...c,
-        fill: "rgba(200, 0, 0, 1)",
-      };
-      const prims = framePrims(record([node]));
-      const outline = canvasOutline(node);
-      const margin = Math.max(
-        1.2,
-        Math.min(c.corner, (c.r1 - c.r0) / 2) * 0.08,
-      );
-      expectShape(
-        prims,
-        (p) => insidePolygon(outline, p),
-        (p) => distanceToPolygon(outline, p) < margin,
-        JSON.stringify(c),
-      );
-      // the fillets are anti-aliased discs (unless they would overlap: then
-      // the flattened outline)
-      if (c.a1 - c.a0 < 0.2) continue;
-      const discs = flat(prims).filter(
-        (p) => p.t === "box" && (p.radius ?? 0) > 0 && (p.radius ?? 0) < 20,
-      );
-      expect(discs.length, JSON.stringify(c)).toBeGreaterThanOrEqual(
-        c.r0 > 0 ? 3 : 2,
-      );
-      expect(depth(prims)).toBeLessThanOrEqual(8);
-    }
-  });
+  // flattens the engine's outlines densely: slow under coverage on CI
+  it(
+    "rounds the corners of pie, donut and sunburst slices like the canvas",
+    { timeout: 30_000 },
+    () => {
+      const cases = [
+        // donut segments, any span
+        { r0: 40, r1: 80, a0: 0.3, a1: 1.4, pad: 0, corner: 10 },
+        { r0: 40, r1: 80, a0: -0.4, a1: 2.9, pad: 0, corner: 8 },
+        { r0: 40, r1: 80, a0: 1, a1: 5.6, pad: 0, corner: 10 },
+        { r0: 50, r1: 90, a0: 0.2, a1: 1.9, pad: 4, corner: 8 },
+        // pie slices: the apex stays sharp
+        { r0: 0, r1: 90, a0: 0.5, a1: 2, pad: 3, corner: 12 },
+        { r0: 0, r1: 90, a0: 1, a1: 5.8, pad: 3, corner: 10 },
+        // clamped to half the thickness, then to the arc length
+        { r0: 70, r1: 85, a0: 0.4, a1: 2.2, pad: 0, corner: 30 },
+        { r0: 0, r1: 85, a0: 0.4, a1: 0.5, pad: 0, corner: 20 },
+        // the donut of the docs: 4 slices, padded
+        ...[
+          [0, 0.4307],
+          [0.4307, 0.7122],
+          [0.7122, 0.916],
+          [0.916, 1],
+        ].map(([s0, s1]) => ({
+          r0: 68,
+          r1: 110,
+          a0: -Math.PI / 2 + s0! * Math.PI * 2,
+          a1: -Math.PI / 2 + s1! * Math.PI * 2,
+          pad: 2,
+          corner: 10,
+        })),
+      ];
+      for (const c of cases) {
+        const node = {
+          kind: "sector",
+          cx: 100,
+          cy: 100,
+          ...c,
+          fill: "rgba(200, 0, 0, 1)",
+        };
+        const prims = framePrims(record([node]));
+        const outline = canvasOutline(node);
+        const margin = Math.max(
+          1.2,
+          Math.min(c.corner, (c.r1 - c.r0) / 2) * 0.08,
+        );
+        expectShape(
+          prims,
+          (p) => insidePolygon(outline, p),
+          (p) => distanceToPolygon(outline, p) < margin,
+          JSON.stringify(c),
+        );
+        // the fillets are anti-aliased discs (unless they would overlap: then
+        // the flattened outline)
+        if (c.a1 - c.a0 < 0.2) continue;
+        const discs = flat(prims).filter(
+          (p) => p.t === "box" && (p.radius ?? 0) > 0 && (p.radius ?? 0) < 20,
+        );
+        expect(discs.length, JSON.stringify(c)).toBeGreaterThanOrEqual(
+          c.r0 > 0 ? 3 : 2,
+        );
+        expect(depth(prims)).toBeLessThanOrEqual(8);
+      }
+    },
+  );
 
   it("draws stroked arcs as bands with round caps", () => {
     const prims = framePrims(

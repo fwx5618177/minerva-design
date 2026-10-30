@@ -128,31 +128,37 @@ describe("user-facing snippets use minerva-design", () => {
     }
   });
 
-  it("the demo sources generated for every framework", () => {
-    let checked = 0;
-    for (const page of docPages.filter((p) => p.wc)) {
-      for (const demo of page.wc!.demos) {
-        const file = join(PAGES, page.id, "wc", `${demo}.html`);
-        const scriptFile = file.replace(/\.html$/, ".ts");
-        const { sources } = transformWcDemo({
-          page: page.id,
-          demo,
-          html: readFileSync(file, "utf8"),
-          script: existsSync(scriptFile)
-            ? readFileSync(scriptFile, "utf8")
-            : undefined,
-        });
-        for (const framework of WC_FRAMEWORKS) {
-          const code = sources[framework];
-          expect(code, `${page.id}/${demo} ${framework}`).not.toContain(
-            "@minerva/",
-          );
-          checked++;
+  // transforms every Web Component demo for every framework: slow under
+  // coverage on CI
+  it(
+    "the demo sources generated for every framework",
+    { timeout: 30_000 },
+    () => {
+      let checked = 0;
+      for (const page of docPages.filter((p) => p.wc)) {
+        for (const demo of page.wc!.demos) {
+          const file = join(PAGES, page.id, "wc", `${demo}.html`);
+          const scriptFile = file.replace(/\.html$/, ".ts");
+          const { sources } = transformWcDemo({
+            page: page.id,
+            demo,
+            html: readFileSync(file, "utf8"),
+            script: existsSync(scriptFile)
+              ? readFileSync(scriptFile, "utf8")
+              : undefined,
+          });
+          for (const framework of WC_FRAMEWORKS) {
+            const code = sources[framework];
+            expect(code, `${page.id}/${demo} ${framework}`).not.toContain(
+              "@minerva/",
+            );
+            checked++;
+          }
         }
       }
-    }
-    expect(checked).toBeGreaterThan(100);
-  });
+      expect(checked).toBeGreaterThan(100);
+    },
+  );
 
   it.each([
     "README.md",
