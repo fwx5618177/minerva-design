@@ -101,7 +101,19 @@ describe("exports map", () => {
     expect(pkg.exports["./vue/charts-global"]).toEqual({
       types: "./dist/vue/charts-global.d.ts",
     });
-    expect(VUE_SUBPATHS).toEqual(["./vue", "./vue/monaco", "./vue/charts"]);
+    expect(pkg.exports["./vue/icons"]).toEqual({
+      types: "./dist/vue/icons.d.ts",
+      default: "./dist/vue/icons.js",
+    });
+    expect(pkg.exports["./vue/icons-global"]).toEqual({
+      types: "./dist/vue/icons-global.d.ts",
+    });
+    expect(VUE_SUBPATHS).toEqual([
+      "./vue",
+      "./vue/monaco",
+      "./vue/charts",
+      "./vue/icons",
+    ]);
     expect(Object.keys(PLANNED_RENDERERS)).not.toContain("vue");
     for (const file of [
       "index.js",
@@ -111,6 +123,9 @@ describe("exports map", () => {
       "charts.d.ts",
       "global.d.ts",
       "charts-global.d.ts",
+      "icons.js",
+      "icons.d.ts",
+      "icons-global.d.ts",
     ])
       expect(existsSync(join(vueDist, file)), file).toBe(true);
   });

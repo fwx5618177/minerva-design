@@ -17,6 +17,7 @@ import "../../src/elements/trading-chart";
 import "../../src/elements/order-book";
 import "../../src/elements/chart-3d";
 import "../../src/elements/graph";
+import "../../src/elements/icon";
 import { customStates } from "../../src/internal/styling-hooks";
 import {
   Coverage,
@@ -57,9 +58,10 @@ describe("styling hooks contract (web components)", () => {
     // The chart elements (optional `chart`, `trading-chart`, `order-book`,
     // `chart-3d` and `graph` entries) render a surface drawn by a chart engine;
     // their parts (`root`, `surface`) are not in the styling hooks manifest
-    // of @minerva/core yet.
+    // of @minerva/core yet. Same for the icon elements (optional `icon` entry,
+    // parts `icon` / `surface`).
     const pending = (tag: string | undefined) =>
-      /^minerva-(.+-)?chart$|^minerva-(sparkline|calendar-heatmap|order-book(-heatmap)?|time-and-sales|dependency-graph)$/.test(
+      /^minerva-(.+-)?chart$|^minerva-(sparkline|calendar-heatmap|order-book(-heatmap)?|time-and-sales|dependency-graph|icon|icon-canvas)$/.test(
         tag ?? "",
       );
     expect(

@@ -11,10 +11,12 @@
 //   (packages/web-components/src/elements/*.ts), the CDN bundle, the
 //   framework typings, the Custom Elements Manifest and the VS Code data.
 // - the native Vue 3 renderer (dist/vue/, ESM only): `./vue`, the optional
-//   `./vue/monaco` and `./vue/charts` (chart components + the opt-in
-//   `MinervaVueCharts` plugin), and the `./vue/global` / `./vue/charts-global`
-//   typings (GlobalComponents of the `app.use(MinervaVue)` /
-//   `app.use(MinervaVueCharts)` plugins).
+//   `./vue/monaco`, `./vue/charts` (chart components + the opt-in
+//   `MinervaVueCharts` plugin) and `./vue/icons` (icon components + the
+//   opt-in `MinervaVueIcons` plugin), and the `./vue/global` /
+//   `./vue/charts-global` / `./vue/icons-global` typings (GlobalComponents
+//   of the `app.use(MinervaVue)` / `app.use(MinervaVueCharts)` /
+//   `app.use(MinervaVueIcons)` plugins).
 //   node scripts/sync-package.mjs          (write)
 //   node scripts/sync-package.mjs --check  (exit 1 when out of date)
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
@@ -55,7 +57,12 @@ export const DUAL_SUBPATHS = {
 };
 
 /** ESM-only entries of the Vue renderer (Are the Types Wrong? esm-only profile) */
-export const VUE_SUBPATHS = ["./vue", "./vue/monaco", "./vue/charts"];
+export const VUE_SUBPATHS = [
+  "./vue",
+  "./vue/monaco",
+  "./vue/charts",
+  "./vue/icons",
+];
 
 /** Reserved for unimplemented platform entries; all current renderers have an initial build. */
 export const PLANNED_RENDERERS = {};
@@ -165,8 +172,13 @@ export function expectedExports() {
       types: "./dist/vue/charts.d.ts",
       default: "./dist/vue/charts.js",
     },
+    "./vue/icons": {
+      types: "./dist/vue/icons.d.ts",
+      default: "./dist/vue/icons.js",
+    },
     "./vue/global": { types: "./dist/vue/global.d.ts" },
     "./vue/charts-global": { types: "./dist/vue/charts-global.d.ts" },
+    "./vue/icons-global": { types: "./dist/vue/icons-global.d.ts" },
     "./custom-elements.json": "./custom-elements.json",
     "./html-custom-data.json": "./dist/web-components/html-custom-data.json",
     "./package.json": "./package.json",

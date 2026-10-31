@@ -14,8 +14,10 @@
 //    declarations (dist/core, dist/dom);
 // 3. rewrites the `@minerva/core` / `@minerva/dom` imports of the FESM
 //    bundles and typings to the shared copies in dist/core and dist/dom
-//    (tools/core-imports.mjs: the core ships once), and the secondary entry's
-//    import of the primary one to a relative path;
+//    (tools/core-imports.mjs: the core ships once), the secondary entry's
+//    import of the primary one to a relative path, and the engines built by
+//    @minerva/charts / @minerva/icons to their built files in dist/charts and
+//    dist/icons;
 // 4. drops the files ng-packagr writes for a standalone npm package
 //    (package.json, README): the entries are published through the exports
 //    map of minerva-design (scripts/sync-package.mjs).
@@ -51,10 +53,11 @@ for (const required of [
   "dom/index.d.ts",
   "react/index.js",
   "charts/core.d.ts",
+  "icons/core.d.ts",
 ])
   if (!existsSync(join(DIST_DIR, required)))
     throw new Error(
-      `dist/${required} is missing: build @minerva/core, @minerva/dom, @minerva/charts and @minerva/react first`,
+      `dist/${required} is missing: build @minerva/core, @minerva/dom, @minerva/charts, @minerva/icons and @minerva/react first`,
     );
 
 // 1. stage
@@ -122,6 +125,10 @@ json(join(STAGE, "tsconfig.lib.json"), {
       "@minerva/dom": declarations("dom/index.d.ts"),
       // the chart components (engine built by @minerva/charts, kept external)
       "minerva-design/charts/core": declarations("charts/core.d.ts"),
+      // the icon components (engine built by @minerva/icons, kept external;
+      // the surface is internal: the lazily loaded canvas renderers of MnIcon)
+      "minerva-design/icons/core": declarations("icons/core.d.ts"),
+      "minerva-design/icons/surface": declarations("icons/engine/surface.d.ts"),
     },
   },
   angularCompilerOptions: {
@@ -145,6 +152,15 @@ const walk = (dir) =>
     entry.isDirectory() ? walk(join(dir, entry.name)) : [join(dir, entry.name)],
   );
 const toPosix = (path) => path.split(sep).join("/");
+/**
+ * Engine specifiers kept external by the components -> their built file in
+ * dist (`minerva-design/icons/surface` is not a published entry)
+ */
+const LINKED = [
+  ["minerva-design/charts/core", "charts/core.js"],
+  ["minerva-design/icons/core", "icons/core.js"],
+  ["minerva-design/icons/surface", "icons/engine/surface.js"],
+];
 for (const file of walk(ANGULAR_DIST)) {
   const kind = file.endsWith(".mjs")
     ? "js"
@@ -161,15 +177,17 @@ for (const file of walk(ANGULAR_DIST)) {
   let target = toPosix(relative(dirname(file), primary));
   if (!target.startsWith(".")) target = `./${target}`;
   code = code.replace(/(["'])@minerva\/angular\1/g, `$1${target}$1`);
-  // the chart engine: the one copy of dist/charts (shared with
-  // minerva-design/charts and the other renderers)
-  let charts = toPosix(
-    relative(dirname(file), join(DIST_DIR, "charts/core.js")),
-  );
-  if (!charts.startsWith(".")) charts = `./${charts}`;
-  code = code.replace(/(["'])minerva-design\/charts\/core\1/g, `$1${charts}$1`);
-  if (/["'](@minerva\/|minerva-design\/charts\/)/.test(code))
-    throw new Error(`${file}: unresolved workspace / chart engine import`);
+  // the chart and icon engines: the one copy of dist/charts / dist/icons
+  // (shared with minerva-design/charts, minerva-design/icons and the other
+  // renderers)
+  for (const [specifier, built] of LINKED) {
+    let path = toPosix(relative(dirname(file), join(DIST_DIR, built)));
+    if (!path.startsWith(".")) path = `./${path}`;
+    code = code.replaceAll(`"${specifier}"`, `"${path}"`);
+    code = code.replaceAll(`'${specifier}'`, `'${path}'`);
+  }
+  if (/["'](@minerva\/|minerva-design\/(charts|icons)\/)/.test(code))
+    throw new Error(`${file}: unresolved workspace / engine import`);
   writeFileSync(file, code);
 }
 

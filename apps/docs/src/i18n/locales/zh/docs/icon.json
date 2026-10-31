@@ -55,5 +55,28 @@
     "DynamicIconProps": {
       "name": "内置图标的名称（如 \"arrow-up\"）；未知名称不渲染任何内容"
     }
+  },
+  "wc": {
+    "minerva-icon": {
+      "props": {
+        "label": "无障碍名称：图标以此名称成为 role=\"img\"；不设置时，图标对辅助技术隐藏"
+      },
+      "events": {
+        "minerva-renderer-change": "画布模式：后端绘制了图标，或在 GPU 丢失后完成回退；detail: { renderer }"
+      },
+      "methods": {
+        "getRenderer": "绘制画布的后端（webgpu、webgl2、webgl、canvas2d）；SVG 模式下或启动前为 null"
+      }
+    },
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "<minerva-icon> 按名称绘制内置图标，可与文本并排，也可放入其他元素的插槽；设置 label 后，它会作为图像暴露给辅助技术。"
+      },
+      "canvas": {
+        "title": "渲染器",
+        "description": "renderer 属性让图标绘制在画布上；每个图标都会触发 minerva-renderer-change，带上实际绘制它的后端（显示在图标下方）。\"auto\" 跟随渲染器栏；浏览器不支持强制指定的后端时，会回退到下一个。"
+      }
+    }
   }
 }

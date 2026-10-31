@@ -15,6 +15,7 @@ import "../../src/elements/trading-chart";
 import "../../src/elements/order-book";
 import "../../src/elements/chart-3d";
 import "../../src/elements/graph";
+import "../../src/elements/icon";
 import { settle } from "../utils";
 
 const tags = (

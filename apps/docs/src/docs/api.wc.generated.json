@@ -7575,6 +7575,88 @@
       }
     ]
   },
+  "wc:minerva-icon": {
+    "kind": "element",
+    "source": "web-components/src/components/icon/icon.ts",
+    "className": "MinervaIcon",
+    "summary": "Icon of the Minerva icon set, as inline SVG or on a GPU canvas.",
+    "description": "An icon of minerva-design/icons (the `<Icon>` of React): inline SVG by default (crisp at any size, styled by CSS, server-renderable), or a canvas drawn with WebGPU, WebGL2, WebGL or Canvas2D (`renderer`) by a backend shared by every canvas icon of the page. Set a built-in icon by `name` (`search`, `arrow-up`...) or any icon, custom ones made with `defineIcon` included, as the `icon` property. The stroke follows the text color unless `color` is set. Without `label` the icon is decorative (hidden from assistive technologies); with one it is an image with that accessible name. In canvas mode the host gets `data-renderer` with the backend drawing. Published as the optional entry `minerva-design/web-components/icon` (not part of the all-in-one entry nor the CDN bundle: it loads the icon set `minerva-design/icons/core`).",
+    "properties": [
+      {
+        "name": "name",
+        "attribute": "name",
+        "type": "string | undefined",
+        "description": "Name of a built-in icon (`search`, `arrow-up`...); the `icon` property wins over it"
+      },
+      {
+        "name": "size",
+        "attribute": "size",
+        "type": "number",
+        "default": "24",
+        "description": "Width and height in pixels"
+      },
+      {
+        "name": "color",
+        "attribute": "color",
+        "type": "string",
+        "default": "\"currentColor\"",
+        "description": "Stroke color, any CSS color (`currentColor` follows the text color)"
+      },
+      {
+        "name": "strokeWidth",
+        "attribute": "stroke-width",
+        "type": "number",
+        "default": "2",
+        "description": "Stroke width on the 24×24 grid (scales with the size unless `absolute-stroke-width`)"
+      },
+      {
+        "name": "absoluteStrokeWidth",
+        "attribute": "absolute-stroke-width",
+        "type": "boolean",
+        "default": "false",
+        "description": "Keeps the stroke width in pixels whatever the size"
+      },
+      {
+        "name": "label",
+        "attribute": "label",
+        "type": "string | undefined",
+        "description": "Accessible name: the icon becomes an image (role=img); without it the icon is hidden from assistive technologies"
+      },
+      {
+        "name": "renderer",
+        "attribute": "renderer",
+        "type": "\"svg\" | \"auto\" | \"webgpu\" | \"webgl2\" | \"webgl\" | \"canvas2d\"",
+        "default": "\"svg\"",
+        "description": "`svg` (inline SVG), or a canvas drawn with the backend preference (`auto` follows the page default)"
+      },
+      {
+        "name": "icon",
+        "type": "IconDefinition | undefined",
+        "description": "Icon definition (a built-in icon constant, or a custom icon of `defineIcon`); wins over `name`; property only"
+      }
+    ],
+    "methods": [
+      {
+        "name": "getRenderer",
+        "signature": "() => IconRendererKind | null",
+        "description": "Backend drawing the canvas (`webgpu`, `webgl2`, `webgl`, `canvas2d`); `null` in SVG mode or until drawn"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-renderer-change",
+        "description": "Canvas mode: the backend drew the icon (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "icon",
+        "description": "The <svg> (or the <canvas> in canvas mode) drawing the icon"
+      }
+    ],
+    "cssProperties": []
+  },
   "wc:minerva-icon-button": {
     "kind": "element",
     "source": "web-components/src/components/icon-button/icon-button.ts",
@@ -7784,6 +7866,86 @@
         "description": "Stacking order (defaults to --z-popover)"
       }
     ]
+  },
+  "wc:minerva-icon-canvas": {
+    "kind": "element",
+    "source": "web-components/src/components/icon/icon-canvas.ts",
+    "className": "MinervaIconCanvas",
+    "summary": "Thousands of icons on one GPU canvas.",
+    "description": "Many icons of minerva-design/icons on one canvas (the `<IconCanvas>` of React): one instanced GPU draw per run of identical icons (WebGPU, WebGL2, WebGL) or Canvas2D, for dense pictures, maps, particles or animations of thousands of icons; for icons in the UI use `<minerva-icon>`. Set the icons (`IconCanvasItem`: `icon`, `x`, `y`, `size`, `color`, `rotation`, `opacity`...) as the `items` property; replace the array to redraw. The canvas fills a box of `width` × `height` (100% × 240 pixels by default; a number is in pixels, any CSS size works) and follows its size. With `renderer` `auto` it follows the page default (`setDefaultIconRenderer`) live. The host gets `data-renderer` with the backend drawing. Published as the optional entry `minerva-design/web-components/icon`.",
+    "properties": [
+      {
+        "name": "renderer",
+        "attribute": "renderer",
+        "type": "\"auto\" | \"webgpu\" | \"webgl2\" | \"webgl\" | \"canvas2d\"",
+        "default": "\"auto\"",
+        "description": "Backend preference (`auto` follows the page default)"
+      },
+      {
+        "name": "width",
+        "attribute": "width",
+        "type": "number | string",
+        "default": "\"100%\"",
+        "description": "Width of the canvas box: a number is in pixels, or any CSS size"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "number | string",
+        "default": "240",
+        "description": "Height of the canvas box: a number is in pixels, or any CSS size"
+      },
+      {
+        "name": "pixelRatio",
+        "attribute": "pixel-ratio",
+        "type": "number | undefined",
+        "description": "Device pixel ratio of the canvas; by default the screen's"
+      },
+      {
+        "name": "label",
+        "attribute": "label",
+        "type": "string | undefined",
+        "description": "Accessible name of the picture (role=img); without it the canvas is hidden from assistive technologies"
+      },
+      {
+        "name": "items",
+        "type": "readonly IconCanvasItem[]",
+        "default": "[]",
+        "description": "Icons to draw, in painting order (later ones on top); replace the array to redraw; property only"
+      },
+      {
+        "name": "canvas",
+        "type": "HTMLCanvasElement | null",
+        "readonly": true,
+        "description": "The `<canvas>` drawn into, `null` until the element is rendered and connected"
+      }
+    ],
+    "methods": [
+      {
+        "name": "getRenderer",
+        "signature": "() => IconRendererKind | null",
+        "description": "Backend drawing (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until it started"
+      },
+      {
+        "name": "ready",
+        "signature": "() => Promise<IconRendererKind>",
+        "description": "Resolves with the backend once it started and the current items are drawn; rejects when the element is not connected or no backend can start"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-renderer-change",
+        "description": "The backend started (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "surface",
+        "description": "The box the canvas is drawn in (role=img when labelled)"
+      }
+    ],
+    "cssProperties": []
   },
   "wc:minerva-input": {
     "kind": "element",

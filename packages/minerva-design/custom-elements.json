@@ -20280,6 +20280,362 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/components/icon/icon-canvas.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Many icons of minerva-design/icons on one canvas (the `<IconCanvas>` of\nReact): one instanced GPU draw per run of identical icons (WebGPU, WebGL2,\nWebGL) or Canvas2D, for dense pictures, maps, particles or animations of\nthousands of icons; for icons in the UI use `<minerva-icon>`. Set the\nicons (`IconCanvasItem`: `icon`, `x`, `y`, `size`, `color`, `rotation`,\n`opacity`...) as the `items` property; replace the array to redraw.\n\nThe canvas fills a box of `width` × `height` (100% × 240 pixels by\ndefault; a number is in pixels, any CSS size works) and follows its size.\nWith `renderer` `auto` it follows the page default\n(`setDefaultIconRenderer`) live. The host gets `data-renderer` with the\nbackend drawing.\n\nPublished as the optional entry `minerva-design/web-components/icon`.",
+          "name": "MinervaIconCanvas",
+          "cssParts": [
+            {
+              "description": "The box the canvas is drawn in (role=img when labelled)",
+              "name": "surface"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "items",
+              "type": {
+                "text": "readonly IconCanvasItem[]"
+              },
+              "default": "[]",
+              "description": "Icons to draw, in painting order (later ones on top); replace the array to redraw; property only"
+            },
+            {
+              "kind": "field",
+              "name": "renderer",
+              "type": {
+                "text": "\"auto\" | \"webgpu\" | \"webgl2\" | \"webgl\" | \"canvas2d\""
+              },
+              "default": "\"auto\"",
+              "description": "Backend preference (`auto` follows the page default)",
+              "attribute": "renderer"
+            },
+            {
+              "kind": "field",
+              "name": "width",
+              "type": {
+                "text": "number | string"
+              },
+              "default": "\"100%\"",
+              "description": "Width of the canvas box: a number is in pixels, or any CSS size",
+              "attribute": "width"
+            },
+            {
+              "kind": "field",
+              "name": "height",
+              "type": {
+                "text": "number | string"
+              },
+              "default": "240",
+              "description": "Height of the canvas box: a number is in pixels, or any CSS size",
+              "attribute": "height"
+            },
+            {
+              "kind": "field",
+              "name": "pixelRatio",
+              "type": {
+                "text": "number | undefined"
+              },
+              "description": "Device pixel ratio of the canvas; by default the screen's",
+              "attribute": "pixel-ratio"
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Accessible name of the picture (role=img); without it the canvas is hidden from assistive technologies",
+              "attribute": "label"
+            },
+            {
+              "kind": "field",
+              "name": "canvas",
+              "type": {
+                "text": "HTMLCanvasElement | null"
+              },
+              "description": "The `<canvas>` drawn into, `null` until the element is rendered and connected",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "getRenderer",
+              "return": {
+                "type": {
+                  "text": "IconRendererKind | null"
+                }
+              },
+              "description": "Backend drawing (`webgpu`, `webgl2`, `webgl`, `canvas2d`), `null` until it started"
+            },
+            {
+              "kind": "method",
+              "name": "ready",
+              "return": {
+                "type": {
+                  "text": "Promise<IconRendererKind>"
+                }
+              },
+              "description": "Resolves with the backend once it started and the current items are drawn; rejects when the element is not connected or no backend can start"
+            }
+          ],
+          "events": [
+            {
+              "description": "The backend started (or fell back after a GPU loss); detail: { renderer }",
+              "name": "minerva-renderer-change"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "renderer",
+              "type": {
+                "text": "\"auto\" | \"webgpu\" | \"webgl2\" | \"webgl\" | \"canvas2d\""
+              },
+              "default": "\"auto\"",
+              "description": "Backend preference (`auto` follows the page default)",
+              "fieldName": "renderer"
+            },
+            {
+              "name": "width",
+              "type": {
+                "text": "number | string"
+              },
+              "default": "\"100%\"",
+              "description": "Width of the canvas box: a number is in pixels, or any CSS size",
+              "fieldName": "width"
+            },
+            {
+              "name": "height",
+              "type": {
+                "text": "number | string"
+              },
+              "default": "240",
+              "description": "Height of the canvas box: a number is in pixels, or any CSS size",
+              "fieldName": "height"
+            },
+            {
+              "name": "pixel-ratio",
+              "type": {
+                "text": "number | undefined"
+              },
+              "description": "Device pixel ratio of the canvas; by default the screen's",
+              "fieldName": "pixelRatio"
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Accessible name of the picture (role=img); without it the canvas is hidden from assistive technologies",
+              "fieldName": "label"
+            }
+          ],
+          "tagName": "minerva-icon-canvas",
+          "customElement": true,
+          "summary": "Thousands of icons on one GPU canvas."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "MinervaIconCanvas",
+          "declaration": {
+            "name": "MinervaIconCanvas",
+            "module": "src/components/icon/icon-canvas.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/icon/icon.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "An icon of minerva-design/icons (the `<Icon>` of React): inline SVG by\ndefault (crisp at any size, styled by CSS, server-renderable), or a\ncanvas drawn with WebGPU, WebGL2, WebGL or Canvas2D (`renderer`) by a\nbackend shared by every canvas icon of the page. Set a built-in icon by\n`name` (`search`, `arrow-up`...) or any icon, custom ones made with\n`defineIcon` included, as the `icon` property. The stroke follows the\ntext color unless `color` is set.\n\nWithout `label` the icon is decorative (hidden from assistive\ntechnologies); with one it is an image with that accessible name. In\ncanvas mode the host gets `data-renderer` with the backend drawing.\n\nPublished as the optional entry `minerva-design/web-components/icon`\n(not part of the all-in-one entry nor the CDN bundle: it loads the icon\nset `minerva-design/icons/core`).",
+          "name": "MinervaIcon",
+          "cssParts": [
+            {
+              "description": "The <svg> (or the <canvas> in canvas mode) drawing the icon",
+              "name": "icon"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Name of a built-in icon (`search`, `arrow-up`...); the `icon` property wins over it",
+              "attribute": "name"
+            },
+            {
+              "kind": "field",
+              "name": "icon",
+              "type": {
+                "text": "IconDefinition | undefined"
+              },
+              "description": "Icon definition (a built-in icon constant, or a custom icon of `defineIcon`); wins over `name`; property only"
+            },
+            {
+              "kind": "field",
+              "name": "size",
+              "type": {
+                "text": "number"
+              },
+              "default": "24",
+              "description": "Width and height in pixels",
+              "attribute": "size"
+            },
+            {
+              "kind": "field",
+              "name": "color",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"currentColor\"",
+              "description": "Stroke color, any CSS color (`currentColor` follows the text color)",
+              "attribute": "color"
+            },
+            {
+              "kind": "field",
+              "name": "strokeWidth",
+              "type": {
+                "text": "number"
+              },
+              "default": "2",
+              "description": "Stroke width on the 24×24 grid (scales with the size unless `absolute-stroke-width`)",
+              "attribute": "stroke-width"
+            },
+            {
+              "kind": "field",
+              "name": "absoluteStrokeWidth",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Keeps the stroke width in pixels whatever the size",
+              "attribute": "absolute-stroke-width"
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Accessible name: the icon becomes an image (role=img); without it the icon is hidden from assistive technologies",
+              "attribute": "label"
+            },
+            {
+              "kind": "field",
+              "name": "renderer",
+              "type": {
+                "text": "\"svg\" | \"auto\" | \"webgpu\" | \"webgl2\" | \"webgl\" | \"canvas2d\""
+              },
+              "default": "\"svg\"",
+              "description": "`svg` (inline SVG), or a canvas drawn with the backend preference (`auto` follows the page default)",
+              "attribute": "renderer"
+            },
+            {
+              "kind": "method",
+              "name": "getRenderer",
+              "return": {
+                "type": {
+                  "text": "IconRendererKind | null"
+                }
+              },
+              "description": "Backend drawing the canvas (`webgpu`, `webgl2`, `webgl`, `canvas2d`); `null` in SVG mode or until drawn"
+            }
+          ],
+          "events": [
+            {
+              "description": "Canvas mode: the backend drew the icon (or fell back after a GPU loss); detail: { renderer }",
+              "name": "minerva-renderer-change"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "name",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Name of a built-in icon (`search`, `arrow-up`...); the `icon` property wins over it",
+              "fieldName": "name"
+            },
+            {
+              "name": "size",
+              "type": {
+                "text": "number"
+              },
+              "default": "24",
+              "description": "Width and height in pixels",
+              "fieldName": "size"
+            },
+            {
+              "name": "color",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"currentColor\"",
+              "description": "Stroke color, any CSS color (`currentColor` follows the text color)",
+              "fieldName": "color"
+            },
+            {
+              "name": "stroke-width",
+              "type": {
+                "text": "number"
+              },
+              "default": "2",
+              "description": "Stroke width on the 24×24 grid (scales with the size unless `absolute-stroke-width`)",
+              "fieldName": "strokeWidth"
+            },
+            {
+              "name": "absolute-stroke-width",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Keeps the stroke width in pixels whatever the size",
+              "fieldName": "absoluteStrokeWidth"
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Accessible name: the icon becomes an image (role=img); without it the icon is hidden from assistive technologies",
+              "fieldName": "label"
+            },
+            {
+              "name": "renderer",
+              "type": {
+                "text": "\"svg\" | \"auto\" | \"webgpu\" | \"webgl2\" | \"webgl\" | \"canvas2d\""
+              },
+              "default": "\"svg\"",
+              "description": "`svg` (inline SVG), or a canvas drawn with the backend preference (`auto` follows the page default)",
+              "fieldName": "renderer"
+            }
+          ],
+          "tagName": "minerva-icon",
+          "customElement": true,
+          "summary": "Icon of the Minerva icon set, as inline SVG or on a GPU canvas."
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "MinervaIcon",
+          "declaration": {
+            "name": "MinervaIcon",
+            "module": "src/components/icon/icon.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/components/input/input.ts",
       "declarations": [
         {

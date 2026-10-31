@@ -1,6 +1,7 @@
 import { Component, signal } from "@angular/core";
 import * as angularCore from "@angular/core";
 import * as chartsCore from "minerva-design/charts/core";
+import * as iconsCore from "minerva-design/icons/core";
 import ts from "typescript";
 import { expect, it, vi } from "vitest";
 import * as components from "./index";
@@ -19,6 +20,7 @@ const exported = { ...components, MnMonacoCodeEditor } as Record<
 const modules: Record<string, Record<string, unknown>> = {
   "@angular/core": angularCore,
   "minerva-design/charts/core": chartsCore,
+  "minerva-design/icons/core": iconsCore,
 };
 /**
  * Value of a code field (`code()` of the examples: generated data, timers),

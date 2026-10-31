@@ -55,5 +55,28 @@
     "DynamicIconProps": {
       "name": "Name of a built-in icon (e.g. \"arrow-up\"); unknown names render nothing"
     }
+  },
+  "wc": {
+    "minerva-icon": {
+      "props": {
+        "label": "Accessible name: the icon becomes role=\"img\" with this name; without it, the icon is hidden from assistive technologies"
+      },
+      "events": {
+        "minerva-renderer-change": "Canvas mode: the backend drew the icon, or fell back after a GPU loss; detail: { renderer }"
+      },
+      "methods": {
+        "getRenderer": "Backend drawing the canvas (webgpu, webgl2, webgl, canvas2d), null in SVG mode or until it started"
+      }
+    },
+    "demos": {
+      "basic": {
+        "title": "Basic",
+        "description": "<minerva-icon> draws a built-in icon by name, inline with text and in the slots of other elements; with a label it becomes an image for assistive technologies."
+      },
+      "canvas": {
+        "title": "Renderers",
+        "description": "The renderer attribute draws the icon on a canvas; each icon fires minerva-renderer-change with the backend that drew it, shown under it. \"auto\" follows the renderer bar; a forced backend this browser lacks falls back to the next one."
+      }
+    }
   }
 }

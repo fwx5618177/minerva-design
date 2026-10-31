@@ -55,5 +55,28 @@
     "DynamicIconProps": {
       "name": "Nom d’une icône intégrée (par ex. \"arrow-up\") ; un nom inconnu n’affiche rien"
     }
+  },
+  "wc": {
+    "minerva-icon": {
+      "props": {
+        "label": "Nom accessible : l'icône devient role=\"img\" avec ce nom ; sans lui, elle est masquée aux technologies d'assistance"
+      },
+      "events": {
+        "minerva-renderer-change": "Mode canvas : le backend a dessiné l'icône, ou a basculé après une perte du GPU ; detail : { renderer }"
+      },
+      "methods": {
+        "getRenderer": "Backend qui dessine le canvas (webgpu, webgl2, webgl, canvas2d), null en mode SVG ou avant son démarrage"
+      }
+    },
+    "demos": {
+      "basic": {
+        "title": "Utilisation de base",
+        "description": "<minerva-icon> dessine une icône intégrée à partir de son nom, au fil du texte ou dans les slots d'autres éléments ; avec un label, elle devient une image pour les technologies d'assistance."
+      },
+      "canvas": {
+        "title": "Moteurs de rendu",
+        "description": "L'attribut renderer dessine l'icône sur un canvas ; chaque icône émet minerva-renderer-change avec le backend qui l'a dessinée, affiché dessous. « auto » suit la barre de rendu ; un backend imposé absent de ce navigateur bascule sur le suivant."
+      }
+    }
   }
 }

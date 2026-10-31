@@ -65,5 +65,26 @@
       "getCanvas": "The <canvas> element (null before mount)",
       "ready": "Resolves once the backend started and the current items are drawn"
     }
+  },
+  "wc": {
+    "minerva-icon-canvas": {
+      "props": {
+        "label": "Accessible name of the whole picture (role=\"img\"); without it, the canvas is hidden from assistive technologies",
+        "canvas": "The <canvas> element drawing the icons, null until connected"
+      },
+      "events": {
+        "minerva-renderer-change": "The backend started, or fell back after a GPU loss; detail: { renderer }"
+      },
+      "methods": {
+        "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until it started",
+        "ready": "Resolves with the backend once it started and the current items are drawn"
+      }
+    },
+    "demos": {
+      "basic": {
+        "title": "Basic",
+        "description": "items is a JavaScript property: icons placed in CSS pixels with their own size, color, rotation, stroke width and opacity, drawn on one canvas. minerva-renderer-change reports the backend."
+      }
+    }
   }
 }

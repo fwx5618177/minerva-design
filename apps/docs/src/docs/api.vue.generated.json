@@ -1715,6 +1715,37 @@
     "events": [],
     "slots": [{ "name": "default", "type": "any" }]
   },
+  "DynamicIcon": {
+    "file": "packages/vue/src/icon/DynamicIcon.vue",
+    "props": [
+      { "name": "color", "type": "string", "default": "\"currentColor\"", "required": false, "description": "Stroke color, any CSS color" },
+      {
+        "name": "size",
+        "type": "string | number",
+        "default": "24",
+        "required": false,
+        "description": "Width and height (a number is in pixels; canvas renderers also follow CSS sizes such as `\"1em\"`)"
+      },
+      {
+        "name": "renderer",
+        "type": "IconRenderer",
+        "default": "\"svg\"",
+        "required": false,
+        "description": "Inline SVG (default), or a `<canvas>` drawn by a backend shared by every\ncanvas icon of the page: `auto` (the global default, see\n`setDefaultIconRenderer`), `webgpu`, `webgl2`, `webgl` or `canvas2d`"
+      },
+      { "name": "strokeWidth", "type": "number", "default": "2", "required": false, "description": "Stroke width on the 24×24 grid (scales with the size)" },
+      { "name": "absoluteStrokeWidth", "type": "boolean", "default": "false", "required": false, "description": "Keeps `strokeWidth` in pixels whatever the size" },
+      {
+        "name": "title",
+        "type": "string",
+        "required": false,
+        "description": "Accessible name: the icon becomes `role=\"img\"`; without it (or an `aria-label`) the icon is hidden from assistive technologies"
+      },
+      { "name": "name", "type": "string", "required": true, "description": "Name of a built-in icon (e.g. `\"arrow-up\"`); unknown names render nothing" }
+    ],
+    "events": [{ "name": "rendererChange", "type": "[kind: IconRendererKind]" }],
+    "slots": []
+  },
   "Empty": {
     "file": "packages/vue/src/components/Empty/Empty.vue",
     "props": [
@@ -2335,6 +2366,37 @@
     "events": [],
     "slots": []
   },
+  "Icon": {
+    "file": "packages/vue/src/icon/Icon.vue",
+    "props": [
+      { "name": "color", "type": "string", "default": "\"currentColor\"", "required": false, "description": "Stroke color, any CSS color" },
+      {
+        "name": "size",
+        "type": "string | number",
+        "default": "24",
+        "required": false,
+        "description": "Width and height (a number is in pixels; canvas renderers also follow CSS sizes such as `\"1em\"`)"
+      },
+      {
+        "name": "renderer",
+        "type": "IconRenderer",
+        "default": "\"svg\"",
+        "required": false,
+        "description": "Inline SVG (default), or a `<canvas>` drawn by a backend shared by every\ncanvas icon of the page: `auto` (the global default, see\n`setDefaultIconRenderer`), `webgpu`, `webgl2`, `webgl` or `canvas2d`"
+      },
+      { "name": "strokeWidth", "type": "number", "default": "2", "required": false, "description": "Stroke width on the 24×24 grid (scales with the size)" },
+      { "name": "absoluteStrokeWidth", "type": "boolean", "default": "false", "required": false, "description": "Keeps `strokeWidth` in pixels whatever the size" },
+      {
+        "name": "title",
+        "type": "string",
+        "required": false,
+        "description": "Accessible name: the icon becomes `role=\"img\"`; without it (or an `aria-label`) the icon is hidden from assistive technologies"
+      },
+      { "name": "icon", "type": "IconDefinition", "required": true, "description": "The icon to draw: a built-in one (e.g. `searchIcon`) or a `defineIcon` result" }
+    ],
+    "events": [{ "name": "rendererChange", "type": "[kind: IconRendererKind]" }],
+    "slots": []
+  },
   "IconButton": {
     "file": "packages/vue/src/components/IconButton/IconButton.vue",
     "props": [
@@ -2373,6 +2435,19 @@
       { "name": "pressedChange", "type": "[pressed: boolean]" }
     ],
     "slots": [{ "name": "default", "type": "any", "description": "The icon" }]
+  },
+  "IconCanvas": {
+    "file": "packages/vue/src/icon/IconCanvas.vue",
+    "props": [
+      { "name": "renderer", "type": "IconRendererPreference", "default": "\"auto\"", "required": false, "description": "Backend preference; `auto` follows the global default" },
+      { "name": "width", "type": "string | number", "default": "\"100%\"", "required": false, "description": "Width (a number is in pixels)" },
+      { "name": "height", "type": "string | number", "default": "240", "required": false, "description": "Height (a number is in pixels)" },
+      { "name": "title", "type": "string", "required": false, "description": "Accessible name of the whole picture (`role=\"img\"`); without it the canvas is hidden from assistive technologies" },
+      { "name": "items", "type": "readonly IconCanvasItem[]", "required": true, "description": "Icons to draw, in painting order (later ones on top), positions in CSS pixels" },
+      { "name": "pixelRatio", "type": "number", "required": false, "description": "Device pixel ratio (`window.devicePixelRatio` by default)" }
+    ],
+    "events": [{ "name": "rendererChange", "type": "[kind: IconRendererKind]" }],
+    "slots": []
   },
   "Input": {
     "file": "packages/vue/src/components/Input/Input.vue",

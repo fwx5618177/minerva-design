@@ -59,7 +59,7 @@ describe("generated files", () => {
     ).toEqual([]);
     // optional entries (optional peer dependencies) stay out of it
     for (const entry of OPTIONAL_ENTRIES) {
-      expect(index).not.toContain(`./elements/${entry}`);
+      expect(index).not.toContain(`"./elements/${entry}"`);
     }
   });
 

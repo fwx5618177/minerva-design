@@ -219,7 +219,7 @@ const VueSection: React.FC<{ meta: DocPageMeta; framework: FrameworkDef }> = ({
       <section className={styles.section} aria-labelledby="vue-import">
         <h2 id="vue-import">{t("doc.import")}</h2>
         <CodeBlock
-          code={`import { ${components.join(", ")} } from "minerva-design/vue${meta.id === "monaco-code-editor" ? "/monaco" : ""}";`}
+          code={`import { ${components.join(", ")} } from "minerva-design/vue${meta.id === "monaco-code-editor" ? "/monaco" : meta.category === "icons" ? "/icons" : ""}";`}
           language="ts"
         />
         <p className={styles.prose}>

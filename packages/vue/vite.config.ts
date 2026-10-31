@@ -11,13 +11,18 @@ import {
   coreImportsPlugin,
   rewriteCoreDeclarations,
 } from "../../tools/core-imports.mjs";
-import { CHARTS_DIST, REACT_DIST, VUE_DIST } from "../../tools/paths.mjs";
+import {
+  CHARTS_DIST,
+  ICONS_DIST,
+  REACT_DIST,
+  VUE_DIST,
+} from "../../tools/paths.mjs";
 
 const here = (path: string) => fileURLToPath(new URL(path, import.meta.url));
 
 // Built into `dist/vue/` of the published `minerva-design` package
-// (`minerva-design/vue`, `minerva-design/vue/monaco` and
-// `minerva-design/vue/charts`), ESM only (the Vue 3
+// (`minerva-design/vue`, `minerva-design/vue/monaco`,
+// `minerva-design/vue/charts` and `minerva-design/vue/icons`), ESM only (the Vue 3
 // ecosystem: Vite, Nuxt, vue/server-renderer all load ESM).
 //
 // Dependencies (vue, dompurify, jsonc-parser, the optional monaco-editor)
@@ -30,54 +35,70 @@ const externalDeps = [
   "@vue",
 ];
 /**
- * The chart components import the engine as `minerva-design/charts/core`:
- * it stays external and is rewritten to the one copy built by
- * @minerva/charts (`dist/charts/core.js`, shared with minerva-design/charts
- * and the other renderers).
+ * Engines built by the other workspace packages, imported by their published
+ * specifier: they stay external and are rewritten to the one built copy
+ * (shared with the other renderers)
+ * - the chart components: `minerva-design/charts/core` -> `dist/charts/core.js`
+ * - the icon components: `minerva-design/icons/core` -> `dist/icons/core.js`,
+ *   and `minerva-design/icons/surface` (internal, not a published entry: the
+ *   canvas renderers of `Icon`, loaded with the first canvas icon) ->
+ *   `dist/icons/engine/surface.js`
  */
-const CHARTS_CORE = "minerva-design/charts/core";
+const LINKED: Record<string, { dist: string; file: string }> = {
+  "minerva-design/charts/core": { dist: CHARTS_DIST, file: "core" },
+  "minerva-design/icons/core": { dist: ICONS_DIST, file: "core" },
+  "minerva-design/icons/surface": { dist: ICONS_DIST, file: "engine/surface" },
+};
 const isExternal = (id: string) =>
-  id === CHARTS_CORE ||
+  id in LINKED ||
   externalDeps.some((dep) => id === dep || id.startsWith(`${dep}/`));
 
-const CHARTS_CORE_IMPORT = /(["'])minerva-design\/charts\/core\1/g;
+const LINKED_IMPORT =
+  /(["'])(minerva-design\/(?:charts\/core|icons\/core|icons\/surface))\1/g;
 /**
  * vite-plugin-dts resolves the `paths` of tsconfig.build.json relative to the
  * sources (`../../minerva-design/dist/charts/core.d.ts`), which is wrong
  * once emitted: back to the bare specifier, rewritten after the build
  */
-const CHARTS_CORE_DECLARATION =
-  /(["'])(?:\.\.\/)+minerva-design\/dist\/charts\/core(?:\.d\.ts)?\1/g;
-const bareChartsCore = (emittedFiles: Map<string, string>) => {
+const LINKED_DECLARATION =
+  /(["'])(?:\.\.\/)+minerva-design\/dist\/(charts\/core|icons\/core|icons\/engine\/surface)(?:\.d\.ts)?\1/g;
+const bareLinked = (emittedFiles: Map<string, string>) => {
   for (const [file, content] of emittedFiles) {
     if (file.endsWith(".d.ts"))
       emittedFiles.set(
         file,
-        content.replace(CHARTS_CORE_DECLARATION, `$1${CHARTS_CORE}$1`),
+        content.replace(
+          LINKED_DECLARATION,
+          (_match, quote: string, path: string) =>
+            `${quote}minerva-design/${path.replace("engine/", "")}${quote}`,
+        ),
       );
   }
   return emittedFiles;
 };
-const chartsCoreSpecifier = (fromFile: string) => {
-  const path = relative(dirname(fromFile), join(CHARTS_DIST, "core.js"))
+const linkedSpecifier = (fromFile: string, specifier: string) => {
+  const { dist, file } = LINKED[specifier]!;
+  const path = relative(dirname(fromFile), join(dist, `${file}.js`))
     .split(sep)
     .join("/");
   return path.startsWith(".") ? path : `./${path}`;
 };
-const chartsCorePlugin = (): Plugin => ({
-  name: "minerva-charts-core-import",
+const rewriteLinked = (code: string, fromFile: string) =>
+  code.replace(
+    LINKED_IMPORT,
+    (_match, quote: string, specifier: string) =>
+      `${quote}${linkedSpecifier(fromFile, specifier)}${quote}`,
+  );
+const linkedImportsPlugin = (): Plugin => ({
+  name: "minerva-linked-engine-imports",
   apply: "build",
   renderChunk(code, chunk) {
-    if (!code.includes(CHARTS_CORE)) return null;
-    const target = chartsCoreSpecifier(join(VUE_DIST, chunk.fileName));
-    return {
-      code: code.replace(CHARTS_CORE_IMPORT, `$1${target}$1`),
-      map: null,
-    };
+    const next = rewriteLinked(code, join(VUE_DIST, chunk.fileName));
+    return next === code ? null : { code: next, map: null };
   },
 });
 /** The same for the emitted declarations (vite-plugin-dts keeps the specifier) */
-const rewriteChartsDeclarations = (dir: string) => {
+const rewriteLinkedDeclarations = (dir: string) => {
   for (const entry of readdirSync(dir, {
     withFileTypes: true,
     recursive: true,
@@ -85,9 +106,8 @@ const rewriteChartsDeclarations = (dir: string) => {
     if (!entry.isFile() || !/\.d\.c?ts$/.test(entry.name)) continue;
     const file = join(entry.parentPath, entry.name);
     const code = readFileSync(file, "utf8");
-    if (!code.includes(CHARTS_CORE)) continue;
-    const target = chartsCoreSpecifier(file);
-    writeFileSync(file, code.replace(CHARTS_CORE_IMPORT, `$1${target}$1`));
+    const next = rewriteLinked(code, file);
+    if (next !== code) writeFileSync(file, next);
   }
 };
 
@@ -132,15 +152,15 @@ export default defineConfig({
     reactStylesPlugin(),
     vue(),
     coreImportsPlugin({ outDir: VUE_DIST }),
-    chartsCorePlugin(),
+    linkedImportsPlugin(),
     dts({
       tsconfigPath: "./tsconfig.build.json",
       entryRoot: "src",
       exclude: ["src/**/*.test.ts", "src/test-utils/**"],
       afterBuild: (emittedFiles) => {
-        writeEsmDeclarations(bareChartsCore(emittedFiles));
+        writeEsmDeclarations(bareLinked(emittedFiles));
         rewriteCoreDeclarations(VUE_DIST);
-        rewriteChartsDeclarations(VUE_DIST);
+        rewriteLinkedDeclarations(VUE_DIST);
       },
     }),
   ],
@@ -155,6 +175,7 @@ export default defineConfig({
         index: here("./src/index.ts"),
         monaco: here("./src/monaco.ts"),
         charts: here("./src/charts.ts"),
+        icons: here("./src/icons.ts"),
       },
       formats: ["es"],
       fileName: (_format, entryName) => `${entryName}.js`,
@@ -203,6 +224,14 @@ export default defineConfig({
       {
         find: /^minerva-design\/charts\/core$/,
         replacement: here("../charts/src/core.ts"),
+      },
+      {
+        find: /^minerva-design\/icons\/core$/,
+        replacement: here("../icons/src/core.ts"),
+      },
+      {
+        find: /^minerva-design\/icons\/surface$/,
+        replacement: here("../icons/src/engine/surface.ts"),
       },
     ],
     setupFiles: ["./tests/setup.ts"],

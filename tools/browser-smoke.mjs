@@ -54,6 +54,9 @@ const ROUTES = value("--routes", "")
       "scatter-3d-chart",
       "surface-3d-chart",
       "bar-3d-chart",
+      "icon",
+      "icon-canvas",
+      "icons-core",
     ];
 
 const CHROME_CANDIDATES = [

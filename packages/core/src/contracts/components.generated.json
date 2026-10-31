@@ -5700,6 +5700,84 @@
     }
   },
   {
+    "name": "Icon",
+    "tag": "minerva-icon",
+    "docs": "icon",
+    "descriptionKey": "docs.icon.description",
+    "description": "Icon of the Minerva icon set, as inline SVG or on a GPU canvas.",
+    "tracks": ["toB", "toC"],
+    "props": [
+      { "name": "name", "kind": "string", "required": false, "description": "Name of a built-in icon (`search`, `arrow-up`...); the `icon` property wins over it", "attribute": "name" },
+      { "name": "size", "kind": "number", "default": 24, "required": false, "description": "Width and height in pixels", "attribute": "size" },
+      { "name": "color", "kind": "string", "default": "currentColor", "required": false, "description": "Stroke color, any CSS color (`currentColor` follows the text color)", "attribute": "color" },
+      {
+        "name": "strokeWidth",
+        "kind": "number",
+        "default": 2,
+        "required": false,
+        "description": "Stroke width on the 24×24 grid (scales with the size unless `absolute-stroke-width`)",
+        "attribute": "stroke-width"
+      },
+      {
+        "name": "absoluteStrokeWidth",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "Keeps the stroke width in pixels whatever the size",
+        "attribute": "absolute-stroke-width"
+      },
+      {
+        "name": "label",
+        "kind": "string",
+        "required": false,
+        "description": "Accessible name: the icon becomes an image (role=img); without it the icon is hidden from assistive technologies",
+        "attribute": "label"
+      },
+      {
+        "name": "renderer",
+        "kind": "enum",
+        "values": ["auto", "canvas2d", "svg", "webgl", "webgl2", "webgpu"],
+        "default": "svg",
+        "required": false,
+        "description": "`svg` (inline SVG), or a canvas drawn with the backend preference (`auto` follows the page default)",
+        "attribute": "renderer"
+      },
+      { "name": "icon", "kind": "object", "required": false, "description": "Icon definition (a built-in icon constant, or a custom icon of `defineIcon`); wins over `name`; property only" }
+    ],
+    "events": [
+      {
+        "name": "minerva-renderer-change",
+        "wc": "minerva-renderer-change",
+        "detail": ["renderer"],
+        "description": "Canvas mode: the backend drew the icon (or fell back after a GPU loss); detail: { renderer }"
+      }
+    ],
+    "slots": [],
+    "children": false,
+    "platforms": {
+      "react": { "status": "n/a", "notes": "React component Icon of minerva-design/icons (separate entry, outside this contract scan)." },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnIcon. Native standalone component/directive; see platform tests for validated scope." },
+      "native": {
+        "status": "n/a",
+        "notes": "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri) with the platform's SVG or image support."
+      },
+      "taro": {
+        "status": "n/a",
+        "notes": "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri) with the platform's SVG or image support."
+      },
+      "weapp": {
+        "status": "n/a",
+        "notes": "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri) with the platform's SVG or image support."
+      },
+      "uni": {
+        "status": "n/a",
+        "notes": "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri) with the platform's SVG or image support."
+      }
+    }
+  },
+  {
     "name": "IconButton",
     "tag": "minerva-icon-button",
     "docs": "icon-button",
@@ -5806,6 +5884,63 @@
       "uni": {
         "status": "beta",
         "notes": "Native labeled icon button with four sizes, semantic colors/variants/shapes, controlled/uncontrolled pressed, loading focusability and guards, icon slot and automatic/custom tooltip. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      }
+    }
+  },
+  {
+    "name": "IconCanvas",
+    "tag": "minerva-icon-canvas",
+    "docs": "icon-canvas",
+    "descriptionKey": "docs.icon-canvas.description",
+    "description": "Thousands of icons on one GPU canvas.",
+    "tracks": ["toB", "toC"],
+    "props": [
+      {
+        "name": "renderer",
+        "kind": "enum",
+        "values": ["auto", "canvas2d", "webgl", "webgl2", "webgpu"],
+        "default": "auto",
+        "required": false,
+        "description": "Backend preference (`auto` follows the page default)",
+        "attribute": "renderer"
+      },
+      { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the canvas box: a number is in pixels, or any CSS size", "attribute": "width" },
+      { "name": "height", "kind": "union", "default": 240, "required": false, "description": "Height of the canvas box: a number is in pixels, or any CSS size", "attribute": "height" },
+      { "name": "pixelRatio", "kind": "number", "required": false, "description": "Device pixel ratio of the canvas; by default the screen's", "attribute": "pixel-ratio" },
+      {
+        "name": "label",
+        "kind": "string",
+        "required": false,
+        "description": "Accessible name of the picture (role=img); without it the canvas is hidden from assistive technologies",
+        "attribute": "label"
+      },
+      { "name": "items", "kind": "array", "required": false, "description": "Icons to draw, in painting order (later ones on top); replace the array to redraw; property only" }
+    ],
+    "events": [
+      { "name": "minerva-renderer-change", "wc": "minerva-renderer-change", "detail": ["renderer"], "description": "The backend started (or fell back after a GPU loss); detail: { renderer }" }
+    ],
+    "slots": [],
+    "children": false,
+    "platforms": {
+      "react": { "status": "n/a", "notes": "React component IconCanvas of minerva-design/icons (separate entry, outside this contract scan)." },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnIconCanvas. Native standalone component/directive; see platform tests for validated scope." },
+      "native": {
+        "status": "n/a",
+        "notes": "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri) with the platform's SVG or image support."
+      },
+      "taro": {
+        "status": "n/a",
+        "notes": "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri) with the platform's SVG or image support."
+      },
+      "weapp": {
+        "status": "n/a",
+        "notes": "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri) with the platform's SVG or image support."
+      },
+      "uni": {
+        "status": "n/a",
+        "notes": "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri) with the platform's SVG or image support."
       }
     }
   },

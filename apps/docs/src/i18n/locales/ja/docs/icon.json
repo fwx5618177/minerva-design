@@ -55,5 +55,28 @@
     "DynamicIconProps": {
       "name": "組み込みアイコンの名前（\"arrow-up\" など）。未知の名前では何も描画しません"
     }
+  },
+  "wc": {
+    "minerva-icon": {
+      "props": {
+        "label": "アクセシブルな名前。指定するとアイコンはこの名前の role=\"img\" になり、指定しないと支援技術から隠されます"
+      },
+      "events": {
+        "minerva-renderer-change": "キャンバスモード：バックエンドがアイコンを描画した、または GPU のロスト後にフォールバックした。detail: { renderer }"
+      },
+      "methods": {
+        "getRenderer": "キャンバスを描画しているバックエンド（webgpu、webgl2、webgl、canvas2d）。SVG モードまたは起動前は null"
+      }
+    },
+    "demos": {
+      "basic": {
+        "title": "基本",
+        "description": "<minerva-icon> は組み込みアイコンを名前で描画し、テキストと並べたり、ほかの要素のスロットに入れたりできます。label を指定すると、支援技術には画像として伝わります。"
+      },
+      "canvas": {
+        "title": "レンダラー",
+        "description": "renderer 属性でアイコンをキャンバスに描画します。各アイコンは描画したバックエンドを付けて minerva-renderer-change を発火し、その名前を下に表示します。\"auto\" はレンダラーバーに従い、このブラウザーにない強制指定のバックエンドは次のものにフォールバックします。"
+      }
+    }
   }
 }

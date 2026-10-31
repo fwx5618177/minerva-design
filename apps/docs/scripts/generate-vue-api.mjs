@@ -1,5 +1,6 @@
 // Generates src/docs/api.vue.generated.json: the API of every component of
-// the native Vue renderer (minerva-design/vue), read from the single-file
+// the native Vue renderer (minerva-design/vue, and the icon components of
+// minerva-design/vue/icons), read from the single-file
 // components' types with vue-component-meta (the Volar language service):
 // props (type, default, required, description), emits (with their payload
 // signature) and slots (with their slot props).
@@ -13,7 +14,10 @@ import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createChecker } from "vue-component-meta";
-import { readVue } from "../../../tools/generate-contracts.mjs";
+import {
+  readValueExports,
+  readVue,
+} from "../../../tools/generate-contracts.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../../..");
 const VUE = join(ROOT, "packages/vue");
@@ -28,7 +32,11 @@ export const VUE_API_OUTPUT = join(
  * "./X.vue"`), restricted to the public exports.
  */
 export function vueComponentFiles() {
-  const exported = readVue();
+  // minerva-design/vue and its optional icon entry (minerva-design/vue/icons)
+  const exported = new Set([
+    ...readVue(),
+    ...readValueExports(["packages/vue/src/icons.ts"]),
+  ]);
   const files = new Map();
   const scan = (file) => {
     const text = readFileSync(file, "utf8");
@@ -49,6 +57,7 @@ export function vueComponentFiles() {
   for (const barrel of readdirSync(join(VUE, "src/groups")))
     scan(join(VUE, "src/groups", barrel));
   scan(join(VUE, "src/monaco.ts"));
+  scan(join(VUE, "src/icon/index.ts"));
   return new Map(
     [...files]
       .filter(([name]) => exported.has(name))

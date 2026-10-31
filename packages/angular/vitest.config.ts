@@ -30,6 +30,14 @@ export default defineConfig({
         find: /^minerva-design\/charts\/core$/,
         replacement: here("../charts/src/core.ts"),
       },
+      {
+        find: /^minerva-design\/icons\/core$/,
+        replacement: here("../icons/src/core.ts"),
+      },
+      {
+        find: /^minerva-design\/icons\/surface$/,
+        replacement: here("../icons/src/engine/surface.ts"),
+      },
     ],
   },
   test: {

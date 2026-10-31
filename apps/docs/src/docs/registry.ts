@@ -3383,6 +3383,11 @@ export const docPages: DocPageMeta[] = [
       "dynamic",
       "canvas",
     ],
+    wc: {
+      entry: "icon",
+      tags: ["minerva-icon"],
+      demos: ["basic", "canvas"],
+    },
   },
   {
     id: "icon-canvas",
@@ -3391,6 +3396,11 @@ export const docPages: DocPageMeta[] = [
     exports: ["IconCanvas"],
     api: ["IconCanvasProps", "IconCanvasItem", "IconStyle", "IconCanvasHandle"],
     demos: ["basic", "thousands", "renderers"],
+    wc: {
+      entry: "icon",
+      tags: ["minerva-icon-canvas"],
+      demos: ["basic"],
+    },
   },
   {
     id: "icons-core",

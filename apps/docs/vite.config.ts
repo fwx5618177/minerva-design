@@ -63,8 +63,16 @@ const testAlias: Alias[] = [
     replacement: src("../../packages/icons/src/core.ts"),
   },
   {
+    find: /^minerva-design\/icons\/surface$/,
+    replacement: src("../../packages/icons/src/engine/surface.ts"),
+  },
+  {
     find: /^minerva-design\/icons$/,
     replacement: src("../../packages/icons/src/index.ts"),
+  },
+  {
+    find: /^minerva-design\/vue\/icons$/,
+    replacement: src("../../packages/vue/src/icons.ts"),
   },
   {
     find: /^minerva-design\/vue\/monaco$/,
@@ -90,10 +98,10 @@ const testAlias: Alias[] = [
     find: /^minerva-design\/vue$/,
     replacement: src("../../packages/vue/src/index.ts"),
   },
-  // the chart entries of the web components (chart, trading-chart,
-  // order-book, chart-3d, graph)
+  // the optional entries of the web components (chart, trading-chart,
+  // order-book, chart-3d, graph, icon)
   {
-    find: /^minerva-design\/web-components\/(chart|trading-chart|order-book|chart-3d|graph)$/,
+    find: /^minerva-design\/web-components\/(chart|trading-chart|order-book|chart-3d|graph|icon)$/,
     replacement: src("../../packages/web-components/src/elements/$1.ts"),
   },
   {

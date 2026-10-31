@@ -153,7 +153,9 @@ describe("per-element entries (tree-shaking)", () => {
     // variants; raised deliberately from 540 kB, with headroom for one release
     expect(size).toBeLessThan(560_000);
     for (const { tagName } of elements) {
-      if (OPTIONAL_TAGS.includes(tagName)) expect(js).not.toContain(tagName);
+      // quoted: <minerva-icon> is optional, <minerva-icon-button> is not
+      const defined = new RegExp(`["'\`]${tagName}["'\`]`);
+      if (OPTIONAL_TAGS.includes(tagName)) expect(js).not.toMatch(defined);
       else expect(js).toContain(tagName);
     }
     expect(js).not.toContain("monaco-editor");

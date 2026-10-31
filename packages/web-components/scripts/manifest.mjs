@@ -185,8 +185,9 @@ export const serializeManifest = (manifest) =>
  * Optional define entries: published as
  * `minerva-design/web-components/<entry>` only, not part of the all-in-one
  * entry nor of the CDN bundle (they need an optional peer dependency, or
- * load a large engine: `chart` imports minerva-design/charts/core). Their
- * elements live in `src/components/<entry>/`.
+ * load a large engine: `chart` imports minerva-design/charts/core, `icon`
+ * imports the whole icon set of minerva-design/icons/core). Their elements
+ * live in `src/components/<entry>/`.
  */
 export const OPTIONAL_ENTRIES = [
   "code-editor",
@@ -195,6 +196,7 @@ export const OPTIONAL_ENTRIES = [
   "order-book",
   "chart-3d",
   "graph",
+  "icon",
 ];
 
 /** Optional entry of a manifest element (`undefined`: all-in-one). */

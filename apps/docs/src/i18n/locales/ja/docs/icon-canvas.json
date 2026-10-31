@@ -65,5 +65,26 @@
       "getCanvas": "<canvas> 要素（マウント前は null）",
       "ready": "バックエンドが起動し、現在の items が描画されると解決されます"
     }
+  },
+  "wc": {
+    "minerva-icon-canvas": {
+      "props": {
+        "label": "画像全体のアクセシブルな名前（role=\"img\"）。指定しないとキャンバスは支援技術から隠されます",
+        "canvas": "アイコンを描画する <canvas> 要素。接続されるまでは null"
+      },
+      "events": {
+        "minerva-renderer-change": "バックエンドが起動した、または GPU のロスト後にフォールバックした。detail: { renderer }"
+      },
+      "methods": {
+        "getRenderer": "使用中のバックエンド（webgpu、webgl2、webgl、canvas2d）。起動するまでは null",
+        "ready": "バックエンドが起動し、現在の items が描画されると、そのバックエンドで resolve します"
+      }
+    },
+    "demos": {
+      "basic": {
+        "title": "基本",
+        "description": "items は JavaScript プロパティです。アイコンを CSS ピクセルで配置し、サイズ・色・回転・線幅・不透明度を個別に指定して、1 つのキャンバスに描画します。minerva-renderer-change が使用中のバックエンドを通知します。"
+      }
+    }
   }
 }

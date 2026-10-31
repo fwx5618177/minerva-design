@@ -37,6 +37,7 @@ export * from "./components/overlays";
 
 export * from "./components/table";
 export * from "./components/charts";
+export * from "./components/icons";
 export * from "./components/overlays/tooltip-provider";
 export * from "./components/overlays/confirm-provider";
 export * from "./components/date-picker";

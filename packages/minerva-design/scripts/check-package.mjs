@@ -50,6 +50,7 @@ try {
     "./uni/monaco",
     "./vue/global",
     "./vue/charts-global",
+    "./vue/icons-global",
   ];
   run("pnpm", ["exec", "attw", tarball, "--entrypoints", ...dual]);
   run("pnpm", [

@@ -64,6 +64,10 @@ const INTERFACE: Record<string, string | null> = {
   "minerva-line-3d-chart": "Line3DChartProps",
   "minerva-surface-3d-chart": "Surface3DChartProps",
   "minerva-bar-3d-chart": "Bar3DChartProps",
+  // icons: React's Icon / IconCanvas live in minerva-design/icons, outside
+  // the React entries compared here
+  "minerva-icon": null,
+  "minerva-icon-canvas": null,
 };
 
 const pascal = (tag: string) =>

@@ -65,5 +65,26 @@
       "getCanvas": "<canvas> 元素（挂载前为 null）",
       "ready": "后端启动且当前 items 绘制完成后 resolve"
     }
+  },
+  "wc": {
+    "minerva-icon-canvas": {
+      "props": {
+        "label": "整幅画面的无障碍名称（role=\"img\"）；不设置时，画布对辅助技术隐藏",
+        "canvas": "绘制图标的 <canvas> 元素；连接到文档前为 null"
+      },
+      "events": {
+        "minerva-renderer-change": "后端已启动，或在 GPU 丢失后完成回退；detail: { renderer }"
+      },
+      "methods": {
+        "getRenderer": "正在使用的后端（webgpu、webgl2、webgl、canvas2d）；启动前为 null",
+        "ready": "后端启动且当前 items 绘制完成后，以该后端 resolve"
+      }
+    },
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "items 是 JavaScript 属性：图标按 CSS 像素定位，各自设置尺寸、颜色、旋转、描边宽度和不透明度，绘制在同一个画布上。minerva-renderer-change 会报告所用的后端。"
+      }
+    }
   }
 }

@@ -19,6 +19,7 @@ const CHART_LOADERS: Record<ChartEntry, () => Promise<unknown>> = {
   "order-book": () => import("minerva-design/web-components/order-book"),
   "chart-3d": () => import("minerva-design/web-components/chart-3d"),
   graph: () => import("minerva-design/web-components/graph"),
+  icon: () => import("minerva-design/web-components/icon"),
 };
 const loadingCharts = new Map<ChartEntry, Promise<unknown>>();
 const loadChartElements = (entry: ChartEntry) => {

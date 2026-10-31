@@ -85,6 +85,11 @@ const DOM_ONLY_CHARTS = new Set([
 const DOM_ONLY_NOTE =
   "DOM / GPU widget of minerva-design/charts (WebGPU or WebGL canvases with DOM overlays): not drawn by the native canvas chart engine; show the web version in a web view.";
 
+/** The icon components of minerva-design/icons (inline SVG, GPU canvases) */
+const WEB_ICON_COMPONENTS = new Set(["Icon", "IconCanvas"]);
+const WEB_ICON_NOTE =
+  "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri) with the platform's SVG or image support.";
+
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const at = (path) => join(ROOT, path);
 
@@ -139,6 +144,16 @@ export const TAG_TO_REACT = {
   "minerva-line-3d-chart": "Line3DChart",
   "minerva-surface-3d-chart": "Surface3DChart",
   "minerva-bar-3d-chart": "Bar3DChart",
+  // icons: React's Icon / IconCanvas live in minerva-design/icons (its own
+  // entry, outside the React sources scanned here); see ICON_ELEMENTS
+  "minerva-icon": null,
+  "minerva-icon-canvas": null,
+};
+
+/** Icon elements -> their React component of minerva-design/icons */
+const ICON_ELEMENTS = {
+  "minerva-icon": "Icon",
+  "minerva-icon-canvas": "IconCanvas",
 };
 
 /** React props interfaces not named `<Component>Props` */
@@ -379,6 +394,8 @@ export function miniSupport(platform, name) {
   if (!entry) {
     if (DOM_ONLY_CHARTS.has(name))
       return { status: "n/a", notes: DOM_ONLY_NOTE };
+    if (WEB_ICON_COMPONENTS.has(name))
+      return { status: "n/a", notes: WEB_ICON_NOTE };
     const equivalent =
       (platform === "uni" || platform === "weapp") &&
       MINI_DATA_EQUIVALENTS[name];
@@ -773,6 +790,8 @@ export function nativeSupport(name) {
         "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles).",
     };
   if (DOM_ONLY_CHARTS.has(name)) return { status: "n/a", notes: DOM_ONLY_NOTE };
+  if (WEB_ICON_COMPONENTS.has(name))
+    return { status: "n/a", notes: WEB_ICON_NOTE };
   return { status: "planned" };
 }
 
@@ -921,7 +940,9 @@ function buildContract({
         notes:
           tag === "minerva-shape-chart"
             ? "Generic shape chart configured by the engine options (any type); React has the named components (PieChart, RadarChart, SankeyChart…) and createShapeChart of minerva-design/charts/core."
-            : NOT_APPLICABLE_NOTES.react,
+            : Object.hasOwn(ICON_ELEMENTS, tag)
+              ? `React component ${ICON_ELEMENTS[tag]} of minerva-design/icons (separate entry, outside this contract scan).`
+              : NOT_APPLICABLE_NOTES.react,
       };
   platforms.wc = element
     ? { status: "stable" }
@@ -980,7 +1001,11 @@ export function generateContracts() {
   const react = readReact();
   const elements = readElements();
   const docs = docsIndex();
-  const vueExports = readVue();
+  // minerva-design/vue and its optional icon entry (minerva-design/vue/icons)
+  const vueExports = new Set([
+    ...readVue(),
+    ...readValueExports(["packages/vue/src/icons.ts"]),
+  ]);
   // exported type aliases resolve the element types named after them
   // (`SwitchColor` -> `"primary" | "success" | ...`)
   const aliasTypes = new Map(

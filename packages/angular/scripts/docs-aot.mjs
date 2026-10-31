@@ -96,6 +96,7 @@ export async function compileAngularExamples() {
     (name) => !["Component", "signal", "Type"].includes(name),
   );
   const chartsCore = codeImports("minerva-design/charts/core");
+  const iconsCore = codeImports("minerva-design/icons/core");
   const classes = all
     .map(
       (example, index) =>
@@ -109,7 +110,7 @@ export async function compileAngularExamples() {
           .join("\n")}\n}`,
     )
     .join("\n");
-  const code = `// Generated from authored examples.ts. Do not edit.\nimport { Component, signal, type Type${angularCore.map((name) => `, ${name}`).join("")} } from '@angular/core';\nimport { MnConfig, ${imports.join(",")}, type ConfigTheme, type MinervaScope } from 'minerva-design/angular';\nimport { MnMonacoCodeEditor } from 'minerva-design/angular/monaco';\n${chartsCore.length ? `import { ${chartsCore.join(", ")} } from 'minerva-design/charts/core';\n` : ""}type ConfigPalette = Parameters<MinervaScope['setPalette']>[0];\n${classes}\nexport const compiledExamples: Record<string,Type<Pick<Example0,'theme'|'palette'|'language'|'onTheme'|'onPalette'|'monaco'>>> = {${all.map((example, index) => `${JSON.stringify(example.key)}:Example${index}`).join(",")}};\n`;
+  const code = `// Generated from authored examples.ts. Do not edit.\nimport { Component, signal, type Type${angularCore.map((name) => `, ${name}`).join("")} } from '@angular/core';\nimport { MnConfig, ${imports.join(",")}, type ConfigTheme, type MinervaScope } from 'minerva-design/angular';\nimport { MnMonacoCodeEditor } from 'minerva-design/angular/monaco';\n${chartsCore.length ? `import { ${chartsCore.join(", ")} } from 'minerva-design/charts/core';\n` : ""}${iconsCore.length ? `import { ${iconsCore.join(", ")} } from 'minerva-design/icons/core';\n` : ""}type ConfigPalette = Parameters<MinervaScope['setPalette']>[0];\n${classes}\nexport const compiledExamples: Record<string,Type<Pick<Example0,'theme'|'palette'|'language'|'onTheme'|'onPalette'|'monaco'>>> = {${all.map((example, index) => `${JSON.stringify(example.key)}:Example${index}`).join(",")}};\n`;
   writeFileSync(join(generated, "examples.ts"), code);
   const config = {
     compilerOptions: {

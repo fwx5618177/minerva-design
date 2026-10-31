@@ -24,12 +24,18 @@ const config = ts.readConfigFile(join(root, "tsconfig.json"), ts.sys.readFile);
 const parsed = ts.parseJsonConfigFileContent(config.config, ts.sys, root);
 const program = ts.createProgram(sourceFiles, parsed.options);
 const checker = program.getTypeChecker();
+const isInternal = (path) => path.includes("/internal/");
 for (const path of sourceFiles) {
   const source = program.getSourceFile(path);
   if (!source) throw new Error(`Cannot read Angular API source: ${path}`);
   for (const node of source.statements)
-    if (ts.isClassDeclaration(node) && node.name)
+    if (ts.isClassDeclaration(node) && node.name) {
+      // an internal helper never shadows a public class of the same name
+      // (the internal `svg[mnIcon]` and the public `mn-icon` are both MnIcon)
+      const known = declarations.get(node.name.text);
+      if (known && isInternal(path) && !isInternal(known.path)) continue;
       declarations.set(node.name.text, { node, source, path });
+    }
 }
 const privateMember = (node) =>
   node.modifiers?.some(

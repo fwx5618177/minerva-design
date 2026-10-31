@@ -65,6 +65,39 @@ describe("MinervaVue (default plugin)", () => {
   });
 });
 
+describe("MinervaVueIcons (minerva-design/vue/icons)", () => {
+  it("registers Icon, IconCanvas and DynamicIcon, with the prefix", async () => {
+    const { MinervaVueIcons, Icon, IconCanvas, DynamicIcon } =
+      await import("./icons");
+    const app = createApp({});
+    app.use(MinervaVueIcons);
+    expect(app.component("MnIcon")).toBe(Icon);
+    expect(app.component("MnIconCanvas")).toBe(IconCanvas);
+    expect(app.component("MnDynamicIcon")).toBe(DynamicIcon);
+    // the named icons are imported, never registered
+    expect(app.component("MnSearchIcon")).toBeUndefined();
+    expect(app.component("MnButton")).toBeUndefined();
+    const prefixed = createApp({});
+    prefixed.use(MinervaVueIcons, { prefix: "Ui" });
+    expect(prefixed.component("UiIcon")).toBe(Icon);
+  });
+
+  it("is the default export, and is not part of minerva-design/vue", async () => {
+    const icons = await import("./icons");
+    const main = await import("./index");
+    expect(icons.default).toBe(icons.MinervaVueIcons);
+    for (const name of ["Icon", "IconCanvas", "DynamicIcon", "SearchIcon"])
+      expect(name in main, name).toBe(false);
+  });
+
+  it("is typed by minerva-design/vue/icons-global", async () => {
+    const { iconComponents } = await import("./icons");
+    expect(typedNames("./icons-global.ts").sort()).toEqual(
+      Object.keys(iconComponents()).sort(),
+    );
+  });
+});
+
 describe("MinervaVueCharts (minerva-design/vue/charts)", () => {
   it("registers every chart component, with the prefix", async () => {
     const { MinervaVueCharts, chartComponents, LineChart, TradingChart } =

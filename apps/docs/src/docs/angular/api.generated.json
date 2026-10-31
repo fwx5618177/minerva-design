@@ -11839,6 +11839,264 @@
       }
     ]
   },
+  "MnIconCanvas": {
+    "name": "MnIconCanvas",
+    "source": "src/components/icons/icon-canvas.ts",
+    "description": "Many icons on one canvas: one instanced GPU draw per run of identical\nicons (WebGPU, WebGL2, WebGL) or Canvas2D. For dense pictures, maps,\nparticles, animations of thousands of icons; for icons in the UI, use\n`MnIcon`. With `renderer` `auto`, it follows the global default\n(`setDefaultIconRenderer`) live.",
+    "members": [
+      {
+        "name": "items",
+        "kind": "input",
+        "type": "readonly IconCanvasItem[]",
+        "required": true,
+        "description": "Icons to draw, in painting order (later ones on top), positions in CSS pixels"
+      },
+      {
+        "name": "renderer",
+        "kind": "input",
+        "type": "IconRendererPreference",
+        "required": false,
+        "default": "\"auto\"",
+        "description": "Backend preference; `auto` follows the global default"
+      },
+      {
+        "name": "width",
+        "kind": "input",
+        "type": "number | string",
+        "required": false,
+        "default": "\"100%\"",
+        "description": "Width (a number is in pixels)"
+      },
+      {
+        "name": "height",
+        "kind": "input",
+        "type": "number | string",
+        "required": false,
+        "default": "240",
+        "description": "Height (a number is in pixels)"
+      },
+      {
+        "name": "pixelRatio",
+        "kind": "input",
+        "type": "number | undefined",
+        "required": false,
+        "description": "Device pixel ratio (`window.devicePixelRatio` by default)"
+      },
+      {
+        "name": "title",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Accessible name of the whole picture (`role=\"img\"`); without it the canvas is hidden from assistive technologies"
+      },
+      {
+        "name": "aria-label",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Accessible name without `title` (the picture becomes `role=\"img\"`)"
+      },
+      {
+        "name": "aria-labelledby",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "id(s) of the element(s) naming the picture (it becomes `role=\"img\"`)"
+      },
+      {
+        "name": "rendererChange",
+        "kind": "output",
+        "type": "IconRendererKind",
+        "required": false,
+        "description": "The backend started, and again after a fallback"
+      },
+      {
+        "name": "getRenderer",
+        "kind": "method",
+        "type": "() => IconRendererKind | null",
+        "required": false,
+        "description": "The backend drawing (null until it started)"
+      },
+      {
+        "name": "getCanvas",
+        "kind": "method",
+        "type": "() => HTMLCanvasElement | null",
+        "required": false,
+        "description": "The `<canvas>` element (null before the first render in the browser)"
+      },
+      {
+        "name": "ready",
+        "kind": "method",
+        "type": "() => Promise<IconRendererKind>",
+        "required": false,
+        "description": "Resolves once the backend started and the current items are drawn"
+      }
+    ]
+  },
+  "MnIcon": {
+    "name": "MnIcon",
+    "source": "src/components/icons/icon.ts",
+    "description": "An icon of minerva-design/icons: inline SVG by default (crisp, styled by\nCSS, server-rendered), or a canvas drawn with WebGPU, WebGL2, WebGL or\nCanvas2D (`renderer`). The color follows the text color unless set.\nPass a built-in icon constant of `minerva-design/icons/core` (e.g.\n`searchIcon`) or a `defineIcon` result.",
+    "members": [
+      {
+        "name": "size",
+        "kind": "input",
+        "type": "number | string",
+        "required": false,
+        "default": "24",
+        "description": "Width and height (a number is in pixels; canvas renderers also follow CSS sizes such as `\"1em\"`)"
+      },
+      {
+        "name": "color",
+        "kind": "input",
+        "type": "string",
+        "required": false,
+        "default": "\"currentColor\"",
+        "description": "Stroke color, any CSS color"
+      },
+      {
+        "name": "strokeWidth",
+        "kind": "input",
+        "type": "number",
+        "required": false,
+        "default": "2",
+        "description": "Stroke width on the 24×24 grid (scales with the size)"
+      },
+      {
+        "name": "absoluteStrokeWidth",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Keeps `strokeWidth` in pixels whatever the size"
+      },
+      {
+        "name": "title",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Accessible name: the icon becomes `role=\"img\"`; without it (or an `aria-label`) the icon is hidden from assistive technologies"
+      },
+      {
+        "name": "aria-label",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Accessible name without a `<title>` (the icon becomes `role=\"img\"`)"
+      },
+      {
+        "name": "aria-labelledby",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "id(s) of the element(s) naming the icon (the icon becomes `role=\"img\"`)"
+      },
+      {
+        "name": "renderer",
+        "kind": "input",
+        "type": "IconRenderer",
+        "required": false,
+        "default": "\"svg\"",
+        "description": "Inline SVG (default), or a `<canvas>` drawn by a backend shared by every\ncanvas icon of the page: `auto` (the global default, see\n`setDefaultIconRenderer`), `webgpu`, `webgl2`, `webgl` or `canvas2d`"
+      },
+      {
+        "name": "rendererChange",
+        "kind": "output",
+        "type": "IconRendererKind",
+        "required": false,
+        "description": "Canvas renderers: the backend that drew the icon"
+      },
+      {
+        "name": "icon",
+        "kind": "input",
+        "type": "IconDefinition",
+        "required": true,
+        "description": "The icon to draw: a built-in one (e.g. `searchIcon`) or a `defineIcon` result"
+      }
+    ]
+  },
+  "MnDynamicIcon": {
+    "name": "MnDynamicIcon",
+    "source": "src/components/icons/icon.ts",
+    "description": "A built-in icon chosen by name at runtime (from data, a CMS…). It bundles\nthe whole set: prefer `MnIcon` with an icon constant when the icon is\nknown when writing the code.",
+    "members": [
+      {
+        "name": "size",
+        "kind": "input",
+        "type": "number | string",
+        "required": false,
+        "default": "24",
+        "description": "Width and height (a number is in pixels; canvas renderers also follow CSS sizes such as `\"1em\"`)"
+      },
+      {
+        "name": "color",
+        "kind": "input",
+        "type": "string",
+        "required": false,
+        "default": "\"currentColor\"",
+        "description": "Stroke color, any CSS color"
+      },
+      {
+        "name": "strokeWidth",
+        "kind": "input",
+        "type": "number",
+        "required": false,
+        "default": "2",
+        "description": "Stroke width on the 24×24 grid (scales with the size)"
+      },
+      {
+        "name": "absoluteStrokeWidth",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Keeps `strokeWidth` in pixels whatever the size"
+      },
+      {
+        "name": "title",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Accessible name: the icon becomes `role=\"img\"`; without it (or an `aria-label`) the icon is hidden from assistive technologies"
+      },
+      {
+        "name": "aria-label",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Accessible name without a `<title>` (the icon becomes `role=\"img\"`)"
+      },
+      {
+        "name": "aria-labelledby",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "id(s) of the element(s) naming the icon (the icon becomes `role=\"img\"`)"
+      },
+      {
+        "name": "renderer",
+        "kind": "input",
+        "type": "IconRenderer",
+        "required": false,
+        "default": "\"svg\"",
+        "description": "Inline SVG (default), or a `<canvas>` drawn by a backend shared by every\ncanvas icon of the page: `auto` (the global default, see\n`setDefaultIconRenderer`), `webgpu`, `webgl2`, `webgl` or `canvas2d`"
+      },
+      {
+        "name": "rendererChange",
+        "kind": "output",
+        "type": "IconRendererKind",
+        "required": false,
+        "description": "Canvas renderers: the backend that drew the icon"
+      },
+      {
+        "name": "name",
+        "kind": "input",
+        "type": "string",
+        "required": true,
+        "description": "Name of a built-in icon (e.g. `\"arrow-up\"`); unknown names render nothing"
+      }
+    ]
+  },
   "MnInput": {
     "name": "MnInput",
     "source": "src/components/input/input.ts",

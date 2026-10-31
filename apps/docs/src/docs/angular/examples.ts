@@ -1202,13 +1202,15 @@ const chart = (
 });
 
 /** Modules a code field may import from (see `code`) */
-export type CodeModule = "@angular/core" | "minerva-design/charts/core";
+export type CodeModule =
+  "@angular/core" | "minerva-design/charts/core" | "minerva-design/icons/core";
 /**
  * A state field initialized by code instead of a JSON value (generated
  * data, a timer): written as is in the displayed source and in the compiled
  * example (strict TypeScript; `this` is the example, whose earlier fields
  * are set). `imports` lists the names it uses from `@angular/core`
- * (`signal`, `inject`, `DestroyRef`...) and `minerva-design/charts/core`.
+ * (`signal`, `inject`, `DestroyRef`...), `minerva-design/charts/core` and
+ * `minerva-design/icons/core` (icon constants).
  */
 export interface CodeField {
   $code: string;
@@ -5558,6 +5560,206 @@ Object.assign(angularExamples, {
   ],
 });
 
+// Icon examples: icon constants (and the icon list) of
+// minerva-design/icons/core are class fields (`homeIcon = homeIcon`).
+const ICONS_CORE = "minerva-design/icons/core";
+const iconFields = (...names: string[]): Record<string, CodeField> =>
+  Object.fromEntries(
+    names.map((name) => [name, code(name, { [ICONS_CORE]: [name] })]),
+  );
+
+Object.assign(angularExamples, {
+  icon: [
+    example(
+      "Named icons in buttons",
+      ["MnIcon", "MnButton"],
+      `<ng-template #download><mn-icon [icon]="downloadIcon" size="16" /></ng-template>
+<ng-template #trash><mn-icon [icon]="trashIcon" size="16" /></ng-template>
+<mn-stack direction="row" wrap gap="4" align="center">
+  <mn-icon [icon]="homeIcon" />
+  <mn-icon [icon]="searchIcon" />
+  <mn-icon [icon]="settingsIcon" />
+  <button mnButton [startIcon]="download">Download</button>
+  <button mnButton color="danger" variant="outline" [startIcon]="trash">Delete</button>
+  <mn-icon [icon]="bellIcon" size="32" title="Notifications" />
+</mn-stack>`,
+      iconFields(
+        "homeIcon",
+        "searchIcon",
+        "settingsIcon",
+        "bellIcon",
+        "downloadIcon",
+        "trashIcon",
+      ),
+      "Pass an icon constant of minerva-design/icons/core: only the icons used are bundled. Icons follow the text color and are hidden from assistive technologies unless they have a title (or aria-label).",
+    ),
+    example(
+      "Renderers",
+      ["MnIcon"],
+      `<mn-stack direction="row" wrap gap="5">
+  @for (renderer of renderers; track renderer) {
+    <mn-stack gap="1" align="center">
+      <mn-icon
+        [icon]="settingsIcon"
+        [size]="40"
+        color="var(--primary-color)"
+        [renderer]="renderer"
+        (rendererChange)="drawn[renderer] = $event"
+      />
+      <code>{{ renderer }}</code>
+      <small>{{ renderer === 'svg' ? 'SVG' : (drawn[renderer] ?? '…') }}</small>
+    </mn-stack>
+  }
+</mn-stack>`,
+      {
+        ...iconFields("settingsIcon"),
+        renderers: ["svg", "auto", "webgpu", "webgl2", "webgl", "canvas2d"],
+        drawn: {},
+      },
+      "renderer draws the icon on a canvas shared by every canvas icon of the page; rendererChange reports the backend that drew it (a forced backend that cannot start falls back to the next one, auto follows setDefaultIconRenderer). The canvas renderers load with the first canvas icon.",
+    ),
+    example(
+      "Icons by name",
+      ["MnDynamicIcon", "MnStack"],
+      `<ul mnStack gap="2" style="margin: 0; padding: 0; list-style: none">
+  @for (service of services; track service.name) {
+    <li style="display: flex; align-items: center; gap: 8px">
+      <mn-dynamic-icon [name]="service.icon" [size]="18" />
+      <span style="min-width: 80px">{{ service.name }}</span>
+      <mn-dynamic-icon
+        [name]="service.status"
+        [size]="18"
+        [color]="service.color"
+        [title]="service.status"
+      />
+    </li>
+  }
+</ul>`,
+      {
+        // icon names coming from data (an API, a CMS, a settings file…)
+        services: [
+          {
+            name: "Storage",
+            icon: "database",
+            status: "check-circle",
+            color: "var(--success-color)",
+          },
+          {
+            name: "Mail",
+            icon: "mail",
+            status: "alert-triangle",
+            color: "var(--warning-color)",
+          },
+          {
+            name: "Payments",
+            icon: "credit-card",
+            status: "x-circle",
+            color: "var(--danger-color)",
+          },
+        ],
+      },
+      "MnDynamicIcon resolves a built-in icon by name at runtime and renders nothing for unknown names. It bundles the whole set: prefer MnIcon with an icon constant when the icon is known.",
+    ),
+  ],
+  "icon-canvas": [
+    example(
+      "Basic",
+      ["MnIconCanvas"],
+      `<mn-stack gap="2">
+  <mn-icon-canvas
+    [items]="items"
+    [height]="160"
+    title="Six icons, three ways"
+    (rendererChange)="drawn = $event"
+  />
+  <small role="status">{{ drawn ? 'Drawn with ' + drawn : '…' }}</small>
+</mn-stack>`,
+      {
+        // positions in CSS pixels; one GPU draw per run of identical icons
+        items: code(
+          `(() => {
+  const row = [homeIcon, searchIcon, mailIcon, bellIcon, userIcon, settingsIcon];
+  return [
+    ...row.map((icon, i) => ({ icon, x: 16 + i * 48, y: 16 })),
+    ...row.map((icon, i) => ({
+      icon,
+      x: 16 + i * 48,
+      y: 64,
+      size: 32,
+      color: 'var(--primary-color)',
+      rotation: i * 15,
+    })),
+    ...row.map((icon, i) => ({
+      icon,
+      x: 16 + i * 48,
+      y: 112,
+      strokeWidth: 1.5,
+      opacity: 0.35 + i * 0.13,
+    })),
+  ];
+})()`,
+          {
+            [ICONS_CORE]: [
+              "homeIcon",
+              "searchIcon",
+              "mailIcon",
+              "bellIcon",
+              "userIcon",
+              "settingsIcon",
+            ],
+          },
+        ),
+        drawn: "",
+      },
+      "Many icons on one canvas, for dense pictures and animations. With renderer auto (the default) the backend follows setDefaultIconRenderer; rendererChange reports it.",
+    ),
+    example(
+      "Every backend",
+      ["MnIconCanvas"],
+      `<mn-stack direction="row" wrap gap="4">
+  @for (renderer of renderers; track renderer) {
+    <figure style="margin: 0">
+      <mn-icon-canvas
+        [items]="items"
+        [renderer]="renderer"
+        [width]="256"
+        [height]="160"
+        [title]="'Icons drawn with ' + renderer"
+        (rendererChange)="drawn[renderer] = $event"
+      />
+      <figcaption>
+        <code>renderer="{{ renderer }}"</code>
+        <small>{{
+          !drawn[renderer]
+            ? 'Starting…'
+            : drawn[renderer] === renderer
+              ? 'Drawn by ' + drawn[renderer]
+              : 'Fell back to ' + drawn[renderer]
+        }}</small>
+      </figcaption>
+    </figure>
+  }
+</mn-stack>`,
+      {
+        renderers: ["webgpu", "webgl2", "webgl", "canvas2d"],
+        // the same 40 icons on every backend: the geometry is shared, only
+        // the rasterizer differs
+        items: code(
+          `icons.slice(0, 40).map((icon, i) => ({
+  icon,
+  x: 8 + (i % 8) * 30,
+  y: 8 + Math.floor(i / 8) * 30,
+  size: 24,
+}))`,
+          { [ICONS_CORE]: ["icons"] },
+        ),
+        drawn: {},
+      },
+      "A forced backend that cannot start falls back to the next one (WebGPU, WebGL2, WebGL, Canvas2D); rendererChange tells which one drew.",
+    ),
+  ],
+});
+
 // Field types are shared by the displayed source and strict AOT compilation.
 for (const [page, examples] of Object.entries(angularExamples)) {
   for (const item of examples) {
@@ -5587,6 +5789,16 @@ for (const [page, examples] of Object.entries(angularExamples)) {
       item.stateTypes.hovered = "number | null";
     if (page === "histogram-chart" && Object.hasOwn(item.state, "bins"))
       item.stateTypes.bins = "number | 'sturges'";
+    if (page === "icon" && Object.hasOwn(item.state, "renderers")) {
+      item.stateTypes.renderers =
+        "import('minerva-design/angular').IconRenderer[]";
+      item.stateTypes.drawn = "Partial<Record<string, string>>";
+    }
+    if (page === "icon-canvas" && Object.hasOwn(item.state, "renderers")) {
+      item.stateTypes.renderers =
+        "import('minerva-design/icons/core').IconRendererPreference[]";
+      item.stateTypes.drawn = "Partial<Record<string, string>>";
+    }
   }
 }
 
@@ -5621,5 +5833,6 @@ export function angularSource(example: AngularExample): string {
     : componentImports;
   const angularCore = ["Component", ...codeImports(example, "@angular/core")];
   const chartsCore = codeImports(example, "minerva-design/charts/core");
-  return `import { ${angularCore.join(", ")} } from '@angular/core';\nimport { ${imports} } from '${packageName}';${chartsCore.length ? `\nimport { ${chartsCore.join(", ")} } from 'minerva-design/charts/core';` : ""}${engine}\n\n@Component({\n  selector: 'app-example',\n  imports: [${componentImports}],\n  template: \`\n${example.template}\n  \`,\n})\nexport class Example {\n${localized ? "  readonly language = injectMinerva().language;\n" : ""}${fields}${example.monaco ? "\n  readonly monaco = monaco;" : ""}\n}\n`;
+  const iconsCore = codeImports(example, "minerva-design/icons/core");
+  return `import { ${angularCore.join(", ")} } from '@angular/core';\nimport { ${imports} } from '${packageName}';${chartsCore.length ? `\nimport { ${chartsCore.join(", ")} } from 'minerva-design/charts/core';` : ""}${iconsCore.length ? `\nimport { ${iconsCore.join(", ")} } from 'minerva-design/icons/core';` : ""}${engine}\n\n@Component({\n  selector: 'app-example',\n  imports: [${componentImports}],\n  template: \`\n${example.template}\n  \`,\n})\nexport class Example {\n${localized ? "  readonly language = injectMinerva().language;\n" : ""}${fields}${example.monaco ? "\n  readonly monaco = monaco;" : ""}\n}\n`;
 }

@@ -3,6 +3,9 @@
 //   by `app.use(MinervaVue)` (`<MnButton>`...), every component but the charts
 // - src/charts-global.ts (`minerva-design/vue/charts-global`): the charts
 //   registered by the opt-in `app.use(MinervaVueCharts)` (`<MnLineChart>`...)
+// - src/icons-global.ts (`minerva-design/vue/icons-global`): the icon
+//   components registered by the opt-in `app.use(MinervaVueIcons)`
+//   (`<MnIcon>`, `<MnIconCanvas>`, `<MnDynamicIcon>`)
 // The component names are the PascalCase value exports of the renderer
 // (static read of its barrels, like the contracts generator);
 // src/plugins.test.ts checks them against the runtime plugins.
@@ -20,9 +23,19 @@ const OUTPUT = fileURLToPath(new URL("../src/global.ts", import.meta.url));
 const CHARTS_OUTPUT = fileURLToPath(
   new URL("../src/charts-global.ts", import.meta.url),
 );
+const ICONS_OUTPUT = fileURLToPath(
+  new URL("../src/icons-global.ts", import.meta.url),
+);
+
+/** The components of `MinervaVueIcons` (the named icons are not registered) */
+export const ICON_PLUGIN_COMPONENTS = ["DynamicIcon", "Icon", "IconCanvas"];
 
 /** PascalCase value exports that are not components */
-export const NOT_COMPONENTS = new Set(["MinervaVue", "MinervaVueCharts"]);
+export const NOT_COMPONENTS = new Set([
+  "MinervaVue",
+  "MinervaVueCharts",
+  "MinervaVueIcons",
+]);
 
 const components = (names) =>
   [...names]
@@ -95,10 +108,25 @@ export async function generateChartsGlobal() {
   );
 }
 
+export async function generateIconsGlobal() {
+  return formatted(
+    typings(
+      `// Volar typings of the icon components registered by
+// \`app.use(MinervaVueIcons)\` (minerva-design/vue/icons, default prefix "Mn"):
+// add "minerva-design/vue/icons-global" to the "types" of tsconfig.json, or
+// \`import type {} from "minerva-design/vue/icons-global"\`.`,
+      "./icons",
+      ICON_PLUGIN_COMPONENTS,
+    ),
+    ICONS_OUTPUT,
+  );
+}
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const outputs = [
     [OUTPUT, await generateGlobal()],
     [CHARTS_OUTPUT, await generateChartsGlobal()],
+    [ICONS_OUTPUT, await generateIconsGlobal()],
   ];
   if (process.argv.includes("--check")) {
     const stale = outputs.filter(

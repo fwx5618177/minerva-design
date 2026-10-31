@@ -10,7 +10,11 @@ import {
   coreImportsPlugin,
   rewriteCoreDeclarations,
 } from "../../tools/core-imports.mjs";
-import { CHARTS_DIST, WEB_COMPONENTS_DIST } from "../../tools/paths.mjs";
+import {
+  CHARTS_DIST,
+  ICONS_DIST,
+  WEB_COMPONENTS_DIST,
+} from "../../tools/paths.mjs";
 import { minifyTemplatesPlugin } from "./scripts/minify-templates.mjs";
 
 const here = (path: string) => fileURLToPath(new URL(path, import.meta.url));
@@ -28,55 +32,68 @@ const externalDeps = [
   ...Object.keys(pkg.peerDependencies ?? {}),
 ];
 /**
- * The chart elements (optional `chart` entry) import the engine as
- * `minerva-design/charts/core`: it stays external and is rewritten to the
- * one copy built by @minerva/charts (`dist/charts/core.js`, shared with
- * minerva-design/charts and the other renderers).
+ * Engines of the optional entries, imported by their public specifier
+ * `minerva-design/<name>/core`: the chart elements (`chart`, `trading-chart`,
+ * `order-book`, `chart-3d`, `graph`) import `minerva-design/charts/core`,
+ * the icon elements (`icon`) `minerva-design/icons/core`. They stay external
+ * and are rewritten to the one copy built by the charts / icons workspace
+ * packages (`dist/<name>/core.js`, shared with minerva-design/charts,
+ * minerva-design/icons and the other renderers).
  */
-const CHARTS_CORE = "minerva-design/charts/core";
+const ENGINE_DIST: Record<string, string> = {
+  charts: CHARTS_DIST,
+  icons: ICONS_DIST,
+};
+const ENGINE_NAMES = Object.keys(ENGINE_DIST).join("|");
+const isEngine = (id: string) =>
+  Object.keys(ENGINE_DIST).some((name) => id === `minerva-design/${name}/core`);
 const isExternal = (id: string) =>
-  id === CHARTS_CORE ||
+  isEngine(id) ||
   externalDeps.some((dep) => id === dep || id.startsWith(`${dep}/`));
 
-const chartsCoreSpecifier = (fromFile: string) => {
-  const path = relative(dirname(fromFile), join(CHARTS_DIST, "core.js"))
-    .split(sep)
-    .join("/");
-  return path.startsWith(".") ? path : `./${path}`;
-};
-const CHARTS_CORE_IMPORT = /(["'])minerva-design\/charts\/core\1/g;
+const ENGINE_IMPORT = new RegExp(
+  `(["'])minerva-design/(${ENGINE_NAMES})/core\\1`,
+  "g",
+);
+/** Engine imports of `fromFile` rewritten to relative paths into `dist/<name>/` */
+const rewriteEngineImports = (code: string, fromFile: string) =>
+  code.replace(ENGINE_IMPORT, (_, quote: string, name: string) => {
+    const path = relative(dirname(fromFile), join(ENGINE_DIST[name], "core.js"))
+      .split(sep)
+      .join("/");
+    return `${quote}${path.startsWith(".") ? path : `./${path}`}${quote}`;
+  });
 /**
  * vite-plugin-dts resolves the `paths` of tsconfig.build.json relative to the
  * sources (`../../../minerva-design/dist/charts/core.d.ts`), which is wrong
  * once emitted: back to the bare specifier, rewritten after the build
  */
-const CHARTS_CORE_DECLARATION =
-  /(["'])(?:\.\.\/)+minerva-design\/dist\/charts\/core(?:\.d\.ts)?\1/g;
-const bareChartsCore = (emittedFiles: Map<string, string>) => {
+const ENGINE_DECLARATION = new RegExp(
+  `(["'])(?:\\.\\./)+minerva-design/dist/(${ENGINE_NAMES})/core(?:\\.d\\.ts)?\\1`,
+  "g",
+);
+const bareEngines = (emittedFiles: Map<string, string>) => {
   for (const [file, content] of emittedFiles) {
     if (file.endsWith(".d.ts"))
       emittedFiles.set(
         file,
-        content.replace(CHARTS_CORE_DECLARATION, `$1${CHARTS_CORE}$1`),
+        content.replace(ENGINE_DECLARATION, "$1minerva-design/$2/core$1"),
       );
   }
   return emittedFiles;
 };
-const chartsCorePlugin = (): Plugin => ({
-  name: "minerva-charts-core-import",
+const enginesPlugin = (): Plugin => ({
+  name: "minerva-engine-imports",
   renderChunk(code, chunk) {
-    if (!code.includes(CHARTS_CORE)) return null;
-    const target = chartsCoreSpecifier(
+    const next = rewriteEngineImports(
+      code,
       join(WEB_COMPONENTS_DIST, chunk.fileName),
     );
-    return {
-      code: code.replace(CHARTS_CORE_IMPORT, `$1${target}$1`),
-      map: null,
-    };
+    return next === code ? null : { code: next, map: null };
   },
 });
 /** The same for the emitted declarations (vite-plugin-dts keeps the specifier) */
-const rewriteChartsDeclarations = (dir: string) => {
+const rewriteEngineDeclarations = (dir: string) => {
   for (const entry of readdirSync(dir, {
     withFileTypes: true,
     recursive: true,
@@ -84,9 +101,8 @@ const rewriteChartsDeclarations = (dir: string) => {
     if (!entry.isFile() || !/\.d\.c?ts$/.test(entry.name)) continue;
     const file = join(entry.parentPath, entry.name);
     const code = readFileSync(file, "utf8");
-    if (!code.includes(CHARTS_CORE)) continue;
-    const target = chartsCoreSpecifier(file);
-    writeFileSync(file, code.replace(CHARTS_CORE_IMPORT, `$1${target}$1`));
+    const next = rewriteEngineImports(code, file);
+    if (next !== code) writeFileSync(file, next);
   }
 };
 
@@ -118,16 +134,16 @@ export default defineConfig({
     // whitespace of the css / html templates (build only)
     minifyTemplatesPlugin(),
     coreImportsPlugin({ outDir: WEB_COMPONENTS_DIST }),
-    chartsCorePlugin(),
+    enginesPlugin(),
     dts({
       tsconfigPath: "./tsconfig.build.json",
       entryRoot: "src",
       exclude: ["src/**/*.test.ts"],
       // explicit `.js` specifiers so `moduleResolution: node16` resolves them
       afterBuild: (emittedFiles) => {
-        writeEsmDeclarations(bareChartsCore(emittedFiles));
+        writeEsmDeclarations(bareEngines(emittedFiles));
         rewriteCoreDeclarations(WEB_COMPONENTS_DIST);
-        rewriteChartsDeclarations(WEB_COMPONENTS_DIST);
+        rewriteEngineDeclarations(WEB_COMPONENTS_DIST);
       },
     }),
   ],
@@ -192,6 +208,10 @@ export default defineConfig({
       {
         find: /^minerva-design\/charts\/core$/,
         replacement: here("../charts/src/core.ts"),
+      },
+      {
+        find: /^minerva-design\/icons\/core$/,
+        replacement: here("../icons/src/core.ts"),
       },
     ],
     setupFiles: ["./tests/setup/setup.ts"],

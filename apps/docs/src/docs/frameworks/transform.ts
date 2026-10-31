@@ -31,7 +31,7 @@ import {
   type HtmlElement,
   type HtmlNode,
 } from "./html.ts";
-import { chartEntriesOf } from "./chartEntries.ts";
+import { chartEntriesOf, chartEntryOf } from "./chartEntries.ts";
 
 import type { WcFrameworkId } from "./index.ts";
 
@@ -1819,13 +1819,20 @@ function solid(
 
 /** Plain HTML: the markup and a module script (types stripped) */
 function html(input: WcDemoInput, a: Analysis | null): string {
-  // the optional chart entries are not part of the all-in-one entry
+  // the optional chart and icon entries are not part of the all-in-one entry
   const chartEntries = chartEntriesOf(input.html);
+  const allInOne = `// registers every <minerva-*> element (or import one entry per element)\nimport "minerva-design/web-components";`;
+  const otherElements = [...input.html.matchAll(/<(minerva-[a-z0-9-]+)/g)].some(
+    ([, tag]) => !chartEntryOf(tag!),
+  );
+  const optional = chartEntries.every((entry) => entry === "icon")
+    ? "// registers the icon elements (optional entry, loads the icon set)"
+    : "// registers the chart elements (optional entries, load the chart engine)";
   const registration = chartEntries.length
-    ? `// registers the chart elements (optional entries, load the chart engine)\n${chartEntries
+    ? `${optional}\n${chartEntries
         .map((entry) => `import "minerva-design/web-components/${entry}";`)
-        .join("\n")}`
-    : `// registers every <minerva-*> element (or import one entry per element)\nimport "minerva-design/web-components";`;
+        .join("\n")}${otherElements ? `\n${allInOne}` : ""}`
+    : allInOne;
   if (!input.script) {
     return `${input.html.trim()}\n\n<script type="module">\n  ${registration.replace(/\n/g, "\n  ")}\n</script>\n`;
   }
