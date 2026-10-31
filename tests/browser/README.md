@@ -25,6 +25,26 @@ deploy cancellation; and Alert dismissal, reset and browser focus restoration.
 Failure screenshots and traces are saved under `test-results/`; the HTML report
 is in `playwright-report/`. Open it with `pnpm exec playwright show-report`.
 
+## Fast smoke check (edit loop)
+
+`pnpm test:smoke` (`tools/browser-smoke.mjs`) is a lighter check for local
+editing: no Playwright runner and no docs build. It starts a Vite dev server on
+the package sources (port 5391), drives the installed Chrome through the
+DevTools protocol with Node's built-in WebSocket, and fails a page that throws,
+logs a console error or mounts no chart. The full chart page list runs in about
+30 seconds.
+
+```sh
+pnpm test:smoke                                    # every chart page
+pnpm test:smoke --routes order-book-heatmap,gantt-chart
+pnpm test:smoke --shots /tmp/shots                 # one screenshot per page
+```
+
+Other flags: `--concurrency 3`, `--timeout 30000` (ms per page), `--port 5391`
+and `--reuse` (use a docs dev server already listening on that port). Set
+`CHROME_PATH` if Chrome is not in a standard location. It complements the
+Playwright suite, which stays the CI check against production artifacts.
+
 The Button style comparison checks React and Vue background, label color, radius,
 height, padding and font size for exact equality under the same dark/tech theme.
 React Native Web shares the colors and font size, but its provider defaults to the

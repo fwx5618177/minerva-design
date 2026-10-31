@@ -1,6 +1,23 @@
 {
   "title": "Carte de chaleur du carnet",
   "description": "Carte de chaleur de liquidité à la Bookmap : quantité au repos par temps et prix dessinée par le GPU, lignes du meilleur achat et de la meilleure vente, transactions en bulles proportionnelles au volume, profil du carnet actuel, zoom, déplacement et lecture au réticule. Les flux ajoutent une colonne par intervalle dans une fenêtre glissante.",
+  "read": {
+    "title": "Comment la lire",
+    "text": "La heatmap est un enregistrement du carnet d'ordres : chaque colonne est un instantané du carnet à un moment, de gauche à droite, le présent au bord droit.",
+    "axes": "L'axe horizontal est le temps (le plus récent à droite), l'axe vertical le prix. Survolez un point : le réticule lit la quantité en attente à ce prix et à cet instant.",
+    "color": "La couleur d'une cellule est la quantité en attente à ce prix à cet instant : sombre signifie presque rien, plus clair (bleu → cyan → jaune → blanc) signifie davantage. La légende en haut à gauche donne la plage de quantités et l'unité des couleurs.",
+    "walls": "Les lignes horizontales claires sont de gros ordres qui restent dans le carnet (murs). Là où une ligne s'arrête, l'ordre a été retiré ou exécuté : si la ligne de prix atteint la fin du mur, il a été exécuté.",
+    "lines": "Les lignes rouge et verte qui suivent le prix sont la meilleure offre et la meilleure demande, l'écart entre elles est le spread. Sur l'axe des prix, les étiquettes pleines rouge et verte sont la meilleure offre et la meilleure demande actuelles, l'étiquette au contour est la dernière transaction.",
+    "bubbles": "Les points sont les transactions : vert pour les achats agressifs (qui prennent les offres), rouge pour les ventes agressives (qui frappent les demandes), leur aire croît avec le volume de la colonne, les grosses bulles sont donc de grosses transactions. colorConvention=\"red-up\" inverse les deux couleurs.",
+    "profile": "Les barres à droite sont le carnet actuel : les offres en rouge au-dessus, les demandes en vert au-dessous, plus la barre est longue plus la quantité est grande ; l'échelle en dessous est la quantité.",
+    "patterns": {
+      "title": "Ce qu'il faut repérer",
+      "hold": "Support et résistance : le prix touche plusieurs fois une ligne claire et repart, le gros ordre l'absorbe.",
+      "pull": "Ordres retirés (spoofing) : une ligne claire disparaît quand le prix approche sans aucune bulle de transaction, l'ordre a été annulé, pas exécuté.",
+      "sweep": "Balayages : une rafale de grosses bulles traverse plusieurs prix, la ligne de prix saute et la liquidité sur son passage s'assombrit.",
+      "thin": "Liquidité faible : une grande zone sombre près du prix signifie peu d'ordres en attente, le prix peut la traverser rapidement."
+    }
+  },
   "demos": {
     "basic": {
       "title": "Historique et direct",
@@ -8,7 +25,7 @@
     },
     "live": {
       "title": "Flux haute fréquence",
-      "description": "100 messages par seconde ; le carnet est échantillonné toutes les 50 ms en instances de barres GPU (WebGPU, WebGL ou Canvas2D), 32 colonnes par tampon : une image n'envoie que la dernière colonne. onRendererChange indique le moteur, onFollowChange si la vue suit le marché."
+      "description": "Un marché rapide simulé : environ 100 mises à jour du carnet par seconde, une colonne toutes les 50 ms, les 15 dernières secondes à l'écran. Il se lit comme les graphiques ci-dessus : les lignes claires sont de gros ordres, les points des transactions, les barres à droite le carnet actuel. Faire glisser ou zoomer arrête de suivre le marché ; Suivre le marché ou un double clic revient au présent. Les cellules sont dessinées par le GPU (WebGPU ou WebGL, Canvas2D sinon) : onRendererChange indique le moteur, onFollowChange si la vue suit le marché."
     },
     "color-scale": {
       "title": "Échelle de couleurs",
@@ -16,7 +33,7 @@
     },
     "large-trades": {
       "title": "Grosses transactions",
-      "description": "Les transactions d'une colonne sont additionnées par sens en une bulle dont l'aire croît avec le volume ; bubbleVolume est le volume de la plus grosse bulle (bubbleSize pixels). Un contrast plus faible assombrit le carnet pour faire ressortir les balayages ; onHover lit les volumes achetés et vendus de la colonne survolée."
+      "description": "Les transactions d'une colonne sont additionnées par sens en une bulle, verte pour les achats et rouge pour les ventes (comme l'indique la légende), dont l'aire croît avec le volume ; bubbleVolume est le volume de la plus grosse bulle (bubbleSize pixels). Un contrast plus faible assombrit le carnet pour faire ressortir les balayages ; onHover lit le volume acheté et vendu de la colonne survolée."
     },
     "dark": {
       "title": "Terminal sombre",
@@ -82,6 +99,8 @@
       "colorScale": "Échelle des quantités vers les couleurs : sqrt garde les niveaux ordinaires sombres et fait briller la liquidité significative, linear ne montre que les murs, log révèle la liquidité fine à côté d'eux",
       "contrast": "Multiplie les quantités avant l'échelle : au-dessus de 1 éclaire la liquidité fine (une plus grande partie du champ brille), en dessous garde seulement les plus gros murs",
       "maxSize": "Quantité dessinée avec la couleur la plus chaude (au-delà, elle sature) ; si omise, le 99e centile des cellules visibles non vides (lissé), pour que les niveaux ordinaires restent sombres et que seule la liquidité principale brille",
+      "sizeUnit": "Unité des quantités, affichée après elles dans la légende et l'infobulle (les nombres ne sont pas convertis)",
+      "legend": "Légende du dégradé (du froid au chaud, avec l'étendue des quantités) et des transactions, dans le coin supérieur gauche",
       "colors": "Rampe de couleurs, du plus froid, interpolée en OKLab. La première couleur remplit aussi les cellules sans liquidité (le champ est opaque, sans trous) : une couleur sombre en thème sombre, pâle en thème clair. Une rampe thermique perceptuelle adaptée au thème si omise",
       "bubbles": "Transactions dessinées en bulles proportionnelles au volume (couleurs achat et vente)",
       "bubbleSize": "Diamètre de la plus grosse bulle, en pixels (l'aire est proportionnelle au volume, les plus petites sont des points de 3 px)",
@@ -123,6 +142,7 @@
       "ask": "Meilleure vente, dans le résumé pour lecteur d'écran",
       "bidSide": "Badge de côté d’une ligne acheteuse survolée dans l’infobulle",
       "askSide": "Badge de côté d’une ligne vendeuse survolée dans l’infobulle",
+      "bubbleHint": "Ligne de légende des transactions (aire de la bulle = volume)",
       "name": "Nom accessible (sans ariaLabel)"
     },
     "OrderBookHeatmapHoverEvent": {

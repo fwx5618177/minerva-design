@@ -149,6 +149,10 @@ export const orderBookHeatmapProps = {
   contrast: Number,
   /** Size drawn with the last color; follows the data by default */
   maxSize: Number,
+  /** Unit after the sizes of the legend and tooltip, e.g. "BTC" */
+  sizeUnit: String,
+  /** Color legend with its size range at the top left (default `true`) */
+  legend: optionalBoolean,
   /** Colors from no liquidity to `maxSize` (any CSS colors) */
   colors: Array as PropType<readonly string[]>,
   /** Trades as bubbles (default `true`) */

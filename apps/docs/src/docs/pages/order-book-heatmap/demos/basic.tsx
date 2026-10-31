@@ -26,6 +26,7 @@ export default function BasicDemo() {
         window={120_000}
         pricePrecision={1}
         sizePrecision={3}
+        sizeUnit="BTC"
         ariaLabel={t("aria")}
       />
     </div>

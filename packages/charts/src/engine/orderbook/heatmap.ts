@@ -97,21 +97,21 @@ type RampStop = readonly [number, string];
  */
 const DARK_RAMP: readonly RampStop[] = [
   [0, "#0b1322"],
-  [0.3, "#0e1c36"],
-  [0.5, "#11306a"],
-  [0.63, "#1556a8"],
-  [0.74, "#1b95c8"],
-  [0.83, "#59d6d0"],
-  [0.9, "#f2e14b"],
+  [0.3, "#0d1a2e"],
+  [0.5, "#102a4e"],
+  [0.65, "#154a8a"],
+  [0.76, "#1b86b8"],
+  [0.85, "#3fc3c0"],
+  [0.91, "#e8d84a"],
   [0.96, "#ff8c2b"],
-  [1, "#fff6e8"],
+  [1, "#ffe6c2"],
 ];
 const LIGHT_RAMP: readonly RampStop[] = [
-  [0, "#f7f9fc"],
-  [0.3, "#eef3fa"],
-  [0.5, "#d6e3f5"],
-  [0.63, "#9dbde9"],
-  [0.74, "#4f86d6"],
+  [0, "#fbfcfe"],
+  [0.3, "#f3f6fc"],
+  [0.5, "#dde7f7"],
+  [0.65, "#a8c4ec"],
+  [0.76, "#5b8bd6"],
   [0.85, "#2f4fb0"],
   [0.93, "#6a2a9c"],
   [1, "#c4173f"],
@@ -183,6 +183,7 @@ const LABELS: LabelDictionary<OrderBookHeatmapLabels> = {
     ask: "Ask",
     bidSide: "Bid side",
     askSide: "Ask side",
+    bubbleHint: "Bubble area = trade size",
     name: "Liquidity heatmap",
   },
   zh: {
@@ -195,6 +196,7 @@ const LABELS: LabelDictionary<OrderBookHeatmapLabels> = {
     ask: "卖一",
     bidSide: "买盘",
     askSide: "卖盘",
+    bubbleHint: "气泡面积 = 成交量",
     name: "订单簿热力图",
   },
   ja: {
@@ -207,6 +209,7 @@ const LABELS: LabelDictionary<OrderBookHeatmapLabels> = {
     ask: "最良売気配",
     bidSide: "買い板",
     askSide: "売り板",
+    bubbleHint: "バブル面積 = 出来高",
     name: "板ヒートマップ",
   },
   fr: {
@@ -219,6 +222,7 @@ const LABELS: LabelDictionary<OrderBookHeatmapLabels> = {
     ask: "Meilleure vente",
     bidSide: "Côté achat",
     askSide: "Côté vente",
+    bubbleHint: "Aire de la bulle = volume",
     name: "Carte de chaleur de la liquidité",
   },
 };
@@ -253,11 +257,81 @@ export const heatIntensity = (
       return r;
     case "log":
       // one decade: a tenth of the hottest size is a fifth of the ramp
-      return Math.log10(1 + 9 * r);
+      return Math.pow(Math.log10(1 + 9 * r), 1.2);
     default:
+      // square root: thin liquidity stays cool, walls reach the warm end
       return Math.sqrt(r);
   }
 };
+
+/**
+ * Cumulative distribution of the visible sizes (a coarse log histogram):
+ * the rank of a size among the cells on screen, 0-1. It spreads a field of
+ * similar sizes over the ramp (no flat wash) while the biggest walls stay
+ * at its hot end. `version` of the grid it was built from.
+ */
+export interface SizeCdf {
+  version: number;
+  min: number;
+  max: number;
+  /** Bins of equal width in log space */
+  cdf: Float32Array;
+}
+
+const CDF_BINS = 48;
+
+/** Rank (0-1) of a size in the visible cells, `0` below the smallest */
+const rankOf = (dist: SizeCdf, size: number): number => {
+  if (!(size >= dist.min) || !(dist.max > dist.min)) return 0;
+  const t = Math.log(size / dist.min) / Math.log(dist.max / dist.min);
+  const x = Math.min(CDF_BINS - 1e-6, Math.max(0, t * CDF_BINS));
+  const i = Math.floor(x);
+  const f = x - i;
+  const a = dist.cdf[i] ?? 0;
+  const b = dist.cdf[i + 1] ?? a;
+  return a + (b - a) * f;
+};
+
+/** Cumulative distribution of the positive sizes of a grid */
+export const sizeCdf = (cells: Float32Array, version = 0): SizeCdf | null => {
+  let min = Infinity;
+  let max = 0;
+  let count = 0;
+  for (let i = 0; i < cells.length; i++) {
+    const v = cells[i]!;
+    if (!(v > 0)) continue;
+    count++;
+    if (v < min) min = v;
+    if (v > max) max = v;
+  }
+  if (!count || !(max > min)) return null;
+  const bins = new Float32Array(CDF_BINS + 1);
+  const span = Math.log(max / min);
+  for (let i = 0; i < cells.length; i++) {
+    const v = cells[i]!;
+    if (!(v > 0)) continue;
+    const t = Math.log(v / min) / span;
+    bins[Math.min(CDF_BINS, Math.floor(t * CDF_BINS))]! += 1;
+  }
+  let sum = 0;
+  for (let i = 0; i <= CDF_BINS; i++) {
+    sum += bins[i]!;
+    bins[i] = sum / count;
+  }
+  return { version, min, max, cdf: bins };
+};
+
+/** Mix of the absolute curve and the rank (0-1 → 0-1) */
+export const heatCurve =
+  (dist: SizeCdf | null, max: number, base: (r: number) => number) =>
+  (r: number): number => {
+    const absolute = Math.min(1, Math.max(0, base(r)));
+    if (!dist || !(max > 0)) return absolute;
+    const rank = rankOf(dist, r * max);
+    // the absolute size keeps the meaning of the ramp, the rank spreads the
+    // mid-range over it (a field of similar sizes is not a flat wash)
+    return Math.min(1, 0.55 * absolute + 0.45 * rank);
+  };
 
 /**
  * Creates a liquidity heatmap in `container`: resting size over time and
@@ -276,6 +350,10 @@ export const createOrderBookHeatmap = (
   let lut: Uint32Array = new Uint32Array(LUT_SIZE);
   /** Size → color table of the current ramp and color scale */
   let table: Uint32Array = new Uint32Array(HEAT_TABLE_SIZE + 1);
+  /** Base intensity curve (0-1 → 0-1) of the color scale */
+  let curve: (r: number) => number = (r) => Math.sqrt(r);
+  /** Distribution of the visible sizes (rank blending), rebuilt with the grid */
+  let dist: SizeCdf | null = null;
   /** The empty field: the cold end of the ramp */
   let floor: Rgba = [0, 0, 0, 1];
   let dark = false;
@@ -404,7 +482,8 @@ export const createOrderBookHeatmap = (
       lut = positionedRamp(stops, LUT_SIZE);
     }
     const scale = options.colorScale ?? "sqrt";
-    table = heatTable(lut, (r) => heatIntensity(r, 1, scale, 1));
+    curve = (r) => heatIntensity(r, 1, scale, 1);
+    table = heatTable(lut, curve);
     paintKey = "";
   }
 
@@ -418,11 +497,18 @@ export const createOrderBookHeatmap = (
     );
   };
 
+  /** A size with its unit, when `sizeUnit` is set */
+  const withUnit = (text: string) => {
+    const unit = options.sizeUnit?.trim();
+    return unit ? `${text} ${unit}` : text;
+  };
+
   const clearHistory = () => {
     columns = [];
     grid = null;
     gridKey = paintKey = "";
     head = null;
+    dist = null;
     openStart = NaN;
     scaleMax = scaleTarget = 0;
     scaleAt = -Infinity;
@@ -625,6 +711,7 @@ export const createOrderBookHeatmap = (
         const target = percentile(grid.cells, SCALE_QUANTILE);
         if (target > 0) scaleTarget = target;
         scaleAt = now;
+        dist = sizeCdf(grid.cells, grid.version);
       }
       if (!(scaleMax > 0)) scaleMax = scaleTarget;
       else if (scaleTarget > 0 && Math.abs(scaleTarget / scaleMax - 1) > 1e-3)
@@ -632,10 +719,13 @@ export const createOrderBookHeatmap = (
     }
     const contrast = Math.max(0.01, options.contrast ?? 1);
     const k = scaleMax > 0 ? (HEAT_TABLE_SIZE * contrast) / scaleMax : 0;
-    const paint = `${grid.version}|${k}`;
+    const paint = `${grid.version}|${k}|${dist?.version ?? -1}`;
     if (paint !== paintKey) {
+      // the table maps a size (through `k`) to the mix of its absolute
+      // intensity and its rank among the visible cells
+      table = heatTable(lut, heatCurve(dist, scaleMax / contrast, curve));
       paintHeatGrid(grid, table, k);
-      paintKey = `${grid.version}|${k}`;
+      paintKey = paint;
     }
     return grid;
   };
@@ -1086,6 +1176,95 @@ export const createOrderBookHeatmap = (
 
   // ---------------------------------------------------------------- draw
 
+  /** A packed ramp color as CSS (`packColor`), alpha dropped */
+  const rampCss = (packed: number) => {
+    const r = packed & 255;
+    const g = (packed >>> 8) & 255;
+    const b = (packed >>> 16) & 255;
+    return `rgb(${r}, ${g}, ${b})`;
+  };
+
+  /**
+   * Legend in the top-left corner of the plot: the color ramp with the size
+   * range it covers (cold = empty, hot = the largest size) and what the
+   * bubbles are, so a color can be read as a size
+   */
+  const drawLegend = (ctx: CanvasRenderingContext2D, fontSize: number) => {
+    if (plot.w < 200 || plot.h < 96) return;
+    const theme = host.theme;
+    const l = labels();
+    const unit = options.sizeUnit?.trim();
+    const title = unit ? `${l.liquidity} · ${unit}` : l.liquidity;
+    const bold = fontOf(theme, options, 600, fontSize - 1);
+    const regular = fontOf(theme, options, 400, fontSize - 1);
+    const small = fontSize - 2;
+    const barW = 76;
+    const barH = 7;
+    const max = scaleMax > 0 ? fmt.size(scaleMax) : "–";
+    // measures
+    ctx.font = bold;
+    const titleW = ctx.measureText(title).width;
+    ctx.font = fontOf(theme, options, 400, small);
+    const lowW = ctx.measureText("0").width;
+    const highW = ctx.measureText(max).width;
+    ctx.font = regular;
+    const hintW = ctx.measureText(l.bubbleHint).width;
+    const dotsW = small + 10;
+    const innerW = Math.max(barW, titleW, hintW + dotsW);
+    const pad = 7;
+    const boxW = innerW + pad * 2;
+    const rowH = fontSize - 1;
+    const boxH = pad * 2 + rowH + 3 + barH + 2 + small + 6 + rowH;
+    const bx = plot.x + 8;
+    const by = plot.y + 8;
+    if (bx + boxW > plot.x + plot.w - 8) return;
+    // panel: a full subtle border, no accent edge
+    ctx.fillStyle = toCss(theme.background, dark ? 0.82 : 0.88);
+    ctx.strokeStyle = toCss(theme.axis, 0.6);
+    ctx.lineWidth = 1;
+    roundRect(ctx, bx + 0.5, by + 0.5, boxW, boxH, 6);
+    ctx.fill();
+    ctx.stroke();
+    const left = bx + pad;
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    // title
+    ctx.font = bold;
+    ctx.fillStyle = toCss(theme.textMuted);
+    ctx.fillText(title, left, by + pad + rowH / 2);
+    // ramp
+    const rampY = by + pad + rowH + 3;
+    const gradient = ctx.createLinearGradient(left, rampY, left + barW, rampY);
+    for (let i = 0; i <= 8; i++) {
+      const t = i / 8;
+      const packed = lut[Math.round(t * (lut.length - 1))] ?? 0;
+      gradient.addColorStop(t, rampCss(packed));
+    }
+    ctx.fillStyle = gradient;
+    roundRect(ctx, left, rampY, barW, barH, 2);
+    ctx.fill();
+    // its size range
+    ctx.font = fontOf(theme, options, 400, small);
+    ctx.fillStyle = toCss(theme.textMuted);
+    const labelY = rampY + barH + 2 + small / 2;
+    ctx.fillText("0", left, labelY);
+    ctx.textAlign = "right";
+    ctx.fillText(max, left + Math.max(barW, highW + lowW), labelY);
+    ctx.textAlign = "left";
+    // trades
+    const hintY = labelY + small / 2 + 6 + rowH / 2;
+    const dot = small / 2;
+    for (const [i, color] of [colors.up, colors.down].entries()) {
+      ctx.fillStyle = toCss(color, 0.9);
+      ctx.beginPath();
+      ctx.arc(left + dot + i * (small + 4), hintY, dot, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.font = regular;
+    ctx.fillStyle = toCss(theme.textMuted);
+    ctx.fillText(l.bubbleHint, left + dotsW, hintY);
+  };
+
   function draw(now: number): boolean {
     const ctx = host.ctx;
     if (!ctx) return false;
@@ -1265,6 +1444,8 @@ export const createOrderBookHeatmap = (
     ctx.moveTo(Math.round(right) + 0.5, plot.y);
     ctx.lineTo(Math.round(right) + 0.5, plot.y + plot.h);
     ctx.stroke();
+
+    if (options.legend !== false) drawLegend(ctx, fontSize);
 
     const cell = ready ? hoverCell(ry) : null;
 
@@ -1491,9 +1672,9 @@ export const createOrderBookHeatmap = (
             ? `${fmt.price(low)} – ${fmt.price(high)}`
             : fmt.price(rowPrice),
         ],
-        [l.liquidity, fmt.size(size)],
-        [l.buys, fmt.size(buyVolume)],
-        [l.sells, fmt.size(sellVolume)],
+        [l.liquidity, withUnit(fmt.size(size))],
+        [l.buys, withUnit(fmt.size(buyVolume))],
+        [l.sells, withUnit(fmt.size(sellVolume))],
       ],
     );
     host.tooltip.style.display = "block";

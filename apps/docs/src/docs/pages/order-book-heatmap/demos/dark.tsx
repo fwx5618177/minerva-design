@@ -58,6 +58,7 @@ export default function DarkDemo() {
         window={90_000}
         pricePrecision={1}
         sizePrecision={3}
+        sizeUnit="BTC"
         fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace"
         ariaLabel={t("aria")}
       />

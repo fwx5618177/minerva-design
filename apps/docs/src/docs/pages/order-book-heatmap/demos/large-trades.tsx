@@ -42,6 +42,7 @@ export default function LargeTradesDemo() {
         onHover={setHover}
         pricePrecision={1}
         sizePrecision={3}
+        sizeUnit="BTC"
         ariaLabel={t("aria")}
       />
       <span style={{ color: "var(--text-secondary-color)", fontSize: 13 }}>

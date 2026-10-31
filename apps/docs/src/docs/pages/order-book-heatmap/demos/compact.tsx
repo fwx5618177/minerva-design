@@ -29,6 +29,7 @@ export default function CompactDemo() {
         fontSize={10}
         pricePrecision={1}
         sizePrecision={3}
+        sizeUnit="BTC"
         ariaLabel={t("aria")}
       />
     </div>

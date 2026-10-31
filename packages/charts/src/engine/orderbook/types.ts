@@ -514,6 +514,8 @@ export interface OrderBookHeatmapLabels {
   bidSide: string;
   /** Side badge of a hovered ask row in the tooltip @default "Ask side" */
   askSide: string;
+  /** Legend row of the trades (bubbles) @default "Bubble area = trade size" */
+  bubbleHint: string;
   /** Accessible name (when `ariaLabel` is not set) @default "Liquidity heatmap" */
   name: string;
 }
@@ -554,6 +556,17 @@ export interface OrderBookHeatmapOptions extends OrderBookCommonOptions {
    * @default "sqrt"
    */
   colorScale?: OrderBookHeatmapScale;
+  /**
+   * Unit of the sizes, shown after them in the legend and the tooltip
+   * (e.g. "BTC"); the numbers are not converted
+   */
+  sizeUnit?: string;
+  /**
+   * Legend of the color ramp (cold to hot, its size range) and of the
+   * trades, in the top-left corner of the plot
+   * @default true
+   */
+  legend?: boolean;
   /**
    * Multiplies the sizes before the scale: above 1 brightens thin liquidity
    * (more of the field glows), below 1 keeps only the largest walls

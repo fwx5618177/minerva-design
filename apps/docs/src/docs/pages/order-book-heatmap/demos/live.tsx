@@ -16,7 +16,7 @@ export default function LiveDemo() {
   const boxRef = useRef<HTMLDivElement>(null);
   const [renderer, setRenderer] = useState<ChartRendererKind | null>(null);
   const [follow, setFollow] = useState(true);
-  // the last 15 s at 200 messages a second (one update every 10 ms), then
+  // the last 15 s with one book update every 10 ms (100 a second), then
   // live at the same pace; the heatmap samples the book every 50 ms
   useHeatmapReplay(boxRef, heatmapRef, { seed: 22, activity: 200 }, 15_000, {
     step: 10,
@@ -34,6 +34,7 @@ export default function LiveDemo() {
         onFollowChange={setFollow}
         pricePrecision={1}
         sizePrecision={3}
+        sizeUnit="BTC"
         ariaLabel={t("aria")}
       />
       <div

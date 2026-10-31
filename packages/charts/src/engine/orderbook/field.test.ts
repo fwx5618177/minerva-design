@@ -49,6 +49,51 @@ const cell = (
 };
 
 describe("heat field", () => {
+  it("keeps the older time columns untouched when a column arrives", () => {
+    const older = [
+      { time: 0, bins: [10, 12], sizes: [1, 3] },
+      { time: 100, bins: [11], sizes: [2] },
+    ];
+    const before = buildHeatGrid(input({ sources: older }))!;
+    const old = [0, 1].flatMap((column) =>
+      [10, 11, 12, 13].map((bin) => cell(before, column, bin)),
+    );
+    // a new column (and a new book) arrives
+    const after = buildHeatGrid(
+      input({
+        sources: [
+          ...older.map((column) => ({ ...column, sizes: [...column.sizes] })),
+          { time: 200, bins: [13, 14], sizes: [9, 4] },
+        ],
+      }),
+    )!;
+    const kept = [0, 1].flatMap((column) =>
+      [10, 11, 12, 13].map((bin) => cell(after, column, bin)),
+    );
+    expect(kept).toEqual(old);
+    // the new column only fills its own texel
+    expect(cell(after, 2, 13)).toBe(9);
+    expect(cell(after, 2, 14)).toBe(4);
+  });
+
+  it("ignores a column arriving after a newer one (no rewriting back)", () => {
+    const grid = buildHeatGrid(
+      input({
+        sources: [
+          { time: 0, bins: [10], sizes: [1] },
+          { time: 100, bins: [10], sizes: [7] },
+          // a late column, older than the last one
+          { time: 50, bins: [10], sizes: [5] },
+        ],
+      }),
+    )!;
+    // columns are consumed in order: the late one cannot rewrite the texels
+    // of the newer column, which keeps covering its span
+    expect(cell(grid, 0, 10)).toBe(1);
+    expect(cell(grid, 1, 10)).toBe(7);
+    expect(cell(grid, 2, 10)).toBe(7);
+    expect(cell(grid, 3, 10)).toBe(7);
+  });
   it("rasterizes columns into abutting texels, filling gaps forward", () => {
     const grid = buildHeatGrid(
       input({

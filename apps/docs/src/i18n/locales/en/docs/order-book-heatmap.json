@@ -1,6 +1,23 @@
 {
   "title": "Order book heatmap",
   "description": "Bookmap-style liquidity heatmap: resting size by time and price drawn by the GPU, best bid and ask lines, trades as bubbles sized by volume, a profile of the current book, zoom, pan and a crosshair readout. Streams append one column per interval in a sliding window.",
+  "read": {
+    "title": "How to read it",
+    "text": "The heatmap is a recording of the order book: every column is a snapshot of the book at one moment, laid out from left to right, with now at the right edge.",
+    "axes": "The horizontal axis is time (newest on the right), the vertical axis is price. Hover anywhere: the crosshair reads the resting size at that price and time.",
+    "color": "The color of a cell is the size resting at that price at that time: dark means almost nothing, brighter colors (blue → cyan → yellow → white) mean more. The legend at the top left gives the size range and unit of the colors.",
+    "walls": "Bright horizontal lines are large orders that stay in the book (walls). Where a line ends, the order was pulled or filled: if the price line reaches the end of the wall, it was filled.",
+    "lines": "The red and green lines that follow the price are the best ask and the best bid, the gap between them is the spread. On the price axis the filled red and green tags are the current best ask and bid, the outlined tag is the last trade.",
+    "bubbles": "Dots are trades: green for aggressive buys (lifting asks), red for aggressive sells (hitting bids), their area grows with the volume traded during the column, so large bubbles are large trades. colorConvention=\"red-up\" swaps the two colors.",
+    "profile": "The bars on the right are the current book: asks in red above, bids in green below, longer bars mean more size; the scale below them is the size.",
+    "patterns": {
+      "title": "What to look for",
+      "hold": "Support and resistance: the price touches a bright line several times and turns back, the large order absorbs it.",
+      "pull": "Pulled orders (spoofing): a bright line disappears as the price comes close without any trade bubble there, the order was cancelled, not filled.",
+      "sweep": "Sweeps: a burst of large bubbles crosses several prices, the price line jumps and the liquidity on its way goes dark.",
+      "thin": "Thin liquidity: a large dark area near the price means few resting orders, the price can move through it quickly."
+    }
+  },
   "demos": {
     "basic": {
       "title": "Backfill and live",
@@ -8,7 +25,7 @@
     },
     "live": {
       "title": "High-frequency stream",
-      "description": "100 messages a second; the book is sampled every 50 ms into GPU bar instances (WebGPU, WebGL or Canvas2D), 32 columns per buffer: a frame only uploads the newest column. onRendererChange reports the backend, onFollowChange whether the view follows the market."
+      "description": "A simulated fast market: about 100 book updates a second, one column every 50 ms, the last 15 seconds on screen. It reads like the charts above: bright lines are large orders, dots are trades, the bars on the right are the current book. Dragging or zooming stops following the market; Follow the market or a double click returns to now. The cells are drawn by the GPU (WebGPU or WebGL, Canvas2D otherwise): onRendererChange reports the backend, onFollowChange whether the view follows the market."
     },
     "color-scale": {
       "title": "Color scale",
@@ -16,7 +33,7 @@
     },
     "large-trades": {
       "title": "Large trades",
-      "description": "The trades of a column are summed per side into one bubble whose area grows with the volume; bubbleVolume is the volume of the largest bubble (bubbleSize pixels). A lower contrast dims the book so the sweeps stand out; onHover reads the bought and sold volume of the hovered column."
+      "description": "The trades of a column are summed per side into one bubble, green for buys and red for sells (as the legend shows), whose area grows with the volume; bubbleVolume is the volume of the largest bubble (bubbleSize pixels). A lower contrast dims the book so the sweeps stand out; onHover reads the bought and sold volume of the hovered column."
     },
     "dark": {
       "title": "Dark terminal",
@@ -82,6 +99,8 @@
       "colorScale": "Scale from sizes to colors: sqrt keeps typical levels dim and lets significant liquidity glow, linear shows only the walls, log reveals thin liquidity next to them",
       "contrast": "Multiplies the sizes before the scale: above 1 brightens thin liquidity (more of the field glows), below 1 keeps only the largest walls",
       "maxSize": "Size drawn with the hottest color (larger sizes saturate); when omitted, the 99th percentile of the visible non-empty cells (eased), so typical levels stay dark and only the top liquidity glows",
+      "sizeUnit": "Unit of the sizes, shown after them in the legend and the tooltip (the numbers are not converted)",
+      "legend": "Legend of the color ramp (cold to hot, its size range) and of the trades, in the top-left corner of the plot",
       "colors": "Color ramp, coldest first, interpolated in OKLab. The first color also fills the cells without liquidity (the field is opaque, no holes): a dark color in dark themes, a pale one in light themes. A perceptual heat ramp suited to the theme when omitted",
       "bubbles": "Trades drawn as bubbles sized by volume (buy and sell colors)",
       "bubbleSize": "Diameter of the largest bubble, in pixels (area ∝ volume, the smallest are 3 px dots)",
@@ -123,6 +142,7 @@
       "ask": "Best ask, in the screen reader summary",
       "bidSide": "Side badge of a hovered bid row in the tooltip",
       "askSide": "Side badge of a hovered ask row in the tooltip",
+      "bubbleHint": "Legend row of the trades (bubble area = trade size)",
       "name": "Accessible name (when ariaLabel is not set)"
     },
     "OrderBookHeatmapHoverEvent": {

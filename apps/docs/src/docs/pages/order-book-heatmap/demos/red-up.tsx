@@ -40,6 +40,7 @@ export default function RedUpDemo() {
         window={60_000}
         pricePrecision={1}
         sizePrecision={3}
+        sizeUnit="BTC"
         ariaLabel={t("aria")}
       />
     </div>

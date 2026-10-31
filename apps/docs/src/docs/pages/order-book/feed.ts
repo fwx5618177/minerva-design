@@ -163,9 +163,9 @@ export function createMarketFeed(options: FeedOptions = {}): MarketFeed {
   const target = (side: Side, index: number) => {
     const d = Math.max(0, distanceOf(side, index));
     const landscape = Math.exp(
-      0.65 *
-        (0.7 * noise(index / 120, elapsed / 40_000, 1) +
-          0.45 * noise(index / 35, elapsed / 15_000, 2)),
+      1.05 *
+        (0.7 * noise(index / 120, elapsed / 22_000, 1) +
+          0.45 * noise(index / 35, elapsed / 9_000, 2)),
     );
     const roundness =
       index % 100 === 0 ? 3 : index % 50 === 0 ? 2 : index % 10 === 0 ? 1.3 : 1;
@@ -176,9 +176,9 @@ export function createMarketFeed(options: FeedOptions = {}): MarketFeed {
       roundness
     );
   };
-  /** Resting size of a new level: its typical size with mild noise */
+  /** Resting size of a new level: its typical size with noise */
   const levelSize = (side: Side, index: number) =>
-    round(target(side, index) * Math.exp(0.4 * gauss()));
+    round(target(side, index) * Math.exp(0.7 * gauss()));
   /** Far from the touch, fewer prices hold orders */
   const emptiness = (distance: number) =>
     distance > 3 ? Math.min(0.6, 0.05 + distance / 2500) : 0;
@@ -208,8 +208,8 @@ export function createMarketFeed(options: FeedOptions = {}): MarketFeed {
       wall.until = Math.max(wall.until, until);
     } else walls[side].set(index, { size, until, spoof });
   };
-  /** Size of a wall: 1.5 to 25 (default market), round prices favored */
-  const wallSize = () => lognormal(6.5, 0.85);
+  /** Size of a wall: a few times a typical level (3 to 12 here) */
+  const wallSize = () => lognormal(3.2, 0.5);
 
   for (const side of ["bid", "ask"] as const) {
     for (let d = 0; d < depth; d++) {
@@ -398,7 +398,7 @@ export function createMarketFeed(options: FeedOptions = {}): MarketFeed {
    * and levels vanish so the density stays put, far levels are dropped
    */
   const drift = (ms: number) => {
-    const visits = Math.ceil((depth * ms) / 2500);
+    const visits = Math.ceil((depth * ms) / 900);
     for (const side of ["bid", "ask"] as const) {
       for (let k = 0; k < visits; k++) {
         const d = 4 + Math.floor(random() * depth);
@@ -415,9 +415,16 @@ export function createMarketFeed(options: FeedOptions = {}): MarketFeed {
           set(side, index, 0);
           continue;
         }
+        if (random() < 0.05) {
+          // a stale order is pulled and re-added at the current depth: no
+          // liquidity line runs unchanged through the whole history
+          set(side, index, 0);
+          if (random() > empty) set(side, index, levelSize(side, index));
+          continue;
+        }
         const log = Math.log(size);
         const goal = Math.log(target(side, index));
-        set(side, index, Math.exp(log + 0.08 * gauss() + 0.06 * (goal - log)));
+        set(side, index, Math.exp(log + 0.1 * gauss() + 0.16 * (goal - log)));
       }
       if (random() < 0.05) {
         for (const index of books[side].keys()) {

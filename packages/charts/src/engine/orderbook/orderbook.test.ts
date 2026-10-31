@@ -15,7 +15,12 @@ import {
   formatCompactNumber,
   sideColors,
 } from "./format";
-import { createOrderBookHeatmap, heatIntensity } from "./heatmap";
+import {
+  createOrderBookHeatmap,
+  heatCurve,
+  heatIntensity,
+  sizeCdf,
+} from "./heatmap";
 import { createOrderBook } from "./ladder";
 import { createTimeAndSales } from "./tape";
 import { readTheme } from "../theme";
@@ -196,6 +201,32 @@ describe("helpers", () => {
     expect(heatIntensity(1, 10, "linear", 2)).toBeCloseTo(0.2);
     expect(heatIntensity(2, 10, "log", 1)).toBeGreaterThan(log);
   });
+
+  it("spreads a field of similar sizes over the ramp (rank blending)", () => {
+    // a long tail: most cells around 1, a few walls at 40
+    const cells = new Float32Array(2000);
+    for (let i = 0; i < cells.length; i++)
+      cells[i] = i % 40 === 0 ? 40 : 1 + (i % 7) * 0.05;
+    const dist = sizeCdf(cells)!;
+    expect(dist.max).toBe(40);
+    const absolute = (r: number) => Math.sqrt(r);
+    const blended = heatCurve(dist, 40, absolute);
+    // a typical cell keeps its absolute meaning but sits higher
+    expect(blended(1 / 40)).toBeGreaterThan(absolute(1 / 40));
+    expect(blended(1 / 40)).toBeLessThan(0.5);
+    // the walls stay at the hot end, the cold end at 0
+    expect(blended(1)).toBeCloseTo(1, 5);
+    expect(blended(0)).toBe(0);
+    // without a distribution the absolute curve is used
+    expect(heatCurve(null, 40, absolute)(0.25)).toBeCloseTo(0.5);
+    // a field of identical sizes has no distribution: absolute only
+    const flat = heatCurve(
+      sizeCdf(new Float32Array([2, 2, 2, 2])),
+      2,
+      absolute,
+    );
+    expect(flat(1)).toBeCloseTo(1, 5);
+  });
 });
 
 describe("localization", () => {
@@ -335,6 +366,59 @@ describe("order book heatmap", () => {
     expect(el.childElementCount).toBe(0);
   });
 
+  it("keeps a closed column when a delta arrives late", async () => {
+    const el = mount();
+    const heatmap = createOrderBookHeatmap(el, {
+      interval: 100,
+      window: 1000,
+      locale: "en-US",
+      renderer: "canvas2d",
+      pricePrecision: 1,
+      sizePrecision: 2,
+      legend: false,
+    });
+    heatmap.setBook({ ...BOOK, time: 1000 });
+    for (let i = 1; i < 10; i++)
+      heatmap.applyDeltas({
+        bids: [[99.5, 3 + i * 0.1]],
+        time: 1000 + i * 100,
+      });
+    await heatmap.ready;
+    await frame();
+    const root = el.firstElementChild as HTMLElement;
+    const seen: { price: number; size: number }[] = [];
+    heatmap.on("hover", (event) => {
+      if (event) seen.push({ price: event.price, size: event.size });
+    });
+    const hover = async (x: number, y: number) => {
+      root.dispatchEvent(
+        new PointerEvent("pointermove", { clientX: x, clientY: y }),
+      );
+      await frame();
+      return seen[seen.length - 1];
+    };
+    // a cell of the drawn history with liquidity: around the price rows of
+    // the book, in the left half (older columns)
+    let found: { x: number; y: number; size: number; price: number } | null =
+      null;
+    for (let y = 130; y <= 190 && !found; y += 10) {
+      for (let x = 90; x <= 160 && !found; x += 20) {
+        const cell = await hover(x, y);
+        if (cell && cell.size > 0)
+          found = { x, y, size: cell.size, price: cell.price };
+      }
+    }
+    expect(found).not.toBeNull();
+    // a delta with an older time than the closed columns: the open book
+    // changes, the history already drawn must not
+    heatmap.applyDeltas({ bids: [[99.5, 77]], time: 1050 });
+    await frame();
+    const after = await hover(found!.x, found!.y);
+    expect(after!.price).toBe(found!.price);
+    expect(after!.size).toBe(found!.size);
+    heatmap.destroy();
+  });
+
   it("recreates its heat field when the default renderer switches live", async () => {
     const fake2d = fakeContext().ctx;
     // a WebGL double: every call succeeds
@@ -382,6 +466,31 @@ describe("order book heatmap", () => {
       auto.destroy();
       fixed.destroy();
     }
+  });
+
+  it("draws a color legend with the size range and the unit", async () => {
+    const el = mount();
+    const heatmap = createOrderBookHeatmap(el, {
+      interval: 100,
+      locale: "en-US",
+      renderer: "canvas2d",
+      pricePrecision: 1,
+      sizeUnit: "BTC",
+    });
+    heatmap.setBook({ ...BOOK, time: 1000 });
+    for (let i = 1; i < 12; i++)
+      heatmap.applyDeltas({ bids: [[99.5, 2 + i]], time: 1000 + i * 100 });
+    await heatmap.ready;
+    await frame();
+    // the title carries the unit, the scale its range, the bubbles are named
+    expect(texts).toContain("Liquidity · BTC");
+    expect(texts).toContain("Bubble area = trade size");
+    expect(texts).toContain("0");
+    heatmap.setOptions({ legend: false });
+    texts.length = 0;
+    await frame();
+    expect(texts).not.toContain("Liquidity · BTC");
+    heatmap.destroy();
   });
 
   it("draws tags, the profile scale, hovers cells and pans / zooms", async () => {
