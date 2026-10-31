@@ -28,7 +28,7 @@ import {
   type ChartTheme,
 } from "../theme";
 import type { ChartRendererKind } from "../types";
-import { localeLabels, resolveLocale } from "../locale";
+import { languageOf, localeLabels, resolveLocale } from "../locale";
 import {
   anchorCount,
   drawingPrices,
@@ -73,6 +73,7 @@ import {
 } from "./geometry";
 import { heikinAshiInto, parseTimeframe, volumeProfile } from "./indicators";
 import { TRADING_LABELS, fill, type TradingTexts } from "./labels";
+import { firstFree, placeTags, stackLabels, type LabelBox } from "./layout";
 import {
   createScale,
   fitScale,
@@ -124,6 +125,7 @@ import type {
   TradingDrawingPoint,
   TradingDrawingTool,
   TradingLineStyle,
+  TradingOrderType,
   TradingPriceLine,
   TradingReplayState,
   TradingScaleMode,
@@ -261,7 +263,21 @@ type Gesture =
 /** Mounts a trading chart in `container` (which should have a height) */
 /** Keys of the keyboard order entry (`aria-keyshortcuts`) */
 const ORDER_KEYS =
-  "B S O Shift+O ArrowUp ArrowDown Shift+ArrowUp Shift+ArrowDown Enter Escape Delete";
+  "B S Alt+B Alt+S O Shift+O ArrowUp ArrowDown Shift+ArrowUp Shift+ArrowDown Enter Escape Delete";
+
+/**
+ * Type of an order at `price`: a limit when it waits for a better price than
+ * the last one (a buy at or below it, a sell at or above it), else a stop
+ */
+const orderTypeFor = (
+  side: "buy" | "sell",
+  price: number,
+  last: number,
+): TradingOrderType => {
+  if (!finite(last)) return "limit";
+  if (side === "buy") return price <= last ? "limit" : "stop";
+  return price >= last ? "limit" : "stop";
+};
 
 /** Legend items cut with an ellipsis when wider than the legend */
 const ELLIPSIS: Partial<CSSStyleDeclaration> = {
@@ -474,12 +490,20 @@ export const createTradingChart = (
 
   let pointer: { x: number; y: number } | null = null;
   let keyboardIndex: number | null = null;
+  /** Alt / Option held over the chart: the "+" creates stop orders */
+  let pointerAlt = false;
   /**
    * Keyboard order entry: an order armed with B / S, or a price line picked
    * with O (its preview price lives in `lineOverrides`, like a drag)
    */
   let keyOrder:
-    | { kind: "create"; side: "buy" | "sell"; price: number }
+    | {
+        kind: "create";
+        side: "buy" | "sell";
+        price: number;
+        /** Type chosen with Alt; follows the price otherwise */
+        pinned?: TradingOrderType;
+      }
     | { kind: "move"; id: string; start: number; override?: number }
     | null = null;
   let gesture: Gesture | null = null;
@@ -2083,7 +2107,10 @@ export const createTradingChart = (
     ctx.stroke();
   };
 
-  /** Label on the price axis; returns its vertical extent */
+  /**
+   * Label on the price axis at `y`; `at` is its top when laid out among the
+   * other labels: moved away from `y`, a leader line joins it to its price
+   */
   const axisLabel = (
     ctx: CanvasRenderingContext2D,
     y: number,
@@ -2091,9 +2118,21 @@ export const createTradingChart = (
     fill: string,
     textColor: string,
     second?: string,
+    at?: number,
   ) => {
     const h = second ? 32 : 18;
-    const top = clamp(Math.round(y - 9), 0, plotH - h);
+    const top = Math.round(at ?? clamp(Math.round(y - 9), 0, plotH - h));
+    if (Math.abs(top + 9 - y) > 1.5) {
+      ctx.save();
+      ctx.strokeStyle = fill;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(plotW - 10, Math.round(y) + 0.5);
+      ctx.lineTo(plotW - 4, Math.round(y) + 0.5);
+      ctx.lineTo(plotW + 2, top + 9.5);
+      ctx.stroke();
+      ctx.restore();
+    }
     roundRect(ctx, plotW + 1, top, axisW - 2, h, 3);
     ctx.fillStyle = fill;
     ctx.fill();
@@ -2214,6 +2253,29 @@ export const createTradingChart = (
     return Number((Math.round(price / step) * step).toFixed(precision()));
   };
 
+  const lastPrice = () => {
+    const count = n();
+    return count ? store.close[count - 1] : NaN;
+  };
+
+  /** "Buy limit 101.20", "Sell stop 98.00"… */
+  const orderLabel = (
+    side: "buy" | "sell",
+    type: TradingOrderType,
+    value: number,
+  ) => {
+    const l = labels();
+    const text =
+      side === "buy"
+        ? type === "stop"
+          ? l.buyStop
+          : l.buyLimit
+        : type === "stop"
+          ? l.sellStop
+          : l.sellLimit;
+    return fill(text, { price: formatPrice(value) });
+  };
+
   /** A rounded label (pill) with text */
   const pill = (
     ctx: CanvasRenderingContext2D,
@@ -2324,13 +2386,181 @@ export const createTradingChart = (
     const downC = css(downCss());
     const l = labels();
 
+    const lastClose = count ? store.close[count - 1] : NaN;
+    const priceBottom = price.top + price.height;
+    // badges sit at the bottom of the price pane: the legends cover its top
+    const badgeY = priceBottom - 32;
+
+    // ---- labels laid out before painting, so that they avoid each other
+    /** Boxes kept clear by the high / low labels */
+    const taken: LabelBox[] = [];
+    /** Box of a pill painted by `pill` */
+    const pillBox = (
+      label: string,
+      x: number,
+      top: number,
+      align: "left" | "center" = "left",
+    ): LabelBox => {
+      ctx.font = font(theme.fontSize, 500);
+      const w = ctx.measureText(label).width + 16;
+      const left = clamp(
+        align === "center" ? x - w / 2 : x,
+        2,
+        Math.max(2, plotW - w - 2),
+      );
+      return { left, top, right: left + w, bottom: top + 22 };
+    };
+    // the order armed with the keyboard
+    let armed: {
+      y: number;
+      color: string;
+      text: string;
+      type: TradingOrderType;
+      box: LabelBox;
+    } | null = null;
+    if (keyOrder?.kind === "create" && count) {
+      const y = Math.round(yOf(price.scale, keyOrder.price)) + 0.5;
+      if (finite(y) && y >= price.top && y <= priceBottom) {
+        const type = keyOrderType(keyOrder);
+        const label = orderLabel(keyOrder.side, type, keyOrder.price);
+        ctx.font = font(theme.fontSize, 500);
+        const box = pillBox(
+          label,
+          plotW - 56 - (ctx.measureText(label).width + 16),
+          clamp(y - 11, price.top + 2, priceBottom - 24),
+        );
+        armed = {
+          y,
+          color: keyOrder.side === "buy" ? upC : downC,
+          text: label,
+          type,
+          box,
+        };
+        taken.push(box);
+      }
+    }
+    // the replay badge and the keys of the keyboard order entry
+    const replayText = replayPicking
+      ? l.replayHint
+      : replay && count
+        ? fill(l.replay, {
+            time: formatCrosshairTime(
+              shift(store.time[count - 1]),
+              tfMs(),
+              locale,
+            ),
+          })
+        : "";
+    if (replayText)
+      taken.push(pillBox(replayText, plotW / 2, badgeY, "center"));
+    const showOrderHint = !!keyOrder && count > 0 && !replayText;
+    if (showOrderHint) taken.push(pillBox(l.orderHint, 8, badgeY));
+
+    // tags of the price lines: [grip] title | quantity | profit | close
+    interface Tag {
+      line: TradingPriceLine;
+      price: number;
+      /** Exact y of the price */
+      at: number;
+      /** y of the line, on the pixel grid */
+      y: number;
+      top: number;
+      left: number;
+      color: string;
+      parts: { text: string; fill: string; color: string; cancel?: boolean }[];
+      widths: number[];
+      grip: number;
+      /** Width of the label, 0 without label */
+      total: number;
+    }
+    const tags: Tag[] = [];
+    ctx.font = font(theme.fontSize, 600);
+    for (const line of options.priceLines ?? []) {
+      const p = linePrice(line);
+      const at = yOf(price.scale, p);
+      const y = Math.round(at) + 0.5;
+      if (!finite(y) || y < price.top || y > priceBottom) continue;
+      const color = lineColor(line);
+      const kind = line.kind ?? "line";
+      const titleKey = PRICE_LINE_TITLES[kind];
+      const title = line.title ?? (titleKey ? l[titleKey] : "");
+      const parts: Tag["parts"] = [];
+      if (title) parts.push({ text: title, fill: color, color: textOn(color) });
+      if (line.quantity !== undefined && line.quantity !== "")
+        parts.push({ text: String(line.quantity), fill: bgCss, color });
+      if (
+        kind === "position" &&
+        typeof line.quantity === "number" &&
+        finite(lastClose)
+      ) {
+        const pnl =
+          (lastClose - p) * line.quantity * (line.side === "sell" ? -1 : 1);
+        const pnlFill = pnl >= 0 ? upC : downC;
+        parts.push({
+          text: `${pnl >= 0 ? "+" : "−"}${formatPrice(Math.abs(pnl))}`,
+          fill: pnlFill,
+          color: textOn(pnlFill),
+        });
+      }
+      if (line.cancellable)
+        parts.push({ text: "×", fill: bgCss, color, cancel: true });
+      const labelled = parts.length > 0 || !!line.draggable;
+      const widths = parts.map((part) =>
+        part.cancel ? 20 : ctx.measureText(part.text).width + 12,
+      );
+      const grip = line.draggable ? 14 : 0;
+      const total = labelled ? widths.reduce((a, b) => a + b, 0) + grip : 0;
+      tags.push({
+        line,
+        price: p,
+        at,
+        y,
+        top: Math.round(y - 9.5),
+        left: Math.round(plotW - total - 56),
+        color,
+        parts,
+        widths,
+        grip,
+        total,
+      });
+    }
+    // tags at the same height move left of each other (positions first)
+    const labelledTags = tags
+      .filter((tag) => tag.total > 0)
+      .sort(
+        (a, b) =>
+          Number(b.line.kind === "position") -
+          Number(a.line.kind === "position"),
+      );
+    placeTags(
+      labelledTags.map((tag) => ({
+        right: plotW - 56,
+        top: tag.top,
+        width: tag.total,
+        height: 18,
+      })),
+      armed ? [armed.box] : [],
+      6,
+    ).forEach((left, k) => {
+      const tag = labelledTags[k];
+      if (!tag) return;
+      tag.left = Math.round(left);
+      taken.push({
+        left: tag.left - 4,
+        top: tag.top - 4,
+        right: tag.left + tag.total + 4,
+        bottom: tag.top + 22,
+      });
+    });
+
     // ---- price pane contents (clipped)
     ctx.save();
     ctx.beginPath();
     ctx.rect(0, price.top, plotW, price.height);
     ctx.clip();
 
-    // high / low of the visible bars, kept inside the plot
+    // high / low of the visible bars: inside the plot, clear of the legend,
+    // the order tags and the badges (nudged with a leader line, else hidden)
     if (
       v &&
       options.highLowMarkers !== false &&
@@ -2356,6 +2586,12 @@ export const createTradingChart = (
       ctx.fillStyle = muted;
       ctx.strokeStyle = muted;
       ctx.lineWidth = 1;
+      const legendBoxes: LabelBox[] = priceLegend.map((row) => ({
+        left: 0,
+        top: row.top,
+        right: row.right,
+        bottom: row.bottom,
+      }));
       for (const [g, value, below] of [
         [hiG, hi, false],
         [loG, lo, true],
@@ -2364,37 +2600,64 @@ export const createTradingChart = (
         const x = xOf(groupCenter(v, g));
         const label = formatPrice(value);
         const w = ctx.measureText(label).width;
-        let y = clamp(
+        const minY = price.top + 8;
+        const maxY = priceBottom - 8;
+        const y0 = clamp(
           yOf(price.scale, value) + (below ? 9 : -9),
-          price.top + 8,
-          price.top + price.height - 8,
+          minY,
+          maxY,
         );
-        // not under a row of the legend
-        const labelLeft = Math.min(x, x + (x > plotW * 0.6 ? -17 - w : 17 + w));
-        for (const row of priceLegend) {
-          if (
-            labelLeft < row.right &&
-            y - 7 < row.bottom &&
-            y + 7 > row.top &&
-            row.bottom + 10 < price.top + price.height - 8
-          )
-            y = row.bottom + 10;
-        }
         // on the right of the bar, unless it does not fit there
         const roomRight = plotW - 4 - (x + 17 + w);
         const roomLeft = x - 17 - w - 4;
-        const leftSide =
+        const leftFirst =
           (roomRight < 0 || x > plotW * 0.6) &&
           roomLeft >= Math.min(0, roomRight);
-        const dir = leftSide ? -1 : 1;
+        const candidates: { y: number; left: boolean; tx: number }[] = [];
+        // away from the bar first
+        const away = below ? 1 : -1;
+        for (const step of [0, 1, 2, 3, -1, -2]) {
+          const y = clamp(y0 + step * away * 17, minY, maxY);
+          if (candidates.some((c) => c.y === y)) continue;
+          for (const left of [leftFirst, !leftFirst])
+            candidates.push({
+              y,
+              left,
+              tx: clamp(left ? x - 17 - w : x + 17, 2, plotW - w - 2),
+            });
+        }
+        // else just under the rows of the legend that cover it
+        for (const row of priceLegend) {
+          const y = row.bottom + 10;
+          if (y > maxY || candidates.some((c) => c.y === y)) continue;
+          for (const left of [leftFirst, !leftFirst])
+            candidates.push({
+              y,
+              left,
+              tx: clamp(left ? x - 17 - w : x + 17, 2, plotW - w - 2),
+            });
+        }
+        const boxes = candidates.map((c) => ({
+          left: c.tx - 2,
+          top: c.y - 8,
+          right: c.tx + w + 2,
+          bottom: c.y + 8,
+        }));
+        // clear of everything, else at least of the opaque labels
+        let pick = firstFree(boxes, [...taken, ...legendBoxes]);
+        if (pick < 0) pick = firstFree(boxes, taken);
+        const spot = candidates[pick];
+        const box = boxes[pick];
+        if (!spot || !box) continue;
+        taken.push(box);
+        const dir = spot.left ? -1 : 1;
         ctx.textBaseline = "middle";
         ctx.textAlign = "left";
         ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(x + dir * 14, y);
+        ctx.moveTo(x, y0);
+        ctx.lineTo(x + dir * 14, spot.y);
         ctx.stroke();
-        const tx = clamp(leftSide ? x - 17 - w : x + 17, 2, plotW - w - 2);
-        ctx.fillText(label, tx, y);
+        ctx.fillText(label, spot.tx, spot.y);
       }
     }
 
@@ -2453,12 +2716,8 @@ export const createTradingChart = (
     ctx.rect(0, price.top, plotW, price.height);
     ctx.clip();
     // price lines (orders, positions, TP / SL, alerts)
-    const lastClose = count ? store.close[count - 1] : NaN;
-    for (const line of options.priceLines ?? []) {
-      const p = linePrice(line);
-      const y = Math.round(yOf(price.scale, p)) + 0.5;
-      if (!finite(y) || y < price.top || y > price.top + price.height) continue;
-      const color = lineColor(line);
+    for (const tag of tags) {
+      const { line, y, color } = tag;
       const kind = line.kind ?? "line";
       const lineStyle =
         line.lineStyle ??
@@ -2477,43 +2736,22 @@ export const createTradingChart = (
       ctx.lineTo(plotW, y);
       ctx.stroke();
       ctx.restore();
-      // label: [grip] title | quantity | profit | close
-      const titleKey = PRICE_LINE_TITLES[kind];
-      const title = line.title ?? (titleKey ? l[titleKey] : "");
-      const parts: {
-        text: string;
-        fill: string;
-        color: string;
-        cancel?: boolean;
-      }[] = [];
-      if (title) parts.push({ text: title, fill: color, color: textOn(color) });
-      if (line.quantity !== undefined && line.quantity !== "")
-        parts.push({ text: String(line.quantity), fill: bgCss, color });
-      if (
-        kind === "position" &&
-        typeof line.quantity === "number" &&
-        finite(lastClose)
-      ) {
-        const pnl =
-          (lastClose - p) * line.quantity * (line.side === "sell" ? -1 : 1);
-        const pnlFill = pnl >= 0 ? upC : downC;
-        parts.push({
-          text: `${pnl >= 0 ? "+" : "−"}${formatPrice(Math.abs(pnl))}`,
-          fill: pnlFill,
-          color: textOn(pnlFill),
-        });
-      }
-      if (line.cancellable)
-        parts.push({ text: "×", fill: bgCss, color, cancel: true });
-      if (!parts.length && !line.draggable) continue;
+      if (!tag.total) continue;
+      const { parts, widths, grip, total, top } = tag;
+      let x = tag.left;
       ctx.font = font(theme.fontSize, 600);
-      const widths = parts.map((part) =>
-        part.cancel ? 20 : ctx.measureText(part.text).width + 12,
-      );
-      const grip = line.draggable ? 14 : 0;
-      const total = widths.reduce((a, b) => a + b, 0) + grip;
-      let x = Math.round(plotW - total - 56);
-      const top = Math.round(y - 9.5);
+      if (x + total < plotW - 56) {
+        // moved left of another tag: a leader along the line
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1;
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        ctx.moveTo(x + total, y);
+        ctx.lineTo(Math.min(x + total + 6, plotW - 56), y);
+        ctx.stroke();
+        ctx.restore();
+      }
       if (keyOrder?.kind === "move" && keyOrder.id === line.id) {
         // picked with the keyboard: a focus ring around the label
         roundRect(ctx, x - 3.5, top - 3.5, total + 7, 25, 5);
@@ -2604,55 +2842,35 @@ export const createTradingChart = (
       });
     }
 
-    // axis ticks, except under the labels drawn over the axis
-    const covered: { pane: string; y: number }[] = [];
-    for (const line of options.priceLines ?? [])
-      covered.push({ pane: PRICE, y: yOf(price.scale, linePrice(line)) });
-    for (const drawing of drawings) {
-      const pane = paneOf(drawing.pane);
-      if (pane && drawing.type === "horizontalLine" && drawing.points[0])
-        covered.push({
-          pane: pane.id,
-          y: yOf(pane.scale, drawing.points[0].price),
-        });
+    // labels over the price axes, stacked per pane so that none overlaps
+    // (the least important ones give way when they do not all fit)
+    interface AxisItem {
+      pane: Pane;
+      y: number;
+      text: string;
+      fill: string;
+      second?: string;
+      priority: number;
+      top?: number | null;
     }
-    for (const label of compareLabels)
-      covered.push({ pane: PRICE, y: label.y });
-    if (lastLine)
-      covered.push({
-        pane: PRICE,
-        y: yOf(price.scale, lastClose) + (options.countdown ? 7 : 0),
+    const axisItems: AxisItem[] = [];
+    const lineRank: Record<string, number> = {
+      position: 3,
+      order: 2,
+      takeProfit: 2,
+      stopLoss: 2,
+    };
+    for (const tag of tags)
+      axisItems.push({
+        pane: price,
+        y: tag.at,
+        text: priceAxisText(tag.price),
+        fill: tag.color,
+        priority:
+          keyOrder?.kind === "move" && keyOrder.id === tag.line.id
+            ? 6
+            : (lineRank[tag.line.kind ?? "line"] ?? 1),
       });
-    ctx.font = font(theme.fontSize);
-    ctx.textAlign = "left";
-    ctx.textBaseline = "middle";
-    ctx.fillStyle = muted;
-    for (const pane of panes) {
-      for (const t of pane.ticks) {
-        const y = yOfScaled(pane.scale, t);
-        if (y < pane.top + 8 || y > pane.top + pane.height - 8) continue;
-        const gap = options.countdown && pane.id === PRICE ? 18 : 14;
-        if (covered.some((c) => c.pane === pane.id && Math.abs(c.y - y) < gap))
-          continue;
-        ctx.fillText(paneTickText(pane, t), plotW + 8, y);
-      }
-    }
-    // time axis ticks
-    ctx.textAlign = "center";
-    for (const t of ticks) {
-      ctx.font = font(theme.fontSize, t.bold ? 600 : 400);
-      ctx.fillStyle = t.bold ? text : muted;
-      ctx.fillText(t.text, t.x, plotH + TIME_AXIS / 2);
-    }
-
-    // labels of the price lines, the drawings and the compared series
-    for (const line of options.priceLines ?? []) {
-      const p = linePrice(line);
-      const y = yOf(price.scale, p);
-      if (!finite(y) || y < price.top || y > price.top + price.height) continue;
-      const fillColor = lineColor(line);
-      axisLabel(ctx, y, priceAxisText(p), fillColor, textOn(fillColor));
-    }
     for (const drawing of drawings) {
       const pane = paneOf(drawing.pane);
       if (!pane || drawing.type !== "horizontalLine" || !drawing.points[0])
@@ -2660,18 +2878,22 @@ export const createTradingChart = (
       const p = drawing.points[0].price;
       const y = yOf(pane.scale, p);
       if (y < pane.top || y > pane.top + pane.height) continue;
-      const fillColor = css(drawing.color ?? PRIMARY);
-      axisLabel(
-        ctx,
+      axisItems.push({
+        pane,
         y,
-        pane.id === PRICE ? priceAxisText(p) : paneValueText(pane, p),
-        fillColor,
-        textOn(fillColor),
-      );
+        text: pane.id === PRICE ? priceAxisText(p) : paneValueText(pane, p),
+        fill: css(drawing.color ?? PRIMARY),
+        priority: 0,
+      });
     }
     for (const label of compareLabels)
-      axisLabel(ctx, label.y, label.text, label.color, textOn(label.color));
-    // last price label (with the countdown)
+      axisItems.push({
+        pane: price,
+        y: label.y,
+        text: label.text,
+        fill: label.color,
+        priority: 1,
+      });
     if (lastLine) {
       let second: string | undefined;
       if (options.countdown) {
@@ -2690,19 +2912,86 @@ export const createTradingChart = (
         }
         second = formatCountdown(end - Date.now(), l);
       }
+      axisItems.push({
+        pane: price,
+        y: yOf(price.scale, lastClose),
+        text: priceAxisText(lastClose),
+        fill: lastColor,
+        second,
+        priority: 5,
+      });
+    }
+    if (armed && keyOrder?.kind === "create")
+      axisItems.push({
+        pane: price,
+        y: armed.y,
+        text: priceAxisText(keyOrder.price),
+        fill: armed.color,
+        priority: 7,
+      });
+    for (const pane of panes) {
+      const items = axisItems.filter((item) => item.pane === pane);
+      if (!items.length) continue;
+      const tops = stackLabels(
+        items.map((item) => ({
+          top: Math.round(item.y - 9),
+          height: item.second ? 32 : 18,
+          priority: item.priority,
+        })),
+        pane.top,
+        Math.min(pane.top + pane.height, plotH),
+        1,
+      );
+      items.forEach((item, k) => (item.top = tops[k] ?? null));
+    }
+
+    // axis ticks, except under the labels drawn over the axis
+    ctx.font = font(theme.fontSize);
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = muted;
+    for (const pane of panes) {
+      const over = axisItems.filter(
+        (item) => item.pane === pane && item.top != null,
+      );
+      for (const t of pane.ticks) {
+        const y = yOfScaled(pane.scale, t);
+        if (y < pane.top + 8 || y > pane.top + pane.height - 8) continue;
+        if (
+          over.some(
+            (item) =>
+              y > (item.top ?? 0) - 6 &&
+              y < (item.top ?? 0) + (item.second ? 32 : 18) + 6,
+          )
+        )
+          continue;
+        ctx.fillText(paneTickText(pane, t), plotW + 8, y);
+      }
+    }
+    // time axis ticks
+    ctx.textAlign = "center";
+    for (const t of ticks) {
+      ctx.font = font(theme.fontSize, t.bold ? 600 : 400);
+      ctx.fillStyle = t.bold ? text : muted;
+      ctx.fillText(t.text, t.x, plotH + TIME_AXIS / 2);
+    }
+
+    // labels of the price lines, the drawings, the compared series, the last
+    // price (with the countdown) and the armed order, most important last
+    for (const item of [...axisItems].sort((a, b) => a.priority - b.priority)) {
+      if (item.top == null) continue;
       axisLabel(
         ctx,
-        yOf(price.scale, lastClose),
-        priceAxisText(lastClose),
-        lastColor,
-        textOn(lastColor),
-        second,
+        item.y,
+        item.text,
+        item.fill,
+        textOn(item.fill),
+        item.second,
+        item.top,
       );
     }
 
-    // replay: the badge, or the picking of the first bar (at the bottom of
-    // the price pane: the legends cover its top)
-    const badgeY = price.top + price.height - 32;
+    // replay: the badge, or the picking of the first bar
     if (replayPicking) {
       const x = pointer && pointer.x <= plotW ? pointer.x : NaN;
       if (finite(x)) {
@@ -2715,61 +3004,24 @@ export const createTradingChart = (
         ctx.lineTo(Math.round(x) + 0.5, plotH);
         ctx.stroke();
       }
-      pill(ctx, l.replayHint, plotW / 2, badgeY, css(PRIMARY));
-    } else if (replay && count) {
-      pill(
-        ctx,
-        fill(l.replay, {
-          time: formatCrosshairTime(
-            shift(store.time[count - 1]),
-            tfMs(),
-            locale,
-          ),
-        }),
-        plotW / 2,
-        badgeY,
-        css(PRIMARY),
-      );
     }
+    if (replayText) pill(ctx, replayText, plotW / 2, badgeY, css(PRIMARY));
 
-    // keyboard order entry: the armed order and the keys to use
-    if (keyOrder && count) {
-      if (keyOrder.kind === "create") {
-        const color = keyOrder.side === "buy" ? upC : downC;
-        const y = Math.round(yOf(price.scale, keyOrder.price)) + 0.5;
-        if (finite(y) && y >= price.top && y <= price.top + price.height) {
-          ctx.save();
-          ctx.strokeStyle = color;
-          ctx.lineWidth = 1.5;
-          ctx.setLineDash([6, 4]);
-          ctx.beginPath();
-          ctx.moveTo(0, y);
-          ctx.lineTo(plotW, y);
-          ctx.stroke();
-          ctx.restore();
-          pill(
-            ctx,
-            fill(keyOrder.side === "buy" ? l.buyLimit : l.sellLimit, {
-              price: formatPrice(keyOrder.price),
-            }),
-            plotW - 56,
-            clamp(y - 11, price.top + 2, price.top + price.height - 24),
-            color,
-            "right",
-          );
-          axisLabel(
-            ctx,
-            y,
-            priceAxisText(keyOrder.price),
-            color,
-            textOn(color),
-          );
-        }
-      }
-      // the keys to use, on the left: order labels sit on the right
-      if (!replay && !replayPicking)
-        pill(ctx, l.orderHint, 8, badgeY, toCss(theme.text, 0.86), "left");
+    // keyboard order entry: the armed order (stops dotted) and the keys
+    if (armed) {
+      ctx.save();
+      ctx.strokeStyle = armed.color;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash(armed.type === "stop" ? [2, 3] : [6, 4]);
+      ctx.beginPath();
+      ctx.moveTo(0, armed.y);
+      ctx.lineTo(plotW, armed.y);
+      ctx.stroke();
+      ctx.restore();
+      pill(ctx, armed.text, armed.box.left, armed.box.top, armed.color, "left");
     }
+    if (showOrderHint)
+      pill(ctx, l.orderHint, 8, badgeY, toCss(theme.text, 0.86), "left");
 
     // crosshair
     const cross = crosshairState();
@@ -2843,9 +3095,17 @@ export const createTradingChart = (
           price.top + price.height - size - 1,
         );
         const orderPrice = roundPrice(cross.price);
-        const side = orderPrice < lastClose ? "buy" : "sell";
+        // a limit order; with Alt, the stop order of the other side
+        const lastRounded = roundPrice(lastClose);
+        const limitSide = orderPrice < lastRounded ? "buy" : "sell";
+        const side = pointerAlt
+          ? limitSide === "buy"
+            ? "sell"
+            : "buy"
+          : limitSide;
+        const orderType = orderTypeFor(side, orderPrice, lastRounded);
         const hover = canvasButton(bx, by, size, size, () =>
-          emit("orderCreate", { price: orderPrice, side }),
+          emit("orderCreate", { price: orderPrice, side, orderType }),
         );
         roundRect(ctx, bx, by, size, size, 4);
         ctx.fillStyle = hover ? css(PRIMARY) : labelBg;
@@ -2861,9 +3121,7 @@ export const createTradingChart = (
         if (hover) {
           pill(
             ctx,
-            fill(side === "buy" ? l.buyLimit : l.sellLimit, {
-              price: formatPrice(orderPrice),
-            }),
+            orderLabel(side, orderType, orderPrice),
             bx - 6,
             by - 2,
             side === "buy" ? upC : downC,
@@ -4211,6 +4469,7 @@ export const createTradingChart = (
   const onPointerMove = (event: PointerEvent) => {
     const { x, y } = local(event);
     pointer = { x, y };
+    pointerAlt = event.altKey;
     if (event.pointerType === "touch" && touches.has(event.pointerId)) {
       touches.set(event.pointerId, { x, y });
       if (pinch && touches.size === 2) {
@@ -4445,8 +4704,13 @@ export const createTradingChart = (
     });
   };
 
-  const say = (text: string) => {
-    live.textContent = text;
+  /** Reads sentences aloud (the live region), joined as the language does */
+  const say = (...sentences: string[]) => {
+    const cjk = ["zh", "ja"].includes(languageOf(locale));
+    live.textContent = sentences
+      .filter(Boolean)
+      .map((text) => text.replace(/[.。]$/, ""))
+      .join(cjk ? "。" : ". ");
   };
 
   /** Price lines the keyboard can pick: draggable or cancellable ones */
@@ -4469,35 +4733,63 @@ export const createTradingChart = (
     keyOrder = null;
   };
 
+  /** Type of the order armed with the keyboard */
+  const keyOrderType = (order: {
+    side: "buy" | "sell";
+    price: number;
+    pinned?: TradingOrderType;
+  }) =>
+    order.pinned ??
+    orderTypeFor(order.side, order.price, roundPrice(lastPrice()));
+
   /** Order entry keys (`orderEntry`); returns whether the key was used */
   const onOrderKey = (event: KeyboardEvent): boolean => {
     const count = n();
-    if (
-      !options.orderEntry ||
-      !count ||
-      event.altKey ||
-      event.ctrlKey ||
-      event.metaKey
-    )
+    if (!options.orderEntry || !count || event.ctrlKey || event.metaKey)
       return false;
     const l = labels();
-    const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
-    const orderText = (side: "buy" | "sell", value: number) =>
-      fill(side === "buy" ? l.buyLimit : l.sellLimit, {
-        price: formatPrice(value),
-      });
-    if (key === "b" || key === "s") {
-      endKeyOrder(true);
-      const cross = crosshairState();
-      const at =
-        cross && cross.pane.id === PRICE && finite(cross.price)
-          ? cross.price
-          : store.close[count - 1];
-      const side = key === "b" ? "buy" : "sell";
-      keyOrder = { kind: "create", side, price: roundPrice(at) };
-      say(`${orderText(side, keyOrder.price)}. ${l.orderHint}`);
+    // Alt (Option) changes `event.key` on macOS: the physical key decides
+    const letter =
+      event.code === "KeyB" ? "b" : event.code === "KeyS" ? "s" : undefined;
+    const key = event.altKey
+      ? letter
+        ? `alt+${letter}`
+        : ""
+      : event.key.length === 1
+        ? event.key.toLowerCase()
+        : event.key;
+    if (key === "b" || key === "s" || key === "alt+b" || key === "alt+s") {
+      const side = key.endsWith("b") ? "buy" : "sell";
+      let pinned: TradingOrderType | undefined;
+      let at: number;
+      if (keyOrder?.kind === "create" && keyOrder.side === side) {
+        at = keyOrder.price;
+        if (key.startsWith("alt"))
+          pinned = keyOrderType(keyOrder) === "limit" ? "stop" : "limit";
+      } else {
+        endKeyOrder(true);
+        const cross = crosshairState();
+        at = roundPrice(
+          cross && cross.pane.id === PRICE && finite(cross.price)
+            ? cross.price
+            : store.close[count - 1],
+        );
+        if (key.startsWith("alt"))
+          pinned =
+            orderTypeFor(side, at, roundPrice(store.close[count - 1])) ===
+            "limit"
+              ? "stop"
+              : "limit";
+      }
+      keyOrder = { kind: "create", side, price: at, pinned };
+      say(
+        orderLabel(side, keyOrderType(keyOrder), at),
+        l.orderHint,
+        l.orderTypeHint,
+      );
       return true;
     }
+    if (event.altKey) return false;
     if (key === "o") {
       const lines = keyLines();
       if (!lines.length) return false;
@@ -4524,13 +4816,9 @@ export const createTradingChart = (
         price: formatPrice(linePrice(line)),
       });
       say(
-        [
-          name,
-          line.draggable ? l.orderHint : "",
-          line.cancellable ? l.orderCancelHint : "",
-        ]
-          .filter(Boolean)
-          .join(". "),
+        name,
+        line.draggable ? l.orderHint : "",
+        line.cancellable ? l.orderCancelHint : "",
       );
       return true;
     }
@@ -4548,7 +4836,9 @@ export const createTradingChart = (
           (event.key === "ArrowUp" ? 1 : -1);
         if (keyOrder.kind === "create") {
           keyOrder.price = roundPrice(keyOrder.price + tick);
-          say(orderText(keyOrder.side, keyOrder.price));
+          say(
+            orderLabel(keyOrder.side, keyOrderType(keyOrder), keyOrder.price),
+          );
         } else if (picked?.draggable) {
           const next = roundPrice(linePrice(picked) + tick);
           lineOverrides.set(picked.id, next);
@@ -4559,9 +4849,13 @@ export const createTradingChart = (
       case "Enter": {
         if (keyOrder.kind === "create") {
           const { price, side } = keyOrder;
+          const orderType = keyOrderType(keyOrder);
           endKeyOrder(false);
-          emit("orderCreate", { price, side });
-          say(fill(l.orderPlaced, { price: formatPrice(price) }));
+          emit("orderCreate", { price, side, orderType });
+          say(
+            orderLabel(side, orderType, price),
+            fill(l.orderPlaced, { price: formatPrice(price) }),
+          );
           return true;
         }
         const start = keyOrder.start;
@@ -4602,7 +4896,15 @@ export const createTradingChart = (
     }
   };
 
+  const onAltKey = (event: KeyboardEvent) => {
+    if (event.key !== "Alt" || pointerAlt === (event.type === "keydown"))
+      return;
+    pointerAlt = event.type === "keydown";
+    if (pointer && options.orderEntry) invalidate();
+  };
+
   const onKeyDown = (event: KeyboardEvent) => {
+    onAltKey(event);
     if (event.target === root && onOrderKey(event)) {
       event.preventDefault();
       invalidate();
@@ -4712,6 +5014,7 @@ export const createTradingChart = (
   root.addEventListener("wheel", onWheel, { passive: false });
   root.addEventListener("dblclick", onDoubleClick);
   root.addEventListener("keydown", onKeyDown);
+  root.addEventListener("keyup", onAltKey);
   root.addEventListener("focus", onFocus);
   root.addEventListener("blur", onBlur);
   jump.addEventListener("pointerdown", (event) => event.stopPropagation());

@@ -1236,60 +1236,260 @@ export interface DependencyArrow {
 /** Length and half width of the arrowheads, in CSS pixels */
 export const ARROW_HEAD = { length: 6, half: 3.5 };
 
-interface RowSpan {
-  /** Category position of the bar center */
-  at: number;
+/**
+ * A bar (or dot) that the arrows connect and go around, in pixels: along
+ * the category axis (`c`, `half`) and along the value axis (`start` /
+ * `end`: the pixels of its lowest / highest value, `lo` / `hi` its extent
+ * on screen)
+ */
+interface TaskBox {
+  c: number;
+  /** Half thickness of the bar / radius of the dot */
+  half: number;
   start: number;
   end: number;
-  /** Half thickness of the bar / radius of the dot in pixels */
-  half: number;
+  lo: number;
+  hi: number;
   /** A dot (milestone): the arrows stop at its edge */
   dot: boolean;
 }
 
-/** Bars (or dots) of every category, the first visible one per category */
-const rowSpans = (model: ChartModel, sc: Scales): Map<number, RowSpan> => {
-  const rows = new Map<number, RowSpan>();
+/** Bars and dots of the visible series, by point id and by category */
+interface TaskIndex {
+  boxes: TaskBox[];
+  byId: Map<string, TaskBox>;
+  byRow: Map<string, TaskBox>;
+  /** Ids of every point, hidden ones included (never matched as categories) */
+  ids: Set<string>;
+}
+
+const taskIndex = (
+  model: ChartModel,
+  sc: Scales,
+  valuePx: (value: number) => number,
+  categoryPx: (at: number) => number,
+): TaskIndex => {
+  const index: TaskIndex = {
+    boxes: [],
+    byId: new Map(),
+    byRow: new Map(),
+    ids: new Set(),
+  };
+  const categories = model.x.type === "category" ? model.x.categories : null;
   for (const s of model.series) {
-    if (s.hidden || !s.tooltip) continue;
     if (s.type !== "bar" && s.type !== "scatter") continue;
+    const ids = s.raw.ids;
+    if (ids) for (const id of ids) if (id !== undefined) index.ids.add(id);
+    if (s.hidden || !s.tooltip) continue;
     const { x, y, count } = s.cols;
     const bar = s.type === "bar" && s.barBase && s.barTop;
-    const half = bar ? s.barHalfWidth / Math.abs(sc.xPerPx) : dotSize(s, 0) / 2;
+    const offset = slotOffset(s);
     for (let i = 0; i < count; i++) {
-      const k = Math.round(x[i]);
-      if (rows.has(k)) continue;
       const start = bar ? s.barBase![i] : y[i];
       const end = bar ? s.barTop![i] : y[i];
-      if (!Number.isFinite(start) || !Number.isFinite(end)) continue;
-      rows.set(k, {
-        at: x[i] + slotOffset(s),
-        start: Math.min(start, end),
-        end: Math.max(start, end),
+      if (
+        !Number.isFinite(x[i]) ||
+        !Number.isFinite(start) ||
+        !Number.isFinite(end)
+      )
+        continue;
+      const half = bar
+        ? s.barHalfWidth / Math.abs(sc.xPerPx)
+        : dotSize(s, i) / 2;
+      const p0 = valuePx(Math.min(start, end));
+      const p1 = valuePx(Math.max(start, end));
+      const pad = bar ? 0 : half;
+      const box: TaskBox = {
+        c: categoryPx(x[i] + offset),
         half,
+        start: p0,
+        end: p1,
+        lo: Math.min(p0, p1) - pad,
+        hi: Math.max(p0, p1) + pad,
         dot: !bar,
-      });
+      };
+      index.boxes.push(box);
+      const id = ids?.[i];
+      if (id !== undefined && !index.byId.has(id)) index.byId.set(id, box);
+      const row = categories
+        ? categories[Math.round(x[i])]
+        : String(s.raw.x[i]);
+      if (row !== undefined && !index.byRow.has(row)) index.byRow.set(row, box);
     }
   }
-  return rows;
+  return index;
+};
+
+/** Run of an arrow out of a bar before it turns, in pixels */
+const ARROW_RUN = 8;
+/** Distance an arrow keeps from the bars it passes, in pixels */
+const ARROW_CLEARANCE = 4;
+
+type Interval = [number, number];
+
+/** Value-axis extents of bars (with the clearance), sorted and merged */
+const blockedLanes = (boxes: readonly TaskBox[]): Interval[] => {
+  const list = boxes
+    .map((o): Interval => [o.lo - ARROW_CLEARANCE, o.hi + ARROW_CLEARANCE])
+    .sort((p, q) => p[0] - q[0]);
+  const out: Interval[] = [];
+  for (const r of list) {
+    const last = out[out.length - 1];
+    if (last && r[0] <= last[1]) last[1] = Math.max(last[1], r[1]);
+    else out.push(r);
+  }
+  return out;
+};
+
+const inside = (lanes: readonly Interval[], v: number) =>
+  lanes.some(([lo, hi]) => v > lo + 1e-6 && v < hi - 1e-6);
+
+/** First free lane from `from` towards `to` (direction `dir`), or null */
+const freeLane = (
+  lanes: readonly Interval[],
+  from: number,
+  to: number,
+  dir: number,
+): number | null => {
+  const candidates = [from];
+  for (const [lo, hi] of lanes) candidates.push(lo, hi);
+  let best: number | null = null;
+  for (const v of candidates) {
+    const along = dir * (v - from);
+    if (along < 0 || dir * (to - v) < 0 || inside(lanes, v)) continue;
+    if (best === null || along < dir * (best - from)) best = v;
+  }
+  return best;
+};
+
+/** Free lane closest to `want` (ties: the lower one) */
+const nearestLane = (lanes: readonly Interval[], want: number): number => {
+  const hit = lanes.find(([lo, hi]) => want > lo + 1e-6 && want < hi - 1e-6);
+  if (!hit) return want;
+  const [lo, hi] = hit;
+  return want - lo <= hi - want ? lo : hi;
+};
+
+/** Drops repeated points and the middle of straight runs */
+const straighten = (points: [number, number][]): [number, number][] => {
+  const out: [number, number][] = [];
+  const same = (p: number, q: number) => Math.abs(p - q) < 1e-6;
+  for (const p of points) {
+    const last = out[out.length - 1];
+    if (last && same(last[0], p[0]) && same(last[1], p[1])) continue;
+    const prev = out[out.length - 2];
+    if (
+      prev &&
+      last &&
+      ((same(prev[0], last[0]) && same(last[0], p[0])) ||
+        (same(prev[1], last[1]) && same(last[1], p[1])))
+    )
+      out.pop();
+    out.push(p);
+  }
+  return out;
+};
+
+/**
+ * Route of an arrow as (value pixel, category pixel) corners, from the end
+ * of `a` (`ev`) to the base of the head before `b` (`base`): one lane
+ * across the rows clear of the other bars, searched from the predecessor
+ * towards the successor; else (no such lane, or the successor starts
+ * before the predecessor ends) along the gaps between the rows, crossing
+ * every row in a free lane
+ */
+const routeArrow = (
+  a: TaskBox,
+  b: TaskBox,
+  ev: number,
+  base: number,
+  dir: number,
+  boxes: readonly TaskBox[],
+): [number, number][] => {
+  const ca = a.c;
+  const cb = b.c;
+  const exit = ev + dir * ARROW_RUN;
+  const room = dir * (base - exit) >= 0;
+  const lo = Math.min(ca, cb);
+  const hi = Math.max(ca, cb);
+  // the other bars reaching between the two centers (none in a single row)
+  const others =
+    hi - lo < 0.5
+      ? []
+      : boxes.filter(
+          (o) => o !== a && o !== b && o.c + o.half > lo && o.c - o.half < hi,
+        );
+  if (room) {
+    const lane = freeLane(blockedLanes(others), exit, base, dir);
+    if (lane !== null)
+      return straighten([
+        [ev, ca],
+        [lane, ca],
+        [lane, cb],
+        [base, cb],
+      ]);
+  }
+  const side = Math.sign(cb - ca) || 1;
+  // the rows in between, from a to b
+  const rows = new Map<number, { c: number; half: number; of: TaskBox[] }>();
+  for (const o of others) {
+    if (Math.abs(o.c - ca) < 0.5 || Math.abs(o.c - cb) < 0.5) continue;
+    const key = Math.round(o.c * 2);
+    const row = rows.get(key);
+    if (row) {
+      row.half = Math.max(row.half, o.half);
+      row.of.push(o);
+    } else rows.set(key, { c: o.c, half: o.half, of: [o] });
+  }
+  const stops = [
+    { c: ca, half: a.half, lanes: [] as Interval[] },
+    ...[...rows.values()]
+      .sort((p, q) => side * (p.c - q.c))
+      .map((r) => ({ c: r.c, half: r.half, lanes: blockedLanes(r.of) })),
+    { c: cb, half: b.half, lanes: [] as Interval[] },
+  ];
+  const back = base - dir * ARROW_RUN;
+  const points: [number, number][] = [
+    [ev, ca],
+    [exit, ca],
+  ];
+  let v = exit;
+  for (let k = 0; k + 1 < stops.length; k++) {
+    const from = stops[k]!;
+    const to = stops[k + 1]!;
+    // the middle of the gap between the two rows (below a row of its own)
+    const m =
+      Math.abs(to.c - from.c) < 0.5
+        ? from.c + side * (Math.max(from.half, to.half) + ARROW_CLEARANCE)
+        : (from.c + side * from.half + to.c - side * to.half) / 2;
+    const lane =
+      k + 2 === stops.length
+        ? room && dir * (base - v) >= 0
+          ? v
+          : back
+        : nearestLane(to.lanes, room ? v : back);
+    if (lane !== v) {
+      points.push([v, m], [lane, m]);
+      v = lane;
+    }
+  }
+  points.push([v, cb], [base, cb]);
+  return straighten(points);
 };
 
 /**
  * Dependency arrows (`dependencies`, Gantt charts): from the end of the
- * predecessor to the start of the successor; when the successor starts
- * too early the line turns around between the rows
+ * predecessor to the start of the successor, both found by point `id`
+ * (else by category), on any x axis and orientation. The line crosses the
+ * rows in a lane clear of the other bars, or goes along the gaps between
+ * the rows (also when the successor starts too early)
  */
 export const dependencyArrows = (
   model: ChartModel,
   sc: Scales,
   dependencies: readonly ResolvedDependency[],
 ): DependencyArrow[] => {
-  if (!dependencies.length || model.x.type !== "category") return [];
-  const rows = rowSpans(model, sc);
-  const index = new Map<string, number>();
-  model.x.categories.forEach((c, i) => {
-    if (!index.has(c)) index.set(c, i);
-  });
+  if (!dependencies.length) return [];
   // (value pixel, category pixel) -> stage pixels
   const horizontal = sc.horizontal;
   const pt = (v: number, c: number) =>
@@ -1303,40 +1503,24 @@ export const dependencyArrows = (
     return horizontal ? p.y : p.x;
   };
   const dir = Math.sign(valuePx(sc.view.y[1]) - valuePx(sc.view.y[0])) || 1;
-  const rowPx = Math.abs(categoryPx(1) - categoryPx(0));
+  const tasks = taskIndex(model, sc, valuePx, categoryPx);
+  const find = (key: string) =>
+    tasks.byId.get(key) ??
+    (tasks.ids.has(key) ? undefined : tasks.byRow.get(key));
   const { length, half } = ARROW_HEAD;
-  const gap = 8;
   const out: DependencyArrow[] = [];
   for (const d of dependencies) {
-    const a = rows.get(index.get(d.from) ?? NaN);
-    const b = rows.get(index.get(d.to) ?? NaN);
+    const a = find(d.from);
+    const b = find(d.to);
     if (!a || !b || a === b) continue;
-    const ev = valuePx(a.end) + (a.dot ? dir * a.half : 0);
-    const ca = categoryPx(a.at);
-    const sv = valuePx(b.start) - dir * (b.dot ? b.half + 1 : 1);
-    const cb = categoryPx(b.at);
+    // the far end of the predecessor (the edge of a dot)
+    const ev = a.end + (a.dot ? dir * a.half : 0);
+    const sv = b.start - dir * (b.dot ? b.half + 1 : 1);
     const base = sv - dir * length;
-    const points = [pt(ev, ca)];
-    const exit = ev + dir * gap;
-    if (dir * (base - exit) >= 0) {
-      // room before the successor: out, across the rows, in
-      points.push(pt(exit, ca), pt(exit, cb), pt(base, cb));
-    } else {
-      // around: out, to the gap between the rows, back, across, in
-      const side = Math.sign(cb - ca) || 1;
-      const between = ca + side * Math.max(a.half + 3, rowPx / 2);
-      const back = base - dir * gap;
-      points.push(
-        pt(exit, ca),
-        pt(exit, between),
-        pt(back, between),
-        pt(back, cb),
-        pt(base, cb),
-      );
-    }
+    const route = routeArrow(a, b, ev, base, dir, tasks.boxes);
     out.push({
-      points,
-      head: [pt(sv, cb), pt(base, cb - half), pt(base, cb + half)],
+      points: route.map(([v, c]) => pt(v, c)),
+      head: [pt(sv, b.c), pt(base, b.c - half), pt(base, b.c + half)],
       color: d.color,
       width: 1.25,
     });

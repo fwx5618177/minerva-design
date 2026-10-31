@@ -98,6 +98,11 @@ export interface ChartPointDatum {
   value?: number | null;
   /** Extra rows of the default tooltip of this point, after its values */
   details?: readonly ChartTooltipDetail[];
+  /**
+   * Identifier of the point, referenced by the `dependencies` of the chart
+   * (Gantt tasks sharing a row); unique across the series
+   */
+  id?: string;
 }
 
 /** Column-oriented data: the fastest form for large data sets (typed arrays are used as is) */
@@ -279,7 +284,11 @@ export interface ChartAxisOptions {
   zero?: boolean;
   /** Reverses the direction of the axis */
   reverse?: boolean;
-  /** Rounds the automatic range to tick values; on by default except for category axes */
+  /**
+   * Rounds the automatic range to tick values; on by default except for
+   * category axes. Log axes: whole decades on y, the closest 1, 2 or 5 × 10^k
+   * bounds around the data on x
+   */
   nice?: boolean;
   /**
    * Calendar of a `time` axis: steps and labels of the ticks and tooltips in
@@ -359,14 +368,17 @@ export type ChartAnnotation =
   ChartRectAnnotation | ChartLineAnnotation | ChartTextAnnotation;
 
 /**
- * Arrow from one category to another (Gantt dependencies): an elbow
- * connector from the end of the `from` bar (or dot) to the start of the
- * `to` bar, with a filled arrowhead
+ * Arrow from one bar (or dot) to another (Gantt dependencies): an elbow
+ * connector from the end of the `from` bar to the start of the `to` bar,
+ * with a filled arrowhead, routed around the bars of the rows it crosses
  */
 export interface ChartDependency {
-  /** Category (x value) of the predecessor */
+  /**
+   * Predecessor: the `id` of a point, or else a category of the x axis (its
+   * first visible bar; the x value written as text on numeric axes)
+   */
   from: string;
-  /** Category (x value) of the successor, where the arrow points */
+  /** Successor, where the arrow points (an `id` or a category, like `from`) */
   to: string;
   /** Color of the arrow (any CSS color); the secondary text color by default */
   color?: string;
@@ -555,8 +567,9 @@ export interface ChartOptions {
   /** Background areas and reference lines */
   annotations?: readonly ChartAnnotation[];
   /**
-   * Arrows between categories (category x axis), e.g. the dependencies of
-   * a Gantt chart: from the end of a bar to the start of another
+   * Arrows between bars, e.g. the dependencies of a Gantt chart: from the
+   * end of a bar to the start of another, matched by point `id` (or by
+   * category); hidden or missing points are skipped
    */
   dependencies?: readonly ChartDependency[];
   /** Zoom / pan / keyboard; `false` makes the chart static */

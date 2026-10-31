@@ -20,7 +20,7 @@
       "pointer": "ホイールでポインター位置を中心にズーム（Shift または横スワイプでスクロール）、ドラッグで慣性付きのパン。",
       "axes": "価格軸のドラッグで縦方向にズーム、時間軸のドラッグで足の幅を変更。軸をダブルクリックするとリセットします。",
       "keyboard": "チャートにフォーカスすると、矢印キーでクロスヘアを一本ずつ移動して価格を読み上げ（Shift で十本ずつ）、+ / − でズーム、Home / End で最初 / 最新の足へ移動、Delete で選択中の描画を削除、Ctrl / ⌘ + Z で描画の変更を元に戻し、Ctrl / ⌘ + Shift + Z でやり直し、Escape で取り消します。",
-      "orders": "orderEntry を有効にすると：B / S でクロスヘア価格（または現在値）に買い / 売りの指値注文を用意し、↑ / ↓ で 1 ティックずつ移動（Shift で 10 ティック）、Enter で発注、Escape で破棄します。O / Shift + O でドラッグ可能・取消可能なラインを順に選び、同じ操作で価格を変更でき、Delete で選択中の注文を取り消します。各操作は読み上げられ、ポインター操作と同じイベント（orderCreate、orderMove、orderCancel）を発生させます。",
+      "orders": "orderEntry 有効時：B / S でクロスヘア価格（または直近価格）に買い / 売り注文を準備し、↑ / ↓ で 1 ティックずつ（Shift：10 ティック）移動、Enter で発注、Esc で破棄します。種類は価格で決まり、直近価格より下の買い・上の売りは指値、上の買い・下の売りは逆指値です。Alt+B / Alt+S で指値と逆指値を切り替えられます。O / Shift + O でドラッグ・取消可能なラインを順に選んで同様に移動し、Delete で選んだ注文を取り消します。各操作は種類も含めて読み上げられ、ポインター操作と同じイベント（orderType 付きの orderCreate、orderMove、orderCancel）を発行します。",
       "touch": "タッチ操作：ドラッグでパン、ピンチでズーム。"
     },
     "languages": {
@@ -95,7 +95,7 @@
     },
     "order-entry": {
       "title": "チャート注文",
-      "description": "orderEntry を有効にすると、価格ペインの右端にクロスヘアに追従する + ボタンが表示されます。クリックするとその価格で指値注文を出します（現在値より下は買い、上は売り）。キーボードでも同じ操作ができます：Tab でチャートにフォーカスし、B または S を押し、矢印キーで価格を調整して Enter。O で既存の注文を選び、価格変更や Delete での取消ができます。注文はドラッグ・取消可能な価格ラインで、onOrderCreate、onOrderMove、onOrderCancel を通じて React の状態に保持されます。"
+      "description": "orderEntry を有効にすると、価格ペインの右側にクロスヘアに追従する + ボタンが表示され、クリックでその価格に指値注文を出せます（直近価格より下は買い、上は売り）。Alt（Option）を押していると反対側の逆指値になります。キーボードでも同じ操作ができます：チャートにフォーカス（Tab）し、B または S を押して矢印キーで価格を調整し Enter。直近価格をまたぐと逆指値に変わり、Alt+B / Alt+S で種類を切り替えられます。O で既存の注文を選んで移動、Delete で取消。注文はドラッグ・取消可能な価格ラインで、onOrderCreate（orderType 付き）、onOrderMove、onOrderCancel で React の state に保持します。同じ高さのラベルは、軸ラベルが引き出し線付きでずれて並び、注文タグも重ならないよう移動します。"
     },
     "sessions": {
       "title": "タイムゾーンとセッション",
@@ -189,7 +189,9 @@
       "stopLoss": "損切り",
       "limitBuy": "指値買い",
       "limitSell": "指値売り",
-      "alert": "アラート"
+      "alert": "アラート",
+      "stopBuy": "逆指値買い",
+      "stopSell": "逆指値売り"
     },
     "buyMarker": "買 {{quantity}}",
     "sellMarker": "売 {{quantity}}",
@@ -254,7 +256,7 @@
     "orderModified": "注文を {{from}} から {{to}} に変更",
     "orderCancelled": "{{price}} の注文を取消",
     "orderEntryAria": "チャート注文ができる BTCUSDT 無期限 5 分足チャート",
-    "orderEntryHint": "チャート上でカーソルを動かし、右端の + をクリックして発注するか、チャートにフォーカスして B / S を押します。ラインをドラッグで変更、× で取消。",
+    "orderEntryHint": "チャートにカーソルを合わせ、右側の + をクリックすると指値注文（Alt で逆指値）、またはチャートにフォーカスして B / S を押します。ラインをドラッグで移動、× で取消。",
     "timeZone": "タイムゾーン",
     "zones": {
       "America_New_York": "ニューヨーク",
@@ -288,8 +290,12 @@
       "selectKeys": "O",
       "select": "次の注文を選択",
       "removeKeys": "Delete",
-      "remove": "選択中の注文を取消"
-    }
+      "remove": "選択中の注文を取消",
+      "typeKeys": "Alt+B Alt+S",
+      "type": "指値と逆指値を切り替え"
+    },
+    "orderPlacedBuyStop": "{{price}} に逆指値買いを発注しました",
+    "orderPlacedSellStop": "{{price}} に逆指値売りを発注しました"
   },
   "api": {
     "TradingChartProps": {
@@ -352,7 +358,7 @@
       "ariaLabel": "アクセシブルラベル。既定では銘柄名から作成",
       "timeZone": "時間軸・セッション区切り・VWAP の期間のタイムゾーン：IANA 名（\"America/New_York\"）または \"UTC\"。既定はローカル時刻です。",
       "sessionBreaks": "日の始まりに破線の縦線を引きます（日中足）。",
-      "orderEntry": "価格ペイン右端のクロスヘア価格に + ボタンを表示し、クリックで指値注文を通知します（orderCreate）。チャートにフォーカスがあるとき、B / S で買い / 売り注文を用意し、矢印キーで移動、Enter で確定、Escape で取消。O でドラッグ可能なラインを選んで移動し、Delete で取消可能な注文を取り消します。",
+      "orderEntry": "価格ペインの右側、クロスヘア価格に + ボタンを表示：クリックで指値注文（orderCreate）を通知し、Alt を押していると反対側の逆指値になります。チャートにフォーカスがあるとき、B / S で買い / 売り注文を準備し、矢印キーで移動、Enter で確定、Esc で取消。直近価格より有利な価格なら指値、そうでなければ逆指値で、Alt+B / Alt+S で切り替えられます。O でドラッグ可能なラインを選んで移動、Delete で取消可能な注文を取り消します。",
       "volumeProfile": "表示中の足の価格帯別出来高。POC とバリューエリアを含みます（true で既定値）。",
       "drawingToolbar": "選択した描画の上に出るフローティングツールバー（色・太さ・線種・塗りつぶし・ロック・削除）。"
     },
@@ -494,13 +500,16 @@
       "short": "ショートポジションツール。",
       "replay": "バーリプレイのバッジ。{time} が置き換わります。",
       "replayHint": "リプレイ開始の足を選ぶときのヒント。",
-      "buyLimit": "現在値より下の注文ボタン。{price} が置き換わります。",
-      "sellLimit": "現在値より上の注文ボタン。{price} が置き換わります。",
+      "buyLimit": "指値買い（直近価格以下）の文言。{price} は置換されます。",
+      "sellLimit": "指値売り（直近価格以上）の文言。{price} は置換されます。",
       "orderHint": "キーボードで注文を用意中、またはラインを選択中に読み上げる案内。既定値 \"Arrows move the price, Enter confirms, Escape cancels\"。",
       "orderCancelHint": "選択中のラインを取り消せるときに読み上げる案内。既定値 \"Delete cancels the order\"。",
       "orderLine": "キーボードで選択したライン。{title} と {price} を置換。既定値 \"{title} at {price}\"。",
       "orderPlaced": "発注・価格変更時に読み上げ。{price} を置換。既定値 \"Order placed at {price}\"。",
-      "orderCancelled": "キーボードの注文を破棄、または注文を取り消したときに読み上げ。既定値 \"Order cancelled\"。"
+      "orderCancelled": "キーボードの注文を破棄、または注文を取り消したときに読み上げ。既定値 \"Order cancelled\"。",
+      "buyStop": "逆指値買い（直近価格より上）の文言。{price} は置換されます。",
+      "sellStop": "逆指値売り（直近価格より下）の文言。{price} は置換されます。",
+      "orderTypeHint": "キーボードで注文を準備したときに読み上げる、指値と逆指値の切り替え方の案内。"
     },
     "TradingCrosshairEvent": {
       "index": "ホバー中の足の番号（最後の足より先の場合あり）",
@@ -548,7 +557,8 @@
     },
     "TradingOrderCreateEvent": {
       "price": "注文価格（価格の精度に丸め）。",
-      "side": "現在値より下は buy、上は sell（キーボードでは押したキー B または S）。"
+      "side": "+ では直近価格より下なら buy、上なら sell（Alt を押すと反対側の逆指値）。キーボードでは押したキー（B または S）。",
+      "orderType": "買いが直近価格以下、売りが直近価格以上なら limit（指値、より有利な価格を待つ注文）、それ以外は stop（逆指値）。Alt で切り替え可能：キーボードでは Alt+B / Alt+S、+ では Alt を押しながらクリック。"
     },
     "TradingOrderCancelEvent": {
       "id": "ラインの id。",

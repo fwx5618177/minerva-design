@@ -170,33 +170,40 @@ describe("WebGL2 order-independent transparency", () => {
     expect(
       names(calls, [
         "drawElements",
-        "clearBufferfv",
         "drawArraysInstanced",
-        "blitFramebuffer",
         "drawArrays",
+        "clearBufferfv",
+        "blitFramebuffer",
       ]),
     ).toEqual([
       // opaque mesh into the multisampled framebuffer
       "drawElements",
-      // transparency targets: the transparent mesh and the additive points
+      // front pass: its clear, then the transparent mesh
+      "clearBufferfv",
+      "drawElements",
+      // the four transparency targets, then the transparent mesh and the lines
+      "clearBufferfv",
+      "clearBufferfv",
       "clearBufferfv",
       "clearBufferfv",
       "drawElements",
       "drawArraysInstanced",
-      // resolved, composited, then the lines, then the canvas
+      // resolved, composited, then the additive glow, then the canvas
+      "blitFramebuffer",
+      "blitFramebuffer",
       "blitFramebuffer",
       "blitFramebuffer",
       "drawArrays",
       "drawArraysInstanced",
       "blitFramebuffer",
     ]);
-    // the transparency targets: two multisampled RGBA16F buffers
+    // the transparency targets: four multisampled RGBA16F buffers
     const rgba16f = calls.filter(
       (c) =>
         c.name === "renderbufferStorageMultisample" &&
         c.args[2] === constant("RGBA16F"),
     );
-    expect(rgba16f).toHaveLength(2);
+    expect(rgba16f).toHaveLength(4);
     expect(rgba16f[0]?.args[1]).toBe(4);
     renderer.destroy();
   });
@@ -204,14 +211,16 @@ describe("WebGL2 order-independent transparency", () => {
   it("reuses the targets until the size changes", () => {
     const { renderer, calls } = start(2, true);
     renderer.render([mesh("t", 0.5)], frame);
+    // the multisampled and resolved framebuffers, the front depth and the
+    // four transparency targets
     const created = names(calls, ["createFramebuffer"]).length;
-    expect(created).toBe(4);
+    expect(created).toBe(7);
     renderer.render([mesh("t", 0.5)], frame);
     expect(names(calls, ["createFramebuffer"]).length).toBe(created);
     renderer.resize(300, 100);
     renderer.render([mesh("t", 0.5)], frame);
     expect(names(calls, ["createFramebuffer"]).length).toBe(created * 2);
-    expect(names(calls, ["deleteFramebuffer"]).length).toBe(4);
+    expect(names(calls, ["deleteFramebuffer"]).length).toBe(created);
     renderer.destroy();
   });
 
@@ -289,9 +298,10 @@ describe("WebGL context budget", () => {
     const first = start(2, true, [4], onLost);
     const items = [mesh("opaque", 1), mesh("transparent", 0.5), glow];
     first.renderer.render(items, frame);
+    // opaque, then the transparent mesh in the front pass and the main pass
     const drawn = count(first.calls, "drawElements");
-    expect(drawn).toBe(2);
-    expect(count(first.calls, "createFramebuffer")).toBe(4);
+    expect(drawn).toBe(3);
+    expect(count(first.calls, "createFramebuffer")).toBe(7);
 
     // a second chart takes the only slot: the first one is suspended
     const secondLost = vi.fn();
@@ -308,9 +318,9 @@ describe("WebGL context budget", () => {
     expect(count(first.calls, "drawElements")).toBe(0);
     await settle();
     expect(first.context.lost).toBe(false);
-    // programs (3 + 3 transparency ones), main and transparency targets
-    expect(count(first.calls, "linkProgram")).toBe(6);
-    expect(count(first.calls, "createFramebuffer")).toBe(4);
+    // programs (3 + 5 transparency ones), main and transparency targets
+    expect(count(first.calls, "linkProgram")).toBe(8);
+    expect(count(first.calls, "createFramebuffer")).toBe(7);
     expect(count(first.calls, "drawElements")).toBe(drawn);
     expect(count(first.calls, "drawArrays")).toBe(1);
     expect(first.renderer.orderIndependent).toBe(true);

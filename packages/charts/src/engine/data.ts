@@ -28,6 +28,8 @@ export interface SeriesColumns {
   outliers: (readonly number[] | undefined)[] | null;
   /** Extra tooltip rows of the points (object data only) */
   details: (readonly ChartTooltipDetail[] | undefined)[] | null;
+  /** Identifiers of the points (object data only; `dependencies`) */
+  ids: (string | undefined)[] | null;
   count: number;
   /** x is non-decreasing (binary search, decimation) */
   sorted: boolean;
@@ -59,6 +61,7 @@ type Extra = Pick<
   | "q3"
   | "outliers"
   | "details"
+  | "ids"
 >;
 
 const isColumns = (
@@ -283,6 +286,7 @@ export const normalizeData = (
     q3: null,
     outliers: null,
     details: null,
+    ids: null,
   };
   if (isColumns(data)) {
     const count = data.y.length;
@@ -347,6 +351,7 @@ export const normalizeData = (
   let q3: Float64Array | null = null;
   let outliers: (readonly number[] | undefined)[] | null = null;
   let details: (readonly ChartTooltipDetail[] | undefined)[] | null = null;
+  let ids: (string | undefined)[] | null = null;
   const nanColumn = () => new Float64Array(count).fill(NaN);
 
   for (let i = 0; i < count; i++) {
@@ -373,6 +378,7 @@ export const normalizeData = (
         q3?: number;
         outliers?: readonly number[];
         details?: readonly ChartTooltipDetail[];
+        id?: string;
       };
       x[i] = d.x === undefined ? i : resolveX(d.x, i);
       y[i] = resolveY(d.y);
@@ -403,6 +409,10 @@ export const normalizeData = (
         details ??= new Array<readonly ChartTooltipDetail[] | undefined>(count);
         details[i] = d.details;
       }
+      if (d.id !== undefined) {
+        ids ??= new Array<string | undefined>(count);
+        ids[i] = d.id;
+      }
     } else {
       x[i] = i;
       y[i] = NaN;
@@ -421,6 +431,7 @@ export const normalizeData = (
     q3,
     outliers,
     details,
+    ids,
   });
 };
 

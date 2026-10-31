@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import {
   TradingChart,
   type TradingOrderCreateEvent,
+  type TradingOrderType,
   type TradingPriceLine,
 } from "minerva-design/charts";
 import { MINUTE, generateBars } from "../data";
@@ -24,12 +25,31 @@ const last = bars[bars.length - 1].close;
 interface Order {
   id: string;
   side: "buy" | "sell";
+  type: TradingOrderType;
   price: number;
   quantity: number;
 }
 
 // keyboard order entry: focus the chart (Tab), then these keys
-const SHORTCUTS = ["arm", "move", "confirm", "cancel", "select", "remove"];
+const SHORTCUTS = [
+  "arm",
+  "type",
+  "move",
+  "confirm",
+  "cancel",
+  "select",
+  "remove",
+];
+
+const LINE_TITLES = {
+  buy: { limit: "lines.limitBuy", stop: "lines.stopBuy" },
+  sell: { limit: "lines.limitSell", stop: "lines.stopSell" },
+} as const;
+
+const PLACED = {
+  buy: { limit: "orderPlacedBuy", stop: "orderPlacedBuyStop" },
+  sell: { limit: "orderPlacedSell", stop: "orderPlacedSellStop" },
+} as const;
 
 const kbd: React.CSSProperties = {
   minWidth: 20,
@@ -44,8 +64,27 @@ const kbd: React.CSSProperties = {
 };
 
 const INITIAL: Order[] = [
-  { id: "o1", side: "buy", price: Math.round(last * 0.996), quantity: 0.25 },
-  { id: "o2", side: "sell", price: Math.round(last * 1.006), quantity: 0.1 },
+  {
+    id: "o1",
+    side: "buy",
+    type: "limit",
+    price: Math.round(last * 0.996),
+    quantity: 0.25,
+  },
+  {
+    id: "o2",
+    side: "sell",
+    type: "limit",
+    price: Math.round(last * 1.006),
+    quantity: 0.1,
+  },
+  {
+    id: "o3",
+    side: "sell",
+    type: "stop",
+    price: Math.round(last * 0.991),
+    quantity: 0.05,
+  },
 ];
 
 export default function OrderEntryDemo() {
@@ -67,24 +106,27 @@ export default function OrderEntryDemo() {
         id: order.id,
         kind: "order",
         side: order.side,
+        title: t(LINE_TITLES[order.side][order.type]),
+        lineStyle: order.type === "stop" ? "dotted" : "dashed",
         price: order.price,
         quantity: order.quantity,
         draggable: true,
         cancellable: true,
       })),
-    [orders],
+    [orders, t],
   );
 
   const onCreate = (event: TradingOrderCreateEvent) => {
     const order = {
       id: `order-${Date.now().toString(36)}`,
       side: event.side,
+      type: event.orderType,
       price: event.price,
       quantity: 0.1,
     };
     setOrders((list) => [...list, order]);
     setLog(
-      t(event.side === "buy" ? "orderPlacedBuy" : "orderPlacedSell", {
+      t(PLACED[event.side][event.orderType], {
         price: usd.format(event.price),
       }),
     );
@@ -159,9 +201,7 @@ export default function OrderEntryDemo() {
                         : "var(--danger-color)",
                   }}
                 >
-                  {t(
-                    order.side === "buy" ? "lines.limitBuy" : "lines.limitSell",
-                  )}
+                  {t(LINE_TITLES[order.side][order.type])}
                 </td>
                 <td
                   style={{

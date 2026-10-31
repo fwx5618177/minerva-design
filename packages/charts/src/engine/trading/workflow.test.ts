@@ -23,6 +23,8 @@ const START = Date.UTC(2024, 0, 1);
 let containers: HTMLDivElement[] = [];
 let charts: TradingChartInstance[] = [];
 let calls: Record<string, number>;
+/** Texts painted on the canvases, with their position */
+let texts: { text: string; x: number; y: number; align: unknown }[];
 
 const fakeContext = () =>
   new Proxy({} as Record<string | symbol, unknown>, {
@@ -30,6 +32,11 @@ const fakeContext = () =>
       if (key in target) return target[key];
       if (key === "measureText")
         return (text: string) => ({ width: text.length * 6 });
+      if (key === "fillText")
+        return (text: string, x: number, y: number) => {
+          calls.fillText = (calls.fillText ?? 0) + 1;
+          texts.push({ text, x, y, align: target.textAlign });
+        };
       if (key === "createLinearGradient") return () => ({ addColorStop() {} });
       return () => {
         calls[String(key)] = (calls[String(key)] ?? 0) + 1;
@@ -111,6 +118,7 @@ const mount = async (options: TradingChartOptions) => {
 
 beforeEach(() => {
   calls = {};
+  texts = [];
   vi.spyOn(HTMLElement.prototype, "clientWidth", "get").mockReturnValue(WIDTH);
   vi.spyOn(HTMLElement.prototype, "clientHeight", "get").mockReturnValue(
     HEIGHT,
@@ -444,11 +452,22 @@ describe("orders on the chart", () => {
     click(x, 60);
     expect(created).toHaveLength(1);
     expect(created[0].side).toBe("sell");
+    expect(created[0].orderType).toBe("limit");
     expect(Number(created[0].price.toFixed(2))).toBe(created[0].price);
     send("pointermove", x, 250);
     await frames(3);
     click(x, 250);
-    expect(created[1]?.side).toBe("buy");
+    expect(created[1]).toMatchObject({ side: "buy", orderType: "limit" });
+    // Alt: the stop order of the other side
+    send("pointermove", x, 250, { altKey: true });
+    await frames(3);
+    expect(texts.some((t) => t.text.startsWith("Sell stop"))).toBe(true);
+    click(x, 250);
+    expect(created[2]).toMatchObject({ side: "sell", orderType: "stop" });
+    send("pointermove", x, 60, { altKey: true });
+    await frames(3);
+    click(x, 60);
+    expect(created[3]).toMatchObject({ side: "buy", orderType: "stop" });
   });
 
   it("cancels a cancellable line from its close button", async () => {
@@ -475,6 +494,78 @@ describe("orders on the chart", () => {
   });
 });
 
+describe("labels over the price pane", () => {
+  /** Bars around 100, with a deep low near the right edge */
+  const dipped = (index: number) =>
+    bars(200).map((bar, i) =>
+      i === index ? { ...bar, low: 50 } : { ...bar, low: bar.close - 1 },
+    );
+  const box = (t: { text: string; x: number; y: number; align: unknown }) => {
+    const w = t.text.length * 6;
+    const left =
+      t.align === "center" ? t.x - w / 2 : t.align === "right" ? t.x - w : t.x;
+    return { left, right: left + w, top: t.y - 7, bottom: t.y + 7 };
+  };
+  const overlap = (a: ReturnType<typeof box>, b: ReturnType<typeof box>) =>
+    a.left < b.right &&
+    a.right > b.left &&
+    a.top < b.bottom &&
+    a.bottom > b.top;
+
+  it("keeps the low marker clear of an order tag at the same height", async () => {
+    const { chart } = await mount({
+      bars: dipped(183),
+      precision: 2,
+      priceLines: [{ id: "o", kind: "order", price: 50, title: "Limit" }],
+    });
+    chart.setVisibleRange({ from: 0, to: 200 });
+    texts = [];
+    await frames(3);
+    const tag = texts.find((t) => t.text === "Limit");
+    const lows = texts.filter((t) => t.text === "50.00" && t.align === "left");
+    expect(tag).toBeDefined();
+    // the marker and the axis label
+    expect(lows.length).toBeGreaterThanOrEqual(1);
+    const marker = lows.find((t) => t.x < (tag?.x ?? 0) + 200);
+    expect(marker).toBeDefined();
+    // the tag is "Limit" plus 12 px of padding
+    const tagBox = { ...box(tag!), top: tag!.y - 9.5, bottom: tag!.y + 8.5 };
+    tagBox.left -= 6;
+    tagBox.right += 6;
+    expect(overlap(box(marker!), tagBox)).toBe(false);
+  });
+
+  it("stacks the axis labels of close prices with leader lines", async () => {
+    const data = bars(200);
+    const last = data[199]!.close;
+    const { chart } = await mount({
+      bars: data,
+      precision: 2,
+      countdown: true,
+      priceLines: [
+        { id: "a", kind: "order", price: last + 0.02 },
+        { id: "b", kind: "alert", price: last - 0.02 },
+        { id: "c", kind: "takeProfit", price: last + 0.04 },
+      ],
+    });
+    await frames(3);
+    // the labels of the last paint, over the price axis
+    const axis = texts.filter((t) => t.align === "left" && t.x > 600).reverse();
+    const labels = [last + 0.02, last - 0.02, last + 0.04, last].map((p) =>
+      axis.find((t) => t.text === p.toFixed(2)),
+    );
+    labels.forEach((label) => expect(label).toBeDefined());
+    // 18 px tall labels (the last price: 32 with the countdown)
+    const spans = labels
+      .map((t, k) => [t!.y - 9.5, t!.y - 9.5 + (k === 3 ? 32 : 18)])
+      .sort((a, b) => a[0]! - b[0]!);
+    spans.forEach((span, k) => {
+      if (k > 0) expect(span[0]!).toBeGreaterThanOrEqual(spans[k - 1]![1]!);
+    });
+    chart.destroy();
+  });
+});
+
 describe("keyboard order entry", () => {
   const keys =
     (root: HTMLElement) =>
@@ -495,29 +586,37 @@ describe("keyboard order entry", () => {
       orderEntry: true,
       precision: 2,
     });
-    expect(root.getAttribute("aria-keyshortcuts")).toContain("B S O");
+    expect(root.getAttribute("aria-keyshortcuts")).toContain("Alt+B Alt+S");
     const live = root.querySelector("[aria-live]")!;
     const created: TradingOrderCreateEvent[] = [];
     chart.on("orderCreate", (e) => created.push(e));
     const key = keys(root);
     const last = Math.round((data[199]?.close ?? 0) * 100) / 100;
-    // at the last price without a crosshair
+    // at the last price without a crosshair: a limit
     key("b");
-    expect(live.textContent).toContain("Buy limit");
+    expect(live.textContent).toContain(`Buy limit ${last.toFixed(2)}`);
     expect(live.textContent).toContain("Enter confirms");
+    expect(live.textContent).toContain("Alt+B or Alt+S");
     const range = chart.getVisibleRange();
+    // above the last price: a buy stop
     key("ArrowUp");
+    expect(live.textContent).toBe(`Buy stop ${(last + 0.01).toFixed(2)}`);
     key("ArrowUp", { shiftKey: true });
     // the arrows move the order instead of zooming
     expect(chart.getVisibleRange()).toEqual(range);
     await frames();
+    expect(texts.some((t) => t.text.startsWith("Buy stop"))).toBe(true);
     key("Enter");
     expect(created).toHaveLength(1);
-    expect(created[0]?.side).toBe("buy");
+    expect(created[0]).toMatchObject({ side: "buy", orderType: "stop" });
     expect(created[0]?.price).toBeCloseTo(last + 0.11, 6);
+    expect(live.textContent).toContain("Buy stop");
     expect(live.textContent).toContain("Order placed");
+    // a sell below the last price is a stop, at or above it a limit
     key("s");
+    expect(live.textContent).toContain("Sell limit");
     key("ArrowDown");
+    expect(live.textContent).toBe(`Sell stop ${(last - 0.01).toFixed(2)}`);
     key("Escape");
     expect(created).toHaveLength(1);
     expect(live.textContent).toBe("Order cancelled");
@@ -576,6 +675,61 @@ describe("keyboard order entry", () => {
     key("Delete");
     expect(cancelled.map((e) => e.id)).toEqual(["o1"]);
     expect(live.textContent).toBe("Order cancelled");
+  });
+
+  it("switches between limit and stop with Alt+B / Alt+S", async () => {
+    const data = bars(200);
+    const { chart, root } = await mount({
+      bars: data,
+      orderEntry: true,
+      precision: 2,
+    });
+    const live = root.querySelector("[aria-live]")!;
+    const created: TradingOrderCreateEvent[] = [];
+    chart.on("orderCreate", (e) => created.push(e));
+    const key = keys(root);
+    // Option+B types "∫" on macOS: the physical key counts
+    key("∫", { altKey: true, code: "KeyB" });
+    expect(live.textContent).toContain("Buy stop");
+    key("∫", { altKey: true, code: "KeyB" });
+    expect(live.textContent).toContain("Buy limit");
+    key("∫", { altKey: true, code: "KeyB" });
+    // pinned: stays a stop while the price moves
+    key("ArrowDown");
+    expect(live.textContent).toContain("Buy stop");
+    key("Enter");
+    expect(created[0]).toMatchObject({ side: "buy", orderType: "stop" });
+    // B again: back to the automatic type
+    key("b");
+    key("ArrowDown");
+    expect(live.textContent).toContain("Buy limit");
+    // S then Alt+S: a sell at the last price becomes a stop
+    key("s");
+    key("ß", { altKey: true, code: "KeyS" });
+    key("Enter");
+    expect(created[1]).toMatchObject({ side: "sell", orderType: "stop" });
+    // other Alt shortcuts are left alone
+    expect(key("x", { altKey: true, code: "KeyX" })).toBe(true);
+  });
+
+  it("announces the order type in the language of the chart", async () => {
+    const data = bars(200);
+    const { root } = await mount({
+      bars: data,
+      orderEntry: true,
+      precision: 2,
+      locale: "zh-CN",
+    });
+    const live = root.querySelector("[aria-live]")!;
+    const key = keys(root);
+    key("s");
+    key("ArrowDown");
+    expect(live.textContent).toContain("止损卖出");
+    key("ß", { altKey: true, code: "KeyS" });
+    expect(live.textContent).toContain("限价卖出");
+    // Chinese sentences end with 。
+    expect(live.textContent).toContain("。Alt+B");
+    expect(live.textContent).not.toContain(". ");
   });
 
   it("ignores the order keys without orderEntry", async () => {

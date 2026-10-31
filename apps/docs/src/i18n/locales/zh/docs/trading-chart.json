@@ -20,7 +20,7 @@
       "pointer": "滚轮在指针位置缩放（Shift 或横向滑动可平移），拖动平移并带有惯性。",
       "axes": "拖动价格轴可纵向缩放，拖动时间轴可调整 K 线宽度；双击坐标轴即可复位。",
       "keyboard": "聚焦图表后：方向键逐根移动十字光标（按住 Shift 一次十根）并朗读价格，+ / − 缩放，Home / End 跳到第一根 / 最新 K 线，Delete 删除选中的画线，Ctrl / ⌘ + Z 撤销、Ctrl / ⌘ + Shift + Z 重做画线修改，Escape 取消。",
-      "orders": "开启 orderEntry 后：B / S 在十字光标价格（或最新价）处预备一笔限价买单 / 卖单，↑ / ↓ 按最小价位调整（按住 Shift 一次十档），回车下单，Escape 放弃。O / Shift + O 依次选中可拖动或可撤销的价格线，用同样的方式改价，Delete 撤销选中的委托。每一步都会朗读，并触发与鼠标操作相同的事件（orderCreate、orderMove、orderCancel）。",
+      "orders": "开启 orderEntry 后：B / S 在十字光标价格（或最新价）处预备买入 / 卖出订单，↑ / ↓ 每次移动一个最小价位（Shift：十个），回车下单，Esc 放弃。订单类型随价格而定：低于最新价买入、高于最新价卖出为限价单，高于最新价买入、低于最新价卖出为止损单；Alt+B / Alt+S 可在限价与止损之间切换。O / Shift + O 依次选中可拖动或可撤销的价格线并以同样方式移动，Delete 撤销选中的订单。每一步（包括订单类型）都会被朗读，并触发与指针操作相同的事件（带 orderType 的 orderCreate、orderMove、orderCancel）。",
       "touch": "触屏设备上：拖动平移，双指捏合缩放。"
     },
     "languages": {
@@ -95,7 +95,7 @@
     },
     "order-entry": {
       "title": "图上下单",
-      "description": "开启 orderEntry 后，价格窗格右侧会有一个跟随十字光标的 + 按钮：点击即在该价格下限价单（低于最新价为买入，高于为卖出）。键盘同样可以下单：Tab 聚焦图表，按 B 或 S，用方向键调整价格后回车；按 O 选中已有委托，可改价或按 Delete 撤单。委托是可拖动、可撤销的价格线，通过 onOrderCreate、onOrderMove 和 onOrderCancel 保存在 React 状态里。"
+      "description": "开启 orderEntry 后，价格窗格右侧会有一个跟随十字光标的 + 按钮：点击即在该价格挂限价单（低于最新价买入，高于最新价卖出），按住 Alt（Option）则为另一方向的止损单。键盘同样可以操作：聚焦图表（Tab），按 B 或 S，用方向键调整价格后回车；价格越过最新价时订单自动变为止损单，Alt+B / Alt+S 可切换类型。O 选中已有订单进行移动，Delete 撤单。订单是可拖动、可撤销的价格线，通过 onOrderCreate（含 orderType）、onOrderMove 和 onOrderCancel 保存在 React 状态中；标签处于同一高度时，坐标轴标签会带引线错开排列，订单标签也会自动避让。"
     },
     "sessions": {
       "title": "时区与交易时段",
@@ -189,7 +189,9 @@
       "stopLoss": "止损",
       "limitBuy": "限价买入",
       "limitSell": "限价卖出",
-      "alert": "预警"
+      "alert": "预警",
+      "stopBuy": "止损买入",
+      "stopSell": "止损卖出"
     },
     "buyMarker": "买 {{quantity}}",
     "sellMarker": "卖 {{quantity}}",
@@ -254,7 +256,7 @@
     "orderModified": "委托已从 {{from}} 改到 {{to}}",
     "orderCancelled": "已撤销 {{price}} 的委托",
     "orderEntryAria": "可图上下单的 BTCUSDT 永续 5 分钟图",
-    "orderEntryHint": "在图上移动鼠标，点击右侧的 + 下单，或聚焦图表后按 B / S；拖动价格线改价，点 × 撤单。",
+    "orderEntryHint": "将鼠标移到图表上，点击右侧的 + 挂限价单（按住 Alt 为止损单），或聚焦图表后按 B / S；拖动价格线可改价，点击 × 撤单。",
     "timeZone": "时区",
     "zones": {
       "America_New_York": "纽约",
@@ -288,8 +290,12 @@
       "selectKeys": "O",
       "select": "选中下一笔委托",
       "removeKeys": "Delete",
-      "remove": "撤销选中的委托"
-    }
+      "remove": "撤销选中的委托",
+      "typeKeys": "Alt+B Alt+S",
+      "type": "切换限价单与止损单"
+    },
+    "orderPlacedBuyStop": "已在 {{price}} 挂止损买入单",
+    "orderPlacedSellStop": "已在 {{price}} 挂止损卖出单"
   },
   "api": {
     "TradingChartProps": {
@@ -352,7 +358,7 @@
       "ariaLabel": "无障碍标签；默认由品种名称生成",
       "timeZone": "时间轴、交易日分隔线和 VWAP 周期使用的时区：IANA 名称（\"America/New_York\"）或 \"UTC\"；默认为本地时间。",
       "sessionBreaks": "在每天开始处画垂直虚线（日内 K 线）。",
-      "orderEntry": "在价格窗格右侧、十字光标价格处显示 + 按钮：点击后触发限价单事件（orderCreate）。图表获得焦点时，B / S 预备买单 / 卖单，方向键调整价格，回车确认，Escape 取消；O 选中可拖动的价格线进行改价，Delete 撤销可撤销的委托。",
+      "orderEntry": "在价格窗格右侧、十字光标价格处显示 + 按钮：点击即上报限价单（orderCreate），按住 Alt 时为另一方向的止损单。图表获得焦点后，B / S 预备买入 / 卖出订单，方向键调整价格，回车确认，Esc 取消；挂单价格优于最新价时为限价单，否则为止损单，Alt+B / Alt+S 可切换类型。O 依次选中可拖动的价格线进行调整，Delete 撤销可撤销的订单。",
       "volumeProfile": "可见 K 线的成交量分布，含 POC 和价值区（true 使用默认设置）。",
       "drawingToolbar": "选中画线时显示的浮动工具栏（颜色、线宽、线型、填充、锁定、删除）。"
     },
@@ -494,13 +500,16 @@
       "short": "空头仓位工具。",
       "replay": "K 线回放的标记；{time} 会被替换。",
       "replayHint": "选择回放起始 K 线时的提示。",
-      "buyLimit": "低于最新价时下单按钮的文字；{price} 会被替换。",
-      "sellLimit": "高于最新价时下单按钮的文字；{price} 会被替换。",
+      "buyLimit": "限价买入单（不高于最新价）的文案，{price} 会被替换。",
+      "sellLimit": "限价卖出单（不低于最新价）的文案，{price} 会被替换。",
       "orderHint": "键盘预备委托或选中价格线时朗读的提示。默认 \"Arrows move the price, Enter confirms, Escape cancels\"。",
       "orderCancelHint": "选中的价格线可撤销时朗读的提示。默认 \"Delete cancels the order\"。",
       "orderLine": "键盘选中的价格线；替换 {title} 和 {price}。默认 \"{title} at {price}\"。",
       "orderPlaced": "下单或改价后朗读；替换 {price}。默认 \"Order placed at {price}\"。",
-      "orderCancelled": "放弃键盘委托或撤单后朗读。默认 \"Order cancelled\"。"
+      "orderCancelled": "放弃键盘委托或撤单后朗读。默认 \"Order cancelled\"。",
+      "buyStop": "止损买入单（高于最新价）的文案，{price} 会被替换。",
+      "sellStop": "止损卖出单（低于最新价）的文案，{price} 会被替换。",
+      "orderTypeHint": "键盘预备下单时朗读的提示，说明如何在限价与止损之间切换。"
     },
     "TradingCrosshairEvent": {
       "index": "悬停 K 线的序号（可能超出最后一根）",
@@ -548,7 +557,8 @@
     },
     "TradingOrderCreateEvent": {
       "price": "委托价格（按价格精度取整）。",
-      "side": "低于最新价为 buy，高于为 sell（键盘下单时取决于按下的 B 或 S）。"
+      "side": "通过 + 下单时，低于最新价为 buy、高于最新价为 sell（按住 Alt 时为另一方向的止损单）；键盘下单时取决于所按的 B 或 S。",
+      "orderType": "买单价格不高于最新价、卖单价格不低于最新价时为 limit（限价单，等待更优价格），否则为 stop（止损单）；可用 Alt 切换：键盘按 Alt+B / Alt+S，或按住 Alt 点击 +。"
     },
     "TradingOrderCancelEvent": {
       "id": "价格线的 id。",

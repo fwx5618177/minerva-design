@@ -7,7 +7,17 @@
 // grid, the axes, the book profile, the crosshair and the tooltip are drawn
 // on a Canvas2D layer above.
 
-import { luminance, mixOklab, oklabRamp, toCss, type Rgba } from "../color";
+import {
+  fromOklab,
+  luminance,
+  mixOklab,
+  oklabRamp,
+  packColor,
+  parseColor,
+  toCss,
+  toOklab,
+  type Rgba,
+} from "../color";
 import { followDefaultRenderer } from "../renderers/follow";
 import { linearTicks } from "../scale";
 import { timeTicks } from "../time";
@@ -66,45 +76,101 @@ import type {
 const LUT_SIZE = 256;
 /** Largest heat image (texels per side) */
 const MAX_TEXELS = 4096;
-/** Quantile of the visible sizes at the hottest color (auto scale) */
-const SCALE_QUANTILE = 0.98;
-/** Gamma of the color curve (> 1: less noise at the cold end) */
-const HEAT_GAMMA = 1.4;
+/**
+ * Quantile of the visible (non-empty) cells at the hottest color (auto
+ * scale): typical levels stay dark, only the top 1 % of the liquidity glows
+ */
+const SCALE_QUANTILE = 0.99;
+/** Thinnest price row on screen (CSS px); thinner rows are bucketed */
+const MIN_ROW_PX = 2;
+
+/** A ramp color at a position (0-1) */
+type RampStop = readonly [number, string];
 
 /**
- * Heat ramps, interpolated in OKLab; the first color is also the empty
- * field. Dark: from deep navy, lightness rises through blue, cyan and green
- * to yellow, then the hottest walls turn orange / red (the Bookmap
- * convention). Light: from a pale tint, lightness falls through blue and
- * violet to crimson.
+ * Heat ramps (positioned stops, interpolated in OKLab, lightness rising
+ * monotonically with the size); the first color is also the empty field.
+ * Dark: a long dark segment close to the panel (thin liquidity stays dim),
+ * then blue, cyan, yellow, orange and a white-hot end for the walls (the
+ * Bookmap convention). Light: the mirror, near white to deep blue, violet
+ * and crimson.
  */
-const DARK_RAMP = [
-  "#0a1830",
-  "#0f2c57",
-  "#134a8a",
-  "#1670b4",
-  "#1aa0bf",
-  "#2fc3a0",
-  "#8ad65a",
-  "#e8dc3f",
-  "#ffa733",
-  "#ff5a2e",
+const DARK_RAMP: readonly RampStop[] = [
+  [0, "#0b1322"],
+  [0.3, "#0e1c36"],
+  [0.5, "#11306a"],
+  [0.63, "#1556a8"],
+  [0.74, "#1b95c8"],
+  [0.83, "#59d6d0"],
+  [0.9, "#f2e14b"],
+  [0.96, "#ff8c2b"],
+  [1, "#fff6e8"],
 ];
-const LIGHT_RAMP = [
-  "#eef4fb",
-  "#cfe1f6",
-  "#9fc2ee",
-  "#679ee2",
-  "#3a73cf",
-  "#3f4bb0",
-  "#62309a",
-  "#9c2783",
-  "#d12c52",
+const LIGHT_RAMP: readonly RampStop[] = [
+  [0, "#f7f9fc"],
+  [0.3, "#eef3fa"],
+  [0.5, "#d6e3f5"],
+  [0.63, "#9dbde9"],
+  [0.74, "#4f86d6"],
+  [0.85, "#2f4fb0"],
+  [0.93, "#6a2a9c"],
+  [1, "#c4173f"],
 ];
 /** Height of the price tags of the axis, in pixels */
 const TAG_HEIGHT = 16;
 /** Smallest distance between two trade bubbles' columns, in pixels */
 const BUBBLE_SPACING = 6;
+/** Diameter of the largest trade bubble (default), in pixels */
+const BUBBLE_SIZE = 14;
+/** Diameter of the smallest trade bubble, in pixels */
+const BUBBLE_MIN = 3;
+
+/**
+ * Lookup table of a ramp with positioned stops (`[position 0-1, color]`,
+ * ascending), interpolated in OKLab
+ */
+export const positionedRamp = (
+  stops: readonly (readonly [number, Rgba])[],
+  size = LUT_SIZE,
+): Uint32Array => {
+  const lut = new Uint32Array(size);
+  if (!stops.length) return lut;
+  const lab = stops.map(([, c]) => toOklab(c));
+  let i = 0;
+  for (let k = 0; k < size; k++) {
+    const t = k / Math.max(1, size - 1);
+    while (i + 1 < stops.length - 1 && t > stops[i + 1]![0]) i++;
+    const [p0] = stops[i]!;
+    const j = Math.min(stops.length - 1, i + 1);
+    const [p1] = stops[j]!;
+    const f = p1 > p0 ? Math.min(1, Math.max(0, (t - p0) / (p1 - p0))) : 0;
+    const a = lab[i]!;
+    const b = lab[j]!;
+    lut[k] = packColor(
+      fromOklab([
+        a[0] + (b[0] - a[0]) * f,
+        a[1] + (b[1] - a[1]) * f,
+        a[2] + (b[2] - a[2]) * f,
+        1,
+      ]),
+    );
+  }
+  return lut;
+};
+
+/**
+ * Rows (ticks) per drawn price row: 1 while a tick is at least 2 px tall,
+ * otherwise the smallest 1 / 2 / 5 × 10ⁿ bucket that is (Bookmap sums the
+ * sizes within a price bucket)
+ */
+export const rowBucket = (tickPx: number): number => {
+  if (!(tickPx > 0) || tickPx >= MIN_ROW_PX) return 1;
+  const need = MIN_ROW_PX / tickPx;
+  for (let p = 1; p < 1e12; p *= 10) {
+    for (const m of [1, 2, 5]) if (m * p >= need) return m * p;
+  }
+  return 1;
+};
 
 const LABELS: LabelDictionary<OrderBookHeatmapLabels> = {
   en: {
@@ -185,11 +251,11 @@ export const heatIntensity = (
   switch (scale) {
     case "linear":
       return r;
-    case "sqrt":
-      return Math.sqrt(r);
-    default:
+    case "log":
       // one decade: a tenth of the hottest size is a fifth of the ramp
       return Math.log10(1 + 9 * r);
+    default:
+      return Math.sqrt(r);
   }
 };
 
@@ -325,16 +391,20 @@ export const createOrderBookHeatmap = (
       1,
     ];
     dark = theme.background[3] > 0 ? luminance(background) < 0.4 : false;
-    const ramp = (
-      options.colors?.length ? options.colors : dark ? DARK_RAMP : LIGHT_RAMP
-    ).map(resolve);
-    // the field is opaque: the empty color is the cold end of the ramp
-    floor = ramp[0] ?? background;
-    lut = oklabRamp(ramp.length > 1 ? ramp : [floor, floor], LUT_SIZE);
-    const scale = options.colorScale ?? "log";
-    // a mild gamma after the scale: the thin noise of the book stays near
-    // the cold end, the walls stand out
-    table = heatTable(lut, (r) => heatIntensity(r, 1, scale, 1) ** HEAT_GAMMA);
+    if (options.colors?.length) {
+      const ramp = options.colors.map(resolve);
+      // the field is opaque: the empty color is the cold end of the ramp
+      floor = ramp[0] ?? background;
+      lut = oklabRamp(ramp.length > 1 ? ramp : [floor, floor], LUT_SIZE);
+    } else {
+      const stops = (dark ? DARK_RAMP : LIGHT_RAMP).map(
+        ([at, hex]) => [at, parseColor(hex) ?? background] as const,
+      );
+      floor = stops[0]![1];
+      lut = positionedRamp(stops, LUT_SIZE);
+    }
+    const scale = options.colorScale ?? "sqrt";
+    table = heatTable(lut, (r) => heatIntensity(r, 1, scale, 1));
     paintKey = "";
   }
 
@@ -493,8 +563,8 @@ export const createOrderBookHeatmap = (
 
   /**
    * The heat image of the view, rebuilt when its inputs change; the color
-   * scale follows the 98th percentile of the visible sizes (eased), so the
-   * whole ramp is used in light and dark themes alike
+   * scale follows the 99th percentile of the visible non-empty cells
+   * (eased): typical levels stay dim, only significant liquidity glows
    */
   const heatGrid = (
     x0: number,
@@ -508,6 +578,7 @@ export const createOrderBookHeatmap = (
     const live = headSource();
     const maxWidth = Math.min(MAX_TEXELS, Math.ceil(plot.w));
     const maxHeight = Math.min(MAX_TEXELS, Math.ceil(plot.h));
+    const rowBins = rowBucket((tick / (y1 - y0)) * plot.h);
     const lastSeq = columns.length ? columns[columns.length - 1]!.seq : -1;
     const key = [
       x0,
@@ -520,12 +591,25 @@ export const createOrderBookHeatmap = (
       head?.version ?? -1,
       maxWidth,
       maxHeight,
+      rowBins,
       tick,
     ].join("|");
     if (key !== gridKey) {
       const sources: HeatSource[] = live ? [...columns, live] : columns;
       grid = buildHeatGrid(
-        { sources, step, tick, x0, x1, y0, y1, end, maxWidth, maxHeight },
+        {
+          sources,
+          step,
+          tick,
+          x0,
+          x1,
+          y0,
+          y1,
+          end,
+          maxWidth,
+          maxHeight,
+          rowBins,
+        },
         grid,
       );
       gridKey = key;
@@ -734,7 +818,10 @@ export const createOrderBookHeatmap = (
     ctx.restore();
   };
 
-  /** Trade bubbles, area ∝ volume, the largest with their volume */
+  /**
+   * Trade bubbles: area ∝ volume (relative to the largest visible trade,
+   * eased), translucent with a thin outline; the largest with their volume
+   */
   const drawBubbles = (
     ctx: CanvasRenderingContext2D,
     bubbles: Bubble[],
@@ -744,21 +831,29 @@ export const createOrderBookHeatmap = (
   ) => {
     if (!bubbles.length) return;
     let max = 0;
-    for (const b of bubbles) max = Math.max(max, b.volume);
-    bubbleRef = bubbleRef > 0 ? Math.max(max, bubbleRef * 0.995) : max;
+    for (const b of bubbles) {
+      const x = xOf(b.time);
+      if (x >= plot.x && x <= plot.x + plot.w) max = Math.max(max, b.volume);
+    }
+    // the reference follows the visible trades: fast up, slowly down
+    if (max > 0)
+      bubbleRef = bubbleRef > 0 ? Math.max(max, bubbleRef * 0.995) : max;
     const ref = options.bubbleVolume ?? bubbleRef;
-    const maxD = Math.max(4, options.bubbleSize ?? 28);
+    if (!(ref > 0)) return;
+    const maxD = Math.max(BUBBLE_MIN, options.bubbleSize ?? BUBBLE_SIZE);
+    const minD = Math.min(BUBBLE_MIN, maxD);
     const sized = bubbles
       .map((b) => ({
         ...b,
-        d: clamp(Math.sqrt(b.volume / ref) * maxD, 3, maxD),
+        d: clamp(Math.sqrt(b.volume / ref) * maxD, minD, maxD),
       }))
       .sort((a, b) => a.d - b.d);
     clipPlot(ctx);
-    ctx.lineWidth = 1.25;
+    ctx.lineWidth = 1;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.font = fontOf(host.theme, options, 600, Math.max(8, fontSize - 1));
+    const rim: Rgba = dark ? [1, 1, 1, 1] : [0, 0, 0, 1];
     for (const b of sized) {
       const x = xOf(b.time);
       const y = yOf(b.price);
@@ -767,20 +862,48 @@ export const createOrderBookHeatmap = (
       if (y < plot.y - r || y > plot.y + plot.h + r) continue;
       const color = b.buy ? colors.up : colors.down;
       ctx.beginPath();
-      ctx.arc(x, y, r, 0, Math.PI * 2);
-      ctx.fillStyle = toCss(color, 0.62);
+      ctx.arc(x, y, Math.max(1, r - 0.5), 0, Math.PI * 2);
+      ctx.fillStyle = toCss(color, 0.35);
       ctx.fill();
-      ctx.strokeStyle = toCss(mixOklab(color, [1, 1, 1, 1], 0.25));
+      ctx.strokeStyle = toCss(mixOklab(color, rim, 0.2), 0.9);
       ctx.stroke();
       if (b.d >= 26) {
         const text = fmt.compact(b.volume);
         if (ctx.measureText(text).width <= b.d - 6) {
-          ctx.fillStyle = "#fff";
+          ctx.fillStyle = toCss(dark ? [1, 1, 1, 1] : [0.08, 0.08, 0.1, 1]);
           ctx.fillText(text, x, y + 0.5);
         }
       }
     }
     ctx.restore();
+  };
+
+  /**
+   * Price buckets of `ry` rows of a side of the live book (the rows of the
+   * field: bucket `b` holds the rows `b × ry` to `b × ry + ry - 1`), best first
+   */
+  const bookBuckets = (side: OrderBookSide, ry: number) => {
+    const buckets: number[] = [];
+    const sizes: number[] = [];
+    const count = store.count(side);
+    let rows = 0;
+    let lastBin = NaN;
+    for (let i = 0; i < count; i++) {
+      const bin = Math.round(store.priceAt(side, i) / tick);
+      if (bin !== lastBin) {
+        if (++rows > depth()) break;
+        lastBin = bin;
+      }
+      const b = Math.floor(bin / ry);
+      const size = store.sizeAt(side, i);
+      if (buckets.length && buckets[buckets.length - 1] === b)
+        sizes[sizes.length - 1] += size;
+      else {
+        buckets.push(b);
+        sizes.push(size);
+      }
+    }
+    return { side, buckets, sizes };
   };
 
   /** The current book as horizontal bars right of the plot, with a size scale */
@@ -790,18 +913,22 @@ export const createOrderBookHeatmap = (
     profileW: number,
     yOf: (p: number) => number,
     fontSize: number,
+    ry: number,
   ) => {
     const theme = host.theme;
     const [y0, y1] = viewY;
-    const rowPx = Math.max(1, (tick / (y1 - y0)) * plot.h);
+    const rowPx = Math.max(1, ((tick * ry) / (y1 - y0)) * plot.h);
+    // bucket b spans [(b ry - ½) tick, (b ry + ry - ½) tick)
+    const lowOf = (b: number) => (b * ry - 0.5) * tick;
+    const highOf = (b: number) => (b * ry + ry - 0.5) * tick;
     let maxSize = 0;
     const sides = (["bid", "ask"] as const).map((side) => {
-      const levels = store.levels(side, { step: tick, limit: depth() });
-      for (let i = 0; i < levels.count; i++) {
-        const p = levels.price[i]!;
-        if (p >= y0 && p <= y1) maxSize = Math.max(maxSize, levels.size[i]!);
-      }
-      return { side, ...levels };
+      const levels = bookBuckets(side, ry);
+      levels.buckets.forEach((b, i) => {
+        if (highOf(b) >= y0 && lowOf(b) <= y1)
+          maxSize = Math.max(maxSize, levels.sizes[i]!);
+      });
+      return levels;
     });
     // a fine "nice" scale (the largest bar fills 75-100 % of the panel),
     // changed only on a clear change: no jumping bars
@@ -826,28 +953,28 @@ export const createOrderBookHeatmap = (
     ctx.beginPath();
     ctx.rect(px, plot.y, profileW, plot.h);
     ctx.clip();
-    // rows on whole pixels from the price edges; a 1 px gap when tall
+    // rows on whole pixels from the bucket edges; a 1 px gap when tall
     const gap = rowPx >= 4 ? 1 : 0;
-    const bar = (p: number, s: number) => {
-      const top = Math.round(yOf(p + tick / 2));
-      const bottom = Math.max(top + 1, Math.round(yOf(p - tick / 2)) - gap);
+    const bar = (b: number, s: number) => {
+      const top = Math.round(yOf(highOf(b)));
+      const bottom = Math.max(top + 1, Math.round(yOf(lowOf(b))) - gap);
       const w = Math.max(1, Math.min(inner, (s / profileMax) * inner));
       ctx.rect(left, top, w, bottom - top);
     };
-    for (const { side, price, size, count } of sides) {
+    for (const { side, buckets, sizes } of sides) {
       const color = side === "bid" ? colors.up : colors.down;
       ctx.beginPath();
-      for (let i = 1; i < count; i++) {
-        const p = price[i]!;
-        if (p >= y0 - tick && p <= y1 + tick) bar(p, size[i]!);
+      for (let i = 1; i < buckets.length; i++) {
+        const b = buckets[i]!;
+        if (highOf(b) >= y0 && lowOf(b) <= y1) bar(b, sizes[i]!);
       }
       ctx.fillStyle = toCss(color, dark ? 0.62 : 0.55);
       ctx.fill();
-      // the best level, solid
-      const best = price[0];
-      if (count && best !== undefined && best >= y0 && best <= y1) {
+      // the best bucket, solid
+      const best = buckets[0];
+      if (best !== undefined && highOf(best) >= y0 && lowOf(best) <= y1) {
         ctx.beginPath();
-        bar(best, size[0]!);
+        bar(best, sizes[0]!);
         ctx.fillStyle = toCss(color);
         ctx.fill();
       }
@@ -878,7 +1005,7 @@ export const createOrderBookHeatmap = (
     }
   };
 
-  /** Hovered cell: pointer, time, price row */
+  /** Hovered cell: pointer, time, price row (bucket of `ry` ticks) */
   interface HoverCell {
     hx: number;
     hy: number;
@@ -887,11 +1014,16 @@ export const createOrderBookHeatmap = (
     /** Start of the hovered column (NaN outside the data) */
     start: number;
     column: Column | null;
-    bin: number;
+    /** Bucket: rows `bucket × ry` to `bucket × ry + ry - 1` */
+    bucket: number;
+    ry: number;
+    /** Lowest / highest row price of the bucket and its center */
+    low: number;
+    high: number;
     rowPrice: number;
   }
 
-  const hoverCell = (): HoverCell | null => {
+  const hoverCell = (ry: number): HoverCell | null => {
     if (!hoverAt || options.tooltip === false || !(tick > 0) || drag)
       return null;
     if (!viewYReady) return null;
@@ -907,15 +1039,18 @@ export const createOrderBookHeatmap = (
     const [y0, y1] = viewY;
     const time = x0 + ((hx - plot.x) / plot.w) * (x1 - x0);
     const price = y0 + ((plot.y + plot.h - hy) / plot.h) * (y1 - y0);
-    const bin = Math.round(price / tick);
-    const rowPrice = +(bin * tick).toFixed(Math.min(12, decimalsOf(tick) + 2));
+    const bucket = Math.floor(Math.round(price / tick) / ry);
+    const digits = Math.min(12, decimalsOf(tick) + 2);
+    const low = +(bucket * ry * tick).toFixed(digits);
+    const high = +((bucket * ry + ry - 1) * tick).toFixed(digits);
+    const rowPrice = +((low + high) / 2).toFixed(digits);
     const column = columnAt(time);
     const start = column
       ? column.time
       : Number.isFinite(openStart) && time >= openStart
         ? openStart
         : NaN;
-    return { hx, hy, time, start, column, bin, rowPrice };
+    return { hx, hy, time, start, column, bucket, ry, low, high, rowPrice };
   };
 
   /** Price / time tag: filled (best bid / ask, hover) or outlined (last trade) */
@@ -1045,6 +1180,8 @@ export const createOrderBookHeatmap = (
     const ready = viewYReady && tick > 0;
     const visible = visibleColumns();
     const columnPx = (step / (x1 - x0)) * plot.w;
+    /** Price rows per drawn row (bucketing of thin rows), as the field */
+    let ry = ready ? rowBucket((tick / (y1 - y0)) * plot.h) : 1;
 
     // data layer: the heat field (an opaque image over the cold color)
     const floorCss = toCss(floor);
@@ -1061,6 +1198,7 @@ export const createOrderBookHeatmap = (
         ready && Number.isFinite(openStart)
           ? heatGrid(x0, x1, y0, y1, time, dt)
           : null;
+      if (heat) ry = heat.rowBins;
       // the image rectangle in device pixels of the plot canvas
       const sx = bw / plot.w;
       const sy = bh / plot.h;
@@ -1078,7 +1216,8 @@ export const createOrderBookHeatmap = (
       ctx.fillRect(plot.x, plot.y, plot.w, plot.h);
     }
 
-    // grid over the cells
+    // no grid inside the field (it would read as liquidity): short tick
+    // marks on the time and price axes instead
     const yTicks = ready
       ? linearTicks(y0, y1, Math.max(2, Math.floor(plot.h / 44)))
       : [];
@@ -1089,28 +1228,28 @@ export const createOrderBookHeatmap = (
       undefined,
       options.timeZone ?? "local",
     );
-    ctx.strokeStyle = toCss(theme.text, dark ? 0.07 : 0.09);
+    ctx.strokeStyle = toCss(theme.axis);
     ctx.lineWidth = 1;
     ctx.beginPath();
     for (const p of yTicks) {
       const y = Math.round(yOf(p)) + 0.5;
-      ctx.moveTo(plot.x, y);
-      ctx.lineTo(right, y);
+      ctx.moveTo(right, y);
+      ctx.lineTo(right + 4, y);
     }
     for (const t of xt.values) {
       const x = Math.round(xOf(t)) + 0.5;
       if (x <= plot.x + 1 || x >= px - 1) continue;
-      ctx.moveTo(x, plot.y);
-      ctx.lineTo(x, plot.y + plot.h);
+      ctx.moveTo(x, plot.y + plot.h);
+      ctx.lineTo(x, plot.y + plot.h + 4);
     }
     ctx.stroke();
 
-    // best bid / ask, trades, the current book
+    // trades, then the best bid / ask on top of them, the current book
     if (ready) {
-      drawBest(ctx, visible, xOf, yOf, columnPx);
       if (options.bubbles !== false)
         drawBubbles(ctx, tradeBubbles(visible, columnPx), xOf, yOf, fontSize);
-      if (profileW) drawProfile(ctx, px, profileW, yOf, fontSize);
+      drawBest(ctx, visible, xOf, yOf, columnPx);
+      if (profileW) drawProfile(ctx, px, profileW, yOf, fontSize, ry);
     }
 
     // frame
@@ -1127,7 +1266,7 @@ export const createOrderBookHeatmap = (
     ctx.lineTo(Math.round(right) + 0.5, plot.y + plot.h);
     ctx.stroke();
 
-    const cell = ready ? hoverCell() : null;
+    const cell = ready ? hoverCell(ry) : null;
 
     // time axis (the hover time tag hides the ticks it covers)
     ctx.font = regular;
@@ -1235,7 +1374,7 @@ export const createOrderBookHeatmap = (
     right: number,
     l: OrderBookHeatmapLabels,
     cell: HoverCell | null,
-    ry: number,
+    hoverY: number,
     timeText: string,
   ) {
     const { theme } = host;
@@ -1247,7 +1386,9 @@ export const createOrderBookHeatmap = (
       }
       return;
     }
-    const { hx, hy, time, start, column, bin, rowPrice } = cell;
+    const { hx, hy, time, start, column, bucket, ry, low, high, rowPrice } =
+      cell;
+    const inBucket = (bin: number) => Math.floor(bin / ry) === bucket;
     const step = interval();
     let size = 0;
     let bestBid = NaN;
@@ -1256,16 +1397,14 @@ export const createOrderBookHeatmap = (
     let sellVolume = 0;
     if (column) {
       for (let i = 0; i < column.bins.length; i++) {
-        if (column.bins[i] === bin) size += column.sizes[i]!;
+        if (inBucket(column.bins[i]!)) size += column.sizes[i]!;
       }
       ({ bestBid, bestAsk, buyVolume, sellVolume } = column);
     } else if (Number.isFinite(start)) {
-      const levels = (["bid", "ask"] as const).map((side) =>
-        store.levels(side, { step: tick, limit: depth() }),
-      );
-      for (const lv of levels) {
-        for (let i = 0; i < lv.count; i++) {
-          if (Math.round(lv.price[i]! / tick) === bin) size += lv.size[i]!;
+      const live = headSource();
+      if (live) {
+        for (let i = 0; i < live.bins.length; i++) {
+          if (inBucket(live.bins[i]!)) size += live.sizes[i]!;
         }
       }
       bestBid = store.bestBid();
@@ -1273,8 +1412,9 @@ export const createOrderBookHeatmap = (
       buyVolume = open.buyVolume;
       sellVolume = open.sellVolume;
     }
+    // a bucket holding both sides (around the spread) has no side
     const side: OrderBookSide | null =
-      rowPrice <= bestBid ? "bid" : rowPrice >= bestAsk ? "ask" : null;
+      high <= bestBid ? "bid" : low >= bestAsk ? "ask" : null;
 
     // crosshair
     ctx.strokeStyle = toCss(theme.text, 0.5);
@@ -1283,16 +1423,16 @@ export const createOrderBookHeatmap = (
     ctx.beginPath();
     ctx.moveTo(Math.round(hx) + 0.5, plot.y);
     ctx.lineTo(Math.round(hx) + 0.5, plot.y + plot.h);
-    ctx.moveTo(plot.x, ry);
-    ctx.lineTo(right, ry);
+    ctx.moveTo(plot.x, hoverY);
+    ctx.lineTo(right, hoverY);
     ctx.stroke();
     ctx.setLineDash([]);
     if (Number.isFinite(start)) {
       // outline of the hovered cell
       const cx0 = xOf(start);
       const cx1 = xOf(start + step);
-      const cy0 = yOf(rowPrice + tick / 2);
-      const cy1 = yOf(rowPrice - tick / 2);
+      const cy0 = yOf((bucket * ry + ry - 0.5) * tick);
+      const cy1 = yOf((bucket * ry - 0.5) * tick);
       ctx.strokeStyle = toCss(theme.text, 0.85);
       ctx.strokeRect(cx0, cy0, Math.max(2, cx1 - cx0), Math.max(2, cy1 - cy0));
     }
@@ -1307,7 +1447,7 @@ export const createOrderBookHeatmap = (
       ctx,
       fmt.price(rowPrice),
       right + 1,
-      ry,
+      hoverY,
       host.width - right - 2,
       theme.text,
       true,
@@ -1345,7 +1485,12 @@ export const createOrderBookHeatmap = (
             : undefined,
       },
       [
-        [l.price, fmt.price(rowPrice)],
+        [
+          l.price,
+          ry > 1
+            ? `${fmt.price(low)} – ${fmt.price(high)}`
+            : fmt.price(rowPrice),
+        ],
         [l.liquidity, fmt.size(size)],
         [l.buys, fmt.size(buyVolume)],
         [l.sells, fmt.size(sellVolume)],
@@ -1359,12 +1504,13 @@ export const createOrderBookHeatmap = (
       hx > plot.w * 0.6 ? "left" : "right",
     );
 
-    const key = `${start}|${bin}|${size}|${buyVolume}|${sellVolume}`;
+    const key = `${start}|${bucket}|${ry}|${size}|${buyVolume}|${sellVolume}`;
     if (key !== hoverKey) {
       hoverKey = key;
       const event: OrderBookHeatmapHoverEvent = {
         time: Number.isFinite(start) ? start : time,
-        price: rowPrice,
+        price: low,
+        priceHigh: high,
         size,
         side,
         buyVolume,

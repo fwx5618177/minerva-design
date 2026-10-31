@@ -2,6 +2,10 @@
 // (limit orders, cancels and market orders sweeping the book) producing a
 // snapshot, incremental deltas and trades like an exchange WebSocket feed,
 // plus a loop hook that stops on unmount and while the demo is off screen.
+// The resting liquidity looks like a real book: a smooth landscape over
+// price that drifts over time, clusters at round prices, a thicker zone at
+// the touch, and a few large walls with a life of their own (added, pulled
+// before the price gets there, or eaten by block trades).
 // Not a demo itself: only `demos/*.tsx` files are collected.
 
 import { useEffect, useRef, type RefObject } from "react";
@@ -68,17 +72,39 @@ export interface MarketFeed {
 
 type Side = "bid" | "ask";
 
+/** A large resting order with a life of its own */
+interface Wall {
+  /** Size it added to its level */
+  size: number;
+  /** Clock at which it is pulled (unless the price is already there) */
+  until: number;
+  /** Pulled as soon as the price comes close (spoofing) */
+  spoof: boolean;
+}
+
+/** Smoothstep */
+const smooth = (t: number) => t * t * (3 - 2 * t);
+
 export function createMarketFeed(options: FeedOptions = {}): MarketFeed {
-  const random = mulberry32(options.seed ?? 7);
+  const seed = options.seed ?? 7;
+  const random = mulberry32(seed);
   const tick = options.tick ?? 0.1;
   const decimals = Math.max(0, Math.round(-Math.log10(tick)));
   const depth = options.levels ?? 1500;
   const activity = options.activity ?? 140;
   const whales = options.whales ?? 0.006;
+  /** Walls compared with the default market */
+  const wallRate = whales / 0.006;
   let time = options.start ?? Date.now();
+  /** Time since the start (drives the liquidity landscape) */
+  let elapsed = 0;
   // prices are integers of ticks: no rounding drift
   const center = Math.round((options.price ?? 64000) / tick);
   const books: Record<Side, Map<number, number>> = {
+    bid: new Map(),
+    ask: new Map(),
+  };
+  const walls: Record<Side, Map<number, Wall>> = {
     bid: new Map(),
     ask: new Map(),
   };
@@ -97,36 +123,122 @@ export function createMarketFeed(options: FeedOptions = {}): MarketFeed {
   const round = (size: number) =>
     Math.max(0.0001, Math.round(size * 1e4) / 1e4);
   const priceOf = (index: number) => +(index * tick).toFixed(decimals);
-  /** Resting size of a new level: thicker away from the touch, a few walls */
-  const levelSize = (distance: number) =>
-    round(
-      random() < whales * 3
-        ? lognormal(14, 0.45)
-        : lognormal(0.18 + distance * 0.002, 0.95),
-    );
-  /** Far from the touch, fewer prices hold orders */
-  const empty = (distance: number) =>
-    distance > 3 && random() < Math.min(0.8, 0.1 + distance / 1500);
   const sign = (side: Side) => (side === "bid" ? -1 : 1);
   const at = (side: Side, distance: number) =>
     best[side] + sign(side) * distance;
+  /** Distance of a price from its side's best (negative: crossed) */
+  const distanceOf = (side: Side, index: number) =>
+    side === "bid" ? best.bid - index : index - best.ask;
 
-  for (const side of ["bid", "ask"] as const) {
-    for (let d = 0; d < depth; d++) {
-      if (empty(d)) continue;
-      books[side].set(at(side, d), levelSize(d));
-    }
-  }
+  /** Seeded lattice hash in [0, 1) (stateless: the landscape is a field) */
+  const hash = (i: number, j: number, octave: number) => {
+    let h =
+      Math.imul(i | 0, 0x27d4eb2d) ^
+      Math.imul(j | 0, 0x165667b1) ^
+      Math.imul((seed + octave * 7919) | 0, 0x9e3779b1);
+    h = Math.imul(h ^ (h >>> 15), 0x85ebca6b);
+    h = Math.imul(h ^ (h >>> 13), 0xc2b2ae35);
+    return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+  };
+  /** Smooth value noise in [-1, 1] over (price, time) lattice units */
+  const noise = (x: number, y: number, octave: number) => {
+    const xi = Math.floor(x);
+    const yi = Math.floor(y);
+    const fx = smooth(x - xi);
+    const fy = smooth(y - yi);
+    const a = hash(xi, yi, octave);
+    const b = hash(xi + 1, yi, octave);
+    const c = hash(xi, yi + 1, octave);
+    const d = hash(xi + 1, yi + 1, octave);
+    return (
+      2 * (a + (b - a) * fx + (c - a) * fy + (a - b - c + d) * fx * fy) - 1
+    );
+  };
+  /**
+   * Typical size of a level: thicker at the touch (makers refresh it) and
+   * slowly deeper in the book, times a smooth landscape over price (zones
+   * of 3 to 12 USD at the default tick) that drifts within a minute, times
+   * the clustering at round prices (every 1, 5 and 10 USD)
+   */
+  const target = (side: Side, index: number) => {
+    const d = Math.max(0, distanceOf(side, index));
+    const landscape = Math.exp(
+      0.65 *
+        (0.7 * noise(index / 120, elapsed / 40_000, 1) +
+          0.45 * noise(index / 35, elapsed / 15_000, 2)),
+    );
+    const roundness =
+      index % 100 === 0 ? 3 : index % 50 === 0 ? 2 : index % 10 === 0 ? 1.3 : 1;
+    return (
+      (0.08 + 0.0004 * d) *
+      (1 + 1.4 * Math.exp(-d / 15)) *
+      landscape *
+      roundness
+    );
+  };
+  /** Resting size of a new level: its typical size with mild noise */
+  const levelSize = (side: Side, index: number) =>
+    round(target(side, index) * Math.exp(0.4 * gauss()));
+  /** Far from the touch, fewer prices hold orders */
+  const emptiness = (distance: number) =>
+    distance > 3 ? Math.min(0.6, 0.05 + distance / 2500) : 0;
 
   let touched: Record<Side, Map<number, number>> = {
     bid: new Map(),
     ask: new Map(),
   };
   const set = (side: Side, index: number, size: number) => {
-    if (size > 0) books[side].set(index, round(size));
+    if (size > 0.00005) books[side].set(index, round(size));
     else books[side].delete(index);
-    touched[side].set(index, size > 0 ? round(size) : 0);
+    touched[side].set(index, size > 0.00005 ? round(size) : 0);
   };
+
+  /** Adds a wall (or grows one) living until `until` */
+  const addWall = (
+    side: Side,
+    index: number,
+    size: number,
+    until: number,
+    spoof: boolean,
+  ) => {
+    set(side, index, (books[side].get(index) ?? 0) + size);
+    const wall = walls[side].get(index);
+    if (wall) {
+      wall.size += size;
+      wall.until = Math.max(wall.until, until);
+    } else walls[side].set(index, { size, until, spoof });
+  };
+  /** Size of a wall: 1.5 to 25 (default market), round prices favored */
+  const wallSize = () => lognormal(6.5, 0.85);
+
+  for (const side of ["bid", "ask"] as const) {
+    for (let d = 0; d < depth; d++) {
+      if (random() < emptiness(d)) continue;
+      const index = at(side, d);
+      books[side].set(index, levelSize(side, index));
+      // a few walls from the start (most at round prices), with varied
+      // lives: some end early, a few outlast the window
+      const p =
+        0.003 *
+        wallRate *
+        (index % 100 === 0
+          ? 8
+          : index % 50 === 0
+            ? 5
+            : index % 10 === 0
+              ? 2
+              : 1);
+      if (d > 8 && random() < p)
+        addWall(
+          side,
+          index,
+          wallSize(),
+          time + 5_000 + random() * 90_000,
+          random() < 0.3,
+        );
+    }
+  }
+
   /** Best level again after a removal (scans away from the spread) */
   const rescan = (side: Side) => {
     const book = books[side];
@@ -140,7 +252,7 @@ export function createMarketFeed(options: FeedOptions = {}): MarketFeed {
     }
     // empty side: a fresh level next to the other one
     best[side] = side === "bid" ? best.ask - 1 : best.bid + 1;
-    set(side, best[side], levelSize(0));
+    set(side, best[side], levelSize(side, best[side]));
   };
 
   const limit = (side: Side) => {
@@ -157,8 +269,21 @@ export function createMarketFeed(options: FeedOptions = {}): MarketFeed {
     }
     if (side === "bid" && index >= best.ask) index = best.ask - 1;
     if (side === "ask" && index <= best.bid) index = best.bid + 1;
-    const size = random() < whales ? lognormal(9, 0.5) : lognormal(0.12, 1.05);
-    set(side, index, (books[side].get(index) ?? 0) + size);
+    if (random() < whales * 0.3) {
+      // a large passive order at the touch: absorbs the flow for a while
+      addWall(
+        side,
+        index,
+        lognormal(5, 0.5),
+        time + 5_000 + random() * 25_000,
+        false,
+      );
+    } else {
+      // makers refresh the liquidity near the touch
+      const d = Math.max(0, distanceOf(side, index));
+      const size = lognormal(0.12 * (1 + 1.2 * Math.exp(-d / 15)), 0.6);
+      set(side, index, (books[side].get(index) ?? 0) + size);
+    }
     if (side === "bid" ? index > best.bid : index < best.ask)
       best[side] = index;
   };
@@ -166,7 +291,8 @@ export function createMarketFeed(options: FeedOptions = {}): MarketFeed {
   const cancel = (side: Side) => {
     const index = at(side, Math.floor(-Math.log(Math.max(1e-9, random())) * 9));
     const size = books[side].get(index);
-    if (size === undefined) return;
+    // walls leave on their own schedule
+    if (size === undefined || walls[side].has(index)) return;
     set(side, index, random() < 0.4 ? 0 : size * (0.2 + random() * 0.6));
     rescan(side);
   };
@@ -175,14 +301,21 @@ export function createMarketFeed(options: FeedOptions = {}): MarketFeed {
   const cancelTouch = (side: Side) => {
     const size = books[side].get(best[side]);
     if (size === undefined) return rescan(side);
+    if (walls[side].has(best[side])) return;
     set(side, best[side], random() < 0.6 ? 0 : size * 0.3);
     rescan(side);
   };
 
-  const market = (buy: boolean, trades: MarketTrade[], now: number) => {
+  const market = (
+    buy: boolean,
+    trades: MarketTrade[],
+    now: number,
+    amount?: number,
+  ) => {
     const side: Side = buy ? "ask" : "bid";
     let remaining =
-      random() < whales ? lognormal(6, 0.6) : lognormal(0.035, 1.35);
+      amount ??
+      (random() < whales ? lognormal(6, 0.6) : lognormal(0.035, 1.35));
     remaining = round(remaining);
     for (let sweep = 0; sweep < 40 && remaining > 0.00005; sweep++) {
       const index = best[side];
@@ -205,18 +338,93 @@ export function createMarketFeed(options: FeedOptions = {}): MarketFeed {
     }
   };
 
-  /** Fills holes and drops the levels too far from the touch */
-  const maintain = () => {
+  /**
+   * Life of the walls: spoofs are pulled when the price comes close, real
+   * ones at the touch are eaten by block trades, the others are pulled at
+   * the end of their life; new ones appear away from the touch
+   */
+  const liveWalls = (ms: number, trades: MarketTrade[], now: number) => {
     for (const side of ["bid", "ask"] as const) {
-      // deep in the book orders come and go: the density stays put
-      const d = Math.floor(random() * depth);
-      const index = at(side, d);
-      if (books[side].has(index)) {
-        if (d > 8 && empty(d)) set(side, index, 0);
-      } else if (!empty(d)) set(side, index, levelSize(d));
+      for (const [index, wall] of [...walls[side]]) {
+        const current = books[side].get(index) ?? 0;
+        const d = distanceOf(side, index);
+        if (d < 0 || current < wall.size * 0.15) {
+          walls[side].delete(index);
+        } else if (wall.spoof && d <= 15) {
+          set(side, index, current - wall.size);
+          walls[side].delete(index);
+          rescan(side);
+        } else if (d === 0) {
+          // absorbed by aggressive orders: large bubbles
+          if (random() < ms / 1500)
+            market(
+              side === "ask",
+              trades,
+              now,
+              current * (0.3 + random() * 0.5),
+            );
+        } else if (time >= wall.until && d > 3) {
+          set(side, index, current - wall.size);
+          walls[side].delete(index);
+        }
+      }
+    }
+    if (random() < (ms / 8000) * wallRate) {
+      const side: Side = random() < 0.5 ? "bid" : "ask";
+      let d = 10 + Math.floor(random() * 140);
+      let index = at(side, d);
+      if (random() < 0.6) {
+        // at a round price (1 USD at the default tick), away from the touch
+        index =
+          side === "bid"
+            ? Math.floor(index / 10) * 10
+            : Math.ceil(index / 10) * 10;
+        d = distanceOf(side, index);
+      }
+      if (d >= 8)
+        addWall(
+          side,
+          index,
+          wallSize(),
+          time + 10_000 + random() * 50_000,
+          random() < 0.3,
+        );
+    }
+  };
+
+  /**
+   * Deep in the book orders come and go: levels drift slowly toward the
+   * landscape (horizontal lines change intensity over time), holes fill
+   * and levels vanish so the density stays put, far levels are dropped
+   */
+  const drift = (ms: number) => {
+    const visits = Math.ceil((depth * ms) / 2500);
+    for (const side of ["bid", "ask"] as const) {
+      for (let k = 0; k < visits; k++) {
+        const d = 4 + Math.floor(random() * depth);
+        const index = at(side, d);
+        if (walls[side].has(index)) continue;
+        const size = books[side].get(index);
+        const empty = emptiness(d);
+        if (size === undefined) {
+          if (random() < (1 - empty) * 0.1)
+            set(side, index, levelSize(side, index));
+          continue;
+        }
+        if (random() < empty * 0.1) {
+          set(side, index, 0);
+          continue;
+        }
+        const log = Math.log(size);
+        const goal = Math.log(target(side, index));
+        set(side, index, Math.exp(log + 0.08 * gauss() + 0.06 * (goal - log)));
+      }
       if (random() < 0.05) {
         for (const index of books[side].keys()) {
-          if (Math.abs(index - best[side]) > depth * 1.3) set(side, index, 0);
+          if (Math.abs(index - best[side]) > depth * 1.3) {
+            set(side, index, 0);
+            walls[side].delete(index);
+          }
         }
       }
     }
@@ -254,15 +462,17 @@ export function createMarketFeed(options: FeedOptions = {}): MarketFeed {
       touched = { bid: new Map(), ask: new Map() };
       const trades: MarketTrade[] = [];
       const start = time;
-      time += Math.max(0, ms);
+      const span = Math.max(0, ms);
+      time += span;
+      elapsed += span;
       // the fair value wanders (with some momentum); orders chase it
-      const seconds = Math.max(0, ms) / 1000;
+      const seconds = span / 1000;
       momentum =
         momentum * Math.exp(-seconds / 20) + gauss() * Math.sqrt(seconds) * 0.6;
       fair += momentum * seconds * 3 + gauss() * Math.sqrt(seconds) * 15;
       const mid = (best.bid + best.ask) / 2;
       const pull = Math.max(-0.38, Math.min(0.38, (fair - mid) / 25));
-      const expected = (activity * ms) / 1000;
+      const expected = (activity * span) / 1000;
       const events = Math.floor(expected * (0.4 + random() * 1.2) + random());
       for (let e = 0; e < events; e++) {
         const now = Math.round(
@@ -279,7 +489,8 @@ export function createMarketFeed(options: FeedOptions = {}): MarketFeed {
           else cancel(random() < 0.5 ? "bid" : "ask");
         } else market(random() < bias, trades, now);
       }
-      maintain();
+      liveWalls(span, trades, time);
+      drift(span);
       uncross();
       const tuples = (side: Side): OrderBookLevel[] =>
         [...touched[side]].map(([index, size]) => [priceOf(index), size]);

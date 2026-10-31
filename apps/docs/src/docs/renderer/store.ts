@@ -8,8 +8,9 @@ import {
   subscribeDefaultChartRenderer,
   type ChartRendererPreference,
 } from "minerva-design/charts/core";
+import { RENDERER_STORAGE_KEY } from "./boot";
 
-export const RENDERER_STORAGE_KEY = "minerva-docs-chart-renderer";
+export { RENDERER_STORAGE_KEY };
 
 export const RENDERER_OPTIONS: readonly ChartRendererPreference[] = [
   "auto",

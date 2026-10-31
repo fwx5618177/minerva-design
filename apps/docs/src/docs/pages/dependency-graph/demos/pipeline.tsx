@@ -26,7 +26,7 @@ const TASKS: [string, Status, number][] = [
   ["production", "pending", 4],
 ];
 
-const NEEDS: [string, string][] = [
+const NEEDS: [string, string, string?][] = [
   ["install", "lint"],
   ["install", "typecheck"],
   ["install", "unit"],
@@ -37,13 +37,17 @@ const NEEDS: [string, string][] = [
   ["buildWeb", "visual"],
   ["buildDocs", "visual"],
   ["unit", "package"],
-  ["buildWeb", "package"],
+  // two artifacts between the same jobs: parallel routes
+  ["buildWeb", "package", "bundle"],
+  ["buildWeb", "package", "types"],
   ["lint", "package"],
   ["package", "staging"],
   ["e2e", "staging"],
   ["security", "staging"],
   ["visual", "staging"],
   ["staging", "production"],
+  // a failed job retries itself: a self-loop
+  ["visual", "visual", "retry"],
 ];
 
 const STATUS_COLORS: Record<Status, string> = {
@@ -75,8 +79,14 @@ export default function PipelineDemo() {
     [t],
   );
   const edges = useMemo(
-    (): GraphEdge[] => NEEDS.map(([source, target]) => ({ source, target })),
-    [],
+    (): GraphEdge[] =>
+      NEEDS.map(([source, target, kind]) => ({
+        source,
+        target,
+        label: kind ? t(`edgeKinds.${kind}`) : undefined,
+        dashed: kind === "retry",
+      })),
+    [t],
   );
   const groups = useMemo(
     () =>
@@ -105,6 +115,8 @@ export default function PipelineDemo() {
         direction="LR"
         edgeStyle="orthogonal"
         criticalPath={showCritical}
+        arrowStyle="filled"
+        edgeLabels="hover"
         dag={{ criticalColor: "var(--primary-color, #4f46e5)", layerGap: 48 }}
         height={420}
         ariaLabel={t("pipelineAria")}

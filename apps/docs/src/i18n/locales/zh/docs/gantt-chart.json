@@ -21,6 +21,10 @@
     "locale": {
       "title": "多语言与 UTC 日期",
       "description": "locale 决定月份和星期名称、进度百分比以及默认名称（任务、进度、里程碑）；yAxis.timeZone: \"utc\" 按 UTC 排列日期，UTC 数据在任何时区都保持对齐。"
+    },
+    "crews": {
+      "title": "共用行",
+      "description": "按施工队排列的施工计划：row 把多个任务放在同一行，dependencies 引用任务 id，因此每条箭头都连接确切的条形。箭头在避开其他条形的通道中穿过各行；没有空闲通道时，则沿两行之间的间隙拐弯（从基坑开挖到基础浇筑，绕开钢筋笼）。"
     }
   },
   "native": {
@@ -119,7 +123,32 @@
       "mobile": "移动端"
     },
     "showDependencies": "依赖箭头",
-    "pipelineAria": "移动应用发布计划及任务之间的依赖关系"
+    "pipelineAria": "移动应用发布计划及任务之间的依赖关系",
+    "works": {
+      "clearing": "场地清理",
+      "dig": "基坑开挖",
+      "rebar": "钢筋笼加工",
+      "footings": "基础浇筑",
+      "backfill": "回填",
+      "slab": "地坪",
+      "frame1": "一层钢结构",
+      "deck": "楼承板",
+      "frame2": "二层钢结构",
+      "inspectFootings": "基础验收",
+      "inspectFrame": "主体结构验收"
+    },
+    "crews": {
+      "excavation": "土方队",
+      "steel": "钢结构队",
+      "concrete": "混凝土队",
+      "inspector": "质检员"
+    },
+    "site": {
+      "groundwork": "基础工程",
+      "structure": "主体结构"
+    },
+    "inspections": "验收",
+    "crewsAria": "按施工队排列的施工计划及任务之间的依赖关系"
   },
   "api": {
     "GanttChartProps": {
@@ -128,14 +157,16 @@
       "todayLabel": "今日线的标签"
     },
     "GanttTask": {
-      "name": "行名称（唯一）",
+      "name": "任务名称：提示框的标题；未设置 row 时也是行名称",
+      "id": "供其他任务的 dependencies 引用的标识；默认为 name（多个任务同名时请设置 id）",
+      "row": "任务所在的行：多个任务可以共用一行（资源、泳道）；默认为 name，每个任务一行",
       "start": "开始时间（时间戳或日期）",
       "end": "结束时间；里程碑可省略",
       "progress": "完成比例，0-1：以实心条覆盖在任务上",
       "group": "分组（阶段、团队）：每组一种颜色和一个图例项",
       "color": "任务颜色（任意 CSS 颜色）；默认为所在分组的颜色",
       "milestone": "在开始时间画一个点而不是条形",
-      "dependencies": "该任务所依赖的任务名称：显示在其提示框中，并绘制为从这些任务结束处出发的箭头"
+      "dependencies": "该任务所依赖的任务（按 id 或 name）：显示在其提示框中，并绘制为从这些任务结束处出发、绕开中间条形的箭头"
     },
     "GanttOptions": {
       "colors": "各分组按出现顺序使用的颜色（任意 CSS 颜色）；默认为图表调色板",

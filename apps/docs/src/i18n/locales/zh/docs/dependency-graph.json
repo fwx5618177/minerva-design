@@ -14,11 +14,11 @@
   "demos": {
     "packages": {
       "title": "包依赖",
-      "description": "单体仓库中的包，从应用一直到设计令牌和工具链。开发依赖以虚线表示；悬停某个包可查看它依赖的全部包以及依赖它的全部包。"
+      "description": "单体仓库中的包，从应用一直到设计令牌和工具链。开发依赖以虚线表示；悬停某个包可查看它依赖的全部包以及依赖它的全部包。utils 与 i18n 互相依赖：循环依赖以红色的两条独立路线绘制。"
     },
     "pipeline": {
       "title": "CI/CD 流水线",
-      "description": "从左到右的构建流水线，使用正交连线。分组按状态为任务着色（可在图例中隐藏），节点 value 为耗时，criticalPath 高亮最长的任务链，下方摘要用 criticalPath() 重新计算。"
+      "description": "从左到右的构建流水线，使用正交连线。分组按状态为任务着色（可在图例中隐藏），节点 value 为耗时，criticalPath 高亮最长的任务链，下方摘要用 criticalPath() 重新计算。构建应用到打包之间传递两个产物（平行边各走各的路线），失败的视觉测试会重试自身（自环）。"
     },
     "lineage": {
       "title": "上游与下游",
@@ -63,6 +63,7 @@
       "tooling": "工具链"
     },
     "devDependency": "开发依赖",
+    "circularDependency": "循环依赖",
     "packagesAria": "单体仓库中各个包之间的依赖关系",
     "tasks": {
       "install": "安装依赖",
@@ -85,6 +86,11 @@
       "pending": "等待中"
     },
     "taskSubtitle": "{{status}} · {{minutes}} 分钟",
+    "edgeKinds": {
+      "bundle": "Web 产物",
+      "types": "类型声明",
+      "retry": "重试"
+    },
     "showCritical": "高亮关键路径",
     "pipelineAria": "CI/CD 流水线：任务、依赖关系及其状态",
     "criticalSummary": "关键路径：{{minutes}} 分钟 —— {{path}}",

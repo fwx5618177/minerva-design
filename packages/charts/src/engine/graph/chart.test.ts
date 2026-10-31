@@ -1530,4 +1530,156 @@ describe("arrowheads, parallel edges and self-loops", () => {
       expect(last(hovers)?.id).toBe("n10-10→n10-11");
     },
   );
+
+  /** Screen point between two nodes, with the first one focused at zoom 2 */
+  const between = (a: string, b: string, at = 0.5): [number, number] => {
+    const p = chart!.getPositions();
+    return [
+      WIDTH / 2 + (p[b].x - p[a].x) * 2 * at,
+      HEIGHT / 2 + (p[b].y - p[a].y) * 2 * at,
+    ];
+  };
+
+  it("fans parallel and opposite flow routes out and picks each of them", async () => {
+    const edges: GraphEdge[] = [
+      { source: "a", target: "b" },
+      { source: "a", target: "b", label: "twice" },
+      { source: "b", target: "a" },
+      { source: "a", target: "a", label: "again" },
+      { source: "b", target: "c" },
+    ];
+    const cases = [
+      ["spline", "TB"],
+      ["orthogonal", "LR"],
+      ["orthogonal", "TB"],
+      ["spline", "RL"],
+    ] as const;
+    for (const [edgeStyle, direction] of cases) {
+      chart?.destroy();
+      await mount({
+        nodes: [
+          { id: "a", label: "Alpha" },
+          { id: "b", label: "Beta" },
+          { id: "c", label: "Gamma" },
+        ],
+        edges,
+        layout: "dag",
+        direction,
+        edgeStyle,
+        arrowStyle: "filled",
+        edgeLabels: true,
+        animation: false,
+      });
+      chart!.focusNode("a", { animate: false, zoom: 2 });
+      await flush();
+      const [mx, my] = between("a", "b");
+      const vertical = direction === "TB";
+      // across the routes halfway: three separate lanes, both directions
+      const ids = vertical
+        ? await hoveredAlong([mx - 70, my], [mx + 70, my], 140)
+        : await hoveredAlong([mx, my - 70], [mx, my + 70], 140);
+      expect(ids, `${edgeStyle} ${direction}`).toEqual(
+        new Set(["a→b#0", "a→b#1", "b→a#2"]),
+      );
+      // the loop sits across the flow (right of TB, above LR / RL)
+      const loop = vertical
+        ? await hoveredAlong(
+            [WIDTH / 2, HEIGHT / 2],
+            [WIDTH / 2 + 200, HEIGHT / 2],
+            100,
+          )
+        : await hoveredAlong(
+            [WIDTH / 2, HEIGHT / 2],
+            [WIDTH / 2, HEIGHT / 2 - 150],
+            75,
+          );
+      expect(loop.has("a→a#3"), `${edgeStyle} ${direction}`).toBe(true);
+      expect(texts).toContain("again");
+    }
+  });
+
+  it("separates parallel org and tree connectors and keeps loops off the bus", async () => {
+    const nodes: GraphNode[] = [
+      { id: "r", label: "Root", subtitle: "top" },
+      { id: "x", label: "Leaf x" },
+      { id: "y", label: "Leaf y" },
+    ];
+    const edges: GraphEdge[] = [
+      { source: "r", target: "x" },
+      { source: "r", target: "y" },
+      { source: "r", target: "y" },
+      { source: "y", target: "y" },
+    ];
+    // org: x and y are leaves, stacked in a column on a bus
+    await mount({
+      nodes,
+      edges,
+      layout: "org",
+      arrows: true,
+      animation: false,
+    });
+    chart!.focusNode("x", { animate: false, zoom: 2 });
+    await flush();
+    // between the two cards, the two buses down to y
+    const [, gy] = between("x", "y");
+    const buses = await hoveredAlong([0, gy], [WIDTH / 2, gy], 200);
+    expect(buses).toEqual(new Set(["r→y#1", "r→y#2"]));
+    // the loop of y goes to the right, away from the bus
+    chart!.focusNode("y", { animate: false, zoom: 2 });
+    await flush();
+    const right = await hoveredAlong(
+      [WIDTH / 2, HEIGHT / 2],
+      [WIDTH, HEIGHT / 2],
+      200,
+    );
+    expect(right.has("y→y#3")).toBe(true);
+    // tidy tree (circles, left to right): bulging splines
+    chart!.destroy();
+    await mount({
+      nodes,
+      edges,
+      layout: "tree",
+      arrowStyle: "filled",
+      arrows: true,
+      animation: false,
+    });
+    chart!.focusNode("r", { animate: false, zoom: 2 });
+    await flush();
+    const [tx, ty] = between("r", "y");
+    const splines = await hoveredAlong([tx, ty - 60], [tx, ty + 60], 120);
+    expect(splines.has("r→y#1")).toBe(true);
+    expect(splines.has("r→y#2")).toBe(true);
+  });
+
+  it(
+    "indexes the offset routes of parallel edges in large graphs",
+    { timeout: 30_000 },
+    async () => {
+      // 1,100 pairs on two layers, each edge doubled: 2,200 edges
+      const nodes: GraphNode[] = [];
+      const edges: GraphEdge[] = [];
+      for (let i = 0; i < 550; i++) {
+        nodes.push({ id: `u${i}` }, { id: `v${i}` });
+        edges.push(
+          { source: `u${i}`, target: `v${i}` },
+          { source: `u${i}`, target: `v${i}` },
+        );
+      }
+      edges.push(...edges.slice(0, 1100));
+      await mount({
+        nodes,
+        edges,
+        layout: "dag",
+        nodeLabels: false,
+        animation: false,
+      });
+      chart!.focusNode("u10", { animate: false, zoom: 2 });
+      await flush();
+      const [mx, my] = between("u10", "v10");
+      const ids = await hoveredAlong([mx - 80, my], [mx + 80, my], 80);
+      expect(ids).toEqual(
+        new Set(["u10→v10#20", "u10→v10#21", "u10→v10#1120", "u10→v10#1121"]),
+      );
+    },
+  );
 });

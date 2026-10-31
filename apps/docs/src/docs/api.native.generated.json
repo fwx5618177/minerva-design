@@ -4727,7 +4727,7 @@
         "name": "categories",
         "type": "string[]",
         "required": true,
-        "description": "Task names from top to bottom (the `categories` of the x axis)"
+        "description": "Rows from top to bottom (the `categories` of the x axis)"
       },
       {
         "name": "domain",
@@ -4753,7 +4753,19 @@
         "name": "name",
         "type": "string",
         "required": true,
-        "description": "Row name (unique)"
+        "description": "Name of the task (tooltip title; the row name when there is no `row`)"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "Identifier referenced by the `dependencies` of other tasks; the `name` by default (give ids when several tasks have the same name)"
+      },
+      {
+        "name": "row",
+        "type": "string",
+        "required": false,
+        "description": "Row of the task: several tasks can share one (a resource, a lane); the `name` by default, one row per task"
       },
       {
         "name": "start",
@@ -4795,7 +4807,7 @@
         "name": "dependencies",
         "type": "readonly string[]",
         "required": false,
-        "description": "Names of the tasks this one waits for (tooltip, and arrows from their ends)"
+        "description": "Tasks this one waits for, by `id` (or `name`): tooltip, and arrows from their ends to its start"
       }
     ]
   },

@@ -448,6 +448,37 @@ const decades = (range: Range): Range => {
   return [lo, hi > lo ? hi : lo + 1];
 };
 
+/** Exponent of `m × 10^k`, exact for the values of the ticks */
+const niceExponent = (m: number, k: number) =>
+  Math.log10(Number((m * 10 ** k).toPrecision(12)));
+
+/**
+ * A log range widened to the closest 1, 2 or 5 × 10^k bounds (the values
+ * 900 - 140k -> 500 - 200k), tighter than whole decades
+ */
+const niceLogRange = (range: Range): Range => {
+  const below = (e: number) => {
+    const k = Math.floor(e + 1e-9);
+    let best = k;
+    for (const m of [2, 5]) {
+      const v = niceExponent(m, k);
+      if (v <= e + 1e-9) best = v;
+    }
+    return best;
+  };
+  const above = (e: number) => {
+    const k = Math.floor(e - 1e-9);
+    for (const m of [1, 2, 5]) {
+      const v = niceExponent(m, k);
+      if (v >= e - 1e-9) return v;
+    }
+    return k + 1;
+  };
+  const lo = below(range[0]);
+  const hi = above(range[1]);
+  return [lo, hi > lo + 1e-9 ? hi : above(lo + 1e-6)];
+};
+
 /**
  * Plots a series through a map: its columns, bars, stacks and lower
  * edges (bars / areas of the right axis start at `zero`)
@@ -965,7 +996,7 @@ export const buildModel = (
     if (nice && xType === "linear") {
       xRange = niceDomain(xRange[0], xRange[1], xOpts?.tickCount ?? 6);
     }
-    if (xLog && xOpts?.nice !== false) xRange = decades(xRange);
+    if (xLog && xOpts?.nice !== false) xRange = niceLogRange(xRange);
   }
   const xBound = (v: number) => (xLog ? Math.log10(v) : v);
   if (xOpts?.min !== undefined) xRange[0] = xBound(xOpts.min);

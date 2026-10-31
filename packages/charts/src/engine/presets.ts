@@ -1106,8 +1106,18 @@ export const bubbleSeries = (
 
 /** A task (or milestone) of a Gantt chart */
 export interface GanttTask {
-  /** Row name (unique) */
+  /** Name of the task (tooltip title; the row name when there is no `row`) */
   name: string;
+  /**
+   * Identifier referenced by the `dependencies` of other tasks; the `name`
+   * by default (give ids when several tasks have the same name)
+   */
+  id?: string;
+  /**
+   * Row of the task: several tasks can share one (a resource, a lane); the
+   * `name` by default, one row per task
+   */
+  row?: string;
   /** Start (a timestamp or a date) */
   start: number | Date;
   /** End; omitted for milestones */
@@ -1120,7 +1130,10 @@ export interface GanttTask {
   color?: string;
   /** Draws a dot at `start` instead of a bar */
   milestone?: boolean;
-  /** Names of the tasks this one waits for (tooltip, and arrows from their ends) */
+  /**
+   * Tasks this one waits for, by `id` (or `name`): tooltip, and arrows from
+   * their ends to its start
+   */
   dependencies?: readonly string[];
 }
 
@@ -1168,7 +1181,7 @@ export interface GanttOptions {
 /** Series of a Gantt chart and the row names in order */
 export interface GanttSeries {
   series: ChartSeries[];
-  /** Task names from top to bottom (the `categories` of the x axis) */
+  /** Rows from top to bottom (the `categories` of the x axis) */
   categories: string[];
   /** Time range of the tasks with a small margin (the `min` / `max` of the value axis) */
   domain: [number, number];
@@ -1222,6 +1235,18 @@ export const ganttSeries = (
   const taskName = options.taskName ?? names.tasks;
   const progressName = options.progressName ?? names.progress;
   const separator = /^(zh|ja)\b/i.test(locale) ? "、" : ", ";
+  const idOf = (t: GanttTask) => t.id ?? t.name;
+  const rowOf = (t: GanttTask) => t.row ?? t.name;
+  // tasks by id, then by name (the first one wins)
+  const byKey = new Map<string, GanttTask>();
+  for (const t of tasks) if (!byKey.has(idOf(t))) byKey.set(idOf(t), t);
+  for (const t of tasks) if (!byKey.has(t.name)) byKey.set(t.name, t);
+  // tasks in a shared row: their name is the title of the tooltip
+  const point = (t: GanttTask) => ({
+    x: rowOf(t),
+    id: idOf(t),
+    ...(rowOf(t) !== t.name ? { label: t.name } : {}),
+  });
   const groups: string[] = [];
   for (const t of tasks) {
     const g = t.group ?? taskName;
@@ -1260,10 +1285,12 @@ export const ganttSeries = (
         if (t.dependencies?.length)
           details.push({
             name: options.dependenciesName ?? rows.dependencies,
-            value: t.dependencies.join(separator),
+            value: t.dependencies
+              .map((k) => byKey.get(k)?.name ?? k)
+              .join(separator),
           });
         return {
-          x: t.name,
+          ...point(t),
           y0: time(t.start),
           y: time(t.end ?? t.start),
           ...(t.color ? { color: t.color } : {}),
@@ -1290,7 +1317,7 @@ export const ganttSeries = (
         const end = time(t.end ?? t.start);
         const share = Math.min(1, Math.max(0, t.progress ?? 0));
         return {
-          x: t.name,
+          x: rowOf(t),
           y0: start,
           y: start + (end - start) * share,
           label: formatProgress(share),
@@ -1309,7 +1336,7 @@ export const ganttSeries = (
       pointSize: 13,
       opacity: 1,
       data: milestones.map((t) => ({
-        x: t.name,
+        ...point(t),
         y: time(t.start),
         ...(t.color ? { color: t.color } : {}),
       })),
@@ -1325,15 +1352,15 @@ export const ganttSeries = (
   }
   // room for the milestone dots at the ends
   const pad = Number.isFinite(hi - lo) ? Math.max((hi - lo) * 0.025, 1) : 0;
-  const known = new Set(tasks.map((t) => t.name));
   const dependencies: ChartDependency[] = [];
   if (options.dependencyArrows !== false) {
     for (const t of tasks) {
-      for (const from of t.dependencies ?? []) {
-        if (from === t.name || !known.has(from)) continue;
+      for (const key of t.dependencies ?? []) {
+        const from = byKey.get(key);
+        if (!from || from === t) continue;
         dependencies.push({
-          from,
-          to: t.name,
+          from: idOf(from),
+          to: idOf(t),
           ...(options.dependencyColor
             ? { color: options.dependencyColor }
             : {}),
@@ -1343,7 +1370,7 @@ export const ganttSeries = (
   }
   return {
     series,
-    categories: tasks.map((t) => t.name),
+    categories: [...new Set(tasks.map(rowOf))],
     domain: Number.isFinite(lo) ? [lo - pad, hi + pad] : [0, 1],
     dependencies,
   };

@@ -289,6 +289,73 @@ describe("charts: horizontal bars, ranges, box plots and dual axes", () => {
     expect(heads[0]!.borderTopColor).toBe("transparent");
   });
 
+  it("links the exact tasks of shared rows by id and skips unknown ids", async () => {
+    const day = 86_400_000;
+    const t0 = Date.UTC(2026, 0, 5);
+    const gantt = ganttSeries(
+      [
+        { id: "dig", name: "Dig", row: "Crew A", start: t0, end: t0 + 4 * day },
+        {
+          id: "pour",
+          name: "Pour",
+          row: "Crew A",
+          start: t0 + 12 * day,
+          end: t0 + 16 * day,
+        },
+        {
+          id: "rebar",
+          name: "Rebar",
+          row: "Crew B",
+          start: t0 + 2 * day,
+          end: t0 + 10 * day,
+        },
+        {
+          id: "frame",
+          name: "Frame",
+          row: "Crew C",
+          start: t0 + 6 * day,
+          end: t0 + 14 * day,
+          dependencies: ["dig", "missing"],
+        },
+        {
+          id: "roof",
+          name: "Roof",
+          row: "Crew A",
+          start: t0 + 18 * day,
+          end: t0 + 20 * day,
+          dependencies: ["pour"],
+        },
+      ],
+      { locale: "en" },
+    );
+    await mount(
+      <Chart
+        orientation="horizontal"
+        series={gantt.series}
+        xAxis={{ type: "category", categories: gantt.categories }}
+        yAxis={{ type: "time", min: gantt.domain[0], max: gantt.domain[1] }}
+        dependencies={gantt.dependencies}
+      />,
+    );
+    const styles = hostElements(part("labels")!).map(
+      (el) => StyleSheet.flatten(el.props.style) as Record<string, unknown>,
+    );
+    const heads = styles.filter(
+      (s) =>
+        s &&
+        s.width === 0 &&
+        s.height === 0 &&
+        ["Left", "Right", "Top", "Bottom"].some(
+          (side) =>
+            s[`border${side}Width`] === 6 &&
+            s[`border${side}Color`] !== "transparent",
+        ),
+    );
+    // dig → frame (around the rebar row) and pour → roof (same row); the
+    // unknown predecessor is skipped
+    expect(heads).toHaveLength(2);
+  });
+
   it("builds the views of arrows in every direction", () => {
     const style = (el: ReactElement) =>
       StyleSheet.flatten((el.props as { style: object }).style) as Record<

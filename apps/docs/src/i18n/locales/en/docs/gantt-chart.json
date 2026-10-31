@@ -21,6 +21,10 @@
     "locale": {
       "title": "Locales and UTC dates",
       "description": "locale sets the month and weekday names, the progress percentages and the default names (tasks, progress, milestones); yAxis.timeZone: \"utc\" lays the dates out in UTC so that UTC data stays aligned in every time zone."
+    },
+    "crews": {
+      "title": "Shared rows",
+      "description": "A construction schedule by crew: row puts several tasks in one row, and the dependencies point to task ids, so every arrow connects the exact bars. Arrows cross the rows in a lane clear of the other bars, or jog through the gap between two rows when none is free (the dig to the footings, around the rebar)."
     }
   },
   "native": {
@@ -119,7 +123,32 @@
       "mobile": "Mobile"
     },
     "showDependencies": "Dependency arrows",
-    "pipelineAria": "Release plan of the mobile app with the dependencies between tasks"
+    "pipelineAria": "Release plan of the mobile app with the dependencies between tasks",
+    "works": {
+      "clearing": "Site clearing",
+      "dig": "Foundation dig",
+      "rebar": "Rebar cages",
+      "footings": "Footings",
+      "backfill": "Backfill",
+      "slab": "Ground slab",
+      "frame1": "Steel frame, level 1",
+      "deck": "Floor deck",
+      "frame2": "Steel frame, level 2",
+      "inspectFootings": "Footing inspection",
+      "inspectFrame": "Frame inspection"
+    },
+    "crews": {
+      "excavation": "Excavation crew",
+      "steel": "Steel crew",
+      "concrete": "Concrete crew",
+      "inspector": "Inspector"
+    },
+    "site": {
+      "groundwork": "Groundwork",
+      "structure": "Structure"
+    },
+    "inspections": "Inspections",
+    "crewsAria": "Construction schedule by crew with the dependencies between tasks"
   },
   "api": {
     "GanttChartProps": {
@@ -128,14 +157,16 @@
       "todayLabel": "Label of the today line"
     },
     "GanttTask": {
-      "name": "Row name (unique)",
+      "name": "Name of the task: the tooltip title, and the row name when there is no row",
+      "id": "Identifier referenced by the dependencies of other tasks; the name by default (give ids when several tasks have the same name)",
+      "row": "Row of the task: several tasks can share one (a resource, a lane); the name by default, one row per task",
       "start": "Start (a timestamp or a date)",
       "end": "End; omitted for milestones",
       "progress": "Share done, 0-1: drawn as a solid bar over the task",
       "group": "Group (phase, team): a color and a legend entry per group",
       "color": "Color of the task (any CSS color); the color of its group by default",
       "milestone": "Draws a dot at start instead of a bar",
-      "dependencies": "Names of the tasks this one waits for: listed in its tooltip and drawn as arrows from their ends"
+      "dependencies": "Tasks this one waits for, by id (or name): listed in its tooltip and drawn as arrows from their ends, routed around the bars in between"
     },
     "GanttOptions": {
       "colors": "Colors of the groups in order of appearance (any CSS colors); the chart palette by default",

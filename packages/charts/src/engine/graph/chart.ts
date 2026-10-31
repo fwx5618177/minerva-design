@@ -49,6 +49,7 @@ import {
   endDirection,
   filledArrow,
   loopPath,
+  boxLoopPath,
   orthogonalPath,
   pathLength,
   pointAt,
@@ -110,6 +111,13 @@ const TREE_TYPES = new Set<GraphLayoutType>([
 const HALO_LIMIT = 5000;
 /** Sideways bow of parallel edges per slot, relative to their length */
 const PARALLEL_BOW = 0.4;
+/** Flow routes (spline / orthogonal) of parallel edges: max port spacing on a node side, lane spacing of their crossing segments and waypoints, and sideways bulge of a direct spline, per slot */
+const PORT_GAP = 8;
+const LANE_GAP = 10;
+const WAYPOINT_GAP = 14;
+const LENS_GAP = 24;
+/** Self-loops of flow layouts avoid their neighbors up to this many nodes */
+const LOOP_SCAN_MAX = 4000;
 /** Edge picking uses a spatial index from this number of edges */
 const EDGE_INDEX_MIN = 2000;
 const TWEEN_MS = 450;
@@ -921,23 +929,153 @@ export const createGraphChart = (
       Math.min(40, Math.min(sizing.width[i], sizing.height[i]) * 0.9),
     );
 
+  /** Free room from the side of node i towards an axis direction (a side of a flow layout) */
+  const roomTowards = (i: number, ax: number, ay: number): number => {
+    const horizontal = Math.abs(ax) > 0.5;
+    const extent = (j: number) =>
+      horizontal ? sizing.width[j] / 2 : sizing.height[j] / 2;
+    const across = (j: number) =>
+      horizontal ? sizing.height[j] / 2 : sizing.width[j] / 2;
+    let room = Infinity;
+    const check = (px: number, py: number, along: number, side: number) => {
+      const dx = px - X[i];
+      const dy = py - Y[i];
+      const d = dx * ax + dy * ay;
+      if (d <= 0 || Math.abs(dx * ay - dy * ax) >= across(i) + side + 4) return;
+      room = Math.min(room, d - extent(i) - along);
+    };
+    for (let j = 0; j < model.n; j++) {
+      if (j !== i && fade(j) > 0) check(X[j], Y[j], extent(j), across(j));
+    }
+    // long DAG edges pass their dummy waypoints
+    if (dag && !tween) {
+      for (const route of dag.routes) {
+        for (let k = 2; k < route.length - 2; k += 2)
+          check(route[k], route[k + 1], 0, 0);
+      }
+    }
+    return room;
+  };
+
+  /**
+   * Direction and size of the self-loops of a node: flow layouts put them on
+   * a side across the flow (routes come in and leave along it), the one with
+   * more room, sized to fit; other layouts use the widest free angle
+   */
+  const loopPlacement = (i: number): [number, number] => {
+    const base = loopSize(i);
+    if (layoutType !== "dag" && (!isTree() || layoutType === "radial"))
+      return [loopAngle(i), base];
+    const { vertical } = flow();
+    // org columns hang from a bus on their left
+    const sides =
+      layoutType === "org" && tree?.stacked[i]
+        ? [0]
+        : vertical
+          ? [0, Math.PI]
+          : [-Math.PI / 2, Math.PI / 2];
+    const labelBelow =
+      sizing.kind[i] === NodeKind.Circle && options.nodeLabels !== false;
+    let angle = sides[0];
+    let room = -Infinity;
+    for (const a of sides) {
+      let r =
+        model.n > LOOP_SCAN_MAX
+          ? Infinity
+          : roomTowards(i, Math.round(Math.cos(a)), Math.round(Math.sin(a)));
+      if (a > 0 && !vertical && labelBelow) r -= 18;
+      if (r > room) {
+        room = r;
+        angle = a;
+      }
+    }
+    let outer = 0;
+    for (let a = model.adjStart[i]; a < model.adjStart[i + 1]; a++) {
+      const e = model.adjEdge[a];
+      if (model.source[e] === model.target[e])
+        outer = Math.max(outer, model.bend[e]);
+    }
+    return [angle, Math.min(base, Math.max(8, (room - 6) / (1 + 0.6 * outer)))];
+  };
+
   /** Self-loop of an edge whose ends are the same node */
   const loopOf = (e: number): number[] => {
     const i = model.source[e];
-    const angle = loopAngle(i);
+    const [angle, size] = loopPlacement(i);
     const w = sizing.width[i];
     const h = sizing.height[i];
-    const box = isBox(i);
+    const reach = size * (1 + 0.6 * model.bend[e]);
+    const gap = edgeArrow[e] ? 1 : 0;
+    if (isBox(i)) {
+      // anchored on a side (wide cards would hide a center-based teardrop)
+      return boxLoopPath(
+        X[i],
+        Y[i],
+        w,
+        h,
+        angle,
+        reach,
+        Math.max(10, size * 0.8) * (1 + 0.35 * model.bend[e]),
+        gap,
+      );
+    }
     const at = (a: number) =>
-      boundaryDistance(box, w, h, Math.cos(a), Math.sin(a));
+      boundaryDistance(false, w, h, Math.cos(a), Math.sin(a));
     return loopPath(
       X[i],
       Y[i],
       angle,
       at(angle - 0.42),
-      at(angle + 0.42) + (edgeArrow[e] ? 1 : 0),
-      loopSize(i) * (1 + 0.6 * model.bend[e]),
+      at(angle + 0.42) + gap,
+      reach,
     );
+  };
+
+  /** Port offset along a node side of `side` units, for a parallel slot */
+  const portShift = (side: number, slot: number) =>
+    slot * Math.min(PORT_GAP, side / (2 * Math.abs(slot) + 2));
+
+  /**
+   * Fans a flow route (waypoints from the source to the target boundary) out
+   * for a parallel slot: the ends move along the node sides (separate ports),
+   * the inner waypoints sideways (separate lanes); a direct spline gets a
+   * bulging middle waypoint. The slot counts towards + x (vertical flows) or
+   * + y, the same for both directions, so opposite edges get other sides
+   */
+  const fanOut = (
+    pts: readonly number[],
+    s: number,
+    t: number,
+    vertical: boolean,
+    slot: number,
+    lens: boolean,
+  ): number[] => {
+    const out = pts.slice();
+    const last = out.length - 2;
+    const b = vertical ? 0 : 1;
+    const end = (k: number, i: number) => {
+      const side = vertical ? sizing.width[i] : sizing.height[i];
+      const o = portShift(side, slot);
+      out[k + b] += o;
+      if (!isBox(i)) {
+        // stay on the circle
+        const c = vertical ? Y[i] : X[i];
+        const d = 1 - b;
+        const r = side / 2;
+        out[k + d] =
+          c +
+          (out[k + d] >= c ? 1 : -1) * Math.sqrt(Math.max(0, r * r - o * o));
+      }
+    };
+    for (let k = 2; k < last; k += 2) out[k + b] += slot * WAYPOINT_GAP;
+    end(0, s);
+    end(last, t);
+    if (lens && out.length === 4) {
+      const mid = [(out[0] + out[2]) / 2, (out[1] + out[3]) / 2];
+      mid[b] = (pts[b] + pts[2 + b]) / 2 + slot * LENS_GAP;
+      out.splice(2, 0, mid[0], mid[1]);
+    }
+    return out;
   };
 
   /** Polyline of a curved edge (straight edges are built on the fly) */
@@ -1015,26 +1153,37 @@ export const createGraphChart = (
           layoutType === "mindmap" ? sign : along * sign >= 0 ? sign : -sign;
         pts = [...port(s, f.vertical, dir), ...port(t, f.vertical, -dir)];
       }
+      // parallel edges (either direction): own ports, lanes and bulges
+      const slot = parallel ? (s < t ? bend : -bend) : 0;
+      if (slot) pts = fanOut(pts, s, t, f.vertical, slot, style === "spline");
       if (style === "orthogonal") {
         if (layoutType === "org" && tree?.stacked[t] && tree.parent[t] === s) {
           // compact column: down from the parent, along a bus on the left
+          // (parallel edges nest: the right port turns lower, keeps the inner bus and enters higher)
           const bottom = Y[s] + sizing.height[s] / 2;
           const left = X[t] - sizing.width[t] / 2;
-          const bus = left - 10;
-          const mid = bottom + 14;
+          const sx = X[s] + portShift(sizing.width[s], slot);
+          const ty = Y[t] - portShift(sizing.height[t], slot);
+          const bus = left - 10 + slot * 3;
+          const mid = bottom + 14 + slot * 4;
           return roundCorners(
-            [X[s], bottom, X[s], mid, bus, mid, bus, Y[t], left, Y[t]],
+            [sx, bottom, sx, mid, bus, mid, bus, ty, left, ty],
             6,
           );
         }
-        if (layoutType === "org" && pts.length === 4) {
+        if (layoutType === "org" && pts.length === 4 && !slot) {
           const mid = (pts[1] + pts[3]) / 2;
           return roundCorners(
             [pts[0], pts[1], pts[0], mid, pts[2], mid, pts[2], pts[3]],
             6,
           );
         }
-        return orthogonalPath(pts, f.vertical, 8);
+        return orthogonalPath(
+          pts,
+          f.vertical,
+          layoutType === "org" ? 6 : 8,
+          slot * LANE_GAP,
+        );
       }
       return splinePath(pts, f.vertical);
     }
@@ -2059,8 +2208,7 @@ export const createGraphChart = (
       for (let e = 0; e < model.m; e++) {
         const i = model.source[e];
         if (i !== model.target[e] || !visible[i]) continue;
-        const a = loopAngle(i);
-        const size = loopSize(i);
+        const [a, size] = loopPlacement(i);
         const reach =
           Math.max(sizing.width[i], sizing.height[i]) / 2 +
           size * (1 + 0.6 * model.bend[e]);

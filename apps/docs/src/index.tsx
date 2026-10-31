@@ -7,6 +7,10 @@ import "minerva-design/style.css";
 import "@styles/global.scss";
 import App from "./App";
 import i18n, { loadLanguage } from "@i18n/config";
+import { bootChartRenderer } from "./docs/renderer/boot";
+
+// every chart, on any page, starts on the saved renderer (no engine import)
+bootChartRenderer();
 
 const container = document.getElementById("root");
 const root = createRoot(container!);

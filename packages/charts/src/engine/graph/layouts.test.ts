@@ -18,6 +18,7 @@ import {
   arcPath,
   arrowHead,
   boundaryDistance,
+  boxLoopPath,
   dashPath,
   distanceToPath,
   endDirection,
@@ -803,6 +804,40 @@ describe("geometry", () => {
     // parallel arcs rise higher or lower
     const high = arcPath(0, 100, 0, 1.5);
     expect(Math.min(...high.filter((_, i) => i % 2 === 1))).toBeCloseTo(-75);
+  });
+
+  it("anchors box loops on a side and nests orthogonal lanes", () => {
+    const xs = (p: number[]) => p.filter((_, i) => i % 2 === 0);
+    const ys = (p: number[]) => p.filter((_, i) => i % 2 === 1);
+    // a wide card: the loop sits on its right side, feet on the side
+    const right = boxLoopPath(0, 0, 120, 30, 0, 20, 16, 2);
+    expect(right.slice(0, 2)).toEqual([60, -8]);
+    expect(right.slice(-2)).toEqual([62, 8]);
+    expect(Math.max(...xs(right))).toBeGreaterThan(75);
+    expect(Math.min(...xs(right))).toBeGreaterThanOrEqual(60);
+    // straight up, and the feet stay on a short side
+    const up = boxLoopPath(10, 10, 120, 30, -Math.PI / 2, 20, 400);
+    expect(up[1]).toBe(-5);
+    expect(Math.min(...ys(up))).toBeLessThan(-15);
+    const left = boxLoopPath(0, 0, 40, 20, Math.PI, 10, 400);
+    expect(Math.abs(left[1])).toBeLessThanOrEqual(10);
+    expect(Math.min(...xs(left))).toBeLessThan(-25);
+    // a diagonal hit keeps its spot along the side (clamped)
+    const down = boxLoopPath(0, 0, 200, 20, Math.PI / 2 - 0.05, 10, 10);
+    expect(down[1]).toBe(10);
+    expect(down[0]).toBeGreaterThan(-200);
+    // lanes: the route on the + side turns earlier towards +, later back
+    const a = orthogonalPath([8, 0, 108, 100], true, 0, 10);
+    const b = orthogonalPath([-8, 0, 92, 100], true, 0, -10);
+    expect(a[3]).toBe(40);
+    expect(b[3]).toBe(60);
+    const back = orthogonalPath([108, 0, 8, 100], true, 0, 10);
+    expect(back[3]).toBe(60);
+    const lr = orthogonalPath([0, 8, 100, 108], false, 0, 10);
+    expect(lr[2]).toBe(40);
+    // short segments keep the lane inside them
+    const short = orthogonalPath([0, 0, 50, 20], true, 0, 30);
+    expect(short[3]).toBe(0);
   });
 });
 

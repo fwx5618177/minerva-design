@@ -2050,7 +2050,7 @@ export const docPages: DocPageMeta[] = [
     package: "minerva-design/charts",
     exports: ["GanttChart", "ganttSeries"],
     api: ["GanttChartProps", "GanttTask", "GanttOptions"],
-    demos: ["project", "dependencies", "roadmap", "sprint", "locale"],
+    demos: ["project", "dependencies", "crews", "roadmap", "sprint", "locale"],
     native: {
       exports: ["GanttChart"],
       api: ["GanttChartProps"],

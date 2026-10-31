@@ -60,6 +60,9 @@ const DEPENDS: [string, string, boolean?][] = [
   ["eslint-config", "tsconfig", true],
 ];
 
+// a circular dependency (both directions between two packages), drawn in red
+const CYCLE: [string, string] = ["utils", "i18n"];
+
 const KINDS: Kind[] = ["app", "framework", "library", "tooling"];
 
 export default function PackagesDemo() {
@@ -77,13 +80,20 @@ export default function PackagesDemo() {
     [],
   );
   const edges = useMemo(
-    (): GraphEdge[] =>
-      DEPENDS.map(([source, target, dev]) => ({
+    (): GraphEdge[] => [
+      ...DEPENDS.map(([source, target, dev]) => ({
         source,
         target,
         dashed: !!dev,
         label: dev ? t("devDependency") : undefined,
       })),
+      {
+        source: CYCLE[0],
+        target: CYCLE[1],
+        color: "var(--danger-color, #ef4444)",
+        label: t("circularDependency"),
+      },
+    ],
     [t],
   );
   const groups = useMemo(

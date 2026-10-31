@@ -87,8 +87,6 @@ export default function LogScaleDemo() {
           type: "log",
           title: t("gdpLog"),
           format: usd,
-          min: 500,
-          max: 200_000,
           grid: true,
         }}
         yAxis={{ title: t("lifeExpectancy") }}

@@ -5,11 +5,14 @@
 // array objects in WebGL 1): a few calls per item.
 //
 // WebGL2 draws into its own multisampled framebuffer, blitted to the canvas.
-// With EXT_color_buffer_float (multisampled RGBA16F), the blended items go
-// through the weighted blended order-independent transparency (`oit.ts`):
-// opaque items, then the blended ones into two float targets sharing the
-// depth buffer (resolved into textures by blits), their composite, then the
-// lines. Otherwise (and on WebGL 1) the blended items are drawn sorted.
+// With EXT_color_buffer_float (multisampled RGBA16F, R16F), the blended items
+// go through the hybrid order-independent transparency (`oit.ts`): opaque
+// items; the depth of the front transparent layer (R16F, `min` blending);
+// the blended items into four float targets sharing the depth buffer
+// (resolved into textures by blits); their composite; then the lines.
+// Otherwise (and on WebGL 1) the blended items come sorted back to front
+// (`sort.ts`, possibly as ranges of their buffers interleaved together) and
+// the additive light is screen blended.
 //
 // The context is part of the page-wide budget (`gl-budget.ts`): when it is
 // suspended off-screen, its GPU objects go; the restore builds the programs
@@ -18,7 +21,7 @@
 
 import type { RendererLostHandler } from "../renderers/types";
 import { claimGlSlot } from "../renderers/gl-budget";
-import { GLSL_COMPOSITE } from "./oit";
+import { FRONT_CLEAR, GLSL_COMPOSITE } from "./oit";
 import {
   POINT_STRIDE,
   SEGMENT_STRIDE,
@@ -108,7 +111,7 @@ interface ItemResources {
   kind: Item3D["kind"];
   vertex: WebGLBuffer;
   index: WebGLBuffer | null;
-  /** `order` of the uploaded indices (meshes) */
+  /** `order` of the uploaded indices (meshes) or points */
   order: number;
 }
 
@@ -153,12 +156,20 @@ interface Framebuffers {
   depth: WebGLRenderbuffer;
   /** Transparency targets, created on first use */
   oit: {
+    /** front color, accum, extra, behind (multisampled, sharing the depth) */
     fbo: WebGLFramebuffer;
-    buffers: [WebGLRenderbuffer, WebGLRenderbuffer];
-    resolved: [WebGLFramebuffer, WebGLFramebuffer];
-    textures: [WebGLTexture, WebGLTexture];
+    buffers: WebGLRenderbuffer[];
+    /** Their resolved textures, read by the composite */
+    resolved: WebGLFramebuffer[];
+    textures: WebGLTexture[];
+    /** Depth of the front transparent layer (single-sampled R16F) */
+    frontFbo: WebGLFramebuffer;
+    frontDepth: WebGLTexture;
   } | null;
 }
+
+/** Targets of the transparency pass (`oit.ts`) */
+const OIT_TARGETS = 4;
 
 export const createWebGl3D = (
   canvas: HTMLCanvasElement,
@@ -205,6 +216,7 @@ export const createWebGl3D = (
   let oitPrograms: {
     points: Program;
     mesh: Program;
+    front: { points: Program; mesh: Program };
     composite: WebGLProgram;
   } | null = null;
   let framebuffers: Framebuffers | null = null;
@@ -242,14 +254,27 @@ export const createWebGl3D = (
       const oit = glslOitPrograms();
       const p = compile(gl, oit.points, GLSL_ATTRIBUTES.points);
       const m = compile(gl, oit.mesh, GLSL_ATTRIBUTES.mesh);
+      const fp = compile(gl, oit.front.points, GLSL_ATTRIBUTES.points);
+      const fm = compile(gl, oit.front.mesh, GLSL_ATTRIBUTES.mesh);
       const c = compile(gl, GLSL_COMPOSITE, []);
-      if (p && m && c) {
-        oitPrograms = { points: p, mesh: m, composite: c.program };
+      if (p && m && fp && fm && c) {
+        oitPrograms = {
+          points: p,
+          mesh: m,
+          front: { points: fp, mesh: fm },
+          composite: c.program,
+        };
+        // the front depth at unit 0 in the transparency pass
+        for (const program of [p, m]) {
+          gl.useProgram(program.program);
+          gl.uniform1i(gl.getUniformLocation(program.program, "u_front"), 0);
+        }
         gl.useProgram(c.program);
-        gl.uniform1i(gl.getUniformLocation(c.program, "u_accum"), 0);
-        gl.uniform1i(gl.getUniformLocation(c.program, "u_extra"), 1);
+        ["u_frontColor", "u_accum", "u_extra", "u_behind"].forEach((name, i) =>
+          gl.uniform1i(gl.getUniformLocation(c.program, name), i),
+        );
       } else {
-        for (const program of [p, m, c])
+        for (const program of [p, m, fp, fm, c])
           if (program) gl.deleteProgram(program.program);
       }
     }
@@ -265,6 +290,8 @@ export const createWebGl3D = (
     for (const b of fb.oit.buffers) gl.deleteRenderbuffer(b);
     for (const f of fb.oit.resolved) gl.deleteFramebuffer(f);
     for (const t of fb.oit.textures) gl.deleteTexture(t);
+    gl.deleteFramebuffer(fb.oit.frontFbo);
+    gl.deleteTexture(fb.oit.frontDepth);
     fb.oit = null;
   };
   const deleteFramebuffers = () => {
@@ -328,31 +355,48 @@ export const createWebGl3D = (
     if (fb.oit || !gl2) return fb.oit;
     const { width, height } = fb;
     const fbo = gl.createFramebuffer();
-    const accum = renderbuffer(gl2.RGBA16F, width, height);
-    const extra = renderbuffer(gl2.RGBA16F, width, height);
-    const resolved = [gl.createFramebuffer(), gl.createFramebuffer()];
-    const textures = [gl.createTexture(), gl.createTexture()];
-    const [r0, r1] = resolved;
-    const [t0, t1] = textures;
-    if (!fbo || !accum || !extra || !r0 || !r1 || !t0 || !t1) return null;
+    const frontFbo = gl.createFramebuffer();
+    const frontDepth = gl.createTexture();
+    const buffers: WebGLRenderbuffer[] = [];
+    const resolved: WebGLFramebuffer[] = [];
+    const textures: WebGLTexture[] = [];
+    for (let i = 0; i < OIT_TARGETS; i++) {
+      const b = renderbuffer(gl2.RGBA16F, width, height);
+      const r = gl.createFramebuffer();
+      const t = gl.createTexture();
+      if (b) buffers.push(b);
+      if (r) resolved.push(r);
+      if (t) textures.push(t);
+    }
     fb.oit = {
-      fbo,
-      buffers: [accum, extra],
-      resolved: [r0, r1],
-      textures: [t0, t1],
+      fbo: fbo!,
+      buffers,
+      resolved,
+      textures,
+      frontFbo: frontFbo!,
+      frontDepth: frontDepth!,
     };
+    if (
+      !fbo ||
+      !frontFbo ||
+      !frontDepth ||
+      buffers.length < OIT_TARGETS ||
+      resolved.length < OIT_TARGETS ||
+      textures.length < OIT_TARGETS
+    ) {
+      deleteOit(fb);
+      oitPrograms = null;
+      return null;
+    }
+    const attachments = buffers.map((_, i) => gl.COLOR_ATTACHMENT0 + i);
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-    gl.framebufferRenderbuffer(
-      gl.FRAMEBUFFER,
-      gl.COLOR_ATTACHMENT0,
-      gl.RENDERBUFFER,
-      accum,
-    );
-    gl.framebufferRenderbuffer(
-      gl.FRAMEBUFFER,
-      gl2.COLOR_ATTACHMENT1,
-      gl.RENDERBUFFER,
-      extra,
+    buffers.forEach((b, i) =>
+      gl.framebufferRenderbuffer(
+        gl.FRAMEBUFFER,
+        attachments[i]!,
+        gl.RENDERBUFFER,
+        b,
+      ),
     );
     gl.framebufferRenderbuffer(
       gl.FRAMEBUFFER,
@@ -360,14 +404,18 @@ export const createWebGl3D = (
       gl.RENDERBUFFER,
       fb.depth,
     );
-    gl2.drawBuffers([gl.COLOR_ATTACHMENT0, gl2.COLOR_ATTACHMENT1]);
+    gl2.drawBuffers(attachments);
     let ok = complete();
-    fb.oit.textures.forEach((texture, i) => {
+    const attach = (
+      target: WebGLFramebuffer,
+      texture: WebGLTexture,
+      format: number,
+    ) => {
       gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl2.texStorage2D(gl.TEXTURE_2D, 1, gl2.RGBA16F, width, height);
+      gl2.texStorage2D(gl.TEXTURE_2D, 1, format, width, height);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-      gl.bindFramebuffer(gl.FRAMEBUFFER, fb.oit!.resolved[i]!);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, target);
       gl.framebufferTexture2D(
         gl.FRAMEBUFFER,
         gl.COLOR_ATTACHMENT0,
@@ -376,7 +424,11 @@ export const createWebGl3D = (
         0,
       );
       ok &&= complete();
-    });
+    };
+    textures.forEach((texture, i) =>
+      attach(resolved[i]!, texture, gl2.RGBA16F),
+    );
+    attach(frontFbo, frontDepth, gl2.R16F);
     gl.bindTexture(gl.TEXTURE_2D, null);
     if (!ok) {
       deleteOit(fb);
@@ -433,7 +485,7 @@ export const createWebGl3D = (
     divisor(location, perInstance ? 1 : 0);
   };
 
-  const bind = (item: Item3D, res: ItemResources) => {
+  const bind = (item: Item3D, res: ItemResources, first: number) => {
     const F = gl.FLOAT;
     const U8 = gl.UNSIGNED_BYTE;
     let used: number;
@@ -448,9 +500,11 @@ export const createWebGl3D = (
       attribute(0, 2, F, 0, 0, false);
       gl.bindBuffer(gl.ARRAY_BUFFER, res.vertex);
       if (item.kind === "points") {
-        attribute(1, 3, F, POINT_STRIDE, 0, true);
-        attribute(2, 1, F, POINT_STRIDE, 12, true);
-        attribute(3, 4, U8, POINT_STRIDE, 16, true);
+        // a range of the instances: the attributes start at its first one
+        const base = first * POINT_STRIDE;
+        attribute(1, 3, F, POINT_STRIDE, base, true);
+        attribute(2, 1, F, POINT_STRIDE, base + 12, true);
+        attribute(3, 4, U8, POINT_STRIDE, base + 16, true);
       } else {
         attribute(1, 3, F, SEGMENT_STRIDE, 0, true);
         attribute(2, 3, F, SEGMENT_STRIDE, 12, true);
@@ -471,15 +525,17 @@ export const createWebGl3D = (
       existing.version === item.version &&
       existing.kind === item.kind
     ) {
-      // same mesh, triangles in a new order (transparent, sorted by depth)
-      if (
-        item.kind === "mesh" &&
-        existing.index &&
-        (item.order ?? 0) !== existing.order
-      ) {
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, existing.index);
-        gl.bufferSubData(gl.ELEMENT_ARRAY_BUFFER, 0, item.indices);
-        existing.order = item.order ?? 0;
+      // same buffers in a new order (sorted back to front): rewritten
+      const order = item.kind === "lines" ? 0 : (item.order ?? 0);
+      if (item.kind !== "lines" && order !== existing.order) {
+        if (item.kind === "mesh" && existing.index) {
+          gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, existing.index);
+          gl.bufferSubData(gl.ELEMENT_ARRAY_BUFFER, 0, item.indices);
+        } else if (item.kind === "points") {
+          gl.bindBuffer(gl.ARRAY_BUFFER, existing.vertex);
+          gl.bufferSubData(gl.ARRAY_BUFFER, 0, item.data);
+        }
+        existing.order = order;
       }
       return existing;
     }
@@ -494,7 +550,9 @@ export const createWebGl3D = (
     gl.bufferData(
       gl.ARRAY_BUFFER,
       item.kind === "mesh" ? item.vertices : item.data,
-      gl.STATIC_DRAW,
+      item.kind === "points" && item.order !== undefined
+        ? gl.DYNAMIC_DRAW
+        : gl.STATIC_DRAW,
     );
     let index: WebGLBuffer | null = null;
     if (item.kind === "mesh") {
@@ -515,7 +573,7 @@ export const createWebGl3D = (
       kind: item.kind,
       vertex,
       index,
-      order: item.kind === "mesh" ? (item.order ?? 0) : 0,
+      order: item.kind === "lines" ? 0 : (item.order ?? 0),
     };
     resources.set(item.key, res);
     return res;
@@ -529,7 +587,12 @@ export const createWebGl3D = (
     seen: Set<string>,
   ) => {
     seen.add(item.key);
-    const count = item.kind === "mesh" ? item.indices.length : item.count;
+    const total = item.kind === "mesh" ? item.indices.length : item.count;
+    const range = item.kind === "lines" ? undefined : item.range;
+    const first = range ? Math.max(0, Math.min(total, range.first)) : 0;
+    const count = range
+      ? Math.max(0, Math.min(total - first, range.count))
+      : total;
     if (count <= 0) return;
     const res = upload(item);
     if (!res) return;
@@ -543,16 +606,19 @@ export const createWebGl3D = (
     gl.uniform4fv(loc.u_material, u.subarray(28, 32));
     gl.uniform4fv(loc.u_params, u.subarray(32, 36));
     gl.uniform4fv(loc.u_fog, u.subarray(36, 40));
-    bind(item, res);
+    bind(item, res, item.kind === "points" ? first : 0);
     if (item.kind === "mesh") {
       gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, res.index);
-      gl.drawElements(gl.TRIANGLES, count, gl.UNSIGNED_INT, 0);
+      gl.drawElements(gl.TRIANGLES, count, gl.UNSIGNED_INT, first * 4);
     } else {
       drawInstanced(count);
     }
   };
 
-  /** Blended items into the transparency targets, then their composite */
+  /**
+   * Blended items into the transparency targets (`oit.ts`): the depth of the
+   * front layer first, then the four targets; their composite
+   */
   const drawTransparent = (
     fb: Framebuffers,
     oit: NonNullable<Framebuffers["oit"]>,
@@ -562,19 +628,52 @@ export const createWebGl3D = (
   ) => {
     if (!gl2 || !oitPrograms) return;
     const { width, height } = fb;
-    gl.bindFramebuffer(gl.FRAMEBUFFER, oit.fbo);
-    gl2.clearBufferfv(gl2.COLOR, 0, [0, 0, 0, 0]);
-    gl2.clearBufferfv(gl2.COLOR, 1, [0, 0, 0, 0]);
+    const unbind = () => {
+      for (let i = OIT_TARGETS - 1; i >= 0; i--) {
+        gl.activeTexture(gl.TEXTURE0 + i);
+        gl.bindTexture(gl.TEXTURE_2D, null);
+      }
+    };
+    // front pass: the nearest visible depth of the non-additive items
+    gl.bindFramebuffer(gl.FRAMEBUFFER, oit.frontFbo);
+    gl2.clearBufferfv(gl2.COLOR, 0, [
+      FRONT_CLEAR,
+      FRONT_CLEAR,
+      FRONT_CLEAR,
+      FRONT_CLEAR,
+    ]);
+    const layered = blended.filter(
+      (item) =>
+        item.kind !== "lines" && !(item.kind === "points" && item.additive),
+    );
     gl.depthMask(false);
+    if (layered.length) {
+      gl.disable(gl.DEPTH_TEST);
+      gl2.blendEquation(gl2.MIN);
+      gl.blendFunc(gl.ONE, gl.ONE);
+      for (const item of layered) {
+        if (item.kind !== "lines")
+          draw(item, oitPrograms.front[item.kind], frame, seen);
+      }
+      gl2.blendEquation(gl.FUNC_ADD);
+      gl.enable(gl.DEPTH_TEST);
+    }
+    // main pass: every blended item, testing the opaque depth
+    gl.bindFramebuffer(gl.FRAMEBUFFER, oit.fbo);
+    for (let i = 0; i < OIT_TARGETS; i++)
+      gl2.clearBufferfv(gl2.COLOR, i, [0, 0, 0, 0]);
     gl.blendFunc(gl.ONE, gl.ONE);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, oit.frontDepth);
     for (const item of blended) {
       if (item.kind !== "lines")
         draw(item, oitPrograms[item.kind], frame, seen);
     }
+    gl.bindTexture(gl.TEXTURE_2D, null);
     // resolve the samples into the textures read by the composite
     gl.bindFramebuffer(gl2.READ_FRAMEBUFFER, oit.fbo);
     oit.resolved.forEach((target, i) => {
-      gl2.readBuffer(i === 0 ? gl.COLOR_ATTACHMENT0 : gl2.COLOR_ATTACHMENT1);
+      gl2.readBuffer(gl.COLOR_ATTACHMENT0 + i);
       gl.bindFramebuffer(gl2.DRAW_FRAMEBUFFER, target);
       gl2.blitFramebuffer(
         0,
@@ -602,9 +701,7 @@ export const createWebGl3D = (
       gl.bindTexture(gl.TEXTURE_2D, texture);
     });
     gl.drawArrays(gl.TRIANGLES, 0, 3);
-    gl.bindTexture(gl.TEXTURE_2D, null);
-    gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, null);
+    unbind();
     gl.enable(gl.DEPTH_TEST);
   };
 
@@ -642,9 +739,15 @@ export const createWebGl3D = (
       gl.depthMask(writesDepth(item));
       const add = item.kind === "points" && !!item.additive;
       if (add !== additive) {
-        // additive points: the colors add up, the coverage composites as usual
+        // additive points: their light screen blended (tone mapped as it
+        // adds up, `screenTone`), the coverage composites as usual
         if (add)
-          gl.blendFuncSeparate(gl.ONE, gl.ONE, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+          gl.blendFuncSeparate(
+            gl.ONE,
+            gl.ONE_MINUS_SRC_COLOR,
+            gl.ONE,
+            gl.ONE_MINUS_SRC_ALPHA,
+          );
         else gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         additive = add;
       }
@@ -713,6 +816,8 @@ export const createWebGl3D = (
         if (oitPrograms) {
           gl.deleteProgram(oitPrograms.points.program);
           gl.deleteProgram(oitPrograms.mesh.program);
+          gl.deleteProgram(oitPrograms.front.points.program);
+          gl.deleteProgram(oitPrograms.front.mesh.program);
           gl.deleteProgram(oitPrograms.composite);
         }
         deleteFramebuffers();

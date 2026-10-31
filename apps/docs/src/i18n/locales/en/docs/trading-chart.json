@@ -20,7 +20,7 @@
       "pointer": "Wheel to zoom at the pointer (Shift or a horizontal swipe to scroll), drag to pan with inertia.",
       "axes": "Drag the price axis to zoom it vertically and the time axis to change the bar width; double-click an axis to reset it.",
       "keyboard": "Focus the chart: arrows move the crosshair bar by bar (Shift: ten bars) and announce its prices, + / − zoom, Home / End jump to the first / latest bar, Delete removes the selected drawing, Ctrl / ⌘ + Z undoes and Ctrl / ⌘ + Shift + Z redoes a drawing change, Escape cancels.",
-      "orders": "With orderEntry: B / S arm a buy / sell limit order at the crosshair price (or the last price), ↑ / ↓ move it by one tick (Shift: ten), Enter places it and Escape abandons it. O / Shift + O pick the draggable or cancellable lines in turn to move them the same way; Delete cancels the picked order. Each step is read aloud and emits the same events as the pointer (orderCreate, orderMove, orderCancel).",
+      "orders": "With orderEntry: B / S arm a buy / sell order at the crosshair price (or the last price), ↑ / ↓ move it by one tick (Shift: ten), Enter places it and Escape abandons it. The type follows the price: a buy below the last price or a sell above it is a limit, a buy above or a sell below is a stop; Alt+B / Alt+S switch between limit and stop. O / Shift + O pick the draggable or cancellable lines in turn to move them the same way; Delete cancels the picked order. Each step, type included, is read aloud and emits the same events as the pointer (orderCreate with its orderType, orderMove, orderCancel).",
       "touch": "On touch screens: drag to pan, pinch to zoom."
     },
     "languages": {
@@ -95,7 +95,7 @@
     },
     "order-entry": {
       "title": "Order entry",
-      "description": "With orderEntry, a + button follows the crosshair on the right of the price pane: click it to place a limit order at that price (buy below the last price, sell above). The keyboard does the same: focus the chart (Tab), press B or S, move the price with the arrows and press Enter; O picks an existing order to move it or Delete to cancel it. Orders are draggable and cancellable price lines kept in React state through onOrderCreate, onOrderMove and onOrderCancel."
+      "description": "With orderEntry, a + button follows the crosshair on the right of the price pane: click it to place a limit order at that price (buy below the last price, sell above), or hold Alt (Option) for the stop order of the other side. The keyboard does the same: focus the chart (Tab), press B or S, move the price with the arrows and press Enter; the order becomes a stop when it crosses the last price, and Alt+B / Alt+S switch the type. O picks an existing order to move it, Delete cancels it. Orders are draggable and cancellable price lines kept in React state through onOrderCreate (with orderType), onOrderMove and onOrderCancel; when labels meet at the same height, the axis labels stack with a leader line and the order tags step aside."
     },
     "sessions": {
       "title": "Time zones and sessions",
@@ -189,7 +189,9 @@
       "stopLoss": "SL",
       "limitBuy": "Buy limit",
       "limitSell": "Sell limit",
-      "alert": "Alert"
+      "alert": "Alert",
+      "stopBuy": "Buy stop",
+      "stopSell": "Sell stop"
     },
     "buyMarker": "B {{quantity}}",
     "sellMarker": "S {{quantity}}",
@@ -254,7 +256,7 @@
     "orderModified": "Order moved from {{from}} to {{to}}",
     "orderCancelled": "Order at {{price}} cancelled",
     "orderEntryAria": "BTCUSDT perpetual 5-minute chart with order entry",
-    "orderEntryHint": "Hover the chart and click the + on the right to place an order, or focus the chart and press B / S; drag a line to move it, × cancels it.",
+    "orderEntryHint": "Hover the chart and click the + on the right to place a limit order (hold Alt for a stop), or focus the chart and press B / S; drag a line to move it, × cancels it.",
     "timeZone": "Time zone",
     "zones": {
       "America_New_York": "New York",
@@ -288,8 +290,12 @@
       "selectKeys": "O",
       "select": "Pick the next order",
       "removeKeys": "Delete",
-      "remove": "Cancel the picked order"
-    }
+      "remove": "Cancel the picked order",
+      "typeKeys": "Alt+B Alt+S",
+      "type": "Switch between limit and stop"
+    },
+    "orderPlacedBuyStop": "Buy stop placed at {{price}}",
+    "orderPlacedSellStop": "Sell stop placed at {{price}}"
   },
   "api": {
     "TradingChartProps": {
@@ -352,7 +358,7 @@
       "ariaLabel": "Accessible label; built from the symbol by default",
       "timeZone": "Time zone of the time axis, the session breaks and the VWAP periods: an IANA name (\"America/New_York\") or \"UTC\"; the local time by default.",
       "sessionBreaks": "Dashed vertical lines where a day starts (intraday bars).",
-      "orderEntry": "A + button at the crosshair price on the right of the price pane: clicking it reports a limit order (orderCreate). With the chart focused, B / S arm a buy / sell order, the arrows move it, Enter confirms and Escape cancels; O picks the draggable lines to move them, Delete cancels the cancellable ones.",
+      "orderEntry": "A + button at the crosshair price on the right of the price pane: clicking it reports a limit order (orderCreate), or with Alt held the stop order of the other side. With the chart focused, B / S arm a buy / sell order, the arrows move it, Enter confirms and Escape cancels; the order is a limit when it waits for a better price than the last one, else a stop, and Alt+B / Alt+S switch it. O picks the draggable lines to move them, Delete cancels the cancellable ones.",
       "volumeProfile": "Volume by price of the visible bars, with its point of control and value area (true for the defaults).",
       "drawingToolbar": "Floating toolbar over the selected drawing (color, width, style, fill, lock, delete)."
     },
@@ -494,13 +500,16 @@
       "short": "Short position tool.",
       "replay": "Badge of the bar replay; {time} is replaced.",
       "replayHint": "Hint while picking the first bar of a replay.",
-      "buyLimit": "Order entry button, below the last price; {price} is replaced.",
-      "sellLimit": "Order entry button, above the last price; {price} is replaced.",
+      "buyLimit": "Buy limit order (at or below the last price); {price} is replaced.",
+      "sellLimit": "Sell limit order (at or above the last price); {price} is replaced.",
       "orderHint": "Read aloud while a keyboard order is armed or a line picked. Default \"Arrows move the price, Enter confirms, Escape cancels\".",
       "orderCancelHint": "Read aloud when the picked line can be cancelled. Default \"Delete cancels the order\".",
       "orderLine": "Line picked with the keyboard; {title} and {price} are replaced. Default \"{title} at {price}\".",
       "orderPlaced": "Read aloud when an order is placed or moved; {price} is replaced. Default \"Order placed at {price}\".",
-      "orderCancelled": "Read aloud when a keyboard order is abandoned or an order cancelled. Default \"Order cancelled\"."
+      "orderCancelled": "Read aloud when a keyboard order is abandoned or an order cancelled. Default \"Order cancelled\".",
+      "buyStop": "Buy stop order (above the last price); {price} is replaced.",
+      "sellStop": "Sell stop order (below the last price); {price} is replaced.",
+      "orderTypeHint": "Read aloud when a keyboard order is armed, to tell how to switch between limit and stop."
     },
     "TradingCrosshairEvent": {
       "index": "Index of the hovered bar (may be past the last bar)",
@@ -548,7 +557,8 @@
     },
     "TradingOrderCreateEvent": {
       "price": "Price of the order (rounded to the price precision).",
-      "side": "buy below the last price, sell above it (the key pressed, B or S, with the keyboard)."
+      "side": "buy below the last price, sell above it with the + (with Alt held: the other side, as a stop); the key pressed, B or S, with the keyboard.",
+      "orderType": "limit for a buy at or below the last price or a sell at or above it (the order waits for a better price), stop otherwise; Alt switches it, with the keyboard (Alt+B / Alt+S) or the + (held while clicking)."
     },
     "TradingOrderCancelEvent": {
       "id": "Id of the line.",

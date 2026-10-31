@@ -12,7 +12,7 @@
     },
     "color-scale": {
       "title": "Color scale",
-      "description": "colorScale maps sizes to colors: log reveals thin liquidity next to the walls, linear keeps only the walls. contrast multiplies the sizes first; maxSize fixes the hottest size (it follows the data otherwise)."
+      "description": "colorScale maps sizes to colors: sqrt keeps typical levels dim and lets significant liquidity glow, linear keeps only the walls, log reveals thin liquidity next to them. contrast multiplies the sizes first; maxSize fixes the hottest size (the 99th percentile of the visible data otherwise)."
     },
     "large-trades": {
       "title": "Large trades",
@@ -79,13 +79,13 @@
       "history": "History kept, in ms (older columns are dropped)",
       "depth": "Price rows sampled on each side of the book per column",
       "priceSpan": "Visible price span (top − bottom); fits the best bid and ask of the window when omitted",
-      "colorScale": "Scale from sizes to colors: log reveals thin liquidity next to the walls",
-      "contrast": "Multiplies the sizes before the scale: above 1 brightens thin liquidity, below 1 keeps the walls",
-      "maxSize": "Size drawn with the hottest color; when omitted, the 98th percentile of the visible sizes (eased), so the whole ramp is used",
+      "colorScale": "Scale from sizes to colors: sqrt keeps typical levels dim and lets significant liquidity glow, linear shows only the walls, log reveals thin liquidity next to them",
+      "contrast": "Multiplies the sizes before the scale: above 1 brightens thin liquidity (more of the field glows), below 1 keeps only the largest walls",
+      "maxSize": "Size drawn with the hottest color (larger sizes saturate); when omitted, the 99th percentile of the visible non-empty cells (eased), so typical levels stay dark and only the top liquidity glows",
       "colors": "Color ramp, coldest first, interpolated in OKLab. The first color also fills the cells without liquidity (the field is opaque, no holes): a dark color in dark themes, a pale one in light themes. A perceptual heat ramp suited to the theme when omitted",
       "bubbles": "Trades drawn as bubbles sized by volume (buy and sell colors)",
-      "bubbleSize": "Largest bubble diameter, in pixels",
-      "bubbleVolume": "Trade volume of the largest bubble; follows the data when omitted",
+      "bubbleSize": "Diameter of the largest bubble, in pixels (area ∝ volume, the smallest are 3 px dots)",
+      "bubbleVolume": "Trade volume of the largest bubble; when omitted, the largest visible trade (eased)",
       "bestLines": "Best bid and ask lines",
       "profile": "Profile of the current book at the right edge",
       "interactive": "Zoom and pan (a double click follows the market again)",
@@ -127,8 +127,9 @@
     },
     "OrderBookHeatmapHoverEvent": {
       "time": "Start time of the hovered column",
-      "price": "Price of the hovered row",
-      "size": "Resting size of the cell",
+      "price": "Price of the hovered row; its lowest price when rows are aggregated into price buckets (rows thinner than 2 px)",
+      "priceHigh": "Highest price of the hovered row (equals price without aggregation)",
+      "size": "Resting size of the cell (summed over the bucket's prices)",
       "side": "Side of the cell (null inside the spread)",
       "buyVolume": "Volume bought during the column",
       "sellVolume": "Volume sold during the column"

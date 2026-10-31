@@ -805,12 +805,18 @@ export interface TradingChartLabels {
   replay?: string;
   /** Hint while picking the first bar of a replay @default "Click a bar to start the replay" */
   replayHint?: string;
-  /** Order entry button, below the last price; `{price}` is replaced @default "Buy limit {price}" */
+  /** Buy limit order (at or below the last price); `{price}` is replaced @default "Buy limit {price}" */
   buyLimit?: string;
-  /** Order entry button, above the last price; `{price}` is replaced @default "Sell limit {price}" */
+  /** Sell limit order (at or above the last price); `{price}` is replaced @default "Sell limit {price}" */
   sellLimit?: string;
+  /** Buy stop order (above the last price); `{price}` is replaced @default "Buy stop {price}" */
+  buyStop?: string;
+  /** Sell stop order (below the last price); `{price}` is replaced @default "Sell stop {price}" */
+  sellStop?: string;
   /** Read aloud while a keyboard order is armed or a line is selected @default "Arrows move the price, Enter confirms, Escape cancels" */
   orderHint?: string;
+  /** Read aloud when a keyboard order is armed @default "Alt+B or Alt+S switches between limit and stop" */
+  orderTypeHint?: string;
   /** Read aloud when the line selected by the keyboard can be cancelled @default "Delete cancels the order" */
   orderCancelHint?: string;
   /** Price line selected by the keyboard; `{title}` and `{price}` are replaced @default "{title} at {price}" */
@@ -906,11 +912,15 @@ export interface TradingChartOptions {
   priceLines?: readonly TradingPriceLine[];
   /**
    * A "+" button at the crosshair price, on the right of the price pane:
-   * clicking it reports a limit order (`orderCreate`) at that price. With the
-   * chart focused, `B` / `S` arm a buy / sell order at the crosshair price
-   * (or the last price), the arrows move it (Shift: ten ticks), Enter
-   * confirms and Escape cancels; `O` selects the draggable lines in turn to
-   * move them the same way, Delete cancels the `cancellable` ones
+   * clicking it reports a limit order (`orderCreate`) at that price, a buy
+   * below the last price and a sell above it (with Alt / Option held: the
+   * stop order of the other side). With the chart focused, `B` / `S` arm a
+   * buy / sell order at the crosshair price (or the last price), the arrows
+   * move it (Shift: ten ticks), Enter confirms and Escape cancels. The order
+   * is a limit when it waits for a better price (a buy at or below the last
+   * price, a sell at or above it), else a stop; `Alt+B` / `Alt+S` switch
+   * between limit and stop explicitly. `O` selects the draggable lines in
+   * turn to move them the same way, Delete cancels the `cancellable` ones
    * @default false
    */
   orderEntry?: boolean;
@@ -1049,7 +1059,15 @@ export interface TradingOrderCreateEvent {
   price: number;
   /** `buy` below the last price, `sell` above it (`B` / `S` with the keyboard) */
   side: "buy" | "sell";
+  /**
+   * `limit` for a buy at or below the last price or a sell at or above it,
+   * `stop` otherwise (or as switched with Alt)
+   */
+  orderType: TradingOrderType;
 }
+
+/** Type of an order created on the chart */
+export type TradingOrderType = "limit" | "stop";
 
 /** The close button of a `cancellable` price line was clicked (or Delete pressed on it) */
 export interface TradingOrderCancelEvent {

@@ -12,7 +12,7 @@
     },
     "color-scale": {
       "title": "Échelle de couleurs",
-      "description": "colorScale associe les quantités aux couleurs : log révèle la liquidité fine près des murs, linear ne garde que les murs. contrast multiplie d'abord les quantités ; maxSize fixe la quantité la plus chaude (sinon elle suit les données)."
+      "description": "colorScale associe les quantités aux couleurs : sqrt garde les niveaux ordinaires sombres et fait briller la liquidité significative, linear ne garde que les murs, log révèle la liquidité fine à côté d'eux. contrast multiplie d'abord les quantités ; maxSize fixe la quantité la plus chaude (le 99e centile des données visibles sinon)."
     },
     "large-trades": {
       "title": "Grosses transactions",
@@ -79,13 +79,13 @@
       "history": "Historique conservé, en ms (les colonnes plus anciennes sont supprimées)",
       "depth": "Lignes de prix échantillonnées de chaque côté du carnet par colonne",
       "priceSpan": "Écart de prix visible (haut − bas) ; ajusté au meilleur achat et à la meilleure vente de la fenêtre si omis",
-      "colorScale": "Échelle des quantités vers les couleurs : log révèle la liquidité fine près des murs",
-      "contrast": "Multiplie les quantités avant l'échelle : au-dessus de 1 éclaire la liquidité fine, en dessous garde les murs",
-      "maxSize": "Quantité dessinée avec la couleur la plus chaude ; si omise, le 98e centile des quantités visibles (lissé), pour utiliser toute la rampe",
+      "colorScale": "Échelle des quantités vers les couleurs : sqrt garde les niveaux ordinaires sombres et fait briller la liquidité significative, linear ne montre que les murs, log révèle la liquidité fine à côté d'eux",
+      "contrast": "Multiplie les quantités avant l'échelle : au-dessus de 1 éclaire la liquidité fine (une plus grande partie du champ brille), en dessous garde seulement les plus gros murs",
+      "maxSize": "Quantité dessinée avec la couleur la plus chaude (au-delà, elle sature) ; si omise, le 99e centile des cellules visibles non vides (lissé), pour que les niveaux ordinaires restent sombres et que seule la liquidité principale brille",
       "colors": "Rampe de couleurs, du plus froid, interpolée en OKLab. La première couleur remplit aussi les cellules sans liquidité (le champ est opaque, sans trous) : une couleur sombre en thème sombre, pâle en thème clair. Une rampe thermique perceptuelle adaptée au thème si omise",
       "bubbles": "Transactions dessinées en bulles proportionnelles au volume (couleurs achat et vente)",
-      "bubbleSize": "Diamètre de la plus grosse bulle, en pixels",
-      "bubbleVolume": "Volume de la plus grosse bulle ; suit les données si omis",
+      "bubbleSize": "Diamètre de la plus grosse bulle, en pixels (l'aire est proportionnelle au volume, les plus petites sont des points de 3 px)",
+      "bubbleVolume": "Volume de la plus grosse bulle ; si omis, la plus grosse transaction visible (lissée)",
       "bestLines": "Lignes du meilleur achat et de la meilleure vente",
       "profile": "Profil du carnet actuel sur le bord droit",
       "interactive": "Zoom et déplacement (un double clic suit à nouveau le marché)",
@@ -127,8 +127,9 @@
     },
     "OrderBookHeatmapHoverEvent": {
       "time": "Début de la colonne survolée",
-      "price": "Prix de la ligne survolée",
-      "size": "Quantité au repos de la cellule",
+      "price": "Prix de la ligne survolée ; son prix le plus bas quand les lignes sont regroupées en tranches de prix (lignes de moins de 2 px)",
+      "priceHigh": "Prix le plus haut de la ligne survolée (égal à price sans regroupement)",
+      "size": "Quantité au repos de la cellule (somme des prix de la tranche)",
       "side": "Côté de la cellule (null dans l'écart)",
       "buyVolume": "Volume acheté pendant la colonne",
       "sellVolume": "Volume vendu pendant la colonne"

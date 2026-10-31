@@ -2531,7 +2531,7 @@
         "name": "nice",
         "type": "boolean",
         "required": false,
-        "description": "Rounds the automatic range to tick values; on by default except for category axes"
+        "description": "Rounds the automatic range to tick values; on by default except for category axes. Log axes: whole decades on y, the closest 1, 2 or 5 × 10^k bounds around the data on x"
       },
       {
         "name": "timeZone",
@@ -3083,7 +3083,7 @@
   },
   "ChartDependency": {
     "source": "charts/src/engine/types.ts",
-    "description": "Arrow from one category to another (Gantt dependencies): an elbow connector from the end of the `from` bar (or dot) to the start of the `to` bar, with a filled arrowhead",
+    "description": "Arrow from one bar (or dot) to another (Gantt dependencies): an elbow connector from the end of the `from` bar to the start of the `to` bar, with a filled arrowhead, routed around the bars of the rows it crosses",
     "kind": "interface",
     "extends": [],
     "props": [
@@ -3091,13 +3091,13 @@
         "name": "from",
         "type": "string",
         "required": true,
-        "description": "Category (x value) of the predecessor"
+        "description": "Predecessor: the `id` of a point, or else a category of the x axis (its first visible bar; the x value written as text on numeric axes)"
       },
       {
         "name": "to",
         "type": "string",
         "required": true,
-        "description": "Category (x value) of the successor, where the arrow points"
+        "description": "Successor, where the arrow points (an `id` or a category, like `from`)"
       },
       {
         "name": "color",
@@ -3972,7 +3972,7 @@
         "name": "dependencies",
         "type": "readonly ChartDependency[]",
         "required": false,
-        "description": "Arrows between categories (category x axis), e.g. the dependencies of a Gantt chart: from the end of a bar to the start of another"
+        "description": "Arrows between bars, e.g. the dependencies of a Gantt chart: from the end of a bar to the start of another, matched by point `id` (or by category); hidden or missing points are skipped"
       },
       {
         "name": "interaction",
@@ -4162,6 +4162,12 @@
         "type": "readonly ChartTooltipDetail[]",
         "required": false,
         "description": "Extra rows of the default tooltip of this point, after its values"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "Identifier of the point, referenced by the `dependencies` of the chart (Gantt tasks sharing a row); unique across the series"
       }
     ]
   },
@@ -5973,7 +5979,7 @@
         "name": "categories",
         "type": "string[]",
         "required": true,
-        "description": "Task names from top to bottom (the `categories` of the x axis)"
+        "description": "Rows from top to bottom (the `categories` of the x axis)"
       },
       {
         "name": "domain",
@@ -5999,7 +6005,19 @@
         "name": "name",
         "type": "string",
         "required": true,
-        "description": "Row name (unique)"
+        "description": "Name of the task (tooltip title; the row name when there is no `row`)"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "Identifier referenced by the `dependencies` of other tasks; the `name` by default (give ids when several tasks have the same name)"
+      },
+      {
+        "name": "row",
+        "type": "string",
+        "required": false,
+        "description": "Row of the task: several tasks can share one (a resource, a lane); the `name` by default, one row per task"
       },
       {
         "name": "start",
@@ -6041,7 +6059,7 @@
         "name": "dependencies",
         "type": "readonly string[]",
         "required": false,
-        "description": "Names of the tasks this one waits for (tooltip, and arrows from their ends)"
+        "description": "Tasks this one waits for, by `id` (or `name`): tooltip, and arrows from their ends to its start"
       }
     ]
   },
@@ -8784,13 +8802,19 @@
         "name": "price",
         "type": "number",
         "required": true,
-        "description": "Price of the hovered row"
+        "description": "Price of the hovered row; its lowest price when rows are aggregated into price buckets (rows thinner than 2 px)"
+      },
+      {
+        "name": "priceHigh",
+        "type": "number",
+        "required": true,
+        "description": "Highest price of the hovered row (equals `price` without aggregation)"
       },
       {
         "name": "size",
         "type": "number",
         "required": true,
-        "description": "Resting size of the cell"
+        "description": "Resting size of the cell (summed over the bucket's prices)"
       },
       {
         "name": "side",
@@ -9020,21 +9044,21 @@
         "name": "colorScale",
         "type": "OrderBookHeatmapScale",
         "required": false,
-        "default": "\"log\"",
-        "description": "Scale from sizes to colors: `log` reveals thin liquidity next to walls"
+        "default": "\"sqrt\"",
+        "description": "Scale from sizes to colors: `sqrt` keeps typical levels dim and lets significant liquidity glow, `linear` shows only the walls, `log` reveals thin liquidity next to them"
       },
       {
         "name": "contrast",
         "type": "number",
         "required": false,
         "default": "1",
-        "description": "Multiplies the sizes before the scale: above 1 brightens thin liquidity, below 1 keeps only the walls"
+        "description": "Multiplies the sizes before the scale: above 1 brightens thin liquidity (more of the field glows), below 1 keeps only the largest walls"
       },
       {
         "name": "maxSize",
         "type": "number",
         "required": false,
-        "description": "Size drawn with the hottest color; when omitted, the 98th percentile of the visible sizes (eased), so the whole ramp is used"
+        "description": "Size drawn with the hottest color (larger sizes saturate); when omitted, the 99th percentile of the visible non-empty cells (eased), so typical levels stay dark and only the top liquidity glows"
       },
       {
         "name": "colors",
@@ -9053,14 +9077,14 @@
         "name": "bubbleSize",
         "type": "number",
         "required": false,
-        "default": "28",
-        "description": "Largest bubble diameter, in pixels"
+        "default": "14",
+        "description": "Diameter of the largest bubble, in pixels (area ∝ volume, the smallest are 3 px dots)"
       },
       {
         "name": "bubbleVolume",
         "type": "number",
         "required": false,
-        "description": "Trade volume of the largest bubble; follows the data when omitted"
+        "description": "Trade volume of the largest bubble; when omitted, the largest visible trade (eased)"
       },
       {
         "name": "bestLines",
@@ -13447,14 +13471,28 @@
         "type": "string",
         "required": false,
         "default": "\"Buy limit {price}\"",
-        "description": "Order entry button, below the last price; `{price}` is replaced"
+        "description": "Buy limit order (at or below the last price); `{price}` is replaced"
       },
       {
         "name": "sellLimit",
         "type": "string",
         "required": false,
         "default": "\"Sell limit {price}\"",
-        "description": "Order entry button, above the last price; `{price}` is replaced"
+        "description": "Sell limit order (at or above the last price); `{price}` is replaced"
+      },
+      {
+        "name": "buyStop",
+        "type": "string",
+        "required": false,
+        "default": "\"Buy stop {price}\"",
+        "description": "Buy stop order (above the last price); `{price}` is replaced"
+      },
+      {
+        "name": "sellStop",
+        "type": "string",
+        "required": false,
+        "default": "\"Sell stop {price}\"",
+        "description": "Sell stop order (below the last price); `{price}` is replaced"
       },
       {
         "name": "orderHint",
@@ -13462,6 +13500,13 @@
         "required": false,
         "default": "\"Arrows move the price, Enter confirms, Escape cancels\"",
         "description": "Read aloud while a keyboard order is armed or a line is selected"
+      },
+      {
+        "name": "orderTypeHint",
+        "type": "string",
+        "required": false,
+        "default": "\"Alt+B or Alt+S switches between limit and stop\"",
+        "description": "Read aloud when a keyboard order is armed"
       },
       {
         "name": "orderCancelHint",
@@ -13645,7 +13690,7 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "A \"+\" button at the crosshair price, on the right of the price pane: clicking it reports a limit order (`orderCreate`) at that price. With the chart focused, `B` / `S` arm a buy / sell order at the crosshair price (or the last price), the arrows move it (Shift: ten ticks), Enter confirms and Escape cancels; `O` selects the draggable lines in turn to move them the same way, Delete cancels the `cancellable` ones"
+        "description": "A \"+\" button at the crosshair price, on the right of the price pane: clicking it reports a limit order (`orderCreate`) at that price, a buy below the last price and a sell above it (with Alt / Option held: the stop order of the other side). With the chart focused, `B` / `S` arm a buy / sell order at the crosshair price (or the last price), the arrows move it (Shift: ten ticks), Enter confirms and Escape cancels. The order is a limit when it waits for a better price (a buy at or below the last price, a sell at or above it), else a stop; `Alt+B` / `Alt+S` switch between limit and stop explicitly. `O` selects the draggable lines in turn to move them the same way, Delete cancels the `cancellable` ones"
       },
       {
         "name": "volumeProfile",
@@ -14670,6 +14715,12 @@
         "type": "\"buy\" | \"sell\"",
         "required": true,
         "description": "`buy` below the last price, `sell` above it (`B` / `S` with the keyboard)"
+      },
+      {
+        "name": "orderType",
+        "type": "TradingOrderType",
+        "required": true,
+        "description": "`limit` for a buy at or below the last price or a sell at or above it, `stop` otherwise (or as switched with Alt)"
       }
     ]
   },
@@ -14704,6 +14755,12 @@
         "description": "The line"
       }
     ]
+  },
+  "TradingOrderType": {
+    "source": "charts/src/engine/trading/types.ts",
+    "description": "Type of an order created on the chart",
+    "kind": "alias",
+    "type": "\"limit\" | \"stop\""
   },
   "TradingPaneIndicatorBase": {
     "source": "charts/src/engine/trading/types.ts",

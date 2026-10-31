@@ -20,7 +20,7 @@
       "pointer": "Molette pour zoomer sous le pointeur (Maj ou balayage horizontal pour défiler), glisser pour se déplacer avec inertie.",
       "axes": "Faites glisser l'axe des prix pour zoomer verticalement et l'axe du temps pour changer la largeur des bougies ; double-cliquez sur un axe pour le réinitialiser.",
       "keyboard": "Une fois le graphique sélectionné : les flèches déplacent le réticule barre par barre (Maj : dix barres) et annoncent les prix, + / − zooment, Début / Fin vont à la première / dernière barre, Suppr efface le dessin sélectionné, Ctrl / ⌘ + Z annule et Ctrl / ⌘ + Maj + Z rétablit une modification des dessins, Échap annule.",
-      "orders": "Avec orderEntry : B / S préparent un ordre limite d'achat / de vente au prix du réticule (ou au dernier cours), ↑ / ↓ le déplacent d'un pas de cotation (Maj : dix), Entrée le place et Échap l'abandonne. O / Maj + O sélectionnent tour à tour les lignes déplaçables ou annulables pour les déplacer de la même façon ; Suppr annule l'ordre sélectionné. Chaque étape est lue à voix haute et émet les mêmes événements que le pointeur (orderCreate, orderMove, orderCancel).",
+      "orders": "Avec orderEntry : B / S arment un ordre d’achat / de vente au prix du réticule (ou au dernier prix), ↑ / ↓ le déplacent d’un pas (Maj : dix), Entrée le place et Échap l’abandonne. Le type suit le prix : un achat sous le dernier prix ou une vente au-dessus est un ordre limite, un achat au-dessus ou une vente en dessous un ordre stop ; Alt+B / Alt+S basculent entre limite et stop. O / Maj + O sélectionnent tour à tour les lignes déplaçables ou annulables pour les déplacer de la même façon ; Suppr annule l’ordre sélectionné. Chaque étape, type compris, est lue à voix haute et émet les mêmes événements que le pointeur (orderCreate avec son orderType, orderMove, orderCancel).",
       "touch": "Sur écran tactile : glisser pour se déplacer, pincer pour zoomer."
     },
     "languages": {
@@ -95,7 +95,7 @@
     },
     "order-entry": {
       "title": "Saisie d'ordres",
-      "description": "Avec orderEntry, un bouton + suit le réticule à droite du panneau des prix : cliquez-le pour placer un ordre limite à ce prix (achat sous le dernier cours, vente au-dessus). Le clavier fait de même : donnez le focus au graphique (Tab), appuyez sur B ou S, ajustez le prix avec les flèches puis Entrée ; O sélectionne un ordre existant pour le déplacer ou l'annuler avec Suppr. Les ordres sont des lignes de prix déplaçables et annulables, conservées dans l'état React via onOrderCreate, onOrderMove et onOrderCancel."
+      "description": "Avec orderEntry, un bouton + suit le réticule à droite du panneau des prix : cliquez dessus pour placer un ordre limite à ce prix (achat sous le dernier prix, vente au-dessus), ou maintenez Alt (Option) pour l’ordre stop de l’autre sens. Le clavier fait de même : focalisez le graphique (Tab), appuyez sur B ou S, ajustez le prix avec les flèches puis Entrée ; l’ordre devient stop quand il franchit le dernier prix, et Alt+B / Alt+S basculent le type. O sélectionne un ordre existant pour le déplacer, Suppr l’annule. Les ordres sont des lignes de prix déplaçables et annulables gardées dans l’état React via onOrderCreate (avec orderType), onOrderMove et onOrderCancel ; quand des étiquettes se rencontrent à la même hauteur, celles de l’axe s’empilent avec un trait de rappel et les étiquettes d’ordres s’écartent."
     },
     "sessions": {
       "title": "Fuseaux horaires et séances",
@@ -189,7 +189,9 @@
       "stopLoss": "SL",
       "limitBuy": "Achat limite",
       "limitSell": "Vente limite",
-      "alert": "Alerte"
+      "alert": "Alerte",
+      "stopBuy": "Achat stop",
+      "stopSell": "Vente stop"
     },
     "buyMarker": "A {{quantity}}",
     "sellMarker": "V {{quantity}}",
@@ -254,7 +256,7 @@
     "orderModified": "Ordre déplacé de {{from}} à {{to}}",
     "orderCancelled": "Ordre à {{price}} annulé",
     "orderEntryAria": "Graphique 5 minutes du perpétuel BTCUSDT avec saisie d'ordres",
-    "orderEntryHint": "Survolez le graphique et cliquez le + à droite pour placer un ordre, ou donnez-lui le focus et appuyez sur B / S ; faites glisser une ligne pour la déplacer, × l'annule.",
+    "orderEntryHint": "Survolez le graphique et cliquez sur le + à droite pour placer un ordre limite (Alt pour un stop), ou focalisez le graphique et appuyez sur B / S ; faites glisser une ligne pour la déplacer, × l’annule.",
     "timeZone": "Fuseau horaire",
     "zones": {
       "America_New_York": "New York",
@@ -288,8 +290,12 @@
       "selectKeys": "O",
       "select": "Sélectionner l'ordre suivant",
       "removeKeys": "Suppr",
-      "remove": "Annuler l'ordre sélectionné"
-    }
+      "remove": "Annuler l'ordre sélectionné",
+      "typeKeys": "Alt+B Alt+S",
+      "type": "Basculer entre limite et stop"
+    },
+    "orderPlacedBuyStop": "Achat stop placé à {{price}}",
+    "orderPlacedSellStop": "Vente stop placée à {{price}}"
   },
   "api": {
     "TradingChartProps": {
@@ -352,7 +358,7 @@
       "ariaLabel": "Étiquette accessible ; construite à partir du symbole par défaut",
       "timeZone": "Fuseau horaire de l'axe du temps, des séparateurs de séance et des périodes du VWAP : un nom IANA (\"America/New_York\") ou \"UTC\" ; l'heure locale par défaut.",
       "sessionBreaks": "Lignes verticales en tirets au début de chaque jour (barres intrajournalières).",
-      "orderEntry": "Un bouton + au prix du réticule, à droite du panneau des prix : un clic signale un ordre limite (orderCreate). Graphique sélectionné, B / S préparent un achat / une vente, les flèches le déplacent, Entrée valide et Échap annule ; O sélectionne les lignes déplaçables pour les déplacer, Suppr annule les ordres annulables.",
+      "orderEntry": "Un bouton + au prix du réticule, à droite du panneau des prix : un clic signale un ordre limite (orderCreate), ou avec Alt maintenu l’ordre stop de l’autre sens. Graphique focalisé, B / S arment un ordre d’achat / de vente, les flèches le déplacent, Entrée valide et Échap annule ; l’ordre est limite quand il attend un meilleur prix que le dernier, stop sinon, et Alt+B / Alt+S basculent le type. O sélectionne les lignes déplaçables pour les déplacer, Suppr annule celles qui sont annulables.",
       "volumeProfile": "Volume par prix des barres visibles, avec son point de contrôle et sa zone de valeur (true pour les valeurs par défaut).",
       "drawingToolbar": "Barre d'outils flottante au-dessus du dessin sélectionné (couleur, épaisseur, style, remplissage, verrou, suppression)."
     },
@@ -494,13 +500,16 @@
       "short": "Outil de position vendeuse.",
       "replay": "Badge de la relecture ; {time} est remplacé.",
       "replayHint": "Indication pendant le choix de la première barre d'une relecture.",
-      "buyLimit": "Bouton de saisie d'ordre sous le dernier cours ; {price} est remplacé.",
-      "sellLimit": "Bouton de saisie d'ordre au-dessus du dernier cours ; {price} est remplacé.",
+      "buyLimit": "Ordre d’achat limite (au dernier prix ou en dessous) ; {price} est remplacé.",
+      "sellLimit": "Ordre de vente limite (au dernier prix ou au-dessus) ; {price} est remplacé.",
       "orderHint": "Lu à voix haute pendant qu'un ordre clavier est préparé ou une ligne sélectionnée. Par défaut \"Arrows move the price, Enter confirms, Escape cancels\".",
       "orderCancelHint": "Lu quand la ligne sélectionnée peut être annulée. Par défaut \"Delete cancels the order\".",
       "orderLine": "Ligne sélectionnée au clavier ; {title} et {price} sont remplacés. Par défaut \"{title} at {price}\".",
       "orderPlaced": "Lu quand un ordre est placé ou déplacé ; {price} est remplacé. Par défaut \"Order placed at {price}\".",
-      "orderCancelled": "Lu quand un ordre clavier est abandonné ou un ordre annulé. Par défaut \"Order cancelled\"."
+      "orderCancelled": "Lu quand un ordre clavier est abandonné ou un ordre annulé. Par défaut \"Order cancelled\".",
+      "buyStop": "Ordre d’achat stop (au-dessus du dernier prix) ; {price} est remplacé.",
+      "sellStop": "Ordre de vente stop (sous le dernier prix) ; {price} est remplacé.",
+      "orderTypeHint": "Lu à voix haute quand un ordre est armé au clavier, pour indiquer comment basculer entre limite et stop."
     },
     "TradingCrosshairEvent": {
       "index": "Index de la bougie survolée (peut dépasser la dernière)",
@@ -548,7 +557,8 @@
     },
     "TradingOrderCreateEvent": {
       "price": "Prix de l'ordre (arrondi à la précision des prix).",
-      "side": "buy sous le dernier cours, sell au-dessus (au clavier : la touche pressée, B ou S)."
+      "side": "buy sous le dernier prix, sell au-dessus avec le + (avec Alt : l’autre sens, en stop) ; au clavier, la touche pressée, B ou S.",
+      "orderType": "limit pour un achat au prix courant ou en dessous, ou une vente au prix courant ou au-dessus (l’ordre attend un meilleur prix), stop sinon ; Alt bascule le type, au clavier (Alt+B / Alt+S) ou avec le + (maintenu pendant le clic)."
     },
     "TradingOrderCancelEvent": {
       "id": "Id de la ligne.",

@@ -18,6 +18,12 @@ interface ItemBase {
   version: number;
   /** 0-1; below 1 the item is drawn without writing depth */
   opacity: number;
+  /**
+   * Draws only a part of the item (GPU backends): `first` and `count` in
+   * indices for meshes, in instances for points. Several parts of an item
+   * interleave with other items (depth sorting without OIT).
+   */
+  range?: { first: number; count: number };
 }
 
 /** Shapes of the points (`PointsItem.style`) */
@@ -41,6 +47,11 @@ export interface PointsItem extends ItemBase {
    * drawn dots get denser to keep the look of the cloud
    */
   thinned?: number;
+  /**
+   * Changes when only the order of the points changed (sorted back to
+   * front): the vertex buffer is rewritten, same length
+   */
+  order?: number;
 }
 
 /** Lit triangles (surfaces, bars) */
@@ -95,6 +106,11 @@ export interface Frame3D {
   fog: Rgba;
   /** Scale of the light of the additive points (tone mapped when possible) */
   exposure: number;
+  /**
+   * The camera or the data is moving (drag, wheel, animation, auto-rotation,
+   * live data): the CPU backend may trade quality for speed
+   */
+  interacting?: boolean;
 }
 
 export interface Renderer3D {

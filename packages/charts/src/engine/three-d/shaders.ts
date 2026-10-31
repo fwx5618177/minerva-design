@@ -14,15 +14,18 @@
 //   fog       background color (far points fade towards it), exposure of the
 //             additive light
 //
-// Points and meshes have a second fragment entry point writing the targets
-// of the order-independent transparency (`oit.ts`): `fsOit` in WGSL, the
-// `oit` variant of the GLSL programs (WebGL2).
+// Points and meshes have two more fragment entry points for the hybrid
+// order-independent transparency (`oit.ts`): `fsOit` (the four targets) and
+// `fsFront` (the depth of the front transparent layer) in WGSL, the `oit`
+// and `front` variants of the GLSL programs (WebGL2). Elsewhere, additive
+// points are screen blended (`screenTone`: their light is tone mapped as it
+// adds up, no clipping on 8-bit framebuffers).
 //
 // Point sizes are CSS pixels times the device pixel ratio (billboards: no
 // point size limit). Dots thinner than the smallest drawn radius keep their
 // energy: their alpha scales with the area they would cover.
 
-import { GLSL_OIT, WGSL_OIT } from "./oit";
+import { GLSL_FRONT, GLSL_OIT, WGSL_OIT, glslScreen } from "./oit";
 import { POINT_SPHERE, type Frame3D, type Item3D } from "./render-types";
 
 export { writesDepth } from "./render-types";
@@ -187,12 +190,17 @@ fn shade(in: Out) -> vec4f {
 
 @fragment
 fn fs(in: Out) -> @location(0) vec4f {
-  return shade(in);
+  return screenLight(shade(in));
 }
 
 @fragment
 fn fsOit(in: Out) -> Oit {
-  return oit(shade(in), in.fog);
+  return oit(shade(in), in.fog, in.position);
+}
+
+@fragment
+fn fsFront(in: Out) -> @location(0) vec4f {
+  return frontDepth(shade(in), in.fog);
 }
 `;
 
@@ -238,7 +246,12 @@ fn fs(in: Out) -> @location(0) vec4f {
 
 @fragment
 fn fsOit(in: Out) -> Oit {
-  return oit(shade(in), depthCue(in.world));
+  return oit(shade(in), depthCue(in.world), in.position);
+}
+
+@fragment
+fn fsFront(in: Out) -> @location(0) vec4f {
+  return frontDepth(shade(in), depthCue(in.world));
 }
 `;
 
@@ -457,24 +470,32 @@ export interface GlslSource {
   fragment: string;
 }
 
+/**
+ * Output of a GLSL program: the color (`plain`), the transparency targets
+ * (`oit`, WebGL2) or the depth of the front transparent layer (`front`, WebGL2)
+ */
+type GlslOutput = "plain" | "oit" | "front";
+
 const glsl = (
   vs: string,
   fs: string,
   version: 1 | 2,
-  oit = false,
+  output: GlslOutput = "plain",
 ): GlslSource =>
   version === 2
     ? {
         vertex: `#version 300 es\n#define attribute in\n#define varying out\n${GLSL_UNIFORMS}${vs}`,
         fragment: `#version 300 es\nprecision highp float;\n#define varying in\n${GLSL_UNIFORMS}${
-          oit
+          output === "oit"
             ? GLSL_OIT
-            : "out vec4 fragColor;\n#define EMIT(c, d) fragColor = (c)\n"
+            : output === "front"
+              ? GLSL_FRONT
+              : `out vec4 fragColor;\n${glslScreen("fragColor")}`
         }${fs}`,
       }
     : {
         vertex: `${GLSL_UNIFORMS}${vs}`,
-        fragment: `${PRECISION}#define EMIT(c, d) gl_FragColor = (c)\n${GLSL_UNIFORMS}${fs}`,
+        fragment: `${PRECISION}${GLSL_UNIFORMS}${glslScreen("gl_FragColor")}${fs}`,
       };
 
 /** GLSL programs of the three primitives for WebGL (1) or WebGL2 */
@@ -486,11 +507,16 @@ export const glslPrograms = (version: 1 | 2) => ({
 
 /**
  * Variants of the points and meshes writing the targets of the
- * order-independent transparency (WebGL2)
+ * order-independent transparency (WebGL2), and the front depth of the
+ * transparent layers (`front`)
  */
 export const glslOitPrograms = () => ({
-  points: glsl(GLSL_POINTS_VS, GLSL_POINTS_FS, 2, true),
-  mesh: glsl(GLSL_MESH_VS, GLSL_MESH_FS, 2, true),
+  points: glsl(GLSL_POINTS_VS, GLSL_POINTS_FS, 2, "oit"),
+  mesh: glsl(GLSL_MESH_VS, GLSL_MESH_FS, 2, "oit"),
+  front: {
+    points: glsl(GLSL_POINTS_VS, GLSL_POINTS_FS, 2, "front"),
+    mesh: glsl(GLSL_MESH_VS, GLSL_MESH_FS, 2, "front"),
+  },
 });
 
 /** Attribute names of every program, bound to locations 0, 1, ... */

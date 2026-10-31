@@ -548,19 +548,22 @@ export interface OrderBookHeatmapOptions extends OrderBookCommonOptions {
   /** Visible price span (top − bottom); fits the best bid / ask of the window when omitted */
   priceSpan?: number;
   /**
-   * Scale from sizes to colors: `log` reveals thin liquidity next to walls
-   * @default "log"
+   * Scale from sizes to colors: `sqrt` keeps typical levels dim and lets
+   * significant liquidity glow, `linear` shows only the walls, `log`
+   * reveals thin liquidity next to them
+   * @default "sqrt"
    */
   colorScale?: OrderBookHeatmapScale;
   /**
-   * Multiplies the sizes before the scale: above 1 brightens thin liquidity,
-   * below 1 keeps only the walls
+   * Multiplies the sizes before the scale: above 1 brightens thin liquidity
+   * (more of the field glows), below 1 keeps only the largest walls
    * @default 1
    */
   contrast?: number;
   /**
-   * Size drawn with the hottest color; when omitted, the 98th percentile of
-   * the visible sizes (eased), so the whole ramp is used
+   * Size drawn with the hottest color (larger sizes saturate); when
+   * omitted, the 99th percentile of the visible non-empty cells (eased), so
+   * typical levels stay dark and only the top liquidity glows
    */
   maxSize?: number;
   /**
@@ -576,11 +579,15 @@ export interface OrderBookHeatmapOptions extends OrderBookCommonOptions {
    */
   bubbles?: boolean;
   /**
-   * Largest bubble diameter, in pixels
-   * @default 28
+   * Diameter of the largest bubble, in pixels (area ∝ volume, the smallest
+   * are 3 px dots)
+   * @default 14
    */
   bubbleSize?: number;
-  /** Trade volume of the largest bubble; follows the data when omitted */
+  /**
+   * Trade volume of the largest bubble; when omitted, the largest visible
+   * trade (eased)
+   */
   bubbleVolume?: number;
   /**
    * Best bid and ask lines
@@ -624,9 +631,14 @@ export interface OrderBookHeatmapOptions extends OrderBookCommonOptions {
 export interface OrderBookHeatmapHoverEvent {
   /** Start time of the hovered column */
   time: number;
-  /** Price of the hovered row */
+  /**
+   * Price of the hovered row; its lowest price when rows are aggregated
+   * into price buckets (rows thinner than 2 px)
+   */
   price: number;
-  /** Resting size of the cell */
+  /** Highest price of the hovered row (equals `price` without aggregation) */
+  priceHigh: number;
+  /** Resting size of the cell (summed over the bucket's prices) */
   size: number;
   /** Side of the cell (`null` inside the spread) */
   side: OrderBookSide | null;

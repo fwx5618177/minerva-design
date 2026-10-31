@@ -16,9 +16,27 @@ interface DefaultsState {
 // build, a Web Components bundle, ...) shares the same default.
 const KEY = Symbol.for("minerva-design.charts.defaults");
 
+/**
+ * Lets a page choose the default before any copy of the engine has loaded
+ * (e.g. a tiny boot script restoring a saved choice without importing the
+ * charts): `globalThis[Symbol.for("minerva-design.charts.defaultRenderer")]
+ * = "canvas2d"`. Read once, when the first engine copy creates the shared
+ * state; afterwards use `setDefaultChartRenderer`. Invalid values mean "auto".
+ */
+const SEED = Symbol.for("minerva-design.charts.defaultRenderer");
+
 const state = (): DefaultsState => {
-  const host = globalThis as unknown as Record<symbol, DefaultsState>;
-  return (host[KEY] ??= { renderer: "auto", listeners: new Set() });
+  const host = globalThis as unknown as Record<symbol, unknown>;
+  let current = host[KEY] as DefaultsState | undefined;
+  if (!current) {
+    const seed = host[SEED];
+    current = {
+      renderer: PREFERENCES.find((option) => option === seed) ?? "auto",
+      listeners: new Set(),
+    };
+    host[KEY] = current;
+  }
+  return current;
 };
 
 const PREFERENCES: readonly ChartRendererPreference[] = [

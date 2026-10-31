@@ -1,12 +1,13 @@
 // WebGPU backend of the 3D charts: 4× MSAA, a depth buffer, one draw per
 // item (instanced billboards / segments, indexed triangles). With blended
-// items (transparent meshes, blended or additive points), three passes:
-// the opaque items; the blended ones into the float targets of the
-// weighted blended order-independent transparency (`oit.ts`, multisampled,
-// testing the opaque depth, resolved); then their composite and the lines.
+// items (transparent meshes, blended or additive points), four passes: the
+// opaque items; the depth of the front transparent layer (r16float, `min`
+// blending); the blended items into the four float targets of the hybrid
+// order-independent transparency (`oit.ts`, multisampled, testing the
+// opaque depth, resolved); then their composite and the lines.
 
 import type { RendererLostHandler } from "../renderers/types";
-import { WGSL_COMPOSITE } from "./oit";
+import { FRONT_CLEAR, WGSL_COMPOSITE } from "./oit";
 import {
   POINT_STRIDE,
   SEGMENT_STRIDE,
@@ -38,6 +39,10 @@ const TEXTURE_RENDER_ATTACHMENT = 0x10;
 const SAMPLES = 4;
 /** Format of the transparency targets (renderable, blendable, resolvable) */
 const OIT_FORMAT: GPUTextureFormat = "rgba16float";
+/** Format of the front depth of the transparent layers (blendable: `min`) */
+const FRONT_FORMAT: GPUTextureFormat = "r16float";
+/** Targets of the transparency pass (`oit.ts`) */
+const OIT_TARGETS = 4;
 
 interface ItemResources {
   version: number;
@@ -113,9 +118,14 @@ export const createWebGpu3D = async (
       operation: "add",
     },
   };
-  // additive points: the colors add up, the coverage composites as usual
+  // additive points: their light screen blended (tone mapped as it adds
+  // up, `screenTone`), the coverage composites as usual
   const additive: GPUBlendState = {
-    color: { srcFactor: "one", dstFactor: "one", operation: "add" },
+    color: {
+      srcFactor: "one",
+      dstFactor: "one-minus-src",
+      operation: "add",
+    },
     alpha: blend.alpha,
   };
   // transparency targets: plain sums
@@ -123,35 +133,61 @@ export const createWebGpu3D = async (
     color: { srcFactor: "one", dstFactor: "one", operation: "add" },
     alpha: { srcFactor: "one", dstFactor: "one", operation: "add" },
   };
+  // front depth: the nearest
+  const nearest: GPUBlendState = {
+    color: { srcFactor: "one", dstFactor: "one", operation: "min" },
+    alpha: { srcFactor: "one", dstFactor: "one", operation: "min" },
+  };
+  // the front depth texture of the transparency pass (group 1)
+  const frontLayout = device.createBindGroupLayout({
+    entries: [
+      {
+        binding: 0,
+        visibility: STAGE_FRAGMENT,
+        texture: { sampleType: "unfilterable-float" },
+      },
+    ],
+  });
+  const oitLayout = device.createPipelineLayout({
+    bindGroupLayouts: [bindGroupLayout, frontLayout],
+  });
   const pipeline = (
     code: string,
     buffers: GPUVertexBufferLayout[],
     topology: GPUPrimitiveTopology,
     depthWrite: boolean,
     blending: GPUBlendState = blend,
-    oit = false,
+    mode: "plain" | "oit" | "front" = "plain",
   ) => {
     const module = device.createShaderModule({ code });
     return device.createRenderPipeline({
-      layout,
+      layout: mode === "oit" ? oitLayout : layout,
       vertex: { module, entryPoint: "vs", buffers },
       fragment: {
         module,
-        entryPoint: oit ? "fsOit" : "fs",
-        targets: oit
-          ? [
-              { format: OIT_FORMAT, blend: sum },
-              { format: OIT_FORMAT, blend: sum },
-            ]
-          : [{ format, blend: blending }],
+        entryPoint:
+          mode === "oit" ? "fsOit" : mode === "front" ? "fsFront" : "fs",
+        targets:
+          mode === "oit"
+            ? Array.from({ length: OIT_TARGETS }, () => ({
+                format: OIT_FORMAT,
+                blend: sum,
+              }))
+            : mode === "front"
+              ? [{ format: FRONT_FORMAT, blend: nearest }]
+              : [{ format, blend: blending }],
       },
       primitive: { topology, cullMode: "none" },
-      depthStencil: {
-        format: "depth24plus",
-        depthWriteEnabled: depthWrite,
-        depthCompare: "less-equal",
-      },
-      multisample: { count: SAMPLES },
+      // the front pass has no depth (`oit.ts`) and one sample
+      depthStencil:
+        mode === "front"
+          ? undefined
+          : {
+              format: "depth24plus",
+              depthWriteEnabled: depthWrite,
+              depthCompare: "less-equal",
+            },
+      multisample: { count: mode === "front" ? 1 : SAMPLES },
     });
   };
   const pointBuffers: GPUVertexBufferLayout[] = [
@@ -217,11 +253,12 @@ export const createWebGpu3D = async (
     return variants[writesDepth(item) ? variants.length - 1 : 0];
   };
 
-  // order-independent transparency: validated once (rgba16float targets are
-  // core, but a failing driver falls back to the sorted blending)
+  // order-independent transparency: validated once (rgba16float and
+  // r16float targets are core, but a failing driver falls back to the
+  // sorted blending)
   device.pushErrorScope("validation");
   const compositeLayout = device.createBindGroupLayout({
-    entries: [0, 1].map((binding) => ({
+    entries: Array.from({ length: OIT_TARGETS }, (_, binding) => ({
       binding,
       visibility: STAGE_FRAGMENT,
       texture: { sampleType: "unfilterable-float" as const },
@@ -235,9 +272,34 @@ export const createWebGpu3D = async (
       "triangle-strip",
       false,
       blend,
-      true,
+      "oit",
     ),
-    mesh: pipeline(WGSL_MESH, meshBuffers, "triangle-list", false, blend, true),
+    mesh: pipeline(
+      WGSL_MESH,
+      meshBuffers,
+      "triangle-list",
+      false,
+      blend,
+      "oit",
+    ),
+    front: {
+      points: pipeline(
+        WGSL_POINTS,
+        pointBuffers,
+        "triangle-strip",
+        false,
+        blend,
+        "front",
+      ),
+      mesh: pipeline(
+        WGSL_MESH,
+        meshBuffers,
+        "triangle-list",
+        false,
+        blend,
+        "front",
+      ),
+    },
     composite: device.createRenderPipeline({
       layout: device.createPipelineLayout({
         bindGroupLayouts: [compositeLayout],
@@ -266,20 +328,21 @@ export const createWebGpu3D = async (
     depth: GPUTexture;
     /** Transparency targets, created on first use */
     oit: {
-      accum: GPUTexture;
-      extra: GPUTexture;
-      accumResolved: GPUTexture;
-      extraResolved: GPUTexture;
+      /** front color, accum, extra, behind (multisampled) */
+      samples: GPUTexture[];
+      /** Their resolved textures, read by the composite */
+      resolved: GPUTexture[];
+      /** Depth of the front transparent layer (single-sampled) */
+      front: GPUTexture;
+      frontBindGroup: GPUBindGroup;
       bindGroup: GPUBindGroup;
     } | null;
   } | null = null;
   const destroyOit = () => {
     const oit = targets?.oit;
     if (!oit) return;
-    oit.accum.destroy();
-    oit.extra.destroy();
-    oit.accumResolved.destroy();
-    oit.extraResolved.destroy();
+    for (const texture of [...oit.samples, ...oit.resolved, oit.front])
+      texture.destroy();
   };
   const renderTargets = () => {
     const width = canvas.width;
@@ -310,29 +373,32 @@ export const createWebGpu3D = async (
   };
   const oitTargets = (t: NonNullable<typeof targets>) => {
     if (t.oit) return t.oit;
-    const texture = (samples: number) =>
+    const texture = (samples: number, kind: GPUTextureFormat = OIT_FORMAT) =>
       device.createTexture({
         size: [t.width, t.height],
         sampleCount: samples,
-        format: OIT_FORMAT,
+        format: kind,
         usage:
           samples > 1
             ? TEXTURE_RENDER_ATTACHMENT
             : TEXTURE_RENDER_ATTACHMENT | TEXTURE_BINDING,
       });
-    const accumResolved = texture(1);
-    const extraResolved = texture(1);
+    const resolved = Array.from({ length: OIT_TARGETS }, () => texture(1));
+    const front = texture(1, FRONT_FORMAT);
     t.oit = {
-      accum: texture(SAMPLES),
-      extra: texture(SAMPLES),
-      accumResolved,
-      extraResolved,
+      samples: Array.from({ length: OIT_TARGETS }, () => texture(SAMPLES)),
+      resolved,
+      front,
+      frontBindGroup: device.createBindGroup({
+        layout: frontLayout,
+        entries: [{ binding: 0, resource: front.createView() }],
+      }),
       bindGroup: device.createBindGroup({
         layout: compositeLayout,
-        entries: [
-          { binding: 0, resource: accumResolved.createView() },
-          { binding: 1, resource: extraResolved.createView() },
-        ],
+        entries: resolved.map((r, binding) => ({
+          binding,
+          resource: r.createView(),
+        })),
       }),
     };
     return t.oit;
@@ -370,12 +436,9 @@ export const createWebGpu3D = async (
   const upload = (item: Item3D): ItemResources => {
     let res = resources.get(item.key);
     if (res && res.version === item.version && res.kind === item.kind) {
-      // same mesh, triangles in a new order (transparent, sorted by depth)
-      if (
-        item.kind === "mesh" &&
-        res.index &&
-        (item.order ?? 0) !== res.order
-      ) {
+      // same buffers in a new order (sorted back to front): rewritten
+      const order = item.kind === "lines" ? 0 : (item.order ?? 0);
+      if (item.kind === "mesh" && res.index && order !== res.order) {
         const { indices } = item;
         device.queue.writeBuffer(
           res.index,
@@ -384,7 +447,10 @@ export const createWebGpu3D = async (
           indices.byteOffset,
           indices.byteLength,
         );
-        res.order = item.order ?? 0;
+        res.order = order;
+      } else if (item.kind === "points" && res.vertex && order !== res.order) {
+        device.queue.writeBuffer(res.vertex, 0, item.data);
+        res.order = order;
       }
       return res;
     }
@@ -405,7 +471,7 @@ export const createWebGpu3D = async (
         kind: item.kind,
         vertex,
         index,
-        order: item.kind === "mesh" ? (item.order ?? 0) : 0,
+        order: item.kind === "lines" ? 0 : (item.order ?? 0),
         uniform,
         bindGroup: device.createBindGroup({
           layout: bindGroupLayout,
@@ -418,7 +484,7 @@ export const createWebGpu3D = async (
       res.kind = item.kind;
       res.vertex = vertex;
       res.index = index;
-      res.order = item.kind === "mesh" ? (item.order ?? 0) : 0;
+      res.order = item.kind === "lines" ? 0 : (item.order ?? 0);
     }
     return res;
   };
@@ -440,13 +506,19 @@ export const createWebGpu3D = async (
       const encoder = device.createCommandEncoder();
       const screen = context.getCurrentTexture().createView();
       const seen = new Set<string>();
-      /** Draws an item; false when it has nothing to draw */
+      /** Draws an item (or its `range`) */
       const draw = (
         pass: GPURenderPassEncoder,
         item: Item3D,
         chosen: GPURenderPipeline,
+        front?: GPUBindGroup,
       ) => {
-        const count = item.kind === "mesh" ? item.indices.length : item.count;
+        const total = item.kind === "mesh" ? item.indices.length : item.count;
+        const range = item.kind === "lines" ? undefined : item.range;
+        const first = range ? Math.max(0, Math.min(total, range.first)) : 0;
+        const count = range
+          ? Math.max(0, Math.min(total - first, range.count))
+          : total;
         if (count <= 0) return;
         const res = upload(item);
         if (!res.vertex) return;
@@ -457,13 +529,14 @@ export const createWebGpu3D = async (
         );
         pass.setPipeline(chosen);
         pass.setBindGroup(0, res.bindGroup);
+        if (front) pass.setBindGroup(1, front);
         pass.setVertexBuffer(0, res.vertex);
         if (item.kind === "mesh") {
           if (!res.index) return;
           pass.setIndexBuffer(res.index, "uint32");
-          pass.drawIndexed(count);
+          pass.drawIndexed(count, 1, first);
         } else {
-          pass.draw(4, count);
+          pass.draw(4, count, 0, first);
         }
       };
 
@@ -493,25 +566,41 @@ export const createWebGpu3D = async (
       main.end();
 
       if (blended) {
-        // blended items, in any order, into the transparency targets
         const oit = oitTargets(t);
-        const transparent = encoder.beginRenderPass({
+        // the depth of the front transparent layer: the nearest visible
+        // fragment of the non-additive blended items
+        const frontPass = encoder.beginRenderPass({
           colorAttachments: [
             {
-              view: oit.accum.createView(),
-              resolveTarget: oit.accumResolved.createView(),
-              clearValue: { r: 0, g: 0, b: 0, a: 0 },
+              view: oit.front.createView(),
+              clearValue: {
+                r: FRONT_CLEAR,
+                g: FRONT_CLEAR,
+                b: FRONT_CLEAR,
+                a: FRONT_CLEAR,
+              },
               loadOp: "clear",
-              storeOp: "discard",
-            },
-            {
-              view: oit.extra.createView(),
-              resolveTarget: oit.extraResolved.createView(),
-              clearValue: { r: 0, g: 0, b: 0, a: 0 },
-              loadOp: "clear",
-              storeOp: "discard",
+              storeOp: "store",
             },
           ],
+        });
+        for (const item of ordered) {
+          if (drawRank(item) !== 2 || item.kind === "lines") continue;
+          if (item.kind === "points" && item.additive) continue;
+          seen.add(item.key);
+          draw(frontPass, item, oitPipelines.front[item.kind]);
+        }
+        frontPass.end();
+
+        // blended items, in any order, into the transparency targets
+        const transparent = encoder.beginRenderPass({
+          colorAttachments: oit.samples.map((texture, i) => ({
+            view: texture.createView(),
+            resolveTarget: oit.resolved[i]!.createView(),
+            clearValue: { r: 0, g: 0, b: 0, a: 0 },
+            loadOp: "clear" as const,
+            storeOp: "discard" as const,
+          })),
           depthStencilAttachment: {
             view: t.depth.createView(),
             depthReadOnly: true,
@@ -520,7 +609,7 @@ export const createWebGpu3D = async (
         for (const item of ordered) {
           if (drawRank(item) !== 2 || item.kind === "lines") continue;
           seen.add(item.key);
-          draw(transparent, item, oitPipelines[item.kind]);
+          draw(transparent, item, oitPipelines[item.kind], oit.frontBindGroup);
         }
         transparent.end();
 

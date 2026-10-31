@@ -127,7 +127,11 @@ describe("TradingChart", () => {
     key("s");
     key("ArrowUp");
     key("Enter");
-    expect(onOrderCreate).toHaveBeenCalledWith({ price: 220.01, side: "sell" });
+    expect(onOrderCreate).toHaveBeenCalledWith({
+      price: 220.01,
+      side: "sell",
+      orderType: "limit",
+    });
   });
 
   it("forwards the drawing, replay and view methods of the handle", async () => {

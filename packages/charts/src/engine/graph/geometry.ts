@@ -118,12 +118,16 @@ const corner = (
 
 /**
  * Orthogonal path through waypoints: along the flow axis to the middle,
- * across, then along the axis again, with rounded corners
+ * across, then along the axis again, with rounded corners. `lane` moves the
+ * crossing segments of a route that sits `lane` units off to the + side of
+ * the cross axis: such routes turn earlier when heading to the + side (later
+ * otherwise), so parallel routes nest instead of crossing each other
  */
 export const orthogonalPath = (
   points: readonly number[],
   vertical: boolean,
   radius: number,
+  lane = 0,
 ): number[] => {
   const corners: number[] = [points[0], points[1]];
   for (let i = 2; i < points.length; i += 2) {
@@ -131,12 +135,19 @@ export const orthogonalPath = (
     const y0 = points[i - 1];
     const x1 = points[i];
     const y1 = points[i + 1];
-    if (Math.abs(vertical ? x1 - x0 : y1 - y0) > 0.5) {
+    const across = vertical ? x1 - x0 : y1 - y0;
+    if (Math.abs(across) > 0.5) {
+      const along = vertical ? y1 - y0 : x1 - x0;
+      const limit = Math.max(0, Math.abs(along) / 2 - radius);
+      const shift = Math.max(
+        -limit,
+        Math.min(limit, -lane * Math.sign(across) * Math.sign(along)),
+      );
       if (vertical) {
-        const my = (y0 + y1) / 2;
+        const my = (y0 + y1) / 2 + shift;
         corners.push(x0, my, x1, my);
       } else {
-        const mx = (x0 + x1) / 2;
+        const mx = (x0 + x1) / 2 + shift;
         corners.push(mx, y0, mx, y1);
       }
     }
@@ -215,6 +226,58 @@ export const loopPath = (
     y + Math.sin(angle + wide) * reach,
     x + Math.cos(a1) * end,
     y + Math.sin(a1) * end,
+  );
+  return out;
+};
+
+/**
+ * Self-loop on a side of a w × h box centered at (x, y): the side hit by the
+ * direction `angle`, with feet `spread` units apart along the side (clamped
+ * to it), reaching `reach` units beyond it. The end stops `endGap` units off
+ * the side (room for an arrowhead pointing into the box)
+ */
+export const boxLoopPath = (
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  angle: number,
+  reach: number,
+  spread: number,
+  endGap = 0,
+): number[] => {
+  const c = Math.cos(angle);
+  const s = Math.sin(angle);
+  const leftRight = Math.abs(c) * h >= Math.abs(s) * w;
+  const nx = leftRight ? (c < 0 ? -1 : 1) : 0;
+  const ny = leftRight ? 0 : s < 0 ? -1 : 1;
+  // tangent: the normal turned a quarter clockwise
+  const tx = -ny;
+  const ty = nx;
+  const half = leftRight ? h / 2 : w / 2;
+  const depth = leftRight ? w / 2 : h / 2;
+  const sp = Math.min(spread / 2, half * 0.85);
+  const dist = boundaryDistance(true, w, h, c, s);
+  const u = Math.max(
+    -(half - sp),
+    Math.min(half - sp, c * dist * tx + s * dist * ty),
+  );
+  const ax = x + nx * depth + tx * (u - sp);
+  const ay = y + ny * depth + ty * (u - sp);
+  const bx = x + nx * (depth + endGap) + tx * (u + sp);
+  const by = y + ny * (depth + endGap) + ty * (u + sp);
+  const lift = reach * 1.33;
+  const out = [ax, ay];
+  cubicPoints(
+    out,
+    ax,
+    ay,
+    ax + nx * lift - tx * sp * 0.6,
+    ay + ny * lift - ty * sp * 0.6,
+    bx + nx * lift + tx * sp * 0.6,
+    by + ny * lift + ty * sp * 0.6,
+    bx,
+    by,
   );
   return out;
 };

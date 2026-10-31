@@ -93,6 +93,32 @@ describe("default chart renderer", () => {
     off();
   });
 
+  it("starts from a default seeded before any engine copy loaded", async () => {
+    const host = globalThis as unknown as Record<symbol, unknown>;
+    const key = Symbol.for("minerva-design.charts.defaults");
+    const seed = Symbol.for("minerva-design.charts.defaultRenderer");
+    const shared = host[key];
+    const fresh = async (value: unknown) => {
+      delete host[key];
+      host[seed] = value;
+      vi.resetModules();
+      return (await import("./defaults")).getDefaultChartRenderer();
+    };
+    try {
+      expect(await fresh("canvas2d")).toBe("canvas2d");
+      expect(await fresh("webgl")).toBe("webgl");
+      expect(await fresh("vulkan")).toBe("auto");
+      expect(await fresh(undefined)).toBe("auto");
+      // read once: an existing state ignores later seeds
+      setDefaultChartRenderer("webgl2");
+      host[seed] = "canvas2d";
+      expect(getDefaultChartRenderer()).toBe("webgl2");
+    } finally {
+      delete host[seed];
+      host[key] = shared;
+    }
+  });
+
   it("resolves auto (or no preference) through the default", () => {
     expect(resolveRendererPreference(undefined)).toBe("auto");
     expect(resolveRendererPreference("auto")).toBe("auto");

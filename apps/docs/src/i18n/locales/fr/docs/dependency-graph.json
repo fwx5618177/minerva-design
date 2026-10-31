@@ -14,11 +14,11 @@
   "demos": {
     "packages": {
       "title": "Dépendances de paquets",
-      "description": "Les paquets d’un monorepo, des applications jusqu’aux jetons de design et à l’outillage. Les dépendances de développement sont en pointillés ; survolez un paquet pour voir tout ce dont il dépend et tout ce qui dépend de lui."
+      "description": "Les paquets d’un monorepo, des applications jusqu’aux jetons de design et à l’outillage. Les dépendances de développement sont en pointillés ; survolez un paquet pour voir tout ce dont il dépend et tout ce qui dépend de lui. utils et i18n dépendent l’un de l’autre : une dépendance circulaire, tracée en rouge par deux routes distinctes."
     },
     "pipeline": {
       "title": "Chaîne CI/CD",
-      "description": "Une chaîne de build de gauche à droite avec des connecteurs orthogonaux. Les groupes colorent les jobs selon leur statut (la légende peut en masquer), la valeur des nœuds est leur durée, et criticalPath met en avant la plus longue chaîne de jobs, recalculée avec criticalPath() pour le résumé."
+      "description": "Une chaîne de build de gauche à droite avec des connecteurs orthogonaux. Les groupes colorent les jobs selon leur statut (la légende peut en masquer), la valeur des nœuds est leur durée, et criticalPath met en avant la plus longue chaîne de jobs, recalculée avec criticalPath() pour le résumé. Deux artefacts vont du build de l’application au job de packaging (les arêtes parallèles ont chacune leur tracé), et les tests visuels en échec se relancent eux-mêmes (une boucle)."
     },
     "lineage": {
       "title": "Amont et aval",
@@ -63,6 +63,7 @@
       "tooling": "Outillage"
     },
     "devDependency": "dépendance de développement",
+    "circularDependency": "dépendance circulaire",
     "packagesAria": "Dépendances entre les paquets d’un monorepo",
     "tasks": {
       "install": "Installation",
@@ -85,6 +86,11 @@
       "pending": "En attente"
     },
     "taskSubtitle": "{{status}} · {{minutes}} min",
+    "edgeKinds": {
+      "bundle": "bundle web",
+      "types": "déclarations de types",
+      "retry": "nouvel essai"
+    },
     "showCritical": "Mettre en avant le chemin critique",
     "pipelineAria": "Chaîne CI/CD : jobs, dépendances et statuts",
     "criticalSummary": "Chemin critique : {{minutes}} min — {{path}}",

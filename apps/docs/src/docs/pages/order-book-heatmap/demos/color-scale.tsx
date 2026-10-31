@@ -16,7 +16,7 @@ export default function ColorScaleDemo() {
   });
   const heatmapRef = useRef<OrderBookHeatmapHandle>(null);
   const boxRef = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState<OrderBookHeatmapScale>("log");
+  const [scale, setScale] = useState<OrderBookHeatmapScale>("sqrt");
   const [contrast, setContrast] = useState(1);
 
   // recorded history (backfilled), then the same market live
@@ -32,9 +32,9 @@ export default function ColorScaleDemo() {
           value={scale}
           onChange={(value) => setScale(value as OrderBookHeatmapScale)}
         >
-          <Radio value="log" label={t("scaleLog")} />
           <Radio value="sqrt" label={t("scaleSqrt")} />
           <Radio value="linear" label={t("scaleLinear")} />
+          <Radio value="log" label={t("scaleLog")} />
         </RadioGroup>
         <RadioGroup
           aria-label={t("contrast")}
@@ -54,7 +54,7 @@ export default function ColorScaleDemo() {
       <OrderBookHeatmap
         ref={heatmapRef}
         height={380}
-        // log reveals thin liquidity next to the walls; contrast > 1 brightens it
+        // sqrt keeps typical levels dim and lets the walls glow; contrast > 1 brightens
         colorScale={scale}
         contrast={contrast}
         interval={200}

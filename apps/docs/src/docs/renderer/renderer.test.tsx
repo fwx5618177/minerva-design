@@ -27,6 +27,7 @@ import {
   useChartRenderer,
 } from "./store";
 import { autoPick, type BackendsSupport } from "./support";
+import { RENDERER_SEED, bootChartRenderer } from "./boot";
 
 const support = vi.hoisted(() => ({
   current: {
@@ -136,6 +137,49 @@ describe("store", () => {
     localStorage.setItem(RENDERER_STORAGE_KEY, "vulkan");
     restoreChartRenderer();
     expect(getDefaultChartRenderer()).toBe("auto");
+  });
+
+  describe("boot (app entry)", () => {
+    const host = globalThis as unknown as Record<symbol, unknown>;
+    const STATE = Symbol.for("minerva-design.charts.defaults");
+    afterEach(() => {
+      delete host[RENDERER_SEED];
+      vi.restoreAllMocks();
+    });
+
+    it("seeds the engine default from storage, ignoring invalid values", () => {
+      localStorage.setItem(RENDERER_STORAGE_KEY, "webgl");
+      expect(bootChartRenderer()).toBe("webgl");
+      expect(host[RENDERER_SEED]).toBe("webgl");
+      localStorage.setItem(RENDERER_STORAGE_KEY, "vulkan");
+      expect(bootChartRenderer()).toBe("auto");
+      localStorage.removeItem(RENDERER_STORAGE_KEY);
+      expect(bootChartRenderer()).toBe("auto");
+      vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+        throw new Error("denied");
+      });
+      expect(bootChartRenderer()).toBe("auto");
+    });
+
+    it("is what the first engine to load starts from, on any page", async () => {
+      const shared = host[STATE];
+      try {
+        localStorage.setItem(RENDERER_STORAGE_KEY, "canvas2d");
+        bootChartRenderer();
+        delete host[STATE]; // no engine loaded yet
+        vi.resetModules();
+        const engine = await import("minerva-design/charts/core");
+        expect(engine.getDefaultChartRenderer()).toBe("canvas2d");
+      } finally {
+        host[STATE] = shared;
+      }
+    });
+
+    it("keeps the chart engine out of the entry chunk", async () => {
+      const source = (await import("./boot.ts?raw")).default;
+      expect(source).not.toMatch(/^\s*import\b/m);
+      expect(source).not.toMatch(/import\(/);
+    });
   });
 
   it("re-renders on changes, from this tab or another one", () => {

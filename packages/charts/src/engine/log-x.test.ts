@@ -80,6 +80,48 @@ describe("log x axes", () => {
     expect(tight.base.x[1]).toBeLessThan(5);
   });
 
+  it("snaps the automatic range to 1, 2 or 5 × 10^k around the data", () => {
+    const range = (xs: number[], extra: object = {}) => {
+      const m = model({
+        xAxis: { type: "log", ...extra },
+        series: [
+          {
+            type: "line",
+            data: xs.map((x, i): [number, number] => [x, i]),
+          },
+        ],
+      });
+      return m.base.x.map((e) => Number((10 ** e).toPrecision(6)));
+    };
+    expect(range([900, 140_000])).toEqual([500, 200_000]);
+    expect(range([2_100, 4_900])).toEqual([2_000, 5_000]);
+    // bounds already nice stay
+    expect(range([1_000, 50_000])).toEqual([1_000, 50_000]);
+    expect(range([0.03, 0.7])).toEqual([0.02, 1]);
+    // a single value: around it
+    const one = range([200, 200]);
+    expect(one[0]).toBeLessThan(200);
+    expect(one[1]).toBeGreaterThan(200);
+    // min / max still win
+    expect(range([900, 140_000], { min: 100, max: 1e6 })).toEqual([100, 1e6]);
+    // the ticks fit the range: 1, 2 and 5 of each decade inside it
+    const m = model({
+      xAxis: { type: "log" },
+      series: [
+        {
+          type: "line",
+          data: [
+            [900, 1],
+            [140_000, 2],
+          ],
+        },
+      ],
+    });
+    const ticks = axisTicks(m.x, m.base.x, 8);
+    expect(ticks.labels[0]).toBe("500");
+    expect(ticks.labels[ticks.labels.length - 1]).toBe("200k");
+  });
+
   it("ticks decades and maps the annotations", () => {
     const m = model(gdp);
     const ticks = axisTicks(m.x, m.base.x, 6);

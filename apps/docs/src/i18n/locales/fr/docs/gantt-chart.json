@@ -21,6 +21,10 @@
     "locale": {
       "title": "Langues et dates UTC",
       "description": "locale fixe les noms des mois et des jours, les pourcentages d'avancement et les noms par défaut (tâches, avancement, jalons) ; yAxis.timeZone: \"utc\" place les dates en UTC pour que des données UTC restent alignées dans tous les fuseaux horaires."
+    },
+    "crews": {
+      "title": "Lignes partagées",
+      "description": "Un planning de chantier par équipe : row place plusieurs tâches sur une ligne et les dependencies citent des id de tâches, si bien que chaque flèche relie les barres exactes. Les flèches traversent les lignes dans un couloir libre des autres barres, ou bifurquent dans l’espace entre deux lignes quand aucun n’est libre (du terrassement aux fondations, autour des cages d’armature)."
     }
   },
   "native": {
@@ -119,7 +123,32 @@
       "mobile": "Mobile"
     },
     "showDependencies": "Flèches de dépendance",
-    "pipelineAria": "Plan de sortie de l’app mobile avec les dépendances entre les tâches"
+    "pipelineAria": "Plan de sortie de l’app mobile avec les dépendances entre les tâches",
+    "works": {
+      "clearing": "Débroussaillage",
+      "dig": "Terrassement des fondations",
+      "rebar": "Cages d’armature",
+      "footings": "Semelles",
+      "backfill": "Remblai",
+      "slab": "Dallage",
+      "frame1": "Charpente métallique, niveau 1",
+      "deck": "Plancher collaborant",
+      "frame2": "Charpente métallique, niveau 2",
+      "inspectFootings": "Réception des fondations",
+      "inspectFrame": "Réception de la charpente"
+    },
+    "crews": {
+      "excavation": "Équipe terrassement",
+      "steel": "Équipe charpente",
+      "concrete": "Équipe béton",
+      "inspector": "Contrôleur"
+    },
+    "site": {
+      "groundwork": "Fondations",
+      "structure": "Structure"
+    },
+    "inspections": "Réceptions",
+    "crewsAria": "Planning de chantier par équipe avec les dépendances entre les tâches"
   },
   "api": {
     "GanttChartProps": {
@@ -128,14 +157,16 @@
       "todayLabel": "Libellé de la ligne du jour"
     },
     "GanttTask": {
-      "name": "Nom de la ligne (unique)",
+      "name": "Nom de la tâche : titre de l’infobulle, et nom de la ligne sans row",
+      "id": "Identifiant cité par les dependencies des autres tâches ; le nom par défaut (donnez des id quand plusieurs tâches ont le même nom)",
+      "row": "Ligne de la tâche : plusieurs tâches peuvent la partager (une ressource, un couloir) ; le nom par défaut, une ligne par tâche",
       "start": "Début (un horodatage ou une date)",
       "end": "Fin ; omise pour les jalons",
       "progress": "Part réalisée, 0-1 : une barre pleine sur la tâche",
       "group": "Groupe (phase, équipe) : une couleur et une entrée de légende par groupe",
       "color": "Couleur de la tâche (toute couleur CSS) ; celle de son groupe par défaut",
       "milestone": "Dessine un point au début au lieu d'une barre",
-      "dependencies": "Noms des tâches dont celle-ci dépend : listés dans son infobulle et dessinés en flèches depuis leur fin"
+      "dependencies": "Tâches dont celle-ci dépend, par id (ou nom) : listées dans son infobulle et dessinées en flèches depuis leur fin, en contournant les barres intermédiaires"
     },
     "GanttOptions": {
       "colors": "Couleurs des groupes dans l'ordre d'apparition (toutes couleurs CSS) ; la palette du graphique par défaut",

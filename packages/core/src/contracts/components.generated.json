@@ -7857,9 +7857,9 @@
         "name": "colorScale",
         "kind": "enum",
         "values": ["linear", "log", "sqrt"],
-        "default": "log",
+        "default": "sqrt",
         "required": false,
-        "description": "Scale from sizes to colors: `log` reveals thin liquidity next to walls",
+        "description": "Scale from sizes to colors: `sqrt` keeps typical levels dim and lets significant liquidity glow, `linear` shows only the walls, `log` reveals thin liquidity next to them",
         "only": "react"
       },
       {
@@ -7867,14 +7867,14 @@
         "kind": "number",
         "default": 1,
         "required": false,
-        "description": "Multiplies the sizes before the scale: above 1 brightens thin liquidity, below 1 keeps only the walls",
+        "description": "Multiplies the sizes before the scale: above 1 brightens thin liquidity (more of the field glows), below 1 keeps only the largest walls",
         "only": "react"
       },
       {
         "name": "maxSize",
         "kind": "number",
         "required": false,
-        "description": "Size drawn with the hottest color; when omitted, the 98th percentile of the visible sizes (eased), so the whole ramp is used",
+        "description": "Size drawn with the hottest color (larger sizes saturate); when omitted, the 99th percentile of the visible non-empty cells (eased), so typical levels stay dark and only the top liquidity glows",
         "only": "react"
       },
       {
@@ -7885,8 +7885,15 @@
         "only": "react"
       },
       { "name": "bubbles", "kind": "boolean", "default": true, "required": false, "description": "Trades drawn as bubbles sized by volume (buys / sells colors)", "only": "react" },
-      { "name": "bubbleSize", "kind": "number", "default": 28, "required": false, "description": "Largest bubble diameter, in pixels", "only": "react" },
-      { "name": "bubbleVolume", "kind": "number", "required": false, "description": "Trade volume of the largest bubble; follows the data when omitted", "only": "react" },
+      {
+        "name": "bubbleSize",
+        "kind": "number",
+        "default": 14,
+        "required": false,
+        "description": "Diameter of the largest bubble, in pixels (area ∝ volume, the smallest are 3 px dots)",
+        "only": "react"
+      },
+      { "name": "bubbleVolume", "kind": "number", "required": false, "description": "Trade volume of the largest bubble; when omitted, the largest visible trade (eased)", "only": "react" },
       { "name": "bestLines", "kind": "boolean", "default": true, "required": false, "description": "Best bid and ask lines", "only": "react" },
       { "name": "profile", "kind": "boolean", "default": true, "required": false, "description": "Profile of the current book at the right edge", "only": "react" },
       { "name": "interactive", "kind": "boolean", "default": true, "required": false, "description": "Wheel / pinch zoom and drag pan (double click resumes following the market)", "only": "react" },
@@ -12997,7 +13004,7 @@
         "kind": "boolean",
         "default": false,
         "required": false,
-        "description": "A \"+\" button at the crosshair price, on the right of the price pane: clicking it reports a limit order (`orderCreate`) at that price. With the chart focused, `B` / `S` arm a buy / sell order at the crosshair price (or the last price), the arrows move it (Shift: ten ticks), Enter confirms and Escape cancels; `O` selects the draggable lines in turn to move them the same way, Delete cancels the `cancellable` ones",
+        "description": "A \"+\" button at the crosshair price, on the right of the price pane: clicking it reports a limit order (`orderCreate`) at that price, a buy below the last price and a sell above it (with Alt / Option held: the stop order of the other side). With the chart focused, `B` / `S` arm a buy / sell order at the crosshair price (or the last price), the arrows move it (Shift: ten ticks), Enter confirms and Escape cancels. The order is a limit when it waits for a better price (a buy at or below the last price, a sell at or above it), else a stop; `Alt+B` / `Alt+S` switch between limit and stop explicitly. `O` selects the draggable lines in turn to move them the same way, Delete cancels the `cancellable` ones",
         "only": "react"
       },
       {

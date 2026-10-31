@@ -14,11 +14,11 @@
   "demos": {
     "packages": {
       "title": "Package dependencies",
-      "description": "The packages of a monorepo, from the applications down to the tokens and the tooling. Dev dependencies are dashed; hover a package to see everything it depends on and everything that depends on it."
+      "description": "The packages of a monorepo, from the applications down to the tokens and the tooling. Dev dependencies are dashed; hover a package to see everything it depends on and everything that depends on it. utils and i18n depend on each other: a circular dependency, drawn in red as two separate routes."
     },
     "pipeline": {
       "title": "CI/CD pipeline",
-      "description": "A build pipeline from left to right with orthogonal connectors. Groups color the jobs by status (the legend can hide some), the node value is the duration, and criticalPath highlights the longest chain of jobs, computed again with criticalPath() for the summary."
+      "description": "A build pipeline from left to right with orthogonal connectors. Groups color the jobs by status (the legend can hide some), the node value is the duration, and criticalPath highlights the longest chain of jobs, computed again with criticalPath() for the summary. Two artifacts go from the app build to the package job (parallel edges get their own routes), and the failed visual tests retry themselves (a self-loop)."
     },
     "lineage": {
       "title": "Upstream and downstream",
@@ -63,6 +63,7 @@
       "tooling": "Tooling"
     },
     "devDependency": "dev dependency",
+    "circularDependency": "circular dependency",
     "packagesAria": "Dependencies between the packages of a monorepo",
     "tasks": {
       "install": "Install",
@@ -85,6 +86,11 @@
       "pending": "Pending"
     },
     "taskSubtitle": "{{status}} · {{minutes}} min",
+    "edgeKinds": {
+      "bundle": "web bundle",
+      "types": "type declarations",
+      "retry": "retry"
+    },
     "showCritical": "Highlight the critical path",
     "pipelineAria": "CI/CD pipeline: jobs, their dependencies and their status",
     "criticalSummary": "Critical path: {{minutes}} min — {{path}}",

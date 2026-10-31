@@ -1,6 +1,8 @@
 // Heat field of the order book heatmap. The liquidity of the visible
 // window is rasterized on the CPU into a small image, one texel per column
-// (sampling interval) and price row (tick), and drawn as ONE textured quad
+// (sampling interval) and price row (tick, or a bucket of rows whose sizes
+// are summed when rows get thinner than the screen allows), and drawn as
+// ONE textured quad
 // with nearest filtering over a clear of the coldest color:
 // - rows and columns abut by construction (every device pixel samples
 //   exactly one texel), so there are no anti-aliased seams between cells;
@@ -37,8 +39,13 @@ export interface HeatGrid {
   width: number;
   height: number;
   pixels: Uint32Array;
-  /** Resting size of every texel (max-pooled), same layout as `pixels` */
+  /**
+   * Resting size of every texel, same layout as `pixels`: the sizes of the
+   * price rows of a texel are summed, its columns max-pooled
+   */
   cells: Float32Array;
+  /** Price rows (ticks) per texel row; texel rows start at multiples of it */
+  rowBins: number;
   /** Times at the left / right edges of the image */
   t0: number;
   t1: number;
@@ -63,9 +70,17 @@ export interface HeatGridInput {
   y1: number;
   /** End of the data (the live time): texels starting later stay cold */
   end: number;
-  /** Largest image (texels); denser data is max-pooled, walls stay visible */
+  /**
+   * Largest image (texels). Denser columns are max-pooled (walls stay
+   * visible); denser price rows are summed into buckets
+   */
   maxWidth: number;
   maxHeight: number;
+  /**
+   * Smallest number of price rows per texel row (price aggregation, e.g.
+   * when a tick is under 2 px); default 1
+   */
+  rowBins?: number;
 }
 
 /** Entries of a heat table (resolution of the size → color mapping) */
@@ -144,11 +159,13 @@ export const buildHeatGrid = (
   const g = step * cx;
   const gs = Math.floor(x0 / g) * g;
   const width = Math.max(1, Math.ceil((x1 - gs) / g));
-  // price texels: `ry` rows each; a row covers [bin - ½, bin + ½) × tick
+  // price texels: buckets of `ry` rows (aligned on multiples of `ry`); a
+  // row covers [bin - ½, bin + ½) × tick
   const binLo = Math.round(y0 / tick);
   const binHi = Math.round(y1 / tick);
   const ry = Math.max(
     1,
+    Math.round(input.rowBins ?? 1) || 1,
     Math.ceil((binHi - binLo + 1) / Math.max(1, input.maxHeight)),
   );
   const base = Math.floor(binLo / ry) * ry;
@@ -159,6 +176,10 @@ export const buildHeatGrid = (
     reuse && reuse.cells.length === count
       ? reuse.cells.fill(0)
       : new Float32Array(count);
+  // a source's rows are summed per bucket first (scratch), then the
+  // sources sharing a time texel are max-pooled
+  const sums = ry > 1 ? new Float32Array(height) : null;
+  const hits: number[] = [];
   const plot = (source: HeatSource, i: number) => {
     const { bins, sizes } = source;
     for (let k = 0; k < sizes.length; k++) {
@@ -166,9 +187,21 @@ export const buildHeatGrid = (
       if (!(s > 0)) continue;
       const r = Math.floor((bins[k]! - base) / ry);
       if (r < 0 || r >= height) continue;
+      if (sums) {
+        if (!sums[r]) hits.push(r);
+        sums[r] += s;
+        continue;
+      }
       const idx = (height - 1 - r) * width + i;
       if (s > cells[idx]!) cells[idx] = s;
     }
+    if (!sums) return;
+    for (const r of hits) {
+      const idx = (height - 1 - r) * width + i;
+      if (sums[r]! > cells[idx]!) cells[idx] = sums[r]!;
+      sums[r] = 0;
+    }
+    hits.length = 0;
   };
   const repeat = (i: number) => {
     for (let r = 0, idx = i; r < height; r++, idx += width)
@@ -210,6 +243,7 @@ export const buildHeatGrid = (
     height,
     pixels,
     cells,
+    rowBins: ry,
     t0: gs,
     t1: gs + width * g,
     p0: (base - 0.5) * tick,
