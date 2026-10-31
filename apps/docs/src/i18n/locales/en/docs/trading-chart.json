@@ -104,6 +104,18 @@
     "export": {
       "title": "Image and full screen",
       "description": "toDataURL and toBlob compose the bars, the axes, the drawings and the legends into one PNG; requestFullscreen shows the chart full screen (Escape leaves it)."
+    },
+    "price-alerts": {
+      "title": "Price alerts",
+      "description": "Click the price pane to set an alert: onClick gives the price, which becomes a priceLines entry of kind \"alert\", draggable (onOrderMove) and cancellable (onOrderCancel). A streaming feed calls update ten times a second; an alert reached by the price is removed, marked on its bar and logged."
+    },
+    "trade-journal": {
+      "title": "Trade journal",
+      "description": "A futures trading journal on 15-minute session bars: each round trip is an entry and an exit marker, the table lists its points and its P&L (50 dollars a point per contract) and the statistics sum them up. Show calls setVisibleTimeRange and setCrosshair to bring the trade into view."
+    },
+    "mobile": {
+      "title": "Mobile layout",
+      "description": "A phone-sized chart without legend, grid or high / low markers: the header above shows the bar under the finger from onCrosshairMove (the last bar otherwise). The timeframes are aggregated from 15-minute bars with resampleBars, and wheel=\"modifier\" lets the page scroll over the chart."
     }
   },
   "data": {
@@ -295,7 +307,50 @@
       "type": "Switch between limit and stop"
     },
     "orderPlacedBuyStop": "Buy stop placed at {{price}}",
-    "orderPlacedSellStop": "Sell stop placed at {{price}}"
+    "orderPlacedSellStop": "Sell stop placed at {{price}}",
+    "alertHint": "Click the chart to add an alert; drag one to move it, × removes it.",
+    "alertUp": "▲ Alert",
+    "alertDown": "▼ Alert",
+    "alertMarker": "🔔",
+    "alertLimit": "At most {{value}} alerts: remove one first.",
+    "alertAdded": "Alert set at {{price}}.",
+    "alertMoved": "Alert moved to {{price}}.",
+    "alertRemoved": "Alert at {{price}} removed.",
+    "alertCount": "{{active}} active alerts, {{fired}} triggered.",
+    "alertFiredUp": "{{time}}: the price rose to {{price}}.",
+    "alertFiredDown": "{{time}}: the price fell to {{price}}.",
+    "alertsAria": "AAPL one-minute chart with price alerts",
+    "es": "ES (E-mini S&P 500)",
+    "entryMarker": "#{{id}}",
+    "exitMarker": "×",
+    "journalSide": "Side",
+    "long": "Long",
+    "short": "Short",
+    "journalEntry": "Entry",
+    "journalExit": "Exit",
+    "journalPoints": "Points",
+    "journalPnl": "P&L",
+    "atTime": "{{price}} · {{time}}",
+    "showTrade": "Show",
+    "showTradeLabel": "Show trade {{id}} on the chart",
+    "netPnl": "Net P&L",
+    "winRate": "Win rate",
+    "winRateValue": "{{rate}} ({{wins}} of {{total}})",
+    "profitFactor": "Profit factor",
+    "averageWin": "Average win",
+    "averageLoss": "Average loss",
+    "journalAria": "E-mini S&P 500 15-minute chart with the trades of the journal",
+    "journalTable": "Closed trades",
+    "journalHint": "Pick a trade in the table to show it on the chart.",
+    "showingTrade": "Trade {{id}}: {{side}} {{contracts}} contracts, {{pnl}}.",
+    "dayChange": "{{value}} 24h",
+    "ohlcOpen": "O {{value}}",
+    "ohlcHigh": "H {{value}}",
+    "ohlcLow": "L {{value}}",
+    "ohlcClose": "C {{value}}",
+    "ohlcVolume": "Vol {{value}}",
+    "timeframe": "Timeframe",
+    "mobileAria": "SOL/USDT chart sized for a phone"
   },
   "api": {
     "TradingChartProps": {

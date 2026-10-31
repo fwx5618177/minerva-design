@@ -25,6 +25,26 @@
     "crews": {
       "title": "行の共有",
       "description": "班ごとの施工工程：row で 1 行に複数のタスクを置き、dependencies はタスクの id を参照するので、どの矢印も正確な棒どうしを結びます。矢印は他の棒を避けたレーンで行を横切り、空きがなければ行と行の間の隙間で曲がります（根切りから基礎へ、鉄筋ケージを避けて）。"
+    },
+    "release-train": {
+      "title": "リリーストレイン",
+      "description": "3 チームのプログラムインクリメント：row でチームの機能を 1 行にまとめ、group で機能とイネーブラーを区別し、時間軸に沿った rect アノテーションでイテレーションに網掛けし、イノベーション＆計画（IP）イテレーションを色付けします。システムデモは専用の行のマイルストーンです。"
+    },
+    "critical-path": {
+      "title": "クリティカルパス",
+      "description": "所要日数と依存関係から最早・最遅開始日を計算します（クリティカルパス法）。スイッチをオンにすると、group がタスクをクリティカルと余裕ありに分け、colors が赤と灰色で塗ります。onPointClick はクリックしたタスクの余裕日数を報告します。"
+    },
+    "resources": {
+      "title": "リソース計画",
+      "description": "1 人 1 行（row）、プロジェクトごとに 1 色（group。Select で絞り込んでも colors で各プロジェクトの色を保持）、yAxis.min / max で 6 週間に固定。onHover はホバー中の行（event.xLabel）を読み取り、その人の負荷を超過割り当ても含めて表示します。"
+    },
+    "live-deploy": {
+      "title": "ライブのパイプライン実行",
+      "description": "デプロイパイプラインを setInterval で再生します（一時停止とアンマウントで解除）。today は模擬時計に追従し、各進捗はそこから再計算され、interaction={false} により更新中も時間範囲が固定されます。"
+    },
+    "onboarding": {
+      "title": "オンボーディング計画",
+      "description": "renderTooltip でツールチップを React コンテンツに置き換えます。ホバー中のバーは seriesId（グループごとに 1 系列、さらにマイルストーン）と index から特定し、担当者、Intl.DateTimeFormat の formatRange で整形した日付、今日を基準にした状態を表示します。"
     }
   },
   "native": {
@@ -148,7 +168,130 @@
       "structure": "躯体工事"
     },
     "inspections": "検査",
-    "crewsAria": "班ごとの施工工程とタスク間の依存関係"
+    "crewsAria": "班ごとの施工工程とタスク間の依存関係",
+    "train": {
+      "teams": {
+        "atlas": "Atlas チーム",
+        "borealis": "Borealis チーム",
+        "comet": "Comet チーム"
+      },
+      "features": {
+        "checkout": "決済画面の刷新",
+        "paymentRetries": "決済リトライ",
+        "wallet": "デジタルウォレット",
+        "searchFilters": "検索フィルター",
+        "indexing": "インデックス刷新",
+        "recommendations": "レコメンド",
+        "observability": "オブザーバビリティ",
+        "push": "プッシュ通知"
+      },
+      "kinds": {
+        "feature": "機能",
+        "enabler": "イネーブラー"
+      },
+      "iteration": "イテレーション {{n}}",
+      "ip": "IP イテレーション",
+      "demo": "システムデモ {{n}}",
+      "demos": "システムデモ",
+      "events": "トレインイベント",
+      "aria": "チーム別のリリーストレインのプログラムインクリメント"
+    },
+    "cpm": {
+      "tasks": {
+        "lease": "賃貸契約",
+        "fitOut": "内装工事",
+        "racking": "ラック設置",
+        "wms": "WMS 構築",
+        "hiring": "スタッフ採用",
+        "training": "スタッフ研修",
+        "testRun": "試運転",
+        "goLive": "稼働開始"
+      },
+      "critical": "クリティカル",
+      "slack": "余裕あり",
+      "highlight": "クリティカルパスを強調",
+      "summary": "{{days}}後に稼働開始。クリティカルパス：{{path}}。タスクをクリックすると余裕日数を表示します。",
+      "taskSlack": "{{task}}は稼働開始を遅らせずに{{slack}}遅れても大丈夫です",
+      "taskCritical": "{{task}}はクリティカル：遅れると稼働開始も遅れます",
+      "aria": "クリティカルパス付きの倉庫開設計画"
+    },
+    "res": {
+      "people": {
+        "ana": "Ana",
+        "ben": "Ben",
+        "chen": "Chen",
+        "dara": "Dara",
+        "eli": "Eli"
+      },
+      "projects": {
+        "apollo": "Apollo",
+        "borealis": "Borealis",
+        "cassini": "Cassini",
+        "vacation": "休暇"
+      },
+      "projectLabel": "プロジェクト",
+      "all": "すべてのプロジェクト",
+      "load": "{{person}}：{{weeks}} 週間で {{share}} 割り当て済み",
+      "overbooked": "{{person}}は割り当て超過：{{weeks}} 週間で {{share}}",
+      "hint": "行にホバーするとその人の負荷を表示します",
+      "aria": "担当者とプロジェクト別のチームのリソース計画"
+    },
+    "deploy": {
+      "stages": {
+        "checkout": "チェックアウト",
+        "compile": "ビルド",
+        "unit": "単体テスト",
+        "lint": "Lint",
+        "integration": "結合テスト",
+        "staging": "ステージングへデプロイ",
+        "smoke": "スモークテスト",
+        "canary": "カナリアリリース",
+        "production": "本番ロールアウト"
+      },
+      "groups": {
+        "build": "ビルド",
+        "test": "テスト",
+        "release": "リリース"
+      },
+      "now": "現在",
+      "running": "実行中：{{stages}} · 経過 {{elapsed}}",
+      "done": "パイプラインは {{elapsed}} で完了しました",
+      "restart": "再実行",
+      "pause": "一時停止",
+      "resume": "再開",
+      "aria": "デプロイパイプライン実行の各ステージ（ライブ更新）"
+    },
+    "onboard": {
+      "tasks": {
+        "contract": "契約と書類",
+        "laptop": "ノート PC の手配",
+        "accounts": "アカウント作成",
+        "welcome": "歓迎ミーティング",
+        "orientation": "オリエンテーション",
+        "buddyLunch": "バディとランチ",
+        "codebase": "コードベース紹介",
+        "firstTicket": "最初のチケット",
+        "training": "コンプライアンス研修",
+        "firstProject": "最初のプロジェクト",
+        "firstDay": "初日",
+        "checkIn30": "30 日面談",
+        "review60": "60 日レビュー"
+      },
+      "owners": {
+        "hr": "人事",
+        "it": "IT",
+        "manager": "マネージャー",
+        "buddy": "バディ"
+      },
+      "owner": "担当：{{owner}}",
+      "status": {
+        "done": "完了",
+        "inProgress": "進行中",
+        "upcoming": "予定"
+      },
+      "checkIns": "面談",
+      "aria": "担当者別の新入社員オンボーディング計画"
+    }
   },
   "api": {
     "GanttChartProps": {

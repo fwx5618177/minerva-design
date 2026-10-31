@@ -17,6 +17,22 @@
     "labels": {
       "title": "标签",
       "description": "按大洲和国家统计的人口。labels 决定名称的书写方式：auto 为每个扇区选择沿弧线或沿半径，放不下的名称会被截断或省略。图例可以隐藏 / 显示大洲；国家名称来自 Intl.DisplayNames。"
+    },
+    "city-budget": {
+      "title": "城市预算",
+      "description": "drill={false} 让点击变为选中而不是放大：onClick 填充图表下方的文字，给出某个项目占整个预算及其所属政策领域的比例。renderTooltip 显示相同的文字，没有项目的领域则是一个普通叶子节点。"
+    },
+    "time-tracking": {
+      "title": "工时记录",
+      "description": "按客户、项目和活动划分的工时，分为三层圆环。通过 RadioGroup 在本周和本月之间切换，扇区会以动画过渡；工时使用 Intl.NumberFormat 的小时单位格式化，摘要给出可计费工时的占比。"
+    },
+    "live-requests": {
+      "title": "实时 API 流量",
+      "description": "按服务和端点划分的每分钟请求数，每 1.5 秒通过带种子的随机游走刷新一次（setInterval，在暂停和卸载时清除）。总数会显示但不播报，只有最繁忙的服务变化时才播报。"
+    },
+    "energy-mix": {
+      "title": "电力结构",
+      "description": "图例和 Switch 编辑同一个受控的 hidden 列表（onToggle），因此无论从哪里隐藏化石燃料都会保持同步。没有细分的能源（核能）是第一层上的叶子节点，各燃料继承其能源的颜色。"
     }
   },
   "native": {
@@ -148,7 +164,114 @@
       "radial": "沿半径",
       "none": "不显示"
     },
-    "worldAria": "按大洲和国家统计的世界人口，单位为百万"
+    "worldAria": "按大洲和国家统计的世界人口，单位为百万",
+    "budget": {
+      "areas": {
+        "education": "教育",
+        "health": "医疗",
+        "transport": "交通",
+        "safety": "公共安全",
+        "environment": "环境",
+        "administration": "行政"
+      },
+      "programs": {
+        "schools": "中小学",
+        "universities": "大学",
+        "libraries": "图书馆",
+        "hospitals": "医院",
+        "prevention": "疾病预防",
+        "transit": "公共交通",
+        "roads": "道路",
+        "cycling": "自行车道",
+        "police": "警务",
+        "fire": "消防",
+        "parks": "公园",
+        "waste": "垃圾清运",
+        "water": "供水"
+      },
+      "programLine": "{{path}}：{{amount}}，占预算的 {{share}}，占{{area}}的 {{areaShare}}。",
+      "areaLine": "{{path}}：{{amount}}，占预算的 {{share}}。",
+      "aria": "按政策领域和项目划分的城市年度预算",
+      "hint": "年度预算：{{total}}。点击某个扇区查看其占比。"
+    },
+    "time": {
+      "clients": {
+        "bakery": "连锁面包店",
+        "clinic": "牙科诊所",
+        "school": "语言学校",
+        "internal": "内部"
+      },
+      "projects": {
+        "website": "网站",
+        "branding": "品牌设计",
+        "booking": "预约系统",
+        "app": "移动应用",
+        "admin": "行政事务",
+        "training": "培训"
+      },
+      "activities": {
+        "design": "设计",
+        "development": "开发",
+        "meetings": "会议",
+        "review": "评审",
+        "support": "支持",
+        "learning": "学习"
+      },
+      "period": "时间段",
+      "periods": {
+        "week": "本周",
+        "month": "本月"
+      },
+      "tooltip": "{{hours}} · 占记录工时的 {{share}}",
+      "aria": "按客户、项目和活动划分的工时（{{period}}）",
+      "summary": "可计费：{{billable}}，共 {{total}}（{{share}}）。"
+    },
+    "requests": {
+      "services": {
+        "checkout": "结账",
+        "search": "搜索",
+        "accounts": "账户",
+        "catalog": "商品目录"
+      },
+      "endpoints": {
+        "cart": "购物车",
+        "payment": "支付",
+        "shipping": "配送",
+        "query": "查询",
+        "suggest": "搜索建议",
+        "login": "登录",
+        "profile": "个人资料",
+        "product": "商品页",
+        "reviews": "评价"
+      },
+      "rpm": "{{value}} 次/分钟",
+      "aria": "按服务和端点划分的每分钟 API 请求数，实时更新",
+      "pause": "暂停",
+      "resume": "继续",
+      "total": "总计：{{value}}",
+      "busiest": "最繁忙的服务：{{service}}"
+    },
+    "energy": {
+      "sources": {
+        "renewables": "可再生能源",
+        "nuclear": "核能",
+        "fossil": "化石燃料"
+      },
+      "fuels": {
+        "wind": "风能",
+        "solar": "太阳能",
+        "hydro": "水电",
+        "biomass": "生物质能",
+        "gas": "天然气",
+        "coal": "煤炭",
+        "oil": "石油"
+      },
+      "twh": "{{value}} 太瓦时",
+      "hideFossil": "隐藏化石燃料",
+      "aria": "按能源和燃料划分的年度发电量",
+      "shownOnly": "已隐藏可再生能源：显示 {{total}}。",
+      "share": "可再生能源：占所显示 {{total}} 的 {{share}}。"
+    }
   },
   "wc": {
     "demos": {

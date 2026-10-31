@@ -37,6 +37,22 @@
     "target": {
       "title": "目標との比較",
       "description": "破線が週間目標を示し、目標に達した棒はデータ点の色で強調されます。"
+    },
+    "drilldown": {
+      "title": "ドリルダウン",
+      "description": "四半期をクリックすると onPointClick で系列がその 3 か月分に切り替わり、Button で四半期表示に戻ります。月をクリックするとその売上が aria-live の出力に表示されます。"
+    },
+    "period-compare": {
+      "title": "前年との比較",
+      "description": "Switch で前年系列の hidden を切り替え、色を変えずに比較の表示・非表示を行います。renderTooltip は両年の値と変化率を一覧表示します。"
+    },
+    "deployments": {
+      "title": "デプロイの推移",
+      "description": "時間軸上の積み上げ棒で、日ごとの成功したデプロイとロールバックされたデプロイを数えます。rect 注釈で週末と変更凍結期間を塗り分け、サマリーにデプロイ頻度と変更失敗率を示します。"
+    },
+    "ev-charging": {
+      "title": "最も安い充電時間帯",
+      "description": "明日の時間ごとの電力価格を 3 つの積み上げ系列に分け、各棒が価格帯の色になるようにしています。rect 注釈は Select で選んだ充電時間に対して最も安い連続時間帯を示し、出力欄では帰宅直後に充電した場合との費用を比較します。"
     }
   },
   "data": {
@@ -88,7 +104,42 @@
     "week": "第{{n}}週",
     "weeklyTarget": "週間目標",
     "targetAria": "週ごとの新規顧客数と週間目標の比較",
-    "targetSummary": "{{total}} 週中 {{reached}} 週で目標を達成（{{rate}}）。"
+    "targetSummary": "{{total}} 週中 {{reached}} 週で目標を達成（{{rate}}）。",
+    "revenue": "売上",
+    "pickedMonth": "{{month}}：{{value}}",
+    "backToQuarters": "四半期に戻る",
+    "drillHint": "四半期をクリックすると月別に表示します。",
+    "quarterDetail": "{{quarter}}：合計 {{value}}。月をクリックすると売上を表示します。",
+    "quartersAria": "2026 年の四半期別売上。四半期をクリックすると月別に表示します",
+    "monthsAria": "2026 年 {{quarter}} の月別売上",
+    "hiringDepartments": {
+      "engineering": "エンジニアリング",
+      "product": "プロダクト",
+      "design": "デザイン",
+      "sales": "営業",
+      "marketing": "マーケティング",
+      "support": "サポート"
+    },
+    "previousYear": "前年",
+    "currentYear": "今年",
+    "change": "増減",
+    "compareLastYear": "前年と比較",
+    "hiresAria": "部門別の採用数（今年と前年）",
+    "deploysOk": "成功",
+    "deploysFailed": "ロールバック",
+    "changeFreeze": "変更凍結",
+    "deploysAria": "8 週間の日別本番デプロイ数（成功とロールバック）",
+    "deploysSummary": "稼働日あたり {{perDay}} 回のデプロイ、変更失敗率 {{failure}}。",
+    "offPeak": "オフピーク",
+    "standard": "通常",
+    "peak": "ピーク",
+    "chargeHere": "充電",
+    "dailyAverage": "日平均",
+    "chargingTime": "充電時間",
+    "chargeFor": "{{energy}} kWh・{{duration}}",
+    "chargeAdvice": "{{start}}〜{{end}} に充電すると {{cost}}。{{plugIn}} の接続直後に充電するより {{saving}} 安くなります。",
+    "pricePerMwh": "MWh あたりの価格",
+    "pricesAria": "明日の各時間の前日市場電力価格。電気自動車の充電に最も安い時間帯を強調表示"
   },
   "api": {
     "BarChartProps": {

@@ -17,6 +17,22 @@
     "comparison": {
       "title": "2 つのサンプルの比較",
       "description": "histogramSeries がサンプルの棒を作ります。同じ domain と数なら 2 つのサンプルがビンを共有し、Chart の中で並びます。"
+    },
+    "quality-control": {
+      "title": "工程能力",
+      "description": "加工部品の直径を公差と比較します。rect と line の注釈で規格限界を示し、series プロパティでビンの上に当てはめた正規曲線を描きます。読み取り欄に Cpk を表示し、スイッチで工具調整後の工程を表示します。"
+    },
+    "order-values": {
+      "title": "対数スケールの注文金額",
+      "description": "3 桁にわたる注文金額を対数でビンに分けるので、各ビンは同じ倍率の幅になります。formatBin と xAxis.format で境界をドルに戻して表示します。注釈で中央値、p99、送料無料になる注文を示します。"
+    },
+    "live-samples": {
+      "title": "ライブのスライディングウィンドウ",
+      "description": "直近 600 件のサポート電話の待ち時間を、setInterval で 1 秒に 2 回更新します（一時停止とアンマウント時に解除）。domain、ビン数、yAxis の範囲を固定して分布が動いても軸を動かさず、読み取り欄でサービスレベルを追跡します。"
+    },
+    "commute": {
+      "title": "クリックで累積割合",
+      "description": "onPointClick でクリックしたビンのインデックスを受け取り、同じオプションで呼んだ binValues の境界と件数から、そのビン以下の通勤時間の従業員の割合を計算します。renderTooltip で各ビンの人数と割合を表示し、onPlotClick で選択を解除します。"
     }
   },
   "native": {
@@ -46,7 +62,44 @@
     "control": "対照群",
     "variant": "新しいオンボーディング",
     "minutes": "セッション時間（分）",
-    "abAria": "A/B テストの 2 群のセッション時間"
+    "abAria": "A/B テストの 2 群のセッション時間",
+    "normalFit": "正規分布の当てはめ",
+    "lsl": "下限規格",
+    "usl": "上限規格",
+    "nominal": "基準値",
+    "adjustTool": "工具調整済み",
+    "capability": "平均 {{mean}}、σ {{sd}}、Cpk {{cpk}}、公差外 {{ppm}} ppm:",
+    "capable": "工程能力あり",
+    "notCapable": "工程能力不足",
+    "parts": "部品",
+    "diameter": "直径",
+    "qualityAria": "規格限界と当てはめた正規曲線を含むシャフト直径の分布",
+    "freeShipping": "送料無料",
+    "medianOrder": "中央値 {{value}}",
+    "p99Order": "p99 {{value}}",
+    "eligibleShare": "注文の {{share}} が送料無料の基準 {{threshold}} に達しています。",
+    "orders": "注文",
+    "orderValue": "注文金額（対数スケール）",
+    "ordersAria": "対数スケールでの注文金額の分布",
+    "pause": "一時停止",
+    "resume": "再開",
+    "reset": "リセット",
+    "serviceLevel": "{{share}} の電話に {{target}} 以内で応答、p90 は {{p90}}:",
+    "targetMet": "目標達成",
+    "targetMissed": "目標未達",
+    "calls": "電話",
+    "waitTime": "待ち時間",
+    "target": "目標",
+    "p90": "p90",
+    "callsAria": "直近 600 件のサポート電話の待ち時間のライブ分布",
+    "withinShare": "従業員の {{share}}",
+    "employeesInBin": "従業員 {{value}} 人（{{share}}）",
+    "clickForCumulative": "クリックで累積割合を表示",
+    "clickBin": "棒をクリックすると、通勤時間がそれ以下の従業員の割合を表示します。",
+    "cumulativeStatus": "従業員の {{share}}（{{employees}} 人）の通勤時間は {{limit}} 以下です。",
+    "employees": "従業員",
+    "commute": "片道の通勤時間",
+    "commuteAria": "従業員の通勤時間の分布"
   },
   "api": {
     "HistogramChartProps": {

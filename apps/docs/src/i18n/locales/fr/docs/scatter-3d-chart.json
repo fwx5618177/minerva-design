@@ -29,6 +29,22 @@
     "renderer": {
       "title": "Moteur de rendu",
       "description": "Choisissez le moteur de la couche de données : auto essaie WebGPU, WebGL2, WebGL puis Canvas2D (projection sur le CPU, décimée) et ignore les GPU logiciels ; onRendererChange indique le moteur réellement utilisé."
+    },
+    "embeddings": {
+      "title": "Plongements de documents",
+      "description": "600 articles de presse plongés puis projetés sur leurs trois premières composantes principales, une série par thème, avec la variance expliquée dans les titres des axes. Cliquez sur un article : onPointClick trouve ses cinq plus proches voisins, dessinés dans une série supplémentaire au-dessus des nuages estompés et listés dessous."
+    },
+    "lidar": {
+      "title": "Relevé lidar d'une rue",
+      "description": "Environ 13 000 retours lidar d'une rue, passés en colonnes de tableaux typés et dessinés en disques plats (pointStyle: \"disc\"). Les boutons radio associent la colonne value à la hauteur ou à l'intensité du retour avec une autre colorScale, l'interrupteur remonte le graphique dans un ConfigProvider sombre, et onHover lit le point sous le pointeur."
+    },
+    "satellites": {
+      "title": "Constellations de satellites",
+      "description": "Quatre couches orbitales autour de la Terre, d'une constellation haut débit en orbite basse à l'anneau géostationnaire, déplacées toutes les 100 ms par un setInterval nettoyé au démontage (un pas vaut une minute simulée). Chaque couche est une série avec son entrée de légende ; survolez un satellite pour lire l'altitude, la vitesse et la période de son orbite."
+    },
+    "portfolio-risk": {
+      "title": "Risque d'un portefeuille",
+      "description": "Quarante actions selon leur volatilité, leur bêta et leur rendement annuel, une série par secteur, la taille du point suivant la capitalisation. Les axes formatent les pourcentages avec Intl.NumberFormat, un clic épingle une action et son ratio de Sharpe dessous, et l'interrupteur passe camera.projection en orthographique pour comparer sans déformation."
     }
   },
   "data": {
@@ -95,7 +111,60 @@
     },
     "cameraState": "Azimut {{azimuth}}°, élévation {{elevation}}°, zoom ×{{zoom}}",
     "cameraHint": "Glisser pour tourner, Maj + glisser pour déplacer, Ctrl / ⌘ + molette pour zoomer, double clic pour réinitialiser.",
-    "rollAria": "Nuage de points en roulé suisse, coloré selon la position sur le rouleau"
+    "rollAria": "Nuage de points en roulé suisse, coloré selon la position sur le rouleau",
+    "topics": {
+      "sports": "Sport",
+      "politics": "Politique",
+      "technology": "Technologie",
+      "health": "Santé",
+      "finance": "Finance",
+      "travel": "Voyage"
+    },
+    "docLabel": "Article {{topic}} n° {{n}}",
+    "neighbours": "Plus proches voisins",
+    "component": "Composante {{n}} ({{variance}})",
+    "embeddingsAria": "Plongements d'articles de presse sur leurs trois premières composantes principales, par thème",
+    "neighboursOf": "Les plus proches de « {{doc}} » : {{list}}.",
+    "neighbourItem": "{{doc}} ({{distance}})",
+    "embeddingsHint": "Cliquez sur un article pour trouver ses plus proches voisins.",
+    "lidarReturns": "Retours lidar",
+    "lidarColor": "Couleur selon",
+    "lidarModes": {
+      "height": "Hauteur",
+      "intensity": "Intensité"
+    },
+    "darkTheme": "Thème sombre",
+    "lidarAria": "Nuage de points lidar d'une rue avec bâtiments, arbres et voitures garées",
+    "lidarSummary": "{{points}} points. Survolez le nuage pour lire un retour.",
+    "lidarHover": "Hauteur {{height}}, intensité {{intensity}}.",
+    "satName": "{{shell}} {{n}}",
+    "shells": {
+      "broadband": "Haut débit (LEO)",
+      "imaging": "Observation (polaire)",
+      "navigation": "Navigation (MEO)",
+      "geostationary": "Géostationnaire"
+    },
+    "earth": "Terre",
+    "play": "Lecture",
+    "thousandKm": "Milliers de km",
+    "satellitesAria": "Satellites de quatre couches orbitales en mouvement autour de la Terre",
+    "satHover": "{{shell}} : altitude {{altitude}}, vitesse {{speed}}, une orbite toutes les {{period}}.",
+    "satellitesHint": "Survolez un satellite pour lire son orbite.",
+    "sectors": {
+      "technology": "Technologie",
+      "healthcare": "Santé",
+      "energy": "Énergie",
+      "financials": "Finance",
+      "consumer": "Consommation"
+    },
+    "stockLabel": "{{ticker}} · {{cap}}",
+    "orthographicView": "Vue orthographique",
+    "annualVolatility": "Volatilité",
+    "beta": "Bêta",
+    "annualReturn": "Rendement annuel",
+    "portfolioAria": "Actions selon leur volatilité, leur bêta et leur rendement annuel, dimensionnées par la capitalisation",
+    "stockReadout": "{{ticker}} ({{sector}}) : rendement {{ret}}, volatilité {{volatility}}, bêta {{beta}}, ratio de Sharpe {{sharpe}}, capitalisation {{cap}}.",
+    "portfolioHint": "Cliquez sur une action pour épingler ses chiffres."
   },
   "api": {
     "Scatter3DChartProps": {

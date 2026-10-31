@@ -49,6 +49,18 @@
     "dark": {
       "title": "ダークテーマ",
       "description": "チャートは CSS 変数から色を読み取ります。コンテナで変数（背景・文字・上昇 / 下落色）を設定すると、ローソク足・軸・凡例・クロスヘアの見た目が変わります。ここでは中抜きローソク足とウォーターマーク付き。"
+    },
+    "patterns": {
+      "title": "ローソク足パターン",
+      "description": "通常の関数で足を走査し、十字線、カラカサ（ハンマー）、流れ星、包み足を検出します。結果は markers になり（強気は足の下、弱気は上）、ラジオグループで絞り込めます。onCrosshairMove がクロスヘア下のパターン名を示します。"
+    },
+    "watchlist": {
+      "title": "ウォッチリストのカード",
+      "description": "暗号資産、株式、通貨ペア、金の小さな CandlestickChart：legend={false} と非表示の軸でローソク足だけを残し、破線の y 注釈が期間の始値を示し、Intl が各銘柄の書式（ドル、小数5桁のレート、時刻または日付）で表示します。renderTooltip はツールチップを1行にします。"
+    },
+    "fx-pips": {
+      "title": "FX の pips とピボット",
+      "description": "UTC の EUR/USD 1時間足：formatPrice が小数5桁を表示し、priceLines が木曜日から求めた金曜日のピボット（P、R1、S1）を描き、onCrosshairMove がホバーした足を pips で測ります：値幅、実体、前の終値からの変化、現在値からの距離。"
     }
   },
   "native": {
@@ -128,7 +140,58 @@
     "fiveSeconds": "5 秒",
     "liveAria": "リアルタイムで更新される ADA/USDT 5 秒足",
     "nasdaq": "ナスダック 100",
-    "darkAria": "ダークテーマのナスダック 100 30 分足（中抜きローソク足）"
+    "darkAria": "ダークテーマのナスダック 100 30 分足（中抜きローソク足）",
+    "patternFilter": "パターン",
+    "patternFilters": {
+      "all": "すべて",
+      "doji": "十字線",
+      "hammer": "カラカサ",
+      "shootingStar": "流れ星",
+      "engulfing": "包み足"
+    },
+    "patternCodes": {
+      "doji": "十",
+      "hammer": "カ",
+      "shootingStar": "流",
+      "bullishEngulfing": "包↑",
+      "bearishEngulfing": "包↓"
+    },
+    "patternNames": {
+      "doji": "十字線",
+      "hammer": "カラカサ",
+      "shootingStar": "流れ星",
+      "bullishEngulfing": "陽の包み足",
+      "bearishEngulfing": "陰の包み足"
+    },
+    "patternMeanings": {
+      "doji": "始値と終値がほぼ同じ、迷い",
+      "hammer": "下落後の長い下ヒゲ、買いが入った",
+      "shootingStar": "上昇後の長い上ヒゲ、売りが入った",
+      "bullishEngulfing": "陽線の実体が前の陰線を包む",
+      "bearishEngulfing": "陰線の実体が前の陽線を包む"
+    },
+    "patternCount": "{{name}}：{{value}}",
+    "patternAt": "{{date}} の{{name}}：{{meaning}}。",
+    "patternHint": "マークの付いた足にカーソルを合わせるとパターン名を表示します。",
+    "patternsAria": "ローソク足パターンを示した ORBT の日足チャート",
+    "assets": {
+      "btc": "BTC/USD",
+      "aapl": "AAPL",
+      "eurusd": "EUR/USD",
+      "gold": "金 (XAU/USD)"
+    },
+    "lastHours": "48 時間",
+    "lastDays": "30 日",
+    "watchAria": "{{name}} のローソク足、期間の騰落率 {{change}}",
+    "pivots": {
+      "r1": "R1",
+      "pivot": "P",
+      "s1": "S1"
+    },
+    "eurusd": "EUR/USD",
+    "fxAria": "日次ピボットを示した EUR/USD の1時間足",
+    "pipReadout": "{{time}} · 値幅 {{range}} pips · 実体 {{body}} pips · 変化 {{change}} pips · カーソルは現在値から {{distance}} pips",
+    "pipHint": "金曜日のピボット：P {{pivot}}、R1 {{r1}}、S1 {{s1}}。足にカーソルを合わせると pips で測ります。"
   },
   "api": {
     "CandlestickChartProps": {

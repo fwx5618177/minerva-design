@@ -29,6 +29,22 @@
     "small-multiples": {
       "title": "小型多图",
       "description": "每个地区一个小环形图，颜色和顺序一致，因此一个图例即可通用，各地区一目了然。"
+    },
+    "portfolio": {
+      "title": "带筛选标签的投资组合",
+      "description": "图表上方的标签和图例通过 onToggle 编辑同一个受控的 hidden 列表，“全部显示”将其清空。centerValue 汇总所显示的资产类别，renderTooltip 给出每个扇区占整个投资组合（而不仅是可见扇区）的比例。"
+    },
+    "live-poll": {
+      "title": "实时投票",
+      "description": "每秒都有新投票（setInterval，在卸载或暂停时清除），扇区以动画过渡到新的占比。renderTooltip 显示票数，centerValue 显示累计总数，只有领先选项变化时才会向屏幕阅读器播报。"
+    },
+    "drill-down": {
+      "title": "下钻云账单",
+      "description": "点击某个类别（onClick）会将数据替换为其下的服务；面包屑可返回总览。提示框提示可以点击，图表下方的文字描述所选的类别或服务。"
+    },
+    "survey-quarters": {
+      "title": "按季度的满意度调查",
+      "description": "通过每个数据项的 color 设置从红到绿的发散色阶，startAngle={-90} 让满意的回答排在前面。切换季度时扇区会以动画过渡；中心显示 CSAT，下方文字显示与上一季度相比的变化。"
     }
   },
   "data": {
@@ -110,7 +126,87 @@
       "desktop": "桌面",
       "tablet": "平板"
     },
-    "devicesAria": "{{region}}按设备统计的会话"
+    "devicesAria": "{{region}}按设备统计的会话",
+    "portfolio": {
+      "assets": {
+        "usEquities": "美国股票",
+        "intlEquities": "国际股票",
+        "bonds": "债券",
+        "realEstate": "房地产",
+        "commodities": "大宗商品",
+        "cash": "现金"
+      },
+      "filter": "显示的资产类别",
+      "showAll": "全部显示",
+      "selection": "所选",
+      "total": "总市值",
+      "ofPortfolio": "占投资组合的 {{share}}",
+      "aria": "按资产类别划分的投资组合",
+      "summary": "显示 {{total}} 个资产类别中的 {{shown}} 个：{{value}}，占投资组合的 {{share}}。"
+    },
+    "poll": {
+      "answers": {
+        "darkMode": "深色模式",
+        "offline": "离线模式",
+        "api": "公开 API",
+        "integrations": "更多集成",
+        "reports": "自定义报表"
+      },
+      "question": "我们接下来应该开发哪个功能？",
+      "votes": "票",
+      "votesShare": "{{votes}} 票 · {{share}}",
+      "aria": "按选项划分的实时投票结果",
+      "pause": "暂停",
+      "resume": "继续",
+      "reset": "重置",
+      "leading": "领先：{{answer}}"
+    },
+    "cloud": {
+      "categories": {
+        "compute": "计算",
+        "databases": "数据库",
+        "storage": "存储",
+        "network": "网络"
+      },
+      "services": {
+        "vms": "虚拟机",
+        "kubernetes": "Kubernetes",
+        "serverless": "无服务器函数",
+        "sql": "SQL 数据库",
+        "nosql": "NoSQL 数据库",
+        "cache": "内存缓存",
+        "objects": "对象存储",
+        "blocks": "块存储",
+        "backups": "备份",
+        "egress": "数据传输",
+        "cdn": "CDN",
+        "loadBalancers": "负载均衡器"
+      },
+      "breadcrumb": "云账单",
+      "all": "全部类别",
+      "clickToOpen": "点击查看其服务",
+      "servicesAria": "按服务划分的{{category}}费用",
+      "aria": "按类别划分的月度云账单",
+      "serviceLine": "{{service}}：{{amount}}，占{{category}}的 {{share}}。",
+      "categoryLine": "{{category}}：{{amount}}，占账单的 {{share}}。点击某项服务查看其占比。",
+      "hint": "月度账单：{{total}}。点击某个类别查看其服务。"
+    },
+    "survey": {
+      "levels": {
+        "veryDissatisfied": "非常不满意",
+        "dissatisfied": "不满意",
+        "neutral": "一般",
+        "satisfied": "满意",
+        "verySatisfied": "非常满意"
+      },
+      "quarter": "第 {{n}} 季度",
+      "quarterLabel": "季度",
+      "csat": "CSAT",
+      "answers": "{{answers}} 份回答 · {{share}}",
+      "aria": "{{quarter}}的客户满意度回答",
+      "first": "CSAT 为 {{csat}}，共 {{respondents}} 位受访者。",
+      "change": "CSAT 为 {{csat}}，较{{previous}}变化 {{delta}} 个百分点，共 {{respondents}} 位受访者。"
+    }
   },
   "api": {
     "PieChartProps": {

@@ -17,6 +17,22 @@
     "pipeline": {
       "title": "销售管道",
       "description": "在管道中的天数与赢单概率，气泡大小表示金额；onPointClick 接收被点击气泡的数值。"
+    },
+    "risk-matrix": {
+      "title": "风险矩阵",
+      "description": "项目风险按可能性和影响程度放在 5 × 5 网格上，气泡大小表示成本敞口；不设边界的 rect 标注为低风险区和高风险区着色，renderTooltip 计算风险分值。"
+    },
+    "campaigns": {
+      "title": "营销活动",
+      "description": "营销活动按上线日期（xAxis.type: \"time\"）和广告支出回报率排列，气泡大小表示预算，每个渠道一个系列；line 标注标出盈亏平衡线，点击图例项可切换渠道。"
+    },
+    "shared-scale": {
+      "title": "共享大小比例",
+      "description": "两个图表对比两年的门店区域。使用相同的 maxValue 时，相同营收在两个图表中面积相同；不设置时，每个图表按自身的最大值确定气泡大小。"
+    },
+    "playback": {
+      "title": "逐年动画",
+      "description": "1990 年至 2025 年的生育率与预期寿命，用 setInterval 逐年播放（暂停和卸载时清除）。固定的坐标轴范围和恒定的 maxValue 让各帧可以比较，text 标注显示年份。"
     }
   },
   "native": {
@@ -70,7 +86,67 @@
     "highIncome": "高收入",
     "logAria": "对数坐标下的人均 GDP 与预期寿命，气泡大小表示人口",
     "visibleIncomes": "可见收入范围：{{from}} – {{to}}",
-    "zoomHint": "缩放后显示以美元计的可见范围"
+    "zoomHint": "缩放后显示以美元计的可见范围",
+    "teams": {
+      "infrastructure": "基础设施",
+      "security": "安全",
+      "people": "人员",
+      "budget": "预算"
+    },
+    "exposure": "敞口",
+    "risks": {
+      "powerOutage": "停电",
+      "hardwareDelay": "硬件交付延迟",
+      "networkCutover": "网络割接",
+      "dataLeak": "数据泄露",
+      "accessReview": "权限审查积压",
+      "keyPerson": "关键人员离职",
+      "vendorSkills": "供应商技能不足",
+      "trainingGap": "培训缺口",
+      "licenseCost": "许可费用上涨",
+      "exchangeRate": "汇率波动"
+    },
+    "zones": {
+      "low": "可接受",
+      "high": "严重"
+    },
+    "riskScore": "可能性 {{likelihood}} × 影响 {{impact}} = {{score}}",
+    "exposureRow": "敞口：{{value}}",
+    "likelihood": "可能性",
+    "impact": "影响",
+    "riskAria": "按可能性、影响和成本敞口排列的项目风险",
+    "channels": {
+      "search": "搜索",
+      "social": "社交",
+      "video": "视频",
+      "email": "邮件"
+    },
+    "budget": "预算",
+    "launchedOn": "上线于 {{date}}",
+    "launch": "上线日期",
+    "roas": "广告支出回报率",
+    "breakEven": "盈亏平衡",
+    "campaignsAria": "按上线日期、广告支出回报率和预算排列的营销活动",
+    "regions": {
+      "north": "北区",
+      "south": "南区",
+      "east": "东区",
+      "west": "西区",
+      "center": "中区"
+    },
+    "sharedScale": "两个图表使用相同的大小比例",
+    "sharedScaleOn": "两个图表都用最大的气泡表示 {{value}}。",
+    "sharedScaleOff": "每个图表都用最大的气泡表示自身的最高营收。",
+    "salesPerMeter": "每平方米销售额",
+    "margin": "利润率",
+    "sharedScaleAria": "{{year}} 年各门店区域的每平方米销售额、利润率和营收",
+    "play": "播放",
+    "pause": "暂停",
+    "replay": "重播",
+    "restart": "重新开始",
+    "yearStatus": "年份：{{year}}",
+    "fertility": "生育率（每名女性生育子女数）",
+    "playbackAria": "1990 年至 2025 年各国的生育率、预期寿命和人口"
   },
   "api": {
     "BubbleChartProps": {

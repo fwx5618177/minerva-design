@@ -25,6 +25,26 @@
     "positioning": {
       "title": "ポジショニングマップ",
       "description": "顧客調査による価格と知覚品質。axisLabels が目盛りの代わりになり、自社ブランドは独自の色とサイズで目立たせます。"
+    },
+    "rice": {
+      "title": "RICE による優先順位付け",
+      "description": "バックログ項目を工数とリーチ × インパクトで配置し、点の大きさは RICE スコアに対応します。xDomain、yDomain、xSplit、ySplit で目盛りの範囲としきい値を設定します。スイッチで価値を確信度で重み付けすると投機的な大型施策が下がり、renderTooltip は RICE の 4 つの入力値を表示します。"
+    },
+    "swot": {
+      "title": "SWOT 分析",
+      "description": "showTicks={false} と axisLabels でチャートを SWOT のグリッドにします。quadrantContent で各象限の中心寄りの角に件数バッジを置き、onQuadrantClick でその象限の要因を一覧表示して他を薄くし、onPointClick でクリックした要因を表示します。"
+    },
+    "competitors": {
+      "title": "競合マップ",
+      "description": "比較する 2 つの軸を選びます。点、xLabel、yLabel はセレクトに合わせて変わります。自社製品は専用の色とサイズで示し、onPointClick でベンダーのプロファイル全体を自社と比較して表示します。"
+    },
+    "talent": {
+      "title": "タレントキャリブレーション",
+      "description": "キャリブレーション会議での業績とポテンシャルのマトリクスです。ドラッグ中は onPointDrag がスコアと移動先の象限を表示し、onPointDrop で移動を確定、onPointDoubleClick で元の位置に戻します。移動した人の点は大きくなります。"
+    },
+    "live-services": {
+      "title": "サービスのリアルタイム監視",
+      "description": "各サービスのレイテンシとエラー率を毎秒更新します。xSplit と ySplit の線が SLO の上限です。quadrantOf で危険象限にあるサービスを一覧にし、renderTooltip は Intl で単位を整形します。"
     }
   },
   "data": {
@@ -140,7 +160,126 @@
     "lowPrice": "低価格",
     "highPrice": "高価格",
     "brand": "ブランド",
-    "positioningAria": "価格と知覚品質によるブランドの配置"
+    "positioningAria": "価格と知覚品質によるブランドの配置",
+    "rice": {
+      "items": {
+        "bulkEdit": "一括編集",
+        "sso": "SAML シングルサインオン",
+        "offlineMode": "オフラインモード",
+        "onboardingTour": "オンボーディングツアー",
+        "aiSummary": "AI 要約",
+        "themes": "カラーテーマ",
+        "auditLog": "監査ログ",
+        "chatAlerts": "チャット通知",
+        "apiV2": "公開 API v2",
+        "csvImport": "CSV インポート"
+      },
+      "weighted": "確信度で重み付け",
+      "effort": "工数（人月）",
+      "value": "リーチ × インパクト（千ユーザー）",
+      "inputs": "リーチ {{reach}}k ・ インパクト {{impact}} ・ 確信度 {{confidence}} ・ 工数 {{effort}} 人月",
+      "score": "RICE スコア：{{score}}",
+      "top": "RICE スコア上位 3 件：{{list}}",
+      "aria": "RICE で優先順位を付けたバックログ：工数とリーチ × インパクト"
+    },
+    "swot": {
+      "topLeft": "強み",
+      "topRight": "弱み",
+      "bottomLeft": "機会",
+      "bottomRight": "脅威",
+      "internal": "内部",
+      "external": "外部",
+      "helpful": "プラス要因",
+      "harmful": "マイナス要因",
+      "factors": {
+        "brandLoyalty": "ロイヤルな顧客",
+        "ownPlatform": "自社開発の基盤",
+        "lowChurn": "低い解約率",
+        "smallSalesTeam": "小規模な営業チーム",
+        "legacyBilling": "旧式の課金システム",
+        "singleRegion": "単一リージョン",
+        "smbMarket": "成長する中小企業市場",
+        "partnerships": "販売代理店との提携",
+        "aiFeatures": "AI 機能",
+        "newEntrant": "資金力のある新規参入",
+        "regulation": "新しいデータ規制",
+        "priceWar": "価格競争"
+      },
+      "count": "{{n}} 件",
+      "quadrantItems": "{{quadrant}}：{{items}}",
+      "factor": "{{factor}}（{{quadrant}}）",
+      "hint": "象限をクリックすると要因を一覧表示し、要因をクリックするとそれを選択します",
+      "aria": "SWOT 分析：強み、弱み、機会、脅威"
+    },
+    "comp": {
+      "dimensions": {
+        "price": "価格の手頃さ",
+        "features": "機能の充実度",
+        "ease": "使いやすさ",
+        "support": "サポート品質",
+        "integrations": "連携機能"
+      },
+      "xAxis": "横軸",
+      "yAxis": "縦軸",
+      "us": "{{name}}（自社）",
+      "strongBoth": "両方で優位",
+      "weakBoth": "両方で劣位",
+      "score": "{{dimension}} {{score}}",
+      "profile": "{{name}}：{{scores}}。{{total}} 項目中 {{ahead}} 項目で自社を上回っています。",
+      "ourProfile": "{{name}}（自社）：{{scores}}。",
+      "hint": "2 つの軸を選び、ベンダーをクリックするとプロファイルを表示します",
+      "aria": "{{x}}と{{y}}による競合比較"
+    },
+    "talent": {
+      "roles": {
+        "backendLead": "バックエンドリード",
+        "productDesigner": "プロダクトデザイナー",
+        "dataAnalyst": "データアナリスト",
+        "qaEngineer": "QA エンジニア",
+        "mobileDeveloper": "モバイル開発者",
+        "productManager": "プロダクトマネージャー",
+        "supportLead": "サポートリード",
+        "juniorDeveloper": "ジュニア開発者"
+      },
+      "futureLeaders": "次世代リーダー",
+      "roughDiamonds": "原石",
+      "solidPerformers": "安定した実力者",
+      "needsSupport": "要サポート",
+      "performance": "業績",
+      "potential": "ポテンシャル",
+      "moving": "{{person}}：業績 {{performance}}、ポテンシャル {{potential}} → {{quadrant}}",
+      "moved": "{{person}} を「{{quadrant}}」に配置しました",
+      "reset": "{{person}} を初期評価に戻しました",
+      "resetAll": "すべての評価を初期値に戻しました",
+      "resetButton": "すべてリセット",
+      "changed": "{{total}} 人中 {{n}} 人を再評価",
+      "hint": "人をドラッグして再評価し、ダブルクリックで元に戻します",
+      "aria": "タレントキャリブレーション：業績とポテンシャル"
+    },
+    "live": {
+      "services": {
+        "auth": "認証",
+        "search": "検索",
+        "checkout": "決済",
+        "catalog": "カタログ",
+        "payments": "支払い",
+        "notifications": "通知",
+        "recommendations": "レコメンド",
+        "media": "メディア"
+      },
+      "healthy": "正常",
+      "slow": "低速",
+      "erroring": "エラー多発",
+      "critical": "危険",
+      "latency": "p95 レイテンシ（ms）",
+      "errorRate": "エラー率（%）",
+      "tooltip": "p95 {{latency}} ・ エラー {{errors}}",
+      "criticalList": "両方の SLO を超過：{{list}}",
+      "allGood": "両方の SLO を超過しているサービスはありません",
+      "pause": "一時停止",
+      "resume": "再開",
+      "aria": "サービスのリアルタイム監視：p95 レイテンシとエラー率"
+    }
   },
   "api": {
     "QuadrantChartProps": {

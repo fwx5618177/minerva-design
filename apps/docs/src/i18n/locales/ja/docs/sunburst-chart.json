@@ -17,6 +17,22 @@
     "labels": {
       "title": "ラベル",
       "description": "大陸・国別の人口。labels で名前の書き方を選びます：auto は扇形ごとに円弧方向か半径方向を選び、収まらない名前は省略または非表示にします。凡例で大陸の表示を切り替えられ、国名は Intl.DisplayNames から取得します。"
+    },
+    "city-budget": {
+      "title": "市の予算",
+      "description": "drill={false} にするとクリックはズームではなく選択になります。onClick でチャート下の文を更新し、事業が予算全体と政策分野に占める割合を示します。renderTooltip も同じ文を表示し、事業のない分野は通常のリーフです。"
+    },
+    "time-tracking": {
+      "title": "工数管理",
+      "description": "クライアント・プロジェクト・作業別の時間を 3 つのリングで表示します。RadioGroup で今週と今月を切り替えるとセクターがアニメーションします。時間は Intl.NumberFormat の hour 単位で書式化し、サマリーは請求可能な時間の割合を示します。"
+    },
+    "live-requests": {
+      "title": "API トラフィックのライブ表示",
+      "description": "サービス・エンドポイント別の毎分リクエスト数を、シード付きランダムウォークで 1.5 秒ごとに更新します（setInterval、一時停止とアンマウント時に解除）。合計は表示しますが通知はせず、最も負荷の高いサービスが変わったときだけ通知します。"
+    },
+    "energy-mix": {
+      "title": "電源構成",
+      "description": "凡例と Switch が同じ制御された hidden リストを編集する（onToggle）ため、どちらから化石燃料を非表示にしても同期します。内訳のない電源（原子力）は 1 つ目のリングのリーフで、各燃料は電源の色を受け継ぎます。"
     }
   },
   "native": {
@@ -148,7 +164,114 @@
       "radial": "半径方向",
       "none": "なし"
     },
-    "worldAria": "大陸・国別の世界人口（百万人）"
+    "worldAria": "大陸・国別の世界人口（百万人）",
+    "budget": {
+      "areas": {
+        "education": "教育",
+        "health": "保健医療",
+        "transport": "交通",
+        "safety": "治安・防災",
+        "environment": "環境",
+        "administration": "行政"
+      },
+      "programs": {
+        "schools": "学校",
+        "universities": "大学",
+        "libraries": "図書館",
+        "hospitals": "病院",
+        "prevention": "予防",
+        "transit": "公共交通",
+        "roads": "道路",
+        "cycling": "自転車道",
+        "police": "警察",
+        "fire": "消防",
+        "parks": "公園",
+        "waste": "ごみ収集",
+        "water": "水道"
+      },
+      "programLine": "{{path}}：{{amount}}（予算の {{share}}、{{area}}の {{areaShare}}）。",
+      "areaLine": "{{path}}：{{amount}}（予算の {{share}}）。",
+      "aria": "政策分野・事業別の市の年間予算",
+      "hint": "年間予算：{{total}}。セクターをクリックすると割合を表示します。"
+    },
+    "time": {
+      "clients": {
+        "bakery": "ベーカリーチェーン",
+        "clinic": "歯科医院",
+        "school": "語学学校",
+        "internal": "社内"
+      },
+      "projects": {
+        "website": "ウェブサイト",
+        "branding": "ブランディング",
+        "booking": "予約システム",
+        "app": "モバイルアプリ",
+        "admin": "事務",
+        "training": "研修"
+      },
+      "activities": {
+        "design": "デザイン",
+        "development": "開発",
+        "meetings": "会議",
+        "review": "レビュー",
+        "support": "サポート",
+        "learning": "学習"
+      },
+      "period": "期間",
+      "periods": {
+        "week": "今週",
+        "month": "今月"
+      },
+      "tooltip": "{{hours}} · 記録時間の {{share}}",
+      "aria": "クライアント・プロジェクト・作業別の記録時間（{{period}}）",
+      "summary": "請求可能：{{total}} 中 {{billable}}（{{share}}）。"
+    },
+    "requests": {
+      "services": {
+        "checkout": "購入手続き",
+        "search": "検索",
+        "accounts": "アカウント",
+        "catalog": "カタログ"
+      },
+      "endpoints": {
+        "cart": "カート",
+        "payment": "決済",
+        "shipping": "配送",
+        "query": "検索クエリ",
+        "suggest": "候補表示",
+        "login": "ログイン",
+        "profile": "プロフィール",
+        "product": "商品ページ",
+        "reviews": "レビュー"
+      },
+      "rpm": "{{value}} 件/分",
+      "aria": "サービス・エンドポイント別の毎分 API リクエスト数（ライブ更新）",
+      "pause": "一時停止",
+      "resume": "再開",
+      "total": "合計：{{value}}",
+      "busiest": "最も負荷の高いサービス：{{service}}"
+    },
+    "energy": {
+      "sources": {
+        "renewables": "再生可能エネルギー",
+        "nuclear": "原子力",
+        "fossil": "化石燃料"
+      },
+      "fuels": {
+        "wind": "風力",
+        "solar": "太陽光",
+        "hydro": "水力",
+        "biomass": "バイオマス",
+        "gas": "天然ガス",
+        "coal": "石炭",
+        "oil": "石油"
+      },
+      "twh": "{{value}} TWh",
+      "hideFossil": "化石燃料を非表示",
+      "aria": "電源・燃料別の年間発電量",
+      "shownOnly": "再生可能エネルギーは非表示：{{total}} を表示中。",
+      "share": "再生可能エネルギー：表示中の {{total}} の {{share}}。"
+    }
   },
   "wc": {
     "demos": {

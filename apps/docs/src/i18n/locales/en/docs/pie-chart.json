@@ -29,6 +29,22 @@
     "small-multiples": {
       "title": "Small multiples",
       "description": "One small donut per region with the same colors and order, so a single legend serves them all and the regions compare at a glance."
+    },
+    "portfolio": {
+      "title": "Investment portfolio with filter tags",
+      "description": "The tags above the chart and the legend edit the same controlled hidden list through onToggle, and Show all clears it. centerValue sums the asset classes shown, and renderTooltip gives each slice's share of the whole portfolio, not only of the visible slices."
+    },
+    "live-poll": {
+      "title": "Live poll",
+      "description": "New votes arrive every second (setInterval, cleared on unmount or pause) and the slices animate toward the new shares. renderTooltip shows the votes, centerValue the running total, and only a change of leader is announced to screen readers."
+    },
+    "drill-down": {
+      "title": "Drill-down into a cloud bill",
+      "description": "Clicking a category (onClick) replaces the data with its services; the breadcrumb goes back to the overview. The tooltip hints at the click, and the line under the chart describes the selected category or service."
+    },
+    "survey-quarters": {
+      "title": "Satisfaction survey by quarter",
+      "description": "A diverging red-to-green scale set through each datum's color, with startAngle={-90} so the happy answers come first. Picking another quarter animates the slices; the center shows the CSAT and the line below its change from the previous quarter."
     }
   },
   "data": {
@@ -110,7 +126,87 @@
       "desktop": "Desktop",
       "tablet": "Tablet"
     },
-    "devicesAria": "Sessions by device in {{region}}"
+    "devicesAria": "Sessions by device in {{region}}",
+    "portfolio": {
+      "assets": {
+        "usEquities": "US equities",
+        "intlEquities": "International equities",
+        "bonds": "Bonds",
+        "realEstate": "Real estate",
+        "commodities": "Commodities",
+        "cash": "Cash"
+      },
+      "filter": "Asset classes shown",
+      "showAll": "Show all",
+      "selection": "selection",
+      "total": "total value",
+      "ofPortfolio": "{{share}} of the portfolio",
+      "aria": "Investment portfolio by asset class",
+      "summary": "{{shown}} of {{total}} asset classes shown: {{value}}, {{share}} of the portfolio."
+    },
+    "poll": {
+      "answers": {
+        "darkMode": "Dark mode",
+        "offline": "Offline mode",
+        "api": "Public API",
+        "integrations": "More integrations",
+        "reports": "Custom reports"
+      },
+      "question": "Which feature should we build next?",
+      "votes": "votes",
+      "votesShare": "{{votes}} votes · {{share}}",
+      "aria": "Live poll results by answer",
+      "pause": "Pause",
+      "resume": "Resume",
+      "reset": "Reset",
+      "leading": "Leading: {{answer}}"
+    },
+    "cloud": {
+      "categories": {
+        "compute": "Compute",
+        "databases": "Databases",
+        "storage": "Storage",
+        "network": "Network"
+      },
+      "services": {
+        "vms": "Virtual machines",
+        "kubernetes": "Kubernetes",
+        "serverless": "Serverless functions",
+        "sql": "SQL databases",
+        "nosql": "NoSQL databases",
+        "cache": "In-memory cache",
+        "objects": "Object storage",
+        "blocks": "Block storage",
+        "backups": "Backups",
+        "egress": "Data transfer",
+        "cdn": "CDN",
+        "loadBalancers": "Load balancers"
+      },
+      "breadcrumb": "Cloud bill",
+      "all": "All categories",
+      "clickToOpen": "Click to see its services",
+      "servicesAria": "{{category}} costs by service",
+      "aria": "Monthly cloud bill by category",
+      "serviceLine": "{{service}}: {{amount}}, {{share}} of {{category}}.",
+      "categoryLine": "{{category}}: {{amount}}, {{share}} of the bill. Click a service for its share.",
+      "hint": "Monthly bill: {{total}}. Click a category to see its services."
+    },
+    "survey": {
+      "levels": {
+        "veryDissatisfied": "Very dissatisfied",
+        "dissatisfied": "Dissatisfied",
+        "neutral": "Neutral",
+        "satisfied": "Satisfied",
+        "verySatisfied": "Very satisfied"
+      },
+      "quarter": "Q{{n}}",
+      "quarterLabel": "Quarter",
+      "csat": "CSAT",
+      "answers": "{{answers}} answers · {{share}}",
+      "aria": "Customer satisfaction answers in {{quarter}}",
+      "first": "CSAT {{csat}} from {{respondents}} respondents.",
+      "change": "CSAT {{csat}}, {{delta}} points since {{previous}}, from {{respondents}} respondents."
+    }
   },
   "api": {
     "PieChartProps": {

@@ -29,6 +29,26 @@
     "options": {
       "title": "选项",
       "description": "尝试不同的标签模式（auto 在每个名称都能放进弧内时使用切向标签，否则使用径向标签）、组的排序、弦带颜色、有向弦带以及刻度。"
+    },
+    "brand-switching": {
+      "title": "品牌转换",
+      "description": "用户在各移动运营商之间的转网情况，每年一个矩阵。directed 为每个方向绘制一条带，ribbonColor=\"target\" 按赢得用户的运营商着色；净增用户数由同一矩阵计算得出。"
+    },
+    "focus": {
+      "title": "聚焦某个分组",
+      "description": "各学院之间合著的论文。onClick 点击弧段后保留该学院的带，其余带通过连线的 color 变为中性色，并列出其主要合作方；点击带则显示这一对学院。"
+    },
+    "co-purchase": {
+      "title": "购物篮分析",
+      "description": "在同一购物篮中一起购买的品类。sortGroups 与 sortSubgroups=\"descending\" 让最大的品类和组合排在前面，ticks={1000} 设置刻度步长并配合紧凑的 tickFormat，renderTooltip 将组合显示为占全部购物篮的比例。"
+    },
+    "live": {
+      "title": "实时服务调用",
+      "description": "微服务之间的每秒调用次数，每 2 秒刷新并带有过渡动画。directed 配合 ribbonColor=\"source\" 显示谁在调用谁；说明文字给出总量和最繁忙的调用。"
+    },
+    "legend": {
+      "title": "受控图例",
+      "description": "各机场枢纽之间的旅客量。legend={{ position: \"top\" }} 用于切换枢纽，配合 hidden + onToggle 将隐藏列表保存在页面中，因此按钮可以应用预设，说明文字统计仍可见的航线。"
     }
   },
   "native": {
@@ -175,7 +195,81 @@
       "neutral": "中性"
     },
     "directed": "有向",
-    "ticks": "刻度"
+    "ticks": "刻度",
+    "switching": {
+      "other": "其他运营商",
+      "yearLabel": "年份",
+      "year": "{{year}} 年",
+      "net": "{{name}} {{value}}",
+      "summary": "{{name}} 赢得的用户最多（净增 {{value}}）。净变化：{{list}}。",
+      "aria": "{{year}} 年移动运营商之间的用户转网"
+    },
+    "research": {
+      "faculties": {
+        "physics": "物理",
+        "chemistry": "化学",
+        "biology": "生物",
+        "medicine": "医学",
+        "computing": "计算机科学",
+        "mathematics": "数学",
+        "economics": "经济",
+        "engineering": "工程"
+      },
+      "hint": "点击某个学院聚焦其合作关系，或点击一条带查看这一对学院",
+      "focus": "{{name}}：合著论文 {{total}} 篇，主要合作方为 {{partners}}",
+      "partner": "{{name}}（{{value}}）",
+      "pair": "{{a}}与{{b}}：合著论文 {{value}} 篇",
+      "clear": "清除",
+      "aria": "一所大学各学院五年间合著的论文"
+    },
+    "basket": {
+      "categories": {
+        "coffee": "咖啡",
+        "milk": "牛奶",
+        "bread": "面包",
+        "pastries": "糕点",
+        "fruit": "水果",
+        "cereal": "麦片",
+        "yogurt": "酸奶",
+        "juice": "果汁"
+      },
+      "pair": "{{a}} + {{b}}",
+      "together": "在 {{value}} 个购物篮中一起购买（占全部购物篮的 {{share}}）",
+      "withOthers": "与其他品类组合 {{value}} 次",
+      "aria": "一个月内在同一购物篮中一起购买的商品品类"
+    },
+    "calls": {
+      "services": {
+        "gateway": "网关",
+        "users": "用户",
+        "orders": "订单",
+        "inventory": "库存",
+        "payments": "支付",
+        "notifications": "通知"
+      },
+      "perSecond": "{{value}} 次/秒",
+      "summary": "总计：{{total}}。最繁忙：{{from}} → {{to}}（{{value}}）",
+      "pause": "暂停",
+      "resume": "继续",
+      "aria": "微服务之间的实时每秒调用次数"
+    },
+    "hubs": {
+      "london": "伦敦",
+      "paris": "巴黎",
+      "frankfurt": "法兰克福",
+      "istanbul": "伊斯坦布尔",
+      "dubai": "迪拜",
+      "singapore": "新加坡",
+      "tokyo": "东京",
+      "newYork": "纽约",
+      "millions": "{{value}} 百万人次",
+      "showAll": "显示全部枢纽",
+      "eastOnly": "东部枢纽",
+      "westOnly": "西部枢纽",
+      "tooFew": "至少显示两个枢纽才能看到它们之间的航线",
+      "summary": "显示 {{total}} 个枢纽中的 {{shown}} 个：{{routes}} 条航线，每年 {{passengers}}",
+      "aria": "主要机场枢纽之间的年旅客量"
+    }
   },
   "wc": {
     "demos": {

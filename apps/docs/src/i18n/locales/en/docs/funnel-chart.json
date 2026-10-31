@@ -21,6 +21,22 @@
     "compare": {
       "title": "Comparing segments",
       "description": "The same funnel split by device, side by side with the same stages and one color per segment, to see where mobile users drop out."
+    },
+    "campaigns": {
+      "title": "Marketing funnel by channel",
+      "description": "A Select filters the funnel to one acquisition channel and the stages animate to the new counts. renderTooltip adds the conversion from the previous stage and the cost per result, computed from the channel's spend; the line below gives the customer acquisition cost."
+    },
+    "what-if": {
+      "title": "What-if conversion model",
+      "description": "The −1 / +1 buttons change the conversion rate of one checkout step and the funnel is recomputed from the visits; the summary compares the orders and the revenue with today's rates. Rates are kept in whole percent points so that Reset knows when nothing has changed."
+    },
+    "live-sale": {
+      "title": "Live flash sale",
+      "description": "A one-hour sale replayed in 30 ticks (setInterval, cleared on pause, at the end and on unmount): new visitors arrive and move down the stages with a seeded random generator. The status line follows the clock, and only the end of the sale is announced."
+    },
+    "sales-pipeline": {
+      "title": "B2B sales pipeline",
+      "description": "Stages sized by the amount of their open deals, with conversion={false} because each stage holds different deals. onClick lists the deals of a stage next to the funnel, and renderTooltip shows their count and win probability."
     }
   },
   "data": {
@@ -83,7 +99,72 @@
       "mobile": "Mobile"
     },
     "conversionRate": "{{rate}} conversion",
-    "deviceFunnelAria": "Checkout funnel on {{device}}"
+    "deviceFunnelAria": "Checkout funnel on {{device}}",
+    "campaigns": {
+      "stages": {
+        "impressions": "Impressions",
+        "clicks": "Clicks",
+        "leads": "Leads",
+        "qualified": "Qualified leads",
+        "customers": "Customers"
+      },
+      "channels": {
+        "all": "All channels",
+        "search": "Search ads",
+        "social": "Social media",
+        "email": "Email",
+        "partners": "Partners"
+      },
+      "channel": "Channel",
+      "fromPrevious": "{{share}} of the previous stage",
+      "costPer": "Cost per result: {{cost}}",
+      "aria": "Marketing funnel of this month: {{channel}}",
+      "summary": "Spend: {{spend}} · Customers: {{customers}} · Acquisition cost: {{cac}} per customer"
+    },
+    "whatIf": {
+      "stages": {
+        "visits": "Visits",
+        "cart": "Added to cart",
+        "checkout": "Checkout",
+        "paid": "Paid orders"
+      },
+      "aria": "Monthly checkout funnel computed from the conversion rates",
+      "step": "{{from}} → {{to}}",
+      "lower": "Lower the conversion of {{step}}",
+      "raise": "Raise the conversion of {{step}}",
+      "reset": "Reset to today's rates",
+      "summary": "{{orders}} orders ({{ordersDelta}}) · {{revenue}} revenue ({{revenueDelta}}) per month"
+    },
+    "sale": {
+      "stages": {
+        "visitors": "Visitors",
+        "product": "Viewed the deal",
+        "cart": "Added to cart",
+        "checkout": "Checkout",
+        "orders": "Orders"
+      },
+      "aria": "Flash sale funnel, updated live",
+      "pause": "Pause",
+      "resume": "Resume",
+      "restart": "Restart",
+      "status": "{{time}} · {{orders}} orders · {{rate}} of the visitors",
+      "ended": "The sale is over: {{orders}} orders."
+    },
+    "pipeline": {
+      "stages": {
+        "lead": "Lead",
+        "qualified": "Qualified",
+        "demo": "Demo",
+        "proposal": "Proposal",
+        "negotiation": "Negotiation"
+      },
+      "dealsAmount": "{{deals}} deals · {{amount}}",
+      "probability": "Win probability: {{share}}",
+      "aria": "Open deals by pipeline stage, by amount",
+      "stageTitle": "{{stage}}: {{deals}} open deals",
+      "forecast": "Weighted forecast: {{amount}}",
+      "hint": "Click a stage to list its deals."
+    }
   },
   "api": {
     "FunnelChartProps": {

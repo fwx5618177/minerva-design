@@ -86,6 +86,18 @@
     "obv": {
       "title": "能量潮 OBV",
       "description": "OBV 累加收涨日的成交量、减去收跌日的成交量；其 20 根均线显示买压还是卖压占优。大数值使用页面语言的紧凑单位。"
+    },
+    "divergence": {
+      "title": "RSI 背离",
+      "description": "rsi() 结合 K 线的波段高低点找出常规背离：价格创新低而 RSI 低点抬高（看涨），价格创新高而 RSI 高点降低（看跌）。每个背离变成两条锁定的 trendLine 画线，一条在价格窗格，一条在 RSI 窗格（pane: \"rsi:14\"）。"
+    },
+    "multi-timeframe": {
+      "title": "多周期",
+      "description": "resampleBars 把小时 K 线聚合为 4 小时和日线，ema() 计算它们的 20 周期均线；每根小时 K 线只能看到最近一根已收盘的大周期 K 线（无未来函数），用 compare 画在小时 EMA 之上。onCrosshairMove 判断收盘价是否位于三条均线之上。"
+    },
+    "screener": {
+      "title": "指标选股器",
+      "description": "对六个品种运行 rsi()、macd()、atr() 和 sma()，填充可排序的 Table：RSI、MACD 柱、ATR 占价格的比例、与 50 日均线的距离以及信号。选择一个品种即可打开带相同指标的图表。"
     }
   },
   "data": {
@@ -166,7 +178,45 @@
     "dmiAria": "MSFT 日线图，含 DMI 窗格",
     "aapl": "苹果 AAPL",
     "obvAria": "AAPL 日线图，含成交量和 OBV",
-    "flips": "趋势翻转：{{count}} 次"
+    "flips": "趋势翻转：{{count}} 次",
+    "divergenceKind": "背离",
+    "divergenceKinds": {
+      "all": "全部",
+      "bullish": "看涨",
+      "bearish": "看跌"
+    },
+    "divergenceAria": "画出 RSI 背离的 SOL/USDT 4 小时图",
+    "divergenceSummary": "看涨背离 {{bullish}} 个，看跌背离 {{bearish}} 个。",
+    "divergenceLatest": "最近：{{kind}}，{{date}}。",
+    "emaOn": "EMA {{period}} · {{frame}}",
+    "mtfAria": "带小时、4 小时和日线 20 周期 EMA 的 ETH/USDT 小时图",
+    "mtfAt": "{{time}} · 收盘 {{close}}",
+    "mtfAbove": "{{frame}}：高于 {{value}}",
+    "mtfBelow": "{{frame}}：低于 {{value}}",
+    "mtfWarmup": "{{frame}}：K 线不足",
+    "mtfVerdict": {
+      "alignedUp": "所有周期向上",
+      "alignedDown": "所有周期向下",
+      "mixed": "各周期方向不一"
+    },
+    "screenTable": "指标选股器",
+    "screenSymbol": "品种",
+    "screenClose": "收盘价",
+    "screenChange": "1 日",
+    "screenRsi": "RSI 14",
+    "screenMacd": "MACD 柱",
+    "screenAtr": "ATR %",
+    "screenSma": "相对 SMA 50",
+    "screenSignal": "信号",
+    "screenSignals": {
+      "overbought": "超买",
+      "oversold": "超卖",
+      "uptrend": "上升趋势",
+      "downtrend": "下降趋势",
+      "neutral": "中性"
+    },
+    "screenShowing": "{{name}}：{{signal}}，距 50 日均线 {{distance}}。",
+    "screenChartAria": "带 50 日均线、RSI 和 MACD 的 {{name}} 日线图"
   },
   "api": {
     "TradingMovingAverageIndicator": {

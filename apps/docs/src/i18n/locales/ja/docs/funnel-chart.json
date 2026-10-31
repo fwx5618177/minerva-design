@@ -21,6 +21,22 @@
     "compare": {
       "title": "セグメントの比較",
       "description": "同じファネルをデバイス別に分けて並べ、段階をそろえてセグメントごとに色を変え、モバイルのユーザーがどこで離脱するかを確認します。"
+    },
+    "campaigns": {
+      "title": "チャネル別のマーケティングファネル",
+      "description": "Select でファネルを 1 つの獲得チャネルに絞り込むと、各ステージが新しい件数へアニメーションします。renderTooltip はチャネルの費用から計算した前ステージからの転換率と成果あたりのコストを追加し、下の文は顧客獲得コストを示します。"
+    },
+    "what-if": {
+      "title": "転換率の what-if モデル",
+      "description": "−1 / +1 ボタンで購入手続きの 1 ステップの転換率を変えると、訪問数からファネルを再計算します。サマリーは注文数と売上を現在の転換率と比較します。転換率は整数のパーセントポイントで保持するため、「リセット」は変更がないことを正しく判定できます。"
+    },
+    "live-sale": {
+      "title": "ライブのタイムセール",
+      "description": "1 時間のセールを 30 回の更新で再生します（setInterval、一時停止・終了・アンマウント時に解除）。新しい訪問者がシード付き乱数で各ステージを下っていきます。ステータス行は時刻に合わせて更新され、通知するのはセールの終了だけです。"
+    },
+    "sales-pipeline": {
+      "title": "B2B の営業パイプライン",
+      "description": "各ステージの大きさはオープン案件の金額で、ステージごとに異なる案件を含むため conversion={false} にしています。onClick でファネルの横にそのステージの案件を一覧表示し、renderTooltip は件数と受注確率を表示します。"
     }
   },
   "data": {
@@ -83,7 +99,72 @@
       "mobile": "モバイル"
     },
     "conversionRate": "コンバージョン率 {{rate}}",
-    "deviceFunnelAria": "{{device}}の購入ファネル"
+    "deviceFunnelAria": "{{device}}の購入ファネル",
+    "campaigns": {
+      "stages": {
+        "impressions": "インプレッション",
+        "clicks": "クリック",
+        "leads": "リード",
+        "qualified": "有望リード",
+        "customers": "顧客"
+      },
+      "channels": {
+        "all": "すべてのチャネル",
+        "search": "検索広告",
+        "social": "ソーシャルメディア",
+        "email": "メール",
+        "partners": "パートナー"
+      },
+      "channel": "チャネル",
+      "fromPrevious": "前ステージの {{share}}",
+      "costPer": "成果あたりのコスト：{{cost}}",
+      "aria": "今月のマーケティングファネル：{{channel}}",
+      "summary": "費用：{{spend}} · 顧客：{{customers}} · 獲得コスト：1 顧客あたり {{cac}}"
+    },
+    "whatIf": {
+      "stages": {
+        "visits": "訪問",
+        "cart": "カート追加",
+        "checkout": "購入手続き",
+        "paid": "支払い済み注文"
+      },
+      "aria": "転換率から計算した月間の購入ファネル",
+      "step": "{{from}} → {{to}}",
+      "lower": "{{step}} の転換率を下げる",
+      "raise": "{{step}} の転換率を上げる",
+      "reset": "現在の転換率に戻す",
+      "summary": "月 {{orders}} 件の注文（{{ordersDelta}}）· 売上 {{revenue}}（{{revenueDelta}}）"
+    },
+    "sale": {
+      "stages": {
+        "visitors": "訪問者",
+        "product": "商品を閲覧",
+        "cart": "カート追加",
+        "checkout": "購入手続き",
+        "orders": "注文"
+      },
+      "aria": "ライブ更新されるタイムセールのファネル",
+      "pause": "一時停止",
+      "resume": "再開",
+      "restart": "最初から",
+      "status": "{{time}} · 注文 {{orders}} 件 · 訪問者の {{rate}}",
+      "ended": "セールは終了しました：注文 {{orders}} 件。"
+    },
+    "pipeline": {
+      "stages": {
+        "lead": "リード",
+        "qualified": "見込み確定",
+        "demo": "デモ",
+        "proposal": "提案",
+        "negotiation": "交渉"
+      },
+      "dealsAmount": "{{deals}} 件 · {{amount}}",
+      "probability": "受注確率：{{share}}",
+      "aria": "パイプラインのステージ別オープン案件の金額",
+      "stageTitle": "{{stage}}：オープン案件 {{deals}} 件",
+      "forecast": "加重予測：{{amount}}",
+      "hint": "ステージをクリックすると案件を一覧表示します。"
+    }
   },
   "api": {
     "FunnelChartProps": {

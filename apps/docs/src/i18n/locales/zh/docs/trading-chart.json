@@ -104,6 +104,18 @@
     "export": {
       "title": "图片与全屏",
       "description": "toDataURL 和 toBlob 把 K 线、坐标轴、画线和图例合成为一张 PNG；requestFullscreen 让图表全屏显示（按 Escape 退出）。"
+    },
+    "price-alerts": {
+      "title": "价格提醒",
+      "description": "点击价格窗格设置提醒：onClick 给出价格，成为 kind 为 \"alert\" 的 priceLines 项，可拖动（onOrderMove）也可取消（onOrderCancel）。模拟行情每秒调用 update 十次；价格触及的提醒会被移除、在对应 K 线上标记并记录下来。"
+    },
+    "trade-journal": {
+      "title": "交易日志",
+      "description": "基于 15 分钟交易时段 K 线的期货交易日志：每笔往返交易是一个开仓标记和一个平仓标记，表格列出其点数和盈亏（每张合约每点 50 美元），统计数据加以汇总。“查看”调用 setVisibleTimeRange 和 setCrosshair 把交易显示出来。"
+    },
+    "mobile": {
+      "title": "移动端布局",
+      "description": "手机尺寸的图表，没有图例、网格和最高 / 最低价标记：上方标题通过 onCrosshairMove 显示手指下的 K 线（否则为最后一根）。各周期由 resampleBars 从 15 分钟 K 线聚合而来，wheel=\"modifier\" 让页面可以在图表上滚动。"
     }
   },
   "data": {
@@ -295,7 +307,50 @@
       "type": "切换限价单与止损单"
     },
     "orderPlacedBuyStop": "已在 {{price}} 挂止损买入单",
-    "orderPlacedSellStop": "已在 {{price}} 挂止损卖出单"
+    "orderPlacedSellStop": "已在 {{price}} 挂止损卖出单",
+    "alertHint": "点击图表添加提醒；拖动可移动，× 可删除。",
+    "alertUp": "▲ 提醒",
+    "alertDown": "▼ 提醒",
+    "alertMarker": "🔔",
+    "alertLimit": "最多 {{value}} 个提醒：请先删除一个。",
+    "alertAdded": "已在 {{price}} 设置提醒。",
+    "alertMoved": "提醒已移至 {{price}}。",
+    "alertRemoved": "已删除 {{price}} 的提醒。",
+    "alertCount": "{{active}} 个有效提醒，已触发 {{fired}} 个。",
+    "alertFiredUp": "{{time}}：价格上涨至 {{price}}。",
+    "alertFiredDown": "{{time}}：价格下跌至 {{price}}。",
+    "alertsAria": "带价格提醒的 AAPL 1 分钟图",
+    "es": "ES（E-mini 标普 500）",
+    "entryMarker": "#{{id}}",
+    "exitMarker": "×",
+    "journalSide": "方向",
+    "long": "做多",
+    "short": "做空",
+    "journalEntry": "开仓",
+    "journalExit": "平仓",
+    "journalPoints": "点数",
+    "journalPnl": "盈亏",
+    "atTime": "{{price}} · {{time}}",
+    "showTrade": "查看",
+    "showTradeLabel": "在图表上查看第 {{id}} 笔交易",
+    "netPnl": "净盈亏",
+    "winRate": "胜率",
+    "winRateValue": "{{rate}}（{{total}} 笔中 {{wins}} 笔）",
+    "profitFactor": "盈利因子",
+    "averageWin": "平均盈利",
+    "averageLoss": "平均亏损",
+    "journalAria": "标出交易日志中各笔交易的 E-mini 标普 500 15 分钟图",
+    "journalTable": "已平仓交易",
+    "journalHint": "在表格中选择一笔交易，在图表上查看。",
+    "showingTrade": "第 {{id}} 笔：{{side}} {{contracts}} 张，{{pnl}}。",
+    "dayChange": "24 小时 {{value}}",
+    "ohlcOpen": "开 {{value}}",
+    "ohlcHigh": "高 {{value}}",
+    "ohlcLow": "低 {{value}}",
+    "ohlcClose": "收 {{value}}",
+    "ohlcVolume": "量 {{value}}",
+    "timeframe": "周期",
+    "mobileAria": "适合手机尺寸的 SOL/USDT 图表"
   },
   "api": {
     "TradingChartProps": {

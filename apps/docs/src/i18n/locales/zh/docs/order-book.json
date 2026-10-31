@@ -37,6 +37,18 @@
     "red-up": {
       "title": "红涨绿跌",
       "description": "colorConvention=\"red-up\"：买盘为红色、卖盘为绿色（中国大陆、日本、韩国的习惯）。闪烁、深度条、买卖比例条与最新价箭头都随之变化。"
+    },
+    "markets": {
+      "title": "不同资产类别",
+      "description": "同一个盘口展示加密货币、美股、外汇和期货：formatPrice 与 formatSize 采用各市场的惯例（美元与美分、整手股数、以百万计的欧元、合约张数），labels 重命名列，largeOrderThreshold 按各市场的常见挂单量设置。"
+    },
+    "wall-watch": {
+      "title": "大单墙监控（幌骗）",
+      "description": "传给 applyDeltas 的增量同时与每个档位之前的数量比较：一次增加 5 BTC 及以上即视为新的大单墙，并由 largeOrderThreshold 高亮。它消失时，根据该价位的成交判断是被吃掉，还是在价格到达前被撤单。"
+    },
+    "order-ticket": {
+      "title": "下单面板",
+      "description": "onLevelClick 填写下单面板：点击卖盘档位，按该价格和累计数量（sum）准备买单；点击买盘档位则准备卖单。预览会遍历盘口：可成交部分立即以均价成交，剩余部分排在已挂数量之后。"
     }
   },
   "data": {
@@ -71,7 +83,68 @@
     "depth": "深度",
     "depthAria": "BTC/USDT 深度",
     "trades": "最新成交",
-    "tradesAria": "BTC/USDT 逐笔成交"
+    "tradesAria": "BTC/USDT 逐笔成交",
+    "market": "市场",
+    "markets": {
+      "crypto": {
+        "name": "加密货币 · BTC/USDT",
+        "price": "价格 (USDT)",
+        "size": "数量 (BTC)",
+        "total": "累计 (BTC)",
+        "aria": "BTC/USDT 订单簿"
+      },
+      "equity": {
+        "name": "股票 · AAPL",
+        "price": "价格 (USD)",
+        "size": "股数",
+        "total": "累计",
+        "aria": "AAPL 订单簿"
+      },
+      "fx": {
+        "name": "外汇 · EUR/USD",
+        "price": "汇率",
+        "size": "数量 (EUR)",
+        "total": "累计 (EUR)",
+        "aria": "EUR/USD 订单簿"
+      },
+      "futures": {
+        "name": "期货 · ES",
+        "price": "价格（点）",
+        "size": "合约",
+        "total": "累计",
+        "aria": "E-mini 标普 500 期货订单簿"
+      }
+    },
+    "spreadPips": "{{value}} 点",
+    "spreadCents": "{{value}} 美分",
+    "spreadTicks": "{{value}} 跳",
+    "spreadUsdt": "{{value}} USDT",
+    "marketStatus": "最小变动价位 {{tick}} · 价差 {{spread}} · 达到 {{large}} 高亮",
+    "wallLog": "大单墙",
+    "wallNew": "新增",
+    "wallPulled": "撤单",
+    "wallFilled": "成交",
+    "wallStats": "≥ {{size}} BTC 的大单墙：{{resting}} 挂单中，{{filled}} 成交，{{pulled}} 撤单（撤单率 {{ratio}}）",
+    "wallWaiting": "正在监控盘口中的大单墙…",
+    "wallBid": "买盘墙 {{price}}：{{size}} BTC",
+    "wallAsk": "卖盘墙 {{price}}：{{size}} BTC",
+    "wallRested": "持续 {{value}}",
+    "ticket": "限价单",
+    "side": "方向",
+    "buy": "买入",
+    "sell": "卖出",
+    "limitPrice": "限价 (USDT)",
+    "quantity": "数量 (BTC)",
+    "ticketHint": "输入价格和数量，或点击一个档位。",
+    "previewFill": "立即成交 {{filled}} BTC，均价 {{average}}。",
+    "previewPartial": "立即成交 {{filled}} BTC（均价 {{average}}），剩余 {{rest}} BTC 挂在 {{price}}。",
+    "previewRest": "挂在 {{price}}，前面排队 {{ahead}} BTC。",
+    "placeOrder": "{{side}}",
+    "orderPlaced": "已下单：{{side}} {{size}} BTC，价格 {{price}}。",
+    "orderCancelled": "已撤销 {{price}} 的订单。",
+    "orderTag": "{{side}} {{size}} @ {{price}}",
+    "noOrders": "暂无挂单。",
+    "cancelOrder": "撤销订单"
   },
   "api": {
     "OrderBookProps": {

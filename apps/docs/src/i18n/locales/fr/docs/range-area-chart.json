@@ -17,6 +17,22 @@
     "price-range": {
       "title": "Plage de cotation",
       "description": "La plage bas-haut de chaque séance en bande et la clôture en ligne, une alternative légère aux chandeliers."
+    },
+    "anomaly-band": {
+      "title": "Détection d'anomalies",
+      "description": "Le trafic attendu ± k écarts types en bande, les valeurs mesurées en ligne, et les points hors de la bande en série type: \"scatter\" de la couleur danger. Le RadioGroup règle k et la sortie compte les anomalies."
+    },
+    "bid-ask": {
+      "title": "Écart achat-vente en direct",
+      "description": "Un setInterval ajoute une cotation toutes les 500 ms à une fenêtre d'une minute et il est effacé à la pause et au démontage. La bande va du prix acheteur au prix vendeur avec curve=\"step\", le prix moyen est une ligne et la sortie affiche le dernier écart en points de base."
+    },
+    "climate-scenarios": {
+      "title": "Scénarios d'émissions",
+      "description": "Deux bandes qui se chevauchent, avec leurs médianes, prolongent un relevé observé jusqu'en 2100 ; des annotations de ligne y marquent les limites de 1,5 °C et 2 °C, et un clic sur un élément de la légende masque une série."
+    },
+    "ab-test": {
+      "title": "Confiance d'un test A/B",
+      "description": "L'amélioration cumulée de la variante B par rapport à A, jour après jour, dans son intervalle de confiance. Le RadioGroup change le niveau de confiance, une ligne y marque zéro et une annotation rect grise les jours à partir desquels l'intervalle reste au-dessus."
     }
   },
   "native": {
@@ -44,7 +60,42 @@
     "latencyAria": "Percentiles du temps de réponse sur une journée",
     "dayRange": "Bas – haut",
     "close": "Clôture",
-    "priceAria": "Plage quotidienne et cours de clôture sur six mois"
+    "priceAria": "Plage quotidienne et cours de clôture sur six mois",
+    "expectedBand": "Attendu ± {{k}}σ",
+    "measured": "Mesuré",
+    "anomalies": "Anomalies",
+    "sensitivity": "Sensibilité",
+    "sigmaOption": "Bande à {{k}}σ",
+    "requestsPerMinute": "Requêtes par minute",
+    "anomalyAria": "Requêtes d'API par minute sur une semaine, avec la bande attendue et les anomalies hors de celle-ci",
+    "noAnomaly": "Aucun point hors de la bande.",
+    "anomalyCount": "Anomalies : {{n}}, la dernière le {{latest}}.",
+    "bidAsk": "Achat – vente",
+    "mid": "Prix moyen",
+    "pause": "Pause",
+    "resume": "Reprendre",
+    "quote": "Achat {{bid}} · Vente {{ask}}",
+    "spreadBps": "Écart {{value}} pb",
+    "bidAskAria": "Prix acheteur et vendeur en direct d'une paire de devises sur la dernière minute, avec le prix moyen",
+    "ssp126": "Faibles émissions (SSP1-2.6)",
+    "ssp126Range": "Faibles émissions, fourchette probable",
+    "ssp585": "Émissions très élevées (SSP5-8.5)",
+    "ssp585Range": "Émissions très élevées, fourchette probable",
+    "observed": "Observé",
+    "parisLimit": "Limite de {{value}}",
+    "warming": "Réchauffement depuis 1850-1900",
+    "climateAria": "Réchauffement mondial observé depuis 1950 et projeté jusqu'en 2100 selon un scénario de faibles et un de très fortes émissions",
+    "crossings": "Avec de faibles émissions, la médiane dépasse {{lowLimit}} vers {{low}} et se stabilise à {{peak}} ; avec des émissions très élevées, elle dépasse {{highLimit}} vers {{high}}.",
+    "confidenceInterval": "Intervalle de confiance à {{level}}",
+    "lift": "Amélioration",
+    "noDifference": "Aucune différence",
+    "significant": "Significatif",
+    "confidenceLevel": "Niveau de confiance",
+    "testDay": "Jour du test",
+    "liftOfB": "Gain de conversion de B sur A",
+    "abTestAria": "Gain de conversion cumulé de la variante B sur la variante A pendant un test de 28 jours, avec son intervalle de confiance",
+    "notSignificant": "B a {{lift}} d'avance, mais l'intervalle à {{level}} contient encore zéro.",
+    "significantSince": "B convertit {{lift}} de mieux ({{low}} à {{high}} à {{level}}), de façon significative depuis le jour {{day}}."
   },
   "api": {
     "RangeAreaChartProps": {

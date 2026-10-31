@@ -104,6 +104,18 @@
     "export": {
       "title": "Image et plein écran",
       "description": "toDataURL et toBlob composent les barres, les axes, les dessins et les légendes en un PNG ; requestFullscreen affiche le graphique en plein écran (Échap pour en sortir)."
+    },
+    "price-alerts": {
+      "title": "Alertes de prix",
+      "description": "Cliquez sur le panneau des prix pour poser une alerte : onClick donne le prix, qui devient une entrée de priceLines de kind \"alert\", déplaçable (onOrderMove) et annulable (onOrderCancel). Un flux appelle update dix fois par seconde ; une alerte atteinte par le prix est retirée, marquée sur sa barre et consignée."
+    },
+    "trade-journal": {
+      "title": "Journal de trading",
+      "description": "Un journal de trading sur contrats à terme, sur des barres de 15 minutes de séance : chaque aller-retour est un marqueur d'entrée et un de sortie, le tableau liste ses points et son résultat (50 dollars le point par contrat) et les statistiques les résument. Afficher appelle setVisibleTimeRange et setCrosshair pour montrer la transaction."
+    },
+    "mobile": {
+      "title": "Format mobile",
+      "description": "Un graphique au format téléphone sans légende, grille ni marqueurs de plus haut / plus bas : l'en-tête au-dessus montre la barre sous le doigt grâce à onCrosshairMove (la dernière sinon). Les unités de temps sont agrégées depuis des barres de 15 minutes avec resampleBars, et wheel=\"modifier\" laisse la page défiler au-dessus du graphique."
     }
   },
   "data": {
@@ -295,7 +307,50 @@
       "type": "Basculer entre limite et stop"
     },
     "orderPlacedBuyStop": "Achat stop placé à {{price}}",
-    "orderPlacedSellStop": "Vente stop placée à {{price}}"
+    "orderPlacedSellStop": "Vente stop placée à {{price}}",
+    "alertHint": "Cliquez sur le graphique pour ajouter une alerte ; faites-la glisser pour la déplacer, × la supprime.",
+    "alertUp": "▲ Alerte",
+    "alertDown": "▼ Alerte",
+    "alertMarker": "🔔",
+    "alertLimit": "{{value}} alertes au plus : supprimez-en une d'abord.",
+    "alertAdded": "Alerte posée à {{price}}.",
+    "alertMoved": "Alerte déplacée à {{price}}.",
+    "alertRemoved": "Alerte à {{price}} supprimée.",
+    "alertCount": "{{active}} alertes actives, {{fired}} déclenchées.",
+    "alertFiredUp": "{{time}} : le prix est monté à {{price}}.",
+    "alertFiredDown": "{{time}} : le prix est descendu à {{price}}.",
+    "alertsAria": "Graphique AAPL en une minute avec des alertes de prix",
+    "es": "ES (E-mini S&P 500)",
+    "entryMarker": "#{{id}}",
+    "exitMarker": "×",
+    "journalSide": "Sens",
+    "long": "Achat",
+    "short": "Vente",
+    "journalEntry": "Entrée",
+    "journalExit": "Sortie",
+    "journalPoints": "Points",
+    "journalPnl": "Résultat",
+    "atTime": "{{price}} · {{time}}",
+    "showTrade": "Afficher",
+    "showTradeLabel": "Afficher la transaction {{id}} sur le graphique",
+    "netPnl": "Résultat net",
+    "winRate": "Taux de réussite",
+    "winRateValue": "{{rate}} ({{wins}} sur {{total}})",
+    "profitFactor": "Facteur de profit",
+    "averageWin": "Gain moyen",
+    "averageLoss": "Perte moyenne",
+    "journalAria": "Graphique E-mini S&P 500 en 15 minutes avec les transactions du journal",
+    "journalTable": "Transactions clôturées",
+    "journalHint": "Choisissez une transaction dans le tableau pour l'afficher sur le graphique.",
+    "showingTrade": "Transaction {{id}} : {{side}} {{contracts}} contrats, {{pnl}}.",
+    "dayChange": "{{value}} sur 24 h",
+    "ohlcOpen": "O {{value}}",
+    "ohlcHigh": "H {{value}}",
+    "ohlcLow": "B {{value}}",
+    "ohlcClose": "C {{value}}",
+    "ohlcVolume": "Vol {{value}}",
+    "timeframe": "Unité de temps",
+    "mobileAria": "Graphique SOL/USDT au format téléphone"
   },
   "api": {
     "TradingChartProps": {

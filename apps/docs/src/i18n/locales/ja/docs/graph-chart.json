@@ -40,6 +40,22 @@
     "vanilla": {
       "title": "コアエンジン",
       "description": "React を使わず minerva-design/charts/core の createGraphChart を利用：setOptions でレイアウトを切り替え、click と layoutEnd イベントを受け取り、クリックしたノードを focusNode で中央に表示します。"
+    },
+    "service-map": {
+      "title": "ライブサービスマップ",
+      "description": "オンラインストアのサービスを layout=\"none\"（ノードの x / y）で手動配置しているため、ライブ更新で位置が動きません。1.5 秒ごとの新しいサンプルで各サービスをヘルス状態のグループで色分けし直し、サブタイトルの p95 レイテンシを更新します。edgeColor=\"target\" は障害中のサービスへの呼び出しをその色で示します。サービスをクリックするとメトリクスを表示します。"
+    },
+    "knowledge-graph": {
+      "title": "ナレッジグラフ検索",
+      "description": "物理学者・場所・機関・理論を、名前付きの有向関係で結んだグラフです。検索ボックスに入力して候補を選ぶと、selected プロパティと ref の focusNode で選択して中央に表示し、関連する事実を Intl.ListFormat で一覧にします。"
+    },
+    "friend-suggestions": {
+      "title": "知り合いかも",
+      "description": "4 つのグループからなるソーシャルネットワーク。人をクリックすると、友達の友達を共通の友達の数で順位付けし、本人と候補を制御された selected プロパティでハイライトします。interaction={{ select: false }} によりクリックは onItemClick だけが処理します。"
+    },
+    "fraud-ring": {
+      "title": "ダークテーマの不正リング",
+      "description": "アカウントと、それが使った端末・カードをつないだグラフ。ノードの shape で端末とカードをボックスで描きます。任意のノードをクリックするとクラスタ全体を選択してリスクを評価します。チャートはネストした ConfigProvider の中にあり、作成時にそのダーク / ライトテーマを読み取ります。"
     }
   },
   "api": {
@@ -418,7 +434,103 @@
       "closed": "完了"
     },
     "filledArrows": "塗りつぶした矢じり",
-    "transitionsAria": "注文の状態とその間のイベント"
+    "transitionsAria": "注文の状態とその間のイベント",
+    "health": {
+      "healthy": "正常",
+      "degraded": "低下",
+      "critical": "重大"
+    },
+    "latency": "p95 {{value}} ms",
+    "rps": "{{value}} 件/秒",
+    "liveUpdates": "ライブ更新",
+    "serviceMapAria": "オンラインストアのサービスマップと各サービスのライブなヘルス状態",
+    "serviceHint": "サービスをクリックするとメトリクスを表示します。",
+    "serviceReadout": "{{name}}：{{status}} · p95 {{latency}} ms · エラー率 {{errors}} · {{rps}} 件/秒。",
+    "serviceCounts": "正常 {{healthy}}・低下 {{degraded}}・重大 {{critical}} · {{time}} 更新",
+    "entities": {
+      "curie": "マリー・キュリー",
+      "pierre": "ピエール・キュリー",
+      "einstein": "アルベルト・アインシュタイン",
+      "planck": "マックス・プランク",
+      "bohr": "ニールス・ボーア",
+      "heisenberg": "ヴェルナー・ハイゼンベルク",
+      "meitner": "リーゼ・マイトナー",
+      "hahn": "オットー・ハーン",
+      "noether": "エミー・ネーター",
+      "paris": "パリ",
+      "warsaw": "ワルシャワ",
+      "vienna": "ウィーン",
+      "berlin": "ベルリン",
+      "zurich": "チューリッヒ",
+      "copenhagen": "コペンハーゲン",
+      "sorbonne": "ソルボンヌ大学",
+      "kwg": "カイザー・ヴィルヘルム協会",
+      "eth": "チューリッヒ工科大学",
+      "nbi": "ニールス・ボーア研究所",
+      "radioactivity": "放射能",
+      "relativity": "相対性理論",
+      "quantum": "量子論",
+      "uncertainty": "不確定性原理",
+      "fission": "核分裂",
+      "symmetry": "ネーターの定理"
+    },
+    "predicates": {
+      "bornIn": "出身地",
+      "workedAt": "所属",
+      "studiedAt": "出身校",
+      "marriedTo": "配偶者",
+      "contributedTo": "貢献",
+      "locatedIn": "所在地",
+      "influenced": "影響を与えた",
+      "partOf": "一部",
+      "collaborated": "共同研究者",
+      "relatedTo": "関連"
+    },
+    "entityKinds": {
+      "person": "人物",
+      "place": "場所",
+      "institution": "機関",
+      "concept": "理論"
+    },
+    "searchPlaceholder": "人物・場所・理論を検索…",
+    "searchLabel": "ナレッジグラフを検索",
+    "noMatch": "一致するエンティティはありません。",
+    "knowledgeAria": "物理学者と、関連する場所・機関・発見のナレッジグラフ",
+    "knowledgeHint": "エンティティを検索するかノードをクリックすると、グラフにある事実を一覧表示します。",
+    "factsReadout": "{{name}}：事実 {{total}} 件 — {{facts}}",
+    "factOut": "→ {{name}}（{{relation}}）",
+    "factIn": "← {{name}}（{{relation}}）",
+    "circles": {
+      "university": "大学の友人",
+      "work": "同僚",
+      "climbing": "クライミングクラブ",
+      "books": "読書会"
+    },
+    "friendsAria": "4 つのグループに属する 24 人の友達関係",
+    "suggestions": "{{name}} さんの知り合いかも：{{list}}。",
+    "suggestion": "{{name}}（共通の友達 {{mutual}} 人）",
+    "noSuggestions": "{{name}} さんは友達の友達を全員知っています。",
+    "friendsHint": "別の人をクリックすると候補を更新します。",
+    "deviceLabel": "端末 {{id}}",
+    "cardLabel": "カード •••• {{last4}}",
+    "accountLabel": "アカウント {{id}}",
+    "loggedInFrom": "ログイン端末",
+    "paidWith": "支払いカード",
+    "fraudKinds": {
+      "account": "アカウント",
+      "flagged": "要注意アカウント",
+      "device": "端末",
+      "card": "カード"
+    },
+    "risk": {
+      "low": "低",
+      "medium": "中",
+      "high": "高"
+    },
+    "darkTheme": "ダークテーマ",
+    "fraudAria": "アカウント・端末・決済カードのグラフ。2 つの不正リングが端末とカードを共有しています",
+    "clusterReadout": "クラスタ：アカウント {{accounts}}・端末 {{devices}}・カード {{cards}} · リスク：{{risk}}",
+    "fraudHint": "アカウント・端末・カードをクリックするとクラスタ全体を選択します。"
   },
   "wc": {
     "demos": {

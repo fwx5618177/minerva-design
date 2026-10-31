@@ -17,6 +17,30 @@
     "headcount": {
       "title": "Headcount bridge",
       "description": "upColor, downColor and totalColor replace the default colors, here arrivals in blue and departures in amber."
+    },
+    "arr-bridge": {
+      "title": "ARR bridge by quarter",
+      "description": "Annual recurring revenue from the opening to the closing ARR of a quarter: new business, expansion, contraction and churn. A RadioGroup switches the quarter, start takes the previous closing ARR and yAxis.min zooms on the changes; the line below computes the net new ARR and the net revenue retention."
+    },
+    "price-bridge": {
+      "title": "Price waterfall",
+      "description": "From the list price to the pocket price of one unit, with the invoice price as a subtotal. onPointClick receives the clicked bar (event.items[0].index): the line below gives its amount as a share of the list price."
+    },
+    "emissions": {
+      "title": "Emissions bridge",
+      "description": "Emissions from the 2019 baseline to 2025: upColor and downColor are swapped so that increases are red and reductions green, a line annotation marks the 2030 target, and renderTooltip shows each change, where it starts and ends, and the gap to the target."
+    },
+    "lead-time": {
+      "title": "Lead time breakdown",
+      "description": "Every stage of an order adds its duration and a total bar gives the lead time. Each step sets its own color (work or waiting), format writes days with the unit style of Intl.NumberFormat and connector draws solid lines."
+    },
+    "live-balance": {
+      "title": "Live cash position",
+      "description": "The treasury balance during the day: a transaction arrives every two seconds (setInterval, cleared on pause and unmount), the oldest one leaves the window and is folded into start, so the first bar always shows the balance before the visible transactions."
+    },
+    "options": {
+      "title": "Options",
+      "description": "Sprint scope from the committed to the completed story points: try orientation, labels and connector."
     }
   },
   "native": {
@@ -68,7 +92,97 @@
       "retirements": "Retirements"
     },
     "people": "People",
-    "headcountAria": "Headcount changes over the year"
+    "headcountAria": "Headcount changes over the year",
+    "arr": {
+      "opening": "Opening ARR",
+      "newBusiness": "New business",
+      "expansion": "Expansion",
+      "contraction": "Contraction",
+      "churn": "Churn",
+      "closing": "Closing ARR",
+      "name": "ARR",
+      "quarterLabel": "Quarter",
+      "quarter": "Q{{n}}",
+      "summary": "{{quarter}}: net new ARR {{net}} · net revenue retention {{nrr}}",
+      "aria": "ARR bridge of {{quarter}}"
+    },
+    "price": {
+      "listPrice": "List price",
+      "dealerDiscount": "Dealer discount",
+      "promotion": "Promotions",
+      "invoicePrice": "Invoice price",
+      "paymentTerms": "Payment terms",
+      "freight": "Freight",
+      "rebates": "Volume rebates",
+      "pocketPrice": "Pocket price",
+      "name": "Price per unit",
+      "hint": "Click a bar to compare it with the list price",
+      "selected": "{{step}}: {{value}}, {{share}} of the list price",
+      "aria": "Price waterfall from the list price to the pocket price"
+    },
+    "emissions": {
+      "baseline": "2019 baseline",
+      "growth": "Business growth",
+      "efficiency": "Energy efficiency",
+      "renewables": "Renewable power",
+      "fleet": "Electric fleet",
+      "refrigerants": "Refrigerants",
+      "acquisition": "Acquisition",
+      "current": "2025",
+      "target": "2030 target",
+      "kt": "{{value}} kt CO₂e",
+      "name": "Emissions",
+      "change": "Change: {{value}}",
+      "range": "From {{from}} to {{to}}",
+      "gap": "{{value}} above the 2030 target",
+      "aria": "Emissions bridge from the 2019 baseline to 2025"
+    },
+    "lead": {
+      "orderEntry": "Order entry",
+      "creditCheck": "Credit check",
+      "picking": "Picking",
+      "quality": "Quality check",
+      "carrierWait": "Waiting for carrier",
+      "transit": "Transit",
+      "customs": "Customs",
+      "total": "Lead time",
+      "name": "Duration",
+      "work": "Work",
+      "wait": "Waiting",
+      "summary": "work takes {{work}} of the {{total}} ({{share}})",
+      "aria": "Lead time of an order by stage"
+    },
+    "live": {
+      "opening": "Earlier",
+      "now": "Now",
+      "name": "Balance",
+      "kinds": {
+        "customer": "Customer payment",
+        "supplier": "Supplier invoice",
+        "payroll": "Payroll",
+        "card": "Card fees",
+        "refund": "Refund"
+      },
+      "last": "Latest: {{time}} · {{kind}} {{amount}}",
+      "pause": "Pause",
+      "resume": "Resume",
+      "aria": "Cash position of the day, updated live"
+    },
+    "scope": {
+      "committed": "Committed",
+      "added": "Added",
+      "removed": "Removed",
+      "reestimated": "Re-estimated",
+      "carriedOver": "Carried over",
+      "completed": "Completed",
+      "name": "Story points",
+      "orientation": "Orientation",
+      "vertical": "Vertical",
+      "horizontal": "Horizontal",
+      "labels": "Labels",
+      "connector": "Connectors",
+      "aria": "Sprint scope from committed to completed story points"
+    }
   },
   "api": {
     "WaterfallChartProps": {

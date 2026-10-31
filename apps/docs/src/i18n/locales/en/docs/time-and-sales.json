@@ -33,6 +33,22 @@
     "red-up": {
       "title": "Red up, green down",
       "description": "colorConvention=\"red-up\": red buys, green sells (mainland China, Japan, Korea)."
+    },
+    "pressure": {
+      "title": "Buy / sell pressure",
+      "description": "The trades sent to addTrades are also kept for a minute to compute rolling tape statistics twice a second: VWAP, volume bought and sold by aggressors, trades per second and the largest print. The tape itself merges sweeps (aggregate) and tints trades from 1 BTC (largeTradeThreshold)."
+    },
+    "clock": {
+      "title": "Time zones and custom formats",
+      "description": "formatTime replaces the built-in clock (local or UTC) with any Intl.DateTimeFormat, here in another time zone with milliseconds; formatPrice shows dollars and labels.time names the zone in the header."
+    },
+    "block-alerts": {
+      "title": "Block trade alerts",
+      "description": "Trades of the same side and millisecond (one sweep, as merged by aggregate) are summed: from 2 BTC they are logged with their average price and notional, and the same size is highlighted on the tape by largeTradeThreshold. Clear empties the tape through clear()."
+    },
+    "split": {
+      "title": "Buys and sells side by side",
+      "description": "One feed, two tapes: the trades are split by aggressor side before addTrades, each tape with its own ariaLabel. The headers count the prints and the volume of each side, and the net flow sums them."
     }
   },
   "data": {
@@ -52,7 +68,44 @@
     "redUp": "Red up, green down",
     "greenUp": "Green up, red down",
     "add": "Add {{value}} trades",
-    "loaded": "{{rows}} trades, last batch in {{ms}} ms"
+    "loaded": "{{rows}} trades, last batch in {{ms}} ms",
+    "rollingWindow": "Rolling window",
+    "lastWindow": "Last {{value}}",
+    "vwap": "VWAP",
+    "buyShare": "Bought share",
+    "bought": "Bought",
+    "sold": "Sold",
+    "btcValue": "{{value}} BTC",
+    "tradesPerSecond": "Trades / s",
+    "largest": "Largest print",
+    "largestBuy": "Buy {{size}} at {{price}}",
+    "largestSell": "Sell {{size}} at {{price}}",
+    "pressureBuy": "Buyers are lifting the offer.",
+    "pressureSell": "Sellers are hitting the bid.",
+    "pressureBalanced": "Buy and sell flow are balanced.",
+    "pressureWaiting": "Waiting for trades…",
+    "timeZone": "Time zone",
+    "zones": {
+      "local": "Local",
+      "utc": "UTC",
+      "newYork": "New York",
+      "tokyo": "Tokyo"
+    },
+    "timeIn": "Time ({{zone}})",
+    "blocksTitle": "Blocks ≥ {{value}} BTC",
+    "clearTape": "Clear",
+    "blocksSeen": "{{value}} blocks since the start",
+    "blocksWaiting": "Waiting for a block trade…",
+    "blockBuy": "Buy",
+    "blockSell": "Sell",
+    "blockLine": "{{time}} · {{size}} BTC at {{price}} ≈ {{notional}}",
+    "blockPrints": "{{value}} prints",
+    "sideTotals": "{{count}} trades · {{size}} BTC",
+    "buysTape": "Buys",
+    "sellsTape": "Sells",
+    "buysAria": "BTC/USDT buy trades",
+    "sellsAria": "BTC/USDT sell trades",
+    "netFlow": "Net flow: {{value}} BTC (bought − sold)"
   },
   "api": {
     "TimeAndSalesProps": {

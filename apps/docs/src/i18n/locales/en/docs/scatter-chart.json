@@ -25,6 +25,26 @@
     "outliers": {
       "title": "Outliers",
       "description": "Per-point color, size and label flag the requests much slower than expected for their payload; the expected time is a line series."
+    },
+    "zoom-controls": {
+      "title": "Zoom controls",
+      "description": "Buttons zoom to regions through the ref: setView sets the visible range (it does not call onZoom, so the demo reads the view back with getView) and resetZoom shows everything again. onZoom reports the wheel and drag zooms; a rect annotation shades the growing range."
+    },
+    "selection": {
+      "title": "Click to select",
+      "description": "onPointClick gives the series and the index of the clicked dot: the selected employee gets a bigger dot and a label, and their details appear below. onPlotClick, called on the empty plot, clears the selection."
+    },
+    "players": {
+      "title": "Custom tooltip and regions",
+      "description": "renderTooltip replaces the tooltip with React content built from the demo data. The league averages are dashed reference lines, and rect annotations with open bounds shade two corners up to the edges of the plot."
+    },
+    "live-stream": {
+      "title": "Live sensor stream",
+      "description": "A new vibration sample every 400 ms (a setInterval cleared on pause and on unmount), split into a normal and an alarm series around a reference line; fixed min and max keep the axes still while the data streams in."
+    },
+    "log-log": {
+      "title": "Log-log axes",
+      "description": "xAxis and yAxis with type: \"log\" turn the power law of the metabolic rates (Kleiber's law) into a straight line across six orders of magnitude; the fit is a two-point line series with tooltip: false."
     }
   },
   "data": {
@@ -67,7 +87,74 @@
     "payload": "Payload size",
     "responseTime": "Response time",
     "outliersAria": "Response time against payload size, outliers in red",
-    "outliersSummary": "{{slow}} of {{total}} requests took more than twice the expected time."
+    "outliersSummary": "{{slow}} of {{total}} requests took more than twice the expected time.",
+    "readings": "Readings",
+    "zoomPresets": {
+      "night": "Cool nights",
+      "comfort": "Growing range",
+      "heat": "Hot afternoons"
+    },
+    "showAll": "Show all",
+    "temperature": "Temperature",
+    "humidity": "Relative humidity",
+    "growingRange": "Growing range",
+    "greenhouseAria": "Temperature and humidity readings of the greenhouse sensors",
+    "greenhouseView": "Visible: {{t0}} – {{t1}}, humidity {{h0}} – {{h1}} · readings in view: {{points}}",
+    "greenhouseHint": "Pick a region, or zoom with Ctrl / ⌘ + wheel",
+    "departments": {
+      "engineering": "Engineering",
+      "sales": "Sales",
+      "support": "Support"
+    },
+    "tenure": "Tenure",
+    "reviewScore": "Review score (1–5)",
+    "companyAverage": "Company average",
+    "staffAria": "Tenure and review score of 90 employees by department",
+    "employeeStatus": "{{id}} · {{department}} · {{tenure}} · score {{score}} · {{salary}} a year",
+    "employeeHint": "Click a dot to select an employee, click the empty plot to clear the selection",
+    "players": "Players",
+    "leagueAverage": "League average",
+    "efficientScorers": "Efficient scorers",
+    "volumeShooters": "Volume shooters",
+    "pointsPerGame": "{{value}} points per game",
+    "usageRow": "Usage rate: {{value}}",
+    "trueShootingRow": "True shooting: {{value}}",
+    "usageRate": "Usage rate",
+    "trueShooting": "True shooting",
+    "playersAria": "Usage rate against shooting efficiency of 16 players; the dot size is the points per game",
+    "normal": "Normal",
+    "alarm": "Alarm",
+    "latest": "Latest",
+    "mmPerSecond": "{{value}} mm/s",
+    "pause": "Pause",
+    "resume": "Resume",
+    "vibrationStatus": "Latest sample: {{rpm}} rpm, {{value}} · alarms on screen: {{alarms}}",
+    "speed": "Speed (rpm)",
+    "vibration": "Vibration",
+    "alarmLimit": "Alarm limit",
+    "vibrationAria": "Live vibration of a motor against its speed",
+    "mammals": "Mammals",
+    "animals": {
+      "shrew": "Shrew",
+      "mouse": "Mouse",
+      "rat": "Rat",
+      "rabbit": "Rabbit",
+      "cat": "Cat",
+      "dog": "Dog",
+      "human": "Human",
+      "pig": "Pig",
+      "horse": "Horse",
+      "cow": "Cow",
+      "giraffe": "Giraffe",
+      "elephant": "Elephant"
+    },
+    "powerLaw": "Power-law fit",
+    "kg": "{{value}} kg",
+    "watts": "{{value}} W",
+    "bodyMass": "Body mass",
+    "metabolicRate": "Basal metabolic rate",
+    "kleiber": "Metabolic rate ∝ mass^{{exponent}} (Kleiber's law)",
+    "kleiberAria": "Basal metabolic rate against body mass of 12 mammals, on log-log axes"
   },
   "api": {
     "ScatterChartProps": {

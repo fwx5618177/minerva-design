@@ -25,6 +25,26 @@
     "outliers": {
       "title": "外れ値",
       "description": "点ごとの色・サイズ・ラベルで、ペイロードに対して想定よりずっと遅いリクエストを示します。想定時間は折れ線系列です。"
+    },
+    "zoom-controls": {
+      "title": "ズーム操作",
+      "description": "ボタンは ref を通じて領域にズームします。setView は表示範囲を設定し（onZoom は呼ばれないため、デモでは getView で表示範囲を読み戻します）、resetZoom で全体表示に戻ります。onZoom はホイールやドラッグによるズームを通知し、rect アノテーションで生育適温域を塗ります。"
+    },
+    "selection": {
+      "title": "クリックで選択",
+      "description": "onPointClick はクリックした点の系列とインデックスを返します。選択した社員の点は大きくなりラベルが付き、詳細が下に表示されます。空いたプロット領域をクリックすると onPlotClick が呼ばれ、選択を解除します。"
+    },
+    "players": {
+      "title": "カスタムツールチップと領域",
+      "description": "renderTooltip はデモのデータから作った React コンテンツでツールチップを置き換えます。リーグ平均は破線の参照線で、境界を一部省いた rect アノテーションが 2 つの隅をプロットの端まで塗ります。"
+    },
+    "live-stream": {
+      "title": "センサーのライブストリーム",
+      "description": "400 ms ごとに振動のサンプルを追加し（setInterval は一時停止とアンマウントで解除）、参照線を境に正常系列とアラーム系列に分けます。min と max を固定して、データが流れ込んでも軸が動かないようにしています。"
+    },
+    "log-log": {
+      "title": "両対数軸",
+      "description": "xAxis と yAxis に type: \"log\" を指定すると、代謝率のべき乗則（クライバーの法則）が 6 桁にわたって直線になります。近似線は tooltip: false を指定した 2 点の line 系列です。"
     }
   },
   "data": {
@@ -67,7 +87,74 @@
     "payload": "ペイロードサイズ",
     "responseTime": "応答時間",
     "outliersAria": "ペイロードサイズと応答時間。外れ値は赤",
-    "outliersSummary": "{{total}} 件中 {{slow}} 件のリクエストが想定の 2 倍以上かかりました。"
+    "outliersSummary": "{{total}} 件中 {{slow}} 件のリクエストが想定の 2 倍以上かかりました。",
+    "readings": "測定値",
+    "zoomPresets": {
+      "night": "涼しい夜間",
+      "comfort": "生育適温域",
+      "heat": "暑い午後"
+    },
+    "showAll": "すべて表示",
+    "temperature": "温度",
+    "humidity": "相対湿度",
+    "growingRange": "生育適温域",
+    "greenhouseAria": "温室センサーの温度と湿度の測定値",
+    "greenhouseView": "表示範囲：{{t0}} – {{t1}}、湿度 {{h0}} – {{h1}} · 表示中の測定値：{{points}}",
+    "greenhouseHint": "領域を選ぶか、Ctrl / ⌘ + ホイールでズームしてください",
+    "departments": {
+      "engineering": "エンジニアリング",
+      "sales": "営業",
+      "support": "サポート"
+    },
+    "tenure": "勤続年数",
+    "reviewScore": "評価スコア（1–5）",
+    "companyAverage": "全社平均",
+    "staffAria": "部署別の社員 90 名の勤続年数と評価スコア",
+    "employeeStatus": "{{id}} · {{department}} · {{tenure}} · スコア {{score}} · 年収 {{salary}}",
+    "employeeHint": "点をクリックすると社員を選択し、空いたプロット領域をクリックすると選択を解除します",
+    "players": "選手",
+    "leagueAverage": "リーグ平均",
+    "efficientScorers": "効率の良いスコアラー",
+    "volumeShooters": "試投数の多いシューター",
+    "pointsPerGame": "1 試合平均 {{value}} 得点",
+    "usageRow": "使用率：{{value}}",
+    "trueShootingRow": "TS%：{{value}}",
+    "usageRate": "使用率",
+    "trueShooting": "TS%（真のシュート成功率）",
+    "playersAria": "選手 16 人の使用率とシュート効率。点の大きさは 1 試合平均得点",
+    "normal": "正常",
+    "alarm": "アラーム",
+    "latest": "最新",
+    "mmPerSecond": "{{value}} mm/s",
+    "pause": "一時停止",
+    "resume": "再開",
+    "vibrationStatus": "最新サンプル：{{rpm}} rpm、{{value}} · 画面上のアラーム：{{alarms}}",
+    "speed": "回転数（rpm）",
+    "vibration": "振動",
+    "alarmLimit": "アラーム閾値",
+    "vibrationAria": "モーターの回転数に対する振動のライブデータ",
+    "mammals": "哺乳類",
+    "animals": {
+      "shrew": "トガリネズミ",
+      "mouse": "マウス",
+      "rat": "ラット",
+      "rabbit": "ウサギ",
+      "cat": "ネコ",
+      "dog": "イヌ",
+      "human": "ヒト",
+      "pig": "ブタ",
+      "horse": "ウマ",
+      "cow": "ウシ",
+      "giraffe": "キリン",
+      "elephant": "ゾウ"
+    },
+    "powerLaw": "べき乗則の近似",
+    "kg": "{{value}} kg",
+    "watts": "{{value}} W",
+    "bodyMass": "体重",
+    "metabolicRate": "基礎代謝率",
+    "kleiber": "代謝率 ∝ 体重^{{exponent}}（クライバーの法則）",
+    "kleiberAria": "哺乳類 12 種の基礎代謝率と体重（両対数軸）"
   },
   "api": {
     "ScatterChartProps": {

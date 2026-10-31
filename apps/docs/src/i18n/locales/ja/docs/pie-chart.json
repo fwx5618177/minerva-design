@@ -29,6 +29,22 @@
     "small-multiples": {
       "title": "スモールマルチプル",
       "description": "地域ごとに同じ色と順序の小さなドーナツを並べるので、凡例は 1 つで済み、地域をひと目で比較できます。"
+    },
+    "portfolio": {
+      "title": "フィルタータグ付きの投資ポートフォリオ",
+      "description": "チャート上のタグと凡例は onToggle を通じて同じ制御された hidden リストを編集し、「すべて表示」でクリアします。centerValue は表示中の資産クラスの合計を示し、renderTooltip は表示中のスライスだけでなくポートフォリオ全体に対する各スライスの割合を表示します。"
+    },
+    "live-poll": {
+      "title": "ライブ投票",
+      "description": "毎秒新しい票が届き（setInterval、アンマウントまたは一時停止時に解除）、スライスは新しい割合へアニメーションします。renderTooltip は票数、centerValue は累計を表示し、スクリーンリーダーには首位の変化だけを通知します。"
+    },
+    "drill-down": {
+      "title": "クラウド請求のドリルダウン",
+      "description": "カテゴリをクリックすると（onClick）、データがそのサービスに置き換わります。パンくずリストで概要に戻れます。ツールチップがクリックできることを示し、チャート下の文が選択したカテゴリまたはサービスを説明します。"
+    },
+    "survey-quarters": {
+      "title": "四半期ごとの満足度調査",
+      "description": "各データの color で赤から緑への発散スケールを設定し、startAngle={-90} で満足の回答を先頭にしています。別の四半期を選ぶとスライスがアニメーションし、中央に CSAT、下の文に前四半期からの変化を表示します。"
     }
   },
   "data": {
@@ -110,7 +126,87 @@
       "desktop": "デスクトップ",
       "tablet": "タブレット"
     },
-    "devicesAria": "{{region}}のデバイス別セッション"
+    "devicesAria": "{{region}}のデバイス別セッション",
+    "portfolio": {
+      "assets": {
+        "usEquities": "米国株式",
+        "intlEquities": "外国株式",
+        "bonds": "債券",
+        "realEstate": "不動産",
+        "commodities": "コモディティ",
+        "cash": "現金"
+      },
+      "filter": "表示する資産クラス",
+      "showAll": "すべて表示",
+      "selection": "選択中",
+      "total": "評価額合計",
+      "ofPortfolio": "ポートフォリオの {{share}}",
+      "aria": "資産クラス別の投資ポートフォリオ",
+      "summary": "{{total}} 資産クラス中 {{shown}} を表示：{{value}}（ポートフォリオの {{share}}）。"
+    },
+    "poll": {
+      "answers": {
+        "darkMode": "ダークモード",
+        "offline": "オフラインモード",
+        "api": "公開 API",
+        "integrations": "連携の追加",
+        "reports": "カスタムレポート"
+      },
+      "question": "次に開発すべき機能はどれですか？",
+      "votes": "票",
+      "votesShare": "{{votes}} 票 · {{share}}",
+      "aria": "回答別のライブ投票結果",
+      "pause": "一時停止",
+      "resume": "再開",
+      "reset": "リセット",
+      "leading": "首位：{{answer}}"
+    },
+    "cloud": {
+      "categories": {
+        "compute": "コンピューティング",
+        "databases": "データベース",
+        "storage": "ストレージ",
+        "network": "ネットワーク"
+      },
+      "services": {
+        "vms": "仮想マシン",
+        "kubernetes": "Kubernetes",
+        "serverless": "サーバーレス関数",
+        "sql": "SQL データベース",
+        "nosql": "NoSQL データベース",
+        "cache": "インメモリキャッシュ",
+        "objects": "オブジェクトストレージ",
+        "blocks": "ブロックストレージ",
+        "backups": "バックアップ",
+        "egress": "データ転送",
+        "cdn": "CDN",
+        "loadBalancers": "ロードバランサー"
+      },
+      "breadcrumb": "クラウド請求",
+      "all": "すべてのカテゴリ",
+      "clickToOpen": "クリックしてサービスを表示",
+      "servicesAria": "サービス別の{{category}}費用",
+      "aria": "カテゴリ別の月間クラウド請求",
+      "serviceLine": "{{service}}：{{amount}}（{{category}}の {{share}}）。",
+      "categoryLine": "{{category}}：{{amount}}（請求の {{share}}）。サービスをクリックすると割合を表示します。",
+      "hint": "月間請求額：{{total}}。カテゴリをクリックするとサービスを表示します。"
+    },
+    "survey": {
+      "levels": {
+        "veryDissatisfied": "とても不満",
+        "dissatisfied": "不満",
+        "neutral": "どちらでもない",
+        "satisfied": "満足",
+        "verySatisfied": "とても満足"
+      },
+      "quarter": "第{{n}}四半期",
+      "quarterLabel": "四半期",
+      "csat": "CSAT",
+      "answers": "{{answers}} 件の回答 · {{share}}",
+      "aria": "{{quarter}}の顧客満足度の回答",
+      "first": "CSAT {{csat}}（回答者 {{respondents}} 人）。",
+      "change": "CSAT {{csat}}、{{previous}}から {{delta}} ポイント（回答者 {{respondents}} 人）。"
+    }
   },
   "api": {
     "PieChartProps": {

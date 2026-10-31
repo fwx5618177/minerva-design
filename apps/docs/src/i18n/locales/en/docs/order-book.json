@@ -37,6 +37,18 @@
     "red-up": {
       "title": "Red up, green down",
       "description": "colorConvention=\"red-up\": red bids, green asks (mainland China, Japan, Korea). The flashes, depth bars, imbalance bar and last price arrow follow."
+    },
+    "markets": {
+      "title": "Asset classes",
+      "description": "One ladder for crypto, US equities, FX and futures: formatPrice and formatSize apply each market's conventions (dollars and cents, round lots, compact millions of euros, contracts), labels renames the columns and largeOrderThreshold follows the usual size of each market."
+    },
+    "wall-watch": {
+      "title": "Wall watch (spoofing)",
+      "description": "The deltas passed to applyDeltas are also compared with the previous size of each level: a jump of 5 BTC or more is a new wall, highlighted by largeOrderThreshold. When it leaves, the trades at its price tell whether it was filled or pulled before the price got there."
+    },
+    "order-ticket": {
+      "title": "Order ticket",
+      "description": "onLevelClick fills a ticket: a click on an ask prepares a buy at that price for the cumulative size (sum), a click on a bid a sell. The preview walks the book: what crosses fills at once with its average price, the rest queues behind the size already resting."
     }
   },
   "data": {
@@ -71,7 +83,68 @@
     "depth": "Depth",
     "depthAria": "BTC/USDT depth",
     "trades": "Trades",
-    "tradesAria": "BTC/USDT trades"
+    "tradesAria": "BTC/USDT trades",
+    "market": "Market",
+    "markets": {
+      "crypto": {
+        "name": "Crypto · BTC/USDT",
+        "price": "Price (USDT)",
+        "size": "Size (BTC)",
+        "total": "Total (BTC)",
+        "aria": "BTC/USDT order book"
+      },
+      "equity": {
+        "name": "Equity · AAPL",
+        "price": "Price (USD)",
+        "size": "Shares",
+        "total": "Total",
+        "aria": "AAPL order book"
+      },
+      "fx": {
+        "name": "FX · EUR/USD",
+        "price": "Rate",
+        "size": "Size (EUR)",
+        "total": "Total (EUR)",
+        "aria": "EUR/USD order book"
+      },
+      "futures": {
+        "name": "Futures · ES",
+        "price": "Price (pts)",
+        "size": "Contracts",
+        "total": "Total",
+        "aria": "E-mini S&P 500 futures order book"
+      }
+    },
+    "spreadPips": "{{value}} pips",
+    "spreadCents": "{{value}} ¢",
+    "spreadTicks": "{{value}} ticks",
+    "spreadUsdt": "{{value}} USDT",
+    "marketStatus": "Tick size {{tick}} · spread {{spread}} · highlighted from {{large}}",
+    "wallLog": "Walls",
+    "wallNew": "New",
+    "wallPulled": "Pulled",
+    "wallFilled": "Filled",
+    "wallStats": "Walls ≥ {{size}} BTC: {{resting}} resting, {{filled}} filled, {{pulled}} pulled ({{ratio}} pulled)",
+    "wallWaiting": "Watching the book for walls…",
+    "wallBid": "Bid wall {{price}}: {{size}} BTC",
+    "wallAsk": "Ask wall {{price}}: {{size}} BTC",
+    "wallRested": "after {{value}}",
+    "ticket": "Limit order",
+    "side": "Side",
+    "buy": "Buy",
+    "sell": "Sell",
+    "limitPrice": "Limit price (USDT)",
+    "quantity": "Quantity (BTC)",
+    "ticketHint": "Enter a price and a quantity, or click a level.",
+    "previewFill": "Fills {{filled}} BTC at once, average {{average}}.",
+    "previewPartial": "Fills {{filled}} BTC at once (average {{average}}), {{rest}} BTC rests at {{price}}.",
+    "previewRest": "Rests at {{price}} behind {{ahead}} BTC.",
+    "placeOrder": "{{side}}",
+    "orderPlaced": "{{side}} {{size}} BTC at {{price}} placed.",
+    "orderCancelled": "Order at {{price}} cancelled.",
+    "orderTag": "{{side}} {{size}} @ {{price}}",
+    "noOrders": "No open orders.",
+    "cancelOrder": "Cancel order"
   },
   "api": {
     "OrderBookProps": {

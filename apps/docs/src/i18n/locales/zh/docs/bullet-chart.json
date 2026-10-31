@@ -21,6 +21,22 @@
     "long-names": {
       "title": "长名称",
       "description": "标签列宽度按文字测量：随最长的名称增长，最多占宽度的 40%；更长的名称折成两行，并在末尾显示省略号。悬停某一行（或用键盘聚焦）可在提示框中查看完整名称。"
+    },
+    "budget-tracker": {
+      "title": "部门预算跟踪",
+      "description": "每行将截至目前的支出与此时应达到的预算（target）比较，每行的 ranges 标出宽裕、紧张和超出计划的区间。部门支出快于计划时通过 color 将进度条变为红色；onClick 在图表下方显示其偏差。"
+    },
+    "live-sensors": {
+      "title": "机房传感器实时读数",
+      "description": "读数每秒刷新（setInterval，在关闭开关或卸载时清除）；target 是设定值，ranges 是警告和严重阈值。每个进度条的 color 跟随其状态，并且只播报超出范围的传感器列表。"
+    },
+    "training": {
+      "title": "每周训练计划",
+      "description": "通过 Select 切换跑者，进度条以动画过渡到其本周数据。每行都按自己的计划确定刻度，因此用 ticks={false} 隐藏没有单位的刻度标签；renderTooltip 使用 Intl.NumberFormat 的单位（km、m、h）格式化数值和计划，并给出完成比例。"
+    },
+    "hiring-plan": {
+      "title": "招聘计划",
+      "description": "各团队的招聘人数与年度编制计划对比，并用标记表示此时应达到的位置。通过 Select 按进度排序；带 hidden 和 onToggle 的 legend 用于隐藏团队，隐藏状态按键保存，因此顺序变化后仍保持隐藏，摘要汇总可见团队。"
     }
   },
   "native": {
@@ -117,7 +133,99 @@
       "renewals": "年度订阅合同的净收入留存率（含扩容与流失）",
       "renewalsUnit": "比率"
     },
-    "longAria": "名称较长的运营 KPI 与目标对比"
+    "longAria": "名称较长的运营 KPI 与目标对比",
+    "budget": {
+      "departments": {
+        "marketing": "市场",
+        "engineering": "研发",
+        "sales": "销售",
+        "people": "人力资源",
+        "facilities": "行政后勤",
+        "travel": "差旅"
+      },
+      "yearly": "年度预算：{{budget}}",
+      "ranges": {
+        "comfortable": "宽裕",
+        "tight": "紧张",
+        "over": "超出计划"
+      },
+      "hint": "有 {{over}} 个部门支出快于计划。点击某行查看其偏差。",
+      "overPlan": "{{department}}超出计划：截至第三季度末偏差 {{variance}}，已使用年度预算的 {{share}}，剩余 {{left}}。",
+      "underPlan": "{{department}}在计划之内：截至第三季度末偏差 {{variance}}，已使用年度预算的 {{share}}，剩余 {{left}}。",
+      "aria": "第三季度末各部门支出与当期计划预算的对比"
+    },
+    "sensors": {
+      "names": {
+        "inlet": "进风温度",
+        "humidity": "湿度",
+        "power": "功耗",
+        "fans": "风扇转速"
+      },
+      "units": {
+        "inlet": "°C",
+        "humidity": "相对湿度 %",
+        "power": "每机柜 kW",
+        "fans": "最大转速的 %"
+      },
+      "status": {
+        "ok": "正常",
+        "warning": "警告",
+        "critical": "严重"
+      },
+      "live": "实时读数",
+      "aria": "机房传感器读数与设定值及阈值的对比",
+      "alerts": "需要关注：{{sensors}}",
+      "allOk": "所有传感器均在限值范围内。"
+    },
+    "training": {
+      "metrics": {
+        "distance": "周跑量",
+        "longRun": "长距离跑",
+        "elevation": "累计爬升",
+        "sessions": "训练次数",
+        "sleep": "睡眠"
+      },
+      "plan": "计划：{{plan}}",
+      "ranges": {
+        "under": "低于计划",
+        "onPlan": "符合计划",
+        "above": "高于计划"
+      },
+      "runner": "跑者",
+      "runners": {
+        "amara": "阿玛拉",
+        "lucas": "卢卡斯",
+        "mei": "小美"
+      },
+      "tooltip": "{{value}}，计划 {{plan}}（{{share}}）",
+      "aria": "{{runner}} 的每周训练与计划对比",
+      "summary": "{{runner}} 完成了 {{metrics}} 项每周目标中的 {{met}} 项。"
+    },
+    "hiring": {
+      "teams": {
+        "engineering": "研发",
+        "sales": "销售",
+        "support": "客户支持",
+        "marketing": "市场",
+        "product": "产品",
+        "finance": "财务"
+      },
+      "planned": "今年计划 {{plan}} 人",
+      "ranges": {
+        "behind": "落后",
+        "catchingUp": "追赶中",
+        "onTrack": "按计划"
+      },
+      "order": "排序",
+      "orders": {
+        "plan": "计划顺序",
+        "behind": "最落后的在前",
+        "ahead": "最领先的在前"
+      },
+      "aria": "各团队招聘人数与年度编制计划的对比",
+      "summary": "所显示的 {{teams}} 个团队已招聘 {{hired}} 人，计划 {{planned}} 人（{{share}}）。",
+      "none": "未显示任何团队。"
+    }
   },
   "wc": {
     "demos": {

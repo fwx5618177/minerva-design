@@ -133,6 +133,7 @@ export default function ChartPerformanceDoc() {
             components={{
               charts: <Link to="/charts" />,
               engine: <Link to="/chart-engine" />,
+              renderers: <Link to="/chart-renderers" />,
             }}
           />
         </p>

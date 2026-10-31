@@ -21,6 +21,22 @@
     "margin": {
       "title": "Color by another value",
       "description": "Revenue sets the height and the margin the color (the value of each datum with colorBy \"value\"): the tallest bars are not the most profitable ones."
+    },
+    "inventory-live": {
+      "title": "Live warehouse stock",
+      "description": "Units left in the bins of a warehouse, aisle × shelf level, updated every second by a seeded setInterval cleaned up on unmount. Bins below 20% of their capacity move to a second series with the danger color, so a cell has its bar in exactly one series (z: null in the other), and empty bins are restocked."
+    },
+    "cohort-retention": {
+      "title": "Cohort retention",
+      "description": "The share of each monthly signup cohort still active n months later; recent cohorts have fewer months of history, left empty with z: null. Cohort names come from Intl.DateTimeFormat, the bars are colored by height (colorBy: \"z\"), and a click reads the retention and the active users of the cell."
+    },
+    "budget-variance": {
+      "title": "Budget variance",
+      "description": "Quarterly spend of six departments for the selected fiscal year: the bar height is the actual spend and the color the variance to budget. colorBy: \"value\" with the diverging coolwarm scale and a symmetric valueRange keeps on-budget cells neutral, overspending warm and underspending cool."
+    },
+    "datacenter": {
+      "title": "Server room heat map",
+      "description": "Racks of a server room with the power draw as height and the inlet temperature as color on the inferno scale. The switch remounts the chart in a dark ConfigProvider, the button calls setCamera() on the ref for an orthographic floor plan (onCameraChange keeps it in sync), and the summary lists the racks above the recommended inlet temperature."
     }
   },
   "data": {
@@ -78,7 +94,53 @@
       "audio": "Audio"
     },
     "margin": "Margin",
-    "marginAria": "Revenue and margin of five products in four markets"
+    "marginAria": "Revenue and margin of five products in four markets",
+    "inStock": "In stock",
+    "lowStock": "Low stock",
+    "unitsValue": "{{value}} units",
+    "liveUpdates": "Live updates",
+    "aisle": "Aisle",
+    "aisleLabel": "Aisle {{id}}",
+    "shelf": "Shelf level",
+    "shelfLabel": "Level {{n}}",
+    "units": "Units",
+    "inventoryAria": "Units left in each warehouse bin by aisle and shelf level, updated live",
+    "inventoryStatus": "{{total}} units in stock · low bins: {{low}} of {{bins}} · bins restocked: {{restocked}}.",
+    "retention": "Retention",
+    "monthsSinceSignup": "Months since signup",
+    "monthIndex": "M{{n}}",
+    "signupCohort": "Signup month",
+    "cohortAria": "Retention of monthly signup cohorts by months since signup",
+    "cohortReadout": "{{cohort}} cohort, month {{n}}: {{retention}} still active ({{users}} of {{total}} users).",
+    "cohortHint": "Click a bar to read the retention of a cohort.",
+    "departments": {
+      "engineering": "Engineering",
+      "sales": "Sales",
+      "marketing": "Marketing",
+      "operations": "Operations",
+      "support": "Support",
+      "finance": "Finance"
+    },
+    "actualSpend": "Actual spend",
+    "fiscalYear": "Fiscal year",
+    "varianceToBudget": "Variance to budget",
+    "department": "Department",
+    "budgetAria": "Quarterly spend and variance to budget of six departments in {{year}}",
+    "varianceDetail": "{{department}}, {{quarter}}: spent {{actual}} for a budget of {{budget}} ({{variance}}).",
+    "budgetSummary": "{{year}}: spent {{actual}} for a budget of {{budget}} ({{variance}}). Largest overrun: {{department}}, {{quarter}} ({{worst}}).",
+    "kw": "{{value}} kW",
+    "inletTemperature": "Inlet temperature",
+    "darkTheme": "Dark theme",
+    "perspectiveView": "3D view",
+    "topView": "Floor plan",
+    "rackPosition": "Rack",
+    "rackRow": "Row",
+    "rowLabel": "Row {{id}}",
+    "powerDraw": "Power draw",
+    "datacenterAria": "Server racks by row and position, with power draw as height and inlet temperature as color",
+    "rackHot": "Rack {{rack}}: {{power}}, inlet {{inlet}}, above the {{limit}} limit.",
+    "rackOk": "Rack {{rack}}: {{power}}, inlet {{inlet}}, within the {{limit}} limit.",
+    "datacenterSummary": "Racks above {{limit}} at the inlet: {{hot}} of {{total}} ({{racks}}). Click a rack for its readings."
   },
   "api": {
     "Bar3DChartProps": {

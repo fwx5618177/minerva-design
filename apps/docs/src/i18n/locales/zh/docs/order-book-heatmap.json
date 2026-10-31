@@ -46,6 +46,22 @@
     "red-up": {
       "title": "红涨绿跌",
       "description": "colorConvention=\"red-up\"：买入气泡与最优买价线为红色，卖出与最优卖价线为绿色。"
+    },
+    "price-resolution": {
+      "title": "价格精度与悬停检查",
+      "description": "tickSize 设置价格行的高度（修改后会按新精度重新采样回放的历史），priceSpan 固定可见价格范围，而不是自动适配最优买卖价。设置 tooltip={false} 后，由 onHover 驱动自定义读数：列时间、价格行、挂单量与方向、成交量。"
+    },
+    "time-window": {
+      "title": "时间窗口、暂停与清空",
+      "description": "window 决定在已记录的五分钟（history）中显示多少，无需重新采样。开关会停止数据循环：恢复时行情从暂停处继续，没有空档。clear() 清除所有列，再用 setBook 从当前盘口重新开始。"
+    },
+    "linked": {
+      "title": "热力图、盘口与逐笔成交",
+      "description": "同一分钟的历史以不同方式回填三个组件：热力图回放每次更新（applyDeltas、addTrades），逐笔成交通过 setTrades 一次性获得全部成交，盘口只需当前的订单簿。之后每条实时消息同时发给三者，就像同一个交易所 WebSocket。"
+    },
+    "perpetual": {
+      "title": "以合约张数显示的永续合约",
+      "description": "以 0.001 BTC 一张合约报价的 BTC 永续合约：formatSize 换算数量，formatPrice 显示美元，sizeUnit 与 labels 重命名图例和提示中的单位，timeZone=\"utc\" 与上方资金费率倒计时的交易所时钟一致。"
     }
   },
   "data": {
@@ -70,7 +86,42 @@
     "redUp": "红涨绿跌",
     "greenUp": "绿涨红跌",
     "volumeAt": "悬停列：买入 {{buys}} BTC，卖出 {{sells}} BTC",
-    "volumeHint": "悬停在某列上查看其成交量。"
+    "volumeHint": "悬停在某列上查看其成交量。",
+    "rowHeight": "行高",
+    "priceSpan": "价格范围",
+    "usdtValue": "{{value}} USDT",
+    "auto": "自动",
+    "fitBook": "适配盘口",
+    "cellReadout": "{{time}} · {{price}} · {{size}} BTC {{side}} · 买入 {{buys}} BTC，卖出 {{sells}} BTC",
+    "priceRange": "{{low}} – {{high}}",
+    "sideBid": "（买盘）",
+    "sideAsk": "（卖盘）",
+    "sideSpread": "（价差内）",
+    "cellHint": "悬停在单元格上查看详情。",
+    "timeWindow": "时间窗口",
+    "liveFeed": "实时行情",
+    "clearHistory": "清空历史",
+    "pausedAt": "已于 {{time}} 暂停。",
+    "resumedAt": "已于 {{time}} 恢复。",
+    "clearedAt": "已于 {{time}} 清空历史。",
+    "windowStatus": "显示 {{window}}，共保留 {{history}}。",
+    "pair": "BTC/USDT",
+    "lastPrice": "最新价 {{value}}",
+    "spreadIs": "价差 {{value}}",
+    "tradesOnTape": "逐笔成交 {{value}} 笔",
+    "bookAria": "BTC/USDT 订单簿",
+    "tapeAria": "BTC/USDT 逐笔成交",
+    "perpName": "BTC-USD 永续合约",
+    "contractSize": "1 张 = {{value}} BTC",
+    "fundingRate": "资金费率 {{rate}}",
+    "funding": "资金费率 {{rate}}，结算时间 {{time}}，剩余 {{countdown}}",
+    "contracts": "张",
+    "restingContracts": "挂单",
+    "takerBuys": "主动买入",
+    "takerSells": "主动卖出",
+    "perpAria": "BTC-USD 永续合约流动性热力图",
+    "perpReadout": "{{price}}：挂单 {{contracts}} 张（≈ {{notional}}）",
+    "perpHint": "悬停在热力图上查看挂单张数及其价值。"
   },
   "api": {
     "OrderBookHeatmapProps": {

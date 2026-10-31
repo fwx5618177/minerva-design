@@ -25,6 +25,22 @@
     "live-wave": {
       "title": "Live wave",
       "description": "Ripples recomputed about 30 times per second: a new data object each frame updates the chart. The animation stops when the demo leaves the screen or the tab is hidden."
+    },
+    "heat-diffusion": {
+      "title": "Heat diffusion",
+      "description": "A metal plate simulated with the heat equation: a setInterval (cleaned up on unmount) runs a few finite-difference steps and sets a new data object. onPointClick gives the row and col of the clicked vertex to add or remove a heat source; zAxis and valueRange are fixed so the inferno scale does not rescale while the plate warms up."
+    },
+    "yield-curve": {
+      "title": "Yield curve over time",
+      "description": "Two years of a government yield curve, from inverted to normal, as a maturity × month surface with contour lines on the floor. Axis format callbacks turn grid indices into maturities and Intl.DateTimeFormat months, and onHover reads the yield and the 10-year minus 2-year spread of the hovered month."
+    },
+    "loss-landscape": {
+      "title": "Loss landscape",
+      "description": "Himmelblau's function, a test landscape with four minima, drawn as log10(1 + loss) with floor contours. The select switches colorScale between built-in ramps; click a point to run gradient descent from there and see which minimum it reaches."
+    },
+    "wifi-signal": {
+      "title": "Wi-Fi coverage",
+      "description": "Signal strength over an office floor from log-distance path loss and wall losses, recomputed when access points are toggled with the tags. Contour levels mark the −67 and −75 dBm thresholds, and the button calls setCamera() on the ref for an orthographic top view, or resetCamera() to go back."
     }
   },
   "data": {
@@ -62,7 +78,53 @@
     "wave": "Wave",
     "play": "Animate",
     "amplitude": "Amplitude",
-    "waveAria": "Animated ripples spreading from the center"
+    "waveAria": "Animated ripples spreading from the center",
+    "plate": "Plate",
+    "reset": "Reset",
+    "cm": "cm",
+    "temperature": "Temperature",
+    "heatAria": "Temperature of a metal plate heated by point sources",
+    "heatStatus": "Heat sources: {{sources}} · hottest point {{max}} · average {{mean}}. Click the plate to add or remove a source.",
+    "treasuryYield": "Government bond yield",
+    "maturity": "Maturity",
+    "month": "Month",
+    "yield": "Yield",
+    "yieldAria": "Government bond yields by maturity over 24 months",
+    "yieldHover": "{{maturity}} yield in {{date}}: {{yield}}.",
+    "yieldHint": "Hover the surface to read a yield.",
+    "spreadInverted": "In {{date}} the curve is inverted (10 yr − 2 yr: {{spread}}).",
+    "spreadNormal": "In {{date}} the curve slopes upward (10 yr − 2 yr: {{spread}}).",
+    "loss": "Loss",
+    "point": "({{x}}, {{y}})",
+    "colorMap": "Color scale",
+    "colorMaps": {
+      "viridis": "Viridis",
+      "plasma": "Plasma",
+      "magma": "Magma",
+      "cividis": "Cividis",
+      "turbo": "Turbo"
+    },
+    "weight1": "Weight 1",
+    "weight2": "Weight 2",
+    "logLoss": "log₁₀(1 + loss)",
+    "lossAria": "Loss landscape of Himmelblau's function with four minima",
+    "descentResult": "From {{start}} (loss {{loss}}), gradient descent reaches minimum {{n}} at {{minimum}} in {{steps}} steps.",
+    "lossHint": "Click the surface to start a gradient descent there.",
+    "dbm": "{{value}} dBm",
+    "signal": "Signal",
+    "accessPoints": "Access points",
+    "rooms": {
+      "lobby": "Lobby",
+      "openSpace": "Open space",
+      "meetingRooms": "Meeting rooms",
+      "kitchen": "Kitchen"
+    },
+    "perspectiveView": "3D view",
+    "topView": "Top view",
+    "distanceM": "Meters",
+    "wifiAria": "Wi-Fi signal strength over an office floor",
+    "wifiCoverage": "{{good}} of the floor gets {{goodLevel}} or better (video calls), {{usable}} gets {{usableLevel}} or better.",
+    "wifiNone": "Every access point is off: no coverage."
   },
   "api": {
     "Surface3DChartProps": {

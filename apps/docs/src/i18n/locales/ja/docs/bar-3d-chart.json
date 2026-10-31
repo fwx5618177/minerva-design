@@ -21,6 +21,22 @@
     "margin": {
       "title": "別の値で色分け",
       "description": "売上が高さを、利益率が色を決めます（各データの value と colorBy \"value\"）。最も高い棒が最も利益率が高いとは限りません。"
+    },
+    "inventory-live": {
+      "title": "倉庫在庫のライブ表示",
+      "description": "倉庫の各ロケーション（通路 × 棚段）の残り数量を、アンマウント時に解除されるシード付きの setInterval で毎秒更新します。容量の 20% を下回ったロケーションは危険色の 2 つ目の系列に移るので、各セルの棒はどちらか一方の系列にだけ存在し（もう一方は z: null）、空になったロケーションは補充されます。"
+    },
+    "cohort-retention": {
+      "title": "コホート継続率",
+      "description": "月ごとの登録コホートが n か月後も利用を続けている割合です。最近のコホートは履歴が短いため、空のセルは z: null にしています。コホート名は Intl.DateTimeFormat で表示し、棒は高さで色分け（colorBy: \"z\"）、クリックでセルの継続率とアクティブユーザー数を表示します。"
+    },
+    "budget-variance": {
+      "title": "予算差異",
+      "description": "選択した会計年度における 6 部門の四半期支出です。棒の高さが実績、色が予算との差異を表します。colorBy: \"value\" と発散型の coolwarm、対称な valueRange により、予算どおりのセルは中間色、超過は暖色、未達は寒色になります。"
+    },
+    "datacenter": {
+      "title": "サーバールームのヒートマップ",
+      "description": "サーバールームのラックを、高さを消費電力、色を inferno スケールの吸気温度として表示します。スイッチでダークの ConfigProvider 内にチャートを再マウントし、ボタンは ref の setCamera() で正射影の平面図に切り替え（onCameraChange で状態を同期）、サマリーには推奨吸気温度を超えたラックを列挙します。"
     }
   },
   "data": {
@@ -78,7 +94,53 @@
       "audio": "オーディオ"
     },
     "margin": "利益率",
-    "marginAria": "4 市場における 5 製品の売上高と利益率"
+    "marginAria": "4 市場における 5 製品の売上高と利益率",
+    "inStock": "在庫あり",
+    "lowStock": "在庫僅少",
+    "unitsValue": "{{value}} 個",
+    "liveUpdates": "ライブ更新",
+    "aisle": "通路",
+    "aisleLabel": "通路 {{id}}",
+    "shelf": "棚段",
+    "shelfLabel": "{{n}} 段目",
+    "units": "数量",
+    "inventoryAria": "通路と棚段ごとの倉庫ロケーションの残り数量（ライブ更新）",
+    "inventoryStatus": "在庫 {{total}} 個 · 僅少ロケーション: {{low}} / {{bins}} · 補充済み: {{restocked}}。",
+    "retention": "継続率",
+    "monthsSinceSignup": "登録からの月数",
+    "monthIndex": "{{n}} か月目",
+    "signupCohort": "登録月",
+    "cohortAria": "登録からの月数ごとの月次登録コホートの継続率",
+    "cohortReadout": "{{cohort}}コホートの {{n}} か月目: {{retention}} が継続中（{{total}} 人中 {{users}} 人）。",
+    "cohortHint": "棒をクリックするとコホートの継続率を表示します。",
+    "departments": {
+      "engineering": "開発",
+      "sales": "営業",
+      "marketing": "マーケティング",
+      "operations": "オペレーション",
+      "support": "サポート",
+      "finance": "経理"
+    },
+    "actualSpend": "実績支出",
+    "fiscalYear": "会計年度",
+    "varianceToBudget": "予算差異",
+    "department": "部門",
+    "budgetAria": "{{year}} 年度の 6 部門の四半期支出と予算差異",
+    "varianceDetail": "{{department}}・{{quarter}}: 予算 {{budget}} に対し支出 {{actual}}（{{variance}}）。",
+    "budgetSummary": "{{year}} 年度: 予算 {{budget}} に対し支出 {{actual}}（{{variance}}）。最大の超過: {{department}}・{{quarter}}（{{worst}}）。",
+    "kw": "{{value}} kW",
+    "inletTemperature": "吸気温度",
+    "darkTheme": "ダークテーマ",
+    "perspectiveView": "3D 表示",
+    "topView": "平面図",
+    "rackPosition": "ラック",
+    "rackRow": "列",
+    "rowLabel": "{{id}} 列",
+    "powerDraw": "消費電力",
+    "datacenterAria": "列と位置ごとのサーバーラック（高さは消費電力、色は吸気温度）",
+    "rackHot": "ラック {{rack}}: {{power}}、吸気 {{inlet}}、上限 {{limit}} を超えています。",
+    "rackOk": "ラック {{rack}}: {{power}}、吸気 {{inlet}}、上限 {{limit}} 以内です。",
+    "datacenterSummary": "吸気温度が {{limit}} を超えるラック: {{total}} 台中 {{hot}} 台（{{racks}}）。ラックをクリックすると測定値を表示します。"
   },
   "api": {
     "Bar3DChartProps": {

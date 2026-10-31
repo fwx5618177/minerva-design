@@ -25,6 +25,26 @@
     "crews": {
       "title": "共用行",
       "description": "按施工队排列的施工计划：row 把多个任务放在同一行，dependencies 引用任务 id，因此每条箭头都连接确切的条形。箭头在避开其他条形的通道中穿过各行；没有空闲通道时，则沿两行之间的间隙拐弯（从基坑开挖到基础浇筑，绕开钢筋笼）。"
+    },
+    "release-train": {
+      "title": "发布火车",
+      "description": "三个团队的一个项目增量（PI）：row 把同一团队的特性放在一行，group 区分特性和使能项，时间轴上的 rect 标注为各迭代加底色，并突出创新与规划（IP）迭代。系统演示是单独一行中的里程碑。"
+    },
+    "critical-path": {
+      "title": "关键路径",
+      "description": "根据工期和依赖计算最早和最迟开始时间（关键路径法）。打开开关后，group 把任务分为关键任务和有浮动时间的任务，colors 将它们涂成红色和灰色；onPointClick 报告被点击任务的浮动时间。"
+    },
+    "resources": {
+      "title": "资源计划",
+      "description": "每人一行（row），每个项目一种颜色（group；Select 筛选项目时 colors 保持每个项目的颜色），yAxis.min / max 固定六周。onHover 读取悬停的行（event.xLabel），显示此人的负荷，包括超额分配。"
+    },
+    "live-deploy": {
+      "title": "实时流水线运行",
+      "description": "用 setInterval 回放一次部署流水线（在暂停和卸载时清除）：today 跟随模拟时钟，每个进度据此重新计算，interaction={false} 让时间范围在图表更新时保持不动。"
+    },
+    "onboarding": {
+      "title": "入职计划",
+      "description": "renderTooltip 用 React 内容替换提示框：根据 seriesId（每组一个系列，外加里程碑）和 index 找到悬停的条形，显示负责人、用 Intl.DateTimeFormat 的 formatRange 格式化的日期，以及相对于今天的状态。"
     }
   },
   "native": {
@@ -148,7 +168,130 @@
       "structure": "主体结构"
     },
     "inspections": "验收",
-    "crewsAria": "按施工队排列的施工计划及任务之间的依赖关系"
+    "crewsAria": "按施工队排列的施工计划及任务之间的依赖关系",
+    "train": {
+      "teams": {
+        "atlas": "Atlas 团队",
+        "borealis": "Borealis 团队",
+        "comet": "Comet 团队"
+      },
+      "features": {
+        "checkout": "结账改版",
+        "paymentRetries": "支付重试",
+        "wallet": "数字钱包",
+        "searchFilters": "搜索筛选",
+        "indexing": "索引升级",
+        "recommendations": "推荐",
+        "observability": "可观测性",
+        "push": "推送通知"
+      },
+      "kinds": {
+        "feature": "特性",
+        "enabler": "使能项"
+      },
+      "iteration": "迭代 {{n}}",
+      "ip": "IP 迭代",
+      "demo": "系统演示 {{n}}",
+      "demos": "系统演示",
+      "events": "火车活动",
+      "aria": "按团队划分的发布火车项目增量"
+    },
+    "cpm": {
+      "tasks": {
+        "lease": "签订租约",
+        "fitOut": "装修工程",
+        "racking": "安装货架",
+        "wms": "部署 WMS",
+        "hiring": "招聘员工",
+        "training": "员工培训",
+        "testRun": "试运行",
+        "goLive": "正式启用"
+      },
+      "critical": "关键",
+      "slack": "有浮动时间",
+      "highlight": "突出显示关键路径",
+      "summary": "{{days}}后正式启用；关键路径：{{path}}。点击任务查看其浮动时间。",
+      "taskSlack": "{{task}}可以推迟{{slack}}而不影响启用",
+      "taskCritical": "{{task}}是关键任务：任何延误都会推迟启用",
+      "aria": "带关键路径的仓库启用计划"
+    },
+    "res": {
+      "people": {
+        "ana": "Ana",
+        "ben": "Ben",
+        "chen": "Chen",
+        "dara": "Dara",
+        "eli": "Eli"
+      },
+      "projects": {
+        "apollo": "Apollo",
+        "borealis": "Borealis",
+        "cassini": "Cassini",
+        "vacation": "休假"
+      },
+      "projectLabel": "项目",
+      "all": "所有项目",
+      "load": "{{person}}：{{weeks}} 周内已分配 {{share}}",
+      "overbooked": "{{person}}超额分配：{{weeks}} 周内 {{share}}",
+      "hint": "悬停在某一行上查看此人的负荷",
+      "aria": "按人员和项目划分的团队资源计划"
+    },
+    "deploy": {
+      "stages": {
+        "checkout": "检出代码",
+        "compile": "构建",
+        "unit": "单元测试",
+        "lint": "代码检查",
+        "integration": "集成测试",
+        "staging": "部署到预发布",
+        "smoke": "冒烟测试",
+        "canary": "金丝雀发布",
+        "production": "生产发布"
+      },
+      "groups": {
+        "build": "构建",
+        "test": "测试",
+        "release": "发布"
+      },
+      "now": "当前",
+      "running": "运行中：{{stages}} · 已用 {{elapsed}}",
+      "done": "流水线完成，用时 {{elapsed}}",
+      "restart": "重新运行",
+      "pause": "暂停",
+      "resume": "继续",
+      "aria": "部署流水线运行的各阶段，实时更新"
+    },
+    "onboard": {
+      "tasks": {
+        "contract": "合同与手续",
+        "laptop": "订购笔记本电脑",
+        "accounts": "创建账号",
+        "welcome": "欢迎会",
+        "orientation": "入职培训",
+        "buddyLunch": "与导师午餐",
+        "codebase": "代码库导览",
+        "firstTicket": "第一个工单",
+        "training": "合规培训",
+        "firstProject": "第一个项目",
+        "firstDay": "第一天",
+        "checkIn30": "30 天面谈",
+        "review60": "60 天评估"
+      },
+      "owners": {
+        "hr": "人力资源",
+        "it": "IT",
+        "manager": "经理",
+        "buddy": "导师"
+      },
+      "owner": "负责人：{{owner}}",
+      "status": {
+        "done": "已完成",
+        "inProgress": "进行中",
+        "upcoming": "未开始"
+      },
+      "checkIns": "面谈",
+      "aria": "按负责人划分的新员工入职计划"
+    }
   },
   "api": {
     "GanttChartProps": {

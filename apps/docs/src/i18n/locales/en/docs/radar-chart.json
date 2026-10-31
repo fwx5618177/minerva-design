@@ -21,6 +21,22 @@
     "capabilities": {
       "title": "Product capabilities",
       "description": "Analyst ratings of a product, a competitor and the market average. hidden makes the visibility controlled: the checkboxes and the legend (onToggle) share the same state."
+    },
+    "nutrition": {
+      "title": "Nutrition facts of breakfasts",
+      "description": "Three breakfasts on a circular grid (shape=\"circle\", levels={5}), each axis in percent of the daily value. renderTooltip uses the event's indicator to list the amount of the hovered nutrient in every meal."
+    },
+    "live-monitor": {
+      "title": "Live service monitor",
+      "description": "The current load is redrawn every second (setInterval, cleared when the switch is off or on unmount) over the last hour's baseline, and turns red above the alert threshold. Only the busiest metric and the alert state are announced, not every tick."
+    },
+    "review-360": {
+      "title": "360° review",
+      "description": "A Select picks the person whose ratings are drawn over the team average; keeping the person as the second series makes the polygon animate in place. The line below names their largest strength and gap compared to the team."
+    },
+    "sales-targets": {
+      "title": "Sales targets with mixed units",
+      "description": "Every indicator has its own min and max, so revenue, deal count, win rate and NPS share one chart; the target is an unfilled outline. onClick and renderTooltip read the event's indicator to show the actual value, the target and the attainment of a KPI."
     }
   },
   "data": {
@@ -82,7 +98,70 @@
       "market": "Market average"
     },
     "compareWith": "Products to compare",
-    "capabilitiesAria": "Capability ratings of our product, a competitor and the market"
+    "capabilitiesAria": "Capability ratings of our product, a competitor and the market",
+    "nutrition": {
+      "nutrients": {
+        "protein": "Protein",
+        "fiber": "Fiber",
+        "sugar": "Sugar",
+        "fat": "Fat",
+        "sodium": "Sodium",
+        "calcium": "Calcium"
+      },
+      "meals": {
+        "oatmeal": "Oatmeal with fruit",
+        "eggs": "Eggs on toast",
+        "yogurt": "Yogurt with granola"
+      },
+      "dailyValue": "{{value}} DV",
+      "row": "{{meal}}: {{amount}} ({{share}})",
+      "aria": "Nutrients of three breakfasts, in percent of the daily value"
+    },
+    "monitor": {
+      "metrics": {
+        "cpu": "CPU",
+        "memory": "Memory",
+        "diskIo": "Disk I/O",
+        "network": "Network",
+        "latency": "Latency",
+        "errors": "Errors"
+      },
+      "baseline": "Last hour average",
+      "now": "Now",
+      "live": "Live updates",
+      "alert": "Alert: {{metric}} is above {{threshold}} of its capacity.",
+      "peak": "Busiest metric: {{metric}}.",
+      "aria": "Current load of the service against the last hour's average"
+    },
+    "review": {
+      "competencies": {
+        "communication": "Communication",
+        "delivery": "Delivery",
+        "expertise": "Expertise",
+        "collaboration": "Collaboration",
+        "mentoring": "Mentoring",
+        "initiative": "Initiative"
+      },
+      "team": "Team average",
+      "person": "Person",
+      "aria": "360° review ratings of {{name}} against the team average",
+      "summary": "Strongest: {{strength}} ({{strengthGap}} vs. the team). To develop: {{growth}} ({{growthGap}})."
+    },
+    "sales": {
+      "kpis": {
+        "revenue": "Revenue",
+        "deals": "Deals won",
+        "winRate": "Win rate",
+        "dealSize": "Avg. deal size",
+        "calls": "Calls",
+        "nps": "NPS"
+      },
+      "target": "Target",
+      "actual": "Actual",
+      "line": "{{kpi}}: {{actual}} for a target of {{target}} ({{attainment}}).",
+      "aria": "Quarterly KPIs of a sales rep against their targets",
+      "hint": "Click near an axis to read its KPI."
+    }
   },
   "api": {
     "RadarChartProps": {

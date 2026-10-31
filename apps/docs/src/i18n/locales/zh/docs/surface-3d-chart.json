@@ -25,6 +25,22 @@
     "live-wave": {
       "title": "实时波动",
       "description": "每秒约重新计算 30 次的涟漪：每帧传入新的数据对象即可更新图表。示例离开屏幕或标签页隐藏时动画停止。"
+    },
+    "heat-diffusion": {
+      "title": "热扩散",
+      "description": "用热传导方程模拟一块金属板：setInterval（卸载时清理）执行若干有限差分步，并设置新的数据对象。onPointClick 提供被点击顶点的 row 和 col，用于添加或移除热源；zAxis 和 valueRange 固定，因此金属板升温时 inferno 色阶不会重新缩放。"
+    },
+    "yield-curve": {
+      "title": "收益率曲线的演变",
+      "description": "两年间从倒挂到正常的国债收益率曲线，以期限 × 月份曲面呈现，底面带等高线。坐标轴的 format 回调把网格索引转换为期限和 Intl.DateTimeFormat 格式的月份，onHover 读取悬停月份的收益率及 10 年期减 2 年期利差。"
+    },
+    "loss-landscape": {
+      "title": "损失曲面",
+      "description": "Himmelblau 函数是一个有四个极小值的测试曲面，这里绘制 log10(1 + loss) 并在底面绘制等高线。下拉框在内置色阶之间切换 colorScale；点击一个点，从该处运行梯度下降，看它到达哪个极小值。"
+    },
+    "wifi-signal": {
+      "title": "Wi-Fi 覆盖",
+      "description": "根据对数距离路径损耗和墙体损耗计算办公楼层的信号强度，用标签开关接入点时重新计算。等高线标出 −67 和 −75 dBm 两个阈值，按钮调用 ref 上的 setCamera() 切换为正交俯视图，或调用 resetCamera() 恢复。"
     }
   },
   "data": {
@@ -62,7 +78,53 @@
     "wave": "波",
     "play": "播放动画",
     "amplitude": "振幅",
-    "waveAria": "从中心扩散的动画涟漪"
+    "waveAria": "从中心扩散的动画涟漪",
+    "plate": "金属板",
+    "reset": "重置",
+    "cm": "厘米",
+    "temperature": "温度",
+    "heatAria": "被点热源加热的金属板温度",
+    "heatStatus": "热源：{{sources}} 个 · 最高温度 {{max}} · 平均温度 {{mean}}。点击金属板可添加或移除热源。",
+    "treasuryYield": "国债收益率",
+    "maturity": "期限",
+    "month": "月份",
+    "yield": "收益率",
+    "yieldAria": "24 个月内各期限国债收益率",
+    "yieldHover": "{{date}} {{maturity}}期收益率：{{yield}}。",
+    "yieldHint": "悬停在曲面上读取收益率。",
+    "spreadInverted": "{{date}}收益率曲线倒挂（10 年期 − 2 年期：{{spread}}）。",
+    "spreadNormal": "{{date}}收益率曲线向上倾斜（10 年期 − 2 年期：{{spread}}）。",
+    "loss": "损失",
+    "point": "({{x}}, {{y}})",
+    "colorMap": "色阶",
+    "colorMaps": {
+      "viridis": "Viridis",
+      "plasma": "Plasma",
+      "magma": "Magma",
+      "cividis": "Cividis",
+      "turbo": "Turbo"
+    },
+    "weight1": "权重 1",
+    "weight2": "权重 2",
+    "logLoss": "log₁₀(1 + 损失)",
+    "lossAria": "有四个极小值的 Himmelblau 函数损失曲面",
+    "descentResult": "从 {{start}}（损失 {{loss}}）出发，梯度下降经过 {{steps}} 步到达位于 {{minimum}} 的第 {{n}} 个极小值。",
+    "lossHint": "点击曲面，从该处开始梯度下降。",
+    "dbm": "{{value}} dBm",
+    "signal": "信号",
+    "accessPoints": "接入点",
+    "rooms": {
+      "lobby": "大堂",
+      "openSpace": "开放办公区",
+      "meetingRooms": "会议室",
+      "kitchen": "茶水间"
+    },
+    "perspectiveView": "3D 视图",
+    "topView": "俯视图",
+    "distanceM": "米",
+    "wifiAria": "办公楼层的 Wi-Fi 信号强度",
+    "wifiCoverage": "{{good}} 的区域信号不低于 {{goodLevel}}（可视频通话），{{usable}} 的区域不低于 {{usableLevel}}。",
+    "wifiNone": "所有接入点均已关闭：无覆盖。"
   },
   "api": {
     "Surface3DChartProps": {

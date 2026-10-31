@@ -17,6 +17,22 @@
     "price-range": {
       "title": "交易区间",
       "description": "用带状区域表示每个交易日的最低-最高区间，用折线表示收盘价，是 K 线图的轻量替代。"
+    },
+    "anomaly-band": {
+      "title": "异常检测",
+      "description": "以预期流量 ± k 个标准差作为区间带，实测值为折线，落在区间外的点作为 type: \"scatter\" 系列以危险色显示。RadioGroup 设置 k，输出区域统计异常数量。"
+    },
+    "bid-ask": {
+      "title": "实时买卖价差",
+      "description": "setInterval 每 500 毫秒向一分钟的窗口中添加一个报价，并在暂停和卸载时清除。区间带以 curve=\"step\" 从买价延伸到卖价，中间价为折线，输出区域以基点显示最新价差。"
+    },
+    "climate-scenarios": {
+      "title": "排放情景",
+      "description": "两个相互重叠的区间带及其中位线承接观测记录一直延伸到 2100 年；y 轴参考线标注 1.5 °C 和 2 °C 的限值，点击图例项可隐藏对应系列。"
+    },
+    "ab-test": {
+      "title": "A/B 测试置信区间",
+      "description": "逐日显示变体 B 相对 A 的累计提升及其置信区间。RadioGroup 切换置信水平，y 轴参考线标出零值，rect 标注为区间持续高于零之后的日期加上底色。"
     }
   },
   "native": {
@@ -44,7 +60,42 @@
     "latencyAria": "一天中响应时间的百分位",
     "dayRange": "最低 – 最高",
     "close": "收盘价",
-    "priceAria": "六个月内每日交易区间与收盘价"
+    "priceAria": "六个月内每日交易区间与收盘价",
+    "expectedBand": "预期值 ± {{k}}σ",
+    "measured": "实测值",
+    "anomalies": "异常",
+    "sensitivity": "灵敏度",
+    "sigmaOption": "{{k}}σ 区间",
+    "requestsPerMinute": "每分钟请求数",
+    "anomalyAria": "一周内每分钟的 API 请求数，含预期区间及其之外的异常点",
+    "noAnomaly": "没有落在区间外的点。",
+    "anomalyCount": "异常：{{n}} 个，最近一次在 {{latest}}。",
+    "bidAsk": "买价 – 卖价",
+    "mid": "中间价",
+    "pause": "暂停",
+    "resume": "继续",
+    "quote": "买价 {{bid}} · 卖价 {{ask}}",
+    "spreadBps": "价差 {{value}} 个基点",
+    "bidAskAria": "某货币对过去一分钟的实时买价和卖价，以及中间价",
+    "ssp126": "低排放（SSP1-2.6）",
+    "ssp126Range": "低排放，可能范围",
+    "ssp585": "极高排放（SSP5-8.5）",
+    "ssp585Range": "极高排放，可能范围",
+    "observed": "观测值",
+    "parisLimit": "{{value}} 限值",
+    "warming": "相对 1850–1900 年的升温",
+    "climateAria": "1950 年以来观测到的全球升温，以及低排放和极高排放情景下到 2100 年的预测",
+    "crossings": "在低排放情景下，中位值约在 {{low}} 年超过 {{lowLimit}}，并稳定在 {{peak}}；在极高排放情景下，约在 {{high}} 年超过 {{highLimit}}。",
+    "confidenceInterval": "{{level}} 置信区间",
+    "lift": "提升",
+    "noDifference": "无差异",
+    "significant": "显著",
+    "confidenceLevel": "置信水平",
+    "testDay": "测试天数",
+    "liftOfB": "B 相对 A 的转化率提升",
+    "abTestAria": "28 天测试期间变体 B 相对变体 A 的累计转化率提升及其置信区间",
+    "notSignificant": "B 领先 {{lift}}，但 {{level}} 置信区间仍包含零。",
+    "significantSince": "B 的转化率高出 {{lift}}（{{level}} 置信区间为 {{low}} 至 {{high}}），自第 {{day}} 天起显著。"
   },
   "api": {
     "RangeAreaChartProps": {

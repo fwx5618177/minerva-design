@@ -23,6 +23,26 @@
     "lineage": {
       "title": "Amont et aval",
       "description": "Le lignage des données, des tables brutes aux tableaux de bord. La sélection garde le lignage en avant : cliquez sur un modèle pour voir ce qui l’alimente et ce qu’il alimente, Échap ou un clic sur le fond l’efface."
+    },
+    "build-scheduler": {
+      "title": "Ordonnanceur de build",
+      "description": "Un lanceur de tâches exécute le build d'un monorepo sur 1, 2 ou 4 workers, en démarrant d'abord la tâche prête dont la chaîne restante est la plus longue. Les groupes colorent les tâches terminées, en cours ou en attente au fil du chronomètre, la valeur du nœud est la durée et criticalPath montre la chaîne qui borne la durée du build quel que soit le nombre de workers."
+    },
+    "project-plan": {
+      "title": "Planning de projet",
+      "description": "Le lancement d'un site planifié par la méthode du chemin critique : les dates de début au plus tôt et au plus tard donnent la marge de chaque tâche, et la chaîne sans marge est passée à criticalPath sous forme de liste d'ids. Les sous-titres affichent des périodes en jours ouvrés avec Intl.DateTimeFormat.formatRange ; cliquez sur une tâche pour lire ses dates et sa marge."
+    },
+    "impact-analysis": {
+      "title": "Impact d'un échec",
+      "description": "Un traitement ETL nocturne : choisissez la tâche qui échoue (ou cliquez sur un nœud) et tout ce qui est en aval passe à l'état bloqué, avec des liens entrants en pointillés. highlight=\"lineage\" avec un selected contrôlé montre le périmètre touché, et le résumé liste les livrables qui ne seront pas produits."
+    },
+    "course-prerequisites": {
+      "title": "Prérequis des cours",
+      "description": "Un cursus d'informatique groupé par année. Les boutons radio changent la direction entre TB, LR, BT et RL, et les nœuds rejoignent leurs nouvelles couches ; cliquez sur un cours pour lister tous ceux à suivre avant, dans l'ordre du catalogue."
+    },
+    "spreadsheet": {
+      "title": "Recalcul d'un tableur",
+      "description": "Les cellules à formule d'un bon de commande et les cellules qu'elles référencent. Modifiez une saisie et les cellules dépendantes sont recalculées : la cellule modifiée est passée dans selected, si bien que la mise en évidence du lignage montre exactement ce qui a été recalculé, et les sous-titres formatent montants et pourcentages avec Intl.NumberFormat."
     }
   },
   "api": {
@@ -108,7 +128,107 @@
     },
     "lineageAria": "Lignage des données, des tables brutes aux tableaux de bord",
     "lineageSummary": "{{name}} : {{upstream}} en amont, {{downstream}} en aval",
-    "lineageHint": "Cliquez sur une table ou un tableau de bord pour mettre en avant son lignage."
+    "lineageHint": "Cliquez sur une table ou un tableau de bord pour mettre en avant son lignage.",
+    "runStates": {
+      "done": "Terminée",
+      "running": "En cours",
+      "queued": "En attente"
+    },
+    "taskProgress": "{{percent}} effectué",
+    "taskSeconds": "{{seconds}} s",
+    "workers": "Workers",
+    "workerCount": "{{n}} × worker",
+    "pause": "Pause",
+    "run": "Lancer",
+    "reset": "Réinitialiser",
+    "schedulerAria": "Tâches de build d'un monorepo, colorées selon leur état pendant l'exécution",
+    "schedulerDone": "Build terminé en {{seconds}} s avec {{workers}} × worker.",
+    "schedulerStatus": "{{elapsed}} s sur {{seconds}} s — en cours : {{running}}.",
+    "idle": "rien",
+    "schedulerBound": "Aucun ordonnancement ne fait mieux que le chemin critique : {{seconds}} s.",
+    "planTasks": {
+      "brief": "Cahier des charges",
+      "research": "Recherche utilisateur",
+      "sitemap": "Arborescence",
+      "wireframes": "Maquettes fil de fer",
+      "visualDesign": "Design graphique",
+      "copy": "Rédaction",
+      "backend": "API et hébergement",
+      "cms": "Configuration du CMS",
+      "frontend": "Intégration front-end",
+      "content": "Saisie des contenus",
+      "qa": "Recette et correctifs",
+      "seo": "Audit SEO",
+      "golive": "Mise en ligne"
+    },
+    "planPhases": {
+      "discovery": "Cadrage",
+      "design": "Conception",
+      "build": "Réalisation",
+      "launch": "Lancement"
+    },
+    "planAria": "Planning du lancement d'un site : tâches, dépendances et chemin critique",
+    "planTask": "{{name}} : {{range}}, {{days}} jours ouvrés, peut glisser de {{slack}} jours ouvrés sans retarder le lancement.",
+    "planCriticalTask": "{{name}} : {{range}}, {{days}} jours ouvrés, sur le chemin critique — tout retard décale le lancement.",
+    "planSummary": "{{days}} jours ouvrés, mise en ligne le {{date}}. Cliquez sur une tâche pour voir ses dates et sa marge.",
+    "runStatuses": {
+      "success": "Réussie",
+      "failed": "Échouée",
+      "blocked": "Amont en échec"
+    },
+    "failingTask": "Tâche en échec",
+    "impactAria": "Tâches ETL nocturnes, avec la tâche en échec et les tâches qu'elle bloque",
+    "impactSummary": "{{task}} a échoué et bloque {{blocked}} des {{total}} tâches : {{sinks}} ne seront pas livrés.",
+    "impactNone": "{{task}} a échoué, mais aucune autre tâche n'en dépend.",
+    "courses": {
+      "intro": "Initiation à la programmation",
+      "discrete": "Mathématiques discrètes",
+      "calculus": "Analyse",
+      "dataStructures": "Structures de données",
+      "architecture": "Architecture des ordinateurs",
+      "linearAlgebra": "Algèbre linéaire",
+      "probability": "Probabilités",
+      "algorithms": "Algorithmique",
+      "os": "Systèmes d'exploitation",
+      "databases": "Bases de données",
+      "networks": "Réseaux",
+      "ml": "Apprentissage automatique",
+      "compilers": "Compilation",
+      "distributed": "Systèmes répartis",
+      "security": "Sécurité",
+      "deepLearning": "Apprentissage profond",
+      "capstone": "Projet de fin d'études"
+    },
+    "yearLabel": "Année {{n}}",
+    "flowDirection": "Direction du flux",
+    "directions": {
+      "TB": "De haut en bas",
+      "LR": "De gauche à droite",
+      "BT": "De bas en haut",
+      "RL": "De droite à gauche"
+    },
+    "coursesAria": "Cours d'informatique et leurs prérequis",
+    "coursePath": "Prérequis de « {{course}} » ({{total}}) : {{list}}.",
+    "courseNoPrerequisite": "« {{course}} » n'a aucun prérequis.",
+    "cells": {
+      "price": "Prix unitaire",
+      "quantity": "Quantité",
+      "discountRate": "Remise (%)",
+      "taxRate": "Taux de TVA",
+      "subtotal": "Sous-total",
+      "discount": "Remise",
+      "net": "Net",
+      "tax": "TVA",
+      "shipping": "Livraison",
+      "total": "Total",
+      "unitCost": "Coût unitaire"
+    },
+    "cellKinds": {
+      "input": "Saisies",
+      "formula": "Formules"
+    },
+    "spreadsheetAria": "Cellules d'un bon de commande et cellules référencées par leurs formules",
+    "recalculated": "{{cell}} modifié : {{total}} cellules recalculées ({{list}}). Total : {{value}}."
   },
   "wc": {
     "demos": {

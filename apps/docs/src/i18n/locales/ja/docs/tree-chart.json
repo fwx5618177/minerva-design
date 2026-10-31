@@ -26,6 +26,26 @@
     "file-tree": {
       "title": "折りたたみ可能なファイルツリー",
       "description": "左から右へのプロジェクトツリーをファイルの種類で色分け。深いフォルダは最初は畳まれています。フォルダをクリックして開くか、ref の expand()、collapse()、fit() を呼ぶボタンを使います。"
+    },
+    "decision-tree": {
+      "title": "決定木",
+      "description": "ローン審査のポリシーを、ラベル付きの分岐（edgeLabels）を持つ org レイアウトで表示します。ラジオボタンで質問に答えると、たどり着いた結論が selected に渡され、highlight=\"lineage\" がルートからの経路を強調します。tree.collapsible を無効にしているので、クリックしても質問は折りたたまれません。"
+    },
+    "taxonomy-search": {
+      "title": "カテゴリ検索",
+      "description": "ストアの商品カテゴリ体系で、第 2 階層は折りたたまれています。入力すると一致するカテゴリがすべて選択され、Enter またはタグで ref の focusNode() を呼び出します。折りたたまれた祖先を展開してからノードを中央に表示し、カテゴリのパンくずを下に表示します。"
+    },
+    "disk-usage": {
+      "title": "ディスク使用量",
+      "description": "各ノードの value をフォルダーのサイズにしたファイルシステムで、[min, max] 形式の nodeSize により円がバイト数に応じて拡大縮小します。サイズは Intl.NumberFormat の単位で整形し、ラジオボタンでツリーと放射状のレイアウトを切り替え、クリックで親フォルダーとディスク全体に対する割合を表示します。"
+    },
+    "wbs": {
+      "title": "作業分解構成図",
+      "description": "モバイルアプリのリリース計画です。作業パッケージはストーリーポイントと状態を持ち、集約項目はサブタイトルでポイントと進捗を積み上げます。詳細レベルは ref の expand() と collapse() を呼び出し、onToggle が折りたたみ・展開した項目のポイントを報告します。"
+    },
+    "bracket": {
+      "title": "トーナメント表",
+      "description": "右から左（direction=\"RL\"）へのトーナメント表で、ボックス型ノードと直角のエッジを使います。決勝がルート、チームが葉で、チーム名は Intl.DisplayNames で表示します。「次のラウンド」でシード付き乱数によるシミュレーション結果を公開し、グループが勝ち残り・敗退・優勝チームを色分けします。"
     }
   },
   "api": {
@@ -159,7 +179,166 @@
     "expandAll": "すべて展開",
     "collapseAll": "すべて折りたたむ",
     "fit": "全体表示",
-    "filesAria": "プロジェクトのファイル"
+    "filesAria": "プロジェクトのファイル",
+    "decision": {
+      "credit": "信用スコア",
+      "income": "収入 ≥ 返済額 × 3？",
+      "employment": "勤続 2 年以上？",
+      "debt": "返済負担率 < 35%？",
+      "approved": "承認",
+      "approvedLower": "承認（減額）",
+      "approvedRate": "承認（金利上乗せ）",
+      "review": "個別審査",
+      "declined": "否決"
+    },
+    "branches": {
+      "creditHigh": "700 以上",
+      "creditFair": "600〜699",
+      "creditPoor": "600 未満",
+      "yes": "はい",
+      "no": "いいえ"
+    },
+    "decisionKinds": {
+      "question": "質問",
+      "approved": "承認",
+      "review": "審査",
+      "declined": "否決"
+    },
+    "decisionAria": "現在の申込者の経路を強調したローン審査の決定木",
+    "decisionResult": "結論: {{outcome}}（{{questions}} 問で判定）。",
+    "taxonomy": {
+      "catalog": "すべての商品",
+      "electronics": "家電・デジタル",
+      "home": "ホーム",
+      "fashion": "ファッション",
+      "sports": "スポーツ",
+      "computers": "パソコン",
+      "phones": "スマートフォン関連",
+      "audio": "オーディオ",
+      "laptops": "ノートパソコン",
+      "desktops": "デスクトップ",
+      "tablets": "タブレット",
+      "smartphones": "スマートフォン",
+      "phoneCases": "スマホケース",
+      "chargers": "充電器",
+      "headphones": "ヘッドホン",
+      "speakers": "スピーカー",
+      "kitchen": "キッチン",
+      "furniture": "家具",
+      "garden": "ガーデン",
+      "cookware": "調理器具",
+      "coffeeMachines": "コーヒーメーカー",
+      "knives": "包丁",
+      "sofas": "ソファ",
+      "desks": "デスク",
+      "officeChairs": "オフィスチェア",
+      "gardenTools": "園芸用品",
+      "plants": "観葉植物",
+      "clothing": "衣類",
+      "shoes": "靴",
+      "accessories": "アクセサリー",
+      "jackets": "ジャケット",
+      "dresses": "ワンピース",
+      "sneakers": "スニーカー",
+      "boots": "ブーツ",
+      "bags": "バッグ",
+      "watches": "腕時計",
+      "outdoor": "アウトドア",
+      "fitness": "フィットネス",
+      "cycling": "サイクリング",
+      "tents": "テント",
+      "hikingBoots": "登山靴",
+      "yogaMats": "ヨガマット",
+      "dumbbells": "ダンベル",
+      "bikes": "自転車",
+      "helmets": "ヘルメット"
+    },
+    "breadcrumbSeparator": " › ",
+    "taxonomySearch": "カテゴリを検索",
+    "taxonomyAria": "ストアの商品カテゴリ体系",
+    "taxonomyMatches": "{{total}} 件のカテゴリが一致しました。Enter キーかタグで表示します。",
+    "taxonomyHint": "カテゴリを検索してください（例:「ブーツ」「デスク」）。",
+    "diskRoot": "Macintosh HD",
+    "diskKinds": {
+      "system": "システム",
+      "apps": "アプリケーション",
+      "media": "メディア",
+      "documents": "書類",
+      "cache": "キャッシュとバックアップ"
+    },
+    "diskLayout": "レイアウト",
+    "diskLayouts": {
+      "tree": "ツリー",
+      "radial": "放射状"
+    },
+    "diskAria": "フォルダー別のディスク使用量（ノードの大きさはバイト数）",
+    "diskShare": "{{name}}: {{size}} — {{parent}} の {{parentShare}}、ディスク全体の {{share}}。",
+    "diskTotal": "{{name}}: {{size}} 使用中。",
+    "wbsItems": {
+      "release": "アプリ 2.0 リリース",
+      "onboarding": "オンボーディング",
+      "signup": "新規登録",
+      "emailVerify": "メール認証",
+      "socialLogin": "ソーシャルログイン",
+      "tour": "製品ツアー",
+      "tourScreens": "ツアー画面",
+      "tourSkip": "スキップと再開",
+      "payments": "決済",
+      "checkout": "チェックアウト",
+      "cardForm": "カード入力フォーム",
+      "applePay": "ウォレット決済",
+      "billing": "請求",
+      "invoices": "請求書",
+      "refunds": "返金",
+      "platform": "プラットフォーム",
+      "offline": "オフラインモード",
+      "syncQueue": "同期キュー",
+      "conflicts": "競合の解決",
+      "quality": "品質",
+      "crashReports": "クラッシュレポート",
+      "perfBudget": "パフォーマンス予算"
+    },
+    "wbsPoints": "{{points}} pt",
+    "wbsRollup": "{{points}} pt · {{done}} 完了",
+    "wbsStatuses": {
+      "summary": "集約",
+      "done": "完了",
+      "doing": "進行中",
+      "todo": "未着手"
+    },
+    "wbsDepth": "詳細レベル",
+    "wbsLevels": {
+      "deliverables": "成果物",
+      "features": "機能",
+      "packages": "作業パッケージ"
+    },
+    "wbsDepthStatus": "{{level}} まで表示しています。",
+    "wbsAria": "ストーリーポイント付きのモバイルアプリリリースの作業分解構成図",
+    "wbsCollapsed": "{{name}} を折りたたみました: {{points}} pt、残り {{remaining}} pt。",
+    "wbsExpanded": "{{name}} を展開しました: {{points}} pt、残り {{remaining}} pt。",
+    "wbsSummary": "合計 {{points}} ストーリーポイント、{{done}} 完了。項目をクリックすると折りたたみ・展開できます。",
+    "rounds": {
+      "quarterFinal": "準々決勝",
+      "semiFinal": "準決勝",
+      "final": "決勝"
+    },
+    "tbd": "未実施",
+    "score": "{{winner}}–{{loser}}",
+    "seed": "第 {{n}} シード",
+    "bracketStates": {
+      "pending": "未実施",
+      "played": "勝者",
+      "alive": "勝ち残り",
+      "out": "敗退",
+      "champion": "優勝"
+    },
+    "nextRound": "次のラウンド",
+    "restart": "最初から",
+    "newSimulation": "再シミュレーション",
+    "bracketAria": "準々決勝から決勝までのトーナメント表",
+    "championResult": "{{team}} が優勝！",
+    "roundResult": "{{round}}の勝者: {{teams}}。",
+    "bracketHint": "実力順にシードされた 8 チーム。次のラウンドを実施して結果を公開します。"
   },
   "wc": {
     "demos": {

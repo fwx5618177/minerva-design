@@ -33,6 +33,22 @@
     "red-up": {
       "title": "Rouge à la hausse",
       "description": "colorConvention=\"red-up\" : achats en rouge, ventes en vert (Chine continentale, Japon, Corée)."
+    },
+    "pressure": {
+      "title": "Pression acheteuse / vendeuse",
+      "description": "Les transactions passées à addTrades sont aussi gardées une minute pour calculer deux fois par seconde des statistiques glissantes : VWAP, volume acheté et vendu par les agresseurs, transactions par seconde et plus grosse transaction. Le ruban fusionne les balayages (aggregate) et colore les transactions dès 1 BTC (largeTradeThreshold)."
+    },
+    "clock": {
+      "title": "Fuseaux horaires et formats",
+      "description": "formatTime remplace l'horloge intégrée (locale ou UTC) par n'importe quel Intl.DateTimeFormat, ici dans un autre fuseau avec les millisecondes ; formatPrice affiche des dollars et labels.time indique le fuseau dans l'en-tête."
+    },
+    "block-alerts": {
+      "title": "Alertes de blocs",
+      "description": "Les transactions de même sens et de même milliseconde (un balayage, comme les fusionne aggregate) sont additionnées : dès 2 BTC elles sont consignées avec leur prix moyen et leur notionnel, et la même taille est mise en évidence sur le ruban par largeTradeThreshold. Effacer vide le ruban avec clear()."
+    },
+    "split": {
+      "title": "Achats et ventes côte à côte",
+      "description": "Un flux, deux rubans : les transactions sont séparées par sens de l'agresseur avant addTrades, chaque ruban avec son propre ariaLabel. Les en-têtes comptent les transactions et le volume de chaque côté, le flux net en fait la différence."
     }
   },
   "data": {
@@ -52,7 +68,44 @@
     "redUp": "Rouge hausse, vert baisse",
     "greenUp": "Vert hausse, rouge baisse",
     "add": "Ajouter {{value}} transactions",
-    "loaded": "{{rows}} transactions, dernier lot en {{ms}} ms"
+    "loaded": "{{rows}} transactions, dernier lot en {{ms}} ms",
+    "rollingWindow": "Fenêtre glissante",
+    "lastWindow": "{{value}} dernières",
+    "vwap": "VWAP",
+    "buyShare": "Part achetée",
+    "bought": "Acheté",
+    "sold": "Vendu",
+    "btcValue": "{{value}} BTC",
+    "tradesPerSecond": "Transactions / s",
+    "largest": "Plus grosse transaction",
+    "largestBuy": "Achat {{size}} à {{price}}",
+    "largestSell": "Vente {{size}} à {{price}}",
+    "pressureBuy": "Les acheteurs prennent l'offre.",
+    "pressureSell": "Les vendeurs frappent la demande.",
+    "pressureBalanced": "Les flux acheteurs et vendeurs s'équilibrent.",
+    "pressureWaiting": "En attente de transactions…",
+    "timeZone": "Fuseau horaire",
+    "zones": {
+      "local": "Local",
+      "utc": "UTC",
+      "newYork": "New York",
+      "tokyo": "Tokyo"
+    },
+    "timeIn": "Heure ({{zone}})",
+    "blocksTitle": "Blocs ≥ {{value}} BTC",
+    "clearTape": "Effacer",
+    "blocksSeen": "{{value}} blocs depuis le début",
+    "blocksWaiting": "En attente d'un bloc…",
+    "blockBuy": "Achat",
+    "blockSell": "Vente",
+    "blockLine": "{{time}} · {{size}} BTC à {{price}} ≈ {{notional}}",
+    "blockPrints": "{{value}} transactions",
+    "sideTotals": "{{count}} transactions · {{size}} BTC",
+    "buysTape": "Achats",
+    "sellsTape": "Ventes",
+    "buysAria": "Achats BTC/USDT",
+    "sellsAria": "Ventes BTC/USDT",
+    "netFlow": "Flux net : {{value}} BTC (acheté − vendu)"
   },
   "api": {
     "TimeAndSalesProps": {

@@ -49,6 +49,18 @@
     "dark": {
       "title": "Thème nuit",
       "description": "Le graphique lit ses couleurs dans des variables CSS : un conteneur qui les définit (fond, texte, couleurs de hausse / baisse) change les bougies, les axes, les légendes et le réticule, ici avec des chandeliers creux et un filigrane."
+    },
+    "patterns": {
+      "title": "Figures en chandeliers",
+      "description": "Une simple fonction repère les dojis, marteaux, étoiles filantes et avalements ; ils deviennent des markers (haussiers sous la bougie, baissiers au-dessus), filtrés par le groupe de boutons radio. onCrosshairMove nomme la figure sous le réticule."
+    },
+    "watchlist": {
+      "title": "Cartes de liste de suivi",
+      "description": "De petits CandlestickChart pour une crypto, une action, une paire de devises et l'or : legend={false} et des axes masqués ne laissent que les bougies, une annotation y en pointillés marque le prix d'ouverture, et Intl formate chaque cotation à sa façon (dollars, cours à cinq décimales, heures ou dates). renderTooltip tient l'infobulle sur une ligne."
+    },
+    "fx-pips": {
+      "title": "Pips et points pivots en change",
+      "description": "Bougies horaires EUR/USD en UTC : formatPrice affiche cinq décimales, priceLines trace les points pivots de jeudi (P, R1, S1) pour vendredi, et onCrosshairMove mesure la bougie survolée en pips : son amplitude, son corps, sa variation depuis la clôture précédente et la distance au dernier cours."
     }
   },
   "native": {
@@ -128,7 +140,58 @@
     "fiveSeconds": "5 s",
     "liveAria": "Bougies de cinq secondes d'ADA/USDT mises à jour en direct",
     "nasdaq": "NASDAQ 100",
-    "darkAria": "Chandeliers creux 30 minutes du NASDAQ 100 sur un thème nuit"
+    "darkAria": "Chandeliers creux 30 minutes du NASDAQ 100 sur un thème nuit",
+    "patternFilter": "Figure",
+    "patternFilters": {
+      "all": "Toutes",
+      "doji": "Doji",
+      "hammer": "Marteau",
+      "shootingStar": "Étoile filante",
+      "engulfing": "Avalement"
+    },
+    "patternCodes": {
+      "doji": "D",
+      "hammer": "M",
+      "shootingStar": "EF",
+      "bullishEngulfing": "A↑",
+      "bearishEngulfing": "A↓"
+    },
+    "patternNames": {
+      "doji": "Doji",
+      "hammer": "Marteau",
+      "shootingStar": "Étoile filante",
+      "bullishEngulfing": "Avalement haussier",
+      "bearishEngulfing": "Avalement baissier"
+    },
+    "patternMeanings": {
+      "doji": "ouverture et clôture presque égales, indécision",
+      "hammer": "longue mèche basse après une baisse, les acheteurs arrivent",
+      "shootingStar": "longue mèche haute après une hausse, les vendeurs arrivent",
+      "bullishEngulfing": "un corps haussier recouvre le corps baissier précédent",
+      "bearishEngulfing": "un corps baissier recouvre le corps haussier précédent"
+    },
+    "patternCount": "{{name}} : {{value}}",
+    "patternAt": "{{name}} le {{date}} : {{meaning}}.",
+    "patternHint": "Survolez une bougie marquée pour nommer sa figure.",
+    "patternsAria": "Graphique journalier ORBT avec les figures en chandeliers",
+    "assets": {
+      "btc": "BTC/USD",
+      "aapl": "AAPL",
+      "eurusd": "EUR/USD",
+      "gold": "Or (XAU/USD)"
+    },
+    "lastHours": "48 heures",
+    "lastDays": "30 jours",
+    "watchAria": "Bougies {{name}}, {{change}} sur la période",
+    "pivots": {
+      "r1": "R1",
+      "pivot": "P",
+      "s1": "S1"
+    },
+    "eurusd": "EUR/USD",
+    "fxAria": "Bougies horaires EUR/USD avec les points pivots journaliers",
+    "pipReadout": "{{time}} · amplitude {{range}} pips · corps {{body}} pips · variation {{change}} pips · réticule à {{distance}} pips du dernier cours",
+    "pipHint": "Pivots de vendredi : P {{pivot}}, R1 {{r1}}, S1 {{s1}}. Survolez une bougie pour la mesurer en pips."
   },
   "api": {
     "CandlestickChartProps": {

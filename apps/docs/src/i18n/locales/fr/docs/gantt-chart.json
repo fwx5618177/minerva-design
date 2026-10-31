@@ -25,6 +25,26 @@
     "crews": {
       "title": "Lignes partagées",
       "description": "Un planning de chantier par équipe : row place plusieurs tâches sur une ligne et les dependencies citent des id de tâches, si bien que chaque flèche relie les barres exactes. Les flèches traversent les lignes dans un couloir libre des autres barres, ou bifurquent dans l’espace entre deux lignes quand aucun n’est libre (du terrassement aux fondations, autour des cages d’armature)."
+    },
+    "release-train": {
+      "title": "Train de livraison",
+      "description": "Un incrément de programme de trois équipes : row met les fonctionnalités d'une équipe sur une ligne, group distingue les fonctionnalités des facilitateurs et des annotations rect le long de l'axe du temps grisent les itérations et teintent l'itération d'innovation et de planification (IP). Les démos système sont des jalons sur leur propre ligne."
+    },
+    "critical-path": {
+      "title": "Chemin critique",
+      "description": "Les dates de début au plus tôt et au plus tard sont calculées à partir des durées et des dépendances (méthode du chemin critique). Interrupteur activé, group sépare les tâches critiques de celles qui ont de la marge et colors les peint en rouge et en gris ; onPointClick donne la marge de la tâche cliquée."
+    },
+    "resources": {
+      "title": "Plan de charge",
+      "description": "Une ligne par personne (row), une couleur par projet (group ; colors garde la couleur de chaque projet quand le Select les filtre) et yAxis.min / max fixent six semaines. onHover lit la ligne survolée (event.xLabel) pour afficher la charge de la personne, surcharge comprise."
+    },
+    "live-deploy": {
+      "title": "Pipeline en direct",
+      "description": "Un pipeline de déploiement rejoué avec setInterval (arrêté à la pause et au démontage) : today suit l'horloge simulée, chaque avancement en est recalculé et interaction={false} fige la plage de temps pendant les mises à jour."
+    },
+    "onboarding": {
+      "title": "Plan d'intégration",
+      "description": "renderTooltip remplace l'infobulle par du contenu React : la barre survolée est retrouvée par son seriesId (une série par groupe, plus les jalons) et son index, puis affichée avec son responsable, ses dates mises en forme par formatRange d'Intl.DateTimeFormat et son état par rapport à aujourd'hui."
     }
   },
   "native": {
@@ -148,7 +168,130 @@
       "structure": "Structure"
     },
     "inspections": "Réceptions",
-    "crewsAria": "Planning de chantier par équipe avec les dépendances entre les tâches"
+    "crewsAria": "Planning de chantier par équipe avec les dépendances entre les tâches",
+    "train": {
+      "teams": {
+        "atlas": "Équipe Atlas",
+        "borealis": "Équipe Borealis",
+        "comet": "Équipe Comet"
+      },
+      "features": {
+        "checkout": "Refonte du paiement",
+        "paymentRetries": "Relances de paiement",
+        "wallet": "Portefeuille numérique",
+        "searchFilters": "Filtres de recherche",
+        "indexing": "Refonte de l'indexation",
+        "recommendations": "Recommandations",
+        "observability": "Observabilité",
+        "push": "Notifications push"
+      },
+      "kinds": {
+        "feature": "Fonctionnalités",
+        "enabler": "Facilitateurs"
+      },
+      "iteration": "Itération {{n}}",
+      "ip": "Itération IP",
+      "demo": "Démo système {{n}}",
+      "demos": "Démos système",
+      "events": "Événements du train",
+      "aria": "Incrément de programme du train de livraison par équipe"
+    },
+    "cpm": {
+      "tasks": {
+        "lease": "Signer le bail",
+        "fitOut": "Aménagement",
+        "racking": "Pose des rayonnages",
+        "wms": "Mise en place du WMS",
+        "hiring": "Recrutement",
+        "training": "Formation",
+        "testRun": "Marche à blanc",
+        "goLive": "Mise en service"
+      },
+      "critical": "Critique",
+      "slack": "Avec marge",
+      "highlight": "Mettre en évidence le chemin critique",
+      "summary": "Mise en service dans {{days}} ; chemin critique : {{path}}. Cliquez sur une tâche pour voir sa marge.",
+      "taskSlack": "{{task}} peut glisser de {{slack}} sans retarder la mise en service",
+      "taskCritical": "{{task}} est critique : tout retard décale la mise en service",
+      "aria": "Plan d'ouverture d'un entrepôt avec son chemin critique"
+    },
+    "res": {
+      "people": {
+        "ana": "Ana",
+        "ben": "Ben",
+        "chen": "Chen",
+        "dara": "Dara",
+        "eli": "Eli"
+      },
+      "projects": {
+        "apollo": "Apollo",
+        "borealis": "Borealis",
+        "cassini": "Cassini",
+        "vacation": "Congés"
+      },
+      "projectLabel": "Projet",
+      "all": "Tous les projets",
+      "load": "{{person}} : {{share}} de charge sur les {{weeks}} semaines",
+      "overbooked": "{{person}} est en surcharge : {{share}} sur les {{weeks}} semaines",
+      "hint": "Survolez une ligne pour voir la charge de la personne",
+      "aria": "Plan de charge de l'équipe par personne et par projet"
+    },
+    "deploy": {
+      "stages": {
+        "checkout": "Récupération du code",
+        "compile": "Compilation",
+        "unit": "Tests unitaires",
+        "lint": "Lint",
+        "integration": "Tests d'intégration",
+        "staging": "Déploiement en préproduction",
+        "smoke": "Tests de fumée",
+        "canary": "Déploiement canari",
+        "production": "Mise en production"
+      },
+      "groups": {
+        "build": "Construction",
+        "test": "Tests",
+        "release": "Livraison"
+      },
+      "now": "Maintenant",
+      "running": "En cours : {{stages}} · {{elapsed}} écoulées",
+      "done": "Pipeline terminé en {{elapsed}}",
+      "restart": "Relancer",
+      "pause": "Pause",
+      "resume": "Reprendre",
+      "aria": "Étapes d'une exécution du pipeline de déploiement, mises à jour en direct"
+    },
+    "onboard": {
+      "tasks": {
+        "contract": "Contrat et formalités",
+        "laptop": "Commander l'ordinateur",
+        "accounts": "Créer les comptes",
+        "welcome": "Réunion d'accueil",
+        "orientation": "Séminaire d'intégration",
+        "buddyLunch": "Déjeuner avec le parrain",
+        "codebase": "Visite du code",
+        "firstTicket": "Premier ticket",
+        "training": "Formation conformité",
+        "firstProject": "Premier projet",
+        "firstDay": "Premier jour",
+        "checkIn30": "Point à 30 jours",
+        "review60": "Bilan à 60 jours"
+      },
+      "owners": {
+        "hr": "RH",
+        "it": "Informatique",
+        "manager": "Manager",
+        "buddy": "Parrain"
+      },
+      "owner": "Responsable : {{owner}}",
+      "status": {
+        "done": "Terminé",
+        "inProgress": "En cours",
+        "upcoming": "À venir"
+      },
+      "checkIns": "Points d'étape",
+      "aria": "Plan d'intégration d'un nouvel arrivant par responsable"
+    }
   },
   "api": {
     "GanttChartProps": {

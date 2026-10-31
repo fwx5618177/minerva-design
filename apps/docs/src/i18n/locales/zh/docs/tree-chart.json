@@ -26,6 +26,26 @@
     "file-tree": {
       "title": "可折叠文件树",
       "description": "从左到右的项目文件树，按文件类型着色。较深的文件夹初始折叠；点击文件夹打开，或使用按钮，它们通过 ref 调用 expand()、collapse() 和 fit()。"
+    },
+    "decision-tree": {
+      "title": "决策树",
+      "description": "以 org 布局展示贷款审批策略，分支带有标签（edgeLabels）。用单选按钮回答问题：得到的结论作为 selected 传入，highlight=\"lineage\" 高亮从根节点出发的路径；关闭了 tree.collapsible，点击不会折叠问题节点。"
+    },
+    "taxonomy-search": {
+      "title": "类目搜索",
+      "description": "商店的商品类目体系，第二层默认折叠。输入关键字会选中所有匹配的类目；按 Enter 或点击标签会调用 ref 上的 focusNode()，先展开折叠的祖先节点再居中显示该节点，下方显示类目的面包屑路径。"
+    },
+    "disk-usage": {
+      "title": "磁盘占用",
+      "description": "文件系统中每个节点的 value 是文件夹大小，因此 [min, max] 形式的 nodeSize 让圆按字节数缩放。大小用 Intl.NumberFormat 的单位格式化，单选按钮在树形与径向布局之间切换，点击可查看其在父文件夹和整个磁盘中的占比。"
+    },
+    "wbs": {
+      "title": "工作分解结构",
+      "description": "移动应用版本的计划：工作包带有故事点和状态，汇总项在副标题中累计点数与进度。细节层级通过 ref 上的 expand() 和 collapse() 实现，onToggle 报告被折叠或展开项的点数。"
+    },
+    "bracket": {
+      "title": "淘汰赛对阵图",
+      "description": "从右到左（direction=\"RL\"）的淘汰赛对阵图，使用方框节点和直角连线：决赛是根节点，参赛队是叶子节点，队名由 Intl.DisplayNames 生成。“下一轮”揭晓用带种子的随机数模拟的结果，分组为晋级、淘汰和冠军球队着色。"
     }
   },
   "api": {
@@ -159,7 +179,166 @@
     "expandAll": "全部展开",
     "collapseAll": "全部折叠",
     "fit": "适应视图",
-    "filesAria": "项目文件"
+    "filesAria": "项目文件",
+    "decision": {
+      "credit": "信用评分",
+      "income": "收入 ≥ 3 × 月供？",
+      "employment": "在职满 2 年？",
+      "debt": "负债收入比 < 35%？",
+      "approved": "批准",
+      "approvedLower": "批准，降低额度",
+      "approvedRate": "批准，提高利率",
+      "review": "人工审核",
+      "declined": "拒绝"
+    },
+    "branches": {
+      "creditHigh": "700 及以上",
+      "creditFair": "600–699",
+      "creditPoor": "低于 600",
+      "yes": "是",
+      "no": "否"
+    },
+    "decisionKinds": {
+      "question": "问题",
+      "approved": "批准",
+      "review": "审核",
+      "declined": "拒绝"
+    },
+    "decisionAria": "贷款审批决策树，高亮当前申请人的决策路径",
+    "decisionResult": "结论：{{outcome}}，共回答 {{questions}} 个问题。",
+    "taxonomy": {
+      "catalog": "全部商品",
+      "electronics": "电子产品",
+      "home": "家居",
+      "fashion": "服饰",
+      "sports": "运动",
+      "computers": "电脑",
+      "phones": "手机",
+      "audio": "音频",
+      "laptops": "笔记本电脑",
+      "desktops": "台式机",
+      "tablets": "平板电脑",
+      "smartphones": "智能手机",
+      "phoneCases": "手机壳",
+      "chargers": "充电器",
+      "headphones": "耳机",
+      "speakers": "音箱",
+      "kitchen": "厨房",
+      "furniture": "家具",
+      "garden": "园艺",
+      "cookware": "锅具",
+      "coffeeMachines": "咖啡机",
+      "knives": "刀具",
+      "sofas": "沙发",
+      "desks": "书桌",
+      "officeChairs": "办公椅",
+      "gardenTools": "园艺工具",
+      "plants": "绿植",
+      "clothing": "服装",
+      "shoes": "鞋履",
+      "accessories": "配饰",
+      "jackets": "夹克",
+      "dresses": "连衣裙",
+      "sneakers": "运动鞋",
+      "boots": "靴子",
+      "bags": "包袋",
+      "watches": "手表",
+      "outdoor": "户外",
+      "fitness": "健身",
+      "cycling": "骑行",
+      "tents": "帐篷",
+      "hikingBoots": "登山鞋",
+      "yogaMats": "瑜伽垫",
+      "dumbbells": "哑铃",
+      "bikes": "自行车",
+      "helmets": "头盔"
+    },
+    "breadcrumbSeparator": " › ",
+    "taxonomySearch": "搜索类目",
+    "taxonomyAria": "商店的商品类目体系",
+    "taxonomyMatches": "{{total}} 个匹配的类目。按 Enter 或点击标签定位。",
+    "taxonomyHint": "搜索类目，例如“靴子”或“书桌”。",
+    "diskRoot": "Macintosh HD",
+    "diskKinds": {
+      "system": "系统",
+      "apps": "应用程序",
+      "media": "媒体",
+      "documents": "文稿",
+      "cache": "缓存与备份"
+    },
+    "diskLayout": "布局",
+    "diskLayouts": {
+      "tree": "树形",
+      "radial": "径向"
+    },
+    "diskAria": "按文件夹统计的磁盘占用，节点大小对应字节数",
+    "diskShare": "{{name}}：{{size}} —— 占 {{parent}} 的 {{parentShare}}，占磁盘的 {{share}}。",
+    "diskTotal": "{{name}}：已使用 {{size}}。",
+    "wbsItems": {
+      "release": "App 2.0 版本",
+      "onboarding": "新用户引导",
+      "signup": "注册",
+      "emailVerify": "邮箱验证",
+      "socialLogin": "社交账号登录",
+      "tour": "产品导览",
+      "tourScreens": "导览页面",
+      "tourSkip": "跳过与恢复",
+      "payments": "支付",
+      "checkout": "结账",
+      "cardForm": "银行卡表单",
+      "applePay": "钱包支付",
+      "billing": "账单",
+      "invoices": "发票",
+      "refunds": "退款",
+      "platform": "平台",
+      "offline": "离线模式",
+      "syncQueue": "同步队列",
+      "conflicts": "冲突处理",
+      "quality": "质量",
+      "crashReports": "崩溃报告",
+      "perfBudget": "性能预算"
+    },
+    "wbsPoints": "{{points}} 点",
+    "wbsRollup": "{{points}} 点 · 已完成 {{done}}",
+    "wbsStatuses": {
+      "summary": "汇总",
+      "done": "已完成",
+      "doing": "进行中",
+      "todo": "待办"
+    },
+    "wbsDepth": "细节层级",
+    "wbsLevels": {
+      "deliverables": "交付物",
+      "features": "功能",
+      "packages": "工作包"
+    },
+    "wbsDepthStatus": "计划显示到：{{level}}。",
+    "wbsAria": "移动应用版本的工作分解结构，含故事点",
+    "wbsCollapsed": "已折叠{{name}}：{{points}} 点，剩余 {{remaining}} 点。",
+    "wbsExpanded": "已展开{{name}}：{{points}} 点，剩余 {{remaining}} 点。",
+    "wbsSummary": "共 {{points}} 个故事点，已完成 {{done}}。点击条目可折叠或展开。",
+    "rounds": {
+      "quarterFinal": "四分之一决赛",
+      "semiFinal": "半决赛",
+      "final": "决赛"
+    },
+    "tbd": "待进行",
+    "score": "{{winner}}–{{loser}}",
+    "seed": "{{n}} 号种子",
+    "bracketStates": {
+      "pending": "未进行",
+      "played": "胜者",
+      "alive": "仍在比赛",
+      "out": "已淘汰",
+      "champion": "冠军"
+    },
+    "nextRound": "下一轮",
+    "restart": "重新开始",
+    "newSimulation": "重新模拟",
+    "bracketAria": "从四分之一决赛到决赛的淘汰赛对阵图",
+    "championResult": "{{team}}夺得冠军！",
+    "roundResult": "{{round}}胜者：{{teams}}。",
+    "bracketHint": "八支球队按实力排定种子。进行下一轮以揭晓结果。"
   },
   "wc": {
     "demos": {

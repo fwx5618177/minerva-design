@@ -46,6 +46,22 @@
     "red-up": {
       "title": "Rouge à la hausse",
       "description": "colorConvention=\"red-up\" : bulles d'achat et ligne du meilleur achat en rouge, ventes et ligne de la meilleure vente en vert."
+    },
+    "price-resolution": {
+      "title": "Résolution des prix et inspecteur",
+      "description": "tickSize fixe la hauteur d'une ligne de prix (une nouvelle valeur rééchantillonne l'historique rejoué), priceSpan fixe l'étendue de prix visible au lieu de suivre le meilleur achat et la meilleure vente. Avec tooltip={false}, onHover alimente un affichage personnalisé : heure de la colonne, ligne de prix, taille en carnet et côté, volume échangé."
+    },
+    "time-window": {
+      "title": "Fenêtre de temps, pause et effacement",
+      "description": "window choisit la part des cinq minutes enregistrées (history) affichée, sans rééchantillonner. L'interrupteur arrête la boucle du flux : le marché reprend où il en était, sans trou. clear() supprime les colonnes, puis setBook repart du carnet actuel."
+    },
+    "linked": {
+      "title": "Carte de chaleur, carnet et transactions",
+      "description": "Une minute enregistrée alimente les trois widgets différemment : la carte de chaleur rejoue chaque mise à jour (applyDeltas, addTrades), le ruban reçoit toutes ses transactions avec setTrades, le carnet seulement le carnet actuel. Chaque message en direct va ensuite aux trois, comme un seul WebSocket de la plateforme."
+    },
+    "perpetual": {
+      "title": "Contrat perpétuel en contrats",
+      "description": "Un perpétuel BTC coté en contrats de 0,001 BTC : formatSize convertit les tailles, formatPrice affiche des dollars, sizeUnit et labels renomment les unités de la légende et de l'infobulle, et timeZone=\"utc\" s'accorde avec l'horloge de la plateforme du compte à rebours du financement."
     }
   },
   "data": {
@@ -70,7 +86,42 @@
     "redUp": "Rouge hausse, vert baisse",
     "greenUp": "Vert hausse, rouge baisse",
     "volumeAt": "Colonne survolée : {{buys}} BTC achetés, {{sells}} BTC vendus",
-    "volumeHint": "Survolez une colonne pour lire son volume échangé."
+    "volumeHint": "Survolez une colonne pour lire son volume échangé.",
+    "rowHeight": "Hauteur de ligne",
+    "priceSpan": "Étendue de prix",
+    "usdtValue": "{{value}} USDT",
+    "auto": "Auto",
+    "fitBook": "Ajuster au carnet",
+    "cellReadout": "{{time}} · {{price}} · {{size}} BTC {{side}} · {{buys}} BTC achetés, {{sells}} BTC vendus",
+    "priceRange": "{{low}} – {{high}}",
+    "sideBid": "côté achat",
+    "sideAsk": "côté vente",
+    "sideSpread": "dans l'écart",
+    "cellHint": "Survolez une cellule pour l'inspecter.",
+    "timeWindow": "Fenêtre de temps",
+    "liveFeed": "Flux en direct",
+    "clearHistory": "Effacer l'historique",
+    "pausedAt": "En pause à {{time}}.",
+    "resumedAt": "Reprise à {{time}}.",
+    "clearedAt": "Historique effacé à {{time}}.",
+    "windowStatus": "{{window}} affichées sur {{history}} conservées.",
+    "pair": "BTC/USDT",
+    "lastPrice": "Dernier {{value}}",
+    "spreadIs": "Écart {{value}}",
+    "tradesOnTape": "{{value}} transactions sur le ruban",
+    "bookAria": "Carnet d'ordres BTC/USDT",
+    "tapeAria": "Transactions BTC/USDT",
+    "perpName": "Perpétuel BTC-USD",
+    "contractSize": "1 contrat = {{value}} BTC",
+    "fundingRate": "Financement {{rate}}",
+    "funding": "Financement {{rate}} à {{time}}, dans {{countdown}}",
+    "contracts": "contrats",
+    "restingContracts": "En carnet",
+    "takerBuys": "Achats preneurs",
+    "takerSells": "Ventes preneuses",
+    "perpAria": "Carte de chaleur de liquidité du perpétuel BTC-USD",
+    "perpReadout": "{{price}} : {{contracts}} contrats en carnet (≈ {{notional}})",
+    "perpHint": "Survolez la carte pour lire les contrats en carnet et leur valeur."
   },
   "api": {
     "OrderBookHeatmapProps": {

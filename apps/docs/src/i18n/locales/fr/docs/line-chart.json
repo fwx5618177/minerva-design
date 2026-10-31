@@ -41,6 +41,26 @@
     "zoom": {
       "title": "Sélecteur de période",
       "description": "Les boutons de période appellent setView sur la ref du graphique avec la fenêtre visible et une plage y ajustée aux cours qu'elle contient ; Ctrl / ⌘ + molette et le glisser restent disponibles."
+    },
+    "live-sensor": {
+      "title": "Capteur en direct",
+      "description": "La sonde d'un congélateur envoie une mesure par seconde : setInterval ajoute un point et retire le plus ancien, l'axe temporel glisse donc sur la dernière minute, et l'intervalle est supprimé à la pause comme au démontage. Un rect et une ligne y en pointillés marquent la zone d'alarme ; seul l'état de l'alarme est annoncé."
+    },
+    "log-scale": {
+      "title": "Échelle logarithmique",
+      "description": "yAxis={{ type: \"log\" }} transforme une croissance exponentielle en droites : quelques heures de latence et des populations de 10³ à 10⁹ restent lisibles ensemble ; l'interrupteur compare avec l'échelle linéaire. Intl.NumberFormat avec notation: \"scientific\" écrit les graduations."
+    },
+    "measure": {
+      "title": "Mesure entre deux points",
+      "description": "onPointClick épingle jusqu'à deux jours et le résumé donne la variation entre eux ; des lignes x et un rect vert ou rouge marquent la période, et onPlotClick sur une zone vide efface la mesure."
+    },
+    "index-tooltip": {
+      "title": "Performance indicée",
+      "description": "Quatre classes d'actifs ramenées à 100 au départ ; renderTooltip remplace le contenu par défaut par une liste React triée de la meilleure à la moins bonne performance, avec la couleur de chaque série et sa variation depuis la base."
+    },
+    "small-multiples": {
+      "title": "Petits multiples",
+      "description": "Un petit LineChart par ville dans une grille CSS, tous avec les mêmes min et max de yAxis pour comparer les panneaux d'un coup d'œil ; interaction={false} les rend statiques et une ligne y en pointillés marque le seuil de l'OMS."
     }
   },
   "data": {
@@ -105,7 +125,54 @@
     "memory": "Mémoire",
     "hour": "{{hour}} h",
     "usageAria": "Utilisation du processeur et de la mémoire au cours de la journée",
-    "pinchHint": "Pincez pour zoomer, touchez deux fois pour réinitialiser ; touchez la légende pour masquer une série."
+    "pinchHint": "Pincez pour zoomer, touchez deux fois pour réinitialiser ; touchez la légende pour masquer une série.",
+    "freezer": "Température du congélateur",
+    "alarmLimit": "Alarme au-dessus de {{value}}",
+    "pause": "Pause",
+    "resume": "Reprendre",
+    "sensorAlarm": "Alarme : porte ouverte ?",
+    "sensorNormal": "Normal",
+    "lastReading": "Dernière mesure {{value}} à {{time}}",
+    "aboveLimit": "Au-dessus du seuil sur la dernière minute : {{readings}}",
+    "freezerAria": "Température du congélateur sur la dernière minute, mise à jour chaque seconde",
+    "strains": {
+      "wild": "Souche sauvage",
+      "mutant": "Mutant",
+      "antibiotic": "Avec antibiotique"
+    },
+    "exponentialPhase": "Phase exponentielle",
+    "logScale": "Échelle logarithmique",
+    "elapsed": "Temps depuis l'inoculation",
+    "cfu": "UFC / mL",
+    "growthAria": "Courbes de croissance de trois cultures bactériennes sur 24 heures",
+    "logNote": "Les segments droits indiquent un taux de croissance constant : la souche sauvage double environ toutes les {{minutes}}.",
+    "linearNote": "Sur une échelle linéaire, les petites cultures paraissent plates : revenez à l'échelle logarithmique pour les comparer.",
+    "portfolio": "Valeur du portefeuille",
+    "measureHint": "Cliquez sur un point pour commencer une mesure, puis sur un second.",
+    "measureStart": "Depuis le {{date}} ({{value}}) : cliquez sur un second point.",
+    "measureResult": "{{from}} → {{to}} : {{change}} ({{percent}}) en {{days}}",
+    "clear": "Effacer",
+    "portfolioAria": "Valeur quotidienne d'un portefeuille en 2026 ; cliquez sur deux points pour mesurer la variation",
+    "assets": {
+      "equities": "Actions",
+      "bonds": "Obligations",
+      "gold": "Or",
+      "realEstate": "Immobilier"
+    },
+    "baseIndex": "Base 100",
+    "assetsAria": "Performance de quatre classes d'actifs en base 100, de 2021 à 2026",
+    "micrograms": "{{value}} µg/m³",
+    "cities": {
+      "delhi": "Delhi",
+      "beijing": "Pékin",
+      "paris": "Paris",
+      "mexicoCity": "Mexico",
+      "tokyo": "Tokyo",
+      "saoPaulo": "São Paulo"
+    },
+    "guidelineNote": "Moyenne journalière des particules fines (PM2,5) en novembre ; la ligne en pointillés est le seuil de l'OMS, {{value}}.",
+    "daysAbove": "{{days}}/{{total}} jours au-dessus",
+    "pmAria": "PM2,5 quotidiennes à {{city}} sur 30 jours"
   },
   "api": {
     "LineChartProps": {

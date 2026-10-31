@@ -37,6 +37,18 @@
     "red-up": {
       "title": "Rouge à la hausse",
       "description": "colorConvention=\"red-up\" : achats en rouge, ventes en vert (Chine continentale, Japon, Corée). Clignotements, barres de profondeur, barre de déséquilibre et flèche du dernier prix suivent."
+    },
+    "markets": {
+      "title": "Classes d'actifs",
+      "description": "Un même carnet pour la crypto, les actions américaines, le change et les contrats à terme : formatPrice et formatSize appliquent les conventions de chaque marché (dollars et cents, lots de 100 actions, millions d'euros abrégés, contrats), labels renomme les colonnes et largeOrderThreshold suit la taille habituelle de chaque marché."
+    },
+    "wall-watch": {
+      "title": "Surveillance des murs (spoofing)",
+      "description": "Les deltas passés à applyDeltas sont aussi comparés à la taille précédente de chaque niveau : un saut d'au moins 5 BTC est un nouveau mur, mis en évidence par largeOrderThreshold. Quand il disparaît, les transactions à son prix indiquent s'il a été exécuté ou retiré avant que le prix ne l'atteigne."
+    },
+    "order-ticket": {
+      "title": "Ticket d'ordre",
+      "description": "onLevelClick remplit un ticket : un clic sur une offre de vente prépare un achat à ce prix pour la taille cumulée (sum), un clic sur une offre d'achat une vente. L'aperçu parcourt le carnet : ce qui croise s'exécute aussitôt à son prix moyen, le reste attend derrière la taille déjà en file."
     }
   },
   "data": {
@@ -71,7 +83,68 @@
     "depth": "Profondeur",
     "depthAria": "Profondeur BTC/USDT",
     "trades": "Transactions",
-    "tradesAria": "Transactions BTC/USDT"
+    "tradesAria": "Transactions BTC/USDT",
+    "market": "Marché",
+    "markets": {
+      "crypto": {
+        "name": "Crypto · BTC/USDT",
+        "price": "Prix (USDT)",
+        "size": "Taille (BTC)",
+        "total": "Total (BTC)",
+        "aria": "Carnet d'ordres BTC/USDT"
+      },
+      "equity": {
+        "name": "Action · AAPL",
+        "price": "Prix (USD)",
+        "size": "Actions",
+        "total": "Total",
+        "aria": "Carnet d'ordres AAPL"
+      },
+      "fx": {
+        "name": "Change · EUR/USD",
+        "price": "Cours",
+        "size": "Taille (EUR)",
+        "total": "Total (EUR)",
+        "aria": "Carnet d'ordres EUR/USD"
+      },
+      "futures": {
+        "name": "Contrats à terme · ES",
+        "price": "Prix (pts)",
+        "size": "Contrats",
+        "total": "Total",
+        "aria": "Carnet d'ordres du contrat E-mini S&P 500"
+      }
+    },
+    "spreadPips": "{{value}} pips",
+    "spreadCents": "{{value}} ¢",
+    "spreadTicks": "{{value}} ticks",
+    "spreadUsdt": "{{value}} USDT",
+    "marketStatus": "Pas de cotation {{tick}} · écart {{spread}} · mis en évidence dès {{large}}",
+    "wallLog": "Murs",
+    "wallNew": "Nouveau",
+    "wallPulled": "Retiré",
+    "wallFilled": "Exécuté",
+    "wallStats": "Murs ≥ {{size}} BTC : {{resting}} en carnet, {{filled}} exécutés, {{pulled}} retirés ({{ratio}} retirés)",
+    "wallWaiting": "Recherche de murs dans le carnet…",
+    "wallBid": "Mur acheteur {{price}} : {{size}} BTC",
+    "wallAsk": "Mur vendeur {{price}} : {{size}} BTC",
+    "wallRested": "après {{value}}",
+    "ticket": "Ordre à cours limité",
+    "side": "Sens",
+    "buy": "Acheter",
+    "sell": "Vendre",
+    "limitPrice": "Prix limite (USDT)",
+    "quantity": "Quantité (BTC)",
+    "ticketHint": "Saisissez un prix et une quantité, ou cliquez sur un niveau.",
+    "previewFill": "{{filled}} BTC exécutés aussitôt, prix moyen {{average}}.",
+    "previewPartial": "{{filled}} BTC exécutés aussitôt (prix moyen {{average}}), {{rest}} BTC en attente à {{price}}.",
+    "previewRest": "En attente à {{price}} derrière {{ahead}} BTC.",
+    "placeOrder": "{{side}}",
+    "orderPlaced": "Ordre placé : {{side}} {{size}} BTC à {{price}}.",
+    "orderCancelled": "Ordre à {{price}} annulé.",
+    "orderTag": "{{side}} {{size}} @ {{price}}",
+    "noOrders": "Aucun ordre ouvert.",
+    "cancelOrder": "Annuler l'ordre"
   },
   "api": {
     "OrderBookProps": {

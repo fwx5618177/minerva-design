@@ -58,6 +58,7 @@ const WIDGET_PAGES = [
   "dependency-graph",
   "tree-chart",
   "chart-performance",
+  "chart-renderers",
 ];
 
 test.beforeEach(async ({ page }) => {

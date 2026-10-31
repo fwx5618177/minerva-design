@@ -37,6 +37,18 @@
     "red-up": {
       "title": "赤が上昇",
       "description": "colorConvention=\"red-up\"：買い板は赤、売り板は緑（中国本土・日本・韓国の慣習）。点滅、深度バー、偏りバー、直近価格の矢印も従います。"
+    },
+    "markets": {
+      "title": "資産クラス",
+      "description": "暗号資産、米国株、FX、先物を一つの板で表示します。formatPrice と formatSize が各市場の慣習（ドルとセント、単元株、百万ユーロ単位、枚数）を適用し、labels が列名を変え、largeOrderThreshold は各市場の一般的な注文量に合わせます。"
+    },
+    "wall-watch": {
+      "title": "大口注文の監視（見せ板）",
+      "description": "applyDeltas に渡す差分を各気配の直前の数量とも比較します。一度に 5 BTC 以上増えると新しい大口の壁とみなし、largeOrderThreshold で強調します。壁が消えたとき、その価格での約定から、約定したのか価格が届く前に取り消されたのかを判定します。"
+    },
+    "order-ticket": {
+      "title": "注文チケット",
+      "description": "onLevelClick でチケットを埋めます。売り気配をクリックするとその価格と累計数量（sum）で買い注文を、買い気配をクリックすると売り注文を準備します。プレビューは板をたどり、交差する分は即座に平均価格で約定し、残りは既存の数量の後ろに並びます。"
     }
   },
   "data": {
@@ -71,7 +83,68 @@
     "depth": "デプス",
     "depthAria": "BTC/USDT の深度",
     "trades": "歩み値",
-    "tradesAria": "BTC/USDT の歩み値"
+    "tradesAria": "BTC/USDT の歩み値",
+    "market": "市場",
+    "markets": {
+      "crypto": {
+        "name": "暗号資産 · BTC/USDT",
+        "price": "価格 (USDT)",
+        "size": "数量 (BTC)",
+        "total": "累計 (BTC)",
+        "aria": "BTC/USDT の板"
+      },
+      "equity": {
+        "name": "株式 · AAPL",
+        "price": "価格 (USD)",
+        "size": "株数",
+        "total": "累計",
+        "aria": "AAPL の板"
+      },
+      "fx": {
+        "name": "FX · EUR/USD",
+        "price": "レート",
+        "size": "数量 (EUR)",
+        "total": "累計 (EUR)",
+        "aria": "EUR/USD の板"
+      },
+      "futures": {
+        "name": "先物 · ES",
+        "price": "価格（ポイント）",
+        "size": "枚数",
+        "total": "累計",
+        "aria": "E-mini S&P 500 先物の板"
+      }
+    },
+    "spreadPips": "{{value}} pips",
+    "spreadCents": "{{value}} セント",
+    "spreadTicks": "{{value}} ティック",
+    "spreadUsdt": "{{value}} USDT",
+    "marketStatus": "呼値 {{tick}} · スプレッド {{spread}} · {{large}} 以上を強調",
+    "wallLog": "大口の壁",
+    "wallNew": "新規",
+    "wallPulled": "取消",
+    "wallFilled": "約定",
+    "wallStats": "{{size}} BTC 以上の壁：待機 {{resting}}、約定 {{filled}}、取消 {{pulled}}（取消率 {{ratio}}）",
+    "wallWaiting": "板の大口の壁を監視中…",
+    "wallBid": "買いの壁 {{price}}：{{size}} BTC",
+    "wallAsk": "売りの壁 {{price}}：{{size}} BTC",
+    "wallRested": "{{value}} 後",
+    "ticket": "指値注文",
+    "side": "売買",
+    "buy": "買い",
+    "sell": "売り",
+    "limitPrice": "指値 (USDT)",
+    "quantity": "数量 (BTC)",
+    "ticketHint": "価格と数量を入力するか、気配をクリックしてください。",
+    "previewFill": "{{filled}} BTC が即座に約定、平均 {{average}}。",
+    "previewPartial": "{{filled}} BTC が即座に約定（平均 {{average}}）、残り {{rest}} BTC は {{price}} で待機。",
+    "previewRest": "{{price}} で待機、前に {{ahead}} BTC。",
+    "placeOrder": "{{side}}",
+    "orderPlaced": "{{side}} {{size}} BTC（{{price}}）を発注しました。",
+    "orderCancelled": "{{price}} の注文を取り消しました。",
+    "orderTag": "{{side}} {{size}} @ {{price}}",
+    "noOrders": "未約定の注文はありません。",
+    "cancelOrder": "注文を取り消す"
   },
   "api": {
     "OrderBookProps": {

@@ -21,6 +21,22 @@
     "capabilities": {
       "title": "製品の機能比較",
       "description": "自社製品、競合、市場平均に対するアナリスト評価。hidden で表示を制御し、チェックボックスと凡例（onToggle）が同じ状態を共有します。"
+    },
+    "nutrition": {
+      "title": "朝食の栄養成分",
+      "description": "3 種類の朝食を円形グリッド（shape=\"circle\"、levels={5}）に描き、各軸は 1 日の基準量に対する割合です。renderTooltip はイベントの indicator を使い、ホバーした栄養素の各朝食での量を一覧表示します。"
+    },
+    "live-monitor": {
+      "title": "サービスのライブ監視",
+      "description": "現在の負荷を毎秒（setInterval、スイッチをオフにしたときやアンマウント時に解除）直近 1 時間のベースラインに重ねて再描画し、アラートしきい値を超えると赤になります。通知するのは最も負荷の高い指標とアラート状態だけで、毎回の更新ではありません。"
+    },
+    "review-360": {
+      "title": "360 度評価",
+      "description": "Select でチーム平均と重ねて表示する人を選びます。その人を常に 2 番目の系列にすることで、多角形がその場でアニメーションします。下の文はチームと比べた最大の強みと差を示します。"
+    },
+    "sales-targets": {
+      "title": "単位の異なる営業目標",
+      "description": "各 indicator に独自の min と max があるため、売上・受注件数・成約率・NPS を 1 つのチャートにまとめられます。目標は塗りなしの輪郭です。onClick と renderTooltip はイベントの indicator を読み取り、KPI の実績・目標・達成率を表示します。"
     }
   },
   "data": {
@@ -82,7 +98,70 @@
       "market": "市場平均"
     },
     "compareWith": "比較する製品",
-    "capabilitiesAria": "自社製品、競合、市場平均の機能評価"
+    "capabilitiesAria": "自社製品、競合、市場平均の機能評価",
+    "nutrition": {
+      "nutrients": {
+        "protein": "たんぱく質",
+        "fiber": "食物繊維",
+        "sugar": "糖質",
+        "fat": "脂質",
+        "sodium": "ナトリウム",
+        "calcium": "カルシウム"
+      },
+      "meals": {
+        "oatmeal": "フルーツ入りオートミール",
+        "eggs": "卵のトースト",
+        "yogurt": "グラノーラ入りヨーグルト"
+      },
+      "dailyValue": "基準量の {{value}}",
+      "row": "{{meal}}：{{amount}}（{{share}}）",
+      "aria": "3 種類の朝食の栄養成分（1 日の基準量に対する割合）"
+    },
+    "monitor": {
+      "metrics": {
+        "cpu": "CPU",
+        "memory": "メモリ",
+        "diskIo": "ディスク I/O",
+        "network": "ネットワーク",
+        "latency": "レイテンシ",
+        "errors": "エラー"
+      },
+      "baseline": "直近 1 時間の平均",
+      "now": "現在",
+      "live": "ライブ更新",
+      "alert": "アラート：{{metric}} が容量の {{threshold}} を超えています。",
+      "peak": "最も負荷の高い指標：{{metric}}。",
+      "aria": "サービスの現在の負荷と直近 1 時間の平均"
+    },
+    "review": {
+      "competencies": {
+        "communication": "コミュニケーション",
+        "delivery": "成果の提供",
+        "expertise": "専門性",
+        "collaboration": "協働",
+        "mentoring": "育成",
+        "initiative": "主体性"
+      },
+      "team": "チーム平均",
+      "person": "対象者",
+      "aria": "{{name}} の 360 度評価とチーム平均",
+      "summary": "強み：{{strength}}（チーム比 {{strengthGap}}）。伸ばす点：{{growth}}（{{growthGap}}）。"
+    },
+    "sales": {
+      "kpis": {
+        "revenue": "売上",
+        "deals": "受注件数",
+        "winRate": "成約率",
+        "dealSize": "平均案件規模",
+        "calls": "通話数",
+        "nps": "NPS"
+      },
+      "target": "目標",
+      "actual": "実績",
+      "line": "{{kpi}}：{{actual}}（目標 {{target}}、達成率 {{attainment}}）。",
+      "aria": "営業担当者の四半期 KPI と目標",
+      "hint": "軸の近くをクリックすると KPI を表示します。"
+    }
   },
   "api": {
     "RadarChartProps": {

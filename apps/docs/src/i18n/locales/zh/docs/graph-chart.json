@@ -40,6 +40,22 @@
     "vanilla": {
       "title": "核心引擎",
       "description": "不依赖 React，直接使用 minerva-design/charts/core 的 createGraphChart：通过 setOptions 切换布局，监听 click 和 layoutEnd 事件，并用 focusNode 将点击的节点居中。"
+    },
+    "service-map": {
+      "title": "实时服务拓扑",
+      "description": "在线商城的各个服务通过 layout=\"none\"（节点 x / y）手动摆放，实时更新时位置不会变化。每 1.5 秒生成一次新采样：服务按健康状态分组重新着色，副标题中的 p95 延迟随之更新；edgeColor=\"target\" 让调用故障服务的连线带上其颜色。点击服务可查看指标。"
+    },
+    "knowledge-graph": {
+      "title": "知识图谱搜索",
+      "description": "物理学家、地点、机构和理论通过带名称的有向关系相连。在搜索框中输入并选择匹配项：selected 属性与 ref 上的 focusNode 会选中并居中该实体，相关事实用 Intl.ListFormat 列出。"
+    },
+    "friend-suggestions": {
+      "title": "你可能认识的人",
+      "description": "由四个圈子组成的社交网络。点击某人：按共同好友数对好友的好友排序，并通过受控的 selected 属性高亮此人及推荐对象；interaction={{ select: false }} 让点击只交给 onItemClick 处理。"
+    },
+    "fraud-ring": {
+      "title": "深色主题下的欺诈团伙",
+      "description": "账户与其使用过的设备和银行卡相连；节点的 shape 把设备和银行卡画成方框。点击任意节点即可选中整个关联簇并评估风险。图表放在嵌套的 ConfigProvider 中，创建时读取其深色或浅色主题。"
     }
   },
   "api": {
@@ -418,7 +434,103 @@
       "closed": "已结束"
     },
     "filledArrows": "实心箭头",
-    "transitionsAria": "订单状态及其之间的事件"
+    "transitionsAria": "订单状态及其之间的事件",
+    "health": {
+      "healthy": "正常",
+      "degraded": "降级",
+      "critical": "严重"
+    },
+    "latency": "p95 {{value}} ms",
+    "rps": "{{value}} 次/秒",
+    "liveUpdates": "实时更新",
+    "serviceMapAria": "在线商城的服务拓扑及各服务的实时健康状态",
+    "serviceHint": "点击服务查看其指标。",
+    "serviceReadout": "{{name}}：{{status}} · p95 {{latency}} ms · 错误率 {{errors}} · {{rps}} 次/秒。",
+    "serviceCounts": "正常 {{healthy}}、降级 {{degraded}}、严重 {{critical}} · 更新于 {{time}}",
+    "entities": {
+      "curie": "玛丽·居里",
+      "pierre": "皮埃尔·居里",
+      "einstein": "阿尔伯特·爱因斯坦",
+      "planck": "马克斯·普朗克",
+      "bohr": "尼尔斯·玻尔",
+      "heisenberg": "维尔纳·海森堡",
+      "meitner": "莉泽·迈特纳",
+      "hahn": "奥托·哈恩",
+      "noether": "埃米·诺特",
+      "paris": "巴黎",
+      "warsaw": "华沙",
+      "vienna": "维也纳",
+      "berlin": "柏林",
+      "zurich": "苏黎世",
+      "copenhagen": "哥本哈根",
+      "sorbonne": "索邦大学",
+      "kwg": "威廉皇帝学会",
+      "eth": "苏黎世联邦理工学院",
+      "nbi": "尼尔斯·玻尔研究所",
+      "radioactivity": "放射性",
+      "relativity": "相对论",
+      "quantum": "量子理论",
+      "uncertainty": "不确定性原理",
+      "fission": "核裂变",
+      "symmetry": "诺特定理"
+    },
+    "predicates": {
+      "bornIn": "出生于",
+      "workedAt": "任职于",
+      "studiedAt": "就读于",
+      "marriedTo": "配偶",
+      "contributedTo": "贡献于",
+      "locatedIn": "位于",
+      "influenced": "影响了",
+      "partOf": "属于",
+      "collaborated": "合作者",
+      "relatedTo": "相关"
+    },
+    "entityKinds": {
+      "person": "人物",
+      "place": "地点",
+      "institution": "机构",
+      "concept": "理论"
+    },
+    "searchPlaceholder": "搜索人物、地点或理论…",
+    "searchLabel": "搜索知识图谱",
+    "noMatch": "没有匹配的实体。",
+    "knowledgeAria": "物理学家及其相关地点、机构与发现的知识图谱",
+    "knowledgeHint": "搜索实体或点击节点，列出图谱中关于它的事实。",
+    "factsReadout": "{{name}}：{{total}} 条事实 — {{facts}}",
+    "factOut": "→ {{name}}（{{relation}}）",
+    "factIn": "← {{name}}（{{relation}}）",
+    "circles": {
+      "university": "大学同学",
+      "work": "同事",
+      "climbing": "攀岩俱乐部",
+      "books": "读书会"
+    },
+    "friendsAria": "四个圈子中 24 人之间的好友关系",
+    "suggestions": "{{name}} 可能认识：{{list}}。",
+    "suggestion": "{{name}}（共同好友 {{mutual}} 位）",
+    "noSuggestions": "{{name}} 已经认识所有好友的好友。",
+    "friendsHint": "点击其他人以更新推荐。",
+    "deviceLabel": "设备 {{id}}",
+    "cardLabel": "银行卡 •••• {{last4}}",
+    "accountLabel": "账户 {{id}}",
+    "loggedInFrom": "登录设备",
+    "paidWith": "支付卡",
+    "fraudKinds": {
+      "account": "账户",
+      "flagged": "可疑账户",
+      "device": "设备",
+      "card": "银行卡"
+    },
+    "risk": {
+      "low": "低",
+      "medium": "中",
+      "high": "高"
+    },
+    "darkTheme": "深色主题",
+    "fraudAria": "账户、设备与银行卡，其中两个欺诈团伙共用设备和银行卡",
+    "clusterReadout": "关联簇：{{accounts}} 个账户、{{devices}} 台设备、{{cards}} 张银行卡 · 风险：{{risk}}",
+    "fraudHint": "点击账户、设备或银行卡以选中整个关联簇。"
   },
   "wc": {
     "demos": {

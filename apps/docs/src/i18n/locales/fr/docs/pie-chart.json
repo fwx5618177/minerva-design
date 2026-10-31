@@ -29,6 +29,22 @@
     "small-multiples": {
       "title": "Petits multiples",
       "description": "Un petit anneau par région avec les mêmes couleurs et le même ordre : une seule légende sert pour tous et les régions se comparent d'un coup d'œil."
+    },
+    "portfolio": {
+      "title": "Portefeuille avec étiquettes de filtre",
+      "description": "Les étiquettes au-dessus du graphique et la légende modifient la même liste hidden contrôlée via onToggle, et « Tout afficher » la vide. centerValue additionne les classes d’actifs affichées, et renderTooltip donne la part de chaque tranche dans tout le portefeuille, pas seulement parmi les tranches visibles."
+    },
+    "live-poll": {
+      "title": "Sondage en direct",
+      "description": "De nouveaux votes arrivent chaque seconde (setInterval, arrêté au démontage ou à la pause) et les parts s’animent vers leurs nouvelles valeurs. renderTooltip affiche les votes, centerValue le total courant, et seul un changement de tête est annoncé aux lecteurs d’écran."
+    },
+    "drill-down": {
+      "title": "Exploration d’une facture cloud",
+      "description": "Un clic sur une catégorie (onClick) remplace les données par ses services ; le fil d’Ariane revient à la vue d’ensemble. L’infobulle invite à cliquer, et la ligne sous le graphique décrit la catégorie ou le service choisi."
+    },
+    "survey-quarters": {
+      "title": "Enquête de satisfaction par trimestre",
+      "description": "Une échelle divergente du rouge au vert, fixée par la couleur de chaque donnée, avec startAngle={-90} pour placer les réponses satisfaites en premier. Choisir un autre trimestre anime les parts ; le centre affiche le CSAT et la ligne en dessous son évolution depuis le trimestre précédent."
     }
   },
   "data": {
@@ -110,7 +126,87 @@
       "desktop": "Ordinateur",
       "tablet": "Tablette"
     },
-    "devicesAria": "Sessions par appareil : {{region}}"
+    "devicesAria": "Sessions par appareil : {{region}}",
+    "portfolio": {
+      "assets": {
+        "usEquities": "Actions américaines",
+        "intlEquities": "Actions internationales",
+        "bonds": "Obligations",
+        "realEstate": "Immobilier",
+        "commodities": "Matières premières",
+        "cash": "Liquidités"
+      },
+      "filter": "Classes d’actifs affichées",
+      "showAll": "Tout afficher",
+      "selection": "sélection",
+      "total": "valeur totale",
+      "ofPortfolio": "{{share}} du portefeuille",
+      "aria": "Portefeuille d’investissement par classe d’actifs",
+      "summary": "{{shown}} classes d’actifs sur {{total}} affichées : {{value}}, soit {{share}} du portefeuille."
+    },
+    "poll": {
+      "answers": {
+        "darkMode": "Mode sombre",
+        "offline": "Mode hors ligne",
+        "api": "API publique",
+        "integrations": "Plus d’intégrations",
+        "reports": "Rapports personnalisés"
+      },
+      "question": "Quelle fonctionnalité développer ensuite ?",
+      "votes": "votes",
+      "votesShare": "{{votes}} votes · {{share}}",
+      "aria": "Résultats du sondage en direct par réponse",
+      "pause": "Pause",
+      "resume": "Reprendre",
+      "reset": "Réinitialiser",
+      "leading": "En tête : {{answer}}"
+    },
+    "cloud": {
+      "categories": {
+        "compute": "Calcul",
+        "databases": "Bases de données",
+        "storage": "Stockage",
+        "network": "Réseau"
+      },
+      "services": {
+        "vms": "Machines virtuelles",
+        "kubernetes": "Kubernetes",
+        "serverless": "Fonctions serverless",
+        "sql": "Bases SQL",
+        "nosql": "Bases NoSQL",
+        "cache": "Cache en mémoire",
+        "objects": "Stockage objet",
+        "blocks": "Stockage bloc",
+        "backups": "Sauvegardes",
+        "egress": "Transfert de données",
+        "cdn": "CDN",
+        "loadBalancers": "Répartiteurs de charge"
+      },
+      "breadcrumb": "Facture cloud",
+      "all": "Toutes les catégories",
+      "clickToOpen": "Cliquez pour voir ses services",
+      "servicesAria": "Coûts de la catégorie {{category}} par service",
+      "aria": "Facture cloud mensuelle par catégorie",
+      "serviceLine": "{{service}} : {{amount}}, soit {{share}} de {{category}}.",
+      "categoryLine": "{{category}} : {{amount}}, soit {{share}} de la facture. Cliquez sur un service pour voir sa part.",
+      "hint": "Facture du mois : {{total}}. Cliquez sur une catégorie pour voir ses services."
+    },
+    "survey": {
+      "levels": {
+        "veryDissatisfied": "Très insatisfait",
+        "dissatisfied": "Insatisfait",
+        "neutral": "Neutre",
+        "satisfied": "Satisfait",
+        "verySatisfied": "Très satisfait"
+      },
+      "quarter": "T{{n}}",
+      "quarterLabel": "Trimestre",
+      "csat": "CSAT",
+      "answers": "{{answers}} réponses · {{share}}",
+      "aria": "Réponses de satisfaction client au {{quarter}}",
+      "first": "CSAT de {{csat}} sur {{respondents}} répondants.",
+      "change": "CSAT de {{csat}}, {{delta}} points depuis le {{previous}}, sur {{respondents}} répondants."
+    }
   },
   "api": {
     "PieChartProps": {

@@ -21,6 +21,22 @@
     "compare": {
       "title": "Comparer des segments",
       "description": "Le même entonnoir par appareil, côte à côte avec les mêmes étapes et une couleur par segment, pour voir où les mobinautes décrochent."
+    },
+    "campaigns": {
+      "title": "Entonnoir marketing par canal",
+      "description": "Un Select limite l’entonnoir à un canal d’acquisition et les étapes s’animent vers les nouveaux effectifs. renderTooltip ajoute la conversion depuis l’étape précédente et le coût par résultat, calculé à partir des dépenses du canal ; la ligne en dessous donne le coût d’acquisition client."
+    },
+    "what-if": {
+      "title": "Simulation de conversion",
+      "description": "Les boutons −1 / +1 modifient le taux de conversion d’une étape du paiement et l’entonnoir est recalculé à partir des visites ; le résumé compare les commandes et le chiffre d’affaires aux taux actuels. Les taux sont gardés en points de pourcentage entiers pour que Réinitialiser sache quand rien n’a changé."
+    },
+    "live-sale": {
+      "title": "Vente flash en direct",
+      "description": "Une vente d’une heure rejouée en 30 pas (setInterval, arrêté à la pause, à la fin et au démontage) : de nouveaux visiteurs arrivent et descendent les étapes grâce à un générateur aléatoire initialisé. La ligne d’état suit l’horloge, et seule la fin de la vente est annoncée."
+    },
+    "sales-pipeline": {
+      "title": "Pipeline commercial B2B",
+      "description": "Les étapes sont dimensionnées par le montant de leurs affaires en cours, avec conversion={false} car chaque étape contient des affaires différentes. onClick liste les affaires d’une étape à côté de l’entonnoir, et renderTooltip affiche leur nombre et leur probabilité de gain."
     }
   },
   "data": {
@@ -83,7 +99,72 @@
       "mobile": "Mobile"
     },
     "conversionRate": "{{rate}} de conversion",
-    "deviceFunnelAria": "Tunnel de commande : {{device}}"
+    "deviceFunnelAria": "Tunnel de commande : {{device}}",
+    "campaigns": {
+      "stages": {
+        "impressions": "Impressions",
+        "clicks": "Clics",
+        "leads": "Prospects",
+        "qualified": "Prospects qualifiés",
+        "customers": "Clients"
+      },
+      "channels": {
+        "all": "Tous les canaux",
+        "search": "Annonces de recherche",
+        "social": "Réseaux sociaux",
+        "email": "E-mail",
+        "partners": "Partenaires"
+      },
+      "channel": "Canal",
+      "fromPrevious": "{{share}} de l’étape précédente",
+      "costPer": "Coût par résultat : {{cost}}",
+      "aria": "Entonnoir marketing du mois : {{channel}}",
+      "summary": "Dépenses : {{spend}} · Clients : {{customers}} · Coût d’acquisition : {{cac}} par client"
+    },
+    "whatIf": {
+      "stages": {
+        "visits": "Visites",
+        "cart": "Ajouts au panier",
+        "checkout": "Paiement",
+        "paid": "Commandes payées"
+      },
+      "aria": "Entonnoir de paiement mensuel calculé à partir des taux de conversion",
+      "step": "{{from}} → {{to}}",
+      "lower": "Baisser la conversion de {{step}}",
+      "raise": "Augmenter la conversion de {{step}}",
+      "reset": "Revenir aux taux actuels",
+      "summary": "{{orders}} commandes ({{ordersDelta}}) · {{revenue}} de chiffre d’affaires ({{revenueDelta}}) par mois"
+    },
+    "sale": {
+      "stages": {
+        "visitors": "Visiteurs",
+        "product": "Offre consultée",
+        "cart": "Ajouts au panier",
+        "checkout": "Paiement",
+        "orders": "Commandes"
+      },
+      "aria": "Entonnoir de la vente flash, mis à jour en direct",
+      "pause": "Pause",
+      "resume": "Reprendre",
+      "restart": "Recommencer",
+      "status": "{{time}} · {{orders}} commandes · {{rate}} des visiteurs",
+      "ended": "La vente est terminée : {{orders}} commandes."
+    },
+    "pipeline": {
+      "stages": {
+        "lead": "Prospect",
+        "qualified": "Qualifié",
+        "demo": "Démo",
+        "proposal": "Proposition",
+        "negotiation": "Négociation"
+      },
+      "dealsAmount": "{{deals}} affaires · {{amount}}",
+      "probability": "Probabilité de gain : {{share}}",
+      "aria": "Affaires en cours par étape du pipeline, en montant",
+      "stageTitle": "{{stage}} : {{deals}} affaires en cours",
+      "forecast": "Prévision pondérée : {{amount}}",
+      "hint": "Cliquez sur une étape pour lister ses affaires."
+    }
   },
   "api": {
     "FunnelChartProps": {

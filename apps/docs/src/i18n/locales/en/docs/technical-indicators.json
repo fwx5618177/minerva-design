@@ -86,6 +86,18 @@
     "obv": {
       "title": "On-balance volume",
       "description": "OBV adds the volume of up closes and subtracts the volume of down closes; its 20-bar average shows whether buying or selling pressure dominates. Large values use compact units of the page language."
+    },
+    "divergence": {
+      "title": "RSI divergences",
+      "description": "rsi() and the swing highs and lows of the bars find regular divergences: a lower low with a higher RSI low (bullish), a higher high with a lower RSI high (bearish). Each one becomes two locked trendLine drawings, on the price pane and on the RSI pane (pane: \"rsi:14\")."
+    },
+    "multi-timeframe": {
+      "title": "Multiple timeframes",
+      "description": "resampleBars aggregates the hourly bars into 4-hour and daily bars, and ema() computes their 20-bar average; each hourly bar only sees the last closed higher bar (no look-ahead), drawn with compare over the hourly EMA. onCrosshairMove tells whether the close sits above all three averages."
+    },
+    "screener": {
+      "title": "Indicator screener",
+      "description": "rsi(), macd(), atr() and sma() run on six symbols to fill a sortable Table: RSI, MACD histogram, ATR as a share of the price, distance from the 50-day average and a signal. Pick a symbol to open its chart with the same indicators."
     }
   },
   "data": {
@@ -166,7 +178,45 @@
     "dmiAria": "MSFT daily chart with the DMI pane",
     "aapl": "AAPL",
     "obvAria": "AAPL daily chart with the volume and the OBV",
-    "flips": "Trend changes: {{count}}"
+    "flips": "Trend changes: {{count}}",
+    "divergenceKind": "Divergences",
+    "divergenceKinds": {
+      "all": "All",
+      "bullish": "Bullish",
+      "bearish": "Bearish"
+    },
+    "divergenceAria": "SOL/USDT four-hour chart with RSI divergences drawn",
+    "divergenceSummary": "{{bullish}} bullish and {{bearish}} bearish divergences.",
+    "divergenceLatest": "Latest: {{kind}}, {{date}}.",
+    "emaOn": "EMA {{period}} · {{frame}}",
+    "mtfAria": "ETH/USDT hourly chart with the 20-bar EMA of the hourly, 4-hour and daily bars",
+    "mtfAt": "{{time}} · close {{close}}",
+    "mtfAbove": "{{frame}}: above {{value}}",
+    "mtfBelow": "{{frame}}: below {{value}}",
+    "mtfWarmup": "{{frame}}: not enough bars",
+    "mtfVerdict": {
+      "alignedUp": "All timeframes up",
+      "alignedDown": "All timeframes down",
+      "mixed": "Timeframes disagree"
+    },
+    "screenTable": "Indicator screener",
+    "screenSymbol": "Symbol",
+    "screenClose": "Close",
+    "screenChange": "1 day",
+    "screenRsi": "RSI 14",
+    "screenMacd": "MACD hist.",
+    "screenAtr": "ATR %",
+    "screenSma": "vs SMA 50",
+    "screenSignal": "Signal",
+    "screenSignals": {
+      "overbought": "Overbought",
+      "oversold": "Oversold",
+      "uptrend": "Uptrend",
+      "downtrend": "Downtrend",
+      "neutral": "Neutral"
+    },
+    "screenShowing": "{{name}}: {{signal}}, {{distance}} from its 50-day average.",
+    "screenChartAria": "{{name}} daily chart with the 50-day average, RSI and MACD"
   },
   "api": {
     "TradingMovingAverageIndicator": {

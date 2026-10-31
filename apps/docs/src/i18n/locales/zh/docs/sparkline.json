@@ -25,6 +25,22 @@
     "servers": {
       "title": "服务器实时监控",
       "description": "柱状迷你图每秒加入一个新的 CPU 采样；超过告警阈值时，颜色和标签变为红色。"
+    },
+    "hover-value": {
+      "title": "悬停读数",
+      "description": "onHover 接收悬停的点（指针离开时为 null）：其索引驱动上方的大数字和日期，没有悬停时回到最近一天。tooltip={false} 隐藏被读数取代的提示框。"
+    },
+    "step-goal": {
+      "title": "每日目标",
+      "description": "以柱形显示四周的步数，达到目标的日子通过数据点的 color 着色；reference 绘制目标线，renderTooltip 显示日期和目标完成比例。"
+    },
+    "weather": {
+      "title": "小多图",
+      "description": "在 Card 网格中为每个城市放一个 Sparkline。每个图按自身范围缩放，因此在上方写出最热和最冷的月份；renderTooltip 显示悬停月份的名称，城市低于冰点时 reference 标出 0 °C。"
+    },
+    "periods": {
+      "title": "切换时段",
+      "description": "RadioGroup 选择最近 7、30 或 90 天：总额、相对上一时段的变化和颜色都由同一组数值计算，reference 标出该时段的日均值。"
     }
   },
   "native": {
@@ -80,7 +96,35 @@
     "cpu": "CPU",
     "cpuAria": "{{server}} 的 CPU 使用率",
     "alert": "告警",
-    "healthy": "正常"
+    "healthy": "正常",
+    "dailyActiveUsers": "日活跃用户",
+    "latestDay": "最近一天：{{date}}",
+    "hoveredDay": "{{date}} · 自 9 月 1 日以来 {{change}}",
+    "dauAria": "9 月 1 日至 10 月 31 日的日活跃用户",
+    "stepsN": "{{value}} 步",
+    "ofGoal": "完成目标的 {{value}}",
+    "goalSummary": "{{days}} 天中有 {{reached}} 天达到 {{goal}} 步的目标",
+    "steps": "步数",
+    "stepsAria": "四周内每天的步数及每日目标",
+    "cities": {
+      "reykjavik": "雷克雅未克",
+      "montreal": "蒙特利尔",
+      "tokyo": "东京",
+      "cairo": "开罗",
+      "singapore": "新加坡",
+      "sydney": "悉尼"
+    },
+    "warmestColdest": "最高 {{max}}（{{maxMonth}}）· 最低 {{min}}（{{minMonth}}）",
+    "weatherAria": "{{city}} 每月平均日最高气温",
+    "period": "时段",
+    "periods": {
+      "week": "7 天",
+      "month": "30 天",
+      "quarter": "90 天"
+    },
+    "vsFirstHalf": "后半段对比前半段",
+    "vsPrevious": "对比上一时段",
+    "periodAria": "最近 {{period}} 的每日营收"
   },
   "api": {
     "SparklineProps": {

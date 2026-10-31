@@ -25,6 +25,22 @@
     "locale": {
       "title": "ロケール",
       "description": "同じグラフに locale=\"zh-CN\" と locale=\"fr-FR\" を指定：エンジンはロケールに合わせて短縮単位（万 / k）、区切り文字、時間軸の月名、ツールチップの日付を書き出します。locale を指定しない場合はページの言語（<html lang>）に従います。"
+    },
+    "solar-battery": {
+      "title": "太陽光発電と家庭用蓄電池",
+      "description": "時間ごとの太陽光発電量を棒、消費量を線で左軸に描き、蓄電池の充電率を面で yAxis2 に描きます。yAxis2 は min、max、nice: false で 0〜100% に固定しています。rect 注釈で夜間を塗り、Switch で蓄電池を非表示にすると出力欄の自給率が再計算されます。"
+    },
+    "inventory": {
+      "title": "在庫と入荷",
+      "description": "在庫水準をステップ状の面で、入荷を棒で表示し、発注点の線と安全在庫の rect を重ねます。onPointClick でその日に x 方向の線を引き、発注書または在庫を出力欄に表示します。onPlotClick で消去します。"
+    },
+    "ops-overview": {
+      "title": "運用の概要",
+      "description": "リクエスト数を棒で左軸に、エラー率を右軸に描き、リリースを type: \"scatter\" 系列として showLabels で各バージョンを表示します。凡例の代わりに Checkbox で各系列の hidden を切り替えます。"
+    },
+    "burndown": {
+      "title": "スプリントのバーンダウン",
+      "description": "明示した xAxis のカテゴリ上に、残作業を面、日ごとの完了ポイントを棒、理想の消化ペースを線で描きます。text 注釈でスコープ変更を示し、renderTooltip で各日が理想線よりどれだけ進んでいるか遅れているかを表示します。"
     }
   },
   "native": {
@@ -68,7 +84,48 @@
     "yearlyRevenue": "売上",
     "users": "ユーザー数",
     "usersLog": "ユーザー数（対数）",
-    "logAria": "2016〜2025 年の年間売上と対数軸のユーザー数"
+    "logAria": "2016〜2025 年の年間売上と対数軸のユーザー数",
+    "kwh": "{{value}} kWh",
+    "solarProduction": "太陽光発電量",
+    "consumption": "消費量",
+    "batteryCharge": "蓄電池の充電率",
+    "night": "夜間",
+    "withBattery": "{{value}} の蓄電池",
+    "selfSufficiency": "2 日間の自給率は {{share}}、系統からの購入は {{imported}} です。",
+    "energyPerHour": "1 時間あたりの電力量",
+    "solarAria": "ある住宅の 2 日間の時間ごとの太陽光発電量と消費量、および蓄電池の充電率",
+    "stockLevel": "在庫水準",
+    "deliveries": "入荷",
+    "promotion": "販促期間",
+    "safetyStock": "安全在庫",
+    "reorderPoint": "発注点",
+    "inventoryHint": "日付または入荷をクリックしてください。",
+    "deliveryDetails": "{{id}}：{{ordered}} に {{quantity}} 個を発注し、{{lead}} 後の {{arrived}} に入荷。",
+    "stockOn": "{{date}} の在庫は {{units}} 個。",
+    "stockLow": "{{date}} の在庫は {{units}} 個のみで、安全在庫を下回っています。",
+    "unitsInStock": "個数",
+    "inventoryAria": "ある商品の 3 か月間の日別在庫水準。入荷、発注点、安全在庫を表示",
+    "requests": "リクエスト数",
+    "errorRate": "エラー率",
+    "releases": "リリース",
+    "requestsPerHalfHour": "30 分あたりのリクエスト数",
+    "opsAria": "ある Web API の 1 日のリクエスト数とエラー率、およびリリース",
+    "incidentSummary": "{{version}} のリリース後、エラー率は {{time}} に {{peak}} でピークに達し、{{rollback}} へのロールバックまで続きました。",
+    "points": "{{value}} pt",
+    "sprintStart": "開始",
+    "remainingWork": "残作業",
+    "completedPerDay": "完了",
+    "idealBurn": "理想ペース",
+    "scopeAdded": "{{value}} 追加",
+    "idealLeft": "理想：残り {{value}}",
+    "remainingLeft": "残り {{value}}",
+    "doneThatDay": "当日の完了 {{value}}",
+    "behindBy": "理想より {{value}} 遅れ",
+    "aheadBy": "理想より {{value}} 先行",
+    "storyPoints": "ストーリーポイント",
+    "burndownAria": "スプリントのバーンダウン：10 稼働日の残作業、日ごとの完了ポイント、理想の消化ペース",
+    "burndownLate": "残り {{left}}、1 日 {{velocity}} のペースでは、スプリント終了時に約 {{forecast}} が未完了になります。",
+    "burndownOnTrack": "残り {{left}}、1 日 {{velocity}} のペースで、スプリントは順調です。"
   },
   "api": {
     "MixedChartProps": {

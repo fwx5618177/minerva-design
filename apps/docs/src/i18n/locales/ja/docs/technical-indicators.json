@@ -86,6 +86,18 @@
     "obv": {
       "title": "オンバランスボリューム",
       "description": "OBV は陽線引けの出来高を足し、陰線引けの出来高を引きます。20 本の平均で買い圧力と売り圧力のどちらが優勢かがわかります。大きな値はページの言語の単位で短く表示されます。"
+    },
+    "divergence": {
+      "title": "RSI ダイバージェンス",
+      "description": "rsi() と足のスイングの高値・安値から通常のダイバージェンスを見つけます：安値更新で RSI の安値が切り上がる（強気）、高値更新で RSI の高値が切り下がる（弱気）。それぞれロックされた2本の trendLine 描画になり、価格ペインと RSI ペイン（pane: \"rsi:14\"）に引かれます。"
+    },
+    "multi-timeframe": {
+      "title": "マルチタイムフレーム",
+      "description": "resampleBars が1時間足を4時間足と日足に集約し、ema() がその20本平均を計算します。各1時間足は確定済みの上位足だけを参照し（先読みなし）、compare で1時間足の EMA に重ねて描きます。onCrosshairMove で終値が3本の平均すべての上にあるかを示します。"
+    },
+    "screener": {
+      "title": "インジケーター・スクリーナー",
+      "description": "6銘柄に rsi()、macd()、atr()、sma() を適用し、並べ替え可能な Table を作ります：RSI、MACD ヒストグラム、価格に対する ATR の比率、50日平均からの乖離、シグナル。銘柄を選ぶと同じインジケーター付きのチャートを表示します。"
     }
   },
   "data": {
@@ -166,7 +178,45 @@
     "dmiAria": "DMI ペイン付きの MSFT 日足チャート",
     "aapl": "アップル AAPL",
     "obvAria": "出来高と OBV 付きの AAPL 日足チャート",
-    "flips": "トレンド転換：{{count}} 回"
+    "flips": "トレンド転換：{{count}} 回",
+    "divergenceKind": "ダイバージェンス",
+    "divergenceKinds": {
+      "all": "すべて",
+      "bullish": "強気",
+      "bearish": "弱気"
+    },
+    "divergenceAria": "RSI ダイバージェンスを描いた SOL/USDT の4時間足チャート",
+    "divergenceSummary": "強気 {{bullish}} 件、弱気 {{bearish}} 件のダイバージェンス。",
+    "divergenceLatest": "最新：{{kind}}、{{date}}。",
+    "emaOn": "EMA {{period}} · {{frame}}",
+    "mtfAria": "1時間足、4時間足、日足の20本 EMA を示した ETH/USDT の1時間足チャート",
+    "mtfAt": "{{time}} · 終値 {{close}}",
+    "mtfAbove": "{{frame}}：{{value}} より上",
+    "mtfBelow": "{{frame}}：{{value}} より下",
+    "mtfWarmup": "{{frame}}：足が不足",
+    "mtfVerdict": {
+      "alignedUp": "すべての時間足が上向き",
+      "alignedDown": "すべての時間足が下向き",
+      "mixed": "時間足の方向が一致しない"
+    },
+    "screenTable": "インジケーター・スクリーナー",
+    "screenSymbol": "銘柄",
+    "screenClose": "終値",
+    "screenChange": "1日",
+    "screenRsi": "RSI 14",
+    "screenMacd": "MACD ヒスト",
+    "screenAtr": "ATR %",
+    "screenSma": "SMA 50 比",
+    "screenSignal": "シグナル",
+    "screenSignals": {
+      "overbought": "買われ過ぎ",
+      "oversold": "売られ過ぎ",
+      "uptrend": "上昇トレンド",
+      "downtrend": "下降トレンド",
+      "neutral": "中立"
+    },
+    "screenShowing": "{{name}}：{{signal}}、50日平均から {{distance}}。",
+    "screenChartAria": "50日平均、RSI、MACD を示した {{name}} の日足チャート"
   },
   "api": {
     "TradingMovingAverageIndicator": {

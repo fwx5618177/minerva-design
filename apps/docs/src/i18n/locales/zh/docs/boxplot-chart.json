@@ -17,6 +17,22 @@
     "temperatures": {
       "title": "叠加折线",
       "description": "boxplotStats 计算每个月的五数概括和平均值：whisker: \"minmax\" 让须线延伸到极值，折线连接各月平均值。"
+    },
+    "build-times": {
+      "title": "须线规则",
+      "description": "各流水线的 CI 构建时长。whisker 设置须线的延伸范围（1.5 或 3 倍四分位距，或用 \"minmax\" 不显示离群值），outlierShape 和 outlierSize 改变慢速构建的绘制方式；用相同规则调用 boxplotStats 可统计其数量。"
+    },
+    "wait-times": {
+      "title": "点击箱体或离群值",
+      "description": "急诊室每个工作日的等待时间。onPointClick 接收被点击箱体的中位数、q1、q3 和离群值个数，点击离群值时在 item.outlier 中提供其数值；在分类轴上，event.x 是当天的索引。"
+    },
+    "asset-sizes": {
+      "title": "对数刻度",
+      "description": "文件大小从几 KB 到几十 MB：yAxis.type: \"log\" 让每个箱体都清晰可读，而在线性轴上小文件会被压在零附近。格式会从 kB 切换到 MB，一条线标出大小预算。"
+    },
+    "live-regions": {
+      "title": "各区域实时延迟",
+      "description": "setInterval 每秒（暂停和卸载时清除）在每个区域的最新请求上滑动窗口。当某组的第三四分位数超过 SLA 线时颜色变红，y 轴范围固定，让箱体保持可比。"
     }
   },
   "native": {
@@ -69,7 +85,60 @@
     "deliveryAria": "各城市工作日与周末的配送时长",
     "dailyHigh": "日最高气温",
     "mean": "平均值",
-    "temperaturesAria": "每月日最高气温的分布"
+    "temperaturesAria": "每月日最高气温的分布",
+    "pipelines": {
+      "lint": "代码检查",
+      "unit": "单元测试",
+      "integration": "集成测试",
+      "e2e": "端到端测试",
+      "release": "发布"
+    },
+    "whiskerRule": "须线范围",
+    "whiskers": {
+      "tukey": "1.5 × IQR",
+      "wide": "3 × IQR",
+      "minmax": "最小 – 最大"
+    },
+    "outlierShape": "离群值形状",
+    "shapes": {
+      "hollow": "空心",
+      "filled": "实心"
+    },
+    "outlierRuns": "{{value}} 次构建显示为离群值",
+    "buildTime": "构建时长",
+    "buildsAria": "各 CI 流水线构建时长的分布",
+    "clickBox": "点击箱体或离群值。",
+    "outlierClicked": "{{day}}：一位患者等待了 {{value}}。",
+    "boxClicked": "{{day}}：等待时间中位数 {{median}}，一半患者等待 {{q1}} 至 {{q3}}，离群值 {{outliers}} 个。",
+    "wait": "等待时间",
+    "fourHours": "四小时目标",
+    "waitsAria": "急诊室每周各天等待时间的分布",
+    "assetTypes": {
+      "styles": "样式表",
+      "scripts": "脚本",
+      "fonts": "字体",
+      "images": "图片",
+      "videos": "视频"
+    },
+    "logScale": "对数刻度",
+    "overBudget": "{{value}} 个文件超过 {{budget}} 的预算。",
+    "fileSize": "文件大小",
+    "budget": "预算",
+    "assetsAria": "网站文件大小按类型的分布",
+    "regions": {
+      "usEast": "美国东部",
+      "usWest": "美国西部",
+      "euWest": "欧洲西部",
+      "apSouth": "亚太南部",
+      "saEast": "南美东部"
+    },
+    "pause": "暂停",
+    "resume": "继续",
+    "slaBreached": "{{regions}} 的 SLA 存在风险",
+    "slaOk": "所有区域均满足 SLA",
+    "latency": "延迟",
+    "sla": "SLA",
+    "regionsAria": "各区域请求延迟的实时分布"
   },
   "api": {
     "BoxPlotChartProps": {

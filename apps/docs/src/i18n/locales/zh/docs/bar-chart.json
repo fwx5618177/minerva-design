@@ -37,6 +37,22 @@
     "target": {
       "title": "对比目标",
       "description": "虚线标出每周目标，达标的柱子通过数据点颜色高亮显示。"
+    },
+    "drilldown": {
+      "title": "下钻",
+      "description": "在季度上触发的 onPointClick 会把系列替换为该季度的三个月，Button 可返回季度视图；点击某个月份时，其收入会写入 aria-live 输出区域。"
+    },
+    "period-compare": {
+      "title": "与去年对比",
+      "description": "Switch 通过设置去年系列的 hidden 来显示或隐藏对比，颜色保持不变；renderTooltip 列出两年的数值及百分比变化。"
+    },
+    "deployments": {
+      "title": "部署时间线",
+      "description": "时间轴上的堆叠柱统计每天成功与回滚的部署次数；rect 标注为周末和变更冻结期加上底色，摘要给出部署频率和变更失败率。"
+    },
+    "ev-charging": {
+      "title": "最便宜的充电时段",
+      "description": "明天每小时的电价被拆分为三个堆叠系列，使每根柱子呈现其价格档位的颜色。rect 标注会随 Select 中所选充电时长标出最便宜的连续时段，输出区域将其费用与到家即充的费用进行对比。"
     }
   },
   "data": {
@@ -88,7 +104,42 @@
     "week": "第{{n}}周",
     "weeklyTarget": "每周目标",
     "targetAria": "每周新客户数与每周目标对比",
-    "targetSummary": "{{total}} 周中有 {{reached}} 周达标（{{rate}}）。"
+    "targetSummary": "{{total}} 周中有 {{reached}} 周达标（{{rate}}）。",
+    "revenue": "收入",
+    "pickedMonth": "{{month}}：{{value}}",
+    "backToQuarters": "返回季度",
+    "drillHint": "点击某个季度查看其各月数据。",
+    "quarterDetail": "{{quarter}}：合计 {{value}}。点击某个月份查看其收入。",
+    "quartersAria": "2026 年各季度收入；点击某个季度查看其各月数据",
+    "monthsAria": "2026 年 {{quarter}} 各月收入",
+    "hiringDepartments": {
+      "engineering": "工程",
+      "product": "产品",
+      "design": "设计",
+      "sales": "销售",
+      "marketing": "市场",
+      "support": "支持"
+    },
+    "previousYear": "去年",
+    "currentYear": "今年",
+    "change": "变化",
+    "compareLastYear": "与去年对比",
+    "hiresAria": "各部门今年与去年的招聘人数",
+    "deploysOk": "成功",
+    "deploysFailed": "已回滚",
+    "changeFreeze": "变更冻结",
+    "deploysAria": "八周内每天的生产部署次数，分为成功与回滚",
+    "deploysSummary": "每个工作日 {{perDay}} 次部署，变更失败率 {{failure}}。",
+    "offPeak": "低谷",
+    "standard": "平段",
+    "peak": "高峰",
+    "chargeHere": "充电",
+    "dailyAverage": "日均价",
+    "chargingTime": "充电时长",
+    "chargeFor": "{{energy}} kWh · {{duration}}",
+    "chargeAdvice": "建议在 {{start}} 至 {{end}} 充电，费用 {{cost}}，比 {{plugIn}} 插上电立即充电节省 {{saving}}。",
+    "pricePerMwh": "每 MWh 电价",
+    "pricesAria": "明天每小时的日前电价，并突出显示电动车最便宜的充电时段"
   },
   "api": {
     "BarChartProps": {

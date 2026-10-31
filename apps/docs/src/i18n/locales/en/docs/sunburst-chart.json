@@ -17,6 +17,22 @@
     "labels": {
       "title": "Labels",
       "description": "Population by continent and country. labels chooses how the names are written: auto picks the arc or the radius per sector, and names that do not fit are shortened or skipped. The legend hides / shows continents; country names come from Intl.DisplayNames."
+    },
+    "city-budget": {
+      "title": "City budget",
+      "description": "drill={false} turns a click into a selection instead of a zoom: onClick fills the line under the chart, which gives a program's share of the whole budget and of its policy area. renderTooltip shows the same text, and an area without programs is a plain leaf."
+    },
+    "time-tracking": {
+      "title": "Time tracking",
+      "description": "Hours by client, project and activity on three rings. A RadioGroup switches between the week and the month and the sectors animate; hours are formatted with Intl.NumberFormat's hour unit, and the summary gives the billable share."
+    },
+    "live-requests": {
+      "title": "Live API traffic",
+      "description": "Requests per minute by service and endpoint, refreshed every 1.5 seconds (setInterval, cleared on pause and on unmount) with a seeded random walk. The total is shown but not announced; only a change of the busiest service is."
+    },
+    "energy-mix": {
+      "title": "Electricity mix",
+      "description": "The legend and a Switch edit the same controlled hidden list (onToggle), so hiding fossil fuels from either one stays in sync. A source without breakdown (nuclear) is a leaf on the first ring, and each source's color is inherited by its fuels."
     }
   },
   "native": {
@@ -148,7 +164,114 @@
       "radial": "Along the radius",
       "none": "None"
     },
-    "worldAria": "World population by continent and country, in millions"
+    "worldAria": "World population by continent and country, in millions",
+    "budget": {
+      "areas": {
+        "education": "Education",
+        "health": "Health",
+        "transport": "Transport",
+        "safety": "Public safety",
+        "environment": "Environment",
+        "administration": "Administration"
+      },
+      "programs": {
+        "schools": "Schools",
+        "universities": "Universities",
+        "libraries": "Libraries",
+        "hospitals": "Hospitals",
+        "prevention": "Prevention",
+        "transit": "Public transit",
+        "roads": "Roads",
+        "cycling": "Cycle lanes",
+        "police": "Police",
+        "fire": "Fire service",
+        "parks": "Parks",
+        "waste": "Waste collection",
+        "water": "Water"
+      },
+      "programLine": "{{path}}: {{amount}}, {{share}} of the budget and {{areaShare}} of {{area}}.",
+      "areaLine": "{{path}}: {{amount}}, {{share}} of the budget.",
+      "aria": "Yearly city budget by policy area and program",
+      "hint": "Yearly budget: {{total}}. Click a sector to read its share."
+    },
+    "time": {
+      "clients": {
+        "bakery": "Bakery chain",
+        "clinic": "Dental clinic",
+        "school": "Language school",
+        "internal": "Internal"
+      },
+      "projects": {
+        "website": "Website",
+        "branding": "Branding",
+        "booking": "Booking system",
+        "app": "Mobile app",
+        "admin": "Administration",
+        "training": "Training"
+      },
+      "activities": {
+        "design": "Design",
+        "development": "Development",
+        "meetings": "Meetings",
+        "review": "Review",
+        "support": "Support",
+        "learning": "Learning"
+      },
+      "period": "Period",
+      "periods": {
+        "week": "This week",
+        "month": "This month"
+      },
+      "tooltip": "{{hours}} · {{share}} of the time logged",
+      "aria": "Hours logged by client, project and activity ({{period}})",
+      "summary": "Billable: {{billable}} of {{total}} ({{share}})."
+    },
+    "requests": {
+      "services": {
+        "checkout": "Checkout",
+        "search": "Search",
+        "accounts": "Accounts",
+        "catalog": "Catalog"
+      },
+      "endpoints": {
+        "cart": "Cart",
+        "payment": "Payment",
+        "shipping": "Shipping",
+        "query": "Queries",
+        "suggest": "Suggestions",
+        "login": "Sign-in",
+        "profile": "Profile",
+        "product": "Product pages",
+        "reviews": "Reviews"
+      },
+      "rpm": "{{value}} req/min",
+      "aria": "API requests per minute by service and endpoint, updated live",
+      "pause": "Pause",
+      "resume": "Resume",
+      "total": "Total: {{value}}",
+      "busiest": "Busiest service: {{service}}"
+    },
+    "energy": {
+      "sources": {
+        "renewables": "Renewables",
+        "nuclear": "Nuclear",
+        "fossil": "Fossil fuels"
+      },
+      "fuels": {
+        "wind": "Wind",
+        "solar": "Solar",
+        "hydro": "Hydro",
+        "biomass": "Biomass",
+        "gas": "Natural gas",
+        "coal": "Coal",
+        "oil": "Oil"
+      },
+      "twh": "{{value}} TWh",
+      "hideFossil": "Hide fossil fuels",
+      "aria": "Yearly electricity generation by source and fuel",
+      "shownOnly": "Renewables hidden: {{total}} shown.",
+      "share": "Renewables: {{share}} of the {{total}} shown."
+    }
   },
   "wc": {
     "demos": {

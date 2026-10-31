@@ -17,6 +17,22 @@
     "temperatures": {
       "title": "折れ線と組み合わせ",
       "description": "boxplotStats で各月の 5 数要約と平均を求めます。whisker: \"minmax\" でひげを極値まで伸ばし、平均を折れ線で結びます。"
+    },
+    "build-times": {
+      "title": "ひげの範囲",
+      "description": "パイプラインごとの CI ビルド時間です。whisker でひげの届く範囲（四分位範囲の 1.5 倍または 3 倍、外れ値なしの \"minmax\"）を決め、outlierShape と outlierSize で遅い実行の描き方を変えます。同じ規則の boxplotStats でその件数を数えます。"
+    },
+    "wait-times": {
+      "title": "箱や外れ値をクリック",
+      "description": "曜日ごとの救急外来の待ち時間です。onPointClick はクリックした箱の中央値、q1、q3、外れ値の数を受け取り、外れ値をクリックした場合は item.outlier にその値が入ります。カテゴリ軸では event.x が曜日のインデックスです。"
+    },
+    "asset-sizes": {
+      "title": "対数スケール",
+      "description": "数 KB から数十 MB までのファイルサイズです。yAxis.type: \"log\" ならどの箱も読み取れますが、線形軸では小さなファイルが 0 付近に潰れます。書式は kB から MB に切り替わり、線でサイズの予算を示します。"
+    },
+    "live-regions": {
+      "title": "リージョン別のライブレイテンシ",
+      "description": "setInterval（一時停止とアンマウント時に解除）が毎秒、各リージョンの最新リクエストのウィンドウをずらします。第 3 四分位数が SLA の線を超えたグループは赤くなり、y 軸の範囲を固定して箱を比較しやすくしています。"
     }
   },
   "native": {
@@ -69,7 +85,60 @@
     "deliveryAria": "都市ごとの平日と週末の配達時間",
     "dailyHigh": "日最高気温",
     "mean": "平均",
-    "temperaturesAria": "月ごとの日最高気温の分布"
+    "temperaturesAria": "月ごとの日最高気温の分布",
+    "pipelines": {
+      "lint": "Lint",
+      "unit": "単体テスト",
+      "integration": "結合テスト",
+      "e2e": "E2E テスト",
+      "release": "リリース"
+    },
+    "whiskerRule": "ひげの範囲",
+    "whiskers": {
+      "tukey": "1.5 × IQR",
+      "wide": "3 × IQR",
+      "minmax": "最小 – 最大"
+    },
+    "outlierShape": "外れ値の形",
+    "shapes": {
+      "hollow": "中抜き",
+      "filled": "塗りつぶし"
+    },
+    "outlierRuns": "{{value}} 件の実行を外れ値として表示",
+    "buildTime": "ビルド時間",
+    "buildsAria": "CI パイプラインごとのビルド時間の分布",
+    "clickBox": "箱または外れ値をクリックしてください。",
+    "outlierClicked": "{{day}}: ある患者は {{value}} 待ちました。",
+    "boxClicked": "{{day}}: 待ち時間の中央値 {{median}}、半数の患者は {{q1}} から {{q3}} 待ち、外れ値 {{outliers}} 件。",
+    "wait": "待ち時間",
+    "fourHours": "4 時間目標",
+    "waitsAria": "曜日ごとの救急外来の待ち時間の分布",
+    "assetTypes": {
+      "styles": "スタイルシート",
+      "scripts": "スクリプト",
+      "fonts": "フォント",
+      "images": "画像",
+      "videos": "動画"
+    },
+    "logScale": "対数スケール",
+    "overBudget": "{{value}} 個のファイルが予算 {{budget}} を超えています。",
+    "fileSize": "ファイルサイズ",
+    "budget": "予算",
+    "assetsAria": "Web サイトのファイルサイズの種類別の分布",
+    "regions": {
+      "usEast": "米国東部",
+      "usWest": "米国西部",
+      "euWest": "欧州西部",
+      "apSouth": "アジア太平洋南部",
+      "saEast": "南米東部"
+    },
+    "pause": "一時停止",
+    "resume": "再開",
+    "slaBreached": "{{regions}} で SLA 違反のおそれ",
+    "slaOk": "すべてのリージョンが SLA 内です",
+    "latency": "レイテンシ",
+    "sla": "SLA",
+    "regionsAria": "リージョンごとのリクエストレイテンシのライブ分布"
   },
   "api": {
     "BoxPlotChartProps": {

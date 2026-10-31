@@ -104,6 +104,18 @@
     "export": {
       "title": "画像と全画面",
       "description": "toDataURL と toBlob は足・軸・描画・凡例を 1 枚の PNG に合成します。requestFullscreen でチャートを全画面表示します（Escape で戻ります）。"
+    },
+    "price-alerts": {
+      "title": "価格アラート",
+      "description": "価格ペインをクリックしてアラートを設定します。onClick が価格を返し、kind が \"alert\" の priceLines 項目になり、ドラッグ（onOrderMove）も取り消し（onOrderCancel）もできます。ストリーミングのフィードが毎秒10回 update を呼び、価格が到達したアラートは削除され、その足にマークされ、記録されます。"
+    },
+    "trade-journal": {
+      "title": "トレード日誌",
+      "description": "15分足の立会時間バーに描く先物のトレード日誌：往復の取引ごとにエントリーとエグジットのマーカーを置き、表がポイントと損益（1枚あたり1ポイント50ドル）を示し、統計がそれを集計します。「表示」は setVisibleTimeRange と setCrosshair で取引を画面に収めます。"
+    },
+    "mobile": {
+      "title": "モバイルレイアウト",
+      "description": "凡例、グリッド、高値 / 安値マーカーのないスマートフォンサイズのチャート：上のヘッダーは onCrosshairMove から指の下の足（なければ最後の足）を表示します。時間足は resampleBars で15分足から集約し、wheel=\"modifier\" でチャート上でもページをスクロールできます。"
     }
   },
   "data": {
@@ -295,7 +307,50 @@
       "type": "指値と逆指値を切り替え"
     },
     "orderPlacedBuyStop": "{{price}} に逆指値買いを発注しました",
-    "orderPlacedSellStop": "{{price}} に逆指値売りを発注しました"
+    "orderPlacedSellStop": "{{price}} に逆指値売りを発注しました",
+    "alertHint": "チャートをクリックしてアラートを追加。ドラッグで移動、× で削除します。",
+    "alertUp": "▲ アラート",
+    "alertDown": "▼ アラート",
+    "alertMarker": "🔔",
+    "alertLimit": "アラートは最大 {{value}} 件です。先に1件削除してください。",
+    "alertAdded": "{{price}} にアラートを設定しました。",
+    "alertMoved": "アラートを {{price}} に移動しました。",
+    "alertRemoved": "{{price}} のアラートを削除しました。",
+    "alertCount": "有効なアラート {{active}} 件、発動 {{fired}} 件。",
+    "alertFiredUp": "{{time}}：価格が {{price}} まで上昇しました。",
+    "alertFiredDown": "{{time}}：価格が {{price}} まで下落しました。",
+    "alertsAria": "価格アラート付きの AAPL 1分足チャート",
+    "es": "ES（E-mini S&P 500）",
+    "entryMarker": "#{{id}}",
+    "exitMarker": "×",
+    "journalSide": "売買",
+    "long": "買い",
+    "short": "売り",
+    "journalEntry": "エントリー",
+    "journalExit": "エグジット",
+    "journalPoints": "ポイント",
+    "journalPnl": "損益",
+    "atTime": "{{price}} · {{time}}",
+    "showTrade": "表示",
+    "showTradeLabel": "取引 {{id}} をチャートに表示",
+    "netPnl": "純損益",
+    "winRate": "勝率",
+    "winRateValue": "{{rate}}（{{total}} 件中 {{wins}} 件）",
+    "profitFactor": "プロフィットファクター",
+    "averageWin": "平均利益",
+    "averageLoss": "平均損失",
+    "journalAria": "日誌の取引を示した E-mini S&P 500 の15分足チャート",
+    "journalTable": "決済済みの取引",
+    "journalHint": "表で取引を選ぶとチャートに表示します。",
+    "showingTrade": "取引 {{id}}：{{side}} {{contracts}} 枚、{{pnl}}。",
+    "dayChange": "24時間 {{value}}",
+    "ohlcOpen": "始 {{value}}",
+    "ohlcHigh": "高 {{value}}",
+    "ohlcLow": "安 {{value}}",
+    "ohlcClose": "終 {{value}}",
+    "ohlcVolume": "出来高 {{value}}",
+    "timeframe": "時間足",
+    "mobileAria": "スマートフォンサイズの SOL/USDT チャート"
   },
   "api": {
     "TradingChartProps": {

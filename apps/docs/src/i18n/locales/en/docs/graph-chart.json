@@ -40,6 +40,22 @@
     "vanilla": {
       "title": "Core engine",
       "description": "createGraphChart from minerva-design/charts/core, without React: switch the layout with setOptions, listen to click and layoutEnd events, and center a clicked node with focusNode."
+    },
+    "service-map": {
+      "title": "Live service map",
+      "description": "The services of an online store placed by hand with layout=\"none\" (node x / y), so live updates never move them. Every 1.5 s a new sample recolors each service through its health group and updates the p95 latency in its subtitle; edgeColor=\"target\" tints the calls into a failing service. Click a service to read its metrics."
+    },
+    "knowledge-graph": {
+      "title": "Knowledge graph search",
+      "description": "Physicists, places, institutions and ideas linked by named, directed relations. Type in the search box and pick a match: the selected prop and focusNode on the ref select it and center it, and the facts about it are listed with Intl.ListFormat."
+    },
+    "friend-suggestions": {
+      "title": "People you may know",
+      "description": "A social network in four circles. Click a person: friends of friends are ranked by mutual friends, and the person and the suggestions stay highlighted through the controlled selected prop; interaction={{ select: false }} leaves clicks to onItemClick."
+    },
+    "fraud-ring": {
+      "title": "Fraud rings in a dark theme",
+      "description": "Accounts linked to the devices and cards they used; the node shape draws devices and cards as boxes. Click any node to select its whole cluster and rate its risk. The chart sits in a nested ConfigProvider and reads its dark or light theme when it is created."
     }
   },
   "api": {
@@ -418,7 +434,103 @@
       "closed": "Closed"
     },
     "filledArrows": "Filled arrowheads",
-    "transitionsAria": "Order states and the events between them"
+    "transitionsAria": "Order states and the events between them",
+    "health": {
+      "healthy": "Healthy",
+      "degraded": "Degraded",
+      "critical": "Critical"
+    },
+    "latency": "p95 {{value}} ms",
+    "rps": "{{value}} req/s",
+    "liveUpdates": "Live updates",
+    "serviceMapAria": "Service map of an online store with the live health of every service",
+    "serviceHint": "Click a service to read its metrics.",
+    "serviceReadout": "{{name}}: {{status}} · p95 {{latency}} ms · errors {{errors}} · {{rps}} req/s.",
+    "serviceCounts": "{{healthy}} healthy, {{degraded}} degraded, {{critical}} critical · updated at {{time}}",
+    "entities": {
+      "curie": "Marie Curie",
+      "pierre": "Pierre Curie",
+      "einstein": "Albert Einstein",
+      "planck": "Max Planck",
+      "bohr": "Niels Bohr",
+      "heisenberg": "Werner Heisenberg",
+      "meitner": "Lise Meitner",
+      "hahn": "Otto Hahn",
+      "noether": "Emmy Noether",
+      "paris": "Paris",
+      "warsaw": "Warsaw",
+      "vienna": "Vienna",
+      "berlin": "Berlin",
+      "zurich": "Zurich",
+      "copenhagen": "Copenhagen",
+      "sorbonne": "Sorbonne",
+      "kwg": "Kaiser Wilhelm Society",
+      "eth": "ETH Zurich",
+      "nbi": "Niels Bohr Institute",
+      "radioactivity": "Radioactivity",
+      "relativity": "Relativity",
+      "quantum": "Quantum theory",
+      "uncertainty": "Uncertainty principle",
+      "fission": "Nuclear fission",
+      "symmetry": "Noether's theorem"
+    },
+    "predicates": {
+      "bornIn": "born in",
+      "workedAt": "worked at",
+      "studiedAt": "studied at",
+      "marriedTo": "married to",
+      "contributedTo": "contributed to",
+      "locatedIn": "located in",
+      "influenced": "influenced",
+      "partOf": "part of",
+      "collaborated": "collaborated with",
+      "relatedTo": "related to"
+    },
+    "entityKinds": {
+      "person": "People",
+      "place": "Places",
+      "institution": "Institutions",
+      "concept": "Ideas"
+    },
+    "searchPlaceholder": "Search a person, a place or an idea…",
+    "searchLabel": "Search the knowledge graph",
+    "noMatch": "No entity matches this search.",
+    "knowledgeAria": "Knowledge graph of physicists, the places and institutions linked to them and their discoveries",
+    "knowledgeHint": "Search an entity or click a node to list what the graph knows about it.",
+    "factsReadout": "{{name}}: {{total}} facts — {{facts}}",
+    "factOut": "→ {{name}} ({{relation}})",
+    "factIn": "← {{name}} ({{relation}})",
+    "circles": {
+      "university": "University friends",
+      "work": "Colleagues",
+      "climbing": "Climbing club",
+      "books": "Book club"
+    },
+    "friendsAria": "Friendships between 24 people in four circles",
+    "suggestions": "People {{name}} may know: {{list}}.",
+    "suggestion": "{{name}} (mutual friends: {{mutual}})",
+    "noSuggestions": "{{name}} already knows every friend of a friend.",
+    "friendsHint": "Click another person to update the suggestions.",
+    "deviceLabel": "Device {{id}}",
+    "cardLabel": "Card •••• {{last4}}",
+    "accountLabel": "Account {{id}}",
+    "loggedInFrom": "logged in from",
+    "paidWith": "paid with",
+    "fraudKinds": {
+      "account": "Accounts",
+      "flagged": "Flagged accounts",
+      "device": "Devices",
+      "card": "Cards"
+    },
+    "risk": {
+      "low": "low",
+      "medium": "medium",
+      "high": "high"
+    },
+    "darkTheme": "Dark theme",
+    "fraudAria": "Accounts, devices and payment cards, with two fraud rings sharing devices and cards",
+    "clusterReadout": "Cluster: {{accounts}} accounts, {{devices}} devices, {{cards}} cards · risk: {{risk}}",
+    "fraudHint": "Click an account, a device or a card to select its whole cluster."
   },
   "wc": {
     "demos": {

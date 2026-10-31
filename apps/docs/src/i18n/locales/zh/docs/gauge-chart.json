@@ -25,6 +25,22 @@
     "slo": {
       "title": "可用性与错误预算",
       "description": "一个放大刻度的仪表盘（min 99.5，max 100）显示可用性与目标的对比，另一个显示剩余的错误预算；renderTooltip 给出详细信息。"
+    },
+    "thermostat": {
+      "title": "智能温控器",
+      "description": "− 和 + 按钮每次将目标温度调整半度；设置以 °C 存储并在显示时换算，因此切换到 °F 时 value、min、max 和 bands 会一起变化。renderTooltip 显示室温，下方文字说明系统正在制热、制冷还是保持。"
+    },
+    "credit-score": {
+      "title": "信用评分",
+      "description": "指针位于 300 到 850 的五个评级区间上，min 和 max 设置为评分的量程。通过 Select 切换申请人时指针会扫向新的分数；renderTooltip 显示评级，event.percent 给出在量程中的位置。"
+    },
+    "battery": {
+      "title": "电动汽车充电",
+      "description": "插电时半圆仪表盘（sweep={180}）每 400 毫秒填充一次，超过 80% 后变慢；拔出、充满或卸载时停止计时器。只播报充电阶段；续航里程和充到 80% 的时间使用 Intl.NumberFormat 的单位格式。"
+    },
+    "dark-panel": {
+      "title": "深色控制面板",
+      "description": "三个带指针的仪表盘位于一个面板上，其 CSS 变量会切换为深色主题。图表只监听 <html> 和 <body>，因此在重新设置容器样式后，示例通过 ref 对每个图表调用 refreshTheme()。"
     }
   },
   "data": {
@@ -56,7 +72,68 @@
     "availabilityAria": "30 天可用性与目标对比",
     "budgetLeft": "剩余错误预算",
     "budgetDetail": "停机 {{used}}，允许 {{budget}}",
-    "budgetAria": "本月剩余的错误预算"
+    "budgetAria": "本月剩余的错误预算",
+    "thermostat": {
+      "unit": "温度单位",
+      "units": {
+        "celsius": "°C",
+        "fahrenheit": "°F"
+      },
+      "target": "目标",
+      "room": "室温：{{value}}",
+      "aria": "温控器目标温度",
+      "lower": "降低目标温度",
+      "raise": "提高目标温度",
+      "modes": {
+        "heating": "正在制热至 {{target}}（室温：{{room}}）",
+        "cooling": "正在制冷至 {{target}}（室温：{{room}}）",
+        "holding": "保持 {{target}}（室温：{{room}}）"
+      }
+    },
+    "credit": {
+      "applicant": "申请人",
+      "score": "信用评分",
+      "ratings": {
+        "poor": "差",
+        "fair": "一般",
+        "good": "良好",
+        "veryGood": "很好",
+        "exceptional": "优秀"
+      },
+      "position": "位于量程的 {{share}} 处",
+      "aria": "{{name}} 的信用评分",
+      "result": "{{name}}：{{score}}。{{advice}}",
+      "advice": {
+        "poor": "大多数贷款机构会拒绝申请。",
+        "fair": "可能获批，但利率较高。",
+        "good": "可按标准利率申请大多数贷款。",
+        "veryGood": "可获得优于平均水平的利率。",
+        "exceptional": "可获得最优惠的利率。"
+      }
+    },
+    "battery": {
+      "label": "已充电",
+      "range": "续航：{{range}}",
+      "aria": "汽车电池电量",
+      "plugged": "已插电",
+      "reset": "重置",
+      "phases": {
+        "full": "已充满",
+        "unplugged": "已拔出",
+        "charging": "快速充电中",
+        "topping": "超过 80%，慢速充电中"
+      },
+      "toEighty": "{{minutes}}后达到 80%"
+    },
+    "turbine": {
+      "rpm": "{{value}} 转/分",
+      "mw": "{{value}} 兆瓦",
+      "dark": "深色面板",
+      "rotor": "转子转速",
+      "power": "输出功率",
+      "nacelle": "机舱温度",
+      "aria": "风力发电机的{{reading}}：{{value}}"
+    }
   },
   "api": {
     "GaugeChartProps": {

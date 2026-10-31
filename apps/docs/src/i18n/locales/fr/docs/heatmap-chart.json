@@ -25,6 +25,22 @@
     "retention": {
       "title": "Rétention par cohorte",
       "description": "Part de chaque cohorte mensuelle d'inscrits encore active après N mois : des valeurs null laissent vides les cellules futures, d'où le triangle classique."
+    },
+    "conversion": {
+      "title": "Clic sur une cellule",
+      "description": "Le taux de conversion par source de trafic et par appareil. onPointClick donne item.index, l'index de la cellule cliquée dans data, qui retrouve ses sessions et ses commandes pour le relevé ; onPlotClick l'efface."
+    },
+    "rack-temperatures": {
+      "title": "Grille de capteurs en direct",
+      "description": "Les températures d'entrée d'air des capteurs d'une allée de serveurs, rafraîchies par un setInterval arrêté à la pause et au démontage. Un valueRange fixe garde la même couleur pour la même température à chaque rafraîchissement, et colorScale passe par des couleurs du thème, du froid au chaud."
+    },
+    "confusion-matrix": {
+      "title": "Matrice de confusion",
+      "description": "Les prédictions d'un classifieur d'images, chaque cellule colorée selon sa part de la classe réelle. renderTooltip retrouve la cellule survolée grâce à item.index pour afficher son effectif, ainsi que le rappel et la précision sur la diagonale."
+    },
+    "sales-regions": {
+      "title": "Changer de mesure",
+      "description": "Chiffre d'affaires, croissance et marge par région et par trimestre : chaque mesure a son colorScale (séquentiel, divergent autour de zéro ou une liste), son valueRange et son format, choisis avec un RadioGroup."
     }
   },
   "native": {
@@ -58,7 +74,67 @@
     "correlationAria": "Matrice de corrélation de six indicateurs produit",
     "monthN": "Mois {{n}}",
     "retained": "Retenus",
-    "retentionAria": "Rétention des cohortes mensuelles d'inscrits"
+    "retentionAria": "Rétention des cohortes mensuelles d'inscrits",
+    "devices": {
+      "desktop": "Ordinateur",
+      "mobile": "Mobile",
+      "tablet": "Tablette"
+    },
+    "sources": {
+      "organic": "Recherche naturelle",
+      "paid": "Recherche payante",
+      "social": "Réseaux sociaux",
+      "email": "E-mail",
+      "referral": "Sites référents",
+      "direct": "Accès direct"
+    },
+    "cellStatus": "{{source}} sur {{device}} : {{orders}} commandes pour {{sessions}} sessions, {{rate}} :",
+    "aboveAverage": "au-dessus de la moyenne de {{value}}",
+    "belowAverage": "en dessous de la moyenne de {{value}}",
+    "clickCell": "Cliquez sur une cellule pour voir ses sessions et ses commandes.",
+    "conversionRate": "Taux de conversion",
+    "conversionAria": "Taux de conversion par source de trafic et par appareil",
+    "rackN": "Baie {{n}}",
+    "sensorN": "Capteur {{n}}",
+    "pause": "Pause",
+    "resume": "Reprendre",
+    "rackStatus": "Le plus chaud : {{rack}}, {{sensor}} à {{value}} · {{alarms}} capteurs au-dessus de {{limit}}",
+    "inletTemperature": "Température d'entrée d'air",
+    "racksAria": "Températures d'entrée d'air en direct des capteurs de dix baies de serveurs",
+    "classes": {
+      "cat": "Chat",
+      "dog": "Chien",
+      "bird": "Oiseau",
+      "car": "Voiture",
+      "truck": "Camion"
+    },
+    "actualPredicted": "Réel : {{actual}}, prédit : {{predicted}}",
+    "imagesShare": "{{value}} images ({{share}} de la classe)",
+    "recall": "Rappel : {{value}}",
+    "precision": "Précision : {{value}}",
+    "misclassified": "Mal classé",
+    "accuracy": "Exactitude : {{value}} sur {{images}} images de test",
+    "shareOfClass": "Part de la classe",
+    "predicted": "Classe prédite",
+    "actual": "Classe réelle",
+    "confusionAria": "Matrice de confusion d'un classifieur d'images sur cinq classes",
+    "regions": {
+      "north": "Nord",
+      "south": "Sud",
+      "east": "Est",
+      "west": "Ouest",
+      "central": "Centre"
+    },
+    "quarterN": "T{{n}}",
+    "metric": "Mesure",
+    "salesMetrics": {
+      "revenue": "Chiffre d'affaires",
+      "growth": "Croissance sur 2025",
+      "margin": "Marge brute"
+    },
+    "regionQuarter": "{{region}} au {{quarter}}",
+    "bestWorst": "Meilleur : {{best}} ({{bestValue}}) · plus faible : {{worst}} ({{worstValue}})",
+    "salesAria": "Indicateurs de ventes 2026 par région et par trimestre"
   },
   "api": {
     "HeatmapConfig": {

@@ -17,6 +17,22 @@
     "temperatures": {
       "title": "Avec une ligne",
       "description": "boxplotStats donne les cinq nombres et la moyenne de chaque mois : whisker: \"minmax\" étend les moustaches aux extrêmes et une ligne relie les moyennes."
+    },
+    "build-times": {
+      "title": "Règles des moustaches",
+      "description": "Les durées de build CI de chaque pipeline. whisker fixe la portée des moustaches (1,5 ou 3 écarts interquartiles, ou \"minmax\" sans valeurs aberrantes), et outlierShape et outlierSize changent le dessin des exécutions lentes ; boxplotStats avec la même règle les compte."
+    },
+    "wait-times": {
+      "title": "Clic sur une boîte ou une valeur aberrante",
+      "description": "L'attente aux urgences par jour de la semaine. onPointClick reçoit la médiane, q1, q3 et le nombre de valeurs aberrantes de la boîte cliquée, ou la valeur cliquée dans item.outlier ; sur l'axe de catégories, event.x est l'index du jour."
+    },
+    "asset-sizes": {
+      "title": "Échelle logarithmique",
+      "description": "Des tailles de fichiers de quelques kilo-octets à des dizaines de mégaoctets : yAxis.type: \"log\" garde chaque boîte lisible, alors que sur un axe linéaire les petits fichiers sont écrasés contre zéro. Le format passe des ko aux Mo et une ligne marque le budget de taille."
+    },
+    "live-regions": {
+      "title": "Latence par région en direct",
+      "description": "Chaque seconde, un setInterval (arrêté à la pause et au démontage) fait glisser une fenêtre sur les dernières requêtes de chaque région. Un groupe passe au rouge quand son troisième quartile dépasse la ligne du SLA, et la plage de l'axe y est fixe pour garder les boîtes comparables."
     }
   },
   "native": {
@@ -69,7 +85,60 @@
     "deliveryAria": "Délais de livraison par ville en semaine et le week-end",
     "dailyHigh": "Maximale du jour",
     "mean": "Moyenne",
-    "temperaturesAria": "Distribution des températures maximales quotidiennes par mois"
+    "temperaturesAria": "Distribution des températures maximales quotidiennes par mois",
+    "pipelines": {
+      "lint": "Lint",
+      "unit": "Tests unitaires",
+      "integration": "Intégration",
+      "e2e": "Bout en bout",
+      "release": "Publication"
+    },
+    "whiskerRule": "Portée des moustaches",
+    "whiskers": {
+      "tukey": "1,5 × EIQ",
+      "wide": "3 × EIQ",
+      "minmax": "Min – max"
+    },
+    "outlierShape": "Forme des valeurs aberrantes",
+    "shapes": {
+      "hollow": "Creuses",
+      "filled": "Pleines"
+    },
+    "outlierRuns": "{{value}} exécutions dessinées comme valeurs aberrantes",
+    "buildTime": "Durée du build",
+    "buildsAria": "Distribution des durées de build de chaque pipeline CI",
+    "clickBox": "Cliquez sur une boîte ou une valeur aberrante.",
+    "outlierClicked": "{{day}} : un patient a attendu {{value}}.",
+    "boxClicked": "{{day}} : attente médiane {{median}}, la moitié des patients a attendu entre {{q1}} et {{q3}}, {{outliers}} valeurs aberrantes.",
+    "wait": "Attente",
+    "fourHours": "Objectif de quatre heures",
+    "waitsAria": "Distribution de l'attente aux urgences par jour de la semaine",
+    "assetTypes": {
+      "styles": "Feuilles de style",
+      "scripts": "Scripts",
+      "fonts": "Polices",
+      "images": "Images",
+      "videos": "Vidéos"
+    },
+    "logScale": "Échelle logarithmique",
+    "overBudget": "{{value}} fichiers dépassent le budget de {{budget}}.",
+    "fileSize": "Taille du fichier",
+    "budget": "Budget",
+    "assetsAria": "Distribution des tailles de fichiers d'un site web par type",
+    "regions": {
+      "usEast": "Est des États-Unis",
+      "usWest": "Ouest des États-Unis",
+      "euWest": "Europe de l'Ouest",
+      "apSouth": "Asie-Pacifique Sud",
+      "saEast": "Est de l'Amérique du Sud"
+    },
+    "pause": "Pause",
+    "resume": "Reprendre",
+    "slaBreached": "SLA menacé : {{regions}}",
+    "slaOk": "Toutes les régions respectent le SLA",
+    "latency": "Latence",
+    "sla": "SLA",
+    "regionsAria": "Distribution en direct de la latence des requêtes dans chaque région"
   },
   "api": {
     "BoxPlotChartProps": {

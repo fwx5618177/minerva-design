@@ -21,6 +21,22 @@
     "margin": {
       "title": "按其他值着色",
       "description": "收入决定高度，利润率决定颜色（每个数据的 value，配合 colorBy \"value\"）：最高的柱体并不是利润最高的。"
+    },
+    "inventory-live": {
+      "title": "实时仓库库存",
+      "description": "仓库各货位（通道 × 货架层）的剩余件数，由带种子的 setInterval 每秒更新，卸载时清理。低于容量 20% 的货位移到使用危险色的第二个系列，因此每个单元格只在一个系列中有柱（另一个系列中 z: null），空货位会被补货。"
+    },
+    "cohort-retention": {
+      "title": "同期群留存",
+      "description": "每个月注册的同期群在 n 个月后仍活跃的比例；较新的同期群历史较短，空缺单元格使用 z: null。同期群名称来自 Intl.DateTimeFormat，柱子按高度着色（colorBy: \"z\"），点击可查看该单元格的留存率和活跃用户数。"
+    },
+    "budget-variance": {
+      "title": "预算差异",
+      "description": "所选财年六个部门的季度支出：柱高为实际支出，颜色为与预算的差异。colorBy: \"value\" 配合发散型 coolwarm 色阶和对称的 valueRange，使符合预算的单元格保持中性色，超支偏暖色，节支偏冷色。"
+    },
+    "datacenter": {
+      "title": "机房热力图",
+      "description": "机房中的机柜，柱高为功耗，颜色为 inferno 色阶上的进风温度。开关在深色 ConfigProvider 中重新挂载图表，按钮调用 ref 上的 setCamera() 切换为正交平面图（onCameraChange 保持按钮状态同步），摘要列出进风温度超过建议值的机柜。"
     }
   },
   "data": {
@@ -78,7 +94,53 @@
       "audio": "音频设备"
     },
     "margin": "利润率",
-    "marginAria": "五种产品在四个市场的收入与利润率"
+    "marginAria": "五种产品在四个市场的收入与利润率",
+    "inStock": "库存充足",
+    "lowStock": "库存不足",
+    "unitsValue": "{{value}} 件",
+    "liveUpdates": "实时更新",
+    "aisle": "通道",
+    "aisleLabel": "{{id}} 通道",
+    "shelf": "货架层",
+    "shelfLabel": "第 {{n}} 层",
+    "units": "件数",
+    "inventoryAria": "按通道和货架层统计的仓库货位剩余件数，实时更新",
+    "inventoryStatus": "库存 {{total}} 件 · 不足货位：{{low}} / {{bins}} · 已补货货位：{{restocked}}。",
+    "retention": "留存率",
+    "monthsSinceSignup": "注册后月数",
+    "monthIndex": "第 {{n}} 月",
+    "signupCohort": "注册月份",
+    "cohortAria": "按注册后月数统计的各月注册同期群留存率",
+    "cohortReadout": "{{cohort}}同期群，第 {{n}} 个月：{{retention}} 仍活跃（{{total}} 位用户中的 {{users}} 位）。",
+    "cohortHint": "点击柱子查看同期群的留存率。",
+    "departments": {
+      "engineering": "研发",
+      "sales": "销售",
+      "marketing": "市场",
+      "operations": "运营",
+      "support": "客服",
+      "finance": "财务"
+    },
+    "actualSpend": "实际支出",
+    "fiscalYear": "财年",
+    "varianceToBudget": "预算差异",
+    "department": "部门",
+    "budgetAria": "{{year}} 年六个部门的季度支出及预算差异",
+    "varianceDetail": "{{department}}，{{quarter}}：支出 {{actual}}，预算 {{budget}}（{{variance}}）。",
+    "budgetSummary": "{{year}} 年：支出 {{actual}}，预算 {{budget}}（{{variance}}）。超支最多：{{department}}，{{quarter}}（{{worst}}）。",
+    "kw": "{{value}} kW",
+    "inletTemperature": "进风温度",
+    "darkTheme": "深色主题",
+    "perspectiveView": "3D 视图",
+    "topView": "平面图",
+    "rackPosition": "机柜",
+    "rackRow": "排",
+    "rowLabel": "{{id}} 排",
+    "powerDraw": "功耗",
+    "datacenterAria": "按排和位置排列的服务器机柜，柱高为功耗，颜色为进风温度",
+    "rackHot": "机柜 {{rack}}：{{power}}，进风 {{inlet}}，超过 {{limit}} 上限。",
+    "rackOk": "机柜 {{rack}}：{{power}}，进风 {{inlet}}，未超过 {{limit}} 上限。",
+    "datacenterSummary": "进风温度超过 {{limit}} 的机柜：{{total}} 个中有 {{hot}} 个（{{racks}}）。点击机柜查看读数。"
   },
   "api": {
     "Bar3DChartProps": {

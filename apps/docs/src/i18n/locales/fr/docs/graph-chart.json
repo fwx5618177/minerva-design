@@ -40,6 +40,22 @@
     "vanilla": {
       "title": "Moteur seul",
       "description": "createGraphChart de minerva-design/charts/core, sans React : changez de disposition avec setOptions, écoutez les événements click et layoutEnd, et centrez le nœud cliqué avec focusNode."
+    },
+    "service-map": {
+      "title": "Carte des services en direct",
+      "description": "Les services d'une boutique en ligne placés à la main avec layout=\"none\" (x / y des nœuds) : les mises à jour en direct ne les déplacent jamais. Toutes les 1,5 s, un nouvel échantillon recolore chaque service par son groupe de santé et met à jour la latence p95 de son sous-titre ; edgeColor=\"target\" teinte les appels vers un service en panne. Cliquez sur un service pour lire ses métriques."
+    },
+    "knowledge-graph": {
+      "title": "Recherche dans un graphe de connaissances",
+      "description": "Physiciens, lieux, institutions et idées reliés par des relations orientées et nommées. Tapez dans le champ de recherche et choisissez un résultat : la prop selected et focusNode sur la ref le sélectionnent et le centrent, et les faits qui le concernent sont listés avec Intl.ListFormat."
+    },
+    "friend-suggestions": {
+      "title": "Vous connaissez peut-être",
+      "description": "Un réseau social en quatre cercles. Cliquez sur une personne : les amis de ses amis sont classés par amis en commun, et la personne et les suggestions restent en évidence grâce à la prop selected contrôlée ; interaction={{ select: false }} laisse les clics à onItemClick."
+    },
+    "fraud-ring": {
+      "title": "Réseaux de fraude en thème sombre",
+      "description": "Des comptes reliés aux appareils et aux cartes qu'ils ont utilisés ; la forme des nœuds dessine les appareils et les cartes en boîtes. Cliquez sur un nœud pour sélectionner tout son groupe et évaluer son risque. Le graphique est placé dans un ConfigProvider imbriqué et lit son thème sombre ou clair à sa création."
     }
   },
   "api": {
@@ -418,7 +434,103 @@
       "closed": "Terminée"
     },
     "filledArrows": "Pointes pleines",
-    "transitionsAria": "États d’une commande et événements qui les relient"
+    "transitionsAria": "États d’une commande et événements qui les relient",
+    "health": {
+      "healthy": "Sain",
+      "degraded": "Dégradé",
+      "critical": "Critique"
+    },
+    "latency": "p95 {{value}} ms",
+    "rps": "{{value}} req/s",
+    "liveUpdates": "Mises à jour en direct",
+    "serviceMapAria": "Carte des services d'une boutique en ligne avec la santé de chaque service en direct",
+    "serviceHint": "Cliquez sur un service pour lire ses métriques.",
+    "serviceReadout": "{{name}} : {{status}} · p95 {{latency}} ms · erreurs {{errors}} · {{rps}} req/s.",
+    "serviceCounts": "{{healthy}} sains, {{degraded}} dégradés, {{critical}} critiques · mis à jour à {{time}}",
+    "entities": {
+      "curie": "Marie Curie",
+      "pierre": "Pierre Curie",
+      "einstein": "Albert Einstein",
+      "planck": "Max Planck",
+      "bohr": "Niels Bohr",
+      "heisenberg": "Werner Heisenberg",
+      "meitner": "Lise Meitner",
+      "hahn": "Otto Hahn",
+      "noether": "Emmy Noether",
+      "paris": "Paris",
+      "warsaw": "Varsovie",
+      "vienna": "Vienne",
+      "berlin": "Berlin",
+      "zurich": "Zurich",
+      "copenhagen": "Copenhague",
+      "sorbonne": "Sorbonne",
+      "kwg": "Société Kaiser-Wilhelm",
+      "eth": "ETH Zurich",
+      "nbi": "Institut Niels-Bohr",
+      "radioactivity": "Radioactivité",
+      "relativity": "Relativité",
+      "quantum": "Théorie quantique",
+      "uncertainty": "Principe d'incertitude",
+      "fission": "Fission nucléaire",
+      "symmetry": "Théorème de Noether"
+    },
+    "predicates": {
+      "bornIn": "né(e) à",
+      "workedAt": "a travaillé à",
+      "studiedAt": "a étudié à",
+      "marriedTo": "marié(e) à",
+      "contributedTo": "a contribué à",
+      "locatedIn": "situé(e) à",
+      "influenced": "a influencé",
+      "partOf": "fait partie de",
+      "collaborated": "a collaboré avec",
+      "relatedTo": "lié(e) à"
+    },
+    "entityKinds": {
+      "person": "Personnes",
+      "place": "Lieux",
+      "institution": "Institutions",
+      "concept": "Idées"
+    },
+    "searchPlaceholder": "Chercher une personne, un lieu ou une idée…",
+    "searchLabel": "Rechercher dans le graphe de connaissances",
+    "noMatch": "Aucune entité ne correspond à cette recherche.",
+    "knowledgeAria": "Graphe de connaissances de physiciens, des lieux et institutions qui leur sont liés et de leurs découvertes",
+    "knowledgeHint": "Cherchez une entité ou cliquez sur un nœud pour lister ce que le graphe sait d'elle.",
+    "factsReadout": "{{name}} : {{total}} faits — {{facts}}",
+    "factOut": "→ {{name}} ({{relation}})",
+    "factIn": "← {{name}} ({{relation}})",
+    "circles": {
+      "university": "Amis de fac",
+      "work": "Collègues",
+      "climbing": "Club d'escalade",
+      "books": "Club de lecture"
+    },
+    "friendsAria": "Amitiés entre 24 personnes réparties en quatre cercles",
+    "suggestions": "Personnes que {{name}} connaît peut-être : {{list}}.",
+    "suggestion": "{{name}} (amis en commun : {{mutual}})",
+    "noSuggestions": "{{name}} connaît déjà tous les amis de ses amis.",
+    "friendsHint": "Cliquez sur une autre personne pour mettre à jour les suggestions.",
+    "deviceLabel": "Appareil {{id}}",
+    "cardLabel": "Carte •••• {{last4}}",
+    "accountLabel": "Compte {{id}}",
+    "loggedInFrom": "connecté depuis",
+    "paidWith": "a payé avec",
+    "fraudKinds": {
+      "account": "Comptes",
+      "flagged": "Comptes signalés",
+      "device": "Appareils",
+      "card": "Cartes"
+    },
+    "risk": {
+      "low": "faible",
+      "medium": "moyen",
+      "high": "élevé"
+    },
+    "darkTheme": "Thème sombre",
+    "fraudAria": "Comptes, appareils et cartes de paiement, avec deux réseaux de fraude qui partagent des appareils et des cartes",
+    "clusterReadout": "Groupe : {{accounts}} comptes, {{devices}} appareils, {{cards}} cartes · risque : {{risk}}",
+    "fraudHint": "Cliquez sur un compte, un appareil ou une carte pour sélectionner tout son groupe."
   },
   "wc": {
     "demos": {

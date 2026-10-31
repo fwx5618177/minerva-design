@@ -29,6 +29,22 @@
     "renderer": {
       "title": "レンダラー",
       "description": "データレイヤーのバックエンドを選択：auto は WebGPU、WebGL2、WebGL、Canvas2D（CPU 投影・間引き）の順に試し、ソフトウェア動作の GPU はスキップします。onRendererChange が実際のバックエンドを通知します。"
+    },
+    "embeddings": {
+      "title": "文書の埋め込み",
+      "description": "600 本のニュース記事の埋め込みを第 1〜第 3 主成分に射影し、トピックごとに 1 系列で表示します。軸タイトルには寄与率を示します。記事をクリックすると onPointClick が最も近い 5 件を求め、薄くした点群の上に追加の系列として描画し、下に一覧表示します。"
+    },
+    "lidar": {
+      "title": "LiDAR による街路スキャン",
+      "description": "街路の約 13,000 点の LiDAR 反射を型付き配列の列として渡し、平らな円（pointStyle: \"disc\"）で描画します。ラジオボタンで value 列を高さまたは反射強度に切り替えて別の colorScale を適用し、スイッチでダークの ConfigProvider 内にチャートを再マウントし、onHover でポインター下の点を読み取ります。"
+    },
+    "satellites": {
+      "title": "衛星コンステレーション",
+      "description": "低軌道のブロードバンド衛星群から静止軌道のリングまで、地球を回る 4 つの軌道殻です。アンマウント時に解除される setInterval で 100 ms ごとに位置を更新します（1 ステップはシミュレーション上の 1 分）。各軌道殻は凡例を持つ系列で、衛星にホバーすると軌道の高度・速度・周期を表示します。"
+    },
+    "portfolio-risk": {
+      "title": "ポートフォリオのリスク",
+      "description": "40 銘柄をボラティリティ・ベータ・年間リターンで配置し、セクターごとに 1 系列、点の大きさは時価総額に対応します。軸は Intl.NumberFormat でパーセントを整形し、クリックで銘柄とシャープレシオを下に固定表示し、スイッチで camera.projection を正射影に切り替えて歪みなく比較できます。"
     }
   },
   "data": {
@@ -95,7 +111,60 @@
     },
     "cameraState": "方位角 {{azimuth}}°、仰角 {{elevation}}°、ズーム ×{{zoom}}",
     "cameraHint": "ドラッグで回転、Shift + ドラッグでパン、Ctrl / ⌘ + ホイールでズーム、ダブルクリックでリセット。",
-    "rollAria": "ロール上の位置で色分けしたスイスロールの点群"
+    "rollAria": "ロール上の位置で色分けしたスイスロールの点群",
+    "topics": {
+      "sports": "スポーツ",
+      "politics": "政治",
+      "technology": "テクノロジー",
+      "health": "健康",
+      "finance": "金融",
+      "travel": "旅行"
+    },
+    "docLabel": "{{topic}}の記事 #{{n}}",
+    "neighbours": "最近傍",
+    "component": "第 {{n}} 主成分（{{variance}}）",
+    "embeddingsAria": "第 1〜第 3 主成分上のニュース記事の埋め込み（トピック別）",
+    "neighboursOf": "{{doc}} に最も近い記事: {{list}}。",
+    "neighbourItem": "{{doc}}（{{distance}}）",
+    "embeddingsHint": "記事をクリックすると最も近い記事を探します。",
+    "lidarReturns": "LiDAR 反射",
+    "lidarColor": "色分けの基準",
+    "lidarModes": {
+      "height": "高さ",
+      "intensity": "反射強度"
+    },
+    "darkTheme": "ダークテーマ",
+    "lidarAria": "建物・街路樹・駐車車両がある街路の LiDAR 点群",
+    "lidarSummary": "{{points}} 点。点群にホバーすると反射を読み取れます。",
+    "lidarHover": "高さ {{height}}、反射強度 {{intensity}}。",
+    "satName": "{{shell}} {{n}}",
+    "shells": {
+      "broadband": "ブロードバンド（低軌道）",
+      "imaging": "地球観測（極軌道）",
+      "navigation": "測位（中軌道）",
+      "geostationary": "静止軌道"
+    },
+    "earth": "地球",
+    "play": "再生",
+    "thousandKm": "千 km",
+    "satellitesAria": "地球を周回する 4 つの軌道殻の衛星",
+    "satHover": "{{shell}}: 高度 {{altitude}}、速度 {{speed}}、周期 {{period}}。",
+    "satellitesHint": "衛星にホバーすると軌道を表示します。",
+    "sectors": {
+      "technology": "テクノロジー",
+      "healthcare": "ヘルスケア",
+      "energy": "エネルギー",
+      "financials": "金融",
+      "consumer": "消費財"
+    },
+    "stockLabel": "{{ticker}} · {{cap}}",
+    "orthographicView": "正射影ビュー",
+    "annualVolatility": "ボラティリティ",
+    "beta": "ベータ",
+    "annualReturn": "年間リターン",
+    "portfolioAria": "ボラティリティ・ベータ・年間リターンで配置した銘柄（大きさは時価総額）",
+    "stockReadout": "{{ticker}}（{{sector}}）: リターン {{ret}}、ボラティリティ {{volatility}}、ベータ {{beta}}、シャープレシオ {{sharpe}}、時価総額 {{cap}}。",
+    "portfolioHint": "銘柄をクリックすると数値を固定表示します。"
   },
   "api": {
     "Scatter3DChartProps": {

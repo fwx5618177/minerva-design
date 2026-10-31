@@ -17,6 +17,22 @@
     "comparison": {
       "title": "比较两个样本",
       "description": "histogramSeries 生成一个样本的柱子：使用相同的 domain 和数量时，两个样本共享分箱，在 Chart 中并排显示。"
+    },
+    "quality-control": {
+      "title": "过程能力",
+      "description": "加工零件直径与公差对比：rect 和 line 标注标出规格界限，series 属性在柱子上绘制拟合的正态曲线。读数显示计算出的 Cpk，开关展示刀具调整后的过程。"
+    },
+    "order-values": {
+      "title": "对数刻度的订单金额",
+      "description": "订单金额跨越三个数量级，按其对数分箱，因此每个分箱覆盖相同的倍数；formatBin 和 xAxis.format 把边界转换回美元。标注标出中位数、p99 以及满足包邮条件的订单。"
+    },
+    "live-samples": {
+      "title": "实时滑动窗口",
+      "description": "最近 600 通客服电话的等待时间，由 setInterval 每秒更新两次，暂停和卸载时清除。固定的 domain、分箱数和 yAxis 范围让坐标轴在分布变化时保持不动，读数跟踪服务水平。"
+    },
+    "commute": {
+      "title": "点击查看累计占比",
+      "description": "onPointClick 提供被点击分箱的索引；用相同选项调用 binValues 可得到其边界和计数，从而计算通勤时间不超过该分箱的员工占比。renderTooltip 显示每个分箱的人数和占比，onPlotClick 清除选择。"
     }
   },
   "native": {
@@ -46,7 +62,44 @@
     "control": "对照组",
     "variant": "新版引导",
     "minutes": "会话时长（分钟）",
-    "abAria": "A/B 测试两组的会话时长"
+    "abAria": "A/B 测试两组的会话时长",
+    "normalFit": "正态拟合",
+    "lsl": "规格下限",
+    "usl": "规格上限",
+    "nominal": "名义值",
+    "adjustTool": "已调整刀具",
+    "capability": "均值 {{mean}}，σ {{sd}}，Cpk {{cpk}}，超差 {{ppm}} ppm：",
+    "capable": "能力充足",
+    "notCapable": "能力不足",
+    "parts": "零件",
+    "diameter": "直径",
+    "qualityAria": "轴直径分布，含规格界限和拟合的正态曲线",
+    "freeShipping": "包邮",
+    "medianOrder": "中位数 {{value}}",
+    "p99Order": "p99 {{value}}",
+    "eligibleShare": "{{share}} 的订单达到 {{threshold}} 的包邮门槛。",
+    "orders": "订单",
+    "orderValue": "订单金额（对数刻度）",
+    "ordersAria": "对数刻度下的订单金额分布",
+    "pause": "暂停",
+    "resume": "继续",
+    "reset": "重置",
+    "serviceLevel": "{{share}} 的电话在 {{target}} 内接听，p90 为 {{p90}}：",
+    "targetMet": "达到目标",
+    "targetMissed": "未达目标",
+    "calls": "电话",
+    "waitTime": "等待时间",
+    "target": "目标",
+    "p90": "p90",
+    "callsAria": "最近 600 通客服电话等待时间的实时分布",
+    "withinShare": "{{share}} 的员工",
+    "employeesInBin": "{{value}} 名员工（{{share}}）",
+    "clickForCumulative": "点击查看累计占比",
+    "clickBin": "点击柱子，查看通勤时间更短的员工占比。",
+    "cumulativeStatus": "{{share}} 的员工（{{employees}} 人）通勤时间不超过 {{limit}}。",
+    "employees": "员工",
+    "commute": "单程通勤时间",
+    "commuteAria": "员工通勤时间分布"
   },
   "api": {
     "HistogramChartProps": {

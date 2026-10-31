@@ -21,6 +21,22 @@
     "long-names": {
       "title": "長い名前",
       "description": "ラベル列の幅は文字を測って決まります。最も長い名前に合わせて広がり（幅の最大 40%）、それより長い名前は 2 行に折り返して末尾を省略記号にします。行にホバー（またはキーボードでフォーカス）すると、ツールチップに完全な名前が表示されます。"
+    },
+    "budget-tracker": {
+      "title": "部門予算のトラッカー",
+      "description": "各行は現時点までの支出を、この時点で想定される予算（target）と比較し、行ごとの ranges で余裕・ぎりぎり・計画超過の範囲を示します。計画より速く支出している部門は color でバーが赤になり、onClick でチャート下に差額を表示します。"
+    },
+    "live-sensors": {
+      "title": "サーバールームのセンサーをライブ表示",
+      "description": "読み取り値は毎秒更新されます（setInterval、スイッチをオフにしたときやアンマウント時に解除）。target は設定値、ranges は警告と危険のしきい値です。各バーの color は状態に従い、通知するのは範囲外のセンサーの一覧だけです。"
+    },
+    "training": {
+      "title": "週間トレーニング計画",
+      "description": "Select でランナーを切り替えると、バーがその週の値へアニメーションします。各行は自分の計画でスケールされるため、ticks={false} で単位のない目盛りラベルを隠しています。renderTooltip は値と計画を Intl.NumberFormat の単位（km、m、h）で書式化し、計画に対する割合を表示します。"
+    },
+    "hiring-plan": {
+      "title": "採用計画",
+      "description": "チームごとの採用数を年間の人員計画と比較し、現時点での目安をマーカーで示します。Select でペース順に並べ替えます。hidden と onToggle を使った legend でチームを非表示にでき、キーで保持するため並び順を変えても非表示のままです。サマリーは表示中のチームを合計します。"
     }
   },
   "native": {
@@ -117,7 +133,99 @@
       "renewals": "年間サブスクリプション契約の売上維持率（拡張・解約を含む）",
       "renewalsUnit": "比率"
     },
-    "longAria": "長い名前の運用 KPI と目標の比較"
+    "longAria": "長い名前の運用 KPI と目標の比較",
+    "budget": {
+      "departments": {
+        "marketing": "マーケティング",
+        "engineering": "エンジニアリング",
+        "sales": "営業",
+        "people": "人事",
+        "facilities": "総務・施設",
+        "travel": "出張"
+      },
+      "yearly": "年間予算：{{budget}}",
+      "ranges": {
+        "comfortable": "余裕あり",
+        "tight": "ぎりぎり",
+        "over": "計画超過"
+      },
+      "hint": "{{over}} 部門が計画より速く支出しています。行をクリックすると差額を表示します。",
+      "overPlan": "{{department}}は計画超過：第 3 四半期末で {{variance}}、年間予算の {{share}} を使用、残り {{left}}。",
+      "underPlan": "{{department}}は計画内：第 3 四半期末で {{variance}}、年間予算の {{share}} を使用、残り {{left}}。",
+      "aria": "第 3 四半期末の部門別支出とその時点の計画予算"
+    },
+    "sensors": {
+      "names": {
+        "inlet": "吸気温度",
+        "humidity": "湿度",
+        "power": "消費電力",
+        "fans": "ファン回転数"
+      },
+      "units": {
+        "inlet": "°C",
+        "humidity": "相対湿度 %",
+        "power": "ラックあたり kW",
+        "fans": "最大回転数の %"
+      },
+      "status": {
+        "ok": "正常",
+        "warning": "警告",
+        "critical": "危険"
+      },
+      "live": "ライブ読み取り",
+      "aria": "サーバールームのセンサー値と設定値・しきい値",
+      "alerts": "要確認：{{sensors}}",
+      "allOk": "すべてのセンサーが範囲内です。"
+    },
+    "training": {
+      "metrics": {
+        "distance": "週間走行距離",
+        "longRun": "ロング走",
+        "elevation": "獲得標高",
+        "sessions": "練習回数",
+        "sleep": "睡眠"
+      },
+      "plan": "計画：{{plan}}",
+      "ranges": {
+        "under": "計画未満",
+        "onPlan": "計画どおり",
+        "above": "計画以上"
+      },
+      "runner": "ランナー",
+      "runners": {
+        "amara": "アマラ",
+        "lucas": "ルーカス",
+        "mei": "メイ"
+      },
+      "tooltip": "{{value}}（計画 {{plan}}、{{share}}）",
+      "aria": "{{runner}} の週間トレーニングと計画",
+      "summary": "{{runner}} は週間目標 {{metrics}} 項目中 {{met}} 項目を達成しました。"
+    },
+    "hiring": {
+      "teams": {
+        "engineering": "エンジニアリング",
+        "sales": "営業",
+        "support": "サポート",
+        "marketing": "マーケティング",
+        "product": "プロダクト",
+        "finance": "財務"
+      },
+      "planned": "今年の計画 {{plan}} 人",
+      "ranges": {
+        "behind": "遅れ",
+        "catchingUp": "追い上げ中",
+        "onTrack": "順調"
+      },
+      "order": "並び順",
+      "orders": {
+        "plan": "計画順",
+        "behind": "遅れの大きい順",
+        "ahead": "進みの大きい順"
+      },
+      "aria": "チーム別の採用数と年間人員計画",
+      "summary": "表示中の {{teams}} チームで計画 {{planned}} 人中 {{hired}} 人を採用（{{share}}）。",
+      "none": "表示中のチームはありません。"
+    }
   },
   "wc": {
     "demos": {

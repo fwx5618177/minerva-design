@@ -17,6 +17,22 @@
     "pipeline": {
       "title": "営業パイプライン",
       "description": "パイプライン滞留日数と受注確率、大きさは金額。onPointClick でクリックしたバブルの値を受け取ります。"
+    },
+    "risk-matrix": {
+      "title": "リスクマトリクス",
+      "description": "プロジェクトのリスクを発生可能性と影響度で 5 × 5 のグリッドに配置し、コストエクスポージャーでバブルの大きさを決めます。境界を省略した rect 注釈で低リスク域と高リスク域を塗り分け、renderTooltip でリスクスコアを計算します。"
+    },
+    "campaigns": {
+      "title": "マーケティングキャンペーン",
+      "description": "キャンペーンを開始日（xAxis.type: \"time\"）と広告費用対効果で配置し、予算でバブルの大きさを決め、チャネルごとに 1 系列にします。line 注釈で損益分岐点を示し、凡例項目をクリックするとチャネルを切り替えられます。"
+    },
+    "shared-scale": {
+      "title": "サイズスケールの共有",
+      "description": "2 つのチャートで 2 年分の店舗地域を比較します。同じ maxValue を指定すると同じ売上は両方のチャートで同じ面積になり、指定しないと各チャートが自身の最大値からバブルの大きさを決めます。"
+    },
+    "playback": {
+      "title": "年ごとのアニメーション",
+      "description": "1990 年から 2025 年までの出生率と平均寿命を、setInterval で 1 年ずつ再生します（一時停止とアンマウント時に解除）。固定した軸の範囲と一定の maxValue でフレーム同士を比較でき、text 注釈で年を表示します。"
     }
   },
   "native": {
@@ -70,7 +86,67 @@
     "highIncome": "高所得",
     "logAria": "対数スケールの 1 人あたり GDP と平均寿命、バブルの大きさは人口",
     "visibleIncomes": "表示中の所得：{{from}} – {{to}}",
-    "zoomHint": "ズームすると表示範囲がドルで表示されます"
+    "zoomHint": "ズームすると表示範囲がドルで表示されます",
+    "teams": {
+      "infrastructure": "インフラ",
+      "security": "セキュリティ",
+      "people": "人員",
+      "budget": "予算"
+    },
+    "exposure": "エクスポージャー",
+    "risks": {
+      "powerOutage": "停電",
+      "hardwareDelay": "ハードウェアの納期遅延",
+      "networkCutover": "ネットワーク切り替え",
+      "dataLeak": "データ漏えい",
+      "accessReview": "アクセス権レビューの滞留",
+      "keyPerson": "キーパーソンの退職",
+      "vendorSkills": "ベンダーのスキル不足",
+      "trainingGap": "研修不足",
+      "licenseCost": "ライセンス費用の上昇",
+      "exchangeRate": "為替変動"
+    },
+    "zones": {
+      "low": "許容範囲",
+      "high": "重大"
+    },
+    "riskScore": "発生可能性 {{likelihood}} × 影響度 {{impact}} = {{score}}",
+    "exposureRow": "エクスポージャー: {{value}}",
+    "likelihood": "発生可能性",
+    "impact": "影響度",
+    "riskAria": "発生可能性、影響度、コストエクスポージャー別のプロジェクトリスク",
+    "channels": {
+      "search": "検索",
+      "social": "ソーシャル",
+      "video": "動画",
+      "email": "メール"
+    },
+    "budget": "予算",
+    "launchedOn": "{{date}} 開始",
+    "launch": "開始日",
+    "roas": "広告費用対効果",
+    "breakEven": "損益分岐点",
+    "campaignsAria": "開始日、広告費用対効果、予算別のマーケティングキャンペーン",
+    "regions": {
+      "north": "北部",
+      "south": "南部",
+      "east": "東部",
+      "west": "西部",
+      "center": "中部"
+    },
+    "sharedScale": "両方のチャートで同じサイズスケールを使う",
+    "sharedScaleOn": "両方のチャートで {{value}} を最大のバブルで描きます。",
+    "sharedScaleOff": "各チャートが自身の最大売上を最大のバブルで描きます。",
+    "salesPerMeter": "1 m² あたりの売上",
+    "margin": "利益率",
+    "sharedScaleAria": "{{year}} 年の店舗地域別の 1 m² あたり売上、利益率、売上高",
+    "play": "再生",
+    "pause": "一時停止",
+    "replay": "もう一度再生",
+    "restart": "最初から",
+    "yearStatus": "年: {{year}}",
+    "fertility": "出生率（女性 1 人あたりの子どもの数）",
+    "playbackAria": "1990 年から 2025 年までの国別の出生率、平均寿命、人口"
   },
   "api": {
     "BubbleChartProps": {

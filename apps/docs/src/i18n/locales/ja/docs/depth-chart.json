@@ -29,6 +29,22 @@
     "red-up": {
       "title": "赤が上昇",
       "description": "colorConvention=\"red-up\" で既定の色を入れ替えます。買い板は赤、売り板は緑（中国本土・日本・韓国の慣習）。upColor と downColor で任意の色も指定できます。"
+    },
+    "slippage": {
+      "title": "成行注文のコスト",
+      "description": "純粋関数が同じスナップショットの売り板（買い）または買い板（売り）を最良気配から順にたどり、数量を約定させます。priceLines が平均約定価格と最後に約定する価格を示し、range は両方が見えるよう広がります。読み取り欄には総コストと仲値からのスリッページ（bp）が表示されます。"
+    },
+    "imbalance": {
+      "title": "流動性の偏り",
+      "description": "getInstance().getStore() でチャート内部のライブ板を参照できます。このデモは毎秒、選んだ範囲（range にも渡す）に並ぶ数量を両サイドで合計し、買い／売りの比率、偏り、スプレッドを表示します。ストリーム自体は React を再レンダリングしません。"
+    },
+    "equity": {
+      "title": "株式：ドルと株数",
+      "description": "呼値 1 セント、単元株で並ぶ株式の板です。formatPrice と formatSize が組み込みの数値書式を置き換え（ページの言語で米ドルとコンパクトな株数）、labels で数量の名前を変えます。amount=\"quote\" にすると株数ではなく金額を累積します。"
+    },
+    "venues": {
+      "title": "複数取引所の統合板",
+      "description": "3 つの取引所が同じペアを提示し、その板を価格ごとに合算して統合板を作ります。book に別のオブジェクトを渡すと、カーブは取引所から取引所へなめらかに移ります。表では最良気配と仲値 ±0.1% 以内の流動性を比較します。"
     }
   },
   "data": {
@@ -53,7 +69,32 @@
     "greenUp": "緑が上昇・赤が下落",
     "sweepBuy": "{{amount}} BTC（{{total}}）を買うと {{price}} までの売り板を約定し、仲値より {{slippage}} 上、平均価格は {{average}} です。",
     "sweepSell": "{{amount}} BTC（{{total}}）を売ると {{price}} までの買い板を約定し、仲値より {{slippage}} 下、平均価格は {{average}} です。",
-    "sweepHint": "曲線にホバーして成行注文のコストを見積もります。"
+    "sweepHint": "曲線にホバーして成行注文のコストを見積もります。",
+    "orderSide": "売買",
+    "marketBuy": "成行買い",
+    "marketSell": "成行売り",
+    "orderSize": "注文数量",
+    "btcAmount": "{{value}} BTC",
+    "averageFill": "平均約定",
+    "worstFill": "最終約定",
+    "fillSummary": "{{size}} BTC は {{levels}} 段で約定：平均 {{average}}、最終約定 {{worst}}、合計 {{cost}}、仲値から {{slippage}} bp。",
+    "fillPartial": "このサイドには {{filled}} BTC しかありません（注文は {{size}} BTC）。{{levels}} 段すべてを {{worst}} まで食い尽くします。",
+    "band": "集計範囲",
+    "imbalanceStatus": "{{band}} 以内：買い {{bids}} BTC、売り {{asks}} BTC、偏り {{imbalance}} · スプレッド {{spread}}（{{spreadBp}} bp）",
+    "imbalanceWaiting": "最初の読み取りを待っています…",
+    "showNotional": "金額を累積（価格 × 株数）",
+    "notionalUsd": "金額（USD）",
+    "shares": "株数",
+    "equityAria": "ACME 株の板の深さ",
+    "consolidated": "統合",
+    "venue": "取引所 {{name}}",
+    "venueColumn": "取引所",
+    "bestBid": "最良買い気配",
+    "bestAsk": "最良売り気配",
+    "depthNearMid": "±0.1% 以内の BTC",
+    "depthShare": "{{value}}（{{share}}）",
+    "venuesAria": "BTC/USDT の深さ、{{name}}",
+    "venuesTable": "取引所別の最良気配と流動性"
   },
   "api": {
     "DepthChartProps": {

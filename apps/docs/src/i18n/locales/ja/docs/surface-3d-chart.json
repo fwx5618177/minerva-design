@@ -25,6 +25,22 @@
     "live-wave": {
       "title": "ライブの波",
       "description": "毎秒約 30 回再計算する波紋：フレームごとに新しいデータオブジェクトを渡してチャートを更新します。デモが画面外に出るかタブが非表示になるとアニメーションは止まります。"
+    },
+    "heat-diffusion": {
+      "title": "熱拡散",
+      "description": "熱方程式でシミュレーションした金属板です。setInterval（アンマウント時に解除）が差分法の計算を数ステップ実行し、新しいデータオブジェクトを設定します。onPointClick がクリックした頂点の row と col を返すので熱源を追加・削除でき、zAxis と valueRange を固定しているため板が温まっても inferno のスケールは変わりません。"
+    },
+    "yield-curve": {
+      "title": "利回り曲線の推移",
+      "description": "逆イールドから順イールドへ移る 2 年間の国債利回り曲線を、年限 × 月の曲面と床面の等高線で表示します。軸の format コールバックでグリッドのインデックスを年限と Intl.DateTimeFormat の月に変換し、onHover でホバーした月の利回りと 10 年 − 2 年のスプレッドを読み取ります。"
+    },
+    "loss-landscape": {
+      "title": "損失関数の地形",
+      "description": "4 つの極小値を持つテスト関数、Himmelblau 関数を log10(1 + loss) として床面の等高線とともに描画します。セレクトで組み込みの colorScale を切り替え、点をクリックするとそこから勾配降下法を実行し、どの極小値に到達するかを表示します。"
+    },
+    "wifi-signal": {
+      "title": "Wi-Fi のカバレッジ",
+      "description": "対数距離の伝搬損失と壁による損失から求めたオフィスフロアの信号強度で、タグでアクセスポイントを切り替えると再計算します。等高線で −67 dBm と −75 dBm のしきい値を示し、ボタンは ref の setCamera() で正射影の真上からの表示にし、resetCamera() で元に戻します。"
     }
   },
   "data": {
@@ -62,7 +78,53 @@
     "wave": "波",
     "play": "アニメーション",
     "amplitude": "振幅",
-    "waveAria": "中心から広がるアニメーションの波紋"
+    "waveAria": "中心から広がるアニメーションの波紋",
+    "plate": "金属板",
+    "reset": "リセット",
+    "cm": "cm",
+    "temperature": "温度",
+    "heatAria": "点熱源で加熱された金属板の温度",
+    "heatStatus": "熱源: {{sources}} · 最高 {{max}} · 平均 {{mean}}。板をクリックすると熱源を追加・削除できます。",
+    "treasuryYield": "国債利回り",
+    "maturity": "年限",
+    "month": "月",
+    "yield": "利回り",
+    "yieldAria": "24 か月間の年限別国債利回り",
+    "yieldHover": "{{date}}の {{maturity}} 利回り: {{yield}}。",
+    "yieldHint": "曲面にホバーすると利回りを表示します。",
+    "spreadInverted": "{{date}}は逆イールドです（10 年 − 2 年: {{spread}}）。",
+    "spreadNormal": "{{date}}は右肩上がりの曲線です（10 年 − 2 年: {{spread}}）。",
+    "loss": "損失",
+    "point": "({{x}}, {{y}})",
+    "colorMap": "カラースケール",
+    "colorMaps": {
+      "viridis": "Viridis",
+      "plasma": "Plasma",
+      "magma": "Magma",
+      "cividis": "Cividis",
+      "turbo": "Turbo"
+    },
+    "weight1": "重み 1",
+    "weight2": "重み 2",
+    "logLoss": "log₁₀(1 + 損失)",
+    "lossAria": "4 つの極小値を持つ Himmelblau 関数の損失地形",
+    "descentResult": "{{start}}（損失 {{loss}}）から勾配降下法で {{steps}} ステップ後、{{minimum}} にある極小値 {{n}} に到達しました。",
+    "lossHint": "曲面をクリックすると、そこから勾配降下法を開始します。",
+    "dbm": "{{value}} dBm",
+    "signal": "信号",
+    "accessPoints": "アクセスポイント",
+    "rooms": {
+      "lobby": "ロビー",
+      "openSpace": "オープンスペース",
+      "meetingRooms": "会議室",
+      "kitchen": "キッチン"
+    },
+    "perspectiveView": "3D 表示",
+    "topView": "真上から",
+    "distanceM": "メートル",
+    "wifiAria": "オフィスフロアの Wi-Fi 信号強度",
+    "wifiCoverage": "フロアの {{good}} が {{goodLevel}} 以上（ビデオ通話可）、{{usable}} が {{usableLevel}} 以上です。",
+    "wifiNone": "すべてのアクセスポイントがオフです。カバレッジはありません。"
   },
   "api": {
     "Surface3DChartProps": {

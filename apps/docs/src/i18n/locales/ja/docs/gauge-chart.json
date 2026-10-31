@@ -25,6 +25,22 @@
     "slo": {
       "title": "可用性とエラーバジェット",
       "description": "拡大したゲージ（min 99.5、max 100）で目標に対する可用性を、もう 1 つで残りのエラーバジェットを示します。詳細は renderTooltip で表示します。"
+    },
+    "thermostat": {
+      "title": "スマートサーモスタット",
+      "description": "− と + のボタンで目標温度を 0.5 度ずつ変更します。設定は °C で保存して表示時に換算するため、°F に切り替えると value・min・max・bands がまとめて変わります。renderTooltip は室温を、下の文は暖房・冷房・維持のどれかを示します。"
+    },
+    "credit-score": {
+      "title": "クレジットスコア",
+      "description": "300 から 850 までの 5 つの評価帯の上に針を表示し、min と max をスコアの範囲に設定しています。Select で申請者を切り替えると針が新しいスコアへ動きます。renderTooltip は評価を、event.percent は範囲内の位置を示します。"
+    },
+    "battery": {
+      "title": "電気自動車の充電",
+      "description": "半円のゲージ（sweep={180}）は接続中に 400 ms ごとに増え、80 % を超えると遅くなります。プラグを抜いたとき、満充電のとき、アンマウント時にインターバルを止めます。通知するのは充電フェーズだけで、航続距離と 80 % までの時間は Intl.NumberFormat の単位で表示します。"
+    },
+    "dark-panel": {
+      "title": "ダークなコントロールパネル",
+      "description": "CSS 変数がダークテーマに切り替わるパネル上の 3 つの針付きゲージです。チャートは <html> と <body> しか監視しないため、コンテナのスタイル変更後に ref から各チャートの refreshTheme() を呼び出します。"
     }
   },
   "data": {
@@ -56,7 +72,68 @@
     "availabilityAria": "目標に対する 30 日間の可用性",
     "budgetLeft": "残りのエラーバジェット",
     "budgetDetail": "許容 {{budget}} のうち停止 {{used}}",
-    "budgetAria": "今月の残りのエラーバジェット"
+    "budgetAria": "今月の残りのエラーバジェット",
+    "thermostat": {
+      "unit": "温度の単位",
+      "units": {
+        "celsius": "°C",
+        "fahrenheit": "°F"
+      },
+      "target": "目標",
+      "room": "室温：{{value}}",
+      "aria": "サーモスタットの目標温度",
+      "lower": "目標温度を下げる",
+      "raise": "目標温度を上げる",
+      "modes": {
+        "heating": "{{target}} まで暖房中（室温：{{room}}）",
+        "cooling": "{{target}} まで冷房中（室温：{{room}}）",
+        "holding": "{{target}} を維持（室温：{{room}}）"
+      }
+    },
+    "credit": {
+      "applicant": "申請者",
+      "score": "クレジットスコア",
+      "ratings": {
+        "poor": "低い",
+        "fair": "やや低い",
+        "good": "良好",
+        "veryGood": "とても良好",
+        "exceptional": "非常に優秀"
+      },
+      "position": "範囲の {{share}} の位置",
+      "aria": "{{name}} のクレジットスコア",
+      "result": "{{name}}：{{score}}。{{advice}}",
+      "advice": {
+        "poor": "ほとんどの金融機関で審査に通りません。",
+        "fair": "承認の可能性はありますが、金利は高めです。",
+        "good": "ほとんどのローンを標準金利で利用できます。",
+        "veryGood": "平均より有利な金利を利用できます。",
+        "exceptional": "最も有利な金利を利用できます。"
+      }
+    },
+    "battery": {
+      "label": "充電済み",
+      "range": "航続距離：{{range}}",
+      "aria": "車のバッテリー残量",
+      "plugged": "接続中",
+      "reset": "リセット",
+      "phases": {
+        "full": "満充電",
+        "unplugged": "未接続",
+        "charging": "急速充電中",
+        "topping": "80 % 以上は低速充電中"
+      },
+      "toEighty": "80 % まであと{{minutes}}"
+    },
+    "turbine": {
+      "rpm": "{{value}} rpm",
+      "mw": "{{value}} MW",
+      "dark": "ダークパネル",
+      "rotor": "ローター回転数",
+      "power": "出力",
+      "nacelle": "ナセル温度",
+      "aria": "風力タービンの{{reading}}：{{value}}"
+    }
   },
   "api": {
     "GaugeChartProps": {

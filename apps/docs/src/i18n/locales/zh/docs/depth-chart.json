@@ -29,6 +29,22 @@
     "red-up": {
       "title": "红涨绿跌",
       "description": "colorConvention=\"red-up\" 交换默认颜色：买盘为红色、卖盘为绿色，符合中国大陆、日本与韩国的习惯。upColor 与 downColor 可设置任意颜色。"
+    },
+    "slippage": {
+      "title": "市价单成本",
+      "description": "一个纯函数沿同一份快照的卖盘（买入）或买盘（卖出）逐档吃单，直到成交完指定数量。priceLines 标出平均成交价和最后一档成交价，range 随之放宽让两者保持可见，下方读数给出总成本以及相对中间价的滑点（基点）。"
+    },
+    "imbalance": {
+      "title": "流动性失衡",
+      "description": "getInstance().getStore() 暴露图表内部的实时订单簿：示例每秒统计一次所选区间内（同时作为 range 传入）两侧挂单量，显示买卖占比、失衡度和价差。行情流本身不会触发 React 重新渲染。"
+    },
+    "equity": {
+      "title": "股票：美元与股数",
+      "description": "一只股票的订单簿，最小变动价位为 1 美分，挂单为整手。formatPrice 和 formatSize 替换内置数字格式（按页面语言显示美元和紧凑的股数），labels 重命名数量轴；amount=\"quote\" 改为累计美元金额而不是股数。"
+    },
+    "venues": {
+      "title": "多交易所合并",
+      "description": "三家交易所报价同一交易对，它们的订单簿按价格逐档合并为一份合并订单簿。给 book 传入另一个对象时，曲线会从一个交易所平滑过渡到另一个；表格对比各家的最优价以及中间价 ±0.1% 内的流动性。"
     }
   },
   "data": {
@@ -53,7 +69,32 @@
     "greenUp": "绿涨红跌",
     "sweepBuy": "买入 {{amount}} BTC（{{total}}）将吃掉直到 {{price}} 的卖单，高于中间价 {{slippage}}，成交均价 {{average}}。",
     "sweepSell": "卖出 {{amount}} BTC（{{total}}）将吃掉直到 {{price}} 的买单，低于中间价 {{slippage}}，成交均价 {{average}}。",
-    "sweepHint": "悬停在曲线上，估算一笔市价单的成本。"
+    "sweepHint": "悬停在曲线上，估算一笔市价单的成本。",
+    "orderSide": "方向",
+    "marketBuy": "市价买入",
+    "marketSell": "市价卖出",
+    "orderSize": "下单数量",
+    "btcAmount": "{{value}} BTC",
+    "averageFill": "成交均价",
+    "worstFill": "最后成交",
+    "fillSummary": "{{size}} BTC 将吃掉 {{levels}} 档：均价 {{average}}，最后一档 {{worst}}，合计 {{cost}}，偏离中间价 {{slippage}} 个基点。",
+    "fillPartial": "这一侧只有 {{filled}} BTC（需要 {{size}} BTC）：订单会吃光全部 {{levels}} 档，直到 {{worst}}。",
+    "band": "统计区间",
+    "imbalanceStatus": "{{band}} 内：买盘 {{bids}} BTC，卖盘 {{asks}} BTC，失衡 {{imbalance}} · 价差 {{spread}}（{{spreadBp}} 个基点）",
+    "imbalanceWaiting": "等待第一次读数…",
+    "showNotional": "累计美元金额（价格 × 股数）",
+    "notionalUsd": "金额（美元）",
+    "shares": "股数",
+    "equityAria": "ACME 股票订单簿深度",
+    "consolidated": "合并",
+    "venue": "交易所 {{name}}",
+    "venueColumn": "交易所",
+    "bestBid": "最优买价",
+    "bestAsk": "最优卖价",
+    "depthNearMid": "±0.1% 内 BTC",
+    "depthShare": "{{value}}（{{share}}）",
+    "venuesAria": "BTC/USDT 深度，{{name}}",
+    "venuesTable": "各交易所最优价与流动性"
   },
   "api": {
     "DepthChartProps": {

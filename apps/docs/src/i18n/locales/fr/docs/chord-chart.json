@@ -29,6 +29,26 @@
     "options": {
       "title": "Options",
       "description": "Essayez les modes de libellés (auto choisit des libellés tangentiels quand chaque nom tient dans son arc, radiaux sinon), l’ordre des groupes, la couleur des rubans, les rubans orientés et les graduations."
+    },
+    "brand-switching": {
+      "title": "Changements d'opérateur",
+      "description": "Les abonnés qui passent d'un opérateur mobile à l'autre, une matrice par année. directed trace un ruban par sens et ribbonColor=\"target\" le colore selon l'opérateur qui gagne les abonnés ; les gains nets sont calculés à partir de la même matrice."
+    },
+    "focus": {
+      "title": "Focus sur un groupe",
+      "description": "Articles co-écrits entre facultés. onClick sur un arc garde les rubans de cette faculté et donne une couleur neutre aux autres via la color des liens, puis liste ses principaux partenaires ; un clic sur un ruban affiche la paire."
+    },
+    "co-purchase": {
+      "title": "Analyse du panier",
+      "description": "Les catégories achetées ensemble dans un même panier. sortGroups et sortSubgroups=\"descending\" placent en premier les plus grosses catégories et associations, ticks={1000} fixe le pas des graduations avec un tickFormat compact, et renderTooltip présente une association comme une part de tous les paniers."
+    },
+    "live": {
+      "title": "Appels de services en direct",
+      "description": "Appels par seconde entre microservices, actualisés toutes les 2 secondes avec une transition animée. directed avec ribbonColor=\"source\" montre qui appelle qui ; la légende donne le total et l'appel le plus chargé."
+    },
+    "legend": {
+      "title": "Légende contrôlée",
+      "description": "Passagers entre plateformes aéroportuaires. legend={{ position: \"top\" }} masque ou affiche les plateformes, et avec hidden + onToggle la liste des éléments masqués vit dans la page : les boutons appliquent des préréglages et le texte additionne les liaisons encore visibles."
     }
   },
   "native": {
@@ -175,7 +195,81 @@
       "neutral": "Neutre"
     },
     "directed": "Orienté",
-    "ticks": "Graduations"
+    "ticks": "Graduations",
+    "switching": {
+      "other": "Autres opérateurs",
+      "yearLabel": "Année",
+      "year": "{{year}}",
+      "net": "{{name}} {{value}}",
+      "summary": "{{name}} a gagné le plus d'abonnés ({{value}} en net). Solde net : {{list}}.",
+      "aria": "Abonnés changeant d'opérateur mobile en {{year}}"
+    },
+    "research": {
+      "faculties": {
+        "physics": "Physique",
+        "chemistry": "Chimie",
+        "biology": "Biologie",
+        "medicine": "Médecine",
+        "computing": "Informatique",
+        "mathematics": "Mathématiques",
+        "economics": "Économie",
+        "engineering": "Ingénierie"
+      },
+      "hint": "Cliquez sur une faculté pour voir ses collaborations, ou sur un ruban pour voir une paire",
+      "focus": "{{name}} : {{total}} articles co-écrits, surtout avec {{partners}}",
+      "partner": "{{name}} ({{value}})",
+      "pair": "{{a}} et {{b}} : {{value}} articles co-écrits",
+      "clear": "Effacer",
+      "aria": "Articles co-écrits par les facultés d'une université sur cinq ans"
+    },
+    "basket": {
+      "categories": {
+        "coffee": "Café",
+        "milk": "Lait",
+        "bread": "Pain",
+        "pastries": "Viennoiseries",
+        "fruit": "Fruits",
+        "cereal": "Céréales",
+        "yogurt": "Yaourts",
+        "juice": "Jus"
+      },
+      "pair": "{{a}} + {{b}}",
+      "together": "Achetés ensemble dans {{value}} paniers ({{share}} de tous les paniers)",
+      "withOthers": "{{value}} associations avec d'autres catégories",
+      "aria": "Catégories de produits achetées ensemble dans un même panier sur un mois"
+    },
+    "calls": {
+      "services": {
+        "gateway": "Passerelle",
+        "users": "Utilisateurs",
+        "orders": "Commandes",
+        "inventory": "Stocks",
+        "payments": "Paiements",
+        "notifications": "Notifications"
+      },
+      "perSecond": "{{value}} appels/s",
+      "summary": "Total : {{total}}. Le plus chargé : {{from}} → {{to}} ({{value}})",
+      "pause": "Pause",
+      "resume": "Reprendre",
+      "aria": "Appels par seconde entre microservices, en direct"
+    },
+    "hubs": {
+      "london": "Londres",
+      "paris": "Paris",
+      "frankfurt": "Francfort",
+      "istanbul": "Istanbul",
+      "dubai": "Dubaï",
+      "singapore": "Singapour",
+      "tokyo": "Tokyo",
+      "newYork": "New York",
+      "millions": "{{value}} M de passagers",
+      "showAll": "Afficher toutes les plateformes",
+      "eastOnly": "Plateformes de l'Est",
+      "westOnly": "Plateformes de l'Ouest",
+      "tooFew": "Affichez au moins deux plateformes pour voir les liaisons entre elles",
+      "summary": "{{shown}} plateformes sur {{total}} affichées : {{routes}} liaisons, {{passengers}} par an",
+      "aria": "Passagers annuels entre les grandes plateformes aéroportuaires"
+    }
   },
   "wc": {
     "demos": {

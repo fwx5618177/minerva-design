@@ -46,6 +46,22 @@
     "red-up": {
       "title": "赤が上昇",
       "description": "colorConvention=\"red-up\"：買いのバブルと最良買い気配ラインを赤、売りと最良売り気配ラインを緑で表示します。"
+    },
+    "price-resolution": {
+      "title": "価格の解像度とホバー検査",
+      "description": "tickSize は価格行の高さを設定し（変更すると再生した履歴を新しい解像度で再サンプリング）、priceSpan は最良気配に合わせる代わりに表示価格範囲を固定します。tooltip={false} にして onHover で独自の表示を作ります：列の時刻、価格行、板の数量と側、出来高。"
+    },
+    "time-window": {
+      "title": "時間窓、一時停止、クリア",
+      "description": "window は記録した5分間（history）のうちどれだけを表示するかを選び、再サンプリングはしません。スイッチはフィードのループを止め、再開すると市場は止まった所から隙間なく続きます。clear() で列を消し、setBook で現在の板から再開します。"
+    },
+    "linked": {
+      "title": "ヒートマップ、板、歩み値",
+      "description": "記録した1分間で3つのウィジェットを別々に埋めます。ヒートマップはすべての更新を再生し（applyDeltas、addTrades）、歩み値は setTrades で全約定を一度に、板は現在の板だけを受け取ります。その後のライブメッセージは、取引所の1本の WebSocket のように3つすべてに送られます。"
+    },
+    "perpetual": {
+      "title": "枚数で表示する無期限先物",
+      "description": "1枚 0.001 BTC の BTC 無期限先物：formatSize が数量を換算し、formatPrice がドルを表示し、sizeUnit と labels が凡例とツールチップの単位を変え、timeZone=\"utc\" が上の資金調達カウントダウンの取引所時刻に合わせます。"
     }
   },
   "data": {
@@ -70,7 +86,42 @@
     "redUp": "赤が上昇・緑が下落",
     "greenUp": "緑が上昇・赤が下落",
     "volumeAt": "ホバー中の列：買い {{buys}} BTC、売り {{sells}} BTC",
-    "volumeHint": "列にホバーすると出来高を表示します。"
+    "volumeHint": "列にホバーすると出来高を表示します。",
+    "rowHeight": "行の高さ",
+    "priceSpan": "価格範囲",
+    "usdtValue": "{{value}} USDT",
+    "auto": "自動",
+    "fitBook": "板に合わせる",
+    "cellReadout": "{{time}} · {{price}} · {{size}} BTC {{side}} · 買い {{buys}} BTC、売り {{sells}} BTC",
+    "priceRange": "{{low}} – {{high}}",
+    "sideBid": "（買い側）",
+    "sideAsk": "（売り側）",
+    "sideSpread": "（スプレッド内）",
+    "cellHint": "セルにカーソルを合わせると詳細を表示します。",
+    "timeWindow": "時間窓",
+    "liveFeed": "ライブフィード",
+    "clearHistory": "履歴をクリア",
+    "pausedAt": "{{time}} に一時停止しました。",
+    "resumedAt": "{{time}} に再開しました。",
+    "clearedAt": "{{time}} に履歴をクリアしました。",
+    "windowStatus": "保持している {{history}} のうち {{window}} を表示中。",
+    "pair": "BTC/USDT",
+    "lastPrice": "現在値 {{value}}",
+    "spreadIs": "スプレッド {{value}}",
+    "tradesOnTape": "歩み値 {{value}} 件",
+    "bookAria": "BTC/USDT の板",
+    "tapeAria": "BTC/USDT の歩み値",
+    "perpName": "BTC-USD 無期限先物",
+    "contractSize": "1枚 = {{value}} BTC",
+    "fundingRate": "資金調達率 {{rate}}",
+    "funding": "資金調達率 {{rate}}、{{time}} まで残り {{countdown}}",
+    "contracts": "枚",
+    "restingContracts": "板",
+    "takerBuys": "テイカー買い",
+    "takerSells": "テイカー売り",
+    "perpAria": "BTC-USD 無期限先物の流動性ヒートマップ",
+    "perpReadout": "{{price}}：板 {{contracts}} 枚（≈ {{notional}}）",
+    "perpHint": "ヒートマップにカーソルを合わせると板の枚数と金額を表示します。"
   },
   "api": {
     "OrderBookHeatmapProps": {

@@ -23,6 +23,26 @@
     "lineage": {
       "title": "Upstream and downstream",
       "description": "Data lineage from the raw tables to the dashboards. The selection keeps the lineage highlighted: click a model to see what feeds it and what it feeds, Esc or a click on the background clears it."
+    },
+    "build-scheduler": {
+      "title": "Build scheduler",
+      "description": "A task runner plays a monorepo build on 1, 2 or 4 workers, starting the ready task with the longest remaining chain first. Groups color the tasks done, running or queued as a timer advances, the node value is the duration and criticalPath shows the chain that bounds the build time however many workers there are."
+    },
+    "project-plan": {
+      "title": "Project plan",
+      "description": "A website launch planned with the critical path method: earliest and latest start dates give the slack of every task, and the zero-slack chain is passed to criticalPath as a list of ids. Subtitles show workday ranges with Intl.DateTimeFormat.formatRange; click a task to read its dates and slack."
+    },
+    "impact-analysis": {
+      "title": "Failure impact",
+      "description": "A nightly ETL run: pick the task that fails (or click a node) and everything downstream is marked blocked, with dashed incoming edges. highlight=\"lineage\" with a controlled selected shows the blast radius, and the summary lists the outputs that will not be delivered."
+    },
+    "course-prerequisites": {
+      "title": "Course prerequisites",
+      "description": "A computer science curriculum grouped by year. The radio buttons switch direction between TB, LR, BT and RL, and the nodes move to their new layers; click a course to list every course to take before it, in catalogue order."
+    },
+    "spreadsheet": {
+      "title": "Spreadsheet recalculation",
+      "description": "The formula cells of an order sheet and the cells they reference. Edit an input and the dependent cells are computed again: the edited cell is passed as selected so the lineage highlight shows exactly what was recalculated, and the subtitles format currencies and percentages with Intl.NumberFormat."
     }
   },
   "api": {
@@ -108,7 +128,107 @@
     },
     "lineageAria": "Data lineage from the raw tables to the dashboards",
     "lineageSummary": "{{name}}: {{upstream}} upstream, {{downstream}} downstream",
-    "lineageHint": "Click a table or a dashboard to highlight its lineage."
+    "lineageHint": "Click a table or a dashboard to highlight its lineage.",
+    "runStates": {
+      "done": "Done",
+      "running": "Running",
+      "queued": "Queued"
+    },
+    "taskProgress": "{{percent}} done",
+    "taskSeconds": "{{seconds}} s",
+    "workers": "Workers",
+    "workerCount": "{{n}} × worker",
+    "pause": "Pause",
+    "run": "Run",
+    "reset": "Reset",
+    "schedulerAria": "Build tasks of a monorepo, colored by state as the scheduler runs them",
+    "schedulerDone": "Build finished in {{seconds}} s on {{workers}} × worker.",
+    "schedulerStatus": "{{elapsed}} s of {{seconds}} s — running: {{running}}.",
+    "idle": "nothing",
+    "schedulerBound": "No schedule can beat the critical path: {{seconds}} s.",
+    "planTasks": {
+      "brief": "Project brief",
+      "research": "User research",
+      "sitemap": "Sitemap",
+      "wireframes": "Wireframes",
+      "visualDesign": "Visual design",
+      "copy": "Copywriting",
+      "backend": "API and hosting",
+      "cms": "CMS setup",
+      "frontend": "Front-end build",
+      "content": "Content entry",
+      "qa": "QA and fixes",
+      "seo": "SEO review",
+      "golive": "Go live"
+    },
+    "planPhases": {
+      "discovery": "Discovery",
+      "design": "Design",
+      "build": "Build",
+      "launch": "Launch"
+    },
+    "planAria": "Website launch plan: tasks, their dependencies and the critical path",
+    "planTask": "{{name}}: {{range}}, {{days}} workdays, can slip {{slack}} workdays without delaying the launch.",
+    "planCriticalTask": "{{name}}: {{range}}, {{days}} workdays, on the critical path — any delay moves the launch.",
+    "planSummary": "{{days}} workdays, launch on {{date}}. Click a task to see its dates and slack.",
+    "runStatuses": {
+      "success": "Succeeded",
+      "failed": "Failed",
+      "blocked": "Upstream failed"
+    },
+    "failingTask": "Failing task",
+    "impactAria": "Nightly ETL tasks, with the failed task and the tasks it blocks",
+    "impactSummary": "{{task}} failed and blocks {{blocked}} of the {{total}} tasks: {{sinks}} will not be delivered.",
+    "impactNone": "{{task}} failed, but no other task depends on it.",
+    "courses": {
+      "intro": "Intro to programming",
+      "discrete": "Discrete mathematics",
+      "calculus": "Calculus",
+      "dataStructures": "Data structures",
+      "architecture": "Computer architecture",
+      "linearAlgebra": "Linear algebra",
+      "probability": "Probability",
+      "algorithms": "Algorithms",
+      "os": "Operating systems",
+      "databases": "Databases",
+      "networks": "Networks",
+      "ml": "Machine learning",
+      "compilers": "Compilers",
+      "distributed": "Distributed systems",
+      "security": "Security",
+      "deepLearning": "Deep learning",
+      "capstone": "Capstone project"
+    },
+    "yearLabel": "Year {{n}}",
+    "flowDirection": "Flow direction",
+    "directions": {
+      "TB": "Top to bottom",
+      "LR": "Left to right",
+      "BT": "Bottom to top",
+      "RL": "Right to left"
+    },
+    "coursesAria": "Computer science courses and their prerequisites",
+    "coursePath": "Prerequisites of {{course}} ({{total}}): {{list}}.",
+    "courseNoPrerequisite": "{{course}} has no prerequisite.",
+    "cells": {
+      "price": "Unit price",
+      "quantity": "Quantity",
+      "discountRate": "Discount (%)",
+      "taxRate": "Tax rate",
+      "subtotal": "Subtotal",
+      "discount": "Discount",
+      "net": "Net",
+      "tax": "Tax",
+      "shipping": "Shipping",
+      "total": "Total",
+      "unitCost": "Cost per unit"
+    },
+    "cellKinds": {
+      "input": "Inputs",
+      "formula": "Formulas"
+    },
+    "spreadsheetAria": "Cells of an order sheet and the cells their formulas reference",
+    "recalculated": "{{cell}} changed: {{total}} cells recalculated ({{list}}). Total: {{value}}."
   },
   "wc": {
     "demos": {

@@ -25,6 +25,22 @@
     "servers": {
       "title": "サーバーのライブ監視",
       "description": "棒のスパークラインに毎秒新しい CPU サンプルを追加します。アラートのしきい値を超えると色とタグが赤になります。"
+    },
+    "hover-value": {
+      "title": "ホバーの読み取り",
+      "description": "onHover はホバー中の点を受け取ります（ポインタが離れると null）。そのインデックスで上の大きな数字と日付を更新し、ホバーがなければ最新の日に戻します。読み取り欄が代わりになるので tooltip={false} でツールチップを隠します。"
+    },
+    "step-goal": {
+      "title": "1 日の目標",
+      "description": "4 週間の歩数を棒で表し、目標を達成した日はデータ点の color で色を変えます。reference で目標を描き、renderTooltip で日付と目標に対する割合を表示します。"
+    },
+    "weather": {
+      "title": "スモールマルチプル",
+      "description": "Card のグリッドに都市ごとの Sparkline を置きます。それぞれ自身の範囲で拡大縮小されるので、最も暑い月と寒い月を上に書きます。renderTooltip でホバー中の月の名前を表示し、氷点下になる都市では reference で 0 °C を示します。"
+    },
+    "periods": {
+      "title": "期間の切り替え",
+      "description": "RadioGroup で直近 7 日、30 日、90 日を選びます。合計、前の期間からの変化、色は同じ値から計算し、reference でその期間の 1 日平均を示します。"
     }
   },
   "native": {
@@ -80,7 +96,35 @@
     "cpu": "CPU",
     "cpuAria": "{{server}} の CPU 使用率",
     "alert": "アラート",
-    "healthy": "正常"
+    "healthy": "正常",
+    "dailyActiveUsers": "デイリーアクティブユーザー",
+    "latestDay": "最新: {{date}}",
+    "hoveredDay": "{{date}} · 9 月 1 日から {{change}}",
+    "dauAria": "9 月 1 日から 10 月 31 日までのデイリーアクティブユーザー",
+    "stepsN": "{{value}} 歩",
+    "ofGoal": "目標の {{value}}",
+    "goalSummary": "{{days}} 日中 {{reached}} 日で目標の {{goal}} 歩を達成",
+    "steps": "歩数",
+    "stepsAria": "4 週間の 1 日あたりの歩数と 1 日の目標",
+    "cities": {
+      "reykjavik": "レイキャビク",
+      "montreal": "モントリオール",
+      "tokyo": "東京",
+      "cairo": "カイロ",
+      "singapore": "シンガポール",
+      "sydney": "シドニー"
+    },
+    "warmestColdest": "最高 {{max}}（{{maxMonth}}）· 最低 {{min}}（{{minMonth}}）",
+    "weatherAria": "{{city}} の月ごとの平均最高気温",
+    "period": "期間",
+    "periods": {
+      "week": "7 日",
+      "month": "30 日",
+      "quarter": "90 日"
+    },
+    "vsFirstHalf": "後半と前半の比較",
+    "vsPrevious": "前の期間との比較",
+    "periodAria": "直近 {{period}} の 1 日あたりの売上"
   },
   "api": {
     "SparklineProps": {

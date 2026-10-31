@@ -25,6 +25,22 @@
     "retention": {
       "title": "Cohort retention",
       "description": "Share of each monthly signup cohort still active after N months: null values leave the future cells empty, which draws the classic triangle."
+    },
+    "conversion": {
+      "title": "Click a cell",
+      "description": "Conversion rate by traffic source and device. onPointClick gives item.index, the index of the clicked cell in data, which leads back to its sessions and orders for the readout; onPlotClick clears it."
+    },
+    "rack-temperatures": {
+      "title": "Live sensor grid",
+      "description": "Inlet temperatures of the sensors of a server aisle, refreshed by a setInterval cleared on pause and unmount. A fixed valueRange keeps the same color for the same temperature at every refresh, and colorScale goes through theme colors from cool to hot."
+    },
+    "confusion-matrix": {
+      "title": "Confusion matrix",
+      "description": "Predictions of an image classifier, each cell colored by its share of the actual class. renderTooltip finds the hovered cell from item.index to show its count, and the recall and precision on the diagonal."
+    },
+    "sales-regions": {
+      "title": "Switching metrics",
+      "description": "Revenue, growth and margin by region and quarter: each metric brings its own colorScale (sequential, diverging around zero or a custom list), valueRange and format, switched with a RadioGroup."
     }
   },
   "native": {
@@ -58,7 +74,67 @@
     "correlationAria": "Correlation matrix of six product metrics",
     "monthN": "Month {{n}}",
     "retained": "Retained",
-    "retentionAria": "Retention of monthly signup cohorts"
+    "retentionAria": "Retention of monthly signup cohorts",
+    "devices": {
+      "desktop": "Desktop",
+      "mobile": "Mobile",
+      "tablet": "Tablet"
+    },
+    "sources": {
+      "organic": "Organic search",
+      "paid": "Paid search",
+      "social": "Social",
+      "email": "Email",
+      "referral": "Referral",
+      "direct": "Direct"
+    },
+    "cellStatus": "{{source}} on {{device}}: {{orders}} orders from {{sessions}} sessions, {{rate}}:",
+    "aboveAverage": "above the average of {{value}}",
+    "belowAverage": "below the average of {{value}}",
+    "clickCell": "Click a cell to see its sessions and orders.",
+    "conversionRate": "Conversion rate",
+    "conversionAria": "Conversion rate by traffic source and device",
+    "rackN": "Rack {{n}}",
+    "sensorN": "Sensor {{n}}",
+    "pause": "Pause",
+    "resume": "Resume",
+    "rackStatus": "Hottest: {{rack}}, {{sensor}} at {{value}} · {{alarms}} sensors above {{limit}}",
+    "inletTemperature": "Inlet temperature",
+    "racksAria": "Live inlet temperatures of the sensors of ten server racks",
+    "classes": {
+      "cat": "Cat",
+      "dog": "Dog",
+      "bird": "Bird",
+      "car": "Car",
+      "truck": "Truck"
+    },
+    "actualPredicted": "Actual {{actual}}, predicted {{predicted}}",
+    "imagesShare": "{{value}} images ({{share}} of the class)",
+    "recall": "Recall: {{value}}",
+    "precision": "Precision: {{value}}",
+    "misclassified": "Misclassified",
+    "accuracy": "Accuracy: {{value}} of {{images}} test images",
+    "shareOfClass": "Share of the class",
+    "predicted": "Predicted class",
+    "actual": "Actual class",
+    "confusionAria": "Confusion matrix of an image classifier over five classes",
+    "regions": {
+      "north": "North",
+      "south": "South",
+      "east": "East",
+      "west": "West",
+      "central": "Central"
+    },
+    "quarterN": "Q{{n}}",
+    "metric": "Metric",
+    "salesMetrics": {
+      "revenue": "Revenue",
+      "growth": "Growth over 2025",
+      "margin": "Gross margin"
+    },
+    "regionQuarter": "{{region}} in {{quarter}}",
+    "bestWorst": "Best: {{best}} ({{bestValue}}) · weakest: {{worst}} ({{worstValue}})",
+    "salesAria": "Sales metrics of 2026 by region and quarter"
   },
   "api": {
     "HeatmapConfig": {

@@ -17,6 +17,22 @@
     "bundle": {
       "title": "Bundle size",
       "description": "What a bundle analyzer shows: the modules of a JavaScript bundle by minified size, three levels deep, and the heaviest dependencies listed under the chart."
+    },
+    "drill-down": {
+      "title": "Drill-down into a store catalog",
+      "description": "Clicking a category (onClick, using the first name of event.path) replaces the data with its subcategories and brands, and the breadcrumb goes back to the overview. Inside a category a click selects a brand; renderTooltip prepends the category to the path."
+    },
+    "cloud-costs": {
+      "title": "Cloud costs with a legend filter",
+      "description": "legend={{ position: \"top\" }} lists the services; hidden and onToggle make the filter controlled, so a Show all button can reset it and the summary can total the services left. renderTooltip shows a resource's share of the whole bill."
+    },
+    "live-cluster": {
+      "title": "Live cluster memory",
+      "description": "The memory used by each pod is refreshed every 2 seconds (setInterval, cleared when the switch is off or on unmount) and the cells resize in place. Pods above 85 % of their limit turn red through their color, and only the list of such pods is announced."
+    },
+    "metric-switch": {
+      "title": "Switching the metric",
+      "description": "The same tree is sized by revenue, orders or profit, so switching the metric moves and resizes the cells instead of redrawing them; format follows the metric. Country names come from Intl.DisplayNames and renderTooltip lists every metric of a country."
     }
   },
   "data": {
@@ -60,7 +76,71 @@
     "marketAria": "Stock market map by sector, colored by the change of the day",
     "ofBundle": "{{share}} of the bundle",
     "bundleAria": "JavaScript bundle size by module",
-    "bundleSummary": "Total {{size}}; dependencies over 100 KB: {{modules}}."
+    "bundleSummary": "Total {{size}}; dependencies over 100 KB: {{modules}}.",
+    "store": {
+      "categories": {
+        "electronics": "Electronics",
+        "home": "Home",
+        "fashion": "Fashion",
+        "sports": "Sports"
+      },
+      "subcategories": {
+        "phones": "Phones",
+        "laptops": "Laptops",
+        "audio": "Audio",
+        "kitchen": "Kitchen",
+        "furniture": "Furniture",
+        "decor": "Decor",
+        "women": "Women",
+        "men": "Men",
+        "kids": "Kids",
+        "outdoor": "Outdoor",
+        "fitness": "Fitness"
+      },
+      "breadcrumb": "Catalog path",
+      "all": "All categories",
+      "aria": "Quarterly revenue by category, subcategory and brand",
+      "categoryAria": "{{category}} revenue by subcategory and brand",
+      "selected": "{{path}}: {{revenue}}, {{share}} of the category.",
+      "hint": "Click a category to open it.",
+      "hintBrand": "Click a brand to read its revenue."
+    },
+    "cloud": {
+      "services": {
+        "compute": "Compute",
+        "databases": "Databases",
+        "storage": "Storage",
+        "network": "Network",
+        "observability": "Observability"
+      },
+      "ofBill": "{{share}} of the bill",
+      "aria": "Monthly cloud costs by service and resource",
+      "filtered": "Shown: {{visible}}, {{share}} of the {{total}} bill.",
+      "total": "Monthly bill: {{total}}.",
+      "showAll": "Show all"
+    },
+    "cluster": {
+      "live": "Live updates",
+      "usage": "{{used}} of {{limit}} ({{share}})",
+      "aria": "Memory used by the pods of the cluster, by namespace",
+      "nearLimit": "Above {{threshold}} of their memory limit: {{pods}}",
+      "healthy": "Every pod is below {{threshold}} of its memory limit."
+    },
+    "sales": {
+      "regions": {
+        "europe": "Europe",
+        "americas": "Americas",
+        "asiaPacific": "Asia-Pacific"
+      },
+      "metric": "Metric",
+      "metrics": {
+        "revenue": "Revenue",
+        "orders": "Orders",
+        "profit": "Profit"
+      },
+      "shareOf": "{{share}} of the total ({{metric}})",
+      "aria": "Yearly sales by region and country: {{metric}}"
+    }
   },
   "api": {
     "TreemapChartProps": {

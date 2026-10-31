@@ -41,6 +41,26 @@
     "zoom": {
       "title": "区间选择",
       "description": "周期按钮调用图表 ref 的 setView，设置可见窗口，并让 y 轴范围贴合窗口内的价格；Ctrl / ⌘ + 滚轮与拖动依然可用。"
+    },
+    "live-sensor": {
+      "title": "实时传感器",
+      "description": "冷冻柜探头每秒推送一个读数：setInterval 追加新点并移除最旧的点，时间轴始终滑动显示最近一分钟；暂停或卸载时会清除定时器。rect 与虚线 y 标注标出报警区域，屏幕阅读器只播报报警状态。"
+    },
+    "log-scale": {
+      "title": "对数刻度",
+      "description": "yAxis={{ type: \"log\" }} 让指数增长呈现为直线，几小时的迟滞期和从 10³ 到 10⁹ 的菌量都能同时看清；用开关可与线性刻度对比。刻度由 notation: \"scientific\" 的 Intl.NumberFormat 生成。"
+    },
+    "measure": {
+      "title": "两点间测量",
+      "description": "onPointClick 最多固定两天，下方读数显示两者之间的变化；x 方向参考线和绿色或红色的 rect 标出该区间，点击空白处触发 onPlotClick 清除测量。"
+    },
+    "index-tooltip": {
+      "title": "指数化表现",
+      "description": "四类资产以起点为 100 重新定基；renderTooltip 用 React 列表替换默认内容，按表现从好到差排序，并显示每个系列的颜色及相对基期的涨跌。"
+    },
+    "small-multiples": {
+      "title": "小多图",
+      "description": "在 CSS 网格中为每个城市放一个小型 LineChart，所有图表使用相同的 yAxis min 和 max，便于一眼比较；interaction={false} 让它们保持静态，虚线 y 参考线标出世卫组织的指导值。"
     }
   },
   "data": {
@@ -105,7 +125,54 @@
     "memory": "内存",
     "hour": "{{hour}} 时",
     "usageAria": "一天内的 CPU 与内存使用率",
-    "pinchHint": "双指缩放，双击重置；点按图例可隐藏系列。"
+    "pinchHint": "双指缩放，双击重置；点按图例可隐藏系列。",
+    "freezer": "冷冻柜温度",
+    "alarmLimit": "高于 {{value}} 报警",
+    "pause": "暂停",
+    "resume": "继续",
+    "sensorAlarm": "报警：门未关？",
+    "sensorNormal": "正常",
+    "lastReading": "最新读数 {{value}}（{{time}}）",
+    "aboveLimit": "最近一分钟超限读数：{{readings}}",
+    "freezerAria": "最近一分钟的冷冻柜温度，每秒更新",
+    "strains": {
+      "wild": "野生型",
+      "mutant": "突变株",
+      "antibiotic": "加入抗生素"
+    },
+    "exponentialPhase": "指数生长期",
+    "logScale": "对数刻度",
+    "elapsed": "接种后时间",
+    "cfu": "CFU / mL",
+    "growthAria": "三种细菌培养物 24 小时的生长曲线",
+    "logNote": "直线段表示增长率恒定：野生型大约每 {{minutes}} 翻一番。",
+    "linearNote": "在线性刻度下，数量较少的培养物看起来几乎是平的：切回对数刻度即可比较。",
+    "portfolio": "投资组合市值",
+    "measureHint": "点击一个点开始测量，再点击第二个点。",
+    "measureStart": "起点 {{date}}（{{value}}）：请点击第二个点。",
+    "measureResult": "{{from}} → {{to}}：{{change}}（{{percent}}），历时 {{days}}",
+    "clear": "清除",
+    "portfolioAria": "2026 年投资组合每日市值；点击两个点测量变化",
+    "assets": {
+      "equities": "股票",
+      "bonds": "债券",
+      "gold": "黄金",
+      "realEstate": "房地产"
+    },
+    "baseIndex": "基期 = 100",
+    "assetsAria": "四类资产以 100 为基期的表现，2021 至 2026 年",
+    "micrograms": "{{value}} µg/m³",
+    "cities": {
+      "delhi": "德里",
+      "beijing": "北京",
+      "paris": "巴黎",
+      "mexicoCity": "墨西哥城",
+      "tokyo": "东京",
+      "saoPaulo": "圣保罗"
+    },
+    "guidelineNote": "11 月细颗粒物（PM2.5）日均浓度；虚线为世卫组织指导值 {{value}}。",
+    "daysAbove": "超标 {{days}}/{{total}} 天",
+    "pmAria": "{{city}} 30 天的每日 PM2.5"
   },
   "api": {
     "LineChartProps": {

@@ -17,6 +17,26 @@
     "options": {
       "title": "Alignment and colors",
       "description": "The chatbot solves tickets without a support tier, so its flows skip a column. align decides where the nodes without explicit column go, linkColor how the links are painted, and labelValues whether the labels show the values."
+    },
+    "income-statement": {
+      "title": "Income statement",
+      "description": "Revenue segments flow into revenue, then split into costs and profit down to net income. Each link sets its own color (green for profit, red for costs) while the segments keep linkColor=\"source\"; a compact currency format shortens the amounts."
+    },
+    "supply-chain": {
+      "title": "Supply chain tracing",
+      "description": "Coffee from the origins to the sales channels. onClick on a node keeps every path through it in color and grays out the other links through their color; a link is selected alone, with its share of the source."
+    },
+    "hiring-funnel": {
+      "title": "Hiring funnel",
+      "description": "Candidates from their source to a hire, with the drop-offs at each stage. Links refer to the nodes by name, so the switch simply leaves the drop-off nodes and links out; align=\"left\" keeps each drop-off next to its stage."
+    },
+    "live-traffic": {
+      "title": "Live API traffic",
+      "description": "Requests per second from the clients to the services and their status codes, refreshed every 1.5 s. The flows are computed downstream so that every node receives what it sends, and iterations={0} keeps the nodes in place between updates."
+    },
+    "plastic": {
+      "title": "Plastic packaging flows",
+      "description": "Polymers placed on the market and where the packaging ends up. renderTooltip shows a link as a share of its source (percent) and a node as a share of all the packaging."
     }
   },
   "native": {
@@ -142,7 +162,110 @@
       "target": "Target",
       "neutral": "Neutral"
     },
-    "labelValues": "Values in the labels"
+    "labelValues": "Values in the labels",
+    "pnl": {
+      "cloud": "Cloud",
+      "licenses": "Licenses",
+      "hardware": "Hardware",
+      "services": "Services",
+      "revenue": "Revenue",
+      "cogs": "Cost of revenue",
+      "gross": "Gross profit",
+      "rnd": "R&D",
+      "sales": "Sales & marketing",
+      "admin": "General & admin",
+      "operating": "Operating income",
+      "tax": "Income tax",
+      "net": "Net income",
+      "aria": "Quarterly income statement: revenue segments, costs and profit",
+      "margins": "Gross margin {{gross}} · operating margin {{operating}} · net margin {{net}}"
+    },
+    "supply": {
+      "brazil": "Brazil",
+      "colombia": "Colombia",
+      "ethiopia": "Ethiopia",
+      "vietnam": "Vietnam",
+      "hamburg": "Hamburg roastery",
+      "rotterdam": "Rotterdam roastery",
+      "north": "North warehouse",
+      "central": "Central warehouse",
+      "south": "South warehouse",
+      "cafes": "Cafés",
+      "supermarkets": "Supermarkets",
+      "online": "Online shop",
+      "tonnes": "{{value}} t",
+      "aria": "Coffee shipped in a month, from the origins through the roasteries and warehouses to the sales channels",
+      "hint": "Click a site to trace everything that goes through it, or a shipment to select it",
+      "node": "{{name}}: {{inbound}} in from {{from}} sites, {{outbound}} out to {{to}} sites",
+      "link": "{{source}} → {{target}}: {{value}} ({{share}} of what {{source}} ships)",
+      "clear": "Clear selection"
+    },
+    "hiring": {
+      "referrals": "Referrals",
+      "jobBoards": "Job boards",
+      "linkedin": "Professional networks",
+      "agencies": "Agencies",
+      "campus": "Campus",
+      "applied": "Applications",
+      "cvRejected": "Rejected on résumé",
+      "screen": "Phone screen",
+      "screenOut": "Not selected after screen",
+      "interview": "Interviews",
+      "interviewOut": "Not selected after interviews",
+      "offer": "Offers",
+      "declined": "Offer declined",
+      "hired": "Hired",
+      "showDropOffs": "Show drop-offs",
+      "aria": "Hiring funnel of a year, from the candidate source to the hire",
+      "summary": "{{applied}} applications, {{hired}} hires ({{rate}}). {{interview}} of the screened candidates reach the interviews and {{accepted}} of the offers are accepted."
+    },
+    "traffic": {
+      "client": {
+        "web": "Web app",
+        "ios": "iOS app",
+        "android": "Android app",
+        "partners": "Partner API"
+      },
+      "gateway": "API gateway",
+      "service": {
+        "auth": "Auth",
+        "catalog": "Catalog",
+        "search": "Search",
+        "checkout": "Checkout"
+      },
+      "status": {
+        "ok": "2xx success",
+        "clientError": "4xx client error",
+        "serverError": "5xx server error"
+      },
+      "rps": "{{value}} req/s",
+      "summary": "Total: {{total}}.",
+      "healthy": "Server errors: {{rate}}",
+      "incident": "Server errors: {{rate}}, checkout incident",
+      "pause": "Pause",
+      "resume": "Resume",
+      "aria": "Live API traffic, in requests per second, from the clients to the services and their status codes"
+    },
+    "plastic": {
+      "pet": "PET bottles & trays",
+      "hdpe": "HDPE containers",
+      "pp": "PP pots & caps",
+      "film": "LDPE films",
+      "other": "Other polymers",
+      "market": "Packaging on the market",
+      "collected": "Collected for recycling",
+      "incinerated": "Incinerated",
+      "landfill": "Landfill",
+      "leaked": "Leaked to nature",
+      "recycled": "Recycled",
+      "rejected": "Sorting rejects",
+      "closedLoop": "New packaging",
+      "downcycled": "Lower-grade products",
+      "mt": "{{value}} Mt",
+      "shareOfSource": "{{share}} of {{source}}",
+      "shareOfTotal": "{{share}} of all the packaging",
+      "aria": "Plastic packaging of a year in megatonnes: polymers, end-of-life routes and recycling"
+    }
   },
   "wc": {
     "demos": {

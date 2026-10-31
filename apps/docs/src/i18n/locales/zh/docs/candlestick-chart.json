@@ -49,6 +49,18 @@
     "dark": {
       "title": "深色主题",
       "description": "图表从 CSS 变量读取颜色：在容器上设置这些变量（背景、文字、涨跌色）即可改变 K 线、坐标轴、图例和十字光标的样式，此处配合空心蜡烛图和水印。"
+    },
+    "patterns": {
+      "title": "K 线形态",
+      "description": "一个普通函数扫描 K 线，识别十字星、锤子线、射击之星和吞没形态；结果作为 markers 显示（看涨在 K 线下方，看跌在上方），并由单选组过滤。onCrosshairMove 给出十字光标下的形态名称。"
+    },
+    "watchlist": {
+      "title": "自选卡片",
+      "description": "加密货币、股票、货币对和黄金的小型 CandlestickChart：legend={false} 并隐藏坐标轴，只保留 K 线；虚线 y 标注标出期初价格，Intl 按各自方式格式化报价（美元、五位小数汇率、小时或日期）。renderTooltip 让提示保持一行。"
+    },
+    "fx-pips": {
+      "title": "外汇点数与枢轴点",
+      "description": "UTC 时间的 EUR/USD 小时 K 线：formatPrice 显示五位小数，priceLines 绘制周四计算出的周五枢轴点（P、R1、S1），onCrosshairMove 以点为单位测量悬停的 K 线：振幅、实体、相对前收盘的变化以及与最新价的距离。"
     }
   },
   "native": {
@@ -128,7 +140,58 @@
     "fiveSeconds": "5 秒",
     "liveAria": "实时更新的 ADA/USDT 5 秒 K 线",
     "nasdaq": "纳斯达克 100",
-    "darkAria": "深色主题下的纳斯达克 100 30 分钟空心 K 线"
+    "darkAria": "深色主题下的纳斯达克 100 30 分钟空心 K 线",
+    "patternFilter": "形态",
+    "patternFilters": {
+      "all": "全部",
+      "doji": "十字星",
+      "hammer": "锤子线",
+      "shootingStar": "射击之星",
+      "engulfing": "吞没"
+    },
+    "patternCodes": {
+      "doji": "十",
+      "hammer": "锤",
+      "shootingStar": "星",
+      "bullishEngulfing": "吞↑",
+      "bearishEngulfing": "吞↓"
+    },
+    "patternNames": {
+      "doji": "十字星",
+      "hammer": "锤子线",
+      "shootingStar": "射击之星",
+      "bullishEngulfing": "看涨吞没",
+      "bearishEngulfing": "看跌吞没"
+    },
+    "patternMeanings": {
+      "doji": "开盘价与收盘价几乎相同，多空犹豫",
+      "hammer": "下跌后出现长下影线，买方入场",
+      "shootingStar": "上涨后出现长上影线，卖方入场",
+      "bullishEngulfing": "阳线实体完全覆盖前一根阴线",
+      "bearishEngulfing": "阴线实体完全覆盖前一根阳线"
+    },
+    "patternCount": "{{name}}：{{value}}",
+    "patternAt": "{{date}} 的{{name}}：{{meaning}}。",
+    "patternHint": "悬停在带标记的 K 线上查看形态名称。",
+    "patternsAria": "标出 K 线形态的 ORBT 日线图",
+    "assets": {
+      "btc": "BTC/USD",
+      "aapl": "AAPL",
+      "eurusd": "EUR/USD",
+      "gold": "黄金 (XAU/USD)"
+    },
+    "lastHours": "48 小时",
+    "lastDays": "30 天",
+    "watchAria": "{{name}} K 线，期间涨跌 {{change}}",
+    "pivots": {
+      "r1": "R1",
+      "pivot": "P",
+      "s1": "S1"
+    },
+    "eurusd": "EUR/USD",
+    "fxAria": "带每日枢轴点的 EUR/USD 小时 K 线",
+    "pipReadout": "{{time}} · 振幅 {{range}} 点 · 实体 {{body}} 点 · 涨跌 {{change}} 点 · 光标距最新价 {{distance}} 点",
+    "pipHint": "周五枢轴点：P {{pivot}}，R1 {{r1}}，S1 {{s1}}。悬停在 K 线上以点数测量。"
   },
   "api": {
     "CandlestickChartProps": {

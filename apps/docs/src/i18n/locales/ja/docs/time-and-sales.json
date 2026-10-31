@@ -33,6 +33,22 @@
     "red-up": {
       "title": "赤が上昇",
       "description": "colorConvention=\"red-up\"：買いは赤、売りは緑（中国本土・日本・韓国の慣習）。"
+    },
+    "pressure": {
+      "title": "買い圧力と売り圧力",
+      "description": "addTrades に渡した約定を1分間保持し、1秒に2回ローリング統計を計算します：VWAP、成行の買い・売り出来高、毎秒の約定件数、最大の約定。歩み値自体は一掃をまとめ（aggregate）、1 BTC 以上を強調します（largeTradeThreshold）。"
+    },
+    "clock": {
+      "title": "タイムゾーンと独自フォーマット",
+      "description": "formatTime は組み込みの時計（ローカルまたは UTC）を任意の Intl.DateTimeFormat に置き換えます。ここでは別のタイムゾーンでミリ秒付きです。formatPrice はドルを表示し、labels.time はヘッダーにタイムゾーンを示します。"
+    },
+    "block-alerts": {
+      "title": "大口約定アラート",
+      "description": "同じ方向・同じミリ秒の約定（aggregate がまとめるのと同じ一回の一掃）を合計し、2 BTC 以上なら平均価格と想定元本とともに記録します。同じサイズは largeTradeThreshold で歩み値でも強調されます。「クリア」は clear() で歩み値を空にします。"
+    },
+    "split": {
+      "title": "買いと売りを並べて表示",
+      "description": "1つのフィード、2つの歩み値：約定は addTrades の前に成行の方向で分けられ、それぞれ独自の ariaLabel を持ちます。ヘッダーは各側の件数と出来高を数え、ネットフローはその差です。"
     }
   },
   "data": {
@@ -52,7 +68,44 @@
     "redUp": "赤が上昇・緑が下落",
     "greenUp": "緑が上昇・赤が下落",
     "add": "約定を {{value}} 件追加",
-    "loaded": "{{rows}} 件、直近のバッチは {{ms}} ms"
+    "loaded": "{{rows}} 件、直近のバッチは {{ms}} ms",
+    "rollingWindow": "ローリング期間",
+    "lastWindow": "直近 {{value}}",
+    "vwap": "VWAP",
+    "buyShare": "買いの比率",
+    "bought": "買い",
+    "sold": "売り",
+    "btcValue": "{{value}} BTC",
+    "tradesPerSecond": "約定数 / 秒",
+    "largest": "最大の約定",
+    "largestBuy": "買い {{size}}（{{price}}）",
+    "largestSell": "売り {{size}}（{{price}}）",
+    "pressureBuy": "買い手が売り気配を買い上がっています。",
+    "pressureSell": "売り手が買い気配に売り込んでいます。",
+    "pressureBalanced": "買いと売りの流れは均衡しています。",
+    "pressureWaiting": "約定を待っています…",
+    "timeZone": "タイムゾーン",
+    "zones": {
+      "local": "ローカル",
+      "utc": "UTC",
+      "newYork": "ニューヨーク",
+      "tokyo": "東京"
+    },
+    "timeIn": "時刻（{{zone}}）",
+    "blocksTitle": "{{value}} BTC 以上の大口約定",
+    "clearTape": "クリア",
+    "blocksSeen": "開始から {{value}} 件の大口約定",
+    "blocksWaiting": "大口約定を待っています…",
+    "blockBuy": "買い",
+    "blockSell": "売り",
+    "blockLine": "{{time}} · {{size}} BTC、平均 {{price}}、≈ {{notional}}",
+    "blockPrints": "{{value}} 件",
+    "sideTotals": "{{count}} 件 · {{size}} BTC",
+    "buysTape": "買い",
+    "sellsTape": "売り",
+    "buysAria": "BTC/USDT の買い約定",
+    "sellsAria": "BTC/USDT の売り約定",
+    "netFlow": "ネットフロー：{{value}} BTC（買い − 売り）"
   },
   "api": {
     "TimeAndSalesProps": {

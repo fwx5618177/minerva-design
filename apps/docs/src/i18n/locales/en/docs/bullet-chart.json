@@ -21,6 +21,22 @@
     "long-names": {
       "title": "Long names",
       "description": "The label column is measured: it grows to fit the longest name, up to 40% of the width; longer names wrap to two lines and end with an ellipsis. Hover a row (or focus it with the keyboard) to read the full name in the tooltip."
+    },
+    "budget-tracker": {
+      "title": "Department budget tracker",
+      "description": "Each row compares the spending to date with the budget expected by now (target), and per-row ranges mark the comfortable, tight and over-plan zones. Bars turn red through color when a department spends faster than planned; onClick shows its variance under the chart."
+    },
+    "live-sensors": {
+      "title": "Live server room sensors",
+      "description": "Readings refresh every second (setInterval, cleared when the switch is off or on unmount); the target is the setpoint and the ranges the warning and critical thresholds. Each bar's color follows its status, and only the list of sensors out of range is announced."
+    },
+    "training": {
+      "title": "Weekly training plan",
+      "description": "A Select switches runners and the bars animate to their week. Every row is scaled on its own plan, so ticks={false} hides the unitless tick labels; renderTooltip formats the value and the plan with Intl.NumberFormat units (km, m, h) and the share of the plan."
+    },
+    "hiring-plan": {
+      "title": "Hiring plan",
+      "description": "Hires per team against the yearly headcount plan, with a marker where the team should be by now. A Select sorts the rows by pace; legend with hidden and onToggle hides teams, kept by key so that they stay hidden when the order changes, and the summary totals the visible teams."
     }
   },
   "native": {
@@ -117,7 +133,99 @@
       "renewals": "Net revenue retention of annual subscription contracts",
       "renewalsUnit": "ratio"
     },
-    "longAria": "Operational KPIs with long names against their targets"
+    "longAria": "Operational KPIs with long names against their targets",
+    "budget": {
+      "departments": {
+        "marketing": "Marketing",
+        "engineering": "Engineering",
+        "sales": "Sales",
+        "people": "People",
+        "facilities": "Facilities",
+        "travel": "Travel"
+      },
+      "yearly": "Yearly budget: {{budget}}",
+      "ranges": {
+        "comfortable": "Comfortable",
+        "tight": "Tight",
+        "over": "Over plan"
+      },
+      "hint": "{{over}} departments spend faster than planned. Click a row to see its variance.",
+      "overPlan": "{{department}} is over plan: {{variance}} by the end of Q3, {{share}} of the yearly budget spent, {{left}} left.",
+      "underPlan": "{{department}} is within plan: {{variance}} by the end of Q3, {{share}} of the yearly budget spent, {{left}} left.",
+      "aria": "Department spending at the end of Q3 against the budget planned by then"
+    },
+    "sensors": {
+      "names": {
+        "inlet": "Inlet temperature",
+        "humidity": "Humidity",
+        "power": "Power draw",
+        "fans": "Fan speed"
+      },
+      "units": {
+        "inlet": "°C",
+        "humidity": "% relative",
+        "power": "kW per rack",
+        "fans": "% of max speed"
+      },
+      "status": {
+        "ok": "Normal",
+        "warning": "Warning",
+        "critical": "Critical"
+      },
+      "live": "Live readings",
+      "aria": "Server room sensor readings against their setpoints and thresholds",
+      "alerts": "Needs attention: {{sensors}}",
+      "allOk": "All sensors are within their limits."
+    },
+    "training": {
+      "metrics": {
+        "distance": "Weekly distance",
+        "longRun": "Long run",
+        "elevation": "Elevation gain",
+        "sessions": "Sessions",
+        "sleep": "Sleep"
+      },
+      "plan": "plan: {{plan}}",
+      "ranges": {
+        "under": "Under plan",
+        "onPlan": "On plan",
+        "above": "Above plan"
+      },
+      "runner": "Runner",
+      "runners": {
+        "amara": "Amara",
+        "lucas": "Lucas",
+        "mei": "Mei"
+      },
+      "tooltip": "{{value}} for a plan of {{plan}} ({{share}})",
+      "aria": "Weekly training of {{runner}} against the plan",
+      "summary": "{{runner}} met {{met}} of {{metrics}} weekly targets."
+    },
+    "hiring": {
+      "teams": {
+        "engineering": "Engineering",
+        "sales": "Sales",
+        "support": "Support",
+        "marketing": "Marketing",
+        "product": "Product",
+        "finance": "Finance"
+      },
+      "planned": "{{plan}} planned this year",
+      "ranges": {
+        "behind": "Behind",
+        "catchingUp": "Catching up",
+        "onTrack": "On track"
+      },
+      "order": "Sort",
+      "orders": {
+        "plan": "Plan order",
+        "behind": "Most behind first",
+        "ahead": "Most ahead first"
+      },
+      "aria": "Hires of each team against the yearly headcount plan",
+      "summary": "{{hired}} of {{planned}} planned hires ({{share}}) across {{teams}} teams shown.",
+      "none": "No team shown."
+    }
   },
   "wc": {
     "demos": {

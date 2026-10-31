@@ -25,6 +25,26 @@
     "positioning": {
       "title": "定位图",
       "description": "来自客户调查的价格与感知质量：axisLabels 取代刻度，我们的品牌以独有的颜色和大小突出显示。"
+    },
+    "rice": {
+      "title": "RICE 优先级排序",
+      "description": "按工作量与覆盖人数 × 影响力排列待办事项，点的大小对应 RICE 得分；xDomain、yDomain、xSplit 和 ySplit 设定刻度范围与分界线。开关按信心度加权价值，让投机性的大赌注下沉，renderTooltip 列出 RICE 的四项输入。"
+    },
+    "swot": {
+      "title": "SWOT 分析",
+      "description": "showTicks={false} 与 axisLabels 把图表变成 SWOT 网格。quadrantContent 在每个象限靠近中心的角落添加计数标签，onQuadrantClick 列出该象限的因素并淡化其他因素，onPointClick 显示被点击的因素。"
+    },
+    "competitors": {
+      "title": "竞品地图",
+      "description": "选择要比较的两个维度：数据点、xLabel 和 yLabel 会随下拉框更新。我们的产品使用独立的颜色和尺寸，onPointClick 显示某个厂商相对我们的完整画像。"
+    },
+    "talent": {
+      "title": "人才校准",
+      "description": "校准会议中的绩效与潜力矩阵。拖动时 onPointDrag 实时显示分数和目标象限，onPointDrop 保存移动，onPointDoubleClick 将某人恢复到初始位置；被调整过的人点会变大。"
+    },
+    "live-services": {
+      "title": "实时服务健康度",
+      "description": "每秒更新各服务的延迟与错误率；xSplit 和 ySplit 两条线即 SLO 上限。借助 quadrantOf 列出处于严重象限的服务，renderTooltip 用 Intl 格式化单位。"
     }
   },
   "data": {
@@ -140,7 +160,126 @@
     "lowPrice": "低价格",
     "highPrice": "高价格",
     "brand": "品牌",
-    "positioningAria": "按价格和感知质量排列的品牌"
+    "positioningAria": "按价格和感知质量排列的品牌",
+    "rice": {
+      "items": {
+        "bulkEdit": "批量编辑",
+        "sso": "SAML 单点登录",
+        "offlineMode": "离线模式",
+        "onboardingTour": "新手引导",
+        "aiSummary": "AI 摘要",
+        "themes": "配色主题",
+        "auditLog": "审计日志",
+        "chatAlerts": "聊天提醒",
+        "apiV2": "公开 API v2",
+        "csvImport": "CSV 导入"
+      },
+      "weighted": "按信心度加权",
+      "effort": "工作量（人月）",
+      "value": "覆盖人数 × 影响力（千用户）",
+      "inputs": "覆盖 {{reach}} 千 · 影响力 {{impact}} · 信心度 {{confidence}} · 工作量 {{effort}} 人月",
+      "score": "RICE 得分：{{score}}",
+      "top": "RICE 得分前三：{{list}}",
+      "aria": "按 RICE 排序的待办事项：工作量与覆盖人数 × 影响力"
+    },
+    "swot": {
+      "topLeft": "优势",
+      "topRight": "劣势",
+      "bottomLeft": "机会",
+      "bottomRight": "威胁",
+      "internal": "内部",
+      "external": "外部",
+      "helpful": "有利",
+      "harmful": "不利",
+      "factors": {
+        "brandLoyalty": "忠实客户",
+        "ownPlatform": "自研平台",
+        "lowChurn": "低流失率",
+        "smallSalesTeam": "销售团队规模小",
+        "legacyBilling": "老旧计费系统",
+        "singleRegion": "仅覆盖单一地区",
+        "smbMarket": "中小企业市场增长",
+        "partnerships": "经销商合作",
+        "aiFeatures": "AI 功能",
+        "newEntrant": "资金雄厚的新进入者",
+        "regulation": "新的数据法规",
+        "priceWar": "价格战"
+      },
+      "count": "{{n}} 个因素",
+      "quadrantItems": "{{quadrant}}：{{items}}",
+      "factor": "{{factor}}（{{quadrant}}）",
+      "hint": "点击象限列出其中的因素，或点击某个因素将其选中",
+      "aria": "SWOT 分析：优势、劣势、机会与威胁"
+    },
+    "comp": {
+      "dimensions": {
+        "price": "价格亲民度",
+        "features": "功能深度",
+        "ease": "易用性",
+        "support": "支持质量",
+        "integrations": "集成能力"
+      },
+      "xAxis": "横轴",
+      "yAxis": "纵轴",
+      "us": "{{name}}（我们）",
+      "strongBoth": "两项都强",
+      "weakBoth": "两项都弱",
+      "score": "{{dimension}} {{score}}",
+      "profile": "{{name}}：{{scores}}。在 {{total}} 个维度中有 {{ahead}} 个领先我们。",
+      "ourProfile": "{{name}}（我们）：{{scores}}。",
+      "hint": "选择两个维度，然后点击某个厂商查看其画像",
+      "aria": "按{{x}}和{{y}}比较的竞品"
+    },
+    "talent": {
+      "roles": {
+        "backendLead": "后端负责人",
+        "productDesigner": "产品设计师",
+        "dataAnalyst": "数据分析师",
+        "qaEngineer": "测试工程师",
+        "mobileDeveloper": "移动端开发",
+        "productManager": "产品经理",
+        "supportLead": "客服主管",
+        "juniorDeveloper": "初级开发"
+      },
+      "futureLeaders": "未来领导者",
+      "roughDiamonds": "璞玉",
+      "solidPerformers": "稳健贡献者",
+      "needsSupport": "需要支持",
+      "performance": "绩效",
+      "potential": "潜力",
+      "moving": "{{person}}：绩效 {{performance}}，潜力 {{potential}} → {{quadrant}}",
+      "moved": "{{person}} 已放入“{{quadrant}}”",
+      "reset": "{{person}} 已恢复初始评级",
+      "resetAll": "所有评级已恢复初始值",
+      "resetButton": "全部重置",
+      "changed": "已校准 {{n}} / {{total}} 人",
+      "hint": "拖动某人以重新校准，双击撤销",
+      "aria": "人才校准：绩效与潜力"
+    },
+    "live": {
+      "services": {
+        "auth": "认证",
+        "search": "搜索",
+        "checkout": "结算",
+        "catalog": "商品目录",
+        "payments": "支付",
+        "notifications": "通知",
+        "recommendations": "推荐",
+        "media": "媒体"
+      },
+      "healthy": "健康",
+      "slow": "缓慢",
+      "erroring": "报错",
+      "critical": "严重",
+      "latency": "p95 延迟（毫秒）",
+      "errorRate": "错误率（%）",
+      "tooltip": "p95 {{latency}} · 错误率 {{errors}}",
+      "criticalList": "同时超出两项 SLO：{{list}}",
+      "allGood": "没有服务同时超出两项 SLO",
+      "pause": "暂停",
+      "resume": "继续",
+      "aria": "实时服务健康度：p95 延迟与错误率"
+    }
   },
   "api": {
     "QuadrantChartProps": {

@@ -17,6 +17,22 @@
     "labels": {
       "title": "Étiquettes",
       "description": "Population par continent et par pays. labels choisit l'écriture des noms : auto prend l'arc ou le rayon pour chaque secteur, et les noms qui ne tiennent pas sont raccourcis ou omis. La légende masque / affiche les continents ; les noms de pays viennent d'Intl.DisplayNames."
+    },
+    "city-budget": {
+      "title": "Budget d’une ville",
+      "description": "drill={false} transforme le clic en sélection plutôt qu’en zoom : onClick remplit la ligne sous le graphique, qui donne la part d’un programme dans tout le budget et dans son domaine. renderTooltip affiche le même texte, et un domaine sans programmes est une simple feuille."
+    },
+    "time-tracking": {
+      "title": "Suivi du temps",
+      "description": "Les heures par client, projet et activité sur trois anneaux. Un RadioGroup passe de la semaine au mois et les secteurs s’animent ; les heures sont formatées avec l’unité hour d’Intl.NumberFormat, et le résumé donne la part facturable."
+    },
+    "live-requests": {
+      "title": "Trafic d’API en direct",
+      "description": "Les requêtes par minute par service et par endpoint, rafraîchies toutes les 1,5 seconde (setInterval, arrêté à la pause et au démontage) par une marche aléatoire initialisée. Le total est affiché sans être annoncé ; seul un changement de service le plus sollicité l’est."
+    },
+    "energy-mix": {
+      "title": "Mix électrique",
+      "description": "La légende et un Switch modifient la même liste hidden contrôlée (onToggle) : masquer les énergies fossiles depuis l’un ou l’autre reste synchronisé. Une source sans détail (le nucléaire) est une feuille du premier anneau, et chaque combustible hérite de la couleur de sa source."
     }
   },
   "native": {
@@ -148,7 +164,114 @@
       "radial": "Le long du rayon",
       "none": "Aucune"
     },
-    "worldAria": "Population mondiale par continent et par pays, en millions"
+    "worldAria": "Population mondiale par continent et par pays, en millions",
+    "budget": {
+      "areas": {
+        "education": "Éducation",
+        "health": "Santé",
+        "transport": "Transports",
+        "safety": "Sécurité publique",
+        "environment": "Environnement",
+        "administration": "Administration"
+      },
+      "programs": {
+        "schools": "Écoles",
+        "universities": "Universités",
+        "libraries": "Bibliothèques",
+        "hospitals": "Hôpitaux",
+        "prevention": "Prévention",
+        "transit": "Transports en commun",
+        "roads": "Voirie",
+        "cycling": "Pistes cyclables",
+        "police": "Police",
+        "fire": "Pompiers",
+        "parks": "Parcs",
+        "waste": "Collecte des déchets",
+        "water": "Eau"
+      },
+      "programLine": "{{path}} : {{amount}}, soit {{share}} du budget et {{areaShare}} du domaine {{area}}.",
+      "areaLine": "{{path}} : {{amount}}, soit {{share}} du budget.",
+      "aria": "Budget annuel de la ville par domaine et par programme",
+      "hint": "Budget annuel : {{total}}. Cliquez sur un secteur pour lire sa part."
+    },
+    "time": {
+      "clients": {
+        "bakery": "Chaîne de boulangeries",
+        "clinic": "Cabinet dentaire",
+        "school": "École de langues",
+        "internal": "Interne"
+      },
+      "projects": {
+        "website": "Site web",
+        "branding": "Identité visuelle",
+        "booking": "Système de réservation",
+        "app": "Application mobile",
+        "admin": "Administration",
+        "training": "Formation"
+      },
+      "activities": {
+        "design": "Design",
+        "development": "Développement",
+        "meetings": "Réunions",
+        "review": "Relecture",
+        "support": "Support",
+        "learning": "Apprentissage"
+      },
+      "period": "Période",
+      "periods": {
+        "week": "Cette semaine",
+        "month": "Ce mois-ci"
+      },
+      "tooltip": "{{hours}} · {{share}} du temps saisi",
+      "aria": "Heures saisies par client, projet et activité ({{period}})",
+      "summary": "Facturable : {{billable}} sur {{total}} ({{share}})."
+    },
+    "requests": {
+      "services": {
+        "checkout": "Paiement",
+        "search": "Recherche",
+        "accounts": "Comptes",
+        "catalog": "Catalogue"
+      },
+      "endpoints": {
+        "cart": "Panier",
+        "payment": "Règlement",
+        "shipping": "Livraison",
+        "query": "Requêtes",
+        "suggest": "Suggestions",
+        "login": "Connexion",
+        "profile": "Profil",
+        "product": "Fiches produit",
+        "reviews": "Avis"
+      },
+      "rpm": "{{value}} req./min",
+      "aria": "Requêtes d’API par minute, par service et par endpoint, mises à jour en direct",
+      "pause": "Pause",
+      "resume": "Reprendre",
+      "total": "Total : {{value}}",
+      "busiest": "Service le plus sollicité : {{service}}"
+    },
+    "energy": {
+      "sources": {
+        "renewables": "Renouvelables",
+        "nuclear": "Nucléaire",
+        "fossil": "Fossiles"
+      },
+      "fuels": {
+        "wind": "Éolien",
+        "solar": "Solaire",
+        "hydro": "Hydraulique",
+        "biomass": "Biomasse",
+        "gas": "Gaz naturel",
+        "coal": "Charbon",
+        "oil": "Pétrole"
+      },
+      "twh": "{{value}} TWh",
+      "hideFossil": "Masquer les énergies fossiles",
+      "aria": "Production annuelle d’électricité par source et par combustible",
+      "shownOnly": "Renouvelables masquées : {{total}} affichés.",
+      "share": "Renouvelables : {{share}} des {{total}} affichés."
+    }
   },
   "wc": {
     "demos": {

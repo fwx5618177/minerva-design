@@ -49,6 +49,18 @@
     "dark": {
       "title": "Night theme",
       "description": "The chart reads its colors from CSS variables: a container that sets them (background, text, up / down colors) restyles the candles, the axes, the legends and the crosshair, here with hollow candles and a watermark."
+    },
+    "patterns": {
+      "title": "Candlestick patterns",
+      "description": "A plain function scans the bars for dojis, hammers, shooting stars and engulfing candles; the matches become markers (bullish below the candle, bearish above), filtered by the radio group. onCrosshairMove names the pattern under the crosshair."
+    },
+    "watchlist": {
+      "title": "Watchlist cards",
+      "description": "Small CandlestickCharts for crypto, a stock, a currency pair and gold: legend={false} and hidden axes leave only the candles, a dashed y annotation marks the opening price, and Intl formats each quote its own way (dollars, five-decimal rates, hours or dates). renderTooltip keeps the tooltip to one line."
+    },
+    "fx-pips": {
+      "title": "FX pips and pivots",
+      "description": "EUR/USD hourly candles in UTC: formatPrice shows five decimals, priceLines draws Thursday's floor pivots (P, R1, S1) for Friday, and onCrosshairMove measures the hovered candle in pips: its range, its body, its change from the previous close and the distance from the last price."
     }
   },
   "native": {
@@ -128,7 +140,58 @@
     "fiveSeconds": "5s",
     "liveAria": "ADA/USDT five-second candles updated live",
     "nasdaq": "NASDAQ 100",
-    "darkAria": "NASDAQ 100 30-minute hollow candles on a night theme"
+    "darkAria": "NASDAQ 100 30-minute hollow candles on a night theme",
+    "patternFilter": "Pattern",
+    "patternFilters": {
+      "all": "All",
+      "doji": "Doji",
+      "hammer": "Hammer",
+      "shootingStar": "Shooting star",
+      "engulfing": "Engulfing"
+    },
+    "patternCodes": {
+      "doji": "D",
+      "hammer": "H",
+      "shootingStar": "SS",
+      "bullishEngulfing": "E↑",
+      "bearishEngulfing": "E↓"
+    },
+    "patternNames": {
+      "doji": "Doji",
+      "hammer": "Hammer",
+      "shootingStar": "Shooting star",
+      "bullishEngulfing": "Bullish engulfing",
+      "bearishEngulfing": "Bearish engulfing"
+    },
+    "patternMeanings": {
+      "doji": "open and close almost equal, indecision",
+      "hammer": "long lower shadow after a decline, buyers stepping in",
+      "shootingStar": "long upper shadow after a rise, sellers stepping in",
+      "bullishEngulfing": "a rising body covers the previous falling one",
+      "bearishEngulfing": "a falling body covers the previous rising one"
+    },
+    "patternCount": "{{name}}: {{value}}",
+    "patternAt": "{{name}} on {{date}}: {{meaning}}.",
+    "patternHint": "Hover a marked candle to name its pattern.",
+    "patternsAria": "ORBT daily chart with candlestick patterns marked",
+    "assets": {
+      "btc": "BTC/USD",
+      "aapl": "AAPL",
+      "eurusd": "EUR/USD",
+      "gold": "Gold (XAU/USD)"
+    },
+    "lastHours": "48 hours",
+    "lastDays": "30 days",
+    "watchAria": "{{name}} candles, {{change}} over the period",
+    "pivots": {
+      "r1": "R1",
+      "pivot": "P",
+      "s1": "S1"
+    },
+    "eurusd": "EUR/USD",
+    "fxAria": "EUR/USD hourly candles with daily pivot levels",
+    "pipReadout": "{{time}} · range {{range}} pips · body {{body}} pips · change {{change}} pips · crosshair {{distance}} pips from the last price",
+    "pipHint": "Pivots for Friday: P {{pivot}}, R1 {{r1}}, S1 {{s1}}. Hover a candle to measure it in pips."
   },
   "api": {
     "CandlestickChartProps": {

@@ -86,6 +86,18 @@
     "obv": {
       "title": "Volume cumulé (OBV)",
       "description": "L'OBV ajoute le volume des clôtures en hausse et retranche celui des clôtures en baisse ; sa moyenne sur 20 barres montre si la pression acheteuse ou vendeuse domine. Les grands nombres utilisent les unités compactes de la langue de la page."
+    },
+    "divergence": {
+      "title": "Divergences du RSI",
+      "description": "rsi() et les points hauts et bas des barres révèlent les divergences classiques : un plus bas plus bas avec un creux du RSI plus haut (haussière), un plus haut plus haut avec un sommet du RSI plus bas (baissière). Chacune devient deux tracés trendLine verrouillés, sur le panneau des prix et sur celui du RSI (pane: \"rsi:14\")."
+    },
+    "multi-timeframe": {
+      "title": "Plusieurs unités de temps",
+      "description": "resampleBars agrège les barres horaires en barres de 4 heures et journalières, et ema() calcule leur moyenne sur 20 barres ; chaque barre horaire ne voit que la dernière barre supérieure clôturée (sans anticipation), tracée avec compare au-dessus de l'EMA horaire. onCrosshairMove indique si la clôture est au-dessus des trois moyennes."
+    },
+    "screener": {
+      "title": "Filtre d'indicateurs",
+      "description": "rsi(), macd(), atr() et sma() calculés sur six valeurs remplissent un Table triable : RSI, histogramme du MACD, ATR en part du prix, écart à la moyenne sur 50 jours et un signal. Choisissez une valeur pour ouvrir son graphique avec les mêmes indicateurs."
     }
   },
   "data": {
@@ -166,7 +178,45 @@
     "dmiAria": "Graphique journalier de MSFT avec le panneau DMI",
     "aapl": "AAPL",
     "obvAria": "Graphique journalier d'AAPL avec le volume et l'OBV",
-    "flips": "Retournements : {{count}}"
+    "flips": "Retournements : {{count}}",
+    "divergenceKind": "Divergences",
+    "divergenceKinds": {
+      "all": "Toutes",
+      "bullish": "Haussières",
+      "bearish": "Baissières"
+    },
+    "divergenceAria": "Graphique SOL/USDT en 4 heures avec les divergences du RSI tracées",
+    "divergenceSummary": "{{bullish}} divergences haussières et {{bearish}} baissières.",
+    "divergenceLatest": "Dernière : {{kind}}, {{date}}.",
+    "emaOn": "EMA {{period}} · {{frame}}",
+    "mtfAria": "Graphique horaire ETH/USDT avec l'EMA 20 des barres horaires, de 4 heures et journalières",
+    "mtfAt": "{{time}} · clôture {{close}}",
+    "mtfAbove": "{{frame}} : au-dessus de {{value}}",
+    "mtfBelow": "{{frame}} : en dessous de {{value}}",
+    "mtfWarmup": "{{frame}} : pas assez de barres",
+    "mtfVerdict": {
+      "alignedUp": "Toutes les unités à la hausse",
+      "alignedDown": "Toutes les unités à la baisse",
+      "mixed": "Les unités divergent"
+    },
+    "screenTable": "Filtre d'indicateurs",
+    "screenSymbol": "Valeur",
+    "screenClose": "Clôture",
+    "screenChange": "1 jour",
+    "screenRsi": "RSI 14",
+    "screenMacd": "Hist. MACD",
+    "screenAtr": "ATR %",
+    "screenSma": "vs MM 50",
+    "screenSignal": "Signal",
+    "screenSignals": {
+      "overbought": "Surachat",
+      "oversold": "Survente",
+      "uptrend": "Tendance haussière",
+      "downtrend": "Tendance baissière",
+      "neutral": "Neutre"
+    },
+    "screenShowing": "{{name}} : {{signal}}, à {{distance}} de sa moyenne sur 50 jours.",
+    "screenChartAria": "Graphique journalier {{name}} avec la moyenne sur 50 jours, le RSI et le MACD"
   },
   "api": {
     "TradingMovingAverageIndicator": {

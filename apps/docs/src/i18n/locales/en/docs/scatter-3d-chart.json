@@ -29,6 +29,22 @@
     "renderer": {
       "title": "Renderer",
       "description": "Pick the backend of the data layer: auto tries WebGPU, WebGL2, WebGL then Canvas2D (CPU projection, decimated) and skips GPUs running in software; onRendererChange reports the backend actually used."
+    },
+    "embeddings": {
+      "title": "Document embeddings",
+      "description": "600 news articles embedded and projected on their first three principal components, one series per topic, with the explained variance in the axis titles. Click an article: onPointClick finds its five nearest neighbours, drawn as an extra series on top of the faded clouds and listed below."
+    },
+    "lidar": {
+      "title": "Lidar street scan",
+      "description": "About 13,000 lidar returns of a street, passed as typed-array columns and drawn as flat discs (pointStyle: \"disc\"). The radio buttons map the value column to the height or to the return intensity with a different colorScale, the switch remounts the chart in a dark ConfigProvider, and onHover reads the point under the pointer."
+    },
+    "satellites": {
+      "title": "Satellite constellations",
+      "description": "Four orbital shells around the Earth, from a low broadband constellation to the geostationary ring, moved every 100 ms by a setInterval cleaned up on unmount (one tick is one simulated minute). Each shell is a series with its own legend entry; hover a satellite to read the altitude, speed and period of its orbit."
+    },
+    "portfolio-risk": {
+      "title": "Portfolio risk",
+      "description": "Forty stocks by volatility, beta and annual return, one series per sector, the dot size following the market capitalization. The axes format percentages with Intl.NumberFormat, a click pins a stock and its Sharpe ratio below, and the switch changes camera.projection to orthographic for undistorted comparisons."
     }
   },
   "data": {
@@ -95,7 +111,60 @@
     },
     "cameraState": "Azimuth {{azimuth}}°, elevation {{elevation}}°, zoom ×{{zoom}}",
     "cameraHint": "Drag to rotate, Shift + drag to pan, Ctrl / ⌘ + wheel to zoom, double-click to reset.",
-    "rollAria": "Swiss roll point cloud colored by the position along the roll"
+    "rollAria": "Swiss roll point cloud colored by the position along the roll",
+    "topics": {
+      "sports": "Sports",
+      "politics": "Politics",
+      "technology": "Technology",
+      "health": "Health",
+      "finance": "Finance",
+      "travel": "Travel"
+    },
+    "docLabel": "{{topic}} article #{{n}}",
+    "neighbours": "Nearest neighbours",
+    "component": "Component {{n}} ({{variance}})",
+    "embeddingsAria": "News article embeddings on their first three principal components, by topic",
+    "neighboursOf": "Closest to {{doc}}: {{list}}.",
+    "neighbourItem": "{{doc}} ({{distance}})",
+    "embeddingsHint": "Click an article to find its nearest neighbours.",
+    "lidarReturns": "Lidar returns",
+    "lidarColor": "Color by",
+    "lidarModes": {
+      "height": "Height",
+      "intensity": "Intensity"
+    },
+    "darkTheme": "Dark theme",
+    "lidarAria": "Lidar point cloud of a street with buildings, trees and parked cars",
+    "lidarSummary": "{{points}} points. Hover the cloud to read a return.",
+    "lidarHover": "Height {{height}}, intensity {{intensity}}.",
+    "satName": "{{shell}} {{n}}",
+    "shells": {
+      "broadband": "Broadband (LEO)",
+      "imaging": "Earth imaging (polar)",
+      "navigation": "Navigation (MEO)",
+      "geostationary": "Geostationary"
+    },
+    "earth": "Earth",
+    "play": "Play",
+    "thousandKm": "Thousands of km",
+    "satellitesAria": "Satellites of four orbital shells moving around the Earth",
+    "satHover": "{{shell}}: altitude {{altitude}}, speed {{speed}}, one orbit every {{period}}.",
+    "satellitesHint": "Hover a satellite to read its orbit.",
+    "sectors": {
+      "technology": "Technology",
+      "healthcare": "Healthcare",
+      "energy": "Energy",
+      "financials": "Financials",
+      "consumer": "Consumer"
+    },
+    "stockLabel": "{{ticker}} · {{cap}}",
+    "orthographicView": "Orthographic view",
+    "annualVolatility": "Volatility",
+    "beta": "Beta",
+    "annualReturn": "Annual return",
+    "portfolioAria": "Stocks by volatility, beta and annual return, sized by market capitalization",
+    "stockReadout": "{{ticker}} ({{sector}}): return {{ret}}, volatility {{volatility}}, beta {{beta}}, Sharpe ratio {{sharpe}}, market cap {{cap}}.",
+    "portfolioHint": "Click a stock to pin its figures."
   },
   "api": {
     "Scatter3DChartProps": {

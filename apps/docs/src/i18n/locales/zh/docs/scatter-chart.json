@@ -25,6 +25,26 @@
     "outliers": {
       "title": "异常值",
       "description": "通过逐点的颜色、大小和标签标出比其负载预期慢得多的请求；预期耗时是一条折线系列。"
+    },
+    "zoom-controls": {
+      "title": "缩放控制",
+      "description": "按钮通过 ref 缩放到指定区域：setView 设置可见范围（它不会触发 onZoom，因此示例用 getView 读回视图），resetZoom 恢复显示全部数据。onZoom 报告滚轮和拖动产生的缩放；rect 标注为适宜生长区间着色。"
+    },
+    "selection": {
+      "title": "点击选中",
+      "description": "onPointClick 给出被点击圆点的系列和索引：选中的员工圆点变大并显示标签，详细信息显示在下方。点击空白绘图区时调用 onPlotClick，用于清除选择。"
+    },
+    "players": {
+      "title": "自定义提示框与区域",
+      "description": "renderTooltip 用基于示例数据构建的 React 内容替换提示框。联盟平均值是虚线参考线，省略部分边界的 rect 标注将两个角落一直着色到绘图区边缘。"
+    },
+    "live-stream": {
+      "title": "实时传感器数据流",
+      "description": "每 400 毫秒新增一个振动样本（setInterval 在暂停和卸载时清除），以参考线为界分为正常和告警两个系列；固定的 min 与 max 让坐标轴在数据流入时保持不动。"
+    },
+    "log-log": {
+      "title": "双对数坐标轴",
+      "description": "xAxis 和 yAxis 设置 type: \"log\" 后，代谢率的幂律（克莱伯定律）在六个数量级上呈现为一条直线；拟合线是一个两点的 line 系列，并设置 tooltip: false。"
     }
   },
   "data": {
@@ -67,7 +87,74 @@
     "payload": "负载大小",
     "responseTime": "响应时间",
     "outliersAria": "响应时间与负载大小的关系，异常值为红色",
-    "outliersSummary": "{{total}} 个请求中有 {{slow}} 个耗时超过预期的两倍。"
+    "outliersSummary": "{{total}} 个请求中有 {{slow}} 个耗时超过预期的两倍。",
+    "readings": "读数",
+    "zoomPresets": {
+      "night": "凉爽夜间",
+      "comfort": "适宜生长区间",
+      "heat": "炎热午后"
+    },
+    "showAll": "显示全部",
+    "temperature": "温度",
+    "humidity": "相对湿度",
+    "growingRange": "适宜生长区间",
+    "greenhouseAria": "温室传感器的温度与湿度读数",
+    "greenhouseView": "可见范围：{{t0}} – {{t1}}，湿度 {{h0}} – {{h1}} · 视图内读数：{{points}}",
+    "greenhouseHint": "选择一个区域，或使用 Ctrl / ⌘ + 滚轮缩放",
+    "departments": {
+      "engineering": "工程",
+      "sales": "销售",
+      "support": "客服"
+    },
+    "tenure": "司龄",
+    "reviewScore": "绩效评分（1–5）",
+    "companyAverage": "公司平均",
+    "staffAria": "按部门划分的 90 名员工的司龄与绩效评分",
+    "employeeStatus": "{{id}} · {{department}} · {{tenure}} · 评分 {{score}} · 年薪 {{salary}}",
+    "employeeHint": "点击圆点选中一名员工，点击空白绘图区清除选择",
+    "players": "球员",
+    "leagueAverage": "联盟平均",
+    "efficientScorers": "高效得分手",
+    "volumeShooters": "高出手低效率",
+    "pointsPerGame": "场均 {{value}} 分",
+    "usageRow": "球权使用率：{{value}}",
+    "trueShootingRow": "真实命中率：{{value}}",
+    "usageRate": "球权使用率",
+    "trueShooting": "真实命中率",
+    "playersAria": "16 名球员的球权使用率与投篮效率；圆点大小表示场均得分",
+    "normal": "正常",
+    "alarm": "告警",
+    "latest": "最新",
+    "mmPerSecond": "{{value}} mm/s",
+    "pause": "暂停",
+    "resume": "继续",
+    "vibrationStatus": "最新样本：{{rpm}} rpm，{{value}} · 屏幕上的告警：{{alarms}}",
+    "speed": "转速（rpm）",
+    "vibration": "振动",
+    "alarmLimit": "告警阈值",
+    "vibrationAria": "电机振动随转速变化的实时数据",
+    "mammals": "哺乳动物",
+    "animals": {
+      "shrew": "鼩鼱",
+      "mouse": "小鼠",
+      "rat": "大鼠",
+      "rabbit": "兔",
+      "cat": "猫",
+      "dog": "狗",
+      "human": "人",
+      "pig": "猪",
+      "horse": "马",
+      "cow": "牛",
+      "giraffe": "长颈鹿",
+      "elephant": "大象"
+    },
+    "powerLaw": "幂律拟合",
+    "kg": "{{value}} kg",
+    "watts": "{{value}} W",
+    "bodyMass": "体重",
+    "metabolicRate": "基础代谢率",
+    "kleiber": "代谢率 ∝ 体重^{{exponent}}（克莱伯定律）",
+    "kleiberAria": "12 种哺乳动物的基础代谢率与体重，双对数坐标轴"
   },
   "api": {
     "ScatterChartProps": {

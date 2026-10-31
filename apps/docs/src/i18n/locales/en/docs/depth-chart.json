@@ -29,6 +29,22 @@
     "red-up": {
       "title": "Red up, green down",
       "description": "colorConvention=\"red-up\" swaps the default colors: red bids, green asks, as read in mainland China, Japan and Korea. upColor and downColor accept any color."
+    },
+    "slippage": {
+      "title": "Market order cost",
+      "description": "A pure function walks the asks (a buy) or the bids (a sell) of the snapshot until the size is filled. priceLines mark the average and the last fill price, range widens to keep them in view, and the readout gives the cost and the slippage from the mid in basis points."
+    },
+    "imbalance": {
+      "title": "Liquidity imbalance",
+      "description": "getInstance().getStore() exposes the live book of the chart: once a second the demo sums the size resting within the selected band (also passed as range) on each side, then shows the bid / ask split, the imbalance and the spread. The stream itself never re-renders React."
+    },
+    "equity": {
+      "title": "Equities: dollars and shares",
+      "description": "A stock book with one-cent ticks and round lots. formatPrice and formatSize replace the built-in number formats (US dollars and compact share counts in the page language) and labels renames the amount; amount=\"quote\" cumulates the dollar value instead of the shares."
+    },
+    "venues": {
+      "title": "Consolidated venues",
+      "description": "Three exchanges quote the same pair; their books are merged price by price into a consolidated one. Passing another object to book eases the curves from one venue to the next, and the table compares the best prices and the liquidity within ±0.1% of the mid."
     }
   },
   "data": {
@@ -53,7 +69,32 @@
     "greenUp": "Green up, red down",
     "sweepBuy": "Buying {{amount}} BTC ({{total}}) sweeps the asks up to {{price}}, {{slippage}} above the mid: average price {{average}}.",
     "sweepSell": "Selling {{amount}} BTC ({{total}}) sweeps the bids down to {{price}}, {{slippage}} below the mid: average price {{average}}.",
-    "sweepHint": "Hover the curves to price a market order."
+    "sweepHint": "Hover the curves to price a market order.",
+    "orderSide": "Side",
+    "marketBuy": "Market buy",
+    "marketSell": "Market sell",
+    "orderSize": "Order size",
+    "btcAmount": "{{value}} BTC",
+    "averageFill": "Avg. fill",
+    "worstFill": "Last fill",
+    "fillSummary": "{{size}} BTC fill across {{levels}} levels: average {{average}}, last fill {{worst}}, {{cost}} in total, {{slippage}} bp from the mid.",
+    "fillPartial": "Only {{filled}} of {{size}} BTC rest on this side: the order would empty all {{levels}} levels, out to {{worst}}.",
+    "band": "Measured band",
+    "imbalanceStatus": "Within {{band}}: {{bids}} BTC bid, {{asks}} BTC offered, imbalance {{imbalance}} · spread {{spread}} ({{spreadBp}} bp)",
+    "imbalanceWaiting": "Waiting for the first reading…",
+    "showNotional": "Cumulate dollars (price × shares)",
+    "notionalUsd": "Notional (USD)",
+    "shares": "Shares",
+    "equityAria": "ACME stock order book depth",
+    "consolidated": "Consolidated",
+    "venue": "Venue {{name}}",
+    "venueColumn": "Venue",
+    "bestBid": "Best bid",
+    "bestAsk": "Best ask",
+    "depthNearMid": "BTC within ±0.1%",
+    "depthShare": "{{value}} ({{share}})",
+    "venuesAria": "BTC/USDT depth, {{name}}",
+    "venuesTable": "Best prices and liquidity by venue"
   },
   "api": {
     "DepthChartProps": {

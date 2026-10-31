@@ -25,6 +25,22 @@
     "slo": {
       "title": "Disponibilité et budget d'erreur",
       "description": "Une jauge resserrée (min 99,5, max 100) montre la disponibilité face à son objectif, une seconde le budget d'erreur restant ; renderTooltip donne le détail."
+    },
+    "thermostat": {
+      "title": "Thermostat connecté",
+      "description": "Les boutons − et + déplacent la consigne d’un demi-degré ; le réglage est stocké en °C et converti à l’affichage, si bien que passer en °F change ensemble value, min, max et les bands. renderTooltip affiche la température de la pièce et la ligne en dessous indique si le système chauffe, refroidit ou maintient."
+    },
+    "credit-score": {
+      "title": "Score de crédit",
+      "description": "Une aiguille sur cinq bandes de notation de 300 à 850, min et max reprenant l’échelle du score. Un Select change de demandeur et l’aiguille balaie jusqu’au nouveau score ; renderTooltip nomme la notation et event.percent donne la position sur l’échelle."
+    },
+    "battery": {
+      "title": "Recharge d’une voiture électrique",
+      "description": "Une demi-jauge (sweep={180}) se remplit toutes les 400 ms quand la voiture est branchée, plus lentement au-delà de 80 % ; l’intervalle s’arrête une fois débranchée, pleine ou démontée. Seule la phase de charge est annoncée ; l’autonomie et le temps jusqu’à 80 % utilisent les unités d’Intl.NumberFormat."
+    },
+    "dark-panel": {
+      "title": "Tableau de bord sombre",
+      "description": "Trois jauges à aiguille sur un panneau dont les variables CSS passent à un thème sombre. Les graphiques n’observent que <html> et <body> : après avoir restylé le conteneur, la démo appelle refreshTheme() sur chaque graphique via sa ref."
     }
   },
   "data": {
@@ -56,7 +72,68 @@
     "availabilityAria": "Disponibilité sur 30 jours face à l'objectif",
     "budgetLeft": "Budget d'erreur restant",
     "budgetDetail": "{{used}} d'indisponibilité sur {{budget}} autorisées",
-    "budgetAria": "Budget d'erreur restant ce mois-ci"
+    "budgetAria": "Budget d'erreur restant ce mois-ci",
+    "thermostat": {
+      "unit": "Unité de température",
+      "units": {
+        "celsius": "°C",
+        "fahrenheit": "°F"
+      },
+      "target": "consigne",
+      "room": "Pièce : {{value}}",
+      "aria": "Température de consigne du thermostat",
+      "lower": "Baisser la consigne",
+      "raise": "Augmenter la consigne",
+      "modes": {
+        "heating": "Chauffe jusqu’à {{target}} (pièce : {{room}})",
+        "cooling": "Refroidit jusqu’à {{target}} (pièce : {{room}})",
+        "holding": "Maintient {{target}} (pièce : {{room}})"
+      }
+    },
+    "credit": {
+      "applicant": "Demandeur",
+      "score": "score de crédit",
+      "ratings": {
+        "poor": "Faible",
+        "fair": "Passable",
+        "good": "Bon",
+        "veryGood": "Très bon",
+        "exceptional": "Exceptionnel"
+      },
+      "position": "À {{share}} de l’échelle",
+      "aria": "Score de crédit de {{name}}",
+      "result": "{{name}} : {{score}}. {{advice}}",
+      "advice": {
+        "poor": "La plupart des prêteurs refuseront la demande.",
+        "fair": "Un accord est possible, à un taux plus élevé.",
+        "good": "Éligible à la plupart des prêts aux taux standards.",
+        "veryGood": "Éligible à des taux meilleurs que la moyenne.",
+        "exceptional": "Éligible aux meilleurs taux proposés."
+      }
+    },
+    "battery": {
+      "label": "chargée",
+      "range": "Autonomie : {{range}}",
+      "aria": "Charge de la batterie de la voiture",
+      "plugged": "Branchée",
+      "reset": "Réinitialiser",
+      "phases": {
+        "full": "Charge complète",
+        "unplugged": "Débranchée",
+        "charging": "Charge rapide",
+        "topping": "Charge lente au-delà de 80 %"
+      },
+      "toEighty": "80 % dans {{minutes}}"
+    },
+    "turbine": {
+      "rpm": "{{value}} tr/min",
+      "mw": "{{value}} MW",
+      "dark": "Panneau sombre",
+      "rotor": "Vitesse du rotor",
+      "power": "Puissance produite",
+      "nacelle": "Température de la nacelle",
+      "aria": "{{reading}} de l’éolienne : {{value}}"
+    }
   },
   "api": {
     "GaugeChartProps": {

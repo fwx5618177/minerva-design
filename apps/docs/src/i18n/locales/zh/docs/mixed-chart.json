@@ -25,6 +25,22 @@
     "locale": {
       "title": "多语言",
       "description": "同一图表分别设置 locale=\"zh-CN\" 和 locale=\"fr-FR\"：引擎按语言区域输出紧凑单位（万 / k）、分隔符、时间轴的月份名称以及提示框中的日期。不设置 locale 时，图表跟随页面语言（<html lang>）。"
+    },
+    "solar-battery": {
+      "title": "光伏与家用储能",
+      "description": "每小时光伏发电量以柱形、用电量以折线绘制在左轴，电池电量以面积绘制在 yAxis2 上，并通过 min、max 和 nice: false 固定为 0–100%；rect 标注为夜间加上底色。Switch 可隐藏电池，输出区域会重新计算自给率。"
+    },
+    "inventory": {
+      "title": "库存与到货",
+      "description": "以阶梯面积图显示库存水平，配合到货柱形、再订货点参考线和安全库存 rect 标注。onPointClick 用 x 轴参考线标出所点日期，并在输出区域显示其采购订单或库存；onPlotClick 将其清除。"
+    },
+    "ops-overview": {
+      "title": "运维总览",
+      "description": "请求量以柱形绘制在左轴，错误率绘制在右轴，发布记录作为 type: \"scatter\" 系列，并通过 showLabels 标出各版本号。Checkbox 取代图例，为每个系列设置 hidden。"
+    },
+    "burndown": {
+      "title": "迭代燃尽图",
+      "description": "在显式指定的 xAxis 分类上，以面积显示剩余工作量、以柱形显示每日完成的点数、以折线显示理想燃尽；text 标注标出范围变更。renderTooltip 显示每天相对理想线超前或落后多少。"
     }
   },
   "native": {
@@ -68,7 +84,48 @@
     "yearlyRevenue": "营收",
     "users": "用户数",
     "usersLog": "用户数（对数）",
-    "logAria": "2016 至 2025 年的年营收与对数轴上的用户数"
+    "logAria": "2016 至 2025 年的年营收与对数轴上的用户数",
+    "kwh": "{{value}} kWh",
+    "solarProduction": "光伏发电",
+    "consumption": "用电量",
+    "batteryCharge": "电池电量",
+    "night": "夜间",
+    "withBattery": "{{value}} 电池",
+    "selfSufficiency": "两天内自给率为 {{share}}，从电网购电 {{imported}}。",
+    "energyPerHour": "每小时电量",
+    "solarAria": "某住宅两天内每小时的光伏发电量和用电量，以及电池电量",
+    "stockLevel": "库存水平",
+    "deliveries": "到货",
+    "promotion": "促销",
+    "safetyStock": "安全库存",
+    "reorderPoint": "再订货点",
+    "inventoryHint": "点击某一天或某次到货。",
+    "deliveryDetails": "{{id}}：{{ordered}} 订购 {{quantity}} 件，经过 {{lead}} 于 {{arrived}} 到货。",
+    "stockOn": "{{date}} 库存 {{units}} 件。",
+    "stockLow": "{{date}} 库存仅 {{units}} 件，低于安全库存。",
+    "unitsInStock": "件数",
+    "inventoryAria": "某商品三个月内的每日库存水平，含到货、再订货点和安全库存",
+    "requests": "请求数",
+    "errorRate": "错误率",
+    "releases": "发布",
+    "requestsPerHalfHour": "每 30 分钟请求数",
+    "opsAria": "某 Web API 一天内的请求数和错误率，以及发布记录",
+    "incidentSummary": "发布 {{version}} 后，错误率于 {{time}} 达到峰值 {{peak}}，直到回滚至 {{rollback}}。",
+    "points": "{{value}} 点",
+    "sprintStart": "开始",
+    "remainingWork": "剩余工作量",
+    "completedPerDay": "已完成",
+    "idealBurn": "理想进度",
+    "scopeAdded": "新增 {{value}}",
+    "idealLeft": "理想：剩余 {{value}}",
+    "remainingLeft": "剩余 {{value}}",
+    "doneThatDay": "当天完成 {{value}}",
+    "behindBy": "落后理想进度 {{value}}",
+    "aheadBy": "领先理想进度 {{value}}",
+    "storyPoints": "故事点",
+    "burndownAria": "迭代燃尽图：十个工作日内的剩余工作量、每日完成点数和理想燃尽线",
+    "burndownLate": "剩余 {{left}}，按每天 {{velocity}} 的速度，迭代结束时约有 {{forecast}} 无法完成。",
+    "burndownOnTrack": "剩余 {{left}}，按每天 {{velocity}} 的速度，迭代进度正常。"
   },
   "api": {
     "MixedChartProps": {

@@ -26,6 +26,26 @@
     "file-tree": {
       "title": "Collapsible file tree",
       "description": "A project tree from left to right, colored by file type. Deep folders start collapsed; click a folder to open it, or use the buttons, which call expand(), collapse() and fit() on the ref."
+    },
+    "decision-tree": {
+      "title": "Decision tree",
+      "description": "A loan approval policy as an org layout with labeled branches (edgeLabels). Answer the questions with the radio buttons: the reached outcome is passed as selected and highlight=\"lineage\" lights up the path from the root; tree.collapsible is off so clicks do not fold the questions."
+    },
+    "taxonomy-search": {
+      "title": "Category search",
+      "description": "The category taxonomy of a store, with the second level collapsed. Type to select every matching category; Enter or a tag calls focusNode() on the ref, which expands the collapsed ancestors before centering the node, and the breadcrumb of the category is shown below."
+    },
+    "disk-usage": {
+      "title": "Disk usage",
+      "description": "A file system where each node value is the size of the folder, so nodeSize as [min, max] scales the circles with the bytes. Sizes are formatted with Intl.NumberFormat units, the radio buttons switch between the tree and radial layouts, and a click reads the share of the parent folder and of the disk."
+    },
+    "wbs": {
+      "title": "Work breakdown structure",
+      "description": "The plan of a mobile app release: work packages carry story points and a status, and summary items roll the points and the progress up in their subtitles. The detail level calls expand() and collapse() on the ref, and onToggle reports the points of the folded or unfolded item."
+    },
+    "bracket": {
+      "title": "Tournament bracket",
+      "description": "A knockout bracket from right to left (direction=\"RL\") with box nodes and orthogonal edges: the final is the root and the teams are the leaves, named with Intl.DisplayNames. Next round reveals results simulated with a seeded generator, and the groups color the teams still in, the eliminated ones and the champion."
     }
   },
   "api": {
@@ -159,7 +179,166 @@
     "expandAll": "Expand all",
     "collapseAll": "Collapse all",
     "fit": "Fit to view",
-    "filesAria": "Files of a project"
+    "filesAria": "Files of a project",
+    "decision": {
+      "credit": "Credit score",
+      "income": "Income ≥ 3 × payment?",
+      "employment": "Employed 2+ years?",
+      "debt": "Debt-to-income < 35%?",
+      "approved": "Approved",
+      "approvedLower": "Approved, lower amount",
+      "approvedRate": "Approved, higher rate",
+      "review": "Manual review",
+      "declined": "Declined"
+    },
+    "branches": {
+      "creditHigh": "700 or more",
+      "creditFair": "600–699",
+      "creditPoor": "Below 600",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "decisionKinds": {
+      "question": "Question",
+      "approved": "Approved",
+      "review": "Review",
+      "declined": "Declined"
+    },
+    "decisionAria": "Loan approval decision tree, with the path of the current applicant highlighted",
+    "decisionResult": "Outcome: {{outcome}} (questions asked: {{questions}}).",
+    "taxonomy": {
+      "catalog": "All products",
+      "electronics": "Electronics",
+      "home": "Home",
+      "fashion": "Fashion",
+      "sports": "Sports",
+      "computers": "Computers",
+      "phones": "Phones",
+      "audio": "Audio",
+      "laptops": "Laptops",
+      "desktops": "Desktops",
+      "tablets": "Tablets",
+      "smartphones": "Smartphones",
+      "phoneCases": "Phone cases",
+      "chargers": "Chargers",
+      "headphones": "Headphones",
+      "speakers": "Speakers",
+      "kitchen": "Kitchen",
+      "furniture": "Furniture",
+      "garden": "Garden",
+      "cookware": "Cookware",
+      "coffeeMachines": "Coffee machines",
+      "knives": "Knives",
+      "sofas": "Sofas",
+      "desks": "Desks",
+      "officeChairs": "Office chairs",
+      "gardenTools": "Garden tools",
+      "plants": "Plants",
+      "clothing": "Clothing",
+      "shoes": "Shoes",
+      "accessories": "Accessories",
+      "jackets": "Jackets",
+      "dresses": "Dresses",
+      "sneakers": "Sneakers",
+      "boots": "Boots",
+      "bags": "Bags",
+      "watches": "Watches",
+      "outdoor": "Outdoor",
+      "fitness": "Fitness",
+      "cycling": "Cycling",
+      "tents": "Tents",
+      "hikingBoots": "Hiking boots",
+      "yogaMats": "Yoga mats",
+      "dumbbells": "Dumbbells",
+      "bikes": "Bikes",
+      "helmets": "Helmets"
+    },
+    "breadcrumbSeparator": " › ",
+    "taxonomySearch": "Search categories",
+    "taxonomyAria": "Product category taxonomy of a store",
+    "taxonomyMatches": "Matching categories: {{total}}. Press Enter or pick a tag to reveal one.",
+    "taxonomyHint": "Search for a category, for example “boots” or “desk”.",
+    "diskRoot": "Macintosh HD",
+    "diskKinds": {
+      "system": "System",
+      "apps": "Applications",
+      "media": "Media",
+      "documents": "Documents",
+      "cache": "Caches and backups"
+    },
+    "diskLayout": "Layout",
+    "diskLayouts": {
+      "tree": "Tree",
+      "radial": "Radial"
+    },
+    "diskAria": "Disk usage by folder, sized by the bytes they hold",
+    "diskShare": "{{name}}: {{size}} — {{parentShare}} of {{parent}}, {{share}} of the disk.",
+    "diskTotal": "{{name}}: {{size}} in use.",
+    "wbsItems": {
+      "release": "App 2.0 release",
+      "onboarding": "Onboarding",
+      "signup": "Sign-up",
+      "emailVerify": "Email verification",
+      "socialLogin": "Social login",
+      "tour": "Product tour",
+      "tourScreens": "Tour screens",
+      "tourSkip": "Skip and resume",
+      "payments": "Payments",
+      "checkout": "Checkout",
+      "cardForm": "Card form",
+      "applePay": "Wallet payments",
+      "billing": "Billing",
+      "invoices": "Invoices",
+      "refunds": "Refunds",
+      "platform": "Platform",
+      "offline": "Offline mode",
+      "syncQueue": "Sync queue",
+      "conflicts": "Conflict resolution",
+      "quality": "Quality",
+      "crashReports": "Crash reports",
+      "perfBudget": "Performance budget"
+    },
+    "wbsPoints": "{{points}} pts",
+    "wbsRollup": "{{points}} pts · {{done}} done",
+    "wbsStatuses": {
+      "summary": "Summary",
+      "done": "Done",
+      "doing": "In progress",
+      "todo": "To do"
+    },
+    "wbsDepth": "Detail level",
+    "wbsLevels": {
+      "deliverables": "Deliverables",
+      "features": "Features",
+      "packages": "Work packages"
+    },
+    "wbsDepthStatus": "Showing the plan down to: {{level}}.",
+    "wbsAria": "Work breakdown structure of a mobile app release, with story points",
+    "wbsCollapsed": "{{name}} folded: {{points}} points, {{remaining}} remaining.",
+    "wbsExpanded": "{{name}} unfolded: {{points}} points, {{remaining}} remaining.",
+    "wbsSummary": "{{points}} story points in total, {{done}} done. Click an item to fold or unfold it.",
+    "rounds": {
+      "quarterFinal": "Quarter-final",
+      "semiFinal": "Semi-final",
+      "final": "Final"
+    },
+    "tbd": "To be played",
+    "score": "{{winner}}–{{loser}}",
+    "seed": "Seed {{n}}",
+    "bracketStates": {
+      "pending": "Not played",
+      "played": "Winner",
+      "alive": "Still in",
+      "out": "Eliminated",
+      "champion": "Champion"
+    },
+    "nextRound": "Next round",
+    "restart": "Restart",
+    "newSimulation": "New simulation",
+    "bracketAria": "Knockout tournament bracket from the quarter-finals to the final",
+    "championResult": "{{team}} wins the tournament!",
+    "roundResult": "{{round}} winners: {{teams}}.",
+    "bracketHint": "Eight teams, seeded by rating. Play the next round to reveal the results."
   },
   "wc": {
     "demos": {

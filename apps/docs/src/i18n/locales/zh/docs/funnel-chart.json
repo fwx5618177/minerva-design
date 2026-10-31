@@ -21,6 +21,22 @@
     "compare": {
       "title": "分群对比",
       "description": "按设备拆分的同一漏斗并排显示，阶段相同、每个分群一种颜色，便于看出移动端用户在哪里流失。"
+    },
+    "campaigns": {
+      "title": "按渠道划分的营销漏斗",
+      "description": "通过 Select 将漏斗筛选为单个获客渠道，各阶段以动画过渡到新的数量。renderTooltip 根据该渠道的花费补充相对上一阶段的转化率和单次结果成本；下方文字给出获客成本。"
+    },
+    "what-if": {
+      "title": "转化假设模型",
+      "description": "−1 / +1 按钮调整某个结账步骤的转化率，漏斗会根据访问量重新计算；摘要将订单数和收入与当前转化率下的结果对比。转化率以整数百分点保存，这样“重置”才能准确判断是否有变化。"
+    },
+    "live-sale": {
+      "title": "实时限时抢购",
+      "description": "以 30 次刷新回放一小时的抢购（setInterval，在暂停、结束和卸载时清除）：新访客不断到来，并借助带种子的随机数生成器逐级向下流动。状态行随时钟更新，只播报抢购结束。"
+    },
+    "sales-pipeline": {
+      "title": "B2B 销售管道",
+      "description": "各阶段按其未结商机的金额确定大小，由于每个阶段包含不同的商机，设置 conversion={false}。onClick 在漏斗旁列出该阶段的商机，renderTooltip 显示商机数量和赢单概率。"
     }
   },
   "data": {
@@ -83,7 +99,72 @@
       "mobile": "移动端"
     },
     "conversionRate": "转化率 {{rate}}",
-    "deviceFunnelAria": "{{device}}的结账漏斗"
+    "deviceFunnelAria": "{{device}}的结账漏斗",
+    "campaigns": {
+      "stages": {
+        "impressions": "曝光",
+        "clicks": "点击",
+        "leads": "线索",
+        "qualified": "合格线索",
+        "customers": "客户"
+      },
+      "channels": {
+        "all": "全部渠道",
+        "search": "搜索广告",
+        "social": "社交媒体",
+        "email": "电子邮件",
+        "partners": "合作伙伴"
+      },
+      "channel": "渠道",
+      "fromPrevious": "上一阶段的 {{share}}",
+      "costPer": "单次结果成本：{{cost}}",
+      "aria": "本月营销漏斗：{{channel}}",
+      "summary": "花费：{{spend}} · 客户：{{customers}} · 获客成本：每位客户 {{cac}}"
+    },
+    "whatIf": {
+      "stages": {
+        "visits": "访问",
+        "cart": "加入购物车",
+        "checkout": "结账",
+        "paid": "已付款订单"
+      },
+      "aria": "根据转化率计算的月度结账漏斗",
+      "step": "{{from}} → {{to}}",
+      "lower": "降低 {{step}} 的转化率",
+      "raise": "提高 {{step}} 的转化率",
+      "reset": "恢复为当前转化率",
+      "summary": "每月 {{orders}} 笔订单（{{ordersDelta}}）· 收入 {{revenue}}（{{revenueDelta}}）"
+    },
+    "sale": {
+      "stages": {
+        "visitors": "访客",
+        "product": "查看商品",
+        "cart": "加入购物车",
+        "checkout": "结账",
+        "orders": "订单"
+      },
+      "aria": "实时更新的限时抢购漏斗",
+      "pause": "暂停",
+      "resume": "继续",
+      "restart": "重新开始",
+      "status": "{{time}} · {{orders}} 笔订单 · 占访客的 {{rate}}",
+      "ended": "抢购已结束：共 {{orders}} 笔订单。"
+    },
+    "pipeline": {
+      "stages": {
+        "lead": "线索",
+        "qualified": "已确认",
+        "demo": "演示",
+        "proposal": "报价",
+        "negotiation": "谈判"
+      },
+      "dealsAmount": "{{deals}} 个商机 · {{amount}}",
+      "probability": "赢单概率：{{share}}",
+      "aria": "按管道阶段划分的未结商机金额",
+      "stageTitle": "{{stage}}：{{deals}} 个未结商机",
+      "forecast": "加权预测：{{amount}}",
+      "hint": "点击某个阶段列出其商机。"
+    }
   },
   "api": {
     "FunnelChartProps": {

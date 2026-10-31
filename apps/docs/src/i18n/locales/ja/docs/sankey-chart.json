@@ -17,6 +17,26 @@
     "options": {
       "title": "配置と配色",
       "description": "チャットボットはサポート階層を経ずにチケットを解決するため、その流れは 1 列を飛ばします。align は column を指定していないノードの列を、linkColor はリンクの塗り方を、labelValues はラベルに値を表示するかを決めます。"
+    },
+    "income-statement": {
+      "title": "損益計算書",
+      "description": "事業セグメントが売上高に集まり、コストと利益に分かれて当期純利益まで流れます。各リンクは自身の color で着色し（利益は緑、コストは赤）、セグメントは linkColor=\"source\" のままです。コンパクトな通貨書式で金額を短く表示します。"
+    },
+    "supply-chain": {
+      "title": "サプライチェーンの追跡",
+      "description": "産地から販売チャネルまでのコーヒーの流れです。ノードを onClick すると、そのノードを通るすべての経路が色付きのまま残り、それ以外のリンクは color でグレーになります。リンクをクリックするとそのリンクだけが選択され、送り元に対する割合が表示されます。"
+    },
+    "hiring-funnel": {
+      "title": "採用ファネル",
+      "description": "応募経路から採用までの候補者と、各段階での離脱です。リンクはノードを名前で参照するので、スイッチは離脱ノードとそのリンクを除くだけで済みます。align=\"left\" により各離脱ノードは対応する段階のすぐ隣に置かれます。"
+    },
+    "live-traffic": {
+      "title": "リアルタイム API トラフィック",
+      "description": "クライアントからサービス、そしてステータスコードまでの秒間リクエスト数を 1.5 秒ごとに更新します。流量は上流から下流へ計算されるため各ノードの流入と流出が一致し、iterations={0} で更新の間もノードの位置が変わりません。"
+    },
+    "plastic": {
+      "title": "プラスチック包装のマテリアルフロー",
+      "description": "市場に出たポリマーと、包装材の行き先です。renderTooltip はリンクを送り元に対する割合（percent）として、ノードを包装材全体に対する割合として表示します。"
     }
   },
   "native": {
@@ -142,7 +162,110 @@
       "target": "流入先",
       "neutral": "ニュートラル"
     },
-    "labelValues": "ラベルに値を表示"
+    "labelValues": "ラベルに値を表示",
+    "pnl": {
+      "cloud": "クラウド",
+      "licenses": "ライセンス",
+      "hardware": "ハードウェア",
+      "services": "サービス",
+      "revenue": "売上高",
+      "cogs": "売上原価",
+      "gross": "売上総利益",
+      "rnd": "研究開発費",
+      "sales": "販売・マーケティング費",
+      "admin": "一般管理費",
+      "operating": "営業利益",
+      "tax": "法人税等",
+      "net": "当期純利益",
+      "aria": "四半期の損益計算書：売上セグメント、コスト、利益",
+      "margins": "売上総利益率 {{gross}} ・ 営業利益率 {{operating}} ・ 純利益率 {{net}}"
+    },
+    "supply": {
+      "brazil": "ブラジル",
+      "colombia": "コロンビア",
+      "ethiopia": "エチオピア",
+      "vietnam": "ベトナム",
+      "hamburg": "ハンブルク焙煎所",
+      "rotterdam": "ロッテルダム焙煎所",
+      "north": "北倉庫",
+      "central": "中央倉庫",
+      "south": "南倉庫",
+      "cafes": "カフェ",
+      "supermarkets": "スーパーマーケット",
+      "online": "オンラインショップ",
+      "tonnes": "{{value}} t",
+      "aria": "1 か月に出荷されたコーヒー：産地から焙煎所と倉庫を経て販売チャネルまで",
+      "hint": "拠点をクリックするとそこを通るすべての流れを追跡し、出荷ルートをクリックするとそのルートを選択します",
+      "node": "{{name}}：{{from}} 拠点から {{inbound}} を入荷、{{to}} 拠点へ {{outbound}} を出荷",
+      "link": "{{source}} → {{target}}：{{value}}（{{source}} の出荷量の {{share}}）",
+      "clear": "選択を解除"
+    },
+    "hiring": {
+      "referrals": "社員紹介",
+      "jobBoards": "求人サイト",
+      "linkedin": "ビジネス SNS",
+      "agencies": "人材紹介会社",
+      "campus": "新卒採用",
+      "applied": "応募",
+      "cvRejected": "書類選考で不合格",
+      "screen": "電話面談",
+      "screenOut": "電話面談で不合格",
+      "interview": "面接",
+      "interviewOut": "面接で不合格",
+      "offer": "内定",
+      "declined": "内定辞退",
+      "hired": "入社",
+      "showDropOffs": "離脱を表示",
+      "aria": "1 年間の採用ファネル：応募経路から入社まで",
+      "summary": "応募 {{applied}} 件、採用 {{hired}} 名（{{rate}}）。電話面談を受けた候補者の {{interview}} が面接に進み、内定の {{accepted}} が承諾されています。"
+    },
+    "traffic": {
+      "client": {
+        "web": "Web アプリ",
+        "ios": "iOS アプリ",
+        "android": "Android アプリ",
+        "partners": "パートナー API"
+      },
+      "gateway": "API ゲートウェイ",
+      "service": {
+        "auth": "認証",
+        "catalog": "カタログ",
+        "search": "検索",
+        "checkout": "決済"
+      },
+      "status": {
+        "ok": "2xx 成功",
+        "clientError": "4xx クライアントエラー",
+        "serverError": "5xx サーバーエラー"
+      },
+      "rps": "{{value}} req/s",
+      "summary": "合計：{{total}}。",
+      "healthy": "サーバーエラー率：{{rate}}",
+      "incident": "サーバーエラー率：{{rate}}、決済サービスで障害発生",
+      "pause": "一時停止",
+      "resume": "再開",
+      "aria": "リアルタイム API トラフィック（秒間リクエスト数）：クライアントからサービスとステータスコードまで"
+    },
+    "plastic": {
+      "pet": "PET ボトル・トレー",
+      "hdpe": "HDPE 容器",
+      "pp": "PP カップ・キャップ",
+      "film": "LDPE フィルム",
+      "other": "その他のポリマー",
+      "market": "市場に出た包装材",
+      "collected": "リサイクル回収",
+      "incinerated": "焼却",
+      "landfill": "埋立",
+      "leaked": "自然環境への流出",
+      "recycled": "リサイクル",
+      "rejected": "選別残渣",
+      "closedLoop": "新しい包装材",
+      "downcycled": "低品位製品",
+      "mt": "{{value}} Mt",
+      "shareOfSource": "{{source}} の {{share}}",
+      "shareOfTotal": "包装材全体の {{share}}",
+      "aria": "1 年間のプラスチック包装材（メガトン）：ポリマー、廃棄経路、リサイクル"
+    }
   },
   "wc": {
     "demos": {

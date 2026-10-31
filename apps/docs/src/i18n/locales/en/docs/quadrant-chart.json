@@ -25,6 +25,26 @@
     "positioning": {
       "title": "Positioning map",
       "description": "Price against perceived quality from a customer survey: axisLabels replace the ticks and our brand stands out with its own color and size."
+    },
+    "rice": {
+      "title": "RICE prioritization",
+      "description": "Backlog items by effort and by reach × impact, with the dot size following the RICE score; xDomain, yDomain, xSplit and ySplit set the scales and thresholds. The switch weights the value by confidence, which drops the speculative bets, and renderTooltip lists the four RICE inputs."
+    },
+    "swot": {
+      "title": "SWOT analysis",
+      "description": "showTicks={false} and axisLabels turn the chart into a SWOT grid. quadrantContent adds a count badge in the inner corner of each quadrant, onQuadrantClick lists its factors and fades the others, and onPointClick names the clicked factor."
+    },
+    "competitors": {
+      "title": "Competitor map",
+      "description": "Pick the two dimensions to compare: the points, xLabel and yLabel follow the selects. Our product has its own color and size, and onPointClick shows a vendor's full profile against ours."
+    },
+    "talent": {
+      "title": "Talent calibration",
+      "description": "Performance against potential during a calibration session. onPointDrag reads out the scores and the target quadrant while dragging, onPointDrop saves the move, and onPointDoubleClick puts a person back where they started; moved people get a bigger dot."
+    },
+    "live-services": {
+      "title": "Live service health",
+      "description": "Latency against error rate for each service, updated every second; the xSplit and ySplit lines are the SLO limits. The services in the critical quadrant are listed with quadrantOf, and renderTooltip formats the units with Intl."
     }
   },
   "data": {
@@ -140,7 +160,126 @@
     "lowPrice": "Low price",
     "highPrice": "High price",
     "brand": "Brand",
-    "positioningAria": "Brands by price and perceived quality"
+    "positioningAria": "Brands by price and perceived quality",
+    "rice": {
+      "items": {
+        "bulkEdit": "Bulk edit",
+        "sso": "SAML single sign-on",
+        "offlineMode": "Offline mode",
+        "onboardingTour": "Onboarding tour",
+        "aiSummary": "AI summaries",
+        "themes": "Color themes",
+        "auditLog": "Audit log",
+        "chatAlerts": "Chat alerts",
+        "apiV2": "Public API v2",
+        "csvImport": "CSV import"
+      },
+      "weighted": "Weight by confidence",
+      "effort": "Effort (person-months)",
+      "value": "Reach × impact (thousand users)",
+      "inputs": "Reach {{reach}}k · impact {{impact}} · confidence {{confidence}} · effort {{effort}} person-months",
+      "score": "RICE score: {{score}}",
+      "top": "Top 3 by RICE score: {{list}}",
+      "aria": "Backlog prioritized with RICE: effort against reach times impact"
+    },
+    "swot": {
+      "topLeft": "Strengths",
+      "topRight": "Weaknesses",
+      "bottomLeft": "Opportunities",
+      "bottomRight": "Threats",
+      "internal": "Internal",
+      "external": "External",
+      "helpful": "Helpful",
+      "harmful": "Harmful",
+      "factors": {
+        "brandLoyalty": "Loyal customers",
+        "ownPlatform": "In-house platform",
+        "lowChurn": "Low churn",
+        "smallSalesTeam": "Small sales team",
+        "legacyBilling": "Legacy billing",
+        "singleRegion": "Single region",
+        "smbMarket": "Growing SMB market",
+        "partnerships": "Reseller partnerships",
+        "aiFeatures": "AI features",
+        "newEntrant": "Well-funded entrant",
+        "regulation": "New data rules",
+        "priceWar": "Price war"
+      },
+      "count": "{{n}} factors",
+      "quadrantItems": "{{quadrant}}: {{items}}",
+      "factor": "{{factor}} ({{quadrant}})",
+      "hint": "Click a quadrant to list its factors, or a factor to select it",
+      "aria": "SWOT analysis: strengths, weaknesses, opportunities and threats"
+    },
+    "comp": {
+      "dimensions": {
+        "price": "Affordability",
+        "features": "Feature depth",
+        "ease": "Ease of use",
+        "support": "Support quality",
+        "integrations": "Integrations"
+      },
+      "xAxis": "Horizontal axis",
+      "yAxis": "Vertical axis",
+      "us": "{{name}} (us)",
+      "strongBoth": "Strong on both",
+      "weakBoth": "Weak on both",
+      "score": "{{dimension}} {{score}}",
+      "profile": "{{name}}: {{scores}}. Ahead of us on {{ahead}} of {{total}} dimensions.",
+      "ourProfile": "{{name}} (us): {{scores}}.",
+      "hint": "Choose two dimensions, then click a vendor to see its profile",
+      "aria": "Competitors by {{x}} and {{y}}"
+    },
+    "talent": {
+      "roles": {
+        "backendLead": "Backend lead",
+        "productDesigner": "Product designer",
+        "dataAnalyst": "Data analyst",
+        "qaEngineer": "QA engineer",
+        "mobileDeveloper": "Mobile developer",
+        "productManager": "Product manager",
+        "supportLead": "Support lead",
+        "juniorDeveloper": "Junior developer"
+      },
+      "futureLeaders": "Future leaders",
+      "roughDiamonds": "Rough diamonds",
+      "solidPerformers": "Solid performers",
+      "needsSupport": "Needs support",
+      "performance": "Performance",
+      "potential": "Potential",
+      "moving": "{{person}}: performance {{performance}}, potential {{potential}} → {{quadrant}}",
+      "moved": "{{person}} placed in “{{quadrant}}”",
+      "reset": "{{person}} is back to the initial rating",
+      "resetAll": "All ratings are back to their initial values",
+      "resetButton": "Reset all",
+      "changed": "{{n}} of {{total}} recalibrated",
+      "hint": "Drag a person to recalibrate them, double-click to undo",
+      "aria": "Talent calibration: performance against potential"
+    },
+    "live": {
+      "services": {
+        "auth": "Auth",
+        "search": "Search",
+        "checkout": "Checkout",
+        "catalog": "Catalog",
+        "payments": "Payments",
+        "notifications": "Notifications",
+        "recommendations": "Recommendations",
+        "media": "Media"
+      },
+      "healthy": "Healthy",
+      "slow": "Slow",
+      "erroring": "Erroring",
+      "critical": "Critical",
+      "latency": "p95 latency (ms)",
+      "errorRate": "Error rate (%)",
+      "tooltip": "p95 {{latency}} · errors {{errors}}",
+      "criticalList": "Over both SLOs: {{list}}",
+      "allGood": "No service is over both SLOs",
+      "pause": "Pause",
+      "resume": "Resume",
+      "aria": "Live service health: p95 latency against error rate"
+    }
   },
   "api": {
     "QuadrantChartProps": {

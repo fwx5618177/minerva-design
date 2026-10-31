@@ -21,6 +21,22 @@
     "margin": {
       "title": "Couleur selon une autre valeur",
       "description": "Le chiffre d'affaires fixe la hauteur et la marge la couleur (la value de chaque donnée avec colorBy \"value\") : les barres les plus hautes ne sont pas les plus rentables."
+    },
+    "inventory-live": {
+      "title": "Stock d'entrepôt en direct",
+      "description": "Les unités restant dans les emplacements d'un entrepôt, allée × niveau d'étagère, mises à jour chaque seconde par un setInterval à graine nettoyé au démontage. Les emplacements sous 20 % de leur capacité passent dans une seconde série couleur danger, si bien qu'une cellule a sa barre dans une seule série (z: null dans l'autre), et les emplacements vides sont réapprovisionnés."
+    },
+    "cohort-retention": {
+      "title": "Rétention par cohorte",
+      "description": "La part de chaque cohorte mensuelle d'inscrits encore active n mois plus tard ; les cohortes récentes ont moins d'historique, laissé vide avec z: null. Les noms des cohortes viennent d'Intl.DateTimeFormat, les barres sont colorées selon leur hauteur (colorBy: \"z\"), et un clic lit la rétention et les utilisateurs actifs de la cellule."
+    },
+    "budget-variance": {
+      "title": "Écarts au budget",
+      "description": "Les dépenses trimestrielles de six services pour l'exercice choisi : la hauteur est la dépense réelle et la couleur l'écart au budget. colorBy: \"value\" avec l'échelle divergente coolwarm et une valueRange symétrique laisse neutres les cellules dans le budget, chaudes les dépassements et froides les économies."
+    },
+    "datacenter": {
+      "title": "Carte thermique d'une salle serveurs",
+      "description": "Les baies d'une salle serveurs, avec la puissance consommée en hauteur et la température d'entrée d'air en couleur sur l'échelle inferno. L'interrupteur remonte le graphique dans un ConfigProvider sombre, le bouton appelle setCamera() sur la ref pour un plan orthographique (onCameraChange le garde synchronisé), et le résumé liste les baies au-dessus de la température d'entrée recommandée."
     }
   },
   "data": {
@@ -78,7 +94,53 @@
       "audio": "Audio"
     },
     "margin": "Marge",
-    "marginAria": "Chiffre d'affaires et marge de cinq produits dans quatre marchés"
+    "marginAria": "Chiffre d'affaires et marge de cinq produits dans quatre marchés",
+    "inStock": "En stock",
+    "lowStock": "Stock bas",
+    "unitsValue": "{{value}} unités",
+    "liveUpdates": "Mises à jour en direct",
+    "aisle": "Allée",
+    "aisleLabel": "Allée {{id}}",
+    "shelf": "Niveau d'étagère",
+    "shelfLabel": "Niveau {{n}}",
+    "units": "Unités",
+    "inventoryAria": "Unités restant dans chaque emplacement de l'entrepôt par allée et niveau, mises à jour en direct",
+    "inventoryStatus": "{{total}} unités en stock · emplacements bas : {{low}} sur {{bins}} · emplacements réapprovisionnés : {{restocked}}.",
+    "retention": "Rétention",
+    "monthsSinceSignup": "Mois depuis l'inscription",
+    "monthIndex": "M{{n}}",
+    "signupCohort": "Mois d'inscription",
+    "cohortAria": "Rétention des cohortes mensuelles d'inscrits selon le nombre de mois depuis l'inscription",
+    "cohortReadout": "Cohorte de {{cohort}}, mois {{n}} : {{retention}} encore actifs ({{users}} utilisateurs sur {{total}}).",
+    "cohortHint": "Cliquez sur une barre pour lire la rétention d'une cohorte.",
+    "departments": {
+      "engineering": "Ingénierie",
+      "sales": "Ventes",
+      "marketing": "Marketing",
+      "operations": "Opérations",
+      "support": "Support",
+      "finance": "Finance"
+    },
+    "actualSpend": "Dépense réelle",
+    "fiscalYear": "Exercice",
+    "varianceToBudget": "Écart au budget",
+    "department": "Service",
+    "budgetAria": "Dépenses trimestrielles et écarts au budget de six services en {{year}}",
+    "varianceDetail": "{{department}}, {{quarter}} : {{actual}} dépensés pour un budget de {{budget}} ({{variance}}).",
+    "budgetSummary": "{{year}} : {{actual}} dépensés pour un budget de {{budget}} ({{variance}}). Plus fort dépassement : {{department}}, {{quarter}} ({{worst}}).",
+    "kw": "{{value}} kW",
+    "inletTemperature": "Température d'entrée d'air",
+    "darkTheme": "Thème sombre",
+    "perspectiveView": "Vue 3D",
+    "topView": "Plan",
+    "rackPosition": "Baie",
+    "rackRow": "Rangée",
+    "rowLabel": "Rangée {{id}}",
+    "powerDraw": "Puissance consommée",
+    "datacenterAria": "Baies de serveurs par rangée et position, la hauteur étant la puissance consommée et la couleur la température d'entrée d'air",
+    "rackHot": "Baie {{rack}} : {{power}}, entrée d'air à {{inlet}}, au-dessus de la limite de {{limit}}.",
+    "rackOk": "Baie {{rack}} : {{power}}, entrée d'air à {{inlet}}, sous la limite de {{limit}}.",
+    "datacenterSummary": "Baies au-dessus de {{limit}} en entrée d'air : {{hot}} sur {{total}} ({{racks}}). Cliquez sur une baie pour voir ses mesures."
   },
   "api": {
     "Bar3DChartProps": {

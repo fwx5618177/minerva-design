@@ -41,6 +41,26 @@
     "zoom": {
       "title": "Range selector",
       "description": "Period buttons call setView on the chart ref with the visible window and a y range fitted to the prices inside it; Ctrl / ⌘ + wheel and drag still work."
+    },
+    "live-sensor": {
+      "title": "Live sensor",
+      "description": "A freezer probe streams one reading a second: setInterval appends a point and drops the oldest, so the time axis slides over the last minute, and the interval is cleared on pause and on unmount. A rect and a dashed y annotation mark the alarm zone; only the alarm state is announced."
+    },
+    "log-scale": {
+      "title": "Logarithmic scale",
+      "description": "yAxis={{ type: \"log\" }} turns exponential growth into straight lines, so a lag of a few hours and populations from 10³ to 10⁹ stay readable together; the switch compares it with the linear scale. Intl.NumberFormat with notation: \"scientific\" writes the ticks."
+    },
+    "measure": {
+      "title": "Measure between two points",
+      "description": "onPointClick pins up to two days and the readout gives the change between them; x line annotations and a green or red rect mark the period, and onPlotClick on an empty area clears the measurement."
+    },
+    "index-tooltip": {
+      "title": "Indexed performance",
+      "description": "Four asset classes rebased to 100 at the start; renderTooltip replaces the default content with a React list sorted from the best to the worst performer, with the color of each series and its change since the base."
+    },
+    "small-multiples": {
+      "title": "Small multiples",
+      "description": "One small LineChart per city in a CSS grid, all with the same yAxis min and max so the panels compare at a glance; interaction={false} keeps them static and a dashed y line marks the WHO guideline."
     }
   },
   "data": {
@@ -105,7 +125,54 @@
     "memory": "Memory",
     "hour": "{{hour}}h",
     "usageAria": "CPU and memory usage over the day",
-    "pinchHint": "Pinch to zoom, double tap to reset; tap the legend to hide a series."
+    "pinchHint": "Pinch to zoom, double tap to reset; tap the legend to hide a series.",
+    "freezer": "Freezer temperature",
+    "alarmLimit": "Alarm above {{value}}",
+    "pause": "Pause",
+    "resume": "Resume",
+    "sensorAlarm": "Alarm: door open?",
+    "sensorNormal": "Normal",
+    "lastReading": "Last reading {{value}} at {{time}}",
+    "aboveLimit": "Above the limit in the last minute: {{readings}}",
+    "freezerAria": "Freezer temperature over the last minute, updated every second",
+    "strains": {
+      "wild": "Wild type",
+      "mutant": "Mutant",
+      "antibiotic": "With antibiotic"
+    },
+    "exponentialPhase": "Exponential phase",
+    "logScale": "Logarithmic scale",
+    "elapsed": "Time since inoculation",
+    "cfu": "CFU / mL",
+    "growthAria": "Growth curves of three bacterial cultures over 24 hours",
+    "logNote": "Straight segments mean a constant growth rate: the wild type doubles about every {{minutes}}.",
+    "linearNote": "On a linear scale the small cultures look flat: switch back to the logarithmic scale to compare them.",
+    "portfolio": "Portfolio value",
+    "measureHint": "Click a point to start a measurement, then a second one.",
+    "measureStart": "From {{date}} ({{value}}): click a second point.",
+    "measureResult": "{{from}} → {{to}}: {{change}} ({{percent}}) over {{days}}",
+    "clear": "Clear",
+    "portfolioAria": "Daily value of a portfolio in 2026; click two points to measure the change",
+    "assets": {
+      "equities": "Equities",
+      "bonds": "Bonds",
+      "gold": "Gold",
+      "realEstate": "Real estate"
+    },
+    "baseIndex": "Base 100",
+    "assetsAria": "Performance of four asset classes rebased to 100, 2021 to 2026",
+    "micrograms": "{{value}} µg/m³",
+    "cities": {
+      "delhi": "Delhi",
+      "beijing": "Beijing",
+      "paris": "Paris",
+      "mexicoCity": "Mexico City",
+      "tokyo": "Tokyo",
+      "saoPaulo": "São Paulo"
+    },
+    "guidelineNote": "Daily mean of fine particles (PM2.5) in November; the dashed line is the WHO guideline of {{value}}.",
+    "daysAbove": "{{days}}/{{total}} days above",
+    "pmAria": "Daily PM2.5 in {{city}} over 30 days"
   },
   "api": {
     "LineChartProps": {

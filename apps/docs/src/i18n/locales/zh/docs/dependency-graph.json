@@ -23,6 +23,26 @@
     "lineage": {
       "title": "上游与下游",
       "description": "从原始表到看板的数据血缘。选中状态会保持血缘高亮：点击模型查看它的来源和去向，按 Esc 或点击背景清除。"
+    },
+    "build-scheduler": {
+      "title": "构建调度器",
+      "description": "任务调度器用 1、2 或 4 个 worker 执行 monorepo 构建，优先启动剩余链路最长的就绪任务。随着计时推进，分组把任务标为已完成、运行中或排队中；节点 value 为耗时，criticalPath 显示无论多少 worker 都无法突破的构建时长下限。"
+    },
+    "project-plan": {
+      "title": "项目计划",
+      "description": "用关键路径法排定网站上线计划：最早与最晚开始时间得出每个任务的浮动时间，零浮动的链路以 id 列表传给 criticalPath。副标题用 Intl.DateTimeFormat.formatRange 显示工作日区间；点击任务查看其日期与浮动时间。"
+    },
+    "impact-analysis": {
+      "title": "故障影响分析",
+      "description": "夜间 ETL 任务：选择失败的任务（或点击节点），其所有下游任务被标记为阻塞，入边改为虚线。highlight=\"lineage\" 配合受控的 selected 显示影响范围，摘要列出无法交付的产出。"
+    },
+    "course-prerequisites": {
+      "title": "课程先修关系",
+      "description": "按学年分组的计算机专业课程。单选按钮在 TB、LR、BT、RL 之间切换方向，节点移动到新的层；点击课程，按课程目录顺序列出修读它之前需要完成的所有课程。"
+    },
+    "spreadsheet": {
+      "title": "电子表格重算",
+      "description": "订单表中的公式单元格及其引用的单元格。修改输入后，依赖它的单元格会重新计算：被修改的单元格作为 selected 传入，血缘高亮正好显示重算了哪些单元格，副标题用 Intl.NumberFormat 格式化金额与百分比。"
     }
   },
   "api": {
@@ -108,7 +128,107 @@
     },
     "lineageAria": "从原始表到看板的数据血缘",
     "lineageSummary": "{{name}}：上游 {{upstream}} 个，下游 {{downstream}} 个",
-    "lineageHint": "点击数据表或看板以高亮其血缘。"
+    "lineageHint": "点击数据表或看板以高亮其血缘。",
+    "runStates": {
+      "done": "已完成",
+      "running": "运行中",
+      "queued": "排队中"
+    },
+    "taskProgress": "已完成 {{percent}}",
+    "taskSeconds": "{{seconds}} 秒",
+    "workers": "Worker 数量",
+    "workerCount": "{{n}} 个 worker",
+    "pause": "暂停",
+    "run": "运行",
+    "reset": "重置",
+    "schedulerAria": "monorepo 的构建任务，按调度器执行状态着色",
+    "schedulerDone": "构建完成，{{workers}} 个 worker 共用时 {{seconds}} 秒。",
+    "schedulerStatus": "{{elapsed}} / {{seconds}} 秒 — 运行中：{{running}}。",
+    "idle": "无",
+    "schedulerBound": "任何调度都快不过关键路径：{{seconds}} 秒。",
+    "planTasks": {
+      "brief": "项目简报",
+      "research": "用户研究",
+      "sitemap": "站点地图",
+      "wireframes": "线框图",
+      "visualDesign": "视觉设计",
+      "copy": "文案撰写",
+      "backend": "API 与托管",
+      "cms": "CMS 配置",
+      "frontend": "前端开发",
+      "content": "内容录入",
+      "qa": "测试与修复",
+      "seo": "SEO 检查",
+      "golive": "正式上线"
+    },
+    "planPhases": {
+      "discovery": "调研",
+      "design": "设计",
+      "build": "开发",
+      "launch": "上线"
+    },
+    "planAria": "网站上线计划：任务、依赖关系与关键路径",
+    "planTask": "{{name}}：{{range}}，{{days}} 个工作日，可推迟 {{slack}} 个工作日而不影响上线。",
+    "planCriticalTask": "{{name}}：{{range}}，{{days}} 个工作日，位于关键路径上——任何延误都会推迟上线。",
+    "planSummary": "共 {{days}} 个工作日，{{date}} 上线。点击任务查看其日期与浮动时间。",
+    "runStatuses": {
+      "success": "成功",
+      "failed": "失败",
+      "blocked": "上游失败"
+    },
+    "failingTask": "失败的任务",
+    "impactAria": "夜间 ETL 任务，标出失败的任务及其阻塞的任务",
+    "impactSummary": "{{task}} 失败：{{total}} 个任务中有 {{blocked}} 个被阻塞，{{sinks}} 将无法交付。",
+    "impactNone": "{{task}} 失败，但没有其他任务依赖它。",
+    "courses": {
+      "intro": "程序设计导论",
+      "discrete": "离散数学",
+      "calculus": "微积分",
+      "dataStructures": "数据结构",
+      "architecture": "计算机体系结构",
+      "linearAlgebra": "线性代数",
+      "probability": "概率论",
+      "algorithms": "算法",
+      "os": "操作系统",
+      "databases": "数据库",
+      "networks": "计算机网络",
+      "ml": "机器学习",
+      "compilers": "编译原理",
+      "distributed": "分布式系统",
+      "security": "信息安全",
+      "deepLearning": "深度学习",
+      "capstone": "毕业设计"
+    },
+    "yearLabel": "第 {{n}} 学年",
+    "flowDirection": "流向",
+    "directions": {
+      "TB": "从上到下",
+      "LR": "从左到右",
+      "BT": "从下到上",
+      "RL": "从右到左"
+    },
+    "coursesAria": "计算机专业课程及其先修关系",
+    "coursePath": "修读{{course}}之前需完成 {{total}} 门课程：{{list}}。",
+    "courseNoPrerequisite": "{{course}}没有先修课程。",
+    "cells": {
+      "price": "单价",
+      "quantity": "数量",
+      "discountRate": "折扣 (%)",
+      "taxRate": "税率",
+      "subtotal": "小计",
+      "discount": "折扣额",
+      "net": "净额",
+      "tax": "税额",
+      "shipping": "运费",
+      "total": "总计",
+      "unitCost": "单位成本"
+    },
+    "cellKinds": {
+      "input": "输入",
+      "formula": "公式"
+    },
+    "spreadsheetAria": "订单表的单元格及其公式引用的单元格",
+    "recalculated": "{{cell}}已修改：重算了 {{total}} 个单元格（{{list}}）。总计：{{value}}。"
   },
   "wc": {
     "demos": {

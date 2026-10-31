@@ -25,6 +25,26 @@
     "outliers": {
       "title": "Valeurs aberrantes",
       "description": "La couleur, la taille et le libellé de chaque point signalent les requêtes bien plus lentes que prévu pour leur taille ; le temps attendu est une série line."
+    },
+    "zoom-controls": {
+      "title": "Commandes de zoom",
+      "description": "Des boutons zooment sur des régions par la ref : setView fixe la plage visible (sans appeler onZoom, la démo relit donc la vue avec getView) et resetZoom affiche à nouveau tout. onZoom signale les zooms à la molette et au glisser ; une annotation rect colore la plage de culture."
+    },
+    "selection": {
+      "title": "Sélection au clic",
+      "description": "onPointClick donne la série et l'index du point cliqué : l'employé sélectionné reçoit un point plus gros et une étiquette, et ses informations s'affichent dessous. onPlotClick, appelé sur la zone vide, efface la sélection."
+    },
+    "players": {
+      "title": "Infobulle et zones personnalisées",
+      "description": "renderTooltip remplace l'infobulle par un contenu React construit à partir des données de la démo. Les moyennes de la ligue sont des lignes de référence en pointillés, et des annotations rect aux bornes ouvertes colorent deux coins jusqu'aux bords du graphique."
+    },
+    "live-stream": {
+      "title": "Flux de capteur en direct",
+      "description": "Un nouvel échantillon de vibration toutes les 400 ms (un setInterval arrêté à la pause et au démontage), réparti entre une série normale et une série d'alarme autour d'une ligne de référence ; des min et max fixes gardent les axes immobiles pendant l'arrivée des données."
+    },
+    "log-log": {
+      "title": "Axes log-log",
+      "description": "xAxis et yAxis avec type: \"log\" transforment la loi de puissance des métabolismes (loi de Kleiber) en droite sur six ordres de grandeur ; l'ajustement est une série line de deux points avec tooltip: false."
     }
   },
   "data": {
@@ -67,7 +87,74 @@
     "payload": "Taille de la charge",
     "responseTime": "Temps de réponse",
     "outliersAria": "Temps de réponse selon la taille de la charge, valeurs aberrantes en rouge",
-    "outliersSummary": "{{slow}} requêtes sur {{total}} ont pris plus de deux fois le temps attendu."
+    "outliersSummary": "{{slow}} requêtes sur {{total}} ont pris plus de deux fois le temps attendu.",
+    "readings": "Mesures",
+    "zoomPresets": {
+      "night": "Nuits fraîches",
+      "comfort": "Plage de culture",
+      "heat": "Après-midi chauds"
+    },
+    "showAll": "Tout afficher",
+    "temperature": "Température",
+    "humidity": "Humidité relative",
+    "growingRange": "Plage de culture",
+    "greenhouseAria": "Mesures de température et d'humidité des capteurs de la serre",
+    "greenhouseView": "Visible : {{t0}} – {{t1}}, humidité {{h0}} – {{h1}} · mesures affichées : {{points}}",
+    "greenhouseHint": "Choisissez une région, ou zoomez avec Ctrl / ⌘ + molette",
+    "departments": {
+      "engineering": "Ingénierie",
+      "sales": "Ventes",
+      "support": "Support"
+    },
+    "tenure": "Ancienneté",
+    "reviewScore": "Note d'évaluation (1–5)",
+    "companyAverage": "Moyenne de l'entreprise",
+    "staffAria": "Ancienneté et note d'évaluation de 90 employés, par service",
+    "employeeStatus": "{{id}} · {{department}} · {{tenure}} · note {{score}} · {{salary}} par an",
+    "employeeHint": "Cliquez sur un point pour sélectionner un employé, sur la zone vide pour effacer la sélection",
+    "players": "Joueurs",
+    "leagueAverage": "Moyenne de la ligue",
+    "efficientScorers": "Marqueurs efficaces",
+    "volumeShooters": "Gros volumes de tirs",
+    "pointsPerGame": "{{value}} points par match",
+    "usageRow": "Taux d'utilisation : {{value}}",
+    "trueShootingRow": "True shooting : {{value}}",
+    "usageRate": "Taux d'utilisation",
+    "trueShooting": "True shooting (adresse réelle)",
+    "playersAria": "Taux d'utilisation et adresse au tir de 16 joueurs ; la taille du point est le nombre de points par match",
+    "normal": "Normal",
+    "alarm": "Alarme",
+    "latest": "Dernier",
+    "mmPerSecond": "{{value}} mm/s",
+    "pause": "Pause",
+    "resume": "Reprendre",
+    "vibrationStatus": "Dernier échantillon : {{rpm}} tr/min, {{value}} · alarmes à l'écran : {{alarms}}",
+    "speed": "Vitesse (tr/min)",
+    "vibration": "Vibration",
+    "alarmLimit": "Seuil d'alarme",
+    "vibrationAria": "Vibration en direct d'un moteur selon sa vitesse",
+    "mammals": "Mammifères",
+    "animals": {
+      "shrew": "Musaraigne",
+      "mouse": "Souris",
+      "rat": "Rat",
+      "rabbit": "Lapin",
+      "cat": "Chat",
+      "dog": "Chien",
+      "human": "Humain",
+      "pig": "Porc",
+      "horse": "Cheval",
+      "cow": "Vache",
+      "giraffe": "Girafe",
+      "elephant": "Éléphant"
+    },
+    "powerLaw": "Loi de puissance ajustée",
+    "kg": "{{value}} kg",
+    "watts": "{{value}} W",
+    "bodyMass": "Masse corporelle",
+    "metabolicRate": "Métabolisme de base",
+    "kleiber": "Métabolisme ∝ masse^{{exponent}} (loi de Kleiber)",
+    "kleiberAria": "Métabolisme de base selon la masse corporelle de 12 mammifères, sur axes log-log"
   },
   "api": {
     "ScatterChartProps": {

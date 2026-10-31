@@ -29,6 +29,22 @@
     "renderer": {
       "title": "渲染后端",
       "description": "选择数据层的后端：auto 依次尝试 WebGPU、WebGL2、WebGL 和 Canvas2D（CPU 投影并抽稀），并跳过软件模拟的 GPU；onRendererChange 报告实际使用的后端。"
+    },
+    "embeddings": {
+      "title": "文档向量",
+      "description": "600 篇新闻文章的向量投影到前三个主成分上，每个主题一个系列，坐标轴标题中标出解释方差。点击一篇文章：onPointClick 找出与它最近的五个邻居，作为额外的系列绘制在淡化的点云之上，并在下方列出。"
+    },
+    "lidar": {
+      "title": "激光雷达街景扫描",
+      "description": "一条街道约 13,000 个激光雷达回波点，以类型化数组列的形式传入，绘制为平面圆点（pointStyle: \"disc\"）。单选按钮把 value 列映射为高度或回波强度，并使用不同的 colorScale；开关在深色 ConfigProvider 中重新挂载图表，onHover 读取指针下的点。"
+    },
+    "satellites": {
+      "title": "卫星星座",
+      "description": "环绕地球的四个轨道层，从低轨宽带星座到地球静止轨道环，每 100 毫秒由 setInterval 更新一次位置，并在卸载时清理（每一步代表模拟的一分钟）。每个轨道层是一个系列，有各自的图例项；悬停卫星可查看其轨道的高度、速度和周期。"
+    },
+    "portfolio-risk": {
+      "title": "投资组合风险",
+      "description": "四十只股票按波动率、贝塔系数和年化收益分布，每个行业一个系列，点的大小随市值变化。坐标轴用 Intl.NumberFormat 格式化百分比，点击可在下方固定显示股票及其夏普比率，开关将 camera.projection 切换为正交投影，便于无畸变地比较。"
     }
   },
   "data": {
@@ -95,7 +111,60 @@
     },
     "cameraState": "方位角 {{azimuth}}°，仰角 {{elevation}}°，缩放 ×{{zoom}}",
     "cameraHint": "拖动旋转，Shift + 拖动平移，Ctrl / ⌘ + 滚轮缩放，双击复位。",
-    "rollAria": "按卷上位置着色的瑞士卷点云"
+    "rollAria": "按卷上位置着色的瑞士卷点云",
+    "topics": {
+      "sports": "体育",
+      "politics": "政治",
+      "technology": "科技",
+      "health": "健康",
+      "finance": "财经",
+      "travel": "旅游"
+    },
+    "docLabel": "{{topic}}文章 #{{n}}",
+    "neighbours": "最近邻",
+    "component": "主成分 {{n}}（{{variance}}）",
+    "embeddingsAria": "新闻文章向量在前三个主成分上的分布，按主题区分",
+    "neighboursOf": "与{{doc}}最接近：{{list}}。",
+    "neighbourItem": "{{doc}}（{{distance}}）",
+    "embeddingsHint": "点击一篇文章，查找与它最近的邻居。",
+    "lidarReturns": "激光雷达回波",
+    "lidarColor": "着色依据",
+    "lidarModes": {
+      "height": "高度",
+      "intensity": "强度"
+    },
+    "darkTheme": "深色主题",
+    "lidarAria": "包含建筑、树木和停放车辆的街道激光雷达点云",
+    "lidarSummary": "共 {{points}} 个点。悬停在点云上可读取回波。",
+    "lidarHover": "高度 {{height}}，强度 {{intensity}}。",
+    "satName": "{{shell}} {{n}}",
+    "shells": {
+      "broadband": "宽带（低轨）",
+      "imaging": "对地成像（极轨）",
+      "navigation": "导航（中轨）",
+      "geostationary": "地球静止轨道"
+    },
+    "earth": "地球",
+    "play": "播放",
+    "thousandKm": "千公里",
+    "satellitesAria": "四个轨道层的卫星环绕地球运行",
+    "satHover": "{{shell}}：高度 {{altitude}}，速度 {{speed}}，每 {{period}}绕行一周。",
+    "satellitesHint": "悬停在卫星上查看其轨道。",
+    "sectors": {
+      "technology": "科技",
+      "healthcare": "医疗",
+      "energy": "能源",
+      "financials": "金融",
+      "consumer": "消费"
+    },
+    "stockLabel": "{{ticker}} · {{cap}}",
+    "orthographicView": "正交视图",
+    "annualVolatility": "波动率",
+    "beta": "贝塔系数",
+    "annualReturn": "年化收益",
+    "portfolioAria": "按波动率、贝塔系数和年化收益分布的股票，点的大小表示市值",
+    "stockReadout": "{{ticker}}（{{sector}}）：收益 {{ret}}，波动率 {{volatility}}，贝塔 {{beta}}，夏普比率 {{sharpe}}，市值 {{cap}}。",
+    "portfolioHint": "点击股票以固定显示其数据。"
   },
   "api": {
     "Scatter3DChartProps": {

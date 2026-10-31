@@ -17,6 +17,30 @@
     "headcount": {
       "title": "人数变动",
       "description": "upColor、downColor 和 totalColor 替换默认颜色，这里入职为蓝色、离职为琥珀色。"
+    },
+    "arr-bridge": {
+      "title": "按季度的 ARR 桥图",
+      "description": "一个季度内年度经常性收入从期初到期末的变化：新业务、扩展、收缩和流失。RadioGroup 切换季度，start 取上一季度的期末 ARR，yAxis.min 放大变化部分；下方文字计算净新增 ARR 和净收入留存率。"
+    },
+    "price-bridge": {
+      "title": "价格瀑布",
+      "description": "单件商品从标价到实际到手价的变化，发票价作为小计。onPointClick 收到被点击的柱子（event.items[0].index），下方文字给出其金额占标价的比例。"
+    },
+    "emissions": {
+      "title": "排放桥图",
+      "description": "从 2019 年基准到 2025 年的排放量：交换 upColor 和 downColor，让增加显示为红色、减少显示为绿色；一条线标注标出 2030 年目标，renderTooltip 显示每项变化、其起止值以及与目标的差距。"
+    },
+    "lead-time": {
+      "title": "交付周期分解",
+      "description": "订单的每个环节累加其耗时，总计柱给出交付周期。每个步骤设置自己的颜色（作业或等待），format 使用 Intl.NumberFormat 的单位样式写出天数，connector 绘制实线。"
+    },
+    "live-balance": {
+      "title": "实时资金头寸",
+      "description": "一天内的资金余额：每两秒到达一笔交易（setInterval，在暂停和卸载时清除），最早的一笔移出窗口并计入 start，因此第一根柱子始终显示可见交易之前的余额。"
+    },
+    "options": {
+      "title": "选项",
+      "description": "冲刺范围从承诺到完成的故事点：试试 orientation、labels 和 connector。"
     }
   },
   "native": {
@@ -68,7 +92,97 @@
       "retirements": "退休"
     },
     "people": "人数",
-    "headcountAria": "全年人数变动"
+    "headcountAria": "全年人数变动",
+    "arr": {
+      "opening": "期初 ARR",
+      "newBusiness": "新业务",
+      "expansion": "扩展",
+      "contraction": "收缩",
+      "churn": "流失",
+      "closing": "期末 ARR",
+      "name": "ARR",
+      "quarterLabel": "季度",
+      "quarter": "第{{n}}季度",
+      "summary": "{{quarter}}：净新增 ARR {{net}} · 净收入留存率 {{nrr}}",
+      "aria": "{{quarter}}的 ARR 桥图"
+    },
+    "price": {
+      "listPrice": "标价",
+      "dealerDiscount": "经销商折扣",
+      "promotion": "促销",
+      "invoicePrice": "发票价",
+      "paymentTerms": "付款条件",
+      "freight": "运费",
+      "rebates": "批量返利",
+      "pocketPrice": "到手价",
+      "name": "单价",
+      "hint": "点击柱子与标价比较",
+      "selected": "{{step}}：{{value}}，占标价的 {{share}}",
+      "aria": "从标价到到手价的价格瀑布"
+    },
+    "emissions": {
+      "baseline": "2019 年基准",
+      "growth": "业务增长",
+      "efficiency": "能效提升",
+      "renewables": "可再生电力",
+      "fleet": "电动车队",
+      "refrigerants": "制冷剂",
+      "acquisition": "收购",
+      "current": "2025 年",
+      "target": "2030 年目标",
+      "kt": "{{value}} 千吨 CO₂e",
+      "name": "排放量",
+      "change": "变化：{{value}}",
+      "range": "从 {{from}} 到 {{to}}",
+      "gap": "高于 2030 年目标 {{value}}",
+      "aria": "从 2019 年基准到 2025 年的排放桥图"
+    },
+    "lead": {
+      "orderEntry": "订单录入",
+      "creditCheck": "信用审核",
+      "picking": "拣货",
+      "quality": "质检",
+      "carrierWait": "等待承运商",
+      "transit": "运输",
+      "customs": "清关",
+      "total": "交付周期",
+      "name": "耗时",
+      "work": "作业",
+      "wait": "等待",
+      "summary": "作业占 {{total}} 中的 {{work}}（{{share}}）",
+      "aria": "按环节划分的订单交付周期"
+    },
+    "live": {
+      "opening": "此前",
+      "now": "当前",
+      "name": "余额",
+      "kinds": {
+        "customer": "客户付款",
+        "supplier": "供应商发票",
+        "payroll": "工资发放",
+        "card": "刷卡手续费",
+        "refund": "退款"
+      },
+      "last": "最新：{{time}} · {{kind}} {{amount}}",
+      "pause": "暂停",
+      "resume": "继续",
+      "aria": "当天资金头寸，实时更新"
+    },
+    "scope": {
+      "committed": "已承诺",
+      "added": "新增",
+      "removed": "移除",
+      "reestimated": "重新估算",
+      "carriedOver": "顺延",
+      "completed": "已完成",
+      "name": "故事点",
+      "orientation": "方向",
+      "vertical": "纵向",
+      "horizontal": "横向",
+      "labels": "标签",
+      "connector": "连接线",
+      "aria": "冲刺范围：从承诺到完成的故事点"
+    }
   },
   "api": {
     "WaterfallChartProps": {

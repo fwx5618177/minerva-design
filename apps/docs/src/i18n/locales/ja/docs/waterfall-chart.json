@@ -17,6 +17,30 @@
     "headcount": {
       "title": "人員の増減",
       "description": "upColor、downColor、totalColor で既定の色を置き換えます。ここでは入社を青、退職を琥珀色にしています。"
+    },
+    "arr-bridge": {
+      "title": "四半期別 ARR ブリッジ",
+      "description": "四半期の期首から期末までの年間経常収益：新規、アップセル、縮小、解約。RadioGroup で四半期を切り替え、start は前四半期の期末 ARR を受け取り、yAxis.min で変化部分を拡大します。下の行では純新規 ARR と売上継続率を計算します。"
+    },
+    "price-bridge": {
+      "title": "価格ウォーターフォール",
+      "description": "1 個あたりの定価から実質手取り価格まで。請求価格は小計です。onPointClick はクリックされたバー（event.items[0].index）を受け取り、下の行でその金額が定価に占める割合を示します。"
+    },
+    "emissions": {
+      "title": "排出量ブリッジ",
+      "description": "2019 年の基準から 2025 年までの排出量：upColor と downColor を入れ替えて増加を赤、削減を緑にし、線のアノテーションで 2030 年目標を示します。renderTooltip は各変化とその始点・終点、目標との差を表示します。"
+    },
+    "lead-time": {
+      "title": "リードタイムの内訳",
+      "description": "注文の各工程が所要時間を積み上げ、合計バーがリードタイムを示します。各ステップは独自の色（作業か待ち）を持ち、format は Intl.NumberFormat の単位スタイルで日数を書き、connector は実線を描きます。"
+    },
+    "live-balance": {
+      "title": "ライブ資金ポジション",
+      "description": "1 日の資金残高：2 秒ごとに取引が届き（setInterval、一時停止とアンマウントで解除）、最も古い取引はウィンドウから外れて start に繰り込まれるため、最初のバーは常に表示中の取引より前の残高を示します。"
+    },
+    "options": {
+      "title": "オプション",
+      "description": "スプリントのスコープをコミットから完了までのストーリーポイントで表示：orientation、labels、connector を試せます。"
     }
   },
   "native": {
@@ -68,7 +92,97 @@
       "retirements": "定年退職"
     },
     "people": "人数",
-    "headcountAria": "1 年間の人員の増減"
+    "headcountAria": "1 年間の人員の増減",
+    "arr": {
+      "opening": "期首 ARR",
+      "newBusiness": "新規",
+      "expansion": "アップセル",
+      "contraction": "縮小",
+      "churn": "解約",
+      "closing": "期末 ARR",
+      "name": "ARR",
+      "quarterLabel": "四半期",
+      "quarter": "第{{n}}四半期",
+      "summary": "{{quarter}}：純新規 ARR {{net}} · 売上継続率 {{nrr}}",
+      "aria": "{{quarter}}の ARR ブリッジ"
+    },
+    "price": {
+      "listPrice": "定価",
+      "dealerDiscount": "販売店値引き",
+      "promotion": "販促",
+      "invoicePrice": "請求価格",
+      "paymentTerms": "支払条件",
+      "freight": "運賃",
+      "rebates": "数量リベート",
+      "pocketPrice": "実質手取り価格",
+      "name": "単価",
+      "hint": "バーをクリックすると定価と比較します",
+      "selected": "{{step}}：{{value}}、定価の {{share}}",
+      "aria": "定価から実質手取り価格までの価格ウォーターフォール"
+    },
+    "emissions": {
+      "baseline": "2019 年基準",
+      "growth": "事業成長",
+      "efficiency": "省エネ",
+      "renewables": "再生可能電力",
+      "fleet": "EV 車両",
+      "refrigerants": "冷媒",
+      "acquisition": "買収",
+      "current": "2025 年",
+      "target": "2030 年目標",
+      "kt": "{{value}} kt CO₂e",
+      "name": "排出量",
+      "change": "変化：{{value}}",
+      "range": "{{from}} から {{to}}",
+      "gap": "2030 年目標を {{value}} 上回る",
+      "aria": "2019 年基準から 2025 年までの排出量ブリッジ"
+    },
+    "lead": {
+      "orderEntry": "受注入力",
+      "creditCheck": "与信審査",
+      "picking": "ピッキング",
+      "quality": "品質検査",
+      "carrierWait": "運送業者待ち",
+      "transit": "輸送",
+      "customs": "通関",
+      "total": "リードタイム",
+      "name": "所要時間",
+      "work": "作業",
+      "wait": "待ち",
+      "summary": "作業は {{total}} のうち {{work}}（{{share}}）",
+      "aria": "工程別の注文リードタイム"
+    },
+    "live": {
+      "opening": "それ以前",
+      "now": "現在",
+      "name": "残高",
+      "kinds": {
+        "customer": "顧客からの入金",
+        "supplier": "仕入先への支払",
+        "payroll": "給与",
+        "card": "カード手数料",
+        "refund": "返金"
+      },
+      "last": "最新：{{time}} · {{kind}} {{amount}}",
+      "pause": "一時停止",
+      "resume": "再開",
+      "aria": "当日の資金ポジション（ライブ更新）"
+    },
+    "scope": {
+      "committed": "コミット",
+      "added": "追加",
+      "removed": "削除",
+      "reestimated": "再見積もり",
+      "carriedOver": "持ち越し",
+      "completed": "完了",
+      "name": "ストーリーポイント",
+      "orientation": "向き",
+      "vertical": "縦",
+      "horizontal": "横",
+      "labels": "ラベル",
+      "connector": "コネクタ",
+      "aria": "コミットから完了までのスプリントのストーリーポイント"
+    }
   },
   "api": {
     "WaterfallChartProps": {

@@ -17,6 +17,30 @@
     "headcount": {
       "title": "Évolution des effectifs",
       "description": "upColor, downColor et totalColor remplacent les couleurs par défaut, ici les arrivées en bleu et les départs en ambre."
+    },
+    "arr-bridge": {
+      "title": "Pont d'ARR par trimestre",
+      "description": "Le revenu récurrent annuel d'un trimestre, de l'ARR d'ouverture à l'ARR de clôture : nouvelles affaires, expansion, contraction et attrition. Un RadioGroup change de trimestre, start reprend l'ARR de clôture précédent et yAxis.min zoome sur les variations ; la ligne du dessous calcule l'ARR net ajouté et la rétention nette du revenu."
+    },
+    "price-bridge": {
+      "title": "Cascade de prix",
+      "description": "Du prix catalogue au prix de poche d'une unité, avec le prix facturé en sous-total. onPointClick reçoit la barre cliquée (event.items[0].index) : la ligne du dessous donne son montant en part du prix catalogue."
+    },
+    "emissions": {
+      "title": "Pont des émissions",
+      "description": "Les émissions de la référence 2019 à 2025 : upColor et downColor sont inversées pour que les hausses soient rouges et les baisses vertes, une annotation en ligne marque l'objectif 2030 et renderTooltip montre chaque variation, son début, sa fin et l'écart à l'objectif."
+    },
+    "lead-time": {
+      "title": "Décomposition du délai",
+      "description": "Chaque étape d'une commande ajoute sa durée et une barre de total donne le délai de livraison. Chaque étape a sa couleur (travail ou attente), format écrit des jours avec le style unit d'Intl.NumberFormat et connector trace des lignes pleines."
+    },
+    "live-balance": {
+      "title": "Trésorerie en direct",
+      "description": "Le solde de trésorerie au fil de la journée : une transaction arrive toutes les deux secondes (setInterval, arrêté à la pause et au démontage), la plus ancienne sort de la fenêtre et rejoint start, si bien que la première barre montre toujours le solde avant les transactions visibles."
+    },
+    "options": {
+      "title": "Options",
+      "description": "Le périmètre d'un sprint, des points engagés aux points terminés : essayez orientation, labels et connector."
     }
   },
   "native": {
@@ -68,7 +92,97 @@
       "retirements": "Départs en retraite"
     },
     "people": "Personnes",
-    "headcountAria": "Évolution des effectifs sur l'année"
+    "headcountAria": "Évolution des effectifs sur l'année",
+    "arr": {
+      "opening": "ARR d'ouverture",
+      "newBusiness": "Nouvelles affaires",
+      "expansion": "Expansion",
+      "contraction": "Contraction",
+      "churn": "Attrition",
+      "closing": "ARR de clôture",
+      "name": "ARR",
+      "quarterLabel": "Trimestre",
+      "quarter": "T{{n}}",
+      "summary": "{{quarter}} : ARR net ajouté {{net}} · rétention nette du revenu {{nrr}}",
+      "aria": "Pont d'ARR du {{quarter}}"
+    },
+    "price": {
+      "listPrice": "Prix catalogue",
+      "dealerDiscount": "Remise distributeur",
+      "promotion": "Promotions",
+      "invoicePrice": "Prix facturé",
+      "paymentTerms": "Conditions de paiement",
+      "freight": "Transport",
+      "rebates": "Ristournes",
+      "pocketPrice": "Prix de poche",
+      "name": "Prix unitaire",
+      "hint": "Cliquez sur une barre pour la comparer au prix catalogue",
+      "selected": "{{step}} : {{value}}, {{share}} du prix catalogue",
+      "aria": "Cascade de prix, du prix catalogue au prix de poche"
+    },
+    "emissions": {
+      "baseline": "Référence 2019",
+      "growth": "Croissance de l'activité",
+      "efficiency": "Efficacité énergétique",
+      "renewables": "Électricité renouvelable",
+      "fleet": "Flotte électrique",
+      "refrigerants": "Réfrigérants",
+      "acquisition": "Acquisition",
+      "current": "2025",
+      "target": "Objectif 2030",
+      "kt": "{{value}} kt CO₂e",
+      "name": "Émissions",
+      "change": "Variation : {{value}}",
+      "range": "De {{from}} à {{to}}",
+      "gap": "{{value}} au-dessus de l'objectif 2030",
+      "aria": "Pont des émissions, de la référence 2019 à 2025"
+    },
+    "lead": {
+      "orderEntry": "Saisie de la commande",
+      "creditCheck": "Contrôle de crédit",
+      "picking": "Préparation",
+      "quality": "Contrôle qualité",
+      "carrierWait": "Attente du transporteur",
+      "transit": "Transport",
+      "customs": "Douane",
+      "total": "Délai",
+      "name": "Durée",
+      "work": "Travail",
+      "wait": "Attente",
+      "summary": "le travail occupe {{work}} sur {{total}} ({{share}})",
+      "aria": "Délai d'une commande par étape"
+    },
+    "live": {
+      "opening": "Avant",
+      "now": "Maintenant",
+      "name": "Solde",
+      "kinds": {
+        "customer": "Paiement client",
+        "supplier": "Facture fournisseur",
+        "payroll": "Paie",
+        "card": "Frais de carte",
+        "refund": "Remboursement"
+      },
+      "last": "Dernière : {{time}} · {{kind}} {{amount}}",
+      "pause": "Pause",
+      "resume": "Reprendre",
+      "aria": "Trésorerie de la journée, mise à jour en direct"
+    },
+    "scope": {
+      "committed": "Engagé",
+      "added": "Ajouté",
+      "removed": "Retiré",
+      "reestimated": "Réestimé",
+      "carriedOver": "Reporté",
+      "completed": "Terminé",
+      "name": "Points d'effort",
+      "orientation": "Orientation",
+      "vertical": "Verticale",
+      "horizontal": "Horizontale",
+      "labels": "Étiquettes",
+      "connector": "Connecteurs",
+      "aria": "Périmètre du sprint, des points engagés aux points terminés"
+    }
   },
   "api": {
     "WaterfallChartProps": {

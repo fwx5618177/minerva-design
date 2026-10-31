@@ -17,6 +17,22 @@
     "comparison": {
       "title": "Comparer deux échantillons",
       "description": "histogramSeries construit les barres d'un échantillon : avec le même domaine et le même nombre, deux échantillons partagent leurs classes et se placent côte à côte dans un Chart."
+    },
+    "quality-control": {
+      "title": "Capabilité du procédé",
+      "description": "Les diamètres de pièces usinées face à leur tolérance : des annotations rect et line marquent les limites de spécification et la prop series trace la courbe normale ajustée par-dessus les classes. Le relevé calcule le Cpk, et l'interrupteur montre le procédé une fois l'outil réglé."
+    },
+    "order-values": {
+      "title": "Montants de commande en échelle log",
+      "description": "Des montants sur trois ordres de grandeur sont regroupés selon leur logarithme, chaque classe couvre donc le même rapport ; formatBin et xAxis.format reconvertissent les bornes en dollars. Des annotations marquent la médiane, le p99 et les commandes qui ont droit à la livraison gratuite."
+    },
+    "live-samples": {
+      "title": "Fenêtre glissante en direct",
+      "description": "Les temps d'attente des 600 derniers appels au support, mis à jour deux fois par seconde par un setInterval arrêté à la pause et au démontage. Un domain, un nombre de classes et une plage yAxis fixes gardent les axes immobiles pendant que la distribution évolue, et le relevé suit le niveau de service."
+    },
+    "commute": {
+      "title": "Part cumulée au clic",
+      "description": "onPointClick donne l'index de la classe cliquée ; binValues, appelé avec les mêmes options, renvoie ses bornes et ses effectifs pour calculer la part des employés en dessous. renderTooltip affiche l'effectif et la part de chaque classe, et onPlotClick efface la sélection."
     }
   },
   "native": {
@@ -46,7 +62,44 @@
     "control": "Contrôle",
     "variant": "Nouvel accueil",
     "minutes": "Durée de session (minutes)",
-    "abAria": "Durées de session des deux groupes d'un test A/B"
+    "abAria": "Durées de session des deux groupes d'un test A/B",
+    "normalFit": "Ajustement normal",
+    "lsl": "LSI",
+    "usl": "LSS",
+    "nominal": "Nominal",
+    "adjustTool": "Outil réglé",
+    "capability": "Moyenne {{mean}}, σ {{sd}}, Cpk {{cpk}}, {{ppm}} ppm hors tolérance :",
+    "capable": "capable",
+    "notCapable": "non capable",
+    "parts": "Pièces",
+    "diameter": "Diamètre",
+    "qualityAria": "Distribution des diamètres d'arbres avec les limites de spécification et une courbe normale ajustée",
+    "freeShipping": "Livraison gratuite",
+    "medianOrder": "Médiane {{value}}",
+    "p99Order": "p99 {{value}}",
+    "eligibleShare": "{{share}} des commandes atteignent le seuil de livraison gratuite de {{threshold}}.",
+    "orders": "Commandes",
+    "orderValue": "Montant de la commande (échelle log)",
+    "ordersAria": "Distribution des montants de commande sur une échelle logarithmique",
+    "pause": "Pause",
+    "resume": "Reprendre",
+    "reset": "Réinitialiser",
+    "serviceLevel": "{{share}} des appels décrochés en {{target}} ou moins, p90 {{p90}} :",
+    "targetMet": "objectif atteint",
+    "targetMissed": "objectif manqué",
+    "calls": "Appels",
+    "waitTime": "Temps d'attente",
+    "target": "Objectif",
+    "p90": "p90",
+    "callsAria": "Distribution en direct des temps d'attente des 600 derniers appels au support",
+    "withinShare": "{{share}} des employés",
+    "employeesInBin": "{{value}} employés ({{share}})",
+    "clickForCumulative": "Cliquez pour la part cumulée",
+    "clickBin": "Cliquez sur une barre pour voir la part des employés dont le trajet est plus court.",
+    "cumulativeStatus": "{{share}} des employés ({{employees}}) font un trajet de {{limit}} ou moins.",
+    "employees": "Employés",
+    "commute": "Trajet aller",
+    "commuteAria": "Distribution des temps de trajet des employés"
   },
   "api": {
     "HistogramChartProps": {

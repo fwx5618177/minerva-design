@@ -46,6 +46,22 @@
     "red-up": {
       "title": "Red up, green down",
       "description": "colorConvention=\"red-up\": red buy bubbles and best bid line, green sells and best ask line."
+    },
+    "price-resolution": {
+      "title": "Price resolution and hover inspector",
+      "description": "tickSize sets the height of a price row (a new value resamples the replayed history), priceSpan fixes the visible price range instead of fitting the best bid and ask. With tooltip={false}, onHover drives a custom readout: column time, price row, resting size and side, traded volume."
+    },
+    "time-window": {
+      "title": "Time window, pause and clear",
+      "description": "window picks how much of the five recorded minutes (history) is on screen, without resampling. The switch stops the feed loop: the market resumes where it was, without a gap. clear() drops the columns, then setBook starts again from the current book."
+    },
+    "linked": {
+      "title": "Heatmap, ladder and tape",
+      "description": "One recorded minute backfills the three widgets differently: the heatmap replays every update (applyDeltas, addTrades), the tape gets all its trades with setTrades, the ladder only the book of now. Each live message then goes to all three, like one exchange WebSocket."
+    },
+    "perpetual": {
+      "title": "Perpetual futures in contracts",
+      "description": "A BTC perpetual quoted in contracts of 0.001 BTC: formatSize converts the sizes, formatPrice shows dollars, sizeUnit and labels rename the units of the legend and tooltip, and timeZone=\"utc\" matches the exchange clock of the funding countdown above."
     }
   },
   "data": {
@@ -70,7 +86,42 @@
     "redUp": "Red up, green down",
     "greenUp": "Green up, red down",
     "volumeAt": "Hovered column: {{buys}} BTC bought, {{sells}} BTC sold",
-    "volumeHint": "Hover a column to read its traded volume."
+    "volumeHint": "Hover a column to read its traded volume.",
+    "rowHeight": "Row height",
+    "priceSpan": "Price span",
+    "usdtValue": "{{value}} USDT",
+    "auto": "Auto",
+    "fitBook": "Fit the book",
+    "cellReadout": "{{time}} · {{price}} · {{size}} BTC {{side}} · {{buys}} BTC bought, {{sells}} BTC sold",
+    "priceRange": "{{low}} – {{high}}",
+    "sideBid": "on the bid side",
+    "sideAsk": "on the ask side",
+    "sideSpread": "inside the spread",
+    "cellHint": "Hover a cell to inspect it.",
+    "timeWindow": "Time window",
+    "liveFeed": "Live feed",
+    "clearHistory": "Clear history",
+    "pausedAt": "Paused at {{time}}.",
+    "resumedAt": "Resumed at {{time}}.",
+    "clearedAt": "History cleared at {{time}}.",
+    "windowStatus": "{{window}} on screen out of {{history}} kept.",
+    "pair": "BTC/USDT",
+    "lastPrice": "Last {{value}}",
+    "spreadIs": "Spread {{value}}",
+    "tradesOnTape": "{{value}} trades on the tape",
+    "bookAria": "BTC/USDT order book",
+    "tapeAria": "BTC/USDT trades",
+    "perpName": "BTC-USD perpetual",
+    "contractSize": "1 contract = {{value}} BTC",
+    "fundingRate": "Funding {{rate}}",
+    "funding": "Funding {{rate}} at {{time}}, in {{countdown}}",
+    "contracts": "contracts",
+    "restingContracts": "Resting",
+    "takerBuys": "Taker buys",
+    "takerSells": "Taker sells",
+    "perpAria": "BTC-USD perpetual liquidity heatmap",
+    "perpReadout": "{{price}}: {{contracts}} contracts resting (≈ {{notional}})",
+    "perpHint": "Hover the heatmap to read the resting contracts and their value."
   },
   "api": {
     "OrderBookHeatmapProps": {

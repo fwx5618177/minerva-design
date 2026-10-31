@@ -21,6 +21,22 @@
     "long-names": {
       "title": "Noms longs",
       "description": "La colonne des libellés est mesurée : elle s’élargit jusqu’au nom le plus long, dans la limite de 40 % de la largeur ; les noms plus longs passent sur deux lignes et se terminent par des points de suspension. Survolez une ligne (ou donnez-lui le focus au clavier) pour lire le nom complet dans l’infobulle."
+    },
+    "budget-tracker": {
+      "title": "Suivi des budgets par service",
+      "description": "Chaque ligne compare les dépenses à date au budget prévu à ce stade (target), et des ranges propres à chaque ligne marquent les zones confortable, tendue et hors plan. La barre passe au rouge via color quand un service dépense plus vite que prévu ; onClick affiche son écart sous le graphique."
+    },
+    "live-sensors": {
+      "title": "Capteurs d’une salle serveurs en direct",
+      "description": "Les mesures se rafraîchissent chaque seconde (setInterval, arrêté quand l’interrupteur est désactivé ou au démontage) ; la target est la consigne et les ranges les seuils d’alerte et critique. La color de chaque barre suit son état, et seule la liste des capteurs hors limites est annoncée."
+    },
+    "training": {
+      "title": "Plan d’entraînement hebdomadaire",
+      "description": "Un Select change de coureur et les barres s’animent vers sa semaine. Chaque ligne a l’échelle de son propre plan, donc ticks={false} masque les graduations sans unité ; renderTooltip formate la valeur et le plan avec les unités d’Intl.NumberFormat (km, m, h) et donne la part du plan."
+    },
+    "hiring-plan": {
+      "title": "Plan de recrutement",
+      "description": "Les embauches de chaque équipe comparées au plan d’effectifs annuel, avec un repère là où l’équipe devrait en être. Un Select trie les lignes selon le rythme ; legend avec hidden et onToggle masque des équipes, mémorisées par clé pour rester masquées quand l’ordre change, et le résumé additionne les équipes visibles."
     }
   },
   "native": {
@@ -117,7 +133,99 @@
       "renewals": "Rétention nette du chiffre d’affaires des abonnements annuels",
       "renewalsUnit": "ratio"
     },
-    "longAria": "KPI opérationnels aux noms longs comparés à leurs objectifs"
+    "longAria": "KPI opérationnels aux noms longs comparés à leurs objectifs",
+    "budget": {
+      "departments": {
+        "marketing": "Marketing",
+        "engineering": "Ingénierie",
+        "sales": "Ventes",
+        "people": "Ressources humaines",
+        "facilities": "Services généraux",
+        "travel": "Déplacements"
+      },
+      "yearly": "Budget annuel : {{budget}}",
+      "ranges": {
+        "comfortable": "Confortable",
+        "tight": "Tendu",
+        "over": "Hors plan"
+      },
+      "hint": "{{over}} services dépensent plus vite que prévu. Cliquez sur une ligne pour voir son écart.",
+      "overPlan": "{{department}} dépasse le plan : {{variance}} à la fin du T3, {{share}} du budget annuel consommé, {{left}} restants.",
+      "underPlan": "{{department}} respecte le plan : {{variance}} à la fin du T3, {{share}} du budget annuel consommé, {{left}} restants.",
+      "aria": "Dépenses de chaque service à la fin du T3 comparées au budget prévu à cette date"
+    },
+    "sensors": {
+      "names": {
+        "inlet": "Température d’entrée",
+        "humidity": "Humidité",
+        "power": "Consommation",
+        "fans": "Vitesse des ventilateurs"
+      },
+      "units": {
+        "inlet": "°C",
+        "humidity": "% relative",
+        "power": "kW par baie",
+        "fans": "% de la vitesse max."
+      },
+      "status": {
+        "ok": "Normal",
+        "warning": "Alerte",
+        "critical": "Critique"
+      },
+      "live": "Mesures en direct",
+      "aria": "Mesures des capteurs de la salle serveurs comparées à leurs consignes et seuils",
+      "alerts": "À surveiller : {{sensors}}",
+      "allOk": "Tous les capteurs sont dans leurs limites."
+    },
+    "training": {
+      "metrics": {
+        "distance": "Distance de la semaine",
+        "longRun": "Sortie longue",
+        "elevation": "Dénivelé positif",
+        "sessions": "Séances",
+        "sleep": "Sommeil"
+      },
+      "plan": "plan : {{plan}}",
+      "ranges": {
+        "under": "Sous le plan",
+        "onPlan": "Dans le plan",
+        "above": "Au-dessus du plan"
+      },
+      "runner": "Coureur",
+      "runners": {
+        "amara": "Amara",
+        "lucas": "Lucas",
+        "mei": "Mei"
+      },
+      "tooltip": "{{value}} pour un plan de {{plan}} ({{share}})",
+      "aria": "Entraînement hebdomadaire de {{runner}} comparé au plan",
+      "summary": "{{runner}} a atteint {{met}} objectifs hebdomadaires sur {{metrics}}."
+    },
+    "hiring": {
+      "teams": {
+        "engineering": "Ingénierie",
+        "sales": "Ventes",
+        "support": "Support",
+        "marketing": "Marketing",
+        "product": "Produit",
+        "finance": "Finance"
+      },
+      "planned": "{{plan}} prévus cette année",
+      "ranges": {
+        "behind": "En retard",
+        "catchingUp": "En rattrapage",
+        "onTrack": "Dans les temps"
+      },
+      "order": "Tri",
+      "orders": {
+        "plan": "Ordre du plan",
+        "behind": "Plus en retard d’abord",
+        "ahead": "Plus en avance d’abord"
+      },
+      "aria": "Embauches de chaque équipe comparées au plan d’effectifs annuel",
+      "summary": "{{hired}} embauches sur {{planned}} prévues ({{share}}) pour les {{teams}} équipes affichées.",
+      "none": "Aucune équipe affichée."
+    }
   },
   "wc": {
     "demos": {

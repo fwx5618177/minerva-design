@@ -41,6 +41,26 @@
     "zoom": {
       "title": "期間セレクター",
       "description": "期間ボタンがチャートの ref の setView を呼び、表示範囲と、その範囲内の価格に合わせた y の範囲を設定します。Ctrl / ⌘ + ホイールやドラッグも使えます。"
+    },
+    "live-sensor": {
+      "title": "ライブセンサー",
+      "description": "冷凍庫のプローブが毎秒 1 件の値を送ります。setInterval が点を追加して最も古い点を削除するため、時間軸は直近 1 分間をスライドし、一時停止時とアンマウント時にインターバルを解除します。rect と破線の y アノテーションが警報ゾーンを示し、読み上げるのは警報の状態だけです。"
+    },
+    "log-scale": {
+      "title": "対数スケール",
+      "description": "yAxis={{ type: \"log\" }} で指数的な増殖が直線になり、数時間の誘導期と 10³ から 10⁹ までの菌数を同時に読み取れます。スイッチで線形スケールと比較できます。目盛りは notation: \"scientific\" の Intl.NumberFormat で表記します。"
+    },
+    "measure": {
+      "title": "2 点間の計測",
+      "description": "onPointClick で最大 2 日を固定し、その間の変化を下に表示します。x の参照線と緑または赤の rect が期間を示し、空いた場所をクリックすると onPlotClick で計測をクリアします。"
+    },
+    "index-tooltip": {
+      "title": "指数化したパフォーマンス",
+      "description": "4 つの資産クラスを開始時点 = 100 に指数化しています。renderTooltip で既定の内容を React のリストに置き換え、パフォーマンスの高い順に、各系列の色と基準からの変化率を表示します。"
+    },
+    "small-multiples": {
+      "title": "スモールマルチプル",
+      "description": "CSS グリッドに都市ごとの小さな LineChart を並べ、すべて同じ yAxis の min と max にしてひと目で比較できるようにしています。interaction={false} で静的にし、破線の y 参照線で WHO の指針値を示します。"
     }
   },
   "data": {
@@ -105,7 +125,54 @@
     "memory": "メモリ",
     "hour": "{{hour}}時",
     "usageAria": "1 日の CPU とメモリの使用率",
-    "pinchHint": "ピンチでズーム、ダブルタップでリセット。凡例をタップすると系列を非表示にできます。"
+    "pinchHint": "ピンチでズーム、ダブルタップでリセット。凡例をタップすると系列を非表示にできます。",
+    "freezer": "冷凍庫の温度",
+    "alarmLimit": "{{value}} 超で警報",
+    "pause": "一時停止",
+    "resume": "再開",
+    "sensorAlarm": "警報：扉が開いている？",
+    "sensorNormal": "正常",
+    "lastReading": "最新の値 {{value}}（{{time}}）",
+    "aboveLimit": "直近 1 分間の上限超過：{{readings}} 件",
+    "freezerAria": "直近 1 分間の冷凍庫の温度（毎秒更新）",
+    "strains": {
+      "wild": "野生型",
+      "mutant": "変異株",
+      "antibiotic": "抗生物質あり"
+    },
+    "exponentialPhase": "対数増殖期",
+    "logScale": "対数スケール",
+    "elapsed": "接種後の経過時間",
+    "cfu": "CFU / mL",
+    "growthAria": "3 種類の細菌培養の 24 時間の増殖曲線",
+    "logNote": "直線部分は増殖率が一定であることを示します。野生型は約 {{minutes}} ごとに倍増します。",
+    "linearNote": "線形スケールでは菌数の少ない培養が平らに見えます。対数スケールに戻すと比較できます。",
+    "portfolio": "ポートフォリオ評価額",
+    "measureHint": "点をクリックして計測を開始し、続けて 2 点目をクリックします。",
+    "measureStart": "始点 {{date}}（{{value}}）：2 点目をクリックしてください。",
+    "measureResult": "{{from}} → {{to}}：{{change}}（{{percent}}）、期間 {{days}}",
+    "clear": "クリア",
+    "portfolioAria": "2026 年のポートフォリオの日次評価額。2 点をクリックすると変化を計測します",
+    "assets": {
+      "equities": "株式",
+      "bonds": "債券",
+      "gold": "金",
+      "realEstate": "不動産"
+    },
+    "baseIndex": "基準 = 100",
+    "assetsAria": "100 を基準に指数化した 4 つの資産クラスのパフォーマンス（2021〜2026 年）",
+    "micrograms": "{{value}} µg/m³",
+    "cities": {
+      "delhi": "デリー",
+      "beijing": "北京",
+      "paris": "パリ",
+      "mexicoCity": "メキシコシティ",
+      "tokyo": "東京",
+      "saoPaulo": "サンパウロ"
+    },
+    "guidelineNote": "11 月の微小粒子状物質（PM2.5）の日平均値。破線は WHO の指針値 {{value}} です。",
+    "daysAbove": "超過 {{days}}/{{total}} 日",
+    "pmAria": "{{city}} の 30 日間の日次 PM2.5"
   },
   "api": {
     "LineChartProps": {

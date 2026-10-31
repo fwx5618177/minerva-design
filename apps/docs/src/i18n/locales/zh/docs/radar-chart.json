@@ -21,6 +21,22 @@
     "capabilities": {
       "title": "产品能力",
       "description": "分析师对我们的产品、竞品和市场平均水平的评分。hidden 让可见性变为受控：复选框和图例（onToggle）共用同一个状态。"
+    },
+    "nutrition": {
+      "title": "早餐营养成分",
+      "description": "三种早餐绘制在圆形网格上（shape=\"circle\"，levels={5}），每条轴以每日参考值的百分比表示。renderTooltip 使用事件的 indicator 列出每份早餐中所悬停营养素的含量。"
+    },
+    "live-monitor": {
+      "title": "实时服务监控",
+      "description": "当前负载每秒重绘一次（setInterval，在关闭开关或卸载时清除），叠加在过去一小时的基线之上，超过告警阈值时变为红色。只播报负载最高的指标和告警状态，而不是每次刷新。"
+    },
+    "review-360": {
+      "title": "360 度评估",
+      "description": "通过 Select 选择要与团队平均值对比的人员；将该人员始终作为第二个系列，多边形就会原地过渡。下方文字指出其相对团队的最大优势和最大差距。"
+    },
+    "sales-targets": {
+      "title": "单位各异的销售目标",
+      "description": "每个指标都有自己的 min 和 max，因此收入、成交数、赢单率和 NPS 可以共用一张图；目标是未填充的轮廓。onClick 和 renderTooltip 读取事件的 indicator，显示某个 KPI 的实际值、目标和达成率。"
     }
   },
   "data": {
@@ -82,7 +98,70 @@
       "market": "市场平均"
     },
     "compareWith": "要比较的产品",
-    "capabilitiesAria": "我们的产品、竞品与市场平均的能力评分"
+    "capabilitiesAria": "我们的产品、竞品与市场平均的能力评分",
+    "nutrition": {
+      "nutrients": {
+        "protein": "蛋白质",
+        "fiber": "膳食纤维",
+        "sugar": "糖",
+        "fat": "脂肪",
+        "sodium": "钠",
+        "calcium": "钙"
+      },
+      "meals": {
+        "oatmeal": "水果燕麦粥",
+        "eggs": "鸡蛋吐司",
+        "yogurt": "酸奶配格兰诺拉麦片"
+      },
+      "dailyValue": "{{value}} NRV",
+      "row": "{{meal}}：{{amount}}（{{share}}）",
+      "aria": "三种早餐的营养成分，以每日参考值的百分比表示"
+    },
+    "monitor": {
+      "metrics": {
+        "cpu": "CPU",
+        "memory": "内存",
+        "diskIo": "磁盘 I/O",
+        "network": "网络",
+        "latency": "延迟",
+        "errors": "错误"
+      },
+      "baseline": "过去一小时平均",
+      "now": "当前",
+      "live": "实时更新",
+      "alert": "告警：{{metric}} 超过容量的 {{threshold}}。",
+      "peak": "负载最高的指标：{{metric}}。",
+      "aria": "服务当前负载与过去一小时平均值的对比"
+    },
+    "review": {
+      "competencies": {
+        "communication": "沟通",
+        "delivery": "交付",
+        "expertise": "专业能力",
+        "collaboration": "协作",
+        "mentoring": "指导",
+        "initiative": "主动性"
+      },
+      "team": "团队平均",
+      "person": "人员",
+      "aria": "{{name}} 的 360 度评估评分与团队平均值的对比",
+      "summary": "最强项：{{strength}}（比团队 {{strengthGap}}）。待提升：{{growth}}（{{growthGap}}）。"
+    },
+    "sales": {
+      "kpis": {
+        "revenue": "收入",
+        "deals": "成交数",
+        "winRate": "赢单率",
+        "dealSize": "平均订单金额",
+        "calls": "通话数",
+        "nps": "NPS"
+      },
+      "target": "目标",
+      "actual": "实际",
+      "line": "{{kpi}}：{{actual}}，目标 {{target}}（达成 {{attainment}}）。",
+      "aria": "一名销售代表的季度 KPI 与目标对比",
+      "hint": "点击某条轴附近查看对应 KPI。"
+    }
   },
   "api": {
     "RadarChartProps": {

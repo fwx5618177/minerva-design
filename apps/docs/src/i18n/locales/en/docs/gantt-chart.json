@@ -25,6 +25,26 @@
     "crews": {
       "title": "Shared rows",
       "description": "A construction schedule by crew: row puts several tasks in one row, and the dependencies point to task ids, so every arrow connects the exact bars. Arrows cross the rows in a lane clear of the other bars, or jog through the gap between two rows when none is free (the dig to the footings, around the rebar)."
+    },
+    "release-train": {
+      "title": "Release train",
+      "description": "A program increment of three teams: row puts the features of a team in one row, group tells features from enablers, and rect annotations along the time axis shade the iterations and tint the innovation and planning (IP) iteration. The system demos are milestones in their own row."
+    },
+    "critical-path": {
+      "title": "Critical path",
+      "description": "Earliest and latest starts are computed from the durations and the dependencies (critical path method). With the switch on, group splits the tasks into critical and with slack, and colors paints them red and gray; onPointClick reports the slack of the clicked task."
+    },
+    "resources": {
+      "title": "Resource plan",
+      "description": "One row per person (row), one color per project (group; colors keeps the color of each project when the Select filters them) and yAxis.min / max fix six weeks. onHover reads the hovered row (event.xLabel) to show the load of that person, overbooking included."
+    },
+    "live-deploy": {
+      "title": "Live pipeline run",
+      "description": "A deployment pipeline replayed with setInterval (cleared on pause and unmount): today follows the simulated clock, every progress is recomputed from it, and interaction={false} keeps the time range still while the chart updates."
+    },
+    "onboarding": {
+      "title": "Onboarding plan",
+      "description": "renderTooltip replaces the tooltip with React content: the hovered bar is found from its seriesId (one series per group, plus the milestones) and its index, then shown with its owner, its dates formatted with formatRange of Intl.DateTimeFormat and its status relative to today."
     }
   },
   "native": {
@@ -148,7 +168,130 @@
       "structure": "Structure"
     },
     "inspections": "Inspections",
-    "crewsAria": "Construction schedule by crew with the dependencies between tasks"
+    "crewsAria": "Construction schedule by crew with the dependencies between tasks",
+    "train": {
+      "teams": {
+        "atlas": "Team Atlas",
+        "borealis": "Team Borealis",
+        "comet": "Team Comet"
+      },
+      "features": {
+        "checkout": "Checkout redesign",
+        "paymentRetries": "Payment retries",
+        "wallet": "Digital wallet",
+        "searchFilters": "Search filters",
+        "indexing": "Indexing upgrade",
+        "recommendations": "Recommendations",
+        "observability": "Observability",
+        "push": "Push notifications"
+      },
+      "kinds": {
+        "feature": "Features",
+        "enabler": "Enablers"
+      },
+      "iteration": "Iteration {{n}}",
+      "ip": "IP iteration",
+      "demo": "System demo {{n}}",
+      "demos": "System demos",
+      "events": "Train events",
+      "aria": "Program increment of the release train by team"
+    },
+    "cpm": {
+      "tasks": {
+        "lease": "Sign the lease",
+        "fitOut": "Fit-out works",
+        "racking": "Install racking",
+        "wms": "Set up the WMS",
+        "hiring": "Hire the staff",
+        "training": "Train the staff",
+        "testRun": "Test run",
+        "goLive": "Go-live"
+      },
+      "critical": "Critical",
+      "slack": "With slack",
+      "highlight": "Highlight the critical path",
+      "summary": "Go-live after {{days}}; critical path: {{path}}. Click a task for its slack.",
+      "taskSlack": "{{task}} can slip by {{slack}} without delaying the go-live",
+      "taskCritical": "{{task}} is critical: any delay moves the go-live",
+      "aria": "Warehouse opening plan with its critical path"
+    },
+    "res": {
+      "people": {
+        "ana": "Ana",
+        "ben": "Ben",
+        "chen": "Chen",
+        "dara": "Dara",
+        "eli": "Eli"
+      },
+      "projects": {
+        "apollo": "Apollo",
+        "borealis": "Borealis",
+        "cassini": "Cassini",
+        "vacation": "Vacation"
+      },
+      "projectLabel": "Project",
+      "all": "All projects",
+      "load": "{{person}}: {{share}} booked over the {{weeks}} weeks",
+      "overbooked": "{{person}} is overbooked: {{share}} over the {{weeks}} weeks",
+      "hint": "Hover a row to see the load of that person",
+      "aria": "Resource plan of the team by person and project"
+    },
+    "deploy": {
+      "stages": {
+        "checkout": "Checkout",
+        "compile": "Build",
+        "unit": "Unit tests",
+        "lint": "Lint",
+        "integration": "Integration tests",
+        "staging": "Deploy to staging",
+        "smoke": "Smoke tests",
+        "canary": "Canary release",
+        "production": "Production rollout"
+      },
+      "groups": {
+        "build": "Build",
+        "test": "Test",
+        "release": "Release"
+      },
+      "now": "Now",
+      "running": "Running: {{stages}} · {{elapsed}} elapsed",
+      "done": "Pipeline finished in {{elapsed}}",
+      "restart": "Run again",
+      "pause": "Pause",
+      "resume": "Resume",
+      "aria": "Stages of a deployment pipeline run, updated live"
+    },
+    "onboard": {
+      "tasks": {
+        "contract": "Contract and paperwork",
+        "laptop": "Order the laptop",
+        "accounts": "Create the accounts",
+        "welcome": "Welcome meeting",
+        "orientation": "Orientation",
+        "buddyLunch": "Lunch with the buddy",
+        "codebase": "Codebase tour",
+        "firstTicket": "First ticket",
+        "training": "Compliance training",
+        "firstProject": "First project",
+        "firstDay": "First day",
+        "checkIn30": "30-day check-in",
+        "review60": "60-day review"
+      },
+      "owners": {
+        "hr": "HR",
+        "it": "IT",
+        "manager": "Manager",
+        "buddy": "Buddy"
+      },
+      "owner": "Owner: {{owner}}",
+      "status": {
+        "done": "Done",
+        "inProgress": "In progress",
+        "upcoming": "Upcoming"
+      },
+      "checkIns": "Check-ins",
+      "aria": "Onboarding plan of a new hire by owner"
+    }
   },
   "api": {
     "GanttChartProps": {

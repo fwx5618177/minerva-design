@@ -26,6 +26,26 @@
     "file-tree": {
       "title": "Arborescence repliable",
       "description": "L’arborescence d’un projet de gauche à droite, colorée par type de fichier. Les dossiers profonds sont repliés au départ ; cliquez sur un dossier pour l’ouvrir, ou utilisez les boutons, qui appellent expand(), collapse() et fit() sur la ref."
+    },
+    "decision-tree": {
+      "title": "Arbre de décision",
+      "description": "Une politique d'octroi de prêt en disposition org, avec des branches étiquetées (edgeLabels). Répondez aux questions avec les boutons radio : la décision atteinte est passée dans selected et highlight=\"lineage\" éclaire le chemin depuis la racine ; tree.collapsible est désactivé pour que les clics ne replient pas les questions."
+    },
+    "taxonomy-search": {
+      "title": "Recherche de catégories",
+      "description": "La taxonomie des catégories d'une boutique, dont le deuxième niveau est replié. Tapez pour sélectionner toutes les catégories correspondantes ; Entrée ou une étiquette appelle focusNode() sur la ref, qui déplie les ancêtres repliés avant de centrer le nœud, et le fil d'Ariane de la catégorie s'affiche dessous."
+    },
+    "disk-usage": {
+      "title": "Occupation du disque",
+      "description": "Un système de fichiers où la valeur de chaque nœud est la taille du dossier : nodeSize en [min, max] proportionne les cercles aux octets. Les tailles sont formatées avec les unités d'Intl.NumberFormat, les boutons radio passent de la disposition en arbre à la disposition radiale, et un clic indique la part du dossier parent et du disque."
+    },
+    "wbs": {
+      "title": "Organigramme des tâches",
+      "description": "Le plan d'une version d'application mobile : les lots de travail portent des points et un état, et les éléments de synthèse cumulent points et avancement dans leurs sous-titres. Le niveau de détail appelle expand() et collapse() sur la ref, et onToggle indique les points de l'élément replié ou déplié."
+    },
+    "bracket": {
+      "title": "Tableau de tournoi",
+      "description": "Un tableau à élimination directe de droite à gauche (direction=\"RL\") avec des nœuds en boîte et des liens orthogonaux : la finale est la racine et les équipes sont les feuilles, nommées avec Intl.DisplayNames. Tour suivant révèle des résultats simulés avec un générateur à graine, et les groupes colorent les équipes en lice, éliminées et le champion."
     }
   },
   "api": {
@@ -159,7 +179,166 @@
     "expandAll": "Tout déplier",
     "collapseAll": "Tout replier",
     "fit": "Tout afficher",
-    "filesAria": "Fichiers d’un projet"
+    "filesAria": "Fichiers d’un projet",
+    "decision": {
+      "credit": "Score de crédit",
+      "income": "Revenu ≥ 3 × mensualité ?",
+      "employment": "En poste depuis 2 ans ou plus ?",
+      "debt": "Taux d'endettement < 35 % ?",
+      "approved": "Accordé",
+      "approvedLower": "Accordé, montant réduit",
+      "approvedRate": "Accordé, taux majoré",
+      "review": "Étude manuelle",
+      "declined": "Refusé"
+    },
+    "branches": {
+      "creditHigh": "700 ou plus",
+      "creditFair": "600–699",
+      "creditPoor": "Moins de 600",
+      "yes": "Oui",
+      "no": "Non"
+    },
+    "decisionKinds": {
+      "question": "Question",
+      "approved": "Accordé",
+      "review": "Étude",
+      "declined": "Refusé"
+    },
+    "decisionAria": "Arbre de décision d'octroi de prêt, avec le chemin du demandeur actuel en évidence",
+    "decisionResult": "Décision : {{outcome}} (questions posées : {{questions}}).",
+    "taxonomy": {
+      "catalog": "Tous les produits",
+      "electronics": "High-tech",
+      "home": "Maison",
+      "fashion": "Mode",
+      "sports": "Sport",
+      "computers": "Informatique",
+      "phones": "Téléphonie",
+      "audio": "Audio",
+      "laptops": "Ordinateurs portables",
+      "desktops": "Ordinateurs de bureau",
+      "tablets": "Tablettes",
+      "smartphones": "Smartphones",
+      "phoneCases": "Coques",
+      "chargers": "Chargeurs",
+      "headphones": "Casques",
+      "speakers": "Enceintes",
+      "kitchen": "Cuisine",
+      "furniture": "Mobilier",
+      "garden": "Jardin",
+      "cookware": "Ustensiles de cuisson",
+      "coffeeMachines": "Machines à café",
+      "knives": "Couteaux",
+      "sofas": "Canapés",
+      "desks": "Bureaux",
+      "officeChairs": "Chaises de bureau",
+      "gardenTools": "Outils de jardin",
+      "plants": "Plantes",
+      "clothing": "Vêtements",
+      "shoes": "Chaussures",
+      "accessories": "Accessoires",
+      "jackets": "Vestes",
+      "dresses": "Robes",
+      "sneakers": "Baskets",
+      "boots": "Bottes",
+      "bags": "Sacs",
+      "watches": "Montres",
+      "outdoor": "Plein air",
+      "fitness": "Fitness",
+      "cycling": "Vélo",
+      "tents": "Tentes",
+      "hikingBoots": "Chaussures de randonnée",
+      "yogaMats": "Tapis de yoga",
+      "dumbbells": "Haltères",
+      "bikes": "Vélos",
+      "helmets": "Casques de vélo"
+    },
+    "breadcrumbSeparator": " › ",
+    "taxonomySearch": "Rechercher une catégorie",
+    "taxonomyAria": "Taxonomie des catégories de produits d'une boutique",
+    "taxonomyMatches": "Catégories correspondantes : {{total}}. Appuyez sur Entrée ou choisissez une étiquette pour en afficher une.",
+    "taxonomyHint": "Recherchez une catégorie, par exemple « bottes » ou « bureau ».",
+    "diskRoot": "Macintosh HD",
+    "diskKinds": {
+      "system": "Système",
+      "apps": "Applications",
+      "media": "Médias",
+      "documents": "Documents",
+      "cache": "Caches et sauvegardes"
+    },
+    "diskLayout": "Disposition",
+    "diskLayouts": {
+      "tree": "Arbre",
+      "radial": "Radiale"
+    },
+    "diskAria": "Occupation du disque par dossier, proportionnelle aux octets",
+    "diskShare": "{{name}} : {{size}} — {{parentShare}} de {{parent}}, {{share}} du disque.",
+    "diskTotal": "{{name}} : {{size}} utilisés.",
+    "wbsItems": {
+      "release": "Version 2.0 de l'app",
+      "onboarding": "Accueil des nouveaux",
+      "signup": "Inscription",
+      "emailVerify": "Vérification de l'e-mail",
+      "socialLogin": "Connexion sociale",
+      "tour": "Visite guidée",
+      "tourScreens": "Écrans de la visite",
+      "tourSkip": "Passer et reprendre",
+      "payments": "Paiements",
+      "checkout": "Commande",
+      "cardForm": "Formulaire de carte",
+      "applePay": "Paiement par portefeuille",
+      "billing": "Facturation",
+      "invoices": "Factures",
+      "refunds": "Remboursements",
+      "platform": "Plateforme",
+      "offline": "Mode hors ligne",
+      "syncQueue": "File de synchronisation",
+      "conflicts": "Résolution des conflits",
+      "quality": "Qualité",
+      "crashReports": "Rapports de plantage",
+      "perfBudget": "Budget de performance"
+    },
+    "wbsPoints": "{{points}} pts",
+    "wbsRollup": "{{points}} pts · {{done}} faits",
+    "wbsStatuses": {
+      "summary": "Synthèse",
+      "done": "Terminé",
+      "doing": "En cours",
+      "todo": "À faire"
+    },
+    "wbsDepth": "Niveau de détail",
+    "wbsLevels": {
+      "deliverables": "Livrables",
+      "features": "Fonctionnalités",
+      "packages": "Lots de travail"
+    },
+    "wbsDepthStatus": "Plan affiché jusqu'au niveau : {{level}}.",
+    "wbsAria": "Organigramme des tâches d'une version d'application mobile, avec les points",
+    "wbsCollapsed": "{{name}} replié : {{points}} points, {{remaining}} restants.",
+    "wbsExpanded": "{{name}} déplié : {{points}} points, {{remaining}} restants.",
+    "wbsSummary": "{{points}} points au total, {{done}} faits. Cliquez sur un élément pour le replier ou le déplier.",
+    "rounds": {
+      "quarterFinal": "Quart de finale",
+      "semiFinal": "Demi-finale",
+      "final": "Finale"
+    },
+    "tbd": "À jouer",
+    "score": "{{winner}}–{{loser}}",
+    "seed": "Tête de série {{n}}",
+    "bracketStates": {
+      "pending": "Non joué",
+      "played": "Vainqueur",
+      "alive": "En lice",
+      "out": "Éliminée",
+      "champion": "Champion"
+    },
+    "nextRound": "Tour suivant",
+    "restart": "Recommencer",
+    "newSimulation": "Nouvelle simulation",
+    "bracketAria": "Tableau à élimination directe, des quarts de finale à la finale",
+    "championResult": "{{team}} remporte le tournoi !",
+    "roundResult": "Vainqueurs ({{round}}) : {{teams}}.",
+    "bracketHint": "Huit équipes classées selon leur niveau. Jouez le tour suivant pour révéler les résultats."
   },
   "wc": {
     "demos": {

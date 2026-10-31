@@ -29,6 +29,22 @@
     "red-up": {
       "title": "Rouge à la hausse",
       "description": "colorConvention=\"red-up\" inverse les couleurs par défaut : achats en rouge, ventes en vert, comme en Chine continentale, au Japon et en Corée. upColor et downColor acceptent toute couleur."
+    },
+    "slippage": {
+      "title": "Coût d'un ordre au marché",
+      "description": "Une fonction pure parcourt les asks (un achat) ou les bids (une vente) du carnet jusqu'à exécuter la taille. priceLines marque le prix moyen et le dernier prix exécuté, range s'élargit pour les garder visibles, et le résumé donne le coût et le glissement par rapport au mid en points de base."
+    },
+    "imbalance": {
+      "title": "Déséquilibre de liquidité",
+      "description": "getInstance().getStore() donne accès au carnet vivant du graphique : chaque seconde, la démo additionne la taille posée dans la bande choisie (aussi passée à range) de chaque côté, puis affiche la répartition achat / vente, le déséquilibre et le spread. Le flux lui-même ne fait jamais re-rendre React."
+    },
+    "equity": {
+      "title": "Actions : dollars et titres",
+      "description": "Le carnet d'une action, au pas d'un cent et en lots ronds. formatPrice et formatSize remplacent les formats intégrés (dollars US et nombres de titres compacts dans la langue de la page) et labels renomme le cumul ; amount=\"quote\" cumule la valeur en dollars au lieu des titres."
+    },
+    "venues": {
+      "title": "Plateformes consolidées",
+      "description": "Trois plateformes cotent la même paire ; leurs carnets sont fusionnés prix par prix en un carnet consolidé. Passer un autre objet à book fait glisser les courbes d'une plateforme à l'autre, et le tableau compare les meilleurs prix et la liquidité à ±0,1 % du mid."
     }
   },
   "data": {
@@ -53,7 +69,32 @@
     "greenUp": "Vert hausse, rouge baisse",
     "sweepBuy": "Acheter {{amount}} BTC ({{total}}) balaie les ventes jusqu'à {{price}}, {{slippage}} au-dessus du médian : prix moyen {{average}}.",
     "sweepSell": "Vendre {{amount}} BTC ({{total}}) balaie les achats jusqu'à {{price}}, {{slippage}} sous le médian : prix moyen {{average}}.",
-    "sweepHint": "Survolez les courbes pour chiffrer un ordre au marché."
+    "sweepHint": "Survolez les courbes pour chiffrer un ordre au marché.",
+    "orderSide": "Sens",
+    "marketBuy": "Achat au marché",
+    "marketSell": "Vente au marché",
+    "orderSize": "Taille de l'ordre",
+    "btcAmount": "{{value}} BTC",
+    "averageFill": "Prix moyen",
+    "worstFill": "Dernier prix",
+    "fillSummary": "{{size}} BTC s'exécutent sur {{levels}} niveaux : moyenne {{average}}, dernier prix {{worst}}, {{cost}} au total, {{slippage}} pb du mid.",
+    "fillPartial": "Seulement {{filled}} BTC sur {{size}} reposent de ce côté : l'ordre viderait les {{levels}} niveaux, jusqu'à {{worst}}.",
+    "band": "Bande mesurée",
+    "imbalanceStatus": "À {{band}} : {{bids}} BTC à l'achat, {{asks}} BTC à la vente, déséquilibre {{imbalance}} · spread {{spread}} ({{spreadBp}} pb)",
+    "imbalanceWaiting": "En attente de la première mesure…",
+    "showNotional": "Cumuler les dollars (prix × titres)",
+    "notionalUsd": "Montant (USD)",
+    "shares": "Titres",
+    "equityAria": "Profondeur du carnet de l'action ACME",
+    "consolidated": "Consolidé",
+    "venue": "Plateforme {{name}}",
+    "venueColumn": "Plateforme",
+    "bestBid": "Meilleur bid",
+    "bestAsk": "Meilleur ask",
+    "depthNearMid": "BTC à ±0,1 %",
+    "depthShare": "{{value}} ({{share}})",
+    "venuesAria": "Profondeur BTC/USDT, {{name}}",
+    "venuesTable": "Meilleurs prix et liquidité par plateforme"
   },
   "api": {
     "DepthChartProps": {

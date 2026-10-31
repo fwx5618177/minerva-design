@@ -17,6 +17,22 @@
     "temperatures": {
       "title": "With a line",
       "description": "boxplotStats gives the five numbers and the mean of each month: whisker: \"minmax\" extends the whiskers to the extremes and a line joins the means."
+    },
+    "build-times": {
+      "title": "Whisker rules",
+      "description": "CI build durations per pipeline. whisker sets how far the whiskers reach (1.5 or 3 interquartile ranges, or \"minmax\" for no outliers), and outlierShape and outlierSize change how the slow runs are drawn; boxplotStats with the same rule counts them."
+    },
+    "wait-times": {
+      "title": "Click a box or an outlier",
+      "description": "Emergency room waits per weekday. onPointClick receives the median, q1, q3 and the number of outliers of the clicked box, or the value of the clicked outlier in item.outlier; on the category axis, event.x is the index of the day."
+    },
+    "asset-sizes": {
+      "title": "Log scale",
+      "description": "File sizes from a few kilobytes to tens of megabytes: yAxis.type: \"log\" keeps every box readable, while on a linear axis the small files are crushed against zero. The format switches from kB to MB and a line marks the size budget."
+    },
+    "live-regions": {
+      "title": "Live latency per region",
+      "description": "Every second a setInterval (cleared on pause and unmount) slides a window over the latest requests of each region. The color of a group turns red when its third quartile exceeds the SLA line, and the y axis range is fixed so the boxes stay comparable."
     }
   },
   "native": {
@@ -69,7 +85,60 @@
     "deliveryAria": "Delivery times per city on weekdays and weekends",
     "dailyHigh": "Daily high",
     "mean": "Mean",
-    "temperaturesAria": "Distribution of the daily high temperatures per month"
+    "temperaturesAria": "Distribution of the daily high temperatures per month",
+    "pipelines": {
+      "lint": "Lint",
+      "unit": "Unit tests",
+      "integration": "Integration",
+      "e2e": "End-to-end",
+      "release": "Release"
+    },
+    "whiskerRule": "Whisker reach",
+    "whiskers": {
+      "tukey": "1.5 × IQR",
+      "wide": "3 × IQR",
+      "minmax": "Min – max"
+    },
+    "outlierShape": "Outlier shape",
+    "shapes": {
+      "hollow": "Hollow",
+      "filled": "Filled"
+    },
+    "outlierRuns": "{{value}} runs drawn as outliers",
+    "buildTime": "Build time",
+    "buildsAria": "Distribution of the build durations of each CI pipeline",
+    "clickBox": "Click a box or an outlier.",
+    "outlierClicked": "{{day}}: a patient waited {{value}}.",
+    "boxClicked": "{{day}}: median wait {{median}}, half of the patients waited between {{q1}} and {{q3}}, {{outliers}} outliers.",
+    "wait": "Wait",
+    "fourHours": "Four-hour target",
+    "waitsAria": "Distribution of the emergency room waits per day of the week",
+    "assetTypes": {
+      "styles": "Style sheets",
+      "scripts": "Scripts",
+      "fonts": "Fonts",
+      "images": "Images",
+      "videos": "Videos"
+    },
+    "logScale": "Log scale",
+    "overBudget": "{{value}} files are over the budget of {{budget}}.",
+    "fileSize": "File size",
+    "budget": "Budget",
+    "assetsAria": "Distribution of the file sizes of a website by type",
+    "regions": {
+      "usEast": "US East",
+      "usWest": "US West",
+      "euWest": "EU West",
+      "apSouth": "Asia Pacific South",
+      "saEast": "South America East"
+    },
+    "pause": "Pause",
+    "resume": "Resume",
+    "slaBreached": "SLA at risk in {{regions}}",
+    "slaOk": "Every region is within the SLA",
+    "latency": "Latency",
+    "sla": "SLA",
+    "regionsAria": "Live distribution of the request latency in each region"
   },
   "api": {
     "BoxPlotChartProps": {

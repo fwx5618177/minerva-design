@@ -17,6 +17,22 @@
     "bundle": {
       "title": "打包体积",
       "description": "打包分析工具的视图：按压缩后体积展示 JavaScript 包中的模块，共三层，图表下方列出最大的依赖。"
+    },
+    "drill-down": {
+      "title": "下钻商品目录",
+      "description": "点击某个类别（onClick，使用 event.path 的第一个名称）会将数据替换为其子类别和品牌，面包屑可返回总览。进入类别后，点击会选中某个品牌；renderTooltip 会在路径前加上类别。"
+    },
+    "cloud-costs": {
+      "title": "带图例筛选的云成本",
+      "description": "legend={{ position: \"top\" }} 列出各项服务；hidden 和 onToggle 让筛选成为受控状态，因此“全部显示”按钮可以重置它，摘要也能汇总剩余的服务。renderTooltip 显示某项资源占整个账单的比例。"
+    },
+    "live-cluster": {
+      "title": "实时集群内存",
+      "description": "每个 Pod 使用的内存每 2 秒刷新一次（setInterval，在关闭开关或卸载时清除），单元格原地调整大小。超过内存上限 85% 的 Pod 通过 color 变为红色，并且只播报这类 Pod 的列表。"
+    },
+    "metric-switch": {
+      "title": "切换指标",
+      "description": "同一棵树可以按收入、订单数或利润确定大小，因此切换指标时单元格会移动和缩放而不是重新绘制；format 随指标变化。国家名称来自 Intl.DisplayNames，renderTooltip 列出某个国家的所有指标。"
     }
   },
   "data": {
@@ -60,7 +76,71 @@
     "marketAria": "按板块分组、按当日涨跌着色的股市热力图",
     "ofBundle": "占打包体积的 {{share}}",
     "bundleAria": "按模块统计的 JavaScript 打包体积",
-    "bundleSummary": "总计 {{size}}；超过 100 KB 的依赖：{{modules}}。"
+    "bundleSummary": "总计 {{size}}；超过 100 KB 的依赖：{{modules}}。",
+    "store": {
+      "categories": {
+        "electronics": "电子产品",
+        "home": "家居",
+        "fashion": "服饰",
+        "sports": "运动"
+      },
+      "subcategories": {
+        "phones": "手机",
+        "laptops": "笔记本电脑",
+        "audio": "音频",
+        "kitchen": "厨房",
+        "furniture": "家具",
+        "decor": "装饰",
+        "women": "女装",
+        "men": "男装",
+        "kids": "童装",
+        "outdoor": "户外",
+        "fitness": "健身"
+      },
+      "breadcrumb": "目录路径",
+      "all": "全部类别",
+      "aria": "按类别、子类别和品牌划分的季度收入",
+      "categoryAria": "按子类别和品牌划分的{{category}}收入",
+      "selected": "{{path}}：{{revenue}}，占该类别的 {{share}}。",
+      "hint": "点击某个类别将其展开。",
+      "hintBrand": "点击某个品牌查看其收入。"
+    },
+    "cloud": {
+      "services": {
+        "compute": "计算",
+        "databases": "数据库",
+        "storage": "存储",
+        "network": "网络",
+        "observability": "可观测性"
+      },
+      "ofBill": "占账单的 {{share}}",
+      "aria": "按服务和资源划分的月度云成本",
+      "filtered": "显示：{{visible}}，占 {{total}} 账单的 {{share}}。",
+      "total": "月度账单：{{total}}。",
+      "showAll": "全部显示"
+    },
+    "cluster": {
+      "live": "实时更新",
+      "usage": "{{used}} / {{limit}}（{{share}}）",
+      "aria": "按命名空间划分的集群 Pod 内存使用量",
+      "nearLimit": "超过内存上限 {{threshold}} 的 Pod：{{pods}}",
+      "healthy": "所有 Pod 均低于内存上限的 {{threshold}}。"
+    },
+    "sales": {
+      "regions": {
+        "europe": "欧洲",
+        "americas": "美洲",
+        "asiaPacific": "亚太"
+      },
+      "metric": "指标",
+      "metrics": {
+        "revenue": "收入",
+        "orders": "订单数",
+        "profit": "利润"
+      },
+      "shareOf": "占总计的 {{share}}（{{metric}}）",
+      "aria": "按地区和国家划分的年度销售：{{metric}}"
+    }
   },
   "api": {
     "TreemapChartProps": {

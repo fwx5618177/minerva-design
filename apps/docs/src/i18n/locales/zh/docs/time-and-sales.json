@@ -33,6 +33,22 @@
     "red-up": {
       "title": "红涨绿跌",
       "description": "colorConvention=\"red-up\"：买入为红色、卖出为绿色（中国大陆、日本、韩国的习惯）。"
+    },
+    "pressure": {
+      "title": "买卖压力",
+      "description": "传给 addTrades 的成交同时保留一分钟，每秒两次计算滚动统计：VWAP、主动买入与卖出量、每秒成交笔数和最大单笔成交。成交列表本身合并扫单（aggregate），并从 1 BTC 起着色（largeTradeThreshold）。"
+    },
+    "clock": {
+      "title": "时区与自定义格式",
+      "description": "formatTime 用任意 Intl.DateTimeFormat 替换内置时钟（本地或 UTC），此处为另一时区并保留毫秒；formatPrice 显示美元，labels.time 在表头注明时区。"
+    },
+    "block-alerts": {
+      "title": "大宗成交提醒",
+      "description": "同一方向、同一毫秒的成交（一次扫单，与 aggregate 合并的方式相同）会被累加：达到 2 BTC 时记录其均价和名义金额，并由 largeTradeThreshold 在成交列表中高亮相同大小的成交。“清空”通过 clear() 清空列表。"
+    },
+    "split": {
+      "title": "买卖分列",
+      "description": "一个数据源，两个成交列表：成交在 addTrades 之前按主动方向拆分，每个列表有自己的 ariaLabel。表头统计每一方的笔数和成交量，净流量为两者之差。"
     }
   },
   "data": {
@@ -52,7 +68,44 @@
     "redUp": "红涨绿跌",
     "greenUp": "绿涨红跌",
     "add": "追加 {{value}} 笔成交",
-    "loaded": "共 {{rows}} 笔成交，最近一批耗时 {{ms}} ms"
+    "loaded": "共 {{rows}} 笔成交，最近一批耗时 {{ms}} ms",
+    "rollingWindow": "滚动窗口",
+    "lastWindow": "最近 {{value}}",
+    "vwap": "VWAP",
+    "buyShare": "买入占比",
+    "bought": "买入量",
+    "sold": "卖出量",
+    "btcValue": "{{value}} BTC",
+    "tradesPerSecond": "每秒成交笔数",
+    "largest": "最大单笔",
+    "largestBuy": "买入 {{size}}，价格 {{price}}",
+    "largestSell": "卖出 {{size}}，价格 {{price}}",
+    "pressureBuy": "买方在主动吃卖单。",
+    "pressureSell": "卖方在主动砸买单。",
+    "pressureBalanced": "买卖力量均衡。",
+    "pressureWaiting": "等待成交…",
+    "timeZone": "时区",
+    "zones": {
+      "local": "本地",
+      "utc": "UTC",
+      "newYork": "纽约",
+      "tokyo": "东京"
+    },
+    "timeIn": "时间（{{zone}}）",
+    "blocksTitle": "≥ {{value}} BTC 的大宗成交",
+    "clearTape": "清空",
+    "blocksSeen": "开始以来共 {{value}} 笔大宗成交",
+    "blocksWaiting": "等待大宗成交…",
+    "blockBuy": "买入",
+    "blockSell": "卖出",
+    "blockLine": "{{time}} · {{size}} BTC，均价 {{price}}，≈ {{notional}}",
+    "blockPrints": "{{value}} 笔",
+    "sideTotals": "{{count}} 笔 · {{size}} BTC",
+    "buysTape": "买入",
+    "sellsTape": "卖出",
+    "buysAria": "BTC/USDT 买入成交",
+    "sellsAria": "BTC/USDT 卖出成交",
+    "netFlow": "净流量：{{value}} BTC（买入 − 卖出）"
   },
   "api": {
     "TimeAndSalesProps": {
