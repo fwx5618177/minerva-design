@@ -3,7 +3,8 @@ import React from "react";
 import { Link, NavLink, useLocation } from "react-router";
 import { useTranslation } from "react-i18next";
 import { IoLogoGithub, IoSearchOutline } from "react-icons/io5";
-import { docPages } from "@/docs/registry";
+import { sections } from "@/docs/registry";
+import { SECTION_LABELS, sectionOfPath } from "@router/routes";
 import LanguageMenu from "./LanguageMenu";
 import ThemeMenu from "./ThemeMenu";
 import MobileNav from "./MobileNav";
@@ -12,18 +13,6 @@ import Kbd from "./Kbd";
 import { modKeyLabel } from "./searchItems";
 import { GITHUB_URL } from "./constants";
 import styles from "./site.module.scss";
-
-const COMPONENT_CATEGORIES = new Set([
-  "general",
-  "layout",
-  "dataEntry",
-  "dataDisplay",
-  "feedback",
-  "overlays",
-  "navigation",
-  "editors",
-  "charts",
-]);
 
 export interface TopNavProps {
   onSearch: () => void;
@@ -35,29 +24,14 @@ export interface TopNavProps {
 const TopNav: React.FC<TopNavProps> = ({ onSearch, withMenu = true }) => {
   const { t } = useTranslation();
   const { pathname } = useLocation();
-  const current = docPages.find((page) => `/${page.id}` === pathname);
+  const current = sectionOfPath(pathname);
 
-  const links = [
-    {
-      to: "/overview",
-      label: t("nav.docs"),
-      active:
-        !!current &&
-        (current.category === "gettingStarted" ||
-          current.category === "theming" ||
-          current.category === "configuration"),
-    },
-    {
-      to: "/button",
-      label: t("nav.components"),
-      active: !!current && COMPONENT_CATEGORIES.has(current.category),
-    },
-    {
-      to: "/web-components",
-      label: t("nav.webComponents"),
-      active: current?.category === "webComponents",
-    },
-  ];
+  // one link per section: each section has its own sidebar
+  const links = sections.map((section) => ({
+    to: `/${section.home}`,
+    label: t(SECTION_LABELS[section.id]),
+    active: current === section.id,
+  }));
 
   return (
     <header className={styles.header}>

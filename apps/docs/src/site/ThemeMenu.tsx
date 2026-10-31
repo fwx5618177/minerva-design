@@ -3,7 +3,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import {
   IoContrastOutline,
-  IoLogoGithub,
+  IoMoon,
   IoMoonOutline,
   IoSunnyOutline,
 } from "react-icons/io5";
@@ -31,7 +31,8 @@ const ICONS: Record<
   auto: IoContrastOutline,
   light: IoSunnyOutline,
   dark: IoMoonOutline,
-  "github-dark": IoLogoGithub,
+  // not the GitHub logo: the repository link next to it already uses it
+  "github-dark": IoMoon,
 };
 
 /**

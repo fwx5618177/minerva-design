@@ -2,13 +2,16 @@ import React from "react";
 import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
-import { menuConfig } from "@router/routes";
+import { menuConfig, sectionOfPath } from "@router/routes";
 import styles from "./site.module.scss";
 
-/** Previous / next page links, in sidebar order */
+/** Previous / next page links, in sidebar order, within the page's section */
 const Pager: React.FC<{ pathname: string }> = ({ pathname }) => {
   const { t } = useTranslation();
-  const flat = menuConfig.flatMap((group) => group.items);
+  const section = sectionOfPath(pathname);
+  const flat = menuConfig
+    .filter((group) => group.section === section)
+    .flatMap((group) => group.items);
   const index = flat.findIndex((item) => `/${item.path}` === pathname);
   if (index === -1) return null;
   const prev = flat[index - 1];

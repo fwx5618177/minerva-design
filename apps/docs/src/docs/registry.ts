@@ -94,6 +94,7 @@ export const categories: DocCategory[] = [
   "gettingStarted",
   "theming",
   "configuration",
+  "webComponents",
   "general",
   "layout",
   "dataEntry",
@@ -102,14 +103,62 @@ export const categories: DocCategory[] = [
   "overlays",
   "navigation",
   "editors",
+  "mobile",
   "charts",
   "financeCharts",
   "charts3d",
   "graphCharts",
   "chartEngine",
-  "mobile",
-  "webComponents",
 ];
+
+/** Top-level parts of the site, each with its own sidebar */
+export type DocSection = "docs" | "components" | "charts";
+
+export interface DocSectionMeta {
+  id: DocSection;
+  /** Page the top navigation link opens */
+  home: string;
+  categories: readonly DocCategory[];
+}
+
+export const sections: readonly DocSectionMeta[] = [
+  {
+    id: "docs",
+    home: "overview",
+    categories: ["gettingStarted", "theming", "configuration", "webComponents"],
+  },
+  {
+    id: "components",
+    home: "button",
+    categories: [
+      "general",
+      "layout",
+      "dataEntry",
+      "dataDisplay",
+      "feedback",
+      "overlays",
+      "navigation",
+      "editors",
+      "mobile",
+    ],
+  },
+  {
+    id: "charts",
+    home: "charts",
+    categories: [
+      "charts",
+      "financeCharts",
+      "charts3d",
+      "graphCharts",
+      "chartEngine",
+    ],
+  },
+];
+
+/** Section of a category (every category belongs to exactly one) */
+export const sectionOf = (category: DocCategory): DocSection =>
+  sections.find((section) => section.categories.includes(category))?.id ??
+  "docs";
 
 export const docPages: DocPageMeta[] = [
   // Getting started

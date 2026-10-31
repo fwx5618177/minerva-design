@@ -79,6 +79,10 @@ describe("MobileNav", () => {
     renderNav();
     await user.click(screen.getByRole("button", { name: "Open navigation" }));
     const dialog = await screen.findByRole("dialog");
+    // the components live in their own section
+    await user.click(
+      within(dialog).getByRole("button", { name: "Components" }),
+    );
     await user.click(
       within(dialog).getByRole("link", { name: i18n.t("docs.button.title") }),
     );
