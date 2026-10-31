@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t,n,r,i;function a(){return(a=e((()=>{t=`minerva-docs-chart-renderer`,n=Symbol.for(`minerva-design.charts.defaultRenderer`),r=[`webgpu`,`webgl2`,`webgl`,`canvas2d`],i=()=>{let e=null;try{e=localStorage.getItem(t)}catch{}let i=e&&r.includes(e)?e:`auto`;return globalThis[n]=i,i}})))()}export{i as n,a as r,t};

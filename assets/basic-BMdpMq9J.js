@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";import{r as t}from"./native-preview-BRFLbKzw.js";import{t as n}from"./native-preview-DOAczRjG.js";import{W as r}from"./native-preview-C8eA3_NH.js";function i(){return(0,a.jsx)(r,{href:`https://reactnative.dev/`,children:`React Native documentation`})}var a;function o(){return(o=e((()=>{n(),a=t()})))()}o();export{i as default};
