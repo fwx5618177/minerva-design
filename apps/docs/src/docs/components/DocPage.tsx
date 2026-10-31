@@ -412,7 +412,9 @@ const DocPage: React.FC<DocPageProps> = ({
       {rendererBar ? (
         // the demos wait for the stored renderer (a few ms, cached after)
         <Suspense fallback={null}>
-          <RendererScope>{body}</RendererScope>
+          <RendererScope topic={meta.category === "icons" ? "icons" : "charts"}>
+            {body}
+          </RendererScope>
         </Suspense>
       ) : (
         body

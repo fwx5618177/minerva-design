@@ -1,0 +1,93 @@
+{
+  "title": "Cœur des icônes",
+  "description": "minerva-design/icons/core : le jeu d’icônes sans framework. Chaînes SVG, dessin Canvas2D, canvas GPU, icônes personnalisées, rendu global par défaut et chaîne de traitement géométrique derrière les backends GPU.",
+  "intro": {
+    "title": "Sans framework",
+    "text": "Importer le cœur n’a aucun effet de bord et ne touche à aucune API du navigateur tant que rien n’est dessiné : il fonctionne donc côté serveur, dans les workers, avec tout framework et dans de simples scripts. Les icônes sont des objets simples : { name, paths, category, tags }.",
+    "frameworks": "Les composants React sont une fine couche au-dessus de ce cœur ; des liaisons Vue et Web Components suivront de la même manière. D’ici là, toSvg et createIconCanvas conviennent à n’importe quel framework."
+  },
+  "demos": {
+    "svg-string": {
+      "title": "Chaînes SVG",
+      "description": "toSvg renvoie un <svg> autonome (échappé, étiqueté s’il reçoit un title) pour les templates, innerHTML ou le rendu serveur ; toSvgDataUri produit une URI d’image pour <img>, les arrière-plans CSS et les favicons."
+    },
+    "canvas2d": {
+      "title": "Canvas2D",
+      "description": "drawIcon trace une icône sur n’importe quel contexte 2D (canvas du DOM, OffscreenCanvas, canvas de mini-programmes) avec des traits natifs, dans la transformation du contexte."
+    },
+    "controller": {
+      "title": "Contrôleur de canvas d’icônes",
+      "description": "createIconCanvas, le contrôleur sous IconCanvas : ajoute un canvas à n’importe quel élément, choisit le backend, suit la barre de rendu, redessine sur setItems et libère le contexte GPU sur destroy."
+    },
+    "geometry": {
+      "title": "Géométrie GPU",
+      "description": "Ce que dessinent les backends GPU : tessellateIcon convertit le trait en triangles (quadrilatères, jointures et extrémités arrondies), à partir des courbes aplaties par flattenIconPath dans la tolérance. Points : ligne médiane aplatie."
+    }
+  },
+  "data": {
+    "status": "Dessiné avec {{backend}}",
+    "starting": "Démarrage du rendu…",
+    "next": "Icônes suivantes",
+    "controllerAria": "Trente icônes dessinées par createIconCanvas",
+    "icon": "Icône",
+    "tolerance": "Tolérance",
+    "geometryAria": "Triangles de l’icône {{name}}",
+    "geometryStats": "{{triangles}} triangles, {{points}} points de ligne médiane"
+  },
+  "api": {
+    "IconDefinition": {
+      "name": "Nom unique en kebab-case, par ex. arrow-up",
+      "paths": "Chaînes d de tracé SVG (M L H V C S Q T A Z, absolues ou relatives) sur la grille 24×24",
+      "category": "Groupe de l’icône, par ex. arrows (les icônes intégrées en ont toujours un)",
+      "tags": "Mots de recherche en plus du nom"
+    },
+    "IconSvgOptions": {
+      "size": "Largeur et hauteur (un nombre est en pixels)",
+      "color": "Couleur du trait",
+      "strokeWidth": "Épaisseur du trait sur la grille 24×24",
+      "title": "Nom accessible : ajoute role=\"img\" et un <title> ; sans lui, le SVG est aria-hidden",
+      "className": "Attribut class",
+      "attributes": "Attributs supplémentaires, échappés (par ex. { \"data-icon\": \"x\" })"
+    },
+    "DrawIconOptions": {
+      "x": "Bord gauche dans les unités courantes du contexte",
+      "y": "Bord supérieur dans les unités courantes du contexte"
+    },
+    "IconCanvasOptions": {
+      "items": "Icônes à dessiner, dans l’ordre de peinture (les suivantes par-dessus)",
+      "renderer": "Backend préféré",
+      "width": "Largeur fixe en pixels CSS ; par défaut celle du conteneur",
+      "height": "Hauteur fixe en pixels CSS ; par défaut celle du conteneur",
+      "pixelRatio": "Ratio de pixels de l’appareil",
+      "onRendererChange": "Appelé avec le backend une fois démarré, puis de nouveau après un repli"
+    },
+    "IconCanvasController": {
+      "renderer": "Le backend qui dessine (null tant qu’il n’a pas démarré)",
+      "canvas": "L’élément <canvas> dans le conteneur",
+      "setItems": "Remplace les icônes ; dessinées à la prochaine image d’animation",
+      "setOptions": "Met à jour les options ; un nouveau renderer redémarre le backend",
+      "render": "Dessine immédiatement (au lieu d’attendre la prochaine image d’animation)",
+      "ready": "Se résout une fois le backend démarré et les items actuels dessinés",
+      "destroy": "Retire le canvas et libère les ressources GPU"
+    },
+    "IconSurfaceOptions": {
+      "icon": "L’icône à dessiner",
+      "renderer": "Backend préféré",
+      "pixelRatio": "Ratio de pixels de l’appareil",
+      "onRendererChange": "Appelé avec le backend une fois qu’il a dessiné, puis de nouveau après un repli"
+    },
+    "IconSurface": {
+      "renderer": "Le backend qui l’a dessinée (null jusqu’à la première image)",
+      "update": "Remplace les options ; redessinée à la prochaine image d’animation",
+      "destroy": "Arrête le dessin (le canvas reste en place)"
+    },
+    "IconMeshOptions": {
+      "strokeWidth": "Épaisseur du trait sur la grille 24×24",
+      "tolerance": "Écart maximal entre le maillage et le contour exact, en unités de grille"
+    },
+    "IconPolyline": {
+      "points": "Points sous la forme [x0, y0, x1, y1, …]",
+      "closed": "Se termine par Z (le dernier point rejoint le premier)"
+    }
+  }
+}

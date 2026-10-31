@@ -1,0 +1,93 @@
+{
+  "title": "图标核心",
+  "description": "minerva-design/icons/core：不依赖框架的图标集。包括 SVG 字符串、Canvas2D 绘制、GPU 画布、自定义图标、全局默认渲染器，以及 GPU 后端背后的几何处理流程。",
+  "intro": {
+    "title": "不依赖框架",
+    "text": "导入核心模块没有副作用，在真正绘制之前不会访问任何浏览器 API，因此可用于服务端代码、Worker、任何框架和普通脚本。图标就是普通对象：{ name, paths, category, tags }。",
+    "frameworks": "React 组件只是这个核心之上的一层薄封装；Vue 和 Web Components 绑定也将以同样的方式提供。在此之前，toSvg 和 createIconCanvas 可用于任何框架。"
+  },
+  "demos": {
+    "svg-string": {
+      "title": "SVG 字符串",
+      "description": "toSvg 返回一个独立的 <svg>（已转义，设置 title 时带有无障碍标签），可用于模板、innerHTML 或服务端渲染；toSvgDataUri 生成图片 URI，可用于 <img>、CSS 背景和网站图标（favicon）。"
+    },
+    "canvas2d": {
+      "title": "Canvas2D",
+      "description": "drawIcon 在任意 2D 上下文（DOM 画布、OffscreenCanvas、小程序画布）上用原生描边绘制图标，并沿用上下文的变换。"
+    },
+    "controller": {
+      "title": "图标画布控制器",
+      "description": "createIconCanvas 即 IconCanvas 底层的控制器：向任意元素追加一块画布，选择后端，跟随渲染器栏，在 setItems 时重绘，并在 destroy 时释放 GPU 上下文。"
+    },
+    "geometry": {
+      "title": "GPU 几何",
+      "description": "GPU 后端实际绘制的内容：tessellateIcon 将描边转换为三角形（四边形、圆形连接和线帽），所用曲线由 flattenIconPath 在容差范围内展平。圆点：展平后的中心线。"
+    }
+  },
+  "data": {
+    "status": "由 {{backend}} 绘制",
+    "starting": "正在启动渲染器…",
+    "next": "下一组图标",
+    "controllerAria": "由 createIconCanvas 绘制的三十个图标",
+    "icon": "图标",
+    "tolerance": "容差",
+    "geometryAria": "{{name}} 图标的三角形",
+    "geometryStats": "{{triangles}} 个三角形，{{points}} 个中心线点"
+  },
+  "api": {
+    "IconDefinition": {
+      "name": "唯一的 kebab-case 名称，如 arrow-up",
+      "paths": "基于 24×24 网格的 SVG 路径 d 字符串（M L H V C S Q T A Z，绝对或相对坐标）",
+      "category": "图标所属分组，如 arrows（内置图标都有分组）",
+      "tags": "名称之外的搜索关键词"
+    },
+    "IconSvgOptions": {
+      "size": "宽度和高度（数字表示像素）",
+      "color": "描边颜色",
+      "strokeWidth": "基于 24×24 网格的描边宽度",
+      "title": "无障碍名称：添加 role=\"img\" 和 <title>；未设置时 SVG 为 aria-hidden",
+      "className": "class 属性",
+      "attributes": "额外的属性，会被转义（如 { \"data-icon\": \"x\" }）"
+    },
+    "DrawIconOptions": {
+      "x": "左边缘，使用上下文当前的单位",
+      "y": "上边缘，使用上下文当前的单位"
+    },
+    "IconCanvasOptions": {
+      "items": "要绘制的图标，按绘制顺序排列（后面的在上层）",
+      "renderer": "后端偏好",
+      "width": "固定宽度，以 CSS 像素为单位；默认为容器宽度",
+      "height": "固定高度，以 CSS 像素为单位；默认为容器高度",
+      "pixelRatio": "设备像素比",
+      "onRendererChange": "后端启动后以其为参数调用，回退后会再次调用"
+    },
+    "IconCanvasController": {
+      "renderer": "正在绘制的后端（启动前为 null）",
+      "canvas": "容器内的 <canvas> 元素",
+      "setItems": "替换图标；在下一个动画帧绘制",
+      "setOptions": "更新选项；更换 renderer 会重启后端",
+      "render": "立即绘制（而不是等到下一个动画帧）",
+      "ready": "后端启动且当前 items 绘制完成后 resolve",
+      "destroy": "移除画布并释放 GPU 资源"
+    },
+    "IconSurfaceOptions": {
+      "icon": "要绘制的图标",
+      "renderer": "后端偏好",
+      "pixelRatio": "设备像素比",
+      "onRendererChange": "后端完成绘制后以其为参数调用，回退后会再次调用"
+    },
+    "IconSurface": {
+      "renderer": "绘制它的后端（第一帧之前为 null）",
+      "update": "替换选项；在下一个动画帧重绘",
+      "destroy": "停止绘制（画布保留在原处）"
+    },
+    "IconMeshOptions": {
+      "strokeWidth": "基于 24×24 网格的描边宽度",
+      "tolerance": "三角网格与精确轮廓之间的最大距离，以 24×24 网格单位计"
+    },
+    "IconPolyline": {
+      "points": "点坐标，形如 [x0, y0, x1, y1, …]",
+      "closed": "以 Z 结尾（最后一个点与第一个点相连）"
+    }
+  }
+}

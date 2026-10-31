@@ -1,0 +1,59 @@
+{
+  "title": "Icon",
+  "description": "Une icône du jeu : SVG inline par défaut, ou un canvas dessiné avec WebGPU, WebGL2, WebGL ou Canvas2D. Composants nommés (SearchIcon…), Icon générique, icônes personnalisées et icônes choisies par nom.",
+  "intro": {
+    "title": "SVG ou canvas",
+    "svg": "Par défaut, une icône est un <svg> inline : il se rend côté serveur, suit la couleur du texte grâce à currentColor et la taille de police avec size=\"1em\", et reste masqué aux technologies d’assistance sauf s’il a un title ou un aria-label.",
+    "canvas": "Avec renderer à \"auto\", \"webgpu\", \"webgl2\", \"webgl\" ou \"canvas2d\", la même icône est dessinée sur un canvas. Les navigateurs limitent les contextes WebGL actifs à environ 16 ; les icônes canvas partagent donc un seul backend par page : les icônes modifiées sont regroupées dans un atlas, dessinées en une passe puis copiées dans leurs canvas. \"auto\" suit la valeur globale par défaut (setDefaultIconRenderer), ici la barre de rendu.",
+    "bundle": "Seul ce que vous importez est embarqué : SearchIcon apporte ses propres données de tracé, les rendus canvas se chargent avec la première icône canvas, et DynamicIcon (noms choisis à l’exécution) est le seul composant qui embarque tout le jeu."
+  },
+  "demos": {
+    "basic": {
+      "title": "Utilisation de base",
+      "description": "Chaque icône est un composant qui porte son nom ; les icônes s’insèrent dans le texte et dans les boutons."
+    },
+    "size-color": {
+      "title": "Taille et couleur",
+      "description": "size accepte des pixels ou toute longueur CSS (1em suit la taille de police) ; color accepte toute couleur CSS, variables de thème comprises, et vaut par défaut la couleur du texte."
+    },
+    "stroke": {
+      "title": "Épaisseur du trait",
+      "description": "strokeWidth s’exprime sur la grille 24×24 et suit donc la taille de l’icône. absoluteStrokeWidth la garde en pixels quelle que soit la taille (seconde moitié de la rangée du bas)."
+    },
+    "accessibility": {
+      "title": "Accessibilité",
+      "description": "Les icônes décoratives sont aria-hidden ; donnez un title à une icône isolée (role=\"img\") ; dans un contrôle, étiquetez plutôt le contrôle."
+    },
+    "custom": {
+      "title": "Icônes personnalisées",
+      "description": "defineIcon valide une fois vos propres données de tracé ; createIcon en fait un composant comme les icônes intégrées, et Icon la dessine avec tous les rendus."
+    },
+    "dynamic": {
+      "title": "Icônes par nom",
+      "description": "DynamicIcon choisit une icône intégrée d’après un nom connu seulement à l’exécution ; un nom inconnu n’affiche rien. Il embarque tout le jeu."
+    },
+    "canvas": {
+      "title": "Rendus",
+      "description": "La même icône en SVG et sur chaque backend canvas ; sous chacune, le backend qui l’a réellement dessinée. \"auto\" suit la barre de rendu ; un backend imposé absent de ce navigateur passe au suivant."
+    }
+  },
+  "data": {
+    "starting": "démarrage…"
+  },
+  "api": {
+    "IconProps": {
+      "icon": "L’icône à dessiner : une icône intégrée (par ex. searchIcon) ou un résultat de defineIcon",
+      "size": "Largeur et hauteur ; un nombre est en pixels, les rendus canvas suivent aussi les tailles CSS comme \"1em\"",
+      "color": "Couleur du trait, toute couleur CSS",
+      "strokeWidth": "Épaisseur du trait sur la grille 24×24 (suit la taille)",
+      "absoluteStrokeWidth": "Garde strokeWidth en pixels quelle que soit la taille",
+      "title": "Nom accessible : l’icône devient role=\"img\" ; sans lui (ni aria-label), l’icône est masquée aux technologies d’assistance",
+      "renderer": "SVG inline, ou un canvas dessiné par un backend partagé par toutes les icônes canvas de la page (\"auto\" suit la valeur globale par défaut)",
+      "onRendererChange": "Rendus canvas : appelé avec le backend qui a dessiné l’icône",
+      "ref": "L’élément <svg>, ou le <canvas> avec un rendu canvas"
+    },
+    "DynamicIconProps": {
+      "name": "Nom d’une icône intégrée (par ex. \"arrow-up\") ; un nom inconnu n’affiche rien"
+    }
+  }
+}

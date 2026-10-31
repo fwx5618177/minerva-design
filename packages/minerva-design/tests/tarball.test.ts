@@ -167,6 +167,10 @@ describe("packed tarball installed in a consumer project", () => {
       "dist/native/index.cjs",
       "dist/native/index.d.ts",
       "dist/native/source/index.ts",
+      "dist/icons/index.js",
+      "dist/icons/index.cjs",
+      "dist/icons/core.js",
+      "dist/icons/core.d.cts",
     ]) {
       expect(listing, file).toContain(file);
     }

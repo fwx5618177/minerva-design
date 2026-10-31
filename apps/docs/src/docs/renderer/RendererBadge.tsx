@@ -1,4 +1,4 @@
-import { useEffect, useState, type RefObject } from "react";
+import { useContext, useEffect, useState, type RefObject } from "react";
 import { useTranslation } from "react-i18next";
 import type {
   ChartRendererKind,
@@ -10,6 +10,7 @@ import {
   scanRenderers,
   type RendererScan,
 } from "./scan";
+import { RendererTopicContext } from "./context";
 import styles from "./renderer.module.scss";
 
 type Counts = Pick<RendererScan, "kinds" | "shapes">;
@@ -36,6 +37,7 @@ export default function RendererBadge({
   requested,
 }: RendererBadgeProps) {
   const { t } = useTranslation("common", { keyPrefix: "chartRenderer" });
+  const topic = useContext(RendererTopicContext);
   const [counts, setCounts] = useState<Counts>(EMPTY);
 
   useEffect(() => {
@@ -100,7 +102,7 @@ export default function RendererBadge({
   // the requested backend is not available here: every GPU chart fell back
   const fellBack =
     requested !== "auto" && used.length > 0 && !used.includes(requested);
-  const titles = [t("badgeTitle")];
+  const titles = [t(topic === "icons" ? "icons.badgeTitle" : "badgeTitle")];
   if (fellBack) {
     titles.push(
       t("badgeFallback", {

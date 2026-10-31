@@ -113,6 +113,12 @@ const sourceFiles = () => [
   { file: join(PACKAGES_DIR, "charts/src/react/orderbook.tsx"), prefix: "" },
   { file: join(PACKAGES_DIR, "charts/src/react/three-d.tsx"), prefix: "" },
   { file: join(PACKAGES_DIR, "charts/src/react/graph.tsx"), prefix: "" },
+  // Icons: core options (minerva-design/icons/core) and React props
+  // (minerva-design/icons)
+  { file: join(PACKAGES_DIR, "icons/src/engine/types.ts"), prefix: "" },
+  { file: join(PACKAGES_DIR, "icons/src/engine/path.ts"), prefix: "" },
+  { file: join(PACKAGES_DIR, "icons/src/engine/tessellate.ts"), prefix: "" },
+  { file: join(PACKAGES_DIR, "icons/src/react/types.ts"), prefix: "" },
 ];
 
 const clean = (text) => text.replace(/\s+/g, " ").trim();
@@ -380,8 +386,12 @@ export const sortKeys = (entries) =>
 
 export const serialize = (api) => `${JSON.stringify(api, null, 2)}\n`;
 
-/** Whether an API entry documents minerva-design/charts */
-const isChartEntry = (entry) => entry.source.startsWith("charts/");
+/**
+ * Whether an API entry goes to api.charts.generated.json: minerva-design/charts
+ * and minerva-design/icons, loaded lazily by their pages only
+ */
+const isChartEntry = (entry) =>
+  entry.source.startsWith("charts/") || entry.source.startsWith("icons/");
 
 /**
  * Splits the API into the entries of api.generated.json and those of

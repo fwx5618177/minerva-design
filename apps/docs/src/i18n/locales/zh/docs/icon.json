@@ -1,0 +1,59 @@
+{
+  "title": "Icon",
+  "description": "图标集中的单个图标：默认为内联 SVG，也可以是由 WebGPU、WebGL2、WebGL 或 Canvas2D 绘制的画布。包括具名组件（SearchIcon…）、通用的 Icon、自定义图标以及按名称选择的图标。",
+  "intro": {
+    "title": "SVG 还是画布",
+    "svg": "默认情况下，图标是一个内联 <svg>：它可在服务端渲染，通过 currentColor 跟随文字颜色，设置 size=\"1em\" 时跟随字号；除非设置了 title 或 aria-label，否则对辅助技术隐藏。",
+    "canvas": "将 renderer 设为 \"auto\"、\"webgpu\"、\"webgl2\"、\"webgl\" 或 \"canvas2d\" 时，同一个图标会绘制在画布上。浏览器将同时存活的 WebGL 上下文限制在 16 个左右，因此同一页面的画布图标共享一个后端：发生变化的图标被打包进一张图集，一次绘制完成后再复制到各自的画布。\"auto\" 跟随全局默认值（setDefaultIconRenderer），在本页即渲染器栏。",
+    "bundle": "只打包你导入的内容：SearchIcon 只带上自己的路径数据，画布渲染器随第一个画布图标加载，而 DynamicIcon（名称在运行时决定）是唯一会打包整套图标的组件。"
+  },
+  "demos": {
+    "basic": {
+      "title": "基础用法",
+      "description": "每个图标都是以其名称命名的组件；图标可以与文字同行显示，也可以放在按钮中。"
+    },
+    "size-color": {
+      "title": "尺寸与颜色",
+      "description": "size 接受像素值或任意 CSS 长度（1em 跟随字号）；color 接受任意 CSS 颜色，包括主题变量，默认为文字颜色。"
+    },
+    "stroke": {
+      "title": "描边宽度",
+      "description": "strokeWidth 基于 24×24 网格，因此会随图标缩放。absoluteStrokeWidth 则无论尺寸如何都保持固定的像素值（见最下面一行的后半部分）。"
+    },
+    "accessibility": {
+      "title": "无障碍",
+      "description": "装饰性图标为 aria-hidden；单独出现的图标应设置 title（role=\"img\"）；位于控件内部时，应改为给控件添加标签。"
+    },
+    "custom": {
+      "title": "自定义图标",
+      "description": "defineIcon 对你自己的路径数据做一次校验；createIcon 将其转换为与内置图标一样的组件，Icon 可在所有渲染器上绘制它。"
+    },
+    "dynamic": {
+      "title": "按名称使用图标",
+      "description": "DynamicIcon 根据仅在运行时才知道的名称选择内置图标；未知名称不渲染任何内容。它会打包整套图标。"
+    },
+    "canvas": {
+      "title": "渲染器",
+      "description": "同一个图标分别以 SVG 和各画布后端绘制；每个下方显示实际绘制它的后端。\"auto\" 跟随渲染器栏；强制指定的后端若在此浏览器中不可用，则回退到下一个。"
+    }
+  },
+  "data": {
+    "starting": "启动中…"
+  },
+  "api": {
+    "IconProps": {
+      "icon": "要绘制的图标：内置图标（如 searchIcon）或 defineIcon 的返回值",
+      "size": "宽度和高度；数字表示像素，画布渲染器也支持 \"1em\" 等 CSS 尺寸",
+      "color": "描边颜色，任意 CSS 颜色",
+      "strokeWidth": "基于 24×24 网格的描边宽度（随尺寸缩放）",
+      "absoluteStrokeWidth": "无论尺寸如何，strokeWidth 都保持为像素值",
+      "title": "无障碍名称：图标变为 role=\"img\"；未设置它（或 aria-label）时，图标对辅助技术隐藏",
+      "renderer": "内联 SVG，或由页面上所有画布图标共享的后端绘制的画布（\"auto\" 跟随全局默认值）",
+      "onRendererChange": "画布渲染器：以绘制该图标的后端为参数调用",
+      "ref": "<svg> 元素；使用画布渲染器时为 <canvas>"
+    },
+    "DynamicIconProps": {
+      "name": "内置图标的名称（如 \"arrow-up\"）；未知名称不渲染任何内容"
+    }
+  }
+}

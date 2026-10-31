@@ -67,4 +67,5 @@ export const SECTION_LABELS: Record<DocSection, string> = {
   docs: "nav.docs",
   components: "nav.components",
   charts: "nav.chartsSection",
+  icons: "nav.iconsSection",
 };

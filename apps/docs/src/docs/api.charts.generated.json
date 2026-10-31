@@ -5773,6 +5773,45 @@
       }
     ]
   },
+  "DrawIconOptions": {
+    "source": "icons/src/engine/types.ts",
+    "description": "Options of `drawIcon` (Canvas2D)",
+    "kind": "interface",
+    "extends": [
+      "IconStyle"
+    ],
+    "props": [
+      {
+        "name": "x",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Left edge in the context's current units"
+      },
+      {
+        "name": "y",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Top edge in the context's current units"
+      }
+    ]
+  },
+  "DynamicIconProps": {
+    "source": "icons/src/react/types.ts",
+    "kind": "interface",
+    "extends": [
+      "NamedIconProps"
+    ],
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "Name of a built-in icon (e.g. `\"arrow-up\"`); unknown names render nothing"
+      }
+    ]
+  },
   "FunnelChartOptions": {
     "source": "charts/src/engine/shapes/types.ts",
     "description": "Funnel chart",
@@ -8379,6 +8418,540 @@
       }
     ]
   },
+  "IconCanvasController": {
+    "source": "icons/src/engine/types.ts",
+    "description": "A canvas drawing many icons in one GPU draw (or Canvas2D)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "renderer",
+        "type": "IconRendererKind | null",
+        "required": true,
+        "description": "The backend drawing (null until it started)"
+      },
+      {
+        "name": "canvas",
+        "type": "HTMLCanvasElement",
+        "required": true,
+        "description": "The `<canvas>` element inside the container"
+      },
+      {
+        "name": "setItems",
+        "type": "(items: readonly IconCanvasItem[]) => void",
+        "required": true,
+        "description": "Replaces the icons; drawn on the next animation frame"
+      },
+      {
+        "name": "setOptions",
+        "type": "(options: Omit<IconCanvasOptions, \"items\">) => void",
+        "required": true,
+        "description": "Updates options; a new `renderer` restarts the backend"
+      },
+      {
+        "name": "render",
+        "type": "() => void",
+        "required": true,
+        "description": "Draws now (instead of the next animation frame)"
+      },
+      {
+        "name": "ready",
+        "type": "() => Promise<IconRendererKind>",
+        "required": true,
+        "description": "Resolves once the backend started and the current items are drawn"
+      },
+      {
+        "name": "destroy",
+        "type": "() => void",
+        "required": true,
+        "description": "Removes the canvas and releases the GPU resources"
+      }
+    ]
+  },
+  "IconCanvasHandle": {
+    "source": "icons/src/react/types.ts",
+    "description": "Imperative handle of `IconCanvas`",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "getRenderer",
+        "type": "() => IconRendererKind | null",
+        "required": true,
+        "description": "The backend drawing (null until it started)"
+      },
+      {
+        "name": "getCanvas",
+        "type": "() => HTMLCanvasElement | null",
+        "required": true,
+        "description": "The `<canvas>` element (null before mount)"
+      },
+      {
+        "name": "ready",
+        "type": "() => Promise<IconRendererKind>",
+        "required": true,
+        "description": "Resolves once the backend started and the current items are drawn"
+      }
+    ]
+  },
+  "IconCanvasItem": {
+    "source": "icons/src/engine/types.ts",
+    "description": "One icon drawn by an icon canvas",
+    "kind": "interface",
+    "extends": [
+      "IconStyle"
+    ],
+    "props": [
+      {
+        "name": "icon",
+        "type": "IconDefinition",
+        "required": true,
+        "description": "The icon to draw"
+      },
+      {
+        "name": "x",
+        "type": "number",
+        "required": true,
+        "description": "Left edge in CSS pixels, from the canvas' top-left corner"
+      },
+      {
+        "name": "y",
+        "type": "number",
+        "required": true,
+        "description": "Top edge in CSS pixels, from the canvas' top-left corner"
+      }
+    ]
+  },
+  "IconCanvasOptions": {
+    "source": "icons/src/engine/types.ts",
+    "description": "Options of `createIconCanvas`",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "items",
+        "type": "readonly IconCanvasItem[]",
+        "required": false,
+        "description": "Icons to draw, in painting order (later ones on top)"
+      },
+      {
+        "name": "renderer",
+        "type": "IconRendererPreference",
+        "required": false,
+        "default": "\"auto\"",
+        "description": "Backend preference"
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "required": false,
+        "description": "Fixed width in CSS pixels; by default the container's width"
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "required": false,
+        "description": "Fixed height in CSS pixels; by default the container's height"
+      },
+      {
+        "name": "pixelRatio",
+        "type": "number",
+        "required": false,
+        "default": "window.devicePixelRatio",
+        "description": "Device pixel ratio"
+      },
+      {
+        "name": "onRendererChange",
+        "type": "(kind: IconRendererKind) => void",
+        "required": false,
+        "description": "Called with the backend once it started, and again after a fallback"
+      }
+    ]
+  },
+  "IconCanvasProps": {
+    "source": "icons/src/react/types.ts",
+    "kind": "interface",
+    "extends": [
+      "Omit<HTMLAttributes<HTMLDivElement>, \"children\" | \"title\">"
+    ],
+    "props": [
+      {
+        "name": "items",
+        "type": "readonly IconCanvasItem[]",
+        "required": true,
+        "description": "Icons to draw, in painting order (later ones on top), positions in CSS pixels"
+      },
+      {
+        "name": "renderer",
+        "type": "IconRendererPreference",
+        "required": false,
+        "default": "\"auto\"",
+        "description": "Backend preference; \"auto\" follows the global default"
+      },
+      {
+        "name": "width",
+        "type": "number | string",
+        "required": false,
+        "default": "\"100%\"",
+        "description": "Width (a number is in pixels)"
+      },
+      {
+        "name": "height",
+        "type": "number | string",
+        "required": false,
+        "default": "240",
+        "description": "Height (a number is in pixels)"
+      },
+      {
+        "name": "pixelRatio",
+        "type": "number",
+        "required": false,
+        "default": "window.devicePixelRatio",
+        "description": "Device pixel ratio"
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": false,
+        "description": "Accessible name of the whole picture (`role=\"img\"`); without it the canvas is hidden from assistive technologies"
+      },
+      {
+        "name": "onRendererChange",
+        "type": "(kind: IconRendererKind) => void",
+        "required": false,
+        "description": "Called with the backend once it started, and again after a fallback"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<IconCanvasHandle>",
+        "required": false,
+        "description": "Imperative handle"
+      }
+    ]
+  },
+  "IconCategory": {
+    "source": "icons/src/engine/types.ts",
+    "description": "Categories of the built-in icons",
+    "kind": "alias",
+    "type": "\"arrows\" | \"actions\" | \"interface\" | \"media\" | \"files\" | \"communication\" | \"data\" | \"finance\" | \"status\" | \"devices\""
+  },
+  "IconDefinition": {
+    "source": "icons/src/engine/types.ts",
+    "description": "An icon: SVG path data on a 24×24 grid, always stroked (never filled) with round caps and joins. The built-in icons and `defineIcon` both produce it.",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "Unique kebab-case name, e.g. `arrow-up`"
+      },
+      {
+        "name": "paths",
+        "type": "readonly string[]",
+        "required": true,
+        "description": "SVG path `d` strings (M L H V C S Q T A Z, absolute or relative) on the 24×24 grid"
+      },
+      {
+        "name": "category",
+        "type": "string",
+        "required": false,
+        "description": "Group of the icon, e.g. `arrows` (built-in icons always have one)"
+      },
+      {
+        "name": "tags",
+        "type": "readonly string[]",
+        "required": false,
+        "description": "Search words besides the name"
+      }
+    ]
+  },
+  "IconMeshOptions": {
+    "source": "icons/src/engine/tessellate.ts",
+    "description": "Options of `tessellateIcon`",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "strokeWidth",
+        "type": "number",
+        "required": false,
+        "default": "2",
+        "description": "Stroke width on the 24×24 grid"
+      },
+      {
+        "name": "tolerance",
+        "type": "number",
+        "required": false,
+        "default": "0.05",
+        "description": "Largest distance between the mesh and the exact outline, in grid units"
+      }
+    ]
+  },
+  "IconPathCommand": {
+    "source": "icons/src/engine/path.ts",
+    "description": "An absolute path command (H/V become L, S/T become C/Q, arcs become cubic curves)",
+    "kind": "alias",
+    "type": "{ type: \"M\"; x: number; y: number } | { type: \"L\"; x: number; y: number } | { type: \"C\"; x1: number; y1: number; x2: number; y2: number; x: number; y: number; } | { type: \"Q\"; x1: number; y1: number; x: number; y: number } | { type: \"Z\" }"
+  },
+  "IconPolyline": {
+    "source": "icons/src/engine/path.ts",
+    "description": "A flattened subpath: `points` is `[x0, y0, x1, y1, …]`",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "points",
+        "type": "number[]",
+        "required": true
+      },
+      {
+        "name": "closed",
+        "type": "boolean",
+        "required": true,
+        "description": "Ends with Z (the last point joins the first)"
+      }
+    ]
+  },
+  "IconProps": {
+    "source": "icons/src/react/types.ts",
+    "kind": "interface",
+    "extends": [
+      "Omit<SVGProps<SVGSVGElement>, \"ref\" | \"color\" | \"stroke\" | \"strokeWidth\" | \"children\" | \"name\">"
+    ],
+    "props": [
+      {
+        "name": "icon",
+        "type": "IconDefinition",
+        "required": true,
+        "description": "The icon to draw: a built-in one (e.g. `searchIcon`) or a `defineIcon` result"
+      },
+      {
+        "name": "size",
+        "type": "number | string",
+        "required": false,
+        "default": "24",
+        "description": "Width and height (a number is in pixels; canvas renderers also follow CSS sizes such as `\"1em\"`)"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "default": "\"currentColor\"",
+        "description": "Stroke color, any CSS color"
+      },
+      {
+        "name": "strokeWidth",
+        "type": "number",
+        "required": false,
+        "default": "2",
+        "description": "Stroke width on the 24×24 grid (scales with the size)"
+      },
+      {
+        "name": "absoluteStrokeWidth",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Keeps `strokeWidth` in pixels whatever the size"
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": false,
+        "description": "Accessible name: the icon becomes `role=\"img\"`; without it (or an `aria-label`) the icon is hidden from assistive technologies"
+      },
+      {
+        "name": "renderer",
+        "type": "IconRenderer",
+        "required": false,
+        "default": "\"svg\"",
+        "description": "Inline SVG (default), or a `<canvas>` drawn by a backend shared by every canvas icon of the page: \"auto\" (the global default, see `setDefaultIconRenderer`), \"webgpu\", \"webgl2\", \"webgl\" or \"canvas2d\""
+      },
+      {
+        "name": "onRendererChange",
+        "type": "(kind: IconRendererKind) => void",
+        "required": false,
+        "description": "Canvas renderers: called with the backend that drew the icon"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<SVGSVGElement | HTMLCanvasElement>",
+        "required": false,
+        "description": "The `<svg>` element, or the `<canvas>` with a canvas renderer"
+      }
+    ]
+  },
+  "IconRenderer": {
+    "source": "icons/src/react/types.ts",
+    "description": "How an `Icon` is drawn: inline SVG, or a canvas backend",
+    "kind": "alias",
+    "type": "\"svg\" | IconRendererPreference"
+  },
+  "IconRendererKind": {
+    "source": "icons/src/engine/types.ts",
+    "description": "A backend that draws icons on a canvas",
+    "kind": "alias",
+    "type": "\"webgpu\" | \"webgl2\" | \"webgl\" | \"canvas2d\""
+  },
+  "IconRendererPreference": {
+    "source": "icons/src/engine/types.ts",
+    "description": "Backend preference of a canvas: a backend (falling back along WebGPU -> WebGL2 -> WebGL -> Canvas2D if it cannot start), or \"auto\" (the global default, see `setDefaultIconRenderer`)",
+    "kind": "alias",
+    "type": "\"auto\" | IconRendererKind"
+  },
+  "IconStyle": {
+    "source": "icons/src/engine/types.ts",
+    "description": "Shared drawing options (sizes in CSS pixels)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "size",
+        "type": "number",
+        "required": false,
+        "default": "24",
+        "description": "Width and height in CSS pixels"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "default": "\"currentColor\"",
+        "description": "Any CSS color; `currentColor` reads the color of the host element"
+      },
+      {
+        "name": "strokeWidth",
+        "type": "number",
+        "required": false,
+        "default": "2",
+        "description": "Stroke width on the 24×24 grid (scales with the size)"
+      },
+      {
+        "name": "rotation",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Clockwise rotation in degrees, around the center"
+      },
+      {
+        "name": "opacity",
+        "type": "number",
+        "required": false,
+        "default": "1",
+        "description": "Opacity between 0 and 1"
+      }
+    ]
+  },
+  "IconSurface": {
+    "source": "icons/src/engine/types.ts",
+    "description": "A single icon on its own `<canvas>`, drawn by a backend shared by the page",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "renderer",
+        "type": "IconRendererKind | null",
+        "required": true,
+        "description": "The backend that drew it (null until the first frame)"
+      },
+      {
+        "name": "update",
+        "type": "(options: IconSurfaceOptions) => void",
+        "required": true,
+        "description": "Replaces the options; redrawn on the next animation frame"
+      },
+      {
+        "name": "destroy",
+        "type": "() => void",
+        "required": true,
+        "description": "Stops drawing (the canvas is left in place)"
+      }
+    ]
+  },
+  "IconSurfaceOptions": {
+    "source": "icons/src/engine/types.ts",
+    "description": "Options of `createIconSurface`",
+    "kind": "interface",
+    "extends": [
+      "Omit<IconStyle, \"rotation\">"
+    ],
+    "props": [
+      {
+        "name": "icon",
+        "type": "IconDefinition",
+        "required": true,
+        "description": "The icon to draw"
+      },
+      {
+        "name": "renderer",
+        "type": "IconRendererPreference",
+        "required": false,
+        "default": "\"auto\"",
+        "description": "Backend preference"
+      },
+      {
+        "name": "pixelRatio",
+        "type": "number",
+        "required": false,
+        "default": "window.devicePixelRatio",
+        "description": "Device pixel ratio"
+      },
+      {
+        "name": "onRendererChange",
+        "type": "(kind: IconRendererKind) => void",
+        "required": false,
+        "description": "Called with the backend once it drew, and again after a fallback"
+      }
+    ]
+  },
+  "IconSvgOptions": {
+    "source": "icons/src/engine/types.ts",
+    "description": "Options of `toSvg`",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "size",
+        "type": "number | string",
+        "required": false,
+        "default": "24",
+        "description": "Width and height (a number is in pixels)"
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "default": "\"currentColor\"",
+        "description": "Stroke color"
+      },
+      {
+        "name": "strokeWidth",
+        "type": "number",
+        "required": false,
+        "default": "2",
+        "description": "Stroke width on the 24×24 grid"
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": false,
+        "description": "Accessible name: adds `role=\"img\"` and a `<title>`; without it the SVG is `aria-hidden`"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "`class` attribute"
+      },
+      {
+        "name": "attributes",
+        "type": "Record<string, string | number>",
+        "required": false,
+        "description": "Extra attributes, escaped (e.g. `{ \"data-icon\": \"x\" }`)"
+      }
+    ]
+  },
   "Line3DChartProps": {
     "source": "charts/src/react/three-d.tsx",
     "description": "Props of `Line3DChart`",
@@ -8555,6 +9128,12 @@
         "description": "Bars, lines, areas and dots, each with its `type`; `yAxis: \"right\"` plots a series against `yAxis2`"
       }
     ]
+  },
+  "NamedIconProps": {
+    "source": "icons/src/react/types.ts",
+    "description": "Props of the named icon components (`SearchIcon`, …): `IconProps` without `icon`",
+    "kind": "alias",
+    "type": "Omit<IconProps, \"icon\">"
   },
   "OrderBookColorConvention": {
     "source": "charts/src/engine/orderbook/types.ts",

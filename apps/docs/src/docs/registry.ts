@@ -29,6 +29,7 @@ export type DocCategory =
   | "charts3d"
   | "graphCharts"
   | "chartEngine"
+  | "icons"
   | "mobile"
   | "webComponents";
 
@@ -43,7 +44,9 @@ export interface DocPageMeta {
     | "minerva-design"
     | "minerva-design/web-components"
     | "minerva-design/charts"
-    | "minerva-design/charts/core";
+    | "minerva-design/charts/core"
+    | "minerva-design/icons"
+    | "minerva-design/icons/core";
   /** Interfaces from api.generated.json rendered as API tables */
   api?: string[];
   /** Demo ids, in display order; each maps to `pages/<id>/demos/<demo>.tsx` */
@@ -109,10 +112,11 @@ export const categories: DocCategory[] = [
   "charts3d",
   "graphCharts",
   "chartEngine",
+  "icons",
 ];
 
 /** Top-level parts of the site, each with its own sidebar */
-export type DocSection = "docs" | "components" | "charts";
+export type DocSection = "docs" | "components" | "charts" | "icons";
 
 export interface DocSectionMeta {
   id: DocSection;
@@ -152,6 +156,11 @@ export const sections: readonly DocSectionMeta[] = [
       "graphCharts",
       "chartEngine",
     ],
+  },
+  {
+    id: "icons",
+    home: "icons",
+    categories: ["icons"],
   },
 ];
 
@@ -3349,6 +3358,74 @@ export const docPages: DocPageMeta[] = [
       api: ["ImagePreviewProps"],
       demos: ["basic", "controlled"],
     },
+  },
+
+  // Icons (minerva-design/icons: custom SVG icons, also drawn by the GPU)
+  {
+    id: "icons",
+    category: "icons",
+    package: "minerva-design/icons/core",
+    exports: ["icons", "iconCategories", "getIcon", "searchIcons"],
+    demos: ["gallery"],
+  },
+  {
+    id: "icon",
+    category: "icons",
+    package: "minerva-design/icons",
+    exports: ["Icon", "createIcon", "DynamicIcon"],
+    api: ["IconProps", "DynamicIconProps"],
+    demos: [
+      "basic",
+      "size-color",
+      "stroke",
+      "accessibility",
+      "custom",
+      "dynamic",
+      "canvas",
+    ],
+  },
+  {
+    id: "icon-canvas",
+    category: "icons",
+    package: "minerva-design/icons",
+    exports: ["IconCanvas"],
+    api: ["IconCanvasProps", "IconCanvasItem", "IconStyle", "IconCanvasHandle"],
+    demos: ["basic", "thousands", "renderers"],
+  },
+  {
+    id: "icons-core",
+    category: "icons",
+    package: "minerva-design/icons/core",
+    exports: [
+      "toSvg",
+      "toSvgDataUri",
+      "iconPathData",
+      "drawIcon",
+      "defineIcon",
+      "createIconCanvas",
+      "createIconSurface",
+      "setDefaultIconRenderer",
+      "getDefaultIconRenderer",
+      "subscribeDefaultIconRenderer",
+      "ICON_RENDERER_PREFERENCES",
+      "ICON_RENDERER_ORDER",
+      "iconRendererCandidates",
+      "parseIconPath",
+      "flattenIconPath",
+      "tessellateIcon",
+    ],
+    api: [
+      "IconDefinition",
+      "IconSvgOptions",
+      "DrawIconOptions",
+      "IconCanvasOptions",
+      "IconCanvasController",
+      "IconSurfaceOptions",
+      "IconSurface",
+      "IconMeshOptions",
+      "IconPolyline",
+    ],
+    demos: ["svg-string", "canvas2d", "controller", "geometry"],
   },
 ];
 

@@ -14,6 +14,8 @@ export default defineConfig({
       // GPU charts (minerva-design/charts); not in the coverage percentage:
       // the GPU backends are verified in real browsers (tests/browser)
       "packages/charts",
+      // icon set (minerva-design/icons); GPU backends checked in real browsers
+      "packages/icons",
       "packages/react",
       "packages/web-components",
       "apps/docs",

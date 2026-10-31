@@ -7,6 +7,7 @@ import {
 } from "react-icons/io5";
 import { Tooltip } from "minerva-design";
 import type { ChartRendererPreference } from "minerva-design/charts/core";
+import type { RendererTopic } from "./context";
 import { RENDERER_OPTIONS, setChartRenderer } from "./store";
 import { autoPick, probeBackends, type BackendsSupport } from "./support";
 import styles from "./renderer.module.scss";
@@ -14,7 +15,19 @@ import styles from "./renderer.module.scss";
 export interface RendererBarProps {
   /** The page-wide renderer */
   value: ChartRendererPreference;
+  /** What it switches: the wording of the label, status and help @default "charts" */
+  topic?: RendererTopic;
 }
+
+/** Strings worded for the canvas icons on icon pages (chartRenderer.icons.*) */
+const ICON_KEYS = new Set([
+  "label",
+  "forced",
+  "forcedSoftware",
+  "software",
+  "info",
+  "infoLabel",
+]);
 
 /** Where the bar sticks: under the site header, with the CSS gap (8px) */
 const stickyTop = () =>
@@ -29,8 +42,18 @@ const stickyTop = () =>
  * WebGL / Canvas2D for every chart of the page, whatever the framework tab.
  * Backends this browser lacks are disabled; software GPUs are flagged.
  */
-export default function RendererBar({ value }: RendererBarProps) {
-  const { t } = useTranslation("common", { keyPrefix: "chartRenderer" });
+export default function RendererBar({
+  value,
+  topic = "charts",
+}: RendererBarProps) {
+  const { t: translate } = useTranslation("common", {
+    keyPrefix: "chartRenderer",
+  });
+  const t = ((key: string, options?: Record<string, unknown>) =>
+    translate(
+      topic === "icons" && ICON_KEYS.has(key) ? `icons.${key}` : key,
+      options,
+    )) as typeof translate;
   const name = useId();
   const sentinelRef = useRef<HTMLDivElement>(null);
   const [stuck, setStuck] = useState(false);

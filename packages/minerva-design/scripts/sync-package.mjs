@@ -49,6 +49,9 @@ export const DUAL_SUBPATHS = {
   // GPU charts: React components and the framework-free engine
   charts: ["charts/index"],
   "charts/core": ["charts/core"],
+  // icon set: React components and the framework-free core
+  icons: ["icons/index"],
+  "icons/core": ["icons/core"],
 };
 
 /** ESM-only entries of the Vue renderer (Are the Types Wrong? esm-only profile) */

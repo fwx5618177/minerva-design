@@ -124,6 +124,26 @@
         "default": "./dist/charts/core.cjs"
       }
     },
+    "./icons": {
+      "import": {
+        "types": "./dist/icons/index.d.ts",
+        "default": "./dist/icons/index.js"
+      },
+      "require": {
+        "types": "./dist/icons/index.d.cts",
+        "default": "./dist/icons/index.cjs"
+      }
+    },
+    "./icons/core": {
+      "import": {
+        "types": "./dist/icons/core.d.ts",
+        "default": "./dist/icons/core.js"
+      },
+      "require": {
+        "types": "./dist/icons/core.d.cts",
+        "default": "./dist/icons/core.cjs"
+      }
+    },
     "./native": {
       "source": "./dist/native/source/index.ts",
       "react-native": {
@@ -1107,6 +1127,12 @@
       "charts/core": [
         "./dist/charts/core.d.ts"
       ],
+      "icons": [
+        "./dist/icons/index.d.ts"
+      ],
+      "icons/core": [
+        "./dist/icons/core.d.ts"
+      ],
       "native": [
         "./dist/native/index.d.ts"
       ]
@@ -1131,7 +1157,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "build": "pnpm --filter @minerva/core build && pnpm --filter @minerva/dom build && pnpm --filter @minerva/charts build && pnpm --filter @minerva/react build && pnpm --filter @minerva/web-components build && pnpm --filter @minerva/vue build && pnpm --filter @minerva/native build && pnpm --filter @minerva/angular build && pnpm --filter @minerva/taro build && pnpm --filter @minerva/uni build && pnpm --filter @minerva/weapp build",
+    "build": "pnpm --filter @minerva/core build && pnpm --filter @minerva/dom build && pnpm --filter @minerva/charts build && pnpm --filter @minerva/icons build && pnpm --filter @minerva/react build && pnpm --filter @minerva/web-components build && pnpm --filter @minerva/vue build && pnpm --filter @minerva/native build && pnpm --filter @minerva/angular build && pnpm --filter @minerva/taro build && pnpm --filter @minerva/uni build && pnpm --filter @minerva/weapp build",
     "sync:package": "node scripts/sync-package.mjs",
     "test:dist": "vitest run",
     "check:package": "node scripts/check-package.mjs",

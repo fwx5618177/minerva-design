@@ -10,6 +10,11 @@ export const RENDERER_SEED = Symbol.for(
   "minerva-design.charts.defaultRenderer",
 );
 
+/** Same for the canvas icons (minerva-design/icons, see its defaults.ts) */
+export const ICON_RENDERER_SEED = Symbol.for(
+  "minerva-design.icons.defaultRenderer",
+);
+
 const BACKENDS = ["webgpu", "webgl2", "webgl", "canvas2d"];
 
 /** Seeds the engine default with the stored renderer; returns it ("auto" if none) */
@@ -21,7 +26,8 @@ export const bootChartRenderer = (): string => {
     // storage unavailable (private mode): automatic detection
   }
   const preference = stored && BACKENDS.includes(stored) ? stored : "auto";
-  (globalThis as unknown as Record<symbol, unknown>)[RENDERER_SEED] =
-    preference;
+  const host = globalThis as unknown as Record<symbol, unknown>;
+  host[RENDERER_SEED] = preference;
+  host[ICON_RENDERER_SEED] = preference;
   return preference;
 };

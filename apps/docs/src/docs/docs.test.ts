@@ -359,6 +359,21 @@ describe("docs: coverage of public exports", () => {
     ).toEqual([]);
   });
 
+  it("documents every runtime export of minerva-design/icons and icons/core", () => {
+    const react = documented("minerva-design/icons");
+    const core = documented("minerva-design/icons/core");
+    // the icons themselves (searchIcon, SearchIcon…) are `export const`s of
+    // the icon files, listed by the gallery; valueExports sees the API only
+    const coreExports = valueExports(join(PACKAGES, "icons/src/core.ts"));
+    expect(coreExports.length).toBeGreaterThan(10);
+    expect(coreExports.filter((name) => !core.has(name))).toEqual([]);
+    // minerva-design/icons re-exports the core
+    const reactExports = valueExports(join(PACKAGES, "icons/src/index.ts"));
+    expect(
+      reactExports.filter((name) => !react.has(name) && !core.has(name)),
+    ).toEqual([]);
+  });
+
   it("every component page has demos and an API table", () => {
     const incomplete = docPages
       .filter((p) => p.exports?.length)

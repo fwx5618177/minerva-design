@@ -23,6 +23,8 @@ export const PRIVATE: Record<string, string> = {
   "packages/dom": "@minerva/dom",
   // GPU charts (minerva-design/charts, minerva-design/charts/core)
   "packages/charts": "@minerva/charts",
+  // icons (minerva-design/icons, minerva-design/icons/core): scaffold only
+  "packages/icons": "@minerva/icons",
   // React Native renderer (minerva-design/native) and its example app
   "packages/native": "@minerva/native",
   "apps/expo-example": "@minerva/expo-example",

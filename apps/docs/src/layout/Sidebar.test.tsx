@@ -82,6 +82,7 @@ describe("docs sections", () => {
       "Docs",
       "Components",
       "Charts",
+      "Icons",
     ]);
     expect(
       links.filter((link) => link.hasAttribute("data-active")),

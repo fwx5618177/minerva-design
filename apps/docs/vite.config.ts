@@ -59,6 +59,14 @@ const testAlias: Alias[] = [
     replacement: src("../../packages/charts/src/index.ts"),
   },
   {
+    find: /^minerva-design\/icons\/core$/,
+    replacement: src("../../packages/icons/src/core.ts"),
+  },
+  {
+    find: /^minerva-design\/icons$/,
+    replacement: src("../../packages/icons/src/index.ts"),
+  },
+  {
     find: /^minerva-design\/vue\/monaco$/,
     replacement: src("../../packages/vue/src/monaco.ts"),
   },

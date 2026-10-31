@@ -18,6 +18,8 @@ const ENTRIES = [
   { entry: "minerva-design/monaco", client: true, key: "monaco" },
   { entry: "minerva-design/charts", client: true, key: "charts" },
   { entry: "minerva-design/charts/core", client: false, key: "chartsCore" },
+  { entry: "minerva-design/icons", client: true, key: "icons" },
+  { entry: "minerva-design/icons/core", client: false, key: "iconsCore" },
   { entry: "minerva-design/theme-utils", client: false, key: "themeUtils" },
   { entry: "minerva-design/utils", client: false, key: "utils" },
 ] as const;
