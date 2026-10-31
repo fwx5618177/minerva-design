@@ -1,5 +1,11 @@
 # minerva-design
 
+## 1.6.1
+
+### Patch Changes
+
+- fix(charts): readable bookmap heat field, exact front transparency layer and gantt routing
+
 ## 1.6.0
 
 ### Minor Changes
