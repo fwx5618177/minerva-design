@@ -61,6 +61,16 @@ const WIDGET_PAGES = [
   "chart-renderers",
 ];
 
+/**
+ * Demos with nothing to draw until the reader acts: a capability table and
+ * benchmarks whose charts only appear once a run is started
+ */
+const ON_DEMAND_DEMOS = new Set([
+  "demo-environment",
+  "demo-benchmark",
+  "demo-scaling",
+]);
+
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     if (window === window.top) {
@@ -199,6 +209,10 @@ for (const id of WIDGET_PAGES) {
     for (let i = 0; i < count; i++) {
       const demo = demos.nth(i);
       await demo.locator("[data-demo-preview]").scrollIntoViewIfNeeded();
+      const demoId = await demo.getAttribute("id");
+      if (id === "chart-renderers" && ON_DEMAND_DEMOS.has(demoId ?? "")) {
+        continue;
+      }
       // widgets mount (and generate their data) when they come into view
       await expect
         .poll(
