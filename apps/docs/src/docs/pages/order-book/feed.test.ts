@@ -11,16 +11,21 @@ describe("simulated market feed", () => {
     expect(a.snapshot()).toEqual(b.snapshot());
   });
 
-  it("never crosses the book (best bid < best ask)", () => {
-    for (const whales of [0.006, 0.03]) {
-      const feed = createMarketFeed({ seed: 11, whales, start: 0 });
-      for (let i = 0; i < 1500; i++) {
-        feed.step(i % 7 === 0 ? 100 : 20);
-        const { bids, asks } = feed.snapshot();
-        expect(bids[0]![0]).toBeLessThan(asks[0]![0]);
+  // 3000 full snapshots: slow under coverage on CI
+  it(
+    "never crosses the book (best bid < best ask)",
+    { timeout: 30_000 },
+    () => {
+      for (const whales of [0.006, 0.03]) {
+        const feed = createMarketFeed({ seed: 11, whales, start: 0 });
+        for (let i = 0; i < 1500; i++) {
+          feed.step(i % 7 === 0 ? 100 : 20);
+          const { bids, asks } = feed.snapshot();
+          expect(bids[0]![0]).toBeLessThan(asks[0]![0]);
+        }
       }
-    }
-  });
+    },
+  );
 
   it("keeps the levels sorted, positive and on the tick", () => {
     const { feed, updates } = createHistory({ seed: 5 }, 10_000);
