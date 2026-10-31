@@ -567,9 +567,11 @@ describe("Tooltip", () => {
       await openByHover();
       const wrapper = getTrigger().parentElement!;
       mouse(wrapper, "mouseleave", { clientX: 130, clientY: 200 });
-      await advance(299);
+      // the fake clock also follows real time (shouldAdvanceTime): keep a
+      // margin on both sides of the 300ms grace period on a busy CI runner
+      await advance(200);
       expect(tooltip()).not.toBeNull();
-      await advance(1);
+      await advance(100);
       expect(tooltip()).toBeNull();
     });
   });

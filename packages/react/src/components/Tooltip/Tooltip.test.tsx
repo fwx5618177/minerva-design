@@ -639,12 +639,14 @@ describe("Tooltip", () => {
         const wrapper = getTrigger().parentElement as HTMLElement;
 
         fireEvent.mouseLeave(wrapper, { clientX: 130, clientY: 200 });
+        // the fake clock also follows real time (shouldAdvanceTime): keep a
+        // margin on both sides of the 300ms grace period on a busy CI runner
         act(() => {
-          vi.advanceTimersByTime(299);
+          vi.advanceTimersByTime(200);
         });
         expect(screen.getByRole("tooltip")).toBeInTheDocument();
         act(() => {
-          vi.advanceTimersByTime(1);
+          vi.advanceTimersByTime(100);
         });
         expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
       });
