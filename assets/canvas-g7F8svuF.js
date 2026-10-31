@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";function t(e){let t=e=>{let t=e.target,{renderer:n}=e.detail,r=t.closest(`figure`)?.querySelector(`small`);r&&(r.textContent=n)};return e.addEventListener(`minerva-renderer-change`,t),()=>e.removeEventListener(`minerva-renderer-change`,t)}function n(){return(n=e((()=>{})))()}n();export{t as setup};

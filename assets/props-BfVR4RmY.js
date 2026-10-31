@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t,n;function r(){return(r=e((()=>{t={size:{type:[Number,String],default:24},color:{type:String,default:`currentColor`},strokeWidth:{type:Number,default:2},absoluteStrokeWidth:{type:Boolean,default:!1},title:String,renderer:{type:String,default:`svg`}},n=e=>typeof e==`number`?`${e}px`:e})))()}export{r as n,n as r,t};

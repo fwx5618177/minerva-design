@@ -1,0 +1,15 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t;function n(){return(n=e((()=>{t=`<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px">
+  <minerva-icon name="home"></minerva-icon>
+  <minerva-icon name="search"></minerva-icon>
+  <minerva-icon name="settings"></minerva-icon>
+  <minerva-button>
+    <minerva-icon slot="start" name="download" size="16"></minerva-icon>
+    Download
+  </minerva-button>
+  <minerva-button color="danger" variant="outline">
+    <minerva-icon slot="start" name="trash" size="16"></minerva-icon>
+    Delete
+  </minerva-button>
+  <minerva-icon name="bell" size="32" label="Notifications"></minerva-icon>
+</div>
+`})))()}n();export{t as default};
