@@ -1,5 +1,12 @@
 # minerva-design
 
+## 1.7.0
+
+### Minor Changes
+
+- test(docs): give the feed crossing test room under ci coverage
+  feat(charts): order book heatmap legend, size unit, rank-blended heat and fast smoke check
+
 ## 1.6.1
 
 ### Patch Changes
