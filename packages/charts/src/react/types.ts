@@ -426,6 +426,18 @@ export interface QuadrantChartProps
     QuadrantConfig {
   /** Called with the clicked point and its index */
   onPointClick?: (point: QuadrantPoint, index: number) => void;
+  /** Called when the same point is clicked twice in quick succession */
+  onPointDoubleClick?: (point: QuadrantPoint, index: number) => void;
+  /**
+   * Called on every move of a dragged point, with the quadrant under the
+   * pointer; the dots stay in place until the drop (update `points` in
+   * `onPointDrop`)
+   */
+  onPointDrag?: (
+    point: QuadrantPoint,
+    index: number,
+    target: QuadrantDropTarget,
+  ) => void;
   /** Called when the empty area of a quadrant is clicked */
   onQuadrantClick?: (
     quadrant: QuadrantCorner,

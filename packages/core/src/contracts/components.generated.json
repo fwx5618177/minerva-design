@@ -9083,17 +9083,39 @@
         "only": "wc"
       },
       { "name": "hideLabels", "kind": "boolean", "default": false, "required": false, "description": "Hides the labels next to the dots", "attribute": "hide-labels", "only": "wc" },
-      { "name": "dragPoints", "kind": "boolean", "default": false, "required": false, "description": "Lets the user drag the dots (`minerva-point-drop`)", "attribute": "drag-points", "only": "wc" },
+      {
+        "name": "dragPoints",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "Lets the user drag the dots (`minerva-point-drag`, `minerva-point-drop`)",
+        "attribute": "drag-points",
+        "only": "wc"
+      },
       { "name": "options", "kind": "object", "required": false, "description": "Other engine options (legend, tooltip, padding, palette...); property only", "only": "wc" }
     ],
     "events": [
       { "name": "minerva-point-click", "wc": "minerva-point-click", "detail": ["point", "index"], "description": "A dot was clicked; detail: { point, index }", "react": "onPointClick" },
+      {
+        "name": "minerva-point-double-click",
+        "wc": "minerva-point-double-click",
+        "detail": ["point", "index"],
+        "description": "The same dot was clicked twice in quick succession; detail: { point, index }",
+        "react": "onPointDoubleClick"
+      },
       {
         "name": "minerva-quadrant-click",
         "wc": "minerva-quadrant-click",
         "detail": ["quadrant", "x", "y"],
         "description": "The empty area of a quadrant was clicked; detail: { quadrant, x, y }",
         "react": "onQuadrantClick"
+      },
+      {
+        "name": "minerva-point-drag",
+        "wc": "minerva-point-drag",
+        "detail": ["point", "index", "x", "y", "quadrant"],
+        "description": "A dot is being dragged (on every move); detail: { point, index, x, y, quadrant }",
+        "react": "onPointDrag"
       },
       {
         "name": "minerva-point-drop",

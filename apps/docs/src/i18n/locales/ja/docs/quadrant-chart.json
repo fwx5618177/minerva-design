@@ -12,7 +12,7 @@
     },
     "draggable": {
       "title": "ドラッグできるタスクマトリクス",
-      "description": "showTicks={false} と axisLabels でチャートをタスクボードにします。タスクを別の象限へドラッグ（onPointDrop が位置を更新）し、空いている場所か +ボタン（quadrantContent）をクリックして追加します。renderTooltip は React のツールチップを表示します。"
+      "description": "showTicks={false} と axisLabels でチャートをタスクボードにします。ドラッグ中はステータスに移動先の象限がリアルタイムで表示され（onPointDrag）、離すと位置が更新されます（onPointDrop）。タスクをダブルクリックすると名前や象限を編集できます（onPointDoubleClick）。空いている場所か +ボタン（quadrantContent）をクリックして追加します。renderTooltip は React のツールチップを表示します。"
     },
     "bcg": {
       "title": "BCG マトリクス",
@@ -79,9 +79,18 @@
     "urgent": "緊急",
     "notUrgent": "緊急でない",
     "taskMoved": "{{task}}を「{{quadrant}}」に移動しました",
+    "taskMoving": "{{task}}を「{{quadrant}}」へ移動中",
+    "taskSaved": "{{task}}を保存しました（「{{quadrant}}」）",
+    "taskRemoved": "{{task}}を削除しました",
+    "editTaskAria": "{{task}}を編集",
+    "taskName": "タスク名",
+    "taskQuadrant": "象限",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "remove": "削除",
     "taskScores": "緊急度 {{urgency}} · 重要度 {{importance}}",
     "boardAria": "タスクマトリクス：象限の間でタスクをドラッグ",
-    "dragHint": "タスクを別の象限にドラッグするか、空白をクリックして追加します",
+    "dragHint": "タスクを別の象限にドラッグするか、ダブルクリックで編集、空白をクリックして追加します",
     "quadrantTapped": "「{{quadrant}}」をタップしました",
     "dragHintNative": "タスクを別の象限にドラッグしてください",
     "products": {
@@ -136,6 +145,8 @@
   "api": {
     "QuadrantChartProps": {
       "onPointClick": "クリックされたポイントとそのインデックスを渡して呼ばれます",
+      "onPointDoubleClick": "同じポイントをすばやく2回クリックしたときに、ポイントとインデックスを渡して呼ばれます",
+      "onPointDrag": "ドラッグ中のポイントが動くたびに、ポイント・インデックス・ポインター下の象限を渡して呼ばれます。ドロップするまでポイントは動きません",
       "onQuadrantClick": "象限の空いている場所をクリックしたときに、象限とデータ位置を渡して呼ばれます",
       "onPointDrop": "ドラッグしたポイントを離したときに、ポイント・インデックス・ドロップ先を渡して呼ばれます。設定するとポイントがドラッグ可能になります（移動するには points を更新）",
       "renderTooltip": "ポイントのツールチップの React コンテンツ",
@@ -156,7 +167,7 @@
       "showLabels": "重なりを避けて点の横にラベルを描画",
       "pointSize": "点の直径（ピクセル）",
       "name": "ツールチップに表示するポイントの名前",
-      "draggable": "ポイントをドラッグできるようにします（onPointDrop を設定すると既定で有効）"
+      "draggable": "ポイントをドラッグできるようにします（onPointDrop または onPointDrag を設定すると既定で有効）"
     },
     "QuadrantDropTarget": {
       "x": "ドロップ位置の X データ座標",
@@ -214,14 +225,16 @@
       "props": {
         "hideTicks": "軸の数値目盛りを非表示にします（マトリクスのみ残ります）",
         "hideLabels": "点の横のラベルを非表示にします",
-        "dragPoints": "点をドラッグできるようにします（minerva-point-drop。移動するには points を更新します）",
+        "dragPoints": "点をドラッグできるようにします（移動中は minerva-point-drag、離すと minerva-point-drop。移動するには points を更新します）",
         "height": "チャートの高さ（凡例を含む）：ピクセルまたは任意の CSS の長さ",
         "options": "その他のエンジンのオプション（軸、凡例、ツールチップ、パレット、書式…）。要素自身のプロパティとマージされます。プロパティのみ",
         "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
       },
       "events": {
         "minerva-point-click": "点がクリックされました。detail：{ point, index }",
+        "minerva-point-double-click": "同じ点がすばやく2回クリックされました。detail：{ point, index }",
         "minerva-quadrant-click": "象限の空白部分がクリックされました。detail：{ quadrant, x, y }",
+        "minerva-point-drag": "点をドラッグ中です（ドロップ前、移動するたびに発生）。detail：{ point, index, x, y, quadrant }",
         "minerva-point-drop": "ドラッグした点が離されました。detail：{ point, index, x, y, quadrant }",
         "minerva-hover": "ホバー（またはキーボードでフォーカス）しているポイントが変わりました。detail：{ x, xLabel, items }、何もない場合は null",
         "minerva-plot-click": "ポイントのないプロット領域がクリックされました。detail：{ x, y }（データ座標）",

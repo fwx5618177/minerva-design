@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { IconButton } from "minerva-design";
+import { Button, IconButton, Input, Select, SelectItem } from "minerva-design";
 import {
   QuadrantChart,
   quadrantCenter,
+  quadrantOf,
   type QuadrantCorner,
   type QuadrantPoint,
 } from "minerva-design/charts";
@@ -13,6 +14,8 @@ type Corner = QuadrantCorner;
 
 // x: urgency, y: importance (0-10); reverseX puts urgent tasks on the left
 const geometry = { reverseX: true };
+
+const corners: Corner[] = ["topLeft", "topRight", "bottomLeft", "bottomRight"];
 
 // translation keys of the quadrant titles
 const titleKeys: Record<Corner, string> = {
@@ -31,7 +34,8 @@ const colors: Record<Corner, string> = {
 };
 
 // task names are translated when rendered (`key`), added tasks are numbered
-type Task = { key?: string; n?: number; x: number; y: number };
+// (`n`) until they are renamed in the editor (`label`)
+type Task = { key?: string; n?: number; label?: string; x: number; y: number };
 const initial: Task[] = [
   { key: "loginOutage", x: 9, y: 8 },
   { key: "quarterlyPlanning", x: 3, y: 8.5 },
@@ -46,10 +50,16 @@ export default function DraggableDemo() {
     keyPrefix: "docs.quadrant-chart.data",
   });
   const [tasks, setTasks] = useState(initial);
+  const [editing, setEditing] = useState<number | null>(null);
+  const [draft, setDraft] = useState<{ name: string; quadrant: Corner }>({
+    name: "",
+    quadrant: "topLeft",
+  });
   const [status, setStatus] = useState<string | null>(null);
   const title = (corner: Corner) => t(titleKeys[corner]);
   const name = (task: Task) =>
-    task.key ? t(`tasks.${task.key}`) : t("newTask", { n: task.n });
+    task.label ??
+    (task.key ? t(`tasks.${task.key}`) : t("newTask", { n: task.n }));
   const points: QuadrantPoint[] = tasks.map((task) => ({
     label: name(task),
     x: task.x,
@@ -71,6 +81,46 @@ export default function DraggableDemo() {
     };
     setTasks((current) => [...current, task]);
     setStatus(t("taskAdded", { task: name(task), quadrant: title(corner) }));
+  };
+
+  const edit = (index: number) => {
+    const task = tasks[index];
+    setEditing(index);
+    setDraft({
+      name: name(task),
+      quadrant: quadrantOf(geometry, task.x, task.y),
+    });
+  };
+
+  // Moving a task to another quadrant puts it at that quadrant's center
+  const save = (event: FormEvent) => {
+    event.preventDefault();
+    if (editing === null) return;
+    const task = tasks[editing];
+    const label = draft.name.trim() || name(task);
+    const moved = quadrantOf(geometry, task.x, task.y) !== draft.quadrant;
+    const center = quadrantCenter(geometry, draft.quadrant);
+    setTasks((current) =>
+      current.map((item, i) =>
+        i === editing
+          ? {
+              ...item,
+              label,
+              x: moved ? center.x : item.x,
+              y: moved ? center.y : item.y,
+            }
+          : item,
+      ),
+    );
+    setStatus(t("taskSaved", { task: label, quadrant: title(draft.quadrant) }));
+    setEditing(null);
+  };
+
+  const remove = (index: number) => {
+    const label = name(tasks[index]);
+    setTasks((current) => current.filter((_, i) => i !== index));
+    setEditing(null);
+    setStatus(t("taskRemoved", { task: label }));
   };
 
   // Title + add button drawn over each quadrant, in its outer corner
@@ -123,6 +173,14 @@ export default function DraggableDemo() {
           left: t("urgent"),
           right: t("notUrgent"),
         }}
+        onPointDrag={(point, _index, target) =>
+          setStatus(
+            t("taskMoving", {
+              task: point.label,
+              quadrant: title(target.quadrant),
+            }),
+          )
+        }
         onPointDrop={(point, index, target) => {
           setTasks((current) =>
             current.map((task, i) =>
@@ -138,6 +196,7 @@ export default function DraggableDemo() {
             }),
           );
         }}
+        onPointDoubleClick={(_point, index) => edit(index)}
         onQuadrantClick={(corner, at) => add(corner, at)}
         quadrantContent={{
           topLeft: header("topLeft"),
@@ -159,6 +218,56 @@ export default function DraggableDemo() {
         height={360}
         ariaLabel={t("boardAria")}
       />
+      {editing !== null && tasks[editing] && (
+        <form
+          onSubmit={save}
+          aria-label={t("editTaskAria", { task: name(tasks[editing]) })}
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <Input
+            aria-label={t("taskName")}
+            value={draft.name}
+            onChange={(event) =>
+              setDraft({ ...draft, name: event.target.value })
+            }
+          />
+          <Select
+            aria-label={t("taskQuadrant")}
+            value={draft.quadrant}
+            onChange={(value) =>
+              setDraft({ ...draft, quadrant: value as Corner })
+            }
+          >
+            {corners.map((corner) => (
+              <SelectItem key={corner} value={corner}>
+                {title(corner)}
+              </SelectItem>
+            ))}
+          </Select>
+          <Button type="submit">{t("save")}</Button>
+          <Button
+            type="button"
+            color="neutral"
+            variant="outline"
+            onClick={() => setEditing(null)}
+          >
+            {t("cancel")}
+          </Button>
+          <Button
+            type="button"
+            color="danger"
+            variant="outline"
+            onClick={() => remove(editing)}
+          >
+            {t("remove")}
+          </Button>
+        </form>
+      )}
       <p role="status">{status ?? t("dragHint")}</p>
     </div>
   );

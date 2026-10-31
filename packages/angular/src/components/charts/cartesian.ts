@@ -132,12 +132,14 @@ export abstract class MnCartesianChartBase extends MnChartEngine<
       chart.on("plotClick", (event) => this.plotClicked?.(event)),
       chart.on("zoom", (view) => this.zoom.emit(view)),
       chart.on("renderer", (renderer) => this.rendererChange.emit(renderer)),
+      chart.on("drag", (event) => this.dragged?.(event)),
       chart.on("drop", (event) => this.dropped?.(event)),
     ];
   }
 
   protected clicked?(event: ChartHoverEvent): void;
   protected plotClicked?(event: ChartPlotClickEvent): void;
+  protected dragged?(event: ChartDragEvent): void;
   protected dropped?(event: ChartDragEvent): void;
 
   /** Engine options of the common inputs */
@@ -470,6 +472,9 @@ export class MnSparkline extends MnCartesianChartBase {
   }
 }
 
+/** Two clicks on the same point within this delay count as a double click */
+const DOUBLE_CLICK_MS = 400;
+
 /**
  * Four-quadrant matrix (priority matrix, Eisenhower, BCG, ...): tinted
  * quadrants with titles, dividers, and labelled dots placed without
@@ -516,19 +521,25 @@ export class MnQuadrantChart extends MnCartesianChartBase {
   readonly pointSize = input<number | undefined>(undefined);
   /** Name of the points in the tooltip */
   readonly name = input<string | undefined>(undefined);
-  /** Lets the user drag the dots (`pointDrop`) */
+  /** Lets the user drag the dots (`pointDrag`, `pointDrop`) */
   readonly draggable = input(false, { transform: booleanAttribute });
 
   /** A point was clicked */
   readonly pointClick = output<{ point: QuadrantPoint; index: number }>();
+  /** The same point was clicked twice in quick succession */
+  readonly pointDoubleClick = output<{ point: QuadrantPoint; index: number }>();
   /** The empty area of a quadrant was clicked */
   readonly quadrantClick = output<{
     quadrant: QuadrantCorner;
     x: number;
     y: number;
   }>();
+  /** A point is being dragged (on every move, with the quadrant under the pointer) */
+  readonly pointDrag = output<QuadrantPointDrop>();
   /** A dragged point was released (the chart does not move it: update `points`) */
   readonly pointDrop = output<QuadrantPointDrop>();
+
+  private lastClick: { index: number; time: number } | null = null;
 
   private geometry() {
     return {
@@ -562,7 +573,13 @@ export class MnQuadrantChart extends MnCartesianChartBase {
   protected override clicked(event: ChartHoverEvent): void {
     const index = event.items[0]?.index;
     const point = index === undefined ? undefined : this.points()[index];
-    if (point && index !== undefined) this.pointClick.emit({ point, index });
+    if (!point || index === undefined) return;
+    const now = Date.now();
+    const last = this.lastClick;
+    const double = last?.index === index && now - last.time < DOUBLE_CLICK_MS;
+    this.lastClick = double ? null : { index, time: now };
+    this.pointClick.emit({ point, index });
+    if (double) this.pointDoubleClick.emit({ point, index });
   }
 
   protected override plotClicked(event: ChartPlotClickEvent): void {
@@ -573,16 +590,26 @@ export class MnQuadrantChart extends MnCartesianChartBase {
     });
   }
 
-  protected override dropped(event: ChartDragEvent): void {
+  private dropAt(event: ChartDragEvent): QuadrantPointDrop | null {
     const index = event.item.index;
     const point = this.points()[index];
-    if (!point) return;
-    this.pointDrop.emit({
+    if (!point) return null;
+    return {
       point,
       index,
       x: event.x,
       y: event.y,
       quadrant: quadrantOf(this.geometry(), event.x, event.y),
-    });
+    };
+  }
+
+  protected override dragged(event: ChartDragEvent): void {
+    const target = this.dropAt(event);
+    if (target) this.pointDrag.emit(target);
+  }
+
+  protected override dropped(event: ChartDragEvent): void {
+    const target = this.dropAt(event);
+    if (target) this.pointDrop.emit(target);
   }
 }

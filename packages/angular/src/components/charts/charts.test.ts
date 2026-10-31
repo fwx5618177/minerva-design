@@ -161,6 +161,9 @@ describe("cartesian charts", () => {
         draggable
         (pointClick)="events.push($event)"
         (quadrantClick)="events.push($event)"
+        (pointDrag)="events.push($event)"
+        (pointDrop)="events.push($event)"
+        (pointDoubleClick)="events.push({ double: $event.index })"
       />`,
     })
     class Host {
@@ -172,9 +175,21 @@ describe("cartesian charts", () => {
     expect(JSON.stringify(engines[0].options)).toContain('"dragPoints":true');
     engines[0].fire("click", { items: [{ index: 0 }] });
     engines[0].fire("plotClick", { x: 1, y: 9 });
+    const point = fixture.componentInstance.points[0];
     expect(fixture.componentInstance.events).toEqual([
-      { point: fixture.componentInstance.points[0], index: 0 },
+      { point, index: 0 },
       { quadrant: "topLeft", x: 1, y: 9 },
+    ]);
+    fixture.componentInstance.events = [];
+    engines[0].fire("click", { items: [{ index: 0 }] });
+    engines[0].fire("drag", { item: { index: 0 }, x: 2, y: 2 });
+    engines[0].fire("drop", { item: { index: 0 }, x: 2, y: 2 });
+    engines[0].fire("drop", { item: { index: 4 }, x: 2, y: 2 });
+    expect(fixture.componentInstance.events).toEqual([
+      { point, index: 0 },
+      { double: 0 },
+      { point, index: 0, x: 2, y: 2, quadrant: "bottomLeft" },
+      { point, index: 0, x: 2, y: 2, quadrant: "bottomLeft" },
     ]);
   });
 });

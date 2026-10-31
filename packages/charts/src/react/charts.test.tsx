@@ -193,6 +193,130 @@ describe("chart components", () => {
     expect(onQuadrantClick.mock.calls[0][0]).toBe("bottomLeft");
   });
 
+  it("reports drags before the drop and highlights the target quadrant", async () => {
+    const onPointDrag = vi.fn();
+    const onPointDrop = vi.fn();
+    const ref = createRef<ChartHandle>();
+    const points = [{ x: 2, y: 8, label: "Write report" }];
+    const { container } = render(
+      <QuadrantChart
+        ref={ref}
+        points={points}
+        reverseX
+        showTicks={false}
+        onPointDrag={onPointDrag}
+        onPointDrop={onPointDrop}
+        quadrants={{ bottomLeft: { label: "Later", color: "#00f" } }}
+      />,
+    );
+    await flush();
+    const chart = ref.current!.getInstance()!;
+    const stage = container.querySelector(".minerva-chart-stage")!;
+    const fire = (type: string, at: { x: number; y: number }) =>
+      stage.dispatchEvent(
+        new PointerEvent(type, {
+          clientX: at.x,
+          clientY: at.y,
+          button: 0,
+          pointerId: 1,
+        }),
+      );
+    const from = chart.toPixel(2, 8)!;
+    const to = chart.toPixel(8, 2)!;
+    fire("pointerdown", from);
+    fire("pointermove", { x: from.x + 20, y: from.y + 20 });
+    fire("pointermove", to);
+    expect(onPointDrag).toHaveBeenCalled();
+    const last = onPointDrag.mock.lastCall!;
+    expect(last[0]).toBe(points[0]);
+    expect(last[2].quadrant).toBe("bottomLeft");
+    await flush();
+    expect(
+      container.querySelector(".minerva-chart-quadrant-target"),
+    ).not.toBeNull();
+    fire("pointerup", to);
+    expect(onPointDrop).toHaveBeenCalledTimes(1);
+    await flush();
+    expect(
+      container.querySelector(".minerva-chart-quadrant-target"),
+    ).toBeNull();
+  });
+
+  it("clears the drop highlight when the pointer is released outside the plot", async () => {
+    const ref = createRef<ChartHandle>();
+    const points = [{ x: 2, y: 8 }];
+    const { container } = render(
+      <QuadrantChart
+        ref={ref}
+        points={points}
+        onPointDrop={() => {}}
+        quadrants={{ bottomLeft: {} }}
+      />,
+    );
+    await flush();
+    const chart = ref.current!.getInstance()!;
+    const stage = container.querySelector(".minerva-chart-stage")!;
+    const at = chart.toPixel(2, 8)!;
+    const fire = (type: string, p: { x: number; y: number }) =>
+      stage.dispatchEvent(
+        new PointerEvent(type, {
+          clientX: p.x,
+          clientY: p.y,
+          button: 0,
+          pointerId: 1,
+        }),
+      );
+    fire("pointerdown", at);
+    fire("pointermove", { x: at.x + 30, y: at.y + 30 });
+    await flush();
+    expect(
+      container.querySelector(".minerva-chart-quadrant-target"),
+    ).not.toBeNull();
+    window.dispatchEvent(new PointerEvent("pointerup"));
+    await flush();
+    expect(
+      container.querySelector(".minerva-chart-quadrant-target"),
+    ).toBeNull();
+  });
+
+  it("calls onPointDoubleClick for two quick clicks on a point", async () => {
+    const onPointClick = vi.fn();
+    const onPointDoubleClick = vi.fn();
+    const ref = createRef<ChartHandle>();
+    const points = [{ x: 2, y: 8 }];
+    const { container } = render(
+      <QuadrantChart
+        ref={ref}
+        points={points}
+        onPointClick={onPointClick}
+        onPointDoubleClick={onPointDoubleClick}
+      />,
+    );
+    await flush();
+    const chart = ref.current!.getInstance()!;
+    const stage = container.querySelector(".minerva-chart-stage")!;
+    const at = chart.toPixel(2, 8)!;
+    const click = () => {
+      for (const type of ["pointerdown", "pointerup"])
+        stage.dispatchEvent(
+          new PointerEvent(type, {
+            clientX: at.x,
+            clientY: at.y,
+            button: 0,
+            pointerId: 1,
+          }),
+        );
+    };
+    click();
+    expect(onPointDoubleClick).not.toHaveBeenCalled();
+    click();
+    expect(onPointClick).toHaveBeenCalledTimes(2);
+    expect(onPointDoubleClick).toHaveBeenCalledTimes(1);
+    expect(onPointDoubleClick.mock.calls[0][0]).toBe(points[0]);
+    click();
+    expect(onPointDoubleClick).toHaveBeenCalledTimes(1);
+  });
+
   it("renders scatter charts", () => {
     const { container } = render(
       <ScatterChart series={[{ data: [[1, 2]] }]} />,

@@ -4679,7 +4679,7 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "Lets the user drag the dots (`pointDrop`)"
+        "description": "Lets the user drag the dots (`pointDrag`, `pointDrop`)"
       },
       {
         "name": "pointClick",
@@ -4689,11 +4689,25 @@
         "description": "A point was clicked"
       },
       {
+        "name": "pointDoubleClick",
+        "kind": "output",
+        "type": "{ point: QuadrantPoint; index: number }",
+        "required": false,
+        "description": "The same point was clicked twice in quick succession"
+      },
+      {
         "name": "quadrantClick",
         "kind": "output",
         "type": "{\n    quadrant: QuadrantCorner;\n    x: number;\n    y: number;\n  }",
         "required": false,
         "description": "The empty area of a quadrant was clicked"
+      },
+      {
+        "name": "pointDrag",
+        "kind": "output",
+        "type": "QuadrantPointDrop",
+        "required": false,
+        "description": "A point is being dragged (on every move, with the quadrant under the pointer)"
       },
       {
         "name": "pointDrop",

@@ -3,6 +3,7 @@ import { getCurrentInstance, type PropType } from "vue";
 import {
   quadrantChartOptions,
   quadrantOf,
+  type ChartDragEvent,
   type ChartHoverEvent,
   type ChartRendererKind,
   type ChartView,
@@ -60,6 +61,10 @@ const emit = defineEmits<{
   hover: [event: ChartHoverEvent | null];
   /** A point was clicked */
   pointClick: [point: QuadrantPoint, index: number];
+  /** The same point was clicked twice in quick succession */
+  pointDoubleClick: [point: QuadrantPoint, index: number];
+  /** A point is being dragged (on every move, with the quadrant under the pointer) */
+  pointDrag: [point: QuadrantPoint, index: number, target: QuadrantDropTarget];
   /** The empty area of a quadrant was clicked */
   quadrantClick: [quadrant: QuadrantCorner, position: { x: number; y: number }];
   /** A dragged point was released (the chart does not move it: update `points`) */
@@ -70,12 +75,20 @@ const emit = defineEmits<{
   rendererChange: [renderer: ChartRendererKind];
 }>();
 const vnode = getCurrentInstance()?.vnode;
+/** Two clicks on the same point within this delay count as a double click */
+const DOUBLE_CLICK_MS = 400;
+let lastClick: { index: number; time: number } | null = null;
 const geometry = () => ({
   xDomain: raw(props.xDomain),
   yDomain: raw(props.yDomain),
   xSplit: props.xSplit,
   ySplit: props.ySplit,
   reverseX: props.reverseX,
+});
+const dropAt = (event: ChartDragEvent): QuadrantDropTarget => ({
+  x: event.x,
+  y: event.y,
+  quadrant: quadrantOf(geometry(), event.x, event.y),
 });
 const { setContainer, rootStyle, handle } = useCartesianChart(
   props,
@@ -92,7 +105,9 @@ const { setContainer, rootStyle, handle } = useCartesianChart(
         showLabels: props.showLabels,
         pointSize: props.pointSize,
         name: props.name,
-        draggable: props.draggable ?? !!vnode?.props?.onPointDrop,
+        draggable:
+          props.draggable ??
+          !!(vnode?.props?.onPointDrop || vnode?.props?.onPointDrag),
       },
       (({ series: _series, ...rest }) => rest)(engineOptions(props, [])),
     ),
@@ -101,22 +116,26 @@ const { setContainer, rootStyle, handle } = useCartesianChart(
     click: (event) => {
       const index = event.items[0]?.index;
       const point = index === undefined ? undefined : props.points[index];
-      if (point && index !== undefined) emit("pointClick", point, index);
+      if (!point || index === undefined) return;
+      const now = Date.now();
+      const double =
+        lastClick?.index === index && now - lastClick.time < DOUBLE_CLICK_MS;
+      lastClick = double ? null : { index, time: now };
+      emit("pointClick", point, index);
+      if (double) emit("pointDoubleClick", point, index);
     },
     plotClick: (at) =>
       emit("quadrantClick", quadrantOf(geometry(), at.x, at.y), {
         x: at.x,
         y: at.y,
       }),
+    drag: (event) => {
+      const point = props.points[event.item.index];
+      if (point) emit("pointDrag", point, event.item.index, dropAt(event));
+    },
     drop: (event) => {
-      const index = event.item.index;
-      const point = props.points[index];
-      if (!point) return;
-      emit("pointDrop", point, index, {
-        x: event.x,
-        y: event.y,
-        quadrant: quadrantOf(geometry(), event.x, event.y),
-      });
+      const point = props.points[event.item.index];
+      if (point) emit("pointDrop", point, event.item.index, dropAt(event));
     },
     zoom: (view) => emit("zoom", view),
     renderer: (renderer) => emit("rendererChange", renderer),

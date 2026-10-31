@@ -97,6 +97,7 @@ export interface CartesianHandlers {
   plotClick?: (event: ChartPlotClickEvent) => void;
   zoom?: (view: ChartView) => void;
   renderer?: (renderer: ChartRendererKind) => void;
+  drag?: (event: ChartDragEvent) => void;
   drop?: (event: ChartDragEvent) => void;
 }
 
@@ -120,6 +121,7 @@ export function useCartesianChart(
     chart.on("plotClick", (event) => handlers.plotClick?.(event)),
     chart.on("zoom", (view) => handlers.zoom?.(view)),
     chart.on("renderer", (renderer) => handlers.renderer?.(renderer)),
+    chart.on("drag", (event) => handlers.drag?.(event)),
     chart.on("drop", (event) => handlers.drop?.(event)),
   ]);
   const handle: ChartHandle = {

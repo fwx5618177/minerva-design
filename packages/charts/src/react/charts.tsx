@@ -1,4 +1,10 @@
-import { useMemo, useState, type CSSProperties } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import {
   areaSeries,
   barSeries,
@@ -20,7 +26,11 @@ import {
   type QuadrantCorner,
 } from "../engine/presets";
 import { resolveLocale } from "../engine/locale";
-import type { ChartAnnotation, ChartRect } from "../engine/types";
+import type {
+  ChartAnnotation,
+  ChartDragEvent,
+  ChartRect,
+} from "../engine/types";
 import { Chart, ChartBase, engineOptions } from "./Chart";
 import type {
   AreaChartProps,
@@ -36,6 +46,7 @@ import type {
   LineChartProps,
   MixedChartProps,
   QuadrantChartProps,
+  QuadrantDropTarget,
   RangeAreaChartProps,
   ScatterChartProps,
   SparklineProps,
@@ -279,6 +290,9 @@ const CORNERS: QuadrantCorner[] = [
   "bottomRight",
 ];
 
+/** Two clicks on the same point within this delay count as a double click */
+const DOUBLE_CLICK_MS = 400;
+
 const cornerStyle = (
   corner: QuadrantCorner,
   plot: ChartRect,
@@ -319,12 +333,30 @@ export function QuadrantChart(props: QuadrantChartProps) {
     name,
     draggable,
     onPointClick,
+    onPointDoubleClick,
+    onPointDrag,
     onPointDrop,
     onQuadrantClick,
     renderTooltip,
     quadrantContent,
   } = props;
   const geometry = { xDomain, yDomain, xSplit, ySplit, reverseX };
+  const [dropCorner, setDropCorner] = useState<QuadrantCorner | null>(null);
+  const lastClick = useRef<{ index: number; time: number } | null>(null);
+
+  // a release outside the plot ends the drag without a drop event
+  useEffect(() => {
+    if (!dropCorner) return;
+    const release = () => setDropCorner(null);
+    window.addEventListener("pointerup", release);
+    return () => window.removeEventListener("pointerup", release);
+  }, [dropCorner]);
+
+  const dropAt = (event: ChartDragEvent): QuadrantDropTarget => ({
+    x: event.x,
+    y: event.y,
+    quadrant: quadrantOf(geometry, event.x, event.y),
+  });
 
   const options = quadrantChartOptions(
     {
@@ -342,36 +374,53 @@ export function QuadrantChart(props: QuadrantChartProps) {
       showLabels,
       pointSize,
       name,
-      draggable: draggable ?? !!onPointDrop,
+      draggable: draggable ?? !!(onPointDrop || onPointDrag),
     },
     engineOptions({ ...props, series: [] }),
   );
 
-  const overlay = quadrantContent
-    ? (plot: ChartRect) => {
-        const [x0, x1] = xDomain ?? [0, 10];
-        const [y0, y1] = yDomain ?? [0, 10];
-        const xs = xSplit ?? (x0 + x1) / 2;
-        const ys = ySplit ?? (y0 + y1) / 2;
-        const fx = (xs - x0) / (x1 - x0 || 1);
-        const fy = (ys - y0) / (y1 - y0 || 1);
-        const split = {
-          x: plot.x + plot.width * (reverseX ? 1 - fx : fx),
-          y: plot.y + plot.height * (1 - fy),
-        };
-        return CORNERS.map((corner) =>
-          quadrantContent[corner] ? (
-            <div
-              key={corner}
-              className={`minerva-chart-quadrant minerva-chart-quadrant-${corner}`}
-              style={cornerStyle(corner, plot, split)}
-            >
-              {quadrantContent[corner]}
-            </div>
-          ) : null,
-        );
-      }
-    : undefined;
+  const overlay =
+    quadrantContent || dropCorner
+      ? (plot: ChartRect) => {
+          const [x0, x1] = xDomain ?? [0, 10];
+          const [y0, y1] = yDomain ?? [0, 10];
+          const xs = xSplit ?? (x0 + x1) / 2;
+          const ys = ySplit ?? (y0 + y1) / 2;
+          const fx = (xs - x0) / (x1 - x0 || 1);
+          const fy = (ys - y0) / (y1 - y0 || 1);
+          const split = {
+            x: plot.x + plot.width * (reverseX ? 1 - fx : fx),
+            y: plot.y + plot.height * (1 - fy),
+          };
+          const tint = dropCorner
+            ? (quadrants?.[dropCorner]?.color ?? "currentColor")
+            : "";
+          return [
+            ...CORNERS.map((corner) =>
+              quadrantContent?.[corner] ? (
+                <div
+                  key={corner}
+                  className={`minerva-chart-quadrant minerva-chart-quadrant-${corner}`}
+                  style={cornerStyle(corner, plot, split)}
+                >
+                  {quadrantContent[corner]}
+                </div>
+              ) : null,
+            ),
+            dropCorner ? (
+              <div
+                key="drop-target"
+                className="minerva-chart-quadrant-target"
+                style={{
+                  ...cornerStyle(dropCorner, plot, split),
+                  background: `color-mix(in srgb, ${tint} 14%, transparent)`,
+                  boxShadow: `inset 0 0 0 2px ${tint}`,
+                }}
+              />
+            ) : null,
+          ];
+        }
+      : undefined;
 
   return (
     <ChartBase
@@ -382,33 +431,34 @@ export function QuadrantChart(props: QuadrantChartProps) {
         renderTooltip: undefined,
       })}
       overlay={overlay}
-      onPointClick={
-        onPointClick
-          ? (event) => {
-              const index = event.items[0]?.index;
-              if (index !== undefined && points[index])
-                onPointClick(points[index], index);
-            }
-          : undefined
-      }
+      onPointClick={(event) => {
+        const index = event.items[0]?.index;
+        if (index === undefined || !points[index]) return;
+        const now = Date.now();
+        const last = lastClick.current;
+        const double =
+          last?.index === index && now - last.time < DOUBLE_CLICK_MS;
+        lastClick.current = double ? null : { index, time: now };
+        onPointClick?.(points[index], index);
+        if (double) onPointDoubleClick?.(points[index], index);
+      }}
       onPlotClick={
         onQuadrantClick
           ? (at) => onQuadrantClick(quadrantOf(geometry, at.x, at.y), at)
           : undefined
       }
-      onDrop={
-        onPointDrop
-          ? (event) => {
-              const index = event.item.index;
-              if (!points[index]) return;
-              onPointDrop(points[index], index, {
-                x: event.x,
-                y: event.y,
-                quadrant: quadrantOf(geometry, event.x, event.y),
-              });
-            }
-          : undefined
-      }
+      onDrag={(event) => {
+        const index = event.item.index;
+        const target = dropAt(event);
+        setDropCorner(target.quadrant);
+        if (points[index]) onPointDrag?.(points[index], index, target);
+      }}
+      onDrop={(event) => {
+        setDropCorner(null);
+        const index = event.item.index;
+        if (points[index] && onPointDrop)
+          onPointDrop(points[index], index, dropAt(event));
+      }}
       renderTooltip={
         renderTooltip
           ? (event) => {

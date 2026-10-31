@@ -360,6 +360,9 @@ export class MinervaSparkline extends MinervaCartesianChartElement {
   }
 }
 
+/** Two clicks on the same dot within this delay count as a double click */
+const DOUBLE_CLICK_MS = 400;
+
 /**
  * Four-quadrant matrix (priority matrix, Eisenhower, BCG...) of
  * `minerva-design/charts/core` (the `<QuadrantChart>` of React): tinted
@@ -374,7 +377,9 @@ export class MinervaSparkline extends MinervaCartesianChartElement {
  * @csspart root - The sized box of the chart
  * @csspart surface - The element the engine renders into
  * @fires minerva-point-click - A dot was clicked; detail: { point, index }
+ * @fires minerva-point-double-click - The same dot was clicked twice in quick succession; detail: { point, index }
  * @fires minerva-quadrant-click - The empty area of a quadrant was clicked; detail: { quadrant, x, y }
+ * @fires minerva-point-drag - A dot is being dragged (on every move); detail: { point, index, x, y, quadrant }
  * @fires minerva-point-drop - A dragged dot was released; detail: { point, index, x, y, quadrant }
  */
 export class MinervaQuadrantChart extends MinervaCartesianChartElement {
@@ -432,13 +437,15 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
   @property({ type: Number, attribute: "point-size" })
   pointSize = 12;
 
-  /** Lets the user drag the dots (`minerva-point-drop`) */
+  /** Lets the user drag the dots (`minerva-point-drag`, `minerva-point-drop`) */
   @property({ type: Boolean, attribute: "drag-points" })
   dragPoints = false;
 
   /** Other engine options (legend, tooltip, padding, palette...); property only */
   @property({ attribute: false })
   options?: Omit<ChartOptions, "series">;
+
+  private lastClick: { index: number; time: number } | null = null;
 
   private geometry(): Pick<
     QuadrantConfig,
@@ -475,7 +482,13 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
   protected override pointClicked(event: ChartHoverEvent): void {
     const index = event.items[0]?.index;
     const point = index === undefined ? undefined : this.points?.[index];
-    if (point) this.emit("minerva-point-click", { point, index });
+    if (!point || index === undefined) return;
+    const now = Date.now();
+    const last = this.lastClick;
+    const double = last?.index === index && now - last.time < DOUBLE_CLICK_MS;
+    this.lastClick = double ? null : { index, time: now };
+    this.emit("minerva-point-click", { point, index });
+    if (double) this.emit("minerva-point-double-click", { point, index });
   }
 
   protected override plotClicked(event: ChartPlotClickEvent): void {
@@ -486,17 +499,27 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
     });
   }
 
-  protected override pointDropped(event: ChartDragEvent): void {
+  private dropDetail(event: ChartDragEvent) {
     const index = event.item.index;
     const point = this.points?.[index];
-    if (!point) return;
-    this.emit("minerva-point-drop", {
+    if (!point) return null;
+    return {
       point,
       index,
       x: event.x,
       y: event.y,
       quadrant: quadrantOf(this.geometry(), event.x, event.y),
-    });
+    };
+  }
+
+  protected override pointDragged(event: ChartDragEvent): void {
+    const detail = this.dropDetail(event);
+    if (detail) this.emit("minerva-point-drag", detail);
+  }
+
+  protected override pointDropped(event: ChartDragEvent): void {
+    const detail = this.dropDetail(event);
+    if (detail) this.emit("minerva-point-drop", detail);
   }
 }
 

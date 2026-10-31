@@ -12,7 +12,7 @@
     },
     "draggable": {
       "title": "Matrice de tâches déplaçables",
-      "description": "showTicks={false} et axisLabels transforment le graphique en tableau de tâches : faites glisser une tâche vers un autre quadrant (onPointDrop met à jour sa position), cliquez une zone vide ou le bouton + (quadrantContent) pour en ajouter une ; renderTooltip affiche une infobulle React."
+      "description": "showTicks={false} et axisLabels transforment le graphique en tableau de tâches : pendant le glissement, la barre d’état indique le quadrant visé en temps réel (onPointDrag), et le relâchement met à jour la position (onPointDrop) ; un double-clic sur une tâche permet de la renommer ou de la déplacer (onPointDoubleClick) ; cliquez une zone vide ou le bouton + (quadrantContent) pour en ajouter une ; renderTooltip affiche une infobulle React."
     },
     "bcg": {
       "title": "Matrice BCG",
@@ -79,9 +79,18 @@
     "urgent": "Urgent",
     "notUrgent": "Pas urgent",
     "taskMoved": "{{task}} déplacée vers « {{quadrant}} »",
+    "taskMoving": "Déplacement de {{task}} vers « {{quadrant}} »",
+    "taskSaved": "{{task}} enregistrée dans « {{quadrant}} »",
+    "taskRemoved": "{{task}} supprimée",
+    "editTaskAria": "Modifier {{task}}",
+    "taskName": "Nom de la tâche",
+    "taskQuadrant": "Quadrant",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "remove": "Supprimer",
     "taskScores": "Urgence {{urgency}} · Importance {{importance}}",
     "boardAria": "Matrice des tâches : faites glisser les tâches entre les quadrants",
-    "dragHint": "Faites glisser une tâche vers un autre quadrant, ou cliquez sur une zone vide pour en ajouter une",
+    "dragHint": "Faites glisser une tâche vers un autre quadrant, double-cliquez pour la modifier, ou cliquez sur une zone vide pour en ajouter une",
     "quadrantTapped": "« {{quadrant}} » touché",
     "dragHintNative": "Faites glisser une tâche vers un autre quadrant",
     "products": {
@@ -136,6 +145,8 @@
   "api": {
     "QuadrantChartProps": {
       "onPointClick": "Appelé avec le point cliqué et son index",
+      "onPointDoubleClick": "Appelé avec le point et son index quand le même point est cliqué deux fois rapidement",
+      "onPointDrag": "Appelé avec le point, son index et le quadrant sous le pointeur à chaque déplacement d’un point glissé, avant le relâchement (le point ne bouge pas avant onPointDrop)",
       "onQuadrantClick": "Appelé avec le quadrant et la position (données) quand la zone vide d’un quadrant est cliquée",
       "onPointDrop": "Appelé avec le point, son index et la cible quand un point glissé est relâché ; le définir rend les points déplaçables (mettez à jour points pour les déplacer)",
       "renderTooltip": "Contenu React de l’infobulle d’un point",
@@ -156,7 +167,7 @@
       "showLabels": "Dessine les libellés à côté des points en évitant les chevauchements",
       "pointSize": "Diamètre des points en pixels",
       "name": "Nom des points dans l’infobulle",
-      "draggable": "Permet de faire glisser les points (activé par défaut quand onPointDrop est défini)"
+      "draggable": "Permet de faire glisser les points (activé par défaut quand onPointDrop ou onPointDrag est défini)"
     },
     "QuadrantDropTarget": {
       "x": "Coordonnée x (données) du dépôt",
@@ -214,14 +225,16 @@
       "props": {
         "hideTicks": "Masque les graduations numériques des axes (seule la matrice reste)",
         "hideLabels": "Masque les étiquettes à côté des points",
-        "dragPoints": "Permet de faire glisser les points (minerva-point-drop ; mettez à jour points pour les déplacer)",
+        "dragPoints": "Permet de faire glisser les points (minerva-point-drag pendant le déplacement, minerva-point-drop au relâchement ; mettez à jour points pour les déplacer)",
         "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
         "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
         "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
       },
       "events": {
         "minerva-point-click": "Un point a été cliqué ; detail : { point, index }",
+        "minerva-point-double-click": "Le même point a été cliqué deux fois rapidement ; detail : { point, index }",
         "minerva-quadrant-click": "La zone vide d'un quadrant a été cliquée ; detail : { quadrant, x, y }",
+        "minerva-point-drag": "Un point est en train d'être glissé (à chaque déplacement, avant le relâchement) ; detail : { point, index, x, y, quadrant }",
         "minerva-point-drop": "Un point déplacé a été relâché ; detail : { point, index, x, y, quadrant }",
         "minerva-hover": "Les points survolés (ou ciblés au clavier) ont changé ; detail : { x, xLabel, items }, null quand rien n'est survolé",
         "minerva-plot-click": "La zone de tracé a été cliquée hors des points ; detail : { x, y } en coordonnées de données",

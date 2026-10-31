@@ -45,6 +45,7 @@ export abstract class MinervaCartesianChartElement extends MinervaEngineElement<
       chart.on("renderer", (renderer) =>
         this.emit("minerva-renderer-change", { renderer }),
       ),
+      chart.on("drag", (event) => this.pointDragged?.(event)),
       chart.on("drop", (event) => this.pointDropped?.(event)),
     ];
   }
@@ -56,6 +57,8 @@ export abstract class MinervaCartesianChartElement extends MinervaEngineElement<
   protected plotClicked(event: ChartPlotClickEvent): void {
     this.emit("minerva-plot-click", event);
   }
+
+  protected pointDragged?(event: ChartDragEvent): void;
 
   protected pointDropped?(event: ChartDragEvent): void;
 

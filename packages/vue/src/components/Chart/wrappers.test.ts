@@ -317,6 +317,14 @@ describe("cartesian components", () => {
     expect(wrapper.emitted("pointDrop")).toEqual([
       [points[0], 0, { x: 2, y: 2, quadrant: "bottomLeft" }],
     ]);
+    engine.fire("drag", { item: { index: 0 }, x: 9, y: 9 });
+    expect(wrapper.emitted("pointDrag")).toEqual([
+      [points[0], 0, { x: 9, y: 9, quadrant: "topRight" }],
+    ]);
+    engine.fire("click", { items: [{ index: 0 }] });
+    engine.fire("click", { items: [{ index: 0 }] });
+    expect(wrapper.emitted("pointClick")).toHaveLength(2);
+    expect(wrapper.emitted("pointDoubleClick")).toEqual([[points[0], 0]]);
   });
 });
 

@@ -12,7 +12,7 @@
     },
     "draggable": {
       "title": "可拖动的任务矩阵",
-      "description": "showTicks={false} 和 axisLabels 把图表变成任务看板：把任务拖到另一个象限（onPointDrop 更新其位置），点击空白区域或 + 按钮（quadrantContent）添加任务；renderTooltip 显示 React 提示框。"
+      "description": "showTicks={false} 和 axisLabels 把图表变成任务看板：拖动时状态栏实时显示目标象限（onPointDrag），松开后更新其位置（onPointDrop）；双击任务可改名或换象限（onPointDoubleClick）；点击空白区域或 + 按钮（quadrantContent）添加任务；renderTooltip 显示 React 提示框。"
     },
     "bcg": {
       "title": "波士顿矩阵",
@@ -79,9 +79,18 @@
     "urgent": "紧急",
     "notUrgent": "不紧急",
     "taskMoved": "已将{{task}}移到“{{quadrant}}”",
+    "taskMoving": "正在将{{task}}移到“{{quadrant}}”",
+    "taskSaved": "已保存{{task}}，位于“{{quadrant}}”",
+    "taskRemoved": "已删除{{task}}",
+    "editTaskAria": "编辑{{task}}",
+    "taskName": "任务名称",
+    "taskQuadrant": "象限",
+    "save": "保存",
+    "cancel": "取消",
+    "remove": "删除",
     "taskScores": "紧急程度 {{urgency}} · 重要程度 {{importance}}",
     "boardAria": "任务矩阵：在象限之间拖动任务",
-    "dragHint": "把任务拖到另一个象限，或点击空白处添加任务",
+    "dragHint": "把任务拖到另一个象限，双击编辑，或点击空白处添加任务",
     "quadrantTapped": "点按了“{{quadrant}}”",
     "dragHintNative": "把任务拖到另一个象限",
     "products": {
@@ -136,6 +145,8 @@
   "api": {
     "QuadrantChartProps": {
       "onPointClick": "以被点击的点及其索引调用",
+      "onPointDoubleClick": "同一个点被快速点击两次时调用，参数为点和索引",
+      "onPointDrag": "拖动点的每次移动都会调用，参数为点、索引和指针下方的象限；松开前点不会移动（移动请在 onPointDrop 中处理）",
       "onQuadrantClick": "点击象限的空白区域时调用，参数为象限和数据位置",
       "onPointDrop": "拖动的点被释放时调用，参数为点、索引和放置目标；设置后点即可拖动（需更新 points 才会移动）",
       "renderTooltip": "某个点的提示框 React 内容",
@@ -156,7 +167,7 @@
       "showLabels": "在点旁绘制标签，跳过重叠项",
       "pointSize": "点的直径，单位为像素",
       "name": "提示框中点的名称",
-      "draggable": "允许用户拖动点（设置 onPointDrop 时默认开启）"
+      "draggable": "允许用户拖动点（设置 onPointDrop 或 onPointDrag 时默认开启）"
     },
     "QuadrantDropTarget": {
       "x": "放置位置的 X 数据坐标",
@@ -214,14 +225,16 @@
       "props": {
         "hideTicks": "隐藏坐标轴的数值刻度（只保留矩阵）",
         "hideLabels": "隐藏点旁边的标签",
-        "dragPoints": "允许用户拖动点（minerva-point-drop；更新 points 来移动它们）",
+        "dragPoints": "允许用户拖动点（移动时触发 minerva-point-drag，松开时触发 minerva-point-drop；更新 points 来移动它们）",
         "height": "图表高度（包含图例）：像素值或任意 CSS 长度",
         "options": "其他引擎选项（坐标轴、图例、提示框、调色板、格式化……），与元素自身的属性合并；仅作为属性设置",
         "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null"
       },
       "events": {
         "minerva-point-click": "点击了一个点；detail：{ point, index }",
+        "minerva-point-double-click": "同一个点被快速点击了两次；detail：{ point, index }",
         "minerva-quadrant-click": "点击了某个象限的空白区域；detail：{ quadrant, x, y }",
+        "minerva-point-drag": "正在拖动一个点（每次移动都会触发，松开之前）；detail：{ point, index, x, y, quadrant }",
         "minerva-point-drop": "释放了被拖动的点；detail：{ point, index, x, y, quadrant }",
         "minerva-hover": "悬停（或键盘聚焦）的数据点发生变化；detail：{ x, xLabel, items }，无悬停时为 null",
         "minerva-plot-click": "点击了绘图区中没有数据点的位置；detail：{ x, y }（数据坐标）",

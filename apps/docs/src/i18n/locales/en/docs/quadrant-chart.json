@@ -12,7 +12,7 @@
     },
     "draggable": {
       "title": "Draggable task matrix",
-      "description": "showTicks={false} and axisLabels turn the chart into a task board: drag a task to another quadrant (onPointDrop updates its position), click an empty area or the + button (quadrantContent) to add one; renderTooltip shows a React tooltip."
+      "description": "showTicks={false} and axisLabels turn the chart into a task board: while dragging, the status line names the target quadrant (onPointDrag), and the drop updates the position (onPointDrop); double-click a task to rename it or move it to another quadrant (onPointDoubleClick); click an empty area or the + button (quadrantContent) to add one; renderTooltip shows a React tooltip."
     },
     "bcg": {
       "title": "BCG matrix",
@@ -79,9 +79,18 @@
     "urgent": "Urgent",
     "notUrgent": "Not urgent",
     "taskMoved": "{{task}} moved to “{{quadrant}}”",
+    "taskMoving": "Moving {{task}} to “{{quadrant}}”",
+    "taskSaved": "{{task}} saved in “{{quadrant}}”",
+    "taskRemoved": "{{task}} deleted",
+    "editTaskAria": "Edit {{task}}",
+    "taskName": "Task name",
+    "taskQuadrant": "Quadrant",
+    "save": "Save",
+    "cancel": "Cancel",
+    "remove": "Delete",
     "taskScores": "Urgency {{urgency}} · Importance {{importance}}",
     "boardAria": "Task matrix: drag tasks between quadrants",
-    "dragHint": "Drag a task to another quadrant, or click an empty area to add one",
+    "dragHint": "Drag a task to another quadrant, double-click it to edit, or click an empty area to add one",
     "quadrantTapped": "“{{quadrant}}” tapped",
     "dragHintNative": "Drag a task to another quadrant",
     "products": {
@@ -136,6 +145,8 @@
   "api": {
     "QuadrantChartProps": {
       "onPointClick": "Called with the clicked point and its index",
+      "onPointDoubleClick": "Called with the point and its index when the same dot is clicked twice quickly",
+      "onPointDrag": "Called with the point, its index and the quadrant under the pointer on every move of a dragged dot, before the drop (the dot does not move until onPointDrop)",
       "onQuadrantClick": "Called with the quadrant and the data position when the empty area of a quadrant is clicked",
       "onPointDrop": "Called with the point, its index and the drop target when a dragged dot is released; setting it makes the dots draggable (update points to move them)",
       "renderTooltip": "React content of the tooltip of a point",
@@ -156,7 +167,7 @@
       "showLabels": "Draws the labels next to the dots, skipping overlaps",
       "pointSize": "Dot diameter in pixels",
       "name": "Name of the points in the tooltip",
-      "draggable": "Lets the user drag the dots (on by default when onPointDrop is set)"
+      "draggable": "Lets the user drag the dots (on by default when onPointDrop or onPointDrag is set)"
     },
     "QuadrantDropTarget": {
       "x": "X data coordinate of the drop",
@@ -214,14 +225,16 @@
       "props": {
         "hideTicks": "Hides the numeric ticks of the axes (only the matrix remains)",
         "hideLabels": "Hides the labels next to the dots",
-        "dragPoints": "Lets the user drag the dots (minerva-point-drop; update points to move them)",
+        "dragPoints": "Lets the user drag the dots (minerva-point-drag while moving, minerva-point-drop on release; update points to move them)",
         "height": "Height of the chart, the legend included: pixels or any CSS length",
         "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
         "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
       },
       "events": {
         "minerva-point-click": "A dot was clicked; detail: { point, index }",
+        "minerva-point-double-click": "The same dot was clicked twice in quick succession; detail: { point, index }",
         "minerva-quadrant-click": "The empty area of a quadrant was clicked; detail: { quadrant, x, y }",
+        "minerva-point-drag": "A dot is being dragged (on every move, before the drop); detail: { point, index, x, y, quadrant }",
         "minerva-point-drop": "A dragged dot was released; detail: { point, index, x, y, quadrant }",
         "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
         "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",

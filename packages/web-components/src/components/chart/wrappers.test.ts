@@ -382,6 +382,20 @@ describe("cartesian elements", () => {
     expect(drops.mock.calls.map(([event]) => event.detail)).toEqual([
       { point: points[0], index: 0, x: 2, y: 2, quadrant: "bottomLeft" },
     ]);
+    const drags = vi.fn();
+    el.addEventListener("minerva-point-drag", drags);
+    engine.fire("drag", { item: { index: 0 }, x: 9, y: 9 });
+    expect(drags.mock.calls.map(([event]) => event.detail)).toEqual([
+      { point: points[0], index: 0, x: 9, y: 9, quadrant: "topRight" },
+    ]);
+    const doubles = vi.fn();
+    el.addEventListener("minerva-point-double-click", doubles);
+    engine.fire("click", { items: [{ index: 0 }] });
+    engine.fire("click", { items: [{ index: 0 }] });
+    expect(clicks).toHaveBeenCalledTimes(2);
+    expect(doubles.mock.calls.map(([event]) => event.detail)).toEqual([
+      { point: points[0], index: 0 },
+    ]);
   });
 });
 
