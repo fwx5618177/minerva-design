@@ -1,5 +1,11 @@
 # minerva-design
 
+## 1.7.1
+
+### Patch Changes
+
+- docs(site): split the docs into docs, components and charts sections
+
 ## 1.7.0
 
 ### Minor Changes
