@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";import{i as t,r as n}from"./native-preview-BRFLbKzw.js";import{n as r,t as i}from"./DocPage-CfPUO8JU.js";var a,o;function s(){return(s=e((()=>{t(),r(),a=n(),o=()=>(0,a.jsx)(i,{id:`tab-bar`})})))()}s();export{o as default};
