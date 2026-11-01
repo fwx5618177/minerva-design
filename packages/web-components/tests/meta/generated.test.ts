@@ -63,30 +63,35 @@ describe("generated files", () => {
     }
   });
 
-  it("every element is documented with a tag, a summary and described attributes", () => {
-    const manifest = generateManifest();
-    const problems: string[] = [];
-    for (const el of elementsOf(manifest) as Array<{
-      tagName: string;
-      summary?: string;
-      attributes?: { name: string; description?: string }[];
-    }>) {
-      if (!el.summary) problems.push(`${el.tagName}: no @summary`);
-      // a JSDoc line starting with "@scope/package" becomes a bogus tag and
-      // silently truncates the description
-      if (
-        /\b(from|by|in|of)$/.test(
-          (el as { description?: string }).description ?? "",
-        )
-      ) {
-        problems.push(`${el.tagName}: truncated description`);
-      }
-      for (const attr of el.attributes ?? []) {
-        if (!attr.description) {
-          problems.push(`${el.tagName}[${attr.name}]: no description`);
+  // generateManifest() analyzes every element source: slow under coverage
+  it(
+    "every element is documented with a tag, a summary and described attributes",
+    { timeout: 30_000 },
+    () => {
+      const manifest = generateManifest();
+      const problems: string[] = [];
+      for (const el of elementsOf(manifest) as Array<{
+        tagName: string;
+        summary?: string;
+        attributes?: { name: string; description?: string }[];
+      }>) {
+        if (!el.summary) problems.push(`${el.tagName}: no @summary`);
+        // a JSDoc line starting with "@scope/package" becomes a bogus tag and
+        // silently truncates the description
+        if (
+          /\b(from|by|in|of)$/.test(
+            (el as { description?: string }).description ?? "",
+          )
+        ) {
+          problems.push(`${el.tagName}: truncated description`);
+        }
+        for (const attr of el.attributes ?? []) {
+          if (!attr.description) {
+            problems.push(`${el.tagName}[${attr.name}]: no description`);
+          }
         }
       }
-    }
-    expect(problems).toEqual([]);
-  });
+      expect(problems).toEqual([]);
+    },
+  );
 });
