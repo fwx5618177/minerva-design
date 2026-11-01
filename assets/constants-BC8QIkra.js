@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t;function n(){return(n=e((()=>{t=`https://github.com/fwx5618177/minerva-design`})))()}export{n,t};

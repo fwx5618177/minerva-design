@@ -1,0 +1,34 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t;function n(){return(n=e((()=>{t=`<div style="display: grid; gap: 16px">
+  <minerva-progress
+    variant="bar"
+    full
+    value="2"
+    max="5"
+    show-value
+    label="Lessons completed"
+  ></minerva-progress>
+  <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: center">
+    <minerva-progress
+      variant="circle"
+      size="xlarge"
+      value="40"
+      show-value
+      aria-label="Course progress"
+    ></minerva-progress>
+    <minerva-progress
+      variant="bar"
+      color="success"
+      value="100"
+      show-value
+      aria-label="Done"
+    ></minerva-progress>
+    <minerva-progress
+      variant="bar"
+      color="danger"
+      value="15"
+      show-value
+      aria-label="Overdue"
+    ></minerva-progress>
+  </div>
+</div>
+`})))()}n();export{t as default};

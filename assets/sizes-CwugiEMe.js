@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";function t(e){let t=new Date,n=e=>String(e).padStart(2,`0`),r=`${t.getFullYear()}-${n(t.getMonth()+1)}-${n(t.getDate())}`;for(let t of e.querySelectorAll(`minerva-week-strip`))t.markers={[r]:4}}function n(){return(n=e((()=>{})))()}n();export{t as setup};
