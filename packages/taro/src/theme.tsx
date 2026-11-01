@@ -49,6 +49,12 @@ interface ThemeContextValue {
   primaryColor: PrimaryColorPair | null;
   /** A provider of the tree wrote brand tokens (nested ones must re-write them) */
   brandScope: boolean;
+  /**
+   * The token scope of this provider's root: its token classes and inline
+   * CSS variables. `Page` re-applies it, because in mini-programs every page
+   * renders under its own root, outside the provider's element.
+   */
+  scope: { className: string; style: Record<string, string> };
 }
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 export interface ConfigProviderProps extends NativeProps, DesignOptions {
@@ -223,6 +229,11 @@ export function ConfigProvider({
     : brandScope
       ? tokenStyle(BRAND_TOKENS)
       : {};
+  const scopeClassName = miniTokenClassNames({
+    mode: resolved,
+    palette: currentPalette,
+    design: options,
+  });
   const setTheme = (next: ThemeMode) => {
     setDefinition(next);
     onThemeChange?.(next);
@@ -261,6 +272,7 @@ export function ConfigProvider({
           "en",
         primaryColor: brand,
         brandScope,
+        scope: { className: scopeClassName, style: customStyle },
       }}
     >
       <View
@@ -269,14 +281,7 @@ export function ConfigProvider({
         data-minerva="config-provider"
         data-theme={resolved}
         data-mode={mode}
-        className={cn(
-          miniTokenClassNames({
-            mode: resolved,
-            palette: currentPalette,
-            design: options,
-          }),
-          props.className,
-        )}
+        className={cn(scopeClassName, props.className)}
       >
         {children}
       </View>

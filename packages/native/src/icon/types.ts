@@ -1,5 +1,6 @@
 // Props of the React Native bindings (minerva-design/native/icons).
 
+import type { ColorValue } from "react-native";
 import type { SvgProps } from "react-native-svg";
 import type { IconDefinition } from "@minerva/icons/core";
 
@@ -20,8 +21,8 @@ export interface IconProps extends Omit<
   icon: IconDefinition;
   /** Width and height in dp @default 24 */
   size?: number;
-  /** Stroke color; per-path `colors` of the icon win @default the theme's text color (`text-color` token) */
-  color?: string;
+  /** Stroke color (any React Native `ColorValue`, e.g. the `color` of a navigation `tabBarIcon`); per-path `colors` of the icon win @default the theme's text color (`text-color` token) */
+  color?: ColorValue;
   /** Stroke width on the 24×24 grid (scales with the size) @default 2 */
   strokeWidth?: number;
   /** Keeps `strokeWidth` in dp whatever the size @default false */

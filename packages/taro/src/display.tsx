@@ -14,7 +14,7 @@ import {
 import { View, Text, Image, Navigator } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import { cn, isSafeUrl, resolveSize } from "@minerva/core";
-import { useI18n, useThemeTokens } from "./theme";
+import { useI18n, useOptionalTheme, useThemeTokens } from "./theme";
 import { Drawer, Tooltip, type TooltipProps } from "./overlays";
 import { Button, type ButtonProps } from "./components";
 import {
@@ -1734,11 +1734,43 @@ export function SplitLayout({
     </Part>
   );
 }
+/**
+ * The root of a page. Inside a `ConfigProvider` / `ThemeProvider` it
+ * re-applies the provider's token scope (mode, palette and design classes,
+ * brand color / custom theme variables): in mini-programs every page renders
+ * under its own root, outside the provider's element, so without it pages
+ * only get the default light tokens of `page`. Outside the default light
+ * theme it also paints the page background and text color.
+ */
 export function Page({
   maxWidth = 1200,
   ...props
 }: NativeProps & { maxWidth?: number | string }) {
-  return <Part name="page" {...props} style={{ maxWidth, ...props.style }} />;
+  const theme = useOptionalTheme();
+  const scope = theme?.scope;
+  // dark mode, a palette or a custom theme change the surface colors
+  const themed =
+    !!theme &&
+    (theme.resolvedTheme === "dark" ||
+      theme.palette !== null ||
+      typeof theme.definition === "object" ||
+      theme.definition === "github-dark");
+  return (
+    <Part
+      name="page"
+      {...props}
+      className={cn(scope?.className, props.className)}
+      style={{
+        ...scope?.style,
+        ...(themed && {
+          backgroundColor: "var(--background-color)",
+          color: "var(--text-color)",
+        }),
+        maxWidth,
+        ...props.style,
+      }}
+    />
+  );
 }
 export function PageHeader({
   title,

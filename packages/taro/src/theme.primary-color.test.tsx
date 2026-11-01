@@ -5,6 +5,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   ConfigProvider,
+  Page,
   ThemeProvider,
   ThemeToggle,
   useThemeTokens,
@@ -124,5 +125,48 @@ describe("Taro primaryColor", () => {
         String(message).includes("primaryColor"),
       ),
     ).toBe(true);
+  });
+});
+
+// In mini-programs every page renders under its own root, outside the
+// provider's element: Page re-applies the provider's token scope.
+describe("Taro Page theme scope", () => {
+  const page = (container: HTMLElement) =>
+    container.querySelector<HTMLElement>('[data-minerva="page"]')!;
+
+  it("carries the brand tokens and token classes of the provider", () => {
+    const { container } = render(
+      <ConfigProvider theme="light" primaryColor="#4f46e5">
+        <Page>content</Page>
+      </ConfigProvider>,
+    );
+    const root = page(container);
+    expect(root.className).toContain("mn-root");
+    expect(root.className).toContain("mn-page");
+    expect(cssVar(root, "primary-color")).toBe("#4f46e5");
+    expect(cssVar(root, "primary-color-hover")).not.toBe("");
+    // the default light theme keeps the page's own surface
+    expect(root.style.backgroundColor).toBe("");
+  });
+
+  it("follows dark mode: dark classes, dark brand value and surface", () => {
+    const { container } = render(
+      <ThemeProvider defaultTheme="dark" primaryColor="#4f46e5" disableStorage>
+        <Page>content</Page>
+      </ThemeProvider>,
+    );
+    const root = page(container);
+    expect(root.className).toContain("mn-theme-dark");
+    expect(cssVar(root, "primary-color")).toBe("#7b85f2");
+    expect(root.style.backgroundColor).toBe("var(--background-color)");
+    expect(root.style.color).toBe("var(--text-color)");
+  });
+
+  it("is a plain page outside a provider", () => {
+    const { container } = render(<Page maxWidth={600}>content</Page>);
+    const root = page(container);
+    expect(root.className).not.toContain("mn-root");
+    expect(root.style.maxWidth).toBe("600px");
+    expect(cssVar(root, "primary-color")).toBe("");
   });
 });
