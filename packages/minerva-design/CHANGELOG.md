@@ -1,5 +1,20 @@
 # minerva-design
 
+## 1.12.0
+
+### Minor Changes
+
+- eec52cc: Icons: 16 new icons, 515 in all: `calendar-check`, `calendar-plus`, `calendar-days`, `bookmark-plus`, `book-plus`, `book-a`, `clipboard-check`, `check-check`, `history`, `bell-ring`, `party-popper`, `notebook-pen`, `list-todo`, `folder-kanban`, `file-json` and `palette`. They are available on every icon entry (React, Vue, Angular, Web Components, React Native, Taro) and in `toSvg`.
+- eec52cc: React Native and Taro icons: the new entries `minerva-design/native/icons` and `minerva-design/taro/icons` export `Icon`, `DynamicIcon`, `createIcon` and one component per icon (`SearchIcon`…), colored by the theme text color by default. React Native draws with `react-native-svg` (an optional peer dependency, only needed by this entry; `minerva-design/native` does not import it); on the web (react-native-web, Expo web) the icons get ARIA attributes instead of the React Native accessibility props. Taro renders an `Image` with an SVG data URI and works in mini-programs and H5. The icon core adds `toSvgBase64DataUri`.
+- eec52cc: Brand color: the theme providers get a `primaryColor` option (React `ConfigProvider` / `ThemeProvider`, Vue, Angular, React Native `MinervaProvider`, Taro, uni-app, WeChat, and `<minerva-config primary-color>`). Give one CSS color, whose dark-mode value is derived for contrast on dark surfaces (`#4f46e5` → `#7b85f2`), or a `{ light, dark }` pair. Every token derived from the primary color (hover, active, subtle, border, text, focus ring, selection) follows it; it wins over the palette's primary, nested providers can set their own and `null` restores the theme's. The core adds `resolvePrimaryColor`, `derivePrimaryDark`, `primaryColorTokens` and `paletteAccents`.
+- eec52cc: ProgressIndicator: a determinate mode. `value` (with `max`, default 100) fills the bar or ring to that amount instead of spinning, `showValue` prints the percentage and `format` customizes it. `color` adds `success`, `warning`, `danger` and `info`. Available in React, Vue, Angular, Web Components (`<minerva-progress value max show-value>`) and Taro; the uni-app and WeChat components already had a value mode. A label next to a bar now stays on one line when there is room (the track takes the remaining width) and wraps between words.
+- eec52cc: New `WeekStrip` component: a one-week row of days to pick a date, with previous / next week buttons, today highlighted and per-day markers (a dot, or a count). Props: `value` / `onChange`, `week` / `onWeekChange`, `firstDayOfWeek` (Monday by default), `today`, `markers`, `showNavigation` and `size`. On every renderer: React, React Native, Taro, Vue, Angular (`MnWeekStrip`), Web Components (`<minerva-week-strip>`), uni-app and WeChat. The core adds `weekStart()`.
+
+### Patch Changes
+
+- eec52cc: Angular: `mn-progress` / `mn-progress-indicator` now draws its indicator. The spinner, circle, wave, bar and dotted-bar variants rendered an empty element before, so `mn-loading-state` had no spinner either. Bars get the 200px default width of the other renderers.
+- eec52cc: Docs: a Changelog page lists every release and the upcoming one, the home page shows the current version, and there are new pages and demos for WeekStrip, the determinate ProgressIndicator and the brand color. The Icon page gets a React Native tab with a live demo and API tables for `minerva-design/native/icons`, and the arrow of the home page's "Get started" button is white again.
+
 ## 1.11.0
 
 ### Minor Changes
