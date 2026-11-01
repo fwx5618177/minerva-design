@@ -1382,6 +1382,29 @@
 .mn-progress-circle {
   border-width: 3px;
 }
+.mn-progress-bar-fill.mn-progress-determinate {
+  border-radius: inherit;
+  animation: none;
+  transition: width 0.3s ease;
+}
+.mn-progress-ring {
+  flex-shrink: 0;
+  border-radius: 50%;
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 3px),
+    #000 calc(100% - 3px)
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 3px),
+    #000 calc(100% - 3px)
+  );
+}
+.mn-progress-value {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
 @keyframes mn-progress-wave {
   0%,
   100% {
@@ -1442,6 +1465,9 @@
   .mn-progress-dot,
   .mn-switch-ripple {
     animation: none;
+  }
+  .mn-progress-bar-fill.mn-progress-determinate {
+    transition: none;
   }
 }
 

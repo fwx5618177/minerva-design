@@ -10129,6 +10129,126 @@
       }
     ]
   },
+  "MnWeekStrip": {
+    "name": "MnWeekStrip",
+    "source": "src/components/data/week-strip.ts",
+    "description": "The seven days of a week in a row (a horizontal `listbox` of day\n`option`s). Select a day by click, Enter or Space; today carries\n`aria-current=\"date\"`; days can show a count badge or a dot (`markers`).\nKeyboard: a roving tab stop, ArrowLeft / ArrowRight move by a day (into\nthe previous / next week), Home / End jump to the ends of the week and\nPageUp / PageDown move by a week. `showNavigation` adds previous / next\nweek buttons and the month of the week. The selected day is\n`[(value)]`, the displayed week `[(week)]`; while `week` is not set the\nstrip shows the week of the selected day, else of today.",
+    "members": [
+      {
+        "name": "value",
+        "kind": "model",
+        "type": "string | null",
+        "required": false,
+        "default": "null",
+        "description": "Selected day, \"YYYY-MM-DD\" (`[(value)]`)",
+        "changeEvent": "valueChange"
+      },
+      {
+        "name": "week",
+        "kind": "model",
+        "type": "Date | null",
+        "required": false,
+        "default": "null",
+        "description": "Displayed week, any day of it (`[(week)]`); defaults to the week of the selected day, else of today",
+        "changeEvent": "weekChange"
+      },
+      {
+        "name": "firstDayOfWeek",
+        "kind": "input",
+        "type": "number",
+        "required": false,
+        "default": "1",
+        "description": "First day of the week: 0 = Sunday, 1 = Monday ... 6 = Saturday"
+      },
+      {
+        "name": "today",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "The day marked as today, \"YYYY-MM-DD\"; defaults to the current local day"
+      },
+      {
+        "name": "markers",
+        "kind": "input",
+        "type": "Readonly<Record<string, WeekStripMarker>> | undefined",
+        "required": false,
+        "description": "Per-day markers keyed by \"YYYY-MM-DD\": a number shows a count badge (99+ above 99), true shows a dot"
+      },
+      {
+        "name": "getDayLabel",
+        "kind": "input",
+        "type": "((day: string, marker: WeekStripMarker | undefined) => string) | undefined",
+        "required": false,
+        "description": "Accessible label of a day, from the day (\"YYYY-MM-DD\") and its marker"
+      },
+      {
+        "name": "showNavigation",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows previous / next week buttons around the month of the week"
+      },
+      {
+        "name": "previousWeekLabel",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Label of the previous-week button (default: translated \"Previous week\")"
+      },
+      {
+        "name": "nextWeekLabel",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Label of the next-week button (default: translated \"Next week\")"
+      },
+      {
+        "name": "weekdayLabels",
+        "kind": "input",
+        "type": "readonly string[] | undefined",
+        "required": false,
+        "description": "Weekday names, Monday first (7 labels), whatever firstDayOfWeek is"
+      },
+      {
+        "name": "locale",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Locale of the dates (Intl.DateTimeFormat); default: the library language"
+      },
+      {
+        "name": "disabled",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Blocks selection and navigation"
+      },
+      {
+        "name": "size",
+        "kind": "input",
+        "type": "WeekStripSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Cell density"
+      },
+      {
+        "name": "aria-label",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Accessible label of the day list (default: translated \"Week\")"
+      },
+      {
+        "name": "focus",
+        "kind": "method",
+        "type": "(options?: FocusOptions) => void",
+        "required": false,
+        "description": "Focuses the active day"
+      }
+    ]
+  },
   "MnDatePicker": {
     "name": "MnDatePicker",
     "source": "src/components/date-picker/date-picker.ts",
@@ -11534,10 +11654,41 @@
       {
         "name": "color",
         "kind": "input",
-        "type": "\"primary\" | \"neutral\" | \"current\"",
+        "type": "| \"primary\"\n    | \"neutral\"\n    | \"success\"\n    | \"warning\"\n    | \"danger\"\n    | \"info\"\n    | \"current\"",
         "required": false,
         "default": "\"primary\"",
         "description": ""
+      },
+      {
+        "name": "value",
+        "kind": "input",
+        "type": "number | undefined",
+        "required": false,
+        "description": "Current progress: switches the bar and circle variants to determinate\nmode (clamped between 0 and max); other variants ignore it"
+      },
+      {
+        "name": "max",
+        "kind": "input",
+        "type": "number",
+        "required": false,
+        "default": "100",
+        "description": "Value that represents completion (non-positive values fall back to 100)"
+      },
+      {
+        "name": "showValue",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the formatted value (a percentage by default)"
+      },
+      {
+        "name": "format",
+        "kind": "input",
+        "type": "((value: number, max: number) => string) | null",
+        "required": false,
+        "default": "null",
+        "description": "Formats the shown value; the result is also used as aria-valuetext"
       }
     ]
   },
@@ -15557,6 +15708,13 @@
         "type": "FontScale | undefined",
         "required": false,
         "description": "Type scale"
+      },
+      {
+        "name": "primaryColor",
+        "kind": "input",
+        "type": "PrimaryColor | null | undefined",
+        "required": false,
+        "description": "Brand colour: one colour (dark value derived) or `{ light, dark }`; wins\nover the palette's primary (`null`: the theme's own primary)"
       },
       {
         "name": "themeChange",

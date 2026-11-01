@@ -5,7 +5,9 @@
 //   dist/core/ plus the DOM primitives of dist/dom/), `./styling-hooks`,
 //   `./tokens.css`
 // - the React Native components (dist/native/, ESM + CJS + the TypeScript
-//   sources): `./native`, with `react-native` / `source` conditions for Metro
+//   sources): `./native`, with `react-native` / `source` conditions for Metro,
+//   and `./native/icons` (icon components, the only entry importing the
+//   optional react-native-svg peer)
 // - the web components (dist/web-components/, ESM only): the all-in-one
 //   `./web-components`, one `./web-components/<name>` entry per element
 //   (packages/web-components/src/elements/*.ts), the CDN bundle, the
@@ -73,14 +75,21 @@ export const PLANNED_RENDERERS = {};
  * `source` the TypeScript sources (opt-in `unstable_conditionNames`), Node /
  * Jest the CJS build, TypeScript the declarations of each.
  */
-export const NATIVE_ENTRY = {
-  source: "./dist/native/source/index.ts",
-  "react-native": {
-    types: "./dist/native/index.d.ts",
-    default: "./dist/native/index.js",
-  },
-  ...dual("native/index"),
-};
+export const NATIVE_ENTRY = nativeEntry("index");
+
+/** `./native/icons`: the icon components, same conditions as `./native` */
+export const NATIVE_ICONS_ENTRY = nativeEntry("icons");
+
+function nativeEntry(name) {
+  return {
+    source: `./dist/native/source/${name}.ts`,
+    "react-native": {
+      types: `./dist/native/${name}.d.ts`,
+      default: `./dist/native/${name}.js`,
+    },
+    ...dual(`native/${name}`),
+  };
+}
 
 export function expectedExports() {
   const exports = { ".": dual("react/index") };
@@ -88,6 +97,7 @@ export function expectedExports() {
     exports[`./${name}`] = dual(base, types);
   }
   exports["./native"] = NATIVE_ENTRY;
+  exports["./native/icons"] = NATIVE_ICONS_ENTRY;
   exports["./angular"] = {
     types: "./dist/angular/types/minerva-angular.d.ts",
     default: "./dist/angular/fesm2022/minerva-angular.mjs",
@@ -103,6 +113,10 @@ export function expectedExports() {
   exports["./taro/monaco"] = {
     types: "./dist/taro/monaco.d.ts",
     default: "./dist/taro/monaco.js",
+  };
+  exports["./taro/icons"] = {
+    types: "./dist/taro/icons.d.ts",
+    default: "./dist/taro/icons.js",
   };
   exports["./uni"] = {
     types: "./dist/uni/index.d.ts",
@@ -196,6 +210,7 @@ export function expectedTypesVersions() {
         ]),
       ),
       native: ["./dist/native/index.d.ts"],
+      "native/icons": ["./dist/native/icons.d.ts"],
     },
   };
 }

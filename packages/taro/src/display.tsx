@@ -1073,6 +1073,11 @@ export function SkeletonText({
     </Part>
   );
 }
+/**
+ * Loading indicator. With `value`, the bar and circle variants become
+ * determinate (filled bar / conic ring, aria-valuenow, optional showValue);
+ * the other variants ignore it.
+ */
 export function ProgressIndicator({
   label,
   variant = "spinner",
@@ -1082,6 +1087,10 @@ export function ProgressIndicator({
   icon,
   full,
   width,
+  value,
+  max = 100,
+  showValue = false,
+  format,
   ...props
 }: NativeProps & {
   label?: ReactNode;
@@ -1092,20 +1101,53 @@ export function ProgressIndicator({
   icon?: ReactNode;
   full?: boolean;
   width?: number | string;
+  /** Current progress (bar / circle): switches to determinate mode */
+  value?: number;
+  /** Value that represents completion; non-positive falls back to 100 */
+  max?: number;
+  /** Shows the formatted value (a percentage by default) */
+  showValue?: boolean;
+  /** Formats the shown value; a string result is also the aria-valuetext */
+  format?: (value: number, max: number) => ReactNode;
 }) {
   const { t } = useI18n();
   const diameter = { xsmall: 12, small: 16, medium: 24, large: 32, xlarge: 48 }[
     size
   ];
+  const determinate =
+    typeof value === "number" && (variant === "bar" || variant === "circle");
+  const safeMax = Number.isFinite(max) && max > 0 ? max : 100;
+  const current = determinate
+    ? Math.min(Math.max(Number.isNaN(value) ? 0 : value, 0), safeMax)
+    : 0;
+  const percent = (current / safeMax) * 100;
+  const formatted = determinate
+    ? format
+      ? format(current, safeMax)
+      : `${Math.round(percent)}%`
+    : null;
   return (
     <Part
       name="progress-indicator"
       role={decorative ? undefined : "progressbar"}
+      {...(determinate &&
+        !decorative && {
+          "aria-valuemin": 0,
+          "aria-valuemax": safeMax,
+          "aria-valuenow": current,
+          "aria-valuetext":
+            format &&
+            (typeof formatted === "string" || typeof formatted === "number")
+              ? String(formatted)
+              : undefined,
+        })}
       {...props}
       aria-hidden={decorative || undefined}
       aria-label={
         props["aria-label"] ??
-        (typeof label === "string" ? label : t("common.loading"))
+        (typeof label === "string"
+          ? label
+          : t(determinate ? "progress.label" : "common.loading"))
       }
       className={cn(
         `mn-progress-${variant}`,
@@ -1124,8 +1166,23 @@ export function ProgressIndicator({
       {icon}
       {variant === "bar" ? (
         <View className="mn-progress-bar-track">
-          <View className="mn-progress-bar-fill" />
+          <View
+            className={cn(
+              "mn-progress-bar-fill",
+              determinate && "mn-progress-determinate",
+            )}
+            style={determinate ? { width: `${percent}%` } : undefined}
+          />
         </View>
+      ) : determinate ? (
+        <View
+          className="mn-progress-ring"
+          style={{
+            width: diameter,
+            height: diameter,
+            background: `conic-gradient(var(--mn-accent, var(--primary-color, #2563eb)) ${percent}%, var(--surface-muted-color, #e5e7eb) 0)`,
+          }}
+        />
       ) : variant === "wave" || variant === "dottedBar" ? (
         <View className="mn-progress-sequence">
           {Array.from({ length: 5 }, (_, index) => (
@@ -1150,6 +1207,11 @@ export function ProgressIndicator({
           )}
           style={{ width: diameter, height: diameter }}
         />
+      )}
+      {determinate && showValue && (
+        <Text className="mn-progress-value" aria-hidden>
+          {formatted}
+        </Text>
       )}
       {label && <Text>{label}</Text>}
     </Part>

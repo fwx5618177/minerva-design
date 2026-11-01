@@ -35,6 +35,19 @@ export {
 } from "./design";
 export { forcedColorsTokens, reducedMotionTokens } from "./accessibility";
 export {
+  PRIMARY_DERIVED_TOKENS,
+  accentFollowsPrimary,
+  contrastRatio,
+  derivePrimaryDark,
+  invalidPrimaryColorMessage,
+  primaryColorTokens,
+  relativeLuminance,
+  resolvePrimaryColor,
+  type DerivePrimaryDarkOptions,
+  type PrimaryColor,
+  type PrimaryColorPair,
+} from "./brand";
+export {
   colorMix,
   formatColor,
   mixRgba,

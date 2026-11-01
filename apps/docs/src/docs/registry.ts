@@ -78,6 +78,8 @@ export interface DocPageMeta {
 export interface NativeMeta {
   /** Exports of minerva-design/native documented on the page */
   exports: string[];
+  /** Entry the exports come from @default "minerva-design/native" */
+  package?: string;
   /** Interfaces rendered as API tables (`ButtonProps` = `native:ButtonProps`) */
   api: string[];
   /** Demo ids, in display order */
@@ -196,6 +198,7 @@ export const docPages: DocPageMeta[] = [
       "items-toast",
     ],
   },
+  { id: "changelog", category: "gettingStarted" },
 
   // Configuration: ConfigProvider, hooks and theme utilities
   {
@@ -203,11 +206,11 @@ export const docPages: DocPageMeta[] = [
     category: "configuration",
     exports: ["ConfigProvider", "useConfig", "ConfigContext"],
     api: ["ConfigContextProviderProps", "ConfigContextProps", "Locale"],
-    demos: ["use-config", "custom-theme", "locale", "palette"],
+    demos: ["use-config", "custom-theme", "locale", "palette", "brand-color"],
     wc: {
       entry: "config",
       tags: ["minerva-config"],
-      demos: ["basic", "palette-design", "locale", "nested"],
+      demos: ["basic", "palette-design", "locale", "nested", "brand-color"],
     },
     native: {
       exports: [
@@ -784,11 +787,19 @@ export const docPages: DocPageMeta[] = [
     category: "feedback",
     exports: ["ProgressIndicator"],
     api: ["ProgressIndicatorProps"],
-    demos: ["variants", "sizes", "colors", "label", "width", "with-icon"],
+    demos: [
+      "variants",
+      "sizes",
+      "colors",
+      "label",
+      "width",
+      "with-icon",
+      "determinate",
+    ],
     wc: {
       entry: "progress",
       tags: ["minerva-progress"],
-      demos: ["basic", "sizes-colors", "label-width"],
+      demos: ["basic", "sizes-colors", "label-width", "determinate"],
     },
     native: {
       exports: ["ProgressIndicator"],
@@ -1770,6 +1781,24 @@ export const docPages: DocPageMeta[] = [
     native: {
       exports: ["MonthCalendar"],
       api: ["CalendarProps"],
+      demos: ["basic"],
+    },
+  },
+  {
+    id: "week-strip",
+    cssVars: ["WeekStrip"],
+    category: "dataDisplay",
+    exports: ["WeekStrip"],
+    api: ["WeekStripProps"],
+    demos: ["basic", "markers", "navigation", "sizes"],
+    wc: {
+      entry: "week-strip",
+      tags: ["minerva-week-strip"],
+      demos: ["basic", "markers", "navigation", "sizes"],
+    },
+    native: {
+      exports: ["WeekStrip"],
+      api: ["WeekStripProps"],
       demos: ["basic"],
     },
   },
@@ -3388,6 +3417,12 @@ export const docPages: DocPageMeta[] = [
       tags: ["minerva-icon"],
       demos: ["basic", "canvas"],
     },
+    native: {
+      package: "minerva-design/native/icons",
+      exports: ["Icon", "createIcon", "DynamicIcon", "SearchIcon"],
+      api: ["IconProps", "DynamicIconProps"],
+      demos: ["basic"],
+    },
   },
   {
     id: "icon-canvas",
@@ -3409,6 +3444,7 @@ export const docPages: DocPageMeta[] = [
     exports: [
       "toSvg",
       "toSvgDataUri",
+      "toSvgBase64DataUri",
       "iconPathData",
       "drawIcon",
       "defineIcon",

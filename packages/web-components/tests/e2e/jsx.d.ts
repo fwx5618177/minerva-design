@@ -98,7 +98,8 @@ type MinervaTag =
   | "minerva-tooltip-provider"
   | "minerva-upload"
   | "minerva-virtual-list"
-  | "minerva-vstack";
+  | "minerva-vstack"
+  | "minerva-week-strip";
 
 type MinervaIntrinsicElements = {
   [Tag in MinervaTag]: DetailedHTMLProps<

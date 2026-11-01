@@ -2800,6 +2800,13 @@
         "attribute": "palette"
       },
       {
+        "name": "primaryColor",
+        "kind": "union",
+        "required": false,
+        "description": "Brand color: sets `--primary-color` and recomputes every token derived from it (hover, active, subtle, border and text roles, selected, focus ring, and the accent when the palette has no accent of its own) with the default theme's formulas, without changing the light / dark mode. A single color applies to light mode and gets a dark-mode value lightened for contrast on dark surfaces (WCAG 4.5:1); pass `{ light, dark }` to choose both. Wins over the primary color of the theme and of the palette. Accepts hex, `rgb()` / `rgba()` and the basic named colors; an invalid value is ignored (development warning). A nested provider inherits its parent's brand color unless set (`null` restores the theme's own), and scopes an override to its subtree.",
+        "attribute": "primary-color"
+      },
+      {
         "name": "persist",
         "kind": "boolean",
         "default": false,
@@ -3797,7 +3804,7 @@
       "native": { "status": "beta" },
       "taro": {
         "status": "beta",
-        "notes": "Axis-aware separators with length/spacing/text/elevation, Empty dimensions/shadow/accessible description/illustration/footer/actions, decorative or announced skeleton shapes/avatar/title/paragraph/pulse/wave, and five distinct themed progress variants/full width. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Illustration is a token-colored SVG native image; image decoding and decorative animations require device validation. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Axis-aware separators with length/spacing/text/elevation, Empty dimensions/shadow/accessible description/illustration/footer/actions, decorative or announced skeleton shapes/avatar/title/paragraph/pulse/wave, and five distinct themed progress variants/full width, plus determinate bar/circle value/max/showValue/format with clamped aria-valuenow. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Illustration is a token-colored SVG native image; image decoding and decorative animations require device validation. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       },
       "weapp": {
         "status": "beta",
@@ -4320,7 +4327,7 @@
       "native": { "status": "beta" },
       "taro": {
         "status": "beta",
-        "notes": "Axis-aware separators with length/spacing/text/elevation, Empty dimensions/shadow/accessible description/illustration/footer/actions, decorative or announced skeleton shapes/avatar/title/paragraph/pulse/wave, and five distinct themed progress variants/full width. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Illustration is a token-colored SVG native image; image decoding and decorative animations require device validation. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Axis-aware separators with length/spacing/text/elevation, Empty dimensions/shadow/accessible description/illustration/footer/actions, decorative or announced skeleton shapes/avatar/title/paragraph/pulse/wave, and five distinct themed progress variants/full width, plus determinate bar/circle value/max/showValue/format with clamped aria-valuenow. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Illustration is a token-colored SVG native image; image decoding and decorative animations require device validation. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       },
       "weapp": {
         "status": "beta",
@@ -5760,20 +5767,20 @@
       "vue": { "status": "beta" },
       "angular": { "status": "beta", "notes": "Native Angular: MnIcon. Native standalone component/directive; see platform tests for validated scope." },
       "native": {
-        "status": "n/a",
-        "notes": "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri) with the platform's SVG or image support."
+        "status": "beta",
+        "notes": "Icon, DynamicIcon, createIcon and the named icons (SearchIcon…) of minerva-design/native/icons, a separate entry drawn with react-native-svg (optional peer dependency); no canvas renderer."
       },
       "taro": {
-        "status": "n/a",
-        "notes": "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri) with the platform's SVG or image support."
+        "status": "beta",
+        "notes": "Icon, DynamicIcon, createIcon and the named icons (SearchIcon…) of minerva-design/taro/icons, a separate entry: an Image of a base64 SVG data URI with an explicit color (the theme text color of the active mode by default); no canvas renderer."
       },
       "weapp": {
         "status": "n/a",
-        "notes": "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri) with the platform's SVG or image support."
+        "notes": "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri, toSvgBase64DataUri) with the platform's SVG or image support."
       },
       "uni": {
         "status": "n/a",
-        "notes": "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri) with the platform's SVG or image support."
+        "notes": "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri, toSvgBase64DataUri) with the platform's SVG or image support."
       }
     }
   },
@@ -5928,19 +5935,19 @@
       "angular": { "status": "beta", "notes": "Native Angular: MnIconCanvas. Native standalone component/directive; see platform tests for validated scope." },
       "native": {
         "status": "n/a",
-        "notes": "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri) with the platform's SVG or image support."
+        "notes": "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri, toSvgBase64DataUri) with the platform's SVG or image support."
       },
       "taro": {
         "status": "n/a",
-        "notes": "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri) with the platform's SVG or image support."
+        "notes": "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri, toSvgBase64DataUri) with the platform's SVG or image support."
       },
       "weapp": {
         "status": "n/a",
-        "notes": "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri) with the platform's SVG or image support."
+        "notes": "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri, toSvgBase64DataUri) with the platform's SVG or image support."
       },
       "uni": {
         "status": "n/a",
-        "notes": "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri) with the platform's SVG or image support."
+        "notes": "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri, toSvgBase64DataUri) with the platform's SVG or image support."
       }
     }
   },
@@ -6635,7 +6642,7 @@
       "native": { "status": "beta", "notes": "Loading (alias Spinner)" },
       "taro": {
         "status": "beta",
-        "notes": "Axis-aware separators with length/spacing/text/elevation, Empty dimensions/shadow/accessible description/illustration/footer/actions, decorative or announced skeleton shapes/avatar/title/paragraph/pulse/wave, and five distinct themed progress variants/full width. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Illustration is a token-colored SVG native image; image decoding and decorative animations require device validation. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Axis-aware separators with length/spacing/text/elevation, Empty dimensions/shadow/accessible description/illustration/footer/actions, decorative or announced skeleton shapes/avatar/title/paragraph/pulse/wave, and five distinct themed progress variants/full width, plus determinate bar/circle value/max/showValue/format with clamped aria-valuenow. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Illustration is a token-colored SVG native image; image decoding and decorative animations require device validation. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       },
       "weapp": {
         "status": "beta",
@@ -9007,7 +9014,7 @@
     "tag": "minerva-progress",
     "docs": "progress",
     "descriptionKey": "docs.progress.description",
-    "description": "Indeterminate loading indicator (spinner, circle, wave, bars).",
+    "description": "Loading indicator (spinner, circle, wave, bars), determinate or not.",
     "tracks": ["toB", "toC"],
     "props": [
       {
@@ -9023,12 +9030,36 @@
       {
         "name": "color",
         "kind": "enum",
-        "values": ["current", "neutral", "primary"],
+        "values": ["current", "danger", "info", "neutral", "primary", "success", "warning"],
         "default": "primary",
         "required": false,
-        "description": "Semantic color of the indicator: theme primary or neutral gray. \"current\" is a special value that follows the surrounding text color (currentColor), e.g. inside buttons or colored containers",
+        "description": "Semantic color of the indicator: theme primary, neutral gray or a status color (success / warning / danger / info). \"current\" is a special value that follows the surrounding text color (currentColor), e.g. inside buttons or colored containers",
         "attribute": "color"
       },
+      {
+        "name": "value",
+        "kind": "number",
+        "required": false,
+        "description": "Current progress. Setting it switches the bar and circle variants to determinate mode (a filled bar / arc and aria-valuenow); the value is clamped between 0 and max. Other variants ignore it and stay indeterminate.",
+        "attribute": "value"
+      },
+      {
+        "name": "max",
+        "kind": "number",
+        "default": 100,
+        "required": false,
+        "description": "Value that represents completion (determinate mode only); non-positive values fall back to 100",
+        "attribute": "max"
+      },
+      {
+        "name": "showValue",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "Shows the formatted value (a percentage by default) next to a determinate indicator",
+        "attribute": "show-value"
+      },
+      { "name": "format", "kind": "node", "required": false, "description": "Formats the value shown by showValue; a string or number result is also used as aria-valuetext" },
       { "name": "icon", "kind": "node", "required": false, "description": "Icon displayed before the indicator", "only": "react" },
       { "name": "label", "kind": "node", "required": false, "description": "Visible text shown next to the indicator; it also names the progressbar unless aria-label is set", "attribute": "label" },
       { "name": "aria-label", "kind": "string", "required": false, "description": "Accessible label describing what is loading (used when there is no visible label)", "only": "react" },
@@ -9063,7 +9094,7 @@
       "native": { "status": "beta", "notes": "Value-based line / circle progress" },
       "taro": {
         "status": "beta",
-        "notes": "Axis-aware separators with length/spacing/text/elevation, Empty dimensions/shadow/accessible description/illustration/footer/actions, decorative or announced skeleton shapes/avatar/title/paragraph/pulse/wave, and five distinct themed progress variants/full width. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Illustration is a token-colored SVG native image; image decoding and decorative animations require device validation. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Axis-aware separators with length/spacing/text/elevation, Empty dimensions/shadow/accessible description/illustration/footer/actions, decorative or announced skeleton shapes/avatar/title/paragraph/pulse/wave, and five distinct themed progress variants/full width, plus determinate bar/circle value/max/showValue/format with clamped aria-valuenow. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Illustration is a token-colored SVG native image; image decoding and decorative animations require device validation. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       },
       "weapp": {
         "status": "beta",
@@ -10743,7 +10774,7 @@
       "native": { "status": "beta" },
       "taro": {
         "status": "beta",
-        "notes": "Axis-aware separators with length/spacing/text/elevation, Empty dimensions/shadow/accessible description/illustration/footer/actions, decorative or announced skeleton shapes/avatar/title/paragraph/pulse/wave, and five distinct themed progress variants/full width. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Illustration is a token-colored SVG native image; image decoding and decorative animations require device validation. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Axis-aware separators with length/spacing/text/elevation, Empty dimensions/shadow/accessible description/illustration/footer/actions, decorative or announced skeleton shapes/avatar/title/paragraph/pulse/wave, and five distinct themed progress variants/full width, plus determinate bar/circle value/max/showValue/format with clamped aria-valuenow. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Illustration is a token-colored SVG native image; image decoding and decorative animations require device validation. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       },
       "weapp": {
         "status": "beta",
@@ -10797,7 +10828,7 @@
       "native": { "status": "beta" },
       "taro": {
         "status": "beta",
-        "notes": "Axis-aware separators with length/spacing/text/elevation, Empty dimensions/shadow/accessible description/illustration/footer/actions, decorative or announced skeleton shapes/avatar/title/paragraph/pulse/wave, and five distinct themed progress variants/full width. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Illustration is a token-colored SVG native image; image decoding and decorative animations require device validation. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Axis-aware separators with length/spacing/text/elevation, Empty dimensions/shadow/accessible description/illustration/footer/actions, decorative or announced skeleton shapes/avatar/title/paragraph/pulse/wave, and five distinct themed progress variants/full width, plus determinate bar/circle value/max/showValue/format with clamped aria-valuenow. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Illustration is a token-colored SVG native image; image decoding and decorative animations require device validation. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       },
       "weapp": {
         "status": "beta",
@@ -12474,6 +12505,12 @@
         "description": "Initial palette (`null` = Minerva's default look). For SSR pass the parsed `palette` cookie."
       },
       {
+        "name": "primaryColor",
+        "kind": "union",
+        "required": false,
+        "description": "Brand color, as `ConfigProvider`'s `primaryColor` (a color, or `{ light, dark }`); the light / dark mode stays the user's choice"
+      },
+      {
         "name": "disableStorage",
         "kind": "boolean",
         "default": false,
@@ -14061,6 +14098,91 @@
       "uni": {
         "status": "beta",
         "notes": "Cartesian chart drawn on a `<canvas type=\"2d\">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize). No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      }
+    }
+  },
+  {
+    "name": "WeekStrip",
+    "tag": "minerva-week-strip",
+    "docs": "week-strip",
+    "descriptionKey": "docs.week-strip.description",
+    "description": "A week of selectable days with today, markers and week navigation.",
+    "tracks": ["toB", "toC"],
+    "props": [
+      { "name": "value", "kind": "string", "required": false, "description": "Selected day, \"YYYY-MM-DD\" (controlled; pair with onChange)", "attribute": "value" },
+      { "name": "defaultValue", "kind": "string", "required": false, "description": "Initially selected day, \"YYYY-MM-DD\" (uncontrolled)", "only": "react" },
+      { "name": "week", "kind": "object", "required": false, "description": "Displayed week (controlled; any day of the week; pair with onWeekChange)", "attribute": "week" },
+      {
+        "name": "defaultWeek",
+        "kind": "object",
+        "required": false,
+        "description": "Initially displayed week (uncontrolled; any day of the week). While the week is uncontrolled it follows the selected day.",
+        "only": "react"
+      },
+      {
+        "name": "firstDayOfWeek",
+        "kind": "number",
+        "default": 1,
+        "required": false,
+        "description": "First day of the week: 0 = Sunday, 1 = Monday ... 6 = Saturday",
+        "attribute": "first-day-of-week"
+      },
+      { "name": "today", "kind": "string", "required": false, "description": "The day marked as today, \"YYYY-MM-DD\" (e.g. a server date or a fixed date in tests)", "attribute": "today" },
+      { "name": "markers", "kind": "object", "required": false, "description": "Per-day markers keyed by \"YYYY-MM-DD\": a number shows a count badge (99+ above 99), true shows a dot" },
+      { "name": "getDayLabel", "kind": "function", "required": false, "description": "Accessible label of a day; receives the day (\"YYYY-MM-DD\") and its marker" },
+      {
+        "name": "showNavigation",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "Shows previous / next week buttons around the month of the week",
+        "attribute": "show-navigation"
+      },
+      { "name": "previousWeekLabel", "kind": "string", "required": false, "description": "Label of the previous-week button", "attribute": "previous-week-label" },
+      { "name": "nextWeekLabel", "kind": "string", "required": false, "description": "Label of the next-week button", "attribute": "next-week-label" },
+      { "name": "weekdayLabels", "kind": "array", "required": false, "description": "Weekday names, Monday first (7 labels), whatever firstDayOfWeek is" },
+      { "name": "locale", "kind": "string", "required": false, "description": "Locale of the dates (Intl.DateTimeFormat)", "attribute": "locale" },
+      { "name": "disabled", "kind": "boolean", "default": false, "required": false, "description": "Blocks selection and navigation", "attribute": "disabled" },
+      { "name": "size", "kind": "enum", "values": ["large", "medium", "small"], "default": "medium", "required": false, "description": "Cell density", "attribute": "size" },
+      { "name": "aria-label", "kind": "string", "required": false, "description": "Accessible label of the day list", "only": "react" }
+    ],
+    "events": [
+      {
+        "name": "minerva-change",
+        "wc": "minerva-change",
+        "detail": ["value"],
+        "description": "The user selected a day (`detail: { value }`, \"YYYY-MM-DD\")",
+        "react": "onChange",
+        "native": "onChange"
+      },
+      {
+        "name": "minerva-week-change",
+        "wc": "minerva-week-change",
+        "detail": ["week"],
+        "description": "The user displayed another week (`detail: { week }`, its first day at local midnight)",
+        "react": "onWeekChange",
+        "native": "onWeekChange"
+      }
+    ],
+    "slots": [],
+    "children": false,
+    "platforms": {
+      "react": { "status": "stable" },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnWeekStrip. Native standalone component/directive; see platform tests for validated scope." },
+      "native": { "status": "beta" },
+      "taro": {
+        "status": "beta",
+        "notes": "Seven-day strip with firstDayOfWeek, controlled/uncontrolled day and week, today ring, count badge/dot markers with translated day labels, previous/next week navigation and three sizes. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. H5 supports roving arrows and Home/End within the week (the navigation buttons change the week); native hosts use touch day selection. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "Shared core local-date arithmetic; the seven days of a week from firstDayOfWeek with controlled/default YYYY-MM-DD selection and week (an uncontrolled week follows the selection), today override, count/dot markers with localized accessible names, getDayLabel through configure(), previous/next week navigation with a localized month heading, weekday labels, size, disabled and readOnly. Dates and the week are serialized YYYY-MM-DD strings. DOM roving keyboard focus is not a native mini-program interaction. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "Shared local-date core: the seven days of a week from firstDayOfWeek; controlled/default string selection (v-model) and Date week (v-model:week, follows the selection while uncontrolled); today override, count/dot markers with localized accessible names, getDayLabel, previous/next week navigation with a localized month heading, weekday labels, size and disabled; listbox/option semantics with arrow, Home/End and PageUp/PageDown keys across weeks. Keyboard metadata and native touch actions are implemented; device focus/geometry still require validation. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       }
     }
   }

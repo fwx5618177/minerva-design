@@ -260,7 +260,7 @@ const nativeFiles = () => {
         (file) =>
           /\.tsx?$/.test(file) &&
           !/\.test\.tsx?$/.test(file) &&
-          /[\\/](components|theme)[\\/]/.test(file),
+          /[\\/](components|theme|icon)[\\/]/.test(file),
       )
       .sort(),
     // the native charts re-export the quadrant settings of the engine

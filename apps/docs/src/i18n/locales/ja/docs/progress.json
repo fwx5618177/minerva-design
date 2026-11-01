@@ -1,6 +1,6 @@
 {
   "title": "ProgressIndicator プログレスインジケーター",
-  "description": "読み込み中であることを示します。スピナー、サークル、ウェーブ、バー、ドットバーで描かれる不確定の progressbar です。",
+  "description": "進捗を示します。スピナー、サークル、ウェーブ、バー、ドットバーで描かれる不確定の progressbar、または value を指定した確定的なバー／サークルです。",
   "demos": {
     "variants": {
       "title": "バリアント",
@@ -12,7 +12,7 @@
     },
     "colors": {
       "title": "色",
-      "description": "セマンティックカラー：primary（デフォルト）または neutral。特別な値 current は周囲の文字色（currentColor）に従います（ボタン内など）。"
+      "description": "セマンティックカラー：primary（デフォルト）、neutral、またはステータスカラー（success、warning、danger、info）。特別な値 current は周囲の文字色（currentColor）に従います（ボタン内など）。"
     },
     "label": {
       "title": "表示ラベル",
@@ -25,16 +25,24 @@
     "with-icon": {
       "title": "アイコン付き",
       "description": "インジケーターの前にアイコンを表示します。読み込み中の内容は必ず aria-label で説明してください。"
+    },
+    "determinate": {
+      "title": "確定的な進捗",
+      "description": "value（必要なら max も）を指定するとバーやサークルが塗りつぶされ、aria-valuenow が公開されます。showValue はパーセンテージを表示し、format で表示を変更できます。ステータスカラー（success、warning、danger、info）で状態を伝えます。他のバリアントは value を無視します。"
     }
   },
   "api": {
     "ProgressIndicatorProps": {
       "variant": "インジケーターのスタイル",
       "size": "インジケーターのサイズ",
-      "color": "インジケーターのセマンティックカラー：テーマのプライマリーまたはニュートラルグレー。特別な値 current は周囲の文字色（currentColor）に従います",
+      "color": "インジケーターのセマンティックカラー：テーマのプライマリー、ニュートラルグレー、またはステータスカラー（success、warning、danger、info）。特別な値 current は周囲の文字色（currentColor）に従います",
+      "value": "現在の進捗：bar と circle バリアントを確定モード（塗りつぶしたバー／円弧と aria-valuenow）にします。値は 0 から max の範囲に収められます。他のバリアントは無視します",
+      "max": "完了を表す値（0 以下の場合は 100 になります）",
+      "showValue": "確定的なインジケーターの横に整形した値（デフォルトはパーセンテージ）を表示します",
+      "format": "showValue で表示する値を整形します。文字列または数値の結果は aria-valuetext にも使われます",
       "icon": "インジケーターの前に表示するアイコン",
       "label": "インジケーターの横に表示するテキスト。aria-label がない場合は progressbar の名前にもなります",
-      "aria-label": "読み込み中の内容を説明するアクセシブルなラベル",
+      "aria-label": "読み込み中の内容を説明するアクセシブルラベル（デフォルトは「読み込み中」、確定モードでは「進捗」）",
       "decorative": "視覚専用：progressbar ロールを外し、支援技術から隠します",
       "className": "追加のクラス名",
       "width": "カスタム幅（full が設定されている場合は無視）。バーの既定値は 200px",
@@ -45,7 +53,7 @@
   "cssVars": {
     "--progress-width": "既定幅の線形インジケーターの幅",
     "--progress-bar-height": "バーの太さ（全サイズ共通）",
-    "--progress-track-color": "バーのトラックの色",
+    "--progress-track-color": "バーのトラックの色（確定的なサークルのトラックにも使用）",
     "--progress-radius": "バーのトラックの角丸（既定値は --radius-sm）",
     "--progress-size": "円形インジケーター（spinner / circle / wave）のサイズ（全サイズ共通）"
   },
@@ -62,6 +70,10 @@
       "label-width": {
         "title": "ラベル・アイコン・幅",
         "description": "表示ラベル（属性またはスロット）、icon スロット、カスタム幅、全幅、ボタン内の装飾用インジケーター。"
+      },
+      "determinate": {
+        "title": "確定的な進捗",
+        "description": "value、max、show-value でバーとサークルが確定的なインジケーターになります。format JS プロパティで表示を変更できます。"
       }
     },
     "minerva-progress": {

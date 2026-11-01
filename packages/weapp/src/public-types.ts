@@ -13,6 +13,10 @@ export interface NativeConfiguration {
   resolvedMode: "light" | "dark";
   theme: unknown;
   palette: NativePalette;
+  /** Brand color of the tree (`null`: the theme's own primary) */
+  primaryColor: { light: string; dark: string } | null;
+  /** A provider of the tree wrote brand tokens */
+  brandScope: boolean;
   design: {
     preset?: string;
     density?: string;
@@ -61,6 +65,12 @@ export interface CalendarConfig {
 }
 export interface NativeCalendarInstance extends NativeConfigConsumer {
   configure(config: CalendarConfig): void;
+}
+export interface WeekStripConfig {
+  getDayLabel?: (day: string, marker: number | boolean | undefined) => string;
+}
+export interface NativeWeekStripInstance extends NativeConfigConsumer {
+  configure(config: WeekStripConfig): void;
 }
 export interface PaginationConfig {
   totalRender?: (total: number, range: [number, number]) => string;

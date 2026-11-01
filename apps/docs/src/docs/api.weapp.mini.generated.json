@@ -2255,6 +2255,38 @@
       { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
     ]
   },
+  "WeekStrip": {
+    "entry": "minerva-design/week-strip/index",
+    "props": [
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "defaultValue", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "defaultWeek", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "disabled", "type": "boolean", "required": false, "default": "false" },
+      { "name": "firstDayOfWeek", "type": "number", "required": false, "default": "1" },
+      { "name": "locale", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "markers", "type": "object", "required": false, "default": "{}" },
+      { "name": "nextWeekLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "previousWeekLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "readOnly", "type": "boolean", "required": false, "default": "false" },
+      { "name": "showNavigation", "type": "boolean", "required": false, "default": "false" },
+      { "name": "size", "type": "string", "required": false, "default": "\"medium\"" },
+      { "name": "today", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "value", "type": "any", "required": false, "default": "null" },
+      { "name": "week", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "weekdayLabels", "type": "array", "required": false, "default": "[]" }
+    ],
+    "events": [
+      { "name": "change", "type": "{ value: unknown }", "description": "Requested next value; a controlled owner must publish the accepted prop." },
+      { "name": "weekchange", "type": "{ week: string }", "description": "Requested YYYY-MM-DD first day of the visible week." }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      { "name": "configure", "type": "configure(config: WeekStripConfig): void", "description": "getDayLabel(day, marker) names a day for assistive technologies; dates are serialized YYYY-MM-DD." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
   "Pagination": {
     "entry": "minerva-design/pagination/index",
     "props": [
@@ -3595,6 +3627,7 @@
       { "name": "locale", "type": "any", "required": false, "default": "null" },
       { "name": "mode", "type": "string", "required": false, "default": "\"\"" },
       { "name": "palette", "type": "any", "required": false, "default": "\"\"" },
+      { "name": "primaryColor", "type": "any", "required": false, "default": "\"\"" },
       { "name": "storageKey", "type": "string", "required": false, "default": "\"minerva-theme\"" },
       { "name": "theme", "type": "any", "required": false, "default": "\"\"" }
     ],
@@ -3636,6 +3669,7 @@
       { "name": "locale", "type": "any", "required": false, "default": "null" },
       { "name": "mode", "type": "string", "required": false, "default": "\"\"" },
       { "name": "palette", "type": "any", "required": false, "default": "\"\"" },
+      { "name": "primaryColor", "type": "any", "required": false, "default": "\"\"" },
       { "name": "storageKey", "type": "string", "required": false, "default": "\"minerva-theme\"" },
       { "name": "theme", "type": "any", "required": false, "default": "\"\"" }
     ],

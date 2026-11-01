@@ -164,3 +164,18 @@ export const flashlightIcon: IconDefinition = {
   paths: ["M8 3h8v3H8z", "M9 6h6v12a3 3 0 0 1-6 0z"],
   colors: [palette.yellow, undefined],
 };
+
+/** Painter's palette with paint dots */
+export const paletteIcon: IconDefinition = {
+  name: "palette",
+  category: "tools",
+  tags: ["paint", "colors", "art", "theme"],
+  paths: [
+    "M15.08 19.02A9 8 0 1 1 20.16 14.88Q16.5 15.5 15.08 19.02Z",
+    "M8 14.5a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0",
+    "M6.5 9.5a1 1 0 1 0 2 0a1 1 0 1 0 -2 0",
+    "M10.5 6.5a1 1 0 1 0 2 0a1 1 0 1 0 -2 0",
+    "M15 8a1 1 0 1 0 2 0a1 1 0 1 0 -2 0",
+  ],
+  colors: [undefined, undefined, palette.red, palette.amber, palette.blue],
+};

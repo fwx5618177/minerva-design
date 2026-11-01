@@ -13,6 +13,7 @@ import {
 } from "react-icons/io5";
 import { Tab, TabList, TabPanel, Tabs, Tag, TextLink } from "minerva-design";
 import { docPages } from "@/docs/registry";
+import { LATEST_VERSION } from "@/docs/releases";
 import Logo from "@/site/Logo";
 import CodeBlock from "@layout/CodeBlock";
 import styles from "./home.module.scss";
@@ -101,6 +102,14 @@ const HomePage: React.FC = () => {
     <div className={styles.home}>
       <section className={styles.hero} aria-labelledby="home-title">
         <div className={styles.heroGrid} aria-hidden />
+        {/* newest version (the upcoming one while changesets are pending) */}
+        <Link to="/changelog" className={styles.release}>
+          <Tag size="small" shape="circle" variant="solid">
+            v{LATEST_VERSION}
+          </Tag>
+          <span>{t("docs.changelog.title")}</span>
+          <IoArrowForward aria-hidden />
+        </Link>
         <FrameworkSupport />
         <h1 id="home-title" className={styles.title}>
           {t("home.title")}

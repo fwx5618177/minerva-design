@@ -69,7 +69,13 @@ export default defineConfig({
     outDir,
     emptyOutDir: true,
     lib: {
-      entry: { index: "src/index.ts", monaco: "src/monaco.tsx" },
+      // icons (minerva-design/taro/icons) is its own entry: the main one
+      // never bundles the named icon components
+      entry: {
+        index: "src/index.ts",
+        monaco: "src/monaco.tsx",
+        icons: "src/icons.ts",
+      },
       formats: ["es"],
       fileName: (_format, name) => `${name}.js`,
     },

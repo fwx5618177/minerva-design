@@ -12,6 +12,14 @@
     "text": "palette adds a color palette (\"editorial\", \"tech\", \"graphite\" or \"cool\") on top of the light, dark or system theme. persist saves theme and palette changes in the theme and palette cookies and restores them after hydration. onThemeChange and onPaletteChange are called after setTheme and setPalette change the value.",
     "setters": "useConfig() also returns mode, resolvedMode and palette, and the setTheme and setPalette setters, so any component can switch the theme without lifting state. Server rendering, cookies and the no-flash init script are covered in"
   },
+  "brand": {
+    "title": "Brand color",
+    "text": "primaryColor sets your brand color without overriding --primary-color by hand: pass a CSS color (\"#4f46e5\", rgb(), a named color) for both modes, or a { light, dark } pair. It keeps the explicit theme: theme stays \"light\", \"dark\" or \"system\", so data-theme, useConfig().mode and ThemeToggle keep working.",
+    "derive": "Derived tokens: every token derived from primary-color (hover, active, subtle, border, text, focus ring, selected color and, unless the palette has its own, the accent tokens) is recomputed from the brand color with the default theme's formulas. A single color gets a dark-mode value mixed toward white in OKLab until it reaches a 4.5:1 contrast on dark surfaces (#4f46e5 becomes #7b85f2); colors that already pass are kept.",
+    "precedence": "Precedence: primaryColor wins over the primary color of the palette and of the theme; the palette keeps its other tokens. An invalid color is ignored, with a warning in development.",
+    "nesting": "Nesting: nested providers inherit the brand color, and a nested primaryColor applies to its subtree only (including its overlays); null restores the theme's own primary color.",
+    "ssr": "Server rendering: the root provider renders the light and dark brand values in a <style> keyed on data-theme, so the server markup has the brand color before hydration (no flash with the theme init script). React Native (MinervaProvider), Taro, uni-app and WeChat mini program providers (ConfigProvider / ThemeProvider), Vue (ConfigProvider / ThemeProvider), Angular (<mn-config primaryColor>, provideMinerva({ primaryColor })) and <minerva-config primary-color> accept the same value, with the same semantics."
+  },
   "demos": {
     "use-config": {
       "title": "Reading the configuration",
@@ -28,12 +36,17 @@
     "palette": {
       "title": "Palettes",
       "description": "Each card is a nested ConfigProvider with its own palette, in the site's current mode. The site's root provider keeps data-palette on <html>."
+    },
+    "brand-color": {
+      "title": "Brand color",
+      "description": "Nested ConfigProviders with primaryColor in the site's current mode: indigo as a single color (dark value derived), as a { light, dark } pair, and teal. Switch the site theme to compare the derived dark values."
     }
   },
   "api": {
     "ConfigContextProviderProps": {
       "theme": "Theme to apply: \"auto\" or its alias \"system\" (follows prefers-color-scheme), a built-in theme name, a theme object, or a { light, dark } pair. The root provider applies it to <html>; a nested provider inherits its parent's theme unless set, and applies an override to its own subtree only.",
       "palette": "Palette applied with the light, dark and system themes (\"editorial\", \"tech\", \"graphite\", \"cool\"); null keeps Minerva's default look. The root provider sets data-palette on <html>; a nested provider inherits its parent's palette unless set, and scopes an override to its subtree. The palette tokens come from style.css.",
+      "primaryColor": "Brand color: a CSS color for both modes (the dark-mode value is derived for contrast on dark surfaces) or a { light, dark } pair. Recomputes every token derived from primary-color and wins over the palette's primary color, keeping the explicit light / dark mode. A nested provider inherits it unless set and scopes an override to its subtree; null restores the theme's own. Invalid colors are ignored with a development warning.",
       "persist": "Persist theme and palette changes in the theme and palette cookies and restore them after hydration (pair it with THEME_INIT_SCRIPT for SSR). Root provider only: nested providers ignore it.",
       "onThemeChange": "Called after setTheme changes the theme.",
       "onPaletteChange": "Called after setPalette changes the palette.",
@@ -52,6 +65,7 @@
       "mode": "Color mode of the theme: \"light\" or \"dark\" for those themes, \"system\" for \"auto\", \"system\" and { light, dark } pairs, undefined for other themes.",
       "resolvedMode": "Applied color mode (data-theme on <html>, or on the scope element of a nested provider), when it can be determined.",
       "palette": "Active palette (data-palette on <html>, or on the scope element of a nested provider), null for Minerva's default look.",
+      "primaryColor": "Brand color applied to the subtree as a { light, dark } pair (the dark value derived when a single color was given), null when the theme's own primary color is used.",
       "setTheme": "Changes the theme (saved to the theme cookie when persist is on).",
       "setPalette": "Changes the palette (saved to the palette cookie when persist is on).",
       "design": "Resolved design axes (preset, density, radius, shadow, fontScale) applied to <html> or to the scope of a nested provider."
@@ -90,6 +104,10 @@
       "nested": {
         "title": "Nested scopes and theme events",
         "description": "Scopes nest and the closest one wins: the inner scope stays light while the outer one follows the buttons. minerva-theme-change reports the resolved mode, also for theme=\"system\"."
+      },
+      "brand-color": {
+        "title": "Brand color",
+        "description": "Scopes with primary-color: indigo as a single color (dark value #7b85f2 derived), indigo in a dark scope, and teal winning over the editorial palette primary."
       }
     },
     "minerva-config": {

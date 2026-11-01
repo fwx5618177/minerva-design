@@ -35,6 +35,8 @@ import {
   dayKey,
   monthStart,
   addDays,
+  parseDayKey,
+  weekStart,
   resolveSize,
 } from "@minerva/core";
 import { Button, Input } from "./components";
@@ -728,6 +730,221 @@ export function MonthCalendar({
           )}
         </Part>
       )}
+    </Part>
+  );
+}
+/** Marker of a WeekStrip day: a count badge (number) or a dot (true) */
+export type WeekStripMarker = number | boolean;
+export interface WeekStripProps extends NativeProps {
+  /** Selected day, "YYYY-MM-DD" (controlled) */
+  value?: string;
+  /** Initially selected day, "YYYY-MM-DD" (uncontrolled) */
+  defaultValue?: string;
+  /** Called with the selected day ("YYYY-MM-DD") */
+  onChange?: (day: string) => void;
+  /** Displayed week (controlled; any day of the week) */
+  week?: Date;
+  /** Initially displayed week (uncontrolled; follows the selected day) */
+  defaultWeek?: Date;
+  /** Called with the first day of the requested week */
+  onWeekChange?: (weekStart: Date) => void;
+  /** First day of the week: 0 = Sunday ... 6 = Saturday (default 1) */
+  firstDayOfWeek?: number;
+  /** The day marked as today, "YYYY-MM-DD" (default the current day) */
+  today?: string;
+  /** Per-day markers keyed by "YYYY-MM-DD": a count badge or a dot */
+  markers?: Readonly<Record<string, WeekStripMarker>>;
+  /** Accessible label of a day */
+  getDayLabel?: (day: string, marker: WeekStripMarker | undefined) => string;
+  /** Shows previous / next week buttons and the month (default false) */
+  showNavigation?: boolean;
+  previousWeekLabel?: string;
+  nextWeekLabel?: string;
+  /** Weekday names, Monday first (7 labels) */
+  weekdayLabels?: readonly string[];
+  locale?: string;
+  disabled?: boolean;
+  size?: "small" | "medium" | "large";
+}
+/**
+ * The seven days of a week in a row (a horizontal listbox): tap a day to
+ * select it, today is ringed, days show a count badge or a dot (`markers`),
+ * and `showNavigation` adds previous / next week buttons.
+ */
+export function WeekStrip({
+  value,
+  defaultValue,
+  onChange,
+  week,
+  defaultWeek,
+  onWeekChange,
+  firstDayOfWeek = 1,
+  today,
+  markers,
+  getDayLabel,
+  showNavigation = false,
+  previousWeekLabel,
+  nextWeekLabel,
+  weekdayLabels,
+  locale,
+  disabled = false,
+  size = "medium",
+  "aria-label": ariaLabel,
+  ...props
+}: WeekStripProps) {
+  const { t, language } = useI18n();
+  locale ??= language;
+  const todayKey = today && parseDayKey(today) ? today : dayKey(new Date());
+  const [selected, set] = useValue<string | undefined>(
+    value,
+    defaultValue,
+    (next) => {
+      if (next !== undefined) onChange?.(next);
+    },
+  );
+  const [shown, setWeek] = useValue(
+    week,
+    weekStart(
+      defaultWeek ??
+        parseDayKey(value ?? defaultValue ?? "") ??
+        parseDayKey(todayKey) ??
+        new Date(),
+      firstDayOfWeek,
+    ),
+    onWeekChange,
+  );
+  const start = weekStart(shown, firstDayOfWeek);
+  const days = Array.from({ length: 7 }, (_, i) => addDays(start, i));
+  const goToWeek = (date: Date) => {
+    const next = weekStart(date, firstDayOfWeek);
+    if (dayKey(next) !== dayKey(start)) setWeek(next);
+  };
+  // An uncontrolled week follows the selected day.
+  const lastSelected = useRef(selected);
+  useEffect(() => {
+    if (lastSelected.current === selected) return;
+    lastSelected.current = selected;
+    const date = selected ? parseDayKey(selected) : null;
+    if (week === undefined && date) goToWeek(date);
+  });
+  const generatedId = useId();
+  const stripId = props.id ?? generatedId;
+  useH5List(stripId, {
+    selector: ".mn-week-strip__day",
+    orientation: "horizontal",
+    loop: false,
+  });
+  const longDate = (date: Date) =>
+    date.toLocaleDateString(locale, {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  const monthOf = (date: Date) =>
+    date.toLocaleDateString(locale, { year: "numeric", month: "long" });
+  const end = days[6]!;
+  return (
+    <Part
+      name="week-strip"
+      {...props}
+      id={stripId}
+      className={cn(`mn-size-${size}`, props.className)}
+    >
+      {showNavigation && (
+        <View className="mn-week-strip__toolbar">
+          <Button
+            variant="ghost"
+            aria-label={previousWeekLabel ?? t("weekStrip.previousWeek")}
+            disabled={disabled}
+            onClick={() => goToWeek(addDays(start, -7))}
+          >
+            ‹
+          </Button>
+          <Text className="mn-week-strip__title" aria-live="polite">
+            {start.getMonth() === end.getMonth()
+              ? monthOf(start)
+              : `${monthOf(start)} – ${monthOf(end)}`}
+          </Text>
+          <Button
+            variant="ghost"
+            aria-label={nextWeekLabel ?? t("weekStrip.nextWeek")}
+            disabled={disabled}
+            onClick={() => goToWeek(addDays(start, 7))}
+          >
+            ›
+          </Button>
+        </View>
+      )}
+      <View
+        className="mn-week-strip__days"
+        role="listbox"
+        aria-label={ariaLabel ?? t("weekStrip.label")}
+        aria-orientation="horizontal"
+        aria-disabled={disabled || undefined}
+      >
+        {days.map((date) => {
+          const key = dayKey(date),
+            marker = markers?.[key],
+            count =
+              typeof marker === "number" && marker > 0 ? Math.floor(marker) : 0,
+            weekday = (date.getDay() + 6) % 7,
+            isSelected = selected === key,
+            isToday = key === todayKey;
+          return (
+            <View
+              key={key}
+              role="option"
+              data-date={key}
+              aria-selected={isSelected}
+              aria-current={isToday ? "date" : undefined}
+              aria-disabled={disabled || undefined}
+              aria-label={
+                getDayLabel?.(key, marker) ??
+                (count
+                  ? t("weekStrip.dayWithMarkers", {
+                      date: longDate(date),
+                      count,
+                    })
+                  : marker === true
+                    ? t("weekStrip.dayMarked", { date: longDate(date) })
+                    : longDate(date))
+              }
+              className={cn(
+                "mn-week-strip__day",
+                isSelected && "mn-selected",
+                isToday && "mn-today",
+                disabled && "mn-disabled",
+              )}
+              onClick={() => {
+                if (disabled) return;
+                set(key);
+                goToWeek(date);
+              }}
+            >
+              <Text aria-hidden className="mn-week-strip__weekday">
+                {weekdayLabels?.[weekday] ??
+                  t(
+                    `monthCalendar.weekdays.${["mon", "tue", "wed", "thu", "fri", "sat", "sun"][weekday]}`,
+                  )}
+              </Text>
+              <Text aria-hidden className="mn-week-strip__number">
+                {date.getDate()}
+              </Text>
+              <Text
+                aria-hidden
+                className={cn(
+                  "mn-week-strip__marker",
+                  count > 0 && "mn-has-count",
+                  !count && marker === true && "mn-has-dot",
+                )}
+              >
+                {count ? (count > 99 ? "99+" : count) : ""}
+              </Text>
+            </View>
+          );
+        })}
+      </View>
     </Part>
   );
 }

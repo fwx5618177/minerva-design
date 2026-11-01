@@ -15,6 +15,7 @@ import type {
   DesignPreset,
   FontScale,
   Palette,
+  PrimaryColor,
   RadiusScale,
   ShadowScale,
   SupportedLanguage,
@@ -121,6 +122,11 @@ export class MnConfig {
   readonly shadow = input<ShadowScale | undefined>(undefined);
   /** Type scale */
   readonly fontScale = input<FontScale | undefined>(undefined);
+  /**
+   * Brand colour: one colour (dark value derived) or `{ light, dark }`; wins
+   * over the palette's primary (`null`: the theme's own primary)
+   */
+  readonly primaryColor = input<PrimaryColor | null | undefined>(undefined);
 
   /** The theme changed through `setTheme()` (e.g. a theme toggle) */
   readonly themeChange = output<ConfigTheme>();
@@ -140,6 +146,7 @@ export class MnConfig {
       radius: this.radius,
       shadow: this.shadow,
       fontScale: this.fontScale,
+      primaryColor: this.primaryColor,
     },
     false,
     {

@@ -102,4 +102,53 @@ describe("<minerva-progress>", () => {
     await mount(`<minerva-progress full width="10px"></minerva-progress>`);
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("width"));
   });
+
+  it("fills a determinate bar and exposes the clamped value", async () => {
+    const el = await mount<MinervaProgress>(
+      `<minerva-progress variant="bar" value="3" max="4" show-value color="success"></minerva-progress>`,
+    );
+    const base = $(el, "[part=root]");
+    expect(base.classList).toContain("success");
+    expect(base).toHaveAttribute("aria-label", "Progress");
+    expect(base).toHaveAttribute("aria-valuemin", "0");
+    expect(base).toHaveAttribute("aria-valuemax", "4");
+    expect(base).toHaveAttribute("aria-valuenow", "3");
+    expect(base).not.toHaveAttribute("aria-valuetext");
+    const fill = $(el, ".bar");
+    expect(fill.classList).toContain("determinate");
+    expect(fill.style.width).toBe("75%");
+    expect($(el, "[part=value]").textContent).toBe("75%");
+
+    el.value = 500;
+    el.max = 0;
+    await el.updateComplete;
+    expect(base).toHaveAttribute("aria-valuemax", "100");
+    expect(base).toHaveAttribute("aria-valuenow", "100");
+
+    el.value = -1;
+    el.format = (value, max) => `${value}/${max}`;
+    await el.updateComplete;
+    expect(base).toHaveAttribute("aria-valuenow", "0");
+    expect(base).toHaveAttribute("aria-valuetext", "0/100");
+    expect($(el, "[part=value]").textContent).toBe("0/100");
+
+    el.removeAttribute("value");
+    el.value = undefined;
+    await el.updateComplete;
+    expect(base).not.toHaveAttribute("aria-valuenow");
+    expect(base).toHaveAttribute("aria-label", "Loading");
+    expect(el.shadowRoot!.querySelector("[part=value]")).toBeNull();
+  });
+
+  it("draws a determinate arc for the circle variant only", async () => {
+    const el = await mount<MinervaProgress>(
+      `<minerva-progress variant="circle" value="25"></minerva-progress>`,
+    );
+    expect($(el, "svg.ring[part=indicator]")).not.toBeNull();
+    expect($(el, ".ringArc").getAttribute("stroke-dasharray")).toBe("25 100");
+    el.variant = "spinner";
+    await el.updateComplete;
+    expect($(el, "[part=root]")).not.toHaveAttribute("aria-valuenow");
+    expect(el.shadowRoot!.querySelector("svg.ring")).toBeNull();
+  });
 });

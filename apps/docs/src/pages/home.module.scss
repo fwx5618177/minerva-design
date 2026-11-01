@@ -43,6 +43,40 @@ $bp-md: 768px;
   pointer-events: none;
 }
 
+// Newest version, linking to the changelog
+.release {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 20px;
+  padding: 4px 12px 4px 4px;
+  border: 1px solid var(--ds-border);
+  border-radius: 999px;
+  background: var(--ds-bg);
+  color: var(--ds-fg-muted);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  transition:
+    border-color var(--ds-duration) var(--ds-ease),
+    color var(--ds-duration) var(--ds-ease);
+
+  &:hover {
+    border-color: var(--ds-border-strong);
+    color: var(--ds-fg-strong);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ds-focus);
+    outline-offset: 2px;
+  }
+
+  > svg {
+    flex: none;
+  }
+}
+
 // Native renderers and Web Components stay grouped when the pills wrap.
 .support {
   display: flex;
@@ -139,7 +173,9 @@ $bp-md: 768px;
     background: color-mix(in srgb, var(--ds-accent) 88%, var(--ds-fg));
   }
 
-  > svg:last-child:not(:first-child) {
+  // after the label text the arrow is still the link's first element child,
+  // so TextLink's leading-icon color (`.action > svg:first-child`) applies
+  > svg:is(:first-child, :last-child) {
     margin-inline-start: 0;
     color: inherit;
   }

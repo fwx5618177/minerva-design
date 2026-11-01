@@ -175,6 +175,15 @@ export const componentSsrCases: Array<[string, ReactElement]> = [
     />,
   ],
   [
+    "WeekStrip",
+    <lib.WeekStrip
+      defaultValue="2024-01-05"
+      today="2024-01-03"
+      markers={{ "2024-01-04": 2, "2024-01-05": true }}
+      showNavigation
+    />,
+  ],
+  [
     "Modal",
     <lib.Modal open onOpenChange={noop} title="Title">
       Body

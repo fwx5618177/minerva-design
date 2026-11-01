@@ -136,6 +136,7 @@ export const NATIVE_COMPONENTS: readonly NativeComponent[] = [
   { name: "AvatarGroup", contract: "AvatarGroup" },
   { name: "Divider", contract: "Divider" },
   { name: "Calendar", contract: "MonthCalendar", aliases: ["MonthCalendar"] },
+  { name: "WeekStrip", contract: "WeekStrip" },
   { name: "Collapse", contract: null, aliases: ["CollapseItem"] },
   { name: "Grid", contract: null },
   {

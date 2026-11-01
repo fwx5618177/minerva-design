@@ -12,6 +12,14 @@
     "text": "palette は light、dark、system テーマの上に配色パレット（\"editorial\"、\"tech\"、\"graphite\"、\"cool\"）を重ねます。persist はテーマとパレットの変更を theme と palette の Cookie に保存し、ハイドレーション後に復元します。onThemeChange と onPaletteChange は setTheme と setPalette が値を変更した後に呼ばれます。",
     "setters": "useConfig() は mode、resolvedMode、palette と、setTheme、setPalette のセッターも返すので、state を持ち上げなくてもどのコンポーネントからでもテーマを切り替えられます。サーバーレンダリング、Cookie、ちらつき防止の初期化スクリプトについては次のページを参照してください："
   },
+  "brand": {
+    "title": "ブランドカラー",
+    "text": "primaryColor を使うと、--primary-color を手動で上書きせずにブランドカラーを設定できます。両モード共通の CSS カラー（\"#4f46e5\"、rgb()、色名）か、{ light, dark } のペアを渡します。テーマは明示的なままです。theme は \"light\"、\"dark\"、\"system\" のままなので、data-theme、useConfig().mode、ThemeToggle はそのまま動作します。",
+    "derive": "派生トークン：primary-color から派生するすべてのトークン（hover、active、subtle、border、text、フォーカスリング、選択色、およびパレットが独自のアクセントを持たない場合の accent トークン）が、デフォルトテーマと同じ式でブランドカラーから再計算されます。単色の場合、ダークモードの値は暗い面で 4.5:1 のコントラストに達するまで OKLab で白に向けて混色されます（#4f46e5 は #7b85f2 になります）。すでに基準を満たす色はそのまま使われます。",
+    "precedence": "優先順位：primaryColor はパレットやテーマのプライマリカラーより優先され、パレットのその他のトークンは維持されます。無効な色は無視され、開発時に警告が出ます。",
+    "nesting": "入れ子：入れ子の Provider はブランドカラーを継承し、入れ子の primaryColor はそのサブツリー（オーバーレイを含む）にだけ適用されます。null でテーマ本来のプライマリカラーに戻ります。",
+    "ssr": "サーバーレンダリング：ルート Provider はライトとダークのブランドカラーを data-theme で切り替える <style> として出力するため、ハイドレーション前のサーバーマークアップにもブランドカラーが含まれます（テーマ初期化スクリプトと組み合わせればちらつきません）。React Native（MinervaProvider）、Taro・uni-app・WeChat ミニプログラムの Provider（ConfigProvider / ThemeProvider）、Vue（ConfigProvider / ThemeProvider）、Angular（<mn-config primaryColor>、provideMinerva({ primaryColor })）、<minerva-config primary-color> も同じ値を同じ意味で受け付けます。"
+  },
   "demos": {
     "use-config": {
       "title": "設定の読み取り",
@@ -28,12 +36,17 @@
     "palette": {
       "title": "パレット",
       "description": "各カードは独自のパレットを持つ入れ子の ConfigProvider で、サイトの現在のモードで表示されます。サイトのルート Provider は <html> の data-palette を保持したままです。"
+    },
+    "brand-color": {
+      "title": "ブランドカラー",
+      "description": "サイトの現在のモードで primaryColor を指定した入れ子の ConfigProvider：単色のインディゴ（ダークの値は自動派生）、{ light, dark } ペア、ティール。サイトのテーマを切り替えて派生したダークの値を比べてください。"
     }
   },
   "api": {
     "ConfigContextProviderProps": {
       "theme": "適用するテーマ：\"auto\" またはその別名 \"system\"（prefers-color-scheme に従う）、組み込みテーマ名、テーマオブジェクト、{ light, dark } の組。ルート Provider は <html> に適用し、入れ子の Provider は未指定なら親のテーマを継承し、指定した場合は自身のサブツリーにだけ適用します。",
       "palette": "light、dark、system テーマと組み合わせるパレット（\"editorial\"、\"tech\"、\"graphite\"、\"cool\"）。null で Minerva のデフォルトの見た目になります。ルート Provider は <html> に data-palette を設定し、入れ子の Provider は未指定なら親のパレットを継承し、指定した場合はサブツリーにだけ適用します。パレットのトークンは style.css から提供されます。",
+      "primaryColor": "ブランドカラー：両モード共通の CSS カラー（ダークモードの値は暗い面でのコントラストのために派生）、または { light, dark } ペア。primary-color から派生するすべてのトークンを再計算し、明示的なライト / ダークモードを保ったままパレットのプライマリカラーより優先されます。入れ子の Provider は未指定なら継承し、指定した場合はサブツリーにだけ適用します。null でテーマ本来の色に戻ります。無効な色は開発時の警告とともに無視されます。",
       "persist": "テーマとパレットの変更を theme / palette Cookie に保存し、ハイドレーション後に復元します（SSR では THEME_INIT_SCRIPT と組み合わせます）。ルート Provider のみ有効で、入れ子の Provider では無視されます。",
       "onThemeChange": "setTheme がテーマを変更した後に呼ばれます。",
       "onPaletteChange": "setPalette がパレットを変更した後に呼ばれます。",
@@ -52,6 +65,7 @@
       "mode": "テーマのカラーモード：light / dark テーマでは \"light\" / \"dark\"、\"auto\"、\"system\"、{ light, dark } のペアでは \"system\"、その他のテーマでは undefined。",
       "resolvedMode": "適用されているカラーモード（<html>、または入れ子の Provider のスコープ要素の data-theme）。判定できる場合のみ。",
       "palette": "有効なパレット（<html>、または入れ子の Provider のスコープ要素の data-palette）。null は Minerva のデフォルトの見た目です。",
+      "primaryColor": "サブツリーに適用されているブランドカラー（{ light, dark } ペア。単色を指定した場合ダークの値は派生値）。テーマ本来のプライマリカラーを使う場合は null。",
       "setTheme": "テーマを変更します（persist が有効なら theme Cookie に保存）。",
       "setPalette": "パレットを変更します（persist が有効なら palette Cookie に保存）。",
       "design": "<html> またはネストした provider のスコープに適用される、解決済みのデザイン軸（preset、density、radius、shadow、fontScale）。"
@@ -90,6 +104,10 @@
       "nested": {
         "title": "ネストしたスコープとテーマイベント",
         "description": "スコープはネストでき、最も近いものが優先されます。内側のスコープは常にライトのまま、外側はボタンに従います。minerva-theme-change は解決後のモードを通知します（theme=\"system\" でも同様）。"
+      },
+      "brand-color": {
+        "title": "ブランドカラー",
+        "description": "primary-color を設定したスコープ：単一のインディゴ（ダーク値 #7b85f2 を自動導出）、ダークスコープのインディゴ、editorial パレットのプライマリより優先されるティール。"
       }
     },
     "minerva-config": {

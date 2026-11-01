@@ -7,11 +7,13 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./icons": "./src/icons.ts",
     "./manifest": "./src/manifest.ts",
     "./package.json": "./package.json"
   },
   "scripts": {
     "build": "vite build",
+    "gen:icons": "node scripts/generate-icon-components.mjs",
     "test": "vitest run && vitest run -c vitest.web.config.ts",
     "typecheck": "tsc --noEmit",
     "clean": "rimraf coverage"
@@ -19,11 +21,18 @@
   "dependencies": {
     "@minerva/charts": "workspace:*",
     "@minerva/core": "workspace:*",
+    "@minerva/icons": "workspace:*",
     "jsonc-parser": "^3.3.1"
   },
   "peerDependencies": {
     "react": "^19.0.0",
-    "react-native": ">=0.79.0"
+    "react-native": ">=0.79.0",
+    "react-native-svg": ">=13.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react-native-svg": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@react-native/babel-preset": "catalog:native",
@@ -39,6 +48,7 @@
     "react": "catalog:native",
     "react-dom": "catalog:native",
     "react-native": "catalog:native",
+    "react-native-svg": "catalog:native",
     "react-native-testing-mocks": "catalog:native",
     "react-native-web": "catalog:native",
     "test-renderer": "catalog:native",

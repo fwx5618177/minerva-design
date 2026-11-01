@@ -33,6 +33,9 @@ export const WORKSPACE_ENTRIES = {
     types: "core/contracts/index",
   },
   "@minerva/dom": { js: "dom/index", types: "dom/index" },
+  // the framework-free icon set (minerva-design/icons/core), linked by the
+  // native and Taro icon entries
+  "@minerva/icons/core": { js: "icons/core", types: "icons/core" },
 };
 
 /** Quoted workspace specifiers (longest first, exact match only) */

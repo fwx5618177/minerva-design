@@ -2379,6 +2379,39 @@
     "slots": [],
     "methods": []
   },
+  "WeekStrip": {
+    "entry": "minerva-design/taro",
+    "props": [
+      { "name": "aria-describedby", "type": "string | undefined", "required": false },
+      { "name": "aria-label", "type": "string | undefined", "required": false },
+      { "name": "aria-labelledby", "type": "string | undefined", "required": false },
+      { "name": "children", "type": "ReactNode", "required": false },
+      { "name": "className", "type": "string | undefined", "required": false },
+      { "name": "defaultValue", "type": "string | undefined", "required": false, "description": "Initially selected day, \"YYYY-MM-DD\" (uncontrolled)" },
+      { "name": "defaultWeek", "type": "Date | undefined", "required": false, "description": "Initially displayed week (uncontrolled; follows the selected day)" },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "firstDayOfWeek", "type": "number | undefined", "required": false, "description": "First day of the week: 0 = Sunday ... 6 = Saturday (default 1)" },
+      { "name": "getDayLabel", "type": "((day: string, marker: WeekStripMarker | undefined) => string) | undefined", "required": false, "description": "Accessible label of a day" },
+      { "name": "id", "type": "string | undefined", "required": false },
+      { "name": "locale", "type": "string | undefined", "required": false },
+      { "name": "markers", "type": "Readonly<Record<string, WeekStripMarker>> | undefined", "required": false, "description": "Per-day markers keyed by \"YYYY-MM-DD\": a count badge or a dot" },
+      { "name": "nextWeekLabel", "type": "string | undefined", "required": false },
+      { "name": "previousWeekLabel", "type": "string | undefined", "required": false },
+      { "name": "showNavigation", "type": "boolean | undefined", "required": false, "description": "Shows previous / next week buttons and the month (default false)" },
+      { "name": "size", "type": "\"small\" | \"medium\" | \"large\" | undefined", "required": false },
+      { "name": "style", "type": "CSSProperties | undefined", "required": false },
+      { "name": "today", "type": "string | undefined", "required": false, "description": "The day marked as today, \"YYYY-MM-DD\" (default the current day)" },
+      { "name": "value", "type": "string | undefined", "required": false, "description": "Selected day, \"YYYY-MM-DD\" (controlled)" },
+      { "name": "week", "type": "Date | undefined", "required": false, "description": "Displayed week (controlled; any day of the week)" },
+      { "name": "weekdayLabels", "type": "readonly string[] | undefined", "required": false, "description": "Weekday names, Monday first (7 labels)" }
+    ],
+    "events": [
+      { "name": "onChange", "type": "((day: string) => void) | undefined", "required": false, "description": "Called with the selected day (\"YYYY-MM-DD\")" },
+      { "name": "onWeekChange", "type": "((weekStart: Date) => void) | undefined", "required": false, "description": "Called with the first day of the requested week" }
+    ],
+    "slots": [],
+    "methods": []
+  },
   "DatePicker": {
     "entry": "minerva-design/taro",
     "props": [
@@ -3077,12 +3110,16 @@
       { "name": "className", "type": "string | undefined", "required": false },
       { "name": "color", "type": "string | undefined", "required": false },
       { "name": "decorative", "type": "boolean | undefined", "required": false },
+      { "name": "format", "type": "((value: number, max: number) => ReactNode) | undefined", "required": false, "description": "Formats the shown value; a string result is also the aria-valuetext" },
       { "name": "full", "type": "boolean | undefined", "required": false },
       { "name": "icon", "type": "ReactNode", "required": false },
       { "name": "id", "type": "string | undefined", "required": false },
       { "name": "label", "type": "ReactNode", "required": false },
+      { "name": "max", "type": "number | undefined", "required": false, "description": "Value that represents completion; non-positive falls back to 100" },
+      { "name": "showValue", "type": "boolean | undefined", "required": false, "description": "Shows the formatted value (a percentage by default)" },
       { "name": "size", "type": "\"xsmall\" | \"small\" | \"medium\" | \"large\" | \"xlarge\" | undefined", "required": false },
       { "name": "style", "type": "CSSProperties | undefined", "required": false },
+      { "name": "value", "type": "number | undefined", "required": false, "description": "Current progress (bar / circle): switches to determinate mode" },
       { "name": "variant", "type": "\"circle\" | \"wave\" | \"spinner\" | \"bar\" | \"dottedBar\" | undefined", "required": false },
       { "name": "width", "type": "string | number | undefined", "required": false }
     ],
@@ -3556,6 +3593,12 @@
         "required": false,
         "description": "Named combination of the axes below and a default palette:\n\"minerva\" (default look), \"editorial\" (restrained, reading-oriented),\n\"compact\" (dense, data-heavy screens) or \"touch\" (consumer mobile apps:\ncomfortable density with 44px touch targets, large radius)"
       },
+      {
+        "name": "primaryColor",
+        "type": "PrimaryColor | null | undefined",
+        "required": false,
+        "description": "Brand color: a CSS color for both modes (the dark-mode value is derived\nfor contrast on dark surfaces) or a `{ light, dark }` pair. Recomputes\nevery token derived from `primary-color` and wins over the palette /\ncustom theme's primary color. Unset: the parent provider's; `null`: the\ntheme's own. Invalid colors are ignored with a development warning."
+      },
       { "name": "radius", "type": "\"small\" | \"medium\" | \"large\" | \"none\" | undefined", "required": false, "description": "Corner radius scale" },
       { "name": "shadow", "type": "\"none\" | \"subtle\" | \"standard\" | undefined", "required": false, "description": "Elevation shadow scale" },
       { "name": "style", "type": "CSSProperties | undefined", "required": false },
@@ -3581,6 +3624,7 @@
       { "name": "disableStorage", "type": "boolean | undefined", "required": false },
       { "name": "id", "type": "string | undefined", "required": false },
       { "name": "locale", "type": "string | Locale | undefined", "required": false },
+      { "name": "primaryColor", "type": "PrimaryColor | null | undefined", "required": false, "description": "Brand color (see `ConfigProvider` `primaryColor`)" },
       { "name": "style", "type": "CSSProperties | undefined", "required": false }
     ],
     "events": [

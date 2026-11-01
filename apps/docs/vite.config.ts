@@ -3,6 +3,9 @@ import type { Alias } from "vite";
 import react from "@vitejs/plugin-react";
 import vue from "@vitejs/plugin-vue";
 import { fileURLToPath } from "node:url";
+import { existsSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import type { Plugin } from "vite";
 import tsconfig from "./tsconfig.json" with { type: "json" };
 import {
   bundleBudgetPlugin,
@@ -45,7 +48,40 @@ const nativeAlias: Alias[] = [
     find: /^minerva-design\/native$/,
     replacement: src("../../packages/native/src/index.ts"),
   },
+  {
+    find: /^minerva-design\/native\/icons$/,
+    replacement: src("../../packages/native/src/icons.ts"),
+  },
+  // react-native-svg's web build (Vite does not resolve `.web.js` files:
+  // see reactNativeSvgWeb below for its relative imports)
+  {
+    find: /^react-native-svg$/,
+    replacement: src(
+      "./node_modules/react-native-svg/lib/module/ReactNativeSVG.web.js",
+    ),
+  },
 ];
+
+// Inside react-native-svg, a relative import with a `.web.js` sibling
+// (`./elements` -> `./elements.web.js`) takes it, as the React Native web
+// bundlers do; the native variants import react-native internals (Flow).
+const reactNativeSvgWeb = (): Plugin => ({
+  name: "react-native-svg-web",
+  enforce: "pre",
+  resolveId(source, importer) {
+    if (
+      !importer ||
+      !source.startsWith(".") ||
+      !/[\\/]react-native-svg[\\/]lib[\\/]module[\\/]/.test(importer)
+    )
+      return null;
+    const web = resolve(
+      dirname(importer),
+      `${source.replace(/\.js$/, "")}.web.js`,
+    );
+    return existsSync(web) ? web : null;
+  },
+});
 
 // Unit tests import the workspace packages from source (no build needed),
 // exactly like tests/e2e does. Exact-match aliases: sub-entries first.
@@ -169,6 +205,7 @@ export default defineConfig({
     docsMetaPlugin(),
     wcFrameworksPlugin(),
     bundleBudgetPlugin(),
+    reactNativeSvgWeb(),
   ],
   resolve: {
     alias: process.env.VITEST

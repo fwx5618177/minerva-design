@@ -6,6 +6,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import i18n from "@i18n/config";
+import { LATEST_VERSION } from "@/docs/releases";
 import HomePage from "./HomePage";
 import { SiteProviders, setupI18n } from "../test/utils";
 
@@ -61,6 +62,14 @@ describe("home page", () => {
       expect(link).toHaveAttribute("data-minerva", "text-link");
       expect(link?.querySelector("button")).toBeNull();
     }
+  });
+
+  it("links the newest version to the changelog", () => {
+    renderHome();
+    const link = screen.getByRole("link", {
+      name: `v${LATEST_VERSION} Changelog`,
+    });
+    expect(link).toHaveAttribute("href", "/changelog");
   });
 
   it("translates the label but not the framework names", async () => {

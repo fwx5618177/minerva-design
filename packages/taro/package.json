@@ -8,10 +8,12 @@
   "exports": {
     ".": "./src/index.ts",
     "./package.json": "./package.json",
-    "./monaco": "./src/monaco.tsx"
+    "./monaco": "./src/monaco.tsx",
+    "./icons": "./src/icons.ts"
   },
   "scripts": {
     "build": "vite build",
+    "gen:icons": "node scripts/generate-icon-components.mjs",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "clean": "rimraf coverage",
@@ -21,6 +23,7 @@
     "@minerva/charts": "workspace:*",
     "@minerva/core": "workspace:*",
     "@minerva/dom": "workspace:*",
+    "@minerva/icons": "workspace:*",
     "dompurify": "^3.4.16"
   },
   "devDependencies": {

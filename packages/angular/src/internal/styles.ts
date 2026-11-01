@@ -1218,21 +1218,30 @@ export const progressIndicatorStyles: ClassMap<
   | "barContainer"
   | "circle"
   | "current"
+  | "danger"
   | "defaultWidth"
+  | "determinate"
   | "dottedBar"
   | "dottedBarAnimation"
   | "dottedBarContainer"
   | "fullWidth"
   | "icon"
+  | "info"
   | "label"
   | "large"
   | "medium"
   | "neutral"
   | "primary"
   | "progressIndicator"
+  | "ring"
+  | "ringArc"
+  | "ringTrack"
   | "small"
   | "spin"
   | "spinner"
+  | "success"
+  | "value"
+  | "warning"
   | "wave"
   | "waveAnimation"
   | "waveContainer"
@@ -1244,21 +1253,30 @@ export const progressIndicatorStyles: ClassMap<
   barContainer: "barContainer",
   circle: "circle",
   current: "current",
+  danger: "danger",
   defaultWidth: "defaultWidth",
+  determinate: "determinate",
   dottedBar: "dottedBar",
   dottedBarAnimation: "dottedBarAnimation",
   dottedBarContainer: "dottedBarContainer",
   fullWidth: "fullWidth",
   icon: "icon",
+  info: "info",
   label: "label",
   large: "large",
   medium: "medium",
   neutral: "neutral",
   primary: "primary",
   progressIndicator: "progressIndicator",
+  ring: "ring",
+  ringArc: "ringArc",
+  ringTrack: "ringTrack",
   small: "small",
   spin: "spin",
   spinner: "spinner",
+  success: "success",
+  value: "value",
+  warning: "warning",
   wave: "wave",
   waveAnimation: "waveAnimation",
   waveContainer: "waveContainer",
@@ -1982,4 +2000,35 @@ export const virtualListStyles: ClassMap<
   virtualList: "virtualList",
   virtualListContent: "virtualListContent",
   virtualListItem: "virtualListItem",
+};
+
+/** components/WeekStrip/weekStrip.module.scss */
+export const weekStripStyles: ClassMap<
+  | "count"
+  | "day"
+  | "dayNumber"
+  | "days"
+  | "dot"
+  | "heading"
+  | "large"
+  | "marker"
+  | "navButton"
+  | "small"
+  | "toolbar"
+  | "weekStrip"
+  | "weekday"
+> = {
+  count: "count",
+  day: "day",
+  dayNumber: "dayNumber",
+  days: "days",
+  dot: "dot",
+  heading: "heading",
+  large: "large",
+  marker: "marker",
+  navButton: "navButton",
+  small: "small",
+  toolbar: "toolbar",
+  weekStrip: "weekStrip",
+  weekday: "weekday",
 };

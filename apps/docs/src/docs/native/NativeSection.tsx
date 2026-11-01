@@ -53,7 +53,10 @@ const NativeSection: React.FC<NativeSectionProps> = ({ meta }) => {
     <>
       <section className={styles.section} aria-labelledby="native-import">
         <h2 id="native-import">{t("doc.import")}</h2>
-        <CodeBlock code={nativeImportSnippet(native.exports)} language="tsx" />
+        <CodeBlock
+          code={nativeImportSnippet(native.exports, native.package)}
+          language="tsx"
+        />
         <p className={styles.prose}>
           <Trans
             i18nKey="doc.native.setup"

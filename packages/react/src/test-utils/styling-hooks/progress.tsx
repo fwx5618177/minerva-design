@@ -15,4 +15,15 @@ export default [
       />
     ),
   },
+  {
+    name: "determinate value",
+    element: (
+      <ProgressIndicator
+        variant="circle"
+        color="success"
+        value={40}
+        showValue
+      />
+    ),
+  },
 ] satisfies HookScenario[];

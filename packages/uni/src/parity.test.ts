@@ -16,6 +16,7 @@ const names = [
   "KeyValueEditor",
   "TimePicker",
   "MonthCalendar",
+  "WeekStrip",
   "Pagination",
   "Tabs",
   "PageTabs",

@@ -1185,6 +1185,12 @@
         "required": false,
         "description": "Color palette (light / dark / system themes only); `null` for none"
       },
+      {
+        "name": "primaryColor",
+        "type": "PrimaryColor | null",
+        "required": false,
+        "description": "Brand color: a CSS color for both modes (the dark-mode value is\nderived for contrast on dark surfaces) or a `{ light, dark }` pair.\nRecomputes every token derived from `primary-color` and wins over the\npalette's primary color; the theme mode stays explicit. Unset: the\nparent provider's; `null`: the theme's own. Invalid colors are ignored\nwith a development warning."
+      },
       { "name": "persist", "type": "boolean", "default": "false", "required": false, "description": "Root only: persist theme and palette in cookies." },
       { "name": "locale", "type": "Locale", "required": false, "description": "Language of the built-in texts" },
       { "name": "preset", "type": "\"compact\" | \"editorial\" | \"minerva\" | \"touch\"", "required": false, "description": "Design preset (brings its palette unless `palette` is set)" },
@@ -3397,10 +3403,24 @@
       { "name": "size", "type": "ProgressIndicatorSize", "default": "\"medium\"", "required": false, "description": "Indicator size" },
       {
         "name": "color",
-        "type": "\"primary\" | \"neutral\" | \"current\"",
+        "type": "ProgressIndicatorColor",
         "default": "\"primary\"",
         "required": false,
-        "description": "Semantic color of the indicator: theme primary or neutral gray.\n\"current\" is a special value that follows the surrounding text color\n(currentColor), e.g. inside buttons or colored containers"
+        "description": "Semantic color of the indicator: theme primary, neutral gray or a status\ncolor (success / warning / danger / info). \"current\" is a special value\nthat follows the surrounding text color (currentColor), e.g. inside\nbuttons or colored containers"
+      },
+      {
+        "name": "value",
+        "type": "number",
+        "required": false,
+        "description": "Current progress. Setting it switches the bar and circle variants to\ndeterminate mode (a filled bar / arc and aria-valuenow); the value is\nclamped between 0 and max. Other variants ignore it and stay\nindeterminate."
+      },
+      { "name": "max", "type": "number", "default": "100", "required": false, "description": "Value that represents completion (determinate mode only); non-positive\nvalues fall back to 100" },
+      { "name": "showValue", "type": "boolean", "default": "false", "required": false, "description": "Shows the formatted value (a percentage by default) next to a\ndeterminate indicator" },
+      {
+        "name": "format",
+        "type": "((value: number, max: number) => string)",
+        "required": false,
+        "description": "Formats the value shown by showValue (or use the `value` slot); the\nresult is also used as aria-valuetext"
       },
       {
         "name": "label",
@@ -3421,7 +3441,8 @@
     "events": [],
     "slots": [
       { "name": "icon", "type": "any", "description": "Icon displayed before the indicator" },
-      { "name": "label", "type": "any", "description": "Visible label (the `label` prop)" }
+      { "name": "label", "type": "any", "description": "Visible label (the `label` prop)" },
+      { "name": "value", "type": "{ value: number; max: number; }", "description": "Custom rendering of the shown value (showValue)" }
     ]
   },
   "Prose": {
@@ -4694,6 +4715,7 @@
     "props": [
       { "name": "defaultTheme", "type": "ThemeMode", "required": false, "description": "Initial mode (root default: \"system\")" },
       { "name": "defaultPalette", "type": "\"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null", "required": false, "description": "Initial palette" },
+      { "name": "primaryColor", "type": "PrimaryColor | null", "required": false, "description": "Brand color (a CSS color, or a `{ light, dark }` pair): see\n`ConfigProvider` `primaryColor`" },
       { "name": "disableStorage", "type": "boolean", "default": "false", "required": false, "description": "Do not persist the choice in cookies." },
       { "name": "locale", "type": "Locale", "required": false, "description": "Language of the built-in texts" }
     ],
@@ -5338,6 +5360,49 @@
       { "name": "plotClick", "type": "[event: ChartPlotClickEvent]" },
       { "name": "pointClick", "type": "[event: ChartHoverEvent]" },
       { "name": "rendererChange", "type": "[renderer: ChartRendererKind]" }
+    ],
+    "slots": []
+  },
+  "WeekStrip": {
+    "file": "packages/vue/src/components/WeekStrip/WeekStrip.vue",
+    "props": [
+      { "name": "modelValue", "type": "string", "required": false, "description": "Selected day, \"YYYY-MM-DD\" (controlled, `v-model`)" },
+      { "name": "defaultValue", "type": "string", "required": false, "description": "Initially selected day, \"YYYY-MM-DD\" (uncontrolled)" },
+      { "name": "week", "type": "Date", "required": false, "description": "Displayed week (controlled, `v-model:week`; any day of the week)" },
+      {
+        "name": "defaultWeek",
+        "type": "Date",
+        "required": false,
+        "description": "Initially displayed week (uncontrolled; any day of the week). While the\nweek is uncontrolled it follows the selected day."
+      },
+      { "name": "firstDayOfWeek", "type": "number", "default": "1", "required": false, "description": "First day of the week: 0 = Sunday, 1 = Monday ... 6 = Saturday" },
+      { "name": "today", "type": "string", "required": false, "description": "The day marked as today, \"YYYY-MM-DD\" (e.g. a server date or a fixed\ndate in tests)" },
+      {
+        "name": "markers",
+        "type": "Readonly<Record<string, WeekStripMarker>>",
+        "required": false,
+        "description": "Per-day markers keyed by \"YYYY-MM-DD\": a number shows a count badge\n(99+ above 99), true shows a dot"
+      },
+      {
+        "name": "getDayLabel",
+        "type": "((day: string, marker: WeekStripMarker | undefined) => string)",
+        "required": false,
+        "description": "Accessible label of a day; receives the day (\"YYYY-MM-DD\") and its marker"
+      },
+      { "name": "showNavigation", "type": "boolean", "default": "false", "required": false, "description": "Shows previous / next week buttons around the month of the week" },
+      { "name": "previousWeekLabel", "type": "string", "required": false, "description": "Label of the previous-week button" },
+      { "name": "nextWeekLabel", "type": "string", "required": false, "description": "Label of the next-week button" },
+      { "name": "weekdayLabels", "type": "readonly string[]", "required": false, "description": "Weekday names, Monday first (7 labels), whatever firstDayOfWeek is" },
+      { "name": "locale", "type": "string", "required": false, "description": "Locale of the dates (Intl.DateTimeFormat)" },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Blocks selection and navigation" },
+      { "name": "size", "type": "WeekStripSize", "default": "\"medium\"", "required": false, "description": "Cell density" },
+      { "name": "aria-label", "type": "string", "required": false, "description": "Accessible label of the day list" }
+    ],
+    "events": [
+      { "name": "update:modelValue", "type": "[day: string]" },
+      { "name": "change", "type": "[day: string]" },
+      { "name": "update:week", "type": "[week: Date]" },
+      { "name": "weekChange", "type": "[weekStart: Date]" }
     ],
     "slots": []
   }

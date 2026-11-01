@@ -88,7 +88,13 @@ const DOM_ONLY_NOTE =
 /** The icon components of minerva-design/icons (inline SVG, GPU canvases) */
 const WEB_ICON_COMPONENTS = new Set(["Icon", "IconCanvas"]);
 const WEB_ICON_NOTE =
-  "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri) with the platform's SVG or image support.";
+  "Web icon component (inline SVG or a WebGPU / WebGL / Canvas2D canvas): no native counterpart yet; draw the same icon data of minerva-design/icons/core (iconPathData, toSvg, toSvgDataUri, toSvgBase64DataUri) with the platform's SVG or image support.";
+/** Icon on the platforms with an icon entry of their own (outside their manifests) */
+const PLATFORM_ICON_NOTES = {
+  native:
+    "Icon, DynamicIcon, createIcon and the named icons (SearchIcon…) of minerva-design/native/icons, a separate entry drawn with react-native-svg (optional peer dependency); no canvas renderer.",
+  taro: "Icon, DynamicIcon, createIcon and the named icons (SearchIcon…) of minerva-design/taro/icons, a separate entry: an Image of a base64 SVG data URI with an explicit color (the theme text color of the active mode by default); no canvas renderer.",
+};
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const at = (path) => join(ROOT, path);
@@ -394,6 +400,8 @@ export function miniSupport(platform, name) {
   if (!entry) {
     if (DOM_ONLY_CHARTS.has(name))
       return { status: "n/a", notes: DOM_ONLY_NOTE };
+    if (name === "Icon" && Object.hasOwn(PLATFORM_ICON_NOTES, platform))
+      return { status: "beta", notes: PLATFORM_ICON_NOTES[platform] };
     if (WEB_ICON_COMPONENTS.has(name))
       return { status: "n/a", notes: WEB_ICON_NOTE };
     const equivalent =
@@ -790,6 +798,8 @@ export function nativeSupport(name) {
         "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles).",
     };
   if (DOM_ONLY_CHARTS.has(name)) return { status: "n/a", notes: DOM_ONLY_NOTE };
+  if (name === "Icon")
+    return { status: "beta", notes: PLATFORM_ICON_NOTES.native };
   if (WEB_ICON_COMPONENTS.has(name))
     return { status: "n/a", notes: WEB_ICON_NOTE };
   return { status: "planned" };

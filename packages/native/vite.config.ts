@@ -125,7 +125,9 @@ export default defineConfig({
     // Hermes (RN 0.79+) and Metro's Babel pass handle ES2020 output
     target: "es2020",
     lib: {
-      entry: { index: join(SRC, "index.ts") },
+      // `icons` (minerva-design/native/icons) is its own entry: the only
+      // one importing react-native-svg (an optional peer dependency)
+      entry: { index: join(SRC, "index.ts"), icons: join(SRC, "icons.ts") },
       formats: ["es", "cjs"],
       fileName: (format, entryName) =>
         `${entryName}.${format === "es" ? "js" : "cjs"}`,

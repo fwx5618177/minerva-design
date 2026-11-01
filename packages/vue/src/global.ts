@@ -127,6 +127,7 @@ declare module "vue" {
     MnUpload: typeof Minerva.Upload;
     MnVStack: typeof Minerva.VStack;
     MnVirtualList: typeof Minerva.VirtualList;
+    MnWeekStrip: typeof Minerva.WeekStrip;
   }
 }
 

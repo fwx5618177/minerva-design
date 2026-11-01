@@ -1,7 +1,7 @@
 import { createRef } from "react";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import i18n from "../../config/i18n";
 import ProgressIndicator from "./ProgressIndicator";
 
@@ -56,13 +56,18 @@ describe("ProgressIndicator", () => {
     },
   );
 
-  it.each(["primary", "neutral", "current"] as const)(
-    "applies the %s color class",
-    (color) => {
-      render(<ProgressIndicator color={color} />);
-      expect(screen.getByRole("progressbar")).toHaveClass(color);
-    },
-  );
+  it.each([
+    "primary",
+    "neutral",
+    "current",
+    "success",
+    "warning",
+    "danger",
+    "info",
+  ] as const)("applies the %s color class", (color) => {
+    render(<ProgressIndicator color={color} />);
+    expect(screen.getByRole("progressbar")).toHaveClass(color);
+  });
 
   it("shows a visible label that names the progressbar", () => {
     const { rerender } = render(<ProgressIndicator label="Saving draft" />);
@@ -176,6 +181,129 @@ describe("ProgressIndicator", () => {
     const ref = createRef<HTMLDivElement>();
     render(<ProgressIndicator ref={ref} />);
     expect(ref.current).toBe(screen.getByRole("progressbar"));
+  });
+});
+
+describe("ProgressIndicator determinate mode", () => {
+  it("stays indeterminate without a value", () => {
+    render(<ProgressIndicator variant="bar" showValue />);
+    const progressbar = screen.getByRole("progressbar", { name: "Loading" });
+    expect(progressbar).not.toHaveAttribute("aria-valuenow");
+    expect(progressbar).not.toHaveAttribute("aria-valuemax");
+    expect(progressbar.querySelector(".value")).toBeNull();
+    expect(progressbar.querySelector(".bar")).not.toHaveClass("determinate");
+  });
+
+  it("fills the bar and exposes the value", () => {
+    render(<ProgressIndicator variant="bar" value={30} />);
+    const progressbar = screen.getByRole("progressbar", { name: "Progress" });
+    expect(progressbar).toHaveAttribute("aria-valuenow", "30");
+    expect(progressbar).toHaveAttribute("aria-valuemin", "0");
+    expect(progressbar).toHaveAttribute("aria-valuemax", "100");
+    expect(progressbar).not.toHaveAttribute("aria-valuetext");
+    const fill = progressbar.querySelector(".bar") as HTMLElement;
+    expect(fill).toHaveClass("determinate");
+    expect(fill.style.width).toBe("30%");
+  });
+
+  it("honours max and clamps the value", () => {
+    const { rerender } = render(
+      <ProgressIndicator variant="bar" value={3} max={4} showValue />,
+    );
+    const progressbar = screen.getByRole("progressbar");
+    expect(progressbar).toHaveAttribute("aria-valuemax", "4");
+    expect(progressbar).toHaveAttribute("aria-valuenow", "3");
+    expect(progressbar.querySelector(".value")).toHaveTextContent("75%");
+
+    rerender(<ProgressIndicator variant="bar" value={150} showValue />);
+    expect(progressbar).toHaveAttribute("aria-valuenow", "100");
+    expect(progressbar.querySelector(".value")).toHaveTextContent("100%");
+
+    rerender(<ProgressIndicator variant="bar" value={-5} showValue />);
+    expect(progressbar).toHaveAttribute("aria-valuenow", "0");
+
+    rerender(<ProgressIndicator variant="bar" value={Number.NaN} />);
+    expect(progressbar).toHaveAttribute("aria-valuenow", "0");
+
+    // An invalid max falls back to 100
+    rerender(<ProgressIndicator variant="bar" value={50} max={0} />);
+    expect(progressbar).toHaveAttribute("aria-valuemax", "100");
+    expect((progressbar.querySelector(".bar") as HTMLElement).style.width).toBe(
+      "50%",
+    );
+  });
+
+  it("formats the shown value and uses it as aria-valuetext", () => {
+    const format = vi.fn((value: number, max: number) => `${value} of ${max}`);
+    render(
+      <ProgressIndicator
+        variant="bar"
+        value={2}
+        max={5}
+        showValue
+        format={format}
+        label="Lessons"
+      />,
+    );
+    const progressbar = screen.getByRole("progressbar", { name: "Lessons" });
+    expect(format).toHaveBeenCalledWith(2, 5);
+    expect(progressbar).toHaveAttribute("aria-valuetext", "2 of 5");
+    const valueText = progressbar.querySelector(".value");
+    expect(valueText).toHaveTextContent("2 of 5");
+    // the value comes before the label
+    expect(valueText?.nextElementSibling).toHaveClass("label");
+  });
+
+  it("skips aria-valuetext when format returns an element", () => {
+    render(
+      <ProgressIndicator
+        variant="bar"
+        value={40}
+        showValue
+        format={(value) => <b>{value}</b>}
+      />,
+    );
+    const progressbar = screen.getByRole("progressbar");
+    expect(progressbar).not.toHaveAttribute("aria-valuetext");
+    expect(progressbar.querySelector(".value b")).toHaveTextContent("40");
+  });
+
+  it("draws an arc for the circle variant", () => {
+    render(<ProgressIndicator variant="circle" value={25} size="large" />);
+    const progressbar = screen.getByRole("progressbar");
+    const ring = progressbar.querySelector("svg.ring");
+    expect(ring).toHaveClass("large");
+    expect(ring).toHaveAttribute("aria-hidden", "true");
+    expect(progressbar.querySelector("svg.circle")).toBeNull();
+    expect(progressbar.querySelector(".ringArc")).toHaveAttribute(
+      "stroke-dasharray",
+      "25 100",
+    );
+    expect(progressbar).toHaveAttribute("aria-valuenow", "25");
+  });
+
+  it.each(["spinner", "wave", "dottedBar"] as const)(
+    "ignores value for the %s variant",
+    (variant) => {
+      render(<ProgressIndicator variant={variant} value={50} showValue />);
+      const progressbar = screen.getByRole("progressbar", { name: "Loading" });
+      expect(progressbar).not.toHaveAttribute("aria-valuenow");
+      expect(progressbar.querySelector(".value")).toBeNull();
+    },
+  );
+
+  it("stays hidden from assistive technologies when decorative", () => {
+    render(
+      <ProgressIndicator
+        variant="bar"
+        value={10}
+        decorative
+        data-testid="pi"
+      />,
+    );
+    const el = screen.getByTestId("pi");
+    expect(el).not.toHaveAttribute("aria-valuenow");
+    expect(el).not.toHaveAttribute("role");
   });
 });
 

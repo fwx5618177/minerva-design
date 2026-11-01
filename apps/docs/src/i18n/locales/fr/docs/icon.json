@@ -7,6 +7,12 @@
     "canvas": "Avec renderer à \"auto\", \"webgpu\", \"webgl2\", \"webgl\" ou \"canvas2d\", la même icône est dessinée sur un canvas. Les navigateurs limitent les contextes WebGL actifs à environ 16 ; les icônes canvas partagent donc un seul backend par page : les icônes modifiées sont regroupées dans un atlas, dessinées en une passe puis copiées dans leurs canvas. \"auto\" suit la valeur globale par défaut (setDefaultIconRenderer), ici la barre de rendu.",
     "bundle": "Seul ce que vous importez est embarqué : SearchIcon apporte ses propres données de tracé, les rendus canvas se chargent avec la première icône canvas, et DynamicIcon (noms choisis à l’exécution) est le seul composant qui embarque tout le jeu."
   },
+  "platforms": {
+    "title": "React Native et mini-programmes",
+    "native": "minerva-design/native/icons fournit les mêmes composants pour React Native (Icon, createIcon, DynamicIcon, SearchIcon…), dessinés avec react-native-svg à partir des mêmes tracés sur la grille 24×24. react-native-svg est une dépendance pair optionnelle, requise par cette seule entrée (minerva-design/native ne l’importe jamais) : installez-la avec npx expo install react-native-svg, ou npm install react-native-svg hors d’Expo. Les icônes prennent la couleur de texte du thème sauf si color est fourni, size est en dp, et un title fait de l’icône une image accessible.",
+    "taro": "minerva-design/taro/icons les fournit pour Taro. Les mini-programmes ne savent pas afficher de SVG inline et l’<image> de WeChat refuse le SVG encodé en pourcentages : chaque icône est donc une Image dont la source est une URI de données SVG en base64 (toSvgBase64DataUri, sans btoa). Une image n’a pas de currentColor : la couleur est écrite dans le SVG, par défaut la couleur de texte du thème pour le mode clair ou sombre actif, et l’image est régénérée quand la couleur ou le mode change. size est en px, ou toute longueur CSS comme \"48rpx\".",
+    "tabBar": "La tabBar d’un mini-programme n’accepte que des fichiers PNG ou JPG : générez-les au build à partir de toSvg (un fichier par icône, couleur et état) avec le rastériseur SVG de votre choix. Minerva n’en fournit pas."
+  },
   "demos": {
     "basic": {
       "title": "Utilisation de base",
@@ -76,6 +82,14 @@
       "canvas": {
         "title": "Moteurs de rendu",
         "description": "L'attribut renderer dessine l'icône sur un canvas ; chaque icône émet minerva-renderer-change avec le backend qui l'a dessinée, affiché dessous. « auto » suit la barre de rendu ; un backend imposé absent de ce navigateur bascule sur le suivant."
+      }
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "Icônes en React Native",
+        "description": "Les mêmes icônes dessinées avec react-native-svg : composants nommés tracés avec la couleur de texte du thème, taille en dp, couleur et épaisseur de trait personnalisées, nom accessible avec title, et DynamicIcon pour les icônes choisies par nom (ici une barre d'onglets)."
       }
     }
   }

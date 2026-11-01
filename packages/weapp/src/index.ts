@@ -5,6 +5,12 @@ import { enhanceBasics } from "./basic-components";
 import { enhanceAdvanced } from "./advanced-components";
 import { annotateNativeApi } from "./public-api";
 import {
+  weekStripExtra,
+  weekStripMethods,
+  weekStripProperties,
+  weekStripTemplate,
+} from "./week-strip";
+import {
   chart,
   lineChart,
   areaChart,
@@ -1178,6 +1184,12 @@ export const monthCalendar = native(
       },
     },
   },
+);
+export const weekStrip = native(
+  weekStripTemplate,
+  weekStripProperties,
+  weekStripMethods,
+  weekStripExtra,
 );
 export const pagination = native(
   `<view class="mn-pagination"><text wx:if="{{showTotal}}">Total {{total}}</text><button class="{{disabled || current <= 1 ? 'mn-disabled' : ''}} mn-button mn-variant-outline" disabled="{{disabled || current <= 1}}" data-delta="-1" bindtap="onPage">Previous</button><text>{{current}} / {{pages}}</text><button class="mn-button mn-variant-outline" disabled="{{disabled || current >= pages}}" data-delta="1" bindtap="onPage">Next</button></view>`,
@@ -3037,6 +3049,7 @@ annotateNativeApi({
   timePicker,
   datePicker,
   monthCalendar,
+  weekStrip,
   pagination,
   tabs,
   pageTabs,

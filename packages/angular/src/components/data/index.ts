@@ -616,3 +616,5 @@ function formatJsonText(value: string, indent: number): string {
   }
   return result;
 }
+
+export * from "./week-strip";

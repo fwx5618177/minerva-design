@@ -9,17 +9,26 @@ import {
   isShadowScale,
   isThemeName,
   presetPalette,
+  invalidPrimaryColorMessage,
+  paletteAccents,
+  resolvePrimaryColor,
   themes,
   type Density,
   type DesignPreset,
   type FontScale,
   type Palette,
+  type PrimaryColor,
   type RadiusScale,
   type ShadowScale,
   type SupportedLanguage,
   type ThemeMap,
 } from "@minerva/core";
-import { applyDesignAttributes, generateCSSVariables } from "@minerva/dom";
+import {
+  applyDesignAttributes,
+  generateCSSVariables,
+  primaryColorTheme,
+} from "@minerva/dom";
+import { DEV, devWarn } from "../../internal/dev";
 import { MinervaElement } from "../../internal/minerva-element";
 
 /** Theme of a `<minerva-config>` scope */
@@ -88,6 +97,19 @@ export class MinervaConfig extends MinervaElement {
   /** Type scale (overrides the preset) */
   @property({ reflect: true, attribute: "font-scale" })
   fontScale?: FontScale;
+
+  /**
+   * Brand color: a CSS color (`primary-color="#4f46e5"`) whose dark-mode
+   * value is derived for contrast on dark surfaces, or (as a property) a
+   * `{ light, dark }` pair. Recomputes every token derived from
+   * `primary-color` and wins over the palette's. The value of the applied
+   * mode is written inline: without `theme`, the mode of the closest
+   * ancestor with `data-theme` when applied (light when the element scopes
+   * a palette, design or scale, whose tokens render light). A brand color
+   * alone does not scope the subtree.
+   */
+  @property({ attribute: "primary-color" })
+  primaryColor?: PrimaryColor;
 
   /** Language of the built-in texts of the elements inside */
   @property({ reflect: true })
@@ -169,26 +191,49 @@ export class MinervaConfig extends MinervaElement {
       ? this.palette
       : presetPalette(design);
     const usesPalette = !!palette && theme !== "github-dark";
+    const brand = resolvePrimaryColor(this.primaryColor);
+    if (DEV && brand === undefined) {
+      devWarn(
+        MinervaConfig.tagName,
+        invalidPrimaryColorMessage(this.primaryColor),
+      );
+    }
 
     set("data-theme", mode);
     set("data-palette", usesPalette ? palette : null);
-    if (!this.root) {
-      const scoped =
-        mode !== null ||
+    // A brand color alone does not scope: its tokens are written inline (so
+    // the derived ones are recomputed here) and the subtree keeps the mode
+    // of its ancestors. A scope without `theme` renders the light tokens.
+    const scoped =
+      !this.root &&
+      (mode !== null ||
         usesPalette ||
         design !== undefined ||
-        [this.density, this.radius, this.shadow, this.fontScale].some(Boolean);
-      set(SCOPE_ATTRIBUTE, scoped ? "" : null);
-    }
+        [this.density, this.radius, this.shadow, this.fontScale].some(Boolean));
+    if (!this.root) set(SCOPE_ATTRIBUTE, scoped ? "" : null);
     if (mode) el.style.colorScheme = mode;
     else el.style.removeProperty("color-scheme");
-    // github-dark (and future named themes) are inline token sets
-    generateCSSVariables(
-      el.style,
-      theme === "github-dark" && isThemeName(theme)
-        ? themes[theme]
-        : ({} as ThemeMap),
-    );
+    // github-dark (and future named themes) are inline token sets, then the
+    // brand color of the applied mode
+    const named =
+      theme === "github-dark" && isThemeName(theme) ? themes[theme] : undefined;
+    const brandMode =
+      mode ??
+      (!scoped &&
+      el.parentElement?.closest("[data-theme]")?.getAttribute("data-theme") ===
+        "dark"
+        ? "dark"
+        : "light");
+    generateCSSVariables(el.style, {
+      ...named,
+      ...(brand
+        ? primaryColorTheme(
+            brand,
+            brandMode,
+            usesPalette ? paletteAccents[palette][brandMode] : named,
+          )
+        : undefined),
+    } as ThemeMap);
     applyDesignAttributes(
       el,
       {

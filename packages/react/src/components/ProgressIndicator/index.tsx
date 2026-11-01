@@ -1,5 +1,6 @@
 import ProgressIndicator from "./ProgressIndicator";
 import type {
+  ProgressIndicatorColor,
   ProgressIndicatorProps,
   ProgressIndicatorSize,
   ProgressIndicatorVariant,
@@ -7,6 +8,7 @@ import type {
 
 export { ProgressIndicator };
 export type {
+  ProgressIndicatorColor,
   ProgressIndicatorProps,
   ProgressIndicatorSize,
   ProgressIndicatorVariant,

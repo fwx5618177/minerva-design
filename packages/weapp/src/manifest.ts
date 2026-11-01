@@ -214,6 +214,20 @@ export const weappComponentManifest = [
     deviceE2E: false,
   },
   {
+    name: "WeekStrip",
+    scope:
+      "Shared core local-date arithmetic; the seven days of a week from firstDayOfWeek with controlled/default YYYY-MM-DD selection and week (an uncontrolled week follows the selection), today override, count/dot markers with localized accessible names, getDayLabel through configure(), previous/next week navigation with a localized month heading, weekday labels, size, disabled and readOnly.",
+    limitations: [
+      "Dates and the week are serialized YYYY-MM-DD strings. DOM roving keyboard focus is not a native mini-program interaction.",
+    ],
+    tests: [
+      "src/week-strip.test.ts: real native host state and callback workflows",
+      "src/parity.test.ts: native host mount",
+    ],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
     name: "Pagination",
     scope:
       "Shared core page windows, jump items/compact ellipses, controlled/default current and pageSize, quick jump, size changer/reset, visible range, simple/hidden-number layouts, sizes/shapes/variants, labels and total/range slots.",

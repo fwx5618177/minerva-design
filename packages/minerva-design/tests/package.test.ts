@@ -43,9 +43,11 @@ const CLIENT_ENTRIES = new Set([".", "./monaco", "./charts", "./icons"]);
  * Optional H5 entries are browser-compiled in mini.test.ts. */
 const NATIVE_ENTRIES = new Set([
   "./native",
+  "./native/icons",
   "./taro",
   "./uni",
   "./taro/monaco",
+  "./taro/icons",
   "./uni/monaco",
 ]);
 const specifier = (key: string) =>
@@ -300,24 +302,32 @@ describe("React Native entry (minerva-design/native)", () => {
     );
 
   it("resolves for Metro (react-native), TypeScript, ESM, CJS and source", () => {
-    const entry = exportsMap["./native"] as Record<string, unknown>;
-    // condition order matters: Metro picks the first matching key
-    expect(Object.keys(entry)).toEqual([
-      "source",
-      "react-native",
-      "import",
-      "require",
-    ]);
-    for (const file of targets(entry)) {
-      expect(existsSync(join(root, file)), file).toBe(true);
+    for (const key of ["./native", "./native/icons"]) {
+      const entry = exportsMap[key] as Record<string, unknown>;
+      // condition order matters: Metro picks the first matching key
+      expect(Object.keys(entry), key).toEqual([
+        "source",
+        "react-native",
+        "import",
+        "require",
+      ]);
+      for (const file of targets(entry)) {
+        expect(existsSync(join(root, file)), file).toBe(true);
+      }
     }
     expect(pkg.typesVersions["*"].native).toEqual(["./dist/native/index.d.ts"]);
+    expect(pkg.typesVersions["*"]["native/icons"]).toEqual([
+      "./dist/native/icons.d.ts",
+    ]);
   });
 
   it("imports only native runtime dependencies and the shared core (one copy)", () => {
+    // react-native-svg (optional peer) is for minerva-design/native/icons
+    // only, which also imports the shared icon core (dist/icons/core)
     const allowed =
-      /^(react|react\/jsx-runtime|react-native|jsonc-parser\/lib\/esm\/main\.js)$/;
+      /^(react|react\/jsx-runtime|react-native|react-native-svg|jsonc-parser\/lib\/esm\/main\.js)$/;
     expect(pkg.dependencies["jsonc-parser"]).toBeTruthy();
+    expect(pkg.peerDependenciesMeta["react-native-svg"]?.optional).toBe(true);
     expect(modules.length).toBeGreaterThan(20);
     for (const file of modules) {
       for (const spec of specifiers(readFileSync(file, "utf8"))) {
@@ -327,12 +337,37 @@ describe("React Native entry (minerva-design/native)", () => {
           const inCore = !relative(join(root, "dist/core"), target).startsWith(
             "..",
           );
-          expect(inNative || inCore, `${file} -> ${spec}`).toBe(true);
+          const inIconCore = /^core\.c?js$/.test(
+            relative(join(root, "dist/icons"), target),
+          );
+          expect(inNative || inCore || inIconCore, `${file} -> ${spec}`).toBe(
+            true,
+          );
           expect(existsSync(target), `${file} -> ${spec}`).toBe(true);
         } else {
           expect(spec, file).toMatch(allowed);
         }
       }
+    }
+  });
+
+  it("minerva-design/native never reaches react-native-svg nor the icon set", () => {
+    for (const entry of ["index.js", "index.cjs"]) {
+      const seen = new Set<string>();
+      const queue = [join(nativeDir, entry)];
+      while (queue.length) {
+        const file = queue.pop()!;
+        if (seen.has(file)) continue;
+        seen.add(file);
+        for (const spec of specifiers(readFileSync(file, "utf8"))) {
+          expect(spec, file).not.toBe("react-native-svg");
+          if (spec.startsWith(".")) queue.push(join(dirname(file), spec));
+        }
+      }
+      expect(seen.size).toBeGreaterThan(20);
+      expect(
+        [...seen].filter((f) => /[\\/]icons?[\\/]|icons\.c?js$/.test(f)),
+      ).toEqual([]);
     }
   });
 

@@ -221,6 +221,20 @@ export const uniComponentManifest = [
     deviceE2E: false,
   },
   {
+    name: "WeekStrip",
+    scope:
+      "Shared local-date core: the seven days of a week from firstDayOfWeek; controlled/default string selection (v-model) and Date week (v-model:week, follows the selection while uncontrolled); today override, count/dot markers with localized accessible names, getDayLabel, previous/next week navigation with a localized month heading, weekday labels, size and disabled; listbox/option semantics with arrow, Home/End and PageUp/PageDown keys across weeks.",
+    limitations: [
+      "Keyboard metadata and native touch actions are implemented; device focus/geometry still require validation.",
+    ],
+    tests: [
+      "src/week-strip.test.ts: behavioral regression",
+      "src/parity.test.ts: native host mount",
+    ],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
     name: "Pagination",
     scope:
       "Shared core page lists and visible ranges; controlled/default page and page size, quick jumper, native size picker, numbered/compact/simple/read-only layouts, labels, item/total slots, semantic variants/shapes/sizes and H5 navigation keys.",

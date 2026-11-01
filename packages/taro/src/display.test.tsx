@@ -69,3 +69,50 @@ it("theme provider toggles inherited tokens without browser globals", () => {
     container.querySelector('[data-minerva="config-provider"]'),
   ).toHaveAttribute("data-theme", "dark");
 });
+it("progress indicator has a determinate mode for bar and circle", () => {
+  const { container, rerender } = render(
+    <M.ProgressIndicator
+      variant="bar"
+      value={3}
+      max={4}
+      showValue
+      color="success"
+    />,
+  );
+  const bar = screen.getByRole("progressbar", { name: "Progress" });
+  expect(bar).toHaveAttribute("aria-valuenow", "3");
+  expect(bar).toHaveAttribute("aria-valuemin", "0");
+  expect(bar).toHaveAttribute("aria-valuemax", "4");
+  expect(bar).toHaveClass("mn-color-success");
+  const fill = container.querySelector(".mn-progress-bar-fill") as HTMLElement;
+  expect(fill).toHaveClass("mn-progress-determinate");
+  expect(fill.style.width).toBe("75%");
+  expect(container.querySelector(".mn-progress-value")).toHaveTextContent(
+    "75%",
+  );
+
+  rerender(
+    <M.ProgressIndicator
+      variant="circle"
+      value={150}
+      showValue
+      format={(value, max) => `${value}/${max}`}
+    />,
+  );
+  const ring = screen.getByRole("progressbar");
+  expect(ring).toHaveAttribute("aria-valuenow", "100");
+  expect(ring).toHaveAttribute("aria-valuetext", "100/100");
+  expect(container.querySelector(".mn-progress-ring")).not.toBeNull();
+  expect(container.querySelector(".mn-spinner")).toBeNull();
+
+  rerender(<M.ProgressIndicator variant="spinner" value={50} showValue />);
+  const spinner = screen.getByRole("progressbar", { name: "Loading" });
+  expect(spinner).not.toHaveAttribute("aria-valuenow");
+  expect(container.querySelector(".mn-progress-value")).toBeNull();
+
+  rerender(<M.ProgressIndicator variant="bar" />);
+  expect(screen.getByRole("progressbar")).not.toHaveAttribute("aria-valuenow");
+  expect(container.querySelector(".mn-progress-bar-fill")).not.toHaveClass(
+    "mn-progress-determinate",
+  );
+});

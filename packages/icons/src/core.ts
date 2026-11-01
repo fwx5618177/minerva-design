@@ -6,7 +6,12 @@
 export * from "./engine/icons";
 export { getIcon, iconCategories, icons, searchIcons } from "./engine/registry";
 export { defineIcon } from "./engine/define";
-export { iconPathData, toSvg, toSvgDataUri } from "./engine/svg";
+export {
+  iconPathData,
+  toSvg,
+  toSvgBase64DataUri,
+  toSvgDataUri,
+} from "./engine/svg";
 export { drawIcon, type IconDrawingContext } from "./engine/canvas2d";
 export {
   flattenIconPath,

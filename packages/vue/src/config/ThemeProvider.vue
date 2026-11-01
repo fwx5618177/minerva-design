@@ -5,7 +5,7 @@
  * The root one defaults to the system mode; nested ones inherit what they do
  * not set.
  */
-import type { Palette, ThemeMode } from "@minerva/core";
+import type { Palette, PrimaryColor, ThemeMode } from "@minerva/core";
 import ConfigProvider from "./ConfigProvider.vue";
 import { useThemeScope } from "../internal/scope";
 import type { ConfigProviderTheme, Locale } from "./context";
@@ -18,6 +18,11 @@ withDefaults(
     defaultTheme?: ThemeMode;
     /** Initial palette */
     defaultPalette?: Palette | null;
+    /**
+     * Brand color (a CSS color, or a `{ light, dark }` pair): see
+     * `ConfigProvider` `primaryColor`
+     */
+    primaryColor?: PrimaryColor | null;
     /** Do not persist the choice in cookies. @default false */
     disableStorage?: boolean;
     /** Language of the built-in texts */
@@ -26,6 +31,7 @@ withDefaults(
   {
     defaultTheme: undefined,
     defaultPalette: undefined,
+    primaryColor: undefined,
     disableStorage: false,
     locale: undefined,
   },
@@ -49,6 +55,7 @@ const onThemeChange = (theme: ConfigProviderTheme) => {
   <ConfigProvider
     :theme="defaultTheme ?? (isRoot ? 'system' : undefined)"
     :palette="defaultPalette"
+    :primary-color="primaryColor"
     :persist="!disableStorage"
     :locale="locale"
     @theme-change="onThemeChange"

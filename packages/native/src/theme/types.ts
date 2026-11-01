@@ -6,6 +6,7 @@ import type {
   FontScale,
   Messages,
   Palette,
+  PrimaryColor,
   RadiusScale,
   ResolvedDesign,
   ResolvedThemeMode,
@@ -61,6 +62,18 @@ export interface MinervaProviderProps {
    * @default the preset's palette (`null` for "minerva" / "touch")
    */
   palette?: Palette | null;
+  /**
+   * Brand color: a CSS color (`"#4f46e5"`, `rgb()`...) for both modes, or a
+   * `{ light, dark }` pair. A single color gets a lighter dark-mode value
+   * with enough contrast on dark surfaces (`derivePrimaryDark`). Every token
+   * derived from `primary-color` (hover, active, subtle, border, text, focus
+   * ring, selection...) is recomputed from it. Wins over the palette's
+   * primary color; `overrides` still win over it. Unset: the parent
+   * provider's; `null`: the theme / palette's own. Invalid colors are
+   * ignored (with a development warning).
+   * @default undefined
+   */
+  primaryColor?: PrimaryColor | null;
   /**
    * Design preset: "minerva" (default look), "editorial", "compact" or
    * "touch" (consumer mobile apps: comfortable density, 44pt touch targets,

@@ -20,24 +20,31 @@ export type ProgressVariant =
   "spinner" | "bar" | "wave" | "circle" | "dottedBar";
 /** Diameter of round indicators (12 / 16 / 24 / 32 / 48 px) or bar thickness */
 export type ProgressSize = "xsmall" | "small" | "medium" | "large" | "xlarge";
-/** Theme primary, neutral gray, or the surrounding text color */
-export type ProgressColor = "primary" | "neutral" | "current";
+/** Theme primary, neutral gray, a status color, or the surrounding text color */
+export type ProgressColor =
+  "primary" | "neutral" | "success" | "warning" | "danger" | "info" | "current";
+
+const defaultFormat = (value: number, max: number): string =>
+  `${Math.round((value / max) * 100)}%`;
 
 /**
- * Indeterminate loading indicator: spinner, circle, wave, bar or dotted bar
- * (`<ProgressIndicator>` of React). It is a `progressbar` without a
- * value, named by `aria-label`, its visible `label`, or the localized
- * "Loading". Never focusable, so it can sit inside buttons. Set
- * `decorative` when a surrounding element already announces the loading
+ * Loading indicator: spinner, circle, wave, bar or dotted bar
+ * (`<ProgressIndicator>` of React). Without `value` it is a `progressbar`
+ * without a value, named by `aria-label`, its visible `label`, or the
+ * localized "Loading". With `value`, the bar and circle variants become
+ * determinate (filled bar / arc, aria-valuenow, optional `show-value`); the
+ * other variants ignore it. Never focusable, so it can sit inside buttons.
+ * Set `decorative` when a surrounding element already announces the loading
  * state.
  *
- * @summary Indeterminate loading indicator (spinner, circle, wave, bars).
+ * @summary Loading indicator (spinner, circle, wave, bars), determinate or not.
  * @tag minerva-progress
  * @slot icon - Icon displayed before the indicator
  * @slot label - Visible label (alternative to the `label` attribute)
  * @csspart root - The indicator (role=progressbar unless decorative); color current follows the text color
  * @csspart icon - The icon before the indicator
- * @csspart indicator - The animated indicator (ring, wave or bar)
+ * @csspart indicator - The indicator (ring, wave or bar; a filled bar or arc when determinate)
+ * @csspart value - The formatted value of a determinate indicator
  * @csspart label - The visible label
  */
 export class MinervaProgress extends MinervaElement {
@@ -62,7 +69,8 @@ export class MinervaProgress extends MinervaElement {
       }
       .spinner svg,
       .circle svg,
-      .wave svg {
+      .wave svg,
+      svg.ring {
         display: block;
       }
     `,
@@ -80,6 +88,28 @@ export class MinervaProgress extends MinervaElement {
   /** Indicator color ("current" follows the text color) */
   @property({ reflect: true })
   color: ProgressColor = "primary";
+
+  /**
+   * Current progress: switches the bar and circle variants to determinate
+   * mode (clamped between 0 and max); other variants ignore it
+   */
+  @property({ type: Number })
+  value?: number;
+
+  /** Value that represents completion (non-positive values fall back to 100) */
+  @property({ type: Number })
+  max = 100;
+
+  /** Shows the formatted value (a percentage by default) */
+  @property({ type: Boolean, attribute: "show-value" })
+  showValue = false;
+
+  /**
+   * Formats the shown value (JS property); the result is also used as
+   * aria-valuetext
+   */
+  @property({ attribute: false })
+  format?: (value: number, max: number) => string;
 
   /** Visible text next to the indicator; also names the progressbar */
   @property()
@@ -116,12 +146,31 @@ export class MinervaProgress extends MinervaElement {
     }
   }
 
-  private renderIndicator() {
+  /** Clamped value and max, or null when indeterminate */
+  private determinate(): { value: number; max: number } | null {
+    const { value, variant } = this;
+    if (
+      typeof value !== "number" ||
+      (variant !== "bar" && variant !== "circle")
+    )
+      return null;
+    const max = Number.isFinite(this.max) && this.max > 0 ? this.max : 100;
+    return {
+      value: Math.min(Math.max(Number.isNaN(value) ? 0 : value, 0), max),
+      max,
+    };
+  }
+
+  private renderIndicator(det: { value: number; max: number } | null) {
     const size = this.size;
+    const percent = det ? (det.value / det.max) * 100 : 0;
     switch (this.variant) {
       case "bar":
         return html`<div part="indicator" class="barContainer ${size}">
-          <div class="bar"></div>
+          <div
+            class=${det ? "bar determinate" : "bar"}
+            style=${styleMap({ width: det ? `${percent}%` : undefined })}
+          ></div>
         </div>`;
       case "dottedBar":
         return html`<div part="indicator" class="dottedBarContainer ${size}">
@@ -132,6 +181,27 @@ export class MinervaProgress extends MinervaElement {
           <span class="wave" aria-hidden="true">${IconWaveSquare}</span>
         </div>`;
       case "circle":
+        if (det) {
+          return html`<svg
+            part="indicator"
+            class="ring ${size}"
+            viewBox="0 0 24 24"
+            width="1em"
+            height="1em"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <circle class="ringTrack" cx="12" cy="12" r="10"></circle>
+            <circle
+              class="ringArc"
+              cx="12"
+              cy="12"
+              r="10"
+              pathLength="100"
+              stroke-dasharray="${percent} 100"
+            ></circle>
+          </svg>`;
+        }
         return html`<span
           part="indicator"
           class="circle ${size}"
@@ -154,6 +224,10 @@ export class MinervaProgress extends MinervaElement {
     const isBar = this.variant === "bar" || this.variant === "dottedBar";
     const hasLabel = !!this.label || this.slots.test("label");
     const ariaLabel = this.aria.label;
+    const det = this.determinate();
+    const formatted = det
+      ? (this.format ?? defaultFormat)(det.value, det.max)
+      : "";
     return html`<div
       part="root"
       class=${classMap({
@@ -171,7 +245,15 @@ export class MinervaProgress extends MinervaElement {
         this.decorative
           ? nothing
           : (ariaLabel ??
-            (hasLabel ? nothing : this.locale.t("common.loading")))
+            (hasLabel
+              ? nothing
+              : this.locale.t(det ? "progress.label" : "common.loading")))
+      }
+      aria-valuemin=${!this.decorative && det ? 0 : nothing}
+      aria-valuemax=${!this.decorative && det ? det.max : nothing}
+      aria-valuenow=${!this.decorative && det ? det.value : nothing}
+      aria-valuetext=${
+        !this.decorative && det && this.format ? String(formatted) : nothing
       }
       aria-labelledby=${
         !this.decorative && !ariaLabel && hasLabel ? "label" : nothing
@@ -184,7 +266,14 @@ export class MinervaProgress extends MinervaElement {
             ></span>`
           : nothing
       }
-      ${this.renderIndicator()}
+      ${this.renderIndicator(det)}
+      ${
+        det && this.showValue
+          ? html`<span part="value" class="value" aria-hidden="true"
+              >${formatted}</span
+            >`
+          : nothing
+      }
       ${
         hasLabel
           ? html`<span id="label" part="label" class="label"

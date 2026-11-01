@@ -13,6 +13,11 @@ import { palettes } from "../theme/palettes";
 import { dark } from "../theme/themes";
 import type { ComponentTheme } from "../theme/types";
 import { reducedMotionTokens } from "./accessibility";
+import {
+  primaryColorTokens,
+  resolvePrimaryColor,
+  type PrimaryColor,
+} from "./brand";
 import { formatColor, parseColor } from "./color";
 import { defaultThemeTokens } from "./default-theme";
 import {
@@ -53,6 +58,13 @@ export interface ResolveTokensOptions {
    */
   overrides?:
     Readonly<Record<string, TokenValue | undefined>> | Partial<ComponentTheme>;
+  /**
+   * Brand color (see `resolvePrimaryColor`): sets `primary-color` for the
+   * mode and recomputes every token derived from it
+   * (`primaryColorTokens`). Wins over the palette / dark theme; `overrides`
+   * still win over it. An invalid color is ignored.
+   */
+  primaryColor?: PrimaryColor | null;
   /** Applies the `prefers-reduced-motion` tokens (instant transitions) */
   reducedMotion?: boolean;
   /** px per rem @default 16 */
@@ -165,6 +177,7 @@ export function tokenCascade({
   palette,
   design: designOptions,
   overrides = {},
+  primaryColor,
   reducedMotion = false,
 }: ResolveTokensOptions = {}): {
   values: Map<string, string>;
@@ -183,8 +196,16 @@ export function tokenCascade({
   };
   apply(defaultThemeTokens);
   apply(scaleTokens);
-  if (chosen) apply(palettes[chosen][mode]);
-  else if (mode === "dark") apply(dark);
+  const base = chosen
+    ? palettes[chosen][mode]
+    : mode === "dark"
+      ? dark
+      : undefined;
+  if (base) apply(base);
+  const brand = resolvePrimaryColor(primaryColor);
+  if (brand) {
+    apply(primaryColorTokens(brand[mode], { ...base, ...overrides }));
+  }
   apply(densityTokens[design.density]);
   apply(radiusTokens[design.radius]);
   if (design.shadow !== "standard") apply(shadowTokens[design.shadow]);

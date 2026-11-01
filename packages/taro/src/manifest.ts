@@ -325,6 +325,15 @@ const families: Array<{
     tests: ["packages/taro/src/parity.test.tsx"],
   },
   {
+    names: ["WeekStrip"],
+    scope:
+      "Seven-day strip with firstDayOfWeek, controlled/uncontrolled day and week, today ring, count badge/dot markers with translated day labels, previous/next week navigation and three sizes.",
+    limitations: [
+      "H5 supports roving arrows and Home/End within the week (the navigation buttons change the week); native hosts use touch day selection.",
+    ],
+    tests: ["packages/taro/src/week-strip.test.tsx"],
+  },
+  {
     names: ["DatePicker"],
     scope:
       "YYYY-MM-DD controlled strings/null/empty, defaultValue, strict typing and lenient blur normalization, real 42-day calendar with month navigation, valid-date and min/max checks, clearing, form locks, labels and open/change callbacks.",
@@ -400,7 +409,7 @@ const families: Array<{
       "LoadingState",
     ],
     scope:
-      "Axis-aware separators with length/spacing/text/elevation, Empty dimensions/shadow/accessible description/illustration/footer/actions, decorative or announced skeleton shapes/avatar/title/paragraph/pulse/wave, and five distinct themed progress variants/full width.",
+      "Axis-aware separators with length/spacing/text/elevation, Empty dimensions/shadow/accessible description/illustration/footer/actions, decorative or announced skeleton shapes/avatar/title/paragraph/pulse/wave, and five distinct themed progress variants/full width, plus determinate bar/circle value/max/showValue/format with clamped aria-valuenow.",
     limitations: [
       "Illustration is a token-colored SVG native image; image decoding and decorative animations require device validation.",
     ],

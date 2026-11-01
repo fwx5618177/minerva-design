@@ -39,6 +39,19 @@ export const filePlusIcon: IconDefinition = {
   ],
 };
 
+/** Document with curly braces */
+export const fileJsonIcon: IconDefinition = {
+  name: "file-json",
+  category: "files",
+  tags: ["json", "data", "code", "config"],
+  paths: [
+    "M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z",
+    "M14 3v4a1 1 0 0 0 1 1h4",
+    "M10.5 11H10a1 1 0 0 0-1 1v1.75l-1 .75 1 .75V17a1 1 0 0 0 1 1h.5",
+    "M13.5 11h.5a1 1 0 0 1 1 1v1.75l1 .75-1 .75V17a1 1 0 0 1-1 1h-.5",
+  ],
+};
+
 /** Folder */
 export const folderIcon: IconDefinition = {
   name: "folder",
@@ -72,6 +85,19 @@ export const folderPlusIcon: IconDefinition = {
   ],
 };
 
+/** Folder with kanban columns */
+export const folderKanbanIcon: IconDefinition = {
+  name: "folder-kanban",
+  category: "files",
+  tags: ["project", "board", "tasks", "directory"],
+  paths: [
+    "M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z",
+    "M8 11v5",
+    "M12 11v2.5",
+    "M16 11v4",
+  ],
+};
+
 /** Paper clip */
 export const paperclipIcon: IconDefinition = {
   name: "paperclip",
@@ -98,6 +124,30 @@ export const bookOpenIcon: IconDefinition = {
   paths: [
     "M12 6.5C10 5 7.5 4.5 3 4.5v14c4.5 0 7 .5 9 2 2-1.5 4.5-2 9-2v-14c-4.5 0-7 .5-9 2Z",
     "M12 6.5v14",
+  ],
+};
+
+/** Closed book with a plus sign */
+export const bookPlusIcon: IconDefinition = {
+  name: "book-plus",
+  category: "files",
+  tags: ["add book", "new", "library", "read"],
+  paths: [
+    "M5 18.5v-13A2.5 2.5 0 0 1 7.5 3H19v13H7.5a2.5 2.5 0 0 0 0 5H19v-5",
+    "M12 7v5",
+    "M9.5 9.5h5",
+  ],
+};
+
+/** Closed book with the letter A */
+export const bookAIcon: IconDefinition = {
+  name: "book-a",
+  category: "files",
+  tags: ["dictionary", "glossary", "vocabulary", "language"],
+  paths: [
+    "M5 18.5v-13A2.5 2.5 0 0 1 7.5 3H19v13H7.5a2.5 2.5 0 0 0 0 5H19v-5",
+    "M9.5 12.5l2.5-6 2.5 6",
+    "M10.54 10h2.92",
   ],
 };
 

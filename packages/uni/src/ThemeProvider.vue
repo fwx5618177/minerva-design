@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import { computed, ref, provide, onMounted } from "vue";
 import ConfigProvider from "./ConfigProvider.vue";
-import type { DesignOptions, Palette, ThemeMode } from "@minerva/core";
+import type {
+  DesignOptions,
+  Palette,
+  PrimaryColor,
+  ThemeMode,
+} from "@minerva/core";
 const props = withDefaults(
   defineProps<{
     mode?: ThemeMode;
     palette?: Palette | null;
+    /** Brand color (see `ConfigProvider` `primaryColor`) */
+    primaryColor?: PrimaryColor | null;
     design?: DesignOptions;
     defaultTheme?: ThemeMode;
     defaultPalette?: Palette | null;
@@ -16,6 +23,7 @@ const props = withDefaults(
   {
     defaultTheme: "system",
     defaultPalette: null,
+    primaryColor: undefined,
     storageKey: "minerva-theme",
   },
 );
@@ -77,6 +85,7 @@ defineExpose({ setTheme, setPalette });
   <ConfigProvider
     :mode="mode"
     :palette="palette"
+    :primary-color="primaryColor"
     :design="design"
     :locale="locale"
     ><template #default="theme"

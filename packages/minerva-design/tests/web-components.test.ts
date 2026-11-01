@@ -150,8 +150,11 @@ describe("per-element entries (tree-shaking)", () => {
     console.info(`all-in-one (deps external): ${size} B`);
     // ~543 kB after the richer component styles (MonthCalendar, Steps, List,
     // DescriptionList...), the separator / focus-ring rules and the new
-    // variants; raised deliberately from 540 kB, with headroom for one release
-    expect(size).toBeLessThan(560_000);
+    // variants; raised deliberately from 540 kB, with headroom for one release.
+    // 1.12.0: 555,784 B -> 568,556 B for <minerva-week-strip>, the
+    // determinate ProgressIndicator (+2.4 kB) and <minerva-config
+    // primary-color> (+0.5 kB); raised from 560 kB keeping ~6 kB headroom
+    expect(size).toBeLessThan(575_000);
     for (const { tagName } of elements) {
       // quoted: <minerva-icon> is optional, <minerva-icon-button> is not
       const defined = new RegExp(`["'\`]${tagName}["'\`]`);
@@ -205,7 +208,12 @@ describe("CDN bundle", () => {
     // Its 14,036 B component cost adds a new public element entry;
     // 715 kB preserves roughly the prior 11 kB headroom.
     // The separate DatePicker entry has its own size/tree-shaking guard above.
-    expect(Buffer.byteLength(js)).toBeLessThan(715_000);
+    // 1.12.0: 702,768 B -> 722,503 B for <minerva-week-strip>, the
+    // determinate ProgressIndicator and the brand color (`primaryColor`:
+    // OKLab dark-mode derivation and token formulas in core; the palettes'
+    // primary / accent only, not the full palette tables). 730 kB keeps
+    // ~7.5 kB headroom.
+    expect(Buffer.byteLength(js)).toBeLessThan(730_000);
     // (template whitespace of <pre> / <textarea> templates is content)
     expect(js).not.toMatch(/\n\t/);
     expect(js).not.toContain("width is ignored when full is set");

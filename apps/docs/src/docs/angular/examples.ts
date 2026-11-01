@@ -399,6 +399,13 @@ export const angularExamples: Record<string, readonly AngularExample[]> = {
         `<mn-progress variant="bar" label="Preparing"/><mn-progress variant="circle" size="large"/><mn-progress variant="wave"/><mn-progress variant="dotted-bar"/>`,
       ),
     ),
+    example(
+      "Determinate progress",
+      ["MnProgressIndicator"],
+      stack(
+        `<mn-progress variant="bar" value="40" showValue label="Course progress"/><mn-progress variant="circle" size="large" color="success" value="75" showValue/>`,
+      ),
+    ),
   ],
   skeleton: [
     example("Content loading", ["MnSkeleton"], `<mn-skeleton variant="card"/>`),
@@ -1166,6 +1173,30 @@ export const angularExamples: Record<string, readonly AngularExample[]> = {
       { month: new Date(2026, 9, 1) },
     ),
   ],
+  "week-strip": [
+    example(
+      "Pick a day of the week",
+      ["MnWeekStrip"],
+      `<mn-week-strip [(value)]="value" [markers]="markers" today="2026-10-07" aria-label="Study days"/><output>Selected: {{value}}</output>`,
+      {
+        value: "2026-10-07",
+        markers: { "2026-10-06": 2, "2026-10-07": 3, "2026-10-08": true },
+      },
+      'value is the selected day ("YYYY-MM-DD"); markers show a count badge (a number) or a dot (true). Arrows, Home / End and PageUp / PageDown move through the days.',
+    ),
+    example(
+      "Week navigation",
+      ["MnWeekStrip"],
+      `<mn-week-strip showNavigation [(week)]="week" [(value)]="value" firstDayOfWeek="0"/><output>Week of {{week?.toDateString()}}</output>`,
+      { week: new Date(2026, 9, 7), value: null },
+      "showNavigation adds previous / next week buttons; [(week)] holds the first day of the displayed week.",
+    ),
+    example(
+      "Sizes and disabled",
+      ["MnWeekStrip"],
+      `<mn-week-strip size="small" today="2026-10-07"/><mn-week-strip size="large" today="2026-10-07"/><mn-week-strip disabled value="2026-10-07" today="2026-10-07"/>`,
+    ),
+  ],
 };
 angularExamples["config-provider"] = [
   example(
@@ -1184,6 +1215,15 @@ angularExamples["config-provider"] = [
     "Local language",
     ["MnConfig", "MnEmpty"],
     `<mn-config locale="zh"><mn-empty title="暂无项目" description="创建你的第一个项目。"/></mn-config>`,
+  ),
+  example(
+    "Brand color",
+    ["MnConfig", "MnButton"],
+    stack(
+      `<mn-config primaryColor="#4f46e5"><button mnButton>Indigo</button></mn-config><mn-config primaryColor="#4f46e5" theme="dark"><div style="padding:12px;background:var(--surface-color)"><button mnButton>Indigo, dark (#7b85f2)</button></div></mn-config><mn-config [primaryColor]="{ light: '#0d9488', dark: '#5eead4' }"><button mnButton variant="outline">Teal pair</button></mn-config>`,
+    ),
+    undefined,
+    "primaryColor sets the brand color without changing the light / dark mode: a single color gets a derived dark value, { light, dark } sets both. It wins over the palette's primary; provideMinerva({ primaryColor }) sets it for the whole application.",
   ),
 ];
 
@@ -5787,6 +5827,12 @@ for (const [page, examples] of Object.entries(angularExamples)) {
         "import('minerva-design/angular').ToastMessage[]";
     if (page === "sparkline" && Object.hasOwn(item.state, "hovered"))
       item.stateTypes.hovered = "number | null";
+    if (page === "week-strip") {
+      if (Object.hasOwn(item.state, "value"))
+        item.stateTypes.value = "string | null";
+      if (Object.hasOwn(item.state, "week"))
+        item.stateTypes.week = "Date | null";
+    }
     if (page === "histogram-chart" && Object.hasOwn(item.state, "bins"))
       item.stateTypes.bins = "number | 'sturges'";
     if (page === "icon" && Object.hasOwn(item.state, "renderers")) {

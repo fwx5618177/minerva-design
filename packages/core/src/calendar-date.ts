@@ -35,6 +35,21 @@ export function sameMonth(a: Date, b: Date): boolean {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth();
 }
 
+/**
+ * First day (local midnight) of the week containing `date`, for weeks that
+ * start on `firstDayOfWeek` (0 = Sunday ... 6 = Saturday; anything else
+ * falls back to Monday).
+ */
+export function weekStart(date: Date, firstDayOfWeek = 1): Date {
+  const first =
+    Number.isInteger(firstDayOfWeek) &&
+    firstDayOfWeek >= 0 &&
+    firstDayOfWeek <= 6
+      ? firstDayOfWeek
+      : 1;
+  return addDays(date, -((date.getDay() - first + 7) % 7));
+}
+
 const STRICT_DAY_KEY = /^(\d{4})-(\d{2})-(\d{2})$/;
 const LOOSE_DAY_KEY = /^\s*(\d{4})-(\d{1,2})-(\d{1,2})\s*$/;
 

@@ -76,3 +76,55 @@ export const toSvgDataUri = (
       color: options.color ?? "#000",
     }),
   )}`;
+
+const BASE64 =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+/**
+ * UTF-8 bytes of a string as base64. Written out because the runtimes that
+ * need base64 data URIs (mini programs) have neither `btoa` nor `TextEncoder`.
+ */
+export function utf8ToBase64(text: string): string {
+  const bytes: number[] = [];
+  for (const char of text) {
+    const code = char.codePointAt(0)!;
+    if (code < 0x80) bytes.push(code);
+    else if (code < 0x800) bytes.push(0xc0 | (code >> 6), 0x80 | (code & 63));
+    else if (code < 0x10000)
+      bytes.push(
+        0xe0 | (code >> 12),
+        0x80 | ((code >> 6) & 63),
+        0x80 | (code & 63),
+      );
+    else
+      bytes.push(
+        0xf0 | (code >> 18),
+        0x80 | ((code >> 12) & 63),
+        0x80 | ((code >> 6) & 63),
+        0x80 | (code & 63),
+      );
+  }
+  let out = "";
+  for (let i = 0; i < bytes.length; i += 3) {
+    const [a, b, c] = [bytes[i]!, bytes[i + 1], bytes[i + 2]];
+    const chunk = (a << 16) | ((b ?? 0) << 8) | (c ?? 0);
+    out +=
+      BASE64[chunk >> 18]! +
+      BASE64[(chunk >> 12) & 63]! +
+      (b === undefined ? "=" : BASE64[(chunk >> 6) & 63]!) +
+      (c === undefined ? "=" : BASE64[chunk & 63]!);
+  }
+  return out;
+}
+
+/**
+ * An icon as a base64 `data:image/svg+xml;base64,` URI: for image hosts that
+ * reject percent-encoded SVG, such as the `<image>` of WeChat mini programs
+ */
+export const toSvgBase64DataUri = (
+  icon: IconDefinition,
+  options: IconSvgOptions = {},
+): string =>
+  `data:image/svg+xml;base64,${utf8ToBase64(
+    toSvg(icon, { ...options, color: options.color ?? "#000" }),
+  )}`;

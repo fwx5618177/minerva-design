@@ -24,6 +24,7 @@ import { ThemeScopeContext } from "../internal/themeScope";
 export function ThemeProvider({
   defaultTheme,
   defaultPalette,
+  primaryColor,
   disableStorage = false,
   locale,
   onThemeChange,
@@ -36,6 +37,7 @@ export function ThemeProvider({
     <ConfigProvider
       theme={defaultTheme ?? (isRoot ? "system" : undefined)}
       palette={defaultPalette}
+      primaryColor={primaryColor}
       persist={!disableStorage}
       locale={locale}
       onThemeChange={

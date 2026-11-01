@@ -5,7 +5,7 @@
 // Public CSS variables (set them on the indicator or any ancestor):
 // @css-var --progress-width Width of a linear indicator with the default width
 // @css-var --progress-bar-height Thickness of the bar (every size)
-// @css-var --progress-track-color Color of the bar track
+// @css-var --progress-track-color Color of the bar track (and of the determinate circle track)
 // @css-var --progress-radius Corner radius of the bar track (defaults to --radius-sm)
 // @css-var --progress-size Size of the round indicators (spinner / circle / wave; every size)
 .progressIndicator {
@@ -40,15 +40,35 @@
 .current {
   --progress-indicator-color: currentColor;
 }
+.success {
+  --progress-indicator-color: var(--success-color);
+}
+.warning {
+  --progress-indicator-color: var(--warning-color);
+}
+.danger {
+  --progress-indicator-color: var(--danger-color);
+}
+.info {
+  --progress-indicator-color: var(--info-color);
+}
 
 .label {
   min-width: 0;
-  overflow-wrap: anywhere;
+  // wraps between words first; a word longer than the line still breaks
+  overflow-wrap: break-word;
+}
+
+// Formatted value of a determinate indicator (showValue)
+.value {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
 }
 
 // Round indicators: the internal icons draw at 1em, so the size is a font-size
 .spinner,
 .circle,
+.ring,
 .waveContainer {
   flex-shrink: 0;
   color: var(--progress-indicator-color);
@@ -84,10 +104,42 @@
   }
 }
 
+// Determinate circle: a track and an arc starting at 12 o'clock
+.ring {
+  transform: rotate(-90deg);
+
+  circle {
+    fill: none;
+    stroke-width: 2.5;
+  }
+
+  .ringTrack {
+    stroke: var(--progress-track-color, var(--surface-muted-color));
+  }
+
+  .ringArc {
+    stroke: var(--progress-indicator-color);
+    stroke-linecap: round;
+    transition: stroke-dasharray 0.3s ease;
+  }
+
+  @media (forced-colors: active) {
+    .ringTrack {
+      stroke: GrayText;
+    }
+    .ringArc {
+      stroke: Highlight;
+    }
+  }
+}
+
 .barContainer,
 .dottedBarContainer {
-  flex: 1 1 auto;
+  // the track takes the space the label and value leave (they stay on one
+  // line when there is room), down to a visible minimum
+  flex: 1 1 0;
   width: 100%;
+  min-width: min(4rem, 100%);
   height: var(--progress-bar-height, 0.5rem);
   background-color: var(--progress-track-color, var(--surface-muted-color));
   border-radius: var(--progress-radius, var(--radius-sm));
@@ -130,6 +182,13 @@
     background-color: var(--progress-indicator-color);
     width: 50%;
     animation: barAnimation 2s linear infinite;
+
+    // Determinate fill: the width is set inline from the value
+    &.determinate {
+      border-radius: inherit;
+      animation: none;
+      transition: width 0.3s ease;
+    }
   }
 
   .dottedBar {
@@ -191,5 +250,10 @@
   .dottedBar,
   .wave {
     animation-duration: 6s;
+  }
+  // Value changes jump instead of sliding
+  .barContainer .bar.determinate,
+  .ring .ringArc {
+    transition: none;
   }
 }

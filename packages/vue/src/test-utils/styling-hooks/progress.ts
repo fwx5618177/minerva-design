@@ -13,4 +13,14 @@ export default [
         { icon: () => h("svg") },
       ),
   },
+  {
+    name: "determinate value",
+    render: () =>
+      h(ProgressIndicator, {
+        variant: "circle",
+        color: "success",
+        value: 40,
+        showValue: true,
+      }),
+  },
 ] satisfies HookScenario[];

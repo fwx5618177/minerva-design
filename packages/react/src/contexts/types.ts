@@ -16,6 +16,8 @@ import type {
   ThemeMode,
   ThemeName,
   SupportedLanguage,
+  PrimaryColor,
+  PrimaryColorPair,
 } from "@minerva/core";
 
 // Theme object types live in @minerva/core (framework-agnostic); re-exported
@@ -33,6 +35,8 @@ export type {
   CustomBilingualTheme,
   ThemeMap,
   Theme,
+  PrimaryColor,
+  PrimaryColorPair,
 } from "@minerva/core";
 
 /**
@@ -97,6 +101,12 @@ export interface ConfigContextProps {
    */
   palette?: Palette | null;
   /**
+   * Brand color in effect (normalized light / dark pair, see
+   * `ConfigProvider`'s `primaryColor`), `null` when the theme / palette
+   * primary color applies
+   */
+  primaryColor?: PrimaryColorPair | null;
+  /**
    * Applied design axes (`data-density` / `data-radius` / `data-shadow` /
    * `data-font-scale`) and the preset they come from
    */
@@ -126,6 +136,21 @@ export interface ConfigContextProviderProps {
    * @default null (nested: the parent's palette)
    */
   palette?: Palette | null;
+  /**
+   * Brand color: sets `--primary-color` and recomputes every token derived
+   * from it (hover, active, subtle, border and text roles, selected,
+   * focus ring, and the accent when the palette has no accent of its own)
+   * with the default theme's formulas, without changing the light / dark
+   * mode. A single color applies to light mode and gets a dark-mode value
+   * lightened for contrast on dark surfaces (WCAG 4.5:1); pass
+   * `{ light, dark }` to choose both. Wins over the primary color of the
+   * theme and of the palette. Accepts hex, `rgb()` / `rgba()` and the basic
+   * named colors; an invalid value is ignored (development warning). A
+   * nested provider inherits its parent's brand color unless set (`null`
+   * restores the theme's own), and scopes an override to its subtree.
+   * @default null (nested: the parent's brand color)
+   */
+  primaryColor?: PrimaryColor | null;
   /**
    * Persist theme and palette changes in the `theme` / `palette` cookies and
    * restore them after hydration (pair with `THEME_INIT_SCRIPT` for SSR).
@@ -212,6 +237,12 @@ export interface ThemeProviderProps {
    * @default null (nested: the parent's palette)
    */
   defaultPalette?: Palette | null;
+  /**
+   * Brand color, as `ConfigProvider`'s `primaryColor` (a color, or
+   * `{ light, dark }`); the light / dark mode stays the user's choice
+   * @default null (nested: the parent's brand color)
+   */
+  primaryColor?: PrimaryColor | null;
   /**
    * Do not read / write the theme cookies (tests, embedded previews). Nested
    * providers never use the cookies.

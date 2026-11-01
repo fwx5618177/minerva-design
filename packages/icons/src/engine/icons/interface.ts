@@ -50,12 +50,37 @@ export const bellOffIcon: IconDefinition = {
   ],
 };
 
+/** Bell ringing, with sound arcs */
+export const bellRingIcon: IconDefinition = {
+  name: "bell-ring",
+  category: "interface",
+  tags: ["notification", "alarm", "ringing", "reminder"],
+  paths: [
+    "M18 15V9.5a6 6 0 0 0-12 0V15l-1.5 2.5h15Z",
+    "M10 20a2.2 2.2 0 0 0 4 0",
+    "M3.54 6.42A9 9 0 0 1 6.84 2.13",
+    "M17.16 2.13A9 9 0 0 1 20.46 6.42",
+  ],
+};
+
 /** Bookmark ribbon */
 export const bookmarkIcon: IconDefinition = {
   name: "bookmark",
   category: "interface",
   tags: ["save", "favorite", "saved", "read later"],
   paths: ["M8 3h8a2 2 0 0 1 2 2v16l-6-4-6 4V5a2 2 0 0 1 2-2Z"],
+};
+
+/** Bookmark ribbon with a plus sign */
+export const bookmarkPlusIcon: IconDefinition = {
+  name: "bookmark-plus",
+  category: "interface",
+  tags: ["add bookmark", "save", "favorite", "read later"],
+  paths: [
+    "M8 3h8a2 2 0 0 1 2 2v16l-6-4-6 4V5a2 2 0 0 1 2-2Z",
+    "M12 7v5",
+    "M9.5 9.5h5",
+  ],
 };
 
 /** Five-pointed star */
@@ -107,6 +132,53 @@ export const calendarIcon: IconDefinition = {
     "M8 3v4",
     "M16 3v4",
     "M3 10h18",
+  ],
+};
+
+/** Calendar page with a check mark */
+export const calendarCheckIcon: IconDefinition = {
+  name: "calendar-check",
+  category: "interface",
+  tags: ["date", "booked", "confirmed", "attendance"],
+  paths: [
+    "M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2Z",
+    "M8 3v4",
+    "M16 3v4",
+    "M3 10h18",
+    "M8.5 15.5l2.5 2.5 4.5-5",
+  ],
+};
+
+/** Calendar page with a plus sign */
+export const calendarPlusIcon: IconDefinition = {
+  name: "calendar-plus",
+  category: "interface",
+  tags: ["date", "add event", "schedule", "new"],
+  paths: [
+    "M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2Z",
+    "M8 3v4",
+    "M16 3v4",
+    "M3 10h18",
+    "M12 13v5",
+    "M9.5 15.5h5",
+  ],
+};
+
+/** Calendar page with day dots */
+export const calendarDaysIcon: IconDefinition = {
+  name: "calendar-days",
+  category: "interface",
+  tags: ["date", "month", "days", "agenda"],
+  paths: [
+    "M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2Z",
+    "M8 3v4",
+    "M16 3v4",
+    "M3 10h18",
+    "M8 14h.01",
+    "M12 14h.01",
+    "M16 14h.01",
+    "M8 17.5h.01",
+    "M12 17.5h.01",
   ],
 };
 
@@ -378,5 +450,23 @@ export const smileIcon: IconDefinition = {
     "M8 14c1 1.5 2.4 2.3 4 2.3s3-.8 4-2.3",
     "M9 9.5h.01",
     "M15 9.5h.01",
+  ],
+};
+
+/** Party popper bursting with confetti */
+export const partyPopperIcon: IconDefinition = {
+  name: "party-popper",
+  category: "interface",
+  tags: ["celebrate", "party", "congratulations", "confetti"],
+  paths: [
+    "M3 21l4.5-12 7.5 7.5Z",
+    "M5.25 15l3.75 3.75",
+    "M13.5 10.5L16 8",
+    "M10.5 7l1-2.5",
+    "M17 13.5l2.5-1",
+    "M14.5 4h.01",
+    "M20 9.5h.01",
+    "M19.5 3v2",
+    "M18.5 4h2",
   ],
 };

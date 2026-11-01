@@ -86,4 +86,67 @@ describe("ProgressIndicator", () => {
     expect(full.classes()).toContain("fullWidth");
     expect((full.element as HTMLElement).style.width).toBe("");
   });
+
+  it("fills a determinate bar and exposes the clamped value", async () => {
+    const wrapper = mount(ProgressIndicator, {
+      props: {
+        variant: "bar",
+        value: 3,
+        max: 4,
+        showValue: true,
+        color: "success",
+      },
+    });
+    const root = wrapper.element as HTMLElement;
+    expect(root.classList).toContain("success");
+    expect(root.getAttribute("aria-label")).toBe("Progress");
+    expect(root.getAttribute("aria-valuemin")).toBe("0");
+    expect(root.getAttribute("aria-valuemax")).toBe("4");
+    expect(root.getAttribute("aria-valuenow")).toBe("3");
+    expect(root.hasAttribute("aria-valuetext")).toBe(false);
+    const fill = root.querySelector(".bar") as HTMLElement;
+    expect(fill.classList).toContain("determinate");
+    expect(fill.style.width).toBe("75%");
+    expect(root.querySelector(".value")?.textContent).toBe("75%");
+
+    await wrapper.setProps({ value: 500, max: 0 });
+    expect(root.getAttribute("aria-valuemax")).toBe("100");
+    expect(root.getAttribute("aria-valuenow")).toBe("100");
+
+    await wrapper.setProps({
+      value: -2,
+      format: (value: number, max: number) => `${value}/${max}`,
+    });
+    expect(root.getAttribute("aria-valuenow")).toBe("0");
+    expect(root.getAttribute("aria-valuetext")).toBe("0/100");
+    expect(root.querySelector(".value")?.textContent).toBe("0/100");
+  });
+
+  it("renders a value slot and a determinate arc for the circle", () => {
+    const wrapper = mount(ProgressIndicator, {
+      props: { variant: "circle", value: 25, showValue: true },
+      slots: {
+        value: ({ value, max }: { value: number; max: number }) =>
+          h("b", `${value} of ${max}`),
+      },
+    });
+    const root = wrapper.element as HTMLElement;
+    expect(root.querySelector("svg.ring")).not.toBeNull();
+    expect(
+      root.querySelector(".ringArc")?.getAttribute("stroke-dasharray"),
+    ).toBe("25 100");
+    expect(root.querySelector(".value b")?.textContent).toBe("25 of 100");
+  });
+
+  it.each(["spinner", "wave", "dottedBar"] as const)(
+    "ignores value for the %s variant",
+    (variant) => {
+      const root = mount(ProgressIndicator, {
+        props: { variant, value: 50, showValue: true },
+      }).element as HTMLElement;
+      expect(root.hasAttribute("aria-valuenow")).toBe(false);
+      expect(root.getAttribute("aria-label")).toBe("Loading");
+      expect(root.querySelector(".value")).toBeNull();
+    },
+  );
 });

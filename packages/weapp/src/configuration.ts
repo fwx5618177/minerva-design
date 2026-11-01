@@ -1,15 +1,21 @@
 import { appBaseInfo } from "./system-info";
 import {
   createTranslator,
+  formatDevMessage,
+  invalidPrimaryColorMessage,
   messages,
   mergeMessages,
   miniTokenClassNames,
+  PRIMARY_DERIVED_TOKENS,
+  resolvePrimaryColor,
   resolveTokens,
   githubDark,
+  type ComponentTheme,
   type Messages,
   type TranslateOptions,
   type DesignOptions,
   type Palette,
+  type PrimaryColorPair,
 } from "@minerva/core";
 type Instance = WechatMiniprogram.Component.TrivialInstance;
 type Control = { template: string; definition: WechatMiniprogram.IAnyObject };
@@ -18,6 +24,10 @@ export interface NativeConfiguration {
   resolvedMode: "light" | "dark";
   theme: unknown;
   palette: Palette | null;
+  /** Brand color of the tree (own valid one, else the parent's) */
+  primaryColor: PrimaryColorPair | null;
+  /** A provider of the tree wrote brand tokens (nested ones must re-write them) */
+  brandScope: boolean;
   design: DesignOptions;
   locale: { language: string };
   dir: string;
@@ -42,6 +52,8 @@ const base: NativeConfiguration = {
   resolvedMode: "light",
   theme: "light",
   palette: null,
+  primaryColor: null,
+  brandScope: false,
   design: {},
   locale: { language: "en" },
   dir: "ltr",
@@ -61,6 +73,25 @@ export function nativeTranslate(
   })(key, options);
 }
 const t = nativeTranslate;
+const BRAND_TOKENS = ["primary-color", ...PRIMARY_DERIVED_TOKENS];
+const warnedPrimaryColors = new Set<string>();
+/** Own valid brand color (`""`: unset), else the parent's; invalid ones warn once */
+function brandOf(
+  value: unknown,
+  inherited: PrimaryColorPair | null,
+): PrimaryColorPair | null {
+  if (value === "" || value === undefined) return inherited;
+  const own = resolvePrimaryColor(value);
+  if (own !== undefined) return own;
+  const key = JSON.stringify(value);
+  if (!warnedPrimaryColors.has(key)) {
+    warnedPrimaryColors.add(key);
+    console.error(
+      formatDevMessage("ConfigProvider", invalidPrimaryColorMessage(value)),
+    );
+  }
+  return inherited;
+}
 function notify(self: Instance) {
   const config = contexts.get(self)!;
   for (const listener of subscriptions.get(self) || []) listener(config);
@@ -132,11 +163,14 @@ function syncProvider(self: Instance) {
     typeof d.locale === "string"
       ? d.locale
       : (d.locale?.language ?? parent.locale.language);
+  const primaryColor = brandOf(d.primaryColor, parent.primaryColor);
   const config: NativeConfiguration = {
     theme,
     mode,
     resolvedMode,
     palette,
+    primaryColor,
+    brandScope: primaryColor !== null || parent.brandScope,
     design: { ...parent.design, ...d.design },
     locale: { language },
     dir: d.dir || parent.dir,
@@ -152,15 +186,29 @@ function syncProvider(self: Instance) {
           : theme
         : undefined;
   const tokenOptions = { mode: resolvedMode, palette, design: config.design };
+  // the brand color wins over a custom theme's primary tokens
+  const themeOverrides =
+    custom && primaryColor
+      ? (Object.fromEntries(
+          Object.entries(custom).filter(([key]) => !BRAND_TOKENS.includes(key)),
+        ) as Partial<ComponentTheme>)
+      : (custom as Partial<ComponentTheme> | undefined);
+  const css =
+    themeOverrides || config.brandScope
+      ? resolveTokens({
+          ...tokenOptions,
+          primaryColor,
+          overrides: themeOverrides,
+        }).css
+      : {};
+  // Custom themes: every token inline. Brand color: its tokens (also when
+  // only an ancestor has one, to restore / follow this provider's own mode)
+  const styleKeys = themeOverrides
+    ? Object.keys(css)
+    : BRAND_TOKENS.filter((key) => key in css);
   self.setData({
     themeClass: miniTokenClassNames(tokenOptions),
-    themeStyle: custom
-      ? Object.entries(
-          resolveTokens({ ...tokenOptions, overrides: custom }).css,
-        )
-          .map(([k, v]) => `--${k}:${v}`)
-          .join(";")
-      : "",
+    themeStyle: styleKeys.map((k) => `--${k}:${css[k]}`).join(";"),
     effectiveDir: config.dir,
     localeLanguage: language,
     localeLabels: labels(self),
@@ -327,6 +375,7 @@ export function enhanceConfiguration(
       mode: text(),
       theme: optional(""),
       palette: optional(""),
+      primaryColor: optional(""),
       design: optional({}),
       locale: optional(),
       dir: text(),
@@ -344,7 +393,9 @@ export function enhanceConfiguration(
       effectiveDir: "ltr",
     };
     def.observers = {
-      "mode,theme,palette,design,locale,dir": function (this: Instance) {
+      "mode,theme,palette,primaryColor,design,locale,dir": function (
+        this: Instance,
+      ) {
         syncProvider(this);
       },
     };

@@ -12,7 +12,13 @@ import {
   type ResolvedThemeMode,
   type ComponentTheme,
   type SupportedLanguage,
+  type PrimaryColor,
+  type PrimaryColorPair,
   resolveTokens,
+  resolvePrimaryColor,
+  invalidPrimaryColorMessage,
+  formatDevMessage,
+  PRIMARY_DERIVED_TOKENS,
   githubDark,
   createTranslator,
   messages,
@@ -39,11 +45,24 @@ interface ThemeContextValue {
   design: DesignOptions;
   setDesign: (design: DesignOptions) => void;
   locale: string;
+  /** Brand color inherited by nested providers (`null`: none) */
+  primaryColor: PrimaryColorPair | null;
+  /** A provider of the tree wrote brand tokens (nested ones must re-write them) */
+  brandScope: boolean;
 }
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 export interface ConfigProviderProps extends NativeProps, DesignOptions {
   theme?: ConfigProviderTheme;
   palette?: Palette | null;
+  /**
+   * Brand color: a CSS color for both modes (the dark-mode value is derived
+   * for contrast on dark surfaces) or a `{ light, dark }` pair. Recomputes
+   * every token derived from `primary-color` and wins over the palette /
+   * custom theme's primary color. Unset: the parent provider's; `null`: the
+   * theme's own. Invalid colors are ignored with a development warning.
+   * @default undefined
+   */
+  primaryColor?: PrimaryColor | null;
   locale?: string | Locale;
   design?: DesignOptions;
   persist?: boolean;
@@ -57,6 +76,31 @@ function readPreference(key: string) {
     return undefined;
   }
 }
+const BRAND_TOKENS = ["primary-color", ...PRIMARY_DERIVED_TOKENS];
+const warnedPrimaryColors = new Set<string>();
+/** Own valid brand color, else the parent's (invalid ones warn once) */
+function brandOf(
+  value: PrimaryColor | null | undefined,
+  inherited: PrimaryColorPair | null | undefined,
+): PrimaryColorPair | null {
+  const own = resolvePrimaryColor(value);
+  if (process.env.NODE_ENV !== "production" && own === undefined) {
+    const key = JSON.stringify(value);
+    if (!warnedPrimaryColors.has(key)) {
+      warnedPrimaryColors.add(key);
+      console.error(
+        formatDevMessage("ConfigProvider", invalidPrimaryColorMessage(value)),
+      );
+    }
+  }
+  return (value !== undefined && own !== undefined ? own : inherited) ?? null;
+}
+/** A custom theme without its primary tokens (the brand color wins) */
+function withoutBrandTokens(theme: object): Partial<ComponentTheme> {
+  return Object.fromEntries(
+    Object.entries(theme).filter(([key]) => !BRAND_TOKENS.includes(key)),
+  ) as Partial<ComponentTheme>;
+}
 function systemTheme(): ResolvedThemeMode {
   try {
     return Taro.getSystemInfoSync().theme === "dark" ? "dark" : "light";
@@ -67,6 +111,7 @@ function systemTheme(): ResolvedThemeMode {
 export function ConfigProvider({
   theme,
   palette,
+  primaryColor,
   locale,
   design,
   preset,
@@ -156,17 +201,28 @@ export function ConfigProvider({
       : definition === "github-dark"
         ? githubDark
         : undefined;
+  const brand = brandOf(primaryColor, parent?.primaryColor);
+  const brandScope = brand !== null || (parent?.brandScope ?? false);
   const tokens = resolveTokens({
     mode: resolved,
     palette: currentPalette,
+    primaryColor: brand,
     design: options,
-    overrides: custom,
+    overrides: custom && brand ? withoutBrandTokens(custom) : custom,
   });
+  const tokenStyle = (keys: readonly string[]) =>
+    Object.fromEntries(
+      keys
+        .filter((key) => key in tokens.css)
+        .map((key) => [`--${key}`, tokens.css[key]]),
+    );
+  // Custom themes: every token inline. Brand color: its tokens (also when
+  // only an ancestor has one, to restore / follow this provider's own mode)
   const customStyle = custom
-    ? Object.fromEntries(
-        Object.entries(tokens.css).map(([key, value]) => [`--${key}`, value]),
-      )
-    : {};
+    ? tokenStyle(Object.keys(tokens.css))
+    : brandScope
+      ? tokenStyle(BRAND_TOKENS)
+      : {};
   const setTheme = (next: ThemeMode) => {
     setDefinition(next);
     onThemeChange?.(next);
@@ -203,6 +259,8 @@ export function ConfigProvider({
           (typeof locale === "string" ? locale : locale?.language) ??
           parent?.locale ??
           "en",
+        primaryColor: brand,
+        brandScope,
       }}
     >
       <View
@@ -228,6 +286,8 @@ export function ConfigProvider({
 export interface ThemeProviderProps extends NativeProps {
   defaultTheme?: ThemeMode;
   defaultPalette?: Palette | null;
+  /** Brand color (see `ConfigProvider` `primaryColor`) @default undefined */
+  primaryColor?: PrimaryColor | null;
   disableStorage?: boolean;
   locale?: string | Locale;
   onThemeChange?: (theme: ThemeMode) => void;
@@ -236,6 +296,7 @@ export interface ThemeProviderProps extends NativeProps {
 export function ThemeProvider({
   defaultTheme,
   defaultPalette,
+  primaryColor,
   children,
   locale,
   disableStorage = false,
@@ -247,6 +308,7 @@ export function ThemeProvider({
     <ConfigProvider
       theme={defaultTheme ?? (parent ? undefined : "system")}
       palette={defaultPalette}
+      primaryColor={primaryColor}
       persist={!disableStorage}
       locale={locale}
       onThemeChange={onThemeChange}

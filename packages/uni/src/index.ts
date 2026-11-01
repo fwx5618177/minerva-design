@@ -59,6 +59,7 @@ export { default as Toast } from "./Toast.vue";
 export { default as Tooltip } from "./Tooltip.vue";
 export { default as Upload } from "./Upload.vue";
 export { default as VirtualList } from "./VirtualList.vue";
+export { default as WeekStrip } from "./WeekStrip.vue";
 export { miniTokenClassNames } from "@minerva/core";
 export { default as ConfigProvider } from "./ConfigProvider.vue";
 export { default as ThemeProvider } from "./ThemeProvider.vue";

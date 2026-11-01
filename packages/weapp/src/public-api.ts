@@ -80,6 +80,11 @@ const configurations: Record<string, Method> = {
     "configure(config: CalendarConfig): void",
     "disabledDate(day), getDayLabel(day,count), getEventsLabel(day); dates are serialized YYYY-MM-DD.",
   ),
+  weekStrip: method(
+    "configure",
+    "configure(config: WeekStripConfig): void",
+    "getDayLabel(day, marker) names a day for assistive technologies; dates are serialized YYYY-MM-DD.",
+  ),
   pagination: method(
     "configure",
     "configure(config: PaginationConfig): void",
@@ -481,6 +486,14 @@ const events: Record<string, Event[]> = {
       "eventclick",
       "{ event: { id: string; date: string; title: string } }",
       "Original selected calendar event.",
+    ),
+  ],
+  weekStrip: [
+    value,
+    event(
+      "weekchange",
+      "{ week: string }",
+      "Requested YYYY-MM-DD first day of the visible week.",
     ),
   ],
   pagination: [

@@ -18,6 +18,7 @@
  */
 import {
   computed,
+  h,
   onBeforeUnmount,
   onMounted,
   provide,
@@ -31,13 +32,17 @@ import {
 import {
   designAttributes,
   isPalette,
+  palettes,
   presetPalette,
   resolveDesign,
+  resolvePrimaryColor,
   type Density,
   type DefaultTheme,
   type DesignPreset,
   type FontScale,
   type Palette,
+  type PrimaryColor,
+  type PrimaryColorPair,
   type RadiusScale,
   type ResolvedDesign,
   type ResolvedThemeMode,
@@ -54,6 +59,8 @@ import {
   isBilingualTheme,
   parsePaletteCookie,
   parseThemeCookie,
+  primaryColorCss,
+  primaryColorTheme,
   readCookieValue,
   resolveTheme,
   serializeThemeCookie,
@@ -67,6 +74,7 @@ import {
 import {
   CONFIG_KEY,
   useOptionalConfig,
+  warnInvalidPrimaryColor,
   type ConfigContext,
   type ConfigProviderTheme,
   type Locale,
@@ -81,6 +89,15 @@ const props = withDefaults(
     theme?: ConfigProviderTheme;
     /** Color palette (light / dark / system themes only); `null` for none */
     palette?: Palette | null;
+    /**
+     * Brand color: a CSS color for both modes (the dark-mode value is
+     * derived for contrast on dark surfaces) or a `{ light, dark }` pair.
+     * Recomputes every token derived from `primary-color` and wins over the
+     * palette's primary color; the theme mode stays explicit. Unset: the
+     * parent provider's; `null`: the theme's own. Invalid colors are ignored
+     * with a development warning.
+     */
+    primaryColor?: PrimaryColor | null;
     /** Root only: persist theme and palette in cookies. @default false */
     persist?: boolean;
     /** Language of the built-in texts */
@@ -95,6 +112,7 @@ const props = withDefaults(
   {
     theme: undefined,
     palette: undefined,
+    primaryColor: undefined,
     persist: false,
     locale: undefined,
     preset: undefined,
@@ -174,8 +192,25 @@ const ownsDesign = computed(
     props.shadow !== undefined ||
     props.fontScale !== undefined,
 );
+// Brand color: an invalid one is ignored (inherited, like an unset one)
+const ownBrand = computed(() => resolvePrimaryColor(props.primaryColor));
+watchEffect(() => {
+  if (ownBrand.value === undefined) {
+    warnInvalidPrimaryColor("ConfigProvider", props.primaryColor);
+  }
+});
+const ownsBrand = computed(
+  () =>
+    isRoot ||
+    (props.primaryColor !== undefined && ownBrand.value !== undefined),
+);
 const scoped = computed(
-  () => !isRoot && (ownsTheme.value || ownsPalette.value || ownsDesign.value),
+  () =>
+    !isRoot &&
+    (ownsTheme.value ||
+      ownsPalette.value ||
+      ownsDesign.value ||
+      ownsBrand.value),
 );
 
 const design = computed<ResolvedDesign>(() =>
@@ -236,6 +271,45 @@ const activePalette = computed(() =>
   palette.value && supportsPalette(theme.value) ? palette.value : null,
 );
 
+const brand = computed<PrimaryColorPair | null>(() =>
+  ownsBrand.value ? (ownBrand.value ?? null) : (parent?.primaryColor ?? null),
+);
+
+// Inline tokens of <html> / the scope: the theme's (none with a palette:
+// they come from the stylesheet), then the brand color of the applied mode
+// (custom theme objects without a mode use the light value)
+const inlineTheme = computed<ThemeMap>(() => {
+  const base = activePalette.value
+    ? undefined
+    : resolveTheme(theme.value, systemTheme.value);
+  if (!brand.value) return base ?? ({} as ThemeMap);
+  const mode = resolvedMode.value ?? "light";
+  return {
+    ...base,
+    ...primaryColorTheme(
+      brand.value,
+      mode,
+      activePalette.value ? palettes[activePalette.value][mode] : base,
+    ),
+  } as ThemeMap;
+});
+
+// Root brand color as a style sheet (both modes, keyed on `data-theme`): part
+// of the server-rendered markup, so there is no flash of the default primary
+// color before hydration. Colors are normalized: safe as raw CSS text.
+const rootBrandCss = computed(() => {
+  if (!isRoot || !brand.value) return undefined;
+  const baseOf = (mode: ResolvedThemeMode) =>
+    activePalette.value
+      ? palettes[activePalette.value][mode]
+      : resolveTheme(theme.value, mode);
+  return primaryColorCss(brand.value, {
+    base: { light: baseOf("light"), dark: baseOf("dark") },
+  });
+});
+const BrandStyle = (styleProps: { css: string }) =>
+  h("style", { "data-minerva-primary-color": "", innerHTML: styleProps.css });
+
 // Root: restore cookies once mounted (never during SSR / hydration)
 onMounted(() => {
   if (!isRoot || !props.persist) return;
@@ -291,14 +365,10 @@ if (isRoot) {
       }
       if (activePalette.value) {
         root.dataset.palette = activePalette.value;
-        generateCSSVariables(root.style, {} as ThemeMap);
       } else {
         delete root.dataset.palette;
-        generateCSSVariables(
-          root.style,
-          resolveTheme(theme.value, systemTheme.value),
-        );
       }
+      generateCSSVariables(root.style, inlineTheme.value);
     });
     watchEffect(() => applyDesignAttributes(root, design.value));
     watchEffect(() => setLanguage(props.locale?.language ?? DEFAULT_LANGUAGE));
@@ -343,12 +413,7 @@ onMounted(() => {
     if (resolvedMode.value)
       host.style.setProperty("color-scheme", resolvedMode.value);
     else host.style.removeProperty("color-scheme");
-    generateCSSVariables(
-      host.style,
-      activePalette.value
-        ? ({} as ThemeMap)
-        : resolveTheme(theme.value, systemTheme.value),
-    );
+    generateCSSVariables(host.style, inlineTheme.value);
   });
 });
 
@@ -390,6 +455,7 @@ const context = reactive({
   mode: computed(() => themeModeOf(theme.value)),
   resolvedMode,
   palette,
+  primaryColor: brand,
   design,
   setTheme,
   setPalette,
@@ -418,15 +484,10 @@ const scopeAttributes = computed(() =>
 const scopeStyle = computed<CSSProperties>(() => {
   const style: Record<string, string> = { display: "contents" };
   if (resolvedMode.value) style.colorScheme = resolvedMode.value;
-  if (!activePalette.value) {
-    const tokens = resolveTheme(theme.value, systemTheme.value) as Record<
-      string,
-      unknown
-    >;
-    for (const [key, value] of Object.entries(tokens)) {
-      if (value !== undefined && value !== null && value !== "") {
-        style[`--${key}`] = String(value);
-      }
+  const tokens = inlineTheme.value as Record<string, unknown>;
+  for (const [key, value] of Object.entries(tokens)) {
+    if (value !== undefined && value !== null && value !== "") {
+      style[`--${key}`] = String(value);
     }
   }
   return style as CSSProperties;
@@ -437,5 +498,8 @@ const scopeStyle = computed<CSSProperties>(() => {
   <div v-if="scoped" v-bind="scopeAttributes" :style="scopeStyle">
     <slot />
   </div>
-  <slot v-else />
+  <template v-else>
+    <BrandStyle v-if="rootBrandCss" :css="rootBrandCss" />
+    <slot />
+  </template>
 </template>

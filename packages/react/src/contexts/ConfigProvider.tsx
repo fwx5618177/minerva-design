@@ -24,12 +24,18 @@ import {
   ThemeScopeContext,
   type ThemeScope,
 } from "../internal/themeScope";
+import { warnOnce } from "../internal/devWarnings";
 import {
   designAttributes,
+  formatDevMessage,
+  invalidPrimaryColorMessage,
+  palettes,
   presetPalette,
   resolveDesign,
+  resolvePrimaryColor,
   isPalette,
   type Palette,
+  type PrimaryColorPair,
   type ResolvedDesign,
   type ResolvedThemeMode,
   type ThemeMode,
@@ -43,6 +49,8 @@ import {
   isBilingualTheme,
   parsePaletteCookie,
   parseThemeCookie,
+  primaryColorCss,
+  primaryColorTheme,
   readCookieValue,
   resolveTheme,
   serializeThemeCookie,
@@ -151,6 +159,10 @@ const DESIGN_ATTRIBUTE_NAMES = [
  * - with a `palette` and a light / dark / system theme: `data-palette` on
  *   `<html>`, tokens come from the palette blocks of `style.css`
  * - otherwise the theme's tokens are written as inline CSS variables
+ * - with a `primaryColor`: the brand tokens of the resolved mode as inline
+ *   CSS variables (over the theme / palette ones), plus a `<style>` element
+ *   with both modes' values (keyed on `data-theme`) so server-rendered
+ *   markup has the brand color before hydration
  * - the design axes that differ from the standard look: `data-density`,
  *   `data-radius`, `data-shadow`, `data-font-scale` on `<html>`
  * - the `theme` / `palette` cookies (`persist`) and the React library's global language
@@ -167,6 +179,7 @@ const DESIGN_ATTRIBUTE_NAMES = [
 export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
   theme: themeProp,
   palette: paletteProp,
+  primaryColor: primaryColorProp,
   persist = false,
   onThemeChange,
   onPaletteChange,
@@ -190,6 +203,21 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
         : undefined;
   const ownsTheme = isRoot || themeProp !== undefined;
   const ownsPalette = isRoot || paletteInput !== undefined;
+  const ownBrand = resolvePrimaryColor(primaryColorProp);
+  if (process.env.NODE_ENV !== "production") {
+    if (ownBrand === undefined) {
+      warnOnce(
+        `ConfigProvider:primaryColor:${JSON.stringify(primaryColorProp)}`,
+        formatDevMessage(
+          "ConfigProvider",
+          invalidPrimaryColorMessage(primaryColorProp),
+        ),
+      );
+    }
+  }
+  // an invalid brand color is ignored (inherited, like an unset one)
+  const ownsBrand =
+    isRoot || (primaryColorProp !== undefined && ownBrand !== undefined);
   const ownsDesign =
     isRoot ||
     preset !== undefined ||
@@ -198,7 +226,8 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
     shadow !== undefined ||
     fontScale !== undefined;
   // a nested provider overriding the theme, palette or design of its subtree
-  const scoped = !isRoot && (ownsTheme || ownsPalette || ownsDesign);
+  const scoped =
+    !isRoot && (ownsTheme || ownsPalette || ownsDesign || ownsBrand);
 
   // Design axes: unset ones follow the parent (a nested preset resets them)
   const parentDesign = isRoot ? undefined : parent?.design;
@@ -277,6 +306,58 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
   const resolvedMode = resolvedModeOf(theme, systemTheme);
   const activePalette = palette && supportsPalette(theme) ? palette : null;
 
+  // Brand color: own (root: none unless set) or the parent's, as a stable pair
+  const brandInput: PrimaryColorPair | null = ownsBrand
+    ? (ownBrand ?? null)
+    : (parent?.primaryColor ?? null);
+  const brandLight = brandInput?.light;
+  const brandDark = brandInput?.dark;
+  const brand = useMemo<PrimaryColorPair | null>(
+    () =>
+      brandLight && brandDark ? { light: brandLight, dark: brandDark } : null,
+    [brandLight, brandDark],
+  );
+
+  // Inline tokens of <html> / the scope: the theme's (none with a palette:
+  // they come from the stylesheet), then the brand color of the applied mode
+  // (custom theme objects without a mode use the light value)
+  const inlineTheme = useMemo<ThemeMap>(() => {
+    const base = activePalette
+      ? undefined
+      : (resolveTheme(theme, systemTheme) as ThemeMap);
+    if (!brand) return base ?? ({} as ThemeMap);
+    const brandMode = resolvedMode ?? "light";
+    return {
+      ...base,
+      ...primaryColorTheme(
+        brand,
+        brandMode,
+        activePalette ? palettes[activePalette][brandMode] : base,
+      ),
+    } as ThemeMap;
+  }, [activePalette, theme, systemTheme, brand, resolvedMode]);
+
+  // Root brand color as a style sheet (both modes, keyed on `data-theme`):
+  // part of the server-rendered markup, so there is no flash of the default
+  // primary color before hydration. Independent of the system scheme (the
+  // server cannot know it), so it hydrates as-is.
+  const rootBrandCss = useMemo(
+    () =>
+      isRoot && brand
+        ? primaryColorCss(brand, {
+            base: {
+              light: activePalette
+                ? palettes[activePalette].light
+                : (resolveTheme(theme, "light") as ThemeMap),
+              dark: activePalette
+                ? palettes[activePalette].dark
+                : (resolveTheme(theme, "dark") as ThemeMap),
+            },
+          })
+        : undefined,
+    [isRoot, brand, activePalette, theme],
+  );
+
   // Root: remember what <html> looked like before, and restore it on unmount.
   // (Declared before the effect below so it runs first.)
   useEffect(() => {
@@ -314,13 +395,13 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
     }
     if (activePalette) {
       root.dataset.palette = activePalette;
-      // Palette tokens come from the stylesheet: drop inline theme variables
-      generateCSSVariables(root.style, {} as ThemeMap);
     } else {
       delete root.dataset.palette;
-      generateCSSVariables(root.style, resolveTheme(theme, systemTheme));
     }
-  }, [isRoot, theme, systemTheme, resolvedMode, activePalette]);
+    // Palette tokens come from the stylesheet: only the theme's (without a
+    // palette) and the brand color's are inline
+    generateCSSVariables(root.style, inlineTheme);
+  }, [isRoot, resolvedMode, activePalette, inlineTheme]);
 
   // Root: apply the design axes to <html> (standard values are omitted)
   useEffect(() => {
@@ -358,11 +439,8 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
 
   // Scoped theme: tokens / attributes of the subtree
   const scopeVariables = useMemo(
-    () =>
-      scoped && !activePalette
-        ? themeVariables(resolveTheme(theme, systemTheme))
-        : undefined,
-    [scoped, activePalette, theme, systemTheme],
+    () => (scoped ? themeVariables(inlineTheme) : undefined),
+    [scoped, inlineTheme],
   );
 
   // Portal container of a scoped provider: carries the same scope attributes
@@ -390,11 +468,8 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
     if (resolvedMode)
       portalHost.style.setProperty("color-scheme", resolvedMode);
     else portalHost.style.removeProperty("color-scheme");
-    generateCSSVariables(
-      portalHost.style,
-      activePalette ? ({} as ThemeMap) : resolveTheme(theme, systemTheme),
-    );
-  }, [portalHost, resolvedMode, activePalette, theme, systemTheme, design]);
+    generateCSSVariables(portalHost.style, inlineTheme);
+  }, [portalHost, resolvedMode, activePalette, inlineTheme, design]);
 
   const onThemeChangeRef = useRef(onThemeChange);
   const onPaletteChangeRef = useRef(onPaletteChange);
@@ -452,6 +527,7 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
       mode: themeModeOf(theme),
       resolvedMode,
       palette,
+      primaryColor: brand,
       design,
       setTheme,
       setPalette,
@@ -462,6 +538,7 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
       currentLocale,
       resolvedMode,
       palette,
+      brand,
       design,
       setTheme,
       setPalette,
@@ -498,7 +575,12 @@ export const ConfigProvider: React.FC<ConfigContextProviderProps> = ({
             {children}
           </div>
         ) : (
-          children
+          <>
+            {rootBrandCss && (
+              <style data-minerva-primary-color="">{rootBrandCss}</style>
+            )}
+            {children}
+          </>
         )}
       </ConfigContext.Provider>
     </ThemeScopeContext.Provider>

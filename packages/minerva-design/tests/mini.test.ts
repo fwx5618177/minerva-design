@@ -103,6 +103,16 @@ describe("native mini-program distribution", () => {
     );
     expect(existsSync(file("taro/index.d.ts"))).toBe(true);
   });
+  it("Taro icons are a separate entry on the shared icon core", () => {
+    const icons = readFileSync(file("taro/icons.js"), "utf8");
+    expect(icons).toContain('"../icons/core.js"');
+    expect(icons).toContain("SearchIcon");
+    expect(icons).not.toMatch(/@minerva\//);
+    expect(existsSync(file("taro/icons.d.ts"))).toBe(true);
+    // the main entry never bundles the named icons nor the icon set
+    const index = readFileSync(file("taro/index.js"), "utf8");
+    expect(index).not.toMatch(/SearchIcon|icons\/core/);
+  });
 });
 
 describe("complete mini renderer distribution", () => {

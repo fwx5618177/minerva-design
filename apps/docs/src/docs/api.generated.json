@@ -2267,6 +2267,12 @@
         "description": "Active palette (`data-palette` on `<html>`, or on the scope element of a nested provider), `null` for Minerva's default look"
       },
       {
+        "name": "primaryColor",
+        "type": "PrimaryColorPair | null",
+        "required": false,
+        "description": "Brand color in effect (normalized light / dark pair, see `ConfigProvider`'s `primaryColor`), `null` when the theme / palette primary color applies"
+      },
+      {
         "name": "design",
         "type": "ResolvedDesign",
         "required": false,
@@ -2305,6 +2311,13 @@
         "required": false,
         "default": "null (nested: the parent's palette)",
         "description": "Palette applied with the light / dark / system themes (\"editorial\", \"tech\", \"graphite\", \"cool\"); `null` keeps Minerva's default look. The root provider sets `data-palette` on `<html>`; a nested provider inherits its parent's palette unless set, and scopes an override to its subtree. Palette tokens come from `style.css`."
+      },
+      {
+        "name": "primaryColor",
+        "type": "PrimaryColor | null",
+        "required": false,
+        "default": "null (nested: the parent's brand color)",
+        "description": "Brand color: sets `--primary-color` and recomputes every token derived from it (hover, active, subtle, border and text roles, selected, focus ring, and the accent when the palette has no accent of its own) with the default theme's formulas, without changing the light / dark mode. A single color applies to light mode and gets a dark-mode value lightened for contrast on dark surfaces (WCAG 4.5:1); pass `{ light, dark }` to choose both. Wins over the primary color of the theme and of the palette. Accepts hex, `rgb()` / `rgba()` and the basic named colors; an invalid value is ignored (development warning). A nested provider inherits its parent's brand color unless set (`null` restores the theme's own), and scopes an override to its subtree."
       },
       {
         "name": "persist",
@@ -3801,7 +3814,7 @@
       },
       {
         "name": "--progress-track-color",
-        "description": "Color of the bar track"
+        "description": "Color of the bar track (and of the determinate circle track)"
       },
       {
         "name": "--progress-radius",
@@ -4522,6 +4535,56 @@
       {
         "name": "--virtual-list-loading-padding",
         "description": "Padding of the loading indicator row"
+      }
+    ]
+  },
+  "css:WeekStrip": {
+    "kind": "cssVars",
+    "source": "react/src/components/WeekStrip",
+    "vars": [
+      {
+        "name": "--week-strip-gap",
+        "description": "Space between the day cells"
+      },
+      {
+        "name": "--week-strip-day-height",
+        "description": "Minimum height of a day cell (defaults to 3.5rem; 2.75rem with size=\"small\", 4.5rem with size=\"large\"); cells grow to fit a count badge"
+      },
+      {
+        "name": "--week-strip-radius",
+        "description": "Corner radius of the day cells and buttons (defaults to --radius-md)"
+      },
+      {
+        "name": "--week-strip-hover-background",
+        "description": "Background of a hovered day"
+      },
+      {
+        "name": "--week-strip-selected-background",
+        "description": "Background of the selected day (defaults to --primary-color)"
+      },
+      {
+        "name": "--week-strip-selected-color",
+        "description": "Text color of the selected day"
+      },
+      {
+        "name": "--week-strip-today-color",
+        "description": "Ring and number color marking today"
+      },
+      {
+        "name": "--week-strip-weekday-color",
+        "description": "Text color of the weekday names"
+      },
+      {
+        "name": "--week-strip-marker-background",
+        "description": "Background of the count badge"
+      },
+      {
+        "name": "--week-strip-marker-color",
+        "description": "Text color of the count badge (and color of the dot)"
+      },
+      {
+        "name": "--week-strip-nav-height",
+        "description": "Size of the previous / next week buttons (defaults to the density's small control height)"
       }
     ]
   },
@@ -8352,6 +8415,12 @@
       }
     ]
   },
+  "ProgressIndicatorColor": {
+    "source": "react/src/components/ProgressIndicator/types.ts",
+    "description": "Semantic color of a ProgressIndicator (\"current\" follows the text color)",
+    "kind": "alias",
+    "type": "ColorScheme | \"current\""
+  },
   "ProgressIndicatorProps": {
     "source": "react/src/components/ProgressIndicator/types.ts",
     "kind": "interface",
@@ -8375,10 +8444,37 @@
       },
       {
         "name": "color",
-        "type": "Extract<ColorScheme, \"primary\" | \"neutral\"> | \"current\"",
+        "type": "ProgressIndicatorColor",
         "required": false,
         "default": "\"primary\"",
-        "description": "Semantic color of the indicator: theme primary or neutral gray. \"current\" is a special value that follows the surrounding text color (currentColor), e.g. inside buttons or colored containers"
+        "description": "Semantic color of the indicator: theme primary, neutral gray or a status color (success / warning / danger / info). \"current\" is a special value that follows the surrounding text color (currentColor), e.g. inside buttons or colored containers"
+      },
+      {
+        "name": "value",
+        "type": "number",
+        "required": false,
+        "description": "Current progress. Setting it switches the bar and circle variants to determinate mode (a filled bar / arc and aria-valuenow); the value is clamped between 0 and max. Other variants ignore it and stay indeterminate."
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "default": "100",
+        "description": "Value that represents completion (determinate mode only); non-positive values fall back to 100"
+      },
+      {
+        "name": "showValue",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the formatted value (a percentage by default) next to a determinate indicator"
+      },
+      {
+        "name": "format",
+        "type": "(value: number, max: number) => ReactNode",
+        "required": false,
+        "default": "(value, max) => `${Math.round((value / max) * 100)}%`",
+        "description": "Formats the value shown by showValue; a string or number result is also used as aria-valuetext"
       },
       {
         "name": "icon",
@@ -8396,7 +8492,7 @@
         "name": "aria-label",
         "type": "string",
         "required": false,
-        "default": "\"Loading\" (localized)",
+        "default": "\"Loading\" (localized; \"Progress\" in determinate mode)",
         "description": "Accessible label describing what is loading (used when there is no visible label)"
       },
       {
@@ -11382,6 +11478,13 @@
         "description": "Initial palette (`null` = Minerva's default look). For SSR pass the parsed `palette` cookie."
       },
       {
+        "name": "primaryColor",
+        "type": "PrimaryColor | null",
+        "required": false,
+        "default": "null (nested: the parent's brand color)",
+        "description": "Brand color, as `ConfigProvider`'s `primaryColor` (a color, or `{ light, dark }`); the light / dark mode stays the user's choice"
+      },
+      {
         "name": "disableStorage",
         "type": "boolean",
         "required": false,
@@ -12605,5 +12708,157 @@
     "description": "Props of VStack: a Stack with a fixed column direction",
     "kind": "alias",
     "type": "Omit<StackProps, \"direction\">"
+  },
+  "WeekStripMarker": {
+    "source": "react/src/components/WeekStrip/types.ts",
+    "description": "Marker of a WeekStrip day: a number shows a count badge (0 shows nothing), true shows a dot",
+    "kind": "alias",
+    "type": "number | boolean"
+  },
+  "WeekStripProps": {
+    "source": "react/src/components/WeekStrip/types.ts",
+    "description": "Props of the WeekStrip component: the seven days of a week in a row, with a selected day, today marked, optional per-day markers and optional previous / next week navigation",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "Selected day, \"YYYY-MM-DD\" (controlled; pair with onChange)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false,
+        "description": "Initially selected day, \"YYYY-MM-DD\" (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(day: string) => void",
+        "required": false,
+        "description": "Called with the selected day (\"YYYY-MM-DD\")"
+      },
+      {
+        "name": "week",
+        "type": "Date",
+        "required": false,
+        "description": "Displayed week (controlled; any day of the week; pair with onWeekChange)"
+      },
+      {
+        "name": "defaultWeek",
+        "type": "Date",
+        "required": false,
+        "default": "the week of the selected day, else of today",
+        "description": "Initially displayed week (uncontrolled; any day of the week). While the week is uncontrolled it follows the selected day."
+      },
+      {
+        "name": "onWeekChange",
+        "type": "(weekStart: Date) => void",
+        "required": false,
+        "description": "Called with the first day of the requested week, at local midnight"
+      },
+      {
+        "name": "firstDayOfWeek",
+        "type": "number",
+        "required": false,
+        "default": "1",
+        "description": "First day of the week: 0 = Sunday, 1 = Monday ... 6 = Saturday"
+      },
+      {
+        "name": "today",
+        "type": "string",
+        "required": false,
+        "default": "the current local day",
+        "description": "The day marked as today, \"YYYY-MM-DD\" (e.g. a server date or a fixed date in tests)"
+      },
+      {
+        "name": "markers",
+        "type": "Readonly<Record<string, WeekStripMarker>>",
+        "required": false,
+        "description": "Per-day markers keyed by \"YYYY-MM-DD\": a number shows a count badge (99+ above 99), true shows a dot"
+      },
+      {
+        "name": "getDayLabel",
+        "type": "(day: string, marker: WeekStripMarker | undefined) => string",
+        "required": false,
+        "default": "\"<long date>, <n> items\" (translated)",
+        "description": "Accessible label of a day; receives the day (\"YYYY-MM-DD\") and its marker"
+      },
+      {
+        "name": "showNavigation",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows previous / next week buttons around the month of the week"
+      },
+      {
+        "name": "previousWeekLabel",
+        "type": "string",
+        "required": false,
+        "default": "\"Previous week\" (translated)",
+        "description": "Label of the previous-week button"
+      },
+      {
+        "name": "nextWeekLabel",
+        "type": "string",
+        "required": false,
+        "default": "\"Next week\" (translated)",
+        "description": "Label of the next-week button"
+      },
+      {
+        "name": "weekdayLabels",
+        "type": "readonly string[]",
+        "required": false,
+        "default": "\"Mon\" ... \"Sun\" (translated)",
+        "description": "Weekday names, Monday first (7 labels), whatever firstDayOfWeek is"
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "default": "the library language",
+        "description": "Locale of the dates (Intl.DateTimeFormat)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Blocks selection and navigation"
+      },
+      {
+        "name": "size",
+        "type": "WeekStripSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Cell density"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "default": "\"Week\" (translated)",
+        "description": "Accessible label of the day list"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root <div>"
+      }
+    ]
+  },
+  "WeekStripSize": {
+    "source": "react/src/components/WeekStrip/types.ts",
+    "description": "Density of a WeekStrip",
+    "kind": "alias",
+    "type": "\"small\" | \"medium\" | \"large\""
   }
 }

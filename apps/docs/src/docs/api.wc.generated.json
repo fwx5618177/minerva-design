@@ -4257,6 +4257,12 @@
         "description": "Type scale (overrides the preset)"
       },
       {
+        "name": "primaryColor",
+        "attribute": "primary-color",
+        "type": "PrimaryColor | undefined",
+        "description": "Brand color: a CSS color (`primary-color=\"#4f46e5\"`) whose dark-mode value is derived for contrast on dark surfaces, or (as a property) a `{ light, dark }` pair. Recomputes every token derived from `primary-color` and wins over the palette's. The value of the applied mode is written inline: without `theme`, the mode of the closest ancestor with `data-theme` when applied (light when the element scopes a palette, design or scale, whose tokens render light). A brand color alone does not scope the subtree."
+      },
+      {
         "name": "locale",
         "attribute": "locale",
         "type": "SupportedLanguage | undefined",
@@ -12132,8 +12138,8 @@
     "kind": "element",
     "source": "web-components/src/components/progress/progress.ts",
     "className": "MinervaProgress",
-    "summary": "Indeterminate loading indicator (spinner, circle, wave, bars).",
-    "description": "Indeterminate loading indicator: spinner, circle, wave, bar or dotted bar (`<ProgressIndicator>` of React). It is a `progressbar` without a value, named by `aria-label`, its visible `label`, or the localized \"Loading\". Never focusable, so it can sit inside buttons. Set `decorative` when a surrounding element already announces the loading state.",
+    "summary": "Loading indicator (spinner, circle, wave, bars), determinate or not.",
+    "description": "Loading indicator: spinner, circle, wave, bar or dotted bar (`<ProgressIndicator>` of React). Without `value` it is a `progressbar` without a value, named by `aria-label`, its visible `label`, or the localized \"Loading\". With `value`, the bar and circle variants become determinate (filled bar / arc, aria-valuenow, optional `show-value`); the other variants ignore it. Never focusable, so it can sit inside buttons. Set `decorative` when a surrounding element already announces the loading state.",
     "properties": [
       {
         "name": "variant",
@@ -12152,9 +12158,29 @@
       {
         "name": "color",
         "attribute": "color",
-        "type": "\"primary\" | \"neutral\" | \"current\"",
+        "type": "\"primary\" | \"neutral\" | \"success\" | \"warning\" | \"danger\" | \"info\" | \"current\"",
         "default": "\"primary\"",
         "description": "Indicator color (\"current\" follows the text color)"
+      },
+      {
+        "name": "value",
+        "attribute": "value",
+        "type": "number | undefined",
+        "description": "Current progress: switches the bar and circle variants to determinate mode (clamped between 0 and max); other variants ignore it"
+      },
+      {
+        "name": "max",
+        "attribute": "max",
+        "type": "number",
+        "default": "100",
+        "description": "Value that represents completion (non-positive values fall back to 100)"
+      },
+      {
+        "name": "showValue",
+        "attribute": "show-value",
+        "type": "boolean",
+        "default": "false",
+        "description": "Shows the formatted value (a percentage by default)"
       },
       {
         "name": "label",
@@ -12182,6 +12208,11 @@
         "type": "boolean",
         "default": "false",
         "description": "Stretches the indicator to the full width of its container"
+      },
+      {
+        "name": "format",
+        "type": "(value: number, max: number) => string | undefined",
+        "description": "Formats the shown value (JS property); the result is also used as aria-valuetext"
       }
     ],
     "methods": [],
@@ -12207,7 +12238,11 @@
       },
       {
         "name": "indicator",
-        "description": "The animated indicator (ring, wave or bar)"
+        "description": "The indicator (ring, wave or bar; a filled bar or arc when determinate)"
+      },
+      {
+        "name": "value",
+        "description": "The formatted value of a determinate indicator"
       },
       {
         "name": "label",
@@ -12225,7 +12260,7 @@
       },
       {
         "name": "--progress-track-color",
-        "description": "Color of the bar track"
+        "description": "Color of the bar track (and of the determinate circle track)"
       },
       {
         "name": "--progress-radius",
@@ -18802,7 +18837,7 @@
       },
       {
         "name": "--progress-track-color",
-        "description": "Color of the bar track"
+        "description": "Color of the bar track (and of the determinate circle track)"
       },
       {
         "name": "--progress-radius",
@@ -19037,5 +19072,194 @@
       }
     ],
     "cssProperties": []
+  },
+  "wc:minerva-week-strip": {
+    "kind": "element",
+    "source": "web-components/src/components/week-strip/week-strip.ts",
+    "className": "MinervaWeekStrip",
+    "summary": "A week of selectable days with today, markers and week navigation.",
+    "description": "The seven days of a week in a row (`<WeekStrip>` of React): a horizontal `listbox` of day `option`s. Select a day by click, Enter or Space; today carries `aria-current=\"date\"`; days can show a count badge or a dot (`markers`). Keyboard: one tab stop (roving `tabindex`), ArrowLeft / ArrowRight move by a day (into the previous / next week; RTL swaps them), Home / End jump to the ends of the week, PageUp / PageDown move by a week. `show-navigation` adds previous / next week buttons around the month of the week. User navigation updates `week` / `value` and fires `minerva-week-change` / `minerva-change`. Setting `value` also displays its week.",
+    "properties": [
+      {
+        "name": "value",
+        "attribute": "value",
+        "type": "string | undefined",
+        "description": "Selected day, \"YYYY-MM-DD\""
+      },
+      {
+        "name": "week",
+        "attribute": "week",
+        "type": "Date | undefined",
+        "description": "Displayed week (any day of it; attribute \"YYYY-MM-DD\"); defaults to the week of the selected day, else of today"
+      },
+      {
+        "name": "firstDayOfWeek",
+        "attribute": "first-day-of-week",
+        "type": "number",
+        "default": "1",
+        "description": "First day of the week: 0 = Sunday, 1 = Monday ... 6 = Saturday"
+      },
+      {
+        "name": "today",
+        "attribute": "today",
+        "type": "string | undefined",
+        "description": "The day marked as today, \"YYYY-MM-DD\"; defaults to the current local day"
+      },
+      {
+        "name": "showNavigation",
+        "attribute": "show-navigation",
+        "type": "boolean",
+        "default": "false",
+        "description": "Shows previous / next week buttons around the month of the week"
+      },
+      {
+        "name": "previousWeekLabel",
+        "attribute": "previous-week-label",
+        "type": "string | undefined",
+        "description": "Label of the previous-week button (default: localized)"
+      },
+      {
+        "name": "nextWeekLabel",
+        "attribute": "next-week-label",
+        "type": "string | undefined",
+        "description": "Label of the next-week button (default: localized)"
+      },
+      {
+        "name": "locale",
+        "attribute": "locale",
+        "type": "string | undefined",
+        "description": "Locale of the dates (Intl.DateTimeFormat); default: the library language"
+      },
+      {
+        "name": "disabled",
+        "attribute": "disabled",
+        "type": "boolean",
+        "default": "false",
+        "description": "Blocks selection and navigation"
+      },
+      {
+        "name": "size",
+        "attribute": "size",
+        "type": "\"small\" | \"medium\" | \"large\"",
+        "default": "\"medium\"",
+        "description": "Cell density: compact (\"small\"), default (\"medium\") or comfortable (\"large\")"
+      },
+      {
+        "name": "markers",
+        "type": "Readonly<Record<string, WeekStripMarker>> | undefined",
+        "description": "Per-day markers keyed by \"YYYY-MM-DD\": a number shows a count badge (99+ above 99), true shows a dot"
+      },
+      {
+        "name": "weekdayLabels",
+        "type": "readonly string[] | undefined",
+        "description": "Weekday names, Monday first (7 labels), whatever `first-day-of-week` is"
+      },
+      {
+        "name": "getDayLabel",
+        "type": "(day: string, marker: WeekStripMarker | undefined) => string | undefined",
+        "description": "Accessible label of a day, from the day (\"YYYY-MM-DD\") and its marker"
+      }
+    ],
+    "methods": [
+      {
+        "name": "focus",
+        "signature": "(options?: FocusOptions) => void"
+      }
+    ],
+    "events": [
+      {
+        "name": "minerva-change",
+        "description": "The user selected a day (`detail: { value }`, \"YYYY-MM-DD\")"
+      },
+      {
+        "name": "minerva-week-change",
+        "description": "The user displayed another week (`detail: { week }`, its first day at local midnight)"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The outermost element"
+      },
+      {
+        "name": "heading",
+        "description": "The month of the week (with `show-navigation`)"
+      },
+      {
+        "name": "nav-button",
+        "description": "The previous / next week buttons (with `show-navigation`)"
+      },
+      {
+        "name": "list",
+        "description": "The `role=listbox` element holding the days"
+      },
+      {
+        "name": "day",
+        "description": "A day (`role=option`)"
+      },
+      {
+        "name": "day--selected",
+        "description": "Item state of `day`: selected"
+      },
+      {
+        "name": "day--today",
+        "description": "Item state of `day`: today"
+      },
+      {
+        "name": "day--disabled",
+        "description": "Item state of `day`: disabled"
+      },
+      {
+        "name": "indicator",
+        "description": "The marker of a day: empty, a count badge or a dot"
+      }
+    ],
+    "cssProperties": [
+      {
+        "name": "--week-strip-gap",
+        "description": "Space between the day cells"
+      },
+      {
+        "name": "--week-strip-day-height",
+        "description": "Minimum height of a day cell (defaults to 3.5rem; 2.75rem with size=\"small\", 4.5rem with size=\"large\"); cells grow to fit a count badge"
+      },
+      {
+        "name": "--week-strip-radius",
+        "description": "Corner radius of the day cells and buttons (defaults to --radius-md)"
+      },
+      {
+        "name": "--week-strip-hover-background",
+        "description": "Background of a hovered day"
+      },
+      {
+        "name": "--week-strip-selected-background",
+        "description": "Background of the selected day (defaults to --primary-color)"
+      },
+      {
+        "name": "--week-strip-selected-color",
+        "description": "Text color of the selected day"
+      },
+      {
+        "name": "--week-strip-today-color",
+        "description": "Ring and number color marking today"
+      },
+      {
+        "name": "--week-strip-weekday-color",
+        "description": "Text color of the weekday names"
+      },
+      {
+        "name": "--week-strip-marker-background",
+        "description": "Background of the count badge"
+      },
+      {
+        "name": "--week-strip-marker-color",
+        "description": "Text color of the count badge (and color of the dot)"
+      },
+      {
+        "name": "--week-strip-nav-height",
+        "description": "Size of the previous / next week buttons (defaults to the density's small control height)"
+      }
+    ]
   }
 }

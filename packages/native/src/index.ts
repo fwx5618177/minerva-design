@@ -29,6 +29,7 @@ export * from "./components/TabBar";
 export * from "./components/PullRefresh";
 export * from "./components/SwipeCell";
 export * from "./components/Calendar";
+export * from "./components/WeekStrip";
 export * from "./components/Collapse";
 export * from "./components/Grid";
 export * from "./components/ImagePreview";

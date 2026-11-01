@@ -15,12 +15,16 @@ import {
 import {
   DEFAULT_LANGUAGE,
   createTranslator,
+  formatDevMessage,
+  invalidPrimaryColorMessage,
   mergeMessages,
   messages as builtInMessages,
   resolveDesign,
+  resolvePrimaryColor,
   resolveTokens,
   type DesignPreset,
   type Palette,
+  type PrimaryColorPair,
   type ResolvedDesign,
   type ThemeMode,
 } from "@minerva/core";
@@ -35,6 +39,8 @@ interface MinervaContextValue {
   theme: MinervaTheme;
   i18n: MinervaI18n;
   insets: EdgeInsets;
+  /** Brand color inherited by nested providers (`null`: none) */
+  primaryColor?: PrimaryColorPair | null;
 }
 
 const MinervaContext = createContext<MinervaContextValue | null>(null);
@@ -72,6 +78,29 @@ function useOsReducedMotion(): boolean {
   return reduced;
 }
 
+const warnedPrimaryColors = new Set<string>();
+
+/** Brand color of a provider: its own valid one, else the parent's */
+function usePrimaryColor(
+  value: MinervaProviderProps["primaryColor"],
+  inherited: PrimaryColorPair | null | undefined,
+): PrimaryColorPair | null {
+  const own = resolvePrimaryColor(value);
+  if (process.env.NODE_ENV !== "production" && own === undefined) {
+    const key = JSON.stringify(value);
+    if (!warnedPrimaryColors.has(key)) {
+      warnedPrimaryColors.add(key);
+      console.error(
+        formatDevMessage("MinervaProvider", invalidPrimaryColorMessage(value)),
+      );
+    }
+  }
+  const pair = value !== undefined && own !== undefined ? own : inherited;
+  const light = pair?.light;
+  const dark = pair?.dark;
+  return useMemo(() => (light && dark ? { light, dark } : null), [light, dark]);
+}
+
 const defaultTopInset = () =>
   Platform.OS === "android" ? (StatusBar.currentHeight ?? 0) : 0;
 
@@ -89,6 +118,7 @@ const defaultTopInset = () =>
 export function MinervaProvider({
   theme,
   palette,
+  primaryColor,
   preset,
   density,
   radius,
@@ -143,17 +173,19 @@ export function MinervaProvider({
     themeMode === "system" ? (scheme === "dark" ? "dark" : "light") : themeMode;
   const reduced =
     reducedMotion ?? parent?.theme.reducedMotion ?? osReducedMotion;
+  const brand = usePrimaryColor(primaryColor, parent?.primaryColor);
 
   const tokens = useMemo(
     () =>
       resolveTokens({
         mode,
         palette: chosenPalette,
+        primaryColor: brand,
         design,
         overrides,
         reducedMotion: reduced,
       }),
-    [mode, chosenPalette, design, overrides, reduced],
+    [mode, chosenPalette, brand, design, overrides, reduced],
   );
 
   const setThemeMode = useCallback(
@@ -246,8 +278,13 @@ export function MinervaProvider({
   );
 
   const value = useMemo(
-    () => ({ theme: themeValue, i18n, insets: insetsValue }),
-    [themeValue, i18n, insetsValue],
+    () => ({
+      theme: themeValue,
+      i18n,
+      insets: insetsValue,
+      primaryColor: brand,
+    }),
+    [themeValue, i18n, insetsValue, brand],
   );
   return (
     <MinervaContext.Provider value={value}>{children}</MinervaContext.Provider>

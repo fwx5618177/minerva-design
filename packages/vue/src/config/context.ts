@@ -1,16 +1,19 @@
 import { inject, type InjectionKey } from "vue";
-import type {
-  ComponentTheme,
-  CustomBilingualTheme,
-  DefaultTheme,
-  Palette,
-  ResolvedDesign,
-  ResolvedThemeMode,
-  SupportTheme,
-  SupportedLanguage,
-  ThemeMap,
-  ThemeMode,
-  ThemeName,
+import {
+  formatDevMessage,
+  invalidPrimaryColorMessage,
+  type ComponentTheme,
+  type CustomBilingualTheme,
+  type DefaultTheme,
+  type Palette,
+  type PrimaryColorPair,
+  type ResolvedDesign,
+  type ResolvedThemeMode,
+  type SupportTheme,
+  type SupportedLanguage,
+  type ThemeMap,
+  type ThemeMode,
+  type ThemeName,
 } from "@minerva/core";
 
 /** Themes accepted by `ConfigProvider` (same as the React renderer) */
@@ -39,6 +42,11 @@ export interface ConfigContext {
   /** Applied light / dark mode, when it can be determined */
   readonly resolvedMode: ResolvedThemeMode | undefined;
   readonly palette: Palette | null;
+  /**
+   * Brand color applied to the subtree (`primaryColor`, the dark value
+   * derived from a single color); `null` for the theme's own
+   */
+  readonly primaryColor: PrimaryColorPair | null;
   /** Resolved design axes (preset, density, radius, shadow, font scale) */
   readonly design: ResolvedDesign;
   setTheme(theme: ConfigProviderTheme): void;
@@ -61,3 +69,17 @@ export function useConfig(): ConfigContext {
 /** Like `useConfig`, `null` outside of a provider. */
 export const useOptionalConfig = (): ConfigContext | null =>
   inject(CONFIG_KEY, null);
+
+const warnedPrimaryColors = new Set<string>();
+
+/** Development warning (once per value) for an invalid `primaryColor`. */
+export function warnInvalidPrimaryColor(
+  component: string,
+  value: unknown,
+): void {
+  if (process.env.NODE_ENV === "production") return;
+  const key = `${component}:${JSON.stringify(value)}`;
+  if (warnedPrimaryColors.has(key)) return;
+  warnedPrimaryColors.add(key);
+  console.error(formatDevMessage(component, invalidPrimaryColorMessage(value)));
+}

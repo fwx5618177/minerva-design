@@ -6,6 +6,7 @@ import {
   monthStart,
   parseDayKey,
   sameMonth,
+  weekStart,
 } from "./calendar-date";
 
 describe("calendar dates", () => {
@@ -46,5 +47,18 @@ describe("calendar dates", () => {
     expect(parseDayKey("2026-02-30", false)).toBeNull();
     expect(parseDayKey("2026-13-01", false)).toBeNull();
     expect(parseDayKey("not-a-date", false)).toBeNull();
+  });
+
+  it("finds the first day of a week", () => {
+    // 2026-11-04 is a Wednesday
+    const wednesday = localDate(2026, 10, 4);
+    expect(dayKey(weekStart(wednesday))).toBe("2026-11-02");
+    expect(dayKey(weekStart(wednesday, 0))).toBe("2026-11-01");
+    expect(dayKey(weekStart(wednesday, 3))).toBe("2026-11-04");
+    expect(dayKey(weekStart(wednesday, 6))).toBe("2026-10-31");
+    expect(dayKey(weekStart(localDate(2026, 10, 1)))).toBe("2026-10-26");
+    // invalid first days fall back to Monday
+    expect(dayKey(weekStart(wednesday, 9))).toBe("2026-11-02");
+    expect(dayKey(weekStart(wednesday, 1.5))).toBe("2026-11-02");
   });
 });

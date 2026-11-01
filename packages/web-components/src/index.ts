@@ -61,6 +61,7 @@ export * from "./elements/toast";
 export * from "./elements/tooltip";
 export * from "./elements/upload";
 export * from "./elements/virtual-list";
+export * from "./elements/week-strip";
 
 export { defineElement, type DefinableElement } from "./internal/define";
 export {

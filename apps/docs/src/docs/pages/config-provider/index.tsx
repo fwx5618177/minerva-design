@@ -105,6 +105,26 @@ function useOptionalConfig() {
   return useContext(ConfigContext);
 }`;
 
+const brandCode = `import { ConfigProvider, ThemeToggle } from "minerva-design";
+
+// Indigo brand: no --primary-color overrides, no !important.
+// theme stays "light" | "dark" | "system", so data-theme and ThemeToggle work.
+export default function Root() {
+  return (
+    <ConfigProvider theme="system" persist primaryColor="#4f46e5">
+      {/* dark mode derives #7b85f2 from #4f46e5 */}
+      <ThemeToggle />
+      <App />
+    </ConfigProvider>
+  );
+}
+
+// Or pick both values:
+<ConfigProvider theme="light" primaryColor={{ light: "#4f46e5", dark: "#818cf8" }} />
+
+// The palette keeps its surfaces and text colors, primaryColor wins:
+<ConfigProvider palette="tech" primaryColor="#4f46e5" />`;
+
 const ConfigProviderDoc: React.FC = () => {
   const { t } = useTranslation();
 
@@ -123,6 +143,15 @@ const ConfigProviderDoc: React.FC = () => {
         {t("docs.config-provider.palette.setters")}{" "}
         <Link to="/theme-palette">{t("docs.theme-palette.title")}</Link>
       </p>
+      <h3 id="brand-color">{t("docs.config-provider.brand.title")}</h3>
+      <p className={styles.prose}>{t("docs.config-provider.brand.text")}</p>
+      <ul className={styles.prose}>
+        <li>{t("docs.config-provider.brand.derive")}</li>
+        <li>{t("docs.config-provider.brand.precedence")}</li>
+        <li>{t("docs.config-provider.brand.nesting")}</li>
+        <li>{t("docs.config-provider.brand.ssr")}</li>
+      </ul>
+      <CodeBlock code={brandCode} language="tsx" />
     </section>
   );
 

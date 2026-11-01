@@ -53,6 +53,7 @@ export const ExternalLinkIcon = /* @__PURE__ */ createIcon(
 );
 export const RefreshIcon = /* @__PURE__ */ createIcon(icons.refreshIcon);
 export const RotateCcwIcon = /* @__PURE__ */ createIcon(icons.rotateCcwIcon);
+export const HistoryIcon = /* @__PURE__ */ createIcon(icons.historyIcon);
 export const UndoIcon = /* @__PURE__ */ createIcon(icons.undoIcon);
 export const RedoIcon = /* @__PURE__ */ createIcon(icons.redoIcon);
 export const MoveIcon = /* @__PURE__ */ createIcon(icons.moveIcon);
@@ -75,6 +76,7 @@ export const PlusIcon = /* @__PURE__ */ createIcon(icons.plusIcon);
 export const MinusIcon = /* @__PURE__ */ createIcon(icons.minusIcon);
 export const CloseIcon = /* @__PURE__ */ createIcon(icons.closeIcon);
 export const CheckIcon = /* @__PURE__ */ createIcon(icons.checkIcon);
+export const CheckCheckIcon = /* @__PURE__ */ createIcon(icons.checkCheckIcon);
 export const SearchIcon = /* @__PURE__ */ createIcon(icons.searchIcon);
 export const ZoomInIcon = /* @__PURE__ */ createIcon(icons.zoomInIcon);
 export const ZoomOutIcon = /* @__PURE__ */ createIcon(icons.zoomOutIcon);
@@ -82,6 +84,9 @@ export const EditIcon = /* @__PURE__ */ createIcon(icons.editIcon);
 export const TrashIcon = /* @__PURE__ */ createIcon(icons.trashIcon);
 export const CopyIcon = /* @__PURE__ */ createIcon(icons.copyIcon);
 export const ClipboardIcon = /* @__PURE__ */ createIcon(icons.clipboardIcon);
+export const ClipboardCheckIcon = /* @__PURE__ */ createIcon(
+  icons.clipboardCheckIcon,
+);
 export const DownloadIcon = /* @__PURE__ */ createIcon(icons.downloadIcon);
 export const UploadIcon = /* @__PURE__ */ createIcon(icons.uploadIcon);
 export const ShareIcon = /* @__PURE__ */ createIcon(icons.shareIcon);
@@ -114,12 +119,25 @@ export const SunIcon = /* @__PURE__ */ createIcon(icons.sunIcon);
 export const MoonIcon = /* @__PURE__ */ createIcon(icons.moonIcon);
 export const BellIcon = /* @__PURE__ */ createIcon(icons.bellIcon);
 export const BellOffIcon = /* @__PURE__ */ createIcon(icons.bellOffIcon);
+export const BellRingIcon = /* @__PURE__ */ createIcon(icons.bellRingIcon);
 export const BookmarkIcon = /* @__PURE__ */ createIcon(icons.bookmarkIcon);
+export const BookmarkPlusIcon = /* @__PURE__ */ createIcon(
+  icons.bookmarkPlusIcon,
+);
 export const StarIcon = /* @__PURE__ */ createIcon(icons.starIcon);
 export const HeartIcon = /* @__PURE__ */ createIcon(icons.heartIcon);
 export const FlagIcon = /* @__PURE__ */ createIcon(icons.flagIcon);
 export const TagIcon = /* @__PURE__ */ createIcon(icons.tagIcon);
 export const CalendarIcon = /* @__PURE__ */ createIcon(icons.calendarIcon);
+export const CalendarCheckIcon = /* @__PURE__ */ createIcon(
+  icons.calendarCheckIcon,
+);
+export const CalendarPlusIcon = /* @__PURE__ */ createIcon(
+  icons.calendarPlusIcon,
+);
+export const CalendarDaysIcon = /* @__PURE__ */ createIcon(
+  icons.calendarDaysIcon,
+);
 export const ClockIcon = /* @__PURE__ */ createIcon(icons.clockIcon);
 export const UserIcon = /* @__PURE__ */ createIcon(icons.userIcon);
 export const UsersIcon = /* @__PURE__ */ createIcon(icons.usersIcon);
@@ -150,6 +168,9 @@ export const InboxIcon = /* @__PURE__ */ createIcon(icons.inboxIcon);
 export const ArchiveIcon = /* @__PURE__ */ createIcon(icons.archiveIcon);
 export const ThumbsUpIcon = /* @__PURE__ */ createIcon(icons.thumbsUpIcon);
 export const SmileIcon = /* @__PURE__ */ createIcon(icons.smileIcon);
+export const PartyPopperIcon = /* @__PURE__ */ createIcon(
+  icons.partyPopperIcon,
+);
 export const PlayIcon = /* @__PURE__ */ createIcon(icons.playIcon);
 export const PauseIcon = /* @__PURE__ */ createIcon(icons.pauseIcon);
 export const StopIcon = /* @__PURE__ */ createIcon(icons.stopIcon);
@@ -177,12 +198,18 @@ export const FilmIcon = /* @__PURE__ */ createIcon(icons.filmIcon);
 export const FileIcon = /* @__PURE__ */ createIcon(icons.fileIcon);
 export const FileTextIcon = /* @__PURE__ */ createIcon(icons.fileTextIcon);
 export const FilePlusIcon = /* @__PURE__ */ createIcon(icons.filePlusIcon);
+export const FileJsonIcon = /* @__PURE__ */ createIcon(icons.fileJsonIcon);
 export const FolderIcon = /* @__PURE__ */ createIcon(icons.folderIcon);
 export const FolderOpenIcon = /* @__PURE__ */ createIcon(icons.folderOpenIcon);
 export const FolderPlusIcon = /* @__PURE__ */ createIcon(icons.folderPlusIcon);
+export const FolderKanbanIcon = /* @__PURE__ */ createIcon(
+  icons.folderKanbanIcon,
+);
 export const PaperclipIcon = /* @__PURE__ */ createIcon(icons.paperclipIcon);
 export const BookIcon = /* @__PURE__ */ createIcon(icons.bookIcon);
 export const BookOpenIcon = /* @__PURE__ */ createIcon(icons.bookOpenIcon);
+export const BookPlusIcon = /* @__PURE__ */ createIcon(icons.bookPlusIcon);
+export const BookAIcon = /* @__PURE__ */ createIcon(icons.bookAIcon);
 export const CodeIcon = /* @__PURE__ */ createIcon(icons.codeIcon);
 export const TerminalIcon = /* @__PURE__ */ createIcon(icons.terminalIcon);
 export const DatabaseIcon = /* @__PURE__ */ createIcon(icons.databaseIcon);
@@ -497,6 +524,7 @@ export const TextWrapIcon = /* @__PURE__ */ createIcon(icons.textWrapIcon);
 export const FontSizeIcon = /* @__PURE__ */ createIcon(icons.fontSizeIcon);
 export const LineHeightIcon = /* @__PURE__ */ createIcon(icons.lineHeightIcon);
 export const ListChecksIcon = /* @__PURE__ */ createIcon(icons.listChecksIcon);
+export const ListTodoIcon = /* @__PURE__ */ createIcon(icons.listTodoIcon);
 export const TextSelectIcon = /* @__PURE__ */ createIcon(icons.textSelectIcon);
 export const ClearFormatIcon = /* @__PURE__ */ createIcon(
   icons.clearFormatIcon,
@@ -525,6 +553,9 @@ export const RulerIcon = /* @__PURE__ */ createIcon(icons.rulerIcon);
 export const GlassesIcon = /* @__PURE__ */ createIcon(icons.glassesIcon);
 export const BrainIcon = /* @__PURE__ */ createIcon(icons.brainIcon);
 export const NotebookIcon = /* @__PURE__ */ createIcon(icons.notebookIcon);
+export const NotebookPenIcon = /* @__PURE__ */ createIcon(
+  icons.notebookPenIcon,
+);
 export const ChalkboardIcon = /* @__PURE__ */ createIcon(icons.chalkboardIcon);
 export const CertificateIcon = /* @__PURE__ */ createIcon(
   icons.certificateIcon,
@@ -638,6 +669,7 @@ export const PickaxeIcon = /* @__PURE__ */ createIcon(icons.pickaxeIcon);
 export const BroomIcon = /* @__PURE__ */ createIcon(icons.broomIcon);
 export const BucketIcon = /* @__PURE__ */ createIcon(icons.bucketIcon);
 export const FlashlightIcon = /* @__PURE__ */ createIcon(icons.flashlightIcon);
+export const PaletteIcon = /* @__PURE__ */ createIcon(icons.paletteIcon);
 export const BasketballIcon = /* @__PURE__ */ createIcon(icons.basketballIcon);
 export const SoccerBallIcon = /* @__PURE__ */ createIcon(icons.soccerBallIcon);
 export const FootballIcon = /* @__PURE__ */ createIcon(icons.footballIcon);

@@ -6,6 +6,7 @@ import {
   computed,
   input,
   model,
+  numberAttribute,
   output,
   signal,
 } from "@angular/core";
@@ -780,8 +781,13 @@ export class MnBadge {
     "data-minerva": "progress",
     "data-part": "root",
     "[attr.role]": "decorative() ? null : 'progressbar'",
-    "[attr.aria-label]": "label() || 'Loading'",
+    "[attr.aria-label]": "label() || (determinate() ? 'Progress' : 'Loading')",
     "[attr.aria-hidden]": "decorative() ? true : null",
+    "[attr.aria-valuemin]": "determinate() && !decorative() ? 0 : null",
+    "[attr.aria-valuemax]": "determinate() && !decorative() ? safeMax() : null",
+    "[attr.aria-valuenow]": "determinate() && !decorative() ? current() : null",
+    "[attr.aria-valuetext]":
+      "determinate() && !decorative() && format() ? formatted() : null",
     "[attr.data-size]": "size()",
     "[attr.data-variant]": "variant()",
     "[attr.data-color]": "color()",
@@ -796,12 +802,118 @@ export class MnBadge {
         >{{ icon() }}</span
       >
     }
-    <span
-      mnHook="progress"
-      mnPart="indicator"
-      aria-hidden="true"
-      [class]="indicatorClass()"
-    ></span>
+    @if (determinate() && variant() === "bar") {
+      <div
+        mnHook="progress"
+        mnPart="indicator"
+        aria-hidden="true"
+        [class]="barContainerClass()"
+      >
+        <div [class]="fillClass" [style.width.%]="percent()"></div>
+      </div>
+    } @else if (determinate()) {
+      <svg
+        mnHook="progress"
+        mnPart="indicator"
+        aria-hidden="true"
+        focusable="false"
+        viewBox="0 0 24 24"
+        width="1em"
+        height="1em"
+        [attr.class]="ringClass()"
+      >
+        <circle [attr.class]="s.ringTrack" cx="12" cy="12" r="10" />
+        <circle
+          [attr.class]="s.ringArc"
+          cx="12"
+          cy="12"
+          r="10"
+          pathLength="100"
+          [attr.stroke-dasharray]="percent() + ' 100'"
+        />
+      </svg>
+    } @else if (variant() === "bar") {
+      <div
+        mnHook="progress"
+        mnPart="indicator"
+        aria-hidden="true"
+        [class]="barContainerClass()"
+      >
+        <div [class]="s.bar"></div>
+      </div>
+    } @else if (variant() === "dotted-bar") {
+      <div
+        mnHook="progress"
+        mnPart="indicator"
+        aria-hidden="true"
+        [class]="dottedBarContainerClass()"
+      >
+        <div [class]="s.dottedBar"></div>
+      </div>
+    } @else if (variant() === "wave") {
+      <div
+        mnHook="progress"
+        mnPart="indicator"
+        aria-hidden="true"
+        [class]="waveContainerClass()"
+      >
+        <svg
+          [attr.class]="s.wave"
+          viewBox="0 0 24 24"
+          width="1em"
+          height="1em"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M2 12h3V6h5v12h5V6h5v6h2" />
+        </svg>
+      </div>
+    } @else {
+      <span
+        mnHook="progress"
+        mnPart="indicator"
+        aria-hidden="true"
+        [class]="indicatorClass()"
+        ><svg
+          viewBox="0 0 24 24"
+          width="1em"
+          height="1em"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          @if (variant() === "circle") {
+            <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+          } @else {
+            <path d="M12 2v4" />
+            <path d="m16.2 7.8 2.9-2.9" />
+            <path d="M18 12h4" />
+            <path d="m16.2 16.2 2.9 2.9" />
+            <path d="M12 18v4" />
+            <path d="m4.9 19.1 2.9-2.9" />
+            <path d="M2 12h4" />
+            <path d="m4.9 4.9 2.9 2.9" />
+          }</svg
+      ></span>
+    }
+    @if (determinate() && showValue()) {
+      <span
+        mnHook="progress"
+        mnPart="value"
+        aria-hidden="true"
+        [class]="s.value"
+        >{{ formatted() }}</span
+      >
+    }
     @if (label()) {
       <span mnHook="progress" mnPart="label" [class]="s.label">{{
         label()
@@ -818,18 +930,86 @@ export class MnProgressIndicator {
   readonly variant = input<
     "spinner" | "bar" | "wave" | "circle" | "dotted-bar"
   >("spinner");
-  readonly color = input<"primary" | "neutral" | "current">("primary");
+  readonly color = input<
+    | "primary"
+    | "neutral"
+    | "success"
+    | "warning"
+    | "danger"
+    | "info"
+    | "current"
+  >("primary");
+  /**
+   * Current progress: switches the bar and circle variants to determinate
+   * mode (clamped between 0 and max); other variants ignore it
+   */
+  readonly value = input<number | undefined, unknown>(undefined, {
+    transform: (v: unknown) =>
+      v === undefined || v === null || v === "" ? undefined : Number(v),
+  });
+  /** Value that represents completion (non-positive values fall back to 100) */
+  readonly max = input(100, { transform: numberAttribute });
+  /** Shows the formatted value (a percentage by default) */
+  readonly showValue = input(false, { transform: booleanAttribute });
+  /** Formats the shown value; the result is also used as aria-valuetext */
+  readonly format = input<((value: number, max: number) => string) | null>(
+    null,
+  );
   protected readonly s = styles.progressIndicatorStyles;
-  protected readonly indicatorClass = computed(
+  protected readonly fillClass = cn(this.s.bar, this.s.determinate);
+  protected readonly determinate = computed(
     () =>
-      this.s[
-        this.variant() === "dotted-bar"
-          ? "dottedBar"
-          : (this.variant() as "spinner" | "bar" | "wave" | "circle")
-      ],
+      typeof this.value() === "number" &&
+      (this.variant() === "bar" || this.variant() === "circle"),
+  );
+  protected readonly safeMax = computed(() => {
+    const max = this.max();
+    return Number.isFinite(max) && max > 0 ? max : 100;
+  });
+  protected readonly current = computed(() => {
+    const value = this.value();
+    if (!this.determinate() || value === undefined) return 0;
+    return Math.min(
+      Math.max(Number.isNaN(value) ? 0 : value, 0),
+      this.safeMax(),
+    );
+  });
+  protected readonly percent = computed(
+    () => (this.current() / this.safeMax()) * 100,
+  );
+  protected readonly formatted = computed(() => {
+    const format = this.format();
+    return format
+      ? format(this.current(), this.safeMax())
+      : `${Math.round(this.percent())}%`;
+  });
+  protected readonly barContainerClass = computed(() =>
+    cn(this.s.barContainer, this.s[this.size()]),
+  );
+  protected readonly dottedBarContainerClass = computed(() =>
+    cn(this.s.dottedBarContainer, this.s[this.size()]),
+  );
+  protected readonly waveContainerClass = computed(() =>
+    cn(this.s.waveContainer, this.s[this.size()]),
+  );
+  protected readonly ringClass = computed(() =>
+    cn(this.s.ring, this.s[this.size()]),
+  );
+  protected readonly indicatorClass = computed(() =>
+    cn(
+      this.s[this.variant() === "circle" ? "circle" : "spinner"],
+      this.s[this.size()],
+    ),
   );
   protected readonly classes = computed(() =>
-    cn(this.s.progressIndicator, this.s[this.size()], this.s[this.color()]),
+    cn(
+      this.s.progressIndicator,
+      this.s[this.size()],
+      this.s[this.color()],
+      // bars default to 200px (--progress-width), like React and WC
+      (this.variant() === "bar" || this.variant() === "dotted-bar") &&
+        this.s.defaultWidth,
+    ),
   );
 }
 @Component({

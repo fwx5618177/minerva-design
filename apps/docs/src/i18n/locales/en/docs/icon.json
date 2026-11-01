@@ -7,6 +7,12 @@
     "canvas": "With renderer set to \"auto\", \"webgpu\", \"webgl2\", \"webgl\" or \"canvas2d\", the same icon is drawn on a canvas. Browsers cap live WebGL contexts at about 16, so canvas icons share one backend per page: the icons that changed are packed into an atlas, drawn in one pass and copied to their canvases. \"auto\" follows the global default (setDefaultIconRenderer), here the renderer bar.",
     "bundle": "Only what you import is bundled: SearchIcon brings its own path data, the canvas renderers load with the first canvas icon, and DynamicIcon (names chosen at runtime) is the only component that bundles the whole set."
   },
+  "platforms": {
+    "title": "React Native and mini programs",
+    "native": "minerva-design/native/icons has the same components for React Native (Icon, createIcon, DynamicIcon, SearchIcon…), drawn with react-native-svg from the same 24×24 path data. react-native-svg is an optional peer dependency needed by this entry only (minerva-design/native never imports it): install it with npx expo install react-native-svg, or npm install react-native-svg outside Expo. Icons stroke with the theme's text color unless color is set, size is in dp, and a title makes the icon an accessible image.",
+    "taro": "minerva-design/taro/icons has them for Taro. Mini programs cannot render inline SVG and the WeChat <image> rejects percent-encoded SVG, so each icon is an Image of a base64 SVG data URI (toSvgBase64DataUri, which needs no btoa). An image has no currentColor: the color is written into the SVG, by default the theme's text color of the active light or dark mode, and the image is rebuilt when the color or the mode changes. size is in px, or any CSS length such as \"48rpx\".",
+    "tabBar": "The tabBar of a mini program only takes PNG or JPG files: generate them at build time from toSvg (one file per icon, color and state) with the SVG rasterizer of your choice. Minerva ships no rasterizer."
+  },
   "demos": {
     "basic": {
       "title": "Basic",
@@ -76,6 +82,14 @@
       "canvas": {
         "title": "Renderers",
         "description": "The renderer attribute draws the icon on a canvas; each icon fires minerva-renderer-change with the backend that drew it, shown under it. \"auto\" follows the renderer bar; a forced backend this browser lacks falls back to the next one."
+      }
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "Icons in React Native",
+        "description": "The same icons drawn with react-native-svg: named components stroked with the theme's text color, size in dp, a custom color and stroke width, an accessible name with title, and DynamicIcon for icons chosen by name (a tab bar here)."
       }
     }
   }

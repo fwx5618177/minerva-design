@@ -1684,6 +1684,36 @@
     "slots": [{ "name": "default", "type": "{ item: any; index: number; }" }],
     "methods": []
   },
+  "WeekStrip": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "ariaLabel", "type": "string | undefined", "required": false },
+      { "name": "defaultValue", "type": "string | undefined", "required": false },
+      { "name": "defaultWeek", "type": "string | Date | undefined", "required": false },
+      { "name": "disabled", "type": "boolean | undefined", "required": false },
+      { "name": "firstDayOfWeek", "type": "number | undefined", "required": false, "default": "1" },
+      { "name": "getDayLabel", "type": "((day: string, marker: WeekStripMarker | undefined) => string) | undefined", "required": false },
+      { "name": "locale", "type": "string | undefined", "required": false },
+      { "name": "markers", "type": "Readonly<Record<string, WeekStripMarker>> | undefined", "required": false },
+      { "name": "modelValue", "type": "string | undefined", "required": false },
+      { "name": "nextWeekLabel", "type": "string | undefined", "required": false },
+      { "name": "previousWeekLabel", "type": "string | undefined", "required": false },
+      { "name": "showNavigation", "type": "boolean | undefined", "required": false, "default": "false" },
+      { "name": "size", "type": "\"medium\" | \"small\" | \"large\" | undefined", "required": false, "default": "\"medium\"" },
+      { "name": "today", "type": "string | undefined", "required": false },
+      { "name": "value", "type": "string | undefined", "required": false },
+      { "name": "week", "type": "string | Date | undefined", "required": false },
+      { "name": "weekdayLabels", "type": "readonly string[] | undefined", "required": false }
+    ],
+    "events": [
+      { "name": "change", "type": "[day: string]" },
+      { "name": "update:modelValue", "type": "[day: string]" },
+      { "name": "update:week", "type": "[weekStart: Date]" },
+      { "name": "weekChange", "type": "[weekStart: Date]" }
+    ],
+    "slots": [],
+    "methods": []
+  },
   "ConfigProvider": {
     "entry": "minerva-design/uni",
     "props": [
@@ -1692,6 +1722,12 @@
       { "name": "locale", "type": "string | undefined", "required": false },
       { "name": "mode", "type": "ThemeMode | undefined", "required": false },
       { "name": "palette", "type": "\"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null | undefined", "required": false },
+      {
+        "name": "primaryColor",
+        "type": "PrimaryColor | null | undefined",
+        "required": false,
+        "description": "Brand color: one color (dark value derived) or `{ light, dark }`; wins\nover the palette's primary (`null`: the theme's own primary)"
+      },
       { "name": "theme", "type": "NativeTheme | undefined", "required": false }
     ],
     "events": [{ "name": "themeChange", "type": "any[]" }],
@@ -1708,6 +1744,7 @@
       { "name": "locale", "type": "string | undefined", "required": false },
       { "name": "mode", "type": "ThemeMode | undefined", "required": false },
       { "name": "palette", "type": "\"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null | undefined", "required": false },
+      { "name": "primaryColor", "type": "PrimaryColor | null | undefined", "required": false, "description": "Brand color (see `ConfigProvider` `primaryColor`)" },
       { "name": "storageKey", "type": "string | undefined", "required": false, "default": "\"minerva-theme\"" }
     ],
     "events": [

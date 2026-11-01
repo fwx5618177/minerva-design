@@ -277,6 +277,31 @@ export const listChecksIcon: IconDefinition = {
   ],
 };
 
+/** To-do list: a ticked box and an open box, with lines */
+export const listTodoIcon: IconDefinition = {
+  name: "list-todo",
+  category: "text",
+  tags: ["checklist", "todo", "tasks", "progress"],
+  paths: [
+    "M9 8v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3",
+    "M5 6.5l1.5 1.5 4-4.5",
+    "M4 14h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1Z",
+    "M14 5.5h7",
+    "M14 9h4",
+    "M14 15.5h7",
+    "M14 19h4",
+  ],
+  colors: [
+    undefined,
+    palette.green,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
+};
+
 /** Select text */
 export const textSelectIcon: IconDefinition = {
   name: "text-select",

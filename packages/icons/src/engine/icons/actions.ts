@@ -33,6 +33,14 @@ export const checkIcon: IconDefinition = {
   paths: ["M4.5 12.5l5 5 10-11"],
 };
 
+/** Two overlapping check marks */
+export const checkCheckIcon: IconDefinition = {
+  name: "check-check",
+  category: "actions",
+  tags: ["done", "read", "delivered", "double tick"],
+  paths: ["M2 12.5l4.5 4.5 9-10", "M11.5 16l1 1 9-10"],
+};
+
 /** Magnifying glass */
 export const searchIcon: IconDefinition = {
   name: "search",
@@ -107,6 +115,18 @@ export const clipboardIcon: IconDefinition = {
   paths: [
     "M8.5 4H7a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.5",
     "M9.5 2.5h5a1 1 0 0 1 1 1v1.5a1 1 0 0 1 -1 1h-5a1 1 0 0 1 -1 -1v-1.5a1 1 0 0 1 1 -1Z",
+  ],
+};
+
+/** Clipboard with a check mark */
+export const clipboardCheckIcon: IconDefinition = {
+  name: "clipboard-check",
+  category: "actions",
+  tags: ["task done", "checklist", "approved", "complete"],
+  paths: [
+    "M8.5 4H7a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.5",
+    "M9.5 2.5h5a1 1 0 0 1 1 1v1.5a1 1 0 0 1 -1 1h-5a1 1 0 0 1 -1 -1v-1.5a1 1 0 0 1 1 -1Z",
+    "M8.5 13.5l2.5 2.5 4.5-5",
   ],
 };
 

@@ -181,6 +181,18 @@ export const rotateCcwIcon: IconDefinition = {
   paths: ["M4.27 14.07A8 8 0 1 0 5.07 8", "M8.45 7.09L5.07 8L4.17 4.62"],
 };
 
+/** Counterclockwise arrow around clock hands */
+export const historyIcon: IconDefinition = {
+  name: "history",
+  category: "arrows",
+  tags: ["recent", "past", "timeline", "log"],
+  paths: [
+    "M4.27 14.07A8 8 0 1 0 5.07 8",
+    "M8.45 7.09L5.07 8L4.17 4.62",
+    "M12 8.5V12l2.5 1.5",
+  ],
+};
+
 /** Curved arrow pointing back */
 export const undoIcon: IconDefinition = {
   name: "undo",

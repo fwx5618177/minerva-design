@@ -6,6 +6,7 @@ import {
   computed,
   effect,
   inject,
+  isDevMode,
   linkedSignal,
   signal,
   untracked,
@@ -14,10 +15,14 @@ import {
 import {
   DEFAULT_LANGUAGE,
   designAttributes,
+  formatDevMessage,
+  invalidPrimaryColorMessage,
   isPalette,
   isSupportedLanguage,
+  palettes,
   presetPalette,
   resolveDesign,
+  resolvePrimaryColor,
   translate,
   messages,
   type ComponentTheme,
@@ -27,6 +32,8 @@ import {
   type DesignPreset,
   type FontScale,
   type Palette,
+  type PrimaryColor,
+  type PrimaryColorPair,
   type RadiusScale,
   type ResolvedDesign,
   type ResolvedThemeMode,
@@ -47,6 +54,8 @@ import {
   isBilingualTheme,
   parsePaletteCookie,
   parseThemeCookie,
+  primaryColorCss,
+  primaryColorTheme,
   readCookieValue,
   resolveTheme,
   serializeThemeCookie,
@@ -88,6 +97,17 @@ export interface MinervaConfig {
    */
   palette?: Palette | null;
   /**
+   * Brand color: a CSS color for both modes (the dark-mode value is derived
+   * for contrast on dark surfaces) or a `{ light, dark }` pair. Recomputes
+   * every token derived from `primary-color` and wins over the palette's
+   * primary color; the theme mode stays explicit. A nested `<mn-config>`
+   * inherits it unless set and scopes an override to its subtree; `null`
+   * restores the theme's own. Invalid colors are ignored with a development
+   * warning.
+   * @default undefined
+   */
+  primaryColor?: PrimaryColor | null;
+  /**
    * Persist theme / palette changes in the `theme` / `palette` cookies and
    * restore them after hydration (root only).
    * @default false
@@ -125,6 +145,7 @@ export interface ScopeCallbacks {
 export const staticInputs = (config: MinervaConfig = {}): ScopeInputs => ({
   theme: () => config.theme,
   palette: () => config.palette,
+  primaryColor: () => config.primaryColor,
   persist: () => config.persist,
   locale: () => config.locale,
   preset: () => config.preset,
@@ -150,6 +171,21 @@ const supportsPalette = (theme: ConfigTheme) =>
   theme === "dark" ||
   theme === "auto" ||
   theme === "system";
+
+const warnedPrimaryColors = new Set<string>();
+/** Development warning (once per value) for an invalid `primaryColor` */
+const warnInvalidPrimaryColor = (value: unknown) => {
+  if (!isDevMode()) return;
+  const key = JSON.stringify(value);
+  if (warnedPrimaryColors.has(key)) return;
+  warnedPrimaryColors.add(key);
+  console.error(
+    formatDevMessage("mn-config", invalidPrimaryColorMessage(value)),
+  );
+};
+
+/** Attribute of the root brand color style sheet (in `<head>`) */
+const BRAND_STYLE_ATTRIBUTE = "data-minerva-primary-color";
 
 /** The user's color scheme (`prefers-color-scheme`), "light" on the server */
 @Injectable({ providedIn: "root" })
@@ -210,6 +246,10 @@ export class MinervaScope {
   readonly resolvedTheme: Signal<ThemeName | ComponentTheme | ThemeMap>;
   /** Palette actually applied (palettes only apply to light / dark / system) */
   readonly activePalette: Signal<Palette | null>;
+  /** Brand color of the scope (own or inherited), `null`: the theme's own */
+  readonly primaryColor: Signal<PrimaryColorPair | null>;
+  /** Inline tokens: the theme's (none with a palette) and the brand color's */
+  private readonly inlineTheme: Signal<ThemeMap>;
   /** This scope overrides the theme, palette or design of its subtree */
   readonly scoped: Signal<boolean>;
   /** Theme tokens of a scoped subtree (inline CSS variables) */
@@ -299,21 +339,54 @@ export class MinervaScope {
       const palette = this.palette();
       return palette && supportsPalette(this.theme()) ? palette : null;
     });
+    // Brand color: an invalid one is ignored (inherited, like an unset one)
+    const ownBrand = computed(() => {
+      const value = inputs.primaryColor();
+      const pair = resolvePrimaryColor(value);
+      if (pair === undefined) warnInvalidPrimaryColor(value);
+      return pair;
+    });
+    const ownsBrand = () =>
+      isRoot ||
+      (inputs.primaryColor() !== undefined && ownBrand() !== undefined);
+    this.primaryColor = computed(
+      () =>
+        ownsBrand() ? (ownBrand() ?? null) : (parent?.primaryColor() ?? null),
+      {
+        equal: (a, b) => a?.light === b?.light && a?.dark === b?.dark,
+      },
+    );
+    this.inlineTheme = computed(() => {
+      const palette = this.activePalette();
+      const base = palette
+        ? undefined
+        : resolveTheme(this.theme(), this.systemTheme());
+      const brand = this.primaryColor();
+      if (!brand) return base ?? ({} as ThemeMap);
+      const mode = this.resolvedMode() ?? "light";
+      return {
+        ...base,
+        ...primaryColorTheme(
+          brand,
+          mode,
+          palette ? palettes[palette][mode] : base,
+        ),
+      } as ThemeMap;
+    });
     this.scoped = computed(
       () =>
         !isRoot &&
         (this.themeInput() !== undefined ||
           this.paletteInput() !== undefined ||
+          (inputs.primaryColor() !== undefined && ownBrand() !== undefined) ||
           this.hasDesign()),
     );
     this.scopeVariables = computed(() => {
-      if (!this.scoped() || this.activePalette()) return null;
-      const theme = resolveTheme(this.theme(), this.systemTheme());
-      return Object.fromEntries(
-        Object.entries(theme)
-          .filter(([, v]) => v !== undefined && v !== null && v !== "")
-          .map(([key, value]) => [`--${key}`, String(value)]),
-      );
+      if (!this.scoped()) return null;
+      const entries = Object.entries(this.inlineTheme())
+        .filter(([, v]) => v !== undefined && v !== null && v !== "")
+        .map(([key, value]) => [`--${key}`, String(value)]);
+      return entries.length ? Object.fromEntries(entries) : null;
     });
     this.scopeDesignAttributes = computed(() =>
       this.scoped() ? designAttributes(this.design(), { all: true }) : null,
@@ -322,7 +395,10 @@ export class MinervaScope {
       this.scoped() ? this.ownPortal() : (parent?.portalContainer() ?? null),
     );
 
-    if (!this.isBrowser || passive) return;
+    if (passive) return;
+    // Root brand color style sheet: also on the server (no flash)
+    if (isRoot) this.manageBrandStyle();
+    if (!this.isBrowser) return;
     if (isRoot) this.applyToDocument();
     else this.managePortalHost();
   }
@@ -422,8 +498,7 @@ export class MinervaScope {
     effect(() => {
       const mode = this.resolvedMode();
       const palette = this.activePalette();
-      const theme = this.theme();
-      const system = this.systemTheme();
+      const inlineTheme = this.inlineTheme();
       const design = this.design();
       untracked(() => {
         if (mode) {
@@ -433,13 +508,9 @@ export class MinervaScope {
           root.removeAttribute("data-theme");
           root.style.removeProperty("color-scheme");
         }
-        if (palette) {
-          root.setAttribute("data-palette", palette);
-          generateCSSVariables(root.style, {} as ThemeMap);
-        } else {
-          root.removeAttribute("data-palette");
-          generateCSSVariables(root.style, resolveTheme(theme, system));
-        }
+        if (palette) root.setAttribute("data-palette", palette);
+        else root.removeAttribute("data-palette");
+        generateCSSVariables(root.style, inlineTheme);
         applyDesignAttributes(root, design);
       });
     });
@@ -484,8 +555,7 @@ export class MinervaScope {
       if (!el) return;
       const mode = this.resolvedMode();
       const palette = this.activePalette();
-      const theme = this.theme();
-      const system = this.systemTheme();
+      const inlineTheme = this.inlineTheme();
       const design = this.design();
       untracked(() => {
         if (mode) el.setAttribute("data-theme", mode);
@@ -495,13 +565,43 @@ export class MinervaScope {
         applyDesignAttributes(el, design, { all: true });
         if (mode) el.style.setProperty("color-scheme", mode);
         else el.style.removeProperty("color-scheme");
-        generateCSSVariables(
-          el.style,
-          palette ? ({} as ThemeMap) : resolveTheme(theme, system),
-        );
+        generateCSSVariables(el.style, inlineTheme);
       });
     });
     inject(DestroyRef).onDestroy(() => host?.remove());
+  }
+
+  /**
+   * Root: the brand color of both modes as a `<style>` in `<head>` keyed on
+   * `data-theme`, so server-rendered pages have it before hydration (the
+   * client reuses the server's element). Colors are normalized: safe CSS.
+   */
+  private manageBrandStyle() {
+    const doc = this.document;
+    let style: HTMLStyleElement | null = null;
+    effect(() => {
+      const brand = this.primaryColor();
+      const palette = this.activePalette();
+      const theme = this.theme();
+      untracked(() => {
+        if (!brand) {
+          style?.remove();
+          style = null;
+          return;
+        }
+        const baseOf = (mode: ResolvedThemeMode) =>
+          palette ? palettes[palette][mode] : resolveTheme(theme, mode);
+        style ??=
+          doc.head.querySelector<HTMLStyleElement>(
+            `style[${BRAND_STYLE_ATTRIBUTE}]`,
+          ) ?? doc.head.appendChild(doc.createElement("style"));
+        style.setAttribute(BRAND_STYLE_ATTRIBUTE, "");
+        style.textContent = primaryColorCss(brand, {
+          base: { light: baseOf("light"), dark: baseOf("dark") },
+        });
+      });
+    });
+    inject(DestroyRef).onDestroy(() => style?.remove());
   }
 }
 

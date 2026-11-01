@@ -3,6 +3,7 @@ export * from "../components/Tabs";
 export * from "../components/Pagination";
 export * from "../components/VirtualList";
 export * from "../components/MonthCalendar";
+export * from "../components/WeekStrip";
 export * from "../components/Steps";
 export * from "../components/Table";
 export * from "../components/NavTree";

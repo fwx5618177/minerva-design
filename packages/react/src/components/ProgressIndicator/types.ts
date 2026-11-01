@@ -5,6 +5,9 @@ import type { ColorScheme } from "@minerva/core";
 export type ProgressIndicatorVariant =
   "spinner" | "bar" | "wave" | "circle" | "dottedBar";
 
+/** Semantic color of a ProgressIndicator ("current" follows the text color) */
+export type ProgressIndicatorColor = ColorScheme | "current";
+
 /**
  * Size preset of a ProgressIndicator: the diameter of round indicators
  * (12 / 16 / 24 / 32 / 48 px) or the thickness of bars
@@ -27,12 +30,38 @@ export interface ProgressIndicatorProps extends Omit<
    */
   size?: ProgressIndicatorSize;
   /**
-   * Semantic color of the indicator: theme primary or neutral gray.
-   * "current" is a special value that follows the surrounding text color
-   * (currentColor), e.g. inside buttons or colored containers
+   * Semantic color of the indicator: theme primary, neutral gray or a status
+   * color (success / warning / danger / info). "current" is a special value
+   * that follows the surrounding text color (currentColor), e.g. inside
+   * buttons or colored containers
    * @default "primary"
    */
-  color?: Extract<ColorScheme, "primary" | "neutral"> | "current";
+  color?: ProgressIndicatorColor;
+  /**
+   * Current progress. Setting it switches the bar and circle variants to
+   * determinate mode (a filled bar / arc and aria-valuenow); the value is
+   * clamped between 0 and max. Other variants ignore it and stay
+   * indeterminate.
+   */
+  value?: number;
+  /**
+   * Value that represents completion (determinate mode only); non-positive
+   * values fall back to 100
+   * @default 100
+   */
+  max?: number;
+  /**
+   * Shows the formatted value (a percentage by default) next to a
+   * determinate indicator
+   * @default false
+   */
+  showValue?: boolean;
+  /**
+   * Formats the value shown by showValue; a string or number result is also
+   * used as aria-valuetext
+   * @default (value, max) => `${Math.round((value / max) * 100)}%`
+   */
+  format?: (value: number, max: number) => ReactNode;
   /** Icon displayed before the indicator */
   icon?: ReactNode;
   /**
@@ -43,7 +72,7 @@ export interface ProgressIndicatorProps extends Omit<
   /**
    * Accessible label describing what is loading (used when there is no
    * visible label)
-   * @default "Loading" (localized)
+   * @default "Loading" (localized; "Progress" in determinate mode)
    */
   "aria-label"?: string;
   /**

@@ -12,6 +12,14 @@
     "text": "palette 在 light、dark 或 system 主题之上叠加一套配色调色板（\"editorial\"、\"tech\"、\"graphite\" 或 \"cool\"）。persist 会把主题和调色板的变更保存到 theme 与 palette Cookie 中，并在水合后恢复。setTheme 和 setPalette 改变取值后会调用 onThemeChange 和 onPaletteChange。",
     "setters": "useConfig() 还会返回 mode、resolvedMode、palette 以及 setTheme 和 setPalette 两个设置函数，任何组件都能切换主题，无需提升状态。服务端渲染、Cookie 和防闪烁初始化脚本详见"
   },
+  "brand": {
+    "title": "品牌色",
+    "text": "primaryColor 用于设置品牌色，无需手动覆盖 --primary-color：传入一个 CSS 颜色（\"#4f46e5\"、rgb()、颜色名）同时用于两种模式，或传入 { light, dark } 对。主题仍保持显式：theme 依旧是 \"light\"、\"dark\" 或 \"system\"，因此 data-theme、useConfig().mode 和 ThemeToggle 照常工作。",
+    "derive": "派生变量：所有由 primary-color 派生的变量（hover、active、subtle、border、text、焦点环、选中色，以及在配色没有自己的强调色时的 accent 变量）都会用默认主题的公式基于品牌色重新计算。单个颜色在暗色模式下会在 OKLab 空间向白色混合，直到在深色表面上达到 4.5:1 的对比度（#4f46e5 变为 #7b85f2）；本身已达标的颜色保持不变。",
+    "precedence": "优先级：primaryColor 优先于配色和主题自带的主色；配色的其他变量保持不变。无效颜色会被忽略，并在开发环境给出警告。",
+    "nesting": "嵌套：嵌套 Provider 会继承品牌色，嵌套的 primaryColor 只作用于其子树（包括其浮层）；null 恢复主题自身的主色。",
+    "ssr": "服务端渲染：根 Provider 会把亮色和暗色两组品牌色渲染到以 data-theme 区分的 <style> 中，因此服务端标记在水合前就带有品牌色（配合主题初始化脚本不会闪烁）。React Native（MinervaProvider）、Taro、uni-app 与微信小程序的 Provider（ConfigProvider / ThemeProvider）、Vue（ConfigProvider / ThemeProvider）、Angular（<mn-config primaryColor>、provideMinerva({ primaryColor })）以及 <minerva-config primary-color> 都支持同样的值，语义一致。"
+  },
   "demos": {
     "use-config": {
       "title": "读取配置",
@@ -28,12 +36,17 @@
     "palette": {
       "title": "调色板",
       "description": "每张卡片都是一个带有自己配色的嵌套 ConfigProvider，使用站点当前的模式。站点的根 Provider 仍保留 <html> 上的 data-palette。"
+    },
+    "brand-color": {
+      "title": "品牌色",
+      "description": "在站点当前模式下使用 primaryColor 的嵌套 ConfigProvider：单个靛蓝色（自动派生暗色值）、{ light, dark } 对，以及青色。切换站点主题即可对比派生的暗色值。"
     }
   },
   "api": {
     "ConfigContextProviderProps": {
       "theme": "要应用的主题：\"auto\" 或其别名 \"system\"（跟随 prefers-color-scheme）、内置主题名、主题对象或 { light, dark } 组合。根 Provider 将其应用到 <html>；嵌套 Provider 未设置时继承父级主题，设置后只作用于自己的子树。",
       "palette": "与 light、dark、system 主题搭配使用的配色（\"editorial\"、\"tech\"、\"graphite\"、\"cool\"）；null 保持 Minerva 默认外观。根 Provider 在 <html> 上设置 data-palette；嵌套 Provider 未设置时继承父级配色，设置后只作用于其子树。配色变量来自 style.css。",
+      "primaryColor": "品牌色：同时用于两种模式的 CSS 颜色（暗色模式的值会为深色表面上的对比度自动派生），或 { light, dark } 对。会重新计算所有由 primary-color 派生的变量，并优先于配色的主色，同时保持显式的亮色 / 暗色模式。嵌套 Provider 未设置时继承，设置后只作用于其子树；null 恢复主题自身的主色。无效颜色会被忽略，并在开发环境给出警告。",
       "persist": "将主题和配色的变更保存到 theme 和 palette Cookie 中，并在水合后恢复（SSR 时请配合 THEME_INIT_SCRIPT 使用）。仅对根 Provider 生效，嵌套 Provider 会忽略它。",
       "onThemeChange": "setTheme 改变主题后调用。",
       "onPaletteChange": "setPalette 改变调色板后调用。",
@@ -52,6 +65,7 @@
       "mode": "主题的颜色模式：light、dark 主题分别为 \"light\"、\"dark\"；\"auto\"、\"system\" 和 { light, dark } 组合为 \"system\"；其他主题为 undefined。",
       "resolvedMode": "实际应用的颜色模式（<html> 或嵌套 Provider 作用域元素上的 data-theme），可确定时提供。",
       "palette": "当前配色（<html> 或嵌套 Provider 作用域元素上的 data-palette），null 表示 Minerva 默认外观。",
+      "primaryColor": "作用于子树的品牌色，形式为 { light, dark } 对（传入单个颜色时暗色值为自动派生），使用主题自身主色时为 null。",
       "setTheme": "切换主题（开启 persist 时保存到 theme Cookie）。",
       "setPalette": "切换调色板（开启 persist 时保存到 palette Cookie）。",
       "design": "解析后的设计维度（preset、density、radius、shadow、fontScale），应用于 <html> 或嵌套 provider 的作用域。"
@@ -90,6 +104,10 @@
       "nested": {
         "title": "嵌套作用域与主题事件",
         "description": "作用域可以嵌套，最近的作用域生效：内层始终为浅色，外层跟随按钮切换。minerva-theme-change 报告解析后的模式，theme=\"system\" 时同样适用。"
+      },
+      "brand-color": {
+        "title": "品牌色",
+        "description": "使用 primary-color 的作用域：单个靛蓝色（自动推导暗色值 #7b85f2）、暗色作用域中的靛蓝色，以及覆盖 editorial 调色板主色的青色。"
       }
     },
     "minerva-config": {

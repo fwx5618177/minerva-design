@@ -8,3 +8,4 @@ export * from "./mode";
 export * from "./design";
 export * from "./themes";
 export * from "./palettes";
+export * from "./palette-accents";

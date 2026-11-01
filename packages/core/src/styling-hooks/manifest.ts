@@ -87,6 +87,7 @@ import tooltipHooks from "./components/tooltip";
 import uploadHooks from "./components/upload";
 import virtualListHooks from "./components/virtual-list";
 import vstackHooks from "./components/vstack";
+import weekStripHooks from "./components/week-strip";
 
 /**
  * The public styling hooks of every Minerva component, by component name:
@@ -182,6 +183,7 @@ export const stylingHooks = {
   upload: uploadHooks,
   "virtual-list": virtualListHooks,
   vstack: vstackHooks,
+  "week-strip": weekStripHooks,
 } as const;
 
 /** The manifest type (component name -> spec) */

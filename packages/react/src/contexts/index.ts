@@ -14,6 +14,8 @@ export type {
   ThemeMap,
   ConfigProviderThemeProps,
   Theme,
+  PrimaryColor,
+  PrimaryColorPair,
   SupportedLanguage,
   Locale,
   ConfigContextProps,

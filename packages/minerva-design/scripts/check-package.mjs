@@ -34,6 +34,7 @@ try {
   const dual = [
     ".",
     "./native",
+    "./native/icons",
     ...Object.keys(DUAL_SUBPATHS).map((name) => `./${name}`),
   ];
   const esmOnly = [
@@ -46,6 +47,7 @@ try {
     "./angular/monaco",
     "./taro",
     "./taro/monaco",
+    "./taro/icons",
     "./uni",
     "./uni/monaco",
     "./vue/global",

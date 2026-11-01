@@ -113,6 +113,22 @@ export const notebookIcon: IconDefinition = {
   ],
 };
 
+/** Notebook with a pen */
+export const notebookPenIcon: IconDefinition = {
+  name: "notebook-pen",
+  category: "education",
+  tags: ["notes", "journal", "write", "edit"],
+  paths: [
+    "M19 6V5a2 2 0 0 0-2-2H6v18h8",
+    "M3 6h3",
+    "M3 11h3",
+    "M3 16h3",
+    "M10 8h4",
+    "M10 12h1.5",
+    "M19 8a1.41 1.41 0 0 1 2 2l-6.5 6.5L11 18l1.5-3.5Z",
+  ],
+};
+
 /** Classroom chalkboard */
 export const chalkboardIcon: IconDefinition = {
   name: "chalkboard",
