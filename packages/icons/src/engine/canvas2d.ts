@@ -1,6 +1,7 @@
 // Canvas2D drawing of a single icon: native strokes, same result as the SVG.
 
 import { flattenIconPath } from "./path";
+import { iconLayers } from "./layers";
 import { iconPathData } from "./svg";
 import type { DrawIconOptions, IconDefinition } from "./types";
 
@@ -57,9 +58,9 @@ export type IconDrawingContext = Pick<
 
 /**
  * Draws an icon on a 2D context, `size` units wide from (`x`, `y`), in the
- * context's current transform. One stroke for the whole icon, so translucent
- * colors don't darken where parts overlap. `currentColor` is not known to a
- * canvas: pass a color (black by default).
+ * context's current transform. One stroke per color layer (see `colors`), so
+ * translucent colors don't darken where the paths of one color overlap.
+ * `currentColor` is not known to a canvas: pass a color (black by default).
  */
 export function drawIcon(
   ctx: IconDrawingContext,
@@ -88,22 +89,35 @@ export function drawIcon(
   ctx.lineWidth = strokeWidth;
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
-  const path = path2d(icon);
-  if (path) {
-    (ctx as CanvasRenderingContext2D).stroke(path);
-  } else {
-    // flattened finely enough for the drawn size
-    const tolerance = Math.min(0.1, 0.2 / Math.max(scale, 0.01));
-    ctx.beginPath();
-    for (const d of icon.paths) {
-      for (const line of flattenIconPath(d, tolerance)) {
-        const p = line.points;
-        ctx.moveTo(p[0]!, p[1]!);
-        for (let i = 2; i < p.length; i += 2) ctx.lineTo(p[i]!, p[i + 1]!);
-        if (line.closed) ctx.closePath();
-      }
-    }
-    ctx.stroke();
+  const base =
+    !color || color.toLowerCase() === "currentcolor" ? "#000" : color;
+  for (const layer of iconLayers(icon)) {
+    ctx.strokeStyle = layer.color ?? base;
+    strokeLayer(ctx, layer.icon, scale);
   }
   ctx.restore();
 }
+
+const strokeLayer = (
+  ctx: IconDrawingContext,
+  icon: IconDefinition,
+  scale: number,
+) => {
+  const path = path2d(icon);
+  if (path) {
+    (ctx as CanvasRenderingContext2D).stroke(path);
+    return;
+  }
+  // flattened finely enough for the drawn size
+  const tolerance = Math.min(0.1, 0.2 / Math.max(scale, 0.01));
+  ctx.beginPath();
+  for (const d of icon.paths) {
+    for (const line of flattenIconPath(d, tolerance)) {
+      const p = line.points;
+      ctx.moveTo(p[0]!, p[1]!);
+      for (let i = 2; i < p.length; i += 2) ctx.lineTo(p[i]!, p[i + 1]!);
+      if (line.closed) ctx.closePath();
+    }
+  }
+  ctx.stroke();
+};

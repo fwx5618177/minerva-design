@@ -7,11 +7,24 @@ import * as arrows from "./icons/arrows";
 import * as communication from "./icons/communication";
 import * as data from "./icons/data";
 import * as devices from "./icons/devices";
+import * as education from "./icons/education";
 import * as files from "./icons/files";
 import * as finance from "./icons/finance";
+import * as food from "./icons/food";
+import * as health from "./icons/health";
 import * as interfaceIcons from "./icons/interface";
 import * as media from "./icons/media";
+import * as music from "./icons/music";
+import * as nature from "./icons/nature";
+import * as people from "./icons/people";
+import * as places from "./icons/places";
+import * as shapes from "./icons/shapes";
+import * as shopping from "./icons/shopping";
+import * as sports from "./icons/sports";
 import * as status from "./icons/status";
+import * as text from "./icons/text";
+import * as tools from "./icons/tools";
+import * as weather from "./icons/weather";
 import type { IconCategory, IconDefinition } from "./types";
 
 const collect = (
@@ -31,6 +44,19 @@ export const icons: readonly IconDefinition[] = /* @__PURE__ */ collect(
   finance,
   status,
   devices,
+  weather,
+  nature,
+  food,
+  people,
+  places,
+  shapes,
+  text,
+  education,
+  health,
+  shopping,
+  music,
+  tools,
+  sports,
 );
 
 /** Categories of the built-in icons, in display order */
@@ -45,6 +71,19 @@ export const iconCategories: readonly IconCategory[] = [
   "finance",
   "status",
   "devices",
+  "weather",
+  "nature",
+  "food",
+  "people",
+  "places",
+  "shapes",
+  "text",
+  "education",
+  "health",
+  "shopping",
+  "music",
+  "tools",
+  "sports",
 ];
 
 let byName: Map<string, IconDefinition> | null = null;

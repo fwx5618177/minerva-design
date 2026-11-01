@@ -58,9 +58,10 @@ const ICON_TEMPLATE = `
         @if (title()) {
           <title>{{ title() }}</title>
         }
-        @for (d of icon.paths; track $index) {
+        @for (d of icon.paths; track $index; let i = $index) {
           <path
             [attr.d]="d"
+            [attr.stroke]="icon.colors?.[i] ?? null"
             [attr.vector-effect]="
               absoluteStrokeWidth() ? 'non-scaling-stroke' : null
             "

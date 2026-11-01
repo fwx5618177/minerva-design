@@ -26,7 +26,7 @@ export const pieChartIcon: IconDefinition = {
   name: "pie-chart",
   category: "data",
   tags: ["chart", "graph", "share", "proportion"],
-  paths: ["M11 5A8 8 0 1 0 19 13H11Z", "M12.5 3.5A8 8 0 0 1 20.5 11.5H12.5Z"],
+  paths: ["M11 5A8 8 0 1 0 19 13H11Z", "M14 2A8 8 0 0 1 22 10H14Z"],
 };
 
 /** Area chart on axes */
@@ -140,16 +140,10 @@ export const sigmaIcon: IconDefinition = {
   paths: ["M18 6.5V4H6l6.5 8L6 20h12v-2.5"],
 };
 
-/** Donut chart */
+/** Donut chart with a notched slice */
 export const donutChartIcon: IconDefinition = {
   name: "donut-chart",
   category: "data",
   tags: ["chart", "ring", "proportion", "breakdown"],
-  paths: [
-    "M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0",
-    "M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0",
-    "M12 8L12 3",
-    "M15.06 14.57L18.89 17.79",
-    "M8.24 13.37L3.54 15.08",
-  ],
+  paths: ["M21 12A9 9 0 1 1 12 3V8A4 4 0 1 0 16 12Z"],
 };

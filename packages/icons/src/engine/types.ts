@@ -9,6 +9,12 @@ export interface IconDefinition {
   readonly name: string;
   /** SVG path `d` strings (M L H V C S Q T A Z, absolute or relative) on the 24×24 grid */
   readonly paths: readonly string[];
+  /**
+   * Stroke color of each path, parallel to `paths`; `undefined` keeps the
+   * drawing color (`color` option, `currentColor` by default). Colors apply
+   * to strokes only.
+   */
+  readonly colors?: readonly (string | undefined)[];
   /** Group of the icon, e.g. `arrows` (built-in icons always have one) */
   readonly category?: string;
   /** Search words besides the name */
@@ -26,7 +32,20 @@ export type IconCategory =
   | "data"
   | "finance"
   | "status"
-  | "devices";
+  | "devices"
+  | "weather"
+  | "nature"
+  | "food"
+  | "people"
+  | "places"
+  | "shapes"
+  | "text"
+  | "education"
+  | "health"
+  | "shopping"
+  | "music"
+  | "tools"
+  | "sports";
 
 /** A backend that draws icons on a canvas */
 export type IconRendererKind = "webgpu" | "webgl2" | "webgl" | "canvas2d";

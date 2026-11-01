@@ -206,7 +206,8 @@ export class MinervaIcon extends MinervaElement {
     >
       ${label ? svg`<title>${label}</title>` : nothing}
       ${icon.paths.map(
-        (d) => svg`<path d=${d} vector-effect=${ifDefined(scaling)}></path>`,
+        (d, i) =>
+          svg`<path d=${d} stroke=${ifDefined(icon.colors?.[i])} vector-effect=${ifDefined(scaling)}></path>`,
       )}
     </svg>`;
   }

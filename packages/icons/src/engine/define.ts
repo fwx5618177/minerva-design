@@ -12,7 +12,7 @@ const NAME = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
  * result is frozen and works with every renderer.
  */
 export function defineIcon(definition: IconDefinition): IconDefinition {
-  const { name, paths, category, tags } = definition;
+  const { name, paths, colors, category, tags } = definition;
   if (!NAME.test(name)) {
     throw new TypeError(
       `Invalid icon name "${name}": use kebab-case (e.g. "my-icon")`,
@@ -22,9 +22,15 @@ export function defineIcon(definition: IconDefinition): IconDefinition {
     throw new TypeError(`Icon "${name}" has no paths`);
   }
   for (const d of paths) parseIconPath(d);
+  if (colors !== undefined && colors.length !== paths.length) {
+    throw new TypeError(
+      `Icon "${name}" has ${colors.length} colors for ${paths.length} paths`,
+    );
+  }
   return Object.freeze({
     name,
     paths: Object.freeze([...paths]),
+    ...(colors !== undefined && { colors: Object.freeze([...colors]) }),
     ...(category !== undefined && { category }),
     ...(tags !== undefined && { tags: Object.freeze([...tags]) }),
   });

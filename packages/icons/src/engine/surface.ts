@@ -8,6 +8,7 @@
 import { drawIcon } from "./canvas2d";
 import { resolveColor } from "./color";
 import { subscribeDefaultIconRenderer } from "./defaults";
+import { iconLayers } from "./layers";
 import { cssColor } from "./renderers/canvas2d";
 import { createIconBackend } from "./renderers/detect";
 import type { FrameItem, IconBackend } from "./renderers/types";
@@ -79,23 +80,26 @@ const report = (state: SurfaceState, kind: IconRendererKind) => {
   }
 };
 
-const itemOf = (state: SurfaceState, x: number, y: number): FrameItem => {
+const itemsOf = (state: SurfaceState, x: number, y: number): FrameItem[] => {
   const { icon, color, strokeWidth = 2, opacity = 1 } = state.options;
   const rgba = resolveColor(color, state.canvas);
-  return {
-    icon,
-    x,
-    y,
-    size: pixelsOf(state),
-    rotation: 0,
-    strokeWidth,
-    color: [
-      rgba[0],
-      rgba[1],
-      rgba[2],
-      rgba[3] * Math.min(1, Math.max(0, opacity)),
-    ],
-  };
+  const alpha = Math.min(1, Math.max(0, opacity));
+  const size = pixelsOf(state);
+  return iconLayers(icon).map((layer): FrameItem => {
+    const layerRgba =
+      layer.color === undefined
+        ? rgba
+        : resolveColor(layer.color, state.canvas);
+    return {
+      icon: layer.icon,
+      x,
+      y,
+      size,
+      rotation: 0,
+      strokeWidth,
+      color: [layerRgba[0], layerRgba[1], layerRgba[2], layerRgba[3] * alpha],
+    };
+  });
 };
 
 const context2d = (canvas: HTMLCanvasElement, pixels: number) => {
@@ -112,12 +116,13 @@ const drawDirect = (state: SurfaceState) => {
   const pixels = pixelsOf(state);
   const ctx = context2d(state.canvas, pixels);
   if (!ctx) return;
-  const item = itemOf(state, 0, 0);
-  drawIcon(ctx, item.icon, {
-    size: pixels,
-    strokeWidth: item.strokeWidth,
-    color: cssColor(item.color),
-  });
+  for (const item of itemsOf(state, 0, 0)) {
+    drawIcon(ctx, item.icon, {
+      size: pixels,
+      strokeWidth: item.strokeWidth,
+      color: cssColor(item.color),
+    });
+  }
 };
 
 /** Draws a batch on the shared backend and copies each icon to its canvas */
@@ -131,7 +136,7 @@ const drawAtlas = (
     width,
     height,
     dpr: 1,
-    items: batch.map(({ state, x, y }) => itemOf(state, x, y)),
+    items: batch.flatMap(({ state, x, y }) => itemsOf(state, x, y)),
   });
   for (const { state, x, y, pixels } of batch) {
     const ctx = context2d(state.canvas, pixels);

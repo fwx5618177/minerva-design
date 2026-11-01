@@ -54,7 +54,12 @@ export function toSvg(
   const head = Object.entries(attrs)
     .map(([name, value]) => `${name}="${escape(value)}"`)
     .join(" ");
-  const body = icon.paths.map((d) => `<path d="${escape(d)}"/>`).join("");
+  const body = icon.paths
+    .map((d, i) => {
+      const stroke = icon.colors?.[i];
+      return `<path d="${escape(d)}"${stroke ? ` stroke="${escape(stroke)}"` : ""}/>`;
+    })
+    .join("");
   const label = title ? `<title>${escape(title)}</title>` : "";
   return `<svg ${head}>${label}${body}</svg>`;
 }

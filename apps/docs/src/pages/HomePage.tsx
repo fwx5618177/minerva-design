@@ -108,13 +108,15 @@ const HomePage: React.FC = () => {
         <p className={styles.subtitle}>{t("home.subtitle")}</p>
         <div className={styles.ctas}>
           <TextLink asChild variant="action">
-            <Link to="/installation">
+            <Link to="/installation" className={styles.ctaPrimary}>
               {t("home.getStarted")}
               <IoArrowForward aria-hidden />
             </Link>
           </TextLink>
           <TextLink asChild variant="action">
-            <Link to="/button">{t("home.browse")}</Link>
+            <Link to="/button" className={styles.ctaSecondary}>
+              {t("home.browse")}
+            </Link>
           </TextLink>
         </div>
 

@@ -283,3 +283,380 @@ export const ServerIcon = /* @__PURE__ */ createIcon(icons.serverIcon);
 export const WatchIcon = /* @__PURE__ */ createIcon(icons.watchIcon);
 export const TvIcon = /* @__PURE__ */ createIcon(icons.tvIcon);
 export const GamepadIcon = /* @__PURE__ */ createIcon(icons.gamepadIcon);
+export const SunRaysIcon = /* @__PURE__ */ createIcon(icons.sunRaysIcon);
+export const MoonStarsIcon = /* @__PURE__ */ createIcon(icons.moonStarsIcon);
+export const CloudDrizzleIcon = /* @__PURE__ */ createIcon(
+  icons.cloudDrizzleIcon,
+);
+export const CloudSnowIcon = /* @__PURE__ */ createIcon(icons.cloudSnowIcon);
+export const CloudLightningIcon = /* @__PURE__ */ createIcon(
+  icons.cloudLightningIcon,
+);
+export const RainbowIcon = /* @__PURE__ */ createIcon(icons.rainbowIcon);
+export const UmbrellaIcon = /* @__PURE__ */ createIcon(icons.umbrellaIcon);
+export const SnowflakeIcon = /* @__PURE__ */ createIcon(icons.snowflakeIcon);
+export const SunriseIcon = /* @__PURE__ */ createIcon(icons.sunriseIcon);
+export const SunsetIcon = /* @__PURE__ */ createIcon(icons.sunsetIcon);
+export const WindIcon = /* @__PURE__ */ createIcon(icons.windIcon);
+export const ThermometerSunIcon = /* @__PURE__ */ createIcon(
+  icons.thermometerSunIcon,
+);
+export const TornadoIcon = /* @__PURE__ */ createIcon(icons.tornadoIcon);
+export const FogIcon = /* @__PURE__ */ createIcon(icons.fogIcon);
+export const CloudSunIcon = /* @__PURE__ */ createIcon(icons.cloudSunIcon);
+export const CloudHailIcon = /* @__PURE__ */ createIcon(icons.cloudHailIcon);
+export const TreePineIcon = /* @__PURE__ */ createIcon(icons.treePineIcon);
+export const SproutIcon = /* @__PURE__ */ createIcon(icons.sproutIcon);
+export const Flower2Icon = /* @__PURE__ */ createIcon(icons.flower2Icon);
+export const MountainSnowIcon = /* @__PURE__ */ createIcon(
+  icons.mountainSnowIcon,
+);
+export const CactusIcon = /* @__PURE__ */ createIcon(icons.cactusIcon);
+export const ButterflyIcon = /* @__PURE__ */ createIcon(icons.butterflyIcon);
+export const BirdIcon = /* @__PURE__ */ createIcon(icons.birdIcon);
+export const FishIcon = /* @__PURE__ */ createIcon(icons.fishIcon);
+export const FeatherIcon = /* @__PURE__ */ createIcon(icons.featherIcon);
+export const MushroomIcon = /* @__PURE__ */ createIcon(icons.mushroomIcon);
+export const VolcanoIcon = /* @__PURE__ */ createIcon(icons.volcanoIcon);
+export const LeafIcon = /* @__PURE__ */ createIcon(icons.leafIcon);
+export const AcornIcon = /* @__PURE__ */ createIcon(icons.acornIcon);
+export const ShellIcon = /* @__PURE__ */ createIcon(icons.shellIcon);
+export const PawPrintIcon = /* @__PURE__ */ createIcon(icons.pawPrintIcon);
+export const TulipIcon = /* @__PURE__ */ createIcon(icons.tulipIcon);
+export const CupSodaIcon = /* @__PURE__ */ createIcon(icons.cupSodaIcon);
+export const WineIcon = /* @__PURE__ */ createIcon(icons.wineIcon);
+export const BeerIcon = /* @__PURE__ */ createIcon(icons.beerIcon);
+export const PizzaIcon = /* @__PURE__ */ createIcon(icons.pizzaIcon);
+export const CherryIcon = /* @__PURE__ */ createIcon(icons.cherryIcon);
+export const CarrotIcon = /* @__PURE__ */ createIcon(icons.carrotIcon);
+export const BreadIcon = /* @__PURE__ */ createIcon(icons.breadIcon);
+export const CroissantIcon = /* @__PURE__ */ createIcon(icons.croissantIcon);
+export const IceCreamIcon = /* @__PURE__ */ createIcon(icons.iceCreamIcon);
+export const CakeIcon = /* @__PURE__ */ createIcon(icons.cakeIcon);
+export const CookieIcon = /* @__PURE__ */ createIcon(icons.cookieIcon);
+export const PopcornIcon = /* @__PURE__ */ createIcon(icons.popcornIcon);
+export const BurgerIcon = /* @__PURE__ */ createIcon(icons.burgerIcon);
+export const SandwichIcon = /* @__PURE__ */ createIcon(icons.sandwichIcon);
+export const SaladIcon = /* @__PURE__ */ createIcon(icons.saladIcon);
+export const ChefHatIcon = /* @__PURE__ */ createIcon(icons.chefHatIcon);
+export const CookingPotIcon = /* @__PURE__ */ createIcon(icons.cookingPotIcon);
+export const TeapotIcon = /* @__PURE__ */ createIcon(icons.teapotIcon);
+export const MilkIcon = /* @__PURE__ */ createIcon(icons.milkIcon);
+export const DonutIcon = /* @__PURE__ */ createIcon(icons.donutIcon);
+export const LollipopIcon = /* @__PURE__ */ createIcon(icons.lollipopIcon);
+export const BananaIcon = /* @__PURE__ */ createIcon(icons.bananaIcon);
+export const EggIcon = /* @__PURE__ */ createIcon(icons.eggIcon);
+export const AppleIcon = /* @__PURE__ */ createIcon(icons.appleIcon);
+export const CoffeeIcon = /* @__PURE__ */ createIcon(icons.coffeeIcon);
+export const HotDogIcon = /* @__PURE__ */ createIcon(icons.hotDogIcon);
+export const GrapesIcon = /* @__PURE__ */ createIcon(icons.grapesIcon);
+export const WatermelonIcon = /* @__PURE__ */ createIcon(icons.watermelonIcon);
+export const UserRoundIcon = /* @__PURE__ */ createIcon(icons.userRoundIcon);
+export const UserRoundPlusIcon = /* @__PURE__ */ createIcon(
+  icons.userRoundPlusIcon,
+);
+export const UserMinusIcon = /* @__PURE__ */ createIcon(icons.userMinusIcon);
+export const UserCheckIcon = /* @__PURE__ */ createIcon(icons.userCheckIcon);
+export const UserCogIcon = /* @__PURE__ */ createIcon(icons.userCogIcon);
+export const BabyIcon = /* @__PURE__ */ createIcon(icons.babyIcon);
+export const HandshakeIcon = /* @__PURE__ */ createIcon(icons.handshakeIcon);
+export const IdCardIcon = /* @__PURE__ */ createIcon(icons.idCardIcon);
+export const ContactRoundIcon = /* @__PURE__ */ createIcon(
+  icons.contactRoundIcon,
+);
+export const UserStarIcon = /* @__PURE__ */ createIcon(icons.userStarIcon);
+export const UserLockIcon = /* @__PURE__ */ createIcon(icons.userLockIcon);
+export const UserHeartIcon = /* @__PURE__ */ createIcon(icons.userHeartIcon);
+export const FamilyIcon = /* @__PURE__ */ createIcon(icons.familyIcon);
+export const UserXIcon = /* @__PURE__ */ createIcon(icons.userXIcon);
+export const GroupCircleIcon = /* @__PURE__ */ createIcon(
+  icons.groupCircleIcon,
+);
+export const UserPenIcon = /* @__PURE__ */ createIcon(icons.userPenIcon);
+export const UserSearchIcon = /* @__PURE__ */ createIcon(icons.userSearchIcon);
+export const UserSquareIcon = /* @__PURE__ */ createIcon(icons.userSquareIcon);
+export const HandHeartIcon = /* @__PURE__ */ createIcon(icons.handHeartIcon);
+export const UserShieldIcon = /* @__PURE__ */ createIcon(icons.userShieldIcon);
+export const AccessibilityIcon = /* @__PURE__ */ createIcon(
+  icons.accessibilityIcon,
+);
+export const PersonArmsUpIcon = /* @__PURE__ */ createIcon(
+  icons.personArmsUpIcon,
+);
+export const HandWaveIcon = /* @__PURE__ */ createIcon(icons.handWaveIcon);
+export const UserClockIcon = /* @__PURE__ */ createIcon(icons.userClockIcon);
+export const UserMicIcon = /* @__PURE__ */ createIcon(icons.userMicIcon);
+export const UserKeyIcon = /* @__PURE__ */ createIcon(icons.userKeyIcon);
+export const UsersRoundIcon = /* @__PURE__ */ createIcon(icons.usersRoundIcon);
+export const PersonStandingIcon = /* @__PURE__ */ createIcon(
+  icons.personStandingIcon,
+);
+export const MapIcon = /* @__PURE__ */ createIcon(icons.mapIcon);
+export const NavigationIcon = /* @__PURE__ */ createIcon(icons.navigationIcon);
+export const RouteIcon = /* @__PURE__ */ createIcon(icons.routeIcon);
+export const SignpostIcon = /* @__PURE__ */ createIcon(icons.signpostIcon);
+export const BuildingIcon = /* @__PURE__ */ createIcon(icons.buildingIcon);
+export const FactoryIcon = /* @__PURE__ */ createIcon(icons.factoryIcon);
+export const WarehouseIcon = /* @__PURE__ */ createIcon(icons.warehouseIcon);
+export const CastleIcon = /* @__PURE__ */ createIcon(icons.castleIcon);
+export const ChurchIcon = /* @__PURE__ */ createIcon(icons.churchIcon);
+export const CarIcon = /* @__PURE__ */ createIcon(icons.carIcon);
+export const BusIcon = /* @__PURE__ */ createIcon(icons.busIcon);
+export const TrainIcon = /* @__PURE__ */ createIcon(icons.trainIcon);
+export const PlaneIcon = /* @__PURE__ */ createIcon(icons.planeIcon);
+export const BicycleIcon = /* @__PURE__ */ createIcon(icons.bicycleIcon);
+export const ShipIcon = /* @__PURE__ */ createIcon(icons.shipIcon);
+export const RocketIcon = /* @__PURE__ */ createIcon(icons.rocketIcon);
+export const AnchorIcon = /* @__PURE__ */ createIcon(icons.anchorIcon);
+export const TentIcon = /* @__PURE__ */ createIcon(icons.tentIcon);
+export const ParkingIcon = /* @__PURE__ */ createIcon(icons.parkingIcon);
+export const RoadIcon = /* @__PURE__ */ createIcon(icons.roadIcon);
+export const HotelIcon = /* @__PURE__ */ createIcon(icons.hotelIcon);
+export const LighthouseIcon = /* @__PURE__ */ createIcon(icons.lighthouseIcon);
+export const MountainIcon = /* @__PURE__ */ createIcon(icons.mountainIcon);
+export const StoreIcon = /* @__PURE__ */ createIcon(icons.storeIcon);
+export const GasStationIcon = /* @__PURE__ */ createIcon(icons.gasStationIcon);
+export const SchoolIcon = /* @__PURE__ */ createIcon(icons.schoolIcon);
+export const BankIcon = /* @__PURE__ */ createIcon(icons.bankIcon);
+export const ParkIcon = /* @__PURE__ */ createIcon(icons.parkIcon);
+export const StadiumIcon = /* @__PURE__ */ createIcon(icons.stadiumIcon);
+export const BeachIcon = /* @__PURE__ */ createIcon(icons.beachIcon);
+export const FountainIcon = /* @__PURE__ */ createIcon(icons.fountainIcon);
+export const RoundedSquareIcon = /* @__PURE__ */ createIcon(
+  icons.roundedSquareIcon,
+);
+export const TriangleIcon = /* @__PURE__ */ createIcon(icons.triangleIcon);
+export const HexagonIcon = /* @__PURE__ */ createIcon(icons.hexagonIcon);
+export const PentagonIcon = /* @__PURE__ */ createIcon(icons.pentagonIcon);
+export const OctagonIcon = /* @__PURE__ */ createIcon(icons.octagonIcon);
+export const DiamondIcon = /* @__PURE__ */ createIcon(icons.diamondIcon);
+export const ParallelogramIcon = /* @__PURE__ */ createIcon(
+  icons.parallelogramIcon,
+);
+export const TrapezoidIcon = /* @__PURE__ */ createIcon(icons.trapezoidIcon);
+export const OvalIcon = /* @__PURE__ */ createIcon(icons.ovalIcon);
+export const TargetIcon = /* @__PURE__ */ createIcon(icons.targetIcon);
+export const HalfCircleIcon = /* @__PURE__ */ createIcon(icons.halfCircleIcon);
+export const TeardropIcon = /* @__PURE__ */ createIcon(icons.teardropIcon);
+export const CubeIcon = /* @__PURE__ */ createIcon(icons.cubeIcon);
+export const CylinderIcon = /* @__PURE__ */ createIcon(icons.cylinderIcon);
+export const PillIcon = /* @__PURE__ */ createIcon(icons.pillIcon);
+export const ArchIcon = /* @__PURE__ */ createIcon(icons.archIcon);
+export const HexagramIcon = /* @__PURE__ */ createIcon(icons.hexagramIcon);
+export const CrownIcon = /* @__PURE__ */ createIcon(icons.crownIcon);
+export const GemIcon = /* @__PURE__ */ createIcon(icons.gemIcon);
+export const SparklesIcon = /* @__PURE__ */ createIcon(icons.sparklesIcon);
+export const InfinityIcon = /* @__PURE__ */ createIcon(icons.infinityIcon);
+export const AsteriskIcon = /* @__PURE__ */ createIcon(icons.asteriskIcon);
+export const SpiralIcon = /* @__PURE__ */ createIcon(icons.spiralIcon);
+export const BlobIcon = /* @__PURE__ */ createIcon(icons.blobIcon);
+export const ZigzagIcon = /* @__PURE__ */ createIcon(icons.zigzagIcon);
+export const LensIcon = /* @__PURE__ */ createIcon(icons.lensIcon);
+export const BowtieIcon = /* @__PURE__ */ createIcon(icons.bowtieIcon);
+export const CrossIcon = /* @__PURE__ */ createIcon(icons.crossIcon);
+export const SectorIcon = /* @__PURE__ */ createIcon(icons.sectorIcon);
+export const CrescentIcon = /* @__PURE__ */ createIcon(icons.crescentIcon);
+export const RingIcon = /* @__PURE__ */ createIcon(icons.ringIcon);
+export const BoldIcon = /* @__PURE__ */ createIcon(icons.boldIcon);
+export const ItalicIcon = /* @__PURE__ */ createIcon(icons.italicIcon);
+export const UnderlineIcon = /* @__PURE__ */ createIcon(icons.underlineIcon);
+export const StrikethroughIcon = /* @__PURE__ */ createIcon(
+  icons.strikethroughIcon,
+);
+export const AlignLeftIcon = /* @__PURE__ */ createIcon(icons.alignLeftIcon);
+export const AlignCenterIcon = /* @__PURE__ */ createIcon(
+  icons.alignCenterIcon,
+);
+export const AlignRightIcon = /* @__PURE__ */ createIcon(icons.alignRightIcon);
+export const AlignJustifyIcon = /* @__PURE__ */ createIcon(
+  icons.alignJustifyIcon,
+);
+export const ListBulletsIcon = /* @__PURE__ */ createIcon(
+  icons.listBulletsIcon,
+);
+export const ListOrderedIcon = /* @__PURE__ */ createIcon(
+  icons.listOrderedIcon,
+);
+export const HeadingIcon = /* @__PURE__ */ createIcon(icons.headingIcon);
+export const QuoteIcon = /* @__PURE__ */ createIcon(icons.quoteIcon);
+export const BracesIcon = /* @__PURE__ */ createIcon(icons.bracesIcon);
+export const PilcrowIcon = /* @__PURE__ */ createIcon(icons.pilcrowIcon);
+export const IndentIcon = /* @__PURE__ */ createIcon(icons.indentIcon);
+export const OutdentIcon = /* @__PURE__ */ createIcon(icons.outdentIcon);
+export const TextCursorIcon = /* @__PURE__ */ createIcon(icons.textCursorIcon);
+export const HighlighterIcon = /* @__PURE__ */ createIcon(
+  icons.highlighterIcon,
+);
+export const LetterCaseIcon = /* @__PURE__ */ createIcon(icons.letterCaseIcon);
+export const SubscriptIcon = /* @__PURE__ */ createIcon(icons.subscriptIcon);
+export const SuperscriptIcon = /* @__PURE__ */ createIcon(
+  icons.superscriptIcon,
+);
+export const SpellCheckIcon = /* @__PURE__ */ createIcon(icons.spellCheckIcon);
+export const TextWrapIcon = /* @__PURE__ */ createIcon(icons.textWrapIcon);
+export const FontSizeIcon = /* @__PURE__ */ createIcon(icons.fontSizeIcon);
+export const LineHeightIcon = /* @__PURE__ */ createIcon(icons.lineHeightIcon);
+export const ListChecksIcon = /* @__PURE__ */ createIcon(icons.listChecksIcon);
+export const TextSelectIcon = /* @__PURE__ */ createIcon(icons.textSelectIcon);
+export const ClearFormatIcon = /* @__PURE__ */ createIcon(
+  icons.clearFormatIcon,
+);
+export const TextEllipsisIcon = /* @__PURE__ */ createIcon(
+  icons.textEllipsisIcon,
+);
+export const TextReplaceIcon = /* @__PURE__ */ createIcon(
+  icons.textReplaceIcon,
+);
+export const LetterSpacingIcon = /* @__PURE__ */ createIcon(
+  icons.letterSpacingIcon,
+);
+export const GraduationCapIcon = /* @__PURE__ */ createIcon(
+  icons.graduationCapIcon,
+);
+export const TriangleRulerIcon = /* @__PURE__ */ createIcon(
+  icons.triangleRulerIcon,
+);
+export const BackpackIcon = /* @__PURE__ */ createIcon(icons.backpackIcon);
+export const FlaskConicalIcon = /* @__PURE__ */ createIcon(
+  icons.flaskConicalIcon,
+);
+export const AtomIcon = /* @__PURE__ */ createIcon(icons.atomIcon);
+export const RulerIcon = /* @__PURE__ */ createIcon(icons.rulerIcon);
+export const GlassesIcon = /* @__PURE__ */ createIcon(icons.glassesIcon);
+export const BrainIcon = /* @__PURE__ */ createIcon(icons.brainIcon);
+export const NotebookIcon = /* @__PURE__ */ createIcon(icons.notebookIcon);
+export const ChalkboardIcon = /* @__PURE__ */ createIcon(icons.chalkboardIcon);
+export const CertificateIcon = /* @__PURE__ */ createIcon(
+  icons.certificateIcon,
+);
+export const AbacusIcon = /* @__PURE__ */ createIcon(icons.abacusIcon);
+export const PuzzleIcon = /* @__PURE__ */ createIcon(icons.puzzleIcon);
+export const LibraryIcon = /* @__PURE__ */ createIcon(icons.libraryIcon);
+export const TestTubeIcon = /* @__PURE__ */ createIcon(icons.testTubeIcon);
+export const DnaIcon = /* @__PURE__ */ createIcon(icons.dnaIcon);
+export const LanguageIcon = /* @__PURE__ */ createIcon(icons.languageIcon);
+export const TelescopeIcon = /* @__PURE__ */ createIcon(icons.telescopeIcon);
+export const EraserIcon = /* @__PURE__ */ createIcon(icons.eraserIcon);
+export const LightbulbIcon = /* @__PURE__ */ createIcon(icons.lightbulbIcon);
+export const PiIcon = /* @__PURE__ */ createIcon(icons.piIcon);
+export const ProtractorIcon = /* @__PURE__ */ createIcon(icons.protractorIcon);
+export const MagnetIcon = /* @__PURE__ */ createIcon(icons.magnetIcon);
+export const HourglassIcon = /* @__PURE__ */ createIcon(icons.hourglassIcon);
+export const DividersIcon = /* @__PURE__ */ createIcon(icons.dividersIcon);
+export const MicroscopeIcon = /* @__PURE__ */ createIcon(icons.microscopeIcon);
+export const SchoolhouseIcon = /* @__PURE__ */ createIcon(
+  icons.schoolhouseIcon,
+);
+export const QuizIcon = /* @__PURE__ */ createIcon(icons.quizIcon);
+export const MedalIcon = /* @__PURE__ */ createIcon(icons.medalIcon);
+export const PresentationIcon = /* @__PURE__ */ createIcon(
+  icons.presentationIcon,
+);
+export const HeartPulseIcon = /* @__PURE__ */ createIcon(icons.heartPulseIcon);
+export const StethoscopeIcon = /* @__PURE__ */ createIcon(
+  icons.stethoscopeIcon,
+);
+export const SyringeIcon = /* @__PURE__ */ createIcon(icons.syringeIcon);
+export const FirstAidIcon = /* @__PURE__ */ createIcon(icons.firstAidIcon);
+export const BandageIcon = /* @__PURE__ */ createIcon(icons.bandageIcon);
+export const DumbbellIcon = /* @__PURE__ */ createIcon(icons.dumbbellIcon);
+export const BedDoubleIcon = /* @__PURE__ */ createIcon(icons.bedDoubleIcon);
+export const HospitalIcon = /* @__PURE__ */ createIcon(icons.hospitalIcon);
+export const ToothIcon = /* @__PURE__ */ createIcon(icons.toothIcon);
+export const LungsIcon = /* @__PURE__ */ createIcon(icons.lungsIcon);
+export const BloodDropIcon = /* @__PURE__ */ createIcon(icons.bloodDropIcon);
+export const CapsuleIcon = /* @__PURE__ */ createIcon(icons.capsuleIcon);
+export const PillBottleIcon = /* @__PURE__ */ createIcon(icons.pillBottleIcon);
+export const MedicalCrossIcon = /* @__PURE__ */ createIcon(
+  icons.medicalCrossIcon,
+);
+export const ThermometerIcon = /* @__PURE__ */ createIcon(
+  icons.thermometerIcon,
+);
+export const FlaskIcon = /* @__PURE__ */ createIcon(icons.flaskIcon);
+export const ShoppingBasketIcon = /* @__PURE__ */ createIcon(
+  icons.shoppingBasketIcon,
+);
+export const PriceTagIcon = /* @__PURE__ */ createIcon(icons.priceTagIcon);
+export const TagsIcon = /* @__PURE__ */ createIcon(icons.tagsIcon);
+export const BarcodeIcon = /* @__PURE__ */ createIcon(icons.barcodeIcon);
+export const QrCodeIcon = /* @__PURE__ */ createIcon(icons.qrCodeIcon);
+export const PackageOpenIcon = /* @__PURE__ */ createIcon(
+  icons.packageOpenIcon,
+);
+export const TruckDeliveryIcon = /* @__PURE__ */ createIcon(
+  icons.truckDeliveryIcon,
+);
+export const StoreFrontIcon = /* @__PURE__ */ createIcon(icons.storeFrontIcon);
+export const BoxIcon = /* @__PURE__ */ createIcon(icons.boxIcon);
+export const CouponIcon = /* @__PURE__ */ createIcon(icons.couponIcon);
+export const CartCheckIcon = /* @__PURE__ */ createIcon(icons.cartCheckIcon);
+export const ShirtIcon = /* @__PURE__ */ createIcon(icons.shirtIcon);
+export const HandbagIcon = /* @__PURE__ */ createIcon(icons.handbagIcon);
+export const HangerIcon = /* @__PURE__ */ createIcon(icons.hangerIcon);
+export const ShoeIcon = /* @__PURE__ */ createIcon(icons.shoeIcon);
+export const ScaleIcon = /* @__PURE__ */ createIcon(icons.scaleIcon);
+export const MusicNoteIcon = /* @__PURE__ */ createIcon(icons.musicNoteIcon);
+export const GuitarIcon = /* @__PURE__ */ createIcon(icons.guitarIcon);
+export const PianoIcon = /* @__PURE__ */ createIcon(icons.pianoIcon);
+export const MicStandIcon = /* @__PURE__ */ createIcon(icons.micStandIcon);
+export const HarpIcon = /* @__PURE__ */ createIcon(icons.harpIcon);
+export const DrumIcon = /* @__PURE__ */ createIcon(icons.drumIcon);
+export const MetronomeIcon = /* @__PURE__ */ createIcon(icons.metronomeIcon);
+export const TuningForkIcon = /* @__PURE__ */ createIcon(icons.tuningForkIcon);
+export const VinylIcon = /* @__PURE__ */ createIcon(icons.vinylIcon);
+export const DiscIcon = /* @__PURE__ */ createIcon(icons.discIcon);
+export const CassetteIcon = /* @__PURE__ */ createIcon(icons.cassetteIcon);
+export const SpeakerIcon = /* @__PURE__ */ createIcon(icons.speakerIcon);
+export const RadioIcon = /* @__PURE__ */ createIcon(icons.radioIcon);
+export const EqualizerIcon = /* @__PURE__ */ createIcon(icons.equalizerIcon);
+export const SoundwaveIcon = /* @__PURE__ */ createIcon(icons.soundwaveIcon);
+export const PlaylistIcon = /* @__PURE__ */ createIcon(icons.playlistIcon);
+export const LyricsIcon = /* @__PURE__ */ createIcon(icons.lyricsIcon);
+export const HeadsetIcon = /* @__PURE__ */ createIcon(icons.headsetIcon);
+export const HammerIcon = /* @__PURE__ */ createIcon(icons.hammerIcon);
+export const WrenchIcon = /* @__PURE__ */ createIcon(icons.wrenchIcon);
+export const ScrewdriverIcon = /* @__PURE__ */ createIcon(
+  icons.screwdriverIcon,
+);
+export const ShearsIcon = /* @__PURE__ */ createIcon(icons.shearsIcon);
+export const TapeMeasureIcon = /* @__PURE__ */ createIcon(
+  icons.tapeMeasureIcon,
+);
+export const DrillIcon = /* @__PURE__ */ createIcon(icons.drillIcon);
+export const LadderIcon = /* @__PURE__ */ createIcon(icons.ladderIcon);
+export const HorseshoeMagnetIcon = /* @__PURE__ */ createIcon(
+  icons.horseshoeMagnetIcon,
+);
+export const NutIcon = /* @__PURE__ */ createIcon(icons.nutIcon);
+export const BoltIcon = /* @__PURE__ */ createIcon(icons.boltIcon);
+export const ShovelIcon = /* @__PURE__ */ createIcon(icons.shovelIcon);
+export const ToolboxIcon = /* @__PURE__ */ createIcon(icons.toolboxIcon);
+export const LevelIcon = /* @__PURE__ */ createIcon(icons.levelIcon);
+export const ChiselIcon = /* @__PURE__ */ createIcon(icons.chiselIcon);
+export const PickaxeIcon = /* @__PURE__ */ createIcon(icons.pickaxeIcon);
+export const BroomIcon = /* @__PURE__ */ createIcon(icons.broomIcon);
+export const BucketIcon = /* @__PURE__ */ createIcon(icons.bucketIcon);
+export const FlashlightIcon = /* @__PURE__ */ createIcon(icons.flashlightIcon);
+export const BasketballIcon = /* @__PURE__ */ createIcon(icons.basketballIcon);
+export const SoccerBallIcon = /* @__PURE__ */ createIcon(icons.soccerBallIcon);
+export const FootballIcon = /* @__PURE__ */ createIcon(icons.footballIcon);
+export const TennisRacketIcon = /* @__PURE__ */ createIcon(
+  icons.tennisRacketIcon,
+);
+export const BaseballIcon = /* @__PURE__ */ createIcon(icons.baseballIcon);
+export const BowlingBallIcon = /* @__PURE__ */ createIcon(
+  icons.bowlingBallIcon,
+);
+export const GolfIcon = /* @__PURE__ */ createIcon(icons.golfIcon);
+export const RunningIcon = /* @__PURE__ */ createIcon(icons.runningIcon);
+export const SwimmingIcon = /* @__PURE__ */ createIcon(icons.swimmingIcon);
+export const SkateboardIcon = /* @__PURE__ */ createIcon(icons.skateboardIcon);
+export const SkiingIcon = /* @__PURE__ */ createIcon(icons.skiingIcon);
+export const WhistleIcon = /* @__PURE__ */ createIcon(icons.whistleIcon);
+export const StopwatchIcon = /* @__PURE__ */ createIcon(icons.stopwatchIcon);
+export const GoldMedalIcon = /* @__PURE__ */ createIcon(icons.goldMedalIcon);
+export const PodiumIcon = /* @__PURE__ */ createIcon(icons.podiumIcon);
+export const KettlebellIcon = /* @__PURE__ */ createIcon(icons.kettlebellIcon);
+export const JumpRopeIcon = /* @__PURE__ */ createIcon(icons.jumpRopeIcon);
+export const ArcheryIcon = /* @__PURE__ */ createIcon(icons.archeryIcon);

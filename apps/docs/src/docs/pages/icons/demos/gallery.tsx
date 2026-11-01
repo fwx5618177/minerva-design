@@ -31,13 +31,20 @@ export default function GalleryDemo() {
   const [mode, setMode] = useState<"svg" | "canvas">("svg");
   const [copied, setCopied] = useState<string | null>(null);
 
-  const shown = useMemo(
-    () =>
-      searchIcons(query).filter(
-        (icon) => category === "all" || icon.category === category,
-      ),
-    [query, category],
-  );
+  // the whole set, grouped by category: the page scrolls, nothing is clipped
+  const sections = useMemo(() => {
+    const matches = searchIcons(query).filter(
+      (icon) => category === "all" || icon.category === category,
+    );
+    return iconCategories
+      .map((key) => ({
+        key,
+        icons: matches.filter((icon) => icon.category === key),
+      }))
+      .filter((section) => section.icons.length > 0);
+  }, [query, category]);
+
+  const total = sections.reduce((sum, { icons }) => sum + icons.length, 0);
 
   const copy = (icon: IconDefinition) => {
     const code = snippet(icon);
@@ -109,32 +116,40 @@ export default function GalleryDemo() {
         </RadioGroup>
       </div>
       <div className={styles.body}>
-        {shown.length ? (
-          <div className={styles.grid}>
-            {shown.map((icon) => (
-              <button
-                key={icon.name}
-                type="button"
-                className={styles.tile}
-                title={t("copy", { code: snippet(icon) })}
-                onClick={() => copy(icon)}
-              >
-                <Icon
-                  icon={icon}
-                  size={size}
-                  strokeWidth={stroke}
-                  renderer={mode === "svg" ? "svg" : "auto"}
-                />
-                <span className={styles.tileName}>{icon.name}</span>
-              </button>
-            ))}
-          </div>
+        {sections.length ? (
+          sections.map(({ key, icons }) => (
+            <section key={key} className={styles.categoryGroup}>
+              <h3 className={styles.categoryTitle}>
+                {t(`categories.${key}`)}
+                <span className={styles.categoryCount}>{icons.length}</span>
+              </h3>
+              <div className={styles.grid}>
+                {icons.map((icon) => (
+                  <button
+                    key={icon.name}
+                    type="button"
+                    className={styles.tile}
+                    title={t("copy", { code: snippet(icon) })}
+                    onClick={() => copy(icon)}
+                  >
+                    <Icon
+                      icon={icon}
+                      size={size}
+                      strokeWidth={stroke}
+                      renderer={mode === "svg" ? "svg" : "auto"}
+                    />
+                    <span className={styles.tileName}>{icon.name}</span>
+                  </button>
+                ))}
+              </div>
+            </section>
+          ))
         ) : (
           <Empty description={t("empty", { query })} />
         )}
       </div>
       <div className={styles.footer}>
-        <p>{t("count", { n: shown.length })}</p>
+        <p>{t("count", { n: total })}</p>
         <p role="status">{copied ? t("copied", { code: copied }) : ""}</p>
       </div>
     </div>

@@ -3,6 +3,7 @@
 
 import { resolveColor, type Rgba } from "./color";
 import { subscribeDefaultIconRenderer } from "./defaults";
+import { iconLayers } from "./layers";
 import { createIconBackend } from "./renderers/detect";
 import type { FrameItem, IconBackend } from "./renderers/types";
 import { observeTheme } from "./theme";
@@ -22,28 +23,34 @@ const raf = (callback: () => void): (() => void) => {
   return () => clearTimeout(id);
 };
 
-/** Frame items of icon canvas items: colors resolved on `host`, opacity applied */
+/** Frame items of icon canvas items: colors resolved on `host`, opacity applied. A colored icon is one frame item per color layer. */
 export const frameItems = (
   items: readonly IconCanvasItem[],
   host: Element,
 ): FrameItem[] => {
   const colors = new Map<string | undefined, Rgba>();
-  return items.map((item) => {
-    let rgba = colors.get(item.color);
+  const resolve = (color: string | undefined) => {
+    let rgba = colors.get(color);
     if (!rgba) {
-      rgba = resolveColor(item.color, host);
-      colors.set(item.color, rgba);
+      rgba = resolveColor(color, host);
+      colors.set(color, rgba);
     }
+    return rgba;
+  };
+  return items.flatMap((item) => {
     const opacity = Math.min(1, Math.max(0, item.opacity ?? 1));
-    return {
-      icon: item.icon,
-      x: item.x,
-      y: item.y,
-      size: item.size ?? 24,
-      rotation: ((item.rotation ?? 0) * Math.PI) / 180,
-      strokeWidth: item.strokeWidth ?? 2,
-      color: [rgba[0], rgba[1], rgba[2], rgba[3] * opacity],
-    };
+    return iconLayers(item.icon).map((layer): FrameItem => {
+      const rgba = resolve(layer.color ?? item.color);
+      return {
+        icon: layer.icon,
+        x: item.x,
+        y: item.y,
+        size: item.size ?? 24,
+        rotation: ((item.rotation ?? 0) * Math.PI) / 180,
+        strokeWidth: item.strokeWidth ?? 2,
+        color: [rgba[0], rgba[1], rgba[2], rgba[3] * opacity],
+      };
+    });
   });
 };
 

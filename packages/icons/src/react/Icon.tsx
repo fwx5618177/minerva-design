@@ -202,6 +202,7 @@ export function Icon(props: IconProps) {
         <path
           key={i}
           d={d}
+          stroke={icon.colors?.[i]}
           vectorEffect={absoluteStrokeWidth ? "non-scaling-stroke" : undefined}
         />
       ))}

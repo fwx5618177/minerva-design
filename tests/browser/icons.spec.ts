@@ -193,6 +193,20 @@ test("icons: the gallery draws every tile in canvas mode", async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
+test("icons: colored icons keep their colors in the gallery", async ({
+  page,
+}) => {
+  const errors = collectErrors(page);
+  await page.goto("#/icons");
+  const demo = page.locator("#demo-gallery");
+  await expect(demo.locator("svg.minerva-icon").first()).toBeVisible();
+  // a colored path carries its own stroke; the others inherit the icon color
+  const colored = demo.locator("svg.minerva-icon path[stroke]");
+  expect(await colored.count()).toBeGreaterThan(0);
+  expect(await colored.first().getAttribute("stroke")).toMatch(/^#/);
+  expect(errors).toEqual([]);
+});
+
 // the same demos in the Vue components (minerva-design/vue/icons) and the
 // custom elements (minerva-design/web-components/icon)
 const FRAMEWORKS = [

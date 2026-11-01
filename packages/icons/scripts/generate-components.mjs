@@ -22,6 +22,19 @@ const ORDER = [
   "finance",
   "status",
   "devices",
+  "weather",
+  "nature",
+  "food",
+  "people",
+  "places",
+  "shapes",
+  "text",
+  "education",
+  "health",
+  "shopping",
+  "music",
+  "tools",
+  "sports",
 ];
 
 const rank = (file) => {

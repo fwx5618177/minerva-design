@@ -162,6 +162,7 @@ onBeforeUnmount(() => {
       v-for="(d, index) in icon.paths"
       :key="index"
       :d="d"
+      :stroke="icon.colors?.[index]"
       :vector-effect="absoluteStrokeWidth ? 'non-scaling-stroke' : undefined"
     />
   </svg>

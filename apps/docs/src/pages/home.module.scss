@@ -112,6 +112,51 @@ $bp-md: 768px;
   margin-bottom: 40px;
 }
 
+// Hero CTAs are library TextLinks (action variant) styled as filled buttons
+.ctaPrimary,
+.ctaSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: var(--ds-radius);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 150ms ease;
+}
+
+.ctas > .ctaPrimary,
+.ctas > .ctaPrimary:visited {
+  color: var(--ds-accent-fg);
+  background: var(--ds-accent);
+  border: 1px solid var(--ds-accent);
+
+  &:hover {
+    color: var(--ds-accent-fg);
+    background: color-mix(in srgb, var(--ds-accent) 88%, var(--ds-fg));
+  }
+
+  > svg:last-child:not(:first-child) {
+    margin-inline-start: 0;
+    color: inherit;
+  }
+}
+
+.ctas > .ctaSecondary,
+.ctas > .ctaSecondary:visited {
+  color: var(--ds-fg);
+  background: var(--ds-bg-raised);
+  border: 1px solid var(--ds-border);
+
+  &:hover {
+    color: var(--ds-fg);
+    background: var(--ds-bg-muted);
+  }
+}
+
 // Install command (Minerva Tabs, soft variant)
 .install {
   --background-color: var(--ds-bg);
