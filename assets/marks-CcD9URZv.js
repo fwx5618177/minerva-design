@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";function t(e){let t=e.querySelector(`#fan`);return t.getAriaValueText=e=>n[e]??String(e),()=>{t.getAriaValueText=void 0}}var n;function r(){return(r=e((()=>{n={0:`Off`,25:`Low`,50:`Medium`,75:`High`,100:`Max`}})))()}r();export{t as setup};

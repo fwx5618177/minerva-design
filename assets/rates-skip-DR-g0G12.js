@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";function t(e){let t=e.querySelector(`#player`),n=e.querySelector(`#rate`);t.playbackRates=[1,1.5,2];let r=e=>{let{rate:t}=e.detail;n.value=`Speed: ${t}×`};return t.addEventListener(`minerva-rate-change`,r),()=>t.removeEventListener(`minerva-rate-change`,r)}function n(){return(n=e((()=>{})))()}n();export{t as setup};

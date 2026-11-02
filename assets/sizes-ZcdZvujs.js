@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";function t(e){let t=Array.from({length:10},(e,t)=>({key:`q${t+1}`,status:t<4?`answered`:`unanswered`}));for(let n of e.querySelectorAll(`minerva-answer-sheet`))n.items=t}function n(){return(n=e((()=>{})))()}n();export{t as setup};

@@ -1,0 +1,16 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t;function n(){return(n=e((()=>{t=`<form id="billing-form" style="display: grid; gap: 12px; max-width: 420px">
+  <minerva-segmented-control
+    full-width
+    name="billing"
+    aria-label="Billing period"
+    options='[{"value":"monthly","label":"Monthly"},{"value":"yearly","label":"Yearly (−20%)"}]'
+    value="yearly"
+  ></minerva-segmented-control>
+  <minerva-segmented-control
+    full-width
+    aria-label="Status filter"
+    options="all,open,closed,archived"
+    value="all"
+  ></minerva-segmented-control>
+</form>
+`})))()}n();export{t as default};

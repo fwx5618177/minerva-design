@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";function t(e){let t=e.querySelector(`#price`),n=e.querySelector(`#price-output`);t.formatValue=e=>`$${e}`;let r=e=>{let[t,r]=e.detail.value;n.value=`From $${t} to $${r}`};return t.addEventListener(`minerva-change`,r),()=>t.removeEventListener(`minerva-change`,r)}function n(){return(n=e((()=>{})))()}n();export{t as setup};

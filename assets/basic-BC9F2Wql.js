@@ -1,0 +1,14 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t;function n(){return(n=e((()=>{t=`<div style="display: grid; gap: 12px">
+  <!-- prettier-ignore -->
+  <minerva-code-block language="json" show-language aria-label="Response payload">{
+  "id": 42,
+  "title": "The Three-Body Problem",
+  "tags": ["sci-fi", "classic"]
+}</minerva-code-block>
+  <!-- prettier-ignore -->
+  <minerva-code-block language="html" show-language aria-label="Usage">&lt;minerva-button&gt;Save&lt;/minerva-button&gt;
+&lt;script type="module"&gt;
+  import "minerva-design/web-components";
+&lt;/script&gt;</minerva-code-block>
+</div>
+`})))()}n();export{t as default};

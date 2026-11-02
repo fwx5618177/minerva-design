@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";function t(e){let t=e.querySelector(`#manual`),n=e.querySelector(`#toggle`),r=()=>{t.flipped=!t.flipped,n.textContent=t.flipped?`Hide answer`:`Reveal answer`};return n.addEventListener(`click`,r),()=>n.removeEventListener(`click`,r)}function n(){return(n=e((()=>{})))()}n();export{t as setup};
