@@ -2856,7 +2856,7 @@
     "source": "web-components/src/components/chart/charts.ts",
     "className": "MinervaQuadrantChart",
     "summary": "Four-quadrant matrix of labelled, draggable dots.",
-    "description": "Four-quadrant matrix (priority matrix, Eisenhower, BCG...) of `minerva-design/charts/core` (the `<QuadrantChart>` of React): tinted quadrants with titles, dividers and labelled dots placed without overlapping labels. With `drag-points`, dots can be dragged to another quadrant (`minerva-point-drop`; update `points` to move them). A visually hidden list of the dots per quadrant lets screen readers and keyboards reach every dot: arrows move between them, Enter clicks (`minerva-point-click`) and, with `drag-points`, Shift + arrows move the focused dot to the neighbouring quadrant (`minerva-point-drop`, announced in a live region). The focused dot is drawn with a focus ring and reported by `minerva-hover`. Published as the optional entry `minerva-design/web-components/chart`.",
+    "description": "Four-quadrant matrix (priority matrix, Eisenhower, BCG...) of `minerva-design/charts/core` (the `<QuadrantChart>` of React): tinted quadrants with titles, dividers and labelled dots placed without overlapping labels. With `drag-points`, dots can be dragged to another quadrant (`minerva-point-drop`; update `points` to move them). A visually hidden list of the dots per quadrant lets screen readers and keyboards reach every dot: arrows move between them, Enter clicks (`minerva-point-click`) and, with `drag-points`, Shift + arrows move the focused dot to the neighbouring quadrant (`minerva-point-drop`, announced in a live region). The focused dot is drawn with a focus ring and reported by `minerva-hover`. Slotted content is placed over the plot: a header per quadrant (in its outer corner, replacing the drawn title, badge, description and count) and actions next to the active dot (hovered, keyboard-focused, else `selected-index`; read it from `activeIndex`). Both receive pointer events; the rest of the plot stays interactive. Published as the optional entry `minerva-design/web-components/chart`.",
     "properties": [
       {
         "name": "xLabel",
@@ -2980,6 +2980,12 @@
         "description": "Other engine options (legend, tooltip, padding, palette...); property only"
       },
       {
+        "name": "activeIndex",
+        "type": "number | null",
+        "readonly": true,
+        "description": "Index of the active dot, the one showing the `point-actions` slot: the hovered dot, else the keyboard-focused one, else `selectedIndex` (`null`: none)"
+      },
+      {
         "name": "instance",
         "type": "I | null",
         "readonly": true,
@@ -3046,7 +3052,28 @@
         "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
       }
     ],
-    "slots": [],
+    "slots": [
+      {
+        "name": "quadrant-header-top-left",
+        "description": "Header of the top left quadrant (replaces its drawn title and count)"
+      },
+      {
+        "name": "quadrant-header-top-right",
+        "description": "Header of the top right quadrant"
+      },
+      {
+        "name": "quadrant-header-bottom-left",
+        "description": "Header of the bottom left quadrant"
+      },
+      {
+        "name": "quadrant-header-bottom-right",
+        "description": "Header of the bottom right quadrant"
+      },
+      {
+        "name": "point-actions",
+        "description": "Content shown at the active dot (e.g. edit / delete buttons), positioned by the slotted element"
+      }
+    ],
     "parts": [
       {
         "name": "root",
@@ -3055,6 +3082,18 @@
       {
         "name": "surface",
         "description": "The element the engine renders into"
+      },
+      {
+        "name": "overlay",
+        "description": "The box over the plot holding the slotted headers and actions"
+      },
+      {
+        "name": "quadrant-header",
+        "description": "The box of a quadrant header slot (in the outer corner of its quadrant)"
+      },
+      {
+        "name": "point-actions",
+        "description": "The zero-size box at the active dot holding the `point-actions` slot"
       }
     ],
     "cssProperties": []

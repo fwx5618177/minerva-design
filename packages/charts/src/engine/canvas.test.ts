@@ -166,15 +166,42 @@ describe("quadrant presets", () => {
     );
     expect(options.series.map((s) => s.id)).toEqual([
       undefined,
+      "quadrant:selected-glow",
       "quadrant:selected",
+      "quadrant:selected-ring",
+      "quadrant:focus-gap",
       "quadrant:focus",
     ]);
-    const [, selected, focus] = options.series;
-    expect(selected).toMatchObject({ tooltip: false, opacity: 0, stroke: 2 });
+    const [, glow, selected, ring, gap, focus] = options.series;
+    // a soft glow, a ring in the surface color and one in the dot color
+    expect(glow).toMatchObject({ tooltip: false, opacity: 0.16, stroke: 0 });
+    expect(selected).toMatchObject({ tooltip: false, opacity: 0 });
     expect(selected!.data).toHaveLength(1);
-    expect((selected!.data as readonly { size: number }[])[0]!.size).toBe(29);
-    expect((focus!.data as readonly { x: number }[])[0]!.x).toBe(1);
+    expect((selected!.data as readonly { color: string }[])[0]!.color).toMatch(
+      /surface-color/,
+    );
+    expect((ring!.data as readonly { size: number }[])[0]!.size).toBe(30);
+    // the focus: a gap in the surface color, then the focus ring color
+    expect((gap!.data as readonly { color: string }[])[0]!.color).toMatch(
+      /surface-color/,
+    );
+    expect(
+      (focus!.data as readonly { x: number; color: string }[])[0],
+    ).toMatchObject({ x: 1, color: expect.stringMatching(/focus-ring-color/) });
     expect(quadrantChartOptions({ points }).series).toHaveLength(1);
+  });
+
+  it("keeps the data arrays while the points are the same (hover re-renders)", () => {
+    const points = [{ x: 1, y: 9, label: "A" }];
+    const a = quadrantChartOptions({ points, selectedIndex: 0 });
+    const b = quadrantChartOptions({ points, selectedIndex: 0 });
+    expect(b.series[0]!.data).toBe(a.series[0]!.data);
+    expect(b.series[2]!.data).toBe(a.series[2]!.data);
+    // a point changed in place: new data
+    points[0]!.x = 2;
+    const c = quadrantChartOptions({ points, selectedIndex: 0 });
+    expect(c.series[0]!.data).not.toBe(a.series[0]!.data);
+    expect((c.series[0]!.data as readonly { x: number }[])[0]!.x).toBe(2);
   });
 
   it("localizes the built-in quadrant texts", () => {
@@ -317,6 +344,16 @@ describe("createChartController", () => {
     controller.pointerMove((from.x + to.x) / 2, (from.y + to.y) / 2);
     expect(controller.getScene()!.dragging).not.toBeNull();
     controller.pointerMove(to.x, to.y);
+    // the dot under the finger with its label, a placeholder where it was,
+    // the quadrant it would land in; its label leaves the data layer
+    const dragging = controller.getScene()!.dragging!;
+    expect(dragging).toMatchObject({ x: to.x, y: to.y, label: "A" });
+    expect(dragging.origin!.x).toBeCloseTo(from.x, 5);
+    expect(dragging.target).not.toBeNull();
+    expect(dragging.target!.x).toBeLessThanOrEqual(to.x);
+    expect(
+      controller.getScene()!.pointLabels.some((l) => l.label.text === "A"),
+    ).toBe(false);
     controller.pointerUp(to.x, to.y);
     expect(drop).toHaveBeenCalledTimes(1);
     expect(drop.mock.calls[0][0].x).toBeCloseTo(8, 5);

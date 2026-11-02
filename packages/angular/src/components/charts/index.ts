@@ -9,3 +9,4 @@ export * from "./shape-extended";
 export * from "./trading";
 export * from "./three-d";
 export * from "./graph";
+export * from "./quadrant-task-board";

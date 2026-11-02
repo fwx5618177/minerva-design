@@ -69,6 +69,7 @@ export { default as KanbanCard } from "./KanbanCard.vue";
 export { default as KanbanColumn } from "./KanbanColumn.vue";
 export { default as Flashcard } from "./Flashcard.vue";
 export { default as MediaPlayer } from "./MediaPlayer.vue";
+export { default as QuadrantTaskBoard } from "./QuadrantTaskBoard.vue";
 export { miniTokenClassNames } from "@minerva/core";
 export { default as ConfigProvider } from "./ConfigProvider.vue";
 export { default as ThemeProvider } from "./ThemeProvider.vue";

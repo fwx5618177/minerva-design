@@ -411,6 +411,7 @@
         "noAccessiblePoints": "Leaves out the visually hidden list of the dots (arrows between the dots, Enter to click, Shift + arrows to move the focused dot, focus ring)",
         "height": "Height of the chart, the legend included: pixels or any CSS length",
         "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+        "activeIndex": "Index of the active dot, the one showing the point-actions slot: the hovered dot, else the keyboard-focused one, else selectedIndex (null: none); read only",
         "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
       },
       "events": {
@@ -423,6 +424,13 @@
         "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
         "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",
         "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+      },
+      "slots": {
+        "quadrant-header-top-left": "Header of the top-left quadrant, in its outer corner (replaces its drawn title, badge, description and count)",
+        "quadrant-header-top-right": "Header of the top-right quadrant",
+        "quadrant-header-bottom-left": "Header of the bottom-left quadrant",
+        "quadrant-header-bottom-right": "Header of the bottom-right quadrant",
+        "point-actions": "Content shown at the active dot (e.g. edit / delete buttons), positioned by the slotted element; it receives pointer events"
       },
       "methods": {
         "resetZoom": "Shows the whole data range",

@@ -411,6 +411,7 @@
         "noAccessiblePoints": "不渲染视觉隐藏的点列表（方向键在点之间切换、Enter 点击、Shift + 方向键移动聚焦的点、焦点环）",
         "height": "图表高度（包含图例）：像素值或任意 CSS 长度",
         "options": "其他引擎选项（坐标轴、图例、提示框、调色板、格式化……），与元素自身的属性合并；仅作为属性设置",
+        "activeIndex": "活动点的索引，即显示 point-actions 插槽的点：悬停的点，否则为键盘聚焦的点，否则为 selectedIndex（null：无）；只读",
         "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null"
       },
       "events": {
@@ -423,6 +424,13 @@
         "minerva-plot-click": "点击了绘图区中没有数据点的位置；detail：{ x, y }（数据坐标）",
         "minerva-zoom": "用户进行了缩放或平移；detail：{ x, y }（可见范围）",
         "minerva-renderer-change": "渲染后端已就绪，或在 GPU 丢失后回退；detail：{ renderer }"
+      },
+      "slots": {
+        "quadrant-header-top-left": "左上象限的标题区，位于其外角（取代绘制的标题、徽标、说明和计数）",
+        "quadrant-header-top-right": "右上象限的标题区",
+        "quadrant-header-bottom-left": "左下象限的标题区",
+        "quadrant-header-bottom-right": "右下象限的标题区",
+        "point-actions": "显示在活动点处的内容（如编辑 / 删除按钮），由插入的元素自行定位；可接收指针事件"
       },
       "methods": {
         "resetZoom": "显示完整的数据范围",

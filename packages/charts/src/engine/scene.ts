@@ -283,7 +283,7 @@ const layoutHorizontal = (input: LayoutInput): ChartLayout => {
 /**
  * Labels of the visible scatter points and bar values (`showLabels`);
  * `background` (the chart background) picks the color of the labels inside
- * solid bars
+ * solid bars; `skip` leaves out the label of a point (the dragged one)
  */
 export const collectPointLabels = (
   model: ChartModel,
@@ -291,6 +291,7 @@ export const collectPointLabels = (
   s: Scales,
   yTicks?: AxisTicks | null,
   background?: Rgba,
+  skip?: { seriesIndex: number; index: number } | null,
 ): PointLabel[] => {
   const labels: PointLabel[] = [];
   // 100% stacks: the axis shows percents, the labels the actual values
@@ -373,6 +374,8 @@ export const collectPointLabels = (
     for (let i = 0; i < count && labels.length < MAX_POINT_LABELS; i++) {
       const text = texts[i];
       if (!text) continue;
+      if (skip && skip.seriesIndex === series.index && skip.index === i)
+        continue;
       const xi = x[i];
       const yi = y[i];
       if (xi < view.x[0] || xi > view.x[1] || yi < view.y[0] || yi > view.y[1])

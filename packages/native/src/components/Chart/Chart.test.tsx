@@ -625,6 +625,66 @@ describe("QuadrantChart", () => {
       hostElements().some((el) => el.props.dataSet?.part === "point"),
     ).toBe(false);
   });
+
+  it("renderQuadrantHeader replaces the drawn titles; renderPointActions follows the selected point", async () => {
+    const header = vi.fn((corner: string, info: { count: number }) => (
+      <Pressable accessibilityRole="button">
+        <Text>{`${corner} ${info.count}`}</Text>
+      </Pressable>
+    ));
+    const actions = vi.fn(() => <Text>Actions</Text>);
+    const { rerender } = await mount(
+      <QuadrantChart
+        points={points}
+        quadrants={{ topLeft: { label: "Do first", badge: "Q1" } }}
+        showCounts
+        renderQuadrantHeader={header}
+        renderPointActions={actions}
+      />,
+    );
+    // the drawn title, badge and count give way to the React header
+    expect(screen.queryByText("Do first")).toBeNull();
+    expect(screen.queryByText("Q1")).toBeNull();
+    expect(screen.getByText("topLeft 1")).toBeTruthy();
+    expect(screen.getByText("topRight 1")).toBeTruthy();
+    expect(screen.getByText("bottomRight 0")).toBeTruthy();
+    expect(header).toHaveBeenCalledWith("topLeft", {
+      count: 1,
+      points: [points[0]],
+      indices: [0],
+      region: { label: "Do first", badge: "Q1" },
+    });
+    const topLeft = hostElements().find(
+      (el) =>
+        el.props.dataSet?.part === "quadrant-header" &&
+        el.props.dataSet?.corner === "topLeft",
+    );
+    expect(topLeft!.props.style).toMatchObject({ top: 0, left: 0 });
+    // nothing selected: no actions
+    expect(actions).not.toHaveBeenCalled();
+    expect(part("point-actions")).toBeNull();
+
+    await rerender(
+      <MinervaProvider>
+        <QuadrantChart
+          points={points}
+          quadrants={{ topLeft: { label: "Do first", badge: "Q1" } }}
+          selectedIndex={1}
+          renderPointActions={actions}
+        />
+      </MinervaProvider>,
+    );
+    // without renderQuadrantHeader the titles are drawn again
+    expect(screen.getByText("Do first")).toBeTruthy();
+    expect(actions).toHaveBeenLastCalledWith(points[1], 1);
+    expect(screen.getByText("Actions")).toBeTruthy();
+    // Roadmap (8, 7): right half, near the top -> anchored right, below it
+    const style = part("point-actions")!.props.style;
+    expect(part("point-actions")!.props.dataSet.index).toBe("1");
+    expect(style).toHaveProperty("right");
+    expect(style).toHaveProperty("top");
+    expect(style).not.toHaveProperty("left");
+  });
 });
 
 describe("helpers", () => {

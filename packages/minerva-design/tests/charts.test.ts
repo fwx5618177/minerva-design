@@ -73,6 +73,16 @@ const ENGINE = [
   "quadrantAccessibleGroups",
   "quadrantKeyTarget",
   "createQuadrantPointLayer",
+  // task boards (QuadrantTaskBoard on every renderer)
+  "applyQuadrantTaskDraft",
+  "canSaveQuadrantTask",
+  "editQuadrantTaskDraft",
+  "moveQuadrantTask",
+  "newQuadrantTaskDraft",
+  "quadrantTaskDeleteText",
+  "quadrantTaskLabels",
+  "removeQuadrantTask",
+  "selectionAfterRemove",
   "heatmapChartOptions",
   "sparklineOptions",
   // series presets
@@ -145,6 +155,9 @@ const ENGINE = [
   "arcLayout",
 ];
 
+/** Constants of the engine entry (quadrant corners, task board icons) */
+const ENGINE_CONSTANTS = ["QUADRANT_CORNERS", "QUADRANT_TASK_ICONS"];
+
 describe("minerva-design/charts", () => {
   it("is declared in the exports map with ESM, CJS and both declaration flavours", () => {
     for (const entry of ["./charts", "./charts/core"]) {
@@ -166,11 +179,17 @@ describe("minerva-design/charts", () => {
       expect(typeof esm[name], name).toBe("function");
       expect(typeof cjs[name], name).toBe("function");
     }
+    for (const name of ENGINE_CONSTANTS) {
+      expect(esm[name], name).toBeTypeOf("object");
+      expect(cjs[name], name).toBeTypeOf("object");
+    }
   });
 
   it("the engine entry has no React and no side effects", async () => {
     const core = await import("minerva-design/charts/core");
-    expect(Object.keys(core).sort()).toEqual([...ENGINE].sort());
+    expect(Object.keys(core).sort()).toEqual(
+      [...ENGINE, ...ENGINE_CONSTANTS].sort(),
+    );
     expect(core.formatCompact(1234567)).toBe("1.23M");
     const code = readFileSync(join(root, "dist/charts/core.js"), "utf8");
     expect(code).not.toContain('"use client"');

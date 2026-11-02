@@ -11,7 +11,7 @@
     },
     "quadrant": {
       "title": "四象限辅助函数",
-      "text": "quadrantChartOptions(config) 为任意入口生成 QuadrantChart 的引擎选项；quadrantOf(config, x, y) 返回某个数据位置在屏幕上所处的象限（考虑 reverseX），quadrantCenter(config, corner) 返回象限中心，例如用于放置新增或拖放的点。quadrantGroups(config) 列出每个象限的点及其索引，quadrantCountText(showCounts, points, locale) 生成象限计数文本，quadrantLabels(locale) 返回无障碍点层的内置文案。createQuadrantPointLayer(host, options) 在任意 DOM 渲染器中挂载该层（每个象限一个点按钮列表，方向键在点之间切换，Shift + 方向键把聚焦的点移到相邻象限，并通过实时区域播报）；quadrantKeyTarget(event, corner) 返回 Shift + 方向键对应的目标象限，quadrantAccessibleGroups(config, locale) 为没有 DOM 的宿主返回各点的名称、标签和移动操作。"
+      "text": "quadrantChartOptions(config) 为任意入口生成 QuadrantChart 的引擎选项；quadrantOf(config, x, y) 返回某个数据位置在屏幕上所处的象限（考虑 reverseX），quadrantCenter(config, corner) 返回象限中心，例如用于放置新增或拖放的点。quadrantGroups(config) 列出每个象限的点及其索引，quadrantCountText(showCounts, points, locale) 生成象限计数文本，quadrantLabels(locale) 返回无障碍点层的内置文案。createQuadrantPointLayer(host, options) 在任意 DOM 渲染器中挂载该层（每个象限一个点按钮列表，方向键在点之间切换，Shift + 方向键把聚焦的点移到相邻象限，并通过实时区域播报）；quadrantKeyTarget(event, corner) 返回 Shift + 方向键对应的目标象限，quadrantAccessibleGroups(config, locale) 为没有 DOM 的宿主返回各点的名称、标签和移动操作。任务看板（各渲染器的 QuadrantTaskBoard）也共享同一套逻辑：QUADRANT_CORNERS 列出四个角，quadrantTaskLabels(locale, overrides) 返回按钮和对话框的本地化文案，newQuadrantTaskDraft / editQuadrantTaskDraft 生成添加 / 编辑对话框的内容，canSaveQuadrantTask 和 applyQuadrantTaskDraft 负责校验并应用它，moveQuadrantTask 和 removeQuadrantTask 返回新的点列表，selectionAfterRemove 给出删除后的选中项，quadrantTaskDeleteText 生成删除确认文案，QUADRANT_TASK_ICONS 则是添加、编辑、删除图标的路径。"
     }
   },
   "demos": {
@@ -117,13 +117,19 @@
       "zoom": "用户缩放或平移；参数为视图",
       "renderer": "后端已就绪或已回退",
       "layout": "绘图区移动或尺寸改变；参数为其矩形",
+      "dragStart": "某个点开始随指针移动（interaction.dragPoints）",
       "drag": "正在拖动某个点（interaction.dragPoints）",
-      "drop": "被拖动的点已释放"
+      "drop": "被拖动的点已释放",
+      "dragEnd": "拖动结束（在 drop 之后，或按 Esc 取消）"
     },
     "ChartDragEvent": {
       "item": "正在拖动的点",
       "x": "指针下的 X 数据坐标",
       "y": "指针下的 Y 数据坐标"
+    },
+    "ChartDragEndEvent": {
+      "item": "被拖动的点",
+      "cancelled": "按下 Esc、指针被取消或在图表外松开：不会触发 drop 事件"
     },
     "ChartRect": {
       "x": "左边缘，CSS 像素",

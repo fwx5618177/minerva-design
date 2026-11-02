@@ -316,6 +316,17 @@ export const uniComponentManifest = [
     deviceE2E: false,
   },
   {
+    name: "QuadrantTaskBoard",
+    scope:
+      "Controlled task board on top of the uni QuadrantChart (points in; update:points for v-model:points and pointsChange out; every other QuadrantChart prop is forwarded, the chart labels excepted; hover, pointClick and zoom are re-emitted and the chart handle is exposed): a row of quadrant headers under the chart (badge, quadrant title, count unless showCounts is false, + add button), an actions toolbar for the selected task (task name, Edit and Delete text buttons; selection is internal or the controlled selectedIndex), a Modal with a required name Input (the keyboard confirm key saves) and a RadioGroup quadrant picker with Cancel / Save (Save disabled until the name is not blank), a danger ConfirmDialog before a delete, tapping an empty quadrant area to add a task there, drag and drop of the dots and the chart's accessible move-to actions. Add/edit/move/delete/selection logic and the localized texts (labels overrides) come from the shared minerva-design/charts quadrant task helpers.",
+    limitations: [
+      "No keyboard moves (Shift + arrow keys) or double-tap to edit: mini-program views take no focus and the chart has no double tap; use the Edit button and the move-to actions. The actions toolbar sits under the chart instead of floating on the selected dot, and the quadrant headers are a row under the chart instead of over the quadrants. Buttons use text glyphs (+) and words instead of the web SVG icons (mini programs have no inline SVG). Screen readers get aria-role / aria-label where the host supports them; device behavior still requires validation.",
+    ],
+    tests: ["src/quadrant-task-board.test.ts: behavioral regression"],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
     name: "AnswerSheet",
     scope:
       "Shared core sections and counts: numbered question pills grouped by section (untitled section first), unanswered/answered/correct/wrong/skipped statuses, flag dot, controlled/default current question (v-model) with aria-current=step, wrap/scroll layouts, fixed columns, localized item labels, getItemLabel, summary, legend, size and disabled; arrow, Home/End and Enter/Space keys (ArrowUp/ArrowDown by row with columns).",

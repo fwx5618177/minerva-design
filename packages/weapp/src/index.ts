@@ -47,6 +47,13 @@ import {
   kanbanColumnTemplate,
 } from "./kanban-board";
 import {
+  quadrantTaskBoardComponents,
+  quadrantTaskBoardExtra,
+  quadrantTaskBoardMethods,
+  quadrantTaskBoardProperties,
+  quadrantTaskBoardTemplate,
+} from "./quadrant-task-board";
+import {
   answerSheetExtra,
   answerSheetMethods,
   answerSheetProperties,
@@ -1256,6 +1263,16 @@ export const kanbanCard = native(
   kanbanCardProperties,
   kanbanCardMethods,
   kanbanCardExtra,
+);
+/** Task board on a quadrant chart; composes Minerva native components */
+export const quadrantTaskBoard = Object.assign(
+  native(
+    quadrantTaskBoardTemplate,
+    quadrantTaskBoardProperties,
+    quadrantTaskBoardMethods,
+    quadrantTaskBoardExtra,
+  ),
+  { usingComponents: quadrantTaskBoardComponents },
 );
 export const flashcard = native(
   flashcardTemplate,
@@ -3145,6 +3162,7 @@ annotateNativeApi({
   kanbanBoard,
   kanbanColumn,
   kanbanCard,
+  quadrantTaskBoard,
   flashcard,
   segmentedControl,
   slider,

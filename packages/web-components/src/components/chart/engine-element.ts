@@ -1,4 +1,4 @@
-import { css, html, type PropertyValues } from "lit";
+import { css, html, nothing, type PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
@@ -80,6 +80,9 @@ export abstract class MinervaEngineElement<
   /** Called once the engine is created (e.g. to pass data streamed apart from the options) */
   protected engineMounted?(engine: I): void;
 
+  /** Content rendered over the surface, inside the sized box (e.g. slots placed on the plot) */
+  protected renderOverlay?(): unknown;
+
   /**
    * Applies a property change to the live engine; replaces the default
    * (`setOptions` with the new engine options) when data such as an order
@@ -139,6 +142,7 @@ export abstract class MinervaEngineElement<
       style=${styleMap({ height: cssLength(this.height ?? this.defaultHeight) })}
     >
       <div part="surface" class="surface"></div>
+      ${this.renderOverlay?.() ?? nothing}
     </div>`;
   }
 }

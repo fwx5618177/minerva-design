@@ -302,7 +302,52 @@ describe("canvas host", () => {
     expect(ring).toBeGreaterThan(fill);
     expect(label).toBeGreaterThan(ring);
   });
+
+  it("draws the lifted bar of a combo chart before the data, without a veil", () => {
+    const controller = createChartController({
+      options: combo,
+      measureText: measure,
+    });
+    controller.setSize(400, 240);
+    const p = controller.toPixel(1, 2.5)!;
+    controller.pointerMove(p.x, p.y);
+    const scene = controller.getScene()!;
+    const bar = bars(scene.hover?.marks ?? [])[0];
+    expect(bar).toBeDefined();
+    const { ctx, calls } = recordingContext();
+    const painted: number[] = [];
+    const painter = {
+      paint: () => {
+        painted.push(calls.length);
+      },
+    } as unknown as Parameters<typeof drawScene>[5];
+    drawScene(ctx, scene, [], { x: 0, y: 0 }, 1, painter);
+    const lifted = calls.findIndex(
+      (c) => c.name === "fill" && c.fill === bar.color,
+    );
+    expect(lifted).toBeGreaterThanOrEqual(0);
+    expect(painted).toHaveLength(1);
+    expect(lifted).toBeLessThan(painted[0]!);
+    const veil = calls.findIndex(
+      (c) => c.name === "fillRect" && c.fill === toCss(theme.background, 0.42),
+    );
+    expect(veil).toBe(-1);
+  });
 });
+
+const combo: ChartOptions = {
+  xAxis: { type: "category", categories: ["A", "B", "C"] },
+  series: [
+    { type: "bar", name: "Sales", color: "#4f46e5", data: [3, 5, 2] },
+    {
+      type: "line",
+      name: "Growth",
+      color: "#f59e0b",
+      yAxis: "right",
+      data: [10, 30, 20],
+    },
+  ],
+};
 
 // -------------------------------------------------------------------- DOM
 
@@ -432,5 +477,74 @@ describe("DOM lift layer", () => {
     move(p.x, p.y);
     expect(liftedBars()).toHaveLength(1);
     expect(animate).not.toHaveBeenCalled();
+  });
+
+  it("lifts the bar of a combo chart below the data: the line stays on top", async () => {
+    const c = await mount(combo);
+    const stage = container.querySelector(".minerva-chart-stage")!;
+    const layers = [...stage.children];
+    const p = c.toPixel(1, 2.5)!;
+    move(p.x, p.y);
+    const bar = stage.querySelector<HTMLElement>('[data-hover-mark="bar"]')!;
+    expect(bar.style.display).toBe("block");
+    // in the layer below the data canvas (and no veil over the line)
+    const holder = layers.find((layer) => layer.contains(bar))!;
+    expect(holder).not.toBe(liftLayer());
+    expect(layers.indexOf(holder)).toBeLessThan(layers.indexOf(liftLayer()));
+    const data = stage.querySelector(".minerva-chart-data");
+    if (data) expect(layers.indexOf(holder)).toBeLessThan(layers.indexOf(data));
+    const veiled = [...liftLayer().children].some(
+      (el) => (el as HTMLElement).style.opacity === "1",
+    );
+    expect(veiled).toBe(false);
+    // the line point is marked in the hover layer, above everything
+    const dots = [...stage.querySelectorAll<HTMLElement>("div")].filter(
+      (el) => el.style.borderRadius === "50%" && el.style.display === "block",
+    );
+    expect(dots.length).toBeGreaterThan(0);
+    for (const dot of dots) {
+      const layer = layers.find((l) => l.contains(dot))!;
+      expect(layers.indexOf(layer)).toBeGreaterThan(
+        layers.indexOf(liftLayer()),
+      );
+    }
+    // a bar-only chart keeps its lifted bar above the data, veiled
+    chart!.setOptions(columns);
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => setTimeout(resolve, 0)),
+    );
+    move(p.x, p.y);
+    expect(liftLayer().contains(bar)).toBe(true);
+  });
+
+  it("rings a hovered dot with a halo and highlights its label in a chip", async () => {
+    const c = await mount({
+      series: [
+        {
+          type: "scatter",
+          name: "Tasks",
+          showLabels: true,
+          data: [
+            { x: 2, y: 3, label: "Alpha" },
+            { x: 6, y: 7, label: "Beta" },
+          ],
+        },
+      ],
+    });
+    const p = c.toPixel(6, 7)!;
+    move(p.x, p.y);
+    const stage = container.querySelector(".minerva-chart-stage")!;
+    const dot = [...stage.querySelectorAll<HTMLElement>("div")].find(
+      (el) => el.style.borderRadius === "50%" && el.style.display === "block",
+    )!;
+    expect(dot.style.boxShadow).toMatch(/0 0 0 4px .*0 0 0 8px/);
+    const chip = stage.querySelector<HTMLElement>('[data-hover-mark="label"]');
+    // happy-dom measures no text: the chip shows when the label was placed
+    if (chip) {
+      expect(chip.textContent).toBe("Beta");
+      expect(chip.style.background).toContain("color-mix");
+    }
+    move(1, 1);
+    if (chip) expect(chip.style.display).toBe("none");
   });
 });

@@ -19,6 +19,7 @@ import type {
   QuadrantConfig,
   QuadrantCorner,
   QuadrantPoint,
+  QuadrantRegion,
 } from "@minerva/charts/canvas";
 
 export type {
@@ -197,6 +198,18 @@ export interface QuadrantDropTarget {
   quadrant: QuadrantCorner;
 }
 
+/** What `renderQuadrantHeader` receives about a quadrant */
+export interface QuadrantHeaderInfo {
+  /** Number of points in the quadrant */
+  count: number;
+  /** Points in the quadrant */
+  points: QuadrantPoint[];
+  /** Indices of these points in `points` */
+  indices: number[];
+  /** Title, badge, description and color of the quadrant (`quadrants`) */
+  region: QuadrantRegion | undefined;
+}
+
 /** Props of QuadrantChart */
 export interface QuadrantChartProps
   extends
@@ -228,6 +241,22 @@ export interface QuadrantChartProps
    * content receives touches, the rest of the quadrant does not
    */
   quadrantContent?: Partial<Record<QuadrantCorner, ReactNode>>;
+  /**
+   * React header of each quadrant, in its outer corner (top edge for the top
+   * quadrants, bottom edge for the bottom ones, aligned to the outer side);
+   * replaces the drawn title, badge, description and count. The header
+   * receives touches (e.g. an add button)
+   */
+  renderQuadrantHeader?: (
+    corner: QuadrantCorner,
+    info: QuadrantHeaderInfo,
+  ) => ReactNode;
+  /**
+   * React content shown next to the selected point (`selectedIndex`), e.g.
+   * edit / delete buttons: above the dot (below it near the top edge),
+   * kept inside the plot area so that it receives touches
+   */
+  renderPointActions?: (point: QuadrantPoint, index: number) => ReactNode;
   /**
    * Exposes every point to the screen readers (VoiceOver, TalkBack) as a
    * button over its dot, labelled with its name, quadrant and values; with

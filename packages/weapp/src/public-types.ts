@@ -952,6 +952,53 @@ export interface NativeQuadrantChartConfig {
 export interface NativeQuadrantChartInstance extends NativeChartMethods {
   configure(config: NativeQuadrantChartConfig): void;
 }
+/** Texts of the quadrant task board (defaults follow the locale) */
+export interface NativeQuadrantTaskLabels {
+  /** Add button of a quadrant and title of the add dialog */
+  add: string;
+  /** Edit button of the selected task and title of the edit dialog */
+  edit: string;
+  /** Delete button of the selected task and title of its confirmation */
+  delete: string;
+  /** Text of the delete confirmation: `{name}` is the task */
+  deleteConfirm: string;
+  /** Label of the name field */
+  name: string;
+  /** Label of the quadrant field */
+  quadrant: string;
+  save: string;
+  cancel: string;
+  /** Name of the actions toolbar of the selected task */
+  actions: string;
+}
+/**
+ * quadrant-task-board: the quadrant-chart properties (except its `labels`)
+ * plus the texts of the board. Controlled: update `points` on `pointschange`.
+ */
+export interface NativeQuadrantTaskBoardProperties extends Omit<
+  NativeQuadrantChartProperties,
+  "draggable" | "showCounts"
+> {
+  labels?: Partial<NativeQuadrantTaskLabels>;
+  /** Dots can be dragged to move a task @default true */
+  draggable?: boolean;
+  /** Count after each quadrant title of the board headers @default true */
+  showCounts?: boolean;
+  /** Stops page scrolling over the chart @default draggable */
+  disableScroll?: boolean;
+}
+/** `event.detail` of the quadrant-task-board events */
+export interface NativeQuadrantTaskBoardEvents {
+  /** Tasks after an add, an edit, a delete or a move */
+  pointschange: { points: NativeQuadrantPoint[] };
+  pointclick: NativeQuadrantChartEvents["pointclick"];
+  pointdrag: NativeQuadrantChartEvents["pointdrag"];
+  hover: NativeQuadrantChartEvents["hover"];
+  zoom: NativeChartView;
+  layout: NativeChartRect;
+}
+/** Chart methods, forwarded to the inner quadrant-chart */
+export type NativeQuadrantTaskBoardInstance = NativeQuadrantChartInstance;
 
 /** A named value of a shape chart (pie slice, funnel stage) */
 export interface NativeShapeDatum {

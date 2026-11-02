@@ -66,7 +66,10 @@ const typeFilesIn = (componentsDir) => {
   for (const dir of readdirSync(componentsDir, { withFileTypes: true })) {
     if (!dir.isDirectory()) continue;
     const file = join(componentsDir, dir.name, "types.ts");
+    // a component without a types.ts declares its props in its own file
+    const component = join(componentsDir, dir.name, `${dir.name}.tsx`);
     if (existsSync(file)) files.push(file);
+    else if (existsSync(component)) files.push(component);
   }
   return files.sort();
 };
@@ -78,6 +81,8 @@ const typeFilesIn = (componentsDir) => {
  */
 const CHART_ENGINE_FILES = [
   "charts/src/engine/presets.ts",
+  // texts and edits of the quadrant task boards (QuadrantTaskLabels)
+  "charts/src/engine/quadrant-tasks.ts",
   "charts/src/engine/canvas.ts",
   "charts/src/engine/controller.ts",
   "charts/src/engine/theme.ts",

@@ -2403,6 +2403,73 @@
       { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
     ]
   },
+  "QuadrantTaskBoard": {
+    "entry": "minerva-design/quadrant-task-board/index",
+    "props": [
+      { "name": "accessiblePoints", "type": "boolean", "required": false, "default": "true" },
+      { "name": "annotations", "type": "array", "required": false, "default": "[]" },
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "axisLabels", "type": "any", "required": false, "default": "null" },
+      { "name": "crosshair", "type": "any", "required": false, "default": "null" },
+      { "name": "disableScroll", "type": "any", "required": false, "default": "null" },
+      { "name": "draggable", "type": "boolean", "required": false, "default": "true" },
+      { "name": "height", "type": "any", "required": false, "default": "320" },
+      { "name": "interaction", "type": "any", "required": false, "default": "null" },
+      { "name": "labels", "type": "any", "required": false, "default": "null" },
+      { "name": "legend", "type": "any", "required": false, "default": "null" },
+      { "name": "locale", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "name", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "padding", "type": "any", "required": false, "default": "null" },
+      { "name": "palette", "type": "array", "required": false, "default": "[]" },
+      { "name": "points", "type": "array", "required": false, "default": "[]" },
+      { "name": "pointSize", "type": "number", "required": false, "default": "12" },
+      { "name": "quadrants", "type": "any", "required": false, "default": "null" },
+      { "name": "reverseX", "type": "boolean", "required": false, "default": "false" },
+      { "name": "selectedIndex", "type": "any", "required": false, "default": "null" },
+      { "name": "selectedIndices", "type": "any", "required": false, "default": "null" },
+      { "name": "showCounts", "type": "any", "required": false, "default": "null" },
+      { "name": "showLabels", "type": "boolean", "required": false, "default": "true" },
+      { "name": "showTicks", "type": "boolean", "required": false, "default": "true" },
+      { "name": "tooltip", "type": "any", "required": false, "default": "null" },
+      { "name": "width", "type": "any", "required": false, "default": "\"100%\"" },
+      { "name": "xDomain", "type": "any", "required": false, "default": "null" },
+      { "name": "xLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "xSplit", "type": "any", "required": false, "default": "null" },
+      { "name": "yDomain", "type": "any", "required": false, "default": "null" },
+      { "name": "yLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "ySplit", "type": "any", "required": false, "default": "null" }
+    ],
+    "events": [
+      {
+        "name": "hover",
+        "type": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+        "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+      },
+      { "name": "layout", "type": "{ x: number; y: number; width: number; height: number }", "description": "The plot area moved or was resized (px of the chart)." },
+      { "name": "pointclick", "type": "{ point: NativeQuadrantPoint; index: number }", "description": "A task dot was tapped (it becomes the selected task)." },
+      { "name": "pointdrag", "type": "{ point: NativeQuadrantPoint; index: number; target: NativeQuadrantDropTarget }", "description": "A task dot is dragged (draggable)." },
+      { "name": "pointschange", "type": "{ points: NativeQuadrantPoint[] }", "description": "Tasks after an add, an edit, a delete or a move (controlled: update points)." },
+      { "name": "zoom", "type": "{ x: [number, number]; y: [number, number] }", "description": "Visible range after a pinch, a pan or a double-tap reset." }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      {
+        "name": "configure",
+        "type": "configure(config: NativeQuadrantChartConfig): void",
+        "description": "Forwarded to the inner quadrant chart (renderTooltip); the chart methods below act on that chart (px of the chart, not of the board)."
+      },
+      { "name": "fromPixel", "type": "fromPixel(x: number, y: number): { x: number; y: number } | null", "description": "Px of the chart to data coordinates." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "getPlotRect", "type": "getPlotRect(): NativeChartRect | null", "description": "Plot area in px of the chart, for host overlays." },
+      { "name": "getView", "type": "getView(): NativeChartView | null", "description": "Visible axis ranges; null before the canvas is ready." },
+      { "name": "resetZoom", "type": "resetZoom(): void", "description": "Show the whole data range." },
+      { "name": "resize", "type": "resize(): void", "description": "Measure the canvas again after a host layout change (e.g. a chart created hidden)." },
+      { "name": "setView", "type": "setView(view: Partial<NativeChartView>): void", "description": "Set the visible axis ranges." },
+      { "name": "toPixel", "type": "toPixel(x: number, y: number): { x: number; y: number } | null", "description": "Data coordinates to px of the chart." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
   "Flashcard": {
     "entry": "minerva-design/flashcard/index",
     "props": [

@@ -96,6 +96,7 @@ export {
   type SparklineConfig,
 } from "./engine/presets";
 export {
+  QUADRANT_CORNERS,
   quadrantAccessibleGroups,
   quadrantHoverEvent,
   quadrantKeyTarget,
@@ -108,6 +109,21 @@ export {
   type QuadrantAccessibleMove,
   type QuadrantAccessiblePoint,
 } from "./engine/quadrant-keyboard";
+export {
+  QUADRANT_TASK_ICONS,
+  applyQuadrantTaskDraft,
+  canSaveQuadrantTask,
+  editQuadrantTaskDraft,
+  moveQuadrantTask,
+  newQuadrantTaskDraft,
+  quadrantTaskDeleteText,
+  quadrantTaskLabels,
+  removeQuadrantTask,
+  selectionAfterRemove,
+  type QuadrantTaskDraft,
+  type QuadrantTaskGeometry,
+  type QuadrantTaskLabels,
+} from "./engine/quadrant-tasks";
 export { toCss } from "./engine/color";
 export { CANVAS_TOOLTIP_ALPHA, tooltipColors } from "./engine/tooltip";
 export { liftedBarRect, type BarHoverMark } from "./engine/scene";

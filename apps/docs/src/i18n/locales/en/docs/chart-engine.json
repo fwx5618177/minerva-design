@@ -11,7 +11,7 @@
     },
     "quadrant": {
       "title": "Quadrant helpers",
-      "text": "quadrantChartOptions(config) builds the engine options of a QuadrantChart for any entry point; quadrantOf(config, x, y) returns the quadrant of a data position as seen on screen (reverseX included) and quadrantCenter(config, corner) the center of a quadrant, e.g. to place a new or dropped point. quadrantGroups(config) lists the points and indices of each quadrant, quadrantCountText(showCounts, points, locale) formats a quadrant count and quadrantLabels(locale) returns the built-in texts of the accessible point layer. createQuadrantPointLayer(host, options) mounts that layer (one list of point buttons per quadrant, arrows between the points, Shift + arrows to move the focused point to the neighbouring quadrant, a live region announcing the move) in any DOM renderer; quadrantKeyTarget(event, corner) returns the quadrant a Shift + arrow key leads to and quadrantAccessibleGroups(config, locale) the names, labels and move actions of the points for hosts without a DOM."
+      "text": "quadrantChartOptions(config) builds the engine options of a QuadrantChart for any entry point; quadrantOf(config, x, y) returns the quadrant of a data position as seen on screen (reverseX included) and quadrantCenter(config, corner) the center of a quadrant, e.g. to place a new or dropped point. quadrantGroups(config) lists the points and indices of each quadrant, quadrantCountText(showCounts, points, locale) formats a quadrant count and quadrantLabels(locale) returns the built-in texts of the accessible point layer. createQuadrantPointLayer(host, options) mounts that layer (one list of point buttons per quadrant, arrows between the points, Shift + arrows to move the focused point to the neighbouring quadrant, a live region announcing the move) in any DOM renderer; quadrantKeyTarget(event, corner) returns the quadrant a Shift + arrow key leads to and quadrantAccessibleGroups(config, locale) the names, labels and move actions of the points for hosts without a DOM. Task boards (the QuadrantTaskBoard of every renderer) share their logic too: QUADRANT_CORNERS lists the four corners, quadrantTaskLabels(locale, overrides) returns the localized texts of the buttons and dialogs, newQuadrantTaskDraft / editQuadrantTaskDraft fill the add / edit dialog, canSaveQuadrantTask and applyQuadrantTaskDraft check and apply it, moveQuadrantTask and removeQuadrantTask return the next list of points, selectionAfterRemove the selection after a delete, quadrantTaskDeleteText the text of the delete confirmation and QUADRANT_TASK_ICONS the paths of the add, edit and delete icons."
     }
   },
   "demos": {
@@ -117,13 +117,19 @@
       "zoom": "The user zoomed or panned; receives the view",
       "renderer": "The backend is ready or fell back",
       "layout": "The plot area moved or was resized; receives its rectangle",
+      "dragStart": "A point starts moving with the pointer (interaction.dragPoints)",
       "drag": "A point is being dragged (interaction.dragPoints)",
-      "drop": "A dragged point was released"
+      "drop": "A dragged point was released",
+      "dragEnd": "The drag is over (after drop, or cancelled with Escape)"
     },
     "ChartDragEvent": {
       "item": "The point being dragged",
       "x": "X data coordinate under the pointer",
       "y": "Y data coordinate under the pointer"
+    },
+    "ChartDragEndEvent": {
+      "item": "The point that was dragged",
+      "cancelled": "Escape, a cancelled pointer or a release outside the chart: no drop event"
     },
     "ChartRect": {
       "x": "Left edge, in CSS pixels",

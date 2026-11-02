@@ -1,9 +1,10 @@
 // Optional define entries of the chart elements: `chart` (cartesian and
 // shape charts), `trading-chart`, `order-book`, `chart-3d` and `graph`
-// (their engines are only loaded by the pages that use them), and `icon`
-// (<minerva-icon>, <minerva-icon-canvas>: it loads the icon set). Used by the
-// live demos (which entries to load) and by the framework conversions (which
-// entries to import).
+// (their engines are only loaded by the pages that use them),
+// `quadrant-task-board` (<minerva-quadrant-task-board>: it loads the chart
+// engine too) and `icon` (<minerva-icon>, <minerva-icon-canvas>: it loads
+// the icon set). Used by the live demos (which entries to load) and by the
+// framework conversions (which entries to import).
 
 /** Optional entries of the chart (and icon) elements */
 export const CHART_ENTRIES = [
@@ -12,6 +13,7 @@ export const CHART_ENTRIES = [
   "order-book",
   "chart-3d",
   "graph",
+  "quadrant-task-board",
   "icon",
 ] as const;
 
@@ -21,6 +23,7 @@ export type ChartEntry = (typeof CHART_ENTRIES)[number];
 export const chartEntryOf = (tag: string): ChartEntry | undefined => {
   if (tag === "minerva-icon" || tag === "minerva-icon-canvas") return "icon";
   if (tag === "minerva-trading-chart") return "trading-chart";
+  if (tag === "minerva-quadrant-task-board") return "quadrant-task-board";
   if (
     /^minerva-(depth-chart|order-book|order-book-heatmap|time-and-sales)$/.test(
       tag,

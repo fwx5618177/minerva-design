@@ -11,7 +11,7 @@
     },
     "quadrant": {
       "title": "象限ヘルパー",
-      "text": "quadrantChartOptions(config) は任意のエントリーポイント向けに QuadrantChart のエンジンオプションを生成します。quadrantOf(config, x, y) はデータ位置が画面上でどの象限にあるか（reverseX を考慮）を返し、quadrantCenter(config, corner) は象限の中心を返します。新しい点やドロップされた点の配置などに使えます。quadrantGroups(config) は各象限の点とインデックスを返し、quadrantCountText(showCounts, points, locale) は象限の件数テキストを生成し、quadrantLabels(locale) はアクセシブルな点レイヤーの組み込みテキストを返します。createQuadrantPointLayer(host, options) は任意の DOM レンダラーにこのレイヤー（象限ごとの点ボタンのリスト、矢印キーによる点間の移動、Shift + 矢印キーによるフォーカス中の点の隣接象限への移動、移動を読み上げるライブリージョン）をマウントします。quadrantKeyTarget(event, corner) は Shift + 矢印キーの移動先の象限を、quadrantAccessibleGroups(config, locale) は DOM のないホスト向けに各点の名前・ラベル・移動操作を返します。"
+      "text": "quadrantChartOptions(config) は任意のエントリーポイント向けに QuadrantChart のエンジンオプションを生成します。quadrantOf(config, x, y) はデータ位置が画面上でどの象限にあるか（reverseX を考慮）を返し、quadrantCenter(config, corner) は象限の中心を返します。新しい点やドロップされた点の配置などに使えます。quadrantGroups(config) は各象限の点とインデックスを返し、quadrantCountText(showCounts, points, locale) は象限の件数テキストを生成し、quadrantLabels(locale) はアクセシブルな点レイヤーの組み込みテキストを返します。createQuadrantPointLayer(host, options) は任意の DOM レンダラーにこのレイヤー（象限ごとの点ボタンのリスト、矢印キーによる点間の移動、Shift + 矢印キーによるフォーカス中の点の隣接象限への移動、移動を読み上げるライブリージョン）をマウントします。quadrantKeyTarget(event, corner) は Shift + 矢印キーの移動先の象限を、quadrantAccessibleGroups(config, locale) は DOM のないホスト向けに各点の名前・ラベル・移動操作を返します。タスクボード（各レンダラーの QuadrantTaskBoard）もロジックを共有しています。QUADRANT_CORNERS は 4 つの角の一覧、quadrantTaskLabels(locale, overrides) はボタンとダイアログのローカライズ済みテキスト、newQuadrantTaskDraft / editQuadrantTaskDraft は追加・編集ダイアログの内容を作り、canSaveQuadrantTask と applyQuadrantTaskDraft がそれを検証・適用します。moveQuadrantTask と removeQuadrantTask は次のポイント一覧を、selectionAfterRemove は削除後の選択を、quadrantTaskDeleteText は削除確認の文言を返し、QUADRANT_TASK_ICONS は追加・編集・削除アイコンのパスです。"
     }
   },
   "demos": {
@@ -117,13 +117,19 @@
       "zoom": "ユーザーがズームまたはパンした。ビューを受け取ります",
       "renderer": "バックエンドの準備完了、またはフォールバックした",
       "layout": "プロット領域が移動またはリサイズされた。その矩形を受け取ります",
+      "dragStart": "ポイントがポインターに合わせて動き始めた（interaction.dragPoints）",
       "drag": "ポイントをドラッグ中（interaction.dragPoints）",
-      "drop": "ドラッグしたポイントが離された"
+      "drop": "ドラッグしたポイントが離された",
+      "dragEnd": "ドラッグが終了した（drop の後、または Esc でキャンセル）"
     },
     "ChartDragEvent": {
       "item": "ドラッグ中のポイント",
       "x": "ポインター位置の X データ座標",
       "y": "ポインター位置の Y データ座標"
+    },
+    "ChartDragEndEvent": {
+      "item": "ドラッグされたポイント",
+      "cancelled": "Esc、ポインターのキャンセル、またはチャート外で離された場合：drop イベントは発生しません"
     },
     "ChartRect": {
       "x": "左端（CSS ピクセル）",

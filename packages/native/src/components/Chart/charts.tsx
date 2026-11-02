@@ -9,6 +9,7 @@ import {
   lineSeries,
   quadrantAccessibleGroups,
   quadrantChartOptions,
+  quadrantGroups,
   quadrantLabels,
   quadrantMoveDrop,
   quadrantMovedText,
@@ -216,6 +217,8 @@ export function QuadrantChart(props: QuadrantChartProps) {
     onQuadrantClick,
     renderTooltip,
     quadrantContent,
+    renderQuadrantHeader,
+    renderPointActions,
     showCounts,
     selectedIndex,
     selectedIndices,
@@ -227,53 +230,69 @@ export function QuadrantChart(props: QuadrantChartProps) {
   const dragPoints = draggable ?? !!onPointDrop;
   // like the web: Shift + arrows there, accessibility actions here
   const movable = !!onPointDrop && draggable !== false;
-  const options = useMemo(
-    () =>
-      quadrantChartOptions(
-        {
-          points,
-          xDomain,
-          yDomain,
-          xSplit,
-          ySplit,
-          quadrants,
-          xLabel,
-          yLabel,
-          axisLabels,
-          showTicks,
-          reverseX,
-          showLabels,
-          pointSize,
-          name,
-          draggable: dragPoints,
-          showCounts,
-          selectedIndex,
-          selectedIndices,
-        },
-        base,
-      ),
-    [
-      points,
-      xDomain,
-      yDomain,
-      xSplit,
-      ySplit,
-      quadrants,
-      xLabel,
-      yLabel,
-      axisLabels,
-      showTicks,
-      reverseX,
-      showLabels,
-      pointSize,
-      name,
-      dragPoints,
-      showCounts,
-      selectedIndex,
-      selectedIndices,
+  const customHeaders = !!renderQuadrantHeader;
+  const options = useMemo(() => {
+    const result = quadrantChartOptions(
+      {
+        points,
+        xDomain,
+        yDomain,
+        xSplit,
+        ySplit,
+        quadrants,
+        xLabel,
+        yLabel,
+        axisLabels,
+        showTicks,
+        reverseX,
+        showLabels,
+        pointSize,
+        name,
+        draggable: dragPoints,
+        showCounts: customHeaders ? undefined : showCounts,
+        selectedIndex,
+        selectedIndices,
+      },
       base,
-    ],
-  );
+    );
+    if (!customHeaders) return result;
+    // the React headers replace the drawn titles (the first four areas)
+    return {
+      ...result,
+      annotations: result.annotations?.map((a, i) =>
+        i < 4 && a.type === "rect"
+          ? {
+              ...a,
+              label: undefined,
+              badge: undefined,
+              description: undefined,
+              detail: undefined,
+            }
+          : a,
+      ),
+    };
+  }, [
+    points,
+    xDomain,
+    yDomain,
+    xSplit,
+    ySplit,
+    quadrants,
+    xLabel,
+    yLabel,
+    axisLabels,
+    showTicks,
+    reverseX,
+    showLabels,
+    pointSize,
+    name,
+    dragPoints,
+    customHeaders,
+    showCounts,
+    selectedIndex,
+    selectedIndices,
+    base,
+  ]);
   const geometry = { xDomain, yDomain, xSplit, ySplit, reverseX };
   const accessible = useMemo(
     () =>
@@ -380,47 +399,154 @@ export function QuadrantChart(props: QuadrantChartProps) {
     });
   };
 
+  /** Rectangle of a quadrant, relative to the plot area */
+  const quadrantRect = (corner: QuadrantCorner, plot: ChartRect) => {
+    const [x0, x1] = xDomain ?? [0, 10];
+    const [y0, y1] = yDomain ?? [0, 10];
+    const xs = xSplit ?? (x0 + x1) / 2;
+    const ys = ySplit ?? (y0 + y1) / 2;
+    const fx = (xs - x0) / (x1 - x0 || 1);
+    const fy = (ys - y0) / (y1 - y0 || 1);
+    // split point relative to the plot area
+    const sx = plot.width * (reverseX ? 1 - fx : fx);
+    const sy = plot.height * (1 - fy);
+    const left = corner.endsWith("Left");
+    const top = corner.startsWith("top");
+    return {
+      position: "absolute" as const,
+      left: left ? 0 : sx,
+      top: top ? 0 : sy,
+      width: left ? sx : plot.width - sx,
+      height: top ? sy : plot.height - sy,
+    };
+  };
+
   const contentViews = quadrantContent
-    ? (plot: ChartRect) => {
-        const [x0, x1] = xDomain ?? [0, 10];
-        const [y0, y1] = yDomain ?? [0, 10];
-        const xs = xSplit ?? (x0 + x1) / 2;
-        const ys = ySplit ?? (y0 + y1) / 2;
-        const fx = (xs - x0) / (x1 - x0 || 1);
-        const fy = (ys - y0) / (y1 - y0 || 1);
-        // split point relative to the plot area
-        const sx = plot.width * (reverseX ? 1 - fx : fx);
-        const sy = plot.height * (1 - fy);
-        return CORNERS.map((corner) => {
+    ? (plot: ChartRect) =>
+        CORNERS.map((corner) => {
           const content = quadrantContent[corner];
           if (content === undefined || content === null || content === false)
             return null;
-          const left = corner.endsWith("Left");
-          const top = corner.startsWith("top");
           return (
             <View
               key={corner}
               pointerEvents="box-none"
-              style={{
-                position: "absolute",
-                left: left ? 0 : sx,
-                top: top ? 0 : sy,
-                width: left ? sx : plot.width - sx,
-                height: top ? sy : plot.height - sy,
-              }}
+              style={quadrantRect(corner, plot)}
               {...part("chart", "quadrant", { corner })}
             >
               {content}
             </View>
           );
+        })
+    : undefined;
+
+  /** The React headers of the quadrants (`renderQuadrantHeader`) */
+  const headerViews = renderQuadrantHeader
+    ? (plot: ChartRect) => {
+        const groups = quadrantGroups({
+          points,
+          xDomain,
+          yDomain,
+          xSplit,
+          ySplit,
+          reverseX,
+        });
+        return CORNERS.map((corner) => {
+          const group = groups[corner];
+          const header = renderQuadrantHeader(corner, {
+            count: group.points.length,
+            points: group.points,
+            indices: group.indices,
+            region: quadrants?.[corner],
+          });
+          if (header === undefined || header === null || header === false)
+            return null;
+          const left = corner.endsWith("Left");
+          const top = corner.startsWith("top");
+          return (
+            <View
+              key={`header-${corner}`}
+              pointerEvents="box-none"
+              style={quadrantRect(corner, plot)}
+            >
+              <View
+                pointerEvents="box-none"
+                style={{
+                  position: "absolute",
+                  [top ? "top" : "bottom"]: 0,
+                  [left ? "left" : "right"]: 0,
+                  maxWidth: "100%",
+                  padding: 6,
+                  flexDirection: "row",
+                  justifyContent: left ? "flex-start" : "flex-end",
+                }}
+                {...part("chart", "quadrant-header", { corner })}
+              >
+                {header}
+              </View>
+            </View>
+          );
         });
       }
     : undefined;
+
+  /** Content next to the selected point, kept inside the plot area */
+  const actionViews = renderPointActions
+    ? (plot: ChartRect) => {
+        const index = selectedIndex;
+        const point =
+          index === undefined || index === null ? undefined : points[index];
+        if (
+          index === undefined ||
+          index === null ||
+          !point ||
+          !Number.isFinite(point.x) ||
+          !Number.isFinite(point.y)
+        )
+          return [];
+        const content = renderPointActions(point, index);
+        if (content === undefined || content === null || content === false)
+          return [];
+        const [x0, x1] = xDomain ?? [0, 10];
+        const [y0, y1] = yDomain ?? [0, 10];
+        const fx = (point.x - x0) / (x1 - x0 || 1);
+        const fy = (point.y - y0) / (y1 - y0 || 1);
+        const px = plot.width * (reverseX ? 1 - fx : fx);
+        const py = plot.height * (1 - fy);
+        // clear of the dot and its selection ring
+        const gap = (point.size ?? pointSize ?? 12) / 2 + 8;
+        // above the dot unless it is close to the top edge
+        const above = py > plot.height / 3;
+        const onLeft = px <= plot.width / 2;
+        return [
+          <View
+            key="point-actions"
+            pointerEvents="box-none"
+            style={{
+              position: "absolute",
+              ...(above
+                ? { bottom: Math.max(0, plot.height - py + gap) }
+                : { top: Math.min(plot.height, py + gap) }),
+              ...(onLeft
+                ? { left: Math.max(0, px - 16) }
+                : { right: Math.max(0, plot.width - px - 16) }),
+              flexDirection: "row",
+            }}
+            {...part("chart", "point-actions", { index: String(index) })}
+          >
+            {content}
+          </View>,
+        ];
+      }
+    : undefined;
+
   const overlay =
-    contentViews || accessible.length
+    contentViews || headerViews || actionViews || accessible.length
       ? (plot: ChartRect) => [
           ...(contentViews?.(plot) ?? []),
+          ...(headerViews?.(plot) ?? []),
           ...pointViews(plot),
+          ...(actionViews?.(plot) ?? []),
         ]
       : undefined;
 

@@ -1,32 +1,34 @@
 <script setup lang="ts">
 import {
+  computed,
   getCurrentInstance,
   onBeforeUnmount,
   onMounted,
   ref,
+  useSlots,
   watch,
-  type PropType,
+  type CSSProperties,
 } from "vue";
 import {
+  QUADRANT_CORNERS,
   createQuadrantPointLayer,
   quadrantChartOptions,
+  quadrantGroups,
   quadrantOf,
   type ChartDragEvent,
   type ChartHoverEvent,
+  type ChartRect,
   type ChartRendererKind,
   type ChartView,
-  type QuadrantAxisLabels,
-  type QuadrantConfig,
   type QuadrantCorner,
   type QuadrantPoint,
   type QuadrantPointLayer,
   type QuadrantPointLayerOptions,
-  type QuadrantRegions,
 } from "minerva-design/charts/core";
 import { engineOptions, useCartesianChart } from "./cartesian";
 import { raw } from "./engine";
-import { chartCommonProps } from "./props";
-import type { QuadrantDropTarget } from "./types";
+import { quadrantChartProps } from "./props";
+import type { QuadrantDropTarget, QuadrantHeaderInfo } from "./types";
 
 /**
  * Four-quadrant matrix (priority matrix, Eisenhower, BCG, ...): tinted
@@ -34,58 +36,7 @@ import type { QuadrantDropTarget } from "./types";
  * overlapping labels. Dots can be dragged to another quadrant.
  */
 defineOptions({ name: "QuadrantChart" });
-const props = defineProps({
-  ...chartCommonProps,
-  /** Points to place (replace the array to update the chart) */
-  points: { type: Array as PropType<readonly QuadrantPoint[]>, required: true },
-  /** Range of the horizontal axis (default `[0, 10]`) */
-  xDomain: Array as unknown as PropType<[number, number]>,
-  /** Range of the vertical axis (default `[0, 10]`) */
-  yDomain: Array as unknown as PropType<[number, number]>,
-  /** X value of the vertical divider (the middle of `xDomain` by default) */
-  xSplit: Number,
-  /** Y value of the horizontal divider (the middle of `yDomain` by default) */
-  ySplit: Number,
-  /** Titles and colors of the quadrants */
-  quadrants: Object as PropType<QuadrantRegions>,
-  /** Title of the horizontal axis */
-  xLabel: String,
-  /** Title of the vertical axis */
-  yLabel: String,
-  /** Texts at the ends of the dividers, drawn inside the plot */
-  axisLabels: Object as PropType<QuadrantAxisLabels>,
-  /** Shows the numeric ticks of the axes (default `true`) */
-  showTicks: { type: Boolean, default: undefined },
-  /** Reverses the horizontal axis (e.g. "urgent" on the left) */
-  reverseX: { type: Boolean, default: undefined },
-  /** Draws the labels next to the dots (default `true`) */
-  showLabels: { type: Boolean, default: undefined },
-  /** Dot diameter in pixels (default 12) */
-  pointSize: Number,
-  /** Name of the points in the tooltip */
-  name: String,
-  /** Lets the user drag the dots (default: when a `pointDrop` listener is set) */
-  draggable: { type: Boolean, default: undefined },
-  /** Shows the number of points of each quadrant after its title; a function returns the text */
-  showCounts: {
-    type: [Boolean, Function] as PropType<QuadrantConfig["showCounts"]>,
-    default: undefined,
-  },
-  /** Index of the selected point, drawn with a ring (`null`: none) */
-  selectedIndex: {
-    type: Number as PropType<number | null>,
-    default: undefined,
-  },
-  /** Indices of the selected points */
-  selectedIndices: Array as PropType<readonly number[]>,
-  /**
-   * Renders a visually hidden list of the points per quadrant: screen
-   * readers can reach every point; arrows move between them, Enter clicks
-   * and Shift + arrows move the focused point to the neighbouring quadrant
-   * (`pointDrop`, with a `pointDrop` listener)
-   */
-  accessiblePoints: { type: Boolean, default: true },
-});
+const props = defineProps(quadrantChartProps);
 const emit = defineEmits<{
   /** The hovered (or keyboard-focused) point changed (`null`: none) */
   hover: [event: ChartHoverEvent | null];
@@ -104,6 +55,25 @@ const emit = defineEmits<{
   /** The backend is ready (or fell back after a GPU loss) */
   rendererChange: [renderer: ChartRendererKind];
 }>();
+defineSlots<{
+  /**
+   * Content shown next to the active point (hovered, focused or
+   * `selectedIndex`), outside the canvas hit region (e.g. edit / delete
+   * buttons); it receives pointer events
+   */
+  "point-actions"?: (props: { point: QuadrantPoint; index: number }) => unknown;
+  /**
+   * Header of each quadrant, in its outer corner (top edge for the top
+   * quadrants, bottom edge for the bottom ones, aligned to the outer side);
+   * replaces the drawn title, badge, description and count. The header
+   * receives pointer events (e.g. an add button)
+   */
+  "quadrant-header"?: (props: {
+    corner: QuadrantCorner;
+    info: QuadrantHeaderInfo;
+  }) => unknown;
+}>();
+const slots = useSlots();
 const vnode = getCurrentInstance()?.vnode;
 /** Two clicks on the same point within this delay count as a double click */
 const DOUBLE_CLICK_MS = 400;
@@ -123,8 +93,12 @@ const dropAt = (event: ChartDragEvent): QuadrantDropTarget => ({
 // keyboard-focused point of the accessible layer (drawn with a focus ring)
 const focusedIndex = ref<number | null>(null);
 const root = ref<HTMLElement | null>(null);
-const build = () =>
-  quadrantChartOptions(
+// plot area (overlay of the slots) and hovered point (active point actions)
+const plot = ref<ChartRect | null>(null);
+const hoveredIndex = ref<number | null>(null);
+const build = () => {
+  const headers = !!slots["quadrant-header"];
+  const options = quadrantChartOptions(
     {
       ...geometry(),
       points: raw(props.points).map(raw),
@@ -139,15 +113,33 @@ const build = () =>
       draggable:
         props.draggable ??
         !!(vnode?.props?.onPointDrop || vnode?.props?.onPointDrag),
-      showCounts: props.showCounts,
+      showCounts: headers ? undefined : props.showCounts,
       selectedIndex: props.selectedIndex,
       selectedIndices: raw(props.selectedIndices),
     },
     (({ series: _series, ...rest }) => rest)(engineOptions(props, [])),
     { focusedIndex: props.accessiblePoints ? focusedIndex.value : null },
   );
+  if (headers)
+    // the slot headers replace the drawn titles (the first four areas)
+    options.annotations = options.annotations?.map((a, i) =>
+      i < 4 && a.type === "rect"
+        ? {
+            ...a,
+            label: undefined,
+            badge: undefined,
+            description: undefined,
+            detail: undefined,
+          }
+        : a,
+    );
+  return options;
+};
 const { setContainer, rootStyle, handle } = useCartesianChart(props, build, {
-  hover: (event) => emit("hover", event),
+  hover: (event) => {
+    hoveredIndex.value = event?.items?.[0]?.index ?? null;
+    emit("hover", event);
+  },
   click: (event) => {
     const index = event.items[0]?.index;
     const point = index === undefined ? undefined : props.points[index];
@@ -174,6 +166,107 @@ const { setContainer, rootStyle, handle } = useCartesianChart(props, build, {
   },
   zoom: (view) => emit("zoom", view),
   renderer: (renderer) => emit("rendererChange", renderer),
+  layout: (rect) => {
+    plot.value = rect;
+  },
+});
+
+// the slots, over the plot area (same DOM as the React renderer)
+const overlaid = computed(
+  () => !!(slots["point-actions"] || slots["quadrant-header"]),
+);
+const px = (value: number) => `${value}px`;
+const fraction = (v: number, a: number, b: number) => (v - a) / (b - a || 1);
+const domains = () => ({
+  x: props.xDomain ?? [0, 10],
+  y: props.yDomain ?? [0, 10],
+});
+/** Position of a data point in the plot, in fractions of its size */
+const visual = (x: number, y: number) => {
+  const d = domains();
+  const fx = fraction(x, d.x[0], d.x[1]);
+  return {
+    x: props.reverseX ? 1 - fx : fx,
+    y: 1 - fraction(y, d.y[0], d.y[1]),
+  };
+};
+const overlayStyle = computed<CSSProperties>(() => {
+  const rect = plot.value;
+  return rect
+    ? {
+        position: "absolute",
+        left: px(rect.x),
+        top: px(rect.y),
+        width: px(rect.width),
+        height: px(rect.height),
+        pointerEvents: "none",
+      }
+    : { display: "none" };
+});
+const cornerStyle = (corner: QuadrantCorner): CSSProperties => {
+  const rect = plot.value ?? { width: 0, height: 0 };
+  const d = domains();
+  const split = visual(
+    props.xSplit ?? (d.x[0] + d.x[1]) / 2,
+    props.ySplit ?? (d.y[0] + d.y[1]) / 2,
+  );
+  const sx = rect.width * split.x;
+  const sy = rect.height * split.y;
+  const left = corner.endsWith("Left");
+  const top = corner.startsWith("top");
+  return {
+    position: "absolute",
+    left: px(left ? 0 : sx),
+    top: px(top ? 0 : sy),
+    width: px(left ? sx : rect.width - sx),
+    height: px(top ? sy : rect.height - sy),
+    pointerEvents: "none",
+  };
+};
+const headerStyle = (corner: QuadrantCorner): CSSProperties => {
+  const top = corner.startsWith("top");
+  const left = corner.endsWith("Left");
+  return {
+    position: "absolute",
+    [top ? "top" : "bottom"]: 0,
+    [left ? "left" : "right"]: 0,
+    maxWidth: "100%",
+    boxSizing: "border-box",
+    padding: "8px",
+    display: "flex",
+    justifyContent: left ? "flex-start" : "flex-end",
+    pointerEvents: "auto",
+  };
+};
+const groups = computed(() =>
+  quadrantGroups({ ...geometry(), points: raw(props.points).map(raw) }),
+);
+const headerInfo = (corner: QuadrantCorner): QuadrantHeaderInfo => ({
+  count: groups.value[corner].points.length,
+  points: groups.value[corner].points,
+  indices: groups.value[corner].indices,
+  region: props.quadrants?.[corner],
+});
+/** Point showing the `point-actions` slot */
+const active = computed(() => {
+  const index =
+    hoveredIndex.value ?? focusedIndex.value ?? props.selectedIndex ?? null;
+  const point = index === null ? undefined : props.points[index];
+  if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.y))
+    return null;
+  const at = visual(point.x, point.y);
+  return {
+    index: index!,
+    point,
+    style: {
+      position: "absolute",
+      left: `${100 * at.x}%`,
+      top: `${100 * at.y}%`,
+      width: 0,
+      height: 0,
+      pointerEvents: "none",
+    } satisfies CSSProperties,
+  };
 });
 
 // the accessible point layer (shared with the other DOM renderers)
@@ -236,5 +329,39 @@ defineExpose(handle);
     :style="rootStyle"
   >
     <div :ref="setContainer" style="position: absolute; inset: 0"></div>
+    <div v-if="overlaid" class="minerva-chart-overlay" :style="overlayStyle">
+      <template v-if="slots['quadrant-header'] && plot">
+        <div
+          v-for="corner in QUADRANT_CORNERS"
+          :key="corner"
+          :style="cornerStyle(corner)"
+        >
+          <div
+            :class="`minerva-chart-quadrant-header minerva-chart-quadrant-header-${corner}`"
+            :style="headerStyle(corner)"
+          >
+            <slot
+              name="quadrant-header"
+              :corner="corner"
+              :info="headerInfo(corner)"
+            />
+          </div>
+        </div>
+      </template>
+      <div
+        v-if="slots['point-actions'] && plot && active"
+        :key="`point-${active.index}`"
+        class="minerva-chart-quadrant-point"
+        :data-point-index="active.index"
+        :data-label="active.point.label"
+        :style="active.style"
+      >
+        <slot
+          name="point-actions"
+          :point="active.point"
+          :index="active.index"
+        />
+      </div>
+    </div>
   </div>
 </template>

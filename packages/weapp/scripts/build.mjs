@@ -95,6 +95,10 @@ for (const [key, component] of Object.entries(controls)) {
       ...(component.componentGenerics
         ? { componentGenerics: component.componentGenerics }
         : {}),
+      // composite components (QuadrantTaskBoard) use other Minerva ones
+      ...(component.usingComponents
+        ? { usingComponents: component.usingComponents }
+        : {}),
     }) + "\n",
   );
   writeFileSync(`${dir}/${name}/index.wxml`, `${component.template}\n`);

@@ -34,6 +34,7 @@ declare module "vue" {
     MnOrderBookHeatmap: typeof Minerva.OrderBookHeatmap;
     MnPieChart: typeof Minerva.PieChart;
     MnQuadrantChart: typeof Minerva.QuadrantChart;
+    MnQuadrantTaskBoard: typeof Minerva.QuadrantTaskBoard;
     MnRadarChart: typeof Minerva.RadarChart;
     MnRadialBarChart: typeof Minerva.RadialBarChart;
     MnRangeAreaChart: typeof Minerva.RangeAreaChart;

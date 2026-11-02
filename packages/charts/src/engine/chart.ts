@@ -7,15 +7,22 @@ import {
   createBand,
   createChartDom,
   createDataCanvas,
+  createDragDot,
+  createDragPlaceholder,
+  createDropTarget,
+  createLabelPill,
   createMarker,
   CELL_ACCENT,
   CELL_LIFT,
+  dragDotShadow,
   liftShadow,
+  markerHalo,
   PLOT_BACKGROUND,
   playLift,
   styleElement,
   swatch,
 } from "./dom";
+import { dragPreview, type DragPreview } from "./drag-preview";
 import { hoverRect, tooltipObstacles } from "./hover-rect";
 import {
   buildItems,
@@ -24,7 +31,13 @@ import {
   type PixelDensity,
 } from "./items";
 import { chartAriaLabel } from "./labels";
-import { createScales, toData, toScreen, type Scales } from "./layout";
+import {
+  createScales,
+  toData,
+  toScreen,
+  type Rect,
+  type Scales,
+} from "./layout";
 import { watchLocale } from "./locale";
 import {
   buildModel,
@@ -42,6 +55,7 @@ import {
   drawBackground,
   drawForeground,
   font,
+  type PointLabel,
   type ResolvedAnnotation,
 } from "./overlay";
 import { createRenderer } from "./renderers/detect";
@@ -109,6 +123,18 @@ interface HoverState {
 }
 
 const mid = (r: Range) => (r[0] + r[1]) / 2;
+/** The box around two boxes (either may be missing) */
+const withRect = (a: Rect | null, b: Rect | null): Rect | null => {
+  if (!a || !b) return a ?? b;
+  const x = Math.min(a.x, b.x);
+  const y = Math.min(a.y, b.y);
+  return {
+    x,
+    y,
+    width: Math.max(a.x + a.width, b.x + b.width) - x,
+    height: Math.max(a.y + a.height, b.y + b.height) - y,
+  };
+};
 const copyView = (v: ChartView): ChartView => ({
   x: [v.x[0], v.x[1]],
   y: [v.y[0], v.y[1]],
@@ -156,11 +182,35 @@ export const createChart = (
   let pointDrag: {
     id: number;
     item: ChartHoverItem;
+    /** Where the pointer went down */
     x: number;
     y: number;
+    /** Where the pointer is */
+    px: number;
+    py: number;
     moved: boolean;
   } | null = null;
-  let ghost: HTMLDivElement | null = null;
+  /** Elements of the drag preview, created on the first drag */
+  let dragEls: {
+    dot: HTMLDivElement;
+    pill: HTMLDivElement;
+    placeholder: HTMLDivElement;
+    target: HTMLDivElement;
+  } | null = null;
+  /**
+   * A dropped point stays where it was released until the new data is
+   * drawn (or briefly, when the drop is not applied)
+   */
+  let settling: {
+    item: ChartHoverItem;
+    timer: ReturnType<typeof setTimeout>;
+  } | null = null;
+  let clearDragOnFrame = false;
+  /** Point labels drawn on the foreground (for the hovered label chip) */
+  let placedLabels: { label: PointLabel; box: Rect }[] = [];
+  let labelChip: HTMLDivElement | null = null;
+  /** Where the label chip is shown (the tooltip keeps off it) */
+  let labelChipBox: Rect | null = null;
   let drag: {
     id: number;
     x: number;
@@ -225,6 +275,7 @@ export const createChart = (
       pan: o.pan ?? true,
       keyboard: o.keyboard ?? true,
       dragPoints: o.dragPoints ?? false,
+      dropTargets: o.dropTargets ?? false,
     });
   };
 
@@ -268,6 +319,12 @@ export const createChart = (
       origin = { x: mid(base.x), y: mid(base.y) };
       itemsDirty = true;
       if (hover && !hover.keyboard) hover = null;
+    }
+    // new data after a drop: the dropped point is drawn where it landed
+    if (settling) {
+      clearTimeout(settling.timer);
+      settling = null;
+      clearDragOnFrame = true;
     }
     annotations = resolveAnnotations(
       options.annotations,
@@ -510,7 +567,7 @@ export const createChart = (
     }
     if (fg) {
       fg.setTransform(dpr, 0, 0, dpr, 0, 0);
-      drawForeground(fg, {
+      placedLabels = drawForeground(fg, {
         width,
         height,
         scales,
@@ -522,6 +579,8 @@ export const createChart = (
           scales,
           yTicks,
           theme.background,
+          // the label of a dragged point follows it (in the drag pill)
+          pointDrag?.moved ? pointDrag.item : (settling?.item ?? null),
         ),
         connectors: connectorSegments(model, scales),
         arrows: dependencyArrows(model, scales, dependencies),
@@ -577,6 +636,10 @@ export const createChart = (
       });
     }
     renderHover();
+    if (clearDragOnFrame) {
+      clearDragOnFrame = false;
+      if (!pointDrag?.moved) hideDrag();
+    } else if (pointDrag?.moved) renderDrag();
   }
 
   // ------------------------------------------------------------ hit tests
@@ -759,7 +822,7 @@ export const createChart = (
     // horizontal charts (Gantt tasks), off the other bars of those
     positionTooltip(tip, dom.stage, {
       anchor: { x: hover.anchorX, y: hover.anchorY },
-      avoid: hoverRect(model, sc, hover.event),
+      avoid: withRect(hoverRect(model, sc, hover.event), labelChipBox),
       obstacles: tooltipObstacles(model, sc),
       prefer: sc.horizontal ? "vertical" : "side",
       size: { width: w, height: h },
@@ -845,15 +908,20 @@ export const createChart = (
               !series.hidden &&
               (series.type === "line" || series.type === "area"),
           );
-          // Keep the original lines visible: an opaque lifted bar would mask them.
-          // the bar in its color, thicker (never longer), lifted and ringed
+          // combo charts: the lifted bar goes below the data layer, so the
+          // lines (and their markers) stay above it; no veil either
+          const liftParent = mixed ? dom.underlay : dom.lift;
           if (!liftClip) {
             liftClip = styleElement(doc.createElement("div"), {
               position: "absolute",
               overflow: "hidden",
             }) as HTMLDivElement;
-            dom.lift.appendChild(liftClip);
           }
+          if (
+            liftClip.parentElement !== liftParent ||
+            (mixed && liftParent.lastElementChild !== liftClip)
+          )
+            liftParent.appendChild(liftClip);
           if (!veiled && !mixed) {
             veiled = true;
             if (!veil) {
@@ -862,7 +930,10 @@ export const createChart = (
                 background: `color-mix(in srgb, ${PLOT_BACKGROUND} 42%, transparent)`,
                 opacity: "0",
               }) as HTMLDivElement;
-              dom.lift.insertBefore(veil, liftClip);
+              dom.lift.insertBefore(
+                veil,
+                liftClip.parentElement === dom.lift ? liftClip : null,
+              );
             }
             styleElement(veil, {
               left: `${plot.x}px`,
@@ -914,11 +985,9 @@ export const createChart = (
             height: `${r.height}px`,
             borderRadius: `${mark.radius}px`,
             filter: "brightness(1.08) saturate(1.08)",
-            background: mixed
-              ? "transparent"
-              : mark.backdrop
-                ? `linear-gradient(${mark.color}, ${mark.color}), ${PLOT_BACKGROUND}`
-                : mark.color,
+            background: mark.backdrop
+              ? `linear-gradient(${mark.color}, ${mark.color}), ${PLOT_BACKGROUND}`
+              : mark.color,
             boxShadow: shadow,
           });
           if (fresh) {
@@ -983,6 +1052,12 @@ export const createChart = (
             );
           continue;
         }
+        const prevMarker = markers[markerCount];
+        const freshMarker =
+          !prevMarker ||
+          prevMarker.style.display !== "block" ||
+          prevMarker.style.left !== `${mark.x}px` ||
+          prevMarker.style.top !== `${mark.y}px`;
         const el = pooled(markers, markerCount++, () => createMarker(doc));
         styleElement(el, {
           left: `${mark.x}px`,
@@ -990,9 +1065,20 @@ export const createChart = (
           width: `${mark.size}px`,
           height: `${mark.size}px`,
           background: mark.color,
-          boxShadow: `0 0 0 4px ${mark.halo}`,
+          boxShadow: markerHalo(mark.halo),
         });
+        if (freshMarker)
+          playLift(
+            el,
+            { transform: "translate(-50%, -50%) scale(0.6)", opacity: "0.6" },
+            { transform: "translate(-50%, -50%) scale(1)", opacity: "1" },
+            win,
+          );
       }
+      renderLabelChip(sc);
+    } else if (labelChip) {
+      labelChip.style.display = "none";
+      labelChipBox = null;
     }
     for (let i = markerCount; i < markers.length; i++)
       markers[i].style.display = "none";
@@ -1019,6 +1105,166 @@ export const createChart = (
     }
     caret.style.display = "block";
     caret.style.left = `${(heatPosition(s, it.value) * 100).toFixed(2)}%`;
+  }
+
+  /** The label of a hovered dot, highlighted in a chip tinted with its color */
+  function renderLabelChip(sc: Scales) {
+    const it = hover?.event.items[0];
+    const s = it ? model.series[it.seriesIndex] : undefined;
+    let found: { label: PointLabel; box: Rect } | undefined;
+    if (it && s?.type === "scatter" && it.label && !pointDrag?.moved) {
+      const p = pointOf(s, it.index, sc);
+      found = placedLabels.find(
+        ({ label }) =>
+          label.text === it.label &&
+          Math.abs(label.x - p.px) < 0.5 &&
+          Math.abs(label.y - p.py) < 0.5,
+      );
+    }
+    labelChipBox = null;
+    if (!found || !it) {
+      if (labelChip) labelChip.style.display = "none";
+      return;
+    }
+    if (!labelChip) {
+      labelChip = createLabelPill(doc);
+      labelChip.dataset.hoverMark = "label";
+      dom.hover.appendChild(labelChip);
+    }
+    labelChip.textContent = found.label.text;
+    styleElement(labelChip, {
+      display: "block",
+      left: `${found.box.x - 10}px`,
+      top: `${found.box.y + found.box.height / 2}px`,
+      transform: "translateY(-50%)",
+      background: `color-mix(in srgb, ${it.color} 14%, var(--surface-color, var(--background-color, #fff)))`,
+      borderColor: `color-mix(in srgb, ${it.color} 45%, transparent)`,
+      boxShadow: "0 4px 12px -4px rgba(15, 23, 42, 0.28)",
+    });
+    // the canvas label, a little wider in bold, with the padding of the chip
+    labelChipBox = {
+      x: found.box.x - 10,
+      y: found.box.y + found.box.height / 2 - 11,
+      width: found.box.width * 1.1 + 20,
+      height: 22,
+    };
+  }
+
+  // ----------------------------------------------------------- point drag
+
+  /** The dragged point under the pointer, its label, its origin and target */
+  function renderDrag() {
+    const d = pointDrag;
+    const sc = scales;
+    if (!d?.moved || !sc) return;
+    showDrag(
+      dragPreview(
+        model,
+        sc,
+        annotations,
+        d.item,
+        d.px,
+        d.py,
+        !!interaction()?.dropTargets,
+      ),
+      true,
+    );
+  }
+
+  function showDrag(p: DragPreview, live: boolean) {
+    if (!dragEls) {
+      dragEls = {
+        dot: createDragDot(doc),
+        pill: createLabelPill(doc),
+        placeholder: createDragPlaceholder(doc),
+        target: createDropTarget(doc),
+      };
+      dragEls.dot.dataset.dragMark = "dot";
+      dragEls.pill.dataset.dragMark = "label";
+      dragEls.placeholder.dataset.dragMark = "origin";
+      dragEls.target.dataset.dragMark = "target";
+      dom.underlay.appendChild(dragEls.target);
+      dom.hover.append(dragEls.placeholder, dragEls.dot, dragEls.pill);
+    }
+    const { dot, pill, placeholder, target } = dragEls;
+    dom.hover.style.width = `${dom.stage.clientWidth}px`;
+    dom.hover.style.height = `${dom.stage.clientHeight}px`;
+    styleElement(dot, {
+      display: "block",
+      left: `${p.x}px`,
+      top: `${p.y}px`,
+      width: `${p.size}px`,
+      height: `${p.size}px`,
+      background: p.color,
+      boxShadow: dragDotShadow(p.color),
+    });
+    if (p.label) {
+      pill.textContent = p.label;
+      const sc = scales;
+      // beside the dot, on the side with room
+      const right = !sc || p.x < sc.plot.x + sc.plot.width * 0.62;
+      styleElement(pill, {
+        display: "block",
+        left: `${p.x}px`,
+        top: `${p.y}px`,
+        transform: right
+          ? `translate(${p.size / 2 + 8}px, -50%)`
+          : `translate(calc(-100% - ${p.size / 2 + 8}px), -50%)`,
+      });
+    } else pill.style.display = "none";
+    if (live && p.origin) {
+      const size = p.size - 2;
+      styleElement(placeholder, {
+        display: "block",
+        left: `${p.origin.x}px`,
+        top: `${p.origin.y}px`,
+        width: `${size}px`,
+        height: `${size}px`,
+        borderColor: p.color,
+        background: `color-mix(in srgb, ${PLOT_BACKGROUND} 62%, transparent)`,
+      });
+    } else placeholder.style.display = "none";
+    if (live && p.target) {
+      styleElement(target, {
+        display: "block",
+        left: `${p.target.x}px`,
+        top: `${p.target.y}px`,
+        width: `${p.target.width}px`,
+        height: `${p.target.height}px`,
+        background: `color-mix(in srgb, ${p.target.color} 12%, transparent)`,
+        boxShadow: `inset 0 0 0 2px color-mix(in srgb, ${p.target.color} 70%, transparent)`,
+      });
+    } else target.style.display = "none";
+  }
+
+  function hideDrag() {
+    if (!dragEls) return;
+    for (const el of Object.values(dragEls)) el.style.display = "none";
+  }
+
+  const onDragKey = (event: KeyboardEvent) => {
+    if (event.key !== "Escape" || !pointDrag) return;
+    event.preventDefault();
+    event.stopPropagation();
+    cancelDrag();
+  };
+
+  const releasePointer = (id: number) => {
+    if (dom.stage.hasPointerCapture?.(id)) dom.stage.releasePointerCapture(id);
+  };
+
+  /** Ends a point drag without a drop (Escape, a cancelled pointer) */
+  function cancelDrag() {
+    const d = pointDrag;
+    if (!d) return;
+    pointDrag = null;
+    win?.removeEventListener("keydown", onDragKey, true);
+    releasePointer(d.id);
+    dom.stage.style.cursor = "";
+    hideDrag();
+    if (!d.moved) return;
+    invalidate();
+    emit("dragEnd", { item: d.item, cancelled: true });
   }
 
   // ---------------------------------------------------------- interaction
@@ -1069,47 +1315,33 @@ export const createChart = (
     return { x: fromPlotX(model, p.x), y: fromPlotY(model, p.y) };
   };
 
-  const moveGhost = (x: number, y: number, color: string | null) => {
-    if (color === null) {
-      if (ghost) ghost.style.display = "none";
-      return;
-    }
-    if (!ghost) {
-      ghost = createMarker(doc);
-      dom.hover.appendChild(ghost);
-    }
-    const s = model.series.find((series) => series.type === "scatter");
-    const size = (s?.pointSize ?? 8) + 8;
-    dom.hover.style.width = `${dom.stage.clientWidth}px`;
-    dom.hover.style.height = `${dom.stage.clientHeight}px`;
-    styleElement(ghost, {
-      display: "block",
-      left: `${x}px`,
-      top: `${y}px`,
-      width: `${size}px`,
-      height: `${size}px`,
-      background: color,
-    });
-  };
-
   const onPointerMove = (event: PointerEvent) => {
     const { x, y } = localPoint(event);
     if (pointDrag && pointDrag.id === event.pointerId) {
-      if (
-        !pointDrag.moved &&
-        Math.hypot(x - pointDrag.x, y - pointDrag.y) > 3
-      ) {
-        pointDrag.moved = true;
+      const d = pointDrag;
+      d.px = x;
+      d.py = y;
+      if (!d.moved && Math.hypot(x - d.x, y - d.y) > 3) {
+        d.moved = true;
         dom.stage.setPointerCapture?.(event.pointerId);
         dom.stage.style.cursor = "grabbing";
-      }
-      if (pointDrag.moved) {
-        const at = dataAt(x, y);
-        if (at) {
-          moveGhost(x, y, pointDrag.item.color);
-          renderHover();
-          emit("drag", { item: pointDrag.item, x: at.x, y: at.y });
+        win?.addEventListener("keydown", onDragKey, true);
+        // a drop not yet applied: the new drag replaces it
+        if (settling) {
+          clearTimeout(settling.timer);
+          settling = null;
         }
+        setHover(null);
+        // the foreground is drawn again without the label of the point
+        invalidate();
+        const at = dataAt(d.x, d.y);
+        if (at) emit("dragStart", { item: d.item, x: at.x, y: at.y });
+      }
+      if (d.moved && pointDrag === d) {
+        // the point and its label follow the pointer at once, on the DOM
+        renderDrag();
+        const at = dataAt(x, y);
+        if (at) emit("drag", { item: d.item, x: at.x, y: at.y });
       }
       return;
     }
@@ -1155,7 +1387,15 @@ export const createChart = (
     if (!inPlot(x, y)) return;
     const draggable = draggableAt(x, y);
     if (draggable) {
-      pointDrag = { id: event.pointerId, item: draggable, x, y, moved: false };
+      pointDrag = {
+        id: event.pointerId,
+        item: draggable,
+        x,
+        y,
+        px: x,
+        py: y,
+        moved: false,
+      };
       return;
     }
     drag = { id: event.pointerId, x, y, view: copyView(view), moved: false };
@@ -1163,18 +1403,39 @@ export const createChart = (
 
   const onPointerUp = (event: PointerEvent) => {
     if (pointDrag && pointDrag.id === event.pointerId) {
-      const { item, moved } = pointDrag;
-      pointDrag = null;
-      if (dom.stage.hasPointerCapture?.(event.pointerId)) {
-        dom.stage.releasePointerCapture(event.pointerId);
-      }
-      moveGhost(0, 0, null);
+      const d = pointDrag;
       const { x, y } = localPoint(event);
+      if (d.moved && event.type === "pointercancel") {
+        cancelDrag();
+        return;
+      }
+      pointDrag = null;
+      win?.removeEventListener("keydown", onDragKey, true);
+      releasePointer(event.pointerId);
       dom.stage.style.cursor = draggableAt(x, y) ? "grab" : "";
-      if (moved) {
+      if (d.moved) {
+        d.px = x;
+        d.py = y;
         const at = dataAt(x, y);
-        if (at && event.type !== "pointercancel")
-          emit("drop", { item, x: at.x, y: at.y });
+        const sc = scales;
+        // the dot stays where it was released until the new data is drawn
+        if (sc) {
+          showDrag(
+            dragPreview(model, sc, annotations, d.item, x, y, false),
+            false,
+          );
+          if (settling) clearTimeout(settling.timer);
+          settling = {
+            item: d.item,
+            timer: setTimeout(() => {
+              settling = null;
+              if (!pointDrag?.moved) hideDrag();
+              invalidate();
+            }, 320),
+          };
+        } else hideDrag();
+        if (at) emit("drop", { item: d.item, x: at.x, y: at.y });
+        emit("dragEnd", { item: d.item, cancelled: !at });
         renderHover();
       } else {
         const hit = hitAt(x, y);
@@ -1516,6 +1777,8 @@ export const createChart = (
     destroy() {
       if (destroyed) return;
       destroyed = true;
+      win?.removeEventListener("keydown", onDragKey, true);
+      if (settling) clearTimeout(settling.timer);
       if (frameId) {
         if (win?.cancelAnimationFrame) win.cancelAnimationFrame(frameId);
         else clearTimeout(frameId);

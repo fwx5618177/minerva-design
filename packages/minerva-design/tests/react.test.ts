@@ -520,6 +520,17 @@ describe("minerva-design React entries (dist/react)", () => {
     expect(all.size).toBeGreaterThan(button.size * 10);
   });
 
+  it("ships a standalone task board with the shared chart dependency", () => {
+    const lib = require("minerva-design");
+    const html = renderToString(
+      createElement(lib.QuadrantTaskBoard, {
+        points: [{ x: 2, y: 8, label: "Portable task" }],
+        onPointsChange: () => {},
+      }),
+    );
+    expect(html).toContain("position:relative");
+  });
+
   it("can be imported and server-rendered without a DOM", async () => {
     const lib = require("minerva-design");
     const html = renderToString(

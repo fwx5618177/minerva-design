@@ -8,6 +8,7 @@ import { toCss, unpackColor } from "./color";
 import { curvePoints } from "./curve";
 import { lowerBound } from "./data";
 import { decimateMinMax } from "./decimate";
+import { dragPreview, type DragPreview } from "./drag-preview";
 import { hoverRect, tooltipObstacles } from "./hover-rect";
 import {
   createScales,
@@ -173,8 +174,12 @@ export interface ChartScene {
   pointLabels: { label: PointLabel; box: Rect }[];
   legend: ChartLegendLayout | null;
   hover: ChartHoverLayout | null;
-  /** Point being dragged (`interaction.dragPoints`) */
-  dragging: { x: number; y: number; color: string; size: number } | null;
+  /**
+   * Point being dragged (`interaction.dragPoints`): lifted under the
+   * pointer with its label, a placeholder where it was and the area it
+   * would land in (`interaction.dropTargets`)
+   */
+  dragging: DragPreview | null;
   /** Lines between consecutive bars (waterfall connectors) */
   connectors: ConnectorSegment[];
   /** Elbow arrows between bars (`dependencies`, Gantt charts) */
@@ -275,7 +280,13 @@ export const createChartController = (
         midX: number;
         midY: number;
       }
-    | { kind: "point"; item: ChartHoverItem; x: number; y: number }
+    | {
+        kind: "point";
+        item: ChartHoverItem;
+        x: number;
+        y: number;
+        moved: boolean;
+      }
     | null = null;
   let lastTap = { time: 0, x: 0, y: 0 };
 
@@ -298,6 +309,7 @@ export const createChartController = (
     return {
       pan: o.pan ?? true,
       dragPoints: o.dragPoints ?? false,
+      dropTargets: o.dropTargets ?? false,
     };
   };
 
@@ -494,6 +506,8 @@ export const createChartController = (
       layout.scales,
       layout.yTicks,
       theme.background,
+      // the label of a dragged point follows it (drawn with the preview)
+      gesture?.kind === "point" && gesture.moved ? gesture.item : null,
     );
     const occupied: Rect[] = [];
     const labelHeight = theme.fontSize + 4;
@@ -568,14 +582,16 @@ export const createChartController = (
         colors.caret =
           colors.bar.x + heatPosition(s, it.value) * colors.bar.width;
     }
-    if (gesture?.kind === "point") {
-      const s = model.series[gesture.item.seriesIndex];
-      next.dragging = {
-        x: gesture.x,
-        y: gesture.y,
-        color: gesture.item.color,
-        size: (s ? dotSize(s, gesture.item.index) : 8) + 6,
-      };
+    if (gesture?.kind === "point" && gesture.moved) {
+      next.dragging = dragPreview(
+        model,
+        layout.scales,
+        annotations,
+        gesture.item,
+        gesture.x,
+        gesture.y,
+        !!interaction()?.dropTargets,
+      );
     }
     const rect = layout.plot;
     const key = `${rect.x},${rect.y},${rect.width},${rect.height}`;
@@ -708,7 +724,7 @@ export const createChartController = (
         (i) => model.series[i.seriesIndex].type === "scatter",
       );
       if (item) {
-        gesture = { kind: "point", item, x, y };
+        gesture = { kind: "point", item, x, y, moved: false };
         return;
       }
     }
@@ -769,11 +785,18 @@ export const createChartController = (
     }
     if (gesture?.kind === "point" && p) {
       if (!p.moved) return;
-      gesture.x = x;
-      gesture.y = y;
+      const g = gesture;
+      g.x = x;
+      g.y = y;
+      if (!g.moved) {
+        g.moved = true;
+        if (hover) setHover(null);
+        const start = dataAt(p.startX, p.startY);
+        if (start) emit("dragStart", { item: g.item, x: start.x, y: start.y });
+      }
       const at = dataAt(x, y);
       invalidate();
-      if (at) emit("drag", { item: gesture.item, x: at.x, y: at.y });
+      if (at) emit("drag", { item: g.item, x: at.x, y: at.y });
       return;
     }
     if (gesture?.kind === "pan" && p) {
@@ -813,6 +836,8 @@ export const createChartController = (
         const at = dataAt(x, y);
         invalidate();
         if (at) emit("drop", { item: current.item, x: at.x, y: at.y });
+        if (current.moved)
+          emit("dragEnd", { item: current.item, cancelled: !at });
         return;
       }
     } else if (current?.kind === "pan" && p.moved) {
@@ -856,8 +881,11 @@ export const createChartController = (
 
   const pointerCancel = (o: ChartPointerOptions = {}) => {
     pointers.delete(o.id ?? 0);
-    if (gesture?.kind === "point" || pointers.size < 2) gesture = null;
+    const current = gesture;
+    if (current?.kind === "point" || pointers.size < 2) gesture = null;
     invalidate();
+    if (current?.kind === "point" && current.moved)
+      emit("dragEnd", { item: current.item, cancelled: true });
   };
 
   model = buildModel(options, theme, hidden, cache);

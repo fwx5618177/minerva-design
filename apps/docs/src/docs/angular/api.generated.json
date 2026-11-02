@@ -4448,7 +4448,7 @@
   "MnQuadrantChart": {
     "name": "MnQuadrantChart",
     "source": "src/components/charts/cartesian.ts",
-    "description": "Four-quadrant matrix (priority matrix, Eisenhower, BCG, ...): tinted\nquadrants with titles, dividers, and labelled dots placed without\noverlapping labels. With `draggable`, dots can be dragged to another\nquadrant (`pointDrop`; update `points` to move them).\n\nA visually hidden list of the dots per quadrant (`accessiblePoints`) lets\nscreen readers and keyboards reach every dot: arrows move between them,\nEnter clicks (`pointClick`) and, with `draggable`, Shift + arrows move the\nfocused dot to the neighbouring quadrant (`pointDrop`, announced in a live\nregion). The focused dot gets a focus ring and is reported by `hover`.",
+    "description": "Four-quadrant matrix (priority matrix, Eisenhower, BCG, ...): tinted\nquadrants with titles, dividers, and labelled dots placed without\noverlapping labels. With `draggable`, dots can be dragged to another\nquadrant (`pointDrop`; update `points` to move them).\n\nA visually hidden list of the dots per quadrant (`accessiblePoints`) lets\nscreen readers and keyboards reach every dot: arrows move between them,\nEnter clicks (`pointClick`) and, with `draggable`, Shift + arrows move the\nfocused dot to the neighbouring quadrant (`pointDrop`, announced in a live\nregion). The focused dot gets a focus ring and is reported by `hover`.\n\n`quadrantHeader` and `pointActions` take templates placed over the plot\n(the headers of the quadrants, e.g. with an add button; actions next to\nthe active dot, e.g. edit / delete buttons).",
     "members": [
       {
         "name": "height",
@@ -4718,6 +4718,20 @@
         "required": false,
         "default": "true",
         "description": "Renders a visually hidden list of the points per quadrant: screen\nreaders can reach every point; arrows move between them, Enter clicks\nand Shift + arrows move the focused point to the neighbouring quadrant\n(`pointDrop`, with `draggable`)"
+      },
+      {
+        "name": "quadrantHeader",
+        "kind": "input",
+        "type": "TemplateRef<QuadrantHeaderContext> | null | undefined",
+        "required": false,
+        "description": "Header of each quadrant, in its outer corner (top edge for the top\nquadrants, bottom edge for the bottom ones, aligned to the outer side);\nreplaces the drawn title, badge, description and count. The header\nreceives pointer events (e.g. an add button). Context: `let-corner`,\n`let-info=\"info\"` (`QuadrantHeaderInfo`)"
+      },
+      {
+        "name": "pointActions",
+        "kind": "input",
+        "type": "TemplateRef<QuadrantPointActionsContext> | null | undefined",
+        "required": false,
+        "description": "Content shown next to the active point (hovered, keyboard-focused or\n`selectedIndex`), outside the canvas hit region (e.g. edit / delete\nbuttons); it receives pointer events. Context: `let-point`,\n`let-index=\"index\"`"
       },
       {
         "name": "pointClick",
@@ -5827,6 +5841,308 @@
         "type": "GraphTreeOptions | undefined",
         "required": false,
         "description": "Root, spacing, collapsing, card size"
+      }
+    ]
+  },
+  "MnQuadrantTaskBoard": {
+    "name": "MnQuadrantTaskBoard",
+    "source": "src/components/charts/quadrant-task-board.ts",
+    "description": "Task board on a four-quadrant matrix (MnQuadrantChart): an add button per\nquadrant, edit and delete buttons on the active task, a dialog to name a\ntask and pick its quadrant, a confirmation before a delete, drag and drop\nand keyboard moves (Shift + arrows). Controlled: `points` in,\n`pointsChange` out (`[(points)]`). The other inputs go to the chart.",
+    "members": [
+      {
+        "name": "points",
+        "kind": "input",
+        "type": "readonly QuadrantPoint[]",
+        "required": true,
+        "description": "Tasks to place (controlled: `[(points)]`, or `[points]` + `(pointsChange)`)"
+      },
+      {
+        "name": "labels",
+        "kind": "input",
+        "type": "Partial<QuadrantTaskLabels> | undefined",
+        "required": false,
+        "description": "Texts of the buttons and dialogs (localized by default)"
+      },
+      {
+        "name": "height",
+        "kind": "input",
+        "type": "number | string | undefined",
+        "required": false,
+        "description": "Height of the chart; numbers are pixels, strings any CSS length (default 320)"
+      },
+      {
+        "name": "width",
+        "kind": "input",
+        "type": "number | string | undefined",
+        "required": false,
+        "description": "Width of the chart; numbers are pixels (default `100%`)"
+      },
+      {
+        "name": "renderer",
+        "kind": "input",
+        "type": "ChartRendererPreference | undefined",
+        "required": false,
+        "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D"
+      },
+      {
+        "name": "legend",
+        "kind": "input",
+        "type": "boolean | ChartLegendOptions | undefined",
+        "required": false,
+        "description": "Legend of the chart"
+      },
+      {
+        "name": "tooltip",
+        "kind": "input",
+        "type": "boolean | ChartTooltipOptions | undefined",
+        "required": false,
+        "description": "Tooltip; `false` disables it"
+      },
+      {
+        "name": "crosshair",
+        "kind": "input",
+        "type": "boolean | undefined",
+        "required": false,
+        "description": "Vertical guide line following the pointer"
+      },
+      {
+        "name": "annotations",
+        "kind": "input",
+        "type": "readonly ChartAnnotation[] | undefined",
+        "required": false,
+        "description": "Background areas and reference lines"
+      },
+      {
+        "name": "interaction",
+        "kind": "input",
+        "type": "boolean | ChartInteractionOptions | undefined",
+        "required": false,
+        "description": "Zoom, pan and keyboard navigation of the chart; `false` makes it static"
+      },
+      {
+        "name": "padding",
+        "kind": "input",
+        "type": "ChartPadding | undefined",
+        "required": false,
+        "description": "Space around the plot area, in pixels"
+      },
+      {
+        "name": "palette",
+        "kind": "input",
+        "type": "readonly string[] | undefined",
+        "required": false,
+        "description": "Series colors"
+      },
+      {
+        "name": "ariaLabel",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Accessible name of the chart"
+      },
+      {
+        "name": "locale",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "BCP 47 locale of the texts (chart and board); the language of `<mn-config>` by default"
+      },
+      {
+        "name": "xDomain",
+        "kind": "input",
+        "type": "[number, number] | undefined",
+        "required": false,
+        "description": "Range of the horizontal axis (default `[0, 10]`)"
+      },
+      {
+        "name": "yDomain",
+        "kind": "input",
+        "type": "[number, number] | undefined",
+        "required": false,
+        "description": "Range of the vertical axis (default `[0, 10]`)"
+      },
+      {
+        "name": "xSplit",
+        "kind": "input",
+        "type": "number | undefined",
+        "required": false,
+        "description": "X value of the vertical divider (the middle of `xDomain` by default)"
+      },
+      {
+        "name": "ySplit",
+        "kind": "input",
+        "type": "number | undefined",
+        "required": false,
+        "description": "Y value of the horizontal divider (the middle of `yDomain` by default)"
+      },
+      {
+        "name": "quadrants",
+        "kind": "input",
+        "type": "QuadrantRegions | undefined",
+        "required": false,
+        "description": "Titles and colors of the quadrants (the titles name the quadrants in the headers and the dialog)"
+      },
+      {
+        "name": "xLabel",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Title of the horizontal axis"
+      },
+      {
+        "name": "yLabel",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Title of the vertical axis"
+      },
+      {
+        "name": "axisLabels",
+        "kind": "input",
+        "type": "QuadrantAxisLabels | undefined",
+        "required": false,
+        "description": "Texts at the ends of the dividers, drawn inside the plot"
+      },
+      {
+        "name": "showTicks",
+        "kind": "input",
+        "type": "boolean | undefined",
+        "required": false,
+        "description": "Shows the numeric ticks of the axes (default `true`)"
+      },
+      {
+        "name": "reverseX",
+        "kind": "input",
+        "type": "boolean | undefined",
+        "required": false,
+        "description": "Reverses the horizontal axis (e.g. \"urgent\" on the left)"
+      },
+      {
+        "name": "showLabels",
+        "kind": "input",
+        "type": "boolean | undefined",
+        "required": false,
+        "description": "Draws the labels next to the dots (default `true`)"
+      },
+      {
+        "name": "pointSize",
+        "kind": "input",
+        "type": "number | undefined",
+        "required": false,
+        "description": "Dot diameter in pixels (default 12)"
+      },
+      {
+        "name": "name",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Name of the points in the tooltip"
+      },
+      {
+        "name": "draggable",
+        "kind": "input",
+        "type": "boolean | undefined",
+        "required": false,
+        "description": "Lets the user drag the tasks (default `true`; `false` keeps the keyboard moves off too)"
+      },
+      {
+        "name": "showCounts",
+        "kind": "input",
+        "type": "ShowCounts | undefined",
+        "required": false,
+        "description": "Number of tasks in each quadrant header (default `true`); a function `(count, points) => text` returns the text"
+      },
+      {
+        "name": "selectedIndex",
+        "kind": "input",
+        "type": "number | null | undefined",
+        "required": false,
+        "description": "Index of the selected task (`null`: none); by default the last clicked, added, edited or moved task"
+      },
+      {
+        "name": "selectedIndices",
+        "kind": "input",
+        "type": "readonly number[] | undefined",
+        "required": false,
+        "description": "Indices of other selected tasks"
+      },
+      {
+        "name": "accessiblePoints",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Visually hidden list of the tasks for keyboards and screen readers (default `true`)"
+      },
+      {
+        "name": "pointsChange",
+        "kind": "output",
+        "type": "QuadrantPoint[]",
+        "required": false,
+        "description": "The next list of tasks after an add, an edit, a delete, a drag and drop\nor a keyboard move (`[(points)]`)"
+      },
+      {
+        "name": "hover",
+        "kind": "output",
+        "type": "ChartHoverEvent | null",
+        "required": false,
+        "description": "The hovered (or keyboard-focused) task changed (`null`: none)"
+      },
+      {
+        "name": "pointClick",
+        "kind": "output",
+        "type": "{ point: QuadrantPoint; index: number }",
+        "required": false,
+        "description": "A task was clicked (it becomes the active task)"
+      },
+      {
+        "name": "pointDrag",
+        "kind": "output",
+        "type": "QuadrantPointDrop",
+        "required": false,
+        "description": "A task is being dragged (on every move, with the quadrant under the pointer)"
+      },
+      {
+        "name": "zoom",
+        "kind": "output",
+        "type": "ChartView",
+        "required": false,
+        "description": "The user zoomed or panned"
+      },
+      {
+        "name": "rendererChange",
+        "kind": "output",
+        "type": "ChartRendererKind",
+        "required": false,
+        "description": "The backend is ready (or fell back after a GPU loss)"
+      },
+      {
+        "name": "resetZoom",
+        "kind": "method",
+        "type": "() => void",
+        "required": false,
+        "description": "Shows the whole data range"
+      },
+      {
+        "name": "getView",
+        "kind": "method",
+        "type": "() => ChartView | null",
+        "required": false,
+        "description": "Visible range, `null` before the first render"
+      },
+      {
+        "name": "setView",
+        "kind": "method",
+        "type": "(view: Partial<ChartView>) => void",
+        "required": false,
+        "description": "Sets the visible range"
+      },
+      {
+        "name": "getRenderer",
+        "kind": "method",
+        "type": "() => ChartRendererKind | null",
+        "required": false,
+        "description": "Backend in use, `null` until ready"
       }
     ]
   },

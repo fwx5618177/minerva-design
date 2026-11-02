@@ -1,0 +1,108 @@
+// Public CSS variables (set them on the board or any ancestor):
+// @css-var --quadrant-task-board-header-color Text color of the quadrant titles (defaults to --text-color)
+// @css-var --quadrant-task-board-header-background Background of the quadrant headers (defaults to a translucent surface)
+// @css-var --quadrant-task-board-count-background Background of the task count chips (defaults to --surface-muted-color)
+// @css-var --quadrant-task-board-count-color Text color of the task count chips (defaults to --text-secondary-color)
+// @css-var --quadrant-task-board-actions-background Background of the toolbar of the active task (defaults to --surface-elevated-color)
+// @css-var --quadrant-task-board-actions-radius Corner radius of the toolbar of the active task (defaults to --radius-md)
+
+.board {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+}
+
+// title, count and add button in the outer corner of a quadrant
+.header {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, 4px);
+  max-width: 100%;
+  min-width: 0;
+  padding: 2px 2px 2px var(--space-2, 8px);
+  border-radius: 999px;
+  background: var(--quadrant-task-board-header-background, color-mix(in srgb, var(--surface-color, #fff) 72%, transparent));
+  backdrop-filter: blur(6px);
+  color: var(--quadrant-task-board-header-color, var(--text-color));
+  font-size: var(--font-size-xs, 12px);
+  font-weight: 600;
+  line-height: 20px;
+  white-space: nowrap;
+  pointer-events: auto;
+}
+
+.title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.badge {
+  color: var(--text-secondary-color);
+  font-weight: 500;
+}
+
+.count {
+  flex: none;
+  min-width: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--quadrant-task-board-count-background, var(--surface-muted-color, rgb(0 0 0 / 6%)));
+  color: var(--quadrant-task-board-count-color, var(--text-secondary-color));
+  font-size: 11px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 18px;
+  text-align: center;
+}
+
+.add {
+  flex: none;
+}
+
+// edit / delete above the active task
+.actions {
+  position: absolute;
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--quadrant-task-board-actions-radius, var(--radius-md, 8px));
+  background: var(--quadrant-task-board-actions-background, var(--surface-elevated-color, var(--surface-color, #fff)));
+  box-shadow: 0 6px 20px rgb(15 23 42 / 16%);
+  transform: translate(-50%, calc(-100% - 16px));
+  pointer-events: auto;
+  animation: actions-in 140ms cubic-bezier(0.2, 0, 0, 1);
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes actions-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-100% - 10px)) scale(0.96);
+  }
+}
+
+.form {
+  display: grid;
+  gap: var(--space-5, 20px);
+}
+
+.field {
+  display: grid;
+  gap: var(--space-2, 8px);
+  font-size: var(--font-size-sm, 14px);
+  font-weight: 500;
+}
+
+// action row of hosts whose dialog has no footer part (web components)
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2, 8px);
+  padding-top: var(--space-1, 4px);
+}

@@ -11,7 +11,8 @@ const loadWebComponents = () =>
 
 /**
  * Registers the chart elements of an optional entry (each loads its chart
- * engine: cartesian / shape charts, trading, order book, 3D, graphs).
+ * engine: cartesian / shape charts, trading, order book, 3D, graphs, the
+ * quadrant task board).
  */
 const CHART_LOADERS: Record<ChartEntry, () => Promise<unknown>> = {
   chart: () => import("minerva-design/web-components/chart"),
@@ -19,6 +20,8 @@ const CHART_LOADERS: Record<ChartEntry, () => Promise<unknown>> = {
   "order-book": () => import("minerva-design/web-components/order-book"),
   "chart-3d": () => import("minerva-design/web-components/chart-3d"),
   graph: () => import("minerva-design/web-components/graph"),
+  "quadrant-task-board": () =>
+    import("minerva-design/web-components/quadrant-task-board"),
   icon: () => import("minerva-design/web-components/icon"),
 };
 const loadingCharts = new Map<ChartEntry, Promise<unknown>>();

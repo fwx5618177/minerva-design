@@ -11,7 +11,7 @@
     },
     "quadrant": {
       "title": "Utilitaires de quadrants",
-      "text": "quadrantChartOptions(config) construit les options moteur d’un QuadrantChart pour n’importe quel point d’entrée ; quadrantOf(config, x, y) renvoie le quadrant d’une position de données tel qu’affiché à l’écran (reverseX compris) et quadrantCenter(config, corner) le centre d’un quadrant, p. ex. pour placer un point ajouté ou déposé. quadrantGroups(config) liste les points et indices de chaque quadrant, quadrantCountText(showCounts, points, locale) formate le nombre de points d’un quadrant et quadrantLabels(locale) renvoie les textes intégrés de la couche de points accessible. createQuadrantPointLayer(host, options) monte cette couche (une liste de boutons de points par quadrant, flèches pour passer d’un point à l’autre, Maj + flèches pour déplacer le point ciblé vers le quadrant voisin, une région live qui annonce le déplacement) dans n’importe quel rendu DOM ; quadrantKeyTarget(event, corner) renvoie le quadrant atteint par Maj + une flèche et quadrantAccessibleGroups(config, locale) les noms, libellés et actions de déplacement des points pour les hôtes sans DOM."
+      "text": "quadrantChartOptions(config) construit les options moteur d’un QuadrantChart pour n’importe quel point d’entrée ; quadrantOf(config, x, y) renvoie le quadrant d’une position de données tel qu’affiché à l’écran (reverseX compris) et quadrantCenter(config, corner) le centre d’un quadrant, p. ex. pour placer un point ajouté ou déposé. quadrantGroups(config) liste les points et indices de chaque quadrant, quadrantCountText(showCounts, points, locale) formate le nombre de points d’un quadrant et quadrantLabels(locale) renvoie les textes intégrés de la couche de points accessible. createQuadrantPointLayer(host, options) monte cette couche (une liste de boutons de points par quadrant, flèches pour passer d’un point à l’autre, Maj + flèches pour déplacer le point ciblé vers le quadrant voisin, une région live qui annonce le déplacement) dans n’importe quel rendu DOM ; quadrantKeyTarget(event, corner) renvoie le quadrant atteint par Maj + une flèche et quadrantAccessibleGroups(config, locale) les noms, libellés et actions de déplacement des points pour les hôtes sans DOM. Les tableaux de tâches (le QuadrantTaskBoard de chaque moteur de rendu) partagent eux aussi leur logique : QUADRANT_CORNERS liste les quatre coins, quadrantTaskLabels(locale, overrides) renvoie les textes traduits des boutons et des boîtes de dialogue, newQuadrantTaskDraft / editQuadrantTaskDraft remplissent la boîte d’ajout / de modification, canSaveQuadrantTask et applyQuadrantTaskDraft la vérifient et l’appliquent, moveQuadrantTask et removeQuadrantTask renvoient la nouvelle liste de points, selectionAfterRemove la sélection après une suppression, quadrantTaskDeleteText le texte de la confirmation de suppression et QUADRANT_TASK_ICONS les tracés des icônes d’ajout, de modification et de suppression."
     }
   },
   "demos": {
@@ -117,13 +117,19 @@
       "zoom": "L’utilisateur a zoomé ou déplacé la vue ; reçoit la vue",
       "renderer": "Le backend est prêt ou a basculé en repli",
       "layout": "La zone de tracé a bougé ou changé de taille ; reçoit son rectangle",
+      "dragStart": "Un point commence à suivre le pointeur (interaction.dragPoints)",
       "drag": "Un point est en cours de glissement (interaction.dragPoints)",
-      "drop": "Un point glissé a été relâché"
+      "drop": "Un point glissé a été relâché",
+      "dragEnd": "Le glissement est terminé (après drop, ou annulé avec Échap)"
     },
     "ChartDragEvent": {
       "item": "Le point en cours de glissement",
       "x": "Coordonnée x (données) sous le pointeur",
       "y": "Coordonnée y (données) sous le pointeur"
+    },
+    "ChartDragEndEvent": {
+      "item": "Le point qui a été glissé",
+      "cancelled": "Échap, un pointeur annulé ou un relâchement hors du graphique : pas d’événement drop"
     },
     "ChartRect": {
       "x": "Bord gauche, en pixels CSS",

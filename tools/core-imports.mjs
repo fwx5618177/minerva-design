@@ -23,6 +23,8 @@ import { DIST_DIR } from "./paths.mjs";
  * `js` for the JS files, `types` for the declarations.
  */
 export const WORKSPACE_ENTRIES = {
+  "@minerva/charts": { js: "charts/index", types: "charts/index" },
+  "@minerva/charts/core": { js: "charts/core", types: "charts/core" },
   "@minerva/core": { js: "core/index", types: "core/index" },
   "@minerva/core/styling-hooks": {
     js: "core/styling-hooks",

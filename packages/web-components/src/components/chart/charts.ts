@@ -1,6 +1,9 @@
-import type { PropertyValues } from "lit";
+import { css, html, nothing, type PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
+import { keyed } from "lit/directives/keyed.js";
+import { styleMap } from "lit/directives/style-map.js";
 import {
+  QUADRANT_CORNERS,
   createQuadrantPointLayer,
   heatmapChartOptions,
   quadrantChartOptions,
@@ -8,17 +11,21 @@ import {
   sparklineOptions,
   type ChartDragEvent,
   type ChartHoverEvent,
+  type ChartInstance,
   type ChartOptions,
   type ChartPlotClickEvent,
+  type ChartRect,
   type ChartSeries,
   type HeatmapCell,
   type QuadrantAxisLabels,
   type QuadrantConfig,
+  type QuadrantCorner,
   type QuadrantPoint,
   type QuadrantPointLayer,
   type QuadrantRegions,
 } from "minerva-design/charts/core";
 import { MinervaCartesianChartElement } from "./chart";
+import { MinervaEngineElement } from "./engine-element";
 import { withSeriesType } from "./series";
 
 /** Engine options other than the series (axes, legend, tooltip, annotations...) */
@@ -366,6 +373,17 @@ export class MinervaSparkline extends MinervaCartesianChartElement {
 /** Two clicks on the same dot within this delay count as a double click */
 const DOUBLE_CLICK_MS = 400;
 
+/** Slot of the header of each quadrant of `<minerva-quadrant-chart>` */
+export const QUADRANT_HEADER_SLOTS: Readonly<Record<QuadrantCorner, string>> = {
+  topLeft: "quadrant-header-top-left",
+  topRight: "quadrant-header-top-right",
+  bottomLeft: "quadrant-header-bottom-left",
+  bottomRight: "quadrant-header-bottom-right",
+};
+
+const px = (value: number) => `${value}px`;
+const fraction = (v: number, a: number, b: number) => (v - a) / (b - a || 1);
+
 /**
  * Four-quadrant matrix (priority matrix, Eisenhower, BCG...) of
  * `minerva-design/charts/core` (the `<QuadrantChart>` of React): tinted
@@ -380,12 +398,26 @@ const DOUBLE_CLICK_MS = 400;
  * in a live region). The focused dot is drawn with a focus ring and
  * reported by `minerva-hover`.
  *
+ * Slotted content is placed over the plot: a header per quadrant (in its
+ * outer corner, replacing the drawn title, badge, description and count)
+ * and actions next to the active dot (hovered, keyboard-focused, else
+ * `selected-index`; read it from `activeIndex`). Both receive pointer
+ * events; the rest of the plot stays interactive.
+ *
  * Published as the optional entry `minerva-design/web-components/chart`.
  *
  * @summary Four-quadrant matrix of labelled, draggable dots.
  * @tag minerva-quadrant-chart
+ * @slot quadrant-header-top-left - Header of the top left quadrant (replaces its drawn title and count)
+ * @slot quadrant-header-top-right - Header of the top right quadrant
+ * @slot quadrant-header-bottom-left - Header of the bottom left quadrant
+ * @slot quadrant-header-bottom-right - Header of the bottom right quadrant
+ * @slot point-actions - Content shown at the active dot (e.g. edit / delete buttons), positioned by the slotted element
  * @csspart root - The sized box of the chart
  * @csspart surface - The element the engine renders into
+ * @csspart overlay - The box over the plot holding the slotted headers and actions
+ * @csspart quadrant-header - The box of a quadrant header slot (in the outer corner of its quadrant)
+ * @csspart point-actions - The zero-size box at the active dot holding the `point-actions` slot
  * @fires minerva-point-click - A dot was clicked; detail: { point, index }
  * @fires minerva-point-double-click - The same dot was clicked twice in quick succession; detail: { point, index }
  * @fires minerva-quadrant-click - The empty area of a quadrant was clicked; detail: { quadrant, x, y }
@@ -395,6 +427,47 @@ const DOUBLE_CLICK_MS = 400;
  */
 export class MinervaQuadrantChart extends MinervaCartesianChartElement {
   static override tagName = "minerva-quadrant-chart";
+  static override styles = [
+    MinervaEngineElement.styles,
+    css`
+      .overlay,
+      .quadrant,
+      .point {
+        position: absolute;
+        pointer-events: none;
+      }
+      .point {
+        width: 0;
+        height: 0;
+      }
+      .quadrant-header {
+        position: absolute;
+        display: flex;
+        box-sizing: border-box;
+        max-width: 100%;
+        padding: 8px;
+        pointer-events: none;
+      }
+      .quadrant-header.top {
+        top: 0;
+      }
+      .quadrant-header.bottom {
+        bottom: 0;
+      }
+      .quadrant-header.left {
+        left: 0;
+        justify-content: flex-start;
+      }
+      .quadrant-header.right {
+        right: 0;
+        justify-content: flex-end;
+      }
+      .quadrant-header ::slotted(*),
+      .point ::slotted(*) {
+        pointer-events: auto;
+      }
+    `,
+  ];
 
   /** Points `{ x, y, label, color, size }` to place; property only */
   @property({ attribute: false })
@@ -475,6 +548,41 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
   private lastClick: { index: number; time: number } | null = null;
   private pointLayer: QuadrantPointLayer | null = null;
   private focusedPoint: number | null = null;
+  /** Plot area (where the slots are placed), known once the engine drew */
+  private plot: ChartRect | null = null;
+  /** Dot under the pointer */
+  private hoveredPoint: number | null = null;
+  private slotObserver: MutationObserver | null = null;
+  /** Slots having content at the last check (header slots, point actions) */
+  private slotted = "";
+
+  /**
+   * Index of the active dot, the one showing the `point-actions` slot: the
+   * hovered dot, else the keyboard-focused one, else `selectedIndex`
+   * (`null`: none)
+   */
+  get activeIndex(): number | null {
+    const index =
+      this.hoveredPoint ?? this.focusedPoint ?? this.selectedIndex ?? null;
+    const point = index === null ? undefined : this.points?.[index];
+    return point && Number.isFinite(point.x) && Number.isFinite(point.y)
+      ? index
+      : null;
+  }
+
+  /** Whether a quadrant header slot has content */
+  private hasHeaders(): boolean {
+    const names = Object.values(QUADRANT_HEADER_SLOTS);
+    return Array.from(this.children).some((child) =>
+      names.includes(child.getAttribute("slot") ?? ""),
+    );
+  }
+
+  private hasPointActions(): boolean {
+    return Array.from(this.children).some(
+      (child) => child.getAttribute("slot") === "point-actions",
+    );
+  }
 
   private geometry(): Pick<
     QuadrantConfig,
@@ -491,7 +599,8 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
 
   protected engineOptions(): ChartOptions | null {
     if (!this.points) return null;
-    return quadrantChartOptions(
+    const headers = this.hasHeaders();
+    const options = quadrantChartOptions(
       {
         ...this.geometry(),
         points: this.points,
@@ -503,18 +612,65 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
         showLabels: !this.hideLabels,
         pointSize: this.pointSize,
         draggable: this.dragPoints,
-        showCounts: this.showCounts,
+        showCounts: headers ? undefined : this.showCounts,
         selectedIndex: this.selectedIndex,
         selectedIndices: this.selectedIndices,
       },
       this.options,
       { focusedIndex: this.noAccessiblePoints ? null : this.focusedPoint },
     );
+    if (headers)
+      // the slotted headers replace the drawn titles (the first four areas)
+      options.annotations = options.annotations?.map((a, i) =>
+        i < 4 && a.type === "rect"
+          ? {
+              ...a,
+              label: undefined,
+              badge: undefined,
+              description: undefined,
+              detail: undefined,
+            }
+          : a,
+      );
+    return options;
+  }
+
+  protected override bindEngine(chart: ChartInstance): Array<() => void> {
+    return [
+      ...super.bindEngine(chart),
+      chart.on("hover", (event) => {
+        const index = event?.items?.[0]?.index ?? null;
+        if (index === this.hoveredPoint) return;
+        this.hoveredPoint = index;
+        if (this.hasPointActions()) this.requestUpdate();
+      }),
+      chart.on("layout", (rect) => {
+        this.plot = rect;
+        if (this.slotted) this.requestUpdate();
+      }),
+    ];
   }
 
   override connectedCallback(): void {
     super.connectedCallback();
     if (this.hasUpdated) this.syncPointLayer();
+    this.slotted = this.slotState();
+    if (typeof MutationObserver === "undefined") return;
+    // slotted headers / actions added or removed: redraw without the titles
+    this.slotObserver = new MutationObserver(() => {
+      const next = this.slotState();
+      if (next === this.slotted) return;
+      this.slotted = next;
+      this.requestUpdate();
+      const options = this.engineOptions();
+      if (options) this.instance?.setOptions(options);
+    });
+    this.slotObserver.observe(this, {
+      childList: true,
+      attributes: true,
+      attributeFilter: ["slot"],
+      subtree: true,
+    });
   }
 
   override disconnectedCallback(): void {
@@ -522,6 +678,91 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
     this.pointLayer?.destroy();
     this.pointLayer = null;
     this.focusedPoint = null;
+    this.hoveredPoint = null;
+    this.plot = null;
+    this.slotObserver?.disconnect();
+    this.slotObserver = null;
+  }
+
+  private slotState(): string {
+    return `${this.hasHeaders() ? "h" : ""}${this.hasPointActions() ? "a" : ""}`;
+  }
+
+  /** The slots over the plot (only when they have content) */
+  protected override renderOverlay() {
+    const headers = this.hasHeaders();
+    const actions = this.hasPointActions();
+    const plot = this.plot;
+    if ((!headers && !actions) || !plot) return nothing;
+    const [x0, x1] = this.xDomain ?? [0, 10];
+    const [y0, y1] = this.yDomain ?? [0, 10];
+    const visual = (x: number, y: number) => {
+      const fx = fraction(x, x0, x1);
+      return { x: this.reverseX ? 1 - fx : fx, y: 1 - fraction(y, y0, y1) };
+    };
+    const split = visual(
+      this.xSplit ?? (x0 + x1) / 2,
+      this.ySplit ?? (y0 + y1) / 2,
+    );
+    const sx = plot.width * split.x;
+    const sy = plot.height * split.y;
+    const quadrant = (corner: QuadrantCorner) => {
+      const left = corner.endsWith("Left");
+      const top = corner.startsWith("top");
+      return html`<div
+        class="quadrant"
+        style=${styleMap({
+          left: px(left ? 0 : sx),
+          top: px(top ? 0 : sy),
+          width: px(left ? sx : plot.width - sx),
+          height: px(top ? sy : plot.height - sy),
+        })}
+      >
+        <div
+          part="quadrant-header"
+          class="quadrant-header ${top ? "top" : "bottom"} ${
+            left ? "left" : "right"
+          }"
+          data-corner=${corner}
+        >
+          <slot name=${QUADRANT_HEADER_SLOTS[corner]}></slot>
+        </div>
+      </div>`;
+    };
+    const index = actions ? this.activeIndex : null;
+    const point = index === null ? undefined : this.points?.[index];
+    const at = point ? visual(point.x, point.y) : null;
+    return html`<div
+      part="overlay"
+      class="overlay"
+      style=${styleMap({
+        left: px(plot.x),
+        top: px(plot.y),
+        width: px(plot.width),
+        height: px(plot.height),
+      })}
+    >
+      ${headers ? QUADRANT_CORNERS.map(quadrant) : nothing}
+      ${
+        at && point
+          ? keyed(
+              index,
+              html`<div
+                part="point-actions"
+                class="point"
+                data-point-index=${index}
+                data-label=${point.label ?? nothing}
+                style=${styleMap({
+                  left: `${100 * at.x}%`,
+                  top: `${100 * at.y}%`,
+                })}
+              >
+                <slot name="point-actions"></slot>
+              </div>`,
+            )
+          : nothing
+      }
+    </div>`;
   }
 
   protected override updated(changed: PropertyValues): void {
@@ -579,6 +820,7 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
     this.focusedPoint = index;
     const options = this.engineOptions();
     if (options) this.instance?.setOptions(options);
+    if (this.hasPointActions()) this.requestUpdate();
   }
 
   protected override pointClicked(event: ChartHoverEvent): void {

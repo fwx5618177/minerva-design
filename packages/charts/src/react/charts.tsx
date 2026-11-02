@@ -17,6 +17,7 @@ import {
   heatmapChartOptions,
   histogramSeries,
   lineSeries,
+  DEFAULT_QUADRANT_COLORS,
   presetLabels,
   quadrantChartOptions,
   quadrantGroups,
@@ -389,20 +390,11 @@ export function QuadrantChart(props: QuadrantChartProps) {
     locale,
   } = props;
   const geometry = { xDomain, yDomain, xSplit, ySplit, reverseX };
-  const [dropCorner, setDropCorner] = useState<QuadrantCorner | null>(null);
-  const [preview, setPreview] = useState<{
-    index: number;
-    target: QuadrantDropTarget;
-  } | null>(null);
+  // the engine draws the dragged dot and its label under the pointer: the
+  // options stay the same during a drag (no re-render on every move)
+  const [dragging, setDragging] = useState<number | null>(null);
   const [hovered, setHovered] = useState<number | null>(null);
   const [selection, setSelection] = useState<number | null>(null);
-  const displayed = preview
-    ? points.map((point, index) =>
-        index === preview.index
-          ? { ...point, x: preview.target.x, y: preview.target.y }
-          : point,
-      )
-    : points;
   const selected = selectedIndex !== undefined ? selectedIndex : selection;
   const lastClick = useRef<{ index: number; time: number } | null>(null);
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
@@ -420,14 +412,14 @@ export function QuadrantChart(props: QuadrantChartProps) {
   const groups = useMemo(
     () =>
       quadrantGroups({
-        points: displayed,
+        points,
         xDomain,
         yDomain,
         xSplit,
         ySplit,
         reverseX,
       }),
-    [displayed, xDomain, yDomain, xSplit, ySplit, reverseX],
+    [points, xDomain, yDomain, xSplit, ySplit, reverseX],
   );
   const quadrantName = (corner: QuadrantCorner) =>
     nameOfQuadrant(corner, { quadrants }, texts);
@@ -463,21 +455,6 @@ export function QuadrantChart(props: QuadrantChartProps) {
       setFocusedIndex(null);
   }, [points, focusedIndex]);
 
-  // a release outside the plot ends the drag without a drop event
-  useEffect(() => {
-    if (!dropCorner) return;
-    const release = () => {
-      setDropCorner(null);
-      setPreview(null);
-    };
-    window.addEventListener("pointerup", release);
-    window.addEventListener("pointercancel", release);
-    return () => {
-      window.removeEventListener("pointerup", release);
-      window.removeEventListener("pointercancel", release);
-    };
-  }, [dropCorner]);
-
   const dropAt = (event: ChartDragEvent): QuadrantDropTarget => ({
     x: event.x,
     y: event.y,
@@ -486,7 +463,7 @@ export function QuadrantChart(props: QuadrantChartProps) {
 
   const options = quadrantChartOptions(
     {
-      points: displayed,
+      points,
       xDomain,
       yDomain,
       xSplit,
@@ -586,8 +563,10 @@ export function QuadrantChart(props: QuadrantChartProps) {
     );
   };
 
-  const activeIndex = preview?.index ?? hovered ?? focusedIndex ?? selected;
-  const activePoint = activeIndex == null ? null : displayed[activeIndex];
+  // nothing is attached to a point while it is dragged
+  const activeIndex =
+    dragging !== null ? null : (hovered ?? focusedIndex ?? selected);
+  const activePoint = activeIndex == null ? null : points[activeIndex];
   const overlay = (plot: ChartRect) => {
     const xs = xSplit ?? (x0 + x1) / 2;
     const ys = ySplit ?? (y0 + y1) / 2;
@@ -597,9 +576,6 @@ export function QuadrantChart(props: QuadrantChartProps) {
       x: plot.x + plot.width * (reverseX ? 1 - fx : fx),
       y: plot.y + plot.height * (1 - fy),
     };
-    const tint = dropCorner
-      ? (quadrants?.[dropCorner]?.color ?? "currentColor")
-      : "";
     return [
       ...CORNERS.map((corner) =>
         quadrantContent?.[corner] ? (
@@ -643,7 +619,7 @@ export function QuadrantChart(props: QuadrantChartProps) {
         className="minerva-chart-quadrant-points"
         style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
       >
-        {displayed.map((point, index) => {
+        {points.map((point, index) => {
           if (!Number.isFinite(point.x) || !Number.isFinite(point.y))
             return null;
           const fx = fraction(point.x, x0, x1);
@@ -698,7 +674,7 @@ export function QuadrantChart(props: QuadrantChartProps) {
           </>
         ) : null}
       </div>,
-      activePoint && (preview || hovered === null)
+      activePoint && hovered === null
         ? (() => {
             const [x0, x1] = xDomain ?? [0, 10];
             const [y0, y1] = yDomain ?? [0, 10];
@@ -724,7 +700,7 @@ export function QuadrantChart(props: QuadrantChartProps) {
                   padding: "8px 12px",
                   borderRadius: 10,
                   border: "1px solid var(--border-color, #374151)",
-                  borderInlineStart: `3px solid ${activePoint.color ?? quadrants?.[corner]?.color ?? tint}`,
+                  borderInlineStart: `3px solid ${activePoint.color ?? quadrants?.[corner]?.color ?? DEFAULT_QUADRANT_COLORS[corner]}`,
                   background:
                     "var(--surface-elevated-color, var(--bg-color, #18181b))",
                   color: "var(--text-color, #f4f4f5)",
@@ -750,17 +726,6 @@ export function QuadrantChart(props: QuadrantChartProps) {
             );
           })()
         : null,
-      dropCorner ? (
-        <div
-          key="drop-target"
-          className="minerva-chart-quadrant-target"
-          style={{
-            ...cornerStyle(dropCorner, plot, split),
-            background: `color-mix(in srgb, ${tint} 14%, transparent)`,
-            boxShadow: `inset 0 0 0 2px ${tint}`,
-          }}
-        />
-      ) : null,
     ];
   };
 
@@ -794,16 +759,14 @@ export function QuadrantChart(props: QuadrantChartProps) {
         setHovered(event?.items[0]?.index ?? null);
         props.onHover?.(event);
       }}
+      onDragStart={(event) => setDragging(event.item.index)}
+      onDragEnd={() => setDragging(null)}
       onDrag={(event) => {
         const index = event.item.index;
-        const target = dropAt(event);
-        setDropCorner(target.quadrant);
-        setPreview({ index, target });
-        if (points[index]) onPointDrag?.(points[index], index, target);
+        if (points[index] && onPointDrag)
+          onPointDrag(points[index], index, dropAt(event));
       }}
       onDrop={(event) => {
-        setPreview(null);
-        setDropCorner(null);
         pendingFocus.current = null;
         const index = event.item.index;
         if (points[index] && onPointDrop)

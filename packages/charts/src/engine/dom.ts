@@ -180,7 +180,7 @@ export const swatch = (
   return el;
 };
 
-/** Marker of a hovered point: a dot with a thin ring in the background color and a soft halo */
+/** Marker of a hovered point: a dot with a ring in the background color, a tinted halo and a soft glow */
 export const createMarker = (doc: Document) =>
   assign(doc.createElement("div"), {
     position: "absolute",
@@ -189,6 +189,72 @@ export const createMarker = (doc: Document) =>
     border: "2px solid var(--surface-color, var(--background-color, #fff))",
     transform: "translate(-50%, -50%)",
     transition: "box-shadow 120ms ease-out",
+  }) as HTMLDivElement;
+
+/** Halo of a hovered point: its tinted ring, a wider soft glow and a light shadow */
+export const markerHalo = (halo: string) =>
+  `0 0 0 4px ${halo}, 0 0 0 8px color-mix(in srgb, ${halo} 45%, transparent), 0 2px 6px rgba(15, 23, 42, 0.18)`;
+
+/** The dot of a dragged point: lifted above the plot, ringed, with a shadow */
+export const createDragDot = (doc: Document) =>
+  assign(doc.createElement("div"), {
+    position: "absolute",
+    boxSizing: "border-box",
+    borderRadius: "50%",
+    border: "2px solid var(--surface-color, var(--background-color, #fff))",
+    transform: "translate(-50%, -50%)",
+    pointerEvents: "none",
+    zIndex: "2",
+    display: "none",
+  }) as HTMLDivElement;
+
+/** Shadows of a dragged dot in `color` */
+export const dragDotShadow = (color: string) =>
+  `0 0 0 5px color-mix(in srgb, ${color} 24%, transparent), 0 10px 22px -6px rgba(15, 23, 42, 0.5), 0 3px 8px rgba(15, 23, 42, 0.22)`;
+
+/** Label of a dragged point (or of a hovered one): a pill above the plot */
+export const createLabelPill = (doc: Document) =>
+  assign(doc.createElement("div"), {
+    position: "absolute",
+    boxSizing: "border-box",
+    maxWidth: "220px",
+    padding: "2px 9px",
+    borderRadius: "999px",
+    border: "1px solid var(--border-color, rgba(148, 163, 184, 0.45))",
+    background:
+      "var(--surface-elevated-color, var(--surface-color, var(--background-color, #fff)))",
+    color: "var(--text-color, #1f2937)",
+    font: "600 12px/18px var(--font-family-sans, system-ui, sans-serif)",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    boxShadow: "0 6px 16px -6px rgba(15, 23, 42, 0.35)",
+    pointerEvents: "none",
+    zIndex: "2",
+    display: "none",
+  }) as HTMLDivElement;
+
+/** Where a dragged point was: a dashed ring fading the dot drawn there */
+export const createDragPlaceholder = (doc: Document) =>
+  assign(doc.createElement("div"), {
+    position: "absolute",
+    boxSizing: "border-box",
+    borderRadius: "50%",
+    borderWidth: "1.5px",
+    borderStyle: "dashed",
+    transform: "translate(-50%, -50%)",
+    pointerEvents: "none",
+    display: "none",
+  }) as HTMLDivElement;
+
+/** The area a dragged point would land in, below the data */
+export const createDropTarget = (doc: Document) =>
+  assign(doc.createElement("div"), {
+    position: "absolute",
+    boxSizing: "border-box",
+    borderRadius: "4px",
+    pointerEvents: "none",
+    display: "none",
   }) as HTMLDivElement;
 
 /** Band behind the hovered bars (or outline of a heatmap cell) */

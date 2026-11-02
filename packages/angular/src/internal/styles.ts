@@ -1531,6 +1531,33 @@ export const proseStyles: ClassMap<"prose"> = {
   prose: "prose",
 };
 
+/** components/QuadrantTaskBoard/quadrantTaskBoard.module.scss */
+export const quadrantTaskBoardStyles: ClassMap<
+  | "actions"
+  | "actions-in"
+  | "add"
+  | "badge"
+  | "board"
+  | "count"
+  | "field"
+  | "footer"
+  | "form"
+  | "header"
+  | "title"
+> = {
+  actions: "actions",
+  "actions-in": "actions-in",
+  add: "add",
+  badge: "badge",
+  board: "board",
+  count: "count",
+  field: "field",
+  footer: "footer",
+  form: "form",
+  header: "header",
+  title: "title",
+};
+
 /** components/Radio/radio.module.scss */
 export const radioStyles: ClassMap<
   | "circle"

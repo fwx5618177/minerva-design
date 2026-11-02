@@ -10593,6 +10593,198 @@
     "parts": [],
     "cssProperties": []
   },
+  "wc:minerva-quadrant-task-board": {
+    "kind": "element",
+    "source": "web-components/src/components/quadrant-task-board/quadrant-task-board.ts",
+    "className": "MinervaQuadrantTaskBoard",
+    "summary": "Four-quadrant task board: add, edit, delete and drag tasks between quadrants.",
+    "description": "Task board on a four-quadrant matrix (`<QuadrantTaskBoard>` of React), built on `<minerva-quadrant-chart>`: each quadrant header shows its title, the number of tasks and an add button; the active task (hovered, keyboard-focused or selected) shows edit and delete buttons; a dialog names a task and picks its quadrant, a confirmation precedes a delete. Tasks can be dragged to another quadrant, or moved with Shift + arrows once focused; a double click edits a task, a click on an empty area adds one there. Controlled, like `<minerva-kanban-board>`: the board never changes its own `points`. It fires `minerva-points-change` with the next list after an add, an edit, a delete, a drag and drop or a keyboard move; set it back as `points` to apply it (or keep the old list to refuse it). Texts are localized (the `locale` attribute, else the library language) and can be overridden with `labels`. The host's `aria-label` names the chart. Published as the optional entry `minerva-design/web-components/quadrant-task-board` (it loads the chart engine, minerva-design/charts/core).",
+    "properties": [
+      {
+        "name": "xLabel",
+        "attribute": "x-label",
+        "type": "string | undefined",
+        "description": "Title of the horizontal axis"
+      },
+      {
+        "name": "yLabel",
+        "attribute": "y-label",
+        "type": "string | undefined",
+        "description": "Title of the vertical axis"
+      },
+      {
+        "name": "xSplit",
+        "attribute": "x-split",
+        "type": "number | undefined",
+        "description": "X value of the vertical divider (the middle of the x domain by default)"
+      },
+      {
+        "name": "ySplit",
+        "attribute": "y-split",
+        "type": "number | undefined",
+        "description": "Y value of the horizontal divider (the middle of the y domain by default)"
+      },
+      {
+        "name": "reverseX",
+        "attribute": "reverse-x",
+        "type": "boolean",
+        "default": "false",
+        "description": "Reverses the horizontal axis (e.g. \"urgent\" on the left)"
+      },
+      {
+        "name": "hideTicks",
+        "attribute": "hide-ticks",
+        "type": "boolean",
+        "default": "false",
+        "description": "Hides the numeric ticks of the axes (only the matrix remains)"
+      },
+      {
+        "name": "hideLabels",
+        "attribute": "hide-labels",
+        "type": "boolean",
+        "default": "false",
+        "description": "Hides the labels next to the tasks"
+      },
+      {
+        "name": "hideCounts",
+        "attribute": "hide-counts",
+        "type": "boolean",
+        "default": "false",
+        "description": "Hides the number of tasks in the quadrant headers"
+      },
+      {
+        "name": "pointSize",
+        "attribute": "point-size",
+        "type": "number",
+        "default": "12",
+        "description": "Dot diameter in pixels"
+      },
+      {
+        "name": "selectedIndex",
+        "attribute": "selected-index",
+        "type": "number | null | undefined",
+        "description": "Index of the selected task, drawn with a ring (`null`: none); by default the board selects the last clicked, moved or saved task"
+      },
+      {
+        "name": "height",
+        "attribute": "height",
+        "type": "string | number | undefined",
+        "description": "Height of the chart: pixels or any CSS length (default 320)"
+      },
+      {
+        "name": "locale",
+        "attribute": "locale",
+        "type": "string | undefined",
+        "description": "Language of the built-in texts, quadrant titles and numbers (e.g. \"fr\"); the library language by default"
+      },
+      {
+        "name": "noAccessiblePoints",
+        "attribute": "no-accessible-points",
+        "type": "boolean",
+        "default": "false",
+        "description": "Leaves out the visually hidden list of the tasks (keyboard and screen reader access, keyboard moves)"
+      },
+      {
+        "name": "points",
+        "type": "readonly QuadrantPoint[] | undefined",
+        "description": "Tasks `{ x, y, label, color, size }`; replace the array to update the board (controlled); property only"
+      },
+      {
+        "name": "labels",
+        "type": "Partial<QuadrantTaskLabels> | undefined",
+        "description": "Texts of the buttons and dialogs (`add`, `edit`, `delete`, `deleteConfirm`, `name`, `quadrant`, `save`, `cancel`, `actions`), localized by default; property only"
+      },
+      {
+        "name": "quadrants",
+        "type": "QuadrantRegions | undefined",
+        "description": "Titles, badges and colors of the quadrants (`topLeft`, `topRight`, `bottomLeft`, `bottomRight`); property only"
+      },
+      {
+        "name": "axisLabels",
+        "type": "QuadrantAxisLabels | undefined",
+        "description": "Texts at the ends of the dividers, drawn inside the plot (`top`, `bottom`, `left`, `right`); property only"
+      },
+      {
+        "name": "xDomain",
+        "type": "[number, number] | undefined",
+        "description": "Range of the horizontal axis (default [0, 10]); property only"
+      },
+      {
+        "name": "yDomain",
+        "type": "[number, number] | undefined",
+        "description": "Range of the vertical axis (default [0, 10]); property only"
+      },
+      {
+        "name": "options",
+        "type": "Omit<ChartOptions, \"series\"> | undefined",
+        "description": "Other engine options of the chart (legend, tooltip, padding, palette...); property only"
+      }
+    ],
+    "methods": [],
+    "events": [
+      {
+        "name": "minerva-points-change",
+        "description": "The tasks changed (add, edit, delete, drag and drop, keyboard move); `detail: { points }`, the next list to set back as `points`"
+      },
+      {
+        "name": "minerva-point-click",
+        "description": "A task was clicked (it becomes the selected one); `detail: { point, index }`"
+      },
+      {
+        "name": "minerva-point-drag",
+        "description": "A task is being dragged (on every move); `detail: { point, index, x, y, quadrant }`"
+      },
+      {
+        "name": "minerva-hover",
+        "description": "The hovered (or keyboard-focused) task changed; `detail: { x, xLabel, items }`, `null` when nothing is hovered"
+      },
+      {
+        "name": "minerva-zoom",
+        "description": "The user zoomed or panned the chart; `detail`: the view"
+      },
+      {
+        "name": "minerva-renderer-change",
+        "description": "The chart backend is ready (or fell back after a GPU loss); `detail`: the renderer"
+      }
+    ],
+    "slots": [],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The box around the chart and the dialogs"
+      },
+      {
+        "name": "chart",
+        "description": "The inner `<minerva-quadrant-chart>`"
+      }
+    ],
+    "cssProperties": [
+      {
+        "name": "--quadrant-task-board-header-color",
+        "description": "Text color of the quadrant titles (defaults to --text-color)"
+      },
+      {
+        "name": "--quadrant-task-board-header-background",
+        "description": "Background of the quadrant headers (defaults to a translucent surface)"
+      },
+      {
+        "name": "--quadrant-task-board-count-background",
+        "description": "Background of the task count chips (defaults to --surface-muted-color)"
+      },
+      {
+        "name": "--quadrant-task-board-count-color",
+        "description": "Text color of the task count chips (defaults to --text-secondary-color)"
+      },
+      {
+        "name": "--quadrant-task-board-actions-background",
+        "description": "Background of the toolbar of the active task (defaults to --surface-elevated-color)"
+      },
+      {
+        "name": "--quadrant-task-board-actions-radius",
+        "description": "Corner radius of the toolbar of the active task (defaults to --radius-md)"
+      }
+    ]
+  },
   "wc:minerva-radio": {
     "kind": "element",
     "source": "web-components/src/components/radio/radio.ts",

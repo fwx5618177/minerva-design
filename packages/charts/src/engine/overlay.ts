@@ -834,12 +834,13 @@ export const drawForeground = (
   }
 
   // point labels
+  let placed: { label: PointLabel; box: Rect }[] = [];
   if (input.pointLabels.length) {
     ctx.font = font(theme);
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
     const textColor = toCss(theme.text, 0.85);
-    const placed = placeLabels(
+    placed = placeLabels(
       input.pointLabels,
       plot,
       (t) => ctx.measureText(t).width,
@@ -855,4 +856,5 @@ export const drawForeground = (
     }
   }
   ctx.restore();
+  return placed;
 };

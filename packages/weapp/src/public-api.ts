@@ -140,6 +140,11 @@ const configurations: Record<string, Method> = {
     "configure(config: NativeQuadrantChartConfig): void",
     "renderTooltip(point, index) returns the tooltip text of a point (lines separated by \\n) or null to hide it.",
   ),
+  quadrantTaskBoard: method(
+    "configure",
+    "configure(config: NativeQuadrantChartConfig): void",
+    "Forwarded to the inner quadrant chart (renderTooltip); the chart methods below act on that chart (px of the chart, not of the board).",
+  ),
 };
 const chartConfiguration = method(
   "configure",
@@ -366,6 +371,26 @@ const events: Record<string, Event[]> = {
       "{ point: NativeQuadrantPoint; index: number; target: NativeQuadrantDropTarget }",
       "A dragged dot was released; update points to move it.",
     ),
+    chartEvent.zoom,
+    chartEvent.layout,
+  ],
+  quadrantTaskBoard: [
+    event(
+      "pointschange",
+      "{ points: NativeQuadrantPoint[] }",
+      "Tasks after an add, an edit, a delete or a move (controlled: update points).",
+    ),
+    event(
+      "pointclick",
+      "{ point: NativeQuadrantPoint; index: number }",
+      "A task dot was tapped (it becomes the selected task).",
+    ),
+    event(
+      "pointdrag",
+      "{ point: NativeQuadrantPoint; index: number; target: NativeQuadrantDropTarget }",
+      "A task dot is dragged (draggable).",
+    ),
+    chartEvent.hover,
     chartEvent.zoom,
     chartEvent.layout,
   ],
@@ -834,7 +859,11 @@ export function annotateNativeApi(controls: Record<string, Control>) {
         ),
       );
     if (configurations[name]) methods.push(configurations[name]);
-    if (SERIES_CHARTS.includes(name) || name === "quadrantChart")
+    if (
+      SERIES_CHARTS.includes(name) ||
+      name === "quadrantChart" ||
+      name === "quadrantTaskBoard"
+    )
       methods.push(...chartMethods);
     if (SHAPE_CHARTS.includes(name)) methods.push(...shapeChartMethods);
     if (

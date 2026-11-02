@@ -1,8 +1,10 @@
+import { NgTemplateOutlet } from "@angular/common";
 import {
   afterNextRender,
   booleanAttribute,
   ChangeDetectionStrategy,
   Component,
+  computed,
   DestroyRef,
   Directive,
   effect,
@@ -14,12 +16,15 @@ import {
   signal,
   untracked,
   viewChild,
+  type TemplateRef,
 } from "@angular/core";
 import {
+  QUADRANT_CORNERS,
   createChart,
   createQuadrantPointLayer,
   heatmapChartOptions,
   quadrantChartOptions,
+  quadrantGroups,
   quadrantOf,
   sparklineOptions,
   type ChartAnnotation,
@@ -35,6 +40,7 @@ import {
   type ChartOptions,
   type ChartPadding,
   type ChartPlotClickEvent,
+  type ChartRect,
   type ChartRendererKind,
   type ChartRendererPreference,
   type ChartSeries,
@@ -47,6 +53,7 @@ import {
   type QuadrantPoint,
   type QuadrantPointLayer,
   type QuadrantPointLayerOptions,
+  type QuadrantRegion,
   type QuadrantRegions,
 } from "minerva-design/charts/core";
 import { CHART_SURFACE, MnChartEngine, optionalBoolean } from "./engine";
@@ -83,6 +90,32 @@ export interface QuadrantPointDrop {
   y: number;
   /** Quadrant of the drop, as seen on screen */
   quadrant: QuadrantCorner;
+}
+
+/** What the `quadrantHeader` template of MnQuadrantChart receives about a quadrant */
+export interface QuadrantHeaderInfo {
+  /** Number of points in the quadrant */
+  count: number;
+  /** Points in the quadrant */
+  points: QuadrantPoint[];
+  /** Indices of these points in `points` */
+  indices: number[];
+  /** Title, badge, description and color of the quadrant (`quadrants`) */
+  region: QuadrantRegion | undefined;
+}
+
+/** Context of the `quadrantHeader` template (`let-corner let-info="info"`) */
+export interface QuadrantHeaderContext {
+  $implicit: QuadrantCorner;
+  corner: QuadrantCorner;
+  info: QuadrantHeaderInfo;
+}
+
+/** Context of the `pointActions` template (`let-point let-index="index"`) */
+export interface QuadrantPointActionsContext {
+  $implicit: QuadrantPoint;
+  point: QuadrantPoint;
+  index: number;
 }
 
 /**
@@ -487,6 +520,8 @@ export class MnSparkline extends MnCartesianChartBase {
 /** Two clicks on the same point within this delay count as a double click */
 const DOUBLE_CLICK_MS = 400;
 
+const fraction = (v: number, a: number, b: number) => (v - a) / (b - a || 1);
+
 /**
  * Four-quadrant matrix (priority matrix, Eisenhower, BCG, ...): tinted
  * quadrants with titles, dividers, and labelled dots placed without
@@ -498,11 +533,53 @@ const DOUBLE_CLICK_MS = 400;
  * Enter clicks (`pointClick`) and, with `draggable`, Shift + arrows move the
  * focused dot to the neighbouring quadrant (`pointDrop`, announced in a live
  * region). The focused dot gets a focus ring and is reported by `hover`.
+ *
+ * `quadrantHeader` and `pointActions` take templates placed over the plot
+ * (the headers of the quadrants, e.g. with an add button; actions next to
+ * the active dot, e.g. edit / delete buttons).
  */
 @Component({
   selector: "mn-quadrant-chart",
+  imports: [NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `${CHART_SURFACE}
+    @if (overlayStyle(); as style) {
+      <div class="minerva-chart-overlay" [style]="style">
+        @if (quadrantHeader(); as tpl) {
+          @for (header of headers(); track header.corner) {
+            <div [style]="header.box">
+              <div
+                [class]="
+                  'minerva-chart-quadrant-header minerva-chart-quadrant-header-' +
+                  header.corner
+                "
+                [style]="header.style"
+              >
+                <ng-container
+                  [ngTemplateOutlet]="tpl"
+                  [ngTemplateOutletContext]="header.context"
+                />
+              </div>
+            </div>
+          }
+        }
+        @if (pointActions(); as tpl) {
+          @for (active of activePoint(); track active.context.index) {
+            <div
+              class="minerva-chart-quadrant-point"
+              [attr.data-point-index]="active.context.index"
+              [attr.data-label]="active.context.point.label ?? null"
+              [style]="active.style"
+            >
+              <ng-container
+                [ngTemplateOutlet]="tpl"
+                [ngTemplateOutletContext]="active.context"
+              />
+            </div>
+          }
+        }
+      </div>
+    }
     <div #points style="display:contents"></div>`,
 })
 export class MnQuadrantChart extends MnCartesianChartBase {
@@ -563,6 +640,25 @@ export class MnQuadrantChart extends MnCartesianChartBase {
    * (`pointDrop`, with `draggable`)
    */
   readonly accessiblePoints = input(true, { transform: booleanAttribute });
+  /**
+   * Header of each quadrant, in its outer corner (top edge for the top
+   * quadrants, bottom edge for the bottom ones, aligned to the outer side);
+   * replaces the drawn title, badge, description and count. The header
+   * receives pointer events (e.g. an add button). Context: `let-corner`,
+   * `let-info="info"` (`QuadrantHeaderInfo`)
+   */
+  readonly quadrantHeader = input<
+    TemplateRef<QuadrantHeaderContext> | null | undefined
+  >(undefined);
+  /**
+   * Content shown next to the active point (hovered, keyboard-focused or
+   * `selectedIndex`), outside the canvas hit region (e.g. edit / delete
+   * buttons); it receives pointer events. Context: `let-point`,
+   * `let-index="index"`
+   */
+  readonly pointActions = input<
+    TemplateRef<QuadrantPointActionsContext> | null | undefined
+  >(undefined);
 
   /** A point was clicked */
   readonly pointClick = output<{ point: QuadrantPoint; index: number }>();
@@ -582,9 +678,99 @@ export class MnQuadrantChart extends MnCartesianChartBase {
   private lastClick: { index: number; time: number } | null = null;
   /** Keyboard-focused point of the accessible layer (drawn with a focus ring) */
   private readonly focusedIndex = signal<number | null>(null);
+  /** Point under the pointer (engine hover) */
+  private readonly hoveredIndex = signal<number | null>(null);
+  /** Plot area reported by the engine (position of the templates) */
+  private readonly plot = signal<ChartRect | null>(null);
   private readonly pointsHost =
     viewChild.required<ElementRef<HTMLElement>>("points");
   private destroyed = false;
+
+  /** Overlay of the templates over the plot area (`null`: nothing to show) */
+  protected readonly overlayStyle = computed(() => {
+    const rect = this.plot();
+    if (!rect || !(this.quadrantHeader() || this.pointActions())) return null;
+    return `position:absolute;left:${rect.x}px;top:${rect.y}px;width:${rect.width}px;height:${rect.height}px;pointer-events:none`;
+  });
+
+  /** Position of a data point in the plot, in fractions of its size */
+  private visual(x: number, y: number) {
+    const [x0, x1] = this.xDomain() ?? [0, 10];
+    const [y0, y1] = this.yDomain() ?? [0, 10];
+    const fx = fraction(x, x0, x1);
+    return {
+      x: this.reverseX() ? 1 - fx : fx,
+      y: 1 - fraction(y, y0, y1),
+    };
+  }
+
+  /** The quadrant headers: their box, slot style and template context */
+  protected readonly headers = computed(() => {
+    const rect = this.plot() ?? { width: 0, height: 0 };
+    const [x0, x1] = this.xDomain() ?? [0, 10];
+    const [y0, y1] = this.yDomain() ?? [0, 10];
+    const split = this.visual(
+      this.xSplit() ?? (x0 + x1) / 2,
+      this.ySplit() ?? (y0 + y1) / 2,
+    );
+    const sx = rect.width * split.x;
+    const sy = rect.height * split.y;
+    const groups = quadrantGroups({
+      ...this.geometry(),
+      points: this.points(),
+    });
+    const regions = this.quadrants();
+    return QUADRANT_CORNERS.map((corner) => {
+      const left = corner.endsWith("Left");
+      const top = corner.startsWith("top");
+      const group = groups[corner];
+      const context: QuadrantHeaderContext = {
+        $implicit: corner,
+        corner,
+        info: {
+          count: group.points.length,
+          points: group.points,
+          indices: group.indices,
+          region: regions?.[corner],
+        },
+      };
+      return {
+        corner,
+        context,
+        box: `position:absolute;left:${left ? 0 : sx}px;top:${top ? 0 : sy}px;width:${left ? sx : rect.width - sx}px;height:${top ? sy : rect.height - sy}px;pointer-events:none`,
+        style: `position:absolute;${top ? "top" : "bottom"}:0;${left ? "left" : "right"}:0;max-width:100%;box-sizing:border-box;padding:8px;display:flex;justify-content:${left ? "flex-start" : "flex-end"};pointer-events:auto`,
+      };
+    });
+  });
+
+  /** The point showing `pointActions` (hovered, focused, then selected), as a list of 0 or 1 */
+  protected readonly activePoint = computed(() => {
+    const index =
+      this.hoveredIndex() ??
+      this.focusedIndex() ??
+      this.selectedIndex() ??
+      null;
+    const point = index === null ? undefined : this.points()[index];
+    if (
+      index === null ||
+      !point ||
+      !Number.isFinite(point.x) ||
+      !Number.isFinite(point.y)
+    )
+      return [];
+    const at = this.visual(point.x, point.y);
+    const context: QuadrantPointActionsContext = {
+      $implicit: point,
+      point,
+      index,
+    };
+    return [
+      {
+        context,
+        style: `position:absolute;left:${100 * at.x}%;top:${100 * at.y}%;width:0;height:0;pointer-events:none`,
+      },
+    ];
+  });
 
   constructor() {
     super();
@@ -666,7 +852,8 @@ export class MnQuadrantChart extends MnCartesianChartBase {
   }
 
   protected engineOptions(): ChartOptions {
-    return quadrantChartOptions(
+    const headers = !!this.quadrantHeader();
+    const options = quadrantChartOptions(
       {
         ...this.geometry(),
         points: this.points(),
@@ -679,13 +866,37 @@ export class MnQuadrantChart extends MnCartesianChartBase {
         pointSize: this.pointSize(),
         name: this.name(),
         draggable: this.draggable(),
-        showCounts: this.showCounts(),
+        showCounts: headers ? undefined : this.showCounts(),
         selectedIndex: this.selectedIndex(),
         selectedIndices: this.selectedIndices(),
       },
       this.commonOptions(),
       { focusedIndex: this.accessiblePoints() ? this.focusedIndex() : null },
     );
+    if (headers)
+      // the header templates replace the drawn titles (the first four areas)
+      options.annotations = options.annotations?.map((a, i) =>
+        i < 4 && a.type === "rect"
+          ? {
+              ...a,
+              label: undefined,
+              badge: undefined,
+              description: undefined,
+              detail: undefined,
+            }
+          : a,
+      );
+    return options;
+  }
+
+  protected override bindEngine(chart: ChartInstance): Array<() => void> {
+    return [
+      ...super.bindEngine(chart),
+      chart.on("hover", (event) =>
+        this.hoveredIndex.set(event?.items?.[0]?.index ?? null),
+      ),
+      chart.on("layout", (rect) => this.plot.set({ ...rect })),
+    ];
   }
 
   protected override clicked(event: ChartHoverEvent): void {

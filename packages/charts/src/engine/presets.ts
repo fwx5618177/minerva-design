@@ -567,6 +567,37 @@ export const quadrantCenter = (
   };
 };
 
+const CORNER_ORDER: readonly QuadrantCorner[] = [
+  "topLeft",
+  "topRight",
+  "bottomLeft",
+  "bottomRight",
+];
+
+/**
+ * Series data of a matrix, kept per `points` array: re-renders passing the
+ * same points (hover, focus, selection) keep the same data arrays, so the
+ * engine keeps its buffers and the hovered point
+ */
+const quadrantData = new WeakMap<
+  readonly QuadrantPoint[],
+  Map<string, ChartPointDatum[]>
+>();
+const cachedData = (
+  points: readonly QuadrantPoint[],
+  key: string,
+  make: () => ChartPointDatum[],
+): ChartPointDatum[] => {
+  let byKey = quadrantData.get(points);
+  if (!byKey) quadrantData.set(points, (byKey = new Map()));
+  let data = byKey.get(key);
+  if (!data) {
+    if (byKey.size >= 32) byKey.clear();
+    byKey.set(key, (data = make()));
+  }
+  return data;
+};
+
 /** Engine options of a quadrant matrix */
 export const quadrantChartOptions = (
   config: QuadrantConfig,
@@ -580,6 +611,19 @@ export const quadrantChartOptions = (
   const pointSize = config.pointSize ?? 12;
   const dotColor = (p: QuadrantPoint) =>
     p.color ?? color(quadrantOf(config, p.x, p.y));
+  // what the dot colors depend on, and the points themselves (arrays
+  // changed in place, e.g. reactive arrays, get new data)
+  const colorKey = JSON.stringify([
+    x0,
+    x1,
+    y0,
+    y1,
+    xs,
+    ys,
+    reverseX,
+    CORNER_ORDER.map(color),
+    config.points.map((p) => [p.x, p.y, p.size, p.color, p.label]),
+  ]);
 
   const series: ChartSeries[] = [
     {
@@ -588,45 +632,54 @@ export const quadrantChartOptions = (
       pointSize,
       showLabels: config.showLabels ?? true,
       opacity: 0.9,
-      data: config.points.map((p) => ({
-        x: p.x,
-        y: p.y,
-        label: p.label,
-        size: p.size,
-        color: dotColor(p),
-      })),
+      data: cachedData(config.points, colorKey, () =>
+        config.points.map((p) => ({
+          x: p.x,
+          y: p.y,
+          label: p.label,
+          size: p.size,
+          color: dotColor(p),
+        })),
+      ),
     },
   ];
-  // rings around the selected and the focused dots (out of hit tests)
+  // states of the selected and the focused dots, drawn over them (out of
+  // hit tests): a soft glow, a ring in the surface color, an outer ring
+  const SURFACE = "var(--surface-color, var(--background-color, #fff))";
   const ring = (
     id: string,
     indices: readonly number[],
     grow: number,
-    ringColor?: string,
+    look: { color?: string; stroke: number; opacity?: number },
   ): ChartSeries | null => {
-    const data = [...new Set(indices)]
-      .filter((i) => Number.isInteger(i) && config.points[i])
-      .map((i) => {
-        const p = config.points[i]!;
-        return {
-          x: p.x,
-          y: p.y,
-          size: (p.size ?? pointSize) + grow,
-          color: ringColor ?? dotColor(p),
-        };
-      });
-    return data.length
-      ? {
-          id,
-          type: "scatter",
-          // unnamed: left out of the accessible name of the chart
-          name: "",
-          tooltip: false,
-          opacity: 0,
-          stroke: 2,
-          data,
-        }
-      : null;
+    const unique = [...new Set(indices)].filter(
+      (i) => Number.isInteger(i) && config.points[i],
+    );
+    if (!unique.length) return null;
+    const data = cachedData(
+      config.points,
+      `${colorKey}|${id}|${grow}|${look.color ?? ""}|${pointSize}|${unique.join(",")}`,
+      () =>
+        unique.map((i) => {
+          const p = config.points[i]!;
+          return {
+            x: p.x,
+            y: p.y,
+            size: (p.size ?? pointSize) + grow,
+            color: look.color ?? dotColor(p),
+          };
+        }),
+    );
+    return {
+      id,
+      type: "scatter",
+      // unnamed: left out of the accessible name of the chart
+      name: "",
+      tooltip: false,
+      opacity: look.opacity ?? 0,
+      stroke: look.stroke,
+      data,
+    };
   };
   const selected = [
     ...(config.selectedIndices ?? []),
@@ -639,13 +692,14 @@ export const quadrantChartOptions = (
       ? [state.focusedIndex]
       : [];
   for (const extra of [
-    ring("quadrant:selected", selected, 9),
-    ring(
-      "quadrant:focus",
-      focused,
-      16,
-      "var(--focus-ring-color, var(--primary-color, #4f46e5))",
-    ),
+    ring("quadrant:selected-glow", selected, 18, { stroke: 0, opacity: 0.16 }),
+    ring("quadrant:selected", selected, 3, { color: SURFACE, stroke: 2.5 }),
+    ring("quadrant:selected-ring", selected, 10, { stroke: 2 }),
+    ring("quadrant:focus-gap", focused, 8, { color: SURFACE, stroke: 3 }),
+    ring("quadrant:focus", focused, 14, {
+      color: "var(--focus-ring-color, var(--primary-color, #4f46e5))",
+      stroke: 2.5,
+    }),
   ])
     if (extra) series.push(extra);
 
@@ -739,7 +793,7 @@ export const quadrantChartOptions = (
       : {
           zoom: false,
           ...(typeof base.interaction === "object" ? base.interaction : {}),
-          ...(config.draggable ? { dragPoints: true } : {}),
+          ...(config.draggable ? { dragPoints: true, dropTargets: true } : {}),
         };
 
   return {

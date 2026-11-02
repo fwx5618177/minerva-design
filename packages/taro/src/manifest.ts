@@ -371,6 +371,15 @@ const families: Array<{
     tests: ["packages/taro/src/kanban-board.test.tsx"],
   },
   {
+    names: ["QuadrantTaskBoard"],
+    scope:
+      'Controlled task board on top of the Taro QuadrantChart (points in, onPointsChange out; every other QuadrantChart prop is forwarded, its chart `labels` excepted): a row of quadrant headers under the chart (badge, quadrant title, count unless showCounts={false}, + add button), an actions toolbar for the selected task (task name, Edit and Delete text buttons; selection is internal or the controlled selectedIndex), a Modal with a required name Input (the keyboard confirm key saves) and a RadioGroup quadrant picker with Cancel / Save (Save disabled until the name is not blank), a danger ConfirmDialog before a delete, tapping an empty quadrant area to add a task there, drag and drop of the dots and the chart\'s accessible "move to" actions. Add/edit/move/delete/selection logic and the localized texts (labels overrides) come from the shared minerva-design/charts quadrant task helpers.',
+    limitations: [
+      "Beta: needs device validation. No keyboard moves (Shift + arrow keys) or double-tap to edit: mini-program views take no focus and the chart has no double tap; use the Edit button and the move to actions. The actions toolbar sits under the chart instead of floating on the selected dot, and the quadrant headers are a row under the chart instead of over the quadrants. Buttons use text glyphs (+) and words instead of the web SVG icons (mini programs have no inline SVG). Input aria-label and the accessible point list are read on H5; native hosts expose aria-role/aria-label only where the host supports them.",
+    ],
+    tests: ["packages/taro/src/quadrant-task-board.test.tsx"],
+  },
+  {
     names: ["MediaPlayer"],
     scope:
       "Video through the host <video> component (controls off, driven by createVideoContext: play/pause/seek/playbackRate/requestFullScreen) and audio through Taro.createInnerAudioContext, under a themed control bar: play/pause, skip back/forward (skipSeconds), touch seek bar with the buffered range and aria-valuetext, m:ss / h:mm:ss time, mute, audio volume bar, playback-rate cycle button, video fullscreen, loading spinner and translated error state; startTime (video initial-time, audio startTime), autoPlay, loop, muted/defaultMuted, title, poster, height/aspectRatio; onTimeUpdate/onEnded/onPlay/onPause/onLoadedMetadata/onError/onRateChange/onVolumeChange and a ref with play/pause/seek/context. controls={false} shows the host video's own controls. Captions: tracks (WebVTT or SRT, data: URLs inline) fetched with Taro.request, parsed by the shared minerva-design/core parser and drawn as an overlay synchronized with the time updates, a CC button with an Off / per-track choice row, the choice remembered in storage (default track otherwise) and onTrackChange.",

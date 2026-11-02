@@ -2,3 +2,4 @@
 // chart engine of minerva-design/charts/core (shared with the React charts
 // and the other renderers; the Vue build keeps it external).
 export * from "../components/Chart";
+export * from "../components/QuadrantTaskBoard";

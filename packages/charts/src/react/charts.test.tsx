@@ -391,7 +391,10 @@ describe("chart components", () => {
     const options = setOptions.mock.lastCall![0];
     expect(options.series.map((s) => s.id)).toEqual([
       undefined,
+      "quadrant:selected-glow",
       "quadrant:selected",
+      "quadrant:selected-ring",
+      "quadrant:focus-gap",
       "quadrant:focus",
     ]);
     const rect = options.annotations![0] as { label?: string; badge?: string };
@@ -408,7 +411,7 @@ describe("chart components", () => {
     expect(container.querySelector("[data-point-index]")).not.toBeNull();
   });
 
-  it("reports drags before the drop and highlights the target quadrant", async () => {
+  it("draws the dragged point live in the engine and highlights the target quadrant", async () => {
     const onPointDrag = vi.fn();
     const onPointDrop = vi.fn();
     const ref = createRef<ChartHandle>();
@@ -437,47 +440,54 @@ describe("chart components", () => {
           pointerId: 1,
         }),
       );
+    const mark = (name: string) =>
+      container.querySelector<HTMLElement>(`[data-drag-mark="${name}"]`);
     const from = chart.toPixel(2, 8)!;
     const to = chart.toPixel(8, 2)!;
     fire("pointerdown", from);
     fire("pointermove", { x: from.x + 20, y: from.y + 20 });
+    await flush();
+    // the drag start may re-render once (the point actions hide), the
+    // moves never do: no options round trip on every move
+    const atStart = updates.mock.calls.length;
+    fire("pointermove", { x: (from.x + to.x) / 2, y: (from.y + to.y) / 2 });
     fire("pointermove", to);
     expect(onPointDrag).toHaveBeenCalled();
     const last = onPointDrag.mock.lastCall!;
     expect(last[0]).toBe(points[0]);
     expect(last[2].quadrant).toBe("bottomLeft");
+    // synchronously, before any frame: the dot and its label follow the pointer
+    expect(mark("dot")!.style.display).toBe("block");
+    expect(parseFloat(mark("dot")!.style.left)).toBeCloseTo(to.x, 0);
+    expect(parseFloat(mark("dot")!.style.top)).toBeCloseTo(to.y, 0);
+    expect(mark("label")!.textContent).toBe("Write report");
+    expect(mark("label")!.style.display).toBe("block");
+    expect(mark("origin")!.style.display).toBe("block");
+    expect(parseFloat(mark("origin")!.style.left)).toBeCloseTo(from.x, 0);
+    expect(mark("target")!.style.display).toBe("block");
     await flush();
-    expect(
-      container.querySelector(".minerva-chart-quadrant-target"),
-    ).not.toBeNull();
-    expect(updates.mock.lastCall?.[0].series[0].data).toEqual([
-      expect.objectContaining({
-        x: expect.closeTo(8, 5),
-        y: expect.closeTo(2, 5),
-      }),
-    ]);
+    expect(updates).toHaveBeenCalledTimes(atStart);
     expect(points[0]).toEqual({ x: 2, y: 8, label: "Write report" });
     fire("pointerup", to);
     expect(onPointDrop).toHaveBeenCalledTimes(1);
-    await flush();
-    expect(
-      container.querySelector(".minerva-chart-quadrant-target"),
-    ).toBeNull();
+    expect(onPointDrop.mock.lastCall![2].quadrant).toBe("bottomLeft");
+    // the dot waits where it was released for the new data
+    expect(mark("target")!.style.display).toBe("none");
+    expect(mark("origin")!.style.display).toBe("none");
+    expect(mark("dot")!.style.display).toBe("block");
   });
 
-  it("clears the drop highlight when the pointer is released outside the plot", async () => {
+  it("cancels a drag with Escape: no drop, the preview goes away", async () => {
+    const onPointDrop = vi.fn();
     const ref = createRef<ChartHandle>();
     const points = [{ x: 2, y: 8 }];
     const { container } = render(
-      <QuadrantChart
-        ref={ref}
-        points={points}
-        onPointDrop={() => {}}
-        quadrants={{ bottomLeft: {} }}
-      />,
+      <QuadrantChart ref={ref} points={points} onPointDrop={onPointDrop} />,
     );
     await flush();
     const chart = ref.current!.getInstance()!;
+    const ends = vi.fn();
+    chart.on("dragEnd", ends);
     const stage = container.querySelector(".minerva-chart-stage")!;
     const at = chart.toPixel(2, 8)!;
     const fire = (type: string, p: { x: number; y: number }) =>
@@ -489,17 +499,18 @@ describe("chart components", () => {
           pointerId: 1,
         }),
       );
+    const dot = () =>
+      container.querySelector<HTMLElement>('[data-drag-mark="dot"]');
     fire("pointerdown", at);
     fire("pointermove", { x: at.x + 30, y: at.y + 30 });
-    await flush();
-    expect(
-      container.querySelector(".minerva-chart-quadrant-target"),
-    ).not.toBeNull();
-    window.dispatchEvent(new PointerEvent("pointerup"));
-    await flush();
-    expect(
-      container.querySelector(".minerva-chart-quadrant-target"),
-    ).toBeNull();
+    expect(dot()!.style.display).toBe("block");
+    window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+    expect(dot()!.style.display).toBe("none");
+    expect(ends).toHaveBeenCalledWith(
+      expect.objectContaining({ cancelled: true }),
+    );
+    fire("pointerup", { x: at.x + 30, y: at.y + 30 });
+    expect(onPointDrop).not.toHaveBeenCalled();
   });
 
   it("calls onPointDoubleClick for two quick clicks on a point", async () => {

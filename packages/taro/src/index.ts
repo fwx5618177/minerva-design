@@ -14,3 +14,4 @@ export * from "./theme";
 export * from "./date-picker";
 export * from "./charts";
 export * from "./shape-charts";
+export * from "./quadrant-task-board";

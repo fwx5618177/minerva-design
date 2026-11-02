@@ -17,6 +17,7 @@ import "../../src/elements/trading-chart";
 import "../../src/elements/order-book";
 import "../../src/elements/chart-3d";
 import "../../src/elements/graph";
+import "../../src/elements/quadrant-task-board";
 import "../../src/elements/icon";
 import { customStates } from "../../src/internal/styling-hooks";
 import {
@@ -59,9 +60,10 @@ describe("styling hooks contract (web components)", () => {
     // `chart-3d` and `graph` entries) render a surface drawn by a chart engine;
     // their parts (`root`, `surface`) are not in the styling hooks manifest
     // of @minerva/core yet. Same for the icon elements (optional `icon` entry,
-    // parts `icon` / `surface`).
+    // parts `icon` / `surface`) and the quadrant task board (optional
+    // `quadrant-task-board` entry, built on the quadrant chart).
     const pending = (tag: string | undefined) =>
-      /^minerva-(.+-)?chart$|^minerva-(sparkline|calendar-heatmap|order-book(-heatmap)?|time-and-sales|dependency-graph|icon|icon-canvas)$/.test(
+      /^minerva-(.+-)?chart$|^minerva-(sparkline|calendar-heatmap|order-book(-heatmap)?|time-and-sales|dependency-graph|icon|icon-canvas|quadrant-task-board)$/.test(
         tag ?? "",
       );
     expect(

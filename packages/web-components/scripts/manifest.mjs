@@ -197,6 +197,7 @@ export const OPTIONAL_ENTRIES = [
   "chart-3d",
   "graph",
   "icon",
+  "quadrant-task-board",
 ];
 
 /** Optional entry of a manifest element (`undefined`: all-in-one). */

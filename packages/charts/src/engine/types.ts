@@ -431,6 +431,13 @@ export interface ChartInteractionOptions {
    * @default false
    */
   dragPoints?: boolean;
+  /**
+   * While a point is dragged, the area annotation (`type: "rect"`) under
+   * the pointer is highlighted: where the point would land (the quadrants
+   * of a quadrant matrix)
+   * @default false
+   */
+  dropTargets?: boolean;
 }
 
 /** Tooltip options */
@@ -672,13 +679,21 @@ export interface ChartRect {
   height: number;
 }
 
-/** A dragged point (`drag` / `drop` events) */
+/** A dragged point (`dragStart` / `drag` / `drop` events) */
 export interface ChartDragEvent {
   /** The point being dragged */
   item: ChartHoverItem;
   /** Data coordinates under the pointer */
   x: number;
   y: number;
+}
+
+/** End of a point drag (`dragEnd`), after the `drop` or without one */
+export interface ChartDragEndEvent {
+  /** The point that was dragged */
+  item: ChartHoverItem;
+  /** Escape, a cancelled pointer or a release outside the chart: no `drop` */
+  cancelled: boolean;
 }
 
 /** A click (or tap) on the plot area outside the points */
@@ -698,10 +713,17 @@ export interface ChartEventMap {
   renderer: ChartRendererKind;
   /** The plot area moved or was resized */
   layout: ChartRect;
-  /** A point is dragged (`interaction.dragPoints`) */
+  /** A point starts moving with the pointer (`interaction.dragPoints`) */
+  dragStart: ChartDragEvent;
+  /**
+   * A point is dragged, on every pointer move: the chart already draws it
+   * under the pointer (no need to update the options while dragging)
+   */
   drag: ChartDragEvent;
-  /** A dragged point was released */
+  /** A dragged point was released (the chart does not move it: update the data) */
   drop: ChartDragEvent;
+  /** The drag is over (after `drop`, or cancelled with Escape) */
+  dragEnd: ChartDragEndEvent;
 }
 
 /** Chart created by `createChart` */

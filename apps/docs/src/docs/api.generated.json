@@ -4296,6 +4296,36 @@
       }
     ]
   },
+  "css:QuadrantTaskBoard": {
+    "kind": "cssVars",
+    "source": "react/src/components/QuadrantTaskBoard",
+    "vars": [
+      {
+        "name": "--quadrant-task-board-header-color",
+        "description": "Text color of the quadrant titles (defaults to --text-color)"
+      },
+      {
+        "name": "--quadrant-task-board-header-background",
+        "description": "Background of the quadrant headers (defaults to a translucent surface)"
+      },
+      {
+        "name": "--quadrant-task-board-count-background",
+        "description": "Background of the task count chips (defaults to --surface-muted-color)"
+      },
+      {
+        "name": "--quadrant-task-board-count-color",
+        "description": "Text color of the task count chips (defaults to --text-secondary-color)"
+      },
+      {
+        "name": "--quadrant-task-board-actions-background",
+        "description": "Background of the toolbar of the active task (defaults to --surface-elevated-color)"
+      },
+      {
+        "name": "--quadrant-task-board-actions-radius",
+        "description": "Corner radius of the toolbar of the active task (defaults to --radius-md)"
+      }
+    ]
+  },
   "css:Radio": {
     "kind": "cssVars",
     "source": "react/src/components/Radio",
@@ -9865,6 +9895,27 @@
         "type": "Ref<HTMLDivElement>",
         "required": false,
         "description": "Ref to the root element"
+      }
+    ]
+  },
+  "QuadrantTaskBoardProps": {
+    "source": "react/src/components/QuadrantTaskBoard/QuadrantTaskBoard.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<QuadrantChartProps, | \"onPointDrop\" | \"onQuadrantClick\" | \"onPointDoubleClick\" | \"renderPointActions\" | \"renderQuadrantHeader\" | \"labels\">"
+    ],
+    "props": [
+      {
+        "name": "onPointsChange",
+        "type": "(points: QuadrantPoint[]) => void",
+        "required": true,
+        "description": "Called with the next list of tasks after an add, an edit, a delete, a drag and drop or a keyboard move (controlled: pass them back as `points`)"
+      },
+      {
+        "name": "labels",
+        "type": "Partial<QuadrantTaskLabels>",
+        "required": false,
+        "description": "Texts of the buttons and dialogs (localized by default)"
       }
     ]
   },

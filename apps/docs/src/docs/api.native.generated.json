@@ -9192,6 +9192,18 @@
         "description": "React content placed over each quadrant (e.g. an add button); the content receives touches, the rest of the quadrant does not"
       },
       {
+        "name": "renderQuadrantHeader",
+        "type": "(corner: QuadrantCorner, info: QuadrantHeaderInfo) => ReactNode",
+        "required": false,
+        "description": "React header of each quadrant, in its outer corner (top edge for the top quadrants, bottom edge for the bottom ones, aligned to the outer side); replaces the drawn title, badge, description and count. The header receives touches (e.g. an add button)"
+      },
+      {
+        "name": "renderPointActions",
+        "type": "(point: QuadrantPoint, index: number) => ReactNode",
+        "required": false,
+        "description": "React content shown next to the selected point (`selectedIndex`), e.g. edit / delete buttons: above the dot (below it near the top edge), kept inside the plot area so that it receives touches"
+      },
+      {
         "name": "accessiblePoints",
         "type": "boolean",
         "required": false,
@@ -9385,6 +9397,38 @@
       }
     ]
   },
+  "native:QuadrantHeaderInfo": {
+    "source": "native/src/components/Chart/types.ts",
+    "description": "What `renderQuadrantHeader` receives about a quadrant",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "count",
+        "type": "number",
+        "required": true,
+        "description": "Number of points in the quadrant"
+      },
+      {
+        "name": "points",
+        "type": "QuadrantPoint[]",
+        "required": true,
+        "description": "Points in the quadrant"
+      },
+      {
+        "name": "indices",
+        "type": "number[]",
+        "required": true,
+        "description": "Indices of these points in `points`"
+      },
+      {
+        "name": "region",
+        "type": "QuadrantRegion | undefined",
+        "required": true,
+        "description": "Title, badge, description and color of the quadrant (`quadrants`)"
+      }
+    ]
+  },
   "native:QuadrantLabels": {
     "source": "charts/src/engine/presets.ts",
     "description": "Built-in texts of the quadrant matrices (accessible point layer)",
@@ -9533,6 +9577,27 @@
         "name": "bottomRight",
         "type": "QuadrantRegion",
         "required": false
+      }
+    ]
+  },
+  "native:QuadrantTaskBoardProps": {
+    "source": "native/src/components/QuadrantTaskBoard/QuadrantTaskBoard.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<QuadrantChartProps, | \"onPointDrop\" | \"onQuadrantClick\" | \"renderPointActions\" | \"renderQuadrantHeader\" | \"labels\">"
+    ],
+    "props": [
+      {
+        "name": "onPointsChange",
+        "type": "(points: QuadrantPoint[]) => void",
+        "required": true,
+        "description": "Called with the next list of tasks after an add, an edit, a delete, a drag and drop or a \"Move to\" accessibility action (controlled: pass them back as `points`)"
+      },
+      {
+        "name": "labels",
+        "type": "Partial<QuadrantTaskLabels>",
+        "required": false,
+        "description": "Texts of the buttons and dialogs (localized by default)"
       }
     ]
   },

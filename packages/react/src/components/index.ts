@@ -72,3 +72,5 @@ export * from "./MediaPlayer";
 export * from "./Flashcard";
 export * from "./KanbanBoard";
 export * from "./DatePicker";
+
+export * from "./QuadrantTaskBoard";

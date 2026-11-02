@@ -158,6 +158,12 @@ export const NATIVE_COMPONENTS: readonly NativeComponent[] = [
   { name: "KanbanBoard", contract: "KanbanBoard" },
   { name: "KanbanColumn", contract: "KanbanColumn" },
   { name: "KanbanCard", contract: "KanbanCard" },
+  {
+    name: "QuadrantTaskBoard",
+    contract: "QuadrantTaskBoard",
+    notes:
+      'On the native QuadrantChart (views, no SVG): add button in each quadrant header, edit / delete toolbar next to the selected (tapped) task, add / edit Dialog with a name field and a quadrant RadioGroup, ConfirmDialog before a delete; moves by dragging a dot or the screen-reader "Move to" actions. No double tap to edit (use the toolbar)',
+  },
   { name: "Flashcard", contract: "Flashcard" },
   { name: "SegmentedControl", contract: "SegmentedControl" },
   { name: "Collapse", contract: null, aliases: ["CollapseItem"] },

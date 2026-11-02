@@ -40,6 +40,8 @@ const EXPECTED_DIFFERENCES: Record<string, string> = {
   "minerva-vstack.direction": "fixed by the element (React omits the prop)",
   "minerva-gantt-chart.formatProgress":
     'a function: its React @default documents the output ("60%")',
+  "minerva-quadrant-task-board.height":
+    "left undefined: the inner minerva-quadrant-chart applies its 320px default",
 };
 
 const contracts = generateContracts();

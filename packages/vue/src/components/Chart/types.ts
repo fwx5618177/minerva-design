@@ -13,6 +13,8 @@ import type {
   OrderBookInstance,
   OrderBookSnapshot,
   QuadrantCorner,
+  QuadrantPoint,
+  QuadrantRegion,
   ShapeChartInstance,
   TimeAndSalesInstance,
   TradingBar,
@@ -344,4 +346,16 @@ export interface QuadrantDropTarget {
   y: number;
   /** Quadrant of the drop, as seen on screen */
   quadrant: QuadrantCorner;
+}
+
+/** What the `quadrant-header` slot of QuadrantChart receives about a quadrant */
+export interface QuadrantHeaderInfo {
+  /** Number of points in the quadrant */
+  count: number;
+  /** Points in the quadrant */
+  points: QuadrantPoint[];
+  /** Indices of these points in `points` */
+  indices: number[];
+  /** Title, badge, description and color of the quadrant (`quadrants`) */
+  region: QuadrantRegion | undefined;
 }

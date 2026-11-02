@@ -3,7 +3,7 @@
 // uni-app, OffscreenCanvas, or a plain browser canvas. The host forwards
 // touches / pointer events; everything else is handled here.
 
-import { toCss } from "./color";
+import { parseColor, toCss } from "./color";
 import {
   createChartController,
   scenePrimitives,
@@ -13,13 +13,15 @@ import {
   type ChartPrimitive,
   type ChartScene,
 } from "./controller";
+import type { DragPreview } from "./drag-preview";
 import { buildItems, cellStyleKey, type Origin } from "./items";
+import type { Rect } from "./layout";
 import { drawBackground, drawForeground, font } from "./overlay";
 import { createCanvas2dPainter } from "./renderers/canvas2d";
 import type { RenderItem } from "./renderers/types";
 import { liftedBarRect, type HoverMark } from "./scene";
 import { itemsSignature } from "./signature";
-import type { ChartThemeInput } from "./theme";
+import type { ChartTheme, ChartThemeInput } from "./theme";
 import { CANVAS_TOOLTIP_ALPHA, tooltipColors } from "./tooltip";
 import type { ChartOptions, ChartRect, ChartView } from "./types";
 
@@ -390,6 +392,84 @@ const drawLiftedMarks = (
   }
 };
 
+/** A CSS color with its alpha multiplied (canvas: no color-mix) */
+const withAlpha = (color: string, alpha: number) => {
+  const rgba = parseColor(color);
+  return rgba ? toCss(rgba, rgba[3] * alpha) : color;
+};
+
+/**
+ * A dragged point: a dashed placeholder where it was, the dot lifted under
+ * the pointer with a shadow, and its label in a pill beside it
+ */
+export const drawDragPreview = (
+  ctx: CanvasRenderingContext2D,
+  d: DragPreview,
+  plot: Rect,
+  theme: ChartTheme,
+) => {
+  ctx.save();
+  if (d.origin) {
+    const r = (d.size - 2) / 2;
+    ctx.beginPath();
+    ctx.arc(d.origin.x, d.origin.y, r, 0, Math.PI * 2);
+    ctx.fillStyle = toCss(theme.background, 0.62);
+    ctx.fill();
+    ctx.setLineDash([3, 3]);
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = d.color;
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+  // shadow, then the halo and the dot ringed in the background color
+  ctx.beginPath();
+  ctx.arc(d.x, d.y + 3, d.size / 2 + 2, 0, Math.PI * 2);
+  ctx.fillStyle = "rgba(15, 23, 42, 0.18)";
+  ctx.shadowColor = "rgba(15, 23, 42, 0.35)";
+  ctx.shadowBlur = 10;
+  ctx.fill();
+  ctx.shadowColor = "transparent";
+  ctx.shadowBlur = 0;
+  ctx.beginPath();
+  ctx.arc(d.x, d.y, d.size / 2 + 5, 0, Math.PI * 2);
+  ctx.fillStyle = withAlpha(d.color, 0.24);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(d.x, d.y, d.size / 2 - 1, 0, Math.PI * 2);
+  ctx.fillStyle = d.color;
+  ctx.fill();
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = toCss(theme.background);
+  ctx.stroke();
+  if (d.label) {
+    ctx.font = font(theme, 12, 600);
+    const w = ctx.measureText(d.label).width + 18;
+    const h = 22;
+    const gap = d.size / 2 + 8;
+    const right =
+      d.x + gap + w <= plot.x + plot.width || d.x - gap - w < plot.x;
+    const x = right ? d.x + gap : d.x - gap - w;
+    const y = d.y - h / 2;
+    ctx.shadowColor = "rgba(15, 23, 42, 0.2)";
+    ctx.shadowBlur = 10;
+    ctx.shadowOffsetY = 3;
+    roundedRect(ctx, x, y, w, h, h / 2);
+    ctx.fillStyle = toCss(theme.background);
+    ctx.fill();
+    ctx.shadowColor = "transparent";
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetY = 0;
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = toCss(theme.axis, 0.7);
+    ctx.stroke();
+    ctx.fillStyle = toCss(theme.text);
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    ctx.fillText(d.label, x + 9, d.y);
+  }
+  ctx.restore();
+};
+
 /** Draws a scene (legend, axes, data, labels, hover) on a 2D context */
 export const drawScene = (
   ctx: CanvasRenderingContext2D,
@@ -458,6 +538,32 @@ export const drawScene = (
     ctx.fillStyle = toCss(theme.text, lifted ? 0.04 : 0.06);
     ctx.fill();
   }
+  // combo charts: the lifted bar goes below the data, so the lines (and
+  // their markers) stay above it, without a veil
+  const mixed = model.series.some(
+    (s) => !s.hidden && (s.type === "line" || s.type === "area"),
+  );
+  if (lifted && mixed && scene.hover)
+    drawLiftedMarks(ctx, scene.hover.marks, plot, theme);
+  // the area a dragged point would land in, below the data
+  const target = scene.dragging?.target;
+  if (target) {
+    ctx.save();
+    ctx.fillStyle = withAlpha(target.color, 0.12);
+    ctx.fillRect(target.x, target.y, target.width, target.height);
+    ctx.strokeStyle = withAlpha(target.color, 0.7);
+    ctx.lineWidth = 2;
+    roundedRect(
+      ctx,
+      target.x + 1,
+      target.y + 1,
+      target.width - 2,
+      target.height - 2,
+      4,
+    );
+    ctx.stroke();
+    ctx.restore();
+  }
 
   // data (horizontal charts: as shapes, the painter draws vertical charts)
   if (scales.horizontal) {
@@ -495,11 +601,12 @@ export const drawScene = (
   }
   // lifted bars and cells, below the value labels; the plot behind lifted
   // bars is veiled so the hovered one stands out
-  if (lifted) {
+  if (lifted && !mixed) {
     ctx.fillStyle = toCss(theme.background, 0.42);
     ctx.fillRect(plot.x, plot.y, plot.width, plot.height);
   }
-  if (scene.hover) drawLiftedMarks(ctx, scene.hover.marks, plot, theme);
+  if (scene.hover && !(lifted && mixed))
+    drawLiftedMarks(ctx, scene.hover.marks, plot, theme);
   drawForeground(ctx, {
     width,
     height,
@@ -572,6 +679,13 @@ export const drawScene = (
         mark.kind === "cell"
       )
         continue;
+      // a soft glow, the tinted halo, the dot ringed in the background color
+      ctx.beginPath();
+      ctx.arc(mark.x, mark.y, mark.size / 2 + 8, 0, Math.PI * 2);
+      ctx.fillStyle = mark.halo;
+      ctx.globalAlpha = 0.45;
+      ctx.fill();
+      ctx.globalAlpha = 1;
       ctx.beginPath();
       ctx.arc(mark.x, mark.y, mark.size / 2 + 4, 0, Math.PI * 2);
       ctx.fillStyle = mark.halo;
@@ -585,18 +699,7 @@ export const drawScene = (
       ctx.stroke();
     }
   }
-  if (scene.dragging) {
-    const d = scene.dragging;
-    ctx.beginPath();
-    ctx.arc(d.x, d.y, d.size / 2, 0, Math.PI * 2);
-    ctx.fillStyle = d.color;
-    ctx.globalAlpha = 0.85;
-    ctx.fill();
-    ctx.globalAlpha = 1;
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = toCss(theme.background);
-    ctx.stroke();
-  }
+  if (scene.dragging) drawDragPreview(ctx, scene.dragging, plot, theme);
   const tip = hover?.tooltip;
   if (tip) {
     const { box, lineHeight, padding } = tip;

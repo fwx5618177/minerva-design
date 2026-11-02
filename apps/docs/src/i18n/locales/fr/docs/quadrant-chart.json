@@ -411,6 +411,7 @@
         "noAccessiblePoints": "Retire la liste visuellement masquée des points (flèches pour passer d’un point à l’autre, Entrée pour cliquer, Maj + flèches pour déplacer le point ciblé, anneau de focus)",
         "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
         "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+        "activeIndex": "Index du point actif, celui qui affiche le slot point-actions : le point survolé, sinon celui qui a le focus clavier, sinon selectedIndex (null : aucun) ; lecture seule",
         "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
       },
       "events": {
@@ -423,6 +424,13 @@
         "minerva-plot-click": "La zone de tracé a été cliquée hors des points ; detail : { x, y } en coordonnées de données",
         "minerva-zoom": "L'utilisateur a zoomé ou s'est déplacé ; detail : { x, y } (les plages visibles)",
         "minerva-renderer-change": "Le moteur de rendu est prêt, ou s'est replié après une perte du GPU ; detail : { renderer }"
+      },
+      "slots": {
+        "quadrant-header-top-left": "En-tête du quadrant supérieur gauche, dans son coin extérieur (remplace le titre, le badge, la description et le nombre dessinés)",
+        "quadrant-header-top-right": "En-tête du quadrant supérieur droit",
+        "quadrant-header-bottom-left": "En-tête du quadrant inférieur gauche",
+        "quadrant-header-bottom-right": "En-tête du quadrant inférieur droit",
+        "point-actions": "Contenu affiché au point actif (par ex. des boutons modifier / supprimer), positionné par l’élément inséré ; il reçoit les événements du pointeur"
       },
       "methods": {
         "resetZoom": "Affiche toute la plage de données",

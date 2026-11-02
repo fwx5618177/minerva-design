@@ -312,6 +312,19 @@ export const weappComponentManifest = [
     deviceE2E: false,
   },
   {
+    name: "QuadrantTaskBoard",
+    scope:
+      "quadrant-task-board: controlled task board composing the native quadrant-chart, modal, input, select, button, icon-button and confirm-dialog components (usingComponents in its JSON). points in, pointschange { points } out; every quadrant-chart property is forwarded except the chart's own labels (labels are the board texts, partial overrides of the localized defaults). A 2 x 2 grid of quadrant headers above the chart (badge, title, count unless showCounts is false, + add button), a toolbar for the selected task (name, Edit and Delete buttons; selection is internal or the controlled selectedIndex), a modal with a name input (the keyboard confirm key saves) and a quadrant select with Cancel / Save (Save disabled while the name is blank), a danger confirm-dialog before a delete, tapping an empty quadrant area adds a task there, and draggable dots (default true) or the chart's accessible Move to buttons move a task. Add/edit/move/delete/selection logic and texts come from the shared minerva-design/charts quadrant task helpers. Chart methods (configure, resize, resetZoom, getView, setView, getPlotRect, toPixel, fromPixel) are forwarded to the inner chart; pointclick, pointdrag, hover, zoom and layout are re-emitted.",
+    limitations: [
+      "Beta: needs device validation. The canvas has no view overlays: the quadrant headers are a grid above the chart (the chart still draws its own quadrant titles) and the actions toolbar sits under the chart instead of floating on the selected dot. No double-tap to edit and no keyboard moves (Shift + arrow keys): mini-program views take no focus; use the Edit button and the Move to actions. Buttons use text glyphs (+, ✎, ✕) instead of the web SVG icons. Layout styles are inline (no dedicated stylesheet yet). The inner components are in the board's shadow tree: the config-provider / theme-provider relation across that boundary (theme tokens and messages of the dialogs) needs device validation; the board's locale is forwarded to the chart explicitly.",
+    ],
+    tests: [
+      "src/quadrant-task-board.test.ts: real native host add / edit / delete / move workflows",
+    ],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
     name: "Flashcard",
     scope:
       "Two-sided study card: front/back/footer named slots with plain-text front/back properties, translated front/back captions and optional hint, controlled (flipped, null = uncontrolled) or defaultFlipped state with flippedchange, flipOnClick, disabled, y/x axis, elevated/outline/filled variants, three sizes and minHeight. Both faces share one CSS grid cell (the card fits the taller face); the hidden face is aria-hidden and the back is a polite live region.",

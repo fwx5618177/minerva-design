@@ -84,3 +84,4 @@ export * from "./components/HtmlPreview";
 export * from "./components/Chart";
 export * from "./components/Charts";
 export * from "./components/ShapeChart";
+export * from "./components/QuadrantTaskBoard";

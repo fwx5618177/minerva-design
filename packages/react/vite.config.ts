@@ -231,6 +231,18 @@ export default defineConfig({
     // library build keeps it external like every other dependency.
     alias: [
       {
+        find: /^@minerva\/charts\/core$/,
+        replacement: fileURLToPath(
+          new URL("../charts/src/core.ts", import.meta.url),
+        ),
+      },
+      {
+        find: /^@minerva\/charts$/,
+        replacement: fileURLToPath(
+          new URL("../charts/src/index.ts", import.meta.url),
+        ),
+      },
+      {
         find: /^@minerva\/core\/tokens\.css$/,
         replacement: fileURLToPath(
           new URL("../core/src/theme/tokens.css", import.meta.url),

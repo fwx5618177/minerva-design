@@ -1925,6 +1925,81 @@
       { "name": "seek", "type": "(seconds: number) => void" }
     ]
   },
+  "QuadrantTaskBoard": {
+    "entry": "minerva-design/uni",
+    "props": [
+      {
+        "name": "accessiblePoints",
+        "type": "boolean | undefined",
+        "required": false,
+        "default": "true",
+        "description": "Renders a visually hidden list of the points for the screen readers\n(`aria-role` / `aria-label`): one button per point (its name, quadrant\nand values; a tap emits `pointClick`) and, with a `pointDrop` listener,\n\"Move to …\" buttons moving it to the neighbouring quadrants (`pointDrop`\nwith the quadrant center)"
+      },
+      { "name": "annotations", "type": "readonly ChartAnnotation[] | undefined", "required": false, "description": "Background areas and reference lines" },
+      {
+        "name": "ariaLabel",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Accessible name of the chart (default: the series names in the chart's locale, e.g. \"Chart: Revenue, Costs\")"
+      },
+      { "name": "axisLabels", "type": "QuadrantAxisLabels | undefined", "required": false, "description": "Texts at the ends of the dividers, drawn inside the plot" },
+      { "name": "crosshair", "type": "boolean | undefined", "required": false, "description": "Vertical guide line following the finger" },
+      { "name": "disableScroll", "type": "boolean | undefined", "required": false, "description": "Keeps the page from scrolling while a finger moves on the chart" },
+      { "name": "draggable", "type": "boolean | undefined", "required": false, "description": "Lets the user drag the dots (default: when a `pointDrop` listener is set)" },
+      {
+        "name": "height",
+        "type": "string | number | undefined",
+        "required": false,
+        "default": "320",
+        "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length (rpx included)"
+      },
+      { "name": "interaction", "type": "boolean | ChartInteractionOptions | undefined", "required": false, "description": "Pinch zoom, pan, double tap reset; `false` makes the chart static" },
+      { "name": "labels", "type": "Partial<QuadrantTaskLabels> | undefined", "required": false, "description": "Texts of the buttons and dialogs (localized by default)" },
+      { "name": "legend", "type": "boolean | ChartLegendOptions | undefined", "required": false, "description": "Legend; shown by default when several series have a name" },
+      {
+        "name": "locale",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact\nunits, separators, month and weekday names). Mini-programs have no\n`<html lang>`: pass the app language (default: the system language when\nthe runtime has `navigator.language`, else English)"
+      },
+      { "name": "name", "type": "string | undefined", "required": false, "description": "Name of the points in the tooltip" },
+      { "name": "padding", "type": "ChartPadding | undefined", "required": false, "description": "Space around the plot area, in pixels" },
+      { "name": "palette", "type": "readonly string[] | undefined", "required": false, "description": "Series colors (defaults to the theme colors)" },
+      { "name": "points", "type": "readonly QuadrantPoint[]", "required": true, "description": "Points to place (replace the array to update the chart)" },
+      { "name": "pointSize", "type": "number | undefined", "required": false, "description": "Dot diameter in pixels (default 12)" },
+      { "name": "quadrants", "type": "QuadrantRegions | undefined", "required": false, "description": "Titles and colors of the quadrants" },
+      { "name": "reverseX", "type": "boolean | undefined", "required": false, "description": "Reverses the horizontal axis" },
+      { "name": "selectedIndex", "type": "number | null | undefined", "required": false, "description": "Index of the selected point, drawn with a ring (`null`: none)" },
+      { "name": "selectedIndices", "type": "readonly number[] | undefined", "required": false, "description": "Indices of the selected points" },
+      { "name": "showCounts", "type": "boolean | undefined", "required": false, "description": "Shows the number of points of each quadrant after its title" },
+      { "name": "showLabels", "type": "boolean | undefined", "required": false, "description": "Draws the labels next to the dots (default `true`)" },
+      { "name": "showTicks", "type": "boolean | undefined", "required": false, "description": "Shows the numeric ticks of the axes (default `true`)" },
+      { "name": "tooltip", "type": "boolean | ChartTooltipOptions | undefined", "required": false, "description": "Tooltip; `false` disables it (`render` may return a string)" },
+      { "name": "width", "type": "string | number | undefined", "required": false, "default": "\"100%\"", "description": "Width of the chart; numbers are pixels" },
+      { "name": "xDomain", "type": "[number, number] | undefined", "required": false, "description": "Range of the horizontal axis (default `[0, 10]`)" },
+      { "name": "xLabel", "type": "string | undefined", "required": false, "description": "Title of the horizontal axis" },
+      { "name": "xSplit", "type": "number | undefined", "required": false, "description": "X value of the vertical divider (the middle of `xDomain` by default)" },
+      { "name": "yDomain", "type": "[number, number] | undefined", "required": false, "description": "Range of the vertical axis (default `[0, 10]`)" },
+      { "name": "yLabel", "type": "string | undefined", "required": false, "description": "Title of the vertical axis" },
+      { "name": "ySplit", "type": "number | undefined", "required": false, "description": "Y value of the horizontal divider (the middle of `yDomain` by default)" }
+    ],
+    "events": [
+      { "name": "hover", "type": "[event: ChartHoverEvent | null]" },
+      { "name": "pointClick", "type": "[point: QuadrantPoint, index: number]" },
+      { "name": "pointsChange", "type": "[points: QuadrantPoint[]]" },
+      { "name": "update:points", "type": "[points: QuadrantPoint[]]" },
+      { "name": "zoom", "type": "[view: ChartView]" }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "getInstance", "type": "() => CanvasChartInstance | null", "description": "The underlying canvas chart, `null` until the canvas is ready" },
+      { "name": "getRenderer", "type": "() => \"canvas2d\" | null", "description": "Always `canvas2d` once the canvas is ready, `null` before" },
+      { "name": "getView", "type": "() => ChartView | null", "description": "Visible range, `null` until the canvas is ready" },
+      { "name": "resetZoom", "type": "() => void", "description": "Shows the whole data range" },
+      { "name": "resize", "type": "() => void", "description": "Measures the canvas again (after a layout change the chart cannot see)" },
+      { "name": "setView", "type": "(view: Partial<ChartView>) => void", "description": "Sets the visible range" }
+    ]
+  },
   "ConfigProvider": {
     "entry": "minerva-design/uni",
     "props": [

@@ -6,6 +6,10 @@ import * as lib from "../index";
 const noop = () => {};
 
 export const componentSsrCases: Array<[string, ReactElement]> = [
+  [
+    "QuadrantTaskBoard",
+    <lib.QuadrantTaskBoard points={[]} onPointsChange={noop} />,
+  ],
   ["ThemeToggle", <lib.ThemeToggle />],
   ["PaletteToggle", <lib.PaletteToggle />],
   [

@@ -3148,9 +3148,29 @@
       }
     ]
   },
+  "ChartDragEndEvent": {
+    "source": "charts/src/engine/types.ts",
+    "description": "End of a point drag (`dragEnd`), after the `drop` or without one",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "item",
+        "type": "ChartHoverItem",
+        "required": true,
+        "description": "The point that was dragged"
+      },
+      {
+        "name": "cancelled",
+        "type": "boolean",
+        "required": true,
+        "description": "Escape, a cancelled pointer or a release outside the chart: no `drop`"
+      }
+    ]
+  },
   "ChartDragEvent": {
     "source": "charts/src/engine/types.ts",
-    "description": "A dragged point (`drag` / `drop` events)",
+    "description": "A dragged point (`dragStart` / `drag` / `drop` events)",
     "kind": "interface",
     "extends": [],
     "props": [
@@ -3212,16 +3232,28 @@
         "description": "The plot area moved or was resized"
       },
       {
+        "name": "dragStart",
+        "type": "ChartDragEvent",
+        "required": true,
+        "description": "A point starts moving with the pointer (`interaction.dragPoints`)"
+      },
+      {
         "name": "drag",
         "type": "ChartDragEvent",
         "required": true,
-        "description": "A point is dragged (`interaction.dragPoints`)"
+        "description": "A point is dragged, on every pointer move: the chart already draws it under the pointer (no need to update the options while dragging)"
       },
       {
         "name": "drop",
         "type": "ChartDragEvent",
         "required": true,
-        "description": "A dragged point was released"
+        "description": "A dragged point was released (the chart does not move it: update the data)"
+      },
+      {
+        "name": "dragEnd",
+        "type": "ChartDragEndEvent",
+        "required": true,
+        "description": "The drag is over (after `drop`, or cancelled with Escape)"
       }
     ]
   },
@@ -3551,6 +3583,13 @@
         "required": false,
         "default": "false",
         "description": "Scatter points can be dragged: `drag` events follow the pointer and a `drop` event ends the gesture (the data is not changed by the chart)"
+      },
+      {
+        "name": "dropTargets",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "While a point is dragged, the area annotation (`type: \"rect\"`) under the pointer is highlighted: where the point would land (the quadrants of a quadrant matrix)"
       }
     ]
   },
@@ -4451,9 +4490,9 @@
       },
       {
         "name": "dragging",
-        "type": "{ x: number; y: number; color: string; size: number } | null",
+        "type": "DragPreview | null",
         "required": true,
-        "description": "Point being dragged (`interaction.dragPoints`)"
+        "description": "Point being dragged (`interaction.dragPoints`): lifted under the pointer with its label, a placeholder where it was and the area it would land in (`interaction.dropTargets`)"
       },
       {
         "name": "connectors",
@@ -11030,6 +11069,109 @@
         "name": "bottomRight",
         "type": "QuadrantRegion",
         "required": false
+      }
+    ]
+  },
+  "QuadrantTaskDraft": {
+    "source": "charts/src/engine/quadrant-tasks.ts",
+    "description": "Content of the add / edit dialog of a task board",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "index",
+        "type": "number | null",
+        "required": true,
+        "description": "Index of the edited point; `null` for a new one"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "description": "Name typed in the dialog"
+      },
+      {
+        "name": "quadrant",
+        "type": "QuadrantCorner",
+        "required": true,
+        "description": "Quadrant picked in the dialog"
+      },
+      {
+        "name": "x",
+        "type": "number",
+        "required": true,
+        "description": "Position kept while the quadrant does not change"
+      },
+      {
+        "name": "y",
+        "type": "number",
+        "required": true
+      }
+    ]
+  },
+  "QuadrantTaskGeometry": {
+    "source": "charts/src/engine/quadrant-tasks.ts",
+    "description": "Geometry of a matrix (what places a point in a quadrant)",
+    "kind": "alias",
+    "type": "Pick<QuadrantConfig, \"xDomain\" | \"yDomain\" | \"xSplit\" | \"ySplit\" | \"reverseX\">"
+  },
+  "QuadrantTaskLabels": {
+    "source": "charts/src/engine/quadrant-tasks.ts",
+    "description": "Built-in texts of the task boards",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "add",
+        "type": "string",
+        "required": true,
+        "description": "Add button of a quadrant and title of the add dialog"
+      },
+      {
+        "name": "edit",
+        "type": "string",
+        "required": true,
+        "description": "Edit button of the active point and title of the edit dialog"
+      },
+      {
+        "name": "delete",
+        "type": "string",
+        "required": true,
+        "description": "Delete button of the active point and title of its confirmation"
+      },
+      {
+        "name": "deleteConfirm",
+        "type": "string",
+        "required": true,
+        "description": "Text of the delete confirmation: `{name}` is the task"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "description": "Label of the name field"
+      },
+      {
+        "name": "quadrant",
+        "type": "string",
+        "required": true,
+        "description": "Label of the quadrant field"
+      },
+      {
+        "name": "save",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "cancel",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "actions",
+        "type": "string",
+        "required": true,
+        "description": "Name of the actions toolbar of the active point"
       }
     ]
   },

@@ -141,6 +141,7 @@ export {
   type SparklineConfig,
 } from "./engine/presets";
 export {
+  QUADRANT_CORNERS,
   quadrantAccessibleGroups,
   quadrantKeyTarget,
   type QuadrantAccessibleConfig,
@@ -155,6 +156,21 @@ export {
   type QuadrantPointLayerOptions,
   type QuadrantPointMove,
 } from "./engine/quadrant-layer";
+export {
+  QUADRANT_TASK_ICONS,
+  applyQuadrantTaskDraft,
+  canSaveQuadrantTask,
+  editQuadrantTaskDraft,
+  moveQuadrantTask,
+  newQuadrantTaskDraft,
+  quadrantTaskDeleteText,
+  quadrantTaskLabels,
+  removeQuadrantTask,
+  selectionAfterRemove,
+  type QuadrantTaskDraft,
+  type QuadrantTaskGeometry,
+  type QuadrantTaskLabels,
+} from "./engine/quadrant-tasks";
 export type { ChartThemeInput } from "./engine/theme";
 export type {
   ChartAnnotation,
@@ -165,6 +181,7 @@ export type {
   ChartConnectorOptions,
   ChartCurve,
   ChartDependency,
+  ChartDragEndEvent,
   ChartDragEvent,
   ChartEventMap,
   ChartHoverEvent,

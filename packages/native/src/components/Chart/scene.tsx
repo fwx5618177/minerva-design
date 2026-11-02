@@ -1073,25 +1073,237 @@ const clip = (plot: ChartRect): ViewStyle => ({
 });
 
 /**
+ * Paint order of the layers. The static layers (`drawStatic`, cached) and
+ * the hover layers (`drawHover`) are siblings drawn in that order, so the
+ * marks that must stay below the data (lifted bars of combo charts) are
+ * lifted out of the tree order with a `zIndex`: background (0) < marks
+ * under the data < data and labels < hover marks, dots and tooltip.
+ */
+export const LAYER_Z = { under: 1, data: 2, over: 3 } as const;
+
+/**
+ * A visible line or area: the hover marks of the bars never cover it (combo
+ * charts), they are drawn below the data, without a veil
+ */
+export const hasVisibleLines = (scene: ChartScene): boolean =>
+  scene.model.series.some(
+    (s) => !s.hidden && (s.type === "line" || s.type === "area"),
+  );
+
+/**
  * Everything but the hover state: axes, grid, legend, annotations, data and
  * labels (cached by the caller while the model, view and size are the same)
  */
 export function drawStatic(scene: ChartScene, family?: string): ReactNode {
   const { plot } = scene.layout;
+  const layer = [clip(plot), { zIndex: LAYER_Z.data }];
   return (
     <>
       {drawBackground(scene, family)}
-      <View key="data" style={clip(plot)} {...part(C, "data")}>
+      <View key="data" style={layer} {...part(C, "data")}>
         {drawData(scene)}
       </View>
-      <View key="labels" style={clip(plot)} {...part(C, "labels")}>
+      <View key="labels" style={layer} {...part(C, "labels")}>
         {drawForeground(scene, family)}
       </View>
     </>
   );
 }
 
-/** Crosshair, highlighted points, dragged point and the default tooltip */
+/**
+ * Hover marker of a point: the dot, enlarged, with a ring in the background
+ * color, a tinted glow (the series color at 20%, 5px around) and a fainter
+ * outer one (10%, 9px around)
+ */
+function pointMarker(
+  key: string,
+  x: number,
+  y: number,
+  size: number,
+  color: string,
+  halo: string,
+  background: string,
+): ReactElement[] {
+  const d = size + 2;
+  return [
+    // `halo` is the series color at 20%: half of it for the outer glow
+    dot(`${key}-glow`, x, y, d + 18, halo, { opacity: 0.5 }),
+    dot(`${key}-halo`, x, y, d + 10, halo),
+    dot(key, x, y, d, color, { borderWidth: 2, borderColor: background }),
+  ];
+}
+
+/**
+ * The dragged point (`scene.dragging`). `label`, `origin` and `target` are
+ * optional: older controllers only give the position, size and color.
+ */
+type DragPreview = NonNullable<ChartScene["dragging"]> & {
+  /** Label of the point, shown in a pill next to it */
+  label?: string | null;
+  /** Where the point was before the drag (pixels of the stage) */
+  origin?: { x: number; y: number } | null;
+  /** The drop area under the point, highlighted */
+  target?: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    color: string;
+  } | null;
+};
+
+const finite = (...values: unknown[]) =>
+  values.every((v) => typeof v === "number" && Number.isFinite(v));
+
+/**
+ * The drop target, a dashed placeholder where the point was, the lifted
+ * point (a soft shadow below it) and its label in a pill
+ */
+function dragPreview(scene: ChartScene, family?: string): ReactElement {
+  const d = scene.dragging as DragPreview;
+  const { theme } = scene;
+  const background = css(theme.background);
+  const out: ReactElement[] = [];
+  const target = d.target;
+  if (
+    target &&
+    finite(target.x, target.y, target.width, target.height) &&
+    target.width > 0 &&
+    target.height > 0
+  ) {
+    const color = target.color || d.color;
+    out.push(
+      <View
+        key="target"
+        {...part(C, "drag-target")}
+        style={{
+          position: "absolute",
+          left: target.x,
+          top: target.y,
+          width: target.width,
+          height: target.height,
+        }}
+      >
+        <View
+          style={[
+            StyleSheet.absoluteFill,
+            { backgroundColor: color, opacity: 0.12, borderRadius: 8 },
+          ]}
+        />
+        <View
+          style={[
+            StyleSheet.absoluteFill,
+            {
+              borderWidth: 2,
+              borderColor: color,
+              opacity: 0.7,
+              borderRadius: 8,
+            },
+          ]}
+        />
+      </View>,
+    );
+  }
+  const origin = d.origin;
+  if (origin && finite(origin.x, origin.y)) {
+    const size = Math.max(8, d.size);
+    out.push(
+      <View
+        key="placeholder"
+        {...part(C, "drag-placeholder")}
+        style={{
+          position: "absolute",
+          left: origin.x - size / 2,
+          top: origin.y - size / 2,
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+          borderWidth: 1.5,
+          borderStyle: "dashed",
+          borderColor: d.color,
+          opacity: 0.75,
+        }}
+      />,
+    );
+  }
+  // lifted: a shadow 3px below (a soft edge around a darker core), then
+  // the point, a little larger than at rest, ringed in the background color
+  const size = d.size + 2;
+  out.push(
+    dot("shadow-edge", d.x, d.y + 3, size + 4, "rgba(0, 0, 0, 0.08)"),
+    dot("shadow", d.x, d.y + 3, size, "rgba(0, 0, 0, 0.18)"),
+    dot("point", d.x, d.y, size, d.color, {
+      borderWidth: 2,
+      borderColor: background,
+    }),
+  );
+  const text = d.label === null || d.label === undefined ? "" : String(d.label);
+  if (text) {
+    const fontSize = 12;
+    const lineHeight = lineHeightOf(fontSize);
+    const height = lineHeight + 6;
+    const gap = 8;
+    const estimate =
+      measureChartText(text, `600 ${fontSize}px sans-serif`) * 1.1 + 20;
+    // on the right of the point, on its left when it would overflow
+    const right = d.x + size / 2 + gap + estimate <= scene.width - 4;
+    out.push(
+      <View
+        key="label"
+        {...part(C, "drag-label")}
+        style={{
+          position: "absolute",
+          top: d.y - height / 2,
+          ...(right
+            ? { left: d.x + size / 2 + gap }
+            : { right: scene.width - (d.x - size / 2 - gap) }),
+          height,
+          maxWidth: Math.max(48, scene.width - 8),
+          paddingHorizontal: 9,
+          justifyContent: "center",
+          borderRadius: height / 2,
+          backgroundColor: css(theme.surface),
+          borderWidth: 1,
+          borderColor: css(theme.axis, 0.7),
+          shadowColor: "#0f172a",
+          shadowOpacity: 0.12,
+          shadowRadius: 4,
+          shadowOffset: { width: 0, height: 2 },
+          elevation: 2,
+        }}
+      >
+        <Text
+          numberOfLines={1}
+          style={{
+            fontSize,
+            lineHeight,
+            color: css(theme.text),
+            fontWeight: "600",
+            includeFontPadding: false,
+            ...(family ? { fontFamily: family } : null),
+          }}
+        >
+          {text}
+        </Text>
+      </View>,
+    );
+  }
+  return (
+    <View key="drag" {...part(C, "drag")} style={StyleSheet.absoluteFill}>
+      {out}
+    </View>
+  );
+}
+
+/**
+ * Crosshair, highlighted points, dragged point and the default tooltip.
+ *
+ * Order, bottom to top: [bars of combo charts, below the data] data and
+ * labels, crosshairs, veil and lifted bars (bar charts), cells, hovered
+ * points, dragged point, tooltip. With a visible line or area the hovered
+ * bar is lifted below the data, without a veil: the lines and their
+ * markers stay on top, only the grown edges and the shadow show.
+ */
 export function drawHover(
   scene: ChartScene,
   family: string | undefined,
@@ -1100,7 +1312,13 @@ export function drawHover(
   const { theme, layout, hover, dragging } = scene;
   const { plot } = layout;
   const background = css(theme.background);
+  const mixed = hasVisibleLines(scene);
+  /** Below the data layer (combo charts) */
+  const under: ReactElement[] = [];
+  /** Above the data and labels */
   const out: ReactElement[] = [];
+  /** Hovered points: above every other mark */
+  const points: ReactElement[] = [];
   if (hover && hover.crosshairY !== null) {
     out.push(
       <View
@@ -1144,7 +1362,7 @@ export function drawHover(
   let veiled = false;
   hover?.marks.forEach((m, i) => {
     if (m.kind === "band") {
-      out.push(
+      (mixed ? under : out).push(
         box(`mark-${i}`, m.x, m.y, m.width, m.height, css(theme.text, 0.05), {
           borderRadius: 6,
         }),
@@ -1160,24 +1378,30 @@ export function drawHover(
     }
     if (m.kind === "bar") {
       // the plot behind lifted bars is veiled so the hovered one stands out
-      if (!veiled) {
+      // (not in combo charts: the veil would fade the lines)
+      if (!veiled && !mixed) {
         veiled = true;
         out.push(
-          box(
-            "veil",
-            plot.x,
-            plot.y,
-            plot.width,
-            plot.height,
-            css(theme.background, 0.42),
-          ),
+          <View
+            key="veil"
+            {...part(C, "veil")}
+            style={{
+              position: "absolute",
+              left: plot.x,
+              top: plot.y,
+              width: plot.width,
+              height: plot.height,
+              backgroundColor: css(theme.background, 0.42),
+            }}
+          />,
         );
       }
       // lifted: thicker across (never longer: the length is the value), a
       // shadow and a ring inside its edge
       const r = liftedBarRect(m);
+      const layer = mixed ? under : out;
       if (m.backdrop)
-        out.push(
+        layer.push(
           box(
             `under-${i}`,
             r.x,
@@ -1190,7 +1414,7 @@ export function drawHover(
             },
           ),
         );
-      out.push(
+      layer.push(
         box(`mark-${i}`, r.x, r.y, r.width, r.height, m.color, {
           borderRadius: m.radius,
           ...(m.ring
@@ -1248,33 +1472,30 @@ export function drawHover(
         );
       return;
     }
-    // soft halo, then the dot with a thin ring in the background color
-    out.push(
-      dot(`halo-${i}`, m.x, m.y, m.size + 8, m.halo),
-      dot(`mark-${i}`, m.x, m.y, m.size, m.color, {
-        borderWidth: 2,
-        borderColor: background,
-      }),
+    points.push(
+      ...pointMarker(
+        `mark-${i}`,
+        m.x,
+        m.y,
+        m.size,
+        m.color,
+        m.halo,
+        background,
+      ),
     );
   });
-  if (dragging) {
+  if (points.length)
     out.push(
-      <View key="drag" {...part(C, "drag")} style={StyleSheet.absoluteFill}>
-        {dot(
-          "ghost",
-          dragging.x,
-          dragging.y,
-          dragging.size + 2,
-          dragging.color,
-          {
-            opacity: 0.85,
-            borderWidth: 2,
-            borderColor: background,
-          },
-        )}
+      <View
+        key="points"
+        {...part(C, "hover-points")}
+        style={StyleSheet.absoluteFill}
+      >
+        {points}
       </View>,
     );
-  }
+  // the point under the finger: above the hovered ones
+  if (dragging) out.push(dragPreview(scene, family));
   const tip = hover?.tooltip;
   if (tip && !customTooltip) {
     const { box: b, lineHeight, padding, content } = tip;
@@ -1388,7 +1609,28 @@ export function drawHover(
       </View>,
     );
   }
-  return out;
+  const layers: ReactElement[] = [];
+  if (under.length)
+    layers.push(
+      <View
+        key="under"
+        {...part(C, "hover-under")}
+        style={[StyleSheet.absoluteFill, { zIndex: LAYER_Z.under }]}
+      >
+        {under}
+      </View>,
+    );
+  if (out.length)
+    layers.push(
+      <View
+        key="hover"
+        {...part(C, "hover")}
+        style={[StyleSheet.absoluteFill, { zIndex: LAYER_Z.over }]}
+      >
+        {out}
+      </View>,
+    );
+  return layers;
 }
 
 /** Look of the tooltips (default and `renderTooltip` content) */

@@ -1,0 +1,141 @@
+import { expect, test } from "@playwright/test";
+
+for (const theme of ["light", "dark"] as const) {
+  test.describe(theme, () => {
+    test.beforeEach(async ({ page }) => {
+      await page.addInitScript((theme) => {
+        localStorage.setItem("minerva-docs-language", "en");
+        localStorage.setItem("minerva-docs-theme", theme);
+      }, theme);
+    });
+
+    test("quadrant task board: live drag, add / edit / delete in dialogs", async ({
+      page,
+    }) => {
+      await page.goto("#/quadrant-task-board");
+      const demo = page.locator("#demo-basic");
+      const stage = demo.locator(".minerva-chart-stage");
+      await stage.scrollIntoViewIfNeeded();
+      const anchor = demo.locator(
+        '.minerva-chart-quadrant-point[data-point-index="0"]',
+      );
+      await expect(anchor).toBeAttached();
+      const from = await anchor.evaluate((node) => {
+        const rect = node.getBoundingClientRect();
+        return { x: rect.x, y: rect.y };
+      });
+      const plot = (await demo
+        .locator(".minerva-chart-overlay")
+        .boundingBox())!;
+      const to = {
+        x: plot.x + plot.width * 0.7,
+        y: plot.y + plot.height * 0.7,
+      };
+      const dot = demo.locator('[data-drag-mark="dot"]');
+      await page.mouse.move(from.x, from.y);
+      await page.mouse.down();
+      try {
+        // the engine moves the dot and its label with every pointer move
+        await page.mouse.move(to.x, to.y, { steps: 12 });
+        const box = (await dot.boundingBox())!;
+        expect(
+          Math.hypot(
+            box.x + box.width / 2 - to.x,
+            box.y + box.height / 2 - to.y,
+          ),
+        ).toBeLessThan(3);
+        await expect(demo.locator('[data-drag-mark="label"]')).toBeVisible();
+        await expect(demo.locator('[data-drag-mark="origin"]')).toBeVisible();
+        await expect(demo.locator('[data-drag-mark="target"]')).toBeVisible();
+        await page.mouse.move(to.x + 20, to.y - 10);
+        const next = (await dot.boundingBox())!;
+        expect(next.x - box.x).toBeCloseTo(20, 0);
+        await page.screenshot({
+          path: test.info().outputPath("quadrant-live-drag.png"),
+        });
+      } finally {
+        await page.mouse.up();
+      }
+      // the drop moved the task: its anchor is where it was released
+      await expect
+        .poll(async () =>
+          anchor.evaluate((node) => {
+            const rect = node.getBoundingClientRect();
+            return { x: Math.round(rect.x), y: Math.round(rect.y) };
+          }),
+        )
+        .not.toEqual({ x: Math.round(from.x), y: Math.round(from.y) });
+      await page.mouse.move(to.x + 20, to.y + 35);
+      await demo
+        .getByRole("button", { name: "Edit task", exact: true })
+        .click();
+      const dialog = page.getByRole("dialog", {
+        name: "Edit task",
+        exact: true,
+      });
+      await dialog
+        .getByRole("textbox", { name: "Task name", exact: true })
+        .fill("Revised task");
+      await dialog.getByRole("button", { name: "Save", exact: true }).click();
+      await expect(demo.locator('[data-label="Revised task"]')).toBeAttached();
+      await demo
+        .getByRole("button", { name: "Delete task", exact: true })
+        .click();
+      await page
+        .getByRole("alertdialog")
+        .getByRole("button", { name: "Cancel", exact: true })
+        .click();
+      await expect(demo.locator('[data-label="Revised task"]')).toBeAttached();
+      await demo
+        .getByRole("button", { name: "Delete task", exact: true })
+        .click();
+      await page
+        .getByRole("alertdialog")
+        .getByRole("button", { name: "Delete", exact: true })
+        .click();
+      await expect(demo.locator('[data-label="Revised task"]')).toHaveCount(0);
+      await demo
+        .getByRole("button", { name: /^Add task ·/ })
+        .first()
+        .click();
+      const create = page.getByRole("dialog", {
+        name: "Add task",
+        exact: true,
+      });
+      await expect(
+        create.getByRole("button", { name: "Save", exact: true }),
+      ).toBeDisabled();
+      await create
+        .getByRole("textbox", { name: "Task name", exact: true })
+        .fill("Another task");
+      await create.getByRole("button", { name: "Save", exact: true }).click();
+      await expect(demo.locator('[data-label="Another task"]')).toBeAttached();
+    });
+
+    test("combo chart hover lifts the bar below the line", async ({ page }) => {
+      await page.goto("#/mixed-chart");
+      const demo = page.locator("#demo-revenue-growth");
+      const stage = demo.locator(".minerva-chart-stage");
+      await stage.scrollIntoViewIfNeeded();
+      const box = (await stage.boundingBox())!;
+      await page.mouse.move(box.x + box.width * 0.66, box.y + box.height * 0.5);
+      const bar = demo.locator('[data-hover-mark="bar"]').first();
+      await expect(bar).toBeVisible();
+      // the layer holding the lifted bar comes before the data canvas
+      const order = await bar.evaluate((node) => {
+        const stage = node.closest(".minerva-chart-stage")!;
+        const layers = [...stage.children];
+        const holder = layers.find((layer) => layer.contains(node))!;
+        const data = stage.querySelector(".minerva-chart-data");
+        return {
+          holder: layers.indexOf(holder),
+          data: data ? layers.indexOf(data) : -1,
+        };
+      });
+      expect(order.data).toBeGreaterThan(order.holder);
+      await page.screenshot({
+        path: test.info().outputPath("mixed-hover-line.png"),
+      });
+    });
+  });
+}

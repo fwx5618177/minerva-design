@@ -1,0 +1,142 @@
+{
+  "title": "四象限タスクボード",
+  "description": "アイゼンハワー・マトリクスのような四象限マトリクス上のタスクボードです。象限ヘッダーの +（または象限の空白部分）でタスクを追加し、アクティブなタスクの上に出るツールバーで編集・削除します。ダイアログでタスク名と象限を指定し、削除の前には確認が入ります。タスクはドラッグ＆ドロップまたは Shift + 矢印キーで移動でき、ダブルクリックで編集できます。ボードは制御コンポーネントです。タスクを points に渡し、onPointsChange で受け取った新しいリストを戻してください。QuadrantChart のその他の props（軸、象限のタイトル・バッジ・色、目盛り、ラベル…）も使え、組み込みのボタンとダイアログはアプリの言語に従います。minerva-design/charts ではなく minerva-design からエクスポートされます。",
+  "demos": {
+    "basic": {
+      "title": "アイゼンハワー・ボード",
+      "description": "緊急のタスクを左（reverseX）、重要なタスクを上に配置します。+ または象限の空白部分をクリックしてタスクを追加し、タスクを選択すると編集・削除でき、ドラッグ（または Shift + 矢印キー）で別の象限へ移動できます。サンプルのタスク名は、名前を変更するまでページの言語に従います。"
+    },
+    "custom-labels": {
+      "title": "テキストとバッジのカスタマイズ",
+      "description": "工数と効果で並べたプロダクトのロードマップです。labels でボタン、名前フィールド、削除確認の文言（{name} は項目名）を変更し、quadrants で各ヘッダーに番号バッジを付け、onPointsChange による変更を数えます。"
+    }
+  },
+  "data": {
+    "tasks": {
+      "loginOutage": "ログイン障害の修正",
+      "quarterlyPlanning": "四半期計画",
+      "bookTravel": "出張の予約",
+      "inboxZero": "受信トレイの整理"
+    },
+    "doFirst": "すぐやる",
+    "schedule": "計画する",
+    "delegate": "任せる",
+    "eliminate": "やめる",
+    "important": "重要",
+    "notImportant": "重要でない",
+    "urgent": "緊急",
+    "notUrgent": "緊急でない",
+    "boardAria": "タスクマトリクス：象限の間でタスクをドラッグ",
+    "roadmap": {
+      "features": {
+        "darkMode": "ダークモード",
+        "sso": "シングルサインオン",
+        "csvExport": "CSV エクスポート",
+        "rewriteBilling": "課金システムの再構築"
+      },
+      "quickWins": "クイックウィン",
+      "bigBets": "大きな賭け",
+      "fillIns": "すき間作業",
+      "moneyPits": "金食い虫",
+      "effort": "工数",
+      "impact": "効果",
+      "aria": "工数と効果で並べたロードマップ",
+      "add": "機能を追加",
+      "edit": "機能を編集",
+      "delete": "機能を削除",
+      "name": "機能名",
+      "deleteConfirm": "「{name}」をロードマップから削除します。",
+      "summary": "機能：{{features}} · 変更：{{changes}} 回"
+    }
+  },
+  "api": {
+    "QuadrantTaskBoardProps": {
+      "onPointsChange": "タスクの追加・編集・削除・ドラッグ＆ドロップ・キーボードでの移動のあとに、新しいタスクのリストを受け取って呼ばれます（制御：points として戻します）",
+      "labels": "ボタンとダイアログのテキスト（QuadrantTaskLabels を参照）。指定しなかったものはロケールに従います"
+    },
+    "QuadrantTaskLabels": {
+      "add": "各象限の追加ボタンと、追加ダイアログのタイトル",
+      "edit": "アクティブなタスクの編集ボタンと、編集ダイアログのタイトル",
+      "delete": "アクティブなタスクの削除ボタンと、その確認のタイトル",
+      "deleteConfirm": "削除確認の本文。{name} はタスク名に置き換えられます",
+      "name": "名前フィールドのラベル",
+      "quadrant": "象限フィールドのラベル",
+      "save": "ダイアログの保存ボタン",
+      "cancel": "ダイアログと確認のキャンセルボタン",
+      "actions": "アクティブなタスクのツールバーのアクセシブルな名前"
+    },
+    "QuadrantConfig": {
+      "points": "タスク { x, y, label, color, size }。onPointsChange で更新する制御されたリストです",
+      "xDomain": "横軸の範囲",
+      "yDomain": "縦軸の範囲",
+      "xSplit": "垂直の区切り線の X 値（既定は xDomain の中央）",
+      "ySplit": "水平の区切り線の Y 値（既定は yDomain の中央）",
+      "quadrants": "各象限のタイトル・バッジ・色。タイトルのない象限にはロケールに応じた既定のタイトルが表示されます",
+      "xLabel": "横軸のタイトル",
+      "yLabel": "縦軸のタイトル",
+      "axisLabels": "区切り線の両端に、プロット内に描画するテキスト（例：上端に「重要」）",
+      "showTicks": "軸の数値目盛りを表示します。false でマトリクスのみになります",
+      "reverseX": "横軸を反転します（例：緊急を左に）",
+      "showLabels": "重なりを避けて点の横にタスク名を描画します",
+      "pointSize": "点の直径（ピクセル）",
+      "name": "ツールチップに表示するタスクの名前",
+      "draggable": "タスクを別の象限へドラッグできるようにします（ボードでは既定で有効。false で無効）",
+      "showCounts": "各象限のタイトルの後にタスク数を表示します（ボードでは既定で有効。false で非表示、関数 (count, points) を渡すとその戻り値を表示）",
+      "selectedIndex": "選択中のタスクのインデックス。リングで囲みます（null：なし）。既定では、最後にクリック・移動・保存したタスクをボードが選択します",
+      "selectedIndices": "複数の選択中のタスクのインデックス。それぞれリングで囲みます"
+    },
+    "native_QuadrantTaskBoardProps": {
+      "onPointsChange": "タスクの追加・編集・削除・ドラッグ＆ドロップ、または「移動先」のアクセシビリティ操作のあとに、新しいタスクのリストを受け取って呼ばれます（制御：points として戻します）",
+      "labels": "ボタンとダイアログのテキスト（add、edit、delete、deleteConfirm、name、quadrant、save、cancel、actions）。指定しなかったものはロケールに従います"
+    }
+  },
+  "cssVars": {
+    "--quadrant-task-board-header-color": "象限タイトルの文字色（既定は --text-color）",
+    "--quadrant-task-board-header-background": "象限ヘッダーの背景（既定は半透明のサーフェス）",
+    "--quadrant-task-board-count-background": "タスク数チップの背景（既定は --surface-muted-color）",
+    "--quadrant-task-board-count-color": "タスク数チップの文字色（既定は --text-secondary-color）",
+    "--quadrant-task-board-actions-background": "アクティブなタスクのツールバーの背景（既定は --surface-elevated-color）",
+    "--quadrant-task-board-actions-radius": "アクティブなタスクのツールバーの角丸（既定は --radius-md）"
+  },
+  "native": {
+    "limitations": "React Native では、タスクはドラッグ＆ドロップまたはスクリーンリーダーの「移動先」操作で移動します。Shift + 矢印キーでの移動とダブルタップでの編集はありません（アクティブなタスクの編集ボタンを使います）。ボタンのアイコンは SVG に依存せず View で描画されます。",
+    "demos": {
+      "basic": {
+        "title": "アイゼンハワー・ボード",
+        "description": "+ または象限の空白部分をタップしてタスクを追加し、タスクをタップすると編集・削除ボタンが表示され、ドラッグで別の象限へ移動できます。サンプルのタスク名は、名前を変更するまでアプリの言語に従います。"
+      }
+    }
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "アイゼンハワー・ボード",
+        "description": "points・quadrants・axisLabels はプロパティで、reverse-x・hide-ticks・height は属性で設定します。minerva-points-change のリスナーが新しいリストを points に戻します。"
+      }
+    },
+    "minerva-quadrant-task-board": {
+      "props": {
+        "points": "タスク { x, y, label, color, size }。minerva-points-change の detail を戻すとボードが更新されます（制御）。プロパティのみ",
+        "quadrants": "各象限のタイトル・バッジ・色（topLeft、topRight、bottomLeft、bottomRight）。プロパティのみ",
+        "axisLabels": "区切り線の両端に、プロット内に描画するテキスト（top、bottom、left、right）。プロパティのみ",
+        "xDomain": "横軸の範囲（既定は [0, 10]）。プロパティのみ",
+        "yDomain": "縦軸の範囲（既定は [0, 10]）。プロパティのみ",
+        "hideTicks": "軸の数値目盛りを非表示にします（マトリクスのみ残ります）",
+        "hideLabels": "点の横のタスク名を非表示にします",
+        "hideCounts": "象限ヘッダーのタスク数を非表示にします",
+        "height": "チャートの高さ：ピクセルまたは任意の CSS の長さ（既定は 320）",
+        "locale": "組み込みテキスト、既定の象限タイトル、数値の言語（例：\"fr\"）。既定はライブラリの言語",
+        "noAccessiblePoints": "視覚的に非表示のタスク一覧（キーボードとスクリーンリーダーでの操作、Shift + 矢印キーでの移動）を省きます",
+        "options": "チャートのその他のエンジンオプション（凡例、ツールチップ、余白、パレット…）。プロパティのみ"
+      },
+      "events": {
+        "minerva-points-change": "タスクが変わりました（追加・編集・削除・ドラッグ＆ドロップ・キーボードでの移動）。detail：{ points }、points に戻す新しいリスト",
+        "minerva-point-click": "タスクがクリックされました（選択中のタスクになります）。detail：{ point, index }",
+        "minerva-point-drag": "タスクをドラッグ中です（移動するたびに発生）。detail：{ point, index, x, y, quadrant }",
+        "minerva-hover": "ホバー（またはキーボードでフォーカス）しているタスクが変わりました。detail：{ x, xLabel, items }、何もない場合は null",
+        "minerva-zoom": "ユーザーがチャートをズームまたはパンしました。detail：{ x, y }（表示範囲）",
+        "minerva-renderer-change": "チャートのバックエンドの準備ができた、または GPU の喪失後にフォールバックしました。detail：{ renderer }"
+      }
+    }
+  }
+}

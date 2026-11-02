@@ -88,6 +88,8 @@ await import("../../elements/order-book");
 await import("../../elements/chart-3d");
 await import("../../elements/graph");
 const { mount, settle } = await import("../../../tests/utils");
+const { QUADRANT_HEADER_SLOTS } = await import("./charts");
+type MinervaQuadrantChart = import("./charts").MinervaQuadrantChart;
 
 beforeEach(() => {
   engines.length = 0;
@@ -396,6 +398,61 @@ describe("cartesian elements", () => {
     expect(doubles.mock.calls.map(([event]) => event.detail)).toEqual([
       { point: points[0], index: 0 },
     ]);
+  });
+
+  it("<minerva-quadrant-chart> places the header and point-actions slots over the plot", async () => {
+    const points = [
+      { x: 2, y: 8, label: "A" },
+      { x: 8, y: 2, label: "B" },
+    ];
+    const { el, engine } = await create(
+      "minerva-quadrant-chart",
+      { points, quadrants: { topLeft: { label: "Do" } } },
+      "show-counts",
+    );
+    const quadrant = el as unknown as MinervaQuadrantChart;
+    const titles = () =>
+      (engine.options.annotations as Array<{ label?: unknown }>)
+        .slice(0, 4)
+        .map((a) => a.label);
+    // without slotted content: drawn titles, no overlay
+    expect(titles()[0]).toBeTruthy();
+    engine.fire("layout", { x: 10, y: 20, width: 200, height: 100 });
+    await settle();
+    expect(el.shadowRoot!.querySelector("[part=overlay]")).toBeNull();
+
+    el.innerHTML = `<b slot="quadrant-header-top-left">Do</b><i slot="point-actions">edit</i>`;
+    await settle();
+    expect(titles()).toEqual([undefined, undefined, undefined, undefined]);
+    const overlay =
+      el.shadowRoot!.querySelector<HTMLElement>("[part=overlay]")!;
+    expect(overlay.style.left).toBe("10px");
+    expect(overlay.style.width).toBe("200px");
+    expect(
+      Array.from(
+        el.shadowRoot!.querySelectorAll("[part=quadrant-header] slot"),
+      ).map((slot) => slot.getAttribute("name")),
+    ).toEqual(Object.values(QUADRANT_HEADER_SLOTS));
+    const anchor = () =>
+      el.shadowRoot!.querySelector<HTMLElement>("[part=point-actions]");
+    expect(anchor()).toBeNull();
+    expect(quadrant.activeIndex).toBeNull();
+
+    // the hovered dot, else the selected one
+    engine.fire("hover", { items: [{ index: 1 }] });
+    await settle();
+    expect(quadrant.activeIndex).toBe(1);
+    expect(anchor()!.dataset.pointIndex).toBe("1");
+    expect(anchor()!.style.left).toBe("80%");
+    engine.fire("hover", null);
+    quadrant.selectedIndex = 0;
+    await settle();
+    expect(anchor()!.dataset.pointIndex).toBe("0");
+
+    el.innerHTML = "";
+    await settle();
+    expect(titles()[0]).toBeTruthy();
+    expect(el.shadowRoot!.querySelector("[part=overlay]")).toBeNull();
   });
 });
 

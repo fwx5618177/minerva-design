@@ -11,6 +11,7 @@ import {
   type ChartOptions,
   type ChartPadding,
   type ChartPlotClickEvent,
+  type ChartRect,
   type ChartRendererKind,
   type ChartRendererPreference,
   type ChartSeries,
@@ -99,6 +100,8 @@ export interface CartesianHandlers {
   renderer?: (renderer: ChartRendererKind) => void;
   drag?: (event: ChartDragEvent) => void;
   drop?: (event: ChartDragEvent) => void;
+  /** The plot area moved or was resized */
+  layout?: (rect: ChartRect) => void;
 }
 
 /** Engine (`createChart`), root style and template handle of a cartesian chart */
@@ -123,6 +126,7 @@ export function useCartesianChart(
     chart.on("renderer", (renderer) => handlers.renderer?.(renderer)),
     chart.on("drag", (event) => handlers.drag?.(event)),
     chart.on("drop", (event) => handlers.drop?.(event)),
+    chart.on("layout", (rect) => handlers.layout?.(rect)),
   ]);
   const handle: ChartHandle = {
     resetZoom: () => instance.value?.resetZoom(),

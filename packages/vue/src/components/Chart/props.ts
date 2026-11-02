@@ -11,6 +11,10 @@ import type {
   ChartRendererPreference,
   ChartSeries,
   ChartTooltipOptions,
+  QuadrantAxisLabels,
+  QuadrantConfig,
+  QuadrantPoint,
+  QuadrantRegions,
   ShapeChartCommonOptions,
   ShapeDatum,
   ShapeLegendOptions,
@@ -68,6 +72,60 @@ export const chartCommonProps = {
   /** Overrides of the built-in texts of the `locale` */
   labels: Object as PropType<ChartOptions["labels"]>,
 };
+
+/** Props of QuadrantChart (shared with QuadrantTaskBoard) */
+export const quadrantChartProps = {
+  ...chartCommonProps,
+  /** Points to place (replace the array to update the chart) */
+  points: { type: Array as PropType<readonly QuadrantPoint[]>, required: true },
+  /** Range of the horizontal axis (default `[0, 10]`) */
+  xDomain: Array as unknown as PropType<[number, number]>,
+  /** Range of the vertical axis (default `[0, 10]`) */
+  yDomain: Array as unknown as PropType<[number, number]>,
+  /** X value of the vertical divider (the middle of `xDomain` by default) */
+  xSplit: Number,
+  /** Y value of the horizontal divider (the middle of `yDomain` by default) */
+  ySplit: Number,
+  /** Titles and colors of the quadrants */
+  quadrants: Object as PropType<QuadrantRegions>,
+  /** Title of the horizontal axis */
+  xLabel: String,
+  /** Title of the vertical axis */
+  yLabel: String,
+  /** Texts at the ends of the dividers, drawn inside the plot */
+  axisLabels: Object as PropType<QuadrantAxisLabels>,
+  /** Shows the numeric ticks of the axes (default `true`) */
+  showTicks: { type: Boolean, default: undefined },
+  /** Reverses the horizontal axis (e.g. "urgent" on the left) */
+  reverseX: { type: Boolean, default: undefined },
+  /** Draws the labels next to the dots (default `true`) */
+  showLabels: { type: Boolean, default: undefined },
+  /** Dot diameter in pixels (default 12) */
+  pointSize: Number,
+  /** Name of the points in the tooltip */
+  name: String,
+  /** Lets the user drag the dots (default: when a `pointDrop` listener is set) */
+  draggable: { type: Boolean, default: undefined },
+  /** Shows the number of points of each quadrant after its title; a function returns the text */
+  showCounts: {
+    type: [Boolean, Function] as PropType<QuadrantConfig["showCounts"]>,
+    default: undefined,
+  },
+  /** Index of the selected point, drawn with a ring (`null`: none) */
+  selectedIndex: {
+    type: Number as PropType<number | null>,
+    default: undefined,
+  },
+  /** Indices of the selected points */
+  selectedIndices: Array as PropType<readonly number[]>,
+  /**
+   * Renders a visually hidden list of the points per quadrant: screen
+   * readers can reach every point; arrows move between them, Enter clicks
+   * and Shift + arrows move the focused point to the neighbouring quadrant
+   * (`pointDrop`, with a `pointDrop` listener)
+   */
+  accessiblePoints: { type: Boolean, default: true },
+} as const;
 
 /** X / Y axes */
 export const chartAxisProps = {

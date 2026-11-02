@@ -135,9 +135,9 @@ const testAlias: Alias[] = [
     replacement: src("../../packages/vue/src/index.ts"),
   },
   // the optional entries of the web components (chart, trading-chart,
-  // order-book, chart-3d, graph, icon)
+  // order-book, chart-3d, graph, quadrant-task-board, icon)
   {
-    find: /^minerva-design\/web-components\/(chart|trading-chart|order-book|chart-3d|graph|icon)$/,
+    find: /^minerva-design\/web-components\/(chart|trading-chart|order-book|chart-3d|graph|quadrant-task-board|icon)$/,
     replacement: src("../../packages/web-components/src/elements/$1.ts"),
   },
   {
@@ -183,6 +183,7 @@ const sourceChartsAlias: Alias[] = process.env.DOCS_SOURCE_CHARTS
 const sourceFrameworksAlias: Alias[] = process.env.DOCS_SOURCE_FRAMEWORKS
   ? [
       "minerva-design/web-components/chart",
+      "minerva-design/web-components/quadrant-task-board",
       "minerva-design/web-components",
       "minerva-design/vue/charts",
       "minerva-design/vue",

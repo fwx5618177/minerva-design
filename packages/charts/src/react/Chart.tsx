@@ -10,6 +10,7 @@ import {
 import { createPortal, flushSync } from "react-dom";
 import { createChart } from "../engine/chart";
 import type {
+  ChartDragEndEvent,
   ChartDragEvent,
   ChartHoverEvent,
   ChartInstance,
@@ -27,8 +28,10 @@ interface Handlers {
   onPlotClick?: (event: ChartPlotClickEvent) => void;
   onZoom?: (view: ChartView) => void;
   onRendererChange?: (renderer: ChartRendererKind) => void;
+  onDragStart?: (event: ChartDragEvent) => void;
   onDrag?: (event: ChartDragEvent) => void;
   onDrop?: (event: ChartDragEvent) => void;
+  onDragEnd?: (event: ChartDragEndEvent) => void;
 }
 
 const size = (value: number | string | undefined, fallback: string) =>
@@ -238,8 +241,10 @@ export function ChartBase({
       chart.on("plotClick", (e) => handlersRef.current.onPlotClick?.(e)),
       chart.on("zoom", (v) => handlersRef.current.onZoom?.(v)),
       chart.on("renderer", (r) => handlersRef.current.onRendererChange?.(r)),
+      chart.on("dragStart", (e) => handlersRef.current.onDragStart?.(e)),
       chart.on("drag", (e) => handlersRef.current.onDrag?.(e)),
       chart.on("drop", (e) => handlersRef.current.onDrop?.(e)),
+      chart.on("dragEnd", (e) => handlersRef.current.onDragEnd?.(e)),
       chart.on("layout", (rect) => setPlot(rect)),
     ];
     return () => {

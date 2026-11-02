@@ -979,6 +979,7 @@
       { "name": "legend", "kind": "union", "required": false, "description": "Legend; shown by default when several series have a name", "only": "react" },
       { "name": "height", "kind": "union", "default": 320, "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
       { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
+      { "name": "renderTooltip", "kind": "node", "required": false, "description": "React content of the tooltip (replaces the default content)", "only": "react" },
       { "name": "xAxis", "kind": "object", "required": false, "description": "X axis", "only": "react" },
       { "name": "yAxis", "kind": "object", "required": false, "description": "Y axis", "only": "react" },
       {
@@ -1010,7 +1011,6 @@
         "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)",
         "only": "react"
       },
-      { "name": "renderTooltip", "kind": "node", "required": false, "description": "React content of the tooltip (replaces the default content)", "only": "react" },
       {
         "name": "options",
         "kind": "object",
@@ -5016,6 +5016,7 @@
       { "name": "height", "kind": "union", "default": 320, "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
       { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
       { "name": "labels", "kind": "object", "required": false, "description": "Overrides of the built-in texts of the `locale`", "only": "react" },
+      { "name": "renderTooltip", "kind": "node", "required": false, "description": "React content of the tooltip (replaces the default content)", "only": "react" },
       { "name": "xAxis", "kind": "object", "required": false, "description": "X axis", "only": "react" },
       { "name": "yAxis", "kind": "object", "required": false, "description": "Y axis", "only": "react" },
       {
@@ -5046,7 +5047,6 @@
         "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)",
         "only": "react"
       },
-      { "name": "renderTooltip", "kind": "node", "required": false, "description": "React content of the tooltip (replaces the default content)", "only": "react" },
       { "name": "colors", "kind": "array", "required": false, "description": "Colors of the groups in order of appearance (any CSS colors); the chart palette by default" },
       { "name": "taskName", "kind": "string", "required": false, "description": "Name of the tasks without a group", "attribute": "task-name" },
       { "name": "progressName", "kind": "string", "required": false, "description": "Name of the progress bars (legend, tooltip)", "attribute": "progress-name" },
@@ -5516,6 +5516,7 @@
       { "name": "height", "kind": "union", "default": 320, "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
       { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
       { "name": "labels", "kind": "object", "required": false, "description": "Overrides of the built-in texts of the `locale`", "only": "react" },
+      { "name": "renderTooltip", "kind": "node", "required": false, "description": "React content of the tooltip (replaces the default content)", "only": "react" },
       { "name": "xAxis", "kind": "object", "required": false, "description": "X axis", "only": "react" },
       { "name": "yAxis", "kind": "object", "required": false, "description": "Y axis", "only": "react" },
       {
@@ -5546,7 +5547,6 @@
         "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)",
         "only": "react"
       },
-      { "name": "renderTooltip", "kind": "node", "required": false, "description": "React content of the tooltip (replaces the default content)", "only": "react" },
       { "name": "data", "kind": "array", "required": true, "description": "Cells" },
       { "name": "xCategories", "kind": "array", "required": false, "description": "Column names in order (collected from the data when omitted)" },
       { "name": "yCategories", "kind": "array", "required": false, "description": "Row names from bottom to top (collected from the data when omitted)" },
@@ -5736,8 +5736,8 @@
       { "name": "legend", "kind": "union", "required": false, "description": "Legend; shown by default when several series have a name", "only": "react" },
       { "name": "height", "kind": "union", "default": 320, "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
       { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
-      { "name": "percent", "kind": "boolean", "default": false, "required": false, "description": "Scales the stacks to 100% (implies `stacked`)", "attribute": "percent" },
       { "name": "labels", "kind": "boolean", "default": false, "required": false, "description": "Writes the value above every bar", "attribute": "labels" },
+      { "name": "renderTooltip", "kind": "node", "required": false, "description": "React content of the tooltip (replaces the default content)", "only": "react" },
       { "name": "xAxis", "kind": "object", "required": false, "description": "X axis", "only": "react" },
       { "name": "yAxis", "kind": "object", "required": false, "description": "Y axis", "only": "react" },
       {
@@ -5769,7 +5769,7 @@
         "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)",
         "only": "react"
       },
-      { "name": "renderTooltip", "kind": "node", "required": false, "description": "React content of the tooltip (replaces the default content)", "only": "react" },
+      { "name": "percent", "kind": "boolean", "default": false, "required": false, "description": "Scales the stacks to 100% (implies `stacked`)", "attribute": "percent" },
       { "name": "stacked", "kind": "boolean", "default": false, "required": false, "description": "Stacks the bars of every series (otherwise they are grouped side by side)", "attribute": "stacked" },
       {
         "name": "options",
@@ -10030,7 +10030,13 @@
         "react": "onRendererChange"
       }
     ],
-    "slots": [],
+    "slots": [
+      { "name": "quadrant-header-top-left", "description": "Header of the top left quadrant (replaces its drawn title and count)" },
+      { "name": "quadrant-header-top-right", "description": "Header of the top right quadrant" },
+      { "name": "quadrant-header-bottom-left", "description": "Header of the bottom left quadrant" },
+      { "name": "quadrant-header-bottom-right", "description": "Header of the bottom right quadrant" },
+      { "name": "point-actions", "description": "Content shown at the active dot (e.g. edit / delete buttons), positioned by the slotted element" }
+    ],
     "children": false,
     "platforms": {
       "react": { "status": "stable" },
@@ -10049,6 +10055,183 @@
       "uni": {
         "status": "beta",
         "notes": "Cartesian chart drawn on a `<canvas type=\"2d\">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize). No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text. Quadrant badges, descriptions, showCounts (boolean only) and the selectedIndex/selectedIndices rings are drawn; renderQuadrantHeader and getPointProps are React-only. Accessible points (accessiblePoints): a visually hidden list of the points (aria-role / aria-label with name, quadrant and values; a tap emits pointClick) with 'Move to …' buttons emitting pointDrop with the center of the neighbouring quadrant (with a pointDrop listener). Mini-program views take no keyboard focus, so there is no focus ring nor Shift + arrow moves, and no live region: the move is announced (role=status) on H5 only. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      }
+    }
+  },
+  {
+    "name": "QuadrantTaskBoard",
+    "tag": "minerva-quadrant-task-board",
+    "docs": "quadrant-task-board",
+    "descriptionKey": "docs.quadrant-task-board.description",
+    "description": "Four-quadrant task board: add, edit, delete and drag tasks between quadrants.",
+    "tracks": ["toB", "toC"],
+    "props": [
+      { "name": "labels", "kind": "object", "required": false, "description": "Texts of the buttons and dialogs (localized by default)" },
+      { "name": "draggable", "kind": "boolean", "required": false, "description": "Lets the user drag the dots (`drag` / `drop` events)", "only": "react" },
+      { "name": "tooltip", "kind": "union", "required": false, "description": "Tooltip; `false` disables it", "only": "react" },
+      { "name": "name", "kind": "string", "required": false, "description": "Name of the points in the tooltip", "only": "react" },
+      { "name": "legend", "kind": "union", "required": false, "description": "Legend; shown by default when several series have a name", "only": "react" },
+      { "name": "height", "kind": "union", "default": 320, "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
+      { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
+      { "name": "renderTooltip", "kind": "node", "required": false, "description": "React content of the tooltip of a point", "only": "react" },
+      {
+        "name": "renderer",
+        "kind": "enum",
+        "values": ["auto", "canvas2d", "webgl", "webgl2", "webgpu"],
+        "default": "auto",
+        "required": false,
+        "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D",
+        "only": "react"
+      },
+      { "name": "crosshair", "kind": "boolean", "required": false, "description": "Vertical guide line following the pointer", "only": "react" },
+      { "name": "annotations", "kind": "array", "required": false, "description": "Background areas and reference lines", "only": "react" },
+      {
+        "name": "interaction",
+        "kind": "union",
+        "default": true,
+        "required": false,
+        "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static",
+        "only": "react"
+      },
+      { "name": "padding", "kind": "object", "required": false, "description": "Space around the plot area, in pixels", "only": "react" },
+      { "name": "palette", "kind": "array", "required": false, "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)", "only": "react" },
+      { "name": "ariaLabel", "kind": "string", "required": false, "description": "Accessible name of the chart", "only": "react" },
+      {
+        "name": "locale",
+        "kind": "string",
+        "required": false,
+        "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)",
+        "attribute": "locale"
+      },
+      {
+        "name": "quadrantContent",
+        "kind": "node",
+        "required": false,
+        "description": "React content placed over each quadrant (e.g. an add button); the content receives pointer events, the rest of the quadrant does not",
+        "only": "react"
+      },
+      {
+        "name": "accessiblePoints",
+        "kind": "boolean",
+        "default": true,
+        "required": false,
+        "description": "Visually hidden list of buttons per quadrant so keyboard and screen reader users can reach the dots: Enter / Space calls `onPointClick`, Shift + arrow keys move the point to the next quadrant (`onPointDrop` with the center of that quadrant); the focused dot gets a focus ring",
+        "only": "react"
+      },
+      {
+        "name": "getPointProps",
+        "kind": "function",
+        "required": false,
+        "description": "Extra attributes of the invisible anchor placed on each dot (e.g. `data-testid`); every anchor already has `data-point-index` and `data-label` and the class `minerva-chart-quadrant-point`",
+        "only": "react"
+      },
+      { "name": "points", "kind": "array", "required": true, "description": "Points to place" },
+      { "name": "xDomain", "kind": "array", "required": false, "description": "Range of the horizontal axis" },
+      { "name": "yDomain", "kind": "array", "required": false, "description": "Range of the vertical axis" },
+      { "name": "xSplit", "kind": "number", "required": false, "description": "X value of the vertical divider (the middle of `xDomain` by default)", "attribute": "x-split" },
+      { "name": "ySplit", "kind": "number", "required": false, "description": "Y value of the horizontal divider (the middle of `yDomain` by default)", "attribute": "y-split" },
+      { "name": "quadrants", "kind": "object", "required": false, "description": "Titles and colors of the quadrants" },
+      { "name": "xLabel", "kind": "string", "required": false, "description": "Title of the horizontal axis", "attribute": "x-label" },
+      { "name": "yLabel", "kind": "string", "required": false, "description": "Title of the vertical axis", "attribute": "y-label" },
+      { "name": "axisLabels", "kind": "object", "required": false, "description": "Texts at the ends of the dividers, drawn inside the plot (e.g. \"Important\" at the top)" },
+      { "name": "showTicks", "kind": "boolean", "default": true, "required": false, "description": "Shows the numeric ticks of the axes; `false` keeps only the matrix", "only": "react" },
+      { "name": "reverseX", "kind": "boolean", "required": false, "description": "Reverses the horizontal axis (e.g. \"urgent\" on the left)", "attribute": "reverse-x" },
+      { "name": "showLabels", "kind": "boolean", "default": true, "required": false, "description": "Draws the labels next to the dots (overlapping labels are skipped)", "only": "react" },
+      { "name": "pointSize", "kind": "number", "default": 12, "required": false, "description": "Dot diameter in pixels", "attribute": "point-size" },
+      {
+        "name": "showCounts",
+        "kind": "union",
+        "default": false,
+        "required": false,
+        "description": "Shows the number of points of each quadrant after its title; a function returns the text instead (e.g. `(n) => `${n} tasks``)",
+        "only": "react"
+      },
+      { "name": "selectedIndex", "kind": "number", "required": false, "description": "Index of the selected point: drawn with a ring of its color (`null`: none)", "attribute": "selected-index" },
+      { "name": "selectedIndices", "kind": "array", "required": false, "description": "Indices of the selected points (several selected points)", "only": "react" },
+      {
+        "name": "hideTicks",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "Hides the numeric ticks of the axes (only the matrix remains)",
+        "attribute": "hide-ticks",
+        "only": "wc"
+      },
+      { "name": "hideLabels", "kind": "boolean", "default": false, "required": false, "description": "Hides the labels next to the tasks", "attribute": "hide-labels", "only": "wc" },
+      { "name": "hideCounts", "kind": "boolean", "default": false, "required": false, "description": "Hides the number of tasks in the quadrant headers", "attribute": "hide-counts", "only": "wc" },
+      {
+        "name": "noAccessiblePoints",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "Leaves out the visually hidden list of the tasks (keyboard and screen reader access, keyboard moves)",
+        "attribute": "no-accessible-points",
+        "only": "wc"
+      },
+      { "name": "options", "kind": "object", "required": false, "description": "Other engine options of the chart (legend, tooltip, padding, palette...); property only", "only": "wc" }
+    ],
+    "events": [
+      {
+        "name": "minerva-points-change",
+        "wc": "minerva-points-change",
+        "detail": ["points"],
+        "description": "The tasks changed (add, edit, delete, drag and drop, keyboard move); `detail: { points }`, the next list to set back as `points`",
+        "react": "onPointsChange",
+        "native": "onPointsChange"
+      },
+      {
+        "name": "minerva-point-click",
+        "wc": "minerva-point-click",
+        "detail": ["point", "index"],
+        "description": "A task was clicked (it becomes the selected one); `detail: { point, index }`",
+        "react": "onPointClick",
+        "native": "onPointClick"
+      },
+      {
+        "name": "minerva-point-drag",
+        "wc": "minerva-point-drag",
+        "detail": ["point", "index", "x", "y", "quadrant"],
+        "description": "A task is being dragged (on every move); `detail: { point, index, x, y, quadrant }`",
+        "react": "onPointDrag"
+      },
+      {
+        "name": "minerva-hover",
+        "wc": "minerva-hover",
+        "detail": ["x", "xLabel", "items"],
+        "description": "The hovered (or keyboard-focused) task changed; `detail: { x, xLabel, items }`, `null` when nothing is hovered",
+        "react": "onHover",
+        "native": "onHover"
+      },
+      { "name": "minerva-zoom", "wc": "minerva-zoom", "description": "The user zoomed or panned the chart; `detail`: the view", "react": "onZoom", "native": "onZoom" },
+      {
+        "name": "minerva-renderer-change",
+        "wc": "minerva-renderer-change",
+        "description": "The chart backend is ready (or fell back after a GPU loss); `detail`: the renderer",
+        "react": "onRendererChange"
+      }
+    ],
+    "slots": [],
+    "children": false,
+    "platforms": {
+      "react": { "status": "stable" },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnQuadrantTaskBoard. Native standalone component/directive; see platform tests for validated scope." },
+      "native": {
+        "status": "beta",
+        "notes": "On the native QuadrantChart (views, no SVG): add button in each quadrant header, edit / delete toolbar next to the selected (tapped) task, add / edit Dialog with a name field and a quadrant RadioGroup, ConfirmDialog before a delete; moves by dragging a dot or the screen-reader \"Move to\" actions. No double tap to edit (use the toolbar)"
+      },
+      "taro": {
+        "status": "beta",
+        "notes": "Controlled task board on top of the Taro QuadrantChart (points in, onPointsChange out; every other QuadrantChart prop is forwarded, its chart `labels` excepted): a row of quadrant headers under the chart (badge, quadrant title, count unless showCounts={false}, + add button), an actions toolbar for the selected task (task name, Edit and Delete text buttons; selection is internal or the controlled selectedIndex), a Modal with a required name Input (the keyboard confirm key saves) and a RadioGroup quadrant picker with Cancel / Save (Save disabled until the name is not blank), a danger ConfirmDialog before a delete, tapping an empty quadrant area to add a task there, drag and drop of the dots and the chart's accessible \"move to\" actions. Add/edit/move/delete/selection logic and the localized texts (labels overrides) come from the shared minerva-design/charts quadrant task helpers. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Beta: needs device validation. No keyboard moves (Shift + arrow keys) or double-tap to edit: mini-program views take no focus and the chart has no double tap; use the Edit button and the move to actions. The actions toolbar sits under the chart instead of floating on the selected dot, and the quadrant headers are a row under the chart instead of over the quadrants. Buttons use text glyphs (+) and words instead of the web SVG icons (mini programs have no inline SVG). Input aria-label and the accessible point list are read on H5; native hosts expose aria-role/aria-label only where the host supports them. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "quadrant-task-board: controlled task board composing the native quadrant-chart, modal, input, select, button, icon-button and confirm-dialog components (usingComponents in its JSON). points in, pointschange { points } out; every quadrant-chart property is forwarded except the chart's own labels (labels are the board texts, partial overrides of the localized defaults). A 2 x 2 grid of quadrant headers above the chart (badge, title, count unless showCounts is false, + add button), a toolbar for the selected task (name, Edit and Delete buttons; selection is internal or the controlled selectedIndex), a modal with a name input (the keyboard confirm key saves) and a quadrant select with Cancel / Save (Save disabled while the name is blank), a danger confirm-dialog before a delete, tapping an empty quadrant area adds a task there, and draggable dots (default true) or the chart's accessible Move to buttons move a task. Add/edit/move/delete/selection logic and texts come from the shared minerva-design/charts quadrant task helpers. Chart methods (configure, resize, resetZoom, getView, setView, getPlotRect, toPixel, fromPixel) are forwarded to the inner chart; pointclick, pointdrag, hover, zoom and layout are re-emitted. Beta: needs device validation. The canvas has no view overlays: the quadrant headers are a grid above the chart (the chart still draws its own quadrant titles) and the actions toolbar sits under the chart instead of floating on the selected dot. No double-tap to edit and no keyboard moves (Shift + arrow keys): mini-program views take no focus; use the Edit button and the Move to actions. Buttons use text glyphs (+, ✎, ✕) instead of the web SVG icons. Layout styles are inline (no dedicated stylesheet yet). The inner components are in the board's shadow tree: the config-provider / theme-provider relation across that boundary (theme tokens and messages of the dialogs) needs device validation; the board's locale is forwarded to the chart explicitly. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "Controlled task board on top of the uni QuadrantChart (points in; update:points for v-model:points and pointsChange out; every other QuadrantChart prop is forwarded, the chart labels excepted; hover, pointClick and zoom are re-emitted and the chart handle is exposed): a row of quadrant headers under the chart (badge, quadrant title, count unless showCounts is false, + add button), an actions toolbar for the selected task (task name, Edit and Delete text buttons; selection is internal or the controlled selectedIndex), a Modal with a required name Input (the keyboard confirm key saves) and a RadioGroup quadrant picker with Cancel / Save (Save disabled until the name is not blank), a danger ConfirmDialog before a delete, tapping an empty quadrant area to add a task there, drag and drop of the dots and the chart's accessible move-to actions. Add/edit/move/delete/selection logic and the localized texts (labels overrides) come from the shared minerva-design/charts quadrant task helpers. No keyboard moves (Shift + arrow keys) or double-tap to edit: mini-program views take no focus and the chart has no double tap; use the Edit button and the move-to actions. The actions toolbar sits under the chart instead of floating on the selected dot, and the quadrant headers are a row under the chart instead of over the quadrants. Buttons use text glyphs (+) and words instead of the web SVG icons (mini programs have no inline SVG). Screen readers get aria-role / aria-label where the host supports them; device behavior still requires validation. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       }
     }
   },
@@ -11782,6 +11965,7 @@
       { "name": "tooltip", "kind": "union", "required": false, "description": "Tooltip; `false` disables it", "only": "react" },
       { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
       { "name": "labels", "kind": "object", "required": false, "description": "Overrides of the built-in texts of the `locale`", "only": "react" },
+      { "name": "renderTooltip", "kind": "node", "required": false, "description": "React content of the tooltip (replaces the default content)", "only": "react" },
       {
         "name": "renderer",
         "kind": "enum",
@@ -11800,7 +11984,6 @@
         "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)",
         "only": "react"
       },
-      { "name": "renderTooltip", "kind": "node", "required": false, "description": "React content of the tooltip (replaces the default content)", "only": "react" },
       { "name": "data", "kind": "union", "required": true, "description": "Values (or `[x, y]` pairs, typed arrays, ...)" },
       { "name": "type", "kind": "enum", "values": ["area", "bar", "line"], "default": "line", "required": false, "description": "How the values are drawn", "attribute": "type" },
       { "name": "color", "kind": "string", "required": false, "description": "Color (any CSS color); the first palette color by default", "attribute": "color" },
@@ -14941,6 +15124,7 @@
       { "name": "legend", "kind": "union", "required": false, "description": "Legend; shown by default when several series have a name", "only": "react" },
       { "name": "height", "kind": "union", "default": 320, "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
       { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
+      { "name": "renderTooltip", "kind": "node", "required": false, "description": "React content of the tooltip (replaces the default content)", "only": "react" },
       { "name": "xAxis", "kind": "object", "required": false, "description": "X axis", "only": "react" },
       { "name": "yAxis", "kind": "object", "required": false, "description": "Y axis", "only": "react" },
       {
@@ -14971,7 +15155,6 @@
         "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)",
         "only": "react"
       },
-      { "name": "renderTooltip", "kind": "node", "required": false, "description": "React content of the tooltip (replaces the default content)", "only": "react" },
       { "name": "name", "kind": "string", "required": false, "description": "Name of the series (tooltip)", "only": "react" },
       { "name": "start", "kind": "number", "default": 0, "required": false, "description": "Value the first change starts from", "attribute": "start" },
       { "name": "upColor", "kind": "string", "required": false, "description": "Color of the increases", "attribute": "up-color" },
