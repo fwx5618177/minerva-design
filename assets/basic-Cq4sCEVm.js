@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-B0Z9INg1.js";import{r as t}from"./native-preview-BRFLbKzw.js";import{n}from"./native-preview-BOht_3WW.js";import{C as r}from"./native-preview-COl-IdAc.js";function i(){return(0,a.jsx)(r,{label:`Loading records`})}var a;function o(){return(o=e((()=>{n(),a=t()})))()}o();export{i as default};
