@@ -1,0 +1,1 @@
+import{t as e}from"./docs-BBtEsra2.js";e();
