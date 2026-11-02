@@ -116,3 +116,20 @@ it("progress indicator has a determinate mode for bar and circle", () => {
     "mn-progress-determinate",
   );
 });
+it("page header and section are their own blocks, not extra .mn-page roots", () => {
+  const { container } = render(
+    <M.Page>
+      <M.PageHeader title="Title" className="custom-header" />
+      <M.PageSection title="Section" />
+    </M.Page>,
+  );
+  expect(container.querySelectorAll(".mn-page")).toHaveLength(1);
+  const header = container.querySelector('[data-minerva="page-header"]')!;
+  const section = container.querySelector('[data-minerva="page-section"]')!;
+  expect(header.className).toContain("mn-page-header");
+  expect(header.className).toContain("mn-page__header");
+  expect(header.className).toContain("custom-header");
+  expect(section.className).toContain("mn-page-section");
+  expect(section.className).toContain("mn-page__section");
+  expect(section.getAttribute("data-part")).toBe("root");
+});

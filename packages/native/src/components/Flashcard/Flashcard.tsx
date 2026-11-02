@@ -273,7 +273,12 @@ export function Flashcard({
               })}
             </View>
           ) : null}
-          <View style={{ alignItems: "center" }}>
+          {/* Plain text is centred; rich content stretches so it lines up with the label. */}
+          <View
+            style={{
+              alignItems: isText(isBack ? back : front) ? "center" : "stretch",
+            }}
+          >
             {textOf(isBack ? back : front, {
               ...textStyle(t, FONT[size], font),
               color: t.colors["text-color"],

@@ -93,6 +93,24 @@ describe("Flashcard (native)", () => {
     ).toBeNull();
   });
 
+  it("centres plain text but stretches rich content to the label's edge", async () => {
+    await render(
+      <Flashcard
+        front="Q"
+        back={<Text testID="rich">A</Text>}
+        defaultFlipped
+      />,
+    );
+    const wrapperOf = (node: { parent: unknown }) =>
+      (node.parent as { props: { style?: { alignItems?: string } } }).props;
+    expect(
+      wrapperOf(screen.getByText("Q", { includeHiddenElements: true })).style,
+    ).toMatchObject({ alignItems: "center" });
+    expect(wrapperOf(screen.getByTestId("rich")).style).toMatchObject({
+      alignItems: "stretch",
+    });
+  });
+
   it("converts minHeight", () => {
     expect(flashcardMinHeight(100)).toBe(100);
     expect(flashcardMinHeight("12rem")).toBe(192);

@@ -1844,7 +1844,13 @@ export function PageHeader({
   actions?: ReactNode;
 }) {
   return (
-    <Part name="page" part="header" {...props}>
+    // Own block name (like React's `page-header`) so app rules on `.mn-page` don't
+    // leak onto headers; `mn-page__header` is kept for existing selectors.
+    <Part
+      name="page-header"
+      {...props}
+      className={cn("mn-page__header", props.className)}
+    >
       <View>
         <Text className="mn-page-title">{title}</Text>
         {description && <Text className="mn-muted">{description}</Text>}
@@ -1868,7 +1874,11 @@ export function PageSection({
   icon?: ReactNode;
 }) {
   return (
-    <Part name="page" part="section" {...props}>
+    <Part
+      name="page-section"
+      {...props}
+      className={cn("mn-page__section", props.className)}
+    >
       <View className="mn-page-section-heading">
         {icon}
         <Text>{title}</Text>
