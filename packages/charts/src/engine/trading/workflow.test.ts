@@ -904,8 +904,15 @@ describe("time zones, sessions and the volume profile", () => {
   });
 
   it("draws the volume profile of the visible bars", async () => {
-    await mount({ bars: bars(200), volumeProfile: { rows: 30 } });
+    // Let each chart finish drawing and stop it before counting the next, so
+    // a late frame of one chart can't land in the other's count.
+    const profiled = await mount({
+      bars: bars(200),
+      volumeProfile: { rows: 30 },
+    });
+    await frames();
     const plain = calls.fillRect ?? 0;
+    profiled.chart.destroy();
     calls = {};
     const other = await mount({ bars: bars(200) });
     await frames();
