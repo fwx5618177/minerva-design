@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t,n,r,i;function a(){return(a=e((()=>{t=`TabBar 标签栏`,n=`使用原生移动控件和共享设计变量构建的标签栏。`,r={demos:{badges:{title:`徽标`,description:`TabBar 的徽标示例；预览随站点主题和色板更新。`},basic:{title:`基础用法`,description:`TabBar 的基础用法示例；预览随站点主题和色板更新。`}}},i={title:t,description:n,native:r}})))()}a();export{i as default};

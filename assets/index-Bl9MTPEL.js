@@ -1,0 +1,1 @@
+import{t as e}from"./docs-BTGjRAu_.js";e();

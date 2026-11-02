@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t,n,r,i;function a(){return(a=e((()=>{t=`滑动操作`,n=`使用原生移动控件和共享设计变量构建的滑动操作。`,r={demos:{basic:{title:`基础用法`,description:`SwipeCell 的基础用法示例；预览随站点主题和色板更新。`},"custom-actions":{title:`自定义操作`,description:`SwipeCell 的自定义操作示例；预览随站点主题和色板更新。`}}},i={title:t,description:n,native:r}})))()}a();export{i as default};

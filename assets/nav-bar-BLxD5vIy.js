@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t,n,r,i;function a(){return(a=e((()=>{t=`导航栏`,n=`使用原生移动控件和共享设计变量构建的导航栏。`,r={demos:{actions:{title:`操作`,description:`NavBar 的操作示例；预览随站点主题和色板更新。`},basic:{title:`基础用法`,description:`NavBar 的基础用法示例；预览随站点主题和色板更新。`}}},i={title:t,description:n,native:r}})))()}a();export{i as default};

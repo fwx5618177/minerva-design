@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t,n,r,i;function a(){return(a=e((()=>{t=`ナビゲーションバー`,n=`ネイティブの操作と共通デザイントークンを使うナビゲーションバー。`,r={demos:{actions:{title:`操作`,description:`NavBar の「操作」の例。プレビューはサイトのテーマとパレットに追従します。`},basic:{title:`基本的な使い方`,description:`NavBar の「基本的な使い方」の例。プレビューはサイトのテーマとパレットに追従します。`}}},i={title:t,description:n,native:r}})))()}a();export{i as default};

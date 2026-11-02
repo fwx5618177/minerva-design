@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t,n,r,i;function a(){return(a=e((()=>{t=`ImagePreview 图片预览`,n=`使用原生移动控件和共享设计变量构建的图片预览。`,r={demos:{basic:{title:`基础用法`,description:`ImagePreview 的基础用法示例；预览随站点主题和色板更新。`},controlled:{title:`受控状态`,description:`ImagePreview 的受控状态示例；预览随站点主题和色板更新。`}}},i={title:t,description:n,native:r}})))()}a();export{i as default};

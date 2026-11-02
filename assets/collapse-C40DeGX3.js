@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t,n,r,i;function a(){return(a=e((()=>{t=`折叠面板`,n=`使用原生移动控件和共享设计变量构建的折叠面板。`,r={demos:{accordion:{title:`手风琴`,description:`Collapse 的手风琴示例；预览随站点主题和色板更新。`},basic:{title:`基础用法`,description:`Collapse 的基础用法示例；预览随站点主题和色板更新。`}}},i={title:t,description:n,native:r}})))()}a();export{i as default};
