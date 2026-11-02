@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";import{en as t,wn as n}from"./angular-preview-BdNkX8l5.js";function r(e,n){return t(n)}function i(){return(i=e((()=>{n()})))()}export{r as n,i as t};
