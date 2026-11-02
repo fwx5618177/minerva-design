@@ -1,5 +1,11 @@
 # minerva-design
 
+## 1.16.1
+
+### Patch Changes
+
+- docs: icon gallery copy toasts, kind and color filters; one naming rule for component titles
+
 ## 1.16.0
 
 ### Minor Changes
