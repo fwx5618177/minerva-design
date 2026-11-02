@@ -1,5 +1,20 @@
 # minerva-design
 
+## 1.15.0
+
+### Minor Changes
+
+- 078043c: Kanban drag and drop, media captions, code marks and language detection, vertical sliders on every platform, quadrant chart keyboard parity, steadier tooltips.
+
+  - **KanbanBoard drag and drop** (React, Vue, Web Components, Angular, React Native, Taro, uni-app, WeChat): `draggable` boards move the new `KanbanCard` children of keyed columns (`value`) with the mouse, a touch long press or the keyboard (Space / Enter picks up and drops, the arrows move, Escape cancels, steps announced). Controlled: `onCardMove` / `card-move` / `minerva-card-move` / `(cardMove)` / `cardmove` report `{ cardKey, fromColumn, fromIndex, toColumn, toIndex }`; `moveKanbanCard` (`minerva-design/core`) applies it to plain lists; `canDrop` refuses positions (WeChat: `drop-disabled` columns). React Native adds screen-reader move actions.
+  - **MediaPlayer captions** (all renderers, plus React Native `MediaControls`): `tracks` takes WebVTT or SRT files; cues are drawn by the player (over the video, under the title for audio), a captions menu chooses the track (C toggles) and the choice is remembered; `onTrackChange`. Mini programs and React Native fetch and parse the file and sync the cue to the playback time. Shared parser in `minerva-design/core`.
+  - **CodeBlock marks**: `marks` (`{ start, end, color?, className?, id?, title? }`, UTF-16 offsets) highlight ranges over the syntax colors on every renderer, with `onMarkClick`; `getCodeSelectionRange` maps a DOM selection to code offsets.
+  - **CodeBlock `language="auto"`**: detects JavaScript, TypeScript, JSX/TSX, JSON, CSS, HTML, Bash, Python, YAML, SQL, diff and Markdown (`detectCodeLanguage` in `minerva-design/core`), on every renderer.
+  - **Slider**: `orientation="vertical"` on React Native, Taro, uni-app and WeChat (min at the bottom, range mode, tap to seek).
+  - **QuadrantChart**: the keyboard / screen-reader layer (arrows between points, Enter to click, Shift + arrows move a point to the next quadrant through `onPointDrop`, live announcements) now ships in Vue, Web Components and Angular too, with "Move to …" accessibility actions on React Native and accessible move buttons on the mini programs. The dragged point previews its position while dragging; `renderPointActions` places React actions next to the active point.
+  - **Tooltips**: always translucent, with colors resolved from the chart theme (no opaque fallback; the backdrop blur is an enhancement only) and refreshed on theme changes. Radar tooltips never cover the radar, its axis labels or the hovered vertex (they overflow into the page when the chart has no room). Gantt and horizontal bar tooltips avoid every task bar, not only the hovered one (`obstacles` in `placeTooltip`). Tooltips shown in the top layer follow page / container scrolling and resizing without waiting for the pointer, and are released with their chart.
+  - **Pagination** (mini programs): the simple-mode page input and "/ total" stay on one line.
+
 ## 1.14.0
 
 ### Minor Changes
