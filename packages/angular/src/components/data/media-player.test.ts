@@ -258,3 +258,131 @@ describe("MnMediaPlayer", () => {
     expect(media().muted).toBe(false);
   });
 });
+
+describe("MnMediaPlayer captions", () => {
+  // happy-dom builds a new TextTrack on each `track` read and refuses the
+  // "hidden" mode: one stable fake per <track>.
+  const textTracks = new WeakMap<HTMLTrackElement, TextTrack>();
+  const textTrackOf = (el: HTMLTrackElement) => {
+    let track = textTracks.get(el);
+    if (!track) {
+      track = Object.assign(new EventTarget(), {
+        mode: "disabled",
+        activeCues: null,
+      }) as unknown as TextTrack;
+      textTracks.set(el, track);
+    }
+    return track;
+  };
+  const tracks = [
+    { src: "/en.vtt", srclang: "en", label: "English" },
+    { src: "/fr.vtt", srclang: "fr", label: "Français", default: true },
+  ];
+  const trackEls = () => Array.from(media().querySelectorAll("track"));
+
+  @Component({
+    imports: [MnMediaPlayer],
+    template: `<mn-media-player
+      [src]="src()"
+      title="Talk"
+      [tracks]="tracks()"
+      (trackChange)="changes.push($event)"
+    />`,
+  })
+  class Host {
+    readonly src = signal("/clip.mp4");
+    readonly tracks =
+      signal<
+        { src: string; srclang?: string; label: string; default?: boolean }[]
+      >(tracks);
+    readonly changes: unknown[] = [];
+  }
+
+  beforeEach(() => {
+    localStorage.clear();
+    vi.spyOn(HTMLTrackElement.prototype, "track", "get").mockImplementation(
+      function (this: HTMLTrackElement) {
+        return textTrackOf(this);
+      },
+    );
+  });
+
+  it("renders <track> children and draws the active cue", async () => {
+    const fixture = await render(Host);
+    await settle(fixture);
+    const els = trackEls();
+    expect(els.map((el) => el.getAttribute("srclang"))).toEqual(["en", "fr"]);
+    expect(els[0]!.getAttribute("kind")).toBe("subtitles");
+    expect(els[1]!.hasAttribute("default")).toBe(false);
+    const fr = textTrackOf(els[1]!);
+    expect(fr.mode).toBe("hidden");
+    Object.defineProperty(fr, "activeCues", {
+      configurable: true,
+      value: [{ text: "Bonjour" }],
+    });
+    fr.dispatchEvent(new Event("cuechange"));
+    await settle(fixture);
+    expect(
+      document.querySelector('[data-part="captions"]')!.textContent!.trim(),
+    ).toBe("Bonjour");
+  });
+
+  it("chooses a track in the captions menu and emits trackChange", async () => {
+    const fixture = await render(Host);
+    await settle(fixture);
+    const cc = button("Captions");
+    expect(cc.getAttribute("aria-haspopup")).toBe("menu");
+    fireEvent.click(cc);
+    await settle(fixture);
+    expect(cc.getAttribute("aria-expanded")).toBe("true");
+    const items = Array.from(
+      document.querySelectorAll<HTMLElement>('[role="menuitemradio"]'),
+    );
+    expect(items.map((item) => item.textContent!.trim())).toEqual([
+      "Off",
+      "English",
+      "Français",
+    ]);
+    expect(document.activeElement).toBe(items[2]);
+    fireEvent.keyDown(items[2]!, { key: "ArrowUp" });
+    expect(document.activeElement).toBe(items[1]);
+    fireEvent.click(items[1]!);
+    await settle(fixture);
+    expect(fixture.componentInstance.changes).toEqual([
+      { index: 0, track: tracks[0] },
+    ]);
+    expect(document.querySelector('[role="menu"]')).toBeNull();
+    expect(localStorage.getItem("minerva-media-player-captions")).toBe("en");
+    expect(textTrackOf(trackEls()[0]!).mode).toBe("hidden");
+    expect(textTrackOf(trackEls()[1]!).mode).toBe("disabled");
+
+    fireEvent.keyDown(root(), { key: "c" });
+    await settle(fixture);
+    expect(fixture.componentInstance.changes.at(-1)).toEqual({
+      index: -1,
+      track: null,
+    });
+  });
+
+  it("shows SRT cues of an audio player under the title", async () => {
+    const srt = "1\n00:00:01,000 --> 00:00:03,000\nHello\n";
+    const fixture = await render(Host);
+    fixture.componentInstance.src.set("/talk.mp3");
+    fixture.componentInstance.tracks.set([
+      {
+        src: `data:application/x-subrip,${encodeURIComponent(srt)}`,
+        label: "English",
+        default: true,
+      },
+    ]);
+    await settle(fixture);
+    await load(fixture, 10);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    time = 2;
+    fireEvent(media(), new Event("timeupdate"));
+    await settle(fixture);
+    expect(
+      document.querySelector('[data-part="captions"]')!.textContent!.trim(),
+    ).toBe("Hello");
+  });
+});

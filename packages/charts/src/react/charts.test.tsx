@@ -283,6 +283,49 @@ describe("chart components", () => {
     ).toBe("bottomLeft");
   });
 
+  it("moves between the quadrant point buttons with arrows and reports the focused point", async () => {
+    const onHover = vi.fn();
+    const points = [
+      { x: 2, y: 8, label: "A" },
+      { x: 8, y: 2, label: "B" },
+    ];
+    const { container } = render(
+      <QuadrantChart locale="en" points={points} onHover={onHover} />,
+    );
+    await flush();
+    const button = (index: number) =>
+      container.querySelector<HTMLButtonElement>(
+        `button[data-point-index="${index}"]`,
+      )!;
+    act(() => button(0).focus());
+    expect(onHover).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        x: 2,
+        items: [expect.objectContaining({ index: 0, label: "A" })],
+      }),
+    );
+    act(() => {
+      button(0).dispatchEvent(
+        new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }),
+      );
+    });
+    expect(document.activeElement).toBe(button(1));
+    expect(onHover.mock.lastCall![0].items[0].index).toBe(1);
+    // without onPointDrop, Shift + arrows do not move the point
+    const shift = new KeyboardEvent("keydown", {
+      key: "ArrowUp",
+      shiftKey: true,
+      bubbles: true,
+      cancelable: true,
+    });
+    act(() => {
+      button(1).dispatchEvent(shift);
+    });
+    expect(shift.defaultPrevented).toBe(false);
+    act(() => button(1).blur());
+    expect(onHover).toHaveBeenLastCalledWith(null);
+  });
+
   it("renders quadrant headers, dot anchors and selection rings", async () => {
     const ref = createRef<ChartHandle>();
     const points = [
@@ -383,6 +426,7 @@ describe("chart components", () => {
     );
     await flush();
     const chart = ref.current!.getInstance()!;
+    const updates = vi.spyOn(chart, "setOptions");
     const stage = container.querySelector(".minerva-chart-stage")!;
     const fire = (type: string, at: { x: number; y: number }) =>
       stage.dispatchEvent(
@@ -406,6 +450,13 @@ describe("chart components", () => {
     expect(
       container.querySelector(".minerva-chart-quadrant-target"),
     ).not.toBeNull();
+    expect(updates.mock.lastCall?.[0].series[0].data).toEqual([
+      expect.objectContaining({
+        x: expect.closeTo(8, 5),
+        y: expect.closeTo(2, 5),
+      }),
+    ]);
+    expect(points[0]).toEqual({ x: 2, y: 8, label: "Write report" });
     fire("pointerup", to);
     expect(onPointDrop).toHaveBeenCalledTimes(1);
     await flush();

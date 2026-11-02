@@ -2801,7 +2801,7 @@
     "source": "web-components/src/components/code-block/code-block.ts",
     "className": "MinervaCodeBlock",
     "summary": "Read-only, scrollable code region with syntax highlighting and an optional copy button.",
-    "description": "A read-only block of preformatted text: logs, payloads, configuration (`<CodeBlock>` of React). It is a named, keyboard-focusable region so its overflow can be scrolled without a mouse. The text is the `code` property, else the element's text content (rendered verbatim, never parsed as HTML; escape `<` in markup or set `code`). `language` highlights the syntax (colored spans, see `--code-token-<type>-color`; `no-highlight` keeps plain text) and sets `class=\"language-<x>\"` / `data-language` on the `<code>`; `show-language` shows it as a small label, `show-line-numbers` numbers the lines. With `copyable`, a copy button writes the text to the clipboard; its label switches to \"Copied\" / \"Copy failed\" for two seconds and the result is announced through a polite live region.",
+    "description": "A read-only block of preformatted text: logs, payloads, configuration (`<CodeBlock>` of React). It is a named, keyboard-focusable region so its overflow can be scrolled without a mouse. The text is the `code` property, else the element's text content (rendered verbatim, never parsed as HTML; escape `<` in markup or set `code`). `language` highlights the syntax (colored spans, see `--code-token-<type>-color`; `no-highlight` keeps plain text) and sets `class=\"language-<x>\"` / `data-language` on the `<code>` (`language=\"auto\"` detects it from the text); `show-language` shows it as a small label, `show-line-numbers` numbers the lines. With `copyable`, a copy button writes the text to the clipboard; its label switches to \"Copied\" / \"Copy failed\" for two seconds and the result is announced through a polite live region. `marks` wraps character ranges in `<mark>`s over the highlighting; `getSelectionRange()` maps the user's selection to offsets to create them.",
     "properties": [
       {
         "name": "code",
@@ -2813,7 +2813,7 @@
         "name": "language",
         "attribute": "language",
         "type": "string | undefined",
-        "description": "Language of the code: highlights its syntax (javascript / js, typescript / ts, jsx, tsx, json, css / scss, html / xml / vue, bash / sh, python / py, yaml, sql, diff, markdown / md; other names render plain text) and sets `class=\"language-<x>\"` / `data-language` on the `<code>`"
+        "description": "Language of the code: highlights its syntax (javascript / js, typescript / ts, jsx, tsx, json, css / scss, html / xml / vue, bash / sh, python / py, yaml, sql, diff, markdown / md; other names render plain text) and sets `class=\"language-<x>\"` / `data-language` on the `<code>`. `auto` detects the language from the text (`detectCodeLanguage`, \"plain\" when unsure): the `<code>` and the label then show the detected name"
       },
       {
         "name": "noHighlight",
@@ -2858,6 +2858,19 @@
         "description": "Shows a copy button writing the text to the clipboard"
       },
       {
+        "name": "marks",
+        "attribute": "marks",
+        "type": "readonly CodeMark[] | undefined",
+        "description": "Character ranges to mark (saved highlights, annotations, search hits), rendered as `<mark part=\"code-mark\">` over the syntax highlighting (the copied text stays the raw code). `start` / `end` are UTF-16 offsets into `text`, clamped to it; empty ranges are ignored. Marks may cross tokens and lines (with show-line-numbers a mark is cut at each line break). Where marks overlap, the later one in the array wins (its color, class, title and click). `color`: a theme color name (a translucent tint) or any CSS color (default: translucent yellow, `--code-block-mark-bg`). Set the property, or a JSON array in the `marks` attribute"
+      },
+      {
+        "name": "clickableMarks",
+        "attribute": "clickable-marks",
+        "type": "boolean",
+        "default": "false",
+        "description": "Gives the marks a click affordance (pointer cursor, hover underline): set it when listening to `minerva-mark-click`"
+      },
+      {
         "name": "text",
         "type": "string",
         "readonly": true,
@@ -2865,6 +2878,11 @@
       }
     ],
     "methods": [
+      {
+        "name": "getSelectionRange",
+        "signature": "(selection?: Selection | AbstractRange | null) => CodeSelectionRange | null",
+        "description": "Offsets in `text` of the user's selection inside the code (to save it as a mark), `null` when nothing of the code is selected. Reads the selection through the shadow root (`getComposedRanges`, or the shadow root's own selection in Chromium); `selection` overrides it"
+      },
       {
         "name": "copy",
         "signature": "() => Promise<boolean>",
@@ -2875,6 +2893,10 @@
       {
         "name": "minerva-copy",
         "description": "The copy button (or `copy()`) was used: `detail: { text, success }` (`text` is the copied text; React's `onCopied` is called with it on success)."
+      },
+      {
+        "name": "minerva-mark-click",
+        "description": "A mark was clicked (not at the end of a text selection drag): `detail: { mark, originalEvent }` (`mark` is the item of `marks`, the topmost where they overlap; React's `onMarkClick`)."
       }
     ],
     "slots": [],
@@ -2894,6 +2916,10 @@
       {
         "name": "line-number",
         "description": "The number of a line, in the gutter (with show-line-numbers; aria-hidden, generated content)"
+      },
+      {
+        "name": "code-mark",
+        "description": "A `<mark>` wrapping a marked character range (with marks; also has `data-mark-id`, `data-mark-color` and the mark's className)"
       },
       {
         "name": "language",
@@ -2932,6 +2958,10 @@
       {
         "name": "--code-block-line-number-color",
         "description": "Color of the line numbers"
+      },
+      {
+        "name": "--code-block-mark-bg",
+        "description": "Default background of the marks (default: a translucent yellow)"
       },
       {
         "name": "--icon-button-color",
@@ -6772,7 +6802,7 @@
     "source": "web-components/src/components/kanban-board/kanban-board.ts",
     "className": "MinervaKanbanBoard",
     "summary": "Horizontally scrolling board of status columns.",
-    "description": "A horizontally scrolling board of status columns (`<KanbanBoard>` of React): put `minerva-kanban-column` elements in it. Columns share one width (`column-width`, 18rem by default); `fill` stretches them equally when they fit; `height` / `max-height` bound the board so that the column bodies scroll vertically. The board is a labelled `role=\"region\"` (name: the host's `aria-label` / `aria-labelledby`, else localized \"Board\") and a tab stop, so the keyboard can scroll it; on narrow screens the columns keep their width and snap while scrolling. Drag and drop is not built in: move cards with your own actions (a menu, buttons) and update the columns.",
+    "description": "A horizontally scrolling board of status columns (`<KanbanBoard>` of React): put `minerva-kanban-column` elements in it. Columns share one width (`column-width`, 18rem by default); `fill` stretches them equally when they fit; `height` / `max-height` bound the board so that the column bodies scroll vertically. The board is a labelled `role=\"region\"` (name: the host's `aria-label` / `aria-labelledby`, else localized \"Board\") and a tab stop, so the keyboard can scroll it; on narrow screens the columns keep their width and snap while scrolling. `draggable` lets the `minerva-kanban-card` children of keyed columns (`value`) be dragged with the mouse, touch (long press) or the keyboard (Space / Enter picks a focused card up, the arrows move it, Space / Enter drops it, Escape cancels). The board is controlled: it fires `minerva-card-move` and the app moves the card element (or re-renders). While dragging is on, the board holds a small layer (drop line, dragged copy, live region) as its last light DOM child.",
     "properties": [
       {
         "name": "columnWidth",
@@ -6806,6 +6836,18 @@
         "attribute": "max-height",
         "type": "KanbanLength | undefined",
         "description": "Maximum height of the board: the column bodies scroll vertically within it (a number is pixels)"
+      },
+      {
+        "name": "draggable",
+        "attribute": "draggable",
+        "type": "boolean",
+        "default": "false",
+        "description": "Lets the `minerva-kanban-card` children of keyed columns be dragged (mouse, touch long press, keyboard); the board fires `minerva-card-move`. Replaces the native `draggable` (HTML drag and drop of the host): the attribute turns it on unless it is `\"false\"`."
+      },
+      {
+        "name": "canDrop",
+        "type": "(move: KanbanCardMove) => boolean | undefined",
+        "description": "Whether a card may be dropped at a position (property only): refused positions show no drop indicator and the keyboard skips them"
       }
     ],
     "methods": [
@@ -6814,7 +6856,12 @@
         "signature": "(options?: FocusOptions) => void"
       }
     ],
-    "events": [],
+    "events": [
+      {
+        "name": "minerva-card-move",
+        "description": "A card was dropped at a new position; `detail: { cardKey, fromColumn, fromIndex, toColumn, toIndex }` (`toIndex` counts the cards without the moved one)"
+      }
+    ],
     "slots": [
       {
         "name": "",
@@ -6863,6 +6910,88 @@
       {
         "name": "--kanban-count-color",
         "description": "Text color of the count badge (defaults to --text-secondary-color)"
+      },
+      {
+        "name": "--kanban-drop-indicator-color",
+        "description": "Color of the drop line and of the column a dragged card would land in (defaults to --primary-color)"
+      }
+    ]
+  },
+  "wc:minerva-kanban-card": {
+    "kind": "element",
+    "source": "web-components/src/components/kanban-board/kanban-board.ts",
+    "className": "MinervaKanbanCard",
+    "summary": "Card of a kanban column that a draggable board can move.",
+    "description": "A card of a `minerva-kanban-column` (`<KanbanCard>` of React), keyed by `value`. In a draggable board its content sits in a focusable `role=\"button\"` (the `root` part) described by the drag instructions; otherwise the part is a plain wrapper. The host is the list item of the column. Controls inside a draggable card keep working (a drag never starts on them), but keep them few: they sit inside the button.",
+    "properties": [
+      {
+        "name": "value",
+        "attribute": "value",
+        "type": "string",
+        "default": "\"\"",
+        "description": "Key of the card, reported as `cardKey` by a draggable board"
+      },
+      {
+        "name": "label",
+        "attribute": "label",
+        "type": "string | undefined",
+        "description": "Name of the card in the drag announcements and, when draggable, its accessible name (default: its text)"
+      }
+    ],
+    "methods": [],
+    "events": [],
+    "slots": [
+      {
+        "name": "",
+        "description": "The content of the card"
+      }
+    ],
+    "parts": [
+      {
+        "name": "root",
+        "description": "The card wrapper (a focusable `role=button` in a draggable board)"
+      }
+    ],
+    "cssProperties": [
+      {
+        "name": "--kanban-column-width",
+        "description": "Width of the columns (defaults to 18rem; the columnWidth prop sets it; with fill it is the minimum width)"
+      },
+      {
+        "name": "--kanban-gap",
+        "description": "Space between the columns (defaults to 0.75rem; the gap prop sets it)"
+      },
+      {
+        "name": "--kanban-column-background",
+        "description": "Background of a column (defaults to --surface-muted-color)"
+      },
+      {
+        "name": "--kanban-column-border-color",
+        "description": "Border color of a column (defaults to --border-color)"
+      },
+      {
+        "name": "--kanban-column-radius",
+        "description": "Corner radius of a column (defaults to --radius-lg)"
+      },
+      {
+        "name": "--kanban-column-color",
+        "description": "Accent of a column: the dot before the title (the color prop sets it for a custom CSS color)"
+      },
+      {
+        "name": "--kanban-card-gap",
+        "description": "Space between the cards of a column (defaults to --space-2)"
+      },
+      {
+        "name": "--kanban-count-background",
+        "description": "Background of the count badge (defaults to --surface-color)"
+      },
+      {
+        "name": "--kanban-count-color",
+        "description": "Text color of the count badge (defaults to --text-secondary-color)"
+      },
+      {
+        "name": "--kanban-drop-indicator-color",
+        "description": "Color of the drop line and of the column a dragged card would land in (defaults to --primary-color)"
       }
     ]
   },
@@ -6879,6 +7008,12 @@
         "type": "string",
         "default": "\"\"",
         "description": "Title of the column (also its accessible name; or use the `heading` slot)"
+      },
+      {
+        "name": "value",
+        "attribute": "value",
+        "type": "string | undefined",
+        "description": "Key of the column, reported as `fromColumn` / `toColumn` by a draggable board (columns without one take no cards)"
       },
       {
         "name": "count",
@@ -7012,6 +7147,10 @@
       {
         "name": "--kanban-count-color",
         "description": "Text color of the count badge (defaults to --text-secondary-color)"
+      },
+      {
+        "name": "--kanban-drop-indicator-color",
+        "description": "Color of the drop line and of the column a dragged card would land in (defaults to --primary-color)"
       }
     ]
   },
@@ -7500,7 +7639,7 @@
     "source": "web-components/src/components/media-player/media-player.ts",
     "className": "MinervaMediaPlayer",
     "summary": "Audio / video player with themed controls.",
-    "description": "An `<audio>` / `<video>` element with themed custom controls (`<MediaPlayer>` of React): play / pause, skip back / forward, a seek bar (`role=slider`, buffered range), the time, mute and volume, the playback speed (cycle button), fullscreen and picture-in-picture (video). Keyboard on the focused player: Space / K play-pause, ← / → seek by 5 s, ↑ / ↓ volume, M mute, F fullscreen. The media events don't cross the shadow root: they are re-dispatched as `minerva-*` events. `play()`, `pause()`, `seek(seconds)` and `element` drive the media from script.",
+    "description": "An `<audio>` / `<video>` element with themed custom controls (`<MediaPlayer>` of React): play / pause, skip back / forward, a seek bar (`role=slider`, buffered range), the time, mute and volume, the playback speed (cycle button), fullscreen and picture-in-picture (video), and a captions menu when `tracks` are given (cues drawn by the player). Keyboard on the focused player: Space / K play-pause, ← / → seek by 5 s, ↑ / ↓ volume, M mute, F fullscreen, C captions on / off. Captions come from the `tracks` property or, when it is empty, from `<track src srclang label kind default>` children of the element. The media events don't cross the shadow root: they are re-dispatched as `minerva-*` events. `play()`, `pause()`, `seek(seconds)` and `element` drive the media from script.",
     "properties": [
       {
         "name": "src",
@@ -7558,7 +7697,7 @@
         "name": "crossOrigin",
         "attribute": "crossorigin",
         "type": "\"anonymous\" | \"use-credentials\" | undefined",
-        "description": "CORS mode of the media request"
+        "description": "CORS mode of the media request (cross-origin caption files need it too, plus CORS headers on their server)"
       },
       {
         "name": "startTime",
@@ -7605,6 +7744,12 @@
         "type": "readonly number[]",
         "default": "DEFAULT_PLAYBACK_RATES",
         "description": "Speeds the speed button cycles through (default [0.5, 0.75, 1, 1.25, 1.5, 2])"
+      },
+      {
+        "name": "tracks",
+        "type": "readonly MediaPlayerTrack[]",
+        "default": "[]",
+        "description": "Captions / subtitles (WebVTT or SRT files, JS property): drawn by the player over the video (below the title for audio), with a captions menu in the control bar. The choice is remembered (localStorage); a `default` track shows until the user chooses. Empty: the `<track>` children are used"
       },
       {
         "name": "element",
@@ -7662,6 +7807,10 @@
       {
         "name": "minerva-volume-change",
         "description": "The volume or the muted state changed (`detail: { volume, muted }`)"
+      },
+      {
+        "name": "minerva-track-change",
+        "description": "The user chose captions (`detail: { index, track }`; index -1 and track null: Off)"
       }
     ],
     "slots": [
@@ -7689,7 +7838,7 @@
       },
       {
         "name": "button",
-        "description": "A control button (play, skip, mute, speed, fullscreen, picture-in-picture)"
+        "description": "A control button (play, skip, mute, speed, captions, fullscreen, picture-in-picture)"
       },
       {
         "name": "seek",
@@ -7710,6 +7859,14 @@
       {
         "name": "error",
         "description": "The error message (media that can't be played)"
+      },
+      {
+        "name": "captions",
+        "description": "The captions overlay showing the active cue (video: over the picture, audio: below the title)"
+      },
+      {
+        "name": "captions-menu",
+        "description": "The captions menu (`role=menu`): Off and one item per track"
       }
     ],
     "cssProperties": [
@@ -7748,6 +7905,18 @@
       {
         "name": "--media-player-track-height",
         "description": "Thickness of the seek and volume tracks (defaults to 4px)"
+      },
+      {
+        "name": "--media-player-captions-background",
+        "description": "Background of the caption text (defaults to rgb(0 0 0 / 75%) over a video, none for audio)"
+      },
+      {
+        "name": "--media-player-captions-color",
+        "description": "Color of the caption text (defaults to white over a video, the bar color for audio)"
+      },
+      {
+        "name": "--media-player-captions-font-size",
+        "description": "Font size of the caption text (defaults to --font-size-lg over a video, --font-size-md for audio)"
       }
     ]
   },

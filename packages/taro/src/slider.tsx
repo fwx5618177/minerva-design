@@ -10,6 +10,7 @@ import {
   normalizeSliderValue,
   setSliderThumb,
   sliderPercent,
+  sliderRatioAt,
   sliderValueFromRatio,
   sliderValues,
   sliderValuesEqual,
@@ -58,6 +59,12 @@ export interface SliderProps extends Omit<NativeProps, "children"> {
   tooltip?: boolean;
   /** Formats a value for the labels and aria-valuetext */
   formatValue?: (value: number) => string;
+  /**
+   * Direction of the track (default "horizontal"). A vertical track runs
+   * from min (bottom) to max (top); its length is `--slider-length`
+   * (default 160px)
+   */
+  orientation?: "horizontal" | "vertical";
   /** Name of the hidden form input(s) (H5 and native forms) */
   name?: string;
   /** aria-valuetext of a thumb (index 0, or 1 for the end thumb) */
@@ -66,17 +73,29 @@ export interface SliderProps extends Omit<NativeProps, "children"> {
 
 interface Rect {
   left: number;
+  top: number;
   width: number;
+  height: number;
 }
 
-type TouchPoint = { clientX?: number; pageX?: number; x?: number };
-const touchX = (event: unknown): number | undefined => {
+type TouchPoint = {
+  clientX?: number;
+  pageX?: number;
+  x?: number;
+  clientY?: number;
+  pageY?: number;
+  y?: number;
+};
+/** The touch position on the slider axis (x, or y when vertical) */
+const touchAt = (event: unknown, vertical: boolean): number | undefined => {
   const { touches, changedTouches } = event as {
     touches?: TouchPoint[];
     changedTouches?: TouchPoint[];
   };
   const touch = touches?.[0] ?? changedTouches?.[0];
-  return touch?.clientX ?? touch?.pageX ?? touch?.x;
+  return vertical
+    ? (touch?.clientY ?? touch?.pageY ?? touch?.y)
+    : (touch?.clientX ?? touch?.pageX ?? touch?.x);
 };
 
 /**
@@ -84,7 +103,8 @@ const touchX = (event: unknown): number | undefined => {
  * track (a custom touch implementation, not the host `<slider>`, for marks,
  * ranges and theming). Touch the track to move the closest thumb, then
  * drag; `onChange` follows the drag and `onChangeEnd` fires on release. The
- * track is measured with `createSelectorQuery`. On H5 each thumb is a
+ * track is measured with `createSelectorQuery`. `orientation="vertical"`
+ * runs the track bottom (min) to top (max). On H5 each thumb is a
  * focusable `role="slider"` with arrow / PageUp / PageDown / Home / End keys.
  */
 export function Slider({
@@ -105,6 +125,7 @@ export function Slider({
   showValue = false,
   tooltip = false,
   formatValue = String,
+  orientation = "horizontal",
   name,
   getAriaValueText,
   ...props
@@ -114,6 +135,7 @@ export function Slider({
   const disabled = disabledProp ?? field.disabled ?? false;
   const readOnly = readOnlyProp ?? field.readOnly ?? false;
   const blocked = disabled || readOnly;
+  const vertical = orientation === "vertical";
   const markList = getSliderMarks(marks, min, max, step);
   const scale: SliderScale = { min, max, step, marks: markList, snapToMarks };
   const [raw, setRaw] = useValue<SliderValue | undefined>(
@@ -130,21 +152,26 @@ export function Slider({
   const gesture = useRef<{ index: number; latest: SliderValue } | null>(null);
 
   const measure = (done: (rect: Rect) => void) => {
+    const accept = (r: Partial<Rect> | null | undefined) => {
+      const length = vertical ? r?.height : r?.width;
+      if (r && typeof length === "number" && length > 0)
+        done({
+          left: r.left ?? 0,
+          top: r.top ?? 0,
+          width: r.width ?? 0,
+          height: r.height ?? 0,
+        });
+    };
     const query = Taro.createSelectorQuery?.();
     if (query) {
       query
         .select(`#${controlId}`)
-        .boundingClientRect((result) => {
-          const r = result as { left?: number; width?: number } | null;
-          if (r && typeof r.width === "number" && r.width > 0)
-            done({ left: r.left ?? 0, width: r.width });
-        })
+        .boundingClientRect((result) => accept(result as Partial<Rect>))
         .exec();
       return;
     }
     if (typeof document === "undefined") return;
-    const box = document.getElementById(controlId)?.getBoundingClientRect();
-    if (box && box.width > 0) done({ left: box.left, width: box.width });
+    accept(document.getElementById(controlId)?.getBoundingClientRect());
   };
   const withRect = (fn: (rect: Rect) => void) => {
     const cached = rect.current;
@@ -161,12 +188,17 @@ export function Slider({
     onChange?.(next);
     return true;
   };
-  const valueAt = (x: number, box: Rect) =>
-    sliderValueFromRatio(box.width ? (x - box.left) / box.width : 0, scale);
+  const valueAt = (point: number, box: Rect) =>
+    sliderValueFromRatio(
+      vertical
+        ? sliderRatioAt(point, box.top, box.height, true)
+        : sliderRatioAt(point, box.left, box.width),
+      scale,
+    );
 
   const onTouchStart = (event: unknown) => {
     if (blocked) return;
-    const x = touchX(event);
+    const x = touchAt(event, vertical);
     if (x === undefined) return;
     withRect((box) => {
       const pointed = valueAt(x, box);
@@ -179,7 +211,7 @@ export function Slider({
   };
   const onTouchMove = (event: unknown) => {
     const current = gesture.current;
-    const x = touchX(event);
+    const x = touchAt(event, vertical);
     if (!current || !rect.current || x === undefined) return;
     const next = setSliderThumb(
       current.latest,
@@ -223,10 +255,12 @@ export function Slider({
   const position = (v: number) => sliderPercent(v, min, max);
   const start = range ? position(values[0]) : 0;
   const end = position(values[values.length - 1]);
-  const rangeStyle: CSSProperties = {
-    left: `${start}%`,
-    width: `${end - start}%`,
-  };
+  // Position along the track: from the left, or the bottom when vertical
+  const at = (percent: number): CSSProperties =>
+    vertical ? { bottom: `${percent}%` } : { left: `${percent}%` };
+  const rangeStyle: CSSProperties = vertical
+    ? { bottom: `${start}%`, height: `${end - start}%` }
+    : { left: `${start}%`, width: `${end - start}%` };
   const labelOf = (index: number) => {
     const label = props["aria-label"];
     if (!range) return label;
@@ -244,7 +278,7 @@ export function Slider({
       aria-labelledby={undefined}
       data-size={size}
       data-color={color}
-      data-orientation="horizontal"
+      data-orientation={orientation}
       data-variant={range ? "range" : "single"}
       data-disabled={disabled ? "" : undefined}
       data-readonly={readOnly ? "" : undefined}
@@ -253,6 +287,7 @@ export function Slider({
       className={cn(
         `mn-size-${size}`,
         `mn-color-${color}`,
+        vertical && "mn-vertical",
         markList.some((m) => m.label) && "mn-labelled",
         disabled && "mn-disabled",
         readOnly && "mn-readonly",
@@ -291,7 +326,7 @@ export function Slider({
               data-minerva="slider"
               data-part="mark"
               data-state={active ? "active" : "inactive"}
-              style={{ left: `${position(mark.value)}%` }}
+              style={at(position(mark.value))}
             >
               {mark.label ? (
                 <Text
@@ -322,7 +357,7 @@ export function Slider({
             aria-valuetext={
               getAriaValueText ? getAriaValueText(v, index) : formatValue(v)
             }
-            aria-orientation="horizontal"
+            aria-orientation={orientation}
             aria-disabled={disabled || undefined}
             aria-readonly={readOnly || undefined}
             aria-invalid={field.invalid || undefined}
@@ -335,7 +370,7 @@ export function Slider({
             data-index={index}
             data-dragging={dragging === index ? "" : undefined}
             data-disabled={disabled ? "" : undefined}
-            style={{ left: `${position(v)}%` }}
+            style={at(position(v))}
           >
             {tooltip && dragging === index ? (
               <Text

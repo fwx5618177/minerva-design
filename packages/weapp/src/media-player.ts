@@ -3,17 +3,28 @@
 // wx.createInnerAudioContext, under the themed control bar of the other
 // renderers: play / pause, skip back / forward, a touch seek bar with the
 // buffered range, the time, mute (and a volume bar for audio), the playback
-// speed (cycle button) and fullscreen (video).
+// speed (cycle button) and fullscreen (video). With `tracks`, captions are
+// fetched (wx.request), parsed and drawn by the component at the playback
+// time, with a CC choice in the control bar (the host <video> has no tracks).
 import {
   DEFAULT_PLAYBACK_RATES,
   DEFAULT_SKIP_SECONDS,
+  activeCueText,
+  captionsPreference,
   clampMediaTime,
   clampVolume,
   formatMediaTime,
   formatPlaybackRate,
   inferMediaType,
+  loadCaptions,
   mediaProgress,
   nextPlaybackRate,
+  pickCaptionsTrack,
+  readCaptionsPreference,
+  writeCaptionsPreference,
+  type CaptionsStorage,
+  type MediaCue,
+  type MediaTrack,
 } from "@minerva/core";
 import { nativeTranslate } from "./configuration";
 
@@ -30,6 +41,13 @@ interface State {
   metadataSent: boolean;
   rects: Record<string, Rect | null>;
   dragging: string | null;
+  /** Remembered form of the captions choice (language / label / "off") */
+  captionsPref: string | null;
+  /** Index of the chosen track (disambiguates equal languages) */
+  captionsIndex: number;
+  /** Source of the loaded / loading cues */
+  cuesSrc: string;
+  cues: readonly MediaCue[];
 }
 
 const states = new WeakMap<Instance, State>();
@@ -47,6 +65,10 @@ const stateOf = (self: Instance): State => {
       metadataSent: false,
       rects: {},
       dragging: null,
+      captionsPref: null,
+      captionsIndex: -1,
+      cuesSrc: "",
+      cues: [],
     };
     states.set(self, state);
   }
@@ -71,6 +93,67 @@ const context = (self: Instance) => {
 const cssSize = (value: string) =>
   /^\d+(\.\d+)?$/.test(value.trim()) ? `${value.trim()}px` : value;
 
+// --- captions ----------------------------------------------------------------
+const captionsStorage: CaptionsStorage = {
+  getItem: (key) => {
+    const value = wxApi()?.getStorageSync?.(key);
+    return typeof value === "string" ? value : null;
+  },
+  setItem: (key, value) => wxApi()?.setStorageSync?.(key, value),
+};
+
+const fetchText = (url: string) =>
+  new Promise<string>((resolve, reject) => {
+    const request = wxApi()?.request;
+    if (typeof request !== "function") {
+      reject(new Error("no request API"));
+      return;
+    }
+    request({
+      url,
+      dataType: "text",
+      responseType: "text",
+      success: ({ statusCode, data }: { statusCode: number; data: unknown }) =>
+        statusCode >= 200 && statusCode < 300
+          ? resolve(typeof data === "string" ? data : String(data ?? ""))
+          : reject(new Error(`HTTP ${statusCode}`)),
+      fail: reject,
+    });
+  });
+
+const tracksOf = (self: Instance): MediaTrack[] =>
+  Array.isArray(self.data.tracks)
+    ? (self.data.tracks as MediaTrack[]).filter(
+        (track) => !!track && typeof track.src === "string",
+      )
+    : [];
+
+/** Index of the shown track (-1: off) */
+function trackIndexOf(self: Instance, tracks: readonly MediaTrack[]): number {
+  const { captionsPref, captionsIndex } = stateOf(self);
+  const chosen = tracks[captionsIndex];
+  return chosen && captionsPreference(chosen) === captionsPref
+    ? captionsIndex
+    : pickCaptionsTrack(tracks, captionsPref);
+}
+
+/** Loads the cues of the shown track when it changes */
+function loadCues(self: Instance, src: string) {
+  const state = stateOf(self);
+  if (state.cuesSrc === src) return;
+  state.cuesSrc = src;
+  state.cues = [];
+  if (!src) return;
+  loadCaptions(src, fetchText).then(
+    (cues) => {
+      if (states.get(self) !== state || state.cuesSrc !== src) return;
+      state.cues = cues;
+      sync(self);
+    },
+    () => undefined,
+  );
+}
+
 /** Derived view data (labels, percentages, classes) */
 function sync(self: Instance) {
   const t = (key: string, options?: Record<string, unknown>) =>
@@ -91,11 +174,25 @@ function sync(self: Instance) {
       ? `height:${cssSize(String(self.data.height))}`
       : `aspect-ratio:${self.data.aspectRatio}`
     : "";
+  const tracks = tracksOf(self);
+  const trackIndex = trackIndexOf(self, tracks);
+  loadCues(self, tracks[trackIndex]?.src ?? "");
+  const caption = activeCueText(stateOf(self).cues, currentTime);
   self.setData({
     isVideo: video,
     variant: video ? "video" : "audio",
     status,
     rootStyle,
+    hasTracks: tracks.length > 0,
+    trackIndex,
+    caption,
+    showCaptions: video
+      ? caption !== ""
+      : !!self.data.controls && trackIndex >= 0,
+    captionsOptions: [
+      { index: -1, label: t("mediaPlayer.captionsOff") },
+      ...tracks.map((track, index) => ({ index, label: track.label })),
+    ],
     progress,
     bufferedPercent: mediaProgress(buffered, duration) * 100,
     volumePercent: shownVolume * 100,
@@ -127,6 +224,7 @@ function sync(self: Instance) {
         : t("mediaPlayer.fullscreen"),
       loading: t("mediaPlayer.loading"),
       error: t("mediaPlayer.error"),
+      captions: t("mediaPlayer.captions"),
     },
   });
 }
@@ -256,7 +354,7 @@ const touchX = (event: WechatMiniprogram.IAnyObject): number | undefined => {
   return touch?.clientX ?? touch?.pageX ?? touch?.x;
 };
 
-export const mediaPlayerTemplate = `<view class="mn-media-player mn-variant-{{variant}} {{status === 'playing' ? 'mn-playing' : ''}} {{loading ? 'mn-loading' : ''}} {{failed ? 'mn-invalid' : ''}}" style="{{rootStyle}}" data-minerva="media-player" data-part="root" data-variant="{{variant}}" data-status="{{status}}" role="{{controls ? 'group' : ''}}" aria-label="{{controls ? labels.root : ariaLabel}}"><video wx:if="{{isVideo}}" id="${VIDEO_ID}" class="mn-media-player__media" data-part="media" src="{{src}}" poster="{{poster}}" controls="{{!controls}}" autoplay="{{autoPlay}}" loop="{{loop}}" muted="{{mutedState}}" initial-time="{{startTime}}" show-center-play-btn="{{!controls}}" show-fullscreen-btn="{{!controls}}" show-play-btn="{{!controls}}" enable-progress-gesture="{{!controls}}" object-fit="contain" bindplay="onVideoPlay" bindpause="onVideoPause" bindended="onVideoEnded" bindwaiting="onVideoWaiting" bindloadedmetadata="onVideoMetadata" bindtimeupdate="onVideoTime" bindprogress="onVideoProgress" bindfullscreenchange="onVideoFullscreen" binderror="onVideoError"/><block wx:if="{{controls}}"><text wx:if="{{title}}" class="mn-media-player__title" data-part="title">{{title}}</text><view wx:if="{{isVideo && showSpinner}}" class="mn-media-player__spinner" data-part="spinner" role="status" aria-label="{{labels.loading}}"/><view wx:if="{{failed}}" class="mn-media-player__error" data-part="error" role="alert">{{labels.error}}</view><view class="mn-media-player__controls" data-part="controls"><view id="mn-media-player-seek" class="mn-media-player__seek" data-part="seek" data-track="seek" role="slider" aria-label="{{labels.seek}}" aria-valuemin="0" aria-valuemax="{{durationRounded}}" aria-valuenow="{{currentRounded}}" aria-valuetext="{{labels.seekText}}" aria-disabled="{{!duration}}" bindtouchstart="onTrackStart" bindtouchmove="onTrackMove" bindtouchend="onTrackEnd"><view class="mn-media-player__track"/><view class="mn-media-player__buffered" style="width:{{bufferedPercent}}%"/><view class="mn-media-player__fill" style="width:{{progress}}%"/><view class="mn-media-player__thumb" style="left:{{progress}}%"/></view><view class="mn-media-player__button mn-media-player__play" data-part="button" role="button" aria-label="{{labels.toggle}}" aria-disabled="{{failed}}" bindtap="onToggle"><text aria-hidden="true">{{paused ? '▶' : '❚❚'}}</text></view><block wx:if="{{showSkip}}"><view class="mn-media-player__button mn-media-player__back" data-part="button" data-delta="{{-skipSeconds}}" role="button" aria-label="{{labels.back}}" bindtap="onSkip"><text aria-hidden="true">−{{skipSeconds}}</text></view><view class="mn-media-player__button mn-media-player__forward" data-part="button" data-delta="{{skipSeconds}}" role="button" aria-label="{{labels.forward}}" bindtap="onSkip"><text aria-hidden="true">+{{skipSeconds}}</text></view></block><view wx:if="{{!isVideo && showSpinner}}" class="mn-media-player__spinner" data-part="spinner" role="status" aria-label="{{labels.loading}}"/><text class="mn-media-player__time" data-part="time">{{timeText}}</text><view class="mn-media-player__spacer"/><view class="mn-media-player__button mn-media-player__mute" data-part="button" role="button" aria-label="{{labels.mute}}" bindtap="onMute"><text aria-hidden="true">{{mutedState ? '🔇︎' : '🔊︎'}}</text></view><view wx:if="{{!isVideo}}" id="mn-media-player-volume" class="mn-media-player__volume" data-part="volume" data-track="volume" role="slider" aria-label="{{labels.volume}}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{volumeNow}}" aria-valuetext="{{volumeNow}}%" bindtouchstart="onTrackStart" bindtouchmove="onTrackMove" bindtouchend="onTrackEnd"><view class="mn-media-player__track"/><view class="mn-media-player__fill" style="width:{{volumePercent}}%"/><view class="mn-media-player__thumb" style="left:{{volumePercent}}%"/></view><view wx:if="{{showRate}}" class="mn-media-player__button mn-media-player__rate" data-part="button" role="button" aria-label="{{labels.rate}}" bindtap="onRate"><text aria-hidden="true">{{rateText}}</text></view><view wx:if="{{isVideo}}" class="mn-media-player__button mn-media-player__fullscreen" data-part="button" role="button" aria-label="{{labels.fullscreen}}" bindtap="onFullscreen"><text aria-hidden="true">⤢</text></view></view></block></view>`;
+export const mediaPlayerTemplate = `<view class="mn-media-player mn-variant-{{variant}} {{status === 'playing' ? 'mn-playing' : ''}} {{loading ? 'mn-loading' : ''}} {{failed ? 'mn-invalid' : ''}} {{controls ? '' : 'mn-bare'}}" style="{{rootStyle}}" data-minerva="media-player" data-part="root" data-variant="{{variant}}" data-status="{{status}}" role="{{controls ? 'group' : ''}}" aria-label="{{controls ? labels.root : ariaLabel}}"><video wx:if="{{isVideo}}" id="${VIDEO_ID}" class="mn-media-player__media" data-part="media" src="{{src}}" poster="{{poster}}" controls="{{!controls}}" autoplay="{{autoPlay}}" loop="{{loop}}" muted="{{mutedState}}" initial-time="{{startTime}}" show-center-play-btn="{{!controls}}" show-fullscreen-btn="{{!controls}}" show-play-btn="{{!controls}}" enable-progress-gesture="{{!controls}}" object-fit="contain" bindplay="onVideoPlay" bindpause="onVideoPause" bindended="onVideoEnded" bindwaiting="onVideoWaiting" bindloadedmetadata="onVideoMetadata" bindtimeupdate="onVideoTime" bindprogress="onVideoProgress" bindfullscreenchange="onVideoFullscreen" binderror="onVideoError"/><view wx:if="{{!controls && showCaptions}}" class="mn-media-player__captions" data-part="captions"><text class="mn-media-player__cue">{{caption}}</text></view><block wx:if="{{controls}}"><text wx:if="{{title}}" class="mn-media-player__title" data-part="title">{{title}}</text><view wx:if="{{isVideo && showSpinner}}" class="mn-media-player__spinner" data-part="spinner" role="status" aria-label="{{labels.loading}}"/><view wx:if="{{showCaptions}}" class="mn-media-player__captions" data-part="captions"><text wx:if="{{caption}}" class="mn-media-player__cue">{{caption}}</text></view><view wx:if="{{failed}}" class="mn-media-player__error" data-part="error" role="alert">{{labels.error}}</view><view class="mn-media-player__controls" data-part="controls"><view id="mn-media-player-seek" class="mn-media-player__seek" data-part="seek" data-track="seek" role="slider" aria-label="{{labels.seek}}" aria-valuemin="0" aria-valuemax="{{durationRounded}}" aria-valuenow="{{currentRounded}}" aria-valuetext="{{labels.seekText}}" aria-disabled="{{!duration}}" bindtouchstart="onTrackStart" bindtouchmove="onTrackMove" bindtouchend="onTrackEnd"><view class="mn-media-player__track"/><view class="mn-media-player__buffered" style="width:{{bufferedPercent}}%"/><view class="mn-media-player__fill" style="width:{{progress}}%"/><view class="mn-media-player__thumb" style="left:{{progress}}%"/></view><view class="mn-media-player__button mn-media-player__play" data-part="button" role="button" aria-label="{{labels.toggle}}" aria-disabled="{{failed}}" bindtap="onToggle"><text aria-hidden="true">{{paused ? '▶' : '❚❚'}}</text></view><block wx:if="{{showSkip}}"><view class="mn-media-player__button mn-media-player__back" data-part="button" data-delta="{{-skipSeconds}}" role="button" aria-label="{{labels.back}}" bindtap="onSkip"><text aria-hidden="true">−{{skipSeconds}}</text></view><view class="mn-media-player__button mn-media-player__forward" data-part="button" data-delta="{{skipSeconds}}" role="button" aria-label="{{labels.forward}}" bindtap="onSkip"><text aria-hidden="true">+{{skipSeconds}}</text></view></block><view wx:if="{{!isVideo && showSpinner}}" class="mn-media-player__spinner" data-part="spinner" role="status" aria-label="{{labels.loading}}"/><text class="mn-media-player__time" data-part="time">{{timeText}}</text><view class="mn-media-player__spacer"/><view class="mn-media-player__button mn-media-player__mute" data-part="button" role="button" aria-label="{{labels.mute}}" bindtap="onMute"><text aria-hidden="true">{{mutedState ? '🔇︎' : '🔊︎'}}</text></view><view wx:if="{{!isVideo}}" id="mn-media-player-volume" class="mn-media-player__volume" data-part="volume" data-track="volume" role="slider" aria-label="{{labels.volume}}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{volumeNow}}" aria-valuetext="{{volumeNow}}%" bindtouchstart="onTrackStart" bindtouchmove="onTrackMove" bindtouchend="onTrackEnd"><view class="mn-media-player__track"/><view class="mn-media-player__fill" style="width:{{volumePercent}}%"/><view class="mn-media-player__thumb" style="left:{{volumePercent}}%"/></view><view wx:if="{{showRate}}" class="mn-media-player__button mn-media-player__rate" data-part="button" role="button" aria-label="{{labels.rate}}" bindtap="onRate"><text aria-hidden="true">{{rateText}}</text></view><view wx:if="{{hasTracks}}" class="mn-media-player__button mn-media-player__cc {{trackIndex >= 0 ? 'mn-media-player__cc--on' : ''}}" data-part="button" role="button" aria-label="{{labels.captions}}" aria-expanded="{{captionsMenu}}" bindtap="onCaptionsMenu"><text aria-hidden="true">CC</text></view><view wx:if="{{isVideo}}" class="mn-media-player__button mn-media-player__fullscreen" data-part="button" role="button" aria-label="{{labels.fullscreen}}" bindtap="onFullscreen"><text aria-hidden="true">⤢</text></view><view wx:if="{{hasTracks && captionsMenu}}" class="mn-media-player__captions-menu" data-part="captions-menu" role="group" aria-label="{{labels.captions}}"><view wx:for="{{captionsOptions}}" wx:key="index" class="mn-media-player__captions-option {{item.index === trackIndex ? 'mn-media-player__captions-option--on' : ''}}" data-index="{{item.index}}" role="button" aria-pressed="{{item.index === trackIndex}}" bindtap="onCaptionsChoose">{{item.label}}</view></view></view></block></view>`;
 
 export const mediaPlayerProperties = {
   src: text(),
@@ -274,6 +372,8 @@ export const mediaPlayerProperties = {
   controls: flag(true),
   height: text(),
   aspectRatio: text("16 / 9"),
+  /** Captions / subtitles: [{ src, srclang?, label, kind?, default? }] (WebVTT or SRT; data: URLs work) */
+  tracks: { type: Array, value: [] },
   ariaLabel: text(),
 };
 
@@ -328,6 +428,25 @@ export const mediaPlayerMethods = {
     if (this.data.isVideo) state.video?.playbackRate?.(next);
     else if (state.audio) state.audio.playbackRate = next;
     this.triggerEvent("ratechange", { rate: next });
+    sync(this);
+  },
+  onCaptionsMenu(this: Instance) {
+    this.setData({ captionsMenu: !this.data.captionsMenu });
+  },
+  onCaptionsChoose(this: Instance, event: WechatMiniprogram.BaseEvent) {
+    this.chooseTrack(Number(event.currentTarget.dataset.index));
+  },
+  /** Shows the captions of `tracks[index]` (-1: off), remembered in storage */
+  chooseTrack(this: Instance, index: number) {
+    this.setData({ captionsMenu: false });
+    const tracks = tracksOf(this);
+    if (index === trackIndexOf(this, tracks)) return;
+    const track = tracks[index] ?? null;
+    const state = stateOf(this);
+    state.captionsPref = captionsPreference(track);
+    state.captionsIndex = track ? index : -1;
+    writeCaptionsPreference(captionsStorage, track);
+    this.triggerEvent("trackchange", { index: track ? index : -1, track });
     sync(this);
   },
   onFullscreen(this: Instance) {
@@ -433,6 +552,12 @@ export const mediaPlayerExtra = {
     showSpinner: false,
     timeText: "0:00 / 0:00",
     rateText: "1×",
+    hasTracks: false,
+    trackIndex: -1,
+    caption: "",
+    showCaptions: false,
+    captionsMenu: false,
+    captionsOptions: [] as { index: number; label: string }[],
     labels: {},
   },
   observers: {
@@ -451,7 +576,7 @@ export const mediaPlayerExtra = {
       const audio = stateOf(this).audio;
       if (audio) audio.loop = loop;
     },
-    "title,ariaLabel,skipSeconds,playbackRates,height,aspectRatio,controls,localeLanguage":
+    "title,ariaLabel,skipSeconds,playbackRates,height,aspectRatio,controls,tracks,localeLanguage":
       function (this: Instance) {
         sync(this);
       },
@@ -464,6 +589,7 @@ export const mediaPlayerExtra = {
             ? this.data.defaultMuted
             : !!this.data.muted,
       });
+      stateOf(this).captionsPref = readCaptionsPreference(captionsStorage);
       setup(this);
       sync(this);
     },

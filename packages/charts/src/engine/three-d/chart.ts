@@ -15,7 +15,7 @@ import {
   watchTheme,
   type ChartTheme,
 } from "../theme";
-import { positionTooltip } from "../tooltip";
+import { positionTooltip, releaseTooltip, themeTooltip } from "../tooltip";
 import type { ChartRendererKind } from "../types";
 import { colorLut, colorStops, type ColorLut } from "./colormap";
 import { createRenderer3D } from "./detect";
@@ -170,6 +170,7 @@ export const createChart3D = (
   const stage = dom.stage;
   let options = initialOptions;
   let theme: ChartTheme = readTheme(dom.root, options.palette);
+  themeTooltip(dom.tooltip, theme);
   let themeVersion = 0;
   let destroyed = false;
 
@@ -1098,6 +1099,7 @@ export const createChart3D = (
     const next = readTheme(dom.root, options.palette);
     if (themeColorsChanged(theme, next)) themeVersion++;
     theme = next;
+    themeTooltip(dom.tooltip, theme);
     rebuild();
   };
   const unwatchTheme = watchTheme(refreshTheme);
@@ -1252,6 +1254,7 @@ export const createChart3D = (
       renderer = null;
       listeners.clear();
       resolveReady(null);
+      releaseTooltip(dom.tooltip);
       dom.root.remove();
     },
   };

@@ -83,6 +83,7 @@ function mount(props: Record<string, unknown>) {
     "error",
     "ratechange",
     "volumechange",
+    "trackchange",
   ])
     w.addEventListener(name, (event: { detail: unknown }) =>
       events.push([name, event.detail]),
@@ -199,4 +200,110 @@ it("media player shows the spinner and the error state", async () => {
   expect(w.querySelector(".mn-media-player__error")!.dom!.textContent).toBe(
     "This media can't be played",
   );
+});
+
+const VTT =
+  "WEBVTT\n\n00:01.000 --> 00:03.000\nHello <i>there</i>\n\n00:05.000 --> 00:06.000\nBye\n";
+const SRT = "1\n00:00:01,000 --> 00:00:03,000\nBonjour\n";
+const captionTracks = [
+  {
+    src: `data:text/vtt,${encodeURIComponent(VTT)}`,
+    srclang: "en",
+    label: "English",
+    default: true,
+  },
+  { src: "https://cdn.example.com/fr.srt", srclang: "fr", label: "Français" },
+];
+function captionsHost(stored: Record<string, unknown> = {}) {
+  Object.assign(wxGlobal.wx, {
+    getStorageSync: vi.fn((key: string) => stored[key] ?? ""),
+    setStorageSync: vi.fn((key: string, value: unknown) => {
+      stored[key] = value;
+    }),
+    request: vi.fn(
+      (options: {
+        url: string;
+        success: (result: { statusCode: number; data: unknown }) => void;
+      }) => options.success({ statusCode: 200, data: SRT }),
+    ),
+  });
+  return stored;
+}
+const captionText = (w: ReturnType<typeof mount>["w"]) =>
+  w.querySelector(".mn-media-player__captions")?.dom?.textContent ?? null;
+
+it("media player draws the active cue of the default track at the video time", async () => {
+  captionsHost();
+  const { w } = mount({ src: "/clip.mp4", tracks: captionTracks });
+  await simulate.sleep(0);
+  expect(w.data.trackIndex).toBe(0);
+  expect(captionText(w)).toBeNull();
+  const video = w.querySelector(".mn-media-player__media")!;
+  video.dispatchEvent("timeupdate", {
+    detail: { currentTime: 1.5, duration: 10 },
+  });
+  await simulate.sleep(0);
+  expect(captionText(w)).toBe("Hello there");
+  video.dispatchEvent("timeupdate", {
+    detail: { currentTime: 4, duration: 10 },
+  });
+  await simulate.sleep(0);
+  expect(captionText(w)).toBeNull();
+});
+
+it("media player chooses captions with the CC button and remembers them", async () => {
+  const stored = captionsHost();
+  const { w, events } = mount({ src: "/clip.mp4", tracks: captionTracks });
+  await simulate.sleep(0);
+  expect(w.data.labels.captions).toBe("Captions");
+  button(w, "cc")!.dispatchEvent("tap");
+  await simulate.sleep(0);
+  const menu = w.querySelector(".mn-media-player__captions-menu");
+  expect(menu).toBeTruthy();
+  expect(w.data.captionsOptions.map((o: { label: string }) => o.label)).toEqual(
+    ["Off", "English", "Français"],
+  );
+  w.querySelectorAll(".mn-media-player__captions-option")[2]!.dispatchEvent(
+    "tap",
+  );
+  await simulate.sleep(0);
+  expect(events).toContainEqual([
+    "trackchange",
+    { index: 1, track: captionTracks[1] },
+  ]);
+  expect(stored["minerva-media-player-captions"]).toBe("fr");
+  expect(w.querySelector(".mn-media-player__captions-menu")).toBeFalsy();
+  await simulate.sleep(0);
+  expect(wxGlobal.wx.request).toHaveBeenCalledWith(
+    expect.objectContaining({
+      url: "https://cdn.example.com/fr.srt",
+      dataType: "text",
+    }),
+  );
+  w.querySelector(".mn-media-player__media")!.dispatchEvent("timeupdate", {
+    detail: { currentTime: 2, duration: 10 },
+  });
+  await simulate.sleep(0);
+  expect(captionText(w)).toBe("Bonjour");
+  w.instance.chooseTrack(-1);
+  await simulate.sleep(0);
+  expect(events).toContainEqual(["trackchange", { index: -1, track: null }]);
+  expect(captionText(w)).toBeNull();
+});
+
+it("media player shows audio cues from the remembered track", async () => {
+  captionsHost({ "minerva-media-player-captions": "en" });
+  const { w } = mount({
+    src: "/talk.mp3",
+    title: "Talk",
+    tracks: [{ ...captionTracks[0], default: false }, captionTracks[1]],
+  });
+  await simulate.sleep(0);
+  expect(w.data.trackIndex).toBe(0);
+  expect(w.querySelector(".mn-media-player__captions")).toBeTruthy();
+  audio.currentTime = 2;
+  audio.duration = 10;
+  audio.listeners.timeupdate!();
+  await simulate.sleep(0);
+  expect(captionText(w)).toBe("Hello there");
 });

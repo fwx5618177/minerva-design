@@ -2,8 +2,10 @@ import React, {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
 } from "react";
 import type {
   CSSProperties,
@@ -15,6 +17,7 @@ import {
   DEFAULT_SKIP_SECONDS,
   MEDIA_ICON_PATHS,
   bufferedEnd,
+  captionsPreference,
   clampMediaTime,
   clampVolume,
   formatMediaTime,
@@ -23,14 +26,35 @@ import {
   mediaKeyAction,
   mediaProgress,
   nextPlaybackRate,
+  pickCaptionsTrack,
+  readCaptionsPreference,
+  toggledCaptionsTrack,
+  writeCaptionsPreference,
   type MediaIconName,
 } from "@minerva/core";
+import { bindMediaCaptions } from "@minerva/dom";
 import { cn } from "../../utils/cn";
 import useI18n from "../../hooks/useI18n";
 import { useIsClient } from "../../internal/useIsClient";
 import { hooks } from "../../internal/stylingHooks";
 import styles from "./mediaPlayer.module.scss";
-import type { MediaPlayerProps } from "./types";
+import type { MediaPlayerProps, MediaPlayerTrack } from "./types";
+
+const NO_TRACKS: readonly MediaPlayerTrack[] = [];
+
+const captionsStorage = () => {
+  try {
+    return typeof window === "undefined" ? null : window.localStorage;
+  } catch {
+    return null;
+  }
+};
+
+/** Follows the remembered captions choice across tabs */
+const subscribeCaptionsStorage = (onChange: () => void) => {
+  window.addEventListener("storage", onChange);
+  return () => window.removeEventListener("storage", onChange);
+};
 
 const Icon = ({ name }: { name: MediaIconName }) => (
   <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -57,8 +81,10 @@ type FullscreenVideo = HTMLVideoElement & {
  * MediaPlayer: an `<audio>` / `<video>` element with themed custom controls.
  * Play / pause, skip back / forward, a seek bar (role=slider, buffered range),
  * the time, mute and volume, the playback speed (cycle button), fullscreen and
- * picture-in-picture (video). Keyboard on the focused player: Space / K
- * play-pause, ← / → seek by 5 s, ↑ / ↓ volume, M mute, F fullscreen.
+ * picture-in-picture (video), and a captions menu when `tracks` are given
+ * (cues drawn by the player). Keyboard on the focused player: Space / K
+ * play-pause, ← / → seek by 5 s, ↑ / ↓ volume, M mute, F fullscreen,
+ * C captions on / off.
  * The ref is an imperative handle: `play()`, `pause()`, `seek(seconds)` and
  * `element`.
  */
@@ -81,6 +107,7 @@ const MediaPlayer = ({
   height,
   aspectRatio = "16 / 9",
   pictureInPicture = false,
+  tracks = NO_TRACKS,
   onTimeUpdate,
   onEnded,
   onPlay,
@@ -89,6 +116,7 @@ const MediaPlayer = ({
   onError,
   onRateChange,
   onVolumeChange,
+  onTrackChange,
   "aria-label": ariaLabel,
   className,
   style,
@@ -146,6 +174,102 @@ const MediaPlayer = ({
     return () =>
       document.removeEventListener("fullscreenchange", onFullscreenChange);
   }, []);
+
+  // --- captions ----------------------------------------------------------
+  // The choice is kept as its remembered form (language / label / "off") so
+  // it survives a new `tracks` array; `index` disambiguates equal languages.
+  // Until the user chooses, the remembered choice (localStorage, read on the
+  // client only) applies.
+  const storedPref = useSyncExternalStore(
+    subscribeCaptionsStorage,
+    () => readCaptionsPreference(captionsStorage()),
+    () => null,
+  );
+  const [captionsChoice, setCaptionsChoice] = useState<{
+    pref: string | null;
+    index: number;
+  } | null>(null);
+  const pref = captionsChoice ? captionsChoice.pref : storedPref;
+  const chosen = captionsChoice ? tracks[captionsChoice.index] : undefined;
+  const trackIndex =
+    captionsChoice && chosen && captionsPreference(chosen) === pref
+      ? captionsChoice.index
+      : pickCaptionsTrack(tracks, pref);
+  const [caption, setCaption] = useState("");
+  const [captionsMenu, setCaptionsMenu] = useState(false);
+  const lastTrack = useRef(-1);
+  const captionsButtonRef = useRef<HTMLButtonElement>(null);
+  const captionsControlRef = useRef<HTMLSpanElement>(null);
+  // Rebinds only when a source changes (not on each new `tracks` array)
+  const trackSources = JSON.stringify(tracks.map((track) => track.src));
+  const boundTracks = useMemo(
+    () =>
+      (JSON.parse(trackSources) as string[]).map((src) => ({ src, label: "" })),
+    [trackSources],
+  );
+
+  useEffect(() => {
+    const media = mediaRef.current;
+    if (!media || !controls) return;
+    return bindMediaCaptions(media, boundTracks, trackIndex, setCaption, {
+      crossOrigin,
+    });
+  }, [boundTracks, trackIndex, crossOrigin, controls, isVideo]);
+
+  useEffect(() => {
+    if (!captionsMenu) return;
+    const control = captionsControlRef.current;
+    control
+      ?.querySelector<HTMLElement>('[aria-checked="true"]')
+      ?.focus({ preventScroll: true });
+    const onPointerDown = (event: PointerEvent) => {
+      if (!control?.contains(event.target as Node)) setCaptionsMenu(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [captionsMenu]);
+
+  const chooseTrack = (index: number) => {
+    if (index === trackIndex) return;
+    const track = tracks[index] ?? null;
+    if (trackIndex >= 0) lastTrack.current = trackIndex;
+    setCaptionsChoice({ pref: captionsPreference(track), index });
+    writeCaptionsPreference(captionsStorage(), track);
+    onTrackChange?.({ index: track ? index : -1, track });
+  };
+
+  const closeCaptionsMenu = (refocus: boolean) => {
+    setCaptionsMenu(false);
+    if (refocus) captionsButtonRef.current?.focus();
+  };
+
+  const captionsMenuKeys = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    const items = Array.from(
+      event.currentTarget.querySelectorAll<HTMLElement>(
+        '[role="menuitemradio"]',
+      ),
+    );
+    const at = items.indexOf(document.activeElement as HTMLElement);
+    let next = -1;
+    if (event.key === "ArrowDown") next = (at + 1) % items.length;
+    else if (event.key === "ArrowUp")
+      next = (at - 1 + items.length) % items.length;
+    else if (event.key === "Home") next = 0;
+    else if (event.key === "End") next = items.length - 1;
+    else if (event.key === "Escape") {
+      event.preventDefault();
+      closeCaptionsMenu(true);
+      return;
+    } else if (event.key === "Tab") {
+      setCaptionsMenu(false);
+      return;
+    }
+    if (next >= 0) {
+      event.preventDefault();
+      items[next]?.focus();
+    }
+  };
 
   useEffect(() => {
     const video = mediaRef.current;
@@ -267,6 +391,13 @@ const MediaPlayer = ({
     const media = mediaRef.current;
     if (!action || !media) return;
     if (action.type === "fullscreen" && !isVideo) return;
+    if (action.type === "captions") {
+      const next = toggledCaptionsTrack(tracks, trackIndex, lastTrack.current);
+      if (next === null) return;
+      event.preventDefault();
+      chooseTrack(next);
+      return;
+    }
     event.preventDefault();
     switch (action.type) {
       case "toggle":
@@ -434,8 +565,20 @@ const MediaPlayer = ({
     else rootStyle.aspectRatio = aspectRatio;
   }
 
-  // Captions: no <track> API yet (a follow-up).
+  // Captions: <track> children (loaded "hidden", the player draws the active
+  // cue); without controls the browser shows the chosen one natively.
+  const trackElements = tracks.map((track, index) => (
+    <track
+      key={`${index}:${track.src}`}
+      kind={track.kind ?? "subtitles"}
+      src={track.src}
+      srcLang={track.srclang}
+      label={track.label}
+      default={!controls && index === trackIndex ? true : undefined}
+    />
+  ));
   const media = isVideo ? (
+    // Captions come from `tracks`, and media without speech needs none.
     // eslint-disable-next-line jsx-a11y/media-has-caption
     <video
       {...mediaProps}
@@ -448,10 +591,12 @@ const MediaPlayer = ({
           ? { height, width: "auto" }
           : undefined
       }
-    />
+    >
+      {trackElements}
+    </video>
   ) : (
     // eslint-disable-next-line jsx-a11y/media-has-caption
-    <audio {...mediaProps} />
+    <audio {...mediaProps}>{trackElements}</audio>
   );
 
   if (!controls) {
@@ -512,6 +657,11 @@ const MediaPlayer = ({
         </div>
       )}
       {isVideo && spinner}
+      {(isVideo ? caption !== "" : trackIndex >= 0) && (
+        <div className={styles.captions} {...hooks("media-player", "captions")}>
+          {caption && <span className={styles.cue}>{caption}</span>}
+        </div>
+      )}
       {error && (
         <div
           className={styles.error}
@@ -631,6 +781,64 @@ const MediaPlayer = ({
           >
             {formatPlaybackRate(rate)}
           </button>
+        )}
+        {tracks.length > 0 && (
+          // Focus leaving the menu by keyboard closes it.
+          <span
+            ref={captionsControlRef}
+            className={styles.captionsControl}
+            onBlur={(event) => {
+              const next = event.relatedTarget as Node | null;
+              if (next && !event.currentTarget.contains(next)) {
+                setCaptionsMenu(false);
+              }
+            }}
+          >
+            <button
+              ref={captionsButtonRef}
+              type="button"
+              className={cn(
+                styles.button,
+                trackIndex >= 0 && styles.captionsOn,
+              )}
+              aria-label={t("mediaPlayer.captions")}
+              aria-haspopup="menu"
+              aria-expanded={captionsMenu}
+              onClick={() => setCaptionsMenu((open) => !open)}
+              {...hooks("media-player", "button")}
+            >
+              <Icon name="captions" />
+            </button>
+            {captionsMenu && (
+              <div
+                role="menu"
+                tabIndex={-1}
+                aria-label={t("mediaPlayer.captions")}
+                className={styles.captionsMenu}
+                onKeyDown={captionsMenuKeys}
+                {...hooks("media-player", "captions-menu")}
+              >
+                {[-1, ...tracks.keys()].map((index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    role="menuitemradio"
+                    aria-checked={index === trackIndex}
+                    tabIndex={index === trackIndex ? 0 : -1}
+                    className={styles.captionsOption}
+                    onClick={() => {
+                      chooseTrack(index);
+                      closeCaptionsMenu(true);
+                    }}
+                  >
+                    {index < 0
+                      ? t("mediaPlayer.captionsOff")
+                      : tracks[index]?.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </span>
         )}
         {isVideo && pictureInPicture && pipSupported && (
           <button

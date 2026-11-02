@@ -1180,7 +1180,7 @@
         "name": "language",
         "type": "string",
         "required": false,
-        "description": "Language of the code: highlights its syntax and sets\n`class=\"language-<x>\"` / `data-language` on the <code>. Supported:\njavascript (js, mjs, cjs), typescript (ts), jsx, tsx, json (jsonc,\njson5), css (scss, less), html (xml, svg, vue), bash (sh, shell, zsh,\nconsole), python (py), yaml (yml), sql, diff, markdown (md); other\nnames render plain text. Without it the text is not highlighted"
+        "description": "Language of the code: highlights its syntax and sets\n`class=\"language-<x>\"` / `data-language` on the <code>. Supported:\njavascript (js, mjs, cjs), typescript (ts), jsx, tsx, json (jsonc,\njson5), css (scss, less), html (xml, svg, vue), bash (sh, shell, zsh,\nconsole), python (py), yaml (yml), sql, diff, markdown (md); other\nnames render plain text. `\"auto\"` detects the language from the text\n(`detectCodeLanguage` of minerva-design/core, \"plain\" when unsure): the\nclass, `data-language` and the label show the detected name. Without it\nthe text is not highlighted"
       },
       {
         "name": "highlight",
@@ -1202,9 +1202,18 @@
         "default": "false",
         "required": false,
         "description": "Shows the `language` as a small label in the top-right corner (e.g.\n\"JSON\"); the <pre> is then wrapped in a <div> like with `copyable`"
+      },
+      {
+        "name": "marks",
+        "type": "readonly CodeMark[]",
+        "required": false,
+        "description": "Character ranges to mark (saved highlights, annotations, search hits),\nrendered as <mark> elements over the syntax highlighting (the token\ncolors are kept; the copied text stays the raw code). `start` / `end`\nare UTF-16 offsets into the code string, clamped to it; empty ranges\nare ignored. Marks may cross tokens and lines (with `showLineNumbers` a\nmark is cut at each line break). Where marks overlap, the later one in\nthe array wins (its color, class, title and click). Each element gets\n`data-mark-id` and the mark's `className` / `title`; `color` is a theme\ncolor name (a translucent tint) or any CSS color (default: translucent\nyellow, `--code-block-mark-bg`). The `mark-click` event reports clicks.\nTo create one from the user's selection, see `getCodeSelectionRange`\nof `minerva-design/core`"
       }
     ],
-    "events": [{ "name": "copied", "type": "[text: string]" }],
+    "events": [
+      { "name": "copied", "type": "[text: string]" },
+      { "name": "mark-click", "type": "[mark: CodeMark, event: MouseEvent]" }
+    ],
     "slots": [{ "name": "default", "type": "any", "description": "Source text (when the `code` prop is not set)" }]
   },
   "CommandDialog": {
@@ -2680,16 +2689,39 @@
       { "name": "gap", "type": "KanbanLength", "required": false, "description": "Space between the columns (a number is pixels)" },
       { "name": "height", "type": "KanbanLength", "required": false, "description": "Height of the board: the column bodies scroll vertically within it" },
       { "name": "maxHeight", "type": "KanbanLength", "required": false, "description": "Maximum height of the board: the column bodies scroll vertically within it" },
+      {
+        "name": "draggable",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Lets the KanbanCard children of keyed columns (`value`) be dragged\nbetween and within columns (mouse, touch long press, keyboard); the\nboard emits `card-move` and the app moves the card in its data"
+      },
+      {
+        "name": "canDrop",
+        "type": "((move: KanbanCardMove) => boolean)",
+        "required": false,
+        "description": "Whether a card may be dropped at a position: refused positions show no\ndrop indicator and the keyboard skips them"
+      },
       { "name": "aria-label", "type": "string", "required": false, "description": "Accessible name of the board region" },
       { "name": "aria-labelledby", "type": "string", "required": false, "description": "Id of an element naming the board (instead of aria-label)" }
     ],
-    "events": [],
+    "events": [{ "name": "card-move", "type": "[move: KanbanCardMove]" }],
     "slots": [{ "name": "default", "type": "any", "description": "The columns (KanbanColumn)" }]
+  },
+  "KanbanCard": {
+    "file": "packages/vue/src/components/KanbanBoard/KanbanCard.vue",
+    "props": [
+      { "name": "value", "type": "string", "required": true, "description": "Key of the card, reported as `cardKey` by a draggable board" },
+      { "name": "label", "type": "string", "required": false, "description": "Name of the card in the drag announcements and, when draggable, its\naccessible name" }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any", "description": "Content of the card" }]
   },
   "KanbanColumn": {
     "file": "packages/vue/src/components/KanbanBoard/KanbanColumn.vue",
     "props": [
       { "name": "title", "type": "string", "required": false, "description": "Title of the column (also its accessible name; or the `title` slot)" },
+      { "name": "value", "type": "string", "required": false, "description": "Key of the column, reported as `fromColumn` / `toColumn` by a draggable\nboard (columns without one take no cards)" },
       { "name": "count", "type": "number", "required": false, "description": "Number of items shown as a badge next to the title (and announced with\nthe title); omit to hide the badge" },
       { "name": "color", "type": "KanbanColumnColor", "required": false, "description": "Accent of the column (a dot before the title): a theme color or any CSS color" },
       { "name": "description", "type": "string", "required": false, "description": "Supporting text under the header (or the `description` slot)" },
@@ -2891,7 +2923,12 @@
       { "name": "muted", "type": "boolean", "required": false, "description": "Mutes the media; applied whenever it changes (the mute button still\ntoggles the sound)" },
       { "name": "defaultMuted", "type": "boolean", "required": false, "description": "Initially muted (uncontrolled)" },
       { "name": "preload", "type": "MediaPlayerPreload", "default": "\"metadata\"", "required": false, "description": "How much of the media the browser loads before playback" },
-      { "name": "crossOrigin", "type": "MediaPlayerCrossOrigin", "required": false, "description": "CORS mode of the media request" },
+      {
+        "name": "crossOrigin",
+        "type": "MediaPlayerCrossOrigin",
+        "required": false,
+        "description": "CORS mode of the media request (cross-origin caption files need it too,\nplus CORS headers on their server)"
+      },
       { "name": "startTime", "type": "number", "required": false, "description": "Resume position in seconds, applied once when the metadata loads (and\nagain when src changes)" },
       { "name": "playbackRates", "type": "readonly number[]", "default": "DEFAULT_PLAYBACK_RATES", "required": false, "description": "Speeds the speed button cycles through" },
       { "name": "skipSeconds", "type": "number", "default": "DEFAULT_SKIP_SECONDS", "required": false, "description": "Step of the skip back / forward buttons, in seconds (0 hides them)" },
@@ -2905,6 +2942,13 @@
       { "name": "height", "type": "string | number", "required": false, "description": "Height of a video player (number: pixels); overrides aspectRatio" },
       { "name": "aspectRatio", "type": "string", "default": "\"16 / 9\"", "required": false, "description": "Aspect ratio of a video player (CSS aspect-ratio)" },
       { "name": "pictureInPicture", "type": "boolean", "default": "false", "required": false, "description": "Shows a picture-in-picture button (video, where the browser supports it)" },
+      {
+        "name": "tracks",
+        "type": "readonly MediaPlayerTrack[]",
+        "default": "[]",
+        "required": false,
+        "description": "Captions / subtitles (WebVTT or SRT files): rendered as <track> children\nand drawn by the player over the video (below the title for audio), with\na captions menu in the control bar. The choice is remembered\n(localStorage); a `default` track shows until the user chooses"
+      },
       { "name": "aria-label", "type": "string", "required": false, "description": "Accessible label of the player" }
     ],
     "events": [
@@ -2915,7 +2959,8 @@
       { "name": "pause", "type": "[]" },
       { "name": "loadedMetadata", "type": "[detail: { duration: number; }]" },
       { "name": "rateChange", "type": "[rate: number]" },
-      { "name": "volumeChange", "type": "[detail: MediaPlayerVolumeDetail]" }
+      { "name": "volumeChange", "type": "[detail: MediaPlayerVolumeDetail]" },
+      { "name": "trackChange", "type": "[detail: MediaPlayerTrackChangeDetail]" }
     ],
     "slots": [{ "name": "title", "type": "any", "description": "Title of the media (replaces the title prop)" }]
   },
@@ -3708,6 +3753,7 @@
         "required": false,
         "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)"
       },
+      { "name": "draggable", "type": "boolean", "required": false, "description": "Lets the user drag the dots (default: when a `pointDrop` listener is set)" },
       {
         "name": "showCounts",
         "type": "boolean | ((count: number, points: readonly QuadrantPoint[]) => string)",
@@ -3717,8 +3763,14 @@
       { "name": "showTicks", "type": "boolean", "required": false, "description": "Shows the numeric ticks of the axes (default `true`)" },
       { "name": "reverseX", "type": "boolean", "required": false, "description": "Reverses the horizontal axis (e.g. \"urgent\" on the left)" },
       { "name": "showLabels", "type": "boolean", "required": false, "description": "Draws the labels next to the dots (default `true`)" },
-      { "name": "draggable", "type": "boolean", "required": false, "description": "Lets the user drag the dots (default: when a `pointDrop` listener is set)" },
       { "name": "selectedIndex", "type": "number | null", "required": false, "description": "Index of the selected point, drawn with a ring (`null`: none)" },
+      {
+        "name": "accessiblePoints",
+        "type": "boolean",
+        "default": "true",
+        "required": false,
+        "description": "Renders a visually hidden list of the points per quadrant: screen\nreaders can reach every point; arrows move between them, Enter clicks\nand Shift + arrows move the focused point to the neighbouring quadrant\n(`pointDrop`, with a `pointDrop` listener)"
+      },
       { "name": "labels", "type": "Partial<ChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
       {
         "name": "renderer",

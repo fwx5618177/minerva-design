@@ -140,6 +140,21 @@ export {
   type QuadrantRegions,
   type SparklineConfig,
 } from "./engine/presets";
+export {
+  quadrantAccessibleGroups,
+  quadrantKeyTarget,
+  type QuadrantAccessibleConfig,
+  type QuadrantAccessibleGroup,
+  type QuadrantAccessibleMove,
+  type QuadrantAccessiblePoint,
+  type QuadrantKeyInput,
+} from "./engine/quadrant-keyboard";
+export {
+  createQuadrantPointLayer,
+  type QuadrantPointLayer,
+  type QuadrantPointLayerOptions,
+  type QuadrantPointMove,
+} from "./engine/quadrant-layer";
 export type { ChartThemeInput } from "./engine/theme";
 export type {
   ChartAnnotation,

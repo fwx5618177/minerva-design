@@ -1,10 +1,10 @@
 {
   "title": "KanbanBoard",
-  "description": "Un tableau de colonnes d’état (À faire / En cours / Terminé) : des colonnes de même largeur avec un titre, un compteur et une couleur d’accent, des cartes empilées et un défilement horizontal. Le glisser-déposer n’est pas intégré : déplacez les cartes avec vos propres actions.",
+  "description": "Un tableau de colonnes d’état (À faire / En cours / Terminé) : des colonnes de même largeur avec un titre, un compteur et une couleur d’accent, des cartes empilées et un défilement horizontal. Avec draggable, les KanbanCard se déplacent entre les colonnes et au sein d’une colonne à la souris, au toucher ou au clavier ; le tableau reste contrôlé (onCardMove).",
   "demos": {
     "basic": {
       "title": "Utilisation de base",
-      "description": "KanbanBoard est une région nommée, défilable au clavier, contenant des KanbanColumn ; chaque colonne est un groupe nommé par son titre et son compteur, et ses cartes (ici des Card minerva) forment une liste. Pas de glisser-déposer : déplacez les cartes avec vos propres actions (un bouton ou un menu) et mettez vos données à jour."
+      "description": "KanbanBoard est une région nommée, défilable au clavier, contenant des KanbanColumn ; chaque colonne est un groupe nommé par son titre et son compteur, et ses cartes (ici des Card minerva) forment une liste. Ici les cartes se déplacent avec leurs propres actions (un bouton ou un menu) ; voir Glisser-déposer pour les tableaux draggable."
     },
     "colors": {
       "title": "Couleurs et compteurs",
@@ -17,6 +17,10 @@
     "fixed-height": {
       "title": "Hauteur fixe",
       "description": "height ou maxHeight bornent le tableau : le corps de chaque colonne défile verticalement pendant que le tableau défile horizontalement."
+    },
+    "drag-drop": {
+      "title": "Glisser-déposer",
+      "description": "draggable permet de faire glisser les KanbanCard des colonnes identifiées (value) : à la souris, par un appui long sur écran tactile ou au clavier (Espace ou Entrée sur une carte ciblée la prend, les flèches la déplacent, Espace ou Entrée la dépose, Échap annule ; chaque étape est annoncée). Le tableau ne réordonne jamais rien : onCardMove signale { cardKey, fromColumn, fromIndex, toColumn, toIndex } et moveKanbanCard (minerva-design/core) l’applique à vos listes. canDrop refuse des positions : ici « En cours » accepte au plus 2 cartes."
     }
   },
   "api": {
@@ -27,6 +31,9 @@
       "gap": "Espace entre les colonnes (un nombre est en pixels)",
       "height": "Hauteur du tableau : le corps des colonnes y défile verticalement (un nombre est en pixels)",
       "maxHeight": "Hauteur maximale du tableau : le corps des colonnes y défile verticalement (un nombre est en pixels)",
+      "draggable": "Permet de faire glisser les KanbanCard des colonnes identifiées entre les colonnes et au sein d’une colonne (souris, appui long tactile, clavier)",
+      "onCardMove": "Appelée quand une carte est déposée à une nouvelle position, avec { cardKey, fromColumn, fromIndex, toColumn, toIndex } (toIndex compte les cartes sans celle déplacée) : déplacez la carte dans vos données",
+      "canDrop": "Indique si une carte peut être déposée à une position : les positions refusées n’affichent pas d’indicateur et le clavier les saute",
       "aria-label": "Nom accessible de la région du tableau",
       "aria-labelledby": "Id d’un élément nommant le tableau (à la place d’aria-label)",
       "className": "Classe CSS supplémentaire",
@@ -36,6 +43,7 @@
     },
     "KanbanColumnProps": {
       "title": "Titre de la colonne (aussi son nom accessible)",
+      "value": "Clé de la colonne, signalée comme fromColumn / toColumn par un tableau draggable (une colonne sans clé ne reçoit pas de cartes)",
       "count": "Nombre d’éléments affiché en badge à côté du titre (et annoncé avec lui) ; omettez-le pour masquer le badge",
       "color": "Accent de la colonne (une pastille avant le titre) : une couleur du thème ou n’importe quelle couleur CSS",
       "description": "Texte d’appoint sous l’en-tête",
@@ -48,6 +56,15 @@
       "style": "Style en ligne de la colonne",
       "id": "Id de la colonne",
       "ref": "Ref vers la <section> racine"
+    },
+    "KanbanCardProps": {
+      "value": "Clé de la carte, signalée comme cardKey par un tableau draggable",
+      "label": "Nom de la carte dans les annonces du glisser-déposer et, quand elle est déplaçable, son nom accessible (par défaut son texte)",
+      "children": "Contenu de la carte",
+      "className": "Nom de classe supplémentaire",
+      "style": "Style en ligne de la carte",
+      "id": "Id de la carte",
+      "ref": "Ref vers la <div> racine"
     }
   },
   "cssVars": {
@@ -59,13 +76,14 @@
     "--kanban-column-color": "Accent d’une colonne : la pastille avant le titre (la prop color la définit pour une couleur CSS personnalisée)",
     "--kanban-card-gap": "Espace entre les cartes d’une colonne (--space-2 par défaut)",
     "--kanban-count-background": "Fond du badge de compteur (--surface-color par défaut)",
-    "--kanban-count-color": "Couleur du texte du badge de compteur (--text-secondary-color par défaut)"
+    "--kanban-count-color": "Couleur du texte du badge de compteur (--text-secondary-color par défaut)",
+    "--kanban-drop-indicator-color": "Couleur de la ligne de dépôt et de la colonne où atterrirait la carte déplacée (par défaut --primary-color)"
   },
   "wc": {
     "demos": {
       "basic": {
         "title": "Utilisation de base",
-        "description": "Des éléments minerva-kanban-column dans un minerva-kanban-board ; les cartes insérées reçoivent role=\"listitem\". Pas de glisser-déposer : ici chaque carte passe à la colonne suivante avec son propre bouton, et le script met à jour les attributs count."
+        "description": "Des éléments minerva-kanban-column dans un minerva-kanban-board ; les cartes insérées reçoivent role=\"listitem\". Ici chaque carte passe à la colonne suivante avec son propre bouton, et le script met à jour les attributs count ; voir Glisser-déposer pour les tableaux draggable."
       },
       "colors": {
         "title": "Couleurs et compteurs",
@@ -78,9 +96,19 @@
       "fixed-height": {
         "title": "Hauteur fixe",
         "description": "height ou max-height bornent le tableau : le corps de chaque colonne défile verticalement pendant que le tableau défile horizontalement."
+      },
+      "drag-drop": {
+        "title": "Glisser-déposer",
+        "description": "Avec draggable, les éléments minerva-kanban-card des colonnes identifiées (value) se déplacent à la souris, au toucher ou au clavier. Le tableau émet minerva-card-move ({ cardKey, fromColumn, fromIndex, toColumn, toIndex }) sans rien déplacer lui-même : le script déplace l’élément de la carte et met à jour les compteurs. La propriété canDrop limite « En cours » à 2 cartes."
       }
     },
     "minerva-kanban-board": {
+      "props": {
+        "draggable": "Permet de faire glisser les enfants minerva-kanban-card des colonnes identifiées (souris, appui long tactile, clavier) ; remplace le draggable natif : l’attribut l’active sauf s’il vaut \"false\""
+      },
+      "events": {
+        "minerva-card-move": "Une carte a été déposée à une nouvelle position (detail : { cardKey, fromColumn, fromIndex, toColumn, toIndex }) ; déplacez l’élément de la carte ou refaites le rendu."
+      },
       "slots": {
         "default": "Les colonnes (minerva-kanban-column)"
       },
@@ -101,6 +129,11 @@
         "empty": "Contenu affiché quand il n’y a aucune carte",
         "footer": "Pied sous les cartes (par exemple un bouton « Ajouter une carte »)"
       }
+    },
+    "minerva-kanban-card": {
+      "slots": {
+        "default": "Le contenu de la carte"
+      }
     }
   },
   "native": {
@@ -108,6 +141,10 @@
       "basic": {
         "title": "Exemple natif",
         "description": "Une ScrollView horizontale de colonnes qui s’aligne colonne par colonne ; les cartes se déplacent avec leurs propres boutons."
+      },
+      "drag-drop": {
+        "title": "Glisser-déposer",
+        "description": "Un appui long prend une carte, le tableau cesse de défiler et la carte est déposée là où le doigt se lève ; les lecteurs d’écran disposent des actions Monter / Descendre / Déplacer vers <colonne> sur chaque carte. onCardMove signale le déplacement."
       }
     }
   }

@@ -324,6 +324,7 @@
   "QuadrantChart": {
     "entry": "minerva-design/quadrant-chart/index",
     "props": [
+      { "name": "accessiblePoints", "type": "boolean", "required": false, "default": "true" },
       { "name": "annotations", "type": "array", "required": false, "default": "[]" },
       { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
       { "name": "axisLabels", "type": "any", "required": false, "default": "null" },
@@ -2309,6 +2310,7 @@
       { "name": "src", "type": "string", "required": false, "default": "\"\"" },
       { "name": "startTime", "type": "number", "required": false, "default": "0" },
       { "name": "title", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "tracks", "type": "array", "required": false, "default": "[]" },
       { "name": "type", "type": "string", "required": false, "default": "\"\"" }
     ],
     "events": [
@@ -2319,11 +2321,17 @@
       { "name": "play", "type": "{}", "description": "Playback started." },
       { "name": "ratechange", "type": "{ rate: number }", "description": "The speed button changed the rate." },
       { "name": "timeupdate", "type": "{ currentTime: number; duration: number }", "description": "Playhead position and duration, in seconds." },
+      {
+        "name": "trackchange",
+        "type": "{ index: number; track: { src: string; srclang?: string; label: string; kind?: string; default?: boolean } | null }",
+        "description": "The user chose captions in the CC row (index -1 and track null: Off)."
+      },
       { "name": "volumechange", "type": "{ volume: number; muted: boolean }", "description": "Mute button or audio volume bar (video volume stays 1)." }
     ],
     "slots": [],
     "methods": [
       { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      { "name": "chooseTrack", "type": "chooseTrack(index: number): void", "description": "Show the captions of tracks[index] (-1: off); remembered in storage, fires trackchange." },
       { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
       { "name": "pause", "type": "pause(): void", "description": "Pause playback." },
       { "name": "play", "type": "play(): void", "description": "Start playback through the host media context." },
@@ -2336,12 +2344,19 @@
     "props": [
       { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
       { "name": "columnWidth", "type": "any | number | string", "required": false, "default": "null" },
+      { "name": "draggable", "type": "boolean", "required": false, "default": "false" },
       { "name": "fill", "type": "boolean", "required": false, "default": "false" },
       { "name": "gap", "type": "any | number | string", "required": false, "default": "null" },
       { "name": "height", "type": "any | number | string", "required": false, "default": "null" },
       { "name": "maxHeight", "type": "any | number | string", "required": false, "default": "null" }
     ],
-    "events": [],
+    "events": [
+      {
+        "name": "cardmove",
+        "type": "{ cardKey: string; fromColumn: string; fromIndex: number; toColumn: string; toIndex: number }",
+        "description": "A draggable board dropped a kanban-card (long press, then move); toIndex counts the target column's cards without the moved one. Dropping in place emits nothing; the board stays controlled."
+      }
+    ],
     "slots": [{ "name": "default", "type": "native slot" }],
     "methods": [
       { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
@@ -2356,8 +2371,10 @@
       { "name": "color", "type": "string", "required": false, "default": "\"\"" },
       { "name": "count", "type": "any | number | string", "required": false, "default": "null" },
       { "name": "description", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "dropDisabled", "type": "boolean", "required": false, "default": "false" },
       { "name": "empty", "type": "string", "required": false, "default": "\"\"" },
-      { "name": "title", "type": "string", "required": false, "default": "\"\"" }
+      { "name": "title", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "value", "type": "string", "required": false, "default": "\"\"" }
     ],
     "events": [],
     "slots": [
@@ -2366,6 +2383,20 @@
       { "name": "footer", "type": "native slot" },
       { "name": "title", "type": "native slot" }
     ],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "KanbanCard": {
+    "entry": "minerva-design/kanban-card/index",
+    "props": [
+      { "name": "label", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "value", "type": "string", "required": false, "default": "\"\"" }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "native slot" }],
     "methods": [
       { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
       { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
@@ -2461,6 +2492,7 @@
       { "name": "max", "type": "number", "required": false, "default": "100" },
       { "name": "min", "type": "number", "required": false, "default": "0" },
       { "name": "name", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "orientation", "type": "string", "required": false, "default": "\"horizontal\"" },
       { "name": "range", "type": "boolean", "required": false, "default": "false" },
       { "name": "readOnly", "type": "any", "required": false, "default": "null" },
       { "name": "required", "type": "any", "required": false, "default": "null" },
@@ -3785,6 +3817,7 @@
       { "name": "copyable", "type": "boolean", "required": false, "default": "false" },
       { "name": "highlight", "type": "boolean", "required": false, "default": "true" },
       { "name": "language", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "marks", "type": "any", "required": false, "default": "[]" },
       { "name": "maxHeight", "type": "any", "required": false, "default": "\"24rem\"" },
       { "name": "showLanguage", "type": "boolean", "required": false, "default": "false" },
       { "name": "showLineNumbers", "type": "boolean", "required": false, "default": "false" },
@@ -3793,7 +3826,8 @@
     "events": [
       { "name": "copied", "type": "event.detail" },
       { "name": "copy", "type": "event.detail" },
-      { "name": "error", "type": "event.detail" }
+      { "name": "error", "type": "event.detail" },
+      { "name": "markclick", "type": "event.detail" }
     ],
     "slots": [],
     "methods": [

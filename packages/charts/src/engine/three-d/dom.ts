@@ -2,7 +2,7 @@
 // walls, data, labels / hover), tooltip, a visually hidden data summary and
 // a live region. Styled inline with the Minerva CSS variables.
 
-import { styleTooltip } from "../tooltip";
+import { styleTooltip, themeTooltip } from "../tooltip";
 
 export interface Chart3DDom {
   root: HTMLDivElement;
@@ -116,6 +116,8 @@ export const createChart3DDom = (container: HTMLElement): Chart3DDom => {
   stage.append(background, foreground, tooltip, summary, live);
   root.append(legend, stage);
   container.appendChild(root);
+  // translucent in the colors of the page until the host applies its theme
+  themeTooltip(tooltip, stage);
   return {
     root,
     legend,

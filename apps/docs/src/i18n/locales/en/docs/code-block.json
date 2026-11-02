@@ -10,6 +10,10 @@
       "title": "Languages",
       "description": "language picks the grammar: JavaScript / TypeScript (JSX, TSX), JSON, CSS, HTML, Bash, Python, YAML, SQL, diff and Markdown (common aliases such as ts, sh, py, yml, md work). showLanguage adds a small label; other languages render plain text."
     },
+    "auto-language": {
+      "title": "Automatic language",
+      "description": "For code whose language is unknown (e.g. an EPUB <pre> without a class), language=\"auto\" detects it from the text with a fast heuristic over its first 4 KB, then highlights it and labels the detected language; when unsure it stays \"plain\". Marks keep working. detectCodeLanguage of minerva-design/core runs the same detection on its own."
+    },
     "line-numbers": {
       "title": "Line numbers",
       "description": "showLineNumbers numbers the lines in a gutter hidden from screen readers; the numbers are not selected or copied with the code."
@@ -21,6 +25,10 @@
     "copyable": {
       "title": "Copy button",
       "description": "copyable adds a copy button in the top-right corner; the result (\"Copied\" / \"Copy failed\") is shown on the button and announced to screen readers. onCopied receives the copied text after a successful copy."
+    },
+    "marks": {
+      "title": "Marks (saved highlights)",
+      "description": "marks lays character ranges over the syntax colors (offsets into the code; overlapping marks: the later one wins). getCodeSelectionRange of minerva-design/core turns the user's selection into offsets to save; onMarkClick reports the clicked mark (here: removes it). Copy still copies the raw code."
     }
   },
   "api": {
@@ -32,10 +40,12 @@
       "tabIndex": "Tab order of the region (focusable by default)",
       "copyable": "Shows a copy button that writes the text to the clipboard and announces the result",
       "onCopied": "Called with the copied text after the copy button wrote it to the clipboard (not on failure); the native onCopy still goes to the element",
-      "language": "Language of the code: highlights its syntax (javascript, typescript, jsx, tsx, json, css, html, bash, python, yaml, sql, diff, markdown and their aliases); without it the text is plain",
+      "language": "Language of the code: highlights its syntax (javascript, typescript, jsx, tsx, json, css, html, bash, python, yaml, sql, diff, markdown and their aliases); \"auto\" detects it from the code (detectCodeLanguage, \"plain\" when unsure), reflected by the label, class and data-language; without it the text is plain",
       "highlight": "Highlights the syntax of language (false: plain text)",
       "showLineNumbers": "Numbers the lines in a gutter (hidden from assistive technology, not copied)",
       "showLanguage": "Shows the language as a small label in the top-right corner",
+      "marks": "Character ranges to mark (saved highlights, annotations): { start, end, color?, className?, id?, title? } with UTF-16 offsets into the code, rendered as <mark> over the syntax colors. Ranges are clamped, empty ones ignored; where marks overlap, the later one wins. color is a theme color name (a translucent tint) or any CSS color",
+      "onMarkClick": "Called with the mark (the topmost where marks overlap) and the event when a mark is clicked, not at the end of a selection drag",
       "ref": "Ref to the <pre> element"
     }
   },
@@ -46,7 +56,8 @@
     "--code-block-border-color": "Border color",
     "--code-block-font-size": "Font size of the code",
     "--code-block-max-height": "Maximum height before the block scrolls (default: none)",
-    "--code-block-line-number-color": "Color of the line numbers"
+    "--code-block-line-number-color": "Color of the line numbers",
+    "--code-block-mark-bg": "Default background of the marks (a translucent yellow)"
   },
   "wc": {
     "demos": {
@@ -57,6 +68,10 @@
       "languages": {
         "title": "Languages",
         "description": "language picks the grammar (ts, css, html, bash, python, diff…); show-language adds a small label. The code property holds the text, never parsed as HTML."
+      },
+      "auto-language": {
+        "title": "Automatic language",
+        "description": "language=\"auto\" detects the language of unlabelled code from its text (detectCodeLanguage of minerva-design/core; \"plain\" when unsure); show-language, class and data-language show the detected one."
       },
       "line-numbers": {
         "title": "Line numbers",
@@ -69,20 +84,27 @@
       "overflow": {
         "title": "Long lines and height",
         "description": "no-wrap scrolls long lines horizontally and max-height caps the block; the region scrolls with the keyboard too."
+      },
+      "marks": {
+        "title": "Marks (saved highlights)",
+        "description": "marks lays character ranges over the syntax colors; getSelectionRange() maps the user's selection to offsets and minerva-mark-click reports the clicked mark (here: removes it)."
       }
     },
     "minerva-code-block": {
       "props": {
         "code": "Source text (default: the element's text content).",
-        "language": "Language of the code: highlights its syntax and sets class=\"language-<x>\" / data-language on the <code>.",
+        "language": "Language of the code: highlights its syntax and sets class=\"language-<x>\" / data-language on the <code>. \"auto\" detects it from the text (detectCodeLanguage; \"plain\" when unsure).",
         "noHighlight": "Keeps the code plain despite language (the React library's highlight={false}).",
         "noWrap": "Scrolls long lines horizontally instead of wrapping them (the React library's wrap={false}).",
         "showLineNumbers": "Numbers the lines in a gutter (aria-hidden, not part of the copied text).",
         "showLanguage": "Shows the language as a small label in the top-right corner (e.g. \"JSON\").",
+        "marks": "Character ranges to mark ({ start, end, color?, className?, id?, title? }, UTF-16 offsets into the text): the property or a JSON array attribute. The later of overlapping marks wins.",
+        "clickableMarks": "Gives the marks a click affordance (pointer cursor, hover underline); set it when listening to minerva-mark-click.",
         "text": "The text shown and copied (read-only)."
       },
       "events": {
-        "minerva-copy": "The copy button or copy() was used (detail: { text, success }; text is the copied text, React's onCopied receives it on success)."
+        "minerva-copy": "The copy button or copy() was used (detail: { text, success }; text is the copied text, React's onCopied receives it on success).",
+        "minerva-mark-click": "A mark was clicked, not at the end of a selection drag (detail: { mark, originalEvent }; React's onMarkClick)."
       },
       "cssVars": {
         "--icon-button-color": "Icon color of the copy button.",
@@ -94,7 +116,8 @@
         "--icon-button-radius": "Corner radius of the copy button."
       },
       "methods": {
-        "copy": "Copies the text to the clipboard; resolves with whether it worked."
+        "copy": "Copies the text to the clipboard; resolves with whether it worked.",
+        "getSelectionRange": "Offsets in text of the user's selection inside the code ({ start, end, text }), or null; reads the selection through the shadow root."
       }
     }
   },
@@ -103,6 +126,10 @@
       "basic": {
         "title": "Native example",
         "description": "Interact with the native component in this phone preview."
+      },
+      "marks": {
+        "title": "Marks",
+        "description": "marks highlights character ranges with nested Text backgrounds; onMarkClick reports the pressed mark."
       }
     },
     "limitations": "Native CodeBlock uses a maximum height of 384 density-independent pixels, corresponding to the web default of 24rem at a 16px root size. Pass copyText to connect Expo Clipboard on iOS and Android."

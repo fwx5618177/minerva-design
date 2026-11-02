@@ -1,4 +1,5 @@
-// No drag and drop: a card moves to the next column with its own button.
+// A card moves to the next column with its own button (draggable boards:
+// drag-drop demo).
 // The column gives each slotted card role="listitem"; update `count` after
 // moving cards.
 const ORDER = ["todo", "doing", "done"];

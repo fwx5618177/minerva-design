@@ -188,3 +188,125 @@ describe("Taro MediaPlayer", () => {
     expect(screen.queryByRole("button")).toBeNull();
   });
 });
+
+describe("Taro MediaPlayer captions", () => {
+  const VTT =
+    "WEBVTT\n\n00:01.000 --> 00:03.000\nHello <b>there</b>\n\n00:05.000 --> 00:06.000\nBye\n";
+  const SRT = "1\n00:00:01,000 --> 00:00:03,000\nBonjour\n";
+  const flush = () =>
+    act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+  const caption = () => document.querySelector('[data-part="captions"]');
+  let stored: Record<string, unknown>;
+  const original = {
+    getStorageSync: mock.getStorageSync,
+    setStorageSync: mock.setStorageSync,
+  };
+
+  beforeEach(() => {
+    stored = {};
+    mock.getStorageSync = vi.fn((key: string) => stored[key]);
+    mock.setStorageSync = vi.fn((key: string, value: unknown) => {
+      stored[key] = value;
+    });
+    mock.request = vi.fn(
+      (options: {
+        url: string;
+        success: (result: { statusCode: number; data: unknown }) => void;
+      }) =>
+        options.success(
+          options.url.endsWith(".srt")
+            ? { statusCode: 200, data: SRT }
+            : { statusCode: 404, data: "" },
+        ),
+    );
+  });
+  afterEach(() => {
+    delete mock.request;
+    Object.assign(mock, original);
+  });
+
+  const tracks = [
+    {
+      src: `data:text/vtt,${encodeURIComponent(VTT)}`,
+      srclang: "en",
+      label: "English",
+      default: true,
+    },
+    { src: "https://cdn.example.com/fr.srt", srclang: "fr", label: "Français" },
+  ];
+
+  it("draws the active cue of the default track at the video time", async () => {
+    render(<M.MediaPlayer src="/clip.mp4" tracks={tracks} />);
+    await flush();
+    expect(caption()).toBeNull();
+    fireVideo("timeupdate", { currentTime: 1.5, duration: 10 });
+    expect(caption()).toHaveTextContent("Hello there");
+    fireVideo("timeupdate", { currentTime: 4, duration: 10 });
+    expect(caption()).toBeNull();
+    fireVideo("timeupdate", { currentTime: 5.2, duration: 10 });
+    expect(caption()).toHaveTextContent("Bye");
+  });
+
+  it("chooses a track with the CC button, fetches it and remembers it", async () => {
+    const onTrackChange = vi.fn();
+    render(
+      <M.MediaPlayer
+        src="/clip.mp4"
+        tracks={tracks}
+        onTrackChange={onTrackChange}
+      />,
+    );
+    const cc = screen.getByRole("button", { name: "Captions" });
+    fireEvent.click(cc);
+    const menu = document.querySelector('[data-part="captions-menu"]')!;
+    expect(menu).toBeInTheDocument();
+    const options = screen.getAllByRole("button", { pressed: false });
+    expect(
+      screen.getByRole("button", { name: "English", pressed: true }),
+    ).toBeInTheDocument();
+    expect(options.map((o) => o.textContent)).toContain("Off");
+    fireEvent.click(screen.getByRole("button", { name: "Français" }));
+    expect(onTrackChange).toHaveBeenCalledWith({ index: 1, track: tracks[1] });
+    expect(document.querySelector('[data-part="captions-menu"]')).toBeNull();
+    expect(stored["minerva-media-player-captions"]).toBe("fr");
+    await flush();
+    expect(mock.request).toHaveBeenCalledWith(
+      expect.objectContaining({
+        url: "https://cdn.example.com/fr.srt",
+        dataType: "text",
+      }),
+    );
+    fireVideo("timeupdate", { currentTime: 2, duration: 10 });
+    expect(caption()).toHaveTextContent("Bonjour");
+
+    fireEvent.click(cc);
+    fireEvent.click(screen.getByRole("button", { name: "Off" }));
+    expect(onTrackChange).toHaveBeenLastCalledWith({ index: -1, track: null });
+    expect(caption()).toBeNull();
+  });
+
+  it("starts on the remembered choice and shows audio cues under the title", async () => {
+    stored["minerva-media-player-captions"] = "off";
+    const { unmount } = render(
+      <M.MediaPlayer src="/song.mp3" title="Talk" tracks={tracks} />,
+    );
+    await flush();
+    expect(caption()).toBeNull();
+    unmount();
+
+    stored["minerva-media-player-captions"] = "en";
+    render(<M.MediaPlayer src="/song.mp3" title="Talk" tracks={tracks} />);
+    await flush();
+    expect(caption()).toBeInTheDocument();
+    audio.currentTime = 2;
+    audio.emit("timeupdate");
+    expect(caption()).toHaveTextContent("Hello there");
+  });
+
+  it("has no CC button without tracks", () => {
+    render(<M.MediaPlayer src="/clip.mp4" />);
+    expect(screen.queryByRole("button", { name: "Captions" })).toBeNull();
+  });
+});

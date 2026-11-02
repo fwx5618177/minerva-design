@@ -232,7 +232,7 @@ export const weappComponentManifest = [
     scope:
       "Custom touch slider (not the host slider) with one or two non-crossing thumbs, min/max/step or marks-only snapping, step or labelled marks, controlled/default value with change { value } while dragging and changeend { value } on release, five colors, three sizes, value label, drag tooltip, formatValue/getAriaValueText through configure(), hidden named inputs and form context disabled/readOnly/invalid.",
     limitations: [
-      "The track is measured with createSelectorQuery on touch start (cached afterwards); horizontal and left-to-right only. There is no keyboard or adjustable screen-reader gesture on native views (stepThumb(key, index) steps programmatically). A range submits two inputs with the same name, which native forms collapse to one value.",
+      "The track is measured with createSelectorQuery on touch start (cached afterwards). Horizontal sliders are left-to-right only; orientation vertical runs the track bottom (min) to top (max). There is no keyboard or adjustable screen-reader gesture on native views (stepThumb(key, index) steps programmatically). A range submits two inputs with the same name, which native forms collapse to one value.",
     ],
     tests: [
       "src/slider.test.ts: real native host touch, range and form workflows",
@@ -258,9 +258,9 @@ export const weappComponentManifest = [
   {
     name: "MediaPlayer",
     scope:
-      "Video through the host <video> (controls off, driven by wx.createVideoContext: play/pause/seek/playbackRate/requestFullScreen) and audio through wx.createInnerAudioContext, under a themed control bar: play/pause, skip back/forward (skipSeconds), touch seek bar with the buffered range and aria-valuetext, m:ss / h:mm:ss time, mute, audio volume bar, playback-rate cycle button, video fullscreen, loading spinner and translated error state; startTime (video initial-time, audio startTime), autoPlay, loop, muted/defaultMuted, title, poster, height/aspectRatio; timeupdate/ended/play/pause/loadedmetadata/error/ratechange/volumechange events and play()/pause()/seek(seconds) instance methods. controls=false shows the host video's own controls.",
+      "Video through the host <video> (controls off, driven by wx.createVideoContext: play/pause/seek/playbackRate/requestFullScreen) and audio through wx.createInnerAudioContext, under a themed control bar: play/pause, skip back/forward (skipSeconds), touch seek bar with the buffered range and aria-valuetext, m:ss / h:mm:ss time, mute, audio volume bar, playback-rate cycle button, video fullscreen, loading spinner and translated error state; startTime (video initial-time, audio startTime), autoPlay, loop, muted/defaultMuted, title, poster, height/aspectRatio; timeupdate/ended/play/pause/loadedmetadata/error/ratechange/volumechange events and play()/pause()/seek(seconds) instance methods. controls=false shows the host video's own controls. Captions: tracks (WebVTT or SRT, data: URLs inline) fetched with wx.request, parsed by the shared minerva-design/core parser and drawn as an overlay synchronized with the time updates, a CC button with an Off / per-track choice row, the choice remembered in storage (default track otherwise), a trackchange event and chooseTrack(index).",
     limitations: [
-      "Beta: needs device validation. The host video has no volume API (mute only, no volume bar); no picture-in-picture and no keyboard shortcuts; icons are text glyphs (no inline SVG in WXML).",
+      "Beta: needs device validation. The host video has no volume API (mute only, no volume bar); no picture-in-picture and no keyboard shortcuts; icons are text glyphs (no inline SVG in WXML). Captions follow the host time updates (about 4 per second), are not shown in the host's native fullscreen, ignore cue positioning / styling, and remote caption files need the app's request domain allowlist.",
     ],
     tests: [
       "src/media-player.test.ts: real native host state and callback workflows",
@@ -272,9 +272,23 @@ export const weappComponentManifest = [
   {
     name: "KanbanBoard",
     scope:
-      "Region around a scroll-view scroll-x of equal-width status columns: columnWidth, gap, height/maxHeight with vertically scrolling column bodies and a translated label.",
+      "Region around a scroll-view scroll-x of equal-width status columns: columnWidth, gap, height/maxHeight with vertically scrolling column bodies and a translated label. draggable boards move kanban-card components between keyed columns (value): board, columns and cards find each other through relations (linked / unlinked), a long press picks a card up, every column and card root is measured with its own createSelectorQuery boundingClientRect, the shared core functions hit-test the finger, a fixed copy showing the card label follows it, a drop line and the target column outline show the position, and the controlled board fires cardmove { cardKey, fromColumn, fromIndex, toColumn, toIndex } (toIndex counts the cards without the moved one; dropping in place fires nothing). KanbanColumn drop-disabled replaces the canDrop function, which WXML properties cannot carry.",
     limitations: [
-      "No drag and drop: move cards with your own actions and update the columns' data. No scroll snapping, and fill does not stretch the columns (each column component host is the flex item); device geometry still requires validation.",
+      "Beta: drag and drop needs device validation. Touch only (no keyboard dragging and no live-region announcements); the floating copy shows the label text, not the card's content; positions are measured once at pick-up (no auto-scroll while dragging, and the board or a column must not scroll during the drag); scrolling under the finger is stopped by a data-bound catchtouchmove on the picked-up card. No canDrop function: drop-disabled refuses a whole column. No scroll snapping, and fill does not stretch the columns (each column component host is the flex item); device geometry still requires validation.",
+    ],
+    tests: [
+      "src/kanban-board.test.ts: real native host rendering and long press / touchmove / touchend drag workflows",
+      "src/parity.test.ts: native host mount",
+    ],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "KanbanColumn",
+    scope:
+      "Status column: accent dot (theme or CSS color), title (property or title slot), count badge announced with the title, description, actions/footer slots, role=list body and translated or custom empty text; value keys it for dragging and drop-disabled refuses dropped cards (the drop target gets an outline).",
+    limitations: [
+      "Slots cannot be inspected: the empty text shows when count is 0, and each card should carry role=listitem (kanban-card does). Empty actions/footer slots keep their (collapsed) wrappers.",
     ],
     tests: [
       "src/kanban-board.test.ts: real native host rendering",
@@ -284,14 +298,14 @@ export const weappComponentManifest = [
     deviceE2E: false,
   },
   {
-    name: "KanbanColumn",
+    name: "KanbanCard",
     scope:
-      "Status column: accent dot (theme or CSS color), title (property or title slot), count badge announced with the title, description, actions/footer slots, role=list body and translated or custom empty text.",
+      "kanban-card: a role=listitem wrapper keyed by value with a label for the dragged copy; in a draggable board a long press picks it up (bindlongpress), a capture-phase touchmove moves the copy and touchend drops it.",
     limitations: [
-      "Slots cannot be inspected: the empty text shows when count is 0, and each card should carry role=listitem. Empty actions/footer slots keep their (collapsed) wrappers.",
+      "Beta: needs device validation. Touch only; the floating copy shows the label text, not the card's content; interactive slotted content inside a draggable card can also start a drag on long press.",
     ],
     tests: [
-      "src/kanban-board.test.ts: real native host rendering",
+      "src/kanban-board.test.ts: real native host drag workflows",
       "src/parity.test.ts: native host mount",
     ],
     status: "partial",
@@ -771,7 +785,7 @@ export const weappComponentManifest = [
   {
     name: "CodeBlock",
     scope:
-      "Verbatim selectable source with syntax highlighting (core highlightCode rendered as nested text, never markup), opt-in line numbers and language label, wrap/horizontal scrolling, maxHeight, opt-in native clipboard copy of the raw text with status/copied/error events.",
+      'Verbatim selectable source with syntax highlighting (core highlightCode rendered as nested text, never markup; language="auto" detects it with detectCodeLanguage), opt-in line numbers and language label, character-range marks (nested text backgrounds, markclick event on tap), wrap/horizontal scrolling, maxHeight, opt-in native clipboard copy of the raw text with status/copied/error events.',
     limitations: [
       "Native clipboard replaces document clipboard permissions; no DOM pre/ref/keyboard-scroll event objects.",
     ],
@@ -1559,7 +1573,8 @@ export const weappChartManifest = [
       "Quadrant matrix with the web props (points, domains, splits, quadrants with badge/description, axis labels, showTicks, reverseX, labels, pointSize, showCounts, selectedIndex/selectedIndices rings); pointclick, quadrantclick and pointdrag/pointdrop events.",
     limitations: [
       "quadrantContent (ReactNode overlays) has no canvas equivalent: place host views with the layout event and toPixel().",
-      "renderQuadrantHeader, getPointProps and the accessible point layer (keyboard moves, focus ring) are React-only; showCounts takes no formatting function.",
+      "renderQuadrantHeader and getPointProps are React-only; showCounts takes no formatting function.",
+      "Accessible points (accessiblePoints): a visually hidden list of the points (aria-role / aria-label with name, quadrant and values; a tap emits pointclick) with 'Move to …' buttons emitting pointdrop with the center of the neighbouring quadrant (when draggable). Mini-program views take no keyboard focus and have no live region: no focus ring, no Shift + arrow moves, and the move is not announced.",
       "Dragging is enabled by the draggable property (a native host cannot detect a bound pointdrop handler).",
     ],
     tests: ["src/charts.test.ts"],

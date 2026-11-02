@@ -69,7 +69,7 @@ export const NATIVE_COMPONENTS: readonly NativeComponent[] = [
     name: "Slider",
     contract: "Slider",
     notes:
-      "Touch slider on the responder system (press the track, drag; the gesture is not stolen by a parent ScrollView), one or two thumbs, marks, value label and drag tooltip; each thumb is adjustable (increment / decrement). Horizontal only; no hidden form input (use FormField / onChangeEnd).",
+      "Touch slider on the responder system (press the track, drag; the gesture is not stolen by a parent ScrollView), one or two thumbs, marks, value label and drag tooltip; each thumb is adjustable (increment / decrement). Horizontal or vertical (orientation; the vertical track runs bottom = min to top = max, 160 dp by default); no hidden form input (use FormField / onChangeEnd).",
   },
   { name: "SearchBar", contract: null },
   {
@@ -153,10 +153,11 @@ export const NATIVE_COMPONENTS: readonly NativeComponent[] = [
     name: "MediaControls",
     contract: null,
     notes:
-      "MediaControls: the themed control bar of MediaPlayer driven by props, to wrap expo-video / expo-audio (core React Native has no media element)",
+      "MediaControls: the themed control bar of MediaPlayer driven by props, to wrap expo-video / expo-audio (core React Native has no media element). Captions: tracks (WebVTT / SRT, fetched or data: URLs) parsed by minerva-design/core and the cue at currentTime drawn above the seek bar, CC choice, controlled or uncontrolled trackIndex and onTrackChange (no persisted preference)",
   },
   { name: "KanbanBoard", contract: "KanbanBoard" },
   { name: "KanbanColumn", contract: "KanbanColumn" },
+  { name: "KanbanCard", contract: "KanbanCard" },
   { name: "Flashcard", contract: "Flashcard" },
   { name: "SegmentedControl", contract: "SegmentedControl" },
   { name: "Collapse", contract: null, aliases: ["CollapseItem"] },

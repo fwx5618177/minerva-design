@@ -3,13 +3,16 @@
  * MediaPlayer: an `<audio>` / `<video>` element with themed custom controls.
  * Play / pause, skip back / forward, a seek bar (role=slider, buffered range),
  * the time, mute and volume, the playback speed (cycle button), fullscreen and
- * picture-in-picture (video). Keyboard on the focused player: Space / K
- * play-pause, ← / → seek by 5 s, ↑ / ↓ volume, M mute, F fullscreen.
+ * picture-in-picture (video), and a captions menu when `tracks` are given
+ * (cues drawn by the player). Keyboard on the focused player: Space / K
+ * play-pause, ← / → seek by 5 s, ↑ / ↓ volume, M mute, F fullscreen,
+ * C captions on / off.
  * The template ref exposes `play()`, `pause()`, `seek(seconds)` and
  * `element`.
  */
 import {
   computed,
+  nextTick,
   onBeforeUnmount,
   onMounted,
   ref,
@@ -23,6 +26,7 @@ import {
   DEFAULT_SKIP_SECONDS,
   MEDIA_ICON_PATHS,
   bufferedEnd,
+  captionsPreference,
   clampMediaTime,
   clampVolume,
   formatMediaTime,
@@ -31,7 +35,12 @@ import {
   mediaKeyAction,
   mediaProgress,
   nextPlaybackRate,
+  pickCaptionsTrack,
+  readCaptionsPreference,
+  toggledCaptionsTrack,
+  writeCaptionsPreference,
 } from "@minerva/core";
+import { bindMediaCaptions } from "@minerva/dom";
 import styles from "@react-styles/components/MediaPlayer/mediaPlayer.module.scss";
 import { hooks } from "../../internal/hooks";
 import { useI18n } from "../../config/useI18n";
@@ -39,6 +48,7 @@ import type {
   MediaPlayerExpose,
   MediaPlayerProps,
   MediaPlayerTimeDetail,
+  MediaPlayerTrackChangeDetail,
   MediaPlayerVolumeDetail,
 } from "./types";
 
@@ -63,6 +73,7 @@ const props = withDefaults(defineProps<MediaPlayerProps>(), {
   height: undefined,
   aspectRatio: "16 / 9",
   pictureInPicture: false,
+  tracks: () => [],
   "aria-label": undefined,
 });
 
@@ -83,6 +94,8 @@ const emit = defineEmits<{
   rateChange: [rate: number];
   /** The volume or the muted state changed */
   volumeChange: [detail: MediaPlayerVolumeDetail];
+  /** The user chose captions (index -1 and track null: Off) */
+  trackChange: [detail: MediaPlayerTrackChangeDetail];
 }>();
 
 defineSlots<{
@@ -161,6 +174,136 @@ onMounted(() => {
 
 onBeforeUnmount(() =>
   document.removeEventListener("fullscreenchange", onFullscreenChange),
+);
+
+// --- captions ---------------------------------------------------------------
+// The choice is kept as its remembered form (language / label / "off") so it
+// survives a new `tracks` array; `index` disambiguates equal languages.
+const captionsStorage = () => {
+  try {
+    return window.localStorage;
+  } catch {
+    return null;
+  }
+};
+const captionsChoice = ref<{ pref: string | null; index: number }>({
+  pref: null,
+  index: -1,
+});
+const trackIndex = computed(() => {
+  const { pref, index } = captionsChoice.value;
+  const chosen = props.tracks[index];
+  return chosen && captionsPreference(chosen) === pref
+    ? index
+    : pickCaptionsTrack(props.tracks, pref);
+});
+const caption = ref("");
+const captionsMenu = ref(false);
+const captionsButton = shallowRef<HTMLButtonElement | null>(null);
+const captionsControl = shallowRef<HTMLElement | null>(null);
+let lastTrack = -1;
+const tracksKey = computed(() =>
+  props.tracks
+    .map((track) => `${track.src}\n${track.srclang}\n${track.label}`)
+    .join("\n\n"),
+);
+
+onMounted(() => {
+  const stored = readCaptionsPreference(captionsStorage());
+  if (stored) captionsChoice.value = { pref: stored, index: -1 };
+});
+
+watch(
+  [media, tracksKey, trackIndex, () => props.crossOrigin, () => props.controls],
+  (_, __, onCleanup) => {
+    const element = media.value;
+    if (!element || !props.controls) return;
+    onCleanup(
+      bindMediaCaptions(
+        element,
+        props.tracks,
+        trackIndex.value,
+        (text) => (caption.value = text),
+        { crossOrigin: props.crossOrigin },
+      ),
+    );
+  },
+  { flush: "post", immediate: true },
+);
+
+const onCaptionsPointerDown = (event: PointerEvent) => {
+  if (!captionsControl.value?.contains(event.target as Node)) {
+    captionsMenu.value = false;
+  }
+};
+watch(captionsMenu, (open, _, onCleanup) => {
+  if (!open) return;
+  void nextTick(() =>
+    captionsControl.value
+      ?.querySelector<HTMLElement>('[aria-checked="true"]')
+      ?.focus({ preventScroll: true }),
+  );
+  document.addEventListener("pointerdown", onCaptionsPointerDown);
+  onCleanup(() =>
+    document.removeEventListener("pointerdown", onCaptionsPointerDown),
+  );
+});
+
+const chooseTrack = (index: number) => {
+  if (index === trackIndex.value) return;
+  const track = props.tracks[index] ?? null;
+  if (trackIndex.value >= 0) lastTrack = trackIndex.value;
+  captionsChoice.value = { pref: captionsPreference(track), index };
+  writeCaptionsPreference(captionsStorage(), track);
+  emit("trackChange", { index: track ? index : -1, track });
+};
+
+const closeCaptionsMenu = (refocus: boolean) => {
+  captionsMenu.value = false;
+  if (refocus) captionsButton.value?.focus();
+};
+
+const onCaptionsFocusOut = (event: FocusEvent) => {
+  const next = event.relatedTarget as Node | null;
+  if (next && !(event.currentTarget as HTMLElement).contains(next)) {
+    captionsMenu.value = false;
+  }
+};
+
+const captionsMenuKeys = (event: KeyboardEvent) => {
+  event.stopPropagation();
+  const items = Array.from(
+    (event.currentTarget as HTMLElement).querySelectorAll<HTMLElement>(
+      '[role="menuitemradio"]',
+    ),
+  );
+  const at = items.indexOf(document.activeElement as HTMLElement);
+  let next = -1;
+  if (event.key === "ArrowDown") next = (at + 1) % items.length;
+  else if (event.key === "ArrowUp")
+    next = (at - 1 + items.length) % items.length;
+  else if (event.key === "Home") next = 0;
+  else if (event.key === "End") next = items.length - 1;
+  else if (event.key === "Escape") {
+    event.preventDefault();
+    closeCaptionsMenu(true);
+    return;
+  } else if (event.key === "Tab") {
+    captionsMenu.value = false;
+    return;
+  }
+  if (next >= 0) {
+    event.preventDefault();
+    items[next]?.focus();
+  }
+};
+
+const captionsOptions = computed(() => [
+  { index: -1, label: t("mediaPlayer.captionsOff") },
+  ...props.tracks.map((track, index) => ({ index, label: track.label })),
+]);
+const showCaptions = computed(() =>
+  isVideo.value ? caption.value !== "" : trackIndex.value >= 0,
 );
 
 const play = (): Promise<void> => {
@@ -262,6 +405,17 @@ const onKeydown = (event: KeyboardEvent) => {
   const element = media.value;
   if (!action || !element) return;
   if (action.type === "fullscreen" && !isVideo.value) return;
+  if (action.type === "captions") {
+    const next = toggledCaptionsTrack(
+      props.tracks,
+      trackIndex.value,
+      lastTrack,
+    );
+    if (next === null) return;
+    event.preventDefault();
+    chooseTrack(next);
+    return;
+  }
   event.preventDefault();
   switch (action.type) {
     case "toggle":
@@ -510,8 +664,28 @@ const icons = MEDIA_ICON_PATHS;
           : undefined
       "
       v-on="videoListeners"
-    />
-    <audio v-else ref="media" v-bind="mediaAttrs" v-on="mediaListeners" />
+    >
+      <track
+        v-for="(track, index) in tracks"
+        :key="`${index}:${track.src}`"
+        :kind="track.kind ?? 'subtitles'"
+        :src="track.src"
+        :srclang="track.srclang"
+        :label="track.label"
+        :default="!controls && index === trackIndex ? true : undefined"
+      />
+    </video>
+    <audio v-else ref="media" v-bind="mediaAttrs" v-on="mediaListeners">
+      <track
+        v-for="(track, index) in tracks"
+        :key="`${index}:${track.src}`"
+        :kind="track.kind ?? 'subtitles'"
+        :src="track.src"
+        :srclang="track.srclang"
+        :label="track.label"
+        :default="!controls && index === trackIndex ? true : undefined"
+      />
+    </audio>
     <template v-if="controls">
       <div
         v-if="hasTitle"
@@ -527,6 +701,13 @@ const icons = MEDIA_ICON_PATHS;
         :aria-label="t('mediaPlayer.loading')"
         v-bind="hooks('media-player', 'spinner')"
       />
+      <div
+        v-if="showCaptions"
+        :class="styles.captions"
+        v-bind="hooks('media-player', 'captions')"
+      >
+        <span v-if="caption" :class="styles.cue">{{ caption }}</span>
+      </div>
       <div
         v-if="failed"
         :class="styles.error"
@@ -649,6 +830,51 @@ const icons = MEDIA_ICON_PATHS;
         >
           {{ formatPlaybackRate(rate) }}
         </button>
+        <span
+          v-if="tracks.length > 0"
+          ref="captionsControl"
+          :class="styles.captionsControl"
+          @focusout="onCaptionsFocusOut"
+        >
+          <button
+            ref="captionsButton"
+            type="button"
+            :class="[styles.button, trackIndex >= 0 && styles.captionsOn]"
+            :aria-label="t('mediaPlayer.captions')"
+            aria-haspopup="menu"
+            :aria-expanded="captionsMenu"
+            v-bind="hooks('media-player', 'button')"
+            @click="captionsMenu = !captionsMenu"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path :d="icons.captions" />
+            </svg>
+          </button>
+          <div
+            v-if="captionsMenu"
+            role="menu"
+            :aria-label="t('mediaPlayer.captions')"
+            :class="styles.captionsMenu"
+            v-bind="hooks('media-player', 'captions-menu')"
+            @keydown="captionsMenuKeys"
+          >
+            <button
+              v-for="option in captionsOptions"
+              :key="option.index"
+              type="button"
+              role="menuitemradio"
+              :aria-checked="option.index === trackIndex"
+              :tabindex="option.index === trackIndex ? 0 : -1"
+              :class="styles.captionsOption"
+              @click="
+                chooseTrack(option.index);
+                closeCaptionsMenu(true);
+              "
+            >
+              {{ option.label }}
+            </button>
+          </div>
+        </span>
         <button
           v-if="isVideo && pictureInPicture && pipSupported"
           type="button"

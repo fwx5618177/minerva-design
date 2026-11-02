@@ -42,3 +42,17 @@ export const describeCartesianChart = (o: ChartOptions): string =>
 export const describeShapeChart = (o: ShapeChartOptions): string =>
   o.ariaLabel ??
   describeShapeType({ ...o, locale: o.locale ?? systemLocale() });
+
+/**
+ * Role and name of a view for the screen readers: `role` on H5 (a DOM
+ * element), `aria-role` on the mini-program runtime (kebab-case like the
+ * other Taro components; the runtime camel-cases it)
+ */
+export const a11yAttrs = (
+  role: string,
+  label?: string,
+): Record<string, string | undefined> => ({
+  role,
+  ...(process.env.TARO_ENV === "h5" ? {} : { "aria-role": role }),
+  "aria-label": label,
+});

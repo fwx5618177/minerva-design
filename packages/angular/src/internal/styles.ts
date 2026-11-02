@@ -535,6 +535,8 @@ export const codeBlockStyles: ClassMap<
   | "language"
   | "line"
   | "lineNumber"
+  | "mark"
+  | "markClickable"
   | "root"
   | "token-attr-name"
   | "token-attr-value"
@@ -564,6 +566,8 @@ export const codeBlockStyles: ClassMap<
   language: "language",
   line: "line",
   lineNumber: "lineNumber",
+  mark: "mark",
+  markClickable: "markClickable",
   root: "root",
   "token-attr-name": "token-attr-name",
   "token-attr-value": "token-attr-value",
@@ -946,6 +950,7 @@ export const jsonFieldStyles: ClassMap<
 export const kanbanBoardStyles: ClassMap<
   | "actions"
   | "board"
+  | "card"
   | "column"
   | "count"
   | "danger"
@@ -966,6 +971,7 @@ export const kanbanBoardStyles: ClassMap<
 > = {
   actions: "actions",
   board: "board",
+  card: "card",
   column: "column",
   count: "count",
   danger: "danger",
@@ -1042,7 +1048,13 @@ export const mediaPlayerStyles: ClassMap<
   | "bare"
   | "buffered"
   | "button"
+  | "captions"
+  | "captionsControl"
+  | "captionsMenu"
+  | "captionsOn"
+  | "captionsOption"
   | "controls"
+  | "cue"
   | "error"
   | "fill"
   | "media"
@@ -1065,7 +1077,13 @@ export const mediaPlayerStyles: ClassMap<
   bare: "bare",
   buffered: "buffered",
   button: "button",
+  captions: "captions",
+  captionsControl: "captionsControl",
+  captionsMenu: "captionsMenu",
+  captionsOn: "captionsOn",
+  captionsOption: "captionsOption",
   controls: "controls",
+  cue: "cue",
   error: "error",
   fill: "fill",
   media: "media",

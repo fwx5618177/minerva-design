@@ -1,5 +1,6 @@
-import { fireEvent, render, screen } from "@testing-library/react-native";
-import { describe, expect, it, vi } from "vitest";
+import { act, fireEvent, render, screen } from "@testing-library/react-native";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { queryPart } from "../../../test/queries";
 import { MediaControls } from "./MediaControls";
 
 describe("MediaControls (native)", () => {
@@ -107,5 +108,121 @@ describe("MediaControls (native)", () => {
       "This media can't be played",
     );
     expect(screen.getByRole("button", { name: "Play" })).toBeDisabled();
+  });
+});
+
+describe("MediaControls captions (native)", () => {
+  const VTT =
+    "WEBVTT\n\n00:01.000 --> 00:03.000\nHello <b>there</b>\n\n00:05.000 --> 00:06.000\nBye\n";
+  const SRT = "1\n00:00:01,000 --> 00:00:03,000\nBonjour\n";
+  const tracks = [
+    {
+      src: `data:text/vtt,${encodeURIComponent(VTT)}`,
+      srclang: "en",
+      label: "English",
+      default: true,
+    },
+    { src: "https://cdn.example.com/fr.srt", srclang: "fr", label: "Français" },
+  ];
+  const flush = () =>
+    act(() => new Promise<void>((resolve) => setTimeout(resolve, 0)));
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("draws the cue of the default track at currentTime", async () => {
+    const view = await render(
+      <MediaControls
+        variant="video"
+        duration={10}
+        currentTime={0.5}
+        tracks={tracks}
+      />,
+    );
+    await flush();
+    expect(screen.queryByText("Hello there")).toBeNull();
+    await view.rerender(
+      <MediaControls
+        variant="video"
+        duration={10}
+        currentTime={1.5}
+        tracks={tracks}
+      />,
+    );
+    expect(screen.getByText("Hello there")).toBeTruthy();
+    await view.rerender(
+      <MediaControls
+        variant="video"
+        duration={10}
+        currentTime={5.5}
+        tracks={tracks}
+      />,
+    );
+    expect(screen.queryByText("Hello there")).toBeNull();
+    expect(screen.getByText("Bye")).toBeTruthy();
+  });
+
+  it("chooses a track with the CC button, fetching SRT files", async () => {
+    const fetchMock = vi.fn(async () => ({
+      ok: true,
+      status: 200,
+      text: async () => SRT,
+    }));
+    vi.stubGlobal("fetch", fetchMock);
+    const onTrackChange = vi.fn();
+    await render(
+      <MediaControls
+        duration={10}
+        currentTime={2}
+        tracks={tracks}
+        onTrackChange={onTrackChange}
+      />,
+    );
+    await flush();
+    expect(screen.getByText("Hello there")).toBeTruthy();
+    const cc = screen.getByRole("button", { name: "Captions" });
+    expect(cc).toBeSelected();
+    await fireEvent.press(cc);
+    expect(queryPart("captions-menu", "media-controls")).toBeTruthy();
+    expect(queryPart("captions", "media-controls")).toBeTruthy();
+    expect(screen.getByRole("radio", { name: "English" })).toBeChecked();
+    await fireEvent.press(screen.getByRole("radio", { name: "Français" }));
+    expect(onTrackChange).toHaveBeenCalledWith({ index: 1, track: tracks[1] });
+    expect(screen.queryByRole("radio")).toBeNull();
+    await flush();
+    expect(fetchMock).toHaveBeenCalledWith("https://cdn.example.com/fr.srt");
+    expect(screen.getByText("Bonjour")).toBeTruthy();
+
+    await fireEvent.press(cc);
+    await fireEvent.press(screen.getByRole("radio", { name: "Off" }));
+    expect(onTrackChange).toHaveBeenLastCalledWith({ index: -1, track: null });
+    expect(screen.queryByText("Bonjour")).toBeNull();
+    expect(screen.getByRole("button", { name: "Captions" })).not.toBeSelected();
+  });
+
+  it("follows a controlled trackIndex and has no CC button without tracks", async () => {
+    const view = await render(
+      <MediaControls
+        duration={10}
+        currentTime={2}
+        tracks={tracks}
+        trackIndex={-1}
+      />,
+    );
+    await flush();
+    expect(screen.queryByText("Hello there")).toBeNull();
+    await view.rerender(
+      <MediaControls
+        duration={10}
+        currentTime={2}
+        tracks={tracks}
+        trackIndex={0}
+      />,
+    );
+    await flush();
+    expect(screen.getByText("Hello there")).toBeTruthy();
+    await view.rerender(<MediaControls duration={10} currentTime={2} />);
+    expect(screen.queryByRole("button", { name: "Captions" })).toBeNull();
   });
 });

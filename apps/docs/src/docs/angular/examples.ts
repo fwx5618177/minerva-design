@@ -926,6 +926,20 @@ export const angularExamples: Record<string, readonly AngularExample[]> = {
       ["MnCodeBlock"],
       `<mn-code-block code="pnpm add minerva-design" language="shell"/>`,
     ),
+    example(
+      "Marks",
+      ["MnCodeBlock"],
+      `<mn-code-block [code]="code" language="typescript" showLineNumbers clickableMarks [marks]="marks" (markClick)="note=$event.mark.title ?? ''"/><output aria-live="polite">{{note}}</output>`,
+      {
+        code: 'const message = "Hello, Minerva";\nconsole.log(message);',
+        marks: [
+          { id: "a", start: 16, end: 32, title: "A string literal" },
+          { id: "b", start: 34, end: 45, color: "info", title: "A call" },
+        ],
+        note: "",
+      },
+      "marks highlights character ranges over the syntax colors; markClick reports the clicked mark.",
+    ),
   ],
   prose: [
     example(
@@ -1246,6 +1260,28 @@ export const angularExamples: Record<string, readonly AngularExample[]> = {
       `<mn-media-player src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" [playbackRates]="[1, 1.5, 2]" [skipSeconds]="3" aspectRatio="4 / 3" (rateChange)="rate = $event"/><output>Speed: {{ rate }}×</output>`,
       { rate: 1 },
     ),
+    example(
+      "Captions",
+      ["MnMediaPlayer"],
+      `<mn-media-player src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" title="Flower" [tracks]="tracks" (trackChange)="choice = $event.track?.label ?? 'Off'"/><output>Captions: {{ choice }}</output>`,
+      {
+        choice: "default track",
+        tracks: [
+          {
+            src: `data:text/vtt,${encodeURIComponent("WEBVTT\n\n00:00.000 --> 00:02.500\nA flower bud in the morning light\n\n00:02.500 --> 00:06.000\nIts petals slowly unfold\n")}`,
+            srclang: "en",
+            label: "English",
+            default: true,
+          },
+          {
+            src: `data:application/x-subrip,${encodeURIComponent("1\n00:00:00,000 --> 00:00:02,500\nUn bouton de fleur au matin\n\n2\n00:00:02,500 --> 00:00:06,000\nSes pétales s'ouvrent lentement\n")}`,
+            srclang: "fr",
+            label: "Français",
+          },
+        ],
+      },
+      "[tracks] takes WebVTT or SRT files (data: URLs here); the player draws the cues and adds a captions menu (C toggles them). The choice is remembered; (trackChange) reports it. Cross-origin files need crossOrigin and CORS headers.",
+    ),
   ],
   "kanban-board": [
     example(
@@ -1268,7 +1304,28 @@ export const angularExamples: Record<string, readonly AngularExample[]> = {
           },
         ],
       },
-      "Projected cards form the column's role=list (each gets role=listitem). There is no drag and drop: move cards with your own actions and update the data.",
+      "Projected cards form the column's role=list (each gets role=listitem). Here cards move with their own actions and the data is updated; see Drag and drop for draggable boards.",
+    ),
+    example(
+      "Drag and drop",
+      ["MnKanbanBoard", "MnKanbanColumn", "MnKanbanCard", "MnCard"],
+      `<mn-kanban-board aria-label="Sprint 12" draggable (cardMove)="$any(lists)[$event.toColumn].splice($event.toIndex, 0, $any(lists)[$event.fromColumn].splice($event.fromIndex, 1)[0])">@for (column of columns; track column.key) {<mn-kanban-column [title]="column.title" [value]="column.key" [count]="$any(lists)[column.key].length">@for (task of $any(lists)[column.key]; track task.id) {<mn-kanban-card [value]="task.id" [label]="task.title"><mn-card padding="small">{{task.title}}</mn-card></mn-kanban-card>}</mn-kanban-column>}</mn-kanban-board>`,
+      {
+        columns: [
+          { key: "todo", title: "To do" },
+          { key: "doing", title: "Doing" },
+          { key: "done", title: "Done" },
+        ],
+        lists: {
+          todo: [
+            { id: "guide", title: "Write the onboarding guide" },
+            { id: "contrast", title: "Audit color contrast" },
+          ],
+          doing: [{ id: "billing", title: "Ship the billing page" }],
+          done: [{ id: "errors", title: "Set up error tracking" }],
+        },
+      },
+      "draggable moves the mn-kanban-card children of keyed columns (value) with the mouse, a touch long press or the keyboard (Space / Enter picks up and drops, the arrows move, Escape cancels). The board is controlled: (cardMove) reports { cardKey, fromColumn, fromIndex, toColumn, toIndex } and the app moves the card (here: remove it, then insert it at toIndex).",
     ),
     example(
       "Colors, counts and actions",

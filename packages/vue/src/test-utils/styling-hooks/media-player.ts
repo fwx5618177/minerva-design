@@ -33,6 +33,28 @@ export default [
     setup: ({ container }) => fire(container, "loadedmetadata", "ended"),
   },
   {
+    name: "audio with captions, menu open",
+    render: () =>
+      h(MediaPlayer, {
+        src: "/song.mp3",
+        title: "Song",
+        tracks: [
+          {
+            src: "data:text/vtt,WEBVTT",
+            srclang: "en",
+            label: "English",
+            default: true,
+          },
+        ],
+      }),
+    setup: async ({ container }) => {
+      await fire(container, "loadedmetadata");
+      await fireEvent.click(
+        container.querySelector<HTMLElement>('[aria-haspopup="menu"]')!,
+      );
+    },
+  },
+  {
     name: "error",
     render: () => h(MediaPlayer, { src: "/broken.mp4" }),
     setup: ({ container }) => fire(container, "error"),

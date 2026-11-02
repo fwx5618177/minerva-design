@@ -1,5 +1,7 @@
+import type { PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 import {
+  createQuadrantPointLayer,
   heatmapChartOptions,
   quadrantChartOptions,
   quadrantOf,
@@ -13,6 +15,7 @@ import {
   type QuadrantAxisLabels,
   type QuadrantConfig,
   type QuadrantPoint,
+  type QuadrantPointLayer,
   type QuadrantRegions,
 } from "minerva-design/charts/core";
 import { MinervaCartesianChartElement } from "./chart";
@@ -370,6 +373,13 @@ const DOUBLE_CLICK_MS = 400;
  * overlapping labels. With `drag-points`, dots can be dragged to another
  * quadrant (`minerva-point-drop`; update `points` to move them).
  *
+ * A visually hidden list of the dots per quadrant lets screen readers and
+ * keyboards reach every dot: arrows move between them, Enter clicks
+ * (`minerva-point-click`) and, with `drag-points`, Shift + arrows move the
+ * focused dot to the neighbouring quadrant (`minerva-point-drop`, announced
+ * in a live region). The focused dot is drawn with a focus ring and
+ * reported by `minerva-hover`.
+ *
  * Published as the optional entry `minerva-design/web-components/chart`.
  *
  * @summary Four-quadrant matrix of labelled, draggable dots.
@@ -380,7 +390,8 @@ const DOUBLE_CLICK_MS = 400;
  * @fires minerva-point-double-click - The same dot was clicked twice in quick succession; detail: { point, index }
  * @fires minerva-quadrant-click - The empty area of a quadrant was clicked; detail: { quadrant, x, y }
  * @fires minerva-point-drag - A dot is being dragged (on every move); detail: { point, index, x, y, quadrant }
- * @fires minerva-point-drop - A dragged dot was released; detail: { point, index, x, y, quadrant }
+ * @fires minerva-point-drop - A dragged dot was released, or the focused dot was moved with Shift + an arrow key; detail: { point, index, x, y, quadrant }
+ * @fires minerva-hover - The hovered (or keyboard-focused) dot changed; detail: { x, xLabel, items }, `null` when nothing is hovered
  */
 export class MinervaQuadrantChart extends MinervaCartesianChartElement {
   static override tagName = "minerva-quadrant-chart";
@@ -457,7 +468,13 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
   @property({ attribute: false })
   options?: Omit<ChartOptions, "series">;
 
+  /** Leaves out the visually hidden list of the dots (keyboard and screen reader access) */
+  @property({ type: Boolean, attribute: "no-accessible-points" })
+  noAccessiblePoints = false;
+
   private lastClick: { index: number; time: number } | null = null;
+  private pointLayer: QuadrantPointLayer | null = null;
+  private focusedPoint: number | null = null;
 
   private geometry(): Pick<
     QuadrantConfig,
@@ -491,7 +508,77 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
         selectedIndices: this.selectedIndices,
       },
       this.options,
+      { focusedIndex: this.noAccessiblePoints ? null : this.focusedPoint },
     );
+  }
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+    if (this.hasUpdated) this.syncPointLayer();
+  }
+
+  override disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this.pointLayer?.destroy();
+    this.pointLayer = null;
+    this.focusedPoint = null;
+  }
+
+  protected override updated(changed: PropertyValues): void {
+    super.updated(changed);
+    this.syncPointLayer();
+  }
+
+  /** Mounts, updates or removes the accessible list of the dots */
+  private syncPointLayer(): void {
+    const root = this.renderRoot.querySelector<HTMLElement>("[part=root]");
+    if (this.noAccessiblePoints || !this.points || !root || !this.isConnected) {
+      this.pointLayer?.destroy();
+      this.pointLayer = null;
+      if (this.focusedPoint !== null) this.focusPoint(null);
+      return;
+    }
+    const options = {
+      config: {
+        ...this.geometry(),
+        points: this.points,
+        quadrants: this.quadrants,
+        xLabel: this.xLabel,
+        yLabel: this.yLabel,
+      },
+      locale: this.options?.locale,
+      movable: this.dragPoints,
+      selected: [
+        ...(this.selectedIndices ?? []),
+        ...(this.selectedIndex !== undefined && this.selectedIndex !== null
+          ? [this.selectedIndex]
+          : []),
+      ],
+      onFocusChange: (index: number | null, hover: ChartHoverEvent | null) => {
+        this.focusPoint(index);
+        this.emit("minerva-hover", hover);
+      },
+      onClick: (index: number) => {
+        const point = this.points?.[index];
+        if (point) this.emit("minerva-point-click", { point, index });
+      },
+      onMove: (
+        index: number,
+        target: { x: number; y: number; quadrant: string },
+      ) => {
+        const point = this.points?.[index];
+        if (point) this.emit("minerva-point-drop", { point, index, ...target });
+      },
+    };
+    if (this.pointLayer) this.pointLayer.update(options);
+    else this.pointLayer = createQuadrantPointLayer(root, options);
+  }
+
+  /** Draws (or removes) the focus ring of the keyboard-focused dot */
+  private focusPoint(index: number | null): void {
+    this.focusedPoint = index;
+    const options = this.engineOptions();
+    if (options) this.instance?.setOptions(options);
   }
 
   protected override pointClicked(event: ChartHoverEvent): void {

@@ -8,7 +8,7 @@ import { toCss, unpackColor } from "./color";
 import { curvePoints } from "./curve";
 import { lowerBound } from "./data";
 import { decimateMinMax } from "./decimate";
-import { hoverRect } from "./hover-rect";
+import { hoverRect, tooltipObstacles } from "./hover-rect";
 import {
   createScales,
   heatCellStyle,
@@ -459,6 +459,7 @@ export const createChartController = (
     const { x: left, y: top } = placeTooltip({
       anchor: { x: anchorX, y: anchorY },
       avoid: hoverRect(model, sc, event),
+      obstacles: tooltipObstacles(model, sc),
       size: { width: boxW, height: boxH },
       stage: { width, height },
       prefer: sc.horizontal ? "vertical" : "side",

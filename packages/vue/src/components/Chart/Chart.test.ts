@@ -184,6 +184,112 @@ describe("named charts", () => {
     ]);
   });
 
+  it("QuadrantChart lists its points for keyboards and screen readers, moves them with Shift + arrows", async () => {
+    const points = [
+      { x: 2, y: 8, label: "Write report" },
+      { x: 8, y: 2 },
+    ];
+    const onPointDrop = vi.fn();
+    const wrapper = mount(QuadrantChart, {
+      props: {
+        points,
+        locale: "en",
+        quadrants: { topLeft: { label: "Do first" } },
+        selectedIndex: 1,
+        onPointDrop,
+      },
+      attachTo: document.body,
+    });
+    await nextTick();
+    const root = wrapper.element as HTMLElement;
+    const lists = root.querySelectorAll('[role="list"]');
+    expect([...lists].map((l) => l.getAttribute("aria-label"))).toEqual([
+      "Do first",
+      "Bottom right quadrant",
+    ]);
+    const button = (index: number) =>
+      root.querySelector<HTMLButtonElement>(
+        `button[data-point-index="${index}"]`,
+      )!;
+    expect(button(0).getAttribute("aria-label")).toBe("Write report, Do first");
+    expect(button(0).getAttribute("aria-keyshortcuts")).toContain(
+      "Shift+ArrowDown",
+    );
+    expect(button(1).getAttribute("aria-current")).toBe("true");
+
+    // focus: hover event and focus ring
+    button(0).focus();
+    await nextTick();
+    expect(wrapper.emitted("hover")!.at(-1)![0]).toMatchObject({
+      x: 2,
+      items: [{ index: 0, label: "Write report" }],
+    });
+    const ids = () =>
+      (engines[0].options.series as Array<{ id?: string }>).map((s) => s.id);
+    expect(ids()).toContain("quadrant:focus");
+
+    // arrows move between the points, Enter / click clicks
+    button(0).dispatchEvent(
+      new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }),
+    );
+    expect(document.activeElement).toBe(button(1));
+    button(1).click();
+    expect(wrapper.emitted("pointClick")).toEqual([[points[1], 1]]);
+
+    // Shift + arrow: dropped in the center of the neighbouring quadrant
+    button(1).dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "ArrowUp",
+        shiftKey: true,
+        bubbles: true,
+      }),
+    );
+    expect(onPointDrop).toHaveBeenCalledWith(points[1], 1, {
+      x: 7.5,
+      y: 7.5,
+      quadrant: "topRight",
+    });
+    expect(root.querySelector('[role="status"]')!.textContent).toBe(
+      "Point 2 moved to Top right quadrant",
+    );
+
+    // the app moves the point: its button keeps the focus
+    await wrapper.setProps({ points: [points[0], { x: 7.5, y: 7.5 }] });
+    expect(document.activeElement).toBe(button(1));
+    expect(
+      button(1).closest('[role="list"]')!.getAttribute("data-quadrant"),
+    ).toBe("topRight");
+
+    button(1).blur();
+    await nextTick();
+    expect(wrapper.emitted("hover")!.at(-1)).toEqual([null]);
+    expect(ids()).not.toContain("quadrant:focus");
+
+    await wrapper.setProps({ accessiblePoints: false });
+    expect(root.querySelector('[role="list"]')).toBeNull();
+    wrapper.unmount();
+  });
+
+  it("QuadrantChart does not move the points without a pointDrop listener", async () => {
+    const wrapper = mount(QuadrantChart, {
+      props: { points: [{ x: 2, y: 8 }] },
+      attachTo: document.body,
+    });
+    await nextTick();
+    const button = (wrapper.element as HTMLElement).querySelector("button")!;
+    expect(button.hasAttribute("aria-keyshortcuts")).toBe(false);
+    const event = new KeyboardEvent("keydown", {
+      key: "ArrowDown",
+      shiftKey: true,
+      bubbles: true,
+      cancelable: true,
+    });
+    button.dispatchEvent(event);
+    expect(event.defaultPrevented).toBe(false);
+    expect(wrapper.emitted("pointDrop")).toBeUndefined();
+    wrapper.unmount();
+  });
+
   it("shape charts build the options of their type", () => {
     const data = [{ name: "A", value: 1 }];
     mount(DonutChart, { props: { data, centerValue: "42" } });

@@ -18,14 +18,22 @@ import {
 import {
   DEFAULT_PLAYBACK_RATES,
   DEFAULT_SKIP_SECONDS,
+  activeCueText,
+  captionsPreference,
   clampMediaTime,
   clampVolume,
   cn,
   formatMediaTime,
   formatPlaybackRate,
   inferMediaType,
+  loadCaptions,
   mediaProgress,
   nextPlaybackRate,
+  pickCaptionsTrack,
+  readCaptionsPreference,
+  writeCaptionsPreference,
+  type CaptionsStorage,
+  type MediaCue,
 } from "@minerva/core";
 import { Part, type NativeProps } from "./shared";
 import { useI18n } from "./theme";
@@ -47,6 +55,28 @@ export interface MediaPlayerVolumeDetail {
   volume: number;
   /** Whether the media is muted */
   muted: boolean;
+}
+
+/** A captions / subtitles file of a MediaPlayer */
+export interface MediaPlayerTrack {
+  /** URL of the WebVTT (.vtt) or SubRip (.srt) file (a request domain of the app; data: URLs work) */
+  src: string;
+  /** Language of the track (BCP 47: "en", "fr-CA") */
+  srclang?: string;
+  /** Name shown in the captions menu */
+  label: string;
+  /** Kind of text track (default "subtitles") */
+  kind?: "subtitles" | "captions";
+  /** Shown when the user has not chosen captions yet */
+  default?: boolean;
+}
+
+/** Detail of MediaPlayer's onTrackChange */
+export interface MediaPlayerTrackChangeDetail {
+  /** Index of the chosen track in `tracks`, -1 for Off */
+  index: number;
+  /** The chosen track, null for Off */
+  track: MediaPlayerTrack | null;
 }
 
 /** Imperative handle of a MediaPlayer (its `ref`) */
@@ -95,6 +125,14 @@ export interface MediaPlayerProps extends Omit<NativeProps, "children"> {
   height?: number | string;
   /** Aspect ratio of a video player (CSS aspect-ratio, default "16 / 9") */
   aspectRatio?: string;
+  /**
+   * Captions / subtitles (WebVTT or SRT files): fetched with `Taro.request`,
+   * parsed and drawn over the video (below the title for audio) at the
+   * playback time, with a captions (CC) choice in the control bar. The
+   * choice is remembered (storage); a `default` track shows until the user
+   * chooses
+   */
+  tracks?: readonly MediaPlayerTrack[];
   /** Called while playing with the playhead position and the duration */
   onTimeUpdate?: (detail: MediaPlayerTimeDetail) => void;
   /** Called when playback reaches the end */
@@ -111,6 +149,8 @@ export interface MediaPlayerProps extends Omit<NativeProps, "children"> {
   onRateChange?: (rate: number) => void;
   /** Called when the volume or the muted state changes */
   onVolumeChange?: (detail: MediaPlayerVolumeDetail) => void;
+  /** Called when the user chooses captions (index -1 and track null: Off) */
+  onTrackChange?: (detail: MediaPlayerTrackChangeDetail) => void;
 }
 
 interface Rect {
@@ -174,13 +214,67 @@ const finite = (value: number | undefined) =>
 const cssSize = (value: number | string) =>
   typeof value === "number" ? `${value}px` : value;
 
+const NO_TRACKS: readonly MediaPlayerTrack[] = [];
+
+type TaroText = {
+  request?: (options: {
+    url: string;
+    dataType?: string;
+    responseType?: string;
+    success?: (result: { statusCode: number; data: unknown }) => void;
+    fail?: (error: unknown) => void;
+  }) => unknown;
+  getStorageSync?: (key: string) => unknown;
+  setStorageSync?: (key: string, value: unknown) => void;
+};
+
+/** Reads a captions file as text (`Taro.request`, else `fetch` on H5) */
+const fetchText = (url: string) =>
+  new Promise<string>((resolve, reject) => {
+    const request = (Taro as unknown as TaroText).request;
+    if (typeof request === "function") {
+      request({
+        url,
+        dataType: "text",
+        responseType: "text",
+        success: ({ statusCode, data }) =>
+          statusCode >= 200 && statusCode < 300
+            ? resolve(typeof data === "string" ? data : String(data ?? ""))
+            : reject(new Error(`HTTP ${statusCode}`)),
+        fail: reject,
+      });
+    } else if (typeof fetch === "function") {
+      fetch(url)
+        .then((response) =>
+          response.ok
+            ? response.text()
+            : Promise.reject(new Error(`HTTP ${response.status}`)),
+        )
+        .then(resolve, reject);
+    } else {
+      reject(new Error("no request API"));
+    }
+  });
+
+/** The host storage, as the captions preference storage */
+const captionsStorage: CaptionsStorage = {
+  getItem: (key) => {
+    const value = (Taro as unknown as TaroText).getStorageSync?.(key);
+    return typeof value === "string" ? value : null;
+  },
+  setItem: (key, value) =>
+    (Taro as unknown as TaroText).setStorageSync?.(key, value),
+};
+
 /**
  * MediaPlayer: video through the host `<video>` component (its own controls
  * off, driven by `createVideoContext`) and audio through
  * `createInnerAudioContext`, under the same themed control bar as the web
  * renderers: play / pause, skip back / forward, a touch seek bar with the
  * buffered range, the time, mute (and a volume bar for audio), the playback
- * speed (cycle button) and fullscreen (video). The ref drives the media:
+ * speed (cycle button) and fullscreen (video). With `tracks`, captions are
+ * fetched, parsed and drawn by the player at the playback time, with a CC
+ * choice in the control bar. The ref drives the media:
  * `play()`, `pause()`, `seek(seconds)` and `context`.
  */
 export const MediaPlayer = forwardRef<MediaPlayerHandle, MediaPlayerProps>(
@@ -201,6 +295,7 @@ export const MediaPlayer = forwardRef<MediaPlayerHandle, MediaPlayerProps>(
       controls = true,
       height,
       aspectRatio = "16 / 9",
+      tracks = NO_TRACKS,
       onTimeUpdate,
       onEnded,
       onPlay,
@@ -209,6 +304,7 @@ export const MediaPlayer = forwardRef<MediaPlayerHandle, MediaPlayerProps>(
       onError,
       onRateChange,
       onVolumeChange,
+      onTrackChange,
       "aria-label": ariaLabel,
       ...props
     },
@@ -272,6 +368,50 @@ export const MediaPlayer = forwardRef<MediaPlayerHandle, MediaPlayerProps>(
     useEffect(() => {
       if (mutedProp !== undefined) setMuted(mutedProp);
     }, [mutedProp]);
+
+    // Captions: no text tracks in the host <video> / InnerAudioContext, so
+    // the chosen file is fetched, parsed and its active cue drawn here. The
+    // choice is kept as its remembered form (language / label / "off").
+    const [captionsChoice, setCaptionsChoice] = useState<{
+      pref: string | null;
+      index: number;
+    }>({ pref: null, index: -1 });
+    const chosen = tracks[captionsChoice.index];
+    const trackIndex =
+      chosen && captionsPreference(chosen) === captionsChoice.pref
+        ? captionsChoice.index
+        : pickCaptionsTrack(tracks, captionsChoice.pref);
+    const trackSrc = tracks[trackIndex]?.src;
+    const [cues, setCues] = useState<readonly MediaCue[]>([]);
+    const [captionsMenu, setCaptionsMenu] = useState(false);
+
+    useEffect(() => {
+      const stored = readCaptionsPreference(captionsStorage);
+      if (stored) setCaptionsChoice({ pref: stored, index: -1 });
+    }, []);
+
+    useEffect(() => {
+      setCues([]);
+      if (!trackSrc) return;
+      let cancelled = false;
+      loadCaptions(trackSrc, fetchText).then(
+        (loaded) => !cancelled && setCues(loaded),
+        () => undefined,
+      );
+      return () => {
+        cancelled = true;
+      };
+    }, [trackSrc]);
+
+    const chooseTrack = (index: number) => {
+      setCaptionsMenu(false);
+      if (index === trackIndex) return;
+      const track = tracks[index] ?? null;
+      setCaptionsChoice({ pref: captionsPreference(track), index });
+      writeCaptionsPreference(captionsStorage, track);
+      onTrackChange?.({ index: track ? index : -1, track });
+    };
+    const caption = activeCueText(cues, currentTime);
 
     // Video: the host component, driven by its context
     useEffect(() => {
@@ -440,6 +580,7 @@ export const MediaPlayer = forwardRef<MediaPlayerHandle, MediaPlayerProps>(
         }
         className={cn(
           `mn-variant-${type}`,
+          !controls && "mn-bare",
           status === "playing" && "mn-playing",
           loading && "mn-loading",
           failed && "mn-invalid",
@@ -526,6 +667,13 @@ export const MediaPlayer = forwardRef<MediaPlayerHandle, MediaPlayerProps>(
           </Text>
         )}
         {controls && isVideo && spinner}
+        {(isVideo ? caption !== "" : controls && trackIndex >= 0) && (
+          <View className="mn-media-player__captions" data-part="captions">
+            {caption !== "" && (
+              <Text className="mn-media-player__cue">{caption}</Text>
+            )}
+          </View>
+        )}
         {controls && failed && (
           <View
             className="mn-media-player__error"
@@ -633,6 +781,21 @@ export const MediaPlayer = forwardRef<MediaPlayerHandle, MediaPlayerProps>(
                 cycleRate,
                 "mn-media-player__rate",
               )}
+            {tracks.length > 0 && (
+              <View
+                className={cn(
+                  "mn-media-player__button mn-media-player__cc",
+                  trackIndex >= 0 && "mn-media-player__cc--on",
+                )}
+                role="button"
+                aria-label={t("mediaPlayer.captions")}
+                aria-expanded={captionsMenu}
+                data-part="button"
+                onClick={() => setCaptionsMenu(!captionsMenu)}
+              >
+                <Text aria-hidden>CC</Text>
+              </View>
+            )}
             {isVideo &&
               button(
                 fullscreen
@@ -641,6 +804,32 @@ export const MediaPlayer = forwardRef<MediaPlayerHandle, MediaPlayerProps>(
                 "⤢",
                 toggleFullscreen,
               )}
+            {captionsMenu && tracks.length > 0 && (
+              <View
+                className="mn-media-player__captions-menu"
+                data-part="captions-menu"
+                role="group"
+                aria-label={t("mediaPlayer.captions")}
+              >
+                {[-1, ...tracks.keys()].map((index) => (
+                  <View
+                    key={index}
+                    className={cn(
+                      "mn-media-player__captions-option",
+                      index === trackIndex &&
+                        "mn-media-player__captions-option--on",
+                    )}
+                    role="button"
+                    aria-pressed={index === trackIndex}
+                    onClick={() => chooseTrack(index)}
+                  >
+                    {index < 0
+                      ? t("mediaPlayer.captionsOff")
+                      : tracks[index]?.label}
+                  </View>
+                ))}
+              </View>
+            )}
           </View>
         )}
       </Part>

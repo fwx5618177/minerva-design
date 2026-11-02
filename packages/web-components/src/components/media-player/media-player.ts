@@ -5,6 +5,7 @@ import {
   DEFAULT_PLAYBACK_RATES,
   MEDIA_ICON_PATHS,
   bufferedEnd,
+  captionsPreference,
   clampMediaTime,
   clampVolume,
   formatMediaTime,
@@ -13,8 +14,14 @@ import {
   mediaKeyAction,
   mediaProgress,
   nextPlaybackRate,
+  pickCaptionsTrack,
+  readCaptionsPreference,
+  toggledCaptionsTrack,
+  writeCaptionsPreference,
   type MediaIconName,
+  type MediaTrack,
 } from "@minerva/core";
+import { bindMediaCaptions } from "@minerva/dom";
 import { AriaController } from "../../internal/aria";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
@@ -29,6 +36,50 @@ export type MediaPlayerPreload = "none" | "metadata" | "auto";
 
 /** CORS mode of the media request */
 export type MediaPlayerCrossOrigin = "anonymous" | "use-credentials";
+
+/** A captions / subtitles file of the player (`tracks` property) */
+export interface MediaPlayerTrack {
+  /** URL of the WebVTT (.vtt) or SubRip (.srt) file; data: URLs work */
+  src: string;
+  /** Language of the track (BCP 47: "en", "fr-CA") */
+  srclang?: string;
+  /** Name shown in the captions menu */
+  label: string;
+  /** Kind of text track (default "subtitles") */
+  kind?: "subtitles" | "captions";
+  /** Shown when the user has not chosen captions yet */
+  default?: boolean;
+}
+
+const captionsStorage = () => {
+  try {
+    return window.localStorage;
+  } catch {
+    return null;
+  }
+};
+
+const tracksKey = (tracks: readonly MediaTrack[]) =>
+  tracks
+    .map((track) => `${track.src}\n${track.srclang}\n${track.label}`)
+    .join("\n\n");
+
+/** The `<track>` children of the host, as `tracks` */
+const lightTracks = (host: HTMLElement): MediaPlayerTrack[] =>
+  Array.from(host.children)
+    .filter((el): el is HTMLTrackElement => el.localName === "track")
+    .filter((el) => !!el.getAttribute("src"))
+    .map((el) => {
+      const src = el.getAttribute("src") ?? "";
+      const srclang = el.getAttribute("srclang") || undefined;
+      return {
+        src,
+        srclang,
+        label: el.getAttribute("label") || srclang || src,
+        kind: el.getAttribute("kind") === "captions" ? "captions" : "subtitles",
+        default: el.hasAttribute("default"),
+      };
+    });
 
 const icon = (name: MediaIconName) =>
   html`<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -55,9 +106,13 @@ type PipDocument = Document & {
  * An `<audio>` / `<video>` element with themed custom controls (`<MediaPlayer>`
  * of React): play / pause, skip back / forward, a seek bar (`role=slider`,
  * buffered range), the time, mute and volume, the playback speed (cycle
- * button), fullscreen and picture-in-picture (video). Keyboard on the
+ * button), fullscreen and picture-in-picture (video), and a captions menu
+ * when `tracks` are given (cues drawn by the player). Keyboard on the
  * focused player: Space / K play-pause, ← / → seek by 5 s, ↑ / ↓ volume,
- * M mute, F fullscreen.
+ * M mute, F fullscreen, C captions on / off.
+ *
+ * Captions come from the `tracks` property or, when it is empty, from
+ * `<track src srclang label kind default>` children of the element.
  *
  * The media events don't cross the shadow root: they are re-dispatched as
  * `minerva-*` events. `play()`, `pause()`, `seek(seconds)` and `element`
@@ -70,12 +125,14 @@ type PipDocument = Document & {
  * @csspart media - The native `<audio>` or `<video>` element
  * @csspart title - The title of the media (audio bar, video overlay)
  * @csspart controls - The control bar
- * @csspart button - A control button (play, skip, mute, speed, fullscreen, picture-in-picture)
+ * @csspart button - A control button (play, skip, mute, speed, captions, fullscreen, picture-in-picture)
  * @csspart seek - The seek bar (`role=slider`) with the buffered range
  * @csspart time - The current time / duration text
  * @csspart volume - The volume bar (`role=slider`)
  * @csspart spinner - The loading indicator (while buffering)
  * @csspart error - The error message (media that can't be played)
+ * @csspart captions - The captions overlay showing the active cue (video: over the picture, audio: below the title)
+ * @csspart captions-menu - The captions menu (`role=menu`): Off and one item per track
  * @fires minerva-play - Playback started
  * @fires minerva-pause - Playback paused
  * @fires minerva-ended - Playback reached the end
@@ -84,6 +141,7 @@ type PipDocument = Document & {
  * @fires minerva-error - The media can't be loaded or played (`detail: { error }`, the `MediaError`)
  * @fires minerva-rate-change - The playback speed changed (`detail: { rate }`)
  * @fires minerva-volume-change - The volume or the muted state changed (`detail: { volume, muted }`)
+ * @fires minerva-track-change - The user chose captions (`detail: { index, track }`; index -1 and track null: Off)
  */
 export class MinervaMediaPlayer extends MinervaElement {
   static override tagName = "minerva-media-player";
@@ -135,7 +193,7 @@ export class MinervaMediaPlayer extends MinervaElement {
   @property()
   preload: MediaPlayerPreload = "metadata";
 
-  /** CORS mode of the media request */
+  /** CORS mode of the media request (cross-origin caption files need it too, plus CORS headers on their server) */
   @property({ attribute: "crossorigin" })
   crossOrigin?: MediaPlayerCrossOrigin;
 
@@ -166,6 +224,30 @@ export class MinervaMediaPlayer extends MinervaElement {
   /** Shows a picture-in-picture button (video, where the browser supports it) */
   @property({ type: Boolean, attribute: "picture-in-picture" })
   pictureInPicture = false;
+
+  /**
+   * Captions / subtitles (WebVTT or SRT files, JS property): drawn by the
+   * player over the video (below the title for audio), with a captions menu
+   * in the control bar. The choice is remembered (localStorage); a `default`
+   * track shows until the user chooses. Empty: the `<track>` children are used
+   */
+  @property({ attribute: false })
+  tracks: readonly MediaPlayerTrack[] = [];
+
+  @state() private childTracks: readonly MediaPlayerTrack[] = [];
+  @state() private captionsChoice: { pref: string | null; index: number } = {
+    pref: null,
+    index: -1,
+  };
+  @state() private caption = "";
+  @state() private captionsMenu = false;
+  private lastTrack = -1;
+  private captionsBinding: {
+    key: string;
+    media: HTMLMediaElement;
+    stop: () => void;
+  } | null = null;
+  private childObserver: MutationObserver | null = null;
 
   @state() private paused = true;
   @state() private ended = false;
@@ -226,11 +308,29 @@ export class MinervaMediaPlayer extends MinervaElement {
     super.connectedCallback();
     this.detached = false;
     document.addEventListener("fullscreenchange", this.onFullscreenChange);
+    const stored = readCaptionsPreference(captionsStorage());
+    if (stored) this.captionsChoice = { pref: stored, index: -1 };
+    this.childTracks = lightTracks(this);
+    if (typeof MutationObserver === "function") {
+      this.childObserver ??= new MutationObserver(() => {
+        this.childTracks = lightTracks(this);
+      });
+      this.childObserver.observe(this, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ["src", "srclang", "label", "kind", "default"],
+      });
+    }
   }
 
   override disconnectedCallback(): void {
     super.disconnectedCallback();
     document.removeEventListener("fullscreenchange", this.onFullscreenChange);
+    document.removeEventListener("pointerdown", this.onCaptionsPointerDown);
+    this.childObserver?.disconnect();
+    this.captionsBinding?.stop();
+    this.captionsBinding = null;
     const media = this.element;
     if (media && this.startApplied) {
       this.resumeAt = media.currentTime;
@@ -256,6 +356,123 @@ export class MinervaMediaPlayer extends MinervaElement {
     super.updated(changed);
     // `src` is gone from the media: load() aborts its pending download
     if (changed.has("detached") && this.detached) this.element?.load?.();
+    this.syncCaptions();
+    if (changed.has("captionsMenu")) {
+      if (this.captionsMenu) {
+        this.renderRoot
+          .querySelector<HTMLElement>('[role="menu"] [aria-checked="true"]')
+          ?.focus({ preventScroll: true });
+        document.addEventListener("pointerdown", this.onCaptionsPointerDown);
+      } else {
+        document.removeEventListener("pointerdown", this.onCaptionsPointerDown);
+      }
+    }
+  }
+
+  // --- captions -----------------------------------------------------------
+  /** `tracks`, else the `<track>` children */
+  private get allTracks(): readonly MediaPlayerTrack[] {
+    return this.tracks.length > 0 ? this.tracks : this.childTracks;
+  }
+
+  /** Index of the shown track (-1: off) */
+  private get trackIndex(): number {
+    const tracks = this.allTracks;
+    const { pref, index } = this.captionsChoice;
+    const chosen = tracks[index];
+    return chosen && captionsPreference(chosen) === pref
+      ? index
+      : pickCaptionsTrack(tracks, pref);
+  }
+
+  /** (Re)binds the captions of the media when the tracks or the choice change */
+  private syncCaptions() {
+    const media = this.element;
+    const tracks = this.allTracks;
+    const index = this.trackIndex;
+    const key =
+      media && !this.noControls && !this.detached
+        ? `${tracksKey(tracks)}|${index}|${this.crossOrigin ?? ""}`
+        : "";
+    const bound = this.captionsBinding;
+    if (bound && bound.key === key && bound.media === media) return;
+    bound?.stop();
+    this.captionsBinding = null;
+    if (!key || !media) return;
+    this.captionsBinding = {
+      key,
+      media,
+      stop: bindMediaCaptions(
+        media,
+        tracks,
+        index,
+        (text) => (this.caption = text),
+        { crossOrigin: this.crossOrigin },
+      ),
+    };
+  }
+
+  private chooseTrack(index: number) {
+    const current = this.trackIndex;
+    if (index === current) return;
+    const track = this.allTracks[index] ?? null;
+    if (current >= 0) this.lastTrack = current;
+    this.caption = "";
+    this.captionsChoice = { pref: captionsPreference(track), index };
+    writeCaptionsPreference(captionsStorage(), track);
+    this.emit("minerva-track-change", { index: track ? index : -1, track });
+  }
+
+  private closeCaptionsMenu(refocus: boolean) {
+    this.captionsMenu = false;
+    if (refocus) {
+      this.renderRoot
+        .querySelector<HTMLElement>('[aria-haspopup="menu"]')
+        ?.focus();
+    }
+  }
+
+  private readonly onCaptionsPointerDown = (event: PointerEvent) => {
+    const control = this.renderRoot.querySelector(".captionsControl");
+    if (control && !event.composedPath().includes(control)) {
+      this.captionsMenu = false;
+    }
+  };
+
+  private onCaptionsFocusOut(event: FocusEvent) {
+    const next = event.relatedTarget as Node | null;
+    if (next && !(event.currentTarget as HTMLElement).contains(next)) {
+      this.captionsMenu = false;
+    }
+  }
+
+  private captionsMenuKeys(event: KeyboardEvent) {
+    event.stopPropagation();
+    const items = Array.from(
+      (event.currentTarget as HTMLElement).querySelectorAll<HTMLElement>(
+        '[role="menuitemradio"]',
+      ),
+    );
+    const active = (this.renderRoot as ShadowRoot).activeElement;
+    const at = items.indexOf(active as HTMLElement);
+    let next = -1;
+    if (event.key === "ArrowDown") next = (at + 1) % items.length;
+    else if (event.key === "ArrowUp")
+      next = (at - 1 + items.length) % items.length;
+    else if (event.key === "Home") next = 0;
+    else if (event.key === "End") next = items.length - 1;
+    else if (event.key === "Escape") {
+      event.preventDefault();
+      this.closeCaptionsMenu(true);
+      return;
+    } else if (event.key === "Tab") {
+      this.captionsMenu = false;
+      return;
+    }
+    if (next >= 0) {
+      event.preventDefault();
+      items[next]?.focus();
+    }
   }
 
   private get mediaType(): MediaPlayerType {
@@ -343,6 +560,17 @@ export class MinervaMediaPlayer extends MinervaElement {
     const media = this.element;
     if (!action || !media) return;
     if (action.type === "fullscreen" && this.mediaType !== "video") return;
+    if (action.type === "captions") {
+      const next = toggledCaptionsTrack(
+        this.allTracks,
+        this.trackIndex,
+        this.lastTrack,
+      );
+      if (next === null) return;
+      event.preventDefault();
+      this.chooseTrack(next);
+      return;
+    }
     event.preventDefault();
     switch (action.type) {
       case "toggle":
@@ -555,7 +783,9 @@ export class MinervaMediaPlayer extends MinervaElement {
         @leavepictureinpicture=${() => (this.pip = false)}
         @click=${controls ? () => this.toggle() : nothing}
         @dblclick=${controls ? () => this.toggleFullscreen() : nothing}
-      ></video>`;
+      >
+        ${this.renderTracks(controls)}
+      </video>`;
     }
     return html`<audio
       part="media"
@@ -579,7 +809,77 @@ export class MinervaMediaPlayer extends MinervaElement {
       @volumechange=${this.onVolumeChange}
       @ratechange=${this.onRateChange}
       @error=${this.onMediaError}
-    ></audio>`;
+    >
+      ${this.renderTracks(controls)}
+    </audio>`;
+  }
+
+  private renderTracks(controls: boolean) {
+    const index = this.trackIndex;
+    return this.allTracks.map(
+      (track, i) =>
+        html`<track
+          kind=${track.kind ?? "subtitles"}
+          src=${track.src}
+          srclang=${track.srclang ?? nothing}
+          label=${track.label}
+          ?default=${!controls && i === index}
+        />`,
+    );
+  }
+
+  private renderCaptionsControl() {
+    const t = this.i18n.t;
+    const tracks = this.allTracks;
+    if (tracks.length === 0) return nothing;
+    const index = this.trackIndex;
+    const options = [
+      { index: -1, label: t("mediaPlayer.captionsOff") },
+      ...tracks.map((track, i) => ({ index: i, label: track.label })),
+    ];
+    const menu = this.captionsMenu
+      ? html`<div
+          part="captions-menu"
+          class="captionsMenu"
+          role="menu"
+          aria-label=${t("mediaPlayer.captions")}
+          @keydown=${this.captionsMenuKeys}
+        >
+          ${options.map(
+            (option) =>
+              html`<button
+                type="button"
+                class="captionsOption"
+                role="menuitemradio"
+                aria-checked=${String(option.index === index)}
+                tabindex=${option.index === index ? "0" : "-1"}
+                @click=${() => {
+                  this.chooseTrack(option.index);
+                  this.closeCaptionsMenu(true);
+                }}
+              >
+                ${option.label}
+              </button>`,
+          )}
+        </div>`
+      : nothing;
+    return html`<span
+      class="captionsControl"
+      @focusout=${this.onCaptionsFocusOut}
+    >
+      <button
+        type="button"
+        part="button"
+        class=${index >= 0 ? "button captionsOn" : "button"}
+        aria-label=${t("mediaPlayer.captions")}
+        aria-haspopup="menu"
+        aria-expanded=${String(this.captionsMenu)}
+        @click=${() => (this.captionsMenu = !this.captionsMenu)}
+      >
+        ${icon("captions")}
+      </button>
+      ${menu}
+    </span>`;
   }
 
   private button(
@@ -653,6 +953,17 @@ export class MinervaMediaPlayer extends MinervaElement {
         <slot name="heading"></slot>
       </div>
       ${isVideo ? spinner : nothing}
+      ${
+        (isVideo ? this.caption !== "" : this.trackIndex >= 0)
+          ? html`<div part="captions" class="captions">
+              ${
+                this.caption
+                  ? html`<span class="cue">${this.caption}</span>`
+                  : nothing
+              }
+            </div>`
+          : nothing
+      }
       ${
         failed
           ? html`<div part="error" class="error" role="alert">
@@ -748,6 +1059,7 @@ export class MinervaMediaPlayer extends MinervaElement {
               )
             : nothing
         }
+        ${this.renderCaptionsControl()}
         ${
           isVideo && this.pictureInPicture && pipSupported
             ? this.button(

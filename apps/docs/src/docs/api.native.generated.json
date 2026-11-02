@@ -3053,7 +3053,7 @@
         "name": "language",
         "type": "string",
         "required": false,
-        "description": "Language of the code: highlights its syntax (nested colored Text, `code-token-<type>-color` tokens). Without it the text is plain"
+        "description": "Language of the code: highlights its syntax (nested colored Text, `code-token-<type>-color` tokens). Without it the text is plain. `\"auto\"` detects it from the code (`detectCodeLanguage`, memoized per text; \"plain\" when unsure), shown by the label too"
       },
       {
         "name": "highlight",
@@ -3075,6 +3075,18 @@
         "required": false,
         "default": "false",
         "description": "Shows the `language` as a small label (e.g. \"JSON\")"
+      },
+      {
+        "name": "marks",
+        "type": "readonly CodeMark[]",
+        "required": false,
+        "description": "Character ranges to mark (saved highlights, annotations): nested Text with the mark's background over the token colors (the copied text stays the raw code). `start` / `end` are UTF-16 offsets into `children`, clamped to it; empty ranges are ignored. Where marks overlap, the later one wins. `color`: a theme color name (a translucent tint of its token) or any color string (default: translucent yellow)"
+      },
+      {
+        "name": "onMarkClick",
+        "type": "(mark: CodeMark) => void",
+        "required": false,
+        "description": "A mark was pressed: the item of `marks` (the topmost where they overlap)"
       }
     ]
   },
@@ -6262,6 +6274,22 @@
       }
     ]
   },
+  "native:KanbanBoardColumn": {
+    "source": "native/src/components/KanbanBoard/drag.ts",
+    "description": "A column of the board as read from its children",
+    "kind": "interface",
+    "extends": [
+      "KanbanLayoutColumn"
+    ],
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "description": "Name of the column in the announcements and action labels"
+      }
+    ]
+  },
   "native:KanbanBoardProps": {
     "source": "native/src/components/KanbanBoard/KanbanBoard.tsx",
     "kind": "interface",
@@ -6309,10 +6337,63 @@
         "description": "Maximum height of the board: the column bodies scroll vertically within it"
       },
       {
+        "name": "draggable",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Lets the KanbanCard children of keyed columns (`value`) be dragged between and within columns: a long press picks a card up (the board stops scrolling), lifting the finger drops it; screen readers get \"Move up\" / \"Move down\" / \"Move to <column>\" actions on each card. The board is controlled: it reports the move (`onCardMove`) and the app moves the card in its data."
+      },
+      {
+        "name": "onCardMove",
+        "type": "(move: KanbanCardMove) => void",
+        "required": false,
+        "description": "Called when a card is dropped at a new position (not when it is put back where it was): move the card in your data (`moveKanbanCard` from `minerva-design/core` does it for plain lists)"
+      },
+      {
+        "name": "canDrop",
+        "type": "(move: KanbanCardMove) => boolean",
+        "required": false,
+        "description": "Whether a card may be dropped at a position: refused positions show no drop indicator and get no accessibility action"
+      },
+      {
         "name": "style",
         "type": "StyleProp<ViewStyle>",
         "required": false,
         "description": "Style of the board (the horizontal ScrollView)"
+      }
+    ]
+  },
+  "native:KanbanCardProps": {
+    "source": "native/src/components/KanbanBoard/KanbanBoard.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "description": "Key of the card, reported as `cardKey` by a draggable board"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "default": "its text when it is a string, else `value`",
+        "description": "Name of the card in the announcements and, when draggable, its accessible name"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Content of the card"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the card"
       }
     ]
   },
@@ -6334,6 +6415,12 @@
         "type": "ReactNode",
         "required": true,
         "description": "Title of the column (also its accessible name)"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "Key of the column, reported as `fromColumn` / `toColumn` by a draggable board (columns without one take no cards)"
       },
       {
         "name": "count",
@@ -6383,6 +6470,183 @@
         "type": "StyleProp<ViewStyle>",
         "required": false,
         "description": "Style of the column"
+      }
+    ]
+  },
+  "native:KanbanDragApi": {
+    "source": "native/src/components/KanbanBoard/drag.ts",
+    "description": "The drag and drop API of a board, given to its columns and cards",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "enabled",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "state",
+        "type": "KanbanDragState | null",
+        "required": true
+      },
+      {
+        "name": "ghost",
+        "type": "Animated.ValueXY",
+        "required": true,
+        "description": "Position of the floating copy, relative to the drag layer"
+      },
+      {
+        "name": "registerLayer",
+        "type": "(view: View | null) => void",
+        "required": true
+      },
+      {
+        "name": "registerColumn",
+        "type": "(key: string, part: \"root\" | \"body\", view: View | null) => void",
+        "required": true
+      },
+      {
+        "name": "registerCard",
+        "type": "(key: string, view: View | null) => void",
+        "required": true
+      },
+      {
+        "name": "setContent",
+        "type": "(key: string, content: ReactNode | undefined) => void",
+        "required": true,
+        "description": "Records the content of a card (rendered by the floating copy)"
+      },
+      {
+        "name": "lift",
+        "type": "(card: string, pageX: number, pageY: number) => void",
+        "required": true
+      },
+      {
+        "name": "active",
+        "type": "(card: string) => boolean",
+        "required": true,
+        "description": "Whether `card` is picked up (by a touch: it owns the gesture)"
+      },
+      {
+        "name": "move",
+        "type": "(pageX: number, pageY: number) => void",
+        "required": true
+      },
+      {
+        "name": "drop",
+        "type": "() => void",
+        "required": true
+      },
+      {
+        "name": "cancel",
+        "type": "() => void",
+        "required": true
+      },
+      {
+        "name": "actions",
+        "type": "(card: string) => { name: string; label: string }[]",
+        "required": true
+      },
+      {
+        "name": "act",
+        "type": "(card: string, action: string) => void",
+        "required": true
+      }
+    ]
+  },
+  "native:KanbanDragOptions": {
+    "source": "native/src/components/KanbanBoard/drag.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "enabled",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "columns",
+        "type": "readonly KanbanBoardColumn[]",
+        "required": true
+      },
+      {
+        "name": "cardLabels",
+        "type": "Readonly<Record<string, string>>",
+        "required": true,
+        "description": "Name of each card in the announcements"
+      },
+      {
+        "name": "onCardMove",
+        "type": "(move: KanbanCardMove) => void",
+        "required": false
+      },
+      {
+        "name": "canDrop",
+        "type": "(move: KanbanCardMove) => boolean",
+        "required": false
+      },
+      {
+        "name": "t",
+        "type": "(key: string, params?: Record<string, string | number>) => string",
+        "required": true
+      }
+    ]
+  },
+  "native:KanbanDragState": {
+    "source": "native/src/components/KanbanBoard/drag.ts",
+    "description": "What the board, columns and cards render while a card is picked up",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "card",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "target",
+        "type": "KanbanPosition | null",
+        "required": true
+      },
+      {
+        "name": "content",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Content of the floating copy (the card's children)"
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "required": false,
+        "description": "Size of the floating copy (once measured)"
+      },
+      {
+        "name": "line",
+        "type": "KanbanDropLine",
+        "required": false
+      }
+    ]
+  },
+  "native:KanbanDropLine": {
+    "source": "native/src/components/KanbanBoard/drag.ts",
+    "description": "The drop line, relative to the drag layer",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "left",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "top",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "required": true
       }
     ]
   },
@@ -6773,10 +7037,88 @@
         "description": "Called with the requested fullscreen state"
       },
       {
+        "name": "tracks",
+        "type": "readonly MediaControlsTrack[]",
+        "required": false,
+        "default": "[]",
+        "description": "Captions / subtitles (WebVTT or SRT files): fetched, parsed and the cue at `currentTime` drawn above the seek bar, with a captions (CC) choice in the bar"
+      },
+      {
+        "name": "trackIndex",
+        "type": "number",
+        "required": false,
+        "description": "Index of the shown track, -1 for Off (controlled); uncontrolled when omitted: starts on the `default` track (else Off)"
+      },
+      {
+        "name": "onTrackChange",
+        "type": "(detail: MediaControlsTrackChangeDetail) => void",
+        "required": false,
+        "description": "Called when the user chooses captions (index -1 and track null: Off)"
+      },
+      {
         "name": "style",
         "type": "StyleProp<ViewStyle>",
         "required": false,
         "description": "Style of the bar"
+      }
+    ]
+  },
+  "native:MediaControlsTrack": {
+    "source": "native/src/components/MediaControls/MediaControls.tsx",
+    "description": "A captions / subtitles file of MediaControls",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "src",
+        "type": "string",
+        "required": true,
+        "description": "URL of the WebVTT (.vtt) or SubRip (.srt) file; data: URLs work"
+      },
+      {
+        "name": "srclang",
+        "type": "string",
+        "required": false,
+        "description": "Language of the track (BCP 47: \"en\", \"fr-CA\")"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "description": "Name shown in the captions choice"
+      },
+      {
+        "name": "kind",
+        "type": "\"subtitles\" | \"captions\"",
+        "required": false,
+        "default": "\"subtitles\"",
+        "description": "Kind of text track"
+      },
+      {
+        "name": "default",
+        "type": "boolean",
+        "required": false,
+        "description": "Shown first (uncontrolled trackIndex)"
+      }
+    ]
+  },
+  "native:MediaControlsTrackChangeDetail": {
+    "source": "native/src/components/MediaControls/MediaControls.tsx",
+    "description": "Detail of MediaControls' onTrackChange",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "index",
+        "type": "number",
+        "required": true,
+        "description": "Index of the chosen track in `tracks`, -1 for Off"
+      },
+      {
+        "name": "track",
+        "type": "MediaControlsTrack | null",
+        "required": true,
+        "description": "The chosen track, null for Off"
       }
     ]
   },
@@ -8848,6 +9190,13 @@
         "type": "Partial<Record<QuadrantCorner, ReactNode>>",
         "required": false,
         "description": "React content placed over each quadrant (e.g. an add button); the content receives touches, the rest of the quadrant does not"
+      },
+      {
+        "name": "accessiblePoints",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Exposes every point to the screen readers (VoiceOver, TalkBack) as a button over its dot, labelled with its name, quadrant and values; with `onPointDrop`, its accessibility actions (\"Move to …\") move it to the neighbouring quadrants (`onPointDrop` with the quadrant center)"
       }
     ]
   },
@@ -9080,6 +9429,12 @@
         "type": "string",
         "required": true,
         "description": "Accessible description of the points that can be moved"
+      },
+      {
+        "name": "moveTo",
+        "type": "string",
+        "required": true,
+        "description": "Name of the action moving a point to another quadrant (touch screen readers, mini-programs)"
       }
     ]
   },
@@ -10731,6 +11086,12 @@
     "kind": "alias",
     "type": "\"text\" | \"circular\" | \"rectangular\" | \"rounded\" | \"button\" | \"image\""
   },
+  "native:SliderOrientation": {
+    "source": "native/src/components/Slider/Slider.tsx",
+    "description": "Direction of a Slider track",
+    "kind": "alias",
+    "type": "\"horizontal\" | \"vertical\""
+  },
   "native:SliderProps": {
     "source": "native/src/components/Slider/Slider.tsx",
     "kind": "interface",
@@ -10842,20 +11203,27 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "Shows the value after the track"
+        "description": "Shows the value after the track (above it when vertical)"
       },
       {
         "name": "tooltip",
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "Shows the value in a bubble above the thumb while it is dragged"
+        "description": "Shows the value in a bubble above the thumb (beside it when vertical) while it is dragged"
       },
       {
         "name": "formatValue",
         "type": "(value: number) => string",
         "required": false,
         "description": "Formats a value for the value label, the tooltip and the accessibility value"
+      },
+      {
+        "name": "orientation",
+        "type": "SliderOrientation",
+        "required": false,
+        "default": "\"horizontal\"",
+        "description": "Direction of the track. A vertical track runs from min (bottom) to max (top) and is 160 dp long by default: set a `height` in `style` to change its length"
       },
       {
         "name": "getAriaValueText",

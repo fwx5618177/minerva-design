@@ -478,6 +478,123 @@ describe("radar layout", () => {
     }
   });
 
+  describe("tooltip among labels on every side", () => {
+    const names = [
+      "Camera",
+      "Battery life",
+      "Display",
+      "Performance",
+      "Price",
+      "Design",
+      "Weight",
+      "Support",
+    ];
+    const radarScene = (width: number, height: number) =>
+      layoutShapeScene({
+        options: {
+          type: "radar",
+          indicators: names.map((name) => ({ name, max: 10 })),
+          series: [
+            { name: "Phone", values: [9, 7, 9.5, 8, 5, 9, 6, 8] },
+            { name: "Tablet", values: [6, 9, 7, 6, 8, 5, 9, 7] },
+          ],
+        },
+        theme,
+        width,
+        height,
+        measure,
+      });
+    type Box = { x: number; y: number; width: number; height: number };
+    const overlaps = (a: Box, b: Box) =>
+      Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x) > 0.01 &&
+      Math.min(a.y + a.height, b.y + b.height) - Math.max(a.y, b.y) > 0.01;
+    /** Whether the box enters the disc of the radar */
+    const onDisc = (scene: ShapeScene, b: Box) => {
+      const r = scene.radar!;
+      const dx = Math.max(b.x - r.cx, 0, r.cx - (b.x + b.width));
+      const dy = Math.max(b.y - r.cy, 0, r.cy - (b.y + b.height));
+      return Math.hypot(dx, dy) < r.radius;
+    };
+    const covers = (b: Box, x: number, y: number) =>
+      x > b.x && x < b.x + b.width && y > b.y && y < b.y + b.height;
+
+    it("never covers the disc, the labels, the vertex nor the pointer", () => {
+      // the gaps beside the disc are just wider than the tooltip
+      const [W2, H2, w, h] = [520, 320, 120, 64];
+      const scene = radarScene(W2, H2);
+      const r = scene.radar!;
+      const labels = r.labels ?? [];
+      expect(labels).toHaveLength(names.length);
+      // labels on every side of the disc
+      expect(labels.some((l) => l.y + l.height < r.cy - r.radius / 2)).toBe(
+        true,
+      );
+      expect(labels.some((l) => l.y > r.cy + r.radius / 2)).toBe(true);
+      expect(labels.some((l) => l.x + l.width < r.cx - r.radius / 2)).toBe(
+        true,
+      );
+      expect(labels.some((l) => l.x > r.cx + r.radius / 2)).toBe(true);
+      for (const item of scene.items)
+        for (let k = 0; k < names.length; k++) {
+          const v = item.indicators![k];
+          // the pointer a little off the vertex, toward the center
+          const pointer = {
+            x: v.x + (r.cx - v.x) * 0.05,
+            y: v.y + (r.cy - v.y) * 0.05,
+          };
+          const p = placeShapeTooltip(
+            scene,
+            { index: item.index, indicator: k },
+            pointer,
+            w,
+            h,
+            W2,
+            H2,
+          );
+          const box = { x: p.x, y: p.y, width: w, height: h };
+          const what = `${item.index}/${names[k]}`;
+          expect(p.fit, what).toBe("stage");
+          expect(onDisc(scene, box), `${what} on the disc`).toBe(false);
+          for (const l of labels)
+            expect(overlaps(box, l), `${what} on a label`).toBe(false);
+          expect(covers(box, v.x, v.y)).toBe(false);
+          expect(covers(box, pointer.x, pointer.y)).toBe(false);
+          expect(box.x).toBeGreaterThanOrEqual(0);
+          expect(box.y).toBeGreaterThanOrEqual(0);
+          expect(box.x + w).toBeLessThanOrEqual(W2);
+          expect(box.y + h).toBeLessThanOrEqual(H2);
+        }
+    });
+
+    it("overflows the drawing, off the disc, when it has no room", () => {
+      const [W2, H2, w, h] = [240, 220, 150, 80];
+      const scene = radarScene(W2, H2);
+      const r = scene.radar!;
+      const bounds = { x: -400, y: -300, width: 1040, height: 820 };
+      for (let k = 0; k < names.length; k++) {
+        const v = scene.items[0].indicators![k];
+        const hover = { index: 0, indicator: k };
+        const inside = placeShapeTooltip(scene, hover, v, w, h, W2, H2);
+        expect(inside.fit).not.toBe("stage");
+        // nothing to overflow into: still off the vertex
+        expect(covers({ ...inside, width: w, height: h }, v.x, v.y)).toBe(
+          false,
+        );
+        const p = placeShapeTooltip(scene, hover, v, w, h, W2, H2, bounds);
+        expect(p.fit).toBe("bounds");
+        const box = { x: p.x, y: p.y, width: w, height: h };
+        expect(onDisc(scene, box)).toBe(false);
+        for (const l of r.labels ?? []) expect(overlaps(box, l)).toBe(false);
+        expect(covers(box, v.x, v.y)).toBe(false);
+        // beside the drawing, on the side of the vertex
+        const dot =
+          (box.x + w / 2 - r.cx) * (v.x - r.cx) +
+          (box.y + h / 2 - r.cy) * (v.y - r.cy);
+        expect(dot).toBeGreaterThanOrEqual(0);
+      }
+    });
+  });
+
   it("bolds the hovered indicator row of the tooltip", () => {
     const scene = layout(radar());
     const content = tooltipContent(scene, { index: 0, indicator: 1 });

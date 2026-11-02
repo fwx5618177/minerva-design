@@ -683,6 +683,20 @@ export const hitTest = (
       others.push(c);
     }
   }
+  // Thin line targets remain reachable over the interior of broad bars.
+  // A bar's zero containment distance must not win against a nearby vertex.
+  const nearLines = others.filter(
+    (c) =>
+      (c.series.type === "line" || c.series.type === "area") &&
+      c.dist <= 8 + slop,
+  );
+  if (
+    (model.tooltipMode === "item" || model.tooltipMode === "nearest") &&
+    nearLines.length
+  ) {
+    const closest = nearLines.reduce((a, b) => (b.dist < a.dist ? b : a));
+    return eventOf([closest], xTicks);
+  }
   if (model.tooltipMode === "item") {
     // the shape under the pointer only: bars, boxes, cells, dots in reach
     // and lines within a few pixels; the last drawn wins

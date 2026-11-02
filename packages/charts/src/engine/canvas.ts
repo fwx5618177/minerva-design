@@ -20,7 +20,7 @@ import type { RenderItem } from "./renderers/types";
 import { liftedBarRect, type HoverMark } from "./scene";
 import { itemsSignature } from "./signature";
 import type { ChartThemeInput } from "./theme";
-import { CANVAS_TOOLTIP_ALPHA } from "./tooltip";
+import { CANVAS_TOOLTIP_ALPHA, tooltipColors } from "./tooltip";
 import type { ChartOptions, ChartRect, ChartView } from "./types";
 
 /**
@@ -600,12 +600,13 @@ export const drawScene = (
   const tip = hover?.tooltip;
   if (tip) {
     const { box, lineHeight, padding } = tip;
+    const colors = tooltipColors(theme, CANVAS_TOOLTIP_ALPHA);
     ctx.save();
     ctx.shadowColor = "rgba(15, 23, 42, 0.18)";
     ctx.shadowBlur = 16;
     ctx.shadowOffsetY = 6;
     roundedRect(ctx, box.x, box.y, box.width, box.height, 8);
-    ctx.fillStyle = toCss(theme.background, CANVAS_TOOLTIP_ALPHA);
+    ctx.fillStyle = colors.background;
     ctx.fill();
     ctx.restore();
     roundedRect(
@@ -616,7 +617,7 @@ export const drawScene = (
       box.height - 1,
       8,
     );
-    ctx.strokeStyle = toCss(theme.axis, 0.6);
+    ctx.strokeStyle = colors.border;
     ctx.lineWidth = 1;
     ctx.stroke();
     ctx.textBaseline = "middle";

@@ -8,6 +8,7 @@
 // @css-var --kanban-card-gap Space between the cards of a column (defaults to --space-2)
 // @css-var --kanban-count-background Background of the count badge (defaults to --surface-color)
 // @css-var --kanban-count-color Text color of the count badge (defaults to --text-secondary-color)
+// @css-var --kanban-drop-indicator-color Color of the drop line and of the column a dragged card would land in (defaults to --primary-color)
 
 // Board: one horizontally scrolling row of equal-width columns. Columns
 // read the private --_kanban-grow (fill) from the closest board.
@@ -47,6 +48,17 @@
   @media (max-width: 640px) {
     scroll-snap-type: x mandatory;
   }
+
+  // while a card is dragged: no text selection, no snapping against the
+  // auto-scroll
+  &[data-kanban-dragging] {
+    scroll-snap-type: none;
+    user-select: none;
+  }
+
+  &[data-kanban-dragging="pointer"] {
+    cursor: grabbing;
+  }
 }
 
 .column {
@@ -74,6 +86,12 @@
 
   &.neutral {
     --_kanban-accent: var(--text-muted-color);
+  }
+
+  // the column a dragged card would land in
+  &[data-kanban-drop-target] {
+    border-color: var(--kanban-drop-indicator-color, var(--primary-color));
+    box-shadow: 0 0 0 1px var(--kanban-drop-indicator-color, var(--primary-color));
   }
 }
 
@@ -158,6 +176,36 @@
   min-width: 0;
 }
 
+// KanbanCard: a plain wrapper unless the board is draggable
+.card {
+  min-width: 0;
+
+  &[data-draggable] {
+    border-radius: var(--radius-md);
+    cursor: grab;
+    user-select: none;
+    // a long press picks the card up instead of opening the callout menu
+    -webkit-touch-callout: none;
+
+    &:focus-visible {
+      outline: 2px solid transparent;
+      outline-offset: 2px;
+      box-shadow: 0 0 0 var(--focus-ring-width, 2px) var(--focus-ring-color);
+    }
+  }
+
+  // the card left behind while its copy follows the pointer
+  &[data-kanban-dragging="pointer"] {
+    opacity: 0.4;
+  }
+
+  // picked up with the keyboard: it stays in place, the drop line moves
+  &[data-kanban-dragging="keyboard"] {
+    outline: 2px dashed var(--kanban-drop-indicator-color, var(--primary-color));
+    outline-offset: 2px;
+  }
+}
+
 .empty {
   display: flex;
   align-items: center;
@@ -188,5 +236,9 @@
 
   .count {
     border: 1px solid CanvasText;
+  }
+
+  .column[data-kanban-drop-target] {
+    border-color: Highlight;
   }
 }

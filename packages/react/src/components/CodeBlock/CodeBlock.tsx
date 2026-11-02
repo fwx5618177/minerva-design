@@ -6,13 +6,21 @@ import {
   useState,
   type CSSProperties,
   type HTMLAttributes,
+  type MouseEvent,
 } from "react";
 import {
+  CODE_MARK_COLORS,
+  applyCodeMarks,
   codeLanguageLabel,
+  codeMarkBackground,
+  detectCodeLanguage,
   highlightCode,
-  splitHighlightLines,
+  splitCodeMarkLines,
+  type CodeMark,
+  type CodeMarkRun,
   type HighlightToken,
 } from "@minerva/core";
+import { clickedCodeMark } from "@minerva/dom";
 import { cn } from "../../utils/cn";
 import useI18n from "../../hooks/useI18n";
 import IconButton from "../IconButton";
@@ -37,22 +45,63 @@ const renderTokens = (tokens: readonly HighlightToken[]) =>
     ),
   );
 
+/** A theme color name of a mark (`data-mark-color`), else undefined */
+const markScheme = (color: string | undefined) => {
+  const value = color?.trim();
+  return value && (CODE_MARK_COLORS as readonly string[]).includes(value)
+    ? value
+    : undefined;
+};
+
+const renderRuns = (runs: readonly CodeMarkRun[], clickable: boolean) =>
+  runs.map(({ mark, index, tokens }, i) => {
+    if (!mark) return <Fragment key={i}>{renderTokens(tokens)}</Fragment>;
+    const background = codeMarkBackground(mark.color);
+    return (
+      <mark
+        key={i}
+        className={cn(
+          styles.mark,
+          clickable && styles.markClickable,
+          mark.className,
+        )}
+        data-mark-id={mark.id}
+        data-mark-index={index}
+        data-mark-color={markScheme(mark.color)}
+        title={mark.title}
+        style={
+          background
+            ? ({ "--code-mark-bg": background } as CSSProperties)
+            : undefined
+        }
+        {...hooks("code-block", "code-mark")}
+      >
+        {renderTokens(tokens)}
+      </mark>
+    );
+  });
+
 /**
  * Contents of the <code>: the text, its highlighted tokens (with a
- * language) and / or its numbered lines. The text content stays the source
- * text exactly (line numbers are generated content).
+ * language), its marks and / or its numbered lines. The text content stays
+ * the source text exactly (line numbers are generated content).
  */
 function codeContent(
   text: string,
   language: string | undefined,
   lineNumbers: boolean,
+  marks: readonly CodeMark[] | undefined,
+  clickable: boolean,
 ) {
-  if (!language && !lineNumbers) return text;
+  const marked = !!marks?.length;
+  if (!language && !lineNumbers && !marked) return text;
   const tokens = language
     ? highlightCode(text, language)
     : [{ type: null, text }];
-  if (!lineNumbers) return renderTokens(tokens);
-  const lines = splitHighlightLines(tokens);
+  if (!lineNumbers && !marked) return renderTokens(tokens);
+  const runs = applyCodeMarks(tokens, marks);
+  if (!lineNumbers) return renderRuns(runs, clickable);
+  const lines = splitCodeMarkLines(runs);
   const trailingBreak = text.endsWith("\n");
   return lines.map((line, i) => (
     <Fragment key={i}>
@@ -63,7 +112,7 @@ function codeContent(
           data-line={i + 1}
           {...hooks("code-block", "line-number")}
         />
-        {renderTokens(line)}
+        {renderRuns(line, clickable)}
       </span>
       {i < lines.length - 1 || trailingBreak ? "\n" : null}
     </Fragment>
@@ -84,7 +133,13 @@ function codeContent(
  *
  * With `language`, the syntax is highlighted (`highlightCode` of
  * @minerva/core) into colored <span>s (`--code-token-<type>-color`); the
- * text content and the copied text stay the source text.
+ * text content and the copied text stay the source text. `language="auto"`
+ * detects it from the text (`detectCodeLanguage`, memoized per text): the
+ * class, `data-language` and the label then show the detected language.
+ *
+ * `marks` wraps character ranges in <mark>s over the highlighting
+ * (`applyCodeMarks` of @minerva/core: tokens are cut at the mark
+ * boundaries; where marks overlap the later one wins).
  */
 export const CodeBlock = ({
   children,
@@ -100,6 +155,8 @@ export const CodeBlock = ({
   highlight = true,
   showLineNumbers = false,
   showLanguage = false,
+  marks,
+  onMarkClick,
   className,
   style,
   ref,
@@ -109,10 +166,24 @@ export const CodeBlock = ({
   const [status, setStatus] = useState<CopyStatus>("idle");
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const mountedRef = useRef(true);
-  const lang = language?.trim() || undefined;
+  const requested = language?.trim() || undefined;
+  const auto = requested?.toLowerCase() === "auto";
+  const detected = useMemo(
+    () => (auto ? detectCodeLanguage(children) : undefined),
+    [auto, children],
+  );
+  const lang = auto ? detected : requested;
+  const clickable = !!onMarkClick;
   const content = useMemo(
-    () => codeContent(children, highlight ? lang : undefined, showLineNumbers),
-    [children, highlight, lang, showLineNumbers],
+    () =>
+      codeContent(
+        children,
+        highlight ? lang : undefined,
+        showLineNumbers,
+        marks,
+        clickable,
+      ),
+    [children, highlight, lang, showLineNumbers, marks, clickable],
   );
   const lineDigits = showLineNumbers
     ? String(String(children).replace(/\n$/, "").split("\n").length).length
@@ -162,7 +233,17 @@ export const CodeBlock = ({
     "data-wrap": String(wrap),
   } as const;
 
+  const markClick = onMarkClick
+    ? (event: MouseEvent<HTMLElement>) => {
+        const mark = clickedCodeMark(event.target, event.currentTarget, marks);
+        if (mark) onMarkClick(mark, event);
+      }
+    : undefined;
+
   const codeElement = (
+    // Marks are not focusable (no keyboard counterpart): the click is a
+    // pointer shortcut, documented on onMarkClick.
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
     <code
       className={lang ? `language-${lang}` : undefined}
       data-language={lang}
@@ -171,6 +252,7 @@ export const CodeBlock = ({
           ? ({ "--code-line-digits": Math.max(lineDigits, 2) } as CSSProperties)
           : undefined
       }
+      onClick={markClick}
       {...hooks("code-block", "code")}
     >
       {content}

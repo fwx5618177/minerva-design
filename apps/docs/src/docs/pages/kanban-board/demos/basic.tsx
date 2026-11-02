@@ -42,7 +42,7 @@ export default function BasicDemo() {
     { id: 3, title: "Ship the billing page", owner: "Sam", status: "doing" },
     { id: 4, title: "Set up error tracking", owner: "Ada", status: "done" },
   ]);
-  // No drag and drop: cards move with your own actions.
+  // Cards move with their own actions here (draggable boards: drag-drop demo).
   const advance = (id: number) =>
     setTasks((all) =>
       all.map((task) =>

@@ -403,6 +403,73 @@ it("QuadrantChart does not drag points unless draggable", async () => {
   expect(events).toEqual([]);
 });
 
+it("QuadrantChart lists its points for screen readers with move-to-quadrant buttons", async () => {
+  const points = [
+    { x: 2, y: 8, label: "Write report" },
+    { x: 7, y: 3 },
+  ];
+  const { w } = await mount(quadrantChart, {
+    points,
+    locale: "en",
+    draggable: true,
+    selectedIndex: 1,
+    quadrants: { topLeft: { label: "Do first" } },
+  });
+  const events = listen(w, "pointclick", "pointdrop");
+  expect(quadrantChart.template).toContain('aria-role="list"');
+  expect(quadrantChart.template).toContain('aria-label="{{p.description}}"');
+  expect(lineChart.template).not.toContain("mn-chart-quadrant-points");
+  const groups = w.data.a11yGroups as {
+    name: string;
+    points: {
+      description: string;
+      selected: boolean;
+      moves: { aria: string }[];
+    }[];
+  }[];
+  expect(groups.map((g) => g.name)).toEqual([
+    "Do first",
+    "Bottom right quadrant",
+  ]);
+  expect(groups[0]!.points[0]).toMatchObject({
+    description: "Write report, Do first, x: 2, y: 8",
+    selected: false,
+    moves: [
+      { aria: "Write report, Move to Bottom left quadrant" },
+      { aria: "Write report, Move to Top right quadrant" },
+    ],
+  });
+  expect(groups[1]!.points[0]!.selected).toBe(true);
+
+  const pointButtons = w.querySelectorAll(".mn-chart-quadrant-point");
+  expect(pointButtons.map((b) => b.dom!.textContent)).toEqual([
+    "Write report",
+    "Point 2",
+  ]);
+  pointButtons[1]!.dispatchEvent("tap");
+  const moves = w.querySelectorAll(".mn-chart-quadrant-move");
+  expect(moves).toHaveLength(4);
+  moves[0]!.dispatchEvent("tap");
+  await tick();
+  expect(events).toEqual([
+    { name: "pointclick", detail: { point: points[1], index: 1 } },
+    {
+      name: "pointdrop",
+      detail: {
+        point: points[0],
+        index: 0,
+        target: { x: 2.5, y: 2.5, quadrant: "bottomLeft" },
+      },
+    },
+  ]);
+
+  // not draggable: no move buttons; accessiblePoints false: no list
+  w.setData({ draggable: false });
+  expect(w.querySelectorAll(".mn-chart-quadrant-move")).toHaveLength(0);
+  w.setData({ accessiblePoints: false });
+  expect(w.querySelector(".mn-chart-quadrant-points")).toBeFalsy();
+});
+
 it("builds the chart theme from the Minerva tokens of the nearest provider", async () => {
   const light = chartTheme(),
     dark = chartTheme({

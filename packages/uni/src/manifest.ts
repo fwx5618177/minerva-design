@@ -239,7 +239,7 @@ export const uniComponentManifest = [
     scope:
       "Custom touch slider (not the built-in slider) with one or two non-crossing thumbs, min/max/step or marks-only snapping, step or labelled marks, controlled/default value (v-model) with change while dragging and changeEnd on release, five colors, three sizes, value label, drag tooltip, hidden named inputs, field inheritance and RTL mirroring.",
     limitations: [
-      "The track is measured with uni.createSelectorQuery on touch start (cached afterwards); horizontal only. H5 supports arrow/PageUp/PageDown/Home/End keys on the focusable thumbs; native hosts use touch only. A range submits two inputs with the same name, which native forms collapse to one value.",
+      "The track is measured with uni.createSelectorQuery on touch start (cached afterwards). Horizontal (RTL-mirrored) or vertical orientation (bottom = min, top = max). H5 supports arrow/PageUp/PageDown/Home/End keys on the focusable thumbs; native hosts use touch only. A range submits two inputs with the same name, which native forms collapse to one value.",
     ],
     tests: [
       "src/slider.test.ts: behavioral regression",
@@ -265,9 +265,9 @@ export const uniComponentManifest = [
   {
     name: "MediaPlayer",
     scope:
-      "Video through the uni <video> component (controls off, driven by uni.createVideoContext: play/pause/seek/playbackRate/requestFullScreen) and audio through uni.createInnerAudioContext, under a themed control bar: play/pause, skip back/forward (skipSeconds), touch seek bar with the buffered range and aria-valuetext, m:ss / h:mm:ss time, mute, audio volume bar, playback-rate cycle button, video fullscreen, loading spinner and translated error state; startTime (video initial-time, audio startTime), autoPlay, loop, muted/defaultMuted, title, poster, height/aspectRatio; timeUpdate/ended/play/pause/loadedMetadata/error/rateChange/volumeChange events and an exposed play/pause/seek/context. controls=false shows the host video's own controls.",
+      "Video through the uni <video> component (controls off, driven by uni.createVideoContext: play/pause/seek/playbackRate/requestFullScreen) and audio through uni.createInnerAudioContext, under a themed control bar: play/pause, skip back/forward (skipSeconds), touch seek bar with the buffered range and aria-valuetext, m:ss / h:mm:ss time, mute, audio volume bar, playback-rate cycle button, video fullscreen, loading spinner and translated error state; startTime (video initial-time, audio startTime), autoPlay, loop, muted/defaultMuted, title, poster, height/aspectRatio; timeUpdate/ended/play/pause/loadedMetadata/error/rateChange/volumeChange events and an exposed play/pause/seek/context. controls=false shows the host video's own controls. Captions: tracks (WebVTT or SRT, data: URLs inline) fetched with uni.request, parsed by the shared minerva-design/core parser and drawn as an overlay synchronized with the time updates, a CC button with an Off / per-track choice row, the choice remembered in storage (default track otherwise) and a trackChange event.",
     limitations: [
-      "Beta: needs device validation (media behavior differs per host). The host video has no volume API (mute only, no volume bar); no picture-in-picture and no keyboard shortcuts; icons are text glyphs (no inline SVG on mini programs).",
+      "Beta: needs device validation (media behavior differs per host). The host video has no volume API (mute only, no volume bar); no picture-in-picture and no keyboard shortcuts; icons are text glyphs (no inline SVG on mini programs). Captions follow the host time updates (about 4 per second), are not shown in the host's native fullscreen, ignore cue positioning / styling, and remote caption files need the app's request domain allowlist.",
     ],
     tests: [
       "src/media-player.test.ts: behavioral regression",
@@ -279,9 +279,9 @@ export const uniComponentManifest = [
   {
     name: "KanbanBoard",
     scope:
-      "Board of status columns in a scroll-view scroll-x: equal-width columns (columnWidth), fill when they fit, gap, height/maxHeight with vertically scrolling column bodies and a translated region label.",
+      "Board of status columns in a scroll-view scroll-x: equal-width columns (columnWidth), fill when they fit, gap, height/maxHeight with vertically scrolling column bodies and a translated region label. draggable boards move the KanbanCard children of keyed columns (value) with a long press and drag (cards and columns measure themselves when a card is picked up), with a drop line, a highlighted target column, canDrop and a card-move event.",
     limitations: [
-      "No drag and drop: move cards with your own actions and update the columns' data. No scroll snapping; device geometry still requires validation.",
+      "Drag and drop is touch only (no keyboard or screen-reader moves): offer your own move actions for accessibility. The floating copy shows the card's label (slots cannot be duplicated), there is no auto-scroll near the edges and the page may still scroll on hosts that cannot cancel touchmove. No scroll snapping; device geometry still requires validation.",
     ],
     tests: [
       "src/kanban-board.test.ts: behavioral regression",
@@ -295,12 +295,23 @@ export const uniComponentManifest = [
     scope:
       "Status column: accent dot (theme or CSS color), title (prop or slot), count badge announced with the title, description, actions slot, role=list body, translated or custom empty content and a footer slot.",
     limitations: [
-      "Mini-program slots cannot be wrapped card by card: give each card role=listitem. The empty content shows without a default slot or with count 0.",
+      "Mini-program slots cannot be wrapped card by card: use KanbanCard or give each card role=listitem. The empty content shows without a default slot or with count 0.",
     ],
     tests: [
       "src/kanban-board.test.ts: behavioral regression",
       "src/parity.test.ts: native host mount",
     ],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "KanbanCard",
+    scope:
+      "Card of a KanbanColumn (role=listitem) keyed by value; in a draggable board a long press picks it up and a copy showing its label follows the finger.",
+    limitations: [
+      "Touch only; the floating copy shows the label text, not the card's content.",
+    ],
+    tests: ["src/kanban-board.test.ts: behavioral regression"],
     status: "partial",
     deviceE2E: false,
   },
@@ -845,7 +856,7 @@ export const uniComponentManifest = [
   {
     name: "CodeBlock",
     scope:
-      "Syntax highlighting (core highlightCode, nested text with code-token colors), opt-in line numbers and language label, wrapped/unwrapped text, bounded scrolling maxHeight, native clipboard copy of the raw text with callbacks and localized feedback with cleanup.",
+      'Syntax highlighting (core highlightCode, nested text with code-token colors; language="auto" detects it with detectCodeLanguage), opt-in line numbers and language label, character-range marks (nested text backgrounds, mark-click on tap), wrapped/unwrapped text, bounded scrolling maxHeight, native clipboard copy of the raw text with callbacks and localized feedback with cleanup.',
     limitations: [],
     tests: [
       "src/primitives-parity.test.ts: behavior and styling contracts",
@@ -1645,7 +1656,8 @@ export const uniChartManifest = [
       'Cartesian chart drawn on a `<canvas type="2d">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize).',
     limitations: [
       "No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text.",
-      "Quadrant badges, descriptions, showCounts (boolean only) and the selectedIndex/selectedIndices rings are drawn; renderQuadrantHeader, getPointProps and the accessible point layer are React-only.",
+      "Quadrant badges, descriptions, showCounts (boolean only) and the selectedIndex/selectedIndices rings are drawn; renderQuadrantHeader and getPointProps are React-only.",
+      "Accessible points (accessiblePoints): a visually hidden list of the points (aria-role / aria-label with name, quadrant and values; a tap emits pointClick) with 'Move to …' buttons emitting pointDrop with the center of the neighbouring quadrant (with a pointDrop listener). Mini-program views take no keyboard focus, so there is no focus ring nor Shift + arrow moves, and no live region: the move is announced (role=status) on H5 only.",
     ],
     tests: ["src/charts.test.ts"],
     status: "partial",

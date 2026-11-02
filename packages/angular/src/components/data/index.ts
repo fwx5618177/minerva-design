@@ -16,16 +16,27 @@ import {
 } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import {
+  CODE_MARK_COLORS,
   addDays,
+  applyCodeMarks,
   codeLanguageLabel,
+  codeMarkBackground,
   dayKey,
+  detectCodeLanguage,
   getVirtualRange,
   highlightCode,
   monthStart,
   sameMonth,
-  splitHighlightLines,
+  splitCodeMarkLines,
+  type CodeMark,
+  type CodeMarkRun,
   type HighlightToken,
 } from "@minerva/core";
+import {
+  clickedCodeMark,
+  getCodeSelectionRange,
+  type CodeSelectionRange,
+} from "@minerva/dom";
 import { MnHook } from "../../internal/hooks";
 import {
   MnFormValueControl,
@@ -243,6 +254,15 @@ export class MnKeyValueEditor extends MnFormValueControl<
       this.commit(this.value().filter((_, i) => i !== index));
   }
 }
+/** Payload of `markClick` of `mn-code-block` */
+export interface CodeBlockMarkClickEvent {
+  /** The clicked mark (the item of `marks`; the topmost where they overlap) */
+  mark: CodeMark;
+  /** The original click */
+  event: MouseEvent;
+}
+export type { CodeMark, CodeMarkColor } from "@minerva/core";
+export type { CodeSelectionRange } from "@minerva/dom";
 @Component({
   selector: "mn-code-block",
   imports: [MnHook],
@@ -258,7 +278,7 @@ export class MnKeyValueEditor extends MnFormValueControl<
       tabindex="0"
       [attr.aria-label]="label()"
       [class]="label_() ? s.codeBlock + ' ' + s.labeled : s.codeBlock"
-    ><code mnHook="code-block" mnPart="code" [attr.data-language]="language()" [class]="'language-' + language()" [style.--code-line-digits]="digits()">@if (rows(); as rows) {@for (row of rows; track $index) {<span [class]="s.line"><span mnHook="code-block" mnPart="line-number" aria-hidden="true" [class]="s.lineNumber" [attr.data-line]="$index + 1"></span>@for (token of row.tokens; track $index) {@if (token.c) {<span [class]="token.c">{{ token.text }}</span>} @else {<ng-container>{{ token.text }}</ng-container>}}</span><ng-container>{{ row.br }}</ng-container>}} @else {@for (token of tokens(); track $index) {@if (token.c) {<span [class]="token.c">{{ token.text }}</span>} @else {<ng-container>{{ token.text }}</ng-container>}}}</code></pre>
+    ><code mnHook="code-block" mnPart="code" [attr.data-language]="lang()" [class]="'language-' + lang()" [style.--code-line-digits]="digits()" (click)="onCodeClick($event)">@if (rows(); as rows) {@for (row of rows; track $index) {<span [class]="s.line"><span mnHook="code-block" mnPart="line-number" aria-hidden="true" [class]="s.lineNumber" [attr.data-line]="$index + 1"></span>@for (run of row.runs; track $index) {@if (run.mark) {<mark mnHook="code-block" mnPart="code-mark" [class]="run.cls" [attr.data-mark-id]="run.mark.id ?? null" [attr.data-mark-index]="run.index" [attr.data-mark-color]="run.scheme" [attr.title]="run.mark.title ?? null" [style.--code-mark-bg]="run.bg">@for (token of run.tokens; track $index) {@if (token.c) {<span [class]="token.c">{{ token.text }}</span>} @else {<ng-container>{{ token.text }}</ng-container>}}</mark>} @else {@for (token of run.tokens; track $index) {@if (token.c) {<span [class]="token.c">{{ token.text }}</span>} @else {<ng-container>{{ token.text }}</ng-container>}}}}</span><ng-container>{{ row.br }}</ng-container>}} @else {@for (run of runs(); track $index) {@if (run.mark) {<mark mnHook="code-block" mnPart="code-mark" [class]="run.cls" [attr.data-mark-id]="run.mark.id ?? null" [attr.data-mark-index]="run.index" [attr.data-mark-color]="run.scheme" [attr.title]="run.mark.title ?? null" [style.--code-mark-bg]="run.bg">@for (token of run.tokens; track $index) {@if (token.c) {<span [class]="token.c">{{ token.text }}</span>} @else {<ng-container>{{ token.text }}</ng-container>}}</mark>} @else {@for (token of run.tokens; track $index) {@if (token.c) {<span [class]="token.c">{{ token.text }}</span>} @else {<ng-container>{{ token.text }}</ng-container>}}}}}</code></pre>
     @if (label_()) {
       <div [class]="s.actions">
         <span
@@ -283,6 +303,11 @@ export class MnKeyValueEditor extends MnFormValueControl<
 })
 export class MnCodeBlock {
   readonly code = input("");
+  /**
+   * Language of the code (highlighted syntax, `class="language-<x>"` /
+   * `data-language` of the <code>); `auto` detects it from `code`
+   * (`detectCodeLanguage`, "plain" when unsure), shown by the label too
+   */
   readonly language = input("text");
   readonly label = input("Code");
   readonly copyable = input(false, { transform: booleanAttribute });
@@ -292,14 +317,37 @@ export class MnCodeBlock {
   readonly showLineNumbers = input(false, { transform: booleanAttribute });
   /** Shows the language as a small label in the top-right corner */
   readonly showLanguage = input(false, { transform: booleanAttribute });
+  /**
+   * Character ranges to mark (saved highlights, annotations), rendered as
+   * `<mark data-part="code-mark">` over the syntax highlighting (the copied
+   * text stays the raw code). `start` / `end` are UTF-16 offsets into
+   * `code`, clamped to it; empty ranges are ignored. Marks may cross tokens
+   * and lines (with showLineNumbers a mark is cut at each line break). Where
+   * marks overlap, the later one in the array wins. `color`: a theme color
+   * name (a translucent tint) or any CSS color (default: translucent
+   * yellow, `--code-block-mark-bg`)
+   */
+  readonly marks = input<readonly CodeMark[] | null | undefined>(undefined);
+  /** Gives the marks a click affordance (pointer cursor, hover underline): set it when listening to `markClick` */
+  readonly clickableMarks = input(false, { transform: booleanAttribute });
+  /** A mark was clicked (not at the end of a text selection drag): the item of `marks` (the topmost where they overlap) and the click */
+  readonly markClick = output<CodeBlockMarkClickEvent>();
   readonly copyError = output<unknown>();
   protected readonly copied = signal(false);
   protected readonly error = signal("");
   protected readonly s = styles.codeBlockStyles;
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  /** The language of the <code>: `language`, `auto` detected from `code` */
+  protected readonly lang = computed(() => {
+    const language = this.language();
+    return language?.trim().toLowerCase() === "auto"
+      ? detectCodeLanguage(this.code() ?? "")
+      : language;
+  });
   private readonly highlighted = computed(() => {
     const code = this.code() ?? "";
     return this.highlight()
-      ? highlightCode(code, this.language())
+      ? highlightCode(code, this.lang())
       : code
         ? [{ type: null, text: code }]
         : [];
@@ -309,15 +357,39 @@ export class MnCodeBlock {
       c: type ? (this.s as Record<string, string>)[`token-${type}`] : "",
       text,
     }));
-  /** Tokens of the code (class `c`: "" for plain text) */
-  protected readonly tokens = computed(() => this.classed(this.highlighted()));
-  /** Numbered lines (with showLineNumbers): tokens and the line break */
+  private readonly marked = computed(() =>
+    applyCodeMarks(this.highlighted(), this.marks() ?? undefined),
+  );
+  private readonly runsOf = (list: readonly CodeMarkRun[]) => {
+    const clickable = this.clickableMarks();
+    return list.map(({ mark, index, tokens }) => {
+      const scheme = mark?.color?.trim();
+      return {
+        mark,
+        index,
+        cls: mark
+          ? [this.s.mark, clickable ? this.s.markClickable : "", mark.className]
+              .filter(Boolean)
+              .join(" ")
+          : "",
+        scheme:
+          scheme && (CODE_MARK_COLORS as readonly string[]).includes(scheme)
+            ? scheme
+            : null,
+        bg: (mark && codeMarkBackground(mark.color)) || null,
+        tokens: this.classed(tokens),
+      };
+    });
+  };
+  /** Runs of the code (marked or not), each with its tokens (class `c`: "" for plain text) */
+  protected readonly runs = computed(() => this.runsOf(this.marked()));
+  /** Numbered lines (with showLineNumbers): runs and the line break */
   protected readonly rows = computed(() => {
     if (!this.showLineNumbers()) return null;
-    const lines = splitHighlightLines(this.highlighted());
+    const lines = splitCodeMarkLines(this.marked());
     const trailingBreak = (this.code() ?? "").endsWith("\n");
     return lines.map((line, i) => ({
-      tokens: this.classed(line),
+      runs: this.runsOf(line),
       br: i < lines.length - 1 || trailingBreak ? "\n" : "",
     }));
   });
@@ -326,10 +398,29 @@ export class MnCodeBlock {
     return rows ? String(Math.max(String(rows.length).length, 2)) : null;
   });
   protected readonly label_ = computed(() =>
-    this.showLanguage() && this.language()?.trim()
-      ? codeLanguageLabel(this.language())
+    this.showLanguage() && this.lang()?.trim()
+      ? codeLanguageLabel(this.lang())
       : "",
   );
+  /**
+   * Offsets in `code` of the user's selection inside the code (to save it
+   * as a mark), `null` when nothing of the code is selected; `selection`
+   * (default: the document's) may be a Selection or a Range
+   */
+  getSelectionRange(
+    selection?: Selection | AbstractRange | null,
+  ): CodeSelectionRange | null {
+    const code = this.host.nativeElement.querySelector("code");
+    return code ? getCodeSelectionRange(code, selection) : null;
+  }
+  protected onCodeClick(event: MouseEvent) {
+    const mark = clickedCodeMark(
+      event.target,
+      event.currentTarget as Element,
+      this.marks() ?? undefined,
+    );
+    if (mark) this.markClick.emit({ mark, event });
+  }
   async copy() {
     try {
       await navigator.clipboard.writeText(this.code());

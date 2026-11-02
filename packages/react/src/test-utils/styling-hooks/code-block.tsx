@@ -10,7 +10,12 @@ export default [
   {
     name: "highlighted, line numbers, language",
     element: (
-      <CodeBlock language="js" showLineNumbers showLanguage>
+      <CodeBlock
+        language="js"
+        showLineNumbers
+        showLanguage
+        marks={[{ start: 6, end: 7 }]}
+      >
         {"const a = 1;"}
       </CodeBlock>
     ),

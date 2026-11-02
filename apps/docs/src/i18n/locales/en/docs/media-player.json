@@ -17,6 +17,10 @@
     "rates-skip": {
       "title": "Speeds and skip step",
       "description": "playbackRates lists the speeds the speed button cycles through (onRateChange reports the new one); skipSeconds sets the step of the back / forward buttons; aspectRatio (or height) sizes a video."
+    },
+    "captions": {
+      "title": "Captions",
+      "description": "tracks takes WebVTT or SRT files ({ src, srclang, label, kind, default }; data: URLs here). They are rendered as <track> children, but the player draws the active cue itself (over the video, below the title for audio) so captions look the same in every browser. The CC button opens a menu (Off and one item per track); C toggles captions on the focused player. The choice is remembered (localStorage) and a default track shows until the user chooses; onTrackChange reports it. Cross-origin caption files need crossOrigin=\"anonymous\" (or \"use-credentials\") on the player and CORS headers on their server."
     }
   },
   "api": {
@@ -31,7 +35,7 @@
       "muted": "Mutes the media; applied whenever it changes (the mute button still toggles the sound)",
       "defaultMuted": "Initially muted (uncontrolled)",
       "preload": "How much of the media the browser loads before playback",
-      "crossOrigin": "CORS mode of the media request",
+      "crossOrigin": "CORS mode of the media request (cross-origin caption files need it too, plus CORS headers on their server)",
       "startTime": "Resume position in seconds, applied once when the metadata loads (and again when src changes)",
       "playbackRates": "Speeds the speed button cycles through",
       "skipSeconds": "Step of the skip back / forward buttons, in seconds (0 hides them)",
@@ -39,6 +43,7 @@
       "height": "Height of a video player (number: pixels); overrides aspectRatio",
       "aspectRatio": "Aspect ratio of a video player (CSS aspect-ratio)",
       "pictureInPicture": "Shows a picture-in-picture button (video, where the browser supports it)",
+      "tracks": "Captions / subtitles: WebVTT or SRT files ({ src, srclang, label, kind, default }) rendered as <track> children and drawn by the player, with a captions menu in the control bar; the choice is remembered (localStorage)",
       "onTimeUpdate": "Called while playing with the playhead position and the duration ({ currentTime, duration }, seconds)",
       "onEnded": "Called when playback reaches the end",
       "onPlay": "Called when playback starts",
@@ -47,6 +52,7 @@
       "onError": "Called with the MediaError when the media can't be loaded or played",
       "onRateChange": "Called with the new playback speed",
       "onVolumeChange": "Called when the volume or the muted state changes ({ volume, muted })",
+      "onTrackChange": "Called when the user chooses captions ({ index, track }; index -1 and track null: Off)",
       "aria-label": "Accessible label of the player (defaults to title, else \"Media player\")",
       "className": "Additional class name",
       "style": "Inline styles of the root element",
@@ -57,6 +63,13 @@
       "pause": "Pauses playback",
       "seek": "Moves the playhead to seconds (clamped to the duration)",
       "element": "The rendered <audio> / <video> element (null before mount)"
+    },
+    "MediaPlayerTrack": {
+      "src": "URL of the WebVTT (.vtt) or SubRip (.srt) file; data: URLs work",
+      "srclang": "Language of the track (BCP 47: \"en\", \"fr-CA\"), also what the remembered choice matches",
+      "label": "Name shown in the captions menu",
+      "kind": "Kind of text track: \"subtitles\" (default) or \"captions\"",
+      "default": "Shown when the user has not chosen captions yet"
     }
   },
   "cssVars": {
@@ -68,7 +81,10 @@
     "--media-player-bar-background": "Background of the audio bar (defaults to --surface-color)",
     "--media-player-bar-color": "Text and icon color of the audio bar (defaults to --text-color)",
     "--media-player-button-size": "Size of the control buttons (defaults to the density's small control height)",
-    "--media-player-track-height": "Thickness of the seek and volume tracks (defaults to 4px)"
+    "--media-player-track-height": "Thickness of the seek and volume tracks (defaults to 4px)",
+    "--media-player-captions-background": "Background of the caption text (defaults to rgb(0 0 0 / 75%) over a video, none for audio)",
+    "--media-player-captions-color": "Color of the caption text (defaults to white over a video, the bar color for audio)",
+    "--media-player-captions-font-size": "Font size of the caption text (defaults to --font-size-lg over a video, --font-size-md for audio)"
   },
   "wc": {
     "demos": {
@@ -87,12 +103,17 @@
       "rates-skip": {
         "title": "Speeds and skip step",
         "description": "playbackRates is a property (an array); minerva-rate-change reports the speed. skip-seconds sets the skip step and aspect-ratio sizes the video."
+      },
+      "captions": {
+        "title": "Captions",
+        "description": "tracks is a property (an array of { src, srclang, label, kind, default }); without it, <track src srclang label default> children of the element are used. The player draws the cues and adds a captions menu; minerva-track-change reports the user's choice. Cross-origin files need crossorigin and CORS headers."
       }
     },
     "minerva-media-player": {
       "props": {
         "noControls": "Hides the custom control bar: renders the bare media element (drive it from script)",
-        "element": "The rendered <audio> / <video> element (read-only; null before the first render)"
+        "element": "The rendered <audio> / <video> element (read-only; null before the first render)",
+        "tracks": "Captions / subtitles (property only): WebVTT or SRT files ({ src, srclang, label, kind, default }); empty: the <track> children are used"
       },
       "events": {
         "minerva-play": "Playback started.",
@@ -102,7 +123,8 @@
         "minerva-loaded-metadata": "The metadata loaded (detail: { duration }).",
         "minerva-error": "The media can't be loaded or played (detail: { error }, the MediaError).",
         "minerva-rate-change": "The playback speed changed (detail: { rate }).",
-        "minerva-volume-change": "The volume or the muted state changed (detail: { volume, muted })."
+        "minerva-volume-change": "The volume or the muted state changed (detail: { volume, muted }).",
+        "minerva-track-change": "The user chose captions (detail: { index, track }; index -1 and track null: Off)."
       },
       "methods": {
         "play": "Starts playback (autoplay rejections are swallowed: the player stays paused).",
@@ -119,6 +141,10 @@
       "basic": {
         "title": "MediaControls (React Native)",
         "description": "Core React Native has no media element: MediaControls is the themed control bar, driven by props (playing, currentTime, duration, buffered, muted, playbackRate) and callbacks (onPlayPause, onSeek, onMutedChange, onRateChange...). Wire it to expo-video / expo-audio (see the comment in the code); this preview simulates the player."
+      },
+      "captions": {
+        "title": "Captions (React Native)",
+        "description": "React Native players have no text tracks: with tracks, MediaControls fetches the WebVTT / SRT file (data: URLs work), parses it and draws the cue at currentTime above the seek bar. The CC button shows an Off / per-track choice; trackIndex can be controlled and onTrackChange reports the choice."
       }
     }
   }

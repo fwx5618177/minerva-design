@@ -4,6 +4,7 @@ import {
   DestroyRef,
   ElementRef,
   afterNextRender,
+  afterRenderEffect,
   booleanAttribute,
   computed,
   effect,
@@ -20,6 +21,7 @@ import {
   DEFAULT_SKIP_SECONDS,
   MEDIA_ICON_PATHS,
   bufferedEnd,
+  captionsPreference,
   clampMediaTime,
   clampVolume,
   formatMediaTime,
@@ -28,7 +30,12 @@ import {
   mediaKeyAction,
   mediaProgress,
   nextPlaybackRate,
+  pickCaptionsTrack,
+  readCaptionsPreference,
+  toggledCaptionsTrack,
+  writeCaptionsPreference,
 } from "@minerva/core";
+import { bindMediaCaptions } from "@minerva/dom";
 import { injectScope } from "../../config/scope";
 import { MnHook } from "../../internal/hooks";
 import * as styles from "../../internal/styles";
@@ -58,6 +65,36 @@ export interface MediaPlayerVolumeDetail {
   muted: boolean;
 }
 
+/** A captions / subtitles file of a MediaPlayer */
+export interface MediaPlayerTrack {
+  /** URL of the WebVTT (.vtt) or SubRip (.srt) file; data: URLs work */
+  src: string;
+  /** Language of the track (BCP 47: "en", "fr-CA") */
+  srclang?: string;
+  /** Name shown in the captions menu */
+  label: string;
+  /** Kind of text track (default "subtitles") */
+  kind?: "subtitles" | "captions";
+  /** Shown when the user has not chosen captions yet */
+  default?: boolean;
+}
+
+/** Payload of `(trackChange)` */
+export interface MediaPlayerTrackChangeDetail {
+  /** Index of the chosen track in `tracks`, -1 for Off */
+  index: number;
+  /** The chosen track, null for Off */
+  track: MediaPlayerTrack | null;
+}
+
+const captionsStorage = (doc: Document) => {
+  try {
+    return doc.defaultView?.localStorage ?? null;
+  } catch {
+    return null;
+  }
+};
+
 const finiteDuration = (value: number) =>
   Number.isFinite(value) && value > 0 ? value : 0;
 
@@ -77,10 +114,13 @@ const cssSize = (value: number | string) =>
  * An `<audio>` / `<video>` element with themed custom controls: play /
  * pause, skip back / forward, a seek bar (role=slider, buffered range), the
  * time, mute and volume, the playback speed (cycle button), fullscreen and
- * picture-in-picture (video). Keyboard on the focused player: Space / K
- * play-pause, ← / → seek by 5 s, ↑ / ↓ volume, M mute, F fullscreen.
+ * picture-in-picture (video), and a captions menu when `tracks` are given
+ * (cues drawn by the player). Keyboard on the focused player: Space / K
+ * play-pause, ← / → seek by 5 s, ↑ / ↓ volume, M mute, F fullscreen,
+ * C captions on / off.
  * Outputs: `(timeUpdate)`, `(ended)`, `(played)`, `(paused)`,
- * `(loadedMetadata)`, `(mediaError)`, `(rateChange)`, `(volumeChange)`.
+ * `(loadedMetadata)`, `(mediaError)`, `(rateChange)`, `(volumeChange)`,
+ * `(trackChange)`.
  * Methods: `play()`, `pause()`, `seek(seconds)`, `element`.
  */
 @Component({
@@ -138,7 +178,17 @@ const cssSize = (value: number | string) =>
         (leavepictureinpicture)="pip.set(false)"
         (click)="controls() && toggle()"
         (dblclick)="controls() && toggleFullscreen()"
-      ></video>
+      >
+        @for (item of tracks(); track $index) {
+          <track
+            [attr.kind]="item.kind ?? 'subtitles'"
+            [attr.src]="item.src"
+            [attr.srclang]="item.srclang ?? null"
+            [attr.label]="item.label"
+            [attr.default]="!controls() && $index === trackIndex() ? '' : null"
+          />
+        }
+      </video>
     } @else {
       <audio
         #media
@@ -164,7 +214,17 @@ const cssSize = (value: number | string) =>
         (volumechange)="onVolumeChange($event)"
         (ratechange)="onRateChange($event)"
         (error)="onError($event)"
-      ></audio>
+      >
+        @for (item of tracks(); track $index) {
+          <track
+            [attr.kind]="item.kind ?? 'subtitles'"
+            [attr.src]="item.src"
+            [attr.srclang]="item.srclang ?? null"
+            [attr.label]="item.label"
+            [attr.default]="!controls() && $index === trackIndex() ? '' : null"
+          />
+        }
+      </audio>
     }
     @if (controls()) {
       @if (title()) {
@@ -180,6 +240,13 @@ const cssSize = (value: number | string) =>
           [class]="s.spinner"
           [attr.aria-label]="scope.t('mediaPlayer.loading')"
         ></span>
+      }
+      @if (isVideo() ? caption() !== "" : trackIndex() >= 0) {
+        <div mnHook="media-player" mnPart="captions" [class]="s.captions">
+          @if (caption()) {
+            <span [class]="s.cue">{{ caption() }}</span>
+          }
+        </div>
       }
       @if (failed()) {
         <div
@@ -327,6 +394,54 @@ const cssSize = (value: number | string) =>
             {{ rateText() }}
           </button>
         }
+        @if (tracks().length > 0) {
+          <span
+            #captionsControl
+            [class]="s.captionsControl"
+            (focusout)="onCaptionsFocusOut($event)"
+          >
+            <button
+              #captionsButton
+              type="button"
+              mnHook="media-player"
+              mnPart="button"
+              [class]="
+                trackIndex() >= 0 ? s.button + ' ' + s.captionsOn : s.button
+              "
+              [attr.aria-label]="scope.t('mediaPlayer.captions')"
+              aria-haspopup="menu"
+              [attr.aria-expanded]="captionsMenu()"
+              (click)="captionsMenu.set(!captionsMenu())"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path [attr.d]="icons.captions" />
+              </svg>
+            </button>
+            @if (captionsMenu()) {
+              <div
+                mnHook="media-player"
+                mnPart="captions-menu"
+                role="menu"
+                [class]="s.captionsMenu"
+                [attr.aria-label]="scope.t('mediaPlayer.captions')"
+                (keydown)="captionsMenuKeys($event)"
+              >
+                @for (option of captionsOptions(); track option.index) {
+                  <button
+                    type="button"
+                    role="menuitemradio"
+                    [class]="s.captionsOption"
+                    [attr.aria-checked]="option.index === trackIndex()"
+                    [attr.tabindex]="option.index === trackIndex() ? 0 : -1"
+                    (click)="chooseTrack(option.index); closeCaptionsMenu(true)"
+                  >
+                    {{ option.label }}
+                  </button>
+                }
+              </div>
+            }
+          </span>
+        }
         @if (isVideo() && pictureInPicture() && pipSupported()) {
           <button
             type="button"
@@ -398,7 +513,7 @@ export class MnMediaPlayer {
   readonly defaultMuted = input(false, { transform: booleanAttribute });
   /** How much of the media the browser loads before playback */
   readonly preload = input<MediaPlayerPreload>("metadata");
-  /** CORS mode of the media request */
+  /** CORS mode of the media request (cross-origin caption files need it too, plus CORS headers on their server) */
   readonly crossOrigin = input<MediaPlayerCrossOrigin | undefined>(undefined);
   /** Resume position in seconds, applied once when the metadata loads (and again when src changes) */
   readonly startTime = input<number | undefined, unknown>(undefined, {
@@ -421,6 +536,13 @@ export class MnMediaPlayer {
   readonly aspectRatio = input("16 / 9");
   /** Shows a picture-in-picture button (video, where the browser supports it) */
   readonly pictureInPicture = input(false, { transform: booleanAttribute });
+  /**
+   * Captions / subtitles (WebVTT or SRT files): rendered as <track> children
+   * and drawn by the player over the video (below the title for audio), with
+   * a captions menu in the control bar. The choice is remembered
+   * (localStorage); a `default` track shows until the user chooses
+   */
+  readonly tracks = input<readonly MediaPlayerTrack[]>([]);
   /** Accessible label of the player (default: title, else translated "Media player") */
   readonly ariaLabel = input<string | undefined>(undefined, {
     alias: "aria-label",
@@ -442,6 +564,8 @@ export class MnMediaPlayer {
   readonly rateChange = output<number>();
   /** The volume or the muted state changed */
   readonly volumeChange = output<MediaPlayerVolumeDetail>();
+  /** The user chose captions (index -1 and track null: Off) */
+  readonly trackChange = output<MediaPlayerTrackChangeDetail>();
 
   protected readonly s = styles.mediaPlayerStyles;
   protected readonly scope = injectScope();
@@ -464,6 +588,38 @@ export class MnMediaPlayer {
   protected readonly fullscreen = signal(false);
   protected readonly pip = signal(false);
   protected readonly pipSupported = signal(false);
+
+  // --- captions ------------------------------------------------------------
+  // The choice is kept as its remembered form (language / label / "off") so
+  // it survives a new `tracks` array; `index` disambiguates equal languages.
+  private readonly captionsChoice = signal<{
+    pref: string | null;
+    index: number;
+  }>({ pref: null, index: -1 });
+  protected readonly trackIndex = computed(() => {
+    const tracks = this.tracks();
+    const { pref, index } = this.captionsChoice();
+    const chosen = tracks[index];
+    return chosen && captionsPreference(chosen) === pref
+      ? index
+      : pickCaptionsTrack(tracks, pref);
+  });
+  private readonly tracksKey = computed(() =>
+    this.tracks()
+      .map((track) => `${track.src}\n${track.srclang}\n${track.label}`)
+      .join("\n\n"),
+  );
+  protected readonly caption = signal("");
+  protected readonly captionsMenu = signal(false);
+  protected readonly captionsOptions = computed(() => [
+    { index: -1, label: this.scope.t("mediaPlayer.captionsOff") },
+    ...this.tracks().map((track, index) => ({ index, label: track.label })),
+  ]);
+  private readonly captionsControl =
+    viewChild<ElementRef<HTMLElement>>("captionsControl");
+  private readonly captionsButton =
+    viewChild<ElementRef<HTMLButtonElement>>("captionsButton");
+  private lastTrack = -1;
 
   constructor() {
     let first = true;
@@ -509,6 +665,44 @@ export class MnMediaPlayer {
       destroyRef.onDestroy(() =>
         doc.removeEventListener("fullscreenchange", onChange),
       );
+      const stored = readCaptionsPreference(captionsStorage(doc));
+      if (stored) this.captionsChoice.set({ pref: stored, index: -1 });
+    });
+    // The selected track is loaded "hidden" and its active cue drawn here
+    afterRenderEffect((onCleanup) => {
+      const media = this.mediaRef()?.nativeElement;
+      this.tracksKey();
+      const index = this.trackIndex();
+      const crossOrigin = this.crossOrigin();
+      if (!media || !this.controls()) return;
+      const stop = untracked(() =>
+        bindMediaCaptions(
+          media,
+          this.tracks(),
+          index,
+          (text) => this.caption.set(text),
+          { crossOrigin },
+        ),
+      );
+      onCleanup(stop);
+    });
+    // The open menu focuses its checked item; a press outside closes it
+    afterRenderEffect((onCleanup) => {
+      const control = this.captionsControl()?.nativeElement;
+      if (!this.captionsMenu() || !control) return;
+      untracked(() =>
+        control
+          .querySelector<HTMLElement>('[aria-checked="true"]')
+          ?.focus({ preventScroll: true }),
+      );
+      const doc = control.ownerDocument;
+      const onPointerDown = (event: PointerEvent) => {
+        if (!control.contains(event.target as Node)) {
+          this.captionsMenu.set(false);
+        }
+      };
+      doc.addEventListener("pointerdown", onPointerDown);
+      onCleanup(() => doc.removeEventListener("pointerdown", onPointerDown));
     });
   }
 
@@ -673,6 +867,17 @@ export class MnMediaPlayer {
     const media = this.element;
     if (!action || !media) return;
     if (action.type === "fullscreen" && !this.isVideo()) return;
+    if (action.type === "captions") {
+      const next = toggledCaptionsTrack(
+        this.tracks(),
+        this.trackIndex(),
+        this.lastTrack,
+      );
+      if (next === null) return;
+      event.preventDefault();
+      this.chooseTrack(next);
+      return;
+    }
     event.preventDefault();
     switch (action.type) {
       case "toggle":
@@ -690,6 +895,58 @@ export class MnMediaPlayer {
       case "fullscreen":
         this.toggleFullscreen();
         break;
+    }
+  }
+
+  protected chooseTrack(index: number) {
+    const current = this.trackIndex();
+    if (index === current) return;
+    const track = this.tracks()[index] ?? null;
+    if (current >= 0) this.lastTrack = current;
+    this.captionsChoice.set({ pref: captionsPreference(track), index });
+    writeCaptionsPreference(
+      captionsStorage(this.host.nativeElement.ownerDocument),
+      track,
+    );
+    this.trackChange.emit({ index: track ? index : -1, track });
+  }
+
+  protected closeCaptionsMenu(refocus: boolean) {
+    this.captionsMenu.set(false);
+    if (refocus) this.captionsButton()?.nativeElement.focus();
+  }
+
+  protected onCaptionsFocusOut(event: FocusEvent) {
+    const next = event.relatedTarget as Node | null;
+    if (next && !(event.currentTarget as HTMLElement).contains(next)) {
+      this.captionsMenu.set(false);
+    }
+  }
+
+  protected captionsMenuKeys(event: KeyboardEvent) {
+    event.stopPropagation();
+    const menu = event.currentTarget as HTMLElement;
+    const items = Array.from(
+      menu.querySelectorAll<HTMLElement>('[role="menuitemradio"]'),
+    );
+    const at = items.indexOf(menu.ownerDocument.activeElement as HTMLElement);
+    let next = -1;
+    if (event.key === "ArrowDown") next = (at + 1) % items.length;
+    else if (event.key === "ArrowUp")
+      next = (at - 1 + items.length) % items.length;
+    else if (event.key === "Home") next = 0;
+    else if (event.key === "End") next = items.length - 1;
+    else if (event.key === "Escape") {
+      event.preventDefault();
+      this.closeCaptionsMenu(true);
+      return;
+    } else if (event.key === "Tab") {
+      this.captionsMenu.set(false);
+      return;
+    }
+    if (next >= 0) {
+      event.preventDefault();
+      items[next]?.focus();
     }
   }
 

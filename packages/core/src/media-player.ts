@@ -150,6 +150,8 @@ export const MEDIA_ICON_PATHS = {
     "M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z",
   pictureInPicture:
     "M19 11h-8v6h8v-6zm4 8V4.98C23 3.88 22.1 3 21 3H3c-1.1 0-2 .88-2 1.98V19c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2zm-2 .02H3V4.97h18v14.05z",
+  captions:
+    "M19 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-8 7H9.5v-.5h-2v3h2V13H11v1c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-4c0-.55.45-1 1-1h3c.55 0 1 .45 1 1v1zm7 0h-1.5v-.5h-2v3h2V13H18v1c0 .55-.45 1-1 1h-3c-.55 0-1-.45-1-1v-4c0-.55.45-1 1-1h3c.55 0 1 .45 1 1v1z",
 } as const;
 
 /** Name of a control bar icon. */
@@ -161,11 +163,13 @@ export type MediaKeyAction =
   | { type: "seek"; delta: number }
   | { type: "volume"; delta: number }
   | { type: "mute" }
-  | { type: "fullscreen" };
+  | { type: "fullscreen" }
+  | { type: "captions" };
 
 /**
  * Space / K play-pause, ← / → seek by 5 s, ↑ / ↓ volume, M mute,
- * F fullscreen. `null` for other keys (and modified keys).
+ * F fullscreen, C captions on / off. `null` for other keys (and modified
+ * keys).
  */
 export function mediaKeyAction(
   key: string,
@@ -192,6 +196,9 @@ export function mediaKeyAction(
     case "f":
     case "F":
       return { type: "fullscreen" };
+    case "c":
+    case "C":
+      return { type: "captions" };
     default:
       return null;
   }

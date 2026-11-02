@@ -3,7 +3,8 @@
     "event": "The React callback belongs to a React-only API or is named after the React convention while the element dispatches the documented minerva-* event (onDropdownVisibleChange / onClose -> minerva-open-change, onOptionClick / onItemSelect -> minerva-select, Pagination onChange -> minerva-page-change, CodeBlock onCopied -> minerva-copy with detail.success, onCopied being named so it does not replace the native onCopy); onPaletteChange follows ConfigProvider's setPalette(), which <minerva-config> does not have (the palette is its attribute).",
     "react-only": "React composition or styling hooks with no custom-element equivalent (ReactNode props without a slot of the same name are slots named differently, e.g. startIcon -> slot start; per-part style objects are ::part() selectors; data props that are children elements in HTML, e.g. KeyValueEditor entries -> value).",
     "wc-only": "Element vocabulary: string attributes replacing ReactNode props (heading, label, description, text), attributes replacing React context / provider values (locale, dialogRole, closeLabel...), state the element reflects for styling (collapsed, mobile, open on items), native-like properties React gets from the DOM element it renders (required, disabled, readOnly, placeholder, minLength, maxLength, autocomplete, href, target, rel, download, type, value).",
-    "date-picker": "DatePicker uses hide-clear-button as the HTML boolean inverse of React clearable. The host id identifies the custom element and its associated label; React id identifies the inner input. The element additionally exposes open for imperative popup control and a read-only valueAsDate for local Date conversion."
+    "date-picker": "DatePicker uses hide-clear-button as the HTML boolean inverse of React clearable. The host id identifies the custom element and its associated label; React id identifies the inner input. The element additionally exposes open for imperative popup control and a read-only valueAsDate for local Date conversion.",
+    "code-block": "CodeBlock's clickable-marks gives the marks their click affordance, which React derives from an onMarkClick handler (an element cannot see its event listeners)."
   },
   "differences": {
     "minerva-alert": ["react-only expanded", "react-only role", "react-only rounded", "wc-only alertRole", "wc-only collapsed", "wc-only heading", "wc-only square"],
@@ -66,7 +67,7 @@
       "wc-only instance",
       "wc-only options"
     ],
-    "minerva-code-block": ["event onCopied", "react-only tabIndex", "wc-only code", "wc-only text"],
+    "minerva-code-block": ["event onCopied", "react-only tabIndex", "wc-only clickableMarks", "wc-only code", "wc-only text"],
     "minerva-code-editor": ["wc-only name", "wc-only required"],
     "minerva-command-dialog": ["react-only title", "wc-only label"],
     "minerva-config": ["event onPaletteChange", "react-only persist", "react-only preset", "wc-only design", "wc-only root"],
@@ -92,6 +93,7 @@
     "minerva-icon-button": ["react-only icon", "wc-only toggle", "wc-only tooltipPlacement"],
     "minerva-input": ["wc-only autocomplete", "wc-only inputmode"],
     "minerva-kanban-board": ["react-only id"],
+    "minerva-kanban-card": ["react-only id"],
     "minerva-kanban-column": ["react-only id", "wc-only emptyText", "wc-only heading"],
     "minerva-key-value-editor": ["react-only entries", "wc-only name", "wc-only required", "wc-only value"],
     "minerva-line-3d-chart": ["wc-only instance", "wc-only options"],
@@ -126,7 +128,7 @@
       "wc-only side",
       "wc-only sideOffset"
     ],
-    "minerva-quadrant-chart": ["react-only accessiblePoints", "react-only quadrantContent", "wc-only dragPoints", "wc-only instance", "wc-only options"],
+    "minerva-quadrant-chart": ["react-only quadrantContent", "wc-only dragPoints", "wc-only instance", "wc-only options"],
     "minerva-radar-chart": ["react-only dots", "wc-only instance", "wc-only options"],
     "minerva-radial-bar-chart": [
       "react-only gap",

@@ -16,7 +16,7 @@ import {
   styleElement,
   swatch,
 } from "./dom";
-import { hoverRect } from "./hover-rect";
+import { hoverRect, tooltipObstacles } from "./hover-rect";
 import {
   buildItems,
   cellStyleKey,
@@ -74,7 +74,12 @@ import {
   watchTheme,
   type ChartTheme,
 } from "./theme";
-import { positionTooltip, prefersReducedMotion } from "./tooltip";
+import {
+  positionTooltip,
+  prefersReducedMotion,
+  releaseTooltip,
+  themeTooltip,
+} from "./tooltip";
 import type {
   ChartEventMap,
   ChartHoverEvent,
@@ -128,6 +133,7 @@ export const createChart = (
 
   let options = initialOptions;
   let theme: ChartTheme = readTheme(dom.root, options.palette);
+  themeTooltip(dom.tooltip, theme);
   let model: ChartModel;
   let view: ChartView = { x: [0, 1], y: [0, 1] };
   let zoomed = false;
@@ -750,10 +756,11 @@ export const createChart = (
         shownTip = { event: hover.event, model, yTicks, width: w, height: h };
     }
     // off the hovered marks: beside them, above / below the rows of
-    // horizontal charts (Gantt tasks)
+    // horizontal charts (Gantt tasks), off the other bars of those
     positionTooltip(tip, dom.stage, {
       anchor: { x: hover.anchorX, y: hover.anchorY },
       avoid: hoverRect(model, sc, hover.event),
+      obstacles: tooltipObstacles(model, sc),
       prefer: sc.horizontal ? "vertical" : "side",
       size: { width: w, height: h },
       animate: true,
@@ -833,6 +840,12 @@ export const createChart = (
           continue;
         }
         if (mark.kind === "bar") {
+          const mixed = model.series.some(
+            (series) =>
+              !series.hidden &&
+              (series.type === "line" || series.type === "area"),
+          );
+          // Keep the original lines visible: an opaque lifted bar would mask them.
           // the bar in its color, thicker (never longer), lifted and ringed
           if (!liftClip) {
             liftClip = styleElement(doc.createElement("div"), {
@@ -841,7 +854,7 @@ export const createChart = (
             }) as HTMLDivElement;
             dom.lift.appendChild(liftClip);
           }
-          if (!veiled) {
+          if (!veiled && !mixed) {
             veiled = true;
             if (!veil) {
               veil = styleElement(doc.createElement("div"), {
@@ -892,6 +905,7 @@ export const createChart = (
                     Math.max(0, (Math.min(r.width, r.height) - 2) / 4),
                   ),
                 };
+          el.dataset.hoverMark = "bar";
           const shadow = ring ? liftShadow(ring, 1.5, null) : "none";
           styleElement(el, {
             left: `${r.x - plot.x}px`,
@@ -900,9 +914,11 @@ export const createChart = (
             height: `${r.height}px`,
             borderRadius: `${mark.radius}px`,
             filter: "brightness(1.08) saturate(1.08)",
-            background: mark.backdrop
-              ? `linear-gradient(${mark.color}, ${mark.color}), ${PLOT_BACKGROUND}`
-              : mark.color,
+            background: mixed
+              ? "transparent"
+              : mark.backdrop
+                ? `linear-gradient(${mark.color}, ${mark.color}), ${PLOT_BACKGROUND}`
+                : mark.color,
             boxShadow: shadow,
           });
           if (fresh) {
@@ -1379,6 +1395,7 @@ export const createChart = (
     // keep the GPU buffers unless a color really changed
     if (themeColorsChanged(theme, next)) themeVersion++;
     theme = next;
+    themeTooltip(dom.tooltip, theme);
     rebuild();
   };
   const unwatchTheme = watchTheme(refreshTheme);
@@ -1510,6 +1527,7 @@ export const createChart = (
       stage.removeEventListener("wheel", onWheel);
       renderer?.destroy();
       renderer = null;
+      releaseTooltip(dom.tooltip);
       dom.root.remove();
       for (const key of Object.keys(listeners)) {
         delete (listeners as Record<string, unknown>)[key];

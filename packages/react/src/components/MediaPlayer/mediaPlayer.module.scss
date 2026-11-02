@@ -8,6 +8,9 @@
 // @css-var --media-player-bar-color Text and icon color of the audio bar (defaults to --text-color)
 // @css-var --media-player-button-size Size of the control buttons (defaults to the density's small control height)
 // @css-var --media-player-track-height Thickness of the seek and volume tracks (defaults to 4px)
+// @css-var --media-player-captions-background Background of the caption text (defaults to rgb(0 0 0 / 75%) over a video, none for audio)
+// @css-var --media-player-captions-color Color of the caption text (defaults to white over a video, the bar color for audio)
+// @css-var --media-player-captions-font-size Font size of the caption text (defaults to --font-size-lg over a video, --font-size-md for audio)
 .mediaPlayer {
   display: block;
   position: relative;
@@ -39,6 +42,8 @@
 }
 
 .audio {
+  // The captions menu opens above the bar, outside the player.
+  overflow: visible;
   border: 1px solid var(--border-color);
   background: var(--media-player-bar-background, var(--surface-color));
   color: var(--media-player-bar-color, var(--text-color));
@@ -103,6 +108,10 @@
   .title {
     opacity: 0;
   }
+
+  .captions {
+    bottom: var(--space-4);
+  }
 }
 
 @media (hover: none) {
@@ -110,6 +119,131 @@
     .controls,
     .title {
       opacity: 1;
+    }
+
+    .captions {
+      bottom: calc(var(--media-player-button-size, var(--control-height-sm)) * 2 + var(--space-10));
+    }
+  }
+}
+
+// Captions: drawn by the player (the <track> is "hidden") so they look the
+// same in every browser; over the video above the control bar, below the
+// title for audio.
+.captions {
+  box-sizing: border-box;
+  pointer-events: none;
+  text-align: center;
+  white-space: pre-line;
+}
+
+.cue {
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding: 0.1em 0.4em;
+  border-radius: var(--radius-sm);
+  line-height: var(--line-height-base);
+}
+
+.video .captions {
+  position: absolute;
+  right: var(--space-4);
+  bottom: calc(var(--media-player-button-size, var(--control-height-sm)) * 2 + var(--space-10));
+  left: var(--space-4);
+  font-size: var(--media-player-captions-font-size, var(--font-size-lg));
+  transition: bottom var(--transition-base);
+
+  .cue {
+    background: var(--media-player-captions-background, rgb(0 0 0 / 75%));
+    color: var(--media-player-captions-color, #fff);
+  }
+}
+
+.audio .captions {
+  min-height: calc(1.5em + var(--space-2));
+  padding: var(--space-2) var(--space-3) 0;
+  font-size: var(--media-player-captions-font-size, var(--font-size-md));
+
+  .cue {
+    background: var(--media-player-captions-background, transparent);
+    color: var(--media-player-captions-color, inherit);
+  }
+}
+
+.captionsControl {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+}
+
+// The captions button is underlined while captions show.
+.captionsOn {
+  position: relative;
+
+  &::after {
+    position: absolute;
+    right: 25%;
+    bottom: 3px;
+    left: 25%;
+    height: 2px;
+    border-radius: 999px;
+    background: var(--media-player-accent, var(--primary-color));
+    content: "";
+  }
+}
+
+.captionsMenu {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + var(--space-1));
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-width: 9rem;
+  max-height: 12rem;
+  overflow-y: auto;
+  padding: var(--space-1);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--surface-elevated-color);
+  box-shadow: var(--shadow-md);
+  color: var(--text-color);
+}
+
+.captionsOption {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--control-height-sm);
+  padding: 0 var(--space-2) 0 var(--space-6);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--hover-color);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: -2px;
+  }
+
+  &[aria-checked="true"] {
+    position: relative;
+    font-weight: var(--font-weight-semibold);
+
+    &::before {
+      position: absolute;
+      left: var(--space-2);
+      content: "✓";
     }
   }
 }
@@ -282,7 +416,8 @@
 @media (prefers-reduced-motion: reduce) {
   .button,
   .video .controls,
-  .video .title {
+  .video .title,
+  .video .captions {
     transition: none;
   }
 

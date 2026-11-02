@@ -16,7 +16,7 @@
     },
     "triage": {
       "title": "徽标、计数与键盘移动",
-      "description": "每个象限带有徽标（badge）、第二行说明（description）以及任务数和总时长（showCounts 传入函数），全部由图表绘制。点击任务会在点外画一个圈（selectedIndex）。键盘用户按 Tab 进入隐藏的任务列表：获得焦点的点显示焦点环，Enter 选中，Shift + 方向键通过 onPointDrop 把任务移到相邻象限，并在 live region 中播报。"
+      "description": "象限带徽标、说明和数量统计。悬停、选中和键盘聚焦时显示任务信息卡；拖动实时预览位置。Tab 进入任务列表，Enter 选中，Shift + 方向键移动到相邻象限，并通过 live region 播报。"
     },
     "quadrant-header": {
       "title": "自定义象限标题",
@@ -308,10 +308,11 @@
       "onPointDrag": "拖动点的每次移动都会调用，参数为点、索引和指针下方的象限；松开前点不会移动（移动请在 onPointDrop 中处理）",
       "onQuadrantClick": "点击象限的空白区域时调用，参数为象限和数据位置",
       "onPointDrop": "拖动的点被释放时调用，参数为点、索引和放置目标；设置后点即可拖动（需更新 points 才会移动）",
+      "renderPointActions": "显示在选中或聚焦的点旁边的 React 操作（如编辑 / 删除按钮），位于画布命中区域之外；参数为该点及其序号",
       "renderTooltip": "某个点的提示框 React 内容",
       "quadrantContent": "放在每个象限上方的 React 内容（如添加按钮）；只有这些内容接收指针事件",
       "renderQuadrantHeader": "每个象限外侧角的 React 标题（上方象限贴顶部，下方象限贴底部）；接收象限和 { count, points, indices, region }，替换绘制的标题、徽标、说明和计数",
-      "accessiblePoints": "为键盘和读屏用户在每个象限生成视觉隐藏的按钮列表：Enter / 空格调用 onPointClick，Shift + 方向键把点移到相邻象限（onPointDrop），获得焦点的点显示焦点环",
+      "accessiblePoints": "为键盘和读屏用户在每个象限生成视觉隐藏的按钮列表：方向键在点之间切换，Enter / 空格调用 onPointClick，Shift + 方向键把点移到相邻象限（onPointDrop，并在实时区域播报），获得焦点的点显示焦点环并通过 onHover 上报。Vue、Angular 和 Web Components（no-accessible-points）渲染同样的层；React Native 为每个点提供“移到…”无障碍操作，Taro、uni-app 和微信小程序提供带“移到…”按钮的点列表",
       "getPointProps": "放在每个点上的隐形锚点的额外属性（如 data-testid）；每个锚点都有 data-point-index、data-label 和类名 minerva-chart-quadrant-point"
     },
     "QuadrantConfig": {
@@ -406,7 +407,8 @@
       "props": {
         "hideTicks": "隐藏坐标轴的数值刻度（只保留矩阵）",
         "hideLabels": "隐藏点旁边的标签",
-        "dragPoints": "允许用户拖动点（移动时触发 minerva-point-drag，松开时触发 minerva-point-drop；更新 points 来移动它们）",
+        "dragPoints": "允许用户拖动点（移动时触发 minerva-point-drag，松开时触发 minerva-point-drop；更新 points 来移动它们）；同时启用键盘 Shift + 方向键移动",
+        "noAccessiblePoints": "不渲染视觉隐藏的点列表（方向键在点之间切换、Enter 点击、Shift + 方向键移动聚焦的点、焦点环）",
         "height": "图表高度（包含图例）：像素值或任意 CSS 长度",
         "options": "其他引擎选项（坐标轴、图例、提示框、调色板、格式化……），与元素自身的属性合并；仅作为属性设置",
         "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null"
@@ -416,7 +418,7 @@
         "minerva-point-double-click": "同一个点被快速点击了两次；detail：{ point, index }",
         "minerva-quadrant-click": "点击了某个象限的空白区域；detail：{ quadrant, x, y }",
         "minerva-point-drag": "正在拖动一个点（每次移动都会触发，松开之前）；detail：{ point, index, x, y, quadrant }",
-        "minerva-point-drop": "释放了被拖动的点；detail：{ point, index, x, y, quadrant }",
+        "minerva-point-drop": "释放了被拖动的点，或用 Shift + 方向键移动了聚焦的点；detail：{ point, index, x, y, quadrant }",
         "minerva-hover": "悬停（或键盘聚焦）的数据点发生变化；detail：{ x, xLabel, items }，无悬停时为 null",
         "minerva-plot-click": "点击了绘图区中没有数据点的位置；detail：{ x, y }（数据坐标）",
         "minerva-zoom": "用户进行了缩放或平移；detail：{ x, y }（可见范围）",

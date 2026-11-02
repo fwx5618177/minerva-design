@@ -14,6 +14,7 @@
 // unterminated one is consumed once), keeping the work roughly linear. Input
 // longer than 200,000 characters is returned as plain text. Grammars are
 // built lazily, on first use of each language.
+import { detectCodeLanguage } from "./detect";
 import {
   supportedCodeLanguages,
   type CodeLanguage,
@@ -76,8 +77,15 @@ const ALIASES =
  * Canonical name of a language or alias (`"ts"` -> `"typescript"`,
  * `"yml"` -> `"yaml"`, `"language-js"` -> `"javascript"`); `"plain"` for
  * unknown or missing languages.
+ *
+ * `"auto"` stands for the language detected from `code`
+ * (`detectCodeLanguage`); without `code` it is `"plain"`. `code` is ignored
+ * for any other language.
  */
-export function normalizeCodeLanguage(language?: string | null): CodeLanguage {
+export function normalizeCodeLanguage(
+  language?: string | null,
+  code?: string,
+): CodeLanguage {
   const name =
     typeof language === "string"
       ? language
@@ -85,6 +93,9 @@ export function normalizeCodeLanguage(language?: string | null): CodeLanguage {
           .toLowerCase()
           .replace(/^language-/, "")
       : "";
+  if (name === "auto") {
+    return typeof code === "string" ? detectCodeLanguage(code) : "plain";
+  }
   for (const group of ALIASES.split("|")) {
     const names = group.split(" ");
     if (names.includes(name)) return names[0] as CodeLanguage;
@@ -118,7 +129,8 @@ export function splitHighlightLines(
 
 /**
  * Splits `code` into highlighted tokens for `language` (any name accepted by
- * `normalizeCodeLanguage`). The token texts concatenate to `code` exactly.
+ * `normalizeCodeLanguage`; `"auto"` detects it from the code). The token
+ * texts concatenate to `code` exactly.
  * Never throws: unknown languages, very large input (> 200,000 characters)
  * and unexpected failures give a single plain token.
  */
@@ -130,7 +142,7 @@ export function highlightCode(
   try {
     text = typeof code === "string" ? code : String(code ?? "");
     if (!text) return [];
-    const lang = normalizeCodeLanguage(language);
+    const lang = normalizeCodeLanguage(language, text);
     if (lang !== "plain" && text.length <= MAX_LENGTH) {
       const out: HighlightToken[] = [];
       lex(text, lang, out, 0);

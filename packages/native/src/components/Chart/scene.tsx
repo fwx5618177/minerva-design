@@ -18,9 +18,11 @@ import {
   annotationRect,
   annotationTextBox,
   annotationTitleLayout,
+  CANVAS_TOOLTIP_ALPHA,
   liftedBarRect,
   scenePrimitives,
   toCss,
+  tooltipColors,
   type ChartPrimitive,
   type ChartRect,
   type ChartScene,
@@ -1390,16 +1392,19 @@ export function drawHover(
 }
 
 /** Look of the tooltips (default and `renderTooltip` content) */
-export const tooltipCard = (scene: ChartScene): ViewStyle => ({
-  position: "absolute",
-  // translucent: the marks behind stay visible (no backdrop blur on native)
-  backgroundColor: css(scene.theme.background, 0.9),
-  borderColor: css(scene.theme.axis),
-  borderWidth: 1,
-  borderRadius: 8,
-  shadowColor: "#0f172a",
-  shadowOpacity: 0.18,
-  shadowRadius: 8,
-  shadowOffset: { width: 0, height: 6 },
-  elevation: 6,
-});
+export const tooltipCard = (scene: ChartScene): ViewStyle => {
+  // translucent like every chart tooltip (no backdrop blur on native)
+  const colors = tooltipColors(scene.theme, CANVAS_TOOLTIP_ALPHA);
+  return {
+    position: "absolute",
+    backgroundColor: colors.background,
+    borderColor: colors.border,
+    borderWidth: 1,
+    borderRadius: 8,
+    shadowColor: "#0f172a",
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 6,
+  };
+};

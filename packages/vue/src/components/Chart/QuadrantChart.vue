@@ -1,6 +1,14 @@
 <script setup lang="ts">
-import { getCurrentInstance, type PropType } from "vue";
 import {
+  getCurrentInstance,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+  type PropType,
+} from "vue";
+import {
+  createQuadrantPointLayer,
   quadrantChartOptions,
   quadrantOf,
   type ChartDragEvent,
@@ -11,6 +19,8 @@ import {
   type QuadrantConfig,
   type QuadrantCorner,
   type QuadrantPoint,
+  type QuadrantPointLayer,
+  type QuadrantPointLayerOptions,
   type QuadrantRegions,
 } from "minerva-design/charts/core";
 import { engineOptions, useCartesianChart } from "./cartesian";
@@ -68,6 +78,13 @@ const props = defineProps({
   },
   /** Indices of the selected points */
   selectedIndices: Array as PropType<readonly number[]>,
+  /**
+   * Renders a visually hidden list of the points per quadrant: screen
+   * readers can reach every point; arrows move between them, Enter clicks
+   * and Shift + arrows move the focused point to the neighbouring quadrant
+   * (`pointDrop`, with a `pointDrop` listener)
+   */
+  accessiblePoints: { type: Boolean, default: true },
 });
 const emit = defineEmits<{
   /** The hovered (or keyboard-focused) point changed (`null`: none) */
@@ -103,65 +120,117 @@ const dropAt = (event: ChartDragEvent): QuadrantDropTarget => ({
   y: event.y,
   quadrant: quadrantOf(geometry(), event.x, event.y),
 });
-const { setContainer, rootStyle, handle } = useCartesianChart(
-  props,
-  () =>
-    quadrantChartOptions(
-      {
-        ...geometry(),
-        points: raw(props.points).map(raw),
-        quadrants: raw(props.quadrants),
-        xLabel: props.xLabel,
-        yLabel: props.yLabel,
-        axisLabels: raw(props.axisLabels),
-        showTicks: props.showTicks,
-        showLabels: props.showLabels,
-        pointSize: props.pointSize,
-        name: props.name,
-        draggable:
-          props.draggable ??
-          !!(vnode?.props?.onPointDrop || vnode?.props?.onPointDrag),
-        showCounts: props.showCounts,
-        selectedIndex: props.selectedIndex,
-        selectedIndices: raw(props.selectedIndices),
-      },
-      (({ series: _series, ...rest }) => rest)(engineOptions(props, [])),
-    ),
-  {
-    hover: (event) => emit("hover", event),
-    click: (event) => {
-      const index = event.items[0]?.index;
-      const point = index === undefined ? undefined : props.points[index];
-      if (!point || index === undefined) return;
-      const now = Date.now();
-      const double =
-        lastClick?.index === index && now - lastClick.time < DOUBLE_CLICK_MS;
-      lastClick = double ? null : { index, time: now };
-      emit("pointClick", point, index);
-      if (double) emit("pointDoubleClick", point, index);
+// keyboard-focused point of the accessible layer (drawn with a focus ring)
+const focusedIndex = ref<number | null>(null);
+const root = ref<HTMLElement | null>(null);
+const build = () =>
+  quadrantChartOptions(
+    {
+      ...geometry(),
+      points: raw(props.points).map(raw),
+      quadrants: raw(props.quadrants),
+      xLabel: props.xLabel,
+      yLabel: props.yLabel,
+      axisLabels: raw(props.axisLabels),
+      showTicks: props.showTicks,
+      showLabels: props.showLabels,
+      pointSize: props.pointSize,
+      name: props.name,
+      draggable:
+        props.draggable ??
+        !!(vnode?.props?.onPointDrop || vnode?.props?.onPointDrag),
+      showCounts: props.showCounts,
+      selectedIndex: props.selectedIndex,
+      selectedIndices: raw(props.selectedIndices),
     },
-    plotClick: (at) =>
-      emit("quadrantClick", quadrantOf(geometry(), at.x, at.y), {
-        x: at.x,
-        y: at.y,
-      }),
-    drag: (event) => {
-      const point = props.points[event.item.index];
-      if (point) emit("pointDrag", point, event.item.index, dropAt(event));
-    },
-    drop: (event) => {
-      const point = props.points[event.item.index];
-      if (point) emit("pointDrop", point, event.item.index, dropAt(event));
-    },
-    zoom: (view) => emit("zoom", view),
-    renderer: (renderer) => emit("rendererChange", renderer),
+    (({ series: _series, ...rest }) => rest)(engineOptions(props, [])),
+    { focusedIndex: props.accessiblePoints ? focusedIndex.value : null },
+  );
+const { setContainer, rootStyle, handle } = useCartesianChart(props, build, {
+  hover: (event) => emit("hover", event),
+  click: (event) => {
+    const index = event.items[0]?.index;
+    const point = index === undefined ? undefined : props.points[index];
+    if (!point || index === undefined) return;
+    const now = Date.now();
+    const double =
+      lastClick?.index === index && now - lastClick.time < DOUBLE_CLICK_MS;
+    lastClick = double ? null : { index, time: now };
+    emit("pointClick", point, index);
+    if (double) emit("pointDoubleClick", point, index);
   },
-);
+  plotClick: (at) =>
+    emit("quadrantClick", quadrantOf(geometry(), at.x, at.y), {
+      x: at.x,
+      y: at.y,
+    }),
+  drag: (event) => {
+    const point = props.points[event.item.index];
+    if (point) emit("pointDrag", point, event.item.index, dropAt(event));
+  },
+  drop: (event) => {
+    const point = props.points[event.item.index];
+    if (point) emit("pointDrop", point, event.item.index, dropAt(event));
+  },
+  zoom: (view) => emit("zoom", view),
+  renderer: (renderer) => emit("rendererChange", renderer),
+});
+
+// the accessible point layer (shared with the other DOM renderers)
+let layer: QuadrantPointLayer | null = null;
+const layerOptions = (): QuadrantPointLayerOptions => ({
+  config: {
+    ...geometry(),
+    points: raw(props.points).map(raw),
+    quadrants: raw(props.quadrants),
+    xLabel: props.xLabel,
+    yLabel: props.yLabel,
+    name: props.name,
+  },
+  locale: props.locale,
+  movable: !!vnode?.props?.onPointDrop && props.draggable !== false,
+  selected: [
+    ...(props.selectedIndices ?? []),
+    ...(props.selectedIndex !== undefined && props.selectedIndex !== null
+      ? [props.selectedIndex]
+      : []),
+  ],
+  onFocusChange: (index, hover) => {
+    focusedIndex.value = index;
+    emit("hover", hover);
+  },
+  onClick: (index) => {
+    const point = props.points[index];
+    if (point) emit("pointClick", point, index);
+  },
+  onMove: (index, target) => {
+    const point = props.points[index];
+    if (point) emit("pointDrop", point, index, target);
+  },
+});
+const syncLayer = () => {
+  if (!props.accessiblePoints) {
+    layer?.destroy();
+    layer = null;
+    focusedIndex.value = null;
+  } else if (layer) layer.update(layerOptions());
+  else if (root.value)
+    layer = createQuadrantPointLayer(root.value, layerOptions());
+};
+onMounted(syncLayer);
+watch(() => ({ ...props }), syncLayer, { flush: "post" });
+// the focus ring is not a prop: redraw on its own
+watch(focusedIndex, () => handle.getInstance()?.setOptions(build()));
+onBeforeUnmount(() => {
+  layer?.destroy();
+  layer = null;
+});
 defineExpose(handle);
 </script>
 
 <template>
   <div
+    ref="root"
     class="mn-chart mn-quadrant-chart"
     data-minerva="chart"
     :style="rootStyle"

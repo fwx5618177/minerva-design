@@ -443,6 +443,8 @@ export interface QuadrantLabels {
   moved: string;
   /** Accessible description of the points that can be moved */
   moveHint: string;
+  /** Name of the action moving a point to another quadrant (touch screen readers, mini-programs) */
+  moveTo: string;
 }
 
 const QUADRANT_LABELS: LabelDictionary<QuadrantLabels> = {
@@ -454,6 +456,7 @@ const QUADRANT_LABELS: LabelDictionary<QuadrantLabels> = {
     point: "Point {n}",
     moved: "{point} moved to {quadrant}",
     moveHint: "Shift + arrow keys move it to another quadrant",
+    moveTo: "Move to {quadrant}",
   },
   zh: {
     topLeft: "左上象限",
@@ -463,6 +466,7 @@ const QUADRANT_LABELS: LabelDictionary<QuadrantLabels> = {
     point: "点 {n}",
     moved: "{point} 已移到{quadrant}",
     moveHint: "Shift + 方向键可移到其他象限",
+    moveTo: "移到{quadrant}",
   },
   ja: {
     topLeft: "左上の象限",
@@ -472,6 +476,7 @@ const QUADRANT_LABELS: LabelDictionary<QuadrantLabels> = {
     point: "点 {n}",
     moved: "{point} を{quadrant}に移動しました",
     moveHint: "Shift + 矢印キーで別の象限に移動できます",
+    moveTo: "{quadrant}に移動",
   },
   fr: {
     topLeft: "Quadrant en haut à gauche",
@@ -481,6 +486,7 @@ const QUADRANT_LABELS: LabelDictionary<QuadrantLabels> = {
     point: "Point {n}",
     moved: "{point} déplacé vers {quadrant}",
     moveHint: "Maj + flèches pour le déplacer vers un autre quadrant",
+    moveTo: "Déplacer vers {quadrant}",
   },
 };
 

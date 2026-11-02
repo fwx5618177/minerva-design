@@ -4448,7 +4448,7 @@
   "MnQuadrantChart": {
     "name": "MnQuadrantChart",
     "source": "src/components/charts/cartesian.ts",
-    "description": "Four-quadrant matrix (priority matrix, Eisenhower, BCG, ...): tinted\nquadrants with titles, dividers, and labelled dots placed without\noverlapping labels. With `draggable`, dots can be dragged to another\nquadrant (`pointDrop`; update `points` to move them).",
+    "description": "Four-quadrant matrix (priority matrix, Eisenhower, BCG, ...): tinted\nquadrants with titles, dividers, and labelled dots placed without\noverlapping labels. With `draggable`, dots can be dragged to another\nquadrant (`pointDrop`; update `points` to move them).\n\nA visually hidden list of the dots per quadrant (`accessiblePoints`) lets\nscreen readers and keyboards reach every dot: arrows move between them,\nEnter clicks (`pointClick`) and, with `draggable`, Shift + arrows move the\nfocused dot to the neighbouring quadrant (`pointDrop`, announced in a live\nregion). The focused dot gets a focus ring and is reported by `hover`.",
     "members": [
       {
         "name": "height",
@@ -4710,6 +4710,14 @@
         "type": "readonly number[] | undefined",
         "required": false,
         "description": "Indices of the selected points"
+      },
+      {
+        "name": "accessiblePoints",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Renders a visually hidden list of the points per quadrant: screen\nreaders can reach every point; arrows move between them, Enter clicks\nand Shift + arrows move the focused point to the neighbouring quadrant\n(`pointDrop`, with `draggable`)"
       },
       {
         "name": "pointClick",
@@ -10352,7 +10360,7 @@
         "type": "string",
         "required": false,
         "default": "\"text\"",
-        "description": ""
+        "description": "Language of the code (highlighted syntax, `class=\"language-<x>\"` /\n`data-language` of the <code>); `auto` detects it from `code`\n(`detectCodeLanguage`, \"plain\" when unsure), shown by the label too"
       },
       {
         "name": "label",
@@ -10395,11 +10403,40 @@
         "description": "Shows the language as a small label in the top-right corner"
       },
       {
+        "name": "marks",
+        "kind": "input",
+        "type": "readonly CodeMark[] | null | undefined",
+        "required": false,
+        "description": "Character ranges to mark (saved highlights, annotations), rendered as\n`<mark data-part=\"code-mark\">` over the syntax highlighting (the copied\ntext stays the raw code). `start` / `end` are UTF-16 offsets into\n`code`, clamped to it; empty ranges are ignored. Marks may cross tokens\nand lines (with showLineNumbers a mark is cut at each line break). Where\nmarks overlap, the later one in the array wins. `color`: a theme color\nname (a translucent tint) or any CSS color (default: translucent\nyellow, `--code-block-mark-bg`)"
+      },
+      {
+        "name": "clickableMarks",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Gives the marks a click affordance (pointer cursor, hover underline): set it when listening to `markClick`"
+      },
+      {
+        "name": "markClick",
+        "kind": "output",
+        "type": "CodeBlockMarkClickEvent",
+        "required": false,
+        "description": "A mark was clicked (not at the end of a text selection drag): the item of `marks` (the topmost where they overlap) and the click"
+      },
+      {
         "name": "copyError",
         "kind": "output",
         "type": "unknown",
         "required": false,
         "description": ""
+      },
+      {
+        "name": "getSelectionRange",
+        "kind": "method",
+        "type": "(selection?: Selection | AbstractRange | null) => CodeSelectionRange | null",
+        "required": false,
+        "description": "Offsets in `code` of the user's selection inside the code (to save it\nas a mark), `null` when nothing of the code is selected; `selection`\n(default: the document's) may be a Selection or a Range"
       },
       {
         "name": "copy",
@@ -10595,7 +10632,7 @@
   "MnKanbanBoard": {
     "name": "MnKanbanBoard",
     "source": "src/components/data/kanban-board.ts",
-    "description": "A horizontally scrolling board of status columns (`mn-kanban-column`),\nequal-width by default (`columnWidth`, 18rem). `fill` stretches the\ncolumns equally when they fit; `height` / `maxHeight` bound the board so\nthat the column bodies scroll vertically. The host is a labelled\n`role=\"region\"` and a tab stop, so the keyboard can scroll it; on narrow\nscreens the columns keep their width and snap while scrolling.\n\nDrag and drop is not built in: move cards with your own actions (a menu,\nbuttons) and update the columns' data.",
+    "description": "A horizontally scrolling board of status columns (`mn-kanban-column`),\nequal-width by default (`columnWidth`, 18rem). `fill` stretches the\ncolumns equally when they fit; `height` / `maxHeight` bound the board so\nthat the column bodies scroll vertically. The host is a labelled\n`role=\"region\"` and a tab stop, so the keyboard can scroll it; on narrow\nscreens the columns keep their width and snap while scrolling.\n\n`draggable` lets the `mn-kanban-card` children of keyed columns (`value`)\nbe dragged with the mouse, touch (long press) or the keyboard. The board\nis controlled: it emits each move (`cardMove`) and the app updates the\ncolumns' data.",
     "members": [
       {
         "name": "columnWidth",
@@ -10634,6 +10671,28 @@
         "description": "Maximum height of the board: the column bodies scroll vertically within it"
       },
       {
+        "name": "draggable",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Lets the `mn-kanban-card` children of keyed columns be dragged between\nand within columns (mouse, touch long press, keyboard: Space / Enter\npicks a focused card up, the arrows move it, Space / Enter drops it,\nEscape cancels)"
+      },
+      {
+        "name": "canDrop",
+        "kind": "input",
+        "type": "((move: KanbanCardMove) => boolean) | undefined",
+        "required": false,
+        "description": "Whether a card may be dropped at a position: refused positions show no\ndrop indicator and the keyboard skips them"
+      },
+      {
+        "name": "cardMove",
+        "kind": "output",
+        "type": "KanbanCardMove",
+        "required": false,
+        "description": "A card was dropped at a new position (not when put back where it was):\nmove it in your data (`moveKanbanCard` from `minerva-design/core`)"
+      },
+      {
         "name": "aria-label",
         "kind": "input",
         "type": "string | undefined",
@@ -10652,7 +10711,7 @@
   "MnKanbanColumn": {
     "name": "MnKanbanColumn",
     "source": "src/components/data/kanban-board.ts",
-    "description": "A status column of an `mn-kanban-board`. The header shows an optional\naccent dot (`color`: a theme color or any CSS color), the `title`, a\n`count` badge and the projected `[mnKanbanActions]`; the projected cards\nform a `role=\"list\"` that scrolls vertically within a bounded board\n(each projected card without a role gets `role=\"listitem\"`, there is no\nwrapper); `[mnKanbanEmpty]` content (else `empty`, default translated\n\"No items\") replaces the list when there are no cards, and\n`[mnKanbanFooter]` sits below. The host is a `role=\"group\"` named by its\ntitle and count (\"To do, 3 items\").",
+    "description": "A status column of an `mn-kanban-board`. The header shows an optional\naccent dot (`color`: a theme color or any CSS color), the `title`, a\n`count` badge and the projected `[mnKanbanActions]`; the projected cards\nform a `role=\"list\"` that scrolls vertically within a bounded board\n(each projected card without a role gets `role=\"listitem\"`, there is no\nwrapper); `[mnKanbanEmpty]` content (else `empty`, default translated\n\"No items\") replaces the list when there are no cards, and\n`[mnKanbanFooter]` sits below. The host is a `role=\"group\"` named by its\ntitle and count (\"To do, 3 items\"). `value` keys the column for drag and\ndrop.",
     "members": [
       {
         "name": "title",
@@ -10660,6 +10719,13 @@
         "type": "string | undefined",
         "required": false,
         "description": "Title of the column (also its accessible name; or project `[mnKanbanTitle]`)"
+      },
+      {
+        "name": "value",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Key of the column, reported as `fromColumn` / `toColumn` by a draggable board (columns without one take no cards)"
       },
       {
         "name": "count",
@@ -10698,10 +10764,31 @@
       }
     ]
   },
+  "MnKanbanCard": {
+    "name": "MnKanbanCard",
+    "source": "src/components/data/kanban-board.ts",
+    "description": "A card of an `mn-kanban-column`, keyed by `value`. In a draggable board\nits content sits in a focusable `role=\"button\"` (the `root` part)\ndescribed by the drag instructions; otherwise the part is a plain\nwrapper. The host is the list item of the column. Controls inside a\ndraggable card keep working (a drag never starts on them), but keep them\nfew: they sit inside the button.",
+    "members": [
+      {
+        "name": "value",
+        "kind": "input",
+        "type": "string",
+        "required": true,
+        "description": "Key of the card, reported as `cardKey` by a draggable board"
+      },
+      {
+        "name": "label",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Name of the card in the drag announcements and, when draggable, its accessible name (default: its text)"
+      }
+    ]
+  },
   "MnMediaPlayer": {
     "name": "MnMediaPlayer",
     "source": "src/components/data/media-player.ts",
-    "description": "An `<audio>` / `<video>` element with themed custom controls: play /\npause, skip back / forward, a seek bar (role=slider, buffered range), the\ntime, mute and volume, the playback speed (cycle button), fullscreen and\npicture-in-picture (video). Keyboard on the focused player: Space / K\nplay-pause, ← / → seek by 5 s, ↑ / ↓ volume, M mute, F fullscreen.\nOutputs: `(timeUpdate)`, `(ended)`, `(played)`, `(paused)`,\n`(loadedMetadata)`, `(mediaError)`, `(rateChange)`, `(volumeChange)`.\nMethods: `play()`, `pause()`, `seek(seconds)`, `element`.",
+    "description": "An `<audio>` / `<video>` element with themed custom controls: play /\npause, skip back / forward, a seek bar (role=slider, buffered range), the\ntime, mute and volume, the playback speed (cycle button), fullscreen and\npicture-in-picture (video), and a captions menu when `tracks` are given\n(cues drawn by the player). Keyboard on the focused player: Space / K\nplay-pause, ← / → seek by 5 s, ↑ / ↓ volume, M mute, F fullscreen,\nC captions on / off.\nOutputs: `(timeUpdate)`, `(ended)`, `(played)`, `(paused)`,\n`(loadedMetadata)`, `(mediaError)`, `(rateChange)`, `(volumeChange)`,\n`(trackChange)`.\nMethods: `play()`, `pause()`, `seek(seconds)`, `element`.",
     "members": [
       {
         "name": "src",
@@ -10782,7 +10869,7 @@
         "kind": "input",
         "type": "MediaPlayerCrossOrigin | undefined",
         "required": false,
-        "description": "CORS mode of the media request"
+        "description": "CORS mode of the media request (cross-origin caption files need it too, plus CORS headers on their server)"
       },
       {
         "name": "startTime",
@@ -10837,6 +10924,14 @@
         "required": false,
         "default": "false",
         "description": "Shows a picture-in-picture button (video, where the browser supports it)"
+      },
+      {
+        "name": "tracks",
+        "kind": "input",
+        "type": "readonly MediaPlayerTrack[]",
+        "required": false,
+        "default": "[]",
+        "description": "Captions / subtitles (WebVTT or SRT files): rendered as <track> children\nand drawn by the player over the video (below the title for audio), with\na captions menu in the control bar. The choice is remembered\n(localStorage); a `default` track shows until the user chooses"
       },
       {
         "name": "aria-label",
@@ -10900,6 +10995,13 @@
         "type": "MediaPlayerVolumeDetail",
         "required": false,
         "description": "The volume or the muted state changed"
+      },
+      {
+        "name": "trackChange",
+        "kind": "output",
+        "type": "MediaPlayerTrackChangeDetail",
+        "required": false,
+        "description": "The user chose captions (index -1 and track null: Off)"
       },
       {
         "name": "play",

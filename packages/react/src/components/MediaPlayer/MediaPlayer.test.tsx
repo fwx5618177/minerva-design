@@ -325,3 +325,195 @@ describe("MediaPlayer", () => {
     ).toHaveAttribute("aria-valuetext", "0:00 sur 1:23");
   });
 });
+
+describe("MediaPlayer captions", () => {
+  // happy-dom builds a new TextTrack on each `track` read and refuses the
+  // "hidden" mode: one stable fake per <track>.
+  const textTracks = new WeakMap<HTMLTrackElement, TextTrack>();
+  const textTrackOf = (el: HTMLTrackElement) => {
+    let track = textTracks.get(el);
+    if (!track) {
+      track = Object.assign(new EventTarget(), {
+        mode: "disabled",
+        activeCues: null,
+      }) as unknown as TextTrack;
+      textTracks.set(el, track);
+    }
+    return track;
+  };
+  const showCue = (el: HTMLTrackElement, ...texts: string[]) => {
+    const track = textTrackOf(el);
+    Object.defineProperty(track, "activeCues", {
+      configurable: true,
+      value: texts.map((text) => ({ text })),
+    });
+    act(() => {
+      track.dispatchEvent(new Event("cuechange"));
+    });
+  };
+
+  const tracks = [
+    { src: "/en.vtt", srclang: "en", label: "English" },
+    {
+      src: "/fr.vtt",
+      srclang: "fr",
+      label: "Français",
+      kind: "captions" as const,
+    },
+  ];
+
+  beforeEach(() => {
+    localStorage.clear();
+    vi.spyOn(HTMLTrackElement.prototype, "track", "get").mockImplementation(
+      function (this: HTMLTrackElement) {
+        return textTrackOf(this);
+      },
+    );
+  });
+
+  it("has no captions button without tracks", () => {
+    render(<MediaPlayer src="/clip.mp4" />);
+    expect(
+      screen.queryByRole("button", { name: "Captions" }),
+    ).not.toBeInTheDocument();
+    expect(media().querySelector("track")).toBeNull();
+  });
+
+  it("renders <track> children and draws the chosen track's cues", async () => {
+    const user = userEvent.setup();
+    const onTrackChange = vi.fn();
+    render(
+      <MediaPlayer
+        src="/clip.mp4"
+        tracks={tracks}
+        onTrackChange={onTrackChange}
+      />,
+    );
+    const els = Array.from(media().querySelectorAll("track"));
+    expect(els).toHaveLength(2);
+    expect(els[0]).toHaveAttribute("src", "/en.vtt");
+    expect(els[0]).toHaveAttribute("srclang", "en");
+    expect(els[0]).toHaveAttribute("kind", "subtitles");
+    expect(els[1]).toHaveAttribute("kind", "captions");
+    expect(els[1]).toHaveAttribute("label", "Français");
+    expect(els[0]).not.toHaveAttribute("default");
+    expect(textTrackOf(els[0]!).mode).toBe("disabled");
+
+    const cc = screen.getByRole("button", { name: "Captions" });
+    expect(cc).toHaveAttribute("aria-haspopup", "menu");
+    await user.click(cc);
+    expect(cc).toHaveAttribute("aria-expanded", "true");
+    const menu = screen.getByRole("menu", { name: "Captions" });
+    expect(menu).toHaveAttribute("data-part", "captions-menu");
+    const off = screen.getByRole("menuitemradio", { name: "Off" });
+    expect(off).toHaveAttribute("aria-checked", "true");
+    expect(off).toHaveFocus();
+
+    await user.keyboard("{ArrowDown}{ArrowDown}");
+    expect(
+      screen.getByRole("menuitemradio", { name: "Français" }),
+    ).toHaveFocus();
+    await user.keyboard("{Enter}");
+    expect(onTrackChange).toHaveBeenCalledWith({ index: 1, track: tracks[1] });
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+    expect(cc).toHaveFocus();
+    expect(localStorage.getItem("minerva-media-player-captions")).toBe("fr");
+    expect(textTrackOf(els[1]!).mode).toBe("hidden");
+    expect(textTrackOf(els[0]!).mode).toBe("disabled");
+
+    showCue(els[1]!, "<v Ana>Bonjour</v>", "tout le monde");
+    const captions = document.querySelector('[data-part="captions"]');
+    expect(captions).toHaveTextContent("Bonjour tout le monde");
+    expect(captions?.textContent).toBe("Bonjour\ntout le monde");
+
+    await user.click(cc);
+    await user.click(screen.getByRole("menuitemradio", { name: "Off" }));
+    expect(onTrackChange).toHaveBeenLastCalledWith({ index: -1, track: null });
+    expect(document.querySelector('[data-part="captions"]')).toBeNull();
+    expect(localStorage.getItem("minerva-media-player-captions")).toBe("off");
+  });
+
+  it("starts on the default or the remembered track; C toggles", async () => {
+    const user = userEvent.setup();
+    const onTrackChange = vi.fn();
+    const withDefault = [tracks[0]!, { ...tracks[1]!, default: true }];
+    const { unmount } = render(
+      <MediaPlayer
+        src="/clip.mp4"
+        tracks={withDefault}
+        onTrackChange={onTrackChange}
+      />,
+    );
+    let els = Array.from(media().querySelectorAll("track"));
+    expect(textTrackOf(els[1]!).mode).toBe("hidden");
+    expect(onTrackChange).not.toHaveBeenCalled();
+
+    screen.getByRole("group").focus();
+    await user.keyboard("c");
+    expect(onTrackChange).toHaveBeenLastCalledWith({ index: -1, track: null });
+    await user.keyboard("c");
+    expect(onTrackChange).toHaveBeenLastCalledWith({
+      index: 1,
+      track: withDefault[1],
+    });
+    unmount();
+
+    localStorage.setItem("minerva-media-player-captions", "en-US");
+    render(<MediaPlayer src="/clip.mp4" tracks={withDefault} />);
+    els = Array.from(media().querySelectorAll("track"));
+    expect(textTrackOf(els[0]!).mode).toBe("hidden");
+    expect(textTrackOf(els[1]!).mode).toBe("disabled");
+  });
+
+  it("shows SRT cues of an audio player in its caption area", async () => {
+    const srt = "1\n00:00:01,000 --> 00:00:03,000\nHello there\n";
+    render(
+      <MediaPlayer
+        src="/talk.mp3"
+        title="Talk"
+        tracks={[
+          {
+            src: `data:application/x-subrip,${encodeURIComponent(srt)}`,
+            label: "English",
+            default: true,
+          },
+        ]}
+      />,
+    );
+    loadMetadata(10);
+    const area = document.querySelector('[data-part="captions"]');
+    expect(area).toBeInTheDocument();
+    expect(area).toHaveTextContent("");
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    act(() => tick(2));
+    expect(area).toHaveTextContent("Hello there");
+    act(() => tick(4));
+    expect(area).toHaveTextContent("");
+  });
+
+  it("lets the browser show the chosen track without controls", () => {
+    render(
+      <MediaPlayer
+        src="/clip.mp4"
+        controls={false}
+        tracks={[tracks[0]!, { ...tracks[1]!, default: true }]}
+      />,
+    );
+    const els = media().querySelectorAll("track");
+    expect(els[0]).not.toHaveAttribute("default");
+    expect(els[1]).toHaveAttribute("default");
+  });
+
+  it("translates the captions menu", async () => {
+    act(() => {
+      void i18n.changeLanguage("fr");
+    });
+    render(<MediaPlayer src="/clip.mp4" tracks={tracks} />);
+    fireEvent.click(screen.getByRole("button", { name: "Sous-titres" }));
+    expect(
+      screen.getByRole("menuitemradio", { name: "Désactivés" }),
+    ).toBeInTheDocument();
+  });
+});

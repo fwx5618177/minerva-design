@@ -285,3 +285,105 @@ describe("<minerva-media-player>", () => {
     expect(el.shadowRoot!.querySelector('[role="group"]')).toBeNull();
   });
 });
+
+describe("<minerva-media-player> captions", () => {
+  // happy-dom builds a new TextTrack on each `track` read and refuses the
+  // "hidden" mode: one stable fake per <track>.
+  const textTracks = new WeakMap<HTMLTrackElement, TextTrack>();
+  const textTrackOf = (el: HTMLTrackElement) => {
+    let track = textTracks.get(el);
+    if (!track) {
+      track = Object.assign(new EventTarget(), {
+        mode: "disabled",
+        activeCues: null,
+      }) as unknown as TextTrack;
+      textTracks.set(el, track);
+    }
+    return track;
+  };
+  const tracks = [
+    { src: "/en.vtt", srclang: "en", label: "English" },
+    { src: "/fr.vtt", srclang: "fr", label: "Français", default: true },
+  ];
+  const trackEls = (el: MinervaMediaPlayer) =>
+    Array.from(el.element!.querySelectorAll("track"));
+
+  beforeEach(() => {
+    localStorage.clear();
+    vi.spyOn(HTMLTrackElement.prototype, "track", "get").mockImplementation(
+      function (this: HTMLTrackElement) {
+        return textTrackOf(this);
+      },
+    );
+  });
+
+  it("renders the tracks property as <track> children and draws the cue", async () => {
+    const el = await setup(`src="/clip.mp4"`);
+    el.tracks = tracks;
+    await el.updateComplete;
+    const els = trackEls(el);
+    expect(els.map((track) => track.getAttribute("srclang"))).toEqual([
+      "en",
+      "fr",
+    ]);
+    expect(els[1]!.hasAttribute("default")).toBe(false);
+    const fr = textTrackOf(els[1]!);
+    expect(fr.mode).toBe("hidden");
+    Object.defineProperty(fr, "activeCues", {
+      configurable: true,
+      value: [{ text: "Bonjour" }],
+    });
+    fr.dispatchEvent(new Event("cuechange"));
+    await el.updateComplete;
+    expect($(el, '[part="captions"]')!.textContent!.trim()).toBe("Bonjour");
+  });
+
+  it("chooses a track in the menu and fires minerva-track-change", async () => {
+    const user = userEvent.setup();
+    const el = await setup(`src="/clip.mp4"`);
+    el.tracks = tracks;
+    await el.updateComplete;
+    const changes: unknown[] = [];
+    el.addEventListener("minerva-track-change", (event) =>
+      changes.push((event as CustomEvent).detail),
+    );
+    const cc = button(el, "Captions") as HTMLButtonElement;
+    expect(cc.getAttribute("aria-haspopup")).toBe("menu");
+    await user.click(cc);
+    await el.updateComplete;
+    expect(cc.getAttribute("aria-expanded")).toBe("true");
+    const items = Array.from(
+      el.shadowRoot!.querySelectorAll<HTMLElement>('[role="menuitemradio"]'),
+    );
+    expect(items.map((item) => item.textContent!.trim())).toEqual([
+      "Off",
+      "English",
+      "Français",
+    ]);
+    expect(el.shadowRoot!.activeElement).toBe(items[2]);
+    await user.keyboard("{ArrowUp}{Enter}");
+    await el.updateComplete;
+    expect(changes).toEqual([{ index: 0, track: tracks[0] }]);
+    expect(el.shadowRoot!.querySelector('[role="menu"]')).toBeNull();
+    expect(localStorage.getItem("minerva-media-player-captions")).toBe("en");
+    expect(textTrackOf(trackEls(el)[0]!).mode).toBe("hidden");
+    expect(textTrackOf(trackEls(el)[1]!).mode).toBe("disabled");
+
+    await user.keyboard("c");
+    expect(changes.at(-1)).toEqual({ index: -1, track: null });
+  });
+
+  it("reads <track> children and shows audio cues below the title", async () => {
+    const srt = "1\n00:00:01,000 --> 00:00:03,000\nHello\n";
+    const el = await setup(
+      `src="/song.mp3"`,
+      `<span slot="heading">Talk</span><track src="data:application/x-subrip,${encodeURIComponent(srt)}" srclang="en" label="English" default>`,
+    );
+    await load(el, 10);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await tick(el, 2);
+    expect(trackEls(el)).toHaveLength(1);
+    expect($(el, '[part="captions"]')!.textContent!.trim()).toBe("Hello");
+    expect(button(el, "Captions")).toBeTruthy();
+  });
+});

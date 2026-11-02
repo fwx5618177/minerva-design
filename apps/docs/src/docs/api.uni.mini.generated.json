@@ -343,7 +343,18 @@
       { "name": "code", "type": "string | undefined", "required": false, "default": "\"\"" },
       { "name": "copyable", "type": "boolean | undefined", "required": false, "default": "false" },
       { "name": "highlight", "type": "boolean | undefined", "required": false, "default": "true", "description": "Highlights the syntax of `language` (false: plain text)" },
-      { "name": "language", "type": "string | undefined", "required": false, "description": "Language of the code: highlights its syntax (plain text without it)" },
+      {
+        "name": "language",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Language of the code: highlights its syntax (plain text without it).\n`\"auto\"` detects it from the code (`detectCodeLanguage`, \"plain\" when\nunsure), shown by the label too"
+      },
+      {
+        "name": "marks",
+        "type": "readonly CodeMark[] | undefined",
+        "required": false,
+        "description": "Character ranges to mark (saved highlights, annotations): nested text\nwith the `mn-code-mark` class and the mark's background over the token\ncolors (the copied text stays the raw code). `start` / `end` are\nUTF-16 offsets into `code`, clamped to it; empty ranges are ignored.\nWhere marks overlap, the later one wins. `color`: a theme color name\n(a translucent tint) or any CSS color (default: translucent yellow)"
+      },
       { "name": "maxHeight", "type": "string | number | undefined", "required": false, "default": "\"24rem\"" },
       { "name": "showLanguage", "type": "boolean | undefined", "required": false, "default": "false", "description": "Shows the `language` as a small label in the header" },
       { "name": "showLineNumbers", "type": "boolean | undefined", "required": false, "default": "false", "description": "Numbers the lines (aria-hidden gutter; one text per line)" },
@@ -352,7 +363,8 @@
     "events": [
       { "name": "copied", "type": "[text: string]" },
       { "name": "copy", "type": "[text: string]" },
-      { "name": "error", "type": "[error: unknown]" }
+      { "name": "error", "type": "[error: unknown]" },
+      { "name": "mark-click", "type": "[mark: CodeMark]" }
     ],
     "slots": [],
     "methods": []
@@ -1252,6 +1264,7 @@
       { "name": "min", "type": "number | undefined", "required": false, "default": "0" },
       { "name": "modelValue", "type": "SliderValue | undefined", "required": false },
       { "name": "name", "type": "string | undefined", "required": false },
+      { "name": "orientation", "type": "\"vertical\" | \"horizontal\" | undefined", "required": false, "default": "\"horizontal\"" },
       { "name": "range", "type": "boolean | undefined", "required": false, "default": "false" },
       { "name": "readOnly", "type": "boolean | undefined", "required": false },
       { "name": "showValue", "type": "boolean | undefined", "required": false, "default": "false" },
@@ -1798,11 +1811,23 @@
     "entry": "minerva-design/uni",
     "props": [
       { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the board (default: translated \"Board\")" },
+      { "name": "canDrop", "type": "((move: KanbanCardMove) => boolean) | undefined", "required": false, "description": "Whether a card may be dropped at a position" },
       { "name": "columnWidth", "type": "string | number | undefined", "required": false, "description": "Width of every column (a number is pixels; default 18rem / 288px)" },
+      { "name": "draggable", "type": "boolean | undefined", "required": false, "default": "false", "description": "Lets the KanbanCard children of keyed columns be dragged (long press)" },
       { "name": "fill", "type": "boolean | undefined", "required": false, "default": "false", "description": "Stretches the columns equally when they fit" },
       { "name": "gap", "type": "string | number | undefined", "required": false, "description": "Space between the columns (a number is pixels; default 12px)" },
       { "name": "height", "type": "string | number | undefined", "required": false, "description": "Height of the board: the column bodies scroll within it" },
       { "name": "maxHeight", "type": "string | number | undefined", "required": false, "description": "Maximum height of the board: the column bodies scroll within it" }
+    ],
+    "events": [{ "name": "card-move", "type": "[move: KanbanCardMove]" }],
+    "slots": [{ "name": "default", "type": "{}" }],
+    "methods": []
+  },
+  "KanbanCard": {
+    "entry": "minerva-design/uni",
+    "props": [
+      { "name": "label", "type": "string | undefined", "required": false, "description": "Text of the floating copy while it is dragged (default: `value`)" },
+      { "name": "value", "type": "string", "required": true, "description": "Key of the card, reported as `cardKey` by a draggable board" }
     ],
     "events": [],
     "slots": [{ "name": "default", "type": "{}" }],
@@ -1816,7 +1841,8 @@
       { "name": "count", "type": "number | undefined", "required": false, "description": "Number of items shown as a badge (and announced); 0 shows the empty content" },
       { "name": "description", "type": "string | undefined", "required": false, "description": "Supporting text under the header" },
       { "name": "empty", "type": "string | undefined", "required": false, "description": "Text shown when the column has no cards (or the empty slot)" },
-      { "name": "title", "type": "string | undefined", "required": false, "description": "Title of the column (also its accessible name)" }
+      { "name": "title", "type": "string | undefined", "required": false, "description": "Title of the column (also its accessible name)" },
+      { "name": "value", "type": "string | undefined", "required": false, "description": "Key of the column, reported as `fromColumn` / `toColumn` by a draggable board" }
     ],
     "events": [],
     "slots": [
@@ -1877,6 +1903,7 @@
       { "name": "src", "type": "string | undefined", "required": false },
       { "name": "startTime", "type": "number | undefined", "required": false },
       { "name": "title", "type": "string | undefined", "required": false },
+      { "name": "tracks", "type": "readonly MediaTrack[] | undefined", "required": false, "default": "[]", "description": "Captions / subtitles (WebVTT or SRT files; data: URLs work)" },
       { "name": "type", "type": "\"audio\" | \"video\" | undefined", "required": false }
     ],
     "events": [
@@ -1887,6 +1914,7 @@
       { "name": "play", "type": "[]" },
       { "name": "rateChange", "type": "[rate: number]" },
       { "name": "timeUpdate", "type": "[detail: { currentTime: number; duration: number; }]" },
+      { "name": "trackChange", "type": "[detail: { index: number; track: MediaTrack | null; }]" },
       { "name": "volumeChange", "type": "[detail: { volume: number; muted: boolean; }]" }
     ],
     "slots": [],
@@ -2959,6 +2987,13 @@
   "QuadrantChart": {
     "entry": "minerva-design/uni",
     "props": [
+      {
+        "name": "accessiblePoints",
+        "type": "boolean | undefined",
+        "required": false,
+        "default": "true",
+        "description": "Renders a visually hidden list of the points for the screen readers\n(`aria-role` / `aria-label`): one button per point (its name, quadrant\nand values; a tap emits `pointClick`) and, with a `pointDrop` listener,\n\"Move to …\" buttons moving it to the neighbouring quadrants (`pointDrop`\nwith the quadrant center)"
+      },
       { "name": "annotations", "type": "readonly ChartAnnotation[] | undefined", "required": false, "description": "Background areas and reference lines" },
       {
         "name": "ariaLabel",

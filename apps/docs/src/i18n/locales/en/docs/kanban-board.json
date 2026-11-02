@@ -1,10 +1,10 @@
 {
   "title": "KanbanBoard",
-  "description": "A board of status columns (To do / Doing / Done): equal-width columns with a title, a count and an accent color, stacked cards, and horizontal scrolling. Drag and drop is not built in: move cards with your own actions.",
+  "description": "A board of status columns (To do / Doing / Done): equal-width columns with a title, a count and an accent color, stacked cards, and horizontal scrolling. With draggable, KanbanCard children move between and within columns by mouse, touch or keyboard; the board stays controlled (onCardMove).",
   "demos": {
     "basic": {
       "title": "Basic usage",
-      "description": "KanbanBoard is a labelled, keyboard-scrollable region of KanbanColumn; each column is a group named by its title and count, and its cards (here minerva Cards) form a list. There is no drag and drop: move cards with your own actions (a button or a menu) and update your data."
+      "description": "KanbanBoard is a labelled, keyboard-scrollable region of KanbanColumn; each column is a group named by its title and count, and its cards (here minerva Cards) form a list. Here cards move with their own actions (a button or a menu); see Drag and drop for draggable boards."
     },
     "colors": {
       "title": "Colors and counts",
@@ -17,6 +17,10 @@
     "fixed-height": {
       "title": "Fixed height",
       "description": "height or maxHeight bound the board: each column body scrolls vertically while the board scrolls horizontally."
+    },
+    "drag-drop": {
+      "title": "Drag and drop",
+      "description": "draggable lets the KanbanCard children of keyed columns (value) be dragged: with the mouse, with a long press on touch screens, or with the keyboard (Space or Enter picks a focused card up, the arrows move it, Space or Enter drops it, Escape cancels; each step is announced). The board never reorders anything: onCardMove reports { cardKey, fromColumn, fromIndex, toColumn, toIndex } and moveKanbanCard (minerva-design/core) applies it to your lists. canDrop refuses positions: here \"Doing\" takes at most 2 cards."
     }
   },
   "api": {
@@ -27,6 +31,9 @@
       "gap": "Space between the columns (a number is pixels)",
       "height": "Height of the board: the column bodies scroll vertically within it (a number is pixels)",
       "maxHeight": "Maximum height of the board: the column bodies scroll vertically within it (a number is pixels)",
+      "draggable": "Lets the KanbanCard children of keyed columns be dragged between and within columns (mouse, touch long press, keyboard)",
+      "onCardMove": "Called when a card is dropped at a new position, with { cardKey, fromColumn, fromIndex, toColumn, toIndex } (toIndex counts the cards without the moved one): move the card in your data",
+      "canDrop": "Whether a card may be dropped at a position: refused positions show no drop indicator and the keyboard skips them",
       "aria-label": "Accessible name of the board region",
       "aria-labelledby": "Id of an element naming the board (instead of aria-label)",
       "className": "Additional class name",
@@ -36,6 +43,7 @@
     },
     "KanbanColumnProps": {
       "title": "Title of the column (also its accessible name)",
+      "value": "Key of the column, reported as fromColumn / toColumn by a draggable board (columns without one take no cards)",
       "count": "Number of items shown as a badge next to the title (and announced with it); omit to hide the badge",
       "color": "Accent of the column (a dot before the title): a theme color or any CSS color",
       "description": "Supporting text under the header",
@@ -48,6 +56,15 @@
       "style": "Inline style of the column",
       "id": "Id of the column",
       "ref": "Ref to the root <section>"
+    },
+    "KanbanCardProps": {
+      "value": "Key of the card, reported as cardKey by a draggable board",
+      "label": "Name of the card in the drag announcements and, when draggable, its accessible name (defaults to its text)",
+      "children": "Content of the card",
+      "className": "Additional class name",
+      "style": "Inline style of the card",
+      "id": "Id of the card",
+      "ref": "Ref to the root <div>"
     }
   },
   "cssVars": {
@@ -59,13 +76,14 @@
     "--kanban-column-color": "Accent of a column: the dot before the title (the color prop sets it for a custom CSS color)",
     "--kanban-card-gap": "Space between the cards of a column (defaults to --space-2)",
     "--kanban-count-background": "Background of the count badge (defaults to --surface-color)",
-    "--kanban-count-color": "Text color of the count badge (defaults to --text-secondary-color)"
+    "--kanban-count-color": "Text color of the count badge (defaults to --text-secondary-color)",
+    "--kanban-drop-indicator-color": "Color of the drop line and of the column a dragged card would land in (defaults to --primary-color)"
   },
   "wc": {
     "demos": {
       "basic": {
         "title": "Basic usage",
-        "description": "minerva-kanban-column elements in a minerva-kanban-board; slotted cards get role=\"listitem\". No drag and drop: here each card moves to the next column with its own button, and the script updates the count attributes."
+        "description": "minerva-kanban-column elements in a minerva-kanban-board; slotted cards get role=\"listitem\". Here each card moves to the next column with its own button, and the script updates the count attributes; see Drag and drop for draggable boards."
       },
       "colors": {
         "title": "Colors and counts",
@@ -78,9 +96,19 @@
       "fixed-height": {
         "title": "Fixed height",
         "description": "height or max-height bound the board: each column body scrolls vertically while the board scrolls horizontally."
+      },
+      "drag-drop": {
+        "title": "Drag and drop",
+        "description": "With draggable, minerva-kanban-card elements of keyed columns (value) move by mouse, touch or keyboard. The board fires minerva-card-move ({ cardKey, fromColumn, fromIndex, toColumn, toIndex }) and never moves anything itself: the script moves the card element and updates the counts. The canDrop property keeps \"Doing\" at 2 cards."
       }
     },
     "minerva-kanban-board": {
+      "props": {
+        "draggable": "Lets the minerva-kanban-card children of keyed columns be dragged (mouse, touch long press, keyboard); replaces the native draggable: the attribute turns it on unless it is \"false\""
+      },
+      "events": {
+        "minerva-card-move": "A card was dropped at a new position (detail: { cardKey, fromColumn, fromIndex, toColumn, toIndex }); move the card element or re-render."
+      },
       "slots": {
         "default": "The columns (minerva-kanban-column)"
       },
@@ -101,6 +129,11 @@
         "empty": "Content shown when there are no cards",
         "footer": "Footer below the cards (e.g. an \"Add card\" button)"
       }
+    },
+    "minerva-kanban-card": {
+      "slots": {
+        "default": "The content of the card"
+      }
     }
   },
   "native": {
@@ -108,6 +141,10 @@
       "basic": {
         "title": "Native example",
         "description": "A horizontal ScrollView of columns that snaps column by column; cards move with their own buttons."
+      },
+      "drag-drop": {
+        "title": "Drag and drop",
+        "description": "A long press picks a card up, the board stops scrolling, and the card drops where the finger lifts; screen readers get Move up / Move down / Move to <column> actions on each card. onCardMove reports the move."
       }
     }
   }

@@ -15,12 +15,17 @@ import {
 import { View, Text, Image, Navigator } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import {
+  applyCodeMarks,
   codeLanguageLabel,
   cn,
+  detectCodeLanguage,
   highlightCode,
   isSafeUrl,
+  resolveCodeMarkBackground,
   resolveSize,
-  splitHighlightLines,
+  splitCodeMarkLines,
+  type CodeMark,
+  type CodeMarkRun,
   type HighlightToken,
 } from "@minerva/core";
 import { useI18n, useOptionalTheme, useThemeTokens } from "./theme";
@@ -1356,6 +1361,7 @@ export function ListItem({
     </Part>
   );
 }
+export type { CodeMark, CodeMarkColor } from "@minerva/core";
 export function CodeBlock({
   code = "",
   language,
@@ -1365,12 +1371,16 @@ export function CodeBlock({
   highlight = true,
   showLineNumbers = false,
   showLanguage = false,
+  marks,
+  onMarkClick,
   ...props
 }: NativeProps & {
   code?: string;
   /**
    * Language of the code: highlights its syntax (nested Text with
-   * `mn-code-token-<type>` classes); without it the text is plain
+   * `mn-code-token-<type>` classes); without it the text is plain. `"auto"`
+   * detects it from the code (`detectCodeLanguage`, "plain" when unsure),
+   * shown by the label too
    */
   language?: string;
   copyable?: boolean;
@@ -1382,10 +1392,28 @@ export function CodeBlock({
   showLineNumbers?: boolean;
   /** Shows the `language` as a small label in the toolbar @default false */
   showLanguage?: boolean;
+  /**
+   * Character ranges to mark (saved highlights, annotations): nested Text
+   * with the `mn-code-mark` class and the mark's background over the token
+   * colors (the copied text stays the raw code). `start` / `end` are UTF-16
+   * offsets into `code`, clamped to it; empty ranges are ignored. Where marks
+   * overlap, the later one wins. `color`: a theme color name (a translucent
+   * tint) or any CSS color (default: translucent yellow)
+   */
+  marks?: readonly CodeMark[];
+  /** A mark was tapped: the item of `marks` (the topmost where they overlap) */
+  onMarkClick?: (mark: CodeMark) => void;
 }) {
   const { t } = useI18n();
+  const { colors } = useThemeTokens();
   const [copied, setCopied] = useState(false);
-  const lang = language?.trim() || undefined;
+  const requested = language?.trim() || undefined;
+  const auto = requested?.toLowerCase() === "auto";
+  const detected = useMemo(
+    () => (auto ? detectCodeLanguage(code) : undefined),
+    [auto, code],
+  );
+  const lang = auto ? detected : requested;
   const tokens = useMemo(
     () =>
       lang && highlight
@@ -1393,6 +1421,8 @@ export function CodeBlock({
         : [{ type: null, text: code }],
     [code, lang, highlight],
   );
+  const runs = useMemo(() => applyCodeMarks(tokens, marks), [tokens, marks]);
+  const marked = runs.some((run) => run.mark);
   const label = showLanguage && lang ? codeLanguageLabel(lang) : "";
   const spans = (list: readonly HighlightToken[]) =>
     list.map(({ type, text }, i) =>
@@ -1402,6 +1432,32 @@ export function CodeBlock({
         </Text>
       ) : (
         text
+      ),
+    );
+  const markSpans = (list: readonly CodeMarkRun[]) =>
+    list.map(({ mark, index, start, tokens: runTokens }) =>
+      mark ? (
+        <Text
+          key={start}
+          className={cn("mn-code-mark", mark.className)}
+          style={
+            mark.color
+              ? {
+                  backgroundColor: resolveCodeMarkBackground(
+                    mark.color,
+                    colors,
+                  ),
+                }
+              : undefined
+          }
+          data-mark-id={mark.id}
+          data-mark-index={index}
+          onClick={onMarkClick ? () => onMarkClick(mark) : undefined}
+        >
+          {spans(runTokens)}
+        </Text>
+      ) : (
+        <Fragment key={start}>{spans(runTokens)}</Fragment>
       ),
     );
   const codeStyle: CSSProperties = {
@@ -1430,20 +1486,20 @@ export function CodeBlock({
       )}
       {showLineNumbers ? (
         <View className="mn-code mn-code--lines" style={codeStyle}>
-          {splitHighlightLines(tokens).map((line, i) => (
+          {splitCodeMarkLines(runs).map((line, i) => (
             <View key={i} className="mn-code-line">
               <Text className="mn-code-line-number" aria-hidden>
                 {i + 1}
               </Text>
               <Text selectable className="mn-code-line-text">
-                {spans(line)}
+                {markSpans(line)}
               </Text>
             </View>
           ))}
         </View>
       ) : (
         <Text selectable className="mn-code" style={codeStyle}>
-          {lang && highlight ? spans(tokens) : code}
+          {marked ? markSpans(runs) : lang && highlight ? spans(tokens) : code}
         </Text>
       )}
     </Part>

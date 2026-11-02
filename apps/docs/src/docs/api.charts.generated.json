@@ -10597,6 +10597,12 @@
     ],
     "props": [
       {
+        "name": "renderPointActions",
+        "type": "(point: QuadrantPoint, index: number) => ReactNode",
+        "required": false,
+        "description": "Actions shown next to the active point, outside the canvas hit region."
+      },
+      {
         "name": "onPointClick",
         "type": "(point: QuadrantPoint, index: number) => void",
         "required": false,
@@ -10612,7 +10618,7 @@
         "name": "onPointDrag",
         "type": "(point: QuadrantPoint, index: number, target: QuadrantDropTarget) => void",
         "required": false,
-        "description": "Called on every move of a dragged point, with the quadrant under the pointer; the dots stay in place until the drop (update `points` in `onPointDrop`)"
+        "description": "Called on every move of a dragged point, with the quadrant under the pointer. A local visual preview follows every move; commit `points` in `onPointDrop` (cancellation leaves caller data unchanged)"
       },
       {
         "name": "onQuadrantClick",
@@ -10920,6 +10926,12 @@
         "type": "string",
         "required": true,
         "description": "Accessible description of the points that can be moved"
+      },
+      {
+        "name": "moveTo",
+        "type": "string",
+        "required": true,
+        "description": "Name of the action moving a point to another quadrant (touch screen readers, mini-programs)"
       }
     ]
   },

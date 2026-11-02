@@ -192,6 +192,103 @@ describe("cartesian charts", () => {
       { point, index: 0, x: 2, y: 2, quadrant: "bottomLeft" },
     ]);
   });
+
+  it("MnQuadrantChart lists its points for keyboards and screen readers, moves them with Shift + arrows", async () => {
+    @Component({
+      imports: [MnQuadrantChart],
+      template: `<mn-quadrant-chart
+        [points]="points()"
+        locale="en"
+        [quadrants]="{ topLeft: { label: 'Do first' } }"
+        [selectedIndex]="1"
+        draggable
+        [accessiblePoints]="accessible()"
+        (hover)="hovers.push($event)"
+        (pointClick)="events.push($event)"
+        (pointDrop)="events.push($event)"
+      />`,
+    })
+    class Host {
+      points = signal([
+        { x: 2, y: 8, label: "Write report" },
+        { x: 8, y: 2 },
+      ]);
+      accessible = signal(true);
+      hovers: unknown[] = [];
+      events: unknown[] = [];
+    }
+    const fixture = await render(Host);
+    await settle(fixture);
+    const host = fixture.nativeElement.querySelector(
+      "mn-quadrant-chart",
+    ) as HTMLElement;
+    const lists = host.querySelectorAll('[role="list"]');
+    expect([...lists].map((l) => l.getAttribute("aria-label"))).toEqual([
+      "Do first",
+      "Bottom right quadrant",
+    ]);
+    const button = (index: number) =>
+      host.querySelector<HTMLButtonElement>(
+        `button[data-point-index="${index}"]`,
+      )!;
+    expect(button(0).getAttribute("aria-label")).toBe("Write report, Do first");
+    expect(button(0).getAttribute("aria-keyshortcuts")).toContain(
+      "Shift+ArrowDown",
+    );
+    expect(button(1).getAttribute("aria-current")).toBe("true");
+    const ids = () =>
+      (engines[0].options.series as Array<{ id?: string }>).map((s) => s.id);
+    const { hovers, events } = fixture.componentInstance;
+
+    button(0).focus();
+    await settle(fixture);
+    expect(hovers.at(-1)).toMatchObject({
+      x: 2,
+      items: [{ index: 0, label: "Write report" }],
+    });
+    expect(ids()).toContain("quadrant:focus");
+
+    button(0).dispatchEvent(
+      new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }),
+    );
+    expect(document.activeElement).toBe(button(1));
+    button(1).click();
+    const [first, second] = fixture.componentInstance.points();
+    expect(events).toEqual([{ point: second, index: 1 }]);
+
+    button(1).dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "ArrowLeft",
+        shiftKey: true,
+        bubbles: true,
+      }),
+    );
+    expect(events.at(-1)).toEqual({
+      point: second,
+      index: 1,
+      x: 2.5,
+      y: 2.5,
+      quadrant: "bottomLeft",
+    });
+    expect(host.querySelector('[role="status"]')!.textContent).toBe(
+      "Point 2 moved to Bottom left quadrant",
+    );
+
+    // the app moves the point: its button keeps the focus
+    fixture.componentInstance.points.set([first!, { x: 2.5, y: 2.5 }]);
+    await settle(fixture);
+    expect(document.activeElement).toBe(button(1));
+    expect(
+      button(1).closest('[role="list"]')!.getAttribute("data-quadrant"),
+    ).toBe("bottomLeft");
+
+    fixture.componentInstance.accessible.set(false);
+    await settle(fixture);
+    expect(host.querySelector('[role="list"]')).toBeNull();
+    expect(hovers.at(-1)).toBeNull();
+    expect(ids()).not.toContain("quadrant:focus");
+    fixture.destroy();
+  });
 });
 
 describe("shape charts", () => {

@@ -1,17 +1,28 @@
 import { useMemo } from "react";
-import { View } from "react-native";
+import {
+  AccessibilityInfo,
+  View,
+  type AccessibilityActionEvent,
+} from "react-native";
 import {
   barSeries,
   lineSeries,
+  quadrantAccessibleGroups,
   quadrantChartOptions,
+  quadrantLabels,
+  quadrantMoveDrop,
+  quadrantMovedText,
+  quadrantName,
   quadrantOf,
   scatterSeries,
   type ChartHoverEvent,
   type ChartOptions,
   type ChartRect,
   type ChartSeries,
+  type QuadrantAccessiblePoint,
   type QuadrantCorner,
 } from "@minerva/charts/canvas";
+import { useI18n } from "../../theme/MinervaProvider";
 import { part } from "../../internal/parts";
 import { ChartBase, engineOptions } from "./ChartBase";
 import type {
@@ -173,6 +184,11 @@ const CORNERS: QuadrantCorner[] = [
 
 const NO_SERIES: readonly ChartSeries[] = [];
 
+/** Name of the accessibility action moving a point to a quadrant */
+const MOVE_ACTION = "move:";
+/** Size of the accessible element of a point (a touch target) */
+const POINT_TARGET = 32;
+
 /**
  * Four-quadrant matrix (priority matrix, Eisenhower, BCG, ...): tinted
  * quadrants with titles, dividers, and labelled dots placed without
@@ -203,9 +219,14 @@ export function QuadrantChart(props: QuadrantChartProps) {
     showCounts,
     selectedIndex,
     selectedIndices,
+    accessiblePoints = true,
   } = props;
+  const { language } = useI18n();
+  const locale = props.locale ?? language;
   const base = useEngineOptions(props, NO_SERIES);
   const dragPoints = draggable ?? !!onPointDrop;
+  // like the web: Shift + arrows there, accessibility actions here
+  const movable = !!onPointDrop && draggable !== false;
   const options = useMemo(
     () =>
       quadrantChartOptions(
@@ -254,8 +275,112 @@ export function QuadrantChart(props: QuadrantChartProps) {
     ],
   );
   const geometry = { xDomain, yDomain, xSplit, ySplit, reverseX };
+  const accessible = useMemo(
+    () =>
+      accessiblePoints
+        ? quadrantAccessibleGroups(
+            {
+              points,
+              xDomain,
+              yDomain,
+              xSplit,
+              ySplit,
+              reverseX,
+              quadrants,
+              xLabel,
+              yLabel,
+              name,
+            },
+            locale,
+          ).flatMap((group) => group.points)
+        : [],
+    [
+      accessiblePoints,
+      points,
+      xDomain,
+      yDomain,
+      xSplit,
+      ySplit,
+      reverseX,
+      quadrants,
+      xLabel,
+      yLabel,
+      name,
+      locale,
+    ],
+  );
 
-  const overlay = quadrantContent
+  const onAction = (
+    p: QuadrantAccessiblePoint,
+    event: AccessibilityActionEvent,
+  ) => {
+    const action = event.nativeEvent.actionName;
+    if (action === "activate") {
+      onPointClick?.(p.point, p.index);
+      return;
+    }
+    if (!movable || !action.startsWith(MOVE_ACTION)) return;
+    const target = action.slice(MOVE_ACTION.length) as QuadrantCorner;
+    if (!p.moves.some((m) => m.quadrant === target)) return;
+    onPointDrop!(p.point, p.index, quadrantMoveDrop(geometry, target));
+    const texts = quadrantLabels(locale);
+    AccessibilityInfo.announceForAccessibility?.(
+      quadrantMovedText(
+        texts,
+        p.name,
+        quadrantName(target, { quadrants }, texts),
+      ),
+    );
+  };
+
+  /** One accessible element per point, over its dot (touches go through) */
+  const pointViews = (plot: ChartRect) => {
+    const [x0, x1] = xDomain ?? [0, 10];
+    const [y0, y1] = yDomain ?? [0, 10];
+    const selected = new Set([
+      ...(selectedIndices ?? []),
+      ...(selectedIndex !== undefined && selectedIndex !== null
+        ? [selectedIndex]
+        : []),
+    ]);
+    return accessible.map((p) => {
+      const fx = (p.point.x - x0) / (x1 - x0 || 1);
+      const fy = (p.point.y - y0) / (y1 - y0 || 1);
+      return (
+        <View
+          key={`point-${p.index}`}
+          pointerEvents="none"
+          accessible
+          accessibilityRole="button"
+          accessibilityLabel={p.description}
+          accessibilityState={{ selected: selected.has(p.index) }}
+          accessibilityActions={[
+            { name: "activate" },
+            ...(movable
+              ? p.moves.map((m) => ({
+                  name: `${MOVE_ACTION}${m.quadrant}`,
+                  label: m.label,
+                }))
+              : []),
+          ]}
+          onAccessibilityAction={(event) => onAction(p, event)}
+          style={{
+            position: "absolute",
+            left: plot.width * (reverseX ? 1 - fx : fx) - POINT_TARGET / 2,
+            top: plot.height * (1 - fy) - POINT_TARGET / 2,
+            width: POINT_TARGET,
+            height: POINT_TARGET,
+          }}
+          {...part("chart", "point", {
+            index: String(p.index),
+            quadrant: p.quadrant,
+          })}
+        />
+      );
+    });
+  };
+
+  const contentViews = quadrantContent
     ? (plot: ChartRect) => {
         const [x0, x1] = xDomain ?? [0, 10];
         const [y0, y1] = yDomain ?? [0, 10];
@@ -291,6 +416,13 @@ export function QuadrantChart(props: QuadrantChartProps) {
         });
       }
     : undefined;
+  const overlay =
+    contentViews || accessible.length
+      ? (plot: ChartRect) => [
+          ...(contentViews?.(plot) ?? []),
+          ...pointViews(plot),
+        ]
+      : undefined;
 
   return (
     <ChartBase

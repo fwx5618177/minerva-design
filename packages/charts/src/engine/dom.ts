@@ -2,7 +2,7 @@
 // tooltip and a live region. Styled inline with the Minerva CSS variables
 // (and fallbacks), so the engine needs no stylesheet.
 
-import { prefersReducedMotion, styleTooltip } from "./tooltip";
+import { prefersReducedMotion, styleTooltip, themeTooltip } from "./tooltip";
 
 export interface ChartDom {
   root: HTMLDivElement;
@@ -138,6 +138,8 @@ export const createChartDom = (container: HTMLElement): ChartDom => {
   stage.append(background, underlay, lift, foreground, hover, tooltip, live);
   root.append(legend, stage);
   container.appendChild(root);
+  // translucent in the colors of the page until the host applies its theme
+  themeTooltip(tooltip, stage);
   return {
     root,
     legend,

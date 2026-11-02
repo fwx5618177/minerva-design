@@ -9,10 +9,12 @@ import type { HookScenario } from "../types";
     copyable
     showLineNumbers
     showLanguage
+    [marks]="marks"
   />`,
 })
 class Fixture {
   readonly date = new Date(2026, 9, 1);
+  readonly marks = [{ start: 0, end: 5, color: "primary" }];
 }
 export default [
   { name: "content and states", component: Fixture },

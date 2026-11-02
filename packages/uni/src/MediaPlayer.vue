@@ -5,7 +5,9 @@
  * `uni.createInnerAudioContext`, under the themed control bar of the web
  * renderers: play / pause, skip back / forward, a touch seek bar with the
  * buffered range, the time, mute (and a volume bar for audio), the playback
- * speed (cycle button) and fullscreen (video). The template ref exposes
+ * speed (cycle button) and fullscreen (video). With `tracks`, captions are
+ * fetched (`uni.request`), parsed and drawn by the player at the playback
+ * time, with a CC choice in the control bar. The template ref exposes
  * `play()`, `pause()`, `seek(seconds)` and `context`.
  */
 import {
@@ -19,13 +21,22 @@ import {
 import {
   DEFAULT_PLAYBACK_RATES,
   DEFAULT_SKIP_SECONDS,
+  activeCueText,
+  captionsPreference,
   clampMediaTime,
   clampVolume,
   formatMediaTime,
   formatPlaybackRate,
   inferMediaType,
+  loadCaptions,
   mediaProgress,
   nextPlaybackRate,
+  pickCaptionsTrack,
+  readCaptionsPreference,
+  writeCaptionsPreference,
+  type CaptionsStorage,
+  type MediaCue,
+  type MediaTrack,
 } from "@minerva/core";
 import { useI18n } from "./i18n";
 
@@ -46,6 +57,8 @@ const props = withDefaults(
     controls?: boolean;
     height?: number | string;
     aspectRatio?: string;
+    /** Captions / subtitles (WebVTT or SRT files; data: URLs work) */
+    tracks?: readonly MediaTrack[];
     ariaLabel?: string;
   }>(),
   {
@@ -61,6 +74,7 @@ const props = withDefaults(
     controls: true,
     height: undefined,
     aspectRatio: "16 / 9",
+    tracks: () => [],
   },
 );
 const emit = defineEmits<{
@@ -72,6 +86,8 @@ const emit = defineEmits<{
   error: [error: unknown];
   rateChange: [rate: number];
   volumeChange: [detail: { volume: number; muted: boolean }];
+  /** The user chose captions (index -1 and track null: Off) */
+  trackChange: [detail: { index: number; track: MediaTrack | null }];
 }>();
 const { t } = useI18n();
 const instance = getCurrentInstance();
@@ -281,6 +297,83 @@ function toggleFullscreen() {
   else videoCtx?.requestFullScreen?.({ direction: 0 });
 }
 
+// --- captions ----------------------------------------------------------------
+// No text tracks in the host <video> / InnerAudioContext: the chosen file is
+// fetched, parsed and its active cue drawn here. The choice is kept as its
+// remembered form (language / label / "off").
+const host = () => (typeof uni === "undefined" ? null : (uni as any));
+const captionsStorage: CaptionsStorage = {
+  getItem: (key) => {
+    const value = host()?.getStorageSync?.(key);
+    return typeof value === "string" ? value : null;
+  },
+  setItem: (key, value) => host()?.setStorageSync?.(key, value),
+};
+const fetchText = (url: string) =>
+  new Promise<string>((resolve, reject) => {
+    const request = host()?.request;
+    if (typeof request !== "function") {
+      reject(new Error("no request API"));
+      return;
+    }
+    request({
+      url,
+      dataType: "text",
+      responseType: "text",
+      success: ({ statusCode, data }: { statusCode: number; data: unknown }) =>
+        statusCode >= 200 && statusCode < 300
+          ? resolve(typeof data === "string" ? data : String(data ?? ""))
+          : reject(new Error(`HTTP ${statusCode}`)),
+      fail: reject,
+    });
+  });
+const captionsChoice = ref<{ pref: string | null; index: number }>({
+  pref: null,
+  index: -1,
+});
+const trackIndex = computed(() => {
+  const { pref, index } = captionsChoice.value;
+  const chosen = props.tracks[index];
+  return chosen && captionsPreference(chosen) === pref
+    ? index
+    : pickCaptionsTrack(props.tracks, pref);
+});
+const cues = ref<readonly MediaCue[]>([]);
+const captionsMenu = ref(false);
+const caption = computed(() => activeCueText(cues.value, currentTime.value));
+const captionsOptions = computed(() => [
+  { index: -1, label: t("mediaPlayer.captionsOff") },
+  ...props.tracks.map((track, index) => ({ index, label: track.label })),
+]);
+onMounted(() => {
+  const stored = readCaptionsPreference(captionsStorage);
+  if (stored) captionsChoice.value = { pref: stored, index: -1 };
+});
+let captionsLoad = 0;
+watch(
+  () => props.tracks[trackIndex.value]?.src,
+  (src) => {
+    const load = ++captionsLoad;
+    cues.value = [];
+    if (!src) return;
+    loadCaptions(src, fetchText).then(
+      (loaded) => {
+        if (load === captionsLoad) cues.value = loaded;
+      },
+      () => undefined,
+    );
+  },
+  { immediate: true },
+);
+function chooseTrack(index: number) {
+  captionsMenu.value = false;
+  if (index === trackIndex.value) return;
+  const track = props.tracks[index] ?? null;
+  captionsChoice.value = { pref: captionsPreference(track), index };
+  writeCaptionsPreference(captionsStorage, track);
+  emit("trackChange", { index: track ? index : -1, track });
+}
+
 // --- touch tracks ----------------------------------------------------------
 interface Rect {
   left: number;
@@ -376,6 +469,7 @@ const showSpinner = computed(() => loading.value && !failed.value);
     :class="[
       `mn-variant-${type}`,
       {
+        'mn-bare': !controls,
         'mn-playing': status === 'playing',
         'mn-loading': loading,
         'mn-invalid': failed,
@@ -418,6 +512,12 @@ const showSpinner = computed(() => loading.value && !failed.value);
       @fullscreenchange="onVideoFullscreen"
       @error="onVideoError"
     />
+    <view
+      v-if="!controls && isVideo && caption !== ''"
+      class="mn-media-player__captions"
+      data-part="captions"
+      ><text class="mn-media-player__cue">{{ caption }}</text></view
+    >
     <template v-if="controls">
       <text v-if="title" class="mn-media-player__title" data-part="title">{{
         title
@@ -429,6 +529,14 @@ const showSpinner = computed(() => loading.value && !failed.value);
         role="status"
         :aria-label="t('mediaPlayer.loading')"
       />
+      <view
+        v-if="isVideo ? caption !== '' : trackIndex >= 0"
+        class="mn-media-player__captions"
+        data-part="captions"
+        ><text v-if="caption" class="mn-media-player__cue">{{
+          caption
+        }}</text></view
+      >
       <view
         v-if="failed"
         class="mn-media-player__error"
@@ -537,6 +645,17 @@ const showSpinner = computed(() => loading.value && !failed.value);
           ><text aria-hidden="true">{{ rateText }}</text></view
         >
         <view
+          v-if="tracks.length > 0"
+          class="mn-media-player__button mn-media-player__cc"
+          :class="{ 'mn-media-player__cc--on': trackIndex >= 0 }"
+          data-part="button"
+          role="button"
+          :aria-label="t('mediaPlayer.captions')"
+          :aria-expanded="captionsMenu ? 'true' : 'false'"
+          @tap="captionsMenu = !captionsMenu"
+          ><text aria-hidden="true">CC</text></view
+        >
+        <view
           v-if="isVideo"
           class="mn-media-player__button"
           data-part="button"
@@ -549,6 +668,27 @@ const showSpinner = computed(() => loading.value && !failed.value);
           @tap="toggleFullscreen"
           ><text aria-hidden="true">⤢</text></view
         >
+        <view
+          v-if="captionsMenu && tracks.length > 0"
+          class="mn-media-player__captions-menu"
+          data-part="captions-menu"
+          role="group"
+          :aria-label="t('mediaPlayer.captions')"
+        >
+          <view
+            v-for="option in captionsOptions"
+            :key="option.index"
+            class="mn-media-player__captions-option"
+            :class="{
+              'mn-media-player__captions-option--on':
+                option.index === trackIndex,
+            }"
+            role="button"
+            :aria-pressed="option.index === trackIndex ? 'true' : 'false'"
+            @tap="chooseTrack(option.index)"
+            >{{ option.label }}</view
+          >
+        </view>
       </view>
     </template>
   </view>

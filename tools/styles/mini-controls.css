@@ -254,6 +254,18 @@
   justify-content: center;
   padding: 12px 0;
 }
+/* simple mode: the page input and "/ count" stay on one line */
+.mn-pagination-counter {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 6px;
+  white-space: nowrap;
+}
+.mn-pagination-counter .mn-input-root {
+  flex-shrink: 0;
+  width: 64px;
+}
 .mn-tabs-list {
   white-space: nowrap;
   border-bottom: 1px solid var(--border-color, #d1d5db);
@@ -743,6 +755,12 @@
 .mn-code-token-heading {
   color: var(--code-token-heading-color, #0550ae);
   font-weight: 600;
+}
+/* Marks of a code block (saved highlights): renderers set the background
+   of themed / custom colors inline; this is the default. */
+.mn-code-mark {
+  background-color: var(--code-block-mark-bg, rgba(250, 204, 21, 0.35));
+  border-radius: 2px;
 }
 .mn-prose {
   font-size: 16px;
@@ -1412,6 +1430,80 @@
   text-align: center;
   transform: translateY(-50%);
 }
+.mn-media-player__captions {
+  box-sizing: border-box;
+  pointer-events: none;
+  text-align: center;
+}
+.mn-variant-video .mn-media-player__captions {
+  position: absolute;
+  right: 16px;
+  bottom: calc(var(--media-player-button-size, 32px) * 2 + 44px);
+  left: 16px;
+  font-size: var(--media-player-captions-font-size, var(--font-size-lg, 18px));
+}
+.mn-variant-video.mn-bare .mn-media-player__captions {
+  bottom: 56px;
+}
+.mn-variant-audio .mn-media-player__captions {
+  min-height: 1.5em;
+  padding: 8px 12px 0;
+  font-size: var(--media-player-captions-font-size, var(--font-size-md, 16px));
+}
+.mn-media-player__cue {
+  padding: 2px 6px;
+  border-radius: var(--radius-sm, 4px);
+  line-height: 1.5;
+  white-space: pre-line;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.mn-variant-video .mn-media-player__cue {
+  background: var(--media-player-captions-background, rgba(0, 0, 0, 0.75));
+  color: var(--media-player-captions-color, #fff);
+}
+.mn-variant-audio .mn-media-player__cue {
+  background: var(--media-player-captions-background, transparent);
+  color: var(--media-player-captions-color, inherit);
+}
+.mn-media-player__cc {
+  position: relative;
+  font-size: 12px;
+  font-weight: var(--font-weight-semibold, 600);
+  letter-spacing: 0.5px;
+}
+.mn-media-player__cc--on::after {
+  position: absolute;
+  right: 25%;
+  bottom: 3px;
+  left: 25%;
+  height: 2px;
+  border-radius: 9999px;
+  background: var(--media-player-accent, var(--primary-color, #2563eb));
+  content: "";
+}
+.mn-media-player__captions-menu {
+  display: flex;
+  flex-basis: 100%;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.mn-media-player__captions-option {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid currentColor;
+  border-radius: 9999px;
+  opacity: 0.8;
+}
+.mn-media-player__captions-option--on {
+  border-color: var(--media-player-accent, var(--primary-color, #2563eb));
+  background: var(--media-player-accent, var(--primary-color, #2563eb));
+  color: #fff;
+  font-weight: var(--font-weight-semibold, 600);
+  opacity: 1;
+}
 @keyframes mn-media-player-spin {
   to {
     transform: rotate(360deg);
@@ -1993,6 +2085,54 @@
 .mn-kanban-column__footer:empty {
   display: none;
 }
+/* Drag and drop of the cards (draggable boards): the picked-up card stays
+   dimmed in place, a fixed copy follows the finger and a fixed line shows
+   where it would land */
+.mn-kanban-card {
+  min-width: 0;
+}
+.mn-kanban-card.mn-draggable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.mn-kanban-card.mn-dragging {
+  opacity: 0.4;
+}
+.mn-kanban-column.mn-drop-target {
+  border-color: var(
+    --kanban-drop-indicator-color,
+    var(--primary-color, #2563eb)
+  );
+  box-shadow: 0 0 0 1px
+    var(--kanban-drop-indicator-color, var(--primary-color, #2563eb));
+}
+.mn-kanban-board__drop-line {
+  position: fixed;
+  z-index: 1000;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--kanban-drop-indicator-color, var(--primary-color, #2563eb));
+  pointer-events: none;
+}
+.mn-kanban-board__ghost {
+  position: fixed;
+  z-index: 1001;
+  box-sizing: border-box;
+  opacity: 0.92;
+  transform: rotate(1.5deg);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+  pointer-events: none;
+}
+/* uni and WeChat: the copy shows the card's label (slots cannot be duplicated) */
+.mn-kanban-board__ghost--label {
+  padding: 12px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: var(--radius-md, 8px);
+  background: var(--surface-color, #fff);
+  color: var(--text-color, #111827);
+  font-size: var(--font-size-sm, 14px);
+}
 
 /* Slider (Taro, uni and WeChat) */
 /* The renderers position the range, the marks and the thumbs inline (%). */
@@ -2127,4 +2267,70 @@
 }
 .mn-slider__input {
   display: none;
+}
+/* Vertical (mn-vertical): the track runs bottom (min) to top (max); the
+   renderers position along `bottom` (%). The value label sits above the
+   track, mark labels and the drag tooltip beside it. */
+.mn-slider.mn-vertical {
+  display: inline-flex;
+  flex-direction: column-reverse;
+  width: auto;
+}
+.mn-slider.mn-vertical .mn-slider__control {
+  flex: none;
+  width: var(--slider-thumb-size, var(--mn-slider-thumb));
+  min-width: 0;
+  height: var(--slider-length, 160px);
+}
+.mn-slider.mn-vertical.mn-labelled .mn-slider__control {
+  margin-bottom: 0;
+  margin-right: 3em;
+}
+.mn-slider.mn-vertical .mn-slider__rail,
+.mn-slider.mn-vertical .mn-slider__range {
+  left: 50%;
+  width: var(--slider-track-height, var(--mn-slider-track));
+  transform: translateX(-50%);
+}
+.mn-slider.mn-vertical .mn-slider__rail {
+  top: 0;
+  right: auto;
+  bottom: 0;
+  height: auto;
+}
+.mn-slider.mn-vertical .mn-slider__range {
+  top: auto;
+}
+.mn-slider.mn-vertical .mn-slider__mark {
+  top: auto;
+  left: 50%;
+  margin-bottom: -2px;
+  transform: none;
+}
+.mn-slider.mn-vertical .mn-slider__mark-label,
+.mn-slider.mn-vertical .mn-slider__mark-label.mn-start,
+.mn-slider.mn-vertical .mn-slider__mark-label.mn-end {
+  top: 50%;
+  right: auto;
+  left: calc(var(--slider-thumb-size, var(--mn-slider-thumb)) / 2 + 4px);
+  transform: translateY(-50%);
+}
+.mn-slider.mn-vertical .mn-slider__thumb {
+  top: auto;
+  left: 50%;
+  transform: translate(-50%, 50%);
+}
+.mn-slider.mn-vertical .mn-slider__thumb.mn-dragging {
+  transform: translate(-50%, 50%) scale(1.15);
+}
+.mn-slider.mn-vertical .mn-slider__tooltip {
+  top: 50%;
+  bottom: auto;
+  left: 100%;
+  margin-bottom: 0;
+  margin-left: 8px;
+  transform: translateY(-50%);
+}
+.mn-slider.mn-vertical .mn-slider__value {
+  text-align: center;
 }

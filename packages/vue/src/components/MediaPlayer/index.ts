@@ -7,6 +7,8 @@ export type {
   MediaPlayerPreload,
   MediaPlayerProps,
   MediaPlayerTimeDetail,
+  MediaPlayerTrack,
+  MediaPlayerTrackChangeDetail,
   MediaPlayerType,
   MediaPlayerVolumeDetail,
 } from "./types";

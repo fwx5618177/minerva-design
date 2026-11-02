@@ -95,7 +95,21 @@ export {
   type QuadrantRegions,
   type SparklineConfig,
 } from "./engine/presets";
+export {
+  quadrantAccessibleGroups,
+  quadrantHoverEvent,
+  quadrantKeyTarget,
+  quadrantMoveDrop,
+  quadrantMovedText,
+  quadrantMoveTargets,
+  quadrantName,
+  type QuadrantAccessibleConfig,
+  type QuadrantAccessibleGroup,
+  type QuadrantAccessibleMove,
+  type QuadrantAccessiblePoint,
+} from "./engine/quadrant-keyboard";
 export { toCss } from "./engine/color";
+export { CANVAS_TOOLTIP_ALPHA, tooltipColors } from "./engine/tooltip";
 export { liftedBarRect, type BarHoverMark } from "./engine/scene";
 export type { ChartThemeInput } from "./engine/theme";
 export type * from "./engine/types";

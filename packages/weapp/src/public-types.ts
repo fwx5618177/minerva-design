@@ -77,6 +77,16 @@ export interface NativeMediaPlayerInstance {
   play(): void;
   pause(): void;
   seek(seconds: number): void;
+  /** Shows the captions of `tracks[index]` (-1: off) */
+  chooseTrack(index: number): void;
+}
+/** Detail of kanban-board `cardmove` (toIndex counts cards without the moved one) */
+export interface NativeKanbanCardMove {
+  cardKey: string;
+  fromColumn: string;
+  fromIndex: number;
+  toColumn: string;
+  toIndex: number;
 }
 export interface AnswerSheetConfig {
   getItemLabel?: (
@@ -904,6 +914,13 @@ export interface NativeQuadrantChartProperties extends NativeChartCommonProperti
   selectedIndex?: number | null;
   /** Indices of the selected points */
   selectedIndices?: readonly number[];
+  /**
+   * Visually hidden list of the points for the screen readers (`aria-role`
+   * / `aria-label`): one button per point (a tap emits `pointclick`) and,
+   * when `draggable`, "Move to …" buttons emitting `pointdrop` with the
+   * center of the neighbouring quadrant @default true
+   */
+  accessiblePoints?: boolean;
 }
 export interface NativeQuadrantDropTarget {
   x: number;

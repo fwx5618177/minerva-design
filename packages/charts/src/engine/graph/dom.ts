@@ -3,7 +3,7 @@
 // tooltip, a visually hidden summary and a live region. Styled inline with
 // the Minerva CSS variables.
 
-import { styleTooltip } from "../tooltip";
+import { styleTooltip, themeTooltip } from "../tooltip";
 
 export interface GraphDom {
   root: HTMLDivElement;
@@ -186,6 +186,8 @@ export const createGraphDom = (container: HTMLElement): GraphDom => {
   stage.append(foreground, controls, hint, tooltip, summary, live);
   root.append(legend, stage);
   container.appendChild(root);
+  // translucent in the colors of the page until the host applies its theme
+  themeTooltip(tooltip, stage);
   return {
     root,
     legend,

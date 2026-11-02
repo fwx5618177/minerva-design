@@ -35,6 +35,20 @@ export default [
     setup: (root) => fire(root, "loadedmetadata", "ended"),
   },
   {
+    name: "audio with captions, menu open",
+    html: `<minerva-media-player src="/song.mp3"><span slot="heading">Song</span><track src="data:text/vtt,WEBVTT" srclang="en" label="English" default></minerva-media-player>`,
+    setup: async (root) => {
+      await fire(root, "loadedmetadata");
+      const player = root.querySelector<MinervaMediaPlayer>(
+        "minerva-media-player",
+      )!;
+      player
+        .shadowRoot!.querySelector<HTMLButtonElement>('[aria-haspopup="menu"]')!
+        .click();
+      await player.updateComplete;
+    },
+  },
+  {
     name: "error",
     html: `<minerva-media-player src="/broken.mp4"></minerva-media-player>`,
     setup: (root) => fire(root, "error"),

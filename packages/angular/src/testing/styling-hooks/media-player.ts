@@ -16,9 +16,23 @@ import type { HookScenario } from "../types";
     /><mn-media-player id="ended" src="/song.mp3" /><mn-media-player
       id="broken"
       src="/broken.mp4"
+    /><mn-media-player
+      id="captioned"
+      src="/song.mp3"
+      title="Talk"
+      [tracks]="tracks"
     />`,
 })
-class Fixture {}
+class Fixture {
+  readonly tracks = [
+    {
+      src: "data:text/vtt,WEBVTT",
+      srclang: "en",
+      label: "English",
+      default: true,
+    },
+  ];
+}
 
 /** Fires media events on a player (no media pipeline in tests) */
 const fire = (root: HTMLElement, id: string, ...events: string[]) => {
@@ -31,13 +45,18 @@ const fire = (root: HTMLElement, id: string, ...events: string[]) => {
 
 export default [
   {
-    name: "video, audio playing and buffering, ended, error",
+    name: "video, audio playing and buffering, ended, error, captions menu",
     component: Fixture,
     setup: async ({ fixture, root }) => {
       fire(root, "video", "loadedmetadata", "play", "waiting");
       fire(root, "audio", "loadedmetadata", "play", "waiting");
       fire(root, "ended", "loadedmetadata", "ended");
       fire(root, "broken", "error");
+      await fixture.whenStable();
+      root
+        .querySelector<HTMLElement>('#captioned [aria-haspopup="menu"]')!
+        .click();
+      fixture.detectChanges();
       await fixture.whenStable();
     },
   },

@@ -228,4 +228,12 @@ export interface QuadrantChartProps
    * content receives touches, the rest of the quadrant does not
    */
   quadrantContent?: Partial<Record<QuadrantCorner, ReactNode>>;
+  /**
+   * Exposes every point to the screen readers (VoiceOver, TalkBack) as a
+   * button over its dot, labelled with its name, quadrant and values; with
+   * `onPointDrop`, its accessibility actions ("Move to …") move it to the
+   * neighbouring quadrants (`onPointDrop` with the quadrant center)
+   * @default true
+   */
+  accessiblePoints?: boolean;
 }

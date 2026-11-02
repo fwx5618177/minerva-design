@@ -38,6 +38,7 @@ import iconButtonHooks from "./components/icon-button";
 import inputHooks from "./components/input";
 import jsonFieldHooks from "./components/json-field";
 import kanbanBoardHooks from "./components/kanban-board";
+import kanbanCardHooks from "./components/kanban-card";
 import kanbanColumnHooks from "./components/kanban-column";
 import keyValueEditorHooks from "./components/key-value-editor";
 import listHooks from "./components/list";
@@ -141,6 +142,7 @@ export const stylingHooks = {
   input: inputHooks,
   "json-field": jsonFieldHooks,
   "kanban-board": kanbanBoardHooks,
+  "kanban-card": kanbanCardHooks,
   "kanban-column": kanbanColumnHooks,
   "key-value-editor": keyValueEditorHooks,
   list: listHooks,

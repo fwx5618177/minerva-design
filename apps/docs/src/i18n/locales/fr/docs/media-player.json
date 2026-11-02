@@ -17,6 +17,10 @@
     "rates-skip": {
       "title": "Vitesses et pas de saut",
       "description": "playbackRates liste les vitesses parcourues par le bouton de vitesse (onRateChange signale la nouvelle) ; skipSeconds fixe le pas des boutons reculer / avancer ; aspectRatio (ou height) dimensionne une vidéo."
+    },
+    "captions": {
+      "title": "Sous-titres",
+      "description": "tracks accepte des fichiers WebVTT ou SRT ({ src, srclang, label, kind, default } ; ici des URL data:). Ils sont rendus comme enfants <track>, mais le lecteur dessine lui-même la réplique active (sur la vidéo, sous le titre pour l’audio) : les sous-titres ont le même aspect dans tous les navigateurs. Le bouton CC ouvre un menu (Désactivés et une entrée par piste) ; C les active / désactive sur le lecteur focalisé. Le choix est mémorisé (localStorage) et une piste default s’affiche tant que l’utilisateur n’a pas choisi ; onTrackChange le signale. Les fichiers d’une autre origine demandent crossOrigin=\"anonymous\" (ou \"use-credentials\") sur le lecteur et des en-têtes CORS sur leur serveur."
     }
   },
   "api": {
@@ -31,7 +35,7 @@
       "muted": "Coupe le son ; appliqué à chaque changement (le bouton muet bascule toujours le son)",
       "defaultMuted": "Muet au départ (non contrôlé)",
       "preload": "Quantité de média chargée par le navigateur avant la lecture",
-      "crossOrigin": "Mode CORS de la requête du média",
+      "crossOrigin": "Mode CORS de la requête du média (nécessaire aussi pour les fichiers de sous-titres d’une autre origine, avec des en-têtes CORS sur leur serveur)",
       "startTime": "Position de reprise en secondes, appliquée une fois les métadonnées chargées (et à nouveau quand src change)",
       "playbackRates": "Vitesses parcourues par le bouton de vitesse",
       "skipSeconds": "Pas des boutons reculer / avancer, en secondes (0 les masque)",
@@ -39,6 +43,7 @@
       "height": "Hauteur d’un lecteur vidéo (nombre : pixels) ; prioritaire sur aspectRatio",
       "aspectRatio": "Rapport d’aspect d’un lecteur vidéo (CSS aspect-ratio)",
       "pictureInPicture": "Affiche un bouton image dans l’image (vidéo, si le navigateur le permet)",
+      "tracks": "Sous-titres : fichiers WebVTT ou SRT ({ src, srclang, label, kind, default }) rendus comme enfants <track> et dessinés par le lecteur, avec un menu de sous-titres dans la barre ; le choix est mémorisé (localStorage)",
       "onTimeUpdate": "Appelé pendant la lecture avec la position et la durée ({ currentTime, duration }, en secondes)",
       "onEnded": "Appelé quand la lecture atteint la fin",
       "onPlay": "Appelé au démarrage de la lecture",
@@ -47,6 +52,7 @@
       "onError": "Appelé avec la MediaError quand le média ne peut pas être chargé ou lu",
       "onRateChange": "Appelé avec la nouvelle vitesse de lecture",
       "onVolumeChange": "Appelé quand le volume ou l’état muet change ({ volume, muted })",
+      "onTrackChange": "Appelé quand l’utilisateur choisit des sous-titres ({ index, track } ; index -1 et track null : désactivés)",
       "aria-label": "Libellé accessible du lecteur (par défaut title, sinon « Lecteur multimédia »)",
       "className": "Nom de classe supplémentaire",
       "style": "Styles en ligne de l’élément racine",
@@ -57,6 +63,13 @@
       "pause": "Met la lecture en pause",
       "seek": "Déplace la position de lecture à secondes (limitée à la durée)",
       "element": "L’élément <audio> / <video> rendu (null avant le montage)"
+    },
+    "MediaPlayerTrack": {
+      "src": "URL du fichier WebVTT (.vtt) ou SubRip (.srt) ; les URL data: fonctionnent",
+      "srclang": "Langue de la piste (BCP 47 : \"en\", \"fr-CA\"), aussi utilisée pour retrouver le choix mémorisé",
+      "label": "Nom affiché dans le menu des sous-titres",
+      "kind": "Type de piste texte : \"subtitles\" (par défaut) ou \"captions\"",
+      "default": "Affichée tant que l’utilisateur n’a pas choisi de sous-titres"
     }
   },
   "cssVars": {
@@ -68,7 +81,10 @@
     "--media-player-bar-background": "Fond de la barre audio (par défaut --surface-color)",
     "--media-player-bar-color": "Couleur du texte et des icônes de la barre audio (par défaut --text-color)",
     "--media-player-button-size": "Taille des boutons de commande (par défaut la hauteur des petits contrôles de la densité)",
-    "--media-player-track-height": "Épaisseur des barres de progression et de volume (4px par défaut)"
+    "--media-player-track-height": "Épaisseur des barres de progression et de volume (4px par défaut)",
+    "--media-player-captions-background": "Fond du texte des sous-titres (rgb(0 0 0 / 75%) par défaut sur une vidéo, aucun pour l’audio)",
+    "--media-player-captions-color": "Couleur du texte des sous-titres (blanc par défaut sur une vidéo, couleur de la barre pour l’audio)",
+    "--media-player-captions-font-size": "Taille du texte des sous-titres (--font-size-lg par défaut sur une vidéo, --font-size-md pour l’audio)"
   },
   "wc": {
     "demos": {
@@ -87,12 +103,17 @@
       "rates-skip": {
         "title": "Vitesses et pas de saut",
         "description": "playbackRates est une propriété (un tableau) ; minerva-rate-change signale la vitesse. skip-seconds fixe le pas de saut et aspect-ratio dimensionne la vidéo."
+      },
+      "captions": {
+        "title": "Sous-titres",
+        "description": "tracks est une propriété (un tableau de { src, srclang, label, kind, default }) ; sans elle, les enfants <track src srclang label default> de l’élément sont utilisés. Le lecteur dessine les répliques et ajoute un menu de sous-titres ; minerva-track-change signale le choix de l’utilisateur. Les fichiers d’une autre origine demandent crossorigin et des en-têtes CORS."
       }
     },
     "minerva-media-player": {
       "props": {
         "noControls": "Masque la barre de commandes personnalisée : affiche l’élément média seul (pilotez-le par script)",
-        "element": "L’élément <audio> / <video> rendu (lecture seule ; null avant le premier rendu)"
+        "element": "L’élément <audio> / <video> rendu (lecture seule ; null avant le premier rendu)",
+        "tracks": "Sous-titres (propriété uniquement) : fichiers WebVTT ou SRT ({ src, srclang, label, kind, default }) ; vide : les enfants <track> sont utilisés"
       },
       "events": {
         "minerva-play": "La lecture a démarré.",
@@ -102,7 +123,8 @@
         "minerva-loaded-metadata": "Les métadonnées sont chargées (detail : { duration }).",
         "minerva-error": "Le média ne peut pas être chargé ou lu (detail : { error }, la MediaError).",
         "minerva-rate-change": "La vitesse de lecture a changé (detail : { rate }).",
-        "minerva-volume-change": "Le volume ou l’état muet a changé (detail : { volume, muted })."
+        "minerva-volume-change": "Le volume ou l’état muet a changé (detail : { volume, muted }).",
+        "minerva-track-change": "L’utilisateur a choisi des sous-titres (detail : { index, track } ; index -1 et track null : désactivés)."
       },
       "methods": {
         "play": "Démarre la lecture (les refus de lecture automatique sont ignorés : le lecteur reste en pause).",
@@ -119,6 +141,10 @@
       "basic": {
         "title": "MediaControls (React Native)",
         "description": "React Native n’a pas d’élément média : MediaControls est la barre de commandes thématisée, pilotée par des props (playing, currentTime, duration, buffered, muted, playbackRate) et des callbacks (onPlayPause, onSeek, onMutedChange, onRateChange…). Branchez-la sur expo-video / expo-audio (voir le commentaire du code) ; cet aperçu simule le lecteur."
+      },
+      "captions": {
+        "title": "Sous-titres (React Native)",
+        "description": "Les lecteurs React Native n’ont pas de pistes texte : avec tracks, MediaControls récupère le fichier WebVTT / SRT (les URL data: fonctionnent), l’analyse et dessine la réplique de currentTime au-dessus de la barre de progression. Le bouton CC propose Désactivés / une piste ; trackIndex peut être contrôlé et onTrackChange signale le choix."
       }
     }
   }

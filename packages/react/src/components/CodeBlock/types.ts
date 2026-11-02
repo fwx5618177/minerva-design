@@ -1,4 +1,5 @@
-import type { HTMLAttributes, Ref } from "react";
+import type { HTMLAttributes, MouseEvent, Ref } from "react";
+import type { CodeMark } from "@minerva/core";
 
 /**
  * DOM placement: without `copyable` / `showLanguage` the root is the <pre>
@@ -60,7 +61,10 @@ export interface CodeBlockProps extends Omit<
    * javascript (js, mjs, cjs), typescript (ts), jsx, tsx, json (jsonc,
    * json5), css (scss, less), html (xml, svg, vue), bash (sh, shell, zsh,
    * console), python (py), yaml (yml), sql, diff, markdown (md); other
-   * names render plain text. Without it the text is not highlighted
+   * names render plain text. `"auto"` detects the language from the text
+   * (`detectCodeLanguage` of minerva-design/core, "plain" when unsure): the
+   * class, `data-language` and the label show the detected name. Without it
+   * the text is not highlighted
    */
   language?: string;
   /**
@@ -81,6 +85,29 @@ export interface CodeBlockProps extends Omit<
    * @default false
    */
   showLanguage?: boolean;
+  /**
+   * Character ranges to mark (saved highlights, annotations, search hits),
+   * rendered as <mark> elements over the syntax highlighting (the token
+   * colors are kept; the copied text stays the raw code). `start` / `end`
+   * are UTF-16 offsets into the code string (`children`), clamped to it;
+   * empty ranges are ignored. Marks may cross tokens and lines (with
+   * `showLineNumbers` a mark is cut at each line break). Where marks
+   * overlap, the later one in the array wins (its color, class, title and
+   * click); the earlier one is cut around it. Each element gets
+   * `data-mark-id` (the mark's `id`) and the mark's `className` / `title`;
+   * `color` is a theme color name (a translucent tint) or any CSS color
+   * (default: translucent yellow, `--code-block-mark-bg`). To create one
+   * from the user's selection, see `getCodeSelectionRange` of
+   * `minerva-design/core`
+   */
+  marks?: readonly CodeMark[];
+  /**
+   * Called when a mark is clicked (not at the end of a text selection drag),
+   * with the mark object of `marks` (the topmost one where marks overlap).
+   * Marks are not focusable: offer a keyboard path to the same action (a
+   * list of the highlights, for example)
+   */
+  onMarkClick?: (mark: CodeMark, event: MouseEvent<HTMLElement>) => void;
   /** Ref to the <pre> element (also when copyable) */
   ref?: Ref<HTMLPreElement>;
 }

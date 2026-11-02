@@ -5,12 +5,15 @@ import { describe, expect, it } from "vitest";
 import { parseColor, unpackColor } from "./color";
 import { createChartController, scenePrimitives } from "./controller";
 import { buildItems } from "./items";
+import { tooltipObstacles } from "./hover-rect";
+import type { Rect } from "./layout";
 import { buildModel, type DataCache } from "./model";
 import { drawForeground, placeLabels } from "./overlay";
 import { ganttSeries, type GanttTask } from "./presets";
 import type { BarItem } from "./renderers/types";
 import { collectPointLabels, layoutChart } from "./scene";
 import { createTheme } from "./theme";
+import { overlapArea, placeTooltip } from "./tooltip";
 import type { ChartOptions } from "./types";
 
 const theme = createTheme();
@@ -267,5 +270,107 @@ describe("Gantt bar fills", () => {
     expect(alphas[0]).toBeCloseTo(0.3, 2);
     expect(alphas[1]).toBeCloseTo(0.9, 2);
     ctrl.destroy();
+  });
+});
+
+describe("Gantt tooltip", () => {
+  /** `rows` lanes of one task each: morning tasks and a late one, or whole-day tasks */
+  const big = (rows: number, height: number, full = false) => {
+    const list: GanttTask[] = Array.from({ length: rows }, (_, i) => ({
+      name: `Task ${i}`,
+      row: `Lane ${i}`,
+      start: full ? at(8) : i === rows - 1 ? at(20) : at(8 + (i % 4)),
+      end: full ? at(22) : i === rows - 1 ? at(22) : at(9, 30 + (i % 4) * 60),
+    }));
+    const g = ganttSeries(list, { locale: "en" });
+    const options: ChartOptions = {
+      locale: "en",
+      orientation: "horizontal",
+      series: g.series,
+      xAxis: { type: "category", categories: g.categories },
+      yAxis: { type: "time", min: g.domain[0], max: g.domain[1] },
+    };
+    const model = buildModel(options, theme, new Set(), new Map() as DataCache);
+    const l = layoutChart({
+      model,
+      view: { x: [...model.base.x], y: [...model.base.y] },
+      theme,
+      width: 720,
+      height,
+      measure,
+    });
+    return { model, l, bars: tooltipObstacles(model, l.scales) };
+  };
+  const center = (r: Rect) => ({ x: r.x + r.width / 2, y: r.y + r.height / 2 });
+  const boxOf = (p: { x: number; y: number }, w: number, h: number) => ({
+    x: p.x,
+    y: p.y,
+    width: w,
+    height: h,
+  });
+
+  it("gives every visible task bar as an obstacle, once per layout", () => {
+    const { model, l, bars } = big(24, 520);
+    expect(bars).toHaveLength(24);
+    expect(tooltipObstacles(model, l.scales)).toBe(bars);
+    const plot = l.scales.plot;
+    for (const r of bars) {
+      expect(r.x).toBeGreaterThanOrEqual(plot.x - 0.01);
+      expect(r.y).toBeGreaterThanOrEqual(plot.y - 0.01);
+      expect(r.x + r.width).toBeLessThanOrEqual(plot.x + plot.width + 0.01);
+      expect(r.y + r.height).toBeLessThanOrEqual(plot.y + plot.height + 0.01);
+    }
+  });
+
+  it("puts a tall tooltip over no other task bar when there is room", () => {
+    const { bars } = big(24, 520);
+    const [w, h] = [170, 160];
+    for (const k of [0, 5, 11, 12, 17, 23]) {
+      const hovered = bars[k];
+      const p = placeTooltip({
+        anchor: center(hovered),
+        avoid: hovered,
+        obstacles: bars,
+        prefer: "vertical",
+        size: { width: w, height: h },
+        stage: { width: 720, height: 520 },
+      });
+      expect(p.fit, `task ${k}`).toBe("stage");
+      const box = boxOf(p, w, h);
+      for (const bar of bars)
+        expect(overlapArea(box, bar), `task ${k}`).toBe(0);
+      expect(box.x).toBeGreaterThanOrEqual(0);
+      expect(box.y).toBeGreaterThanOrEqual(0);
+      expect(box.x + w).toBeLessThanOrEqual(720);
+      expect(box.y + h).toBeLessThanOrEqual(520);
+    }
+  });
+
+  it("overflows the chart when every lane is busy", () => {
+    // whole-day tasks: no tooltip-sized hole in the plot nor its margins
+    const { bars } = big(24, 520, true);
+    const [w, h] = [200, 120];
+    const hovered = bars[12];
+    const input = {
+      anchor: center(hovered),
+      avoid: hovered,
+      obstacles: bars,
+      prefer: "vertical" as const,
+      size: { width: w, height: h },
+      stage: { width: 720, height: 520 },
+    };
+    const p = placeTooltip({
+      ...input,
+      bounds: { x: -100, y: -300, width: 920, height: 1200 },
+    });
+    expect(p.fit).toBe("bounds");
+    const box = boxOf(p, w, h);
+    for (const bar of bars) expect(overlapArea(box, bar)).toBe(0);
+    expect(box.y < 0 || box.y + h > 520).toBe(true);
+
+    // nowhere to go: the least covering spot, never over the hovered task
+    const none = placeTooltip(input);
+    expect(none.fit).toBe("none");
+    expect(overlapArea(boxOf(none, w, h), hovered)).toBe(0);
   });
 });

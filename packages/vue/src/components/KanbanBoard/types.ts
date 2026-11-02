@@ -1,4 +1,6 @@
-import type { ColorScheme } from "@minerva/core";
+import type { ColorScheme, KanbanCardMove } from "@minerva/core";
+
+export type { KanbanCardMove };
 
 /** A length: a number of pixels or any CSS length ("18rem", "40vh") */
 export type KanbanLength = number | string;
@@ -36,6 +38,18 @@ export interface KanbanBoardProps {
   /** Maximum height of the board: the column bodies scroll vertically within it */
   maxHeight?: KanbanLength;
   /**
+   * Lets the KanbanCard children of keyed columns (`value`) be dragged
+   * between and within columns (mouse, touch long press, keyboard); the
+   * board emits `card-move` and the app moves the card in its data
+   * @default false
+   */
+  draggable?: boolean;
+  /**
+   * Whether a card may be dropped at a position: refused positions show no
+   * drop indicator and the keyboard skips them
+   */
+  canDrop?: (move: KanbanCardMove) => boolean;
+  /**
    * Accessible name of the board region
    * @default "Board" (translated)
    */
@@ -53,6 +67,11 @@ export interface KanbanBoardProps {
 export interface KanbanColumnProps {
   /** Title of the column (also its accessible name; or the `title` slot) */
   title?: string;
+  /**
+   * Key of the column, reported as `fromColumn` / `toColumn` by a draggable
+   * board (columns without one take no cards)
+   */
+  value?: string;
   /**
    * Number of items shown as a badge next to the title (and announced with
    * the title); omit to hide the badge
@@ -72,4 +91,20 @@ export interface KanbanColumnProps {
    * @default the title with the count ("To do, 3 items", translated)
    */
   "aria-label"?: string;
+}
+
+/**
+ * Props of `KanbanCard` (same names as the React `KanbanCardProps`): a card
+ * of a KanbanColumn that a draggable board can move. The default slot is
+ * its content; attributes fall through to the root `<div>`.
+ */
+export interface KanbanCardProps {
+  /** Key of the card, reported as `cardKey` by a draggable board */
+  value: string;
+  /**
+   * Name of the card in the drag announcements and, when draggable, its
+   * accessible name
+   * @default its text content
+   */
+  label?: string;
 }

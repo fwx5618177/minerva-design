@@ -533,7 +533,7 @@ describe("order book heatmap", () => {
     // the tooltip keeps its full border (no single-side accent)
     const tip = root.querySelector(".minerva-orderbook-tooltip") as HTMLElement;
     expect(tip.style.display).toBe("block");
-    expect(tip.style.borderLeft).toBe("");
+    expect(tip.style.borderLeft).toBe(tip.style.borderTop);
     // drag: pan (stops following), double click: follow again
     root.dispatchEvent(
       new PointerEvent("pointerdown", { clientX: 150, clientY: 120 }),

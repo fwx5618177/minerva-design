@@ -242,6 +242,16 @@ export const componentSsrCases: Array<[string, ReactElement]> = [
     </lib.KanbanColumn>,
   ],
   [
+    "KanbanCard",
+    <lib.KanbanBoard aria-label="Sprint" draggable>
+      <lib.KanbanColumn title="To do" value="todo">
+        <lib.KanbanCard value="a" label="Write docs">
+          Write docs
+        </lib.KanbanCard>
+      </lib.KanbanColumn>
+    </lib.KanbanBoard>,
+  ],
+  [
     "Modal",
     <lib.Modal open onOpenChange={noop} title="Title">
       Body

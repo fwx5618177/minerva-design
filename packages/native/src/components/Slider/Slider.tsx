@@ -18,6 +18,7 @@ import {
   normalizeSliderValue,
   setSliderThumb,
   sliderPercent,
+  sliderRatioAt,
   sliderValueFromRatio,
   sliderValues,
   sliderValuesEqual,
@@ -41,6 +42,8 @@ import { useI18n, useTheme } from "../../theme/MinervaProvider";
 
 export type { SliderMark, SliderValue };
 export type SliderSize = NativeSize;
+/** Direction of a Slider track */
+export type SliderOrientation = "horizontal" | "vertical";
 
 export interface SliderProps extends Omit<ViewProps, "style"> {
   /** Value (controlled): a number, or `[start, end]` with `range` */
@@ -104,17 +107,25 @@ export interface SliderProps extends Omit<ViewProps, "style"> {
    */
   color?: SemanticColor;
   /**
-   * Shows the value after the track
+   * Shows the value after the track (above it when vertical)
    * @default false
    */
   showValue?: boolean;
   /**
-   * Shows the value in a bubble above the thumb while it is dragged
+   * Shows the value in a bubble above the thumb (beside it when vertical)
+   * while it is dragged
    * @default false
    */
   tooltip?: boolean;
   /** Formats a value for the value label, the tooltip and the accessibility value */
   formatValue?: (value: number) => string;
+  /**
+   * Direction of the track. A vertical track runs from min (bottom) to max
+   * (top) and is 160 dp long by default: set a `height` in `style` to
+   * change its length
+   * @default "horizontal"
+   */
+  orientation?: SliderOrientation;
   /** Accessibility value text of a thumb (index 0, or 1 for the end thumb) */
   getAriaValueText?: (value: number, index: number) => string;
   /** Style of the root view */
@@ -123,12 +134,15 @@ export interface SliderProps extends Omit<ViewProps, "style"> {
 
 const TRACK = { small: 4, medium: 6, large: 8 } as const;
 const THUMB = { small: 20, medium: 24, large: 28 } as const;
+/** Default length of a vertical track (the web's `--slider-length`) */
+const VERTICAL_LENGTH = 160;
 
 /**
  * Slider: picks a number, or a `[start, end]` range with `range`, on a
  * track. Touch: press anywhere on the track to move the closest thumb, then
  * drag (the gesture keeps the responder, a parent ScrollView does not steal
  * it). `onChange` follows the drag, `onChangeEnd` fires once on release.
+ * `orientation="vertical"` runs the track bottom (min) to top (max).
  * Screen readers: each thumb is `adjustable` (increment / decrement step).
  */
 export function Slider(componentProps: SliderProps) {
@@ -151,6 +165,7 @@ export function Slider(componentProps: SliderProps) {
     showValue = false,
     tooltip = false,
     formatValue = String,
+    orientation = "horizontal",
     getAriaValueText,
     style,
     accessibilityLabel,
@@ -160,6 +175,7 @@ export function Slider(componentProps: SliderProps) {
   const { tokens: t, fonts } = useTheme();
   const { t: translate } = useI18n();
   const blocked = disabled || readOnly;
+  const vertical = orientation === "vertical";
 
   const markList = getSliderMarks(marks, min, max, step);
   const scale: SliderScale = { min, max, step, marks: markList, snapToMarks };
@@ -170,7 +186,8 @@ export function Slider(componentProps: SliderProps) {
   const value = normalizeSliderValue(raw, range, scale);
   const values = sliderValues(value);
 
-  const [width, setWidth] = useState(0);
+  // Measured length of the track (width, or height when vertical)
+  const [length, setLength] = useState(0);
   const [dragging, setDragging] = useState<number | null>(null);
   const gesture = useRef<{ index: number; latest: SliderValue } | null>(null);
 
@@ -181,14 +198,16 @@ export function Slider(componentProps: SliderProps) {
     return true;
   };
 
-  const valueAt = (x: number) => {
-    let ratio = width ? x / width : 0;
-    if (I18nManager.isRTL) ratio = 1 - ratio;
-    return sliderValueFromRatio(ratio, scale);
-  };
+  const valueAt = ({ nativeEvent }: GestureResponderEvent) =>
+    sliderValueFromRatio(
+      vertical
+        ? sliderRatioAt(nativeEvent.locationY, 0, length, true)
+        : sliderRatioAt(nativeEvent.locationX, 0, length, I18nManager.isRTL),
+      scale,
+    );
 
   const onGrant = (event: GestureResponderEvent) => {
-    const pointed = valueAt(event.nativeEvent.locationX);
+    const pointed = valueAt(event);
     const index = closestSliderThumb(value, pointed);
     const next = setSliderThumb(value, index, pointed);
     gesture.current = { index, latest: next };
@@ -199,11 +218,7 @@ export function Slider(componentProps: SliderProps) {
   const onMove = (event: GestureResponderEvent) => {
     const current = gesture.current;
     if (!current) return;
-    const next = setSliderThumb(
-      current.latest,
-      current.index,
-      valueAt(event.nativeEvent.locationX),
-    );
+    const next = setSliderThumb(current.latest, current.index, valueAt(event));
     if (update(next, current.latest)) current.latest = next;
   };
 
@@ -234,7 +249,10 @@ export function Slider(componentProps: SliderProps) {
   const thumb = THUMB[size];
   const accent = colorRole(t, color).solid;
   const textFont = fonts.sans ? { fontFamily: fonts.sans } : null;
-  const offset = (v: number) => (sliderPercent(v, min, max) / 100) * width;
+  const offset = (v: number) => (sliderPercent(v, min, max) / 100) * length;
+  // Position along the track: from the start edge, or the bottom when vertical
+  const along = (distance: number): ViewStyle =>
+    vertical ? { bottom: distance } : { start: distance };
   const start = range ? offset(values[0]) : 0;
   const end = offset(values[values.length - 1]);
   const hasMarkLabels = markList.some((m) => m.label);
@@ -253,23 +271,32 @@ export function Slider(componentProps: SliderProps) {
         dragging: dragging !== null,
         size,
         color,
-        orientation: "horizontal",
+        orientation,
         variant: range ? "range" : "single",
       })}
       {...rest}
       style={[
-        {
-          flexDirection: "row",
-          alignItems: "center",
-          opacity: disabled ? 0.5 : 1,
-        },
+        vertical
+          ? {
+              // bottom-up: the value label sits above the track (like the web)
+              flexDirection: "column-reverse",
+              alignItems: "center",
+              alignSelf: "flex-start",
+              opacity: disabled ? 0.5 : 1,
+            }
+          : {
+              flexDirection: "row",
+              alignItems: "center",
+              opacity: disabled ? 0.5 : 1,
+            },
         style,
       ]}
     >
       <View
-        onLayout={(event: LayoutChangeEvent) =>
-          setWidth(event.nativeEvent.layout.width)
-        }
+        onLayout={(event: LayoutChangeEvent) => {
+          const { width, height } = event.nativeEvent.layout;
+          setLength(vertical ? height : width);
+        }}
         onStartShouldSetResponder={() => !blocked}
         onMoveShouldSetResponder={() => !blocked}
         onResponderTerminationRequest={() => false}
@@ -277,21 +304,39 @@ export function Slider(componentProps: SliderProps) {
         onResponderMove={onMove}
         onResponderRelease={onEnd}
         onResponderTerminate={onEnd}
-        hitSlop={hitSlopFor(t, thumb)}
+        hitSlop={
+          vertical
+            ? hitSlopFor(t, Number.POSITIVE_INFINITY, thumb)
+            : hitSlopFor(t, thumb)
+        }
         {...part("slider", "control")}
-        style={{
-          flex: 1,
-          height: thumb,
-          justifyContent: "center",
-          marginBottom: hasMarkLabels ? t.space["5"] : 0,
-          marginHorizontal: thumb / 2,
-        }}
+        style={
+          vertical
+            ? {
+                // 160 dp by default; fills (or shrinks to) a root height
+                flexGrow: 1,
+                flexShrink: 1,
+                flexBasis: VERTICAL_LENGTH,
+                width: thumb,
+                flexDirection: "row",
+                justifyContent: "center",
+                marginVertical: thumb / 2,
+                marginEnd: hasMarkLabels ? t.space["10"] : 0,
+              }
+            : {
+                flex: 1,
+                height: thumb,
+                justifyContent: "center",
+                marginBottom: hasMarkLabels ? t.space["5"] : 0,
+                marginHorizontal: thumb / 2,
+              }
+        }
       >
         <View
           pointerEvents="none"
           {...part("slider", "rail")}
           style={{
-            height: track,
+            ...(vertical ? { width: track } : { height: track }),
             borderRadius: track,
             backgroundColor: t.colors["border-color"],
           }}
@@ -301,9 +346,10 @@ export function Slider(componentProps: SliderProps) {
           {...part("slider", "range")}
           style={{
             position: "absolute",
-            start,
-            width: Math.max(0, end - start),
-            height: track,
+            ...along(start),
+            ...(vertical
+              ? { height: Math.max(0, end - start), width: track }
+              : { width: Math.max(0, end - start), height: track }),
             borderRadius: track,
             backgroundColor: accent,
           }}
@@ -319,7 +365,7 @@ export function Slider(componentProps: SliderProps) {
               })}
               style={{
                 position: "absolute",
-                start: offset(mark.value) - 2,
+                ...along(offset(mark.value) - 2),
                 width: 4,
                 height: 4,
                 borderRadius: 2,
@@ -333,10 +379,19 @@ export function Slider(componentProps: SliderProps) {
                   {...part("slider", "mark-label")}
                   style={{
                     position: "absolute",
-                    top: thumb / 2 + t.space["1"],
+                    ...(vertical
+                      ? // beside the track, centered on the mark
+                        {
+                          start: thumb / 2 + t.space["1"],
+                          top: -6,
+                          lineHeight: 16,
+                        }
+                      : {
+                          top: thumb / 2 + t.space["1"],
+                          left: -30,
+                          textAlign: "center" as const,
+                        }),
                     width: 64,
-                    left: -30,
-                    textAlign: "center",
                     color: t.colors["text-muted-color"],
                     fontSize: t.fontSize.xs,
                     ...textFont,
@@ -376,6 +431,7 @@ export function Slider(componentProps: SliderProps) {
             aria-valuetext={
               getAriaValueText ? getAriaValueText(v, index) : formatValue(v)
             }
+            aria-orientation={orientation}
             onAccessibilityAction={(event) => onAction(event, index)}
             {...part("slider", "thumb", {
               dragging: dragging === index,
@@ -383,9 +439,11 @@ export function Slider(componentProps: SliderProps) {
             })}
             style={{
               position: "absolute",
-              start: offset(v) - thumb / 2,
+              ...along(offset(v) - thumb / 2),
               width: thumb,
               height: thumb,
+              // centers the side tooltip of a vertical slider
+              justifyContent: "center",
               borderRadius: thumb / 2,
               borderWidth: 2,
               borderColor: invalid ? t.colors["danger-color"] : accent,
@@ -400,8 +458,9 @@ export function Slider(componentProps: SliderProps) {
                 {...part("slider", "tooltip")}
                 style={{
                   position: "absolute",
-                  bottom: thumb + t.space["1"],
-                  alignSelf: "center",
+                  ...(vertical
+                    ? { start: thumb + t.space["1"] }
+                    : { bottom: thumb + t.space["1"], alignSelf: "center" }),
                   paddingHorizontal: t.space["2"],
                   paddingVertical: t.space["0-5"],
                   borderRadius: t.radius.sm,
@@ -428,9 +487,10 @@ export function Slider(componentProps: SliderProps) {
           importantForAccessibility="no"
           accessibilityElementsHidden
           style={{
-            marginStart: t.space["2"],
+            ...(vertical
+              ? { marginBottom: t.space["2"], textAlign: "center" as const }
+              : { marginStart: t.space["2"], textAlign: "right" as const }),
             minWidth: 32,
-            textAlign: "right",
             color: t.colors["text-secondary-color"],
             fontSize: size === "large" ? t.fontSize.md : t.fontSize.sm,
             fontWeight: weight(t, "medium"),

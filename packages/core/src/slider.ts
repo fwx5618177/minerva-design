@@ -107,8 +107,27 @@ export function sliderPercent(v: number, min: number, max: number): number {
 }
 
 /**
+ * Ratio (0..1 from the min end, unclamped) of a pointer `position` on a
+ * track whose measured axis starts at `start` and is `length` long.
+ * `reversed` tracks have their min at the far end of the axis: vertical
+ * sliders (min at the bottom, the y axis grows downwards) and horizontal RTL
+ * sliders. `0` while the track is not measured.
+ */
+export function sliderRatioAt(
+  position: number,
+  start: number,
+  length: number,
+  reversed = false,
+): number {
+  if (!length) return 0;
+  const ratio = (position - start) / length;
+  return reversed ? 1 - ratio : ratio;
+}
+
+/**
  * The snapped value at `ratio` (0..1, from the start of the track) of the
- * track. Renderers flip the ratio for RTL / vertical sliders.
+ * track. Renderers flip the ratio for RTL / vertical sliders (see
+ * `sliderRatioAt`).
  */
 export function sliderValueFromRatio(
   ratio: number,

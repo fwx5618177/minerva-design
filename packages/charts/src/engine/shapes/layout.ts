@@ -6,7 +6,14 @@ import { toCss } from "../color";
 import { resolveLocale } from "../locale";
 import { font } from "../overlay";
 import type { ChartTheme } from "../theme";
-import { placeTooltip, unionRect, type TooltipPlacement } from "../tooltip";
+import {
+  findTooltipSpot,
+  placeTooltip,
+  pointRectDistance,
+  rectIndex,
+  unionRect,
+  type TooltipPlacement,
+} from "../tooltip";
 import { bulletValues, layoutBullet } from "./bullet";
 import {
   calendarLegend,
@@ -664,10 +671,12 @@ const textBox = (node: {
  * Top-left corner of a `w` x `h` tooltip anchored at `anchor`, inside a
  * `width` x `height` drawing (or overflowing it into `bounds`, see
  * `placeTooltip`, when the drawing has no room). Candidates around the
- * pointer and around the hovered item are scored: never over the pointer
- * (nor the hovered radar vertex), then covering as little as possible of the
- * hovered item and of the texts, close to the pointer; radar tooltips lean
- * outward.
+ * pointer and around the hovered item are scored: never over the pointer,
+ * then covering as little as possible of the hovered item and of the
+ * texts, close to the pointer; a spot hiding a text gives way to one off
+ * every text, the pointer and the hovered item when there is one. Radar
+ * tooltips never cover the radar disc, its labels, the hovered vertex nor
+ * the pointer (see `placeRadarTooltip`).
  */
 export const placeShapeTooltip = (
   scene: ShapeScene | null,
@@ -692,6 +701,11 @@ export const placeShapeTooltip = (
       bounds,
       gap: 16 - t,
     });
+  if (scene?.radar && hover)
+    return (
+      placeRadarTooltip(scene, hover, anchor, w, h, width, height, bounds) ??
+      fallback()
+    );
   // tooltips larger than the drawing (sparkline-sized charts) go out of it
   if (!scene || !hover || w + m * 2 > width || h + m * 2 > height)
     return fallback();
@@ -700,35 +714,13 @@ export const placeShapeTooltip = (
     x: Math.max(m, Math.min(x, width - w - m)),
     y: Math.max(m, Math.min(y, height - h - m)),
   });
-  // points the tooltip must not cover: the pointer and the hovered vertex
-  const keep: [number, number][] = [[ax, ay]];
-  const item = scene.items.find((it) => it.index === hover.index);
-  const vertex =
-    item?.indicators && hover.indicator !== undefined
-      ? item.indicators[hover.indicator]
-      : undefined;
-  if (vertex) keep.push([vertex.x, vertex.y]);
+  // the box around the pointer the tooltip must not cover
+  const keep: ShapeRect = { x: ax - 8, y: ay - 8, width: 16, height: 16 };
   const target = itemBox(scene, hover.index);
-  const texts: ShapeRect[] = [...(scene.radar?.labels ?? [])];
+  const texts: ShapeRect[] = [];
   for (const node of scene.nodes)
     if (node.kind === "text" && !node.rotate && node.indicator === undefined)
       texts.push(textBox(node));
-
-  const radar = scene.radar;
-  let dx = 0;
-  let dy = 0;
-  if (radar) {
-    dx = ax - radar.cx;
-    dy = ay - radar.cy;
-    const len = Math.hypot(dx, dy);
-    if (len > 1) {
-      dx /= len;
-      dy /= len;
-    } else {
-      dx = 1;
-      dy = 0;
-    }
-  }
 
   const g = TIP_GAP;
   const candidates: [number, number][] = [
@@ -758,29 +750,18 @@ export const placeShapeTooltip = (
     [ax - w / 2, height - h - m],
   );
   const area = w * h;
+  const distance = (box: ShapeRect) =>
+    Math.hypot(box.x + w / 2 - ax, box.y + h / 2 - ay) * 0.35;
   let best: { x: number; y: number } | null = null;
   let bestScore = Infinity;
   for (const [cx0, cy0] of candidates) {
     const p = fit(cx0, cy0);
     const box = { x: p.x, y: p.y, width: w, height: h };
-    let score = 0;
-    for (const [px, py] of keep) {
-      if (
-        px > box.x - 8 &&
-        px < box.x + w + 8 &&
-        py > box.y - 8 &&
-        py < box.y + h + 8
-      )
-        score += 1e6;
-    }
+    let score = overlapArea(box, keep) > 0 ? 1e6 : 0;
     // texts weigh most (a hidden label is lost), then the hovered item
     if (target) score += (overlapArea(box, target) / area) * 400;
     for (const text of texts) score += overlapArea(box, text) * 4;
-    const ox = p.x + w / 2 - ax;
-    const oy = p.y + h / 2 - ay;
-    const dist = Math.hypot(ox, oy) || 1;
-    score += dist * 0.35;
-    if (radar) score -= ((ox * dx + oy * dy) / dist) * 40;
+    score += distance(box);
     // candidates that fit without being pushed in
     score += Math.abs(p.x - cx0) + Math.abs(p.y - cy0);
     if (score < bestScore) {
@@ -789,7 +770,172 @@ export const placeShapeTooltip = (
     }
   }
   if (!best || bestScore >= 1e6) return fallback();
+  const chosen: ShapeRect = { x: best.x, y: best.y, width: w, height: h };
+  if (texts.some((text) => overlapArea(chosen, text) > 0)) {
+    // texts are obstacles when the drawing has room off them
+    const index = rectIndex(texts);
+    const free = findTooltipSpot({
+      area: { x: m, y: m, width: width - m * 2, height: height - m * 2 },
+      size: { width: w, height: h },
+      seeds: candidates.map(([x, y]) => fit(x, y)),
+      blocked: (box) =>
+        overlapArea(box, keep) > 0 ||
+        (!!target && overlapArea(box, target) > 0) ||
+        index.hits(box),
+      score: distance,
+    });
+    if (free) return { ...free, fit: "stage" };
+  }
   return { ...best, fit: "stage" };
+};
+
+/**
+ * Radar tooltips: the radar disc, the indicator labels, the hovered vertex
+ * and the pointer are obstacles never covered. The free spot closest to
+ * the vertex (leaning outward) in the drawing, else overflowing it into
+ * `bounds`; else the spot covering the vertex / pointer, then the labels,
+ * then the disc the least (`fit: "none"`). `null` when the tooltip fits
+ * nowhere (larger than the drawing, no bounds).
+ */
+const placeRadarTooltip = (
+  scene: ShapeScene,
+  hover: ShapeHover,
+  anchor: { x: number; y: number },
+  w: number,
+  h: number,
+  width: number,
+  height: number,
+  bounds: ShapeRect | null,
+): TooltipPlacement | null => {
+  const radar = scene.radar!;
+  const m = TIP_MARGIN;
+  const g = TIP_GAP;
+  const size = { width: w, height: h };
+  const item = scene.items.find((it) => it.index === hover.index);
+  const vertex =
+    item?.indicators && hover.indicator !== undefined
+      ? item.indicators[hover.indicator]
+      : undefined;
+  const focus = vertex ? { x: vertex.x, y: vertex.y } : anchor;
+  const keep = (vertex ? [anchor, vertex] : [anchor]).map((p) => ({
+    x: p.x - 8,
+    y: p.y - 8,
+    width: 16,
+    height: 16,
+  }));
+  const labels = (radar.labels ?? []).map((l) => ({
+    x: l.x - 2,
+    y: l.y - 2,
+    width: l.width + 4,
+    height: l.height + 4,
+  }));
+  const { cx, cy } = radar;
+  const r = radar.radius + 2;
+  const hitsDisc = (box: ShapeRect) =>
+    Math.hypot(
+      Math.max(box.x, Math.min(cx, box.x + box.width)) - cx,
+      Math.max(box.y, Math.min(cy, box.y + box.height)) - cy,
+    ) < r;
+  const hitsKeep = (box: ShapeRect) =>
+    keep.some((k) => overlapArea(box, k) > 0);
+  const labelCover = (box: ShapeRect) =>
+    labels.reduce((sum, l) => sum + overlapArea(box, l), 0);
+  const blocked = (box: ShapeRect) =>
+    hitsKeep(box) || labelCover(box) > 0 || hitsDisc(box);
+
+  // outward: from the center through the vertex (or the pointer)
+  let dx = focus.x - cx;
+  let dy = focus.y - cy;
+  const len = Math.hypot(dx, dy);
+  if (len > 1) {
+    dx /= len;
+    dy /= len;
+  } else {
+    dx = 1;
+    dy = 0;
+  }
+  const score = (box: ShapeRect) => {
+    const ox = box.x + w / 2 - focus.x;
+    const oy = box.y + h / 2 - focus.y;
+    const d = Math.hypot(ox, oy) || 1;
+    return (
+      pointRectDistance(focus.x, focus.y, box) +
+      d * 0.15 -
+      ((ox * dx + oy * dy) / d) * 12
+    );
+  };
+  // around the vertex, and just out of the disc on its side
+  const rim = { x: cx + dx * (r + g), y: cy + dy * (r + g) };
+  const seeds = [
+    { x: focus.x + g, y: focus.y - h / 2 },
+    { x: focus.x - g - w, y: focus.y - h / 2 },
+    { x: focus.x - w / 2, y: focus.y - g - h },
+    { x: focus.x - w / 2, y: focus.y + g },
+    { x: focus.x + g, y: focus.y - g - h },
+    { x: focus.x + g, y: focus.y + g },
+    { x: focus.x - g - w, y: focus.y - g - h },
+    { x: focus.x - g - w, y: focus.y + g },
+    {
+      x: dx >= 0 ? rim.x : rim.x - w,
+      y: dy >= 0 ? rim.y : rim.y - h,
+    },
+  ];
+
+  const inner = { x: m, y: m, width: width - m * 2, height: height - m * 2 };
+  const inStage = findTooltipSpot({ area: inner, size, seeds, blocked, score });
+  if (inStage) return { ...inStage, fit: "stage" };
+
+  // overflowing the drawing (top layer), beside it
+  const around =
+    bounds && bounds.width > m * 2 && bounds.height > m * 2
+      ? intersectRect(
+          {
+            x: bounds.x + m,
+            y: bounds.y + m,
+            width: bounds.width - m * 2,
+            height: bounds.height - m * 2,
+          },
+          {
+            x: -w - g,
+            y: -h - g,
+            width: width + (w + g) * 2,
+            height: height + (h + g) * 2,
+          },
+        )
+      : null;
+  if (around) {
+    const out = findTooltipSpot({ area: around, size, seeds, blocked, score });
+    if (out) return { ...out, fit: "bounds" };
+  }
+
+  // no free spot: off the vertex and the pointer, then the labels, then
+  // the disc first
+  const disc = { x: cx - r, y: cy - r, width: r * 2, height: r * 2 };
+  for (const area of around ? [inner, around] : [inner]) {
+    const least = findTooltipSpot({
+      area,
+      size,
+      seeds,
+      blocked: () => false,
+      score: (box) =>
+        (hitsKeep(box) ? 1e9 : 0) +
+        labelCover(box) * 100 +
+        overlapArea(box, disc) +
+        score(box) * 0.01,
+    });
+    if (least) return { ...least, fit: "none" };
+  }
+  return null;
+};
+
+const intersectRect = (a: ShapeRect, b: ShapeRect): ShapeRect | null => {
+  const x = Math.max(a.x, b.x);
+  const y = Math.max(a.y, b.y);
+  const right = Math.min(a.x + a.width, b.x + b.width);
+  const bottom = Math.min(a.y + a.height, b.y + b.height);
+  return right > x && bottom > y
+    ? { x, y, width: right - x, height: bottom - y }
+    : null;
 };
 
 /** Box of a tooltip drawn on a canvas, next to the anchor and inside the drawing */

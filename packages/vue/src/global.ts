@@ -57,6 +57,7 @@ declare module "vue" {
     MnInput: typeof Minerva.Input;
     MnJsonField: typeof Minerva.JsonField;
     MnKanbanBoard: typeof Minerva.KanbanBoard;
+    MnKanbanCard: typeof Minerva.KanbanCard;
     MnKanbanColumn: typeof Minerva.KanbanColumn;
     MnKeyValueEditor: typeof Minerva.KeyValueEditor;
     MnList: typeof Minerva.List;

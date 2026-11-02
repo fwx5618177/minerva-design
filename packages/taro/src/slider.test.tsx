@@ -128,4 +128,94 @@ describe("Taro Slider", () => {
     fireEvent.keyDown(thumb, { key: "ArrowRight" });
     expect(onChange).not.toHaveBeenCalled();
   });
+
+  describe("vertical", () => {
+    /** A 200px-high track at y = 100 */
+    function mockVerticalTrack(el: HTMLElement) {
+      el.getBoundingClientRect = () =>
+        ({
+          left: 0,
+          right: 24,
+          top: 100,
+          bottom: 300,
+          width: 24,
+          height: 200,
+        }) as DOMRect;
+    }
+    const touchY = (clientY: number) => ({
+      touches: [{ clientX: 12, clientY }],
+    });
+
+    it("positions from the bottom and exposes the orientation", () => {
+      const { container } = render(
+        <M.Slider
+          aria-label="Level"
+          orientation="vertical"
+          defaultValue={30}
+        />,
+      );
+      const root = container.querySelector(".mn-slider")!;
+      expect(root).toHaveClass("mn-vertical");
+      expect(root).toHaveAttribute("data-orientation", "vertical");
+      const [thumb] = thumbs();
+      expect(thumb).toHaveAttribute("aria-orientation", "vertical");
+      expect(thumb.style.bottom).toBe("30%");
+      expect(thumb.style.left).toBe("");
+      const fill = container.querySelector<HTMLElement>(".mn-slider__range")!;
+      expect(fill.style.bottom).toBe("0%");
+      expect(fill.style.height).toBe("30%");
+    });
+
+    it("tap at the bottom = min, drag up increases, commit on release", () => {
+      const onChange = vi.fn();
+      const onChangeEnd = vi.fn();
+      const { container } = render(
+        <M.Slider
+          aria-label="v"
+          orientation="vertical"
+          defaultValue={50}
+          onChange={onChange}
+          onChangeEnd={onChangeEnd}
+        />,
+      );
+      const el = control(container);
+      mockVerticalTrack(el);
+      fireEvent.touchStart(el, touchY(300));
+      fireEvent.touchMove(el, touchY(250));
+      fireEvent.touchMove(el, touchY(120));
+      fireEvent.touchMove(el, touchY(40));
+      fireEvent.touchEnd(el, { changedTouches: [{ clientY: 40 }] });
+      expect(onChange.mock.calls.map((c) => c[0])).toEqual([0, 25, 90, 100]);
+      expect(onChangeEnd).toHaveBeenCalledTimes(1);
+      expect(onChangeEnd).toHaveBeenCalledWith(100);
+    });
+
+    it("range: the closest thumb follows; H5 ArrowUp steps", () => {
+      const onChange = vi.fn();
+      const { container } = render(
+        <M.Slider
+          aria-label="Band"
+          orientation="vertical"
+          range
+          defaultValue={[20, 60]}
+          onChange={onChange}
+          marks={[{ value: 0, label: "Low" }, { value: 100 }]}
+        />,
+      );
+      const marks = container.querySelectorAll<HTMLElement>(".mn-slider__mark");
+      expect(marks[1].style.bottom).toBe("100%");
+      const el = control(container);
+      mockVerticalTrack(el);
+      // 80% up: the end thumb, then dragged below the start thumb
+      fireEvent.touchStart(el, touchY(140));
+      fireEvent.touchMove(el, touchY(290));
+      fireEvent.touchEnd(el, {});
+      expect(onChange.mock.calls.map((c) => c[0])).toEqual([
+        [20, 80],
+        [20, 20],
+      ]);
+      fireEvent.keyDown(thumbs()[1], { key: "ArrowUp" });
+      expect(onChange).toHaveBeenLastCalledWith([20, 21]);
+    });
+  });
 });

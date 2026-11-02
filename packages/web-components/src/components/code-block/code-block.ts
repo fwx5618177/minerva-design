@@ -1,13 +1,25 @@
-import { css, html, nothing, type TemplateResult } from "lit";
+import { css, html, nothing } from "lit";
 import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { styleMap } from "lit/directives/style-map.js";
 import {
+  CODE_MARK_COLORS,
+  applyCodeMarks,
   codeLanguageLabel,
+  codeMarkBackground,
+  detectCodeLanguage,
   highlightCode,
-  splitHighlightLines,
+  splitCodeMarkLines,
+  type CodeLanguage,
+  type CodeMark,
+  type CodeMarkRun,
   type HighlightToken,
 } from "@minerva/core";
+import {
+  clickedCodeMark,
+  getCodeSelectionRange,
+  type CodeSelectionRange,
+} from "@minerva/dom";
 import styles from "@react-styles/components/CodeBlock/codeBlock.module.scss?inline";
 import iconButtonStyles from "@react-styles/components/IconButton/iconButton.module.scss?inline";
 import { AriaController } from "../../internal/aria";
@@ -32,6 +44,17 @@ export interface CodeBlockCopyDetail {
 /** Result of the last copy */
 export type CodeBlockCopyStatus = "idle" | "copied" | "failed";
 
+/** `detail` of the `minerva-mark-click` event */
+export interface CodeBlockMarkClickDetail {
+  /** The clicked mark (the item of `marks`; the topmost where they overlap) */
+  mark: CodeMark;
+  /** The original click */
+  originalEvent: MouseEvent;
+}
+
+export type { CodeMark, CodeMarkColor } from "@minerva/core";
+export type { CodeSelectionRange } from "@minerva/dom";
+
 const toCss = (value: string | number | undefined) =>
   value === undefined || value === ""
     ? undefined
@@ -44,22 +67,52 @@ const tokens = (list: readonly HighlightToken[]) =>
     type ? html`<span class=${`token-${type}`}>${text}</span>` : text,
   );
 
+const markScheme = (color: string | undefined) => {
+  const value = color?.trim();
+  return value && (CODE_MARK_COLORS as readonly string[]).includes(value)
+    ? value
+    : undefined;
+};
+
+const runs = (list: readonly CodeMarkRun[], clickable: boolean) =>
+  list.map(({ mark, index, tokens: runTokens }) => {
+    if (!mark) return tokens(runTokens);
+    const background = codeMarkBackground(mark.color);
+    return html`<mark
+      part="code-mark"
+      class=${["mark", clickable ? "markClickable" : "", mark.className ?? ""]
+        .filter(Boolean)
+        .join(" ")}
+      data-mark-id=${mark.id ?? nothing}
+      data-mark-index=${index}
+      data-mark-color=${markScheme(mark.color) ?? nothing}
+      title=${mark.title ?? nothing}
+      style=${background ? `--code-mark-bg:${background}` : nothing}
+      >${tokens(runTokens)}</mark
+    >`;
+  });
+
 /**
- * Contents of the <code>: highlighted tokens and / or numbered lines (lit
- * templates: the code is text, never parsed as HTML). The text content stays
- * the source text (line numbers are generated content).
+ * Contents of the <code>: highlighted tokens, marks and / or numbered
+ * lines (lit templates: the code is text, never parsed as HTML). The text
+ * content stays the source text (line numbers are generated content).
  */
 function codeContent(
   text: string,
   language: string | undefined,
   lineNumbers: boolean,
-): string | Array<string | TemplateResult> {
-  if (!language && !lineNumbers) return text;
+  marks: readonly CodeMark[] | undefined,
+  clickable: boolean,
+): string | unknown[] {
+  const marked = !!marks?.length;
+  if (!language && !lineNumbers && !marked) return text;
   const list = language
     ? highlightCode(text, language)
     : [{ type: null, text }];
-  if (!lineNumbers) return tokens(list);
-  const lines = splitHighlightLines(list);
+  if (!lineNumbers && !marked) return tokens(list);
+  const marksRuns = applyCodeMarks(list, marks);
+  if (!lineNumbers) return runs(marksRuns, clickable);
+  const lines = splitCodeMarkLines(marksRuns);
   const trailingBreak = text.endsWith("\n");
   return lines.map(
     (line, i) =>
@@ -70,7 +123,7 @@ function codeContent(
             aria-hidden="true"
             data-line=${i + 1}
           ></span
-          >${tokens(line)}</span
+          >${runs(line, clickable)}</span
         >${i < lines.length - 1 || trailingBreak ? "\n" : nothing}`,
   );
 }
@@ -84,12 +137,15 @@ function codeContent(
  * (rendered verbatim, never parsed as HTML; escape `<` in markup or set
  * `code`). `language` highlights the syntax (colored spans, see
  * `--code-token-<type>-color`; `no-highlight` keeps plain text) and sets
- * `class="language-<x>"` / `data-language` on the `<code>`;
+ * `class="language-<x>"` / `data-language` on the `<code>`
+ * (`language="auto"` detects it from the text);
  * `show-language` shows it as a small label, `show-line-numbers` numbers
  * the lines. With
  * `copyable`, a copy button writes the text to the clipboard; its label
  * switches to "Copied" / "Copy failed" for two seconds and the result is
- * announced through a polite live region.
+ * announced through a polite live region. `marks` wraps character ranges
+ * in `<mark>`s over the highlighting; `getSelectionRange()` maps the
+ * user's selection to offsets to create them.
  *
  * @summary Read-only, scrollable code region with syntax highlighting and an optional copy button.
  * @tag minerva-code-block
@@ -97,9 +153,11 @@ function codeContent(
  * @csspart region - The `<pre>` scroll region (role=region): the visible box of the code
  * @csspart code - The `<code>` element
  * @csspart line-number - The number of a line, in the gutter (with show-line-numbers; aria-hidden, generated content)
+ * @csspart code-mark - A `<mark>` wrapping a marked character range (with marks; also has `data-mark-id`, `data-mark-color` and the mark's className)
  * @csspart language - The language label (with show-language)
  * @csspart copy-button - The copy button (while copyable)
  * @fires minerva-copy - The copy button (or `copy()`) was used: `detail: { text, success }` (`text` is the copied text; React's `onCopied` is called with it on success).
+ * @fires minerva-mark-click - A mark was clicked (not at the end of a text selection drag): `detail: { mark, originalEvent }` (`mark` is the item of `marks`, the topmost where they overlap; React's `onMarkClick`).
  */
 export class MinervaCodeBlock extends MinervaElement {
   static override tagName = "minerva-code-block";
@@ -128,7 +186,9 @@ export class MinervaCodeBlock extends MinervaElement {
    * Language of the code: highlights its syntax (javascript / js, typescript
    * / ts, jsx, tsx, json, css / scss, html / xml / vue, bash / sh, python /
    * py, yaml, sql, diff, markdown / md; other names render plain text) and
-   * sets `class="language-<x>"` / `data-language` on the `<code>`
+   * sets `class="language-<x>"` / `data-language` on the `<code>`. `auto`
+   * detects the language from the text (`detectCodeLanguage`, "plain" when
+   * unsure): the `<code>` and the label then show the detected name
    */
   @property({ reflect: true })
   language?: string;
@@ -157,10 +217,30 @@ export class MinervaCodeBlock extends MinervaElement {
   @property({ type: Boolean, reflect: true })
   copyable = false;
 
+  /**
+   * Character ranges to mark (saved highlights, annotations, search hits),
+   * rendered as `<mark part="code-mark">` over the syntax highlighting (the
+   * copied text stays the raw code). `start` / `end` are UTF-16 offsets into
+   * `text`, clamped to it; empty ranges are ignored. Marks may cross tokens
+   * and lines (with show-line-numbers a mark is cut at each line break).
+   * Where marks overlap, the later one in the array wins (its color, class,
+   * title and click). `color`: a theme color name (a translucent tint) or
+   * any CSS color (default: translucent yellow, `--code-block-mark-bg`).
+   * Set the property, or a JSON array in the `marks` attribute
+   */
+  @property({ type: Array })
+  marks?: readonly CodeMark[];
+
+  /** Gives the marks a click affordance (pointer cursor, hover underline): set it when listening to `minerva-mark-click` */
+  @property({ type: Boolean, attribute: "clickable-marks", reflect: true })
+  clickableMarks = false;
+
   @state()
   private status: CodeBlockCopyStatus = "idle";
 
   private timer?: ReturnType<typeof setTimeout>;
+  /** Last detection of `language="auto"` */
+  private detected?: { text: string; language: CodeLanguage };
   private readonly locale = new LocaleController(this);
   private readonly aria = new AriaController(this);
   // re-renders when the text content changes
@@ -169,6 +249,40 @@ export class MinervaCodeBlock extends MinervaElement {
   /** The text shown (and copied) */
   get text(): string {
     return this.code ?? this.textContent ?? "";
+  }
+
+  /**
+   * Offsets in `text` of the user's selection inside the code (to save it
+   * as a mark), `null` when nothing of the code is selected. Reads the
+   * selection through the shadow root (`getComposedRanges`, or the
+   * shadow root's own selection in Chromium); `selection` overrides it
+   */
+  getSelectionRange(
+    selection?: Selection | AbstractRange | null,
+  ): CodeSelectionRange | null {
+    const code = this.shadowRoot?.querySelector("code");
+    if (!code) return null;
+    if (selection !== undefined) return getCodeSelectionRange(code, selection);
+    const own = (
+      this.shadowRoot as ShadowRoot & { getSelection?: () => Selection | null }
+    ).getSelection?.();
+    return getCodeSelectionRange(
+      code,
+      own ?? this.ownerDocument.defaultView?.getSelection() ?? null,
+    );
+  }
+
+  private onCodeClick(event: MouseEvent) {
+    const mark = clickedCodeMark(
+      event.target,
+      event.currentTarget as Element,
+      this.marks,
+    );
+    if (mark)
+      this.emit<CodeBlockMarkClickDetail>("minerva-mark-click", {
+        mark,
+        originalEvent: event,
+      });
   }
 
   /** Copies the text to the clipboard; resolves with whether it worked */
@@ -215,13 +329,23 @@ export class MinervaCodeBlock extends MinervaElement {
     }
   }
 
+  /** The language of the `<code>`: `language`, `auto` resolved from `text` */
+  private resolveLanguage(text: string): string | undefined {
+    const language = this.language?.trim() || undefined;
+    if (language?.toLowerCase() !== "auto") return language;
+    if (this.detected?.text !== text) {
+      this.detected = { text, language: detectCodeLanguage(text) };
+    }
+    return this.detected.language;
+  }
+
   protected override render() {
     void this.slots;
     const t = this.locale.t;
     const name = this.aria.label ?? t("codeBlock.label");
     const maxHeight = toCss(this.maxHeight);
     const text = this.text;
-    const lang = this.language?.trim() || undefined;
+    const lang = this.resolveLanguage(text);
     const label = this.showLanguage && lang ? codeLanguageLabel(lang) : "";
     const wrapped = this.copyable || !!label;
     const lines = this.showLineNumbers
@@ -245,7 +369,14 @@ export class MinervaCodeBlock extends MinervaElement {
         class=${lang ? `language-${lang}` : nothing}
         data-language=${lang ?? nothing}
         style=${lines ? `--code-line-digits:${Math.max(String(lines).length, 2)}` : nothing}
-      >${codeContent(text, this.noHighlight ? undefined : lang, this.showLineNumbers)}</code></pre>`;
+        @click=${this.onCodeClick}
+      >${codeContent(
+      text,
+      this.noHighlight ? undefined : lang,
+      this.showLineNumbers,
+      Array.isArray(this.marks) ? this.marks : undefined,
+      this.clickableMarks,
+    )}</code></pre>`;
 
     if (!wrapped) return region;
 

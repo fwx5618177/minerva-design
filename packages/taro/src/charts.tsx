@@ -8,6 +8,7 @@ import {
   useImperativeHandle,
   useMemo,
   useRef,
+  useState,
   type CSSProperties,
   type ForwardedRef,
 } from "react";
@@ -26,7 +27,12 @@ import {
   heatmapChartOptions,
   histogramSeries,
   lineSeries,
+  quadrantAccessibleGroups,
   quadrantChartOptions,
+  quadrantLabels,
+  quadrantMoveDrop,
+  quadrantMovedText,
+  quadrantName,
   quadrantOf,
   rangeAreaSeries,
   scatterSeries,
@@ -66,7 +72,7 @@ import {
   type WaterfallStep,
 } from "@minerva/charts/canvas";
 import { useOptionalTheme, useThemeTokens } from "./theme";
-import { describeCartesianChart } from "./chart-a11y";
+import { a11yAttrs, describeCartesianChart, systemLocale } from "./chart-a11y";
 
 export type {
   BinOptions,
@@ -470,6 +476,14 @@ export interface QuadrantChartProps
    * @default draggable
    */
   disableScroll?: boolean;
+  /**
+   * Renders a visually hidden list of the points for the screen readers:
+   * one button per point (its name, quadrant and values; a tap is
+   * `onPointClick`) and, with `onPointDrop`, "Move to …" buttons moving it
+   * to the neighbouring quadrants (`onPointDrop` with the quadrant center)
+   * @default true
+   */
+  accessiblePoints?: boolean;
 }
 
 const isH5 = process.env.TARO_ENV === "h5";
@@ -1061,10 +1075,25 @@ export const ScatterChart = forwardRef<ChartHandle, ScatterChartProps>(
   },
 );
 
+/** Hides a view visually, keeping it for the screen readers */
+const VISUALLY_HIDDEN: CSSProperties = {
+  position: "absolute",
+  width: "1px",
+  height: "1px",
+  margin: "-1px",
+  padding: 0,
+  border: 0,
+  overflow: "hidden",
+  clipPath: "inset(50%)",
+  whiteSpace: "nowrap",
+};
+
 /**
  * Four-quadrant matrix (priority matrix, Eisenhower, BCG, ...): tinted
  * quadrants with titles, dividers, and labelled dots placed without
- * overlapping labels. Dots can be dragged to another quadrant.
+ * overlapping labels. Dots can be dragged to another quadrant; screen
+ * readers get a list of the points with "Move to …" buttons
+ * (`accessiblePoints`).
  */
 export const QuadrantChart = forwardRef<ChartHandle, QuadrantChartProps>(
   function QuadrantChart(props, ref) {
@@ -1100,49 +1129,128 @@ export const QuadrantChart = forwardRef<ChartHandle, QuadrantChartProps>(
     const at = (index: number | undefined) =>
       index !== undefined && points[index] ? points[index] : undefined;
 
+    // accessible list of the points (the chart root is an image for the
+    // screen readers: its children are not read, the list is a sibling)
+    const providerLocale = useOptionalTheme()?.locale;
+    const locale = props.locale ?? providerLocale ?? systemLocale();
+    const accessiblePoints = props.accessiblePoints ?? true;
+    const movable = !!onPointDrop && props.draggable !== false;
+    const [announcement, setAnnouncement] = useState("");
+    const groups = useMemo(
+      () => (accessiblePoints ? quadrantAccessibleGroups(config, locale) : []),
+      [accessiblePoints, config, locale],
+    );
+    const selected = new Set([
+      ...(config.selectedIndices ?? []),
+      ...(config.selectedIndex !== undefined && config.selectedIndex !== null
+        ? [config.selectedIndex]
+        : []),
+    ]);
+    const move = (index: number, target: QuadrantCorner) => {
+      const point = at(index);
+      if (!point || !onPointDrop) return;
+      onPointDrop(point, index, quadrantMoveDrop(config, target));
+      const texts = quadrantLabels(locale);
+      setAnnouncement(
+        quadrantMovedText(
+          texts,
+          groups.flatMap((g) => g.points).find((p) => p.index === index)!.name,
+          quadrantName(target, config, texts),
+        ),
+      );
+    };
+    const list = groups.length ? (
+      <View
+        className="mn-chart-quadrant-points"
+        data-minerva="chart-quadrant-points"
+        style={VISUALLY_HIDDEN}
+      >
+        {groups.map((group) => (
+          <View
+            key={group.quadrant}
+            data-quadrant={group.quadrant}
+            {...a11yAttrs("list", group.name)}
+          >
+            {group.points.map((p) => (
+              <View key={p.index} {...a11yAttrs("listitem")}>
+                <View
+                  data-point-index={p.index}
+                  {...a11yAttrs("button", p.description)}
+                  {...(selected.has(p.index) ? { "aria-selected": true } : {})}
+                  onClick={() => onPointClick?.(p.point, p.index)}
+                >
+                  {p.name}
+                </View>
+                {movable
+                  ? p.moves.map((m) => (
+                      <View
+                        key={m.quadrant}
+                        data-point-index={p.index}
+                        data-move={m.quadrant}
+                        {...a11yAttrs("button", `${p.name}, ${m.label}`)}
+                        onClick={() => move(p.index, m.quadrant)}
+                      >
+                        {m.label}
+                      </View>
+                    ))
+                  : null}
+              </View>
+            ))}
+          </View>
+        ))}
+        {/* H5 reads it; mini-programs have no live regions */}
+        <View {...{ role: "status", "aria-live": "polite" }}>
+          {announcement}
+        </View>
+      </View>
+    ) : null;
+
     return (
-      <ChartBase
-        options={options}
-        {...frameProps({
-          ...props,
-          onPointClick: undefined,
-          onPlotClick: undefined,
-          disableScroll: props.disableScroll ?? draggable,
-        })}
-        handleRef={ref}
-        onPointClick={
-          onPointClick
-            ? (event) => {
-                const index = event.items[0]?.index;
-                const point = at(index);
-                if (point) onPointClick(point, index!);
-              }
-            : undefined
-        }
-        onPlotClick={
-          onQuadrantClick
-            ? (position) =>
-                onQuadrantClick(
-                  quadrantOf(config, position.x, position.y),
-                  position,
-                )
-            : undefined
-        }
-        onDrop={
-          onPointDrop
-            ? (event) => {
-                const index = event.item.index;
-                const point = at(index);
-                if (!point) return;
-                onPointDrop(point, index, {
-                  x: event.x,
-                  y: event.y,
-                  quadrant: quadrantOf(config, event.x, event.y),
-                });
-              }
-            : undefined
-        }
-      />
+      <>
+        <ChartBase
+          options={options}
+          {...frameProps({
+            ...props,
+            onPointClick: undefined,
+            onPlotClick: undefined,
+            disableScroll: props.disableScroll ?? draggable,
+          })}
+          handleRef={ref}
+          onPointClick={
+            onPointClick
+              ? (event) => {
+                  const index = event.items[0]?.index;
+                  const point = at(index);
+                  if (point) onPointClick(point, index!);
+                }
+              : undefined
+          }
+          onPlotClick={
+            onQuadrantClick
+              ? (position) =>
+                  onQuadrantClick(
+                    quadrantOf(config, position.x, position.y),
+                    position,
+                  )
+              : undefined
+          }
+          onDrop={
+            onPointDrop
+              ? (event) => {
+                  const index = event.item.index;
+                  const point = at(index);
+                  if (!point) return;
+                  onPointDrop(point, index, {
+                    x: event.x,
+                    y: event.y,
+                    quadrant: quadrantOf(config, event.x, event.y),
+                  });
+                }
+              : undefined
+          }
+        />
+        {list}
+      </>
     );
   },
 );

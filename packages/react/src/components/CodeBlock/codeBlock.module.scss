@@ -6,6 +6,7 @@
 // @css-var --code-block-font-size Font size of the code
 // @css-var --code-block-max-height Maximum height before the block scrolls (default: none)
 // @css-var --code-block-line-number-color Color of the line numbers
+// @css-var --code-block-mark-bg Default background of the marks (default: a translucent yellow)
 // Syntax colors: the theme tokens --code-token-<type>-color (tokens.css,
 // light and dark values).
 
@@ -56,6 +57,39 @@
 
 .token-heading {
   font-weight: var(--font-weight-semibold, 600);
+}
+
+// Marks (saved highlights): a translucent background over the token colors.
+// `--code-mark-bg` is set inline from the mark's `color`. Each fragment of a
+// wrapped mark gets its own rounded box.
+.mark {
+  border-radius: 2px;
+  background: var(--code-mark-bg, var(--code-block-mark-bg, rgb(250 204 21 / 35%)));
+  color: inherit;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.markClickable {
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+}
+
+@media (forced-colors: active) {
+  .mark {
+    forced-color-adjust: none;
+    background: Mark;
+    color: MarkText;
+
+    * {
+      color: MarkText;
+    }
+  }
 }
 
 // Line numbers: each line is an inline-block (not a block: copying a

@@ -13,7 +13,9 @@ import {
   heatmapChartOptions,
   histogramSeries,
   lineSeries,
+  quadrantAccessibleGroups,
   quadrantChartOptions,
+  quadrantMoveDrop,
   quadrantOf,
   rangeAreaSeries,
   scatterSeries,
@@ -26,6 +28,7 @@ import {
   type ChartThemeInput,
   type ChartTouch,
   type QuadrantConfig,
+  type QuadrantCorner,
 } from "@minerva/charts/canvas";
 import { githubDark, resolveTokens } from "@minerva/core";
 import type { NativeConfiguration } from "./configuration";
@@ -509,6 +512,43 @@ const applyOptions = (self: Instance) => {
   state.chart?.setOptions(options);
   const label = describeCartesianChart(options);
   if (label !== self.data.chartLabel) self.setData({ chartLabel: label });
+  if (state.kind === "quadrant") applyA11yPoints(self);
+};
+
+/**
+ * Accessible list of the points of a quadrant chart (template data): one
+ * button per point and, when `draggable`, "Move to …" buttons
+ */
+const applyA11yPoints = (self: Instance) => {
+  const d = self.data;
+  const config = quadrantConfig(self);
+  const selected = new Set([
+    ...(config.selectedIndices ?? []),
+    ...(config.selectedIndex !== undefined && config.selectedIndex !== null
+      ? [config.selectedIndex]
+      : []),
+  ]);
+  const groups = d.accessiblePoints
+    ? quadrantAccessibleGroups(config, localeOf(d)).map((group) => ({
+        quadrant: group.quadrant,
+        name: group.name,
+        points: group.points.map((p) => ({
+          index: p.index,
+          name: p.name,
+          description: p.description,
+          selected: selected.has(p.index),
+          moves: d.draggable
+            ? p.moves.map((m) => ({
+                quadrant: m.quadrant,
+                label: m.label,
+                aria: `${p.name}, ${m.label}`,
+              }))
+            : [],
+        })),
+      }))
+    : [];
+  if (JSON.stringify(groups) !== JSON.stringify(d.a11yGroups ?? []))
+    self.setData({ a11yGroups: groups });
 };
 
 const applyTheme = (self: Instance) => {
@@ -733,7 +773,51 @@ const QUADRANT_OPTIONS = [
   "showCounts",
   "selectedIndex",
   "selectedIndices",
+  "accessiblePoints",
 ];
+
+/**
+ * Visually hidden list of the points of a quadrant chart for the screen
+ * readers (`aria-role` / `aria-label`; mini-programs have no live regions)
+ */
+const QUADRANT_A11Y_TEMPLATE =
+  `<view wx:if="{{a11yGroups.length}}" class="mn-chart-quadrant-points" style="position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap">` +
+  `<view wx:for="{{a11yGroups}}" wx:for-item="group" wx:key="quadrant" class="mn-chart-quadrant-list" aria-role="list" aria-label="{{group.name}}" data-quadrant="{{group.quadrant}}">` +
+  `<view wx:for="{{group.points}}" wx:for-item="p" wx:key="index" aria-role="listitem">` +
+  `<view class="mn-chart-quadrant-point" aria-role="button" aria-label="{{p.description}}" aria-selected="{{p.selected}}" data-index="{{p.index}}" bindtap="onA11yPointTap">{{p.name}}</view>` +
+  `<view wx:for="{{p.moves}}" wx:for-item="m" wx:key="quadrant" class="mn-chart-quadrant-move" aria-role="button" aria-label="{{m.aria}}" data-index="{{p.index}}" data-quadrant="{{m.quadrant}}" bindtap="onA11yMoveTap">{{m.label}}</view>` +
+  `</view></view></view>`;
+
+interface A11yTapEvent {
+  currentTarget?: { dataset?: { index?: number | string; quadrant?: string } };
+}
+
+/** Taps on the accessible point list of the quadrant charts */
+const QUADRANT_A11Y_METHODS = {
+  onA11yPointTap(this: Instance, event: A11yTapEvent) {
+    const index = Number(event.currentTarget?.dataset?.index);
+    const point = ((this.data.points as NativeQuadrantPoint[] | null) ?? [])[
+      index
+    ];
+    if (point) this.triggerEvent("pointclick", { point, index });
+  },
+  onA11yMoveTap(this: Instance, event: A11yTapEvent) {
+    const dataset = event.currentTarget?.dataset;
+    const index = Number(dataset?.index);
+    const point = ((this.data.points as NativeQuadrantPoint[] | null) ?? [])[
+      index
+    ];
+    if (!point || !this.data.draggable || !dataset?.quadrant) return;
+    this.triggerEvent("pointdrop", {
+      point,
+      index,
+      target: quadrantMoveDrop(
+        quadrantConfig(this),
+        dataset.quadrant as QuadrantCorner,
+      ),
+    });
+  },
+};
 
 function defineChart(kind: ChartKind): Control {
   const kindProperties: WechatMiniprogram.IAnyObject =
@@ -757,6 +841,7 @@ function defineChart(kind: ChartKind): Control {
           showCounts: flag(),
           selectedIndex: optional(),
           selectedIndices: optional(),
+          accessiblePoints: flag(true),
         }
       : { ...seriesProperties(kind), ...KIND_PROPERTIES[kind] };
   const optionNames = [
@@ -769,7 +854,7 @@ function defineChart(kind: ChartKind): Control {
   ];
   const fallbackHeight = kind === "sparkline" ? "48px" : "320px";
   return {
-    template: `<view class="mn-chart" style="display:block;position:relative;width:{{chartWidth}};height:{{chartHeight}}"><canvas type="2d" class="mn-chart-canvas" style="display:block;width:100%;height:100%" disable-scroll="{{disableScroll}}" aria-role="img" aria-label="{{chartLabel}}" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchCancel"></canvas></view>`,
+    template: `<view class="mn-chart" style="display:block;position:relative;width:{{chartWidth}};height:{{chartHeight}}"><canvas type="2d" class="mn-chart-canvas" style="display:block;width:100%;height:100%" disable-scroll="{{disableScroll}}" aria-role="img" aria-label="{{chartLabel}}" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchCancel"></canvas>${kind === "quadrant" ? QUADRANT_A11Y_TEMPLATE : ""}</view>`,
     definition: {
       properties: {
         width: { type: null, value: "100%" },
@@ -787,7 +872,12 @@ function defineChart(kind: ChartKind): Control {
         disableScroll: flag(),
         ...kindProperties,
       },
-      data: { chartWidth: "100%", chartHeight: fallbackHeight, chartLabel: "" },
+      data: {
+        chartWidth: "100%",
+        chartHeight: fallbackHeight,
+        chartLabel: "",
+        ...(kind === "quadrant" ? { a11yGroups: [] } : {}),
+      },
       observers: {
         [[...optionNames, "localeLanguage"].join(",")]: function (
           this: Instance,
@@ -884,6 +974,7 @@ function defineChart(kind: ChartKind): Control {
             .get(this)
             ?.chart?.touchCancel(changed.length ? changed : undefined);
         },
+        ...(kind === "quadrant" ? QUADRANT_A11Y_METHODS : {}),
       },
     },
   };

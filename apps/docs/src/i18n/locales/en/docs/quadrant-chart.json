@@ -16,7 +16,7 @@
     },
     "triage": {
       "title": "Badges, counts and keyboard moves",
-      "description": "Each quadrant gets a badge (badge), a second line (description) and its task count with the total time (showCounts as a function), all drawn by the chart. Click a task to ring it (selectedIndex). Keyboard users Tab to the hidden list of tasks: the focused dot gets a focus ring, Enter selects it and Shift + arrow keys move it to the next quadrant through onPointDrop, announced in a live region."
+      "description": "Quadrants show badges, descriptions and counts. Hover, selection and keyboard focus reveal a task card; dragging previews positions live. Tab enters the task list, Enter selects, and Shift + arrows move tasks between quadrants with live announcements."
     },
     "quadrant-header": {
       "title": "Custom quadrant headers",
@@ -308,10 +308,11 @@
       "onPointDrag": "Called with the point, its index and the quadrant under the pointer on every move of a dragged dot, before the drop (the dot does not move until onPointDrop)",
       "onQuadrantClick": "Called with the quadrant and the data position when the empty area of a quadrant is clicked",
       "onPointDrop": "Called with the point, its index and the drop target when a dragged dot is released; setting it makes the dots draggable (update points to move them)",
+      "renderPointActions": "React actions (e.g. edit / delete buttons) shown next to the selected or focused point, outside the hit region of the canvas; receives the point and its index",
       "renderTooltip": "React content of the tooltip of a point",
       "quadrantContent": "React content placed over each quadrant (e.g. an add button); only that content receives pointer events",
       "renderQuadrantHeader": "React header of each quadrant in its outer corner (top edge for the top quadrants, bottom edge for the bottom ones); receives the corner and { count, points, indices, region } and replaces the drawn title, badge, description and count",
-      "accessiblePoints": "Visually hidden list of buttons per quadrant for keyboard and screen reader users: Enter / Space calls onPointClick, Shift + arrow keys move the point to the next quadrant (onPointDrop), and the focused dot gets a focus ring",
+      "accessiblePoints": "Visually hidden list of buttons per quadrant for keyboard and screen reader users: arrow keys move between the points, Enter / Space calls onPointClick, Shift + arrow keys move the point to the next quadrant (onPointDrop, announced in a live region), and the focused dot gets a focus ring and is reported by onHover. Vue, Angular and Web Components (no-accessible-points) render the same layer; React Native exposes each point with ‘Move to …’ accessibility actions, and Taro, uni-app and WeChat a list of the points with ‘Move to …’ buttons",
       "getPointProps": "Extra attributes (e.g. data-testid) of the invisible anchor placed on each dot; every anchor has data-point-index, data-label and the class minerva-chart-quadrant-point"
     },
     "QuadrantConfig": {
@@ -406,7 +407,8 @@
       "props": {
         "hideTicks": "Hides the numeric ticks of the axes (only the matrix remains)",
         "hideLabels": "Hides the labels next to the dots",
-        "dragPoints": "Lets the user drag the dots (minerva-point-drag while moving, minerva-point-drop on release; update points to move them)",
+        "dragPoints": "Lets the user drag the dots (minerva-point-drag while moving, minerva-point-drop on release; update points to move them); also enables the Shift + arrow moves of the keyboard",
+        "noAccessiblePoints": "Leaves out the visually hidden list of the dots (arrows between the dots, Enter to click, Shift + arrows to move the focused dot, focus ring)",
         "height": "Height of the chart, the legend included: pixels or any CSS length",
         "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
         "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
@@ -416,7 +418,7 @@
         "minerva-point-double-click": "The same dot was clicked twice in quick succession; detail: { point, index }",
         "minerva-quadrant-click": "The empty area of a quadrant was clicked; detail: { quadrant, x, y }",
         "minerva-point-drag": "A dot is being dragged (on every move, before the drop); detail: { point, index, x, y, quadrant }",
-        "minerva-point-drop": "A dragged dot was released; detail: { point, index, x, y, quadrant }",
+        "minerva-point-drop": "A dragged dot was released, or the focused dot was moved with Shift + an arrow key; detail: { point, index, x, y, quadrant }",
         "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
         "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
         "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",

@@ -437,14 +437,16 @@ export interface QuadrantChartProps
       "onPointClick" | "onPlotClick" | "renderTooltip" | "xAxis" | "yAxis"
     >,
     QuadrantConfig {
+  /** Actions shown next to the active point, outside the canvas hit region. */
+  renderPointActions?: (point: QuadrantPoint, index: number) => ReactNode;
   /** Called with the clicked point and its index */
   onPointClick?: (point: QuadrantPoint, index: number) => void;
   /** Called when the same point is clicked twice in quick succession */
   onPointDoubleClick?: (point: QuadrantPoint, index: number) => void;
   /**
    * Called on every move of a dragged point, with the quadrant under the
-   * pointer; the dots stay in place until the drop (update `points` in
-   * `onPointDrop`)
+   * pointer. A local visual preview follows every move; commit `points` in
+   * `onPointDrop` (cancellation leaves caller data unchanged)
    */
   onPointDrag?: (
     point: QuadrantPoint,

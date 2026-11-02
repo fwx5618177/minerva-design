@@ -206,3 +206,110 @@ describe("MediaPlayer (Vue)", () => {
     expect(media().muted).toBe(false);
   });
 });
+
+describe("MediaPlayer captions (Vue)", () => {
+  // happy-dom builds a new TextTrack on each `track` read and refuses the
+  // "hidden" mode: one stable fake per <track>.
+  const textTracks = new WeakMap<HTMLTrackElement, TextTrack>();
+  const textTrackOf = (el: HTMLTrackElement) => {
+    let track = textTracks.get(el);
+    if (!track) {
+      track = Object.assign(new EventTarget(), {
+        mode: "disabled",
+        activeCues: null,
+      }) as unknown as TextTrack;
+      textTracks.set(el, track);
+    }
+    return track;
+  };
+  const tracks = [
+    { src: "/en.vtt", srclang: "en", label: "English" },
+    { src: "/fr.vtt", srclang: "fr", label: "Français", default: true },
+  ];
+  const trackEls = () => Array.from(media().querySelectorAll("track"));
+
+  beforeEach(() => {
+    localStorage.clear();
+    vi.spyOn(HTMLTrackElement.prototype, "track", "get").mockImplementation(
+      function (this: HTMLTrackElement) {
+        return textTrackOf(this);
+      },
+    );
+  });
+
+  it("renders <track> children and draws the active cue", async () => {
+    renderPlayer({ src: "/clip.mp4", tracks });
+    await nextTick();
+    const els = trackEls();
+    expect(els.map((el) => el.getAttribute("srclang"))).toEqual(["en", "fr"]);
+    expect(els[0]!.getAttribute("kind")).toBe("subtitles");
+    expect(els[1]!.hasAttribute("default")).toBe(false);
+    const fr = textTrackOf(els[1]!);
+    expect(fr.mode).toBe("hidden");
+    Object.defineProperty(fr, "activeCues", {
+      configurable: true,
+      value: [{ text: "<i>Bonjour</i>" }],
+    });
+    fr.dispatchEvent(new Event("cuechange"));
+    await nextTick();
+    expect(document.querySelector('[data-part="captions"]')!.textContent).toBe(
+      "Bonjour",
+    );
+  });
+
+  it("chooses a track in the captions menu and emits trackChange", async () => {
+    const view = renderPlayer({ src: "/clip.mp4", tracks });
+    await nextTick();
+    const cc = button("Captions");
+    expect(cc.getAttribute("aria-haspopup")).toBe("menu");
+    await fireEvent.click(cc);
+    await nextTick();
+    const items = Array.from(
+      document.querySelectorAll<HTMLElement>('[role="menuitemradio"]'),
+    );
+    expect(items.map((item) => item.textContent?.trim())).toEqual([
+      "Off",
+      "English",
+      "Français",
+    ]);
+    expect(items[2]!.getAttribute("aria-checked")).toBe("true");
+    expect(document.activeElement).toBe(items[2]);
+    await fireEvent.keyDown(items[2]!, { key: "Home" });
+    expect(document.activeElement).toBe(items[0]);
+    await fireEvent.click(items[1]!);
+    expect(view.emitted("trackChange")).toEqual([
+      [{ index: 0, track: tracks[0] }],
+    ]);
+    expect(document.querySelector('[role="menu"]')).toBeNull();
+    expect(localStorage.getItem("minerva-media-player-captions")).toBe("en");
+    await nextTick();
+    expect(textTrackOf(trackEls()[0]!).mode).toBe("hidden");
+    expect(textTrackOf(trackEls()[1]!).mode).toBe("disabled");
+
+    group().focus();
+    await fireEvent.keyDown(group(), { key: "c" });
+    expect(view.emitted("trackChange")![1]).toEqual([
+      { index: -1, track: null },
+    ]);
+  });
+
+  it("shows SRT cues of an audio player under the title", async () => {
+    const srt = "1\n00:00:01,000 --> 00:00:03,000\nHello\n";
+    renderPlayer({
+      title: "Talk",
+      tracks: [
+        {
+          src: `data:application/x-subrip,${encodeURIComponent(srt)}`,
+          label: "English",
+          default: true,
+        },
+      ],
+    });
+    await load(10);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    await tick(2);
+    expect(document.querySelector('[data-part="captions"]')!.textContent).toBe(
+      "Hello",
+    );
+  });
+});

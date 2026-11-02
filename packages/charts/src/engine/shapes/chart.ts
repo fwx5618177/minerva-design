@@ -13,7 +13,7 @@ import { VectorRecorder } from "../renderers/vector";
 import { followDefaultRenderer } from "../renderers/follow";
 import type { ChartRendererKind } from "../types";
 import { readTheme, watchTheme, type ChartTheme } from "../theme";
-import { placeTooltipElement } from "../tooltip";
+import { placeTooltipElement, releaseTooltip, themeTooltip } from "../tooltip";
 import { drawShapeScene } from "./draw";
 import { hitTestShapes, hoverAnchor, stepHover } from "./hit";
 import {
@@ -98,6 +98,7 @@ export const createShapeChart = (
     return text;
   };
   let theme: ChartTheme = readTheme(dom.root, options.palette);
+  themeTooltip(dom.tooltip, theme);
   let scene: ShapeScene | null = null;
   let hover: HoverState | null = null;
   let tipKey = "";
@@ -600,6 +601,7 @@ export const createShapeChart = (
   const refreshTheme = () => {
     if (destroyed) return;
     theme = readTheme(dom.root, options.palette);
+    themeTooltip(dom.tooltip, theme);
     renderLegend();
     tipKey = "";
     schedule();
@@ -713,6 +715,7 @@ export const createShapeChart = (
       listeners.click.clear();
       listeners.toggle.clear();
       listeners.drill.clear();
+      releaseTooltip(dom.tooltip);
       dom.root.remove();
     },
   };

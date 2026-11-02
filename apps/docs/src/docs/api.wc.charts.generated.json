@@ -2856,7 +2856,7 @@
     "source": "web-components/src/components/chart/charts.ts",
     "className": "MinervaQuadrantChart",
     "summary": "Four-quadrant matrix of labelled, draggable dots.",
-    "description": "Four-quadrant matrix (priority matrix, Eisenhower, BCG...) of `minerva-design/charts/core` (the `<QuadrantChart>` of React): tinted quadrants with titles, dividers and labelled dots placed without overlapping labels. With `drag-points`, dots can be dragged to another quadrant (`minerva-point-drop`; update `points` to move them). Published as the optional entry `minerva-design/web-components/chart`.",
+    "description": "Four-quadrant matrix (priority matrix, Eisenhower, BCG...) of `minerva-design/charts/core` (the `<QuadrantChart>` of React): tinted quadrants with titles, dividers and labelled dots placed without overlapping labels. With `drag-points`, dots can be dragged to another quadrant (`minerva-point-drop`; update `points` to move them). A visually hidden list of the dots per quadrant lets screen readers and keyboards reach every dot: arrows move between them, Enter clicks (`minerva-point-click`) and, with `drag-points`, Shift + arrows move the focused dot to the neighbouring quadrant (`minerva-point-drop`, announced in a live region). The focused dot is drawn with a focus ring and reported by `minerva-hover`. Published as the optional entry `minerva-design/web-components/chart`.",
     "properties": [
       {
         "name": "xLabel",
@@ -2929,6 +2929,13 @@
         "attribute": "selected-index",
         "type": "number | null | undefined",
         "description": "Index of the selected dot, drawn with a ring (`null`: none)"
+      },
+      {
+        "name": "noAccessiblePoints",
+        "attribute": "no-accessible-points",
+        "type": "boolean",
+        "default": "false",
+        "description": "Leaves out the visually hidden list of the dots (keyboard and screen reader access)"
       },
       {
         "name": "height",
@@ -3020,11 +3027,11 @@
       },
       {
         "name": "minerva-point-drop",
-        "description": "A dragged dot was released; detail: { point, index, x, y, quadrant }"
+        "description": "A dragged dot was released, or the focused dot was moved with Shift + an arrow key; detail: { point, index, x, y, quadrant }"
       },
       {
         "name": "minerva-hover",
-        "description": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, `null` when nothing is hovered"
+        "description": "The hovered (or keyboard-focused) dot changed; detail: { x, xLabel, items }, `null` when nothing is hovered"
       },
       {
         "name": "minerva-plot-click",

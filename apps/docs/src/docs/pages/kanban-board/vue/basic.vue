@@ -31,7 +31,7 @@ const tasks = ref([
 ] as { id: number; title: string; owner: string; status: Status }[]);
 const itemsOf = (status: Status) =>
   tasks.value.filter((task) => task.status === status);
-// No drag and drop: cards move with your own actions.
+// Cards move with their own actions here (draggable boards: drag-drop demo).
 const advance = (id: number) => {
   const task = tasks.value.find((item) => item.id === id);
   if (task && next[task.status]) task.status = next[task.status]!;

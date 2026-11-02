@@ -552,6 +552,18 @@ const events: Record<string, Event[]> = {
       "{ volume: number; muted: boolean }",
       "Mute button or audio volume bar (video volume stays 1).",
     ),
+    event(
+      "trackchange",
+      "{ index: number; track: { src: string; srclang?: string; label: string; kind?: string; default?: boolean } | null }",
+      "The user chose captions in the CC row (index -1 and track null: Off).",
+    ),
+  ],
+  kanbanBoard: [
+    event(
+      "cardmove",
+      "{ cardKey: string; fromColumn: string; fromIndex: number; toColumn: string; toIndex: number }",
+      "A draggable board dropped a kanban-card (long press, then move); toIndex counts the target column's cards without the moved one. Dropping in place emits nothing; the board stays controlled.",
+    ),
   ],
   pagination: [
     event(
@@ -806,6 +818,11 @@ export function annotateNativeApi(controls: Record<string, Control>) {
           "seek",
           "seek(seconds: number): void",
           "Move the playhead (clamped to the duration).",
+        ),
+        method(
+          "chooseTrack",
+          "chooseTrack(index: number): void",
+          "Show the captions of tracks[index] (-1: off); remembered in storage, fires trackchange.",
         ),
       );
     if (name === "confirmProvider")

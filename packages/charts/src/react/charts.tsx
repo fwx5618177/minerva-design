@@ -18,7 +18,6 @@ import {
   histogramSeries,
   lineSeries,
   presetLabels,
-  quadrantCenter,
   quadrantChartOptions,
   quadrantGroups,
   quadrantLabels,
@@ -30,6 +29,18 @@ import {
   type QuadrantCorner,
   type QuadrantPoint,
 } from "../engine/presets";
+import {
+  QUADRANT_CORNERS,
+  QUADRANT_MOVE_SHORTCUTS,
+  isQuadrantMoveKey,
+  quadrantHoverEvent,
+  quadrantKeyTarget,
+  quadrantMoveDrop,
+  quadrantMovedText,
+  quadrantName as nameOfQuadrant,
+  quadrantNavTarget,
+  quadrantPointName,
+} from "../engine/quadrant-keyboard";
 import { resolveLocale } from "../engine/locale";
 import type {
   ChartAnnotation,
@@ -288,12 +299,7 @@ export function ScatterChart(props: ScatterChartProps) {
   );
 }
 
-const CORNERS: QuadrantCorner[] = [
-  "topLeft",
-  "topRight",
-  "bottomLeft",
-  "bottomRight",
-];
+const CORNERS = QUADRANT_CORNERS;
 
 /** Two clicks on the same point within this delay count as a double click */
 const DOUBLE_CLICK_MS = 400;
@@ -310,17 +316,6 @@ const VISUALLY_HIDDEN: CSSProperties = {
   clipPath: "inset(50%)",
   whiteSpace: "nowrap",
 };
-
-/** Quadrant reached from another with Shift + an arrow key */
-const MOVES: Record<string, (corner: QuadrantCorner) => QuadrantCorner> = {
-  ArrowUp: (c) => c.replace("bottom", "top") as QuadrantCorner,
-  ArrowDown: (c) => c.replace("top", "bottom") as QuadrantCorner,
-  ArrowLeft: (c) => c.replace("Right", "Left") as QuadrantCorner,
-  ArrowRight: (c) => c.replace("Left", "Right") as QuadrantCorner,
-};
-
-const MOVE_SHORTCUTS =
-  "Shift+ArrowUp Shift+ArrowDown Shift+ArrowLeft Shift+ArrowRight";
 
 /** Header slot in the outer corner of a quadrant */
 const headerStyle = (corner: QuadrantCorner): CSSProperties => {
@@ -395,6 +390,20 @@ export function QuadrantChart(props: QuadrantChartProps) {
   } = props;
   const geometry = { xDomain, yDomain, xSplit, ySplit, reverseX };
   const [dropCorner, setDropCorner] = useState<QuadrantCorner | null>(null);
+  const [preview, setPreview] = useState<{
+    index: number;
+    target: QuadrantDropTarget;
+  } | null>(null);
+  const [hovered, setHovered] = useState<number | null>(null);
+  const [selection, setSelection] = useState<number | null>(null);
+  const displayed = preview
+    ? points.map((point, index) =>
+        index === preview.index
+          ? { ...point, x: preview.target.x, y: preview.target.y }
+          : point,
+      )
+    : points;
+  const selected = selectedIndex !== undefined ? selectedIndex : selection;
   const lastClick = useRef<{ index: number; time: number } | null>(null);
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
   const [announcement, setAnnouncement] = useState("");
@@ -410,13 +419,30 @@ export function QuadrantChart(props: QuadrantChartProps) {
   const movable = !!onPointDrop && draggable !== false;
   const groups = useMemo(
     () =>
-      quadrantGroups({ points, xDomain, yDomain, xSplit, ySplit, reverseX }),
-    [points, xDomain, yDomain, xSplit, ySplit, reverseX],
+      quadrantGroups({
+        points: displayed,
+        xDomain,
+        yDomain,
+        xSplit,
+        ySplit,
+        reverseX,
+      }),
+    [displayed, xDomain, yDomain, xSplit, ySplit, reverseX],
   );
   const quadrantName = (corner: QuadrantCorner) =>
-    quadrants?.[corner]?.label || texts[corner];
+    nameOfQuadrant(corner, { quadrants }, texts);
   const pointName = (point: QuadrantPoint, index: number) =>
-    point.label || texts.point.replace("{n}", String(index + 1));
+    quadrantPointName(point, index, texts);
+  // the accessible buttons in list order (arrow navigation)
+  const order = CORNERS.flatMap((corner) => groups[corner].indices);
+  const focusHover = (index: number | null) =>
+    props.onHover?.(
+      quadrantHoverEvent(
+        { points, ...geometry, quadrants, xLabel, yLabel, name },
+        index,
+        locale,
+      ),
+    );
 
   useEffect(() => {
     const layer = layerRef.current;
@@ -440,9 +466,16 @@ export function QuadrantChart(props: QuadrantChartProps) {
   // a release outside the plot ends the drag without a drop event
   useEffect(() => {
     if (!dropCorner) return;
-    const release = () => setDropCorner(null);
+    const release = () => {
+      setDropCorner(null);
+      setPreview(null);
+    };
     window.addEventListener("pointerup", release);
-    return () => window.removeEventListener("pointerup", release);
+    window.addEventListener("pointercancel", release);
+    return () => {
+      window.removeEventListener("pointerup", release);
+      window.removeEventListener("pointercancel", release);
+    };
   }, [dropCorner]);
 
   const dropAt = (event: ChartDragEvent): QuadrantDropTarget => ({
@@ -453,7 +486,7 @@ export function QuadrantChart(props: QuadrantChartProps) {
 
   const options = quadrantChartOptions(
     {
-      points,
+      points: displayed,
       xDomain,
       yDomain,
       xSplit,
@@ -469,7 +502,7 @@ export function QuadrantChart(props: QuadrantChartProps) {
       name,
       draggable: draggable ?? !!(onPointDrop || onPointDrag),
       showCounts: renderQuadrantHeader ? undefined : showCounts,
-      selectedIndex,
+      selectedIndex: selected,
       selectedIndices,
     },
     engineOptions({ ...props, series: [] }),
@@ -505,36 +538,45 @@ export function QuadrantChart(props: QuadrantChartProps) {
           data-point-index={index}
           aria-label={`${label}, ${quadrantName(corner)}`}
           aria-current={selected ? "true" : undefined}
-          aria-keyshortcuts={movable ? MOVE_SHORTCUTS : undefined}
+          aria-keyshortcuts={movable ? QUADRANT_MOVE_SHORTCUTS : undefined}
           aria-describedby={movable ? hintId : undefined}
-          onFocus={() => setFocusedIndex(index)}
+          onFocus={() => {
+            setFocusedIndex(index);
+            focusHover(index);
+          }}
           onBlur={(event) => {
             setFocusedIndex((current) => (current === index ? null : current));
             if (event.relatedTarget) pendingFocus.current = null;
+            const next = event.relatedTarget as Element | null;
+            if (
+              !next?.closest?.("button[data-point-index]") &&
+              !pendingFocus.current
+            )
+              focusHover(null);
           }}
-          onClick={() => onPointClick?.(point, index)}
+          onClick={() => {
+            setSelection(index);
+            onPointClick?.(point, index);
+          }}
           onKeyDown={(event) => {
-            const move =
-              movable &&
-              event.shiftKey &&
-              !event.altKey &&
-              !event.ctrlKey &&
-              !event.metaKey
-                ? MOVES[event.key]
-                : undefined;
-            if (!move) return;
+            if (!(movable && isQuadrantMoveKey(event))) {
+              const next = quadrantNavTarget(event, order, index);
+              if (next === null) return;
+              event.preventDefault();
+              layerRef.current
+                ?.querySelector<HTMLButtonElement>(
+                  `button[data-point-index="${next}"]`,
+                )
+                ?.focus();
+              return;
+            }
             event.preventDefault();
-            const target = move(corner);
-            if (target === corner) return;
+            const target = quadrantKeyTarget(event, corner);
+            if (!target) return;
             pendingFocus.current = { index, points };
-            onPointDrop!(point, index, {
-              ...quadrantCenter(geometry, target),
-              quadrant: target,
-            });
+            onPointDrop!(point, index, quadrantMoveDrop(geometry, target));
             setAnnouncement(
-              texts.moved
-                .replace("{point}", label)
-                .replace("{quadrant}", quadrantName(target)),
+              quadrantMovedText(texts, label, quadrantName(target)),
             );
           }}
         >
@@ -544,6 +586,8 @@ export function QuadrantChart(props: QuadrantChartProps) {
     );
   };
 
+  const activeIndex = preview?.index ?? hovered ?? focusedIndex ?? selected;
+  const activePoint = activeIndex == null ? null : displayed[activeIndex];
   const overlay = (plot: ChartRect) => {
     const xs = xSplit ?? (x0 + x1) / 2;
     const ys = ySplit ?? (y0 + y1) / 2;
@@ -599,15 +643,15 @@ export function QuadrantChart(props: QuadrantChartProps) {
         className="minerva-chart-quadrant-points"
         style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
       >
-        {points.map((point, index) => {
+        {displayed.map((point, index) => {
           if (!Number.isFinite(point.x) || !Number.isFinite(point.y))
             return null;
           const fx = fraction(point.x, x0, x1);
           return (
-            <span
+            <div
               key={index}
               {...getPointProps?.(point, index)}
-              aria-hidden="true"
+              aria-hidden={props.renderPointActions ? undefined : true}
               className="minerva-chart-quadrant-point"
               data-point-index={index}
               data-label={point.label}
@@ -619,7 +663,11 @@ export function QuadrantChart(props: QuadrantChartProps) {
                 height: 0,
                 pointerEvents: "none",
               }}
-            />
+            >
+              {index === activeIndex
+                ? props.renderPointActions?.(points[index], index)
+                : null}
+            </div>
           );
         })}
         {accessiblePoints ? (
@@ -650,6 +698,58 @@ export function QuadrantChart(props: QuadrantChartProps) {
           </>
         ) : null}
       </div>,
+      activePoint && (preview || hovered === null)
+        ? (() => {
+            const [x0, x1] = xDomain ?? [0, 10];
+            const [y0, y1] = yDomain ?? [0, 10];
+            const corner = quadrantOf(geometry, activePoint.x, activePoint.y);
+            const x = fraction(activePoint.x, x0, x1);
+            const visualX = reverseX ? 1 - x : x;
+            return (
+              <div
+                key="point-card"
+                aria-hidden="true"
+                data-point-preview={activeIndex}
+                style={{
+                  position: "absolute",
+                  left: visualX * plot.width,
+                  top: (1 - fraction(activePoint.y, y0, y1)) * plot.height,
+                  transform:
+                    visualX > 0.6
+                      ? "translate(calc(-100% - 14px), -50%)"
+                      : "translate(14px, -50%)",
+                  pointerEvents: "none",
+                  zIndex: 3,
+                  maxWidth: 200,
+                  padding: "8px 12px",
+                  borderRadius: 10,
+                  border: "1px solid var(--border-color, #374151)",
+                  borderInlineStart: `3px solid ${activePoint.color ?? quadrants?.[corner]?.color ?? tint}`,
+                  background:
+                    "var(--surface-elevated-color, var(--bg-color, #18181b))",
+                  color: "var(--text-color, #f4f4f5)",
+                  boxShadow: "0 8px 24px rgb(0 0 0 / 18%)",
+                  fontSize: 12,
+                  lineHeight: 1.5,
+                }}
+              >
+                <strong
+                  style={{
+                    display: "block",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {activePoint.label}
+                </strong>
+                <span style={{ color: "var(--text-secondary-color, #9ca3af)" }}>
+                  {quadrantName(corner)}
+                </span>
+              </div>
+            );
+          })()
+        : null,
       dropCorner ? (
         <div
           key="drop-target"
@@ -681,6 +781,7 @@ export function QuadrantChart(props: QuadrantChartProps) {
         const double =
           last?.index === index && now - last.time < DOUBLE_CLICK_MS;
         lastClick.current = double ? null : { index, time: now };
+        setSelection(index);
         onPointClick?.(points[index], index);
         if (double) onPointDoubleClick?.(points[index], index);
       }}
@@ -689,13 +790,19 @@ export function QuadrantChart(props: QuadrantChartProps) {
           ? (at) => onQuadrantClick(quadrantOf(geometry, at.x, at.y), at)
           : undefined
       }
+      onHover={(event) => {
+        setHovered(event?.items[0]?.index ?? null);
+        props.onHover?.(event);
+      }}
       onDrag={(event) => {
         const index = event.item.index;
         const target = dropAt(event);
         setDropCorner(target.quadrant);
+        setPreview({ index, target });
         if (points[index]) onPointDrag?.(points[index], index, target);
       }}
       onDrop={(event) => {
+        setPreview(null);
         setDropCorner(null);
         pendingFocus.current = null;
         const index = event.item.index;

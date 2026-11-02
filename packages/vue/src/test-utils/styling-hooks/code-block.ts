@@ -16,6 +16,7 @@ export default [
         language: "js",
         showLineNumbers: true,
         showLanguage: true,
+        marks: [{ start: 6, end: 7 }],
       }),
   },
 ] satisfies HookScenario[];

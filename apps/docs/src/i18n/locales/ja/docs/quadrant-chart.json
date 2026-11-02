@@ -16,7 +16,7 @@
     },
     "triage": {
       "title": "バッジ・件数・キーボード移動",
-      "description": "各象限にバッジ（badge）、2 行目の説明（description）、タスク数と合計時間（showCounts に関数を渡す）を付け、すべてチャートが描画します。タスクをクリックするとリングで囲みます（selectedIndex）。キーボードでは Tab で非表示のタスク一覧に入り、フォーカス中の点にフォーカスリングが表示されます。Enter で選択、Shift + 矢印キーで onPointDrop を通じて隣の象限へ移動し、ライブリージョンで読み上げます。"
+      "description": "象限にはバッジ、説明、件数を表示します。ホバー・選択・フォーカス時に情報カードを表示。Tab でタスクを移動、Enter で選択、Shift + 矢印で隣の象限へ移動し、変更を読み上げます。"
     },
     "quadrant-header": {
       "title": "象限ヘッダーのカスタマイズ",
@@ -308,10 +308,11 @@
       "onPointDrag": "ドラッグ中のポイントが動くたびに、ポイント・インデックス・ポインター下の象限を渡して呼ばれます。ドロップするまでポイントは動きません",
       "onQuadrantClick": "象限の空いている場所をクリックしたときに、象限とデータ位置を渡して呼ばれます",
       "onPointDrop": "ドラッグしたポイントを離したときに、ポイント・インデックス・ドロップ先を渡して呼ばれます。設定するとポイントがドラッグ可能になります（移動するには points を更新）",
+      "renderPointActions": "選択またはフォーカスされたポイントの横に表示する React のアクション（編集 / 削除ボタンなど）。キャンバスのヒット領域の外に置かれ、ポイントとそのインデックスを受け取ります",
       "renderTooltip": "ポイントのツールチップの React コンテンツ",
       "quadrantContent": "各象限の上に置く React コンテンツ（追加ボタンなど）。ポインターイベントを受け取るのはこのコンテンツだけです",
       "renderQuadrantHeader": "各象限の外側の角に置く React ヘッダー（上の象限は上端、下の象限は下端）。象限と { count, points, indices, region } を受け取り、描画されるタイトル・バッジ・説明・件数を置き換えます",
-      "accessiblePoints": "キーボードとスクリーンリーダー利用者のため、象限ごとに視覚的に非表示のボタン一覧を置きます。Enter / Space で onPointClick、Shift + 矢印キーで隣の象限へ移動（onPointDrop）し、フォーカス中の点にフォーカスリングを描きます",
+      "accessiblePoints": "キーボードとスクリーンリーダー利用者のため、象限ごとに視覚的に非表示のボタン一覧を置きます。矢印キーで点の間を移動し、Enter / Space で onPointClick、Shift + 矢印キーで隣の象限へ移動（onPointDrop、ライブリージョンで読み上げ）し、フォーカス中の点にフォーカスリングを描いて onHover で通知します。Vue、Angular、Web Components（no-accessible-points）も同じレイヤーを描画し、React Native は各点に「…に移動」のアクセシビリティアクションを、Taro・uni-app・WeChat は「…に移動」ボタン付きの点の一覧を提供します",
       "getPointProps": "各点に置かれる不可視アンカーの追加属性（data-testid など）。すべてのアンカーに data-point-index、data-label、クラス minerva-chart-quadrant-point が付きます"
     },
     "QuadrantConfig": {
@@ -406,7 +407,8 @@
       "props": {
         "hideTicks": "軸の数値目盛りを非表示にします（マトリクスのみ残ります）",
         "hideLabels": "点の横のラベルを非表示にします",
-        "dragPoints": "点をドラッグできるようにします（移動中は minerva-point-drag、離すと minerva-point-drop。移動するには points を更新します）",
+        "dragPoints": "点をドラッグできるようにします（移動中は minerva-point-drag、離すと minerva-point-drop。移動するには points を更新します）。キーボードの Shift + 矢印キーによる移動も有効にします",
+        "noAccessiblePoints": "視覚的に非表示の点の一覧（矢印キーでの点間移動、Enter でクリック、Shift + 矢印キーでの移動、フォーカスリング）を省きます",
         "height": "チャートの高さ（凡例を含む）：ピクセルまたは任意の CSS の長さ",
         "options": "その他のエンジンのオプション（軸、凡例、ツールチップ、パレット、書式…）。要素自身のプロパティとマージされます。プロパティのみ",
         "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
@@ -416,7 +418,7 @@
         "minerva-point-double-click": "同じ点がすばやく2回クリックされました。detail：{ point, index }",
         "minerva-quadrant-click": "象限の空白部分がクリックされました。detail：{ quadrant, x, y }",
         "minerva-point-drag": "点をドラッグ中です（ドロップ前、移動するたびに発生）。detail：{ point, index, x, y, quadrant }",
-        "minerva-point-drop": "ドラッグした点が離されました。detail：{ point, index, x, y, quadrant }",
+        "minerva-point-drop": "ドラッグした点が離されたか、フォーカス中の点が Shift + 矢印キーで移動されました。detail：{ point, index, x, y, quadrant }",
         "minerva-hover": "ホバー（またはキーボードでフォーカス）しているポイントが変わりました。detail：{ x, xLabel, items }、何もない場合は null",
         "minerva-plot-click": "ポイントのないプロット領域がクリックされました。detail：{ x, y }（データ座標）",
         "minerva-zoom": "ユーザーがズームまたはパンしました。detail：{ x, y }（表示範囲）",

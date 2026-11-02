@@ -12,4 +12,18 @@ describe("Slider (react-native-web)", () => {
     expect(end).toHaveAttribute("aria-valuetext", "60");
     expect(start).toHaveAttribute("data-minerva", "slider");
   });
+
+  it("vertical: aria-orientation and the root hook", () => {
+    const { container } = render(
+      <Slider accessibilityLabel="Level" orientation="vertical" />,
+    );
+    expect(screen.getByRole("slider")).toHaveAttribute(
+      "aria-orientation",
+      "vertical",
+    );
+    expect(container.querySelector('[data-part="root"]')).toHaveAttribute(
+      "data-orientation",
+      "vertical",
+    );
+  });
 });

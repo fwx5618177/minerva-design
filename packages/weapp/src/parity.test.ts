@@ -19,6 +19,7 @@ const names = [
   "mediaPlayer",
   "kanbanBoard",
   "kanbanColumn",
+  "kanbanCard",
   "flashcard",
   "answerSheet",
   "segmentedControl",

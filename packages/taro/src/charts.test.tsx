@@ -345,6 +345,81 @@ describe("charts", () => {
     expect(target.y).toBeCloseTo(9, 5);
   });
 
+  it("lists the QuadrantChart points for screen readers with move-to-quadrant buttons", async () => {
+    const { node } = fakeNode();
+    mockQuery(node);
+    const ref = createRef<ChartHandle>();
+    const points = [
+      { x: 2, y: 8, label: "Write report" },
+      { x: 7, y: 3 },
+    ];
+    const onPointClick = vi.fn();
+    const onPointDrop = vi.fn();
+    const { container, rerender } = render(
+      <QuadrantChart
+        ref={ref}
+        locale="en"
+        points={points}
+        quadrants={{ topLeft: { label: "Do first" } }}
+        selectedIndex={1}
+        onPointClick={onPointClick}
+        onPointDrop={onPointDrop}
+      />,
+    );
+    await ready(ref);
+    const layer = container.querySelector(
+      '[data-minerva="chart-quadrant-points"]',
+    )!;
+    // a sibling of the chart image (whose children are presentational)
+    expect(layer.closest('[role="img"]')).toBeNull();
+    const lists = layer.querySelectorAll('[role="list"]');
+    expect(
+      [...lists].map((l) => [
+        l.getAttribute("role"),
+        l.getAttribute("aria-label"),
+      ]),
+    ).toEqual([
+      ["list", "Do first"],
+      ["list", "Bottom right quadrant"],
+    ]);
+    const buttons = [...layer.querySelectorAll('[role="button"]')];
+    expect(buttons.map((b) => b.getAttribute("aria-label"))).toEqual([
+      "Write report, Do first, x: 2, y: 8",
+      "Write report, Move to Bottom left quadrant",
+      "Write report, Move to Top right quadrant",
+      "Point 2, Bottom right quadrant, x: 7, y: 3",
+      "Point 2, Move to Top right quadrant",
+      "Point 2, Move to Bottom left quadrant",
+    ]);
+    expect(buttons[3]!.getAttribute("aria-selected")).toBe("true");
+
+    act(() => (buttons[3] as HTMLElement).click());
+    expect(onPointClick).toHaveBeenCalledWith(points[1], 1);
+    act(() => (buttons[1] as HTMLElement).click());
+    expect(onPointDrop).toHaveBeenCalledWith(points[0], 0, {
+      x: 2.5,
+      y: 2.5,
+      quadrant: "bottomLeft",
+    });
+    expect(layer.querySelector('[role="status"]')!.textContent).toBe(
+      "Write report moved to Bottom left quadrant",
+    );
+
+    // without onPointDrop: no move buttons; accessiblePoints={false}: no list
+    rerender(<QuadrantChart ref={ref} locale="en" points={points} />);
+    expect(
+      container.querySelectorAll(
+        '[data-minerva="chart-quadrant-points"] [role="button"]',
+      ),
+    ).toHaveLength(2);
+    rerender(
+      <QuadrantChart ref={ref} points={points} accessiblePoints={false} />,
+    );
+    expect(
+      container.querySelector('[data-minerva="chart-quadrant-points"]'),
+    ).toBeNull();
+  });
+
   it("re-measures on resize and cleans up on unmount", async () => {
     const { node } = fakeNode();
     const { size } = mockQuery(node);

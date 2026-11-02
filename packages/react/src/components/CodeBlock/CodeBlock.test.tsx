@@ -2,9 +2,16 @@ import { act, createRef } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { detectCodeLanguage } from "@minerva/core";
 import i18n from "../../config/i18n";
 import CodeBlock from "./CodeBlock";
 import styles from "./codeBlock.module.scss";
+
+// a pass-through spy, to count the detections
+vi.mock("@minerva/core", async (importOriginal) => {
+  const core = await importOriginal<typeof import("@minerva/core")>();
+  return { ...core, detectCodeLanguage: vi.fn(core.detectCodeLanguage) };
+});
 
 describe("CodeBlock", () => {
   it("exposes a named, keyboard-focusable region for scrolling", async () => {
@@ -403,6 +410,274 @@ describe("CodeBlock highlighting", () => {
     );
     await user.click(screen.getByRole("button", { name: "Copy code" }));
     expect(writeText).toHaveBeenCalledWith(json);
+    delete (navigator as { clipboard?: unknown }).clipboard;
+  });
+});
+
+describe('CodeBlock language="auto"', () => {
+  const python = "def greet(name):\n    return f'Hello {name}'\n";
+  const code = (container: HTMLElement) => container.querySelector("code")!;
+
+  afterEach(() => {
+    vi.mocked(detectCodeLanguage).mockClear();
+  });
+
+  it("highlights, labels and tags the detected language", () => {
+    const { container } = render(
+      <CodeBlock language="auto" showLanguage>
+        {python}
+      </CodeBlock>,
+    );
+    const el = code(container);
+    expect(el).toHaveClass("language-python");
+    expect(el).toHaveAttribute("data-language", "python");
+    expect(container.querySelector(`.${styles.language}`)?.textContent).toBe(
+      "PYTHON",
+    );
+    const keywords = el.querySelectorAll(`.${styles["token-keyword"]}`);
+    expect([...keywords].map((k) => k.textContent)).toContain("def");
+    expect(el.textContent).toBe(python);
+  });
+
+  it("accepts any case and keeps undetected text plain", () => {
+    const { container } = render(
+      <CodeBlock language=" Auto " showLanguage>
+        {"Just a sentence."}
+      </CodeBlock>,
+    );
+    expect(code(container)).toHaveAttribute("data-language", "plain");
+    expect(code(container).querySelector("span")).toBeNull();
+    expect(container.querySelector(`.${styles.language}`)?.textContent).toBe(
+      "PLAIN",
+    );
+  });
+
+  it("detects once per text and follows text changes", () => {
+    const { container, rerender } = render(
+      <CodeBlock language="auto">{python}</CodeBlock>,
+    );
+    rerender(
+      <CodeBlock language="auto" showLineNumbers>
+        {python}
+      </CodeBlock>,
+    );
+    expect(detectCodeLanguage).toHaveBeenCalledTimes(1);
+    rerender(<CodeBlock language="auto">{'{"ok": true}'}</CodeBlock>);
+    expect(detectCodeLanguage).toHaveBeenCalledTimes(2);
+    expect(code(container)).toHaveAttribute("data-language", "json");
+  });
+
+  it("keeps the language with highlight={false}", () => {
+    const { container } = render(
+      <CodeBlock language="auto" highlight={false}>
+        {python}
+      </CodeBlock>,
+    );
+    expect(code(container)).toHaveAttribute("data-language", "python");
+    expect(code(container).querySelector("span")).toBeNull();
+  });
+
+  it("lays marks over the detected highlighting", () => {
+    const { container } = render(
+      <CodeBlock language="auto" marks={[{ start: 4, end: 9, id: "m" }]}>
+        {python}
+      </CodeBlock>,
+    );
+    const mark = container.querySelector("mark")!;
+    expect(mark.textContent).toBe("greet");
+    expect(mark).toHaveAttribute("data-mark-id", "m");
+    expect(
+      code(container).querySelector(`.${styles["token-keyword"]}`)?.textContent,
+    ).toBe("def");
+    expect(code(container).textContent).toBe(python);
+  });
+});
+
+describe("CodeBlock marks", () => {
+  const source = 'const name = "x";\nlog(name);';
+  const code = (container: HTMLElement) => container.querySelector("code")!;
+  const marksOf = (container: HTMLElement) => [
+    ...container.querySelectorAll<HTMLElement>("mark"),
+  ];
+
+  afterEach(() => {
+    window.getSelection()?.removeAllRanges();
+  });
+
+  it("wraps the ranges in <mark>s, keeping the token colors inside", () => {
+    const { container } = render(
+      <CodeBlock
+        language="js"
+        marks={[
+          { start: 6, end: 15, id: "a", title: "Note", className: "saved" },
+        ]}
+      >
+        {source}
+      </CodeBlock>,
+    );
+    const [mark] = marksOf(container);
+    expect(mark.textContent).toBe('name = "x');
+    expect(mark).toHaveClass(styles.mark, "saved");
+    expect(mark).toHaveAttribute("data-mark-id", "a");
+    expect(mark).toHaveAttribute("title", "Note");
+    expect(mark).toHaveAttribute("data-part", "code-mark");
+    expect(mark.querySelector(`.${styles["token-string"]}`)?.textContent).toBe(
+      '"x',
+    );
+    expect(mark.querySelector(`.${styles["token-operator"]}`)).not.toBeNull();
+    expect(code(container).textContent).toBe(source);
+    expect(
+      code(container).querySelector(`.${styles["token-keyword"]}`)?.textContent,
+    ).toBe("const");
+  });
+
+  it("marks plain text without a language", () => {
+    const { container } = render(
+      <CodeBlock marks={[{ start: 0, end: 5 }]}>{source}</CodeBlock>,
+    );
+    expect(marksOf(container).map((m) => m.textContent)).toEqual(["const"]);
+    expect(code(container).querySelector("span")).toBeNull();
+    expect(code(container).textContent).toBe(source);
+  });
+
+  it("colors marks with theme names or CSS colors", () => {
+    const { container } = render(
+      <CodeBlock
+        marks={[
+          { start: 0, end: 1 },
+          { start: 2, end: 3, color: "success" },
+          { start: 4, end: 5, color: "rgb(0 0 255 / 0.2)" },
+        ]}
+      >
+        {source}
+      </CodeBlock>,
+    );
+    const [plain, scheme, custom] = marksOf(container);
+    expect(plain.style.getPropertyValue("--code-mark-bg")).toBe("");
+    expect(plain).not.toHaveAttribute("data-mark-color");
+    expect(scheme).toHaveAttribute("data-mark-color", "success");
+    expect(scheme.style.getPropertyValue("--code-mark-bg")).toBe(
+      "color-mix(in srgb, var(--success-color) 30%, transparent)",
+    );
+    expect(custom.style.getPropertyValue("--code-mark-bg")).toBe(
+      "rgb(0 0 255 / 0.2)",
+    );
+  });
+
+  it("lets the later mark win over an earlier overlapping one", () => {
+    const { container } = render(
+      <CodeBlock
+        marks={[
+          { start: 0, end: 10, id: "outer" },
+          { start: 2, end: 4, id: "inner" },
+        ]}
+      >
+        {source}
+      </CodeBlock>,
+    );
+    expect(
+      marksOf(container).map((m) => [
+        m.textContent,
+        m.getAttribute("data-mark-id"),
+      ]),
+    ).toEqual([
+      ["co", "outer"],
+      ["ns", "inner"],
+      ["t name", "outer"],
+    ]);
+    expect(container.querySelector("mark mark")).toBeNull();
+  });
+
+  it("cuts a multi-line mark per line with line numbers", () => {
+    const { container } = render(
+      <CodeBlock language="js" showLineNumbers marks={[{ start: 13, end: 21 }]}>
+        {source}
+      </CodeBlock>,
+    );
+    const marks = marksOf(container);
+    expect(marks.map((m) => m.textContent)).toEqual(['"x";', "log"]);
+    expect(marks.map((m) => m.closest(`.${styles.line}`))).toEqual([
+      ...container.querySelectorAll(`.${styles.line}`),
+    ]);
+    expect(
+      [...container.querySelectorAll(`.${styles.lineNumber}`)].map((n) =>
+        n.getAttribute("data-line"),
+      ),
+    ).toEqual(["1", "2"]);
+    expect(code(container).textContent).toBe(source);
+  });
+
+  it("clamps out-of-range marks and ignores empty ones", () => {
+    const { container } = render(
+      <CodeBlock
+        marks={[
+          { start: -4, end: 2 },
+          { start: 7, end: 7 },
+          { start: 23, end: 99 },
+        ]}
+      >
+        {source}
+      </CodeBlock>,
+    );
+    expect(marksOf(container).map((m) => m.textContent)).toEqual([
+      "co",
+      "ame);",
+    ]);
+  });
+
+  it("calls onMarkClick with the mark, not after a selection drag", async () => {
+    const user = userEvent.setup();
+    const onMarkClick = vi.fn();
+    const marks = [{ start: 0, end: 5, id: "a" }];
+    const { container } = render(
+      <CodeBlock language="js" marks={marks} onMarkClick={onMarkClick}>
+        {source}
+      </CodeBlock>,
+    );
+    const [mark] = marksOf(container);
+    expect(mark).toHaveClass(styles.markClickable);
+    await user.click(mark.firstElementChild!);
+    expect(onMarkClick).toHaveBeenCalledTimes(1);
+    expect(onMarkClick.mock.calls[0][0]).toBe(marks[0]);
+    expect(onMarkClick.mock.calls[0][1].type).toBe("click");
+    // not on unmarked text
+    await user.click(code(container));
+    expect(onMarkClick).toHaveBeenCalledTimes(1);
+    // a click ending a text selection in the code is not a mark click
+    const range = document.createRange();
+    range.selectNodeContents(code(container));
+    window.getSelection()!.removeAllRanges();
+    window.getSelection()!.addRange(range);
+    fireEvent.click(mark);
+    expect(onMarkClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("has no click affordance without onMarkClick", () => {
+    const { container } = render(
+      <CodeBlock marks={[{ start: 0, end: 5 }]}>{source}</CodeBlock>,
+    );
+    expect(marksOf(container)[0]).not.toHaveClass(styles.markClickable);
+  });
+
+  it("copies the raw code, not the marks", async () => {
+    const user = userEvent.setup();
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText },
+      configurable: true,
+    });
+    render(
+      <CodeBlock
+        language="js"
+        copyable
+        showLineNumbers
+        marks={[{ start: 2, end: 20 }]}
+      >
+        {source}
+      </CodeBlock>,
+    );
+    await user.click(screen.getByRole("button", { name: "Copy code" }));
+    expect(writeText).toHaveBeenCalledWith(source);
     delete (navigator as { clipboard?: unknown }).clipboard;
   });
 });

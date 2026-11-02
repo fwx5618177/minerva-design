@@ -1,3 +1,5 @@
+import type { CodeMark } from "@minerva/core";
+
 /**
  * Props of `CodeBlock` (same names and defaults as React; React's string
  * children are the `code` prop, or the text of the default slot).
@@ -41,7 +43,10 @@ export interface CodeBlockProps {
    * javascript (js, mjs, cjs), typescript (ts), jsx, tsx, json (jsonc,
    * json5), css (scss, less), html (xml, svg, vue), bash (sh, shell, zsh,
    * console), python (py), yaml (yml), sql, diff, markdown (md); other
-   * names render plain text. Without it the text is not highlighted
+   * names render plain text. `"auto"` detects the language from the text
+   * (`detectCodeLanguage` of minerva-design/core, "plain" when unsure): the
+   * class, `data-language` and the label show the detected name. Without it
+   * the text is not highlighted
    */
   language?: string;
   /**
@@ -62,4 +67,19 @@ export interface CodeBlockProps {
    * @default false
    */
   showLanguage?: boolean;
+  /**
+   * Character ranges to mark (saved highlights, annotations, search hits),
+   * rendered as <mark> elements over the syntax highlighting (the token
+   * colors are kept; the copied text stays the raw code). `start` / `end`
+   * are UTF-16 offsets into the code string, clamped to it; empty ranges
+   * are ignored. Marks may cross tokens and lines (with `showLineNumbers` a
+   * mark is cut at each line break). Where marks overlap, the later one in
+   * the array wins (its color, class, title and click). Each element gets
+   * `data-mark-id` and the mark's `className` / `title`; `color` is a theme
+   * color name (a translucent tint) or any CSS color (default: translucent
+   * yellow, `--code-block-mark-bg`). The `mark-click` event reports clicks.
+   * To create one from the user's selection, see `getCodeSelectionRange`
+   * of `minerva-design/core`
+   */
+  marks?: readonly CodeMark[];
 }

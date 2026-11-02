@@ -6,8 +6,10 @@ import {
   afterNextRender,
   booleanAttribute,
   computed,
+  effect,
   inject,
   input,
+  output,
   signal,
 } from "@angular/core";
 import {
@@ -15,7 +17,13 @@ import {
   kanbanCount,
   kanbanLength,
   type ColorScheme,
+  type KanbanCardMove,
 } from "@minerva/core";
+import {
+  createKanbanDrag,
+  kanbanDataAdapter,
+  type KanbanDrag,
+} from "@minerva/dom";
 import { injectScope } from "../../config/scope";
 import { MnHook } from "../../internal/hooks";
 import { injectId } from "../../internal/ids";
@@ -27,6 +35,8 @@ export type KanbanLength = number | string;
 /** Accent of a KanbanColumn: a theme color or any CSS color */
 export type KanbanColumnColor = ColorScheme | (string & {});
 
+export type { KanbanCardMove };
+
 /**
  * A horizontally scrolling board of status columns (`mn-kanban-column`),
  * equal-width by default (`columnWidth`, 18rem). `fill` stretches the
@@ -35,8 +45,10 @@ export type KanbanColumnColor = ColorScheme | (string & {});
  * `role="region"` and a tab stop, so the keyboard can scroll it; on narrow
  * screens the columns keep their width and snap while scrolling.
  *
- * Drag and drop is not built in: move cards with your own actions (a menu,
- * buttons) and update the columns' data.
+ * `draggable` lets the `mn-kanban-card` children of keyed columns (`value`)
+ * be dragged with the mouse, touch (long press) or the keyboard. The board
+ * is controlled: it emits each move (`cardMove`) and the app updates the
+ * columns' data.
  */
 @Component({
   selector: "mn-kanban-board",
@@ -68,6 +80,25 @@ export class MnKanbanBoard {
   readonly height = input<KanbanLength | undefined>(undefined);
   /** Maximum height of the board: the column bodies scroll vertically within it */
   readonly maxHeight = input<KanbanLength | undefined>(undefined);
+  /**
+   * Lets the `mn-kanban-card` children of keyed columns be dragged between
+   * and within columns (mouse, touch long press, keyboard: Space / Enter
+   * picks a focused card up, the arrows move it, Space / Enter drops it,
+   * Escape cancels)
+   */
+  readonly draggable = input(false, { transform: booleanAttribute });
+  /**
+   * Whether a card may be dropped at a position: refused positions show no
+   * drop indicator and the keyboard skips them
+   */
+  readonly canDrop = input<((move: KanbanCardMove) => boolean) | undefined>(
+    undefined,
+  );
+  /**
+   * A card was dropped at a new position (not when put back where it was):
+   * move it in your data (`moveKanbanCard` from `minerva-design/core`)
+   */
+  readonly cardMove = output<KanbanCardMove>();
   /** Accessible name of the board (default: translated "Board") */
   readonly ariaLabel = input<string | undefined>(undefined, {
     alias: "aria-label",
@@ -79,11 +110,39 @@ export class MnKanbanBoard {
 
   protected readonly s = styles.kanbanBoardStyles;
   protected readonly scope = injectScope();
+  /** Id of the keyboard instructions describing the draggable cards */
+  readonly hintId = injectId("kanban-hint");
+  private drag: KanbanDrag | null = null;
   protected readonly rootClass = computed(() =>
     this.fill() ? `${this.s.board} ${this.s.fill}` : this.s.board,
   );
   protected length(value: KanbanLength | undefined): string | null {
     return kanbanLength(value) ?? null;
+  }
+
+  constructor() {
+    const host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
+    const destroyRef = inject(DestroyRef);
+    // browser only; one controller for the life of the board, reading the
+    // inputs lazily
+    afterNextRender(() => {
+      this.drag = createKanbanDrag(host, {
+        ...kanbanDataAdapter(host),
+        scroller: () => host,
+        hintId: this.hintId,
+        enabled: () => this.draggable(),
+        canDrop: (move) => this.canDrop()?.(move) ?? true,
+        onMove: (move) => this.cardMove.emit(move),
+        t: (key, params) => this.scope.t(key, params),
+      });
+      destroyRef.onDestroy(() => this.drag?.destroy());
+    });
+    effect(() => {
+      // the layer follows `draggable` and the language
+      this.draggable();
+      this.scope.t("kanban.dragHint");
+      this.drag?.refresh();
+    });
   }
 }
 
@@ -96,7 +155,8 @@ export class MnKanbanBoard {
  * wrapper); `[mnKanbanEmpty]` content (else `empty`, default translated
  * "No items") replaces the list when there are no cards, and
  * `[mnKanbanFooter]` sits below. The host is a `role="group"` named by its
- * title and count ("To do, 3 items").
+ * title and count ("To do, 3 items"). `value` keys the column for drag and
+ * drop.
  */
 @Component({
   selector: "mn-kanban-column",
@@ -109,6 +169,7 @@ export class MnKanbanBoard {
     // `title` is an input: no native tooltip on the whole column
     "[attr.title]": "null",
     "[attr.data-color]": "accent().scheme ?? null",
+    "[attr.data-kanban-column]": "value() || null",
     "[attr.aria-label]": "label() ?? null",
     "[attr.aria-labelledby]":
       "label() === undefined ? (count() !== undefined ? titleId + ' ' + countId : titleId) : null",
@@ -187,6 +248,8 @@ export class MnKanbanBoard {
 export class MnKanbanColumn {
   /** Title of the column (also its accessible name; or project `[mnKanbanTitle]`) */
   readonly title = input<string | undefined>(undefined);
+  /** Key of the column, reported as `fromColumn` / `toColumn` by a draggable board (columns without one take no cards) */
+  readonly value = input<string | undefined>(undefined);
   /** Number of items shown as a badge (and announced with the title); unset hides it */
   readonly count = input<number | undefined, unknown>(undefined, {
     transform: (value: unknown) => kanbanCount(value),
@@ -276,4 +339,44 @@ export class MnKanbanColumn {
       !!this.part("empty")?.querySelector(":scope > [mnKanbanEmpty]"),
     );
   }
+}
+
+/**
+ * A card of an `mn-kanban-column`, keyed by `value`. In a draggable board
+ * its content sits in a focusable `role="button"` (the `root` part)
+ * described by the drag instructions; otherwise the part is a plain
+ * wrapper. The host is the list item of the column. Controls inside a
+ * draggable card keep working (a drag never starts on them), but keep them
+ * few: they sit inside the button.
+ */
+@Component({
+  selector: "mn-kanban-card",
+  imports: [MnHook],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { "[class]": "s.item" },
+  template: `<div
+    mnHook="kanban-card"
+    mnPart="root"
+    [class]="s.card"
+    [attr.data-kanban-card]="value()"
+    [attr.data-draggable]="draggable() ? '' : null"
+    [attr.role]="draggable() ? 'button' : null"
+    [attr.tabindex]="draggable() ? 0 : null"
+    [attr.aria-label]="draggable() ? (label() ?? null) : null"
+    [attr.aria-describedby]="draggable() ? board?.hintId : null"
+  >
+    <ng-content />
+  </div>`,
+})
+export class MnKanbanCard {
+  /** Key of the card, reported as `cardKey` by a draggable board */
+  readonly value = input.required<string>();
+  /** Name of the card in the drag announcements and, when draggable, its accessible name (default: its text) */
+  readonly label = input<string | undefined>(undefined);
+
+  protected readonly s = styles.kanbanBoardStyles;
+  protected readonly board = inject(MnKanbanBoard, { optional: true });
+  protected readonly draggable = computed(
+    () => this.board?.draggable() ?? false,
+  );
 }

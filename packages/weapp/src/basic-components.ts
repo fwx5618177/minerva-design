@@ -1,8 +1,16 @@
 import {
+  CODE_MARK_COLORS,
+  applyCodeMarks,
   codeLanguageLabel,
+  codeMarkBackground,
+  detectCodeLanguage,
   highlightCode,
+  resolveCodeMarkBackground,
   resolveSpace,
-  splitHighlightLines,
+  resolveTokens,
+  splitCodeMarkLines,
+  type CodeMark,
+  type CodeMarkRun,
   type HighlightToken,
 } from "@minerva/core";
 import { nativeTranslate as t } from "./configuration";
@@ -241,24 +249,72 @@ const codeTokenData = (tokens: readonly HighlightToken[]) =>
     c: type ? `mn-code-token-${type}` : "",
     text,
   }));
+let lightColors: Record<string, string> | undefined;
 /**
- * Highlighted tokens / numbered lines of the code (rendered as nested
- * <text> by the template: the code is never parsed as markup).
+ * Inline background of a mark: a theme tint is `color-mix` of the theme
+ * variable, after an rgba() of the light theme for renderers without
+ * `color-mix` (they drop the second declaration); none for the default (the
+ * `.mn-code-mark` rule, `--code-block-mark-bg`).
+ */
+function codeMarkStyle(color: unknown) {
+  const value = typeof color === "string" ? color.trim() : "";
+  if (!value) return "";
+  if (!(CODE_MARK_COLORS as readonly string[]).includes(value))
+    return `background-color:${value}`;
+  lightColors ??= resolveTokens().colors;
+  return `background-color:${resolveCodeMarkBackground(value, lightColors)};background-color:${codeMarkBackground(value)}`;
+}
+/** Runs of marked / unmarked tokens, as wxml data (`m`: mark index, -1: none) */
+const codeRunData = (runs: readonly CodeMarkRun[]) =>
+  runs.map(({ mark, index, tokens }) => ({
+    m: index,
+    c: mark
+      ? [
+          "mn-code-mark",
+          typeof mark.className === "string" ? mark.className : "",
+        ]
+          .filter(Boolean)
+          .join(" ")
+      : "",
+    style: mark ? codeMarkStyle(mark.color) : "",
+    id: mark?.id ?? "",
+    tokens: codeTokenData(tokens),
+  }));
+/** Last detected language per instance (`language="auto"`), by code */
+const detectedCode = new WeakMap<
+  Instance,
+  { code: string; language: string }
+>();
+/** The trimmed language: for "auto", detected from the code (once per code) */
+function codeLanguage(self: Instance, code: string, language: unknown) {
+  const lang = typeof language === "string" ? language.trim() : "";
+  if (lang.toLowerCase() !== "auto") return lang;
+  const last = detectedCode.get(self);
+  if (last?.code === code) return last.language;
+  const detected = detectCodeLanguage(code);
+  detectedCode.set(self, { code, language: detected });
+  return detected;
+}
+/**
+ * Highlighted tokens / marks / numbered lines of the code (rendered as
+ * nested <text> by the template: the code is never parsed as markup).
  */
 function codeSync(self: Instance) {
   const d = self.data,
-    lang = typeof d.language === "string" ? d.language.trim() : "",
     code = typeof d.code === "string" ? d.code : String(d.code ?? ""),
+    lang = codeLanguage(self, code, d.language),
     tokens =
       lang && d.highlight
         ? highlightCode(code, lang)
         : code
           ? [{ type: null, text: code }]
-          : [];
+          : [],
+    runs = applyCodeMarks(tokens, d.marks as CodeMark[] | null),
+    marked = runs.some((run) => run.mark);
   self.setData({
-    codeTokens: lang && d.highlight ? codeTokenData(tokens) : [],
+    codeRuns: (lang && d.highlight) || marked ? codeRunData(runs) : [],
     codeLines: d.showLineNumbers
-      ? splitHighlightLines(tokens).map(codeTokenData)
+      ? splitCodeMarkLines(runs).map(codeRunData)
       : [],
     languageLabel: d.showLanguage && lang ? codeLanguageLabel(lang) : "",
   });
@@ -903,7 +959,7 @@ export function enhanceBasics(c: {
   );
   patch(
     c.codeBlock,
-    `<view class="mn-code-block"><view wx:if="{{languageLabel || copyable}}" class="mn-row"><text class="mn-muted mn-code-language" aria-hidden="true">{{languageLabel}}</text><button wx:if="{{copyable}}" class="mn-close" bindtap="onCopy">{{copyLabel}}</button></view><scroll-view scroll-x="{{!wrap}}" scroll-y style="{{codeStyle}}" role="region" aria-label="{{codeRegionLabel}}"><view wx:if="{{showLineNumbers}}" class="mn-code mn-code--lines" style="white-space:{{wrap?'pre-wrap':'pre'}};word-break:{{wrap?'break-word':'normal'}}"><view wx:for="{{codeLines}}" wx:for-item="line" wx:for-index="n" wx:key="n" class="mn-code-line"><text class="mn-code-line-number" aria-hidden="true">{{n + 1}}</text><text class="mn-code-line-text" selectable><text wx:for="{{line}}" wx:for-index="i" wx:key="i" class="{{item.c}}">{{item.text}}</text></text></view></view><text wx:elif="{{codeTokens.length}}" class="mn-code" selectable style="white-space:{{wrap?'pre-wrap':'pre'}};word-break:{{wrap?'break-word':'normal'}}"><text wx:for="{{codeTokens}}" wx:for-index="i" wx:key="i" class="{{item.c}}">{{item.text}}</text></text><text wx:else class="mn-code" selectable style="white-space:{{wrap?'pre-wrap':'pre'}};word-break:{{wrap?'break-word':'normal'}}">{{code}}</text></scroll-view><text class="mn-visually-hidden" aria-live="polite">{{copyStatus}}</text></view>`,
+    `<view class="mn-code-block"><view wx:if="{{languageLabel || copyable}}" class="mn-row"><text class="mn-muted mn-code-language" aria-hidden="true">{{languageLabel}}</text><button wx:if="{{copyable}}" class="mn-close" bindtap="onCopy">{{copyLabel}}</button></view><scroll-view scroll-x="{{!wrap}}" scroll-y style="{{codeStyle}}" role="region" aria-label="{{codeRegionLabel}}"><view wx:if="{{showLineNumbers}}" class="mn-code mn-code--lines" style="white-space:{{wrap?'pre-wrap':'pre'}};word-break:{{wrap?'break-word':'normal'}}"><view wx:for="{{codeLines}}" wx:for-item="line" wx:for-index="n" wx:key="n" class="mn-code-line"><text class="mn-code-line-number" aria-hidden="true">{{n + 1}}</text><text class="mn-code-line-text" selectable><text wx:for="{{line}}" wx:for-item="run" wx:for-index="r" wx:key="r" class="{{run.c}}" style="{{run.style}}" data-index="{{run.m}}" data-mark-id="{{run.id}}" bindtap="onMarkTap"><text wx:for="{{run.tokens}}" wx:for-index="i" wx:key="i" class="{{item.c}}">{{item.text}}</text></text></text></view></view><text wx:elif="{{codeRuns.length}}" class="mn-code" selectable style="white-space:{{wrap?'pre-wrap':'pre'}};word-break:{{wrap?'break-word':'normal'}}"><text wx:for="{{codeRuns}}" wx:for-item="run" wx:for-index="r" wx:key="r" class="{{run.c}}" style="{{run.style}}" data-index="{{run.m}}" data-mark-id="{{run.id}}" bindtap="onMarkTap"><text wx:for="{{run.tokens}}" wx:for-index="i" wx:key="i" class="{{item.c}}">{{item.text}}</text></text></text><text wx:else class="mn-code" selectable style="white-space:{{wrap?'pre-wrap':'pre'}};word-break:{{wrap?'break-word':'normal'}}">{{code}}</text></scroll-view><text class="mn-visually-hidden" aria-live="polite">{{copyStatus}}</text></view>`,
     {
       wrap: flag(true),
       maxHeight: optional("24rem"),
@@ -912,8 +968,24 @@ export function enhanceBasics(c: {
       highlight: flag(true),
       showLineNumbers: flag(),
       showLanguage: flag(),
+      // character ranges to mark ({ start, end, color?, className?, id?, title? })
+      marks: optional([]),
     },
     {
+      onMarkTap(
+        this: Instance,
+        e: WechatMiniprogram.BaseEvent<
+          WechatMiniprogram.IAnyObject,
+          { index?: number | string }
+        >,
+      ) {
+        const index = Number(e.currentTarget.dataset.index);
+        const mark =
+          index >= 0 && Array.isArray(this.data.marks)
+            ? this.data.marks[index]
+            : undefined;
+        if (mark) this.triggerEvent("markclick", { mark, index });
+      },
       onCopy(this: Instance) {
         const sourceText = this.data.code;
         wx.setClipboardData({
@@ -943,7 +1015,7 @@ export function enhanceBasics(c: {
         copyLabel: "Copy",
         copyState: "idle",
         codeRegionLabel: "Code",
-        codeTokens: [],
+        codeRuns: [],
         codeLines: [],
         languageLabel: "",
       },
@@ -951,7 +1023,7 @@ export function enhanceBasics(c: {
         "localeLanguage,ariaLabel": function (this: Instance) {
           copyLabels(this);
         },
-        "code,language,highlight,showLineNumbers,showLanguage": function (
+        "code,language,highlight,showLineNumbers,showLanguage,marks": function (
           this: Instance,
         ) {
           codeSync(this);

@@ -1,12 +1,42 @@
-import { Children, useId, type CSSProperties } from "react";
-import { kanbanAccent, kanbanCount, kanbanLength } from "@minerva/core";
+import {
+  Children,
+  createContext,
+  useContext,
+  useId,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  type CSSProperties,
+} from "react";
+import {
+  kanbanAccent,
+  kanbanCount,
+  kanbanLength,
+  type KanbanCardMove,
+} from "@minerva/core";
+import {
+  createKanbanDrag,
+  kanbanDataAdapter,
+  type KanbanDrag,
+} from "@minerva/dom";
 import { cn } from "../../utils/cn";
-import useI18n from "../../hooks/useI18n";
+import useI18n, { type TranslateFn } from "../../hooks/useI18n";
 import { hooks } from "../../internal/stylingHooks";
+import { useMergedRefs } from "../../internal/mergeRefs";
 import styles from "./kanbanBoard.module.scss";
-import type { KanbanBoardProps, KanbanColumnProps } from "./types";
+import type {
+  KanbanBoardProps,
+  KanbanCardProps,
+  KanbanColumnProps,
+} from "./types";
 
 type StyleWithVars = CSSProperties & Record<`--${string}`, string | undefined>;
+
+/** What the cards of a board need to know about dragging */
+const KanbanDragContext = createContext<{
+  draggable: boolean;
+  hintId?: string;
+}>({ draggable: false });
 
 /**
  * KanbanBoard: a horizontally scrolling board of status columns
@@ -16,8 +46,10 @@ type StyleWithVars = CSSProperties & Record<`--${string}`, string | undefined>;
  * labelled `role="region"` and a tab stop, so the keyboard can scroll it;
  * on narrow screens the columns keep their width and snap while scrolling.
  *
- * Drag and drop is not built in: move cards with your own actions (a menu,
- * buttons) and update the columns' data.
+ * `draggable` lets the KanbanCard children of keyed columns (`value`) be
+ * dragged with the mouse, touch (long press) or the keyboard. The board is
+ * controlled: it reports each move (`onCardMove`) and the app updates the
+ * columns' data.
  */
 const KanbanBoard = ({
   children,
@@ -26,6 +58,9 @@ const KanbanBoard = ({
   gap,
   height,
   maxHeight,
+  draggable = false,
+  onCardMove,
+  canDrop,
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
   className,
@@ -34,6 +69,46 @@ const KanbanBoard = ({
   ref,
 }: KanbanBoardProps) => {
   const { t } = useI18n();
+  const hintId = useId();
+  const rootRef = useRef<HTMLDivElement>(null);
+  const mergedRef = useMergedRefs(rootRef, ref);
+  const dragRef = useRef<KanbanDrag | null>(null);
+  // the controller lives as long as the board and reads the latest props
+  const latest = useRef<{
+    draggable: boolean;
+    onCardMove?: (move: KanbanCardMove) => void;
+    canDrop?: (move: KanbanCardMove) => boolean;
+    t: TranslateFn;
+  }>({ draggable, onCardMove, canDrop, t });
+
+  useLayoutEffect(() => {
+    latest.current = { draggable, onCardMove, canDrop, t };
+    dragRef.current?.refresh();
+  });
+
+  useLayoutEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const drag = createKanbanDrag(root, {
+      ...kanbanDataAdapter(root),
+      scroller: () => root,
+      hintId,
+      enabled: () => latest.current.draggable,
+      canDrop: (move) => latest.current.canDrop?.(move) ?? true,
+      onMove: (move) => latest.current.onCardMove?.(move),
+      t: (key, params) => latest.current.t(key, params),
+    });
+    dragRef.current = drag;
+    return () => {
+      drag.destroy();
+      dragRef.current = null;
+    };
+  }, [hintId]);
+
+  const dragContext = useMemo(
+    () => ({ draggable, hintId }),
+    [draggable, hintId],
+  );
   const boardStyle: StyleWithVars = {
     "--kanban-column-width": kanbanLength(columnWidth),
     "--kanban-gap": kanbanLength(gap),
@@ -43,7 +118,7 @@ const KanbanBoard = ({
   };
   return (
     <div
-      ref={ref}
+      ref={mergedRef}
       id={id}
       role="region"
       aria-label={ariaLabelledBy ? ariaLabel : (ariaLabel ?? t("kanban.label"))}
@@ -53,7 +128,9 @@ const KanbanBoard = ({
       style={boardStyle}
       {...hooks("kanban-board", "root")}
     >
-      {children}
+      <KanbanDragContext.Provider value={dragContext}>
+        {children}
+      </KanbanDragContext.Provider>
     </div>
   );
 };
@@ -65,10 +142,12 @@ const KanbanBoard = ({
  * `role="list"` (each child is wrapped in a `role="listitem"`) that scrolls
  * vertically within a bounded board; `empty` replaces the list when there
  * are no cards, and `footer` sits below. The column is a `role="group"`
- * named by its title and count ("To do, 3 items").
+ * named by its title and count ("To do, 3 items"). `value` keys the column
+ * for drag and drop.
  */
 const KanbanColumn = ({
   title,
+  value,
   count: countProp,
   color,
   description,
@@ -115,6 +194,7 @@ const KanbanColumn = ({
       }
       className={cn(styles.column, scheme && styles[scheme], className)}
       style={columnStyle}
+      data-kanban-column={value || undefined}
       {...hooks("kanban-column", "root", { color: scheme })}
     >
       <div className={styles.header} {...hooks("kanban-column", "header")}>
@@ -193,5 +273,47 @@ const KanbanColumn = ({
   );
 };
 
-export { KanbanBoard, KanbanColumn };
+/**
+ * KanbanCard: a card of a KanbanColumn, keyed by `value`. In a draggable
+ * board it is a focusable `role="button"` described by the drag
+ * instructions; otherwise it renders a plain wrapper. Controls inside a
+ * draggable card keep working (a drag never starts on them), but keep them
+ * few: they sit inside the button.
+ */
+const KanbanCard = ({
+  value,
+  label,
+  children,
+  className,
+  style,
+  id,
+  ref,
+}: KanbanCardProps) => {
+  const { draggable, hintId } = useContext(KanbanDragContext);
+  // a draggable card is a focusable button described by the instructions
+  const interactive = draggable
+    ? {
+        role: "button",
+        tabIndex: 0,
+        "aria-label": label,
+        "aria-describedby": hintId,
+        "data-draggable": true,
+      }
+    : null;
+  return (
+    <div
+      ref={ref}
+      id={id}
+      {...interactive}
+      data-kanban-card={value}
+      className={cn(styles.card, className)}
+      style={style}
+      {...hooks("kanban-card", "root")}
+    >
+      {children}
+    </div>
+  );
+};
+
+export { KanbanBoard, KanbanCard, KanbanColumn };
 export default KanbanBoard;

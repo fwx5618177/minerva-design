@@ -7,7 +7,7 @@
  * scrolls vertically within a bounded board; the `empty` slot / prop
  * replaces the list when there are no cards, and the `footer` slot sits
  * below. The column is a `role="group"` named by its title and count
- * ("To do, 3 items").
+ * ("To do, 3 items"). `value` keys the column for drag and drop.
  */
 import { computed, useAttrs, useId, useSlots, type VNode } from "vue";
 import { kanbanAccent, kanbanCount } from "@minerva/core";
@@ -21,6 +21,7 @@ defineOptions({ name: "KanbanColumn", inheritAttrs: false });
 
 const props = withDefaults(defineProps<KanbanColumnProps>(), {
   title: undefined,
+  value: undefined,
   count: undefined,
   color: undefined,
   description: undefined,
@@ -76,6 +77,7 @@ const rootAttrs = computed(() => {
         : undefined,
     class: [styles.column, scheme && styles[scheme], attrs.class],
     style: [custom ? { "--kanban-column-color": custom } : {}, attrs.style],
+    "data-kanban-column": props.value || undefined,
     ...hooks("kanban-column", "root", { color: scheme }),
   };
 });

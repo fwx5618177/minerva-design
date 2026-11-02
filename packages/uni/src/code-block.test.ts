@@ -63,4 +63,76 @@ describe("CodeBlock (uni)", () => {
       vi.stubGlobal("uni", original);
     }
   });
+
+  it('language="auto" detects the language for the tokens and the label', async () => {
+    const w = mount(CodeBlock, {
+      props: {
+        code: json,
+        language: "auto",
+        showLanguage: true,
+        marks: [{ start: 4, end: 8 }],
+      },
+    });
+    expect(w.get(".mn-code-language").text()).toBe("JSON");
+    expect(w.get(".mn-code-mark .mn-code-token-property").text()).toBe('"id"');
+    expect(w.get(".mn-code").element.textContent).toBe(json);
+    await w.setProps({ code: "SELECT id FROM users WHERE id = 1;" });
+    expect(w.get(".mn-code-language").text()).toBe("SQL");
+    expect(w.find(".mn-code-token-keyword").exists()).toBe(true);
+    await w.setProps({ code: "hello", marks: [] });
+    expect(w.get(".mn-code-language").text()).toBe("PLAIN");
+    expect(w.find("[class*=mn-code-token-]").exists()).toBe(false);
+  });
+
+  it("marks character ranges over the tokens and emits mark-click", async () => {
+    const marks = [
+      { start: 0, end: 9, id: "a", className: "saved" },
+      { start: 4, end: 8, color: "#ff000055" },
+      { start: 3, end: 3 },
+    ];
+    const w = mount(CodeBlock, {
+      props: { code: json, language: "json", marks },
+    });
+    const list = w.findAll(".mn-code-mark");
+    expect(list.map((m) => m.element.textContent)).toEqual([
+      "{\n  ",
+      '"id"',
+      ":",
+    ]);
+    expect(list[0].classes()).toContain("saved");
+    expect(list[0].attributes("data-mark-id")).toBe("a");
+    expect(list[0].attributes("data-mark-index")).toBe("0");
+    expect((list[0].element as HTMLElement).style.backgroundColor).toBe("");
+    expect(list[1].find(".mn-code-token-property").text()).toBe('"id"');
+    expect(w.get(".mn-code").element.textContent).toBe(json);
+    await list[1].trigger("click");
+    await list[2].trigger("click");
+    expect(w.emitted("mark-click")).toEqual([[marks[1]], [marks[0]]]);
+  });
+
+  it("marks plain text, tints theme colors and cuts marks at line breaks", async () => {
+    const w = mount(CodeBlock, {
+      props: {
+        code: "ab\ncd",
+        showLineNumbers: true,
+        marks: [{ start: 1, end: 4, color: "primary" }],
+      },
+    });
+    const list = w.findAll(".mn-code-mark");
+    expect(list.map((m) => m.text())).toEqual(["b", "c"]);
+    expect(
+      w.findAll(".mn-code-line-text").map((n) => n.element.textContent),
+    ).toEqual(["ab", "cd"]);
+    expect((list[0].element as HTMLElement).style.backgroundColor).toMatch(
+      /^rgba\(/,
+    );
+    expect((list[0].element as HTMLElement).style.backgroundColor).not.toBe(
+      "rgba(250, 204, 21, 0.35)",
+    );
+    const plain = mount(CodeBlock, {
+      props: { code: "abc", marks: [{ start: 1, end: 2 }] },
+    });
+    expect(plain.get(".mn-code-mark").text()).toBe("b");
+    expect(plain.get(".mn-code").element.textContent).toBe("abc");
+  });
 });

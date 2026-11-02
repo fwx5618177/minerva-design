@@ -1,8 +1,8 @@
 import { h } from "vue";
-import { render, screen, within } from "@testing-library/vue";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen, within } from "@testing-library/vue";
+import { describe, expect, it, vi } from "vitest";
 import ConfigProvider from "../../config/ConfigProvider.vue";
-import { KanbanBoard, KanbanColumn } from ".";
+import { KanbanBoard, KanbanCard, KanbanColumn } from ".";
 
 describe("KanbanBoard", () => {
   it("renders a labelled, focusable region with the sizes", () => {
@@ -132,5 +132,160 @@ describe("KanbanColumn", () => {
       screen.getByRole("group", { name: "待办，3 项" }),
     ).toBeInTheDocument();
     expect(screen.getByText("暂无项目")).toBeInTheDocument();
+  });
+});
+
+describe("KanbanBoard drag and drop", () => {
+  const box = (
+    element: Element,
+    left: number,
+    top: number,
+    width: number,
+    height: number,
+  ) => {
+    element.getBoundingClientRect = () =>
+      ({
+        left,
+        top,
+        width,
+        height,
+        right: left + width,
+        bottom: top + height,
+        x: left,
+        y: top,
+        toJSON: () => ({}),
+      }) as DOMRect;
+  };
+
+  /** Two 200px columns of 50px cards: "todo" (a, b) and "done" (c) */
+  const renderBoard = (props: Record<string, unknown> = {}) => {
+    const view = render(KanbanBoard, {
+      props: { draggable: true, ...props },
+      slots: {
+        default: () => [
+          h(KanbanColumn, { title: "To do", value: "todo" }, () => [
+            h(KanbanCard, { value: "a" }, () => "Write spec"),
+            h(
+              KanbanCard,
+              { value: "b", label: "Review the spec" },
+              () => "Review",
+            ),
+          ]),
+          h(KanbanColumn, { title: "Done", value: "done" }, () => [
+            h(KanbanCard, { value: "c" }, () => "Ship"),
+          ]),
+        ],
+      },
+    });
+    const board = screen.getByRole("region");
+    box(board, 0, 0, 500, 400);
+    board.querySelectorAll("[data-kanban-column]").forEach((column, i) => {
+      box(column, i * 220, 0, 200, 400);
+      column
+        .querySelectorAll("[data-kanban-card]")
+        .forEach((card, j) => box(card, i * 220, 40 + j * 60, 200, 50));
+    });
+    return view;
+  };
+
+  const pointer = (type: string, target: EventTarget, x: number, y: number) =>
+    target.dispatchEvent(
+      new PointerEvent(type, {
+        bubbles: true,
+        cancelable: true,
+        clientX: x,
+        clientY: y,
+        pointerId: 1,
+        pointerType: "mouse",
+        isPrimary: true,
+      }),
+    );
+
+  it("renders plain cards by default", () => {
+    render(KanbanBoard, {
+      slots: {
+        default: () =>
+          h(KanbanColumn, { title: "To do", value: "todo" }, () =>
+            h(KanbanCard, { value: "a" }, () => "Write spec"),
+          ),
+      },
+    });
+    const card = screen.getByText("Write spec");
+    expect(card).toHaveAttribute("data-kanban-card", "a");
+    expect(card).not.toHaveAttribute("tabindex");
+    expect(screen.getByRole("group")).toHaveAttribute(
+      "data-kanban-column",
+      "todo",
+    );
+    expect(document.querySelector("[data-kanban-layer]")).toBeNull();
+  });
+
+  it("emits card-move for a pointer drag to another column", () => {
+    const { emitted } = renderBoard();
+    expect(
+      screen.getByRole("button", { name: "Review the spec" }),
+    ).toHaveAccessibleDescription(/Press Space or Enter/);
+    pointer("pointerdown", screen.getByText("Write spec"), 100, 60);
+    pointer("pointermove", document, 110, 60);
+    pointer("pointermove", document, 300, 120);
+    pointer("pointerup", document, 300, 120);
+    expect(emitted("card-move")).toEqual([
+      [
+        {
+          cardKey: "a",
+          fromColumn: "todo",
+          fromIndex: 0,
+          toColumn: "done",
+          toIndex: 1,
+        },
+      ],
+    ]);
+  });
+
+  it("moves a card with the keyboard and announces it", async () => {
+    const { emitted } = renderBoard();
+    const card = screen.getByRole("button", { name: "Write spec" });
+    card.focus();
+    await fireEvent.keyDown(card, { key: " " });
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Picked up Write spec: position 1 of 2 in To do.",
+    );
+    await fireEvent.keyDown(card, { key: "ArrowRight" });
+    await fireEvent.keyDown(card, { key: "Enter" });
+    expect(emitted("card-move")).toEqual([
+      [
+        {
+          cardKey: "a",
+          fromColumn: "todo",
+          fromIndex: 0,
+          toColumn: "done",
+          toIndex: 0,
+        },
+      ],
+    ]);
+  });
+
+  it("cancels with Escape and respects canDrop", async () => {
+    const canDrop = vi.fn(() => false);
+    const { emitted } = renderBoard({ canDrop });
+    const card = screen.getByRole("button", { name: "Write spec" });
+    card.focus();
+    await fireEvent.keyDown(card, { key: " " });
+    await fireEvent.keyDown(card, { key: "ArrowRight" });
+    await fireEvent.keyDown(card, { key: " " });
+    expect(canDrop).toHaveBeenCalled();
+    await fireEvent.keyDown(card, { key: " " });
+    await fireEvent.keyDown(card, { key: "Escape" });
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Move cancelled: Write spec stays in To do.",
+    );
+    expect(emitted("card-move")).toBeUndefined();
+  });
+
+  it("removes the drag layer when draggable turns off", async () => {
+    const { rerender } = render(KanbanBoard, { props: { draggable: true } });
+    expect(document.querySelector("[data-kanban-layer]")).not.toBeNull();
+    await rerender({ draggable: false });
+    expect(document.querySelector("[data-kanban-layer]")).toBeNull();
   });
 });

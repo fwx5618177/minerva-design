@@ -42,6 +42,7 @@ type MinervaTag =
   | "minerva-input"
   | "minerva-json-field"
   | "minerva-kanban-board"
+  | "minerva-kanban-card"
   | "minerva-kanban-column"
   | "minerva-key-value-editor"
   | "minerva-list"

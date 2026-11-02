@@ -181,6 +181,14 @@ export const quadrantChartProps = {
   },
   /** Indices of the selected points */
   selectedIndices: Array as PropType<readonly number[]>,
+  /**
+   * Renders a visually hidden list of the points for the screen readers
+   * (`aria-role` / `aria-label`): one button per point (its name, quadrant
+   * and values; a tap emits `pointClick`) and, with a `pointDrop` listener,
+   * "Move to …" buttons moving it to the neighbouring quadrants (`pointDrop`
+   * with the quadrant center)
+   */
+  accessiblePoints: { type: Boolean, default: true },
 } as const;
 
 /** Shape of lines and area edges */

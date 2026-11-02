@@ -70,6 +70,9 @@ const ENGINE = [
   "quadrantGroups",
   "quadrantLabels",
   "quadrantCountText",
+  "quadrantAccessibleGroups",
+  "quadrantKeyTarget",
+  "createQuadrantPointLayer",
   "heatmapChartOptions",
   "sparklineOptions",
   // series presets

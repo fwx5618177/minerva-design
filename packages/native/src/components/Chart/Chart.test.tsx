@@ -1,6 +1,6 @@
 import { act, createRef, type ReactElement } from "react";
 import { fireEvent, render, screen } from "@testing-library/react-native";
-import { Pressable, Text } from "react-native";
+import { AccessibilityInfo, Pressable, Text } from "react-native";
 import { describe, expect, it, vi } from "vitest";
 import { MinervaProvider } from "../../theme/MinervaProvider";
 import { hostElements, queryPart, type Host } from "../../../test/queries";
@@ -550,6 +550,80 @@ describe("QuadrantChart", () => {
         el.props.dataSet?.part === "tooltip" && el.props.dataSet?.custom === "",
     );
     expect(tooltip?.props.pointerEvents).toBe("none");
+  });
+
+  it("exposes the points to screen readers; accessibility actions move them to the neighbouring quadrants", async () => {
+    const onPointDrop = vi.fn();
+    const onPointClick = vi.fn();
+    const announce = vi
+      .spyOn(AccessibilityInfo, "announceForAccessibility")
+      .mockImplementation(() => {});
+    await mount(
+      <QuadrantChart
+        locale="en"
+        points={points}
+        quadrants={{ topLeft: { label: "Do first" } }}
+        xLabel="Urgency"
+        selectedIndex={1}
+        onPointClick={onPointClick}
+        onPointDrop={onPointDrop}
+      />,
+    );
+    const views = hostElements().filter(
+      (el) => el.props.dataSet?.part === "point",
+    );
+    expect(views.map((v) => v.props.accessibilityLabel)).toEqual([
+      "Fix login, Do first, Urgency: 2, y: 8",
+      "Roadmap, Top right quadrant, Urgency: 8, y: 7",
+    ]);
+    const [fix, roadmap] = views;
+    expect(fix!.props.accessible).toBe(true);
+    expect(fix!.props.accessibilityRole).toBe("button");
+    expect(fix!.props.pointerEvents).toBe("none");
+    expect(roadmap!.props.accessibilityState).toEqual({ selected: true });
+    expect(fix!.props.accessibilityActions).toEqual([
+      { name: "activate" },
+      { name: "move:bottomLeft", label: "Move to Bottom left quadrant" },
+      { name: "move:topRight", label: "Move to Top right quadrant" },
+    ]);
+
+    await fireEvent(fix!, "accessibilityAction", {
+      nativeEvent: { actionName: "move:bottomLeft" },
+    });
+    expect(onPointDrop).toHaveBeenCalledWith(points[0], 0, {
+      x: 2.5,
+      y: 2.5,
+      quadrant: "bottomLeft",
+    });
+    expect(announce).toHaveBeenCalledWith(
+      "Fix login moved to Bottom left quadrant",
+    );
+    // not a neighbour: ignored
+    await fireEvent(fix!, "accessibilityAction", {
+      nativeEvent: { actionName: "move:bottomRight" },
+    });
+    expect(onPointDrop).toHaveBeenCalledTimes(1);
+    await fireEvent(roadmap!, "accessibilityAction", {
+      nativeEvent: { actionName: "activate" },
+    });
+    expect(onPointClick).toHaveBeenCalledWith(points[1], 1);
+    announce.mockRestore();
+  });
+
+  it("no move actions without onPointDrop; accessiblePoints={false} leaves the points out", async () => {
+    const { rerender } = await mount(<QuadrantChart points={points} />);
+    const view = hostElements().find(
+      (el) => el.props.dataSet?.part === "point",
+    );
+    expect(view!.props.accessibilityActions).toEqual([{ name: "activate" }]);
+    await rerender(
+      <MinervaProvider>
+        <QuadrantChart points={points} accessiblePoints={false} />
+      </MinervaProvider>,
+    );
+    expect(
+      hostElements().some((el) => el.props.dataSet?.part === "point"),
+    ).toBe(false);
   });
 });
 

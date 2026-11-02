@@ -1,10 +1,10 @@
 {
   "title": "KanbanBoard 看板",
-  "description": "由状态列（待办 / 进行中 / 已完成）组成的看板：等宽的列带有标题、计数和强调色，卡片纵向堆叠，整个看板可横向滚动。不内置拖放：请用你自己的操作移动卡片。",
+  "description": "由状态列（待办 / 进行中 / 已完成）组成的看板：等宽的列带有标题、计数和强调色，卡片纵向堆叠，整个看板可横向滚动。开启 draggable 后，KanbanCard 可以用鼠标、触摸或键盘在列之间和列内移动；看板保持受控（onCardMove）。",
   "demos": {
     "basic": {
       "title": "基础用法",
-      "description": "KanbanBoard 是一个带标签、可用键盘滚动的区域，内含 KanbanColumn；每一列是以标题和计数命名的分组，列中的卡片（这里使用 minerva Card）构成一个列表。不支持拖放：请用你自己的操作（按钮或菜单）移动卡片并更新数据。"
+      "description": "KanbanBoard 是一个带标签、可用键盘滚动的区域，内含 KanbanColumn；每一列是以标题和计数命名的分组，列中的卡片（这里使用 minerva Card）构成一个列表。这里卡片通过自己的操作（按钮或菜单）移动；可拖放的看板见“拖放”示例。"
     },
     "colors": {
       "title": "颜色与计数",
@@ -17,6 +17,10 @@
     "fixed-height": {
       "title": "固定高度",
       "description": "height 或 maxHeight 限制看板高度：看板横向滚动的同时，每一列的内容区纵向滚动。"
+    },
+    "drag-drop": {
+      "title": "拖放",
+      "description": "draggable 让带键（value）列中的 KanbanCard 可以拖动：使用鼠标、在触摸屏上长按，或使用键盘（在聚焦的卡片上按空格键或回车键拿起，方向键移动，再按空格键或回车键放下，Esc 取消；每一步都会播报）。看板从不自行重排：onCardMove 报告 { cardKey, fromColumn, fromIndex, toColumn, toIndex }，由 moveKanbanCard（minerva-design/core）应用到你的列表。canDrop 可拒绝某些位置：这里“进行中”最多 2 张卡片。"
     }
   },
   "api": {
@@ -27,6 +31,9 @@
       "gap": "列之间的间距（数字表示像素）",
       "height": "看板高度：列的内容区在其中纵向滚动（数字表示像素）",
       "maxHeight": "看板最大高度：列的内容区在其中纵向滚动（数字表示像素）",
+      "draggable": "让带键列中的 KanbanCard 可以在列之间和列内拖动（鼠标、触摸长按、键盘）",
+      "onCardMove": "卡片被放到新位置时调用，参数为 { cardKey, fromColumn, fromIndex, toColumn, toIndex }（toIndex 不计被移动的卡片）：请在数据中移动该卡片",
+      "canDrop": "卡片能否放到某个位置：被拒绝的位置不显示放置指示，键盘也会跳过",
       "aria-label": "看板区域的无障碍名称",
       "aria-labelledby": "为看板命名的元素 id（替代 aria-label）",
       "className": "附加的类名",
@@ -36,6 +43,7 @@
     },
     "KanbanColumnProps": {
       "title": "列标题（也是其无障碍名称）",
+      "value": "列的键，可拖放的看板以 fromColumn / toColumn 报告（没有键的列不接收卡片）",
       "count": "显示在标题旁的项目数徽标（并随标题朗读）；省略则不显示",
       "color": "列的强调色（标题前的圆点）：主题色或任意 CSS 颜色",
       "description": "列头下方的辅助文字",
@@ -48,6 +56,15 @@
       "style": "列的内联样式",
       "id": "列的 id",
       "ref": "指向根 <section> 的 ref"
+    },
+    "KanbanCardProps": {
+      "value": "卡片的键，可拖放的看板以 cardKey 报告",
+      "label": "卡片在拖放播报中的名称；可拖动时也是它的无障碍名称（默认为其文本）",
+      "children": "卡片内容",
+      "className": "额外的类名",
+      "style": "卡片的行内样式",
+      "id": "卡片的 id",
+      "ref": "根 <div> 的 ref"
     }
   },
   "cssVars": {
@@ -59,13 +76,14 @@
     "--kanban-column-color": "列的强调色：标题前的圆点（color 属性为自定义 CSS 颜色时设置它）",
     "--kanban-card-gap": "列中卡片之间的间距（默认 --space-2）",
     "--kanban-count-background": "计数徽标的背景（默认 --surface-color）",
-    "--kanban-count-color": "计数徽标的文字颜色（默认 --text-secondary-color）"
+    "--kanban-count-color": "计数徽标的文字颜色（默认 --text-secondary-color）",
+    "--kanban-drop-indicator-color": "放置线以及拖动卡片将落入的列的颜色（默认为 --primary-color）"
   },
   "wc": {
     "demos": {
       "basic": {
         "title": "基础用法",
-        "description": "minerva-kanban-board 中放置 minerva-kanban-column 元素；插入的卡片会获得 role=\"listitem\"。不支持拖放：这里每张卡片通过自己的按钮移到下一列，并由脚本更新 count 属性。"
+        "description": "minerva-kanban-board 中放置 minerva-kanban-column 元素；插入的卡片会获得 role=\"listitem\"。这里每张卡片通过自己的按钮移到下一列，并由脚本更新 count 属性；可拖放的看板见“拖放”示例。"
       },
       "colors": {
         "title": "颜色与计数",
@@ -78,9 +96,19 @@
       "fixed-height": {
         "title": "固定高度",
         "description": "height 或 max-height 限制看板高度：看板横向滚动的同时，每一列的内容区纵向滚动。"
+      },
+      "drag-drop": {
+        "title": "拖放",
+        "description": "开启 draggable 后，带键（value）列中的 minerva-kanban-card 元素可以用鼠标、触摸或键盘移动。看板触发 minerva-card-move（{ cardKey, fromColumn, fromIndex, toColumn, toIndex }），自身从不移动任何元素：由脚本移动卡片元素并更新计数。canDrop 属性让“进行中”最多保留 2 张卡片。"
       }
     },
     "minerva-kanban-board": {
+      "props": {
+        "draggable": "让带键列中的 minerva-kanban-card 子元素可以拖动（鼠标、触摸长按、键盘）；取代原生 draggable：存在该特性即开启，值为 \"false\" 时除外"
+      },
+      "events": {
+        "minerva-card-move": "卡片被放到新位置（detail：{ cardKey, fromColumn, fromIndex, toColumn, toIndex }）；请移动卡片元素或重新渲染。"
+      },
       "slots": {
         "default": "列（minerva-kanban-column）"
       },
@@ -101,6 +129,11 @@
         "empty": "没有卡片时显示的内容",
         "footer": "卡片下方的页脚（例如“添加卡片”按钮）"
       }
+    },
+    "minerva-kanban-card": {
+      "slots": {
+        "default": "卡片内容"
+      }
     }
   },
   "native": {
@@ -108,6 +141,10 @@
       "basic": {
         "title": "原生示例",
         "description": "由列组成的横向 ScrollView，按列吸附滚动；卡片通过自己的按钮移动。"
+      },
+      "drag-drop": {
+        "title": "拖放",
+        "description": "长按拿起卡片，看板停止滚动，手指抬起处即放下位置；读屏软件可在每张卡片上使用“上移 / 下移 / 移到某列”操作。onCardMove 报告移动。"
       }
     }
   }

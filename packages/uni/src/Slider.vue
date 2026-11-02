@@ -8,6 +8,7 @@ import {
   normalizeSliderValue,
   setSliderThumb,
   sliderPercent,
+  sliderRatioAt,
   sliderValueFromRatio,
   sliderValues,
   sliderValuesEqual,
@@ -23,9 +24,11 @@ import { inheritForm } from "./form-context";
  * ranges and theming) with one thumb, or two non-crossing thumbs with
  * `range`. Touch the track to move the closest thumb, then drag: `change` /
  * `update:modelValue` follow the drag and `changeEnd` fires on release. The
- * track is measured with `uni.createSelectorQuery` (the DOM on H5). On H5
+ * track is measured with `uni.createSelectorQuery` (the DOM on H5).
+ * `orientation="vertical"` runs the track bottom (min) to top (max); its
+ * length is `--slider-length` (default 160px). On H5
  * each thumb is a focusable `role="slider"` with arrow / PageUp / PageDown /
- * Home / End keys (mirrored in RTL).
+ * Home / End keys (mirrored in RTL when horizontal).
  */
 const rawProps = withDefaults(
   defineProps<{
@@ -46,6 +49,7 @@ const rawProps = withDefaults(
     showValue?: boolean;
     tooltip?: boolean;
     formatValue?: (value: number) => string;
+    orientation?: "horizontal" | "vertical";
     name?: string;
     ariaLabel?: string;
     ariaLabelledby?: string;
@@ -66,6 +70,7 @@ const rawProps = withDefaults(
     showValue: false,
     tooltip: false,
     formatValue: undefined,
+    orientation: "horizontal",
     name: undefined,
     ariaLabel: undefined,
     ariaLabelledby: undefined,
@@ -105,22 +110,34 @@ const current = computed(() =>
 const values = computed(() => sliderValues(current.value));
 const format = (v: number) => (props.formatValue ?? String)(v);
 const rtl = computed(() => dir.value === "rtl");
+const vertical = computed(() => props.orientation === "vertical");
 const dragging = ref<number | null>(null);
 
 interface Rect {
   left: number;
+  top: number;
   width: number;
+  height: number;
 }
 let rect: Rect | null = null;
 let gesture: { index: number; latest: SliderValue } | null = null;
 
+function accept(box: any, done: (rect: Rect) => void) {
+  const length = vertical.value ? box?.height : box?.width;
+  if (typeof length === "number" && length > 0)
+    done({
+      left: box.left ?? 0,
+      top: box.top ?? 0,
+      width: box.width ?? 0,
+      height: box.height ?? 0,
+    });
+}
 function measure(done: (rect: Rect) => void) {
   const el = (instance?.proxy?.$el as HTMLElement | undefined)?.querySelector?.(
     ".mn-slider__control",
   );
   if (el?.getBoundingClientRect) {
-    const box = el.getBoundingClientRect();
-    if (box.width > 0) done({ left: box.left, width: box.width });
+    accept(el.getBoundingClientRect(), done);
     return;
   }
   try {
@@ -129,10 +146,7 @@ function measure(done: (rect: Rect) => void) {
       .createSelectorQuery()
       .in(instance?.proxy)
       .select(`#${controlId}`)
-      .boundingClientRect((result: any) => {
-        if (result?.width > 0)
-          done({ left: result.left ?? 0, width: result.width });
-      })
+      .boundingClientRect((result: any) => accept(result, done))
       .exec();
   } catch {}
 }
@@ -153,18 +167,22 @@ function set(next: SliderValue, from: SliderValue): boolean {
   emit("change", next);
   return true;
 }
-function touchX(event: any): number | undefined {
+/** The touch position on the slider axis (x, or y when vertical) */
+function touchAt(event: any): number | undefined {
   const touch = event?.touches?.[0] ?? event?.changedTouches?.[0];
-  return touch?.clientX ?? touch?.pageX ?? touch?.x;
+  return vertical.value
+    ? (touch?.clientY ?? touch?.pageY ?? touch?.y)
+    : (touch?.clientX ?? touch?.pageX ?? touch?.x);
 }
-function valueAt(x: number, box: Rect) {
-  let ratio = box.width ? (x - box.left) / box.width : 0;
-  if (rtl.value) ratio = 1 - ratio;
+function valueAt(point: number, box: Rect) {
+  const ratio = vertical.value
+    ? sliderRatioAt(point, box.top, box.height, true)
+    : sliderRatioAt(point, box.left, box.width, rtl.value);
   return sliderValueFromRatio(ratio, scale.value);
 }
 function onTouchStart(event: any) {
   if (blocked.value) return;
-  const x = touchX(event);
+  const x = touchAt(event);
   if (x === undefined) return;
   withRect((box) => {
     const from = current.value;
@@ -177,7 +195,7 @@ function onTouchStart(event: any) {
   });
 }
 function onTouchMove(event: any) {
-  const x = touchX(event);
+  const x = touchAt(event);
   if (!gesture || !rect || x === undefined) return;
   const next = setSliderThumb(gesture.latest, gesture.index, valueAt(x, rect));
   if (set(next, gesture.latest)) gesture.latest = next;
@@ -192,7 +210,11 @@ function onTouchEnd() {
 function onKeydown(event: KeyboardEvent, index: number) {
   if (blocked.value) return;
   let key = event.key;
-  if (rtl.value && (key === "ArrowLeft" || key === "ArrowRight"))
+  if (
+    rtl.value &&
+    !vertical.value &&
+    (key === "ArrowLeft" || key === "ArrowRight")
+  )
     key = key === "ArrowLeft" ? "ArrowRight" : "ArrowLeft";
   const target = getSliderKeyValue(key, values.value[index]!, scale.value);
   if (target === null) return;
@@ -202,14 +224,19 @@ function onKeydown(event: KeyboardEvent, index: number) {
   if (set(next, from)) emit("changeEnd", next);
 }
 
-const side = computed(() => (rtl.value ? "right" : "left"));
+const side = computed(() =>
+  vertical.value ? "bottom" : rtl.value ? "right" : "left",
+);
 const position = (v: number) => sliderPercent(v, props.min, props.max);
 const at = (v: number) => ({ [side.value]: `${position(v)}%` });
 const rangeStyle = computed(() => {
   const list = values.value;
   const start = props.range ? position(list[0]!) : 0;
   const end = position(list[list.length - 1]!);
-  return { [side.value]: `${start}%`, width: `${end - start}%` };
+  return {
+    [side.value]: `${start}%`,
+    [vertical.value ? "height" : "width"]: `${end - start}%`,
+  };
 });
 const labelOf = (index: number) => {
   if (!props.range) return props.ariaLabel;
@@ -233,10 +260,11 @@ const marksView = computed(() =>
     const edge = position(mark.value);
     const atStart = edge <= 0;
     const atEnd = edge >= 100;
-    // Labels are positioned with physical `left`/`right`, so swap in RTL.
+    // Labels are positioned with physical `left`/`right`, so swap in RTL
+    // (vertical labels sit beside the track: no edge alignment).
     const labelClass = {
-      "mn-start": rtl.value ? atEnd : atStart,
-      "mn-end": rtl.value ? atStart : atEnd,
+      "mn-start": !vertical.value && (rtl.value ? atEnd : atStart),
+      "mn-end": !vertical.value && (rtl.value ? atStart : atEnd),
     };
     return { ...mark, active, labelClass, style: at(mark.value) };
   }),
@@ -252,6 +280,7 @@ const valueText = computed(() => values.value.map(format).join(" – "));
       `mn-color-${color}`,
       {
         'mn-labelled': marksView.some((m) => m.label),
+        'mn-vertical': vertical,
         'mn-disabled': props.disabled,
         'mn-readonly': props.readOnly,
         'mn-dragging': dragging !== null,
@@ -261,7 +290,7 @@ const valueText = computed(() => values.value.map(format).join(" – "));
     data-part="root"
     :data-size="size"
     :data-color="color"
-    data-orientation="horizontal"
+    :data-orientation="orientation"
     :data-variant="range ? 'range' : 'single'"
     :data-disabled="props.disabled ? '' : undefined"
     :data-readonly="props.readOnly ? '' : undefined"
@@ -316,7 +345,7 @@ const valueText = computed(() => values.value.map(format).join(" – "));
         :aria-valuemax="thumb.max"
         :aria-valuenow="thumb.value"
         :aria-valuetext="thumb.text"
-        aria-orientation="horizontal"
+        :aria-orientation="orientation"
         :aria-disabled="props.disabled || undefined"
         :aria-readonly="props.readOnly || undefined"
         :aria-invalid="props.invalid || undefined"

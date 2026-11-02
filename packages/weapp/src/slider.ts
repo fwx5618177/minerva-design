@@ -4,6 +4,8 @@
 // thumb, then drag: `change` ({ value }) follows the drag and `changeend`
 // ({ value }) fires on release. The track is measured with
 // `createSelectorQuery` on touch start (cached afterwards).
+// `orientation="vertical"` runs the track bottom (min) to top (max); its
+// length is `--slider-length` (default 160px).
 import {
   closestSliderThumb,
   getSliderKeyValue,
@@ -12,6 +14,7 @@ import {
   normalizeSliderValue,
   setSliderThumb,
   sliderPercent,
+  sliderRatioAt,
   sliderValueFromRatio,
   sliderValues,
   sliderValuesEqual,
@@ -25,9 +28,17 @@ type Instance = Pick<
   WechatMiniprogram.Component.TrivialInstance,
   "data" | "setData" | "triggerEvent" | "createSelectorQuery"
 >;
+type TouchPoint = {
+  clientX?: number;
+  pageX?: number;
+  x?: number;
+  clientY?: number;
+  pageY?: number;
+  y?: number;
+};
 type TouchEvent = {
-  touches?: { clientX?: number; pageX?: number; x?: number }[];
-  changedTouches?: { clientX?: number; pageX?: number; x?: number }[];
+  touches?: TouchPoint[];
+  changedTouches?: TouchPoint[];
 };
 export interface SliderConfig {
   /** Formats a value for the value label, the tooltip and aria-valuetext */
@@ -37,7 +48,9 @@ export interface SliderConfig {
 }
 interface Rect {
   left: number;
+  top: number;
   width: number;
+  height: number;
 }
 
 const configs = new WeakMap<Instance, SliderConfig>();
@@ -50,6 +63,7 @@ const flag = (value = false) => ({ type: Boolean, value });
 const text = (value = "") => ({ type: String, value });
 const blocked = (self: Instance) =>
   !!(self.data.disabled || self.data.readOnly);
+const isVertical = (self: Instance) => self.data.orientation === "vertical";
 
 function scaleOf(self: Instance): SliderScale {
   const min = Number(self.data.min) || 0;
@@ -101,6 +115,9 @@ function sync(self: Instance) {
   const start = range ? percent(values[0]) : 0;
   const end = percent(values[values.length - 1]);
   const dragging = self.data.dragging as number;
+  const vertical = isVertical(self);
+  // Position along the track: from the left, or the bottom when vertical
+  const at = (v: number) => `${vertical ? "bottom" : "left"}:${percent(v)}%`;
   self.setData({
     current: value,
     thumbs: values.map((v, index) => ({
@@ -110,7 +127,7 @@ function sync(self: Instance) {
       ariaValueText: config?.getAriaValueText?.(v, index) ?? format(v),
       min: range && index === 1 ? values[0] : scale.min,
       max: range && index === 0 ? values[1] : scale.max,
-      style: `left:${percent(v)}%`,
+      style: at(v),
       dragging: dragging === index,
     })),
     marksView: (scale.marks ?? []).map((mark) => {
@@ -120,17 +137,21 @@ function sync(self: Instance) {
         label: mark.label ?? "",
         active,
         state: active ? "active" : "inactive",
-        labelClass:
-          percent(mark.value) <= 0
+        // vertical labels sit beside the track: no edge alignment
+        labelClass: vertical
+          ? ""
+          : percent(mark.value) <= 0
             ? "mn-start"
             : percent(mark.value) >= 100
               ? "mn-end"
               : "",
-        style: `left:${percent(mark.value)}%`,
+        style: at(mark.value),
       };
     }),
     labelled: (scale.marks ?? []).some((mark) => mark.label),
-    rangeStyle: `left:${start}%;width:${end - start}%`,
+    rangeStyle: vertical
+      ? `bottom:${start}%;height:${end - start}%`
+      : `left:${start}%;width:${end - start}%`,
     valueText: values.map((v) => format(v)).join(" – "),
     variant: range ? "range" : "single",
   });
@@ -145,28 +166,39 @@ function request(self: Instance, next: SliderValue, from: SliderValue) {
   return true;
 }
 
-const touchX = (event: TouchEvent) => {
+/** The touch position on the slider axis (x, or y when vertical) */
+const touchAt = (event: TouchEvent, vertical: boolean) => {
   const touch = event.touches?.[0] ?? event.changedTouches?.[0];
-  return touch?.clientX ?? touch?.pageX ?? touch?.x;
+  return vertical
+    ? (touch?.clientY ?? touch?.pageY ?? touch?.y)
+    : (touch?.clientX ?? touch?.pageX ?? touch?.x);
 };
 
 function measure(self: Instance, done: (rect: Rect) => void) {
   const query = self.createSelectorQuery();
   query.select(".mn-slider__control").boundingClientRect((result) => {
-    const r = result as { left?: number; width?: number } | null;
-    if (r && !Array.isArray(r) && typeof r.width === "number" && r.width > 0)
-      done({ left: r.left ?? 0, width: r.width });
+    const r = result as Partial<Rect> | null;
+    const length = isVertical(self) ? r?.height : r?.width;
+    if (r && !Array.isArray(r) && typeof length === "number" && length > 0)
+      done({
+        left: r.left ?? 0,
+        top: r.top ?? 0,
+        width: r.width ?? 0,
+        height: r.height ?? 0,
+      });
   });
   query.exec();
 }
 
-const valueAt = (self: Instance, x: number, rect: Rect) =>
+const valueAt = (self: Instance, point: number, rect: Rect) =>
   sliderValueFromRatio(
-    rect.width ? (x - rect.left) / rect.width : 0,
+    isVertical(self)
+      ? sliderRatioAt(point, rect.top, rect.height, true)
+      : sliderRatioAt(point, rect.left, rect.width),
     scaleOf(self),
   );
 
-export const sliderTemplate = `<view class="mn-slider mn-size-{{size}} mn-color-{{color}} {{labelled ? 'mn-labelled' : ''}} {{disabled ? 'mn-disabled' : ''}} {{readOnly ? 'mn-readonly' : ''}} {{dragging >= 0 ? 'mn-dragging' : ''}}" data-minerva="slider" data-part="root" data-variant="{{variant}}"><view class="mn-slider__control" bindtouchstart="onTouchStart" catchtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchEnd"><view class="mn-slider__rail"/><view class="mn-slider__range" style="{{rangeStyle}}"/><view wx:for="{{marksView}}" wx:key="value" class="mn-slider__mark {{item.active ? 'mn-active' : ''}}" aria-hidden="true" data-state="{{item.state}}" style="{{item.style}}"><text wx:if="{{item.label}}" class="mn-slider__mark-label {{item.labelClass}}">{{item.label}}</text></view><view wx:for="{{thumbs}}" wx:key="index" class="mn-slider__thumb {{item.dragging ? 'mn-dragging' : ''}}" role="slider" aria-role="slider" aria-label="{{item.ariaLabel}}" aria-valuemin="{{item.min}}" aria-valuemax="{{item.max}}" aria-valuenow="{{item.value}}" aria-valuetext="{{item.ariaValueText}}" aria-orientation="horizontal" aria-disabled="{{disabled}}" aria-readonly="{{readOnly}}" aria-invalid="{{invalid}}" data-index="{{index}}" style="{{item.style}}"><text wx:if="{{tooltip && item.dragging}}" class="mn-slider__tooltip" aria-hidden="true">{{item.text}}</text></view></view><text wx:if="{{showValue}}" class="mn-slider__value" aria-hidden="true">{{valueText}}</text><block wx:if="{{name}}"><input wx:for="{{thumbs}}" wx:key="index" class="mn-slider__input" name="{{name}}" value="{{item.value}}" disabled="{{disabled}}" hidden/></block></view>`;
+export const sliderTemplate = `<view class="mn-slider mn-size-{{size}} mn-color-{{color}} {{orientation === 'vertical' ? 'mn-vertical' : ''}} {{labelled ? 'mn-labelled' : ''}} {{disabled ? 'mn-disabled' : ''}} {{readOnly ? 'mn-readonly' : ''}} {{dragging >= 0 ? 'mn-dragging' : ''}}" data-minerva="slider" data-part="root" data-orientation="{{orientation}}" data-variant="{{variant}}"><view class="mn-slider__control" bindtouchstart="onTouchStart" catchtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchEnd"><view class="mn-slider__rail"/><view class="mn-slider__range" style="{{rangeStyle}}"/><view wx:for="{{marksView}}" wx:key="value" class="mn-slider__mark {{item.active ? 'mn-active' : ''}}" aria-hidden="true" data-state="{{item.state}}" style="{{item.style}}"><text wx:if="{{item.label}}" class="mn-slider__mark-label {{item.labelClass}}">{{item.label}}</text></view><view wx:for="{{thumbs}}" wx:key="index" class="mn-slider__thumb {{item.dragging ? 'mn-dragging' : ''}}" role="slider" aria-role="slider" aria-label="{{item.ariaLabel}}" aria-valuemin="{{item.min}}" aria-valuemax="{{item.max}}" aria-valuenow="{{item.value}}" aria-valuetext="{{item.ariaValueText}}" aria-orientation="{{orientation}}" aria-disabled="{{disabled}}" aria-readonly="{{readOnly}}" aria-invalid="{{invalid}}" data-index="{{index}}" style="{{item.style}}"><text wx:if="{{tooltip && item.dragging}}" class="mn-slider__tooltip" aria-hidden="true">{{item.text}}</text></view></view><text wx:if="{{showValue}}" class="mn-slider__value" aria-hidden="true">{{valueText}}</text><block wx:if="{{name}}"><input wx:for="{{thumbs}}" wx:key="index" class="mn-slider__input" name="{{name}}" value="{{item.value}}" disabled="{{disabled}}" hidden/></block></view>`;
 
 export const sliderProperties = {
   disabled: flag(),
@@ -182,6 +214,7 @@ export const sliderProperties = {
   snapToMarks: flag(),
   size: text("medium"),
   color: text("primary"),
+  orientation: text("horizontal"),
   showValue: flag(),
   tooltip: flag(),
   name: text(),
@@ -195,7 +228,7 @@ export const sliderMethods = {
   },
   onTouchStart(this: Instance, event: TouchEvent) {
     if (blocked(this)) return;
-    const x = touchX(event);
+    const x = touchAt(event, isVertical(this));
     if (x === undefined) return;
     const apply = (rect: Rect) => {
       const from = currentOf(this);
@@ -216,7 +249,7 @@ export const sliderMethods = {
   onTouchMove(this: Instance, event: TouchEvent) {
     const gesture = gestures.get(this),
       rect = rects.get(this),
-      x = touchX(event);
+      x = touchAt(event, isVertical(this));
     if (!gesture || !rect || x === undefined) return;
     const next = setSliderThumb(
       gesture.latest,
@@ -262,7 +295,7 @@ export const sliderExtra = {
     variant: "single",
   },
   observers: {
-    "value,defaultValue,range,min,max,step,marks,snapToMarks,ariaLabel,localeLanguage":
+    "value,defaultValue,range,min,max,step,marks,snapToMarks,ariaLabel,orientation,localeLanguage":
       function (this: Instance) {
         sync(this);
       },

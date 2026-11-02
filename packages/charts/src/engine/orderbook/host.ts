@@ -5,7 +5,12 @@
 
 import { styleElement } from "../dom";
 import { readTheme, watchTheme, type ChartTheme } from "../theme";
-import { placeTooltip, styleTooltip } from "../tooltip";
+import {
+  placeTooltip,
+  releaseTooltip,
+  styleTooltip,
+  themeTooltip,
+} from "../tooltip";
 
 export interface HostConfig {
   /** Class of the root element */
@@ -91,14 +96,18 @@ export const createHost = (
   root.appendChild(canvas);
   container.appendChild(root);
 
+  let theme = readTheme(root);
+  const tips: HTMLDivElement[] = [];
   const createTooltip = () => {
     const tip = styleTooltip(
       doc.createElement("div"),
       TOOLTIP_STYLE,
+      theme,
     ) as HTMLDivElement;
     tip.className = "minerva-orderbook-tooltip";
     tip.setAttribute("role", "tooltip");
     root.appendChild(tip);
+    tips.push(tip);
     return tip;
   };
   const tooltip = createTooltip();
@@ -153,7 +162,7 @@ export const createHost = (
     width: 0,
     height: 0,
     dpr: 1,
-    theme: readTheme(root),
+    theme,
     invalidate() {
       pending = true;
       if (visible) schedule();
@@ -204,6 +213,7 @@ export const createHost = (
       resizeObserver?.disconnect();
       intersection?.disconnect();
       unwatchTheme();
+      for (const tip of tips) releaseTooltip(tip);
       root.remove();
     },
   };
@@ -229,7 +239,8 @@ export const createHost = (
 
   const unwatchTheme = watchTheme(() => {
     if (destroyed) return;
-    host.theme = readTheme(root);
+    theme = host.theme = readTheme(root);
+    for (const tip of tips) themeTooltip(tip, theme);
     config.onTheme?.();
     host.invalidate();
   });

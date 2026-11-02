@@ -82,3 +82,78 @@ export const hoverRect = (
     ? { x, y, width: right - x, height: bottom - y }
     : null;
 };
+
+/**
+ * Boxes (stage pixels) of every visible bar, clipped to the plot: the
+ * other bars a tooltip should not cover
+ */
+export const barRects = (model: ChartModel, sc: Scales): Rect[] => {
+  const rects: Rect[] = [];
+  const { plot } = sc;
+  const px0 = plot.x;
+  const py0 = plot.y;
+  const px1 = plot.x + plot.width;
+  const py1 = plot.y + plot.height;
+  // along the category axis: the screen y of horizontal charts
+  const lo = sc.horizontal ? py0 : px0;
+  const hi = sc.horizontal ? py1 : px1;
+  for (const s of model.series) {
+    if (s.hidden || s.type !== "bar") continue;
+    const { x: xs, y: ys } = s.cols;
+    const half = Math.max(s.barHalfWidth / Math.abs(sc.xPerPx), 1);
+    const n = Math.min(xs.length, ys.length);
+    for (let i = 0; i < n; i++) {
+      const c = sc.xToPx(xs[i] + s.barOffset);
+      if (!(c + half > lo && c - half < hi)) continue;
+      const pa = sc.yToPx(s.barBase?.[i] ?? model.baseline);
+      const pb = sc.yToPx(s.barTop?.[i] ?? ys[i]);
+      if (!Number.isFinite(pa) || !Number.isFinite(pb)) continue;
+      const r = sc.horizontal
+        ? {
+            x0: Math.min(pa, pb),
+            x1: Math.max(pa, pb),
+            y0: c - half,
+            y1: c + half,
+          }
+        : {
+            x0: c - half,
+            x1: c + half,
+            y0: Math.min(pa, pb),
+            y1: Math.max(pa, pb),
+          };
+      const x0 = Math.max(px0, r.x0);
+      const y0 = Math.max(py0, r.y0);
+      const x1 = Math.min(px1, r.x1);
+      const y1 = Math.min(py1, r.y1);
+      if (x1 - x0 > 0.5 && y1 - y0 > 0.5)
+        rects.push({ x: x0, y: y0, width: x1 - x0, height: y1 - y0 });
+    }
+  }
+  return rects;
+};
+
+const NO_OBSTACLES: readonly Rect[] = [];
+const obstacleCache = new WeakMap<
+  Scales,
+  { model: ChartModel; rects: readonly Rect[] }
+>();
+
+/**
+ * What a tooltip of the chart must not cover besides the hovered marks:
+ * the bars of horizontal charts (Gantt tasks, rows of bars) and of
+ * floating (range) bars. Cached per layout, so pointer moves only query it.
+ */
+export const tooltipObstacles = (
+  model: ChartModel,
+  sc: Scales,
+): readonly Rect[] => {
+  const cached = obstacleCache.get(sc);
+  if (cached?.model === model) return cached.rects;
+  const applies = model.series.some(
+    (s) =>
+      !s.hidden && s.type === "bar" && (sc.horizontal || s.floating === true),
+  );
+  const rects = applies ? barRects(model, sc) : NO_OBSTACLES;
+  obstacleCache.set(sc, { model, rects });
+  return rects;
+};

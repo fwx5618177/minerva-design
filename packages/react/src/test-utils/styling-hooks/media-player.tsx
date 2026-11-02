@@ -47,6 +47,29 @@ export default [
     },
   },
   {
+    name: "audio with captions, menu open",
+    element: (
+      <MediaPlayer
+        src="/song.mp3"
+        title="Song"
+        tracks={[
+          {
+            src: "data:text/vtt,WEBVTT",
+            srclang: "en",
+            label: "English",
+            default: true,
+          },
+        ]}
+      />
+    ),
+    setup: async ({ user, container }) => {
+      loaded(container);
+      await user.click(
+        container.querySelector<HTMLElement>('[aria-haspopup="menu"]')!,
+      );
+    },
+  },
+  {
     name: "error",
     element: <MediaPlayer src="/broken.mp4" />,
     setup: ({ container }) => {

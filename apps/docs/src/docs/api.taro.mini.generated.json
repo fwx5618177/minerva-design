@@ -2422,6 +2422,12 @@
       { "name": "max", "type": "number | undefined", "required": false, "description": "Largest value (default 100)" },
       { "name": "min", "type": "number | undefined", "required": false, "description": "Smallest value (default 0)" },
       { "name": "name", "type": "string | undefined", "required": false, "description": "Name of the hidden form input(s) (H5 and native forms)" },
+      {
+        "name": "orientation",
+        "type": "\"horizontal\" | \"vertical\" | undefined",
+        "required": false,
+        "description": "Direction of the track (default \"horizontal\"). A vertical track runs\nfrom min (bottom) to max (top); its length is `--slider-length`\n(default 160px)"
+      },
       { "name": "range", "type": "boolean | undefined", "required": false, "description": "Two thumbs selecting `[start, end]` (default false)" },
       { "name": "readOnly", "type": "boolean | undefined", "required": false, "description": "Shows the value but blocks changes (inherited from FormControl)" },
       { "name": "showValue", "type": "boolean | undefined", "required": false, "description": "Shows the value after the track (default false)" },
@@ -2508,6 +2514,12 @@
       { "name": "aria-describedby", "type": "string | undefined", "required": false },
       { "name": "aria-label", "type": "string | undefined", "required": false },
       { "name": "aria-labelledby", "type": "string | undefined", "required": false },
+      {
+        "name": "canDrop",
+        "type": "((move: KanbanCardMove) => boolean) | undefined",
+        "required": false,
+        "description": "Whether a card may be dropped at a position (refused positions show no drop line)"
+      },
       { "name": "children", "type": "ReactNode", "required": false },
       { "name": "className", "type": "string | undefined", "required": false },
       {
@@ -2516,6 +2528,12 @@
         "required": false,
         "description": "Width of every column (a number is pixels; default 18rem / 288px); with `fill` the minimum width"
       },
+      {
+        "name": "draggable",
+        "type": "boolean | undefined",
+        "required": false,
+        "description": "Lets the KanbanCard children of keyed columns (`value`) be dragged: a\nlong press picks a card up (the board stops scrolling), moving the\nfinger moves it, lifting the finger drops it (default false). The board\nis controlled: it reports the move (`onCardMove`)"
+      },
       { "name": "fill", "type": "boolean | undefined", "required": false, "description": "Stretches the columns equally to fill the board when they fit (default false)" },
       { "name": "gap", "type": "KanbanLength | undefined", "required": false, "description": "Space between the columns (a number is pixels; default 12px)" },
       { "name": "height", "type": "KanbanLength | undefined", "required": false, "description": "Height of the board: the column bodies scroll vertically within it" },
@@ -2523,7 +2541,14 @@
       { "name": "maxHeight", "type": "KanbanLength | undefined", "required": false, "description": "Maximum height of the board: the column bodies scroll vertically within it" },
       { "name": "style", "type": "CSSProperties | undefined", "required": false }
     ],
-    "events": [],
+    "events": [
+      {
+        "name": "onCardMove",
+        "type": "((move: KanbanCardMove) => void) | undefined",
+        "required": false,
+        "description": "Called when a card is dropped at a new position: move it in your data (`moveKanbanCard`)"
+      }
+    ],
     "slots": [],
     "methods": []
   },
@@ -2543,7 +2568,24 @@
       { "name": "footer", "type": "ReactNode", "required": false, "description": "Footer below the cards (e.g. an \"Add card\" button)" },
       { "name": "id", "type": "string | undefined", "required": false },
       { "name": "style", "type": "CSSProperties | undefined", "required": false },
-      { "name": "title", "type": "ReactNode", "required": true, "description": "Title of the column (also its accessible name)" }
+      { "name": "title", "type": "ReactNode", "required": true, "description": "Title of the column (also its accessible name)" },
+      { "name": "value", "type": "string | undefined", "required": false, "description": "Key of the column, reported as `fromColumn` / `toColumn` by a draggable board" }
+    ],
+    "events": [],
+    "slots": [],
+    "methods": []
+  },
+  "KanbanCard": {
+    "entry": "minerva-design/taro",
+    "props": [
+      { "name": "aria-describedby", "type": "string | undefined", "required": false },
+      { "name": "aria-label", "type": "string | undefined", "required": false },
+      { "name": "aria-labelledby", "type": "string | undefined", "required": false },
+      { "name": "children", "type": "ReactNode", "required": false },
+      { "name": "className", "type": "string | undefined", "required": false },
+      { "name": "id", "type": "string | undefined", "required": false },
+      { "name": "style", "type": "CSSProperties | undefined", "required": false },
+      { "name": "value", "type": "string", "required": true, "description": "Key of the card, reported as `cardKey` by a draggable board" }
     ],
     "events": [],
     "slots": [],
@@ -2584,6 +2626,12 @@
       { "name": "startTime", "type": "number | undefined", "required": false, "description": "Resume position in seconds, applied once (video `initial-time`, audio `startTime`)" },
       { "name": "style", "type": "CSSProperties | undefined", "required": false },
       { "name": "title", "type": "string | undefined", "required": false, "description": "Title of the media, shown in the audio bar / over the video" },
+      {
+        "name": "tracks",
+        "type": "readonly MediaPlayerTrack[] | undefined",
+        "required": false,
+        "description": "Captions / subtitles (WebVTT or SRT files): fetched with `Taro.request`,\nparsed and drawn over the video (below the title for audio) at the\nplayback time, with a captions (CC) choice in the control bar. The\nchoice is remembered (storage); a `default` track shows until the user\nchooses"
+      },
       { "name": "type", "type": "MediaPlayerType | undefined", "required": false, "description": "Kind of media (default: inferred from mimeType, else the file extension of src, else \"video\")" }
     ],
     "events": [
@@ -2594,6 +2642,12 @@
       { "name": "onPlay", "type": "(() => void) | undefined", "required": false, "description": "Called when playback starts" },
       { "name": "onRateChange", "type": "((rate: number) => void) | undefined", "required": false, "description": "Called with the new playback speed" },
       { "name": "onTimeUpdate", "type": "((detail: MediaPlayerTimeDetail) => void) | undefined", "required": false, "description": "Called while playing with the playhead position and the duration" },
+      {
+        "name": "onTrackChange",
+        "type": "((detail: MediaPlayerTrackChangeDetail) => void) | undefined",
+        "required": false,
+        "description": "Called when the user chooses captions (index -1 and track null: Off)"
+      },
       { "name": "onVolumeChange", "type": "((detail: MediaPlayerVolumeDetail) => void) | undefined", "required": false, "description": "Called when the volume or the muted state changes" }
     ],
     "slots": [],
@@ -3465,7 +3519,13 @@
         "name": "language",
         "type": "string | undefined",
         "required": false,
-        "description": "Language of the code: highlights its syntax (nested Text with\n`mn-code-token-<type>` classes); without it the text is plain"
+        "description": "Language of the code: highlights its syntax (nested Text with\n`mn-code-token-<type>` classes); without it the text is plain. `\"auto\"`\ndetects it from the code (`detectCodeLanguage`, \"plain\" when unsure),\nshown by the label too"
+      },
+      {
+        "name": "marks",
+        "type": "readonly CodeMark[] | undefined",
+        "required": false,
+        "description": "Character ranges to mark (saved highlights, annotations): nested Text\nwith the `mn-code-mark` class and the mark's background over the token\ncolors (the copied text stays the raw code). `start` / `end` are UTF-16\noffsets into `code`, clamped to it; empty ranges are ignored. Where marks\noverlap, the later one wins. `color`: a theme color name (a translucent\ntint) or any CSS color (default: translucent yellow)"
       },
       { "name": "maxHeight", "type": "string | number | undefined", "required": false },
       { "name": "showLanguage", "type": "boolean | undefined", "required": false, "description": "Shows the `language` as a small label in the toolbar" },
@@ -3473,7 +3533,9 @@
       { "name": "style", "type": "CSSProperties | undefined", "required": false },
       { "name": "wrap", "type": "boolean | undefined", "required": false }
     ],
-    "events": [],
+    "events": [
+      { "name": "onMarkClick", "type": "((mark: CodeMark) => void) | undefined", "required": false, "description": "A mark was tapped: the item of `marks` (the topmost where they overlap)" }
+    ],
     "slots": [],
     "methods": []
   },

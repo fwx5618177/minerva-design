@@ -1,13 +1,23 @@
 import {
+  afterNextRender,
   booleanAttribute,
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   Directive,
+  effect,
+  ElementRef,
+  inject,
+  Injector,
   input,
   output,
+  signal,
+  untracked,
+  viewChild,
 } from "@angular/core";
 import {
   createChart,
+  createQuadrantPointLayer,
   heatmapChartOptions,
   quadrantChartOptions,
   quadrantOf,
@@ -35,6 +45,8 @@ import {
   type QuadrantAxisLabels,
   type QuadrantCorner,
   type QuadrantPoint,
+  type QuadrantPointLayer,
+  type QuadrantPointLayerOptions,
   type QuadrantRegions,
 } from "minerva-design/charts/core";
 import { CHART_SURFACE, MnChartEngine, optionalBoolean } from "./engine";
@@ -480,11 +492,18 @@ const DOUBLE_CLICK_MS = 400;
  * quadrants with titles, dividers, and labelled dots placed without
  * overlapping labels. With `draggable`, dots can be dragged to another
  * quadrant (`pointDrop`; update `points` to move them).
+ *
+ * A visually hidden list of the dots per quadrant (`accessiblePoints`) lets
+ * screen readers and keyboards reach every dot: arrows move between them,
+ * Enter clicks (`pointClick`) and, with `draggable`, Shift + arrows move the
+ * focused dot to the neighbouring quadrant (`pointDrop`, announced in a live
+ * region). The focused dot gets a focus ring and is reported by `hover`.
  */
 @Component({
   selector: "mn-quadrant-chart",
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: CHART_SURFACE,
+  template: `${CHART_SURFACE}
+    <div #points style="display:contents"></div>`,
 })
 export class MnQuadrantChart extends MnCartesianChartBase {
   /** Points to place */
@@ -537,6 +556,13 @@ export class MnQuadrantChart extends MnCartesianChartBase {
   readonly selectedIndex = input<number | null | undefined>(undefined);
   /** Indices of the selected points */
   readonly selectedIndices = input<readonly number[] | undefined>(undefined);
+  /**
+   * Renders a visually hidden list of the points per quadrant: screen
+   * readers can reach every point; arrows move between them, Enter clicks
+   * and Shift + arrows move the focused point to the neighbouring quadrant
+   * (`pointDrop`, with `draggable`)
+   */
+  readonly accessiblePoints = input(true, { transform: booleanAttribute });
 
   /** A point was clicked */
   readonly pointClick = output<{ point: QuadrantPoint; index: number }>();
@@ -554,6 +580,80 @@ export class MnQuadrantChart extends MnCartesianChartBase {
   readonly pointDrop = output<QuadrantPointDrop>();
 
   private lastClick: { index: number; time: number } | null = null;
+  /** Keyboard-focused point of the accessible layer (drawn with a focus ring) */
+  private readonly focusedIndex = signal<number | null>(null);
+  private readonly pointsHost =
+    viewChild.required<ElementRef<HTMLElement>>("points");
+  private destroyed = false;
+
+  constructor() {
+    super();
+    const injector = inject(Injector);
+    let layer: QuadrantPointLayer | null = null;
+    afterNextRender(() => {
+      effect(
+        () => {
+          const enabled = this.accessiblePoints();
+          const options = this.layerOptions();
+          untracked(() => {
+            if (!enabled) {
+              layer?.destroy();
+              layer = null;
+              this.focusedIndex.set(null);
+            } else if (layer) layer.update(options);
+            else
+              layer = createQuadrantPointLayer(
+                this.pointsHost().nativeElement,
+                options,
+              );
+          });
+        },
+        { injector },
+      );
+    });
+    inject(DestroyRef).onDestroy(() => {
+      // the outputs are closed: the final focus loss is not reported
+      this.destroyed = true;
+      layer?.destroy();
+      layer = null;
+    });
+  }
+
+  /** Settings of the accessible point layer (shared with the other DOM renderers) */
+  private layerOptions(): QuadrantPointLayerOptions {
+    const selectedIndex = this.selectedIndex();
+    return {
+      config: {
+        ...this.geometry(),
+        points: this.points(),
+        quadrants: this.quadrants(),
+        xLabel: this.xLabel(),
+        yLabel: this.yLabel(),
+        name: this.name(),
+      },
+      locale: this.locale(),
+      movable: this.draggable(),
+      selected: [
+        ...(this.selectedIndices() ?? []),
+        ...(selectedIndex !== undefined && selectedIndex !== null
+          ? [selectedIndex]
+          : []),
+      ],
+      onFocusChange: (index, hover) => {
+        if (this.destroyed) return;
+        this.focusedIndex.set(index);
+        this.hover.emit(hover);
+      },
+      onClick: (index) => {
+        const point = this.points()[index];
+        if (point) this.pointClick.emit({ point, index });
+      },
+      onMove: (index, target) => {
+        const point = this.points()[index];
+        if (point) this.pointDrop.emit({ point, index, ...target });
+      },
+    };
+  }
 
   private geometry() {
     return {
@@ -584,6 +684,7 @@ export class MnQuadrantChart extends MnCartesianChartBase {
         selectedIndices: this.selectedIndices(),
       },
       this.commonOptions(),
+      { focusedIndex: this.accessiblePoints() ? this.focusedIndex() : null },
     );
   }
 

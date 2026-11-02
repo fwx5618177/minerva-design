@@ -2160,7 +2160,7 @@
         "name": "language",
         "type": "string",
         "required": false,
-        "description": "Language of the code: highlights its syntax and sets `class=\"language-<x>\"` / `data-language` on the <code>. Supported: javascript (js, mjs, cjs), typescript (ts), jsx, tsx, json (jsonc, json5), css (scss, less), html (xml, svg, vue), bash (sh, shell, zsh, console), python (py), yaml (yml), sql, diff, markdown (md); other names render plain text. Without it the text is not highlighted"
+        "description": "Language of the code: highlights its syntax and sets `class=\"language-<x>\"` / `data-language` on the <code>. Supported: javascript (js, mjs, cjs), typescript (ts), jsx, tsx, json (jsonc, json5), css (scss, less), html (xml, svg, vue), bash (sh, shell, zsh, console), python (py), yaml (yml), sql, diff, markdown (md); other names render plain text. `\"auto\"` detects the language from the text (`detectCodeLanguage` of minerva-design/core, \"plain\" when unsure): the class, `data-language` and the label show the detected name. Without it the text is not highlighted"
       },
       {
         "name": "highlight",
@@ -2182,6 +2182,18 @@
         "required": false,
         "default": "false",
         "description": "Shows the `language` as a small label in the top-right corner (e.g. \"JSON\"); the <pre> is then wrapped in a <div> like with `copyable`"
+      },
+      {
+        "name": "marks",
+        "type": "readonly CodeMark[]",
+        "required": false,
+        "description": "Character ranges to mark (saved highlights, annotations, search hits), rendered as <mark> elements over the syntax highlighting (the token colors are kept; the copied text stays the raw code). `start` / `end` are UTF-16 offsets into the code string (`children`), clamped to it; empty ranges are ignored. Marks may cross tokens and lines (with `showLineNumbers` a mark is cut at each line break). Where marks overlap, the later one in the array wins (its color, class, title and click); the earlier one is cut around it. Each element gets `data-mark-id` (the mark's `id`) and the mark's `className` / `title`; `color` is a theme color name (a translucent tint) or any CSS color (default: translucent yellow, `--code-block-mark-bg`). To create one from the user's selection, see `getCodeSelectionRange` of `minerva-design/core`"
+      },
+      {
+        "name": "onMarkClick",
+        "type": "(mark: CodeMark, event: MouseEvent<HTMLElement>) => void",
+        "required": false,
+        "description": "Called when a mark is clicked (not at the end of a text selection drag), with the mark object of `marks` (the topmost one where marks overlap). Marks are not focusable: offer a keyboard path to the same action (a list of the highlights, for example)"
       },
       {
         "name": "ref",
@@ -3233,6 +3245,10 @@
       {
         "name": "--code-block-line-number-color",
         "description": "Color of the line numbers"
+      },
+      {
+        "name": "--code-block-mark-bg",
+        "description": "Default background of the marks (default: a translucent yellow)"
       }
     ]
   },
@@ -3681,6 +3697,10 @@
       {
         "name": "--kanban-count-color",
         "description": "Text color of the count badge (defaults to --text-secondary-color)"
+      },
+      {
+        "name": "--kanban-drop-indicator-color",
+        "description": "Color of the drop line and of the column a dragged card would land in (defaults to --primary-color)"
       }
     ]
   },
@@ -3813,6 +3833,18 @@
       {
         "name": "--media-player-track-height",
         "description": "Thickness of the seek and volume tracks (defaults to 4px)"
+      },
+      {
+        "name": "--media-player-captions-background",
+        "description": "Background of the caption text (defaults to rgb(0 0 0 / 75%) over a video, none for audio)"
+      },
+      {
+        "name": "--media-player-captions-color",
+        "description": "Color of the caption text (defaults to white over a video, the bar color for audio)"
+      },
+      {
+        "name": "--media-player-captions-font-size",
+        "description": "Font size of the caption text (defaults to --font-size-lg over a video, --font-size-md for audio)"
       }
     ]
   },
@@ -6741,6 +6773,25 @@
         "description": "Maximum height of the board: the column bodies scroll vertically within it (a number is pixels)"
       },
       {
+        "name": "draggable",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Lets the KanbanCard children of keyed columns (`value`) be dragged between and within columns: with the mouse, a long press on touch screens, or the keyboard (Space / Enter picks a focused card up, the arrows move it, Space / Enter drops it, Escape cancels). The board is controlled: it reports the move (`onCardMove`) and the app moves the card in its data."
+      },
+      {
+        "name": "onCardMove",
+        "type": "(move: KanbanCardMove) => void",
+        "required": false,
+        "description": "Called when a card is dropped at a new position (not when it is put back where it was): move the card in your data (`moveKanbanCard` from `minerva-design/core` does it for plain lists)"
+      },
+      {
+        "name": "canDrop",
+        "type": "(move: KanbanCardMove) => boolean",
+        "required": false,
+        "description": "Whether a card may be dropped at a position: refused positions show no drop indicator and the keyboard skips them (its original position is always allowed)"
+      },
+      {
         "name": "aria-label",
         "type": "string",
         "required": false,
@@ -6779,6 +6830,57 @@
       }
     ]
   },
+  "KanbanCardProps": {
+    "source": "react/src/components/KanbanBoard/types.ts",
+    "description": "Props of the KanbanCard component: a card of a KanbanColumn that a draggable board can move",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "description": "Key of the card, reported as `cardKey` by a draggable board"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "default": "its text content",
+        "description": "Name of the card in the drag announcements and, when draggable, its accessible name"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Content of the card"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name"
+      },
+      {
+        "name": "style",
+        "type": "CSSProperties",
+        "required": false,
+        "description": "Inline style of the card"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "Id of the card"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root <div>"
+      }
+    ]
+  },
   "KanbanColumnColor": {
     "source": "react/src/components/KanbanBoard/types.ts",
     "description": "Accent of a KanbanColumn: a theme color or any CSS color (\"#7c3aed\", \"rgb(...)\", \"var(--my-color)\")",
@@ -6796,6 +6898,12 @@
         "type": "ReactNode",
         "required": true,
         "description": "Title of the column (also its accessible name)"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "Key of the column, reported as `fromColumn` / `toColumn` by a draggable board (columns without one take no cards)"
       },
       {
         "name": "count",
@@ -7254,7 +7362,7 @@
         "name": "crossOrigin",
         "type": "MediaPlayerCrossOrigin",
         "required": false,
-        "description": "CORS mode of the media request"
+        "description": "CORS mode of the media request (cross-origin caption files need it too, plus CORS headers on their server)"
       },
       {
         "name": "startTime",
@@ -7302,6 +7410,13 @@
         "required": false,
         "default": "false",
         "description": "Shows a picture-in-picture button (video, where the browser supports it)"
+      },
+      {
+        "name": "tracks",
+        "type": "readonly MediaPlayerTrack[]",
+        "required": false,
+        "default": "[]",
+        "description": "Captions / subtitles (WebVTT or SRT files): rendered as <track> children and drawn by the player over the video (below the title for audio), with a captions menu in the control bar. The choice is remembered (localStorage); a `default` track shows until the user chooses"
       },
       {
         "name": "onTimeUpdate",
@@ -7352,6 +7467,12 @@
         "description": "Called when the volume or the muted state changes"
       },
       {
+        "name": "onTrackChange",
+        "type": "(detail: MediaPlayerTrackChangeDetail) => void",
+        "required": false,
+        "description": "Called when the user chooses captions (index -1 and track null: Off)"
+      },
+      {
         "name": "aria-label",
         "type": "string",
         "required": false,
@@ -7395,6 +7516,65 @@
         "type": "number",
         "required": true,
         "description": "Duration in seconds (0 while unknown)"
+      }
+    ]
+  },
+  "MediaPlayerTrack": {
+    "source": "react/src/components/MediaPlayer/types.ts",
+    "description": "A captions / subtitles file of a MediaPlayer",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "src",
+        "type": "string",
+        "required": true,
+        "description": "URL of the WebVTT (.vtt) or SubRip (.srt) file; data: URLs work"
+      },
+      {
+        "name": "srclang",
+        "type": "string",
+        "required": false,
+        "description": "Language of the track (BCP 47: \"en\", \"fr-CA\")"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "description": "Name shown in the captions menu"
+      },
+      {
+        "name": "kind",
+        "type": "\"subtitles\" | \"captions\"",
+        "required": false,
+        "default": "\"subtitles\"",
+        "description": "Kind of text track"
+      },
+      {
+        "name": "default",
+        "type": "boolean",
+        "required": false,
+        "description": "Shown when the user has not chosen captions yet"
+      }
+    ]
+  },
+  "MediaPlayerTrackChangeDetail": {
+    "source": "react/src/components/MediaPlayer/types.ts",
+    "description": "Detail of MediaPlayer's onTrackChange",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "index",
+        "type": "number",
+        "required": true,
+        "description": "Index of the chosen track in `tracks`, -1 for Off"
+      },
+      {
+        "name": "track",
+        "type": "MediaPlayerTrack | null",
+        "required": true,
+        "description": "The chosen track, null for Off"
       }
     ]
   },

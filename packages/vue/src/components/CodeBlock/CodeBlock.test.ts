@@ -230,3 +230,164 @@ describe("CodeBlock highlighting", () => {
     expect(labelOnly.find('[aria-live="polite"]').exists()).toBe(false);
   });
 });
+
+describe('CodeBlock language="auto"', () => {
+  const python = "def greet(name):\n    return f'Hello {name}'\n";
+
+  it("highlights, labels and tags the detected language", () => {
+    const wrapper = mount(CodeBlock, {
+      props: { code: python, language: "auto", showLanguage: true },
+    });
+    const code = wrapper.get("code");
+    expect(code.classes()).toContain("language-python");
+    expect(code.attributes("data-language")).toBe("python");
+    expect(wrapper.get(".language").text()).toBe("PYTHON");
+    expect(code.findAll(".token-keyword").map((k) => k.text())).toContain(
+      "def",
+    );
+    expect(code.element.textContent).toBe(python);
+  });
+
+  it("detects the slot text and follows code changes", async () => {
+    const slotted = mount(CodeBlock, {
+      props: { language: "AUTO" },
+      slots: { default: () => "SELECT id FROM books;" },
+    });
+    expect(slotted.get("code").attributes("data-language")).toBe("sql");
+    const wrapper = mount(CodeBlock, {
+      props: { code: "Just a sentence.", language: "auto" },
+    });
+    expect(wrapper.get("code").attributes("data-language")).toBe("plain");
+    expect(wrapper.get("code").find("span").exists()).toBe(false);
+    await wrapper.setProps({ code: '{"ok": true}' });
+    expect(wrapper.get("code").attributes("data-language")).toBe("json");
+    expect(wrapper.get("code").find(".token-boolean").text()).toBe("true");
+  });
+
+  it("lays marks over the detected highlighting", () => {
+    const code = mount(CodeBlock, {
+      props: {
+        code: python,
+        language: "auto",
+        marks: [{ start: 4, end: 9, id: "m" }],
+      },
+    }).get("code");
+    expect(code.get("mark").text()).toBe("greet");
+    expect(code.get("mark").attributes("data-mark-id")).toBe("m");
+    expect(code.get(".token-keyword").text()).toBe("def");
+    expect(code.element.textContent).toBe(python);
+  });
+});
+
+describe("CodeBlock marks", () => {
+  const source = 'const name = "x";\nlog(name);';
+
+  afterEach(() => {
+    window.getSelection()?.removeAllRanges();
+  });
+
+  it("wraps the ranges in <mark>s over the highlighted tokens", () => {
+    const wrapper = mount(CodeBlock, {
+      props: {
+        code: source,
+        language: "js",
+        marks: [
+          { start: 6, end: 15, id: "a", title: "Note", className: "saved" },
+          { start: 18, end: 21, color: "info" },
+        ],
+      },
+    });
+    const marks = wrapper.findAll("mark");
+    expect(marks.map((m) => m.text())).toEqual(['name = "x', "log"]);
+    expect(marks[0].classes()).toEqual(
+      expect.arrayContaining(["mark", "saved"]),
+    );
+    expect(marks[0].classes()).not.toContain("markClickable");
+    expect(marks[0].attributes()).toMatchObject({
+      "data-mark-id": "a",
+      title: "Note",
+      "data-part": "code-mark",
+    });
+    expect(marks[0].find(".token-string").text()).toBe('"x');
+    expect(marks[1].attributes("data-mark-color")).toBe("info");
+    expect(
+      (marks[1].element as HTMLElement).style.getPropertyValue(
+        "--code-mark-bg",
+      ),
+    ).toBe("color-mix(in srgb, var(--info-color) 30%, transparent)");
+    expect(wrapper.get("code").element.textContent).toBe(source);
+  });
+
+  it("marks plain text, overlaps (later wins) and clamps ranges", () => {
+    const wrapper = mount(CodeBlock, {
+      props: {
+        code: source,
+        marks: [
+          { start: -3, end: 10, id: "outer" },
+          { start: 2, end: 4, id: "inner" },
+          { start: 25, end: 80 },
+          { start: 5, end: 5 },
+        ],
+      },
+    });
+    expect(
+      wrapper
+        .findAll("mark")
+        .map((m) => [m.text(), m.attributes("data-mark-id")]),
+    ).toEqual([
+      ["co", "outer"],
+      ["ns", "inner"],
+      ["t name", "outer"],
+      ["e);", undefined],
+    ]);
+    expect(wrapper.find("span").exists()).toBe(false);
+  });
+
+  it("cuts multi-line marks per numbered line and copies the raw text", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    setClipboard(writeText);
+    const wrapper = mount(CodeBlock, {
+      props: {
+        code: source,
+        language: "js",
+        showLineNumbers: true,
+        copyable: true,
+        marks: [{ start: 13, end: 21 }],
+      },
+    });
+    const lines = wrapper.findAll(".line");
+    expect(lines.map((line) => line.find("mark").text())).toEqual([
+      '"x";',
+      "log",
+    ]);
+    expect(wrapper.findAll(".lineNumber")).toHaveLength(2);
+    expect(wrapper.get("code").element.textContent).toBe(source);
+    await wrapper.get("button").trigger("click");
+    await flushPromises();
+    expect(writeText).toHaveBeenCalledWith(source);
+  });
+
+  it("emits mark-click with the mark, not after a selection drag", async () => {
+    const marks = [{ start: 0, end: 5, id: "a" }];
+    const onMarkClick = vi.fn();
+    const wrapper = mount(CodeBlock, {
+      props: { code: source, language: "js", marks, onMarkClick },
+      attachTo: document.body,
+    });
+    const mark = wrapper.get("mark");
+    expect(mark.classes()).toContain("markClickable");
+    await mark.get("span").trigger("click");
+    expect(onMarkClick).toHaveBeenCalledTimes(1);
+    expect(onMarkClick.mock.calls[0][0]).toStrictEqual(marks[0]);
+    expect(onMarkClick.mock.calls[0][1]).toBeInstanceOf(MouseEvent);
+    await wrapper.get("code").trigger("click");
+    expect(onMarkClick).toHaveBeenCalledTimes(1);
+    const range = document.createRange();
+    range.selectNodeContents(wrapper.get("code").element);
+    window.getSelection()!.removeAllRanges();
+    window.getSelection()!.addRange(range);
+    await mark.trigger("click");
+    expect(onMarkClick).toHaveBeenCalledTimes(1);
+    wrapper.unmount();
+  });
+});

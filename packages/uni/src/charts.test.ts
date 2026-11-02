@@ -258,6 +258,65 @@ describe("uni charts (H5 canvas)", () => {
     wrapper.unmount();
   });
 
+  it("lists the QuadrantChart points for screen readers with move-to-quadrant buttons", async () => {
+    const points = [
+      { x: 2, y: 8, label: "Write report" },
+      { x: 7, y: 3 },
+    ];
+    const onPointDrop = vi.fn();
+    const wrapper = mount(QuadrantChart, {
+      props: {
+        points,
+        locale: "en",
+        quadrants: { topLeft: { label: "Do first" } },
+        selectedIndex: 1,
+        onPointDrop,
+      },
+    });
+    await flushPromises();
+    const layer = wrapper.find(".mn-chart-quadrant-points");
+    expect(
+      layer
+        .findAll('[aria-role="list"]')
+        .map((l) => l.attributes("aria-label")),
+    ).toEqual(["Do first", "Bottom right quadrant"]);
+    const buttons = layer.findAll('[aria-role="button"]');
+    expect(buttons.map((b) => b.attributes("aria-label"))).toEqual([
+      "Write report, Do first, x: 2, y: 8",
+      "Write report, Move to Bottom left quadrant",
+      "Write report, Move to Top right quadrant",
+      "Point 2, Bottom right quadrant, x: 7, y: 3",
+      "Point 2, Move to Top right quadrant",
+      "Point 2, Move to Bottom left quadrant",
+    ]);
+    expect(buttons[3]!.attributes("aria-selected")).toBe("true");
+
+    await buttons[3]!.trigger("click");
+    expect(wrapper.emitted("pointClick")).toEqual([[points[1], 1]]);
+    await buttons[4]!.trigger("click");
+    expect(onPointDrop).toHaveBeenCalledWith(points[1], 1, {
+      x: 7.5,
+      y: 7.5,
+      quadrant: "topRight",
+    });
+    expect(layer.find('[role="status"]').text()).toBe(
+      "Point 2 moved to Top right quadrant",
+    );
+
+    await wrapper.setProps({ accessiblePoints: false });
+    expect(wrapper.find(".mn-chart-quadrant-points").exists()).toBe(false);
+    wrapper.unmount();
+  });
+
+  it("has no move buttons without a pointDrop listener", async () => {
+    const wrapper = mount(QuadrantChart, {
+      props: { points: [{ x: 2, y: 8 }] },
+    });
+    await flushPromises();
+    expect(wrapper.findAll('[aria-role="button"]')).toHaveLength(1);
+    wrapper.unmount();
+  });
+
   it("cleans up on unmount", async () => {
     const wrapper = mount(LineChart, { props: { series } });
     await flushPromises();

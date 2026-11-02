@@ -28,6 +28,7 @@ export * from "./tag-separators";
 export * from "./cascader-options";
 export * from "./rating";
 export * from "./media-player";
+export * from "./media-captions";
 export * from "./slider";
 export * from "./cn";
 export * from "./highlight";

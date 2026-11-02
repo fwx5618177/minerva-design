@@ -163,3 +163,105 @@ it("media player controls=false hands the video to the host controls", () => {
   expect(w.find("video").attributes("controls")).toBeDefined();
   expect(w.find('[role="button"]').exists()).toBe(false);
 });
+
+const VTT =
+  "WEBVTT\n\n00:01.000 --> 00:03.000\nHello <i>there</i>\n\n00:05.000 --> 00:06.000\nBye\n";
+const SRT = "1\n00:00:01,000 --> 00:00:03,000\nBonjour\n";
+const captionTracks = [
+  {
+    src: `data:text/vtt,${encodeURIComponent(VTT)}`,
+    srclang: "en",
+    label: "English",
+    default: true,
+  },
+  { src: "https://cdn.example.com/fr.srt", srclang: "fr", label: "Français" },
+];
+const flush = async () => {
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  await nextTick();
+};
+const captions = (w: ReturnType<typeof mount>) =>
+  w.find('[data-part="captions"]');
+
+function captionsHost(stored: Record<string, unknown> = {}) {
+  uniGlobal.getStorageSync = vi.fn((key: string) => stored[key]);
+  uniGlobal.setStorageSync = vi.fn((key: string, value: unknown) => {
+    stored[key] = value;
+  });
+  uniGlobal.request = vi.fn(
+    (options: {
+      url: string;
+      success: (result: { statusCode: number; data: unknown }) => void;
+    }) => options.success({ statusCode: 200, data: SRT }),
+  );
+  return stored;
+}
+afterEach(() => {
+  delete uniGlobal.getStorageSync;
+  delete uniGlobal.setStorageSync;
+  delete uniGlobal.request;
+});
+
+it("media player draws the active cue of the default track at the video time", async () => {
+  captionsHost();
+  const w = mount(MediaPlayer, {
+    props: { src: "/clip.mp4", tracks: captionTracks },
+  });
+  await flush();
+  expect(captions(w).exists()).toBe(false);
+  await fireVideo(w, "timeupdate", { currentTime: 1.5, duration: 10 });
+  expect(captions(w).text()).toBe("Hello there");
+  await fireVideo(w, "timeupdate", { currentTime: 4, duration: 10 });
+  expect(captions(w).exists()).toBe(false);
+});
+
+it("media player chooses captions with the CC button and remembers them", async () => {
+  const stored = captionsHost();
+  const w = mount(MediaPlayer, {
+    props: { src: "/clip.mp4", tracks: captionTracks },
+  });
+  const cc = button(w, "Captions");
+  expect(cc.attributes("aria-expanded")).toBe("false");
+  await cc.trigger("click");
+  const menu = w.find('[data-part="captions-menu"]');
+  const options = menu.findAll('[role="button"]');
+  expect(options.map((o) => o.text())).toEqual(["Off", "English", "Français"]);
+  expect(options[1]!.attributes("aria-pressed")).toBe("true");
+  await options[2]!.trigger("click");
+  expect(w.emitted("trackChange")).toEqual([
+    [{ index: 1, track: captionTracks[1] }],
+  ]);
+  expect(stored["minerva-media-player-captions"]).toBe("fr");
+  expect(w.find('[data-part="captions-menu"]').exists()).toBe(false);
+  await flush();
+  expect(uniGlobal.request).toHaveBeenCalledWith(
+    expect.objectContaining({
+      url: "https://cdn.example.com/fr.srt",
+      dataType: "text",
+    }),
+  );
+  await fireVideo(w, "timeupdate", { currentTime: 2, duration: 10 });
+  expect(captions(w).text()).toBe("Bonjour");
+});
+
+it("media player shows audio cues under the title, from the remembered track", async () => {
+  captionsHost({ "minerva-media-player-captions": "en-US" });
+  const w = mount(MediaPlayer, {
+    props: {
+      src: "/talk.mp3",
+      title: "Talk",
+      tracks: [{ ...captionTracks[0]!, default: false }, captionTracks[1]!],
+    },
+  });
+  await flush();
+  const area = captions(w);
+  expect(area.exists()).toBe(true);
+  expect(
+    area.element.compareDocumentPosition(
+      w.find(".mn-media-player__title").element,
+    ) & Node.DOCUMENT_POSITION_PRECEDING,
+  ).toBeTruthy();
+  audio.currentTime = 2;
+  await audio.emit("timeupdate");
+  expect(captions(w).text()).toBe("Hello there");
+});

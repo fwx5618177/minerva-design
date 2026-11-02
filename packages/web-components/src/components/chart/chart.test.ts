@@ -249,6 +249,114 @@ describe("named chart elements", () => {
     ]);
   });
 
+  it("<minerva-quadrant-chart> lists its dots for keyboards and screen readers, moves them with Shift + arrows", async () => {
+    document.body.innerHTML = `<minerva-quadrant-chart drag-points selected-index="1"></minerva-quadrant-chart>`;
+    const el = document.querySelector("minerva-quadrant-chart")!;
+    const points = [
+      { x: 2, y: 8, label: "Write report" },
+      { x: 8, y: 2 },
+    ];
+    el.points = points;
+    el.quadrants = { topLeft: { label: "Do first" } };
+    el.options = { locale: "en" };
+    await settle();
+    const root = el.shadowRoot!.querySelector("[part=root]")!;
+    const lists = root.querySelectorAll('[role="list"]');
+    expect([...lists].map((l) => l.getAttribute("aria-label"))).toEqual([
+      "Do first",
+      "Bottom right quadrant",
+    ]);
+    const button = (index: number) =>
+      root.querySelector<HTMLButtonElement>(
+        `button[data-point-index="${index}"]`,
+      )!;
+    expect(button(0).getAttribute("aria-label")).toBe("Write report, Do first");
+    expect(button(0).getAttribute("aria-keyshortcuts")).toContain(
+      "Shift+ArrowDown",
+    );
+    expect(button(1).getAttribute("aria-current")).toBe("true");
+
+    const seen: Array<[string, unknown]> = [];
+    for (const type of [
+      "minerva-hover",
+      "minerva-point-click",
+      "minerva-point-drop",
+    ])
+      el.addEventListener(type, (e) =>
+        seen.push([type, (e as CustomEvent).detail]),
+      );
+    const ids = () =>
+      (engines[0].options.series as Array<{ id?: string }>).map((s) => s.id);
+
+    button(0).focus();
+    expect(seen.at(-1)).toEqual([
+      "minerva-hover",
+      expect.objectContaining({
+        x: 2,
+        items: [expect.objectContaining({ index: 0 })],
+      }),
+    ]);
+    expect(ids()).toContain("quadrant:focus");
+
+    button(0).dispatchEvent(
+      new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }),
+    );
+    expect(el.shadowRoot!.activeElement).toBe(button(1));
+    button(1).click();
+    expect(seen.at(-1)).toEqual([
+      "minerva-point-click",
+      { point: points[1], index: 1 },
+    ]);
+
+    button(1).dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "ArrowLeft",
+        shiftKey: true,
+        bubbles: true,
+      }),
+    );
+    expect(seen.at(-1)).toEqual([
+      "minerva-point-drop",
+      { point: points[1], index: 1, x: 2.5, y: 2.5, quadrant: "bottomLeft" },
+    ]);
+    expect(root.querySelector('[role="status"]')!.textContent).toBe(
+      "Point 2 moved to Bottom left quadrant",
+    );
+
+    // the app moves the dot: its button keeps the focus
+    el.points = [points[0]!, { x: 2.5, y: 2.5 }];
+    await settle();
+    expect(el.shadowRoot!.activeElement).toBe(button(1));
+    expect(
+      button(1).closest('[role="list"]')!.getAttribute("data-quadrant"),
+    ).toBe("bottomLeft");
+
+    el.noAccessiblePoints = true;
+    await settle();
+    expect(root.querySelector('[role="list"]')).toBeNull();
+    expect(seen.at(-1)).toEqual(["minerva-hover", null]);
+    expect(ids()).not.toContain("quadrant:focus");
+  });
+
+  it("<minerva-quadrant-chart> does not move its dots without drag-points", async () => {
+    document.body.innerHTML = `<minerva-quadrant-chart></minerva-quadrant-chart>`;
+    const el = document.querySelector("minerva-quadrant-chart")!;
+    el.points = [{ x: 2, y: 8 }];
+    await settle();
+    const button = el.shadowRoot!.querySelector("button")!;
+    expect(button.hasAttribute("aria-keyshortcuts")).toBe(false);
+    const drops = vi.fn();
+    el.addEventListener("minerva-point-drop", drops);
+    button.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "ArrowDown",
+        shiftKey: true,
+        bubbles: true,
+      }),
+    );
+    expect(drops).not.toHaveBeenCalled();
+  });
+
   it("shape elements build the options of their type", async () => {
     document.body.innerHTML = `
       <minerva-donut-chart center-value="42"></minerva-donut-chart>

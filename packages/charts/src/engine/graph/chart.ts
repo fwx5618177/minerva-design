@@ -34,7 +34,11 @@ import {
   watchTheme,
   type ChartTheme,
 } from "../theme";
-import { positionTooltip as placeTip } from "../tooltip";
+import {
+  positionTooltip as placeTip,
+  releaseTooltip,
+  themeTooltip,
+} from "../tooltip";
 import type { ChartRendererKind } from "../types";
 import { arcPositions, circularPositions } from "./circular";
 import { layeredLayout, longestPath } from "./dag";
@@ -205,6 +209,7 @@ export const createGraphChart = (
   const stage = dom.stage;
   let options = initialOptions;
   let theme: ChartTheme = readTheme(dom.root, options.palette);
+  themeTooltip(dom.tooltip, theme);
   let dark = isDark(theme);
   let loc: GraphLocale = graphLocale(options.locale, options.labels);
   let destroyed = false;
@@ -3419,6 +3424,7 @@ export const createGraphChart = (
     const fontChanged = next.fontFamily !== theme.fontFamily;
     if (!themeColorsChanged(theme, next) && !fontChanged) return;
     theme = next;
+    themeTooltip(dom.tooltip, theme);
     if (fontChanged) {
       runLayout(snapshot(), false);
       return;
@@ -3740,6 +3746,7 @@ export const createGraphChart = (
       renderer = null;
       listeners.clear();
       resolveReady(null);
+      releaseTooltip(dom.tooltip);
       dom.root.remove();
     },
   };

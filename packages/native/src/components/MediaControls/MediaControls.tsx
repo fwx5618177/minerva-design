@@ -1,4 +1,4 @@
-import { useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -14,12 +14,16 @@ import {
 import {
   DEFAULT_PLAYBACK_RATES,
   DEFAULT_SKIP_SECONDS,
+  activeCueText,
   clampMediaTime,
   clampVolume,
   formatMediaTime,
   formatPlaybackRate,
+  loadCaptions,
   mediaProgress,
   nextPlaybackRate,
+  pickCaptionsTrack,
+  type MediaCue,
 } from "@minerva/core";
 import { useI18n, useTheme } from "../../theme/MinervaProvider";
 import { part } from "../../internal/parts";
@@ -27,6 +31,40 @@ import { hitSlopFor, textStyle, weight } from "../../internal/styles";
 
 /** Look of the control bar: over a video (dark overlay) or an audio bar (surface) */
 export type MediaControlsVariant = "video" | "audio";
+
+/** A captions / subtitles file of MediaControls */
+export interface MediaControlsTrack {
+  /** URL of the WebVTT (.vtt) or SubRip (.srt) file; data: URLs work */
+  src: string;
+  /** Language of the track (BCP 47: "en", "fr-CA") */
+  srclang?: string;
+  /** Name shown in the captions choice */
+  label: string;
+  /**
+   * Kind of text track
+   * @default "subtitles"
+   */
+  kind?: "subtitles" | "captions";
+  /** Shown first (uncontrolled trackIndex) */
+  default?: boolean;
+}
+
+/** Detail of MediaControls' onTrackChange */
+export interface MediaControlsTrackChangeDetail {
+  /** Index of the chosen track in `tracks`, -1 for Off */
+  index: number;
+  /** The chosen track, null for Off */
+  track: MediaControlsTrack | null;
+}
+
+const NO_TRACKS: readonly MediaControlsTrack[] = [];
+
+/** Reads a captions file with `fetch` */
+const fetchText = async (url: string): Promise<string> => {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return response.text();
+};
 
 export interface MediaControlsProps extends Omit<
   ViewProps,
@@ -90,6 +128,20 @@ export interface MediaControlsProps extends Omit<
   onRateChange?: (rate: number) => void;
   /** Called with the requested fullscreen state */
   onFullscreenChange?: (fullscreen: boolean) => void;
+  /**
+   * Captions / subtitles (WebVTT or SRT files): fetched, parsed and the cue
+   * at `currentTime` drawn above the seek bar, with a captions (CC) choice
+   * in the bar
+   * @default []
+   */
+  tracks?: readonly MediaControlsTrack[];
+  /**
+   * Index of the shown track, -1 for Off (controlled); uncontrolled when
+   * omitted: starts on the `default` track (else Off)
+   */
+  trackIndex?: number;
+  /** Called when the user chooses captions (index -1 and track null: Off) */
+  onTrackChange?: (detail: MediaControlsTrackChangeDetail) => void;
   /** Style of the bar */
   style?: StyleProp<ViewStyle>;
 }
@@ -222,6 +274,8 @@ function PlayGlyph({ playing, color }: { playing: boolean; color: string }) {
  * forward, a seek bar (adjustable for screen readers), the time, mute and
  * volume, the playback speed and fullscreen, plus a loading spinner and an
  * error message. Optional buttons only show when their callback is set.
+ * With `tracks`, captions are fetched, parsed (WebVTT / SRT) and the cue at
+ * `currentTime` is drawn above the seek bar, with a CC choice in the bar.
  */
 export function MediaControls({
   playing = false,
@@ -244,6 +298,9 @@ export function MediaControls({
   onVolumeChange,
   onRateChange,
   onFullscreenChange,
+  tracks = NO_TRACKS,
+  trackIndex: trackIndexProp,
+  onTrackChange,
   style,
   accessibilityLabel,
   ...rest
@@ -259,6 +316,44 @@ export function MediaControls({
   };
   const text = [textStyle(t, "sm", fonts.sans), { color }];
   const shownVolume = muted ? 0 : clampVolume(volume);
+
+  // Captions: no text tracks in React Native players either; the chosen
+  // file is fetched, parsed and its cue at `currentTime` drawn here.
+  const [innerTrack, setInnerTrack] = useState(() =>
+    pickCaptionsTrack(tracks, null),
+  );
+  const requested = trackIndexProp ?? innerTrack;
+  const trackIndex = tracks[requested] ? requested : -1;
+  const trackSrc = tracks[trackIndex]?.src;
+  const [loaded, setLoaded] = useState<{
+    src: string;
+    cues: readonly MediaCue[];
+  } | null>(null);
+  const [captionsOpen, setCaptionsOpen] = useState(false);
+  useEffect(() => {
+    if (!trackSrc) return;
+    let cancelled = false;
+    loadCaptions(trackSrc, fetchText).then(
+      (cues) => {
+        if (!cancelled) setLoaded({ src: trackSrc, cues });
+      },
+      () => undefined,
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, [trackSrc]);
+  const caption =
+    trackSrc && loaded?.src === trackSrc
+      ? activeCueText(loaded.cues, currentTime)
+      : "";
+  const chooseTrack = (index: number) => {
+    setCaptionsOpen(false);
+    if (index === trackIndex) return;
+    const track = tracks[index] ?? null;
+    setInnerTrack(track ? index : -1);
+    onTrackChange?.({ index: track ? index : -1, track });
+  };
 
   const button = (
     label: string,
@@ -352,6 +447,30 @@ export function MediaControls({
         >
           {translate("mediaPlayer.error")}
         </Text>
+      ) : null}
+      {(video ? caption !== "" : trackIndex >= 0) ? (
+        <View
+          pointerEvents="none"
+          style={{ alignItems: "center", minHeight: video ? 0 : 24 }}
+          {...part("media-controls", "captions")}
+        >
+          {caption !== "" ? (
+            <Text
+              style={[
+                textStyle(t, video ? "lg" : "md", fonts.sans),
+                {
+                  color,
+                  textAlign: "center",
+                  paddingHorizontal: t.space["2"],
+                  borderRadius: t.radius.sm,
+                  backgroundColor: video ? "rgba(0,0,0,0.75)" : "transparent",
+                },
+              ]}
+            >
+              {caption}
+            </Text>
+          ) : null}
+        </View>
       ) : null}
       <Track
         accessibilityRole="adjustable"
@@ -481,6 +600,16 @@ export function MediaControls({
               { name: "rate" },
             )
           : null}
+        {tracks.length > 0
+          ? button(
+              translate("mediaPlayer.captions"),
+              <Text style={[text, { fontWeight: weight(t, "semibold") }]}>
+                CC
+              </Text>,
+              () => setCaptionsOpen(!captionsOpen),
+              { selected: trackIndex >= 0, name: "captions" },
+            )
+          : null}
         {onFullscreenChange
           ? button(
               fullscreen
@@ -492,6 +621,49 @@ export function MediaControls({
             )
           : null}
       </View>
+      {captionsOpen && tracks.length > 0 ? (
+        <View
+          accessibilityRole="radiogroup"
+          accessibilityLabel={translate("mediaPlayer.captions")}
+          style={{ flexDirection: "row", flexWrap: "wrap", gap: t.space["1"] }}
+          {...part("media-controls", "captions-menu")}
+        >
+          {[-1, ...tracks.keys()].map((index) => {
+            const checked = index === trackIndex;
+            return (
+              <Pressable
+                key={index}
+                accessibilityRole="radio"
+                accessibilityState={{ checked }}
+                hitSlop={hitSlopFor(t, 28, 28)}
+                onPress={() => chooseTrack(index)}
+                style={{
+                  minHeight: 28,
+                  justifyContent: "center",
+                  paddingHorizontal: t.space["3"],
+                  borderRadius: 999,
+                  borderWidth: 1,
+                  borderColor: checked ? accent : color,
+                  backgroundColor: checked ? accent : "transparent",
+                }}
+              >
+                <Text
+                  style={[
+                    text,
+                    checked
+                      ? { color: "#ffffff", fontWeight: weight(t, "semibold") }
+                      : null,
+                  ]}
+                >
+                  {index < 0
+                    ? translate("mediaPlayer.captionsOff")
+                    : tracks[index]?.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      ) : null}
     </View>
   );
 }

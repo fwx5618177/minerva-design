@@ -1,5 +1,5 @@
-import { css, html, nothing } from "lit";
-import { property } from "lit/decorators.js";
+import { css, html, nothing, type PropertyValues } from "lit";
+import { property, state } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 import styles from "@react-styles/components/KanbanBoard/kanbanBoard.module.scss?inline";
 import {
@@ -8,12 +8,16 @@ import {
   kanbanAccent,
   kanbanCount,
   kanbanLength,
+  type KanbanCardMove,
 } from "@minerva/core";
+import { createKanbanDrag, type KanbanDrag } from "@minerva/dom";
 import { AriaController } from "../../internal/aria";
 import { LocaleController } from "../../internal/locale";
 import { MinervaElement, hostStyles } from "../../internal/minerva-element";
 import { HasSlotController } from "../../internal/slots";
 import { sharedStyles } from "../../internal/styles";
+
+export type { KanbanCardMove };
 
 /** A length: a number of pixels or any CSS length ("18rem", "40vh") */
 export type KanbanLength = number | string;
@@ -40,6 +44,22 @@ const lengthConverter = {
   },
 };
 
+const COLUMN_TAG = "minerva-kanban-column";
+const CARD_TAG = "minerva-kanban-card";
+
+const childrenNamed = (parent: Element, tag: string) =>
+  Array.from(parent.children).filter(
+    (child): child is HTMLElement => child.localName === tag,
+  );
+
+const text = (element: Element) =>
+  (element.textContent ?? "").replace(/\s+/g, " ").trim();
+
+/** The board a card or column belongs to (its closest one) */
+const boardOf = (element: Element) =>
+  element.parentElement?.closest<MinervaKanbanBoard>("minerva-kanban-board") ??
+  null;
+
 /**
  * A horizontally scrolling board of status columns (`<KanbanBoard>` of
  * React): put `minerva-kanban-column` elements in it. Columns share one
@@ -50,13 +70,19 @@ const lengthConverter = {
  * a tab stop, so the keyboard can scroll it; on narrow screens the columns
  * keep their width and snap while scrolling.
  *
- * Drag and drop is not built in: move cards with your own actions (a menu,
- * buttons) and update the columns.
+ * `draggable` lets the `minerva-kanban-card` children of keyed columns
+ * (`value`) be dragged with the mouse, touch (long press) or the keyboard
+ * (Space / Enter picks a focused card up, the arrows move it, Space / Enter
+ * drops it, Escape cancels). The board is controlled: it fires
+ * `minerva-card-move` and the app moves the card element (or re-renders).
+ * While dragging is on, the board holds a small layer (drop line, dragged
+ * copy, live region) as its last light DOM child.
  *
  * @summary Horizontally scrolling board of status columns.
  * @tag minerva-kanban-board
  * @slot - The columns (`minerva-kanban-column`)
  * @csspart root - The scrolling `role=region` row of columns
+ * @fires minerva-card-move - A card was dropped at a new position; `detail: { cardKey, fromColumn, fromIndex, toColumn, toIndex }` (`toIndex` counts the cards without the moved one)
  */
 export class MinervaKanbanBoard extends MinervaElement {
   static override tagName = "minerva-kanban-board";
@@ -67,6 +93,14 @@ export class MinervaKanbanBoard extends MinervaElement {
         display: block;
         min-inline-size: 0;
         max-inline-size: 100%;
+      }
+      /* while a card is dragged (the drag controller marks the host) */
+      :host([data-kanban-dragging]) .board {
+        scroll-snap-type: none;
+        user-select: none;
+      }
+      :host([data-kanban-dragging="pointer"]) .board {
+        cursor: grabbing;
       }
     `,
     sharedStyles(styles),
@@ -92,12 +126,101 @@ export class MinervaKanbanBoard extends MinervaElement {
   @property({ attribute: "max-height", converter: lengthConverter })
   maxHeight?: KanbanLength;
 
+  /**
+   * Lets the `minerva-kanban-card` children of keyed columns be dragged
+   * (mouse, touch long press, keyboard); the board fires `minerva-card-move`.
+   * Replaces the native `draggable` (HTML drag and drop of the host): the
+   * attribute turns it on unless it is `"false"`.
+   */
+  @property({
+    converter: {
+      fromAttribute: (value: string | null) =>
+        value !== null && value !== "false",
+    },
+  })
+  override draggable = false;
+
+  /**
+   * Whether a card may be dropped at a position (property only): refused
+   * positions show no drop indicator and the keyboard skips them
+   */
+  @property({ attribute: false })
+  canDrop?: (move: KanbanCardMove) => boolean;
+
   private readonly i18n = new LocaleController(this);
   private readonly aria = new AriaController(this);
+  private drag: KanbanDrag | null = null;
+  private static hints = 0;
+  private readonly hintId = `minerva-kanban-hint-${++MinervaKanbanBoard.hints}`;
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+    this.drag ??= createKanbanDrag(this, {
+      columns: () => childrenNamed(this, COLUMN_TAG),
+      columnKey: (column) =>
+        (column as MinervaKanbanColumn).value || column.getAttribute("value"),
+      columnLabel: (column) => {
+        const heading = (column as MinervaKanbanColumn).heading?.trim();
+        const slotted = column.querySelector(':scope > [slot="heading"]');
+        return (
+          heading ||
+          (slotted ? text(slotted) : "") ||
+          column.getAttribute("aria-label") ||
+          column.getAttribute("value") ||
+          ""
+        );
+      },
+      cards: (column) => childrenNamed(column, CARD_TAG),
+      cardKey: (card) =>
+        (card as MinervaKanbanCard).value || card.getAttribute("value"),
+      cardLabel: (card) =>
+        (card as MinervaKanbanCard).label ||
+        text(card) ||
+        card.getAttribute("value") ||
+        "",
+      body: (column) => {
+        const shadow = column.shadowRoot;
+        return (
+          shadow?.querySelector<HTMLElement>(".list") ??
+          shadow?.querySelector<HTMLElement>(".empty") ??
+          null
+        );
+      },
+      scroller: () => this.renderRoot.querySelector<HTMLElement>(".board"),
+      hintId: this.hintId,
+      enabled: () => this.draggable,
+      canDrop: (move) => this.canDrop?.(move) ?? true,
+      onMove: (move) => this.emit("minerva-card-move", move),
+      t: (key, params) => this.i18n.t(key, params),
+    });
+  }
+
+  override disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this.drag?.destroy();
+    this.drag = null;
+  }
 
   override focus(options?: FocusOptions): void {
     this.renderRoot.querySelector<HTMLElement>(".board")?.focus(options);
   }
+
+  protected override updated(changed: PropertyValues<this>): void {
+    super.updated(changed);
+    this.drag?.refresh();
+    if (changed.has("draggable")) this.syncCards();
+  }
+
+  /** Tells the cards whether they are draggable */
+  private syncCards() {
+    for (const card of this.querySelectorAll<MinervaKanbanCard>(CARD_TAG))
+      if (boardOf(card) === this) card.syncBoard();
+  }
+
+  private onSlotChange = () => {
+    // the app may have replaced the children, the drag layer with them
+    this.drag?.refresh();
+  };
 
   protected override render() {
     const style: Record<string, string> = {};
@@ -119,7 +242,7 @@ export class MinervaKanbanBoard extends MinervaElement {
       aria-label=${this.aria.label ?? this.i18n.t("kanban.label")}
       style=${styleMap(style)}
     >
-      <slot></slot>
+      <slot @slotchange=${this.onSlotChange}></slot>
     </div>`;
   }
 }
@@ -180,6 +303,17 @@ export class MinervaKanbanColumn extends MinervaElement {
         flex: none;
         min-inline-size: 0;
       }
+      /* the column a dragged card would land in */
+      :host([data-kanban-drop-target]) section.column {
+        border-color: var(--kanban-drop-indicator-color, var(--primary-color));
+        box-shadow: 0 0 0 1px
+          var(--kanban-drop-indicator-color, var(--primary-color));
+      }
+      @media (forced-colors: active) {
+        :host([data-kanban-drop-target]) section.column {
+          border-color: Highlight;
+        }
+      }
     `,
     sharedStyles(styles),
   ];
@@ -187,6 +321,10 @@ export class MinervaKanbanColumn extends MinervaElement {
   /** Title of the column (also its accessible name; or use the `heading` slot) */
   @property()
   heading = "";
+
+  /** Key of the column, reported as `fromColumn` / `toColumn` by a draggable board (columns without one take no cards) */
+  @property()
+  value?: string;
 
   /** Number of items shown as a badge (and announced with the title); unset hides it */
   @property({ type: Number })
@@ -333,9 +471,97 @@ export class MinervaKanbanColumn extends MinervaElement {
   }
 }
 
+/**
+ * A card of a `minerva-kanban-column` (`<KanbanCard>` of React), keyed by
+ * `value`. In a draggable board its content sits in a focusable
+ * `role="button"` (the `root` part) described by the drag instructions;
+ * otherwise the part is a plain wrapper. The host is the list item of the
+ * column. Controls inside a draggable card keep working (a drag never
+ * starts on them), but keep them few: they sit inside the button.
+ *
+ * @summary Card of a kanban column that a draggable board can move.
+ * @tag minerva-kanban-card
+ * @slot - The content of the card
+ * @csspart root - The card wrapper (a focusable `role=button` in a draggable board)
+ */
+export class MinervaKanbanCard extends MinervaElement {
+  static override tagName = "minerva-kanban-card";
+  static override shadowRootOptions = {
+    ...MinervaElement.shadowRootOptions,
+    delegatesFocus: true,
+  };
+  static override styles = [
+    hostStyles,
+    css`
+      :host {
+        display: block;
+        min-inline-size: 0;
+      }
+      /* the card left behind while its copy follows the pointer */
+      :host([data-kanban-dragging="pointer"]) .card {
+        opacity: 0.4;
+      }
+      /* picked up with the keyboard: it stays, the drop line moves */
+      :host([data-kanban-dragging="keyboard"]) .card {
+        outline: 2px dashed
+          var(--kanban-drop-indicator-color, var(--primary-color));
+        outline-offset: 2px;
+      }
+    `,
+    sharedStyles(styles),
+  ];
+
+  /** Key of the card, reported as `cardKey` by a draggable board */
+  @property()
+  value = "";
+
+  /** Name of the card in the drag announcements and, when draggable, its accessible name (default: its text) */
+  @property()
+  label?: string;
+
+  /** Whether the closest board is draggable */
+  @state()
+  private dragEnabled = false;
+
+  private readonly i18n = new LocaleController(this);
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+    this.syncBoard();
+  }
+
+  /** @internal Called by the owning `<minerva-kanban-board>`. */
+  syncBoard(): void {
+    this.dragEnabled = boardOf(this)?.draggable ?? false;
+  }
+
+  protected override render() {
+    const draggable = this.dragEnabled;
+    return html`<div
+        part="root"
+        class="card"
+        role=${draggable ? "button" : nothing}
+        tabindex=${draggable ? "0" : nothing}
+        aria-label=${(draggable && this.label) || nothing}
+        aria-describedby=${draggable ? "hint" : nothing}
+        ?data-draggable=${draggable}
+      >
+        <slot></slot>
+      </div>
+      ${
+        draggable
+          ? html`<span id="hint" hidden
+              >${this.i18n.t("kanban.dragHint")}</span
+            >`
+          : nothing
+      }`;
+  }
+}
+
 declare global {
   interface HTMLElementTagNameMap {
     "minerva-kanban-board": MinervaKanbanBoard;
+    "minerva-kanban-card": MinervaKanbanCard;
     "minerva-kanban-column": MinervaKanbanColumn;
   }
 }

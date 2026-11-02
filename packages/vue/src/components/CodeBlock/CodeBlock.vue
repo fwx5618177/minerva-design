@@ -6,10 +6,25 @@
  * With `copyable`, a copy button (top-right) writes the text to the
  * clipboard and a visually hidden polite live region announces the result.
  * With `language`, the syntax is highlighted into colored spans (the text
- * content and the copied text stay the source text).
+ * content and the copied text stay the source text); `language="auto"`
+ * detects it from the text (memoized per text). `marks` wraps
+ * character ranges in <mark>s over the highlighting.
  */
-import { computed, onBeforeUnmount, ref, useAttrs, type StyleValue } from "vue";
-import { codeLanguageLabel } from "@minerva/core";
+import {
+  computed,
+  getCurrentInstance,
+  onBeforeUnmount,
+  ref,
+  useAttrs,
+  type StyleValue,
+} from "vue";
+import {
+  codeLanguageLabel,
+  detectCodeLanguage,
+  type CodeLanguage,
+  type CodeMark,
+} from "@minerva/core";
+import { clickedCodeMark } from "@minerva/dom";
 import styles from "@react-styles/components/CodeBlock/codeBlock.module.scss";
 import { hooks } from "../../internal/hooks";
 import { IconCheck, IconCopy, IconX } from "../../internal/icons";
@@ -29,11 +44,17 @@ const props = withDefaults(defineProps<CodeBlockProps>(), {
   highlight: true,
   showLineNumbers: false,
   showLanguage: false,
+  marks: undefined,
 });
 
 const emit = defineEmits<{
   /** The copy button wrote the text to the clipboard (not on failure) */
   copied: [text: string];
+  /**
+   * A mark was clicked (not at the end of a text selection drag): the mark
+   * object of `marks` (the topmost one where marks overlap)
+   */
+  "mark-click": [mark: CodeMark, event: MouseEvent];
 }>();
 
 const slots = defineSlots<{
@@ -137,14 +158,42 @@ const buttonColor = computed(() =>
       : "neutral",
 );
 
-const lang = computed(() => props.language?.trim() || undefined);
-/** Highlighted and / or numbered: the <code> holds spans, not just text */
+const requested = computed(() => props.language?.trim() || undefined);
+const auto = computed(() => requested.value?.toLowerCase() === "auto");
+/** Last detection of `language="auto"` (the text can come from the slot) */
+let detected: { text: string; language: CodeLanguage } | undefined;
+/** The language, `auto` resolved (call while rendering: reads the slot) */
+const lang = () => {
+  if (!auto.value) return requested.value;
+  const text = renderText();
+  if (detected?.text !== text) {
+    detected = { text, language: detectCodeLanguage(text) };
+  }
+  return detected.language;
+};
+/** Highlighted, marked and / or numbered: the <code> holds elements */
 const rich = computed(
-  () => (!!lang.value && props.highlight) || props.showLineNumbers,
+  () =>
+    (!!requested.value && props.highlight) ||
+    props.showLineNumbers ||
+    !!props.marks?.length,
 );
-const label = computed(() =>
-  props.showLanguage && lang.value ? codeLanguageLabel(lang.value) : "",
-);
+const instance = getCurrentInstance();
+/** Whether a `mark-click` listener is set (marks get a click affordance) */
+const hasMarkListener = () => !!instance?.vnode.props?.onMarkClick;
+const onCodeClick = (event: MouseEvent) => {
+  const mark = clickedCodeMark(
+    event.target,
+    event.currentTarget as Element,
+    props.marks,
+  );
+  if (mark) emit("mark-click", mark, event);
+};
+/** The language label (call while rendering) */
+const label = () => {
+  const language = props.showLanguage ? lang() : undefined;
+  return language ? codeLanguageLabel(language) : "";
+};
 /** Source text, read while rendering (the slot text without `code`) */
 const renderText = () => props.code ?? vnodeText(slots.default?.() as never);
 /** Attributes of the <code> (call while rendering: reads the slot) */
@@ -152,9 +201,10 @@ const codeAttrs = () => {
   const lines = props.showLineNumbers
     ? renderText().replace(/\n$/, "").split("\n").length
     : 0;
+  const language = lang();
   return {
-    class: lang.value ? `language-${lang.value}` : undefined,
-    "data-language": lang.value,
+    class: language ? `language-${language}` : undefined,
+    "data-language": language,
     style: lines
       ? { "--code-line-digits": Math.max(String(lines).length, 2) }
       : undefined,
@@ -165,7 +215,7 @@ const codeAttrs = () => {
 
 <template>
   <pre
-    v-if="!copyable && !label"
+    v-if="!copyable && !label()"
     ref="pre"
     :class="styles.codeBlock"
     :style="boxStyle"
@@ -174,7 +224,7 @@ const codeAttrs = () => {
       ...otherAttrs,
       ...hooks('code-block', 'region'),
     }"
-  ><code v-bind="codeAttrs()"><CodeContent v-if="rich" :text="renderText()" :language="highlight ? lang : undefined" :line-numbers="showLineNumbers" /><template v-else-if="code !== undefined">{{ code }}</template><slot v-else-if="slots.default" /></code></pre>
+  ><code v-bind="codeAttrs()" @click="onCodeClick"><CodeContent v-if="rich" :text="renderText()" :language="highlight ? lang() : undefined" :line-numbers="showLineNumbers" :marks="marks" :clickable="hasMarkListener()" /><template v-else-if="code !== undefined">{{ code }}</template><slot v-else-if="slots.default" /></code></pre>
   <div
     v-else
     v-bind="{ ...otherAttrs, ...hooks('code-block', 'root') }"
@@ -187,16 +237,16 @@ const codeAttrs = () => {
       :class="[
         styles.codeBlock,
         copyable && styles.copyable,
-        label && styles.labeled,
+        label() && styles.labeled,
       ]"
-    ><code v-bind="codeAttrs()"><CodeContent v-if="rich" :text="renderText()" :language="highlight ? lang : undefined" :line-numbers="showLineNumbers" /><template v-else-if="code !== undefined">{{ code }}</template><slot v-else-if="slots.default" /></code></pre>
+    ><code v-bind="codeAttrs()" @click="onCodeClick"><CodeContent v-if="rich" :text="renderText()" :language="highlight ? lang() : undefined" :line-numbers="showLineNumbers" :marks="marks" :clickable="hasMarkListener()" /><template v-else-if="code !== undefined">{{ code }}</template><slot v-else-if="slots.default" /></code></pre>
     <div :class="styles.actions">
       <span
-        v-if="label"
+        v-if="label()"
         :class="styles.language"
         aria-hidden="true"
         v-bind="hooks('code-block', 'language')"
-        >{{ label }}</span
+        >{{ label() }}</span
       >
       <IconButton
         v-if="copyable"

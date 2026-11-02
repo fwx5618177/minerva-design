@@ -35,11 +35,36 @@ export interface MediaPlayerVolumeDetail {
   muted: boolean;
 }
 
+/** A captions / subtitles file of a MediaPlayer */
+export interface MediaPlayerTrack {
+  /** URL of the WebVTT (.vtt) or SubRip (.srt) file; data: URLs work */
+  src: string;
+  /** Language of the track (BCP 47: "en", "fr-CA") */
+  srclang?: string;
+  /** Name shown in the captions menu */
+  label: string;
+  /**
+   * Kind of text track
+   * @default "subtitles"
+   */
+  kind?: "subtitles" | "captions";
+  /** Shown when the user has not chosen captions yet */
+  default?: boolean;
+}
+
+/** Payload of the `trackChange` event */
+export interface MediaPlayerTrackChangeDetail {
+  /** Index of the chosen track in `tracks`, -1 for Off */
+  index: number;
+  /** The chosen track, null for Off */
+  track: MediaPlayerTrack | null;
+}
+
 /**
  * Props of `MediaPlayer` (same names and defaults as the React
  * `MediaPlayerProps`; the callbacks are events: `timeUpdate`, `ended`,
  * `play`, `pause`, `loadedMetadata`, `error`, `rateChange`,
- * `volumeChange`). A `title` slot can replace the `title` prop. Attributes
+ * `volumeChange`, `trackChange`). A `title` slot can replace the `title` prop. Attributes
  * fall through to the root `<div>`.
  */
 export interface MediaPlayerProps {
@@ -79,7 +104,10 @@ export interface MediaPlayerProps {
    * @default "metadata"
    */
   preload?: MediaPlayerPreload;
-  /** CORS mode of the media request */
+  /**
+   * CORS mode of the media request (cross-origin caption files need it too,
+   * plus CORS headers on their server)
+   */
   crossOrigin?: MediaPlayerCrossOrigin;
   /**
    * Resume position in seconds, applied once when the metadata loads (and
@@ -114,6 +142,14 @@ export interface MediaPlayerProps {
    * @default false
    */
   pictureInPicture?: boolean;
+  /**
+   * Captions / subtitles (WebVTT or SRT files): rendered as <track> children
+   * and drawn by the player over the video (below the title for audio), with
+   * a captions menu in the control bar. The choice is remembered
+   * (localStorage); a `default` track shows until the user chooses
+   * @default []
+   */
+  tracks?: readonly MediaPlayerTrack[];
   /**
    * Accessible label of the player
    * @default title, else "Media player" (translated)

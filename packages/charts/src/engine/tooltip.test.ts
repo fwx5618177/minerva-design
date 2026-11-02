@@ -1,14 +1,21 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { Rect } from "./layout";
+import { parseColor } from "./color";
 import {
   CANVAS_TOOLTIP_ALPHA,
+  findTooltipSpot,
   overlapArea,
   placeTooltip,
   positionTooltip,
   prefersReducedMotion,
+  rectIndex,
+  releaseTooltip,
   styleTooltip,
+  themeTooltip,
+  TOOLTIP_ALPHA,
   TOOLTIP_TRANSITION,
   tooltipBounds,
+  tooltipColors,
   unionRect,
   type TooltipPlacement,
 } from "./tooltip";
@@ -181,6 +188,133 @@ describe("placeTooltip", () => {
   });
 });
 
+describe("placeTooltip with obstacles (Gantt rows)", () => {
+  const box = (
+    p: TooltipPlacement,
+    size: { width: number; height: number },
+  ) => ({
+    x: p.x,
+    y: p.y,
+    width: size.width,
+    height: size.height,
+  });
+  /** One bar per 20px row, staggered in time, on a 600 x 400 stage */
+  const rows = (n: number, from = 40): Rect[] =>
+    Array.from({ length: n }, (_, i) => ({
+      x: 60 + ((i * 37) % 300),
+      y: from + i * 20 + 4,
+      width: 140,
+      height: 12,
+    }));
+
+  it("puts a tall tooltip on no other bar when there is free space", () => {
+    const bars = rows(16);
+    const hovered = bars[7];
+    const size = { width: 120, height: 140 };
+    const p = placeTooltip({
+      anchor: { x: hovered.x + 40, y: hovered.y + 6 },
+      avoid: hovered,
+      size,
+      stage: { width: 600, height: 400 },
+      prefer: "vertical",
+      obstacles: bars,
+    });
+    expect(p.fit).toBe("stage");
+    const b = box(p, size);
+    for (const bar of bars) expect(overlapArea(b, bar)).toBe(0);
+    expect(overlapArea(b, hovered)).toBe(0);
+    expect(b.x).toBeGreaterThanOrEqual(0);
+    expect(b.x + b.width).toBeLessThanOrEqual(600);
+    expect(b.y + b.height).toBeLessThanOrEqual(400);
+  });
+
+  it("picks the free spot closest to the pointer", () => {
+    // the beside spots all hit a bar; a free gap sits right below
+    const bars: Rect[] = [
+      { x: 0, y: 100, width: 400, height: 12 },
+      { x: 0, y: 60, width: 400, height: 12 },
+      { x: 0, y: 200, width: 400, height: 12 },
+    ];
+    const size = { width: 80, height: 60 };
+    const p = placeTooltip({
+      anchor: { x: 200, y: 106 },
+      avoid: bars[0],
+      size,
+      stage: { width: 400, height: 300 },
+      obstacles: bars,
+    });
+    expect(p.fit).toBe("stage");
+    // between the hovered bar and the next one below
+    expect(p.y).toBeGreaterThanOrEqual(112);
+    expect(p.y + size.height).toBeLessThanOrEqual(200);
+    for (const bar of bars) expect(overlapArea(box(p, size), bar)).toBe(0);
+  });
+
+  it("overflows into the bounds when the plot is full of bars", () => {
+    const stage = { width: 400, height: 300 };
+    // bars filling every row: no free spot of the size inside
+    const bars: Rect[] = Array.from({ length: 15 }, (_, i) => ({
+      x: 0,
+      y: i * 20,
+      width: 400,
+      height: 16,
+    }));
+    const size = { width: 100, height: 60 };
+    const input = {
+      anchor: { x: 200, y: 148 },
+      avoid: bars[7],
+      size,
+      stage,
+      obstacles: bars,
+    };
+    const p = placeTooltip({
+      ...input,
+      bounds: { x: -200, y: -200, width: 800, height: 700 },
+    });
+    expect(p.fit).toBe("bounds");
+    const b = box(p, size);
+    for (const bar of bars) expect(overlapArea(b, bar)).toBe(0);
+    // it leaves the stage (partly at least)
+    expect(
+      b.y < 0 || b.x < 0 || b.y + b.height > 300 || b.x + b.width > 400,
+    ).toBe(true);
+
+    // no bounds: the least covering spot, still off the hovered bar
+    const none = placeTooltip(input);
+    expect(none.fit).toBe("none");
+    expect(overlapArea(box(none, size), bars[7])).toBe(0);
+    expect(
+      none.x <= 200 &&
+        200 <= none.x + size.width &&
+        none.y <= 148 &&
+        148 <= none.y + size.height,
+    ).toBe(false);
+  });
+
+  it("indexes many obstacles in buckets", () => {
+    const many: Rect[] = Array.from({ length: 3000 }, (_, i) => ({
+      x: (i % 60) * 10,
+      y: Math.floor(i / 60) * 10,
+      width: 6,
+      height: 6,
+    }));
+    const index = rectIndex(many);
+    expect(rectIndex(many)).toBe(index);
+    expect(index.hits({ x: 0, y: 0, width: 2, height: 2 })).toBe(true);
+    expect(index.hits({ x: 6.5, y: 6.5, width: 3, height: 3 })).toBe(false);
+    expect(index.cover({ x: 0, y: 0, width: 20, height: 10 })).toBe(72);
+    expect(index.hits({ x: 1000, y: 1000, width: 5, height: 5 })).toBe(false);
+    const spot = findTooltipSpot({
+      area: { x: 0, y: 0, width: 600, height: 500 },
+      size: { width: 3, height: 3 },
+      blocked: index.hits,
+      score: (r) => Math.hypot(r.x - 300, r.y - 250),
+    });
+    expect(spot).not.toBeNull();
+    expect(index.hits({ ...spot!, width: 3, height: 3 })).toBe(false);
+  });
+});
+
 describe("rectangles", () => {
   it("unions and intersects", () => {
     const a = { x: 0, y: 0, width: 10, height: 10 };
@@ -212,23 +346,90 @@ describe("tooltip DOM", () => {
     return { outer, stage, tip };
   };
 
-  it("sets the opaque background before the translucent one", () => {
-    const seen: string[] = [];
-    const style = {
-      set background(value: string) {
-        seen.push(value);
+  it("is always translucent, without color-mix nor an opaque fallback", () => {
+    // a style object keeping every assigned value, like a browser without color-mix
+    const seen: Record<string, string> = {};
+    const style = new Proxy(
+      { setProperty: vi.fn((name: string, v: string) => (seen[name] = v)) },
+      {
+        set: (_target, key, value) => {
+          seen[String(key)] = String(value);
+          return true;
+        },
+        get: (target, key) =>
+          key === "setProperty" ? target.setProperty : seen[String(key)],
       },
-      setProperty: vi.fn(),
-    };
-    styleTooltip({ style } as unknown as HTMLElement);
-    expect(seen).toHaveLength(2);
-    expect(seen[0]).toMatch(/^var\(--surface-elevated-color/);
-    expect(seen[1]).toMatch(/^color-mix\(in srgb, var\(--surface-elevated/);
-    expect(style.setProperty).toHaveBeenCalledWith(
-      "-webkit-backdrop-filter",
-      "blur(12px) saturate(160%)",
     );
+    styleTooltip({ style } as unknown as HTMLElement);
+    expect(Object.values(seen).join(" ")).not.toMatch(
+      /color-mix|var\(--surface/,
+    );
+    expect(seen.background).toBeUndefined();
+    const fill = parseColor(seen.backgroundColor)!;
+    expect(fill[3]).toBeCloseTo(TOOLTIP_ALPHA, 2);
+    expect(fill[3]).toBeLessThan(1);
+    expect(seen.border).toMatch(/^1px solid rgba\(/);
+    expect(seen["-webkit-backdrop-filter"]).toBe("blur(12px) saturate(160%)");
+    expect(seen.backdropFilter).toBe("blur(12px) saturate(160%)");
     expect(CANVAS_TOOLTIP_ALPHA).toBeLessThan(1);
+    expect(CANVAS_TOOLTIP_ALPHA).toBeGreaterThanOrEqual(0.8);
+  });
+
+  it("keeps an rgba fill on a real element and follows theme switches", () => {
+    const light = {
+      background: parseColor("#ffffff"),
+      axis: parseColor("#e5e7eb"),
+    };
+    const dark = {
+      background: parseColor("#111827"),
+      axis: parseColor("#374151"),
+    };
+    const tip = styleTooltip(document.createElement("div"), {}, light);
+    const fill = () => parseColor(tip.style.backgroundColor)!;
+    expect(fill()).toEqual([1, 1, 1, TOOLTIP_ALPHA]);
+    themeTooltip(tip, dark);
+    expect(fill()[0]).toBeCloseTo(17 / 255, 3);
+    expect(fill()[3]).toBeCloseTo(TOOLTIP_ALPHA, 3);
+    expect(tip.style.border).toContain("rgba(55, 65, 81, 0.7)");
+    themeTooltip(tip, light);
+    expect(fill()).toEqual([1, 1, 1, TOOLTIP_ALPHA]);
+  });
+
+  it("falls back to translucent colors, never opaque ones", () => {
+    for (const theme of [
+      null,
+      {},
+      { background: [0, 0, 0, 0] as const },
+      { text: parseColor("#f9fafb") },
+    ]) {
+      const c = tooltipColors(theme as never);
+      expect(parseColor(c.background)![3]).toBeLessThan(1);
+      expect(parseColor(c.border)![3]).toBeLessThan(1);
+    }
+    // a light text tells a dark theme
+    expect(tooltipColors({ text: parseColor("#f9fafb") }).background).toBe(
+      "rgba(17, 24, 39, 0.8)",
+    );
+    expect(tooltipColors(null).background).toBe("rgba(255, 255, 255, 0.8)");
+    expect(tooltipColors(null, CANVAS_TOOLTIP_ALPHA).background).toBe(
+      `rgba(255, 255, 255, ${CANVAS_TOOLTIP_ALPHA})`,
+    );
+  });
+
+  it("reads the CSS variables of a stage for hosts without a theme", () => {
+    const stage = document.createElement("div");
+    stage.style.setProperty("--surface-elevated-color", "#1f2937");
+    stage.style.setProperty("--border-color", "rgb(75, 85, 99)");
+    document.body.appendChild(stage);
+    const tip = document.createElement("div");
+    themeTooltip(tip, stage);
+    expect(tip.style.backgroundColor).toBe("rgba(31, 41, 55, 0.8)");
+    expect(tip.style.border).toContain("rgba(75, 85, 99, 0.7)");
+    // nothing resolvable: still translucent
+    const bare = document.createElement("div");
+    document.body.appendChild(bare);
+    themeTooltip(tip, bare);
+    expect(parseColor(tip.style.backgroundColor)![3]).toBeLessThan(1);
   });
 
   it("places the tooltip inside its stage and animates the moves", () => {
@@ -325,5 +526,150 @@ describe("tooltip DOM", () => {
     expect(viewport.width).toBe(
       document.documentElement.clientWidth || window.innerWidth,
     );
+  });
+
+  describe("a promoted tooltip following the page", () => {
+    const sparkline = {
+      anchor: { x: 80, y: 20 },
+      avoid: { x: 68, y: 8, width: 24, height: 24 },
+      size: { width: 130, height: 58 },
+      stage: { width: 160, height: 48 },
+    };
+
+    const promote = () => {
+      const ctx = setup();
+      const show = vi.fn();
+      const hide = vi.fn();
+      Object.assign(ctx.tip, { showPopover: show, hidePopover: hide });
+      const frames: FrameRequestCallback[] = [];
+      vi.spyOn(window, "requestAnimationFrame").mockImplementation((cb) => {
+        frames.push(cb);
+        return frames.length;
+      });
+      vi.spyOn(window, "cancelAnimationFrame").mockImplementation(() => {});
+      const added = vi.spyOn(window, "addEventListener");
+      const removed = vi.spyOn(window, "removeEventListener");
+      const docRemoved = vi.spyOn(document, "removeEventListener");
+      const p = positionTooltip(ctx.tip, ctx.stage, sparkline);
+      expect(p.fit).toBe("bounds");
+      expect(ctx.tip.style.position).toBe("fixed");
+      const moveStage = (left: number, top: number) => {
+        ctx.stage.getBoundingClientRect = () =>
+          ({ left, top, width: 160, height: 48 }) as DOMRect;
+      };
+      const flush = () => {
+        const pending = frames.splice(0);
+        for (const cb of pending) cb(0);
+        return pending.length;
+      };
+      const listening = (spy: typeof removed, type: string) =>
+        spy.mock.calls.some(
+          ([t, , o]) => t === type && (o as AddEventListenerOptions)?.capture,
+        );
+      return {
+        ...ctx,
+        p,
+        show,
+        hide,
+        frames,
+        added,
+        removed,
+        docRemoved,
+        moveStage,
+        flush,
+        listening,
+      };
+    };
+
+    it("moves with a scrolling ancestor, the page and the viewport", () => {
+      const { outer, tip, p, added, moveStage, flush, frames, listening } =
+        promote();
+      expect(listening(added, "scroll")).toBe(true);
+      expect(listening(added, "resize")).toBe(true);
+
+      // an ancestor scrolls: its non-bubbling event is caught on capture
+      moveStage(150, 120);
+      outer.dispatchEvent(new Event("scroll"));
+      outer.dispatchEvent(new Event("scroll"));
+      // throttled to one frame
+      expect(frames).toHaveLength(1);
+      tip.style.transition = TOOLTIP_TRANSITION;
+      expect(flush()).toBe(1);
+      expect(tip.style.transform).toBe(
+        `translate(${150 + p.x}px, ${120 + p.y}px)`,
+      );
+      expect(tip.style.transition).toBe("none");
+
+      moveStage(90, 300);
+      document.dispatchEvent(new Event("scroll"));
+      flush();
+      expect(tip.style.transform).toBe(
+        `translate(${90 + p.x}px, ${300 + p.y}px)`,
+      );
+
+      moveStage(40, 260);
+      window.dispatchEvent(new Event("resize"));
+      flush();
+      expect(tip.style.transform).toBe(
+        `translate(${40 + p.x}px, ${260 + p.y}px)`,
+      );
+    });
+
+    it("stops once the tooltip is hidden", () => {
+      const { outer, tip, removed, docRemoved, moveStage, flush, listening } =
+        promote();
+      tip.style.display = "none";
+      const before = tip.style.transform;
+      moveStage(10, 10);
+      outer.dispatchEvent(new Event("scroll"));
+      expect(flush()).toBe(0);
+      expect(tip.style.transform).toBe(before);
+      expect(listening(removed, "scroll")).toBe(true);
+      expect(listening(removed, "resize")).toBe(true);
+      expect(listening(docRemoved, "scroll")).toBe(true);
+    });
+
+    it("stops once demoted back into the stage", () => {
+      const { stage, tip, hide, removed, moveStage, flush, listening } =
+        promote();
+      positionTooltip(tip, stage, {
+        ...sparkline,
+        size: { width: 20, height: 10 },
+      });
+      expect(hide).toHaveBeenCalledTimes(1);
+      expect(listening(removed, "scroll")).toBe(true);
+      const before = tip.style.transform;
+      moveStage(10, 10);
+      window.dispatchEvent(new Event("scroll"));
+      expect(flush()).toBe(0);
+      expect(tip.style.transform).toBe(before);
+    });
+
+    it("stops once released by a destroyed chart", () => {
+      const { tip, hide, removed, moveStage, flush, listening } = promote();
+      releaseTooltip(tip);
+      expect(hide).toHaveBeenCalledTimes(1);
+      expect(tip.hasAttribute("popover")).toBe(false);
+      expect(listening(removed, "scroll")).toBe(true);
+      expect(listening(removed, "resize")).toBe(true);
+      const before = tip.style.transform;
+      moveStage(10, 10);
+      window.dispatchEvent(new Event("scroll"));
+      expect(flush()).toBe(0);
+      expect(tip.style.transform).toBe(before);
+      // releasing twice is harmless
+      releaseTooltip(tip);
+      expect(hide).toHaveBeenCalledTimes(1);
+    });
+
+    it("hides the tooltip of a stage scrolled out of view", () => {
+      const { outer, tip, hide, moveStage, flush } = promote();
+      moveStage(100, -400);
+      outer.dispatchEvent(new Event("scroll"));
+      flush();
+      expect(tip.style.display).toBe("none");
+      expect(hide).toHaveBeenCalledTimes(1);
+      expect(tip.style.position).toBe("absolute");
+    });
   });
 });

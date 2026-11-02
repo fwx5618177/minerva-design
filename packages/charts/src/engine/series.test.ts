@@ -283,3 +283,30 @@ describe("hover marks", () => {
     expect(mark).toMatchObject({ kind: "dot", halo: "rgba(255, 0, 0, 0.2)" });
   });
 });
+
+describe("mixed series hit priority", () => {
+  it.each(["item", "nearest"] as const)(
+    "keeps a nearby line selectable inside a bar (%s)",
+    (mode) => {
+      const m = model({
+        tooltip: { mode },
+        series: [
+          { id: "line", type: "line", data: [{ x: 1, y: 4 }] },
+          { id: "bar", type: "bar", data: [{ x: 1, y: 8 }] },
+        ],
+      });
+      const sc = createScales(
+        { x: 0, y: 0, width: 200, height: 100 },
+        { x: [0, 2], y: [0, 10] },
+        false,
+        false,
+      );
+      expect(
+        hitTest(m, sc, null, sc.xToPx(1), sc.yToPx(4) + 1)?.items[0].seriesId,
+      ).toBe("line");
+      expect(
+        hitTest(m, sc, null, sc.xToPx(1), sc.yToPx(7))?.items[0].seriesId,
+      ).toBe("bar");
+    },
+  );
+});

@@ -1,18 +1,27 @@
 <script setup lang="ts">
-import { computed, useId, useSlots } from "vue";
+import { computed, provide, useId, useSlots } from "vue";
 import { kanbanAccent, kanbanCount } from "@minerva/core";
 import { useI18n } from "./i18n";
+import {
+  KANBAN_COLUMN,
+  injectKanbanBoard,
+  useKanbanRegistration,
+  useMeasure,
+} from "./kanban-drag";
 /**
  * A status column of a KanbanBoard: an accent dot (color), the title, a
  * count badge and the actions slot in the header; the cards (default slot)
- * in a role="list" body (give each card role="listitem": mini-program slots
- * cannot be wrapped one by one); the empty slot / prop (default translated
- * "No items") when there is no default slot or count is 0; a footer slot.
- * The column is a role="group" named by its title and count.
+ * in a role="list" body (use KanbanCard, or give each card role="listitem":
+ * mini-program slots cannot be wrapped one by one); the empty slot / prop
+ * (default translated "No items") when there is no default slot or count is
+ * 0; a footer slot. The column is a role="group" named by its title and
+ * count. `value` keys the column for drag and drop.
  */
 const props = defineProps<{
   /** Title of the column (also its accessible name) */
   title?: string;
+  /** Key of the column, reported as `fromColumn` / `toColumn` by a draggable board */
+  value?: string;
   /** Number of items shown as a badge (and announced); 0 shows the empty content */
   count?: number;
   /** Accent: a theme color (primary, success, warning, danger, info, neutral) or any CSS color */
@@ -37,11 +46,33 @@ const label = computed(() => {
     : props.title;
 });
 const hasCards = computed(() => !!slots.default && shown.value !== 0);
+const columnId = `mn-kanban-column-${useId()}`;
+const board = injectKanbanBoard();
+provide(
+  KANBAN_COLUMN,
+  computed(() => props.value),
+);
+const measure = useMeasure(columnId);
+useKanbanRegistration(
+  board
+    ? () => board.registerColumn({ key: () => props.value, measure })
+    : null,
+);
+const dropTarget = computed(
+  () =>
+    props.value !== undefined &&
+    board?.view.value?.target?.column === props.value,
+);
 </script>
 <template>
   <view
+    :id="columnId"
     class="mn-kanban-column"
-    :class="accent.scheme ? `mn-color-${accent.scheme}` : ''"
+    :class="[
+      accent.scheme ? `mn-color-${accent.scheme}` : '',
+      { 'mn-drop-target': dropTarget },
+    ]"
+    :data-kanban-column="value"
     role="group"
     :aria-label="label"
     :aria-labelledby="

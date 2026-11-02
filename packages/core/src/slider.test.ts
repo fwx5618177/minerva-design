@@ -9,6 +9,7 @@ import {
   setSliderThumb,
   sliderPercent,
   sliderPrecision,
+  sliderRatioAt,
   sliderValueFromRatio,
   sliderValuesEqual,
   snapSliderValue,
@@ -54,6 +55,18 @@ describe("slider math", () => {
     expect(sliderPercent(5, 5, 5)).toBe(0);
     expect(sliderValueFromRatio(0.333, scale)).toBe(33);
     expect(sliderValueFromRatio(2, scale)).toBe(100);
+  });
+
+  it("maps pointer positions to ratios (vertical / RTL reversed)", () => {
+    expect(sliderRatioAt(150, 100, 200)).toBe(0.25);
+    expect(sliderRatioAt(150, 100, 200, true)).toBe(0.75);
+    // vertical: min at the bottom of a track measured from its top
+    expect(sliderRatioAt(200, 0, 200, true)).toBe(0);
+    expect(sliderRatioAt(0, 0, 200, true)).toBe(1);
+    expect(sliderRatioAt(10, 0, 0)).toBe(0);
+    expect(sliderValueFromRatio(sliderRatioAt(250, 0, 200, true), scale)).toBe(
+      0,
+    );
   });
 
   it("steps with the keys", () => {

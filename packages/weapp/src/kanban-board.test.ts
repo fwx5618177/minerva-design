@@ -1,6 +1,6 @@
 import simulate from "miniprogram-simulate";
 import { afterEach, expect, it } from "vitest";
-import { kanbanBoard, kanbanColumn } from "./index";
+import { kanbanBoard, kanbanCard, kanbanColumn } from "./index";
 
 const mounted: simulate.RootComponent<
   WechatMiniprogram.IAnyObject,
@@ -97,4 +97,215 @@ it("kanban column shows the empty text with count 0, a custom color and no badge
   expect(w.data.columnLabel).toBe("Done");
   expect(w.data.emptyText).toBe("Nothing shipped");
   expect(w.querySelector(".mn-kanban-column__count")).toBeFalsy();
+});
+
+// Drag and drop: a host page with a board, three keyed columns and cards.
+// j-component has no layout, so every root reports a stubbed rect.
+type Wrapper = (typeof mounted)[number];
+const load = (c: typeof kanbanBoard) =>
+  simulate.load({ template: c.template, ...c.definition });
+function mountBoard(data: Record<string, unknown> = {}) {
+  const host = simulate.load({
+    tagName: "kanban-drag-case",
+    usingComponents: {
+      "mn-board": load(kanbanBoard),
+      "mn-column": load(kanbanColumn),
+      "mn-card": load(kanbanCard),
+    },
+    data: { draggable: true, locked: false, ...data },
+    template: `<mn-board id="board" draggable="{{draggable}}"><mn-column id="todo" title="To do" value="todo"><mn-card id="a" value="a" label="Write spec">A</mn-card><mn-card id="b" value="b" label="Review">B</mn-card></mn-column><mn-column id="doing" title="Doing" value="doing"><mn-card id="c" value="c" label="Ship">C</mn-card></mn-column><mn-column id="done" title="Done" value="done" drop-disabled="{{locked}}"></mn-column></mn-board>`,
+  });
+  const w = simulate.render(host);
+  w.attach(document.createElement("div"));
+  mounted.push(w);
+  const stub = (
+    id: string,
+    selector: string,
+    left: number,
+    top: number,
+    width: number,
+    height: number,
+  ) => {
+    const dom = w.querySelector(id)!.querySelector(selector)!.dom!;
+    dom.getBoundingClientRect = () =>
+      ({
+        left,
+        top,
+        width,
+        height,
+        right: left + width,
+        bottom: top + height,
+        x: left,
+        y: top,
+      }) as DOMRect;
+  };
+  stub("#board", ".mn-kanban-board", 0, 0, 660, 400);
+  stub("#todo", ".mn-kanban-column", 0, 0, 200, 400);
+  stub("#doing", ".mn-kanban-column", 220, 0, 200, 400);
+  stub("#done", ".mn-kanban-column", 440, 0, 200, 400);
+  // b is above a on screen: the board orders cards by position
+  stub("#a", ".mn-kanban-card", 10, 90, 180, 40);
+  stub("#b", ".mn-kanban-card", 10, 40, 180, 40);
+  stub("#c", ".mn-kanban-card", 230, 40, 180, 40);
+  const moves: unknown[] = [];
+  w.querySelector("#board")!.addEventListener("cardmove", (e) =>
+    moves.push(e.detail),
+  );
+  return { w, moves };
+}
+const settle = () => simulate.sleep(10);
+const root = (w: Wrapper, id: string) =>
+  w.querySelector(id)!.querySelector(".mn-kanban-card")!;
+async function pick(w: Wrapper, id: string, x: number, y: number) {
+  root(w, id).dispatchEvent("longpress", { touches: [{ x, y }] });
+  await settle();
+}
+async function moveTo(w: Wrapper, id: string, x: number, y: number) {
+  root(w, id).dispatchEvent("touchmove", { touches: [{ x, y }] });
+  await settle();
+}
+async function release(w: Wrapper, id: string, x: number, y: number) {
+  root(w, id).dispatchEvent("touchend", { changedTouches: [{ x, y }] });
+  await settle();
+}
+
+it("kanban card follows the draggable flag of its board", async () => {
+  const { w } = mountBoard({ draggable: false });
+  await settle();
+  const card = root(w, "#a");
+  expect(card.dom!.className).not.toContain("mn-draggable");
+  expect(w.querySelector("#a")!.data.draggable).toBe(false);
+  w.setData({ draggable: true });
+  await settle();
+  expect(w.querySelector("#a")!.data.draggable).toBe(true);
+  expect(root(w, "#a").dom!.className).toContain("mn-draggable");
+});
+
+it("kanban board drags a card into another column with a copy and a drop indicator", async () => {
+  const { w, moves } = mountBoard();
+  await settle();
+  await pick(w, "#a", 100, 110);
+  const board = w.querySelector("#board")!;
+  expect(board.data.dragging).toBe(true);
+  expect(board.data.dragLabel).toBe("Write spec");
+  expect(board.data.dropTarget).toEqual({ column: "todo", index: 1 });
+  expect(root(w, "#a").dom!.className).toContain("mn-dragging");
+  expect(board.querySelector(".mn-kanban-board")!.dom!.className).toContain(
+    "mn-dragging",
+  );
+  await moveTo(w, "#a", 320, 100);
+  expect(board.data.dropTarget).toEqual({ column: "doing", index: 1 });
+  const ghost = board.querySelector(".mn-kanban-board__ghost")!;
+  expect(ghost.dom!.textContent).toBe("Write spec");
+  // the copy keeps the grab offset (90, 20) and the card width
+  expect(board.data.ghostStyle).toBe("left:230px;top:80px;width:180px");
+  expect(board.querySelector(".mn-kanban-board__drop-line")).toBeTruthy();
+  expect(board.data.lineStyle).toBe("left:230px;top:83px;width:180px");
+  expect(
+    w.querySelector("#doing")!.querySelector(".mn-kanban-column")!.dom!
+      .className,
+  ).toContain("mn-drop-target");
+  expect(
+    w.querySelector("#todo")!.querySelector(".mn-kanban-column")!.dom!
+      .className,
+  ).not.toContain("mn-drop-target");
+  expect(moves).toEqual([]);
+  await release(w, "#a", 320, 100);
+  expect(moves).toEqual([
+    {
+      cardKey: "a",
+      fromColumn: "todo",
+      fromIndex: 1,
+      toColumn: "doing",
+      toIndex: 1,
+    },
+  ]);
+  expect(board.data).toMatchObject({
+    dragging: false,
+    ghostStyle: "",
+    lineStyle: "",
+    dropTarget: null,
+  });
+  expect(board.querySelector(".mn-kanban-board__ghost")).toBeFalsy();
+  expect(w.querySelector("#doing")!.data.dropTarget).toBe(false);
+  expect(w.querySelector("#a")!.data.dragging).toBe(false);
+});
+
+it("kanban board reorders within a column and drops into an empty column", async () => {
+  const { w, moves } = mountBoard();
+  await settle();
+  await pick(w, "#a", 100, 110);
+  await moveTo(w, "#a", 100, 30);
+  await release(w, "#a", 100, 30);
+  await pick(w, "#c", 300, 60);
+  await moveTo(w, "#c", 540, 200);
+  expect(w.querySelector("#board")!.data.lineStyle).toBe(
+    "left:448px;top:200px;width:184px",
+  );
+  await release(w, "#c", 540, 200);
+  expect(moves).toEqual([
+    {
+      cardKey: "a",
+      fromColumn: "todo",
+      fromIndex: 1,
+      toColumn: "todo",
+      toIndex: 0,
+    },
+    {
+      cardKey: "c",
+      fromColumn: "doing",
+      fromIndex: 0,
+      toColumn: "done",
+      toIndex: 0,
+    },
+  ]);
+});
+
+it("kanban board emits nothing for a drop in place, a cancel or a refused column", async () => {
+  const { w, moves } = mountBoard({ locked: true });
+  await settle();
+  await pick(w, "#a", 100, 110);
+  await moveTo(w, "#a", 300, 60);
+  await moveTo(w, "#a", 110, 115);
+  await release(w, "#a", 110, 115);
+  await pick(w, "#a", 100, 110);
+  await moveTo(w, "#a", 320, 100);
+  root(w, "#a").dispatchEvent("touchcancel");
+  await settle();
+  expect(w.querySelector("#board")!.data.dragging).toBe(false);
+  // done refuses drops (drop-disabled): no target, no line, no event
+  await pick(w, "#b", 100, 60);
+  await moveTo(w, "#b", 540, 200);
+  const board = w.querySelector("#board")!;
+  expect(board.data.dropTarget).toBeNull();
+  expect(board.data.lineStyle).toBe("");
+  expect(
+    w.querySelector("#done")!.querySelector(".mn-kanban-column")!.dom!
+      .className,
+  ).not.toContain("mn-drop-target");
+  await release(w, "#b", 540, 200);
+  expect(moves).toEqual([]);
+});
+
+it("kanban board ignores long presses while not draggable and touches of other cards", async () => {
+  const { w, moves } = mountBoard({ draggable: false });
+  await settle();
+  await pick(w, "#a", 100, 110);
+  expect(w.querySelector("#board")!.data.dragging).toBe(false);
+  await moveTo(w, "#a", 320, 100);
+  await release(w, "#a", 320, 100);
+  w.setData({ draggable: true });
+  await settle();
+  await pick(w, "#a", 100, 110);
+  await moveTo(w, "#b", 320, 100);
+  expect(w.querySelector("#board")!.data.dropTarget).toEqual({
+    column: "todo",
+    index: 1,
+  });
+  // turning dragging off cancels the drag
+  w.setData({ draggable: false });
+  await settle();
+  expect(w.querySelector("#board")!.data.dragging).toBe(false);
+  await release(w, "#a", 320, 100);
+  expect(moves).toEqual([]);
 });

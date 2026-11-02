@@ -8,10 +8,15 @@ import { useId, useMemo, useRef, useState, useEffect } from "react";
 import { Platform, ScrollView, Text, View, type ViewProps } from "react-native";
 import {
   DEFAULT_TAG_SEPARATORS,
+  applyCodeMarks,
   codeLanguageLabel,
+  detectCodeLanguage,
   highlightCode,
+  resolveCodeMarkBackground,
   splitBySeparators,
-  splitHighlightLines,
+  splitCodeMarkLines,
+  type CodeMark,
+  type CodeMarkRun,
   type HighlightToken,
 } from "@minerva/core";
 import { useI18n, useTheme } from "../../theme/MinervaProvider";
@@ -403,7 +408,9 @@ export interface CodeBlockProps extends Omit<ViewProps, "children"> {
   onCopyError?: (error: unknown) => void;
   /**
    * Language of the code: highlights its syntax (nested colored Text,
-   * `code-token-<type>-color` tokens). Without it the text is plain
+   * `code-token-<type>-color` tokens). Without it the text is plain. `"auto"`
+   * detects it from the code (`detectCodeLanguage`, memoized per text;
+   * "plain" when unsure), shown by the label too
    */
   language?: string;
   /** Highlights the syntax of `language` (false: plain text) @default true */
@@ -415,7 +422,19 @@ export interface CodeBlockProps extends Omit<ViewProps, "children"> {
   showLineNumbers?: boolean;
   /** Shows the `language` as a small label (e.g. "JSON") @default false */
   showLanguage?: boolean;
+  /**
+   * Character ranges to mark (saved highlights, annotations): nested Text
+   * with the mark's background over the token colors (the copied text stays
+   * the raw code). `start` / `end` are UTF-16 offsets into `children`,
+   * clamped to it; empty ranges are ignored. Where marks overlap, the later
+   * one wins. `color`: a theme color name (a translucent tint of its token)
+   * or any color string (default: translucent yellow)
+   */
+  marks?: readonly CodeMark[];
+  /** A mark was pressed: the item of `marks` (the topmost where they overlap) */
+  onMarkClick?: (mark: CodeMark) => void;
 }
+export type { CodeMark, CodeMarkColor } from "@minerva/core";
 export function CodeBlock({
   children,
   wrap = true,
@@ -428,6 +447,8 @@ export function CodeBlock({
   highlight = true,
   showLineNumbers = false,
   showLanguage = false,
+  marks,
+  onMarkClick,
   style,
   ...props
 }: CodeBlockProps) {
@@ -435,7 +456,13 @@ export function CodeBlock({
   const { t: translate } = useI18n();
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
-  const lang = language?.trim() || undefined;
+  const requested = language?.trim() || undefined;
+  const auto = requested?.toLowerCase() === "auto";
+  const detected = useMemo(
+    () => (auto ? detectCodeLanguage(children) : undefined),
+    [auto, children],
+  );
+  const lang = auto ? detected : requested;
   const highlighted = useMemo(
     () =>
       lang && highlight
@@ -458,7 +485,28 @@ export function CodeBlock({
         text
       ),
     );
-  const lines = showLineNumbers ? splitHighlightLines(highlighted) : [];
+  const runs = useMemo(
+    () => applyCodeMarks(highlighted, marks),
+    [highlighted, marks],
+  );
+  const markSpans = (list: readonly CodeMarkRun[]) =>
+    list.map(({ mark, index, start, tokens }) =>
+      mark ? (
+        <Text
+          key={start}
+          testID={`code-block-mark-${index}`}
+          style={{
+            backgroundColor: resolveCodeMarkBackground(mark.color, t.colors),
+          }}
+          onPress={onMarkClick ? () => onMarkClick(mark) : undefined}
+        >
+          {spans(tokens)}
+        </Text>
+      ) : (
+        <Text key={start}>{spans(tokens)}</Text>
+      ),
+    );
+  const lines = showLineNumbers ? splitCodeMarkLines(runs) : [];
   const gutter = String(lines.length).length;
   const browserClipboard =
     typeof navigator !== "undefined"
@@ -552,14 +600,16 @@ export function CodeBlock({
                     {i + 1}
                   </Text>
                   <Text selectable style={[mono, wrap ? { flex: 1 } : null]}>
-                    {spans(line)}
+                    {markSpans(line)}
                   </Text>
                 </View>
               ))}
             </View>
           ) : (
             <Text selectable style={[mono]}>
-              {spans(highlighted)}
+              {runs.some((run) => run.mark)
+                ? markSpans(runs)
+                : spans(highlighted)}
             </Text>
           )}
         </ScrollView>

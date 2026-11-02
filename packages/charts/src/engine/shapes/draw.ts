@@ -6,7 +6,7 @@
 import { toCss } from "../color";
 import { font } from "../overlay";
 import type { ChartTheme } from "../theme";
-import { CANVAS_TOOLTIP_ALPHA } from "../tooltip";
+import { CANVAS_TOOLTIP_ALPHA, tooltipColors } from "../tooltip";
 import type { ShapeLegendBox, ShapeTooltipBox } from "./layout";
 import {
   TAU,
@@ -574,6 +574,7 @@ export const drawShapeTooltip = (
   box: ShapeTooltipBox,
 ) => {
   const { padding, lineHeight } = box;
+  const colors = tooltipColors(theme, CANVAS_TOOLTIP_ALPHA);
   ctx.save();
   ctx.globalAlpha = 1;
   ctx.save();
@@ -581,7 +582,7 @@ export const drawShapeTooltip = (
   ctx.shadowBlur = 16;
   ctx.shadowOffsetY = 6;
   roundRectPath(ctx, box.x, box.y, box.width, box.height, 8);
-  ctx.fillStyle = toCss(theme.background, CANVAS_TOOLTIP_ALPHA);
+  ctx.fillStyle = colors.background;
   ctx.fill();
   ctx.restore();
   roundRectPath(
@@ -592,7 +593,7 @@ export const drawShapeTooltip = (
     box.height - 1,
     8,
   );
-  ctx.strokeStyle = toCss(theme.axis);
+  ctx.strokeStyle = colors.border;
   ctx.lineWidth = 1;
   ctx.stroke();
 

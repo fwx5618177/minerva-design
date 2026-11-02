@@ -38,6 +38,10 @@ import {
   kanbanBoardExtra,
   kanbanBoardProperties,
   kanbanBoardTemplate,
+  kanbanCardExtra,
+  kanbanCardMethods,
+  kanbanCardProperties,
+  kanbanCardTemplate,
   kanbanColumnExtra,
   kanbanColumnProperties,
   kanbanColumnTemplate,
@@ -1246,6 +1250,12 @@ export const kanbanColumn = native(
   kanbanColumnProperties,
   {},
   kanbanColumnExtra,
+);
+export const kanbanCard = native(
+  kanbanCardTemplate,
+  kanbanCardProperties,
+  kanbanCardMethods,
+  kanbanCardExtra,
 );
 export const flashcard = native(
   flashcardTemplate,
@@ -3134,6 +3144,7 @@ annotateNativeApi({
   mediaPlayer,
   kanbanBoard,
   kanbanColumn,
+  kanbanCard,
   flashcard,
   segmentedControl,
   slider,
