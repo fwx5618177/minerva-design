@@ -207,6 +207,71 @@ test("icons: colored icons keep their colors in the gallery", async ({
   expect(errors).toEqual([]);
 });
 
+test("icons: clicking a tile copies its component and says so in a toast", async ({
+  page,
+  context,
+}) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  const errors = collectErrors(page);
+  await page.goto("#/icons");
+  const demo = page.locator("#demo-gallery");
+  await demo.getByRole("button", { name: "check-check" }).click();
+  await expect(page.getByText("Copied <CheckCheckIcon />")).toBeVisible();
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(
+    "<CheckCheckIcon />",
+  );
+  // a second copy replaces the toast instead of stacking a new one
+  await demo.getByRole("button", { name: "check", exact: true }).click();
+  await expect(page.getByText("Copied <CheckIcon />")).toBeVisible();
+  await expect(page.getByText("Copied <CheckCheckIcon />")).toHaveCount(0);
+  expect(errors).toEqual([]);
+});
+
+test("icons: the gallery filters by kind and recolors the monochrome icons", async ({
+  page,
+}) => {
+  const errors = collectErrors(page);
+  await page.goto("#/icons");
+  const demo = page.locator("#demo-gallery");
+  const icons = demo.locator("svg.minerva-icon");
+  await expect(icons.first()).toBeVisible();
+  const all = await icons.count();
+
+  const pick = async (label: string, option: string) => {
+    await demo.getByRole("combobox", { name: label }).click();
+    await page.getByRole("option", { name: option, exact: true }).click();
+  };
+  await pick("Kind", "Multicolor");
+  await expect.poll(() => icons.count()).toBeLessThan(all);
+  const multicolor = await icons.count();
+  expect(multicolor).toBeGreaterThan(0);
+  // every multicolor icon has a path with a color of its own
+  expect(
+    await icons.evaluateAll((svgs) =>
+      svgs.every((svg) => svg.querySelector("path[stroke]")),
+    ),
+  ).toBe(true);
+  await pick("Kind", "Monochrome");
+  await expect(icons).toHaveCount(all - multicolor);
+  await expect(demo.locator("svg.minerva-icon path[stroke]")).toHaveCount(0);
+
+  // a monochrome icon draws in the picked color: here the theme's primary
+  await pick("Color", "Primary");
+  await expect
+    .poll(() =>
+      icons.first().evaluate((svg) => {
+        const probe = document.createElement("span");
+        probe.style.color = "var(--primary-color)";
+        svg.parentElement!.append(probe);
+        const primary = getComputedStyle(probe).color;
+        probe.remove();
+        return getComputedStyle(svg).stroke === primary;
+      }),
+    )
+    .toBe(true);
+  expect(errors).toEqual([]);
+});
+
 // the same demos in the Vue components (minerva-design/vue/icons) and the
 // custom elements (minerva-design/web-components/icon)
 const FRAMEWORKS = [

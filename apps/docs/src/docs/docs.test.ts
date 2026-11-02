@@ -420,6 +420,42 @@ describe("docs: pages and demos", () => {
     },
   );
 
+  it("names component pages alike: the component in en / fr, with the local name in zh / ja", () => {
+    // chart types, guides and the icon set keep descriptive titles ("甘特图")
+    const COMPONENT_CATEGORIES = new Set([
+      "general",
+      "layout",
+      "dataEntry",
+      "dataDisplay",
+      "feedback",
+      "navigation",
+      "overlays",
+      "editors",
+      "mobile",
+    ]);
+    const EXTRA_COMPONENTS = ["quadrant-task-board", "icon", "icon-canvas"];
+    const mismatches = docPages
+      .filter(
+        (p) =>
+          COMPONENT_CATEGORIES.has(p.category) ||
+          EXTRA_COMPONENTS.includes(p.id),
+      )
+      .flatMap(({ id }) => {
+        const name = en.get(`docs.${id}.title`) ?? "";
+        const titles = Object.fromEntries(
+          LANGUAGES.map((lng) => [lng, locales[lng].get(`docs.${id}.title`)]),
+        );
+        const ok =
+          /^[A-Z][A-Za-z0-9]*$/.test(name) &&
+          titles.fr === name &&
+          ["zh", "ja"].every((lng) =>
+            new RegExp(`^${name} \\S`).test(titles[lng] ?? ""),
+          );
+        return ok ? [] : [`${id}: ${JSON.stringify(titles)}`];
+      });
+    expect(mismatches).toEqual([]);
+  });
+
   it("has no page folders missing from the registry", () => {
     const folders = readdirSync(join(SRC, "docs/pages"), {
       withFileTypes: true,

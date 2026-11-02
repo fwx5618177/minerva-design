@@ -7,6 +7,8 @@ import {
   RadioGroup,
   Select,
   SelectItem,
+  ToastProvider,
+  toast,
 } from "minerva-design";
 import { Icon, type IconDefinition } from "minerva-design/icons";
 import { iconCategories, searchIcons } from "minerva-design/icons/core";
@@ -14,6 +16,19 @@ import styles from "../icons.module.scss";
 
 const SIZES = [16, 20, 24, 32];
 const STROKES = [1.5, 2, 2.5];
+// the drawing color: what the paths without a color of their own follow
+const TONES = {
+  text: undefined,
+  primary: "var(--primary-color)",
+  success: "var(--success-color)",
+  warning: "var(--warning-color)",
+  danger: "var(--danger-color)",
+} as const;
+type Tone = keyof typeof TONES;
+
+/** Icons whose paths carry colors of their own (`colors`) */
+const isMulticolor = (icon: IconDefinition) =>
+  Boolean(icon.colors?.some(Boolean));
 
 /** `arrow-up` -> `<ArrowUpIcon />` */
 const snippet = (icon: IconDefinition) =>
@@ -29,12 +44,16 @@ export default function GalleryDemo() {
   const [stroke, setStroke] = useState(2);
   // "canvas": every tile drawn by the backend of the renderer bar
   const [mode, setMode] = useState<"svg" | "canvas">("svg");
-  const [copied, setCopied] = useState<string | null>(null);
+  // monochrome icons follow the color; multicolor ones keep their accents
+  const [kind, setKind] = useState("all");
+  const [tone, setTone] = useState<Tone>("text");
 
   // the whole set, grouped by category: the page scrolls, nothing is clipped
   const sections = useMemo(() => {
     const matches = searchIcons(query).filter(
-      (icon) => category === "all" || icon.category === category,
+      (icon) =>
+        (category === "all" || icon.category === category) &&
+        (kind === "all" || (kind === "multicolor") === isMulticolor(icon)),
     );
     return iconCategories
       .map((key) => ({
@@ -42,20 +61,27 @@ export default function GalleryDemo() {
         icons: matches.filter((icon) => icon.category === key),
       }))
       .filter((section) => section.icons.length > 0);
-  }, [query, category]);
+  }, [query, category, kind]);
 
   const total = sections.reduce((sum, { icons }) => sum + icons.length, 0);
 
-  const copy = (icon: IconDefinition) => {
+  const copy = async (icon: IconDefinition) => {
     const code = snippet(icon);
-    void navigator.clipboard?.writeText(code).then(
-      () => setCopied(code),
-      () => setCopied(null),
-    );
+    try {
+      // no clipboard outside secure contexts: report it instead of nothing
+      if (!navigator.clipboard) throw new Error("clipboard unavailable");
+      await navigator.clipboard.writeText(code);
+      // one id: a new copy replaces the toast instead of stacking them
+      toast.success(t("copied", { code }), { id: "icon-copy" });
+    } catch {
+      toast.danger(t("copyFailed", { code }), { id: "icon-copy" });
+    }
   };
 
   return (
     <div className={styles.stage}>
+      {/* mount one ToastProvider near the root of an app */}
+      <ToastProvider position="bottom-right" />
       <div className={styles.toolbar}>
         <Input
           type="search"
@@ -79,6 +105,30 @@ export default function GalleryDemo() {
           {iconCategories.map((key) => (
             <SelectItem key={key} value={key}>
               {t(`categories.${key}`)}
+            </SelectItem>
+          ))}
+        </Select>
+        <Select
+          size="small"
+          style={{ width: 130 }}
+          aria-label={t("kind")}
+          value={kind}
+          onChange={setKind}
+        >
+          <SelectItem value="all">{t("kinds.all")}</SelectItem>
+          <SelectItem value="monochrome">{t("kinds.monochrome")}</SelectItem>
+          <SelectItem value="multicolor">{t("kinds.multicolor")}</SelectItem>
+        </Select>
+        <Select
+          size="small"
+          style={{ width: 130 }}
+          aria-label={t("color")}
+          value={tone}
+          onChange={(value) => setTone(value as Tone)}
+        >
+          {Object.keys(TONES).map((key) => (
+            <SelectItem key={key} value={key}>
+              {t(`tones.${key}`)}
             </SelectItem>
           ))}
         </Select>
@@ -130,11 +180,12 @@ export default function GalleryDemo() {
                     type="button"
                     className={styles.tile}
                     title={t("copy", { code: snippet(icon) })}
-                    onClick={() => copy(icon)}
+                    onClick={() => void copy(icon)}
                   >
                     <Icon
                       icon={icon}
                       size={size}
+                      color={TONES[tone]}
                       strokeWidth={stroke}
                       renderer={mode === "svg" ? "svg" : "auto"}
                     />
@@ -150,7 +201,6 @@ export default function GalleryDemo() {
       </div>
       <div className={styles.footer}>
         <p>{t("count", { n: total })}</p>
-        <p role="status">{copied ? t("copied", { code: copied }) : ""}</p>
       </div>
     </div>
   );
