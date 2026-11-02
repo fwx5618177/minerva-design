@@ -1,5 +1,11 @@
 # minerva-design
 
+## 1.13.2
+
+### Patch Changes
+
+- 73e21ad: Taro: page sections keep their bottom-only 24px spacing now that they also match the shared `.mn-page-section` rule (no extra top margin).
+
 ## 1.13.1
 
 ### Patch Changes
