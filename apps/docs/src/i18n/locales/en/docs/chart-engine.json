@@ -264,7 +264,8 @@
       "destroy": "Removes the DOM and the listeners",
       "getHidden": "Indexes of the hidden slices / stages / series",
       "drill": "Sunburst: zooms into the node at a path and emits drill",
-      "getDrillPath": "Sunburst: names from the root to the focused node"
+      "getDrillPath": "Sunburst: names from the root to the focused node",
+      "getRenderer": "Backend drawing the shapes (webgpu, webgl2, webgl, canvas2d); null until it is chosen (the first frames are drawn with Canvas2D meanwhile)"
     },
     "ShapeChartEventMap": {
       "hover": "The hovered (or keyboard-focused) mark: index, name, value, percent, color (treemap: path); null when the pointer leaves",
@@ -321,6 +322,7 @@
       "headers": "Draws the names of the parents above their children (true by default)"
     },
     "ShapeChartCommonOptions": {
+      "renderer": "Backend of the shapes (auto, webgpu, webgl2, webgl, canvas2d); auto skips GPUs running in software, the text is always drawn with Canvas2D above the shapes. Defaults to the global default (setDefaultChartRenderer)",
       "palette": "Colors of the marks without color (--chart-series-1..8, then the theme colors)",
       "legend": "Legend (position, toggle); shown by default for pie, funnel and multi-series radar charts",
       "tooltip": "Tooltip; false disables it, render replaces its content",

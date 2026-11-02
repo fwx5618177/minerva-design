@@ -264,7 +264,8 @@
       "destroy": "移除 DOM 和监听器",
       "getHidden": "被隐藏的扇区 / 阶段 / 系列的索引",
       "drill": "旭日图：下钻到某条路径上的节点并触发 drill",
-      "getDrillPath": "旭日图：从根节点到当前聚焦节点的名称路径"
+      "getDrillPath": "旭日图：从根节点到当前聚焦节点的名称路径",
+      "getRenderer": "绘制图形所用的后端（webgpu、webgl2、webgl、canvas2d）；选定之前为 null（在此期间先用 Canvas2D 绘制最初几帧）"
     },
     "ShapeChartEventMap": {
       "hover": "悬停（或键盘聚焦）的图形：index、name、value、percent、color（矩形树图另有 path）；指针离开时为 null",
@@ -321,6 +322,7 @@
       "headers": "在子节点上方绘制父节点名称（默认 true）"
     },
     "ShapeChartCommonOptions": {
+      "renderer": "图形的后端（auto、webgpu、webgl2、webgl、canvas2d）；auto 会跳过以软件方式运行的 GPU，文字始终用 Canvas2D 绘制在图形上方。默认跟随全局默认值（setDefaultChartRenderer）",
       "palette": "未设置 color 的图形所用颜色（--chart-series-1..8，其次为主题色）",
       "legend": "图例（position、toggle）；饼图、漏斗图和多系列雷达图默认显示",
       "tooltip": "提示框；false 禁用，render 可替换其内容",

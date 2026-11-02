@@ -55,7 +55,7 @@ export class MinervaSankeyChart extends MinervaShapeChartElement {
   @property({ type: Boolean, attribute: "hide-labels" })
   hideLabels = false;
 
-  /** Other engine options (`SankeyChartOptions`: nodeWidth, nodePadding, iterations, palette, format...); property only */
+  /** Other engine options (`SankeyChartOptions`: renderer, nodeWidth, nodePadding, iterations, palette, format...); property only */
   @property({ attribute: false })
   options?: Partial<Omit<SankeyChartOptions, "type">>;
 
@@ -114,7 +114,7 @@ export class MinervaSunburstChart extends MinervaShapeChartElement {
   @property({ attribute: false })
   drillPath?: readonly string[];
 
-  /** Other engine options (`SunburstChartOptions`: levels, startAngle, padAngle, palette, format...); property only */
+  /** Other engine options (`SunburstChartOptions`: renderer, levels, startAngle, padAngle, palette, format...); property only */
   @property({ attribute: false })
   options?: Partial<Omit<SunburstChartOptions, "type">>;
 
@@ -187,7 +187,7 @@ export class MinervaRadialBarChart extends MinervaShapeChartElement {
   @property({ attribute: "center-label" })
   centerLabel?: string;
 
-  /** Other engine options (`RadialBarChartOptions`: startAngle, gap, track, rounded, labels, palette...); property only */
+  /** Other engine options (`RadialBarChartOptions`: renderer, startAngle, gap, track, rounded, labels, palette...); property only */
   @property({ attribute: false })
   options?: Partial<Omit<RadialBarChartOptions, "type">>;
 
@@ -265,7 +265,7 @@ export class MinervaCalendarHeatmap extends MinervaShapeChartElement {
   @property({ type: Number })
   levels = 4;
 
-  /** Other engine options (`CalendarHeatmapOptions`: weekStart, colors, thresholds, gap, radius...); property only */
+  /** Other engine options (`CalendarHeatmapOptions`: renderer, weekStart, colors, thresholds, gap, radius...); property only */
   @property({ attribute: false })
   options?: Partial<Omit<CalendarHeatmapOptions, "type">>;
 
@@ -327,7 +327,7 @@ export class MinervaBulletChart extends MinervaShapeChartElement {
   @property({ attribute: "target-color" })
   targetColor?: string;
 
-  /** Other engine options (`BulletChartOptions`: rangeColors, barSize, ticks, palette, format...); property only */
+  /** Other engine options (`BulletChartOptions`: renderer, rangeColors, barSize, ticks, palette, format...); property only */
   @property({ attribute: false })
   options?: Partial<Omit<BulletChartOptions, "type">>;
 
@@ -397,7 +397,7 @@ export class MinervaChordChart extends MinervaShapeChartElement {
   @property({ attribute: false })
   tickFormat?: (value: number) => string;
 
-  /** Other engine options (`ChordChartOptions`: padAngle, startAngle, sortGroups, sortSubgroups, ribbonOpacity, arcWidth, ticks, arrows, palette, format, percentFormat...); property only */
+  /** Other engine options (`ChordChartOptions`: renderer, padAngle, startAngle, sortGroups, sortSubgroups, ribbonOpacity, arcWidth, ticks, arrows, palette, format, percentFormat...); property only */
   @property({ attribute: false })
   options?: Partial<Omit<ChordChartOptions, "type">>;
 

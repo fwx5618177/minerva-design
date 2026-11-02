@@ -64,19 +64,18 @@ const chartRoot = (kind?: string, className = "minerva-chart") => {
 };
 
 describe("scanRenderers", () => {
-  it("counts the charts per backend, shape charts apart", () => {
+  it("counts the charts per backend, shape charts included", () => {
     const host = document.createElement("div");
     host.append(
       chartRoot("webgl2"),
-      chartRoot("webgl2"),
+      chartRoot("webgl2", "minerva-chart minerva-shape-chart"),
       chartRoot("canvas2d"),
-      chartRoot(undefined, "minerva-chart minerva-shape-chart"),
+      chartRoot(undefined, "minerva-chart minerva-shape-chart"), // still starting
       chartRoot(), // still starting
       chartRoot("bogus"),
     );
     const scan = scanRenderers(host);
     expect(scan.kinds).toEqual({ webgl2: 2, canvas2d: 1 });
-    expect(scan.shapes).toBe(1);
     expect(scan.roots).toEqual([]);
   });
 
@@ -93,21 +92,13 @@ describe("scanRenderers", () => {
   });
 
   it("compares counts", () => {
-    expect(
-      sameScan(
-        { kinds: { webgl: 1 }, shapes: 0 },
-        { kinds: { webgl: 1 }, shapes: 0 },
-      ),
-    ).toBe(true);
-    expect(
-      sameScan(
-        { kinds: { webgl: 1 }, shapes: 0 },
-        { kinds: { webgl: 2 }, shapes: 0 },
-      ),
-    ).toBe(false);
-    expect(sameScan({ kinds: {}, shapes: 1 }, { kinds: {}, shapes: 0 })).toBe(
+    expect(sameScan({ kinds: { webgl: 1 } }, { kinds: { webgl: 1 } })).toBe(
+      true,
+    );
+    expect(sameScan({ kinds: { webgl: 1 } }, { kinds: { webgl: 2 } })).toBe(
       false,
     );
+    expect(sameScan({ kinds: {} }, { kinds: { canvas2d: 1 } })).toBe(false);
   });
 });
 
@@ -288,6 +279,11 @@ describe("RendererBadge", () => {
       <Harness requested="auto">
         <div className="minerva-chart" data-renderer="webgl2" />
         <div className="minerva-chart" data-renderer="webgl2" />
+        <div
+          className="minerva-chart minerva-shape-chart"
+          data-renderer="canvas2d"
+        />
+        {/* a shape chart still starting is not counted */}
         <div className="minerva-chart minerva-shape-chart" />
       </Harness>,
     );
@@ -296,7 +292,7 @@ describe("RendererBadge", () => {
       expect(badge()).toHaveTextContent("RendererWebGL2 ×2Canvas2D"),
     );
     expect(badge()).toHaveAttribute("data-renderer-badge", "webgl2 canvas2d");
-    expect(badge()?.getAttribute("title")).toMatch(/Shape charts/);
+    expect(badge()?.getAttribute("title")).not.toMatch(/Shape charts/);
 
     const preview = screen.getByTestId("preview");
     act(() => {
@@ -304,7 +300,8 @@ describe("RendererBadge", () => {
         (el as HTMLElement).dataset.renderer = "webgl";
       });
     });
-    await waitFor(() => expect(badge()).toHaveTextContent("WebGL ×2"));
+    await waitFor(() => expect(badge()).toHaveTextContent("WebGL ×3"));
+    expect(badge()).toHaveAttribute("data-renderer-badge", "webgl");
   });
 
   it("flags a fallback and hides without charts", async () => {

@@ -4,7 +4,11 @@
 // (crisp text, arcs and polygons) by the same code in the browser
 // (createShapeChart) and on any 2D canvas (createCanvasShapeChart).
 
-import type { ChartPadding } from "../types";
+import type {
+  ChartPadding,
+  ChartRendererKind,
+  ChartRendererPreference,
+} from "../types";
 
 /** Kind of shape chart */
 export type ShapeChartType =
@@ -200,6 +204,13 @@ export interface ShapeChartCommonOptions {
   padding?: ChartPadding;
   /** Accessible name of the chart */
   ariaLabel?: string;
+  /**
+   * Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL (1),
+   * then Canvas2D, and skips GPU backends that run in software. Text is
+   * always drawn with Canvas2D, above the shapes.
+   * @default "auto" (the global default, see `setDefaultChartRenderer`)
+   */
+  renderer?: ChartRendererPreference;
 }
 
 /** Pie / donut chart */
@@ -888,6 +899,11 @@ export interface ShapeChartInstance {
   drill(path: readonly string[]): void;
   /** Sunburst: names from the root to the focused node (`[]` = the root) */
   getDrillPath(): string[];
+  /**
+   * Backend drawing the shapes; `null` until it is chosen (the first frames
+   * are drawn with Canvas2D meanwhile)
+   */
+  getRenderer(): ChartRendererKind | null;
   /** Subscribes to an event; returns the unsubscribe function */
   on<K extends keyof ShapeChartEventMap>(
     type: K,

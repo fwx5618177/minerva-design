@@ -113,6 +113,23 @@ describe("shape chart components", () => {
     ).toHaveLength(3);
   });
 
+  it("passes `renderer` to the engine and exposes the backend", async () => {
+    const ref = createRef<ShapeChartHandle>();
+    const { container, rerender } = render(
+      <PieChart ref={ref} data={data} renderer="canvas2d" />,
+    );
+    const spy = vi.spyOn(ref.current!.getInstance()!, "setOptions");
+    await flush();
+    expect(ref.current?.getRenderer()).toBe("canvas2d");
+    expect(
+      container.querySelector<HTMLElement>(".minerva-chart")?.dataset.renderer,
+    ).toBe("canvas2d");
+    rerender(<PieChart ref={ref} data={data} renderer="webgl" />);
+    expect(spy).toHaveBeenLastCalledWith(
+      expect.objectContaining({ renderer: "webgl" }),
+    );
+  });
+
   it("forwards hover / click events and renders a React tooltip", async () => {
     const onHover = vi.fn();
     const onClick = vi.fn();

@@ -1390,6 +1390,14 @@
       { "name": "height", "kind": "union", "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
       { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
       {
+        "name": "renderer",
+        "kind": "enum",
+        "values": ["auto", "canvas2d", "webgl", "webgl2", "webgpu"],
+        "required": false,
+        "description": "Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D, above the shapes",
+        "only": "react"
+      },
+      {
         "name": "palette",
         "kind": "array",
         "required": false,
@@ -1423,7 +1431,7 @@
         "name": "options",
         "kind": "object",
         "required": false,
-        "description": "Other engine options (`BulletChartOptions`: rangeColors, barSize, ticks, palette, format...); property only",
+        "description": "Other engine options (`BulletChartOptions`: renderer, rangeColors, barSize, ticks, palette, format...); property only",
         "only": "wc"
       }
     ],
@@ -1605,6 +1613,14 @@
       { "name": "height", "kind": "union", "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
       { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
       {
+        "name": "renderer",
+        "kind": "enum",
+        "values": ["auto", "canvas2d", "webgl", "webgl2", "webgpu"],
+        "required": false,
+        "description": "Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D, above the shapes",
+        "only": "react"
+      },
+      {
         "name": "palette",
         "kind": "array",
         "required": false,
@@ -1631,7 +1647,7 @@
         "name": "options",
         "kind": "object",
         "required": false,
-        "description": "Other engine options (`CalendarHeatmapOptions`: weekStart, colors, thresholds, gap, radius...); property only",
+        "description": "Other engine options (`CalendarHeatmapOptions`: renderer, weekStart, colors, thresholds, gap, radius...); property only",
         "only": "wc"
       }
     ],
@@ -2522,6 +2538,14 @@
       { "name": "height", "kind": "union", "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
       { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
       {
+        "name": "renderer",
+        "kind": "enum",
+        "values": ["auto", "canvas2d", "webgl", "webgl2", "webgpu"],
+        "required": false,
+        "description": "Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D, above the shapes",
+        "only": "react"
+      },
+      {
         "name": "palette",
         "kind": "array",
         "required": false,
@@ -2555,7 +2579,7 @@
         "name": "options",
         "kind": "object",
         "required": false,
-        "description": "Other engine options (`ChordChartOptions`: padAngle, startAngle, sortGroups, sortSubgroups, ribbonOpacity, arcWidth, ticks, arrows, palette, format, percentFormat...); property only",
+        "description": "Other engine options (`ChordChartOptions`: renderer, padAngle, startAngle, sortGroups, sortSubgroups, ribbonOpacity, arcWidth, ticks, arrows, palette, format, percentFormat...); property only",
         "only": "wc"
       }
     ],
@@ -3946,6 +3970,14 @@
       { "name": "height", "kind": "union", "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
       { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
       {
+        "name": "renderer",
+        "kind": "enum",
+        "values": ["auto", "canvas2d", "webgl", "webgl2", "webgpu"],
+        "required": false,
+        "description": "Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D, above the shapes",
+        "only": "react"
+      },
+      {
         "name": "palette",
         "kind": "array",
         "required": false,
@@ -3979,7 +4011,7 @@
         "name": "options",
         "kind": "object",
         "required": false,
-        "description": "Other engine options (`PieChartOptions`: palette, legend, startAngle, labelContent, format...); property only",
+        "description": "Other engine options (`PieChartOptions`: renderer, palette, legend, startAngle, labelContent, format...); property only",
         "only": "wc"
       }
     ],
@@ -4851,6 +4883,14 @@
       { "name": "height", "kind": "union", "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
       { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
       {
+        "name": "renderer",
+        "kind": "enum",
+        "values": ["auto", "canvas2d", "webgl", "webgl2", "webgpu"],
+        "required": false,
+        "description": "Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D, above the shapes",
+        "only": "react"
+      },
+      {
         "name": "palette",
         "kind": "array",
         "required": false,
@@ -4889,7 +4929,7 @@
         "attribute": "hide-conversion",
         "only": "wc"
       },
-      { "name": "options", "kind": "object", "required": false, "description": "Other engine options (`FunnelChartOptions`: gap, palette, legend, format...); property only", "only": "wc" }
+      { "name": "options", "kind": "object", "required": false, "description": "Other engine options (`FunnelChartOptions`: renderer, gap, palette, legend, format...); property only", "only": "wc" }
     ],
     "events": [
       {
@@ -5091,6 +5131,14 @@
       { "name": "height", "kind": "union", "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
       { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
       {
+        "name": "renderer",
+        "kind": "enum",
+        "values": ["auto", "canvas2d", "webgl", "webgl2", "webgpu"],
+        "required": false,
+        "description": "Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D, above the shapes",
+        "only": "react"
+      },
+      {
         "name": "palette",
         "kind": "array",
         "required": false,
@@ -5120,7 +5168,13 @@
       { "name": "padding", "kind": "object", "required": false, "description": "Space around the drawing, in pixels", "only": "react" },
       { "name": "ariaLabel", "kind": "string", "required": false, "description": "Accessible name of the chart", "only": "react" },
       { "name": "renderTooltip", "kind": "node", "required": false, "description": "React content of the tooltip (replaces the default content)", "only": "react" },
-      { "name": "options", "kind": "object", "required": false, "description": "Other engine options (`GaugeChartOptions`: sweep, thickness, color, ticks, format...); property only", "only": "wc" }
+      {
+        "name": "options",
+        "kind": "object",
+        "required": false,
+        "description": "Other engine options (`GaugeChartOptions`: renderer, sweep, thickness, color, ticks, format...); property only",
+        "only": "wc"
+      }
     ],
     "events": [
       {
@@ -9126,6 +9180,14 @@
       { "name": "height", "kind": "union", "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
       { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
       {
+        "name": "renderer",
+        "kind": "enum",
+        "values": ["auto", "canvas2d", "webgl", "webgl2", "webgpu"],
+        "required": false,
+        "description": "Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D, above the shapes",
+        "only": "react"
+      },
+      {
         "name": "palette",
         "kind": "array",
         "required": false,
@@ -9159,7 +9221,7 @@
         "name": "options",
         "kind": "object",
         "required": false,
-        "description": "Other engine options (`PieChartOptions`: palette, legend, startAngle, labelContent, format...); property only",
+        "description": "Other engine options (`PieChartOptions`: renderer, palette, legend, startAngle, labelContent, format...); property only",
         "only": "wc"
       }
     ],
@@ -9869,6 +9931,14 @@
       { "name": "height", "kind": "union", "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
       { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
       {
+        "name": "renderer",
+        "kind": "enum",
+        "values": ["auto", "canvas2d", "webgl", "webgl2", "webgpu"],
+        "required": false,
+        "description": "Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D, above the shapes",
+        "only": "react"
+      },
+      {
         "name": "palette",
         "kind": "array",
         "required": false,
@@ -9898,7 +9968,7 @@
       { "name": "padding", "kind": "object", "required": false, "description": "Space around the drawing, in pixels", "only": "react" },
       { "name": "ariaLabel", "kind": "string", "required": false, "description": "Accessible name of the chart", "only": "react" },
       { "name": "renderTooltip", "kind": "node", "required": false, "description": "React content of the tooltip (replaces the default content)", "only": "react" },
-      { "name": "options", "kind": "object", "required": false, "description": "Other engine options (`RadarChartOptions`: palette, legend, dots, format...); property only", "only": "wc" }
+      { "name": "options", "kind": "object", "required": false, "description": "Other engine options (`RadarChartOptions`: renderer, palette, legend, dots, format...); property only", "only": "wc" }
     ],
     "events": [
       {
@@ -9975,6 +10045,14 @@
       { "name": "height", "kind": "union", "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
       { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
       {
+        "name": "renderer",
+        "kind": "enum",
+        "values": ["auto", "canvas2d", "webgl", "webgl2", "webgpu"],
+        "required": false,
+        "description": "Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D, above the shapes",
+        "only": "react"
+      },
+      {
         "name": "palette",
         "kind": "array",
         "required": false,
@@ -10008,7 +10086,7 @@
         "name": "options",
         "kind": "object",
         "required": false,
-        "description": "Other engine options (`RadialBarChartOptions`: startAngle, gap, track, rounded, labels, palette...); property only",
+        "description": "Other engine options (`RadialBarChartOptions`: renderer, startAngle, gap, track, rounded, labels, palette...); property only",
         "only": "wc"
       }
     ],
@@ -10588,6 +10666,14 @@
       { "name": "height", "kind": "union", "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
       { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
       {
+        "name": "renderer",
+        "kind": "enum",
+        "values": ["auto", "canvas2d", "webgl", "webgl2", "webgpu"],
+        "required": false,
+        "description": "Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D, above the shapes",
+        "only": "react"
+      },
+      {
         "name": "palette",
         "kind": "array",
         "required": false,
@@ -10622,7 +10708,7 @@
         "name": "options",
         "kind": "object",
         "required": false,
-        "description": "Other engine options (`SankeyChartOptions`: nodeWidth, nodePadding, iterations, palette, format...); property only",
+        "description": "Other engine options (`SankeyChartOptions`: renderer, nodeWidth, nodePadding, iterations, palette, format...); property only",
         "only": "wc"
       }
     ],
@@ -11913,6 +11999,14 @@
       { "name": "height", "kind": "union", "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
       { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
       {
+        "name": "renderer",
+        "kind": "enum",
+        "values": ["auto", "canvas2d", "webgl", "webgl2", "webgpu"],
+        "required": false,
+        "description": "Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D, above the shapes",
+        "only": "react"
+      },
+      {
         "name": "palette",
         "kind": "array",
         "required": false,
@@ -11955,7 +12049,7 @@
         "name": "options",
         "kind": "object",
         "required": false,
-        "description": "Other engine options (`SunburstChartOptions`: levels, startAngle, padAngle, palette, format...); property only",
+        "description": "Other engine options (`SunburstChartOptions`: renderer, levels, startAngle, padAngle, palette, format...); property only",
         "only": "wc"
       }
     ],
@@ -14327,6 +14421,14 @@
       { "name": "height", "kind": "union", "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
       { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
       {
+        "name": "renderer",
+        "kind": "enum",
+        "values": ["auto", "canvas2d", "webgl", "webgl2", "webgpu"],
+        "required": false,
+        "description": "Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D, above the shapes",
+        "only": "react"
+      },
+      {
         "name": "palette",
         "kind": "array",
         "required": false,
@@ -14365,7 +14467,7 @@
         "attribute": "hide-headers",
         "only": "wc"
       },
-      { "name": "options", "kind": "object", "required": false, "description": "Other engine options (`TreemapChartOptions`: palette, tooltip, format...); property only", "only": "wc" }
+      { "name": "options", "kind": "object", "required": false, "description": "Other engine options (`TreemapChartOptions`: renderer, palette, tooltip, format...); property only", "only": "wc" }
     ],
     "events": [
       {

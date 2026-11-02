@@ -5,6 +5,7 @@
 
 import { styleElement } from "../dom";
 import { readTheme, watchTheme, type ChartTheme } from "../theme";
+import { placeTooltip, styleTooltip } from "../tooltip";
 
 export interface HostConfig {
   /** Class of the root element */
@@ -44,22 +45,12 @@ export interface Host {
   destroy(): void;
 }
 
-/** Tooltip look of the chart engine (dom.ts), copied for the widgets */
+/** Sizes of the tooltips of the widgets (the look is the chart engine's) */
 const TOOLTIP_STYLE: Partial<CSSStyleDeclaration> = {
-  position: "absolute",
-  left: "0",
-  top: "0",
   zIndex: "2",
   display: "none",
-  pointerEvents: "none",
   padding: "6px 10px",
   borderRadius: "8px",
-  border:
-    "1px solid color-mix(in srgb, var(--border-color, #e5e7eb) 60%, transparent)",
-  background: "var(--surface-elevated-color, var(--background-color, #fff))",
-  color: "var(--text-color, #1f2937)",
-  boxShadow:
-    "0 12px 32px -8px rgba(15, 23, 42, 0.18), 0 4px 10px -4px rgba(15, 23, 42, 0.1)",
   fontSize: "12px",
   lineHeight: "18px",
   whiteSpace: "nowrap",
@@ -101,7 +92,7 @@ export const createHost = (
   container.appendChild(root);
 
   const createTooltip = () => {
-    const tip = styleElement(
+    const tip = styleTooltip(
       doc.createElement("div"),
       TOOLTIP_STYLE,
     ) as HTMLDivElement;
@@ -186,14 +177,16 @@ export const createHost = (
       return true;
     },
     placeTooltip(tip, x, y, prefer = "right") {
-      const tw = tip.offsetWidth;
-      const th = tip.offsetHeight;
-      const gap = 14;
-      let left = prefer === "right" ? x + gap : x - gap - tw;
-      if (left + tw > host.width - 4) left = x - gap - tw;
-      if (left < 4) left = Math.min(x + gap, host.width - tw - 4);
-      const top = Math.max(4, Math.min(y - th / 2, host.height - th - 4));
-      tip.style.transform = `translate(${Math.round(Math.max(4, left))}px, ${Math.round(top)}px)`;
+      // inside the widget (it clips its overflow), off the hovered point
+      const { x: left, y: top } = placeTooltip({
+        anchor: { x, y },
+        avoid: { x: x - 4, y: y - 4, width: 8, height: 8 },
+        size: { width: tip.offsetWidth, height: tip.offsetHeight },
+        stage: { width: host.width, height: host.height },
+        prefer,
+        gap: 10,
+      });
+      tip.style.transform = `translate(${Math.round(left)}px, ${Math.round(top)}px)`;
     },
     createTooltip,
     describe(text) {

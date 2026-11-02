@@ -264,7 +264,8 @@
       "destroy": "DOM とリスナーを削除します",
       "getHidden": "非表示のスライス／段階／系列のインデックス",
       "drill": "サンバースト：パス上のノードへズームし drill を発火",
-      "getDrillPath": "サンバースト：ルートからフォーカス中のノードまでの名前"
+      "getDrillPath": "サンバースト：ルートからフォーカス中のノードまでの名前",
+      "getRenderer": "シェイプを描画しているバックエンド（webgpu、webgl2、webgl、canvas2d）。決まるまでは null（その間の最初のフレームは Canvas2D で描画）"
     },
     "ShapeChartEventMap": {
       "hover": "ホバー中（またはキーボードでフォーカス中）のマーク：index、name、value、percent、color（ツリーマップは path も）。ポインターが離れると null",
@@ -321,6 +322,7 @@
       "headers": "子の上に親の名前を描画します（既定 true）"
     },
     "ShapeChartCommonOptions": {
+      "renderer": "シェイプのバックエンド（auto、webgpu、webgl2、webgl、canvas2d）。auto はソフトウェアで動作する GPU をスキップし、文字は常に Canvas2D でシェイプの上に描画されます。既定値はグローバル設定（setDefaultChartRenderer）に従います",
       "palette": "color のないマークの色（--chart-series-1..8、なければテーマカラー）",
       "legend": "凡例（position、toggle）。円、ファネル、複数系列のレーダーでは既定で表示",
       "tooltip": "ツールチップ。false で無効、render で内容を置き換えます",

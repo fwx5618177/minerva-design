@@ -1,6 +1,7 @@
 import { property } from "lit/decorators.js";
 import {
   createShapeChart,
+  type ChartRendererKind,
   type FunnelChartOptions,
   type GaugeBand,
   type GaugeChartOptions,
@@ -17,7 +18,7 @@ import {
 } from "minerva-design/charts/core";
 import { MinervaEngineElement } from "./engine-element";
 
-/** Engine options shared by every shape chart (palette, legend, tooltip, format, hidden, animation...) */
+/** Engine options shared by every shape chart (renderer, palette, legend, tooltip, format, hidden, animation...) */
 export type ShapeChartBaseOptions = ShapeChartCommonOptions;
 
 /**
@@ -50,6 +51,11 @@ export abstract class MinervaShapeChartElement extends MinervaEngineElement<
   /** Hides / shows a slice, stage, radar series or top-level treemap node by index */
   toggle(index: number): void {
     this.instance?.toggle(index);
+  }
+
+  /** Backend drawing the shapes (`webgpu`, `webgl2`, `webgl`, `canvas2d`; set with the `renderer` engine option), `null` until ready */
+  getRenderer(): ChartRendererKind | null {
+    return this.instance?.getRenderer() ?? null;
   }
 }
 
@@ -121,7 +127,7 @@ export class MinervaPieChart extends MinervaShapeChartElement {
   @property({ attribute: "center-label" })
   centerLabel?: string;
 
-  /** Other engine options (`PieChartOptions`: palette, legend, startAngle, labelContent, format...); property only */
+  /** Other engine options (`PieChartOptions`: renderer, palette, legend, startAngle, labelContent, format...); property only */
   @property({ attribute: false })
   options?: Partial<Omit<PieChartOptions, "type">>;
 
@@ -191,7 +197,7 @@ export class MinervaRadarChart extends MinervaShapeChartElement {
   @property({ type: Number })
   levels = 4;
 
-  /** Other engine options (`RadarChartOptions`: palette, legend, dots, format...); property only */
+  /** Other engine options (`RadarChartOptions`: renderer, palette, legend, dots, format...); property only */
   @property({ attribute: false })
   options?: Partial<Omit<RadarChartOptions, "type">>;
 
@@ -248,7 +254,7 @@ export class MinervaGaugeChart extends MinervaShapeChartElement {
   @property({ attribute: false })
   bands?: readonly GaugeBand[];
 
-  /** Other engine options (`GaugeChartOptions`: sweep, thickness, color, ticks, format...); property only */
+  /** Other engine options (`GaugeChartOptions`: renderer, sweep, thickness, color, ticks, format...); property only */
   @property({ attribute: false })
   options?: Partial<Omit<GaugeChartOptions, "type">>;
 
@@ -300,7 +306,7 @@ export class MinervaFunnelChart extends MinervaShapeChartElement {
   @property({ type: Boolean, attribute: "hide-conversion" })
   hideConversion = false;
 
-  /** Other engine options (`FunnelChartOptions`: gap, palette, legend, format...); property only */
+  /** Other engine options (`FunnelChartOptions`: renderer, gap, palette, legend, format...); property only */
   @property({ attribute: false })
   options?: Partial<Omit<FunnelChartOptions, "type">>;
 
@@ -344,7 +350,7 @@ export class MinervaTreemapChart extends MinervaShapeChartElement {
   @property({ type: Boolean, attribute: "hide-headers" })
   hideHeaders = false;
 
-  /** Other engine options (`TreemapChartOptions`: palette, tooltip, format...); property only */
+  /** Other engine options (`TreemapChartOptions`: renderer, palette, tooltip, format...); property only */
   @property({ attribute: false })
   options?: Partial<Omit<TreemapChartOptions, "type">>;
 

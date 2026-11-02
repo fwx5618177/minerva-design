@@ -96,6 +96,7 @@ export {
   type SparklineConfig,
 } from "./engine/presets";
 export { toCss } from "./engine/color";
+export { liftedBarRect, type BarHoverMark } from "./engine/scene";
 export type { ChartThemeInput } from "./engine/theme";
 export type * from "./engine/types";
 export {

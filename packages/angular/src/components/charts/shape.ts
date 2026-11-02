@@ -8,6 +8,8 @@ import {
 import {
   createShapeChart,
   type ChartPadding,
+  type ChartRendererKind,
+  type ChartRendererPreference,
   type GaugeBand,
   type RadarIndicator,
   type RadarSeries,
@@ -25,7 +27,7 @@ import { CHART_SURFACE, MnChartEngine, optionalBoolean } from "./engine";
 
 /**
  * Base of the shape chart components (engine `createShapeChart`): hover,
- * click and toggle outputs and the `toggle()` method.
+ * click and toggle outputs, the `toggle()` and `getRenderer()` methods.
  */
 @Directive()
 export abstract class MnShapeChartBase extends MnChartEngine<
@@ -58,11 +60,18 @@ export abstract class MnShapeChartBase extends MnChartEngine<
   toggle(index: number): void {
     this.instance()?.toggle(index);
   }
+
+  /** Backend drawing the shapes, `null` until ready */
+  getRenderer(): ChartRendererKind | null {
+    return this.instance()?.getRenderer() ?? null;
+  }
 }
 
 /** Base of the named shape charts: the inputs shared by every type */
 @Directive()
 export abstract class MnShapeChartCommon extends MnShapeChartBase {
+  /** Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D (default `auto`, see `setDefaultChartRenderer`) */
+  readonly renderer = input<ChartRendererPreference | undefined>(undefined);
   /** Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors) */
   readonly palette = input<readonly string[] | undefined>(undefined);
   /** Legend; clicking an item hides / shows its entry (shown by default for pie, donut, funnel and multi-series radar charts) */
@@ -97,6 +106,7 @@ export abstract class MnShapeChartCommon extends MnShapeChartBase {
   protected commonOptions(): ShapeChartCommonOptions {
     const hidden = this.hidden();
     return {
+      renderer: this.renderer(),
       palette: this.palette(),
       legend: this.legend(),
       tooltip: this.tooltip(),

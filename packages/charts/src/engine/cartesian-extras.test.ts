@@ -893,11 +893,19 @@ describe("DOM chart", () => {
     )!;
     expect(caret.style.display).toBe("block");
     expect(caret.style.left).toBe("0.00%");
-    // the lifted cell has a ring inside its edge
+    // the lifted cell: a ring at its edge, a halo, above the data but below
+    // the labels of the foreground canvas
     const lifted = [...container.querySelectorAll<HTMLElement>("div")].find(
-      (el) => el.style.transform === "scale(1.12)",
+      (el) => el.style.transform === "scale(1.16)",
     );
+    expect(lifted?.style.boxShadow).toContain("inset");
     expect(lifted?.style.boxShadow).toContain("rgba");
+    const stage = container.querySelector(".minerva-chart-stage")!;
+    const layers = [...stage.children];
+    const fg = stage.querySelectorAll("canvas");
+    expect(layers.indexOf(lifted!.parentElement!)).toBeLessThan(
+      layers.indexOf(fg[fg.length - 1]!),
+    );
     // moving away hides the caret
     move(1, 1);
     expect(caret.style.display).toBe("none");

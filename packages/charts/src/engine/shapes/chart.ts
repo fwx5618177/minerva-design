@@ -1,9 +1,19 @@
-// createShapeChart: DOM host of the shape charts. One Canvas2D layer sized
-// with the device pixel ratio, the house legend / tooltip / live region of
-// createChartDom, pointer + keyboard interaction, resize and theme watching.
+// createShapeChart: DOM host of the shape charts. The shapes are drawn on
+// the GPU (WebGPU, then WebGL2 / WebGL) with the text on a 2D canvas above
+// them, or on one Canvas2D layer; plus the house legend / tooltip / live
+// region of createChartDom, pointer + keyboard interaction, resize and theme
+// watching.
 
-import { createChartDom, styleElement, swatch } from "../dom";
+import { createChartDom, createDataCanvas, styleElement, swatch } from "../dom";
+import {
+  createVectorRenderer,
+  type VectorRenderer,
+} from "../renderers/vector-gpu";
+import { VectorRecorder } from "../renderers/vector";
+import { followDefaultRenderer } from "../renderers/follow";
+import type { ChartRendererKind } from "../types";
 import { readTheme, watchTheme, type ChartTheme } from "../theme";
+import { placeTooltipElement } from "../tooltip";
 import { drawShapeScene } from "./draw";
 import { hitTestShapes, hoverAnchor, stepHover } from "./hit";
 import {
@@ -45,8 +55,9 @@ interface HoverState {
 
 /**
  * Creates a pie / donut, radar, gauge, funnel, treemap, sankey, sunburst,
- * radial bar, calendar heatmap or bullet chart in `container` (drawn with
- * Canvas2D, themed by the Minerva CSS variables).
+ * radial bar, calendar heatmap, bullet or chord chart in `container` (drawn
+ * on the GPU when available, else with Canvas2D; themed by the Minerva CSS
+ * variables).
  */
 export const createShapeChart = (
   container: HTMLElement,
@@ -68,6 +79,24 @@ export const createShapeChart = (
 
   const runtime = createShapeRuntime(initial);
   let options = initial;
+  /** GPU backend of the shapes; null while starting and with Canvas2D */
+  let vector: VectorRenderer | null = null;
+  /** Backend in use, once chosen */
+  let backend: ChartRendererKind | null = null;
+  let rendererToken = 0;
+  const recorder = new VectorRecorder();
+  let text: CanvasRenderingContext2D | null | undefined;
+  /** 2D context of the text layer drawn above the GPU canvas */
+  const textCtx = () => {
+    if (text === undefined) {
+      try {
+        text = dom.foreground.getContext("2d");
+      } catch {
+        text = null;
+      }
+    }
+    return text;
+  };
   let theme: ChartTheme = readTheme(dom.root, options.palette);
   let scene: ShapeScene | null = null;
   let hover: HoverState | null = null;
@@ -235,18 +264,24 @@ export const createShapeChart = (
     const anchor = hover.keyboard
       ? (hoverAnchor(scene, hover.hover) ?? hover)
       : hover;
-    const stageW = dom.stage.clientWidth;
-    const stageH = dom.stage.clientHeight;
-    const { x: left, y: top } = placeShapeTooltip(
-      scene,
-      hover.hover,
-      anchor,
-      tip.offsetWidth,
-      tip.offsetHeight,
-      stageW,
-      stageH,
+    const shown = scene;
+    const hovered = hover.hover;
+    placeTooltipElement(
+      tip,
+      dom.stage,
+      (size, stage, bounds) =>
+        placeShapeTooltip(
+          shown,
+          hovered,
+          anchor,
+          size.width,
+          size.height,
+          stage.width,
+          stage.height,
+          bounds,
+        ),
+      { animate: true },
     );
-    tip.style.transform = `translate(${Math.round(left)}px, ${Math.round(top)}px)`;
   };
 
   const setHover = (
@@ -273,10 +308,16 @@ export const createShapeChart = (
     const dpr = win?.devicePixelRatio || 1;
     const pw = Math.max(1, Math.round(width * dpr));
     const ph = Math.max(1, Math.round(height * dpr));
-    if (canvas.width !== pw) canvas.width = pw;
-    if (canvas.height !== ph) canvas.height = ph;
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
+    // the GPU draws the shapes, the foreground canvas the text above them
+    const gpu = vector;
+    const target = gpu ? dom.foreground : canvas;
+    const target2d = gpu ? textCtx() : ctx;
+    for (const layer of gpu ? [dom.foreground, gpu.canvas] : [canvas]) {
+      if (layer.width !== pw) layer.width = pw;
+      if (layer.height !== ph) layer.height = ph;
+      layer.style.width = `${width}px`;
+      layer.style.height = `${height}px`;
+    }
     fontSet = "";
     const frame = runtime.frame(now(), { theme, width, height, measure });
     scene = frame.scene;
@@ -285,7 +326,19 @@ export const createShapeChart = (
       dom.stage.style.cursor = "";
       emit("hover", null);
     }
-    if (ctx) {
+    if (gpu) {
+      if (target2d) {
+        target2d.setTransform(1, 0, 0, 1, 0, 0);
+        target2d.clearRect(0, 0, target.width, target.height);
+      }
+      recorder.reset(target2d, dpr);
+      drawShapeScene(
+        recorder as unknown as CanvasRenderingContext2D,
+        scene,
+        hover?.hover ?? null,
+      );
+      gpu.render(recorder.finish());
+    } else if (ctx) {
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, pw, ph);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -553,6 +606,54 @@ export const createShapeChart = (
   };
   const unwatchTheme = watchTheme(refreshTheme);
 
+  // ------------------------------------------------------------- renderer
+
+  const applyBackend = (next: VectorRenderer | null) => {
+    if (vector) {
+      vector.destroy();
+      vector.canvas.remove();
+    }
+    vector = next;
+    backend = next?.kind ?? "canvas2d";
+    dom.root.dataset.renderer = backend;
+    if (next) dom.stage.insertBefore(next.canvas, dom.foreground);
+    canvas.style.display = next ? "none" : "";
+    dom.foreground.style.display = next ? "" : "none";
+    if (!next) {
+      const t = textCtx();
+      t?.setTransform(1, 0, 0, 1, 0, 0);
+      t?.clearRect(0, 0, dom.foreground.width, dom.foreground.height);
+    }
+    schedule();
+  };
+
+  /**
+   * Starts the GPU backend (WebGPU, then WebGL2 / WebGL, like the other
+   * charts); the first frames are drawn with Canvas2D meanwhile
+   */
+  const initRenderer = async (exclude: Set<ChartRendererKind> = new Set()) => {
+    const token = ++rendererToken;
+    const next = await createVectorRenderer(
+      options.renderer,
+      () => createDataCanvas(doc),
+      (kind) => {
+        if (destroyed || vector?.kind !== kind) return;
+        void initRenderer(new Set([...exclude, kind]));
+      },
+      exclude,
+    );
+    if (destroyed || token !== rendererToken) {
+      next?.destroy();
+      return;
+    }
+    applyBackend(next);
+  };
+  void initRenderer();
+  const unfollowDefault = followDefaultRenderer(
+    () => options.renderer,
+    () => void initRenderer(),
+  );
+
   renderLegend();
   updateAccessibility();
   render();
@@ -566,6 +667,8 @@ export const createShapeChart = (
       if ((next.palette ?? []).join() !== (previous.palette ?? []).join())
         theme = readTheme(dom.root, next.palette);
       if (next.type !== previous.type && hover) setHover(null, 0, 0, false);
+      if ((next.renderer ?? "auto") !== (previous.renderer ?? "auto"))
+        void initRenderer();
       renderLegend();
       updateAccessibility();
       tipKey = "";
@@ -581,6 +684,7 @@ export const createShapeChart = (
     getHidden: () => runtime.hiddenIndexes(),
     drill,
     getDrillPath: () => runtime.drillPath(),
+    getRenderer: () => backend,
     on(type, listener) {
       listeners[type].add(listener);
       return () => {
@@ -601,6 +705,10 @@ export const createShapeChart = (
       stage.removeEventListener("blur", onBlur);
       resizeObserver?.disconnect();
       unwatchTheme();
+      unfollowDefault();
+      rendererToken++;
+      vector?.destroy();
+      vector = null;
       listeners.hover.clear();
       listeners.click.clear();
       listeners.toggle.clear();

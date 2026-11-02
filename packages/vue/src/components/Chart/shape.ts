@@ -3,6 +3,7 @@ import {
   type CalendarDate,
   type CalendarHeatmapOptions,
   type ChartPadding,
+  type ChartRendererPreference,
   type ShapeChartCommonOptions,
   type ShapeChartInstance,
   type ShapeChartOptions,
@@ -17,6 +18,7 @@ import type { ShapeChartHandle } from "./types";
 
 /** The common props read by `shapeCommonOptions` */
 interface ShapeCommonProps {
+  renderer?: ChartRendererPreference;
   palette?: readonly string[];
   legend?: boolean | ShapeLegendOptions;
   tooltip?: boolean | ShapeTooltipOptions;
@@ -34,6 +36,7 @@ interface ShapeCommonProps {
 export const shapeCommonOptions = (
   props: ShapeCommonProps,
 ): ShapeChartCommonOptions => ({
+  renderer: props.renderer,
   palette: raw(props.palette),
   legend: raw(props.legend),
   tooltip: raw(props.tooltip),
@@ -78,6 +81,7 @@ export function useShapeChart(
   const handle: ShapeChartHandle = {
     toggle: (index) => instance.value?.toggle(index),
     drill: (path) => instance.value?.drill(path),
+    getRenderer: () => instance.value?.getRenderer() ?? null,
     getInstance: () => instance.value,
   };
   return {

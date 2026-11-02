@@ -15,6 +15,7 @@ import {
   watchTheme,
   type ChartTheme,
 } from "../theme";
+import { positionTooltip } from "../tooltip";
 import type { ChartRendererKind } from "../types";
 import { colorLut, colorStops, type ColorLut } from "./colormap";
 import { createRenderer3D } from "./detect";
@@ -669,15 +670,18 @@ export const createChart3D = (
     if (typeof content === "string") tip.textContent = content;
     else tip.replaceChildren(content);
     tip.style.display = "block";
-    const width = stage.clientWidth;
-    const height = stage.clientHeight;
-    const tw = tip.offsetWidth;
-    const th = tip.offsetHeight;
-    let x = hoverHit.x + 16;
-    if (x + tw > width - 4) x = hoverHit.x - 16 - tw;
-    x = Math.max(4, x);
-    const y = Math.max(4, Math.min(height - th - 4, hoverHit.y - th / 2));
-    tip.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px)`;
+    // off the hovered point / bar top
+    const r = 8;
+    positionTooltip(tip, stage, {
+      anchor: { x: hoverHit.x, y: hoverHit.y },
+      avoid: {
+        x: hoverHit.x - r,
+        y: hoverHit.y - r,
+        width: r * 2,
+        height: r * 2,
+      },
+      gap: 10,
+    });
   };
 
   const defaultTooltip = (event: Chart3DHoverEvent): Node => {

@@ -13,9 +13,9 @@ import {
 import { RendererTopicContext } from "./context";
 import styles from "./renderer.module.scss";
 
-type Counts = Pick<RendererScan, "kinds" | "shapes">;
+type Counts = Pick<RendererScan, "kinds">;
 
-const EMPTY: Counts = { kinds: {}, shapes: 0 };
+const EMPTY: Counts = { kinds: {} };
 
 /** Rescans at most this often while charts start or switch backends */
 const THROTTLE = 150;
@@ -86,19 +86,12 @@ export default function RendererBadge({
   }, [targetRef]);
 
   const used = RENDERER_KINDS.filter((kind) => counts.kinds[kind]);
-  const shapes = counts.shapes > 0;
-  if (used.length === 0 && !shapes) return null;
+  if (used.length === 0) return null;
 
   const name = (kind: ChartRendererKind) => t(`options.${kind}`);
   const parts: { kind: ChartRendererKind; count: number }[] = used.map(
     (kind) => ({ kind, count: counts.kinds[kind] ?? 0 }),
   );
-  // shape charts draw with Canvas2D whatever the selection
-  if (shapes) {
-    const canvas = parts.find((part) => part.kind === "canvas2d");
-    if (canvas) canvas.count += counts.shapes;
-    else parts.push({ kind: "canvas2d", count: counts.shapes });
-  }
   // the requested backend is not available here: every GPU chart fell back
   const fellBack =
     requested !== "auto" && used.length > 0 && !used.includes(requested);
@@ -111,7 +104,6 @@ export default function RendererBadge({
       }),
     );
   }
-  if (shapes) titles.push(t("badgeShape"));
 
   return (
     <span

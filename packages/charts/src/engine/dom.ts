@@ -2,6 +2,8 @@
 // tooltip and a live region. Styled inline with the Minerva CSS variables
 // (and fallbacks), so the engine needs no stylesheet.
 
+import { prefersReducedMotion, styleTooltip } from "./tooltip";
+
 export interface ChartDom {
   root: HTMLDivElement;
   legend: HTMLDivElement;
@@ -9,6 +11,11 @@ export interface ChartDom {
   background: HTMLCanvasElement;
   /** Hover band of bars, drawn below the data */
   underlay: HTMLDivElement;
+  /**
+   * Lifted hover marks (bars, heatmap cells): above the data canvas, below
+   * the foreground canvas so the value labels stay readable
+   */
+  lift: HTMLDivElement;
   foreground: HTMLCanvasElement;
   hover: HTMLDivElement;
   crosshair: HTMLDivElement;
@@ -85,6 +92,15 @@ export const createChartDom = (container: HTMLElement): ChartDom => {
   }) as HTMLDivElement;
   underlay.setAttribute("aria-hidden", "true");
 
+  // its own stacking context: the z-index of the lifted marks stays inside
+  const lift = assign(layer(doc, "div"), {
+    right: "0",
+    bottom: "0",
+    overflow: "hidden",
+    isolation: "isolate",
+  }) as HTMLDivElement;
+  lift.setAttribute("aria-hidden", "true");
+
   const crosshair = assign(doc.createElement("div"), {
     position: "absolute",
     width: "0",
@@ -94,28 +110,17 @@ export const createChartDom = (container: HTMLElement): ChartDom => {
   }) as HTMLDivElement;
   hover.appendChild(crosshair);
 
-  const tooltip = assign(doc.createElement("div"), {
-    position: "absolute",
-    left: "0",
-    top: "0",
+  const tooltip = styleTooltip(doc.createElement("div"), {
     zIndex: "2",
     display: "none",
-    pointerEvents: "none",
     minWidth: "128px",
     maxWidth: "320px",
     padding: "8px 12px",
     borderRadius: "10px",
-    border:
-      "1px solid color-mix(in srgb, var(--border-color, #e5e7eb) 60%, transparent)",
-    background: "var(--surface-elevated-color, var(--background-color, #fff))",
-    color: "var(--text-color, #1f2937)",
-    boxShadow:
-      "0 12px 32px -8px rgba(15, 23, 42, 0.16), 0 4px 10px -4px rgba(15, 23, 42, 0.08)",
     fontSize: "12px",
     lineHeight: "20px",
     whiteSpace: "nowrap",
-    transition: "transform 80ms ease-out",
-  }) as HTMLDivElement;
+  });
   tooltip.className = "minerva-chart-tooltip";
   tooltip.setAttribute("role", "tooltip");
 
@@ -130,7 +135,7 @@ export const createChartDom = (container: HTMLElement): ChartDom => {
   }) as HTMLDivElement;
   live.setAttribute("aria-live", "polite");
 
-  stage.append(background, underlay, foreground, hover, tooltip, live);
+  stage.append(background, underlay, lift, foreground, hover, tooltip, live);
   root.append(legend, stage);
   container.appendChild(root);
   return {
@@ -139,6 +144,7 @@ export const createChartDom = (container: HTMLElement): ChartDom => {
     stage,
     background,
     underlay,
+    lift,
     foreground,
     hover,
     crosshair,
@@ -192,5 +198,60 @@ export const createBand = (doc: Document) =>
     background:
       "color-mix(in srgb, var(--text-color, #1f2937) 6%, transparent)",
   }) as HTMLDivElement;
+
+/** Background of the plot (the backdrop of lifted translucent bars) */
+export const PLOT_BACKGROUND =
+  "var(--surface-color, var(--background-color, #fff))";
+
+/** Shadow of a lifted bar / cell, below its halo */
+export const LIFT_SHADOW = "0 8px 18px -6px rgba(15, 23, 42, 0.55)";
+
+/** Scale of a hovered heatmap cell */
+export const CELL_LIFT = 1.16;
+
+/** Thin line in the primary color around the halo of a hovered cell */
+export const CELL_ACCENT = {
+  color: "color-mix(in srgb, var(--primary-color, #4f46e5) 60%, transparent)",
+  width: 1.5,
+};
+
+/**
+ * Box shadows of a lifted mark: a ring inside its edge, a halo of the plot
+ * background (and an optional accent line) around it, the lift shadow.
+ * `off` gives the same list collapsed (the start of the transition).
+ */
+export const liftShadow = (
+  ring: { color: string; width: number } | null,
+  halo: number,
+  accent: { color: string; width: number } | null,
+  off = false,
+): string => {
+  const k = off ? 0 : 1;
+  const parts: string[] = [];
+  if (ring) parts.push(`inset 0 0 0 ${ring.width * k}px ${ring.color}`);
+  parts.push(`0 0 0 ${halo * k}px ${PLOT_BACKGROUND}`);
+  if (accent)
+    parts.push(`0 0 0 ${(halo + accent.width) * k}px ${accent.color}`);
+  parts.push(off ? "0 0 0 0 rgba(15, 23, 42, 0)" : LIFT_SHADOW);
+  return parts.join(", ");
+};
+
+/**
+ * Plays the entry of a lifted mark (from its resting size, without its
+ * rings) unless the user prefers reduced motion; the final style is set
+ * on the element, so hosts without the Web Animations API show it at once
+ */
+export const playLift = (
+  el: HTMLElement,
+  from: Keyframe,
+  to: Keyframe,
+  win: Window | null,
+) => {
+  if (typeof el.animate !== "function" || prefersReducedMotion(win)) return;
+  el.animate([from, to], {
+    duration: 160,
+    easing: "cubic-bezier(0.2, 0, 0, 1)",
+  });
+};
 
 export { assign as styleElement };

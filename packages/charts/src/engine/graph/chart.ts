@@ -34,6 +34,7 @@ import {
   watchTheme,
   type ChartTheme,
 } from "../theme";
+import { positionTooltip as placeTip } from "../tooltip";
 import type { ChartRendererKind } from "../types";
 import { arcPositions, circularPositions } from "./circular";
 import { layeredLayout, longestPath } from "./dag";
@@ -2781,23 +2782,23 @@ export const createGraphChart = (
     if (!hit || tip.style.display === "none") return;
     let ax: number;
     let ay: number;
-    let gap = 14;
+    // the node circle (an edge: its midpoint)
+    let r = 6;
     if (hit.type === "node") {
       ax = screenX(hit.index);
       ay = screenY(hit.index);
-      gap += (Math.max(sizing.width[hit.index], 0) * k) / 2;
+      r = Math.max(r, (Math.max(sizing.width[hit.index], 0) * k) / 2);
     } else {
       const ev = hoverEvent(hit);
       ax = ev.clientX - stage.offsetLeft;
       ay = ev.clientY - stage.offsetTop;
     }
-    const tw = tip.offsetWidth;
-    const th = tip.offsetHeight;
-    let x = ax + gap;
-    if (x + tw > width - 4) x = ax - gap - tw;
-    x = Math.max(4, Math.min(width - tw - 4, x));
-    const y = Math.max(4, Math.min(height - th - 4, ay - th / 2));
-    tip.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px)`;
+    placeTip(tip, stage, {
+      anchor: { x: ax, y: ay },
+      avoid: { x: ax - r, y: ay - r, width: r * 2, height: r * 2 },
+      stage: { width, height },
+      gap: 10,
+    });
   };
 
   const row = (name: string, value: string) => {

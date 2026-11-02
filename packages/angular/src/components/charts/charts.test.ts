@@ -225,6 +225,25 @@ describe("shape charts", () => {
     expect(gauge.style.height).toBe("240px");
   });
 
+  it("pass the renderer input to the engine and expose getRenderer", async () => {
+    @Component({
+      imports: [MnDonutChart],
+      template: `<mn-donut-chart [data]="data" [renderer]="renderer()" />`,
+    })
+    class Host {
+      data = [{ name: "A", value: 1 }];
+      renderer = signal<"webgl" | "canvas2d">("webgl");
+      chart = viewChild.required(MnDonutChart);
+    }
+    const fixture = await render(Host);
+    await settle(fixture);
+    expect(engines[0].options).toMatchObject({ renderer: "webgl" });
+    expect(fixture.componentInstance.chart().getRenderer()).toBe("webgl2");
+    fixture.componentInstance.renderer.set("canvas2d");
+    await settle(fixture);
+    expect(engines[0].options).toMatchObject({ renderer: "canvas2d" });
+  });
+
   it("MnShapeChart forwards hover, itemClick and visibilityChange", async () => {
     @Component({
       imports: [MnShapeChart],

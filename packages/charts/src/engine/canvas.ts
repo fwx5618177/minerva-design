@@ -17,8 +17,10 @@ import { buildItems, cellStyleKey, type Origin } from "./items";
 import { drawBackground, drawForeground, font } from "./overlay";
 import { createCanvas2dPainter } from "./renderers/canvas2d";
 import type { RenderItem } from "./renderers/types";
+import { liftedBarRect, type HoverMark } from "./scene";
 import { itemsSignature } from "./signature";
 import type { ChartThemeInput } from "./theme";
+import { CANVAS_TOOLTIP_ALPHA } from "./tooltip";
 import type { ChartOptions, ChartRect, ChartView } from "./types";
 
 /**
@@ -260,6 +262,134 @@ const drawColorLegend = (
   }
 };
 
+/** Scale of a hovered heatmap cell (like the DOM host) */
+const CELL_LIFT = 1.16;
+
+/** A rounded rectangle grown by `d` on every side (shrunk when negative) */
+const grownRect = (
+  ctx: CanvasRenderingContext2D,
+  r: { x: number; y: number; width: number; height: number },
+  radius: number,
+  d: number,
+) => {
+  const w = Math.max(0, r.width + d * 2);
+  const h = Math.max(0, r.height + d * 2);
+  roundedRect(
+    ctx,
+    r.x - d,
+    r.y - d,
+    w,
+    h,
+    Math.max(0, Math.min(radius + d, w / 2, h / 2)),
+  );
+};
+
+/**
+ * A lifted shape: the lift shadow under a halo of the background, an
+ * optional accent line around the halo, the fill, a ring inside the edge
+ */
+const drawLifted = (
+  ctx: CanvasRenderingContext2D,
+  r: { x: number; y: number; width: number; height: number },
+  radius: number,
+  fill: string,
+  backdrop: boolean,
+  ring: { color: string; width: number } | null,
+  halo: number,
+  accent: { color: string; width: number } | null,
+  theme: ChartScene["theme"],
+) => {
+  const background = toCss(theme.background);
+  if (ring) {
+    ctx.save();
+    ctx.shadowColor = "rgba(15, 23, 42, 0.4)";
+    ctx.shadowBlur = 14;
+    ctx.shadowOffsetY = 5;
+    grownRect(ctx, r, radius, halo + (accent?.width ?? 0));
+    ctx.fillStyle = accent ? accent.color : background;
+    ctx.fill();
+    ctx.restore();
+    if (accent) {
+      grownRect(ctx, r, radius, halo);
+      ctx.fillStyle = background;
+      ctx.fill();
+    }
+  } else if (backdrop) {
+    grownRect(ctx, r, radius, 0);
+    ctx.fillStyle = background;
+    ctx.fill();
+  }
+  grownRect(ctx, r, radius, 0);
+  ctx.fillStyle = fill;
+  ctx.fill();
+  if (ring && ring.width > 0) {
+    grownRect(ctx, r, radius, -ring.width / 2);
+    ctx.lineWidth = ring.width;
+    ctx.strokeStyle = ring.color;
+    ctx.stroke();
+  }
+};
+
+/** Hovered bars (thicker, clipped to the plot) and heatmap cells, lifted */
+const drawLiftedMarks = (
+  ctx: CanvasRenderingContext2D,
+  marks: readonly HoverMark[],
+  plot: { x: number; y: number; width: number; height: number },
+  theme: ChartScene["theme"],
+) => {
+  for (const mark of marks) {
+    if (mark.kind === "bar") {
+      const r = liftedBarRect(mark);
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(plot.x, plot.y, plot.width, plot.height);
+      ctx.clip();
+      const ring =
+        mark.ring === null
+          ? null
+          : {
+              color: mark.ring,
+              width: Math.min(
+                mark.backdrop ? 2 : 1.5,
+                Math.max(0, (Math.min(r.width, r.height) - 2) / 4),
+              ),
+            };
+      drawLifted(
+        ctx,
+        r,
+        mark.radius,
+        mark.color,
+        mark.backdrop,
+        ring,
+        1.5,
+        null,
+        theme,
+      );
+      ctx.restore();
+    } else if (mark.kind === "cell") {
+      const w = mark.width * CELL_LIFT;
+      const h = mark.height * CELL_LIFT;
+      const r = {
+        x: mark.x + (mark.width - w) / 2,
+        y: mark.y + (mark.height - h) / 2,
+        width: w,
+        height: h,
+      };
+      drawLifted(
+        ctx,
+        r,
+        Math.max(2, mark.radius) * CELL_LIFT,
+        mark.color,
+        false,
+        { color: mark.ring, width: Math.min(2, Math.min(w, h) / 5) },
+        2,
+        { color: toCss(theme.primary, 0.6), width: 1.5 },
+        theme,
+      );
+    }
+  }
+};
+
 /** Draws a scene (legend, axes, data, labels, hover) on a 2D context */
 export const drawScene = (
   ctx: CanvasRenderingContext2D,
@@ -320,11 +450,12 @@ export const drawScene = (
     ctx.globalAlpha = 1;
   }
 
-  // hover band of bars, below the data
+  // hover band of bars, below the data (lighter behind lifted bars)
+  const lifted = scene.hover?.marks.some((m) => m.kind === "bar") ?? false;
   for (const mark of scene.hover?.marks ?? []) {
     if (mark.kind !== "band") continue;
     roundedRect(ctx, mark.x, mark.y, mark.width, mark.height, 6);
-    ctx.fillStyle = toCss(theme.text, 0.06);
+    ctx.fillStyle = toCss(theme.text, lifted ? 0.04 : 0.06);
     ctx.fill();
   }
 
@@ -362,6 +493,13 @@ export const drawScene = (
     ctx.fillStyle = toCss(theme.text, 0.06);
     ctx.fillRect(mark.x, mark.y, mark.width, mark.height);
   }
+  // lifted bars and cells, below the value labels; the plot behind lifted
+  // bars is veiled so the hovered one stands out
+  if (lifted) {
+    ctx.fillStyle = toCss(theme.background, 0.42);
+    ctx.fillRect(plot.x, plot.y, plot.width, plot.height);
+  }
+  if (scene.hover) drawLiftedMarks(ctx, scene.hover.marks, plot, theme);
   drawForeground(ctx, {
     width,
     height,
@@ -427,42 +565,13 @@ export const drawScene = (
       ctx.restore();
     }
     for (const mark of hover.marks) {
-      if (mark.kind === "band" || mark.kind === "guide") continue;
-      if (mark.kind === "cell") {
-        // lifted: a little larger, with a soft shadow and an inner ring
-        const grow = Math.min(3, mark.width * 0.06, mark.height * 0.06);
-        const r = Math.max(2, mark.radius);
-        ctx.save();
-        ctx.shadowColor = "rgba(15, 23, 42, 0.4)";
-        ctx.shadowBlur = 12;
-        ctx.shadowOffsetY = 4;
-        roundedRect(
-          ctx,
-          mark.x - grow,
-          mark.y - grow,
-          mark.width + grow * 2,
-          mark.height + grow * 2,
-          r,
-        );
-        ctx.fillStyle = mark.color;
-        ctx.fill();
-        ctx.restore();
-        const inset = Math.min(2.75, mark.width / 5, mark.height / 5);
-        if (mark.width > 8 && mark.height > 8) {
-          roundedRect(
-            ctx,
-            mark.x + inset,
-            mark.y + inset,
-            mark.width - inset * 2,
-            mark.height - inset * 2,
-            Math.max(1, r - inset / 2),
-          );
-          ctx.lineWidth = 1.5;
-          ctx.strokeStyle = mark.ring;
-          ctx.stroke();
-        }
+      if (
+        mark.kind === "band" ||
+        mark.kind === "guide" ||
+        mark.kind === "bar" ||
+        mark.kind === "cell"
+      )
         continue;
-      }
       ctx.beginPath();
       ctx.arc(mark.x, mark.y, mark.size / 2 + 4, 0, Math.PI * 2);
       ctx.fillStyle = mark.halo;
@@ -496,7 +605,7 @@ export const drawScene = (
     ctx.shadowBlur = 16;
     ctx.shadowOffsetY = 6;
     roundedRect(ctx, box.x, box.y, box.width, box.height, 8);
-    ctx.fillStyle = toCss(theme.background);
+    ctx.fillStyle = toCss(theme.background, CANVAS_TOOLTIP_ALPHA);
     ctx.fill();
     ctx.restore();
     roundedRect(

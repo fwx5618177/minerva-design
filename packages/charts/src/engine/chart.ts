@@ -8,9 +8,15 @@ import {
   createChartDom,
   createDataCanvas,
   createMarker,
+  CELL_ACCENT,
+  CELL_LIFT,
+  liftShadow,
+  PLOT_BACKGROUND,
+  playLift,
   styleElement,
   swatch,
 } from "./dom";
+import { hoverRect } from "./hover-rect";
 import {
   buildItems,
   cellStyleKey,
@@ -53,6 +59,7 @@ import {
   layoutChart,
   legendShape,
   legendShown,
+  liftedBarRect,
   pointOf,
   resolveAnnotations,
   resolveDependencies,
@@ -67,6 +74,7 @@ import {
   watchTheme,
   type ChartTheme,
 } from "./theme";
+import { positionTooltip, prefersReducedMotion } from "./tooltip";
 import type {
   ChartEventMap,
   ChartHoverEvent,
@@ -158,6 +166,12 @@ export const createChart = (
   const bands: HTMLDivElement[] = [];
   const cells: HTMLDivElement[] = [];
   const guides: HTMLDivElement[] = [];
+  /** Lifted hovered bars, in `liftClip` */
+  const lifts: HTMLDivElement[] = [];
+  /** Clips the lifted bars to the plot, like the data layer */
+  let liftClip: HTMLDivElement | null = null;
+  /** Dims the plot behind lifted bars (focus on the hovered one) */
+  let veil: HTMLDivElement | null = null;
   /** Hover caret of the color legend (heatmaps) */
   let legendCaret: HTMLDivElement | null = null;
   let cellKey = "";
@@ -735,21 +749,25 @@ export const createChart = (
       if (!custom)
         shownTip = { event: hover.event, model, yTicks, width: w, height: h };
     }
-    const stageW = dom.stage.clientWidth;
-    const stageH = dom.stage.clientHeight;
-    let left = hover.anchorX + 16;
-    if (left + w > stageW - 4) left = hover.anchorX - 16 - w;
-    left = Math.max(4, Math.min(left, stageW - w - 4));
-    const top = Math.max(4, Math.min(hover.anchorY - h / 2, stageH - h - 4));
-    tip.style.transform = `translate(${Math.round(left)}px, ${Math.round(top)}px)`;
+    // off the hovered marks: beside them, above / below the rows of
+    // horizontal charts (Gantt tasks)
+    positionTooltip(tip, dom.stage, {
+      anchor: { x: hover.anchorX, y: hover.anchorY },
+      avoid: hoverRect(model, sc, hover.event),
+      prefer: sc.horizontal ? "vertical" : "side",
+      size: { width: w, height: h },
+      animate: true,
+    });
   }
 
-  /** Crosshair, point markers, bar bands and lifted heatmap cells */
+  /** Crosshair, point markers, bar bands, lifted bars and heatmap cells */
   function renderMarks(sc: Scales | null) {
     let markerCount = 0;
     let bandCount = 0;
     let cellCount = 0;
     let guideCount = 0;
+    let liftCount = 0;
+    let veiled = false;
     renderLegendCaret();
     shownMarks = null;
     dom.crosshair.style.display = "none";
@@ -785,17 +803,24 @@ export const createChart = (
               },
         );
       }
-      for (const mark of hoverMarks(model, sc, hover.event)) {
+      const marks = hoverMarks(model, sc, hover.event);
+      // behind lifted bars the band only gives the context: lighter
+      const lifted = marks.some((mark) => mark.kind === "bar");
+      for (const mark of marks) {
         if (mark.kind === "band" || mark.kind === "guide") {
           const el =
             mark.kind === "band"
               ? pooled(bands, bandCount++, () => createBand(doc), dom.underlay)
-              : pooled(guides, guideCount++, () =>
-                  styleElement(createBand(doc), {
-                    borderRadius: "0",
-                    background:
-                      "color-mix(in srgb, var(--text-color, #1f2937) 6%, transparent)",
-                  }),
+              : pooled(
+                  guides,
+                  guideCount++,
+                  () =>
+                    styleElement(createBand(doc), {
+                      borderRadius: "0",
+                      background:
+                        "color-mix(in srgb, var(--text-color, #1f2937) 6%, transparent)",
+                    }),
+                  dom.lift,
                 );
           styleElement(el, {
             left: `${mark.x}px`,
@@ -803,20 +828,124 @@ export const createChart = (
             width: `${mark.width}px`,
             height: `${mark.height}px`,
           });
+          if (mark.kind === "band")
+            el.style.background = `color-mix(in srgb, var(--text-color, #1f2937) ${lifted ? 4 : 6}%, transparent)`;
+          continue;
+        }
+        if (mark.kind === "bar") {
+          // the bar in its color, thicker (never longer), lifted and ringed
+          if (!liftClip) {
+            liftClip = styleElement(doc.createElement("div"), {
+              position: "absolute",
+              overflow: "hidden",
+            }) as HTMLDivElement;
+            dom.lift.appendChild(liftClip);
+          }
+          if (!veiled) {
+            veiled = true;
+            if (!veil) {
+              veil = styleElement(doc.createElement("div"), {
+                position: "absolute",
+                background: `color-mix(in srgb, ${PLOT_BACKGROUND} 42%, transparent)`,
+                opacity: "0",
+              }) as HTMLDivElement;
+              dom.lift.insertBefore(veil, liftClip);
+            }
+            styleElement(veil, {
+              left: `${plot.x}px`,
+              top: `${plot.y}px`,
+              width: `${plot.width}px`,
+              height: `${plot.height}px`,
+              transition: prefersReducedMotion(win)
+                ? "none"
+                : "opacity 140ms ease-out",
+              opacity: "1",
+            });
+          }
+          styleElement(liftClip, {
+            left: `${plot.x}px`,
+            top: `${plot.y}px`,
+            width: `${plot.width}px`,
+            height: `${plot.height}px`,
+          });
+          const key = `${mark.seriesIndex}:${mark.index}`;
+          const prev = lifts[liftCount];
+          const fresh =
+            !prev || prev.style.display !== "block" || prev.dataset.key !== key;
+          const el = pooled(
+            lifts,
+            liftCount++,
+            () => createBand(doc),
+            liftClip,
+          );
+          el.dataset.key = key;
+          const r = liftedBarRect(mark);
+          const vertical = mark.base === "top" || mark.base === "bottom";
+          const ring =
+            mark.ring === null
+              ? null
+              : {
+                  color: mark.ring,
+                  // translucent bars: a stronger ring in their solid color
+                  width: Math.min(
+                    mark.backdrop ? 2 : 1.5,
+                    Math.max(0, (Math.min(r.width, r.height) - 2) / 4),
+                  ),
+                };
+          const shadow = ring ? liftShadow(ring, 1.5, null) : "none";
+          styleElement(el, {
+            left: `${r.x - plot.x}px`,
+            top: `${r.y - plot.y}px`,
+            width: `${r.width}px`,
+            height: `${r.height}px`,
+            borderRadius: `${mark.radius}px`,
+            filter: "brightness(1.08) saturate(1.08)",
+            background: mark.backdrop
+              ? `linear-gradient(${mark.color}, ${mark.color}), ${PLOT_BACKGROUND}`
+              : mark.color,
+            boxShadow: shadow,
+          });
+          if (fresh) {
+            // grows from the bar as drawn
+            const thick = vertical ? r.width : r.height;
+            const k = thick > 0 ? (thick - mark.grow * 2) / thick : 1;
+            playLift(
+              el,
+              {
+                transform: vertical ? `scaleX(${k})` : `scaleY(${k})`,
+                ...(ring
+                  ? { boxShadow: liftShadow(ring, 1.5, null, true) }
+                  : {}),
+              },
+              { transform: "none", ...(ring ? { boxShadow: shadow } : {}) },
+              win,
+            );
+          }
           continue;
         }
         if (mark.kind === "cell") {
-          // the cell lifted above its neighbours, a ring inside its edge
-          const el = pooled(cells, cellCount++, () =>
-            styleElement(createBand(doc), {
-              boxShadow:
-                "0 8px 18px -6px rgba(15, 23, 42, 0.6), 0 0 0 1px rgba(15, 23, 42, 0.12)",
-              outlineStyle: "solid",
-              outlineWidth: "1.5px",
-              outlineOffset: "-4px",
-              transform: "scale(1.12)",
-            }),
+          // the cell lifted above its neighbours (and below the labels):
+          // a ring at its edge, a halo of the background and an accent line
+          const key = `${mark.seriesIndex}:${mark.index}`;
+          const prev = cells[cellCount];
+          const fresh =
+            !prev || prev.style.display !== "block" || prev.dataset.key !== key;
+          const el = pooled(
+            cells,
+            cellCount++,
+            () =>
+              styleElement(createBand(doc), {
+                zIndex: "1",
+                transform: `scale(${CELL_LIFT})`,
+              }),
+            dom.lift,
           );
+          el.dataset.key = key;
+          const ring = {
+            color: mark.ring,
+            width: Math.min(2, Math.min(mark.width, mark.height) / 5),
+          };
+          const shadow = liftShadow(ring, 2, CELL_ACCENT);
           styleElement(el, {
             left: `${mark.x}px`,
             top: `${mark.y}px`,
@@ -824,8 +953,18 @@ export const createChart = (
             height: `${mark.height}px`,
             background: mark.color,
             borderRadius: `${Math.max(mark.radius, 2)}px`,
-            outlineColor: mark.ring,
+            boxShadow: shadow,
           });
+          if (fresh)
+            playLift(
+              el,
+              {
+                transform: "scale(1)",
+                boxShadow: liftShadow(ring, 2, CELL_ACCENT, true),
+              },
+              { transform: `scale(${CELL_LIFT})`, boxShadow: shadow },
+              win,
+            );
           continue;
         }
         const el = pooled(markers, markerCount++, () => createMarker(doc));
@@ -847,6 +986,9 @@ export const createChart = (
       cells[i].style.display = "none";
     for (let i = guideCount; i < guides.length; i++)
       guides[i].style.display = "none";
+    for (let i = liftCount; i < lifts.length; i++)
+      lifts[i].style.display = "none";
+    if (veil && !veiled) veil.style.opacity = "0";
   }
 
   /** Marks the hovered heatmap value on the color legend */
@@ -1272,7 +1414,8 @@ export const createChart = (
     renderer = next;
     if (next) {
       dom.root.dataset.renderer = next.kind;
-      dom.stage.insertBefore(next.canvas, dom.foreground);
+      // between the hover band and the lifted marks
+      dom.stage.insertBefore(next.canvas, dom.lift);
       itemsDirty = true;
       emit("renderer", next.kind);
     }

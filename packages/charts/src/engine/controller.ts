@@ -8,6 +8,7 @@ import { toCss, unpackColor } from "./color";
 import { curvePoints } from "./curve";
 import { lowerBound } from "./data";
 import { decimateMinMax } from "./decimate";
+import { hoverRect } from "./hover-rect";
 import {
   createScales,
   heatCellStyle,
@@ -64,6 +65,7 @@ import {
   type TooltipContent,
 } from "./scene";
 import { createTheme, type ChartTheme, type ChartThemeInput } from "./theme";
+import { placeTooltip } from "./tooltip";
 import type {
   ChartEventMap,
   ChartHoverEvent,
@@ -408,6 +410,7 @@ export const createChartController = (
     event: ChartHoverEvent,
     anchorX: number,
     anchorY: number,
+    sc: Scales,
   ): ChartTooltipLayout | null => {
     const tooltip = options.tooltip;
     if (tooltip === false) return null;
@@ -452,10 +455,14 @@ export const createChartController = (
     }
     const boxW = Math.ceil(Math.max(w, 96) + padding * 2 + 4);
     const boxH = lines * lineHeight + padding * 2;
-    let left = anchorX + 14;
-    if (left + boxW > width - 4) left = anchorX - 14 - boxW;
-    left = Math.max(4, Math.min(left, width - boxW - 4));
-    const top = Math.max(4, Math.min(anchorY - boxH / 2, height - boxH - 4));
+    // off the hovered marks, inside the canvas (nothing can overflow it)
+    const { x: left, y: top } = placeTooltip({
+      anchor: { x: anchorX, y: anchorY },
+      avoid: hoverRect(model, sc, event),
+      size: { width: boxW, height: boxH },
+      stage: { width, height },
+      prefer: sc.horizontal ? "vertical" : "side",
+    });
     return {
       content,
       text,
@@ -550,7 +557,7 @@ export const createChartController = (
         tooltip:
           gesture?.kind === "pan" || gesture?.kind === "point"
             ? null
-            : tooltipLayout(hover.event, hover.x, hover.y),
+            : tooltipLayout(hover.event, hover.x, hover.y, layout.scales),
       };
       // the hovered value on the color legend
       const colors = legend?.colors;

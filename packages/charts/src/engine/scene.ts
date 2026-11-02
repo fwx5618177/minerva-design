@@ -1020,11 +1020,47 @@ export const tooltipContent = (
 const stackIdOf = (model: ChartModel, seriesIndex: number): string | null =>
   model.series[seriesIndex].hidden ? null : model.stacks[seriesIndex];
 
+/** Side of a bar where its baseline is (its start for floating bars) */
+export type BarBase = "top" | "right" | "bottom" | "left";
+
+/**
+ * A hovered bar redrawn above the data (below the value labels): thicker
+ * by `grow` on both sides across its thickness, never longer (the length
+ * is the value), lifted with a shadow and a ring in a contrasting color
+ */
+export interface BarHoverMark {
+  kind: "bar";
+  /** The bar as drawn on the data layer (pixels of the stage) */
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  seriesIndex: number;
+  index: number;
+  /** Fill (CSS), with the opacity of the bar */
+  color: string;
+  /** The fill is translucent: drawn over the plot background */
+  backdrop: boolean;
+  /**
+   * Ring inside the edge (CSS): contrasting with solid fills, the solid
+   * color of translucent ones; `null` for the parts drawn over a lifted bar
+   * (the progress of a Gantt task)
+   */
+  ring: string | null;
+  /** Corner radius, like the data layer */
+  radius: number;
+  base: BarBase;
+  /** Pixels added on both sides across the thickness (0 between grouped bars without room) */
+  grow: number;
+}
+
 /**
  * Shape of the hover marker of an item: a dot with a soft halo on a point,
- * a band behind the hovered bar group / candle, or the outline of a cell
+ * a band behind the hovered bar group / candle, the lifted bar, or the
+ * lifted cell of a heatmap
  */
 export type HoverMark =
+  | BarHoverMark
   | {
       kind: "dot";
       x: number;
@@ -1044,12 +1080,14 @@ export type HoverMark =
       height: number;
     }
   | {
-      /** The hovered cell, lifted, with a ring inside its edge */
+      /** The hovered cell, lifted, with a ring at its edge */
       kind: "cell";
       x: number;
       y: number;
       width: number;
       height: number;
+      seriesIndex: number;
+      index: number;
       /** Fill of the cell (CSS) */
       color: string;
       /** Ring color (CSS), contrasting with the fill */
@@ -1088,6 +1126,7 @@ export const hoverMarks = (
       const half = Math.max(s.barHalfWidth / Math.abs(sc.xPerPx), 1);
       bandLo = Math.min(bandLo, c - half);
       bandHi = Math.max(bandHi, c + half);
+      if (s.type === "bar") marks.push(...liftedBars(model, sc, s, it.index));
       continue;
     }
     if (s.type === "heatmap") {
@@ -1126,6 +1165,8 @@ export const hoverMarks = (
         y: cell.y + style.inset,
         width: Math.max(1, cell.width - style.inset * 2),
         height: Math.max(1, cell.height - style.inset * 2),
+        seriesIndex: s.index,
+        index: it.index,
         color: it.color,
         ring: contrastRing(fill),
         radius: style.radius,
@@ -1179,6 +1220,188 @@ export const contrastRing = (fill: Rgba): string =>
   luminance(fill) > 0.45
     ? "rgba(15, 23, 42, 0.78)"
     : "rgba(255, 255, 255, 0.9)";
+
+/** Bars below this opacity are translucent: ringed in their solid color */
+const TRANSLUCENT = 0.6;
+
+/**
+ * Corner radius of the bars of a series, like the data layer: stacked
+ * segments stay square, floating bars (ranges, Gantt) keep their corners
+ */
+const barRadius = (model: ChartModel, s: SeriesModel): number =>
+  !s.floating &&
+  model.series.some(
+    (o) =>
+      o !== s &&
+      !o.hidden &&
+      o.type === "bar" &&
+      !o.floating &&
+      o.barOffset === s.barOffset,
+  )
+    ? 0
+    : s.radius;
+
+/**
+ * Room (data units) between a bar and the edge of its slot when it shares
+ * its category with other slots (grouped bars); `null` when it is alone
+ */
+const slotRoom = (model: ChartModel, s: SeriesModel): number | null => {
+  let slot = Infinity;
+  for (const o of model.series) {
+    if (o.hidden || (o.type !== "bar" && o.type !== "boxplot")) continue;
+    const d = Math.abs(o.barOffset - s.barOffset);
+    if (d > 0 && d < slot) slot = d;
+  }
+  return Number.isFinite(slot) ? Math.max(0, slot / 2 - s.barHalfWidth) : null;
+};
+
+/** Pixels the thickness of a hovered bar grows by on each side */
+const barGrow = (
+  model: ChartModel,
+  sc: Scales,
+  s: SeriesModel,
+  thickness: number,
+): number => {
+  let grow = Math.min(5, Math.max(1.5, thickness * 0.08));
+  const room = slotRoom(model, s);
+  // grouped bars: half of the gap at most, so neighbours never touch
+  if (room !== null) grow = Math.min(grow, (room / Math.abs(sc.xPerPx)) * 0.5);
+  return grow >= 0.75 ? Math.round(grow * 4) / 4 : 0;
+};
+
+/** Bar `i` of a series in pixels of the stage, `null` if not drawn */
+const barGeometry = (
+  model: ChartModel,
+  sc: Scales,
+  s: SeriesModel,
+  i: number,
+): Omit<
+  BarHoverMark,
+  "kind" | "color" | "backdrop" | "ring" | "grow" | "seriesIndex" | "index"
+> | null => {
+  const base = s.barBase?.[i];
+  const top = s.barTop?.[i];
+  const x = s.cols.x[i];
+  if (base === undefined || top === undefined) return null;
+  if (Number.isNaN(base) || Number.isNaN(top) || !Number.isFinite(x))
+    return null;
+  const { plot } = sc;
+  const c = sc.xToPx(x + s.barOffset);
+  const half = Math.max(s.barHalfWidth / Math.abs(sc.xPerPx), 0.5);
+  // ends far outside the plot (log axes: -Infinity) are cut a little past it
+  const lo = sc.horizontal ? plot.x : plot.y;
+  const hi = lo + (sc.horizontal ? plot.width : plot.height);
+  const clamp = (v: number) =>
+    Math.min(hi + 16, Math.max(lo - 16, Number.isNaN(v) ? lo : v));
+  const a = clamp(sc.yToPx(base));
+  const b = clamp(sc.yToPx(top));
+  // zero-length bars are not drawn
+  if (Math.abs(a - b) < 0.5) return null;
+  const rect = screenRect(sc, c - half, c + half, a, b);
+  if (
+    rect.x > plot.x + plot.width ||
+    rect.x + rect.width < plot.x ||
+    rect.y > plot.y + plot.height ||
+    rect.y + rect.height < plot.y
+  )
+    return null;
+  return {
+    ...rect,
+    radius: Math.min(barRadius(model, s), rect.width / 2, rect.height / 2),
+    base: sc.horizontal ? (a < b ? "left" : "right") : a > b ? "bottom" : "top",
+  };
+};
+
+/**
+ * Lifted marks of hovered bar `i`, then the bars drawn over it by series
+ * without a tooltip in its slot (the progress of a Gantt task), which the
+ * lifted bar would hide otherwise
+ */
+const liftedBars = (
+  model: ChartModel,
+  sc: Scales,
+  s: SeriesModel,
+  i: number,
+): BarHoverMark[] => {
+  const shape = barGeometry(model, sc, s, i);
+  if (!shape) return [];
+  const vertical = shape.base === "top" || shape.base === "bottom";
+  const thickness = vertical ? shape.width : shape.height;
+  const grow = barGrow(model, sc, s, thickness);
+  const fill = s.pointColors?.[i] ?? s.color;
+  const alpha = fill[3] * barOpacity(s, i);
+  const translucent = alpha < TRANSLUCENT;
+  const marks: BarHoverMark[] = [
+    {
+      kind: "bar",
+      ...shape,
+      seriesIndex: s.index,
+      index: i,
+      color: toCss(fill, barOpacity(s, i)),
+      backdrop: alpha < 0.98,
+      ring: translucent
+        ? toCss([fill[0], fill[1], fill[2], 1])
+        : contrastRing(fill),
+      grow,
+    },
+  ];
+  const lo = Math.min(s.barBase?.[i] ?? NaN, s.barTop?.[i] ?? NaN);
+  const hi = Math.max(s.barBase?.[i] ?? NaN, s.barTop?.[i] ?? NaN);
+  if (!s.floating || !(hi >= lo)) return marks;
+  const eps = (hi - lo) * 1e-9;
+  for (const o of model.series) {
+    if (
+      o === s ||
+      o.hidden ||
+      o.tooltip ||
+      o.type !== "bar" ||
+      !o.floating ||
+      o.barOffset !== s.barOffset ||
+      !o.barBase ||
+      !o.barTop
+    )
+      continue;
+    for (let j = 0; j < o.cols.count; j++) {
+      if (o.cols.x[j] !== s.cols.x[i]) continue;
+      const a = Math.min(o.barBase[j], o.barTop[j]);
+      const b = Math.max(o.barBase[j], o.barTop[j]);
+      if (!(a >= lo - eps && b <= hi + eps)) continue;
+      const part = barGeometry(model, sc, o, j);
+      if (!part) continue;
+      const color = o.pointColors?.[j] ?? o.color;
+      marks.push({
+        kind: "bar",
+        ...part,
+        seriesIndex: o.index,
+        index: j,
+        color: toCss(color, barOpacity(o, j)),
+        backdrop: false,
+        ring: null,
+        grow,
+      });
+    }
+  }
+  return marks;
+};
+
+/**
+ * Rectangle of a lifted bar: thicker by `grow` on both sides across its
+ * thickness, the same length
+ */
+export const liftedBarRect = (mark: BarHoverMark): Rect =>
+  mark.base === "top" || mark.base === "bottom"
+    ? {
+        x: mark.x - mark.grow,
+        y: mark.y,
+        width: mark.width + mark.grow * 2,
+        height: mark.height,
+      }
+    : {
+        x: mark.x,
+        y: mark.y - mark.grow,
+        width: mark.width,
+        height: mark.height + mark.grow * 2,
+      };
 
 /** Plotted value of the hovered outlier of a box */
 const plottedOutlier = (s: SeriesModel, it: ChartHoverItem): number => {

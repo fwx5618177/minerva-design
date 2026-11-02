@@ -18,6 +18,7 @@ import {
   annotationRect,
   annotationTextBox,
   annotationTitleLayout,
+  liftedBarRect,
   scenePrimitives,
   toCss,
   type ChartPrimitive,
@@ -1138,6 +1139,7 @@ export function drawHover(
       </View>,
     );
   }
+  let veiled = false;
   hover?.marks.forEach((m, i) => {
     if (m.kind === "band") {
       out.push(
@@ -1151,6 +1153,56 @@ export function drawHover(
       // the row / column of the hovered heatmap cell
       out.push(
         box(`mark-${i}`, m.x, m.y, m.width, m.height, css(theme.text, 0.06)),
+      );
+      return;
+    }
+    if (m.kind === "bar") {
+      // the plot behind lifted bars is veiled so the hovered one stands out
+      if (!veiled) {
+        veiled = true;
+        out.push(
+          box(
+            "veil",
+            plot.x,
+            plot.y,
+            plot.width,
+            plot.height,
+            css(theme.background, 0.42),
+          ),
+        );
+      }
+      // lifted: thicker across (never longer: the length is the value), a
+      // shadow and a ring inside its edge
+      const r = liftedBarRect(m);
+      if (m.backdrop)
+        out.push(
+          box(
+            `under-${i}`,
+            r.x,
+            r.y,
+            r.width,
+            r.height,
+            css(theme.background),
+            {
+              borderRadius: m.radius,
+            },
+          ),
+        );
+      out.push(
+        box(`mark-${i}`, r.x, r.y, r.width, r.height, m.color, {
+          borderRadius: m.radius,
+          ...(m.ring
+            ? {
+                borderWidth: m.backdrop ? 2 : 1.5,
+                borderColor: m.ring,
+                shadowColor: "#0f172a",
+                shadowOpacity: 0.4,
+                shadowRadius: 6,
+                shadowOffset: { width: 0, height: 3 },
+                elevation: 4,
+              }
+            : null),
+        }),
       );
       return;
     }
@@ -1187,7 +1239,7 @@ export function drawHover(
             "transparent",
             {
               borderRadius: Math.max(1, m.radius - inset / 2),
-              borderWidth: 1.5,
+              borderWidth: 2,
               borderColor: m.ring,
             },
           ),
@@ -1340,7 +1392,8 @@ export function drawHover(
 /** Look of the tooltips (default and `renderTooltip` content) */
 export const tooltipCard = (scene: ChartScene): ViewStyle => ({
   position: "absolute",
-  backgroundColor: css(scene.theme.background),
+  // translucent: the marks behind stay visible (no backdrop blur on native)
+  backgroundColor: css(scene.theme.background, 0.9),
   borderColor: css(scene.theme.axis),
   borderWidth: 1,
   borderRadius: 8,

@@ -425,6 +425,17 @@ describe("shape components", () => {
     });
     expectForwarded(handle, engine, { toggle: [0], drill: [["A"]] });
   });
+
+  it("passes `renderer` to the engine and forwards getRenderer", async () => {
+    const { wrapper, handle, engine } = mountChart("PieChart", {
+      data: shapeData,
+      renderer: "webgl",
+    });
+    expect(engine.options).toMatchObject({ renderer: "webgl" });
+    expectForwarded(handle, engine, { getRenderer: [] });
+    await wrapper.setProps({ renderer: "canvas2d" } as never);
+    expect(engine.options).toMatchObject({ renderer: "canvas2d" });
+  });
 });
 
 describe("TradingChart", () => {

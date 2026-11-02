@@ -6,6 +6,7 @@ import { toCss } from "../color";
 import { resolveLocale } from "../locale";
 import { font } from "../overlay";
 import type { ChartTheme } from "../theme";
+import { placeTooltip, unionRect, type TooltipPlacement } from "../tooltip";
 import { bulletValues, layoutBullet } from "./bullet";
 import {
   calendarLegend,
@@ -29,6 +30,7 @@ import { layoutRadialBar, radialBarLabels, radialBarValues } from "./radialBar";
 import { layoutSankey, resolveSankey, sankeyValues } from "./sankey";
 import {
   clamp,
+  estimateText,
   inset,
   resolveWith,
   wrapText,
@@ -530,16 +532,142 @@ export interface ShapeTooltipBox {
 const TIP_MARGIN = 6;
 /** Distance between a tooltip and its anchor */
 const TIP_GAP = 14;
+/** Half size of the box around the pointer a tooltip keeps off */
+const TIP_POINTER = 6;
 
 const overlapArea = (a: ShapeRect, b: ShapeRect) =>
   Math.max(0, Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x)) *
   Math.max(0, Math.min(a.y + a.height, b.y + b.height) - Math.max(a.y, b.y));
 
+/** Box of a circle arc (stroke half width included) */
+const arcBox = (
+  cx: number,
+  cy: number,
+  r0: number,
+  r1: number,
+  a0: number,
+  a1: number,
+): ShapeRect => {
+  const xs: number[] = [];
+  const ys: number[] = [];
+  const add = (a: number) => {
+    for (const r of [r0, r1]) {
+      xs.push(cx + r * Math.cos(a));
+      ys.push(cy + r * Math.sin(a));
+    }
+  };
+  add(a0);
+  add(a1);
+  // the extreme points of the circle crossed by the arc
+  const start = Math.ceil(a0 / (Math.PI / 2));
+  for (let k = start; k * (Math.PI / 2) <= a1; k++) add(k * (Math.PI / 2));
+  const x = Math.min(...xs);
+  const y = Math.min(...ys);
+  return { x, y, width: Math.max(...xs) - x, height: Math.max(...ys) - y };
+};
+
+/** Box of the marks of an item (slice, tile, arc, polygon, flow, ...) */
+const itemBox = (scene: ShapeScene, index: number): ShapeRect | null => {
+  let box: ShapeRect | null = null;
+  const add = (b: ShapeRect) => {
+    box = unionRect(box, b);
+  };
+  for (const node of scene.nodes) {
+    if (node.hit !== index) continue;
+    switch (node.kind) {
+      case "rect":
+        add(node);
+        break;
+      case "sector":
+        add(arcBox(node.cx, node.cy, node.r0, node.r1, node.a0, node.a1));
+        break;
+      case "arc":
+        add(
+          arcBox(
+            node.cx,
+            node.cy,
+            node.r - node.width / 2,
+            node.r + node.width / 2,
+            node.a0,
+            node.a1,
+          ),
+        );
+        break;
+      case "polygon": {
+        const p = node.points;
+        let x0 = Infinity;
+        let y0 = Infinity;
+        let x1 = -Infinity;
+        let y1 = -Infinity;
+        for (let i = 0; i + 1 < p.length; i += 2) {
+          x0 = Math.min(x0, p[i]);
+          x1 = Math.max(x1, p[i]);
+          y0 = Math.min(y0, p[i + 1]);
+          y1 = Math.max(y1, p[i + 1]);
+        }
+        if (x1 >= x0) add({ x: x0, y: y0, width: x1 - x0, height: y1 - y0 });
+        break;
+      }
+      case "circle":
+        add({
+          x: node.cx - node.r,
+          y: node.cy - node.r,
+          width: node.r * 2,
+          height: node.r * 2,
+        });
+        break;
+      case "link": {
+        const half = node.width / 2;
+        const y0 = Math.min(node.y0, node.y1) - half;
+        add({
+          x: Math.min(node.x0, node.x1),
+          y: y0,
+          width: Math.abs(node.x1 - node.x0),
+          height: Math.abs(node.y1 - node.y0) + node.width,
+        });
+        break;
+      }
+      default:
+        break;
+    }
+  }
+  return box;
+};
+
+/** Approximate box of a text node (unrotated) */
+const textBox = (node: {
+  x: number;
+  y: number;
+  text: string;
+  font: string;
+  align: "left" | "center" | "right";
+  baseline: "top" | "middle" | "bottom" | "alphabetic";
+}): ShapeRect => {
+  const size = Number(/(\d+(?:\.\d+)?)px/.exec(node.font)?.[1] ?? 12);
+  const width = estimateText(node.text, node.font);
+  const x =
+    node.align === "center"
+      ? node.x - width / 2
+      : node.align === "right"
+        ? node.x - width
+        : node.x;
+  const y =
+    node.baseline === "top"
+      ? node.y
+      : node.baseline === "middle"
+        ? node.y - size / 2
+        : node.y - size;
+  return { x, y, width, height: size };
+};
+
 /**
  * Top-left corner of a `w` x `h` tooltip anchored at `anchor`, inside a
- * `width` x `height` drawing. Beside the anchor (right, else left) by
- * default; radar tooltips go outward, off the hovered vertex and, when
- * possible, off the indicator labels.
+ * `width` x `height` drawing (or overflowing it into `bounds`, see
+ * `placeTooltip`, when the drawing has no room). Candidates around the
+ * pointer and around the hovered item are scored: never over the pointer
+ * (nor the hovered radar vertex), then covering as little as possible of the
+ * hovered item and of the texts, close to the pointer; radar tooltips lean
+ * outward.
  */
 export const placeShapeTooltip = (
   scene: ShapeScene | null,
@@ -549,40 +677,59 @@ export const placeShapeTooltip = (
   h: number,
   width: number,
   height: number,
-): { x: number; y: number } => {
+  bounds: ShapeRect | null = null,
+): TooltipPlacement => {
   const m = TIP_MARGIN;
+  const { x: ax, y: ay } = anchor;
+  const t = TIP_POINTER;
+  const fallback = () =>
+    placeTooltip({
+      anchor,
+      size: { width: w, height: h },
+      stage: { width, height },
+      margin: m,
+      avoid: { x: ax - t, y: ay - t, width: t * 2, height: t * 2 },
+      bounds,
+      gap: 16 - t,
+    });
+  // tooltips larger than the drawing (sparkline-sized charts) go out of it
+  if (!scene || !hover || w + m * 2 > width || h + m * 2 > height)
+    return fallback();
+
   const fit = (x: number, y: number) => ({
     x: Math.max(m, Math.min(x, width - w - m)),
     y: Math.max(m, Math.min(y, height - h - m)),
   });
-  const { x: ax, y: ay } = anchor;
-  const radar = scene?.radar;
-  if (!radar || !scene || !hover) {
-    let x = ax + 16;
-    if (x + w > width - m) x = ax - 16 - w;
-    return fit(x, ay - h / 2);
-  }
-
-  // points the tooltip must not cover: the anchor and the hovered vertex
-  const avoid: [number, number][] = [[ax, ay]];
+  // points the tooltip must not cover: the pointer and the hovered vertex
+  const keep: [number, number][] = [[ax, ay]];
   const item = scene.items.find((it) => it.index === hover.index);
   const vertex =
     item?.indicators && hover.indicator !== undefined
       ? item.indicators[hover.indicator]
       : undefined;
-  if (vertex) avoid.push([vertex.x, vertex.y]);
-  const labels = radar.labels ?? [];
-  // outward direction, from the center through the anchor
-  let dx = ax - radar.cx;
-  let dy = ay - radar.cy;
-  const len = Math.hypot(dx, dy);
-  if (len > 1) {
-    dx /= len;
-    dy /= len;
-  } else {
-    dx = 1;
-    dy = 0;
+  if (vertex) keep.push([vertex.x, vertex.y]);
+  const target = itemBox(scene, hover.index);
+  const texts: ShapeRect[] = [...(scene.radar?.labels ?? [])];
+  for (const node of scene.nodes)
+    if (node.kind === "text" && !node.rotate && node.indicator === undefined)
+      texts.push(textBox(node));
+
+  const radar = scene.radar;
+  let dx = 0;
+  let dy = 0;
+  if (radar) {
+    dx = ax - radar.cx;
+    dy = ay - radar.cy;
+    const len = Math.hypot(dx, dy);
+    if (len > 1) {
+      dx /= len;
+      dy /= len;
+    } else {
+      dx = 1;
+      dy = 0;
+    }
   }
+
   const g = TIP_GAP;
   const candidates: [number, number][] = [
     [ax + g, ay - h / 2],
@@ -594,34 +741,55 @@ export const placeShapeTooltip = (
     [ax - g - w, ay - g - h],
     [ax - g - w, ay + g],
   ];
-  let best = fit(candidates[0][0], candidates[0][1]);
+  if (target) {
+    const gap = 10;
+    candidates.push(
+      [target.x + target.width + gap, ay - h / 2],
+      [target.x - gap - w, ay - h / 2],
+      [ax - w / 2, target.y - gap - h],
+      [ax - w / 2, target.y + target.height + gap],
+    );
+  }
+  // the free edges of wide or tall drawings (beyond the labels)
+  candidates.push(
+    [m, ay - h / 2],
+    [width - w - m, ay - h / 2],
+    [ax - w / 2, m],
+    [ax - w / 2, height - h - m],
+  );
+  const area = w * h;
+  let best: { x: number; y: number } | null = null;
   let bestScore = Infinity;
   for (const [cx0, cy0] of candidates) {
     const p = fit(cx0, cy0);
     const box = { x: p.x, y: p.y, width: w, height: h };
     let score = 0;
-    for (const [px, py] of avoid) {
-      const covers =
+    for (const [px, py] of keep) {
+      if (
         px > box.x - 8 &&
         px < box.x + w + 8 &&
         py > box.y - 8 &&
-        py < box.y + h + 8;
-      if (covers) score += 1e6;
+        py < box.y + h + 8
+      )
+        score += 1e6;
     }
-    for (const label of labels) score += overlapArea(box, label) * 4;
+    // texts weigh most (a hidden label is lost), then the hovered item
+    if (target) score += (overlapArea(box, target) / area) * 400;
+    for (const text of texts) score += overlapArea(box, text) * 4;
     const ox = p.x + w / 2 - ax;
     const oy = p.y + h / 2 - ay;
     const dist = Math.hypot(ox, oy) || 1;
-    score += dist * 0.5;
-    // prefer going outward, and candidates that fit without being pushed in
-    score -= ((ox * dx + oy * dy) / dist) * 40;
+    score += dist * 0.35;
+    if (radar) score -= ((ox * dx + oy * dy) / dist) * 40;
+    // candidates that fit without being pushed in
     score += Math.abs(p.x - cx0) + Math.abs(p.y - cy0);
     if (score < bestScore) {
       bestScore = score;
       best = p;
     }
   }
-  return best;
+  if (!best || bestScore >= 1e6) return fallback();
+  return { ...best, fit: "stage" };
 };
 
 /** Box of a tooltip drawn on a canvas, next to the anchor and inside the drawing */

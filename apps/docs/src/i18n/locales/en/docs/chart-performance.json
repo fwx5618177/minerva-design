@@ -177,10 +177,10 @@
     "batch": "Batch samples and update at most once per frame (requestAnimationFrame) or on a timer, rather than once per message. For very fast feeds with typed arrays, preallocate a larger buffer and pass subarray() views of the filled part: a new view is a new identity but the memory is reused."
   },
   "shapes": {
-    "title": "Shape charts or GPU charts",
-    "text": "Pie, donut, rose, radar, gauge, funnel and treemap charts are drawn with Canvas2D: they have few marks, need crisp text, arcs and polygons, and start instantly without a GPU context.",
-    "gpu": "Choose a GPU chart (line, area, bar, scatter, candlestick, heatmap) for many points, zooming and panning, or live data.",
-    "canvas": "Choose a shape chart for parts of a whole, profiles, a single KPI or hierarchies — dozens to a few hundred marks. Beyond that, a treemap or a heatmap of aggregated data reads better than thousands of slices. Many small shape charts on one page are cheap: they use no WebGL context."
+    "title": "Shape charts or cartesian charts",
+    "text": "Pie, donut, rose, radar, gauge, funnel, treemap, Sankey, sunburst, chord and the other shape charts use the same GPU backends as the other charts (WebGPU → WebGL2 → WebGL → Canvas2D, chosen by the renderer option or setDefaultChartRenderer): their arcs, polygons and ribbons are tessellated into triangles and drawn with 4x MSAA, non-convex fills go through the stencil buffer (nonzero winding), and the text is drawn on a 2D canvas above the shapes. Canvas2D remains the fallback when no GPU backend starts, and the only backend in mini-programs (createCanvasShapeChart).",
+    "gpu": "Choose a cartesian chart (line, area, bar, scatter, candlestick, heatmap) for many points, zooming and panning, or live data.",
+    "canvas": "Choose a shape chart for parts of a whole, profiles, a single KPI or hierarchies — dozens to a few hundred marks. Beyond that, a treemap or a heatmap of aggregated data reads better than thousands of slices. Many small shape charts on one page stay cheap: on WebGPU they share one device; on WebGL each holds a context, and past the browser limit (about 16) the least recently drawn off-screen ones are suspended and restored when they scroll back. renderer=\"canvas2d\" uses no GPU context at all."
   },
   "platforms": {
     "title": "Mini-programs and React Native",

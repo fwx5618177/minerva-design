@@ -177,10 +177,10 @@
     "batch": "Regroupez les échantillons et mettez à jour au plus une fois par image (requestAnimationFrame) ou par minuterie, plutôt qu’à chaque message. Pour des flux très rapides en tableaux typés, préallouez un tampon plus grand et passez des vues subarray() de la partie remplie : une nouvelle vue est une nouvelle identité, mais la mémoire est réutilisée."
   },
   "shapes": {
-    "title": "Graphiques de formes ou graphiques GPU",
-    "text": "Les graphiques en secteurs, anneau, rose, radar, jauge, entonnoir et treemap sont dessinés avec Canvas2D : peu de marques, des textes, arcs et polygones nets, et un démarrage instantané sans contexte GPU.",
-    "gpu": "Choisissez un graphique GPU (courbe, aire, barres, nuage de points, chandeliers, carte de chaleur) pour beaucoup de points, le zoom et le déplacement, ou des données en direct.",
-    "canvas": "Choisissez un graphique de formes pour des parts d’un tout, des profils, un indicateur unique ou des hiérarchies — de quelques dizaines à quelques centaines de marques. Au-delà, une treemap ou une carte de chaleur de données agrégées se lit mieux que des milliers de secteurs. De nombreux petits graphiques de formes sur une page coûtent peu : ils n’utilisent aucun contexte WebGL."
+    "title": "Graphiques de formes ou graphiques cartésiens",
+    "text": "Les graphiques en secteurs, anneau, rose, radar, jauge, entonnoir, treemap, Sankey, rayons de soleil, accords et les autres graphiques de formes utilisent les mêmes backends GPU que les autres graphiques (WebGPU → WebGL2 → WebGL → Canvas2D, choisis par l’option renderer ou setDefaultChartRenderer) : arcs, polygones et rubans sont découpés en triangles et dessinés avec un MSAA 4x, les remplissages non convexes passent par le stencil buffer (règle nonzero), et le texte est dessiné sur un canvas 2D au-dessus des formes. Canvas2D reste le repli quand aucun backend GPU ne démarre, et le seul backend dans les mini-programmes (createCanvasShapeChart).",
+    "gpu": "Choisissez un graphique cartésien (courbe, aire, barres, nuage de points, chandeliers, carte de chaleur) pour beaucoup de points, le zoom et le déplacement, ou des données en direct.",
+    "canvas": "Choisissez un graphique de formes pour des parts d’un tout, des profils, un indicateur unique ou des hiérarchies — de quelques dizaines à quelques centaines de marques. Au-delà, une treemap ou une carte de chaleur de données agrégées se lit mieux que des milliers de secteurs. De nombreux petits graphiques de formes sur une page restent peu coûteux : avec WebGPU ils partagent un seul device ; avec WebGL chacun a son contexte, et au-delà de la limite du navigateur (environ 16) les moins récemment dessinés hors écran sont suspendus, puis restaurés quand ils reviennent à l’écran. renderer=\"canvas2d\" n’utilise aucun contexte GPU."
   },
   "platforms": {
     "title": "Mini-programmes et React Native",

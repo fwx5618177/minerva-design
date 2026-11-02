@@ -591,6 +591,20 @@ describe("shape elements", () => {
     });
     expectForwarded(methods, engine, { toggle: [0], drill: [["A"]] });
   });
+
+  it("pass the `renderer` engine option and forward getRenderer", async () => {
+    const { methods, engine } = await create("minerva-sankey-chart", {
+      links: [{ source: "A", target: "B", value: 1 }],
+      options: { renderer: "webgl" },
+    });
+    expect(engine.options).toMatchObject({
+      type: "sankey",
+      renderer: "webgl",
+    });
+    expectForwarded(methods, engine, { getRenderer: [] });
+    const detached = document.createElement("minerva-pie-chart");
+    expect(detached.getRenderer()).toBeNull();
+  });
 });
 
 describe("<minerva-trading-chart>", () => {

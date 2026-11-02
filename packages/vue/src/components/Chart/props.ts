@@ -112,6 +112,8 @@ export const chartCurveProp = {
 /** Props shared by the shape chart components (engine `createShapeChart`) */
 export const shapeCommonProps = {
   ...chartFrameProps,
+  /** Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D (default `auto`, see `setDefaultChartRenderer`) */
+  renderer: String as PropType<ChartRendererPreference>,
   /** Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors) */
   palette: Array as PropType<readonly string[]>,
   /** Legend; clicking an item hides / shows its slice, stage or series (shown by default for pie, donut, funnel and multi-series radar charts) */

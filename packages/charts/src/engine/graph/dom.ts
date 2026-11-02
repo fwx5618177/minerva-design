@@ -3,6 +3,8 @@
 // tooltip, a visually hidden summary and a live region. Styled inline with
 // the Minerva CSS variables.
 
+import { styleTooltip } from "../tooltip";
+
 export interface GraphDom {
   root: HTMLDivElement;
   legend: HTMLDivElement;
@@ -160,23 +162,13 @@ export const createGraphDom = (container: HTMLElement): GraphDom => {
   hint.className = "minerva-chart-hint";
   hint.setAttribute("aria-hidden", "true");
 
-  const tooltip = style(doc.createElement("div"), {
-    position: "absolute",
-    left: "0",
-    top: "0",
+  const tooltip = styleTooltip(doc.createElement("div"), {
     zIndex: "3",
     display: "none",
-    pointerEvents: "none",
     minWidth: "120px",
     maxWidth: "320px",
     padding: "8px 12px",
     borderRadius: "10px",
-    border:
-      "1px solid color-mix(in srgb, var(--border-color, #e5e7eb) 60%, transparent)",
-    background: "var(--surface-elevated-color, var(--background-color, #fff))",
-    color: "var(--text-color, #1f2937)",
-    boxShadow:
-      "0 12px 32px -8px rgba(15, 23, 42, 0.16), 0 4px 10px -4px rgba(15, 23, 42, 0.08)",
     fontSize: "12px",
     lineHeight: "20px",
     whiteSpace: "nowrap",

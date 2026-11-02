@@ -10,7 +10,11 @@ import {
   type Ref,
 } from "react";
 import { createPortal, flushSync } from "react-dom";
-import type { ChartPadding } from "../engine/types";
+import type {
+  ChartPadding,
+  ChartRendererKind,
+  ChartRendererPreference,
+} from "../engine/types";
 import { calendarStrips } from "../engine/shapes/calendar";
 import { createShapeChart } from "../engine/shapes/chart";
 import type {
@@ -51,6 +55,8 @@ import type {
 
 /** Imperative handle of the shape chart components (`ref`) */
 export interface ShapeChartHandle {
+  /** Backend drawing the shapes, `null` until ready */
+  getRenderer(): ChartRendererKind | null;
   /** The underlying engine instance (minerva-design/charts/core) */
   getInstance(): ShapeChartInstance | null;
 }
@@ -71,6 +77,13 @@ export interface ShapeChartCommonProps {
    * @default "100%"
    */
   width?: number | string;
+  /**
+   * Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then
+   * Canvas2D, skipping GPUs running in software; text is always drawn with
+   * Canvas2D, above the shapes
+   * @default "auto" (the global default, see `setDefaultChartRenderer`)
+   */
+  renderer?: ChartRendererPreference;
   /** Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors) */
   palette?: readonly string[];
   /**
@@ -687,6 +700,7 @@ const noPageLanguage = () => "";
 
 /** Engine options shared by every type, stable while the props are equal */
 const useCommonOptions = ({
+  renderer,
   palette,
   legend,
   tooltip,
@@ -719,6 +733,7 @@ const useCommonOptions = ({
   );
   return useMemo(
     () => ({
+      renderer,
       palette,
       legend,
       tooltip,
@@ -732,6 +747,7 @@ const useCommonOptions = ({
       ariaLabel,
     }),
     [
+      renderer,
       palette,
       legend,
       tooltip,
@@ -819,7 +835,10 @@ function ShapeChartBase({
 
   useImperativeHandle(
     handleRef,
-    () => ({ getInstance: () => chartRef.current }),
+    () => ({
+      getRenderer: () => chartRef.current?.getRenderer() ?? null,
+      getInstance: () => chartRef.current,
+    }),
     [],
   );
 

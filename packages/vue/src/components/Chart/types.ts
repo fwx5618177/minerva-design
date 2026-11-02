@@ -158,6 +158,8 @@ export interface ShapeChartHandle {
   toggle(index: number): void;
   /** Sunburst: zooms into the node at `path` (names from the root, `[]` = the root) */
   drill(path: readonly string[]): void;
+  /** Backend drawing the shapes, `null` before mount */
+  getRenderer(): ChartRendererKind | null;
   /** The underlying engine instance (minerva-design/charts/core), `null` before mount */
   getInstance(): ShapeChartInstance | null;
 }

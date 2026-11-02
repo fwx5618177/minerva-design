@@ -227,6 +227,7 @@
     "ShapeChartCommonProps": {
       "height": "Hauteur du graphique, légende comprise ; les nombres sont en pixels",
       "width": "Largeur du graphique ; les nombres sont en pixels",
+      "renderer": "Moteur de rendu des formes : auto essaie WebGPU, WebGL2, WebGL, puis Canvas2D, en ignorant les GPU logiciels ; le texte est toujours dessiné avec Canvas2D, au-dessus des formes. Suit par défaut le réglage global (setDefaultChartRenderer)",
       "palette": "Couleurs des formes sans couleur (par défaut les variables CSS --chart-series-1..8, puis les couleurs du thème)",
       "legend": "Affiche la légende, ou règle sa position et si un clic sur un élément masque / affiche sa part, son étape ou sa série",
       "tooltip": "Infobulle ; false la désactive, un objet permet d’en rendre le contenu",
@@ -309,7 +310,8 @@
         "minerva-toggle": "Un élément de la légende a été cliqué (ou toggle() appelé) ; detail : { index, hidden, hiddenIndexes }"
       },
       "methods": {
-        "toggle": "Masque / affiche une part, une étape, une série radar ou un nœud de premier niveau du treemap par son index"
+        "toggle": "Masque / affiche une part, une étape, une série radar ou un nœud de premier niveau du treemap par son index",
+        "getRenderer": "Moteur de rendu des formes (webgpu, webgl2, webgl, canvas2d), null tant qu’il n’est pas prêt ; à choisir avec l’option renderer du moteur"
       }
     },
     "minerva-donut-chart": {
@@ -323,7 +325,8 @@
         "minerva-toggle": "Un élément de la légende a été cliqué (ou toggle() appelé) ; detail : { index, hidden, hiddenIndexes }"
       },
       "methods": {
-        "toggle": "Masque / affiche une part, une étape, une série radar ou un nœud de premier niveau du treemap par son index"
+        "toggle": "Masque / affiche une part, une étape, une série radar ou un nœud de premier niveau du treemap par son index",
+        "getRenderer": "Moteur de rendu des formes (webgpu, webgl2, webgl, canvas2d), null tant qu’il n’est pas prêt ; à choisir avec l’option renderer du moteur"
       }
     }
   }
