@@ -239,6 +239,12 @@ export default defineConfig({
               maxSize: 350 * 1024,
             },
             {
+              // The Angular API tables: their own chunk, loaded with the
+              // Angular section, so that it stays below the 500 kB budget.
+              name: "angular-api",
+              test: /docs[\\/]angular[\\/]api\.generated\.json$/,
+            },
+            {
               // Shared UI translations have their own budget; page strings
               // remain lazy-loaded with the page that needs them.
               name: "locale-common",

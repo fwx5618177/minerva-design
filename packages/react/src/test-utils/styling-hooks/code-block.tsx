@@ -7,4 +7,12 @@ export default [
     name: "copyable",
     element: <CodeBlock copyable>{"const a = 1;"}</CodeBlock>,
   },
+  {
+    name: "highlighted, line numbers, language",
+    element: (
+      <CodeBlock language="js" showLineNumbers showLanguage>
+        {"const a = 1;"}
+      </CodeBlock>
+    ),
+  },
 ] satisfies HookScenario[];

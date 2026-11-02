@@ -47,6 +47,11 @@ export const OUTPUT_CHARTS = join(
 );
 /** Web Component APIs: a separate file, loaded only by the "Web Components" tabs */
 export const OUTPUT_WC = join(DOCS_ROOT, "src/docs/api.wc.generated.json");
+/** Chart custom element APIs: split from OUTPUT_WC to keep chunks below 500 kB */
+export const OUTPUT_WC_CHARTS = join(
+  DOCS_ROOT,
+  "src/docs/api.wc.charts.generated.json",
+);
 /** React Native APIs: loaded only by the "React Native" tabs */
 export const OUTPUT_NATIVE = join(
   DOCS_ROOT,
@@ -407,14 +412,35 @@ export const splitChartApis = (api) => {
   return [main, charts];
 };
 
+const WC_CHART_SOURCE =
+  /^web-components\/src\/components\/(chart|chart-3d|graph|order-book|trading-chart)\//;
+
+/**
+ * Splits the custom element APIs into the entries of api.wc.generated.json
+ * and those of api.wc.charts.generated.json (the chart elements)
+ * @returns {[Record<string, unknown>, Record<string, unknown>]}
+ */
+export const splitElementApis = (elements) => {
+  const main = {};
+  const charts = {};
+  for (const [name, entry] of Object.entries(elements)) {
+    (WC_CHART_SOURCE.test(entry.source) ? charts : main)[name] = entry;
+  }
+  return [main, charts];
+};
+
 const isMain =
   process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (isMain) {
   const [mainApi, chartApi] = splitChartApis(generateApi());
+  const [elementApi, chartElementApi] = splitElementApis(
+    sortKeys(generateElements()),
+  );
   const outputs = [
     [OUTPUT, serialize(mainApi)],
     [OUTPUT_CHARTS, serialize(chartApi)],
-    [OUTPUT_WC, serialize(sortKeys(generateElements()))],
+    [OUTPUT_WC, serialize(elementApi)],
+    [OUTPUT_WC_CHARTS, serialize(chartElementApi)],
     [OUTPUT_NATIVE, serialize(generateNativeApi())],
   ];
   for (const [file, next] of outputs) {

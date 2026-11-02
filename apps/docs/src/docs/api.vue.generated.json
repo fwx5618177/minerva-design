@@ -54,6 +54,34 @@
       { "name": "close-icon", "type": "any", "description": "Custom close icon" }
     ]
   },
+  "AnswerSheet": {
+    "file": "packages/vue/src/components/AnswerSheet/AnswerSheet.vue",
+    "props": [
+      { "name": "items", "type": "readonly AnswerSheetItem[]", "required": true, "description": "The questions, in order" },
+      { "name": "groups", "type": "readonly AnswerSheetGroup[]", "required": false, "description": "Titled sections, in display order; items render under the group whose\nkey matches `item.group`" },
+      { "name": "modelValue", "type": "string", "required": false, "description": "Key of the current question (controlled, `v-model`)" },
+      { "name": "defaultValue", "type": "string", "required": false, "description": "Key of the initially current question (uncontrolled)" },
+      { "name": "size", "type": "AnswerSheetSize", "default": "\"medium\"", "required": false, "description": "Density of the pills" },
+      {
+        "name": "layout",
+        "type": "AnswerSheetLayout",
+        "default": "\"wrap\"",
+        "required": false,
+        "description": "\"wrap\" wraps the pills on several rows; \"scroll\" keeps a single\nhorizontally scrolling row"
+      },
+      { "name": "columns", "type": "number", "required": false, "description": "Fixed number of columns (a grid; ArrowUp / ArrowDown move by a row).\nIgnored with layout=\"scroll\"." },
+      { "name": "showLegend", "type": "boolean", "default": "false", "required": false, "description": "Shows a legend of the statuses present (and of the flag)" },
+      { "name": "showSummary", "type": "boolean", "default": "false", "required": false, "description": "Shows the number of answered questions (\"12 / 20 answered\")" },
+      { "name": "getItemLabel", "type": "((item: AnswerSheetItem, index: number) => string)", "required": false, "description": "Accessible name of a pill; receives the item and its display index" },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Disables the whole sheet" },
+      { "name": "aria-label", "type": "string", "required": false, "description": "Accessible name of the navigation landmark" }
+    ],
+    "events": [
+      { "name": "update:modelValue", "type": "[key: string]" },
+      { "name": "change", "type": "[key: string]" }
+    ],
+    "slots": []
+  },
   "AppShell": {
     "file": "packages/vue/src/components/AppShell/AppShell.vue",
     "props": [
@@ -470,6 +498,7 @@
         "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)"
       },
       { "name": "name", "type": "string", "default": "\"Values\"", "required": false, "description": "Name of the series built from `groups`" },
+      { "name": "groups", "type": "readonly BoxplotGroup[]", "required": false, "description": "Raw samples, one box each (an alternative to `series`)" },
       { "name": "labels", "type": "Partial<ChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
       {
         "name": "renderer",
@@ -499,7 +528,6 @@
         "description": "`horizontal` puts the x axis (categories) down the left side and the values along the bottom (default `vertical`)"
       },
       { "name": "outlierSize", "type": "number", "required": false, "description": "Diameter of the outliers in CSS pixels (default 7)" },
-      { "name": "groups", "type": "readonly BoxplotGroup[]", "required": false, "description": "Raw samples, one box each (an alternative to `series`)" },
       {
         "name": "whisker",
         "type": "number | \"minmax\"",
@@ -1043,6 +1071,12 @@
       { "name": "directed", "type": "boolean", "required": false, "description": "One ribbon per direction, arcs sized by the outgoing plus the incoming flows (default `false`)" },
       { "name": "arrows", "type": "boolean", "required": false, "description": "Arrowheads at the target end of the ribbons (default `true` when `directed`)" },
       {
+        "name": "groups",
+        "type": "readonly (string | ChordGroup)[]",
+        "required": false,
+        "description": "Groups (names or `{ name, color }`), in their order around the circle; groups only named by `links` are appended"
+      },
+      {
         "name": "labels",
         "type": "\"auto\" | \"none\" | \"tangential\" | \"radial\"",
         "required": false,
@@ -1069,12 +1103,6 @@
         "type": "readonly number[]",
         "required": false,
         "description": "Hidden slices / stages / radar series / top-level treemap nodes, by\nindex. Makes the visibility controlled: legend clicks then only emit\n`toggle`, whose `hiddenIndexes` should be stored and passed back."
-      },
-      {
-        "name": "groups",
-        "type": "readonly (string | ChordGroup)[]",
-        "required": false,
-        "description": "Groups (names or `{ name, color }`), in their order around the circle; groups only named by `links` are appended"
       },
       { "name": "texts", "type": "Partial<ShapeChartLabels>", "required": false, "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")" },
       { "name": "format", "type": "((value: number) => string)", "required": false, "description": "Formats the values of the labels and the tooltip (default: compact numbers, 1.2k, 3.4M)" },
@@ -1129,6 +1157,33 @@
         "default": "false",
         "required": false,
         "description": "Shows a copy button in the top-right corner that writes the text to the\nclipboard; its label switches to \"Copied\" / \"Copy failed\" for about two\nseconds and the result is announced through a polite live region. When\nset, the <pre> is wrapped in a <div> (see the interface description)"
+      },
+      {
+        "name": "language",
+        "type": "string",
+        "required": false,
+        "description": "Language of the code: highlights its syntax and sets\n`class=\"language-<x>\"` / `data-language` on the <code>. Supported:\njavascript (js, mjs, cjs), typescript (ts), jsx, tsx, json (jsonc,\njson5), css (scss, less), html (xml, svg, vue), bash (sh, shell, zsh,\nconsole), python (py), yaml (yml), sql, diff, markdown (md); other\nnames render plain text. Without it the text is not highlighted"
+      },
+      {
+        "name": "highlight",
+        "type": "boolean",
+        "default": "true",
+        "required": false,
+        "description": "Highlights the syntax of `language` (false: plain text, the language is\nstill set on the <code> and shown by `showLanguage`)"
+      },
+      {
+        "name": "showLineNumbers",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Numbers the lines in a gutter (hidden from assistive technology, not\npart of the copied or selected text)"
+      },
+      {
+        "name": "showLanguage",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Shows the `language` as a small label in the top-right corner (e.g.\n\"JSON\"); the <pre> is then wrapped in a <div> like with `copyable`"
       }
     ],
     "events": [{ "name": "copied", "type": "[text: string]" }],
@@ -1418,6 +1473,7 @@
         "description": "Edge labels: always, `auto` (zoomed in or highlighted), only `hover`, or never (default `auto`)"
       },
       { "name": "controls", "type": "boolean", "required": false, "description": "Zoom buttons (zoom in, zoom out, fit; default `true`)" },
+      { "name": "groups", "type": "readonly GraphGroup[]", "required": false, "description": "Groups: legend order, names and colors" },
       { "name": "labels", "type": "Partial<GraphChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
       {
         "name": "renderer",
@@ -1430,7 +1486,7 @@
       { "name": "palette", "type": "readonly string[]", "required": false, "description": "Group colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
       { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
       { "name": "locale", "type": "string", "required": false, "description": "Language of the built-in texts (summary, announcements, tooltip, buttons); the page language by default" },
-      { "name": "groups", "type": "readonly GraphGroup[]", "required": false, "description": "Groups: legend order, names and colors" },
+      { "name": "highlight", "type": "\"none\" | \"neighbors\" | \"lineage\"", "required": false, "description": "What hovering / selecting a node highlights" },
       { "name": "nodes", "type": "readonly GraphNode[]", "required": true, "description": "The nodes (a new array re-runs the layout; an array rebuilt with the same node objects does not)" },
       { "name": "edges", "type": "readonly GraphEdge[]", "required": true, "description": "The edges (parent → child in trees, prerequisite → dependent in DAGs)" },
       { "name": "dag", "type": "GraphDagOptions", "required": false, "description": "Layer / node spacing, crossing reduction sweeps" },
@@ -1445,7 +1501,6 @@
         "required": false,
         "description": "Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color; default `open`)"
       },
-      { "name": "highlight", "type": "\"none\" | \"neighbors\" | \"lineage\"", "required": false, "description": "What hovering / selecting a node highlights" },
       { "name": "selected", "type": "readonly string[]", "required": false, "description": "Ids of the selected nodes (changing it updates the selection)" },
       { "name": "fitPadding", "type": "number", "required": false, "description": "Padding around the graph when fitting it, in CSS pixels (default 24)" }
     ],
@@ -1779,6 +1834,47 @@
       { "name": "secondary-action", "type": "any", "description": "Secondary action rendered after `action`" }
     ]
   },
+  "Flashcard": {
+    "file": "packages/vue/src/components/Flashcard/Flashcard.vue",
+    "props": [
+      { "name": "front", "type": "string", "required": false, "description": "Text of the front face (the prompt); the `front` slot wins" },
+      { "name": "back", "type": "string", "required": false, "description": "Text of the back face (the answer); the `back` slot wins" },
+      { "name": "frontLabel", "type": "string | null", "required": false, "description": "Small caption of the front face; `\"\"` or `null` hides it" },
+      { "name": "backLabel", "type": "string | null", "required": false, "description": "Small caption of the back face; `\"\"` or `null` hides it" },
+      { "name": "hint", "type": "string", "required": false, "description": "Hint on the front face (shown with showHint while the card flips on click)" },
+      { "name": "showHint", "type": "boolean", "default": "false", "required": false, "description": "Shows the hint on the front face" },
+      { "name": "flipped", "type": "boolean", "required": false, "description": "Whether the back is shown (controlled, `v-model:flipped`)" },
+      { "name": "defaultFlipped", "type": "boolean", "default": "false", "required": false, "description": "Whether the back is initially shown (uncontrolled)" },
+      {
+        "name": "flipOnClick",
+        "type": "boolean",
+        "default": "true",
+        "required": false,
+        "description": "Clicking the card (or Enter / Space on it) flips it. When false the card\nis not a button and only `flipped` flips it."
+      },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Blocks flipping and dims the card" },
+      { "name": "axis", "type": "FlashcardAxis", "default": "\"y\"", "required": false, "description": "Rotation axis: \"y\" flips horizontally, \"x\" vertically" },
+      { "name": "variant", "type": "FlashcardVariant", "default": "\"elevated\"", "required": false, "description": "Surface style" },
+      { "name": "size", "type": "FlashcardSize", "default": "\"medium\"", "required": false, "description": "Padding and typography scale" },
+      {
+        "name": "minHeight",
+        "type": "string | number",
+        "default": "\"12rem\"",
+        "required": false,
+        "description": "Minimum height of the card (a number is in px); the card grows to fit\nthe taller face"
+      },
+      { "name": "aria-label", "type": "string", "required": false, "description": "Accessible label of the card" }
+    ],
+    "events": [
+      { "name": "update:flipped", "type": "[flipped: boolean]" },
+      { "name": "flippedChange", "type": "[flipped: boolean]" }
+    ],
+    "slots": [
+      { "name": "front", "type": "any", "description": "Content of the front face (the prompt)" },
+      { "name": "back", "type": "any", "description": "Content of the back face (the answer)" },
+      { "name": "footer", "type": "any", "description": "Content below the card, not flipped (e.g. rating buttons)" }
+    ]
+  },
   "FormControl": {
     "file": "packages/vue/src/components/FormControl/FormControl.vue",
     "props": [
@@ -1956,6 +2052,12 @@
         "required": false,
         "description": "Draws the `dependencies` of the tasks as elbow arrows from the end of every predecessor to the start of the task (default `true`)"
       },
+      {
+        "name": "barLabels",
+        "type": "boolean | \"auto\" | \"inside\"",
+        "required": false,
+        "description": "Writes the task names inside the bars: `\"auto\"` when several tasks\nshare a row (default), `true` / `\"inside\"` always, `false` never"
+      },
       { "name": "today", "type": "number | boolean | Date", "default": "false", "required": false, "description": "Draws a line at this date (`true`: now)" },
       { "name": "labels", "type": "Partial<ChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
       {
@@ -2092,6 +2194,7 @@
         "description": "Edge labels: always, `auto` (zoomed in or highlighted), only `hover`, or never (default `auto`)"
       },
       { "name": "controls", "type": "boolean", "required": false, "description": "Zoom buttons (zoom in, zoom out, fit; default `true`)" },
+      { "name": "groups", "type": "readonly GraphGroup[]", "required": false, "description": "Groups: legend order, names and colors" },
       { "name": "labels", "type": "Partial<GraphChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
       {
         "name": "renderer",
@@ -2104,7 +2207,7 @@
       { "name": "palette", "type": "readonly string[]", "required": false, "description": "Group colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
       { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
       { "name": "locale", "type": "string", "required": false, "description": "Language of the built-in texts (summary, announcements, tooltip, buttons); the page language by default" },
-      { "name": "groups", "type": "readonly GraphGroup[]", "required": false, "description": "Groups: legend order, names and colors" },
+      { "name": "highlight", "type": "\"none\" | \"neighbors\" | \"lineage\"", "required": false, "description": "What hovering / selecting a node highlights" },
       { "name": "direction", "type": "GraphDirection", "required": false, "description": "Direction of the `dag` and `tree` layouts" },
       { "name": "nodes", "type": "readonly GraphNode[]", "required": true, "description": "The nodes (a new array re-runs the layout; an array rebuilt with the same node objects does not)" },
       { "name": "edges", "type": "readonly GraphEdge[]", "required": true, "description": "The edges (parent → child in trees, prerequisite → dependent in DAGs)" },
@@ -2120,7 +2223,6 @@
         "required": false,
         "description": "Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color; default `open`)"
       },
-      { "name": "highlight", "type": "\"none\" | \"neighbors\" | \"lineage\"", "required": false, "description": "What hovering / selecting a node highlights" },
       { "name": "selected", "type": "readonly string[]", "required": false, "description": "Ids of the selected nodes (changing it updates the selection)" },
       { "name": "fitPadding", "type": "number", "required": false, "description": "Padding around the graph when fitting it, in CSS pixels (default 24)" },
       { "name": "tree", "type": "GraphTreeOptions", "required": false, "description": "Tree layout settings (tree layouts)" },
@@ -2330,6 +2432,7 @@
   "HStack": {
     "file": "packages/vue/src/components/Stack/HStack.vue",
     "props": [
+      { "name": "wrap", "type": "boolean", "default": "false", "required": false, "description": "Wraps items onto multiple lines" },
       { "name": "as", "type": "string | Component", "default": "\"div\"", "required": false, "description": "Element or component to render" },
       {
         "name": "gap",
@@ -2337,7 +2440,6 @@
         "required": false,
         "description": "Gap between items: numbers and numeric strings select spacing tokens\n(`2` -> `var(--space-2)`), other strings are CSS values. No gap when omitted."
       },
-      { "name": "wrap", "type": "boolean", "default": "false", "required": false, "description": "Wraps items onto multiple lines" },
       { "name": "align", "type": "StackAlign", "required": false, "description": "Cross-axis alignment (`align-items`); unset when omitted" },
       { "name": "justify", "type": "StackJustify", "required": false, "description": "Main-axis distribution (`justify-content`); unset when omitted" },
       {
@@ -2517,8 +2619,8 @@
       { "name": "spellCheck", "type": "boolean", "default": "false", "required": false, "description": "Spell checking of the textarea" },
       { "name": "variant", "type": "TextareaVariant", "default": "\"outline\"", "required": false, "description": "Visual style" },
       { "name": "size", "type": "TextareaSize", "default": "\"medium\"", "required": false, "description": "Font size and minimum height" },
-      { "name": "required", "type": "boolean", "default": "false", "required": false, "description": "Marks the field as required." },
       { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Disables the field (also set by FormControl)." },
+      { "name": "required", "type": "boolean", "default": "false", "required": false, "description": "Marks the field as required." },
       { "name": "id", "type": "string", "required": false, "description": "id of the textarea (defaults to the enclosing FormControl's id)" },
       { "name": "readOnly", "type": "boolean", "default": "false", "required": false, "description": "Read-only field (also set by FormControl)." },
       { "name": "invalid", "type": "boolean", "default": "false", "required": false, "description": "Error state (also set by an invalid FormControl); sets aria-invalid" }
@@ -2528,6 +2630,45 @@
       { "name": "change", "type": "[value: string]" }
     ],
     "slots": []
+  },
+  "KanbanBoard": {
+    "file": "packages/vue/src/components/KanbanBoard/KanbanBoard.vue",
+    "props": [
+      {
+        "name": "columnWidth",
+        "type": "KanbanLength",
+        "required": false,
+        "description": "Width of every column (a number is pixels). With `fill` it is the\nminimum width: columns stretch equally when they fit"
+      },
+      { "name": "fill", "type": "boolean", "default": "false", "required": false, "description": "Stretches the columns equally to fill the board when they fit" },
+      { "name": "gap", "type": "KanbanLength", "required": false, "description": "Space between the columns (a number is pixels)" },
+      { "name": "height", "type": "KanbanLength", "required": false, "description": "Height of the board: the column bodies scroll vertically within it" },
+      { "name": "maxHeight", "type": "KanbanLength", "required": false, "description": "Maximum height of the board: the column bodies scroll vertically within it" },
+      { "name": "aria-label", "type": "string", "required": false, "description": "Accessible name of the board region" },
+      { "name": "aria-labelledby", "type": "string", "required": false, "description": "Id of an element naming the board (instead of aria-label)" }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any", "description": "The columns (KanbanColumn)" }]
+  },
+  "KanbanColumn": {
+    "file": "packages/vue/src/components/KanbanBoard/KanbanColumn.vue",
+    "props": [
+      { "name": "title", "type": "string", "required": false, "description": "Title of the column (also its accessible name; or the `title` slot)" },
+      { "name": "count", "type": "number", "required": false, "description": "Number of items shown as a badge next to the title (and announced with\nthe title); omit to hide the badge" },
+      { "name": "color", "type": "KanbanColumnColor", "required": false, "description": "Accent of the column (a dot before the title): a theme color or any CSS color" },
+      { "name": "description", "type": "string", "required": false, "description": "Supporting text under the header (or the `description` slot)" },
+      { "name": "empty", "type": "string", "required": false, "description": "Text shown when the column has no cards (or the `empty` slot)" },
+      { "name": "aria-label", "type": "string", "required": false, "description": "Accessible name of the column" }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "default", "type": "any", "description": "The cards: each is wrapped in a role=\"listitem\"" },
+      { "name": "title", "type": "any", "description": "Rich title (replaces the `title` text)" },
+      { "name": "actions", "type": "any", "description": "Header controls on the end side (e.g. an add button)" },
+      { "name": "description", "type": "any", "description": "Supporting text under the header" },
+      { "name": "empty", "type": "any", "description": "Content shown when there are no cards" },
+      { "name": "footer", "type": "any", "description": "Footer below the cards (e.g. an \"Add card\" button)" }
+    ]
   },
   "KeyValueEditor": {
     "file": "packages/vue/src/components/KeyValueEditor/KeyValueEditor.vue",
@@ -2694,6 +2835,53 @@
     ],
     "events": [],
     "slots": []
+  },
+  "MediaPlayer": {
+    "file": "packages/vue/src/components/MediaPlayer/MediaPlayer.vue",
+    "props": [
+      { "name": "src", "type": "string", "required": false, "description": "URL of the media" },
+      { "name": "type", "type": "MediaPlayerType", "required": false, "description": "Kind of media" },
+      { "name": "mimeType", "type": "string", "required": false, "description": "MIME type of the media (\"audio/mpeg\", \"video/mp4\"...), used to infer type" },
+      { "name": "poster", "type": "string", "required": false, "description": "Image shown before a video plays" },
+      { "name": "title", "type": "string", "required": false, "description": "Title of the media, shown in the audio bar / over the video" },
+      {
+        "name": "autoPlay",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Starts playing as soon as possible (browsers only allow muted autoplay\nwithout a user gesture)"
+      },
+      { "name": "loop", "type": "boolean", "default": "false", "required": false, "description": "Restarts at the end" },
+      { "name": "muted", "type": "boolean", "required": false, "description": "Mutes the media; applied whenever it changes (the mute button still\ntoggles the sound)" },
+      { "name": "defaultMuted", "type": "boolean", "required": false, "description": "Initially muted (uncontrolled)" },
+      { "name": "preload", "type": "MediaPlayerPreload", "default": "\"metadata\"", "required": false, "description": "How much of the media the browser loads before playback" },
+      { "name": "crossOrigin", "type": "MediaPlayerCrossOrigin", "required": false, "description": "CORS mode of the media request" },
+      { "name": "startTime", "type": "number", "required": false, "description": "Resume position in seconds, applied once when the metadata loads (and\nagain when src changes)" },
+      { "name": "playbackRates", "type": "readonly number[]", "default": "DEFAULT_PLAYBACK_RATES", "required": false, "description": "Speeds the speed button cycles through" },
+      { "name": "skipSeconds", "type": "number", "default": "DEFAULT_SKIP_SECONDS", "required": false, "description": "Step of the skip back / forward buttons, in seconds (0 hides them)" },
+      {
+        "name": "controls",
+        "type": "boolean",
+        "default": "true",
+        "required": false,
+        "description": "Shows the custom control bar; false renders the bare media element\n(drive it through the template ref)"
+      },
+      { "name": "height", "type": "string | number", "required": false, "description": "Height of a video player (number: pixels); overrides aspectRatio" },
+      { "name": "aspectRatio", "type": "string", "default": "\"16 / 9\"", "required": false, "description": "Aspect ratio of a video player (CSS aspect-ratio)" },
+      { "name": "pictureInPicture", "type": "boolean", "default": "false", "required": false, "description": "Shows a picture-in-picture button (video, where the browser supports it)" },
+      { "name": "aria-label", "type": "string", "required": false, "description": "Accessible label of the player" }
+    ],
+    "events": [
+      { "name": "error", "type": "[error: MediaError | null]" },
+      { "name": "timeUpdate", "type": "[detail: MediaPlayerTimeDetail]" },
+      { "name": "ended", "type": "[]" },
+      { "name": "play", "type": "[]" },
+      { "name": "pause", "type": "[]" },
+      { "name": "loadedMetadata", "type": "[detail: { duration: number; }]" },
+      { "name": "rateChange", "type": "[rate: number]" },
+      { "name": "volumeChange", "type": "[detail: MediaPlayerVolumeDetail]" }
+    ],
+    "slots": [{ "name": "title", "type": "any", "description": "Title of the media (replaces the title prop)" }]
   },
   "Menu": {
     "file": "packages/vue/src/components/Menu/Menu.vue",
@@ -3017,13 +3205,13 @@
       { "name": "flash", "type": "boolean", "required": false, "description": "Flashes the changed sizes (default `true`)" },
       { "name": "spreadRow", "type": "boolean", "required": false, "description": "Spread row between the sides (default `true`)" },
       { "name": "imbalance", "type": "boolean", "required": false, "description": "Bid / ask imbalance bar (default `true`)" },
+      { "name": "columns", "type": "readonly (\"size\" | \"price\" | \"total\")[]", "required": false, "description": "Columns, in order (default `[\"price\", \"size\", \"total\"]`)" },
       { "name": "labels", "type": "Partial<OrderBookLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
       { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
       { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
       { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible label" },
       { "name": "locale", "type": "string", "required": false, "description": "Locale of the numbers and texts (`\"zh-CN\"`); the page language by default" },
       { "name": "mode", "type": "OrderBookMode", "required": false, "description": "Sides shown (default `both`)" },
-      { "name": "columns", "type": "readonly (\"size\" | \"price\" | \"total\")[]", "required": false, "description": "Columns, in order (default `[\"price\", \"size\", \"total\"]`)" },
       { "name": "book", "type": "OrderBookSnapshot", "required": false, "description": "Book to draw, applied when the object changes (stream updates through the handle's `applyDeltas`)" },
       { "name": "total", "type": "\"base\" | \"quote\"", "required": false, "description": "Total column in the base asset or the quote notional (default `base`)" },
       { "name": "upColor", "type": "string", "required": false, "description": "Color of the bids / buys (any CSS color); from `colorConvention` by default" },
@@ -3478,10 +3666,17 @@
         "required": false,
         "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)"
       },
+      {
+        "name": "showCounts",
+        "type": "boolean | ((count: number, points: readonly QuadrantPoint[]) => string)",
+        "required": false,
+        "description": "Shows the number of points of each quadrant after its title; a function returns the text"
+      },
       { "name": "showTicks", "type": "boolean", "required": false, "description": "Shows the numeric ticks of the axes (default `true`)" },
       { "name": "reverseX", "type": "boolean", "required": false, "description": "Reverses the horizontal axis (e.g. \"urgent\" on the left)" },
       { "name": "showLabels", "type": "boolean", "required": false, "description": "Draws the labels next to the dots (default `true`)" },
       { "name": "draggable", "type": "boolean", "required": false, "description": "Lets the user drag the dots (default: when a `pointDrop` listener is set)" },
+      { "name": "selectedIndex", "type": "number | null", "required": false, "description": "Index of the selected point, drawn with a ring (`null`: none)" },
       { "name": "labels", "type": "Partial<ChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
       {
         "name": "renderer",
@@ -3511,7 +3706,8 @@
       { "name": "xDomain", "type": "[number, number]", "required": false, "description": "Range of the horizontal axis (default `[0, 10]`)" },
       { "name": "yDomain", "type": "[number, number]", "required": false, "description": "Range of the vertical axis (default `[0, 10]`)" },
       { "name": "quadrants", "type": "QuadrantRegions", "required": false, "description": "Titles and colors of the quadrants" },
-      { "name": "axisLabels", "type": "QuadrantAxisLabels", "required": false, "description": "Texts at the ends of the dividers, drawn inside the plot" }
+      { "name": "axisLabels", "type": "QuadrantAxisLabels", "required": false, "description": "Texts at the ends of the dividers, drawn inside the plot" },
+      { "name": "selectedIndices", "type": "readonly number[]", "required": false, "description": "Indices of the selected points" }
     ],
     "events": [
       { "name": "zoom", "type": "[view: ChartView]" },
@@ -4013,6 +4209,25 @@
     ],
     "slots": []
   },
+  "SegmentedControl": {
+    "file": "packages/vue/src/components/SegmentedControl/SegmentedControl.vue",
+    "props": [
+      { "name": "options", "type": "readonly SegmentedControlOption[]", "required": true, "description": "The segments: strings or option objects" },
+      { "name": "modelValue", "type": "string", "required": false, "description": "Selected value (controlled, `v-model`)" },
+      { "name": "defaultValue", "type": "string", "required": false, "description": "Initially selected value (uncontrolled)" },
+      { "name": "size", "type": "SegmentedControlSize", "default": "\"medium\"", "required": false, "description": "Segment density" },
+      { "name": "color", "type": "SegmentedControlColor", "default": "\"neutral\"", "required": false, "description": "Thumb color" },
+      { "name": "fullWidth", "type": "boolean", "default": "false", "required": false, "description": "Fills the width of the container (the segments always share the width\nequally)" },
+      { "name": "disabled", "type": "boolean", "default": "false", "required": false, "description": "Blocks every segment" },
+      { "name": "name", "type": "string", "required": false, "description": "Name of a hidden input carrying the value in a form" },
+      { "name": "aria-label", "type": "string", "required": false, "description": "Accessible label of the group" }
+    ],
+    "events": [
+      { "name": "update:modelValue", "type": "[value: string]" },
+      { "name": "change", "type": "[value: string]" }
+    ],
+    "slots": []
+  },
   "Select": {
     "file": "packages/vue/src/components/Select/Select.vue",
     "props": [
@@ -4130,6 +4345,35 @@
       { "name": "animation", "type": "SkeletonAnimation", "default": "\"pulse\"", "required": false, "description": "Loading animation; \"false\" disables it" }
     ],
     "events": [],
+    "slots": []
+  },
+  "Slider": {
+    "file": "packages/vue/src/components/Slider/Slider.vue",
+    "props": [
+      { "name": "modelValue", "type": "SliderValue", "required": false, "description": "Value (controlled, `v-model`): a number, or `[start, end]` with `range`" },
+      { "name": "defaultValue", "type": "SliderValue", "required": false, "description": "Initial value (uncontrolled); defaults to min, or [min, max] with range" },
+      { "name": "range", "type": "boolean", "default": "false", "required": false, "description": "Two thumbs selecting `[start, end]`; the thumbs cannot cross" },
+      { "name": "min", "type": "number", "default": "0", "required": false, "description": "Smallest value" },
+      { "name": "max", "type": "number", "default": "100", "required": false, "description": "Largest value" },
+      { "name": "step", "type": "number | null", "default": "1", "required": false, "description": "Step between two values; `null` snaps to the marks only" },
+      { "name": "marks", "type": "boolean | SliderMark[]", "required": false, "description": "Ticks of the scale: `{ value, label? }[]`, or `true` for one tick per step" },
+      { "name": "snapToMarks", "type": "boolean", "default": "false", "required": false, "description": "Snaps the value to the closest mark (instead of the step)" },
+      { "name": "disabled", "type": "boolean", "required": false, "description": "Disables the slider. Inherited from an enclosing FormControl when not set" },
+      { "name": "readOnly", "type": "boolean", "required": false, "description": "The user cannot change the value. Inherited from an enclosing FormControl\nwhen not set" },
+      { "name": "size", "type": "SliderSize", "default": "\"medium\"", "required": false, "description": "Thumb and track size" },
+      { "name": "color", "type": "SliderColor", "default": "\"primary\"", "required": false, "description": "Semantic color of the filled track and the thumbs" },
+      { "name": "showValue", "type": "boolean", "default": "false", "required": false, "description": "Shows the value after the track" },
+      { "name": "tooltip", "type": "boolean", "default": "false", "required": false, "description": "Shows the value in a bubble above a thumb while it is dragged, hovered\nor focused" },
+      { "name": "formatValue", "type": "((value: number) => string)", "required": false, "description": "Formats a value for the value label, the tooltip and aria-valuetext" },
+      { "name": "orientation", "type": "SliderOrientation", "default": "\"horizontal\"", "required": false, "description": "Direction of the track" },
+      { "name": "name", "type": "string", "required": false, "description": "Name of the hidden form input(s); a range submits two entries" },
+      { "name": "getAriaValueText", "type": "((value: number, index: number) => string)", "required": false, "description": "aria-valuetext of a thumb (index 0, or 1 for the end thumb of a range)" }
+    ],
+    "events": [
+      { "name": "update:modelValue", "type": "[value: SliderValue]" },
+      { "name": "change", "type": "[value: SliderValue]" },
+      { "name": "changeEnd", "type": "[value: SliderValue]" }
+    ],
     "slots": []
   },
   "Sparkline": {
@@ -4749,13 +4993,13 @@
       { "name": "aggregate", "type": "boolean", "required": false, "description": "Merges the consecutive trades of the same side and price (default `false`)" },
       { "name": "pauseOnHover", "type": "boolean", "required": false, "description": "Pauses the tape while hovered (default `true`)" },
       { "name": "milliseconds", "type": "boolean", "required": false, "description": "Milliseconds in the times (default `true`)" },
+      { "name": "columns", "type": "readonly TimeAndSalesColumn[]", "required": false, "description": "Columns, in order (default `[\"time\", \"price\", \"size\"]`)" },
       { "name": "labels", "type": "Partial<TimeAndSalesLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
       { "name": "width", "type": "string | number", "required": false, "description": "Width of the chart; numbers are pixels (default `100%`)" },
       { "name": "height", "type": "string | number", "required": false, "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length" },
       { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible label" },
       { "name": "locale", "type": "string", "required": false, "description": "Locale of the numbers and texts (`\"zh-CN\"`); the page language by default" },
       { "name": "minSize", "type": "number", "required": false, "description": "Hides the trades below this size (default 0)" },
-      { "name": "columns", "type": "readonly TimeAndSalesColumn[]", "required": false, "description": "Columns, in order (default `[\"time\", \"price\", \"size\"]`)" },
       { "name": "upColor", "type": "string", "required": false, "description": "Color of the bids / buys (any CSS color); from `colorConvention` by default" },
       { "name": "downColor", "type": "string", "required": false, "description": "Color of the asks / sells" },
       { "name": "colorConvention", "type": "OrderBookColorConvention", "required": false, "description": "`red-up` swaps the default colors (default `green-up`)" },
@@ -4780,8 +5024,8 @@
     ],
     "events": [
       { "name": "hover", "type": "[row: TimeAndSalesRowEvent | null]" },
-      { "name": "tradeClick", "type": "[row: TimeAndSalesRowEvent]" },
-      { "name": "pause", "type": "[paused: boolean]" }
+      { "name": "pause", "type": "[paused: boolean]" },
+      { "name": "tradeClick", "type": "[row: TimeAndSalesRowEvent]" }
     ],
     "slots": []
   },
@@ -5102,6 +5346,7 @@
         "description": "Edge labels: always, `auto` (zoomed in or highlighted), only `hover`, or never (default `auto`)"
       },
       { "name": "controls", "type": "boolean", "required": false, "description": "Zoom buttons (zoom in, zoom out, fit; default `true`)" },
+      { "name": "groups", "type": "readonly GraphGroup[]", "required": false, "description": "Groups: legend order, names and colors" },
       { "name": "labels", "type": "Partial<GraphChartLabels>", "required": false, "description": "Overrides of the built-in texts of the `locale`" },
       {
         "name": "renderer",
@@ -5114,7 +5359,7 @@
       { "name": "palette", "type": "readonly string[]", "required": false, "description": "Group colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)" },
       { "name": "ariaLabel", "type": "string", "required": false, "description": "Accessible name of the chart" },
       { "name": "locale", "type": "string", "required": false, "description": "Language of the built-in texts (summary, announcements, tooltip, buttons); the page language by default" },
-      { "name": "groups", "type": "readonly GraphGroup[]", "required": false, "description": "Groups: legend order, names and colors" },
+      { "name": "highlight", "type": "\"none\" | \"neighbors\" | \"lineage\"", "required": false, "description": "What hovering / selecting a node highlights" },
       { "name": "direction", "type": "GraphDirection", "required": false, "description": "Direction of `layout=\"tree\"` (default `LR`)" },
       { "name": "nodes", "type": "readonly GraphNode[]", "required": true, "description": "The nodes (a new array re-runs the layout; an array rebuilt with the same node objects does not)" },
       { "name": "edges", "type": "readonly GraphEdge[]", "required": true, "description": "The edges (parent → child in trees, prerequisite → dependent in DAGs)" },
@@ -5129,7 +5374,6 @@
         "required": false,
         "description": "Shape of the arrowheads: `open` (a slim outlined head) or `filled` (a solid head in the edge color; default `open`)"
       },
-      { "name": "highlight", "type": "\"none\" | \"neighbors\" | \"lineage\"", "required": false, "description": "What hovering / selecting a node highlights" },
       { "name": "selected", "type": "readonly string[]", "required": false, "description": "Ids of the selected nodes (changing it updates the selection)" },
       { "name": "fitPadding", "type": "number", "required": false, "description": "Padding around the graph when fitting it, in CSS pixels (default 24)" },
       { "name": "tree", "type": "GraphTreeOptions", "required": false, "description": "Root, spacing, collapsing, card size" }
@@ -5264,6 +5508,7 @@
   "VStack": {
     "file": "packages/vue/src/components/Stack/VStack.vue",
     "props": [
+      { "name": "wrap", "type": "boolean", "default": "false", "required": false, "description": "Wraps items onto multiple lines" },
       { "name": "as", "type": "string | Component", "default": "\"div\"", "required": false, "description": "Element or component to render" },
       {
         "name": "gap",
@@ -5271,7 +5516,6 @@
         "required": false,
         "description": "Gap between items: numbers and numeric strings select spacing tokens\n(`2` -> `var(--space-2)`), other strings are CSS values. No gap when omitted."
       },
-      { "name": "wrap", "type": "boolean", "default": "false", "required": false, "description": "Wraps items onto multiple lines" },
       { "name": "align", "type": "StackAlign", "required": false, "description": "Cross-axis alignment (`align-items`); unset when omitted" },
       { "name": "justify", "type": "StackJustify", "required": false, "description": "Main-axis distribution (`justify-content`); unset when omitted" },
       {

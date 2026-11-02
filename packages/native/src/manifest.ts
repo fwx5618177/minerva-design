@@ -65,6 +65,12 @@ export const NATIVE_COMPONENTS: readonly NativeComponent[] = [
       "Native touch field with calendar dialog: local YYYY-MM-DD values, immediate day selection, bounds and clearing; no text entry or DOM keyboard grid.",
   },
   { name: "Rating", contract: "Rating" },
+  {
+    name: "Slider",
+    contract: "Slider",
+    notes:
+      "Touch slider on the responder system (press the track, drag; the gesture is not stolen by a parent ScrollView), one or two thumbs, marks, value label and drag tooltip; each thumb is adjustable (increment / decrement). Horizontal only; no hidden form input (use FormField / onChangeEnd).",
+  },
   { name: "SearchBar", contract: null },
   {
     name: "FormField",
@@ -79,6 +85,12 @@ export const NATIVE_COMPONENTS: readonly NativeComponent[] = [
   { name: "TabPanel", contract: "TabPanel" },
   { name: "Pagination", contract: "Pagination" },
   { name: "Steps", contract: "Steps" },
+  {
+    name: "AnswerSheet",
+    contract: "AnswerSheet",
+    notes:
+      "Pressable pills in wrapping rows (layout=scroll: a horizontal ScrollView that centres the current pill with scrollTo after layout); no arrow-key roving focus on native",
+  },
   { name: "NavBar", contract: null },
   { name: "TabBar", contract: null, aliases: ["TabBarItem"] },
   // ---- feedback ----
@@ -137,6 +149,16 @@ export const NATIVE_COMPONENTS: readonly NativeComponent[] = [
   { name: "Divider", contract: "Divider" },
   { name: "Calendar", contract: "MonthCalendar", aliases: ["MonthCalendar"] },
   { name: "WeekStrip", contract: "WeekStrip" },
+  {
+    name: "MediaControls",
+    contract: null,
+    notes:
+      "MediaControls: the themed control bar of MediaPlayer driven by props, to wrap expo-video / expo-audio (core React Native has no media element)",
+  },
+  { name: "KanbanBoard", contract: "KanbanBoard" },
+  { name: "KanbanColumn", contract: "KanbanColumn" },
+  { name: "Flashcard", contract: "Flashcard" },
+  { name: "SegmentedControl", contract: "SegmentedControl" },
   { name: "Collapse", contract: null, aliases: ["CollapseItem"] },
   { name: "Grid", contract: null },
   {

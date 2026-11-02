@@ -1,0 +1,5 @@
+---
+"minerva-design": minor
+---
+
+New `Flashcard` component: a two-sided study card that flips between a front (the prompt) and a back (the answer) for spaced-repetition review, with a 3D `rotateY` / `rotateX` flip (a crossfade under `prefers-reduced-motion`) and a height that fits the taller face. Props: `front` / `back` / `footer`, `frontLabel` / `backLabel` (translated "Question" / "Answer" by default), `hint` / `showHint`, `flipped` / `defaultFlipped` / `onFlippedChange`, `flipOnClick`, `disabled`, `axis`, `variant` (elevated, outline, filled), `size` and `minHeight`. The card is a toggle button (`aria-pressed`, Enter / Space) that ignores clicks on interactive content inside a face; the hidden face is inert and the revealed answer is announced. On every renderer: React, React Native, Taro, Vue (`v-model:flipped`), Angular (`MnFlashcard`, `[(flipped)]`), Web Components (`<minerva-flashcard>`, `minerva-flipped-change`), uni-app and WeChat (`front` / `back` / `footer` slots, `flippedchange`). `@minerva/dom` adds `isInteractiveEventTarget()`.

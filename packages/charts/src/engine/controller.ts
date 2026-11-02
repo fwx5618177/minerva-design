@@ -18,6 +18,7 @@ import {
   type Scales,
 } from "./layout";
 import {
+  barOpacity,
   buildModel,
   fromPlotX,
   fromPlotY,
@@ -31,6 +32,7 @@ import {
   type SeriesModel,
 } from "./model";
 import {
+  areaTitleLayout,
   font,
   placeLabels,
   rectOf,
@@ -483,6 +485,7 @@ export const createChartController = (
       view,
       layout.scales,
       layout.yTicks,
+      theme.background,
     );
     const occupied: Rect[] = [];
     const labelHeight = theme.fontSize + 4;
@@ -498,26 +501,15 @@ export const createChartController = (
         );
         continue;
       }
-      if (a.type !== "rect" || !a.label) continue;
+      if (a.type !== "rect") continue;
       // keep the dot labels off the area titles (drawForeground does the same)
-      const r = rectOf(a, layout.scales);
-      if (r.width <= 0 || r.height <= 0) continue;
-      const w = measure(a.label, theme.fontSize + 1, 600);
-      const pos = a.labelPosition;
-      occupied.push({
-        x: pos.endsWith("left")
-          ? r.x + 10
-          : pos.endsWith("right")
-            ? r.x + r.width - 10 - w
-            : r.x + (r.width - w) / 2,
-        y: pos.startsWith("top")
-          ? r.y + 10
-          : pos.startsWith("bottom")
-            ? r.y + r.height - 10 - labelHeight
-            : r.y + (r.height - labelHeight) / 2,
-        width: w,
-        height: labelHeight,
-      });
+      const title = areaTitleLayout(
+        a,
+        rectOf(a, layout.scales),
+        theme.fontSize,
+        measure,
+      );
+      if (title) occupied.push(title.box);
     }
     const pointLabels = placeLabels(
       labels,
@@ -1227,16 +1219,23 @@ export const scenePrimitives = (
         lastCol = col;
         rects.push(cx - half, top, half * 2, h);
         const pc = s.pointColors?.[i];
-        colors.push(pc ? toCss(pc) : s.colorCss);
+        // bars with an own opacity carry it in their color
+        colors.push(
+          s.cols.opacities
+            ? toCss(pc ?? s.color, barOpacity(s, i))
+            : pc
+              ? toCss(pc)
+              : s.colorCss,
+        );
       }
       out.push({
         kind: "bars",
         seriesIndex: s.index,
         color: s.colorCss,
         rects: toRects(sc, rects),
-        ...(s.pointColors ? { colors } : {}),
+        ...(s.pointColors || s.cols.opacities ? { colors } : {}),
         radius: s.radius,
-        ...(s.opacity < 1 ? { opacity: s.opacity } : {}),
+        ...(s.opacity < 1 && !s.cols.opacities ? { opacity: s.opacity } : {}),
       });
       continue;
     }
@@ -1390,6 +1389,7 @@ export const scenePrimitives = (
       opacity: s.opacity,
       dots,
       colors,
+      ...(s.stroke !== null ? { stroke: s.stroke } : {}),
     });
   }
   return out;

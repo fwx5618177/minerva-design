@@ -8,6 +8,7 @@ import {
   type ChartRendererKind,
   type ChartView,
   type QuadrantAxisLabels,
+  type QuadrantConfig,
   type QuadrantCorner,
   type QuadrantPoint,
   type QuadrantRegions,
@@ -55,6 +56,18 @@ const props = defineProps({
   name: String,
   /** Lets the user drag the dots (default: when a `pointDrop` listener is set) */
   draggable: { type: Boolean, default: undefined },
+  /** Shows the number of points of each quadrant after its title; a function returns the text */
+  showCounts: {
+    type: [Boolean, Function] as PropType<QuadrantConfig["showCounts"]>,
+    default: undefined,
+  },
+  /** Index of the selected point, drawn with a ring (`null`: none) */
+  selectedIndex: {
+    type: Number as PropType<number | null>,
+    default: undefined,
+  },
+  /** Indices of the selected points */
+  selectedIndices: Array as PropType<readonly number[]>,
 });
 const emit = defineEmits<{
   /** The hovered (or keyboard-focused) point changed (`null`: none) */
@@ -108,6 +121,9 @@ const { setContainer, rootStyle, handle } = useCartesianChart(
         draggable:
           props.draggable ??
           !!(vnode?.props?.onPointDrop || vnode?.props?.onPointDrag),
+        showCounts: props.showCounts,
+        selectedIndex: props.selectedIndex,
+        selectedIndices: raw(props.selectedIndices),
       },
       (({ series: _series, ...rest }) => rest)(engineOptions(props, [])),
     ),

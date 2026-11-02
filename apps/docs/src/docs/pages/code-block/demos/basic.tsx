@@ -7,5 +7,9 @@ const payload = JSON.stringify(
 );
 
 export default function BasicDemo() {
-  return <CodeBlock aria-label="Response payload">{payload}</CodeBlock>;
+  return (
+    <CodeBlock aria-label="Response payload" language="json">
+      {payload}
+    </CodeBlock>
+  );
 }

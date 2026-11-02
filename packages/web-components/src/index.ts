@@ -37,14 +37,17 @@ export * from "./elements/number-input";
 export * from "./elements/page";
 export * from "./elements/page-tabs";
 export * from "./elements/pagination";
+export * from "./elements/answer-sheet";
 export * from "./elements/popover";
 export * from "./elements/progress";
 export * from "./elements/prose";
 export * from "./elements/radio";
 export * from "./elements/rating";
 export * from "./elements/responsive-grid";
+export * from "./elements/segmented-control";
 export * from "./elements/select";
 export * from "./elements/skeleton";
+export * from "./elements/slider";
 export * from "./elements/split-layout";
 export * from "./elements/stack";
 export * from "./elements/steps";
@@ -62,6 +65,9 @@ export * from "./elements/tooltip";
 export * from "./elements/upload";
 export * from "./elements/virtual-list";
 export * from "./elements/week-strip";
+export * from "./elements/media-player";
+export * from "./elements/flashcard";
+export * from "./elements/kanban-board";
 
 export { defineElement, type DefinableElement } from "./internal/define";
 export {

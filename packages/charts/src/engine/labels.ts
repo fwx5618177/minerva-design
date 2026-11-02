@@ -106,18 +106,20 @@ export const chartLabels = (
 const listSeparator = (locale: string) =>
   /^(zh|ja)\b/i.test(locale) ? "、" : ", ";
 
-/** Default accessible name of a chart model: "Chart: Revenue, Costs" */
+/** Default accessible name of a chart model: "Chart: Revenue, Costs" (unnamed series left out) */
 export const chartAriaLabel = (model: {
   labels: ChartLabels;
   locale: string;
   series: readonly { name: string }[];
-}): string =>
-  model.series.length
+}): string => {
+  const named = model.series.filter((s) => s.name);
+  return named.length
     ? model.labels.chartOf.replace(
         "{series}",
-        model.series.map((s) => s.name).join(listSeparator(model.locale)),
+        named.map((s) => s.name).join(listSeparator(model.locale)),
       )
     : model.labels.chart;
+};
 
 /**
  * Localized accessible description of a chart, for platforms that build their

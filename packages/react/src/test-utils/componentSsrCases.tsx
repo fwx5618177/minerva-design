@@ -175,6 +175,15 @@ export const componentSsrCases: Array<[string, ReactElement]> = [
     />,
   ],
   [
+    "SegmentedControl",
+    <lib.SegmentedControl
+      options={["Day", "Week", { value: "Month", disabled: true }]}
+      defaultValue="Week"
+      name="view"
+      aria-label="View"
+    />,
+  ],
+  [
     "WeekStrip",
     <lib.WeekStrip
       defaultValue="2024-01-05"
@@ -182,6 +191,55 @@ export const componentSsrCases: Array<[string, ReactElement]> = [
       markers={{ "2024-01-04": 2, "2024-01-05": true }}
       showNavigation
     />,
+  ],
+  [
+    "MediaPlayer",
+    <lib.MediaPlayer src="/clip.mp4" title="Clip" pictureInPicture />,
+  ],
+  [
+    "Slider",
+    <lib.Slider
+      defaultValue={[20, 60]}
+      range
+      marks={[
+        { value: 0, label: "0" },
+        { value: 100, label: "100" },
+      ]}
+      name="budget"
+      aria-label="Budget"
+    />,
+  ],
+  [
+    "Flashcard",
+    <lib.Flashcard
+      front="Capital of France?"
+      back="Paris"
+      showHint
+      footer={<button type="button">Good</button>}
+    />,
+  ],
+  [
+    "KanbanBoard",
+    <lib.KanbanBoard aria-label="Sprint" fill maxHeight={320}>
+      <lib.KanbanColumn title="To do" count={1} color="info">
+        <div>Card</div>
+      </lib.KanbanColumn>
+      <lib.KanbanColumn title="Done" count={0} />
+    </lib.KanbanBoard>,
+  ],
+  [
+    "KanbanColumn",
+    <lib.KanbanColumn
+      title="Doing"
+      count={2}
+      color="#7c3aed"
+      description="In progress"
+      actions={<button type="button">Add</button>}
+      footer="Footer"
+    >
+      <div>A</div>
+      <div>B</div>
+    </lib.KanbanColumn>,
   ],
   [
     "Modal",
@@ -554,6 +612,19 @@ export const componentSsrCases: Array<[string, ReactElement]> = [
   [
     "Pagination",
     <lib.Pagination total={100} showQuickJumper showSizeChanger showTotal />,
+  ],
+  [
+    "AnswerSheet",
+    <lib.AnswerSheet
+      items={[
+        { key: "q1", status: "answered", group: "a" },
+        { key: "q2", flagged: true },
+      ]}
+      groups={[{ key: "a", title: "Section A" }]}
+      defaultValue="q1"
+      showLegend
+      showSummary
+    />,
   ],
   ["ProgressIndicator", <lib.ProgressIndicator />],
   ["Radio", <lib.Radio label="Radio" value="r" />],

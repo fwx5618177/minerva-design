@@ -424,6 +424,25 @@ export class MinervaGanttChart extends MinervaCartesianChartElement {
   @property({ attribute: "dependency-color" })
   dependencyColor?: string;
 
+  /**
+   * Writes the task names inside the bars: `auto` when several tasks share a
+   * row (default), `true` / `inside` always, `false` never
+   */
+  @property({
+    attribute: "bar-labels",
+    converter: {
+      fromAttribute: (v: string | null) =>
+        v === null || v === "auto"
+          ? undefined
+          : v === "false"
+            ? false
+            : v === "inside"
+              ? "inside"
+              : true,
+    },
+  })
+  barLabels: boolean | "inside" | "auto" = "auto";
+
   /** Formats the progress shares (tooltip, default "60%"); property only */
   @property({ attribute: false })
   formatProgress?: (share: number) => string;
@@ -453,6 +472,7 @@ export class MinervaGanttChart extends MinervaCartesianChartElement {
       dependenciesName: this.dependenciesName,
       dependencyArrows: !this.hideDependencyArrows,
       dependencyColor: this.dependencyColor,
+      barLabels: this.barLabels,
       locale: this.options?.locale,
     });
     const today = this.today;

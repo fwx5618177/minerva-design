@@ -251,6 +251,9 @@ const quadrantConfig = (self: Instance): QuadrantConfig => {
     pointSize: d.pointSize,
     name: d.name || undefined,
     draggable: d.draggable,
+    showCounts: d.showCounts,
+    selectedIndex: unset(d.selectedIndex),
+    selectedIndices: unset(d.selectedIndices),
   };
 };
 
@@ -439,6 +442,7 @@ const chartOptions = (self: Instance, state: ChartState): ChartOptions => {
         dependenciesName: d.dependenciesName || undefined,
         dependencyArrows: unset(d.dependencyArrows as boolean | null),
         dependencyColor: d.dependencyColor || undefined,
+        barLabels: unset(d.barLabels as boolean | "inside" | "auto" | null),
         locale,
       });
       const today = unset(d.today as boolean | number | null);
@@ -696,6 +700,7 @@ const KIND_PROPERTIES: Partial<
     dependenciesName: text(),
     dependencyArrows: optional(),
     dependencyColor: text(),
+    barLabels: optional(),
     locale: text(),
     today: optional(),
     todayLabel: text(),
@@ -725,6 +730,9 @@ const QUADRANT_OPTIONS = [
   "pointSize",
   "name",
   "draggable",
+  "showCounts",
+  "selectedIndex",
+  "selectedIndices",
 ];
 
 function defineChart(kind: ChartKind): Control {
@@ -746,6 +754,9 @@ function defineChart(kind: ChartKind): Control {
           pointSize: { type: Number, value: 12 },
           name: text(),
           draggable: flag(),
+          showCounts: flag(),
+          selectedIndex: optional(),
+          selectedIndices: optional(),
         }
       : { ...seriesProperties(kind), ...KIND_PROPERTIES[kind] };
   const optionNames = [

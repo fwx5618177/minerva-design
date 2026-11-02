@@ -342,6 +342,9 @@
       { "name": "pointSize", "type": "number", "required": false, "default": "12" },
       { "name": "quadrants", "type": "any", "required": false, "default": "null" },
       { "name": "reverseX", "type": "boolean", "required": false, "default": "false" },
+      { "name": "selectedIndex", "type": "any", "required": false, "default": "null" },
+      { "name": "selectedIndices", "type": "any", "required": false, "default": "null" },
+      { "name": "showCounts", "type": "boolean", "required": false, "default": "false" },
       { "name": "showLabels", "type": "boolean", "required": false, "default": "true" },
       { "name": "showTicks", "type": "boolean", "required": false, "default": "true" },
       { "name": "tooltip", "type": "any", "required": false, "default": "null" },
@@ -894,6 +897,7 @@
     "props": [
       { "name": "annotations", "type": "array", "required": false, "default": "[]" },
       { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "barLabels", "type": "any", "required": false, "default": "null" },
       { "name": "colors", "type": "array", "required": false, "default": "[]" },
       { "name": "crosshair", "type": "any", "required": false, "default": "null" },
       { "name": "dependenciesName", "type": "string", "required": false, "default": "\"\"" },
@@ -2287,6 +2291,207 @@
       { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
     ]
   },
+  "MediaPlayer": {
+    "entry": "minerva-design/media-player/index",
+    "props": [
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "aspectRatio", "type": "string", "required": false, "default": "\"16 / 9\"" },
+      { "name": "autoPlay", "type": "boolean", "required": false, "default": "false" },
+      { "name": "controls", "type": "boolean", "required": false, "default": "true" },
+      { "name": "defaultMuted", "type": "boolean", "required": false, "default": "false" },
+      { "name": "height", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "loop", "type": "boolean", "required": false, "default": "false" },
+      { "name": "mimeType", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "muted", "type": "any", "required": false, "default": "null" },
+      { "name": "playbackRates", "type": "array", "required": false, "default": "[0.5,0.75,1,1.25,1.5,2]" },
+      { "name": "poster", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "skipSeconds", "type": "number", "required": false, "default": "10" },
+      { "name": "src", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "startTime", "type": "number", "required": false, "default": "0" },
+      { "name": "title", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "type", "type": "string", "required": false, "default": "\"\"" }
+    ],
+    "events": [
+      { "name": "ended", "type": "{}", "description": "Playback reached the end." },
+      { "name": "error", "type": "{ error: unknown }", "description": "The host media failed (host error detail)." },
+      { "name": "loadedmetadata", "type": "{ duration: number }", "description": "The duration is known (once per source)." },
+      { "name": "pause", "type": "{}", "description": "Playback paused." },
+      { "name": "play", "type": "{}", "description": "Playback started." },
+      { "name": "ratechange", "type": "{ rate: number }", "description": "The speed button changed the rate." },
+      { "name": "timeupdate", "type": "{ currentTime: number; duration: number }", "description": "Playhead position and duration, in seconds." },
+      { "name": "volumechange", "type": "{ volume: number; muted: boolean }", "description": "Mute button or audio volume bar (video volume stays 1)." }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "pause", "type": "pause(): void", "description": "Pause playback." },
+      { "name": "play", "type": "play(): void", "description": "Start playback through the host media context." },
+      { "name": "seek", "type": "seek(seconds: number): void", "description": "Move the playhead (clamped to the duration)." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "KanbanBoard": {
+    "entry": "minerva-design/kanban-board/index",
+    "props": [
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "columnWidth", "type": "any | number | string", "required": false, "default": "null" },
+      { "name": "fill", "type": "boolean", "required": false, "default": "false" },
+      { "name": "gap", "type": "any | number | string", "required": false, "default": "null" },
+      { "name": "height", "type": "any | number | string", "required": false, "default": "null" },
+      { "name": "maxHeight", "type": "any | number | string", "required": false, "default": "null" }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "native slot" }],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "KanbanColumn": {
+    "entry": "minerva-design/kanban-column/index",
+    "props": [
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "color", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "count", "type": "any | number | string", "required": false, "default": "null" },
+      { "name": "description", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "empty", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "title", "type": "string", "required": false, "default": "\"\"" }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "actions", "type": "native slot" },
+      { "name": "default", "type": "native slot" },
+      { "name": "footer", "type": "native slot" },
+      { "name": "title", "type": "native slot" }
+    ],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "Flashcard": {
+    "entry": "minerva-design/flashcard/index",
+    "props": [
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "axis", "type": "string", "required": false, "default": "\"y\"" },
+      { "name": "back", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "backLabel", "type": "any", "required": false, "default": "null" },
+      { "name": "defaultFlipped", "type": "boolean", "required": false, "default": "false" },
+      { "name": "disabled", "type": "boolean", "required": false, "default": "false" },
+      { "name": "flipOnClick", "type": "boolean", "required": false, "default": "true" },
+      { "name": "flipped", "type": "any", "required": false, "default": "null" },
+      { "name": "front", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "frontLabel", "type": "any", "required": false, "default": "null" },
+      { "name": "hint", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "minHeight", "type": "any", "required": false, "default": "\"12rem\"" },
+      { "name": "showHint", "type": "boolean", "required": false, "default": "false" },
+      { "name": "size", "type": "string", "required": false, "default": "\"medium\"" },
+      { "name": "variant", "type": "string", "required": false, "default": "\"elevated\"" }
+    ],
+    "events": [{ "name": "flippedchange", "type": "{ flipped: boolean }", "description": "Requested face (true: the back); a controlled owner must publish the accepted flipped prop." }],
+    "slots": [
+      { "name": "back", "type": "native slot" },
+      { "name": "footer", "type": "native slot" },
+      { "name": "front", "type": "native slot" }
+    ],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "AnswerSheet": {
+    "entry": "minerva-design/answer-sheet/index",
+    "props": [
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "columns", "type": "number", "required": false, "default": "0" },
+      { "name": "defaultValue", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "disabled", "type": "boolean", "required": false, "default": "false" },
+      { "name": "groups", "type": "array", "required": false, "default": "[]" },
+      { "name": "items", "type": "array", "required": false, "default": "[]" },
+      { "name": "layout", "type": "string", "required": false, "default": "\"wrap\"" },
+      { "name": "readOnly", "type": "boolean", "required": false, "default": "false" },
+      { "name": "showLegend", "type": "boolean", "required": false, "default": "false" },
+      { "name": "showSummary", "type": "boolean", "required": false, "default": "false" },
+      { "name": "size", "type": "string", "required": false, "default": "\"medium\"" },
+      { "name": "value", "type": "any", "required": false, "default": "null" }
+    ],
+    "events": [{ "name": "change", "type": "{ value: unknown }", "description": "Requested next value; a controlled owner must publish the accepted prop." }],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      { "name": "configure", "type": "configure(config: AnswerSheetConfig): void", "description": "getItemLabel(item, index) names a question pill for assistive technologies." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "SegmentedControl": {
+    "entry": "minerva-design/segmented-control/index",
+    "props": [
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "color", "type": "string", "required": false, "default": "\"neutral\"" },
+      { "name": "defaultValue", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "disabled", "type": "boolean", "required": false, "default": "false" },
+      { "name": "fullWidth", "type": "boolean", "required": false, "default": "false" },
+      { "name": "options", "type": "array", "required": false, "default": "[]" },
+      { "name": "readOnly", "type": "boolean", "required": false, "default": "false" },
+      { "name": "size", "type": "string", "required": false, "default": "\"medium\"" },
+      { "name": "value", "type": "any", "required": false, "default": "null" }
+    ],
+    "events": [{ "name": "change", "type": "{ value: unknown }", "description": "Requested next value; a controlled owner must publish the accepted prop." }],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
+  "Slider": {
+    "entry": "minerva-design/slider/index",
+    "props": [
+      { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "color", "type": "string", "required": false, "default": "\"primary\"" },
+      { "name": "defaultValue", "type": "any", "required": false, "default": "null" },
+      { "name": "disabled", "type": "any", "required": false, "default": "null" },
+      { "name": "invalid", "type": "any", "required": false, "default": "null" },
+      { "name": "marks", "type": "any", "required": false, "default": "false" },
+      { "name": "max", "type": "number", "required": false, "default": "100" },
+      { "name": "min", "type": "number", "required": false, "default": "0" },
+      { "name": "name", "type": "string", "required": false, "default": "\"\"" },
+      { "name": "range", "type": "boolean", "required": false, "default": "false" },
+      { "name": "readOnly", "type": "any", "required": false, "default": "null" },
+      { "name": "required", "type": "any", "required": false, "default": "null" },
+      { "name": "showValue", "type": "boolean", "required": false, "default": "false" },
+      { "name": "size", "type": "string", "required": false, "default": "\"medium\"" },
+      { "name": "snapToMarks", "type": "boolean", "required": false, "default": "false" },
+      { "name": "step", "type": "any", "required": false, "default": "1" },
+      { "name": "tooltip", "type": "boolean", "required": false, "default": "false" },
+      { "name": "value", "type": "any", "required": false, "default": "null" }
+    ],
+    "events": [
+      { "name": "change", "type": "{ value: unknown }", "description": "Requested next value; a controlled owner must publish the accepted prop." },
+      { "name": "changeend", "type": "{ value: number | [number, number] }", "description": "Final value when the touch ends: save here." }
+    ],
+    "slots": [],
+    "methods": [
+      { "name": "bindConfig", "type": "bindConfig(provider: NativeConfigProviderInstance): void", "description": "Explicit native provider binding when the view is outside an ancestor relation." },
+      {
+        "name": "configure",
+        "type": "configure(config: SliderConfig): void",
+        "description": "formatValue(value) formats the value label, tooltip and aria-valuetext; getAriaValueText(value, index) names a thumb value for assistive technologies."
+      },
+      { "name": "getConfig", "type": "getConfig(): NativeConfiguration", "description": "Read effective theme, mode, palette, design, locale, direction and message trees." },
+      {
+        "name": "getFormState",
+        "type": "getFormState(): NativeFormState",
+        "description": "Read inherited disabled/readOnly/required/invalid. Null props inherit the nearest FormControl/FormField; explicit false overrides it."
+      },
+      { "name": "translate", "type": "translate(key: string, options?: TranslateOptions): string", "description": "Core interpolation/plural-aware localized text in the closest provider scope." }
+    ]
+  },
   "Pagination": {
     "entry": "minerva-design/pagination/index",
     "props": [
@@ -3578,8 +3783,11 @@
       { "name": "ariaLabel", "type": "string", "required": false, "default": "\"\"" },
       { "name": "code", "type": "string", "required": false, "default": "\"\"" },
       { "name": "copyable", "type": "boolean", "required": false, "default": "false" },
+      { "name": "highlight", "type": "boolean", "required": false, "default": "true" },
       { "name": "language", "type": "string", "required": false, "default": "\"\"" },
       { "name": "maxHeight", "type": "any", "required": false, "default": "\"24rem\"" },
+      { "name": "showLanguage", "type": "boolean", "required": false, "default": "false" },
+      { "name": "showLineNumbers", "type": "boolean", "required": false, "default": "false" },
       { "name": "wrap", "type": "boolean", "required": false, "default": "true" }
     ],
     "events": [

@@ -484,7 +484,7 @@ const TO_B = new Set([
   "Toolbar",
   "VirtualList",
 ]);
-const TO_C = new Set(["Rating", "RatingScale"]);
+const TO_C = new Set(["Rating", "RatingScale", "Flashcard"]);
 const tracksOf = (name) =>
   TO_B.has(name) ? ["toB"] : TO_C.has(name) ? ["toC"] : ["toB", "toC"];
 
@@ -802,6 +802,12 @@ export function nativeSupport(name) {
     return { status: "beta", notes: PLATFORM_ICON_NOTES.native };
   if (WEB_ICON_COMPONENTS.has(name))
     return { status: "n/a", notes: WEB_ICON_NOTE };
+  if (name === "MediaPlayer")
+    return {
+      status: "n/a",
+      notes:
+        "Core React Native has no media element. minerva-design/native exports MediaControls, the themed control bar driven by props (playing, currentTime, duration, onPlayPause, onSeek...), to wrap the player of expo-video / expo-audio (or react-native-video).",
+    };
   return { status: "planned" };
 }
 

@@ -443,6 +443,7 @@ export function GanttChart(props: GanttChartProps) {
     dependenciesName,
     dependencyArrows,
     dependencyColor,
+    barLabels,
     today = false,
     todayLabel,
     xAxis,
@@ -472,6 +473,7 @@ export function GanttChart(props: GanttChartProps) {
       dependenciesName,
       dependencyArrows,
       dependencyColor,
+      barLabels,
       locale: locale ?? base.locale,
     });
     const lines: ChartAnnotation[] =
@@ -516,6 +518,7 @@ export function GanttChart(props: GanttChartProps) {
     dependenciesName,
     dependencyArrows,
     dependencyColor,
+    barLabels,
     now,
     todayLabel,
     xAxis,

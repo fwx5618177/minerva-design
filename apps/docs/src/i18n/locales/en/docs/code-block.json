@@ -4,7 +4,15 @@
   "demos": {
     "basic": {
       "title": "Basic usage",
-      "description": "Text is rendered verbatim and long lines wrap by default."
+      "description": "Text is rendered verbatim and long lines wrap by default; language=\"json\" highlights the syntax."
+    },
+    "languages": {
+      "title": "Languages",
+      "description": "language picks the grammar: JavaScript / TypeScript (JSX, TSX), JSON, CSS, HTML, Bash, Python, YAML, SQL, diff and Markdown (common aliases such as ts, sh, py, yml, md work). showLanguage adds a small label; other languages render plain text."
+    },
+    "line-numbers": {
+      "title": "Line numbers",
+      "description": "showLineNumbers numbers the lines in a gutter hidden from screen readers; the numbers are not selected or copied with the code."
     },
     "no-wrap": {
       "title": "Scrolling logs",
@@ -24,6 +32,10 @@
       "tabIndex": "Tab order of the region (focusable by default)",
       "copyable": "Shows a copy button that writes the text to the clipboard and announces the result",
       "onCopied": "Called with the copied text after the copy button wrote it to the clipboard (not on failure); the native onCopy still goes to the element",
+      "language": "Language of the code: highlights its syntax (javascript, typescript, jsx, tsx, json, css, html, bash, python, yaml, sql, diff, markdown and their aliases); without it the text is plain",
+      "highlight": "Highlights the syntax of language (false: plain text)",
+      "showLineNumbers": "Numbers the lines in a gutter (hidden from assistive technology, not copied)",
+      "showLanguage": "Shows the language as a small label in the top-right corner",
       "ref": "Ref to the <pre> element"
     }
   },
@@ -33,13 +45,22 @@
     "--code-block-bg": "Background color",
     "--code-block-border-color": "Border color",
     "--code-block-font-size": "Font size of the code",
-    "--code-block-max-height": "Maximum height before the block scrolls (default: none)"
+    "--code-block-max-height": "Maximum height before the block scrolls (default: none)",
+    "--code-block-line-number-color": "Color of the line numbers"
   },
   "wc": {
     "demos": {
       "basic": {
         "title": "Basic usage",
-        "description": "The text content is rendered verbatim (escape < in markup); language shows a label. Each block is a named, focusable region."
+        "description": "The text content is rendered verbatim (escape < in markup); language highlights the syntax and show-language shows a label. Each block is a named, focusable region."
+      },
+      "languages": {
+        "title": "Languages",
+        "description": "language picks the grammar (ts, css, html, bash, python, diff…); show-language adds a small label. The code property holds the text, never parsed as HTML."
+      },
+      "line-numbers": {
+        "title": "Line numbers",
+        "description": "show-line-numbers numbers the lines in a gutter hidden from screen readers; copy still copies the raw text."
       },
       "copy": {
         "title": "Copy to clipboard",
@@ -53,8 +74,11 @@
     "minerva-code-block": {
       "props": {
         "code": "Source text (default: the element's text content).",
-        "language": "Language of the code, shown as a label (e.g. \"json\", \"bash\").",
+        "language": "Language of the code: highlights its syntax and sets class=\"language-<x>\" / data-language on the <code>.",
+        "noHighlight": "Keeps the code plain despite language (the React library's highlight={false}).",
         "noWrap": "Scrolls long lines horizontally instead of wrapping them (the React library's wrap={false}).",
+        "showLineNumbers": "Numbers the lines in a gutter (aria-hidden, not part of the copied text).",
+        "showLanguage": "Shows the language as a small label in the top-right corner (e.g. \"JSON\").",
         "text": "The text shown and copied (read-only)."
       },
       "events": {

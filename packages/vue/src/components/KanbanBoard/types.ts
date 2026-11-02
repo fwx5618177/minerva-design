@@ -1,0 +1,75 @@
+import type { ColorScheme } from "@minerva/core";
+
+/** A length: a number of pixels or any CSS length ("18rem", "40vh") */
+export type KanbanLength = number | string;
+
+/**
+ * Accent of a KanbanColumn: a theme color or any CSS color
+ * ("#7c3aed", "rgb(...)", "var(--my-color)")
+ */
+export type KanbanColumnColor = ColorScheme | (string & {});
+
+/**
+ * Props of `KanbanBoard` (same names and defaults as the React
+ * `KanbanBoardProps`). The default slot holds the KanbanColumn components;
+ * attributes fall through to the root `<div>`.
+ */
+export interface KanbanBoardProps {
+  /**
+   * Width of every column (a number is pixels). With `fill` it is the
+   * minimum width: columns stretch equally when they fit
+   * @default "18rem"
+   */
+  columnWidth?: KanbanLength;
+  /**
+   * Stretches the columns equally to fill the board when they fit
+   * @default false
+   */
+  fill?: boolean;
+  /**
+   * Space between the columns (a number is pixels)
+   * @default "0.75rem"
+   */
+  gap?: KanbanLength;
+  /** Height of the board: the column bodies scroll vertically within it */
+  height?: KanbanLength;
+  /** Maximum height of the board: the column bodies scroll vertically within it */
+  maxHeight?: KanbanLength;
+  /**
+   * Accessible name of the board region
+   * @default "Board" (translated)
+   */
+  "aria-label"?: string;
+  /** Id of an element naming the board (instead of aria-label) */
+  "aria-labelledby"?: string;
+}
+
+/**
+ * Props of `KanbanColumn` (same names as the React `KanbanColumnProps`).
+ * Slots: default (the cards, each wrapped in a `role="listitem"`), `title`
+ * (rich title), `actions`, `description`, `empty`, `footer`. Attributes
+ * fall through to the root `<section>`.
+ */
+export interface KanbanColumnProps {
+  /** Title of the column (also its accessible name; or the `title` slot) */
+  title?: string;
+  /**
+   * Number of items shown as a badge next to the title (and announced with
+   * the title); omit to hide the badge
+   */
+  count?: number;
+  /** Accent of the column (a dot before the title): a theme color or any CSS color */
+  color?: KanbanColumnColor;
+  /** Supporting text under the header (or the `description` slot) */
+  description?: string;
+  /**
+   * Text shown when the column has no cards (or the `empty` slot)
+   * @default "No items" (translated)
+   */
+  empty?: string;
+  /**
+   * Accessible name of the column
+   * @default the title with the count ("To do, 3 items", translated)
+   */
+  "aria-label"?: string;
+}

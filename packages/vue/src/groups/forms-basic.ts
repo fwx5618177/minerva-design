@@ -7,5 +7,7 @@ export * from "../components/NumberInput";
 export * from "../components/Checkbox";
 export * from "../components/Radio";
 export * from "../components/Switch";
+export * from "../components/Slider";
 export * from "../components/IconButton";
 export * from "../components/Rating";
+export * from "../components/SegmentedControl";

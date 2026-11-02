@@ -918,7 +918,7 @@ export const angularExamples: Record<string, readonly AngularExample[]> = {
     example(
       "Copyable source",
       ["MnCodeBlock"],
-      `<mn-code-block [code]="code" language="typescript" copyable/>`,
+      `<mn-code-block [code]="code" language="typescript" showLineNumbers showLanguage copyable/>`,
       { code: 'const message = "Hello, Minerva";\nconsole.log(message);' },
     ),
     example(
@@ -1173,6 +1173,27 @@ export const angularExamples: Record<string, readonly AngularExample[]> = {
       { month: new Date(2026, 9, 1) },
     ),
   ],
+  slider: [
+    example(
+      "Pick a value",
+      ["MnSlider"],
+      `<mn-slider aria-label="Volume" [(value)]="volume" (changeEnd)="saved = $event" showValue tooltip/><output>Saved on release: {{saved}}</output>`,
+      { volume: 40, saved: 40 },
+      "[(value)] follows the drag and the keys; (changeEnd) fires once on release (or after a key press): save there. Arrows step, PageUp / PageDown move by 10%, Home / End jump to the bounds.",
+    ),
+    example(
+      "Range and marks",
+      ["MnSlider"],
+      `<mn-slider aria-label="Price" range [(value)]="price" [step]="10" [marks]="true" color="success"/><output>{{price}}</output>`,
+      { price: [20, 80] },
+      'range selects [start, end] with two thumbs that cannot cross; [marks]="true" draws a tick per step.',
+    ),
+    example(
+      "Sizes, disabled and read-only",
+      ["MnSlider"],
+      `<mn-slider aria-label="Small" size="small" [defaultValue]="30"/><mn-slider aria-label="Large" size="large" color="warning" [defaultValue]="70"/><mn-slider aria-label="Disabled" disabled [defaultValue]="40"/><mn-slider aria-label="Read only" readOnly [defaultValue]="60" showValue/>`,
+    ),
+  ],
   "week-strip": [
     example(
       "Pick a day of the week",
@@ -1195,6 +1216,197 @@ export const angularExamples: Record<string, readonly AngularExample[]> = {
       "Sizes and disabled",
       ["MnWeekStrip"],
       `<mn-week-strip size="small" today="2026-10-07"/><mn-week-strip size="large" today="2026-10-07"/><mn-week-strip disabled value="2026-10-07" today="2026-10-07"/>`,
+    ),
+  ],
+  "media-player": [
+    example(
+      "Video",
+      ["MnMediaPlayer"],
+      `<mn-media-player src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" title="Flower" pictureInPicture/>`,
+      undefined,
+      "Custom controls on a <video>: play / pause, skip, seek bar (role=slider), time, mute and volume, speed, picture-in-picture and fullscreen. Focus the player: Space / K, arrows, M, F.",
+    ),
+    example(
+      "Audio",
+      ["MnMediaPlayer"],
+      `<mn-media-player src="https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3" title="T-Rex roar" [skipSeconds]="0"/>`,
+      undefined,
+      "The type is inferred from the file extension (or mimeType): audio renders a surface bar.",
+    ),
+    example(
+      "Resume and progress",
+      ["MnMediaPlayer"],
+      `<mn-media-player #player src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" [startTime]="saved" (timeUpdate)="time = $event.currentTime" (paused)="saved = time"/><button type="button" (click)="player.seek(0)">Restart</button><output>{{ time.toFixed(1) }}s · saved {{ saved }}s</output>`,
+      { saved: 2, time: 0 },
+      "startTime resumes once the metadata loads; (timeUpdate) reports the progress; play(), pause() and seek() are public methods.",
+    ),
+    example(
+      "Speeds and skip step",
+      ["MnMediaPlayer"],
+      `<mn-media-player src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" [playbackRates]="[1, 1.5, 2]" [skipSeconds]="3" aspectRatio="4 / 3" (rateChange)="rate = $event"/><output>Speed: {{ rate }}×</output>`,
+      { rate: 1 },
+    ),
+  ],
+  "kanban-board": [
+    example(
+      "Board with cards",
+      ["MnKanbanBoard", "MnKanbanColumn", "MnCard", "MnButton"],
+      `<mn-kanban-board aria-label="Sprint 12">@for (column of columns; track column.title; let i = $index) {<mn-kanban-column [title]="column.title" [count]="column.tasks.length">@for (task of column.tasks; track task.id; let j = $index) {<mn-card padding="small">{{task.title}} @if (i < columns.length - 1) {<button mnButton size="small" variant="ghost" (click)="columns[i + 1].tasks.push(task); column.tasks.splice(j, 1)">Move to {{columns[i + 1].title}}</button>}</mn-card>}</mn-kanban-column>}</mn-kanban-board>`,
+      {
+        columns: [
+          {
+            title: "To do",
+            tasks: [{ id: 1, title: "Write the onboarding guide" }],
+          },
+          {
+            title: "Doing",
+            tasks: [{ id: 2, title: "Ship the billing page" }],
+          },
+          {
+            title: "Done",
+            tasks: [{ id: 3, title: "Set up error tracking" }],
+          },
+        ],
+      },
+      "Projected cards form the column's role=list (each gets role=listitem). There is no drag and drop: move cards with your own actions and update the data.",
+    ),
+    example(
+      "Colors, counts and actions",
+      ["MnKanbanBoard", "MnKanbanColumn", "MnCard", "MnButton"],
+      `<mn-kanban-board aria-label="Roadmap" [columnWidth]="220" fill><mn-kanban-column title="Ready" color="info" [count]="1" description="Groomed and estimated"><button mnButton mnKanbanActions size="small" variant="ghost">Add</button><mn-card padding="small">Pricing page copy</mn-card></mn-kanban-column><mn-kanban-column title="Blocked" color="danger" [count]="1"><mn-card padding="small">SSO with Okta</mn-card></mn-kanban-column><mn-kanban-column title="Research" color="#7c3aed" [count]="0" empty="Nothing to research"/></mn-kanban-board>`,
+      {},
+      "color takes a theme color or any CSS color (the dot before the title); [mnKanbanActions], [mnKanbanEmpty] and [mnKanbanFooter] project header actions, empty content and a footer.",
+    ),
+    example(
+      "Fixed height",
+      ["MnKanbanBoard", "MnKanbanColumn", "MnCard"],
+      `<mn-kanban-board aria-label="Support queue" [height]="280"><mn-kanban-column title="Inbox" color="info" [count]="tickets.length">@for (ticket of tickets; track ticket) {<mn-card padding="small">{{ticket}}</mn-card>}</mn-kanban-column><mn-kanban-column title="Fixed" color="success" [count]="0"/></mn-kanban-board>`,
+      {
+        tickets: Array.from(
+          { length: 10 },
+          (_, index) => `Ticket ${index + 1}`,
+        ),
+      },
+      "height / maxHeight bound the board: each column body scrolls vertically while the board scrolls horizontally.",
+    ),
+  ],
+  "answer-sheet": [
+    example(
+      "Jump between questions",
+      ["MnAnswerSheet"],
+      `<mn-answer-sheet [items]="items" [(value)]="value"/><output>Current question: {{value}}</output>`,
+      {
+        value: "q6",
+        items: Array.from({ length: 12 }, (_, i) => ({
+          key: `q${i + 1}`,
+          status: i < 5 ? "answered" : "unanswered",
+        })),
+      },
+      "[(value)] holds the key of the current question (aria-current=step). One tab stop: arrows and Home / End move the focus, Enter / Space select.",
+    ),
+    example(
+      "Sections, statuses and legend",
+      ["MnAnswerSheet"],
+      `<mn-answer-sheet [items]="items" [groups]="groups" [(value)]="value" showSummary showLegend aria-label="Review questions"/>`,
+      {
+        value: "s3",
+        groups: [
+          { key: "single", title: "Single choice" },
+          { key: "short", title: "Short answer" },
+        ],
+        items: [
+          { key: "s1", group: "single", status: "correct" },
+          { key: "s2", group: "single", status: "correct" },
+          { key: "s3", group: "single", status: "wrong", flagged: true },
+          { key: "s4", group: "single", status: "skipped" },
+          { key: "a1", group: "short", status: "answered" },
+          { key: "a2", group: "short" },
+          { key: "a3", group: "short", disabled: true },
+        ],
+      },
+      "groups titles the sections; showSummary counts the answered questions and showLegend explains the statuses present.",
+    ),
+    example(
+      "Scroll layout, sizes and columns",
+      ["MnAnswerSheet"],
+      `<mn-answer-sheet [items]="items" layout="scroll" size="small" aria-label="Scrolling sheet"/><mn-answer-sheet [items]="items" columns="5" aria-label="Five columns"/><mn-answer-sheet [items]="items" disabled aria-label="Disabled sheet"/>`,
+      {
+        items: Array.from({ length: 10 }, (_, i) => ({
+          key: `q${i + 1}`,
+          status: i < 4 ? "answered" : "unanswered",
+        })),
+      },
+    ),
+  ],
+  flashcard: [
+    example(
+      "Flip a study card",
+      ["MnFlashcard"],
+      `<div style="max-width:420px"><mn-flashcard front="What is the capital of Australia?" back="Canberra" showHint/></div>`,
+      {},
+      "Click the card or press Enter / Space on it to flip it; the hidden face is inert and the back is announced politely.",
+    ),
+    example(
+      "Review with rating buttons",
+      ["MnFlashcard", "MnButton"],
+      `<div style="display:grid;gap:12px;max-width:420px"><mn-flashcard [(flipped)]="flipped" backLabel="Definition" [frontLabel]="'Card ' + (index + 1) + ' / ' + deck.length"><strong mnFront style="font-size:1.5rem">{{deck[index]?.front}}</strong><span mnBack>{{deck[index]?.back}}</span><div mnFooter style="display:flex;gap:8px">@if (flipped) { @for (rating of ratings; track rating) {<button mnButton size="small" [variant]="rating === 'Good' ? 'solid' : 'outline'" (click)="last = deck[index]?.front + ': ' + rating; flipped = false; index = (index + 1) % deck.length">{{rating}}</button>} } @else {<button mnButton size="small" (click)="flipped = true">Show answer</button>}</div></mn-flashcard><output>{{last || 'Flip the card, then rate it.'}}</output></div>`,
+      {
+        flipped: false,
+        index: 0,
+        last: "",
+        ratings: ["Again", "Hard", "Good", "Easy"],
+        deck: [
+          { front: "ephemeral", back: "Lasting for a very short time" },
+          {
+            front: "ubiquitous",
+            back: "Present, appearing or found everywhere",
+          },
+          { front: "laconic", back: "Using very few words" },
+        ],
+      },
+      "[(flipped)] holds the face; project the faces with [mnFront] / [mnBack] and the rating buttons with [mnFooter] (below the card, not flipped).",
+    ),
+    example(
+      "Axis, variants and disabled",
+      ["MnFlashcard"],
+      `<div style="display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(200px,1fr))"><mn-flashcard variant="outline" axis="x" front="outline · axis x" back="Flips vertically" [minHeight]="140"/><mn-flashcard variant="filled" size="small" front="filled · small" back="Less padding" [minHeight]="140"/><mn-flashcard disabled front="Disabled" back="Never shown" [minHeight]="140"/></div>`,
+    ),
+  ],
+  "segmented-control": [
+    example(
+      "Pick a view",
+      ["MnSegmentedControl"],
+      `<mn-segmented-control aria-label="Calendar view" [options]="options" [(value)]="value"/><output>Showing the {{value}} view</output>`,
+      {
+        value: "week",
+        options: [
+          { value: "day", label: "Day" },
+          { value: "week", label: "Week" },
+          { value: "month", label: "Month" },
+        ],
+      },
+      "[(value)] holds the selected value; (change) reports user selections. One tab stop: the arrow keys move and select, Home / End jump to the ends.",
+    ),
+    example(
+      "Sizes, full width and colors",
+      ["MnSegmentedControl"],
+      `<mn-segmented-control size="small" aria-label="Small" [options]="periods" defaultValue="Daily"/><mn-segmented-control size="large" color="primary" aria-label="Large" [options]="periods" defaultValue="Weekly"/><mn-segmented-control fullWidth aria-label="Full width" [options]="periods" defaultValue="Monthly"/>`,
+      { periods: ["Daily", "Weekly", "Monthly"] },
+    ),
+    example(
+      "Change events and disabled segments",
+      ["MnSegmentedControl"],
+      `<mn-segmented-control aria-label="Theme" [options]="themes" [(value)]="mode" (change)="changes = changes + 1"/><mn-segmented-control disabled aria-label="Theme (disabled)" [options]="themes" value="light"/><output>Theme: {{mode}} ({{changes}} changes)</output>`,
+      {
+        mode: "dark",
+        changes: 0,
+        themes: [
+          { value: "light", label: "Light" },
+          { value: "dark", label: "Dark" },
+          { value: "system", label: "System", disabled: true },
+        ],
+      },
+      "Disabled segments are skipped by the arrow keys; disabled blocks the whole control. The component is also a ControlValueAccessor (ngModel, formControl).",
     ),
   ],
 };
@@ -2400,6 +2612,81 @@ Object.assign(angularExamples, {
               "E-mails",
               "Newsletter",
               "Entretien",
+            ],
+          },
+        },
+      },
+    ),
+    chart(
+      "triage",
+      "Badges, counts and selection",
+      ["MnQuadrantChart"],
+      `@let t = labels[language()];
+<mn-quadrant-chart
+  [points]="[
+    { x: 9, y: 8.5, label: t.tasks[0] },
+    { x: 7, y: 7, label: t.tasks[1] },
+    { x: 2.5, y: 9, label: t.tasks[2] },
+    { x: 8, y: 3, label: t.tasks[3] },
+    { x: 2, y: 2.5, label: t.tasks[4] }
+  ]"
+  [quadrants]="{
+    topLeft: { badge: 'Q1', label: t.corners[0], description: t.hints[0] },
+    topRight: { badge: 'Q2', label: t.corners[1], description: t.hints[1] },
+    bottomLeft: { badge: 'Q3', label: t.corners[2], description: t.hints[2] },
+    bottomRight: { badge: 'Q4', label: t.corners[3], description: t.hints[3] }
+  }"
+  reverseX
+  [showTicks]="false"
+  showCounts
+  [selectedIndex]="selected"
+  [height]="360"
+  (pointClick)="selected = $event.index"
+/>
+<output aria-live="polite">{{ selected < 0 ? t.hint : t.tasks[selected] }}</output>`,
+      {
+        // -1: no task selected (no ring)
+        selected: -1,
+        labels: {
+          en: {
+            hint: "Click a task to select it",
+            corners: ["Do first", "Schedule", "Delegate", "Eliminate"],
+            hints: ["Do it now", "Plan a time", "Hand it off", "Drop it"],
+            tasks: ["Bug fix", "Tax filing", "Roadmap", "Email", "Newsletter"],
+          },
+          zh: {
+            hint: "点击任务以选中",
+            corners: ["立即处理", "计划安排", "委派他人", "放弃"],
+            hints: ["立即做", "安排时间", "交给别人", "不做"],
+            tasks: ["修复缺陷", "报税", "路线图", "邮件", "简报"],
+          },
+          ja: {
+            hint: "タスクをクリックして選択します",
+            corners: ["すぐ実行", "計画", "委任", "削除"],
+            hints: ["今すぐやる", "時間を確保", "人に任せる", "やらない"],
+            tasks: [
+              "バグ修正",
+              "確定申告",
+              "ロードマップ",
+              "メール",
+              "ニュースレター",
+            ],
+          },
+          fr: {
+            hint: "Cliquez sur une tâche pour la sélectionner",
+            corners: ["À faire", "À planifier", "À déléguer", "À abandonner"],
+            hints: [
+              "Maintenant",
+              "Réserver un créneau",
+              "Confier",
+              "Laisser tomber",
+            ],
+            tasks: [
+              "Correctif",
+              "Impôts",
+              "Feuille de route",
+              "E-mails",
+              "Newsletter",
             ],
           },
         },
@@ -3908,6 +4195,99 @@ Object.assign(angularExamples, {
               "Notes de version",
             ],
             today: "Aujourd’hui",
+          },
+        },
+      },
+    ),
+    chart(
+      "daily",
+      "Daily schedule in swimlanes",
+      ["MnGanttChart"],
+      `@let t = labels[language()];
+<mn-gantt-chart
+  [tasks]="[
+    { id: 'a', name: t.tasks[0], row: t.lanes[0], group: t.groups[0], start: day + 9 * hour, end: day + 9.5 * hour },
+    { id: 'b', name: t.tasks[1], row: t.lanes[0], group: t.groups[0], start: day + 10 * hour, end: day + 12 * hour },
+    { id: 'c', name: t.tasks[2], row: t.lanes[0], group: t.groups[1], start: day + 16 * hour, end: day + 17.5 * hour },
+    { id: 'd', name: t.tasks[3], row: t.lanes[1], group: t.groups[0], start: day + 8 * hour, end: day + 8.75 * hour },
+    { id: 'e', name: t.tasks[4], row: t.lanes[1], group: t.groups[0], start: day + 13.5 * hour, end: day + 15 * hour, progress: 0.6 },
+    { id: 'f', name: t.tasks[5], row: t.lanes[1], group: t.groups[1], start: day + 20 * hour, end: day + 21 * hour },
+    { id: 'g', name: t.tasks[6], row: t.lanes[2], group: t.groups[2], start: day + 12 * hour, end: day + 13 * hour },
+    { id: 'h', name: t.tasks[7], row: t.lanes[2], group: t.groups[2], start: day + 18 * hour, end: day + 19.5 * hour },
+    { id: 'i', name: t.tasks[8], row: t.lanes[2], group: t.groups[1], start: day + 21.25 * hour, end: day + 22 * hour }
+  ]"
+  [today]="day + 14.5 * hour"
+  [todayLabel]="t.now"
+  [height]="260"
+/>`,
+      {
+        hour: 3600000,
+        // 2026-11-02, local midnight
+        day: code("new Date(2026, 10, 2).getTime()"),
+        labels: {
+          en: {
+            lanes: ["High", "Medium", "Low"],
+            groups: ["Work", "Study", "Life"],
+            tasks: [
+              "Standup",
+              "Deep work",
+              "Mock exam",
+              "Email",
+              "Code review",
+              "Flashcards",
+              "Lunch",
+              "Gym",
+              "Reading",
+            ],
+            now: "Now",
+          },
+          zh: {
+            lanes: ["高", "中", "低"],
+            groups: ["工作", "学习", "生活"],
+            tasks: [
+              "站会",
+              "专注工作",
+              "模拟考试",
+              "邮件",
+              "代码评审",
+              "背单词",
+              "午饭",
+              "健身",
+              "阅读",
+            ],
+            now: "现在",
+          },
+          ja: {
+            lanes: ["高", "中", "低"],
+            groups: ["仕事", "学習", "生活"],
+            tasks: [
+              "朝会",
+              "集中作業",
+              "模擬試験",
+              "メール",
+              "コードレビュー",
+              "単語カード",
+              "昼食",
+              "ジム",
+              "読書",
+            ],
+            now: "現在",
+          },
+          fr: {
+            lanes: ["Haute", "Moyenne", "Basse"],
+            groups: ["Travail", "Études", "Perso"],
+            tasks: [
+              "Point d’équipe",
+              "Travail de fond",
+              "Examen blanc",
+              "E-mails",
+              "Revue de code",
+              "Fiches",
+              "Déjeuner",
+              "Sport",
+              "Lecture",
+            ],
+            now: "Maintenant",
           },
         },
       },
@@ -5827,11 +6207,31 @@ for (const [page, examples] of Object.entries(angularExamples)) {
         "import('minerva-design/angular').ToastMessage[]";
     if (page === "sparkline" && Object.hasOwn(item.state, "hovered"))
       item.stateTypes.hovered = "number | null";
+    if (page === "segmented-control") {
+      if (Object.hasOwn(item.state, "value"))
+        item.stateTypes.value = "string | null | undefined";
+      if (Object.hasOwn(item.state, "theme"))
+        item.stateTypes.theme = "string | null | undefined";
+    }
+    if (page === "slider") {
+      for (const key of ["volume", "saved", "price"])
+        if (Object.hasOwn(item.state, key))
+          item.stateTypes[key] = "import('minerva-design/angular').SliderValue";
+    }
     if (page === "week-strip") {
       if (Object.hasOwn(item.state, "value"))
         item.stateTypes.value = "string | null";
       if (Object.hasOwn(item.state, "week"))
         item.stateTypes.week = "Date | null";
+    }
+    if (page === "answer-sheet") {
+      if (Object.hasOwn(item.state, "value"))
+        item.stateTypes.value = "string | null";
+      item.stateTypes.items =
+        "import('minerva-design/angular').AnswerSheetItem[]";
+      if (Object.hasOwn(item.state, "groups"))
+        item.stateTypes.groups =
+          "import('minerva-design/angular').AnswerSheetGroup[]";
     }
     if (page === "histogram-chart" && Object.hasOwn(item.state, "bins"))
       item.stateTypes.bins = "number | 'sturges'";

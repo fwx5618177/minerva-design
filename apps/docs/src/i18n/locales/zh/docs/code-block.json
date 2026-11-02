@@ -4,7 +4,15 @@
   "demos": {
     "basic": {
       "title": "基础用法",
-      "description": "文本按原样渲染，默认长行自动换行。"
+      "description": "文本按原样渲染，默认长行自动换行；language=\"json\" 开启语法高亮。"
+    },
+    "languages": {
+      "title": "多种语言",
+      "description": "language 选择语法：JavaScript / TypeScript（JSX、TSX）、JSON、CSS、HTML、Bash、Python、YAML、SQL、diff 与 Markdown（支持 ts、sh、py、yml、md 等常用别名）。showLanguage 显示小标签；其他语言按纯文本渲染。"
+    },
+    "line-numbers": {
+      "title": "行号",
+      "description": "showLineNumbers 在左侧显示行号，行号对屏幕阅读器隐藏，选择或复制代码时不会包含行号。"
     },
     "no-wrap": {
       "title": "滚动日志",
@@ -24,6 +32,10 @@
       "tabIndex": "区域的 Tab 顺序（默认可聚焦）",
       "copyable": "显示复制按钮，将文本写入剪贴板并播报结果",
       "onCopied": "复制按钮成功将文本写入剪贴板后调用，参数为被复制的文本（失败时不调用）；原生 onCopy 仍作用于元素",
+      "language": "代码语言：开启语法高亮（javascript、typescript、jsx、tsx、json、css、html、bash、python、yaml、sql、diff、markdown 及其别名）；不设置时为纯文本",
+      "highlight": "是否高亮 language 的语法（false：纯文本）",
+      "showLineNumbers": "在左侧显示行号（对辅助技术隐藏，不会被复制）",
+      "showLanguage": "在右上角以小标签显示语言",
       "ref": "<pre> 元素的 ref"
     }
   },
@@ -33,13 +45,22 @@
     "--code-block-bg": "背景色",
     "--code-block-border-color": "边框颜色",
     "--code-block-font-size": "代码字号",
-    "--code-block-max-height": "出现滚动前的最大高度（默认 none）"
+    "--code-block-max-height": "出现滚动前的最大高度（默认 none）",
+    "--code-block-line-number-color": "行号颜色"
   },
   "wc": {
     "demos": {
       "basic": {
         "title": "基础用法",
-        "description": "文本内容按原样渲染（标记中需转义 <）；language 显示语言标签。每个代码块都是有名称、可聚焦的区域。"
+        "description": "文本内容按原样渲染（标记中需转义 <）；language 开启语法高亮，show-language 显示语言标签。每个代码块都是有名称、可聚焦的区域。"
+      },
+      "languages": {
+        "title": "多种语言",
+        "description": "language 选择语法（ts、css、html、bash、python、diff…）；show-language 显示小标签。code 属性保存文本，永远不会被解析为 HTML。"
+      },
+      "line-numbers": {
+        "title": "行号",
+        "description": "show-line-numbers 在左侧显示行号（对屏幕阅读器隐藏）；复制时仍复制原始文本。"
       },
       "copy": {
         "title": "复制到剪贴板",
@@ -53,8 +74,11 @@
     "minerva-code-block": {
       "props": {
         "code": "源文本（默认：元素的文本内容）。",
-        "language": "代码语言，显示为标签（如 \"json\"、\"bash\"）。",
+        "language": "代码语言：开启语法高亮，并在 <code> 上设置 class=\"language-<x>\" / data-language。",
+        "noHighlight": "即使设置了 language 也保持纯文本（相当于 React 库的 highlight={false}）。",
         "noWrap": "长行水平滚动而不是换行（相当于 React 版的 wrap={false}）。",
+        "showLineNumbers": "在左侧显示行号（aria-hidden，不属于复制的文本）。",
+        "showLanguage": "在右上角以小标签显示语言（如 \"JSON\"）。",
         "text": "显示和复制的文本（只读）。"
       },
       "events": {

@@ -1,0 +1,194 @@
+// Public CSS variables (set them on the flashcard or any ancestor):
+// @css-var --flashcard-min-height Minimum height of the card (defaults to 12rem; the minHeight prop sets it); the card grows to fit the taller face
+// @css-var --flashcard-bg-color Background color of the faces (defaults to --surface-color, --surface-muted-color with variant="filled")
+// @css-var --flashcard-border-color Border color of the faces (variant="outline")
+// @css-var --flashcard-radius Corner radius of the faces (defaults to --radius-lg)
+// @css-var --flashcard-shadow Shadow of the faces (variant="elevated"; defaults to --shadow-lg)
+// @css-var --flashcard-padding Padding of the faces (defaults to the size's spacing)
+// @css-var --flashcard-font-size Font size of the face content (defaults to the size's font size)
+// @css-var --flashcard-label-color Text color of the face captions
+// @css-var --flashcard-perspective Perspective of the 3D flip (defaults to 1200px)
+// @css-var --flashcard-duration Duration of the flip (defaults to 0.5s)
+.flashcard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  color: var(--text-color);
+  font-family: var(--font-family-sans);
+}
+
+.card {
+  display: grid;
+  min-width: 0;
+  border-radius: var(--flashcard-radius, var(--radius-lg));
+  perspective: var(--flashcard-perspective, 1200px);
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  -webkit-tap-highlight-color: transparent;
+
+  &.interactive {
+    cursor: pointer;
+  }
+
+  &:focus-visible {
+    outline-color: var(--focus-ring-color);
+  }
+}
+
+// Both faces share one grid cell: the card is as tall as the taller face
+// (no absolute positioning, so nothing collapses).
+.inner {
+  display: grid;
+  min-height: var(--flashcard-min-height, 12rem);
+  transform-style: preserve-3d;
+  transition: transform var(--flashcard-duration, 0.5s) cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+
+.face {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: var(--flashcard-padding, var(--space-5));
+  border: 1px solid transparent;
+  border-radius: var(--flashcard-radius, var(--radius-lg));
+  background-color: var(--flashcard-bg-color, var(--surface-color));
+  color: var(--text-color);
+  overflow-wrap: anywhere;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition: box-shadow var(--transition-base);
+
+  &[aria-hidden="true"] {
+    pointer-events: none;
+  }
+}
+
+.back {
+  transform: rotateY(180deg);
+}
+
+.axisX .back {
+  transform: rotateX(180deg);
+}
+
+.flipped .inner {
+  transform: rotateY(180deg);
+}
+
+.axisX.flipped .inner {
+  transform: rotateX(180deg);
+}
+
+.elevated .face {
+  box-shadow: var(--flashcard-shadow, var(--shadow-lg));
+}
+
+.outline .face {
+  border-color: var(--flashcard-border-color, var(--border-color));
+}
+
+.filled .face {
+  background-color: var(--flashcard-bg-color, var(--surface-muted-color));
+}
+
+.label {
+  color: var(--flashcard-label-color, var(--text-muted-color));
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.04em;
+  line-height: var(--line-height-tight);
+  text-transform: uppercase;
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  font-size: var(--flashcard-font-size, var(--font-size-lg));
+  line-height: var(--line-height-base);
+  text-align: center;
+}
+
+.hint {
+  color: var(--text-muted-color);
+  font-size: var(--font-size-xs);
+  text-align: center;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+
+  // Angular projects the footer into an always-rendered wrapper
+  &:empty {
+    display: none;
+  }
+}
+
+.small {
+  .face {
+    padding: var(--flashcard-padding, var(--space-3));
+  }
+
+  .content {
+    font-size: var(--flashcard-font-size, var(--font-size-md));
+  }
+}
+
+.large {
+  .face {
+    padding: var(--flashcard-padding, var(--space-6));
+  }
+
+  .content {
+    font-size: var(--flashcard-font-size, var(--font-size-xl));
+  }
+}
+
+.disabled .card {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+// Reduced motion: no rotation, the faces crossfade.
+@media (prefers-reduced-motion: reduce) {
+  .inner,
+  .flipped .inner,
+  .axisX.flipped .inner {
+    transform: none;
+    transition: none;
+  }
+
+  .face,
+  .back,
+  .axisX .back {
+    transform: none;
+    transition:
+      opacity 0.2s ease,
+      visibility 0.2s;
+  }
+
+  .face[aria-hidden="true"] {
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+
+@media (forced-colors: active) {
+  .face {
+    border-color: CanvasText;
+  }
+
+  .card:focus-visible {
+    outline-color: Highlight;
+  }
+}

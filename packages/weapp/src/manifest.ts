@@ -214,6 +214,34 @@ export const weappComponentManifest = [
     deviceE2E: false,
   },
   {
+    name: "SegmentedControl",
+    scope:
+      "Single-choice segmented switch from string/object options (text icon, label, disabled, aria-label) with controlled/default value and change { value }, three sizes, neutral/primary thumb, fullWidth, disabled/readOnly, radiogroup/radio semantics and an equal-width sliding thumb.",
+    limitations: [
+      "Icons are text only and there is no form field integration. DOM roving keyboard focus is not a native mini-program interaction.",
+    ],
+    tests: [
+      "src/segmented-control.test.ts: real native host state and callback workflows",
+      "src/parity.test.ts: native host mount",
+    ],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "Slider",
+    scope:
+      "Custom touch slider (not the host slider) with one or two non-crossing thumbs, min/max/step or marks-only snapping, step or labelled marks, controlled/default value with change { value } while dragging and changeend { value } on release, five colors, three sizes, value label, drag tooltip, formatValue/getAriaValueText through configure(), hidden named inputs and form context disabled/readOnly/invalid.",
+    limitations: [
+      "The track is measured with createSelectorQuery on touch start (cached afterwards); horizontal and left-to-right only. There is no keyboard or adjustable screen-reader gesture on native views (stepThumb(key, index) steps programmatically). A range submits two inputs with the same name, which native forms collapse to one value.",
+    ],
+    tests: [
+      "src/slider.test.ts: real native host touch, range and form workflows",
+      "src/parity.test.ts: native host mount",
+    ],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
     name: "WeekStrip",
     scope:
       "Shared core local-date arithmetic; the seven days of a week from firstDayOfWeek with controlled/default YYYY-MM-DD selection and week (an uncontrolled week follows the selection), today override, count/dot markers with localized accessible names, getDayLabel through configure(), previous/next week navigation with a localized month heading, weekday labels, size, disabled and readOnly.",
@@ -222,6 +250,77 @@ export const weappComponentManifest = [
     ],
     tests: [
       "src/week-strip.test.ts: real native host state and callback workflows",
+      "src/parity.test.ts: native host mount",
+    ],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "MediaPlayer",
+    scope:
+      "Video through the host <video> (controls off, driven by wx.createVideoContext: play/pause/seek/playbackRate/requestFullScreen) and audio through wx.createInnerAudioContext, under a themed control bar: play/pause, skip back/forward (skipSeconds), touch seek bar with the buffered range and aria-valuetext, m:ss / h:mm:ss time, mute, audio volume bar, playback-rate cycle button, video fullscreen, loading spinner and translated error state; startTime (video initial-time, audio startTime), autoPlay, loop, muted/defaultMuted, title, poster, height/aspectRatio; timeupdate/ended/play/pause/loadedmetadata/error/ratechange/volumechange events and play()/pause()/seek(seconds) instance methods. controls=false shows the host video's own controls.",
+    limitations: [
+      "Beta: needs device validation. The host video has no volume API (mute only, no volume bar); no picture-in-picture and no keyboard shortcuts; icons are text glyphs (no inline SVG in WXML).",
+    ],
+    tests: [
+      "src/media-player.test.ts: real native host state and callback workflows",
+      "src/parity.test.ts: native host mount",
+    ],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "KanbanBoard",
+    scope:
+      "Region around a scroll-view scroll-x of equal-width status columns: columnWidth, gap, height/maxHeight with vertically scrolling column bodies and a translated label.",
+    limitations: [
+      "No drag and drop: move cards with your own actions and update the columns' data. No scroll snapping, and fill does not stretch the columns (each column component host is the flex item); device geometry still requires validation.",
+    ],
+    tests: [
+      "src/kanban-board.test.ts: real native host rendering",
+      "src/parity.test.ts: native host mount",
+    ],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "KanbanColumn",
+    scope:
+      "Status column: accent dot (theme or CSS color), title (property or title slot), count badge announced with the title, description, actions/footer slots, role=list body and translated or custom empty text.",
+    limitations: [
+      "Slots cannot be inspected: the empty text shows when count is 0, and each card should carry role=listitem. Empty actions/footer slots keep their (collapsed) wrappers.",
+    ],
+    tests: [
+      "src/kanban-board.test.ts: real native host rendering",
+      "src/parity.test.ts: native host mount",
+    ],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "Flashcard",
+    scope:
+      "Two-sided study card: front/back/footer named slots with plain-text front/back properties, translated front/back captions and optional hint, controlled (flipped, null = uncontrolled) or defaultFlipped state with flippedchange, flipOnClick, disabled, y/x axis, elevated/outline/filled variants, three sizes and minHeight. Both faces share one CSS grid cell (the card fits the taller face); the hidden face is aria-hidden and the back is a polite live region.",
+    limitations: [
+      "Tap to flip only: no keyboard toggling and no prefers-reduced-motion crossfade in mini programs. The CSS 3D rotateY/rotateX flip, backface-visibility and the grid stack need the WebView renderer (Skyline does not support CSS grid or 3D transforms). Taps on interactive slotted content also flip the card (no DOM event path). The footer wrapper is always rendered (slot content cannot be detected).",
+    ],
+    tests: [
+      "src/flashcard.test.ts: real native host state and callback workflows",
+      "src/parity.test.ts: native host mount",
+    ],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "AnswerSheet",
+    scope:
+      "Shared core sections and counts: numbered question pills grouped by section (untitled section first), unanswered/answered/correct/wrong/skipped statuses, flag dot, controlled/default current question with aria-current=step, wrap/scroll layouts, fixed columns, localized item labels with getItemLabel through configure(), summary, legend, size, disabled and readOnly.",
+    limitations: [
+      "Items and groups are plain serializable arrays; selection is by tap. DOM roving keyboard focus is not a native mini-program interaction.",
+      "layout=scroll centres the current pill through the scroll-view scroll-left, measured with createSelectorQuery after each change (RTL is not mirrored).",
+    ],
+    tests: [
+      "src/answer-sheet.test.ts: real native host state and callback workflows",
       "src/parity.test.ts: native host mount",
     ],
     status: "partial",
@@ -672,11 +771,11 @@ export const weappComponentManifest = [
   {
     name: "CodeBlock",
     scope:
-      "Verbatim selectable source, wrap/horizontal scrolling, maxHeight, opt-in native clipboard copy with status/copied/error events.",
+      "Verbatim selectable source with syntax highlighting (core highlightCode rendered as nested text, never markup), opt-in line numbers and language label, wrap/horizontal scrolling, maxHeight, opt-in native clipboard copy of the raw text with status/copied/error events.",
     limitations: [
       "Native clipboard replaces document clipboard permissions; no DOM pre/ref/keyboard-scroll event objects.",
     ],
-    tests: ["src/basic-parity.test.ts"],
+    tests: ["src/basic-parity.test.ts", "src/code-block.test.ts"],
     status: "partial",
     deviceE2E: false,
   },
@@ -1457,9 +1556,10 @@ export const weappChartManifest = [
   {
     name: "QuadrantChart",
     scope:
-      "Quadrant matrix with the web props (points, domains, splits, quadrants, axis labels, showTicks, reverseX, labels, pointSize); pointclick, quadrantclick and pointdrag/pointdrop events.",
+      "Quadrant matrix with the web props (points, domains, splits, quadrants with badge/description, axis labels, showTicks, reverseX, labels, pointSize, showCounts, selectedIndex/selectedIndices rings); pointclick, quadrantclick and pointdrag/pointdrop events.",
     limitations: [
       "quadrantContent (ReactNode overlays) has no canvas equivalent: place host views with the layout event and toPixel().",
+      "renderQuadrantHeader, getPointProps and the accessible point layer (keyboard moves, focus ring) are React-only; showCounts takes no formatting function.",
       "Dragging is enabled by the draggable property (a native host cannot detect a bound pointdrop handler).",
     ],
     tests: ["src/charts.test.ts"],

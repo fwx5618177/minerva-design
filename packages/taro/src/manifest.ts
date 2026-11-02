@@ -325,6 +325,24 @@ const families: Array<{
     tests: ["packages/taro/src/parity.test.tsx"],
   },
   {
+    names: ["SegmentedControl"],
+    scope:
+      "Single-choice segmented switch from string/object options (icon, label, disabled, aria-label), controlled/uncontrolled value, three sizes, neutral/primary thumb, fullWidth, disabled and an equal-width sliding thumb.",
+    limitations: [
+      "H5 supports roving arrows (left-to-right only) and Home/End selection; native hosts use touch selection. Segments always share the width equally.",
+    ],
+    tests: ["packages/taro/src/segmented-control.test.tsx"],
+  },
+  {
+    names: ["Slider"],
+    scope:
+      "Custom touch slider (not the host slider) with one or two non-crossing thumbs, min/max/step or marks-only snapping, step or labelled marks, controlled/uncontrolled value, onChange while dragging and onChangeEnd on release, five colors, three sizes, value label, drag tooltip, hidden named inputs and FormControl disabled/readOnly/invalid.",
+    limitations: [
+      "The track is measured with createSelectorQuery on touch start (cached afterwards; a layout change is picked up on the next touch). Horizontal and left-to-right only. H5 supports arrow/PageUp/PageDown/Home/End keys on the focusable thumbs; native hosts use touch only and expose no adjustable accessibility actions.",
+    ],
+    tests: ["packages/taro/src/slider.test.tsx"],
+  },
+  {
     names: ["WeekStrip"],
     scope:
       "Seven-day strip with firstDayOfWeek, controlled/uncontrolled day and week, today ring, count badge/dot markers with translated day labels, previous/next week navigation and three sizes.",
@@ -332,6 +350,43 @@ const families: Array<{
       "H5 supports roving arrows and Home/End within the week (the navigation buttons change the week); native hosts use touch day selection.",
     ],
     tests: ["packages/taro/src/week-strip.test.tsx"],
+  },
+  {
+    names: ["AnswerSheet"],
+    scope:
+      "Numbered question pills grouped by section with unanswered/answered/correct/wrong/skipped statuses, flag dot, controlled/uncontrolled current question (aria-current=step), wrap/scroll layouts, fixed columns, translated item labels, summary and legend, and two sizes.",
+    limitations: [
+      "H5 supports arrow keys and Home/End across the pills (disabled pills are skipped; no row-wise ArrowUp/ArrowDown); native hosts use tap selection.",
+      "layout=scroll centres the current pill through the ScrollView scrollLeft, measured with createSelectorQuery after each change.",
+    ],
+    tests: ["packages/taro/src/answer-sheet.test.tsx"],
+  },
+  {
+    names: ["KanbanBoard", "KanbanColumn"],
+    scope:
+      "Board of status columns in a horizontal ScrollView (scrollX): equal-width columns (columnWidth), fill when they fit, gap, height/maxHeight with vertically scrolling column bodies, translated region label; columns with an accent dot (theme color or CSS color), title, count badge announced with the title, description, actions, role=list cards wrapped in listitems, translated or custom empty content and a footer.",
+    limitations: [
+      "No drag and drop: move cards with your own actions (menus, buttons) and update the columns' data. No scroll snapping on native hosts.",
+    ],
+    tests: ["packages/taro/src/kanban-board.test.tsx"],
+  },
+  {
+    names: ["MediaPlayer"],
+    scope:
+      "Video through the host <video> component (controls off, driven by createVideoContext: play/pause/seek/playbackRate/requestFullScreen) and audio through Taro.createInnerAudioContext, under a themed control bar: play/pause, skip back/forward (skipSeconds), touch seek bar with the buffered range and aria-valuetext, m:ss / h:mm:ss time, mute, audio volume bar, playback-rate cycle button, video fullscreen, loading spinner and translated error state; startTime (video initial-time, audio startTime), autoPlay, loop, muted/defaultMuted, title, poster, height/aspectRatio; onTimeUpdate/onEnded/onPlay/onPause/onLoadedMetadata/onError/onRateChange/onVolumeChange and a ref with play/pause/seek/context. controls={false} shows the host video's own controls.",
+    limitations: [
+      "Beta: needs device validation (WeChat / Alipay / H5 media behavior differs). The host video has no volume API (mute only, no volume bar); no picture-in-picture, no buffered range for audio on hosts that do not report InnerAudioContext.buffered, no keyboard shortcuts; icons are text glyphs (mini programs have no inline SVG).",
+    ],
+    tests: ["packages/taro/src/media-player.test.tsx"],
+  },
+  {
+    names: ["Flashcard"],
+    scope:
+      "Two-sided study card: front/back/footer nodes, translated front/back captions and optional hint, controlled/uncontrolled flipped with onFlippedChange, flipOnClick, disabled, y/x axis, elevated/outline/filled variants, three sizes and minHeight. Both faces share one CSS grid cell (the card fits the taller face); the hidden face is aria-hidden and the back is a polite live region.",
+    limitations: [
+      "Mini-program hosts flip on tap only (no keyboard) and ignore prefers-reduced-motion; the CSS 3D rotateY/rotateX flip and backface-visibility need the WebView renderer (Skyline does not support CSS grid or 3D transforms). On H5 the card is a toggle button with Enter/Space and taps on interactive face content do not flip it.",
+    ],
+    tests: ["packages/taro/src/flashcard.test.tsx"],
   },
   {
     names: ["DatePicker"],
@@ -426,11 +481,14 @@ const families: Array<{
       "Prose",
     ],
     scope:
-      "Safe native navigation, description/list composition, text wrapping and native clipboard code copying.",
+      "Safe native navigation, description/list composition, text wrapping and syntax-highlighted code (nested Text, opt-in line numbers / language label) with native clipboard copying.",
     limitations: [
       "Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent.",
     ],
-    tests: ["packages/taro/src/native-api.test.tsx"],
+    tests: [
+      "packages/taro/src/native-api.test.tsx",
+      "packages/taro/src/code-block.test.tsx",
+    ],
   },
   {
     names: ["HtmlPreview"],

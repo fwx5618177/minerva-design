@@ -6,6 +6,7 @@ import {
   isValidElement,
   useState,
   useEffect,
+  useMemo,
   useRef,
   useId,
   type ReactNode,
@@ -13,7 +14,15 @@ import {
 } from "react";
 import { View, Text, Image, Navigator } from "@tarojs/components";
 import Taro from "@tarojs/taro";
-import { cn, isSafeUrl, resolveSize } from "@minerva/core";
+import {
+  codeLanguageLabel,
+  cn,
+  highlightCode,
+  isSafeUrl,
+  resolveSize,
+  splitHighlightLines,
+  type HighlightToken,
+} from "@minerva/core";
 import { useI18n, useOptionalTheme, useThemeTokens } from "./theme";
 import { Drawer, Tooltip, type TooltipProps } from "./overlays";
 import { Button, type ButtonProps } from "./components";
@@ -1353,39 +1362,90 @@ export function CodeBlock({
   copyable = true,
   wrap = true,
   maxHeight,
+  highlight = true,
+  showLineNumbers = false,
+  showLanguage = false,
   ...props
 }: NativeProps & {
   code?: string;
+  /**
+   * Language of the code: highlights its syntax (nested Text with
+   * `mn-code-token-<type>` classes); without it the text is plain
+   */
   language?: string;
   copyable?: boolean;
   wrap?: boolean;
   maxHeight?: number | string;
+  /** Highlights the syntax of `language` (false: plain text) @default true */
+  highlight?: boolean;
+  /** Numbers the lines (aria-hidden gutter; one Text per line) @default false */
+  showLineNumbers?: boolean;
+  /** Shows the `language` as a small label in the toolbar @default false */
+  showLanguage?: boolean;
 }) {
   const { t } = useI18n();
   const [copied, setCopied] = useState(false);
+  const lang = language?.trim() || undefined;
+  const tokens = useMemo(
+    () =>
+      lang && highlight
+        ? highlightCode(code, lang)
+        : [{ type: null, text: code }],
+    [code, lang, highlight],
+  );
+  const label = showLanguage && lang ? codeLanguageLabel(lang) : "";
+  const spans = (list: readonly HighlightToken[]) =>
+    list.map(({ type, text }, i) =>
+      type ? (
+        <Text key={i} className={`mn-code-token-${type}`}>
+          {text}
+        </Text>
+      ) : (
+        text
+      ),
+    );
+  const codeStyle: CSSProperties = {
+    whiteSpace: wrap ? "pre-wrap" : "pre",
+    maxHeight,
+  };
   return (
     <Part name="code-block" {...props}>
-      <View className="mn-code-toolbar">
-        <Text>{language}</Text>
-        {copyable && (
-          <Button
-            variant="ghost"
-            onClick={async () => {
-              await Taro.setClipboardData({ data: code });
-              setCopied(true);
-            }}
-          >
-            {copied ? t("codeBlock.copied") : t("codeBlock.copy")}
-          </Button>
-        )}
-      </View>
-      <Text
-        selectable
-        className="mn-code"
-        style={{ whiteSpace: wrap ? "pre-wrap" : "pre", maxHeight }}
-      >
-        {code}
-      </Text>
+      {(label || copyable) && (
+        <View className="mn-code-toolbar">
+          <Text className="mn-code-language" aria-hidden>
+            {label}
+          </Text>
+          {copyable && (
+            <Button
+              variant="ghost"
+              onClick={async () => {
+                await Taro.setClipboardData({ data: code });
+                setCopied(true);
+              }}
+            >
+              {copied ? t("codeBlock.copied") : t("codeBlock.copy")}
+            </Button>
+          )}
+        </View>
+      )}
+      {showLineNumbers ? (
+        <View className="mn-code mn-code--lines" style={codeStyle}>
+          {splitHighlightLines(tokens).map((line, i) => (
+            <View key={i} className="mn-code-line">
+              <Text className="mn-code-line-number" aria-hidden>
+                {i + 1}
+              </Text>
+              <Text selectable className="mn-code-line-text">
+                {spans(line)}
+              </Text>
+            </View>
+          ))}
+        </View>
+      ) : (
+        <Text selectable className="mn-code" style={codeStyle}>
+          {lang && highlight ? spans(tokens) : code}
+        </Text>
+      )}
     </Part>
   );
 }

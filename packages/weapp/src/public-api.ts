@@ -85,6 +85,16 @@ const configurations: Record<string, Method> = {
     "configure(config: WeekStripConfig): void",
     "getDayLabel(day, marker) names a day for assistive technologies; dates are serialized YYYY-MM-DD.",
   ),
+  slider: method(
+    "configure",
+    "configure(config: SliderConfig): void",
+    "formatValue(value) formats the value label, tooltip and aria-valuetext; getAriaValueText(value, index) names a thumb value for assistive technologies.",
+  ),
+  answerSheet: method(
+    "configure",
+    "configure(config: AnswerSheetConfig): void",
+    "getItemLabel(item, index) names a question pill for assistive technologies.",
+  ),
   pagination: method(
     "configure",
     "configure(config: PaginationConfig): void",
@@ -488,12 +498,59 @@ const events: Record<string, Event[]> = {
       "Original selected calendar event.",
     ),
   ],
+  segmentedControl: [value],
+  slider: [
+    value,
+    event(
+      "changeend",
+      "{ value: number | [number, number] }",
+      "Final value when the touch ends: save here.",
+    ),
+  ],
+  flashcard: [
+    event(
+      "flippedchange",
+      "{ flipped: boolean }",
+      "Requested face (true: the back); a controlled owner must publish the accepted flipped prop.",
+    ),
+  ],
+  answerSheet: [value],
   weekStrip: [
     value,
     event(
       "weekchange",
       "{ week: string }",
       "Requested YYYY-MM-DD first day of the visible week.",
+    ),
+  ],
+  mediaPlayer: [
+    event("play", "{}", "Playback started."),
+    event("pause", "{}", "Playback paused."),
+    event("ended", "{}", "Playback reached the end."),
+    event(
+      "timeupdate",
+      "{ currentTime: number; duration: number }",
+      "Playhead position and duration, in seconds.",
+    ),
+    event(
+      "loadedmetadata",
+      "{ duration: number }",
+      "The duration is known (once per source).",
+    ),
+    event(
+      "error",
+      "{ error: unknown }",
+      "The host media failed (host error detail).",
+    ),
+    event(
+      "ratechange",
+      "{ rate: number }",
+      "The speed button changed the rate.",
+    ),
+    event(
+      "volumechange",
+      "{ volume: number; muted: boolean }",
+      "Mute button or audio volume bar (video volume stays 1).",
     ),
   ],
   pagination: [
@@ -735,6 +792,20 @@ export function annotateNativeApi(controls: Record<string, Control>) {
           "paste",
           "paste(text: string, start?: number, end?: number): void",
           "Insert delimited clipboard text at the supplied draft selection; native input does not expose browser clipboard ranges.",
+        ),
+      );
+    if (name === "mediaPlayer")
+      methods.push(
+        method(
+          "play",
+          "play(): void",
+          "Start playback through the host media context.",
+        ),
+        method("pause", "pause(): void", "Pause playback."),
+        method(
+          "seek",
+          "seek(seconds: number): void",
+          "Move the playhead (clamped to the duration).",
         ),
       );
     if (name === "confirmProvider")

@@ -490,6 +490,346 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/components/answer-sheet/answer-sheet.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A grid of numbered pills to jump between the questions of a practice or\nexam session (`<AnswerSheet>` of React): a `nav` landmark of buttons,\ngrouped by section (`groups`), each with a status (unanswered, answered,\ncorrect, wrong, skipped) and an optional flag. The current question\ncarries `aria-current=\"step\"`. Keyboard: one tab stop (roving\n`tabindex`); ArrowLeft / ArrowRight move in order (RTL swaps them),\nArrowUp / ArrowDown by a row, Home / End to the ends, Enter / Space\nselect.\n\nSelecting a question updates `value` and fires `minerva-change`.",
+          "name": "MinervaAnswerSheet",
+          "cssParts": [
+            {
+              "description": "The outermost element (a `nav` landmark)",
+              "name": "root"
+            },
+            {
+              "description": "The \"12 / 20 answered\" summary (with `show-summary`)",
+              "name": "total"
+            },
+            {
+              "description": "A section of questions (`role=group` when titled)",
+              "name": "group"
+            },
+            {
+              "description": "The title of a section",
+              "name": "group-label"
+            },
+            {
+              "description": "The element holding the pills of a section",
+              "name": "grid"
+            },
+            {
+              "description": "A question pill (a button)",
+              "name": "item"
+            },
+            {
+              "description": "Item state of `item`: the current question",
+              "name": "item--current"
+            },
+            {
+              "description": "Item state of `item`: disabled",
+              "name": "item--disabled"
+            },
+            {
+              "description": "Item state of `item`: flagged",
+              "name": "item--flagged"
+            },
+            {
+              "description": "Item state of `item`: status unanswered",
+              "name": "item--status-unanswered"
+            },
+            {
+              "description": "Item state of `item`: status answered",
+              "name": "item--status-answered"
+            },
+            {
+              "description": "Item state of `item`: status correct",
+              "name": "item--status-correct"
+            },
+            {
+              "description": "Item state of `item`: status wrong",
+              "name": "item--status-wrong"
+            },
+            {
+              "description": "Item state of `item`: status skipped",
+              "name": "item--status-skipped"
+            },
+            {
+              "description": "The flag dot of a flagged question",
+              "name": "indicator"
+            },
+            {
+              "description": "The legend of the statuses (with `show-legend`)",
+              "name": "legend"
+            },
+            {
+              "description": "An entry of the legend",
+              "name": "legend-item"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "items",
+              "type": {
+                "text": "readonly AnswerSheetItem[]"
+              },
+              "default": "[]",
+              "description": "The questions, in order"
+            },
+            {
+              "kind": "field",
+              "name": "groups",
+              "type": {
+                "text": "readonly AnswerSheetGroup[] | undefined"
+              },
+              "description": "Titled sections, in display order (items render under the group whose key matches `item.group`)"
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Key of the current question",
+              "attribute": "value",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "size",
+              "type": {
+                "text": "\"small\" | \"medium\""
+              },
+              "default": "\"medium\"",
+              "description": "Pill density",
+              "attribute": "size",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "layout",
+              "type": {
+                "text": "\"wrap\" | \"scroll\""
+              },
+              "default": "\"wrap\"",
+              "description": "\"wrap\" wraps the pills on several rows; \"scroll\" keeps a single horizontally scrolling row",
+              "attribute": "layout",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "columns",
+              "type": {
+                "text": "number | undefined"
+              },
+              "description": "Fixed number of columns (ArrowUp / ArrowDown move by a row); ignored with layout=\"scroll\"",
+              "attribute": "columns"
+            },
+            {
+              "kind": "field",
+              "name": "showLegend",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Shows a legend of the statuses present (and of the flag)",
+              "attribute": "show-legend",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "showSummary",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Shows the number of answered questions (\"12 / 20 answered\")",
+              "attribute": "show-summary",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Disables the whole sheet",
+              "attribute": "disabled",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "getItemLabel",
+              "type": {
+                "text": "(item: AnswerSheetItem, index: number) => string | undefined"
+              },
+              "description": "Accessible name of a pill, from the item and its display index (default: \"Question <n>, <status>\", localized)"
+            },
+            {
+              "kind": "method",
+              "name": "focus",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "options",
+                  "optional": true,
+                  "type": {
+                    "text": "FocusOptions"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "description": "The user selected a question (`detail: { value }`, its key)",
+              "name": "minerva-change"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "value",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Key of the current question",
+              "fieldName": "value"
+            },
+            {
+              "name": "size",
+              "type": {
+                "text": "\"small\" | \"medium\""
+              },
+              "default": "\"medium\"",
+              "description": "Pill density",
+              "fieldName": "size"
+            },
+            {
+              "name": "layout",
+              "type": {
+                "text": "\"wrap\" | \"scroll\""
+              },
+              "default": "\"wrap\"",
+              "description": "\"wrap\" wraps the pills on several rows; \"scroll\" keeps a single horizontally scrolling row",
+              "fieldName": "layout"
+            },
+            {
+              "name": "columns",
+              "type": {
+                "text": "number | undefined"
+              },
+              "description": "Fixed number of columns (ArrowUp / ArrowDown move by a row); ignored with layout=\"scroll\"",
+              "fieldName": "columns"
+            },
+            {
+              "name": "show-legend",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Shows a legend of the statuses present (and of the flag)",
+              "fieldName": "showLegend"
+            },
+            {
+              "name": "show-summary",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Shows the number of answered questions (\"12 / 20 answered\")",
+              "fieldName": "showSummary"
+            },
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Disables the whole sheet",
+              "fieldName": "disabled"
+            }
+          ],
+          "tagName": "minerva-answer-sheet",
+          "customElement": true,
+          "summary": "A question navigator: numbered pills with statuses, grouped by section.",
+          "cssProperties": [
+            {
+              "name": "--answer-sheet-gap",
+              "description": "Space between the pills (defaults to --space-2; --space-1-5 with size=\"small\")"
+            },
+            {
+              "name": "--answer-sheet-item-size",
+              "description": "Minimum width and height of a pill (defaults to 2rem; 1.75rem with size=\"small\")"
+            },
+            {
+              "name": "--answer-sheet-radius",
+              "description": "Corner radius of the pills (defaults to --radius-md)"
+            },
+            {
+              "name": "--answer-sheet-item-background",
+              "description": "Background of an unanswered pill"
+            },
+            {
+              "name": "--answer-sheet-answered-background",
+              "description": "Background of an answered pill (defaults to --primary-color-subtle)"
+            },
+            {
+              "name": "--answer-sheet-answered-color",
+              "description": "Text color of an answered pill"
+            },
+            {
+              "name": "--answer-sheet-correct-background",
+              "description": "Background of a correct pill (defaults to --success-color-subtle)"
+            },
+            {
+              "name": "--answer-sheet-correct-color",
+              "description": "Text color of a correct pill"
+            },
+            {
+              "name": "--answer-sheet-wrong-background",
+              "description": "Background of a wrong pill (defaults to --danger-color-subtle)"
+            },
+            {
+              "name": "--answer-sheet-wrong-color",
+              "description": "Text color of a wrong pill"
+            },
+            {
+              "name": "--answer-sheet-current-background",
+              "description": "Background of the current pill (defaults to --primary-color)"
+            },
+            {
+              "name": "--answer-sheet-current-color",
+              "description": "Text color of the current pill"
+            },
+            {
+              "name": "--answer-sheet-flag-color",
+              "description": "Color of the flag dot (defaults to --warning-color)"
+            },
+            {
+              "name": "--answer-sheet-title-color",
+              "description": "Text color of the group titles and the summary"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "MinervaAnswerSheet",
+          "declaration": {
+            "name": "MinervaAnswerSheet",
+            "module": "src/components/answer-sheet/answer-sheet.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/components/app-shell/app-shell.ts",
       "declarations": [
         {
@@ -7436,6 +7776,33 @@
             },
             {
               "kind": "field",
+              "name": "showCounts",
+              "type": {
+                "text": "QuadrantConfig[\"showCounts\"]"
+              },
+              "default": "false",
+              "description": "Shows the number of points of each quadrant after its title; as a property, a function `(count, points) => text` returns the text",
+              "attribute": "show-counts"
+            },
+            {
+              "kind": "field",
+              "name": "selectedIndex",
+              "type": {
+                "text": "number | null | undefined"
+              },
+              "description": "Index of the selected dot, drawn with a ring (`null`: none)",
+              "attribute": "selected-index"
+            },
+            {
+              "kind": "field",
+              "name": "selectedIndices",
+              "type": {
+                "text": "readonly number[] | undefined"
+              },
+              "description": "Indices of the selected dots; property only"
+            },
+            {
+              "kind": "field",
               "name": "options",
               "type": {
                 "text": "Omit<ChartOptions, \"series\"> | undefined"
@@ -7669,6 +8036,23 @@
               "default": "false",
               "description": "Lets the user drag the dots (`minerva-point-drag`, `minerva-point-drop`)",
               "fieldName": "dragPoints"
+            },
+            {
+              "name": "show-counts",
+              "type": {
+                "text": "QuadrantConfig[\"showCounts\"]"
+              },
+              "default": "false",
+              "description": "Shows the number of points of each quadrant after its title; as a property, a function `(count, points) => text` returns the text",
+              "fieldName": "showCounts"
+            },
+            {
+              "name": "selected-index",
+              "type": {
+                "text": "number | null | undefined"
+              },
+              "description": "Index of the selected dot, drawn with a ring (`null`: none)",
+              "fieldName": "selectedIndex"
             },
             {
               "name": "height",
@@ -9678,6 +10062,16 @@
             },
             {
               "kind": "field",
+              "name": "barLabels",
+              "type": {
+                "text": "boolean | \"inside\" | \"auto\""
+              },
+              "default": "\"auto\"",
+              "description": "Writes the task names inside the bars: `auto` when several tasks share a\nrow (default), `true` / `inside` always, `false` never",
+              "attribute": "bar-labels"
+            },
+            {
+              "kind": "field",
               "name": "formatProgress",
               "type": {
                 "text": "(share: number) => string | undefined"
@@ -9851,6 +10245,15 @@
               },
               "description": "Color of the dependency arrows (any CSS color); the secondary text color by default",
               "fieldName": "dependencyColor"
+            },
+            {
+              "name": "bar-labels",
+              "type": {
+                "text": "boolean | \"inside\" | \"auto\""
+              },
+              "default": "\"auto\"",
+              "description": "Writes the task names inside the bars: `auto` when several tasks share a\nrow (default), `true` / `inside` always, `false` never",
+              "fieldName": "barLabels"
             },
             {
               "name": "today-label",
@@ -13276,7 +13679,7 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "A read-only block of preformatted text: logs, payloads, configuration\n(`<CodeBlock>` of React). It is a named, keyboard-focusable region so\nits overflow can be scrolled without a mouse.\n\nThe text is the `code` property, else the element's text content\n(rendered verbatim, never parsed as HTML; escape `<` in markup or set\n`code`). `language` shows a small language label and sets\n`class=\"language-<x>\"` / `data-language` on the `<code>`. With\n`copyable`, a copy button writes the text to the clipboard; its label\nswitches to \"Copied\" / \"Copy failed\" for two seconds and the result is\nannounced through a polite live region.",
+          "description": "A read-only block of preformatted text: logs, payloads, configuration\n(`<CodeBlock>` of React). It is a named, keyboard-focusable region so\nits overflow can be scrolled without a mouse.\n\nThe text is the `code` property, else the element's text content\n(rendered verbatim, never parsed as HTML; escape `<` in markup or set\n`code`). `language` highlights the syntax (colored spans, see\n`--code-token-<type>-color`; `no-highlight` keeps plain text) and sets\n`class=\"language-<x>\"` / `data-language` on the `<code>`;\n`show-language` shows it as a small label, `show-line-numbers` numbers\nthe lines. With\n`copyable`, a copy button writes the text to the clipboard; its label\nswitches to \"Copied\" / \"Copy failed\" for two seconds and the result is\nannounced through a polite live region.",
           "name": "MinervaCodeBlock",
           "cssParts": [
             {
@@ -13292,7 +13695,11 @@
               "name": "code"
             },
             {
-              "description": "The language label",
+              "description": "The number of a line, in the gutter (with show-line-numbers; aria-hidden, generated content)",
+              "name": "line-number"
+            },
+            {
+              "description": "The language label (with show-language)",
               "name": "language"
             },
             {
@@ -13316,8 +13723,41 @@
               "type": {
                 "text": "string | undefined"
               },
-              "description": "Language of the code, shown as a label (e.g. \"json\", \"bash\")",
+              "description": "Language of the code: highlights its syntax (javascript / js, typescript\n/ ts, jsx, tsx, json, css / scss, html / xml / vue, bash / sh, python /\npy, yaml, sql, diff, markdown / md; other names render plain text) and\nsets `class=\"language-<x>\"` / `data-language` on the `<code>`",
               "attribute": "language",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "noHighlight",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Keeps the code plain (no syntax highlighting) despite `language` (the React library's `highlight={false}`)",
+              "attribute": "no-highlight",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "showLineNumbers",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Numbers the lines in a gutter (aria-hidden, not part of the copied text)",
+              "attribute": "show-line-numbers",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "showLanguage",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Shows the `language` as a small label in the top-right corner (e.g. \"JSON\")",
+              "attribute": "show-language",
               "reflects": true
             },
             {
@@ -13392,8 +13832,35 @@
               "type": {
                 "text": "string | undefined"
               },
-              "description": "Language of the code, shown as a label (e.g. \"json\", \"bash\")",
+              "description": "Language of the code: highlights its syntax (javascript / js, typescript\n/ ts, jsx, tsx, json, css / scss, html / xml / vue, bash / sh, python /\npy, yaml, sql, diff, markdown / md; other names render plain text) and\nsets `class=\"language-<x>\"` / `data-language` on the `<code>`",
               "fieldName": "language"
+            },
+            {
+              "name": "no-highlight",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Keeps the code plain (no syntax highlighting) despite `language` (the React library's `highlight={false}`)",
+              "fieldName": "noHighlight"
+            },
+            {
+              "name": "show-line-numbers",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Numbers the lines in a gutter (aria-hidden, not part of the copied text)",
+              "fieldName": "showLineNumbers"
+            },
+            {
+              "name": "show-language",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Shows the `language` as a small label in the top-right corner (e.g. \"JSON\")",
+              "fieldName": "showLanguage"
             },
             {
               "name": "no-wrap",
@@ -13425,7 +13892,7 @@
           ],
           "tagName": "minerva-code-block",
           "customElement": true,
-          "summary": "Read-only, scrollable code region with optional copy button.",
+          "summary": "Read-only, scrollable code region with syntax highlighting and an optional copy button.",
           "cssProperties": [
             {
               "name": "--code-block-padding",
@@ -13450,6 +13917,10 @@
             {
               "name": "--code-block-max-height",
               "description": "Maximum height before the block scrolls (default: none)"
+            },
+            {
+              "name": "--code-block-line-number-color",
+              "description": "Color of the line numbers"
             },
             {
               "name": "--icon-button-color",
@@ -17529,6 +18000,397 @@
           "declaration": {
             "name": "MinervaEmpty",
             "module": "src/components/empty/empty.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/flashcard/flashcard.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A two-sided study card (`<Flashcard>` of React) that flips between a front\n(the prompt) and a back (the answer) with a 3D rotation (a crossfade under\n`prefers-reduced-motion`). Both faces share one grid cell, so the card is\nas tall as the taller face. The card is a toggle button (`aria-pressed`\nwhile the back shows): click, Enter or Space flips it, except clicks on\ninteractive slotted content. The hidden face is `inert`; the back is a\npolite live region, so the revealed answer is announced. The `footer`\nslot (e.g. rating buttons) sits below the card and does not flip.\n\nUser flips update `flipped` and fire the cancelable\n`minerva-flipped-change` (`preventDefault()` keeps the current face).",
+          "name": "MinervaFlashcard",
+          "cssParts": [
+            {
+              "description": "The outermost element (card and footer)",
+              "name": "root"
+            },
+            {
+              "description": "The flipping card (`role=button` while flip-on-click); holds both faces",
+              "name": "card"
+            },
+            {
+              "description": "The front face (the prompt)",
+              "name": "front"
+            },
+            {
+              "description": "The back face (the answer)",
+              "name": "back"
+            },
+            {
+              "description": "The small caption of a face",
+              "name": "label"
+            },
+            {
+              "description": "The flip hint on the front face (with `show-hint`)",
+              "name": "hint"
+            },
+            {
+              "description": "The footer below the card (not flipped)",
+              "name": "footer"
+            }
+          ],
+          "slots": [
+            {
+              "description": "Content of the front face (the prompt; falls back to the `front` attribute)",
+              "name": "front"
+            },
+            {
+              "description": "Content of the back face (the answer; falls back to the `back` attribute)",
+              "name": "back"
+            },
+            {
+              "description": "Content below the card, not flipped (e.g. rating buttons)",
+              "name": "footer"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "front",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Text of the front face (the prompt); the `front` slot wins",
+              "attribute": "front"
+            },
+            {
+              "kind": "field",
+              "name": "back",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Text of the back face (the answer); the `back` slot wins",
+              "attribute": "back"
+            },
+            {
+              "kind": "field",
+              "name": "frontLabel",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Caption of the front face (default: localized \"Question\"; \"\" hides it)",
+              "attribute": "front-label"
+            },
+            {
+              "kind": "field",
+              "name": "backLabel",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Caption of the back face (default: localized \"Answer\"; \"\" hides it)",
+              "attribute": "back-label"
+            },
+            {
+              "kind": "field",
+              "name": "hint",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Hint on the front face (default: localized \"Click or press Space to flip\")",
+              "attribute": "hint"
+            },
+            {
+              "kind": "field",
+              "name": "showHint",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Shows the hint on the front face (while the card flips on click)",
+              "attribute": "show-hint",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "flipped",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether the back is shown",
+              "attribute": "flipped",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "flipOnClick",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "true",
+              "description": "Clicking the card (or Enter / Space on it) flips it; when false only `flipped` flips it",
+              "attribute": "flip-on-click"
+            },
+            {
+              "kind": "field",
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Blocks flipping and dims the card",
+              "attribute": "disabled",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "axis",
+              "type": {
+                "text": "\"y\" | \"x\""
+              },
+              "default": "\"y\"",
+              "description": "Rotation axis: \"y\" flips horizontally, \"x\" vertically",
+              "attribute": "axis",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "variant",
+              "type": {
+                "text": "\"elevated\" | \"outline\" | \"filled\""
+              },
+              "default": "\"elevated\"",
+              "description": "Surface style",
+              "attribute": "variant",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "size",
+              "type": {
+                "text": "\"small\" | \"medium\" | \"large\""
+              },
+              "default": "\"medium\"",
+              "description": "Padding and typography scale",
+              "attribute": "size",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "minHeight",
+              "type": {
+                "text": "string | number"
+              },
+              "default": "\"12rem\"",
+              "description": "Minimum height of the card (CSS length; a number is in px); the card grows to fit the taller face",
+              "attribute": "min-height"
+            },
+            {
+              "kind": "method",
+              "name": "focus",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "options",
+                  "optional": true,
+                  "type": {
+                    "text": "FocusOptions"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "toggle",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Flips the card (as a user flip: fires `minerva-flipped-change`)"
+            }
+          ],
+          "events": [
+            {
+              "description": "The user flipped the card (`detail: { flipped }`); cancelable",
+              "name": "minerva-flipped-change"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "front",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Text of the front face (the prompt); the `front` slot wins",
+              "fieldName": "front"
+            },
+            {
+              "name": "back",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Text of the back face (the answer); the `back` slot wins",
+              "fieldName": "back"
+            },
+            {
+              "name": "front-label",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Caption of the front face (default: localized \"Question\"; \"\" hides it)",
+              "fieldName": "frontLabel"
+            },
+            {
+              "name": "back-label",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Caption of the back face (default: localized \"Answer\"; \"\" hides it)",
+              "fieldName": "backLabel"
+            },
+            {
+              "name": "hint",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Hint on the front face (default: localized \"Click or press Space to flip\")",
+              "fieldName": "hint"
+            },
+            {
+              "name": "show-hint",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Shows the hint on the front face (while the card flips on click)",
+              "fieldName": "showHint"
+            },
+            {
+              "name": "flipped",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Whether the back is shown",
+              "fieldName": "flipped"
+            },
+            {
+              "name": "flip-on-click",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "true",
+              "description": "Clicking the card (or Enter / Space on it) flips it; when false only `flipped` flips it",
+              "fieldName": "flipOnClick"
+            },
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Blocks flipping and dims the card",
+              "fieldName": "disabled"
+            },
+            {
+              "name": "axis",
+              "type": {
+                "text": "\"y\" | \"x\""
+              },
+              "default": "\"y\"",
+              "description": "Rotation axis: \"y\" flips horizontally, \"x\" vertically",
+              "fieldName": "axis"
+            },
+            {
+              "name": "variant",
+              "type": {
+                "text": "\"elevated\" | \"outline\" | \"filled\""
+              },
+              "default": "\"elevated\"",
+              "description": "Surface style",
+              "fieldName": "variant"
+            },
+            {
+              "name": "size",
+              "type": {
+                "text": "\"small\" | \"medium\" | \"large\""
+              },
+              "default": "\"medium\"",
+              "description": "Padding and typography scale",
+              "fieldName": "size"
+            },
+            {
+              "name": "min-height",
+              "type": {
+                "text": "string | number"
+              },
+              "default": "\"12rem\"",
+              "description": "Minimum height of the card (CSS length; a number is in px); the card grows to fit the taller face",
+              "fieldName": "minHeight"
+            }
+          ],
+          "tagName": "minerva-flashcard",
+          "customElement": true,
+          "summary": "A two-sided study card that flips between a prompt and an answer.",
+          "cssProperties": [
+            {
+              "name": "--flashcard-min-height",
+              "description": "Minimum height of the card (defaults to 12rem; the minHeight prop sets it); the card grows to fit the taller face"
+            },
+            {
+              "name": "--flashcard-bg-color",
+              "description": "Background color of the faces (defaults to --surface-color, --surface-muted-color with variant=\"filled\")"
+            },
+            {
+              "name": "--flashcard-border-color",
+              "description": "Border color of the faces (variant=\"outline\")"
+            },
+            {
+              "name": "--flashcard-radius",
+              "description": "Corner radius of the faces (defaults to --radius-lg)"
+            },
+            {
+              "name": "--flashcard-shadow",
+              "description": "Shadow of the faces (variant=\"elevated\"; defaults to --shadow-lg)"
+            },
+            {
+              "name": "--flashcard-padding",
+              "description": "Padding of the faces (defaults to the size's spacing)"
+            },
+            {
+              "name": "--flashcard-font-size",
+              "description": "Font size of the face content (defaults to the size's font size)"
+            },
+            {
+              "name": "--flashcard-label-color",
+              "description": "Text color of the face captions"
+            },
+            {
+              "name": "--flashcard-perspective",
+              "description": "Perspective of the 3D flip (defaults to 1200px)"
+            },
+            {
+              "name": "--flashcard-duration",
+              "description": "Duration of the flip (defaults to 0.5s)"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "MinervaFlashcard",
+          "declaration": {
+            "name": "MinervaFlashcard",
+            "module": "src/components/flashcard/flashcard.ts"
           }
         }
       ]
@@ -22104,6 +22966,410 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/components/kanban-board/kanban-board.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A horizontally scrolling board of status columns (`<KanbanBoard>` of\nReact): put `minerva-kanban-column` elements in it. Columns share one\nwidth (`column-width`, 18rem by default); `fill` stretches them equally\nwhen they fit; `height` / `max-height` bound the board so that the column\nbodies scroll vertically. The board is a labelled `role=\"region\"` (name:\nthe host's `aria-label` / `aria-labelledby`, else localized \"Board\") and\na tab stop, so the keyboard can scroll it; on narrow screens the columns\nkeep their width and snap while scrolling.\n\nDrag and drop is not built in: move cards with your own actions (a menu,\nbuttons) and update the columns.",
+          "name": "MinervaKanbanBoard",
+          "cssParts": [
+            {
+              "description": "The scrolling `role=region` row of columns",
+              "name": "root"
+            }
+          ],
+          "slots": [
+            {
+              "description": "The columns (`minerva-kanban-column`)",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "columnWidth",
+              "type": {
+                "text": "KanbanLength"
+              },
+              "default": "\"18rem\"",
+              "description": "Width of every column (a number is pixels); with `fill` the minimum width",
+              "attribute": "column-width"
+            },
+            {
+              "kind": "field",
+              "name": "fill",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Stretches the columns equally to fill the board when they fit",
+              "attribute": "fill",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "gap",
+              "type": {
+                "text": "KanbanLength"
+              },
+              "default": "\"0.75rem\"",
+              "description": "Space between the columns (a number is pixels)",
+              "attribute": "gap"
+            },
+            {
+              "kind": "field",
+              "name": "height",
+              "type": {
+                "text": "KanbanLength | undefined"
+              },
+              "description": "Height of the board: the column bodies scroll vertically within it (a number is pixels)",
+              "attribute": "height"
+            },
+            {
+              "kind": "field",
+              "name": "maxHeight",
+              "type": {
+                "text": "KanbanLength | undefined"
+              },
+              "description": "Maximum height of the board: the column bodies scroll vertically within it (a number is pixels)",
+              "attribute": "max-height"
+            },
+            {
+              "kind": "method",
+              "name": "focus",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "options",
+                  "optional": true,
+                  "type": {
+                    "text": "FocusOptions"
+                  }
+                }
+              ]
+            }
+          ],
+          "attributes": [
+            {
+              "name": "column-width",
+              "type": {
+                "text": "KanbanLength"
+              },
+              "default": "\"18rem\"",
+              "description": "Width of every column (a number is pixels); with `fill` the minimum width",
+              "fieldName": "columnWidth"
+            },
+            {
+              "name": "fill",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Stretches the columns equally to fill the board when they fit",
+              "fieldName": "fill"
+            },
+            {
+              "name": "gap",
+              "type": {
+                "text": "KanbanLength"
+              },
+              "default": "\"0.75rem\"",
+              "description": "Space between the columns (a number is pixels)",
+              "fieldName": "gap"
+            },
+            {
+              "name": "height",
+              "type": {
+                "text": "KanbanLength | undefined"
+              },
+              "description": "Height of the board: the column bodies scroll vertically within it (a number is pixels)",
+              "fieldName": "height"
+            },
+            {
+              "name": "max-height",
+              "type": {
+                "text": "KanbanLength | undefined"
+              },
+              "description": "Maximum height of the board: the column bodies scroll vertically within it (a number is pixels)",
+              "fieldName": "maxHeight"
+            }
+          ],
+          "tagName": "minerva-kanban-board",
+          "customElement": true,
+          "summary": "Horizontally scrolling board of status columns.",
+          "cssProperties": [
+            {
+              "name": "--kanban-column-width",
+              "description": "Width of the columns (defaults to 18rem; the columnWidth prop sets it; with fill it is the minimum width)"
+            },
+            {
+              "name": "--kanban-gap",
+              "description": "Space between the columns (defaults to 0.75rem; the gap prop sets it)"
+            },
+            {
+              "name": "--kanban-column-background",
+              "description": "Background of a column (defaults to --surface-muted-color)"
+            },
+            {
+              "name": "--kanban-column-border-color",
+              "description": "Border color of a column (defaults to --border-color)"
+            },
+            {
+              "name": "--kanban-column-radius",
+              "description": "Corner radius of a column (defaults to --radius-lg)"
+            },
+            {
+              "name": "--kanban-column-color",
+              "description": "Accent of a column: the dot before the title (the color prop sets it for a custom CSS color)"
+            },
+            {
+              "name": "--kanban-card-gap",
+              "description": "Space between the cards of a column (defaults to --space-2)"
+            },
+            {
+              "name": "--kanban-count-background",
+              "description": "Background of the count badge (defaults to --surface-color)"
+            },
+            {
+              "name": "--kanban-count-color",
+              "description": "Text color of the count badge (defaults to --text-secondary-color)"
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "description": "A status column of a `minerva-kanban-board` (`<KanbanColumn>` of React).\nThe header shows an optional accent dot (`color`: a theme color or any\nCSS color), the `heading`, a `count` badge and the `actions` slot; the\ncards (default slot) form a `role=\"list\"` that scrolls vertically within a\nbounded board (each slotted card without a role gets `role=\"listitem\"`;\nthere is no wrapper); `empty-text` / the `empty` slot (default: localized\n\"No items\") replaces the list when there are no cards, and the `footer`\nslot sits below. The column is a `role=\"group\"` named by its heading and\ncount (\"To do, 3 items\").",
+          "name": "MinervaKanbanColumn",
+          "cssParts": [
+            {
+              "description": "The `role=group` column (state `color-<name>` for a theme accent)",
+              "name": "root"
+            },
+            {
+              "description": "The header row (accent, title, count, actions)",
+              "name": "header"
+            },
+            {
+              "description": "The accent dot before the title (with `color`)",
+              "name": "indicator"
+            },
+            {
+              "description": "The title of the column",
+              "name": "title"
+            },
+            {
+              "description": "The count badge (with `count`)",
+              "name": "count"
+            },
+            {
+              "description": "The header actions (with the `actions` slot)",
+              "name": "actions"
+            },
+            {
+              "description": "The supporting text (with a description)",
+              "name": "description"
+            },
+            {
+              "description": "The `role=list` body holding the cards",
+              "name": "list"
+            },
+            {
+              "description": "The empty content shown instead of the list",
+              "name": "empty"
+            },
+            {
+              "description": "The footer (with the `footer` slot)",
+              "name": "footer"
+            }
+          ],
+          "slots": [
+            {
+              "description": "The cards (each gets `role=\"listitem\"` unless it has a role)",
+              "name": ""
+            },
+            {
+              "description": "Rich title (alternative to the `heading` attribute)",
+              "name": "heading"
+            },
+            {
+              "description": "Header controls on the end side (e.g. an add button)",
+              "name": "actions"
+            },
+            {
+              "description": "Supporting text (alternative to the `description` attribute)",
+              "name": "description"
+            },
+            {
+              "description": "Content shown when there are no cards (default: `empty-text`, else localized \"No items\")",
+              "name": "empty"
+            },
+            {
+              "description": "Footer below the cards (e.g. an \"Add card\" button)",
+              "name": "footer"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "heading",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Title of the column (also its accessible name; or use the `heading` slot)",
+              "attribute": "heading"
+            },
+            {
+              "kind": "field",
+              "name": "count",
+              "type": {
+                "text": "number | undefined"
+              },
+              "description": "Number of items shown as a badge (and announced with the title); unset hides it",
+              "attribute": "count"
+            },
+            {
+              "kind": "field",
+              "name": "color",
+              "type": {
+                "text": "KanbanColumnColor | undefined"
+              },
+              "description": "Accent: a theme color (primary, success, warning, danger, info, neutral) or any CSS color",
+              "attribute": "color",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "description",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Supporting text under the header (or use the `description` slot)",
+              "attribute": "description"
+            },
+            {
+              "kind": "field",
+              "name": "emptyText",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Text shown when there are no cards (default: localized \"No items\"; or use the `empty` slot)",
+              "attribute": "empty-text"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "heading",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Title of the column (also its accessible name; or use the `heading` slot)",
+              "fieldName": "heading"
+            },
+            {
+              "name": "count",
+              "type": {
+                "text": "number | undefined"
+              },
+              "description": "Number of items shown as a badge (and announced with the title); unset hides it",
+              "fieldName": "count"
+            },
+            {
+              "name": "color",
+              "type": {
+                "text": "KanbanColumnColor | undefined"
+              },
+              "description": "Accent: a theme color (primary, success, warning, danger, info, neutral) or any CSS color",
+              "fieldName": "color"
+            },
+            {
+              "name": "description",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Supporting text under the header (or use the `description` slot)",
+              "fieldName": "description"
+            },
+            {
+              "name": "empty-text",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Text shown when there are no cards (default: localized \"No items\"; or use the `empty` slot)",
+              "fieldName": "emptyText"
+            }
+          ],
+          "tagName": "minerva-kanban-column",
+          "customElement": true,
+          "summary": "Status column of a kanban board: header, count, cards and footer.",
+          "cssProperties": [
+            {
+              "name": "--kanban-column-width",
+              "description": "Width of the columns (defaults to 18rem; the columnWidth prop sets it; with fill it is the minimum width)"
+            },
+            {
+              "name": "--kanban-gap",
+              "description": "Space between the columns (defaults to 0.75rem; the gap prop sets it)"
+            },
+            {
+              "name": "--kanban-column-background",
+              "description": "Background of a column (defaults to --surface-muted-color)"
+            },
+            {
+              "name": "--kanban-column-border-color",
+              "description": "Border color of a column (defaults to --border-color)"
+            },
+            {
+              "name": "--kanban-column-radius",
+              "description": "Corner radius of a column (defaults to --radius-lg)"
+            },
+            {
+              "name": "--kanban-column-color",
+              "description": "Accent of a column: the dot before the title (the color prop sets it for a custom CSS color)"
+            },
+            {
+              "name": "--kanban-card-gap",
+              "description": "Space between the cards of a column (defaults to --space-2)"
+            },
+            {
+              "name": "--kanban-count-background",
+              "description": "Background of the count badge (defaults to --surface-color)"
+            },
+            {
+              "name": "--kanban-count-color",
+              "description": "Text color of the count badge (defaults to --text-secondary-color)"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "MinervaKanbanBoard",
+          "declaration": {
+            "name": "MinervaKanbanBoard",
+            "module": "src/components/kanban-board/kanban-board.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "MinervaKanbanColumn",
+          "declaration": {
+            "name": "MinervaKanbanColumn",
+            "module": "src/components/kanban-board/kanban-board.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/components/key-value-editor/key-value-editor.ts",
       "declarations": [
         {
@@ -22986,6 +24252,483 @@
           "declaration": {
             "name": "MinervaLoadingState",
             "module": "src/components/loading-state/loading-state.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/media-player/media-player.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "An `<audio>` / `<video>` element with themed custom controls (`<MediaPlayer>`\nof React): play / pause, skip back / forward, a seek bar (`role=slider`,\nbuffered range), the time, mute and volume, the playback speed (cycle\nbutton), fullscreen and picture-in-picture (video). Keyboard on the\nfocused player: Space / K play-pause, ← / → seek by 5 s, ↑ / ↓ volume,\nM mute, F fullscreen.\n\nThe media events don't cross the shadow root: they are re-dispatched as\n`minerva-*` events. `play()`, `pause()`, `seek(seconds)` and `element`\ndrive the media from script.",
+          "name": "MinervaMediaPlayer",
+          "cssParts": [
+            {
+              "description": "The outermost element (the focusable player)",
+              "name": "root"
+            },
+            {
+              "description": "The native `<audio>` or `<video>` element",
+              "name": "media"
+            },
+            {
+              "description": "The title of the media (audio bar, video overlay)",
+              "name": "title"
+            },
+            {
+              "description": "The control bar",
+              "name": "controls"
+            },
+            {
+              "description": "A control button (play, skip, mute, speed, fullscreen, picture-in-picture)",
+              "name": "button"
+            },
+            {
+              "description": "The seek bar (`role=slider`) with the buffered range",
+              "name": "seek"
+            },
+            {
+              "description": "The current time / duration text",
+              "name": "time"
+            },
+            {
+              "description": "The volume bar (`role=slider`)",
+              "name": "volume"
+            },
+            {
+              "description": "The loading indicator (while buffering)",
+              "name": "spinner"
+            },
+            {
+              "description": "The error message (media that can't be played)",
+              "name": "error"
+            }
+          ],
+          "slots": [
+            {
+              "description": "Title of the media, shown in the audio bar / over the video",
+              "name": "heading"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "src",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "URL of the media",
+              "attribute": "src"
+            },
+            {
+              "kind": "field",
+              "name": "type",
+              "type": {
+                "text": "\"audio\" | \"video\" | undefined"
+              },
+              "description": "Kind of media; default: inferred from `mime-type`, else from the file extension of `src`, else \"video\"",
+              "attribute": "type",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "mimeType",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "MIME type of the media (\"audio/mpeg\", \"video/mp4\"...), used to infer `type`",
+              "attribute": "mime-type"
+            },
+            {
+              "kind": "field",
+              "name": "poster",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Image shown before a video plays",
+              "attribute": "poster"
+            },
+            {
+              "kind": "field",
+              "name": "autoPlay",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Starts playing as soon as possible (browsers only allow muted autoplay without a user gesture)",
+              "attribute": "autoplay"
+            },
+            {
+              "kind": "field",
+              "name": "loop",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Restarts at the end",
+              "attribute": "loop"
+            },
+            {
+              "kind": "field",
+              "name": "muted",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Mutes the media; follows the mute button and the M key",
+              "attribute": "muted"
+            },
+            {
+              "kind": "field",
+              "name": "preload",
+              "type": {
+                "text": "\"none\" | \"metadata\" | \"auto\""
+              },
+              "default": "\"metadata\"",
+              "description": "How much of the media the browser loads before playback",
+              "attribute": "preload"
+            },
+            {
+              "kind": "field",
+              "name": "crossOrigin",
+              "type": {
+                "text": "\"anonymous\" | \"use-credentials\" | undefined"
+              },
+              "description": "CORS mode of the media request",
+              "attribute": "crossorigin"
+            },
+            {
+              "kind": "field",
+              "name": "startTime",
+              "type": {
+                "text": "number | undefined"
+              },
+              "description": "Resume position in seconds, applied once when the metadata loads (and again when `src` changes)",
+              "attribute": "start-time"
+            },
+            {
+              "kind": "field",
+              "name": "playbackRates",
+              "type": {
+                "text": "readonly number[]"
+              },
+              "default": "DEFAULT_PLAYBACK_RATES",
+              "description": "Speeds the speed button cycles through (default [0.5, 0.75, 1, 1.25, 1.5, 2])"
+            },
+            {
+              "kind": "field",
+              "name": "skipSeconds",
+              "type": {
+                "text": "number"
+              },
+              "default": "10",
+              "description": "Step of the skip back / forward buttons, in seconds (0 hides them)",
+              "attribute": "skip-seconds"
+            },
+            {
+              "kind": "field",
+              "name": "noControls",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Hides the custom control bar: renders the bare media element (drive it from script)",
+              "attribute": "no-controls",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "height",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Height of a video player (CSS length; a bare number is pixels); overrides `aspect-ratio`",
+              "attribute": "height"
+            },
+            {
+              "kind": "field",
+              "name": "aspectRatio",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"16 / 9\"",
+              "description": "Aspect ratio of a video player (CSS aspect-ratio)",
+              "attribute": "aspect-ratio"
+            },
+            {
+              "kind": "field",
+              "name": "pictureInPicture",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Shows a picture-in-picture button (video, where the browser supports it)",
+              "attribute": "picture-in-picture"
+            },
+            {
+              "kind": "field",
+              "name": "element",
+              "type": {
+                "text": "HTMLMediaElement | null"
+              },
+              "description": "The rendered `<audio>` / `<video>` element (null before the first render)",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "play",
+              "return": {
+                "type": {
+                  "text": "Promise<void>"
+                }
+              },
+              "description": "Starts playback (autoplay-policy rejections are swallowed: the player stays paused)"
+            },
+            {
+              "kind": "method",
+              "name": "pause",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "description": "Pauses playback"
+            },
+            {
+              "kind": "method",
+              "name": "seek",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "seconds",
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ],
+              "description": "Moves the playhead to `seconds` (clamped to the duration)"
+            }
+          ],
+          "events": [
+            {
+              "description": "Playback started",
+              "name": "minerva-play"
+            },
+            {
+              "description": "Playback paused",
+              "name": "minerva-pause"
+            },
+            {
+              "description": "Playback reached the end",
+              "name": "minerva-ended"
+            },
+            {
+              "description": "The playhead moved (`detail: { currentTime, duration }`, seconds)",
+              "name": "minerva-time-update"
+            },
+            {
+              "description": "The metadata loaded (`detail: { duration }`)",
+              "name": "minerva-loaded-metadata"
+            },
+            {
+              "description": "The media can't be loaded or played (`detail: { error }`, the `MediaError`)",
+              "name": "minerva-error"
+            },
+            {
+              "description": "The playback speed changed (`detail: { rate }`)",
+              "name": "minerva-rate-change"
+            },
+            {
+              "description": "The volume or the muted state changed (`detail: { volume, muted }`)",
+              "name": "minerva-volume-change"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "src",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "URL of the media",
+              "fieldName": "src"
+            },
+            {
+              "name": "type",
+              "type": {
+                "text": "\"audio\" | \"video\" | undefined"
+              },
+              "description": "Kind of media; default: inferred from `mime-type`, else from the file extension of `src`, else \"video\"",
+              "fieldName": "type"
+            },
+            {
+              "name": "mime-type",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "MIME type of the media (\"audio/mpeg\", \"video/mp4\"...), used to infer `type`",
+              "fieldName": "mimeType"
+            },
+            {
+              "name": "poster",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Image shown before a video plays",
+              "fieldName": "poster"
+            },
+            {
+              "name": "autoplay",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Starts playing as soon as possible (browsers only allow muted autoplay without a user gesture)",
+              "fieldName": "autoPlay"
+            },
+            {
+              "name": "loop",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Restarts at the end",
+              "fieldName": "loop"
+            },
+            {
+              "name": "muted",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Mutes the media; follows the mute button and the M key",
+              "fieldName": "muted"
+            },
+            {
+              "name": "preload",
+              "type": {
+                "text": "\"none\" | \"metadata\" | \"auto\""
+              },
+              "default": "\"metadata\"",
+              "description": "How much of the media the browser loads before playback",
+              "fieldName": "preload"
+            },
+            {
+              "name": "crossorigin",
+              "type": {
+                "text": "\"anonymous\" | \"use-credentials\" | undefined"
+              },
+              "description": "CORS mode of the media request",
+              "fieldName": "crossOrigin"
+            },
+            {
+              "name": "start-time",
+              "type": {
+                "text": "number | undefined"
+              },
+              "description": "Resume position in seconds, applied once when the metadata loads (and again when `src` changes)",
+              "fieldName": "startTime"
+            },
+            {
+              "name": "skip-seconds",
+              "type": {
+                "text": "number"
+              },
+              "default": "10",
+              "description": "Step of the skip back / forward buttons, in seconds (0 hides them)",
+              "fieldName": "skipSeconds"
+            },
+            {
+              "name": "no-controls",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Hides the custom control bar: renders the bare media element (drive it from script)",
+              "fieldName": "noControls"
+            },
+            {
+              "name": "height",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Height of a video player (CSS length; a bare number is pixels); overrides `aspect-ratio`",
+              "fieldName": "height"
+            },
+            {
+              "name": "aspect-ratio",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"16 / 9\"",
+              "description": "Aspect ratio of a video player (CSS aspect-ratio)",
+              "fieldName": "aspectRatio"
+            },
+            {
+              "name": "picture-in-picture",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Shows a picture-in-picture button (video, where the browser supports it)",
+              "fieldName": "pictureInPicture"
+            }
+          ],
+          "tagName": "minerva-media-player",
+          "customElement": true,
+          "summary": "Audio / video player with themed controls.",
+          "cssProperties": [
+            {
+              "name": "--media-player-radius",
+              "description": "Corner radius of the player (defaults to --radius-lg)"
+            },
+            {
+              "name": "--media-player-accent",
+              "description": "Color of the played range and the slider thumbs (defaults to --primary-color)"
+            },
+            {
+              "name": "--media-player-video-background",
+              "description": "Letterbox color behind a video (defaults to black)"
+            },
+            {
+              "name": "--media-player-overlay-background",
+              "description": "Background of the video control bar (defaults to a gradient to --overlay-color)"
+            },
+            {
+              "name": "--media-player-overlay-color",
+              "description": "Text and icon color over a video (defaults to white)"
+            },
+            {
+              "name": "--media-player-bar-background",
+              "description": "Background of the audio bar (defaults to --surface-color)"
+            },
+            {
+              "name": "--media-player-bar-color",
+              "description": "Text and icon color of the audio bar (defaults to --text-color)"
+            },
+            {
+              "name": "--media-player-button-size",
+              "description": "Size of the control buttons (defaults to the density's small control height)"
+            },
+            {
+              "name": "--media-player-track-height",
+              "description": "Thickness of the seek and volume tracks (defaults to 4px)"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "MinervaMediaPlayer",
+          "declaration": {
+            "name": "MinervaMediaPlayer",
+            "module": "src/components/media-player/media-player.ts"
           }
         }
       ]
@@ -30649,6 +32392,512 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/components/segmented-control/segmented-control.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A single-choice segmented switch for modes and filters\n(`<SegmentedControl>` of React): a `radiogroup` of `radio` segments\nsharing the width equally, with a thumb sliding under the selected\nsegment. Use `<minerva-tabs>` when each choice has a content panel.\nKeyboard: one Tab stop (the selected segment, else the first enabled\none); the arrow keys move and select, skipping disabled segments and\nwrapping (RTL-aware); Home / End select the first / last enabled segment.\n\nForm-associated: submits `value` under `name`, `required` makes it invalid\nwhile nothing is selected, and it supports `form.reset()` (restores the\n`value` attribute), `<fieldset disabled>` and state restoration. Name it\nwith `aria-label`, `aria-labelledby` or `<label for>`.",
+          "name": "MinervaSegmentedControl",
+          "cssParts": [
+            {
+              "description": "The element with role=\"radiogroup\" (the track)",
+              "name": "root"
+            },
+            {
+              "description": "The sliding thumb under the selected segment",
+              "name": "indicator"
+            },
+            {
+              "description": "A segment (`role=radio`)",
+              "name": "item"
+            },
+            {
+              "description": "Item state of `item`: selected",
+              "name": "item--selected"
+            },
+            {
+              "description": "Item state of `item`: disabled",
+              "name": "item--disabled"
+            },
+            {
+              "description": "The icon of a segment",
+              "name": "icon"
+            },
+            {
+              "description": "The text label of a segment",
+              "name": "label"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "options",
+              "type": {
+                "text": "SegmentedControlOption[]"
+              },
+              "default": "[]",
+              "description": "The segments (property; the attribute takes a JSON array or comma-separated values)",
+              "attribute": "options"
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Selected value (property; the `value` attribute sets `defaultValue`)"
+            },
+            {
+              "kind": "field",
+              "name": "defaultValue",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Initially selected value, restored by `form.reset()` (the `value` attribute)",
+              "attribute": "value"
+            },
+            {
+              "kind": "field",
+              "name": "size",
+              "type": {
+                "text": "\"small\" | \"medium\" | \"large\""
+              },
+              "default": "\"medium\"",
+              "description": "Segment density",
+              "attribute": "size",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "color",
+              "type": {
+                "text": "\"neutral\" | \"primary\""
+              },
+              "default": "\"neutral\"",
+              "description": "Thumb color",
+              "attribute": "color",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "fullWidth",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Fills the width of the container (the segments always share the width equally)",
+              "attribute": "full-width",
+              "reflects": true
+            },
+            {
+              "kind": "method",
+              "name": "focus",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "options",
+                  "optional": true,
+                  "type": {
+                    "text": "FocusOptions"
+                  }
+                }
+              ],
+              "description": "Focuses the selected segment (else the first enabled one)"
+            },
+            {
+              "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Name submitted with the form data",
+              "attribute": "name",
+              "reflects": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Disables the control (not focusable, not submitted, not validated)",
+              "attribute": "disabled",
+              "reflects": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "required",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "The control must have a value for the form to be submitted",
+              "attribute": "required",
+              "reflects": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "isDisabled",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the control is disabled (itself or by a disabled fieldset).",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "form",
+              "type": {
+                "text": "HTMLFormElement | null"
+              },
+              "description": "The form owning the element",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "labels",
+              "type": {
+                "text": "NodeList | null"
+              },
+              "description": "`<label>` elements associated with the element",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "validity",
+              "type": {
+                "text": "ValidityState | undefined"
+              },
+              "description": "Validity state (same as `<input>.validity`)",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "validationMessage",
+              "type": {
+                "text": "string"
+              },
+              "description": "Message describing the current validation error (empty when valid)",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "willValidate",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the element is a candidate for constraint validation",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "checkValidity",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              },
+              "description": "Checks validity; fires `invalid` when invalid.",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "reportValidity",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              },
+              "description": "Checks validity and shows the browser's validation message.",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "setCustomValidity",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "message",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Sets (or clears, with `\"\"`) a custom validation error.",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "formResetCallback",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "formDisabledCallback",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "disabled",
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "formStateRestoreCallback",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "state",
+                  "type": {
+                    "text": "string | File | FormData | null"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            }
+          ],
+          "events": [
+            {
+              "name": "change",
+              "type": {
+                "text": "Event"
+              },
+              "description": "The user selected another segment (like native radios)"
+            },
+            {
+              "description": "The user selected another segment; `detail: { value }`",
+              "name": "minerva-change"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "options",
+              "type": {
+                "text": "SegmentedControlOption[]"
+              },
+              "default": "[]",
+              "description": "The segments (property; the attribute takes a JSON array or comma-separated values)",
+              "fieldName": "options"
+            },
+            {
+              "name": "value",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Initially selected value, restored by `form.reset()` (the `value` attribute)",
+              "fieldName": "defaultValue"
+            },
+            {
+              "name": "size",
+              "type": {
+                "text": "\"small\" | \"medium\" | \"large\""
+              },
+              "default": "\"medium\"",
+              "description": "Segment density",
+              "fieldName": "size"
+            },
+            {
+              "name": "color",
+              "type": {
+                "text": "\"neutral\" | \"primary\""
+              },
+              "default": "\"neutral\"",
+              "description": "Thumb color",
+              "fieldName": "color"
+            },
+            {
+              "name": "full-width",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Fills the width of the container (the segments always share the width equally)",
+              "fieldName": "fullWidth"
+            },
+            {
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Name submitted with the form data",
+              "fieldName": "name",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Disables the control (not focusable, not submitted, not validated)",
+              "fieldName": "disabled",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "name": "required",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "The control must have a value for the form to be submitted",
+              "fieldName": "required",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            }
+          ],
+          "tagName": "minerva-segmented-control",
+          "customElement": true,
+          "summary": "Single-choice segmented switch with a sliding thumb.",
+          "cssProperties": [
+            {
+              "name": "--segmented-control-height",
+              "description": "Height of the control (defaults to the density's control height)"
+            },
+            {
+              "name": "--segmented-control-padding",
+              "description": "Space between the track and the segments (defaults to 2px)"
+            },
+            {
+              "name": "--segmented-control-radius",
+              "description": "Corner radius of the track (defaults to --radius-md); the thumb follows it"
+            },
+            {
+              "name": "--segmented-control-background",
+              "description": "Background of the track (defaults to --surface-muted-color)"
+            },
+            {
+              "name": "--segmented-control-color",
+              "description": "Text color of the unselected segments"
+            },
+            {
+              "name": "--segmented-control-item-padding-x",
+              "description": "Inline padding of a segment"
+            },
+            {
+              "name": "--segmented-control-thumb-background",
+              "description": "Background of the thumb (defaults to --surface-elevated-color; --primary-color with color=\"primary\")"
+            },
+            {
+              "name": "--segmented-control-thumb-shadow",
+              "description": "Shadow of the thumb (defaults to --shadow-sm; none with color=\"primary\")"
+            },
+            {
+              "name": "--segmented-control-selected-color",
+              "description": "Text color of the selected segment"
+            },
+            {
+              "name": "--segmented-control-duration",
+              "description": "Duration of the thumb slide (defaults to --transition-base)"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "MinervaSegmentedControl",
+          "declaration": {
+            "name": "MinervaSegmentedControl",
+            "module": "src/components/segmented-control/segmented-control.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/components/select/option.ts",
       "declarations": [
         {
@@ -32086,6 +34335,743 @@
           "declaration": {
             "name": "MinervaSkeletonText",
             "module": "src/components/skeleton/skeleton.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/slider/slider.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Picks a number, or a `[start, end]` range with `range`, on a track\n(`<Slider>` of React). Each thumb is a `role=\"slider\"`: ArrowRight /\nArrowUp add a step (ArrowLeft increases in RTL), PageUp / PageDown move by\n10%, Home / End jump to the bounds. Clicking the track moves the closest\nthumb there; dragging captures the pointer.\n\nForm-associated: submits the value under `name` (a range submits two\nentries); supports `form.reset()` (restores the `value` attribute),\n`<fieldset disabled>` and state restoration.",
+          "name": "MinervaSlider",
+          "cssParts": [
+            {
+              "description": "The outermost element",
+              "name": "root"
+            },
+            {
+              "description": "The interactive area holding the rail, the marks and the thumbs",
+              "name": "control"
+            },
+            {
+              "description": "The full-length track",
+              "name": "rail"
+            },
+            {
+              "description": "The filled part of the track (up to the value, or between the thumbs)",
+              "name": "range"
+            },
+            {
+              "description": "A thumb (`role=slider`)",
+              "name": "thumb"
+            },
+            {
+              "description": "Item state of `thumb`: dragged",
+              "name": "thumb--dragging"
+            },
+            {
+              "description": "Item state of `thumb`: disabled",
+              "name": "thumb--disabled"
+            },
+            {
+              "description": "The value bubble of a thumb (with `tooltip`, while dragging or focused)",
+              "name": "tooltip"
+            },
+            {
+              "description": "A tick of the scale",
+              "name": "mark"
+            },
+            {
+              "description": "Item state of `mark`: inside the filled range",
+              "name": "mark--active"
+            },
+            {
+              "description": "Item state of `mark`: outside the filled range",
+              "name": "mark--inactive"
+            },
+            {
+              "description": "The label of a mark",
+              "name": "mark-label"
+            },
+            {
+              "description": "The inline value label (with `show-value`)",
+              "name": "value"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "SliderValue | undefined"
+              },
+              "default": "undefined",
+              "description": "Value: a number, or `[start, end]` with `range` (property; the `value` attribute sets `defaultValue`)"
+            },
+            {
+              "kind": "field",
+              "name": "defaultValue",
+              "type": {
+                "text": "SliderValue | undefined"
+              },
+              "default": "undefined",
+              "description": "Initial value, restored by `form.reset()` (the `value` attribute: \"30\" or \"20,80\")",
+              "attribute": "value"
+            },
+            {
+              "kind": "field",
+              "name": "range",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Two thumbs selecting `[start, end]`; the thumbs cannot cross",
+              "attribute": "range",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "min",
+              "type": {
+                "text": "number"
+              },
+              "default": "0",
+              "description": "Smallest value",
+              "attribute": "min"
+            },
+            {
+              "kind": "field",
+              "name": "max",
+              "type": {
+                "text": "number"
+              },
+              "default": "100",
+              "description": "Largest value",
+              "attribute": "max"
+            },
+            {
+              "kind": "field",
+              "name": "step",
+              "type": {
+                "text": "number | null"
+              },
+              "default": "1",
+              "description": "Step between two values; `null` (attribute \"null\") snaps to the marks only",
+              "attribute": "step"
+            },
+            {
+              "kind": "field",
+              "name": "marks",
+              "type": {
+                "text": "SliderMark[] | boolean"
+              },
+              "default": "false",
+              "description": "Ticks of the scale: `{ value, label? }[]` (property or JSON attribute), or `true` (empty attribute) for one tick per step",
+              "attribute": "marks"
+            },
+            {
+              "kind": "field",
+              "name": "snapToMarks",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Snaps the value to the closest mark (instead of the step)",
+              "attribute": "snap-to-marks"
+            },
+            {
+              "kind": "field",
+              "name": "readOnly",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Focusable and submitted, but the user cannot change the value",
+              "attribute": "readonly",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "invalid",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Error state (aria-invalid)",
+              "attribute": "invalid",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "size",
+              "type": {
+                "text": "\"small\" | \"medium\" | \"large\""
+              },
+              "default": "\"medium\"",
+              "description": "Thumb and track size",
+              "attribute": "size",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "color",
+              "type": {
+                "text": "SliderColor"
+              },
+              "default": "\"primary\"",
+              "description": "Semantic color of the filled track and the thumbs",
+              "attribute": "color",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "showValue",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Shows the value after the track",
+              "attribute": "show-value"
+            },
+            {
+              "kind": "field",
+              "name": "tooltip",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Shows the value in a bubble above a thumb while it is dragged, hovered or focused",
+              "attribute": "tooltip"
+            },
+            {
+              "kind": "field",
+              "name": "orientation",
+              "type": {
+                "text": "\"horizontal\" | \"vertical\""
+              },
+              "default": "\"horizontal\"",
+              "description": "Direction of the track",
+              "attribute": "orientation",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "formatValue",
+              "type": {
+                "text": "((value: number) => string) | undefined"
+              },
+              "default": "undefined",
+              "description": "Formats a value for the value label, the tooltip and aria-valuetext (property)"
+            },
+            {
+              "kind": "field",
+              "name": "getAriaValueText",
+              "type": {
+                "text": "((value: number, index: number) => string) | undefined"
+              },
+              "default": "undefined",
+              "description": "aria-valuetext of a thumb, index 0 or 1 (property; defaults to formatValue)"
+            },
+            {
+              "kind": "method",
+              "name": "focus",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "options",
+                  "optional": true,
+                  "type": {
+                    "text": "FocusOptions"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "blur",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Name submitted with the form data",
+              "attribute": "name",
+              "reflects": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Disables the control (not focusable, not submitted, not validated)",
+              "attribute": "disabled",
+              "reflects": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "required",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "The control must have a value for the form to be submitted",
+              "attribute": "required",
+              "reflects": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "isDisabled",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the control is disabled (itself or by a disabled fieldset).",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "form",
+              "type": {
+                "text": "HTMLFormElement | null"
+              },
+              "description": "The form owning the element",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "labels",
+              "type": {
+                "text": "NodeList | null"
+              },
+              "description": "`<label>` elements associated with the element",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "validity",
+              "type": {
+                "text": "ValidityState | undefined"
+              },
+              "description": "Validity state (same as `<input>.validity`)",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "validationMessage",
+              "type": {
+                "text": "string"
+              },
+              "description": "Message describing the current validation error (empty when valid)",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "willValidate",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the element is a candidate for constraint validation",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "checkValidity",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              },
+              "description": "Checks validity; fires `invalid` when invalid.",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "reportValidity",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              },
+              "description": "Checks validity and shows the browser's validation message.",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "setCustomValidity",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "message",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Sets (or clears, with `\"\"`) a custom validation error.",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "formResetCallback",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "formDisabledCallback",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "disabled",
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "formStateRestoreCallback",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "state",
+                  "type": {
+                    "text": "string | File | FormData | null"
+                  }
+                }
+              ],
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            }
+          ],
+          "events": [
+            {
+              "name": "input",
+              "type": {
+                "text": "Event"
+              },
+              "description": "The value changed while dragging or with a key (native-like)"
+            },
+            {
+              "name": "change",
+              "type": {
+                "text": "Event"
+              },
+              "description": "The interaction ended (native-like)"
+            },
+            {
+              "description": "The value changed (while dragging, on each key press); `detail: { value }`",
+              "name": "minerva-change"
+            },
+            {
+              "description": "The interaction ended (pointer release, key press): save here; `detail: { value }`",
+              "name": "minerva-change-end"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "value",
+              "type": {
+                "text": "SliderValue | undefined"
+              },
+              "default": "undefined",
+              "description": "Initial value, restored by `form.reset()` (the `value` attribute: \"30\" or \"20,80\")",
+              "fieldName": "defaultValue"
+            },
+            {
+              "name": "range",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Two thumbs selecting `[start, end]`; the thumbs cannot cross",
+              "fieldName": "range"
+            },
+            {
+              "name": "min",
+              "type": {
+                "text": "number"
+              },
+              "default": "0",
+              "description": "Smallest value",
+              "fieldName": "min"
+            },
+            {
+              "name": "max",
+              "type": {
+                "text": "number"
+              },
+              "default": "100",
+              "description": "Largest value",
+              "fieldName": "max"
+            },
+            {
+              "name": "step",
+              "type": {
+                "text": "number | null"
+              },
+              "default": "1",
+              "description": "Step between two values; `null` (attribute \"null\") snaps to the marks only",
+              "fieldName": "step"
+            },
+            {
+              "name": "marks",
+              "type": {
+                "text": "SliderMark[] | boolean"
+              },
+              "default": "false",
+              "description": "Ticks of the scale: `{ value, label? }[]` (property or JSON attribute), or `true` (empty attribute) for one tick per step",
+              "fieldName": "marks"
+            },
+            {
+              "name": "snap-to-marks",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Snaps the value to the closest mark (instead of the step)",
+              "fieldName": "snapToMarks"
+            },
+            {
+              "name": "readonly",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Focusable and submitted, but the user cannot change the value",
+              "fieldName": "readOnly"
+            },
+            {
+              "name": "invalid",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Error state (aria-invalid)",
+              "fieldName": "invalid"
+            },
+            {
+              "name": "size",
+              "type": {
+                "text": "\"small\" | \"medium\" | \"large\""
+              },
+              "default": "\"medium\"",
+              "description": "Thumb and track size",
+              "fieldName": "size"
+            },
+            {
+              "name": "color",
+              "type": {
+                "text": "SliderColor"
+              },
+              "default": "\"primary\"",
+              "description": "Semantic color of the filled track and the thumbs",
+              "fieldName": "color"
+            },
+            {
+              "name": "show-value",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Shows the value after the track",
+              "fieldName": "showValue"
+            },
+            {
+              "name": "tooltip",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Shows the value in a bubble above a thumb while it is dragged, hovered or focused",
+              "fieldName": "tooltip"
+            },
+            {
+              "name": "orientation",
+              "type": {
+                "text": "\"horizontal\" | \"vertical\""
+              },
+              "default": "\"horizontal\"",
+              "description": "Direction of the track",
+              "fieldName": "orientation"
+            },
+            {
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Name submitted with the form data",
+              "fieldName": "name",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Disables the control (not focusable, not submitted, not validated)",
+              "fieldName": "disabled",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            },
+            {
+              "name": "required",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "The control must have a value for the form to be submitted",
+              "fieldName": "required",
+              "inheritedFrom": {
+                "name": "FormAssociatedElement",
+                "module": "src/internal/form.ts"
+              }
+            }
+          ],
+          "tagName": "minerva-slider",
+          "customElement": true,
+          "summary": "Range input with one or two thumbs, marks, value label and tooltip.",
+          "cssProperties": [
+            {
+              "name": "--slider-accent",
+              "description": "Color of the filled track and of the thumb border (defaults to the color prop's accent)"
+            },
+            {
+              "name": "--slider-rail-color",
+              "description": "Background of the empty track"
+            },
+            {
+              "name": "--slider-thumb-color",
+              "description": "Background of the thumbs"
+            },
+            {
+              "name": "--slider-track-height",
+              "description": "Thickness of the track (every size)"
+            },
+            {
+              "name": "--slider-thumb-size",
+              "description": "Width and height of the thumbs (every size)"
+            },
+            {
+              "name": "--slider-length",
+              "description": "Length of a vertical slider"
+            },
+            {
+              "name": "--slider-min-length",
+              "description": "Smallest length of a horizontal track, like the intrinsic size of a native range input (defaults to 10rem)"
+            },
+            {
+              "name": "--slider-gap",
+              "description": "Space between the track and the value label"
+            },
+            {
+              "name": "--slider-value-font-size",
+              "description": "Font size of the value label and of the mark labels"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "MinervaSlider",
+          "declaration": {
+            "name": "MinervaSlider",
+            "module": "src/components/slider/slider.ts"
           }
         }
       ]

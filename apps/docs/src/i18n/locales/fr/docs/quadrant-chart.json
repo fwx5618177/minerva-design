@@ -14,6 +14,14 @@
       "title": "Matrice de tâches déplaçables",
       "description": "showTicks={false} et axisLabels transforment le graphique en tableau de tâches : pendant le glissement, la barre d’état indique le quadrant visé en temps réel (onPointDrag), et le relâchement met à jour la position (onPointDrop) ; un double-clic sur une tâche permet de la renommer ou de la déplacer (onPointDoubleClick) ; cliquez une zone vide ou le bouton + (quadrantContent) pour en ajouter une ; renderTooltip affiche une infobulle React."
     },
+    "triage": {
+      "title": "Pastilles, compteurs et déplacements au clavier",
+      "description": "Chaque quadrant reçoit une pastille (badge), une deuxième ligne (description) et son nombre de tâches avec la durée totale (showCounts sous forme de fonction), le tout dessiné par le graphique. Cliquez sur une tâche pour l’entourer (selectedIndex). Au clavier, Tab mène à la liste masquée des tâches : le point qui a le focus reçoit un anneau de focus, Entrée le sélectionne et Maj + flèches le déplacent vers le quadrant voisin via onPointDrop, annoncé dans une région live."
+    },
+    "quadrant-header": {
+      "title": "En-têtes de quadrant personnalisés",
+      "description": "renderQuadrantHeader remplace les titres dessinés par du contenu React dans le coin extérieur de chaque quadrant : une pastille, le titre, une consigne, le nombre et la durée totale tirés de l’argument info, et un bouton + qui ajoute une tâche. getPointProps ajoute un data-testid à l’ancre invisible de chaque point pour les tests de bout en bout."
+    },
     "bcg": {
       "title": "Matrice BCG",
       "description": "Portefeuille de produits selon la part de marché relative et la croissance du marché : xDomain, yDomain, xSplit et ySplit placent les séparations à une part de 1 et une croissance de 10 %, reverseX met les leaders à gauche et la taille du point est le chiffre d'affaires."
@@ -113,6 +121,18 @@
     "dragHint": "Faites glisser une tâche vers un autre quadrant, double-cliquez pour la modifier, ou cliquez sur une zone vide pour en ajouter une",
     "quadrantTapped": "« {{quadrant}} » touché",
     "dragHintNative": "Faites glisser une tâche vers un autre quadrant",
+    "triage": {
+      "doNow": "Maintenant",
+      "plan": "Réserver un créneau",
+      "handOff": "Confier",
+      "drop": "Laisser tomber",
+      "count_one": "{{count}} tâche · {{time}}",
+      "count_other": "{{count}} tâches · {{time}}",
+      "selected": "{{task}} sélectionnée",
+      "hint": "Cliquez sur une tâche pour la sélectionner, ou faites-la glisser. Au clavier : Tab jusqu’à une tâche, puis Maj + flèches pour la déplacer vers un autre quadrant",
+      "headerHint": "Cliquez sur + pour ajouter une tâche à un quadrant, sur une tâche pour la sélectionner",
+      "aria": "Matrice d’Eisenhower des tâches du jour avec leurs estimations"
+    },
     "products": {
       "cloud": "Hébergement cloud",
       "analytics": "Analytique",
@@ -289,7 +309,10 @@
       "onQuadrantClick": "Appelé avec le quadrant et la position (données) quand la zone vide d’un quadrant est cliquée",
       "onPointDrop": "Appelé avec le point, son index et la cible quand un point glissé est relâché ; le définir rend les points déplaçables (mettez à jour points pour les déplacer)",
       "renderTooltip": "Contenu React de l’infobulle d’un point",
-      "quadrantContent": "Contenu React placé sur chaque quadrant (p. ex. un bouton d’ajout) ; seul ce contenu reçoit les événements de pointeur"
+      "quadrantContent": "Contenu React placé sur chaque quadrant (p. ex. un bouton d’ajout) ; seul ce contenu reçoit les événements de pointeur",
+      "renderQuadrantHeader": "En-tête React de chaque quadrant dans son coin extérieur (bord haut pour les quadrants du haut, bord bas pour ceux du bas) ; reçoit le quadrant et { count, points, indices, region } et remplace le titre, la pastille, la description et le compteur dessinés",
+      "accessiblePoints": "Liste de boutons visuellement masquée par quadrant pour le clavier et les lecteurs d’écran : Entrée / Espace appelle onPointClick, Maj + flèches déplacent le point vers le quadrant voisin (onPointDrop) et le point qui a le focus reçoit un anneau de focus",
+      "getPointProps": "Attributs supplémentaires (p. ex. data-testid) de l’ancre invisible placée sur chaque point ; chaque ancre a data-point-index, data-label et la classe minerva-chart-quadrant-point"
     },
     "QuadrantConfig": {
       "points": "Points à placer",
@@ -306,7 +329,10 @@
       "showLabels": "Dessine les libellés à côté des points en évitant les chevauchements",
       "pointSize": "Diamètre des points en pixels",
       "name": "Nom des points dans l’infobulle",
-      "draggable": "Permet de faire glisser les points (activé par défaut quand onPointDrop ou onPointDrag est défini)"
+      "draggable": "Permet de faire glisser les points (activé par défaut quand onPointDrop ou onPointDrag est défini)",
+      "showCounts": "Affiche le nombre de points de chaque quadrant après son titre ; une fonction (count, points) renvoie le texte à la place",
+      "selectedIndex": "Index du point sélectionné, entouré d’un anneau de sa couleur (null : aucun)",
+      "selectedIndices": "Index des points sélectionnés, chacun entouré d’un anneau"
     },
     "QuadrantDropTarget": {
       "x": "Coordonnée x (données) du dépôt",
@@ -328,7 +354,15 @@
     },
     "QuadrantRegion": {
       "label": "Titre dessiné dans l’angle extérieur du quadrant",
-      "color": "Teinte de fond et couleur par défaut des points"
+      "color": "Teinte de fond et couleur par défaut des points",
+      "badge": "Code court dessiné dans une pastille avant le titre (p. ex. \"Q1\")",
+      "description": "Deuxième ligne dessinée sous le titre ; coupée par … si elle est trop longue"
+    },
+    "QuadrantHeaderInfo": {
+      "count": "Nombre de points du quadrant",
+      "points": "Points du quadrant",
+      "indices": "Index de ces points dans points",
+      "region": "Titre, pastille, description et couleur du quadrant (quadrants)"
     },
     "QuadrantAxisLabels": {
       "top": "Texte à l’extrémité haute du séparateur vertical",
@@ -346,6 +380,10 @@
       "draggable": {
         "title": "Glisser entre quadrants",
         "description": "Faites glisser une tâche vers un autre quadrant : onPointDrop reçoit la cible ; les boutons + viennent de quadrantContent et l’infobulle est une vue renderTooltip."
+      },
+      "triage": {
+        "title": "Pastilles, compteurs et sélection",
+        "description": "Les pastilles, la deuxième ligne et le nombre de tâches de chaque quadrant sont dessinés par le graphique ; touchez une tâche pour l’entourer (selectedIndex) ou faites-la glisser vers un autre quadrant."
       }
     }
   },
@@ -358,6 +396,10 @@
       "point-click": {
         "title": "Tâche et quadrant cliqués",
         "description": "Une matrice d'Eisenhower avec les tâches urgentes à gauche (axe x inversé) : cliquez sur une tâche ou sur la zone vide d'un quadrant."
+      },
+      "triage": {
+        "title": "Pastilles, compteurs et sélection",
+        "description": "badge et description dans les quadrants, l’attribut show-counts (ou une fonction showCounts), selectedIndex défini sur minerva-point-click, et minerva-point-drop pour déplacer une tâche."
       }
     },
     "minerva-quadrant-chart": {

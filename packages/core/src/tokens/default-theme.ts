@@ -12,6 +12,7 @@
 // where they are declared, so the derived tokens must be recomputed from the
 // scope's own base tokens.
 import type { ThemeProps } from "../theme/types";
+import { codeTokensLight } from "./code";
 import { mediumRadiusTheme } from "./design";
 import {
   mergeBlocks,
@@ -120,4 +121,6 @@ export const defaultThemeTokens: TokenBlock = mergeBlocks<TokenBlock>(
   // default radii, declared with the theme tokens
   mediumRadiusTheme,
   allRoleTokens(),
+  // syntax highlighting (dark values: tokens/code.ts)
+  codeTokensLight,
 );

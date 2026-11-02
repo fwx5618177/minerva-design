@@ -14,6 +14,14 @@
       "title": "Draggable task matrix",
       "description": "showTicks={false} and axisLabels turn the chart into a task board: while dragging, the status line names the target quadrant (onPointDrag), and the drop updates the position (onPointDrop); double-click a task to rename it or move it to another quadrant (onPointDoubleClick); click an empty area or the + button (quadrantContent) to add one; renderTooltip shows a React tooltip."
     },
+    "triage": {
+      "title": "Badges, counts and keyboard moves",
+      "description": "Each quadrant gets a badge (badge), a second line (description) and its task count with the total time (showCounts as a function), all drawn by the chart. Click a task to ring it (selectedIndex). Keyboard users Tab to the hidden list of tasks: the focused dot gets a focus ring, Enter selects it and Shift + arrow keys move it to the next quadrant through onPointDrop, announced in a live region."
+    },
+    "quadrant-header": {
+      "title": "Custom quadrant headers",
+      "description": "renderQuadrantHeader replaces the drawn titles with React content in the outer corner of each quadrant: a badge, the title, an action hint, the count and total time from the info argument, and a + button that adds a task. getPointProps puts a data-testid on the invisible anchor of every dot for end-to-end tests."
+    },
     "bcg": {
       "title": "BCG matrix",
       "description": "Product portfolio by relative market share and market growth: xDomain, yDomain, xSplit and ySplit place the dividing lines at a share of 1 and a growth of 10%, reverseX puts the leaders on the left and the dot size is the revenue."
@@ -113,6 +121,18 @@
     "dragHint": "Drag a task to another quadrant, double-click it to edit, or click an empty area to add one",
     "quadrantTapped": "“{{quadrant}}” tapped",
     "dragHintNative": "Drag a task to another quadrant",
+    "triage": {
+      "doNow": "Do it now",
+      "plan": "Plan a time",
+      "handOff": "Hand it off",
+      "drop": "Drop it",
+      "count_one": "{{count}} task · {{time}}",
+      "count_other": "{{count}} tasks · {{time}}",
+      "selected": "{{task}} selected",
+      "hint": "Click a task to select it, or drag it. Keyboard: Tab to a task, then Shift + arrow keys move it to another quadrant",
+      "headerHint": "Click + to add a task to a quadrant, click a task to select it",
+      "aria": "Eisenhower matrix of today's tasks with their estimates"
+    },
     "products": {
       "cloud": "Cloud hosting",
       "analytics": "Analytics",
@@ -289,7 +309,10 @@
       "onQuadrantClick": "Called with the quadrant and the data position when the empty area of a quadrant is clicked",
       "onPointDrop": "Called with the point, its index and the drop target when a dragged dot is released; setting it makes the dots draggable (update points to move them)",
       "renderTooltip": "React content of the tooltip of a point",
-      "quadrantContent": "React content placed over each quadrant (e.g. an add button); only that content receives pointer events"
+      "quadrantContent": "React content placed over each quadrant (e.g. an add button); only that content receives pointer events",
+      "renderQuadrantHeader": "React header of each quadrant in its outer corner (top edge for the top quadrants, bottom edge for the bottom ones); receives the corner and { count, points, indices, region } and replaces the drawn title, badge, description and count",
+      "accessiblePoints": "Visually hidden list of buttons per quadrant for keyboard and screen reader users: Enter / Space calls onPointClick, Shift + arrow keys move the point to the next quadrant (onPointDrop), and the focused dot gets a focus ring",
+      "getPointProps": "Extra attributes (e.g. data-testid) of the invisible anchor placed on each dot; every anchor has data-point-index, data-label and the class minerva-chart-quadrant-point"
     },
     "QuadrantConfig": {
       "points": "Points to place",
@@ -306,7 +329,10 @@
       "showLabels": "Draws the labels next to the dots, skipping overlaps",
       "pointSize": "Dot diameter in pixels",
       "name": "Name of the points in the tooltip",
-      "draggable": "Lets the user drag the dots (on by default when onPointDrop or onPointDrag is set)"
+      "draggable": "Lets the user drag the dots (on by default when onPointDrop or onPointDrag is set)",
+      "showCounts": "Shows the number of points of each quadrant after its title; a function (count, points) returns the text instead",
+      "selectedIndex": "Index of the selected point, drawn with a ring of its color (null: none)",
+      "selectedIndices": "Indices of the selected points, each drawn with a ring"
     },
     "QuadrantDropTarget": {
       "x": "X data coordinate of the drop",
@@ -328,7 +354,15 @@
     },
     "QuadrantRegion": {
       "label": "Title drawn in the outer corner of the quadrant",
-      "color": "Background tint and default dot color"
+      "color": "Background tint and default dot color",
+      "badge": "Short code drawn in a pill before the title (e.g. \"Q1\")",
+      "description": "Second line drawn under the title; cut with … when too long"
+    },
+    "QuadrantHeaderInfo": {
+      "count": "Number of points in the quadrant",
+      "points": "Points in the quadrant",
+      "indices": "Indices of these points in points",
+      "region": "Title, badge, description and color of the quadrant (quadrants)"
     },
     "QuadrantAxisLabels": {
       "top": "Text at the top end of the vertical divider",
@@ -346,6 +380,10 @@
       "draggable": {
         "title": "Drag between quadrants",
         "description": "Drag a task to another quadrant: onPointDrop receives the drop target; the + buttons are quadrantContent and the tooltip is a renderTooltip view."
+      },
+      "triage": {
+        "title": "Badges, counts and selection",
+        "description": "Badges, a second line and the task count of each quadrant are drawn by the chart; tap a task to ring it (selectedIndex) or drag it to another quadrant."
       }
     }
   },
@@ -358,6 +396,10 @@
       "point-click": {
         "title": "Clicked task and quadrant",
         "description": "An Eisenhower matrix with the urgent tasks on the left (reversed x axis): click a task or the empty area of a quadrant."
+      },
+      "triage": {
+        "title": "Badges, counts and selection",
+        "description": "badge and description in the quadrants, the show-counts attribute (or a showCounts function), selectedIndex set on minerva-point-click, and minerva-point-drop to move a task."
       }
     },
     "minerva-quadrant-chart": {

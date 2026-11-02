@@ -4,7 +4,15 @@
   "demos": {
     "basic": {
       "title": "基本的な使い方",
-      "description": "テキストはそのまま描画され、既定で長い行は折り返されます。"
+      "description": "テキストはそのまま表示され、長い行はデフォルトで折り返されます。language=\"json\" で構文がハイライトされます。"
+    },
+    "languages": {
+      "title": "言語",
+      "description": "language で文法を選びます：JavaScript / TypeScript（JSX、TSX）、JSON、CSS、HTML、Bash、Python、YAML、SQL、diff、Markdown（ts、sh、py、yml、md などの一般的な別名も使えます）。showLanguage で小さなラベルを表示します。その他の言語はプレーンテキストで表示されます。"
+    },
+    "line-numbers": {
+      "title": "行番号",
+      "description": "showLineNumbers はスクリーンリーダーから隠されたガターに行番号を表示します。行番号はコードと一緒に選択・コピーされません。"
     },
     "no-wrap": {
       "title": "スクロールするログ",
@@ -24,6 +32,10 @@
       "tabIndex": "領域のタブ順（既定でフォーカス可能）",
       "copyable": "テキストをクリップボードに書き込むコピーボタンを表示し、結果を読み上げます",
       "onCopied": "コピーボタンがテキストをクリップボードに書き込んだ後、そのテキストを引数に呼ばれます（失敗時は呼ばれません）。ネイティブの onCopy は引き続き要素に渡されます",
+      "language": "コードの言語：構文をハイライトします（javascript、typescript、jsx、tsx、json、css、html、bash、python、yaml、sql、diff、markdown とその別名）。未指定ならプレーンテキスト",
+      "highlight": "language の構文をハイライトするか（false：プレーンテキスト）",
+      "showLineNumbers": "ガターに行番号を表示（支援技術から隠され、コピーされません）",
+      "showLanguage": "右上に言語を小さなラベルで表示",
       "ref": "<pre> 要素への ref"
     }
   },
@@ -33,13 +45,22 @@
     "--code-block-bg": "背景色",
     "--code-block-border-color": "枠線の色",
     "--code-block-font-size": "コードのフォントサイズ",
-    "--code-block-max-height": "スクロールするまでの最大高さ（既定値は none）"
+    "--code-block-max-height": "スクロールするまでの最大高さ（既定値は none）",
+    "--code-block-line-number-color": "行番号の色"
   },
   "wc": {
     "demos": {
       "basic": {
         "title": "基本的な使い方",
-        "description": "テキスト内容はそのまま表示されます（マークアップでは < をエスケープ）。language はラベルを表示します。各ブロックは名前付きのフォーカス可能な領域です。"
+        "description": "テキスト内容はそのまま表示されます（マークアップ内の < はエスケープ）。language で構文をハイライトし、show-language でラベルを表示します。各ブロックは名前付きのフォーカス可能な領域です。"
+      },
+      "languages": {
+        "title": "言語",
+        "description": "language で文法を選びます（ts、css、html、bash、python、diff…）。show-language で小さなラベルを表示します。code プロパティのテキストは HTML として解釈されません。"
+      },
+      "line-numbers": {
+        "title": "行番号",
+        "description": "show-line-numbers はスクリーンリーダーから隠されたガターに行番号を表示します。コピーは元のテキストをコピーします。"
       },
       "copy": {
         "title": "クリップボードへコピー",
@@ -53,8 +74,11 @@
     "minerva-code-block": {
       "props": {
         "code": "ソーステキスト（既定：要素のテキスト内容）。",
-        "language": "コードの言語。ラベルとして表示されます（例：\"json\"、\"bash\"）。",
+        "language": "コードの言語：構文をハイライトし、<code> に class=\"language-<x>\" / data-language を設定します。",
+        "noHighlight": "language があってもプレーンテキストのままにします（React ライブラリの highlight={false}）。",
         "noWrap": "長い行を折り返さず横スクロールします（React 版の wrap={false} に相当）。",
+        "showLineNumbers": "ガターに行番号を表示します（aria-hidden、コピーされるテキストには含まれません）。",
+        "showLanguage": "右上に言語を小さなラベルで表示します（例：\"JSON\"）。",
         "text": "表示・コピーされるテキスト（読み取り専用）。"
       },
       "events": {

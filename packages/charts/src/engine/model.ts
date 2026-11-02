@@ -68,6 +68,8 @@ export interface SeriesModel {
   opacity: number;
   hidden: boolean;
   showLabels: boolean;
+  /** Bars: the labels are written inside the bars (`showLabels: "inside"`) */
+  labelsInside: boolean;
   curve: ChartCurve;
   /**
    * Plotted columns: the data, mapped onto the left axis for the series of
@@ -106,6 +108,8 @@ export interface SeriesModel {
   colorLut: Uint32Array | null;
   /** Hit tests and tooltips include the series */
   tooltip: boolean;
+  /** Scatter: width of the ring around every dot (`null`: the default) */
+  stroke: number | null;
   /** Box plots: outlier rings or dots, and their diameter */
   outlierShape: "hollow" | "filled";
   outlierSize: number;
@@ -812,6 +816,7 @@ export const buildModel = (
               : 1),
       hidden: !!s.hidden || hidden.has(id),
       showLabels: !!s.showLabels,
+      labelsInside: s.showLabels === "inside" && type === "bar",
       curve: s.curve ?? "linear",
       cols,
       raw: cols,
@@ -839,6 +844,10 @@ export const buildModel = (
       colorMidpoint,
       colorLut,
       tooltip: s.tooltip !== false,
+      stroke:
+        s.stroke !== undefined && Number.isFinite(s.stroke)
+          ? Math.max(0, s.stroke)
+          : null,
       outlierShape: s.outlierShape ?? "hollow",
       outlierSize: s.outlierSize ?? s.pointSize ?? 7,
       connector:
@@ -1032,7 +1041,7 @@ export const buildModel = (
     }
     const listBars = list.filter((s) => s.type === "bar");
     if (!log && (listBars.some((s) => !s.floating) || zero)) values.push(0);
-    if (listBars.some((s) => s.showLabels)) {
+    if (listBars.some((s) => s.showLabels && !s.labelsInside)) {
       // room for the value labels above the tallest bar
       const [lo, hi] = extent(values);
       if (hi > 0) values.push(hi + (hi - Math.min(0, lo)) * 0.1);
@@ -1192,6 +1201,12 @@ export const plottedY = (s: SeriesModel, i: number): number =>
   s.barTop ? s.barTop[i] : s.stackTop ? s.stackTop[i] : s.cols.y[i];
 
 const grids = new WeakMap<SeriesColumns, GridIndex>();
+
+/** Fill opacity of bar `i`: its own `opacity`, else the one of the series */
+export const barOpacity = (s: SeriesModel, i: number): number => {
+  const own = s.cols.opacities?.[i];
+  return own !== undefined && Number.isFinite(own) ? own : s.opacity;
+};
 
 /** Spatial index of a scatter series, built on first use and kept with its data */
 export const gridOf = (s: SeriesModel): GridIndex => {

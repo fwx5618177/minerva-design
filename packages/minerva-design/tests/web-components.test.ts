@@ -154,7 +154,11 @@ describe("per-element entries (tree-shaking)", () => {
     // 1.12.0: 555,784 B -> 568,556 B for <minerva-week-strip>, the
     // determinate ProgressIndicator (+2.4 kB) and <minerva-config
     // primary-color> (+0.5 kB); raised from 560 kB keeping ~6 kB headroom
-    expect(size).toBeLessThan(575_000);
+    // 1.13.0: 568,556 B -> 630,956 B for six new elements (slider,
+    // segmented-control, flashcard, kanban-board/column, answer-sheet,
+    // media-player) and CodeBlock syntax highlighting (core tokenizer);
+    // raised from 575 kB keeping ~9 kB headroom
+    expect(size).toBeLessThan(640_000);
     for (const { tagName } of elements) {
       // quoted: <minerva-icon> is optional, <minerva-icon-button> is not
       const defined = new RegExp(`["'\`]${tagName}["'\`]`);
@@ -212,8 +216,9 @@ describe("CDN bundle", () => {
     // determinate ProgressIndicator and the brand color (`primaryColor`:
     // OKLab dark-mode derivation and token formulas in core; the palettes'
     // primary / accent only, not the full palette tables). 730 kB keeps
-    // ~7.5 kB headroom.
-    expect(Buffer.byteLength(js)).toBeLessThan(730_000);
+    // ~7.5 kB headroom. 1.13.0: 809,491 B with the six new elements and the
+    // CodeBlock tokenizer; 820 kB keeps ~10 kB headroom.
+    expect(Buffer.byteLength(js)).toBeLessThan(820_000);
     // (template whitespace of <pre> / <textarea> templates is content)
     expect(js).not.toMatch(/\n\t/);
     expect(js).not.toContain("width is ignored when full is set");

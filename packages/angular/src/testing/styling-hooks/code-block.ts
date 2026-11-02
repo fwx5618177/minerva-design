@@ -7,6 +7,8 @@ import type { HookScenario } from "../types";
     code="const x = 1;"
     language="typescript"
     copyable
+    showLineNumbers
+    showLanguage
   />`,
 })
 class Fixture {

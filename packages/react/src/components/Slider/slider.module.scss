@@ -1,0 +1,351 @@
+@use "../../styles/mixins" as *;
+
+// Public CSS variables (set them on `className` or any ancestor):
+// @css-var --slider-accent Color of the filled track and of the thumb border (defaults to the color prop's accent)
+// @css-var --slider-rail-color Background of the empty track
+// @css-var --slider-thumb-color Background of the thumbs
+// @css-var --slider-track-height Thickness of the track (every size)
+// @css-var --slider-thumb-size Width and height of the thumbs (every size)
+// @css-var --slider-length Length of a vertical slider
+// @css-var --slider-min-length Smallest length of a horizontal track, like the intrinsic size of a native range input (defaults to 10rem)
+// @css-var --slider-gap Space between the track and the value label
+// @css-var --slider-value-font-size Font size of the value label and of the mark labels
+//
+// Internal plumbing uses the --_slider-* prefix (per-size dimensions, color
+// accent). Thumbs and marks are positioned with inset-inline-start (bottom
+// when vertical) and centered with negative margins, so RTL mirrors them.
+.slider {
+  --_slider-track: 6px;
+  --_slider-thumb: 18px;
+  --_slider-accent: var(--primary-color);
+  --_slider-fill: var(--slider-accent, var(--_slider-accent));
+  --_slider-thumb-size: var(--slider-thumb-size, var(--_slider-thumb));
+  --_slider-track-size: var(--slider-track-height, var(--_slider-track));
+  display: flex;
+  align-items: center;
+  gap: var(--slider-gap, var(--space-3));
+  width: 100%;
+  min-width: 0;
+  font-family: var(--font-family-sans);
+  color: var(--text-color);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.small {
+  --_slider-track: 4px;
+  --_slider-thumb: 14px;
+}
+
+.large {
+  --_slider-track: 8px;
+  --_slider-thumb: 22px;
+}
+
+// Color roles: accent of the filled track and of the thumbs.
+.primary {
+  --_slider-accent: var(--primary-color);
+}
+
+.success {
+  --_slider-accent: var(--success-color);
+}
+
+.info {
+  --_slider-accent: var(--info-color);
+}
+
+.warning {
+  --_slider-accent: var(--warning-color);
+}
+
+.danger {
+  --_slider-accent: var(--danger-color);
+}
+
+// The track never collapses in shrink-to-fit containers (inline, flex-start,
+// grid auto columns): like <input type=range> it has an intrinsic length and
+// still fills the available width.
+.control {
+  position: relative;
+  flex: 1 1 var(--slider-min-length, 10rem);
+  min-width: var(--slider-min-length, 10rem);
+  height: var(--_slider-thumb-size);
+  // the slider handles pointer moves itself (no scrolling while dragging)
+  touch-action: none;
+  cursor: pointer;
+}
+
+.labelled .control {
+  margin-bottom: calc(var(--font-size-xs) * 1.5 + var(--space-2));
+}
+
+.rail,
+.range {
+  position: absolute;
+  top: 50%;
+  height: var(--_slider-track-size);
+  border-radius: var(--radius-full);
+  transform: translateY(-50%);
+}
+
+.rail {
+  inset-inline: 0;
+  background-color: var(--slider-rail-color, var(--border-color));
+}
+
+.range {
+  background-color: var(--_slider-fill);
+}
+
+.mark {
+  position: absolute;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  margin-inline-start: -2px;
+  border-radius: 50%;
+  background-color: var(--border-strong-color);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.markActive {
+  background-color: color-mix(in srgb, var(--surface-color) 80%, transparent);
+}
+
+.markLabel {
+  position: absolute;
+  top: calc(var(--_slider-thumb-size) / 2 + var(--space-1));
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  color: var(--text-muted-color);
+  font-size: var(--slider-value-font-size, var(--font-size-xs));
+  line-height: 1.5;
+}
+
+// Labels of the marks at the ends stay inside the track (start / end
+// aligned) instead of overflowing and overlapping their neighbours.
+.markLabelStart {
+  left: auto;
+  inset-inline-start: 0;
+  transform: none;
+}
+
+.markLabelEnd {
+  left: auto;
+  inset-inline-end: 0;
+  transform: none;
+}
+
+.thumb {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  box-sizing: border-box;
+  width: var(--_slider-thumb-size);
+  height: var(--_slider-thumb-size);
+  margin-top: calc(var(--_slider-thumb-size) / -2);
+  margin-inline-start: calc(var(--_slider-thumb-size) / -2);
+  border: 2px solid var(--_slider-fill);
+  border-radius: 50%;
+  background-color: var(--slider-thumb-color, var(--surface-color));
+  box-shadow: var(--shadow-sm);
+  outline: none;
+  cursor: grab;
+  transition: box-shadow var(--transition-fast);
+
+  &:hover {
+    box-shadow:
+      0 0 0 6px color-mix(in srgb, var(--_slider-fill) 16%, transparent),
+      var(--shadow-sm);
+  }
+
+  // the design-system ring (box-shadow) + a transparent outline that forced
+  // colors paint
+  &:focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow: focus-ring();
+  }
+}
+
+.thumbDragging {
+  z-index: 2;
+  cursor: grabbing;
+  box-shadow:
+    0 0 0 8px color-mix(in srgb, var(--_slider-fill) 20%, transparent),
+    var(--shadow-sm);
+}
+
+// Value bubble above the thumb (tooltip prop): hovered, focused or dragged.
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + var(--space-2));
+  left: 50%;
+  padding: var(--space-0-5) var(--space-2);
+  border-radius: var(--radius-sm);
+  background-color: var(--text-color);
+  color: var(--surface-color);
+  font-size: var(--font-size-xs);
+  line-height: 1.5;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition:
+    opacity var(--transition-fast),
+    transform var(--transition-fast);
+
+  .thumb:hover > &,
+  .thumb:focus-visible > &,
+  .thumbDragging > & {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.value {
+  flex: none;
+  min-width: 2.5em;
+  text-align: end;
+  font-size: var(--slider-value-font-size, var(--font-size-sm));
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary-color);
+
+  .small & {
+    font-size: var(--slider-value-font-size, var(--font-size-xs));
+  }
+
+  .large & {
+    font-size: var(--slider-value-font-size, var(--font-size-md));
+  }
+}
+
+// Vertical: the track runs bottom (min) to top (max).
+.vertical {
+  flex-direction: column-reverse;
+  width: auto;
+  display: inline-flex;
+
+  .control {
+    flex: none;
+    width: var(--_slider-thumb-size);
+    min-width: 0;
+    height: var(--slider-length, 160px);
+  }
+
+  .rail,
+  .range {
+    top: auto;
+    left: 50%;
+    width: var(--_slider-track-size);
+    height: auto;
+    transform: translateX(-50%);
+  }
+
+  .rail {
+    inset-inline: auto;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+  }
+
+  .mark,
+  .thumb {
+    top: auto;
+    left: 50%;
+    margin-top: 0;
+  }
+
+  .mark {
+    margin-inline-start: 0;
+    margin-left: -2px;
+    margin-bottom: -2px;
+    transform: none;
+  }
+
+  .thumb {
+    margin-inline-start: 0;
+    margin-left: calc(var(--_slider-thumb-size) / -2);
+    margin-bottom: calc(var(--_slider-thumb-size) / -2);
+  }
+
+  .markLabel {
+    inset-inline: auto;
+    top: 50%;
+    left: calc(var(--_slider-thumb-size) / 2 + var(--space-1));
+    transform: translateY(-50%);
+  }
+
+  &.labelled .control {
+    margin-bottom: 0;
+    margin-inline-end: 3em;
+  }
+
+  .value {
+    text-align: center;
+  }
+}
+
+.readOnly .control,
+.readOnly .thumb {
+  cursor: default;
+}
+
+.disabled {
+  opacity: 0.5;
+
+  .control,
+  .thumb {
+    cursor: not-allowed;
+  }
+
+  .thumb:hover {
+    box-shadow: var(--shadow-sm);
+  }
+}
+
+.dragging {
+  cursor: grabbing;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thumb,
+  .tooltip {
+    transition: none;
+  }
+}
+
+// Forced colors drop backgrounds and box-shadows: draw the parts with
+// system colors.
+@media (forced-colors: active) {
+  .rail {
+    forced-color-adjust: none;
+    background-color: Canvas;
+    outline: 1px solid ButtonText;
+  }
+
+  .range {
+    forced-color-adjust: none;
+    background-color: Highlight;
+  }
+
+  .thumb {
+    forced-color-adjust: none;
+    background-color: ButtonFace;
+    border-color: ButtonText;
+
+    &:focus-visible {
+      outline: 2px solid Highlight;
+      outline-offset: 2px;
+    }
+  }
+
+  .disabled .range,
+  .disabled .thumb {
+    background-color: GrayText;
+    border-color: GrayText;
+  }
+}

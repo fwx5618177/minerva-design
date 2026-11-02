@@ -35,6 +35,7 @@ const INTERVALS: Interval[] = [
   { unit: "minute", step: 15, ms: 15 * MINUTE },
   { unit: "minute", step: 30, ms: 30 * MINUTE },
   { unit: "hour", step: 1, ms: HOUR },
+  { unit: "hour", step: 2, ms: 2 * HOUR },
   { unit: "hour", step: 3, ms: 3 * HOUR },
   { unit: "hour", step: 6, ms: 6 * HOUR },
   { unit: "hour", step: 12, ms: 12 * HOUR },

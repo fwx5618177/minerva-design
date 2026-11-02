@@ -19,6 +19,7 @@ import {
   type PrimaryColor,
 } from "./brand";
 import { formatColor, parseColor } from "./color";
+import { codeTokensDark } from "./code";
 import { defaultThemeTokens } from "./default-theme";
 import {
   densityTokens,
@@ -202,6 +203,8 @@ export function tokenCascade({
       ? dark
       : undefined;
   if (base) apply(base);
+  // `[data-theme=dark]` syntax highlighting block of tokens.css
+  if (mode === "dark") apply(codeTokensDark);
   const brand = resolvePrimaryColor(primaryColor);
   if (brand) {
     apply(primaryColorTokens(brand[mode], { ...base, ...overrides }));

@@ -14,6 +14,14 @@
       "title": "ドラッグできるタスクマトリクス",
       "description": "showTicks={false} と axisLabels でチャートをタスクボードにします。ドラッグ中はステータスに移動先の象限がリアルタイムで表示され（onPointDrag）、離すと位置が更新されます（onPointDrop）。タスクをダブルクリックすると名前や象限を編集できます（onPointDoubleClick）。空いている場所か +ボタン（quadrantContent）をクリックして追加します。renderTooltip は React のツールチップを表示します。"
     },
+    "triage": {
+      "title": "バッジ・件数・キーボード移動",
+      "description": "各象限にバッジ（badge）、2 行目の説明（description）、タスク数と合計時間（showCounts に関数を渡す）を付け、すべてチャートが描画します。タスクをクリックするとリングで囲みます（selectedIndex）。キーボードでは Tab で非表示のタスク一覧に入り、フォーカス中の点にフォーカスリングが表示されます。Enter で選択、Shift + 矢印キーで onPointDrop を通じて隣の象限へ移動し、ライブリージョンで読み上げます。"
+    },
+    "quadrant-header": {
+      "title": "象限ヘッダーのカスタマイズ",
+      "description": "renderQuadrantHeader は描画されたタイトルを、各象限の外側の角に置く React コンテンツに置き換えます。バッジ、タイトル、行動のヒント、info 引数から得た件数と合計時間、タスクを追加する + ボタンです。getPointProps は E2E テスト用に各点の不可視アンカーへ data-testid を付けます。"
+    },
     "bcg": {
       "title": "BCG マトリクス",
       "description": "相対市場シェアと市場成長率による製品ポートフォリオ。xDomain、yDomain、xSplit、ySplit で区切り線をシェア 1・成長率 10% に置き、reverseX でリーダーを左に配置し、点の大きさは売上です。"
@@ -113,6 +121,18 @@
     "dragHint": "タスクを別の象限にドラッグするか、ダブルクリックで編集、空白をクリックして追加します",
     "quadrantTapped": "「{{quadrant}}」をタップしました",
     "dragHintNative": "タスクを別の象限にドラッグしてください",
+    "triage": {
+      "doNow": "今すぐやる",
+      "plan": "時間を確保",
+      "handOff": "人に任せる",
+      "drop": "やらない",
+      "count_one": "{{count}} 件 · {{time}}",
+      "count_other": "{{count}} 件 · {{time}}",
+      "selected": "選択中：{{task}}",
+      "hint": "タスクをクリックで選択、またはドラッグします。キーボード：Tab でタスクに移り、Shift + 矢印キーで別の象限へ移動します",
+      "headerHint": "+ で象限にタスクを追加し、タスクをクリックすると選択します",
+      "aria": "今日のタスクと見積もりのアイゼンハワー・マトリクス"
+    },
     "products": {
       "cloud": "クラウドホスティング",
       "analytics": "アナリティクス",
@@ -289,7 +309,10 @@
       "onQuadrantClick": "象限の空いている場所をクリックしたときに、象限とデータ位置を渡して呼ばれます",
       "onPointDrop": "ドラッグしたポイントを離したときに、ポイント・インデックス・ドロップ先を渡して呼ばれます。設定するとポイントがドラッグ可能になります（移動するには points を更新）",
       "renderTooltip": "ポイントのツールチップの React コンテンツ",
-      "quadrantContent": "各象限の上に置く React コンテンツ（追加ボタンなど）。ポインターイベントを受け取るのはこのコンテンツだけです"
+      "quadrantContent": "各象限の上に置く React コンテンツ（追加ボタンなど）。ポインターイベントを受け取るのはこのコンテンツだけです",
+      "renderQuadrantHeader": "各象限の外側の角に置く React ヘッダー（上の象限は上端、下の象限は下端）。象限と { count, points, indices, region } を受け取り、描画されるタイトル・バッジ・説明・件数を置き換えます",
+      "accessiblePoints": "キーボードとスクリーンリーダー利用者のため、象限ごとに視覚的に非表示のボタン一覧を置きます。Enter / Space で onPointClick、Shift + 矢印キーで隣の象限へ移動（onPointDrop）し、フォーカス中の点にフォーカスリングを描きます",
+      "getPointProps": "各点に置かれる不可視アンカーの追加属性（data-testid など）。すべてのアンカーに data-point-index、data-label、クラス minerva-chart-quadrant-point が付きます"
     },
     "QuadrantConfig": {
       "points": "配置するポイント",
@@ -306,7 +329,10 @@
       "showLabels": "重なりを避けて点の横にラベルを描画",
       "pointSize": "点の直径（ピクセル）",
       "name": "ツールチップに表示するポイントの名前",
-      "draggable": "ポイントをドラッグできるようにします（onPointDrop または onPointDrag を設定すると既定で有効）"
+      "draggable": "ポイントをドラッグできるようにします（onPointDrop または onPointDrag を設定すると既定で有効）",
+      "showCounts": "各象限のタイトルの後に点の数を表示します。関数 (count, points) を渡すとその戻り値を表示します",
+      "selectedIndex": "選択中の点のインデックス。同じ色のリングで囲みます（null：なし）",
+      "selectedIndices": "複数の選択中の点のインデックス。それぞれリングで囲みます"
     },
     "QuadrantDropTarget": {
       "x": "ドロップ位置の X データ座標",
@@ -328,7 +354,15 @@
     },
     "QuadrantRegion": {
       "label": "象限の外側の角に描画するタイトル",
-      "color": "背景の色合いと点の既定の色"
+      "color": "背景の色合いと点の既定の色",
+      "badge": "タイトルの前にピル型で描く短いコード（例：\"Q1\"）",
+      "description": "タイトルの下に描く 2 行目。長すぎると … で切り詰めます"
+    },
+    "QuadrantHeaderInfo": {
+      "count": "象限内の点の数",
+      "points": "象限内の点",
+      "indices": "points 内でのこれらの点のインデックス",
+      "region": "象限のタイトル・バッジ・説明・色（quadrants）"
     },
     "QuadrantAxisLabels": {
       "top": "垂直の区切り線の上端のテキスト",
@@ -346,6 +380,10 @@
       "draggable": {
         "title": "象限間のドラッグ",
         "description": "タスクを別の象限へドラッグします。onPointDrop がドロップ先を受け取り、+ ボタンは quadrantContent、ツールチップは renderTooltip のビューです。"
+      },
+      "triage": {
+        "title": "バッジ・件数・選択",
+        "description": "各象限のバッジ、2 行目、タスク数はチャートが描画します。タスクをタップするとリングで囲み（selectedIndex）、別の象限へドラッグもできます。"
       }
     }
   },
@@ -358,6 +396,10 @@
       "point-click": {
         "title": "クリックしたタスクと象限",
         "description": "緊急のタスクを左に置いたアイゼンハワー・マトリクス（x 軸を反転）。タスクまたは象限の空白部分をクリックします。"
+      },
+      "triage": {
+        "title": "バッジ・件数・選択",
+        "description": "象限の badge と description、show-counts 属性（または showCounts 関数）、minerva-point-click で設定する selectedIndex、タスクを移動する minerva-point-drop。"
       }
     },
     "minerva-quadrant-chart": {

@@ -263,6 +263,10 @@ export type Oklab = [number, number, number, number];
 
 const toLinear = (v: number) =>
   v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+
+/** WCAG relative luminance (alpha ignored) */
+export const relativeLuminance = (c: Rgba): number =>
+  0.2126 * toLinear(c[0]) + 0.7152 * toLinear(c[1]) + 0.0722 * toLinear(c[2]);
 const toGamma = (v: number) =>
   v <= 0.0031308 ? v * 12.92 : 1.055 * Math.max(0, v) ** (1 / 2.4) - 0.055;
 

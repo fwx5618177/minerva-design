@@ -1,0 +1,114 @@
+{
+  "title": "KanbanBoard 看板",
+  "description": "由状态列（待办 / 进行中 / 已完成）组成的看板：等宽的列带有标题、计数和强调色，卡片纵向堆叠，整个看板可横向滚动。不内置拖放：请用你自己的操作移动卡片。",
+  "demos": {
+    "basic": {
+      "title": "基础用法",
+      "description": "KanbanBoard 是一个带标签、可用键盘滚动的区域，内含 KanbanColumn；每一列是以标题和计数命名的分组，列中的卡片（这里使用 minerva Card）构成一个列表。不支持拖放：请用你自己的操作（按钮或菜单）移动卡片并更新数据。"
+    },
+    "colors": {
+      "title": "颜色与计数",
+      "description": "color 在标题前显示一个强调色圆点：可以是主题色（primary、success、warning、danger、info、neutral）或任意 CSS 颜色。count 显示一个徽标，并随标题一同朗读。columnWidth 和 gap 控制列的尺寸；在窄屏上列保持宽度，看板滚动时按列吸附。"
+    },
+    "empty-actions": {
+      "title": "空状态、操作与页脚",
+      "description": "actions 位于列头末端（例如添加按钮），description 位于列头下方，footer 位于卡片下方。没有卡片的列显示 empty（默认是已翻译的“暂无项目”）。fill 会在列放得下时等分拉伸它们。"
+    },
+    "fixed-height": {
+      "title": "固定高度",
+      "description": "height 或 maxHeight 限制看板高度：看板横向滚动的同时，每一列的内容区纵向滚动。"
+    }
+  },
+  "api": {
+    "KanbanBoardProps": {
+      "children": "列（KanbanColumn）",
+      "columnWidth": "每一列的宽度（数字表示像素）；启用 fill 时为最小宽度",
+      "fill": "列放得下时等分拉伸以填满看板（以 columnWidth 为最小宽度，放不下时滚动）",
+      "gap": "列之间的间距（数字表示像素）",
+      "height": "看板高度：列的内容区在其中纵向滚动（数字表示像素）",
+      "maxHeight": "看板最大高度：列的内容区在其中纵向滚动（数字表示像素）",
+      "aria-label": "看板区域的无障碍名称",
+      "aria-labelledby": "为看板命名的元素 id（替代 aria-label）",
+      "className": "附加的类名",
+      "style": "看板的内联样式",
+      "id": "看板的 id",
+      "ref": "指向根 <div> 的 ref"
+    },
+    "KanbanColumnProps": {
+      "title": "列标题（也是其无障碍名称）",
+      "count": "显示在标题旁的项目数徽标（并随标题朗读）；省略则不显示",
+      "color": "列的强调色（标题前的圆点）：主题色或任意 CSS 颜色",
+      "description": "列头下方的辅助文字",
+      "actions": "列头末端的控件（例如添加按钮）",
+      "empty": "列中没有卡片时显示的内容",
+      "footer": "卡片下方的页脚（例如“添加卡片”按钮）",
+      "children": "卡片：每个子元素都包裹在 role=\"listitem\" 中",
+      "aria-label": "列的无障碍名称（默认为标题加计数，例如“待办，3 项”）",
+      "className": "附加的类名",
+      "style": "列的内联样式",
+      "id": "列的 id",
+      "ref": "指向根 <section> 的 ref"
+    }
+  },
+  "cssVars": {
+    "--kanban-column-width": "列宽（默认 18rem；由 columnWidth 属性设置；启用 fill 时为最小宽度）",
+    "--kanban-gap": "列之间的间距（默认 0.75rem；由 gap 属性设置）",
+    "--kanban-column-background": "列的背景（默认 --surface-muted-color）",
+    "--kanban-column-border-color": "列的边框颜色（默认 --border-color）",
+    "--kanban-column-radius": "列的圆角（默认 --radius-lg）",
+    "--kanban-column-color": "列的强调色：标题前的圆点（color 属性为自定义 CSS 颜色时设置它）",
+    "--kanban-card-gap": "列中卡片之间的间距（默认 --space-2）",
+    "--kanban-count-background": "计数徽标的背景（默认 --surface-color）",
+    "--kanban-count-color": "计数徽标的文字颜色（默认 --text-secondary-color）"
+  },
+  "wc": {
+    "demos": {
+      "basic": {
+        "title": "基础用法",
+        "description": "minerva-kanban-board 中放置 minerva-kanban-column 元素；插入的卡片会获得 role=\"listitem\"。不支持拖放：这里每张卡片通过自己的按钮移到下一列，并由脚本更新 count 属性。"
+      },
+      "colors": {
+        "title": "颜色与计数",
+        "description": "color 接受主题色（同时提供 :state(color-success) 等自定义状态）或任意 CSS 颜色；count 显示一个随标题朗读的徽标。column-width 和 gap 控制列的尺寸。"
+      },
+      "empty-actions": {
+        "title": "空状态与操作",
+        "description": "actions 插槽位于列头末端；列中没有卡片时显示 empty-text（或 empty 插槽）；fill 会在列放得下时拉伸它们。"
+      },
+      "fixed-height": {
+        "title": "固定高度",
+        "description": "height 或 max-height 限制看板高度：看板横向滚动的同时，每一列的内容区纵向滚动。"
+      }
+    },
+    "minerva-kanban-board": {
+      "slots": {
+        "default": "列（minerva-kanban-column）"
+      },
+      "methods": {
+        "focus": "聚焦滚动区域（之后可用方向键滚动）。"
+      }
+    },
+    "minerva-kanban-column": {
+      "props": {
+        "heading": "列标题（也是其无障碍名称；或使用 heading 插槽）",
+        "emptyText": "没有卡片时显示的文字（默认为已翻译的“暂无项目”；或使用 empty 插槽）"
+      },
+      "slots": {
+        "default": "卡片（没有 role 的卡片会获得 role=\"listitem\"）",
+        "heading": "富文本标题（替代 heading 属性）",
+        "actions": "列头末端的控件（例如添加按钮）",
+        "description": "辅助文字（替代 description 属性）",
+        "empty": "没有卡片时显示的内容",
+        "footer": "卡片下方的页脚（例如“添加卡片”按钮）"
+      }
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "原生示例",
+        "description": "由列组成的横向 ScrollView，按列吸附滚动；卡片通过自己的按钮移动。"
+      }
+    }
+  }
+}

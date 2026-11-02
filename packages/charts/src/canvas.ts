@@ -34,9 +34,12 @@ export { formatCompact, formatDuration, formatValue } from "./engine/format";
 export { chartAriaLabel, describeChart } from "./engine/labels";
 export { drawPrimitives } from "./engine/canvas";
 export {
+  areaTitleLayout as annotationTitleLayout,
   lineOf as annotationLine,
   rectOf as annotationRect,
   textBox as annotationTextBox,
+  type AreaText as ChartAreaText,
+  type AreaTitle as ChartAreaTitle,
 } from "./engine/overlay";
 export { toData, toScreen } from "./engine/layout";
 export {
@@ -71,6 +74,9 @@ export {
   lineSeries,
   quadrantCenter,
   quadrantChartOptions,
+  quadrantCountText,
+  quadrantGroups,
+  quadrantLabels,
   quadrantOf,
   scatterSeries,
   sparklineOptions,
@@ -79,8 +85,11 @@ export {
   type HeatmapCell,
   type HeatmapConfig,
   type QuadrantAxisLabels,
+  type QuadrantChartState,
   type QuadrantConfig,
   type QuadrantCorner,
+  type QuadrantGroup,
+  type QuadrantLabels,
   type QuadrantPoint,
   type QuadrantRegion,
   type QuadrantRegions,

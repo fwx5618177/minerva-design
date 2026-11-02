@@ -110,8 +110,14 @@ let elementsLoading: Promise<void> | null = null;
 
 /** Loads the custom element APIs (once); `getElementApi` works afterwards */
 export const loadElementApis = (): Promise<void> =>
-  (elementsLoading ??= import("./api.wc.generated.json").then((mod) => {
-    elements = mod.default as unknown as Record<string, ApiElement>;
+  (elementsLoading ??= Promise.all([
+    import("./api.wc.generated.json"),
+    import("./api.wc.charts.generated.json"),
+  ]).then(([main, charts]) => {
+    elements = {
+      ...(main.default as unknown as Record<string, ApiElement>),
+      ...(charts.default as unknown as Record<string, ApiElement>),
+    };
   }));
 
 /** API of a custom element (`minerva-button`), once `loadElementApis` resolved */

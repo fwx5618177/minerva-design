@@ -496,7 +496,13 @@ export const createChart = (
         scales,
         theme,
         annotations,
-        pointLabels: collectPointLabels(model, view, scales, yTicks),
+        pointLabels: collectPointLabels(
+          model,
+          view,
+          scales,
+          yTicks,
+          theme.background,
+        ),
         connectors: connectorSegments(model, scales),
         arrows: dependencyArrows(model, scales, dependencies),
       });

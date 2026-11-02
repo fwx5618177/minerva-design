@@ -13,6 +13,8 @@ export interface SeriesColumns {
   y: Float64Array;
   size: Float32Array | null;
   colors: (string | undefined)[] | null;
+  /** Bars: per-point fill opacity (NaN: the series opacity) */
+  opacities: Float32Array | null;
   labels: (string | undefined)[] | null;
   /** Candlesticks: open / high / low (y is the close) */
   open: Float64Array | null;
@@ -51,6 +53,7 @@ type Extra = Pick<
   SeriesColumns,
   | "size"
   | "colors"
+  | "opacities"
   | "labels"
   | "open"
   | "high"
@@ -276,6 +279,7 @@ export const normalizeData = (
   const none: Extra = {
     size: null,
     colors: null,
+    opacities: null,
     labels: null,
     open: null,
     high: null,
@@ -341,6 +345,7 @@ export const normalizeData = (
   const y = new Float64Array(count);
   let size: Float32Array | null = null;
   let colors: (string | undefined)[] | null = null;
+  let opacities: Float32Array | null = null;
   let labels: (string | undefined)[] | null = null;
   let open: Float64Array | null = null;
   let high: Float64Array | null = null;
@@ -368,6 +373,7 @@ export const normalizeData = (
         y?: number | string | null;
         size?: number;
         color?: string;
+        opacity?: number;
         label?: string;
         open?: number;
         high?: number;
@@ -389,6 +395,10 @@ export const normalizeData = (
       if (d.color !== undefined) {
         colors ??= new Array<string | undefined>(count);
         colors[i] = d.color;
+      }
+      if (typeof d.opacity === "number") {
+        opacities ??= new Float32Array(count).fill(NaN);
+        opacities[i] = Math.min(1, Math.max(0, d.opacity));
       }
       if (d.label !== undefined) {
         labels ??= new Array<string | undefined>(count);
@@ -421,6 +431,7 @@ export const normalizeData = (
   return finalize(x, y, count, {
     size,
     colors,
+    opacities,
     labels,
     open,
     high,

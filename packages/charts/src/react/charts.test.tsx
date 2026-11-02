@@ -193,6 +193,178 @@ describe("chart components", () => {
     expect(onQuadrantClick.mock.calls[0][0]).toBe("bottomLeft");
   });
 
+  it("lists the quadrant points as buttons and moves them with Shift + arrows", async () => {
+    const onPointClick = vi.fn();
+    const onPointDrop = vi.fn();
+    const ref = createRef<ChartHandle>();
+    const initial = [
+      { x: 8, y: 8, label: "Write report" },
+      { x: 2, y: 2 },
+    ];
+    const view = (points: typeof initial) => (
+      <QuadrantChart
+        ref={ref}
+        locale="en"
+        points={points}
+        reverseX
+        quadrants={{ topLeft: { label: "Do first" } }}
+        onPointClick={onPointClick}
+        onPointDrop={onPointDrop}
+      />
+    );
+    const { container, rerender } = render(view(initial));
+    await flush();
+    const lists = container.querySelectorAll('[role="list"]');
+    expect([...lists].map((l) => l.getAttribute("aria-label"))).toEqual([
+      "Do first",
+      "Bottom right quadrant",
+    ]);
+    const button = () =>
+      container.querySelector<HTMLButtonElement>(
+        'button[data-point-index="0"]',
+      )!;
+    expect(button().getAttribute("aria-label")).toBe("Write report, Do first");
+    expect(button().getAttribute("aria-keyshortcuts")).toContain(
+      "Shift+ArrowDown",
+    );
+    expect(
+      container
+        .querySelector('button[data-point-index="1"]')!
+        .getAttribute("aria-label"),
+    ).toBe("Point 2, Bottom right quadrant");
+
+    // the focused dot gets a ring
+    const chart = ref.current!.getInstance()!;
+    const setOptions = vi.spyOn(chart, "setOptions");
+    act(() => button().focus());
+    await flush();
+    expect(setOptions.mock.lastCall![0].series.map((s) => s.id)).toContain(
+      "quadrant:focus",
+    );
+
+    act(() => button().click());
+    expect(onPointClick).toHaveBeenCalledWith(initial[0], 0);
+
+    act(() => {
+      button().dispatchEvent(
+        new KeyboardEvent("keydown", {
+          key: "ArrowDown",
+          shiftKey: true,
+          bubbles: true,
+        }),
+      );
+    });
+    expect(onPointDrop).toHaveBeenCalledWith(initial[0], 0, {
+      x: 7.5,
+      y: 2.5,
+      quadrant: "bottomLeft",
+    });
+    expect(container.querySelector('[role="status"]')!.textContent).toBe(
+      "Write report moved to Bottom left quadrant",
+    );
+    // up from a top quadrant: nothing
+    act(() => {
+      button().dispatchEvent(
+        new KeyboardEvent("keydown", {
+          key: "ArrowUp",
+          shiftKey: true,
+          bubbles: true,
+        }),
+      );
+    });
+    expect(onPointDrop).toHaveBeenCalledTimes(1);
+
+    // the app moves the point: its button keeps the focus
+    rerender(view([{ ...initial[0]!, x: 7.5, y: 2.5 }, initial[1]!]));
+    await flush();
+    expect(document.activeElement).toBe(button());
+    expect(
+      button().closest('[role="list"]')!.getAttribute("data-quadrant"),
+    ).toBe("bottomLeft");
+  });
+
+  it("renders quadrant headers, dot anchors and selection rings", async () => {
+    const ref = createRef<ChartHandle>();
+    const points = [
+      { x: 2, y: 8, label: "A" },
+      { x: 3, y: 9, label: "B" },
+      { x: 8, y: 2, label: "C" },
+    ];
+    const header = vi.fn(
+      (corner: string, info: { count: number; region?: { badge?: string } }) =>
+        corner === "topLeft" ? (
+          <span>
+            {info.region?.badge} {info.count} items
+          </span>
+        ) : null,
+    );
+    const { container, getByText } = render(
+      <QuadrantChart
+        ref={ref}
+        points={points}
+        quadrants={{ topLeft: { label: "Do", badge: "Q1" } }}
+        showCounts
+        selectedIndex={2}
+        renderQuadrantHeader={header}
+        getPointProps={(point) => ({ "data-testid": `dot-${point.label}` })}
+      />,
+    );
+    await flush();
+    expect(getByText("Q1 2 items")).toBeTruthy();
+    expect(header).toHaveBeenCalledWith(
+      "bottomRight",
+      expect.objectContaining({ count: 1, indices: [2] }),
+    );
+    const slot = container.querySelector<HTMLElement>(
+      ".minerva-chart-quadrant-header-topLeft",
+    )!;
+    expect(slot.style.top).toBe("0px");
+    expect(slot.style.left).toBe("0px");
+    expect(slot.style.pointerEvents).toBe("auto");
+
+    const anchor = container.querySelector<HTMLElement>(
+      '[data-testid="dot-A"]',
+    )!;
+    expect(anchor.dataset.pointIndex).toBe("0");
+    expect(anchor.dataset.label).toBe("A");
+    expect(anchor.getAttribute("aria-hidden")).toBe("true");
+    expect(parseFloat(anchor.style.left)).toBeCloseTo(20);
+    expect(parseFloat(anchor.style.top)).toBeCloseTo(20);
+    expect(
+      container
+        .querySelector('button[data-point-index="2"]')!
+        .getAttribute("aria-current"),
+    ).toBe("true");
+
+    // the drawn titles give way to the React headers; the selection is ringed
+    const chart = ref.current!.getInstance()!;
+    const setOptions = vi.spyOn(chart, "setOptions");
+    act(() =>
+      container
+        .querySelector<HTMLButtonElement>('button[data-point-index="0"]')!
+        .focus(),
+    );
+    await flush();
+    const options = setOptions.mock.lastCall![0];
+    expect(options.series.map((s) => s.id)).toEqual([
+      undefined,
+      "quadrant:selected",
+      "quadrant:focus",
+    ]);
+    const rect = options.annotations![0] as { label?: string; badge?: string };
+    expect(rect.label).toBeUndefined();
+    expect(rect.badge).toBeUndefined();
+  });
+
+  it("leaves the accessible point layer out on request", async () => {
+    const { container } = render(
+      <QuadrantChart points={[{ x: 1, y: 1 }]} accessiblePoints={false} />,
+    );
+    await flush();
+    expect(container.querySelector('[role="list"]')).toBeNull();
+    expect(container.querySelector("[data-point-index]")).not.toBeNull();
+  });
+
   it("reports drags before the drop and highlights the target quadrant", async () => {
     const onPointDrag = vi.fn();
     const onPointDrop = vi.fn();
@@ -561,6 +733,34 @@ describe("cartesian chart components", () => {
     expect(view.y[0]).toBeLessThan(0);
     expect(view.y[1]).toBeGreaterThan(100);
     expect(view.x).toEqual([-0.5, 1.5]);
+  });
+
+  it("GanttChart writes the task names inside the bars", async () => {
+    const ref = createRef<ChartHandle>();
+    const tasks = [
+      { name: "Design", start: 0, end: 40 },
+      { name: "Build", start: 40, end: 100, progress: 0.5 },
+    ];
+    const view = (barLabels?: boolean | "auto") => (
+      <GanttChart ref={ref} tasks={tasks} barLabels={barLabels} />
+    );
+    const { rerender, unmount } = render(view());
+    await flush();
+    const setOptions = vi.spyOn(ref.current!.getInstance()!, "setOptions");
+    rerender(view(true));
+    await flush();
+    const series = setOptions.mock.lastCall![0].series;
+    expect(series[0]).toMatchObject({ showLabels: "inside" });
+    // solid without a progress, translucent under one
+    expect(
+      (
+        series[0]!.data as unknown as { label?: string; opacity?: number }[]
+      ).map((d) => [d.label, d.opacity]),
+    ).toEqual([
+      ["Design", 0.9],
+      ["Build", undefined],
+    ]);
+    unmount();
   });
 
   it("writes the texts of the locale and follows the page language", async () => {

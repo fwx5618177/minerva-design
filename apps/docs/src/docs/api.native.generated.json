@@ -347,6 +347,182 @@
     "kind": "alias",
     "type": "\"subtle\" | \"outline\" | \"solid\""
   },
+  "native:AnswerSheetGroup": {
+    "source": "native/src/components/AnswerSheet/AnswerSheet.tsx",
+    "description": "A titled section of an AnswerSheet",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true,
+        "description": "Key matched by `item.group`"
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": true,
+        "description": "Visible title"
+      }
+    ]
+  },
+  "native:AnswerSheetItem": {
+    "source": "native/src/components/AnswerSheet/AnswerSheet.tsx",
+    "description": "A question of an AnswerSheet",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true,
+        "description": "Unique key of the question (the value of the sheet)"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "description": "Visible label; defaults to its number across all the groups"
+      },
+      {
+        "name": "status",
+        "type": "AnswerSheetStatus",
+        "required": false,
+        "default": "\"unanswered\"",
+        "description": "Status of the question"
+      },
+      {
+        "name": "flagged",
+        "type": "boolean",
+        "required": false,
+        "description": "Flags the question for review (a warning dot in a corner)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "The question can't be selected"
+      },
+      {
+        "name": "group",
+        "type": "string",
+        "required": false,
+        "description": "Key of its group; items without a known group render first, untitled"
+      }
+    ]
+  },
+  "native:AnswerSheetLayout": {
+    "source": "native/src/components/AnswerSheet/AnswerSheet.tsx",
+    "description": "\"wrap\" wraps the pills on several rows; \"scroll\" keeps a single scrolling row",
+    "kind": "alias",
+    "type": "\"wrap\" | \"scroll\""
+  },
+  "native:AnswerSheetProps": {
+    "source": "native/src/components/AnswerSheet/AnswerSheet.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "items",
+        "type": "readonly AnswerSheetItem[]",
+        "required": true,
+        "description": "The questions, in order"
+      },
+      {
+        "name": "groups",
+        "type": "readonly AnswerSheetGroup[]",
+        "required": false,
+        "description": "Titled sections, in display order (items render under the group whose key matches `item.group`)"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "Key of the current question (controlled; pair with onChange)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false,
+        "description": "Key of the initially current question (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(key: string) => void",
+        "required": false,
+        "description": "Called with the key of the selected question"
+      },
+      {
+        "name": "size",
+        "type": "AnswerSheetSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Density of the pills"
+      },
+      {
+        "name": "layout",
+        "type": "AnswerSheetLayout",
+        "required": false,
+        "default": "\"wrap\"",
+        "description": "\"wrap\" wraps the pills on several rows; \"scroll\" keeps a single horizontally scrolling row"
+      },
+      {
+        "name": "columns",
+        "type": "number",
+        "required": false,
+        "description": "Fixed number of columns (equal-width pills); ignored with layout=\"scroll\""
+      },
+      {
+        "name": "showLegend",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a legend of the statuses present (and of the flag)"
+      },
+      {
+        "name": "showSummary",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the number of answered questions (\"12 / 20 answered\")"
+      },
+      {
+        "name": "getItemLabel",
+        "type": "(item: AnswerSheetItem, index: number) => string",
+        "required": false,
+        "default": "\"Question <n>, <status>\" (translated)",
+        "description": "Accessible name of a pill; receives the item and its display index"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the whole sheet"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the sheet"
+      }
+    ]
+  },
+  "native:AnswerSheetSize": {
+    "source": "native/src/components/AnswerSheet/AnswerSheet.tsx",
+    "description": "Density of an AnswerSheet",
+    "kind": "alias",
+    "type": "\"small\" | \"medium\""
+  },
+  "native:AnswerSheetStatus": {
+    "source": "native/src/components/AnswerSheet/AnswerSheet.tsx",
+    "description": "Status of an AnswerSheet question",
+    "kind": "alias",
+    "type": "\"unanswered\" | \"answered\" | \"correct\" | \"wrong\" | \"skipped\""
+  },
   "native:AppShellNavigationState": {
     "source": "native/src/components/AppShell/index.tsx",
     "kind": "interface",
@@ -2872,6 +3048,33 @@
         "name": "onCopyError",
         "type": "(error: unknown) => void",
         "required": false
+      },
+      {
+        "name": "language",
+        "type": "string",
+        "required": false,
+        "description": "Language of the code: highlights its syntax (nested colored Text, `code-token-<type>-color` tokens). Without it the text is plain"
+      },
+      {
+        "name": "highlight",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Highlights the syntax of `language` (false: plain text)"
+      },
+      {
+        "name": "showLineNumbers",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Numbers the lines in a gutter hidden from assistive technology (each line is then its own selectable Text)"
+      },
+      {
+        "name": "showLanguage",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the `language` as a small label (e.g. \"JSON\")"
       }
     ]
   },
@@ -4028,6 +4231,146 @@
       }
     ]
   },
+  "native:FlashcardAxis": {
+    "source": "native/src/components/Flashcard/Flashcard.tsx",
+    "description": "Rotation axis of a Flashcard flip",
+    "kind": "alias",
+    "type": "\"y\" | \"x\""
+  },
+  "native:FlashcardProps": {
+    "source": "native/src/components/Flashcard/Flashcard.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "front",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Content of the front face (the prompt)"
+      },
+      {
+        "name": "back",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Content of the back face (the answer)"
+      },
+      {
+        "name": "footer",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Content below the card, not flipped (e.g. rating buttons)"
+      },
+      {
+        "name": "frontLabel",
+        "type": "ReactNode",
+        "required": false,
+        "default": "the \"flashcard.frontLabel\" message (\"Question\")",
+        "description": "Small caption of the front face; `null`, `false` or `\"\"` hides it"
+      },
+      {
+        "name": "backLabel",
+        "type": "ReactNode",
+        "required": false,
+        "default": "the \"flashcard.backLabel\" message (\"Answer\")",
+        "description": "Small caption of the back face; `null`, `false` or `\"\"` hides it"
+      },
+      {
+        "name": "hint",
+        "type": "ReactNode",
+        "required": false,
+        "default": "the \"flashcard.hint\" message",
+        "description": "Hint on the front face (shown with showHint while the card flips on press)"
+      },
+      {
+        "name": "showHint",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the hint on the front face"
+      },
+      {
+        "name": "flipped",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the back is shown (controlled; pair with onFlippedChange)"
+      },
+      {
+        "name": "defaultFlipped",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Whether the back is initially shown (uncontrolled)"
+      },
+      {
+        "name": "onFlippedChange",
+        "type": "(flipped: boolean) => void",
+        "required": false,
+        "description": "Called with the next flipped state"
+      },
+      {
+        "name": "flipOnClick",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Pressing the card flips it. When false the card is not a button and only `flipped` flips it."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Blocks flipping and dims the card"
+      },
+      {
+        "name": "axis",
+        "type": "FlashcardAxis",
+        "required": false,
+        "default": "\"y\"",
+        "description": "Rotation axis: \"y\" flips horizontally, \"x\" vertically"
+      },
+      {
+        "name": "variant",
+        "type": "FlashcardVariant",
+        "required": false,
+        "default": "\"elevated\"",
+        "description": "Surface style"
+      },
+      {
+        "name": "size",
+        "type": "FlashcardSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Padding and typography scale"
+      },
+      {
+        "name": "minHeight",
+        "type": "number | string",
+        "required": false,
+        "default": "192",
+        "description": "Minimum height of the card in dp (or a \"px\" / \"rem\" string, 1rem = 16); the card grows to fit the taller face"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the outer view (card and footer)"
+      }
+    ]
+  },
+  "native:FlashcardSize": {
+    "source": "native/src/components/Flashcard/Flashcard.tsx",
+    "description": "Padding and typography scale of a Flashcard",
+    "kind": "alias",
+    "type": "\"small\" | \"medium\" | \"large\""
+  },
+  "native:FlashcardVariant": {
+    "source": "native/src/components/Flashcard/Flashcard.tsx",
+    "description": "Surface style of a Flashcard (matches Card)",
+    "kind": "alias",
+    "type": "\"elevated\" | \"outline\" | \"filled\""
+  },
   "native:FormApi": {
     "source": "native/src/components/Form/formStore.ts",
     "description": "Imperative API of a form (`useForm()`, the Form `ref`, `useFormContext()`)",
@@ -4717,6 +5060,13 @@
         "type": "string",
         "required": false,
         "description": "Color of the dependency arrows (any CSS color); the secondary text color by default"
+      },
+      {
+        "name": "barLabels",
+        "type": "boolean | \"inside\" | \"auto\"",
+        "required": false,
+        "default": "\"auto\"",
+        "description": "Writes the name of every task inside its bar (cut with an ellipsis, in a color contrasting with the bar; skipped when the bar is too small): `\"auto\"` when several tasks share a row (`row`), so the bars of a lane can be told apart without hovering; `true` / `\"inside\"` always, `false` never"
       },
       {
         "name": "locale",
@@ -5912,6 +6262,130 @@
       }
     ]
   },
+  "native:KanbanBoardProps": {
+    "source": "native/src/components/KanbanBoard/KanbanBoard.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "The columns (KanbanColumn)"
+      },
+      {
+        "name": "columnWidth",
+        "type": "number",
+        "required": false,
+        "default": "288",
+        "description": "Width of every column, in device-independent pixels. With `fill` it is the minimum width: columns stretch equally when they fit"
+      },
+      {
+        "name": "fill",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Stretches the columns equally to fill the board when they fit (they keep `columnWidth` as their minimum width and scroll otherwise)"
+      },
+      {
+        "name": "gap",
+        "type": "number",
+        "required": false,
+        "default": "12",
+        "description": "Space between the columns, in device-independent pixels"
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "required": false,
+        "description": "Height of the board: the column bodies scroll vertically within it"
+      },
+      {
+        "name": "maxHeight",
+        "type": "number",
+        "required": false,
+        "description": "Maximum height of the board: the column bodies scroll vertically within it"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the board (the horizontal ScrollView)"
+      }
+    ]
+  },
+  "native:KanbanColumnColor": {
+    "source": "native/src/components/KanbanBoard/KanbanBoard.tsx",
+    "description": "Accent of a KanbanColumn: a theme color or any React Native color",
+    "kind": "alias",
+    "type": "ColorScheme | (string & {})"
+  },
+  "native:KanbanColumnProps": {
+    "source": "native/src/components/KanbanBoard/KanbanBoard.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": true,
+        "description": "Title of the column (also its accessible name)"
+      },
+      {
+        "name": "count",
+        "type": "number",
+        "required": false,
+        "description": "Number of items shown as a badge next to the title (and announced with the title); omit to hide the badge"
+      },
+      {
+        "name": "color",
+        "type": "KanbanColumnColor",
+        "required": false,
+        "description": "Accent of the column (a dot before the title): a theme color or any color"
+      },
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Supporting text under the header"
+      },
+      {
+        "name": "actions",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Header controls on the end side (e.g. an add button)"
+      },
+      {
+        "name": "empty",
+        "type": "ReactNode",
+        "required": false,
+        "default": "\"No items\" (translated)",
+        "description": "Content shown when the column has no cards"
+      },
+      {
+        "name": "footer",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Footer below the cards (e.g. an \"Add card\" button)"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "The cards: each child is wrapped in a role=\"listitem\" view"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the column"
+      }
+    ]
+  },
   "native:KeyValueEditorProps": {
     "source": "native/src/components/Editors/index.tsx",
     "kind": "interface",
@@ -6164,6 +6638,153 @@
     "source": "native/src/components/Loading/Loading.tsx",
     "kind": "alias",
     "type": "\"small\" | \"medium\" | \"large\""
+  },
+  "native:MediaControlsProps": {
+    "source": "native/src/components/MediaControls/MediaControls.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "playing",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the media is playing (drives the play / pause button)"
+      },
+      {
+        "name": "currentTime",
+        "type": "number",
+        "required": false,
+        "description": "Playhead position, in seconds"
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "required": false,
+        "description": "Duration in seconds (0 while unknown: the seek bar is disabled)"
+      },
+      {
+        "name": "buffered",
+        "type": "number",
+        "required": false,
+        "description": "Buffered position, in seconds (shown on the seek bar)"
+      },
+      {
+        "name": "muted",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the media is muted (shows the mute button when onMutedChange is set)"
+      },
+      {
+        "name": "volume",
+        "type": "number",
+        "required": false,
+        "description": "Volume 0..1 (shows the volume bar when onVolumeChange is set)"
+      },
+      {
+        "name": "playbackRate",
+        "type": "number",
+        "required": false,
+        "default": "1",
+        "description": "Current playback speed (shows the speed button when onRateChange is set)"
+      },
+      {
+        "name": "playbackRates",
+        "type": "readonly number[]",
+        "required": false,
+        "default": "[0.5, 0.75, 1, 1.25, 1.5, 2]",
+        "description": "Speeds the speed button cycles through"
+      },
+      {
+        "name": "skipSeconds",
+        "type": "number",
+        "required": false,
+        "default": "10",
+        "description": "Step of the skip back / forward buttons, in seconds (0 hides them)"
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": false,
+        "description": "Title of the media, shown above the controls"
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the loading spinner (buffering)"
+      },
+      {
+        "name": "error",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the translated error message (\"This media can't be played\") and disables the play buttons"
+      },
+      {
+        "name": "fullscreen",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the player is fullscreen (shows the fullscreen button when onFullscreenChange is set)"
+      },
+      {
+        "name": "variant",
+        "type": "MediaControlsVariant",
+        "required": false,
+        "default": "\"audio\"",
+        "description": "Overlay over a video (dark translucent) or audio bar (surface)"
+      },
+      {
+        "name": "onPlayPause",
+        "type": "() => void",
+        "required": false,
+        "description": "Called when the play / pause button is pressed"
+      },
+      {
+        "name": "onSeek",
+        "type": "(seconds: number) => void",
+        "required": false,
+        "description": "Called with the requested playhead position (seek bar, skip buttons, screen reader actions)"
+      },
+      {
+        "name": "onMutedChange",
+        "type": "(muted: boolean) => void",
+        "required": false,
+        "description": "Called with the requested muted state"
+      },
+      {
+        "name": "onVolumeChange",
+        "type": "(volume: number) => void",
+        "required": false,
+        "description": "Called with the requested volume (0..1)"
+      },
+      {
+        "name": "onRateChange",
+        "type": "(rate: number) => void",
+        "required": false,
+        "description": "Called with the next playback speed"
+      },
+      {
+        "name": "onFullscreenChange",
+        "type": "(fullscreen: boolean) => void",
+        "required": false,
+        "description": "Called with the requested fullscreen state"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the bar"
+      }
+    ]
+  },
+  "native:MediaControlsVariant": {
+    "source": "native/src/components/MediaControls/MediaControls.tsx",
+    "description": "Look of the control bar: over a video (dark overlay) or an audio bar (surface)",
+    "kind": "alias",
+    "type": "\"video\" | \"audio\""
   },
   "native:MenuAction": {
     "source": "native/src/components/Menu/index.tsx",
@@ -8230,6 +8851,20 @@
       }
     ]
   },
+  "native:QuadrantChartState": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "State of a quadrant matrix that is not a prop (set by the components)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "focusedIndex",
+        "type": "number | null",
+        "required": false,
+        "description": "Index of the keyboard-focused point: drawn with a focus ring"
+      }
+    ]
+  },
   "native:QuadrantConfig": {
     "source": "charts/src/engine/presets.ts",
     "description": "Settings of a quadrant matrix (the props of QuadrantChart)",
@@ -8330,6 +8965,25 @@
         "type": "boolean",
         "required": false,
         "description": "Lets the user drag the dots (`drag` / `drop` events)"
+      },
+      {
+        "name": "showCounts",
+        "type": "boolean | ((count: number, points: readonly QuadrantPoint[]) => string)",
+        "required": false,
+        "default": "false",
+        "description": "Shows the number of points of each quadrant after its title; a function returns the text instead (e.g. `(n) => `${n} tasks``)"
+      },
+      {
+        "name": "selectedIndex",
+        "type": "number | null",
+        "required": false,
+        "description": "Index of the selected point: drawn with a ring of its color (`null`: none)"
+      },
+      {
+        "name": "selectedIndices",
+        "type": "readonly number[]",
+        "required": false,
+        "description": "Indices of the selected points (several selected points)"
       }
     ]
   },
@@ -8361,6 +9015,71 @@
         "type": "QuadrantCorner",
         "required": true,
         "description": "Quadrant of the drop, as seen on screen"
+      }
+    ]
+  },
+  "native:QuadrantGroup": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Points of each quadrant, with their indices",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "points",
+        "type": "QuadrantPoint[]",
+        "required": true
+      },
+      {
+        "name": "indices",
+        "type": "number[]",
+        "required": true
+      }
+    ]
+  },
+  "native:QuadrantLabels": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Built-in texts of the quadrant matrices (accessible point layer)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "topLeft",
+        "type": "string",
+        "required": true,
+        "description": "Names of the quadrants without a title"
+      },
+      {
+        "name": "topRight",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "bottomLeft",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "bottomRight",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "point",
+        "type": "string",
+        "required": true,
+        "description": "Name of a point without a label: `{n}` is its number"
+      },
+      {
+        "name": "moved",
+        "type": "string",
+        "required": true,
+        "description": "Announced when a point is moved with the keyboard"
+      },
+      {
+        "name": "moveHint",
+        "type": "string",
+        "required": true,
+        "description": "Accessible description of the points that can be moved"
       }
     ]
   },
@@ -8419,6 +9138,18 @@
         "type": "string",
         "required": false,
         "description": "Background tint and default dot color (any CSS color)"
+      },
+      {
+        "name": "badge",
+        "type": "string",
+        "required": false,
+        "description": "Short code drawn in a pill before the title (e.g. \"Q1\")"
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false,
+        "description": "Second line drawn under the title (e.g. \"Do it now\"); cut with … when too long"
       }
     ]
   },
@@ -9326,6 +10057,137 @@
     "kind": "alias",
     "type": "{ t: \"L\"; x: number; y: number; q?: Quad } | { t: \"A\"; cx: number; cy: number; r: number; /** Start angle and end angle (`a1 - a0` is the signed sweep) */ a0: number; a1: number; }"
   },
+  "native:SegmentedControlColor": {
+    "source": "native/src/components/SegmentedControl/SegmentedControl.tsx",
+    "description": "Color of a SegmentedControl: `neutral` shows a raised surface thumb on a muted track, `primary` a solid primary thumb",
+    "kind": "alias",
+    "type": "\"neutral\" | \"primary\""
+  },
+  "native:SegmentedControlOption": {
+    "source": "native/src/components/SegmentedControl/SegmentedControl.tsx",
+    "description": "A segment: a plain string (value and label) or an option object",
+    "kind": "alias",
+    "type": "T | SegmentedControlOptionObject<T>"
+  },
+  "native:SegmentedControlOptionObject": {
+    "source": "native/src/components/SegmentedControl/SegmentedControl.tsx",
+    "description": "A segment of a SegmentedControl",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "value",
+        "type": "T",
+        "required": true,
+        "description": "Value of the segment"
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": false,
+        "default": "the value (unless an icon is given)",
+        "description": "Visible label (a string is rendered as text)"
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Icon shown before the label (alone for an icon-only segment)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Blocks this segment"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "description": "Accessible name; required for an icon-only segment"
+      }
+    ]
+  },
+  "native:SegmentedControlProps": {
+    "source": "native/src/components/SegmentedControl/SegmentedControl.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "options",
+        "type": "readonly SegmentedControlOption<NoInfer<T>>[]",
+        "required": true,
+        "description": "The segments: strings or option objects"
+      },
+      {
+        "name": "value",
+        "type": "NoInfer<T>",
+        "required": false,
+        "description": "Selected value (controlled; pair with onChange)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "NoInfer<T>",
+        "required": false,
+        "description": "Initially selected value (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: T) => void",
+        "required": false,
+        "description": "Called with the selected value"
+      },
+      {
+        "name": "size",
+        "type": "SegmentedControlSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Segment density"
+      },
+      {
+        "name": "color",
+        "type": "SegmentedControlColor",
+        "required": false,
+        "default": "\"neutral\"",
+        "description": "Thumb color"
+      },
+      {
+        "name": "fullWidth",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Fills the width of the container with equal-width segments (otherwise each segment is as wide as its content)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Blocks every segment"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label of the group"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the track"
+      }
+    ]
+  },
+  "native:SegmentedControlSize": {
+    "source": "native/src/components/SegmentedControl/SegmentedControl.tsx",
+    "description": "Density of a SegmentedControl",
+    "kind": "alias",
+    "type": "\"small\" | \"medium\" | \"large\""
+  },
   "native:SelectCloseReason": {
     "source": "native/src/components/Select/Select.tsx",
     "description": "Why the options sheet closed",
@@ -9868,6 +10730,151 @@
     "source": "native/src/components/Skeleton/Skeleton.tsx",
     "kind": "alias",
     "type": "\"text\" | \"circular\" | \"rectangular\" | \"rounded\" | \"button\" | \"image\""
+  },
+  "native:SliderProps": {
+    "source": "native/src/components/Slider/Slider.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\">"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "SliderValue",
+        "required": false,
+        "description": "Value (controlled): a number, or `[start, end]` with `range`"
+      },
+      {
+        "name": "defaultValue",
+        "type": "SliderValue",
+        "required": false,
+        "description": "Initial value (uncontrolled); defaults to min, or [min, max] with range"
+      },
+      {
+        "name": "range",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Two thumbs selecting `[start, end]`; the thumbs cannot cross"
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Smallest value"
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "default": "100",
+        "description": "Largest value"
+      },
+      {
+        "name": "step",
+        "type": "number | null",
+        "required": false,
+        "default": "1",
+        "description": "Step between two values; `null` snaps to the marks only"
+      },
+      {
+        "name": "marks",
+        "type": "SliderMark[] | boolean",
+        "required": false,
+        "description": "Ticks of the scale: `{ value, label? }[]`, or `true` for one tick per step"
+      },
+      {
+        "name": "snapToMarks",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Snaps the value to the closest mark (instead of the step)"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: SliderValue) => void",
+        "required": false,
+        "description": "Called with the new value while dragging and on each adjustment"
+      },
+      {
+        "name": "onChangeEnd",
+        "type": "(value: SliderValue) => void",
+        "required": false,
+        "description": "Called with the final value when the gesture ends (release, screen reader adjustment): save here"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the slider (inherited from an enclosing FormField)"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "The user cannot change the value (inherited from an enclosing FormField)"
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "description": "Error state (inherited from an enclosing FormField)"
+      },
+      {
+        "name": "size",
+        "type": "SliderSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Thumb and track size (thumbs are 20 / 24 / 28 dp: touch targets)"
+      },
+      {
+        "name": "color",
+        "type": "SemanticColor",
+        "required": false,
+        "default": "\"primary\"",
+        "description": "Semantic color of the filled track and the thumbs"
+      },
+      {
+        "name": "showValue",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the value after the track"
+      },
+      {
+        "name": "tooltip",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the value in a bubble above the thumb while it is dragged"
+      },
+      {
+        "name": "formatValue",
+        "type": "(value: number) => string",
+        "required": false,
+        "description": "Formats a value for the value label, the tooltip and the accessibility value"
+      },
+      {
+        "name": "getAriaValueText",
+        "type": "(value: number, index: number) => string",
+        "required": false,
+        "description": "Accessibility value text of a thumb (index 0, or 1 for the end thumb)"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the root view"
+      }
+    ]
+  },
+  "native:SliderSize": {
+    "source": "native/src/components/Slider/Slider.tsx",
+    "kind": "alias",
+    "type": "NativeSize"
   },
   "native:SparklineConfig": {
     "source": "charts/src/engine/presets.ts",

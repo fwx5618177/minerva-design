@@ -12,6 +12,8 @@ import {
   OUTPUT,
   OUTPUT_CHARTS,
   OUTPUT_WC,
+  OUTPUT_WC_CHARTS,
+  splitElementApis,
   generateApi,
   generateCssVars,
   generateElements,
@@ -123,8 +125,12 @@ describe("docs: API tables", () => {
     const [main, charts] = splitChartApis(generateApi());
     expect(readFileSync(OUTPUT, "utf8")).toBe(serialize(main));
     expect(readFileSync(OUTPUT_CHARTS, "utf8")).toBe(serialize(charts));
-    expect(readFileSync(OUTPUT_WC, "utf8")).toBe(
-      serialize(sortKeys(generateElements())),
+    const [elements, chartElements] = splitElementApis(
+      sortKeys(generateElements()),
+    );
+    expect(readFileSync(OUTPUT_WC, "utf8")).toBe(serialize(elements));
+    expect(readFileSync(OUTPUT_WC_CHARTS, "utf8")).toBe(
+      serialize(chartElements),
     );
   });
 

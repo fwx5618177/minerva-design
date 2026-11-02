@@ -1,7 +1,7 @@
 // Canvas2D layers around the data: background (areas, grid, axes, tick
 // labels) and foreground (reference lines, annotation and point labels).
 
-import { toCss, type Rgba } from "./color";
+import { mix, relativeLuminance, toCss, type Rgba } from "./color";
 import type { AxisTicks } from "./axis";
 import { screenRect, toScreen, type Rect, type Scales } from "./layout";
 import type { AxisModel } from "./model";
@@ -19,6 +19,9 @@ export interface ResolvedRect {
   label?: string;
   labelPosition: ChartLabelPosition;
   labelColor: Rgba;
+  badge?: string;
+  detail?: string;
+  description?: string;
 }
 
 export interface ResolvedLine {
@@ -51,15 +54,68 @@ export interface PointLabel {
   text: string;
   /**
    * Fixed side (bar values: above / below, left / right of horizontal
-   * bars); any free side around the dot otherwise
+   * bars; `inside` the `bar`); any free side around the dot otherwise
    */
-  placement?: "above" | "below" | "left" | "right";
+  placement?: "above" | "below" | "left" | "right" | "inside";
+  /** `inside` labels: the bar, in CSS pixels */
+  bar?: Rect;
+  /** `inside` labels: at the start of the bar (horizontal bars) or centered */
+  align?: "start" | "center";
+  /**
+   * Text color contrasting with a solid bar (`inside` labels), drawn
+   * without a halo; the text color of the theme with a halo otherwise
+   */
+  color?: string;
 }
+
+/** Padding of the labels inside the bars, CSS pixels */
+const INSIDE_PAD = 6;
+
+/**
+ * Color of a text written on a bar of color `fill` (alpha included) over
+ * `background`: white or near-black, whichever contrasts more; `undefined`
+ * for translucent bars (the theme text color with a halo reads better)
+ */
+export const insideLabelColor = (
+  fill: Rgba,
+  background: Rgba,
+): string | undefined => {
+  const alpha = fill[3];
+  if (alpha < 0.6) return undefined;
+  const seen = mix(background, fill, alpha);
+  const l = relativeLuminance(seen);
+  // WCAG contrast with white (L = 1) and with #111827 (L ≈ 0.012)
+  return 1.05 / (l + 0.05) >= (l + 0.05) / 0.062
+    ? "#ffffff"
+    : "rgba(17, 24, 39, 0.92)";
+};
 
 export const font = (theme: ChartTheme, size = theme.fontSize, weight = 400) =>
   `${weight} ${size}px ${theme.fontFamily}`;
 
 const crisp = (v: number) => Math.round(v) + 0.5;
+
+/** Path of a rounded box with half-height corners */
+const pill = (
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+) => {
+  const r = Math.min(h / 2, w / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x + w, y, x + w, y + r, r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h);
+  ctx.arcTo(x, y + h, x, y + h - r, r);
+  ctx.lineTo(x, y + r);
+  ctx.arcTo(x, y, x + r, y, r);
+  ctx.closePath();
+};
 
 /** Box of a text annotation, kept inside the plot */
 export const textBox = (
@@ -107,6 +163,174 @@ export const rectOf = (a: ResolvedRect, s: Scales): Rect => {
     along(s.yToPx(a.y0 ?? -Infinity), yLo, yHi),
     along(s.yToPx(a.y1 ?? Infinity), yLo, yHi),
   );
+};
+
+/** A text of the title block of an area: badge, label, detail or description */
+export interface AreaText {
+  kind: "badge" | "label" | "detail" | "description";
+  text: string;
+  /** Box of the text (the pill of a badge), CSS pixels */
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  /** Font size and weight */
+  size: number;
+  weight: number;
+}
+
+/** Title block of an area annotation, in its `labelPosition` corner */
+export interface AreaTitle {
+  parts: AreaText[];
+  /** Box around the parts (the point labels avoid it) */
+  box: Rect;
+}
+
+/** Whether an area annotation has a title block */
+export const hasAreaTitle = (a: ResolvedRect): boolean =>
+  !!(a.label || a.badge || a.detail || a.description);
+
+/** Text cut with an ellipsis to fit `max` pixels ("" when nothing fits) */
+const fitText = (
+  text: string,
+  max: number,
+  width: (text: string) => number,
+): string => {
+  if (width(text) <= max) return text;
+  const chars = Array.from(text);
+  let lo = 0;
+  let hi = chars.length;
+  while (lo < hi) {
+    const mid = Math.ceil((lo + hi) / 2);
+    if (width(`${chars.slice(0, mid).join("")}…`) <= max) lo = mid;
+    else hi = mid - 1;
+  }
+  return lo > 0 ? `${chars.slice(0, lo).join("").trimEnd()}…` : "";
+};
+
+/**
+ * Layout of the title block of an area: `[badge] label detail` on the first
+ * line, the description under it; the block sits in the `labelPosition`
+ * corner, 10px from the edges, and the texts are cut to the area width
+ */
+export const areaTitleLayout = (
+  a: ResolvedRect,
+  r: Rect,
+  fontSize: number,
+  measure: (text: string, size: number, weight: number) => number,
+): AreaTitle | null => {
+  if (!hasAreaTitle(a) || r.width <= 0 || r.height <= 0) return null;
+  const pad = 10;
+  const lineHeight = fontSize + 4;
+  const max = Math.max(0, r.width - pad * 2);
+  const labelSize = fontSize + 1;
+  const badgeSize = Math.max(9, fontSize - 1);
+  const gap = 6;
+  const badge = a.badge
+    ? fitText(a.badge, Math.max(0, max - 10), (t) => measure(t, badgeSize, 700))
+    : "";
+  const badgeWidth = badge ? measure(badge, badgeSize, 700) + 10 : 0;
+  let detail = a.detail ?? "";
+  let detailWidth = detail ? measure(detail, fontSize, 500) : 0;
+  const room = () =>
+    max - (badge ? badgeWidth + gap : 0) - (detail ? detailWidth + gap : 0);
+  // a narrow area keeps the title rather than the detail
+  if (detail && a.label && room() < 32) {
+    detail = "";
+    detailWidth = 0;
+  }
+  if (detail && room() < 0) {
+    detail = fitText(
+      detail,
+      Math.max(0, max - (badge ? badgeWidth + gap : 0)),
+      (t) => measure(t, fontSize, 500),
+    );
+    detailWidth = detail ? measure(detail, fontSize, 500) : 0;
+  }
+  const label = a.label
+    ? fitText(a.label, Math.max(0, room()), (t) => measure(t, labelSize, 600))
+    : "";
+  const line: AreaText[] = [];
+  if (badge)
+    line.push({
+      kind: "badge",
+      text: badge,
+      x: 0,
+      y: 0,
+      width: badgeWidth,
+      height: lineHeight,
+      size: badgeSize,
+      weight: 700,
+    });
+  if (label)
+    line.push({
+      kind: "label",
+      text: label,
+      x: 0,
+      y: 0,
+      width: measure(label, labelSize, 600),
+      height: lineHeight,
+      size: labelSize,
+      weight: 600,
+    });
+  if (detail)
+    line.push({
+      kind: "detail",
+      text: detail,
+      x: 0,
+      y: 0,
+      width: detailWidth,
+      height: lineHeight,
+      size: fontSize,
+      weight: 500,
+    });
+  const description = a.description
+    ? fitText(a.description, max, (t) => measure(t, fontSize, 400))
+    : "";
+  const lineWidth =
+    line.reduce((sum, p) => sum + p.width, 0) +
+    Math.max(0, line.length - 1) * gap;
+  const descriptionWidth = description
+    ? measure(description, fontSize, 400)
+    : 0;
+  if (!line.length && !description) return null;
+  const height =
+    (line.length ? lineHeight : 0) +
+    (description ? lineHeight + (line.length ? 2 : 0) : 0);
+  const pos = a.labelPosition;
+  const top = pos.startsWith("top")
+    ? r.y + pad
+    : pos.startsWith("bottom")
+      ? r.y + r.height - pad - height
+      : r.y + (r.height - height) / 2;
+  const startOf = (width: number) =>
+    pos.endsWith("left")
+      ? r.x + pad
+      : pos.endsWith("right")
+        ? r.x + r.width - pad - width
+        : r.x + (r.width - width) / 2;
+  const parts: AreaText[] = [];
+  let x = startOf(lineWidth);
+  for (const p of line) {
+    parts.push({ ...p, x, y: top });
+    x += p.width + gap;
+  }
+  if (description)
+    parts.push({
+      kind: "description",
+      text: description,
+      x: startOf(descriptionWidth),
+      y: top + (line.length ? lineHeight + 2 : 0),
+      width: descriptionWidth,
+      height: lineHeight,
+      size: fontSize,
+      weight: 400,
+    });
+  const width = Math.max(lineWidth, descriptionWidth);
+  return {
+    parts,
+    box: { x: startOf(width), y: top, width, height },
+  };
 };
 
 /**
@@ -316,6 +540,34 @@ const haloText = (
   ctx.fillText(text, x, y);
 };
 
+/**
+ * Box of a label inside its bar (the visible part of it): the text cut with
+ * an ellipsis to fit, at the start of horizontal bars and centered in
+ * vertical ones; `null` when the bar is too small
+ */
+const insideBox = (
+  label: PointLabel,
+  plot: Rect,
+  measure: (text: string) => number,
+  height: number,
+): { label: PointLabel; box: Rect } | null => {
+  const bar = label.bar;
+  if (!bar) return null;
+  const x0 = Math.max(bar.x, plot.x);
+  const x1 = Math.min(bar.x + bar.width, plot.x + plot.width);
+  const y0 = Math.max(bar.y, plot.y);
+  const y1 = Math.min(bar.y + bar.height, plot.y + plot.height);
+  if (y1 - y0 < height - 2) return null;
+  const text = fitText(label.text, x1 - x0 - INSIDE_PAD * 2, measure);
+  if (!text) return null;
+  const w = measure(text);
+  const x = label.align === "start" ? x0 + INSIDE_PAD : (x0 + x1) / 2 - w / 2;
+  return {
+    label: text === label.text ? label : { ...label, text },
+    box: { x, y: (y0 + y1) / 2 - height / 2, width: w, height },
+  };
+};
+
 /** Greedy placement: right, left, above, below the dot; skipped when no slot is free */
 export const placeLabels = (
   labels: readonly PointLabel[],
@@ -326,6 +578,11 @@ export const placeLabels = (
 ): { label: PointLabel; box: Rect }[] => {
   const placed: { label: PointLabel; box: Rect }[] = [];
   for (const label of labels) {
+    if (label.placement === "inside") {
+      const fit = insideBox(label, plot, measure, height);
+      if (fit) placed.push(fit);
+      continue;
+    }
     const w = measure(label.text);
     const gap = label.r + 4;
     const above = {
@@ -530,29 +787,39 @@ export const drawForeground = (
   ctx.setLineDash([]);
 
   // labels of areas
-  ctx.font = font(theme, theme.fontSize + 1, 600);
   for (const a of input.annotations) {
-    if (a.type !== "rect" || !a.label) continue;
-    const r = rectOf(a, scales);
-    if (r.width <= 0 || r.height <= 0) continue;
-    const pad = 10;
-    const w = ctx.measureText(a.label).width;
-    const pos = a.labelPosition;
-    const tx = pos.endsWith("left")
-      ? r.x + pad
-      : pos.endsWith("right")
-        ? r.x + r.width - pad - w
-        : r.x + (r.width - w) / 2;
-    const ty = pos.startsWith("top")
-      ? r.y + pad
-      : pos.startsWith("bottom")
-        ? r.y + r.height - pad - labelHeight
-        : r.y + (r.height - labelHeight) / 2;
+    if (a.type !== "rect" || !hasAreaTitle(a)) continue;
+    const title = areaTitleLayout(
+      a,
+      rectOf(a, scales),
+      theme.fontSize,
+      (text, size, weight) => {
+        ctx.font = font(theme, size, weight);
+        return ctx.measureText(text).width;
+      },
+    );
+    if (!title) continue;
+    const color = toCss(a.labelColor);
+    const muted = toCss(theme.textMuted);
     ctx.textAlign = "left";
-    ctx.textBaseline = "top";
-    ctx.fillStyle = toCss(a.labelColor);
-    ctx.fillText(a.label, tx, ty);
-    occupied.push({ x: tx, y: ty, width: w, height: labelHeight });
+    ctx.textBaseline = "middle";
+    for (const p of title.parts) {
+      const cy = p.y + p.height / 2;
+      if (p.kind === "badge") {
+        const h = p.height - 2;
+        pill(ctx, p.x, cy - h / 2, p.width, h);
+        ctx.fillStyle = toCss(a.labelColor, 0.16);
+        ctx.fill();
+        ctx.font = font(theme, p.size, p.weight);
+        ctx.fillStyle = color;
+        ctx.fillText(p.text, p.x + 5, cy);
+        continue;
+      }
+      ctx.font = font(theme, p.size, p.weight);
+      ctx.fillStyle = p.kind === "label" ? color : muted;
+      ctx.fillText(p.text, p.x, cy);
+    }
+    occupied.push(title.box);
   }
 
   // free texts
@@ -580,7 +847,11 @@ export const drawForeground = (
       occupied,
     );
     for (const { label, box } of placed) {
-      haloText(ctx, label.text, box.x, box.y + box.height / 2, textColor, halo);
+      const y = box.y + box.height / 2;
+      if (label.color) {
+        ctx.fillStyle = label.color;
+        ctx.fillText(label.text, box.x, y);
+      } else haloText(ctx, label.text, box.x, y, textColor, halo);
     }
   }
   ctx.restore();

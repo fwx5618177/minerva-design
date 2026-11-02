@@ -1086,6 +1086,9 @@ export const QuadrantChart = forwardRef<ChartHandle, QuadrantChartProps>(
       pointSize: props.pointSize,
       name: props.name,
       draggable,
+      showCounts: props.showCounts,
+      selectedIndex: props.selectedIndex,
+      selectedIndices: props.selectedIndices,
     });
     const base = useShallowStable(
       pickOptions(props) as Record<string, unknown>,
@@ -1474,6 +1477,7 @@ export const GanttChart = forwardRef<ChartHandle, GanttChartProps>(
       dependenciesName,
       dependencyArrows,
       dependencyColor,
+      barLabels,
       locale,
       today = false,
       todayLabel,
@@ -1489,6 +1493,7 @@ export const GanttChart = forwardRef<ChartHandle, GanttChartProps>(
           dependenciesName,
           dependencyArrows,
           dependencyColor,
+          barLabels,
           locale,
         }),
       [
@@ -1501,6 +1506,7 @@ export const GanttChart = forwardRef<ChartHandle, GanttChartProps>(
         dependenciesName,
         dependencyArrows,
         dependencyColor,
+        barLabels,
         locale,
       ],
     );

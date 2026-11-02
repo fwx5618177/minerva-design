@@ -5,13 +5,17 @@
  * scrolled without a mouse (WCAG 2.1.1, axe scrollable-region-focusable).
  * With `copyable`, a copy button (top-right) writes the text to the
  * clipboard and a visually hidden polite live region announces the result.
+ * With `language`, the syntax is highlighted into colored spans (the text
+ * content and the copied text stay the source text).
  */
 import { computed, onBeforeUnmount, ref, useAttrs, type StyleValue } from "vue";
+import { codeLanguageLabel } from "@minerva/core";
 import styles from "@react-styles/components/CodeBlock/codeBlock.module.scss";
 import { hooks } from "../../internal/hooks";
 import { IconCheck, IconCopy, IconX } from "../../internal/icons";
 import { useI18n } from "../../config/useI18n";
 import { IconButton } from "../IconButton";
+import { CodeContent, vnodeText } from "./CodeContent";
 import type { CodeBlockProps } from "./types";
 
 defineOptions({ name: "CodeBlock", inheritAttrs: false });
@@ -21,6 +25,10 @@ const props = withDefaults(defineProps<CodeBlockProps>(), {
   wrap: true,
   maxHeight: "24rem",
   copyable: false,
+  language: undefined,
+  highlight: true,
+  showLineNumbers: false,
+  showLanguage: false,
 });
 
 const emit = defineEmits<{
@@ -128,11 +136,36 @@ const buttonColor = computed(() =>
       ? "success"
       : "neutral",
 );
+
+const lang = computed(() => props.language?.trim() || undefined);
+/** Highlighted and / or numbered: the <code> holds spans, not just text */
+const rich = computed(
+  () => (!!lang.value && props.highlight) || props.showLineNumbers,
+);
+const label = computed(() =>
+  props.showLanguage && lang.value ? codeLanguageLabel(lang.value) : "",
+);
+/** Source text, read while rendering (the slot text without `code`) */
+const renderText = () => props.code ?? vnodeText(slots.default?.() as never);
+/** Attributes of the <code> (call while rendering: reads the slot) */
+const codeAttrs = () => {
+  const lines = props.showLineNumbers
+    ? renderText().replace(/\n$/, "").split("\n").length
+    : 0;
+  return {
+    class: lang.value ? `language-${lang.value}` : undefined,
+    "data-language": lang.value,
+    style: lines
+      ? { "--code-line-digits": Math.max(String(lines).length, 2) }
+      : undefined,
+    ...hooks("code-block", "code"),
+  };
+};
 </script>
 
 <template>
   <pre
-    v-if="!copyable"
+    v-if="!copyable && !label"
     ref="pre"
     :class="styles.codeBlock"
     :style="boxStyle"
@@ -141,7 +174,7 @@ const buttonColor = computed(() =>
       ...otherAttrs,
       ...hooks('code-block', 'region'),
     }"
-  ><code v-bind="hooks('code-block', 'code')"><template v-if="code !== undefined">{{ code }}</template><slot v-else-if="slots.default" /></code></pre>
+  ><code v-bind="codeAttrs()"><CodeContent v-if="rich" :text="renderText()" :language="highlight ? lang : undefined" :line-numbers="showLineNumbers" /><template v-else-if="code !== undefined">{{ code }}</template><slot v-else-if="slots.default" /></code></pre>
   <div
     v-else
     v-bind="{ ...otherAttrs, ...hooks('code-block', 'root') }"
@@ -151,10 +184,22 @@ const buttonColor = computed(() =>
     <pre
       ref="pre"
       v-bind="{ ...regionAttrs, ...hooks('code-block', 'region') }"
-      :class="[styles.codeBlock, styles.copyable]"
-    ><code v-bind="hooks('code-block', 'code')"><template v-if="code !== undefined">{{ code }}</template><slot v-else-if="slots.default" /></code></pre>
+      :class="[
+        styles.codeBlock,
+        copyable && styles.copyable,
+        label && styles.labeled,
+      ]"
+    ><code v-bind="codeAttrs()"><CodeContent v-if="rich" :text="renderText()" :language="highlight ? lang : undefined" :line-numbers="showLineNumbers" /><template v-else-if="code !== undefined">{{ code }}</template><slot v-else-if="slots.default" /></code></pre>
     <div :class="styles.actions">
+      <span
+        v-if="label"
+        :class="styles.language"
+        aria-hidden="true"
+        v-bind="hooks('code-block', 'language')"
+        >{{ label }}</span
+      >
       <IconButton
+        v-if="copyable"
         type="button"
         :label="statusText || t('codeBlock.copy')"
         size="small"
@@ -167,7 +212,7 @@ const buttonColor = computed(() =>
         <IconCopy v-else :size="16" />
       </IconButton>
     </div>
-    <span :class="styles.visuallyHidden" aria-live="polite">{{
+    <span v-if="copyable" :class="styles.visuallyHidden" aria-live="polite">{{
       statusText
     }}</span>
   </div>

@@ -8,6 +8,7 @@ import type * as Minerva from "./index";
 declare module "vue" {
   export interface GlobalComponents {
     MnAlert: typeof Minerva.Alert;
+    MnAnswerSheet: typeof Minerva.AnswerSheet;
     MnAppShell: typeof Minerva.AppShell;
     MnAutoComplete: typeof Minerva.AutoComplete;
     MnAvatar: typeof Minerva.Avatar;
@@ -42,6 +43,7 @@ declare module "vue" {
     MnDrawerRoot: typeof Minerva.DrawerRoot;
     MnDrawerTrigger: typeof Minerva.DrawerTrigger;
     MnEmpty: typeof Minerva.Empty;
+    MnFlashcard: typeof Minerva.Flashcard;
     MnFormControl: typeof Minerva.FormControl;
     MnFormErrorMessage: typeof Minerva.FormErrorMessage;
     MnFormField: typeof Minerva.FormField;
@@ -54,10 +56,13 @@ declare module "vue" {
     MnIconButton: typeof Minerva.IconButton;
     MnInput: typeof Minerva.Input;
     MnJsonField: typeof Minerva.JsonField;
+    MnKanbanBoard: typeof Minerva.KanbanBoard;
+    MnKanbanColumn: typeof Minerva.KanbanColumn;
     MnKeyValueEditor: typeof Minerva.KeyValueEditor;
     MnList: typeof Minerva.List;
     MnListItem: typeof Minerva.ListItem;
     MnLoadingState: typeof Minerva.LoadingState;
+    MnMediaPlayer: typeof Minerva.MediaPlayer;
     MnMenu: typeof Minerva.Menu;
     MnModal: typeof Minerva.Modal;
     MnModalBody: typeof Minerva.ModalBody;
@@ -89,6 +94,7 @@ declare module "vue" {
     MnRating: typeof Minerva.Rating;
     MnRatingScale: typeof Minerva.RatingScale;
     MnResponsiveGrid: typeof Minerva.ResponsiveGrid;
+    MnSegmentedControl: typeof Minerva.SegmentedControl;
     MnSelect: typeof Minerva.Select;
     MnSelectGroup: typeof Minerva.SelectGroup;
     MnSelectItem: typeof Minerva.SelectItem;
@@ -96,6 +102,7 @@ declare module "vue" {
     MnSelectSeparator: typeof Minerva.SelectSeparator;
     MnSkeleton: typeof Minerva.Skeleton;
     MnSkeletonText: typeof Minerva.SkeletonText;
+    MnSlider: typeof Minerva.Slider;
     MnSplitLayout: typeof Minerva.SplitLayout;
     MnStack: typeof Minerva.Stack;
     MnStatCard: typeof Minerva.StatCard;

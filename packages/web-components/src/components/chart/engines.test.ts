@@ -186,6 +186,16 @@ describe("extended cartesian and shape elements", () => {
     el.setAttribute("hide-dependency-arrows", "");
     await settle();
     expect(last().options.dependencies).toEqual([]);
+    // one task per row: no names inside the bars unless asked
+    const labels = () =>
+      (last().options.series as { showLabels?: unknown }[])[0]!.showLabels;
+    expect(labels()).toBeUndefined();
+    el.setAttribute("bar-labels", "");
+    await settle();
+    expect(labels()).toBe("inside");
+    el.setAttribute("bar-labels", "false");
+    await settle();
+    expect(labels()).toBeUndefined();
   });
 
   it("<minerva-bubble-chart> sizes the dots by value", async () => {

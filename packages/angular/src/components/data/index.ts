@@ -17,10 +17,14 @@ import {
 import { DomSanitizer } from "@angular/platform-browser";
 import {
   addDays,
+  codeLanguageLabel,
   dayKey,
   getVirtualRange,
+  highlightCode,
   monthStart,
   sameMonth,
+  splitHighlightLines,
+  type HighlightToken,
 } from "@minerva/core";
 import { MnHook } from "../../internal/hooks";
 import {
@@ -253,8 +257,19 @@ export class MnKeyValueEditor extends MnFormValueControl<
       mnPart="region"
       tabindex="0"
       [attr.aria-label]="label()"
-      [class]="s.codeBlock"
-    ><code mnHook="code-block" mnPart="code" [attr.data-language]="language()">{{code()}}</code></pre>
+      [class]="label_() ? s.codeBlock + ' ' + s.labeled : s.codeBlock"
+    ><code mnHook="code-block" mnPart="code" [attr.data-language]="language()" [class]="'language-' + language()" [style.--code-line-digits]="digits()">@if (rows(); as rows) {@for (row of rows; track $index) {<span [class]="s.line"><span mnHook="code-block" mnPart="line-number" aria-hidden="true" [class]="s.lineNumber" [attr.data-line]="$index + 1"></span>@for (token of row.tokens; track $index) {@if (token.c) {<span [class]="token.c">{{ token.text }}</span>} @else {<ng-container>{{ token.text }}</ng-container>}}</span><ng-container>{{ row.br }}</ng-container>}} @else {@for (token of tokens(); track $index) {@if (token.c) {<span [class]="token.c">{{ token.text }}</span>} @else {<ng-container>{{ token.text }}</ng-container>}}}</code></pre>
+    @if (label_()) {
+      <div [class]="s.actions">
+        <span
+          mnHook="code-block"
+          mnPart="language"
+          aria-hidden="true"
+          [class]="s.language"
+          >{{ label_() }}</span
+        >
+      </div>
+    }
     @if (copyable()) {
       <button
         type="button"
@@ -271,10 +286,50 @@ export class MnCodeBlock {
   readonly language = input("text");
   readonly label = input("Code");
   readonly copyable = input(false, { transform: booleanAttribute });
+  /** Highlights the syntax of `language` (false: plain text) */
+  readonly highlight = input(true, { transform: booleanAttribute });
+  /** Numbers the lines in an aria-hidden gutter (not part of the copied text) */
+  readonly showLineNumbers = input(false, { transform: booleanAttribute });
+  /** Shows the language as a small label in the top-right corner */
+  readonly showLanguage = input(false, { transform: booleanAttribute });
   readonly copyError = output<unknown>();
   protected readonly copied = signal(false);
   protected readonly error = signal("");
   protected readonly s = styles.codeBlockStyles;
+  private readonly highlighted = computed(() => {
+    const code = this.code() ?? "";
+    return this.highlight()
+      ? highlightCode(code, this.language())
+      : code
+        ? [{ type: null, text: code }]
+        : [];
+  });
+  private readonly classed = (tokens: readonly HighlightToken[]) =>
+    tokens.map(({ type, text }) => ({
+      c: type ? (this.s as Record<string, string>)[`token-${type}`] : "",
+      text,
+    }));
+  /** Tokens of the code (class `c`: "" for plain text) */
+  protected readonly tokens = computed(() => this.classed(this.highlighted()));
+  /** Numbered lines (with showLineNumbers): tokens and the line break */
+  protected readonly rows = computed(() => {
+    if (!this.showLineNumbers()) return null;
+    const lines = splitHighlightLines(this.highlighted());
+    const trailingBreak = (this.code() ?? "").endsWith("\n");
+    return lines.map((line, i) => ({
+      tokens: this.classed(line),
+      br: i < lines.length - 1 || trailingBreak ? "\n" : "",
+    }));
+  });
+  protected readonly digits = computed(() => {
+    const rows = this.rows();
+    return rows ? String(Math.max(String(rows.length).length, 2)) : null;
+  });
+  protected readonly label_ = computed(() =>
+    this.showLanguage() && this.language()?.trim()
+      ? codeLanguageLabel(this.language())
+      : "",
+  );
   async copy() {
     try {
       await navigator.clipboard.writeText(this.code());
@@ -618,3 +673,7 @@ function formatJsonText(value: string, indent: number): string {
 }
 
 export * from "./week-strip";
+export * from "./answer-sheet";
+export * from "./flashcard";
+export * from "./kanban-board";
+export * from "./media-player";

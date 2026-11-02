@@ -1,6 +1,7 @@
 // One module per component in ./components (sorted). The core tests check
 // that every module is listed here.
 import alertHooks from "./components/alert";
+import answerSheetHooks from "./components/answer-sheet";
 import appShellHooks from "./components/app-shell";
 import autocompleteHooks from "./components/autocomplete";
 import avatarHooks from "./components/avatar";
@@ -27,6 +28,7 @@ import descriptionListHooks from "./components/description-list";
 import dividerHooks from "./components/divider";
 import drawerHooks from "./components/drawer";
 import emptyHooks from "./components/empty";
+import flashcardHooks from "./components/flashcard";
 import formControlHooks from "./components/form-control";
 import formLayoutHooks from "./components/form-layout";
 import gridItemHooks from "./components/grid-item";
@@ -35,10 +37,13 @@ import htmlPreviewHooks from "./components/html-preview";
 import iconButtonHooks from "./components/icon-button";
 import inputHooks from "./components/input";
 import jsonFieldHooks from "./components/json-field";
+import kanbanBoardHooks from "./components/kanban-board";
+import kanbanColumnHooks from "./components/kanban-column";
 import keyValueEditorHooks from "./components/key-value-editor";
 import listHooks from "./components/list";
 import listItemHooks from "./components/list-item";
 import loadingStateHooks from "./components/loading-state";
+import mediaPlayerHooks from "./components/media-player";
 import menuHooks from "./components/menu";
 import modalHooks from "./components/modal";
 import monthCalendarHooks from "./components/month-calendar";
@@ -61,11 +66,13 @@ import radioGroupHooks from "./components/radio-group";
 import ratingHooks from "./components/rating";
 import ratingScaleHooks from "./components/rating-scale";
 import responsiveGridHooks from "./components/responsive-grid";
+import segmentedControlHooks from "./components/segmented-control";
 import selectHooks from "./components/select";
 import selectLabelHooks from "./components/select-label";
 import selectSeparatorHooks from "./components/select-separator";
 import skeletonHooks from "./components/skeleton";
 import skeletonTextHooks from "./components/skeleton-text";
+import sliderHooks from "./components/slider";
 import splitLayoutHooks from "./components/split-layout";
 import stackHooks from "./components/stack";
 import statCardHooks from "./components/stat-card";
@@ -97,6 +104,7 @@ import weekStripHooks from "./components/week-strip";
  */
 export const stylingHooks = {
   alert: alertHooks,
+  "answer-sheet": answerSheetHooks,
   "app-shell": appShellHooks,
   autocomplete: autocompleteHooks,
   avatar: avatarHooks,
@@ -123,6 +131,7 @@ export const stylingHooks = {
   divider: dividerHooks,
   drawer: drawerHooks,
   empty: emptyHooks,
+  flashcard: flashcardHooks,
   "form-control": formControlHooks,
   "form-layout": formLayoutHooks,
   "grid-item": gridItemHooks,
@@ -131,10 +140,13 @@ export const stylingHooks = {
   "icon-button": iconButtonHooks,
   input: inputHooks,
   "json-field": jsonFieldHooks,
+  "kanban-board": kanbanBoardHooks,
+  "kanban-column": kanbanColumnHooks,
   "key-value-editor": keyValueEditorHooks,
   list: listHooks,
   "list-item": listItemHooks,
   "loading-state": loadingStateHooks,
+  "media-player": mediaPlayerHooks,
   menu: menuHooks,
   modal: modalHooks,
   "month-calendar": monthCalendarHooks,
@@ -157,11 +169,13 @@ export const stylingHooks = {
   rating: ratingHooks,
   "rating-scale": ratingScaleHooks,
   "responsive-grid": responsiveGridHooks,
+  "segmented-control": segmentedControlHooks,
   select: selectHooks,
   "select-label": selectLabelHooks,
   "select-separator": selectSeparatorHooks,
   skeleton: skeletonHooks,
   "skeleton-text": skeletonTextHooks,
+  slider: sliderHooks,
   "split-layout": splitLayoutHooks,
   stack: stackHooks,
   "stat-card": statCardHooks,

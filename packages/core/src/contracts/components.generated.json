@@ -160,6 +160,69 @@
     }
   },
   {
+    "name": "AnswerSheet",
+    "tag": "minerva-answer-sheet",
+    "docs": "answer-sheet",
+    "descriptionKey": "docs.answer-sheet.description",
+    "description": "A question navigator: numbered pills with statuses, grouped by section.",
+    "tracks": ["toB", "toC"],
+    "props": [
+      { "name": "items", "kind": "array", "required": true, "description": "The questions, in order" },
+      { "name": "groups", "kind": "array", "required": false, "description": "Titled sections, in display order; items render under the group whose key matches `item.group`" },
+      { "name": "value", "kind": "string", "required": false, "description": "Key of the current question (controlled; pair with onChange)", "attribute": "value" },
+      { "name": "defaultValue", "kind": "string", "required": false, "description": "Key of the initially current question (uncontrolled)", "only": "react" },
+      { "name": "size", "kind": "enum", "values": ["medium", "small"], "default": "medium", "required": false, "description": "Density of the pills", "attribute": "size" },
+      {
+        "name": "layout",
+        "kind": "enum",
+        "values": ["scroll", "wrap"],
+        "default": "wrap",
+        "required": false,
+        "description": "\"wrap\" wraps the pills on several rows; \"scroll\" keeps a single horizontally scrolling row",
+        "attribute": "layout"
+      },
+      {
+        "name": "columns",
+        "kind": "number",
+        "required": false,
+        "description": "Fixed number of columns (a grid; ArrowUp / ArrowDown move by a row). Ignored with layout=\"scroll\".",
+        "attribute": "columns"
+      },
+      { "name": "showLegend", "kind": "boolean", "default": false, "required": false, "description": "Shows a legend of the statuses present (and of the flag)", "attribute": "show-legend" },
+      { "name": "showSummary", "kind": "boolean", "default": false, "required": false, "description": "Shows the number of answered questions (\"12 / 20 answered\")", "attribute": "show-summary" },
+      { "name": "getItemLabel", "kind": "function", "required": false, "description": "Accessible name of a pill; receives the item and its display index" },
+      { "name": "disabled", "kind": "boolean", "default": false, "required": false, "description": "Disables the whole sheet", "attribute": "disabled" },
+      { "name": "aria-label", "kind": "string", "required": false, "description": "Accessible name of the navigation landmark", "only": "react" }
+    ],
+    "events": [
+      { "name": "minerva-change", "wc": "minerva-change", "detail": ["value"], "description": "The user selected a question (`detail: { value }`, its key)", "react": "onChange", "native": "onChange" }
+    ],
+    "slots": [],
+    "children": false,
+    "platforms": {
+      "react": { "status": "stable" },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnAnswerSheet. Native standalone component/directive; see platform tests for validated scope." },
+      "native": {
+        "status": "beta",
+        "notes": "Pressable pills in wrapping rows (layout=scroll: a horizontal ScrollView that centres the current pill with scrollTo after layout); no arrow-key roving focus on native"
+      },
+      "taro": {
+        "status": "beta",
+        "notes": "Numbered question pills grouped by section with unanswered/answered/correct/wrong/skipped statuses, flag dot, controlled/uncontrolled current question (aria-current=step), wrap/scroll layouts, fixed columns, translated item labels, summary and legend, and two sizes. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. H5 supports arrow keys and Home/End across the pills (disabled pills are skipped; no row-wise ArrowUp/ArrowDown); native hosts use tap selection. layout=scroll centres the current pill through the ScrollView scrollLeft, measured with createSelectorQuery after each change. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "Shared core sections and counts: numbered question pills grouped by section (untitled section first), unanswered/answered/correct/wrong/skipped statuses, flag dot, controlled/default current question with aria-current=step, wrap/scroll layouts, fixed columns, localized item labels with getItemLabel through configure(), summary, legend, size, disabled and readOnly. Items and groups are plain serializable arrays; selection is by tap. DOM roving keyboard focus is not a native mini-program interaction. layout=scroll centres the current pill through the scroll-view scroll-left, measured with createSelectorQuery after each change (RTL is not mirrored). Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "Shared core sections and counts: numbered question pills grouped by section (untitled section first), unanswered/answered/correct/wrong/skipped statuses, flag dot, controlled/default current question (v-model) with aria-current=step, wrap/scroll layouts, fixed columns, localized item labels, getItemLabel, summary, legend, size and disabled; arrow, Home/End and Enter/Space keys (ArrowUp/ArrowDown by row with columns). Keyboard metadata and native tap selection are implemented; without columns ArrowUp/ArrowDown do not move (no layout measurement), and device focus/geometry still require validation. layout=scroll centres the current pill through the scroll-view scroll-left (measured with createSelectorQuery on native hosts). Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      }
+    }
+  },
+  {
     "name": "AppShell",
     "tag": "minerva-app-shell",
     "docs": "app-shell",
@@ -2546,7 +2609,7 @@
     "tag": "minerva-code-block",
     "docs": "code-block",
     "descriptionKey": "docs.code-block.description",
-    "description": "Read-only, scrollable code region with optional copy button.",
+    "description": "Read-only, scrollable code region with syntax highlighting and an optional copy button.",
     "tracks": ["toB", "toC"],
     "props": [
       {
@@ -2567,8 +2630,47 @@
         "description": "Shows a copy button in the top-right corner that writes the text to the clipboard; its label switches to \"Copied\" / \"Copy failed\" for about two seconds and the result is announced through a polite live region. When set, the <pre> is wrapped in a <div> (see the interface description)",
         "attribute": "copyable"
       },
+      {
+        "name": "language",
+        "kind": "string",
+        "required": false,
+        "description": "Language of the code: highlights its syntax and sets `class=\"language-<x>\"` / `data-language` on the <code>. Supported: javascript (js, mjs, cjs), typescript (ts), jsx, tsx, json (jsonc, json5), css (scss, less), html (xml, svg, vue), bash (sh, shell, zsh, console), python (py), yaml (yml), sql, diff, markdown (md); other names render plain text. Without it the text is not highlighted",
+        "attribute": "language"
+      },
+      {
+        "name": "highlight",
+        "kind": "boolean",
+        "default": true,
+        "required": false,
+        "description": "Highlights the syntax of `language` (false: plain text, the language is still set on the <code> and shown by `showLanguage`)",
+        "only": "react"
+      },
+      {
+        "name": "showLineNumbers",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "Numbers the lines in a gutter (hidden from assistive technology, not part of the copied or selected text)",
+        "attribute": "show-line-numbers"
+      },
+      {
+        "name": "showLanguage",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "Shows the `language` as a small label in the top-right corner (e.g. \"JSON\"); the <pre> is then wrapped in a <div> like with `copyable`",
+        "attribute": "show-language"
+      },
       { "name": "code", "kind": "string", "required": false, "description": "Source text (default: the element's text content)", "attribute": "code", "only": "wc" },
-      { "name": "language", "kind": "string", "required": false, "description": "Language of the code, shown as a label (e.g. \"json\", \"bash\")", "attribute": "language", "only": "wc" },
+      {
+        "name": "noHighlight",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "Keeps the code plain (no syntax highlighting) despite `language` (the React library's `highlight={false}`)",
+        "attribute": "no-highlight",
+        "only": "wc"
+      },
       {
         "name": "noWrap",
         "kind": "boolean",
@@ -2603,15 +2705,15 @@
       "native": { "status": "beta" },
       "taro": {
         "status": "beta",
-        "notes": "Safe native navigation, description/list composition, text wrapping and native clipboard code copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Safe native navigation, description/list composition, text wrapping and syntax-highlighted code (nested Text, opt-in line numbers / language label) with native clipboard copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       },
       "weapp": {
         "status": "beta",
-        "notes": "Verbatim selectable source, wrap/horizontal scrolling, maxHeight, opt-in native clipboard copy with status/copied/error events. Native clipboard replaces document clipboard permissions; no DOM pre/ref/keyboard-scroll event objects. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+        "notes": "Verbatim selectable source with syntax highlighting (core highlightCode rendered as nested text, never markup), opt-in line numbers and language label, wrap/horizontal scrolling, maxHeight, opt-in native clipboard copy of the raw text with status/copied/error events. Native clipboard replaces document clipboard permissions; no DOM pre/ref/keyboard-scroll event objects. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
       },
       "uni": {
         "status": "beta",
-        "notes": "Language label, wrapped/unwrapped text, bounded scrolling maxHeight, native clipboard copy callbacks and localized feedback with cleanup. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Syntax highlighting (core highlightCode, nested text with code-token colors), opt-in line numbers and language label, wrapped/unwrapped text, bounded scrolling maxHeight, native clipboard copy of the raw text with callbacks and localized feedback with cleanup. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       }
     }
   },
@@ -3171,7 +3273,6 @@
         "attribute": "variant"
       },
       { "name": "size", "kind": "enum", "values": ["large", "medium", "small"], "default": "medium", "required": false, "description": "Density of the cells", "attribute": "size" },
-      { "name": "hoverable", "kind": "boolean", "default": false, "required": false, "description": "Highlights body rows on hover", "attribute": "hoverable" },
       {
         "name": "scroll",
         "kind": "object",
@@ -3179,6 +3280,7 @@
         "description": "Horizontal minimum width / vertical maximum height of the scroll area. When set (or when the content overflows), the scroll area becomes a focusable region named by the table's `aria-label` / `aria-labelledby` (default: \"Scrollable table\", localized) so keyboard users can scroll it",
         "only": "react"
       },
+      { "name": "hoverable", "kind": "boolean", "default": false, "required": false, "description": "Highlights body rows on hover", "attribute": "hoverable" },
       { "name": "selectable", "kind": "boolean", "default": false, "required": false, "description": "Adds a checkbox column to select rows", "attribute": "selectable", "only": "wc" },
       { "name": "scrollX", "kind": "union", "required": false, "description": "Horizontal scroll: minimum table width (px number or CSS length)", "attribute": "scroll-x", "only": "wc" },
       { "name": "scrollY", "kind": "union", "required": false, "description": "Vertical scroll: maximum wrapper height; the header sticks", "attribute": "scroll-y", "only": "wc" },
@@ -3708,7 +3810,7 @@
       "native": { "status": "n/a", "notes": "No standalone native element: DescriptionList.items accepts { key, label, value } rows and renders each term and description, including numeric zero." },
       "taro": {
         "status": "beta",
-        "notes": "Safe native navigation, description/list composition, text wrapping and native clipboard code copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Safe native navigation, description/list composition, text wrapping and syntax-highlighted code (nested Text, opt-in line numbers / language label) with native clipboard copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       },
       "weapp": {
         "status": "n/a",
@@ -3750,7 +3852,7 @@
       "native": { "status": "beta" },
       "taro": {
         "status": "beta",
-        "notes": "Safe native navigation, description/list composition, text wrapping and native clipboard code copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Safe native navigation, description/list composition, text wrapping and syntax-highlighted code (nested Text, opt-in line numbers / language label) with native clipboard copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       },
       "weapp": {
         "status": "beta",
@@ -4340,6 +4442,81 @@
     }
   },
   {
+    "name": "Flashcard",
+    "tag": "minerva-flashcard",
+    "docs": "flashcard",
+    "descriptionKey": "docs.flashcard.description",
+    "description": "A two-sided study card that flips between a prompt and an answer.",
+    "tracks": ["toC"],
+    "props": [
+      { "name": "front", "kind": "node", "required": false, "description": "Content of the front face (the prompt)", "attribute": "front" },
+      { "name": "back", "kind": "node", "required": false, "description": "Content of the back face (the answer)", "attribute": "back" },
+      { "name": "footer", "kind": "node", "required": false, "description": "Content below the card, not flipped (e.g. rating buttons)", "only": "react" },
+      { "name": "frontLabel", "kind": "node", "required": false, "description": "Small caption of the front face; `null`, `false` or `\"\"` hides it", "attribute": "front-label" },
+      { "name": "backLabel", "kind": "node", "required": false, "description": "Small caption of the back face; `null`, `false` or `\"\"` hides it", "attribute": "back-label" },
+      { "name": "hint", "kind": "node", "required": false, "description": "Hint on the front face (shown with showHint while the card flips on click)", "attribute": "hint" },
+      { "name": "showHint", "kind": "boolean", "default": false, "required": false, "description": "Shows the hint on the front face", "attribute": "show-hint" },
+      { "name": "flipped", "kind": "boolean", "required": false, "description": "Whether the back is shown (controlled; pair with onFlippedChange)", "attribute": "flipped" },
+      { "name": "defaultFlipped", "kind": "boolean", "default": false, "required": false, "description": "Whether the back is initially shown (uncontrolled)", "only": "react" },
+      {
+        "name": "flipOnClick",
+        "kind": "boolean",
+        "default": true,
+        "required": false,
+        "description": "Clicking the card (or Enter / Space on it) flips it. When false the card is not a button and only `flipped` flips it.",
+        "attribute": "flip-on-click"
+      },
+      { "name": "disabled", "kind": "boolean", "default": false, "required": false, "description": "Blocks flipping and dims the card", "attribute": "disabled" },
+      { "name": "axis", "kind": "enum", "values": ["x", "y"], "default": "y", "required": false, "description": "Rotation axis: \"y\" flips horizontally, \"x\" vertically", "attribute": "axis" },
+      { "name": "variant", "kind": "enum", "values": ["elevated", "filled", "outline"], "default": "elevated", "required": false, "description": "Surface style", "attribute": "variant" },
+      { "name": "size", "kind": "enum", "values": ["large", "medium", "small"], "default": "medium", "required": false, "description": "Padding and typography scale", "attribute": "size" },
+      {
+        "name": "minHeight",
+        "kind": "union",
+        "default": "12rem",
+        "required": false,
+        "description": "Minimum height of the card (a number is in px); the card grows to fit the taller face",
+        "attribute": "min-height"
+      },
+      { "name": "aria-label", "kind": "string", "required": false, "description": "Accessible label of the card", "only": "react" }
+    ],
+    "events": [
+      {
+        "name": "minerva-flipped-change",
+        "wc": "minerva-flipped-change",
+        "detail": ["flipped"],
+        "description": "The user flipped the card (`detail: { flipped }`); cancelable",
+        "react": "onFlippedChange",
+        "native": "onFlippedChange"
+      }
+    ],
+    "slots": [
+      { "name": "front", "description": "Content of the front face (the prompt; falls back to the `front` attribute)" },
+      { "name": "back", "description": "Content of the back face (the answer; falls back to the `back` attribute)" },
+      { "name": "footer", "description": "Content below the card, not flipped (e.g. rating buttons)" }
+    ],
+    "children": false,
+    "platforms": {
+      "react": { "status": "stable" },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnFlashcard. Native standalone component/directive; see platform tests for validated scope." },
+      "native": { "status": "beta" },
+      "taro": {
+        "status": "beta",
+        "notes": "Two-sided study card: front/back/footer nodes, translated front/back captions and optional hint, controlled/uncontrolled flipped with onFlippedChange, flipOnClick, disabled, y/x axis, elevated/outline/filled variants, three sizes and minHeight. Both faces share one CSS grid cell (the card fits the taller face); the hidden face is aria-hidden and the back is a polite live region. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Mini-program hosts flip on tap only (no keyboard) and ignore prefers-reduced-motion; the CSS 3D rotateY/rotateX flip and backface-visibility need the WebView renderer (Skyline does not support CSS grid or 3D transforms). On H5 the card is a toggle button with Enter/Space and taps on interactive face content do not flip it. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "Two-sided study card: front/back/footer named slots with plain-text front/back properties, translated front/back captions and optional hint, controlled (flipped, null = uncontrolled) or defaultFlipped state with flippedchange, flipOnClick, disabled, y/x axis, elevated/outline/filled variants, three sizes and minHeight. Both faces share one CSS grid cell (the card fits the taller face); the hidden face is aria-hidden and the back is a polite live region. Tap to flip only: no keyboard toggling and no prefers-reduced-motion crossfade in mini programs. The CSS 3D rotateY/rotateX flip, backface-visibility and the grid stack need the WebView renderer (Skyline does not support CSS grid or 3D transforms). Taps on interactive slotted content also flip the card (no DOM event path). The footer wrapper is always rendered (slot content cannot be detected). Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "Two-sided study card: front/back/footer slots with plain-text front/back fallbacks, translated front/back captions and optional hint, controlled/default flipped (v-model:flipped, flippedChange), flipOnClick, disabled, y/x axis, elevated/outline/filled variants, three sizes and minHeight. Both faces share one CSS grid cell (the card fits the taller face); the hidden face is aria-hidden and the back is a polite live region; H5 adds role=button with aria-pressed, Enter/Space and ignores taps on interactive face content. Mini-program hosts flip on tap only (no keyboard) and ignore prefers-reduced-motion; the CSS 3D rotateY/rotateX flip and backface-visibility need the WebView renderer (Skyline does not support CSS grid or 3D transforms). Device rendering is not validated. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      }
+    }
+  },
+  {
     "name": "Form",
     "tracks": ["toC"],
     "props": [
@@ -4826,6 +5003,14 @@
         "required": false,
         "description": "Color of the dependency arrows (any CSS color); the secondary text color by default",
         "attribute": "dependency-color"
+      },
+      {
+        "name": "barLabels",
+        "kind": "union",
+        "default": "auto",
+        "required": false,
+        "description": "Writes the name of every task inside its bar (cut with an ellipsis, in a color contrasting with the bar; skipped when the bar is too small): `\"auto\"` when several tasks share a row (`row`), so the bars of a lane can be told apart without hovering; `true` / `\"inside\"` always, `false` never",
+        "attribute": "bar-labels"
       },
       {
         "name": "hideDependencyArrows",
@@ -5578,6 +5763,7 @@
         "description": "Rendered between every two items (not before the first or after the last), e.g. a `<Divider orientation=\"vertical\" />` or `\"·\"`. Empty children (null / undefined / booleans) do not get a separator.",
         "attribute": "separator"
       },
+      { "name": "wrap", "kind": "boolean", "default": false, "required": false, "description": "Wraps items onto multiple lines", "attribute": "wrap" },
       { "name": "as", "kind": "union", "default": "div", "required": false, "description": "Element or component to render", "only": "react" },
       {
         "name": "gap",
@@ -5602,7 +5788,6 @@
         "description": "Main-axis distribution (`justify-content`); unset when omitted",
         "attribute": "justify"
       },
-      { "name": "wrap", "kind": "boolean", "default": false, "required": false, "description": "Wraps items onto multiple lines", "attribute": "wrap" },
       {
         "name": "attached",
         "kind": "boolean",
@@ -6200,6 +6385,137 @@
     }
   },
   {
+    "name": "KanbanBoard",
+    "tag": "minerva-kanban-board",
+    "docs": "kanban-board",
+    "descriptionKey": "docs.kanban-board.description",
+    "description": "Horizontally scrolling board of status columns.",
+    "tracks": ["toB", "toC"],
+    "props": [
+      {
+        "name": "columnWidth",
+        "kind": "union",
+        "default": "18rem",
+        "required": false,
+        "description": "Width of every column (a number is pixels). With `fill` it is the minimum width: columns stretch equally when they fit",
+        "attribute": "column-width"
+      },
+      {
+        "name": "fill",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "Stretches the columns equally to fill the board when they fit (they keep `columnWidth` as their minimum width and scroll otherwise)",
+        "attribute": "fill"
+      },
+      { "name": "gap", "kind": "union", "default": "0.75rem", "required": false, "description": "Space between the columns (a number is pixels)", "attribute": "gap" },
+      { "name": "height", "kind": "union", "required": false, "description": "Height of the board: the column bodies scroll vertically within it (a number is pixels)", "attribute": "height" },
+      {
+        "name": "maxHeight",
+        "kind": "union",
+        "required": false,
+        "description": "Maximum height of the board: the column bodies scroll vertically within it (a number is pixels)",
+        "attribute": "max-height"
+      },
+      { "name": "aria-label", "kind": "string", "required": false, "description": "Accessible name of the board region", "only": "react" },
+      { "name": "aria-labelledby", "kind": "string", "required": false, "description": "Id of an element naming the board (instead of aria-label)", "only": "react" },
+      { "name": "id", "kind": "string", "required": false, "description": "Id of the board", "only": "react" }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "description": "The columns (`minerva-kanban-column`)" }],
+    "children": true,
+    "platforms": {
+      "react": { "status": "stable" },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnKanbanBoard. Native standalone component/directive; see platform tests for validated scope." },
+      "native": { "status": "beta" },
+      "taro": {
+        "status": "beta",
+        "notes": "Board of status columns in a horizontal ScrollView (scrollX): equal-width columns (columnWidth), fill when they fit, gap, height/maxHeight with vertically scrolling column bodies, translated region label; columns with an accent dot (theme color or CSS color), title, count badge announced with the title, description, actions, role=list cards wrapped in listitems, translated or custom empty content and a footer. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. No drag and drop: move cards with your own actions (menus, buttons) and update the columns' data. No scroll snapping on native hosts. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "Region around a scroll-view scroll-x of equal-width status columns: columnWidth, gap, height/maxHeight with vertically scrolling column bodies and a translated label. No drag and drop: move cards with your own actions and update the columns' data. No scroll snapping, and fill does not stretch the columns (each column component host is the flex item); device geometry still requires validation. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "Board of status columns in a scroll-view scroll-x: equal-width columns (columnWidth), fill when they fit, gap, height/maxHeight with vertically scrolling column bodies and a translated region label. No drag and drop: move cards with your own actions and update the columns' data. No scroll snapping; device geometry still requires validation. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      }
+    }
+  },
+  {
+    "name": "KanbanColumn",
+    "tag": "minerva-kanban-column",
+    "docs": "kanban-board",
+    "descriptionKey": "docs.kanban-board.description",
+    "description": "Status column of a kanban board: header, count, cards and footer.",
+    "tracks": ["toB", "toC"],
+    "props": [
+      { "name": "title", "kind": "node", "required": true, "description": "Title of the column (also its accessible name)", "only": "react" },
+      {
+        "name": "count",
+        "kind": "number",
+        "required": false,
+        "description": "Number of items shown as a badge next to the title (and announced with the title); omit to hide the badge",
+        "attribute": "count"
+      },
+      { "name": "color", "kind": "union", "required": false, "description": "Accent of the column (a dot before the title): a theme color or any CSS color", "attribute": "color" },
+      { "name": "description", "kind": "node", "required": false, "description": "Supporting text under the header", "attribute": "description" },
+      { "name": "actions", "kind": "node", "required": false, "description": "Header controls on the end side (e.g. an add button)", "only": "react" },
+      { "name": "empty", "kind": "node", "required": false, "description": "Content shown when the column has no cards", "only": "react" },
+      { "name": "footer", "kind": "node", "required": false, "description": "Footer below the cards (e.g. an \"Add card\" button)", "only": "react" },
+      { "name": "aria-label", "kind": "string", "required": false, "description": "Accessible name of the column", "only": "react" },
+      { "name": "id", "kind": "string", "required": false, "description": "Id of the column", "only": "react" },
+      {
+        "name": "heading",
+        "kind": "string",
+        "default": "",
+        "required": false,
+        "description": "Title of the column (also its accessible name; or use the `heading` slot)",
+        "attribute": "heading",
+        "only": "wc"
+      },
+      {
+        "name": "emptyText",
+        "kind": "string",
+        "required": false,
+        "description": "Text shown when there are no cards (default: localized \"No items\"; or use the `empty` slot)",
+        "attribute": "empty-text",
+        "only": "wc"
+      }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "default", "description": "The cards (each gets `role=\"listitem\"` unless it has a role)" },
+      { "name": "heading", "description": "Rich title (alternative to the `heading` attribute)" },
+      { "name": "actions", "description": "Header controls on the end side (e.g. an add button)" },
+      { "name": "description", "description": "Supporting text (alternative to the `description` attribute)" },
+      { "name": "empty", "description": "Content shown when there are no cards (default: `empty-text`, else localized \"No items\")" },
+      { "name": "footer", "description": "Footer below the cards (e.g. an \"Add card\" button)" }
+    ],
+    "children": true,
+    "platforms": {
+      "react": { "status": "stable" },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnKanbanColumn. Native standalone component/directive; see platform tests for validated scope." },
+      "native": { "status": "beta" },
+      "taro": {
+        "status": "beta",
+        "notes": "Board of status columns in a horizontal ScrollView (scrollX): equal-width columns (columnWidth), fill when they fit, gap, height/maxHeight with vertically scrolling column bodies, translated region label; columns with an accent dot (theme color or CSS color), title, count badge announced with the title, description, actions, role=list cards wrapped in listitems, translated or custom empty content and a footer. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. No drag and drop: move cards with your own actions (menus, buttons) and update the columns' data. No scroll snapping on native hosts. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "Status column: accent dot (theme or CSS color), title (property or title slot), count badge announced with the title, description, actions/footer slots, role=list body and translated or custom empty text. Slots cannot be inspected: the empty text shows when count is 0, and each card should carry role=listitem. Empty actions/footer slots keep their (collapsed) wrappers. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "Status column: accent dot (theme or CSS color), title (prop or slot), count badge announced with the title, description, actions slot, role=list body, translated or custom empty content and a footer slot. Mini-program slots cannot be wrapped card by card: give each card role=listitem. The empty content shows without a default slot or with count 0. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      }
+    }
+  },
+  {
     "name": "KeyValueEditor",
     "tag": "minerva-key-value-editor",
     "docs": "key-value-editor",
@@ -6559,7 +6875,7 @@
       "native": { "status": "beta" },
       "taro": {
         "status": "beta",
-        "notes": "Safe native navigation, description/list composition, text wrapping and native clipboard code copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Safe native navigation, description/list composition, text wrapping and syntax-highlighted code (nested Text, opt-in line numbers / language label) with native clipboard copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       },
       "weapp": {
         "status": "beta",
@@ -6600,7 +6916,7 @@
       "native": { "status": "beta" },
       "taro": {
         "status": "beta",
-        "notes": "Safe native navigation, description/list composition, text wrapping and native clipboard code copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Safe native navigation, description/list composition, text wrapping and syntax-highlighted code (nested Text, opt-in line numbers / language label) with native clipboard copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       },
       "weapp": {
         "status": "n/a",
@@ -6651,6 +6967,182 @@
       "uni": {
         "status": "beta",
         "notes": "Loading label/spinner, error/retry, loaded slot. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      }
+    }
+  },
+  {
+    "name": "MediaControls",
+    "docs": "media-player",
+    "descriptionKey": "docs.media-player.description",
+    "tracks": ["toC"],
+    "props": [
+      { "name": "playing", "kind": "boolean", "required": false, "description": "Whether the media is playing (drives the play / pause button)", "only": "native" },
+      { "name": "currentTime", "kind": "number", "required": false, "description": "Playhead position, in seconds", "only": "native" },
+      { "name": "duration", "kind": "number", "required": false, "description": "Duration in seconds (0 while unknown: the seek bar is disabled)", "only": "native" },
+      { "name": "buffered", "kind": "number", "required": false, "description": "Buffered position, in seconds (shown on the seek bar)", "only": "native" },
+      { "name": "muted", "kind": "boolean", "required": false, "description": "Whether the media is muted (shows the mute button when onMutedChange is set)", "only": "native" },
+      { "name": "volume", "kind": "number", "required": false, "description": "Volume 0..1 (shows the volume bar when onVolumeChange is set)", "only": "native" },
+      { "name": "playbackRate", "kind": "number", "default": 1, "required": false, "description": "Current playback speed (shows the speed button when onRateChange is set)", "only": "native" },
+      { "name": "playbackRates", "kind": "array", "required": false, "description": "Speeds the speed button cycles through", "only": "native" },
+      { "name": "skipSeconds", "kind": "number", "default": 10, "required": false, "description": "Step of the skip back / forward buttons, in seconds (0 hides them)", "only": "native" },
+      { "name": "title", "kind": "string", "required": false, "description": "Title of the media, shown above the controls", "only": "native" },
+      { "name": "loading", "kind": "boolean", "default": false, "required": false, "description": "Shows the loading spinner (buffering)", "only": "native" },
+      {
+        "name": "error",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "Shows the translated error message (\"This media can't be played\") and disables the play buttons",
+        "only": "native"
+      },
+      { "name": "fullscreen", "kind": "boolean", "required": false, "description": "Whether the player is fullscreen (shows the fullscreen button when onFullscreenChange is set)", "only": "native" },
+      {
+        "name": "variant",
+        "kind": "enum",
+        "values": ["audio", "video"],
+        "default": "audio",
+        "required": false,
+        "description": "Overlay over a video (dark translucent) or audio bar (surface)",
+        "only": "native"
+      }
+    ],
+    "events": [
+      { "name": "play-pause", "native": "onPlayPause", "description": "Called when the play / pause button is pressed" },
+      { "name": "seek", "native": "onSeek", "description": "Called with the requested playhead position (seek bar, skip buttons, screen reader actions)" },
+      { "name": "muted-change", "native": "onMutedChange", "description": "Called with the requested muted state" },
+      { "name": "volume-change", "native": "onVolumeChange", "description": "Called with the requested volume (0..1)" },
+      { "name": "rate-change", "native": "onRateChange", "description": "Called with the next playback speed" },
+      { "name": "fullscreen-change", "native": "onFullscreenChange", "description": "Called with the requested fullscreen state" }
+    ],
+    "slots": [],
+    "children": false,
+    "platforms": {
+      "react": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "wc": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "vue": { "status": "n/a", "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component." },
+      "angular": { "status": "n/a", "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component." },
+      "native": { "status": "beta", "notes": "MediaControls: the themed control bar of MediaPlayer driven by props, to wrap expo-video / expo-audio (core React Native has no media element)" },
+      "taro": { "status": "n/a", "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component." },
+      "weapp": { "status": "n/a", "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component." },
+      "uni": { "status": "n/a", "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component." }
+    }
+  },
+  {
+    "name": "MediaPlayer",
+    "tag": "minerva-media-player",
+    "docs": "media-player",
+    "descriptionKey": "docs.media-player.description",
+    "description": "Audio / video player with themed controls.",
+    "tracks": ["toB", "toC"],
+    "props": [
+      { "name": "src", "kind": "string", "required": false, "description": "URL of the media", "attribute": "src" },
+      { "name": "type", "kind": "enum", "values": ["audio", "video"], "required": false, "description": "Kind of media", "attribute": "type" },
+      { "name": "mimeType", "kind": "string", "required": false, "description": "MIME type of the media (\"audio/mpeg\", \"video/mp4\"...), used to infer type", "attribute": "mime-type" },
+      { "name": "poster", "kind": "string", "required": false, "description": "Image shown before a video plays", "attribute": "poster" },
+      { "name": "title", "kind": "string", "required": false, "description": "Title of the media, shown in the audio bar / over the video", "only": "react" },
+      {
+        "name": "autoPlay",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "Starts playing as soon as possible (browsers only allow muted autoplay without a user gesture)",
+        "attribute": "autoplay"
+      },
+      { "name": "loop", "kind": "boolean", "default": false, "required": false, "description": "Restarts at the end", "attribute": "loop" },
+      { "name": "muted", "kind": "boolean", "required": false, "description": "Mutes the media; applied whenever it changes (the mute button still toggles the sound)", "attribute": "muted" },
+      { "name": "defaultMuted", "kind": "boolean", "required": false, "description": "Initially muted (uncontrolled)", "only": "react" },
+      {
+        "name": "preload",
+        "kind": "enum",
+        "values": ["auto", "metadata", "none"],
+        "default": "metadata",
+        "required": false,
+        "description": "How much of the media the browser loads before playback",
+        "attribute": "preload"
+      },
+      { "name": "crossOrigin", "kind": "enum", "values": ["anonymous", "use-credentials"], "required": false, "description": "CORS mode of the media request", "attribute": "crossorigin" },
+      {
+        "name": "startTime",
+        "kind": "number",
+        "required": false,
+        "description": "Resume position in seconds, applied once when the metadata loads (and again when src changes)",
+        "attribute": "start-time"
+      },
+      { "name": "playbackRates", "kind": "array", "required": false, "description": "Speeds the speed button cycles through" },
+      { "name": "skipSeconds", "kind": "number", "default": 10, "required": false, "description": "Step of the skip back / forward buttons, in seconds (0 hides them)", "attribute": "skip-seconds" },
+      {
+        "name": "controls",
+        "kind": "boolean",
+        "default": true,
+        "required": false,
+        "description": "Shows the custom control bar; false renders the bare media element (drive it through the ref)",
+        "only": "react"
+      },
+      { "name": "height", "kind": "union", "required": false, "description": "Height of a video player (number: pixels); overrides aspectRatio", "attribute": "height" },
+      { "name": "aspectRatio", "kind": "string", "default": "16 / 9", "required": false, "description": "Aspect ratio of a video player (CSS aspect-ratio)", "attribute": "aspect-ratio" },
+      {
+        "name": "pictureInPicture",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "Shows a picture-in-picture button (video, where the browser supports it)",
+        "attribute": "picture-in-picture"
+      },
+      { "name": "aria-label", "kind": "string", "required": false, "description": "Accessible label of the player", "only": "react" },
+      {
+        "name": "noControls",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "Hides the custom control bar: renders the bare media element (drive it from script)",
+        "attribute": "no-controls",
+        "only": "wc"
+      }
+    ],
+    "events": [
+      { "name": "minerva-play", "wc": "minerva-play", "description": "Playback started", "react": "onPlay" },
+      { "name": "minerva-pause", "wc": "minerva-pause", "description": "Playback paused", "react": "onPause" },
+      { "name": "minerva-ended", "wc": "minerva-ended", "description": "Playback reached the end", "react": "onEnded" },
+      {
+        "name": "minerva-time-update",
+        "wc": "minerva-time-update",
+        "detail": ["currentTime", "duration"],
+        "description": "The playhead moved (`detail: { currentTime, duration }`, seconds)",
+        "react": "onTimeUpdate"
+      },
+      { "name": "minerva-loaded-metadata", "wc": "minerva-loaded-metadata", "detail": ["duration"], "description": "The metadata loaded (`detail: { duration }`)", "react": "onLoadedMetadata" },
+      { "name": "minerva-error", "wc": "minerva-error", "detail": ["error"], "description": "The media can't be loaded or played (`detail: { error }`, the `MediaError`)", "react": "onError" },
+      { "name": "minerva-rate-change", "wc": "minerva-rate-change", "detail": ["rate"], "description": "The playback speed changed (`detail: { rate }`)", "react": "onRateChange" },
+      {
+        "name": "minerva-volume-change",
+        "wc": "minerva-volume-change",
+        "detail": ["volume", "muted"],
+        "description": "The volume or the muted state changed (`detail: { volume, muted }`)",
+        "react": "onVolumeChange"
+      }
+    ],
+    "slots": [{ "name": "heading", "description": "Title of the media, shown in the audio bar / over the video" }],
+    "children": false,
+    "platforms": {
+      "react": { "status": "stable" },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnMediaPlayer. Native standalone component/directive; see platform tests for validated scope." },
+      "native": {
+        "status": "n/a",
+        "notes": "Core React Native has no media element. minerva-design/native exports MediaControls, the themed control bar driven by props (playing, currentTime, duration, onPlayPause, onSeek...), to wrap the player of expo-video / expo-audio (or react-native-video)."
+      },
+      "taro": {
+        "status": "beta",
+        "notes": "Video through the host <video> component (controls off, driven by createVideoContext: play/pause/seek/playbackRate/requestFullScreen) and audio through Taro.createInnerAudioContext, under a themed control bar: play/pause, skip back/forward (skipSeconds), touch seek bar with the buffered range and aria-valuetext, m:ss / h:mm:ss time, mute, audio volume bar, playback-rate cycle button, video fullscreen, loading spinner and translated error state; startTime (video initial-time, audio startTime), autoPlay, loop, muted/defaultMuted, title, poster, height/aspectRatio; onTimeUpdate/onEnded/onPlay/onPause/onLoadedMetadata/onError/onRateChange/onVolumeChange and a ref with play/pause/seek/context. controls={false} shows the host video's own controls. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Beta: needs device validation (WeChat / Alipay / H5 media behavior differs). The host video has no volume API (mute only, no volume bar); no picture-in-picture, no buffered range for audio on hosts that do not report InnerAudioContext.buffered, no keyboard shortcuts; icons are text glyphs (mini programs have no inline SVG). Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "Video through the host <video> (controls off, driven by wx.createVideoContext: play/pause/seek/playbackRate/requestFullScreen) and audio through wx.createInnerAudioContext, under a themed control bar: play/pause, skip back/forward (skipSeconds), touch seek bar with the buffered range and aria-valuetext, m:ss / h:mm:ss time, mute, audio volume bar, playback-rate cycle button, video fullscreen, loading spinner and translated error state; startTime (video initial-time, audio startTime), autoPlay, loop, muted/defaultMuted, title, poster, height/aspectRatio; timeupdate/ended/play/pause/loadedmetadata/error/ratechange/volumechange events and play()/pause()/seek(seconds) instance methods. controls=false shows the host video's own controls. Beta: needs device validation. The host video has no volume API (mute only, no volume bar); no picture-in-picture and no keyboard shortcuts; icons are text glyphs (no inline SVG in WXML). Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "Video through the uni <video> component (controls off, driven by uni.createVideoContext: play/pause/seek/playbackRate/requestFullScreen) and audio through uni.createInnerAudioContext, under a themed control bar: play/pause, skip back/forward (skipSeconds), touch seek bar with the buffered range and aria-valuetext, m:ss / h:mm:ss time, mute, audio volume bar, playback-rate cycle button, video fullscreen, loading spinner and translated error state; startTime (video initial-time, audio startTime), autoPlay, loop, muted/defaultMuted, title, poster, height/aspectRatio; timeUpdate/ended/play/pause/loadedMetadata/error/rateChange/volumeChange events and an exposed play/pause/seek/context. controls=false shows the host video's own controls. Beta: needs device validation (media behavior differs per host). The host video has no volume API (mute only, no volume bar); no picture-in-picture and no keyboard shortcuts; icons are text glyphs (no inline SVG on mini programs). Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       }
     }
   },
@@ -9134,7 +9626,7 @@
       "native": { "status": "beta" },
       "taro": {
         "status": "beta",
-        "notes": "Safe native navigation, description/list composition, text wrapping and native clipboard code copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Safe native navigation, description/list composition, text wrapping and syntax-highlighted code (nested Text, opt-in line numbers / language label) with native clipboard copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       },
       "weapp": {
         "status": "beta",
@@ -9190,6 +9682,28 @@
         "description": "React content placed over each quadrant (e.g. an add button); the content receives pointer events, the rest of the quadrant does not",
         "only": "react"
       },
+      {
+        "name": "renderQuadrantHeader",
+        "kind": "node",
+        "required": false,
+        "description": "React header of each quadrant, in its outer corner (top edge for the top quadrants, bottom edge for the bottom ones, aligned to the outer side); replaces the drawn title, badge, description and count. The header receives pointer events (e.g. an add button)",
+        "only": "react"
+      },
+      {
+        "name": "accessiblePoints",
+        "kind": "boolean",
+        "default": true,
+        "required": false,
+        "description": "Visually hidden list of buttons per quadrant so keyboard and screen reader users can reach the dots: Enter / Space calls `onPointClick`, Shift + arrow keys move the point to the next quadrant (`onPointDrop` with the center of that quadrant); the focused dot gets a focus ring",
+        "only": "react"
+      },
+      {
+        "name": "getPointProps",
+        "kind": "function",
+        "required": false,
+        "description": "Extra attributes of the invisible anchor placed on each dot (e.g. `data-testid`); every anchor already has `data-point-index` and `data-label` and the class `minerva-chart-quadrant-point`",
+        "only": "react"
+      },
       { "name": "tooltip", "kind": "union", "required": false, "description": "Tooltip; `false` disables it", "only": "react" },
       { "name": "legend", "kind": "union", "required": false, "description": "Legend; shown by default when several series have a name", "only": "react" },
       { "name": "height", "kind": "union", "default": 320, "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
@@ -9239,6 +9753,16 @@
       { "name": "pointSize", "kind": "number", "default": 12, "required": false, "description": "Dot diameter in pixels", "attribute": "point-size" },
       { "name": "name", "kind": "string", "required": false, "description": "Name of the points in the tooltip", "only": "react" },
       { "name": "draggable", "kind": "boolean", "required": false, "description": "Lets the user drag the dots (`drag` / `drop` events)", "only": "react" },
+      {
+        "name": "showCounts",
+        "kind": "union",
+        "default": false,
+        "required": false,
+        "description": "Shows the number of points of each quadrant after its title; a function returns the text instead (e.g. `(n) => `${n} tasks``)",
+        "attribute": "show-counts"
+      },
+      { "name": "selectedIndex", "kind": "number", "required": false, "description": "Index of the selected point: drawn with a ring of its color (`null`: none)", "attribute": "selected-index" },
+      { "name": "selectedIndices", "kind": "array", "required": false, "description": "Indices of the selected points (several selected points)" },
       {
         "name": "hideTicks",
         "kind": "boolean",
@@ -9321,11 +9845,11 @@
       },
       "weapp": {
         "status": "beta",
-        "notes": "Quadrant matrix with the web props (points, domains, splits, quadrants, axis labels, showTicks, reverseX, labels, pointSize); pointclick, quadrantclick and pointdrag/pointdrop events. quadrantContent (ReactNode overlays) has no canvas equivalent: place host views with the layout event and toPixel(). Dragging is enabled by the draggable property (a native host cannot detect a bound pointdrop handler). Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+        "notes": "Quadrant matrix with the web props (points, domains, splits, quadrants with badge/description, axis labels, showTicks, reverseX, labels, pointSize, showCounts, selectedIndex/selectedIndices rings); pointclick, quadrantclick and pointdrag/pointdrop events. quadrantContent (ReactNode overlays) has no canvas equivalent: place host views with the layout event and toPixel(). renderQuadrantHeader, getPointProps and the accessible point layer (keyboard moves, focus ring) are React-only; showCounts takes no formatting function. Dragging is enabled by the draggable property (a native host cannot detect a bound pointdrop handler). Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
       },
       "uni": {
         "status": "beta",
-        "notes": "Cartesian chart drawn on a `<canvas type=\"2d\">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize). No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Cartesian chart drawn on a `<canvas type=\"2d\">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize). No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text. Quadrant badges, descriptions, showCounts (boolean only) and the selectedIndex/selectedIndices rings are drawn; renderQuadrantHeader, getPointProps and the accessible point layer are React-only. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       }
     }
   },
@@ -10423,6 +10947,60 @@
     }
   },
   {
+    "name": "SegmentedControl",
+    "tag": "minerva-segmented-control",
+    "docs": "segmented-control",
+    "descriptionKey": "docs.segmented-control.description",
+    "description": "Single-choice segmented switch with a sliding thumb.",
+    "tracks": ["toB", "toC"],
+    "props": [
+      { "name": "options", "kind": "array", "required": true, "description": "The segments: strings or option objects", "attribute": "options" },
+      { "name": "value", "kind": "object", "required": false, "description": "Selected value (controlled; pair with onChange)" },
+      { "name": "defaultValue", "kind": "object", "required": false, "description": "Initially selected value (uncontrolled)", "attribute": "value" },
+      { "name": "size", "kind": "enum", "values": ["large", "medium", "small"], "default": "medium", "required": false, "description": "Segment density", "attribute": "size" },
+      { "name": "color", "kind": "enum", "values": ["neutral", "primary"], "default": "neutral", "required": false, "description": "Thumb color", "attribute": "color" },
+      {
+        "name": "fullWidth",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "Fills the width of the container (the segments always share the width equally)",
+        "attribute": "full-width"
+      },
+      { "name": "disabled", "kind": "boolean", "default": false, "required": false, "description": "Blocks every segment", "attribute": "disabled" },
+      { "name": "name", "kind": "string", "required": false, "description": "Name of a hidden input carrying the value in a form", "attribute": "name" },
+      { "name": "aria-label", "kind": "string", "required": false, "description": "Accessible label of the group", "only": "react" },
+      { "name": "aria-labelledby", "kind": "string", "required": false, "description": "Id of the element labelling the group", "only": "react" },
+      { "name": "id", "kind": "string", "required": false, "description": "Root id", "only": "react" },
+      { "name": "required", "kind": "boolean", "default": false, "required": false, "description": "The control must have a value for the form to be submitted", "attribute": "required", "only": "wc" }
+    ],
+    "events": [
+      { "name": "change", "wc": "change", "description": "The user selected another segment (like native radios)" },
+      { "name": "minerva-change", "wc": "minerva-change", "detail": ["value"], "description": "The user selected another segment; `detail: { value }`", "react": "onChange", "native": "onChange" }
+    ],
+    "slots": [],
+    "children": false,
+    "platforms": {
+      "react": { "status": "stable" },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnSegmentedControl. Native standalone component/directive; see platform tests for validated scope." },
+      "native": { "status": "beta" },
+      "taro": {
+        "status": "beta",
+        "notes": "Single-choice segmented switch from string/object options (icon, label, disabled, aria-label), controlled/uncontrolled value, three sizes, neutral/primary thumb, fullWidth, disabled and an equal-width sliding thumb. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. H5 supports roving arrows (left-to-right only) and Home/End selection; native hosts use touch selection. Segments always share the width equally. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "Single-choice segmented switch from string/object options (text icon, label, disabled, aria-label) with controlled/default value and change { value }, three sizes, neutral/primary thumb, fullWidth, disabled/readOnly, radiogroup/radio semantics and an equal-width sliding thumb. Icons are text only and there is no form field integration. DOM roving keyboard focus is not a native mini-program interaction. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "Single-choice segmented switch from string/object options (text icon, label, disabled, aria-label); controlled/default value (v-model) with change events; three sizes, neutral/primary thumb, fullWidth and disabled; radiogroup/radio semantics with an equal-width sliding thumb, arrow keys that move and select (skipping disabled segments, RTL-aware) and Home/End. Icons are text only and there is no hidden form input; keyboard metadata and native touch actions are implemented; device focus/geometry still require validation. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      }
+    }
+  },
+  {
     "name": "Select",
     "tag": "minerva-select",
     "docs": "select",
@@ -10837,6 +11415,135 @@
       "uni": {
         "status": "beta",
         "notes": "Variants, geometry, radius/circle, loading content replacement, decorative/status semantics, pulse/wave/no-animation; text line count, height, gap and shortened final line. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      }
+    }
+  },
+  {
+    "name": "Slider",
+    "tag": "minerva-slider",
+    "docs": "slider",
+    "descriptionKey": "docs.slider.description",
+    "description": "Range input with one or two thumbs, marks, value label and tooltip.",
+    "tracks": ["toB", "toC"],
+    "props": [
+      {
+        "name": "value",
+        "kind": "union",
+        "required": false,
+        "description": "Value (controlled): a number, or `[start, end]` with `range`. Values are clamped to min..max and snapped to the step (or to the marks)"
+      },
+      { "name": "defaultValue", "kind": "union", "required": false, "description": "Initial value (uncontrolled); defaults to min, or [min, max] with range", "attribute": "value" },
+      { "name": "range", "kind": "boolean", "default": false, "required": false, "description": "Two thumbs selecting `[start, end]`; the thumbs cannot cross", "attribute": "range" },
+      { "name": "min", "kind": "number", "default": 0, "required": false, "description": "Smallest value", "attribute": "min" },
+      { "name": "max", "kind": "number", "default": 100, "required": false, "description": "Largest value", "attribute": "max" },
+      { "name": "step", "kind": "number", "default": 1, "required": false, "description": "Step between two values; `null` snaps to the marks only", "attribute": "step" },
+      {
+        "name": "marks",
+        "kind": "union",
+        "required": false,
+        "description": "Ticks of the scale: an array of `{ value, label? }`, or `true` for one tick per step (up to 101 ticks)",
+        "attribute": "marks"
+      },
+      { "name": "snapToMarks", "kind": "boolean", "default": false, "required": false, "description": "Snaps the value to the closest mark (instead of the step)", "attribute": "snap-to-marks" },
+      {
+        "name": "disabled",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "Disables the slider. Inherited from an enclosing FormControl when not set; an explicit `false` overrides the FormControl",
+        "attribute": "disabled"
+      },
+      {
+        "name": "readOnly",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "Focusable and submitted, but the user cannot change the value. Inherited from an enclosing FormControl when not set",
+        "attribute": "readonly"
+      },
+      { "name": "size", "kind": "enum", "values": ["large", "medium", "small"], "default": "medium", "required": false, "description": "Thumb and track size", "attribute": "size" },
+      {
+        "name": "color",
+        "kind": "enum",
+        "values": ["danger", "info", "primary", "success", "warning"],
+        "default": "primary",
+        "required": false,
+        "description": "Semantic color of the filled track and the thumbs",
+        "attribute": "color"
+      },
+      { "name": "showValue", "kind": "boolean", "default": false, "required": false, "description": "Shows the value (formatted with formatValue) after the track", "attribute": "show-value" },
+      {
+        "name": "tooltip",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "Shows the value in a bubble above a thumb while it is dragged, hovered or focused",
+        "attribute": "tooltip"
+      },
+      { "name": "formatValue", "kind": "function", "required": false, "description": "Formats a value for the value label, the tooltip and aria-valuetext" },
+      { "name": "orientation", "kind": "enum", "values": ["horizontal", "vertical"], "default": "horizontal", "required": false, "description": "Direction of the track", "attribute": "orientation" },
+      { "name": "name", "kind": "string", "required": false, "description": "Name of the hidden form input(s); a range submits two entries under this name", "attribute": "name" },
+      {
+        "name": "aria-label",
+        "kind": "string",
+        "required": false,
+        "description": "Accessible label of the thumbs (range: suffixed with \"Minimum\" / \"Maximum\"). Defaults to the enclosing FormControl's label",
+        "only": "react"
+      },
+      { "name": "aria-labelledby", "kind": "string", "required": false, "description": "id(s) of the element(s) labelling the thumbs", "only": "react" },
+      {
+        "name": "aria-describedby",
+        "kind": "string",
+        "required": false,
+        "description": "Extra id(s) of elements describing the slider, merged with the enclosing FormControl's helper / error text",
+        "only": "react"
+      },
+      { "name": "getAriaValueText", "kind": "function", "required": false, "description": "aria-valuetext of a thumb (index 0, or 1 for the end thumb of a range). Defaults to formatValue" },
+      { "name": "invalid", "kind": "boolean", "default": false, "required": false, "description": "Error state (aria-invalid)", "attribute": "invalid", "only": "wc" },
+      { "name": "required", "kind": "boolean", "default": false, "required": false, "description": "The control must have a value for the form to be submitted", "attribute": "required", "only": "wc" }
+    ],
+    "events": [
+      { "name": "input", "wc": "input", "description": "The value changed while dragging or with a key (native-like)" },
+      { "name": "change", "wc": "change", "description": "The interaction ended (native-like)" },
+      {
+        "name": "minerva-change",
+        "wc": "minerva-change",
+        "detail": ["value"],
+        "description": "The value changed (while dragging, on each key press); `detail: { value }`",
+        "react": "onChange",
+        "native": "onChange"
+      },
+      {
+        "name": "minerva-change-end",
+        "wc": "minerva-change-end",
+        "detail": ["value"],
+        "description": "The interaction ended (pointer release, key press): save here; `detail: { value }`",
+        "react": "onChangeEnd",
+        "native": "onChangeEnd"
+      }
+    ],
+    "slots": [],
+    "children": false,
+    "platforms": {
+      "react": { "status": "stable" },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnSlider. Native standalone component/directive; see platform tests for validated scope." },
+      "native": {
+        "status": "beta",
+        "notes": "Touch slider on the responder system (press the track, drag; the gesture is not stolen by a parent ScrollView), one or two thumbs, marks, value label and drag tooltip; each thumb is adjustable (increment / decrement). Horizontal only; no hidden form input (use FormField / onChangeEnd)."
+      },
+      "taro": {
+        "status": "beta",
+        "notes": "Custom touch slider (not the host slider) with one or two non-crossing thumbs, min/max/step or marks-only snapping, step or labelled marks, controlled/uncontrolled value, onChange while dragging and onChangeEnd on release, five colors, three sizes, value label, drag tooltip, hidden named inputs and FormControl disabled/readOnly/invalid. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. The track is measured with createSelectorQuery on touch start (cached afterwards; a layout change is picked up on the next touch). Horizontal and left-to-right only. H5 supports arrow/PageUp/PageDown/Home/End keys on the focusable thumbs; native hosts use touch only and expose no adjustable accessibility actions. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "Custom touch slider (not the host slider) with one or two non-crossing thumbs, min/max/step or marks-only snapping, step or labelled marks, controlled/default value with change { value } while dragging and changeend { value } on release, five colors, three sizes, value label, drag tooltip, formatValue/getAriaValueText through configure(), hidden named inputs and form context disabled/readOnly/invalid. The track is measured with createSelectorQuery on touch start (cached afterwards); horizontal and left-to-right only. There is no keyboard or adjustable screen-reader gesture on native views (stepThumb(key, index) steps programmatically). A range submits two inputs with the same name, which native forms collapse to one value. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "Custom touch slider (not the built-in slider) with one or two non-crossing thumbs, min/max/step or marks-only snapping, step or labelled marks, controlled/default value (v-model) with change while dragging and changeEnd on release, five colors, three sizes, value label, drag tooltip, hidden named inputs, field inheritance and RTL mirroring. The track is measured with uni.createSelectorQuery on touch start (cached afterwards); horizontal only. H5 supports arrow/PageUp/PageDown/Home/End keys on the focusable thumbs; native hosts use touch only. A range submits two inputs with the same name, which native forms collapse to one value. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       }
     }
   },
@@ -11723,13 +12430,13 @@
         "description": "Visual style: plain rows, zebra stripes or bordered cells"
       },
       { "name": "size", "kind": "enum", "values": ["large", "medium", "small"], "default": "medium", "required": false, "description": "Density of the cells" },
-      { "name": "hoverable", "kind": "boolean", "default": false, "required": false, "description": "Highlights body rows on hover" },
       {
         "name": "scroll",
         "kind": "object",
         "required": false,
         "description": "Horizontal minimum width / vertical maximum height of the scroll area. When set (or when the content overflows), the scroll area becomes a focusable region named by the table's `aria-label` / `aria-labelledby` (default: \"Scrollable table\", localized) so keyboard users can scroll it"
-      }
+      },
+      { "name": "hoverable", "kind": "boolean", "default": false, "required": false, "description": "Highlights body rows on hover" }
     ],
     "events": [{ "name": "sort-change", "react": "onSortChange", "description": "Called with the next sort state when a sortable header is activated", "native": "onSortChange" }],
     "slots": [],
@@ -12471,7 +13178,7 @@
       "native": { "status": "beta" },
       "taro": {
         "status": "beta",
-        "notes": "Safe native navigation, description/list composition, text wrapping and native clipboard code copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Safe native navigation, description/list composition, text wrapping and syntax-highlighted code (nested Text, opt-in line numbers / language label) with native clipboard copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       },
       "weapp": {
         "status": "beta",
@@ -13905,6 +14612,7 @@
         "description": "Rendered between every two items (not before the first or after the last), e.g. a `<Divider orientation=\"vertical\" />` or `\"·\"`. Empty children (null / undefined / booleans) do not get a separator.",
         "attribute": "separator"
       },
+      { "name": "wrap", "kind": "boolean", "default": false, "required": false, "description": "Wraps items onto multiple lines", "attribute": "wrap" },
       { "name": "as", "kind": "union", "default": "div", "required": false, "description": "Element or component to render", "only": "react" },
       {
         "name": "gap",
@@ -13929,7 +14637,6 @@
         "description": "Main-axis distribution (`justify-content`); unset when omitted",
         "attribute": "justify"
       },
-      { "name": "wrap", "kind": "boolean", "default": false, "required": false, "description": "Wraps items onto multiple lines", "attribute": "wrap" },
       {
         "name": "attached",
         "kind": "boolean",

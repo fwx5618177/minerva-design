@@ -2,7 +2,15 @@ import { describe, expect, it, vi } from "vitest";
 import { createCanvasChart, type ChartCanvas } from "./canvas";
 import { resolveStaticColor } from "./color";
 import { createChartController, scenePrimitives } from "./controller";
-import { quadrantCenter, quadrantChartOptions, quadrantOf } from "./presets";
+import { areaTitleLayout, type ResolvedRect } from "./overlay";
+import {
+  quadrantCenter,
+  quadrantChartOptions,
+  quadrantGroups,
+  quadrantLabels,
+  quadrantOf,
+  type QuadrantConfig,
+} from "./presets";
 import { createTheme } from "./theme";
 import type { ChartOptions } from "./types";
 
@@ -99,6 +107,128 @@ describe("quadrant presets", () => {
     const data = options.series[0].data as readonly { color?: string }[];
     expect(data[0].color).toBe("#ff0000");
     expect(typeof options.tooltip).toBe("object");
+  });
+
+  it("adds badges, descriptions and counts to the quadrant titles", () => {
+    const points = [
+      { x: 1, y: 9, label: "A" },
+      { x: 2, y: 8, label: "B" },
+      { x: 8, y: 2, label: "C" },
+    ];
+    const rects = (showCounts?: QuadrantConfig["showCounts"]) =>
+      quadrantChartOptions({
+        points,
+        showCounts,
+        quadrants: {
+          topLeft: { label: "Do", badge: "Q1", description: "Now" },
+        },
+      }).annotations!.filter((a) => a.type === "rect");
+    expect(rects()[0]).toMatchObject({
+      label: "Do",
+      badge: "Q1",
+      description: "Now",
+    });
+    expect(rects()[0]).not.toHaveProperty("detail");
+    expect(rects(true).map((r) => (r as { detail?: string }).detail)).toEqual([
+      "2",
+      "0",
+      "0",
+      "1",
+    ]);
+    const format = vi.fn((n: number) => `${n} tasks`);
+    expect((rects(format)[0] as { detail?: string }).detail).toBe("2 tasks");
+    expect(format).toHaveBeenCalledWith(2, [points[0], points[1]]);
+  });
+
+  it("groups the points by quadrant", () => {
+    const groups = quadrantGroups({
+      reverseX: true,
+      points: [
+        { x: 8, y: 8 },
+        { x: 2, y: 2 },
+        { x: 9, y: 9 },
+      ],
+    });
+    expect(groups.topLeft.indices).toEqual([0, 2]);
+    expect(groups.bottomRight.indices).toEqual([1]);
+    expect(groups.topRight.points).toEqual([]);
+  });
+
+  it("rings the selected and the focused dots, out of the hit tests", () => {
+    const points = [
+      { x: 1, y: 9, label: "A" },
+      { x: 8, y: 2, label: "B", size: 20 },
+    ];
+    const options = quadrantChartOptions(
+      { points, selectedIndex: 1, selectedIndices: [1, 7] },
+      {},
+      { focusedIndex: 0 },
+    );
+    expect(options.series.map((s) => s.id)).toEqual([
+      undefined,
+      "quadrant:selected",
+      "quadrant:focus",
+    ]);
+    const [, selected, focus] = options.series;
+    expect(selected).toMatchObject({ tooltip: false, opacity: 0, stroke: 2 });
+    expect(selected!.data).toHaveLength(1);
+    expect((selected!.data as readonly { size: number }[])[0]!.size).toBe(29);
+    expect((focus!.data as readonly { x: number }[])[0]!.x).toBe(1);
+    expect(quadrantChartOptions({ points }).series).toHaveLength(1);
+  });
+
+  it("localizes the built-in quadrant texts", () => {
+    expect(quadrantLabels("zh").topLeft).toBe("左上象限");
+    expect(quadrantLabels("en").moved).toContain("{quadrant}");
+  });
+});
+
+describe("areaTitleLayout", () => {
+  const measure = (text: string, size: number) => text.length * size * 0.6;
+  const area = (extra: Partial<ResolvedRect>): ResolvedRect => ({
+    type: "rect",
+    color: [0, 0, 0, 1],
+    opacity: 0.1,
+    labelPosition: "top-left",
+    labelColor: [0, 0, 0, 1],
+    ...extra,
+  });
+  const box = { x: 0, y: 0, width: 300, height: 200 };
+
+  it("lays the badge, title and count on a line and the description under it", () => {
+    const title = areaTitleLayout(
+      area({ badge: "Q1", label: "Do", detail: "3", description: "Now" }),
+      box,
+      12,
+      measure,
+    )!;
+    expect(title.parts.map((p) => p.kind)).toEqual([
+      "badge",
+      "label",
+      "detail",
+      "description",
+    ]);
+    const [badge, label, , description] = title.parts;
+    expect(badge!.x).toBe(10);
+    expect(label!.x).toBeGreaterThan(badge!.x + badge!.width);
+    expect(description!.y).toBeGreaterThan(label!.y);
+  });
+
+  it("aligns the block to the outer corner and cuts long texts", () => {
+    const title = areaTitleLayout(
+      area({
+        label: "A very long quadrant title",
+        labelPosition: "bottom-right",
+      }),
+      { x: 0, y: 0, width: 100, height: 100 },
+      12,
+      measure,
+    )!;
+    const [label] = title.parts;
+    expect(label!.text.endsWith("…")).toBe(true);
+    expect(label!.x + label!.width).toBeLessThanOrEqual(90);
+    expect(label!.y + label!.height).toBe(90);
+    expect(areaTitleLayout(area({}), box, 12, measure)).toBeNull();
   });
 });
 

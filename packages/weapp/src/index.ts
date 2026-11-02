@@ -5,11 +5,49 @@ import { enhanceBasics } from "./basic-components";
 import { enhanceAdvanced } from "./advanced-components";
 import { annotateNativeApi } from "./public-api";
 import {
+  flashcardExtra,
+  flashcardMethods,
+  flashcardProperties,
+  flashcardTemplate,
+} from "./flashcard";
+import {
+  segmentedControlExtra,
+  segmentedControlMethods,
+  segmentedControlProperties,
+  segmentedControlTemplate,
+} from "./segmented-control";
+import {
+  sliderExtra,
+  sliderMethods,
+  sliderProperties,
+  sliderTemplate,
+} from "./slider";
+import {
   weekStripExtra,
   weekStripMethods,
   weekStripProperties,
   weekStripTemplate,
 } from "./week-strip";
+import {
+  mediaPlayerExtra,
+  mediaPlayerMethods,
+  mediaPlayerProperties,
+  mediaPlayerTemplate,
+} from "./media-player";
+import {
+  kanbanBoardExtra,
+  kanbanBoardProperties,
+  kanbanBoardTemplate,
+  kanbanColumnExtra,
+  kanbanColumnProperties,
+  kanbanColumnTemplate,
+} from "./kanban-board";
+import {
+  answerSheetExtra,
+  answerSheetMethods,
+  answerSheetProperties,
+  answerSheetTemplate,
+} from "./answer-sheet";
 import {
   chart,
   lineChart,
@@ -1190,6 +1228,48 @@ export const weekStrip = native(
   weekStripProperties,
   weekStripMethods,
   weekStripExtra,
+);
+export const mediaPlayer = native(
+  mediaPlayerTemplate,
+  mediaPlayerProperties,
+  mediaPlayerMethods,
+  mediaPlayerExtra,
+);
+export const kanbanBoard = native(
+  kanbanBoardTemplate,
+  kanbanBoardProperties,
+  {},
+  kanbanBoardExtra,
+);
+export const kanbanColumn = native(
+  kanbanColumnTemplate,
+  kanbanColumnProperties,
+  {},
+  kanbanColumnExtra,
+);
+export const flashcard = native(
+  flashcardTemplate,
+  flashcardProperties,
+  flashcardMethods,
+  flashcardExtra,
+);
+export const answerSheet = native(
+  answerSheetTemplate,
+  answerSheetProperties,
+  answerSheetMethods,
+  answerSheetExtra,
+);
+export const segmentedControl = native(
+  segmentedControlTemplate,
+  segmentedControlProperties,
+  segmentedControlMethods,
+  segmentedControlExtra,
+);
+export const slider = native(
+  sliderTemplate,
+  sliderProperties,
+  sliderMethods,
+  sliderExtra,
 );
 export const pagination = native(
   `<view class="mn-pagination"><text wx:if="{{showTotal}}">Total {{total}}</text><button class="{{disabled || current <= 1 ? 'mn-disabled' : ''}} mn-button mn-variant-outline" disabled="{{disabled || current <= 1}}" data-delta="-1" bindtap="onPage">Previous</button><text>{{current}} / {{pages}}</text><button class="mn-button mn-variant-outline" disabled="{{disabled || current >= pages}}" data-delta="1" bindtap="onPage">Next</button></view>`,
@@ -2984,6 +3064,7 @@ enhanceFormContext(
     keyValueEditor,
     rating,
     ratingScale,
+    slider,
     timePicker,
     datePicker,
     upload,
@@ -3050,7 +3131,14 @@ annotateNativeApi({
   datePicker,
   monthCalendar,
   weekStrip,
+  mediaPlayer,
+  kanbanBoard,
+  kanbanColumn,
+  flashcard,
+  segmentedControl,
+  slider,
   pagination,
+  answerSheet,
   tabs,
   pageTabs,
   menu,

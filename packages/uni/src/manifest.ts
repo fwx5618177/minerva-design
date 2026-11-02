@@ -221,6 +221,34 @@ export const uniComponentManifest = [
     deviceE2E: false,
   },
   {
+    name: "SegmentedControl",
+    scope:
+      "Single-choice segmented switch from string/object options (text icon, label, disabled, aria-label); controlled/default value (v-model) with change events; three sizes, neutral/primary thumb, fullWidth and disabled; radiogroup/radio semantics with an equal-width sliding thumb, arrow keys that move and select (skipping disabled segments, RTL-aware) and Home/End.",
+    limitations: [
+      "Icons are text only and there is no hidden form input; keyboard metadata and native touch actions are implemented; device focus/geometry still require validation.",
+    ],
+    tests: [
+      "src/segmented-control.test.ts: behavioral regression",
+      "src/parity.test.ts: native host mount",
+    ],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "Slider",
+    scope:
+      "Custom touch slider (not the built-in slider) with one or two non-crossing thumbs, min/max/step or marks-only snapping, step or labelled marks, controlled/default value (v-model) with change while dragging and changeEnd on release, five colors, three sizes, value label, drag tooltip, hidden named inputs, field inheritance and RTL mirroring.",
+    limitations: [
+      "The track is measured with uni.createSelectorQuery on touch start (cached afterwards); horizontal only. H5 supports arrow/PageUp/PageDown/Home/End keys on the focusable thumbs; native hosts use touch only. A range submits two inputs with the same name, which native forms collapse to one value.",
+    ],
+    tests: [
+      "src/slider.test.ts: behavioral regression",
+      "src/parity.test.ts: native host mount",
+    ],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
     name: "WeekStrip",
     scope:
       "Shared local-date core: the seven days of a week from firstDayOfWeek; controlled/default string selection (v-model) and Date week (v-model:week, follows the selection while uncontrolled); today override, count/dot markers with localized accessible names, getDayLabel, previous/next week navigation with a localized month heading, weekday labels, size and disabled; listbox/option semantics with arrow, Home/End and PageUp/PageDown keys across weeks.",
@@ -229,6 +257,77 @@ export const uniComponentManifest = [
     ],
     tests: [
       "src/week-strip.test.ts: behavioral regression",
+      "src/parity.test.ts: native host mount",
+    ],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "MediaPlayer",
+    scope:
+      "Video through the uni <video> component (controls off, driven by uni.createVideoContext: play/pause/seek/playbackRate/requestFullScreen) and audio through uni.createInnerAudioContext, under a themed control bar: play/pause, skip back/forward (skipSeconds), touch seek bar with the buffered range and aria-valuetext, m:ss / h:mm:ss time, mute, audio volume bar, playback-rate cycle button, video fullscreen, loading spinner and translated error state; startTime (video initial-time, audio startTime), autoPlay, loop, muted/defaultMuted, title, poster, height/aspectRatio; timeUpdate/ended/play/pause/loadedMetadata/error/rateChange/volumeChange events and an exposed play/pause/seek/context. controls=false shows the host video's own controls.",
+    limitations: [
+      "Beta: needs device validation (media behavior differs per host). The host video has no volume API (mute only, no volume bar); no picture-in-picture and no keyboard shortcuts; icons are text glyphs (no inline SVG on mini programs).",
+    ],
+    tests: [
+      "src/media-player.test.ts: behavioral regression",
+      "src/parity.test.ts: native host mount",
+    ],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "KanbanBoard",
+    scope:
+      "Board of status columns in a scroll-view scroll-x: equal-width columns (columnWidth), fill when they fit, gap, height/maxHeight with vertically scrolling column bodies and a translated region label.",
+    limitations: [
+      "No drag and drop: move cards with your own actions and update the columns' data. No scroll snapping; device geometry still requires validation.",
+    ],
+    tests: [
+      "src/kanban-board.test.ts: behavioral regression",
+      "src/parity.test.ts: native host mount",
+    ],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "KanbanColumn",
+    scope:
+      "Status column: accent dot (theme or CSS color), title (prop or slot), count badge announced with the title, description, actions slot, role=list body, translated or custom empty content and a footer slot.",
+    limitations: [
+      "Mini-program slots cannot be wrapped card by card: give each card role=listitem. The empty content shows without a default slot or with count 0.",
+    ],
+    tests: [
+      "src/kanban-board.test.ts: behavioral regression",
+      "src/parity.test.ts: native host mount",
+    ],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "AnswerSheet",
+    scope:
+      "Shared core sections and counts: numbered question pills grouped by section (untitled section first), unanswered/answered/correct/wrong/skipped statuses, flag dot, controlled/default current question (v-model) with aria-current=step, wrap/scroll layouts, fixed columns, localized item labels, getItemLabel, summary, legend, size and disabled; arrow, Home/End and Enter/Space keys (ArrowUp/ArrowDown by row with columns).",
+    limitations: [
+      "Keyboard metadata and native tap selection are implemented; without columns ArrowUp/ArrowDown do not move (no layout measurement), and device focus/geometry still require validation.",
+      "layout=scroll centres the current pill through the scroll-view scroll-left (measured with createSelectorQuery on native hosts).",
+    ],
+    tests: [
+      "src/answer-sheet.test.ts: behavioral regression",
+      "src/parity.test.ts: native host mount",
+    ],
+    status: "partial",
+    deviceE2E: false,
+  },
+  {
+    name: "Flashcard",
+    scope:
+      "Two-sided study card: front/back/footer slots with plain-text front/back fallbacks, translated front/back captions and optional hint, controlled/default flipped (v-model:flipped, flippedChange), flipOnClick, disabled, y/x axis, elevated/outline/filled variants, three sizes and minHeight. Both faces share one CSS grid cell (the card fits the taller face); the hidden face is aria-hidden and the back is a polite live region; H5 adds role=button with aria-pressed, Enter/Space and ignores taps on interactive face content.",
+    limitations: [
+      "Mini-program hosts flip on tap only (no keyboard) and ignore prefers-reduced-motion; the CSS 3D rotateY/rotateX flip and backface-visibility need the WebView renderer (Skyline does not support CSS grid or 3D transforms). Device rendering is not validated.",
+    ],
+    tests: [
+      "src/flashcard.test.ts: behavioral regression",
       "src/parity.test.ts: native host mount",
     ],
     status: "partial",
@@ -746,10 +845,11 @@ export const uniComponentManifest = [
   {
     name: "CodeBlock",
     scope:
-      "Language label, wrapped/unwrapped text, bounded scrolling maxHeight, native clipboard copy callbacks and localized feedback with cleanup.",
+      "Syntax highlighting (core highlightCode, nested text with code-token colors), opt-in line numbers and language label, wrapped/unwrapped text, bounded scrolling maxHeight, native clipboard copy of the raw text with callbacks and localized feedback with cleanup.",
     limitations: [],
     tests: [
       "src/primitives-parity.test.ts: behavior and styling contracts",
+      "src/code-block.test.ts: highlighting, line numbers, language label and raw copy",
       "spike/browser/primitives.spec.ts: real Chromium geometry, theme and interaction",
     ],
     status: "implemented",
@@ -1545,6 +1645,7 @@ export const uniChartManifest = [
       'Cartesian chart drawn on a `<canvas type="2d">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize).',
     limitations: [
       "No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text.",
+      "Quadrant badges, descriptions, showCounts (boolean only) and the selectedIndex/selectedIndices rings are drawn; renderQuadrantHeader, getPointProps and the accessible point layer are React-only.",
     ],
     tests: ["src/charts.test.ts"],
     status: "partial",

@@ -2,7 +2,7 @@ import { defineHooks } from "../types";
 
 export default defineHooks({
   description:
-    "A scrollable, focusable block of source text with an optional copy button",
+    "A scrollable, focusable block of source text with optional syntax highlighting, line numbers, language label and copy button",
   react: ["CodeBlock"],
   wc: "minerva-code-block",
   parts: {
@@ -15,10 +15,12 @@ export default defineHooks({
         "The <pre> scroll region (role=region): the visible box of the code",
     },
     code: { description: "The <code> element" },
-    language: {
+    "line-number": {
       description:
-        "The language label. Web components only: React's CodeBlock has no language prop",
-      only: "wc",
+        "The number of a line, in the gutter (with showLineNumbers; aria-hidden, generated content)",
+    },
+    language: {
+      description: "The language label (with showLanguage and a language)",
     },
     "copy-button": {
       description:

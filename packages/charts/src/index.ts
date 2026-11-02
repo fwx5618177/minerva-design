@@ -51,6 +51,7 @@ export type {
   MixedChartProps,
   QuadrantChartProps,
   QuadrantDropTarget,
+  QuadrantHeaderInfo,
   RangeAreaChartProps,
   ScatterChartProps,
   SparklineProps,

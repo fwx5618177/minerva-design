@@ -63,9 +63,10 @@ describe("themes map", () => {
     for (const [key, value] of Object.entries(light)) {
       expect(declared[key], key).toBe(normalize(String(value)));
     }
-    // the remaining :root tokens are derived from other tokens or are sizes
+    // the remaining :root tokens are derived from other tokens or are sizes;
+    // the syntax colors are mode constants switched by [data-theme=dark]
     for (const [key, value] of Object.entries(declared)) {
-      if (key in light) continue;
+      if (key in light || key.startsWith("code-token-")) continue;
       expect(value, key).toMatch(/var\(--|^\d+px$/);
     }
   });

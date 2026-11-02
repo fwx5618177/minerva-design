@@ -5,6 +5,9 @@
 // @css-var --code-block-border-color Border color
 // @css-var --code-block-font-size Font size of the code
 // @css-var --code-block-max-height Maximum height before the block scrolls (default: none)
+// @css-var --code-block-line-number-color Color of the line numbers
+// Syntax colors: the theme tokens --code-token-<type>-color (tokens.css,
+// light and dark values).
 
 .codeBlock {
   box-sizing: border-box;
@@ -41,6 +44,56 @@
   }
 }
 
+// Syntax highlighting: one class per token type of `highlightCode` (quoted:
+// a bare `null` is the Sass null value).
+@each $type in "comment", "keyword", "string", "number", "boolean", "null", "property", "function", "tag", "attr-name", "attr-value", "punctuation", "operator", "regex", "variable", "builtin",
+  "inserted", "deleted", "heading"
+{
+  .token-#{$type} {
+    color: var(--code-token-#{$type}-color);
+  }
+}
+
+.token-heading {
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+// Line numbers: each line is an inline-block (not a block: copying a
+// selection keeps the source line breaks) with a hanging indent, so wrapped
+// lines align after the gutter. The numbers are generated content
+// (`data-line`): not part of the text, not selectable.
+.line {
+  --code-line-gutter: calc(var(--code-line-digits, 2) * 1ch + var(--space-4));
+
+  display: inline-block;
+  vertical-align: top;
+  padding-inline-start: var(--code-line-gutter);
+  text-indent: calc(-1 * var(--code-line-gutter));
+}
+
+.lineNumber {
+  display: inline-block;
+  box-sizing: border-box;
+  width: var(--code-line-gutter);
+  padding-inline-end: var(--space-4);
+  text-indent: 0;
+  text-align: end;
+  color: var(--code-block-line-number-color, var(--text-muted-color));
+  user-select: none;
+
+  &::before {
+    content: attr(data-line);
+  }
+}
+
+.language {
+  color: var(--text-muted-color);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-xs);
+  line-height: 1;
+  user-select: none;
+}
+
 // Copyable: a positioned wrapper holds the region and the copy button.
 // The wrapper carries the max-height (inline style), the region shrinks to
 // fit and scrolls.
@@ -59,9 +112,17 @@
   }
 }
 
-// Keep the first line clear of the copy button.
+// Keep the first line clear of the copy button / language label.
 .copyable {
   padding-inline-end: calc(var(--code-block-padding, var(--space-4)) + var(--control-height-sm) + var(--space-2));
+}
+
+.labeled {
+  padding-inline-end: calc(var(--code-block-padding, var(--space-4)) + 6ch + var(--space-2));
+
+  &.copyable {
+    padding-inline-end: calc(var(--code-block-padding, var(--space-4)) + var(--control-height-sm) + 6ch + var(--space-4));
+  }
 }
 
 .actions {
@@ -69,6 +130,8 @@
   inset-block-start: var(--space-2);
   inset-inline-end: var(--space-2);
   display: flex;
+  align-items: center;
+  gap: var(--space-2);
 }
 
 .visuallyHidden {

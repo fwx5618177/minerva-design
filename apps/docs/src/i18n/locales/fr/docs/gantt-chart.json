@@ -45,6 +45,10 @@
     "onboarding": {
       "title": "Plan d'intégration",
       "description": "renderTooltip remplace l'infobulle par du contenu React : la barre survolée est retrouvée par son seriesId (une série par groupe, plus les jalons) et son index, puis affichée avec son responsable, ses dates mises en forme par formatRange d'Intl.DateTimeFormat et son état par rapport à aujourd'hui."
+    },
+    "daily": {
+      "title": "Couloirs : un planning de la journée",
+      "description": "Un planning d’une journée en couloirs de priorité : les tâches de même row partagent un couloir, le domaine s’aligne sur les heures pleines (08:00–22:00) avec des graduations heure:minute, les groupes colorent les tâches par type et today trace l’heure actuelle. Comme plusieurs tâches partagent chaque couloir, barLabels (\"auto\" par défaut) écrit leur nom dans les barres, coupé par des points de suspension et dans une couleur contrastant avec la barre. Les tâches sans progress sont pleines ; la revue de code en cours montre sa partie restante en translucide."
     }
   },
   "native": {
@@ -52,6 +56,10 @@
       "basic": {
         "title": "Exemple de base",
         "description": "Tâches par phase avec leur avancement et le jalon du lancement ; pincez pour zoomer sur le temps et faites glisser pour vous déplacer."
+      },
+      "daily": {
+        "title": "Planning de la journée",
+        "description": "Couloirs de priorité avec plusieurs tâches chacun (row) et leur nom dans les barres (barLabels), graduations horaires pour une plage d’une journée et une ligne à l’heure actuelle ; les tâches sans progress sont pleines."
       }
     }
   },
@@ -291,6 +299,31 @@
       },
       "checkIns": "Points d'étape",
       "aria": "Plan d'intégration d'un nouvel arrivant par responsable"
+    },
+    "daily": {
+      "lanes": {
+        "high": "Haute",
+        "medium": "Moyenne",
+        "low": "Basse"
+      },
+      "groups": {
+        "work": "Travail",
+        "study": "Études",
+        "life": "Perso"
+      },
+      "tasks": {
+        "standup": "Point d’équipe",
+        "deepWork": "Travail de fond",
+        "exam": "Examen blanc",
+        "email": "E-mails",
+        "review": "Revue de code",
+        "flashcards": "Fiches",
+        "lunch": "Déjeuner",
+        "gym": "Sport",
+        "reading": "Lecture"
+      },
+      "now": "Maintenant",
+      "aria": "Planning du jour par priorité"
     }
   },
   "api": {
@@ -320,7 +353,8 @@
       "locale": "Langue des noms par défaut et des pourcentages d'avancement ; la langue de la page par défaut",
       "dependenciesName": "Nom de la ligne des dépendances dans l’infobulle (« Dépend de » dans la langue par défaut)",
       "dependencyArrows": "Dessine les dépendances en flèches coudées, de la fin de chaque prédécesseur au début de la tâche",
-      "dependencyColor": "Couleur des flèches de dépendance (toute couleur CSS) ; la couleur du texte secondaire par défaut"
+      "dependencyColor": "Couleur des flèches de dépendance (toute couleur CSS) ; la couleur du texte secondaire par défaut",
+      "barLabels": "Écrit le nom de chaque tâche dans sa barre (coupé par des points de suspension, dans une couleur contrastant avec la barre, omis quand la barre est trop petite) : \"auto\" quand plusieurs tâches partagent une ligne, true / \"inside\" toujours, false jamais"
     }
   },
   "wc": {
@@ -332,6 +366,10 @@
       "sprint": {
         "title": "Sprint avec la ligne d’aujourd’hui",
         "description": "Un sprint de deux semaines : les tâches sans groupe partagent une couleur, une ligne pointillée marque aujourd’hui."
+      },
+      "daily": {
+        "title": "Couloirs : un planning de la journée",
+        "description": "Couloirs de priorité avec plusieurs tâches chacun (row) et leur nom dans les barres (bar-labels), graduations heure:minute pour une plage d’une journée et today à l’heure actuelle ; les tâches sans progress sont pleines."
       }
     },
     "minerva-gantt-chart": {
@@ -339,6 +377,7 @@
         "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
         "hideDependencyArrows": "Masque les flèches coudées tracées de la fin de chaque prédécesseur au début de la tâche (les dépendances des tâches)",
         "dependencyColor": "Couleur des flèches de dépendance (toute couleur CSS) ; la couleur du texte secondaire par défaut",
+        "barLabels": "Écrit le nom des tâches dans les barres : auto quand plusieurs tâches partagent une ligne (par défaut), true / inside toujours, false jamais",
         "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
         "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
       },

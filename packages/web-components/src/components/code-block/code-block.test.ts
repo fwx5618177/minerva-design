@@ -66,14 +66,74 @@ describe("<minerva-code-block>", () => {
     expect(pre(el)).toHaveAttribute("aria-label", "Server log");
   });
 
-  it("shows the language label", async () => {
+  it("shows the language label with show-language", async () => {
     const el = await mount<MinervaCodeBlock>(
       `<minerva-code-block language="json">{}</minerva-code-block>`,
     );
-    expect($(el, "[part=language]").textContent?.trim()).toBe("json");
     expect($(el, "code")).toHaveClass("language-json");
     expect($(el, "code")).toHaveAttribute("data-language", "json");
+    expect(el.shadowRoot!.querySelector("[part=language]")).toBeNull();
+    expect(el.shadowRoot!.querySelector(".root")).toBeNull();
+    el.showLanguage = true;
+    await el.updateComplete;
+    expect($(el, "[part=language]").textContent?.trim()).toBe("JSON");
+    expect($(el, "[part=language]")).toHaveAttribute("aria-hidden", "true");
     expect($(el, ".root")).not.toBeNull();
+    expect(pre(el).classList).toContain("labeled");
+    expect(el.shadowRoot!.querySelector("[aria-live]")).toBeNull();
+  });
+
+  it("highlights the syntax of the language into token spans", async () => {
+    const json = '{\n  "id": 42,\n  "ok": true\n}';
+    const el = await mount<MinervaCodeBlock>(
+      `<minerva-code-block language="json"></minerva-code-block>`,
+    );
+    el.code = json;
+    await el.updateComplete;
+    const code = $(el, "code");
+    expect(code.textContent).toBe(json);
+    expect(
+      [...code.querySelectorAll(".token-property")].map((s) => s.textContent),
+    ).toEqual(['"id"', '"ok"']);
+    expect(code.querySelector(".token-number")?.textContent).toBe("42");
+    el.noHighlight = true;
+    await el.updateComplete;
+    expect(code.querySelector("span")).toBeNull();
+    expect(code.textContent).toBe(json);
+  });
+
+  it("renders plain text without a language and never parses HTML", async () => {
+    const el = await mount<MinervaCodeBlock>(
+      `<minerva-code-block>&lt;img src=x onerror="alert(1)"&gt;</minerva-code-block>`,
+    );
+    expect($(el, "code").querySelector("span")).toBeNull();
+    el.language = "html";
+    await el.updateComplete;
+    expect($(el, "code").querySelector("img")).toBeNull();
+    expect($(el, "code .token-tag").textContent).toBe("img");
+    expect($(el, "code").textContent).toBe('<img src=x onerror="alert(1)">');
+  });
+
+  it("numbers the lines with show-line-numbers and copies the raw text", async () => {
+    const writeText = mockClipboard(() => Promise.resolve());
+    const text = "a\nb\n\nc\n";
+    const el = await mount<MinervaCodeBlock>(
+      `<minerva-code-block language="js" show-line-numbers copyable></minerva-code-block>`,
+    );
+    el.code = text;
+    await el.updateComplete;
+    const numbers = el.shadowRoot!.querySelectorAll("[part=line-number]");
+    expect([...numbers].map((n) => n.getAttribute("data-line"))).toEqual([
+      "1",
+      "2",
+      "3",
+      "4",
+    ]);
+    for (const n of numbers) expect(n).toHaveAttribute("aria-hidden", "true");
+    expect($(el, "code").textContent).toBe(text);
+    await userEvent.click(copyButton(el));
+    await settle();
+    expect(writeText).toHaveBeenCalledWith(text);
   });
 
   it("copies the text and announces the result", async () => {

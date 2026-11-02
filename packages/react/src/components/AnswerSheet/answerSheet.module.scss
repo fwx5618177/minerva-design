@@ -1,0 +1,248 @@
+// Public CSS variables (set them on the sheet or any ancestor):
+// @css-var --answer-sheet-gap Space between the pills (defaults to --space-2; --space-1-5 with size="small")
+// @css-var --answer-sheet-item-size Minimum width and height of a pill (defaults to 2rem; 1.75rem with size="small")
+// @css-var --answer-sheet-radius Corner radius of the pills (defaults to --radius-md)
+// @css-var --answer-sheet-item-background Background of an unanswered pill
+// @css-var --answer-sheet-answered-background Background of an answered pill (defaults to --primary-color-subtle)
+// @css-var --answer-sheet-answered-color Text color of an answered pill
+// @css-var --answer-sheet-correct-background Background of a correct pill (defaults to --success-color-subtle)
+// @css-var --answer-sheet-correct-color Text color of a correct pill
+// @css-var --answer-sheet-wrong-background Background of a wrong pill (defaults to --danger-color-subtle)
+// @css-var --answer-sheet-wrong-color Text color of a wrong pill
+// @css-var --answer-sheet-current-background Background of the current pill (defaults to --primary-color)
+// @css-var --answer-sheet-current-color Text color of the current pill
+// @css-var --answer-sheet-flag-color Color of the flag dot (defaults to --warning-color)
+// @css-var --answer-sheet-title-color Text color of the group titles and the summary
+.answerSheet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+  min-width: 0;
+  color: var(--text-color);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-sm);
+}
+
+.summary {
+  margin: 0;
+  color: var(--answer-sheet-title-color, var(--text-muted-color));
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.sectionTitle {
+  color: var(--answer-sheet-title-color, var(--text-muted-color));
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1rem;
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--answer-sheet-gap, var(--space-2));
+
+  // fixed columns (grid-template-columns set inline)
+  &.columns {
+    display: grid;
+  }
+}
+
+// layout="scroll": a single horizontally scrolling row, full width, that
+// only scrolls when it overflows. The padding keeps the focus ring and the
+// flag visible; the negative margin keeps the pills aligned with the other
+// content. No scroll snapping: it would ignore the padding (offsetting the
+// first pill) and fight centering the current pill.
+.scroll .grid {
+  flex-wrap: nowrap;
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  padding: var(--space-1);
+  margin: calc(-1 * var(--space-1));
+  scrollbar-width: thin;
+
+  .item {
+    flex: none;
+  }
+}
+
+// Focus: full border color + ring (box-shadow); the transparent outline
+// shows in forced-colors mode, where box-shadows are dropped.
+%focus-ring {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 var(--focus-ring-width, 2px) var(--focus-ring-color);
+}
+
+.item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--answer-sheet-item-size, 2rem);
+  height: var(--answer-sheet-item-size, 2rem);
+  padding: 0 var(--space-1-5);
+  border: 1px solid transparent;
+  border-radius: var(--answer-sheet-radius, var(--radius-md));
+  background: var(--answer-sheet-item-background, var(--surface-muted-color));
+  color: var(--text-secondary-color);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    color var(--transition-fast);
+
+  &:hover {
+    border-color: var(--border-strong-color);
+  }
+
+  &:focus-visible {
+    @extend %focus-ring;
+  }
+
+  &[aria-current="step"] {
+    border-color: var(--answer-sheet-current-background, var(--primary-color));
+    background: var(--answer-sheet-current-background, var(--primary-color));
+    color: var(--answer-sheet-current-color, var(--text-inverse-color));
+  }
+
+  &[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.5;
+
+    &:hover {
+      border-color: transparent;
+    }
+  }
+}
+
+// ---- Statuses (pills and legend swatches) ----
+.answered:not([aria-current="step"]) {
+  background: var(--answer-sheet-answered-background, var(--primary-color-subtle));
+  color: var(--answer-sheet-answered-color, var(--primary-color-text));
+}
+
+.correct:not([aria-current="step"]) {
+  background: var(--answer-sheet-correct-background, var(--success-color-subtle));
+  color: var(--answer-sheet-correct-color, var(--success-color-text));
+}
+
+.wrong:not([aria-current="step"]) {
+  background: var(--answer-sheet-wrong-background, var(--danger-color-subtle));
+  color: var(--answer-sheet-wrong-color, var(--danger-color-text));
+}
+
+.skipped:not([aria-current="step"]) {
+  border-style: dashed;
+  border-color: var(--border-strong-color);
+  background: transparent;
+  color: var(--text-muted-color);
+}
+
+// Flag: a dot in the top-end corner
+.flag {
+  position: absolute;
+  top: -0.1875rem;
+  inset-inline-end: -0.1875rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 1.5px solid var(--surface-color);
+  border-radius: var(--radius-full);
+  background: var(--answer-sheet-flag-color, var(--warning-color));
+}
+
+// ---- Legend ----
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text-muted-color);
+  font-size: var(--font-size-xs);
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+}
+
+.swatch {
+  position: relative;
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: var(--answer-sheet-item-background, var(--surface-muted-color));
+
+  &.flagged {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: var(--radius-full);
+    background: var(--answer-sheet-flag-color, var(--warning-color));
+  }
+}
+
+// ---- Sizes ----
+.small {
+  gap: var(--space-2);
+
+  .grid {
+    gap: var(--answer-sheet-gap, var(--space-1-5));
+  }
+
+  .item {
+    min-width: var(--answer-sheet-item-size, 1.75rem);
+    height: var(--answer-sheet-item-size, 1.75rem);
+    padding: 0 var(--space-1);
+    font-size: var(--font-size-xs);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item {
+    transition: none;
+  }
+}
+
+// Forced colors: statuses lose their backgrounds, so answered pills get a
+// border, the current one an outline and the flag a visible border.
+@media (forced-colors: active) {
+  .item {
+    border-color: CanvasText;
+  }
+
+  .skipped {
+    border-style: dashed;
+  }
+
+  .item[aria-current="step"] {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+
+  .flag,
+  .swatch {
+    border: 1px solid CanvasText;
+  }
+}

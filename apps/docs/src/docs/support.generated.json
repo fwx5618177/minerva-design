@@ -39,6 +39,34 @@
     }
   },
   {
+    "name": "AnswerSheet",
+    "tag": "minerva-answer-sheet",
+    "docs": "answer-sheet",
+    "tracks": ["toB", "toC"],
+    "platforms": {
+      "react": { "status": "stable" },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnAnswerSheet. Native standalone component/directive; see platform tests for validated scope." },
+      "native": {
+        "status": "beta",
+        "notes": "Pressable pills in wrapping rows (layout=scroll: a horizontal ScrollView that centres the current pill with scrollTo after layout); no arrow-key roving focus on native"
+      },
+      "taro": {
+        "status": "beta",
+        "notes": "Numbered question pills grouped by section with unanswered/answered/correct/wrong/skipped statuses, flag dot, controlled/uncontrolled current question (aria-current=step), wrap/scroll layouts, fixed columns, translated item labels, summary and legend, and two sizes. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. H5 supports arrow keys and Home/End across the pills (disabled pills are skipped; no row-wise ArrowUp/ArrowDown); native hosts use tap selection. layout=scroll centres the current pill through the ScrollView scrollLeft, measured with createSelectorQuery after each change. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "Shared core sections and counts: numbered question pills grouped by section (untitled section first), unanswered/answered/correct/wrong/skipped statuses, flag dot, controlled/default current question with aria-current=step, wrap/scroll layouts, fixed columns, localized item labels with getItemLabel through configure(), summary, legend, size, disabled and readOnly. Items and groups are plain serializable arrays; selection is by tap. DOM roving keyboard focus is not a native mini-program interaction. layout=scroll centres the current pill through the scroll-view scroll-left, measured with createSelectorQuery after each change (RTL is not mirrored). Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "Shared core sections and counts: numbered question pills grouped by section (untitled section first), unanswered/answered/correct/wrong/skipped statuses, flag dot, controlled/default current question (v-model) with aria-current=step, wrap/scroll layouts, fixed columns, localized item labels, getItemLabel, summary, legend, size and disabled; arrow, Home/End and Enter/Space keys (ArrowUp/ArrowDown by row with columns). Keyboard metadata and native tap selection are implemented; without columns ArrowUp/ArrowDown do not move (no layout measurement), and device focus/geometry still require validation. layout=scroll centres the current pill through the scroll-view scroll-left (measured with createSelectorQuery on native hosts). Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      }
+    }
+  },
+  {
     "name": "AppShell",
     "tag": "minerva-app-shell",
     "docs": "app-shell",
@@ -726,15 +754,15 @@
       "native": { "status": "beta" },
       "taro": {
         "status": "beta",
-        "notes": "Safe native navigation, description/list composition, text wrapping and native clipboard code copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Safe native navigation, description/list composition, text wrapping and syntax-highlighted code (nested Text, opt-in line numbers / language label) with native clipboard copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       },
       "weapp": {
         "status": "beta",
-        "notes": "Verbatim selectable source, wrap/horizontal scrolling, maxHeight, opt-in native clipboard copy with status/copied/error events. Native clipboard replaces document clipboard permissions; no DOM pre/ref/keyboard-scroll event objects. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+        "notes": "Verbatim selectable source with syntax highlighting (core highlightCode rendered as nested text, never markup), opt-in line numbers and language label, wrap/horizontal scrolling, maxHeight, opt-in native clipboard copy of the raw text with status/copied/error events. Native clipboard replaces document clipboard permissions; no DOM pre/ref/keyboard-scroll event objects. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
       },
       "uni": {
         "status": "beta",
-        "notes": "Language label, wrapped/unwrapped text, bounded scrolling maxHeight, native clipboard copy callbacks and localized feedback with cleanup. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Syntax highlighting (core highlightCode, nested text with code-token colors), opt-in line numbers and language label, wrapped/unwrapped text, bounded scrolling maxHeight, native clipboard copy of the raw text with callbacks and localized feedback with cleanup. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       }
     }
   },
@@ -1029,7 +1057,7 @@
       "native": { "status": "n/a", "notes": "No standalone native element: DescriptionList.items accepts { key, label, value } rows and renders each term and description, including numeric zero." },
       "taro": {
         "status": "beta",
-        "notes": "Safe native navigation, description/list composition, text wrapping and native clipboard code copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Safe native navigation, description/list composition, text wrapping and syntax-highlighted code (nested Text, opt-in line numbers / language label) with native clipboard copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       },
       "weapp": {
         "status": "n/a",
@@ -1054,7 +1082,7 @@
       "native": { "status": "beta" },
       "taro": {
         "status": "beta",
-        "notes": "Safe native navigation, description/list composition, text wrapping and native clipboard code copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Safe native navigation, description/list composition, text wrapping and syntax-highlighted code (nested Text, opt-in line numbers / language label) with native clipboard copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       },
       "weapp": {
         "status": "beta",
@@ -1331,6 +1359,31 @@
       "uni": {
         "status": "beta",
         "notes": "Localized title/description, primary/secondary action slots, size and explicit geometry, shadow, custom icon, exact theme-resolved SVG illustration and Inbox paths rendered through native Image. Real-device SVG data-URI support has not been verified on every native host. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      }
+    }
+  },
+  {
+    "name": "Flashcard",
+    "tag": "minerva-flashcard",
+    "docs": "flashcard",
+    "tracks": ["toC"],
+    "platforms": {
+      "react": { "status": "stable" },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnFlashcard. Native standalone component/directive; see platform tests for validated scope." },
+      "native": { "status": "beta" },
+      "taro": {
+        "status": "beta",
+        "notes": "Two-sided study card: front/back/footer nodes, translated front/back captions and optional hint, controlled/uncontrolled flipped with onFlippedChange, flipOnClick, disabled, y/x axis, elevated/outline/filled variants, three sizes and minHeight. Both faces share one CSS grid cell (the card fits the taller face); the hidden face is aria-hidden and the back is a polite live region. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Mini-program hosts flip on tap only (no keyboard) and ignore prefers-reduced-motion; the CSS 3D rotateY/rotateX flip and backface-visibility need the WebView renderer (Skyline does not support CSS grid or 3D transforms). On H5 the card is a toggle button with Enter/Space and taps on interactive face content do not flip it. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "Two-sided study card: front/back/footer named slots with plain-text front/back properties, translated front/back captions and optional hint, controlled (flipped, null = uncontrolled) or defaultFlipped state with flippedchange, flipOnClick, disabled, y/x axis, elevated/outline/filled variants, three sizes and minHeight. Both faces share one CSS grid cell (the card fits the taller face); the hidden face is aria-hidden and the back is a polite live region. Tap to flip only: no keyboard toggling and no prefers-reduced-motion crossfade in mini programs. The CSS 3D rotateY/rotateX flip, backface-visibility and the grid stack need the WebView renderer (Skyline does not support CSS grid or 3D transforms). Taps on interactive slotted content also flip the card (no DOM event path). The footer wrapper is always rendered (slot content cannot be detected). Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "Two-sided study card: front/back/footer slots with plain-text front/back fallbacks, translated front/back captions and optional hint, controlled/default flipped (v-model:flipped, flippedChange), flipOnClick, disabled, y/x axis, elevated/outline/filled variants, three sizes and minHeight. Both faces share one CSS grid cell (the card fits the taller face); the hidden face is aria-hidden and the back is a polite live region; H5 adds role=button with aria-pressed, Enter/Space and ignores taps on interactive face content. Mini-program hosts flip on tap only (no keyboard) and ignore prefers-reduced-motion; the CSS 3D rotateY/rotateX flip and backface-visibility need the WebView renderer (Skyline does not support CSS grid or 3D transforms). Device rendering is not validated. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       }
     }
   },
@@ -1912,6 +1965,56 @@
     }
   },
   {
+    "name": "KanbanBoard",
+    "tag": "minerva-kanban-board",
+    "docs": "kanban-board",
+    "tracks": ["toB", "toC"],
+    "platforms": {
+      "react": { "status": "stable" },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnKanbanBoard. Native standalone component/directive; see platform tests for validated scope." },
+      "native": { "status": "beta" },
+      "taro": {
+        "status": "beta",
+        "notes": "Board of status columns in a horizontal ScrollView (scrollX): equal-width columns (columnWidth), fill when they fit, gap, height/maxHeight with vertically scrolling column bodies, translated region label; columns with an accent dot (theme color or CSS color), title, count badge announced with the title, description, actions, role=list cards wrapped in listitems, translated or custom empty content and a footer. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. No drag and drop: move cards with your own actions (menus, buttons) and update the columns' data. No scroll snapping on native hosts. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "Region around a scroll-view scroll-x of equal-width status columns: columnWidth, gap, height/maxHeight with vertically scrolling column bodies and a translated label. No drag and drop: move cards with your own actions and update the columns' data. No scroll snapping, and fill does not stretch the columns (each column component host is the flex item); device geometry still requires validation. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "Board of status columns in a scroll-view scroll-x: equal-width columns (columnWidth), fill when they fit, gap, height/maxHeight with vertically scrolling column bodies and a translated region label. No drag and drop: move cards with your own actions and update the columns' data. No scroll snapping; device geometry still requires validation. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      }
+    }
+  },
+  {
+    "name": "KanbanColumn",
+    "tag": "minerva-kanban-column",
+    "docs": "kanban-board",
+    "tracks": ["toB", "toC"],
+    "platforms": {
+      "react": { "status": "stable" },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnKanbanColumn. Native standalone component/directive; see platform tests for validated scope." },
+      "native": { "status": "beta" },
+      "taro": {
+        "status": "beta",
+        "notes": "Board of status columns in a horizontal ScrollView (scrollX): equal-width columns (columnWidth), fill when they fit, gap, height/maxHeight with vertically scrolling column bodies, translated region label; columns with an accent dot (theme color or CSS color), title, count badge announced with the title, description, actions, role=list cards wrapped in listitems, translated or custom empty content and a footer. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. No drag and drop: move cards with your own actions (menus, buttons) and update the columns' data. No scroll snapping on native hosts. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "Status column: accent dot (theme or CSS color), title (property or title slot), count badge announced with the title, description, actions/footer slots, role=list body and translated or custom empty text. Slots cannot be inspected: the empty text shows when count is 0, and each card should carry role=listitem. Empty actions/footer slots keep their (collapsed) wrappers. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "Status column: accent dot (theme or CSS color), title (prop or slot), count badge announced with the title, description, actions slot, role=list body, translated or custom empty content and a footer slot. Mini-program slots cannot be wrapped card by card: give each card role=listitem. The empty content shows without a default slot or with count 0. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      }
+    }
+  },
+  {
     "name": "KeyValueEditor",
     "tag": "minerva-key-value-editor",
     "docs": "key-value-editor",
@@ -2002,7 +2105,7 @@
       "native": { "status": "beta" },
       "taro": {
         "status": "beta",
-        "notes": "Safe native navigation, description/list composition, text wrapping and native clipboard code copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Safe native navigation, description/list composition, text wrapping and syntax-highlighted code (nested Text, opt-in line numbers / language label) with native clipboard copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       },
       "weapp": {
         "status": "beta",
@@ -2027,7 +2130,7 @@
       "native": { "status": "beta" },
       "taro": {
         "status": "beta",
-        "notes": "Safe native navigation, description/list composition, text wrapping and native clipboard code copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Safe native navigation, description/list composition, text wrapping and syntax-highlighted code (nested Text, opt-in line numbers / language label) with native clipboard copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       },
       "weapp": {
         "status": "n/a",
@@ -2061,6 +2164,49 @@
       "uni": {
         "status": "beta",
         "notes": "Loading label/spinner, error/retry, loaded slot. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      }
+    }
+  },
+  {
+    "name": "MediaControls",
+    "docs": "media-player",
+    "tracks": ["toC"],
+    "platforms": {
+      "react": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "wc": { "status": "n/a", "notes": "Mobile component of minerva-design/native (React Native); on the web use the responsive web components." },
+      "vue": { "status": "n/a", "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component." },
+      "angular": { "status": "n/a", "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component." },
+      "native": { "status": "beta", "notes": "MediaControls: the themed control bar of MediaPlayer driven by props, to wrap expo-video / expo-audio (core React Native has no media element)" },
+      "taro": { "status": "n/a", "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component." },
+      "weapp": { "status": "n/a", "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component." },
+      "uni": { "status": "n/a", "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component." }
+    }
+  },
+  {
+    "name": "MediaPlayer",
+    "tag": "minerva-media-player",
+    "docs": "media-player",
+    "tracks": ["toB", "toC"],
+    "platforms": {
+      "react": { "status": "stable" },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnMediaPlayer. Native standalone component/directive; see platform tests for validated scope." },
+      "native": {
+        "status": "n/a",
+        "notes": "Core React Native has no media element. minerva-design/native exports MediaControls, the themed control bar driven by props (playing, currentTime, duration, onPlayPause, onSeek...), to wrap the player of expo-video / expo-audio (or react-native-video)."
+      },
+      "taro": {
+        "status": "beta",
+        "notes": "Video through the host <video> component (controls off, driven by createVideoContext: play/pause/seek/playbackRate/requestFullScreen) and audio through Taro.createInnerAudioContext, under a themed control bar: play/pause, skip back/forward (skipSeconds), touch seek bar with the buffered range and aria-valuetext, m:ss / h:mm:ss time, mute, audio volume bar, playback-rate cycle button, video fullscreen, loading spinner and translated error state; startTime (video initial-time, audio startTime), autoPlay, loop, muted/defaultMuted, title, poster, height/aspectRatio; onTimeUpdate/onEnded/onPlay/onPause/onLoadedMetadata/onError/onRateChange/onVolumeChange and a ref with play/pause/seek/context. controls={false} shows the host video's own controls. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Beta: needs device validation (WeChat / Alipay / H5 media behavior differs). The host video has no volume API (mute only, no volume bar); no picture-in-picture, no buffered range for audio on hosts that do not report InnerAudioContext.buffered, no keyboard shortcuts; icons are text glyphs (mini programs have no inline SVG). Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "Video through the host <video> (controls off, driven by wx.createVideoContext: play/pause/seek/playbackRate/requestFullScreen) and audio through wx.createInnerAudioContext, under a themed control bar: play/pause, skip back/forward (skipSeconds), touch seek bar with the buffered range and aria-valuetext, m:ss / h:mm:ss time, mute, audio volume bar, playback-rate cycle button, video fullscreen, loading spinner and translated error state; startTime (video initial-time, audio startTime), autoPlay, loop, muted/defaultMuted, title, poster, height/aspectRatio; timeupdate/ended/play/pause/loadedmetadata/error/ratechange/volumechange events and play()/pause()/seek(seconds) instance methods. controls=false shows the host video's own controls. Beta: needs device validation. The host video has no volume API (mute only, no volume bar); no picture-in-picture and no keyboard shortcuts; icons are text glyphs (no inline SVG in WXML). Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "Video through the uni <video> component (controls off, driven by uni.createVideoContext: play/pause/seek/playbackRate/requestFullScreen) and audio through uni.createInnerAudioContext, under a themed control bar: play/pause, skip back/forward (skipSeconds), touch seek bar with the buffered range and aria-valuetext, m:ss / h:mm:ss time, mute, audio volume bar, playback-rate cycle button, video fullscreen, loading spinner and translated error state; startTime (video initial-time, audio startTime), autoPlay, loop, muted/defaultMuted, title, poster, height/aspectRatio; timeUpdate/ended/play/pause/loadedMetadata/error/rateChange/volumeChange events and an exposed play/pause/seek/context. controls=false shows the host video's own controls. Beta: needs device validation (media behavior differs per host). The host video has no volume API (mute only, no volume bar); no picture-in-picture and no keyboard shortcuts; icons are text glyphs (no inline SVG on mini programs). Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       }
     }
   },
@@ -3034,7 +3180,7 @@
       "native": { "status": "beta" },
       "taro": {
         "status": "beta",
-        "notes": "Safe native navigation, description/list composition, text wrapping and native clipboard code copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Safe native navigation, description/list composition, text wrapping and syntax-highlighted code (nested Text, opt-in line numbers / language label) with native clipboard copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       },
       "weapp": {
         "status": "beta",
@@ -3078,11 +3224,11 @@
       },
       "weapp": {
         "status": "beta",
-        "notes": "Quadrant matrix with the web props (points, domains, splits, quadrants, axis labels, showTicks, reverseX, labels, pointSize); pointclick, quadrantclick and pointdrag/pointdrop events. quadrantContent (ReactNode overlays) has no canvas equivalent: place host views with the layout event and toPixel(). Dragging is enabled by the draggable property (a native host cannot detect a bound pointdrop handler). Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+        "notes": "Quadrant matrix with the web props (points, domains, splits, quadrants with badge/description, axis labels, showTicks, reverseX, labels, pointSize, showCounts, selectedIndex/selectedIndices rings); pointclick, quadrantclick and pointdrag/pointdrop events. quadrantContent (ReactNode overlays) has no canvas equivalent: place host views with the layout event and toPixel(). renderQuadrantHeader, getPointProps and the accessible point layer (keyboard moves, focus ring) are React-only; showCounts takes no formatting function. Dragging is enabled by the draggable property (a native host cannot detect a bound pointdrop handler). Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
       },
       "uni": {
         "status": "beta",
-        "notes": "Cartesian chart drawn on a `<canvas type=\"2d\">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize). No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Cartesian chart drawn on a `<canvas type=\"2d\">` by the DOM-free engine: the web component props mapped to the same presets and engine options, tap / scrub tooltip, legend toggles, pinch zoom, pan and double-tap reset; hover/pointClick/plotClick/zoom events and a template ref handle (resetZoom/getView/setView/getInstance/resize). No WebGPU / WebGL renderer and no keyboard navigation; tooltip.render may only return text. Quadrant badges, descriptions, showCounts (boolean only) and the selectedIndex/selectedIndices rings are drawn; renderQuadrantHeader, getPointProps and the accessible point layer are React-only. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       }
     }
   },
@@ -3379,6 +3525,31 @@
     }
   },
   {
+    "name": "SegmentedControl",
+    "tag": "minerva-segmented-control",
+    "docs": "segmented-control",
+    "tracks": ["toB", "toC"],
+    "platforms": {
+      "react": { "status": "stable" },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnSegmentedControl. Native standalone component/directive; see platform tests for validated scope." },
+      "native": { "status": "beta" },
+      "taro": {
+        "status": "beta",
+        "notes": "Single-choice segmented switch from string/object options (icon, label, disabled, aria-label), controlled/uncontrolled value, three sizes, neutral/primary thumb, fullWidth, disabled and an equal-width sliding thumb. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. H5 supports roving arrows (left-to-right only) and Home/End selection; native hosts use touch selection. Segments always share the width equally. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "Single-choice segmented switch from string/object options (text icon, label, disabled, aria-label) with controlled/default value and change { value }, three sizes, neutral/primary thumb, fullWidth, disabled/readOnly, radiogroup/radio semantics and an equal-width sliding thumb. Icons are text only and there is no form field integration. DOM roving keyboard focus is not a native mini-program interaction. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "Single-choice segmented switch from string/object options (text icon, label, disabled, aria-label); controlled/default value (v-model) with change events; three sizes, neutral/primary thumb, fullWidth and disabled; radiogroup/radio semantics with an equal-width sliding thumb, arrow keys that move and select (skipping disabled segments, RTL-aware) and Home/End. Icons are text only and there is no hidden form input; keyboard metadata and native touch actions are implemented; device focus/geometry still require validation. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      }
+    }
+  },
+  {
     "name": "Select",
     "tag": "minerva-select",
     "docs": "select",
@@ -3578,6 +3749,34 @@
       "uni": {
         "status": "beta",
         "notes": "Variants, geometry, radius/circle, loading content replacement, decorative/status semantics, pulse/wave/no-animation; text line count, height, gap and shortened final line. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      }
+    }
+  },
+  {
+    "name": "Slider",
+    "tag": "minerva-slider",
+    "docs": "slider",
+    "tracks": ["toB", "toC"],
+    "platforms": {
+      "react": { "status": "stable" },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnSlider. Native standalone component/directive; see platform tests for validated scope." },
+      "native": {
+        "status": "beta",
+        "notes": "Touch slider on the responder system (press the track, drag; the gesture is not stolen by a parent ScrollView), one or two thumbs, marks, value label and drag tooltip; each thumb is adjustable (increment / decrement). Horizontal only; no hidden form input (use FormField / onChangeEnd)."
+      },
+      "taro": {
+        "status": "beta",
+        "notes": "Custom touch slider (not the host slider) with one or two non-crossing thumbs, min/max/step or marks-only snapping, step or labelled marks, controlled/uncontrolled value, onChange while dragging and onChangeEnd on release, five colors, three sizes, value label, drag tooltip, hidden named inputs and FormControl disabled/readOnly/invalid. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. The track is measured with createSelectorQuery on touch start (cached afterwards; a layout change is picked up on the next touch). Horizontal and left-to-right only. H5 supports arrow/PageUp/PageDown/Home/End keys on the focusable thumbs; native hosts use touch only and expose no adjustable accessibility actions. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "Custom touch slider (not the host slider) with one or two non-crossing thumbs, min/max/step or marks-only snapping, step or labelled marks, controlled/default value with change { value } while dragging and changeend { value } on release, five colors, three sizes, value label, drag tooltip, formatValue/getAriaValueText through configure(), hidden named inputs and form context disabled/readOnly/invalid. The track is measured with createSelectorQuery on touch start (cached afterwards); horizontal and left-to-right only. There is no keyboard or adjustable screen-reader gesture on native views (stepThumb(key, index) steps programmatically). A range submits two inputs with the same name, which native forms collapse to one value. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "Custom touch slider (not the built-in slider) with one or two non-crossing thumbs, min/max/step or marks-only snapping, step or labelled marks, controlled/default value (v-model) with change while dragging and changeEnd on release, five colors, three sizes, value label, drag tooltip, hidden named inputs, field inheritance and RTL mirroring. The track is measured with uni.createSelectorQuery on touch start (cached afterwards); horizontal only. H5 supports arrow/PageUp/PageDown/Home/End keys on the focusable thumbs; native hosts use touch only. A range submits two inputs with the same name, which native forms collapse to one value. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       }
     }
   },
@@ -4200,7 +4399,7 @@
       "native": { "status": "beta" },
       "taro": {
         "status": "beta",
-        "notes": "Safe native navigation, description/list composition, text wrapping and native clipboard code copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Safe native navigation, description/list composition, text wrapping and syntax-highlighted code (nested Text, opt-in line numbers / language label) with native clipboard copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       },
       "weapp": {
         "status": "beta",

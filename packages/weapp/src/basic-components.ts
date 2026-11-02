@@ -1,4 +1,10 @@
-import { resolveSpace } from "@minerva/core";
+import {
+  codeLanguageLabel,
+  highlightCode,
+  resolveSpace,
+  splitHighlightLines,
+  type HighlightToken,
+} from "@minerva/core";
 import { nativeTranslate as t } from "./configuration";
 type Instance = WechatMiniprogram.Component.TrivialInstance;
 type Control = { template: string; definition: WechatMiniprogram.IAnyObject };
@@ -229,6 +235,34 @@ function skeletonSync(self: Instance) {
 }
 const copyTimers = new WeakMap<object, ReturnType<typeof setTimeout>>(),
   copyMounted = new WeakSet<object>();
+/** Token texts with their class ("": plain text), as wxml data */
+const codeTokenData = (tokens: readonly HighlightToken[]) =>
+  tokens.map(({ type, text }) => ({
+    c: type ? `mn-code-token-${type}` : "",
+    text,
+  }));
+/**
+ * Highlighted tokens / numbered lines of the code (rendered as nested
+ * <text> by the template: the code is never parsed as markup).
+ */
+function codeSync(self: Instance) {
+  const d = self.data,
+    lang = typeof d.language === "string" ? d.language.trim() : "",
+    code = typeof d.code === "string" ? d.code : String(d.code ?? ""),
+    tokens =
+      lang && d.highlight
+        ? highlightCode(code, lang)
+        : code
+          ? [{ type: null, text: code }]
+          : [];
+  self.setData({
+    codeTokens: lang && d.highlight ? codeTokenData(tokens) : [],
+    codeLines: d.showLineNumbers
+      ? splitHighlightLines(tokens).map(codeTokenData)
+      : [],
+    languageLabel: d.showLanguage && lang ? codeLanguageLabel(lang) : "",
+  });
+}
 function copyLabels(self: Instance) {
   const key = self.data.copyState === "idle" ? "copy" : self.data.copyState;
   const label = t(self, `codeBlock.${key}`);
@@ -869,12 +903,15 @@ export function enhanceBasics(c: {
   );
   patch(
     c.codeBlock,
-    `<view class="mn-code-block"><view class="mn-row"><text class="mn-muted">{{language}}</text><button wx:if="{{copyable}}" class="mn-close" bindtap="onCopy">{{copyLabel}}</button></view><scroll-view scroll-x="{{!wrap}}" scroll-y style="{{codeStyle}}" role="region" aria-label="{{codeRegionLabel}}"><text class="mn-code" selectable style="white-space:{{wrap?'pre-wrap':'pre'}};word-break:{{wrap?'break-word':'normal'}}">{{code}}</text></scroll-view><text class="mn-visually-hidden" aria-live="polite">{{copyStatus}}</text></view>`,
+    `<view class="mn-code-block"><view wx:if="{{languageLabel || copyable}}" class="mn-row"><text class="mn-muted mn-code-language" aria-hidden="true">{{languageLabel}}</text><button wx:if="{{copyable}}" class="mn-close" bindtap="onCopy">{{copyLabel}}</button></view><scroll-view scroll-x="{{!wrap}}" scroll-y style="{{codeStyle}}" role="region" aria-label="{{codeRegionLabel}}"><view wx:if="{{showLineNumbers}}" class="mn-code mn-code--lines" style="white-space:{{wrap?'pre-wrap':'pre'}};word-break:{{wrap?'break-word':'normal'}}"><view wx:for="{{codeLines}}" wx:for-item="line" wx:for-index="n" wx:key="n" class="mn-code-line"><text class="mn-code-line-number" aria-hidden="true">{{n + 1}}</text><text class="mn-code-line-text" selectable><text wx:for="{{line}}" wx:for-index="i" wx:key="i" class="{{item.c}}">{{item.text}}</text></text></view></view><text wx:elif="{{codeTokens.length}}" class="mn-code" selectable style="white-space:{{wrap?'pre-wrap':'pre'}};word-break:{{wrap?'break-word':'normal'}}"><text wx:for="{{codeTokens}}" wx:for-index="i" wx:key="i" class="{{item.c}}">{{item.text}}</text></text><text wx:else class="mn-code" selectable style="white-space:{{wrap?'pre-wrap':'pre'}};word-break:{{wrap?'break-word':'normal'}}">{{code}}</text></scroll-view><text class="mn-visually-hidden" aria-live="polite">{{copyStatus}}</text></view>`,
     {
       wrap: flag(true),
       maxHeight: optional("24rem"),
       ariaLabel: text(),
       copyable: flag(),
+      highlight: flag(true),
+      showLineNumbers: flag(),
+      showLanguage: flag(),
     },
     {
       onCopy(this: Instance) {
@@ -906,10 +943,18 @@ export function enhanceBasics(c: {
         copyLabel: "Copy",
         copyState: "idle",
         codeRegionLabel: "Code",
+        codeTokens: [],
+        codeLines: [],
+        languageLabel: "",
       },
       observers: {
         "localeLanguage,ariaLabel": function (this: Instance) {
           copyLabels(this);
+        },
+        "code,language,highlight,showLineNumbers,showLanguage": function (
+          this: Instance,
+        ) {
+          codeSync(this);
         },
         maxHeight(this: Instance) {
           this.setData({ codeStyle: `max-height:${px(this.data.maxHeight)}` });
@@ -924,6 +969,7 @@ export function enhanceBasics(c: {
         attached(this: Instance) {
           copyMounted.add(this);
           copyLabels(this);
+          codeSync(this);
           this.setData({ codeStyle: `max-height:${px(this.data.maxHeight)}` });
         },
       },

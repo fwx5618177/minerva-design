@@ -78,6 +78,47 @@ export const alertStyles: ClassMap<
   withElevation: "withElevation",
 };
 
+/** components/AnswerSheet/answerSheet.module.scss */
+export const answerSheetStyles: ClassMap<
+  | "answerSheet"
+  | "answered"
+  | "columns"
+  | "correct"
+  | "flag"
+  | "flagged"
+  | "grid"
+  | "item"
+  | "legend"
+  | "legendItem"
+  | "scroll"
+  | "section"
+  | "sectionTitle"
+  | "skipped"
+  | "small"
+  | "summary"
+  | "swatch"
+  | "wrong"
+> = {
+  answerSheet: "answerSheet",
+  answered: "answered",
+  columns: "columns",
+  correct: "correct",
+  flag: "flag",
+  flagged: "flagged",
+  grid: "grid",
+  item: "item",
+  legend: "legend",
+  legendItem: "legendItem",
+  scroll: "scroll",
+  section: "section",
+  sectionTitle: "sectionTitle",
+  skipped: "skipped",
+  small: "small",
+  summary: "summary",
+  swatch: "swatch",
+  wrong: "wrong",
+};
+
 /** components/AppShell/appShell.module.scss */
 export const appShellStyles: ClassMap<
   | "brand"
@@ -487,12 +528,62 @@ export const checkboxStyles: ClassMap<
 
 /** components/CodeBlock/codeBlock.module.scss */
 export const codeBlockStyles: ClassMap<
-  "actions" | "codeBlock" | "copyable" | "root" | "visuallyHidden"
+  | "actions"
+  | "codeBlock"
+  | "copyable"
+  | "labeled"
+  | "language"
+  | "line"
+  | "lineNumber"
+  | "root"
+  | "token-attr-name"
+  | "token-attr-value"
+  | "token-boolean"
+  | "token-builtin"
+  | "token-comment"
+  | "token-deleted"
+  | "token-function"
+  | "token-heading"
+  | "token-inserted"
+  | "token-keyword"
+  | "token-null"
+  | "token-number"
+  | "token-operator"
+  | "token-property"
+  | "token-punctuation"
+  | "token-regex"
+  | "token-string"
+  | "token-tag"
+  | "token-variable"
+  | "visuallyHidden"
 > = {
   actions: "actions",
   codeBlock: "codeBlock",
   copyable: "copyable",
+  labeled: "labeled",
+  language: "language",
+  line: "line",
+  lineNumber: "lineNumber",
   root: "root",
+  "token-attr-name": "token-attr-name",
+  "token-attr-value": "token-attr-value",
+  "token-boolean": "token-boolean",
+  "token-builtin": "token-builtin",
+  "token-comment": "token-comment",
+  "token-deleted": "token-deleted",
+  "token-function": "token-function",
+  "token-heading": "token-heading",
+  "token-inserted": "token-inserted",
+  "token-keyword": "token-keyword",
+  "token-null": "token-null",
+  "token-number": "token-number",
+  "token-operator": "token-operator",
+  "token-property": "token-property",
+  "token-punctuation": "token-punctuation",
+  "token-regex": "token-regex",
+  "token-string": "token-string",
+  "token-tag": "token-tag",
+  "token-variable": "token-variable",
   visuallyHidden: "visuallyHidden",
 };
 
@@ -695,6 +786,47 @@ export const emptyStyles: ClassMap<
   title: "title",
 };
 
+/** components/Flashcard/flashcard.module.scss */
+export const flashcardStyles: ClassMap<
+  | "axisX"
+  | "back"
+  | "card"
+  | "content"
+  | "disabled"
+  | "elevated"
+  | "face"
+  | "filled"
+  | "flashcard"
+  | "flipped"
+  | "footer"
+  | "hint"
+  | "inner"
+  | "interactive"
+  | "label"
+  | "large"
+  | "outline"
+  | "small"
+> = {
+  axisX: "axisX",
+  back: "back",
+  card: "card",
+  content: "content",
+  disabled: "disabled",
+  elevated: "elevated",
+  face: "face",
+  filled: "filled",
+  flashcard: "flashcard",
+  flipped: "flipped",
+  footer: "footer",
+  hint: "hint",
+  inner: "inner",
+  interactive: "interactive",
+  label: "label",
+  large: "large",
+  outline: "outline",
+  small: "small",
+};
+
 /** components/FormControl/formControl.module.scss */
 export const formControlStyles: ClassMap<
   "error" | "helper" | "label" | "required" | "root"
@@ -810,6 +942,49 @@ export const jsonFieldStyles: ClassMap<
   toolbar: "toolbar",
 };
 
+/** components/KanbanBoard/kanbanBoard.module.scss */
+export const kanbanBoardStyles: ClassMap<
+  | "actions"
+  | "board"
+  | "column"
+  | "count"
+  | "danger"
+  | "description"
+  | "empty"
+  | "fill"
+  | "footer"
+  | "header"
+  | "indicator"
+  | "info"
+  | "item"
+  | "list"
+  | "neutral"
+  | "primary"
+  | "success"
+  | "title"
+  | "warning"
+> = {
+  actions: "actions",
+  board: "board",
+  column: "column",
+  count: "count",
+  danger: "danger",
+  description: "description",
+  empty: "empty",
+  fill: "fill",
+  footer: "footer",
+  header: "header",
+  indicator: "indicator",
+  info: "info",
+  item: "item",
+  list: "list",
+  neutral: "neutral",
+  primary: "primary",
+  success: "success",
+  title: "title",
+  warning: "warning",
+};
+
 /** components/KeyValueEditor/keyValueEditor.module.scss */
 export const keyValueEditorStyles: ClassMap<
   "add" | "key" | "remove" | "root" | "row" | "srOnly"
@@ -859,6 +1034,55 @@ export const loadingStateStyles: ClassMap<
   loadingState: "loadingState",
   medium: "medium",
   small: "small",
+};
+
+/** components/MediaPlayer/mediaPlayer.module.scss */
+export const mediaPlayerStyles: ClassMap<
+  | "audio"
+  | "bare"
+  | "buffered"
+  | "button"
+  | "controls"
+  | "error"
+  | "fill"
+  | "media"
+  | "mediaPlayer"
+  | "mediaPlayerSpin"
+  | "playing"
+  | "rate"
+  | "seek"
+  | "slider"
+  | "spacer"
+  | "spinner"
+  | "thumb"
+  | "time"
+  | "title"
+  | "track"
+  | "video"
+  | "volume"
+> = {
+  audio: "audio",
+  bare: "bare",
+  buffered: "buffered",
+  button: "button",
+  controls: "controls",
+  error: "error",
+  fill: "fill",
+  media: "media",
+  mediaPlayer: "mediaPlayer",
+  mediaPlayerSpin: "mediaPlayerSpin",
+  playing: "playing",
+  rate: "rate",
+  seek: "seek",
+  slider: "slider",
+  spacer: "spacer",
+  spinner: "spinner",
+  thumb: "thumb",
+  time: "time",
+  title: "title",
+  track: "track",
+  video: "video",
+  volume: "volume",
 };
 
 /** components/Menu/menu.module.scss */
@@ -1401,6 +1625,31 @@ export const responsiveGridStyles: ClassMap<
   root: "root",
 };
 
+/** components/SegmentedControl/segmentedControl.module.scss */
+export const segmentedControlStyles: ClassMap<
+  | "disabled"
+  | "fullWidth"
+  | "icon"
+  | "indicator"
+  | "item"
+  | "label"
+  | "large"
+  | "primary"
+  | "segmentedControl"
+  | "small"
+> = {
+  disabled: "disabled",
+  fullWidth: "fullWidth",
+  icon: "icon",
+  indicator: "indicator",
+  item: "item",
+  label: "label",
+  large: "large",
+  primary: "primary",
+  segmentedControl: "segmentedControl",
+  small: "small",
+};
+
 /** components/Select/select.module.scss */
 export const selectStyles: ClassMap<
   | "content"
@@ -1489,6 +1738,61 @@ export const skeletonStyles: ClassMap<
   title: "title",
   wave: "wave",
   withAvatar: "withAvatar",
+};
+
+/** components/Slider/slider.module.scss */
+export const sliderStyles: ClassMap<
+  | "control"
+  | "danger"
+  | "disabled"
+  | "dragging"
+  | "info"
+  | "labelled"
+  | "large"
+  | "mark"
+  | "markActive"
+  | "markLabel"
+  | "markLabelEnd"
+  | "markLabelStart"
+  | "primary"
+  | "rail"
+  | "range"
+  | "readOnly"
+  | "slider"
+  | "small"
+  | "success"
+  | "thumb"
+  | "thumbDragging"
+  | "tooltip"
+  | "value"
+  | "vertical"
+  | "warning"
+> = {
+  control: "control",
+  danger: "danger",
+  disabled: "disabled",
+  dragging: "dragging",
+  info: "info",
+  labelled: "labelled",
+  large: "large",
+  mark: "mark",
+  markActive: "markActive",
+  markLabel: "markLabel",
+  markLabelEnd: "markLabelEnd",
+  markLabelStart: "markLabelStart",
+  primary: "primary",
+  rail: "rail",
+  range: "range",
+  readOnly: "readOnly",
+  slider: "slider",
+  small: "small",
+  success: "success",
+  thumb: "thumb",
+  thumbDragging: "thumbDragging",
+  tooltip: "tooltip",
+  value: "value",
+  vertical: "vertical",
+  warning: "warning",
 };
 
 /** components/SplitLayout/splitLayout.module.scss */

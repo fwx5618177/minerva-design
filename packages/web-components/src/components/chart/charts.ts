@@ -441,6 +441,18 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
   @property({ type: Boolean, attribute: "drag-points" })
   dragPoints = false;
 
+  /** Shows the number of points of each quadrant after its title; as a property, a function `(count, points) => text` returns the text */
+  @property({ type: Boolean, attribute: "show-counts" })
+  showCounts: QuadrantConfig["showCounts"] = false;
+
+  /** Index of the selected dot, drawn with a ring (`null`: none) */
+  @property({ type: Number, attribute: "selected-index" })
+  selectedIndex?: number | null;
+
+  /** Indices of the selected dots; property only */
+  @property({ attribute: false })
+  selectedIndices?: readonly number[];
+
   /** Other engine options (legend, tooltip, padding, palette...); property only */
   @property({ attribute: false })
   options?: Omit<ChartOptions, "series">;
@@ -474,6 +486,9 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
         showLabels: !this.hideLabels,
         pointSize: this.pointSize,
         draggable: this.dragPoints,
+        showCounts: this.showCounts,
+        selectedIndex: this.selectedIndex,
+        selectedIndices: this.selectedIndices,
       },
       this.options,
     );

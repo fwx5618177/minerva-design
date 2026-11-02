@@ -74,9 +74,14 @@ export interface ChartPointDatum {
   /** Color of the dot or bar (scatter, bar); any CSS color */
   color?: string;
   /**
+   * Bar: opacity of the fill of this bar, 0-1; the series `opacity` by
+   * default (e.g. solid Gantt tasks among translucent ones)
+   */
+  opacity?: number;
+  /**
    * Text drawn next to the dot (scatter with `showLabels`) or at the end of
-   * the bar instead of its value (bar with `showLabels`), and shown in the
-   * tooltip
+   * the bar instead of its value (bar with `showLabels`; inside it with
+   * `showLabels: "inside"`), and shown in the tooltip
    */
   label?: string;
   /** Candlestick: opening value */
@@ -176,9 +181,11 @@ export interface ChartSeries {
   hidden?: boolean;
   /**
    * Draws the `label` of each point next to it (scatter) or the value above
-   * each bar (bar)
+   * each bar (bar); `"inside"` writes the label (or value) of each bar
+   * inside it, cut with an ellipsis to fit, in a color contrasting with the
+   * bar (skipped when the bar is too small)
    */
-  showLabels?: boolean;
+  showLabels?: boolean | "inside";
   /**
    * Shape of the line between the points: straight, smooth (monotone, never
    * overshoots the data) or steps (line / area)
@@ -228,6 +235,12 @@ export interface ChartSeries {
    * @default true
    */
   tooltip?: boolean;
+  /**
+   * Scatter: width in CSS pixels of the ring drawn around every dot in its
+   * color; with `opacity: 0` the dots are hollow rings (selection rings)
+   * @default 1.25 (up to 5000 dots, 0 beyond)
+   */
+  stroke?: number;
   /**
    * Box plot: outliers drawn as rings of the series color or as filled dots
    * @default "hollow"
@@ -322,6 +335,12 @@ export interface ChartRectAnnotation {
   labelPosition?: ChartLabelPosition;
   /** Label color (defaults to `color`) */
   labelColor?: string;
+  /** Short code drawn in a pill before the label (e.g. "Q1") */
+  badge?: string;
+  /** Secondary text drawn after the label, in the muted text color (e.g. a count) */
+  detail?: string;
+  /** Second line under the label, in the muted text color (cut with … when too long) */
+  description?: string;
 }
 
 /**

@@ -20,13 +20,18 @@ import {
   type Scales,
 } from "./layout";
 import {
+  barOpacity,
   gridOf,
   plottedY,
   toPlotX,
   type ChartModel,
   type SeriesModel,
 } from "./model";
-import type { PointLabel, ResolvedAnnotation } from "./overlay";
+import {
+  insideLabelColor,
+  type PointLabel,
+  type ResolvedAnnotation,
+} from "./overlay";
 import type { ChartTheme } from "./theme";
 import type { Range } from "./viewport";
 import type {
@@ -75,6 +80,9 @@ export const resolveAnnotations = (
         labelColor: a.labelColor
           ? resolve(a.labelColor, color)
           : mix(color, theme.text, 0.2),
+        ...(a.badge ? { badge: a.badge } : {}),
+        ...(a.detail ? { detail: a.detail } : {}),
+        ...(a.description ? { description: a.description } : {}),
       };
     }
     if (a.type === "text") {
@@ -256,7 +264,11 @@ const layoutHorizontal = (input: LayoutInput): ChartLayout => {
     model.y.tickCount ??
     (model.y.type === "category"
       ? Math.max(1, Math.floor(plot.width / 60))
-      : Math.max(3, Math.min(8, Math.floor(plot.width / 88))));
+      : // short time labels ("09:00", "Mar 4"): at least 4 on narrow charts
+        Math.max(
+          model.y.type === "time" ? 4 : 3,
+          Math.min(8, Math.floor(plot.width / 88)),
+        ));
   const yTicks = axisTicks(model.y, view.y, yCount);
   const scales = createScales(
     plot,
@@ -268,12 +280,17 @@ const layoutHorizontal = (input: LayoutInput): ChartLayout => {
   return { plot, scales, xTicks, yTicks, y2Ticks: null };
 };
 
-/** Labels of the visible scatter points and bar values (`showLabels`) */
+/**
+ * Labels of the visible scatter points and bar values (`showLabels`);
+ * `background` (the chart background) picks the color of the labels inside
+ * solid bars
+ */
 export const collectPointLabels = (
   model: ChartModel,
   view: ChartView,
   s: Scales,
   yTicks?: AxisTicks | null,
+  background?: Rgba,
 ): PointLabel[] => {
   const labels: PointLabel[] = [];
   // 100% stacks: the axis shows percents, the labels the actual values
@@ -304,13 +321,41 @@ export const collectPointLabels = (
         // ranges on a time axis (Gantt tasks) have no value to write
         if (step && model.y.type === "time" && !texts?.[i]) continue;
         const delta = step ? y[i] - (y0?.[i] ?? 0) : 0;
+        const text =
+          texts?.[i] ??
+          (step ? `${delta > 0 ? "+" : ""}${format(delta)}` : format(y[i]));
+        if (series.labelsInside) {
+          const base = series.barBase?.[i] ?? 0;
+          const half = series.barHalfWidth;
+          const c = series.pointColors?.[i] ?? series.color;
+          const fill: Rgba = [c[0], c[1], c[2], c[3] * barOpacity(series, i)];
+          const color = background
+            ? insideLabelColor(fill, background)
+            : undefined;
+          const mid = toScreen(s, xv, (base + top[i]) / 2);
+          labels.push({
+            x: mid.x,
+            y: mid.y,
+            r: 0,
+            text,
+            placement: "inside",
+            align: s.horizontal ? "start" : "center",
+            bar: screenRect(
+              s,
+              s.xToPx(xv - half),
+              s.xToPx(xv + half),
+              s.yToPx(base),
+              s.yToPx(top[i]),
+            ),
+            ...(color ? { color } : {}),
+          });
+          continue;
+        }
         labels.push({
           x: p.x,
           y: p.y,
           r: 0,
-          text:
-            texts?.[i] ??
-            (step ? `${delta > 0 ? "+" : ""}${format(delta)}` : format(y[i])),
+          text,
           placement: s.horizontal
             ? reversed
               ? "left"

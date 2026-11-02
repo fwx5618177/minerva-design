@@ -8,4 +8,14 @@ export default [
     name: "copyable",
     render: () => h(CodeBlock, { code: "const a = 1;", copyable: true }),
   },
+  {
+    name: "highlighted, line numbers, language",
+    render: () =>
+      h(CodeBlock, {
+        code: "const a = 1;",
+        language: "js",
+        showLineNumbers: true,
+        showLanguage: true,
+      }),
+  },
 ] satisfies HookScenario[];

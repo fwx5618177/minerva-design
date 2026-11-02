@@ -4,7 +4,15 @@
   "demos": {
     "basic": {
       "title": "Utilisation de base",
-      "description": "Le texte est rendu tel quel et les longues lignes reviennent à la ligne par défaut."
+      "description": "Le texte est rendu tel quel et les longues lignes reviennent à la ligne par défaut ; language=\"json\" colore la syntaxe."
+    },
+    "languages": {
+      "title": "Langages",
+      "description": "language choisit la grammaire : JavaScript / TypeScript (JSX, TSX), JSON, CSS, HTML, Bash, Python, YAML, SQL, diff et Markdown (les alias courants comme ts, sh, py, yml, md fonctionnent). showLanguage ajoute une petite étiquette ; les autres langages sont rendus en texte brut."
+    },
+    "line-numbers": {
+      "title": "Numéros de ligne",
+      "description": "showLineNumbers numérote les lignes dans une marge masquée aux lecteurs d'écran ; les numéros ne sont ni sélectionnés ni copiés avec le code."
     },
     "no-wrap": {
       "title": "Journaux défilants",
@@ -24,6 +32,10 @@
       "tabIndex": "Ordre de tabulation de la région (focalisable par défaut)",
       "copyable": "Affiche un bouton qui copie le texte dans le presse-papiers et annonce le résultat",
       "onCopied": "Appelée avec le texte copié une fois que le bouton de copie l'a écrit dans le presse-papiers (pas en cas d'échec) ; le onCopy natif reste transmis à l'élément",
+      "language": "Langage du code : colore sa syntaxe (javascript, typescript, jsx, tsx, json, css, html, bash, python, yaml, sql, diff, markdown et leurs alias) ; sans lui, le texte reste brut",
+      "highlight": "Colore la syntaxe de language (false : texte brut)",
+      "showLineNumbers": "Numérote les lignes dans une marge (masquée aux technologies d'assistance, non copiée)",
+      "showLanguage": "Affiche le langage dans une petite étiquette en haut à droite",
       "ref": "Ref vers l'élément <pre>"
     }
   },
@@ -33,13 +45,22 @@
     "--code-block-bg": "Couleur de fond",
     "--code-block-border-color": "Couleur de la bordure",
     "--code-block-font-size": "Taille de police du code",
-    "--code-block-max-height": "Hauteur maximale avant défilement (par défaut none)"
+    "--code-block-max-height": "Hauteur maximale avant défilement (par défaut none)",
+    "--code-block-line-number-color": "Couleur des numéros de ligne"
   },
   "wc": {
     "demos": {
       "basic": {
         "title": "Utilisation de base",
-        "description": "Le contenu texte est affiché tel quel (échappez < dans le balisage) ; language affiche une étiquette. Chaque bloc est une région nommée et focalisable."
+        "description": "Le contenu texte est rendu tel quel (échappez < dans le balisage) ; language colore la syntaxe et show-language affiche une étiquette. Chaque bloc est une région nommée et focalisable."
+      },
+      "languages": {
+        "title": "Langages",
+        "description": "language choisit la grammaire (ts, css, html, bash, python, diff…) ; show-language ajoute une petite étiquette. La propriété code contient le texte, jamais interprété comme du HTML."
+      },
+      "line-numbers": {
+        "title": "Numéros de ligne",
+        "description": "show-line-numbers numérote les lignes dans une marge masquée aux lecteurs d'écran ; la copie copie toujours le texte brut."
       },
       "copy": {
         "title": "Copier dans le presse-papiers",
@@ -53,8 +74,11 @@
     "minerva-code-block": {
       "props": {
         "code": "Texte source (par défaut : le contenu texte de l'élément).",
-        "language": "Langage du code, affiché en étiquette (par ex. « json », « bash »).",
+        "language": "Langage du code : colore sa syntaxe et définit class=\"language-<x>\" / data-language sur le <code>.",
+        "noHighlight": "Garde le code brut malgré language (highlight={false} de la bibliothèque React).",
         "noWrap": "Fait défiler les longues lignes horizontalement au lieu de les replier (wrap={false} de la bibliothèque React).",
+        "showLineNumbers": "Numérote les lignes dans une marge (aria-hidden, hors du texte copié).",
+        "showLanguage": "Affiche le langage dans une petite étiquette en haut à droite (par ex. « JSON »).",
         "text": "Le texte affiché et copié (lecture seule)."
       },
       "events": {

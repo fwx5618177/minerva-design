@@ -342,6 +342,8 @@ export class MnGanttChart extends MnSeriesChartBase {
   readonly dependencyArrows = input(true, { transform: booleanAttribute });
   /** Color of the dependency arrows (any CSS color); the secondary text color by default */
   readonly dependencyColor = input<string | undefined>(undefined);
+  /** Writes the task names inside the bars: `"auto"` when several tasks share a row, `true` / `"inside"` always, `false` never */
+  readonly barLabels = input<boolean | "inside" | "auto">("auto");
   /** Draws a line at this date (`true`: now) */
   readonly today = input<boolean | number | Date>(false);
   /** Label of the today line */
@@ -359,6 +361,7 @@ export class MnGanttChart extends MnSeriesChartBase {
       dependenciesName: this.dependenciesName(),
       dependencyArrows: this.dependencyArrows(),
       dependencyColor: this.dependencyColor(),
+      barLabels: this.barLabels(),
       locale: this.locale(),
     });
     const today = this.today();

@@ -39,6 +39,14 @@ const props = defineProps({
   dependencyArrows: { type: Boolean, default: undefined },
   /** Color of the dependency arrows (any CSS color); the secondary text color by default */
   dependencyColor: String,
+  /**
+   * Writes the task names inside the bars: `"auto"` when several tasks
+   * share a row (default), `true` / `"inside"` always, `false` never
+   */
+  barLabels: {
+    type: [Boolean, String] as PropType<boolean | "inside" | "auto">,
+    default: undefined,
+  },
   /** Draws a line at this date (`true`: now) */
   today: {
     type: [Boolean, Number, Date] as PropType<boolean | number | Date>,
@@ -72,6 +80,7 @@ const { setContainer, rootStyle, handle } = useCartesianChart(
       dependenciesName: props.dependenciesName,
       dependencyArrows: props.dependencyArrows,
       dependencyColor: props.dependencyColor,
+      barLabels: props.barLabels,
       locale: props.locale,
     });
     const today = props.today;

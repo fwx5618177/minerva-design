@@ -134,3 +134,99 @@ describe("CodeBlock", () => {
     expect(vi.getTimerCount()).toBe(0);
   });
 });
+
+describe("CodeBlock highlighting", () => {
+  const json = '{\n  "id": 42,\n  "ok": true\n}';
+
+  it("renders plain text without a language", () => {
+    const code = mount(CodeBlock, { props: { code: json } }).get("code");
+    expect(code.element.children).toHaveLength(0);
+    expect(code.element.textContent).toBe(json);
+    expect(code.attributes("data-language")).toBeUndefined();
+  });
+
+  it("renders token spans with the token classes, keeping the text verbatim", () => {
+    const code = mount(CodeBlock, {
+      props: { code: json, language: "json" },
+    }).get("code");
+    expect(code.classes()).toContain("language-json");
+    expect(code.element.textContent).toBe(json);
+    expect(code.findAll(".token-property").map((s) => s.text())).toEqual([
+      '"id"',
+      '"ok"',
+    ]);
+    expect(code.get(".token-number").text()).toBe("42");
+    expect(code.get(".token-boolean").text()).toBe("true");
+  });
+
+  it("highlights the slot text and never parses it as HTML", () => {
+    const text = '<img src=x onerror="alert(1)">';
+    const wrapper = mount(CodeBlock, {
+      props: { language: "html" },
+      slots: { default: () => text },
+    });
+    expect(wrapper.find("img").exists()).toBe(false);
+    expect(wrapper.get("code").element.textContent).toBe(text);
+    expect(wrapper.get(".token-tag").text()).toBe("img");
+  });
+
+  it("highlight=false renders plain text", () => {
+    const code = mount(CodeBlock, {
+      props: { code: json, language: "json", highlight: false },
+    }).get("code");
+    expect(code.find("span").exists()).toBe(false);
+    expect(code.attributes("data-language")).toBe("json");
+  });
+
+  it("numbers the lines in an aria-hidden gutter outside the text", () => {
+    const text = "a\nb\n\nc\n";
+    const code = mount(CodeBlock, {
+      props: { code: text, language: "js", showLineNumbers: true },
+    }).get("code");
+    const numbers = code.findAll(".lineNumber");
+    expect(numbers.map((n) => n.attributes("data-line"))).toEqual([
+      "1",
+      "2",
+      "3",
+      "4",
+    ]);
+    expect(numbers.every((n) => n.attributes("aria-hidden") === "true")).toBe(
+      true,
+    );
+    expect(code.element.textContent).toBe(text);
+    expect(
+      (code.element as HTMLElement).style.getPropertyValue(
+        "--code-line-digits",
+      ),
+    ).toBe("2");
+  });
+
+  it("shows the language label only with showLanguage and copies the raw text", async () => {
+    expect(
+      mount(CodeBlock, { props: { code: json, language: "json" } }).element
+        .tagName,
+    ).toBe("PRE");
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    setClipboard(writeText);
+    const wrapper = mount(CodeBlock, {
+      props: {
+        code: json,
+        language: "json",
+        showLanguage: true,
+        showLineNumbers: true,
+        copyable: true,
+      },
+    });
+    expect(wrapper.element.tagName).toBe("DIV");
+    expect(wrapper.get(".language").text()).toBe("JSON");
+    expect(wrapper.get(".language").attributes("aria-hidden")).toBe("true");
+    await wrapper.get("button").trigger("click");
+    await flushPromises();
+    expect(writeText).toHaveBeenCalledWith(json);
+    const labelOnly = mount(CodeBlock, {
+      props: { code: "x", language: "sh", showLanguage: true },
+    });
+    expect(labelOnly.find("button").exists()).toBe(false);
+    expect(labelOnly.find('[aria-live="polite"]').exists()).toBe(false);
+  });
+});

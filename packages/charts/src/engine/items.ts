@@ -218,9 +218,10 @@ export const buildItems = (
       case "bar": {
         const base = s.barBase ?? new Float64Array(count);
         const top = s.barTop ?? y;
-        const fade = (c: Rgba): Rgba =>
-          s.opacity < 1 ? [c[0], c[1], c[2], c[3] * s.opacity] : c;
+        const fade = (c: Rgba, alpha = s.opacity): Rgba =>
+          alpha < 1 ? [c[0], c[1], c[2], c[3] * alpha] : c;
         const seriesColor = packColor(fade(s.color));
+        const opacities = s.cols.opacities;
         // floating bars (ranges, Gantt progress) keep their corners
         const shared =
           !s.floating &&
@@ -245,7 +246,12 @@ export const buildItems = (
               f[i * 4 + 1] = valid ? base[i] - origin.y : GAP;
               f[i * 4 + 2] = valid ? top[i] - origin.y : GAP;
               const pc = s.pointColors?.[i];
-              u[i * 4 + 3] = pc ? packColor(fade(pc)) : seriesColor;
+              u[i * 4 + 3] =
+                opacities && Number.isFinite(opacities[i])
+                  ? packColor(fade(pc ?? s.color, opacities[i]))
+                  : pc
+                    ? packColor(fade(pc))
+                    : seriesColor;
             },
             {
               halfWidth: s.barHalfWidth,
@@ -372,7 +378,7 @@ export const buildItems = (
           instances: buffer,
           count,
           opacity: s.opacity,
-          stroke: count <= 5000 ? 1.25 : 0,
+          stroke: s.stroke ?? (count <= 5000 ? 1.25 : 0),
         });
         break;
       }

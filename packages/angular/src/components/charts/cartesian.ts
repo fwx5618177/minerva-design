@@ -523,6 +523,20 @@ export class MnQuadrantChart extends MnCartesianChartBase {
   readonly name = input<string | undefined>(undefined);
   /** Lets the user drag the dots (`pointDrag`, `pointDrop`) */
   readonly draggable = input(false, { transform: booleanAttribute });
+  /** Shows the number of points of each quadrant after its title; a function `(count, points) => text` returns the text */
+  readonly showCounts = input<
+    boolean | ((count: number, points: readonly QuadrantPoint[]) => string),
+    unknown
+  >(false, {
+    transform: (value: unknown) =>
+      typeof value === "function"
+        ? (value as (count: number, points: readonly QuadrantPoint[]) => string)
+        : booleanAttribute(value),
+  });
+  /** Index of the selected point, drawn with a ring (`null`: none) */
+  readonly selectedIndex = input<number | null | undefined>(undefined);
+  /** Indices of the selected points */
+  readonly selectedIndices = input<readonly number[] | undefined>(undefined);
 
   /** A point was clicked */
   readonly pointClick = output<{ point: QuadrantPoint; index: number }>();
@@ -565,6 +579,9 @@ export class MnQuadrantChart extends MnCartesianChartBase {
         pointSize: this.pointSize(),
         name: this.name(),
         draggable: this.draggable(),
+        showCounts: this.showCounts(),
+        selectedIndex: this.selectedIndex(),
+        selectedIndices: this.selectedIndices(),
       },
       this.commonOptions(),
     );

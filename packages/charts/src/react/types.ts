@@ -28,6 +28,7 @@ import type {
   QuadrantConfig,
   QuadrantCorner,
   QuadrantPoint,
+  QuadrantRegion,
   SparklineConfig,
   WaterfallOptions,
   WaterfallStep,
@@ -416,6 +417,18 @@ export interface QuadrantDropTarget {
   quadrant: QuadrantCorner;
 }
 
+/** What `renderQuadrantHeader` receives about a quadrant */
+export interface QuadrantHeaderInfo {
+  /** Number of points in the quadrant */
+  count: number;
+  /** Points in the quadrant */
+  points: QuadrantPoint[];
+  /** Indices of these points in `points` */
+  indices: number[];
+  /** Title, badge, description and color of the quadrant (`quadrants`) */
+  region: QuadrantRegion | undefined;
+}
+
 /** Props of QuadrantChart */
 export interface QuadrantChartProps
   extends
@@ -459,4 +472,31 @@ export interface QuadrantChartProps
    * content receives pointer events, the rest of the quadrant does not
    */
   quadrantContent?: Partial<Record<QuadrantCorner, ReactNode>>;
+  /**
+   * React header of each quadrant, in its outer corner (top edge for the top
+   * quadrants, bottom edge for the bottom ones, aligned to the outer side);
+   * replaces the drawn title, badge, description and count. The header
+   * receives pointer events (e.g. an add button)
+   */
+  renderQuadrantHeader?: (
+    corner: QuadrantCorner,
+    info: QuadrantHeaderInfo,
+  ) => ReactNode;
+  /**
+   * Visually hidden list of buttons per quadrant so keyboard and screen
+   * reader users can reach the dots: Enter / Space calls `onPointClick`,
+   * Shift + arrow keys move the point to the next quadrant (`onPointDrop`
+   * with the center of that quadrant); the focused dot gets a focus ring
+   * @default true
+   */
+  accessiblePoints?: boolean;
+  /**
+   * Extra attributes of the invisible anchor placed on each dot (e.g.
+   * `data-testid`); every anchor already has `data-point-index` and
+   * `data-label` and the class `minerva-chart-quadrant-point`
+   */
+  getPointProps?: (
+    point: QuadrantPoint,
+    index: number,
+  ) => Record<string, string | number | boolean | undefined>;
 }

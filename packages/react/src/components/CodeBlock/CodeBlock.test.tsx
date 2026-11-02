@@ -290,3 +290,119 @@ describe("CodeBlock copyable", () => {
     expect(liveRegion(container)).toHaveTextContent("已复制");
   });
 });
+
+describe("CodeBlock highlighting", () => {
+  const json = '{\n  "id": 42,\n  "ok": true\n}';
+  const code = (container: HTMLElement) => container.querySelector("code")!;
+
+  it("renders plain text without a language", () => {
+    const { container } = render(<CodeBlock>{json}</CodeBlock>);
+    expect(code(container).children).toHaveLength(0);
+    expect(code(container).textContent).toBe(json);
+    expect(code(container)).not.toHaveAttribute("data-language");
+  });
+
+  it("renders token spans with the token classes, keeping the text verbatim", () => {
+    const { container } = render(<CodeBlock language="json">{json}</CodeBlock>);
+    const el = code(container);
+    expect(el).toHaveClass("language-json");
+    expect(el).toHaveAttribute("data-language", "json");
+    expect(el.textContent).toBe(json);
+    const property = el.querySelectorAll(`.${styles["token-property"]}`);
+    expect([...property].map((s) => s.textContent)).toEqual(['"id"', '"ok"']);
+    expect(el.querySelector(`.${styles["token-number"]}`)?.textContent).toBe(
+      "42",
+    );
+    expect(el.querySelector(`.${styles["token-boolean"]}`)?.textContent).toBe(
+      "true",
+    );
+  });
+
+  it("never parses the code as HTML", () => {
+    const text = '<img src=x onerror="alert(1)"><script>x()</script>';
+    const { container } = render(<CodeBlock language="html">{text}</CodeBlock>);
+    expect(container.querySelector("img, script")).toBeNull();
+    expect(code(container).textContent).toBe(text);
+    expect(
+      code(container).querySelector(`.${styles["token-tag"]}`)?.textContent,
+    ).toBe("img");
+  });
+
+  it("highlight={false} renders plain text", () => {
+    const { container } = render(
+      <CodeBlock language="json" highlight={false}>
+        {json}
+      </CodeBlock>,
+    );
+    expect(code(container).querySelector("span")).toBeNull();
+    expect(code(container)).toHaveAttribute("data-language", "json");
+  });
+
+  it("numbers the lines in an aria-hidden gutter outside the text", () => {
+    const text = "a\nb\n\nc\n";
+    const { container } = render(
+      <CodeBlock language="js" showLineNumbers>
+        {text}
+      </CodeBlock>,
+    );
+    const numbers = container.querySelectorAll(`.${styles.lineNumber}`);
+    expect([...numbers].map((n) => n.getAttribute("data-line"))).toEqual([
+      "1",
+      "2",
+      "3",
+      "4",
+    ]);
+    for (const n of numbers) {
+      expect(n).toHaveAttribute("aria-hidden", "true");
+      expect(n.textContent).toBe("");
+    }
+    expect(code(container).textContent).toBe(text);
+    expect(code(container).style.getPropertyValue("--code-line-digits")).toBe(
+      "2",
+    );
+  });
+
+  it("numbers the lines without a language", () => {
+    const { container } = render(
+      <CodeBlock showLineNumbers>{"x\ny"}</CodeBlock>,
+    );
+    expect(container.querySelectorAll(`.${styles.lineNumber}`)).toHaveLength(2);
+    expect(code(container).textContent).toBe("x\ny");
+  });
+
+  it("shows the language label only with showLanguage", () => {
+    const { container, rerender } = render(
+      <CodeBlock language="json">{json}</CodeBlock>,
+    );
+    expect(container.firstElementChild?.tagName).toBe("PRE");
+    rerender(
+      <CodeBlock language="json" showLanguage>
+        {json}
+      </CodeBlock>,
+    );
+    const root = container.firstElementChild as HTMLElement;
+    expect(root.tagName).toBe("DIV");
+    const label = root.querySelector(`.${styles.language}`);
+    expect(label?.textContent).toBe("JSON");
+    expect(label).toHaveAttribute("aria-hidden", "true");
+    expect(screen.queryByRole("button")).toBeNull();
+    expect(root.querySelector('[aria-live="polite"]')).toBeNull();
+  });
+
+  it("copies the raw text of highlighted, numbered code", async () => {
+    const user = userEvent.setup();
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText },
+      configurable: true,
+    });
+    render(
+      <CodeBlock language="json" showLineNumbers showLanguage copyable>
+        {json}
+      </CodeBlock>,
+    );
+    await user.click(screen.getByRole("button", { name: "Copy code" }));
+    expect(writeText).toHaveBeenCalledWith(json);
+    delete (navigator as { clipboard?: unknown }).clipboard;
+  });
+});

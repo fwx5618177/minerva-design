@@ -311,6 +311,10 @@ export interface QuadrantRegion {
   label?: string;
   /** Background tint and default dot color (any CSS color) */
   color?: string;
+  /** Short code drawn in a pill before the title (e.g. "Q1") */
+  badge?: string;
+  /** Second line drawn under the title (e.g. "Do it now"); cut with … when too long */
+  description?: string;
 }
 
 /** The four quadrants of a QuadrantChart */
@@ -379,7 +383,122 @@ export interface QuadrantConfig {
   name?: string;
   /** Lets the user drag the dots (`drag` / `drop` events) */
   draggable?: boolean;
+  /**
+   * Shows the number of points of each quadrant after its title; a function
+   * returns the text instead (e.g. `(n) => `${n} tasks``)
+   * @default false
+   */
+  showCounts?:
+    boolean | ((count: number, points: readonly QuadrantPoint[]) => string);
+  /** Index of the selected point: drawn with a ring of its color (`null`: none) */
+  selectedIndex?: number | null;
+  /** Indices of the selected points (several selected points) */
+  selectedIndices?: readonly number[];
 }
+
+/** State of a quadrant matrix that is not a prop (set by the components) */
+export interface QuadrantChartState {
+  /** Index of the keyboard-focused point: drawn with a focus ring */
+  focusedIndex?: number | null;
+}
+
+/** Points of each quadrant, with their indices */
+export interface QuadrantGroup {
+  points: QuadrantPoint[];
+  indices: number[];
+}
+
+/** The points of a matrix grouped by quadrant (as seen on screen) */
+export const quadrantGroups = (
+  config: Pick<
+    QuadrantConfig,
+    "points" | "xDomain" | "yDomain" | "xSplit" | "ySplit" | "reverseX"
+  >,
+): Record<QuadrantCorner, QuadrantGroup> => {
+  const groups: Record<QuadrantCorner, QuadrantGroup> = {
+    topLeft: { points: [], indices: [] },
+    topRight: { points: [], indices: [] },
+    bottomLeft: { points: [], indices: [] },
+    bottomRight: { points: [], indices: [] },
+  };
+  config.points.forEach((p, i) => {
+    if (!Number.isFinite(p.x) || !Number.isFinite(p.y)) return;
+    const g = groups[quadrantOf(config, p.x, p.y)];
+    g.points.push(p);
+    g.indices.push(i);
+  });
+  return groups;
+};
+
+/** Built-in texts of the quadrant matrices (accessible point layer) */
+export interface QuadrantLabels {
+  /** Names of the quadrants without a title */
+  topLeft: string;
+  topRight: string;
+  bottomLeft: string;
+  bottomRight: string;
+  /** Name of a point without a label: `{n}` is its number */
+  point: string;
+  /** Announced when a point is moved with the keyboard */
+  moved: string;
+  /** Accessible description of the points that can be moved */
+  moveHint: string;
+}
+
+const QUADRANT_LABELS: LabelDictionary<QuadrantLabels> = {
+  en: {
+    topLeft: "Top left quadrant",
+    topRight: "Top right quadrant",
+    bottomLeft: "Bottom left quadrant",
+    bottomRight: "Bottom right quadrant",
+    point: "Point {n}",
+    moved: "{point} moved to {quadrant}",
+    moveHint: "Shift + arrow keys move it to another quadrant",
+  },
+  zh: {
+    topLeft: "左上象限",
+    topRight: "右上象限",
+    bottomLeft: "左下象限",
+    bottomRight: "右下象限",
+    point: "点 {n}",
+    moved: "{point} 已移到{quadrant}",
+    moveHint: "Shift + 方向键可移到其他象限",
+  },
+  ja: {
+    topLeft: "左上の象限",
+    topRight: "右上の象限",
+    bottomLeft: "左下の象限",
+    bottomRight: "右下の象限",
+    point: "点 {n}",
+    moved: "{point} を{quadrant}に移動しました",
+    moveHint: "Shift + 矢印キーで別の象限に移動できます",
+  },
+  fr: {
+    topLeft: "Quadrant en haut à gauche",
+    topRight: "Quadrant en haut à droite",
+    bottomLeft: "Quadrant en bas à gauche",
+    bottomRight: "Quadrant en bas à droite",
+    point: "Point {n}",
+    moved: "{point} déplacé vers {quadrant}",
+    moveHint: "Maj + flèches pour le déplacer vers un autre quadrant",
+  },
+};
+
+/** Built-in texts of the quadrant matrices in a locale (the page language by default) */
+export const quadrantLabels = (locale?: string): QuadrantLabels =>
+  localeLabels(QUADRANT_LABELS, locale);
+
+/** Text of the count of a quadrant (`showCounts`), or `undefined` */
+export const quadrantCountText = (
+  showCounts: QuadrantConfig["showCounts"],
+  points: readonly QuadrantPoint[],
+  locale?: string,
+): string | undefined =>
+  !showCounts
+    ? undefined
+    : typeof showCounts === "function"
+      ? showCounts(points.length, points)
+      : numberFormat(resolveLocale(locale)).format(points.length);
 
 export const DEFAULT_QUADRANT_COLORS: Required<Record<QuadrantCorner, string>> =
   {
@@ -446,17 +565,21 @@ export const quadrantCenter = (
 export const quadrantChartOptions = (
   config: QuadrantConfig,
   base: Omit<ChartOptions, "series"> = {},
+  state: QuadrantChartState = {},
 ): ChartOptions => {
   const { x0, x1, y0, y1, xs, ys } = splits(config);
   const reverseX = !!config.reverseX;
   const color = (corner: QuadrantCorner) =>
     config.quadrants?.[corner]?.color ?? DEFAULT_QUADRANT_COLORS[corner];
+  const pointSize = config.pointSize ?? 12;
+  const dotColor = (p: QuadrantPoint) =>
+    p.color ?? color(quadrantOf(config, p.x, p.y));
 
   const series: ChartSeries[] = [
     {
       type: "scatter",
       name: config.name ?? "",
-      pointSize: config.pointSize ?? 12,
+      pointSize,
       showLabels: config.showLabels ?? true,
       opacity: 0.9,
       data: config.points.map((p) => ({
@@ -464,10 +587,63 @@ export const quadrantChartOptions = (
         y: p.y,
         label: p.label,
         size: p.size,
-        color: p.color ?? color(quadrantOf(config, p.x, p.y)),
+        color: dotColor(p),
       })),
     },
   ];
+  // rings around the selected and the focused dots (out of hit tests)
+  const ring = (
+    id: string,
+    indices: readonly number[],
+    grow: number,
+    ringColor?: string,
+  ): ChartSeries | null => {
+    const data = [...new Set(indices)]
+      .filter((i) => Number.isInteger(i) && config.points[i])
+      .map((i) => {
+        const p = config.points[i]!;
+        return {
+          x: p.x,
+          y: p.y,
+          size: (p.size ?? pointSize) + grow,
+          color: ringColor ?? dotColor(p),
+        };
+      });
+    return data.length
+      ? {
+          id,
+          type: "scatter",
+          // unnamed: left out of the accessible name of the chart
+          name: "",
+          tooltip: false,
+          opacity: 0,
+          stroke: 2,
+          data,
+        }
+      : null;
+  };
+  const selected = [
+    ...(config.selectedIndices ?? []),
+    ...(config.selectedIndex !== undefined && config.selectedIndex !== null
+      ? [config.selectedIndex]
+      : []),
+  ];
+  const focused =
+    state.focusedIndex !== undefined && state.focusedIndex !== null
+      ? [state.focusedIndex]
+      : [];
+  for (const extra of [
+    ring("quadrant:selected", selected, 9),
+    ring(
+      "quadrant:focus",
+      focused,
+      16,
+      "var(--focus-ring-color, var(--primary-color, #4f46e5))",
+    ),
+  ])
+    if (extra) series.push(extra);
+
+  const groups = config.showCounts ? quadrantGroups(config) : null;
 
   // visual left / right -> data ranges
   const left: [number, number] = reverseX ? [xs, x1] : [x0, xs];
@@ -477,17 +653,26 @@ export const quadrantChartOptions = (
     [xa, xb]: [number, number],
     [ya, yb]: [number, number],
     position: "top-left" | "top-right" | "bottom-left" | "bottom-right",
-  ): ChartAnnotation => ({
-    type: "rect",
-    x0: xa,
-    x1: xb,
-    y0: ya,
-    y1: yb,
-    color: color(corner),
-    opacity: 0.07,
-    label: config.quadrants?.[corner]?.label,
-    labelPosition: position,
-  });
+  ): ChartAnnotation => {
+    const region = config.quadrants?.[corner];
+    const detail = groups
+      ? quadrantCountText(config.showCounts, groups[corner].points, base.locale)
+      : undefined;
+    return {
+      type: "rect",
+      x0: xa,
+      x1: xb,
+      y0: ya,
+      y1: yb,
+      color: color(corner),
+      opacity: 0.07,
+      label: region?.label,
+      labelPosition: position,
+      ...(region?.badge ? { badge: region.badge } : {}),
+      ...(region?.description ? { description: region.description } : {}),
+      ...(detail ? { detail } : {}),
+    };
+  };
   const ends = config.axisLabels ?? {};
   const visualLeft = reverseX ? x1 : x0;
   const visualRight = reverseX ? x0 : x1;
@@ -1172,6 +1357,15 @@ export interface GanttOptions {
   /** Color of the dependency arrows (any CSS color); the secondary text color by default */
   dependencyColor?: string;
   /**
+   * Writes the name of every task inside its bar (cut with an ellipsis,
+   * in a color contrasting with the bar; skipped when the bar is too
+   * small): `"auto"` when several tasks share a row (`row`), so the bars
+   * of a lane can be told apart without hovering; `true` / `"inside"`
+   * always, `false` never
+   * @default "auto"
+   */
+  barLabels?: boolean | "inside" | "auto";
+  /**
    * Locale of the default names and of the progress shares
    * @default the page language
    */
@@ -1220,6 +1414,27 @@ export const paletteColor = (k: number): string => {
 const time = (v: number | Date | undefined) =>
   v instanceof Date ? v.getTime() : v === undefined ? NaN : v;
 
+const HOUR_MS = 3_600_000;
+const DAY_MS = 24 * HOUR_MS;
+/** Opacity of the Gantt tasks without a `progress` (near-solid) */
+const SOLID_TASK = 0.9;
+
+/** Local time rounded down to a multiple of `step` minutes (15 or 60) */
+const floorMinutes = (v: number, step: number): number => {
+  const d = new Date(v);
+  d.setMinutes(d.getMinutes() - (d.getMinutes() % step), 0, 0);
+  return d.getTime();
+};
+
+/** Local time rounded up to a multiple of `step` minutes (15 or 60) */
+const ceilMinutes = (v: number, step: number): number => {
+  const floor = floorMinutes(v, step);
+  if (floor >= v) return floor;
+  const d = new Date(floor);
+  d.setMinutes(d.getMinutes() + step);
+  return d.getTime();
+};
+
 /**
  * Floating bar series of a Gantt chart (horizontal, on a time axis): a
  * translucent bar per task with its progress drawn over it, one series per
@@ -1237,15 +1452,22 @@ export const ganttSeries = (
   const separator = /^(zh|ja)\b/i.test(locale) ? "、" : ", ";
   const idOf = (t: GanttTask) => t.id ?? t.name;
   const rowOf = (t: GanttTask) => t.row ?? t.name;
+  const bars = tasks.filter((t) => !t.milestone);
+  const barLabels = options.barLabels ?? "auto";
+  const labelled =
+    barLabels === "auto"
+      ? new Set(bars.map(rowOf)).size < bars.length
+      : !!barLabels;
   // tasks by id, then by name (the first one wins)
   const byKey = new Map<string, GanttTask>();
   for (const t of tasks) if (!byKey.has(idOf(t))) byKey.set(idOf(t), t);
   for (const t of tasks) if (!byKey.has(t.name)) byKey.set(t.name, t);
-  // tasks in a shared row: their name is the title of the tooltip
-  const point = (t: GanttTask) => ({
+  // tasks in a shared row: their name is the title of the tooltip (and the
+  // text inside their bar)
+  const point = (t: GanttTask, named = false) => ({
     x: rowOf(t),
     id: idOf(t),
-    ...(rowOf(t) !== t.name ? { label: t.name } : {}),
+    ...(named || rowOf(t) !== t.name ? { label: t.name } : {}),
   });
   const groups: string[] = [];
   for (const t of tasks) {
@@ -1263,6 +1485,7 @@ export const ganttSeries = (
         style: "percent",
         maximumFractionDigits: 0,
       }).format(share));
+  // translucent bars under the progress of their task, solid ones otherwise
   const series: ChartSeries[] = groups.map((g) => ({
     id: `gantt:${g}`,
     name: g,
@@ -1272,8 +1495,9 @@ export const ganttSeries = (
     opacity: 0.3,
     barWidth: 0.62,
     radius: 4,
-    data: tasks
-      .filter((t) => !t.milestone && (t.group ?? taskName) === g)
+    ...(labelled ? { showLabels: "inside" as const } : {}),
+    data: bars
+      .filter((t) => (t.group ?? taskName) === g)
       .map((t) => {
         // the tooltip of a task: its progress and what it waits for
         const details: ChartTooltipDetail[] = [];
@@ -1290,10 +1514,11 @@ export const ganttSeries = (
               .join(separator),
           });
         return {
-          ...point(t),
+          ...point(t, labelled),
           y0: time(t.start),
           y: time(t.end ?? t.start),
           ...(t.color ? { color: t.color } : {}),
+          ...(t.progress === undefined ? { opacity: SOLID_TASK } : {}),
           ...(details.length ? { details } : {}),
         };
       }),
@@ -1352,6 +1577,23 @@ export const ganttSeries = (
   }
   // room for the milestone dots at the ends
   const pad = Number.isFinite(hi - lo) ? Math.max((hi - lo) * 0.025, 1) : 0;
+  let domain: [number, number] = Number.isFinite(lo)
+    ? [lo - pad, hi + pad]
+    : [0, 1];
+  // schedules of a day or two: whole hours (quarter hours under 3 hours) at
+  // the ends, so the first and last ticks are the edges (08:00 – 22:00);
+  // only for real dates (plain numbers such as days or weeks keep the margin)
+  const span = hi - lo;
+  const dates = lo >= 1e11 || tasks.some((t) => t.start instanceof Date);
+  if (dates && span >= 60_000 && span <= 2 * DAY_MS) {
+    const step = span <= 3 * HOUR_MS ? 15 : 60;
+    const near = (v: number) =>
+      milestones.some((t) => Math.abs(time(t.start) - v) < pad);
+    domain = [
+      floorMinutes(lo - (near(lo) ? pad : 0), step),
+      ceilMinutes(hi + (near(hi) ? pad : 0), step),
+    ];
+  }
   const dependencies: ChartDependency[] = [];
   if (options.dependencyArrows !== false) {
     for (const t of tasks) {
@@ -1371,7 +1613,7 @@ export const ganttSeries = (
   return {
     series,
     categories: [...new Set(tasks.map(rowOf))],
-    domain: Number.isFinite(lo) ? [lo - pad, hi + pad] : [0, 1],
+    domain,
     dependencies,
   };
 };

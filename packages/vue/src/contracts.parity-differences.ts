@@ -11,4 +11,6 @@ export const PARITY_DIFFERENCES: Record<string, string> = {
     "uncontrolled initial entries: `defaultValue` (the v-model convention)",
   "Rating.onKeyDown":
     "a native `keydown` listener (`@keydown`) falls through to the rating element",
+  "QuadrantChart.accessiblePoints":
+    "React-only for now: the hidden per-quadrant list of point buttons (Enter to click, Shift+arrow to move) is rendered by the React wrapper; the Vue chart keeps the canvas chart's own accessible summary",
 };

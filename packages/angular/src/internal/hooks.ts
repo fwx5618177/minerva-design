@@ -49,6 +49,7 @@ export function hookValue(
     "[attr.data-expanded]": 'attr("expanded")',
     "[attr.data-today]": 'attr("today")',
     "[attr.data-outside]": 'attr("outside")',
+    "[attr.data-flagged]": 'attr("flagged")',
     "[attr.data-size]": 'attr("size")',
     "[attr.data-variant]": 'attr("variant")',
     "[attr.data-color]": 'attr("color")',
@@ -60,6 +61,7 @@ export function hookValue(
     "[attr.data-status]": 'attr("status")',
     "[attr.data-sort]": 'attr("sort")',
     "[attr.data-fill]": 'attr("fill")',
+    "[attr.data-layout]": 'attr("layout")',
   },
 })
 export class MnHook {

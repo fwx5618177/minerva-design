@@ -210,6 +210,195 @@
     "kind": "alias",
     "type": "\"small\" | \"medium\" | \"large\""
   },
+  "AnswerSheetGroup": {
+    "source": "react/src/components/AnswerSheet/types.ts",
+    "description": "A titled section of an AnswerSheet",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true,
+        "description": "Key matched by `item.group`"
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": true,
+        "description": "Visible title of the section"
+      }
+    ]
+  },
+  "AnswerSheetItem": {
+    "source": "react/src/components/AnswerSheet/types.ts",
+    "description": "A question of an AnswerSheet",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "key",
+        "type": "string",
+        "required": true,
+        "description": "Unique key of the question (the value of the sheet)"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "default": "its number across all the groups (index + 1)",
+        "description": "Visible label of the pill"
+      },
+      {
+        "name": "status",
+        "type": "AnswerSheetStatus",
+        "required": false,
+        "default": "\"unanswered\"",
+        "description": "Status of the question"
+      },
+      {
+        "name": "flagged",
+        "type": "boolean",
+        "required": false,
+        "description": "Flags the question for review (a warning dot in a corner)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "description": "The question can't be selected"
+      },
+      {
+        "name": "group",
+        "type": "string",
+        "required": false,
+        "description": "Key of its group (see `groups`); items without a known group render first, in an untitled section"
+      }
+    ]
+  },
+  "AnswerSheetLayout": {
+    "source": "react/src/components/AnswerSheet/types.ts",
+    "description": "Layout of an AnswerSheet: \"wrap\" wraps the pills on several rows, \"scroll\" keeps a single horizontally scrolling row",
+    "kind": "alias",
+    "type": "\"wrap\" | \"scroll\""
+  },
+  "AnswerSheetProps": {
+    "source": "react/src/components/AnswerSheet/types.ts",
+    "description": "Props of the AnswerSheet component: a grid of numbered pills to jump between the questions of a practice or exam session, grouped by section, each with a status",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "items",
+        "type": "readonly AnswerSheetItem[]",
+        "required": true,
+        "description": "The questions, in order"
+      },
+      {
+        "name": "groups",
+        "type": "readonly AnswerSheetGroup[]",
+        "required": false,
+        "description": "Titled sections, in display order; items render under the group whose key matches `item.group`"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "Key of the current question (controlled; pair with onChange)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false,
+        "description": "Key of the initially current question (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(key: string) => void",
+        "required": false,
+        "description": "Called with the key of the selected question"
+      },
+      {
+        "name": "size",
+        "type": "AnswerSheetSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Density of the pills"
+      },
+      {
+        "name": "layout",
+        "type": "AnswerSheetLayout",
+        "required": false,
+        "default": "\"wrap\"",
+        "description": "\"wrap\" wraps the pills on several rows; \"scroll\" keeps a single horizontally scrolling row"
+      },
+      {
+        "name": "columns",
+        "type": "number",
+        "required": false,
+        "description": "Fixed number of columns (a grid; ArrowUp / ArrowDown move by a row). Ignored with layout=\"scroll\"."
+      },
+      {
+        "name": "showLegend",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a legend of the statuses present (and of the flag)"
+      },
+      {
+        "name": "showSummary",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the number of answered questions (\"12 / 20 answered\")"
+      },
+      {
+        "name": "getItemLabel",
+        "type": "(item: AnswerSheetItem, index: number) => string",
+        "required": false,
+        "default": "\"Question <n>, <status>\" (translated)",
+        "description": "Accessible name of a pill; receives the item and its display index"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the whole sheet"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "default": "\"Questions\" (translated)",
+        "description": "Accessible name of the navigation landmark"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class of the root element"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLElement>",
+        "required": false,
+        "description": "Ref to the root `nav` element"
+      }
+    ]
+  },
+  "AnswerSheetSize": {
+    "source": "react/src/components/AnswerSheet/types.ts",
+    "description": "Density of an AnswerSheet",
+    "kind": "alias",
+    "type": "\"small\" | \"medium\""
+  },
+  "AnswerSheetStatus": {
+    "source": "react/src/components/AnswerSheet/types.ts",
+    "description": "Status of an AnswerSheet question",
+    "kind": "alias",
+    "type": "\"unanswered\" | \"answered\" | \"correct\" | \"wrong\" | \"skipped\""
+  },
   "AppShellLabels": {
     "source": "react/src/components/AppShell/types.ts",
     "description": "Accessible names of the AppShell controls",
@@ -1914,7 +2103,7 @@
   },
   "CodeBlockProps": {
     "source": "react/src/components/CodeBlock/types.ts",
-    "description": "DOM placement: without `copyable` the root is the <pre> region and it receives `className`, `style`, `ref` and every native attribute. With `copyable` the <pre> is wrapped in a positioned <div> (the copy button cannot live inside <pre>); `className`, `style` (including the `maxHeight` cap) and native attributes then go to that outermost <div>, while `ref`, `tabIndex`, `aria-label`, `aria-labelledby` and `aria-describedby` stay on the <pre> region.",
+    "description": "DOM placement: without `copyable` / `showLanguage` the root is the <pre> region and it receives `className`, `style`, `ref` and every native attribute. With `copyable` or a shown language label the <pre> is wrapped in a positioned <div> (the copy button and the label cannot live inside <pre>); `className`, `style` (including the `maxHeight` cap) and native attributes then go to that outermost <div>, while `ref`, `tabIndex`, `aria-label`, `aria-labelledby` and `aria-describedby` stay on the <pre> region.",
     "kind": "interface",
     "extends": [
       "Omit<HTMLAttributes<HTMLPreElement>, \"children\">"
@@ -1966,6 +2155,33 @@
         "type": "(text: string) => void",
         "required": false,
         "description": "Called with the copied text after the copy button wrote it to the clipboard (not on failure). The counterpart of the `minerva-copy` event of `<minerva-code-block>` (`detail.text`, with `detail.success`); named `onCopied` so it does not replace the native `onCopy` clipboard event handler, which still goes to the element"
+      },
+      {
+        "name": "language",
+        "type": "string",
+        "required": false,
+        "description": "Language of the code: highlights its syntax and sets `class=\"language-<x>\"` / `data-language` on the <code>. Supported: javascript (js, mjs, cjs), typescript (ts), jsx, tsx, json (jsonc, json5), css (scss, less), html (xml, svg, vue), bash (sh, shell, zsh, console), python (py), yaml (yml), sql, diff, markdown (md); other names render plain text. Without it the text is not highlighted"
+      },
+      {
+        "name": "highlight",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Highlights the syntax of `language` (false: plain text, the language is still set on the <code> and shown by `showLanguage`)"
+      },
+      {
+        "name": "showLineNumbers",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Numbers the lines in a gutter (hidden from assistive technology, not part of the copied or selected text)"
+      },
+      {
+        "name": "showLanguage",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the `language` as a small label in the top-right corner (e.g. \"JSON\"); the <pre> is then wrapped in a <div> like with `copyable`"
       },
       {
         "name": "ref",
@@ -2620,6 +2836,68 @@
       }
     ]
   },
+  "css:AnswerSheet": {
+    "kind": "cssVars",
+    "source": "react/src/components/AnswerSheet",
+    "vars": [
+      {
+        "name": "--answer-sheet-gap",
+        "description": "Space between the pills (defaults to --space-2; --space-1-5 with size=\"small\")"
+      },
+      {
+        "name": "--answer-sheet-item-size",
+        "description": "Minimum width and height of a pill (defaults to 2rem; 1.75rem with size=\"small\")"
+      },
+      {
+        "name": "--answer-sheet-radius",
+        "description": "Corner radius of the pills (defaults to --radius-md)"
+      },
+      {
+        "name": "--answer-sheet-item-background",
+        "description": "Background of an unanswered pill"
+      },
+      {
+        "name": "--answer-sheet-answered-background",
+        "description": "Background of an answered pill (defaults to --primary-color-subtle)"
+      },
+      {
+        "name": "--answer-sheet-answered-color",
+        "description": "Text color of an answered pill"
+      },
+      {
+        "name": "--answer-sheet-correct-background",
+        "description": "Background of a correct pill (defaults to --success-color-subtle)"
+      },
+      {
+        "name": "--answer-sheet-correct-color",
+        "description": "Text color of a correct pill"
+      },
+      {
+        "name": "--answer-sheet-wrong-background",
+        "description": "Background of a wrong pill (defaults to --danger-color-subtle)"
+      },
+      {
+        "name": "--answer-sheet-wrong-color",
+        "description": "Text color of a wrong pill"
+      },
+      {
+        "name": "--answer-sheet-current-background",
+        "description": "Background of the current pill (defaults to --primary-color)"
+      },
+      {
+        "name": "--answer-sheet-current-color",
+        "description": "Text color of the current pill"
+      },
+      {
+        "name": "--answer-sheet-flag-color",
+        "description": "Color of the flag dot (defaults to --warning-color)"
+      },
+      {
+        "name": "--answer-sheet-title-color",
+        "description": "Text color of the group titles and the summary"
+      }
+    ]
+  },
   "css:AppShell": {
     "kind": "cssVars",
     "source": "react/src/components/AppShell",
@@ -2951,6 +3229,10 @@
       {
         "name": "--code-block-max-height",
         "description": "Maximum height before the block scrolls (default: none)"
+      },
+      {
+        "name": "--code-block-line-number-color",
+        "description": "Color of the line numbers"
       }
     ]
   },
@@ -3158,6 +3440,52 @@
       }
     ]
   },
+  "css:Flashcard": {
+    "kind": "cssVars",
+    "source": "react/src/components/Flashcard",
+    "vars": [
+      {
+        "name": "--flashcard-min-height",
+        "description": "Minimum height of the card (defaults to 12rem; the minHeight prop sets it); the card grows to fit the taller face"
+      },
+      {
+        "name": "--flashcard-bg-color",
+        "description": "Background color of the faces (defaults to --surface-color, --surface-muted-color with variant=\"filled\")"
+      },
+      {
+        "name": "--flashcard-border-color",
+        "description": "Border color of the faces (variant=\"outline\")"
+      },
+      {
+        "name": "--flashcard-radius",
+        "description": "Corner radius of the faces (defaults to --radius-lg)"
+      },
+      {
+        "name": "--flashcard-shadow",
+        "description": "Shadow of the faces (variant=\"elevated\"; defaults to --shadow-lg)"
+      },
+      {
+        "name": "--flashcard-padding",
+        "description": "Padding of the faces (defaults to the size's spacing)"
+      },
+      {
+        "name": "--flashcard-font-size",
+        "description": "Font size of the face content (defaults to the size's font size)"
+      },
+      {
+        "name": "--flashcard-label-color",
+        "description": "Text color of the face captions"
+      },
+      {
+        "name": "--flashcard-perspective",
+        "description": "Perspective of the 3D flip (defaults to 1200px)"
+      },
+      {
+        "name": "--flashcard-duration",
+        "description": "Duration of the flip (defaults to 0.5s)"
+      }
+    ]
+  },
   "css:FormControl": {
     "kind": "cssVars",
     "source": "react/src/components/FormControl",
@@ -3314,6 +3642,48 @@
       }
     ]
   },
+  "css:KanbanBoard": {
+    "kind": "cssVars",
+    "source": "react/src/components/KanbanBoard",
+    "vars": [
+      {
+        "name": "--kanban-column-width",
+        "description": "Width of the columns (defaults to 18rem; the columnWidth prop sets it; with fill it is the minimum width)"
+      },
+      {
+        "name": "--kanban-gap",
+        "description": "Space between the columns (defaults to 0.75rem; the gap prop sets it)"
+      },
+      {
+        "name": "--kanban-column-background",
+        "description": "Background of a column (defaults to --surface-muted-color)"
+      },
+      {
+        "name": "--kanban-column-border-color",
+        "description": "Border color of a column (defaults to --border-color)"
+      },
+      {
+        "name": "--kanban-column-radius",
+        "description": "Corner radius of a column (defaults to --radius-lg)"
+      },
+      {
+        "name": "--kanban-column-color",
+        "description": "Accent of a column: the dot before the title (the color prop sets it for a custom CSS color)"
+      },
+      {
+        "name": "--kanban-card-gap",
+        "description": "Space between the cards of a column (defaults to --space-2)"
+      },
+      {
+        "name": "--kanban-count-background",
+        "description": "Background of the count badge (defaults to --surface-color)"
+      },
+      {
+        "name": "--kanban-count-color",
+        "description": "Text color of the count badge (defaults to --text-secondary-color)"
+      }
+    ]
+  },
   "css:KeyValueEditor": {
     "kind": "cssVars",
     "source": "react/src/components/KeyValueEditor",
@@ -3401,6 +3771,48 @@
       {
         "name": "--loading-state-font-size",
         "description": "Font size of the label"
+      }
+    ]
+  },
+  "css:MediaPlayer": {
+    "kind": "cssVars",
+    "source": "react/src/components/MediaPlayer",
+    "vars": [
+      {
+        "name": "--media-player-radius",
+        "description": "Corner radius of the player (defaults to --radius-lg)"
+      },
+      {
+        "name": "--media-player-accent",
+        "description": "Color of the played range and the slider thumbs (defaults to --primary-color)"
+      },
+      {
+        "name": "--media-player-video-background",
+        "description": "Letterbox color behind a video (defaults to black)"
+      },
+      {
+        "name": "--media-player-overlay-background",
+        "description": "Background of the video control bar (defaults to a gradient to --overlay-color)"
+      },
+      {
+        "name": "--media-player-overlay-color",
+        "description": "Text and icon color over a video (defaults to white)"
+      },
+      {
+        "name": "--media-player-bar-background",
+        "description": "Background of the audio bar (defaults to --surface-color)"
+      },
+      {
+        "name": "--media-player-bar-color",
+        "description": "Text and icon color of the audio bar (defaults to --text-color)"
+      },
+      {
+        "name": "--media-player-button-size",
+        "description": "Size of the control buttons (defaults to the density's small control height)"
+      },
+      {
+        "name": "--media-player-track-height",
+        "description": "Thickness of the seek and volume tracks (defaults to 4px)"
       }
     ]
   },
@@ -3942,6 +4354,52 @@
       }
     ]
   },
+  "css:SegmentedControl": {
+    "kind": "cssVars",
+    "source": "react/src/components/SegmentedControl",
+    "vars": [
+      {
+        "name": "--segmented-control-height",
+        "description": "Height of the control (defaults to the density's control height)"
+      },
+      {
+        "name": "--segmented-control-padding",
+        "description": "Space between the track and the segments (defaults to 2px)"
+      },
+      {
+        "name": "--segmented-control-radius",
+        "description": "Corner radius of the track (defaults to --radius-md); the thumb follows it"
+      },
+      {
+        "name": "--segmented-control-background",
+        "description": "Background of the track (defaults to --surface-muted-color)"
+      },
+      {
+        "name": "--segmented-control-color",
+        "description": "Text color of the unselected segments"
+      },
+      {
+        "name": "--segmented-control-item-padding-x",
+        "description": "Inline padding of a segment"
+      },
+      {
+        "name": "--segmented-control-thumb-background",
+        "description": "Background of the thumb (defaults to --surface-elevated-color; --primary-color with color=\"primary\")"
+      },
+      {
+        "name": "--segmented-control-thumb-shadow",
+        "description": "Shadow of the thumb (defaults to --shadow-sm; none with color=\"primary\")"
+      },
+      {
+        "name": "--segmented-control-selected-color",
+        "description": "Text color of the selected segment"
+      },
+      {
+        "name": "--segmented-control-duration",
+        "description": "Duration of the thumb slide (defaults to --transition-base)"
+      }
+    ]
+  },
   "css:Select": {
     "kind": "cssVars",
     "source": "react/src/components/Select",
@@ -4003,6 +4461,48 @@
       {
         "name": "--skeleton-gap",
         "description": "Space between the lines of a paragraph and next to the avatar"
+      }
+    ]
+  },
+  "css:Slider": {
+    "kind": "cssVars",
+    "source": "react/src/components/Slider",
+    "vars": [
+      {
+        "name": "--slider-accent",
+        "description": "Color of the filled track and of the thumb border (defaults to the color prop's accent)"
+      },
+      {
+        "name": "--slider-rail-color",
+        "description": "Background of the empty track"
+      },
+      {
+        "name": "--slider-thumb-color",
+        "description": "Background of the thumbs"
+      },
+      {
+        "name": "--slider-track-height",
+        "description": "Thickness of the track (every size)"
+      },
+      {
+        "name": "--slider-thumb-size",
+        "description": "Width and height of the thumbs (every size)"
+      },
+      {
+        "name": "--slider-length",
+        "description": "Length of a vertical slider"
+      },
+      {
+        "name": "--slider-min-length",
+        "description": "Smallest length of a horizontal track, like the intrinsic size of a native range input (defaults to 10rem)"
+      },
+      {
+        "name": "--slider-gap",
+        "description": "Space between the track and the value label"
+      },
+      {
+        "name": "--slider-value-font-size",
+        "description": "Font size of the value label and of the mark labels"
       }
     ]
   },
@@ -5458,6 +5958,158 @@
       }
     ]
   },
+  "FlashcardAxis": {
+    "source": "react/src/components/Flashcard/types.ts",
+    "description": "Rotation axis of a Flashcard flip",
+    "kind": "alias",
+    "type": "\"y\" | \"x\""
+  },
+  "FlashcardProps": {
+    "source": "react/src/components/Flashcard/types.ts",
+    "description": "Props of the Flashcard component: a two-sided study card that flips between a front (the prompt) and a back (the answer), e.g. for spaced repetition review",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "front",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Content of the front face (the prompt)"
+      },
+      {
+        "name": "back",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Content of the back face (the answer)"
+      },
+      {
+        "name": "footer",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Content below the card, not flipped (e.g. rating buttons)"
+      },
+      {
+        "name": "frontLabel",
+        "type": "ReactNode",
+        "required": false,
+        "default": "\"Question\" (translated)",
+        "description": "Small caption of the front face; `null`, `false` or `\"\"` hides it"
+      },
+      {
+        "name": "backLabel",
+        "type": "ReactNode",
+        "required": false,
+        "default": "\"Answer\" (translated)",
+        "description": "Small caption of the back face; `null`, `false` or `\"\"` hides it"
+      },
+      {
+        "name": "hint",
+        "type": "ReactNode",
+        "required": false,
+        "default": "\"Click or press Space to flip\" (translated)",
+        "description": "Hint on the front face (shown with showHint while the card flips on click)"
+      },
+      {
+        "name": "showHint",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the hint on the front face"
+      },
+      {
+        "name": "flipped",
+        "type": "boolean",
+        "required": false,
+        "description": "Whether the back is shown (controlled; pair with onFlippedChange)"
+      },
+      {
+        "name": "defaultFlipped",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Whether the back is initially shown (uncontrolled)"
+      },
+      {
+        "name": "onFlippedChange",
+        "type": "(flipped: boolean) => void",
+        "required": false,
+        "description": "Called with the next flipped state"
+      },
+      {
+        "name": "flipOnClick",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Clicking the card (or Enter / Space on it) flips it. When false the card is not a button and only `flipped` flips it."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Blocks flipping and dims the card"
+      },
+      {
+        "name": "axis",
+        "type": "FlashcardAxis",
+        "required": false,
+        "default": "\"y\"",
+        "description": "Rotation axis: \"y\" flips horizontally, \"x\" vertically"
+      },
+      {
+        "name": "variant",
+        "type": "FlashcardVariant",
+        "required": false,
+        "default": "\"elevated\"",
+        "description": "Surface style"
+      },
+      {
+        "name": "size",
+        "type": "FlashcardSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Padding and typography scale"
+      },
+      {
+        "name": "minHeight",
+        "type": "number | string",
+        "required": false,
+        "default": "\"12rem\"",
+        "description": "Minimum height of the card (a number is in px); the card grows to fit the taller face"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "default": "\"Flashcard, showing <face label>\" (translated)",
+        "description": "Accessible label of the card"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root <div>"
+      }
+    ]
+  },
+  "FlashcardSize": {
+    "source": "react/src/components/Flashcard/types.ts",
+    "description": "Padding and typography scale of a Flashcard",
+    "kind": "alias",
+    "type": "\"small\" | \"medium\" | \"large\""
+  },
+  "FlashcardVariant": {
+    "source": "react/src/components/Flashcard/types.ts",
+    "description": "Surface style of a Flashcard (matches Card)",
+    "kind": "alias",
+    "type": "\"elevated\" | \"outline\" | \"filled\""
+  },
   "FontScale": {
     "source": "core/src/theme/design.ts",
     "description": "Type scale (\"large\" is reading-oriented).",
@@ -6043,6 +6695,190 @@
       }
     ]
   },
+  "KanbanBoardProps": {
+    "source": "react/src/components/KanbanBoard/types.ts",
+    "description": "Props of the KanbanBoard component: a horizontally scrolling row of KanbanColumn",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "The columns (KanbanColumn)"
+      },
+      {
+        "name": "columnWidth",
+        "type": "KanbanLength",
+        "required": false,
+        "default": "\"18rem\"",
+        "description": "Width of every column (a number is pixels). With `fill` it is the minimum width: columns stretch equally when they fit"
+      },
+      {
+        "name": "fill",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Stretches the columns equally to fill the board when they fit (they keep `columnWidth` as their minimum width and scroll otherwise)"
+      },
+      {
+        "name": "gap",
+        "type": "KanbanLength",
+        "required": false,
+        "default": "\"0.75rem\"",
+        "description": "Space between the columns (a number is pixels)"
+      },
+      {
+        "name": "height",
+        "type": "KanbanLength",
+        "required": false,
+        "description": "Height of the board: the column bodies scroll vertically within it (a number is pixels)"
+      },
+      {
+        "name": "maxHeight",
+        "type": "KanbanLength",
+        "required": false,
+        "description": "Maximum height of the board: the column bodies scroll vertically within it (a number is pixels)"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "default": "\"Board\" (translated)",
+        "description": "Accessible name of the board region"
+      },
+      {
+        "name": "aria-labelledby",
+        "type": "string",
+        "required": false,
+        "description": "Id of an element naming the board (instead of aria-label)"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name"
+      },
+      {
+        "name": "style",
+        "type": "CSSProperties",
+        "required": false,
+        "description": "Inline style of the board"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "Id of the board"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root <div>"
+      }
+    ]
+  },
+  "KanbanColumnColor": {
+    "source": "react/src/components/KanbanBoard/types.ts",
+    "description": "Accent of a KanbanColumn: a theme color or any CSS color (\"#7c3aed\", \"rgb(...)\", \"var(--my-color)\")",
+    "kind": "alias",
+    "type": "ColorScheme | (string & {})"
+  },
+  "KanbanColumnProps": {
+    "source": "react/src/components/KanbanBoard/types.ts",
+    "description": "Props of the KanbanColumn component: a status column of a KanbanBoard",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": true,
+        "description": "Title of the column (also its accessible name)"
+      },
+      {
+        "name": "count",
+        "type": "number",
+        "required": false,
+        "description": "Number of items shown as a badge next to the title (and announced with the title); omit to hide the badge"
+      },
+      {
+        "name": "color",
+        "type": "KanbanColumnColor",
+        "required": false,
+        "description": "Accent of the column (a dot before the title): a theme color or any CSS color"
+      },
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Supporting text under the header"
+      },
+      {
+        "name": "actions",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Header controls on the end side (e.g. an add button)"
+      },
+      {
+        "name": "empty",
+        "type": "ReactNode",
+        "required": false,
+        "default": "\"No items\" (translated)",
+        "description": "Content shown when the column has no cards"
+      },
+      {
+        "name": "footer",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Footer below the cards (e.g. an \"Add card\" button)"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "The cards: each child is wrapped in a role=\"listitem\""
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "default": "the title with the count (\"To do, 3 items\", translated)",
+        "description": "Accessible name of the column"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name"
+      },
+      {
+        "name": "style",
+        "type": "CSSProperties",
+        "required": false,
+        "description": "Inline style of the column"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "Id of the column"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLElement>",
+        "required": false,
+        "description": "Ref to the root <section>"
+      }
+    ]
+  },
+  "KanbanLength": {
+    "source": "react/src/components/KanbanBoard/types.ts",
+    "description": "A length: a number of pixels or any CSS length (\"18rem\", \"40vh\")",
+    "kind": "alias",
+    "type": "number | string"
+  },
   "KeyValueEditorProps": {
     "source": "react/src/components/KeyValueEditor/types.ts",
     "kind": "interface",
@@ -6297,6 +7133,294 @@
         "required": false,
         "default": "\"en\"",
         "description": "Language of the React library's built-in texts"
+      }
+    ]
+  },
+  "MediaPlayerCrossOrigin": {
+    "source": "react/src/components/MediaPlayer/types.ts",
+    "description": "CORS mode of the media request",
+    "kind": "alias",
+    "type": "\"anonymous\" | \"use-credentials\""
+  },
+  "MediaPlayerHandle": {
+    "source": "react/src/components/MediaPlayer/types.ts",
+    "description": "Imperative handle of a MediaPlayer (its `ref`)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "play",
+        "type": "() => Promise<void>",
+        "required": true,
+        "description": "Starts playback (the promise of `HTMLMediaElement.play()`)"
+      },
+      {
+        "name": "pause",
+        "type": "() => void",
+        "required": true,
+        "description": "Pauses playback"
+      },
+      {
+        "name": "seek",
+        "type": "(seconds: number) => void",
+        "required": true,
+        "description": "Moves the playhead to `seconds` (clamped to the duration)"
+      },
+      {
+        "name": "element",
+        "type": "HTMLMediaElement | null",
+        "required": true,
+        "description": "The rendered <audio> / <video> element (null before mount)"
+      }
+    ]
+  },
+  "MediaPlayerPreload": {
+    "source": "react/src/components/MediaPlayer/types.ts",
+    "description": "How much of the media the browser loads before playback",
+    "kind": "alias",
+    "type": "\"none\" | \"metadata\" | \"auto\""
+  },
+  "MediaPlayerProps": {
+    "source": "react/src/components/MediaPlayer/types.ts",
+    "description": "Props of the MediaPlayer component: an <audio> / <video> element with themed custom controls (play / pause, skip, seek bar with the buffered range, time, volume, playback speed, fullscreen and picture-in-picture)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "src",
+        "type": "string",
+        "required": false,
+        "description": "URL of the media"
+      },
+      {
+        "name": "type",
+        "type": "MediaPlayerType",
+        "required": false,
+        "default": "inferred from mimeType, else from the file extension of src, else \"video\"",
+        "description": "Kind of media"
+      },
+      {
+        "name": "mimeType",
+        "type": "string",
+        "required": false,
+        "description": "MIME type of the media (\"audio/mpeg\", \"video/mp4\"...), used to infer type"
+      },
+      {
+        "name": "poster",
+        "type": "string",
+        "required": false,
+        "description": "Image shown before a video plays"
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": false,
+        "description": "Title of the media, shown in the audio bar / over the video"
+      },
+      {
+        "name": "autoPlay",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Starts playing as soon as possible (browsers only allow muted autoplay without a user gesture)"
+      },
+      {
+        "name": "loop",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Restarts at the end"
+      },
+      {
+        "name": "muted",
+        "type": "boolean",
+        "required": false,
+        "description": "Mutes the media; applied whenever it changes (the mute button still toggles the sound)"
+      },
+      {
+        "name": "defaultMuted",
+        "type": "boolean",
+        "required": false,
+        "description": "Initially muted (uncontrolled)"
+      },
+      {
+        "name": "preload",
+        "type": "MediaPlayerPreload",
+        "required": false,
+        "default": "\"metadata\"",
+        "description": "How much of the media the browser loads before playback"
+      },
+      {
+        "name": "crossOrigin",
+        "type": "MediaPlayerCrossOrigin",
+        "required": false,
+        "description": "CORS mode of the media request"
+      },
+      {
+        "name": "startTime",
+        "type": "number",
+        "required": false,
+        "description": "Resume position in seconds, applied once when the metadata loads (and again when src changes)"
+      },
+      {
+        "name": "playbackRates",
+        "type": "readonly number[]",
+        "required": false,
+        "default": "[0.5, 0.75, 1, 1.25, 1.5, 2]",
+        "description": "Speeds the speed button cycles through"
+      },
+      {
+        "name": "skipSeconds",
+        "type": "number",
+        "required": false,
+        "default": "10",
+        "description": "Step of the skip back / forward buttons, in seconds (0 hides them)"
+      },
+      {
+        "name": "controls",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Shows the custom control bar; false renders the bare media element (drive it through the ref)"
+      },
+      {
+        "name": "height",
+        "type": "number | string",
+        "required": false,
+        "description": "Height of a video player (number: pixels); overrides aspectRatio"
+      },
+      {
+        "name": "aspectRatio",
+        "type": "string",
+        "required": false,
+        "default": "\"16 / 9\"",
+        "description": "Aspect ratio of a video player (CSS aspect-ratio)"
+      },
+      {
+        "name": "pictureInPicture",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a picture-in-picture button (video, where the browser supports it)"
+      },
+      {
+        "name": "onTimeUpdate",
+        "type": "(detail: MediaPlayerTimeDetail) => void",
+        "required": false,
+        "description": "Called while playing with the playhead position and the duration"
+      },
+      {
+        "name": "onEnded",
+        "type": "() => void",
+        "required": false,
+        "description": "Called when playback reaches the end"
+      },
+      {
+        "name": "onPlay",
+        "type": "() => void",
+        "required": false,
+        "description": "Called when playback starts"
+      },
+      {
+        "name": "onPause",
+        "type": "() => void",
+        "required": false,
+        "description": "Called when playback pauses"
+      },
+      {
+        "name": "onLoadedMetadata",
+        "type": "(detail: { duration: number }) => void",
+        "required": false,
+        "description": "Called with the duration once the metadata is loaded"
+      },
+      {
+        "name": "onError",
+        "type": "(error: MediaError | null) => void",
+        "required": false,
+        "description": "Called when the media can't be loaded or played"
+      },
+      {
+        "name": "onRateChange",
+        "type": "(rate: number) => void",
+        "required": false,
+        "description": "Called with the new playback speed"
+      },
+      {
+        "name": "onVolumeChange",
+        "type": "(detail: MediaPlayerVolumeDetail) => void",
+        "required": false,
+        "description": "Called when the volume or the muted state changes"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "default": "title, else \"Media player\" (translated)",
+        "description": "Accessible label of the player"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name"
+      },
+      {
+        "name": "style",
+        "type": "CSSProperties",
+        "required": false,
+        "description": "Inline styles of the root element"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<MediaPlayerHandle>",
+        "required": false,
+        "description": "Imperative handle: play(), pause(), seek(seconds), element"
+      }
+    ]
+  },
+  "MediaPlayerTimeDetail": {
+    "source": "react/src/components/MediaPlayer/types.ts",
+    "description": "Detail of MediaPlayer's onTimeUpdate",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "currentTime",
+        "type": "number",
+        "required": true,
+        "description": "Playhead position, in seconds"
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "required": true,
+        "description": "Duration in seconds (0 while unknown)"
+      }
+    ]
+  },
+  "MediaPlayerType": {
+    "source": "react/src/components/MediaPlayer/types.ts",
+    "description": "Kind of media a MediaPlayer renders",
+    "kind": "alias",
+    "type": "\"audio\" | \"video\""
+  },
+  "MediaPlayerVolumeDetail": {
+    "source": "react/src/components/MediaPlayer/types.ts",
+    "description": "Detail of MediaPlayer's onVolumeChange",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "volume",
+        "type": "number",
+        "required": true,
+        "description": "Volume, 0..1"
+      },
+      {
+        "name": "muted",
+        "type": "boolean",
+        "required": true,
+        "description": "Whether the media is muted"
       }
     ]
   },
@@ -9124,6 +10248,160 @@
       }
     ]
   },
+  "SegmentedControlColor": {
+    "source": "react/src/components/SegmentedControl/types.ts",
+    "description": "Color of a SegmentedControl: `neutral` shows a raised surface thumb on a muted track, `primary` a solid primary thumb",
+    "kind": "alias",
+    "type": "\"neutral\" | \"primary\""
+  },
+  "SegmentedControlOption": {
+    "source": "react/src/components/SegmentedControl/types.ts",
+    "description": "A segment: a plain string (value and label) or an option object",
+    "kind": "alias",
+    "type": "T | SegmentedControlOptionObject<T>"
+  },
+  "SegmentedControlOptionObject": {
+    "source": "react/src/components/SegmentedControl/types.ts",
+    "description": "A segment of a SegmentedControl",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "value",
+        "type": "T",
+        "required": true,
+        "description": "Value of the segment"
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": false,
+        "default": "the value (unless an icon is given)",
+        "description": "Visible label"
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Icon shown before the label (alone for an icon-only segment)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Blocks this segment"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "description": "Accessible name; required for an icon-only segment"
+      }
+    ]
+  },
+  "SegmentedControlProps": {
+    "source": "react/src/components/SegmentedControl/types.ts",
+    "description": "Props of the SegmentedControl component: a single-choice segmented switch for modes and filters (use Tabs when each choice has a content panel). The value type `T` comes from `onChange` or an explicit type argument (`<SegmentedControl<View> ...>`), never from `options` / `value` / `defaultValue`, so literal values and mixed options do not narrow it.",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "options",
+        "type": "readonly SegmentedControlOption<NoInfer<T>>[]",
+        "required": true,
+        "description": "The segments: strings or option objects"
+      },
+      {
+        "name": "value",
+        "type": "NoInfer<T>",
+        "required": false,
+        "description": "Selected value (controlled; pair with onChange)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "NoInfer<T>",
+        "required": false,
+        "description": "Initially selected value (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: T) => void",
+        "required": false,
+        "description": "Called with the selected value"
+      },
+      {
+        "name": "size",
+        "type": "SegmentedControlSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Segment density"
+      },
+      {
+        "name": "color",
+        "type": "SegmentedControlColor",
+        "required": false,
+        "default": "\"neutral\"",
+        "description": "Thumb color"
+      },
+      {
+        "name": "fullWidth",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Fills the width of the container (the segments always share the width equally)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Blocks every segment"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "Name of a hidden input carrying the value in a form"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label of the group"
+      },
+      {
+        "name": "aria-labelledby",
+        "type": "string",
+        "required": false,
+        "description": "Id of the element labelling the group"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "Root id"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root <div> (role=\"radiogroup\")"
+      }
+    ]
+  },
+  "SegmentedControlSize": {
+    "source": "react/src/components/SegmentedControl/types.ts",
+    "description": "Density of a SegmentedControl",
+    "kind": "alias",
+    "type": "\"small\" | \"medium\" | \"large\""
+  },
   "SelectGroupProps": {
     "source": "react/src/components/Select/types.ts",
     "description": "Props of a group of Select options",
@@ -9760,6 +11038,202 @@
     "source": "react/src/components/Skeleton/types.ts",
     "kind": "alias",
     "type": "\"text\" | \"circular\" | \"rectangular\" | \"rounded\" | \"button\" | \"image\" | \"card\""
+  },
+  "SliderColor": {
+    "source": "react/src/components/Slider/types.ts",
+    "description": "Accent color of a Slider",
+    "kind": "alias",
+    "type": "Extract<ColorScheme, \"primary\" | \"success\" | \"info\" | \"warning\" | \"danger\">"
+  },
+  "SliderOrientation": {
+    "source": "react/src/components/Slider/types.ts",
+    "description": "Direction of a Slider track",
+    "kind": "alias",
+    "type": "\"horizontal\" | \"vertical\""
+  },
+  "SliderProps": {
+    "source": "react/src/components/Slider/types.ts",
+    "description": "`data-*` attributes are forwarded to the root element.",
+    "kind": "interface",
+    "extends": [
+      "DataAttributes"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "SliderValue",
+        "required": false,
+        "description": "Value (controlled): a number, or `[start, end]` with `range`. Values are clamped to min..max and snapped to the step (or to the marks)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "SliderValue",
+        "required": false,
+        "description": "Initial value (uncontrolled); defaults to min, or [min, max] with range"
+      },
+      {
+        "name": "range",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Two thumbs selecting `[start, end]`; the thumbs cannot cross"
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": "Smallest value"
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "default": "100",
+        "description": "Largest value"
+      },
+      {
+        "name": "step",
+        "type": "number | null",
+        "required": false,
+        "default": "1",
+        "description": "Step between two values; `null` snaps to the marks only"
+      },
+      {
+        "name": "marks",
+        "type": "SliderMark[] | boolean",
+        "required": false,
+        "description": "Ticks of the scale: an array of `{ value, label? }`, or `true` for one tick per step (up to 101 ticks)"
+      },
+      {
+        "name": "snapToMarks",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Snaps the value to the closest mark (instead of the step)"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: SliderValue) => void",
+        "required": false,
+        "description": "Called with the new value while dragging and on each key press"
+      },
+      {
+        "name": "onChangeEnd",
+        "type": "(value: SliderValue) => void",
+        "required": false,
+        "description": "Called with the final value when the interaction ends (pointer release, key press): save here"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the slider. Inherited from an enclosing FormControl when not set; an explicit `false` overrides the FormControl"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Focusable and submitted, but the user cannot change the value. Inherited from an enclosing FormControl when not set"
+      },
+      {
+        "name": "size",
+        "type": "SliderSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Thumb and track size"
+      },
+      {
+        "name": "color",
+        "type": "SliderColor",
+        "required": false,
+        "default": "\"primary\"",
+        "description": "Semantic color of the filled track and the thumbs"
+      },
+      {
+        "name": "showValue",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the value (formatted with formatValue) after the track"
+      },
+      {
+        "name": "tooltip",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the value in a bubble above a thumb while it is dragged, hovered or focused"
+      },
+      {
+        "name": "formatValue",
+        "type": "(value: number) => string",
+        "required": false,
+        "description": "Formats a value for the value label, the tooltip and aria-valuetext"
+      },
+      {
+        "name": "orientation",
+        "type": "SliderOrientation",
+        "required": false,
+        "default": "\"horizontal\"",
+        "description": "Direction of the track"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "description": "Name of the hidden form input(s); a range submits two entries under this name"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "description": "Accessible label of the thumbs (range: suffixed with \"Minimum\" / \"Maximum\"). Defaults to the enclosing FormControl's label"
+      },
+      {
+        "name": "aria-labelledby",
+        "type": "string",
+        "required": false,
+        "description": "id(s) of the element(s) labelling the thumbs"
+      },
+      {
+        "name": "aria-describedby",
+        "type": "string",
+        "required": false,
+        "description": "Extra id(s) of elements describing the slider, merged with the enclosing FormControl's helper / error text"
+      },
+      {
+        "name": "getAriaValueText",
+        "type": "(value: number, index: number) => string",
+        "required": false,
+        "description": "aria-valuetext of a thumb (index 0, or 1 for the end thumb of a range). Defaults to formatValue"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name"
+      },
+      {
+        "name": "style",
+        "type": "React.CSSProperties",
+        "required": false,
+        "description": "Inline styles of the root element"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root element"
+      }
+    ]
+  },
+  "SliderSize": {
+    "source": "react/src/components/Slider/types.ts",
+    "description": "Size of a Slider",
+    "kind": "alias",
+    "type": "\"small\" | \"medium\" | \"large\""
   },
   "SplitLayoutCollapseBelow": {
     "source": "react/src/components/SplitLayout/types.ts",

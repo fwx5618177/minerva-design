@@ -14,6 +14,14 @@
       "title": "可拖动的任务矩阵",
       "description": "showTicks={false} 和 axisLabels 把图表变成任务看板：拖动时状态栏实时显示目标象限（onPointDrag），松开后更新其位置（onPointDrop）；双击任务可改名或换象限（onPointDoubleClick）；点击空白区域或 + 按钮（quadrantContent）添加任务；renderTooltip 显示 React 提示框。"
     },
+    "triage": {
+      "title": "徽标、计数与键盘移动",
+      "description": "每个象限带有徽标（badge）、第二行说明（description）以及任务数和总时长（showCounts 传入函数），全部由图表绘制。点击任务会在点外画一个圈（selectedIndex）。键盘用户按 Tab 进入隐藏的任务列表：获得焦点的点显示焦点环，Enter 选中，Shift + 方向键通过 onPointDrop 把任务移到相邻象限，并在 live region 中播报。"
+    },
+    "quadrant-header": {
+      "title": "自定义象限标题",
+      "description": "renderQuadrantHeader 用 React 内容替换绘制的标题，放在每个象限的外侧角：徽标、标题、行动提示、来自 info 参数的数量与总时长，以及添加任务的 + 按钮。getPointProps 为每个点的隐形锚点加上 data-testid，便于端到端测试。"
+    },
     "bcg": {
       "title": "波士顿矩阵",
       "description": "按相对市场份额和市场增长率排列的产品组合：xDomain、yDomain、xSplit 和 ySplit 把分界线放在份额 1 和增长率 10% 处，reverseX 让领先者位于左侧，点的大小表示收入。"
@@ -113,6 +121,18 @@
     "dragHint": "把任务拖到另一个象限，双击编辑，或点击空白处添加任务",
     "quadrantTapped": "点按了“{{quadrant}}”",
     "dragHintNative": "把任务拖到另一个象限",
+    "triage": {
+      "doNow": "立即做",
+      "plan": "安排时间",
+      "handOff": "交给别人",
+      "drop": "不做",
+      "count_one": "{{count}} 项 · {{time}}",
+      "count_other": "{{count}} 项 · {{time}}",
+      "selected": "已选中：{{task}}",
+      "hint": "点击任务即可选中，也可以拖动。键盘：Tab 到任务后按 Shift + 方向键移到其他象限",
+      "headerHint": "点击 + 向象限添加任务，点击任务即可选中",
+      "aria": "今日任务的艾森豪威尔矩阵（含预估时长）"
+    },
     "products": {
       "cloud": "云托管",
       "analytics": "数据分析",
@@ -289,7 +309,10 @@
       "onQuadrantClick": "点击象限的空白区域时调用，参数为象限和数据位置",
       "onPointDrop": "拖动的点被释放时调用，参数为点、索引和放置目标；设置后点即可拖动（需更新 points 才会移动）",
       "renderTooltip": "某个点的提示框 React 内容",
-      "quadrantContent": "放在每个象限上方的 React 内容（如添加按钮）；只有这些内容接收指针事件"
+      "quadrantContent": "放在每个象限上方的 React 内容（如添加按钮）；只有这些内容接收指针事件",
+      "renderQuadrantHeader": "每个象限外侧角的 React 标题（上方象限贴顶部，下方象限贴底部）；接收象限和 { count, points, indices, region }，替换绘制的标题、徽标、说明和计数",
+      "accessiblePoints": "为键盘和读屏用户在每个象限生成视觉隐藏的按钮列表：Enter / 空格调用 onPointClick，Shift + 方向键把点移到相邻象限（onPointDrop），获得焦点的点显示焦点环",
+      "getPointProps": "放在每个点上的隐形锚点的额外属性（如 data-testid）；每个锚点都有 data-point-index、data-label 和类名 minerva-chart-quadrant-point"
     },
     "QuadrantConfig": {
       "points": "要放置的点",
@@ -306,7 +329,10 @@
       "showLabels": "在点旁绘制标签，跳过重叠项",
       "pointSize": "点的直径，单位为像素",
       "name": "提示框中点的名称",
-      "draggable": "允许用户拖动点（设置 onPointDrop 或 onPointDrag 时默认开启）"
+      "draggable": "允许用户拖动点（设置 onPointDrop 或 onPointDrag 时默认开启）",
+      "showCounts": "在每个象限标题后显示其中的点数；传入函数 (count, points) 则返回自定义文本",
+      "selectedIndex": "选中点的索引，用同色圆环标出（null：无）",
+      "selectedIndices": "多个选中点的索引，各自用圆环标出"
     },
     "QuadrantDropTarget": {
       "x": "放置位置的 X 数据坐标",
@@ -328,7 +354,15 @@
     },
     "QuadrantRegion": {
       "label": "绘制在象限外侧角落的标题",
-      "color": "背景底色及默认的点颜色"
+      "color": "背景底色及默认的点颜色",
+      "badge": "画在标题前胶囊中的简短代号（如 \"Q1\"）",
+      "description": "画在标题下方的第二行；过长时以 … 截断"
+    },
+    "QuadrantHeaderInfo": {
+      "count": "象限中的点数",
+      "points": "象限中的点",
+      "indices": "这些点在 points 中的索引",
+      "region": "该象限的标题、徽标、说明和颜色（quadrants）"
     },
     "QuadrantAxisLabels": {
       "top": "竖直分隔线顶端的文字",
@@ -346,6 +380,10 @@
       "draggable": {
         "title": "在象限间拖动",
         "description": "把任务拖到另一个象限：onPointDrop 接收放置目标；+ 按钮来自 quadrantContent，提示框是 renderTooltip 返回的视图。"
+      },
+      "triage": {
+        "title": "徽标、计数与选中",
+        "description": "每个象限的徽标、第二行说明和任务数由图表绘制；点按任务会画出圆环（selectedIndex），也可以拖到其他象限。"
       }
     }
   },
@@ -358,6 +396,10 @@
       "point-click": {
         "title": "点击任务和象限",
         "description": "艾森豪威尔矩阵，紧急任务位于左侧（反转 x 轴）：点击任务或象限的空白区域。"
+      },
+      "triage": {
+        "title": "徽标、计数与选中",
+        "description": "象限中的 badge 与 description、show-counts 属性（或 showCounts 函数）、在 minerva-point-click 中设置 selectedIndex，以及用 minerva-point-drop 移动任务。"
       }
     },
     "minerva-quadrant-chart": {

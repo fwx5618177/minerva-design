@@ -1,0 +1,303 @@
+// Public CSS variables (set them on the player or any ancestor):
+// @css-var --media-player-radius Corner radius of the player (defaults to --radius-lg)
+// @css-var --media-player-accent Color of the played range and the slider thumbs (defaults to --primary-color)
+// @css-var --media-player-video-background Letterbox color behind a video (defaults to black)
+// @css-var --media-player-overlay-background Background of the video control bar (defaults to a gradient to --overlay-color)
+// @css-var --media-player-overlay-color Text and icon color over a video (defaults to white)
+// @css-var --media-player-bar-background Background of the audio bar (defaults to --surface-color)
+// @css-var --media-player-bar-color Text and icon color of the audio bar (defaults to --text-color)
+// @css-var --media-player-button-size Size of the control buttons (defaults to the density's small control height)
+// @css-var --media-player-track-height Thickness of the seek and volume tracks (defaults to 4px)
+.mediaPlayer {
+  display: block;
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: var(--media-player-radius, var(--radius-lg));
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-tight);
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
+  }
+}
+
+.video {
+  background: var(--media-player-video-background, #000);
+  color: var(--media-player-overlay-color, #fff);
+
+  .media {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+.audio {
+  border: 1px solid var(--border-color);
+  background: var(--media-player-bar-background, var(--surface-color));
+  color: var(--media-player-bar-color, var(--text-color));
+
+  .media {
+    display: none;
+  }
+}
+
+.bare {
+  overflow: visible;
+
+  .media {
+    display: block;
+  }
+}
+
+.title {
+  overflow: hidden;
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.video .title {
+  position: absolute;
+  inset: 0 0 auto;
+  padding: var(--space-3) var(--space-4) var(--space-6);
+  background: linear-gradient(to bottom, var(--overlay-color), transparent);
+  font-size: var(--font-size-md);
+  pointer-events: none;
+}
+
+.audio .title {
+  padding: var(--space-3) var(--space-3) 0;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  padding: var(--space-2) var(--space-3);
+}
+
+.video .controls {
+  position: absolute;
+  inset: auto 0 0;
+  padding-top: var(--space-6);
+  background: var(--media-player-overlay-background, linear-gradient(to top, var(--overlay-color), transparent));
+}
+
+// Video chrome fades out while playing; it shows on hover, on focus, while
+// paused and on touch screens (no hover).
+.video .controls,
+.video .title {
+  transition: opacity var(--transition-base);
+}
+
+.video.playing:not(:hover, :focus-within) {
+  .controls,
+  .title {
+    opacity: 0;
+  }
+}
+
+@media (hover: none) {
+  .video.playing:not(:hover, :focus-within) {
+    .controls,
+    .title {
+      opacity: 1;
+    }
+  }
+}
+
+.button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--media-player-button-size, var(--control-height-sm));
+  height: var(--media-player-button-size, var(--control-height-sm));
+  padding: 0 var(--space-1);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: currentColor;
+  }
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, currentColor 15%, transparent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 1px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.rate {
+  min-width: 3rem;
+  font-weight: var(--font-weight-semibold);
+}
+
+.slider {
+  position: relative;
+  flex: 1 1 6rem;
+  min-width: 4rem;
+  height: var(--media-player-button-size, var(--control-height-sm));
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  touch-action: none;
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 1px;
+  }
+
+  &[aria-disabled="true"] {
+    cursor: default;
+    opacity: 0.5;
+  }
+}
+
+.seek {
+  flex-basis: 100%;
+}
+
+.volume {
+  flex: 0 1 5rem;
+  min-width: 3rem;
+}
+
+.track,
+.buffered,
+.fill {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: var(--media-player-track-height, 4px);
+  border-radius: 999px;
+  transform: translateY(-50%);
+}
+
+.track {
+  right: 0;
+  background: color-mix(in srgb, currentColor 25%, transparent);
+}
+
+.buffered {
+  width: var(--_mp-buffered, 0%);
+  background: color-mix(in srgb, currentColor 40%, transparent);
+}
+
+.fill {
+  width: var(--_mp-value, 0%);
+  background: var(--media-player-accent, var(--primary-color));
+}
+
+.thumb {
+  position: absolute;
+  top: 50%;
+  left: var(--_mp-value, 0%);
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 2px solid var(--surface-color);
+  border-radius: 50%;
+  background: var(--media-player-accent, var(--primary-color));
+  transform: translate(-50%, -50%);
+}
+
+.time {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.spacer {
+  flex: 1 1 0;
+}
+
+.spinner {
+  display: inline-block;
+  flex: none;
+  box-sizing: border-box;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid color-mix(in srgb, currentColor 30%, transparent);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: mediaPlayerSpin 0.8s linear infinite;
+}
+
+.video > .spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3rem;
+  height: 3rem;
+  margin: -1.5rem 0 0 -1.5rem;
+  border-width: 3px;
+}
+
+.error {
+  padding: var(--space-2) var(--space-3);
+  color: var(--danger-color);
+}
+
+.video .error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  max-width: 80%;
+  border-radius: var(--radius-md);
+  background: var(--overlay-color);
+  color: inherit;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes mediaPlayerSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .video .controls,
+  .video .title {
+    transition: none;
+  }
+
+  .spinner {
+    animation-duration: 2.4s;
+  }
+}
+
+@media (forced-colors: active) {
+  .fill,
+  .thumb {
+    background: Highlight;
+  }
+
+  .track {
+    border: 1px solid CanvasText;
+  }
+}

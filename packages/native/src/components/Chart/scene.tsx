@@ -17,6 +17,7 @@ import {
   annotationLine,
   annotationRect,
   annotationTextBox,
+  annotationTitleLayout,
   scenePrimitives,
   toCss,
   type ChartPrimitive,
@@ -957,39 +958,63 @@ function drawForeground(scene: ChartScene, family?: string): ReactElement[] {
   });
 
   annotations.forEach((a, i) => {
-    if (a.type !== "rect" || !a.label) return;
-    const r = annotationRect(a, scales);
-    if (r.width <= 0 || r.height <= 0) return;
-    const pad = 10;
-    const pos = a.labelPosition;
-    const align: Align = pos.endsWith("left")
-      ? "left"
-      : pos.endsWith("right")
-        ? "right"
-        : "center";
-    const tx =
-      align === "left"
-        ? r.x + pad
-        : align === "right"
-          ? r.x + r.width - pad
-          : r.x + r.width / 2;
-    const ty = pos.startsWith("top")
-      ? r.y + pad
-      : pos.startsWith("bottom")
-        ? r.y + r.height - pad - labelHeight
-        : r.y + (r.height - labelHeight) / 2;
-    out.push(
-      label(
-        `area-label-${i}`,
-        a.label,
-        tx - ox,
-        ty - oy,
-        align,
-        "top",
-        { size: fs + 1, weight: 600, color: css(a.labelColor), family },
-        fw,
-      ),
+    if (a.type !== "rect") return;
+    const title = annotationTitleLayout(
+      a,
+      annotationRect(a, scales),
+      fs,
+      (text, size, weight) =>
+        measureChartText(text, `${weight} ${size}px sans-serif`),
     );
+    if (!title) return;
+    const color = css(a.labelColor);
+    const muted = css(theme.textMuted);
+    title.parts.forEach((p, k) => {
+      const key = `area-${p.kind}-${i}-${k}`;
+      const cy = p.y + p.height / 2 - oy;
+      if (p.kind === "badge") {
+        const h = p.height - 2;
+        out.push(
+          box(
+            `${key}-pill`,
+            p.x - ox,
+            cy - h / 2,
+            p.width,
+            h,
+            css(a.labelColor, 0.16),
+            { borderRadius: h / 2 },
+          ),
+          label(
+            key,
+            p.text,
+            p.x - ox + p.width / 2,
+            cy,
+            "center",
+            "middle",
+            { size: p.size, weight: p.weight, color, family },
+            fw,
+          ),
+        );
+        return;
+      }
+      out.push(
+        label(
+          p.kind === "label" ? `area-label-${i}` : key,
+          p.text,
+          p.x - ox,
+          cy,
+          "left",
+          "middle",
+          {
+            size: p.size,
+            weight: p.weight,
+            color: p.kind === "label" ? color : muted,
+            family,
+          },
+          fw,
+        ),
+      );
+    });
   });
 
   annotations.forEach((a, i) => {
@@ -1012,6 +1037,8 @@ function drawForeground(scene: ChartScene, family?: string): ReactElement[] {
 
   const pointColor = css(theme.text, 0.85);
   scene.pointLabels.forEach(({ label: l, box: b }, i) => {
+    // inside a bar: its contrasting color, no halo, cut at the end of the bar
+    const bar = l.placement === "inside" ? l.bar : undefined;
     out.push(
       label(
         `point-label-${i}`,
@@ -1020,8 +1047,13 @@ function drawForeground(scene: ChartScene, family?: string): ReactElement[] {
         b.y + b.height / 2 - oy,
         "left",
         "middle",
-        { size: fs, color: pointColor, halo, family },
+        l.color
+          ? { size: fs, color: l.color, family }
+          : { size: fs, color: pointColor, halo, family },
         fw,
+        bar
+          ? { width: Math.max(b.width, bar.x + bar.width - 6 - b.x) }
+          : undefined,
       ),
     );
   });

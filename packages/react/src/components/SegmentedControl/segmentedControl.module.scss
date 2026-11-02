@@ -1,0 +1,192 @@
+// Public CSS variables (set them on the control or any ancestor):
+// @css-var --segmented-control-height Height of the control (defaults to the density's control height)
+// @css-var --segmented-control-padding Space between the track and the segments (defaults to 2px)
+// @css-var --segmented-control-radius Corner radius of the track (defaults to --radius-md); the thumb follows it
+// @css-var --segmented-control-background Background of the track (defaults to --surface-muted-color)
+// @css-var --segmented-control-color Text color of the unselected segments
+// @css-var --segmented-control-item-padding-x Inline padding of a segment
+// @css-var --segmented-control-thumb-background Background of the thumb (defaults to --surface-elevated-color; --primary-color with color="primary")
+// @css-var --segmented-control-thumb-shadow Shadow of the thumb (defaults to --shadow-sm; none with color="primary")
+// @css-var --segmented-control-selected-color Text color of the selected segment
+// @css-var --segmented-control-duration Duration of the thumb slide (defaults to --transition-base)
+
+// Private: --_segmented-control-count / -index are set inline from the
+// options; the reading direction flips the slide.
+.segmentedControl {
+  --_segmented-control-pad: var(--segmented-control-padding, 2px);
+  --_segmented-control-radius: var(--segmented-control-radius, var(--radius-md));
+  --_segmented-control-height: var(--segmented-control-height, var(--control-height-md));
+  --_segmented-control-dir: 1;
+  --_segmented-control-thumb: var(--segmented-control-thumb-background, var(--surface-elevated-color));
+  --_segmented-control-thumb-shadow: var(--segmented-control-thumb-shadow, var(--shadow-sm));
+  --_segmented-control-selected: var(--segmented-control-selected-color, var(--text-color));
+
+  position: relative;
+  // Equal columns as wide as the widest segment (iOS-like); the thumb is
+  // one column wide and slides by whole columns.
+  display: inline-grid;
+  grid-auto-columns: 1fr;
+  grid-auto-flow: column;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: var(--_segmented-control-pad);
+  border-radius: var(--_segmented-control-radius);
+  background: var(--segmented-control-background, var(--surface-muted-color));
+  color: var(--segmented-control-color, var(--text-secondary-color));
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-sm);
+  vertical-align: middle;
+  isolation: isolate;
+}
+
+.segmentedControl:dir(rtl) {
+  --_segmented-control-dir: -1;
+}
+
+[dir="rtl"] .segmentedControl {
+  --_segmented-control-dir: -1;
+}
+
+.fullWidth {
+  display: grid;
+  width: 100%;
+}
+
+.small {
+  --_segmented-control-height: var(--segmented-control-height, var(--control-height-sm));
+
+  font-size: var(--font-size-xs);
+}
+
+.large {
+  --_segmented-control-height: var(--segmented-control-height, var(--control-height-lg));
+
+  font-size: var(--font-size-md);
+}
+
+.primary {
+  --_segmented-control-thumb: var(--segmented-control-thumb-background, var(--primary-color));
+  --_segmented-control-thumb-shadow: var(--segmented-control-thumb-shadow, none);
+  --_segmented-control-selected: var(--segmented-control-selected-color, var(--text-inverse-color));
+}
+
+.indicator {
+  position: absolute;
+  z-index: 0;
+  top: var(--_segmented-control-pad);
+  bottom: var(--_segmented-control-pad);
+  inset-inline-start: var(--_segmented-control-pad);
+  width: calc((100% - 2 * var(--_segmented-control-pad)) / var(--_segmented-control-count, 1));
+  box-sizing: border-box;
+  border-radius: calc(var(--_segmented-control-radius) - var(--_segmented-control-pad));
+  background: var(--_segmented-control-thumb);
+  box-shadow: var(--_segmented-control-thumb-shadow);
+  transform: translateX(calc(var(--_segmented-control-index, 0) * 100% * var(--_segmented-control-dir)));
+  transition:
+    transform var(--segmented-control-duration, var(--transition-base)),
+    background-color var(--transition-fast);
+  pointer-events: none;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.item {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-width: 0;
+  box-sizing: border-box;
+  height: calc(var(--_segmented-control-height) - 2 * var(--_segmented-control-pad));
+  padding-inline: var(--segmented-control-item-padding-x, var(--space-3));
+  border-radius: calc(var(--_segmented-control-radius) - var(--_segmented-control-pad));
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  -webkit-tap-highlight-color: transparent;
+  transition: color var(--transition-fast);
+
+  &:hover:not([aria-checked="true"], [aria-disabled="true"]) {
+    color: var(--text-color);
+  }
+
+  &[aria-checked="true"] {
+    color: var(--_segmented-control-selected);
+  }
+
+  &[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 var(--focus-ring-width, 2px) var(--focus-ring-color);
+  }
+}
+
+.small .item {
+  padding-inline: var(--segmented-control-item-padding-x, var(--space-2));
+}
+
+.large .item {
+  padding-inline: var(--segmented-control-item-padding-x, var(--space-4));
+}
+
+.icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15em;
+
+  svg {
+    width: 1em;
+    height: 1em;
+  }
+}
+
+.label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.disabled {
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .indicator,
+  .item {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .segmentedControl {
+    border: 1px solid CanvasText;
+  }
+
+  .indicator {
+    background: Highlight;
+    forced-color-adjust: none;
+  }
+
+  .item[aria-checked="true"] {
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+
+  .item:focus-visible {
+    outline-color: CanvasText;
+  }
+}

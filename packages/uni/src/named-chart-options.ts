@@ -305,6 +305,7 @@ export function ganttChartOptions(
     dependenciesName?: string;
     dependencyArrows?: boolean;
     dependencyColor?: string;
+    barLabels?: boolean | "inside" | "auto";
     locale?: string;
     today?: boolean | number | Date;
     todayLabel?: string;
@@ -320,6 +321,7 @@ export function ganttChartOptions(
     dependenciesName: props.dependenciesName,
     dependencyArrows: props.dependencyArrows,
     dependencyColor: props.dependencyColor,
+    barLabels: props.barLabels,
     locale: props.locale,
   });
   const today = props.today ?? false;

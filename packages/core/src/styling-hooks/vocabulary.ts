@@ -49,6 +49,7 @@ export const BOOLEAN_STATES = [
   "expanded",
   "today",
   "outside",
+  "flagged",
 ] as const;
 
 /**
@@ -67,6 +68,7 @@ export const KEYED_STATES = [
   "status",
   "sort",
   "fill",
+  "layout",
 ] as const;
 
 export type StateValue = (typeof STATE_VALUES)[number];

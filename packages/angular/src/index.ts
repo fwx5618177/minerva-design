@@ -6,6 +6,7 @@
 export * from "./config";
 export * from "./components/button";
 export * from "./components/switch";
+export * from "./components/slider";
 
 export * from "./components/modal";
 
@@ -19,6 +20,7 @@ export * from "./components/input";
 export * from "./components/number-input";
 export * from "./components/radio";
 export * from "./components/rating";
+export * from "./components/segmented-control";
 export * from "./components/select";
 export * from "./components/tag-input";
 export * from "./components/textarea";

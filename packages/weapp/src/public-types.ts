@@ -72,6 +72,28 @@ export interface WeekStripConfig {
 export interface NativeWeekStripInstance extends NativeConfigConsumer {
   configure(config: WeekStripConfig): void;
 }
+/** Instance methods of the MediaPlayer native component (selectComponent) */
+export interface NativeMediaPlayerInstance {
+  play(): void;
+  pause(): void;
+  seek(seconds: number): void;
+}
+export interface AnswerSheetConfig {
+  getItemLabel?: (
+    item: {
+      key: string;
+      label?: string;
+      status?: string;
+      flagged?: boolean;
+      disabled?: boolean;
+      group?: string;
+    },
+    index: number,
+  ) => string;
+}
+export interface NativeAnswerSheetInstance extends NativeConfigConsumer {
+  configure(config: AnswerSheetConfig): void;
+}
 export interface PaginationConfig {
   totalRender?: (total: number, range: [number, number]) => string;
   itemRender?: (page: number, type: string) => string;
@@ -738,6 +760,11 @@ export interface NativeGanttChartProperties extends NativeChartCommonProperties 
   dependencyArrows?: boolean;
   /** Color of the dependency arrows (any CSS color) @default the secondary text color */
   dependencyColor?: string;
+  /**
+   * Task names inside the bars: `"auto"` when several tasks share a row,
+   * `true` / `"inside"` always, `false` never @default "auto"
+   */
+  barLabels?: boolean | "inside" | "auto";
   locale?: string;
   /** Line at this timestamp (`true`: now) @default false */
   today?: boolean | number;
@@ -831,6 +858,10 @@ export interface NativeQuadrantPoint {
 export interface NativeQuadrantRegion {
   label?: string;
   color?: string;
+  /** Short code drawn in a pill before the title (e.g. "Q1") */
+  badge?: string;
+  /** Second line drawn under the title */
+  description?: string;
 }
 export interface NativeQuadrantRegions {
   topLeft?: NativeQuadrantRegion;
@@ -867,6 +898,12 @@ export interface NativeQuadrantChartProperties extends NativeChartCommonProperti
   name?: string;
   /** Dots can be dragged (`pointdrag` / `pointdrop`) @default false */
   draggable?: boolean;
+  /** Number of points of each quadrant after its title @default false */
+  showCounts?: boolean;
+  /** Index of the selected point, drawn with a ring (`null`: none) */
+  selectedIndex?: number | null;
+  /** Indices of the selected points */
+  selectedIndices?: readonly number[];
 }
 export interface NativeQuadrantDropTarget {
   x: number;

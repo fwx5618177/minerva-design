@@ -384,8 +384,17 @@ export const drawScene = (
     ctx.strokeStyle = toCss(theme.background, 0.9);
     ctx.fillStyle = toCss(theme.text, 0.85);
     for (const { label, box } of scene.pointLabels) {
-      ctx.strokeText(label.text, box.x, box.y + box.height / 2);
-      ctx.fillText(label.text, box.x, box.y + box.height / 2);
+      const y = box.y + box.height / 2;
+      if (label.color) {
+        // inside a solid bar: its contrasting color, no halo
+        ctx.save();
+        ctx.fillStyle = label.color;
+        ctx.fillText(label.text, box.x, y);
+        ctx.restore();
+        continue;
+      }
+      ctx.strokeText(label.text, box.x, y);
+      ctx.fillText(label.text, box.x, y);
     }
     ctx.restore();
   }

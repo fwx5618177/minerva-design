@@ -4,9 +4,16 @@ import {
   createScanner,
   format,
 } from "jsonc-parser/lib/esm/main.js";
-import { useId, useRef, useState, useEffect } from "react";
+import { useId, useMemo, useRef, useState, useEffect } from "react";
 import { Platform, ScrollView, Text, View, type ViewProps } from "react-native";
-import { DEFAULT_TAG_SEPARATORS, splitBySeparators } from "@minerva/core";
+import {
+  DEFAULT_TAG_SEPARATORS,
+  codeLanguageLabel,
+  highlightCode,
+  splitBySeparators,
+  splitHighlightLines,
+  type HighlightToken,
+} from "@minerva/core";
 import { useI18n, useTheme } from "../../theme/MinervaProvider";
 import { textStyle } from "../../internal/styles";
 import { useControllable } from "../../internal/useControllable";
@@ -394,6 +401,20 @@ export interface CodeBlockProps extends Omit<ViewProps, "children"> {
   ) => Promise<void> | void;
   onCopied?: (text: string) => void;
   onCopyError?: (error: unknown) => void;
+  /**
+   * Language of the code: highlights its syntax (nested colored Text,
+   * `code-token-<type>-color` tokens). Without it the text is plain
+   */
+  language?: string;
+  /** Highlights the syntax of `language` (false: plain text) @default true */
+  highlight?: boolean;
+  /**
+   * Numbers the lines in a gutter hidden from assistive technology (each
+   * line is then its own selectable Text) @default false
+   */
+  showLineNumbers?: boolean;
+  /** Shows the `language` as a small label (e.g. "JSON") @default false */
+  showLanguage?: boolean;
 }
 export function CodeBlock({
   children,
@@ -403,6 +424,10 @@ export function CodeBlock({
   copyText,
   onCopied,
   onCopyError,
+  language,
+  highlight = true,
+  showLineNumbers = false,
+  showLanguage = false,
   style,
   ...props
 }: CodeBlockProps) {
@@ -410,6 +435,31 @@ export function CodeBlock({
   const { t: translate } = useI18n();
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
+  const lang = language?.trim() || undefined;
+  const highlighted = useMemo(
+    () =>
+      lang && highlight
+        ? highlightCode(children, lang)
+        : [{ type: null, text: children }],
+    [children, lang, highlight],
+  );
+  const mono = textStyle(
+    t,
+    "sm",
+    fonts.mono ?? (Platform.OS === "ios" ? "Menlo" : "monospace"),
+  );
+  const spans = (list: readonly HighlightToken[]) =>
+    list.map(({ type, text }, i) =>
+      type ? (
+        <Text key={i} style={{ color: t.colors[`code-token-${type}-color`] }}>
+          {text}
+        </Text>
+      ) : (
+        text
+      ),
+    );
+  const lines = showLineNumbers ? splitHighlightLines(highlighted) : [];
+  const gutter = String(lines.length).length;
   const browserClipboard =
     typeof navigator !== "undefined"
       ? (
@@ -436,6 +486,19 @@ export function CodeBlock({
         style,
       ]}
     >
+      {showLanguage && lang ? (
+        <Text
+          testID="code-block-language"
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
+          style={[
+            textStyle(t, "xs", mono.fontFamily),
+            { color: t.colors["text-muted-color"], alignSelf: "flex-end" },
+          ]}
+        >
+          {codeLanguageLabel(lang)}
+        </Text>
+      ) : null}
       {copyable && (
         <Button
           variant="ghost"
@@ -467,18 +530,38 @@ export function CodeBlock({
       )}
       <ScrollView style={{ maxHeight, flexGrow: 0 }}>
         <ScrollView horizontal={!wrap} style={{ flexGrow: 0 }}>
-          <Text
-            selectable
-            style={[
-              textStyle(
-                t,
-                "sm",
-                fonts.mono ?? (Platform.OS === "ios" ? "Menlo" : "monospace"),
-              ),
-            ]}
-          >
-            {children}
-          </Text>
+          {showLineNumbers ? (
+            <View>
+              {lines.map((line, i) => (
+                <View key={i} style={{ flexDirection: "row" }}>
+                  <Text
+                    testID="code-block-line-number"
+                    accessibilityElementsHidden
+                    importantForAccessibility="no-hide-descendants"
+                    style={[
+                      mono,
+                      {
+                        color: t.colors["text-muted-color"],
+                        minWidth:
+                          gutter * (mono.fontSize ?? 14) * 0.6 + t.space["1"],
+                        marginEnd: t.space["3"],
+                        textAlign: "right",
+                      },
+                    ]}
+                  >
+                    {i + 1}
+                  </Text>
+                  <Text selectable style={[mono, wrap ? { flex: 1 } : null]}>
+                    {spans(line)}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          ) : (
+            <Text selectable style={[mono]}>
+              {spans(highlighted)}
+            </Text>
+          )}
         </ScrollView>
       </ScrollView>
     </View>

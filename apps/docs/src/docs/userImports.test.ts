@@ -177,6 +177,7 @@ describe("user-facing snippets use minerva-design", () => {
       "apps/docs/src/docs/api.generated.json",
       "apps/docs/src/docs/api.charts.generated.json",
       "apps/docs/src/docs/api.wc.generated.json",
+      "apps/docs/src/docs/api.wc.charts.generated.json",
     ]) {
       expect(readFileSync(join(REPO, file), "utf8"), file).not.toMatch(
         /@minerva\/(?!core\b)/,

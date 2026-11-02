@@ -200,6 +200,9 @@ export function QuadrantChart(props: QuadrantChartProps) {
     onQuadrantClick,
     renderTooltip,
     quadrantContent,
+    showCounts,
+    selectedIndex,
+    selectedIndices,
   } = props;
   const base = useEngineOptions(props, NO_SERIES);
   const dragPoints = draggable ?? !!onPointDrop;
@@ -222,6 +225,9 @@ export function QuadrantChart(props: QuadrantChartProps) {
           pointSize,
           name,
           draggable: dragPoints,
+          showCounts,
+          selectedIndex,
+          selectedIndices,
         },
         base,
       ),
@@ -241,6 +247,9 @@ export function QuadrantChart(props: QuadrantChartProps) {
       pointSize,
       name,
       dragPoints,
+      showCounts,
+      selectedIndex,
+      selectedIndices,
       base,
     ],
   );

@@ -1,0 +1,125 @@
+{
+  "title": "MediaPlayer",
+  "description": "Un lecteur audio ou vidéo aux commandes personnalisées et thématisées : lecture / pause, sauts, barre de progression avec la plage mise en mémoire tampon, durée, volume, vitesse de lecture et plein écran, utilisable au clavier.",
+  "demos": {
+    "video": {
+      "title": "Vidéo",
+      "description": "Une <video> avec une barre de commandes sombre et translucide qui s’efface pendant la lecture (elle reste visible sur écran tactile, au survol et au focus). Lecteur focalisé : Espace / K lecture-pause, ← / → saut de 5 s, ↑ / ↓ volume, M muet, F plein écran. pictureInPicture ajoute un bouton là où le navigateur le permet."
+    },
+    "audio": {
+      "title": "Audio",
+      "description": "Le type est déduit de mimeType ou de l’extension du fichier (vidéo sinon) ; l’audio affiche une barre de surface avec le titre. skipSeconds={0} masque les boutons de saut."
+    },
+    "resume": {
+      "title": "Reprise et progression",
+      "description": "startTime est appliqué une fois les métadonnées chargées (reprendre là où l’apprenant s’est arrêté). onTimeUpdate / onLoadedMetadata / onPause / onEnded signalent la progression ; la ref expose play(), pause(), seek(secondes) et l’élément média."
+    },
+    "rates-skip": {
+      "title": "Vitesses et pas de saut",
+      "description": "playbackRates liste les vitesses parcourues par le bouton de vitesse (onRateChange signale la nouvelle) ; skipSeconds fixe le pas des boutons reculer / avancer ; aspectRatio (ou height) dimensionne une vidéo."
+    }
+  },
+  "api": {
+    "MediaPlayerProps": {
+      "src": "URL du média",
+      "type": "Type de média ; déduit de mimeType, sinon de l’extension de src, sinon \"video\"",
+      "mimeType": "Type MIME du média (\"audio/mpeg\", \"video/mp4\"…), utilisé pour déduire type",
+      "poster": "Image affichée avant la lecture d’une vidéo",
+      "title": "Titre du média, affiché dans la barre audio / sur la vidéo",
+      "autoPlay": "Démarre la lecture dès que possible (les navigateurs n’autorisent la lecture automatique sans geste de l’utilisateur qu’en muet)",
+      "loop": "Recommence à la fin",
+      "muted": "Coupe le son ; appliqué à chaque changement (le bouton muet bascule toujours le son)",
+      "defaultMuted": "Muet au départ (non contrôlé)",
+      "preload": "Quantité de média chargée par le navigateur avant la lecture",
+      "crossOrigin": "Mode CORS de la requête du média",
+      "startTime": "Position de reprise en secondes, appliquée une fois les métadonnées chargées (et à nouveau quand src change)",
+      "playbackRates": "Vitesses parcourues par le bouton de vitesse",
+      "skipSeconds": "Pas des boutons reculer / avancer, en secondes (0 les masque)",
+      "controls": "Affiche la barre de commandes personnalisée ; false affiche l’élément média seul (pilotez-le via la ref)",
+      "height": "Hauteur d’un lecteur vidéo (nombre : pixels) ; prioritaire sur aspectRatio",
+      "aspectRatio": "Rapport d’aspect d’un lecteur vidéo (CSS aspect-ratio)",
+      "pictureInPicture": "Affiche un bouton image dans l’image (vidéo, si le navigateur le permet)",
+      "onTimeUpdate": "Appelé pendant la lecture avec la position et la durée ({ currentTime, duration }, en secondes)",
+      "onEnded": "Appelé quand la lecture atteint la fin",
+      "onPlay": "Appelé au démarrage de la lecture",
+      "onPause": "Appelé à la mise en pause",
+      "onLoadedMetadata": "Appelé avec la durée une fois les métadonnées chargées ({ duration })",
+      "onError": "Appelé avec la MediaError quand le média ne peut pas être chargé ou lu",
+      "onRateChange": "Appelé avec la nouvelle vitesse de lecture",
+      "onVolumeChange": "Appelé quand le volume ou l’état muet change ({ volume, muted })",
+      "aria-label": "Libellé accessible du lecteur (par défaut title, sinon « Lecteur multimédia »)",
+      "className": "Nom de classe supplémentaire",
+      "style": "Styles en ligne de l’élément racine",
+      "ref": "Poignée impérative : play(), pause(), seek(secondes), element"
+    },
+    "MediaPlayerHandle": {
+      "play": "Démarre la lecture (la promesse de HTMLMediaElement.play() ; les refus de lecture automatique sont ignorés)",
+      "pause": "Met la lecture en pause",
+      "seek": "Déplace la position de lecture à secondes (limitée à la durée)",
+      "element": "L’élément <audio> / <video> rendu (null avant le montage)"
+    }
+  },
+  "cssVars": {
+    "--media-player-radius": "Rayon des coins du lecteur (par défaut --radius-lg)",
+    "--media-player-accent": "Couleur de la plage lue et des curseurs (par défaut --primary-color)",
+    "--media-player-video-background": "Couleur des bandes derrière une vidéo (noir par défaut)",
+    "--media-player-overlay-background": "Fond de la barre de commandes vidéo (par défaut un dégradé vers --overlay-color)",
+    "--media-player-overlay-color": "Couleur du texte et des icônes sur une vidéo (blanc par défaut)",
+    "--media-player-bar-background": "Fond de la barre audio (par défaut --surface-color)",
+    "--media-player-bar-color": "Couleur du texte et des icônes de la barre audio (par défaut --text-color)",
+    "--media-player-button-size": "Taille des boutons de commande (par défaut la hauteur des petits contrôles de la densité)",
+    "--media-player-track-height": "Épaisseur des barres de progression et de volume (4px par défaut)"
+  },
+  "wc": {
+    "demos": {
+      "video": {
+        "title": "Vidéo",
+        "description": "Le slot heading est le titre affiché sur la vidéo ; picture-in-picture ajoute un bouton là où le navigateur le permet. Lecteur focalisé : Espace / K, flèches, M et F."
+      },
+      "audio": {
+        "title": "Audio",
+        "description": "Un src en .mp3 (ou mime-type=\"audio/…\") affiche la barre audio ; skip-seconds=\"0\" masque les boutons de saut."
+      },
+      "resume": {
+        "title": "Reprise et progression",
+        "description": "start-time reprend une fois les métadonnées chargées. Les événements média ne traversent pas la shadow root : écoutez minerva-loaded-metadata, minerva-time-update, minerva-pause et minerva-ended ; play() et seek() pilotent le lecteur."
+      },
+      "rates-skip": {
+        "title": "Vitesses et pas de saut",
+        "description": "playbackRates est une propriété (un tableau) ; minerva-rate-change signale la vitesse. skip-seconds fixe le pas de saut et aspect-ratio dimensionne la vidéo."
+      }
+    },
+    "minerva-media-player": {
+      "props": {
+        "noControls": "Masque la barre de commandes personnalisée : affiche l’élément média seul (pilotez-le par script)",
+        "element": "L’élément <audio> / <video> rendu (lecture seule ; null avant le premier rendu)"
+      },
+      "events": {
+        "minerva-play": "La lecture a démarré.",
+        "minerva-pause": "La lecture est en pause.",
+        "minerva-ended": "La lecture a atteint la fin.",
+        "minerva-time-update": "La position de lecture a changé (detail : { currentTime, duration }, en secondes).",
+        "minerva-loaded-metadata": "Les métadonnées sont chargées (detail : { duration }).",
+        "minerva-error": "Le média ne peut pas être chargé ou lu (detail : { error }, la MediaError).",
+        "minerva-rate-change": "La vitesse de lecture a changé (detail : { rate }).",
+        "minerva-volume-change": "Le volume ou l’état muet a changé (detail : { volume, muted })."
+      },
+      "methods": {
+        "play": "Démarre la lecture (les refus de lecture automatique sont ignorés : le lecteur reste en pause).",
+        "pause": "Met la lecture en pause.",
+        "seek": "Déplace la position de lecture à secondes (limitée à la durée)."
+      },
+      "slots": {
+        "heading": "Titre du média, affiché dans la barre audio / sur la vidéo."
+      }
+    }
+  },
+  "native": {
+    "demos": {
+      "basic": {
+        "title": "MediaControls (React Native)",
+        "description": "React Native n’a pas d’élément média : MediaControls est la barre de commandes thématisée, pilotée par des props (playing, currentTime, duration, buffered, muted, playbackRate) et des callbacks (onPlayPause, onSeek, onMutedChange, onRateChange…). Branchez-la sur expo-video / expo-audio (voir le commentaire du code) ; cet aperçu simule le lecteur."
+      }
+    }
+  }
+}

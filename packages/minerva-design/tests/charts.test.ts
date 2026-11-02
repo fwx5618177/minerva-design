@@ -67,6 +67,9 @@ const ENGINE = [
   "quadrantChartOptions",
   "quadrantOf",
   "quadrantCenter",
+  "quadrantGroups",
+  "quadrantLabels",
+  "quadrantCountText",
   "heatmapChartOptions",
   "sparklineOptions",
   // series presets

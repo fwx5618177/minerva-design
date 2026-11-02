@@ -172,6 +172,15 @@ export const quadrantChartProps = {
   name: String,
   /** Lets the user drag the dots (default: when a `pointDrop` listener is set) */
   draggable: { type: Boolean, default: undefined },
+  /** Shows the number of points of each quadrant after its title */
+  showCounts: { type: Boolean, default: undefined },
+  /** Index of the selected point, drawn with a ring (`null`: none) */
+  selectedIndex: {
+    type: Number as PropType<number | null>,
+    default: undefined,
+  },
+  /** Indices of the selected points */
+  selectedIndices: Array as PropType<readonly number[]>,
 } as const;
 
 /** Shape of lines and area edges */
@@ -358,6 +367,11 @@ export const ganttChartProps = {
   dependencyArrows: { type: Boolean, default: undefined },
   /** Color of the dependency arrows (any CSS color; default: the secondary text color) */
   dependencyColor: String,
+  /** Writes the task names inside the bars: `"auto"` when several tasks share a row (default), `true` / `"inside"` always, `false` never */
+  barLabels: {
+    type: [Boolean, String] as PropType<boolean | "inside" | "auto">,
+    default: undefined,
+  },
   /** Locale of the default names and of the progress shares */
   locale: String,
   /** Draws a line at this date (`true`: now) */

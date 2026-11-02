@@ -18,6 +18,10 @@ export declare const generateCssVars: () => Record<
 >;
 export declare const generateElements: () => Record<string, unknown>;
 export declare const OUTPUT_WC: string;
+export declare const OUTPUT_WC_CHARTS: string;
+export declare const splitElementApis: (
+  elements: Record<string, unknown>,
+) => [Record<string, unknown>, Record<string, unknown>];
 export declare const sortKeys: <T>(
   entries: Record<string, T>,
 ) => Record<string, T>;

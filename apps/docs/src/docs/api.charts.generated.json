@@ -4110,10 +4110,16 @@
         "description": "Color of the dot or bar (scatter, bar); any CSS color"
       },
       {
+        "name": "opacity",
+        "type": "number",
+        "required": false,
+        "description": "Bar: opacity of the fill of this bar, 0-1; the series `opacity` by default (e.g. solid Gantt tasks among translucent ones)"
+      },
+      {
         "name": "label",
         "type": "string",
         "required": false,
-        "description": "Text drawn next to the dot (scatter with `showLabels`) or at the end of the bar instead of its value (bar with `showLabels`), and shown in the tooltip"
+        "description": "Text drawn next to the dot (scatter with `showLabels`) or at the end of the bar instead of its value (bar with `showLabels`; inside it with `showLabels: \"inside\"`), and shown in the tooltip"
       },
       {
         "name": "open",
@@ -4353,6 +4359,24 @@
         "type": "string",
         "required": false,
         "description": "Label color (defaults to `color`)"
+      },
+      {
+        "name": "badge",
+        "type": "string",
+        "required": false,
+        "description": "Short code drawn in a pill before the label (e.g. \"Q1\")"
+      },
+      {
+        "name": "detail",
+        "type": "string",
+        "required": false,
+        "description": "Secondary text drawn after the label, in the muted text color (e.g. a count)"
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false,
+        "description": "Second line under the label, in the muted text color (cut with … when too long)"
       }
     ]
   },
@@ -4516,9 +4540,9 @@
       },
       {
         "name": "showLabels",
-        "type": "boolean",
+        "type": "boolean | \"inside\"",
         "required": false,
-        "description": "Draws the `label` of each point next to it (scatter) or the value above each bar (bar)"
+        "description": "Draws the `label` of each point next to it (scatter) or the value above each bar (bar); `\"inside\"` writes the label (or value) of each bar inside it, cut with an ellipsis to fit, in a color contrasting with the bar (skipped when the bar is too small)"
       },
       {
         "name": "curve",
@@ -4597,6 +4621,13 @@
         "required": false,
         "default": "true",
         "description": "`false` leaves the series out of hit tests and tooltips (decorations, overlays such as the progress of Gantt tasks)"
+      },
+      {
+        "name": "stroke",
+        "type": "number",
+        "required": false,
+        "default": "1.25 (up to 5000 dots, 0 beyond)",
+        "description": "Scatter: width in CSS pixels of the ring drawn around every dot in its color; with `opacity: 0` the dots are hollow rings (selection rings)"
       },
       {
         "name": "outlierShape",
@@ -5993,6 +6024,13 @@
         "type": "string",
         "required": false,
         "description": "Color of the dependency arrows (any CSS color); the secondary text color by default"
+      },
+      {
+        "name": "barLabels",
+        "type": "boolean | \"inside\" | \"auto\"",
+        "required": false,
+        "default": "\"auto\"",
+        "description": "Writes the name of every task inside its bar (cut with an ellipsis, in a color contrasting with the bar; skipped when the bar is too small): `\"auto\"` when several tasks share a row (`row`), so the bars of a lane can be told apart without hovering; `true` / `\"inside\"` always, `false` never"
       },
       {
         "name": "locale",
@@ -10599,6 +10637,39 @@
         "type": "Partial<Record<QuadrantCorner, ReactNode>>",
         "required": false,
         "description": "React content placed over each quadrant (e.g. an add button); the content receives pointer events, the rest of the quadrant does not"
+      },
+      {
+        "name": "renderQuadrantHeader",
+        "type": "(corner: QuadrantCorner, info: QuadrantHeaderInfo) => ReactNode",
+        "required": false,
+        "description": "React header of each quadrant, in its outer corner (top edge for the top quadrants, bottom edge for the bottom ones, aligned to the outer side); replaces the drawn title, badge, description and count. The header receives pointer events (e.g. an add button)"
+      },
+      {
+        "name": "accessiblePoints",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Visually hidden list of buttons per quadrant so keyboard and screen reader users can reach the dots: Enter / Space calls `onPointClick`, Shift + arrow keys move the point to the next quadrant (`onPointDrop` with the center of that quadrant); the focused dot gets a focus ring"
+      },
+      {
+        "name": "getPointProps",
+        "type": "(point: QuadrantPoint, index: number) => Record<string, string | number | boolean | undefined>",
+        "required": false,
+        "description": "Extra attributes of the invisible anchor placed on each dot (e.g. `data-testid`); every anchor already has `data-point-index` and `data-label` and the class `minerva-chart-quadrant-point`"
+      }
+    ]
+  },
+  "QuadrantChartState": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "State of a quadrant matrix that is not a prop (set by the components)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "focusedIndex",
+        "type": "number | null",
+        "required": false,
+        "description": "Index of the keyboard-focused point: drawn with a focus ring"
       }
     ]
   },
@@ -10702,6 +10773,25 @@
         "type": "boolean",
         "required": false,
         "description": "Lets the user drag the dots (`drag` / `drop` events)"
+      },
+      {
+        "name": "showCounts",
+        "type": "boolean | ((count: number, points: readonly QuadrantPoint[]) => string)",
+        "required": false,
+        "default": "false",
+        "description": "Shows the number of points of each quadrant after its title; a function returns the text instead (e.g. `(n) => `${n} tasks``)"
+      },
+      {
+        "name": "selectedIndex",
+        "type": "number | null",
+        "required": false,
+        "description": "Index of the selected point: drawn with a ring of its color (`null`: none)"
+      },
+      {
+        "name": "selectedIndices",
+        "type": "readonly number[]",
+        "required": false,
+        "description": "Indices of the selected points (several selected points)"
       }
     ]
   },
@@ -10733,6 +10823,103 @@
         "type": "QuadrantCorner",
         "required": true,
         "description": "Quadrant of the drop, as seen on screen"
+      }
+    ]
+  },
+  "QuadrantGroup": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Points of each quadrant, with their indices",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "points",
+        "type": "QuadrantPoint[]",
+        "required": true
+      },
+      {
+        "name": "indices",
+        "type": "number[]",
+        "required": true
+      }
+    ]
+  },
+  "QuadrantHeaderInfo": {
+    "source": "charts/src/react/types.ts",
+    "description": "What `renderQuadrantHeader` receives about a quadrant",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "count",
+        "type": "number",
+        "required": true,
+        "description": "Number of points in the quadrant"
+      },
+      {
+        "name": "points",
+        "type": "QuadrantPoint[]",
+        "required": true,
+        "description": "Points in the quadrant"
+      },
+      {
+        "name": "indices",
+        "type": "number[]",
+        "required": true,
+        "description": "Indices of these points in `points`"
+      },
+      {
+        "name": "region",
+        "type": "QuadrantRegion | undefined",
+        "required": true,
+        "description": "Title, badge, description and color of the quadrant (`quadrants`)"
+      }
+    ]
+  },
+  "QuadrantLabels": {
+    "source": "charts/src/engine/presets.ts",
+    "description": "Built-in texts of the quadrant matrices (accessible point layer)",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "topLeft",
+        "type": "string",
+        "required": true,
+        "description": "Names of the quadrants without a title"
+      },
+      {
+        "name": "topRight",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "bottomLeft",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "bottomRight",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "point",
+        "type": "string",
+        "required": true,
+        "description": "Name of a point without a label: `{n}` is its number"
+      },
+      {
+        "name": "moved",
+        "type": "string",
+        "required": true,
+        "description": "Announced when a point is moved with the keyboard"
+      },
+      {
+        "name": "moveHint",
+        "type": "string",
+        "required": true,
+        "description": "Accessible description of the points that can be moved"
       }
     ]
   },
@@ -10791,6 +10978,18 @@
         "type": "string",
         "required": false,
         "description": "Background tint and default dot color (any CSS color)"
+      },
+      {
+        "name": "badge",
+        "type": "string",
+        "required": false,
+        "description": "Short code drawn in a pill before the title (e.g. \"Q1\")"
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false,
+        "description": "Second line drawn under the title (e.g. \"Do it now\"); cut with … when too long"
       }
     ]
   },

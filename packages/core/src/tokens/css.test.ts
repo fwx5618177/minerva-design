@@ -15,6 +15,9 @@ describe("generateTokensCss", () => {
   // 1. `touch` design preset: `--touch-target-min` added at the end of the
   //    scales `:root` block (32px) and of the density blocks (standard 32px,
   //    compact 24px, comfortable 44px): +4 lines, nothing else changed.
+  // 2. Code block syntax colors (tokens/code.ts): `--code-token-*-color` at
+  //    the end of the `:root` block and a `[data-theme=dark]` block after the
+  //    dark-without-palette block: +41 lines, nothing else changed.
   it("tokens.golden.css: equals the published stylesheet", () => {
     expect(generateTokensCss()).toBe(read("__fixtures__", "tokens.golden.css"));
   });

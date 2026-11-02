@@ -13,7 +13,7 @@ it("published native method metadata points to real instance methods and stays o
       };
     },
   ][];
-  expect(entries).toHaveLength(106);
+  expect(entries).toHaveLength(113);
   for (const [name, c] of entries) {
     expect(c.definition.publicApi, `${name} registration`).toBeUndefined();
     for (const method of c.publicApi?.methods ?? []) {

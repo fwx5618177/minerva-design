@@ -13,6 +13,7 @@ import { palettes } from "../theme/palettes";
 import { dark } from "../theme/themes";
 import type { ComponentTheme } from "../theme/types";
 import { forcedColorsTokens, reducedMotionTokens } from "./accessibility";
+import { codeTokensDark } from "./code";
 import { defaultThemeTokens } from "./default-theme";
 import {
   densityTokens,
@@ -150,6 +151,11 @@ export function generateTokensCss({
     {
       selectors: [`${attr("data-theme", "dark")}:not(${attr("data-palette")})`],
       declarations: tokenDeclarations(dark),
+    },
+    // Syntax highlighting in dark mode, any palette (after the :root block).
+    {
+      selectors: [attr("data-theme", "dark")],
+      declarations: tokenDeclarations(codeTokensDark),
     },
     ...designRules(),
   ];

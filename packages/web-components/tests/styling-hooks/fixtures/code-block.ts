@@ -7,6 +7,6 @@ export default [
   },
   {
     name: "copyable, language",
-    html: `<minerva-code-block code="{}" language="json" copyable></minerva-code-block>`,
+    html: `<minerva-code-block code="{}" language="json" copyable show-language show-line-numbers></minerva-code-block>`,
   },
 ] satisfies WcHookScenario[];

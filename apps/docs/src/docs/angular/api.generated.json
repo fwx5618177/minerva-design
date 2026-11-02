@@ -2843,6 +2843,14 @@
         "description": "Color of the dependency arrows (any CSS color); the secondary text color by default"
       },
       {
+        "name": "barLabels",
+        "kind": "input",
+        "type": "boolean | \"inside\" | \"auto\"",
+        "required": false,
+        "default": "\"auto\"",
+        "description": "Writes the task names inside the bars: `\"auto\"` when several tasks share a row, `true` / `\"inside\"` always, `false` never"
+      },
+      {
         "name": "today",
         "kind": "input",
         "type": "boolean | number | Date",
@@ -4680,6 +4688,28 @@
         "required": false,
         "default": "false",
         "description": "Lets the user drag the dots (`pointDrag`, `pointDrop`)"
+      },
+      {
+        "name": "showCounts",
+        "kind": "input",
+        "type": "boolean | ((count: number, points: readonly QuadrantPoint[]) => string)",
+        "required": false,
+        "default": "false",
+        "description": "Shows the number of points of each quadrant after its title; a function `(count, points) => text` returns the text"
+      },
+      {
+        "name": "selectedIndex",
+        "kind": "input",
+        "type": "number | null | undefined",
+        "required": false,
+        "description": "Index of the selected point, drawn with a ring (`null`: none)"
+      },
+      {
+        "name": "selectedIndices",
+        "kind": "input",
+        "type": "readonly number[] | undefined",
+        "required": false,
+        "description": "Indices of the selected points"
       },
       {
         "name": "pointClick",
@@ -9770,6 +9800,226 @@
       }
     ]
   },
+  "MnAnswerSheet": {
+    "name": "MnAnswerSheet",
+    "source": "src/components/data/answer-sheet.ts",
+    "description": "A grid of numbered pills to jump between the questions of a practice or\nexam session (a `navigation` landmark of buttons), grouped by section,\neach with a status (unanswered, answered, correct, wrong, skipped) and an\noptional flag. The current question carries `aria-current=\"step\"` and is\n`[(value)]`. Keyboard: a roving tab stop; ArrowLeft / ArrowRight move in\norder, ArrowUp / ArrowDown by a row, Home / End to the ends, Enter /\nSpace select.",
+    "members": [
+      {
+        "name": "items",
+        "kind": "input",
+        "type": "readonly AnswerSheetItem[]",
+        "required": false,
+        "default": "[]",
+        "description": "The questions, in order"
+      },
+      {
+        "name": "groups",
+        "kind": "input",
+        "type": "readonly AnswerSheetGroup[] | undefined",
+        "required": false,
+        "description": "Titled sections, in display order (items render under the group whose key matches `item.group`)"
+      },
+      {
+        "name": "value",
+        "kind": "model",
+        "type": "string | null",
+        "required": false,
+        "default": "null",
+        "description": "Key of the current question (`[(value)]`)",
+        "changeEvent": "valueChange"
+      },
+      {
+        "name": "size",
+        "kind": "input",
+        "type": "AnswerSheetSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Pill density"
+      },
+      {
+        "name": "layout",
+        "kind": "input",
+        "type": "AnswerSheetLayout",
+        "required": false,
+        "default": "\"wrap\"",
+        "description": "\"wrap\" wraps the pills on several rows; \"scroll\" keeps a single horizontally scrolling row"
+      },
+      {
+        "name": "columns",
+        "kind": "input",
+        "type": "number | undefined",
+        "required": false,
+        "description": "Fixed number of columns (ArrowUp / ArrowDown move by a row); ignored with layout=\"scroll\""
+      },
+      {
+        "name": "showLegend",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a legend of the statuses present (and of the flag)"
+      },
+      {
+        "name": "showSummary",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the number of answered questions (\"12 / 20 answered\")"
+      },
+      {
+        "name": "getItemLabel",
+        "kind": "input",
+        "type": "((item: AnswerSheetItem, index: number) => string) | undefined",
+        "required": false,
+        "description": "Accessible name of a pill, from the item and its display index (default: \"Question <n>, <status>\", translated)"
+      },
+      {
+        "name": "disabled",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the whole sheet"
+      },
+      {
+        "name": "aria-label",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Accessible name of the navigation landmark (default: translated \"Questions\")"
+      },
+      {
+        "name": "focus",
+        "kind": "method",
+        "type": "(options?: FocusOptions) => void",
+        "required": false,
+        "description": "Focuses the pill holding the tab stop"
+      }
+    ]
+  },
+  "MnFlashcard": {
+    "name": "MnFlashcard",
+    "source": "src/components/data/flashcard.ts",
+    "description": "A two-sided study card that flips between a front (the prompt) and a back\n(the answer) with a 3D rotation (a crossfade under\n`prefers-reduced-motion`). Both faces share one grid cell, so the card is\nas tall as the taller face. The card is a toggle button (`aria-pressed`\nwhile the back shows): click, Enter or Space flips it, except clicks on\ninteractive content inside a face. The hidden face is `inert`; the back is\na polite live region. Project rich faces with `[mnFront]` / `[mnBack]`\n(the `front` / `back` inputs are plain-text fallbacks) and a footer (not\nflipped, e.g. rating buttons) with `[mnFooter]`. The flipped state is\n`[(flipped)]`.",
+    "members": [
+      {
+        "name": "front",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Text of the front face (the prompt); projected `[mnFront]` content wins"
+      },
+      {
+        "name": "back",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Text of the back face (the answer); projected `[mnBack]` content wins"
+      },
+      {
+        "name": "frontLabel",
+        "kind": "input",
+        "type": "string | null | undefined",
+        "required": false,
+        "description": "Caption of the front face (default: translated \"Question\"; \"\" or null hides it)"
+      },
+      {
+        "name": "backLabel",
+        "kind": "input",
+        "type": "string | null | undefined",
+        "required": false,
+        "description": "Caption of the back face (default: translated \"Answer\"; \"\" or null hides it)"
+      },
+      {
+        "name": "hint",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Hint on the front face (default: translated \"Click or press Space to flip\")"
+      },
+      {
+        "name": "showHint",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the hint on the front face (while the card flips on click)"
+      },
+      {
+        "name": "flipped",
+        "kind": "model",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Whether the back is shown (`[(flipped)]`)",
+        "changeEvent": "flippedChange"
+      },
+      {
+        "name": "flipOnClick",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Clicking the card (or Enter / Space on it) flips it; when false only `flipped` flips it"
+      },
+      {
+        "name": "disabled",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Blocks flipping and dims the card"
+      },
+      {
+        "name": "axis",
+        "kind": "input",
+        "type": "FlashcardAxis",
+        "required": false,
+        "default": "\"y\"",
+        "description": "Rotation axis: \"y\" flips horizontally, \"x\" vertically"
+      },
+      {
+        "name": "variant",
+        "kind": "input",
+        "type": "FlashcardVariant",
+        "required": false,
+        "default": "\"elevated\"",
+        "description": "Surface style"
+      },
+      {
+        "name": "size",
+        "kind": "input",
+        "type": "FlashcardSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Padding and typography scale"
+      },
+      {
+        "name": "minHeight",
+        "kind": "input",
+        "type": "number | string",
+        "required": false,
+        "default": "\"12rem\"",
+        "description": "Minimum height of the card (a number is in px); the card grows to fit the taller face"
+      },
+      {
+        "name": "aria-label",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Accessible label of the card (default: translated \"Flashcard, showing <face>\")"
+      },
+      {
+        "name": "toggle",
+        "kind": "method",
+        "type": "() => void",
+        "required": false,
+        "description": "Flips the card (as a user flip: updates `flipped`)"
+      }
+    ]
+  },
   "MnJsonField": {
     "name": "MnJsonField",
     "source": "src/components/data/index.ts",
@@ -9930,6 +10180,30 @@
         "required": false,
         "default": "false",
         "description": ""
+      },
+      {
+        "name": "highlight",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Highlights the syntax of `language` (false: plain text)"
+      },
+      {
+        "name": "showLineNumbers",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Numbers the lines in an aria-hidden gutter (not part of the copied text)"
+      },
+      {
+        "name": "showLanguage",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the language as a small label in the top-right corner"
       },
       {
         "name": "copyError",
@@ -10126,6 +10400,338 @@
         "type": "CalendarEvent",
         "required": false,
         "description": ""
+      }
+    ]
+  },
+  "MnKanbanBoard": {
+    "name": "MnKanbanBoard",
+    "source": "src/components/data/kanban-board.ts",
+    "description": "A horizontally scrolling board of status columns (`mn-kanban-column`),\nequal-width by default (`columnWidth`, 18rem). `fill` stretches the\ncolumns equally when they fit; `height` / `maxHeight` bound the board so\nthat the column bodies scroll vertically. The host is a labelled\n`role=\"region\"` and a tab stop, so the keyboard can scroll it; on narrow\nscreens the columns keep their width and snap while scrolling.\n\nDrag and drop is not built in: move cards with your own actions (a menu,\nbuttons) and update the columns' data.",
+    "members": [
+      {
+        "name": "columnWidth",
+        "kind": "input",
+        "type": "KanbanLength | undefined",
+        "required": false,
+        "description": "Width of every column (a number is pixels; default 18rem); with `fill` the minimum width"
+      },
+      {
+        "name": "fill",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Stretches the columns equally to fill the board when they fit"
+      },
+      {
+        "name": "gap",
+        "kind": "input",
+        "type": "KanbanLength | undefined",
+        "required": false,
+        "description": "Space between the columns (a number is pixels; default 0.75rem)"
+      },
+      {
+        "name": "height",
+        "kind": "input",
+        "type": "KanbanLength | undefined",
+        "required": false,
+        "description": "Height of the board: the column bodies scroll vertically within it"
+      },
+      {
+        "name": "maxHeight",
+        "kind": "input",
+        "type": "KanbanLength | undefined",
+        "required": false,
+        "description": "Maximum height of the board: the column bodies scroll vertically within it"
+      },
+      {
+        "name": "aria-label",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Accessible name of the board (default: translated \"Board\")"
+      },
+      {
+        "name": "aria-labelledby",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Id of an element naming the board (instead of aria-label)"
+      }
+    ]
+  },
+  "MnKanbanColumn": {
+    "name": "MnKanbanColumn",
+    "source": "src/components/data/kanban-board.ts",
+    "description": "A status column of an `mn-kanban-board`. The header shows an optional\naccent dot (`color`: a theme color or any CSS color), the `title`, a\n`count` badge and the projected `[mnKanbanActions]`; the projected cards\nform a `role=\"list\"` that scrolls vertically within a bounded board\n(each projected card without a role gets `role=\"listitem\"`, there is no\nwrapper); `[mnKanbanEmpty]` content (else `empty`, default translated\n\"No items\") replaces the list when there are no cards, and\n`[mnKanbanFooter]` sits below. The host is a `role=\"group\"` named by its\ntitle and count (\"To do, 3 items\").",
+    "members": [
+      {
+        "name": "title",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Title of the column (also its accessible name; or project `[mnKanbanTitle]`)"
+      },
+      {
+        "name": "count",
+        "kind": "input",
+        "type": "number | undefined",
+        "required": false,
+        "description": "Number of items shown as a badge (and announced with the title); unset hides it"
+      },
+      {
+        "name": "color",
+        "kind": "input",
+        "type": "KanbanColumnColor | undefined",
+        "required": false,
+        "description": "Accent: a theme color (primary, success, warning, danger, info, neutral) or any CSS color"
+      },
+      {
+        "name": "description",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Supporting text under the header"
+      },
+      {
+        "name": "empty",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Text shown when there are no cards (default: translated \"No items\"; or project `[mnKanbanEmpty]`)"
+      },
+      {
+        "name": "aria-label",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Accessible name (default: the title with the count, translated)"
+      }
+    ]
+  },
+  "MnMediaPlayer": {
+    "name": "MnMediaPlayer",
+    "source": "src/components/data/media-player.ts",
+    "description": "An `<audio>` / `<video>` element with themed custom controls: play /\npause, skip back / forward, a seek bar (role=slider, buffered range), the\ntime, mute and volume, the playback speed (cycle button), fullscreen and\npicture-in-picture (video). Keyboard on the focused player: Space / K\nplay-pause, ← / → seek by 5 s, ↑ / ↓ volume, M mute, F fullscreen.\nOutputs: `(timeUpdate)`, `(ended)`, `(played)`, `(paused)`,\n`(loadedMetadata)`, `(mediaError)`, `(rateChange)`, `(volumeChange)`.\nMethods: `play()`, `pause()`, `seek(seconds)`, `element`.",
+    "members": [
+      {
+        "name": "src",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "URL of the media"
+      },
+      {
+        "name": "type",
+        "kind": "input",
+        "type": "MediaPlayerType | undefined",
+        "required": false,
+        "description": "Kind of media; default: inferred from mimeType, else from the file extension of src, else \"video\""
+      },
+      {
+        "name": "mimeType",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "MIME type of the media (\"audio/mpeg\", \"video/mp4\"...), used to infer the type"
+      },
+      {
+        "name": "poster",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Image shown before a video plays"
+      },
+      {
+        "name": "title",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Title of the media, shown in the audio bar / over the video"
+      },
+      {
+        "name": "autoPlay",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Starts playing as soon as possible (browsers only allow muted autoplay without a user gesture)"
+      },
+      {
+        "name": "loop",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Restarts at the end"
+      },
+      {
+        "name": "muted",
+        "kind": "input",
+        "type": "boolean | undefined",
+        "required": false,
+        "description": "Mutes the media; applied whenever it changes (the mute button still toggles the sound)"
+      },
+      {
+        "name": "defaultMuted",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Initially muted"
+      },
+      {
+        "name": "preload",
+        "kind": "input",
+        "type": "MediaPlayerPreload",
+        "required": false,
+        "default": "\"metadata\"",
+        "description": "How much of the media the browser loads before playback"
+      },
+      {
+        "name": "crossOrigin",
+        "kind": "input",
+        "type": "MediaPlayerCrossOrigin | undefined",
+        "required": false,
+        "description": "CORS mode of the media request"
+      },
+      {
+        "name": "startTime",
+        "kind": "input",
+        "type": "number | undefined",
+        "required": false,
+        "description": "Resume position in seconds, applied once when the metadata loads (and again when src changes)"
+      },
+      {
+        "name": "playbackRates",
+        "kind": "input",
+        "type": "readonly number[]",
+        "required": false,
+        "default": "DEFAULT_PLAYBACK_RATES",
+        "description": "Speeds the speed button cycles through"
+      },
+      {
+        "name": "skipSeconds",
+        "kind": "input",
+        "type": "unknown",
+        "required": false,
+        "default": "DEFAULT_SKIP_SECONDS",
+        "description": "Step of the skip back / forward buttons, in seconds (0 hides them)"
+      },
+      {
+        "name": "controls",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Shows the custom control bar; false renders the bare media element"
+      },
+      {
+        "name": "height",
+        "kind": "input",
+        "type": "number | string | undefined",
+        "required": false,
+        "description": "Height of a video player (number: pixels); overrides aspectRatio"
+      },
+      {
+        "name": "aspectRatio",
+        "kind": "input",
+        "type": "string",
+        "required": false,
+        "default": "\"16 / 9\"",
+        "description": "Aspect ratio of a video player (CSS aspect-ratio)"
+      },
+      {
+        "name": "pictureInPicture",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a picture-in-picture button (video, where the browser supports it)"
+      },
+      {
+        "name": "aria-label",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Accessible label of the player (default: title, else translated \"Media player\")"
+      },
+      {
+        "name": "timeUpdate",
+        "kind": "output",
+        "type": "MediaPlayerTimeDetail",
+        "required": false,
+        "description": "The playhead moved"
+      },
+      {
+        "name": "ended",
+        "kind": "output",
+        "type": "void",
+        "required": false,
+        "description": "Playback reached the end"
+      },
+      {
+        "name": "played",
+        "kind": "output",
+        "type": "void",
+        "required": false,
+        "description": "Playback started"
+      },
+      {
+        "name": "paused",
+        "kind": "output",
+        "type": "void",
+        "required": false,
+        "description": "Playback paused"
+      },
+      {
+        "name": "loadedMetadata",
+        "kind": "output",
+        "type": "{ duration: number }",
+        "required": false,
+        "description": "The metadata loaded"
+      },
+      {
+        "name": "mediaError",
+        "kind": "output",
+        "type": "MediaError | null",
+        "required": false,
+        "description": "The media can't be loaded or played"
+      },
+      {
+        "name": "rateChange",
+        "kind": "output",
+        "type": "number",
+        "required": false,
+        "description": "The playback speed changed"
+      },
+      {
+        "name": "volumeChange",
+        "kind": "output",
+        "type": "MediaPlayerVolumeDetail",
+        "required": false,
+        "description": "The volume or the muted state changed"
+      },
+      {
+        "name": "play",
+        "kind": "method",
+        "type": "() => Promise<void>",
+        "required": false,
+        "description": "Starts playback (autoplay-policy rejections are swallowed: the player stays paused)"
+      },
+      {
+        "name": "pause",
+        "kind": "method",
+        "type": "() => void",
+        "required": false,
+        "description": "Pauses playback"
+      },
+      {
+        "name": "seek",
+        "kind": "method",
+        "type": "(seconds: number) => void",
+        "required": false,
+        "description": "Moves the playhead to `seconds` (clamped to the duration)"
       }
     ]
   },
@@ -14423,6 +15029,96 @@
       }
     ]
   },
+  "MnSegmentedControl": {
+    "name": "MnSegmentedControl",
+    "source": "src/components/segmented-control/segmented-control.ts",
+    "description": "SegmentedControl: a single-choice segmented switch for modes and filters\n(a `radiogroup` of `radio` segments sharing the width equally, with a\nthumb sliding under the selected segment). Use Tabs when each choice has\nits own content panel.\nKeyboard: a roving tab stop (the selected segment, else the first enabled\none); the arrow keys move and select, skipping disabled segments and\nwrapping around; Home / End select the first / last enabled segment.\n\nTwo-way binding of the selected value: `[(value)]`, `ngModel` or a\nReactive Forms control (ControlValueAccessor); `(change)` reports user\nselections.",
+    "members": [
+      {
+        "name": "options",
+        "kind": "input",
+        "type": "readonly SegmentedControlOption[]",
+        "required": false,
+        "default": "[]",
+        "description": "The segments: strings or option objects"
+      },
+      {
+        "name": "value",
+        "kind": "model",
+        "type": "string | null | undefined",
+        "required": false,
+        "description": "Selected value (two-way: `[(value)]`; `null`: none)",
+        "changeEvent": "valueChange"
+      },
+      {
+        "name": "defaultValue",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Initially selected value when `value` is not bound"
+      },
+      {
+        "name": "size",
+        "kind": "input",
+        "type": "SegmentedControlSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Segment density"
+      },
+      {
+        "name": "color",
+        "kind": "input",
+        "type": "SegmentedControlColor",
+        "required": false,
+        "default": "\"neutral\"",
+        "description": "Thumb color"
+      },
+      {
+        "name": "fullWidth",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Fills the width of the container (the segments always share the width equally)"
+      },
+      {
+        "name": "disabled",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Blocks every segment"
+      },
+      {
+        "name": "name",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Name of a hidden input carrying the value in a form"
+      },
+      {
+        "name": "aria-label",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Accessible label of the group"
+      },
+      {
+        "name": "aria-labelledby",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "id(s) of the element(s) labelling the group"
+      },
+      {
+        "name": "change",
+        "kind": "output",
+        "type": "string",
+        "required": false,
+        "description": "The user selected a segment (its value)"
+      }
+    ]
+  },
   "MnSelectItem": {
     "name": "MnSelectItem",
     "source": "src/components/select/select-item.ts",
@@ -14633,6 +15329,208 @@
         "type": "(options?: FocusOptions) => void",
         "required": false,
         "description": "Focuses the trigger"
+      }
+    ]
+  },
+  "MnSlider": {
+    "name": "MnSlider",
+    "source": "src/components/slider/slider.ts",
+    "description": "Slider: picks a number (or a `[start, end]` range with `range`) on a\ntrack. Same DOM, classes and styling hooks as React's Slider (the host\nelement is `display: contents`). Each thumb is a `role=\"slider\"`: arrows\nstep (mirrored in RTL), PageUp / PageDown move by 10%, Home / End jump to\nthe bounds; clicking the track moves the closest thumb.\n\nTwo-way binding: `[(value)]`, `ngModel` or a Reactive Forms control\n(ControlValueAccessor). `valueChange` follows the drag; `changeEnd` fires\nonce the interaction ends (pointer release, key press): save there.\nInside `<mn-form-control>` it takes the field's id, label, description,\ninvalid / read-only / disabled states.",
+    "members": [
+      {
+        "name": "value",
+        "kind": "input",
+        "type": "SliderValue | undefined",
+        "required": false,
+        "description": "Value: a number, or `[start, end]` with `range`. Bound (`[value]`), the\nparent owns it: a change only emits `valueChange` (two-way\n`[(value)]`); unbound, the slider owns it (`defaultValue`)"
+      },
+      {
+        "name": "valueChange",
+        "kind": "output",
+        "type": "SliderValue",
+        "required": false,
+        "description": "The value changed (while dragging, on each key press)"
+      },
+      {
+        "name": "changeEnd",
+        "kind": "output",
+        "type": "SliderValue",
+        "required": false,
+        "description": "The interaction ended (pointer release, key press): the final value"
+      },
+      {
+        "name": "defaultValue",
+        "kind": "input",
+        "type": "SliderValue | undefined",
+        "required": false,
+        "description": "Initial value when `value` is not bound (min, or [min, max] with range)"
+      },
+      {
+        "name": "range",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Two thumbs selecting `[start, end]`"
+      },
+      {
+        "name": "min",
+        "kind": "input",
+        "type": "number",
+        "required": false,
+        "default": "0",
+        "description": ""
+      },
+      {
+        "name": "max",
+        "kind": "input",
+        "type": "number",
+        "required": false,
+        "default": "100",
+        "description": ""
+      },
+      {
+        "name": "step",
+        "kind": "input",
+        "type": "number | null",
+        "required": false,
+        "default": "1",
+        "description": "Step between two values; `null` snaps to the marks only"
+      },
+      {
+        "name": "marks",
+        "kind": "input",
+        "type": "SliderMark[] | boolean",
+        "required": false,
+        "default": "false",
+        "description": "Ticks of the scale: `{ value, label? }[]`, or `true` for one tick per step"
+      },
+      {
+        "name": "snapToMarks",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Snaps the value to the closest mark"
+      },
+      {
+        "name": "disabled",
+        "kind": "input",
+        "type": "boolean | undefined",
+        "required": false,
+        "description": "Disables the slider (an explicit `false` opts out of the field's disabled state)"
+      },
+      {
+        "name": "readOnly",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Focusable, but the user cannot change the value"
+      },
+      {
+        "name": "invalid",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Standalone error state"
+      },
+      {
+        "name": "size",
+        "kind": "input",
+        "type": "SliderSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": ""
+      },
+      {
+        "name": "color",
+        "kind": "input",
+        "type": "SliderColor",
+        "required": false,
+        "default": "\"primary\"",
+        "description": ""
+      },
+      {
+        "name": "showValue",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the value after the track"
+      },
+      {
+        "name": "tooltip",
+        "kind": "input",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Value bubble above a thumb while dragged, hovered or focused"
+      },
+      {
+        "name": "formatValue",
+        "kind": "input",
+        "type": "((value: number) => string) | undefined",
+        "required": false,
+        "description": "Formats a value for the value label, the tooltip and aria-valuetext"
+      },
+      {
+        "name": "orientation",
+        "kind": "input",
+        "type": "SliderOrientation",
+        "required": false,
+        "default": "\"horizontal\"",
+        "description": ""
+      },
+      {
+        "name": "name",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Name of the hidden input(s) (native forms)"
+      },
+      {
+        "name": "id",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "id of the first thumb (default: the field's)"
+      },
+      {
+        "name": "aria-label",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": "Accessible label of the thumbs"
+      },
+      {
+        "name": "aria-labelledby",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "aria-describedby",
+        "kind": "input",
+        "type": "string | undefined",
+        "required": false,
+        "description": ""
+      },
+      {
+        "name": "getAriaValueText",
+        "kind": "input",
+        "type": "((value: number, index: number) => string) | undefined",
+        "required": false,
+        "description": "aria-valuetext of a thumb (index 0, or 1 for the end thumb of a range)"
+      },
+      {
+        "name": "focus",
+        "kind": "method",
+        "type": "(options?: FocusOptions) => void",
+        "required": false,
+        "description": "Focuses the first thumb"
       }
     ]
   },

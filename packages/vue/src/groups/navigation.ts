@@ -1,6 +1,7 @@
 // Components of the "navigation" group (see src/index.ts).
 export * from "../components/Tabs";
 export * from "../components/Pagination";
+export * from "../components/AnswerSheet";
 export * from "../components/VirtualList";
 export * from "../components/MonthCalendar";
 export * from "../components/WeekStrip";

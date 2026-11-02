@@ -201,6 +201,14 @@ describe("named cartesian chart options", () => {
       ganttChartOptions({ tasks: ganttTasks, dependencyArrows: false }, start)
         .dependencies,
     ).toEqual([]);
+    // the task names inside the bars, on demand
+    expect(
+      ganttChartOptions({ tasks: ganttTasks, barLabels: true }, start)
+        .series[0],
+    ).toMatchObject({ showLabels: "inside" });
+    expect(
+      ganttChartOptions({ tasks: ganttTasks }, start).series[0]!.showLabels,
+    ).toBeUndefined();
     const box = boxPlotChartOptions({
       groups: [{ x: "A", values: [1, 2, 3, 4, 20] }],
       outlierShape: "filled",
