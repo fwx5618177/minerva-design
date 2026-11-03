@@ -75,7 +75,7 @@ function toVue(spec: Spec | string, log: EmittedEvent[]): VNode | string {
       log.push({
         component: contract.name,
         name: event.name,
-        detail: detailOf(event, args),
+        detail: detailOf(event, args, contract.name),
       });
       return own?.(...args);
     };
@@ -164,6 +164,7 @@ export const uniDriver: Driver = {
   isChecked: dom.isChecked,
   classes: (el) => Array.from(el.classList),
   tokenVar: dom.tokenVar,
+  combobox: dom.combobox,
   stylesheet() {
     return readFileSync(
       join(REPO_ROOT, "tools/styles/mini-controls.css"),

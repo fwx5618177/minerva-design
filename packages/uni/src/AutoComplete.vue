@@ -10,6 +10,7 @@ import {
   onBeforeUnmount,
   type CSSProperties,
 } from "vue";
+import { resolveActiveOptionIndex } from "@minerva/core";
 import { useNativeId as useId } from "./native-id";
 import { inheritForm } from "./form-context";
 import PopoverContent from "./PopoverContent.vue";
@@ -75,7 +76,8 @@ const readOnly = computed(() => props.inputProps?.readOnly ?? props.readOnly);
 const locked = computed(() => disabled.value || readOnly.value);
 const open = ref(false);
 const composing = ref(false);
-const active = ref(-1);
+// Keyboard highlight, by option identity (survives async option updates)
+const focusedValue = ref<string | number | null>(null);
 let blurTimer: ReturnType<typeof setTimeout> | undefined;
 const filtered = computed(() => {
   const result = props.options.filter((o) =>
@@ -102,25 +104,28 @@ const groups = computed(() => {
   return result;
 });
 const ordered = computed(() => groups.value.flatMap((g) => g.options));
-const activeOption = computed(
-  () =>
-    ordered.value[
-      active.value >= 0
-        ? active.value
-        : props.autoHighlight && open.value
-          ? ordered.value.findIndex((o) => !o.disabled)
-          : -1
-    ],
+// Options the keyboard can reach: none while loading (they are hidden).
+const interactive = computed(() => (props.loading ? [] : ordered.value));
+// With autoHighlight the first enabled option is active until the user
+// moves the highlight; a highlight whose option is gone falls back.
+const activeIndex = computed(() =>
+  resolveActiveOptionIndex(
+    interactive.value,
+    focusedValue.value,
+    !!props.autoHighlight && open.value && !locked.value,
+  ),
 );
-watch(filtered, () => {
-  active.value = -1;
-});
+const activeOption = computed(() => interactive.value[activeIndex.value]);
+/** Option -> its index in display order (ids for aria-activedescendant) */
+const optionIndex = computed(
+  () => new Map(ordered.value.map((option, index) => [option, index])),
+);
 function setOpen(value: boolean) {
   if (value && locked.value) return;
   clearTimeout(blurTimer);
   if (open.value !== value) emit("dropdownVisibleChange", value);
   open.value = value;
-  if (!value) active.value = -1;
+  if (!value) focusedValue.value = null;
 }
 watch(locked, (value) => {
   if (value) setOpen(false);
@@ -136,7 +141,7 @@ function change(value: string) {
 function type(value: string) {
   if (locked.value) return;
   change(value);
-  active.value = -1;
+  focusedValue.value = null;
   setOpen(true);
 }
 function choose(option: Option, pointer = false) {
@@ -149,8 +154,7 @@ function choose(option: Option, pointer = false) {
 }
 function confirm() {
   if (locked.value || composing.value) return;
-  if (open.value && activeOption.value && !props.loading)
-    choose(activeOption.value);
+  if (open.value && activeOption.value) choose(activeOption.value);
   else if (current.value.trim()) {
     emit("submit", current.value.trim());
     setOpen(false);
@@ -174,17 +178,17 @@ function keydown(event: KeyboardEvent) {
   } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
     event.preventDefault();
     setOpen(true);
-    const count = ordered.value.length,
+    const list = interactive.value,
+      count = list.length,
       step = event.key === "ArrowDown" ? 1 : -1;
-    let next = activeOption.value
-      ? ordered.value.indexOf(activeOption.value)
-      : step === 1
-        ? -1
-        : count;
+    // from "nothing focused", ArrowDown starts at the first option and
+    // ArrowUp at the last one
+    let next =
+      activeIndex.value >= 0 ? activeIndex.value : step === 1 ? -1 : count;
     for (let i = 0; i < count; i++) {
       next = (next + step + count) % count;
-      if (!ordered.value[next].disabled) {
-        active.value = next;
+      if (!list[next].disabled) {
+        focusedValue.value = list[next].value;
         break;
       }
     }
@@ -243,6 +247,9 @@ provide<MiniPopoverContext>("minerva:popover", {
       :placeholder="placeholder ?? inputProps?.placeholder"
       role="combobox"
       :aria-expanded="open"
+      :aria-activedescendant="
+        open && activeIndex >= 0 ? `${id}-option-${activeIndex}` : undefined
+      "
       @change="type"
       @focus="setOpen(true)"
       @tap="setOpen(true)"
@@ -291,6 +298,7 @@ provide<MiniPopoverContext>("minerva:popover", {
           <button
             v-for="option in group.options"
             :key="option.value"
+            :id="`${id}-option-${optionIndex.get(option)}`"
             class="mn-option"
             :class="{
               'mn-disabled': option.disabled,

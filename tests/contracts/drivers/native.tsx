@@ -201,6 +201,10 @@ function toNative(
 
 export const nativeDriver: Driver = {
   platform: "native",
+  notApplicable: {
+    "AutoComplete active option":
+      "React Native's AutoComplete has no keyboard-highlighted option (no aria-activedescendant, no ArrowDown / Enter list navigation): options are pressed, and submitting the input picks the first enabled option with autoHighlight",
+  },
 
   async render(input: Spec | string, options: RenderOptions = {}) {
     let spec = input;

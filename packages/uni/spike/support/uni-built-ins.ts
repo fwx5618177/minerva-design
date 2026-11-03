@@ -25,7 +25,24 @@ function uniShim(name: string, tag: string): Component {
         );
       return () => {
         const { onTap, onClick, ...rest } = attrs as Record<string, unknown>;
-        if (name === "Input") delete rest.focus;
+        if (name === "Input") {
+          delete rest.focus;
+          // uni-h5 delivers the text as `event.detail.value`; real typing
+          // (user-event) dispatches DOM input events without it.
+          const onInput = [rest.onInput].flat().filter(Boolean) as Array<
+            (e: Event) => void
+          >;
+          if (onInput.length)
+            rest.onInput = (e: Event) => {
+              const detail = (e as { detail?: { value?: unknown } }).detail;
+              if (typeof detail?.value !== "string")
+                Object.defineProperty(e, "detail", {
+                  configurable: true,
+                  value: { value: (e.target as HTMLInputElement).value },
+                });
+              onInput.forEach((fn) => fn(e));
+            };
+        }
         const handlers = [onClick, onTap].flat().filter(Boolean) as Array<
           (e: Event) => void
         >;

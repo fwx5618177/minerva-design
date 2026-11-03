@@ -83,7 +83,7 @@ function toReact(
       log.push({
         component: contract.name,
         name: event.name,
-        detail: detailOf(event, args),
+        detail: detailOf(event, args, contract.name),
       });
       return own?.(...args);
     };
@@ -161,6 +161,7 @@ export const reactDriver: Driver = {
   isChecked: dom.isChecked,
   classes: (el) => Array.from(el.classList),
   tokenVar: dom.tokenVar,
+  combobox: dom.combobox,
   stylesheet(component) {
     const folder = folderOf(getContract(component)?.name ?? component);
     return readdirSync(folder)

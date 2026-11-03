@@ -72,8 +72,38 @@ export interface ToastService {
   reset(): void | Promise<void>;
 }
 
+/**
+ * Suites a driver may declare not applicable (`Driver.notApplicable`): they
+ * rely on host semantics that the platform's driver does not provide.
+ */
+export type OptionalSuite = "AutoComplete active option";
+
+/**
+ * Reads of a text combobox (an `<input role="combobox">` whose active
+ * option is exposed with `aria-activedescendant`), for the AutoComplete
+ * suite. Find the input with `queryByRole("combobox")` and the options with
+ * `queryAllByRole("option")` (shadow roots included).
+ */
+export interface ComboboxReads {
+  /**
+   * The element the input's `aria-activedescendant` refers to, resolved in
+   * the input's tree (the document, or the custom element's shadow root);
+   * `null` without the attribute or when it refers to no element
+   */
+  activeOption(input: Element): Element | null;
+  /** Current text of the input */
+  inputValue(input: Element): string;
+}
+
 export interface Driver {
   platform: Platform;
+  /**
+   * Suites this driver does not run, with the reason. The suite registers
+   * them as skipped tests naming the platform and the reason (never as
+   * passes); a suite whose capability is missing without a declaration
+   * fails.
+   */
+  notApplicable?: Partial<Record<OptionalSuite, string>>;
   render(spec: Spec | string, options?: RenderOptions): Promise<Handle>;
   /** Waits for pending renders / updates */
   settle(ms?: number): Promise<void>;
@@ -105,6 +135,8 @@ export interface Driver {
   stylesheet(component: string): string;
   /** Flattened host style objects on platforms without CSS. */
   nativeStyle?(el: Element): Record<string, unknown>;
+  /** Combobox reads (DOM renderers); see `ComboboxReads` */
+  combobox?: ComboboxReads;
 
   services: { toast: ToastService };
 }

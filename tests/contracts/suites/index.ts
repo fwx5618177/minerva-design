@@ -1,5 +1,6 @@
 // Every contract suite, run by each driver's test file.
 import type { Driver } from "../harness/types";
+import { autoCompleteSuite } from "./autocomplete";
 import { buttonSuite } from "./button";
 import { i18nSuite } from "./i18n";
 import { overlaySuite } from "./overlays";
@@ -14,6 +15,7 @@ export const SUITES = [
   overlaySuite,
   i18nSuite,
   tokenSuite,
+  autoCompleteSuite,
 ];
 
 export function runContractSuites(driver: Driver) {

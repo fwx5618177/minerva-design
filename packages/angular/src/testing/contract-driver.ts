@@ -13,6 +13,7 @@ import { render, settle, user } from "./index";
 import * as dom from "../../../../tests/contracts/harness/dom";
 import {
   contractOf,
+  detailOf,
   isNative,
   REPO_ROOT,
 } from "../../../../tests/contracts/harness/contracts";
@@ -30,6 +31,16 @@ const escape = (text: string) =>
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll("{", "&#123;");
+/**
+ * Contract events whose Angular output is not `<first detail field>Change`;
+ * their payload is mapped onto the detail fields by `detailOf`.
+ */
+const OUTPUTS: Record<string, Record<string, string>> = {
+  AutoComplete: {
+    "minerva-select": "optionSelect",
+    "minerva-submit": "valueSubmit",
+  },
+};
 export const nativeAngular: Driver = {
   platform: "angular",
   async render(spec, options = {}) {
@@ -82,7 +93,12 @@ export const nativeAngular: Driver = {
         for (const event of contractOf(spec.component).events) {
           const field = event.detail?.[0];
           const output =
-            event.react === "onClick" ? "click" : field ? `${field}Change` : "";
+            OUTPUTS[spec.component]?.[event.name] ??
+            (event.react === "onClick"
+              ? "click"
+              : field
+                ? `${field}Change`
+                : "");
           if (output === "click" || outputs.includes(output))
             attributes += ` (${output})="emit(${id}, '${event.name}', '${field ?? ""}', $event)"`;
         }
@@ -93,10 +109,18 @@ export const nativeAngular: Driver = {
     class ContractHost {
       nodes = signal(nodes);
       emit(id: number, name: string, field: string, value: unknown) {
+        const component = nodes[id].component;
+        const event = OUTPUTS[component]?.[name]
+          ? contractOf(component).events.find((e) => e.name === name)
+          : undefined;
         log.push({
-          component: nodes[id].component,
+          component,
           name,
-          detail: field ? { [field]: value } : {},
+          detail: event
+            ? detailOf(event, [value], component)
+            : field
+              ? { [field]: value }
+              : {},
         });
       }
     }
@@ -156,6 +180,7 @@ export const nativeAngular: Driver = {
   isChecked: dom.isChecked,
   classes: (el) => Array.from(el.classList),
   tokenVar: dom.tokenVar,
+  combobox: dom.combobox,
   stylesheet(component) {
     const folder = join(REPO_ROOT, "packages/react/src/components", component);
     return readdirSync(folder)

@@ -67,6 +67,10 @@ function toReact(
 
 export const taroDriver: Driver = {
   platform: "taro",
+  notApplicable: {
+    "AutoComplete active option":
+      "the Taro AutoComplete exposes no aria-activedescendant on its input (H5 arrow keys come from its H5 adapter); this driver does not run the suite yet",
+  },
 
   async render(input: Spec | string, options: RenderOptions = {}) {
     let spec = input;

@@ -990,7 +990,8 @@ export function AutoComplete({
           }}
           onConfirm={(event) => {
             inputProps?.onConfirm?.(event);
-            if (autoHighlight && first) pick(first);
+            // nothing hidden (closed dropdown, loading) is selectable
+            if (shown && !loading && autoHighlight && first) pick(first);
           }}
           onChange={(next) => {
             set(next);

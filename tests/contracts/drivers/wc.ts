@@ -138,6 +138,7 @@ export const wcDriver: Driver = {
   isChecked: dom.isChecked,
   classes: (el) => Array.from(el.classList),
   tokenVar: dom.tokenVar,
+  combobox: dom.combobox,
   stylesheet(component) {
     const tag = contractOf(component).tag;
     // Lit: the finalized `static styles` (CSSResult or CSSStyleSheet)

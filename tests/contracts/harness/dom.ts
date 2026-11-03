@@ -172,6 +172,21 @@ export function isChecked(el: Element): boolean {
   return !!(el as HTMLInputElement).checked;
 }
 
+/**
+ * Combobox reads of the DOM drivers: `aria-activedescendant` is an IDREF of
+ * the input's own tree (the document, or the shadow root holding both the
+ * input and its listbox).
+ */
+export const combobox = {
+  activeOption(input: Element): Element | null {
+    const id = input.getAttribute("aria-activedescendant");
+    if (!id) return null;
+    const root = input.getRootNode() as Document | ShadowRoot;
+    return root.getElementById(id);
+  },
+  inputValue: (input: Element) => (input as HTMLInputElement).value,
+};
+
 export const tokenVar = (el: Element, name: string) =>
   getComputedStyle(el).getPropertyValue(name).trim();
 

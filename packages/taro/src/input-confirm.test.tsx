@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { expect, it, vi } from "vitest";
-import { Input, TimePicker, Cascader } from "./index";
+import { Input, TimePicker, Cascader, AutoComplete } from "./index";
 
 it("H5 Input confirms Enter with its current text without leaking onConfirm to the DOM", () => {
   const error = vi.spyOn(console, "error");
@@ -29,6 +29,39 @@ it("H5 Input confirms Enter with its current text without leaking onConfirm to t
     error.mockRestore();
   }
 });
+it("H5 AutoComplete Enter never picks an option hidden by loading or a closed dropdown", () => {
+  const select = vi.fn();
+  const options = [
+    { value: "a", label: "Alpha" },
+    { value: "b", label: "Beta" },
+  ];
+  const w = render(
+    <AutoComplete
+      options={options}
+      loading
+      onSelect={select}
+      inputProps={{ "aria-label": "Search" }}
+    />,
+  );
+  const input = screen.getByRole("textbox", { name: "Search" });
+  // closed: Enter only confirms the text
+  fireEvent.keyDown(input, { key: "Enter" });
+  expect(select).not.toHaveBeenCalled();
+  fireEvent.focus(input);
+  expect(screen.queryAllByRole("option")).toHaveLength(0);
+  fireEvent.keyDown(input, { key: "Enter" });
+  expect(select).not.toHaveBeenCalled();
+  w.rerender(
+    <AutoComplete
+      options={options}
+      onSelect={select}
+      inputProps={{ "aria-label": "Search" }}
+    />,
+  );
+  fireEvent.keyDown(input, { key: "Enter" });
+  expect(select.mock.calls).toEqual([[options[0]]]);
+});
+
 it("H5 TimePicker Enter commits the draft and closes its panel without blur", () => {
   const change = vi.fn();
   render(<TimePicker format="HH:mm" label="Meeting time" onChange={change} />);

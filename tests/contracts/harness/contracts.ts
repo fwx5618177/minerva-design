@@ -79,14 +79,35 @@ export function eventWith(
 }
 
 /**
+ * Callbacks whose arguments are not the contract's detail fields listed in
+ * order. AutoComplete's `onSelect(option)` (React, Vue, Angular's
+ * `optionSelect`) passes the option that the custom element sends as
+ * `detail: { value: option.value, option }`.
+ */
+const CALLBACK_DETAILS: Record<
+  string,
+  Record<string, (args: unknown[]) => Record<string, unknown>>
+> = {
+  AutoComplete: {
+    "minerva-select": ([option]) => ({
+      value: (option as { value?: unknown } | undefined)?.value,
+      option,
+    }),
+  },
+};
+
+/**
  * React / React Native callback arguments -> the contract's detail fields,
  * by position (`onChange(checked, event)` -> `{ checked }`); events are
- * dropped.
+ * dropped. Pass the `component` to apply its `CALLBACK_DETAILS` exceptions.
  */
 export function detailOf(
   event: EventContract,
   args: unknown[],
+  component?: string,
 ): Record<string, unknown> {
+  const mapped = component && CALLBACK_DETAILS[component]?.[event.name];
+  if (mapped) return mapped(args);
   const detail: Record<string, unknown> = {};
   (event.detail ?? []).forEach((field, i) => {
     const value = args[i];
