@@ -4,6 +4,50 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
+test("reference identity excludes Angular compiler outputs but tracks authored and API sources", async () => {
+  const { referenceInputs, referenceDigest } =
+    await import("./reference-inputs.mjs");
+  const root = mkdtempSync(join(tmpdir(), "minerva-reference-inputs-"));
+  const write = (path, content = "source") => {
+    const file = join(root, path);
+    mkdirSync(join(file, ".."), { recursive: true });
+    writeFileSync(file, content);
+  };
+  try {
+    for (const path of [
+      "apps/docs/src/docs/angular/examples.ts",
+      "apps/docs/src/docs/api.generated.json",
+      "apps/docs/src/i18n/locales/en.ts",
+      "apps/docs/recipes/react-form/src/main.tsx",
+      "apps/docs/scripts/generate-reference.mjs",
+      "tools/import-ts.mjs",
+      "packages/minerva-design/package.json",
+      "packages/core/src/contracts/components.generated.json",
+      "packages/core/src/contracts/types.generated.json",
+      "packages/core/src/contracts/metadata.generated.json",
+    ])
+      write(path);
+    const initial = referenceInputs(root);
+    const digest = referenceDigest(initial);
+    for (const path of [
+      "apps/docs/src/docs/angular/.aot/examples.js",
+      "apps/docs/src/docs/angular/.aot/examples.d.ts",
+      "apps/docs/src/docs/angular/.aot-source/examples.ts",
+      "apps/docs/src/docs/angular/.aot-source/tsconfig.json",
+    ])
+      write(path, "compiler output");
+    assert.deepEqual(referenceInputs(root), initial);
+    assert.equal(referenceDigest(referenceInputs(root)), digest);
+    write("apps/docs/src/docs/angular/examples.ts", "updated authored example");
+    const authoredDigest = referenceDigest(referenceInputs(root));
+    assert.notEqual(authoredDigest, digest);
+    write("apps/docs/src/docs/api.generated.json", "updated API");
+    assert.notEqual(referenceDigest(referenceInputs(root)), authoredDigest);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("demo source bundle includes transitive local files and external dependencies, and labels docs context", async () => {
   const { collectSourceBundle } = await import("./source-bundle.mjs");
   const root = mkdtempSync(join(tmpdir(), "minerva-bundle-test-"));

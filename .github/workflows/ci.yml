@@ -48,6 +48,12 @@ jobs:
       - name: Check generated files are committed
         run: git diff --exit-code
 
+      - name: Check static documentation references
+        run: pnpm --filter @minerva/docs check:reference
+
+      - name: Test component documentation UI in Chrome
+        run: pnpm test:browser:ui
+
       - name: Typecheck
         run: pnpm typecheck
 
@@ -68,12 +74,6 @@ jobs:
 
       - name: Check mini-program API documentation against source
         run: pnpm --filter @minerva/docs check:mini-api
-
-      - name: Check static documentation references
-        run: pnpm --filter @minerva/docs check:reference
-
-      - name: Test component documentation UI in Chrome
-        run: pnpm test:browser:ui
 
       - name: Test built packages
         run: pnpm test:dist

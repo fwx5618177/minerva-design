@@ -14,9 +14,18 @@ export function referenceDigest(inputs) {
 }
 export function referenceInputs(root) {
   const files = {};
+  // Angular AOT runs after reference generation during a clean docs build.
+  // Its ignored compiler outputs are not reference sources; including them
+  // makes identity depend on whether the checkout has been built before.
+  const compilerOutputs = new Set(
+    [".aot", ".aot-source"].map((name) =>
+      join(root, "apps/docs/src/docs/angular", name),
+    ),
+  );
   function visit(directory) {
     for (const entry of readdirSync(directory, { withFileTypes: true })) {
       const path = join(directory, entry.name);
+      if (compilerOutputs.has(path)) continue;
       if (entry.isDirectory()) visit(path);
       else if (entry.isFile() && !/\.test\./.test(path))
         files[relative(root, path)] = readFileSync(path);
