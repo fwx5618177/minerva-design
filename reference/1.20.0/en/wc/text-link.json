@@ -1,0 +1,319 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.0",
+  "locale": "en",
+  "renderer": "wc",
+  "page": "text-link",
+  "title": "TextLink",
+  "description": "A styled native anchor for inline links, quiet navigation and settings rows; asChild styles a router link without nesting anchors.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.0",
+    "sourceCommit": "e5692a82f25163efee65ef771fb64a94e61cb359",
+    "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+    "referenceSourceDigest": "sha256:07db3eb36ff2e4b5bb88e238b04c82819862c70d739534f627e7b6c73c0c6ef1"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "TextLink",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/text-link",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-text-link",
+        "props": [
+          {
+            "name": "variant",
+            "typeText": "\"default\" | \"subtle\" | \"action\"",
+            "attribute": "variant",
+            "required": false
+          },
+          {
+            "name": "href",
+            "typeText": "string | undefined",
+            "attribute": "href",
+            "required": false
+          },
+          {
+            "name": "target",
+            "typeText": "string | undefined",
+            "attribute": "target",
+            "required": false
+          },
+          {
+            "name": "rel",
+            "typeText": "string | undefined",
+            "attribute": "rel",
+            "required": false
+          },
+          {
+            "name": "download",
+            "typeText": "string | undefined",
+            "attribute": "download",
+            "required": false
+          },
+          {
+            "name": "hreflang",
+            "typeText": "string | undefined",
+            "attribute": "hreflang",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "description": "Link text (and icons)"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-text-link": {
+      "kind": "element",
+      "source": "web-components/src/components/text-link/text-link.ts",
+      "className": "MinervaTextLink",
+      "summary": "Styled native link (default, subtle, action row).",
+      "description": "A styled native link (`<TextLink>` of React). Renders an `<a>` in its shadow root (one tab stop, activated with Enter); the subtle variant appends a decorative chevron as a non-color cue. To style a router link instead, put the router's anchor inside and use the CSS variables, or use the element's `href` with your router's click interception.",
+      "properties": [
+        {
+          "name": "variant",
+          "attribute": "variant",
+          "type": "\"default\" | \"subtle\" | \"action\"",
+          "default": "\"default\"",
+          "description": "Visual style"
+        },
+        {
+          "name": "href",
+          "attribute": "href",
+          "type": "string | undefined",
+          "description": "URL of the link (`javascript:` / `vbscript:` URLs are not rendered)"
+        },
+        {
+          "name": "target",
+          "attribute": "target",
+          "type": "string | undefined",
+          "description": "Browsing context (`_blank`...)"
+        },
+        {
+          "name": "rel",
+          "attribute": "rel",
+          "type": "string | undefined",
+          "description": "Link relationship (`noopener`...); defaults to `noopener noreferrer` with `target=\"_blank\"`"
+        },
+        {
+          "name": "download",
+          "attribute": "download",
+          "type": "string | undefined",
+          "description": "Downloads the target instead of navigating (optional file name)"
+        },
+        {
+          "name": "hreflang",
+          "attribute": "hreflang",
+          "type": "string | undefined",
+          "description": "Language of the linked resource"
+        }
+      ],
+      "methods": [
+        {
+          "name": "focus",
+          "signature": "(options?: FocusOptions) => void"
+        },
+        {
+          "name": "blur",
+          "signature": "() => void"
+        },
+        {
+          "name": "click",
+          "signature": "() => void"
+        }
+      ],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "Link text (and icons)"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The native <a> (React: the slotted child with asChild)"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--text-link-color",
+          "description": "Color of the default variant (falls back to --link-color, then --primary-color)"
+        },
+        {
+          "name": "--text-link-font-weight",
+          "description": "Font weight"
+        },
+        {
+          "name": "--text-link-text-decoration",
+          "description": "Text decoration of the default variant (default: underline)"
+        },
+        {
+          "name": "--text-link-underline-offset",
+          "description": "Distance between the text and its underline"
+        },
+        {
+          "name": "--text-link-action-min-height",
+          "description": "Minimum height of the action variant"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:TextLink": {
+      "kind": "cssVars",
+      "source": "react/src/components/TextLink",
+      "vars": [
+        {
+          "name": "--text-link-color",
+          "description": "Color of the default variant (falls back to --link-color, then --primary-color)"
+        },
+        {
+          "name": "--text-link-font-weight",
+          "description": "Font weight"
+        },
+        {
+          "name": "--text-link-text-decoration",
+          "description": "Text decoration of the default variant (default: underline)"
+        },
+        {
+          "name": "--text-link-underline-offset",
+          "description": "Distance between the text and its underline"
+        },
+        {
+          "name": "--text-link-action-min-height",
+          "description": "Minimum height of the action variant"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/text-link/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/text-link/wc/basic.html": "<p style=\"margin: 0\">\n  Read the\n  <minerva-text-link\n    href=\"https://developer.mozilla.org/docs/Web/HTML/Element/a\"\n    target=\"_blank\"\n    rel=\"noopener noreferrer\"\n    hreflang=\"en\"\n    >anchor reference</minerva-text-link\n  >\n  before writing your own links, or\n  <minerva-text-link href=\"data:text/plain,Minerva\" download=\"minerva.txt\"\n    >download a sample file</minerva-text-link\n  >.\n</p>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Basic usage",
+      "description": "A native <a> in a shadow root: href, target, rel, hreflang and download are forwarded to it."
+    },
+    {
+      "id": "styling",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/text-link/wc/styling.html",
+      "files": {
+        "apps/docs/src/docs/pages/text-link/wc/styling.html": "<div\n  style=\"\n    display: flex;\n    flex-wrap: wrap;\n    gap: 16px;\n    --text-link-color: var(--success-color);\n    --text-link-font-weight: 600;\n    --text-link-underline-offset: 4px;\n  \"\n>\n  <minerva-text-link href=\"https://example.com\" target=\"_blank\" rel=\"noopener\"\n    >Custom color</minerva-text-link\n  >\n  <minerva-text-link\n    href=\"https://example.com\"\n    target=\"_blank\"\n    rel=\"noopener\"\n    style=\"--text-link-text-decoration: none\"\n    >No underline</minerva-text-link\n  >\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "CSS variables",
+      "description": "Color, weight, underline and its offset are tuned per link with CSS variables."
+    },
+    {
+      "id": "variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/text-link/wc/variants.html",
+      "files": {
+        "apps/docs/src/docs/pages/text-link/wc/variants.html": "<div style=\"display: grid; gap: 16px; width: 320px\">\n  <p style=\"margin: 0\">\n    Read the\n    <minerva-text-link href=\"/guide\">community guide</minerva-text-link>\n    first.\n  </p>\n  <minerva-text-link href=\"/reviews\" variant=\"subtle\"\n    >View all reviews</minerva-text-link\n  >\n  <div>\n    <minerva-text-link href=\"/account\" variant=\"action\"\n      >Account settings</minerva-text-link\n    >\n    <minerva-text-link href=\"/security\" variant=\"action\"\n      >Security</minerva-text-link\n    >\n  </div>\n  <output id=\"route\">Click a link: the navigation is intercepted.</output>\n</div>\n",
+        "apps/docs/src/docs/pages/text-link/wc/variants.ts": "// Client-side routing: the click is composed out of the shadow root, so a\n// router can intercept it on the host and read its `href`.\nexport function setup(root: HTMLElement) {\n  const route = root.querySelector<HTMLOutputElement>(\"#route\")!;\n  const onClick = (event: MouseEvent) => {\n    const link = (event.target as Element).closest<\n      HTMLElement & { href?: string }\n    >(\"minerva-text-link\");\n    if (!link) return;\n    event.preventDefault();\n    route.value = `Navigated to ${link.href}`;\n  };\n  root.addEventListener(\"click\", onClick);\n  return () => root.removeEventListener(\"click\", onClick);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Variants and routing",
+      "description": "default is underlined, subtle adds a chevron, action is a settings row. Clicks are intercepted on the host, like a client-side router would."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "TextLink",
+      "description": "A styled native anchor for inline links, quiet navigation and settings rows; asChild styles a router link without nesting anchors.",
+      "demos": {
+        "variants": {
+          "title": "Variants",
+          "description": "default is underlined, subtle adds a chevron as a non-color cue, action is a full-width row."
+        },
+        "as-child": {
+          "title": "Router links",
+          "description": "asChild merges the styling onto its single child element."
+        }
+      },
+      "api": {
+        "TextLinkProps": {
+          "asChild": "Merges the link styling onto its single child element",
+          "variant": "Visual style: default, subtle or action",
+          "ref": "Ref to the anchor element"
+        }
+      },
+      "cssVars": {
+        "--text-link-color": "Color of the default variant (falls back to --link-color, then --primary-color)",
+        "--text-link-font-weight": "Font weight",
+        "--text-link-text-decoration": "Text decoration of the default variant (default: underline)",
+        "--text-link-underline-offset": "Distance between the text and its underline",
+        "--text-link-action-min-height": "Minimum height of the action variant"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "A native <a> in a shadow root: href, target, rel, hreflang and download are forwarded to it."
+          },
+          "variants": {
+            "title": "Variants and routing",
+            "description": "default is underlined, subtle adds a chevron, action is a settings row. Clicks are intercepted on the host, like a client-side router would."
+          },
+          "styling": {
+            "title": "CSS variables",
+            "description": "Color, weight, underline and its offset are tuned per link with CSS variables."
+          }
+        },
+        "minerva-text-link": {
+          "props": {
+            "href": "URL of the link.",
+            "target": "Browsing context where the link opens (_blank...).",
+            "rel": "Relationship of the linked resource (noopener...).",
+            "download": "Downloads the target instead of navigating (optional file name).",
+            "hreflang": "Language of the linked resource."
+          },
+          "slots": {
+            "default": "Link text (and icons)."
+          },
+          "methods": {
+            "focus": "Focuses the inner link.",
+            "blur": "Removes focus from the inner link.",
+            "click": "Clicks the inner link."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

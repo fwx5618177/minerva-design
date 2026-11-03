@@ -1,0 +1,266 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.0",
+  "locale": "zh",
+  "renderer": "uni",
+  "page": "toast",
+  "title": "Toast 通知",
+  "description": "带标题、描述和语义色的临时通知，可在任意位置通过 toast() 调用（无需 React 上下文），并由应用树中的 ToastProvider 渲染，因此会继承应用的上下文（主题、语言）。内置加载状态、Promise 跟踪、原地更新、操作按钮和最大数量限制。支持服务端渲染。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.0",
+    "sourceCommit": "e5692a82f25163efee65ef771fb64a94e61cb359",
+    "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+    "referenceSourceDigest": "sha256:07db3eb36ff2e4b5bb88e238b04c82819862c70d739534f627e7b6c73c0c6ef1"
+  },
+  "content": {
+    "usage": {
+      "title": "如何选择：useToast() 还是 toast()",
+      "hook": "在组件内调用 useToast()：它显示的通知跟随最近的 ConfigProvider 作用域。在嵌套 Provider 下，通知渲染到该作用域的 portal 容器中，使用其主题、配色方案和 token，内置文案使用其语言。通知仍由持有者 ToastProvider 渲染，沿用它的 position、max 和文案。",
+      "function": "在 React 之外（事件总线、API 客户端、store 等非组件模块）直接导入 toast()：那里无法使用 hook，其通知使用 ToastProvider 的作用域，通常即根主题和根语言。",
+      "modal": "当模态对话框打开时（Modal、Drawer、ConfirmDialog、Command、模态 Popover 或 Menu），它的 hide-others 处理会像页面其余部分一样覆盖 Toast 视口：视口会获得 aria-hidden=\"true\"，在对话框关闭之前辅助技术只能看到对话框。<minerva-toast-region> 的行为相同（可在某个区域上用 data-minerva-keep-visible 退出）。"
+    }
+  },
+  "components": [
+    {
+      "name": "ToastProvider",
+      "support": {
+        "status": "beta",
+        "notes": "Real toast host/store: upsert by id, update/dismiss, callbacks/actions, max overflow, timers, loading and promise transitions. Uni supports hover/focus pause. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Real toast host/store: upsert by id, update/dismiss, callbacks/actions, max overflow, timers, loading and promise transitions. Uni supports hover/focus pause. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "ToastProvider"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "position",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "max",
+            "typeText": "number | undefined",
+            "required": false
+          },
+          {
+            "name": "pauseOnHover",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "closeLabel",
+            "typeText": "string | undefined",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Toast": {
+      "kind": "cssVars",
+      "source": "react/src/components/Toast",
+      "vars": [
+        {
+          "name": "--toast-width",
+          "description": "Width of the toast stack (capped by the viewport)"
+        },
+        {
+          "name": "--toast-gap",
+          "description": "Space between stacked toasts"
+        },
+        {
+          "name": "--toast-offset",
+          "description": "Distance between the stack and the viewport edges"
+        },
+        {
+          "name": "--toast-padding",
+          "description": "Padding of a toast"
+        },
+        {
+          "name": "--toast-radius",
+          "description": "Corner radius of a toast (defaults to --radius-md)"
+        },
+        {
+          "name": "--toast-shadow",
+          "description": "Shadow of a toast (defaults to --shadow-lg)"
+        },
+        {
+          "name": "--toast-background",
+          "description": "Base background of a toast (under the color tint)"
+        },
+        {
+          "name": "--toast-z-index",
+          "description": "Stacking order of the stack (defaults to --z-toast)"
+        },
+        {
+          "name": "--toast-icon-background",
+          "description": "Background of the round chip behind the status icon (defaults to the color's accent at 14%)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "// Inside a component: follows the nearest ConfigProvider scope\nfunction SaveButton() {\n  const toast = useToast();\n  return <Button onClick={() => toast.success(\"Saved\")}>Save</Button>;\n}\n\n// Outside React (API client, event bus, store...): root scope\nimport { toast } from \"minerva-design\";\napiClient.onError((error) => toast.danger(error.message));",
+      "language": "tsx"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.20.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Toast 通知",
+      "description": "带标题、描述和语义色的临时通知，可在任意位置通过 toast() 调用（无需 React 上下文），并由应用树中的 ToastProvider 渲染，因此会继承应用的上下文（主题、语言）。内置加载状态、Promise 跟踪、原地更新、操作按钮和最大数量限制。支持服务端渲染。",
+      "usage": {
+        "title": "如何选择：useToast() 还是 toast()",
+        "hook": "在组件内调用 useToast()：它显示的通知跟随最近的 ConfigProvider 作用域。在嵌套 Provider 下，通知渲染到该作用域的 portal 容器中，使用其主题、配色方案和 token，内置文案使用其语言。通知仍由持有者 ToastProvider 渲染，沿用它的 position、max 和文案。",
+        "function": "在 React 之外（事件总线、API 客户端、store 等非组件模块）直接导入 toast()：那里无法使用 hook，其通知使用 ToastProvider 的作用域，通常即根主题和根语言。",
+        "modal": "当模态对话框打开时（Modal、Drawer、ConfirmDialog、Command、模态 Popover 或 Menu），它的 hide-others 处理会像页面其余部分一样覆盖 Toast 视口：视口会获得 aria-hidden=\"true\"，在对话框关闭之前辅助技术只能看到对话框。<minerva-toast-region> 的行为相同（可在某个区域上用 data-minerva-keep-visible 退出）。"
+      },
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "Success 显示 Saved，Danger 显示 Request failed，Warning 显示 Unsaved changes，Info 显示 New version；最多保留三条通知。"
+        },
+        "colors": {
+          "title": "颜色",
+          "description": "color 选择语义色：info（默认）、success、warning 或 danger。它决定强调色、图标和角色：danger 以 alert 播报，其余以 status 播报。"
+        },
+        "options": {
+          "title": "选项",
+          "description": "使用 toast({ color, title, description, duration }) 完全控制；duration 为 0 时通知会一直保留直到被关闭。toast.dismiss(id) 关闭单条，toast.dismiss() 关闭全部。悬停或聚焦通知会暂停其计时。"
+        },
+        "loading": {
+          "title": "加载、更新与 Promise",
+          "description": "toast.loading（或任意颜色搭配 loading: true 选项）以旋转图标代替图标显示，且不会自动关闭；toast.update(id, { loading: false, ... }) 可原地将其变为结果。toast.promise(promise, { loading, success, error }) 会针对 Promise 自动完成这两步。"
+        },
+        "action": {
+          "title": "操作、图标与 onClose",
+          "description": "action 添加一个按钮（如“撤销”），点击后同时关闭通知；icon 替换颜色图标；closable: false 隐藏关闭按钮；onClose 在通知关闭时调用一次。"
+        },
+        "dedupe": {
+          "title": "相同 id 替换",
+          "description": "使用可见通知的 id 再次显示会替换它并重新计时，而不是叠加重复通知（适合轮询报错）。"
+        },
+        "scoped": {
+          "title": "作用域：useToast() 与 toast()",
+          "description": "两个按钮都位于嵌套的 ConfigProvider 中（暗色主题、tech 配色、中文）。useToast() 在该作用域中渲染通知（暗色 token、中文关闭按钮，在相同位置拥有独立的通知区域）；toast() 渲染在根部，使用页面的主题和语言。"
+        },
+        "keyboard": {
+          "title": "键盘",
+          "description": "F8（hotkey 属性，也会出现在区域标签“通知（F8）”中）将焦点移到通知。Escape 关闭当前聚焦的通知；关闭一条后，焦点移到下一条通知的关闭按钮，最后回到进入通知前的位置。"
+        }
+      },
+      "api": {
+        "ToastOptions": {
+          "id": "通知的标识；省略时自动生成。使用可见通知的 id 再次显示会替换它（并重新计时），而不是叠加重复通知",
+          "color": "通知的语义色；决定其强调色、图标和 ARIA 角色（danger 以 alert 播报，其余以 status 播报）",
+          "loading": "以旋转图标代替图标，并保持通知打开（duration 默认为 0），直到被更新或关闭；以 status 播报",
+          "title": "主要文本",
+          "description": "标题下方的辅助文本",
+          "duration": "自动关闭前的毫秒数；0 表示保持打开。加载通知默认为 0",
+          "icon": "替换颜色图标（或加载旋转图标）；传 null 时隐藏",
+          "closable": "显示关闭按钮",
+          "action": "通知中的操作按钮（如“撤销”）",
+          "onClose": "通知关闭时（无论何种原因）以其 id 调用一次"
+        },
+        "ToastAction": {
+          "label": "按钮的可见文字",
+          "onClick": "按钮被激活时调用，随后通知关闭"
+        },
+        "ToastProviderProps": {
+          "position": "通知堆叠的位置",
+          "children": "应用内容；通知视口渲染在其后",
+          "max": "同时显示的最大通知数；超出时最早的通知先关闭",
+          "pauseOnHover": "悬停或聚焦通知时暂停自动关闭计时",
+          "aria-label": "通知区域的无障碍标签，按原样使用（默认标签包含快捷键）",
+          "closeLabel": "关闭按钮的无障碍标签",
+          "hotkey": "同时按下以将焦点移到通知区域（第一个包含通知的区域）的按键：按键码（F8、KeyT）、按键或修饰键（altKey、ctrlKey、metaKey、shiftKey）。显示在默认区域标签中，如“通知（F8）”；空数组表示禁用"
+        },
+        "ToastApi": {
+          "info": "以给定标题显示一条信息通知",
+          "success": "以给定标题显示一条成功通知",
+          "warning": "以给定标题显示一条警告通知",
+          "danger": "以给定标题显示一条危险通知",
+          "loading": "以给定标题显示加载通知（旋转图标，不自动关闭）",
+          "promise": "Promise 进行中显示加载通知，完成后将其变为成功或错误通知；返回传入的 Promise",
+          "update": "原地修改已打开的通知（合并选项）并重新计时；loading: false 会把加载通知变为普通通知（未指定 duration 时使用默认时长）。未知 id 会被忽略",
+          "dismiss": "关闭指定 id 的通知；省略时关闭全部"
+        },
+        "ToastPromiseMessages": {
+          "loading": "Promise 进行中时的标题",
+          "success": "Promise 成功后的标题（节点，或接收结果的函数）",
+          "error": "Promise 失败后的标题（节点，或接收错误的函数）"
+        }
+      },
+      "cssVars": {
+        "--toast-width": "通知堆栈的宽度（受视口限制）",
+        "--toast-gap": "堆叠通知之间的间距",
+        "--toast-offset": "堆栈与视口边缘的距离",
+        "--toast-padding": "通知的内边距",
+        "--toast-radius": "通知的圆角（默认 --radius-md）",
+        "--toast-shadow": "通知的阴影（默认 --shadow-lg）",
+        "--toast-background": "通知的基础背景（位于颜色色调之下）",
+        "--toast-z-index": "堆栈的层级（默认 --z-toast）",
+        "--toast-icon-background": "状态图标背后圆形底块的背景（默认为 14% 的强调色）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "<minerva-toast-region> 负责渲染提示；region.toast 是绑定到该区域的 toast() API（info、success、warning、danger）。position 决定堆叠位置。 与 React 的 ToastProvider 一样，打开的模态对话框会在关闭前对辅助技术隐藏该区域（aria-hidden）。"
+          },
+          "options": {
+            "title": "选项与操作按钮",
+            "description": "带标题、描述、更长显示时长和「撤销」操作的提示。max 只保留最新的若干条；minerva-close 说明每条提示关闭的原因。"
+          },
+          "loading": {
+            "title": "加载与 Promise",
+            "description": "toast.promise() 用一条提示跟踪 Promise 的状态；loading() 加 update() 可手动实现同样效果。加载中的提示会一直显示直到被更新；dismiss() 关闭所有提示。"
+          }
+        },
+        "minerva-toast-region": {
+          "props": {
+            "noPauseOnHover": "悬停或聚焦提示时倒计时仍继续。",
+            "toast": "绑定到此区域的 toast API：region.toast.success(\"Saved\") 会渲染在该元素中（只读）。"
+          },
+          "events": {
+            "minerva-close": "该区域的某条提示开始关闭（detail: { id, reason }；reason 为 timeout、close-button、action、escape、dismiss 或 overflow）。",
+            "minerva-after-close": "该区域的某条提示在退出动画后被移除（detail: { id }）。"
+          },
+          "methods": {
+            "focus": "将焦点移至该区域（与快捷键效果相同）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "Success 显示 Saved，Danger 显示 Request failed，Warning 显示 Unsaved changes，Info 显示 New version；最多保留三条通知。"
+          }
+        },
+        "limitations": "Native 中 top-left/top-center/top-right 映射为顶部通知，bottom-left/bottom-center/bottom-right 映射为底部通知；消息动作和最大条数一致，左右角定位不等同于 Web。"
+      }
+    }
+  }
+}

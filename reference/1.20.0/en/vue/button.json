@@ -1,0 +1,531 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.0",
+  "locale": "en",
+  "renderer": "vue",
+  "page": "button",
+  "title": "Button",
+  "description": "Triggers an action or event, such as submitting a form or opening a dialog.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.0",
+    "sourceCommit": "e5692a82f25163efee65ef771fb64a94e61cb359",
+    "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+    "referenceSourceDigest": "sha256:07db3eb36ff2e4b5bb88e238b04c82819862c70d739534f627e7b6c73c0c6ef1"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Button",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "Button"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "type",
+            "type": "\"submit\" | \"button\" | \"reset\"",
+            "default": "\"button\"",
+            "required": false,
+            "typeText": "\"submit\" | \"button\" | \"reset\""
+          },
+          {
+            "name": "color",
+            "type": "ColorScheme",
+            "default": "\"primary\"",
+            "required": false,
+            "description": "Semantic color.",
+            "typeText": "ColorScheme"
+          },
+          {
+            "name": "variant",
+            "type": "\"outline\" | \"solid\" | \"link\" | \"ghost\"",
+            "default": "\"solid\"",
+            "required": false,
+            "description": "Visual variant.",
+            "typeText": "\"outline\" | \"solid\" | \"link\" | \"ghost\""
+          },
+          {
+            "name": "size",
+            "type": "\"medium\" | \"small\" | \"large\" | \"xsmall\" | \"xlarge\"",
+            "default": "\"medium\"",
+            "required": false,
+            "typeText": "\"medium\" | \"small\" | \"large\" | \"xsmall\" | \"xlarge\""
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "typeText": "boolean"
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Busy: spinner, `aria-busy`, ignores presses.",
+            "typeText": "boolean"
+          },
+          {
+            "name": "loadingText",
+            "type": "string",
+            "required": false,
+            "description": "Label while loading (or the `loading-text` slot)",
+            "typeText": "string"
+          },
+          {
+            "name": "fullWidth",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Takes the full width of its container.",
+            "typeText": "boolean"
+          },
+          {
+            "name": "active",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Pressed / selected look (`data-state=\"active\"`).",
+            "typeText": "boolean"
+          },
+          {
+            "name": "shape",
+            "type": "\"rounded\" | \"circle\" | \"square\"",
+            "required": false,
+            "typeText": "\"rounded\" | \"circle\" | \"square\""
+          },
+          {
+            "name": "borderRadius",
+            "type": "number | \"medium\" | \"small\" | \"large\" | \"circle\" | \"square\" | \"none\"",
+            "required": false,
+            "description": "Corner radius: a scale step or px",
+            "typeText": "number | \"medium\" | \"small\" | \"large\" | \"circle\" | \"square\" | \"none\""
+          }
+        ],
+        "events": [
+          {
+            "name": "click",
+            "type": "[event: MouseEvent]",
+            "typeText": "[event: MouseEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "MouseEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "description": "Label",
+            "typeText": "any"
+          },
+          {
+            "name": "start-icon",
+            "type": "any",
+            "description": "Icon before the label",
+            "typeText": "any"
+          },
+          {
+            "name": "end-icon",
+            "type": "any",
+            "description": "Icon after the label",
+            "typeText": "any"
+          },
+          {
+            "name": "loading-text",
+            "type": "any",
+            "description": "Label while loading (replaces the content; the `loadingText` prop)",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Button": {
+      "kind": "cssVars",
+      "source": "react/src/components/Button",
+      "vars": [
+        {
+          "name": "--button-height",
+          "description": "Minimum height (every size; defaults to the density's control height of the size)"
+        },
+        {
+          "name": "--button-padding-x",
+          "description": "Horizontal padding (every size)"
+        },
+        {
+          "name": "--button-radius",
+          "description": "Corner radius (defaults to --radius-md; the shape / borderRadius props win)"
+        },
+        {
+          "name": "--button-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--button-font-weight",
+          "description": "Font weight"
+        },
+        {
+          "name": "--button-gap",
+          "description": "Space between the icons and the label"
+        },
+        {
+          "name": "--button-label-white-space",
+          "description": "White-space of the label: nowrap (default, truncates) or normal (wraps)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/button/vue/basic.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Button, HStack } from \"minerva-design/vue\";\nconst count = ref(0);\n</script>\n<template>\n  <HStack :gap=\"3\" wrap>\n    <Button @click=\"count++\">Click me</Button>\n    <output aria-live=\"polite\">Clicked {{ count }} times</output>\n  </HStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": "Click the button to increase the visible count by one."
+    },
+    {
+      "id": "colors",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/vue/colors.vue",
+      "files": {
+        "apps/docs/src/docs/pages/button/vue/colors.vue": "<script setup lang=\"ts\">\nimport { Button, HStack } from \"minerva-design/vue\";\nconst colors = [\n  \"primary\",\n  \"neutral\",\n  \"success\",\n  \"warning\",\n  \"danger\",\n  \"info\",\n] as const;\n</script>\n<template>\n  <HStack :gap=\"2\" wrap\n    ><Button v-for=\"color in colors\" :key=\"color\" :color=\"color\">{{\n      color[0].toUpperCase() + color.slice(1)\n    }}</Button></HStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "colors",
+      "description": ""
+    },
+    {
+      "id": "form",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/vue/form.vue",
+      "files": {
+        "apps/docs/src/docs/pages/button/vue/form.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Button, Input } from \"minerva-design/vue\";\nconst log = ref(\"Nothing yet\");\nfunction submit(event: Event) {\n  const title = new FormData(event.target as HTMLFormElement).get(\"title\");\n  log.value = `Submitted \"${String(title)}\"`;\n}\n</script>\n<template>\n  <form\n    @submit.prevent=\"submit\"\n    @reset=\"log = 'Reset'\"\n    style=\"display: flex; flex-wrap: wrap; gap: 8px; align-items: center\"\n  >\n    <Input name=\"title\" aria-label=\"Title\" default-value=\"Draft\" />\n    <Button\n      color=\"neutral\"\n      variant=\"outline\"\n      @click=\"log = 'Preview opened (form not submitted)'\"\n      >Preview</Button\n    >\n    <Button type=\"reset\" color=\"neutral\" variant=\"ghost\">Reset</Button\n    ><Button type=\"submit\">Save</Button\n    ><output style=\"flex-basis: 100%\">{{ log }}</output>\n  </form>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "form",
+      "description": ""
+    },
+    {
+      "id": "icons-loading",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/vue/icons-loading.vue",
+      "files": {
+        "apps/docs/src/docs/pages/button/vue/icons-loading.vue": "<script setup lang=\"ts\">\nimport { ref, onBeforeUnmount } from \"vue\";\nimport { Button, HStack, VStack } from \"minerva-design/vue\";\nconst saving = ref(false);\nlet timer: ReturnType<typeof setTimeout>;\nfunction save() {\n  saving.value = true;\n  timer = setTimeout(() => (saving.value = false), 1500);\n}\nonBeforeUnmount(() => clearTimeout(timer));\n</script>\n<template>\n  <VStack :gap=\"3\" style=\"max-width: 320px\"\n    ><Button\n      ><template #start-icon><span aria-hidden=\"true\">+</span></template\n      >Add item</Button\n    ><Button variant=\"outline\"\n      ><template #end-icon><span aria-hidden=\"true\">→</span></template\n      >Continue</Button\n    ><Button\n      color=\"success\"\n      full-width\n      :loading=\"saving\"\n      loading-text=\"Saving...\"\n      @click=\"save\"\n      >Save</Button\n    ></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "icons-loading",
+      "description": ""
+    },
+    {
+      "id": "shapes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/vue/shapes.vue",
+      "files": {
+        "apps/docs/src/docs/pages/button/vue/shapes.vue": "<script setup lang=\"ts\">\nimport { Button, HStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <HStack :gap=\"2\" wrap\n    ><Button shape=\"square\">Square</Button\n    ><Button shape=\"rounded\">Rounded</Button\n    ><Button shape=\"circle\" aria-label=\"Add\">+</Button\n    ><Button border-radius=\"none\">No radius</Button\n    ><Button :border-radius=\"12\">12px radius</Button></HStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "shapes",
+      "description": ""
+    },
+    {
+      "id": "sizes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/vue/sizes.vue",
+      "files": {
+        "apps/docs/src/docs/pages/button/vue/sizes.vue": "<script setup lang=\"ts\">\nimport { Button, HStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <HStack :gap=\"2\" wrap\n    ><Button size=\"xsmall\">XSmall</Button><Button size=\"small\">Small</Button\n    ><Button size=\"medium\">Medium</Button><Button size=\"large\">Large</Button\n    ><Button size=\"xlarge\">XLarge</Button></HStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "sizes",
+      "description": ""
+    },
+    {
+      "id": "states",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/vue/states.vue",
+      "files": {
+        "apps/docs/src/docs/pages/button/vue/states.vue": "<script setup lang=\"ts\">\nimport { ref, onBeforeUnmount } from \"vue\";\nimport { Button, HStack, VStack } from \"minerva-design/vue\";\nconst saving = ref(false);\nlet timer: ReturnType<typeof setTimeout>;\nfunction save() {\n  saving.value = true;\n  timer = setTimeout(() => (saving.value = false), 1500);\n}\nonBeforeUnmount(() => clearTimeout(timer));\n</script>\n<template>\n  <HStack :gap=\"2\" wrap\n    ><Button :loading=\"saving\" @click=\"save\">{{\n      saving ? \"Saving…\" : \"Save\"\n    }}</Button\n    ><Button disabled>Disabled</Button><Button active>Active</Button></HStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "states",
+      "description": ""
+    },
+    {
+      "id": "variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/vue/variants.vue",
+      "files": {
+        "apps/docs/src/docs/pages/button/vue/variants.vue": "<script setup lang=\"ts\">\nimport { Button, HStack, VStack } from \"minerva-design/vue\";\nconst colors = [\"primary\", \"neutral\", \"danger\"] as const;\nconst variants = [\"solid\", \"outline\", \"ghost\", \"link\"] as const;\n</script>\n<template>\n  <VStack :gap=\"3\"\n    ><HStack v-for=\"color in colors\" :key=\"color\" :gap=\"2\" wrap\n      ><Button\n        v-for=\"variant in variants\"\n        :key=\"variant\"\n        :color=\"color\"\n        :variant=\"variant\"\n        >{{ variant }}</Button\n      ></HStack\n    ></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "variants",
+      "description": ""
+    },
+    {
+      "id": "with-icon",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/vue/with-icon.vue",
+      "files": {
+        "apps/docs/src/docs/pages/button/vue/with-icon.vue": "<script setup lang=\"ts\">\nimport { Button, HStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <HStack :gap=\"2\" wrap\n    ><Button\n      ><template #start-icon><span aria-hidden=\"true\">+</span></template\n      >Add</Button\n    ><Button color=\"danger\"\n      ><template #start-icon><span aria-hidden=\"true\">↻</span></template\n      >Retry</Button\n    ><Button color=\"neutral\" variant=\"ghost\"\n      ><template #start-icon><span aria-hidden=\"true\">←</span></template\n      >Back</Button\n    ><Button color=\"danger\" variant=\"outline\" aria-label=\"Delete item\"\n      ><span aria-hidden=\"true\">×</span></Button\n    ></HStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "with-icon",
+      "description": ""
+    }
+  ],
+  "recipes": [
+    {
+      "id": "vue-form",
+      "title": "Vue controlled project form",
+      "renderer": "vue",
+      "pages": [
+        "input",
+        "switch",
+        "form-control",
+        "form-layout",
+        "button"
+      ],
+      "kind": "standalone-recipe",
+      "packageVersion": "1.20.0",
+      "files": {
+        "README.md": "# vue-form\n\nStandalone Vue 3 recipe, using only public Minerva entries.\n\nRequires Node >=22.13 and pnpm 11. Copy the complete directory, then run:\n\n```sh\npnpm install\npnpm build\npnpm dev\n```\n\nThe package manifest pins the tested Minerva/framework/tool versions. The entry imports the global stylesheet once. App owns the provider and controlled state. No documentation translation setup or workspace aliases are required.\n",
+        "index.html": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n    <title>Minerva standalone recipe</title>\n  </head>\n  <body>\n    <div id=\"app\"></div>\n    <script type=\"module\" src=\"/src/main.ts\"></script>\n  </body>\n</html>\n",
+        "package.json": "{\n  \"name\": \"minerva-recipe-vue-form\",\n  \"private\": true,\n  \"version\": \"1.0.0\",\n  \"type\": \"module\",\n  \"packageManager\": \"pnpm@11.23.0\",\n  \"scripts\": {\n    \"dev\": \"vite --host 127.0.0.1\",\n    \"build\": \"vue-tsc --noEmit && vite build\"\n  },\n  \"dependencies\": {\n    \"minerva-design\": \"1.20.0\",\n    \"vue\": \"3.5.43\"\n  },\n  \"devDependencies\": {\n    \"typescript\": \"6.0.3\",\n    \"vite\": \"8.3.3\",\n    \"@vitejs/plugin-vue\": \"6.0.9\",\n    \"vue-tsc\": \"3.3.12\"\n  }\n}\n",
+        "src/App.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport {\n  Button,\n  ConfigProvider,\n  FormField,\n  Input,\n  Switch,\n  VStack,\n} from \"minerva-design/vue\";\nconst name = ref(\"\");\nconst subscribed = ref(false);\nconst saved = ref(\"\");\n</script>\n<template>\n  <ConfigProvider theme=\"light\"\n    ><VStack :gap=\"4\" align=\"start\">\n      <FormField label=\"Project name\" required\n        ><Input name=\"project\" v-model=\"name\" clearable\n      /></FormField>\n      <Switch label=\"Newsletter\" v-model=\"subscribed\" />\n      <Button\n        :disabled=\"!name.trim()\"\n        @click=\"saved = `${name}${subscribed ? ' · subscribed' : ''}`\"\n        >Save project</Button\n      >\n      <output aria-live=\"polite\">{{ saved || \"No project saved\" }}</output>\n    </VStack></ConfigProvider\n  >\n</template>\n",
+        "src/main.ts": "import { createApp } from \"vue\";\nimport App from \"./App.vue\";\nimport \"minerva-design/style.css\";\ncreateApp(App).mount(\"#app\");\n",
+        "src/vite-env.d.ts": "/// <reference types=\"vite/client\" />\n",
+        "tsconfig.json": "{\n  \"compilerOptions\": {\n    \"target\": \"ES2022\",\n    \"module\": \"ESNext\",\n    \"moduleResolution\": \"Bundler\",\n    \"lib\": [\"ES2022\", \"DOM\", \"DOM.Iterable\"],\n    \"strict\": true,\n    \"skipLibCheck\": true,\n    \"jsx\": \"react-jsx\",\n    \"noEmit\": true,\n    \"esModuleInterop\": true\n  },\n  \"include\": [\"src\"]\n}\n",
+        "vite.config.ts": "import { defineConfig } from \"vite\";\nimport vue from \"@vitejs/plugin-vue\";\nexport default defineConfig({ plugins: [vue()] });\n"
+      },
+      "dependencies": {
+        "minerva-design": "1.20.0",
+        "vue": "3.5.43",
+        "typescript": "6.0.3",
+        "vite": "8.3.3",
+        "@vitejs/plugin-vue": "6.0.9",
+        "vue-tsc": "3.3.12"
+      },
+      "url": "/minerva-design/reference/1.20.0/recipes/vue-form/README.md"
+    }
+  ],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Button",
+      "description": "Triggers an action or event, such as submitting a form or opening a dialog.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Click the button to increase the visible count by one."
+        },
+        "colors": {
+          "title": "Colors",
+          "description": "color sets the semantic color: primary (default), neutral, success, warning, danger or info."
+        },
+        "variants": {
+          "title": "Variants",
+          "description": "variant sets the visual style: solid (default), outline, ghost or link. It combines with any color."
+        },
+        "sizes": {
+          "title": "Sizes",
+          "description": "Five sizes: xsmall, small, medium (default), large and xlarge."
+        },
+        "shapes": {
+          "title": "Shapes and radius",
+          "description": "Preset shapes, or a custom borderRadius preset / pixel value."
+        },
+        "states": {
+          "title": "States",
+          "description": "Loading, disabled and active states. Loading blocks clicks (and form submission) while an action is running, but keeps keyboard focus on the button."
+        },
+        "with-icon": {
+          "title": "With icons",
+          "description": "Combine text and icons with startIcon / endIcon, e.g. a danger retry or a neutral ghost back button. Give icon-only buttons an aria-label."
+        },
+        "icons-loading": {
+          "title": "Icons, loading text and full width",
+          "description": "startIcon / endIcon render icons around the label, loadingText replaces the content while loading and fullWidth stretches the button."
+        },
+        "form": {
+          "title": "In a form: type",
+          "description": "Button defaults to type=\"button\", so a Button inside a <form> (preview, add row, open dialog...) never submits it by accident. Pass type=\"submit\" for the submit button and type=\"reset\" to reset the form."
+        }
+      },
+      "api": {
+        "ButtonProps": {
+          "type": "Native button type. Defaults to \"button\" (unlike the HTML default \"submit\"), so a Button in a form never submits it by accident: use type=\"submit\" for submit buttons and \"reset\" for reset buttons",
+          "onClick": "Called when the button is clicked (not called while disabled)",
+          "children": "Button content",
+          "className": "Additional class name",
+          "color": "Semantic color of the button",
+          "variant": "Visual style: solid (filled), outline (border only), ghost (transparent until hovered) or link (text link look)",
+          "size": "Button size",
+          "aria-label": "Accessible label, required when the button only contains an icon",
+          "disabled": "Disables the button",
+          "loading": "Shows a spinner and blocks activation (aria-busy / aria-disabled). The button stays focusable so keyboard focus is not lost",
+          "active": "Renders the button in its pressed/active state",
+          "shape": "Preset shape of the button",
+          "borderRadius": "Corner radius: a preset or a number of pixels. The theme radius (--radius-md) is used when omitted",
+          "style": "Inline styles",
+          "ref": "Ref to the <button> element",
+          "loadingText": "Text shown instead of the content (and icons) while loading",
+          "startIcon": "Icon rendered before the content",
+          "endIcon": "Icon rendered after the content",
+          "fullWidth": "Stretches the button to the full width of its container"
+        }
+      },
+      "cssVars": {
+        "--button-height": "Minimum height (every size; defaults to the density's control height of the size)",
+        "--button-padding-x": "Horizontal padding (every size)",
+        "--button-radius": "Corner radius (defaults to --radius-md; the shape / borderRadius props win)",
+        "--button-font-size": "Font size (every size)",
+        "--button-font-weight": "Font weight",
+        "--button-gap": "Space between the icons and the label",
+        "--button-label-white-space": "White-space of the label: nowrap (default, truncates) or normal (wraps)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Click the button to increase the visible count by one."
+          },
+          "colors-variants": {
+            "title": "Colors and variants",
+            "description": "color sets the semantic tone (shared ColorScheme), variant the visual style."
+          },
+          "sizes-shapes": {
+            "title": "Sizes and shapes",
+            "description": "Five sizes and three shapes. Icon-only circle buttons need an aria-label, forwarded to the inner button."
+          },
+          "states": {
+            "title": "States, icons and loading",
+            "description": "The start / end slots hold icons, the loading slot replaces the label while loading. Click Save to see the loading state."
+          },
+          "form": {
+            "title": "In a form",
+            "description": "The element is form-associated: type=\"submit\" validates and submits its form, type=\"reset\" resets it."
+          }
+        },
+        "minerva-button": {
+          "props": {
+            "form": "The form owning the button (read-only)."
+          },
+          "slots": {
+            "default": "Label.",
+            "start": "Icon before the label.",
+            "end": "Icon after the label.",
+            "loading": "Text shown instead of the label while loading."
+          },
+          "methods": {
+            "focus": "Focuses the inner button.",
+            "blur": "Removes focus from the inner button.",
+            "click": "Clicks the inner button (ignored while disabled or loading)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Click the button to increase the visible count by one."
+          },
+          "colors": {
+            "title": "Colors",
+            "description": "color sets the semantic color: primary (default), neutral, success, warning, danger or info."
+          },
+          "variants": {
+            "title": "Variants",
+            "description": "variant sets the visual style: solid (default), outline, ghost or link. It combines with any color."
+          },
+          "sizes": {
+            "title": "Sizes",
+            "description": "Five sizes: xsmall, small, medium (default), large and xlarge."
+          },
+          "shapes": {
+            "title": "Shapes and radius",
+            "description": "Preset shapes, or a custom borderRadius preset / pixel value."
+          },
+          "states": {
+            "title": "States",
+            "description": "Loading, disabled and active states. Loading blocks clicks (and form submission) while an action is running, but keeps keyboard focus on the button."
+          },
+          "with-icon": {
+            "title": "With icons",
+            "description": "Combine text and icons with startIcon / endIcon, e.g. a danger retry or a neutral ghost back button. Give icon-only buttons an aria-label."
+          },
+          "icons-loading": {
+            "title": "Icons, loading text and full width",
+            "description": "startIcon / endIcon render icons around the label, loadingText replaces the content while loading and fullWidth stretches the button."
+          },
+          "form": {
+            "title": "In a form: type",
+            "description": "Preview, reset and save a draft. Native buttons use onPress handlers instead of browser form submission."
+          }
+        }
+      },
+      "vue": {
+        "demos": {
+          "basic": {
+            "description": "Click the button to increase the visible count by one."
+          }
+        }
+      }
+    }
+  }
+}

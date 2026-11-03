@@ -1,0 +1,360 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.0",
+  "locale": "fr",
+  "renderer": "taro",
+  "page": "virtual-list",
+  "title": "VirtualList",
+  "description": "Affiche efficacement de longues listes en ne montant que les lignes visibles dans le conteneur défilant.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.0",
+    "sourceCommit": "e5692a82f25163efee65ef771fb64a94e61cb359",
+    "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+    "referenceSourceDigest": "sha256:07db3eb36ff2e4b5bb88e238b04c82819862c70d739534f627e7b6c73c0c6ef1"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "VirtualList",
+      "support": {
+        "status": "beta",
+        "notes": "Fixed-height native ScrollView windowing with optional first-row measurement, item padding, overscan, compact short lists, native item click events, optional 16 ms scroll batching, pixel loading thresholds and Promise load-more mutual exclusion. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Both React and this renderer use one fixed row height. Native scheduling uses a 16 ms timer instead of browser requestAnimationFrame/requestIdleCallback; browser ref targets are not reproduced. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Fixed-height native ScrollView windowing with optional first-row measurement, item padding, overscan, compact short lists, native item click events, optional 16 ms scroll batching, pixel loading thresholds and Promise load-more mutual exclusion. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Both React and this renderer use one fixed row height. Native scheduling uses a 16 ms timer instead of browser requestAnimationFrame/requestIdleCallback; browser ref targets are not reproduced. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "VirtualList"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "items",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "array",
+            "typeText": "T[]",
+            "typeRef": "type:bf7ca7a5ed16ef435cb4",
+            "required": true
+          },
+          {
+            "name": "itemHeight",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false
+          },
+          {
+            "name": "itemPadding",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false
+          },
+          {
+            "name": "maxHeight",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false
+          },
+          {
+            "name": "overscan",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false
+          },
+          {
+            "name": "renderItem",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "node",
+            "typeText": "(item: T, index: number) => ReactNode",
+            "typeRef": "type:9ebe34272ba535e9cd01",
+            "parameters": [
+              {
+                "name": "item",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "T",
+                "typeRef": "type:be6701fadc622c309ae1"
+              },
+              {
+                "name": "index",
+                "position": 1,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:a991edaa7809b6d75ba2"
+            },
+            "required": true
+          },
+          {
+            "name": "loadMoreThreshold",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false
+          },
+          {
+            "name": "loading",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "highPerformance",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onLoadMore",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "function",
+            "typeText": "(() => void | Promise<void>) | undefined",
+            "typeRef": "type:b6730488f87fb9751d62",
+            "parameters": [],
+            "returnType": {
+              "typeText": "void | Promise<void>",
+              "typeRef": "type:3c4871f2062b3b734ba0"
+            },
+            "required": false
+          },
+          {
+            "name": "onItemClick",
+            "source": "packages/taro/src/data.tsx",
+            "kind": "function",
+            "typeText": "((item: T, index: number, event: ITouchEvent) => void) | undefined",
+            "typeRef": "type:bb107fb1e3e0c8c52cae",
+            "parameters": [
+              {
+                "name": "item",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "T",
+                "typeRef": "type:be6701fadc622c309ae1"
+              },
+              {
+                "name": "index",
+                "position": 1,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              },
+              {
+                "name": "event",
+                "position": 2,
+                "required": true,
+                "rest": false,
+                "typeText": "ITouchEvent",
+                "typeRef": "type:7276d9ff893f9fea3df5"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:VirtualList": {
+      "kind": "cssVars",
+      "source": "react/src/components/VirtualList",
+      "vars": [
+        {
+          "name": "--virtual-list-radius",
+          "description": "Corner radius (defaults to --radius-sm)"
+        },
+        {
+          "name": "--virtual-list-shadow",
+          "description": "Shadow at rest (defaults to --shadow-sm)"
+        },
+        {
+          "name": "--virtual-list-hover-shadow",
+          "description": "Shadow while hovered (defaults to --shadow-md)"
+        },
+        {
+          "name": "--virtual-list-scrollbar-size",
+          "description": "Width of the scrollbar (WebKit / Blink)"
+        },
+        {
+          "name": "--virtual-list-loading-padding",
+          "description": "Padding of the loading indicator row"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "VirtualList",
+      "description": "Affiche efficacement de longues listes en ne montant que les lignes visibles dans le conteneur défilant.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "10 000 lignes avec un itemHeight fixe ; seules les lignes visibles (plus l'overscan) sont dans le DOM."
+        },
+        "auto-height": {
+          "title": "Hauteur mesurée",
+          "description": "Omettez itemHeight pour la mesurer à partir du premier élément ; itemPadding est ajouté autour de chaque ligne."
+        },
+        "infinite-scroll": {
+          "title": "Défilement infini",
+          "description": "onLoadMore est appelé près du bas de la liste ; affichez un indicateur de chargement pendant son exécution."
+        },
+        "high-performance": {
+          "title": "Mode haute performance",
+          "description": "highPerformance regroupe les mises à jour de défilement avec requestAnimationFrame et requestIdleCallback, ici avec 100 000 lignes."
+        },
+        "clickable-rows": {
+          "title": "Lignes cliquables et attributs natifs",
+          "description": "onItemClick rend les lignes cliquables (curseur pointeur, focalisables, activées avec Entrée / Espace) ; sans lui, elles gardent le curseur par défaut. Les attributs natifs comme id, data-* et aria-* sont transmis à la racine."
+        }
+      },
+      "api": {
+        "VirtualListProps": {
+          "items": "Éléments à afficher",
+          "itemHeight": "Hauteur fixe des lignes en pixels ; mesurée à partir du premier élément si omise",
+          "itemPadding": "Marge intérieure de chaque ligne en pixels",
+          "overscan": "Nombre de lignes rendues au-dessus et au-dessous de la zone visible",
+          "maxHeight": "Hauteur maximale du conteneur défilant en pixels",
+          "renderItem": "Affiche le contenu d'une ligne",
+          "className": "Nom de classe supplémentaire",
+          "style": "Styles en ligne du conteneur défilant",
+          "onLoadMore": "Appelé à l’approche du bas de la liste ; renvoie une promesse résolue une fois les nouveaux éléments chargés (aucun nouvel appel avant qu’elle ne soit réglée)",
+          "loadMoreThreshold": "Distance du bas (px) à partir de laquelle onLoadMore est déclenché",
+          "highPerformance": "Regroupe les mises à jour de défilement avec requestAnimationFrame et requestIdleCallback",
+          "loading": "Affiche un indicateur de chargement en bas de la liste",
+          "aria-label": "Nom accessible de la liste",
+          "ref": "Ref vers l’élément racine <div> (conteneur de défilement)",
+          "onItemClick": "Appelé quand une ligne est cliquée, ou activée avec Entrée / Espace quand elle a elle-même le focus. Rend les lignes cliquables : focalisables et affichées avec un curseur pointeur"
+        },
+        "VirtualListItem": {
+          "id": "Clé unique de l'élément",
+          "metadata": "Données arbitraires pour renderItem"
+        }
+      },
+      "cssVars": {
+        "--virtual-list-radius": "Rayon des coins (par défaut --radius-sm)",
+        "--virtual-list-shadow": "Ombre au repos (par défaut --shadow-sm)",
+        "--virtual-list-hover-shadow": "Ombre au survol (par défaut --shadow-md)",
+        "--virtual-list-scrollbar-size": "Largeur de la barre de défilement (WebKit / Blink)",
+        "--virtual-list-loading-padding": "Marge intérieure de la ligne de l'indicateur de chargement"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Définissez les propriétés items et renderItem en JavaScript : seules les lignes visibles sont rendues, même avec 10 000 éléments. Nommez la liste avec aria-label."
+          },
+          "clickable-rows": {
+            "title": "Lignes cliquables",
+            "description": "clickable rend les lignes focalisables et déclenche minerva-item-click au clic, avec Entrée ou Espace. scrollToIndex() fait défiler par programme."
+          },
+          "infinite-scroll": {
+            "title": "Défilement infini",
+            "description": "minerva-load-more est déclenché près du bas (load-more-threshold) ; définissez loading pendant le chargement de la page suivante."
+          }
+        },
+        "minerva-virtual-list": {
+          "props": {
+            "clickable": "Rend les lignes focalisables et cliquables (curseur pointeur, Entrée / Espace) et déclenche minerva-item-click.",
+            "scrollContainer": "L'élément conteneur de défilement (lecture seule), par exemple pour faire défiler par programme."
+          },
+          "events": {
+            "minerva-item-click": "Une ligne cliquable a été cliquée ou activée avec Entrée / Espace (detail : { item, index }).",
+            "minerva-load-more": "La liste a défilé à moins de load-more-threshold pixels du bas."
+          },
+          "cssVars": {
+            "--progress-width": "Largeur de l'indicateur de chargement.",
+            "--progress-bar-height": "Épaisseur de la barre de chargement.",
+            "--progress-track-color": "Couleur de la piste de l'indicateur de chargement.",
+            "--progress-radius": "Rayon des coins de la piste de l'indicateur de chargement.",
+            "--progress-size": "Taille de l'indicateur de chargement circulaire."
+          },
+          "methods": {
+            "scrollToIndex": "Fait défiler pour placer la ligne d'indice index en haut de la liste."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

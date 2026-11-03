@@ -1,0 +1,697 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.0",
+  "locale": "en",
+  "renderer": "native",
+  "page": "slider",
+  "title": "Slider",
+  "description": "Pick a number, or a range with two thumbs, by dragging along a track: steps or marks, a value label and tooltip, and a separate event when the user lets go.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.0",
+    "sourceCommit": "e5692a82f25163efee65ef771fb64a94e61cb359",
+    "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+    "referenceSourceDigest": "sha256:07db3eb36ff2e4b5bb88e238b04c82819862c70d739534f627e7b6c73c0c6ef1"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Slider",
+      "support": {
+        "status": "beta",
+        "notes": "Touch slider on the responder system (press the track, drag; the gesture is not stolen by a parent ScrollView), one or two thumbs, marks, value label and drag tooltip; each thumb is adjustable (increment / decrement). Horizontal or vertical (orientation; the vertical track runs bottom = min to top = max, 160 dp by default); no hidden form input (use FormField / onChangeEnd)."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Touch slider on the responder system (press the track, drag; the gesture is not stolen by a parent ScrollView), one or two thumbs, marks, value label and drag tooltip; each thumb is adjustable (increment / decrement). Horizontal or vertical (orientation; the vertical track runs bottom = min to top = max, 160 dp by default); no hidden form input (use FormField / onChangeEnd).",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "Slider"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "value",
+            "source": "packages/native/src/components/Slider/Slider.tsx",
+            "kind": "union",
+            "typeText": "SliderValue | undefined",
+            "typeRef": "type:57afcfaa304ddfd6ee22",
+            "required": false,
+            "description": "Value (controlled): a number, or `[start, end]` with `range`"
+          },
+          {
+            "name": "defaultValue",
+            "source": "packages/native/src/components/Slider/Slider.tsx",
+            "kind": "union",
+            "typeText": "SliderValue | undefined",
+            "typeRef": "type:57afcfaa304ddfd6ee22",
+            "required": false,
+            "description": "Initial value (uncontrolled); defaults to min, or [min, max] with range"
+          },
+          {
+            "name": "range",
+            "source": "packages/native/src/components/Slider/Slider.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Two thumbs selecting `[start, end]`; the thumbs cannot cross"
+          },
+          {
+            "name": "min",
+            "source": "packages/native/src/components/Slider/Slider.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 0,
+            "required": false,
+            "description": "Smallest value"
+          },
+          {
+            "name": "max",
+            "source": "packages/native/src/components/Slider/Slider.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 100,
+            "required": false,
+            "description": "Largest value"
+          },
+          {
+            "name": "step",
+            "source": "packages/native/src/components/Slider/Slider.tsx",
+            "kind": "number",
+            "typeText": "number | null | undefined",
+            "typeRef": "type:63da203dcb31379a7982",
+            "default": 1,
+            "required": false,
+            "description": "Step between two values; `null` snaps to the marks only"
+          },
+          {
+            "name": "marks",
+            "source": "packages/native/src/components/Slider/Slider.tsx",
+            "kind": "union",
+            "typeText": "boolean | SliderMark[] | undefined",
+            "typeRef": "type:3b548a81416903c4a3b0",
+            "required": false,
+            "description": "Ticks of the scale: `{ value, label? }[]`, or `true` for one tick per step"
+          },
+          {
+            "name": "snapToMarks",
+            "source": "packages/native/src/components/Slider/Slider.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Snaps the value to the closest mark (instead of the step)"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/native/src/components/Slider/Slider.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables the slider (inherited from an enclosing FormField)"
+          },
+          {
+            "name": "readOnly",
+            "source": "packages/native/src/components/Slider/Slider.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "The user cannot change the value (inherited from an enclosing FormField)"
+          },
+          {
+            "name": "invalid",
+            "source": "packages/native/src/components/Slider/Slider.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Error state (inherited from an enclosing FormField)"
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/components/Slider/Slider.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "NativeSize | undefined",
+            "typeRef": "type:3e1597e03bb6f7f3269e",
+            "default": "medium",
+            "required": false,
+            "description": "Thumb and track size (thumbs are 20 / 24 / 28 dp: touch targets)"
+          },
+          {
+            "name": "color",
+            "source": "packages/native/src/components/Slider/Slider.tsx",
+            "kind": "enum",
+            "values": [
+              "danger",
+              "info",
+              "primary",
+              "success",
+              "warning"
+            ],
+            "typeText": "SemanticColor | undefined",
+            "typeRef": "type:fb510f224f696f21d0ad",
+            "default": "primary",
+            "required": false,
+            "description": "Semantic color of the filled track and the thumbs"
+          },
+          {
+            "name": "showValue",
+            "source": "packages/native/src/components/Slider/Slider.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows the value after the track (above it when vertical)"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/native/src/components/Slider/Slider.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows the value in a bubble above the thumb (beside it when vertical) while it is dragged"
+          },
+          {
+            "name": "formatValue",
+            "source": "packages/native/src/components/Slider/Slider.tsx",
+            "kind": "function",
+            "typeText": "((value: number) => string) | undefined",
+            "typeRef": "type:1d4a096fdfb17808fb89",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats a value for the value label, the tooltip and the accessibility value"
+          },
+          {
+            "name": "orientation",
+            "source": "packages/native/src/components/Slider/Slider.tsx",
+            "kind": "enum",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
+            "typeText": "SliderOrientation | undefined",
+            "typeRef": "type:360548d575d55659ea42",
+            "default": "horizontal",
+            "required": false,
+            "description": "Direction of the track. A vertical track runs from min (bottom) to max (top) and is 160 dp long by default: set a `height` in `style` to change its length"
+          },
+          {
+            "name": "getAriaValueText",
+            "source": "packages/native/src/components/Slider/Slider.tsx",
+            "kind": "function",
+            "typeText": "((value: number, index: number) => string) | undefined",
+            "typeRef": "type:8c67c0ad89ab5c6a0ebe",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              },
+              {
+                "name": "index",
+                "position": 1,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Accessibility value text of a thumb (index 0, or 1 for the end thumb)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onChange",
+            "source": "packages/native/src/components/Slider/Slider.tsx",
+            "kind": "function",
+            "typeText": "((value: SliderValue) => void) | undefined",
+            "typeRef": "type:f39a136d596f3f56dc7b",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "SliderValue",
+                "typeRef": "type:35ce1d2f89f8eab1e586"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the new value while dragging and on each adjustment"
+          },
+          {
+            "name": "onChangeEnd",
+            "source": "packages/native/src/components/Slider/Slider.tsx",
+            "kind": "function",
+            "typeText": "((value: SliderValue) => void) | undefined",
+            "typeRef": "type:375a038467627278e3e8",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "SliderValue",
+                "typeRef": "type:35ce1d2f89f8eab1e586"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the final value when the gesture ends (release, screen reader adjustment): save here"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "onChange",
+            "syntax": "value={value} onChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "native:SliderProps": {
+      "source": "native/src/components/Slider/Slider.tsx",
+      "kind": "interface",
+      "extends": [
+        "Omit<ViewProps, \"style\">"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "type": "SliderValue",
+          "required": false,
+          "description": "Value (controlled): a number, or `[start, end]` with `range`"
+        },
+        {
+          "name": "defaultValue",
+          "type": "SliderValue",
+          "required": false,
+          "description": "Initial value (uncontrolled); defaults to min, or [min, max] with range"
+        },
+        {
+          "name": "range",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Two thumbs selecting `[start, end]`; the thumbs cannot cross"
+        },
+        {
+          "name": "min",
+          "type": "number",
+          "required": false,
+          "default": "0",
+          "description": "Smallest value"
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "required": false,
+          "default": "100",
+          "description": "Largest value"
+        },
+        {
+          "name": "step",
+          "type": "number | null",
+          "required": false,
+          "default": "1",
+          "description": "Step between two values; `null` snaps to the marks only"
+        },
+        {
+          "name": "marks",
+          "type": "SliderMark[] | boolean",
+          "required": false,
+          "description": "Ticks of the scale: `{ value, label? }[]`, or `true` for one tick per step"
+        },
+        {
+          "name": "snapToMarks",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Snaps the value to the closest mark (instead of the step)"
+        },
+        {
+          "name": "onChange",
+          "type": "(value: SliderValue) => void",
+          "required": false,
+          "description": "Called with the new value while dragging and on each adjustment"
+        },
+        {
+          "name": "onChangeEnd",
+          "type": "(value: SliderValue) => void",
+          "required": false,
+          "description": "Called with the final value when the gesture ends (release, screen reader adjustment): save here"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Disables the slider (inherited from an enclosing FormField)"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "The user cannot change the value (inherited from an enclosing FormField)"
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "required": false,
+          "description": "Error state (inherited from an enclosing FormField)"
+        },
+        {
+          "name": "size",
+          "type": "SliderSize",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Thumb and track size (thumbs are 20 / 24 / 28 dp: touch targets)"
+        },
+        {
+          "name": "color",
+          "type": "SemanticColor",
+          "required": false,
+          "default": "\"primary\"",
+          "description": "Semantic color of the filled track and the thumbs"
+        },
+        {
+          "name": "showValue",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows the value after the track (above it when vertical)"
+        },
+        {
+          "name": "tooltip",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows the value in a bubble above the thumb (beside it when vertical) while it is dragged"
+        },
+        {
+          "name": "formatValue",
+          "type": "(value: number) => string",
+          "required": false,
+          "description": "Formats a value for the value label, the tooltip and the accessibility value"
+        },
+        {
+          "name": "orientation",
+          "type": "SliderOrientation",
+          "required": false,
+          "default": "\"horizontal\"",
+          "description": "Direction of the track. A vertical track runs from min (bottom) to max (top) and is 160 dp long by default: set a `height` in `style` to change its length"
+        },
+        {
+          "name": "getAriaValueText",
+          "type": "(value: number, index: number) => string",
+          "required": false,
+          "description": "Accessibility value text of a thumb (index 0, or 1 for the end thumb)"
+        },
+        {
+          "name": "style",
+          "type": "StyleProp<ViewStyle>",
+          "required": false,
+          "description": "Style of the root view"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Slider": {
+      "kind": "cssVars",
+      "source": "react/src/components/Slider",
+      "vars": [
+        {
+          "name": "--slider-accent",
+          "description": "Color of the filled track and of the thumb border (defaults to the color prop's accent)"
+        },
+        {
+          "name": "--slider-rail-color",
+          "description": "Background of the empty track"
+        },
+        {
+          "name": "--slider-thumb-color",
+          "description": "Background of the thumbs"
+        },
+        {
+          "name": "--slider-track-height",
+          "description": "Thickness of the track (every size)"
+        },
+        {
+          "name": "--slider-thumb-size",
+          "description": "Width and height of the thumbs (every size)"
+        },
+        {
+          "name": "--slider-length",
+          "description": "Length of a vertical slider"
+        },
+        {
+          "name": "--slider-min-length",
+          "description": "Smallest length of a horizontal track, like the intrinsic size of a native range input (defaults to 10rem)"
+        },
+        {
+          "name": "--slider-gap",
+          "description": "Space between the track and the value label"
+        },
+        {
+          "name": "--slider-value-font-size",
+          "description": "Font size of the value label and of the mark labels"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/slider/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/slider/native/basic.tsx": "import { useState } from \"react\";\nimport { Text, View } from \"react-native\";\nimport { Slider, type SliderValue } from \"minerva-design/native\";\n\nexport default function Basic() {\n  const [volume, setVolume] = useState<SliderValue>(40);\n  const [saved, setSaved] = useState<SliderValue>(40);\n  const [price, setPrice] = useState<SliderValue>([20, 80]);\n  return (\n    <View style={{ gap: 24 }}>\n      <Slider\n        accessibilityLabel=\"Volume\"\n        value={volume}\n        onChange={setVolume}\n        onChangeEnd={setSaved}\n        showValue\n        tooltip\n      />\n      <Text>Saved on release: {String(saved)}</Text>\n      <Slider\n        accessibilityLabel=\"Price\"\n        range\n        value={price}\n        onChange={setPrice}\n        step={10}\n        marks\n        color=\"success\"\n      />\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "Basic usage",
+      "description": "A controlled value with showValue and a tooltip while dragging or focused. Each thumb is a role=\"slider\": arrows step, PageUp / PageDown move by 10%, Home / End jump to min / max; clicking the track jumps there."
+    },
+    {
+      "id": "vertical",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/slider/native/vertical.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/slider/native/vertical.tsx": "import { useState } from \"react\";\nimport { View } from \"react-native\";\nimport { Slider, type SliderValue } from \"minerva-design/native\";\n\nexport default function Vertical() {\n  const [volume, setVolume] = useState<SliderValue>(40);\n  const [range, setRange] = useState<SliderValue>([20, 80]);\n  return (\n    <View style={{ flexDirection: \"row\", gap: 32 }}>\n      <Slider\n        accessibilityLabel=\"Volume\"\n        orientation=\"vertical\"\n        value={volume}\n        onChange={setVolume}\n        showValue\n        tooltip\n      />\n      <Slider\n        accessibilityLabel=\"Temperature\"\n        orientation=\"vertical\"\n        range\n        value={range}\n        onChange={setRange}\n        step={10}\n        marks={[\n          { value: 0, label: \"0°\" },\n          { value: 50, label: \"50°\" },\n          { value: 100, label: \"100°\" },\n        ]}\n        color=\"success\"\n        style={{ height: 220 }}\n      />\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "vertical",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Slider",
+      "description": "Pick a number, or a range with two thumbs, by dragging along a track: steps or marks, a value label and tooltip, and a separate event when the user lets go.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "A controlled value with showValue and a tooltip while dragging or focused. Each thumb is a role=\"slider\": arrows step, PageUp / PageDown move by 10%, Home / End jump to min / max; clicking the track jumps there."
+        },
+        "range": {
+          "title": "Range",
+          "description": "range selects [start, end] with two thumbs that cannot cross (the closest thumb follows a track click). formatValue formats the tooltip and aria-valuetext; name submits two hidden inputs."
+        },
+        "marks": {
+          "title": "Marks",
+          "description": "marks={true} draws one tick per step; an array of { value, label } draws labelled marks. step={null} (or snapToMarks) snaps to the marks only; getAriaValueText names the value for screen readers."
+        },
+        "sizes-colors": {
+          "title": "Sizes and colors",
+          "description": "Three sizes and the five semantic colors of the filled track and the thumbs; the theme variables follow the light / dark modes."
+        },
+        "committed": {
+          "title": "Save on release",
+          "description": "onChange follows every move; onChangeEnd fires once when the pointer is released (or after a key press). Save there instead of on every change."
+        },
+        "disabled": {
+          "title": "Disabled, read-only and forms",
+          "description": "disabled blocks the slider; readOnly keeps it focusable but fixed. Inside a FormControl it takes the label, the description and the invalid / disabled / read-only states."
+        }
+      },
+      "api": {
+        "SliderProps": {
+          "value": "Value (controlled): a number, or [start, end] with range; clamped to min..max and snapped",
+          "defaultValue": "Initial value (uncontrolled); defaults to min, or [min, max] with range",
+          "range": "Two thumbs selecting [start, end]; the thumbs cannot cross",
+          "min": "Smallest value",
+          "max": "Largest value",
+          "step": "Step between two values; null snaps to the marks only",
+          "marks": "Ticks of the scale: an array of { value, label? }, or true for one tick per step (up to 101)",
+          "snapToMarks": "Snaps the value to the closest mark instead of the step",
+          "onChange": "Called with the new value while dragging and on each key press",
+          "onChangeEnd": "Called with the final value when the interaction ends (pointer release, key press): save here",
+          "disabled": "Disables the slider (inherited from an enclosing FormControl when not set)",
+          "readOnly": "Focusable, but the user cannot change the value (inherited from an enclosing FormControl)",
+          "size": "Thumb and track size",
+          "color": "Semantic color of the filled track and the thumbs",
+          "showValue": "Shows the value (formatted) after the track",
+          "tooltip": "Shows the value in a bubble above a thumb while it is dragged, hovered or focused",
+          "formatValue": "Formats a value for the value label, the tooltip and aria-valuetext",
+          "orientation": "Direction of the track",
+          "name": "Name of the hidden form input(s); a range submits two entries",
+          "aria-label": "Accessible label of the thumbs (range: suffixed with Minimum / Maximum); defaults to the FormControl label",
+          "aria-labelledby": "id(s) of the element(s) labelling the thumbs",
+          "aria-describedby": "Extra id(s) of elements describing the slider, merged with the FormControl helper / error text",
+          "getAriaValueText": "aria-valuetext of a thumb (index 0, or 1 for the end thumb of a range); defaults to formatValue",
+          "className": "Additional class name",
+          "style": "Inline styles of the root element",
+          "ref": "Ref to the root element"
+        }
+      },
+      "cssVars": {
+        "--slider-accent": "Color of the filled track and of the thumb border (defaults to the color prop's accent)",
+        "--slider-rail-color": "Background of the empty track",
+        "--slider-thumb-color": "Background of the thumbs",
+        "--slider-track-height": "Thickness of the track (every size)",
+        "--slider-thumb-size": "Width and height of the thumbs (every size)",
+        "--slider-length": "Length of a vertical slider",
+        "--slider-min-length": "Smallest length of a horizontal track, like the intrinsic size of a native range input (defaults to 10rem)",
+        "--slider-gap": "Space between the track and the value label",
+        "--slider-value-font-size": "Font size of the value label and of the mark labels"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "value is an attribute (it seeds the value and is restored by form.reset()); minerva-change follows the drag and the keys. show-value and tooltip display the value."
+          },
+          "range": {
+            "title": "Range",
+            "description": "range with value=\"20,80\" selects two values; the form submits two entries under name. formatValue is a property."
+          },
+          "marks": {
+            "title": "Marks",
+            "description": "An empty marks attribute draws a tick per step; a JSON array draws labelled marks. step=\"null\" snaps to the marks only; the getAriaValueText property names the values."
+          },
+          "sizes-colors": {
+            "title": "Sizes and colors",
+            "description": "size and color are reflected attributes (also the :state(size-small), :state(color-success) ... custom states)."
+          },
+          "committed": {
+            "title": "Save on release",
+            "description": "minerva-change follows every move; minerva-change-end fires once on release (or after a key press): save there."
+          },
+          "disabled": {
+            "title": "Disabled, read-only and invalid",
+            "description": "disabled (also from a disabled fieldset) blocks the slider; readonly keeps it focusable and submitted; invalid sets aria-invalid."
+          }
+        },
+        "minerva-slider": {
+          "events": {
+            "input": "The value changed while dragging or with a key (native-like).",
+            "change": "The interaction ended (native-like).",
+            "minerva-change": "The value changed while dragging or with a key (detail: { value }).",
+            "minerva-change-end": "The interaction ended, on release or after a key press (detail: { value }): save here."
+          },
+          "props": {
+            "invalid": "Error state (sets aria-invalid).",
+            "isDisabled": "Whether the control is disabled, by itself or by a disabled <fieldset> (read-only).",
+            "form": "The form owning the element (read-only).",
+            "labels": "The <label> elements associated with the element (read-only).",
+            "validity": "Validity state, like <input>.validity (read-only).",
+            "validationMessage": "Message of the current validation error; empty when valid (read-only).",
+            "willValidate": "Whether the element takes part in constraint validation (read-only).",
+            "required": "Form-associated flag; a slider always has a value, so it is never missing."
+          },
+          "methods": {
+            "focus": "Focuses the first thumb.",
+            "blur": "Removes the focus from the slider.",
+            "checkValidity": "Checks validity; fires invalid when the element is invalid.",
+            "reportValidity": "Checks validity and shows the browser's validation message.",
+            "setCustomValidity": "Sets a custom validation error, or clears it with an empty string.",
+            "formResetCallback": "Form lifecycle callback called by form.reset(): restores the initial value.",
+            "formDisabledCallback": "Form lifecycle callback called when an ancestor <fieldset> is disabled or enabled.",
+            "formStateRestoreCallback": "Form lifecycle callback called when the browser restores the state (history navigation, autofill)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Drag the thumbs in this phone preview: onChange follows the drag, onChangeEnd fires on release; screen readers adjust each thumb with increment / decrement."
+          },
+          "vertical": {
+            "title": "Vertical",
+            "description": "orientation=\"vertical\" runs the track from min (bottom) to max (top): drag up to increase, tap the track to jump there. It is 160 dp long by default; set a height in style to change it. Range, marks, the tooltip and the value label work the same way."
+          }
+        }
+      }
+    }
+  }
+}

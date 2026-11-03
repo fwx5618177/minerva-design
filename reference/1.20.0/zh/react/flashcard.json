@@ -1,0 +1,585 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.0",
+  "locale": "zh",
+  "renderer": "react",
+  "page": "flashcard",
+  "title": "Flashcard 抽认卡",
+  "description": "在问题与答案之间翻转的双面学习卡片，适用于间隔重复复习。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.0",
+    "sourceCommit": "e5692a82f25163efee65ef771fb64a94e61cb359",
+    "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+    "referenceSourceDigest": "sha256:07db3eb36ff2e4b5bb88e238b04c82819862c70d739534f627e7b6c73c0c6ef1"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Flashcard",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "Flashcard"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "front",
+            "source": "packages/react/src/components/Flashcard/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Content of the front face (the prompt)"
+          },
+          {
+            "name": "back",
+            "source": "packages/react/src/components/Flashcard/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Content of the back face (the answer)"
+          },
+          {
+            "name": "footer",
+            "source": "packages/react/src/components/Flashcard/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Content below the card, not flipped (e.g. rating buttons)"
+          },
+          {
+            "name": "frontLabel",
+            "source": "packages/react/src/components/Flashcard/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Small caption of the front face; `null`, `false` or `\"\"` hides it"
+          },
+          {
+            "name": "backLabel",
+            "source": "packages/react/src/components/Flashcard/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Small caption of the back face; `null`, `false` or `\"\"` hides it"
+          },
+          {
+            "name": "hint",
+            "source": "packages/react/src/components/Flashcard/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Hint on the front face (shown with showHint while the card flips on click)"
+          },
+          {
+            "name": "showHint",
+            "source": "packages/react/src/components/Flashcard/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows the hint on the front face"
+          },
+          {
+            "name": "flipped",
+            "source": "packages/react/src/components/Flashcard/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Whether the back is shown (controlled; pair with onFlippedChange)"
+          },
+          {
+            "name": "defaultFlipped",
+            "source": "packages/react/src/components/Flashcard/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Whether the back is initially shown (uncontrolled)"
+          },
+          {
+            "name": "flipOnClick",
+            "source": "packages/react/src/components/Flashcard/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Clicking the card (or Enter / Space on it) flips it. When false the card is not a button and only `flipped` flips it."
+          },
+          {
+            "name": "disabled",
+            "source": "packages/react/src/components/Flashcard/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Blocks flipping and dims the card"
+          },
+          {
+            "name": "axis",
+            "source": "packages/react/src/components/Flashcard/types.ts",
+            "kind": "enum",
+            "values": [
+              "x",
+              "y"
+            ],
+            "typeText": "FlashcardAxis | undefined",
+            "typeRef": "type:c542c7031138ffed2013",
+            "default": "y",
+            "required": false,
+            "description": "Rotation axis: \"y\" flips horizontally, \"x\" vertically"
+          },
+          {
+            "name": "variant",
+            "source": "packages/react/src/components/Flashcard/types.ts",
+            "kind": "enum",
+            "values": [
+              "elevated",
+              "filled",
+              "outline"
+            ],
+            "typeText": "FlashcardVariant | undefined",
+            "typeRef": "type:e2988f5a10b092415682",
+            "default": "elevated",
+            "required": false,
+            "description": "Surface style"
+          },
+          {
+            "name": "size",
+            "source": "packages/react/src/components/Flashcard/types.ts",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "FlashcardSize | undefined",
+            "typeRef": "type:69ddf6c5343508a57b1a",
+            "default": "medium",
+            "required": false,
+            "description": "Padding and typography scale"
+          },
+          {
+            "name": "minHeight",
+            "source": "packages/react/src/components/Flashcard/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": "12rem",
+            "required": false,
+            "description": "Minimum height of the card (a number is in px); the card grows to fit the taller face"
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/react/src/components/Flashcard/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the card"
+          }
+        ],
+        "events": [
+          {
+            "name": "onFlippedChange",
+            "source": "packages/react/src/components/Flashcard/types.ts",
+            "kind": "function",
+            "typeText": "((flipped: boolean) => void) | undefined",
+            "typeRef": "type:16413388c9b412893619",
+            "parameters": [
+              {
+                "name": "flipped",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the next flipped state"
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "flipped",
+            "event": "onFlippedChange",
+            "syntax": "flipped={flipped} onFlippedChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "FlashcardProps": {
+      "source": "react/src/components/Flashcard/types.ts",
+      "description": "Props of the Flashcard component: a two-sided study card that flips between a front (the prompt) and a back (the answer), e.g. for spaced repetition review",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "front",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Content of the front face (the prompt)"
+        },
+        {
+          "name": "back",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Content of the back face (the answer)"
+        },
+        {
+          "name": "footer",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Content below the card, not flipped (e.g. rating buttons)"
+        },
+        {
+          "name": "frontLabel",
+          "type": "ReactNode",
+          "required": false,
+          "default": "\"Question\" (translated)",
+          "description": "Small caption of the front face; `null`, `false` or `\"\"` hides it"
+        },
+        {
+          "name": "backLabel",
+          "type": "ReactNode",
+          "required": false,
+          "default": "\"Answer\" (translated)",
+          "description": "Small caption of the back face; `null`, `false` or `\"\"` hides it"
+        },
+        {
+          "name": "hint",
+          "type": "ReactNode",
+          "required": false,
+          "default": "\"Click or press Space to flip\" (translated)",
+          "description": "Hint on the front face (shown with showHint while the card flips on click)"
+        },
+        {
+          "name": "showHint",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows the hint on the front face"
+        },
+        {
+          "name": "flipped",
+          "type": "boolean",
+          "required": false,
+          "description": "Whether the back is shown (controlled; pair with onFlippedChange)"
+        },
+        {
+          "name": "defaultFlipped",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Whether the back is initially shown (uncontrolled)"
+        },
+        {
+          "name": "onFlippedChange",
+          "type": "(flipped: boolean) => void",
+          "required": false,
+          "description": "Called with the next flipped state"
+        },
+        {
+          "name": "flipOnClick",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Clicking the card (or Enter / Space on it) flips it. When false the card is not a button and only `flipped` flips it."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Blocks flipping and dims the card"
+        },
+        {
+          "name": "axis",
+          "type": "FlashcardAxis",
+          "required": false,
+          "default": "\"y\"",
+          "description": "Rotation axis: \"y\" flips horizontally, \"x\" vertically"
+        },
+        {
+          "name": "variant",
+          "type": "FlashcardVariant",
+          "required": false,
+          "default": "\"elevated\"",
+          "description": "Surface style"
+        },
+        {
+          "name": "size",
+          "type": "FlashcardSize",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Padding and typography scale"
+        },
+        {
+          "name": "minHeight",
+          "type": "number | string",
+          "required": false,
+          "default": "\"12rem\"",
+          "description": "Minimum height of the card (a number is in px); the card grows to fit the taller face"
+        },
+        {
+          "name": "aria-label",
+          "type": "string",
+          "required": false,
+          "default": "\"Flashcard, showing <face label>\" (translated)",
+          "description": "Accessible label of the card"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "description": "Additional class name"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "required": false,
+          "description": "Ref to the root <div>"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Flashcard": {
+      "kind": "cssVars",
+      "source": "react/src/components/Flashcard",
+      "vars": [
+        {
+          "name": "--flashcard-min-height",
+          "description": "Minimum height of the card (defaults to 12rem; the minHeight prop sets it); the card grows to fit the taller face"
+        },
+        {
+          "name": "--flashcard-bg-color",
+          "description": "Background color of the faces (defaults to --surface-color, --surface-muted-color with variant=\"filled\")"
+        },
+        {
+          "name": "--flashcard-border-color",
+          "description": "Border color of the faces (variant=\"outline\")"
+        },
+        {
+          "name": "--flashcard-radius",
+          "description": "Corner radius of the faces (defaults to --radius-lg)"
+        },
+        {
+          "name": "--flashcard-shadow",
+          "description": "Shadow of the faces (variant=\"elevated\"; defaults to --shadow-lg)"
+        },
+        {
+          "name": "--flashcard-padding",
+          "description": "Padding of the faces (defaults to the size's spacing)"
+        },
+        {
+          "name": "--flashcard-font-size",
+          "description": "Font size of the face content (defaults to the size's font size)"
+        },
+        {
+          "name": "--flashcard-label-color",
+          "description": "Text color of the face captions"
+        },
+        {
+          "name": "--flashcard-perspective",
+          "description": "Perspective of the 3D flip (defaults to 1200px)"
+        },
+        {
+          "name": "--flashcard-duration",
+          "description": "Duration of the flip (defaults to 0.5s)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "axis-variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/flashcard/demos/axis-variants.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/flashcard/demos/axis-variants.tsx": "import { Flashcard } from \"minerva-design\";\n\nexport default function AxisVariantsDemo() {\n  return (\n    <div\n      style={{\n        display: \"grid\",\n        gap: 16,\n        gridTemplateColumns: \"repeat(auto-fill, minmax(200px, 1fr))\",\n      }}\n    >\n      <Flashcard\n        variant=\"elevated\"\n        front=\"elevated · axis y\"\n        back=\"Flips horizontally\"\n        minHeight={140}\n      />\n      <Flashcard\n        variant=\"outline\"\n        axis=\"x\"\n        front=\"outline · axis x\"\n        back=\"Flips vertically\"\n        minHeight={140}\n      />\n      <Flashcard\n        variant=\"filled\"\n        size=\"small\"\n        front=\"filled · small\"\n        back=\"Less padding, smaller type\"\n        minHeight={140}\n      />\n      <Flashcard\n        size=\"large\"\n        front=\"large\"\n        back={\n          <>\n            The card grows to fit the taller face: this answer is much longer\n            than the question, and the card height follows it on both sides.\n          </>\n        }\n        minHeight={140}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "翻转轴、变体与尺寸",
+      "description": "axis=\"x\" 纵向翻转；variant 与 Card 一致（elevated、outline、filled），size 调整内边距与字号。两面位于同一网格单元，卡片高度取较高的一面。"
+    },
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/flashcard/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/flashcard/demos/basic.tsx": "import { Flashcard } from \"minerva-design\";\n\nexport default function BasicDemo() {\n  return (\n    <div style={{ maxWidth: 420 }}>\n      <Flashcard\n        front=\"What is the capital of Australia?\"\n        back=\"Canberra\"\n        showHint\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "基础用法",
+      "description": "点击卡片，或在卡片上按 Enter / 空格键，即以 3D 旋转翻面。卡片是切换按钮（aria-pressed）；隐藏的一面为 inert，背面是 polite 实时区域，翻开的答案会被读出。"
+    },
+    {
+      "id": "controlled",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/flashcard/demos/controlled.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/flashcard/demos/controlled.tsx": "import { useState } from \"react\";\nimport { Button, Flashcard } from \"minerva-design\";\n\nconst deck = [\n  { front: \"ephemeral\", back: \"Lasting for a very short time\" },\n  { front: \"ubiquitous\", back: \"Present, appearing or found everywhere\" },\n  { front: \"laconic\", back: \"Using very few words\" },\n];\nconst ratings = [\"Again\", \"Hard\", \"Good\", \"Easy\"] as const;\n\nexport default function ControlledDemo() {\n  const [index, setIndex] = useState(0);\n  const [flipped, setFlipped] = useState(false);\n  const [log, setLog] = useState<string[]>([]);\n  const card = deck[index];\n\n  const rate = (rating: (typeof ratings)[number]) => {\n    setLog((prev) => [...prev, `${card.front}: ${rating}`].slice(-3));\n    setFlipped(false);\n    setIndex((i) => (i + 1) % deck.length);\n  };\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, maxWidth: 420 }}>\n      <Flashcard\n        front={<strong style={{ fontSize: \"1.5rem\" }}>{card.front}</strong>}\n        back={card.back}\n        frontLabel={`Card ${index + 1} / ${deck.length}`}\n        backLabel=\"Definition\"\n        flipped={flipped}\n        onFlippedChange={setFlipped}\n        footer={\n          flipped ? (\n            ratings.map((rating) => (\n              <Button\n                key={rating}\n                size=\"small\"\n                variant={rating === \"Good\" ? \"solid\" : \"outline\"}\n                onClick={() => rate(rating)}\n              >\n                {rating}\n              </Button>\n            ))\n          ) : (\n            <Button size=\"small\" onClick={() => setFlipped(true)}>\n              Show answer\n            </Button>\n          )\n        }\n      />\n      <output style={{ fontSize: 13 }}>\n        {log.length ? log.join(\" · \") : \"Flip the card, then rate it.\"}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "受控复习与评分按钮",
+      "description": "flipped / onFlippedChange 控制当前面；footer 在卡片下方放置评分按钮（不随卡片翻转）。frontLabel / backLabel 替换默认的“问题” / “答案”标注。"
+    },
+    {
+      "id": "reduced-disabled",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/flashcard/demos/reduced-disabled.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/flashcard/demos/reduced-disabled.tsx": "import { useState } from \"react\";\nimport { Button, Flashcard } from \"minerva-design\";\n\nexport default function ReducedDisabledDemo() {\n  const [flipped, setFlipped] = useState(false);\n\n  return (\n    <div\n      style={{\n        display: \"grid\",\n        gap: 16,\n        gridTemplateColumns: \"repeat(auto-fill, minmax(220px, 1fr))\",\n      }}\n    >\n      <Flashcard\n        front=\"Disabled\"\n        back=\"Never shown by a click\"\n        disabled\n        minHeight={140}\n      />\n      <Flashcard\n        front=\"flipOnClick={false}\"\n        back=\"Flipped by the button below\"\n        flipOnClick={false}\n        flipped={flipped}\n        frontLabel={null}\n        backLabel={null}\n        minHeight={140}\n        footer={\n          <Button size=\"small\" onClick={() => setFlipped((f) => !f)}>\n            {flipped ? \"Hide answer\" : \"Reveal answer\"}\n          </Button>\n        }\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "禁用与程序化翻转",
+      "description": "disabled 阻止翻转并使卡片变淡；flipOnClick={false} 时卡片不是按钮，只能通过 flipped 翻面。在 prefers-reduced-motion 下两面以淡入淡出切换，不做旋转。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Flashcard 抽认卡",
+      "description": "在问题与答案之间翻转的双面学习卡片，适用于间隔重复复习。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "点击卡片，或在卡片上按 Enter / 空格键，即以 3D 旋转翻面。卡片是切换按钮（aria-pressed）；隐藏的一面为 inert，背面是 polite 实时区域，翻开的答案会被读出。"
+        },
+        "controlled": {
+          "title": "受控复习与评分按钮",
+          "description": "flipped / onFlippedChange 控制当前面；footer 在卡片下方放置评分按钮（不随卡片翻转）。frontLabel / backLabel 替换默认的“问题” / “答案”标注。"
+        },
+        "axis-variants": {
+          "title": "翻转轴、变体与尺寸",
+          "description": "axis=\"x\" 纵向翻转；variant 与 Card 一致（elevated、outline、filled），size 调整内边距与字号。两面位于同一网格单元，卡片高度取较高的一面。"
+        },
+        "reduced-disabled": {
+          "title": "禁用与程序化翻转",
+          "description": "disabled 阻止翻转并使卡片变淡；flipOnClick={false} 时卡片不是按钮，只能通过 flipped 翻面。在 prefers-reduced-motion 下两面以淡入淡出切换，不做旋转。"
+        }
+      },
+      "api": {
+        "FlashcardProps": {
+          "front": "正面内容（问题）",
+          "back": "背面内容（答案）",
+          "footer": "卡片下方的内容，不随卡片翻转（例如评分按钮）",
+          "frontLabel": "正面的小标注；null、false 或 \"\" 时隐藏",
+          "backLabel": "背面的小标注；null、false 或 \"\" 时隐藏",
+          "hint": "正面的提示文字（showHint 且可点击翻转时显示）",
+          "showHint": "在正面显示提示文字",
+          "flipped": "是否显示背面（受控；与 onFlippedChange 搭配）",
+          "defaultFlipped": "初始是否显示背面（非受控）",
+          "onFlippedChange": "以新的翻转状态调用",
+          "flipOnClick": "点击卡片（或在其上按 Enter / 空格键）即翻面；为 false 时卡片不是按钮，只能通过 flipped 翻面",
+          "disabled": "阻止翻转并使卡片变淡",
+          "axis": "旋转轴：\"y\" 横向翻转，\"x\" 纵向翻转",
+          "variant": "表面样式",
+          "size": "内边距与字号的尺寸",
+          "minHeight": "卡片最小高度（数字单位为 px）；卡片会撑高以容纳较高的一面",
+          "aria-label": "卡片的无障碍标签",
+          "className": "额外的类名",
+          "ref": "根 <div> 的 ref"
+        }
+      },
+      "cssVars": {
+        "--flashcard-min-height": "卡片最小高度（默认 12rem；由 minHeight 属性设置）；卡片会撑高以容纳较高的一面",
+        "--flashcard-bg-color": "两面的背景色（默认 --surface-color，variant=\"filled\" 时为 --surface-muted-color）",
+        "--flashcard-border-color": "两面的边框颜色（variant=\"outline\"）",
+        "--flashcard-radius": "两面的圆角（默认 --radius-lg）",
+        "--flashcard-shadow": "两面的阴影（variant=\"elevated\"；默认 --shadow-lg）",
+        "--flashcard-padding": "两面的内边距（默认取决于 size）",
+        "--flashcard-font-size": "面内容的字号（默认取决于 size）",
+        "--flashcard-label-color": "面标注的文字颜色",
+        "--flashcard-perspective": "3D 翻转的透视距离（默认 1200px）",
+        "--flashcard-duration": "翻转动画时长（默认 0.5s）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "front / back 是纯文本属性（front / back 插槽可放富内容）。点击卡片或在其上按 Enter / 空格键翻面；flipped 属性反映当前面。"
+          },
+          "controlled": {
+            "title": "复习与评分按钮",
+            "description": "minerva-flipped-change 报告用户翻面（可取消：preventDefault() 保持当前面）；footer 插槽放置评分按钮，按钮设置 flipped 属性。"
+          },
+          "axis-variants": {
+            "title": "翻转轴、变体与尺寸",
+            "description": "axis=\"x\" 纵向翻转；variant（elevated、outline、filled）和 size 也是自定义状态（:state(variant-outline)、:state(size-small)……）。"
+          },
+          "reduced-disabled": {
+            "title": "禁用与程序化翻转",
+            "description": "disabled 阻止翻转；flip-on-click=\"false\" 时只能通过 flipped 属性翻面。在 prefers-reduced-motion 下两面以淡入淡出切换。"
+          }
+        },
+        "minerva-flashcard": {
+          "events": {
+            "minerva-flipped-change": "用户翻转了卡片（detail: { flipped }）；可取消。"
+          },
+          "slots": {
+            "front": "正面内容（问题；缺省时使用 front 属性）",
+            "back": "背面内容（答案；缺省时使用 back 属性）",
+            "footer": "卡片下方的内容，不随卡片翻转（例如评分按钮）"
+          },
+          "methods": {
+            "focus": "聚焦卡片。",
+            "toggle": "像用户操作一样翻转卡片（触发 minerva-flipped-change）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中与原生组件交互。"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,191 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.0",
+  "locale": "zh",
+  "renderer": "react",
+  "page": "icons",
+  "title": "图标",
+  "description": "Minerva 的图标集：专为本组件库在 24×24 网格上绘制的原创图标，默认以内联 SVG 渲染，也可以绘制在 Canvas2D、WebGL、WebGL2 或 WebGPU 画布上。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.0",
+    "sourceCommit": "e5692a82f25163efee65ef771fb64a94e61cb359",
+    "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+    "referenceSourceDigest": "sha256:07db3eb36ff2e4b5bb88e238b04c82819862c70d739534f627e7b6c73c0c6ef1"
+  },
+  "content": {
+    "intro": {
+      "title": "概览",
+      "text": "minerva-design/icons 提供 {{count}} 个图标，分为 {{categories}} 个类别，不依赖任何第三方图标集：每个图标都是组件库自有的 SVG 路径数据，所有渲染器、所有框架使用同一份数据。",
+      "design": "统一的视觉语言：24×24 网格，约 2px 内边距，2px 描边，圆形线帽与连接，无填充，因此图标能与文字协调搭配，并可在 12 到 96 像素之间缩放。部分图标为每条描边指定颜色（colors），其余图标跟随 color 属性。",
+      "svg": "默认使用 SVG：任意尺寸下都清晰，支持服务端渲染，颜色跟随文字颜色（currentColor），未设置 title 时对辅助技术隐藏。",
+      "renderers": "同样的几何图形也能在 GPU 上绘制：Icon 可通过 renderer=\"auto\"、\"webgpu\"、\"webgl2\"、\"webgl\" 或 \"canvas2d\" 绘制在画布上，IconCanvas 则用少量实例化绘制调用画出成千上万个图标，回退链与图表相同：WebGPU -> WebGL2 -> WebGL -> Canvas2D。",
+      "treeShaking": "用多少打包多少：每个图标都有独立的常量（searchIcon）和组件（SearchIcon），画布渲染器只在第一个画布图标出现时才加载。",
+      "frameworks": "不依赖框架的核心：minerva-design/icons/core 包含图标数据、SVG 字符串、Canvas2D 绘制和 GPU 画布，适用于任何框架；React 组件即基于它构建。",
+      "pages": "组件用法见 <icon>Icon</icon>，GPU 批量绘制见 <canvas>IconCanvas</canvas>，不依赖框架的 API 见 <core>图标核心</core>。"
+    },
+    "data": {
+      "search": "搜索图标",
+      "searchPlaceholder": "按名称或标签搜索…",
+      "category": "类别",
+      "all": "全部类别",
+      "size": "尺寸",
+      "stroke": "描边宽度",
+      "render": "渲染方式",
+      "svg": "SVG",
+      "canvas": "画布",
+      "copy": "复制 {{code}}",
+      "copied": "已复制 {{code}}",
+      "copyFailed": "无法复制 {{code}}：剪贴板不可用",
+      "kind": "类型",
+      "kinds": {
+        "all": "全部类型",
+        "monochrome": "单色",
+        "multicolor": "彩色"
+      },
+      "color": "颜色",
+      "tones": {
+        "text": "文字颜色",
+        "primary": "主色",
+        "success": "成功",
+        "warning": "警告",
+        "danger": "危险"
+      },
+      "count": "{{n}} 个图标",
+      "empty": "没有与“{{query}}”匹配的图标",
+      "categories": {
+        "arrows": "箭头",
+        "actions": "操作",
+        "interface": "界面",
+        "media": "媒体",
+        "files": "文件",
+        "communication": "通讯",
+        "data": "数据与图表",
+        "finance": "金融",
+        "status": "状态",
+        "devices": "设备",
+        "weather": "天气",
+        "nature": "自然",
+        "food": "食物",
+        "people": "人物",
+        "places": "地点",
+        "shapes": "形状",
+        "text": "文本",
+        "education": "教育",
+        "health": "健康",
+        "shopping": "购物",
+        "music": "音乐",
+        "tools": "工具",
+        "sports": "运动"
+      }
+    }
+  },
+  "components": [],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "gallery",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icons/demos/gallery.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icons/demos/gallery.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  Empty,\n  Input,\n  Radio,\n  RadioGroup,\n  Select,\n  SelectItem,\n  ToastProvider,\n  toast,\n} from \"minerva-design\";\nimport { Icon, type IconDefinition } from \"minerva-design/icons\";\nimport { iconCategories, searchIcons } from \"minerva-design/icons/core\";\nimport styles from \"../icons.module.scss\";\n\nconst SIZES = [16, 20, 24, 32];\nconst STROKES = [1.5, 2, 2.5];\n// the drawing color: what the paths without a color of their own follow\nconst TONES = {\n  text: undefined,\n  primary: \"var(--primary-color)\",\n  success: \"var(--success-color)\",\n  warning: \"var(--warning-color)\",\n  danger: \"var(--danger-color)\",\n} as const;\ntype Tone = keyof typeof TONES;\n\n/** Icons whose paths carry colors of their own (`colors`) */\nconst isMulticolor = (icon: IconDefinition) =>\n  Boolean(icon.colors?.some(Boolean));\n\n/** `arrow-up` -> `<ArrowUpIcon />` */\nconst snippet = (icon: IconDefinition) =>\n  `<${icon.name.replace(/(^|-)([a-z0-9])/g, (_, __, c: string) =>\n    c.toUpperCase(),\n  )}Icon />`;\n\nexport default function GalleryDemo() {\n  const { t } = useTranslation(\"common\", { keyPrefix: \"docs.icons.data\" });\n  const [query, setQuery] = useState(\"\");\n  const [category, setCategory] = useState(\"all\");\n  const [size, setSize] = useState(24);\n  const [stroke, setStroke] = useState(2);\n  // \"canvas\": every tile drawn by the backend of the renderer bar\n  const [mode, setMode] = useState<\"svg\" | \"canvas\">(\"svg\");\n  // monochrome icons follow the color; multicolor ones keep their accents\n  const [kind, setKind] = useState(\"all\");\n  const [tone, setTone] = useState<Tone>(\"text\");\n\n  // the whole set, grouped by category: the page scrolls, nothing is clipped\n  const sections = useMemo(() => {\n    const matches = searchIcons(query).filter(\n      (icon) =>\n        (category === \"all\" || icon.category === category) &&\n        (kind === \"all\" || (kind === \"multicolor\") === isMulticolor(icon)),\n    );\n    return iconCategories\n      .map((key) => ({\n        key,\n        icons: matches.filter((icon) => icon.category === key),\n      }))\n      .filter((section) => section.icons.length > 0);\n  }, [query, category, kind]);\n\n  const total = sections.reduce((sum, { icons }) => sum + icons.length, 0);\n\n  const copy = async (icon: IconDefinition) => {\n    const code = snippet(icon);\n    try {\n      // no clipboard outside secure contexts: report it instead of nothing\n      if (!navigator.clipboard) throw new Error(\"clipboard unavailable\");\n      await navigator.clipboard.writeText(code);\n      // one id: a new copy replaces the toast instead of stacking them\n      toast.success(t(\"copied\", { code }), { id: \"icon-copy\" });\n    } catch {\n      toast.danger(t(\"copyFailed\", { code }), { id: \"icon-copy\" });\n    }\n  };\n\n  return (\n    <div className={styles.stage}>\n      {/* mount one ToastProvider near the root of an app */}\n      <ToastProvider position=\"top-center\" />\n      <div className={styles.toolbar}>\n        <Input\n          type=\"search\"\n          className={styles.search}\n          size=\"small\"\n          clearable\n          value={query}\n          onChange={(event) => setQuery(event.target.value)}\n          onClear={() => setQuery(\"\")}\n          placeholder={t(\"searchPlaceholder\")}\n          aria-label={t(\"search\")}\n        />\n        <Select\n          size=\"small\"\n          style={{ width: 170 }}\n          aria-label={t(\"category\")}\n          value={category}\n          onChange={setCategory}\n        >\n          <SelectItem value=\"all\">{t(\"all\")}</SelectItem>\n          {iconCategories.map((key) => (\n            <SelectItem key={key} value={key}>\n              {t(`categories.${key}`)}\n            </SelectItem>\n          ))}\n        </Select>\n        <Select\n          size=\"small\"\n          style={{ width: 130 }}\n          aria-label={t(\"kind\")}\n          value={kind}\n          onChange={setKind}\n        >\n          <SelectItem value=\"all\">{t(\"kinds.all\")}</SelectItem>\n          <SelectItem value=\"monochrome\">{t(\"kinds.monochrome\")}</SelectItem>\n          <SelectItem value=\"multicolor\">{t(\"kinds.multicolor\")}</SelectItem>\n        </Select>\n        <Select\n          size=\"small\"\n          style={{ width: 130 }}\n          aria-label={t(\"color\")}\n          value={tone}\n          onChange={(value) => setTone(value as Tone)}\n        >\n          {Object.keys(TONES).map((key) => (\n            <SelectItem key={key} value={key}>\n              {t(`tones.${key}`)}\n            </SelectItem>\n          ))}\n        </Select>\n        <RadioGroup\n          aria-label={t(\"size\")}\n          direction=\"horizontal\"\n          size=\"small\"\n          value={String(size)}\n          onChange={(value) => setSize(Number(value))}\n        >\n          {SIZES.map((value) => (\n            <Radio key={value} value={String(value)} label={`${value}px`} />\n          ))}\n        </RadioGroup>\n        <RadioGroup\n          aria-label={t(\"stroke\")}\n          direction=\"horizontal\"\n          size=\"small\"\n          value={String(stroke)}\n          onChange={(value) => setStroke(Number(value))}\n        >\n          {STROKES.map((value) => (\n            <Radio key={value} value={String(value)} label={String(value)} />\n          ))}\n        </RadioGroup>\n        <RadioGroup\n          aria-label={t(\"render\")}\n          direction=\"horizontal\"\n          size=\"small\"\n          value={mode}\n          onChange={(value) => setMode(value as \"svg\" | \"canvas\")}\n        >\n          <Radio value=\"svg\" label={t(\"svg\")} />\n          <Radio value=\"canvas\" label={t(\"canvas\")} />\n        </RadioGroup>\n      </div>\n      <div className={styles.body}>\n        {sections.length ? (\n          sections.map(({ key, icons }) => (\n            <section key={key} className={styles.categoryGroup}>\n              <h3 className={styles.categoryTitle}>\n                {t(`categories.${key}`)}\n                <span className={styles.categoryCount}>{icons.length}</span>\n              </h3>\n              <div className={styles.grid}>\n                {icons.map((icon) => (\n                  <button\n                    key={icon.name}\n                    type=\"button\"\n                    className={styles.tile}\n                    title={t(\"copy\", { code: snippet(icon) })}\n                    onClick={() => void copy(icon)}\n                  >\n                    <Icon\n                      icon={icon}\n                      size={size}\n                      color={TONES[tone]}\n                      strokeWidth={stroke}\n                      renderer={mode === \"svg\" ? \"svg\" : \"auto\"}\n                    />\n                    <span className={styles.tileName}>{icon.name}</span>\n                  </button>\n                ))}\n              </div>\n            </section>\n          ))\n        ) : (\n          <Empty description={t(\"empty\", { query })} />\n        )}\n      </div>\n      <div className={styles.footer}>\n        <p>{t(\"count\", { n: total })}</p>\n      </div>\n    </div>\n  );\n}\n",
+        "apps/docs/src/docs/pages/icons/icons.module.scss": "// Shared by the demos of the icon pages (icons, icon, icon-canvas, icons-core)\n\n.stage {\n  width: 100%;\n  min-width: 0;\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-lg);\n  background: var(--surface-color);\n  overflow: hidden;\n}\n\n.toolbar {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 8px 16px;\n  padding: 10px 14px;\n  background: var(--surface-subtle-color);\n}\n\n.search {\n  flex: 1 1 220px;\n  min-width: 180px;\n}\n\n.body {\n  padding: 12px 14px;\n}\n\n.grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));\n  gap: 6px;\n  padding: 2px;\n}\n\n.categoryGroup + .categoryGroup {\n  margin-top: 20px;\n}\n\n.categoryTitle {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  margin: 0 0 8px;\n  font-size: 14px;\n  font-weight: 600;\n  color: var(--text-color);\n}\n\n.categoryCount {\n  padding: 0 6px;\n  border-radius: var(--radius-sm);\n  background: var(--surface-muted-color);\n  font-size: 12px;\n  font-weight: 500;\n  font-variant-numeric: tabular-nums;\n  color: var(--text-secondary-color);\n}\n\n.tile {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  min-height: 92px;\n  padding: 12px 6px 8px;\n  border: 1px solid transparent;\n  border-radius: var(--radius-md);\n  background: transparent;\n  color: var(--text-color);\n  font: inherit;\n  cursor: pointer;\n\n  &:hover {\n    border-color: var(--border-color);\n    background: var(--hover-color);\n  }\n\n  &:focus-visible {\n    outline: 2px solid var(--focus-ring-color);\n    outline-offset: 1px;\n  }\n}\n\n.tileName {\n  max-width: 100%;\n  overflow: hidden;\n  font-size: 11px;\n  line-height: 1.3;\n  color: var(--text-secondary-color);\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.footer {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: space-between;\n  gap: 4px 16px;\n  padding: 8px 14px 12px;\n  background: var(--surface-subtle-color);\n  font-size: 13px;\n  line-height: 1.5;\n  color: var(--text-secondary-color);\n\n  p {\n    margin: 0;\n  }\n}\n\n.row {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 16px 24px;\n}\n\n.cell {\n  display: inline-flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 6px;\n  min-width: 72px;\n  font-size: 12px;\n  color: var(--text-secondary-color);\n}\n\n.code {\n  margin: 0;\n  padding: 10px 12px;\n  border-radius: var(--radius-md);\n  background: var(--surface-muted-color);\n  font-family: var(--font-family-mono, monospace);\n  font-size: 12px;\n  line-height: 1.5;\n  white-space: pre-wrap;\n  word-break: break-all;\n}\n\n.canvasFrame {\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-md);\n  background: var(--canvas-color);\n}\n\n.kind {\n  font-variant-numeric: tabular-nums;\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "图标一览",
+      "description": "图标集中的全部图标。可按名称或标签搜索、按类别或类型筛选、尝试不同的尺寸、描边宽度和颜色，并在 SVG 与画布之间切换：画布模式下，每个图标都由页面顶部渲染器栏中选择的后端绘制。单色图标（操作、箭头、状态等界面图标）像文字一样跟随文字颜色，因此能直接用在按钮和输入框中；彩色图标保留自带的强调色，只有其中的中性描边跟随颜色。点击图标即可复制其组件代码。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "import { SearchIcon, SettingsIcon } from \"minerva-design/icons\";\n\n<SearchIcon />                                  // 24px, currentColor, 2px stroke\n<SettingsIcon size={16} title=\"Settings\" />     // labelled: role=\"img\"\n<SearchIcon renderer=\"webgl2\" />               // drawn by the GPU on a canvas",
+      "language": "tsx"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.20.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "图标",
+      "description": "Minerva 的图标集：专为本组件库在 24×24 网格上绘制的原创图标，默认以内联 SVG 渲染，也可以绘制在 Canvas2D、WebGL、WebGL2 或 WebGPU 画布上。",
+      "intro": {
+        "title": "概览",
+        "text": "minerva-design/icons 提供 {{count}} 个图标，分为 {{categories}} 个类别，不依赖任何第三方图标集：每个图标都是组件库自有的 SVG 路径数据，所有渲染器、所有框架使用同一份数据。",
+        "design": "统一的视觉语言：24×24 网格，约 2px 内边距，2px 描边，圆形线帽与连接，无填充，因此图标能与文字协调搭配，并可在 12 到 96 像素之间缩放。部分图标为每条描边指定颜色（colors），其余图标跟随 color 属性。",
+        "svg": "默认使用 SVG：任意尺寸下都清晰，支持服务端渲染，颜色跟随文字颜色（currentColor），未设置 title 时对辅助技术隐藏。",
+        "renderers": "同样的几何图形也能在 GPU 上绘制：Icon 可通过 renderer=\"auto\"、\"webgpu\"、\"webgl2\"、\"webgl\" 或 \"canvas2d\" 绘制在画布上，IconCanvas 则用少量实例化绘制调用画出成千上万个图标，回退链与图表相同：WebGPU -> WebGL2 -> WebGL -> Canvas2D。",
+        "treeShaking": "用多少打包多少：每个图标都有独立的常量（searchIcon）和组件（SearchIcon），画布渲染器只在第一个画布图标出现时才加载。",
+        "frameworks": "不依赖框架的核心：minerva-design/icons/core 包含图标数据、SVG 字符串、Canvas2D 绘制和 GPU 画布，适用于任何框架；React 组件即基于它构建。",
+        "pages": "组件用法见 <icon>Icon</icon>，GPU 批量绘制见 <canvas>IconCanvas</canvas>，不依赖框架的 API 见 <core>图标核心</core>。"
+      },
+      "demos": {
+        "gallery": {
+          "title": "图标一览",
+          "description": "图标集中的全部图标。可按名称或标签搜索、按类别或类型筛选、尝试不同的尺寸、描边宽度和颜色，并在 SVG 与画布之间切换：画布模式下，每个图标都由页面顶部渲染器栏中选择的后端绘制。单色图标（操作、箭头、状态等界面图标）像文字一样跟随文字颜色，因此能直接用在按钮和输入框中；彩色图标保留自带的强调色，只有其中的中性描边跟随颜色。点击图标即可复制其组件代码。"
+        }
+      },
+      "data": {
+        "search": "搜索图标",
+        "searchPlaceholder": "按名称或标签搜索…",
+        "category": "类别",
+        "all": "全部类别",
+        "size": "尺寸",
+        "stroke": "描边宽度",
+        "render": "渲染方式",
+        "svg": "SVG",
+        "canvas": "画布",
+        "copy": "复制 {{code}}",
+        "copied": "已复制 {{code}}",
+        "copyFailed": "无法复制 {{code}}：剪贴板不可用",
+        "kind": "类型",
+        "kinds": {
+          "all": "全部类型",
+          "monochrome": "单色",
+          "multicolor": "彩色"
+        },
+        "color": "颜色",
+        "tones": {
+          "text": "文字颜色",
+          "primary": "主色",
+          "success": "成功",
+          "warning": "警告",
+          "danger": "危险"
+        },
+        "count": "{{n}} 个图标",
+        "empty": "没有与“{{query}}”匹配的图标",
+        "categories": {
+          "arrows": "箭头",
+          "actions": "操作",
+          "interface": "界面",
+          "media": "媒体",
+          "files": "文件",
+          "communication": "通讯",
+          "data": "数据与图表",
+          "finance": "金融",
+          "status": "状态",
+          "devices": "设备",
+          "weather": "天气",
+          "nature": "自然",
+          "food": "食物",
+          "people": "人物",
+          "places": "地点",
+          "shapes": "形状",
+          "text": "文本",
+          "education": "教育",
+          "health": "健康",
+          "shopping": "购物",
+          "music": "音乐",
+          "tools": "工具",
+          "sports": "运动"
+        }
+      }
+    }
+  }
+}

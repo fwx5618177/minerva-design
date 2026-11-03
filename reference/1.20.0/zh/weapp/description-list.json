@@ -1,0 +1,211 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.0",
+  "locale": "zh",
+  "renderer": "weapp",
+  "page": "description-list",
+  "title": "DescriptionList 描述列表",
+  "description": "以原生 dl 呈现的带标签元数据字段，窄屏下行会堆叠显示。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.0",
+    "sourceCommit": "e5692a82f25163efee65ef771fb64a94e61cb359",
+    "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+    "referenceSourceDigest": "sha256:07db3eb36ff2e4b5bb88e238b04c82819862c70d739534f627e7b6c73c0c6ef1"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "DescriptionItem",
+      "support": {
+        "status": "n/a",
+        "notes": "Data API rather than a standalone component. DescriptionList.items: { key, label, value }; uni also exposes scoped label/value slots, and WeApp exposes a named slot for each item.key."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Data API rather than a standalone component. DescriptionList.items: { key, label, value }; uni also exposes scoped label/value slots, and WeApp exposes a named slot for each item.key."
+      }
+    },
+    {
+      "name": "DescriptionList",
+      "support": {
+        "status": "beta",
+        "notes": "Ordered term/value rows with zero values, bordered/striped variants and native keyed content slots. Native view rows replace DOM dl/dt/dd elements. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Ordered term/value rows with zero values, bordered/striped variants and native keyed content slots. Native view rows replace DOM dl/dt/dd elements. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/description-list/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "description-list",
+        "props": [
+          {
+            "name": "items",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "columns",
+            "typeText": "number",
+            "required": false,
+            "default": 1
+          },
+          {
+            "name": "bordered",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "striped",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "{{item.key}}"
+          },
+          {
+            "name": "default"
+          }
+        ],
+        "registration": "\"usingComponents\": { \"mn-description-list\": \"minerva-design/dist/weapp/description-list/index\" }",
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:DescriptionList": {
+      "kind": "cssVars",
+      "source": "react/src/components/DescriptionList",
+      "vars": [
+        {
+          "name": "--description-list-row-padding-y",
+          "description": "Vertical padding of a row (follows the density's row padding)"
+        },
+        {
+          "name": "--description-list-gap",
+          "description": "Space between the term and the description"
+        },
+        {
+          "name": "--description-list-term-color",
+          "description": "Text color of the terms"
+        },
+        {
+          "name": "--description-list-border-color",
+          "description": "Color of the row separators"
+        },
+        {
+          "name": "--description-list-font-size",
+          "description": "Font size"
+        },
+        {
+          "name": "--description-list-radius",
+          "description": "Corner radius of a bordered list (defaults to --radius-lg)"
+        },
+        {
+          "name": "--description-list-background",
+          "description": "Background of a bordered list (defaults to --surface-color)"
+        },
+        {
+          "name": "--description-list-padding-x",
+          "description": "Horizontal padding of the rows of a bordered or striped list"
+        },
+        {
+          "name": "--description-list-stripe-background",
+          "description": "Background of every other row of a striped list (defaults to --surface-subtle-color)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "DescriptionList 描述列表",
+      "description": "以原生 dl 呈现的带标签元数据字段，窄屏下行会堆叠显示。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "标签和值可以是任意 ReactNode，0 也会显示。"
+        },
+        "variants": {
+          "title": "带边框与条纹",
+          "description": "bordered 将字段包装为带内边距行的卡片；striped 隔行着色以替代分隔线。"
+        }
+      },
+      "api": {
+        "DescriptionListProps": {
+          "items": "按顺序渲染的行",
+          "ref": "<dl> 元素的 ref",
+          "bordered": "将列表包装为带内边距行的卡片",
+          "striped": "隔行着色（替代分隔线）"
+        },
+        "DescriptionListItem": {
+          "key": "行的稳定 React key",
+          "label": "术语，渲染在 <dt> 中",
+          "value": "描述，渲染在 <dd> 中"
+        }
+      },
+      "cssVars": {
+        "--description-list-row-padding-y": "行的垂直内边距（跟随密度的行内边距）",
+        "--description-list-gap": "术语与描述之间的间距",
+        "--description-list-term-color": "术语的文字颜色",
+        "--description-list-border-color": "行分隔线的颜色",
+        "--description-list-font-size": "字号",
+        "--description-list-radius": "带边框列表的圆角（默认为 --radius-lg）",
+        "--description-list-background": "带边框列表的背景（默认为 --surface-color）",
+        "--description-list-padding-x": "带边框或条纹列表中行的水平内边距",
+        "--description-list-stripe-background": "条纹列表中隔行的背景（默认为 --surface-subtle-color）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "声明式的 <minerva-description-item label> 行；内容（文本、徽章、链接）放入原生 <dl> 的 <dd> 中。"
+          },
+          "items": {
+            "title": "数据驱动的行",
+            "description": "items 属性根据 JS 数据渲染行，位于声明式子元素之前；0 也会作为值渲染。"
+          },
+          "styling": {
+            "title": "样式定制",
+            "description": "CSS 变量设置密度、间距和分隔线；::part(term) 和 ::part(row) 用于定制原生单元格样式。"
+          },
+          "variants": {
+            "title": "带边框与条纹",
+            "description": "bordered 与 striped 布尔属性：带内边距行的卡片框，或以隔行着色替代分隔线。"
+          }
+        },
+        "minerva-description-item": {
+          "slots": {
+            "default": "描述内容。"
+          }
+        },
+        "minerva-description-list": {
+          "slots": {
+            "default": "<minerva-description-item> 行。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        }
+      }
+    }
+  }
+}

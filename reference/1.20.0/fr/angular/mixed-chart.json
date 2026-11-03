@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.0",
+  "locale": "fr",
+  "renderer": "angular",
+  "page": "mixed-chart",
+  "title": "Graphique combiné",
+  "description": "Barres, lignes et aires dans un même graphique, sur un ou deux axes de valeurs : chiffre d'affaires et croissance, pluie et température, diagrammes de Pareto.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.0",
+    "sourceCommit": "e5692a82f25163efee65ef771fb64a94e61cb359",
+    "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+    "referenceSourceDigest": "sha256:07db3eb36ff2e4b5bb88e238b04c82819862c70d739534f627e7b6c73c0c6ef1"
+  },
+  "content": {
+    "data": {
+      "quarter": "T{{n}} {{year}}",
+      "revenue": "Chiffre d'affaires",
+      "growth": "Croissance (sur un an)",
+      "revenueAria": "Chiffre d'affaires trimestriel et sa croissance sur un an",
+      "rainfall": "Précipitations",
+      "temperature": "Température",
+      "climateAria": "Précipitations et températures mensuelles à Tokyo",
+      "sessions": "Sessions",
+      "conversionRate": "Taux de conversion",
+      "campaign": "Campagne",
+      "conversionAria": "Sessions quotidiennes et taux de conversion sur deux mois",
+      "returns": "Retours",
+      "cumulative": "Part cumulée",
+      "causes": {
+        "wrongSize": "Mauvaise taille",
+        "damaged": "Endommagé",
+        "notAsDescribed": "Non conforme",
+        "late": "Livré en retard",
+        "changedMind": "Changement d'avis",
+        "wrongItem": "Mauvais article",
+        "other": "Autre"
+      },
+      "paretoAria": "Retours par cause et leur part cumulée",
+      "pageViews": "Pages vues",
+      "locales": {
+        "chinese": "Chinois (zh-CN)",
+        "french": "Français (fr-FR)"
+      },
+      "localeAria": "Pages vues et taux de conversion par jour, {{locale}}",
+      "yearlyRevenue": "Chiffre d’affaires",
+      "users": "Utilisateurs",
+      "usersLog": "Utilisateurs (échelle log)",
+      "logAria": "Chiffre d’affaires annuel et utilisateurs sur un axe logarithmique, de 2016 à 2025",
+      "kwh": "{{value}} kWh",
+      "solarProduction": "Production solaire",
+      "consumption": "Consommation",
+      "batteryCharge": "Charge de la batterie",
+      "night": "Nuit",
+      "withBattery": "Batterie de {{value}}",
+      "selfSufficiency": "Autosuffisance de {{share}} sur deux jours, {{imported}} achetés au réseau.",
+      "energyPerHour": "Énergie par heure",
+      "solarAria": "Production solaire et consommation horaires d'une maison sur deux jours, avec l'état de charge de sa batterie",
+      "stockLevel": "Niveau de stock",
+      "deliveries": "Livraisons",
+      "promotion": "Promotion",
+      "safetyStock": "Stock de sécurité",
+      "reorderPoint": "Point de commande",
+      "inventoryHint": "Cliquez sur un jour ou une livraison.",
+      "deliveryDetails": "{{id}} : {{quantity}} unités commandées le {{ordered}}, livrées le {{arrived}} après {{lead}}.",
+      "stockOn": "{{units}} unités en stock le {{date}}.",
+      "stockLow": "Seulement {{units}} unités en stock le {{date}}, sous le stock de sécurité.",
+      "unitsInStock": "Unités",
+      "inventoryAria": "Niveau de stock quotidien d'un article sur trois mois, avec les livraisons, le point de commande et le stock de sécurité",
+      "requests": "Requêtes",
+      "errorRate": "Taux d'erreur",
+      "releases": "Mises en production",
+      "requestsPerHalfHour": "Requêtes par 30 min",
+      "opsAria": "Requêtes et taux d'erreur d'une API web sur une journée, avec ses mises en production",
+      "incidentSummary": "Le taux d'erreur a culminé à {{peak}} à {{time}} après {{version}}, jusqu'au retour à {{rollback}}.",
+      "points": "{{value}} pts",
+      "sprintStart": "Début",
+      "remainingWork": "Travail restant",
+      "completedPerDay": "Terminé",
+      "idealBurn": "Idéal",
+      "scopeAdded": "+{{value}} ajoutés",
+      "idealLeft": "Idéal : {{value}} restants",
+      "remainingLeft": "{{value}} restants",
+      "doneThatDay": "{{value}} terminés ce jour-là",
+      "behindBy": "{{value}} de retard sur l'idéal",
+      "aheadBy": "{{value}} d'avance sur l'idéal",
+      "storyPoints": "Points d'histoire",
+      "burndownAria": "Burndown de sprint : travail restant, points terminés chaque jour et progression idéale sur dix jours ouvrés",
+      "burndownLate": "{{left}} restants à {{velocity}} par jour : environ {{forecast}} ne seront pas terminés à la fin du sprint.",
+      "burndownOnTrack": "{{left}} restants à {{velocity}} par jour : le sprint est dans les temps."
+    }
+  },
+  "components": [
+    {
+      "name": "MixedChart",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnMixedChart. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnMixedChart. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnMixedChart"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-mixed-chart",
+        "props": [
+          {
+            "name": "series",
+            "typeText": "readonly ChartSeries[]",
+            "required": true,
+            "source": "packages/angular/src/components/charts/cartesian-extended.ts"
+          },
+          {
+            "name": "yAxis2",
+            "typeText": "ChartAxisOptions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian-extended.ts"
+          },
+          {
+            "name": "stackMode",
+            "typeText": "\"normal\" | \"percent\" | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian-extended.ts"
+          },
+          {
+            "name": "orientation",
+            "typeText": "ChartOrientation | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian-extended.ts"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "revenue-growth",
+      "title": "Chiffre d'affaires et croissance",
+      "description": "La ligne de croissance fixe yAxis: \"right\" et se lit sur yAxis2 avec son propre format ; la plage de droite s'aligne sur les graduations de gauche, la grille convient aux deux axes.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnMixedChart, injectMinerva } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnMixedChart],\n  template: `\n@let t = labels[language()];\n@let m = months[language()];\n<mn-mixed-chart\n  [series]=\"[\n    { name: t.revenue, type: 'bar', data: [{ x: m[0], y: 182 }, { x: m[1], y: 196 }, { x: m[2], y: 214 }, { x: m[3], y: 205 }, { x: m[4], y: 238 }, { x: m[5], y: 261 }] },\n    { name: t.growth, type: 'line', curve: 'smooth', yAxis: 'right', data: [{ x: m[0], y: 0 }, { x: m[1], y: 7.7 }, { x: m[2], y: 9.2 }, { x: m[3], y: -4.2 }, { x: m[4], y: 16.1 }, { x: m[5], y: 9.7 }] }\n  ]\"\n  [xAxis]=\"{ type: 'category' }\"\n  [height]=\"300\"\n/>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  labels = {\n  \"en\": {\n    \"revenue\": \"Revenue (k€)\",\n    \"growth\": \"Growth\"\n  },\n  \"zh\": {\n    \"revenue\": \"收入（千欧元）\",\n    \"growth\": \"增长率\"\n  },\n  \"ja\": {\n    \"revenue\": \"売上（千ユーロ）\",\n    \"growth\": \"成長率\"\n  },\n  \"fr\": {\n    \"revenue\": \"Chiffre d’affaires (k€)\",\n    \"growth\": \"Croissance\"\n  }\n};\n  months = {\n  \"en\": [\"Jan\", \"Feb\", \"Mar\", \"Apr\", \"May\", \"Jun\"],\n  \"zh\": [\"1月\", \"2月\", \"3月\", \"4月\", \"5月\", \"6月\"],\n  \"ja\": [\"1月\", \"2月\", \"3月\", \"4月\", \"5月\", \"6月\"],\n  \"fr\": [\"janv.\", \"févr.\", \"mars\", \"avr.\", \"mai\", \"juin\"]\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "climate",
+      "title": "Diagramme climatique",
+      "description": "Les barres de précipitations sur l'axe de gauche, la courbe des températures sur l'axe de droite ; zero: true garde le zéro dans la plage de droite.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnMixedChart, injectMinerva } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnMixedChart],\n  template: `\n@let t = labels[language()];\n@let m = months[language()];\n<mn-mixed-chart\n  [series]=\"[\n    { name: t.rain, type: 'bar', color: 'var(--chart-series-2, #0ea5e9)', data: [{ x: m[0], y: 52 }, { x: m[1], y: 41 }, { x: m[2], y: 48 }, { x: m[3], y: 55 }, { x: m[4], y: 68 }, { x: m[5], y: 71 }, { x: m[6], y: 64 }, { x: m[7], y: 62 }, { x: m[8], y: 55 }, { x: m[9], y: 64 }, { x: m[10], y: 63 }, { x: m[11], y: 60 }] },\n    { name: t.temperature, type: 'line', curve: 'smooth', yAxis: 'right', color: 'var(--chart-series-4, #ef4444)', data: [{ x: m[0], y: 3.5 }, { x: m[1], y: 4.2 }, { x: m[2], y: 7.6 }, { x: m[3], y: 10.7 }, { x: m[4], y: 14.5 }, { x: m[5], y: 17.6 }, { x: m[6], y: 19.8 }, { x: m[7], y: 19.6 }, { x: m[8], y: 16.4 }, { x: m[9], y: 12.3 }, { x: m[10], y: 7.6 }, { x: m[11], y: 4.4 }] }\n  ]\"\n  [xAxis]=\"{ type: 'category' }\"\n  crosshair\n  [height]=\"300\"\n/>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  labels = {\n  \"en\": {\n    \"rain\": \"Precipitation (mm)\",\n    \"temperature\": \"Temperature (°C)\"\n  },\n  \"zh\": {\n    \"rain\": \"降水量（毫米）\",\n    \"temperature\": \"气温（°C）\"\n  },\n  \"ja\": {\n    \"rain\": \"降水量（mm）\",\n    \"temperature\": \"気温（°C）\"\n  },\n  \"fr\": {\n    \"rain\": \"Précipitations (mm)\",\n    \"temperature\": \"Température (°C)\"\n  }\n};\n  months = {\n  \"en\": [\"Jan\", \"Feb\", \"Mar\", \"Apr\", \"May\", \"Jun\", \"Jul\", \"Aug\", \"Sep\", \"Oct\", \"Nov\", \"Dec\"],\n  \"zh\": [\"1月\", \"2月\", \"3月\", \"4月\", \"5月\", \"6月\", \"7月\", \"8月\", \"9月\", \"10月\", \"11月\", \"12月\"],\n  \"ja\": [\"1月\", \"2月\", \"3月\", \"4月\", \"5月\", \"6月\", \"7月\", \"8月\", \"9月\", \"10月\", \"11月\", \"12月\"],\n  \"fr\": [\"janv.\", \"févr.\", \"mars\", \"avr.\", \"mai\", \"juin\", \"juil.\", \"août\", \"sept.\", \"oct.\", \"nov.\", \"déc.\"]\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Graphique combiné",
+      "description": "Barres, lignes et aires dans un même graphique, sur un ou deux axes de valeurs : chiffre d'affaires et croissance, pluie et température, diagrammes de Pareto.",
+      "demos": {
+        "revenue-growth": {
+          "title": "Chiffre d'affaires et croissance",
+          "description": "La ligne de croissance fixe yAxis: \"right\" et se lit sur yAxis2 avec son propre format ; la plage de droite s'aligne sur les graduations de gauche, la grille convient aux deux axes."
+        },
+        "climate": {
+          "title": "Diagramme climatique",
+          "description": "Les barres de précipitations sur l'axe de gauche, la courbe des températures sur l'axe de droite ; zero: true garde le zéro dans la plage de droite."
+        },
+        "conversion": {
+          "title": "Trafic et conversion",
+          "description": "Une aire des sessions quotidiennes avec le taux de conversion sur l'axe de droite et une campagne mise en évidence par une annotation rect."
+        },
+        "pareto": {
+          "title": "Diagramme de Pareto",
+          "description": "Les causes triées et leur part cumulée sur un axe de droite de 0 à 100 % (min, max et nice: false) ; les causes de 80 % des retours sont mises en évidence."
+        },
+        "log-scale": {
+          "title": "Échelle logarithmique",
+          "description": "Les utilisateurs sont multipliés par 6 000 en dix ans : yAxis2={{ type: \"log\" }} les trace sur un axe droit logarithmique avec ses propres décades, à côté des barres de chiffre d’affaires sur l’axe gauche linéaire ; les infobulles gardent les valeurs réelles."
+        },
+        "locale": {
+          "title": "Langues",
+          "description": "Le même graphique avec locale=\"zh-CN\" et locale=\"fr-FR\" : le moteur écrit les unités compactes (万 / k), les séparateurs, les noms des mois de l'axe temporel et les dates de l'infobulle de la langue. Sans locale, les graphiques suivent la langue de la page (<html lang>)."
+        },
+        "solar-battery": {
+          "title": "Solaire et batterie domestique",
+          "description": "La production solaire horaire en barres et la consommation en ligne sur l'axe de gauche, l'état de charge de la batterie en aire sur yAxis2 fixé à 0-100 % avec min, max et nice: false ; des annotations rect grisent les nuits. Le Switch masque la batterie et la sortie recalcule l'autosuffisance."
+        },
+        "inventory": {
+          "title": "Stock et livraisons",
+          "description": "Une aire en escalier du niveau de stock avec des barres de livraison, une ligne de point de commande et un rect de stock de sécurité. onPointClick marque le jour d'une ligne x et affiche son bon de commande ou son stock dans une sortie ; onPlotClick l'efface."
+        },
+        "ops-overview": {
+          "title": "Vue d'ensemble de l'exploitation",
+          "description": "Des barres de requêtes sur l'axe de gauche, le taux d'erreur sur l'axe de droite et les mises en production en série type: \"scatter\" dont showLabels écrit chaque version. Des Checkbox remplacent la légende et règlent hidden sur chaque série."
+        },
+        "burndown": {
+          "title": "Burndown de sprint",
+          "description": "Le travail restant en aire, les points terminés chaque jour en barres et la progression idéale en ligne, sur des catégories xAxis explicites ; une annotation text signale un changement de périmètre. renderTooltip indique l'avance ou le retard de chaque jour sur la ligne idéale."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple de base",
+            "description": "Les barres de pluie sur l'axe de gauche et la courbe des températures sur l'axe de droite (yAxis: \"right\" et yAxis2) ; touchez pour comparer."
+          }
+        }
+      },
+      "data": {
+        "quarter": "T{{n}} {{year}}",
+        "revenue": "Chiffre d'affaires",
+        "growth": "Croissance (sur un an)",
+        "revenueAria": "Chiffre d'affaires trimestriel et sa croissance sur un an",
+        "rainfall": "Précipitations",
+        "temperature": "Température",
+        "climateAria": "Précipitations et températures mensuelles à Tokyo",
+        "sessions": "Sessions",
+        "conversionRate": "Taux de conversion",
+        "campaign": "Campagne",
+        "conversionAria": "Sessions quotidiennes et taux de conversion sur deux mois",
+        "returns": "Retours",
+        "cumulative": "Part cumulée",
+        "causes": {
+          "wrongSize": "Mauvaise taille",
+          "damaged": "Endommagé",
+          "notAsDescribed": "Non conforme",
+          "late": "Livré en retard",
+          "changedMind": "Changement d'avis",
+          "wrongItem": "Mauvais article",
+          "other": "Autre"
+        },
+        "paretoAria": "Retours par cause et leur part cumulée",
+        "pageViews": "Pages vues",
+        "locales": {
+          "chinese": "Chinois (zh-CN)",
+          "french": "Français (fr-FR)"
+        },
+        "localeAria": "Pages vues et taux de conversion par jour, {{locale}}",
+        "yearlyRevenue": "Chiffre d’affaires",
+        "users": "Utilisateurs",
+        "usersLog": "Utilisateurs (échelle log)",
+        "logAria": "Chiffre d’affaires annuel et utilisateurs sur un axe logarithmique, de 2016 à 2025",
+        "kwh": "{{value}} kWh",
+        "solarProduction": "Production solaire",
+        "consumption": "Consommation",
+        "batteryCharge": "Charge de la batterie",
+        "night": "Nuit",
+        "withBattery": "Batterie de {{value}}",
+        "selfSufficiency": "Autosuffisance de {{share}} sur deux jours, {{imported}} achetés au réseau.",
+        "energyPerHour": "Énergie par heure",
+        "solarAria": "Production solaire et consommation horaires d'une maison sur deux jours, avec l'état de charge de sa batterie",
+        "stockLevel": "Niveau de stock",
+        "deliveries": "Livraisons",
+        "promotion": "Promotion",
+        "safetyStock": "Stock de sécurité",
+        "reorderPoint": "Point de commande",
+        "inventoryHint": "Cliquez sur un jour ou une livraison.",
+        "deliveryDetails": "{{id}} : {{quantity}} unités commandées le {{ordered}}, livrées le {{arrived}} après {{lead}}.",
+        "stockOn": "{{units}} unités en stock le {{date}}.",
+        "stockLow": "Seulement {{units}} unités en stock le {{date}}, sous le stock de sécurité.",
+        "unitsInStock": "Unités",
+        "inventoryAria": "Niveau de stock quotidien d'un article sur trois mois, avec les livraisons, le point de commande et le stock de sécurité",
+        "requests": "Requêtes",
+        "errorRate": "Taux d'erreur",
+        "releases": "Mises en production",
+        "requestsPerHalfHour": "Requêtes par 30 min",
+        "opsAria": "Requêtes et taux d'erreur d'une API web sur une journée, avec ses mises en production",
+        "incidentSummary": "Le taux d'erreur a culminé à {{peak}} à {{time}} après {{version}}, jusqu'au retour à {{rollback}}.",
+        "points": "{{value}} pts",
+        "sprintStart": "Début",
+        "remainingWork": "Travail restant",
+        "completedPerDay": "Terminé",
+        "idealBurn": "Idéal",
+        "scopeAdded": "+{{value}} ajoutés",
+        "idealLeft": "Idéal : {{value}} restants",
+        "remainingLeft": "{{value}} restants",
+        "doneThatDay": "{{value}} terminés ce jour-là",
+        "behindBy": "{{value}} de retard sur l'idéal",
+        "aheadBy": "{{value}} d'avance sur l'idéal",
+        "storyPoints": "Points d'histoire",
+        "burndownAria": "Burndown de sprint : travail restant, points terminés chaque jour et progression idéale sur dix jours ouvrés",
+        "burndownLate": "{{left}} restants à {{velocity}} par jour : environ {{forecast}} ne seront pas terminés à la fin du sprint.",
+        "burndownOnTrack": "{{left}} restants à {{velocity}} par jour : le sprint est dans les temps."
+      },
+      "api": {
+        "MixedChartProps": {
+          "series": "Barres, lignes, aires et points, chacun avec son type ; yAxis: \"right\" place une série sur yAxis2",
+          "yAxis2": "Axe de valeurs de droite des séries avec yAxis: \"right\"",
+          "stackMode": "\"percent\" ramène chaque empilement à 100 %",
+          "orientation": "\"horizontal\" place les catégories sur le côté gauche"
+        },
+        "ChartProps": {
+          "series": "Séries de données ; chacune fixe son type",
+          "stackMode": "\"percent\" ramène chaque pile à 100 % à chaque x",
+          "yAxis2": "Axe des valeurs de droite des séries avec yAxis: \"right\" ; sa plage est alignée sur les graduations de gauche",
+          "orientation": "\"horizontal\" place l'axe x (catégories) à gauche et les valeurs en bas"
+        },
+        "ChartLabels": {
+          "open": "Ligne d'ouverture des chandeliers",
+          "high": "Ligne du plus haut des chandeliers",
+          "low": "Ligne du plus bas des chandeliers",
+          "close": "Ligne de clôture des chandeliers",
+          "max": "Ligne de la moustache haute des boîtes",
+          "q3": "Ligne du troisième quartile des boîtes",
+          "median": "Ligne de la médiane des boîtes",
+          "q1": "Ligne du premier quartile des boîtes",
+          "min": "Ligne de la moustache basse des boîtes",
+          "outliers": "Nombre de valeurs aberrantes d'une boîte",
+          "value": "Valeur des points (bulles) quand la série n'a pas de valueName",
+          "x": "Ligne du x d'un point quand l'axe n'a pas de titre",
+          "y": "Ligne du y d'un point quand l'axe n'a pas de titre",
+          "series": "Noms de série par défaut (« Série 1 », « Série 2 »…)",
+          "chart": "Nom accessible d'un graphique sans série",
+          "chartOf": "Nom accessible d'un graphique ; {series} est la liste des noms de séries",
+          "start": "Début d’une barre d’intervalle sur un axe temporel (tâches de Gantt)",
+          "end": "Fin d’une barre d’intervalle sur un axe temporel",
+          "duration": "Durée d’une barre d’intervalle sur un axe temporel (4 semaines, 26 jours)",
+          "progress": "Part réalisée d’une tâche de Gantt",
+          "dependencies": "Tâches dont dépend une tâche de Gantt",
+          "outlier": "Valeur aberrante survolée d’une boîte à moustaches"
+        }
+      },
+      "wc": {
+        "demos": {
+          "revenue-growth": {
+            "title": "Chiffre d’affaires et croissance sur deux axes",
+            "description": "Le chiffre d’affaires en barres sur l’axe gauche, la croissance en ligne sur l’axe droit (yAxis: \"right\")."
+          },
+          "climate": {
+            "title": "Diagramme climatique",
+            "description": "Les précipitations mensuelles en barres et la température moyenne en ligne lissée ; le réticule lit les deux."
+          }
+        },
+        "minerva-mixed-chart": {
+          "props": {
+            "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+            "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+            "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+          },
+          "events": {
+            "minerva-hover": "Les points survolés (ou ciblés au clavier) ont changé ; detail : { x, xLabel, items }, null quand rien n'est survolé",
+            "minerva-point-click": "Un point ou une barre a été cliqué ; detail : { x, xLabel, items }",
+            "minerva-plot-click": "La zone de tracé a été cliquée hors des points ; detail : { x, y } en coordonnées de données",
+            "minerva-zoom": "L'utilisateur a zoomé ou s'est déplacé ; detail : { x, y } (les plages visibles)",
+            "minerva-renderer-change": "Le moteur de rendu est prêt, ou s'est replié après une perte du GPU ; detail : { renderer }"
+          },
+          "methods": {
+            "resetZoom": "Affiche toute la plage de données",
+            "getView": "Plage visible, null avant la création du moteur",
+            "setView": "Définit la plage visible",
+            "getRenderer": "Moteur de rendu utilisé (webgpu, webgl2, webgl, canvas2d), null tant qu'il n'est pas prêt"
+          }
+        }
+      }
+    }
+  }
+}

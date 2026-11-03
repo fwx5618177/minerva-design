@@ -1,0 +1,984 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.0",
+  "locale": "en",
+  "renderer": "native",
+  "page": "table",
+  "title": "Table",
+  "description": "Displays rows of data. Use Table with columns and data for the common case, TableRoot and its parts for custom headers or merged cells, and DataTable for pagination, loading and error states.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.0",
+    "sourceCommit": "e5692a82f25163efee65ef771fb64a94e61cb359",
+    "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+    "referenceSourceDigest": "sha256:07db3eb36ff2e4b5bb88e238b04c82819862c70d739534f627e7b6c73c0c6ef1"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "DataTable",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "DataTable"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "pagination",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "object",
+            "typeText": "PaginationProps | undefined",
+            "typeRef": "type:b44ba81159f90eb56adc",
+            "required": false
+          },
+          {
+            "name": "error",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false
+          },
+          {
+            "name": "retryLabel",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "columns",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "array",
+            "typeText": "TableColumn<T>[]",
+            "typeRef": "type:2cff1f3e22fb4d90b2bf",
+            "required": true
+          },
+          {
+            "name": "data",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "array",
+            "typeText": "T[]",
+            "typeRef": "type:20200e745cc85bc9a314",
+            "required": true
+          },
+          {
+            "name": "rowKey",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "function",
+            "typeText": "((row: T, index: number) => TableRowKey) | undefined",
+            "typeRef": "type:c49fcaa99bb35875d0e9",
+            "parameters": [
+              {
+                "name": "row",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "T",
+                "typeRef": "type:b3438710ea76e93708b7"
+              },
+              {
+                "name": "index",
+                "position": 1,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "TableRowKey",
+              "typeRef": "type:80d8ed2cc879d836162f"
+            },
+            "required": false
+          },
+          {
+            "name": "emptyText",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false
+          },
+          {
+            "name": "loading",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "\"small\" | \"medium\" | \"large\" | undefined",
+            "typeRef": "type:8d5b6882dc615b54818b",
+            "default": "medium",
+            "required": false
+          },
+          {
+            "name": "variant",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "enum",
+            "values": [
+              "bordered",
+              "simple",
+              "striped"
+            ],
+            "typeText": "\"simple\" | \"striped\" | \"bordered\" | undefined",
+            "typeRef": "type:73fba31381c2a852323a",
+            "default": "simple",
+            "required": false
+          },
+          {
+            "name": "scroll",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "object",
+            "typeText": "{ x?: number | undefined; y?: number | undefined; } | undefined",
+            "typeRef": "type:4b0e34acd99bc48f8933",
+            "required": false
+          },
+          {
+            "name": "sortState",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "object",
+            "typeText": "TableSortState | null | undefined",
+            "typeRef": "type:c3de4a905353a45f4d22",
+            "required": false
+          },
+          {
+            "name": "defaultSortState",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "object",
+            "typeText": "TableSortState | null | undefined",
+            "typeRef": "type:c3de4a905353a45f4d22",
+            "default": null,
+            "required": false
+          },
+          {
+            "name": "manualSort",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false
+          },
+          {
+            "name": "rowSelection",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "object",
+            "typeText": "TableRowSelection<T> | undefined",
+            "typeRef": "type:f984bb8a4da81b85ba62",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onRetry",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "function",
+            "typeText": "(() => void) | undefined",
+            "typeRef": "type:578e9bb01824ed41ac21",
+            "parameters": [],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onSortChange",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "function",
+            "typeText": "((state: TableSortState) => void) | undefined",
+            "typeRef": "type:3bf4aece4c7dfca3c840",
+            "parameters": [
+              {
+                "name": "state",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "TableSortState",
+                "typeRef": "type:db91c2a624e3335e1e4c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    },
+    {
+      "name": "Table",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "Table"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "columns",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "array",
+            "typeText": "TableColumn<T>[]",
+            "typeRef": "type:a90743d0b566554d2691",
+            "required": true
+          },
+          {
+            "name": "data",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "array",
+            "typeText": "T[]",
+            "typeRef": "type:33e4ae66ef8a36b4c5d4",
+            "required": true
+          },
+          {
+            "name": "rowKey",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "function",
+            "typeText": "((row: T, index: number) => TableRowKey) | undefined",
+            "typeRef": "type:50e1334b1722b181c4c0",
+            "parameters": [
+              {
+                "name": "row",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "T",
+                "typeRef": "type:565763637d0a2c3cf692"
+              },
+              {
+                "name": "index",
+                "position": 1,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "TableRowKey",
+              "typeRef": "type:80d8ed2cc879d836162f"
+            },
+            "required": false
+          },
+          {
+            "name": "emptyText",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false
+          },
+          {
+            "name": "loading",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "\"small\" | \"medium\" | \"large\" | undefined",
+            "typeRef": "type:8d5b6882dc615b54818b",
+            "default": "medium",
+            "required": false
+          },
+          {
+            "name": "variant",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "enum",
+            "values": [
+              "bordered",
+              "simple",
+              "striped"
+            ],
+            "typeText": "\"simple\" | \"striped\" | \"bordered\" | undefined",
+            "typeRef": "type:73fba31381c2a852323a",
+            "default": "simple",
+            "required": false
+          },
+          {
+            "name": "scroll",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "object",
+            "typeText": "{ x?: number | undefined; y?: number | undefined; } | undefined",
+            "typeRef": "type:4b0e34acd99bc48f8933",
+            "required": false
+          },
+          {
+            "name": "sortState",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "object",
+            "typeText": "TableSortState | null | undefined",
+            "typeRef": "type:c3de4a905353a45f4d22",
+            "required": false
+          },
+          {
+            "name": "defaultSortState",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "object",
+            "typeText": "TableSortState | null | undefined",
+            "typeRef": "type:c3de4a905353a45f4d22",
+            "default": null,
+            "required": false
+          },
+          {
+            "name": "manualSort",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false
+          },
+          {
+            "name": "rowSelection",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "object",
+            "typeText": "TableRowSelection<T> | undefined",
+            "typeRef": "type:e127c5aed51fb1fe9bbf",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onSortChange",
+            "source": "packages/native/src/components/Table/index.tsx",
+            "kind": "function",
+            "typeText": "((state: TableSortState) => void) | undefined",
+            "typeRef": "type:3bf4aece4c7dfca3c840",
+            "parameters": [
+              {
+                "name": "state",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "TableSortState",
+                "typeRef": "type:db91c2a624e3335e1e4c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TableBody",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "TableBody"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TableCell",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "TableCell"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TableCellContent",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "TableCellContent"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "secondary",
+            "source": "packages/native/src/components/Parts/index.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TableHead",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "TableHead"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TableHeader",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "TableHeader"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TableRoot",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "TableRoot"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TableRow",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "TableRow"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:TableProps": {
+      "source": "native/src/components/Table/index.tsx",
+      "kind": "interface",
+      "extends": [
+        "Omit<ViewProps, \"children\">"
+      ],
+      "props": [
+        {
+          "name": "columns",
+          "type": "TableColumn<T>[]",
+          "required": true
+        },
+        {
+          "name": "data",
+          "type": "T[]",
+          "required": true
+        },
+        {
+          "name": "rowKey",
+          "type": "(row: T, index: number) => TableRowKey",
+          "required": false
+        },
+        {
+          "name": "emptyText",
+          "type": "ReactNode",
+          "required": false
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "required": false,
+          "default": "false"
+        },
+        {
+          "name": "size",
+          "type": "\"small\" | \"medium\" | \"large\"",
+          "required": false,
+          "default": "\"medium\""
+        },
+        {
+          "name": "variant",
+          "type": "\"simple\" | \"striped\" | \"bordered\"",
+          "required": false,
+          "default": "\"simple\""
+        },
+        {
+          "name": "scroll",
+          "type": "{ x?: number; y?: number }",
+          "required": false
+        },
+        {
+          "name": "sortState",
+          "type": "TableSortState | null",
+          "required": false
+        },
+        {
+          "name": "defaultSortState",
+          "type": "TableSortState | null",
+          "required": false,
+          "default": "null"
+        },
+        {
+          "name": "onSortChange",
+          "type": "(state: TableSortState) => void",
+          "required": false
+        },
+        {
+          "name": "manualSort",
+          "type": "boolean",
+          "required": false,
+          "default": "false"
+        },
+        {
+          "name": "rowSelection",
+          "type": "TableRowSelection<T>",
+          "required": false
+        }
+      ]
+    },
+    "native:TableCellContentProps": {
+      "source": "native/src/components/Parts/index.tsx",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": false
+        },
+        {
+          "name": "secondary",
+          "type": "ReactNode",
+          "required": false
+        }
+      ]
+    },
+    "native:DataTableProps": {
+      "source": "native/src/components/Table/index.tsx",
+      "kind": "interface",
+      "extends": [
+        "TableProps<T>"
+      ],
+      "props": [
+        {
+          "name": "pagination",
+          "type": "PaginationProps",
+          "required": false
+        },
+        {
+          "name": "error",
+          "type": "ReactNode",
+          "required": false
+        },
+        {
+          "name": "onRetry",
+          "type": "() => void",
+          "required": false
+        },
+        {
+          "name": "retryLabel",
+          "type": "string",
+          "required": false
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Table": {
+      "kind": "cssVars",
+      "source": "react/src/components/Table",
+      "vars": [
+        {
+          "name": "--table-cell-padding-y",
+          "description": "Vertical padding of the cells (every size; follows the density by default)"
+        },
+        {
+          "name": "--table-cell-padding-x",
+          "description": "Horizontal padding of the cells (every size; follows the density by default)"
+        },
+        {
+          "name": "--table-font-size",
+          "description": "Font size of the body cells (every size)"
+        },
+        {
+          "name": "--table-header-bg",
+          "description": "Background color of the header row"
+        },
+        {
+          "name": "--table-border-color",
+          "description": "Color of the row separators"
+        },
+        {
+          "name": "--table-radius",
+          "description": "Corner radius of the wrapper (defaults to --radius-lg)"
+        },
+        {
+          "name": "--table-stripe-bg",
+          "description": "Background color of the odd rows of a striped table"
+        },
+        {
+          "name": "--table-hover-bg",
+          "description": "Background color of the hovered row of a hoverable table"
+        },
+        {
+          "name": "--table-selected-bg",
+          "description": "Background color of the selected rows (row selection)"
+        },
+        {
+          "name": "--table-sort-icon-color",
+          "description": "Color of the sort indicator of an unsorted sortable column"
+        },
+        {
+          "name": "--table-focus-ring-color",
+          "description": "Outline color of the focused scroll region"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/table/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/table/native/basic.tsx": "import { useState } from \"react\";\nimport { Text, View } from \"react-native\";\nimport { DataTable } from \"minerva-design/native\";\nexport default function Basic() {\n  const [selected, setSelected] = useState<readonly string[]>([]);\n  return (\n    <View>\n      <DataTable\n        data={[\n          { id: \"a\", name: \"Ada\", score: 9 },\n          { id: \"b\", name: \"Grace\", score: 10 },\n        ]}\n        rowKey={(row) => row.id}\n        columns={[\n          { key: \"name\", header: \"Name\", sortable: true },\n          { key: \"score\", header: \"Score\", sortable: true },\n        ]}\n        rowSelection={{ onChange: (keys) => setSelected(keys.map(String)) }}\n        pagination={{ total: 2, pageSize: 2 }}\n      />\n      <Text>Selected: {selected.join(\", \")}</Text>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "Basic usage",
+      "description": "Each column reads row[key] unless it has a render function. Give rows a stable rowKey."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Table",
+      "description": "Displays rows of data. Use Table with columns and data for the common case, TableRoot and its parts for custom headers or merged cells, and DataTable for pagination, loading and error states.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Each column reads row[key] unless it has a render function. Give rows a stable rowKey."
+        },
+        "variants": {
+          "title": "Variants and sizes",
+          "description": "Simple, striped or bordered rows, in small, medium or large density, optionally highlighted on hover."
+        },
+        "fixed-columns": {
+          "title": "Fixed columns and scrolling",
+          "description": "scroll.x sets a minimum width, scroll.y bounds the height with a sticky header. Fixed columns need a width and must be declared at the start (left) or end (right); ellipsis truncates long text. The component releases fixed columns when their measured widths leave less than 120px for the scrolling area; all fields and actions remain available by horizontal scrolling."
+        },
+        "states": {
+          "title": "Loading and empty states",
+          "description": "loading renders skeleton rows (hidden from assistive technologies); an empty data array renders emptyText."
+        },
+        "data-table": {
+          "title": "DataTable",
+          "description": "Adds pagination under the table and replaces it with an alert and a retry button when error is set. Rows must already be paginated."
+        },
+        "compound": {
+          "title": "Compound parts",
+          "description": "TableRoot, TableHead, TableBody, TableRow, TableHeader and TableCell render native table elements for multi-row headers or merged cells."
+        },
+        "cell-content": {
+          "title": "Cell content",
+          "description": "TableCellContent bounds and wraps long content, with an optional muted secondary line or monospace primary text."
+        },
+        "sorting": {
+          "title": "Sorting",
+          "description": "sortable makes a header a button cycling ascending, descending and unsorted (aria-sort follows). true compares row[key]; a function compares two rows. Control the state with sortState and onSortChange, or use manualSort to sort on a server."
+        },
+        "selection": {
+          "title": "Row selection",
+          "description": "rowSelection adds a checkbox column with a select-all checkbox (indeterminate when partially selected). Disabled rows are skipped by select-all; selected rows get aria-selected and a highlight."
+        }
+      },
+      "api": {
+        "TableProps": {
+          "columns": "Column definitions",
+          "data": "Rows to render",
+          "rowKey": "Extracts a stable key from a row (defaults to the row index)",
+          "emptyText": "Content of the single row shown when data is empty",
+          "loading": "Renders placeholder skeleton rows instead of the data",
+          "loadingRows": "Number of skeleton rows rendered while loading",
+          "sortState": "Sort state (controlled); null means unsorted",
+          "defaultSortState": "Initial sort state (uncontrolled)",
+          "onSortChange": "Called with the next sort state when a sortable header is activated",
+          "manualSort": "Skips local sorting: data is rendered as given (sorted by its owner, e.g. a server) while the headers reflect the sort state",
+          "rowSelection": "Adds a leading checkbox column to select rows"
+        },
+        "TableColumn": {
+          "key": "Unique key of the column; also the default field read from each row",
+          "header": "Header content",
+          "render": "Renders a cell; defaults to row[key]",
+          "width": "Column width (numbers are pixels), applied as width and min-width; required for fixed columns",
+          "align": "Horizontal alignment of the header and cells",
+          "ellipsis": "Truncates the content on a single line with an ellipsis",
+          "fixed": "Sticks the column to the left or right edge while scrolling horizontally",
+          "sortable": "Makes the column sortable: true compares row[key] (empty values last), a function (a, b) => number compares two rows for the ascending order"
+        },
+        "DataTableProps": {
+          "pagination": "Pagination props rendered under the table (rows must already be paginated)",
+          "error": "Error message; replaces the table and pagination with an alert",
+          "onRetry": "Called by the retry button shown with error",
+          "retryLabel": "Text of the retry button"
+        },
+        "TableRootProps": {
+          "size": "Density of the cells",
+          "variant": "Visual style: plain rows, zebra stripes or bordered cells",
+          "hoverable": "Highlights body rows on hover",
+          "scroll": "Horizontal minimum width / vertical maximum height of the scroll area; a scrolling wrapper becomes a focusable region named after the table (default: \"Scrollable table\")",
+          "ref": "Ref to the <table> element"
+        },
+        "TableScrollConfig": {
+          "x": "Minimum width of the table; the wrapper scrolls horizontally when narrower",
+          "y": "Maximum visible height; the wrapper scrolls vertically and the header sticks"
+        },
+        "TableSortState": {
+          "key": "Key of the sorted column",
+          "order": "Sort direction (\"ascend\" or \"descend\"); null means unsorted"
+        },
+        "TableRowSelection": {
+          "type": "Selection mode (multiple selection with checkboxes)",
+          "selectedRowKeys": "Keys of the selected rows (controlled)",
+          "defaultSelectedRowKeys": "Keys of the initially selected rows (uncontrolled)",
+          "onChange": "Called with the new selected keys and the matching rows of data",
+          "getCheckboxProps": "Per-row checkbox options; disabled rows cannot be toggled and are skipped by select-all",
+          "getRowLabel": "Names a row in the accessible label of its checkbox (\"Select row {name}\"); defaults to the row key"
+        },
+        "TableCellContentProps": {
+          "primary": "Main content",
+          "secondary": "Secondary, muted content under the primary content",
+          "monospace": "Renders the primary content as <code> in the monospace font",
+          "maxWidth": "Maximum width (numbers are pixels); long content wraps",
+          "ref": "Ref to the root <div> element"
+        },
+        "FixedColumnLayout": {
+          "leftOffsets": "Left offset (px) of every left-fixed column, by column key",
+          "rightOffsets": "Right offset (px) of every right-fixed column, by column key",
+          "lastLeftFixedKey": "Last column of the leading left-fixed block (gets the edge shadow)",
+          "firstRightFixedKey": "First column of the trailing right-fixed block (gets the edge shadow)"
+        }
+      },
+      "cssVars": {
+        "--table-cell-padding-y": "Vertical padding of the cells (every size; follows the density by default)",
+        "--table-cell-padding-x": "Horizontal padding of the cells (every size; follows the density by default)",
+        "--table-font-size": "Font size of the body cells (every size)",
+        "--table-header-bg": "Background color of the header row",
+        "--table-border-color": "Color of the row separators",
+        "--table-radius": "Corner radius of the wrapper (defaults to --radius-lg)",
+        "--table-stripe-bg": "Background color of the odd rows of a striped table",
+        "--table-hover-bg": "Background color of the hovered row of a hoverable table",
+        "--table-selected-bg": "Background color of the selected rows (row selection)",
+        "--table-sort-icon-color": "Color of the sort indicator of an unsorted sortable column",
+        "--table-focus-ring-color": "Outline color of the focused scroll region"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "columns and rows are JS properties set from a script; row-key names the key field. A cell render function may return a DOM node, here a two-line <minerva-table-cell-content>."
+          },
+          "sorting": {
+            "title": "Sorting",
+            "description": "sortable: true sorts by the row field, a function is a custom comparator. Clicking a header cycles ascending, descending and unsorted, and fires minerva-sort-change; sortState sets the initial sort."
+          },
+          "selection": {
+            "title": "Row selection",
+            "description": "selectable adds a checkbox column with a select-all header. isRowDisabled locks paid invoices, getRowLabel names each checkbox, and minerva-selection-change reports the selected keys."
+          },
+          "pagination": {
+            "title": "Pagination and loading",
+            "description": "The pagination property renders a <minerva-pagination> under the table. Rows are not sliced: load the requested page on minerva-page-change; loading shows skeleton rows meanwhile."
+          }
+        },
+        "minerva-data-table": {
+          "props": {
+            "selectable": "Adds a checkbox column to select rows.",
+            "scrollX": "Horizontal scroll: minimum table width (px number or CSS length).",
+            "scrollY": "Vertical scroll: maximum height of the wrapper; the header sticks.",
+            "retryable": "Shows a retry button in the error state (fires minerva-retry).",
+            "rows": "Row data.",
+            "isRowDisabled": "Returns true for rows whose checkbox is disabled."
+          },
+          "events": {
+            "minerva-sort-change": "The user changed the sort (detail: { key, order }, order null = unsorted). Cancelable: preventDefault() keeps the current sort.",
+            "minerva-selection-change": "The user changed the selected rows (detail: { selectedRowKeys, selectedRows }). Cancelable: preventDefault() keeps the current selection.",
+            "minerva-page-change": "Re-dispatched from the pagination (detail: { page, pageSize }). Cancelable.",
+            "minerva-retry": "The retry button of the error state was activated."
+          },
+          "slots": {
+            "empty": "Content of the empty state (default: empty-text or the localized \"No data\").",
+            "error": "Content of the error state (default: the error text)."
+          },
+          "cssVars": {
+            "--button-height": "Minimum height of the retry button.",
+            "--button-padding-x": "Horizontal padding of the retry button.",
+            "--button-radius": "Corner radius of the retry button.",
+            "--button-font-size": "Font size of the retry button.",
+            "--button-font-weight": "Font weight of the retry button.",
+            "--button-gap": "Space between the icon and the label of the retry button.",
+            "--button-label-white-space": "White-space of the retry button label: nowrap (default, truncates) or normal (wraps)."
+          }
+        },
+        "minerva-table-cell-content": {
+          "slots": {
+            "default": "Primary content (alternative to the primary attribute).",
+            "secondary": "Secondary line (alternative to the secondary attribute)."
+          },
+          "cssVars": {
+            "--button-height": "Button variable listed because the module shares the Button stylesheet with the table; this element does not use it.",
+            "--button-padding-x": "Button variable listed because the module shares the Button stylesheet with the table; this element does not use it.",
+            "--button-radius": "Button variable listed because the module shares the Button stylesheet with the table; this element does not use it.",
+            "--button-font-size": "Button variable listed because the module shares the Button stylesheet with the table; this element does not use it.",
+            "--button-font-weight": "Button variable listed because the module shares the Button stylesheet with the table; this element does not use it.",
+            "--button-gap": "Button variable listed because the module shares the Button stylesheet with the table; this element does not use it.",
+            "--button-label-white-space": "Button variable listed because the module shares the Button stylesheet with the table; this element does not use it."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

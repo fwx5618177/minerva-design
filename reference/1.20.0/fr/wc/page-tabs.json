@@ -1,0 +1,678 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.0",
+  "locale": "fr",
+  "renderer": "wc",
+  "page": "page-tabs",
+  "title": "PageTabs",
+  "description": "Une barre des pages ouvertes de l’application (navigation entre routes, pas une tablist ARIA) : l’application gère les routes, la fermeture et la protection des modifications non enregistrées. Les éléments sont des surfaces plates arrondies ; les titres longs sont tronqués et affichés en entier dans une infobulle ; la page courante reste visible et des boutons de défilement apparaissent quand la liste déborde.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.0",
+    "sourceCommit": "e5692a82f25163efee65ef771fb64a94e61cb359",
+    "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+    "referenceSourceDigest": "sha256:07db3eb36ff2e4b5bb88e238b04c82819862c70d739534f627e7b6c73c0c6ef1"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "PageTab",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/page-tab",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-page-tab",
+        "props": [
+          {
+            "name": "value",
+            "typeText": "string",
+            "attribute": "value",
+            "required": false
+          },
+          {
+            "name": "label",
+            "typeText": "string",
+            "attribute": "label",
+            "required": false
+          },
+          {
+            "name": "active",
+            "typeText": "boolean",
+            "attribute": "active",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "attribute": "disabled",
+            "required": false
+          },
+          {
+            "name": "closable",
+            "typeText": "boolean",
+            "attribute": "closable",
+            "required": false
+          },
+          {
+            "name": "closeLabel",
+            "typeText": "string | undefined",
+            "attribute": "close-label",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "minerva-select",
+            "typeText": "CustomEvent<{ value: string; }>",
+            "detailType": {
+              "typeText": "{ value: string; }",
+              "typeRef": "type:fa0107075cc9f561dc91"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": true,
+            "description": "The label button was activated (`detail: { value }`); cancelable: `preventDefault()` keeps the strip's `active-value`"
+          },
+          {
+            "name": "minerva-close",
+            "typeText": "CustomEvent<{ value: string; }>",
+            "detailType": {
+              "typeText": "{ value: string; }",
+              "typeRef": "type:1e55b2c77b6960f92a9f"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The built-in close button was activated (`detail: { value }`); remove the element to close the page"
+          }
+        ],
+        "slots": [
+          {
+            "name": "icon",
+            "description": "Icon displayed before the label"
+          },
+          {
+            "name": "action",
+            "description": "Separate control next to the label (e.g. a close button)"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "PageTabs",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/page-tabs",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-page-tabs",
+        "props": [
+          {
+            "name": "activeValue",
+            "typeText": "string | undefined",
+            "attribute": "active-value",
+            "required": false
+          },
+          {
+            "name": "scrollLeftLabel",
+            "typeText": "string | undefined",
+            "attribute": "scroll-left-label",
+            "required": false
+          },
+          {
+            "name": "scrollRightLabel",
+            "typeText": "string | undefined",
+            "attribute": "scroll-right-label",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "minerva-select",
+            "typeText": "CustomEvent",
+            "description": "Re-dispatched from `<minerva-page-tab>`: a page was chosen (`detail: { value }`)"
+          },
+          {
+            "name": "minerva-close",
+            "typeText": "CustomEvent",
+            "description": "Re-dispatched from `<minerva-page-tab>`: the close button of a page was activated (`detail: { value }`)"
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "description": "`<minerva-page-tab>` items"
+          },
+          {
+            "name": "actions",
+            "description": "Global actions after the scrollable list (e.g. a page menu)"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-page-tabs": {
+      "kind": "element",
+      "source": "web-components/src/components/page-tabs/page-tabs.ts",
+      "className": "MinervaPageTabs",
+      "summary": "Strip of open pages with overflow scrolling and closable items.",
+      "description": "A strip of open application pages (`<PageTabs>` of React): route navigation, not an ARIA tablist. The application owns routes, closing and leave guards. Overflowing items scroll horizontally with scroll buttons and the current item (`active-value`) is kept in view; when the focused item is removed, focus goes back to the current page.",
+      "properties": [
+        {
+          "name": "activeValue",
+          "attribute": "active-value",
+          "type": "string | undefined",
+          "description": "Value of the current route's item: it gets `active` and is scrolled into view when it (or the set of items) changes"
+        },
+        {
+          "name": "scrollLeftLabel",
+          "attribute": "scroll-left-label",
+          "type": "string | undefined",
+          "description": "Accessible label of the \"scroll left\" button (default localized)"
+        },
+        {
+          "name": "scrollRightLabel",
+          "attribute": "scroll-right-label",
+          "type": "string | undefined",
+          "description": "Accessible label of the \"scroll right\" button (default localized)"
+        },
+        {
+          "name": "items",
+          "type": "MinervaPageTab[]",
+          "readonly": true,
+          "description": "The `<minerva-page-tab>` items."
+        }
+      ],
+      "methods": [],
+      "events": [
+        {
+          "name": "minerva-select",
+          "description": "Re-dispatched from `<minerva-page-tab>`: a page was chosen (`detail: { value }`)"
+        },
+        {
+          "name": "minerva-close",
+          "description": "Re-dispatched from `<minerva-page-tab>`: the close button of a page was activated (`detail: { value }`)"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "`<minerva-page-tab>` items"
+        },
+        {
+          "name": "actions",
+          "description": "Global actions after the scrollable list (e.g. a page menu)"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The <nav> landmark"
+        },
+        {
+          "name": "viewport",
+          "description": "The scrolling viewport of the items"
+        },
+        {
+          "name": "list",
+          "description": "The item list"
+        },
+        {
+          "name": "scroll-button",
+          "description": "The scroll left / right buttons (while the items overflow)"
+        },
+        {
+          "name": "actions",
+          "description": "The global actions after the list"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--page-tabs-height",
+          "description": "Height of the tab bar"
+        },
+        {
+          "name": "--page-tabs-background",
+          "description": "Background of the tab bar"
+        },
+        {
+          "name": "--page-tabs-gap",
+          "description": "Space between the tabs"
+        },
+        {
+          "name": "--page-tabs-item-height",
+          "description": "Height of a tab"
+        },
+        {
+          "name": "--page-tabs-item-min-width",
+          "description": "Minimum width of a tab"
+        },
+        {
+          "name": "--page-tabs-item-max-width",
+          "description": "Maximum width of a tab (the label truncates)"
+        },
+        {
+          "name": "--page-tabs-item-radius",
+          "description": "Corner radius of a tab (defaults to --radius-lg)"
+        },
+        {
+          "name": "--page-tabs-selected-background",
+          "description": "Background of the active tab"
+        },
+        {
+          "name": "--icon-button-color",
+          "description": "Icon color"
+        },
+        {
+          "name": "--icon-button-hover-bg",
+          "description": "Background on hover"
+        },
+        {
+          "name": "--icon-button-pressed-color",
+          "description": "Icon color of a pressed toggle"
+        },
+        {
+          "name": "--icon-button-pressed-bg",
+          "description": "Background of a pressed toggle"
+        },
+        {
+          "name": "--icon-button-size",
+          "description": "Width and height of the button (every size; defaults follow the density's control heights)"
+        },
+        {
+          "name": "--icon-button-icon-size",
+          "description": "Font size of the icon (every size)"
+        },
+        {
+          "name": "--icon-button-radius",
+          "description": "Corner radius of the square shape (defaults to --radius-lg)"
+        }
+      ]
+    },
+    "wc:minerva-page-tab": {
+      "kind": "element",
+      "source": "web-components/src/components/page-tabs/page-tabs.ts",
+      "className": "MinervaPageTab",
+      "summary": "An open page of `<minerva-page-tabs>`.",
+      "description": "One open page of `<minerva-page-tabs>` (`<PageTab>` of React). The label button selects it (`aria-current=\"page\"` while `active`); the `action` slot (or the built-in close button of `closable`) is a separate control, never nested inside the label button.",
+      "properties": [
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Identifier of the page"
+        },
+        {
+          "name": "label",
+          "attribute": "label",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Title of the page; truncated with an ellipsis (full text in `title`)"
+        },
+        {
+          "name": "active",
+          "attribute": "active",
+          "type": "boolean",
+          "default": "false",
+          "description": "Marks the item as the current page (`aria-current=\"page\"`)"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false",
+          "description": "Disables the label button (the separate action keeps its own state)"
+        },
+        {
+          "name": "closable",
+          "attribute": "closable",
+          "type": "boolean",
+          "default": "false",
+          "description": "Renders a built-in close button (fires `minerva-close`)"
+        },
+        {
+          "name": "closeLabel",
+          "attribute": "close-label",
+          "type": "string | undefined",
+          "description": "Accessible label of the close button (default localized \"Close <label>\")"
+        }
+      ],
+      "methods": [
+        {
+          "name": "focus",
+          "signature": "(options?: FocusOptions) => void",
+          "description": "Focuses the label button."
+        }
+      ],
+      "events": [
+        {
+          "name": "minerva-select",
+          "description": "The label button was activated (`detail: { value }`); cancelable: `preventDefault()` keeps the strip's `active-value`"
+        },
+        {
+          "name": "minerva-close",
+          "description": "The built-in close button was activated (`detail: { value }`); remove the element to close the page"
+        }
+      ],
+      "slots": [
+        {
+          "name": "icon",
+          "description": "Icon displayed before the label"
+        },
+        {
+          "name": "action",
+          "description": "Separate control next to the label (e.g. a close button)"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The item wrapper"
+        },
+        {
+          "name": "trigger",
+          "description": "The label <button> (selects the page)"
+        },
+        {
+          "name": "icon",
+          "description": "The icon before the label"
+        },
+        {
+          "name": "label",
+          "description": "The (truncated) label"
+        },
+        {
+          "name": "action",
+          "description": "The wrapper of the separate control next to the label"
+        },
+        {
+          "name": "close-button",
+          "description": "The built-in close button (`closable`)"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--page-tabs-height",
+          "description": "Height of the tab bar"
+        },
+        {
+          "name": "--page-tabs-background",
+          "description": "Background of the tab bar"
+        },
+        {
+          "name": "--page-tabs-gap",
+          "description": "Space between the tabs"
+        },
+        {
+          "name": "--page-tabs-item-height",
+          "description": "Height of a tab"
+        },
+        {
+          "name": "--page-tabs-item-min-width",
+          "description": "Minimum width of a tab"
+        },
+        {
+          "name": "--page-tabs-item-max-width",
+          "description": "Maximum width of a tab (the label truncates)"
+        },
+        {
+          "name": "--page-tabs-item-radius",
+          "description": "Corner radius of a tab (defaults to --radius-lg)"
+        },
+        {
+          "name": "--page-tabs-selected-background",
+          "description": "Background of the active tab"
+        },
+        {
+          "name": "--icon-button-color",
+          "description": "Icon color"
+        },
+        {
+          "name": "--icon-button-hover-bg",
+          "description": "Background on hover"
+        },
+        {
+          "name": "--icon-button-pressed-color",
+          "description": "Icon color of a pressed toggle"
+        },
+        {
+          "name": "--icon-button-pressed-bg",
+          "description": "Background of a pressed toggle"
+        },
+        {
+          "name": "--icon-button-size",
+          "description": "Width and height of the button (every size; defaults follow the density's control heights)"
+        },
+        {
+          "name": "--icon-button-icon-size",
+          "description": "Font size of the icon (every size)"
+        },
+        {
+          "name": "--icon-button-radius",
+          "description": "Corner radius of the square shape (defaults to --radius-lg)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:PageTabs": {
+      "kind": "cssVars",
+      "source": "react/src/components/PageTabs",
+      "vars": [
+        {
+          "name": "--page-tabs-height",
+          "description": "Height of the tab bar"
+        },
+        {
+          "name": "--page-tabs-background",
+          "description": "Background of the tab bar"
+        },
+        {
+          "name": "--page-tabs-gap",
+          "description": "Space between the tabs"
+        },
+        {
+          "name": "--page-tabs-item-height",
+          "description": "Height of a tab"
+        },
+        {
+          "name": "--page-tabs-item-min-width",
+          "description": "Minimum width of a tab"
+        },
+        {
+          "name": "--page-tabs-item-max-width",
+          "description": "Maximum width of a tab (the label truncates)"
+        },
+        {
+          "name": "--page-tabs-item-radius",
+          "description": "Corner radius of a tab (defaults to --radius-lg)"
+        },
+        {
+          "name": "--page-tabs-selected-background",
+          "description": "Background of the active tab"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "actions",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/page-tabs/wc/actions.html",
+      "files": {
+        "apps/docs/src/docs/pages/page-tabs/wc/actions.html": "<minerva-page-tabs id=\"tabs\" aria-label=\"Open queries\" active-value=\"q1\">\n  <minerva-page-tab value=\"q1\" label=\"Query 1\">\n    <minerva-icon-button\n      slot=\"action\"\n      size=\"small\"\n      toggle\n      label=\"Pin Query 1\"\n      no-tooltip\n      >★</minerva-icon-button\n    >\n  </minerva-page-tab>\n  <minerva-page-tab value=\"q2\" label=\"Query 2\" closable></minerva-page-tab>\n  <minerva-icon-button id=\"add\" slot=\"actions\" label=\"New query\"\n    >+</minerva-icon-button\n  >\n</minerva-page-tabs>\n",
+        "apps/docs/src/docs/pages/page-tabs/wc/actions.ts": "// The actions slot sits outside the scrolling list: here it adds a page.\n// The action slot holds any separate control next to a label (a pin toggle).\nexport function setup(root: HTMLElement) {\n  const tabs = root.querySelector<HTMLElement & { activeValue?: string }>(\n    \"#tabs\",\n  )!;\n  const add = root.querySelector<HTMLElement>(\"#add\")!;\n  let count = 2;\n  const onAdd = () => {\n    count += 1;\n    const tab = document.createElement(\"minerva-page-tab\") as HTMLElement & {\n      value: string;\n      label: string;\n      closable: boolean;\n    };\n    tab.value = `q${count}`;\n    tab.label = `Query ${count}`;\n    tab.closable = true;\n    tabs.insertBefore(tab, add);\n    tabs.activeValue = tab.value;\n  };\n  const onClose = (event: Event) => {\n    const { value } = (event as CustomEvent<{ value: string }>).detail;\n    (event.target as HTMLElement).remove();\n    if (tabs.activeValue === value) tabs.activeValue = \"q1\";\n  };\n  add.addEventListener(\"click\", onAdd);\n  tabs.addEventListener(\"minerva-close\", onClose);\n  return () => {\n    add.removeEventListener(\"click\", onAdd);\n    tabs.removeEventListener(\"minerva-close\", onClose);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Actions",
+      "description": "Le slot actions affiche des contrôles globaux hors de la liste défilante (ici, un bouton qui ouvre une nouvelle page) ; le slot action d’un élément contient son propre contrôle, comme un bouton d’épinglage."
+    },
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/page-tabs/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/page-tabs/wc/basic.html": "<minerva-page-tabs id=\"pages\" aria-label=\"Open pages\" active-value=\"books\">\n  <minerva-page-tab value=\"home\" label=\"Dashboard\">\n    <span slot=\"icon\">⌂</span>\n  </minerva-page-tab>\n  <minerva-page-tab value=\"books\" label=\"Books\" closable></minerva-page-tab>\n  <minerva-page-tab\n    value=\"article\"\n    label=\"A very long article title that gets truncated\"\n    closable\n  ></minerva-page-tab>\n</minerva-page-tabs>\n<output id=\"log\" aria-live=\"polite\"></output>\n",
+        "apps/docs/src/docs/pages/page-tabs/wc/basic.ts": "// The strip follows minerva-select (active-value); minerva-close only\n// reports the click: remove the element to close the page.\nexport function setup(root: HTMLElement) {\n  const strip = root.querySelector<HTMLElement & { activeValue?: string }>(\n    \"#pages\",\n  )!;\n  const log = root.querySelector<HTMLOutputElement>(\"#log\")!;\n  const onSelect = (event: Event) => {\n    log.value = `Opened ${(event as CustomEvent<{ value: string }>).detail.value}`;\n  };\n  const onClose = (event: Event) => {\n    const { value } = (event as CustomEvent<{ value: string }>).detail;\n    (event.target as HTMLElement).remove();\n    if (strip.activeValue === value) strip.activeValue = \"home\";\n    log.value = `Closed ${value}`;\n  };\n  strip.addEventListener(\"minerva-select\", onSelect);\n  strip.addEventListener(\"minerva-close\", onClose);\n  return () => {\n    strip.removeEventListener(\"minerva-select\", onSelect);\n    strip.removeEventListener(\"minerva-close\", onClose);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Utilisation de base",
+      "description": "active-value marque la page courante et suit minerva-select. closable ajoute un bouton de fermeture qui émet minerva-close : supprimez l’élément pour fermer la page. Le slot icon affiche une icône avant le libellé."
+    },
+    {
+      "id": "overflow",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/page-tabs/wc/overflow.html",
+      "files": {
+        "apps/docs/src/docs/pages/page-tabs/wc/overflow.html": "<minerva-page-tabs\n  aria-label=\"Open files\"\n  active-value=\"file-9\"\n  scroll-left-label=\"Earlier files\"\n  scroll-right-label=\"Later files\"\n  style=\"max-width: 480px\"\n>\n  <minerva-page-tab value=\"file-1\" label=\"index.ts\"></minerva-page-tab>\n  <minerva-page-tab value=\"file-2\" label=\"router.ts\"></minerva-page-tab>\n  <minerva-page-tab value=\"file-3\" label=\"store.ts\" disabled></minerva-page-tab>\n  <minerva-page-tab value=\"file-4\" label=\"theme.scss\"></minerva-page-tab>\n  <minerva-page-tab value=\"file-5\" label=\"README.md\"></minerva-page-tab>\n  <minerva-page-tab value=\"file-6\" label=\"package.json\"></minerva-page-tab>\n  <minerva-page-tab value=\"file-7\" label=\"vite.config.ts\"></minerva-page-tab>\n  <minerva-page-tab value=\"file-8\" label=\"tsconfig.json\"></minerva-page-tab>\n  <minerva-page-tab value=\"file-9\" label=\"CHANGELOG.md\"></minerva-page-tab>\n  <minerva-page-tab value=\"file-10\" label=\"LICENSE\"></minerva-page-tab>\n</minerva-page-tabs>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Débordement et désactivation",
+      "description": "Quand les pages débordent, des boutons de défilement apparaissent (nommés par scroll-left-label / scroll-right-label) et la page active est ramenée dans la vue. Les pages désactivées ne peuvent pas être sélectionnées."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "PageTabs",
+      "description": "Une barre des pages ouvertes de l’application (navigation entre routes, pas une tablist ARIA) : l’application gère les routes, la fermeture et la protection des modifications non enregistrées. Les éléments sont des surfaces plates arrondies ; les titres longs sont tronqués et affichés en entier dans une infobulle ; la page courante reste visible et des boutons de défilement apparaissent quand la liste déborde.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Chaque PageTab a un bouton de libellé (aria-current=\"page\" quand il est actif) et une action séparée facultative, comme un bouton de fermeture. Quand l’élément ayant le focus est fermé, le focus passe à la page courante."
+        },
+        "context-menu": {
+          "title": "Menu contextuel et actions",
+          "description": "Enveloppez les éléments dans un ContextMenu pour des commandes par page ; actions affiche des contrôles globaux hors de la liste défilante."
+        },
+        "overflow": {
+          "title": "Débordement et désactivation",
+          "description": "Quand les pages débordent, des boutons de défilement apparaissent et la page active est ramenée dans la zone visible. Les pages désactivées ne peuvent pas être choisies et n’affichent pas d’infobulle."
+        }
+      },
+      "api": {
+        "PageTabsProps": {
+          "aria-label": "Libellé accessible du repère de navigation (par ex. « Pages ouvertes »)",
+          "activeValue": "Valeur de l’élément de la route courante. Quand elle (ou l’ensemble des éléments) change, l’élément actif est ramené dans la zone visible",
+          "children": "Éléments PageTab",
+          "actions": "Actions globales affichées après la liste défilante (par ex. un menu de pages)",
+          "scrollLeftLabel": "Libellé accessible du bouton « défiler vers la gauche »",
+          "scrollRightLabel": "Libellé accessible du bouton « défiler vers la droite »"
+        },
+        "PageTabProps": {
+          "ref": "Ref vers l’élément englobant de l’élément",
+          "value": "Identifiant de la page (exposé en data-value)",
+          "label": "Titre de la page ; tronqué par des points de suspension, affiché en entier dans une infobulle",
+          "active": "Marque l’élément comme page courante (aria-current=\"page\")",
+          "disabled": "Désactive le bouton de libellé (l’action séparée garde son propre état)",
+          "icon": "Icône affichée avant le libellé",
+          "action": "Contrôle séparé affiché à côté du libellé (par ex. un IconButton de fermeture)",
+          "onSelect": "Appelé quand le bouton de libellé est activé"
+        }
+      },
+      "cssVars": {
+        "--page-tabs-height": "Hauteur de la barre d'onglets",
+        "--page-tabs-background": "Fond de la barre d'onglets",
+        "--page-tabs-gap": "Espace entre les onglets",
+        "--page-tabs-item-height": "Hauteur d'un onglet",
+        "--page-tabs-item-min-width": "Largeur minimale d'un onglet",
+        "--page-tabs-item-max-width": "Largeur maximale d'un onglet (le libellé est tronqué)",
+        "--page-tabs-item-radius": "Rayon des coins d'un onglet (par défaut --radius-lg)",
+        "--page-tabs-selected-background": "Fond de l'onglet actif"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "active-value marque la page courante et suit minerva-select. closable ajoute un bouton de fermeture qui émet minerva-close : supprimez l’élément pour fermer la page. Le slot icon affiche une icône avant le libellé."
+          },
+          "actions": {
+            "title": "Actions",
+            "description": "Le slot actions affiche des contrôles globaux hors de la liste défilante (ici, un bouton qui ouvre une nouvelle page) ; le slot action d’un élément contient son propre contrôle, comme un bouton d’épinglage."
+          },
+          "overflow": {
+            "title": "Débordement et désactivation",
+            "description": "Quand les pages débordent, des boutons de défilement apparaissent (nommés par scroll-left-label / scroll-right-label) et la page active est ramenée dans la vue. Les pages désactivées ne peuvent pas être sélectionnées."
+          }
+        },
+        "minerva-page-tabs": {
+          "props": {
+            "items": "Les enfants <minerva-page-tab> (lecture seule)."
+          },
+          "events": {
+            "minerva-select": "Remonte d’un <minerva-page-tab> : une page a été choisie (detail: { value }).",
+            "minerva-close": "Remonte d’un <minerva-page-tab> : le bouton de fermeture d’une page a été activé (detail: { value })."
+          },
+          "slots": {
+            "default": "Éléments <minerva-page-tab>.",
+            "actions": "Actions globales après la liste défilante (par ex. un menu des pages)."
+          },
+          "cssVars": {
+            "--icon-button-color": "Couleur de l’icône des boutons de fermeture / défilement.",
+            "--icon-button-hover-bg": "Fond des boutons de fermeture / défilement au survol.",
+            "--icon-button-pressed-color": "Couleur de l’icône d’un bouton bascule enfoncé.",
+            "--icon-button-pressed-bg": "Fond d’un bouton bascule enfoncé.",
+            "--icon-button-size": "Largeur et hauteur des boutons de fermeture / défilement.",
+            "--icon-button-icon-size": "Taille de police de leurs icônes.",
+            "--icon-button-radius": "Rayon des coins de la forme carrée (par défaut --radius-lg)."
+          }
+        },
+        "minerva-page-tab": {
+          "props": {
+            "closable": "Affiche un bouton de fermeture intégré qui émet minerva-close.",
+            "closeLabel": "Libellé accessible du bouton de fermeture (par défaut « Fermer <label> » localisé)."
+          },
+          "events": {
+            "minerva-select": "Le bouton du libellé a été activé (detail: { value }). Annulable : preventDefault() conserve l’active-value de la barre.",
+            "minerva-close": "Le bouton de fermeture intégré a été activé (detail: { value }) ; supprimez l’élément pour fermer la page."
+          },
+          "slots": {
+            "icon": "Icône affichée avant le libellé.",
+            "action": "Contrôle séparé à côté du libellé (par ex. un bouton de fermeture ou d’épinglage)."
+          },
+          "cssVars": {
+            "--icon-button-color": "Couleur de l’icône des boutons de fermeture / défilement.",
+            "--icon-button-hover-bg": "Fond des boutons de fermeture / défilement au survol.",
+            "--icon-button-pressed-color": "Couleur de l’icône d’un bouton bascule enfoncé.",
+            "--icon-button-pressed-bg": "Fond d’un bouton bascule enfoncé.",
+            "--icon-button-size": "Largeur et hauteur des boutons de fermeture / défilement.",
+            "--icon-button-icon-size": "Taille de police de leurs icônes.",
+            "--icon-button-radius": "Rayon des coins de la forme carrée (par défaut --radius-lg)."
+          },
+          "methods": {
+            "focus": "Donne le focus au bouton du libellé."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

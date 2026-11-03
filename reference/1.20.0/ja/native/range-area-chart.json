@@ -1,0 +1,562 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.0",
+  "locale": "ja",
+  "renderer": "native",
+  "page": "range-area-chart",
+  "title": "範囲面グラフ",
+  "description": "下端と上端の間を塗る帯：信頼区間、予測、最小・最大の範囲、パーセンタイルのファンチャートに。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.0",
+    "sourceCommit": "e5692a82f25163efee65ef771fb64a94e61cb359",
+    "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+    "referenceSourceDigest": "sha256:07db3eb36ff2e4b5bb88e238b04c82819862c70d739534f627e7b6c73c0c6ef1"
+  },
+  "content": {
+    "data": {
+      "interval95": "95% 区間",
+      "interval80": "80% 区間",
+      "actual": "実績",
+      "forecast": "予測",
+      "orders": "注文数",
+      "today": "今日",
+      "forecastAria": "月間注文数と 12 か月の予測、その信頼区間",
+      "dailyRange": "最低 – 最高",
+      "normal": "平年値",
+      "temperatureAria": "1 年間の日ごとの最低・最高気温",
+      "p5p95": "5 – 95 パーセンタイル",
+      "p25p75": "25 – 75 パーセンタイル",
+      "median": "中央値",
+      "latencyAria": "1 日の応答時間のパーセンタイル",
+      "dayRange": "安値 – 高値",
+      "close": "終値",
+      "priceAria": "6 か月間の日ごとの値幅と終値",
+      "expectedBand": "予測値 ± {{k}}σ",
+      "measured": "実測値",
+      "anomalies": "異常",
+      "sensitivity": "感度",
+      "sigmaOption": "{{k}}σ の帯",
+      "requestsPerMinute": "1 分あたりのリクエスト数",
+      "anomalyAria": "1 週間の 1 分あたり API リクエスト数。予測の帯とその外側の異常を表示",
+      "noAnomaly": "帯の外にある点はありません。",
+      "anomalyCount": "異常：{{n}} 件。最新は {{latest}}。",
+      "bidAsk": "買値 – 売値",
+      "mid": "仲値",
+      "pause": "一時停止",
+      "resume": "再開",
+      "quote": "買値 {{bid}} ・ 売値 {{ask}}",
+      "spreadBps": "スプレッド {{value}} bp",
+      "bidAskAria": "通貨ペアの直近 1 分間のリアルタイムの買値と売値、および仲値",
+      "ssp126": "低排出（SSP1-2.6）",
+      "ssp126Range": "低排出、可能性の高い範囲",
+      "ssp585": "非常に高い排出（SSP5-8.5）",
+      "ssp585Range": "非常に高い排出、可能性の高い範囲",
+      "observed": "観測値",
+      "parisLimit": "{{value}} の上限",
+      "warming": "1850〜1900 年比の気温上昇",
+      "climateAria": "1950 年以降に観測された地球温暖化と、低排出および非常に高い排出シナリオでの 2100 年までの予測",
+      "crossings": "低排出では中央値が {{low}} 年ごろに {{lowLimit}} を超え、{{peak}} で横ばいになります。非常に高い排出では {{high}} 年ごろに {{highLimit}} を超えます。",
+      "confidenceInterval": "{{level}} 信頼区間",
+      "lift": "リフト",
+      "noDifference": "差なし",
+      "significant": "有意",
+      "confidenceLevel": "信頼水準",
+      "testDay": "テスト日数",
+      "liftOfB": "A に対する B のコンバージョンリフト",
+      "abTestAria": "28 日間のテストにおけるバリアント A に対するバリアント B の累積コンバージョンリフトと信頼区間",
+      "notSignificant": "B は {{lift}} 上回っていますが、{{level}} 区間はまだゼロを含んでいます。",
+      "significantSince": "B のコンバージョンは {{lift}} 高く（{{level}} 区間で {{low}}〜{{high}}）、{{day}} 日目から有意です。"
+    }
+  },
+  "components": [
+    {
+      "name": "RangeAreaChart",
+      "support": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles)."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles).",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "RangeAreaChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "series",
+            "source": "packages/native/src/components/Charts/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartSeries[]",
+            "typeRef": "type:deda0bcb88251b63a5de",
+            "required": true,
+            "description": "Bands between `y0` (lower edge) and `y` (upper edge) of every point, unless a series sets a `type` (e.g. a `line` for the forecast itself)"
+          },
+          {
+            "name": "curve",
+            "source": "packages/native/src/components/Charts/types.ts",
+            "kind": "enum",
+            "values": [
+              "linear",
+              "smooth",
+              "step"
+            ],
+            "typeText": "ChartCurve | undefined",
+            "typeRef": "type:9a03680a65f827285385",
+            "default": "smooth",
+            "required": false,
+            "description": "Shape of the edges: straight, smooth (monotone) or steps"
+          },
+          {
+            "name": "height",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": 320,
+            "required": false,
+            "description": "Height of the chart (the legend included)"
+          },
+          {
+            "name": "width",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "X axis"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Y axis"
+          },
+          {
+            "name": "legend",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartLegendOptions | undefined",
+            "typeRef": "type:860fa553ee4deaac43f8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name (tap toggles a series)"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "typeRef": "type:c08795b3492e4547d570",
+            "required": false,
+            "description": "Tooltip shown on tap / while scrubbing; `false` disables it"
+          },
+          {
+            "name": "crosshair",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Vertical guide line following the finger"
+          },
+          {
+            "name": "annotations",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartAnnotation[] | undefined",
+            "typeRef": "type:f440eb8a958892b1b0c2",
+            "required": false,
+            "description": "Background areas, reference lines and texts"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartInteractionOptions | undefined",
+            "typeRef": "type:f4b160d7dd18649fd178",
+            "default": true,
+            "required": false,
+            "description": "Pinch to zoom, drag to pan when zoomed, double tap to reset; `false` makes the chart static"
+          },
+          {
+            "name": "padding",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the plot area, in pixels"
+          },
+          {
+            "name": "palette",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `chart-series-1..8` tokens, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)"
+          },
+          {
+            "name": "labels",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "Partial<ChartLabels> | undefined",
+            "typeRef": "type:14c31fd72a2c2ac7a7fd",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "node",
+            "typeText": "((event: ChartHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:66d650d38e6b7d308d32",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          },
+          {
+            "name": "testID",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Test identifier of the root view"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent | null) => void) | undefined",
+            "typeRef": "type:170f27b8f07028fffd08",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent | null",
+                "typeRef": "type:92ec77c4587c7e27430b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the highlighted points change"
+          },
+          {
+            "name": "onPointClick",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent) => void) | undefined",
+            "typeRef": "type:d586363317763d2fd3f3",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point (or bar) is tapped"
+          },
+          {
+            "name": "onPlotClick",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartPlotClickEvent) => void) | undefined",
+            "typeRef": "type:3ab7d8ab926fce010082",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartPlotClickEvent",
+                "typeRef": "type:db60e2cf00fabb558740"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the plot area is tapped where there is no point"
+          },
+          {
+            "name": "onZoom",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((view: ChartView) => void) | undefined",
+            "typeRef": "type:e6c98e88ed542ed60f34",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartView",
+                "typeRef": "type:f1de933b453f8db86ff3"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the user zooms or pans"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:RangeAreaChartProps": {
+      "source": "native/src/components/Charts/types.ts",
+      "description": "Props of RangeAreaChart",
+      "kind": "interface",
+      "extends": [
+        "ChartCommonProps"
+      ],
+      "props": [
+        {
+          "name": "series",
+          "type": "readonly ChartSeries[]",
+          "required": true,
+          "description": "Bands between `y0` (lower edge) and `y` (upper edge) of every point, unless a series sets a `type` (e.g. a `line` for the forecast itself)"
+        },
+        {
+          "name": "curve",
+          "type": "ChartCurve",
+          "required": false,
+          "default": "\"smooth\"",
+          "description": "Shape of the edges: straight, smooth (monotone) or steps"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/range-area-chart/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/range-area-chart/native/basic.tsx": "import { useTranslation } from \"react-i18next\";\nimport { RangeAreaChart } from \"minerva-design/native\";\n\n// Monthly mean minimum and maximum temperatures (°C) and the mean\nconst low = [1.2, 1.6, 4.1, 6.7, 10.4, 13.6, 15.7, 15.4, 12.5, 9.1, 4.9, 2.1];\nconst high = [\n  7.2, 8.6, 12.7, 16.2, 19.8, 23.3, 25.6, 25.4, 21.4, 16.4, 10.9, 7.6,\n];\n\nexport default function Basic() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.range-area-chart.data\",\n  });\n  const locale = i18n.language;\n  const month = new Intl.DateTimeFormat(locale, { month: \"short\" });\n  const months = low.map((_, m) => month.format(new Date(2026, m, 1)));\n  return (\n    <RangeAreaChart\n      height={260}\n      locale={locale}\n      ariaLabel={t(\"temperatureAria\")}\n      series={[\n        {\n          name: t(\"dailyRange\"),\n          color: \"var(--chart-series-4, #ef4444)\",\n          data: months.map((x, i) => ({\n            x,\n            y0: low[i] ?? 0,\n            y: high[i] ?? 0,\n          })),\n        },\n        {\n          name: t(\"normal\"),\n          type: \"line\",\n          color: \"var(--text-secondary-color, #6b7280)\",\n          data: months.map(\n            (x, i) => [x, ((low[i] ?? 0) + (high[i] ?? 0)) / 2] as const,\n          ),\n        },\n      ]}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "範囲面グラフ",
+      "description": "下端と上端の間を塗る帯：信頼区間、予測、最小・最大の範囲、パーセンタイルのファンチャートに。",
+      "demos": {
+        "forecast": {
+          "title": "信頼区間付きの予測",
+          "description": "面の各点が y0 で下端を指定します。80% と 95% の区間は予測期間とともに広がり、実績と予測は折れ線です。lineWidth: 0 で帯の縁を隠します。"
+        },
+        "temperature": {
+          "title": "日ごとの最低・最高気温",
+          "description": "1 年分の日ごとの気温の幅と平年値：ツールチップに帯の両端が表示され、Ctrl / ⌘ + ホイールで 1 日単位まで拡大できます。"
+        },
+        "fan": {
+          "title": "パーセンタイルのファン",
+          "description": "中央値を囲む 5〜95 と 25〜75 パーセンタイルの入れ子の帯：混雑する時間帯ほど分布が広がります。"
+        },
+        "price-range": {
+          "title": "値幅",
+          "description": "各取引日の安値〜高値を帯で、終値を折れ線で表示する、ローソク足の軽い代替です。"
+        },
+        "anomaly-band": {
+          "title": "異常検知",
+          "description": "予測トラフィック ± k 標準偏差を帯で、実測値を線で表示し、帯の外にある点を danger 色の type: \"scatter\" 系列で示します。RadioGroup で k を設定し、出力欄に異常の件数を表示します。"
+        },
+        "bid-ask": {
+          "title": "リアルタイムの売買スプレッド",
+          "description": "setInterval で 500 ms ごとに 1 分間のウィンドウへ気配値を追加し、一時停止時とアンマウント時にクリアします。帯は curve=\"step\" で買値から売値まで描き、仲値は線で表示します。出力欄には最新のスプレッドをベーシスポイントで示します。"
+        },
+        "climate-scenarios": {
+          "title": "排出シナリオ",
+          "description": "重なり合う 2 つの帯とその中央値が観測記録を 2100 年まで延長します。y 方向の線注釈で 1.5 °C と 2 °C の上限を示し、凡例項目をクリックすると系列を非表示にできます。"
+        },
+        "ab-test": {
+          "title": "A/B テストの信頼区間",
+          "description": "バリアント B の A に対する累積リフトを日ごとに信頼区間とともに表示します。RadioGroup で信頼水準を切り替え、y 方向の線でゼロを示し、区間がゼロを上回り続ける日以降を rect 注釈で塗ります。"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基本",
+            "description": "月ごとの気温の範囲を帯（y0 から y）で、平均を折れ線で表示。locale はアプリの言語に合わせます。"
+          }
+        }
+      },
+      "data": {
+        "interval95": "95% 区間",
+        "interval80": "80% 区間",
+        "actual": "実績",
+        "forecast": "予測",
+        "orders": "注文数",
+        "today": "今日",
+        "forecastAria": "月間注文数と 12 か月の予測、その信頼区間",
+        "dailyRange": "最低 – 最高",
+        "normal": "平年値",
+        "temperatureAria": "1 年間の日ごとの最低・最高気温",
+        "p5p95": "5 – 95 パーセンタイル",
+        "p25p75": "25 – 75 パーセンタイル",
+        "median": "中央値",
+        "latencyAria": "1 日の応答時間のパーセンタイル",
+        "dayRange": "安値 – 高値",
+        "close": "終値",
+        "priceAria": "6 か月間の日ごとの値幅と終値",
+        "expectedBand": "予測値 ± {{k}}σ",
+        "measured": "実測値",
+        "anomalies": "異常",
+        "sensitivity": "感度",
+        "sigmaOption": "{{k}}σ の帯",
+        "requestsPerMinute": "1 分あたりのリクエスト数",
+        "anomalyAria": "1 週間の 1 分あたり API リクエスト数。予測の帯とその外側の異常を表示",
+        "noAnomaly": "帯の外にある点はありません。",
+        "anomalyCount": "異常：{{n}} 件。最新は {{latest}}。",
+        "bidAsk": "買値 – 売値",
+        "mid": "仲値",
+        "pause": "一時停止",
+        "resume": "再開",
+        "quote": "買値 {{bid}} ・ 売値 {{ask}}",
+        "spreadBps": "スプレッド {{value}} bp",
+        "bidAskAria": "通貨ペアの直近 1 分間のリアルタイムの買値と売値、および仲値",
+        "ssp126": "低排出（SSP1-2.6）",
+        "ssp126Range": "低排出、可能性の高い範囲",
+        "ssp585": "非常に高い排出（SSP5-8.5）",
+        "ssp585Range": "非常に高い排出、可能性の高い範囲",
+        "observed": "観測値",
+        "parisLimit": "{{value}} の上限",
+        "warming": "1850〜1900 年比の気温上昇",
+        "climateAria": "1950 年以降に観測された地球温暖化と、低排出および非常に高い排出シナリオでの 2100 年までの予測",
+        "crossings": "低排出では中央値が {{low}} 年ごろに {{lowLimit}} を超え、{{peak}} で横ばいになります。非常に高い排出では {{high}} 年ごろに {{highLimit}} を超えます。",
+        "confidenceInterval": "{{level}} 信頼区間",
+        "lift": "リフト",
+        "noDifference": "差なし",
+        "significant": "有意",
+        "confidenceLevel": "信頼水準",
+        "testDay": "テスト日数",
+        "liftOfB": "A に対する B のコンバージョンリフト",
+        "abTestAria": "28 日間のテストにおけるバリアント A に対するバリアント B の累積コンバージョンリフトと信頼区間",
+        "notSignificant": "B は {{lift}} 上回っていますが、{{level}} 区間はまだゼロを含んでいます。",
+        "significantSince": "B のコンバージョンは {{lift}} 高く（{{level}} 区間で {{low}}〜{{high}}）、{{day}} 日目から有意です。"
+      },
+      "api": {
+        "RangeAreaChartProps": {
+          "series": "各点の y0（下端）と y（上端）の間の帯。系列が type（line など）を指定した場合を除く",
+          "curve": "縁の形：\"linear\"、\"smooth\"（単調）、\"step\""
+        }
+      },
+      "wc": {
+        "demos": {
+          "forecast": {
+            "title": "不確実性の帯付き予測",
+            "description": "y0 から y までの帯は予測期間とともに広がり、実績と予測は折れ線系列です。"
+          },
+          "temperature": {
+            "title": "日ごとの気温の幅",
+            "description": "各日の最低・最高気温を帯で、平均を線で表示します。直線の縁で実測値をそのまま示します。"
+          }
+        },
+        "minerva-range-area-chart": {
+          "props": {
+            "height": "チャートの高さ（凡例を含む）：ピクセルまたは任意の CSS の長さ",
+            "options": "その他のエンジンのオプション（軸、凡例、ツールチップ、パレット、書式…）。要素自身のプロパティとマージされます。プロパティのみ",
+            "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+          },
+          "events": {
+            "minerva-hover": "ホバー（またはキーボードでフォーカス）しているポイントが変わりました。detail：{ x, xLabel, items }、何もない場合は null",
+            "minerva-point-click": "ポイントまたは棒がクリックされました。detail：{ x, xLabel, items }",
+            "minerva-plot-click": "ポイントのないプロット領域がクリックされました。detail：{ x, y }（データ座標）",
+            "minerva-zoom": "ユーザーがズームまたはパンしました。detail：{ x, y }（表示範囲）",
+            "minerva-renderer-change": "バックエンドの準備ができた、または GPU の喪失後にフォールバックしました。detail：{ renderer }"
+          },
+          "methods": {
+            "resetZoom": "データ範囲全体を表示します",
+            "getView": "表示範囲。エンジンが作成されるまでは null",
+            "setView": "表示範囲を設定します",
+            "getRenderer": "使用中のバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null"
+          }
+        }
+      }
+    }
+  }
+}
