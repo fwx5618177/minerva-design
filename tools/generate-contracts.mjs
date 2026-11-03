@@ -33,11 +33,24 @@ import {
   generateApi,
   generateElements,
 } from "../apps/docs/scripts/generate-api.mjs";
-import { docPages } from "../apps/docs/src/docs/registry.ts";
-import * as nativeManifest from "../packages/native/src/manifest.ts";
-import * as taroManifest from "../packages/taro/src/manifest.ts";
-import * as uniManifest from "../packages/uni/src/manifest.ts";
-import * as weappManifest from "../packages/weapp/src/manifest.ts";
+import { importTs } from "./import-ts.mjs";
+
+// Standalone .ts modules, transpiled explicitly (see import-ts.mjs)
+const { docPages } = await importTs(
+  new URL("../apps/docs/src/docs/registry.ts", import.meta.url),
+);
+const nativeManifest = await importTs(
+  new URL("../packages/native/src/manifest.ts", import.meta.url),
+);
+const taroManifest = await importTs(
+  new URL("../packages/taro/src/manifest.ts", import.meta.url),
+);
+const uniManifest = await importTs(
+  new URL("../packages/uni/src/manifest.ts", import.meta.url),
+);
+const weappManifest = await importTs(
+  new URL("../packages/weapp/src/manifest.ts", import.meta.url),
+);
 
 const { NATIVE_COMPONENTS } = nativeManifest;
 const { taroComponentManifest } = taroManifest;

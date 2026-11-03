@@ -18,6 +18,7 @@ import {
   readValueExports,
   readVue,
 } from "../../../tools/generate-contracts.mjs";
+import { portableTypes } from "../../../tools/portable-types.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../../..");
 const VUE = join(ROOT, "packages/vue");
@@ -65,8 +66,9 @@ export function vueComponentFiles() {
   );
 }
 
+// Absolute `import("...")` paths made checkout-independent (portable-types)
 const clean = (text) =>
-  text
+  portableTypes(text)
     ?.replace(/\s*\|\s*undefined$/, "")
     .replace(/^undefined\s*\|\s*/, "")
     .replace(/\s+/g, " ")

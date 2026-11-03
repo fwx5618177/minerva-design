@@ -43,6 +43,23 @@ const changesets = readJson<{
   privatePackages: { version: boolean; tag: boolean };
 }>(".changeset/config.json");
 
+/** Node range of the published package (consumers: SSR, tooling) */
+const RUNTIME_NODE = "^20.19.0 || >=22.12.0";
+/** Node range of the development toolchain (pnpm 11 needs 22.13) */
+const TOOLCHAIN_NODE = ">=22.13.0";
+
+describe("Node versions", () => {
+  it("separates the toolchain floor from the package runtime floor", () => {
+    expect(root.engines.node).toBe(TOOLCHAIN_NODE);
+  });
+
+  it("CI builds on the toolchain floor and loads the package on the runtime floor", () => {
+    const ci = read(".github/workflows/ci.yml");
+    expect(ci).toContain("node-version: 22.13.0");
+    expect(ci).toContain("node-version: 20.19.0");
+  });
+});
+
 describe.each(packages)("%s (%s)", (dir, name, pkg) => {
   it("has the npm metadata of a public package", () => {
     expect(pkg.name).toBe(name);
@@ -62,7 +79,8 @@ describe.each(packages)("%s (%s)", (dir, name, pkg) => {
       url: "https://github.com/fwx5618177/minerva-design/issues",
     });
     expect(pkg.type).toBe("module");
-    expect(pkg.engines?.node).toBe(root.engines.node);
+    // the consumer runtime range, not the development toolchain's (root)
+    expect(pkg.engines?.node).toBe(RUNTIME_NODE);
     expect(pkg.publishConfig).toEqual({
       access: "public",
       registry: "https://registry.npmjs.org/",

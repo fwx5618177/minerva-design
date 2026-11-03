@@ -342,7 +342,7 @@ minerva-modal:state(open)::part(content) {
 
 ## 🧑‍💻 开发者快速开始
 
-环境要求：本地开发需要 Node.js >= 22.12（见 `.nvmrc`）和 pnpm 11。构建各个包和文档站点在 Node.js 20.19+ 上同样可用（GitHub Pages 部署工作流使用的就是 Node 20）。
+环境要求：开发和构建需要 Node.js >= 22.13 和 pnpm 11（`.nvmrc` 选用最新的 Node 22；CI 还会在 22.13.0 上构建）。这是工具链的最低版本；发布的 `minerva-design` 包本身在 Node `^20.19.0 || >=22.12.0` 上运行，CI 会在 Node 20.19.0 上加载构建产物来验证。
 
 ```bash
 git clone https://github.com/fwx5618177/minerva-design.git

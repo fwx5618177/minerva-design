@@ -4,6 +4,7 @@ import ts from "typescript";
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
+import { portableTypes } from "../../../tools/portable-types.mjs";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const target = join(
   root,
@@ -131,10 +132,12 @@ function rows(name, seen = new Set()) {
         .join(", ");
       const signature = checker.getSignatureFromDeclaration(member);
       const returnType = signature
-        ? checker.typeToString(
-            checker.getReturnTypeOfSignature(signature),
-            member,
-            ts.TypeFormatFlags.NoTruncation,
+        ? portableTypes(
+            checker.typeToString(
+              checker.getReturnTypeOfSignature(signature),
+              member,
+              ts.TypeFormatFlags.NoTruncation,
+            ),
           )
         : (member.type?.getText(source) ?? "void");
       result.set(name, {

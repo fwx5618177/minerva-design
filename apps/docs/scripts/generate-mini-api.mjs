@@ -6,14 +6,19 @@ import { fileURLToPath } from "node:url";
 import ts from "typescript";
 import { createChecker } from "vue-component-meta";
 import { runnerImport } from "vite";
-import { taroComponentManifest } from "../../../packages/taro/src/manifest.ts";
+import { importTs } from "../../../tools/import-ts.mjs";
+import { portableTypes } from "../../../tools/portable-types.mjs";
+
+const { taroComponentManifest } = await importTs(
+  new URL("../../../packages/taro/src/manifest.ts", import.meta.url),
+);
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "../../..");
 export const MINI_API_OUTPUT = join(
   root,
   "apps/docs/src/docs/api.mini.generated.json",
 );
-const clean = (text) => text?.replace(/\s+/g, " ").trim();
+const clean = (text) => portableTypes(text)?.replace(/\s+/g, " ").trim();
 const sorted = (list) => list.sort((a, b) => a.name.localeCompare(b.name));
 
 function uniApi() {
@@ -116,10 +121,12 @@ function taroApi() {
               )
               .map((property) => ({
                 name: property.name,
-                type: checker.typeToString(
-                  checker.getTypeOfSymbolAtLocation(property, location),
-                  undefined,
-                  ts.TypeFormatFlags.NoTruncation,
+                type: portableTypes(
+                  checker.typeToString(
+                    checker.getTypeOfSymbolAtLocation(property, location),
+                    undefined,
+                    ts.TypeFormatFlags.NoTruncation,
+                  ),
                 ),
                 required: !(property.flags & ts.SymbolFlags.Optional),
                 ...(property.getDocumentationComment(checker).length

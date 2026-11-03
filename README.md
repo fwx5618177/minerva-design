@@ -407,7 +407,7 @@ The React components render overlays into a portal and do not need the Popover A
 
 ## 🧑‍💻 Developer Quick Start
 
-Requirements: Node.js >= 22.12 (see `.nvmrc`) and pnpm 11 for local development. Building the packages and the docs site also works on Node.js 20.19+, which is what the GitHub Pages deploy workflow uses.
+Requirements: Node.js >= 22.13 and pnpm 11 for development and building (`.nvmrc` selects the latest Node 22; CI also builds on exactly 22.13.0). This is the toolchain floor; the published `minerva-design` package itself runs on Node `^20.19.0 || >=22.12.0`, which CI checks by loading the built package on Node 20.19.0.
 
 ```bash
 git clone https://github.com/fwx5618177/minerva-design.git

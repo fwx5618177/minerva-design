@@ -6,7 +6,7 @@
   "type": "module",
   "packageManager": "pnpm@11.23.0",
   "engines": {
-    "node": "^20.19.0 || >=22.12.0"
+    "node": ">=22.13.0"
   },
   "scripts": {
     "dev": "pnpm --filter minerva-design build && pnpm --filter @minerva/docs dev",
@@ -36,7 +36,8 @@
     "test:contracts:mini": "vitest run --project taro --project uni shared-contracts.test",
     "test:smoke": "node tools/browser-smoke.mjs",
     "test:migration": "node --test tools/migrate-novel-ui.test.mjs",
-    "test:release": "node --test tools/npm-release.test.mjs"
+    "test:release": "node --test tools/npm-release.test.mjs",
+    "test:tools": "node --test tools/import-ts.test.mjs tools/portable-types.test.mjs"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
