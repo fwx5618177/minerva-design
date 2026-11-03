@@ -85,8 +85,12 @@ NPM_AUTO_RELEASE = false
 ## 三、之后每次推送/合并 main 自动发布
 
 1. 推送或合并代码到 `main`：
-   - **自动推导（默认）**：无需手写 changeset，CI 会自动读取自上一个 `minerva-design@<version>` 标签以来的提交信息，按 Conventional Commits 规则推导版本级别（含 `feat` 升 `minor`、含 `!:` 或 `BREAKING CHANGE` 升 `major`、其余升 `patch`），自动生成变更说明并升级版本。
-   - **显式指定（可选）**：如需自定义发布说明或指定跨级版本，可执行 `pnpm changeset` 生成 `.changeset/*.md` 并随代码一起提交。**不用手动修改 package.json 版本，不用手动运行 version-packages。**
+   - **自动推导（默认）**：无需手写 changeset，CI 读取自上一个 `minerva-design@<version>` 标签以来每个提交的完整提交信息（标题 + 正文 + footer）和改动文件（无标签时只看 HEAD 提交），按以下规则决定是否发版：
+     1. 类型为 `docs`、`test`、`ci` 的提交（含带 scope 或 `!` 的写法）永远不触发发布。
+     2. 其余提交只有改动了**影响发布包的文件**才触发发布：`packages/*/` 下的任意文件（各 workspace 包都会构建进 `packages/minerva-design/dist`，包括 `src/`、`package.json`、`vite*.config.ts`、`tsconfig.build.json`、`scripts/` 等），以及被这些构建引用的 `tools/paths.mjs`、`tools/core-imports.mjs`、`tools/css-layer.mjs`、`tools/dual-declarations.mjs`、`tools/generate-contracts.mjs`、`tools/styles/`。其中排除测试与开发文件：`*.test.*` / `*.spec.*`、`tests/`、`test/`、`__tests__/`、`spike/`、`examples/`、`type-tests/` 目录、`vitest*.config.*` / `vitest.setup.*`、`*.log` 以及所有 Markdown（README、CHANGELOG）。`docs/`、`apps/`、根目录 `tests/`、`.github/`、`.changeset/`、其余 `tools/`、根目录配置与 `pnpm-lock.yaml` 都不触发发布。空提交和 merge 提交本身没有改动文件，按其包含的提交判断。
+     3. 只要有一个提交触发发布，就按这些提交推导版本级别：标题为 `type!:` / `type(scope)!:`，或正文中有以 `BREAKING CHANGE:` / `BREAKING-CHANGE:` 开头的 footer 行（必须大写、位于行首）升 `major`；否则含 `feat` 升 `minor`；其余升 `patch`。变更说明取这些提交的标题和 BREAKING CHANGE footer。
+     4. 没有提交触发发布时（纯文档、测试、工具或 CI 修改），发布 job 显示 `skip`，不改版本也不发布 npm。
+   - **显式指定（可选）**：如需自定义发布说明、指定跨级版本，或强制发布上述规则会跳过的改动（例如只升级了依赖锁文件），可执行 `pnpm changeset` 生成 `.changeset/*.md` 并随代码一起提交。显式 changeset 优先，总是按其指定的级别发布，不再按提交推导。**不用手动修改 package.json 版本，不用手动运行 version-packages。**
 
 2. 推送到 `main` 后，流水线自动完成：
 
@@ -100,7 +104,7 @@ NPM_AUTO_RELEASE = false
      → 推送 minerva-design@<版本> tag
    ```
 
-   main 的 push（包括直接 push）都会触发；若只允许 PR 合并，请通过 GitHub 分支规则约束 main。多个待发布 changeset 按 Changesets 规则合并计算一次版本升级。纯文档修改没有 changeset，正常跳过 npm 发布。
+   main 的 push（包括直接 push）都会触发；若只允许 PR 合并，请通过 GitHub 分支规则约束 main。多个待发布 changeset 按 Changesets 规则合并计算一次版本升级。纯文档修改（以及只改测试、工具或 CI）且没有 changeset 时，按上面的规则正常跳过 npm 发布。
 
 3. 在 Actions → CI → `Publish npm release` 查看结果，再用 `pnpm view minerva-design version --registry https://registry.npmjs.org/` 确认。
 

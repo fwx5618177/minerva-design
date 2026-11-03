@@ -1,6 +1,13 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { releasePlan, readRegistry } from "./npm-release.mjs";
+import {
+  inferBump,
+  isReleaseRelevantPath,
+  parseGitLog,
+  readCommits,
+  releasePlan,
+  readRegistry,
+} from "./npm-release.mjs";
 
 const registry = { versions: { "1.0.0": {}, "1.0.1": {} } };
 const input = { version: "1.0.1", registry, releases: [], isCurrentMain: true };
@@ -33,8 +40,7 @@ test("main pushes without explicit changesets auto-bump patch by default or mino
       version: "1.1.0",
       autoChangeset: {
         bump: "minor",
-        summary:
-          "docs: add DatePicker documentation\nfeat(react): add DatePicker component",
+        summary: "feat(react): add DatePicker component",
       },
     },
   );
@@ -53,6 +59,298 @@ test("main pushes without explicit changesets auto-bump patch by default or mino
     },
   );
 });
+test("issue #10 repro: docs commits skip and BREAKING CHANGE footers are major", () => {
+  const base = {
+    version: "1.19.0",
+    registry: { versions: { "1.0.0": {}, "1.19.0": {} } },
+    releases: [],
+    isCurrentMain: true,
+  };
+  assert.equal(
+    releasePlan({ ...base, commits: ["docs: clarify installation"] }).mode,
+    "skip",
+  );
+  assert.equal(
+    inferBump([
+      "fix: normalize value\n\nBREAKING CHANGE: remove old signature",
+    ]),
+    "major",
+  );
+});
+
+const src = "packages/react/src/components/Input/Input.tsx";
+const plan = (commits, extra = {}) =>
+  releasePlan({ ...input, commits, ...extra });
+
+test("full commit messages: a BREAKING CHANGE body or footer is a major release", () => {
+  for (const message of [
+    "fix(react): normalize value\n\nBREAKING CHANGE: remove the old signature",
+    "fix: normalize value\n\nExplain why.\n\nRefs: #10\nBREAKING-CHANGE: onChange receives a string",
+    "refactor(core)!: drop legacy tokens\n\nSome body text.",
+  ]) {
+    assert.deepEqual(
+      plan([{ message, files: [src] }]).autoChangeset.bump,
+      "major",
+    );
+    assert.equal(plan([message]).autoChangeset.bump, "major");
+  }
+  assert.deepEqual(
+    plan([
+      {
+        message:
+          "fix(react): normalize value\n\nLonger explanation.\n\nBREAKING CHANGE: remove the old signature",
+        files: [src],
+      },
+    ]),
+    {
+      mode: "version",
+      version: "2.0.0",
+      autoChangeset: {
+        bump: "major",
+        summary:
+          "fix(react): normalize value\nBREAKING CHANGE: remove the old signature",
+      },
+    },
+  );
+  // Prose that merely mentions breaking changes is not a footer.
+  assert.equal(
+    inferBump([
+      "fix: guard input\n\nThis is not a breaking change for callers.",
+    ]),
+    "patch",
+  );
+});
+
+test("docs-only commits and docs-only files skip the release", () => {
+  assert.equal(plan(["docs: clarify installation"]).mode, "skip");
+  assert.equal(
+    plan(["docs(react): document Input", "test: cover Input"]).mode,
+    "skip",
+  );
+  assert.equal(
+    plan([{ message: "docs: fix JSDoc typo", files: [src] }]).mode,
+    "skip",
+  );
+  for (const files of [
+    ["docs/releasing.md"],
+    ["apps/docs/src/pages/input.mdx", "apps/docs/src/App.tsx"],
+    [
+      "README.md",
+      "packages/react/README.md",
+      "packages/minerva-design/README.md",
+    ],
+    ["packages/minerva-design/CHANGELOG.md"],
+  ]) {
+    assert.equal(
+      plan([{ message: "feat: new docs page", files }]).mode,
+      "skip",
+      files.join(", "),
+    );
+    assert.equal(
+      plan(["fix: typo"], { changedFiles: files }).mode,
+      "skip",
+      files.join(", "),
+    );
+  }
+});
+
+test("tests, tooling and CI-only changes skip the release", () => {
+  for (const files of [
+    [".github/workflows/ci.yml"],
+    ["tools/npm-release.mjs", "tools/npm-release.test.mjs"],
+    ["eslint.config.js", ".prettierrc", "vitest.config.ts", "package.json"],
+    ["tests/e2e/input.test.ts", "packages/react/src/Input.keyboard.test.tsx"],
+    ["packages/web-components/tests/manifest.test.ts"],
+    ["packages/minerva-design/tests/tarball.test.ts"],
+    ["packages/native/vitest.web.config.ts", "packages/react/vitest.setup.ts"],
+    ["packages/taro/spike/device/app.tsx", "packages/angular/build-check.log"],
+  ]) {
+    assert.equal(
+      plan([{ message: "chore: tidy", files }]).mode,
+      "skip",
+      files.join(", "),
+    );
+  }
+  assert.equal(
+    plan([{ message: "ci: cache pnpm", files: [src] }]).mode,
+    "skip",
+  );
+  assert.equal(plan([{ message: "fix: nothing", files: [] }]).mode, "skip");
+});
+
+test("changes to the shipped package release with the inferred bump", () => {
+  assert.deepEqual(
+    plan([{ message: "fix(react): keep caret", files: [src] }]),
+    {
+      mode: "version",
+      version: "1.0.2",
+      autoChangeset: { bump: "patch", summary: "fix(react): keep caret" },
+    },
+  );
+  assert.deepEqual(
+    plan([
+      { message: "docs: explain DatePicker", files: ["docs/date-picker.md"] },
+      {
+        message: "feat(react): add DatePicker\n\nWith keyboard support.",
+        files: ["packages/react/src/DatePicker.tsx", "apps/docs/src/x.tsx"],
+      },
+      {
+        message: "feat(docs): add a playground",
+        files: ["apps/docs/src/p.tsx"],
+      },
+    ]),
+    {
+      mode: "version",
+      version: "1.1.0",
+      autoChangeset: { bump: "minor", summary: "feat(react): add DatePicker" },
+    },
+  );
+  // A docs-site feat does not lift a library fix to minor.
+  assert.equal(
+    plan([
+      {
+        message: "feat(docs): add a playground",
+        files: ["apps/docs/src/p.tsx"],
+      },
+      {
+        message: "fix(vue): emit change",
+        files: ["packages/vue/src/Input.vue"],
+      },
+    ]).autoChangeset.bump,
+    "patch",
+  );
+  assert.equal(
+    plan(["fix(react): keep caret"], { changedFiles: ["docs/a.md", src] })
+      .autoChangeset.bump,
+    "patch",
+  );
+  assert.equal(
+    plan(["feat: add Slider"], { changedFiles: [src] }).autoChangeset.bump,
+    "minor",
+  );
+});
+
+test("release-relevant paths cover everything that builds into the tarball", () => {
+  for (const path of [
+    src,
+    "packages/core/src/tokens.css",
+    "packages/vue/vite.config.ts",
+    "packages/web-components/scripts/generate-typings.mjs",
+    "packages/uni/tsconfig.build.json",
+    "packages/angular/monaco/index.ts",
+    "packages/native/types/charts-engine-dom.d.ts",
+    "packages/minerva-design/package.json",
+    "packages/minerva-design/custom-elements.json",
+    "packages/react/package.json",
+    "tools/dual-declarations.mjs",
+    "tools/styles/uni-components.css",
+  ]) {
+    assert.equal(isReleaseRelevantPath(path), true, path);
+  }
+  for (const path of [
+    "docs/releasing.md",
+    "apps/docs/src/App.tsx",
+    "apps/expo-example/App.tsx",
+    "tests/contracts/button.test.ts",
+    ".github/workflows/ci.yml",
+    ".changeset/brave-cats.md",
+    "pnpm-lock.yaml",
+    "tools/npm-release.mjs",
+    "packages/react/src/Input.test.tsx",
+    "packages/angular/monaco/monaco.test.ts",
+    "packages/vue/tests/global.test.ts",
+    "packages/native/test/setup.ts",
+    "packages/weapp/type-tests/index.ts",
+    "packages/taro/examples/app.tsx",
+    "packages/core/README.md",
+  ]) {
+    assert.equal(isReleaseRelevantPath(path), false, path);
+  }
+});
+
+test("an explicit changeset always releases with its own bump", () => {
+  for (const commits of [
+    ["docs: clarify installation"],
+    [{ message: "ci: cache pnpm", files: [".github/workflows/ci.yml"] }],
+    [{ message: "feat!: drop IE", files: [src] }],
+  ]) {
+    assert.deepEqual(
+      plan(commits, {
+        releases: [
+          { name: "minerva-design", type: "minor", newVersion: "1.1.0" },
+        ],
+        changedFiles: ["docs/releasing.md"],
+      }),
+      { mode: "version", version: "1.1.0" },
+    );
+  }
+});
+
+test("git log output keeps commit boundaries, bodies and files", () => {
+  const output =
+    "\x1efix: normalize value\n\nLine one\n\nBREAKING CHANGE: remove old signature\n\x1f\n\npackages/react/src/a.ts\npackages/react/src/b.ts\n" +
+    "\x1edocs: clarify\n\x1f\n\ndocs/releasing.md\n" +
+    "\x1eMerge pull request #1\n\x1f\n";
+  assert.deepEqual(parseGitLog(output), [
+    {
+      message:
+        "fix: normalize value\n\nLine one\n\nBREAKING CHANGE: remove old signature",
+      files: ["packages/react/src/a.ts", "packages/react/src/b.ts"],
+    },
+    { message: "docs: clarify", files: ["docs/releasing.md"] },
+    { message: "Merge pull request #1", files: [] },
+  ]);
+  assert.deepEqual(parseGitLog(""), []);
+});
+
+test("readCommits reads full messages and files from a real repository", async () => {
+  const { mkdtempSync, mkdirSync, writeFileSync, rmSync } =
+    await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const { join } = await import("node:path");
+  const { execFileSync } = await import("node:child_process");
+  const cwd = mkdtempSync(join(tmpdir(), "minerva-release-log-"));
+  const git = (...args) => execFileSync("git", args, { cwd, stdio: "pipe" });
+  const commit = (file, ...messages) => {
+    mkdirSync(join(cwd, file, ".."), { recursive: true });
+    writeFileSync(join(cwd, file), `${messages[0]}\n`);
+    git("add", ".");
+    git("commit", ...messages.flatMap((m) => ["-m", m]));
+  };
+  try {
+    git("init", "-b", "main");
+    git("config", "user.name", "Release test");
+    git("config", "user.email", "release-test@example.invalid");
+    git("config", "commit.gpgsign", "false");
+    commit("README.md", "chore: release minerva-design 1.0.0");
+    git("tag", "minerva-design@1.0.0");
+    commit(
+      "packages/react/src/Input.tsx",
+      "fix(react): normalize value",
+      "Callers passing numbers now get strings.",
+      "BREAKING CHANGE: onChange receives a string",
+    );
+    commit("docs/guide.md", "docs: clarify installation", "With a body line.");
+    const commits = readCommits(["minerva-design@1.0.0..HEAD"], { cwd });
+    assert.deepEqual(commits, [
+      {
+        message: "docs: clarify installation\n\nWith a body line.",
+        files: ["docs/guide.md"],
+      },
+      {
+        message:
+          "fix(react): normalize value\n\nCallers passing numbers now get strings.\n\nBREAKING CHANGE: onChange receives a string",
+        files: ["packages/react/src/Input.tsx"],
+      },
+    ]);
+    assert.equal(plan(commits).autoChangeset.bump, "major");
+    assert.equal(plan(commits.slice(0, 1)).mode, "skip");
+    assert.equal(readCommits(["-1", "HEAD"], { cwd }).length, 1);
+  } finally {
+    rmSync(cwd, { recursive: true, force: true });
+  }
+});
+
 test("a pending changeset versions the sole public package", () => {
   assert.deepEqual(
     releasePlan({
