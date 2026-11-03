@@ -6,6 +6,12 @@ on:
   pull_request:
     types: [opened, reopened]
 
+# The default GITHUB_TOKEN is read-only here: assigning, commenting,
+# labelling and requesting reviews need write access (else 403).
+permissions:
+  issues: write
+  pull-requests: write
+
 jobs:
   auto-assign:
     runs-on: ubuntu-latest
