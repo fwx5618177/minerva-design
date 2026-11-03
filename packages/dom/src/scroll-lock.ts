@@ -1,4 +1,5 @@
 import { canUseDOM } from "./dom";
+import { sharedState } from "./internal/shared-state";
 
 /** CSS variable (on `<html>`) holding the compensated scrollbar width. */
 export const SCROLLBAR_GAP_VAR = "--minerva-scrollbar-gap";
@@ -8,7 +9,11 @@ interface LockState {
   restore: () => void;
 }
 
-const locks = new Map<HTMLElement, LockState>();
+/** Per target element (hence per document); shared by every module copy. */
+const locks = sharedState(
+  "scroll-lock.v1",
+  () => new WeakMap<HTMLElement, LockState>(),
+);
 
 /**
  * Width of the scrollbar that hiding overflow on `target` would remove:

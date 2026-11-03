@@ -1,4 +1,5 @@
 import { contains, getEventTarget, getOwnerDocument } from "./dom";
+import { sharedState } from "./internal/shared-state";
 
 /**
  * Attribute marking an element that handles Escape itself while it is set:
@@ -43,10 +44,10 @@ export interface DismissableLayerOptions {
   /**
    * Explicit parent layer. Interactions inside a child layer are "inside" for
    * all of its ancestors. When omitted, the parent is the closest layer whose
-   * element contains this one, else the layer directly below in the stack
-   * (layers opened while another is open are treated as its children, which
-   * makes portalled nested menus / popovers work). Pass `null` to make the
-   * layer a root.
+   * element contains this one, else the layer directly below in the stack of
+   * the same document (layers opened while another is open are treated as its
+   * children, which makes portalled nested menus / popovers work). Pass `null`
+   * to make the layer a root.
    */
   parent?: DismissableLayer | Element | null;
 }
@@ -70,6 +71,8 @@ export interface LayerInfo {
 interface Layer {
   handle: DismissableLayer;
   element: Element;
+  /** Owner document at creation (whose listeners handle this layer). */
+  doc: Document;
   options: DismissableLayerOptions;
   /** Pointer handling starts on the next tick (ignore the opening click). */
   pointerReady: boolean;
@@ -80,15 +83,27 @@ interface Layer {
   implicitParent: Layer | null;
 }
 
-/** Bottom -> top. */
-const layers: Layer[] = [];
-
 interface DocumentState {
   refs: number;
   cleanup: () => void;
   bodyPointerEvents: string | null;
 }
-const documents = new Map<Document, DocumentState>();
+
+/**
+ * Shared by every module copy: one stack (so "topmost" / modal / parent
+ * resolution sees every layer) and one set of listeners per document (so a
+ * single Escape never dismisses one layer per copy).
+ */
+const { layers, documents } = sharedState("dismissable-layer.v1", () => ({
+  /** Bottom -> top, all documents. */
+  layers: [] as Layer[],
+  documents: new WeakMap<Document, DocumentState>(),
+}));
+
+/** The layers of `doc`, bottom -> top. Interactions never cross documents. */
+function layersOf(doc: Document): Layer[] {
+  return layers.filter((layer) => layer.doc === doc);
+}
 
 function findLayer(target: DismissableLayer | Element | null | undefined) {
   if (!target) return null;
@@ -103,7 +118,7 @@ function parentOf(layer: Layer): Layer | null {
   const { parent } = layer.options;
   if (parent === null) return null;
   if (parent !== undefined) {
-    if (parent instanceof Object && "destroy" in parent) {
+    if (typeof parent === "object" && "destroy" in parent) {
       return findLayer(parent);
     }
     // an element: the layer that is (or contains) it
@@ -147,15 +162,18 @@ function isInside(layer: Layer, target: Node): boolean {
   );
 }
 
-function highestModalIndex(): number {
-  for (let i = layers.length - 1; i >= 0; i--) {
-    if (layers[i].options.disableOutsidePointerEvents) return i;
+/** Index (in `stack`) of the topmost modal layer, `-1` when none. */
+function highestModalIndex(stack: Layer[]): number {
+  for (let i = stack.length - 1; i >= 0; i--) {
+    if (stack[i].options.disableOutsidePointerEvents) return i;
   }
   return -1;
 }
 
+/** A modal layer only blocks the layers below it in its own document. */
 function isPointerEventsEnabled(layer: Layer): boolean {
-  return layers.indexOf(layer) >= highestModalIndex();
+  const stack = layersOf(layer.doc);
+  return stack.indexOf(layer) >= highestModalIndex(stack);
 }
 
 function setInlinePointerEvents(el: Element, value: string | null) {
@@ -165,29 +183,22 @@ function setInlinePointerEvents(el: Element, value: string | null) {
   else style.pointerEvents = value;
 }
 
-/** Re-applies body / layer `pointer-events` after any stack change. */
-function syncPointerEvents() {
-  const modalIndex = highestModalIndex();
-  for (const [doc, state] of documents) {
-    const hasModal =
-      modalIndex !== -1 &&
-      layers.some(
-        (l, i) =>
-          i <= modalIndex &&
-          l.options.disableOutsidePointerEvents &&
-          getOwnerDocument(l.element) === doc,
-      );
-    const body = doc.body;
-    if (!body) continue;
-    if (hasModal && state.bodyPointerEvents === null) {
+/** Re-applies `doc`'s body / layer `pointer-events` after a stack change. */
+function syncPointerEvents(doc: Document) {
+  const stack = layersOf(doc);
+  const modalIndex = highestModalIndex(stack);
+  const state = documents.get(doc);
+  const body = doc.body;
+  if (state && body) {
+    if (modalIndex !== -1 && state.bodyPointerEvents === null) {
       state.bodyPointerEvents = body.style.pointerEvents ?? "";
       body.style.pointerEvents = "none";
-    } else if (!hasModal && state.bodyPointerEvents !== null) {
+    } else if (modalIndex === -1 && state.bodyPointerEvents !== null) {
       setInlinePointerEvents(body, state.bodyPointerEvents);
       state.bodyPointerEvents = null;
     }
   }
-  layers.forEach((layer, index) => {
+  stack.forEach((layer, index) => {
     const enable = modalIndex !== -1 && index >= modalIndex;
     setInlinePointerEvents(
       layer.element,
@@ -232,20 +243,26 @@ function runHandlers<E extends Event>(
 function dismissOutside<E extends PointerEvent | FocusEvent>(
   event: E,
   kind: "pointer" | "focus",
+  doc: Document,
 ) {
   const target = getEventTarget(event);
-  if (!(target instanceof Object) || !("nodeType" in target)) return;
+  // Not `instanceof Object`: nodes of an iframe come from another realm.
+  if (!target || typeof target !== "object" || !("nodeType" in target)) {
+    return;
+  }
   const node = target as Node;
   // Topmost first: snapshot, handlers may destroy layers.
-  const candidates = [...layers].reverse().filter((layer) => {
-    if (
-      kind === "pointer" &&
-      (!layer.pointerReady || !isPointerEventsEnabled(layer))
-    )
-      return false;
-    if (layer.options.excludeFromOutside?.(node)) return false;
-    return !isInside(layer, node);
-  });
+  const candidates = layersOf(doc)
+    .reverse()
+    .filter((layer) => {
+      if (
+        kind === "pointer" &&
+        (!layer.pointerReady || !isPointerEventsEnabled(layer))
+      )
+        return false;
+      if (layer.options.excludeFromOutside?.(node)) return false;
+      return !isInside(layer, node);
+    });
   for (const layer of candidates) {
     if (!layers.includes(layer)) continue;
     const { options } = layer;
@@ -274,9 +291,8 @@ function attachDocument(doc: Document) {
     // combobox clearing its text): the layer stays open.
     const target = getEventTarget(event) as Element | null;
     if (target?.closest?.(`[${ESCAPE_CONSUMER_ATTRIBUTE}]`)) return;
-    const top = [...layers]
-      .reverse()
-      .find((layer) => getOwnerDocument(layer.element) === doc);
+    const stack = layersOf(doc);
+    const top = stack[stack.length - 1];
     if (!top) return;
     const ok = runHandlers(event, [top.options.onEscapeKeyDown]);
     if (ok && top.options.onDismiss) {
@@ -296,15 +312,15 @@ function attachDocument(doc: Document) {
       // Touch: wait for the click so scrolling gestures do not dismiss.
       pendingClick = () => {
         pendingClick = null;
-        dismissOutside(event, "pointer");
+        dismissOutside(event, "pointer", doc);
       };
       doc.addEventListener("click", pendingClick, { once: true });
       return;
     }
-    dismissOutside(event, "pointer");
+    dismissOutside(event, "pointer", doc);
   };
 
-  const onFocusIn = (event: FocusEvent) => dismissOutside(event, "focus");
+  const onFocusIn = (event: FocusEvent) => dismissOutside(event, "focus", doc);
 
   doc.addEventListener("keydown", onKeyDown, true);
   doc.addEventListener("pointerdown", onPointerDown, true);
@@ -337,10 +353,12 @@ function detachDocument(doc: Document) {
 /**
  * Registers `element` as a dismissable layer (popover, menu, dialog...).
  *
- * - Escape: only the topmost layer is notified.
+ * - Escape: only the topmost layer of the document is notified.
  * - Pointer down / focus outside: a layer is notified when the interaction
  *   is outside itself, its `branches` and its descendant layers, so clicking
  *   in a (portalled) submenu never dismisses its parent menu.
+ * - Layers only react to interactions in their own document (iframes, other
+ *   windows); a modal layer only blocks the layers of its own document.
  * - Pointer handling starts on the next tick so the click that opened the
  *   layer does not immediately dismiss it. Touch pointers are handled on the
  *   following `click` (so scroll gestures do not dismiss).
@@ -360,9 +378,10 @@ export function createDismissableLayer(
   options: DismissableLayerOptions = {},
 ): DismissableLayer {
   const doc = getOwnerDocument(element);
+  const sameDocument = layersOf(doc);
   const implicitParent =
-    [...layers].reverse().find((l) => contains(l.element, element)) ??
-    layers[layers.length - 1] ??
+    [...sameDocument].reverse().find((l) => contains(l.element, element)) ??
+    sameDocument[sameDocument.length - 1] ??
     null;
 
   let destroyed = false;
@@ -375,19 +394,20 @@ export function createDismissableLayer(
       const index = layers.indexOf(layer);
       if (index !== -1) layers.splice(index, 1);
       setInlinePointerEvents(element, layer.originalPointerEvents);
-      syncPointerEvents();
+      syncPointerEvents(doc);
       detachDocument(doc);
     },
     update(next) {
       if (destroyed) return;
       layer.options = { ...layer.options, ...next };
-      syncPointerEvents();
+      syncPointerEvents(doc);
     },
   };
 
   const layer: Layer = {
     handle,
     element,
+    doc,
     options: { ...options },
     pointerReady: false,
     readyTimer: undefined,
@@ -399,7 +419,7 @@ export function createDismissableLayer(
 
   layers.push(layer);
   attachDocument(doc);
-  syncPointerEvents();
+  syncPointerEvents(doc);
   const win = doc.defaultView;
   layer.readyTimer = (win?.setTimeout.bind(win) ?? setTimeout)(() => {
     layer.pointerReady = true;

@@ -8,6 +8,7 @@ import {
   getTabbables,
   isHTMLElement,
 } from "./dom";
+import { sharedState } from "./internal/shared-state";
 
 /** Name of the cancelable event dispatched on the container on activation. */
 export const FOCUS_SCOPE_MOUNT_EVENT = "minerva.focusScope.autoFocusOnMount";
@@ -65,14 +66,26 @@ export interface FocusScope {
 }
 
 interface ScopeEntry {
+  doc: Document;
   setStackPaused(paused: boolean): void;
 }
 
-/** Active scopes, last = topmost. Only the topmost scope traps focus. */
-const scopeStack: ScopeEntry[] = [];
+/**
+ * Active scopes, last = topmost. Only the topmost scope of each document
+ * traps focus (focus is per document). Shared by every module copy: two
+ * stacks would leave two "topmost" traps fighting over focus.
+ */
+const scopeStack = sharedState("focus-scope.v1", (): ScopeEntry[] => []);
+
+function topScope(doc: Document): ScopeEntry | undefined {
+  for (let i = scopeStack.length - 1; i >= 0; i--) {
+    if (scopeStack[i].doc === doc) return scopeStack[i];
+  }
+  return undefined;
+}
 
 function pushScope(entry: ScopeEntry) {
-  scopeStack[scopeStack.length - 1]?.setStackPaused(true);
+  topScope(entry.doc)?.setStackPaused(true);
   removeScope(entry);
   scopeStack.push(entry);
   entry.setStackPaused(false);
@@ -82,7 +95,7 @@ function removeScope(entry: ScopeEntry) {
   const index = scopeStack.indexOf(entry);
   if (index === -1) return;
   scopeStack.splice(index, 1);
-  scopeStack[scopeStack.length - 1]?.setStackPaused(false);
+  topScope(entry.doc)?.setStackPaused(false);
 }
 
 function runAutoFocusHandler(
@@ -109,8 +122,9 @@ function withoutLinksFirst(items: HTMLElement[]): HTMLElement[] {
  * focus trap (Tab wrapping, pulling focus back) and focus restoration on
  * deactivation.
  *
- * Scopes form a global stack: activating a scope pauses the previous one,
- * deactivating it resumes the previous one, so nested dialogs work.
+ * Scopes form a stack per document: activating a scope pauses the previous
+ * one of the same document, deactivating it resumes it, so nested dialogs
+ * work.
  *
  * Focus restoration runs in a `setTimeout(0)` after `deactivate()`, so it
  * works whether the container is removed before or after the call. It is
@@ -147,6 +161,7 @@ export function createFocusScope(
 
   const isPaused = () => userPaused || stackPaused;
   const entry: ScopeEntry = {
+    doc,
     setStackPaused(paused) {
       stackPaused = paused;
     },

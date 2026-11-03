@@ -135,6 +135,16 @@ describe("generateCSSVariables", () => {
       githubDark["surface-color"],
     );
   });
+
+  it("removes custom keys written by another module copy", async () => {
+    vi.resetModules();
+    const copy = await import("./apply-theme");
+    expect(copy.generateCSSVariables).not.toBe(generateCSSVariables);
+    const style = rootStyle();
+    copy.generateCSSVariables(style, { ...light, "card-bg-color": "#abcdef" });
+    generateCSSVariables(style, githubDark);
+    expect(style.getPropertyValue("--card-bg-color")).toBe("");
+  });
 });
 
 describe("resolveTheme", () => {

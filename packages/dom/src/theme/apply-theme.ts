@@ -7,6 +7,7 @@ import type {
   ThemeName,
 } from "@minerva/core";
 import { isThemeName, themeKeys, themes } from "@minerva/core";
+import { sharedState } from "../internal/shared-state";
 
 const DARK_SCHEME_QUERY = "(prefers-color-scheme: dark)";
 
@@ -52,8 +53,15 @@ export const resolveTheme = (
   return theme;
 };
 
-/** Keys written by the last `generateCSSVariables` call, per target. */
-const appliedKeys = new WeakMap<CSSStyleDeclaration, Set<string>>();
+/**
+ * Keys written by the last `generateCSSVariables` call, per target. Shared by
+ * every module copy, so a copy switching themes removes the custom keys
+ * another copy wrote.
+ */
+const appliedKeys = sharedState(
+  "theme-applied-keys.v1",
+  () => new WeakMap<CSSStyleDeclaration, Set<string>>(),
+);
 
 /**
  * Write every theme entry as a CSS custom property (`--<key>`).

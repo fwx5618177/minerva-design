@@ -1,4 +1,5 @@
 import { canUseDOM } from "./dom";
+import { sharedState } from "./internal/shared-state";
 
 export interface HideOthersOptions {
   /** Only elements inside `root` are hidden. @default document.body */
@@ -15,16 +16,22 @@ export const KEEP_VISIBLE_SELECTOR = "[aria-live], [data-minerva-keep-visible]";
 
 const IGNORED_TAGS = new Set(["SCRIPT", "STYLE", "TEMPLATE", "LINK", "META"]);
 
-/** attribute -> element -> number of active hideOthers() calls hiding it */
-const counters: Record<string, WeakMap<Element, number>> = {
-  "aria-hidden": new WeakMap(),
-  inert: new WeakMap(),
-};
-/** attribute -> elements that already had the attribute before us */
-const preexisting: Record<string, WeakSet<Element>> = {
-  "aria-hidden": new WeakSet(),
-  inert: new WeakSet(),
-};
+/**
+ * Shared by every module copy, so overlapping calls from different copies
+ * still count each other (and never take a pre-existing attribute for ours).
+ */
+const { counters, preexisting } = sharedState("hide-others.v1", () => ({
+  /** attribute -> element -> number of active hideOthers() calls hiding it */
+  counters: {
+    "aria-hidden": new WeakMap(),
+    inert: new WeakMap(),
+  } as Record<string, WeakMap<Element, number>>,
+  /** attribute -> elements that already had the attribute before us */
+  preexisting: {
+    "aria-hidden": new WeakSet(),
+    inert: new WeakSet(),
+  } as Record<string, WeakSet<Element>>,
+}));
 
 function hasAttribute(el: Element, attribute: string): boolean {
   if (attribute === "aria-hidden") {

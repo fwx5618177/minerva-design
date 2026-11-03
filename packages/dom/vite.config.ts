@@ -49,6 +49,11 @@ export default defineConfig({
     },
     rolldownOptions: {
       external: isExternal,
+      // `core-web` re-exports `index`: let `index.js` also host the internal
+      // modules it does not export (internal/shared-state), so both entries
+      // share it instead of splitting a third chunk (one copy of the dom,
+      // packages/minerva-design/tests/package.test.ts).
+      preserveEntrySignatures: "allow-extension",
       output: { exports: "named" },
     },
   },

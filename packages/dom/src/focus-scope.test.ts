@@ -1,4 +1,5 @@
 import userEvent from "@testing-library/user-event";
+import { Window } from "happy-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   createFocusScope,
@@ -317,6 +318,68 @@ describe("createFocusScope", () => {
     s.deactivate();
     s.deactivate();
     expect(getFocusScopeCount()).toBe(before);
+  });
+});
+
+describe("createFocusScope across module copies and documents", () => {
+  const nestedDom = () => {
+    document.body.innerHTML = `
+      <div id="outer"><button id="o1">o1</button></div>
+      <div id="inner"><button id="i1">i1</button></div>
+      <button id="elsewhere">x</button>
+    `;
+    return (id: string) => document.getElementById(id)!;
+  };
+
+  it("shares the stack between module copies (one trap at a time)", async () => {
+    vi.resetModules();
+    const copy = await import("./focus-scope");
+    expect(copy.createFocusScope).not.toBe(createFocusScope);
+    const $ = nestedDom();
+    const outer = scope($("outer"), { trapped: true });
+    outer.activate();
+    const inner = copy.createFocusScope($("inner"), { trapped: true });
+    scopes.push(inner);
+    inner.activate();
+
+    expect(copy.getFocusScopeCount()).toBe(getFocusScopeCount());
+    expect(outer.isActive()).toBe(false);
+    $("elsewhere").focus();
+    expect(document.activeElement).toBe($("i1"));
+
+    inner.deactivate();
+    expect(outer.isActive()).toBe(true);
+    await nextTick();
+    expect(document.activeElement).toBe($("o1"));
+  });
+
+  it("a scope in another document does not pause this document's scope", () => {
+    const win = new Window();
+    const doc = win.document as unknown as Document;
+    doc.body.innerHTML = `<div id="other"><button>b</button></div>`;
+    const $ = nestedDom();
+    const outer = scope($("outer"), { trapped: true });
+    outer.activate();
+    const before = getFocusScopeCount();
+    const other = scope(doc.getElementById("other")!, { trapped: true });
+    other.activate();
+
+    expect(getFocusScopeCount()).toBe(before + 1);
+    expect(other.isActive()).toBe(true);
+    expect(outer.isActive()).toBe(true);
+    $("elsewhere").focus();
+    expect(document.activeElement).toBe($("o1"));
+
+    // stacking still applies within the main document
+    const inner = scope($("inner"), { trapped: true });
+    inner.activate();
+    expect(outer.isActive()).toBe(false);
+    expect(other.isActive()).toBe(true);
+    inner.deactivate();
+    expect(outer.isActive()).toBe(true);
+    other.deactivate();
+    expect(outer.isActive()).toBe(true);
+    win.happyDOM.close();
   });
 });
 

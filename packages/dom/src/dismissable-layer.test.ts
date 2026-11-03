@@ -1,3 +1,4 @@
+import { Window } from "happy-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   ESCAPE_CONSUMER_ATTRIBUTE,
@@ -45,10 +46,13 @@ const escape = (target: Element = document.body) => {
   return event;
 };
 
+const otherWindows: Window[] = [];
+
 afterEach(() => {
   for (const l of created.splice(0)) l.destroy();
   document.body.innerHTML = "";
   document.body.removeAttribute("style");
+  for (const win of otherWindows.splice(0)) win.happyDOM.close();
 });
 
 describe("createDismissableLayer", () => {
@@ -354,5 +358,221 @@ describe("createDismissableLayer", () => {
     await nextTick();
     pointerDown(el("outside"));
     expect(lowerDismiss).not.toHaveBeenCalled();
+  });
+});
+
+describe("createDismissableLayer across documents", () => {
+  /** A second document, in its own happy-dom Window (like an iframe). */
+  const otherDocument = () => {
+    const win = new Window();
+    otherWindows.push(win);
+    const doc = win.document as unknown as Document;
+    const elIn = (id: string) => {
+      const node = doc.createElement("div");
+      node.id = id;
+      node.innerHTML = `<button id="${id}-btn">${id}</button>`;
+      doc.body.appendChild(node);
+      return node;
+    };
+    const otherPointerDown = (target: Element) =>
+      target.dispatchEvent(
+        new win.PointerEvent("pointerdown", {
+          bubbles: true,
+          cancelable: true,
+          composed: true,
+          pointerType: "mouse",
+        }) as unknown as Event,
+      );
+    const otherEscape = (target: Element = doc.body) =>
+      target.dispatchEvent(
+        new win.KeyboardEvent("keydown", {
+          key: "Escape",
+          bubbles: true,
+          cancelable: true,
+        }) as unknown as Event,
+      );
+    const otherFocusIn = (target: Element) =>
+      target.dispatchEvent(
+        new win.FocusEvent("focusin", { bubbles: true }) as unknown as Event,
+      );
+    // pointer handling starts on the next tick of the layer's own window
+    const otherTick = () =>
+      new Promise((resolve) => win.setTimeout(resolve, 0));
+    return {
+      doc,
+      elIn,
+      otherPointerDown,
+      otherEscape,
+      otherFocusIn,
+      otherTick,
+    };
+  };
+
+  const focusIn = (target: Element) =>
+    target.dispatchEvent(new FocusEvent("focusin", { bubbles: true }));
+
+  it.each([
+    ["root layers", { parent: null }],
+    ["implicit parents", {}],
+  ] as const)(
+    "focus in one document never dismisses a layer of another (%s)",
+    (_, extra) => {
+      const other = otherDocument();
+      let closedA = 0;
+      let closedB = 0;
+      const a = el("a");
+      const b = other.elIn("b");
+      layer(a, { ...extra, onDismiss: () => closedA++ });
+      layer(b, { ...extra, onDismiss: () => closedB++ });
+
+      focusIn(a);
+      expect({ closedA, closedB }).toEqual({ closedA: 0, closedB: 0 });
+      other.otherFocusIn(b);
+      expect({ closedA, closedB }).toEqual({ closedA: 0, closedB: 0 });
+
+      other.otherFocusIn(other.elIn("outside-b"));
+      expect({ closedA, closedB }).toEqual({ closedA: 0, closedB: 1 });
+      focusIn(el("outside-a"));
+      expect({ closedA, closedB }).toEqual({ closedA: 1, closedB: 1 });
+    },
+  );
+
+  it("pointer down outside only dismisses layers of the event's document", async () => {
+    const other = otherDocument();
+    const onDismissA = vi.fn();
+    const onDismissB = vi.fn();
+    const a = el("a");
+    const b = other.elIn("b");
+    layer(a, { onDismiss: onDismissA });
+    layer(b, { onDismiss: onDismissB });
+    await nextTick();
+    await other.otherTick();
+
+    pointerDown(a);
+    other.otherPointerDown(b);
+    expect(onDismissA).not.toHaveBeenCalled();
+    expect(onDismissB).not.toHaveBeenCalled();
+
+    pointerDown(el("outside-a"));
+    expect(onDismissA).toHaveBeenCalledTimes(1);
+    expect(onDismissB).not.toHaveBeenCalled();
+
+    other.otherPointerDown(other.elIn("outside-b"));
+    expect(onDismissA).toHaveBeenCalledTimes(1);
+    expect(onDismissB).toHaveBeenCalledTimes(1);
+  });
+
+  it("Escape reaches the topmost layer of the event's document only", () => {
+    const other = otherDocument();
+    const onDismissA = vi.fn();
+    const onDismissB = vi.fn();
+    const layerA = layer(el("a"), { onDismiss: onDismissA });
+    // opened last: topmost overall, but not in the main document
+    layer(other.elIn("b"), { onDismiss: onDismissB });
+
+    escape();
+    expect(onDismissA).toHaveBeenCalledTimes(1);
+    expect(onDismissB).not.toHaveBeenCalled();
+
+    layerA.destroy();
+    escape();
+    expect(onDismissA).toHaveBeenCalledTimes(1);
+    expect(onDismissB).not.toHaveBeenCalled();
+
+    other.otherEscape();
+    expect(onDismissB).toHaveBeenCalledTimes(1);
+  });
+
+  it("a modal layer only blocks its own document", async () => {
+    const other = otherDocument();
+    const onDismissB = vi.fn();
+    const onDismissBelow = vi.fn();
+    const b = other.elIn("b");
+    layer(b, { onDismiss: onDismissB });
+    layer(el("below"), { onDismiss: onDismissBelow });
+    const modal = el("modal");
+    const modalLayer = layer(modal, { disableOutsidePointerEvents: true });
+
+    expect(document.body.style.pointerEvents).toBe("none");
+    expect(modal.style.pointerEvents).toBe("auto");
+    expect(other.doc.body.style.pointerEvents).toBe("");
+    expect(b.style.pointerEvents).toBe("");
+    // not a child of a layer of another document
+    expect(getLayerStack()[1].parent).toBe(null);
+
+    await nextTick();
+    await other.otherTick();
+    pointerDown(el("outside-a"));
+    expect(onDismissBelow).not.toHaveBeenCalled();
+    other.otherPointerDown(other.elIn("outside-b"));
+    expect(onDismissB).toHaveBeenCalledTimes(1);
+
+    // a modal in the other document does not touch the main one
+    const modalB = layer(other.elIn("modal-b"), {
+      disableOutsidePointerEvents: true,
+    });
+    expect(other.doc.body.style.pointerEvents).toBe("none");
+    modalLayer.destroy();
+    expect(document.body.style.pointerEvents).toBe("");
+    expect(other.doc.body.style.pointerEvents).toBe("none");
+    modalB.destroy();
+    expect(other.doc.body.style.pointerEvents).toBe("");
+  });
+});
+
+describe("createDismissableLayer across module copies", () => {
+  const loadOtherCopy = async () => {
+    vi.resetModules();
+    const copy = await import("./dismissable-layer");
+    expect(copy.createDismissableLayer).not.toBe(createDismissableLayer);
+    const create = (...args: Parameters<typeof createDismissableLayer>) => {
+      const l = copy.createDismissableLayer(...args);
+      created.push(l);
+      return l;
+    };
+    return { ...copy, create };
+  };
+
+  it("shares one stack: parents, Escape and outside pointer", async () => {
+    const copy = await loadOtherCopy();
+    const onDismissParent = vi.fn();
+    const onDismissChild = vi.fn();
+    const parent = el("parent");
+    const child = el("child");
+    layer(parent, { onDismiss: onDismissParent });
+    copy.create(child, { onDismiss: onDismissChild });
+
+    expect(getLayerStack()).toHaveLength(2);
+    expect(copy.getLayerStack()).toEqual(getLayerStack());
+    expect(getLayerStack()[1].parent).toBe(parent);
+
+    await nextTick();
+    pointerDown(child);
+    expect(onDismissParent).not.toHaveBeenCalled();
+
+    // a single listener set: only the topmost layer gets Escape, once
+    escape();
+    expect(onDismissChild).toHaveBeenCalledTimes(1);
+    expect(onDismissParent).not.toHaveBeenCalled();
+  });
+
+  it("a modal layer from one copy blocks the layers of the other", async () => {
+    const copy = await loadOtherCopy();
+    const onDismissBelow = vi.fn();
+    const below = layer(el("below"), { onDismiss: onDismissBelow });
+    const modal = copy.create(el("modal"), {
+      disableOutsidePointerEvents: true,
+    });
+    expect(document.body.style.pointerEvents).toBe("none");
+
+    await nextTick();
+    pointerDown(el("outside"));
+    expect(onDismissBelow).not.toHaveBeenCalled();
+
+    below.destroy();
+    expect(document.body.style.pointerEvents).toBe("none");
+    modal.destroy();
+    expect(document.body.style.pointerEvents).toBe("");
+    expect(copy.getLayerStack()).toHaveLength(0);
   });
 });

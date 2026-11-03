@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { hideOthers } from "./hide-others";
 
 const setup = () => {
@@ -96,4 +96,31 @@ describe("hideOthers", () => {
     expect($("header").hasAttribute("aria-hidden")).toBe(false);
     undo();
   });
+});
+
+describe("hideOthers across module copies", () => {
+  it.each([
+    ["A then B", "a"],
+    ["B then A", "b"],
+  ] as const)(
+    "shares the counters (undo %s): hidden until the last undo, pre-existing kept",
+    async (_, first) => {
+      vi.resetModules();
+      const copy = await import("./hide-others");
+      expect(copy.hideOthers).not.toBe(hideOthers);
+      const $ = setup();
+      const undoA = hideOthers($("dialog"));
+      const undoB = copy.hideOthers($("portal"));
+
+      const [undo1, undo2] = first === "a" ? [undoA, undoB] : [undoB, undoA];
+      undo1();
+      // hidden by both calls
+      expect(hidden($("header"))).toBe("true");
+
+      undo2();
+      expect($("header").hasAttribute("aria-hidden")).toBe(false);
+      expect($("main").hasAttribute("aria-hidden")).toBe(false);
+      expect(hidden($("pre"))).toBe("true");
+    },
+  );
 });
