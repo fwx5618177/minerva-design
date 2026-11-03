@@ -451,6 +451,12 @@ export interface ChartInteractionOptions {
    * @default true
    */
   dragLabel?: boolean;
+  /**
+   * The label of a hovered dot is highlighted in a chip; `false` leaves it
+   * as drawn (a host showing its own card on the point)
+   * @default true
+   */
+  hoverLabel?: boolean;
 }
 
 /** Tooltip options */
@@ -763,6 +769,11 @@ export interface ChartInstance {
   ready: Promise<ChartRendererKind | null>;
   /** Reads the CSS variables again (theme changes on `<html>` / `<body>` are detected automatically) */
   refreshTheme(): void;
+  /**
+   * Hides the drawn label of a point while a host card names it; the other
+   * labels keep their places. `null` draws it again
+   */
+  setLabelHidden(point: { seriesIndex: number; index: number } | null): void;
   /** Subscribes to an event; returns the unsubscribe function */
   on<K extends keyof ChartEventMap>(
     type: K,

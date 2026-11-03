@@ -70,6 +70,13 @@ it("preserves point metadata on edit and confirms deletion inline", async () => 
   const user = userEvent.setup();
   const change = vi.fn();
   render(<QuadrantTaskBoard points={initial} onPointsChange={change} />);
+  // compact actions for the card of the active task
+  const toolbar = screen.getByRole("toolbar", { name: "Task actions" });
+  expect(toolbar.className).toMatch(/cardActions/);
+  for (const button of within(toolbar).getAllByRole("button")) {
+    expect(button.className).toMatch(/xsmall/);
+    expect(button.querySelector("svg")?.getAttribute("width")).toBe("14");
+  }
   await user.click(screen.getByRole("button", { name: "Edit task" }));
   const dialog = screen.getByRole("dialog", { name: "Edit task" });
   const input = within(dialog).getByRole("textbox", { name: "Task name" });

@@ -92,6 +92,8 @@ interface ChartBaseProps extends Handlers {
   renderTooltip?: (event: ChartHoverEvent) => ReactNode;
   /** React content placed over the chart, given the plot area */
   overlay?: (plot: ChartRect) => ReactNode;
+  /** The engine instance once created, `null` once destroyed (internal) */
+  onInstance?: (chart: ChartInstance | null) => void;
 }
 
 const isPlainObject = (value: unknown): value is Record<string, unknown> => {
@@ -179,12 +181,14 @@ export function ChartBase({
   handleRef,
   renderTooltip,
   overlay,
+  onInstance,
   ...handlers
 }: ChartBaseProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<ChartInstance | null>(null);
   const handlersRef = useRef<Handlers>(handlers);
   const tooltipRef = useRef(renderTooltip);
+  const instanceRef = useRef(onInstance);
   const tipEventRef = useRef<ChartHoverEvent | null>(null);
   const [tipEvent, setTipEvent] = useState<ChartHoverEvent | null>(null);
   const [plot, setPlot] = useState<ChartRect | null>(null);
@@ -228,6 +232,7 @@ export function ChartBase({
   useEffect(() => {
     handlersRef.current = handlers;
     tooltipRef.current = renderTooltip;
+    instanceRef.current = onInstance;
   });
 
   useEffect(() => {
@@ -247,10 +252,12 @@ export function ChartBase({
       chart.on("dragEnd", (e) => handlersRef.current.onDragEnd?.(e)),
       chart.on("layout", (rect) => setPlot(rect)),
     ];
+    instanceRef.current?.(chart);
     return () => {
       offs.forEach((off) => off());
       chart.destroy();
       chartRef.current = null;
+      instanceRef.current?.(null);
     };
   }, []);
 

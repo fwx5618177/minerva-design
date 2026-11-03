@@ -211,6 +211,8 @@ export const createChart = (
   let labelChip: HTMLDivElement | null = null;
   /** Where the label chip is shown (the tooltip keeps off it) */
   let labelChipBox: Rect | null = null;
+  /** Point whose label a host card shows instead (`setLabelHidden`) */
+  let hiddenLabel: { seriesIndex: number; index: number } | null = null;
   let drag: {
     id: number;
     x: number;
@@ -277,6 +279,7 @@ export const createChart = (
       dragPoints: o.dragPoints ?? false,
       dropTargets: o.dropTargets ?? false,
       dragLabel: o.dragLabel ?? true,
+      hoverLabel: o.hoverLabel ?? true,
     });
   };
 
@@ -587,6 +590,7 @@ export const createChart = (
           theme.background,
           // the label of a dragged point follows it (in the drag pill)
           pointDrag?.moved ? pointDrag.item : (settling?.item ?? null),
+          hiddenLabel,
         ),
         connectors: connectorSegments(model, scales),
         arrows: dependencyArrows(model, scales, dependencies),
@@ -1118,10 +1122,17 @@ export const createChart = (
     const it = hover?.event.items[0];
     const s = it ? model.series[it.seriesIndex] : undefined;
     let found: { label: PointLabel; box: Rect } | undefined;
-    if (it && s?.type === "scatter" && it.label && !pointDrag?.moved) {
+    if (
+      it &&
+      s?.type === "scatter" &&
+      it.label &&
+      !pointDrag?.moved &&
+      interaction()?.hoverLabel !== false
+    ) {
       const p = pointOf(s, it.index, sc);
       found = placedLabels.find(
         ({ label }) =>
+          !label.hidden &&
           label.text === it.label &&
           Math.abs(label.x - p.px) < 0.5 &&
           Math.abs(label.y - p.py) < 0.5,
@@ -1769,6 +1780,18 @@ export const createChart = (
     },
     ready,
     refreshTheme,
+    setLabelHidden(point) {
+      const next = point
+        ? { seriesIndex: point.seriesIndex, index: point.index }
+        : null;
+      if (
+        next?.seriesIndex === hiddenLabel?.seriesIndex &&
+        next?.index === hiddenLabel?.index
+      )
+        return;
+      hiddenLabel = next;
+      invalidate();
+    },
     on(type, listener) {
       let set = listeners[type] as Set<typeof listener> | undefined;
       if (!set) {

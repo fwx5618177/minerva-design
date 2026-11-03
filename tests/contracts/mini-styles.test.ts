@@ -101,3 +101,20 @@ it("every mini stylesheet uses class selectors for component state", () => {
     selectors.filter((selector) => /\[[^\]]+\]|\*/.test(selector)),
   ).toEqual([]);
 });
+
+// 320px wide phones: two headers side by side leave each title a few
+// characters. The narrow rules must give the room to the title.
+it("quadrant board headers give the title the room on narrow phones", () => {
+  const css = readFileSync(join(styleDirectory, "mini-controls.css"), "utf8");
+  const narrow = /@media \(max-width: 360px\) \{([\s\S]*?)\n\}/.exec(
+    css.slice(css.indexOf(".mn-quadrant-task-board__add-icon")),
+  )?.[1];
+  expect(narrow).toBeDefined();
+  expect(narrow).toMatch(
+    /\.mn-quadrant-task-board__badge \{\s*display: none;\s*\}/,
+  );
+  expect(narrow).toMatch(/\.mn-quadrant-task-board__header \{[^}]*gap: 2px;/);
+  expect(narrow).toMatch(
+    /\.mn-quadrant-task-board__count \{[^}]*padding: 0 4px;/,
+  );
+});

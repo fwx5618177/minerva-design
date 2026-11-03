@@ -72,6 +72,11 @@ export interface PointLabel {
    * when it does not fit
    */
   bounds?: Rect;
+  /**
+   * Placed (it keeps its room) but not drawn: a card over the chart names
+   * the point
+   */
+  hidden?: boolean;
 }
 
 /** Padding of the labels inside the bars, CSS pixels */
@@ -576,13 +581,27 @@ const insideBox = (
 
 /** Room kept between a label and the edges of its cell, CSS pixels */
 const CELL_PAD = 2;
+/** Room kept between two labels of a cell (they never touch), CSS pixels */
+const LABEL_GAP = { x: 4, y: 2 };
+
+/** Distance from a point to the nearest point of a box */
+const distanceTo = (x: number, y: number, r: Rect) =>
+  Math.hypot(
+    Math.max(r.x - x, 0, x - (r.x + r.width)),
+    Math.max(r.y - y, 0, y - (r.y + r.height)),
+  );
+
+/** A dot of a cell label: its label is told apart from the others by it */
+type Dot = Pick<PointLabel, "x" | "y" | "r">;
 
 /**
  * Box of a label kept inside a cell of the plot (`bounds`): beside the dot
  * on the side with more room in the cell (moved up or down into the cell
  * near its edges), else above or below it (moved sideways into the cell);
  * cut with an ellipsis to the room left when the whole text fits nowhere;
- * `null` when no free slot is left
+ * `null` when no free slot is left. A slot is free when it keeps a gap to
+ * the other labels and its own dot is the nearest one (it covers no other
+ * dot): a crowded cell never pairs a name with the wrong dot
  */
 const cellBox = (
   label: PointLabel,
@@ -591,6 +610,7 @@ const cellBox = (
   measure: (text: string) => number,
   height: number,
   occupied: readonly Rect[],
+  dots: readonly Dot[] = [],
 ): { label: PointLabel; box: Rect } | null => {
   const x0 = Math.max(bounds.x, plot.x) + CELL_PAD;
   const x1 = Math.min(bounds.x + bounds.width, plot.x + plot.width) - CELL_PAD;
@@ -605,8 +625,25 @@ const cellBox = (
     width: x1 - x0 + 0.02,
     height: y1 - y0 + 0.02,
   };
-  const free = (c: Rect) =>
-    inside(c, slack) && !occupied.some((o) => overlaps(o, c));
+  // the other dots: those at the very spot of this one count as its own
+  const others = dots.filter(
+    (d) => Math.abs(d.x - label.x) >= 0.5 || Math.abs(d.y - label.y) >= 0.5,
+  );
+  const free = (c: Rect) => {
+    if (!inside(c, slack)) return false;
+    const spaced = {
+      x: c.x - LABEL_GAP.x,
+      y: c.y - LABEL_GAP.y,
+      width: c.width + LABEL_GAP.x * 2,
+      height: c.height + LABEL_GAP.y * 2,
+    };
+    if (occupied.some((o) => overlaps(o, spaced))) return false;
+    const own = distanceTo(label.x, label.y, c);
+    return others.every((d) => {
+      const far = distanceTo(d.x, d.y, c);
+      return far >= d.r + 2 && far > own;
+    });
+  };
   const gap = label.r + 4;
   // centered on the dot, moved into the cell near its top or bottom edge
   const sideY = Math.min(Math.max(label.y - height / 2, y0), y1 - height);
@@ -668,6 +705,8 @@ export const placeLabels = (
   occupied: Rect[] = [],
 ): { label: PointLabel; box: Rect }[] => {
   const placed: { label: PointLabel; box: Rect }[] = [];
+  // the dots of the labels kept in cells (labels placed later included)
+  const dots = labels.filter((label) => label.bounds);
   for (const label of labels) {
     if (label.placement === "inside") {
       const fit = insideBox(label, plot, measure, height);
@@ -675,7 +714,15 @@ export const placeLabels = (
       continue;
     }
     if (label.bounds) {
-      const fit = cellBox(label, label.bounds, plot, measure, height, occupied);
+      const fit = cellBox(
+        label,
+        label.bounds,
+        plot,
+        measure,
+        height,
+        occupied,
+        dots,
+      );
       if (!fit) continue;
       occupied.push(fit.box);
       placed.push(fit);
@@ -946,6 +993,7 @@ export const drawForeground = (
       occupied,
     );
     for (const { label, box } of placed) {
+      if (label.hidden) continue;
       const y = box.y + box.height / 2;
       if (label.color) {
         ctx.fillStyle = label.color;

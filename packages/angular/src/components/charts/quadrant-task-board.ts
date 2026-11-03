@@ -74,6 +74,8 @@ const DOT = 10;
 const emptyBox = (): QuadrantTaskBox => ({ x: 0, y: 0, width: 0, height: 0 });
 
 const ICON_ATTRS = `width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"`;
+/** The compact icons of the toolbar of the active task */
+const ACTION_ICON_ATTRS = `width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"`;
 
 /**
  * Task board on a four-quadrant matrix (MnQuadrantChart): an add button per
@@ -171,22 +173,22 @@ const ICON_ATTRS = `width="16" height="16" viewBox="0 0 24 24" fill="none" strok
       >
         <button
           mnIconButton
-          size="small"
+          size="xsmall"
           variant="ghost"
           [label]="texts().edit"
           (click)="edit(index)"
         >
-          <svg ${ICON_ATTRS}><path [attr.d]="icons.edit" /></svg>
+          <svg ${ACTION_ICON_ATTRS}><path [attr.d]="icons.edit" /></svg>
         </button>
         <button
           mnIconButton
-          size="small"
+          size="xsmall"
           variant="ghost"
           color="danger"
           [label]="texts().delete"
           (click)="confirmRemove(index)"
         >
-          <svg ${ICON_ATTRS}><path [attr.d]="icons.delete" /></svg>
+          <svg ${ACTION_ICON_ATTRS}><path [attr.d]="icons.delete" /></svg>
         </button>
       </div>
     </ng-template>

@@ -9863,8 +9863,20 @@
     "description": "Four-quadrant matrix of labelled, draggable dots.",
     "tracks": ["toB", "toC"],
     "props": [
-      { "name": "renderPointActions", "kind": "node", "required": false, "description": "Actions shown next to the active point, outside the canvas hit region.", "only": "react" },
-      { "name": "renderTooltip", "kind": "node", "required": false, "description": "React content of the tooltip of a point", "only": "react" },
+      {
+        "name": "renderPointActions",
+        "kind": "node",
+        "required": false,
+        "description": "React actions (e.g. compact edit / delete icon buttons) shown in the card of the active point (hovered, focused or selected), beside its name",
+        "only": "react"
+      },
+      {
+        "name": "renderTooltip",
+        "kind": "node",
+        "required": false,
+        "description": "React content of the card of the active point, in place of its name and quadrant (the engine tooltip is not shown)",
+        "only": "react"
+      },
       {
         "name": "quadrantContent",
         "kind": "node",
@@ -10073,7 +10085,13 @@
       { "name": "legend", "kind": "union", "required": false, "description": "Legend; shown by default when several series have a name", "only": "react" },
       { "name": "height", "kind": "union", "default": 320, "required": false, "description": "Height of the chart (the legend included); numbers are pixels", "attribute": "height" },
       { "name": "width", "kind": "union", "default": "100%", "required": false, "description": "Width of the chart; numbers are pixels", "only": "react" },
-      { "name": "renderTooltip", "kind": "node", "required": false, "description": "React content of the tooltip of a point", "only": "react" },
+      {
+        "name": "renderTooltip",
+        "kind": "node",
+        "required": false,
+        "description": "React content of the card of the active point, in place of its name and quadrant (the engine tooltip is not shown)",
+        "only": "react"
+      },
       {
         "name": "renderer",
         "kind": "enum",

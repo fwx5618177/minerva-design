@@ -1538,6 +1538,7 @@ export const quadrantTaskBoardStyles: ClassMap<
   | "add"
   | "badge"
   | "board"
+  | "cardActions"
   | "count"
   | "field"
   | "footer"
@@ -1559,6 +1560,7 @@ export const quadrantTaskBoardStyles: ClassMap<
   add: "add",
   badge: "badge",
   board: "board",
+  cardActions: "cardActions",
   count: "count",
   field: "field",
   footer: "footer",

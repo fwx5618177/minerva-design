@@ -326,6 +326,8 @@ export const collectPointLabels = (
   yTicks?: AxisTicks | null,
   background?: Rgba,
   skip?: { seriesIndex: number; index: number } | null,
+  /** Placed but not drawn (see `PointLabel.hidden`) */
+  hide?: { seriesIndex: number; index: number } | null,
 ): PointLabel[] => {
   const labels: PointLabel[] = [];
   // 100% stacks: the axis shows percents, the labels the actual values
@@ -416,17 +418,18 @@ export const collectPointLabels = (
         continue;
       const d = size && size[i] > 0 ? size[i] : series.pointSize;
       const p = toScreen(s, xi, yi);
-      labels.push(
-        series.labelCells
-          ? {
-              x: p.x,
-              y: p.y,
-              r: d / 2,
-              text,
-              bounds: labelCell(s, series.labelCells, p),
-            }
-          : { x: p.x, y: p.y, r: d / 2, text },
-      );
+      const label: PointLabel = series.labelCells
+        ? {
+            x: p.x,
+            y: p.y,
+            r: d / 2,
+            text,
+            bounds: labelCell(s, series.labelCells, p),
+          }
+        : { x: p.x, y: p.y, r: d / 2, text };
+      if (hide && hide.seriesIndex === series.index && hide.index === i)
+        label.hidden = true;
+      labels.push(label);
     }
   }
   return labels;

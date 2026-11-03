@@ -81,12 +81,13 @@ const emit = defineEmits<{
 
 const ActionIcon: FunctionalComponent<{
   kind: keyof typeof QUADRANT_TASK_ICONS;
-}> = ({ kind }) =>
+  size?: number;
+}> = ({ kind, size = 16 }) =>
   h(
     "svg",
     {
-      width: 16,
-      height: 16,
+      width: size,
+      height: size,
       viewBox: "0 0 24 24",
       fill: "none",
       stroke: "currentColor",
@@ -97,7 +98,7 @@ const ActionIcon: FunctionalComponent<{
     },
     [h("path", { d: QUADRANT_TASK_ICONS[kind] })],
   );
-ActionIcon.props = ["kind"];
+ActionIcon.props = ["kind", "size"];
 
 /** The inline panel: the add / edit form, or the delete confirmation */
 type Panel =
@@ -364,21 +365,21 @@ defineExpose(handle);
           @pointerdown.stop
         >
           <IconButton
-            size="small"
+            size="xsmall"
             variant="ghost"
             :label="texts.edit"
             @click="edit(index)"
           >
-            <ActionIcon kind="edit" />
+            <ActionIcon kind="edit" :size="14" />
           </IconButton>
           <IconButton
-            size="small"
+            size="xsmall"
             variant="ghost"
             color="danger"
             :label="texts.delete"
             @click="confirmRemove(index)"
           >
-            <ActionIcon kind="delete" />
+            <ActionIcon kind="delete" :size="14" />
           </IconButton>
         </div>
       </template>

@@ -2439,6 +2439,28 @@
   height: 16px;
   flex: none;
 }
+/* Narrow phones (320px wide): the title comes first. The badge gives way
+   (the 2 x 2 grid already places the quadrants) and the chips get tighter */
+@media (max-width: 360px) {
+  .mn-quadrant-task-board__headers {
+    gap: 4px;
+  }
+  .mn-quadrant-task-board__header {
+    gap: 2px;
+    padding-left: 8px;
+  }
+  .mn-quadrant-task-board__badge {
+    display: none;
+  }
+  .mn-quadrant-task-board__title,
+  .mn-quadrant-task-board__badge + .mn-quadrant-task-board__title {
+    padding-left: 0;
+  }
+  .mn-quadrant-task-board__count {
+    min-width: 16px;
+    padding: 0 4px;
+  }
+}
 .mn-quadrant-task-board__panel {
   position: relative;
   z-index: 1;

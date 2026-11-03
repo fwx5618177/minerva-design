@@ -12,11 +12,11 @@
     },
     "draggable": {
       "title": "Draggable task matrix",
-      "description": "showTicks={false} and axisLabels turn the chart into a task board: while dragging, the status line names the target quadrant (onPointDrag), and the drop updates the position (onPointDrop); double-click a task to rename it or move it to another quadrant (onPointDoubleClick); click an empty area or the + button (quadrantContent) to add one; renderTooltip shows a React tooltip."
+      "description": "showTicks={false} and axisLabels turn the chart into a task board: while dragging, the status line names the target quadrant (onPointDrag), and the drop updates the position (onPointDrop); double-click a task to rename it or move it to another quadrant (onPointDoubleClick); click an empty area or the + button (quadrantContent) to add one; renderTooltip fills the card of a task."
     },
     "triage": {
       "title": "Badges, counts and keyboard moves",
-      "description": "Quadrants show badges, descriptions and counts. Selection and keyboard focus show a translucent task card next to the task; while a task is dragged the card follows it and names the quadrant it would land in. Tab enters the task list, Enter selects, and Shift + arrows move tasks between quadrants with live announcements."
+      "description": "Quadrants show badges, descriptions and counts. Hovering, focusing or selecting a task shows one translucent card on it: its dot, its name and its quadrant, in place of its label; while a task is dragged the card follows it and names the quadrant it would land in. Tab enters the task list, Enter selects, and Shift + arrows move tasks between quadrants with live announcements."
     },
     "quadrant-header": {
       "title": "Custom quadrant headers",
@@ -308,8 +308,8 @@
       "onPointDrag": "Called with the point, its index and the quadrant under the pointer on every move of a dragged dot, before the drop (the dot does not move until onPointDrop)",
       "onQuadrantClick": "Called with the quadrant and the data position when the empty area of a quadrant is clicked",
       "onPointDrop": "Called with the point, its index and the drop target when a dragged dot is released; setting it makes the dots draggable (update points to move them)",
-      "renderPointActions": "React actions (e.g. edit / delete buttons) shown next to the selected or focused point, outside the hit region of the canvas; receives the point and its index",
-      "renderTooltip": "React content of the tooltip of a point",
+      "renderPointActions": "React actions (e.g. compact edit / delete icon buttons) shown in the card of the active point (hovered, focused or selected), beside its name; receives the point and its index",
+      "renderTooltip": "React content of the card of the active point, in place of its name and quadrant (the engine tooltip is not shown)",
       "quadrantContent": "React content placed over each quadrant (e.g. an add button); only that content receives pointer events",
       "renderQuadrantHeader": "React header of each quadrant in its outer corner (top edge for the top quadrants, bottom edge for the bottom ones); receives the corner and { count, points, indices, region } and replaces the drawn title, badge, description and count",
       "accessiblePoints": "Visually hidden list of buttons per quadrant for keyboard and screen reader users: arrow keys move between the points, Enter / Space calls onPointClick, Shift + arrow keys move the point to the next quadrant (onPointDrop, announced in a live region), and the focused dot gets a focus ring and is reported by onHover. Vue, Angular and Web Components (no-accessible-points) render the same layer; React Native exposes each point with ‘Move to …’ accessibility actions, and Taro, uni-app and WeChat a list of the points with ‘Move to …’ buttons",

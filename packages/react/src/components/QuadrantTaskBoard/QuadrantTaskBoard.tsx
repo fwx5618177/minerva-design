@@ -68,11 +68,17 @@ type Panel =
 /** Half the size of the box around a task the panel keeps clear */
 const DOT = 10;
 
-function ActionIcon({ kind }: { kind: keyof typeof QUADRANT_TASK_ICONS }) {
+function ActionIcon({
+  kind,
+  size = 16,
+}: {
+  kind: keyof typeof QUADRANT_TASK_ICONS;
+  size?: number;
+}) {
   return (
     <svg
-      width="16"
-      height="16"
+      width={size}
+      height={size}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -289,25 +295,26 @@ export function QuadrantTaskBoard({
         }
         onPointDoubleClick={(_point, index) => edit(index)}
         renderPointActions={(_point, index) => (
+          // compact, in the card of the active task (beside its name)
           <div
             role="toolbar"
             aria-label={texts.actions}
-            className={styles.actions}
+            className={styles.cardActions}
             onPointerDown={(event) => event.stopPropagation()}
           >
             <IconButton
-              size="small"
+              size="xsmall"
               variant="ghost"
               label={texts.edit}
-              icon={<ActionIcon kind="edit" />}
+              icon={<ActionIcon kind="edit" size={14} />}
               onClick={() => edit(index)}
             />
             <IconButton
-              size="small"
+              size="xsmall"
               variant="ghost"
               color="danger"
               label={texts.delete}
-              icon={<ActionIcon kind="delete" />}
+              icon={<ActionIcon kind="delete" size={14} />}
               onClick={() =>
                 open({ kind: "delete", index, anchor: pointBox(index) })
               }

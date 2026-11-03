@@ -12,11 +12,11 @@
     },
     "draggable": {
       "title": "可拖动的任务矩阵",
-      "description": "showTicks={false} 和 axisLabels 把图表变成任务看板：拖动时状态栏实时显示目标象限（onPointDrag），松开后更新其位置（onPointDrop）；双击任务可改名或换象限（onPointDoubleClick）；点击空白区域或 + 按钮（quadrantContent）添加任务；renderTooltip 显示 React 提示框。"
+      "description": "showTicks={false} 和 axisLabels 把图表变成任务看板：拖动时状态栏实时显示目标象限（onPointDrag），松开后更新其位置（onPointDrop）；双击任务可改名或换象限（onPointDoubleClick）；点击空白区域或 + 按钮（quadrantContent）添加任务；renderTooltip 自定义任务卡片的内容。"
     },
     "triage": {
       "title": "徽标、计数与键盘移动",
-      "description": "象限带徽标、说明和数量统计。选中和键盘聚焦时在任务旁显示半透明的任务信息卡；拖动时信息卡跟随任务移动，并显示将要落入的象限。Tab 进入任务列表，Enter 选中，Shift + 方向键移动到相邻象限，并通过 live region 播报。"
+      "description": "象限带徽标、说明和数量统计。悬停、聚焦或选中任务时，只在任务上显示一张半透明卡片：圆点、名称和象限合为一体，并替代原标签；拖动时卡片跟随任务移动，并显示将要落入的象限。Tab 进入任务列表，Enter 选中，Shift + 方向键移动到相邻象限，并通过 live region 播报。"
     },
     "quadrant-header": {
       "title": "自定义象限标题",
@@ -308,8 +308,8 @@
       "onPointDrag": "拖动点的每次移动都会调用，参数为点、索引和指针下方的象限；松开前点不会移动（移动请在 onPointDrop 中处理）",
       "onQuadrantClick": "点击象限的空白区域时调用，参数为象限和数据位置",
       "onPointDrop": "拖动的点被释放时调用，参数为点、索引和放置目标；设置后点即可拖动（需更新 points 才会移动）",
-      "renderPointActions": "显示在选中或聚焦的点旁边的 React 操作（如编辑 / 删除按钮），位于画布命中区域之外；参数为该点及其序号",
-      "renderTooltip": "某个点的提示框 React 内容",
+      "renderPointActions": "显示在活动点（悬停、聚焦或选中）卡片中、名称旁边的 React 操作（如紧凑的编辑 / 删除图标按钮）；参数为该点及其序号",
+      "renderTooltip": "活动点卡片的 React 内容，替代其名称和象限（不再显示引擎提示框）",
       "quadrantContent": "放在每个象限上方的 React 内容（如添加按钮）；只有这些内容接收指针事件",
       "renderQuadrantHeader": "每个象限外侧角的 React 标题（上方象限贴顶部，下方象限贴底部）；接收象限和 { count, points, indices, region }，替换绘制的标题、徽标、说明和计数",
       "accessiblePoints": "为键盘和读屏用户在每个象限生成视觉隐藏的按钮列表：方向键在点之间切换，Enter / 空格调用 onPointClick，Shift + 方向键把点移到相邻象限（onPointDrop，并在实时区域播报），获得焦点的点显示焦点环并通过 onHover 上报。Vue、Angular 和 Web Components（no-accessible-points）渲染同样的层；React Native 为每个点提供“移到…”无障碍操作，Taro、uni-app 和微信小程序提供带“移到…”按钮的点列表",

@@ -12,11 +12,11 @@
     },
     "draggable": {
       "title": "Matrice de tâches déplaçables",
-      "description": "showTicks={false} et axisLabels transforment le graphique en tableau de tâches : pendant le glissement, la barre d’état indique le quadrant visé en temps réel (onPointDrag), et le relâchement met à jour la position (onPointDrop) ; un double-clic sur une tâche permet de la renommer ou de la déplacer (onPointDoubleClick) ; cliquez une zone vide ou le bouton + (quadrantContent) pour en ajouter une ; renderTooltip affiche une infobulle React."
+      "description": "showTicks={false} et axisLabels transforment le graphique en tableau de tâches : pendant le glissement, la barre d’état indique le quadrant visé en temps réel (onPointDrag), et le relâchement met à jour la position (onPointDrop) ; un double-clic sur une tâche permet de la renommer ou de la déplacer (onPointDoubleClick) ; cliquez une zone vide ou le bouton + (quadrantContent) pour en ajouter une ; renderTooltip remplit la fiche d’une tâche."
     },
     "triage": {
       "title": "Pastilles, compteurs et déplacements au clavier",
-      "description": "Badges, descriptions et compteurs par quadrant. La sélection et le focus affichent une fiche translucide à côté de la tâche ; pendant un glisser, la fiche la suit et nomme le quadrant d’arrivée. Tab parcourt les tâches, Entrée sélectionne et Maj + flèches déplace une tâche avec une annonce accessible."
+      "description": "Badges, descriptions et compteurs par quadrant. Le survol, le focus ou la sélection d’une tâche affichent une seule fiche translucide posée sur elle : son point, son nom et son quadrant, à la place de son étiquette ; pendant un glisser, la fiche la suit et nomme le quadrant d’arrivée. Tab parcourt les tâches, Entrée sélectionne et Maj + flèches déplace une tâche avec une annonce accessible."
     },
     "quadrant-header": {
       "title": "En-têtes de quadrant personnalisés",
@@ -308,8 +308,8 @@
       "onPointDrag": "Appelé avec le point, son index et le quadrant sous le pointeur à chaque déplacement d’un point glissé, avant le relâchement (le point ne bouge pas avant onPointDrop)",
       "onQuadrantClick": "Appelé avec le quadrant et la position (données) quand la zone vide d’un quadrant est cliquée",
       "onPointDrop": "Appelé avec le point, son index et la cible quand un point glissé est relâché ; le définir rend les points déplaçables (mettez à jour points pour les déplacer)",
-      "renderPointActions": "Actions React (p. ex. boutons modifier / supprimer) affichées à côté du point sélectionné ou ayant le focus, hors de la zone de détection du canevas ; reçoit le point et son index",
-      "renderTooltip": "Contenu React de l’infobulle d’un point",
+      "renderPointActions": "Actions React (p. ex. boutons d’icône compacts modifier / supprimer) affichées dans la fiche du point actif (survolé, ayant le focus ou sélectionné), à côté de son nom ; reçoit le point et son index",
+      "renderTooltip": "Contenu React de la fiche du point actif, à la place de son nom et de son quadrant (l’infobulle du moteur n’est pas affichée)",
       "quadrantContent": "Contenu React placé sur chaque quadrant (p. ex. un bouton d’ajout) ; seul ce contenu reçoit les événements de pointeur",
       "renderQuadrantHeader": "En-tête React de chaque quadrant dans son coin extérieur (bord haut pour les quadrants du haut, bord bas pour ceux du bas) ; reçoit le quadrant et { count, points, indices, region } et remplace le titre, la pastille, la description et le compteur dessinés",
       "accessiblePoints": "Liste de boutons visuellement masquée par quadrant pour le clavier et les lecteurs d’écran : les flèches passent d’un point à l’autre, Entrée / Espace appelle onPointClick, Maj + flèches déplacent le point vers le quadrant voisin (onPointDrop, annoncé dans une région live) et le point qui a le focus reçoit un anneau de focus et est signalé par onHover. Vue, Angular et les Web Components (no-accessible-points) rendent la même couche ; React Native expose chaque point avec des actions d’accessibilité « Déplacer vers … », Taro, uni-app et WeChat une liste des points avec des boutons « Déplacer vers … »",

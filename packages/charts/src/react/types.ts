@@ -437,7 +437,10 @@ export interface QuadrantChartProps
       "onPointClick" | "onPlotClick" | "renderTooltip" | "xAxis" | "yAxis"
     >,
     QuadrantConfig {
-  /** Actions shown next to the active point, outside the canvas hit region. */
+  /**
+   * React actions (e.g. compact edit / delete icon buttons) shown in the
+   * card of the active point (hovered, focused or selected), beside its name
+   */
   renderPointActions?: (point: QuadrantPoint, index: number) => ReactNode;
   /** Called with the clicked point and its index */
   onPointClick?: (point: QuadrantPoint, index: number) => void;
@@ -467,7 +470,10 @@ export interface QuadrantChartProps
     index: number,
     target: QuadrantDropTarget,
   ) => void;
-  /** React content of the tooltip of a point */
+  /**
+   * React content of the card of the active point, in place of its name and
+   * quadrant (the engine tooltip is not shown)
+   */
   renderTooltip?: (point: QuadrantPoint, index: number) => ReactNode;
   /**
    * React content placed over each quadrant (e.g. an add button); the

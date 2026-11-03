@@ -179,9 +179,15 @@ describe("chart components", () => {
     const from = chart.toPixel(2, 8)!;
     const to = chart.toPixel(8, 2)!;
     fire("pointermove", from);
+    await flush();
+    // the custom content shows in the point card, not in an engine tooltip
     expect(
-      container.querySelector(".minerva-chart-tooltip strong")?.textContent,
+      container.querySelector("[data-point-preview] strong")?.textContent,
     ).toBe("Write report");
+    expect(
+      container.querySelector<HTMLElement>(".minerva-chart-tooltip")?.style
+        .display ?? "none",
+    ).toBe("none");
     fire("pointerdown", from);
     fire("pointermove", { x: from.x + 20, y: from.y + 20 });
     fire("pointermove", to);
@@ -281,6 +287,140 @@ describe("chart components", () => {
     expect(
       button().closest('[role="list"]')!.getAttribute("data-quadrant"),
     ).toBe("bottomLeft");
+  });
+
+  it("shows one point card on hover: its dot on the point, the name, the quadrant and the actions", async () => {
+    const ref = createRef<ChartHandle>();
+    const onPointClick = vi.fn();
+    const points = [
+      { x: 2, y: 8, label: "Book travel" },
+      { x: 9, y: 2, label: "Archive" },
+    ];
+    const { container } = render(
+      <QuadrantChart
+        ref={ref}
+        locale="en"
+        points={points}
+        quadrants={{ topLeft: { label: "Delegate", badge: "Q3" } }}
+        onPointClick={onPointClick}
+        renderPointActions={(point) => (
+          <button type="button">Edit {point.label}</button>
+        )}
+      />,
+    );
+    await flush();
+    const chart = ref.current!.getInstance()!;
+    const hide = vi.spyOn(chart, "setLabelHidden");
+    const stage = container.querySelector(".minerva-chart-stage")!;
+    const move = (at: { x: number; y: number }) =>
+      stage.dispatchEvent(
+        new PointerEvent("pointermove", {
+          clientX: at.x,
+          clientY: at.y,
+          pointerId: 1,
+        }),
+      );
+    const card = () =>
+      container.querySelector<HTMLElement>("[data-point-preview]");
+    expect(card()).toBeNull();
+    move(chart.toPixel(2, 8)!);
+    await flush();
+    expect(card()!.dataset.pointPreview).toBe("0");
+    expect(card()!.textContent).toContain("Book travel");
+    expect(card()!.textContent).toContain("Q3 · Delegate");
+    // no second surface: no engine tooltip, no label chip; the drawn label
+    // of the point gives way to the card
+    const tip = container.querySelector<HTMLElement>(".minerva-chart-tooltip");
+    expect(tip?.style.display ?? "none").toBe("none");
+    const chip = container.querySelector<HTMLElement>(
+      '[data-hover-mark="label"]',
+    );
+    expect(chip?.style.display ?? "none").toBe("none");
+    expect(hide).toHaveBeenLastCalledWith({ seriesIndex: 0, index: 0 });
+    // the dot of the card lies on the point: the card starts its padding
+    // and border before it
+    const dot = () => card()!.querySelector<HTMLElement>("[data-card-dot]")!;
+    expect(dot().style.width).toBe("12px");
+    expect(dot().style.left).toBe("8px");
+    expect(card()!.dataset.side).toBe("start");
+    expect(card()!.style.transform).toContain("translate(-15px, 0)");
+    // the actions are in the card, compact, and reachable by assistive tech
+    const actions = card()!.querySelector<HTMLElement>("[data-card-actions]")!;
+    expect(actions.textContent).toBe("Edit Book travel");
+    expect(actions.closest('[aria-hidden="true"]')).toBeNull();
+    expect(
+      container.querySelector(".minerva-chart-quadrant-point button"),
+    ).toBeNull();
+    // a click on the name selects the point like a click on the dot
+    act(() =>
+      card()!
+        .querySelector<HTMLElement>("strong")!
+        .closest<HTMLElement>("[aria-hidden]")!
+        .click(),
+    );
+    expect(onPointClick).toHaveBeenCalledWith(points[0], 0);
+
+    // a point near the right edge: mirrored, the dot on the right
+    move(chart.toPixel(9, 2)!);
+    await flush();
+    expect(card()!.dataset.pointPreview).toBe("1");
+    expect(card()!.dataset.side).toBe("end");
+    expect(dot().style.right).toBe("8px");
+    expect(card()!.style.transform).toContain("calc(-100% + 15px)");
+  });
+
+  it("keeps the card while the pointer goes from the dot to its actions", async () => {
+    const ref = createRef<ChartHandle>();
+    const points = [{ x: 2, y: 8, label: "Report" }];
+    const { container } = render(
+      <QuadrantChart
+        ref={ref}
+        points={points}
+        renderPointActions={() => <button type="button">Edit</button>}
+      />,
+    );
+    await flush();
+    const chart = ref.current!.getInstance()!;
+    const stage = container.querySelector(".minerva-chart-stage")!;
+    const at = chart.toPixel(2, 8)!;
+    stage.dispatchEvent(
+      new PointerEvent("pointermove", {
+        clientX: at.x,
+        clientY: at.y,
+        pointerId: 1,
+      }),
+    );
+    await flush();
+    const card = () =>
+      container.querySelector<HTMLElement>("[data-point-preview]");
+    expect(card()).not.toBeNull();
+    // the pointer leaves the dot for the card: it lingers, then holds
+    stage.dispatchEvent(
+      new PointerEvent("pointerleave", {
+        clientX: 0,
+        clientY: 0,
+        pointerId: 1,
+      }),
+    );
+    await flush();
+    expect(card()).not.toBeNull();
+    const content = card()!.querySelector<HTMLElement>("[data-card-content]")!;
+    expect(content.style.pointerEvents).toBe("auto");
+    act(() => {
+      content.dispatchEvent(
+        new PointerEvent("pointerover", { bubbles: true, pointerId: 1 }),
+      );
+    });
+    await act(() => new Promise((resolve) => setTimeout(resolve, 250)));
+    expect(card()).not.toBeNull();
+    // out of the card: it goes once the linger is over
+    act(() => {
+      content.dispatchEvent(
+        new PointerEvent("pointerout", { bubbles: true, pointerId: 1 }),
+      );
+    });
+    await act(() => new Promise((resolve) => setTimeout(resolve, 250)));
+    expect(card()).toBeNull();
   });
 
   it("moves between the quadrant point buttons with arrows and reports the focused point", async () => {

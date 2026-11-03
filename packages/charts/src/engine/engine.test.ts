@@ -733,6 +733,71 @@ describe("placeLabels", () => {
       placeLabels([labels[0]!], plot, measure, 12, [{ ...cell }]),
     ).toHaveLength(0);
   });
+
+  it("keeps a gap between the labels of a crowded cell", () => {
+    // two dots one above the other: their labels never touch
+    const placed = placeLabels(
+      [
+        { x: 40, y: 50, r: 4, text: "Login outage", bounds: cell },
+        { x: 40, y: 62, r: 4, text: "Sign contract", bounds: cell },
+      ],
+      plot,
+      measure,
+      12,
+    );
+    expect(placed).toHaveLength(2);
+    const [a, b] = placed.map((p) => p.box);
+    const apart =
+      a!.x >= b!.x + b!.width + 4 ||
+      b!.x >= a!.x + a!.width + 4 ||
+      a!.y >= b!.y + b!.height + 2 ||
+      b!.y >= a!.y + a!.height + 2;
+    expect(apart).toBe(true);
+  });
+
+  it("never puts a label nearer to another dot than to its own", () => {
+    const dots = [
+      { x: 40, y: 50, r: 4, text: "Report", bounds: cell },
+      // right where the label of the first dot would go
+      { x: 60, y: 52, r: 4, text: "Call", bounds: cell },
+      { x: 120, y: 30, r: 4, text: "Review", bounds: cell },
+    ];
+    const placed = placeLabels(dots, plot, measure, 12);
+    const distance = (
+      d: { x: number; y: number },
+      r: { x: number; y: number; width: number; height: number },
+    ) =>
+      Math.hypot(
+        Math.max(r.x - d.x, 0, d.x - (r.x + r.width)),
+        Math.max(r.y - d.y, 0, d.y - (r.y + r.height)),
+      );
+    expect(placed.length).toBeGreaterThan(1);
+    for (const { label, box } of placed) {
+      within(box);
+      const own = distance(label, box);
+      for (const other of dots) {
+        if (other.x === label.x && other.y === label.y) continue;
+        expect(distance(other, box)).toBeGreaterThan(own);
+        expect(distance(other, box)).toBeGreaterThanOrEqual(other.r + 2);
+      }
+    }
+  });
+
+  it("keeps the place of a hidden label (not drawn by the foreground)", () => {
+    const labels = [
+      { x: 40, y: 50, r: 4, text: "Report", bounds: cell },
+      { x: 40, y: 50, r: 4, text: "Call", bounds: cell },
+    ];
+    const shown = placeLabels(labels, plot, measure, 12);
+    const hidden = placeLabels(
+      [{ ...labels[0]!, hidden: true }, labels[1]!],
+      plot,
+      measure,
+      12,
+    );
+    expect(hidden.map((p) => p.box)).toEqual(shown.map((p) => p.box));
+    expect(hidden[0]!.label.hidden).toBe(true);
+  });
 });
 
 describe("instanceRange", () => {

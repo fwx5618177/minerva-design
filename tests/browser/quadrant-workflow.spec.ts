@@ -54,9 +54,11 @@ for (const theme of ["light", "dark"] as const) {
         await page.mouse.move(to.x + 20, to.y - 10);
         const next = (await dot.boundingBox())!;
         expect(next.x - box.x).toBeCloseTo(20, 0);
+        // the card follows (it may change sides near an edge: compare the
+        // vertical move)
         await expect
-          .poll(async () => (await card.boundingBox())!.x - before.x)
-          .toBeCloseTo(20, 0);
+          .poll(async () => (await card.boundingBox())!.y - before.y)
+          .toBeCloseTo(-10, 0);
         await page.screenshot({
           path: test.info().outputPath("quadrant-live-drag.png"),
         });
@@ -73,7 +75,9 @@ for (const theme of ["light", "dark"] as const) {
         )
         .not.toEqual({ x: Math.round(from.x), y: Math.round(from.y) });
       await page.mouse.move(to.x + 20, to.y + 35);
+      // the dropped task is selected: its card holds the compact actions
       await demo
+        .locator("[data-point-preview]")
         .getByRole("button", { name: "Edit task", exact: true })
         .click();
       // inline in the board, next to the task: not a modal

@@ -90,10 +90,10 @@ function deepActiveElement(): HTMLElement | null {
   return active instanceof HTMLElement ? active : null;
 }
 
-const icon = (kind: keyof typeof QUADRANT_TASK_ICONS) =>
+const icon = (kind: keyof typeof QUADRANT_TASK_ICONS, size = 16) =>
   html`<svg
-    width="16"
-    height="16"
+    width=${size}
+    height=${size}
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -786,21 +786,21 @@ export class MinervaQuadrantTaskBoard extends MinervaElement {
           @pointerdown=${stop}
         >
           <minerva-icon-button
-            size="small"
+            size="xsmall"
             variant="ghost"
             label=${texts.edit}
             data-action="edit"
             @click=${() => this.edit(this.chart?.activeIndex ?? null)}
-            >${icon("edit")}</minerva-icon-button
+            >${icon("edit", 14)}</minerva-icon-button
           >
           <minerva-icon-button
-            size="small"
+            size="xsmall"
             variant="ghost"
             color="danger"
             label=${texts.delete}
             data-action="delete"
             @click=${() => this.confirmRemove(this.chart?.activeIndex ?? null)}
-            >${icon("delete")}</minerva-icon-button
+            >${icon("delete", 14)}</minerva-icon-button
           >
         </div>
       </minerva-quadrant-chart>

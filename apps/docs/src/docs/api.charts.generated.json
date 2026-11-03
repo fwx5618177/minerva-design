@@ -3530,6 +3530,12 @@
         "description": "Reads the CSS variables again (theme changes on `<html>` / `<body>` are detected automatically)"
       },
       {
+        "name": "setLabelHidden",
+        "type": "(point: { seriesIndex: number; index: number } | null) => void",
+        "required": true,
+        "description": "Hides the drawn label of a point while a host card names it; the other labels keep their places. `null` draws it again"
+      },
+      {
         "name": "on",
         "type": "(type: K, listener: (event: ChartEventMap[K]) => void) => () => void",
         "required": true,
@@ -3597,6 +3603,13 @@
         "required": false,
         "default": "true",
         "description": "The label of a dragged point follows it in a pill; `false` leaves it out (a host showing its own card next to the point)"
+      },
+      {
+        "name": "hoverLabel",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "The label of a hovered dot is highlighted in a chip; `false` leaves it as drawn (a host showing its own card on the point)"
       }
     ]
   },
@@ -10652,7 +10665,7 @@
         "name": "renderPointActions",
         "type": "(point: QuadrantPoint, index: number) => ReactNode",
         "required": false,
-        "description": "Actions shown next to the active point, outside the canvas hit region."
+        "description": "React actions (e.g. compact edit / delete icon buttons) shown in the card of the active point (hovered, focused or selected), beside its name"
       },
       {
         "name": "onPointClick",
@@ -10688,7 +10701,7 @@
         "name": "renderTooltip",
         "type": "(point: QuadrantPoint, index: number) => ReactNode",
         "required": false,
-        "description": "React content of the tooltip of a point"
+        "description": "React content of the card of the active point, in place of its name and quadrant (the engine tooltip is not shown)"
       },
       {
         "name": "quadrantContent",
