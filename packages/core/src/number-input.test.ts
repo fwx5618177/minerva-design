@@ -13,7 +13,12 @@ describe("number input helpers", () => {
     expect(inferStepPrecision(5)).toBe(0);
     expect(inferStepPrecision(0.1)).toBe(1);
     expect(inferStepPrecision(0.05)).toBe(2);
-    expect(inferStepPrecision(1e-7)).toBe(0);
+    expect(inferStepPrecision(1e-7)).toBe(7);
+    // #5: whole-part steps keep their decimals; exponents add the coefficient's
+    expect(inferStepPrecision(1.25)).toBe(2);
+    expect(inferStepPrecision(10.5)).toBe(1);
+    expect(inferStepPrecision(1.5e-7)).toBe(8);
+    expect(inferStepPrecision(1e21)).toBe(0);
   });
 
   it("clamps to optional bounds", () => {

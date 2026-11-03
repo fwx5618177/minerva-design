@@ -1,6 +1,8 @@
 // Value helpers of the sliders (every renderer): clamping, snapping to the
 // step or to the marks, keyboard stepping, two-thumb ranges.
 
+import { decimalPlaces } from "./decimal-places";
+
 /** A slider value: one number, or `[start, end]` for a range slider */
 export type SliderValue = number | [number, number];
 
@@ -27,14 +29,10 @@ export interface SliderScale {
 /** Most step ticks drawn by `marks: true` (denser scales draw none). */
 export const SLIDER_MAX_STEP_MARKS = 101;
 
-/** Decimal places of a step (`0.05` -> 2). */
+/** Decimal places of a step (`0.05` -> 2, `1.5e-7` -> 8). */
 export function sliderPrecision(step?: number | null): number {
-  if (!step || !Number.isFinite(step)) return 0;
-  const s = String(step);
-  const exp = s.match(/e-(\d+)$/);
-  if (exp) return Number(exp[1]);
-  const dot = s.indexOf(".");
-  return dot === -1 ? 0 : s.length - dot - 1;
+  if (!step) return 0;
+  return decimalPlaces(step);
 }
 
 /** `v` limited to `[min, max]`. */

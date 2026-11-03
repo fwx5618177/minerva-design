@@ -8,6 +8,7 @@ import {
 import { property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { parsePlacement } from "@minerva/dom";
+import { resolveActiveOptionIndex } from "@minerva/core";
 import { live } from "lit/directives/live.js";
 import { styleMap } from "lit/directives/style-map.js";
 import inputStyles from "@react-styles/components/Input/input.module.scss?inline";
@@ -240,8 +241,9 @@ export class MinervaAutocomplete extends FormAssociatedElement {
   @property({ attribute: false })
   renderEmpty?: () => AutoCompleteRenderResult;
 
+  /** Keyboard highlight, by option identity (survives option updates). */
   @state()
-  private focusedIndex = -1;
+  private focusedValue: string | number | null = null;
 
   @state()
   private hoveredIndex = -1;
@@ -320,7 +322,7 @@ export class MinervaAutocomplete extends FormAssociatedElement {
   protected resetFormValue(): void {
     this.dirty = false;
     this.value = this.defaultValue;
-    this.focusedIndex = -1;
+    this.focusedValue = null;
   }
 
   protected override restoreFormState(state: unknown): void {
@@ -372,11 +374,17 @@ export class MinervaAutocomplete extends FormAssociatedElement {
     return grouped ? grouped.flatMap(([, list]) => list) : processed;
   }
 
+  /**
+   * Active option index: the highlighted option while it is listed and
+   * enabled, else the autoHighlight fallback; none while loading (the
+   * options are hidden).
+   */
   private activeIndex(navigable: AutoCompleteOption[]): number {
-    if (this.focusedIndex >= 0) return this.focusedIndex;
-    return this.autoHighlight && this.shown
-      ? navigable.findIndex((option) => !option.disabled)
-      : -1;
+    return resolveActiveOptionIndex(
+      this.loading ? [] : navigable,
+      this.focusedValue,
+      this.autoHighlight && this.shown,
+    );
   }
 
   /** Asks to open / close; listeners can cancel `minerva-open-change`. */
@@ -397,7 +405,7 @@ export class MinervaAutocomplete extends FormAssociatedElement {
 
   private close() {
     this.requestOpen(false);
-    this.focusedIndex = -1;
+    this.focusedValue = null;
   }
 
   private setText(next: string, commit: boolean) {
@@ -408,7 +416,7 @@ export class MinervaAutocomplete extends FormAssociatedElement {
   }
 
   private moveFocus(step: 1 | -1) {
-    const navigable = this.navigableOptions;
+    const navigable = this.loading ? [] : this.navigableOptions;
     const count = navigable.length;
     if (count === 0) return;
     // from "nothing focused", ArrowDown starts at the first option and
@@ -418,7 +426,7 @@ export class MinervaAutocomplete extends FormAssociatedElement {
     for (let i = 0; i < count; i += 1) {
       index = (index + step + count) % count;
       if (!navigable[index].disabled) {
-        this.focusedIndex = index;
+        this.focusedValue = navigable[index].value;
         return;
       }
     }
@@ -473,7 +481,7 @@ export class MinervaAutocomplete extends FormAssociatedElement {
         if (!this.shown && !this.floating.isOpen && this.value !== "") {
           event.preventDefault();
           this.setText("", true);
-          this.focusedIndex = -1;
+          this.focusedValue = null;
         }
         break;
       default:
@@ -483,7 +491,7 @@ export class MinervaAutocomplete extends FormAssociatedElement {
 
   private handleInput() {
     this.setText(this.input!.value, false);
-    this.focusedIndex = -1;
+    this.focusedValue = null;
     this.openDropdown();
   }
 
@@ -527,7 +535,7 @@ export class MinervaAutocomplete extends FormAssociatedElement {
     // A disabled / read-only field never keeps the dropdown.
     if (this.open && this.blocked) {
       this.open = false;
-      this.focusedIndex = -1;
+      this.focusedValue = null;
     }
   }
 
@@ -554,9 +562,10 @@ export class MinervaAutocomplete extends FormAssociatedElement {
     super.updated(changed);
     this.floating.sync(this.shown);
     // Keep the keyboard-focused option scrolled into view
-    if (changed.has("focusedIndex") && this.focusedIndex >= 0) {
+    if (changed.has("focusedValue") && this.focusedValue !== null) {
+      const active = this.activeIndex(this.navigableOptions);
       this.shadowRoot
-        ?.getElementById(`option-${this.focusedIndex}`)
+        ?.getElementById(`option-${active}`)
         ?.scrollIntoView?.({ block: "nearest" });
     }
     if (DEV && changed.has("options")) {

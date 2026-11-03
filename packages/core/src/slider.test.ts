@@ -29,6 +29,19 @@ describe("slider math", () => {
     expect(sliderPrecision(1e-7)).toBe(7);
   });
 
+  it("keeps the coefficient decimals of a scientific-notation step (#9)", () => {
+    expect(sliderPrecision(1.5e-7)).toBe(8);
+    expect(sliderPrecision(2.25e-10)).toBe(12);
+    expect(sliderPrecision(1e21)).toBe(0);
+    const tiny: SliderScale = { min: 0, max: 1e-6, step: 1.5e-7 };
+    expect(snapSliderValue(tiny.step!, tiny)).toBe(1.5e-7);
+    expect(getSliderKeyValue("ArrowRight", 0, tiny)).toBe(1.5e-7);
+    expect(getSliderKeyValue("ArrowRight", 1.5e-7, tiny)).toBe(3e-7);
+    expect(getSliderMarks(true, 0, 6e-7, 1.5e-7).map((m) => m.value)).toEqual([
+      0, 1.5e-7, 3e-7, 4.5e-7, 6e-7,
+    ]);
+  });
+
   it("snaps to the marks with a null step or snapToMarks", () => {
     const marks = [{ value: 0 }, { value: 30 }, { value: 100 }];
     expect(snapSliderValue(20, { ...scale, step: null, marks })).toBe(30);

@@ -125,3 +125,38 @@ describe("NumberInput keyboard", () => {
     expect(spin()).toHaveValue("5");
   });
 });
+
+describe("NumberInput inferred precision (#5)", () => {
+  it("keeps the decimals of a step >= 1 (1.25)", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <NumberInput
+        aria-label="Qty"
+        defaultValue={0}
+        step={1.25}
+        onChange={onChange}
+      />,
+    );
+    await user.click(spin());
+    await user.keyboard("{ArrowUp}");
+    expect(onChange).toHaveBeenLastCalledWith(1.25);
+    expect(spin()).toHaveValue("1.25");
+  });
+
+  it("steps by a tiny step (1e-7)", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <NumberInput
+        aria-label="Qty"
+        defaultValue={0}
+        step={0.0000001}
+        onChange={onChange}
+      />,
+    );
+    await user.click(spin());
+    await user.keyboard("{ArrowUp}");
+    expect(onChange).toHaveBeenLastCalledWith(1e-7);
+  });
+});

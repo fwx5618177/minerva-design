@@ -319,9 +319,16 @@ export class MinervaDatePicker extends FormAssociatedElement {
     const start = addDays(first, -((first.getDay() + 6) % 7));
     const days = Array.from({ length: 42 }, (_, i) => addDays(start, i));
     const keys = days.map(dayKey);
-    const active = keys.includes(this.focusedKey)
-      ? this.focusedKey
-      : dayKey(first);
+    // Roving Tab stop: never a disabled day while the view has an enabled one
+    // (e.g. a month cut by minDate), else the grid has no Tab entry.
+    const active =
+      [
+        this.focusedKey,
+        this.valueAsDate ? dayKey(this.valueAsDate) : "",
+        dayKey(new Date()),
+        dayKey(first),
+        ...keys,
+      ].find((key) => key && keys.includes(key) && this.allowed(key)) ?? "";
     let heading: string;
     try {
       heading = new Intl.DateTimeFormat(this.locale ?? this.i18n.language, {

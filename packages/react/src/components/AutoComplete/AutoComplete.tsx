@@ -12,6 +12,7 @@ import { useFormControlProps } from "../FormControl/context";
 import { hooks } from "../../internal/stylingHooks";
 import styles from "./autoComplete.module.scss";
 import { ESCAPE_CONSUMER_ATTRIBUTE } from "@minerva/dom";
+import { resolveActiveOptionIndex } from "@minerva/core";
 
 const DEFAULT_OFFSET = Object.freeze({ x: 0, y: 4 });
 const EMPTY_OPTIONS: AutoCompleteOption[] = [];
@@ -71,7 +72,10 @@ const AutoComplete = ({
     name: "AutoComplete",
     prop: "open",
   });
-  const [focusedIndex, setFocusedIndex] = useState(-1);
+  // Keyboard highlight, by option identity (survives async option updates)
+  const [focusedValue, setFocusedValue] = useState<string | number | null>(
+    null,
+  );
   const [hoveredIndex, setHoveredIndex] = useState(-1);
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
   const [input, setInput] = useState<HTMLInputElement | null>(null);
@@ -113,7 +117,7 @@ const AutoComplete = ({
   };
   const close = () => {
     setVisible(false);
-    setFocusedIndex(-1);
+    setFocusedValue(null);
   };
 
   const processedOptions = useMemo(() => {
@@ -158,25 +162,27 @@ const AutoComplete = ({
     [groupedOptions, processedOptions],
   );
 
+  // Options the keyboard can reach: none while loading (they are hidden).
+  const interactiveOptions = loading ? EMPTY_OPTIONS : navigableOptions;
+
   // With autoHighlight the first enabled option is active until the user
-  // moves the highlight.
-  const activeIndex =
-    focusedIndex >= 0
-      ? focusedIndex
-      : autoHighlight && shown
-        ? navigableOptions.findIndex((option) => !option.disabled)
-        : -1;
+  // moves the highlight; a highlight whose option is gone falls back.
+  const activeIndex = resolveActiveOptionIndex(
+    interactiveOptions,
+    focusedValue,
+    autoHighlight && shown,
+  );
 
   const moveFocus = (step: 1 | -1) => {
-    const count = navigableOptions.length;
+    const count = interactiveOptions.length;
     if (count === 0) return;
     // from "nothing focused", ArrowDown starts at the first option and
     // ArrowUp at the last one
     let index = activeIndex >= 0 ? activeIndex : step === 1 ? -1 : count;
     for (let i = 0; i < count; i += 1) {
       index = (index + step + count) % count;
-      if (!navigableOptions[index].disabled) {
-        setFocusedIndex(index);
+      if (!interactiveOptions[index].disabled) {
+        setFocusedValue(interactiveOptions[index].value);
         return;
       }
     }
@@ -209,7 +215,7 @@ const AutoComplete = ({
         moveFocus(-1);
         break;
       case "Enter": {
-        const option = shown ? navigableOptions[activeIndex] : undefined;
+        const option = shown ? interactiveOptions[activeIndex] : undefined;
         if (option) {
           event.preventDefault();
           handleOptionSelect(option);
@@ -227,7 +233,7 @@ const AutoComplete = ({
         if (!shown && inputValue !== "") {
           event.preventDefault();
           setInputValue("");
-          setFocusedIndex(-1);
+          setFocusedValue(null);
         }
         break;
       default:
@@ -237,7 +243,7 @@ const AutoComplete = ({
 
   const handleInputChange = (next: string) => {
     setInputValue(next);
-    setFocusedIndex(-1);
+    setFocusedValue(null);
     open();
   };
 

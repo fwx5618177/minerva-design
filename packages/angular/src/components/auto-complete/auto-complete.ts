@@ -17,7 +17,7 @@ import {
   untracked,
   viewChild,
 } from "@angular/core";
-import { cn } from "@minerva/core";
+import { cn, resolveActiveOptionIndex } from "@minerva/core";
 import { parsePlacement, type Placement } from "@minerva/dom";
 import { injectScope } from "../../config/scope";
 import { classOf } from "../../internal/classes";
@@ -587,7 +587,8 @@ export class MnAutoComplete extends MnFormValueControl<string> {
     () => this.value() ?? this.defaultValue() ?? "",
   );
 
-  private readonly focusedIndex = signal(-1);
+  /** Keyboard highlight, by option identity (survives option updates) */
+  private readonly focusedValue = signal<string | number | null>(null);
   protected readonly hoveredIndex = signal(-1);
   /** IME composition in progress: Enter / arrows belong to the IME */
   protected composing = false;
@@ -661,15 +662,22 @@ export class MnAutoComplete extends MnFormValueControl<string> {
     ),
   );
 
-  /** With autoHighlight the first enabled option is active until the user moves */
-  protected readonly activeIndex = computed(() => {
-    const focused = this.focusedIndex();
-    if (focused >= 0) return focused;
-    if (this.autoHighlight() && this.shown()) {
-      return this.navigable().findIndex((option) => !option.disabled);
-    }
-    return -1;
-  });
+  /** Options the keyboard can reach: none while loading (they are hidden) */
+  private readonly interactive = computed(() =>
+    this.loading() ? [] : this.navigable(),
+  );
+
+  /**
+   * With autoHighlight the first enabled option is active until the user
+   * moves; a highlight whose option is gone falls back
+   */
+  protected readonly activeIndex = computed(() =>
+    resolveActiveOptionIndex(
+      this.interactive(),
+      this.focusedValue(),
+      this.autoHighlight() && this.shown(),
+    ),
+  );
 
   protected readonly activeOptionId = computed(() =>
     this.shown() && this.activeIndex() >= 0
@@ -811,11 +819,11 @@ export class MnAutoComplete extends MnFormValueControl<string> {
 
   private closeDropdown(): void {
     this.setOpen(false);
-    this.focusedIndex.set(-1);
+    this.focusedValue.set(null);
   }
 
   private moveFocus(step: 1 | -1): void {
-    const options = this.navigable();
+    const options = this.interactive();
     const count = options.length;
     if (count === 0) return;
     // from "nothing focused", ArrowDown starts at the first option and
@@ -825,7 +833,7 @@ export class MnAutoComplete extends MnFormValueControl<string> {
     for (let i = 0; i < count; i += 1) {
       index = (index + step + count) % count;
       if (!options[index].disabled) {
-        this.focusedIndex.set(index);
+        this.focusedValue.set(options[index].value);
         return;
       }
     }
@@ -840,7 +848,7 @@ export class MnAutoComplete extends MnFormValueControl<string> {
 
   protected onInput(next: string): void {
     this.setText(next);
-    this.focusedIndex.set(-1);
+    this.focusedValue.set(null);
     this.openDropdown();
   }
 
@@ -880,7 +888,7 @@ export class MnAutoComplete extends MnFormValueControl<string> {
         break;
       case "Enter": {
         const option = this.shown()
-          ? this.navigable()[this.activeIndex()]
+          ? this.interactive()[this.activeIndex()]
           : undefined;
         const text = this.text().trim();
         if (option) {
@@ -900,7 +908,7 @@ export class MnAutoComplete extends MnFormValueControl<string> {
         if (event !== this.layerEscape && !this.shown() && this.text() !== "") {
           event.preventDefault();
           this.setText("");
-          this.focusedIndex.set(-1);
+          this.focusedValue.set(null);
         }
         break;
       default:

@@ -788,3 +788,31 @@ describe("AutoComplete in a Modal", () => {
     expect(screen.getByRole("dialog")).toBeInTheDocument();
   });
 });
+
+describe("AutoComplete hidden / stale options", () => {
+  it("selects nothing while loading hides the options (#6)", async () => {
+    const { emitted } = search({ loading: true });
+    input().focus();
+    await settle();
+    expect(options()).toHaveLength(0);
+    expect(input()).not.toHaveAttribute("aria-activedescendant");
+    await keyDown("ArrowDown");
+    await keyDown("Enter");
+    expect(emitted("select")).toBeUndefined();
+  });
+
+  it("drops a highlight whose option is gone, falling back with autoHighlight (#7)", async () => {
+    const { emitted, rerender } = search();
+    input().focus();
+    await settle();
+    await keyDown("ArrowDown");
+    await keyDown("ArrowDown");
+    expect(input()).toHaveAttribute("aria-activedescendant", options()[2].id);
+    await rerender({ options: [OPTIONS[0]] });
+    await settle();
+    const id = input().getAttribute("aria-activedescendant");
+    expect(id && document.getElementById(id)).toBe(options()[0]);
+    await keyDown("Enter");
+    expect(emitted("select")).toEqual([[OPTIONS[0]]]);
+  });
+});

@@ -1,7 +1,7 @@
 import { createRef } from "react";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import DatePicker from "./DatePicker";
 import { FormControl, FormField, FormLabel } from "../FormControl";
 
@@ -98,5 +98,28 @@ describe("DatePicker", () => {
     expect(ref.current).toBe(input);
     await user.click(input);
     expect(screen.queryByRole("dialog")).toBeNull();
+  });
+});
+
+describe("DatePicker Tab entry in a month cut by minDate (#8)", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("keeps an enabled gridcell tabbable", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date(2026, 11, 15));
+    const user = userEvent.setup();
+    render(<DatePicker defaultValue="2026-12-15" minDate="2026-11-15" />);
+    await user.click(screen.getByRole("textbox"));
+    const dialog = screen.getByRole("dialog");
+    await user.click(
+      within(dialog).getByRole("button", { name: "Previous month" }),
+    );
+    const cells = within(dialog).getAllByRole("gridcell");
+    const stops = cells.filter((cell) => cell.tabIndex === 0);
+    expect(stops).toHaveLength(1);
+    expect(stops[0]).toHaveAttribute("data-date", "2026-11-15");
+    expect(stops[0]).not.toHaveAttribute("aria-disabled");
   });
 });

@@ -1,12 +1,15 @@
 // Value helpers of the number inputs (React NumberInput and
 // <minerva-number-input>).
 
-/** Decimal places of `step` (`0.05` -> 2); `0` for whole or missing steps. */
+import { decimalPlaces } from "./decimal-places";
+
+/**
+ * Decimal places of `step` (`0.05` -> 2, `1.25` -> 2, `1e-7` -> 7);
+ * `0` for whole or missing steps.
+ */
 export function inferStepPrecision(step?: number): number {
-  if (!step || step >= 1) return 0;
-  const s = String(step);
-  const dot = s.indexOf(".");
-  return dot === -1 ? 0 : s.length - dot - 1;
+  if (!step) return 0;
+  return decimalPlaces(step);
 }
 
 /** `n` limited to `[min, max]`; a missing bound does not limit. */

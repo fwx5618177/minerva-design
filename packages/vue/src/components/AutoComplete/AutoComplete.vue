@@ -19,6 +19,7 @@ import {
   type VNodeChild,
 } from "vue";
 import { ESCAPE_CONSUMER_ATTRIBUTE } from "@minerva/dom";
+import { resolveActiveOptionIndex } from "@minerva/core";
 import styles from "@react-styles/components/AutoComplete/autoComplete.module.scss";
 import FloatingPanel from "../../internal/FloatingPanel.vue";
 import { hooks } from "../../internal/hooks";
@@ -101,7 +102,8 @@ const setVisible = (next: boolean) => {
   visible.value = next;
   emit("dropdownVisibleChange", next);
 };
-const focusedIndex = ref(-1);
+// Keyboard highlight, by option identity (survives async option updates)
+const focusedValue = ref<string | number | null>(null);
 const hoveredIndex = ref(-1);
 const container = shallowRef<HTMLDivElement | null>(null);
 const input = shallowRef<HTMLInputElement | null>(null);
@@ -139,7 +141,7 @@ function open() {
 }
 function close() {
   setVisible(false);
-  focusedIndex.value = -1;
+  focusedValue.value = null;
 }
 
 const processedOptions = computed(() => {
@@ -184,18 +186,23 @@ const navigableOptions = computed(() =>
     : processedOptions.value,
 );
 
+// Options the keyboard can reach: none while loading (they are hidden).
+const interactiveOptions = computed(() =>
+  props.loading ? [] : navigableOptions.value,
+);
+
 // With autoHighlight the first enabled option is active until the user
-// moves the highlight.
+// moves the highlight; a highlight whose option is gone falls back.
 const activeIndex = computed(() =>
-  focusedIndex.value >= 0
-    ? focusedIndex.value
-    : props.autoHighlight && shown.value
-      ? navigableOptions.value.findIndex((option) => !option.disabled)
-      : -1,
+  resolveActiveOptionIndex(
+    interactiveOptions.value,
+    focusedValue.value,
+    props.autoHighlight && shown.value,
+  ),
 );
 
 function moveFocus(step: 1 | -1) {
-  const list = navigableOptions.value;
+  const list = interactiveOptions.value;
   const count = list.length;
   if (count === 0) return;
   // from "nothing focused", ArrowDown starts at the first option and
@@ -205,7 +212,7 @@ function moveFocus(step: 1 | -1) {
   for (let i = 0; i < count; i += 1) {
     index = (index + step + count) % count;
     if (!list[index].disabled) {
-      focusedIndex.value = index;
+      focusedValue.value = list[index].value;
       return;
     }
   }
@@ -240,7 +247,7 @@ function handleKeyDown(event: KeyboardEvent) {
       break;
     case "Enter": {
       const option = shown.value
-        ? navigableOptions.value[activeIndex.value]
+        ? interactiveOptions.value[activeIndex.value]
         : undefined;
       const text = inputValue.value.trim();
       if (option) {
@@ -260,7 +267,7 @@ function handleKeyDown(event: KeyboardEvent) {
       if (event !== closingEscape && !shown.value && inputValue.value !== "") {
         event.preventDefault();
         inputValue.value = "";
-        focusedIndex.value = -1;
+        focusedValue.value = null;
       }
       break;
     default:
@@ -270,7 +277,7 @@ function handleKeyDown(event: KeyboardEvent) {
 
 function handleInputChange(next: string) {
   inputValue.value = next;
-  focusedIndex.value = -1;
+  focusedValue.value = null;
   open();
 }
 

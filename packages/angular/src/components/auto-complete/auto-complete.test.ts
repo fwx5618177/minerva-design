@@ -748,3 +748,35 @@ describe("MnAutoComplete", () => {
     expect(fixture.componentInstance.openChange).toHaveBeenCalledWith(false);
   });
 });
+
+describe("MnAutoComplete hidden / stale options", () => {
+  it("selects nothing while loading hides the options (#6)", async () => {
+    const fixture = await render(Fruits);
+    fixture.componentInstance.loading.set(true);
+    await settle(fixture);
+    input().focus();
+    await settle(fixture);
+    expect(options()).toHaveLength(0);
+    expect(input()).not.toHaveAttribute("aria-activedescendant");
+    await user().keyboard("{ArrowDown}{Enter}");
+    await settle(fixture);
+    expect(fixture.componentInstance.selected).not.toHaveBeenCalled();
+    expect(input()).toHaveValue("");
+  });
+
+  it("drops a highlight whose option is gone, falling back with autoHighlight (#7)", async () => {
+    const fixture = await render(Search);
+    input().focus();
+    await settle(fixture);
+    await user().keyboard("{ArrowDown}{ArrowDown}");
+    await settle(fixture);
+    expect(input()).toHaveAttribute("aria-activedescendant", options()[2].id);
+    fixture.componentInstance.options.set([BOOKS[0]]);
+    await settle(fixture);
+    const id = input().getAttribute("aria-activedescendant");
+    expect(id && document.getElementById(id)).toBe(options()[0]);
+    await user().keyboard("{Enter}");
+    await settle(fixture);
+    expect(fixture.componentInstance.selected).toHaveBeenCalledWith(BOOKS[0]);
+  });
+});

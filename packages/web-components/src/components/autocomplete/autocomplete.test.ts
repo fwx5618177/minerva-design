@@ -605,3 +605,33 @@ describe("<minerva-autocomplete> dev warnings", () => {
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("unique"));
   });
 });
+
+describe("<minerva-autocomplete> hidden / stale options", () => {
+  it("selects nothing while loading hides the options (#6)", async () => {
+    const el = await setup('aria-label="search" auto-highlight loading');
+    const onSelect = vi.fn();
+    el.addEventListener("minerva-select", onSelect);
+    await focusInput(el);
+    expect(options(el)).toHaveLength(0);
+    expect(activeId(el)).toBeNull();
+    await keyDown(el, "ArrowDown");
+    await keyDown(el, "Enter");
+    expect(onSelect).not.toHaveBeenCalled();
+    expect(el.value).toBe("");
+  });
+
+  it("drops a highlight whose option is gone, falling back with auto-highlight (#7)", async () => {
+    const el = await setup('aria-label="search" auto-highlight');
+    const onSelect = vi.fn();
+    el.addEventListener("minerva-select", onSelect);
+    await focusInput(el);
+    await keyDown(el, "ArrowDown");
+    await keyDown(el, "ArrowDown");
+    expect(activeId(el)).toBe(options(el)[2].id);
+    el.options = [OPTIONS[0]];
+    await settle();
+    expect(el.shadowRoot!.getElementById(activeId(el)!)).toBe(options(el)[0]);
+    await keyDown(el, "Enter");
+    expect(onSelect.mock.calls[0][0].detail.option).toEqual(OPTIONS[0]);
+  });
+});

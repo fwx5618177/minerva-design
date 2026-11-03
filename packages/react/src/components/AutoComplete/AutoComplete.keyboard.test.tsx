@@ -467,3 +467,70 @@ describe("AutoComplete keyboard with userEvent", () => {
     expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 });
+
+describe("AutoComplete hidden / stale options", () => {
+  const ABC: AutoCompleteOption[] = [
+    { label: "Alpha", value: "a" },
+    { label: "Beta", value: "b" },
+    { label: "Gamma", value: "c" },
+  ];
+
+  it("selects nothing while loading hides the options (#6)", async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    render(
+      <AutoComplete
+        label="Search"
+        options={[{ label: "Old result", value: "old" }]}
+        loading
+        autoHighlight
+        onSelect={onSelect}
+      />,
+    );
+    const input = screen.getByRole("combobox");
+    await user.click(input);
+    expect(screen.queryAllByRole("option")).toHaveLength(0);
+    expect(input).not.toHaveAttribute("aria-activedescendant");
+    await user.keyboard("{ArrowDown}{Enter}");
+    expect(onSelect).not.toHaveBeenCalled();
+    expect(input).toHaveValue("");
+  });
+
+  it("drops a highlight whose option is gone, falling back with autoHighlight (#7)", async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    const props = { label: "Search", autoHighlight: true, onSelect };
+    const { rerender } = render(<AutoComplete {...props} options={ABC} />);
+    const input = screen.getByRole("combobox");
+    await user.click(input);
+    await user.keyboard("{ArrowDown}{ArrowDown}");
+    const gamma = screen.getByRole("option", { name: "Gamma" });
+    expect(input).toHaveAttribute("aria-activedescendant", gamma.id);
+
+    rerender(<AutoComplete {...props} options={[ABC[0]]} />);
+    const id = input.getAttribute("aria-activedescendant");
+    expect(id && document.getElementById(id)).toHaveTextContent("Alpha");
+    await user.keyboard("{Enter}");
+    expect(onSelect).toHaveBeenCalledWith(ABC[0]);
+  });
+
+  it("keeps the highlight on the same option when the list reorders", async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    const { rerender } = render(
+      <AutoComplete label="Search" options={ABC} onSelect={onSelect} />,
+    );
+    const input = screen.getByRole("combobox");
+    await user.click(input);
+    await user.keyboard("{ArrowDown}{ArrowDown}");
+    rerender(
+      <AutoComplete
+        label="Search"
+        options={[ABC[1], { label: "Delta", value: "d" }]}
+        onSelect={onSelect}
+      />,
+    );
+    await user.keyboard("{Enter}");
+    expect(onSelect).toHaveBeenCalledWith(ABC[1]);
+  });
+});

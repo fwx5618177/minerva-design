@@ -254,3 +254,23 @@ describe("Slider", () => {
     expect(thumb.closest('[data-part="root"]')).toHaveAttribute("data-invalid");
   });
 });
+
+describe("Slider scientific-notation step (#9)", () => {
+  it("moves by exactly 1.5e-7 with the keyboard", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(
+      <Slider
+        aria-label="Price"
+        min={0}
+        max={0.000001}
+        step={0.00000015}
+        defaultValue={0}
+        onChange={onChange}
+      />,
+    );
+    screen.getByRole("slider", { name: "Price" }).focus();
+    await user.keyboard("{ArrowRight}");
+    expect(onChange).toHaveBeenLastCalledWith(1.5e-7);
+  });
+});

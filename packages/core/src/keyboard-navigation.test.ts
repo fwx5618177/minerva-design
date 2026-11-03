@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
-import { getNextIndex, type GetNextIndexOptions } from "./keyboard-navigation";
+import {
+  getNextIndex,
+  resolveActiveOptionIndex,
+  type GetNextIndexOptions,
+} from "./keyboard-navigation";
 import { createTypeahead } from "./typeahead";
 
 const next = (
@@ -147,5 +151,29 @@ describe("createTypeahead", () => {
   it("returns -1 when only the current item matches a single character", () => {
     const t = createTypeahead();
     expect(t.search("c", items, 4)).toBe(-1);
+  });
+});
+
+describe("resolveActiveOptionIndex", () => {
+  const abc = [{ value: "a" }, { value: "b" }, { value: "c" }];
+
+  it("follows the focused option by identity", () => {
+    expect(resolveActiveOptionIndex(abc, "c", false)).toBe(2);
+    expect(resolveActiveOptionIndex([{ value: "c" }, ...abc], "c", false)).toBe(
+      0,
+    );
+  });
+
+  it("drops a highlight that is gone or disabled (#7)", () => {
+    expect(resolveActiveOptionIndex([{ value: "a" }], "c", false)).toBe(-1);
+    expect(resolveActiveOptionIndex([{ value: "a" }], "c", true)).toBe(0);
+    const disabled = [{ value: "a", disabled: true }, { value: "c" }];
+    expect(resolveActiveOptionIndex(disabled, "a", true)).toBe(1);
+  });
+
+  it("has nothing active without options (loading, #6)", () => {
+    expect(resolveActiveOptionIndex([], "a", true)).toBe(-1);
+    expect(resolveActiveOptionIndex(abc, null, false)).toBe(-1);
+    expect(resolveActiveOptionIndex(abc, null, true)).toBe(0);
   });
 });

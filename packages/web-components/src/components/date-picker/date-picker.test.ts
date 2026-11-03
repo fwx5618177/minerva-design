@@ -113,3 +113,20 @@ describe("date picker", () => {
     },
   );
 });
+
+describe("date picker Tab entry in a month cut by min-date (#8)", () => {
+  it("keeps an enabled gridcell tabbable", async () => {
+    const el = await mount<Picker>(
+      '<minerva-date-picker value="2026-12-15" min-date="2026-11-15"></minerva-date-picker>',
+    );
+    await userEvent.click(input(el));
+    await settle();
+    await userEvent.click($(el, ".navButton"));
+    await settle();
+    const stops = Array.from(
+      el.shadowRoot!.querySelectorAll<HTMLElement>('[role="gridcell"]'),
+    ).filter((cell) => cell.getAttribute("tabindex") === "0");
+    expect(stops).toHaveLength(1);
+    expect(stops[0]).toHaveAttribute("data-date", "2026-11-15");
+  });
+});

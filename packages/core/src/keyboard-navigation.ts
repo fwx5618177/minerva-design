@@ -130,3 +130,31 @@ export function getNextIndex({
     }
   }
 }
+
+/** An option of a combobox list (identified by its `value`). */
+export interface ActiveOptionItem {
+  value: string | number;
+  disabled?: boolean;
+}
+
+/**
+ * Index of the active (aria-activedescendant) option of a combobox list.
+ * The highlight follows the option's identity (`focusedValue`), not its
+ * index, so it survives async option updates and is dropped when that option
+ * is gone or disabled. Without a valid highlight, `autoHighlight` falls back
+ * to the first enabled option; `-1` otherwise. Pass `[]` while the options
+ * are hidden (loading) so nothing unseen can be active or selected.
+ */
+export function resolveActiveOptionIndex(
+  options: readonly ActiveOptionItem[],
+  focusedValue: string | number | null,
+  autoHighlight: boolean,
+): number {
+  if (focusedValue !== null) {
+    const index = options.findIndex(
+      (option) => option.value === focusedValue && !option.disabled,
+    );
+    if (index >= 0) return index;
+  }
+  return autoHighlight ? options.findIndex((option) => !option.disabled) : -1;
+}

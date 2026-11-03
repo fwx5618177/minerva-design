@@ -203,12 +203,15 @@ const DatePicker = ({
   const visibleKeys = days.map(dayKey);
   const today = new Date();
   const todayKey = dayKey(today);
+  // Roving Tab stop: never a disabled day while the view has an enabled one
+  // (e.g. a month cut by minDate), else the grid has no Tab entry.
   const activeKey = [
     focusedKey,
     current,
     sameMonth(today, month) ? todayKey : "",
     dayKey(first),
-  ].find((key) => key && visibleKeys.includes(key));
+    ...visibleKeys,
+  ].find((key) => key && visibleKeys.includes(key) && !isDayDisabled(key));
   const monthKey = dayKey(first);
 
   useEffect(() => {
