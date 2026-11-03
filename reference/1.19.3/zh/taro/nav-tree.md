@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.19.3",
-  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
-  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
-  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  "sourceCommit": "19932861fda2d088219d708a8ca132bea760a32b",
+  "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+  "referenceSourceDigest": "sha256:ed8b6b1bf30e9055934099f84afd6b8369eee155b0404de5e8db004c3d91bce6"
 }
 ```
 
@@ -51,7 +51,7 @@ Page-tab onSelect/actions/close events, measured overflow arrows and active-item
     "source": "packages/taro/src/navigation.tsx",
     "kind": "array",
     "typeText": "NavTreeSection[]",
-    "typeRef": "type:2c43a5d4773429f373a7",
+    "typeRef": "type:5b4dae1fd0745cc4e2a4",
     "required": true
   },
   {
@@ -67,7 +67,7 @@ Page-tab onSelect/actions/close events, measured overflow arrows and active-item
     "source": "packages/taro/src/navigation.tsx",
     "kind": "array",
     "typeText": "string[] | undefined",
-    "typeRef": "type:12e6366870d23ba44018",
+    "typeRef": "type:2f7bd52d63b79232027d",
     "required": false
   },
   {
@@ -75,7 +75,7 @@ Page-tab onSelect/actions/close events, measured overflow arrows and active-item
     "source": "packages/taro/src/navigation.tsx",
     "kind": "array",
     "typeText": "string[] | undefined",
-    "typeRef": "type:12e6366870d23ba44018",
+    "typeRef": "type:2f7bd52d63b79232027d",
     "required": false
   },
   {
@@ -220,7 +220,7 @@ Page-tab onSelect/actions/close events, measured overflow arrows and active-item
     "source": "packages/taro/src/navigation.tsx",
     "kind": "function",
     "typeText": "((ids: string[]) => void) | undefined",
-    "typeRef": "type:6246a24ca7455b61bc6a",
+    "typeRef": "type:4e24f6093d6901dfc4f6",
     "parameters": [
       {
         "name": "ids",
@@ -228,7 +228,7 @@ Page-tab onSelect/actions/close events, measured overflow arrows and active-item
         "required": true,
         "rest": false,
         "typeText": "string[]",
-        "typeRef": "type:876798c326dba0ca62bf"
+        "typeRef": "type:19a96e1d6cef0c4dc643"
       }
     ],
     "returnType": {

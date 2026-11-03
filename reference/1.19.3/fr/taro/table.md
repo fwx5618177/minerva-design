@@ -14,9 +14,9 @@ Locale: fr
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.19.3",
-  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
-  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
-  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  "sourceCommit": "19932861fda2d088219d708a8ca132bea760a32b",
+  "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+  "referenceSourceDigest": "sha256:ed8b6b1bf30e9055934099f84afd6b8369eee155b0404de5e8db004c3d91bce6"
 }
 ```
 
@@ -51,7 +51,7 @@ Declarative or compound native tables, shared-core local/custom sorting, disable
     "source": "packages/taro/src/data.tsx",
     "kind": "array",
     "typeText": "TableColumn<T>[]",
-    "typeRef": "type:940e9586c8c68ec98398",
+    "typeRef": "type:73e4b90285cf0b5b600d",
     "required": true
   },
   {
@@ -59,7 +59,7 @@ Declarative or compound native tables, shared-core local/custom sorting, disable
     "source": "packages/taro/src/data.tsx",
     "kind": "array",
     "typeText": "T[]",
-    "typeRef": "type:06933f291c550d5a5c54",
+    "typeRef": "type:c7184d0658a985e5a80a",
     "required": true
   },
   {
@@ -318,7 +318,7 @@ Declarative or compound native tables, shared-core local/custom sorting, disable
     "source": "packages/taro/src/data.tsx",
     "kind": "array",
     "typeText": "TableColumn<T>[]",
-    "typeRef": "type:1d36082c0b05d496ab22",
+    "typeRef": "type:b9474777dd95565712f3",
     "required": true
   },
   {
@@ -326,7 +326,7 @@ Declarative or compound native tables, shared-core local/custom sorting, disable
     "source": "packages/taro/src/data.tsx",
     "kind": "array",
     "typeText": "T[]",
-    "typeRef": "type:25f0c8753476f1482286",
+    "typeRef": "type:537b08d25edb0f5c31a1",
     "required": true
   },
   {

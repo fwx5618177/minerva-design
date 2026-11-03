@@ -14,9 +14,9 @@ Locale: en
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.19.3",
-  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
-  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
-  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  "sourceCommit": "19932861fda2d088219d708a8ca132bea760a32b",
+  "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+  "referenceSourceDigest": "sha256:ed8b6b1bf30e9055934099f84afd6b8369eee155b0404de5e8db004c3d91bce6"
 }
 ```
 
@@ -58,7 +58,7 @@ Support: stable
     "source": "packages/react/src/components/Upload/types.ts",
     "kind": "array",
     "typeText": "UploadItem[]",
-    "typeRef": "type:c1cd8039da986cfe563f",
+    "typeRef": "type:e26c7d52d015cdbcc640",
     "required": true,
     "description": "Files to list, with their transfer state (controlled)"
   },
@@ -151,7 +151,7 @@ Support: stable
     "source": "packages/react/src/components/Upload/types.ts",
     "kind": "function",
     "typeText": "(files: File[]) => void",
-    "typeRef": "type:61156f6a6a3740f03635",
+    "typeRef": "type:2c6927fbc2413055326e",
     "parameters": [
       {
         "name": "files",
@@ -159,7 +159,7 @@ Support: stable
         "required": true,
         "rest": false,
         "typeText": "File[]",
-        "typeRef": "type:fe304536b2b75cb8a3c2"
+        "typeRef": "type:40ae21b0493523b4c65f"
       }
     ],
     "returnType": {

@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.19.3",
-  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
-  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
-  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  "sourceCommit": "19932861fda2d088219d708a8ca132bea760a32b",
+  "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+  "referenceSourceDigest": "sha256:ed8b6b1bf30e9055934099f84afd6b8369eee155b0404de5e8db004c3d91bce6"
 }
 ```
 
@@ -119,7 +119,7 @@ Shared page bounds/visible ranges/items, controlled page and size rejection, one
     "source": "packages/taro/src/navigation.tsx",
     "kind": "node",
     "typeText": "boolean | ((total: number, range: [number, number]) => ReactNode) | undefined",
-    "typeRef": "type:89b1560315cc52e40800",
+    "typeRef": "type:ec1243f615ffa00c6ebf",
     "parameters": [
       {
         "name": "total",
@@ -135,7 +135,7 @@ Shared page bounds/visible ranges/items, controlled page and size rejection, one
         "required": true,
         "rest": false,
         "typeText": "[number, number]",
-        "typeRef": "type:babd2d86e00973774777"
+        "typeRef": "type:d0a9da0989240a301afe"
       }
     ],
     "returnType": {
@@ -149,7 +149,7 @@ Shared page bounds/visible ranges/items, controlled page and size rejection, one
     "source": "packages/taro/src/navigation.tsx",
     "kind": "node",
     "typeText": "((total: number, range: [number, number]) => ReactNode) | undefined",
-    "typeRef": "type:2e22210d8daf217e414d",
+    "typeRef": "type:753381a1aafd7d9dc604",
     "parameters": [
       {
         "name": "total",
@@ -165,7 +165,7 @@ Shared page bounds/visible ranges/items, controlled page and size rejection, one
         "required": true,
         "rest": false,
         "typeText": "[number, number]",
-        "typeRef": "type:babd2d86e00973774777"
+        "typeRef": "type:d0a9da0989240a301afe"
       }
     ],
     "returnType": {
@@ -225,7 +225,7 @@ Shared page bounds/visible ranges/items, controlled page and size rejection, one
     "source": "packages/taro/src/navigation.tsx",
     "kind": "array",
     "typeText": "number[] | undefined",
-    "typeRef": "type:acc371c7a58ee477ae8b",
+    "typeRef": "type:2a04a2225ac8229b1a84",
     "required": false
   },
   {

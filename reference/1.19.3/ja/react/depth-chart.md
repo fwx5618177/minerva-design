@@ -14,9 +14,9 @@ Locale: ja
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.19.3",
-  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
-  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
-  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  "sourceCommit": "19932861fda2d088219d708a8ca132bea760a32b",
+  "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+  "referenceSourceDigest": "sha256:ed8b6b1bf30e9055934099f84afd6b8369eee155b0404de5e8db004c3d91bce6"
 }
 ```
 
@@ -161,7 +161,7 @@ Support: stable
     "source": "packages/charts/src/engine/orderbook/types.ts",
     "kind": "array",
     "typeText": "readonly [number, number] | undefined",
-    "typeRef": "type:77aa7481bdbc4eb34fae",
+    "typeRef": "type:993918f52c7908c02d32",
     "required": false,
     "description": "Smallest / largest range the wheel and pinch zoom reach"
   },
@@ -288,7 +288,7 @@ Support: stable
     "source": "packages/charts/src/engine/orderbook/types.ts",
     "kind": "array",
     "typeText": "readonly DepthChartPriceLine[] | undefined",
-    "typeRef": "type:70e7d83e59fc52481234",
+    "typeRef": "type:2bb9fbaebc82f6bde237",
     "required": false,
     "description": "Vertical markers (open orders, liquidation price…)"
   },

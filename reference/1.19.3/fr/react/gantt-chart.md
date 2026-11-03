@@ -14,9 +14,9 @@ Locale: fr
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.19.3",
-  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
-  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
-  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  "sourceCommit": "19932861fda2d088219d708a8ca132bea760a32b",
+  "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+  "referenceSourceDigest": "sha256:ed8b6b1bf30e9055934099f84afd6b8369eee155b0404de5e8db004c3d91bce6"
 }
 ```
 
@@ -441,7 +441,7 @@ Support: stable
     "source": "packages/charts/src/react/types.ts",
     "kind": "array",
     "typeText": "readonly GanttTask[]",
-    "typeRef": "type:8c12a7c29a2513cca058",
+    "typeRef": "type:791e8e1c53f83b4ec740",
     "required": true,
     "description": "Tasks and milestones, from top to bottom"
   },
@@ -574,7 +574,7 @@ Support: stable
     "source": "packages/charts/src/react/types.ts",
     "kind": "array",
     "typeText": "readonly ChartAnnotation[] | undefined",
-    "typeRef": "type:84228cb24d45ac3a017b",
+    "typeRef": "type:f440eb8a958892b1b0c2",
     "required": false,
     "description": "Background areas and reference lines"
   },
@@ -602,7 +602,7 @@ Support: stable
     "source": "packages/charts/src/react/types.ts",
     "kind": "array",
     "typeText": "readonly string[] | undefined",
-    "typeRef": "type:3c1d4f0e2c96bafd8005",
+    "typeRef": "type:88dcb55e82bb1c501478",
     "required": false,
     "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
   },
@@ -629,7 +629,7 @@ Support: stable
     "source": "packages/charts/src/engine/presets.ts",
     "kind": "array",
     "typeText": "readonly string[] | undefined",
-    "typeRef": "type:3c1d4f0e2c96bafd8005",
+    "typeRef": "type:88dcb55e82bb1c501478",
     "required": false,
     "description": "Colors of the groups in order of appearance (any CSS colors); the chart palette by default"
   },

@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.19.3",
-  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
-  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
-  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  "sourceCommit": "19932861fda2d088219d708a8ca132bea760a32b",
+  "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+  "referenceSourceDigest": "sha256:ed8b6b1bf30e9055934099f84afd6b8369eee155b0404de5e8db004c3d91bce6"
 }
 ```
 
@@ -137,7 +137,7 @@ Support: stable
     "source": "packages/react/src/components/CodeBlock/types.ts",
     "kind": "array",
     "typeText": "readonly CodeMark[] | undefined",
-    "typeRef": "type:aedac2437194594cd714",
+    "typeRef": "type:e3bf662d746e3e0cae53",
     "required": false,
     "description": "Character ranges to mark (saved highlights, annotations, search hits), rendered as <mark> elements over the syntax highlighting (the token colors are kept; the copied text stays the raw code). `start` / `end` are UTF-16 offsets into the code string (`children`), clamped to it; empty ranges are ignored. Marks may cross tokens and lines (with `showLineNumbers` a mark is cut at each line break). Where marks overlap, the later one in the array wins (its color, class, title and click); the earlier one is cut around it. Each element gets `data-mark-id` (the mark's `id`) and the mark's `className` / `title`; `color` is a theme color name (a translucent tint) or any CSS color (default: translucent yellow, `--code-block-mark-bg`). To create one from the user's selection, see `getCodeSelectionRange` of `minerva-design/core`"
   }

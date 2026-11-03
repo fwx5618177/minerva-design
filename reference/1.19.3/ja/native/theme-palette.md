@@ -14,9 +14,9 @@ Locale: ja
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.19.3",
-  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
-  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
-  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  "sourceCommit": "19932861fda2d088219d708a8ca132bea760a32b",
+  "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+  "referenceSourceDigest": "sha256:ed8b6b1bf30e9055934099f84afd6b8369eee155b0404de5e8db004c3d91bce6"
 }
 ```
 
@@ -386,7 +386,7 @@ Support: beta
     "source": "packages/native/src/components/ThemeToggle/ThemeToggle.tsx",
     "kind": "array",
     "typeText": "readonly (\"editorial\" | \"tech\" | \"graphite\" | \"cool\")[] | undefined",
-    "typeRef": "type:78c516853aace1bdfd71",
+    "typeRef": "type:dc4f14752e48383655c4",
     "required": false,
     "description": "Palettes offered, in order"
   },
@@ -491,7 +491,7 @@ Support: beta
     "source": "packages/native/src/components/ThemeToggle/ThemeToggle.tsx",
     "kind": "array",
     "typeText": "readonly (\"editorial\" | \"minerva\" | \"compact\" | \"touch\")[] | undefined",
-    "typeRef": "type:c9488c32df32946418c9",
+    "typeRef": "type:04a395374e29e221ee72",
     "required": false,
     "description": "Presets offered, in order"
   },

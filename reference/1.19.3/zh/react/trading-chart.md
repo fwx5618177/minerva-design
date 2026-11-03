@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.19.3",
-  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
-  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
-  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  "sourceCommit": "19932861fda2d088219d708a8ca132bea760a32b",
+  "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+  "referenceSourceDigest": "sha256:ed8b6b1bf30e9055934099f84afd6b8369eee155b0404de5e8db004c3d91bce6"
 }
 ```
 
@@ -535,7 +535,7 @@ Support: stable
     "source": "packages/charts/src/engine/trading/types.ts",
     "kind": "union",
     "typeText": "TradingBarsInput | undefined",
-    "typeRef": "type:7b3289ab4da55c7b3a8f",
+    "typeRef": "type:03e8bd548e3d64fe4c79",
     "required": false,
     "description": "Bars, oldest first; replaced when a new array / object is passed"
   },
@@ -581,7 +581,7 @@ Support: stable
     "source": "packages/charts/src/engine/trading/types.ts",
     "kind": "array",
     "typeText": "readonly TradingIndicator[] | undefined",
-    "typeRef": "type:0484f7990e5975985bda",
+    "typeRef": "type:c0884998b4d2e08697ff",
     "required": false,
     "description": "Indicators, over the price or in panes below it, in this order"
   },
@@ -761,7 +761,7 @@ Support: stable
     "source": "packages/charts/src/engine/trading/types.ts",
     "kind": "array",
     "typeText": "readonly TradingMarker[] | undefined",
-    "typeRef": "type:d7f43bf8cbcace3a018a",
+    "typeRef": "type:131f1a91c40e007054b6",
     "required": false,
     "description": "Buy / sell markers"
   },
@@ -770,7 +770,7 @@ Support: stable
     "source": "packages/charts/src/engine/trading/types.ts",
     "kind": "array",
     "typeText": "readonly TradingPriceLine[] | undefined",
-    "typeRef": "type:c99fcbe488554b617d90",
+    "typeRef": "type:7ab611b5981dd07c8409",
     "required": false,
     "description": "Order, position, take profit / stop loss and alert lines"
   },
@@ -799,7 +799,7 @@ Support: stable
     "source": "packages/charts/src/engine/trading/types.ts",
     "kind": "array",
     "typeText": "readonly TradingCompareSeries[] | undefined",
-    "typeRef": "type:8a76b6a242f495ef003d",
+    "typeRef": "type:2a60a226a57aab3ffc32",
     "required": false,
     "description": "Comparison series (best read with `scaleMode: \"percent\"`)"
   },
@@ -808,7 +808,7 @@ Support: stable
     "source": "packages/charts/src/engine/trading/types.ts",
     "kind": "array",
     "typeText": "readonly TradingDrawing[] | undefined",
-    "typeRef": "type:178995cda024f17d5d22",
+    "typeRef": "type:f8a33dcadbf98ee70db7",
     "required": false,
     "description": "Drawings; replaced when a new array is passed (see `drawingsChange`)"
   },
@@ -1127,7 +1127,7 @@ Support: stable
     "source": "packages/charts/src/react/trading.tsx",
     "kind": "function",
     "typeText": "((drawings: readonly TradingDrawing[]) => void) | undefined",
-    "typeRef": "type:7e050eae0767e1f6ddeb",
+    "typeRef": "type:8fc4ffa50392b8e07453",
     "parameters": [
       {
         "name": "drawings",
@@ -1135,7 +1135,7 @@ Support: stable
         "required": true,
         "rest": false,
         "typeText": "readonly TradingDrawing[]",
-        "typeRef": "type:5b5978d8346bc44e1a49"
+        "typeRef": "type:df45581c582fa73cc20d"
       }
     ],
     "returnType": {

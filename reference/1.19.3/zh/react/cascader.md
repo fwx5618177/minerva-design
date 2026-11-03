@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.19.3",
-  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
-  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
-  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  "sourceCommit": "19932861fda2d088219d708a8ca132bea760a32b",
+  "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+  "referenceSourceDigest": "sha256:ed8b6b1bf30e9055934099f84afd6b8369eee155b0404de5e8db004c3d91bce6"
 }
 ```
 
@@ -79,7 +79,7 @@ Support: stable
     "source": "packages/react/src/components/Cascader/types.ts",
     "kind": "array",
     "typeText": "CascaderOption[]",
-    "typeRef": "type:d7fb743d082f5c7365c2",
+    "typeRef": "type:fb01bf79af86c266acb1",
     "required": true,
     "description": "Option tree"
   },
@@ -88,7 +88,7 @@ Support: stable
     "source": "packages/react/src/components/Cascader/types.ts",
     "kind": "array",
     "typeText": "(string | number)[] | undefined",
-    "typeRef": "type:fcee8879a48b94da00b4",
+    "typeRef": "type:3c201ca43fb6fb3589ff",
     "required": false,
     "description": "Selected path of values (controlled; pair with onChange)"
   },
@@ -97,7 +97,7 @@ Support: stable
     "source": "packages/react/src/components/Cascader/types.ts",
     "kind": "array",
     "typeText": "(string | number)[] | undefined",
-    "typeRef": "type:fcee8879a48b94da00b4",
+    "typeRef": "type:3c201ca43fb6fb3589ff",
     "required": false,
     "description": "Initially selected path of values (uncontrolled)"
   },
@@ -106,7 +106,7 @@ Support: stable
     "source": "packages/react/src/components/Cascader/types.ts",
     "kind": "function",
     "typeText": "((labels: string[], selectedOptions: CascaderOption[]) => string) | undefined",
-    "typeRef": "type:5bb918215df0fddc6454",
+    "typeRef": "type:5d520cc4099ed6070916",
     "parameters": [
       {
         "name": "labels",
@@ -114,7 +114,7 @@ Support: stable
         "required": true,
         "rest": false,
         "typeText": "string[]",
-        "typeRef": "type:876798c326dba0ca62bf"
+        "typeRef": "type:19a96e1d6cef0c4dc643"
       },
       {
         "name": "selectedOptions",
@@ -122,7 +122,7 @@ Support: stable
         "required": true,
         "rest": false,
         "typeText": "CascaderOption[]",
-        "typeRef": "type:d7fb743d082f5c7365c2"
+        "typeRef": "type:fb01bf79af86c266acb1"
       }
     ],
     "returnType": {
@@ -253,7 +253,7 @@ Support: stable
     "source": "packages/react/src/components/Cascader/types.ts",
     "kind": "function",
     "typeText": "((inputValue: string, path: CascaderOption[]) => boolean) | undefined",
-    "typeRef": "type:2df13296063622793238",
+    "typeRef": "type:22976bcc35782cae0650",
     "parameters": [
       {
         "name": "inputValue",
@@ -269,7 +269,7 @@ Support: stable
         "required": true,
         "rest": false,
         "typeText": "CascaderOption[]",
-        "typeRef": "type:d7fb743d082f5c7365c2"
+        "typeRef": "type:fb01bf79af86c266acb1"
       }
     ],
     "returnType": {
@@ -284,7 +284,7 @@ Support: stable
     "source": "packages/react/src/components/Cascader/types.ts",
     "kind": "function",
     "typeText": "((selectedOptions: CascaderOption[]) => void) | undefined",
-    "typeRef": "type:cc21751da09e50b270e7",
+    "typeRef": "type:697054a38914863f2613",
     "parameters": [
       {
         "name": "selectedOptions",
@@ -292,7 +292,7 @@ Support: stable
         "required": true,
         "rest": false,
         "typeText": "CascaderOption[]",
-        "typeRef": "type:d7fb743d082f5c7365c2"
+        "typeRef": "type:fb01bf79af86c266acb1"
       }
     ],
     "returnType": {
@@ -392,7 +392,7 @@ Support: stable
     "source": "packages/react/src/components/Cascader/types.ts",
     "kind": "function",
     "typeText": "((value: (string | number)[], selectedOptions: CascaderOption[]) => void) | undefined",
-    "typeRef": "type:5e61300b13c473c07bf5",
+    "typeRef": "type:92f5df597f431330bdae",
     "parameters": [
       {
         "name": "value",
@@ -400,7 +400,7 @@ Support: stable
         "required": true,
         "rest": false,
         "typeText": "(string | number)[]",
-        "typeRef": "type:d30b7a57953f3032038a"
+        "typeRef": "type:6a8218963ce603035852"
       },
       {
         "name": "selectedOptions",
@@ -408,7 +408,7 @@ Support: stable
         "required": true,
         "rest": false,
         "typeText": "CascaderOption[]",
-        "typeRef": "type:d7fb743d082f5c7365c2"
+        "typeRef": "type:fb01bf79af86c266acb1"
       }
     ],
     "returnType": {

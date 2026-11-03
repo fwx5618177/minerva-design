@@ -14,9 +14,9 @@ Locale: en
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.19.3",
-  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
-  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
-  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  "sourceCommit": "19932861fda2d088219d708a8ca132bea760a32b",
+  "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+  "referenceSourceDigest": "sha256:ed8b6b1bf30e9055934099f84afd6b8369eee155b0404de5e8db004c3d91bce6"
 }
 ```
 
@@ -51,7 +51,7 @@ Numbered question pills grouped by section with unanswered/answered/correct/wron
     "source": "packages/taro/src/answer-sheet.tsx",
     "kind": "array",
     "typeText": "readonly AnswerSheetItem[]",
-    "typeRef": "type:c2f50a3cf615a5aad843",
+    "typeRef": "type:26922a03a3dd16257527",
     "required": true,
     "description": "The questions, in order"
   },
@@ -60,7 +60,7 @@ Numbered question pills grouped by section with unanswered/answered/correct/wron
     "source": "packages/taro/src/answer-sheet.tsx",
     "kind": "array",
     "typeText": "readonly AnswerSheetGroup[] | undefined",
-    "typeRef": "type:63f13020e9503da58e5c",
+    "typeRef": "type:f6f69fb0a466cd4be84f",
     "required": false,
     "description": "Titled sections, in display order"
   },

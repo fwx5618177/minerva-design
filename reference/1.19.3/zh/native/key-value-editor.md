@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.19.3",
-  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
-  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
-  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  "sourceCommit": "19932861fda2d088219d708a8ca132bea760a32b",
+  "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+  "referenceSourceDigest": "sha256:ed8b6b1bf30e9055934099f84afd6b8369eee155b0404de5e8db004c3d91bce6"
 }
 ```
 
@@ -49,7 +49,7 @@ Support: beta
     "source": "packages/native/src/components/Editors/index.tsx",
     "kind": "array",
     "typeText": "KeyValueEntry[] | undefined",
-    "typeRef": "type:48b61a407f3773186d11",
+    "typeRef": "type:2c38ab2ddee0241179fe",
     "required": false
   },
   {
@@ -57,7 +57,7 @@ Support: beta
     "source": "packages/native/src/components/Editors/index.tsx",
     "kind": "array",
     "typeText": "KeyValueEntry[] | undefined",
-    "typeRef": "type:48b61a407f3773186d11",
+    "typeRef": "type:2c38ab2ddee0241179fe",
     "required": false
   },
   {
@@ -121,7 +121,7 @@ Support: beta
     "source": "packages/native/src/components/Editors/index.tsx",
     "kind": "function",
     "typeText": "((entries: KeyValueEntry[]) => void) | undefined",
-    "typeRef": "type:012b1998cca0e0ec52e1",
+    "typeRef": "type:94f8e572ea5ff6148895",
     "parameters": [
       {
         "name": "entries",
@@ -129,7 +129,7 @@ Support: beta
         "required": true,
         "rest": false,
         "typeText": "KeyValueEntry[]",
-        "typeRef": "type:50236b22b179d004a54b"
+        "typeRef": "type:59d1544970e6a8f2a83f"
       }
     ],
     "returnType": {

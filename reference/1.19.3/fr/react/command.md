@@ -14,9 +14,9 @@ Locale: fr
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.19.3",
-  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
-  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
-  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  "sourceCommit": "19932861fda2d088219d708a8ca132bea760a32b",
+  "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+  "referenceSourceDigest": "sha256:ed8b6b1bf30e9055934099f84afd6b8369eee155b0404de5e8db004c3d91bce6"
 }
 ```
 
@@ -68,7 +68,7 @@ Support: stable
     "source": "packages/react/src/components/Command/types.ts",
     "kind": "array",
     "typeText": "CommandItem[]",
-    "typeRef": "type:df4d93bfc92235f2a922",
+    "typeRef": "type:5e8f80324382283a6925",
     "required": true,
     "description": "Commands to search. Disabled items are never shown."
   },
@@ -122,7 +122,7 @@ Support: stable
     "source": "packages/react/src/components/Command/types.ts",
     "kind": "union",
     "typeText": "string | string[] | undefined",
-    "typeRef": "type:5486fc2b13911672f74a",
+    "typeRef": "type:cdf445ffccc04acaf8cd",
     "required": false,
     "description": "Global keyboard shortcut(s) that open the palette, e.g. \"mod+k\" (Cmd+K on macOS, Ctrl+K elsewhere). Modifiers: mod, ctrl, meta/cmd, shift, alt/option."
   },
@@ -141,7 +141,7 @@ Support: stable
     "source": "packages/react/src/components/Command/types.ts",
     "kind": "function",
     "typeText": "((items: CommandItem[], query: string) => CommandItem[]) | undefined",
-    "typeRef": "type:5fb4d8fcd78bd34738b3",
+    "typeRef": "type:1100a4f8c74c7a7e97ff",
     "parameters": [
       {
         "name": "items",
@@ -149,7 +149,7 @@ Support: stable
         "required": true,
         "rest": false,
         "typeText": "CommandItem[]",
-        "typeRef": "type:df4d93bfc92235f2a922"
+        "typeRef": "type:5e8f80324382283a6925"
       },
       {
         "name": "query",
@@ -162,7 +162,7 @@ Support: stable
     ],
     "returnType": {
       "typeText": "CommandItem[]",
-      "typeRef": "type:df4d93bfc92235f2a922"
+      "typeRef": "type:5e8f80324382283a6925"
     },
     "required": false,
     "description": "Custom search, e.g. to rank results by match quality. Receives the enabled items and the trimmed query (never empty) and returns the matching items in display order (then capped at `maxResults`). By default, items whose group, title, description or keywords contain the query (case-insensitive) are kept in `items` order."

@@ -14,9 +14,9 @@ Locale: fr
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.19.3",
-  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
-  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
-  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  "sourceCommit": "19932861fda2d088219d708a8ca132bea760a32b",
+  "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+  "referenceSourceDigest": "sha256:ed8b6b1bf30e9055934099f84afd6b8369eee155b0404de5e8db004c3d91bce6"
 }
 ```
 
@@ -131,7 +131,7 @@ Support: stable
     "source": "packages/react/src/components/Pagination/types.ts",
     "kind": "array",
     "typeText": "number[] | undefined",
-    "typeRef": "type:acc371c7a58ee477ae8b",
+    "typeRef": "type:2a04a2225ac8229b1a84",
     "required": false,
     "description": "Options of the page size selector"
   },
@@ -171,7 +171,7 @@ Support: stable
     "source": "packages/react/src/components/Pagination/types.ts",
     "kind": "node",
     "typeText": "boolean | ((total: number, range: [number, number]) => ReactNode) | undefined",
-    "typeRef": "type:a06f300d429abcd20727",
+    "typeRef": "type:dc0ced254e74816047bb",
     "parameters": [
       {
         "name": "total",
@@ -187,7 +187,7 @@ Support: stable
         "required": true,
         "rest": false,
         "typeText": "[number, number]",
-        "typeRef": "type:25cb136e8d1a2d7c135f"
+        "typeRef": "type:d0a9da0989240a301afe"
       }
     ],
     "returnType": {
@@ -203,7 +203,7 @@ Support: stable
     "source": "packages/react/src/components/Pagination/types.ts",
     "kind": "node",
     "typeText": "((total: number, range: [number, number]) => ReactNode) | undefined",
-    "typeRef": "type:28bd1e18be4d9fb5f34d",
+    "typeRef": "type:f255bb544728c8075ad0",
     "parameters": [
       {
         "name": "total",
@@ -219,7 +219,7 @@ Support: stable
         "required": true,
         "rest": false,
         "typeText": "[number, number]",
-        "typeRef": "type:25cb136e8d1a2d7c135f"
+        "typeRef": "type:d0a9da0989240a301afe"
       }
     ],
     "returnType": {

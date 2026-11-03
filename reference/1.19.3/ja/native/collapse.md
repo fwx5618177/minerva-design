@@ -14,9 +14,9 @@ Locale: ja
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.19.3",
-  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
-  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
-  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  "sourceCommit": "19932861fda2d088219d708a8ca132bea760a32b",
+  "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+  "referenceSourceDigest": "sha256:ed8b6b1bf30e9055934099f84afd6b8369eee155b0404de5e8db004c3d91bce6"
 }
 ```
 
@@ -49,7 +49,7 @@ Support: beta
     "source": "packages/native/src/components/Collapse/Collapse.tsx",
     "kind": "union",
     "typeText": "string | string[] | undefined",
-    "typeRef": "type:5486fc2b13911672f74a",
+    "typeRef": "type:cdf445ffccc04acaf8cd",
     "required": false,
     "description": "Names of the expanded items (controlled; pair with `onChange`): an array, or a single name (`\"\"`: none) in `accordion` mode"
   },
@@ -58,7 +58,7 @@ Support: beta
     "source": "packages/native/src/components/Collapse/Collapse.tsx",
     "kind": "union",
     "typeText": "string | string[] | undefined",
-    "typeRef": "type:5486fc2b13911672f74a",
+    "typeRef": "type:cdf445ffccc04acaf8cd",
     "required": false,
     "description": "Names of the items expanded at first (uncontrolled)"
   },
@@ -94,7 +94,7 @@ Support: beta
     "source": "packages/native/src/components/Collapse/Collapse.tsx",
     "kind": "function",
     "typeText": "((value: string | string[]) => void) | undefined",
-    "typeRef": "type:95c4880b7af708b654ae",
+    "typeRef": "type:6e0e52fe4385886b9120",
     "parameters": [
       {
         "name": "value",
@@ -102,7 +102,7 @@ Support: beta
         "required": true,
         "rest": false,
         "typeText": "string | string[]",
-        "typeRef": "type:2ccd9da2240d5a578b95"
+        "typeRef": "type:213a0e28fa24569c26be"
       }
     ],
     "returnType": {

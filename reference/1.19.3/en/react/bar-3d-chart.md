@@ -14,9 +14,9 @@ Locale: en
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.19.3",
-  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
-  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
-  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  "sourceCommit": "19932861fda2d088219d708a8ca132bea760a32b",
+  "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+  "referenceSourceDigest": "sha256:ed8b6b1bf30e9055934099f84afd6b8369eee155b0404de5e8db004c3d91bce6"
 }
 ```
 
@@ -227,7 +227,7 @@ Support: stable
     "source": "packages/charts/src/react/three-d.tsx",
     "kind": "array",
     "typeText": "readonly Bar3DSeries[]",
-    "typeRef": "type:4e5cddcd153ffd94aef5",
+    "typeRef": "type:d3b5b1b2d9d80229448b",
     "required": true,
     "description": "Bars over the x × y category grid (bars of the same cell are stacked)"
   },
@@ -312,7 +312,7 @@ Support: stable
     "source": "packages/charts/src/react/three-d.tsx",
     "kind": "array",
     "typeText": "readonly [number, number, number] | undefined",
-    "typeRef": "type:6bc62f06dbb0a2f71c9b",
+    "typeRef": "type:d7844941c1a0fb5f2288",
     "required": false,
     "description": "Proportions of the box (x, y, z)"
   },
@@ -331,7 +331,7 @@ Support: stable
     "source": "packages/charts/src/react/three-d.tsx",
     "kind": "union",
     "typeText": "Chart3DColorScale | undefined",
-    "typeRef": "type:80267bbec5f3c5c4bfc2",
+    "typeRef": "type:a7f2e842d4114e5e2bc9",
     "default": "viridis",
     "required": false,
     "description": "Colors of `colorBy: \"z\"` / `\"value\"`: a built-in ramp or CSS colors"
@@ -341,7 +341,7 @@ Support: stable
     "source": "packages/charts/src/react/three-d.tsx",
     "kind": "array",
     "typeText": "readonly [number, number] | undefined",
-    "typeRef": "type:77aa7481bdbc4eb34fae",
+    "typeRef": "type:993918f52c7908c02d32",
     "required": false,
     "description": "Values mapped to the ends of the color scale; the data range by default"
   },
@@ -423,7 +423,7 @@ Support: stable
     "source": "packages/charts/src/react/three-d.tsx",
     "kind": "array",
     "typeText": "readonly string[] | undefined",
-    "typeRef": "type:3c1d4f0e2c96bafd8005",
+    "typeRef": "type:88dcb55e82bb1c501478",
     "required": false,
     "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
   },

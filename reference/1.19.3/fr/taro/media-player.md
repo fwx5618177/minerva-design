@@ -14,9 +14,9 @@ Locale: fr
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.19.3",
-  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
-  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
-  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  "sourceCommit": "19932861fda2d088219d708a8ca132bea760a32b",
+  "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+  "referenceSourceDigest": "sha256:ed8b6b1bf30e9055934099f84afd6b8369eee155b0404de5e8db004c3d91bce6"
 }
 ```
 
@@ -151,7 +151,7 @@ Video through the host <video> component (controls off, driven by createVideoCon
     "source": "packages/taro/src/media-player.tsx",
     "kind": "array",
     "typeText": "readonly number[] | undefined",
-    "typeRef": "type:2efc21c063c671bd9177",
+    "typeRef": "type:9b11f9b3b1a7e709603e",
     "required": false,
     "description": "Speeds the speed button cycles through (default [0.5, 0.75, 1, 1.25, 1.5, 2])"
   },
@@ -196,7 +196,7 @@ Video through the host <video> component (controls off, driven by createVideoCon
     "source": "packages/taro/src/media-player.tsx",
     "kind": "array",
     "typeText": "readonly MediaPlayerTrack[] | undefined",
-    "typeRef": "type:0ca5f62777c7f4696ade",
+    "typeRef": "type:12be99ac32eab1da806c",
     "required": false,
     "description": "Captions / subtitles (WebVTT or SRT files): fetched with `Taro.request`, parsed and drawn over the video (below the title for audio) at the playback time, with a captions (CC) choice in the control bar. The choice is remembered (storage); a `default` track shows until the user chooses"
   },

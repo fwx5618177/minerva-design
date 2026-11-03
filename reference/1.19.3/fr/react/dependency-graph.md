@@ -14,9 +14,9 @@ Locale: fr
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.19.3",
-  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
-  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
-  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  "sourceCommit": "19932861fda2d088219d708a8ca132bea760a32b",
+  "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+  "referenceSourceDigest": "sha256:ed8b6b1bf30e9055934099f84afd6b8369eee155b0404de5e8db004c3d91bce6"
 }
 ```
 
@@ -336,7 +336,7 @@ Support: stable
     "source": "packages/charts/src/react/graph.tsx",
     "kind": "union",
     "typeText": "boolean | readonly string[] | undefined",
-    "typeRef": "type:449d1fe8245ca44a6c7a",
+    "typeRef": "type:fa8f02e6494a887e466c",
     "default": false,
     "required": false,
     "description": "Highlights the longest path (node `value` = duration); `true` computes it, a list of ids sets it"
@@ -346,7 +346,7 @@ Support: stable
     "source": "packages/charts/src/react/graph.tsx",
     "kind": "array",
     "typeText": "readonly GraphNode[]",
-    "typeRef": "type:5a5e2187ce81a19974ea",
+    "typeRef": "type:d043e153cf195b5b2e2b",
     "required": true,
     "description": "The nodes"
   },
@@ -355,7 +355,7 @@ Support: stable
     "source": "packages/charts/src/react/graph.tsx",
     "kind": "array",
     "typeText": "readonly GraphEdge[]",
-    "typeRef": "type:df5bac6b3d89ee94338a",
+    "typeRef": "type:75a5208fa228dd1e0528",
     "required": true,
     "description": "The edges (parent → child in trees, prerequisite → dependent in DAGs)"
   },
@@ -364,7 +364,7 @@ Support: stable
     "source": "packages/charts/src/react/graph.tsx",
     "kind": "array",
     "typeText": "readonly GraphGroup[] | undefined",
-    "typeRef": "type:ecae18bfd47aaa7b6807",
+    "typeRef": "type:b8f1cf5e37f0c33f5bad",
     "required": false,
     "description": "Groups: legend order, names and colors"
   },
@@ -406,7 +406,7 @@ Support: stable
     "source": "packages/charts/src/react/graph.tsx",
     "kind": "union",
     "typeText": "number | readonly [number, number] | undefined",
-    "typeRef": "type:475c736eb3b1f17cfb65",
+    "typeRef": "type:750314f5aee769294737",
     "required": false,
     "description": "Circle diameter in layout units, or `[min, max]` scaled by the node `value`"
   },
@@ -430,7 +430,7 @@ Support: stable
     "source": "packages/charts/src/react/graph.tsx",
     "kind": "union",
     "typeText": "number | readonly [number, number] | undefined",
-    "typeRef": "type:475c736eb3b1f17cfb65",
+    "typeRef": "type:750314f5aee769294737",
     "required": false,
     "description": "Edge width in CSS pixels, or `[min, max]` scaled by the edge `value`"
   },
@@ -511,7 +511,7 @@ Support: stable
     "source": "packages/charts/src/react/graph.tsx",
     "kind": "array",
     "typeText": "readonly string[] | undefined",
-    "typeRef": "type:3c1d4f0e2c96bafd8005",
+    "typeRef": "type:88dcb55e82bb1c501478",
     "required": false,
     "description": "Ids of the selected nodes (changing it updates the selection)"
   },
@@ -595,7 +595,7 @@ Support: stable
     "source": "packages/charts/src/react/graph.tsx",
     "kind": "array",
     "typeText": "readonly string[] | undefined",
-    "typeRef": "type:3c1d4f0e2c96bafd8005",
+    "typeRef": "type:88dcb55e82bb1c501478",
     "required": false,
     "description": "Group colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
   },
@@ -684,7 +684,7 @@ Support: stable
     "source": "packages/charts/src/react/graph.tsx",
     "kind": "function",
     "typeText": "((ids: string[]) => void) | undefined",
-    "typeRef": "type:96b838f2d8fb91636e26",
+    "typeRef": "type:e21311d79e7bf99e04a2",
     "parameters": [
       {
         "name": "ids",
@@ -692,7 +692,7 @@ Support: stable
         "required": true,
         "rest": false,
         "typeText": "string[]",
-        "typeRef": "type:876798c326dba0ca62bf"
+        "typeRef": "type:19a96e1d6cef0c4dc643"
       }
     ],
     "returnType": {

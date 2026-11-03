@@ -14,9 +14,9 @@ Locale: fr
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.19.3",
-  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
-  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
-  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  "sourceCommit": "19932861fda2d088219d708a8ca132bea760a32b",
+  "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+  "referenceSourceDigest": "sha256:ed8b6b1bf30e9055934099f84afd6b8369eee155b0404de5e8db004c3d91bce6"
 }
 ```
 
@@ -63,7 +63,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
     "source": "packages/taro/src/forms.tsx",
     "kind": "array",
     "typeText": "(string | number)[] | undefined",
-    "typeRef": "type:fcee8879a48b94da00b4",
+    "typeRef": "type:3c201ca43fb6fb3589ff",
     "required": false
   },
   {
@@ -71,7 +71,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
     "source": "packages/taro/src/forms.tsx",
     "kind": "array",
     "typeText": "(string | number)[] | undefined",
-    "typeRef": "type:fcee8879a48b94da00b4",
+    "typeRef": "type:3c201ca43fb6fb3589ff",
     "required": false
   },
   {
@@ -79,7 +79,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
     "source": "packages/taro/src/forms.tsx",
     "kind": "array",
     "typeText": "CascaderOption[]",
-    "typeRef": "type:b4c82a129ded60179d15",
+    "typeRef": "type:0a0dd99a2907ba8f10a1",
     "required": true
   },
   {
@@ -111,7 +111,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
     "source": "packages/taro/src/forms.tsx",
     "kind": "function",
     "typeText": "((input: string, path: CascaderOption[]) => boolean) | undefined",
-    "typeRef": "type:3cfbce81759a4d02f264",
+    "typeRef": "type:6941f846c1bbc7af1b95",
     "parameters": [
       {
         "name": "input",
@@ -127,7 +127,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
         "required": true,
         "rest": false,
         "typeText": "CascaderOption[]",
-        "typeRef": "type:b4c82a129ded60179d15"
+        "typeRef": "type:0a0dd99a2907ba8f10a1"
       }
     ],
     "returnType": {
@@ -141,7 +141,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
     "source": "packages/taro/src/forms.tsx",
     "kind": "function",
     "typeText": "((path: CascaderOption[]) => void | Promise<void>) | undefined",
-    "typeRef": "type:5a66ca2d58a4e820fd14",
+    "typeRef": "type:6f67df9ae82b94208765",
     "parameters": [
       {
         "name": "path",
@@ -149,7 +149,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
         "required": true,
         "rest": false,
         "typeText": "CascaderOption[]",
-        "typeRef": "type:b4c82a129ded60179d15"
+        "typeRef": "type:0a0dd99a2907ba8f10a1"
       }
     ],
     "returnType": {
@@ -163,7 +163,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
     "source": "packages/taro/src/forms.tsx",
     "kind": "node",
     "typeText": "((labels: string[], path: CascaderOption[]) => ReactNode) | undefined",
-    "typeRef": "type:704e8dcff778e495c090",
+    "typeRef": "type:896a59ebe2714742ad21",
     "parameters": [
       {
         "name": "labels",
@@ -171,7 +171,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
         "required": true,
         "rest": false,
         "typeText": "string[]",
-        "typeRef": "type:876798c326dba0ca62bf"
+        "typeRef": "type:19a96e1d6cef0c4dc643"
       },
       {
         "name": "path",
@@ -179,7 +179,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
         "required": true,
         "rest": false,
         "typeText": "CascaderOption[]",
-        "typeRef": "type:b4c82a129ded60179d15"
+        "typeRef": "type:0a0dd99a2907ba8f10a1"
       }
     ],
     "returnType": {
@@ -399,7 +399,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
     "source": "packages/taro/src/forms.tsx",
     "kind": "function",
     "typeText": "((value: (string | number)[], selectedOptions: CascaderOption[]) => void) | undefined",
-    "typeRef": "type:6d3d17c6aa7d9acdfd7b",
+    "typeRef": "type:dbf2d1fc2e6268735e01",
     "parameters": [
       {
         "name": "value",
@@ -407,7 +407,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
         "required": true,
         "rest": false,
         "typeText": "(string | number)[]",
-        "typeRef": "type:d30b7a57953f3032038a"
+        "typeRef": "type:6a8218963ce603035852"
       },
       {
         "name": "selectedOptions",
@@ -415,7 +415,7 @@ Hierarchical numeric/string paths, original option callbacks, concurrent horizon
         "required": true,
         "rest": false,
         "typeText": "CascaderOption[]",
-        "typeRef": "type:b4c82a129ded60179d15"
+        "typeRef": "type:0a0dd99a2907ba8f10a1"
       }
     ],
     "returnType": {

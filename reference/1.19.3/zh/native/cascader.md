@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.19.3",
-  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
-  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
-  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  "sourceCommit": "19932861fda2d088219d708a8ca132bea760a32b",
+  "sourceDigest": "sha256:fb3cb834b0315cadc80051ab82991b2623935288f141da2c666cf641e82850a8",
+  "referenceSourceDigest": "sha256:ed8b6b1bf30e9055934099f84afd6b8369eee155b0404de5e8db004c3d91bce6"
 }
 ```
 
@@ -61,7 +61,7 @@ Support: beta
     "source": "packages/native/src/components/Cascader/index.tsx",
     "kind": "array",
     "typeText": "CascaderOption[]",
-    "typeRef": "type:facda7174478ab560175",
+    "typeRef": "type:5479f79bddc002f83c85",
     "required": true
   },
   {
@@ -69,7 +69,7 @@ Support: beta
     "source": "packages/native/src/components/Cascader/index.tsx",
     "kind": "array",
     "typeText": "(string | number)[] | undefined",
-    "typeRef": "type:fcee8879a48b94da00b4",
+    "typeRef": "type:3c201ca43fb6fb3589ff",
     "required": false
   },
   {
@@ -77,7 +77,7 @@ Support: beta
     "source": "packages/native/src/components/Cascader/index.tsx",
     "kind": "array",
     "typeText": "(string | number)[] | undefined",
-    "typeRef": "type:fcee8879a48b94da00b4",
+    "typeRef": "type:3c201ca43fb6fb3589ff",
     "required": false
   },
   {
@@ -151,7 +151,7 @@ Support: beta
     "source": "packages/native/src/components/Cascader/index.tsx",
     "kind": "function",
     "typeText": "((query: string, path: CascaderOption[]) => boolean) | undefined",
-    "typeRef": "type:1fb42bda0dec8800d9ff",
+    "typeRef": "type:d8582f48bce41c8c43df",
     "parameters": [
       {
         "name": "query",
@@ -167,7 +167,7 @@ Support: beta
         "required": true,
         "rest": false,
         "typeText": "CascaderOption[]",
-        "typeRef": "type:facda7174478ab560175"
+        "typeRef": "type:5479f79bddc002f83c85"
       }
     ],
     "returnType": {
@@ -181,7 +181,7 @@ Support: beta
     "source": "packages/native/src/components/Cascader/index.tsx",
     "kind": "function",
     "typeText": "((path: CascaderOption[]) => void) | undefined",
-    "typeRef": "type:d15c06685679e7698fc3",
+    "typeRef": "type:90b9e1471076206e819c",
     "parameters": [
       {
         "name": "path",
@@ -189,7 +189,7 @@ Support: beta
         "required": true,
         "rest": false,
         "typeText": "CascaderOption[]",
-        "typeRef": "type:facda7174478ab560175"
+        "typeRef": "type:5479f79bddc002f83c85"
       }
     ],
     "returnType": {
@@ -203,7 +203,7 @@ Support: beta
     "source": "packages/native/src/components/Cascader/index.tsx",
     "kind": "node",
     "typeText": "((labels: string[], path: CascaderOption[]) => ReactNode) | undefined",
-    "typeRef": "type:93bf0ae3c8dea8f1a601",
+    "typeRef": "type:1c0ca9a5c727c7b72a75",
     "parameters": [
       {
         "name": "labels",
@@ -211,7 +211,7 @@ Support: beta
         "required": true,
         "rest": false,
         "typeText": "string[]",
-        "typeRef": "type:876798c326dba0ca62bf"
+        "typeRef": "type:19a96e1d6cef0c4dc643"
       },
       {
         "name": "path",
@@ -219,7 +219,7 @@ Support: beta
         "required": true,
         "rest": false,
         "typeText": "CascaderOption[]",
-        "typeRef": "type:facda7174478ab560175"
+        "typeRef": "type:5479f79bddc002f83c85"
       }
     ],
     "returnType": {
@@ -288,7 +288,7 @@ Support: beta
     "source": "packages/native/src/components/Cascader/index.tsx",
     "kind": "function",
     "typeText": "((value: (string | number)[], options: CascaderOption[]) => void) | undefined",
-    "typeRef": "type:504a51e4962c0fc7cade",
+    "typeRef": "type:2c94d76bc243324eb215",
     "parameters": [
       {
         "name": "value",
@@ -296,7 +296,7 @@ Support: beta
         "required": true,
         "rest": false,
         "typeText": "(string | number)[]",
-        "typeRef": "type:d30b7a57953f3032038a"
+        "typeRef": "type:6a8218963ce603035852"
       },
       {
         "name": "options",
@@ -304,7 +304,7 @@ Support: beta
         "required": true,
         "rest": false,
         "typeText": "CascaderOption[]",
-        "typeRef": "type:facda7174478ab560175"
+        "typeRef": "type:5479f79bddc002f83c85"
       }
     ],
     "returnType": {
