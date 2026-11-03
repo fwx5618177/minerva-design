@@ -1,3 +1,4 @@
+import { updateFixedColumnBudget } from "@minerva/dom";
 import {
   css,
   html,
@@ -328,6 +329,7 @@ export class MinervaDataTable<
       return;
     }
     const update = () => {
+      updateFixedColumnBudget(el);
       const overflowing =
         el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight;
       if (overflowing !== this.overflowing) this.overflowing = overflowing;

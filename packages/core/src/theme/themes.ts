@@ -1,29 +1,20 @@
 import type { ComponentTheme, ThemeName } from "./types";
 import { baseTokens, semanticTokens } from "../tokens/default-theme";
-import { mergeBlocks, toCss, type TokenValue } from "../tokens/expr";
-
-/** CSS text of some tokens of a block. */
-/*#__NO_SIDE_EFFECTS__*/
-function pickCss<K extends string>(
-  block: Record<K, TokenValue>,
-  keys: readonly K[],
-): Record<K, string> {
-  const out = {} as Record<K, string>;
-  for (const key of keys) out[key] = toCss(block[key]);
-  return out;
-}
+import { mergeBlocks, toCssBlock } from "../tokens/expr";
 
 /**
  * Semantic token defaults, expressed in terms of the base tokens: the same
  * formulas as the `:root` block of `tokens.css` (../tokens/default-theme.ts).
  * The light theme uses them as-is so they keep following the base colors.
  */
-const derivedSemantic = /* @__PURE__ */ pickCss(semanticTokens, [
+const derivedSemantic = /* @__PURE__ */ toCssBlock(semanticTokens, [
   "surface-color",
   "surface-muted-color",
   "surface-elevated-color",
+  "readonly-surface-color",
   "overlay-color",
   "border-strong-color",
+  "control-border-color",
   "text-color",
   "text-secondary-color",
   "text-disabled-color",
@@ -35,7 +26,9 @@ export const light: ComponentTheme = /* @__PURE__ */ mergeBlocks<
   Partial<ComponentTheme>
 >(baseTokens, derivedSemantic) as ComponentTheme;
 
-export const dark: ComponentTheme = {
+export const dark: ComponentTheme = /* @__PURE__ */ mergeBlocks<
+  Partial<ComponentTheme>
+>(derivedSemantic, {
   "primary-color": "#818cf8",
   "secondary-color": "#94a3b8",
   "success-color": "#4ade80",
@@ -69,9 +62,11 @@ export const dark: ComponentTheme = {
   "text-disabled-color": "#718096",
   "text-inverse-color": "#111827",
   "focus-ring-color": "rgba(129, 140, 248, 0.55)",
-};
+}) as ComponentTheme;
 
-export const githubDark: ComponentTheme = {
+export const githubDark: ComponentTheme = /* @__PURE__ */ mergeBlocks<
+  Partial<ComponentTheme>
+>(derivedSemantic, {
   "primary-color": "#58a6ff",
   "secondary-color": "#8b949e",
   "success-color": "#3fb950",
@@ -105,7 +100,7 @@ export const githubDark: ComponentTheme = {
   "text-disabled-color": "#6e7681",
   "text-inverse-color": "#0d1117",
   "focus-ring-color": "rgba(31, 111, 235, 0.6)",
-};
+}) as ComponentTheme;
 
 /** Union of the keys of `themes` (pure: dropped when `themeKeys` is unused). */
 function uniqueKeys(...themes: object[]): string[] {

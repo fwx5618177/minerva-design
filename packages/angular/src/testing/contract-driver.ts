@@ -177,6 +177,10 @@ export const nativeAngular: Driver = {
     await user().keyboard(keys);
     await this.settle();
   },
+  async composition(target, phase) {
+    dom.composition(target, phase);
+    await this.settle();
+  },
   isChecked: dom.isChecked,
   classes: (el) => Array.from(el.classList),
   tokenVar: dom.tokenVar,

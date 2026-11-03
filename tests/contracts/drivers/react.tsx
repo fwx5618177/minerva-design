@@ -158,6 +158,11 @@ export const reactDriver: Driver = {
     await reactDriver.settle();
   },
 
+  async composition(target, phase) {
+    await act(() => dom.composition(target, phase));
+    await reactDriver.settle();
+  },
+
   isChecked: dom.isChecked,
   classes: (el) => Array.from(el.classList),
   tokenVar: dom.tokenVar,

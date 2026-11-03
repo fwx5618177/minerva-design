@@ -45,7 +45,9 @@
 }
 
 .panel {
-  width: var(--date-picker-panel-width, 17.5rem);
+  width: max(var(--date-picker-panel-width, 17.5rem), calc(7 * var(--touch-target-min, 24px) + 12px + 2 * var(--date-picker-panel-padding, var(--space-3))));
+  max-width: calc(100vw - 2 * var(--space-4));
+  box-sizing: border-box;
   padding: var(--date-picker-panel-padding, var(--space-3));
   border: 1px solid var(--border-color);
   border-radius: var(--date-picker-panel-radius, var(--radius-lg));
@@ -78,6 +80,8 @@
 }
 
 .navButton {
+  min-width: var(--touch-target-min, 24px);
+  min-height: var(--touch-target-min, 24px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -107,12 +111,13 @@
 }
 
 .grid {
+  overflow-x: auto;
   width: 100%;
 }
 
 .week {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(7, minmax(var(--touch-target-min, 24px), 1fr));
   gap: 2px;
   margin-bottom: 2px;
 }
@@ -126,6 +131,8 @@
 }
 
 .day {
+  min-width: var(--touch-target-min, 24px);
+  min-height: var(--touch-target-min, 24px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -149,7 +156,7 @@
   }
 
   &[data-outside] {
-    color: var(--text-disabled-color);
+    color: var(--text-secondary-color);
   }
 
   &[aria-current="date"] {
@@ -229,4 +236,8 @@
     outline: 2px solid Highlight;
     outline-offset: -2px;
   }
+}
+
+.datePicker:has(input[readonly]) .calendarIcon {
+  display: none;
 }

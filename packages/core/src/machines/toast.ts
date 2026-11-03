@@ -13,9 +13,15 @@ import { createStore, type Scheduler } from "./store";
  * from this module so that leak reports name the toast queue.
  */
 const engineScheduler: Scheduler = {
-  setTimeout: (callback, ms) => globalThis.setTimeout(callback, ms),
+  setTimeout: (callback, ms) =>
+    (globalThis as unknown as Pick<Scheduler, "setTimeout">).setTimeout(
+      callback,
+      ms,
+    ),
   clearTimeout: (handle) =>
-    globalThis.clearTimeout(handle as ReturnType<typeof setTimeout>),
+    (globalThis as unknown as Pick<Scheduler, "clearTimeout">).clearTimeout(
+      handle,
+    ),
   now: () => Date.now(),
 };
 

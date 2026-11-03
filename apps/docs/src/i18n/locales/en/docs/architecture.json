@@ -104,5 +104,11 @@
     "title": "Next steps",
     "installation": "Install the packages and import the stylesheet.",
     "webComponents": "Use the custom elements in plain HTML, Vue, Angular or Svelte."
+  },
+  "metadata": {
+    "title": "Component metadata for tools",
+    "text": "The read-only contracts entry describes renderer-specific imports, props, events, slots and bindings. Read referenced type nodes only as needed. It is independent of React, the DOM and native renderers.",
+    "code": "import { contractsMetadata, getRendererContract, getType } from \"minerva-design/contracts\";\n\nconst input = getRendererContract(\"Input\", \"vue\");\nconsole.log(input?.import, input?.bindings);\nconst value = input?.props?.find(prop => prop.name === \"modelValue\");\nconst type = value?.typeRef ? getType(value.typeRef) : undefined;\nconsole.log(contractsMetadata.packageVersion, type);",
+    "provenance": "schemaVersion describes the metadata format; packageVersion matches the package. sourceCommit is the generation baseline and sourceDigest identifies the exact source snapshot. Static Markdown / JSON and complete recipes are available from the text index."
   }
 }

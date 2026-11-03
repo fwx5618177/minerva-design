@@ -58,6 +58,8 @@
 
 // Ghost buttons (toolbar, days, events)
 %ghost-button {
+  min-width: var(--touch-target-min, 24px);
+  min-height: var(--touch-target-min, 24px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -117,13 +119,14 @@
 }
 
 .grid {
+  overflow-x: auto;
   width: 100%;
   min-width: 0;
 }
 
 .week {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(7, minmax(var(--touch-target-min, 24px), 1fr));
   gap: var(--month-calendar-gap, var(--space-1));
   margin-bottom: var(--space-1);
 }
@@ -143,14 +146,14 @@
 .day {
   @extend %ghost-button;
   flex-direction: column;
-  min-width: 0;
+  min-width: var(--touch-target-min, 24px);
   width: 100%;
   height: var(--month-calendar-day-height, 4rem);
   padding: var(--space-1);
   font-variant-numeric: tabular-nums;
 
   &[data-outside] {
-    color: var(--month-calendar-outside-color, var(--text-disabled-color));
+    color: var(--month-calendar-outside-color, var(--text-secondary-color));
   }
 
   // Today: a full ring and an emphasized number

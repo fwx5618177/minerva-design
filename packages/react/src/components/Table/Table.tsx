@@ -1,3 +1,4 @@
+import { updateFixedColumnBudget } from "@minerva/dom";
 import {
   useEffect,
   useRef,
@@ -64,16 +65,28 @@ export const TableRoot = ({
   useEffect(() => {
     const el = wrapperRef.current;
     if (!el) return;
-    const update = () =>
+    const update = () => {
+      updateFixedColumnBudget(el);
       setOverflowing(
         el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight,
       );
+    };
     update();
     if (typeof ResizeObserver === "undefined") return;
     const observer = new ResizeObserver(update);
     observer.observe(el);
     if (el.firstElementChild) observer.observe(el.firstElementChild);
-    return () => observer.disconnect();
+    const mutation = new MutationObserver(update);
+    mutation.observe(el.firstElementChild ?? el, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["data-fixed", "style"],
+    });
+    return () => {
+      observer.disconnect();
+      mutation.disconnect();
+    };
   }, []);
 
   // A scrolling wrapper is a tab stop so keyboard users can scroll it; it is

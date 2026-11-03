@@ -31,7 +31,7 @@ describe("MonthCalendar responsive styles", () => {
       expect(rows).toHaveLength(7);
       for (const row of rows) {
         expect(window.getComputedStyle(row).gridTemplateColumns).toBe(
-          "repeat(7, minmax(0, 1fr))",
+          "repeat(7, minmax(24px, 1fr))",
         );
         expect(row.children).toHaveLength(7);
       }

@@ -29,6 +29,14 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import ts from "typescript";
+import { METADATA_OUTPUT, generateMetadata } from "./contracts-provenance.mjs";
+export { METADATA_OUTPUT, generateMetadata } from "./contracts-provenance.mjs";
+import {
+  typeGraph,
+  describeType,
+  describeCallback,
+} from "./type-contracts.mjs";
+import { rendererSources, renderersFor } from "./renderer-contracts.mjs";
 import {
   generateApi,
   generateElements,
@@ -115,6 +123,13 @@ const at = (path) => join(ROOT, path);
 export const CONTRACTS_OUTPUT = at(
   "packages/core/src/contracts/components.generated.json",
 );
+export const TYPES_OUTPUT = at(
+  "packages/core/src/contracts/types.generated.json",
+);
+export const generateTypeGraph = () =>
+  Object.fromEntries(
+    Object.entries(typeGraph).sort(([a], [b]) => a.localeCompare(b)),
+  );
 export const SUPPORT_OUTPUT = at("apps/docs/src/docs/support.generated.json");
 
 /** The matrix needs support facts, not the complete props/events API payload. */
@@ -534,9 +549,48 @@ const REACT_ENTRIES = [
   at("packages/charts/src/index.ts"),
 ];
 const MINERVA_SOURCE = /[\\/]packages[\\/](react|core|dom|charts)[\\/]src[\\/]/;
-const NATIVE_ENTRIES = [at("packages/native/src/index.ts")];
+const NATIVE_ENTRIES = [
+  at("packages/native/src/index.ts"),
+  at("packages/native/src/icons.ts"),
+];
 const NATIVE_SOURCE = /[\\/]packages[\\/](native|core)[\\/]src[\\/]/;
 /** Composition / host props that are not part of the contract */
+const INHERITED_REACT_PROPS = new Set([
+  "value",
+  "defaultValue",
+  "checked",
+  "defaultChecked",
+  "type",
+  "placeholder",
+  "disabled",
+  "readOnly",
+  "required",
+  "name",
+  "id",
+  "autoComplete",
+  "autoFocus",
+  "min",
+  "max",
+  "step",
+  "minLength",
+  "maxLength",
+  "multiple",
+  "accept",
+  "pattern",
+  "rows",
+  "cols",
+  "wrap",
+  "form",
+  "onChange",
+  "onInput",
+  "onFocus",
+  "onBlur",
+  "onKeyDown",
+  "onKeyUp",
+  "onClick",
+  "aria-label",
+  "aria-describedby",
+]);
 const SKIPPED_REACT_PROPS = new Set([
   "children",
   "className",
@@ -572,7 +626,7 @@ function reactKind(checker, type) {
  * Exported components and their props (declared in Minerva sources only):
  * every exported value `X` with an exported `XProps` type.
  */
-function readComponents({
+export function readComponents({
   entries,
   source,
   paths,
@@ -631,11 +685,25 @@ function readComponents({
     if (!type && !parameterless) continue;
     const all = type ? checker.getPropertiesOfType(type) : [];
     const props = [];
+    // Keep integration-critical DOM inheritance for actual form hosts. Generic
+    // HTMLAttributes also expose defaultValue/onChange on divs, but those are
+    // outside the component calling contract. The event element type identifies
+    // the host without a handwritten component-name map.
+    const inputEvent = all.find((p) => p.name === "onInput");
+    const formHost =
+      inputEvent &&
+      /HTML(Input|TextArea|Select)Element/.test(
+        checker.typeToString(checker.getTypeOfSymbol(inputEvent)),
+      );
     for (const prop of all) {
       const own = (prop.declarations ?? []).some((d) =>
         source.test(d.getSourceFile().fileName),
       );
-      if (!own || SKIPPED_REACT_PROPS.has(prop.name)) continue;
+      if (
+        (!own && !(formHost && INHERITED_REACT_PROPS.has(prop.name))) ||
+        SKIPPED_REACT_PROPS.has(prop.name)
+      )
+        continue;
       const propType = checker.getTypeOfSymbol(prop);
       const tag = prop
         .getJsDocTags(checker)
@@ -645,7 +713,16 @@ function readComponents({
       );
       props.push({
         name: prop.name,
+        inherited: !own || undefined,
+        source: !own
+          ? "react"
+          : relative(
+              ROOT,
+              prop.declarations?.[0]?.getSourceFile().fileName ?? entries[0],
+            ),
         ...reactKind(checker, propType),
+        ...describeType(checker, propType),
+        ...describeCallback(checker, propType),
         default: literal(tag ? ts.displayPartsToString(tag.text) : undefined),
         required: !(prop.flags & ts.SymbolFlags.Optional),
         description: description || undefined,
@@ -659,6 +736,16 @@ function readComponents({
     );
     components.set(name, {
       props,
+      specifier: entries
+        .find((entry) => {
+          const mod = checker.getSymbolAtLocation(program.getSourceFile(entry));
+          return checker.getExportsOfModule(mod).some((s) => s.name === name);
+        })
+        ?.includes("/charts/")
+        ? "minerva-design/charts"
+        : name === "MonacoCodeEditor"
+          ? "minerva-design/monaco"
+          : "minerva-design",
       children: all.some((p) => p.name === "children"),
       description: description || undefined,
     });
@@ -837,6 +924,13 @@ function buildNativeContract(component, native, docs) {
         compact({
           name: kebab(prop.name.slice(2)).slice(1),
           native: prop.name,
+          required: prop.required,
+          typeText: prop.typeText,
+          typeRef: prop.typeRef,
+          parameters: prop.parameters,
+          returnType: prop.returnType,
+          source: prop.source,
+          inherited: prop.inherited,
           description: prop.description,
         }),
       );
@@ -846,6 +940,10 @@ function buildNativeContract(component, native, docs) {
       compact({
         name: prop.name,
         kind: prop.kind,
+        typeText: prop.typeText,
+        typeRef: prop.typeRef,
+        inherited: prop.inherited,
+        source: prop.source,
         values: prop.values,
         default: prop.default,
         required: prop.required,
@@ -919,7 +1017,16 @@ function buildContract({
     if (/^on[A-Z]/.test(prop.name) && prop.kind === "function") {
       const wc = element ? eventFor(prop.name, events) : undefined;
       if (wc) {
-        events.get(wc).react ??= prop.name;
+        Object.assign(events.get(wc), {
+          react: prop.name,
+          inherited: prop.inherited,
+          source: prop.source,
+          required: prop.required,
+          typeText: prop.typeText,
+          typeRef: prop.typeRef,
+          parameters: prop.parameters,
+          returnType: prop.returnType,
+        });
       } else {
         const event = kebab(prop.name.slice(2)).slice(1);
         events.set(
@@ -927,6 +1034,13 @@ function buildContract({
           compact({
             name: event,
             react: prop.name,
+            inherited: prop.inherited,
+            source: prop.source,
+            required: prop.required,
+            typeText: prop.typeText,
+            typeRef: prop.typeRef,
+            parameters: prop.parameters,
+            returnType: prop.returnType,
             description: prop.description,
           }),
         );
@@ -938,6 +1052,10 @@ function buildContract({
       compact({
         name: prop.name,
         kind: prop.kind,
+        typeText: prop.typeText,
+        typeRef: prop.typeRef,
+        inherited: prop.inherited,
+        source: prop.source,
         values: prop.values,
         default: prop.default,
         required: prop.required,
@@ -1064,6 +1182,7 @@ export function generateContracts() {
     byName.set(name, { name, react: component, docs: docs.get(name) });
   }
   const native = readNative();
+  const apis = rendererSources(readComponents);
   const contracts = [...byName.values()].map((input) =>
     buildContract({
       ...input,
@@ -1087,6 +1206,29 @@ export function generateContracts() {
       ),
     );
   }
+  for (const contract of contracts) {
+    const nativeName =
+      NATIVE_COMPONENTS.find(
+        (c) =>
+          c.contract === contract.name ||
+          (c.contract === null && c.name === contract.name),
+      )?.name ?? contract.name;
+    const nativeComponent = native.get(nativeName);
+    if (nativeComponent) nativeComponent.exportName = nativeName;
+    contract.renderers = renderersFor(contract, {
+      react: react.get(contract.name),
+      native: nativeComponent,
+      elements: elements.get(contract.tag),
+      apis,
+      angularExports: ANGULAR_EQUIVALENTS[contract.name]?.exports,
+    });
+    for (const event of contract.events) {
+      const wcEvent = contract.renderers.wc.events?.find(
+        (e) => e.name === event.wc,
+      );
+      if (wcEvent?.detailType) event.detailType = wcEvent.detailType;
+    }
+  }
   return contracts.sort((a, b) => a.name.localeCompare(b.name));
 }
 
@@ -1107,6 +1249,8 @@ if (isMain) {
   const outputs = [
     [CONTRACTS_OUTPUT, await serializeContracts(contracts)],
     [SUPPORT_OUTPUT, await serializeContracts(projectSupport(contracts))],
+    [TYPES_OUTPUT, await serializeContracts(generateTypeGraph())],
+    [METADATA_OUTPUT, await serializeContracts(generateMetadata())],
   ];
   for (const [output, next] of outputs) {
     const name = relative(ROOT, output);

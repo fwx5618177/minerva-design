@@ -2,10 +2,16 @@ import type {
   ComponentContract,
   DefaultValue,
   PropKind,
+  TypeNode,
+  ContractsMetadata,
 } from "../packages/core/src/contracts/types";
 
 export declare const CONTRACTS_OUTPUT: string;
 export declare const SUPPORT_OUTPUT: string;
+export declare const TYPES_OUTPUT: string;
+export declare const METADATA_OUTPUT: string;
+export declare function generateTypeGraph(): Record<string, TypeNode>;
+export declare function generateMetadata(): ContractsMetadata;
 export type ComponentSupport = Pick<
   ComponentContract,
   "name" | "tag" | "docs" | "tracks" | "platforms"
@@ -25,6 +31,10 @@ export declare function detailFields(
 export interface ReactProp {
   name: string;
   kind: PropKind;
+  inherited?: boolean;
+  source?: string;
+  typeText?: string;
+  typeRef?: string;
   values?: string[];
   default?: DefaultValue;
   required: boolean;
@@ -62,7 +72,7 @@ export declare function readElements(): Map<string, ElementApi>;
 
 export declare function generateContracts(): ComponentContract[];
 export declare function serializeContracts(
-  contracts?: ComponentContract[] | ComponentSupport[],
+  contracts?: unknown,
 ): Promise<string>;
 
 /** Vue components covered by the shared contract suites (`stable`) */

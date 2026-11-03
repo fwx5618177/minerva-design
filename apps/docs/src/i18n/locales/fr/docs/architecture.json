@@ -104,5 +104,11 @@
     "title": "Étapes suivantes",
     "installation": "Installer les paquets et importer la feuille de style.",
     "webComponents": "Utiliser les éléments personnalisés en HTML simple, Vue, Angular ou Svelte."
+  },
+  "metadata": {
+    "title": "Métadonnées des composants pour les outils",
+    "text": "Le point d’entrée contracts en lecture seule décrit les imports, propriétés, événements, slots et liaisons par moteur de rendu. Consultez les types référencés à la demande. Il ne dépend ni de React ni du DOM.",
+    "code": "import { contractsMetadata, getRendererContract, getType } from \"minerva-design/contracts\";\n\nconst input = getRendererContract(\"Input\", \"vue\");\nconsole.log(input?.import, input?.bindings);\nconst value = input?.props?.find(prop => prop.name === \"modelValue\");\nconst type = value?.typeRef ? getType(value.typeRef) : undefined;\nconsole.log(contractsMetadata.packageVersion, type);",
+    "provenance": "schemaVersion identifie le format et packageVersion la version du paquet. sourceCommit est la base de génération ; sourceDigest identifie le contenu exact. L’index texte fournit aussi Markdown / JSON statiques et des exemples complets."
   }
 }

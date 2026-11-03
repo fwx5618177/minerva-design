@@ -28,3 +28,4 @@ export * from "./theme/cookies";
 export * from "./theme/csp";
 export * from "./theme/design-attributes";
 export * from "./theme/primary-color";
+export * from "./table-fixed-columns";

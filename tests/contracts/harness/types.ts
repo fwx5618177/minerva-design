@@ -124,6 +124,8 @@ export interface Driver {
   press(target: Element): Promise<void>;
   type(target: Element, text: string): Promise<void>;
   keyboard(keys: string): Promise<void>;
+  /** Native IME boundary events; required by the AutoComplete DOM suite. */
+  composition?(target: Element, phase: "start" | "end"): Promise<void>;
 
   // --- state and styles ------------------------------------------------------
   /** Checked state of a checkbox / switch / radio (`aria-checked` or `.checked`) */

@@ -4,7 +4,8 @@
 // `modelValue`; React nodes may be slots), the same literal defaults, and an
 // emit for every React callback (`onOpenChange` -> `openChange`). Reviewed
 // differences are listed below with their reason.
-import { describe, expect, it } from "vitest";
+import { mount } from "@vue/test-utils";
+import { describe, expect, it, vi } from "vitest";
 import type { Component } from "vue";
 import { componentContracts } from "@minerva/core/contracts";
 import { allComponents } from "./plugin";
@@ -63,6 +64,43 @@ describe("contracts parity (Vue vs @minerva/core/contracts)", () => {
 
   it("props, defaults and events match (or are reviewed differences)", () => {
     const problems: string[] = [];
+    // React's inherited host API is Vue's native attribute/listener surface,
+    // not an emitted component event. Verify actual forwarding before treating
+    // inherited members as host API; own Minerva props retain the parity checks.
+    const forwardedHosts = new Set<string>();
+    for (const contract of vueContracts) {
+      if (!contract.props.some((prop) => prop.inherited)) continue;
+      const component = components[contract.name];
+      if (!component) continue;
+      const onFocus = vi.fn();
+      const wrapper = mount(component, {
+        attrs: {
+          name: "contract-field",
+          placeholder: "Contract placeholder",
+          onFocus,
+        },
+      });
+      const field = wrapper.find("input,textarea,select");
+      if (field.exists()) {
+        if (
+          field.attributes("name") !== "contract-field" ||
+          field.attributes("placeholder") !== "Contract placeholder"
+        )
+          problems.push(
+            `${contract.name}: native attributes are not forwarded`,
+          );
+        field.element.dispatchEvent(new FocusEvent("focus"));
+        if (!onFocus.mock.calls.length)
+          problems.push(
+            `${contract.name}: native focus listener is not forwarded`,
+          );
+        else forwardedHosts.add(contract.name);
+      } else
+        problems.push(
+          `${contract.name}: inherited form API has no native field`,
+        );
+      wrapper.unmount();
+    }
     for (const contract of vueContracts) {
       const component = components[contract.name];
       if (!component) continue;
@@ -70,6 +108,7 @@ describe("contracts parity (Vue vs @minerva/core/contracts)", () => {
       const emits = emitsOf(component);
       for (const prop of contract.props) {
         if (prop.only === "wc") continue;
+        if (prop.inherited && forwardedHosts.has(contract.name)) continue;
         const key = `${contract.name}.${prop.name}`;
         if (key in PARITY_DIFFERENCES) continue;
         // HTML attributes (aria-*, id, tabIndex) fall through to the element
@@ -101,6 +140,7 @@ describe("contracts parity (Vue vs @minerva/core/contracts)", () => {
       }
       for (const event of contract.events) {
         if (!event.react) continue;
+        if (event.inherited && forwardedHosts.has(contract.name)) continue;
         const key = `${contract.name}.${event.react}`;
         if (key in PARITY_DIFFERENCES) continue;
         const emit = emitOf(event.react);

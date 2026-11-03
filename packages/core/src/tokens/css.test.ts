@@ -18,6 +18,8 @@ describe("generateTokensCss", () => {
   // 2. Code block syntax colors (tokens/code.ts): `--code-token-*-color` at
   //    the end of the `:root` block and a `[data-theme=dark]` block after the
   //    dark-without-palette block: +41 lines, nothing else changed.
+  // 3. Necessary control-border-color and readable readonly-surface-color
+  //    semantics, kept separate from decorative divider and disabled colors.
   it("tokens.golden.css: equals the published stylesheet", () => {
     expect(generateTokensCss()).toBe(read("__fixtures__", "tokens.golden.css"));
   });

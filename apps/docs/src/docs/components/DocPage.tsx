@@ -24,6 +24,7 @@ import {
 } from "../frameworks";
 import { useFramework } from "../frameworks/useFramework";
 import DemoBlock from "./DemoBlock";
+import ReferenceLinks from "./ReferenceLinks";
 import PropsTable from "./PropsTable";
 import CssVarsTable from "./CssVarsTable";
 import WcApiTables from "./WcApiTables";
@@ -403,6 +404,7 @@ const DocPage: React.FC<DocPageProps> = ({
         <p className={styles.eyebrow}>{t(`nav.${meta.category}`)}</p>
         <h1>{title}</h1>
         <p className={styles.lead}>{t(`docs.${id}.description`)}</p>
+        <ReferenceLinks page={id} />
         {nativeOnly && (
           <p className={styles.callout} data-testid="native-only">
             {t("doc.native.only")}

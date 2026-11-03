@@ -41,7 +41,7 @@ pnpm test:contracts:mini       # shared suites on Taro / uni-app (incl. AutoComp
 | Toast queue                                  | `max` caps the visible toasts, the oldest closes first                                   |
 | i18n labels                                  | Modal close / Pagination labels in en, zh, ja, fr through the platform's locale provider |
 | Button color / variant tokens                | each `color` / `variant` value renders its class, whose rules resolve to design tokens   |
-| AutoComplete active option                   | see below (10 tests)                                                                     |
+| AutoComplete active option                   | see below (17 tests)                                                                     |
 
 **AutoComplete active option** (`suites/autocomplete.ts`). The active option
 is the element that the combobox input's `aria-activedescendant` refers to. It
@@ -53,7 +53,8 @@ must be one of the rendered options. Picks are read from the select event
   it and fills its label; Escape closes the dropdown (`aria-expanded="false"`,
   no option rendered);
 - while `loading` hides the options, no option is active and ArrowDown +
-  Enter picks nothing;
+  Enter picks nothing; a previously highlighted list also becomes inert while
+  loading, and replacement results use the `autoHighlight` fallback policy;
 - options shrinking below the highlight (index 2 -> one option) fall back to
   the first option with `autoHighlight`, and Enter picks it;
 - reordered options (new objects, same values) keep the highlight on the same
@@ -61,7 +62,17 @@ must be one of the rendered options. Picks are read from the select event
 - a highlighted option that becomes disabled falls back to the first enabled
   option with `autoHighlight`, and clears the highlight without it;
 - without `autoHighlight`, removing the highlighted option leaves no
-  `aria-activedescendant`, and Enter picks nothing.
+  `aria-activedescendant`, and Enter picks nothing;
+- an all-disabled replacement list offers no fallback even with `autoHighlight`;
+- a controlled parent can reject typing and selection text in React / Vue;
+  WC owns its element value and Angular owns its model value. uni's native
+  input keeps typed text until an actual parent value change, while option
+  fills remain controlled. Parent updates restore text without another selection;
+- native composition start / end events leave arrows, Enter and Escape with
+  the IME until composition ends, then selection works again;
+- changing `disabled` / `readOnly` while open closes the list and blocks
+  selection; unlocking allows a new selection. React / Vue pass input state
+  through `inputProps`; Angular / WC expose top-level state properties.
 
 ### Platform matrix
 
@@ -73,7 +84,7 @@ must be one of the rendered options. Picks are read from the select event
 | Angular             | all                                         | runs                                                  |
 | React Native        | all                                         | declared not applicable, reported as 1 skipped test   |
 | Taro (H5 host)      | Button, toggle and selection (11 tests)     | declared not applicable in the driver; not registered |
-| uni-app (host)      | Button, toggle, selection and AutoComplete  | runs (21 tests in total)                              |
+| uni-app (host)      | Button, toggle, selection and AutoComplete  | runs (28 tests in total)                              |
 | WeChat mini program | none (no shared driver; package tests only) | no shared driver                                      |
 
 ## Platform differences: `notApplicable`
@@ -143,7 +154,7 @@ tests, without a shared driver yet.
      DOM renderers reuse `harness/dom.ts`; React Native uses its testing
      library's role / text queries; mini-program renderers query their
      simulator's node tree.
-   - interactions (`press`, `type`, `keyboard`), state (`isChecked`,
+   - interactions (`press`, `type`, `keyboard`, and native `composition` boundary events for DOM AutoComplete), state (`isChecked`,
      `classes`, `tokenVar`), `stylesheet(component)` (the CSS or style objects
      the platform applies) and `services.toast`.
    - `combobox` (`activeOption(input)`, `inputValue(input)`) for the

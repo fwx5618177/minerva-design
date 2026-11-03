@@ -121,8 +121,12 @@ export interface SemanticThemeProps extends ThemeRoleTokens {
   "accent-color"?: string;
   /** Backdrop / modal overlay. */
   "overlay-color"?: string;
-  /** Higher-contrast border (inputs, hovered borders). */
+  /** Emphasized decorative border (panels, hovered separators). */
   "border-strong-color"?: string;
+  /** Read-only field surface; content keeps normal text contrast and focus. */
+  "readonly-surface-color"?: string;
+  /** Necessary boundary of editable controls; distinct from decorative dividers. */
+  "control-border-color"?: string;
   /** Main text color (defaults to `--foreground-color`). */
   "text-color"?: string;
   /** Secondary text (descriptions, helper text). */

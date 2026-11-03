@@ -3,12 +3,26 @@
 // (../tokens/css.ts), so the SSR init script can select a palette before
 // hydration without any JavaScript theme application, and of
 // `resolveTokens({ palette })` / the mini-program palette classes.
+import { semanticTokens } from "../tokens/default-theme";
+import { toCssBlock } from "../tokens/expr";
 import type { ComponentTheme } from "./types";
 import type { Palette, ResolvedThemeMode } from "./mode";
 
+const controlSemantics = /* @__PURE__ */ toCssBlock(semanticTokens, [
+  "control-border-color",
+  "readonly-surface-color",
+] as const);
+/** Pure data construction stays removable for consumers of unrelated helpers. */
+/*#__NO_SIDE_EFFECTS__*/
+function withControlSemantics<const T extends ComponentTheme>(
+  theme: T,
+): T & typeof controlSemantics {
+  return Object.assign({}, controlSemantics, theme);
+}
+
 export const palettes = {
   editorial: {
-    light: {
+    light: /* @__PURE__ */ withControlSemantics({
       "primary-color": "#1e3a5f",
       "secondary-color": "#57534e",
       "success-color": "#5a7c2f",
@@ -88,8 +102,8 @@ export const palettes = {
         "'Spectral', 'Source Serif Pro', 'Noto Serif CJK SC', '思源宋体', 'Songti SC', Georgia, 'Times New Roman', serif",
       "font-family-mono":
         "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace",
-    },
-    dark: {
+    }),
+    dark: /* @__PURE__ */ withControlSemantics({
       "primary-color": "#7a9bc4",
       "secondary-color": "#c8bfac",
       "success-color": "#a3c971",
@@ -169,10 +183,10 @@ export const palettes = {
         "'Spectral', 'Source Serif Pro', 'Noto Serif CJK SC', '思源宋体', 'Songti SC', Georgia, 'Times New Roman', serif",
       "font-family-mono":
         "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace",
-    },
+    }),
   },
   tech: {
-    light: {
+    light: /* @__PURE__ */ withControlSemantics({
       "primary-color": "#2364c4",
       "secondary-color": "#424c5c",
       "success-color": "#10b981",
@@ -252,8 +266,8 @@ export const palettes = {
         "'Inter', system-ui, -apple-system, 'PingFang SC', sans-serif",
       "font-family-mono":
         "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace",
-    },
-    dark: {
+    }),
+    dark: /* @__PURE__ */ withControlSemantics({
       "primary-color": "#5c8ee6",
       "secondary-color": "#b8c0cc",
       "success-color": "#34d399",
@@ -333,10 +347,10 @@ export const palettes = {
         "'Spectral', 'Source Serif Pro', 'Noto Serif CJK SC', '思源宋体', 'Songti SC', Georgia, 'Times New Roman', serif",
       "font-family-mono":
         "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace",
-    },
+    }),
   },
   graphite: {
-    light: {
+    light: /* @__PURE__ */ withControlSemantics({
       "primary-color": "#315fce",
       "secondary-color": "#505761",
       "success-color": "#25865a",
@@ -413,8 +427,8 @@ export const palettes = {
         "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', Arial, sans-serif",
       "font-family-mono":
         "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace",
-    },
-    dark: {
+    }),
+    dark: /* @__PURE__ */ withControlSemantics({
       "primary-color": "#7b9cff",
       "secondary-color": "#a7adb7",
       "success-color": "#65c18c",
@@ -491,10 +505,10 @@ export const palettes = {
         "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', Arial, sans-serif",
       "font-family-mono":
         "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace",
-    },
+    }),
   },
   cool: {
-    light: {
+    light: /* @__PURE__ */ withControlSemantics({
       "primary-color": "#2864c7",
       "secondary-color": "#485a6b",
       "success-color": "#23845a",
@@ -571,8 +585,8 @@ export const palettes = {
         "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', Arial, sans-serif",
       "font-family-mono":
         "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace",
-    },
-    dark: {
+    }),
+    dark: /* @__PURE__ */ withControlSemantics({
       "primary-color": "#79a9ff",
       "secondary-color": "#a2afbd",
       "success-color": "#62c28e",
@@ -649,6 +663,6 @@ export const palettes = {
         "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', Arial, sans-serif",
       "font-family-mono":
         "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace",
-    },
+    }),
   },
 } as const satisfies Record<Palette, Record<ResolvedThemeMode, ComponentTheme>>;

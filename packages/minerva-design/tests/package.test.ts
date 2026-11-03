@@ -90,9 +90,9 @@ describe("exports map", () => {
             .replace(/\.js$/, ".d.ts")
             .replace(/\.cjs$/, ".d.cts")
             .replace(
-              // the styling-hooks declarations live in a folder
-              /core\/styling-hooks\.d\.(c?)ts$/,
-              "core/styling-hooks/index.d.$1ts",
+              // Data entries emit declarations from their source index folder
+              /core\/(styling-hooks|contracts)\.d\.(c?)ts$/,
+              "core/$1/index.d.$2ts",
             ),
         );
         expect(existsSync(join(root, types)), types).toBe(true);

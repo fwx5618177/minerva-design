@@ -5,7 +5,7 @@ export default function StatesDemo() {
     <>
       <Input aria-label="Invalid" invalid defaultValue="Invalid" />
       <Input aria-label="Disabled" disabled defaultValue="Disabled" />
-      <Input aria-label="Read-only" readOnly defaultValue="Read-only" />
+      <Input aria-label="Read-only" readOnly defaultValue="Project Atlas" />
       <FormField label="Inside a FormField" errorMessage="Inherits the error">
         <Input />
       </FormField>

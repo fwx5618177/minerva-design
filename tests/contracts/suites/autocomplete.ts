@@ -88,6 +88,154 @@ export function autoCompleteSuite(driver: Driver) {
     const selected = () =>
       handle!.emitted(select.name, "AutoComplete").map((e) => e.detail);
 
+    for (const autoHighlight of [false, true]) {
+      contractTest(
+        driver,
+        SUITE,
+        `loading blocks a previous highlight until replacement results arrive (autoHighlight=${autoHighlight})`,
+        async () => {
+          const { handle, input } = await open({
+            options: ABC,
+            autoHighlight,
+            loading: false,
+          });
+          await highlight(input, "Beta");
+          await handle.setProps({ loading: true });
+          expect(labels()).toEqual([]);
+          expect(active(input)).toBeNull();
+          await driver.keyboard("{ArrowDown}{Enter}");
+          expect(selected()).toEqual([]);
+          await handle.setProps({ options: [GAMMA], loading: false });
+          expect(labels()).toEqual(["Gamma"]);
+          expect(active(input)).toBe(autoHighlight ? "Gamma" : null);
+          await driver.keyboard("{Enter}");
+          expect(selected()).toEqual(
+            autoHighlight ? [{ value: "c", option: GAMMA }] : [],
+          );
+        },
+      );
+    }
+
+    contractTest(
+      driver,
+      SUITE,
+      "autoHighlight has no fallback when every replacement option is disabled",
+      async () => {
+        const { handle, input } = await open({
+          options: ABC,
+          autoHighlight: true,
+        });
+        await handle.setProps({
+          options: ABC.map((option) => ({ ...option, disabled: true })),
+        });
+        expect(active(input)).toBeNull();
+        await driver.keyboard("{ArrowDown}{ArrowUp}{Enter}");
+        expect(selected()).toEqual([]);
+      },
+    );
+
+    contractTest(
+      driver,
+      SUITE,
+      driver.platform === "wc" || driver.platform === "angular"
+        ? "element/model-owned text can be restored by the parent after a selection"
+        : driver.platform === "uni"
+          ? "native input text can be restored while option fills remain controlled"
+          : "controlled parent rejection preserves the value after typing and selection requests",
+      async () => {
+        const { handle, input } = await open({
+          options: ABC,
+          value: "",
+          onChange: () => {},
+        });
+        await driver.type(input, "x");
+        expect(reads().inputValue(input)).toBe(
+          ["wc", "angular", "uni"].includes(driver.platform) ? "x" : "",
+        );
+        const change = eventWith(
+          contractOf("AutoComplete"),
+          "value",
+          driver.platform,
+        );
+        expect(
+          handle.emitted(change.name, "AutoComplete").at(-1)?.detail,
+        ).toEqual({ value: "x" });
+        // Native hosts / Angular models require an actual parent value change;
+        // rebinding the unchanged value does not rewrite their live input.
+        await handle.setProps({ value: "Alpha" });
+        await handle.setProps({ value: "" });
+        await highlight(input, "Beta");
+        await driver.keyboard("{Enter}");
+        expect(selected()).toEqual([{ value: "b", option: BETA }]);
+        expect(reads().inputValue(input)).toBe(
+          driver.platform === "wc" || driver.platform === "angular"
+            ? "Beta"
+            : "",
+        );
+        await handle.setProps({ value: "Alpha" });
+        expect(reads().inputValue(input)).toBe("Alpha");
+        await handle.setProps({ value: "" });
+        expect(reads().inputValue(input)).toBe("");
+        expect(selected()).toHaveLength(1);
+      },
+    );
+
+    contractTest(
+      driver,
+      SUITE,
+      "IME composition owns arrows, Enter and Escape until composition ends",
+      async () => {
+        const { input } = await open({ options: ABC });
+        await highlight(input, "Beta");
+        if (!driver.composition)
+          throw new Error(
+            `${driver.platform} needs a composition event adapter`,
+          );
+        await driver.composition(input, "start");
+        await driver.keyboard("{ArrowDown}{Enter}{Escape}");
+        expect(active(input)).toBe("Beta");
+        expect(input.getAttribute("aria-expanded")).toBe("true");
+        expect(selected()).toEqual([]);
+        await driver.composition(input, "end");
+        await driver.keyboard("{Enter}");
+        expect(selected()).toEqual([{ value: "b", option: BETA }]);
+      },
+    );
+
+    for (const state of ["disabled", "readOnly"]) {
+      contractTest(
+        driver,
+        SUITE,
+        `${state} transition closes the dropdown and blocks selection until unlocked`,
+        async () => {
+          // React / Vue expose the input state through inputProps; Angular / WC
+          // expose it on the component. uni-app accepts both API shapes.
+          const lock = (value: boolean) =>
+            driver.platform === "react" || driver.platform === "vue"
+              ? { inputProps: { [state]: value } }
+              : { [state]: value };
+          const { handle, input } = await open({
+            options: ABC,
+            ...lock(false),
+          });
+          await highlight(input, "Beta");
+          await handle.setProps(lock(true));
+          await driver.settle(EXIT);
+          expect(input.getAttribute("aria-expanded")).toBe("false");
+          expect(active(input)).toBeNull();
+          expect(labels()).toEqual([]);
+          await driver.keyboard("{ArrowDown}{Enter}");
+          expect(selected()).toEqual([]);
+          expect(reads().inputValue(input)).toBe("");
+          await handle.setProps(lock(false));
+          await driver.press(input);
+          await highlight(input, "Alpha");
+          await driver.keyboard("{Enter}");
+          expect(selected()).toEqual([{ value: "a", option: ALPHA }]);
+        },
+      );
+    }
+
     contractTest(driver, SUITE, "typing filters the options", async () => {
       const { input } = await open({ options: ABC });
       expect(labels()).toEqual(["Alpha", "Beta", "Gamma"]);

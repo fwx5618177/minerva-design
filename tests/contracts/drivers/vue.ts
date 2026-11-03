@@ -188,6 +188,11 @@ export const vueDriver: Driver = {
     await vueDriver.settle();
   },
 
+  async composition(target, phase) {
+    dom.composition(target, phase);
+    await vueDriver.settle();
+  },
+
   isChecked: dom.isChecked,
   classes: (el) => Array.from(el.classList),
   tokenVar: dom.tokenVar,

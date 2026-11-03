@@ -171,6 +171,15 @@ const ArchitectureDoc: React.FC = () => {
 
   return (
     <DocPage id="architecture" intro={intro}>
+      <section className={styles.section} aria-labelledby="component-metadata">
+        <h2 id="component-metadata">{k("metadata.title")}</h2>
+        <p>{k("metadata.text")}</p>
+        <CodeBlock code={k("metadata.code")} language="ts" />
+        <p>{k("metadata.provenance")}</p>
+        <a href={`${import.meta.env.BASE_URL}llms.txt`}>
+          {t("doc.reference.index")}
+        </a>
+      </section>
       <section className={styles.section} aria-labelledby="platforms">
         <h2 id="platforms">{k("platforms.title")}</h2>
         <p className={styles.prose}>{k("platforms.text")}</p>

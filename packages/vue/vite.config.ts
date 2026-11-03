@@ -206,6 +206,8 @@ export default defineConfig({
     },
     include: ["src/**/*.test.ts", "spike/**/*.test.ts", "tests/**/*.test.ts"],
     alias: [
+      // Copyable documentation demos exercise source components during tests.
+      { find: /^minerva-design\/vue$/, replacement: here("./src/index.ts") },
       { find: /^@react-styles\//, replacement: here("../react/src/") },
       {
         find: /^@minerva\/core\/tokens\.css$/,

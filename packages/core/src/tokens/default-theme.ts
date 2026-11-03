@@ -62,6 +62,7 @@ export const semanticTokens = {
   "surface-muted-color": mix(fg, 6, bg),
   "surface-elevated-color": bg,
   "surface-subtle-color": mix(fg, 3, bg),
+  "readonly-surface-color": mix(fg, 8, surface),
   "canvas-color": ref("surface-subtle-color"),
   "control-color": ref("surface-subtle-color"),
   "hover-color": ref("surface-muted-color"),
@@ -69,6 +70,7 @@ export const semanticTokens = {
   "overlay-color": mix("#000000", 45, "transparent"),
   // ---- Borders ----
   "border-strong-color": mix(fg, 35, bg),
+  "control-border-color": mix(fg, 60, surface),
   // ---- Text ----
   "text-color": fg,
   "text-secondary-color": mix(fg, 75, bg),

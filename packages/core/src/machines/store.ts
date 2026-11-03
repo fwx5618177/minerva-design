@@ -119,9 +119,15 @@ export interface Scheduler {
  * after this module loaded are honored).
  */
 export const defaultScheduler: Scheduler = {
-  setTimeout: (callback, ms) => globalThis.setTimeout(callback, ms),
+  setTimeout: (callback, ms) =>
+    (globalThis as unknown as Pick<Scheduler, "setTimeout">).setTimeout(
+      callback,
+      ms,
+    ),
   clearTimeout: (handle) =>
-    globalThis.clearTimeout(handle as ReturnType<typeof setTimeout>),
+    (globalThis as unknown as Pick<Scheduler, "clearTimeout">).clearTimeout(
+      handle,
+    ),
   now: () => Date.now(),
 };
 

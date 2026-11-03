@@ -135,6 +135,11 @@ export const wcDriver: Driver = {
     await wcDriver.settle();
   },
 
+  async composition(target, phase) {
+    dom.composition(target, phase);
+    await wcDriver.settle();
+  },
+
   isChecked: dom.isChecked,
   classes: (el) => Array.from(el.classList),
   tokenVar: dom.tokenVar,

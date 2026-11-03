@@ -2,7 +2,7 @@
  * `@minerva/core/contracts`: runtime metadata of every Minerva component
  * (props, events, slots, product tracks and the platform support matrix).
  *
- * Internal entry (not part of the main core index, so `@minerva/core` stays
+ * Public entry: minerva-design/contracts (kept out of the main core index so it stays
  * small): read by the docs ("Platform support" page), the cross-platform
  * contract tests (tests/contracts) and future renderers.
  *
@@ -11,20 +11,99 @@
  * tests/docs/contracts.test.ts fails when it is stale.
  */
 import data from "./components.generated.json";
+import typeData from "./types.generated.json";
+import provenance from "./metadata.generated.json";
 import type {
   ComponentContract,
   Platform,
   PlatformSupport,
   SupportStatus,
   Track,
+  TypeNode,
+  ContractsMetadata,
+  RendererContract,
 } from "./types";
 
 export type * from "./types";
 export { PLATFORMS, SUPPORT_STATUSES, TRACKS } from "./constants";
 
 /** Every component contract, sorted by name */
-export const componentContracts =
-  data as unknown as readonly ComponentContract[];
+function freeze<T>(value: T): T {
+  if (value && typeof value === "object" && !Object.isFrozen(value)) {
+    for (const child of Object.values(value)) freeze(child);
+    Object.freeze(value);
+  }
+  return value;
+}
+
+export const componentContracts = freeze(
+  data,
+) as unknown as readonly ComponentContract[];
+
+/** Format version, package version and reproducible source snapshot identity. */
+export const contractsMetadata = freeze(provenance) as ContractsMetadata;
+const types = freeze(typeData) as unknown as Readonly<Record<string, TypeNode>>;
+
+/** Read just the referenced type node; references keep recursive types finite. */
+export function getType(typeRef: string): TypeNode | undefined {
+  return Object.hasOwn(types, typeRef) ? types[typeRef] : undefined;
+}
+
+/** The exact vocabulary of one renderer; unsupported renderers expose status/notes. */
+export function getRendererContract(
+  nameOrTag: string,
+  renderer: Platform,
+): RendererContract | undefined {
+  return getContract(nameOrTag)?.renderers[renderer];
+}
+
+export type ContractCapability = "props" | "events" | "slots" | "bindings";
+export interface ContractQuery {
+  component?: string;
+  renderer?: Platform;
+  capability?: ContractCapability;
+  track?: Track;
+  status?: SupportStatus;
+}
+
+/** Filter before serializing results into a tool/model context. For the
+ * smallest payload use getRendererContract or getType on the result. */
+export function queryContracts(
+  query: ContractQuery = {},
+): readonly ComponentContract[] {
+  return componentContracts.filter((contract) => {
+    if (
+      query.component &&
+      contract.name !== query.component &&
+      contract.tag !== query.component
+    )
+      return false;
+    if (query.track && !contract.tracks.includes(query.track)) return false;
+    const renderer = query.renderer
+      ? contract.renderers[query.renderer]
+      : undefined;
+    if (
+      query.renderer &&
+      (!renderer?.import ||
+        (renderer.status !== "stable" && renderer.status !== "beta"))
+    )
+      return false;
+    if (query.status && (!renderer || renderer.status !== query.status))
+      return false;
+    if (
+      query.capability &&
+      !(renderer
+        ? renderer[query.capability]?.length
+        : query.capability === "bindings"
+          ? Object.values(contract.renderers).some(
+              (api) => api.bindings?.length,
+            )
+          : contract[query.capability].length)
+    )
+      return false;
+    return true;
+  });
+}
 
 /** Contract of a component by name (`Button`) or tag (`minerva-button`) */
 export function getContract(nameOrTag: string): ComponentContract | undefined {

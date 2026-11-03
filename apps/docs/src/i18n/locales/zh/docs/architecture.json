@@ -104,5 +104,11 @@
     "title": "下一步",
     "installation": "安装各个包并引入样式表。",
     "webComponents": "在纯 HTML、Vue、Angular 或 Svelte 中使用自定义元素。"
+  },
+  "metadata": {
+    "title": "工具与 AI 使用的组件元数据",
+    "text": "只读 contracts 入口提供各框架的导入、属性、事件、插槽和绑定信息。按需读取类型引用即可，无需把全部类型放入上下文。此入口不依赖 React、DOM 或原生渲染器。",
+    "code": "import { contractsMetadata, getRendererContract, getType } from \"minerva-design/contracts\";\n\nconst input = getRendererContract(\"Input\", \"vue\");\nconsole.log(input?.import, input?.bindings);\nconst value = input?.props?.find(prop => prop.name === \"modelValue\");\nconst type = value?.typeRef ? getType(value.typeRef) : undefined;\nconsole.log(contractsMetadata.packageVersion, type);",
+    "provenance": "schemaVersion 标识格式，packageVersion 对应包版本。sourceCommit 是生成基线，sourceDigest 标识实际源码快照。文本索引还提供静态 Markdown / JSON 和完整接入示例。"
   }
 }

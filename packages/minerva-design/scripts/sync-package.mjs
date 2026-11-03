@@ -60,6 +60,7 @@ export const DUAL_SUBPATHS = {
   "theme-utils": ["react/theme-utils"],
   monaco: ["react/monaco"],
   core: ["dom/core-web"],
+  contracts: ["core/contracts", "core/contracts/index"],
   "styling-hooks": ["core/styling-hooks", "core/styling-hooks/index"],
   // GPU charts: React components and the framework-free engine
   charts: ["charts/index"],

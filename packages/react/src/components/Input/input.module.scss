@@ -19,7 +19,7 @@
 //
 // Internal plumbing uses the --_input-* prefix.
 .root {
-  --_input-border: var(--input-border-color, var(--border-color));
+  --_input-border: var(--input-border-color, var(--control-border-color));
   --_input-pad-x: var(--input-padding-x, var(--control-padding-x-sm));
 
   position: relative;
@@ -36,7 +36,7 @@
     box-shadow var(--transition-fast),
     background-color var(--transition-fast);
 
-  &:hover:not(.disabled) {
+  &:hover:not(.disabled):not([data-readonly]):not(:has(.field[readonly])) {
     --_input-border: var(--input-focus-color, var(--primary-color));
   }
 
@@ -81,7 +81,7 @@
   background: transparent;
   box-shadow: none;
 
-  &:hover:not(.disabled) {
+  &:hover:not(.disabled):not([data-readonly]):not(:has(.field[readonly])) {
     --_input-border: transparent;
   }
 
@@ -93,7 +93,7 @@
 .invalid {
   --_input-border: var(--danger-color);
 
-  &:hover:not(.disabled) {
+  &:hover:not(.disabled):not([data-readonly]):not(:has(.field[readonly])) {
     --_input-border: var(--danger-color);
   }
 
@@ -208,4 +208,11 @@
     outline: 2px solid Highlight;
     outline-offset: 1px;
   }
+}
+
+// Read-only values retain normal contrast, selection and focus feedback.
+.root[data-readonly]:not(.disabled),
+.root:has(.field[readonly]):not(.disabled) {
+  background-color: var(--readonly-surface-color);
+  cursor: default;
 }

@@ -4,6 +4,7 @@ import {
   componentContracts,
   contractsForTrack,
   getContract,
+  getType,
   getSupport,
   supportSummary,
 } from "./index";
@@ -100,4 +101,9 @@ describe("component contracts", () => {
     expect(toB.some((c) => c.name === "Rating")).toBe(false);
     expect(contractsForTrack()).toHaveLength(componentContracts.length);
   });
+});
+
+it("unknown type references do not resolve Object prototype properties", () => {
+  for (const ref of ["__proto__", "constructor", "toString"])
+    expect(getType(ref)).toBeUndefined();
 });

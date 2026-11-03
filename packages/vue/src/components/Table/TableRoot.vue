@@ -14,6 +14,7 @@ import {
   useAttrs,
   type CSSProperties,
 } from "vue";
+import { updateFixedColumnBudget } from "@minerva/dom";
 import styles from "@react-styles/components/Table/table.module.scss";
 import { hooks } from "../../internal/hooks";
 import { useI18n } from "../../config/useI18n";
@@ -46,9 +47,11 @@ const scrollY = computed(() => toLength(props.scroll?.y));
 // Without an explicit scroll config, the wrapper still scrolls when the
 // content overflows it: track that so it can become a focusable region.
 let observer: ResizeObserver | undefined;
+let mutation: MutationObserver | undefined;
 onMounted(() => {
   const el = wrapper.value!;
   const update = () => {
+    updateFixedColumnBudget(el);
     overflowing.value =
       el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight;
   };
@@ -57,8 +60,18 @@ onMounted(() => {
   observer = new ResizeObserver(update);
   observer.observe(el);
   if (el.firstElementChild) observer.observe(el.firstElementChild);
+  mutation = new MutationObserver(update);
+  mutation.observe(el.firstElementChild ?? el, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ["data-fixed", "style"],
+  });
 });
-onBeforeUnmount(() => observer?.disconnect());
+onBeforeUnmount(() => {
+  observer?.disconnect();
+  mutation?.disconnect();
+});
 
 // A scrolling wrapper is a tab stop so keyboard users can scroll it; it is
 // named after the table (or a localized default).

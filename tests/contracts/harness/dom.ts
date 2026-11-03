@@ -192,3 +192,13 @@ export const tokenVar = (el: Element, name: string) =>
 
 export const wait = (ms = 0) =>
   new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+/** Dispatch the host IME boundary without synthesizing text or component state. */
+export function composition(target: Element, phase: "start" | "end") {
+  target.dispatchEvent(
+    new CompositionEvent(`composition${phase}`, {
+      bubbles: true,
+      composed: true,
+    }),
+  );
+}

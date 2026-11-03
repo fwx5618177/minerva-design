@@ -193,3 +193,14 @@ export function toCss(value: TokenValue): string {
       return `cubic-bezier(${value.points.join(", ")})`;
   }
 }
+
+/** CSS text of some tokens of a block. */
+/*#__NO_SIDE_EFFECTS__*/
+export function toCssBlock<K extends string>(
+  block: Record<K, TokenValue>,
+  keys: readonly K[],
+): Record<K, string> {
+  const out = {} as Record<K, string>;
+  for (const key of keys) out[key] = toCss(block[key]);
+  return out;
+}

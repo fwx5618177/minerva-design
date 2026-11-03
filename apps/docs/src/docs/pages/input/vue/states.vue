@@ -9,7 +9,7 @@ import { FormField, Input, VStack } from "minerva-design/vue";
       default-value="Disabled" /><Input
       aria-label="Read-only"
       read-only
-      default-value="Read-only" /><FormField
+      default-value="Project Atlas" /><FormField
       label="Inside a FormField"
       error-message="Inherits the error"
       ><Input /></FormField

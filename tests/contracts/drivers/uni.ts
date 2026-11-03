@@ -161,6 +161,11 @@ export const uniDriver: Driver = {
     await uniDriver.settle();
   },
 
+  async composition(target, phase) {
+    dom.composition(target, phase);
+    await uniDriver.settle();
+  },
+
   isChecked: dom.isChecked,
   classes: (el) => Array.from(el.classList),
   tokenVar: dom.tokenVar,

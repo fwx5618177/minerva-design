@@ -104,5 +104,11 @@
     "title": "次のステップ",
     "installation": "パッケージをインストールしてスタイルシートを読み込みます。",
     "webComponents": "素の HTML、Vue、Angular、Svelte でカスタム要素を使います。"
+  },
+  "metadata": {
+    "title": "ツール向けコンポーネントメタデータ",
+    "text": "読み取り専用の contracts には各レンダラーの import、props、イベント、スロットとバインディングが含まれます。型ノードは必要な分だけ参照します。React、DOM、ネイティブランタイムに依存しません。",
+    "code": "import { contractsMetadata, getRendererContract, getType } from \"minerva-design/contracts\";\n\nconst input = getRendererContract(\"Input\", \"vue\");\nconsole.log(input?.import, input?.bindings);\nconst value = input?.props?.find(prop => prop.name === \"modelValue\");\nconst type = value?.typeRef ? getType(value.typeRef) : undefined;\nconsole.log(contractsMetadata.packageVersion, type);",
+    "provenance": "schemaVersion は形式、packageVersion はパッケージ版です。sourceCommit は生成の基準、sourceDigest は実際のソーススナップショットです。テキスト索引から静的 Markdown / JSON と完全な導入例を取得できます。"
   }
 }
