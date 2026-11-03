@@ -2294,7 +2294,17 @@
   background: var(--table-selected-bg, var(--selected-color));
 }
 
-/* Input owns the border around its field and every adornment, like React. */
+/* Input owns the border around its field and every adornment, like React.
+   The inner field carries the side padding: none on the root (the shared
+   .mn-size-* rules pad buttons, which would double it). */
+.mn-input-root,
+.mn-input-root.mn-size-xsmall,
+.mn-input-root.mn-size-small,
+.mn-input-root.mn-size-medium,
+.mn-input-root.mn-size-large,
+.mn-input-root.mn-size-xlarge {
+  padding: 0;
+}
 .mn-input-root {
   --mn-input-padding: var(--input-padding-x, var(--control-padding-x-sm));
   display: inline-flex;

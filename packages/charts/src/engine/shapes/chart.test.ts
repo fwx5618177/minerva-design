@@ -306,6 +306,37 @@ describe("createCanvasShapeChart", () => {
     return { canvas, calls, flush, frames };
   };
 
+  it("draws again at the pixel ratio when the host resets the canvas size", async () => {
+    const { ctx, calls } = fakeContext();
+    const canvas = document.createElement("canvas");
+    canvas.getContext = (() => ctx) as unknown as typeof canvas.getContext;
+    const chart = createCanvasShapeChart({
+      canvas: canvas as unknown as ChartCanvas,
+      width: WIDTH,
+      height: HEIGHT,
+      pixelRatio: 2,
+      options,
+    });
+    chart.render();
+    expect([canvas.width, canvas.height]).toEqual([WIDTH * 2, HEIGHT * 2]);
+    // one legend entry "A" per frame
+    const draws = () => filled(calls).filter((t) => t === "A").length;
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    const drawn = draws();
+    expect(drawn).toBeGreaterThan(0);
+    // Taro / uni-app H5 hosts write the CSS size (x1) on renders of their own
+    canvas.width = WIDTH;
+    canvas.height = HEIGHT;
+    await vi.waitFor(() =>
+      expect([canvas.width, canvas.height]).toEqual([WIDTH * 2, HEIGHT * 2]),
+    );
+    expect(draws()).toBe(drawn + 1);
+    chart.destroy();
+    canvas.width = WIDTH;
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(canvas.width).toBe(WIDTH);
+  });
+
   it("draws the chart, the legend and a tooltip on tap", () => {
     const { canvas, calls, flush } = fakeCanvas();
     const chart = createCanvasShapeChart({

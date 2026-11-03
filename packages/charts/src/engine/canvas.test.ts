@@ -12,6 +12,7 @@ import {
   type QuadrantConfig,
 } from "./presets";
 import { createTheme } from "./theme";
+import { collectPointLabels, labelCell } from "./scene";
 import type { ChartOptions } from "./types";
 
 /** 2D context double recording the calls (mini-program canvases have the same API) */
@@ -363,6 +364,57 @@ describe("createChartController", () => {
     expect(plotClick.mock.calls[0][0].y).toBeCloseTo(8, 5);
   });
 
+  it("keeps the labels of quadrant dots inside their quadrant", () => {
+    const long = "A rather long task name for its quadrant";
+    const options = quadrantChartOptions({
+      points: [
+        // left of the vertical divider: its label used to cross it
+        { x: 4.6, y: 7, label: long },
+        { x: 5.4, y: 3, label: "Short" },
+        // right under the horizontal divider
+        { x: 0.5, y: 4.9, label: "Near the middle" },
+      ],
+      showTicks: false,
+    });
+    const controller = createChartController({ options, measureText });
+    controller.setSize(360, 320);
+    const scene = controller.getScene()!;
+    const split = controller.toPixel(5, 5)!;
+    const { plot } = scene.layout;
+    expect(scene.pointLabels).toHaveLength(3);
+    for (const { label, box } of scene.pointLabels) {
+      if (label.x < split.x) expect(box.x + box.width).toBeLessThan(split.x);
+      else expect(box.x).toBeGreaterThan(split.x);
+      if (label.y < split.y) expect(box.y + box.height).toBeLessThan(split.y);
+      else expect(box.y).toBeGreaterThan(split.y);
+      expect(box.x).toBeGreaterThanOrEqual(plot.x);
+      expect(box.x + box.width).toBeLessThanOrEqual(plot.x + plot.width);
+    }
+    // too long for its quadrant: cut with an ellipsis
+    const cut = scene.pointLabels.find(
+      (l) => l.label.text !== long && l.label.text.startsWith("A rather"),
+    )!;
+    expect(cut.label.text).toMatch(/…$/);
+    expect(cut.box.x + cut.box.width).toBeLessThan(split.x);
+    // every host gets the cells from the shared label collection
+    const labels = collectPointLabels(
+      scene.model,
+      scene.view,
+      scene.layout.scales,
+    );
+    expect(labels.map((l) => l.bounds)).toEqual(
+      labels.map((l) =>
+        labelCell(scene.layout.scales, { x: 5, y: 5 }, { x: l.x, y: l.y }),
+      ),
+    );
+    expect(labels[0]!.bounds).toEqual({
+      x: plot.x,
+      y: plot.y,
+      width: split.x - plot.x,
+      height: split.y - plot.y,
+    });
+  });
+
   it("describes the data as bounded primitives", () => {
     const n = 50000;
     const controller = createChartController({
@@ -391,6 +443,48 @@ describe("createChartController", () => {
 });
 
 describe("createCanvasChart", () => {
+  it("draws again at the pixel ratio when the host resets the canvas size", async () => {
+    // Taro H5's <taro-canvas-core> and uni-app H5's <canvas> write the CSS
+    // size (x1) to their inner canvas on renders of their own
+    const { ctx, calls } = fakeContext();
+    const canvas = document.createElement("canvas");
+    canvas.getContext = (() => ctx) as unknown as typeof canvas.getContext;
+    const chart = createCanvasChart({
+      canvas: canvas as unknown as ChartCanvas,
+      width: 300,
+      height: 200,
+      pixelRatio: 2,
+      options: quadrantChartOptions({
+        points: [{ x: 2, y: 8, label: "Task" }],
+      }),
+    });
+    chart.render();
+    expect([canvas.width, canvas.height]).toEqual([600, 400]);
+    // one "Task" label per frame
+    const draws = () =>
+      calls.filter((c) => c.name === "fillText" && c.args[0] === "Task").length;
+    // its own size writes draw nothing more
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    const drawn = draws();
+    expect(drawn).toBeGreaterThan(0);
+
+    canvas.width = 300;
+    canvas.height = 200;
+    await vi.waitFor(() =>
+      expect([canvas.width, canvas.height]).toEqual([600, 400]),
+    );
+    expect(draws()).toBe(drawn + 1);
+    // the same size written again also clears the pixels: drawn again
+    canvas.width = 600;
+    await vi.waitFor(() => expect(draws()).toBe(drawn + 2));
+
+    chart.destroy();
+    canvas.width = 300;
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(canvas.width).toBe(300);
+    expect(draws()).toBe(drawn + 2);
+  });
+
   it("draws every layer on one canvas", () => {
     const { canvas, calls, flush } = fakeCanvas();
     const chart = createCanvasChart({

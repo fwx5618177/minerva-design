@@ -2343,6 +2343,96 @@
    quadrant headers or the actions of the selected task) with a caret pointing
    at it. A frosted surface like the chart tooltips: the translucent fill and
    border are a ::before layer (no color-mix in WXSS). */
+/* The quadrant headers: a 2 x 2 grid laid out like the matrix, each a
+   compact single-line pill (badge chip, title cut with an ellipsis, count
+   chip, + button) like the headers of the web board. */
+.mn-quadrant-task-board__quadrants,
+.mn-quadrant-task-board__headers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  min-width: 0;
+}
+.mn-quadrant-task-board__header {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  height: 28px;
+  padding: 2px 2px 2px 4px;
+  border-radius: 999px;
+  background: var(
+    --quadrant-task-board-header-background,
+    var(--surface-muted-color, #f3f4f6)
+  );
+  color: var(--quadrant-task-board-header-color, var(--text-color, #111827));
+  font-size: var(--font-size-xs, 12px);
+  font-weight: 600;
+  line-height: 20px;
+  white-space: nowrap;
+}
+.mn-quadrant-task-board__badge {
+  box-sizing: border-box;
+  flex: none;
+  min-width: 22px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--surface-color, #fff);
+  color: var(--text-secondary-color, #6b7280);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
+}
+.mn-quadrant-task-board__title {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  padding-left: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mn-quadrant-task-board__badge + .mn-quadrant-task-board__title {
+  padding-left: 0;
+}
+.mn-quadrant-task-board__count {
+  box-sizing: border-box;
+  flex: none;
+  min-width: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(
+    --quadrant-task-board-count-background,
+    var(--surface-color, #fff)
+  );
+  color: var(
+    --quadrant-task-board-count-color,
+    var(--text-secondary-color, #6b7280)
+  );
+  font-size: 11px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 18px;
+  text-align: center;
+}
+.mn-quadrant-task-board__header .mn-quadrant-task-board__add,
+.mn-quadrant-task-board__header .mn-uni-icon-root {
+  box-sizing: border-box;
+  flex: none;
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  min-height: 24px;
+  padding: 0;
+}
+/* Taro: over the size rules of the buttons (.mn-button.mn-size-xsmall) */
+.mn-quadrant-task-board__header .mn-button.mn-quadrant-task-board__add {
+  min-width: 24px;
+  min-height: 24px;
+  padding: 0;
+}
 .mn-quadrant-task-board__add-icon {
   display: block;
   width: 16px;

@@ -3,6 +3,7 @@
 // tooltip are drawn on the canvas; the host forwards touches / pointer events.
 
 import type { ChartCanvas, ChartTouch } from "../canvas";
+import { watchBackingStore } from "../backing-store";
 import { createTheme, type ChartTheme, type ChartThemeInput } from "../theme";
 import { drawShapeLegend, drawShapeScene, drawShapeTooltip } from "./draw";
 import { hitTestShapes } from "./hit";
@@ -177,6 +178,21 @@ export const createCanvasShapeChart = (
     }
   };
 
+  // H5 hosts reset the canvas size (and clear it) on renders of their own:
+  // draw again at once, at the device pixel ratio
+  const backing = watchBackingStore(
+    canvas,
+    () =>
+      width > 0 &&
+      height > 0 &&
+      (canvas.width !== Math.max(1, Math.round(width * dpr)) ||
+        canvas.height !== Math.max(1, Math.round(height * dpr))),
+    () => {
+      cancelFrame();
+      render();
+    },
+  );
+
   const tooltipText = (event: ShapeHoverEvent): string | null | undefined => {
     if (options.tooltip === false) return null;
     const render =
@@ -193,8 +209,14 @@ export const createCanvasShapeChart = (
     if (destroyed || !(width > 0 && height > 0)) return;
     const pw = Math.max(1, Math.round(width * dpr));
     const ph = Math.max(1, Math.round(height * dpr));
-    if (canvas.width !== pw) canvas.width = pw;
-    if (canvas.height !== ph) canvas.height = ph;
+    if (canvas.width !== pw) {
+      backing.own();
+      canvas.width = pw;
+    }
+    if (canvas.height !== ph) {
+      backing.own();
+      canvas.height = ph;
+    }
     fontSet = "";
 
     const entries = shapeLegend(options, theme, runtime.hidden);
@@ -399,6 +421,7 @@ export const createCanvasShapeChart = (
       if (destroyed) return;
       destroyed = true;
       cancelFrame();
+      backing.disconnect();
       listeners.hover.clear();
       listeners.click.clear();
       listeners.toggle.clear();

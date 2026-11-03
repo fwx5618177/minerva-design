@@ -78,6 +78,16 @@ it("quadrant task board shows the headers with counts and a plus icon on the add
     "Bottom right quadrant",
   ]);
   expect(all(board(), ".mn-quadrant-task-board__header")).toHaveLength(4);
+  // compact pills styled by the shared stylesheet, in the same grid as the
+  // Taro and uni-app boards (no inline layout)
+  const grid = board().querySelector(".mn-quadrant-task-board__headers")!;
+  expect(grid.dom!.classList).toContain("mn-quadrant-task-board__quadrants");
+  expect(grid.dom!.getAttribute("style") ?? "").toBe("");
+  for (const header of all(board(), ".mn-quadrant-task-board__header")) {
+    expect(header.dom!.getAttribute("style") ?? "").toBe("");
+    for (const part of header.dom!.querySelectorAll("wx-text"))
+      expect(part.getAttribute("style") ?? "").toBe("");
+  }
   expect(board().data.headers[0].count).toBe("1");
   expect(headers[1].addLabel).toBe("Add task · Top right quadrant");
 

@@ -70,6 +70,8 @@ export interface SeriesModel {
   showLabels: boolean;
   /** Bars: the labels are written inside the bars (`showLabels: "inside"`) */
   labelsInside: boolean;
+  /** Scatter: the labels stay in the cell of their point (`labelCells`) */
+  labelCells: { x?: number; y?: number } | null;
   curve: ChartCurve;
   /**
    * Plotted columns: the data, mapped onto the left axis for the series of
@@ -817,6 +819,7 @@ export const buildModel = (
       hidden: !!s.hidden || hidden.has(id),
       showLabels: !!s.showLabels,
       labelsInside: s.showLabels === "inside" && type === "bar",
+      labelCells: type === "scatter" && s.labelCells ? s.labelCells : null,
       curve: s.curve ?? "linear",
       cols,
       raw: cols,

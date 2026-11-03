@@ -58,6 +58,7 @@ import {
 } from "@minerva/charts/canvas";
 import { useOptionalTheme, useThemeTokens } from "./theme";
 import { describeShapeChart } from "./chart-a11y";
+import { chartPixelRatio } from "./chart-pixel-ratio";
 
 export type {
   BulletDatum,
@@ -691,21 +692,7 @@ const isH5 = process.env.TARO_ENV === "h5";
 const toLength = (value: number | string) =>
   typeof value === "number" ? `${value}px` : value;
 
-const pixelRatio = () => {
-  try {
-    const api = Taro as unknown as {
-      getWindowInfo?: () => { pixelRatio?: number };
-      getSystemInfoSync?: () => { pixelRatio?: number };
-    };
-    return (
-      api.getWindowInfo?.()?.pixelRatio ||
-      api.getSystemInfoSync?.()?.pixelRatio ||
-      1
-    );
-  } catch {
-    return 1;
-  }
-};
+const pixelRatio = chartPixelRatio;
 
 type Host = {
   parentNode?: Host | null;

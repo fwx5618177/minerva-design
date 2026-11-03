@@ -281,6 +281,40 @@ const layoutHorizontal = (input: LayoutInput): ChartLayout => {
 };
 
 /**
+ * Cell of the plot a point is in, the plot being cut at the data values of
+ * `cuts` (the quadrant of a quadrant chart), in CSS pixels
+ */
+export const labelCell = (
+  s: Scales,
+  cuts: { x?: number; y?: number },
+  p: { x: number; y: number },
+): Rect => {
+  const { plot } = s;
+  let left = plot.x;
+  let right = plot.x + plot.width;
+  let top = plot.y;
+  let bottom = plot.y + plot.height;
+  const across: number[] = [];
+  const down: number[] = [];
+  // horizontal charts: the x axis runs down the side
+  if (cuts.x !== undefined && Number.isFinite(cuts.x))
+    (s.horizontal ? down : across).push(s.xToPx(cuts.x));
+  if (cuts.y !== undefined && Number.isFinite(cuts.y))
+    (s.horizontal ? across : down).push(s.yToPx(cuts.y));
+  for (const c of across)
+    if (c > left && c < right) {
+      if (p.x < c) right = c;
+      else left = c;
+    }
+  for (const c of down)
+    if (c > top && c < bottom) {
+      if (p.y < c) bottom = c;
+      else top = c;
+    }
+  return { x: left, y: top, width: right - left, height: bottom - top };
+};
+
+/**
  * Labels of the visible scatter points and bar values (`showLabels`);
  * `background` (the chart background) picks the color of the labels inside
  * solid bars; `skip` leaves out the label of a point (the dragged one)
@@ -382,7 +416,17 @@ export const collectPointLabels = (
         continue;
       const d = size && size[i] > 0 ? size[i] : series.pointSize;
       const p = toScreen(s, xi, yi);
-      labels.push({ x: p.x, y: p.y, r: d / 2, text });
+      labels.push(
+        series.labelCells
+          ? {
+              x: p.x,
+              y: p.y,
+              r: d / 2,
+              text,
+              bounds: labelCell(s, series.labelCells, p),
+            }
+          : { x: p.x, y: p.y, r: d / 2, text },
+      );
     }
   }
   return labels;

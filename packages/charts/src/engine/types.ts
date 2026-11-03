@@ -187,6 +187,13 @@ export interface ChartSeries {
    */
   showLabels?: boolean | "inside";
   /**
+   * Scatter labels (`showLabels`): cuts the plot at these values and keeps
+   * the label of each point inside the cell of its point (the quadrants of a
+   * quadrant chart): on the side of the dot with more room in the cell, cut
+   * with an ellipsis when it still does not fit
+   */
+  labelCells?: { x?: number; y?: number };
+  /**
    * Shape of the line between the points: straight, smooth (monotone, never
    * overshoots the data) or steps (line / area)
    * @default "linear"

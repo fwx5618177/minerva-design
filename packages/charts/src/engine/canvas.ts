@@ -3,6 +3,7 @@
 // uni-app, OffscreenCanvas, or a plain browser canvas. The host forwards
 // touches / pointer events; everything else is handled here.
 
+import { watchBackingStore } from "./backing-store";
 import { parseColor, toCss } from "./color";
 import {
   createChartController,
@@ -836,8 +837,14 @@ export const createCanvasChart = (
     if (!scene) return;
     const pw = Math.max(1, Math.round(width * dpr));
     const ph = Math.max(1, Math.round(height * dpr));
-    if (canvas.width !== pw) canvas.width = pw;
-    if (canvas.height !== ph) canvas.height = ph;
+    if (canvas.width !== pw) {
+      backing.own();
+      canvas.width = pw;
+    }
+    if (canvas.height !== ph) {
+      backing.own();
+      canvas.height = ph;
+    }
     fontSet = "";
     if (itemsModel !== scene.model) {
       itemsModel = scene.model;
@@ -870,6 +877,29 @@ export const createCanvasChart = (
     else frameId = setTimeout(render, 16) as unknown as number;
   };
 
+  const cancelFrame = () => {
+    if (frameId === null) return;
+    if (canvas.cancelAnimationFrame) canvas.cancelAnimationFrame(frameId);
+    else if (g.cancelAnimationFrame) g.cancelAnimationFrame(frameId);
+    else clearTimeout(frameId);
+    frameId = null;
+  };
+
+  const renderNow = () => {
+    cancelFrame();
+    render();
+  };
+
+  // H5 hosts reset the canvas size (and clear it) on renders of their own:
+  // draw again at once, at the device pixel ratio
+  const backing = watchBackingStore(
+    canvas,
+    () =>
+      canvas.width !== Math.max(1, Math.round(width * dpr)) ||
+      canvas.height !== Math.max(1, Math.round(height * dpr)),
+    renderNow,
+  );
+
   const controller = createChartController({
     options: config.options,
     theme: config.theme,
@@ -896,14 +926,7 @@ export const createCanvasChart = (
       controller.setSize(w, h);
       schedule();
     },
-    render() {
-      if (frameId !== null) {
-        if (canvas.cancelAnimationFrame) canvas.cancelAnimationFrame(frameId);
-        else if (g.cancelAnimationFrame) g.cancelAnimationFrame(frameId);
-        else clearTimeout(frameId);
-      }
-      render();
-    },
+    render: renderNow,
     touchStart(touches) {
       touches.forEach((t, i) =>
         controller.pointerDown(t.x, t.y, touchOptions(t, i)),
@@ -940,11 +963,8 @@ export const createCanvasChart = (
     destroy() {
       if (destroyed) return;
       destroyed = true;
-      if (frameId !== null) {
-        if (canvas.cancelAnimationFrame) canvas.cancelAnimationFrame(frameId);
-        else if (g.cancelAnimationFrame) g.cancelAnimationFrame(frameId);
-        else clearTimeout(frameId);
-      }
+      cancelFrame();
+      backing.disconnect();
       painter?.destroy();
       controller.destroy();
     },

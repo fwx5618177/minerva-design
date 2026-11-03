@@ -149,6 +149,33 @@ describe("charts", () => {
     expect(texts(calls)).toContain("Month");
   });
 
+  it("draws at the devicePixelRatio of the page on H5 (no pixel ratio API on Taro)", async () => {
+    // @tarojs/taro-h5 has getWindowInfo / getSystemInfoSync as named exports
+    // only: the default export a library sees has neither
+    const api = Taro as unknown as Record<string, unknown>;
+    const systemInfo = api.getSystemInfoSync;
+    delete api.getSystemInfoSync;
+    vi.stubGlobal("devicePixelRatio", 3);
+    try {
+      const { node, flush } = fakeNode();
+      mockQuery(node);
+      const ref = createRef<ChartHandle>();
+      render(
+        <LineChart ref={ref} series={[{ name: "Sales", data: [1, 4, 2] }]} />,
+      );
+      await ready(ref);
+      flush();
+      expect(node.width).toBe(400 * 3);
+      expect(node.height).toBe(300 * 3);
+      // a resize keeps the ratio
+      act(() => ref.current!.resize());
+      await waitFor(() => expect(node.width).toBe(400 * 3));
+    } finally {
+      api.getSystemInfoSync = systemInfo;
+      vi.unstubAllGlobals();
+    }
+  });
+
   it("generates a canvas id and scopes the query to custom components", async () => {
     const { node } = fakeNode();
     const { selectors, scopes } = mockQuery(node);

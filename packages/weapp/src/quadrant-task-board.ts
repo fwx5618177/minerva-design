@@ -125,11 +125,11 @@ const panelTemplate = (at: "headers" | "actions") =>
 
 export const quadrantTaskBoardTemplate =
   `<view class="mn-quadrant-task-board" style="display:flex;flex-direction:column;gap:8px">` +
-  `<view class="mn-quadrant-task-board__headers" style="display:grid;grid-template-columns:1fr 1fr;gap:4px 12px">` +
-  `<view wx:for="{{headers}}" wx:key="corner" class="mn-quadrant-task-board__header" role="group" aria-label="{{item.title}}" data-corner="{{item.corner}}" style="display:flex;align-items:center;gap:6px;min-width:0">` +
-  `<text wx:if="{{item.badge}}" class="mn-quadrant-task-board__badge mn-muted">{{item.badge}}</text>` +
-  `<text class="mn-quadrant-task-board__title" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600">{{item.title}}</text>` +
-  `<text wx:if="{{item.count}}" class="mn-quadrant-task-board__count mn-muted">{{item.count}}</text>` +
+  `<view class="mn-quadrant-task-board__headers mn-quadrant-task-board__quadrants">` +
+  `<view wx:for="{{headers}}" wx:key="corner" class="mn-quadrant-task-board__header" role="group" aria-label="{{item.title}}" data-corner="{{item.corner}}">` +
+  `<text wx:if="{{item.badge}}" class="mn-quadrant-task-board__badge">{{item.badge}}</text>` +
+  `<text class="mn-quadrant-task-board__title">{{item.title}}</text>` +
+  `<text wx:if="{{item.count}}" class="mn-quadrant-task-board__count">{{item.count}}</text>` +
   `<mn-icon-button class="mn-quadrant-task-board__add" size="xsmall" variant="ghost" label="{{item.addLabel}}" data-corner="{{item.corner}}" bind:click="onAdd"><image class="mn-quadrant-task-board__add-icon" src="{{addIcon}}" mode="aspectFit" aria-hidden="true"/></mn-icon-button>` +
   `</view>` +
   `</view>` +

@@ -318,30 +318,20 @@ defineExpose<ChartHandle>({
       <view
         v-if="section === 'headers'"
         class="mn-quadrant-task-board__quadrants"
-        style="display: flex; flex-wrap: wrap; row-gap: 4px"
       >
         <view
           v-for="header in headers"
           :key="header.corner"
           class="mn-quadrant-task-board__header"
+          role="group"
+          aria-role="group"
+          :aria-label="header.title"
           :data-corner="header.corner"
-          style="
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            width: 50%;
-            box-sizing: border-box;
-            padding: 0 4px;
-          "
         >
           <text v-if="header.badge" class="mn-quadrant-task-board__badge">{{
             header.badge
           }}</text>
-          <text
-            class="mn-quadrant-task-board__title"
-            style="flex: 1; min-width: 0"
-            >{{ header.title }}</text
-          >
+          <text class="mn-quadrant-task-board__title">{{ header.title }}</text>
           <text
             v-if="header.count !== undefined"
             class="mn-quadrant-task-board__count"

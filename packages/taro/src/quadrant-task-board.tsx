@@ -299,10 +299,7 @@ export function QuadrantTaskBoard({
         }}
         onQuadrantClick={(corner, at) => addAt(corner, at)}
       />
-      <View
-        className="mn-quadrant-task-board__quadrants"
-        style={{ display: "flex", flexWrap: "wrap", rowGap: "4px" }}
-      >
+      <View className="mn-quadrant-task-board__quadrants">
         {QUADRANT_CORNERS.map((corner) => {
           const region = props.quadrants?.[corner];
           return (
@@ -310,22 +307,14 @@ export function QuadrantTaskBoard({
               key={corner}
               className="mn-quadrant-task-board__header"
               data-corner={corner}
-              style={{
-                ...ROW,
-                width: "50%",
-                boxSizing: "border-box",
-                padding: "0 4px",
-              }}
+              {...a11yAttrs("group", title(corner))}
             >
               {region?.badge ? (
                 <Text className="mn-quadrant-task-board__badge">
                   {region.badge}
                 </Text>
               ) : null}
-              <Text
-                className="mn-quadrant-task-board__title"
-                style={{ flex: 1, minWidth: 0 }}
-              >
+              <Text className="mn-quadrant-task-board__title">
                 {title(corner)}
               </Text>
               {props.showCounts === false ? null : (

@@ -92,6 +92,20 @@ describe("uni QuadrantTaskBoard", () => {
     ]);
     expect(headers[0]!.text()).toBe("Q1Do first1");
     expect(headers[1]!.text()).toBe("Top right quadrant0");
+    // compact pills styled by the shared stylesheet (no inline layout)
+    expect(
+      w.get(".mn-quadrant-task-board__quadrants").attributes("style"),
+    ).toBeUndefined();
+    for (const header of headers) {
+      expect(header.attributes("style")).toBeUndefined();
+      expect(header.attributes("role")).toBe("group");
+      expect(
+        header.get(".mn-quadrant-task-board__title").attributes("style"),
+      ).toBeUndefined();
+    }
+    expect(headers[0]!.attributes("aria-label")).toBe("Do first");
+    expect(headers[0]!.get(".mn-quadrant-task-board__badge").text()).toBe("Q1");
+    expect(headers[0]!.get(".mn-quadrant-task-board__count").text()).toBe("1");
     const add = headers[0]!.get("button");
     expect(add.attributes("aria-label")).toBe("Add task · Do first");
     // a plus icon image, not a "+" glyph

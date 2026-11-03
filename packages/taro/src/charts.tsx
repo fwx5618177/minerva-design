@@ -73,6 +73,7 @@ import {
 } from "@minerva/charts/canvas";
 import { useOptionalTheme, useThemeTokens } from "./theme";
 import { a11yAttrs, describeCartesianChart, systemLocale } from "./chart-a11y";
+import { chartPixelRatio } from "./chart-pixel-ratio";
 
 export type {
   BinOptions,
@@ -561,21 +562,7 @@ const compact = <T extends Record<string, unknown>>(value: T): Partial<T> => {
   return out as Partial<T>;
 };
 
-const pixelRatio = () => {
-  try {
-    const api = Taro as unknown as {
-      getWindowInfo?: () => { pixelRatio?: number };
-      getSystemInfoSync?: () => { pixelRatio?: number };
-    };
-    return (
-      api.getWindowInfo?.()?.pixelRatio ||
-      api.getSystemInfoSync?.()?.pixelRatio ||
-      1
-    );
-  } catch {
-    return 1;
-  }
-};
+const pixelRatio = chartPixelRatio;
 
 type Host = {
   parentNode?: Host | null;

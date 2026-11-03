@@ -614,6 +614,125 @@ describe("placeLabels", () => {
     expect(placed[0].box.x).toBeGreaterThan(50);
     expect(placed[1].box.x + placed[1].box.width).toBeLessThan(50);
   });
+
+  // quadrant charts: the left cell of a plot cut at x = 200
+  const plot = { x: 0, y: 0, width: 400, height: 200 };
+  const cell = { x: 0, y: 0, width: 200, height: 100 };
+  const measure = (t: string) => t.length * 6;
+  const within = (box: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }) => {
+    expect(box.x).toBeGreaterThanOrEqual(cell.x);
+    expect(box.y).toBeGreaterThanOrEqual(cell.y);
+    expect(box.x + box.width).toBeLessThanOrEqual(cell.x + cell.width);
+    expect(box.y + box.height).toBeLessThanOrEqual(cell.y + cell.height);
+  };
+
+  it("keeps a label in its cell, on the side of the dot with more room", () => {
+    const dot = { x: 150, y: 50, r: 4, text: "Long label" };
+    // without a cell: right of the dot, across the divider at x = 200
+    const [free] = placeLabels([dot], plot, measure, 12);
+    expect(free!.box.x + free!.box.width).toBeGreaterThan(200);
+    const [kept] = placeLabels([{ ...dot, bounds: cell }], plot, measure, 12);
+    expect(kept!.label.text).toBe("Long label");
+    expect(kept!.box.x + kept!.box.width).toBeLessThanOrEqual(150 - 8);
+    within(kept!.box);
+    // more room on the right: right of the dot
+    const [right] = placeLabels(
+      [{ ...dot, x: 30, bounds: cell }],
+      plot,
+      measure,
+      12,
+    );
+    expect(right!.box.x).toBeGreaterThanOrEqual(30 + 8);
+    within(right!.box);
+  });
+
+  it("cuts a label with an ellipsis to the room left in its cell", () => {
+    const text = "A task with a very long name indeed";
+    const [placed] = placeLabels(
+      [{ x: 100, y: 50, r: 4, text, bounds: cell }],
+      plot,
+      measure,
+      12,
+    );
+    expect(placed!.label.text).toMatch(/…$/);
+    expect(placed!.label.text.length).toBeLessThan(text.length);
+    expect(placed!.box.width).toBe(measure(placed!.label.text));
+    within(placed!.box);
+  });
+
+  it("skips a label that would keep too little of its name", () => {
+    // a dot pinned in the corner of a tiny cell: only a stub would fit
+    const tiny = { x: 0, y: 0, width: 40, height: 40 };
+    const placed = placeLabels(
+      [{ x: 20, y: 20, r: 4, text: "Single sign-on", bounds: tiny }],
+      plot,
+      measure,
+      12,
+    );
+    for (const { label } of placed)
+      expect(Array.from(label.text).length - 1).toBeGreaterThanOrEqual(4);
+  });
+
+  it("moves a label beside a dot near the edge of its cell into the cell", () => {
+    const [placed] = placeLabels(
+      [{ x: 30, y: 99, r: 4, text: "Edge", bounds: cell }],
+      plot,
+      measure,
+      12,
+    );
+    expect(placed!.box.x).toBeGreaterThan(30);
+    within(placed!.box);
+  });
+
+  it("slides a label above or below its dot into the cell before cutting it", () => {
+    // too wide for either side of a dot near the right edge (a title on its
+    // left), but the cell is wide enough: whole, slid left, still over it
+    const title = { x: 0, y: 44, width: 150, height: 12 };
+    const [placed] = placeLabels(
+      [{ x: 180, y: 50, r: 4, text: "Single sign-on", bounds: cell }],
+      plot,
+      measure,
+      12,
+      [title],
+    );
+    expect(placed!.label.text).toBe("Single sign-on");
+    within(placed!.box);
+    expect(placed!.box.x).toBeLessThan(180);
+    expect(placed!.box.x + placed!.box.width).toBeGreaterThan(180);
+  });
+
+  it("still skips the labels of a cell without a free slot", () => {
+    const labels = [
+      { x: 100, y: 50, r: 4, text: "first", bounds: cell },
+      { x: 100, y: 50, r: 4, text: "second", bounds: cell },
+      { x: 100, y: 50, r: 4, text: "third", bounds: cell },
+      { x: 100, y: 50, r: 4, text: "fourth", bounds: cell },
+      { x: 100, y: 50, r: 4, text: "fifth", bounds: cell },
+    ];
+    const placed = placeLabels(labels, plot, measure, 12);
+    expect(placed).toHaveLength(4);
+    for (const { box } of placed) within(box);
+    for (let i = 0; i < placed.length; i++)
+      for (let j = i + 1; j < placed.length; j++) {
+        const a = placed[i]!.box;
+        const b = placed[j]!.box;
+        expect(
+          a.x < b.x + b.width &&
+            b.x < a.x + a.width &&
+            a.y < b.y + b.height &&
+            b.y < a.y + a.height,
+        ).toBe(false);
+      }
+    // a title covering the cell: nothing left
+    expect(
+      placeLabels([labels[0]!], plot, measure, 12, [{ ...cell }]),
+    ).toHaveLength(0);
+  });
 });
 
 describe("instanceRange", () => {

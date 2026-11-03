@@ -66,6 +66,12 @@ export interface PointLabel {
    * without a halo; the text color of the theme with a halo otherwise
    */
   color?: string;
+  /**
+   * Cell the label stays in (`labelCells`: the quadrant of the dot), in CSS
+   * pixels: on the side of the dot with more room, cut with an ellipsis
+   * when it does not fit
+   */
+  bounds?: Rect;
 }
 
 /** Padding of the labels inside the bars, CSS pixels */
@@ -568,6 +574,91 @@ const insideBox = (
   };
 };
 
+/** Room kept between a label and the edges of its cell, CSS pixels */
+const CELL_PAD = 2;
+
+/**
+ * Box of a label kept inside a cell of the plot (`bounds`): beside the dot
+ * on the side with more room in the cell (moved up or down into the cell
+ * near its edges), else above or below it (moved sideways into the cell);
+ * cut with an ellipsis to the room left when the whole text fits nowhere;
+ * `null` when no free slot is left
+ */
+const cellBox = (
+  label: PointLabel,
+  bounds: Rect,
+  plot: Rect,
+  measure: (text: string) => number,
+  height: number,
+  occupied: readonly Rect[],
+): { label: PointLabel; box: Rect } | null => {
+  const x0 = Math.max(bounds.x, plot.x) + CELL_PAD;
+  const x1 = Math.min(bounds.x + bounds.width, plot.x + plot.width) - CELL_PAD;
+  const y0 = Math.max(bounds.y, plot.y) + CELL_PAD;
+  const y1 =
+    Math.min(bounds.y + bounds.height, plot.y + plot.height) - CELL_PAD;
+  if (x1 - x0 <= 0 || y1 - y0 < height) return null;
+  // a hair of slack: a text cut to the exact room ends on the edge
+  const slack = {
+    x: x0 - 0.01,
+    y: y0 - 0.01,
+    width: x1 - x0 + 0.02,
+    height: y1 - y0 + 0.02,
+  };
+  const free = (c: Rect) =>
+    inside(c, slack) && !occupied.some((o) => overlaps(o, c));
+  const gap = label.r + 4;
+  // centered on the dot, moved into the cell near its top or bottom edge
+  const sideY = Math.min(Math.max(label.y - height / 2, y0), y1 - height);
+  const room = { right: x1 - (label.x + gap), left: label.x - gap - x0 };
+  const sides: ("right" | "left")[] =
+    room.right >= room.left ? ["right", "left"] : ["left", "right"];
+  const beside = (side: "right" | "left", w: number): Rect[] => [
+    {
+      x: side === "right" ? label.x + gap : label.x - gap - w,
+      y: sideY,
+      width: w,
+      height,
+    },
+  ];
+  const stacked = (w: number): Rect[] => {
+    // slid sideways into the cell near its edges (still over the dot)
+    const x = Math.min(Math.max(label.x - w / 2, x0), x1 - w);
+    return [
+      { x, y: label.y - gap - height, width: w, height },
+      { x, y: label.y + gap, width: w, height },
+    ];
+  };
+  const w = measure(label.text);
+  const whole = [
+    ...beside(sides[0]!, w),
+    ...beside(sides[1]!, w),
+    ...stacked(w),
+  ];
+  const box = whole.find(free);
+  if (box) return { label, box };
+  // the whole text fits nowhere: cut it to the room beside the dot or above
+  // / below it, keeping the longest text (the roomiest side on ties)
+  const cuts: [number, (w: number) => Rect[]][] = [
+    [room[sides[0]!], (cw) => beside(sides[0]!, cw)],
+    [room[sides[1]!], (cw) => beside(sides[1]!, cw)],
+    [x1 - x0, stacked],
+  ];
+  let best: { label: PointLabel; box: Rect } | null = null;
+  // a cut keeps enough of the name to tell it (else the label is skipped,
+  // like an overlapping one: the tooltip still names the point)
+  const total = Array.from(label.text).length;
+  const keep = Math.min(4, Math.ceil(total * 0.4));
+  for (const [max, boxes] of cuts) {
+    const text = fitText(label.text, max, measure);
+    if (!text || (best && text.length <= best.label.text.length)) continue;
+    if (Array.from(text).length - 1 < keep) continue;
+    const cut = boxes(measure(text)).find(free);
+    if (cut) best = { label: { ...label, text }, box: cut };
+  }
+  return best;
+};
+
 /** Greedy placement: right, left, above, below the dot; skipped when no slot is free */
 export const placeLabels = (
   labels: readonly PointLabel[],
@@ -581,6 +672,13 @@ export const placeLabels = (
     if (label.placement === "inside") {
       const fit = insideBox(label, plot, measure, height);
       if (fit) placed.push(fit);
+      continue;
+    }
+    if (label.bounds) {
+      const fit = cellBox(label, label.bounds, plot, measure, height, occupied);
+      if (!fit) continue;
+      occupied.push(fit.box);
+      placed.push(fit);
       continue;
     }
     const w = measure(label.text);

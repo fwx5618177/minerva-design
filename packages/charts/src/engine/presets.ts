@@ -631,6 +631,8 @@ export const quadrantChartOptions = (
       name: config.name ?? "",
       pointSize,
       showLabels: config.showLabels ?? true,
+      // a label stays in the quadrant of its dot, off the dividers
+      labelCells: { x: xs, y: ys },
       opacity: 0.9,
       data: cachedData(config.points, colorKey, () =>
         config.points.map((p) => ({
