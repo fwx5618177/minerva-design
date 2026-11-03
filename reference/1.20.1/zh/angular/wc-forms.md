@@ -1,0 +1,165 @@
+# 表单
+
+Minerva 控件是表单关联的自定义元素：支持 FormData、required 与约束校验、setCustomValidity、form.reset()、<fieldset disabled>、<label for>、:invalid 以及本地化消息。
+
+Package: minerva-design@1.20.1
+
+Renderer: angular
+
+Locale: zh
+
+## Provenance
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "packageVersion": "1.20.1",
+  "sourceCommit": "3a9f5cdaae706f14fe6d8c65c5481eba719a66c4",
+  "sourceDigest": "sha256:c9ed2b706b61413d29e506a3f04f3d35c044a4b57ec0e284935054f9e1898c7e",
+  "referenceSourceDigest": "sha256:6c9ecba0079f25e53cd971e51f2be8604fc3d941c0ed1cfeec03c4a91913ad73"
+}
+```
+
+Type references resolve through the [type graph](/minerva-design/reference/1.20.1/types.json) or getType() from minerva-design/contracts.
+
+## Documentation
+
+### 表单关联元素
+
+表单控件是基于 ElementInternals 构建的表单关联自定义元素：在  中它们的行为与原生输入框一致，无需隐藏输入框或包裹元素。以下元素可参与表单：
+
+ 同样是表单关联的：type="submit" 会通过 requestSubmit() 提交所在表单（因此会执行校验和 submit 监听器），type="reset" 会重置表单。默认类型为 "button"，不执行任何操作。
+
+### 名称、值与 FormData
+
+为每个控件设置 name。它的值会成为 new FormData(form) 和原生提交的一部分，与  完全相同：
+
+name 是提交值的键。复选框和开关只在选中时提交其 value（默认为 "on"），因此多个同名复选框会产生一个列表（FormData.getAll()）。
+
+value 属性（复选框和开关为 checked）是初始值；value / checked property 是当前值。有些控件会提交多个条目（标签输入框为每个标签提交一条）；每个组件页面都说明了其控件提交的内容。
+
+在控件或其祖先  上设置 disabled，会使控件不可编辑，并将其排除在提交和校验之外（isDisabled 会同时反映这两种情况）。
+
+当用户返回页面时（bfcache）以及自动填充时，浏览器会通过表单关联回调恢复这些值。
+
+### 标签
+
+与原生输入框一样， 和包裹式  元素会为控件命名：元素的 labels property 会列出它们，标签文本会被转发到 shadow root 内的控件，点击标签会让控件获得焦点。元素上的 aria-label、aria-labelledby 和 aria-describedby 同样有效（由于 id 无法穿越 shadow root，它们会被解析为文本）。
+
+### 约束校验
+
+required、minlength / maxlength、pattern、min / max 和 type（email、url……）的效果与原生输入框相同。每个元素都暴露了约束校验 API（validity、validationMessage、willValidate、checkValidity()、reportValidity()、setCustomValidity()），而 form.checkValidity()、form.reportValidity() 和表单提交都会将 Minerva 控件纳入考虑：无效的控件会阻止 submit 事件，浏览器会在控件旁显示其消息。
+
+form.reset() 会把每个控件恢复为其 value 或 checked 属性的值，并清除通过 setCustomValidity() 设置的消息；监听表单的 reset 事件即可清除你自己的错误样式。
+
+### 为无效控件设置样式
+
+:invalid 和 :valid 伪类会像匹配原生输入框一样匹配表单关联元素，因此可以在页面中为它们设置样式。为了避免用户还没做任何操作时字段就显示为红色，请在尝试提交之后再应用这些样式：
+
+内置的错误状态是一个属性：文本字段、选择器、开关和其他控件使用 invalid，复选框和单选框使用 error。它会显示红色边框并设置 aria-invalid。 用标签、辅助文本和错误消息包裹一个控件，并把自身的 invalid / required / disabled 状态传递给该控件。
+
+### 本地化消息
+
+没有原生对应元素的控件（选择器、复选框、开关、单选组、评分、上传、时间选择器、级联选择器……）会报告 Minerva 自己的校验消息（"Please select an item in the list."、"Please check this box if you want to proceed."……），这些消息已翻译为所有受支持的语言，并跟随其作用域内的 lang 属性或 。文本字段则委托给内部的原生输入框，其消息由浏览器以自身语言提供。
+
+```html
+<form id="profile">
+  <fieldset id="details">
+    <legend>Profile</legend>
+
+    <label for="name">Name</label>
+    <minerva-input id="name" name="name" required minlength="2"></minerva-input>
+
+    <label for="bio">Bio</label>
+    <minerva-textarea id="bio" name="bio" maxlength="200"></minerva-textarea>
+
+    <label for="role">Role</label>
+    <minerva-select id="role" name="role" placeholder="Choose a role" required>
+      <minerva-option value="dev">Developer</minerva-option>
+      <minerva-option value="design">Designer</minerva-option>
+    </minerva-select>
+
+    <minerva-checkbox name="skills" value="ts" checked>TypeScript</minerva-checkbox>
+    <minerva-checkbox name="skills" value="css">CSS</minerva-checkbox>
+    <minerva-switch name="public" value="yes">Public profile</minerva-switch>
+  </fieldset>
+
+  <minerva-button type="submit">Save</minerva-button>
+  <minerva-button type="reset" variant="ghost">Reset</minerva-button>
+</form>
+```
+
+```ts
+const form = document.querySelector("#profile");
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const data = new FormData(form);
+  data.get("name"); // "Ada"
+  data.getAll("skills"); // ["ts"]: unchecked boxes are not submitted
+  data.get("public"); // null, or "yes" when the switch is on
+});
+
+// disable every control of the fieldset: not editable, not submitted, not validated
+document.querySelector("#details").disabled = true;
+```
+
+```ts
+const name = document.querySelector("#name");
+
+name.required; // true
+name.validity.valueMissing; // true while empty
+name.validationMessage; // "Please fill out this field."
+name.checkValidity(); // false, fires "invalid" on the element
+name.reportValidity(); // same, and shows the message next to the control
+form.checkValidity(); // checks the Minerva controls with the native ones
+
+// custom rules: any non-empty message makes the control invalid
+name.addEventListener("minerva-change", async () => {
+  const taken = await isNameTaken(name.value);
+  name.setCustomValidity(taken ? "This name is already taken." : "");
+});
+
+// form.reset(): values back to their value / checked attributes,
+// custom validity cleared
+form.reset();
+```
+
+```css
+/* :invalid / :valid match the elements like native inputs */
+form.was-validated :invalid {
+  outline: 2px solid var(--danger-color);
+  outline-offset: 2px;
+}
+
+/* or switch on the built-in error style (invalid; "error" on
+   checkboxes and radios) once the user tried to submit */
+```
+
+```ts
+// "invalid" does not bubble: listen in the capture phase
+form.addEventListener("invalid", (event) => {
+  form.classList.add("was-validated");
+  event.target.invalid = true; // red border + aria-invalid
+}, true);
+
+form.addEventListener("minerva-change", (event) => {
+  if (form.classList.contains("was-validated")) {
+    event.target.invalid = !event.target.validity.valid;
+  }
+});
+```
+
+```html
+<!-- built-in messages follow lang or <minerva-config locale> -->
+<minerva-config locale="fr">
+  <form>
+    <minerva-select name="pays" required aria-label="Pays">…</minerva-select>
+    <!-- validationMessage: "Veuillez sélectionner un élément de la liste." -->
+  </form>
+</minerva-config>
+```
+
+## Installation and initialization
+
+See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.

@@ -1,0 +1,813 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.1",
+  "locale": "fr",
+  "renderer": "wc",
+  "page": "input",
+  "title": "Input",
+  "description": "Champ de saisie sur une ligne avec tailles, variantes, contenu avant / après, bouton d'effacement, compteur de caractères et bascule de visibilité du mot de passe. Placez-le dans un FormField pour un libellé, une aide et un message d'erreur.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.1",
+    "sourceCommit": "3a9f5cdaae706f14fe6d8c65c5481eba719a66c4",
+    "sourceDigest": "sha256:c9ed2b706b61413d29e506a3f04f3d35c044a4b57ec0e284935054f9e1898c7e",
+    "referenceSourceDigest": "sha256:6c9ecba0079f25e53cd971e51f2be8604fc3d941c0ed1cfeec03c4a91913ad73"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Input",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/input",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-input",
+        "props": [
+          {
+            "name": "defaultValue",
+            "typeText": "string",
+            "attribute": "value",
+            "required": false
+          },
+          {
+            "name": "type",
+            "typeText": "\"text\" | \"email\" | \"password\" | \"search\" | \"tel\" | \"url\" | \"number\" | \"date\" | \"datetime-local\" | \"month\" | \"time\" | \"week\"",
+            "attribute": "type",
+            "required": false
+          },
+          {
+            "name": "variant",
+            "typeText": "\"outline\" | \"filled\" | \"unstyled\"",
+            "attribute": "variant",
+            "required": false
+          },
+          {
+            "name": "size",
+            "typeText": "\"small\" | \"medium\" | \"large\"",
+            "attribute": "size",
+            "required": false
+          },
+          {
+            "name": "invalid",
+            "typeText": "boolean",
+            "attribute": "invalid",
+            "required": false
+          },
+          {
+            "name": "placeholder",
+            "typeText": "string",
+            "attribute": "placeholder",
+            "required": false
+          },
+          {
+            "name": "readOnly",
+            "typeText": "boolean",
+            "attribute": "readonly",
+            "required": false
+          },
+          {
+            "name": "minLength",
+            "typeText": "number | undefined",
+            "attribute": "minlength",
+            "required": false
+          },
+          {
+            "name": "maxLength",
+            "typeText": "number | undefined",
+            "attribute": "maxlength",
+            "required": false
+          },
+          {
+            "name": "pattern",
+            "typeText": "string | undefined",
+            "attribute": "pattern",
+            "required": false
+          },
+          {
+            "name": "min",
+            "typeText": "string | undefined",
+            "attribute": "min",
+            "required": false
+          },
+          {
+            "name": "max",
+            "typeText": "string | undefined",
+            "attribute": "max",
+            "required": false
+          },
+          {
+            "name": "step",
+            "typeText": "string | undefined",
+            "attribute": "step",
+            "required": false
+          },
+          {
+            "name": "autocomplete",
+            "typeText": "string | undefined",
+            "attribute": "autocomplete",
+            "required": false
+          },
+          {
+            "name": "inputmode",
+            "typeText": "string | undefined",
+            "attribute": "inputmode",
+            "required": false
+          },
+          {
+            "name": "clearable",
+            "typeText": "boolean",
+            "attribute": "clearable",
+            "required": false
+          },
+          {
+            "name": "clearLabel",
+            "typeText": "string | undefined",
+            "attribute": "clear-label",
+            "required": false
+          },
+          {
+            "name": "showCharCount",
+            "typeText": "boolean",
+            "attribute": "show-char-count",
+            "required": false
+          },
+          {
+            "name": "showPasswordLabel",
+            "typeText": "string | undefined",
+            "attribute": "show-password-label",
+            "required": false
+          },
+          {
+            "name": "hidePasswordLabel",
+            "typeText": "string | undefined",
+            "attribute": "hide-password-label",
+            "required": false
+          },
+          {
+            "name": "name",
+            "typeText": "string",
+            "attribute": "name",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "attribute": "disabled",
+            "required": false
+          },
+          {
+            "name": "required",
+            "typeText": "boolean",
+            "attribute": "required",
+            "required": false
+          },
+          {
+            "name": "value",
+            "typeText": "string",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "change",
+            "typeText": "Event",
+            "description": "The value was committed (blur / Enter), re-dispatched from the inner input"
+          },
+          {
+            "name": "input",
+            "typeText": "Event",
+            "description": "The value changed (each keystroke; native, composed)"
+          },
+          {
+            "name": "minerva-input",
+            "typeText": "CustomEvent<{ value: string; }>",
+            "detailType": {
+              "typeText": "{ value: string; }",
+              "typeRef": "type:8d8a5b145d3477e3a88c"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "Same as `input`, with `detail: { value }`"
+          },
+          {
+            "name": "minerva-change",
+            "typeText": "CustomEvent<{ value: string; }>",
+            "detailType": {
+              "typeText": "{ value: string; }",
+              "typeRef": "type:bd5274ca734871802bf6"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "Same as `change`, with `detail: { value }`"
+          },
+          {
+            "name": "minerva-clear",
+            "typeText": "CustomEvent<undefined>",
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The clear button emptied the field"
+          }
+        ],
+        "slots": [
+          {
+            "name": "prefix",
+            "description": "Content before the text (icon, \"@\")"
+          },
+          {
+            "name": "suffix",
+            "description": "Content after the text (unit, icon, button)"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-input": {
+      "kind": "element",
+      "source": "web-components/src/components/input/input.ts",
+      "className": "MinervaInput",
+      "summary": "Text field with prefix / suffix, clear button and character count.",
+      "description": "Single-line text field (`<Input>` of React) with prefix / suffix slots, clear button, character count and password visibility toggle. Form-associated: submits `value` under `name`, supports `required`, `minlength` / `maxlength` / `pattern` / `min` / `max` validation (the browser's messages, from the inner `<input>`), `form.reset()` and `<fieldset disabled>`. Name it with `<label for>`, a wrapping `<label>`, `aria-label` or `aria-labelledby`.",
+      "properties": [
+        {
+          "name": "defaultValue",
+          "attribute": "value",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Initial value, restored by `form.reset()` (the `value` attribute). Like `<input>`, changing it also changes `value` until the user edits it"
+        },
+        {
+          "name": "type",
+          "attribute": "type",
+          "type": "\"text\" | \"email\" | \"password\" | \"search\" | \"tel\" | \"url\" | \"number\" | \"date\" | \"datetime-local\" | \"month\" | \"time\" | \"week\"",
+          "default": "\"text\"",
+          "description": "Input type"
+        },
+        {
+          "name": "variant",
+          "attribute": "variant",
+          "type": "\"outline\" | \"filled\" | \"unstyled\"",
+          "default": "\"outline\"",
+          "description": "Visual style"
+        },
+        {
+          "name": "size",
+          "attribute": "size",
+          "type": "\"small\" | \"medium\" | \"large\"",
+          "default": "\"medium\"",
+          "description": "Height and font size"
+        },
+        {
+          "name": "invalid",
+          "attribute": "invalid",
+          "type": "boolean",
+          "default": "false",
+          "description": "Error state; sets aria-invalid"
+        },
+        {
+          "name": "placeholder",
+          "attribute": "placeholder",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Placeholder text"
+        },
+        {
+          "name": "readOnly",
+          "attribute": "readonly",
+          "type": "boolean",
+          "default": "false",
+          "description": "Read-only: focusable and submitted, not editable"
+        },
+        {
+          "name": "minLength",
+          "attribute": "minlength",
+          "type": "number | undefined",
+          "description": "Minimum length"
+        },
+        {
+          "name": "maxLength",
+          "attribute": "maxlength",
+          "type": "number | undefined",
+          "description": "Maximum length"
+        },
+        {
+          "name": "pattern",
+          "attribute": "pattern",
+          "type": "string | undefined",
+          "description": "Regular expression the value must match"
+        },
+        {
+          "name": "min",
+          "attribute": "min",
+          "type": "string | undefined",
+          "description": "Minimum (number / date types)"
+        },
+        {
+          "name": "max",
+          "attribute": "max",
+          "type": "string | undefined",
+          "description": "Maximum (number / date types)"
+        },
+        {
+          "name": "step",
+          "attribute": "step",
+          "type": "string | undefined",
+          "description": "Step (number / date types)"
+        },
+        {
+          "name": "autocomplete",
+          "attribute": "autocomplete",
+          "type": "string | undefined",
+          "description": "Autocomplete hint"
+        },
+        {
+          "name": "inputmode",
+          "attribute": "inputmode",
+          "type": "string | undefined",
+          "description": "Virtual keyboard hint"
+        },
+        {
+          "name": "clearable",
+          "attribute": "clearable",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows a clear button while the field has a value"
+        },
+        {
+          "name": "clearLabel",
+          "attribute": "clear-label",
+          "type": "string | undefined",
+          "description": "Accessible label of the clear button (default: localized \"Clear\")"
+        },
+        {
+          "name": "showCharCount",
+          "attribute": "show-char-count",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows the number of characters (and maxlength) after the text"
+        },
+        {
+          "name": "showPasswordLabel",
+          "attribute": "show-password-label",
+          "type": "string | undefined",
+          "description": "Label of the password toggle while hidden (default: localized)"
+        },
+        {
+          "name": "hidePasswordLabel",
+          "attribute": "hide-password-label",
+          "type": "string | undefined",
+          "description": "Label of the password toggle while visible (default: localized)"
+        },
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Name submitted with the form data"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false",
+          "description": "Disables the control (not focusable, not submitted, not validated)"
+        },
+        {
+          "name": "required",
+          "attribute": "required",
+          "type": "boolean",
+          "default": "false",
+          "description": "The control must have a value for the form to be submitted"
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Current value (property; the `value` attribute sets `defaultValue`)"
+        },
+        {
+          "name": "isDisabled",
+          "type": "boolean",
+          "readonly": true,
+          "description": "Whether the control is disabled (itself or by a disabled fieldset)."
+        },
+        {
+          "name": "form",
+          "type": "HTMLFormElement | null",
+          "readonly": true,
+          "description": "The form owning the element"
+        },
+        {
+          "name": "labels",
+          "type": "NodeList | null",
+          "readonly": true,
+          "description": "`<label>` elements associated with the element"
+        },
+        {
+          "name": "validity",
+          "type": "ValidityState | undefined",
+          "readonly": true,
+          "description": "Validity state (same as `<input>.validity`)"
+        },
+        {
+          "name": "validationMessage",
+          "type": "string",
+          "readonly": true,
+          "description": "Message describing the current validation error (empty when valid)"
+        },
+        {
+          "name": "willValidate",
+          "type": "boolean",
+          "readonly": true,
+          "description": "Whether the element is a candidate for constraint validation"
+        }
+      ],
+      "methods": [
+        {
+          "name": "focus",
+          "signature": "(options?: FocusOptions) => void"
+        },
+        {
+          "name": "blur",
+          "signature": "() => void"
+        },
+        {
+          "name": "select",
+          "signature": "() => void",
+          "description": "Selects the text"
+        },
+        {
+          "name": "checkValidity",
+          "signature": "() => boolean",
+          "description": "Checks validity; fires `invalid` when invalid."
+        },
+        {
+          "name": "reportValidity",
+          "signature": "() => boolean",
+          "description": "Checks validity and shows the browser's validation message."
+        },
+        {
+          "name": "setCustomValidity",
+          "signature": "(message: string) => void",
+          "description": "Sets (or clears, with `\"\"`) a custom validation error."
+        },
+        {
+          "name": "formResetCallback",
+          "signature": "() => void"
+        },
+        {
+          "name": "formDisabledCallback",
+          "signature": "(disabled: boolean) => void"
+        },
+        {
+          "name": "formStateRestoreCallback",
+          "signature": "(state: string | File | FormData | null) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "change",
+          "description": "The value was committed (blur / Enter), re-dispatched from the inner input"
+        },
+        {
+          "name": "input",
+          "description": "The value changed (each keystroke; native, composed)"
+        },
+        {
+          "name": "minerva-input",
+          "description": "Same as `input`, with `detail: { value }`"
+        },
+        {
+          "name": "minerva-change",
+          "description": "Same as `change`, with `detail: { value }`"
+        },
+        {
+          "name": "minerva-clear",
+          "description": "The clear button emptied the field"
+        }
+      ],
+      "slots": [
+        {
+          "name": "prefix",
+          "description": "Content before the text (icon, \"@\")"
+        },
+        {
+          "name": "suffix",
+          "description": "Content after the text (unit, icon, button)"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The field box (wraps the input and its addons)"
+        },
+        {
+          "name": "input",
+          "description": "The native `<input>`"
+        },
+        {
+          "name": "prefix",
+          "description": "The content before the text"
+        },
+        {
+          "name": "suffix",
+          "description": "The content after the text"
+        },
+        {
+          "name": "clear-button",
+          "description": "The clear button (while there is a value)"
+        },
+        {
+          "name": "password-toggle",
+          "description": "The password visibility toggle (type=password)"
+        },
+        {
+          "name": "count",
+          "description": "The character counter"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--input-height",
+          "description": "Minimum height of the field (every size; defaults to the density's control height of the size)"
+        },
+        {
+          "name": "--input-padding-x",
+          "description": "Horizontal padding of the text (every size)"
+        },
+        {
+          "name": "--input-radius",
+          "description": "Corner radius (defaults to --radius-lg)"
+        },
+        {
+          "name": "--input-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--input-background",
+          "description": "Background color of the outline variant"
+        },
+        {
+          "name": "--input-border-color",
+          "description": "Border color at rest"
+        },
+        {
+          "name": "--input-focus-color",
+          "description": "Border color while hovered / focused (focus: then --minerva-focus-border-color)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Input": {
+      "kind": "cssVars",
+      "source": "react/src/components/Input",
+      "vars": [
+        {
+          "name": "--input-height",
+          "description": "Minimum height of the field (every size; defaults to the density's control height of the size)"
+        },
+        {
+          "name": "--input-padding-x",
+          "description": "Horizontal padding of the text (every size)"
+        },
+        {
+          "name": "--input-radius",
+          "description": "Corner radius (defaults to --radius-lg)"
+        },
+        {
+          "name": "--input-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--input-background",
+          "description": "Background color of the outline variant"
+        },
+        {
+          "name": "--input-border-color",
+          "description": "Border color at rest"
+        },
+        {
+          "name": "--input-focus-color",
+          "description": "Border color while hovered / focused (focus: then --minerva-focus-border-color)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "addons",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/input/wc/addons.html",
+      "files": {
+        "apps/docs/src/docs/pages/input/wc/addons.html": "<div style=\"display: grid; gap: 12px; max-width: 360px\">\n  <minerva-input type=\"url\" aria-label=\"Website\" placeholder=\"example.com\">\n    <span slot=\"prefix\">https://</span>\n  </minerva-input>\n  <minerva-input\n    type=\"number\"\n    aria-label=\"Weight\"\n    value=\"72\"\n    min=\"0\"\n    step=\"0.5\"\n  >\n    <span slot=\"suffix\">kg</span>\n  </minerva-input>\n  <minerva-input\n    type=\"search\"\n    clearable\n    value=\"web components\"\n    aria-label=\"Search\"\n  >\n    <span slot=\"prefix\" aria-hidden=\"true\">🔍</span>\n  </minerva-input>\n  <minerva-input\n    show-char-count\n    maxlength=\"40\"\n    value=\"Character count\"\n    aria-label=\"Title\"\n  ></minerva-input>\n  <minerva-input\n    type=\"password\"\n    value=\"correct horse\"\n    aria-label=\"Password\"\n    autocomplete=\"current-password\"\n  ></minerva-input>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Compléments, effacement, compteur et mot de passe",
+      "description": "Slots prefix et suffix, bouton d’effacement (clearable), compteur de caractères lié à maxlength et bouton d’affichage du mot de passe."
+    },
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/input/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/input/wc/basic.html": "<minerva-input aria-label=\"Name\" placeholder=\"Uncontrolled\"></minerva-input>\n<minerva-input\n  id=\"controlled-name\"\n  aria-label=\"Controlled\"\n  placeholder=\"Controlled\"\n></minerva-input>\n",
+        "apps/docs/src/docs/pages/input/wc/basic.ts": "// Web Components emit their next value in CustomEvent.detail.\n// The owner writes it back through the element's value property.\nexport function setup(root: HTMLElement) {\n  const input = root.querySelector<HTMLElement & { value: string }>(\n    \"#controlled-name\",\n  )!;\n  let value = \"\";\n  input.value = value;\n  const onInput = (event: Event) => {\n    value = (event as CustomEvent<{ value: string }>).detail.value;\n    input.value = value;\n  };\n  input.addEventListener(\"minerva-input\", onInput);\n  return () => input.removeEventListener(\"minerva-input\", onInput);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Utilisation de base",
+      "description": "Un champ non contrôlé et un champ dont le propriétaire synchronise la propriété value via minerva-input. Les deux peuvent être modifiés et vidés."
+    },
+    {
+      "id": "form",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/input/wc/form.html",
+      "files": {
+        "apps/docs/src/docs/pages/input/wc/form.html": "<form id=\"in-form\" style=\"display: grid; gap: 8px; max-width: 360px\">\n  <label for=\"in-form-email\">Email</label>\n  <minerva-input\n    id=\"in-form-email\"\n    name=\"email\"\n    type=\"email\"\n    required\n    placeholder=\"you@example.com\"\n  ></minerva-input>\n  <label for=\"in-form-user\">Username (3 to 16 lowercase letters)</label>\n  <minerva-input\n    id=\"in-form-user\"\n    name=\"username\"\n    required\n    minlength=\"3\"\n    maxlength=\"16\"\n    pattern=\"[a-z]+\"\n    show-char-count\n  ></minerva-input>\n  <div style=\"display: flex; gap: 8px\">\n    <minerva-button type=\"submit\">Sign up</minerva-button>\n    <minerva-button type=\"reset\" variant=\"ghost\" color=\"neutral\"\n      >Reset</minerva-button\n    >\n  </div>\n  <output id=\"in-form-result\"></output>\n</form>\n",
+        "apps/docs/src/docs/pages/input/wc/form.ts": "// The browser validates the inputs on submit (required, type, minlength,\n// pattern) and reports the first invalid one; `invalid` styles the fields\n// that failed until they are edited. Reset restores the `value` attributes.\ntype Field = HTMLElement & { invalid: boolean; validity?: ValidityState };\n\nexport function setup(root: HTMLElement) {\n  const form = root.querySelector<HTMLFormElement>(\"#in-form\")!;\n  const result = root.querySelector<HTMLOutputElement>(\"#in-form-result\")!;\n  const onInvalid = (event: Event) => ((event.target as Field).invalid = true);\n  const onInput = (event: Event) => {\n    const field = event.target as Field;\n    if (field.validity?.valid) field.invalid = false;\n  };\n  const onSubmit = (event: SubmitEvent) => {\n    event.preventDefault();\n    const entries = [...new FormData(form)].map(\n      ([key, value]) => `${key}=${value}`,\n    );\n    result.value = `FormData: ${entries.join(\", \")}`;\n  };\n  const onReset = () => {\n    result.value = \"\";\n    form\n      .querySelectorAll<Field>(\"minerva-input\")\n      .forEach((field) => (field.invalid = false));\n  };\n  form.addEventListener(\"invalid\", onInvalid, true);\n  form.addEventListener(\"minerva-input\", onInput);\n  form.addEventListener(\"submit\", onSubmit);\n  form.addEventListener(\"reset\", onReset);\n  return () => {\n    form.removeEventListener(\"invalid\", onInvalid, true);\n    form.removeEventListener(\"minerva-input\", onInput);\n    form.removeEventListener(\"submit\", onSubmit);\n    form.removeEventListener(\"reset\", onReset);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Dans un formulaire",
+      "description": "required, type=\"email\", minlength et pattern utilisent la validation du navigateur à l’envoi ; les champs en échec passent en invalid jusqu’à correction, et reset les restaure."
+    },
+    {
+      "id": "sizes-variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/input/wc/sizes-variants.html",
+      "files": {
+        "apps/docs/src/docs/pages/input/wc/sizes-variants.html": "<div style=\"display: grid; gap: 12px; max-width: 360px\">\n  <minerva-input\n    size=\"small\"\n    aria-label=\"Small\"\n    placeholder=\"Small\"\n  ></minerva-input>\n  <minerva-input\n    size=\"medium\"\n    aria-label=\"Medium\"\n    placeholder=\"Medium (outline)\"\n  ></minerva-input>\n  <minerva-input\n    size=\"large\"\n    aria-label=\"Large\"\n    placeholder=\"Large\"\n  ></minerva-input>\n  <minerva-input\n    variant=\"filled\"\n    aria-label=\"Filled\"\n    placeholder=\"Filled\"\n  ></minerva-input>\n  <minerva-input\n    variant=\"unstyled\"\n    aria-label=\"Unstyled\"\n    placeholder=\"Unstyled\"\n  ></minerva-input>\n  <minerva-input\n    readonly\n    value=\"Read-only value\"\n    aria-label=\"Read-only\"\n  ></minerva-input>\n  <minerva-input\n    disabled\n    value=\"Disabled\"\n    aria-label=\"Disabled\"\n  ></minerva-input>\n  <minerva-input\n    invalid\n    value=\"Invalid value\"\n    aria-label=\"Invalid\"\n  ></minerva-input>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Tailles, variantes et états",
+      "description": "Trois tailles, les variantes outline, filled et unstyled, et les états lecture seule, désactivé et invalide."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Input",
+      "description": "Champ de saisie sur une ligne avec tailles, variantes, contenu avant / après, bouton d'effacement, compteur de caractères et bascule de visibilité du mot de passe. Placez-le dans un FormField pour un libellé, une aide et un message d'erreur.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Les attributs et événements natifs sont transmis ; className s’applique au conteneur et ref atteint l’<input>."
+        },
+        "sizes-variants": {
+          "title": "Tailles et variantes",
+          "description": "Trois tailles et les variantes outline, filled et unstyled."
+        },
+        "addons": {
+          "title": "Préfixe et suffixe",
+          "description": "Contenu décoratif comme des icônes, symboles ou unités."
+        },
+        "clearable-and-count": {
+          "title": "Bouton d'effacement et compteur",
+          "description": "clearable affiche un bouton d'effacement libellé tant que le champ a une valeur ; l'effacement déclenche onChange avec une valeur vide et garde le focus dans le champ. showCharCount affiche la longueur (et maxLength) et la relie au champ."
+        },
+        "password": {
+          "title": "Mot de passe",
+          "description": "type=\"password\" ajoute un bouton afficher / masquer avec un libellé localisé."
+        },
+        "states": {
+          "title": "États",
+          "description": "invalid, disabled et readOnly ; dans un FormField l’état est hérité. Les champs en lecture seule utilisent --readonly-surface-color, conservent le contraste du texte et restent accessibles au clavier pour sélectionner et copier. Les commandes d’édition sont masquées et les bordures d’erreur restent visibles."
+        },
+        "validation": {
+          "title": "Validation",
+          "description": "Validez à l'envoi et affichez le message avec errorMessage du FormField : le champ devient invalide et est décrit par le message."
+        }
+      },
+      "api": {
+        "InputProps": {
+          "variant": "Style visuel",
+          "size": "Hauteur et taille de police",
+          "invalid": "État d’erreur (aussi défini par un FormControl invalide) ; définit aria-invalid",
+          "prefix": "Contenu avant le texte, par ex. une icône ou « @ »",
+          "suffix": "Contenu après le texte, par ex. une unité, une icône ou un bouton",
+          "className": "Classe du conteneur externe (pas de l’<input>)",
+          "ref": "Ref vers l’élément <input>",
+          "clearable": "Affiche un bouton d'effacement tant que le champ a une valeur (sauf désactivé ou en lecture seule) ; l'effacement déclenche onChange avec une valeur vide",
+          "onClear": "Appelé après que le bouton d'effacement a vidé le champ",
+          "clearLabel": "Libellé accessible du bouton d'effacement (par défaut « Effacer », localisé)",
+          "showCharCount": "Affiche le nombre de caractères (et maxLength s'il est défini), relié au champ par aria-describedby",
+          "showPasswordLabel": "Libellé accessible de la bascule quand le mot de passe est masqué",
+          "hidePasswordLabel": "Libellé accessible de la bascule quand le mot de passe est visible"
+        }
+      },
+      "cssVars": {
+        "--input-height": "Hauteur minimale du champ (toutes tailles ; par défaut la hauteur de contrôle de la densité pour la taille)",
+        "--input-padding-x": "Marge intérieure horizontale du texte (toutes tailles)",
+        "--input-radius": "Rayon des coins (par défaut --radius-lg)",
+        "--input-font-size": "Taille de police (toutes tailles)",
+        "--input-background": "Couleur de fond de la variante outline",
+        "--input-border-color": "Couleur de bordure au repos",
+        "--input-focus-color": "Couleur de bordure au survol / au focus"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Un champ non contrôlé et un champ dont le propriétaire synchronise la propriété value via minerva-input. Les deux peuvent être modifiés et vidés."
+          },
+          "sizes-variants": {
+            "title": "Tailles, variantes et états",
+            "description": "Trois tailles, les variantes outline, filled et unstyled, et les états lecture seule, désactivé et invalide."
+          },
+          "addons": {
+            "title": "Compléments, effacement, compteur et mot de passe",
+            "description": "Slots prefix et suffix, bouton d’effacement (clearable), compteur de caractères lié à maxlength et bouton d’affichage du mot de passe."
+          },
+          "form": {
+            "title": "Dans un formulaire",
+            "description": "required, type=\"email\", minlength et pattern utilisent la validation du navigateur à l’envoi ; les champs en échec passent en invalid jusqu’à correction, et reset les restaure."
+          }
+        },
+        "minerva-input": {
+          "props": {
+            "defaultValue": "Valeur initiale (l’attribut value), restaurée par form.reset(). Comme pour <input>, la modifier change aussi value tant que l’utilisateur n’a pas édité le champ.",
+            "type": "Type de l’<input> interne (text, email, password, search, url, number, date…).",
+            "placeholder": "Texte indicatif affiché tant que le champ est vide.",
+            "readOnly": "Lecture seule : focalisable et envoyé, mais non modifiable.",
+            "minLength": "Longueur minimale de la valeur (validée par le navigateur).",
+            "maxLength": "Longueur maximale de la valeur ; c’est aussi la limite du compteur de caractères.",
+            "pattern": "Expression régulière à laquelle la valeur doit correspondre.",
+            "min": "Valeur minimale (types number et date).",
+            "max": "Valeur maximale (types number et date).",
+            "step": "Pas (types number et date).",
+            "autocomplete": "Indication de saisie automatique de l’<input> interne.",
+            "inputmode": "Indication de clavier virtuel (numeric, email, tel…).",
+            "name": "Nom sous lequel la valeur est envoyée avec le formulaire.",
+            "disabled": "Désactive le contrôle : ni focalisable, ni envoyé, ni validé.",
+            "required": "Le contrôle doit avoir une valeur pour que le formulaire soit envoyé.",
+            "value": "Valeur courante (propriété ; l’attribut value définit defaultValue).",
+            "isDisabled": "Indique si le contrôle est désactivé, par lui-même ou par un <fieldset> désactivé (lecture seule).",
+            "form": "Le formulaire auquel appartient l’élément (lecture seule).",
+            "labels": "Les éléments <label> associés à l’élément (lecture seule).",
+            "validity": "État de validité, comme <input>.validity (lecture seule).",
+            "validationMessage": "Message de l’erreur de validation courante ; vide si la valeur est valide (lecture seule).",
+            "willValidate": "Indique si l’élément participe à la validation des contraintes (lecture seule)."
+          },
+          "events": {
+            "change": "La valeur a été validée (perte du focus ou Entrée), réémis depuis l’input interne.",
+            "input": "La valeur a changé (à chaque frappe ; natif, composed).",
+            "minerva-input": "Identique à input, avec detail : { value }.",
+            "minerva-change": "Identique à change, avec detail : { value }.",
+            "minerva-clear": "Le bouton d’effacement a vidé le champ."
+          },
+          "slots": {
+            "prefix": "Contenu avant le texte (icône, « @ », protocole…).",
+            "suffix": "Contenu après le texte (unité, icône, bouton)."
+          },
+          "methods": {
+            "focus": "Donne le focus au contrôle interne.",
+            "blur": "Retire le focus du contrôle interne.",
+            "select": "Sélectionne tout le texte.",
+            "checkValidity": "Vérifie la validité ; déclenche invalid si l’élément est invalide.",
+            "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+            "setCustomValidity": "Définit une erreur de validation personnalisée, ou l’efface avec une chaîne vide.",
+            "formResetCallback": "Rappel du cycle de vie du formulaire appelé par form.reset() : restaure la valeur initiale.",
+            "formDisabledCallback": "Rappel du cycle de vie du formulaire appelé quand un <fieldset> ancêtre est désactivé ou réactivé.",
+            "formStateRestoreCallback": "Rappel du cycle de vie du formulaire appelé quand le navigateur restaure l’état (navigation dans l’historique, remplissage automatique)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "states": {
+            "title": "États",
+            "description": "invalid, disabled et readOnly ; dans un FormField l’état est hérité."
+          },
+          "sizes-variants": {
+            "title": "Tailles et variantes",
+            "description": "Trois tailles et les variantes outline, filled et unstyled."
+          },
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Un champ non contrôlé et un TextInput contrôlé. onChange reçoit la nouvelle chaîne ; accessibilityLabel définit le nom accessible et les propriétés de style natives règlent l’apparence."
+          },
+          "clearable-and-count": {
+            "title": "Bouton d'effacement et compteur",
+            "description": "clearable affiche un bouton d'effacement libellé tant que le champ a une valeur ; l'effacement déclenche onChange avec une valeur vide et garde le focus dans le champ. showCharCount affiche la longueur (et maxLength) et la relie au champ."
+          }
+        }
+      }
+    }
+  }
+}

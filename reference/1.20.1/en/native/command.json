@@ -1,0 +1,428 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.1",
+  "locale": "en",
+  "renderer": "native",
+  "page": "command",
+  "title": "Command",
+  "description": "A searchable command palette in a modal. Type to filter by title, description, group and keywords, move with the arrow keys, choose with Enter or a click. An optional global shortcut opens it.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.1",
+    "sourceCommit": "3a9f5cdaae706f14fe6d8c65c5481eba719a66c4",
+    "sourceDigest": "sha256:c9ed2b706b61413d29e506a3f04f3d35c044a4b57ec0e284935054f9e1898c7e",
+    "referenceSourceDigest": "sha256:6c9ecba0079f25e53cd971e51f2be8604fc3d941c0ed1cfeec03c4a91913ad73"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "CommandDialog",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "CommandDialog"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "open",
+            "source": "packages/native/src/components/Command/index.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "defaultOpen",
+            "source": "packages/native/src/components/Command/index.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false
+          },
+          {
+            "name": "items",
+            "source": "packages/native/src/components/Command/index.tsx",
+            "kind": "array",
+            "typeText": "CommandItem[]",
+            "typeRef": "type:5b75a5a1cf5cd137f5ee",
+            "required": true
+          },
+          {
+            "name": "title",
+            "source": "packages/native/src/components/Command/index.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false
+          },
+          {
+            "name": "description",
+            "source": "packages/native/src/components/Command/index.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false
+          },
+          {
+            "name": "placeholder",
+            "source": "packages/native/src/components/Command/index.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "emptyText",
+            "source": "packages/native/src/components/Command/index.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false
+          },
+          {
+            "name": "maxResults",
+            "source": "packages/native/src/components/Command/index.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 12,
+            "required": false
+          },
+          {
+            "name": "filter",
+            "source": "packages/native/src/components/Command/index.tsx",
+            "kind": "function",
+            "typeText": "((items: CommandItem[], query: string) => CommandItem[]) | undefined",
+            "typeRef": "type:ebd929855a8711c70627",
+            "parameters": [
+              {
+                "name": "items",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "CommandItem[]",
+                "typeRef": "type:5b75a5a1cf5cd137f5ee"
+              },
+              {
+                "name": "query",
+                "position": 1,
+                "required": true,
+                "rest": false,
+                "typeText": "string",
+                "typeRef": "type:e15e314d298fc0d116fc"
+              }
+            ],
+            "returnType": {
+              "typeText": "CommandItem[]",
+              "typeRef": "type:5b75a5a1cf5cd137f5ee"
+            },
+            "required": false
+          },
+          {
+            "name": "resultsLabel",
+            "source": "packages/native/src/components/Command/index.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onOpenChange",
+            "source": "packages/native/src/components/Command/index.tsx",
+            "kind": "function",
+            "typeText": "((open: boolean) => void) | undefined",
+            "typeRef": "type:14cc959ec09f17e77070",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onSelect",
+            "source": "packages/native/src/components/Command/index.tsx",
+            "kind": "function",
+            "typeText": "(item: CommandItem) => void",
+            "typeRef": "type:09ad6118b922c5cfd39b",
+            "parameters": [
+              {
+                "name": "item",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "CommandItem",
+                "typeRef": "type:f2871cebb5525058852f"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": true
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "open",
+            "event": "onOpenChange",
+            "syntax": "open={open} onOpenChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "native:CommandDialogProps": {
+      "source": "native/src/components/Command/index.tsx",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "required": false
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "required": false,
+          "default": "false"
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "required": false
+        },
+        {
+          "name": "items",
+          "type": "CommandItem[]",
+          "required": true
+        },
+        {
+          "name": "onSelect",
+          "type": "(item: CommandItem) => void",
+          "required": true
+        },
+        {
+          "name": "title",
+          "type": "ReactNode",
+          "required": false
+        },
+        {
+          "name": "description",
+          "type": "ReactNode",
+          "required": false
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "emptyText",
+          "type": "ReactNode",
+          "required": false
+        },
+        {
+          "name": "maxResults",
+          "type": "number",
+          "required": false,
+          "default": "12"
+        },
+        {
+          "name": "filter",
+          "type": "(items: CommandItem[], query: string) => CommandItem[]",
+          "required": false
+        },
+        {
+          "name": "resultsLabel",
+          "type": "string",
+          "required": false
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Command": {
+      "kind": "cssVars",
+      "source": "react/src/components/Command",
+      "vars": [
+        {
+          "name": "--command-search-height",
+          "description": "Minimum height of the search field (defaults to --control-height-md)"
+        },
+        {
+          "name": "--command-results-max-height",
+          "description": "Maximum height of the scrolling result list"
+        },
+        {
+          "name": "--command-item-min-height",
+          "description": "Minimum height of a result row"
+        },
+        {
+          "name": "--command-item-padding-y",
+          "description": "Vertical padding of a result row (follows the density's row padding)"
+        },
+        {
+          "name": "--command-item-padding-x",
+          "description": "Horizontal padding of a result row (follows the density's row padding)"
+        },
+        {
+          "name": "--command-item-active-background",
+          "description": "Background of the hovered / active row (defaults to a 10% primary tint)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/command/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/command/native/basic.tsx": "import { useState } from \"react\";\nimport { Text, View } from \"react-native\";\nimport { CommandDialog, Button } from \"minerva-design/native\";\nexport default function Basic() {\n  const [open, setOpen] = useState(false);\n  const [choice, setChoice] = useState(\"\");\n  return (\n    <View>\n      <Button onPress={() => setOpen(true)}>Commands</Button>\n      <Text>{choice}</Text>\n      <CommandDialog\n        open={open}\n        onOpenChange={setOpen}\n        items={[\n          { id: \"settings\", title: \"Settings\", keywords: \"preferences\" },\n          { id: \"profile\", title: \"Profile\" },\n        ]}\n        onSelect={(item) => setChoice(item.title)}\n      />\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "Basic usage",
+      "description": "Controlled palette; onSelect receives the chosen item and the palette closes."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Command",
+      "description": "A searchable command palette in a modal. Type to filter by title, description, group and keywords, move with the arrow keys, choose with Enter or a click. An optional global shortcut opens it.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Controlled palette; onSelect receives the chosen item and the palette closes."
+        },
+        "shortcut": {
+          "title": "Global shortcut",
+          "description": "shortcut=\"mod+k\" opens the palette with Cmd+K on macOS and Ctrl+K elsewhere; shortcutLabel shows the hint."
+        },
+        "custom-filter": {
+          "title": "Ranked results",
+          "description": "filter replaces the default substring search: it receives the enabled items and the trimmed query and returns the results in display order. Here, titles starting with the query come first."
+        },
+        "site-search": {
+          "title": "Site search",
+          "description": "The documentation search composes Button and CommandDialog: filtering, groups, empty results, keyboard selection and focus restoration. This example uses Ctrl+Shift+K; the site uses Cmd/Ctrl+K. Connect onSelect to your router in an application."
+        }
+      },
+      "api": {
+        "CommandDialogProps": {
+          "open": "Controlled open state; leave undefined for uncontrolled",
+          "defaultOpen": "Initial open state while uncontrolled",
+          "onOpenChange": "Called with the requested open state (shortcut, selection, Escape, backdrop click)",
+          "items": "Commands to search; disabled items are never shown",
+          "onSelect": "Called with the chosen item (click or Enter); the palette then closes",
+          "title": "Title of the dialog; defaults to the localized \"Command palette\"",
+          "description": "Accessible description of the palette; defaults to a localized hint",
+          "placeholder": "Placeholder of the search input; defaults to a localized hint",
+          "emptyText": "Shown when nothing matches",
+          "shortcutLabel": "Shortcut hint rendered as <kbd> next to the title, e.g. \"⌘K\"",
+          "shortcut": "Global keyboard shortcut(s) that open the palette, e.g. \"mod+k\"; modifiers: mod, ctrl, meta/cmd, shift, alt/option",
+          "maxResults": "Maximum number of results shown",
+          "filter": "Custom search, e.g. ranking results by match quality: receives the enabled items and the trimmed query (never empty) and returns the matching items in display order (then capped at maxResults); defaults to a case-insensitive substring match kept in items order",
+          "resultsLabel": "Accessible label of the results list",
+          "enterLabel": "Key hint shown at the end of the search input; defaults to the localized \"Enter\"",
+          "className": "Additional class name of the dialog panel"
+        },
+        "CommandItem": {
+          "id": "Unique id, passed back through onSelect",
+          "title": "Main label",
+          "description": "Secondary line below the title",
+          "group": "Group name, shown as a badge and matched by the search",
+          "keywords": "Extra search terms (not displayed)",
+          "disabled": "Hides the item from the results"
+        }
+      },
+      "cssVars": {
+        "--command-search-height": "Minimum height of the search field (defaults to --control-height-md)",
+        "--command-results-max-height": "Maximum height of the scrolling result list",
+        "--command-item-min-height": "Minimum height of a result row",
+        "--command-item-padding-y": "Vertical padding of a result row (follows the density's row padding)",
+        "--command-item-padding-x": "Horizontal padding of a result row (follows the density's row padding)",
+        "--command-item-active-background": "Background of the hovered / active row (defaults to a 10% primary tint)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "items is a JS property (id, title, description, group, keywords, disabled). Type to filter, move with the arrow keys, choose with Enter or a click; minerva-select gives the chosen id."
+          },
+          "shortcut": {
+            "title": "Global shortcut",
+            "description": "shortcut takes a comma-separated list (\"mod+k, /\"; mod is Ctrl, or ⌘ on macOS) and opens the palette from anywhere, except while typing in a field. max-results caps the list."
+          },
+          "custom-filter": {
+            "title": "Ranked results",
+            "description": "filter replaces the default substring search: it receives the enabled items and the trimmed query and returns the results in display order. Here, titles starting with the query come first."
+          }
+        },
+        "minerva-command-dialog": {
+          "props": {
+            "label": "Title of the dialog (default: localized \"Command palette\")."
+          },
+          "events": {
+            "minerva-select": "A command was chosen (detail: { value, item }, value = the item's id); the palette then closes.",
+            "minerva-open-change": "The user asked to open (shortcut) / close (detail: { open, reason }); cancelable: preventDefault() keeps the current state.",
+            "minerva-after-open": "The palette is open and focus moved to the search input.",
+            "minerva-after-close": "Fired once the panel has finished closing (after its exit animation)."
+          },
+          "cssVars": {
+            "--modal-width": "Width of the panel (defaults to the width of the size, capped by the viewport).",
+            "--modal-max-height": "Maximum height of the panel (the body scrolls beyond).",
+            "--modal-padding": "Horizontal padding of the header, description, body and footer.",
+            "--modal-radius": "Corner radius of the panel (defaults to --radius-xl).",
+            "--modal-shadow": "Shadow of the panel (defaults to --shadow-xl).",
+            "--modal-background": "Background of the panel.",
+            "--modal-z-index": "Stacking order of the panel (defaults to --z-modal)."
+          },
+          "methods": {
+            "show": "Opens the palette.",
+            "hide": "Closes the palette."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

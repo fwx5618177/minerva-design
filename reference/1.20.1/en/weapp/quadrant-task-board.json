@@ -1,0 +1,504 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.1",
+  "locale": "en",
+  "renderer": "weapp",
+  "page": "quadrant-task-board",
+  "title": "QuadrantTaskBoard",
+  "description": "A task board on a four-quadrant matrix, such as an Eisenhower matrix: the + of a quadrant header (or a click on its empty area) adds a task, compact edit and delete buttons on the active task (in its card, beside its name, on React) edit or delete it, a panel opened right at the + button or at the task names it and picks its quadrant, an inline confirmation guards every delete, and tasks move by drag and drop or Shift + arrow keys (a double click edits them). The board is controlled: pass the tasks as points and set back the list received by onPointsChange. It accepts the other props of QuadrantChart (axes, quadrant titles, badges and colors, ticks, labels…) and its buttons and panels follow the language of the app. Exported by minerva-design, not minerva-design/charts.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.1",
+    "sourceCommit": "3a9f5cdaae706f14fe6d8c65c5481eba719a66c4",
+    "sourceDigest": "sha256:c9ed2b706b61413d29e506a3f04f3d35c044a4b57ec0e284935054f9e1898c7e",
+    "referenceSourceDigest": "sha256:6c9ecba0079f25e53cd971e51f2be8604fc3d941c0ed1cfeec03c4a91913ad73"
+  },
+  "content": {
+    "data": {
+      "tasks": {
+        "loginOutage": "Fix login outage",
+        "quarterlyPlanning": "Quarterly planning",
+        "bookTravel": "Book travel",
+        "inboxZero": "Inbox zero"
+      },
+      "doFirst": "Do first",
+      "schedule": "Schedule",
+      "delegate": "Delegate",
+      "eliminate": "Eliminate",
+      "important": "Important",
+      "notImportant": "Not important",
+      "urgent": "Urgent",
+      "notUrgent": "Not urgent",
+      "boardAria": "Task matrix: drag tasks between quadrants",
+      "roadmap": {
+        "features": {
+          "darkMode": "Dark mode",
+          "sso": "Single sign-on",
+          "csvExport": "CSV export",
+          "rewriteBilling": "Rewrite billing"
+        },
+        "quickWins": "Quick wins",
+        "bigBets": "Big bets",
+        "fillIns": "Fill-ins",
+        "moneyPits": "Money pits",
+        "effort": "Effort",
+        "impact": "Impact",
+        "aria": "Roadmap by effort and impact",
+        "add": "Add feature",
+        "edit": "Edit feature",
+        "delete": "Remove feature",
+        "name": "Feature",
+        "deleteConfirm": "“{name}” will be removed from the roadmap.",
+        "summary": "Features: {{features}} · changes: {{changes}}"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "QuadrantTaskBoard",
+      "support": {
+        "status": "beta",
+        "notes": "quadrant-task-board: controlled task board composing the native quadrant-chart, button and icon-button components (usingComponents in its JSON). points in, pointschange { points } out; every quadrant-chart property is forwarded except the chart's own labels (labels are the board texts, partial overrides of the localized defaults). A 2 x 2 grid of quadrant headers above the chart (badge, title, count unless showCounts is false, plus-icon add button), a toolbar for the selected task (name, Edit and Delete buttons; selection is internal or the controlled selectedIndex), an inline panel opened under the headers or the actions toolbar (a caret points at its opener) with a name input (the keyboard confirm key saves) and a 2 x 2 quadrant radio grid with Cancel / Save (Save disabled while the name is blank), an inline danger confirmation before a delete, tapping an empty quadrant area adds a task there, and draggable dots (default true) or the chart's accessible Move to buttons move a task. Add/edit/move/delete/selection logic and texts come from the shared minerva-design/charts quadrant task helpers. Chart methods (configure, resize, resetZoom, getView, setView, getPlotRect, toPixel, fromPixel) are forwarded to the inner chart; pointclick, pointdrag, hover, zoom and layout are re-emitted. Beta: needs device validation. The canvas has no view overlays: the quadrant headers are a grid above the chart (the chart still draws its own quadrant titles) and the actions toolbar sits under the chart instead of floating on the selected dot. No double-tap to edit and no keyboard moves (Shift + arrow keys): mini-program views take no focus; use the Edit button and the Move to actions. The add buttons draw the plus icon as an SVG data URI image; Edit and Delete keep text glyphs (✎, ✕). Layout styles are inline (no dedicated stylesheet yet). The inner components are in the board's shadow tree: the config-provider / theme-provider relation across that boundary (theme tokens and messages of the inline panel) needs device validation; the board's locale is forwarded to the chart explicitly. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "quadrant-task-board: controlled task board composing the native quadrant-chart, button and icon-button components (usingComponents in its JSON). points in, pointschange { points } out; every quadrant-chart property is forwarded except the chart's own labels (labels are the board texts, partial overrides of the localized defaults). A 2 x 2 grid of quadrant headers above the chart (badge, title, count unless showCounts is false, plus-icon add button), a toolbar for the selected task (name, Edit and Delete buttons; selection is internal or the controlled selectedIndex), an inline panel opened under the headers or the actions toolbar (a caret points at its opener) with a name input (the keyboard confirm key saves) and a 2 x 2 quadrant radio grid with Cancel / Save (Save disabled while the name is blank), an inline danger confirmation before a delete, tapping an empty quadrant area adds a task there, and draggable dots (default true) or the chart's accessible Move to buttons move a task. Add/edit/move/delete/selection logic and texts come from the shared minerva-design/charts quadrant task helpers. Chart methods (configure, resize, resetZoom, getView, setView, getPlotRect, toPixel, fromPixel) are forwarded to the inner chart; pointclick, pointdrag, hover, zoom and layout are re-emitted. Beta: needs device validation. The canvas has no view overlays: the quadrant headers are a grid above the chart (the chart still draws its own quadrant titles) and the actions toolbar sits under the chart instead of floating on the selected dot. No double-tap to edit and no keyboard moves (Shift + arrow keys): mini-program views take no focus; use the Edit button and the Move to actions. The add buttons draw the plus icon as an SVG data URI image; Edit and Delete keep text glyphs (✎, ✕). Layout styles are inline (no dedicated stylesheet yet). The inner components are in the board's shadow tree: the config-provider / theme-provider relation across that boundary (theme tokens and messages of the inline panel) needs device validation; the board's locale is forwarded to the chart explicitly. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/quadrant-task-board/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "quadrant-task-board",
+        "props": [
+          {
+            "name": "width",
+            "typeText": "unknown",
+            "required": false,
+            "default": "100%"
+          },
+          {
+            "name": "height",
+            "typeText": "unknown",
+            "required": false,
+            "default": 320
+          },
+          {
+            "name": "legend",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "tooltip",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "crosshair",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "annotations",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "interaction",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "padding",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "palette",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "locale",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "disableScroll",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "points",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "xDomain",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "yDomain",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "xSplit",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "ySplit",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "quadrants",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "xLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "yLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "axisLabels",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "showTicks",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          },
+          {
+            "name": "reverseX",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "showLabels",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          },
+          {
+            "name": "pointSize",
+            "typeText": "number",
+            "required": false,
+            "default": 12
+          },
+          {
+            "name": "name",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "draggable",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          },
+          {
+            "name": "showCounts",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "selectedIndex",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "selectedIndices",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "accessiblePoints",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          },
+          {
+            "name": "labels",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          }
+        ],
+        "events": [
+          {
+            "name": "pointschange",
+            "typeText": "{ points: NativeQuadrantPoint[] }",
+            "description": "Tasks after an add, an edit, a delete or a move (controlled: update points)."
+          },
+          {
+            "name": "pointclick",
+            "typeText": "{ point: NativeQuadrantPoint; index: number }",
+            "description": "A task dot was tapped (it becomes the selected task)."
+          },
+          {
+            "name": "pointdrag",
+            "typeText": "{ point: NativeQuadrantPoint; index: number; target: NativeQuadrantDropTarget }",
+            "description": "A task dot is dragged (draggable)."
+          },
+          {
+            "name": "hover",
+            "typeText": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+            "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+          },
+          {
+            "name": "zoom",
+            "typeText": "{ x: [number, number]; y: [number, number] }",
+            "description": "Visible range after a pinch, a pan or a double-tap reset."
+          },
+          {
+            "name": "layout",
+            "typeText": "{ x: number; y: number; width: number; height: number }",
+            "description": "The plot area moved or was resized (px of the chart)."
+          }
+        ],
+        "slots": [],
+        "registration": "\"usingComponents\": { \"mn-quadrant-task-board\": \"minerva-design/dist/weapp/quadrant-task-board/index\" }",
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:QuadrantTaskBoard": {
+      "kind": "cssVars",
+      "source": "react/src/components/QuadrantTaskBoard",
+      "vars": [
+        {
+          "name": "--quadrant-task-board-header-color",
+          "description": "Text color of the quadrant titles (defaults to --text-color)"
+        },
+        {
+          "name": "--quadrant-task-board-header-background",
+          "description": "Background of the quadrant headers (defaults to a translucent surface)"
+        },
+        {
+          "name": "--quadrant-task-board-count-background",
+          "description": "Background of the task count chips (defaults to --surface-muted-color)"
+        },
+        {
+          "name": "--quadrant-task-board-count-color",
+          "description": "Text color of the task count chips (defaults to --text-secondary-color)"
+        },
+        {
+          "name": "--quadrant-task-board-actions-background",
+          "description": "Background of the toolbar of the active task (defaults to --surface-elevated-color)"
+        },
+        {
+          "name": "--quadrant-task-board-actions-radius",
+          "description": "Corner radius of the toolbar of the active task (defaults to --radius-md)"
+        },
+        {
+          "name": "--quadrant-task-board-panel-background",
+          "description": "Background of the inline add / edit / delete panel (defaults to a translucent elevated surface)"
+        },
+        {
+          "name": "--quadrant-task-board-panel-border",
+          "description": "Border color of the inline panel (defaults to a translucent --border-color)"
+        },
+        {
+          "name": "--quadrant-task-board-panel-radius",
+          "description": "Corner radius of the inline panel (defaults to --radius-lg)"
+        },
+        {
+          "name": "--quadrant-task-board-panel-width",
+          "description": "Width of the inline panel (defaults to 288px)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "QuadrantTaskBoard",
+      "description": "A task board on a four-quadrant matrix, such as an Eisenhower matrix: the + of a quadrant header (or a click on its empty area) adds a task, compact edit and delete buttons on the active task (in its card, beside its name, on React) edit or delete it, a panel opened right at the + button or at the task names it and picks its quadrant, an inline confirmation guards every delete, and tasks move by drag and drop or Shift + arrow keys (a double click edits them). The board is controlled: pass the tasks as points and set back the list received by onPointsChange. It accepts the other props of QuadrantChart (axes, quadrant titles, badges and colors, ticks, labels…) and its buttons and panels follow the language of the app. Exported by minerva-design, not minerva-design/charts.",
+      "demos": {
+        "basic": {
+          "title": "Eisenhower board",
+          "description": "Urgent tasks on the left (reverseX) and important ones at the top: click + or the empty area of a quadrant to add a task, select a task to edit or delete it, and drag it (or press Shift + an arrow key) to move it to another quadrant. The sample names follow the page language until you rename them."
+        },
+        "custom-labels": {
+          "title": "Custom texts and badges",
+          "description": "A product roadmap by effort and impact: labels renames the buttons, the name field and the delete confirmation ({name} stands for the item), quadrants gives each header a numbered badge, and every change from onPointsChange is counted."
+        }
+      },
+      "data": {
+        "tasks": {
+          "loginOutage": "Fix login outage",
+          "quarterlyPlanning": "Quarterly planning",
+          "bookTravel": "Book travel",
+          "inboxZero": "Inbox zero"
+        },
+        "doFirst": "Do first",
+        "schedule": "Schedule",
+        "delegate": "Delegate",
+        "eliminate": "Eliminate",
+        "important": "Important",
+        "notImportant": "Not important",
+        "urgent": "Urgent",
+        "notUrgent": "Not urgent",
+        "boardAria": "Task matrix: drag tasks between quadrants",
+        "roadmap": {
+          "features": {
+            "darkMode": "Dark mode",
+            "sso": "Single sign-on",
+            "csvExport": "CSV export",
+            "rewriteBilling": "Rewrite billing"
+          },
+          "quickWins": "Quick wins",
+          "bigBets": "Big bets",
+          "fillIns": "Fill-ins",
+          "moneyPits": "Money pits",
+          "effort": "Effort",
+          "impact": "Impact",
+          "aria": "Roadmap by effort and impact",
+          "add": "Add feature",
+          "edit": "Edit feature",
+          "delete": "Remove feature",
+          "name": "Feature",
+          "deleteConfirm": "“{name}” will be removed from the roadmap.",
+          "summary": "Features: {{features}} · changes: {{changes}}"
+        }
+      },
+      "api": {
+        "QuadrantTaskBoardProps": {
+          "onPointsChange": "Called with the next list of tasks after an add, an edit, a delete, a drag and drop or a keyboard move (controlled: pass it back as points)",
+          "labels": "Texts of the buttons and panels (see QuadrantTaskLabels); the ones left out follow the locale"
+        },
+        "QuadrantTaskLabels": {
+          "add": "Add button of each quadrant, and title of the add panel",
+          "edit": "Edit button of the active task, and title of the edit panel",
+          "delete": "Delete button of the active task, and title of its confirmation",
+          "deleteConfirm": "Text of the delete confirmation; {name} is replaced by the name of the task",
+          "confirmDelete": "Confirm button of the delete confirmation",
+          "name": "Label of the name field",
+          "quadrant": "Label of the quadrant field",
+          "save": "Save button of the add / edit panel",
+          "cancel": "Cancel button of the panels",
+          "actions": "Accessible name of the toolbar of the active task"
+        },
+        "QuadrantConfig": {
+          "points": "Tasks { x, y, label, color, size }: the controlled list, updated through onPointsChange",
+          "xDomain": "Range of the horizontal axis",
+          "yDomain": "Range of the vertical axis",
+          "xSplit": "X value of the vertical divider (middle of xDomain by default)",
+          "ySplit": "Y value of the horizontal divider (middle of yDomain by default)",
+          "quadrants": "Titles, badges and colors of the quadrants; a quadrant without a title shows a localized default one",
+          "xLabel": "Title of the horizontal axis",
+          "yLabel": "Title of the vertical axis",
+          "axisLabels": "Texts at the ends of the dividers, drawn inside the plot (e.g. \"Important\" at the top)",
+          "showTicks": "Shows the numeric ticks of the axes; false keeps only the matrix",
+          "reverseX": "Reverses the horizontal axis (e.g. urgent on the left)",
+          "showLabels": "Draws the task names next to the dots, skipping overlaps",
+          "pointSize": "Dot diameter in pixels",
+          "name": "Name of the tasks in the tooltip",
+          "draggable": "Lets the user drag the tasks to another quadrant (on by default on the board; false turns it off)",
+          "showCounts": "Shows the number of tasks after each quadrant title (on by default on the board; false hides it, a function (count, points) returns the text instead)",
+          "selectedIndex": "Index of the selected task, drawn with a ring (null: none); by default the board selects the last clicked, moved or saved task",
+          "selectedIndices": "Indices of several selected tasks, each drawn with a ring"
+        },
+        "native_QuadrantTaskBoardProps": {
+          "onPointsChange": "Called with the next list of tasks after an add, an edit, a delete, a drag and drop or a “Move to” accessibility action (controlled: pass it back as points)",
+          "labels": "Texts of the buttons and panels (add, edit, delete, deleteConfirm, confirmDelete, name, quadrant, save, cancel, actions); the ones left out follow the locale"
+        }
+      },
+      "cssVars": {
+        "--quadrant-task-board-header-color": "Text color of the quadrant titles (defaults to --text-color)",
+        "--quadrant-task-board-header-background": "Background of the quadrant headers (defaults to a translucent surface)",
+        "--quadrant-task-board-count-background": "Background of the task count chips (defaults to --surface-muted-color)",
+        "--quadrant-task-board-count-color": "Text color of the task count chips (defaults to --text-secondary-color)",
+        "--quadrant-task-board-actions-background": "Background of the toolbar of the active task (defaults to --surface-elevated-color)",
+        "--quadrant-task-board-actions-radius": "Corner radius of the toolbar of the active task (defaults to --radius-md)",
+        "--quadrant-task-board-panel-background": "Background of the inline add / edit / delete panel (defaults to a translucent elevated surface)",
+        "--quadrant-task-board-panel-border": "Border color of the inline panel (defaults to a translucent --border-color)",
+        "--quadrant-task-board-panel-radius": "Corner radius of the inline panel (defaults to --radius-lg)",
+        "--quadrant-task-board-panel-width": "Width of the inline panel (defaults to 288px)"
+      },
+      "native": {
+        "limitations": "On React Native, tasks move by drag and drop or with the “Move to” actions of screen readers: there are no Shift + arrow key moves and no double tap to edit (use the edit button of the active task). The icons of the buttons are drawn with Views, without an SVG dependency.",
+        "demos": {
+          "basic": {
+            "title": "Eisenhower board",
+            "description": "Tap + or the empty area of a quadrant to add a task, tap a task to show its edit and delete buttons, and drag it to another quadrant. The sample names follow the app language until you rename them."
+          }
+        }
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Eisenhower board",
+            "description": "points, quadrants and axisLabels are set as properties, reverse-x, hide-ticks and height as attributes; the minerva-points-change listener sets the next list back as points."
+          }
+        },
+        "minerva-quadrant-task-board": {
+          "props": {
+            "points": "Tasks { x, y, label, color, size }; set the detail of minerva-points-change back to update the board (controlled); property only",
+            "quadrants": "Titles, badges and colors of the quadrants (topLeft, topRight, bottomLeft, bottomRight); property only",
+            "axisLabels": "Texts at the ends of the dividers, drawn inside the plot (top, bottom, left, right); property only",
+            "xDomain": "Range of the horizontal axis (default [0, 10]); property only",
+            "yDomain": "Range of the vertical axis (default [0, 10]); property only",
+            "hideTicks": "Hides the numeric ticks of the axes (only the matrix remains)",
+            "hideLabels": "Hides the task names next to the dots",
+            "hideCounts": "Hides the number of tasks in the quadrant headers",
+            "height": "Height of the chart: pixels or any CSS length (default 320)",
+            "locale": "Language of the built-in texts, default quadrant titles and numbers (e.g. \"fr\"); the library language by default",
+            "noAccessiblePoints": "Leaves out the visually hidden list of the tasks (keyboard and screen reader access, Shift + arrow moves)",
+            "options": "Other engine options of the chart (legend, tooltip, padding, palette…); property only"
+          },
+          "events": {
+            "minerva-points-change": "The tasks changed (add, edit, delete, drag and drop, keyboard move); detail: { points }, the next list to set back as points",
+            "minerva-point-click": "A task was clicked (it becomes the selected one); detail: { point, index }",
+            "minerva-point-drag": "A task is being dragged (on every move); detail: { point, index, x, y, quadrant }",
+            "minerva-hover": "The hovered (or keyboard-focused) task changed; detail: { x, xLabel, items }, null when nothing is hovered",
+            "minerva-zoom": "The user zoomed or panned the chart; detail: { x, y } (the visible ranges)",
+            "minerva-renderer-change": "The chart backend is ready, or fell back after a GPU loss; detail: { renderer }"
+          }
+        }
+      }
+    }
+  }
+}

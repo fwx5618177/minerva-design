@@ -1,0 +1,522 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.1",
+  "locale": "zh",
+  "renderer": "vue",
+  "page": "tabs",
+  "title": "Tabs 标签页",
+  "description": "将内容分为一次显示一个的面板。无障碍标签页，支持方向键导航、line / enclosed / soft / pills 变体、语义色与垂直方向。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.1",
+    "sourceCommit": "3a9f5cdaae706f14fe6d8c65c5481eba719a66c4",
+    "sourceDigest": "sha256:c9ed2b706b61413d29e506a3f04f3d35c044a4b57ec0e284935054f9e1898c7e",
+    "referenceSourceDigest": "sha256:6c9ecba0079f25e53cd971e51f2be8604fc3d941c0ed1cfeec03c4a91913ad73"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Tab",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "Tab"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "value",
+            "type": "string",
+            "required": true,
+            "description": "Value identifying the tab and its panel (must not contain whitespace)",
+            "typeText": "string"
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Disables the tab (skipped by arrow keys)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "color",
+            "type": "ColorScheme",
+            "required": false,
+            "description": "Overrides the group color; an explicitly colored tab keeps a tinted\nbackground while inactive",
+            "typeText": "ColorScheme"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "description": "Tab content",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TabList",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "TabList"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "loop",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Moves focus from the last tab to the first (and back) with the arrow keys",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TabPanel",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "TabPanel"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "value",
+            "type": "string",
+            "required": true,
+            "description": "Value of the tab this panel belongs to",
+            "typeText": "string"
+          },
+          {
+            "name": "forceMount",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Keeps the panel mounted (hidden) while its tab is not selected",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "Tabs",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "Tabs"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "modelValue",
+            "type": "string",
+            "required": false,
+            "description": "Value of the selected tab (controlled: `v-model`)",
+            "typeText": "string"
+          },
+          {
+            "name": "defaultValue",
+            "type": "string",
+            "required": false,
+            "description": "Value of the initially selected tab (uncontrolled)",
+            "typeText": "string"
+          },
+          {
+            "name": "orientation",
+            "type": "TabsOrientation",
+            "default": "\"horizontal\"",
+            "required": false,
+            "description": "Layout and arrow-key direction",
+            "typeText": "TabsOrientation"
+          },
+          {
+            "name": "activationMode",
+            "type": "\"automatic\" | \"manual\"",
+            "default": "\"automatic\"",
+            "required": false,
+            "description": "`automatic` selects a tab when it receives focus; `manual` only on\nEnter / Space / click, so the parent can confirm before switching",
+            "typeText": "\"automatic\" | \"manual\""
+          },
+          {
+            "name": "dir",
+            "type": "\"ltr\" | \"rtl\"",
+            "required": false,
+            "description": "Reading direction (affects arrow keys)",
+            "typeText": "\"ltr\" | \"rtl\""
+          },
+          {
+            "name": "variant",
+            "type": "TabsVariant",
+            "default": "\"line\"",
+            "required": false,
+            "description": "Visual style",
+            "typeText": "TabsVariant"
+          },
+          {
+            "name": "color",
+            "type": "ColorScheme",
+            "default": "\"primary\"",
+            "required": false,
+            "description": "Color of the selection",
+            "typeText": "ColorScheme"
+          }
+        ],
+        "events": [
+          {
+            "name": "update:modelValue",
+            "type": "[value: string]",
+            "typeText": "[value: string]",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "typeText": "string",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "change",
+            "type": "[value: string]",
+            "typeText": "[value: string]",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "typeText": "string",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "description": "`TabList` and `TabPanel` elements",
+            "typeText": "any"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "modelValue",
+            "event": "update:modelValue",
+            "syntax": "v-model"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Tabs": {
+      "kind": "cssVars",
+      "source": "react/src/components/Tabs",
+      "vars": [
+        {
+          "name": "--tabs-gap",
+          "description": "Space between the tabs of the list"
+        },
+        {
+          "name": "--tabs-font-size",
+          "description": "Font size of the tabs"
+        },
+        {
+          "name": "--tabs-trigger-padding-x",
+          "description": "Horizontal padding of a tab (every variant)"
+        },
+        {
+          "name": "--tabs-trigger-padding-y",
+          "description": "Vertical padding of a tab (every variant)"
+        },
+        {
+          "name": "--tabs-trigger-min-height",
+          "description": "Minimum height of a tab (pills default to the density's control height minus 4px)"
+        },
+        {
+          "name": "--tabs-radius",
+          "description": "Corner radius of enclosed / soft / pill tabs (defaults to --radius-md)"
+        },
+        {
+          "name": "--tabs-indicator-width",
+          "description": "Thickness of the line indicator"
+        },
+        {
+          "name": "--tabs-panel-padding",
+          "description": "Padding of the panel"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tabs/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/tabs/vue/basic.vue": "<script setup lang=\"ts\">\nimport { Tabs, Tab, TabList, TabPanel } from \"minerva-design/vue\";\n</script>\n<template>\n  <Tabs default-value=\"overview\"\n    ><TabList aria-label=\"Book sections\"\n      ><Tab value=\"overview\">Overview</Tab><Tab value=\"reviews\">Reviews</Tab\n      ><Tab value=\"similar\" disabled>Similar books</Tab></TabList\n    ><TabPanel value=\"overview\"\n      >A desert planet, a noble family and a precious spice.</TabPanel\n    ><TabPanel value=\"reviews\">“A masterpiece of world building.”</TabPanel\n    ><TabPanel value=\"similar\">Coming soon.</TabPanel></Tabs\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "controlled",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tabs/vue/controlled.vue",
+      "files": {
+        "apps/docs/src/docs/pages/tabs/vue/controlled.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport {\n  Tabs,\n  TabList,\n  Tab,\n  TabPanel,\n  Button,\n  VStack,\n} from \"minerva-design/vue\";\nconst active = ref(\"one\");\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><Button @click=\"active = active === 'one' ? 'two' : 'one'\"\n      >Switch active tab</Button\n    ><Tabs v-model=\"active\"\n      ><TabList aria-label=\"Controlled sections\"\n        ><Tab value=\"one\">First</Tab><Tab value=\"two\">Second</Tab></TabList\n      ><TabPanel value=\"one\">First panel</TabPanel\n      ><TabPanel value=\"two\">Second panel</TabPanel></Tabs\n    ><output>{{ active }}</output></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "controlled",
+      "description": ""
+    },
+    {
+      "id": "panels",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tabs/vue/panels.vue",
+      "files": {
+        "apps/docs/src/docs/pages/tabs/vue/panels.vue": "<script setup lang=\"ts\">\nimport { Tabs, TabList, Tab, TabPanel, Input } from \"minerva-design/vue\";\n</script>\n<template>\n  <Tabs default-value=\"profile\"\n    ><TabList aria-label=\"Account settings\"\n      ><Tab value=\"profile\">Profile</Tab\n      ><Tab value=\"security\">Security</Tab></TabList\n    ><TabPanel value=\"profile\"\n      ><Input aria-label=\"Display name\" default-value=\"Ada\" /></TabPanel\n    ><TabPanel value=\"security\"\n      ><Input\n        type=\"password\"\n        aria-label=\"New password\"\n        placeholder=\"New password\" /></TabPanel\n  ></Tabs>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "panels",
+      "description": ""
+    },
+    {
+      "id": "variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tabs/vue/variants.vue",
+      "files": {
+        "apps/docs/src/docs/pages/tabs/vue/variants.vue": "<script setup lang=\"ts\">\nimport { Tabs, Tab, TabList, VStack } from \"minerva-design/vue\";\nconst variants = [\"line\", \"enclosed\", \"soft\", \"pills\"] as const;\n</script>\n<template>\n  <VStack :gap=\"6\"\n    ><Tabs\n      v-for=\"variant in variants\"\n      :key=\"variant\"\n      :variant=\"variant\"\n      default-value=\"hot\"\n      ><TabList :aria-label=\"`${variant} tabs`\"\n        ><Tab value=\"hot\">Hot</Tab><Tab value=\"new\">New</Tab\n        ><Tab value=\"completed\">Completed</Tab></TabList\n      ></Tabs\n    ></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "variants",
+      "description": ""
+    },
+    {
+      "id": "vertical",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tabs/vue/vertical.vue",
+      "files": {
+        "apps/docs/src/docs/pages/tabs/vue/vertical.vue": "<script setup lang=\"ts\">\nimport { Tabs, TabList, Tab, TabPanel } from \"minerva-design/vue\";\n</script>\n<template>\n  <Tabs default-value=\"general\" orientation=\"vertical\" variant=\"pills\"\n    ><TabList aria-label=\"Settings sections\"\n      ><Tab value=\"general\">General</Tab><Tab value=\"team\">Team</Tab></TabList\n    ><TabPanel value=\"general\">General workspace settings</TabPanel\n    ><TabPanel value=\"team\">Team access settings</TabPanel></Tabs\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "vertical",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Tabs 标签页",
+      "description": "将内容分为一次显示一个的面板。无障碍标签页，支持方向键导航、line / enclosed / soft / pills 变体、语义色与垂直方向。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "初始显示 Overview；Reviews 展示评论，Similar books 保持禁用。"
+        },
+        "variants": {
+          "title": "变体",
+          "description": "同一组 Hot、New、Completed 标签展示 line、enclosed、soft、pills 四种外观，均默认选中 Hot。"
+        },
+        "colors": {
+          "title": "颜色与手动激活",
+          "description": "color 设置整组颜色；Tab 的 color 使该标签在未选中时也保持着色。activationMode=\"manual\" 时聚焦不会选中，父组件可在 onChange 中确认切换。"
+        },
+        "vertical": {
+          "title": "垂直方向",
+          "description": "orientation=\"vertical\" 纵向排列标签，使用上下方向键切换。"
+        }
+      },
+      "api": {
+        "TabsProps": {
+          "value": "选中标签的值（受控，配合 onChange）",
+          "defaultValue": "初始选中标签的值（非受控）",
+          "onChange": "以新选中标签的值调用",
+          "orientation": "布局与方向键方向",
+          "activationMode": "automatic 聚焦即选中；manual 仅在回车 / 空格 / 点击时选中",
+          "dir": "阅读方向（影响方向键）",
+          "variant": "视觉样式",
+          "color": "选中状态的颜色",
+          "children": "TabList 与 TabPanel 元素",
+          "ref": "根 <div> 元素的 ref"
+        },
+        "TabListProps": {
+          "loop": "方向键在最后与第一个标签间循环",
+          "ref": "标签列表 <div> 元素的 ref"
+        },
+        "TabProps": {
+          "value": "标识标签及其面板的值（不可含空白）",
+          "children": "标签内容",
+          "disabled": "禁用标签（方向键跳过）",
+          "color": "覆盖整组颜色，未选中时也保持着色",
+          "ref": "<button> 元素的 ref"
+        },
+        "TabPanelProps": {
+          "value": "面板所属标签的值",
+          "forceMount": "在其标签页未选中时保持面板挂载（隐藏）。不设置时，非活动面板会被卸载。<minerva-tab-panel> 的普通子元素始终挂载（等同 forceMount），对 <template> 内容可用 force-mount 属性做同样选择",
+          "ref": "面板 <div> 元素的 ref"
+        }
+      },
+      "cssVars": {
+        "--tabs-gap": "标签列表中各标签之间的间距",
+        "--tabs-font-size": "标签的字号",
+        "--tabs-trigger-padding-x": "标签的水平内边距（所有变体）",
+        "--tabs-trigger-padding-y": "标签的垂直内边距（所有变体）",
+        "--tabs-trigger-min-height": "标签的最小高度（pills 默认为密度的控件高度减 4px）",
+        "--tabs-radius": "enclosed / soft / pills 标签的圆角（默认 --radius-md）",
+        "--tabs-indicator-width": "线条指示器的粗细",
+        "--tabs-panel-padding": "面板的内边距"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "<minerva-tab> 元素会自动放入标签列表；每个 <minerva-tab-panel> 与 value 相同的标签关联。label 为标签列表命名，方向键会跳过禁用的标签。"
+          },
+          "variants": {
+            "title": "变体与颜色",
+            "description": "variant 可选 line、enclosed、soft 或 pills；color 设置选中态的颜色，<minerva-tab> 上的 color 使该标签在未选中时也保持着色。"
+          },
+          "vertical": {
+            "title": "垂直方向与手动激活",
+            "description": "orientation=\"vertical\" 将标签纵向排列（ArrowUp / ArrowDown）。activation-mode=\"manual\" 时焦点移动不会选中标签，需按 Enter 或空格；no-loop 使方向键停在第一个 / 最后一个标签。"
+          },
+          "controlled": {
+            "title": "取消切换",
+            "description": "minerva-change 可取消：勾选复选框时，preventDefault() 会保留当前标签。取消勾选即可切换。"
+          },
+          "panels": {
+            "title": "非活动面板：是否挂载",
+            "description": "React 的 <TabPanel> 默认会卸载非活动面板，设置 forceMount 时才保留（隐藏）。light DOM 子元素属于页面，<minerva-tab-panel> 无法卸载它们：普通子元素的行为等同于 forceMount（隐藏、保留状态、表单字段仍会提交）。若要获得 React 的默认行为，把内容放进 <template>（激活时创建，离开后移除）；再加上 force-mount 则在隐藏时也保持挂载。"
+          }
+        },
+        "minerva-tabs": {
+          "props": {
+            "noLoop": "方向键在第一个 / 最后一个标签处停止，而不是循环。",
+            "label": "标签列表的无障碍名称（也可在元素上使用 aria-label / aria-labelledby）。",
+            "tabs": "本组的 <minerva-tab> 元素，不含嵌套组中的标签（只读）。",
+            "panels": "本组的 <minerva-tab-panel> 元素（只读）。"
+          },
+          "events": {
+            "minerva-change": "用户选择了一个标签（detail: { value }）。可取消：preventDefault() 会保留当前选中项。"
+          },
+          "slots": {
+            "default": "<minerva-tab-panel> 元素。",
+            "tab": "<minerva-tab> 元素（自动分配）。"
+          },
+          "methods": {
+            "select": "选中指定 value 的标签，并先触发 minerva-change（标签在点击、Enter / 空格或获得焦点时调用）。"
+          }
+        },
+        "minerva-tab": {
+          "props": {
+            "selected": "该标签是否被选中（由 <minerva-tabs> 设置）。"
+          },
+          "slots": {
+            "default": "标签文字。"
+          }
+        },
+        "minerva-tab-panel": {
+          "slots": {
+            "default": "面板内容。"
+          },
+          "props": {
+            "forceMount": "即使面板处于非活动状态（隐藏）也挂载 <template> 子元素的内容，等同于 React 的 forceMount。普通子元素始终处于挂载状态。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "初始显示 Overview；Reviews 展示评论，Similar books 保持禁用。"
+          },
+          "compound": {
+            "title": "组合用法",
+            "description": "Tabs 的组合用法示例；预览随站点主题和色板更新。"
+          },
+          "scrollable": {
+            "title": "可滚动标签",
+            "description": "Tabs 的可滚动标签示例；预览随站点主题和色板更新。"
+          },
+          "variants": {
+            "title": "变体",
+            "description": "同一组 Hot、New、Completed 标签展示 line、enclosed、soft、pills 四种外观，均默认选中 Hot。"
+          }
+        }
+      }
+    }
+  }
+}

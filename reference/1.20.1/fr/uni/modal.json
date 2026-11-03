@@ -1,0 +1,732 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.1",
+  "locale": "fr",
+  "renderer": "uni",
+  "page": "modal",
+  "title": "Modal",
+  "description": "Une boîte de dialogue qui interrompt la page pour une tâche ciblée. Le focus reste à l'intérieur, Échap et un clic sur le fond la ferment, puis le focus revient à l'élément d'ouverture. Sur petit écran elle devient une feuille en bas de page.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.1",
+    "sourceCommit": "3a9f5cdaae706f14fe6d8c65c5481eba719a66c4",
+    "sourceDigest": "sha256:c9ed2b706b61413d29e506a3f04f3d35c044a4b57ec0e284935054f9e1898c7e",
+    "referenceSourceDigest": "sha256:6c9ecba0079f25e53cd971e51f2be8604fc3d941c0ed1cfeec03c4a91913ad73"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Modal",
+      "support": {
+        "status": "beta",
+        "notes": "Controlled/default dialog using the shared Drawer surface, title/description and authored heading linkage, all width sizes with responsive bottom sheet, forceMount, close label/hide action, role and modal/nonmodal semantics; cancelable outside/Escape/autofocus, busy guards, declarative/compound opener recovery. Native hosts do not expose DOM inert, document-wide focus trapping or React asChild cloning. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Controlled/default dialog using the shared Drawer surface, title/description and authored heading linkage, all width sizes with responsive bottom sheet, forceMount, close label/hide action, role and modal/nonmodal semantics; cancelable outside/Escape/autofocus, busy guards, declarative/compound opener recovery. Native hosts do not expose DOM inert, document-wide focus trapping or React asChild cloning. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "Modal"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "size",
+            "typeText": "\"medium\" | \"small\" | \"large\" | \"xlarge\" | \"full\" | undefined",
+            "required": false
+          },
+          {
+            "name": "title",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "description",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "closeLabel",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "role",
+            "typeText": "\"dialog\" | \"alertdialog\" | undefined",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "loading",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "open",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "defaultOpen",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "closeOnOverlayClick",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "confirmLabel",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "cancelLabel",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "hiddenDescription",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "hideCloseButton",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "forceMount",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "modal",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "overlayClassName",
+            "typeText": "string | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "close",
+            "typeText": "any[]"
+          },
+          {
+            "name": "openChange",
+            "typeText": "any[]"
+          },
+          {
+            "name": "update:open",
+            "typeText": "any[]"
+          },
+          {
+            "name": "confirm",
+            "typeText": "any[]"
+          },
+          {
+            "name": "cancel",
+            "typeText": "any[]"
+          },
+          {
+            "name": "openAutoFocus",
+            "typeText": "any[]"
+          },
+          {
+            "name": "closeAutoFocus",
+            "typeText": "any[]"
+          },
+          {
+            "name": "escapeKeyDown",
+            "typeText": "any[]"
+          },
+          {
+            "name": "pointerDownOutside",
+            "typeText": "any[]"
+          },
+          {
+            "name": "interactOutside",
+            "typeText": "any[]"
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          },
+          {
+            "name": "trigger",
+            "typeText": "{}"
+          },
+          {
+            "name": "title",
+            "typeText": "{}"
+          },
+          {
+            "name": "description",
+            "typeText": "{}"
+          },
+          {
+            "name": "footer",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "open",
+            "event": "update:open",
+            "syntax": "v-model:open"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ModalBody",
+      "support": {
+        "status": "beta",
+        "notes": "Modal compound body with injected reactive root state and native slot content. DOM portals and document focus trapping do not apply to native views. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Modal compound body with injected reactive root state and native slot content. DOM portals and document focus trapping do not apply to native views. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "ModalBody"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "ModalClose",
+      "support": {
+        "status": "beta",
+        "notes": "Disabled-aware native close button; consumer click runs before close and can preventDefault. React asChild element cloning maps to native button content slots. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Disabled-aware native close button; consumer click runs before close and can preventDefault. React asChild element cloning maps to native button content slots. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "ModalClose"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "click",
+            "typeText": "[event: Event]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "Event",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "ModalContent",
+      "support": {
+        "status": "beta",
+        "notes": "Complete Modal content props and slots forwarded into shared surface; compound root owns open/modal state and registered trigger recovery. Native fixed surface replaces React DOM portal and asChild behavior. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Complete Modal content props and slots forwarded into shared surface; compound root owns open/modal state and registered trigger recovery. Native fixed surface replaces React DOM portal and asChild behavior. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "ModalContent"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "size",
+            "typeText": "\"medium\" | \"small\" | \"large\" | \"xlarge\" | \"full\" | undefined",
+            "required": false
+          },
+          {
+            "name": "title",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "description",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "closeLabel",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "role",
+            "typeText": "\"dialog\" | \"alertdialog\" | undefined",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "loading",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "open",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "defaultOpen",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "closeOnOverlayClick",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "confirmLabel",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "cancelLabel",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "hiddenDescription",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "hideCloseButton",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "forceMount",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "modal",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "overlayClassName",
+            "typeText": "string | undefined",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          },
+          {
+            "name": "trigger",
+            "typeText": "{}"
+          },
+          {
+            "name": "title",
+            "typeText": "{}"
+          },
+          {
+            "name": "description",
+            "typeText": "{}"
+          },
+          {
+            "name": "footer",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "ModalFooter",
+      "support": {
+        "status": "beta",
+        "notes": "Modal compound footer with injected reactive root state and native slot content. DOM portals and document focus trapping do not apply to native views. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Modal compound footer with injected reactive root state and native slot content. DOM portals and document focus trapping do not apply to native views. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "ModalFooter"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "ModalHeader",
+      "support": {
+        "status": "beta",
+        "notes": "Authored accessible heading registered as the enclosing surface dialog name. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Authored accessible heading registered as the enclosing surface dialog name. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "ModalHeader"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "id",
+            "typeText": "string | undefined",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "ModalRoot",
+      "support": {
+        "status": "beta",
+        "notes": "Controlled/default open and modal context with registered opener. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Controlled/default open and modal context with registered opener. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "ModalRoot"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "open",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "defaultOpen",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "modal",
+            "typeText": "boolean | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "openChange",
+            "typeText": "any[]"
+          },
+          {
+            "name": "update:open",
+            "typeText": "any[]"
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{ open: boolean; }"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "open",
+            "event": "update:open",
+            "syntax": "v-model:open"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ModalTrigger",
+      "support": {
+        "status": "beta",
+        "notes": "Disabled-aware native trigger that registers the focus return target. React asChild maps to native button content slots. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Disabled-aware native trigger that registers the focus return target. React asChild maps to native button content slots. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "ModalTrigger"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Modal": {
+      "kind": "cssVars",
+      "source": "react/src/components/Modal",
+      "vars": [
+        {
+          "name": "--modal-width",
+          "description": "Width of the panel (every size; defaults to the width of the size, capped by the viewport)"
+        },
+        {
+          "name": "--modal-max-height",
+          "description": "Maximum height of the panel (the body scrolls beyond)"
+        },
+        {
+          "name": "--modal-padding",
+          "description": "Horizontal padding of the header, description, body and footer"
+        },
+        {
+          "name": "--modal-radius",
+          "description": "Corner radius of the panel (defaults to --radius-xl)"
+        },
+        {
+          "name": "--modal-shadow",
+          "description": "Shadow of the panel (defaults to --shadow-xl)"
+        },
+        {
+          "name": "--modal-background",
+          "description": "Background of the panel"
+        },
+        {
+          "name": "--modal-z-index",
+          "description": "Stacking order of the panel (defaults to --z-modal)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Modal",
+      "description": "Une boîte de dialogue qui interrompt la page pour une tâche ciblée. Le focus reste à l'intérieur, Échap et un clic sur le fond la ferment, puis le focus revient à l'élément d'ouverture. Sur petit écran elle devient une feuille en bas de page.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Cancel ferme sans supprimer. Delete ferme le dialogue et affiche Record deleted."
+        },
+        "uncontrolled": {
+          "title": "Non contrôlée avec déclencheur",
+          "description": "Passez trigger pour laisser la modale gérer son propre état."
+        },
+        "sizes": {
+          "title": "Tailles",
+          "description": "small, medium (par défaut), large, xlarge et full."
+        },
+        "form": {
+          "title": "Formulaire",
+          "description": "Modifiez Name puis cliquez sur Save pour renommer Quarterly report. Le bouton affiche ensuite le nom enregistré."
+        },
+        "compound": {
+          "title": "API composée",
+          "description": "ModalRoot, ModalTrigger, ModalContent, ModalHeader, ModalBody, ModalFooter et ModalClose pour un contrôle total."
+        }
+      },
+      "api": {
+        "ModalProps": {
+          "open": "État d'ouverture contrôlé ; laissez undefined pour le mode non contrôlé",
+          "defaultOpen": "État d'ouverture initial en mode non contrôlé",
+          "onOpenChange": "Appelé avec l'état d'ouverture demandé (déclencheur, bouton de fermeture, Échap, clic sur le fond)",
+          "trigger": "Élément qui l'ouvre au clic (un seul élément, rendu avec asChild)",
+          "title": "Titre, utilisé comme nom accessible de la boîte de dialogue",
+          "description": "Description sous le titre, utilisée comme description accessible",
+          "size": "Préréglage de largeur",
+          "hideCloseButton": "Masque le bouton de fermeture (×)",
+          "closeLabel": "Libellé accessible du bouton de fermeture ; par défaut « Fermer » localisé",
+          "role": "Rôle ARIA du panneau de dialogue ; utilisez \"alertdialog\" pour les confirmations qui interrompent l’utilisateur",
+          "className": "Classe supplémentaire du panneau",
+          "ref": "Ref vers l'élément de dialogue",
+          "children": "Corps : en général ModalBody + ModalFooter, ou un <form> qui les englobe"
+        },
+        "ModalRootProps": {
+          "open": "État d'ouverture contrôlé ; laissez undefined pour le mode non contrôlé",
+          "defaultOpen": "État d'ouverture initial en mode non contrôlé",
+          "onOpenChange": "Appelé avec l'état d'ouverture demandé (déclencheur, bouton de fermeture, Échap, clic sur le fond)",
+          "modal": "Mode modal : affiche le fond, piège le focus, bloque le défilement de la page et les interactions extérieures, et masque la page aux technologies d'assistance",
+          "children": "Déclencheur et contenu"
+        },
+        "ModalTriggerProps": {
+          "asChild": "Fusionne le comportement sur l'unique élément enfant au lieu de rendre son propre élément"
+        },
+        "ModalContentProps": {
+          "ref": "Ref vers l'élément de dialogue",
+          "size": "Préréglage de largeur",
+          "hideCloseButton": "Masque le bouton de fermeture (×)",
+          "closeLabel": "Libellé accessible du bouton de fermeture ; par défaut « Fermer » localisé",
+          "description": "Description visible sous le titre, liée comme description accessible (sans description, aria-describedby est omis)",
+          "overlayClassName": "Classe de la superposition (fond)",
+          "role": "Rôle ARIA du panneau ; utilisez \"alertdialog\" pour les confirmations qui interrompent l'utilisateur",
+          "forceMount": "Garde le panneau monté une fois fermé (data-state=\"closed\"), par exemple pour une bibliothèque d'animation",
+          "onOpenAutoFocus": "Appelé avant que le focus n'entre dans le panneau à l'ouverture ; event.preventDefault() laisse le focus en place",
+          "onCloseAutoFocus": "Appelé avant que le focus ne revienne à l'élément d'ouverture à la fermeture ; event.preventDefault() l'annule",
+          "onEscapeKeyDown": "Échap pressé alors qu'il est la couche supérieure ; event.preventDefault() le garde ouvert",
+          "onPointerDownOutside": "Pointeur pressé à l'extérieur ; event.preventDefault() le garde ouvert",
+          "onInteractOutside": "Pointeur pressé ou focus à l'extérieur ; event.preventDefault() le garde ouvert"
+        }
+      },
+      "cssVars": {
+        "--modal-width": "Largeur du panneau (toutes les tailles ; par défaut celle de la taille, limitée par la fenêtre)",
+        "--modal-max-height": "Hauteur maximale du panneau (le corps défile au-delà)",
+        "--modal-padding": "Marge intérieure horizontale de l'en-tête, de la description, du corps et du pied",
+        "--modal-radius": "Rayon des coins du panneau (par défaut --radius-xl)",
+        "--modal-shadow": "Ombre du panneau (par défaut --shadow-xl)",
+        "--modal-background": "Fond du panneau",
+        "--modal-z-index": "Ordre d'empilement du panneau (par défaut --z-modal)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Le slot trigger ouvre la modale ; label et description la nomment et la décrivent. Le focus est piégé, Échap et un clic sur l'overlay la ferment, et le focus revient à l'élément d'origine."
+          },
+          "sizes": {
+            "title": "Tailles",
+            "description": "Cinq tailles prédéfinies, réglées avant d'appeler show(). Ici, le titre vient du slot header."
+          },
+          "form": {
+            "title": "Formulaire dans une modale",
+            "description": "Un bouton submit du pied cible le formulaire par son id ; le navigateur le valide, puis le gestionnaire submit enregistre et appelle hide()."
+          },
+          "events": {
+            "title": "Événements et fermeture bloquée",
+            "description": "minerva-open-change est annulable : tant que « Unsaved changes » est coché, preventDefault() garde la modale ouverte. Le journal affiche la raison et les événements after-open / after-close."
+          }
+        },
+        "minerva-modal": {
+          "props": {
+            "label": "Texte du titre (ou le slot header) ; nomme la boîte de dialogue.",
+            "dialogRole": "Rôle ARIA du panneau ; \"alertdialog\" pour les confirmations qui interrompent."
+          },
+          "events": {
+            "minerva-open-change": "L'utilisateur demande l'ouverture / la fermeture (detail : { open, reason }) ; annulable : preventDefault() conserve l'état actuel.",
+            "minerva-after-open": "Émis une fois le panneau ouvert et le focus déplacé à l'intérieur.",
+            "minerva-after-close": "Émis une fois le panneau fermé (après son animation de sortie)."
+          },
+          "slots": {
+            "default": "Contenu du corps.",
+            "header": "Titre (alternative à l'attribut label).",
+            "footer": "Rangée d'actions.",
+            "trigger": "Élément qui ouvre le panneau au clic."
+          },
+          "methods": {
+            "show": "Ouvre la modale.",
+            "hide": "Ferme la modale."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Cancel ferme sans supprimer. Delete ferme le dialogue et affiche Record deleted."
+          },
+          "confirm": {
+            "title": "Confirmation",
+            "description": "confirmLabel / onConfirm et onCancel affichent les boutons du pied ; onOpenChange indique la raison de la fermeture (confirm, cancel, mask, back)."
+          },
+          "custom-footer": {
+            "title": "Pied personnalisé",
+            "description": "footer remplace les boutons par n'importe quel contenu ; size règle la largeur."
+          },
+          "form": {
+            "title": "Formulaire",
+            "description": "Modifiez Name puis cliquez sur Save pour renommer Quarterly report. Le bouton affiche ensuite le nom enregistré."
+          }
+        },
+        "limitations": "Dialog natif enregistre via onPress, sans soumission HTML. Il ne propose ni API composée ModalRoot/ModalTrigger ni taille xlarge ; ces exemples ne sont pas simulés."
+      }
+    }
+  }
+}

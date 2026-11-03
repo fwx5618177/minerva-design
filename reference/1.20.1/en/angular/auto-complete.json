@@ -1,0 +1,592 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.1",
+  "locale": "en",
+  "renderer": "angular",
+  "page": "auto-complete",
+  "title": "AutoComplete",
+  "description": "A text input that suggests matching options while the user types.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.1",
+    "sourceCommit": "3a9f5cdaae706f14fe6d8c65c5481eba719a66c4",
+    "sourceDigest": "sha256:c9ed2b706b61413d29e506a3f04f3d35c044a4b57ec0e284935054f9e1898c7e",
+    "referenceSourceDigest": "sha256:6c9ecba0079f25e53cd971e51f2be8604fc3d941c0ed1cfeec03c4a91913ad73"
+  },
+  "content": {
+    "keyboard": {
+      "title": "Keyboard and accessibility",
+      "arrows": "Arrow Down / Arrow Up move through the visible options (wrapping around).",
+      "enter": "Enter selects the active option (disabled options are skipped) without submitting the surrounding form.",
+      "escape": "Escape closes the dropdown and keeps focus in the input; with the dropdown already closed it clears the text (onChange receives \"\"). Inside a Modal or Popover only the dropdown closes.",
+      "aria": "The input exposes the combobox role with aria-expanded, aria-controls and aria-activedescendant pointing to the listbox options."
+    }
+  },
+  "components": [
+    {
+      "name": "AutoComplete",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnAutoComplete. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnAutoComplete. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnAutoComplete"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-auto-complete",
+        "props": [
+          {
+            "name": "value",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "defaultValue",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "open",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "options",
+            "typeText": "readonly AutoCompleteOption[]",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "name",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "label",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "mode",
+            "typeText": "AutoCompleteMode",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "groupBy",
+            "typeText": "((option: AutoCompleteOption) => string) | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "groupMode",
+            "typeText": "AutoCompleteGroupMode",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "renderOption",
+            "typeText": "TemplateRef<AutoCompleteOptionContext> | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "renderEmpty",
+            "typeText": "MnContent",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "loading",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "filterOption",
+            "typeText": "((inputValue: string, option: AutoCompleteOption) => boolean) | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "sortOption",
+            "typeText": "((a: AutoCompleteOption, b: AutoCompleteOption) => number) | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "placement",
+            "typeText": "AutoCompletePlacement",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "offset",
+            "typeText": "{ x: number; y: number; }",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "animation",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "dropdownClassName",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "autoHighlight",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "fillOnSelect",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "className",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "placeholder",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "size",
+            "typeText": "AutoCompleteSize",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "variant",
+            "typeText": "AutoCompleteVariant",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "invalid",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "readOnly",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "required",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "id",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "prefix",
+            "typeText": "MnContent",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "suffix",
+            "typeText": "MnContent",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "clearable",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "clearLabel",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "aria-label",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "aria-labelledby",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          },
+          {
+            "name": "aria-describedby",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "openChange",
+            "typeText": "boolean",
+            "required": false
+          },
+          {
+            "name": "optionSelect",
+            "typeText": "AutoCompleteOption",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "AutoCompleteOption",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "optionClick",
+            "typeText": "AutoCompleteOption",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "AutoCompleteOption",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "valueSubmit",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/auto-complete/auto-complete.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "string",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "valueChange",
+            "syntax": "[(value)]"
+          },
+          {
+            "prop": "open",
+            "event": "openChange",
+            "syntax": "[(open)]"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:AutoComplete": {
+      "kind": "cssVars",
+      "source": "react/src/components/AutoComplete",
+      "vars": [
+        {
+          "name": "--auto-complete-dropdown-background",
+          "description": "Background of the dropdown"
+        },
+        {
+          "name": "--auto-complete-dropdown-radius",
+          "description": "Corner radius of the dropdown (defaults to --radius-lg)"
+        },
+        {
+          "name": "--auto-complete-dropdown-max-height",
+          "description": "Maximum height of the option list before it scrolls"
+        },
+        {
+          "name": "--auto-complete-font-size",
+          "description": "Font size of the dropdown"
+        },
+        {
+          "name": "--auto-complete-option-padding-y",
+          "description": "Vertical padding of an option (follows the density's row padding)"
+        },
+        {
+          "name": "--auto-complete-option-padding-x",
+          "description": "Horizontal padding of an option and of a group label"
+        },
+        {
+          "name": "--auto-complete-option-hover-background",
+          "description": "Background of the hovered / keyboard-focused option"
+        },
+        {
+          "name": "--auto-complete-option-highlight-background",
+          "description": "Background of options with `highlight: true`"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "search-suggestions",
+      "title": "Search suggestions",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnAutoComplete } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnAutoComplete],\n  template: `\n<mn-auto-complete label=\"City\" [options]=\"options\" [(value)]=\"value\"/><output>City: {{value}}</output>\n  `,\n})\nexport class Example {\n  options = [\n  {\n    \"label\": \"London\",\n    \"value\": \"London\"\n  },\n  {\n    \"label\": \"Lisbon\",\n    \"value\": \"Lisbon\"\n  },\n  {\n    \"label\": \"Lima\",\n    \"value\": \"Lima\"\n  },\n  {\n    \"label\": \"Tokyo\",\n    \"value\": \"Tokyo\"\n  }\n];\n  value = \"\";\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "preselected-suggestion",
+      "title": "Preselected suggestion",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnAutoComplete } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnAutoComplete],\n  template: `\n<mn-auto-complete label=\"Language\" [options]=\"options\" value=\"TypeScript\"/>\n  `,\n})\nexport class Example {\n  options = [\n  {\n    \"label\": \"TypeScript\",\n    \"value\": \"TypeScript\"\n  },\n  {\n    \"label\": \"JavaScript\",\n    \"value\": \"JavaScript\"\n  },\n  {\n    \"label\": \"Rust\",\n    \"value\": \"Rust\"\n  }\n];\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "AutoComplete",
+      "description": "A text input that suggests matching options while the user types.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Options whose label contains the typed text are suggested; inputProps are forwarded to the input."
+        },
+        "controlled": {
+          "title": "Controlled",
+          "description": "value / onChange control the input text, onSelect reports the chosen option and onDropdownVisibleChange the dropdown state."
+        },
+        "rich-options": {
+          "title": "Icons, descriptions and states",
+          "description": "In basic mode an option can have an icon and a description, and can be highlighted or disabled."
+        },
+        "custom-render": {
+          "title": "Custom rendering",
+          "description": "Set mode=\"custom\" and renderOption to fully control how options look; renderEmpty replaces the empty state."
+        },
+        "grouped": {
+          "title": "Grouped options",
+          "description": "groupBy returns a group name for each option; groups are shown under headings in order of appearance."
+        },
+        "filter-sort": {
+          "title": "Custom filter and sort",
+          "description": "filterOption replaces the default \"contains\" matching and sortOption orders the results."
+        },
+        "async-loading": {
+          "title": "Remote search",
+          "description": "Fetch options as the user types and show loading while the request is pending."
+        },
+        "appearance": {
+          "title": "Dropdown placement and colors",
+          "description": "Customize placement, offset and animation, and recolor the dropdown, hovered and highlighted options with the --auto-complete-dropdown-background, --auto-complete-option-hover-background and --auto-complete-option-highlight-background CSS custom properties set through dropdownClassName. The dropdown is aligned with the input's start edge, is at least as wide as the input, and flips / shifts to stay in the viewport."
+        },
+        "search-box": {
+          "title": "Search box",
+          "description": "autoHighlight makes Enter pick the first suggestion, fillOnSelect={false} keeps the typed text, and onSubmit runs a search when no option is active."
+        }
+      },
+      "keyboard": {
+        "title": "Keyboard and accessibility",
+        "arrows": "Arrow Down / Arrow Up move through the visible options (wrapping around).",
+        "enter": "Enter selects the active option (disabled options are skipped) without submitting the surrounding form.",
+        "escape": "Escape closes the dropdown and keeps focus in the input; with the dropdown already closed it clears the text (onChange receives \"\"). Inside a Modal or Popover only the dropdown closes.",
+        "aria": "The input exposes the combobox role with aria-expanded, aria-controls and aria-activedescendant pointing to the listbox options."
+      },
+      "api": {
+        "AutoCompleteProps": {
+          "name": "Name of the input",
+          "label": "Label of the input",
+          "mode": "\"basic\" renders icon / label / description; \"custom\" uses renderOption",
+          "value": "Input text (controlled; pair with onChange)",
+          "onChange": "Called when the input text changes (typing or selecting an option)",
+          "options": "Options to suggest",
+          "defaultValue": "Initial input value (uncontrolled)",
+          "onSelect": "Called when an option is picked (mouse or keyboard)",
+          "groupBy": "Returns the group name of an option; options are grouped under headings",
+          "renderOption": "Custom option renderer (used when mode is \"custom\")",
+          "renderEmpty": "Custom content shown when no option matches",
+          "loading": "Shows a loading indicator in the dropdown",
+          "inputProps": "Props forwarded to the underlying Input (native attributes, aria-label, size, prefix / suffix, clearable...)",
+          "emptyProps": "Props forwarded to the default Empty state",
+          "dropdownClassName": "Additional class name of the dropdown (portalled) element. It can set the --auto-complete-dropdown-background, --auto-complete-option-hover-background and --auto-complete-option-highlight-background CSS custom properties to recolor the dropdown, hovered options and highlighted options",
+          "placement": "Preferred dropdown side; the dropdown is aligned with the input's start edge, is at least as wide as the input, and flips / shifts to stay in the viewport",
+          "offset": "Dropdown offset in pixels: for top / bottom placements y is the gap to the input and x shifts along it; for left / right placements x is the gap",
+          "animation": "Animates the dropdown when it opens",
+          "filterOption": "Custom filter; by default options whose label contains the input (case-insensitive) are shown",
+          "sortOption": "Compare function used to sort the filtered options",
+          "onOptionClick": "Called when an option is clicked with the mouse",
+          "onDropdownVisibleChange": "Called when the dropdown opens or closes (not on mount)",
+          "ref": "Ref to the inner <input> element",
+          "onSubmit": "Called with the trimmed text when Enter is pressed while no option is active (e.g. to search)",
+          "autoHighlight": "Makes the first enabled option active whenever the dropdown opens or the options change",
+          "fillOnSelect": "Writes the label of the picked option into the input",
+          "className": "Additional class name of the root element",
+          "groupMode": "\"first\" groups options at their first appearance, \"adjacent\" groups runs of consecutive options; group \"\" has no heading"
+        },
+        "AutoCompleteOption": {
+          "label": "Text displayed for the option and written to the input when selected",
+          "value": "Unique value of the option",
+          "disabled": "Prevents the option from being selected",
+          "highlight": "Highlights the option (e.g. as a recommendation)",
+          "icon": "Icon displayed before the label (basic mode)",
+          "description": "Secondary text displayed under the label (basic mode)",
+          "group": "Free-form group identifier, typically read by groupBy",
+          "style": "Inline styles of the option"
+        }
+      },
+      "cssVars": {
+        "--auto-complete-dropdown-background": "Background of the dropdown",
+        "--auto-complete-dropdown-radius": "Corner radius of the dropdown (defaults to --radius-lg)",
+        "--auto-complete-dropdown-max-height": "Maximum height of the option list before it scrolls",
+        "--auto-complete-font-size": "Font size of the dropdown",
+        "--auto-complete-option-padding-y": "Vertical padding of an option (follows the density's row padding)",
+        "--auto-complete-option-padding-x": "Horizontal padding of an option and of a group label",
+        "--auto-complete-option-hover-background": "Background of the hovered / keyboard-focused option",
+        "--auto-complete-option-highlight-background": "Background of options with highlight: true"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Set the options JS property; typing filters them by label. Picking an option fills the input and fires minerva-select; Enter with no active option fires minerva-submit with the typed text."
+          },
+          "rich-options": {
+            "title": "Rich and grouped options",
+            "description": "Options can have an icon, a description, a highlight or be disabled; groupBy puts them under headings. auto-highlight makes the first enabled option active so Enter picks it; variant and size style the input."
+          },
+          "custom-render": {
+            "title": "Custom rendering and filtering",
+            "description": "With mode=\"custom\", renderOption returns each option's content (string, DOM node or Lit template). filterOption here also matches the email, sortOption orders by name and renderEmpty replaces the empty state."
+          },
+          "async-loading": {
+            "title": "Asynchronous loading",
+            "description": "Listen to minerva-input to fetch matches as the user types and set loading meanwhile. The prefix slot holds an icon; minerva-change reports the committed text."
+          }
+        },
+        "minerva-autocomplete": {
+          "props": {
+            "open": "Whether the dropdown is open.",
+            "placeholder": "Placeholder of the input.",
+            "size": "Size of the input.",
+            "variant": "Visual style of the input: outline, filled or unstyled.",
+            "invalid": "Error state; sets aria-invalid.",
+            "readOnly": "Read-only: focusable and submitted, but no dropdown.",
+            "noAnimation": "Disables the opening animation.",
+            "noFillOnSelect": "Keeps the typed text when an option is picked (no fill-in).",
+            "required": "The control must have a value for the form to be submitted.",
+            "isDisabled": "Whether the control is disabled, by itself or by a disabled fieldset (read-only).",
+            "form": "The form owning the element (read-only).",
+            "labels": "<label> elements associated with the element (read-only).",
+            "validity": "Validity state, as <input>.validity (read-only).",
+            "validationMessage": "Message describing the current validation error, empty when valid (read-only).",
+            "willValidate": "Whether the element is a candidate for constraint validation (read-only)."
+          },
+          "events": {
+            "change": "The native change of the input, re-dispatched from the host (on blur after editing).",
+            "minerva-input": "The input text changed: typing, picking an option or Escape clearing (detail: { value }).",
+            "minerva-change": "The text was committed: an option filled it in, Escape cleared it, or the native change on blur (detail: { value }).",
+            "minerva-select": "An option was picked with the mouse or the keyboard (detail: { value, option }).",
+            "minerva-submit": "Enter was pressed with no active option and non-blank text (detail: { value }, trimmed).",
+            "minerva-open-change": "The dropdown opens or closes (detail: { open }); cancelable: preventDefault() keeps the current state."
+          },
+          "slots": {
+            "prefix": "Content before the text (icon).",
+            "suffix": "Content after the text."
+          },
+          "cssVars": {
+            "--input-height": "Minimum height of the field, for every size (defaults to the density's control height of the size).",
+            "--input-padding-x": "Horizontal padding of the text, for every size.",
+            "--input-radius": "Corner radius (defaults to --radius-lg).",
+            "--input-font-size": "Font size, for every size.",
+            "--input-background": "Background color of the outline variant.",
+            "--input-border-color": "Border color at rest.",
+            "--input-focus-color": "Border color while hovered or focused."
+          },
+          "methods": {
+            "focus": "Focuses the input.",
+            "blur": "Removes focus from the input.",
+            "checkValidity": "Checks validity; fires invalid when invalid.",
+            "reportValidity": "Checks validity and shows the browser's validation message.",
+            "setCustomValidity": "Sets (or clears, with \"\") a custom validation error.",
+            "formResetCallback": "Form lifecycle callback called by the browser on form.reset(): restores the value attribute.",
+            "formDisabledCallback": "Form lifecycle callback called by the browser when an ancestor <fieldset> is disabled or enabled.",
+            "formStateRestoreCallback": "Form lifecycle callback called by the browser to restore the value (back/forward cache, autofill)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

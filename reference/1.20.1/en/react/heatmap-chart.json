@@ -1,0 +1,965 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.1",
+  "locale": "en",
+  "renderer": "react",
+  "page": "heatmap-chart",
+  "title": "Heatmap",
+  "description": "A grid of cells colored by value, over categories or numbers on both axes: activity by weekday and hour, correlation matrices, maps of a measure. Hover a cell to lift it, highlight its row and column and mark its value on the color legend.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.1",
+    "sourceCommit": "3a9f5cdaae706f14fe6d8c65c5481eba719a66c4",
+    "sourceDigest": "sha256:c9ed2b706b61413d29e506a3f04f3d35c044a4b57ec0e284935054f9e1898c7e",
+    "referenceSourceDigest": "sha256:6c9ecba0079f25e53cd971e51f2be8604fc3d941c0ed1cfeec03c4a91913ad73"
+  },
+  "content": {
+    "data": {
+      "sessions": "Sessions",
+      "sessionsAria": "Sessions by weekday and hour of the day",
+      "anomaly": "Anomaly",
+      "anomalyAria": "Monthly temperature anomaly, 1995 to 2024",
+      "signal": "Signal",
+      "wifiAria": "Wi-Fi signal strength over a 200 by 100 meter floor",
+      "largeStatus": "{{cells}} cells · drawn with {{renderer}} · Ctrl / ⌘ + wheel to zoom, drag to pan, double-click to reset",
+      "contributions": "Contributions",
+      "activityAria": "Contributions per day over one year",
+      "activityTotal": "{{total}} contributions in the last year",
+      "metrics": {
+        "sessions": "Sessions",
+        "pageViews": "Page views",
+        "signups": "Sign-ups",
+        "revenue": "Revenue",
+        "churn": "Churn",
+        "tickets": "Support tickets"
+      },
+      "correlation": "Correlation",
+      "correlationAria": "Correlation matrix of six product metrics",
+      "monthN": "Month {{n}}",
+      "retained": "Retained",
+      "retentionAria": "Retention of monthly signup cohorts",
+      "devices": {
+        "desktop": "Desktop",
+        "mobile": "Mobile",
+        "tablet": "Tablet"
+      },
+      "sources": {
+        "organic": "Organic search",
+        "paid": "Paid search",
+        "social": "Social",
+        "email": "Email",
+        "referral": "Referral",
+        "direct": "Direct"
+      },
+      "cellStatus": "{{source}} on {{device}}: {{orders}} orders from {{sessions}} sessions, {{rate}}:",
+      "aboveAverage": "above the average of {{value}}",
+      "belowAverage": "below the average of {{value}}",
+      "clickCell": "Click a cell to see its sessions and orders.",
+      "conversionRate": "Conversion rate",
+      "conversionAria": "Conversion rate by traffic source and device",
+      "rackN": "Rack {{n}}",
+      "sensorN": "Sensor {{n}}",
+      "pause": "Pause",
+      "resume": "Resume",
+      "rackStatus": "Hottest: {{rack}}, {{sensor}} at {{value}} · {{alarms}} sensors above {{limit}}",
+      "inletTemperature": "Inlet temperature",
+      "racksAria": "Live inlet temperatures of the sensors of ten server racks",
+      "classes": {
+        "cat": "Cat",
+        "dog": "Dog",
+        "bird": "Bird",
+        "car": "Car",
+        "truck": "Truck"
+      },
+      "actualPredicted": "Actual {{actual}}, predicted {{predicted}}",
+      "imagesShare": "{{value}} images ({{share}} of the class)",
+      "recall": "Recall: {{value}}",
+      "precision": "Precision: {{value}}",
+      "misclassified": "Misclassified",
+      "accuracy": "Accuracy: {{value}} of {{images}} test images",
+      "shareOfClass": "Share of the class",
+      "predicted": "Predicted class",
+      "actual": "Actual class",
+      "confusionAria": "Confusion matrix of an image classifier over five classes",
+      "regions": {
+        "north": "North",
+        "south": "South",
+        "east": "East",
+        "west": "West",
+        "central": "Central"
+      },
+      "quarterN": "Q{{n}}",
+      "metric": "Metric",
+      "salesMetrics": {
+        "revenue": "Revenue",
+        "growth": "Growth over 2025",
+        "margin": "Gross margin"
+      },
+      "regionQuarter": "{{region}} in {{quarter}}",
+      "bestWorst": "Best: {{best}} ({{bestValue}}) · weakest: {{worst}} ({{worstValue}})",
+      "salesAria": "Sales metrics of 2026 by region and quarter"
+    }
+  },
+  "components": [
+    {
+      "name": "HeatmapChart",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/charts",
+          "exports": [
+            "HeatmapChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "tooltip",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "typeRef": "type:c08795b3492e4547d570",
+            "required": false,
+            "description": "Tooltip; `false` disables it"
+          },
+          {
+            "name": "legend",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartLegendOptions | undefined",
+            "typeRef": "type:860fa553ee4deaac43f8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name"
+          },
+          {
+            "name": "height",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": 320,
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels"
+          },
+          {
+            "name": "width",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels"
+          },
+          {
+            "name": "labels",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "Partial<ChartLabels> | undefined",
+            "typeRef": "type:14c31fd72a2c2ac7a7fd",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "node",
+            "typeText": "((event: ChartHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:018692c396245c230316",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "X axis"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Y axis"
+          },
+          {
+            "name": "renderer",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "enum",
+            "values": [
+              "auto",
+              "canvas2d",
+              "webgl",
+              "webgl2",
+              "webgpu"
+            ],
+            "typeText": "ChartRendererPreference | undefined",
+            "typeRef": "type:dc7d7e6f384ddec86e04",
+            "default": "auto",
+            "required": false,
+            "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D"
+          },
+          {
+            "name": "annotations",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartAnnotation[] | undefined",
+            "typeRef": "type:f440eb8a958892b1b0c2",
+            "required": false,
+            "description": "Background areas and reference lines"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartInteractionOptions | undefined",
+            "typeRef": "type:f4b160d7dd18649fd178",
+            "default": true,
+            "required": false,
+            "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static"
+          },
+          {
+            "name": "padding",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the plot area, in pixels"
+          },
+          {
+            "name": "palette",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)"
+          },
+          {
+            "name": "data",
+            "source": "packages/charts/src/engine/presets.ts",
+            "kind": "array",
+            "typeText": "readonly HeatmapCell[]",
+            "typeRef": "type:72dc19315841e79c236c",
+            "required": true,
+            "description": "Cells"
+          },
+          {
+            "name": "xCategories",
+            "source": "packages/charts/src/engine/presets.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Column names in order (collected from the data when omitted)"
+          },
+          {
+            "name": "yCategories",
+            "source": "packages/charts/src/engine/presets.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Row names from bottom to top (collected from the data when omitted)"
+          },
+          {
+            "name": "colorScale",
+            "source": "packages/charts/src/engine/presets.ts",
+            "kind": "union",
+            "typeText": "readonly string[] | ChartColorScheme | undefined",
+            "typeRef": "type:026f1b1a07f1a1db780e",
+            "default": "sequential",
+            "required": false,
+            "description": "Colors from the lowest to the highest value (interpolated in OKLab), or a built-in theme-aware ramp of the first palette color"
+          },
+          {
+            "name": "valueRange",
+            "source": "packages/charts/src/engine/presets.ts",
+            "kind": "array",
+            "typeText": "readonly [number, number] | undefined",
+            "typeRef": "type:993918f52c7908c02d32",
+            "required": false,
+            "description": "Values at the ends of the color scale; the data range by default"
+          },
+          {
+            "name": "colorMidpoint",
+            "source": "packages/charts/src/engine/presets.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "Value at the middle of the color scale (diverging data)"
+          },
+          {
+            "name": "name",
+            "source": "packages/charts/src/engine/presets.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Name of the value in the tooltip"
+          },
+          {
+            "name": "radius",
+            "source": "packages/charts/src/engine/presets.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "Corner radius of the cells, in pixels"
+          },
+          {
+            "name": "format",
+            "source": "packages/charts/src/engine/presets.ts",
+            "kind": "function",
+            "typeText": "((value: number) => string) | undefined",
+            "typeRef": "type:7ffadb149c54b261e07b",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats the values in the tooltip"
+          }
+        ],
+        "events": [
+          {
+            "name": "onPointClick",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent) => void) | undefined",
+            "typeRef": "type:677083ee0328d7ee4253",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point (or bar) is clicked"
+          },
+          {
+            "name": "onPlotClick",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartPlotClickEvent) => void) | undefined",
+            "typeRef": "type:0256cf20d9a3f1b1c88a",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartPlotClickEvent",
+                "typeRef": "type:db60e2cf00fabb558740"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the plot area is clicked where there is no point"
+          },
+          {
+            "name": "onHover",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent | null) => void) | undefined",
+            "typeRef": "type:7f639ac6d9481ff0bde9",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent | null",
+                "typeRef": "type:92ec77c4587c7e27430b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the hovered (or keyboard-focused) points change"
+          },
+          {
+            "name": "onZoom",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((view: ChartView) => void) | undefined",
+            "typeRef": "type:ee073556f18eb3ee4cae",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartView",
+                "typeRef": "type:f1de933b453f8db86ff3"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the user zooms or pans"
+          },
+          {
+            "name": "onRendererChange",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((renderer: ChartRendererKind) => void) | undefined",
+            "typeRef": "type:167734f7bd5dd7f686a6",
+            "parameters": [
+              {
+                "name": "renderer",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartRendererKind",
+                "typeRef": "type:3439f360c8a2b0649d25"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the backend once it is ready (and when it falls back after a GPU loss)"
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "renderer",
+            "event": "onRendererChange",
+            "syntax": "renderer={renderer} onRendererChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "HeatmapChartProps": {
+      "source": "charts/src/react/types.ts",
+      "description": "Props of HeatmapChart",
+      "kind": "interface",
+      "extends": [
+        "Omit<ChartCommonProps, \"crosshair\">",
+        "HeatmapConfig"
+      ],
+      "props": []
+    },
+    "HeatmapConfig": {
+      "source": "charts/src/engine/presets.ts",
+      "description": "Settings of a heatmap (the props of HeatmapChart)",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "data",
+          "type": "readonly HeatmapCell[]",
+          "required": true,
+          "description": "Cells"
+        },
+        {
+          "name": "xCategories",
+          "type": "readonly string[]",
+          "required": false,
+          "description": "Column names in order (collected from the data when omitted)"
+        },
+        {
+          "name": "yCategories",
+          "type": "readonly string[]",
+          "required": false,
+          "description": "Row names from bottom to top (collected from the data when omitted)"
+        },
+        {
+          "name": "colorScale",
+          "type": "readonly string[] | ChartColorScheme",
+          "required": false,
+          "default": "\"sequential\"",
+          "description": "Colors from the lowest to the highest value (interpolated in OKLab), or a built-in theme-aware ramp of the first palette color"
+        },
+        {
+          "name": "valueRange",
+          "type": "readonly [number, number]",
+          "required": false,
+          "description": "Values at the ends of the color scale; the data range by default"
+        },
+        {
+          "name": "colorMidpoint",
+          "type": "number",
+          "required": false,
+          "default": "0 for `diverging` ramps spanning it, else the middle of the range",
+          "description": "Value at the middle of the color scale (diverging data)"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "description": "Name of the value in the tooltip"
+        },
+        {
+          "name": "radius",
+          "type": "number",
+          "required": false,
+          "description": "Corner radius of the cells, in pixels"
+        },
+        {
+          "name": "format",
+          "type": "(value: number) => string",
+          "required": false,
+          "description": "Formats the values in the tooltip"
+        }
+      ]
+    },
+    "HeatmapCell": {
+      "source": "charts/src/engine/presets.ts",
+      "description": "A cell of a HeatmapChart",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "x",
+          "type": "string | number",
+          "required": true,
+          "description": "Column: a category name (or a number on a numeric axis)"
+        },
+        {
+          "name": "y",
+          "type": "string | number",
+          "required": true,
+          "description": "Row: a category name (or a number on a numeric axis)"
+        },
+        {
+          "name": "value",
+          "type": "number | null",
+          "required": true,
+          "description": "Value mapped to the color scale; `null` leaves the cell empty"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "activity",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/heatmap-chart/demos/activity.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/heatmap-chart/demos/activity.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { HeatmapChart, type HeatmapCell } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst DAY = 24 * 60 * 60 * 1000;\nconst WEEKS = 52;\n// first Monday of the year shown\nconst START = Date.UTC(2025, 10, 3);\n\n// Contributions per day: weekdays busier, a quiet holiday period, a few streaks\nconst random = mulberry32(52);\nconst contributions: { week: number; day: number; count: number }[] = [];\nfor (let week = 0; week < WEEKS; week++) {\n  const holiday = week >= 7 && week <= 8;\n  const streak = week % 13 > 8;\n  for (let day = 0; day < 7; day++) {\n    const weekend = day >= 5;\n    const busy =\n      (weekend ? 0.15 : 0.7) * (holiday ? 0.1 : 1) * (streak ? 1.8 : 1);\n    const count = random() < busy ? Math.round(random() * 12 * busy) : 0;\n    contributions.push({ week, day, count });\n  }\n}\n\n/** Short weekday names in the reader's language, Monday first */\nconst weekdays = (locale: string) => {\n  const format = new Intl.DateTimeFormat(locale, { weekday: \"short\" });\n  return Array.from({ length: 7 }, (_, i) =>\n    format.format(new Date(2026, 0, 5 + i)),\n  );\n};\n\nexport default function ActivityDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.heatmap-chart.data\",\n  });\n  const locale = i18n.language;\n  const days = useMemo(() => weekdays(locale), [locale]);\n\n  // columns are weeks (numbers), rows are weekdays (categories)\n  const data = useMemo(\n    (): HeatmapCell[] =>\n      contributions.map(({ week, day, count }) => ({\n        x: week,\n        y: days[day],\n        value: count,\n      })),\n    [days],\n  );\n  // the x ticks show the month of the week\n  const month = useMemo(\n    () =>\n      new Intl.DateTimeFormat(locale, {\n        month: \"short\",\n        year: \"2-digit\",\n        timeZone: \"UTC\",\n      }),\n    [locale],\n  );\n  const total = contributions.reduce((sum, { count }) => sum + count, 0);\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <HeatmapChart\n        data={data}\n        yCategories={[...days].reverse()}\n        // a ramp of the success color, readable in light and dark themes\n        palette={[\"var(--success-color)\"]}\n        valueRange={[0, 12]}\n        name={t(\"contributions\")}\n        xAxis={{\n          format: (week) => month.format(START + Math.round(week) * 7 * DAY),\n          tickCount: 12,\n        }}\n        radius={2}\n        height={200}\n        ariaLabel={t(\"activityAria\")}\n      />\n      <p>\n        {t(\"activityTotal\", {\n          total: new Intl.NumberFormat(locale).format(total),\n        })}\n      </p>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Contribution calendar",
+      "description": "A year of daily contributions like a GitHub profile: weeks as numeric columns, weekdays as rows, an x format that turns the week number into its month, and palette={[\"var(--success-color)\"]} for a green ramp that reads well in light and dark themes."
+    },
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/heatmap-chart/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/heatmap-chart/demos/basic.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { HeatmapChart, type HeatmapCell } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\n/** Short weekday names in the reader's language, Monday first */\nconst weekdays = (locale: string) => {\n  const format = new Intl.DateTimeFormat(locale, { weekday: \"short\" });\n  // 5 January 2026 is a Monday\n  return Array.from({ length: 7 }, (_, i) =>\n    format.format(new Date(2026, 0, 5 + i)),\n  );\n};\n\n/** Hours of the day: \"9 AM\", \"9時\", \"09 h\"... */\nconst hoursOfDay = (locale: string) => {\n  const format = new Intl.DateTimeFormat(locale, { hour: \"numeric\" });\n  return Array.from({ length: 24 }, (_, h) =>\n    format.format(new Date(2026, 0, 5, h)),\n  );\n};\n\nconst bump = (hour: number, center: number, width: number) =>\n  Math.exp(-((hour - center) ** 2) / (2 * width ** 2));\n\nexport default function BasicDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.heatmap-chart.data\",\n  });\n  const locale = i18n.language;\n  const days = useMemo(() => weekdays(locale), [locale]);\n  const hours = useMemo(() => hoursOfDay(locale), [locale]);\n\n  const data = useMemo((): HeatmapCell[] => {\n    const random = mulberry32(24);\n    return days.flatMap((day, d) => {\n      const weekend = d >= 5;\n      return hours.map((hour, h) => {\n        // office hours with a lunch dip on weekdays, late mornings at weekends\n        const activity = weekend\n          ? 0.55 * bump(h, 13, 4) + 0.3 * bump(h, 21, 2)\n          : bump(h, 10.5, 1.8) +\n            0.9 * bump(h, 15, 2) -\n            0.25 * bump(h, 12.5, 0.8) +\n            0.35 * bump(h, 21, 1.5);\n        const value = Math.max(0, activity) * 1200 + 40 + random() * 90;\n        return { x: hour, y: day, value: Math.round(value) };\n      });\n    });\n  }, [days, hours]);\n  const number = useMemo(() => new Intl.NumberFormat(locale), [locale]);\n\n  return (\n    <HeatmapChart\n      data={data}\n      xCategories={hours}\n      // rows go from bottom to top: reverse them to read Monday first\n      yCategories={[...days].reverse()}\n      name={t(\"sessions\")}\n      format={(value) => number.format(value)}\n      height={280}\n      ariaLabel={t(\"sessionsAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Weekly activity",
+      "description": "7 × 24 cells over category axes. The default ramp is perceptual (OKLab) and follows the theme: from a near-white tint to a deep primary color in light mode, from a tint of the surface to a bright one in dark mode; the color legend shows its range. yCategories lists the rows from bottom to top, hence the reversed weekdays."
+    },
+    {
+      "id": "color-scale",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/heatmap-chart/demos/color-scale.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/heatmap-chart/demos/color-scale.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { HeatmapChart, type HeatmapCell } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\n/** Short month names in the reader's language */\nconst monthNames = (locale: string) => {\n  const format = new Intl.DateTimeFormat(locale, { month: \"short\" });\n  return Array.from({ length: 12 }, (_, m) =>\n    format.format(new Date(2026, m, 1)),\n  );\n};\nconst years = Array.from({ length: 30 }, (_, i) => String(1995 + i));\n// warm years of strong El Niño events\nconst elNino: Record<string, number> = {\n  \"1998\": 0.5,\n  \"2016\": 0.45,\n  \"2024\": 0.4,\n};\n\n// Blue below the reference period, the page background at 0, red above\nconst diverging = [\n  \"#2166ac\",\n  \"#67a9cf\",\n  \"var(--background-color)\",\n  \"#ef8a62\",\n  \"#b2182b\",\n];\n\nexport default function ColorScaleDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.heatmap-chart.data\",\n  });\n  const locale = i18n.language;\n  const months = useMemo(() => monthNames(locale), [locale]);\n\n  const data = useMemo((): HeatmapCell[] => {\n    const random = mulberry32(1995);\n    return years.flatMap((year, i) =>\n      months.map((month) => {\n        const trend = -0.75 + i * 0.07;\n        const noise = (random() + random() - 1) * 0.7;\n        const value = trend + noise + (elNino[year] ?? 0);\n        return { x: year, y: month, value: Math.round(value * 100) / 100 };\n      }),\n    );\n  }, [months]);\n  // \"+0.42 °C\", \"+0,42 °C\"...\n  const celsius = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        style: \"unit\",\n        unit: \"celsius\",\n        minimumFractionDigits: 2,\n        maximumFractionDigits: 2,\n        signDisplay: \"exceptZero\",\n      }),\n    [locale],\n  );\n\n  return (\n    <HeatmapChart\n      data={data}\n      xCategories={years}\n      yCategories={[...months].reverse()}\n      colorScale={diverging}\n      // symmetric range: 0 stays in the middle of the scale\n      valueRange={[-2, 2]}\n      name={t(\"anomaly\")}\n      format={(value) => celsius.format(value)}\n      radius={1}\n      height={340}\n      ariaLabel={t(\"anomalyAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Diverging scale",
+      "description": "colorScale lists the colors from the lowest to the highest value and accepts CSS variables, so the middle stop follows the theme. A symmetric valueRange keeps 0 in the middle of the scale."
+    },
+    {
+      "id": "confusion-matrix",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/heatmap-chart/demos/confusion-matrix.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/heatmap-chart/demos/confusion-matrix.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  HeatmapChart,\n  type ChartHoverEvent,\n  type HeatmapCell,\n} from \"minerva-design/charts\";\n\n// Test set of an image classifier: rows are the actual classes, columns\n// the predicted ones (cats and dogs, cars and trucks get confused)\nconst classes = [\"cat\", \"dog\", \"bird\", \"car\", \"truck\"];\nconst matrix = [\n  [412, 61, 18, 2, 1],\n  [48, 431, 9, 4, 3],\n  [22, 14, 455, 6, 2],\n  [1, 2, 3, 447, 52],\n  [2, 1, 1, 71, 418],\n];\nconst actualTotals = matrix.map((row) => row.reduce((a, b) => a + b, 0));\nconst predictedTotals = classes.map((_, j) =>\n  matrix.reduce((sum, row) => sum + (row[j] ?? 0), 0),\n);\nconst total = actualTotals.reduce((a, b) => a + b, 0);\nconst correct = matrix.reduce((sum, row, i) => sum + (row[i] ?? 0), 0);\n// the cells in the order of `data`: row by row\nconst cells = matrix.flatMap((row, i) =>\n  row.map((n, j) => ({ actual: i, predicted: j, n })),\n);\n\nexport default function ConfusionMatrixDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.heatmap-chart.data\",\n  });\n  const locale = i18n.language;\n\n  const names = useMemo(() => classes.map((key) => t(`classes.${key}`)), [t]);\n  // share of the actual class in each cell: rows add up to 100 %\n  const data = useMemo(\n    (): HeatmapCell[] =>\n      cells.map(({ actual, predicted, n }) => ({\n        x: names[predicted] ?? \"\",\n        y: names[actual] ?? \"\",\n        value: n / (actualTotals[actual] ?? 1),\n      })),\n    [names],\n  );\n  const percent = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        style: \"percent\",\n        maximumFractionDigits: 1,\n      }),\n    [locale],\n  );\n  const number = useMemo(() => new Intl.NumberFormat(locale), [locale]);\n\n  const tooltip = (event: ChartHoverEvent) => {\n    const item = event.items[0];\n    const cell = item ? cells[item.index] : undefined;\n    if (!cell) return null;\n    const { actual, predicted, n } = cell;\n    const hit = actual === predicted;\n    return (\n      <div style={{ display: \"grid\", gap: 2 }}>\n        <strong>\n          {t(\"actualPredicted\", {\n            actual: names[actual],\n            predicted: names[predicted],\n          })}\n        </strong>\n        <span>\n          {t(\"imagesShare\", {\n            value: number.format(n),\n            share: percent.format(n / (actualTotals[actual] ?? 1)),\n          })}\n        </span>\n        {hit ? (\n          <>\n            <span style={{ color: \"var(--success-color)\" }}>\n              {t(\"recall\", {\n                value: percent.format(n / (actualTotals[actual] ?? 1)),\n              })}\n            </span>\n            <span style={{ color: \"var(--success-color)\" }}>\n              {t(\"precision\", {\n                value: percent.format(n / (predictedTotals[predicted] ?? 1)),\n              })}\n            </span>\n          </>\n        ) : (\n          <span style={{ color: \"var(--danger-color)\" }}>\n            {t(\"misclassified\")}\n          </span>\n        )}\n      </div>\n    );\n  };\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {t(\"accuracy\", {\n          value: percent.format(correct / total),\n          images: number.format(total),\n        })}\n      </output>\n      <HeatmapChart\n        data={data}\n        xCategories={names}\n        // first class at the top, like a table\n        yCategories={[...names].reverse()}\n        valueRange={[0, 1]}\n        name={t(\"shareOfClass\")}\n        format={(value) => percent.format(value)}\n        xAxis={{ title: t(\"predicted\") }}\n        yAxis={{ title: t(\"actual\") }}\n        renderTooltip={tooltip}\n        height={360}\n        ariaLabel={t(\"confusionAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Confusion matrix",
+      "description": "Predictions of an image classifier, each cell colored by its share of the actual class. renderTooltip finds the hovered cell from item.index to show its count, and the recall and precision on the diagonal."
+    },
+    {
+      "id": "conversion",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/heatmap-chart/demos/conversion.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/heatmap-chart/demos/conversion.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  HeatmapChart,\n  type ChartHoverEvent,\n  type HeatmapCell,\n} from \"minerva-design/charts\";\n\nconst sources = [\"organic\", \"paid\", \"social\", \"email\", \"referral\", \"direct\"];\nconst devices = [\"desktop\", \"mobile\", \"tablet\"];\n// sessions and orders of last month, per source (rows) and device (columns)\nconst sessions = [\n  [42_000, 61_000, 6_100],\n  [18_500, 33_000, 2_400],\n  [7_200, 39_000, 1_900],\n  [9_800, 12_400, 1_300],\n  [5_600, 4_100, 700],\n  [21_000, 15_500, 2_800],\n];\nconst orders = [\n  [1_390, 1_160, 150],\n  [520, 560, 41],\n  [101, 470, 21],\n  [560, 430, 52],\n  [230, 92, 19],\n  [880, 420, 84],\n];\nconst cells = sources.flatMap((source, s) =>\n  devices.map((device, d) => ({\n    source,\n    device,\n    sessions: sessions[s]?.[d] ?? 0,\n    orders: orders[s]?.[d] ?? 0,\n  })),\n);\nconst average =\n  orders.flat().reduce((a, b) => a + b, 0) /\n  sessions.flat().reduce((a, b) => a + b, 0);\n\nexport default function ConversionDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.heatmap-chart.data\",\n  });\n  const locale = i18n.language;\n  const [selected, setSelected] = useState<number | null>(null);\n\n  const data = useMemo(\n    (): HeatmapCell[] =>\n      cells.map((cell) => ({\n        x: t(`devices.${cell.device}`),\n        y: t(`sources.${cell.source}`),\n        value: cell.orders / cell.sessions,\n      })),\n    [t],\n  );\n  const percent = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        style: \"percent\",\n        minimumFractionDigits: 1,\n        maximumFractionDigits: 1,\n      }),\n    [locale],\n  );\n  const number = useMemo(() => new Intl.NumberFormat(locale), [locale]);\n\n  // item.index is the index of the cell in `data` (and in `cells`)\n  const click = (event: ChartHoverEvent) => {\n    const item = event.items[0];\n    if (item) setSelected(item.index);\n  };\n  const cell = selected === null ? undefined : cells[selected];\n  const rate = cell ? cell.orders / cell.sessions : 0;\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {cell ? (\n          <>\n            {t(\"cellStatus\", {\n              source: t(`sources.${cell.source}`),\n              device: t(`devices.${cell.device}`),\n              orders: number.format(cell.orders),\n              sessions: number.format(cell.sessions),\n              rate: percent.format(rate),\n            })}{\" \"}\n            <strong\n              style={{\n                color:\n                  rate >= average\n                    ? \"var(--success-color)\"\n                    : \"var(--danger-color)\",\n              }}\n            >\n              {rate >= average\n                ? t(\"aboveAverage\", { value: percent.format(average) })\n                : t(\"belowAverage\", { value: percent.format(average) })}\n            </strong>\n          </>\n        ) : (\n          t(\"clickCell\")\n        )}\n      </output>\n      <HeatmapChart\n        data={data}\n        xCategories={devices.map((key) => t(`devices.${key}`))}\n        // first source at the top\n        yCategories={[...sources].reverse().map((key) => t(`sources.${key}`))}\n        name={t(\"conversionRate\")}\n        format={(value) => percent.format(value)}\n        radius={4}\n        onPointClick={click}\n        onPlotClick={() => setSelected(null)}\n        height={340}\n        ariaLabel={t(\"conversionAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Click a cell",
+      "description": "Conversion rate by traffic source and device. onPointClick gives item.index, the index of the clicked cell in data, which leads back to its sessions and orders for the readout; onPlotClick clears it."
+    },
+    {
+      "id": "correlation",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/heatmap-chart/demos/correlation.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/heatmap-chart/demos/correlation.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { HeatmapChart, type HeatmapCell } from \"minerva-design/charts\";\n\n// Correlation between product metrics (symmetric, 1 on the diagonal)\nconst metrics = [\n  \"sessions\",\n  \"pageViews\",\n  \"signups\",\n  \"revenue\",\n  \"churn\",\n  \"tickets\",\n];\nconst matrix = [\n  [1, 0.92, 0.71, 0.64, -0.18, 0.35],\n  [0.92, 1, 0.66, 0.58, -0.12, 0.31],\n  [0.71, 0.66, 1, 0.83, -0.41, 0.22],\n  [0.64, 0.58, 0.83, 1, -0.57, 0.08],\n  [-0.18, -0.12, -0.41, -0.57, 1, 0.46],\n  [0.35, 0.31, 0.22, 0.08, 0.46, 1],\n];\n\nexport default function CorrelationDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.heatmap-chart.data\",\n  });\n  const locale = i18n.language;\n\n  const names = useMemo(() => metrics.map((key) => t(`metrics.${key}`)), [t]);\n  const data = useMemo(\n    (): HeatmapCell[] =>\n      matrix.flatMap((row, i) =>\n        row.map((value, j) => ({ x: names[j], y: names[i], value })),\n      ),\n    [names],\n  );\n  const coefficient = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        minimumFractionDigits: 2,\n        maximumFractionDigits: 2,\n        signDisplay: \"exceptZero\",\n      }),\n    [locale],\n  );\n\n  return (\n    <HeatmapChart\n      data={data}\n      xCategories={names}\n      // first metric at the top, like a table\n      yCategories={[...names].reverse()}\n      // built-in theme-aware ramp: danger color below 0, primary above\n      colorScale=\"diverging\"\n      colorMidpoint={0}\n      valueRange={[-1, 1]}\n      name={t(\"correlation\")}\n      format={(value) => coefficient.format(value)}\n      height={360}\n      ariaLabel={t(\"correlationAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Correlation matrix",
+      "description": "Pairwise correlations of product metrics with colorScale=\"diverging\": the danger color below colorMidpoint (0), the primary color above, a neutral middle that follows the theme; the same translated names are used for both axes."
+    },
+    {
+      "id": "large-grid",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/heatmap-chart/demos/large-grid.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/heatmap-chart/demos/large-grid.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  HeatmapChart,\n  type ChartRendererKind,\n  type HeatmapCell,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst WIDTH = 200;\nconst DEPTH = 100;\nconst ACCESS_POINTS = [\n  { x: 30, y: 70 },\n  { x: 105, y: 25 },\n  { x: 170, y: 65 },\n];\n// interior walls (x positions) that weaken the signal crossing them\nconst WALLS = [70, 140];\n\nconst plasma = [\"#0d0887\", \"#7e03a8\", \"#cc4778\", \"#f89540\", \"#f0f921\"];\n\nexport default function LargeGridDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.heatmap-chart.data\",\n  });\n  const locale = i18n.language;\n  const [renderer, setRenderer] = useState<ChartRendererKind | null>(null);\n\n  // Wi-Fi signal strength on a 200 × 100 m floor, one cell per square meter\n  const data = useMemo((): HeatmapCell[] => {\n    const random = mulberry32(200);\n    const cells: HeatmapCell[] = [];\n    for (let y = 0; y < DEPTH; y++) {\n      for (let x = 0; x < WIDTH; x++) {\n        let best = -100;\n        for (const ap of ACCESS_POINTS) {\n          const distance = Math.hypot(x - ap.x, y - ap.y) + 1;\n          const walls = WALLS.filter((wall) => x < wall !== ap.x < wall).length;\n          best = Math.max(best, -32 - 22 * Math.log10(distance) - 7 * walls);\n        }\n        cells.push({ x, y, value: best + (random() - 0.5) * 2 });\n      }\n    }\n    return cells;\n  }, []);\n  const meters = useMemo(\n    () => new Intl.NumberFormat(locale, { style: \"unit\", unit: \"meter\" }),\n    [locale],\n  );\n  const number = useMemo(() => new Intl.NumberFormat(locale), [locale]);\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <HeatmapChart\n        data={data}\n        colorScale={plasma}\n        valueRange={[-90, -30]}\n        name={t(\"signal\")}\n        format={(value) => `${number.format(Math.round(value))} dBm`}\n        radius={0}\n        xAxis={{ format: (value) => meters.format(value) }}\n        yAxis={{ format: (value) => meters.format(value) }}\n        interaction={{ zoom: \"xy\" }}\n        onRendererChange={setRenderer}\n        height={340}\n        ariaLabel={t(\"wifiAria\")}\n      />\n      <p role=\"status\">\n        {t(\"largeStatus\", {\n          cells: number.format(WIDTH * DEPTH),\n          renderer: renderer ?? \"…\",\n        })}\n      </p>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "20,000 cells",
+      "description": "A 200 × 100 grid with numbers on both axes. interaction={{ zoom: \"xy\" }} enables zooming (off by default for heatmaps): Ctrl / ⌘ + wheel, drag to pan, double-click to reset."
+    },
+    {
+      "id": "rack-temperatures",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/heatmap-chart/demos/rack-temperatures.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/heatmap-chart/demos/rack-temperatures.tsx": "import { useEffect, useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button } from \"minerva-design\";\nimport { HeatmapChart, type HeatmapCell } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst RACKS = 10;\nconst UNITS = 8; // sensors per rack, bottom to top\nconst LIMIT = 32; // °C, the inlet temperature alarm\n\n/**\n * Inlet temperatures of the sensors at refresh `tick`, rack by rack: warmer\n * at the top of the racks, with a cooling unit failing now and then.\n * Derived from the tick alone, so the readings are deterministic.\n */\nconst readingsAt = (tick: number) => {\n  const random = mulberry32(tick * 7919 + 3);\n  // the failing cooling unit drifts along the aisle\n  const failing = Math.floor(tick / 12) % RACKS;\n  const heat = Math.max(0, Math.sin((tick % 12) / 3.8)) * 12;\n  const values: number[] = [];\n  for (let r = 0; r < RACKS; r++) {\n    for (let u = 0; u < UNITS; u++) {\n      const distance = Math.abs(r - failing);\n      const hot = distance < 2 ? heat * (1 - distance * 0.5) : 0;\n      values.push(20 + u * 0.9 + hot * (0.5 + u / UNITS) + random() * 1.5);\n    }\n  }\n  return values;\n};\n\nexport default function RackTemperaturesDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.heatmap-chart.data\",\n  });\n  const locale = i18n.language;\n  const [tick, setTick] = useState(0);\n  const [running, setRunning] = useState(true);\n\n  // the sensors are polled every 1.5 s\n  useEffect(() => {\n    if (!running) return;\n    const timer = setInterval(() => setTick((value) => value + 1), 1500);\n    return () => clearInterval(timer);\n  }, [running]);\n\n  const racks = useMemo(\n    () => Array.from({ length: RACKS }, (_, r) => t(\"rackN\", { n: r + 1 })),\n    [t],\n  );\n  const units = useMemo(\n    () => Array.from({ length: UNITS }, (_, u) => t(\"sensorN\", { n: u + 1 })),\n    [t],\n  );\n  const readings = useMemo(() => readingsAt(tick), [tick]);\n  const data = useMemo(\n    (): HeatmapCell[] =>\n      readings.map((value, i) => ({\n        x: racks[Math.floor(i / UNITS)] ?? \"\",\n        y: units[i % UNITS] ?? \"\",\n        value,\n      })),\n    [readings, racks, units],\n  );\n  const celsius = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, {\n      style: \"unit\",\n      unit: \"celsius\",\n      maximumFractionDigits: 1,\n    });\n    return (value: number) => format.format(value);\n  }, [locale]);\n\n  const hottest = readings.reduce(\n    (best, value, i) => (value > (readings[best] ?? -Infinity) ? i : best),\n    0,\n  );\n  const alarms = readings.filter((value) => value > LIMIT).length;\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <div\n        style={{\n          display: \"flex\",\n          flexWrap: \"wrap\",\n          alignItems: \"center\",\n          gap: 12,\n        }}\n      >\n        <Button\n          size=\"small\"\n          variant=\"outline\"\n          onClick={() => setRunning((value) => !value)}\n        >\n          {running ? t(\"pause\") : t(\"resume\")}\n        </Button>\n        <output\n          aria-live=\"polite\"\n          style={{\n            color: alarms\n              ? \"var(--danger-color)\"\n              : \"var(--text-secondary-color)\",\n          }}\n        >\n          {t(\"rackStatus\", {\n            rack: racks[Math.floor(hottest / UNITS)],\n            sensor: units[hottest % UNITS],\n            value: celsius(readings[hottest] ?? 0),\n            alarms: new Intl.NumberFormat(locale).format(alarms),\n            limit: celsius(LIMIT),\n          })}\n        </output>\n      </div>\n      <HeatmapChart\n        data={data}\n        xCategories={racks}\n        yCategories={units}\n        // a fixed range: the same color means the same temperature at every refresh\n        valueRange={[18, 40]}\n        colorScale={[\n          \"var(--primary-color)\",\n          \"var(--success-color)\",\n          \"var(--warning-color)\",\n          \"var(--danger-color)\",\n        ]}\n        name={t(\"inletTemperature\")}\n        format={celsius}\n        radius={2}\n        height={340}\n        ariaLabel={t(\"racksAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Live sensor grid",
+      "description": "Inlet temperatures of the sensors of a server aisle, refreshed by a setInterval cleared on pause and unmount. A fixed valueRange keeps the same color for the same temperature at every refresh, and colorScale goes through theme colors from cool to hot."
+    },
+    {
+      "id": "retention",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/heatmap-chart/demos/retention.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/heatmap-chart/demos/retention.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { HeatmapChart, type HeatmapCell } from \"minerva-design/charts\";\n\nconst COHORTS = 9;\nconst PERIODS = 9;\n\n// Share of each monthly signup cohort still active N months later; the\n// newest cohorts have fewer months (null leaves the cell empty)\nconst retention = (cohort: number, month: number) => {\n  if (month === 0) return 1;\n  if (cohort + month >= COHORTS) return null;\n  // onboarding improvements: later cohorts keep more users\n  const floor = 0.18 + cohort * 0.015;\n  return floor + (1 - floor) * Math.exp(-month / 1.6) * 0.62;\n};\n\nexport default function RetentionDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.heatmap-chart.data\",\n  });\n  const locale = i18n.language;\n\n  const { cohorts, periods, data } = useMemo(() => {\n    const date = new Intl.DateTimeFormat(locale, {\n      month: \"short\",\n      year: \"numeric\",\n    });\n    const cohorts = Array.from({ length: COHORTS }, (_, c) =>\n      date.format(new Date(2026, c, 1)),\n    );\n    const periods = Array.from({ length: PERIODS }, (_, m) =>\n      t(\"monthN\", { n: m }),\n    );\n    const data: HeatmapCell[] = cohorts.flatMap((cohort, c) =>\n      periods.map((period, m) => ({\n        x: period,\n        y: cohort,\n        value: retention(c, m),\n      })),\n    );\n    return { cohorts, periods, data };\n  }, [t, locale]);\n  const percent = useMemo(\n    () => new Intl.NumberFormat(locale, { style: \"percent\" }),\n    [locale],\n  );\n\n  return (\n    <HeatmapChart\n      data={data}\n      xCategories={periods}\n      // oldest cohort at the top\n      yCategories={[...cohorts].reverse()}\n      // the default ramp: a tint of the surface to a deep (light theme) or\n      // bright (dark theme) primary color\n      valueRange={[0, 1]}\n      name={t(\"retained\")}\n      format={(value) => percent.format(value)}\n      height={340}\n      ariaLabel={t(\"retentionAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Cohort retention",
+      "description": "Share of each monthly signup cohort still active after N months: null values leave the future cells empty, which draws the classic triangle."
+    },
+    {
+      "id": "sales-regions",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/heatmap-chart/demos/sales-regions.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/heatmap-chart/demos/sales-regions.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Radio, RadioGroup } from \"minerva-design\";\nimport { HeatmapChart, type HeatmapCell } from \"minerva-design/charts\";\n\nconst regions = [\"north\", \"south\", \"east\", \"west\", \"central\"];\nconst quarters = [1, 2, 3, 4];\n// revenue (M€) of 2025 and 2026 and gross margin (%) of 2026, per region\n// (rows) and quarter (columns)\nconst revenue2025 = [\n  [4.1, 4.4, 4.0, 5.2],\n  [3.2, 3.6, 3.9, 4.4],\n  [5.6, 5.1, 4.8, 6.0],\n  [2.4, 2.6, 2.9, 3.3],\n  [6.8, 7.0, 6.6, 7.9],\n];\nconst revenue2026 = [\n  [4.5, 4.9, 4.6, 5.9],\n  [3.0, 3.3, 3.5, 4.0],\n  [6.4, 6.0, 5.9, 7.3],\n  [3.1, 3.5, 3.9, 4.6],\n  [6.7, 6.8, 6.3, 7.4],\n];\nconst margin2026 = [\n  [31, 33, 30, 35],\n  [24, 26, 27, 29],\n  [38, 36, 35, 40],\n  [19, 22, 25, 27],\n  [34, 33, 31, 36],\n];\n\ntype Metric = \"revenue\" | \"growth\" | \"margin\";\n\nexport default function SalesRegionsDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.heatmap-chart.data\",\n  });\n  const locale = i18n.language;\n  const [metric, setMetric] = useState<Metric>(\"revenue\");\n\n  // each metric brings its own values, color scale and format\n  const settings = useMemo(() => {\n    const euros = new Intl.NumberFormat(locale, {\n      style: \"currency\",\n      currency: \"EUR\",\n      notation: \"compact\",\n      maximumFractionDigits: 1,\n    });\n    const signed = new Intl.NumberFormat(locale, {\n      style: \"percent\",\n      maximumFractionDigits: 1,\n      signDisplay: \"exceptZero\",\n    });\n    const percent = new Intl.NumberFormat(locale, { style: \"percent\" });\n    const value = (r: number, q: number) => {\n      const before = revenue2025[r]?.[q] ?? 0;\n      const now = revenue2026[r]?.[q] ?? 0;\n      if (metric === \"growth\") return now / before - 1;\n      if (metric === \"margin\") return (margin2026[r]?.[q] ?? 0) / 100;\n      return now;\n    };\n    const values = regions.flatMap((_, r) =>\n      quarters.map((_, q) => value(r, q)),\n    );\n    if (metric === \"growth\") {\n      // diverging around zero: red for a decline, primary for growth\n      return {\n        values,\n        colorScale: \"diverging\" as const,\n        valueRange: [-0.3, 0.3] as const,\n        format: (v: number) => signed.format(v),\n      };\n    }\n    if (metric === \"margin\") {\n      return {\n        values,\n        colorScale: [\n          \"var(--danger-color)\",\n          \"var(--warning-color)\",\n          \"var(--success-color)\",\n        ],\n        valueRange: [0.15, 0.4] as const,\n        format: (v: number) => percent.format(v),\n      };\n    }\n    return {\n      values,\n      colorScale: \"sequential\" as const,\n      valueRange: undefined,\n      format: (v: number) => euros.format(v * 1e6),\n    };\n  }, [metric, locale]);\n\n  const regionNames = useMemo(\n    () => regions.map((key) => t(`regions.${key}`)),\n    [t],\n  );\n  const quarterNames = useMemo(\n    () => quarters.map((n) => t(\"quarterN\", { n })),\n    [t],\n  );\n  const data = useMemo(\n    (): HeatmapCell[] =>\n      regions.flatMap((_, r) =>\n        quarters.map((_, q) => ({\n          x: quarterNames[q] ?? \"\",\n          y: regionNames[r] ?? \"\",\n          value: settings.values[r * quarters.length + q] ?? null,\n        })),\n      ),\n    [settings, regionNames, quarterNames],\n  );\n  const best = settings.values.indexOf(Math.max(...settings.values));\n  const worst = settings.values.indexOf(Math.min(...settings.values));\n  const cellName = (i: number) =>\n    t(\"regionQuarter\", {\n      region: regionNames[Math.floor(i / quarters.length)],\n      quarter: quarterNames[i % quarters.length],\n    });\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <RadioGroup\n        aria-label={t(\"metric\")}\n        direction=\"horizontal\"\n        value={metric}\n        onChange={(value) => setMetric(value as Metric)}\n      >\n        <Radio value=\"revenue\" label={t(\"salesMetrics.revenue\")} />\n        <Radio value=\"growth\" label={t(\"salesMetrics.growth\")} />\n        <Radio value=\"margin\" label={t(\"salesMetrics.margin\")} />\n      </RadioGroup>\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {t(\"bestWorst\", {\n          best: cellName(best),\n          bestValue: settings.format(settings.values[best] ?? 0),\n          worst: cellName(worst),\n          worstValue: settings.format(settings.values[worst] ?? 0),\n        })}\n      </output>\n      <HeatmapChart\n        data={data}\n        xCategories={quarterNames}\n        yCategories={[...regionNames].reverse()}\n        colorScale={settings.colorScale}\n        valueRange={settings.valueRange}\n        name={t(`salesMetrics.${metric}`)}\n        format={settings.format}\n        radius={4}\n        height={320}\n        ariaLabel={t(\"salesAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Switching metrics",
+      "description": "Revenue, growth and margin by region and quarter: each metric brings its own colorScale (sequential, diverging around zero or a custom list), valueRange and format, switched with a RadioGroup."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Heatmap",
+      "description": "A grid of cells colored by value, over categories or numbers on both axes: activity by weekday and hour, correlation matrices, maps of a measure. Hover a cell to lift it, highlight its row and column and mark its value on the color legend.",
+      "demos": {
+        "basic": {
+          "title": "Weekly activity",
+          "description": "7 × 24 cells over category axes. The default ramp is perceptual (OKLab) and follows the theme: from a near-white tint to a deep primary color in light mode, from a tint of the surface to a bright one in dark mode; the color legend shows its range. yCategories lists the rows from bottom to top, hence the reversed weekdays."
+        },
+        "color-scale": {
+          "title": "Diverging scale",
+          "description": "colorScale lists the colors from the lowest to the highest value and accepts CSS variables, so the middle stop follows the theme. A symmetric valueRange keeps 0 in the middle of the scale."
+        },
+        "large-grid": {
+          "title": "20,000 cells",
+          "description": "A 200 × 100 grid with numbers on both axes. interaction={{ zoom: \"xy\" }} enables zooming (off by default for heatmaps): Ctrl / ⌘ + wheel, drag to pan, double-click to reset."
+        },
+        "activity": {
+          "title": "Contribution calendar",
+          "description": "A year of daily contributions like a GitHub profile: weeks as numeric columns, weekdays as rows, an x format that turns the week number into its month, and palette={[\"var(--success-color)\"]} for a green ramp that reads well in light and dark themes."
+        },
+        "correlation": {
+          "title": "Correlation matrix",
+          "description": "Pairwise correlations of product metrics with colorScale=\"diverging\": the danger color below colorMidpoint (0), the primary color above, a neutral middle that follows the theme; the same translated names are used for both axes."
+        },
+        "retention": {
+          "title": "Cohort retention",
+          "description": "Share of each monthly signup cohort still active after N months: null values leave the future cells empty, which draws the classic triangle."
+        },
+        "conversion": {
+          "title": "Click a cell",
+          "description": "Conversion rate by traffic source and device. onPointClick gives item.index, the index of the clicked cell in data, which leads back to its sessions and orders for the readout; onPlotClick clears it."
+        },
+        "rack-temperatures": {
+          "title": "Live sensor grid",
+          "description": "Inlet temperatures of the sensors of a server aisle, refreshed by a setInterval cleared on pause and unmount. A fixed valueRange keeps the same color for the same temperature at every refresh, and colorScale goes through theme colors from cool to hot."
+        },
+        "confusion-matrix": {
+          "title": "Confusion matrix",
+          "description": "Predictions of an image classifier, each cell colored by its share of the actual class. renderTooltip finds the hovered cell from item.index to show its count, and the recall and precision on the diagonal."
+        },
+        "sales-regions": {
+          "title": "Switching metrics",
+          "description": "Revenue, growth and margin by region and quarter: each metric brings its own colorScale (sequential, diverging around zero or a custom list), valueRange and format, switched with a RadioGroup."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic",
+            "description": "Sessions by weekday and 3-hour slot, with the weekday and hour names of the app language; tap a cell to read its value."
+          }
+        }
+      },
+      "data": {
+        "sessions": "Sessions",
+        "sessionsAria": "Sessions by weekday and hour of the day",
+        "anomaly": "Anomaly",
+        "anomalyAria": "Monthly temperature anomaly, 1995 to 2024",
+        "signal": "Signal",
+        "wifiAria": "Wi-Fi signal strength over a 200 by 100 meter floor",
+        "largeStatus": "{{cells}} cells · drawn with {{renderer}} · Ctrl / ⌘ + wheel to zoom, drag to pan, double-click to reset",
+        "contributions": "Contributions",
+        "activityAria": "Contributions per day over one year",
+        "activityTotal": "{{total}} contributions in the last year",
+        "metrics": {
+          "sessions": "Sessions",
+          "pageViews": "Page views",
+          "signups": "Sign-ups",
+          "revenue": "Revenue",
+          "churn": "Churn",
+          "tickets": "Support tickets"
+        },
+        "correlation": "Correlation",
+        "correlationAria": "Correlation matrix of six product metrics",
+        "monthN": "Month {{n}}",
+        "retained": "Retained",
+        "retentionAria": "Retention of monthly signup cohorts",
+        "devices": {
+          "desktop": "Desktop",
+          "mobile": "Mobile",
+          "tablet": "Tablet"
+        },
+        "sources": {
+          "organic": "Organic search",
+          "paid": "Paid search",
+          "social": "Social",
+          "email": "Email",
+          "referral": "Referral",
+          "direct": "Direct"
+        },
+        "cellStatus": "{{source}} on {{device}}: {{orders}} orders from {{sessions}} sessions, {{rate}}:",
+        "aboveAverage": "above the average of {{value}}",
+        "belowAverage": "below the average of {{value}}",
+        "clickCell": "Click a cell to see its sessions and orders.",
+        "conversionRate": "Conversion rate",
+        "conversionAria": "Conversion rate by traffic source and device",
+        "rackN": "Rack {{n}}",
+        "sensorN": "Sensor {{n}}",
+        "pause": "Pause",
+        "resume": "Resume",
+        "rackStatus": "Hottest: {{rack}}, {{sensor}} at {{value}} · {{alarms}} sensors above {{limit}}",
+        "inletTemperature": "Inlet temperature",
+        "racksAria": "Live inlet temperatures of the sensors of ten server racks",
+        "classes": {
+          "cat": "Cat",
+          "dog": "Dog",
+          "bird": "Bird",
+          "car": "Car",
+          "truck": "Truck"
+        },
+        "actualPredicted": "Actual {{actual}}, predicted {{predicted}}",
+        "imagesShare": "{{value}} images ({{share}} of the class)",
+        "recall": "Recall: {{value}}",
+        "precision": "Precision: {{value}}",
+        "misclassified": "Misclassified",
+        "accuracy": "Accuracy: {{value}} of {{images}} test images",
+        "shareOfClass": "Share of the class",
+        "predicted": "Predicted class",
+        "actual": "Actual class",
+        "confusionAria": "Confusion matrix of an image classifier over five classes",
+        "regions": {
+          "north": "North",
+          "south": "South",
+          "east": "East",
+          "west": "West",
+          "central": "Central"
+        },
+        "quarterN": "Q{{n}}",
+        "metric": "Metric",
+        "salesMetrics": {
+          "revenue": "Revenue",
+          "growth": "Growth over 2025",
+          "margin": "Gross margin"
+        },
+        "regionQuarter": "{{region}} in {{quarter}}",
+        "bestWorst": "Best: {{best}} ({{bestValue}}) · weakest: {{worst}} ({{worstValue}})",
+        "salesAria": "Sales metrics of 2026 by region and quarter"
+      },
+      "api": {
+        "HeatmapConfig": {
+          "data": "Cells: x, y and value",
+          "xCategories": "Column names in order (collected from the data when omitted)",
+          "yCategories": "Row names from bottom to top (collected from the data when omitted)",
+          "colorScale": "Colors from the lowest to the highest value (interpolated in OKLab), or a built-in theme-aware ramp: sequential (default) or diverging",
+          "valueRange": "Values at the ends of the color scale; the data range by default",
+          "name": "Name of the value in the tooltip",
+          "radius": "Corner radius of the cells, in pixels",
+          "format": "Formats the values in the tooltip",
+          "colorMidpoint": "Value at the middle of the color scale (diverging data); 0 for diverging ramps spanning it, else the middle of the range"
+        },
+        "HeatmapCell": {
+          "x": "Column: a category name or a number",
+          "y": "Row: a category name or a number",
+          "value": "Value mapped to the color scale; null leaves the cell empty"
+        }
+      },
+      "wc": {
+        "demos": {
+          "weekly-activity": {
+            "title": "Weekly activity",
+            "description": "Commits per day and time slot; the categories set the order of the columns and rows."
+          },
+          "color-scale": {
+            "title": "Diverging color scale",
+            "description": "A correlation matrix on a fixed -1 to 1 range: blue for negative values, red for positive ones, rounded cells."
+          }
+        },
+        "minerva-heatmap-chart": {
+          "props": {
+            "valueName": "Name of the value in the tooltip",
+            "height": "Height of the chart, the legend included: pixels or any CSS length",
+            "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+          },
+          "events": {
+            "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
+            "minerva-point-click": "A point or a bar was clicked; detail: { x, xLabel, items }",
+            "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
+            "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",
+            "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+          },
+          "methods": {
+            "resetZoom": "Shows the whole data range",
+            "getView": "Visible range, null before the engine is created",
+            "setView": "Sets the visible range",
+            "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
+          }
+        }
+      }
+    }
+  }
+}

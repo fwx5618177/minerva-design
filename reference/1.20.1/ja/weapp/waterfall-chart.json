@@ -1,0 +1,607 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.1",
+  "locale": "ja",
+  "renderer": "weapp",
+  "page": "waterfall-chart",
+  "title": "ウォーターフォールチャート",
+  "description": "一連の増減が値を始点から終点へ運ぶ様子を、小計と合計とともに示します：損益ブリッジ、キャッシュフロー、差異分析。細い破線が各棒を次の棒につなぎます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.1",
+    "sourceCommit": "3a9f5cdaae706f14fe6d8c65c5481eba719a66c4",
+    "sourceDigest": "sha256:c9ed2b706b61413d29e506a3f04f3d35c044a4b57ec0e284935054f9e1898c7e",
+    "referenceSourceDigest": "sha256:6c9ecba0079f25e53cd971e51f2be8604fc3d941c0ed1cfeec03c4a91913ad73"
+  },
+  "content": {
+    "data": {
+      "pnl": {
+        "revenue": "売上高",
+        "costOfSales": "売上原価",
+        "grossProfit": "売上総利益",
+        "research": "研究開発費",
+        "marketing": "マーケティング費",
+        "admin": "一般管理費",
+        "operatingIncome": "営業利益",
+        "interest": "受取利息",
+        "tax": "法人税等",
+        "netIncome": "純利益"
+      },
+      "amount": "金額",
+      "pnlAria": "売上高から純利益までの損益計算書",
+      "opening": "期首",
+      "closing": "期末",
+      "cashFlow": "純キャッシュフロー",
+      "cashAria": "期首残高から期末残高までの月ごとの純キャッシュフロー",
+      "budget": "予算",
+      "actual": "実績",
+      "drivers": {
+        "volume": "数量",
+        "price": "価格",
+        "mix": "製品構成",
+        "exchangeRates": "為替",
+        "rawMaterials": "原材料",
+        "savings": "コスト削減"
+      },
+      "variance": "差異",
+      "varianceAria": "予算と実績の利益の差異要因",
+      "startOfYear": "年初",
+      "endOfYear": "年末",
+      "movements": {
+        "hires": "採用",
+        "internalIn": "社内異動（受入）",
+        "resignations": "退職",
+        "internalOut": "社内異動（送出）",
+        "retirements": "定年退職"
+      },
+      "people": "人数",
+      "headcountAria": "1 年間の人員の増減",
+      "arr": {
+        "opening": "期首 ARR",
+        "newBusiness": "新規",
+        "expansion": "アップセル",
+        "contraction": "縮小",
+        "churn": "解約",
+        "closing": "期末 ARR",
+        "name": "ARR",
+        "quarterLabel": "四半期",
+        "quarter": "第{{n}}四半期",
+        "summary": "{{quarter}}：純新規 ARR {{net}} · 売上継続率 {{nrr}}",
+        "aria": "{{quarter}}の ARR ブリッジ"
+      },
+      "price": {
+        "listPrice": "定価",
+        "dealerDiscount": "販売店値引き",
+        "promotion": "販促",
+        "invoicePrice": "請求価格",
+        "paymentTerms": "支払条件",
+        "freight": "運賃",
+        "rebates": "数量リベート",
+        "pocketPrice": "実質手取り価格",
+        "name": "単価",
+        "hint": "バーをクリックすると定価と比較します",
+        "selected": "{{step}}：{{value}}、定価の {{share}}",
+        "aria": "定価から実質手取り価格までの価格ウォーターフォール"
+      },
+      "emissions": {
+        "baseline": "2019 年基準",
+        "growth": "事業成長",
+        "efficiency": "省エネ",
+        "renewables": "再生可能電力",
+        "fleet": "EV 車両",
+        "refrigerants": "冷媒",
+        "acquisition": "買収",
+        "current": "2025 年",
+        "target": "2030 年目標",
+        "kt": "{{value}} kt CO₂e",
+        "name": "排出量",
+        "change": "変化：{{value}}",
+        "range": "{{from}} から {{to}}",
+        "gap": "2030 年目標を {{value}} 上回る",
+        "aria": "2019 年基準から 2025 年までの排出量ブリッジ"
+      },
+      "lead": {
+        "orderEntry": "受注入力",
+        "creditCheck": "与信審査",
+        "picking": "ピッキング",
+        "quality": "品質検査",
+        "carrierWait": "運送業者待ち",
+        "transit": "輸送",
+        "customs": "通関",
+        "total": "リードタイム",
+        "name": "所要時間",
+        "work": "作業",
+        "wait": "待ち",
+        "summary": "作業は {{total}} のうち {{work}}（{{share}}）",
+        "aria": "工程別の注文リードタイム"
+      },
+      "live": {
+        "opening": "それ以前",
+        "now": "現在",
+        "name": "残高",
+        "kinds": {
+          "customer": "顧客からの入金",
+          "supplier": "仕入先への支払",
+          "payroll": "給与",
+          "card": "カード手数料",
+          "refund": "返金"
+        },
+        "last": "最新：{{time}} · {{kind}} {{amount}}",
+        "pause": "一時停止",
+        "resume": "再開",
+        "aria": "当日の資金ポジション（ライブ更新）"
+      },
+      "scope": {
+        "committed": "コミット",
+        "added": "追加",
+        "removed": "削除",
+        "reestimated": "再見積もり",
+        "carriedOver": "持ち越し",
+        "completed": "完了",
+        "name": "ストーリーポイント",
+        "orientation": "向き",
+        "vertical": "縦",
+        "horizontal": "横",
+        "labels": "ラベル",
+        "connector": "コネクタ",
+        "aria": "コミットから完了までのスプリントのストーリーポイント"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "WaterfallChart",
+      "support": {
+        "status": "beta",
+        "notes": "Waterfall of changes, subtotals and totals (`steps`), colors, start, labels, locale, orientation; format() through configure(). Same as Chart. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Waterfall of changes, subtotals and totals (`steps`), colors, start, labels, locale, orientation; format() through configure(). Same as Chart. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/waterfall-chart/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "waterfall-chart",
+        "props": [
+          {
+            "name": "width",
+            "typeText": "unknown",
+            "required": false,
+            "default": "100%"
+          },
+          {
+            "name": "height",
+            "typeText": "unknown",
+            "required": false,
+            "default": 320
+          },
+          {
+            "name": "legend",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "tooltip",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "crosshair",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "annotations",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "interaction",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "padding",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "palette",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "locale",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "labels",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          },
+          {
+            "name": "disableScroll",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "xAxis",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "yAxis",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "steps",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "name",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "upColor",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "downColor",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "totalColor",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "start",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "connector",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "orientation",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "events": [
+          {
+            "name": "hover",
+            "typeText": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+            "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+          },
+          {
+            "name": "pointclick",
+            "typeText": "{ items: NativeChartHoverItem[]; x: number; xLabel: string }",
+            "description": "A point or bar was tapped."
+          },
+          {
+            "name": "plotclick",
+            "typeText": "{ x: number; y: number }",
+            "description": "The plot area was tapped where there is no point (data coordinates)."
+          },
+          {
+            "name": "zoom",
+            "typeText": "{ x: [number, number]; y: [number, number] }",
+            "description": "Visible range after a pinch, a pan or a double-tap reset."
+          },
+          {
+            "name": "layout",
+            "typeText": "{ x: number; y: number; width: number; height: number }",
+            "description": "The plot area moved or was resized (px of the chart)."
+          },
+          {
+            "name": "pointdrag",
+            "typeText": "{ item: NativeChartHoverItem; x: number; y: number }",
+            "description": "A scatter point is dragged (interaction.dragPoints); the data is not changed."
+          },
+          {
+            "name": "pointdrop",
+            "typeText": "{ item: NativeChartHoverItem; x: number; y: number }",
+            "description": "A dragged scatter point was released; update the series to move it."
+          }
+        ],
+        "slots": [],
+        "registration": "\"usingComponents\": { \"mn-waterfall-chart\": \"minerva-design/dist/weapp/waterfall-chart/index\" }",
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "ウォーターフォールチャート",
+      "description": "一連の増減が値を始点から終点へ運ぶ様子を、小計と合計とともに示します：損益ブリッジ、キャッシュフロー、差異分析。細い破線が各棒を次の棒につなぎます。",
+      "demos": {
+        "pnl": {
+          "title": "損益ブリッジ",
+          "description": "売上から純利益まで：各増減は前の棒の終点から始まり、小計と合計の棒はゼロからの累計を示します。ラベルには増減が表示されます。"
+        },
+        "cash-flow": {
+          "title": "キャッシュフロー",
+          "description": "start で期首残高を指定し、最初の小計がそれを示します。各月の純キャッシュフローを加え、期末残高で終わります。yAxis.min で増減部分を拡大します。"
+        },
+        "variance": {
+          "title": "予算差異",
+          "description": "orientation: \"horizontal\" で、予算と実績の利益の差を説明する要因を行に並べます。"
+        },
+        "headcount": {
+          "title": "人員の増減",
+          "description": "upColor、downColor、totalColor で既定の色を置き換えます。ここでは入社を青、退職を琥珀色にしています。"
+        },
+        "arr-bridge": {
+          "title": "四半期別 ARR ブリッジ",
+          "description": "四半期の期首から期末までの年間経常収益：新規、アップセル、縮小、解約。RadioGroup で四半期を切り替え、start は前四半期の期末 ARR を受け取り、yAxis.min で変化部分を拡大します。下の行では純新規 ARR と売上継続率を計算します。"
+        },
+        "price-bridge": {
+          "title": "価格ウォーターフォール",
+          "description": "1 個あたりの定価から実質手取り価格まで。請求価格は小計です。onPointClick はクリックされたバー（event.items[0].index）を受け取り、下の行でその金額が定価に占める割合を示します。"
+        },
+        "emissions": {
+          "title": "排出量ブリッジ",
+          "description": "2019 年の基準から 2025 年までの排出量：upColor と downColor を入れ替えて増加を赤、削減を緑にし、線のアノテーションで 2030 年目標を示します。renderTooltip は各変化とその始点・終点、目標との差を表示します。"
+        },
+        "lead-time": {
+          "title": "リードタイムの内訳",
+          "description": "注文の各工程が所要時間を積み上げ、合計バーがリードタイムを示します。各ステップは独自の色（作業か待ち）を持ち、format は Intl.NumberFormat の単位スタイルで日数を書き、connector は実線を描きます。"
+        },
+        "live-balance": {
+          "title": "ライブ資金ポジション",
+          "description": "1 日の資金残高：2 秒ごとに取引が届き（setInterval、一時停止とアンマウントで解除）、最も古い取引はウィンドウから外れて start に繰り込まれるため、最初のバーは常に表示中の取引より前の残高を示します。"
+        },
+        "options": {
+          "title": "オプション",
+          "description": "スプリントのスコープをコミットから完了までのストーリーポイントで表示：orientation、labels、connector を試せます。"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基本",
+            "description": "行に並べた損益計算書（orientation=\"horizontal\"）。スマートフォンでも項目名の幅を確保できます。"
+          }
+        }
+      },
+      "data": {
+        "pnl": {
+          "revenue": "売上高",
+          "costOfSales": "売上原価",
+          "grossProfit": "売上総利益",
+          "research": "研究開発費",
+          "marketing": "マーケティング費",
+          "admin": "一般管理費",
+          "operatingIncome": "営業利益",
+          "interest": "受取利息",
+          "tax": "法人税等",
+          "netIncome": "純利益"
+        },
+        "amount": "金額",
+        "pnlAria": "売上高から純利益までの損益計算書",
+        "opening": "期首",
+        "closing": "期末",
+        "cashFlow": "純キャッシュフロー",
+        "cashAria": "期首残高から期末残高までの月ごとの純キャッシュフロー",
+        "budget": "予算",
+        "actual": "実績",
+        "drivers": {
+          "volume": "数量",
+          "price": "価格",
+          "mix": "製品構成",
+          "exchangeRates": "為替",
+          "rawMaterials": "原材料",
+          "savings": "コスト削減"
+        },
+        "variance": "差異",
+        "varianceAria": "予算と実績の利益の差異要因",
+        "startOfYear": "年初",
+        "endOfYear": "年末",
+        "movements": {
+          "hires": "採用",
+          "internalIn": "社内異動（受入）",
+          "resignations": "退職",
+          "internalOut": "社内異動（送出）",
+          "retirements": "定年退職"
+        },
+        "people": "人数",
+        "headcountAria": "1 年間の人員の増減",
+        "arr": {
+          "opening": "期首 ARR",
+          "newBusiness": "新規",
+          "expansion": "アップセル",
+          "contraction": "縮小",
+          "churn": "解約",
+          "closing": "期末 ARR",
+          "name": "ARR",
+          "quarterLabel": "四半期",
+          "quarter": "第{{n}}四半期",
+          "summary": "{{quarter}}：純新規 ARR {{net}} · 売上継続率 {{nrr}}",
+          "aria": "{{quarter}}の ARR ブリッジ"
+        },
+        "price": {
+          "listPrice": "定価",
+          "dealerDiscount": "販売店値引き",
+          "promotion": "販促",
+          "invoicePrice": "請求価格",
+          "paymentTerms": "支払条件",
+          "freight": "運賃",
+          "rebates": "数量リベート",
+          "pocketPrice": "実質手取り価格",
+          "name": "単価",
+          "hint": "バーをクリックすると定価と比較します",
+          "selected": "{{step}}：{{value}}、定価の {{share}}",
+          "aria": "定価から実質手取り価格までの価格ウォーターフォール"
+        },
+        "emissions": {
+          "baseline": "2019 年基準",
+          "growth": "事業成長",
+          "efficiency": "省エネ",
+          "renewables": "再生可能電力",
+          "fleet": "EV 車両",
+          "refrigerants": "冷媒",
+          "acquisition": "買収",
+          "current": "2025 年",
+          "target": "2030 年目標",
+          "kt": "{{value}} kt CO₂e",
+          "name": "排出量",
+          "change": "変化：{{value}}",
+          "range": "{{from}} から {{to}}",
+          "gap": "2030 年目標を {{value}} 上回る",
+          "aria": "2019 年基準から 2025 年までの排出量ブリッジ"
+        },
+        "lead": {
+          "orderEntry": "受注入力",
+          "creditCheck": "与信審査",
+          "picking": "ピッキング",
+          "quality": "品質検査",
+          "carrierWait": "運送業者待ち",
+          "transit": "輸送",
+          "customs": "通関",
+          "total": "リードタイム",
+          "name": "所要時間",
+          "work": "作業",
+          "wait": "待ち",
+          "summary": "作業は {{total}} のうち {{work}}（{{share}}）",
+          "aria": "工程別の注文リードタイム"
+        },
+        "live": {
+          "opening": "それ以前",
+          "now": "現在",
+          "name": "残高",
+          "kinds": {
+            "customer": "顧客からの入金",
+            "supplier": "仕入先への支払",
+            "payroll": "給与",
+            "card": "カード手数料",
+            "refund": "返金"
+          },
+          "last": "最新：{{time}} · {{kind}} {{amount}}",
+          "pause": "一時停止",
+          "resume": "再開",
+          "aria": "当日の資金ポジション（ライブ更新）"
+        },
+        "scope": {
+          "committed": "コミット",
+          "added": "追加",
+          "removed": "削除",
+          "reestimated": "再見積もり",
+          "carriedOver": "持ち越し",
+          "completed": "完了",
+          "name": "ストーリーポイント",
+          "orientation": "向き",
+          "vertical": "縦",
+          "horizontal": "横",
+          "labels": "ラベル",
+          "connector": "コネクタ",
+          "aria": "コミットから完了までのスプリントのストーリーポイント"
+        }
+      },
+      "api": {
+        "WaterfallChartProps": {
+          "steps": "順に並べた増減、小計、合計",
+          "labels": "各棒の先端に増減（または合計）を表示",
+          "orientation": "\"horizontal\" でステップを行に並べる"
+        },
+        "WaterfallStep": {
+          "label": "棒のカテゴリ名",
+          "value": "増減（正または負）。合計では無視",
+          "kind": "\"subtotal\" と \"total\" の棒はゼロからの累計を表示",
+          "color": "この棒の色（任意の CSS カラー）"
+        },
+        "WaterfallOptions": {
+          "name": "系列名（ツールチップ）",
+          "upColor": "増加の色",
+          "downColor": "減少の色",
+          "totalColor": "合計と小計の色",
+          "start": "最初の増減の起点となる値",
+          "labels": "各棒の先端に増減（または合計）を表示",
+          "format": "値の書式（ラベル、ツールチップ）",
+          "locale": "既定の系列名のロケール。既定はページの言語",
+          "connector": "各棒の端から次の棒への細い線（補助テキスト色の破線）。false で非表示、オブジェクトで color・dash・width を指定"
+        },
+        "ChartConnectorOptions": {
+          "color": "線の色（任意の CSS カラー）。既定は補助テキスト色",
+          "dash": "破線のパターン（CSS ピクセル）。[] で実線（既定 [3, 3]）",
+          "width": "線の太さ（CSS ピクセル、既定 1）"
+        }
+      },
+      "wc": {
+        "demos": {
+          "pnl": {
+            "title": "損益ブリッジ",
+            "description": "増減は累計値から浮かび、売上総利益は小計、純利益は合計として表示されます。"
+          },
+          "cash-flow": {
+            "title": "期首残高からのキャッシュフロー",
+            "description": "月ごとの入出金を行方向に並べ、期首残高から期末合計まで表示します。値はツールチップに表示されます。"
+          }
+        },
+        "minerva-waterfall-chart": {
+          "props": {
+            "valueName": "ツールチップに表示する値の名前",
+            "hideLabels": "各バーの端に表示される増減（または合計）を非表示にします",
+            "height": "チャートの高さ（凡例を含む）：ピクセルまたは任意の CSS の長さ",
+            "options": "その他のエンジンのオプション（軸、凡例、ツールチップ、パレット、書式…）。要素自身のプロパティとマージされます。プロパティのみ",
+            "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null",
+            "hideConnectors": "各バーの端から次のバーへの細い線を非表示にします"
+          },
+          "events": {
+            "minerva-hover": "ホバー（またはキーボードでフォーカス）しているポイントが変わりました。detail：{ x, xLabel, items }、何もない場合は null",
+            "minerva-point-click": "ポイントまたは棒がクリックされました。detail：{ x, xLabel, items }",
+            "minerva-plot-click": "ポイントのないプロット領域がクリックされました。detail：{ x, y }（データ座標）",
+            "minerva-zoom": "ユーザーがズームまたはパンしました。detail：{ x, y }（表示範囲）",
+            "minerva-renderer-change": "バックエンドの準備ができた、または GPU の喪失後にフォールバックしました。detail：{ renderer }"
+          },
+          "methods": {
+            "resetZoom": "データ範囲全体を表示します",
+            "getView": "表示範囲。エンジンが作成されるまでは null",
+            "setView": "表示範囲を設定します",
+            "getRenderer": "使用中のバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null"
+          }
+        }
+      }
+    }
+  }
+}

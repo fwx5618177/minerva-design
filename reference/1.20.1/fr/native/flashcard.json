@@ -1,0 +1,522 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.1",
+  "locale": "fr",
+  "renderer": "native",
+  "page": "flashcard",
+  "title": "Flashcard",
+  "description": "Une carte d'étude à deux faces qui se retourne entre une question et sa réponse, pour la révision espacée.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.1",
+    "sourceCommit": "3a9f5cdaae706f14fe6d8c65c5481eba719a66c4",
+    "sourceDigest": "sha256:c9ed2b706b61413d29e506a3f04f3d35c044a4b57ec0e284935054f9e1898c7e",
+    "referenceSourceDigest": "sha256:6c9ecba0079f25e53cd971e51f2be8604fc3d941c0ed1cfeec03c4a91913ad73"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Flashcard",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "Flashcard"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "front",
+            "source": "packages/native/src/components/Flashcard/Flashcard.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Content of the front face (the prompt)"
+          },
+          {
+            "name": "back",
+            "source": "packages/native/src/components/Flashcard/Flashcard.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Content of the back face (the answer)"
+          },
+          {
+            "name": "footer",
+            "source": "packages/native/src/components/Flashcard/Flashcard.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Content below the card, not flipped (e.g. rating buttons)"
+          },
+          {
+            "name": "frontLabel",
+            "source": "packages/native/src/components/Flashcard/Flashcard.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Small caption of the front face; `null`, `false` or `\"\"` hides it"
+          },
+          {
+            "name": "backLabel",
+            "source": "packages/native/src/components/Flashcard/Flashcard.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Small caption of the back face; `null`, `false` or `\"\"` hides it"
+          },
+          {
+            "name": "hint",
+            "source": "packages/native/src/components/Flashcard/Flashcard.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Hint on the front face (shown with showHint while the card flips on press)"
+          },
+          {
+            "name": "showHint",
+            "source": "packages/native/src/components/Flashcard/Flashcard.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows the hint on the front face"
+          },
+          {
+            "name": "flipped",
+            "source": "packages/native/src/components/Flashcard/Flashcard.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Whether the back is shown (controlled; pair with onFlippedChange)"
+          },
+          {
+            "name": "defaultFlipped",
+            "source": "packages/native/src/components/Flashcard/Flashcard.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Whether the back is initially shown (uncontrolled)"
+          },
+          {
+            "name": "flipOnClick",
+            "source": "packages/native/src/components/Flashcard/Flashcard.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Pressing the card flips it. When false the card is not a button and only `flipped` flips it."
+          },
+          {
+            "name": "disabled",
+            "source": "packages/native/src/components/Flashcard/Flashcard.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Blocks flipping and dims the card"
+          },
+          {
+            "name": "axis",
+            "source": "packages/native/src/components/Flashcard/Flashcard.tsx",
+            "kind": "enum",
+            "values": [
+              "x",
+              "y"
+            ],
+            "typeText": "FlashcardAxis | undefined",
+            "typeRef": "type:c542c7031138ffed2013",
+            "default": "y",
+            "required": false,
+            "description": "Rotation axis: \"y\" flips horizontally, \"x\" vertically"
+          },
+          {
+            "name": "variant",
+            "source": "packages/native/src/components/Flashcard/Flashcard.tsx",
+            "kind": "enum",
+            "values": [
+              "elevated",
+              "filled",
+              "outline"
+            ],
+            "typeText": "FlashcardVariant | undefined",
+            "typeRef": "type:e2988f5a10b092415682",
+            "default": "elevated",
+            "required": false,
+            "description": "Surface style"
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/components/Flashcard/Flashcard.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "FlashcardSize | undefined",
+            "typeRef": "type:69ddf6c5343508a57b1a",
+            "default": "medium",
+            "required": false,
+            "description": "Padding and typography scale"
+          },
+          {
+            "name": "minHeight",
+            "source": "packages/native/src/components/Flashcard/Flashcard.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": 192,
+            "required": false,
+            "description": "Minimum height of the card in dp (or a \"px\" / \"rem\" string, 1rem = 16); the card grows to fit the taller face"
+          }
+        ],
+        "events": [
+          {
+            "name": "onFlippedChange",
+            "source": "packages/native/src/components/Flashcard/Flashcard.tsx",
+            "kind": "function",
+            "typeText": "((flipped: boolean) => void) | undefined",
+            "typeRef": "type:6f3a25656598c5373da5",
+            "parameters": [
+              {
+                "name": "flipped",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the next flipped state"
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "flipped",
+            "event": "onFlippedChange",
+            "syntax": "flipped={flipped} onFlippedChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "native:FlashcardProps": {
+      "source": "native/src/components/Flashcard/Flashcard.tsx",
+      "kind": "interface",
+      "extends": [
+        "Omit<ViewProps, \"style\" | \"children\">"
+      ],
+      "props": [
+        {
+          "name": "front",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Content of the front face (the prompt)"
+        },
+        {
+          "name": "back",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Content of the back face (the answer)"
+        },
+        {
+          "name": "footer",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Content below the card, not flipped (e.g. rating buttons)"
+        },
+        {
+          "name": "frontLabel",
+          "type": "ReactNode",
+          "required": false,
+          "default": "the \"flashcard.frontLabel\" message (\"Question\")",
+          "description": "Small caption of the front face; `null`, `false` or `\"\"` hides it"
+        },
+        {
+          "name": "backLabel",
+          "type": "ReactNode",
+          "required": false,
+          "default": "the \"flashcard.backLabel\" message (\"Answer\")",
+          "description": "Small caption of the back face; `null`, `false` or `\"\"` hides it"
+        },
+        {
+          "name": "hint",
+          "type": "ReactNode",
+          "required": false,
+          "default": "the \"flashcard.hint\" message",
+          "description": "Hint on the front face (shown with showHint while the card flips on press)"
+        },
+        {
+          "name": "showHint",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows the hint on the front face"
+        },
+        {
+          "name": "flipped",
+          "type": "boolean",
+          "required": false,
+          "description": "Whether the back is shown (controlled; pair with onFlippedChange)"
+        },
+        {
+          "name": "defaultFlipped",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Whether the back is initially shown (uncontrolled)"
+        },
+        {
+          "name": "onFlippedChange",
+          "type": "(flipped: boolean) => void",
+          "required": false,
+          "description": "Called with the next flipped state"
+        },
+        {
+          "name": "flipOnClick",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Pressing the card flips it. When false the card is not a button and only `flipped` flips it."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Blocks flipping and dims the card"
+        },
+        {
+          "name": "axis",
+          "type": "FlashcardAxis",
+          "required": false,
+          "default": "\"y\"",
+          "description": "Rotation axis: \"y\" flips horizontally, \"x\" vertically"
+        },
+        {
+          "name": "variant",
+          "type": "FlashcardVariant",
+          "required": false,
+          "default": "\"elevated\"",
+          "description": "Surface style"
+        },
+        {
+          "name": "size",
+          "type": "FlashcardSize",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Padding and typography scale"
+        },
+        {
+          "name": "minHeight",
+          "type": "number | string",
+          "required": false,
+          "default": "192",
+          "description": "Minimum height of the card in dp (or a \"px\" / \"rem\" string, 1rem = 16); the card grows to fit the taller face"
+        },
+        {
+          "name": "style",
+          "type": "StyleProp<ViewStyle>",
+          "required": false,
+          "description": "Style of the outer view (card and footer)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Flashcard": {
+      "kind": "cssVars",
+      "source": "react/src/components/Flashcard",
+      "vars": [
+        {
+          "name": "--flashcard-min-height",
+          "description": "Minimum height of the card (defaults to 12rem; the minHeight prop sets it); the card grows to fit the taller face"
+        },
+        {
+          "name": "--flashcard-bg-color",
+          "description": "Background color of the faces (defaults to --surface-color, --surface-muted-color with variant=\"filled\")"
+        },
+        {
+          "name": "--flashcard-border-color",
+          "description": "Border color of the faces (variant=\"outline\")"
+        },
+        {
+          "name": "--flashcard-radius",
+          "description": "Corner radius of the faces (defaults to --radius-lg)"
+        },
+        {
+          "name": "--flashcard-shadow",
+          "description": "Shadow of the faces (variant=\"elevated\"; defaults to --shadow-lg)"
+        },
+        {
+          "name": "--flashcard-padding",
+          "description": "Padding of the faces (defaults to the size's spacing)"
+        },
+        {
+          "name": "--flashcard-font-size",
+          "description": "Font size of the face content (defaults to the size's font size)"
+        },
+        {
+          "name": "--flashcard-label-color",
+          "description": "Text color of the face captions"
+        },
+        {
+          "name": "--flashcard-perspective",
+          "description": "Perspective of the 3D flip (defaults to 1200px)"
+        },
+        {
+          "name": "--flashcard-duration",
+          "description": "Duration of the flip (defaults to 0.5s)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/flashcard/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/flashcard/native/basic.tsx": "import { useState } from \"react\";\nimport { Text, View } from \"react-native\";\nimport { Button, Flashcard } from \"minerva-design/native\";\n\nconst deck = [\n  { front: \"ephemeral\", back: \"Lasting for a very short time\" },\n  { front: \"ubiquitous\", back: \"Present, appearing or found everywhere\" },\n  { front: \"laconic\", back: \"Using very few words\" },\n];\n\nexport default function Basic() {\n  const [index, setIndex] = useState(0);\n  const [flipped, setFlipped] = useState(false);\n  const card = deck[index]!;\n  const next = () => {\n    setFlipped(false);\n    setIndex((i) => (i + 1) % deck.length);\n  };\n  return (\n    <View style={{ gap: 12 }}>\n      <Flashcard\n        front={card.front}\n        back={card.back}\n        backLabel=\"Definition\"\n        flipped={flipped}\n        onFlippedChange={setFlipped}\n        minHeight={160}\n        footer={\n          flipped ? (\n            <>\n              <Button size=\"small\" variant=\"outline\" onPress={next}>\n                Again\n              </Button>\n              <Button size=\"small\" onPress={next}>\n                Good\n              </Button>\n            </>\n          ) : null\n        }\n      />\n      <Text>\n        Card {index + 1} / {deck.length} · tap to flip\n      </Text>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "Utilisation de base",
+      "description": "Cliquez sur la carte, ou appuyez sur Entrée / Espace dessus, pour la retourner avec une rotation 3D. La carte est un bouton bascule (aria-pressed) ; la face cachée est inert et le verso est une région live polite, la réponse révélée est donc annoncée."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Flashcard",
+      "description": "Une carte d'étude à deux faces qui se retourne entre une question et sa réponse, pour la révision espacée.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Cliquez sur la carte, ou appuyez sur Entrée / Espace dessus, pour la retourner avec une rotation 3D. La carte est un bouton bascule (aria-pressed) ; la face cachée est inert et le verso est une région live polite, la réponse révélée est donc annoncée."
+        },
+        "controlled": {
+          "title": "Révision contrôlée avec boutons de notation",
+          "description": "flipped / onFlippedChange contrôlent la face ; footer place des boutons de notation sous la carte (il ne se retourne pas). frontLabel / backLabel remplacent les légendes par défaut « Question » / « Réponse »."
+        },
+        "axis-variants": {
+          "title": "Axe, variantes et tailles",
+          "description": "axis=\"x\" retourne verticalement ; variant reprend Card (elevated, outline, filled) et size ajuste les marges et le texte. Les deux faces partagent une même cellule de grille : la carte prend la hauteur de la plus haute."
+        },
+        "reduced-disabled": {
+          "title": "Désactivée et retournement programmé",
+          "description": "disabled bloque le retournement et estompe la carte ; avec flipOnClick={false} la carte n'est pas un bouton et seul flipped la retourne. Avec prefers-reduced-motion les faces se fondent au lieu de pivoter."
+        }
+      },
+      "api": {
+        "FlashcardProps": {
+          "front": "Contenu du recto (la question)",
+          "back": "Contenu du verso (la réponse)",
+          "footer": "Contenu sous la carte, non retourné (p. ex. des boutons de notation)",
+          "frontLabel": "Petite légende du recto ; null, false ou \"\" la masque",
+          "backLabel": "Petite légende du verso ; null, false ou \"\" la masque",
+          "hint": "Indication sur le recto (affichée avec showHint quand la carte se retourne au clic)",
+          "showHint": "Affiche l'indication sur le recto",
+          "flipped": "Indique si le verso est affiché (contrôlé ; à associer à onFlippedChange)",
+          "defaultFlipped": "Indique si le verso est affiché au départ (non contrôlé)",
+          "onFlippedChange": "Appelé avec le nouvel état retourné",
+          "flipOnClick": "Un clic sur la carte (ou Entrée / Espace) la retourne ; à false la carte n'est pas un bouton et seul flipped la retourne",
+          "disabled": "Bloque le retournement et estompe la carte",
+          "axis": "Axe de rotation : \"y\" retourne horizontalement, \"x\" verticalement",
+          "variant": "Style de surface",
+          "size": "Échelle des marges et du texte",
+          "minHeight": "Hauteur minimale de la carte (un nombre est en px) ; la carte s'agrandit pour contenir la face la plus haute",
+          "aria-label": "Libellé accessible de la carte",
+          "className": "Nom de classe supplémentaire",
+          "ref": "Ref vers le <div> racine"
+        }
+      },
+      "cssVars": {
+        "--flashcard-min-height": "Hauteur minimale de la carte (12rem par défaut ; définie par la prop minHeight) ; la carte s'agrandit pour contenir la face la plus haute",
+        "--flashcard-bg-color": "Couleur de fond des faces (--surface-color par défaut, --surface-muted-color avec variant=\"filled\")",
+        "--flashcard-border-color": "Couleur de bordure des faces (variant=\"outline\")",
+        "--flashcard-radius": "Rayon des coins des faces (--radius-lg par défaut)",
+        "--flashcard-shadow": "Ombre des faces (variant=\"elevated\" ; --shadow-lg par défaut)",
+        "--flashcard-padding": "Marge intérieure des faces (selon size par défaut)",
+        "--flashcard-font-size": "Taille de police du contenu des faces (selon size par défaut)",
+        "--flashcard-label-color": "Couleur du texte des légendes",
+        "--flashcard-perspective": "Perspective du retournement 3D (1200px par défaut)",
+        "--flashcard-duration": "Durée du retournement (0.5s par défaut)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "front / back sont des attributs texte (les slots front / back acceptent du contenu riche). Cliquez sur la carte, ou appuyez sur Entrée / Espace, pour la retourner ; l'attribut flipped reflète la face."
+          },
+          "controlled": {
+            "title": "Révision avec boutons de notation",
+            "description": "minerva-flipped-change signale les retournements de l'utilisateur (annulable : preventDefault() garde la face) ; le slot footer contient les boutons de notation, qui définissent la propriété flipped."
+          },
+          "axis-variants": {
+            "title": "Axe, variantes et tailles",
+            "description": "axis=\"x\" retourne verticalement ; variant (elevated, outline, filled) et size sont aussi des états personnalisés (:state(variant-outline), :state(size-small)...)."
+          },
+          "reduced-disabled": {
+            "title": "Désactivée et retournement programmé",
+            "description": "disabled bloque le retournement ; flip-on-click=\"false\" ne laisse que la propriété flipped. Avec prefers-reduced-motion les faces se fondent."
+          }
+        },
+        "minerva-flashcard": {
+          "events": {
+            "minerva-flipped-change": "L'utilisateur a retourné la carte (detail: { flipped }) ; annulable."
+          },
+          "slots": {
+            "front": "Contenu du recto (la question ; à défaut, l'attribut front)",
+            "back": "Contenu du verso (la réponse ; à défaut, l'attribut back)",
+            "footer": "Contenu sous la carte, non retourné (p. ex. des boutons de notation)"
+          },
+          "methods": {
+            "focus": "Donne le focus à la carte.",
+            "toggle": "Retourne la carte comme un geste utilisateur (déclenche minerva-flipped-change)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Interagissez avec le composant natif dans cet aperçu de téléphone."
+          }
+        }
+      }
+    }
+  }
+}

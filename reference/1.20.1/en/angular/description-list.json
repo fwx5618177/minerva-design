@@ -1,0 +1,238 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.1",
+  "locale": "en",
+  "renderer": "angular",
+  "page": "description-list",
+  "title": "DescriptionList",
+  "description": "Labeled metadata fields rendered as a native dl; rows stack on narrow screens.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.1",
+    "sourceCommit": "3a9f5cdaae706f14fe6d8c65c5481eba719a66c4",
+    "sourceDigest": "sha256:c9ed2b706b61413d29e506a3f04f3d35c044a4b57ec0e284935054f9e1898c7e",
+    "referenceSourceDigest": "sha256:6c9ecba0079f25e53cd971e51f2be8604fc3d941c0ed1cfeec03c4a91913ad73"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "DescriptionItem",
+      "support": {
+        "status": "n/a",
+        "notes": "Native Angular: MnDescriptionList.items entries { term, description } render semantic dt/dd pairs; there is no separate item element."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Native Angular: MnDescriptionList.items entries { term, description } render semantic dt/dd pairs; there is no separate item element.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnDescriptionList"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-description-list",
+        "props": [
+          {
+            "name": "items",
+            "typeText": "readonly DescriptionItem[]",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DescriptionList",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnDescriptionList. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnDescriptionList. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnDescriptionList"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-description-list",
+        "props": [
+          {
+            "name": "items",
+            "typeText": "readonly DescriptionItem[]",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:DescriptionList": {
+      "kind": "cssVars",
+      "source": "react/src/components/DescriptionList",
+      "vars": [
+        {
+          "name": "--description-list-row-padding-y",
+          "description": "Vertical padding of a row (follows the density's row padding)"
+        },
+        {
+          "name": "--description-list-gap",
+          "description": "Space between the term and the description"
+        },
+        {
+          "name": "--description-list-term-color",
+          "description": "Text color of the terms"
+        },
+        {
+          "name": "--description-list-border-color",
+          "description": "Color of the row separators"
+        },
+        {
+          "name": "--description-list-font-size",
+          "description": "Font size"
+        },
+        {
+          "name": "--description-list-radius",
+          "description": "Corner radius of a bordered list (defaults to --radius-lg)"
+        },
+        {
+          "name": "--description-list-background",
+          "description": "Background of a bordered list (defaults to --surface-color)"
+        },
+        {
+          "name": "--description-list-padding-x",
+          "description": "Horizontal padding of the rows of a bordered or striped list"
+        },
+        {
+          "name": "--description-list-stripe-background",
+          "description": "Background of every other row of a striped list (defaults to --surface-subtle-color)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "record-metadata",
+      "title": "Record metadata",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnDescriptionList } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnDescriptionList],\n  template: `\n<mn-description-list [items]=\"items\"/>\n  `,\n})\nexport class Example {\n  items = [\n  {\n    \"term\": \"Owner\",\n    \"description\": \"Ada Lovelace\"\n  },\n  {\n    \"term\": \"Status\",\n    \"description\": \"Active\"\n  },\n  {\n    \"term\": \"Created\",\n    \"description\": \"October 2026\"\n  }\n];\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "operational-details",
+      "title": "Operational details",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnDescriptionList } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnDescriptionList],\n  template: `\n<mn-description-list [items]=\"items\"/>\n  `,\n})\nexport class Example {\n  items = [\n  {\n    \"term\": \"Region\",\n    \"description\": \"Europe\"\n  },\n  {\n    \"term\": \"Environment\",\n    \"description\": \"Production\"\n  }\n];\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "DescriptionList",
+      "description": "Labeled metadata fields rendered as a native dl; rows stack on narrow screens.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Labels and values accept any ReactNode, and 0 is rendered."
+        },
+        "variants": {
+          "title": "Bordered and striped",
+          "description": "bordered frames the fields as a card with padded rows; striped tints every other row instead of drawing separators."
+        }
+      },
+      "api": {
+        "DescriptionListProps": {
+          "items": "Rows to render, in order",
+          "ref": "Ref to the <dl> element",
+          "bordered": "Frames the list as a card with padded rows",
+          "striped": "Tints every other row (replaces the separators)"
+        },
+        "DescriptionListItem": {
+          "key": "Stable React key of the row",
+          "label": "Term, rendered in a <dt>",
+          "value": "Description, rendered in a <dd>"
+        }
+      },
+      "cssVars": {
+        "--description-list-row-padding-y": "Vertical padding of a row (follows the density's row padding)",
+        "--description-list-gap": "Space between the term and the description",
+        "--description-list-term-color": "Text color of the terms",
+        "--description-list-border-color": "Color of the row separators",
+        "--description-list-font-size": "Font size",
+        "--description-list-radius": "Corner radius of a bordered list (defaults to --radius-lg)",
+        "--description-list-background": "Background of a bordered list (defaults to --surface-color)",
+        "--description-list-padding-x": "Horizontal padding of the rows of a bordered or striped list",
+        "--description-list-stripe-background": "Background of every other row of a striped list (defaults to --surface-subtle-color)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Declarative <minerva-description-item label> rows; the content (text, badges, links) goes into the <dd> of a native <dl>."
+          },
+          "items": {
+            "title": "Rows from data",
+            "description": "The items property renders rows from JS data, before the declarative children; 0 is rendered as a value."
+          },
+          "styling": {
+            "title": "Styling",
+            "description": "CSS variables set the density, gap and separators; ::part(term) and ::part(row) style the native cells."
+          },
+          "variants": {
+            "title": "Bordered and striped",
+            "description": "The bordered and striped boolean attributes: a card frame with padded rows, or tinted alternate rows instead of separators."
+          }
+        },
+        "minerva-description-item": {
+          "slots": {
+            "default": "The description."
+          }
+        },
+        "minerva-description-list": {
+          "slots": {
+            "default": "<minerva-description-item> rows."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

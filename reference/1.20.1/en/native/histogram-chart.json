@@ -1,0 +1,640 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.1",
+  "locale": "en",
+  "renderer": "native",
+  "page": "histogram-chart",
+  "title": "Histogram",
+  "description": "The distribution of raw samples in bins of equal width, from a few hundred values to millions.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.1",
+    "sourceCommit": "3a9f5cdaae706f14fe6d8c65c5481eba719a66c4",
+    "sourceDigest": "sha256:c9ed2b706b61413d29e506a3f04f3d35c044a4b57ec0e284935054f9e1898c7e",
+    "referenceSourceDigest": "sha256:6c9ecba0079f25e53cd971e51f2be8604fc3d941c0ed1cfeec03c4a91913ad73"
+  },
+  "content": {
+    "data": {
+      "requests": "Requests",
+      "latencyAria": "Distribution of one million request latencies with p50, p95 and p99",
+      "binning": "Binning rule",
+      "rules": {
+        "auto": "Auto",
+        "sturges": "Sturges",
+        "ten": "10 bins",
+        "forty": "40 bins"
+      },
+      "students": "Students",
+      "score": "Score",
+      "scoresAria": "Distribution of the exam scores",
+      "customers": "Customers",
+      "age": "Age",
+      "agesAria": "Age distribution of the customers",
+      "control": "Control",
+      "variant": "New onboarding",
+      "minutes": "Session duration (minutes)",
+      "abAria": "Session durations of the two groups of an A/B test",
+      "normalFit": "Normal fit",
+      "lsl": "LSL",
+      "usl": "USL",
+      "nominal": "Nominal",
+      "adjustTool": "Tool adjusted",
+      "capability": "Mean {{mean}}, σ {{sd}}, Cpk {{cpk}}, {{ppm}} ppm out of tolerance:",
+      "capable": "capable",
+      "notCapable": "not capable",
+      "parts": "Parts",
+      "diameter": "Diameter",
+      "qualityAria": "Distribution of the shaft diameters with the specification limits and a fitted normal curve",
+      "freeShipping": "Free shipping",
+      "medianOrder": "Median {{value}}",
+      "p99Order": "p99 {{value}}",
+      "eligibleShare": "{{share}} of the orders reach the free shipping threshold of {{threshold}}.",
+      "orders": "Orders",
+      "orderValue": "Order value (log scale)",
+      "ordersAria": "Distribution of the order values on a logarithmic scale",
+      "pause": "Pause",
+      "resume": "Resume",
+      "reset": "Reset",
+      "serviceLevel": "{{share}} of the calls answered within {{target}}, p90 {{p90}}:",
+      "targetMet": "target met",
+      "targetMissed": "target missed",
+      "calls": "Calls",
+      "waitTime": "Wait time",
+      "target": "Target",
+      "p90": "p90",
+      "callsAria": "Live distribution of the wait times of the last 600 support calls",
+      "withinShare": "{{share}} of the employees",
+      "employeesInBin": "{{value}} employees ({{share}})",
+      "clickForCumulative": "Click for the cumulative share",
+      "clickBin": "Click a bar to see the share of employees with a shorter commute.",
+      "cumulativeStatus": "{{share}} of the employees ({{employees}}) commute {{limit}} or less.",
+      "employees": "Employees",
+      "commute": "One-way commute",
+      "commuteAria": "Distribution of the commute times of the employees"
+    }
+  },
+  "components": [
+    {
+      "name": "HistogramChart",
+      "support": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles)."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles).",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "HistogramChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "values",
+            "source": "packages/native/src/components/Charts/types.ts",
+            "kind": "object",
+            "typeText": "ArrayLike<number>",
+            "typeRef": "type:44dd641637ae8002a767",
+            "required": true,
+            "description": "Raw samples (typed arrays are counted without copies)"
+          },
+          {
+            "name": "name",
+            "source": "packages/native/src/components/Charts/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "default": "Count",
+            "required": false,
+            "description": "Name of the counts (legend, tooltip)"
+          },
+          {
+            "name": "color",
+            "source": "packages/native/src/components/Charts/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Bar color (any CSS color)"
+          },
+          {
+            "name": "formatBin",
+            "source": "packages/native/src/components/Charts/types.ts",
+            "kind": "function",
+            "typeText": "((value: number) => string) | undefined",
+            "typeRef": "type:27fc14e3f8aa07e4097e",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats the edges of the bins in the tooltip"
+          },
+          {
+            "name": "series",
+            "source": "packages/native/src/components/Charts/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartSeries[] | undefined",
+            "typeRef": "type:f8b682a7983af505585d",
+            "required": false,
+            "description": "More series drawn over the bins (e.g. a density `line`)"
+          },
+          {
+            "name": "height",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": 320,
+            "required": false,
+            "description": "Height of the chart (the legend included)"
+          },
+          {
+            "name": "width",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "X axis"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Y axis"
+          },
+          {
+            "name": "legend",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartLegendOptions | undefined",
+            "typeRef": "type:860fa553ee4deaac43f8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name (tap toggles a series)"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "typeRef": "type:c08795b3492e4547d570",
+            "required": false,
+            "description": "Tooltip shown on tap / while scrubbing; `false` disables it"
+          },
+          {
+            "name": "crosshair",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Vertical guide line following the finger"
+          },
+          {
+            "name": "annotations",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartAnnotation[] | undefined",
+            "typeRef": "type:f440eb8a958892b1b0c2",
+            "required": false,
+            "description": "Background areas, reference lines and texts"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartInteractionOptions | undefined",
+            "typeRef": "type:f4b160d7dd18649fd178",
+            "default": true,
+            "required": false,
+            "description": "Pinch to zoom, drag to pan when zoomed, double tap to reset; `false` makes the chart static"
+          },
+          {
+            "name": "padding",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the plot area, in pixels"
+          },
+          {
+            "name": "palette",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `chart-series-1..8` tokens, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)"
+          },
+          {
+            "name": "labels",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "Partial<ChartLabels> | undefined",
+            "typeRef": "type:14c31fd72a2c2ac7a7fd",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "node",
+            "typeText": "((event: ChartHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:66d650d38e6b7d308d32",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          },
+          {
+            "name": "testID",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Test identifier of the root view"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent | null) => void) | undefined",
+            "typeRef": "type:170f27b8f07028fffd08",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent | null",
+                "typeRef": "type:92ec77c4587c7e27430b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the highlighted points change"
+          },
+          {
+            "name": "onPointClick",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent) => void) | undefined",
+            "typeRef": "type:d586363317763d2fd3f3",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point (or bar) is tapped"
+          },
+          {
+            "name": "onPlotClick",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartPlotClickEvent) => void) | undefined",
+            "typeRef": "type:3ab7d8ab926fce010082",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartPlotClickEvent",
+                "typeRef": "type:db60e2cf00fabb558740"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the plot area is tapped where there is no point"
+          },
+          {
+            "name": "onZoom",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((view: ChartView) => void) | undefined",
+            "typeRef": "type:e6c98e88ed542ed60f34",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartView",
+                "typeRef": "type:f1de933b453f8db86ff3"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the user zooms or pans"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:HistogramChartProps": {
+      "source": "native/src/components/Charts/types.ts",
+      "description": "Props of HistogramChart",
+      "kind": "interface",
+      "extends": [
+        "ChartCommonProps",
+        "BinOptions"
+      ],
+      "props": [
+        {
+          "name": "values",
+          "type": "ArrayLike<number>",
+          "required": true,
+          "description": "Raw samples (typed arrays are counted without copies)"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "default": "\"Count\"",
+          "description": "Name of the counts (legend, tooltip)"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": false,
+          "description": "Bar color (any CSS color)"
+        },
+        {
+          "name": "formatBin",
+          "type": "(value: number) => string",
+          "required": false,
+          "description": "Formats the edges of the bins in the tooltip"
+        },
+        {
+          "name": "series",
+          "type": "readonly ChartSeries[]",
+          "required": false,
+          "description": "More series drawn over the bins (e.g. a density `line`)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/histogram-chart/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/histogram-chart/native/basic.tsx": "import { useTranslation } from \"react-i18next\";\nimport { HistogramChart } from \"minerva-design/native\";\n\n// Ages of 5,000 customers (a deterministic pseudo-random sample)\nconst ages = (() => {\n  let seed = 21;\n  const random = () => {\n    seed = (seed * 16807) % 2147483647;\n    return seed / 2147483647;\n  };\n  return Int32Array.from({ length: 5000 }, () =>\n    Math.round(\n      random() < 0.6 ? 22 + random() * 18 + random() * 6 : 35 + random() * 40,\n    ),\n  );\n})();\n\nexport default function Basic() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.histogram-chart.data\",\n  });\n  return (\n    <HistogramChart\n      height={260}\n      locale={i18n.language}\n      values={ages}\n      domain={[15, 85]}\n      bins={14}\n      name={t(\"customers\")}\n      color=\"var(--chart-series-2, #10b981)\"\n      xAxis={{ title: t(\"age\") }}\n      ariaLabel={t(\"agesAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Histogram",
+      "description": "The distribution of raw samples in bins of equal width, from a few hundred values to millions.",
+      "demos": {
+        "latency": {
+          "title": "Latency distribution",
+          "description": "One million request latencies binned in a few milliseconds; quantiles gives the exact p50, p95 and p99, drawn as x reference lines."
+        },
+        "binning": {
+          "title": "Binning rules",
+          "description": "bins takes a count or a rule: auto (Freedman-Diaconis, robust to outliers), sturges (log2 n + 1) or a fixed number; the two groups of levels appear with enough bins."
+        },
+        "ages": {
+          "title": "Fixed bins",
+          "description": "A domain and a count give round bins, one per 5 years here; formatBin writes the edges in the tooltip, typed arrays are binned without copies."
+        },
+        "comparison": {
+          "title": "Comparing two samples",
+          "description": "histogramSeries builds the bars of a sample: with the same domain and count, two samples share their bins and sit side by side in a Chart."
+        },
+        "quality-control": {
+          "title": "Process capability",
+          "description": "Diameters of machined parts against their tolerance: rect and line annotations mark the specification limits and the series prop draws the fitted normal curve over the bins. The readout computes the Cpk, and the switch shows the process once the tool is adjusted."
+        },
+        "order-values": {
+          "title": "Order values on a log scale",
+          "description": "Order values spanning three orders of magnitude are binned on their logarithm, so each bin covers the same ratio; formatBin and xAxis.format turn the edges back into dollars. Annotations mark the median, the p99 and the orders that qualify for free shipping."
+        },
+        "live-samples": {
+          "title": "Live sliding window",
+          "description": "Wait times of the last 600 support calls, updated twice a second by a setInterval that is cleared on pause and unmount. A fixed domain, bin count and yAxis range keep the axes still while the distribution shifts, and the readout tracks the service level."
+        },
+        "commute": {
+          "title": "Cumulative share on click",
+          "description": "onPointClick gives the index of the clicked bin; binValues, called with the same options, returns its edges and counts to compute the share of employees at or below it. renderTooltip shows the count and share of each bin, and onPlotClick clears the selection."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic",
+            "description": "5,000 ages counted into 14 bins of 5 years; the tooltip shows the range and the count of the touched bin."
+          }
+        }
+      },
+      "data": {
+        "requests": "Requests",
+        "latencyAria": "Distribution of one million request latencies with p50, p95 and p99",
+        "binning": "Binning rule",
+        "rules": {
+          "auto": "Auto",
+          "sturges": "Sturges",
+          "ten": "10 bins",
+          "forty": "40 bins"
+        },
+        "students": "Students",
+        "score": "Score",
+        "scoresAria": "Distribution of the exam scores",
+        "customers": "Customers",
+        "age": "Age",
+        "agesAria": "Age distribution of the customers",
+        "control": "Control",
+        "variant": "New onboarding",
+        "minutes": "Session duration (minutes)",
+        "abAria": "Session durations of the two groups of an A/B test",
+        "normalFit": "Normal fit",
+        "lsl": "LSL",
+        "usl": "USL",
+        "nominal": "Nominal",
+        "adjustTool": "Tool adjusted",
+        "capability": "Mean {{mean}}, σ {{sd}}, Cpk {{cpk}}, {{ppm}} ppm out of tolerance:",
+        "capable": "capable",
+        "notCapable": "not capable",
+        "parts": "Parts",
+        "diameter": "Diameter",
+        "qualityAria": "Distribution of the shaft diameters with the specification limits and a fitted normal curve",
+        "freeShipping": "Free shipping",
+        "medianOrder": "Median {{value}}",
+        "p99Order": "p99 {{value}}",
+        "eligibleShare": "{{share}} of the orders reach the free shipping threshold of {{threshold}}.",
+        "orders": "Orders",
+        "orderValue": "Order value (log scale)",
+        "ordersAria": "Distribution of the order values on a logarithmic scale",
+        "pause": "Pause",
+        "resume": "Resume",
+        "reset": "Reset",
+        "serviceLevel": "{{share}} of the calls answered within {{target}}, p90 {{p90}}:",
+        "targetMet": "target met",
+        "targetMissed": "target missed",
+        "calls": "Calls",
+        "waitTime": "Wait time",
+        "target": "Target",
+        "p90": "p90",
+        "callsAria": "Live distribution of the wait times of the last 600 support calls",
+        "withinShare": "{{share}} of the employees",
+        "employeesInBin": "{{value}} employees ({{share}})",
+        "clickForCumulative": "Click for the cumulative share",
+        "clickBin": "Click a bar to see the share of employees with a shorter commute.",
+        "cumulativeStatus": "{{share}} of the employees ({{employees}}) commute {{limit}} or less.",
+        "employees": "Employees",
+        "commute": "One-way commute",
+        "commuteAria": "Distribution of the commute times of the employees"
+      },
+      "api": {
+        "HistogramChartProps": {
+          "values": "Raw samples (typed arrays are counted without copies)",
+          "name": "Name of the counts (legend, tooltip)",
+          "color": "Bar color (any CSS color)",
+          "formatBin": "Formats the edges of the bins in the tooltip",
+          "series": "More series drawn over the bins (e.g. a density line)"
+        },
+        "BinOptions": {
+          "bins": "Number of bins, or the rule choosing it: \"auto\" (Freedman-Diaconis, Sturges when the spread is zero), \"sturges\" or \"freedman-diaconis\"",
+          "domain": "Range covered by the bins (values outside are not counted); the data range by default",
+          "nice": "Rounds the bin width to 1, 2 or 5 × 10^k and aligns the edges on it"
+        },
+        "HistogramBins": {
+          "edges": "Edges of the bins: one more than the bins",
+          "counts": "Number of values in every bin",
+          "width": "Width of a bin",
+          "total": "Number of values counted (finite, inside the domain)"
+        }
+      },
+      "wc": {
+        "demos": {
+          "latency": {
+            "title": "Response time distribution",
+            "description": "5,000 raw samples binned by the chart (Freedman-Diaconis): the long tail of slow requests shows at once."
+          },
+          "binning": {
+            "title": "Binning rules",
+            "description": "The same ages in Sturges bins, 10 or 40 bins: the two groups of customers appear with enough bins."
+          }
+        },
+        "minerva-histogram-chart": {
+          "props": {
+            "valueName": "Name of the value in the tooltip",
+            "height": "Height of the chart, the legend included: pixels or any CSS length",
+            "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+          },
+          "events": {
+            "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
+            "minerva-point-click": "A point or a bar was clicked; detail: { x, xLabel, items }",
+            "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
+            "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",
+            "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+          },
+          "methods": {
+            "resetZoom": "Shows the whole data range",
+            "getView": "Visible range, null before the engine is created",
+            "setView": "Sets the visible range",
+            "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
+          }
+        }
+      }
+    }
+  }
+}

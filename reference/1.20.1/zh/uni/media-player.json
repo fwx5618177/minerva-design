@@ -1,0 +1,447 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.1",
+  "locale": "zh",
+  "renderer": "uni",
+  "page": "media-player",
+  "title": "MediaPlayer 媒体播放器",
+  "description": "带主题化自定义控件的音频 / 视频播放器：播放 / 暂停、快进快退、显示缓冲范围的进度条、时间、音量、播放速度与全屏，并支持键盘操作。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.1",
+    "sourceCommit": "3a9f5cdaae706f14fe6d8c65c5481eba719a66c4",
+    "sourceDigest": "sha256:c9ed2b706b61413d29e506a3f04f3d35c044a4b57ec0e284935054f9e1898c7e",
+    "referenceSourceDigest": "sha256:6c9ecba0079f25e53cd971e51f2be8604fc3d941c0ed1cfeec03c4a91913ad73"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "MediaControls",
+      "support": {
+        "status": "n/a",
+        "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component."
+      }
+    },
+    {
+      "name": "MediaPlayer",
+      "support": {
+        "status": "beta",
+        "notes": "Video through the uni <video> component (controls off, driven by uni.createVideoContext: play/pause/seek/playbackRate/requestFullScreen) and audio through uni.createInnerAudioContext, under a themed control bar: play/pause, skip back/forward (skipSeconds), touch seek bar with the buffered range and aria-valuetext, m:ss / h:mm:ss time, mute, audio volume bar, playback-rate cycle button, video fullscreen, loading spinner and translated error state; startTime (video initial-time, audio startTime), autoPlay, loop, muted/defaultMuted, title, poster, height/aspectRatio; timeUpdate/ended/play/pause/loadedMetadata/error/rateChange/volumeChange events and an exposed play/pause/seek/context. controls=false shows the host video's own controls. Captions: tracks (WebVTT or SRT, data: URLs inline) fetched with uni.request, parsed by the shared minerva-design/core parser and drawn as an overlay synchronized with the time updates, a CC button with an Off / per-track choice row, the choice remembered in storage (default track otherwise) and a trackChange event. Beta: needs device validation (media behavior differs per host). The host video has no volume API (mute only, no volume bar); no picture-in-picture and no keyboard shortcuts; icons are text glyphs (no inline SVG on mini programs). Captions follow the host time updates (about 4 per second), are not shown in the host's native fullscreen, ignore cue positioning / styling, and remote caption files need the app's request domain allowlist. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Video through the uni <video> component (controls off, driven by uni.createVideoContext: play/pause/seek/playbackRate/requestFullScreen) and audio through uni.createInnerAudioContext, under a themed control bar: play/pause, skip back/forward (skipSeconds), touch seek bar with the buffered range and aria-valuetext, m:ss / h:mm:ss time, mute, audio volume bar, playback-rate cycle button, video fullscreen, loading spinner and translated error state; startTime (video initial-time, audio startTime), autoPlay, loop, muted/defaultMuted, title, poster, height/aspectRatio; timeUpdate/ended/play/pause/loadedMetadata/error/rateChange/volumeChange events and an exposed play/pause/seek/context. controls=false shows the host video's own controls. Captions: tracks (WebVTT or SRT, data: URLs inline) fetched with uni.request, parsed by the shared minerva-design/core parser and drawn as an overlay synchronized with the time updates, a CC button with an Off / per-track choice row, the choice remembered in storage (default track otherwise) and a trackChange event. Beta: needs device validation (media behavior differs per host). The host video has no volume API (mute only, no volume bar); no picture-in-picture and no keyboard shortcuts; icons are text glyphs (no inline SVG on mini programs). Captions follow the host time updates (about 4 per second), are not shown in the host's native fullscreen, ignore cue positioning / styling, and remote caption files need the app's request domain allowlist. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "MediaPlayer"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "src",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "type",
+            "typeText": "\"audio\" | \"video\" | undefined",
+            "required": false
+          },
+          {
+            "name": "mimeType",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "poster",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "title",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "autoPlay",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "loop",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "muted",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "defaultMuted",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "startTime",
+            "typeText": "number | undefined",
+            "required": false
+          },
+          {
+            "name": "playbackRates",
+            "typeText": "readonly number[] | undefined",
+            "required": false
+          },
+          {
+            "name": "skipSeconds",
+            "typeText": "number | undefined",
+            "required": false
+          },
+          {
+            "name": "controls",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "height",
+            "typeText": "string | number | undefined",
+            "required": false
+          },
+          {
+            "name": "aspectRatio",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "tracks",
+            "typeText": "readonly MediaTrack[] | undefined",
+            "required": false
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "error",
+            "typeText": "[error: unknown]",
+            "parameters": [
+              {
+                "name": "error",
+                "position": 0,
+                "typeText": "unknown",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "ended",
+            "typeText": "[]",
+            "parameters": []
+          },
+          {
+            "name": "timeUpdate",
+            "typeText": "[detail: { currentTime: number; duration: number; }]",
+            "parameters": [
+              {
+                "name": "detail",
+                "position": 0,
+                "typeText": "{ currentTime: number; duration: number; }",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "play",
+            "typeText": "[]",
+            "parameters": []
+          },
+          {
+            "name": "pause",
+            "typeText": "[]",
+            "parameters": []
+          },
+          {
+            "name": "loadedMetadata",
+            "typeText": "[detail: { duration: number; }]",
+            "parameters": [
+              {
+                "name": "detail",
+                "position": 0,
+                "typeText": "{ duration: number; }",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "rateChange",
+            "typeText": "[rate: number]",
+            "parameters": [
+              {
+                "name": "rate",
+                "position": 0,
+                "typeText": "number",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "volumeChange",
+            "typeText": "[detail: { volume: number; muted: boolean; }]",
+            "parameters": [
+              {
+                "name": "detail",
+                "position": 0,
+                "typeText": "{ volume: number; muted: boolean; }",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "trackChange",
+            "typeText": "[detail: { index: number; track: MediaTrack | null; }]",
+            "parameters": [
+              {
+                "name": "detail",
+                "position": 0,
+                "typeText": "{ index: number; track: MediaTrack | null; }",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:MediaPlayer": {
+      "kind": "cssVars",
+      "source": "react/src/components/MediaPlayer",
+      "vars": [
+        {
+          "name": "--media-player-radius",
+          "description": "Corner radius of the player (defaults to --radius-lg)"
+        },
+        {
+          "name": "--media-player-accent",
+          "description": "Color of the played range and the slider thumbs (defaults to --primary-color)"
+        },
+        {
+          "name": "--media-player-video-background",
+          "description": "Letterbox color behind a video (defaults to black)"
+        },
+        {
+          "name": "--media-player-overlay-background",
+          "description": "Background of the video control bar (defaults to a gradient to --overlay-color)"
+        },
+        {
+          "name": "--media-player-overlay-color",
+          "description": "Text and icon color over a video (defaults to white)"
+        },
+        {
+          "name": "--media-player-bar-background",
+          "description": "Background of the audio bar (defaults to --surface-color)"
+        },
+        {
+          "name": "--media-player-bar-color",
+          "description": "Text and icon color of the audio bar (defaults to --text-color)"
+        },
+        {
+          "name": "--media-player-button-size",
+          "description": "Size of the control buttons (defaults to the density's small control height)"
+        },
+        {
+          "name": "--media-player-track-height",
+          "description": "Thickness of the seek and volume tracks (defaults to 4px)"
+        },
+        {
+          "name": "--media-player-captions-background",
+          "description": "Background of the caption text (defaults to rgb(0 0 0 / 75%) over a video, none for audio)"
+        },
+        {
+          "name": "--media-player-captions-color",
+          "description": "Color of the caption text (defaults to white over a video, the bar color for audio)"
+        },
+        {
+          "name": "--media-player-captions-font-size",
+          "description": "Font size of the caption text (defaults to --font-size-lg over a video, --font-size-md for audio)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "MediaPlayer 媒体播放器",
+      "description": "带主题化自定义控件的音频 / 视频播放器：播放 / 暂停、快进快退、显示缓冲范围的进度条、时间、音量、播放速度与全屏，并支持键盘操作。",
+      "demos": {
+        "video": {
+          "title": "视频",
+          "description": "<video> 上叠加深色半透明控制栏，播放时自动淡出（触屏设备、悬停和聚焦时保持可见）。聚焦播放器后：空格 / K 播放暂停，← / → 跳转 5 秒，↑ / ↓ 调节音量，M 静音，F 全屏。pictureInPicture 在浏览器支持时添加画中画按钮。"
+        },
+        "audio": {
+          "title": "音频",
+          "description": "类型由 mimeType 或文件扩展名推断（否则为视频）；音频渲染为带标题的表面色控制条。skipSeconds={0} 隐藏快进快退按钮。"
+        },
+        "resume": {
+          "title": "续播与进度",
+          "description": "startTime 在元数据加载后应用一次（从学习者上次停止的位置继续）。onTimeUpdate / onLoadedMetadata / onPause / onEnded 上报进度；ref 提供 play()、pause()、seek(seconds) 和媒体元素。"
+        },
+        "rates-skip": {
+          "title": "播放速度与跳转步长",
+          "description": "playbackRates 列出速度按钮循环切换的速度（onRateChange 上报新速度）；skipSeconds 设置快退 / 快进按钮的步长；aspectRatio（或 height）设置视频尺寸。"
+        },
+        "captions": {
+          "title": "字幕",
+          "description": "tracks 接收 WebVTT 或 SRT 文件（{ src, srclang, label, kind, default }；此处使用 data: URL）。它们会渲染为 <track> 子元素，但当前字幕由播放器自行绘制（视频上方叠加，音频则显示在标题下方），因此在各浏览器中外观一致。CC 按钮打开菜单（关闭及每条字幕轨道）；聚焦播放器时按 C 可开关字幕。选择会被记住（localStorage），用户选择前显示 default 轨道；onTrackChange 上报选择。跨域字幕文件需要在播放器上设置 crossOrigin=\"anonymous\"（或 \"use-credentials\"），并在其服务器上返回 CORS 头。"
+        }
+      },
+      "api": {
+        "MediaPlayerProps": {
+          "src": "媒体的 URL",
+          "type": "媒体类型；默认由 mimeType 推断，其次由 src 的文件扩展名推断，否则为 \"video\"",
+          "mimeType": "媒体的 MIME 类型（\"audio/mpeg\"、\"video/mp4\"……），用于推断 type",
+          "poster": "视频播放前显示的图片",
+          "title": "媒体标题，显示在音频条中 / 视频上方",
+          "autoPlay": "尽快开始播放（浏览器仅允许无用户手势时静音自动播放）",
+          "loop": "播放结束后重新开始",
+          "muted": "静音；每次变化时生效（静音按钮仍可切换声音）",
+          "defaultMuted": "初始是否静音（非受控）",
+          "preload": "浏览器在播放前加载多少媒体内容",
+          "crossOrigin": "媒体请求的 CORS 模式（跨域字幕文件同样需要，并需其服务器返回 CORS 头）",
+          "startTime": "续播位置（秒），在元数据加载后应用一次（src 变化时再次应用）",
+          "playbackRates": "速度按钮循环切换的速度",
+          "skipSeconds": "快退 / 快进按钮的步长（秒，0 表示隐藏）",
+          "controls": "显示自定义控制栏；false 时仅渲染媒体元素（通过 ref 控制）",
+          "height": "视频播放器高度（数字：像素）；优先于 aspectRatio",
+          "aspectRatio": "视频播放器的宽高比（CSS aspect-ratio）",
+          "pictureInPicture": "显示画中画按钮（视频，且浏览器支持时）",
+          "tracks": "字幕：WebVTT 或 SRT 文件（{ src, srclang, label, kind, default }），渲染为 <track> 子元素并由播放器绘制，控制栏中提供字幕菜单；选择会被记住（localStorage）",
+          "onTimeUpdate": "播放过程中以播放位置和时长调用（{ currentTime, duration }，单位秒）",
+          "onEnded": "播放到结尾时调用",
+          "onPlay": "开始播放时调用",
+          "onPause": "暂停时调用",
+          "onLoadedMetadata": "元数据加载后以时长调用（{ duration }）",
+          "onError": "媒体无法加载或播放时以 MediaError 调用",
+          "onRateChange": "以新的播放速度调用",
+          "onVolumeChange": "音量或静音状态变化时调用（{ volume, muted }）",
+          "onTrackChange": "用户选择字幕时调用（{ index, track }；index 为 -1、track 为 null 表示关闭）",
+          "aria-label": "播放器的无障碍标签（默认为 title，否则为“媒体播放器”）",
+          "className": "附加类名",
+          "style": "根元素的内联样式",
+          "ref": "命令式句柄：play()、pause()、seek(seconds)、element"
+        },
+        "MediaPlayerHandle": {
+          "play": "开始播放（HTMLMediaElement.play() 的 Promise；自动播放被拒绝时不会抛出）",
+          "pause": "暂停播放",
+          "seek": "将播放位置移动到指定秒数（限制在时长范围内）",
+          "element": "渲染的 <audio> / <video> 元素（挂载前为 null）"
+        },
+        "MediaPlayerTrack": {
+          "src": "WebVTT（.vtt）或 SubRip（.srt）文件的 URL；支持 data: URL",
+          "srclang": "字幕语言（BCP 47：\"en\"、\"fr-CA\"），也用于匹配记住的选择",
+          "label": "字幕菜单中显示的名称",
+          "kind": "文本轨道类型：\"subtitles\"（默认）或 \"captions\"",
+          "default": "用户尚未选择字幕时显示"
+        }
+      },
+      "cssVars": {
+        "--media-player-radius": "播放器圆角（默认 --radius-lg）",
+        "--media-player-accent": "已播放范围和滑块的颜色（默认 --primary-color）",
+        "--media-player-video-background": "视频背后的留白颜色（默认黑色）",
+        "--media-player-overlay-background": "视频控制栏背景（默认渐变到 --overlay-color）",
+        "--media-player-overlay-color": "视频上的文字和图标颜色（默认白色）",
+        "--media-player-bar-background": "音频条背景（默认 --surface-color）",
+        "--media-player-bar-color": "音频条的文字和图标颜色（默认 --text-color）",
+        "--media-player-button-size": "控制按钮尺寸（默认为当前密度的小号控件高度）",
+        "--media-player-track-height": "进度条和音量条的粗细（默认 4px）",
+        "--media-player-captions-background": "字幕文字的背景（视频默认 rgb(0 0 0 / 75%)，音频默认无）",
+        "--media-player-captions-color": "字幕文字的颜色（视频默认白色，音频默认控制栏颜色）",
+        "--media-player-captions-font-size": "字幕文字的字号（视频默认 --font-size-lg，音频默认 --font-size-md）"
+      },
+      "wc": {
+        "demos": {
+          "video": {
+            "title": "视频",
+            "description": "heading 插槽为视频上方的标题；picture-in-picture 在浏览器支持时添加画中画按钮。聚焦播放器后可使用空格 / K、方向键、M 和 F。"
+          },
+          "audio": {
+            "title": "音频",
+            "description": ".mp3 的 src（或 mime-type=\"audio/…\"）渲染为音频条；skip-seconds=\"0\" 隐藏快进快退按钮。"
+          },
+          "resume": {
+            "title": "续播与进度",
+            "description": "start-time 在元数据加载后续播一次。媒体事件不会穿过 shadow root：请监听 minerva-loaded-metadata、minerva-time-update、minerva-pause 和 minerva-ended；play() 和 seek() 控制播放器。"
+          },
+          "rates-skip": {
+            "title": "播放速度与跳转步长",
+            "description": "playbackRates 是属性（数组）；minerva-rate-change 上报速度。skip-seconds 设置跳转步长，aspect-ratio 设置视频尺寸。"
+          },
+          "captions": {
+            "title": "字幕",
+            "description": "tracks 是一个属性（{ src, srclang, label, kind, default } 数组）；未设置时使用元素的 <track src srclang label default> 子元素。播放器绘制字幕并添加字幕菜单；minerva-track-change 上报用户的选择。跨域文件需要 crossorigin 和 CORS 头。"
+          }
+        },
+        "minerva-media-player": {
+          "props": {
+            "noControls": "隐藏自定义控制栏：仅渲染媒体元素（通过脚本控制）",
+            "element": "渲染的 <audio> / <video> 元素（只读；首次渲染前为 null）",
+            "tracks": "字幕（仅属性）：WebVTT 或 SRT 文件（{ src, srclang, label, kind, default }）；为空时使用 <track> 子元素"
+          },
+          "events": {
+            "minerva-play": "开始播放。",
+            "minerva-pause": "已暂停。",
+            "minerva-ended": "播放到结尾。",
+            "minerva-time-update": "播放位置变化（detail: { currentTime, duration }，单位秒）。",
+            "minerva-loaded-metadata": "元数据已加载（detail: { duration }）。",
+            "minerva-error": "媒体无法加载或播放（detail: { error }，即 MediaError）。",
+            "minerva-rate-change": "播放速度变化（detail: { rate }）。",
+            "minerva-volume-change": "音量或静音状态变化（detail: { volume, muted }）。",
+            "minerva-track-change": "用户选择了字幕（detail: { index, track }；index 为 -1、track 为 null 表示关闭）。"
+          },
+          "methods": {
+            "play": "开始播放（自动播放被拒绝时不会抛出：播放器保持暂停）。",
+            "pause": "暂停播放。",
+            "seek": "将播放位置移动到指定秒数（限制在时长范围内）。"
+          },
+          "slots": {
+            "heading": "媒体标题，显示在音频条中 / 视频上方。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "MediaControls（React Native）",
+            "description": "React Native 核心没有媒体元素：MediaControls 是由 props（playing、currentTime、duration、buffered、muted、playbackRate）和回调（onPlayPause、onSeek、onMutedChange、onRateChange……）驱动的主题化控制栏。将其连接到 expo-video / expo-audio（见代码注释）；此预览模拟播放器状态。"
+          },
+          "captions": {
+            "title": "字幕（React Native）",
+            "description": "React Native 播放器没有文本轨道：设置 tracks 后，MediaControls 会获取 WebVTT / SRT 文件（支持 data: URL）并解析，在进度条上方绘制 currentTime 对应的字幕。CC 按钮显示「关闭 / 各字幕轨道」选项；trackIndex 可受控，onTrackChange 上报选择。"
+          }
+        }
+      }
+    }
+  }
+}

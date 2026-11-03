@@ -1,0 +1,277 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.1",
+  "locale": "ja",
+  "renderer": "angular",
+  "page": "skeleton",
+  "title": "Skeleton スケルトン",
+  "description": "コンテンツの読み込み中に表示されるプレースホルダーの図形です。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.1",
+    "sourceCommit": "3a9f5cdaae706f14fe6d8c65c5481eba719a66c4",
+    "sourceDigest": "sha256:c9ed2b706b61413d29e506a3f04f3d35c044a4b57ec0e284935054f9e1898c7e",
+    "referenceSourceDigest": "sha256:6c9ecba0079f25e53cd971e51f2be8604fc3d941c0ed1cfeec03c4a91913ad73"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Skeleton",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnSkeleton. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnSkeleton. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnSkeleton"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-skeleton",
+        "props": [
+          {
+            "name": "variant",
+            "typeText": "\"image\" | \"rounded\" | \"card\" | \"button\" | \"text\" | \"circular\" | \"rectangular\"",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          },
+          {
+            "name": "count",
+            "typeText": "number",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          },
+          {
+            "name": "label",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    },
+    {
+      "name": "SkeletonText",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnSkeletonText. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnSkeletonText. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnSkeletonText"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-skeleton-text",
+        "props": [
+          {
+            "name": "count",
+            "typeText": "number",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Skeleton": {
+      "kind": "cssVars",
+      "source": "react/src/components/Skeleton",
+      "vars": [
+        {
+          "name": "--skeleton-color",
+          "description": "Base color of the placeholder blocks"
+        },
+        {
+          "name": "--skeleton-highlight-color",
+          "description": "Color of the moving highlight (wave animation)"
+        },
+        {
+          "name": "--skeleton-radius",
+          "description": "Corner radius of the lines and blocks (circles stay round, rectangular blocks square)"
+        },
+        {
+          "name": "--skeleton-text-height",
+          "description": "Height of a text line"
+        },
+        {
+          "name": "--skeleton-gap",
+          "description": "Space between the lines of a paragraph and next to the avatar"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "content-loading",
+      "title": "Content loading",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnSkeleton } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnSkeleton],\n  template: `\n<mn-skeleton variant=\"card\"/>\n  `,\n})\nexport class Example {\n\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "text-placeholders",
+      "title": "Text placeholders",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnSkeletonText, MnSkeleton } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnSkeletonText, MnSkeleton],\n  template: `\n<mn-skeleton-text [count]=\"4\"/><mn-skeleton variant=\"rounded\" [count]=\"1\"/>\n  `,\n})\nexport class Example {\n\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Skeleton スケルトン",
+      "description": "コンテンツの読み込み中に表示されるプレースホルダーの図形です。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "テキスト行。lines で行数を指定します。"
+        },
+        "variants": {
+          "title": "バリアント",
+          "description": "テキスト、円形、長方形、角丸長方形、ボタン、画像の形状。"
+        },
+        "animations": {
+          "title": "アニメーション",
+          "description": "パルス（デフォルト）、ウェーブ、またはアニメーションなしの \"false\"。"
+        },
+        "composition": {
+          "title": "アバター、タイトル、段落",
+          "description": "アバターをタイトルと段落、または通常の行と組み合わせます。"
+        },
+        "card": {
+          "title": "カード",
+          "description": "card バリアントはアバター、タイトル、段落をレイアウトします。active で強調表示します。"
+        },
+        "loading": {
+          "title": "読み込み状態",
+          "description": "実際のコンテンツをラップし、loading が false になったら表示します。"
+        },
+        "decorative": {
+          "title": "装飾用ブロック",
+          "description": "decorative は aria-hidden のプレースホルダーを 1 つだけ描画し、ビジー状態を示すコンテナ内で独自のレイアウトを組めます。"
+        },
+        "skeleton-text": {
+          "title": "SkeletonText",
+          "description": "最終行を短くして本物のテキストのように見せる複数行のプレースホルダーです。"
+        }
+      },
+      "api": {
+        "SkeletonProps": {
+          "variant": "プレースホルダーの形状",
+          "animation": "読み込みアニメーション。\"false\" で無効になります",
+          "width": "各行の幅（数値はピクセル）",
+          "height": "各行の高さ（数値はピクセル）",
+          "className": "追加のクラス名",
+          "children": "実際のコンテンツ。loading が false になると表示されます",
+          "loading": "プレースホルダーを表示する。false にすると children を表示します",
+          "borderRadius": "各行のカスタムの角丸",
+          "style": "各行に適用するインラインスタイル",
+          "lines": "表示する行数",
+          "avatar": "アバターのプレースホルダーを表示する",
+          "avatarSize": "アバターのサイズ（数値はピクセル）",
+          "avatarShape": "アバターの形状",
+          "active": "card バリアントをアクティブとして強調表示する",
+          "paragraph": "段落のプレースホルダーを表示する（行の代わりに表示）",
+          "title": "タイトルのプレースホルダーを表示する（行の代わりに表示）",
+          "aria-label": "読み込み中プレースホルダーのアクセシブルな名前（busy 状態の status 領域として描画）",
+          "ref": "ルートの <div> 要素への ref。読み込み中のみ設定されます（それ以外は children をそのまま描画）",
+          "decorative": "読み上げられる読み込み領域の代わりに、装飾用プレースホルダー（aria-hidden の span）を 1 つだけ描画します",
+          "size": "装飾用の円形プレースホルダーの直径。width と height より優先されます"
+        },
+        "SkeletonTextProps": {
+          "lines": "テキストの行数",
+          "lineHeight": "各行の高さ（数値はピクセル）",
+          "gap": "行間：スペーシングスケールの段階または任意の CSS の長さ",
+          "shrinkLast": "最終行を幅 70% に縮めます",
+          "animation": "読み込みアニメーション。\"false\" で無効になります",
+          "ref": "ルートの <div> 要素への ref"
+        }
+      },
+      "cssVars": {
+        "--skeleton-color": "プレースホルダーの基本色",
+        "--skeleton-highlight-color": "移動するハイライトの色（wave アニメーション）",
+        "--skeleton-radius": "行とブロックの角丸（円は円のまま、矩形ブロックは角のまま）",
+        "--skeleton-text-height": "テキスト行の高さ",
+        "--skeleton-gap": "段落の行間とアバター横の間隔"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "複数の行、またはアバターと見出しと段落。スケルトンは「読み込み中」（または aria-label）という名前のビジーな status 領域です。"
+          },
+          "variants": {
+            "title": "バリアントとアニメーション",
+            "description": "プレースホルダーの形状（width / height はピクセル値も可）、pulse / wave / アニメーションなし、card バリアント。"
+          },
+          "loading": {
+            "title": "コンテンツの読み込み",
+            "description": "データが揃ったら loaded を設定すると、スケルトンはスロットのコンテンツを描画します。Reload をクリックすると再生します。"
+          },
+          "composition": {
+            "title": "カスタム構成",
+            "description": "decorative のスケルトンと minerva-skeleton-text は支援技術から隠されます。ビジー状態を通知するコンテナーの中で組み合わせてください。"
+          }
+        },
+        "minerva-skeleton": {
+          "props": {
+            "loaded": "プレースホルダーの代わりにスロットのコンテンツを表示します。",
+            "heading": "タイトルのプレースホルダーを表示します（行の代わり）。"
+          },
+          "slots": {
+            "default": "loaded 設定後に描画される実際のコンテンツ。"
+          }
+        },
+        "minerva-skeleton-text": {
+          "props": {
+            "noShrinkLast": "最後の行も全幅のままにします。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

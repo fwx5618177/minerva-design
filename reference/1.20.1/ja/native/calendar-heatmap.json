@@ -1,0 +1,747 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.1",
+  "locale": "ja",
+  "renderer": "native",
+  "page": "calendar-heatmap",
+  "title": "カレンダーヒートマップ",
+  "description": "日ごとの値をカレンダー上に表示します。コントリビューショングラフのように、コミット、学習の継続、運動、注文などに使えます。各日はレベルで色分けされたセルで、月名・曜日名、ツールチップの日付、週の始まりはロケールに従います。凡例でレベルの表示を切り替えられ、矢印キーで日単位・週単位に移動でき、ツールチップに日付が表示されます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.1",
+    "sourceCommit": "3a9f5cdaae706f14fe6d8c65c5481eba719a66c4",
+    "sourceDigest": "sha256:c9ed2b706b61413d29e506a3f04f3d35c044a4b57ec0e284935054f9e1898c7e",
+    "referenceSourceDigest": "sha256:6c9ecba0079f25e53cd971e51f2be8604fc3d941c0ed1cfeec03c4a91913ad73"
+  },
+  "content": {
+    "data": {
+      "commitsTotal": "過去 1 年間のコミット数：{{total}}",
+      "commitsAria": "過去 1 年間の日ごとのコミット数",
+      "commitsDay": "{{date}}：{{value}} コミット",
+      "commitsHint": "日をクリック（またはチャートにフォーカスし、矢印キーで移動して Enter）すると選択できます",
+      "minutes": "{{value}} 分",
+      "streaks": "現在の連続記録：{{current}} 日 · 最長記録：{{longest}} 日",
+      "lessonsAria": "2026 年の日ごとの語学学習時間（分）",
+      "lessonDay": "{{date}}：{{value}} 学習",
+      "missedDay": "{{date}}：学習なし",
+      "lessonsHint": "日をクリックすると学習時間を表示します",
+      "km": "{{value}} km",
+      "runsAria": "2024〜2026 年の日ごとのランニング距離",
+      "runsYear": "{{year}} 年：{{value}}",
+      "weekStartLabel": "週の始まり",
+      "fromLocale": "ロケールに従う",
+      "ordersAria": "2026 年の日ごとのオンライン注文数（月別）",
+      "localeLabel": "ロケール",
+      "deploysAria": "2026 年上半期の日ごとのデプロイ回数",
+      "kwh": "{{value}} kWh",
+      "highUseOnly": "使用量の多い日のみ",
+      "showAll": "すべて表示",
+      "energyAria": "2025 年の毎日の電力使用量",
+      "visibleDays": "{{days}} 日を表示、合計 {{value}}（年間の {{share}}）",
+      "noRecord": "記録なし",
+      "vsGoal": "目標 {{goal}} に対して {{value}}",
+      "sleepSummary": "1 晩平均 {{average}} · {{nights}} 晩中 {{reached}} 晩で目標 {{goal}} を達成",
+      "sleepAria": "2026 年 5 月から 10 月までの毎晩の睡眠時間",
+      "year": "年",
+      "incidentsYear": "{{year}} 年: 障害 {{total}} 件、障害のない日 {{quiet}} 日",
+      "incidentsN": "{{value}} 件の障害",
+      "incidentsAria": "{{year}} 年の 1 日あたりの本番障害",
+      "incidentsDay": "{{date}}: 障害 {{value}} 件",
+      "quietDay": "{{date}}: 障害なし",
+      "futureDay": "{{date}}: これから",
+      "hoverDay": "日にホバーすると障害件数を表示します",
+      "habitSummary": "運動 {{done}} 回（日数の {{share}}）· 現在の連続記録: {{streak}} 日",
+      "reset": "リセット",
+      "workoutDone": "実施",
+      "workoutMissed": "未実施",
+      "habitAria": "2026 年 8 月から 10 月までの毎日の運動記録",
+      "markedDone": "{{date}} を実施済みにしました",
+      "markedMissed": "{{date}} を未実施にしました",
+      "habitHint": "日をクリック（またはその日で Enter キー）して運動を記録・取り消しします"
+    }
+  },
+  "components": [
+    {
+      "name": "CalendarHeatmap",
+      "support": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles)."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles).",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "CalendarHeatmap"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "data",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "array",
+            "typeText": "readonly CalendarDatum[]",
+            "typeRef": "type:5f1af2a4d17fe1cfc728",
+            "required": true,
+            "description": "Daily values (several entries of the same day add up)"
+          },
+          {
+            "name": "range",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "union",
+            "typeText": "number | readonly [CalendarDate, CalendarDate] | undefined",
+            "typeRef": "type:4b12d2b81062a2b776c5",
+            "required": false,
+            "description": "Days shown: a year (`2026`) or an inclusive `[start, end]` range"
+          },
+          {
+            "name": "layout",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "enum",
+            "values": [
+              "months",
+              "weeks"
+            ],
+            "typeText": "\"weeks\" | \"months\" | undefined",
+            "typeRef": "type:b873a466717fc9913cac",
+            "default": "weeks",
+            "required": false,
+            "description": "`weeks`: a column per week and a row per weekday (one strip per year when the range spans several years); `months`: a small calendar per month"
+          },
+          {
+            "name": "weekStart",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "First day of the week, 0 = Sunday … 6 = Saturday"
+          },
+          {
+            "name": "locale",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "BCP 47 locale of the month and weekday names, of the tooltip dates and of the default `weekStart`"
+          },
+          {
+            "name": "color",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Color of the highest level (lower levels are lighter)"
+          },
+          {
+            "name": "colors",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Colors of the levels, lowest first (replaces `color` and sets the number of levels)"
+          },
+          {
+            "name": "levels",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 4,
+            "required": false,
+            "description": "Number of color levels above the empty days"
+          },
+          {
+            "name": "thresholds",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "array",
+            "typeText": "readonly number[] | undefined",
+            "typeRef": "type:9b11f9b3b1a7e709603e",
+            "required": false,
+            "description": "Upper bounds of the levels but the last, ascending (`[2, 5, 10]`: 1-2, 3-5, 6-10, more); an even split of the largest value by default"
+          },
+          {
+            "name": "gap",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 3,
+            "required": false,
+            "description": "Gap between the cells, in pixels"
+          },
+          {
+            "name": "radius",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 2,
+            "required": false,
+            "description": "Corner radius of the cells, in pixels"
+          },
+          {
+            "name": "maxCellSize",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "Largest cell size, in pixels (cells shrink to fit the width)"
+          },
+          {
+            "name": "monthLabels",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Month names (and years) around the cells"
+          },
+          {
+            "name": "weekdayLabels",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Weekday names beside (weeks) or above (months) the cells"
+          },
+          {
+            "name": "palette",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Colors of the marks without `color` (defaults to the `chart-series-1..8` tokens, then the theme colors)"
+          },
+          {
+            "name": "legend",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ShapeLegendOptions | undefined",
+            "typeRef": "type:b3cd5c49d86fb91effb3",
+            "required": false,
+            "description": "Legend; tapping an item hides / shows its slice, stage, series, node, bar, row or level"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ShapeTooltipOptions | undefined",
+            "typeRef": "type:9441d8fe0edba7239796",
+            "default": true,
+            "required": false,
+            "description": "Tooltip shown while a mark is pressed; `false` disables it"
+          },
+          {
+            "name": "format",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "function",
+            "typeText": "((value: number) => string) | undefined",
+            "typeRef": "type:541b024ed1104992e34e",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats the values of the labels and the tooltip"
+          },
+          {
+            "name": "percentFormat",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "function",
+            "typeText": "((share: number) => string) | undefined",
+            "typeRef": "type:d92c3cd66b7afc0213bc",
+            "parameters": [
+              {
+                "name": "share",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1"
+          },
+          {
+            "name": "hidden",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "array",
+            "typeText": "readonly number[] | undefined",
+            "typeRef": "type:9b11f9b3b1a7e709603e",
+            "required": false,
+            "description": "Hidden slices / stages / radar series / top-level treemap or sunburst nodes / sankey nodes / radial bars / bullet rows / calendar levels, by index. Makes the visibility controlled: legend taps then only call `onToggle`, whose `hiddenIndexes` should be stored and passed back."
+          },
+          {
+            "name": "animation",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Entry and update animations (skipped when the theme reduces motion)"
+          },
+          {
+            "name": "padding",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the drawing, in pixels"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "texts",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "object",
+            "typeText": "Partial<ShapeChartLabels> | undefined",
+            "typeRef": "type:2ef787a978af6750b6c8",
+            "required": false,
+            "description": "Replaces built-in texts of the `locale`"
+          },
+          {
+            "name": "height",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "required": false,
+            "description": "Height of the chart (the legend included)"
+          },
+          {
+            "name": "width",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "node",
+            "typeText": "((event: ShapeHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:9333c89b3161f5ff3652",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent",
+                "typeRef": "type:019a32700cb7aa817346"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          },
+          {
+            "name": "testID",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Test identifier of the root view"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ShapeHoverEvent | null) => void) | undefined",
+            "typeRef": "type:fa632874a08b24956e5f",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent | null",
+                "typeRef": "type:5ce60fcc1021d329ffba"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the highlighted mark changes (press and drag over the chart)"
+          },
+          {
+            "name": "onClick",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ShapeHoverEvent) => void) | undefined",
+            "typeRef": "type:8504b594a968c22eaac5",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent",
+                "typeRef": "type:019a32700cb7aa817346"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a mark is tapped"
+          },
+          {
+            "name": "onToggle",
+            "source": "packages/native/src/components/ShapeChart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ShapeToggleEvent) => void) | undefined",
+            "typeRef": "type:d096120cd0ab66afae24",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeToggleEvent",
+                "typeRef": "type:4b4244045a32e66c0a25"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a legend item is tapped (or the instance's `toggle()` is called), with the toggled index and every hidden index after the toggle"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:CalendarHeatmapProps": {
+      "source": "native/src/components/ShapeChart/types.ts",
+      "description": "Props of CalendarHeatmap",
+      "kind": "interface",
+      "extends": [
+        "ShapeChartCommonProps"
+      ],
+      "props": [
+        {
+          "name": "data",
+          "type": "readonly CalendarDatum[]",
+          "required": true,
+          "description": "Daily values (several entries of the same day add up)"
+        },
+        {
+          "name": "range",
+          "type": "number | readonly [CalendarDate, CalendarDate]",
+          "required": false,
+          "default": "the 53 weeks ending on the last day of the data",
+          "description": "Days shown: a year (`2026`) or an inclusive `[start, end]` range"
+        },
+        {
+          "name": "layout",
+          "type": "\"weeks\" | \"months\"",
+          "required": false,
+          "default": "\"weeks\"",
+          "description": "`weeks`: a column per week and a row per weekday (one strip per year when the range spans several years); `months`: a small calendar per month"
+        },
+        {
+          "name": "weekStart",
+          "type": "number",
+          "required": false,
+          "default": "from `locale`",
+          "description": "First day of the week, 0 = Sunday … 6 = Saturday"
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "required": false,
+          "default": "the runtime's default locale",
+          "description": "BCP 47 locale of the month and weekday names, of the tooltip dates and of the default `weekStart`"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": false,
+          "default": "the first palette color",
+          "description": "Color of the highest level (lower levels are lighter)"
+        },
+        {
+          "name": "colors",
+          "type": "readonly string[]",
+          "required": false,
+          "description": "Colors of the levels, lowest first (replaces `color` and sets the number of levels)"
+        },
+        {
+          "name": "levels",
+          "type": "number",
+          "required": false,
+          "default": "4",
+          "description": "Number of color levels above the empty days"
+        },
+        {
+          "name": "thresholds",
+          "type": "readonly number[]",
+          "required": false,
+          "description": "Upper bounds of the levels but the last, ascending (`[2, 5, 10]`: 1-2, 3-5, 6-10, more); an even split of the largest value by default"
+        },
+        {
+          "name": "gap",
+          "type": "number",
+          "required": false,
+          "default": "3",
+          "description": "Gap between the cells, in pixels"
+        },
+        {
+          "name": "radius",
+          "type": "number",
+          "required": false,
+          "default": "2",
+          "description": "Corner radius of the cells, in pixels"
+        },
+        {
+          "name": "maxCellSize",
+          "type": "number",
+          "required": false,
+          "default": "16 (weeks), 28 (months)",
+          "description": "Largest cell size, in pixels (cells shrink to fit the width)"
+        },
+        {
+          "name": "monthLabels",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Month names (and years) around the cells"
+        },
+        {
+          "name": "weekdayLabels",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Weekday names beside (weeks) or above (months) the cells"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/calendar-heatmap/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/calendar-heatmap/native/basic.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Text, View } from \"react-native\";\nimport {\n  CalendarHeatmap,\n  useTheme,\n  type CalendarDatum,\n  type ShapeHoverEvent,\n} from \"minerva-design/native\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst DAY = 24 * 60 * 60 * 1000;\nconst iso = (time: number) => new Date(time).toISOString().slice(0, 10);\n\n// A developer's commits over the last four months (a phone fits ~17 weeks):\n// busy weekdays, quiet weekends and a release crunch every few weeks\nconst END = Date.UTC(2026, 9, 24);\nconst START = END - 118 * DAY;\nconst random = mulberry32(7);\nconst COMMITS: CalendarDatum[] = [];\nfor (let time = START; time <= END; time += DAY) {\n  const weekday = new Date(time).getUTCDay();\n  const weekend = weekday === 0 || weekday === 6;\n  const crunch = ((time - START) / DAY) % 40 < 5;\n  if (random() < (weekend ? 0.2 : 0.82))\n    COMMITS.push({\n      date: iso(time),\n      value: Math.max(\n        1,\n        Math.round(random() * (weekend ? 4 : 9) * (crunch ? 2.2 : 1)),\n      ),\n    });\n}\nconst RANGE = [iso(START), iso(END)] as const;\n\nexport default function Basic() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.calendar-heatmap\",\n  });\n  const { colors } = useTheme();\n  const [selected, setSelected] = useState<ShapeHoverEvent | null>(null);\n  const total = useMemo(() => COMMITS.reduce((sum, d) => sum + d.value, 0), []);\n  return (\n    <View style={{ width: \"100%\", gap: 8 }}>\n      <Text style={{ color: colors[\"text-color\"] }}>\n        {t(\"native.data.total\", { total })}\n      </Text>\n      <CalendarHeatmap\n        data={COMMITS}\n        range={RANGE}\n        locale={i18n.language}\n        color=\"#2da44e\"\n        onClick={setSelected}\n        ariaLabel={t(\"data.commitsAria\")}\n      />\n      <Text role=\"status\" style={{ color: colors[\"text-secondary-color\"] }}>\n        {selected\n          ? t(\"data.commitsDay\", {\n              date: selected.name,\n              value: selected.value,\n            })\n          : t(\"native.data.tapDay\")}\n      </Text>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "カレンダーヒートマップ",
+      "description": "日ごとの値をカレンダー上に表示します。コントリビューショングラフのように、コミット、学習の継続、運動、注文などに使えます。各日はレベルで色分けされたセルで、月名・曜日名、ツールチップの日付、週の始まりはロケールに従います。凡例でレベルの表示を切り替えられ、矢印キーで日単位・週単位に移動でき、ツールチップに日付が表示されます。",
+      "demos": {
+        "contributions": {
+          "title": "1 年間のコントリビューション",
+          "description": "range を指定しないと、データの最終日までの 53 週を表示します。color で最上位レベルの色を設定します（下位レベルはライト・ダークどちらのテーマでも薄くなります）。onClick はクリックした日を返し、name に書式化された日付、date に YYYY-MM-DD 形式の日付が入ります。"
+        },
+        "streak": {
+          "title": "学習の継続記録",
+          "description": "range={2026} で未来の日を含む 1 年全体を表示します。thresholds でレベルの上限（1–15、16–30、31–60、60 分超）を、format でその名前の書式を設定します。継続日数は同じデータから計算します。"
+        },
+        "multi-year": {
+          "title": "複数年",
+          "description": "1 年より長い範囲は年ごとの帯で描かれ、横に年が表示されます。既定の高さは帯の数に応じて増えます。"
+        },
+        "months": {
+          "title": "月ごとのカレンダー",
+          "description": "layout=\"months\" で月ごとに小さなカレンダーを描き、セルが最も大きくなるグリッドに並べます。weekStart はロケールによる週の始まりを上書きします。注文のない日（毎週月曜は定休日）は空のままです。"
+        },
+        "locale": {
+          "title": "ロケール",
+          "description": "locale は月名・曜日名とツールチップの日付を翻訳し、週の始まり（米国と日本は日曜、フランスとドイツは月曜、エジプトは土曜）を決めます。maxCellSize で広い画面でもセルを小さく保ちます。"
+        },
+        "energy": {
+          "title": "レベルの絞り込み",
+          "description": "4 つの独自の色としきい値で表した毎日の電力使用量です。hidden で凡例が制御モードになり、onToggle が保存すべき hiddenIndexes を返すので、ボタンからもレベルを隠せます。読み取り欄では表示中の日を合計します。"
+        },
+        "sleep": {
+          "title": "カスタムツールチップ",
+          "description": "[start, end] の範囲で 6 か月分の睡眠を表示します。renderTooltip は name に書式化済みの日付、value に時間を受け取り、8 時間の目標と比較します。データのない夜には別のメッセージを表示します。"
+        },
+        "incidents": {
+          "title": "年の選択とホバー",
+          "description": "3 年分の本番障害を 1 つのデータで持ち、RadioGroup では描画する年を選ぶ range だけを変えます。onHover はホバー中の日をチャートの下に表示し（ポインタが離れると null）、まだ来ていない日には別のメッセージを出します。"
+        },
+        "habit-toggle": {
+          "title": "クリックで日を記録",
+          "description": "layout=\"months\" と単一レベル（levels={1}）の運動記録です。onClick でクリックした日の日付を受け取り、data の元になる state に追加または削除します。連続日数と読み取り欄も更新されます。"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基本",
+            "description": "直近 4 か月の 1 日ごとのコミット数。スマートフォンに収まる期間です。月と曜日の名前はアプリの言語に従い、タップで日を選択します。"
+          }
+        },
+        "data": {
+          "total": "直近 4 か月で {{total}} 件のコミット",
+          "tapDay": "日をタップして選択"
+        }
+      },
+      "api": {
+        "CalendarHeatmapProps": {
+          "data": "日ごとの値：日付（YYYY-MM-DD 文字列、Date、タイムスタンプ）と値。同じ日の値は合計されます",
+          "range": "表示する日：年（2026）または両端を含む [start, end]。既定はデータの最終日までの 53 週",
+          "layout": "weeks：週ごとに列、曜日ごとに行（長い範囲は年ごとの帯）。months：月ごとの小さなカレンダー",
+          "weekStart": "週の始まり（0 = 日曜 … 6 = 土曜）。既定は locale から決まります",
+          "locale": "月名・曜日名、ツールチップの日付、既定の weekStart、組み込み文言に使う BCP 47 ロケール。既定はページの言語（`<html lang>`）",
+          "color": "最上位レベルの色（下位レベルは薄くなります）。既定はパレットの最初の色",
+          "colors": "レベルの色（低い順）。color を置き換え、レベル数も決めます",
+          "levels": "空の日を除く色のレベル数",
+          "thresholds": "最後を除く各レベルの上限（昇順。[2, 5, 10] は 1–2、3–5、6–10、それ以上）。既定は最大値の等分",
+          "gap": "セル間の間隔（ピクセル）",
+          "radius": "セルの角の半径（ピクセル）",
+          "maxCellSize": "セルの最大サイズ（ピクセル、幅に収まるよう縮小されます）",
+          "monthLabels": "月名（と年）を表示します",
+          "weekdayLabels": "セルの横（weeks）または上（months）に曜日名を表示します"
+        },
+        "CalendarDatum": {
+          "date": "値の日付：YYYY-MM-DD 文字列、Date、またはタイムスタンプ（ローカルの暦日）",
+          "value": "その日の値（負の値は 0 として扱います）"
+        }
+      },
+      "data": {
+        "commitsTotal": "過去 1 年間のコミット数：{{total}}",
+        "commitsAria": "過去 1 年間の日ごとのコミット数",
+        "commitsDay": "{{date}}：{{value}} コミット",
+        "commitsHint": "日をクリック（またはチャートにフォーカスし、矢印キーで移動して Enter）すると選択できます",
+        "minutes": "{{value}} 分",
+        "streaks": "現在の連続記録：{{current}} 日 · 最長記録：{{longest}} 日",
+        "lessonsAria": "2026 年の日ごとの語学学習時間（分）",
+        "lessonDay": "{{date}}：{{value}} 学習",
+        "missedDay": "{{date}}：学習なし",
+        "lessonsHint": "日をクリックすると学習時間を表示します",
+        "km": "{{value}} km",
+        "runsAria": "2024〜2026 年の日ごとのランニング距離",
+        "runsYear": "{{year}} 年：{{value}}",
+        "weekStartLabel": "週の始まり",
+        "fromLocale": "ロケールに従う",
+        "ordersAria": "2026 年の日ごとのオンライン注文数（月別）",
+        "localeLabel": "ロケール",
+        "deploysAria": "2026 年上半期の日ごとのデプロイ回数",
+        "kwh": "{{value}} kWh",
+        "highUseOnly": "使用量の多い日のみ",
+        "showAll": "すべて表示",
+        "energyAria": "2025 年の毎日の電力使用量",
+        "visibleDays": "{{days}} 日を表示、合計 {{value}}（年間の {{share}}）",
+        "noRecord": "記録なし",
+        "vsGoal": "目標 {{goal}} に対して {{value}}",
+        "sleepSummary": "1 晩平均 {{average}} · {{nights}} 晩中 {{reached}} 晩で目標 {{goal}} を達成",
+        "sleepAria": "2026 年 5 月から 10 月までの毎晩の睡眠時間",
+        "year": "年",
+        "incidentsYear": "{{year}} 年: 障害 {{total}} 件、障害のない日 {{quiet}} 日",
+        "incidentsN": "{{value}} 件の障害",
+        "incidentsAria": "{{year}} 年の 1 日あたりの本番障害",
+        "incidentsDay": "{{date}}: 障害 {{value}} 件",
+        "quietDay": "{{date}}: 障害なし",
+        "futureDay": "{{date}}: これから",
+        "hoverDay": "日にホバーすると障害件数を表示します",
+        "habitSummary": "運動 {{done}} 回（日数の {{share}}）· 現在の連続記録: {{streak}} 日",
+        "reset": "リセット",
+        "workoutDone": "実施",
+        "workoutMissed": "未実施",
+        "habitAria": "2026 年 8 月から 10 月までの毎日の運動記録",
+        "markedDone": "{{date}} を実施済みにしました",
+        "markedMissed": "{{date}} を未実施にしました",
+        "habitHint": "日をクリック（またはその日で Enter キー）して運動を記録・取り消しします"
+      },
+      "wc": {
+        "demos": {
+          "contributions": {
+            "title": "1 年間のコントリビューション",
+            "description": "2025 年の日ごとの値。月や曜日の名前はページの言語の locale に従います。"
+          },
+          "months": {
+            "title": "月ごとのカレンダー",
+            "description": "月ごとの小さなカレンダーに、しきい値を指定した 5 段階の色で表示します（1 日の歩数）。"
+          }
+        },
+        "minerva-calendar-heatmap": {
+          "props": {
+            "height": "チャートの高さ（凡例を含む）：ピクセルまたは任意の CSS の長さ",
+            "options": "その他のエンジンのオプション（軸、凡例、ツールチップ、パレット、書式…）。要素自身のプロパティとマージされます。プロパティのみ",
+            "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+          },
+          "events": {
+            "minerva-hover": "ホバー（またはキーボードでフォーカス）している要素が変わりました。detail：{ index, name, value, share }、何もない場合は null",
+            "minerva-click": "要素がクリック、タップ、または Enter で選択されました。detail：{ index, name, value, share }",
+            "minerva-toggle": "凡例の項目がクリックされました（または toggle() が呼ばれました）。detail：{ index, hidden, hiddenIndexes }"
+          },
+          "methods": {
+            "toggle": "インデックスでスライス、段階、レーダーの系列、ツリーマップの最上位ノードを表示・非表示にします",
+            "getRenderer": "シェイプを描画しているバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null。エンジンオプション renderer で指定できます"
+          }
+        }
+      }
+    }
+  }
+}

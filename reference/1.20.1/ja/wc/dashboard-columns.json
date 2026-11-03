@@ -1,0 +1,848 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.1",
+  "locale": "ja",
+  "renderer": "wc",
+  "page": "dashboard-columns",
+  "title": "DashboardColumns ダッシュボード列",
+  "description": "ダッシュボード上にカードを列で並べるボード。ワークフローの段階、パイプラインの工程、ステータス（未着手 / 進行中 / 完了）ごとに 1 列：タイトル・件数・アクセントカラーを持つ同じ幅の列、縦に並ぶカード、ボード全体の横スクロール。draggable を指定すると、DashboardCard をマウス・タッチ・キーボードで列間および列内で移動できます。ボードは制御されたままです（onCardMove）。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.1",
+    "sourceCommit": "3a9f5cdaae706f14fe6d8c65c5481eba719a66c4",
+    "sourceDigest": "sha256:c9ed2b706b61413d29e506a3f04f3d35c044a4b57ec0e284935054f9e1898c7e",
+    "referenceSourceDigest": "sha256:6c9ecba0079f25e53cd971e51f2be8604fc3d941c0ed1cfeec03c4a91913ad73"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "DashboardCard",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/dashboard-card",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-dashboard-card",
+        "props": [
+          {
+            "name": "value",
+            "typeText": "string",
+            "attribute": "value",
+            "required": false
+          },
+          {
+            "name": "label",
+            "typeText": "string | undefined",
+            "attribute": "label",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "description": "The content of the card"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DashboardColumn",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/dashboard-column",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-dashboard-column",
+        "props": [
+          {
+            "name": "heading",
+            "typeText": "string",
+            "attribute": "heading",
+            "required": false
+          },
+          {
+            "name": "value",
+            "typeText": "string | undefined",
+            "attribute": "value",
+            "required": false
+          },
+          {
+            "name": "count",
+            "typeText": "number | undefined",
+            "attribute": "count",
+            "required": false
+          },
+          {
+            "name": "color",
+            "typeText": "DashboardColumnColor | undefined",
+            "attribute": "color",
+            "required": false
+          },
+          {
+            "name": "description",
+            "typeText": "string",
+            "attribute": "description",
+            "required": false
+          },
+          {
+            "name": "emptyText",
+            "typeText": "string | undefined",
+            "attribute": "empty-text",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "description": "The cards (each gets `role=\"listitem\"` unless it has a role)"
+          },
+          {
+            "name": "heading",
+            "description": "Rich title (alternative to the `heading` attribute)"
+          },
+          {
+            "name": "actions",
+            "description": "Header controls on the end side (e.g. an add button)"
+          },
+          {
+            "name": "description",
+            "description": "Supporting text (alternative to the `description` attribute)"
+          },
+          {
+            "name": "empty",
+            "description": "Content shown when there are no cards (default: `empty-text`, else localized \"No items\")"
+          },
+          {
+            "name": "footer",
+            "description": "Footer below the cards (e.g. an \"Add card\" button)"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DashboardColumns",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/dashboard-columns",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-dashboard-columns",
+        "props": [
+          {
+            "name": "columnWidth",
+            "typeText": "DashboardLength",
+            "attribute": "column-width",
+            "required": false
+          },
+          {
+            "name": "fill",
+            "typeText": "boolean",
+            "attribute": "fill",
+            "required": false
+          },
+          {
+            "name": "gap",
+            "typeText": "DashboardLength",
+            "attribute": "gap",
+            "required": false
+          },
+          {
+            "name": "height",
+            "typeText": "DashboardLength | undefined",
+            "attribute": "height",
+            "required": false
+          },
+          {
+            "name": "maxHeight",
+            "typeText": "DashboardLength | undefined",
+            "attribute": "max-height",
+            "required": false
+          },
+          {
+            "name": "draggable",
+            "typeText": "boolean",
+            "attribute": "draggable",
+            "required": false
+          },
+          {
+            "name": "canDrop",
+            "typeText": "(move: DashboardCardMove) => boolean | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "minerva-card-move",
+            "typeText": "CustomEvent<DashboardCardMove>",
+            "detailType": {
+              "typeText": "DashboardCardMove",
+              "typeRef": "type:fd9302cfc7d74ff2894a"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "A card was dropped at a new position; `detail: { cardKey, fromColumn, fromIndex, toColumn, toIndex }` (`toIndex` counts the cards without the moved one)"
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "description": "The columns (`minerva-dashboard-column`)"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-dashboard-columns": {
+      "kind": "element",
+      "source": "web-components/src/components/dashboard-columns/dashboard-columns.ts",
+      "className": "MinervaDashboardColumns",
+      "summary": "Horizontally scrolling board of status columns.",
+      "description": "A horizontally scrolling board of status columns (`<DashboardColumns>` of React): put `minerva-dashboard-column` elements in it. Columns share one width (`column-width`, 18rem by default); `fill` stretches them equally when they fit; `height` / `max-height` bound the board so that the column bodies scroll vertically. The board is a labelled `role=\"region\"` (name: the host's `aria-label` / `aria-labelledby`, else localized \"Board\") and a tab stop, so the keyboard can scroll it; on narrow screens the columns keep their width and snap while scrolling. `draggable` lets the `minerva-dashboard-card` children of keyed columns (`value`) be dragged with the mouse, touch (long press) or the keyboard (Space / Enter picks a focused card up, the arrows move it, Space / Enter drops it, Escape cancels). The board is controlled: it fires `minerva-card-move` and the app moves the card element (or re-renders). While dragging is on, the board holds a small layer (drop line, dragged copy, live region) as its last light DOM child.",
+      "properties": [
+        {
+          "name": "columnWidth",
+          "attribute": "column-width",
+          "type": "DashboardLength",
+          "default": "\"18rem\"",
+          "description": "Width of every column (a number is pixels); with `fill` the minimum width"
+        },
+        {
+          "name": "fill",
+          "attribute": "fill",
+          "type": "boolean",
+          "default": "false",
+          "description": "Stretches the columns equally to fill the board when they fit"
+        },
+        {
+          "name": "gap",
+          "attribute": "gap",
+          "type": "DashboardLength",
+          "default": "\"0.75rem\"",
+          "description": "Space between the columns (a number is pixels)"
+        },
+        {
+          "name": "height",
+          "attribute": "height",
+          "type": "DashboardLength | undefined",
+          "description": "Height of the board: the column bodies scroll vertically within it (a number is pixels)"
+        },
+        {
+          "name": "maxHeight",
+          "attribute": "max-height",
+          "type": "DashboardLength | undefined",
+          "description": "Maximum height of the board: the column bodies scroll vertically within it (a number is pixels)"
+        },
+        {
+          "name": "draggable",
+          "attribute": "draggable",
+          "type": "boolean",
+          "default": "false",
+          "description": "Lets the `minerva-dashboard-card` children of keyed columns be dragged (mouse, touch long press, keyboard); the board fires `minerva-card-move`. Replaces the native `draggable` (HTML drag and drop of the host): the attribute turns it on unless it is `\"false\"`."
+        },
+        {
+          "name": "canDrop",
+          "type": "(move: DashboardCardMove) => boolean | undefined",
+          "description": "Whether a card may be dropped at a position (property only): refused positions show no drop indicator and the keyboard skips them"
+        }
+      ],
+      "methods": [
+        {
+          "name": "focus",
+          "signature": "(options?: FocusOptions) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "minerva-card-move",
+          "description": "A card was dropped at a new position; `detail: { cardKey, fromColumn, fromIndex, toColumn, toIndex }` (`toIndex` counts the cards without the moved one)"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "The columns (`minerva-dashboard-column`)"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The scrolling `role=region` row of columns"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--dashboard-column-width",
+          "description": "Width of the columns (defaults to 18rem; the columnWidth prop sets it; with fill it is the minimum width)"
+        },
+        {
+          "name": "--dashboard-gap",
+          "description": "Space between the columns (defaults to 0.75rem; the gap prop sets it)"
+        },
+        {
+          "name": "--dashboard-column-background",
+          "description": "Background of a column (defaults to --surface-muted-color)"
+        },
+        {
+          "name": "--dashboard-column-border-color",
+          "description": "Border color of a column (defaults to --border-color)"
+        },
+        {
+          "name": "--dashboard-column-radius",
+          "description": "Corner radius of a column (defaults to --radius-lg)"
+        },
+        {
+          "name": "--dashboard-column-color",
+          "description": "Accent of a column: the dot before the title (the color prop sets it for a custom CSS color)"
+        },
+        {
+          "name": "--dashboard-card-gap",
+          "description": "Space between the cards of a column (defaults to --space-2)"
+        },
+        {
+          "name": "--dashboard-count-background",
+          "description": "Background of the count badge (defaults to --surface-color)"
+        },
+        {
+          "name": "--dashboard-count-color",
+          "description": "Text color of the count badge (defaults to --text-secondary-color)"
+        },
+        {
+          "name": "--dashboard-drop-indicator-color",
+          "description": "Color of the drop line and of the column a dragged card would land in (defaults to --primary-color)"
+        }
+      ]
+    },
+    "wc:minerva-dashboard-column": {
+      "kind": "element",
+      "source": "web-components/src/components/dashboard-columns/dashboard-columns.ts",
+      "className": "MinervaDashboardColumn",
+      "summary": "Status column of a DashboardColumns: header, count, cards and footer.",
+      "description": "A status column of a `minerva-dashboard-columns` (`<DashboardColumn>` of React). The header shows an optional accent dot (`color`: a theme color or any CSS color), the `heading`, a `count` badge and the `actions` slot; the cards (default slot) form a `role=\"list\"` that scrolls vertically within a bounded board (each slotted card without a role gets `role=\"listitem\"`; there is no wrapper); `empty-text` / the `empty` slot (default: localized \"No items\") replaces the list when there are no cards, and the `footer` slot sits below. The column is a `role=\"group\"` named by its heading and count (\"To do, 3 items\").",
+      "properties": [
+        {
+          "name": "heading",
+          "attribute": "heading",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Title of the column (also its accessible name; or use the `heading` slot)"
+        },
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "string | undefined",
+          "description": "Key of the column, reported as `fromColumn` / `toColumn` by a draggable board (columns without one take no cards)"
+        },
+        {
+          "name": "count",
+          "attribute": "count",
+          "type": "number | undefined",
+          "description": "Number of items shown as a badge (and announced with the title); unset hides it"
+        },
+        {
+          "name": "color",
+          "attribute": "color",
+          "type": "DashboardColumnColor | undefined",
+          "description": "Accent: a theme color (primary, success, warning, danger, info, neutral) or any CSS color"
+        },
+        {
+          "name": "description",
+          "attribute": "description",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Supporting text under the header (or use the `description` slot)"
+        },
+        {
+          "name": "emptyText",
+          "attribute": "empty-text",
+          "type": "string | undefined",
+          "description": "Text shown when there are no cards (default: localized \"No items\"; or use the `empty` slot)"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "The cards (each gets `role=\"listitem\"` unless it has a role)"
+        },
+        {
+          "name": "heading",
+          "description": "Rich title (alternative to the `heading` attribute)"
+        },
+        {
+          "name": "actions",
+          "description": "Header controls on the end side (e.g. an add button)"
+        },
+        {
+          "name": "description",
+          "description": "Supporting text (alternative to the `description` attribute)"
+        },
+        {
+          "name": "empty",
+          "description": "Content shown when there are no cards (default: `empty-text`, else localized \"No items\")"
+        },
+        {
+          "name": "footer",
+          "description": "Footer below the cards (e.g. an \"Add card\" button)"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The `role=group` column (state `color-<name>` for a theme accent)"
+        },
+        {
+          "name": "header",
+          "description": "The header row (accent, title, count, actions)"
+        },
+        {
+          "name": "indicator",
+          "description": "The accent dot before the title (with `color`)"
+        },
+        {
+          "name": "title",
+          "description": "The title of the column"
+        },
+        {
+          "name": "count",
+          "description": "The count badge (with `count`)"
+        },
+        {
+          "name": "actions",
+          "description": "The header actions (with the `actions` slot)"
+        },
+        {
+          "name": "description",
+          "description": "The supporting text (with a description)"
+        },
+        {
+          "name": "list",
+          "description": "The `role=list` body holding the cards"
+        },
+        {
+          "name": "empty",
+          "description": "The empty content shown instead of the list"
+        },
+        {
+          "name": "footer",
+          "description": "The footer (with the `footer` slot)"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--dashboard-column-width",
+          "description": "Width of the columns (defaults to 18rem; the columnWidth prop sets it; with fill it is the minimum width)"
+        },
+        {
+          "name": "--dashboard-gap",
+          "description": "Space between the columns (defaults to 0.75rem; the gap prop sets it)"
+        },
+        {
+          "name": "--dashboard-column-background",
+          "description": "Background of a column (defaults to --surface-muted-color)"
+        },
+        {
+          "name": "--dashboard-column-border-color",
+          "description": "Border color of a column (defaults to --border-color)"
+        },
+        {
+          "name": "--dashboard-column-radius",
+          "description": "Corner radius of a column (defaults to --radius-lg)"
+        },
+        {
+          "name": "--dashboard-column-color",
+          "description": "Accent of a column: the dot before the title (the color prop sets it for a custom CSS color)"
+        },
+        {
+          "name": "--dashboard-card-gap",
+          "description": "Space between the cards of a column (defaults to --space-2)"
+        },
+        {
+          "name": "--dashboard-count-background",
+          "description": "Background of the count badge (defaults to --surface-color)"
+        },
+        {
+          "name": "--dashboard-count-color",
+          "description": "Text color of the count badge (defaults to --text-secondary-color)"
+        },
+        {
+          "name": "--dashboard-drop-indicator-color",
+          "description": "Color of the drop line and of the column a dragged card would land in (defaults to --primary-color)"
+        }
+      ]
+    },
+    "wc:minerva-dashboard-card": {
+      "kind": "element",
+      "source": "web-components/src/components/dashboard-columns/dashboard-columns.ts",
+      "className": "MinervaDashboardCard",
+      "summary": "Card of a dashboard column that a draggable board can move.",
+      "description": "A card of a `minerva-dashboard-column` (`<DashboardCard>` of React), keyed by `value`. In a draggable board its content sits in a focusable `role=\"button\"` (the `root` part) described by the drag instructions; otherwise the part is a plain wrapper. The host is the list item of the column. Controls inside a draggable card keep working (a drag never starts on them), but keep them few: they sit inside the button.",
+      "properties": [
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Key of the card, reported as `cardKey` by a draggable board"
+        },
+        {
+          "name": "label",
+          "attribute": "label",
+          "type": "string | undefined",
+          "description": "Name of the card in the drag announcements and, when draggable, its accessible name (default: its text)"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "The content of the card"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The card wrapper (a focusable `role=button` in a draggable board)"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--dashboard-column-width",
+          "description": "Width of the columns (defaults to 18rem; the columnWidth prop sets it; with fill it is the minimum width)"
+        },
+        {
+          "name": "--dashboard-gap",
+          "description": "Space between the columns (defaults to 0.75rem; the gap prop sets it)"
+        },
+        {
+          "name": "--dashboard-column-background",
+          "description": "Background of a column (defaults to --surface-muted-color)"
+        },
+        {
+          "name": "--dashboard-column-border-color",
+          "description": "Border color of a column (defaults to --border-color)"
+        },
+        {
+          "name": "--dashboard-column-radius",
+          "description": "Corner radius of a column (defaults to --radius-lg)"
+        },
+        {
+          "name": "--dashboard-column-color",
+          "description": "Accent of a column: the dot before the title (the color prop sets it for a custom CSS color)"
+        },
+        {
+          "name": "--dashboard-card-gap",
+          "description": "Space between the cards of a column (defaults to --space-2)"
+        },
+        {
+          "name": "--dashboard-count-background",
+          "description": "Background of the count badge (defaults to --surface-color)"
+        },
+        {
+          "name": "--dashboard-count-color",
+          "description": "Text color of the count badge (defaults to --text-secondary-color)"
+        },
+        {
+          "name": "--dashboard-drop-indicator-color",
+          "description": "Color of the drop line and of the column a dragged card would land in (defaults to --primary-color)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:DashboardColumns": {
+      "kind": "cssVars",
+      "source": "react/src/components/DashboardColumns",
+      "vars": [
+        {
+          "name": "--dashboard-column-width",
+          "description": "Width of the columns (defaults to 18rem; the columnWidth prop sets it; with fill it is the minimum width)"
+        },
+        {
+          "name": "--dashboard-gap",
+          "description": "Space between the columns (defaults to 0.75rem; the gap prop sets it)"
+        },
+        {
+          "name": "--dashboard-column-background",
+          "description": "Background of a column (defaults to --surface-muted-color)"
+        },
+        {
+          "name": "--dashboard-column-border-color",
+          "description": "Border color of a column (defaults to --border-color)"
+        },
+        {
+          "name": "--dashboard-column-radius",
+          "description": "Corner radius of a column (defaults to --radius-lg)"
+        },
+        {
+          "name": "--dashboard-column-color",
+          "description": "Accent of a column: the dot before the title (the color prop sets it for a custom CSS color)"
+        },
+        {
+          "name": "--dashboard-card-gap",
+          "description": "Space between the cards of a column (defaults to --space-2)"
+        },
+        {
+          "name": "--dashboard-count-background",
+          "description": "Background of the count badge (defaults to --surface-color)"
+        },
+        {
+          "name": "--dashboard-count-color",
+          "description": "Text color of the count badge (defaults to --text-secondary-color)"
+        },
+        {
+          "name": "--dashboard-drop-indicator-color",
+          "description": "Color of the drop line and of the column a dragged card would land in (defaults to --primary-color)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/dashboard-columns/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/dashboard-columns/wc/basic.html": "<minerva-dashboard-columns id=\"board\" aria-label=\"Sprint 12\">\n  <minerva-dashboard-column heading=\"To do\" count=\"2\" data-status=\"todo\">\n    <minerva-card padding=\"small\" data-id=\"1\"\n      >Write the onboarding guide\n      <minerva-button size=\"small\" variant=\"ghost\" data-move=\"1\"\n        >Move to Doing</minerva-button\n      ></minerva-card\n    >\n    <minerva-card padding=\"small\" data-id=\"2\"\n      >Audit color contrast\n      <minerva-button size=\"small\" variant=\"ghost\" data-move=\"2\"\n        >Move to Doing</minerva-button\n      ></minerva-card\n    >\n  </minerva-dashboard-column>\n  <minerva-dashboard-column heading=\"Doing\" count=\"1\" data-status=\"doing\">\n    <minerva-card padding=\"small\" data-id=\"3\"\n      >Ship the billing page\n      <minerva-button size=\"small\" variant=\"ghost\" data-move=\"3\"\n        >Move to Done</minerva-button\n      ></minerva-card\n    >\n  </minerva-dashboard-column>\n  <minerva-dashboard-column heading=\"Done\" count=\"1\" data-status=\"done\">\n    <minerva-card padding=\"small\" data-id=\"4\"\n      >Set up error tracking</minerva-card\n    >\n  </minerva-dashboard-column>\n</minerva-dashboard-columns>\n",
+        "apps/docs/src/docs/pages/dashboard-columns/wc/basic.ts": "// A card moves to the next column with its own button (draggable boards:\n// drag-drop demo).\n// The column gives each slotted card role=\"listitem\"; update `count` after\n// moving cards.\nconst ORDER = [\"todo\", \"doing\", \"done\"];\nconst TITLES: Record<string, string> = { doing: \"Doing\", done: \"Done\" };\n\nexport function setup(root: HTMLElement) {\n  const board = root.querySelector<HTMLElement>(\"#board\")!;\n  const columns = () =>\n    Array.from(board.querySelectorAll<HTMLElement>(\"minerva-dashboard-column\"));\n  const onClick = (event: Event) => {\n    const button = (event.target as Element).closest<HTMLElement>(\n      \"[data-move]\",\n    );\n    if (!button) return;\n    const card = button.closest<HTMLElement>(\"minerva-card\")!;\n    const from = card.closest<HTMLElement>(\"minerva-dashboard-column\")!;\n    const status = ORDER[ORDER.indexOf(from.dataset.status!) + 1];\n    const to = columns().find((column) => column.dataset.status === status);\n    if (!to) return;\n    to.append(card);\n    const after = ORDER[ORDER.indexOf(status!) + 1];\n    if (after) button.textContent = `Move to ${TITLES[after]}`;\n    else button.remove();\n    for (const column of columns())\n      column.setAttribute(\n        \"count\",\n        String(column.querySelectorAll(\"minerva-card\").length),\n      );\n  };\n  board.addEventListener(\"click\", onClick);\n  return () => board.removeEventListener(\"click\", onClick);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "基本的な使い方",
+      "description": "minerva-dashboard-columns の中に minerva-dashboard-column 要素を置きます。スロットに入れたカードには role=\"listitem\" が付きます。ここでは各カードが自分のボタンで次の列に移動し、スクリプトが count 属性を更新します。ドラッグできるボードは「ドラッグ＆ドロップ」を参照してください。"
+    },
+    {
+      "id": "colors",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/dashboard-columns/wc/colors.html",
+      "files": {
+        "apps/docs/src/docs/pages/dashboard-columns/wc/colors.html": "<minerva-dashboard-columns\n  aria-label=\"Product roadmap\"\n  column-width=\"220\"\n  gap=\"8\"\n>\n  <minerva-dashboard-column heading=\"Backlog\" count=\"1\" color=\"neutral\">\n    <minerva-card padding=\"small\">Collect feedback</minerva-card>\n  </minerva-dashboard-column>\n  <minerva-dashboard-column heading=\"Ready\" count=\"1\" color=\"info\">\n    <minerva-card padding=\"small\">Pricing page copy</minerva-card>\n  </minerva-dashboard-column>\n  <minerva-dashboard-column heading=\"In progress\" count=\"2\" color=\"primary\">\n    <minerva-card padding=\"small\">Search API</minerva-card>\n    <minerva-card padding=\"small\">Avatars</minerva-card>\n  </minerva-dashboard-column>\n  <minerva-dashboard-column heading=\"Review\" count=\"1\" color=\"warning\">\n    <minerva-card padding=\"small\">Dark mode</minerva-card>\n  </minerva-dashboard-column>\n  <minerva-dashboard-column heading=\"Blocked\" count=\"1\" color=\"danger\">\n    <minerva-card padding=\"small\">SSO with Okta</minerva-card>\n  </minerva-dashboard-column>\n  <minerva-dashboard-column heading=\"Done\" count=\"1\" color=\"success\">\n    <minerva-card padding=\"small\">Release 2.4</minerva-card>\n  </minerva-dashboard-column>\n  <minerva-dashboard-column heading=\"Research\" count=\"1\" color=\"#7c3aed\">\n    <minerva-card padding=\"small\">Interview users</minerva-card>\n  </minerva-dashboard-column>\n</minerva-dashboard-columns>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "カラーと件数",
+      "description": "color はテーマカラー（:state(color-success) などのカスタムステートも提供）または任意の CSS カラーを受け付けます。count は見出しと一緒に読み上げられるバッジを表示します。column-width と gap で列のサイズを決めます。"
+    },
+    {
+      "id": "drag-drop",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/dashboard-columns/wc/drag-drop.html",
+      "files": {
+        "apps/docs/src/docs/pages/dashboard-columns/wc/drag-drop.html": "<minerva-dashboard-columns id=\"board\" aria-label=\"Sprint 12\" draggable>\n  <minerva-dashboard-column heading=\"To do\" value=\"todo\" count=\"3\">\n    <minerva-dashboard-card value=\"guide\" label=\"Write the onboarding guide\"\n      ><minerva-card padding=\"small\"\n        >Write the onboarding guide</minerva-card\n      ></minerva-dashboard-card\n    >\n    <minerva-dashboard-card value=\"contrast\" label=\"Audit color contrast\"\n      ><minerva-card padding=\"small\"\n        >Audit color contrast</minerva-card\n      ></minerva-dashboard-card\n    >\n    <minerva-dashboard-card value=\"search\" label=\"Index the docs search\"\n      ><minerva-card padding=\"small\"\n        >Index the docs search</minerva-card\n      ></minerva-dashboard-card\n    >\n  </minerva-dashboard-column>\n  <minerva-dashboard-column\n    heading=\"Doing\"\n    value=\"doing\"\n    count=\"1\"\n    description=\"At most 2 cards\"\n  >\n    <minerva-dashboard-card value=\"billing\" label=\"Ship the billing page\"\n      ><minerva-card padding=\"small\"\n        >Ship the billing page</minerva-card\n      ></minerva-dashboard-card\n    >\n  </minerva-dashboard-column>\n  <minerva-dashboard-column heading=\"Done\" value=\"done\" count=\"1\">\n    <minerva-dashboard-card value=\"errors\" label=\"Set up error tracking\"\n      ><minerva-card padding=\"small\"\n        >Set up error tracking</minerva-card\n      ></minerva-dashboard-card\n    >\n  </minerva-dashboard-column>\n</minerva-dashboard-columns>\n",
+        "apps/docs/src/docs/pages/dashboard-columns/wc/drag-drop.ts": "// The board is controlled: on minerva-card-move the script moves the card\n// element itself (toIndex counts the cards without the moved one) and\n// updates the count attributes. canDrop keeps \"Doing\" at 2 cards.\nimport type {\n  DashboardCardMove,\n  MinervaDashboardColumns,\n} from \"minerva-design/web-components/dashboard-columns\";\n\nconst LIMIT = 2;\n\nexport function setup(root: HTMLElement) {\n  const board = root.querySelector<MinervaDashboardColumns>(\"#board\")!;\n  const column = (value: string) =>\n    board.querySelector<HTMLElement>(\n      `minerva-dashboard-column[value=\"${value}\"]`,\n    )!;\n  const cardsOf = (element: HTMLElement) =>\n    Array.from(\n      element.querySelectorAll<HTMLElement>(\":scope > minerva-dashboard-card\"),\n    );\n\n  board.canDrop = (move) =>\n    move.toColumn !== \"doing\" ||\n    move.fromColumn === \"doing\" ||\n    cardsOf(column(\"doing\")).length < LIMIT;\n\n  const onMove = (event: Event) => {\n    const move = (event as CustomEvent<DashboardCardMove>).detail;\n    const card = cardsOf(column(move.fromColumn))[move.fromIndex]!;\n    const target = column(move.toColumn);\n    const others = cardsOf(target).filter((other) => other !== card);\n    target.insertBefore(card, others[move.toIndex] ?? null);\n    for (const element of [column(move.fromColumn), target])\n      element.setAttribute(\"count\", String(cardsOf(element).length));\n  };\n  board.addEventListener(\"minerva-card-move\", onMove);\n  return () => {\n    board.removeEventListener(\"minerva-card-move\", onMove);\n    board.canDrop = undefined;\n  };\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "ドラッグ＆ドロップ",
+      "description": "draggable を指定すると、キー（value）付きの列にある minerva-dashboard-card 要素をマウス・タッチ・キーボードで移動できます。ボードは minerva-card-move（{ cardKey, fromColumn, fromIndex, toColumn, toIndex }）を発火するだけで自身では何も動かしません。スクリプトがカード要素を移動し、件数を更新します。canDrop プロパティで「進行中」を 2 枚までにしています。"
+    },
+    {
+      "id": "empty-actions",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/dashboard-columns/wc/empty-actions.html",
+      "files": {
+        "apps/docs/src/docs/pages/dashboard-columns/wc/empty-actions.html": "<minerva-dashboard-columns aria-label=\"Ideas\" fill>\n  <minerva-dashboard-column\n    id=\"ideas\"\n    heading=\"Ideas\"\n    count=\"0\"\n    description=\"Anything worth exploring\"\n    empty-text=\"No ideas yet: use Add to create one.\"\n  >\n    <minerva-button slot=\"actions\" id=\"add\" size=\"small\" variant=\"ghost\"\n      >Add</minerva-button\n    >\n  </minerva-dashboard-column>\n  <minerva-dashboard-column\n    heading=\"Archived\"\n    count=\"0\"\n  ></minerva-dashboard-column>\n</minerva-dashboard-columns>\n",
+        "apps/docs/src/docs/pages/dashboard-columns/wc/empty-actions.ts": "// The empty slot / empty-text shows while the column has no cards; the\n// actions slot holds header controls.\nexport function setup(root: HTMLElement) {\n  const column = root.querySelector<HTMLElement>(\"#ideas\")!;\n  const add = root.querySelector<HTMLElement>(\"#add\")!;\n  const onAdd = () => {\n    const count = column.querySelectorAll(\"minerva-card\").length + 1;\n    const card = document.createElement(\"minerva-card\");\n    card.setAttribute(\"padding\", \"small\");\n    card.textContent = `Idea ${count}`;\n    column.append(card);\n    column.setAttribute(\"count\", String(count));\n  };\n  add.addEventListener(\"click\", onAdd);\n  return () => add.removeEventListener(\"click\", onAdd);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "空の状態とアクション",
+      "description": "actions スロットはヘッダーの末尾に配置されます。カードがない間は empty-text（または empty スロット）を表示します。fill は列が収まるときに引き伸ばします。"
+    },
+    {
+      "id": "fixed-height",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/dashboard-columns/wc/fixed-height.html",
+      "files": {
+        "apps/docs/src/docs/pages/dashboard-columns/wc/fixed-height.html": "<minerva-dashboard-columns id=\"queue\" aria-label=\"Support queue\" height=\"320\">\n  <minerva-dashboard-column\n    heading=\"Inbox\"\n    color=\"info\"\n    data-prefix=\"Ticket\"\n    data-count=\"12\"\n  ></minerva-dashboard-column>\n  <minerva-dashboard-column\n    heading=\"Triaged\"\n    color=\"warning\"\n    data-prefix=\"Bug\"\n    data-count=\"5\"\n  ></minerva-dashboard-column>\n  <minerva-dashboard-column\n    heading=\"Fixed\"\n    color=\"success\"\n    data-prefix=\"Fix\"\n    data-count=\"8\"\n  ></minerva-dashboard-column>\n</minerva-dashboard-columns>\n",
+        "apps/docs/src/docs/pages/dashboard-columns/wc/fixed-height.ts": "// height (or max-height) bounds the board: each column body scrolls\n// vertically within it while the board scrolls horizontally.\nexport function setup(root: HTMLElement) {\n  const added: HTMLElement[] = [];\n  for (const column of root.querySelectorAll<HTMLElement>(\n    \"minerva-dashboard-column\",\n  )) {\n    const count = Number(column.dataset.count);\n    for (let index = 1; index <= count; index++) {\n      const card = document.createElement(\"minerva-card\");\n      card.setAttribute(\"padding\", \"small\");\n      card.textContent = `${column.dataset.prefix} ${index}`;\n      column.append(card);\n      added.push(card);\n    }\n    column.setAttribute(\"count\", String(count));\n  }\n  return () => added.forEach((card) => card.remove());\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "固定の高さ",
+      "description": "height または max-height でボードの高さを制限すると、ボードが横にスクロールする一方で各列の本体が縦にスクロールします。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "DashboardColumns ダッシュボード列",
+      "description": "ダッシュボード上にカードを列で並べるボード。ワークフローの段階、パイプラインの工程、ステータス（未着手 / 進行中 / 完了）ごとに 1 列：タイトル・件数・アクセントカラーを持つ同じ幅の列、縦に並ぶカード、ボード全体の横スクロール。draggable を指定すると、DashboardCard をマウス・タッチ・キーボードで列間および列内で移動できます。ボードは制御されたままです（onCardMove）。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "DashboardColumns は DashboardColumn を含む、ラベル付きでキーボードでスクロールできる領域です。各列はタイトルと件数で名前が付いたグループで、カード（ここでは minerva の Card）はリストになります。ここではカードを独自の操作（ボタンやメニュー）で移動します。ドラッグできるボードは「ドラッグ＆ドロップ」を参照してください。"
+        },
+        "colors": {
+          "title": "カラーと件数",
+          "description": "color はタイトルの前にアクセントのドットを表示します：テーマカラー（primary、success、warning、danger、info、neutral）または任意の CSS カラー。count はバッジを表示し、タイトルと一緒に読み上げられます。columnWidth と gap で列のサイズを決めます。狭い画面では列は幅を保ち、スクロール時に列単位でスナップします。"
+        },
+        "empty-actions": {
+          "title": "空の状態・アクション・フッター",
+          "description": "actions はヘッダーの末尾（追加ボタンなど）、description はその下、footer はカードの下に配置されます。カードのない列には empty（既定は翻訳された「項目がありません」）を表示します。fill は列が収まるときに均等に引き伸ばします。"
+        },
+        "fixed-height": {
+          "title": "固定の高さ",
+          "description": "height または maxHeight でボードの高さを制限すると、ボードが横にスクロールする一方で各列の本体が縦にスクロールします。"
+        },
+        "drag-drop": {
+          "title": "ドラッグ＆ドロップ",
+          "description": "draggable は、キー（value）付きの列にある DashboardCard をドラッグ可能にします。マウス、タッチ画面での長押し、またはキーボード（フォーカスしたカードで Space か Enter で持ち上げ、矢印キーで移動、Space か Enter で置き、Escape で取り消し。各操作は読み上げられます）で操作できます。ボード自身は並べ替えません。onCardMove が { cardKey, fromColumn, fromIndex, toColumn, toIndex } を通知し、moveDashboardCard（minerva-design/core）でリストに適用します。canDrop で位置を拒否できます。ここでは「進行中」は最大 2 枚です。"
+        }
+      },
+      "api": {
+        "DashboardColumnsProps": {
+          "children": "列（DashboardColumn）",
+          "columnWidth": "各列の幅（数値はピクセル）。fill のときは最小幅",
+          "fill": "列が収まるときにボードいっぱいに均等に引き伸ばします（columnWidth を最小幅とし、収まらなければスクロール）",
+          "gap": "列の間隔（数値はピクセル）",
+          "height": "ボードの高さ：列の本体はその中で縦にスクロールします（数値はピクセル）",
+          "maxHeight": "ボードの最大の高さ：列の本体はその中で縦にスクロールします（数値はピクセル）",
+          "draggable": "キー付きの列にある DashboardCard を列間・列内でドラッグできるようにします（マウス、タッチの長押し、キーボード）",
+          "onCardMove": "カードが新しい位置に置かれたときに { cardKey, fromColumn, fromIndex, toColumn, toIndex }（toIndex は移動したカードを除いて数えます）で呼ばれます。データ内でカードを移動してください",
+          "canDrop": "カードをその位置に置けるかどうか。拒否された位置にはドロップ表示が出ず、キーボードでも飛ばされます",
+          "aria-label": "ボード領域のアクセシブルな名前",
+          "aria-labelledby": "ボードに名前を付ける要素の id（aria-label の代わり）",
+          "className": "追加のクラス名",
+          "style": "ボードのインラインスタイル",
+          "id": "ボードの id",
+          "ref": "ルートの <div> への ref"
+        },
+        "DashboardColumnProps": {
+          "title": "列のタイトル（アクセシブルな名前にもなります）",
+          "value": "列のキー。ドラッグ可能なボードは fromColumn / toColumn として通知します（キーのない列はカードを受け付けません）",
+          "count": "タイトルの横にバッジで表示する件数（タイトルと一緒に読み上げ）。省略するとバッジは表示されません",
+          "color": "列のアクセント（タイトルの前のドット）：テーマカラーまたは任意の CSS カラー",
+          "description": "ヘッダーの下の補足テキスト",
+          "actions": "ヘッダー末尾のコントロール（追加ボタンなど）",
+          "empty": "列にカードがないときに表示する内容",
+          "footer": "カードの下のフッター（「カードを追加」ボタンなど）",
+          "children": "カード：各子要素は role=\"listitem\" で包まれます",
+          "aria-label": "列のアクセシブルな名前（既定はタイトルと件数。例：「未着手、3 件」）",
+          "className": "追加のクラス名",
+          "style": "列のインラインスタイル",
+          "id": "列の id",
+          "ref": "ルートの <section> への ref"
+        },
+        "DashboardCardProps": {
+          "value": "カードのキー。ドラッグ可能なボードは cardKey として通知します",
+          "label": "ドラッグの読み上げで使うカードの名前。ドラッグ可能なときはアクセシブルな名前にもなります（既定はテキスト）",
+          "children": "カードの内容",
+          "className": "追加のクラス名",
+          "style": "カードのインラインスタイル",
+          "id": "カードの id",
+          "ref": "ルートの <div> への ref"
+        }
+      },
+      "cssVars": {
+        "--dashboard-column-width": "列の幅（既定は 18rem。columnWidth プロパティで設定。fill のときは最小幅）",
+        "--dashboard-gap": "列の間隔（既定は 0.75rem。gap プロパティで設定）",
+        "--dashboard-column-background": "列の背景（既定は --surface-muted-color）",
+        "--dashboard-column-border-color": "列の枠線の色（既定は --border-color）",
+        "--dashboard-column-radius": "列の角の丸み（既定は --radius-lg）",
+        "--dashboard-column-color": "列のアクセント：タイトルの前のドット（color プロパティにカスタム CSS カラーを指定すると設定されます）",
+        "--dashboard-card-gap": "列内のカードの間隔（既定は --space-2）",
+        "--dashboard-count-background": "件数バッジの背景（既定は --surface-color）",
+        "--dashboard-count-color": "件数バッジの文字色（既定は --text-secondary-color）",
+        "--dashboard-drop-indicator-color": "ドロップ位置を示す線と、ドラッグ中のカードが入る列の色（既定は --primary-color）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "minerva-dashboard-columns の中に minerva-dashboard-column 要素を置きます。スロットに入れたカードには role=\"listitem\" が付きます。ここでは各カードが自分のボタンで次の列に移動し、スクリプトが count 属性を更新します。ドラッグできるボードは「ドラッグ＆ドロップ」を参照してください。"
+          },
+          "colors": {
+            "title": "カラーと件数",
+            "description": "color はテーマカラー（:state(color-success) などのカスタムステートも提供）または任意の CSS カラーを受け付けます。count は見出しと一緒に読み上げられるバッジを表示します。column-width と gap で列のサイズを決めます。"
+          },
+          "empty-actions": {
+            "title": "空の状態とアクション",
+            "description": "actions スロットはヘッダーの末尾に配置されます。カードがない間は empty-text（または empty スロット）を表示します。fill は列が収まるときに引き伸ばします。"
+          },
+          "fixed-height": {
+            "title": "固定の高さ",
+            "description": "height または max-height でボードの高さを制限すると、ボードが横にスクロールする一方で各列の本体が縦にスクロールします。"
+          },
+          "drag-drop": {
+            "title": "ドラッグ＆ドロップ",
+            "description": "draggable を指定すると、キー（value）付きの列にある minerva-dashboard-card 要素をマウス・タッチ・キーボードで移動できます。ボードは minerva-card-move（{ cardKey, fromColumn, fromIndex, toColumn, toIndex }）を発火するだけで自身では何も動かしません。スクリプトがカード要素を移動し、件数を更新します。canDrop プロパティで「進行中」を 2 枚までにしています。"
+          }
+        },
+        "minerva-dashboard-columns": {
+          "props": {
+            "draggable": "キー付きの列にある minerva-dashboard-card 子要素をドラッグ可能にします（マウス、タッチの長押し、キーボード）。ネイティブの draggable を置き換え、属性があれば有効になります（\"false\" を除く）"
+          },
+          "events": {
+            "minerva-card-move": "カードが新しい位置に置かれました（detail: { cardKey, fromColumn, fromIndex, toColumn, toIndex }）。カード要素を移動するか再描画してください。"
+          },
+          "slots": {
+            "default": "列（minerva-dashboard-column）"
+          },
+          "methods": {
+            "focus": "スクロール領域にフォーカスします（その後は矢印キーでスクロールできます）。"
+          }
+        },
+        "minerva-dashboard-column": {
+          "props": {
+            "heading": "列のタイトル（アクセシブルな名前にもなります。heading スロットも使用可）",
+            "emptyText": "カードがないときに表示するテキスト（既定は翻訳された「項目がありません」。empty スロットも使用可）"
+          },
+          "slots": {
+            "default": "カード（role のないカードには role=\"listitem\" が付きます）",
+            "heading": "リッチなタイトル（heading 属性の代わり）",
+            "actions": "ヘッダー末尾のコントロール（追加ボタンなど）",
+            "description": "補足テキスト（description 属性の代わり）",
+            "empty": "カードがないときに表示する内容",
+            "footer": "カードの下のフッター（「カードを追加」ボタンなど）"
+          }
+        },
+        "minerva-dashboard-card": {
+          "slots": {
+            "default": "カードの内容"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "列単位でスナップする横向きの ScrollView。カードは自分のボタンで移動します。"
+          },
+          "drag-drop": {
+            "title": "ドラッグ＆ドロップ",
+            "description": "長押しでカードを持ち上げるとボードのスクロールが止まり、指を離した位置に置かれます。スクリーンリーダーでは各カードで「上へ移動 / 下へ移動 / 〜へ移動」のアクションを使えます。onCardMove が移動を通知します。"
+          }
+        }
+      }
+    }
+  }
+}

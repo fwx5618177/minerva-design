@@ -1,0 +1,2403 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.1",
+  "locale": "en",
+  "renderer": "react",
+  "page": "scatter-3d-chart",
+  "title": "3D scatter chart",
+  "description": "Point clouds in a 3D box you can orbit: hundreds of thousands to millions of points on the GPU, colored per series, per point or through a color scale, with hover picking, legend and color bar. Line3DChart draws 3D trajectories.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.1",
+    "sourceCommit": "3a9f5cdaae706f14fe6d8c65c5481eba719a66c4",
+    "sourceDigest": "sha256:c9ed2b706b61413d29e506a3f04f3d35c044a4b57ec0e284935054f9e1898c7e",
+    "referenceSourceDigest": "sha256:6c9ecba0079f25e53cd971e51f2be8604fc3d941c0ed1cfeec03c4a91913ad73"
+  },
+  "content": {
+    "data": {
+      "species": {
+        "setosa": "Setosa",
+        "versicolor": "Versicolor",
+        "virginica": "Virginica"
+      },
+      "sepalLength": "Sepal length (cm)",
+      "sepalWidth": "Sepal width (cm)",
+      "petalLength": "Petal length (cm)",
+      "clustersAria": "3D scatter chart of three flower species by sepal length, sepal width and petal length",
+      "galaxy": {
+        "bulge": "Bulge and bar",
+        "disk": "Old disk",
+        "arms": "Young stars",
+        "nebulae": "HII regions",
+        "halo": "Halo"
+      },
+      "kiloparsecs": "{{value}} kpc",
+      "galaxyAria": "A barred spiral galaxy of one million stars: bulge, spiral arms with young stars, HII regions and dust lanes, disk and halo",
+      "exposure": "Exposure",
+      "exposureValue": "Exposure ×{{value}}",
+      "sensors": "Sensors",
+      "sensorLabel": "Sensor {{id}} · humidity {{humidity}}%",
+      "celsius": "{{value}} °C",
+      "lengthM": "Length (m)",
+      "widthM": "Width (m)",
+      "heightM": "Height (m)",
+      "temperature": "Temperature",
+      "sensorsAria": "Temperature of 300 sensors in a warehouse, by position and height",
+      "backbone1": "Backbone 1",
+      "backbone2": "Backbone 2",
+      "basePairs": "Base pairs",
+      "autoRotate": "Auto rotate",
+      "projection": "Projection",
+      "perspective": "Perspective",
+      "orthographic": "Orthographic",
+      "helixAria": "Rotating DNA double helix",
+      "knot": "Torus knot",
+      "knotAria": "200,000 points around a torus knot, colored by height",
+      "renderer": "Backend",
+      "renderers": {
+        "auto": "Auto",
+        "webgpu": "WebGPU",
+        "webgl2": "WebGL2",
+        "webgl": "WebGL",
+        "canvas2d": "Canvas2D"
+      },
+      "starting": "Starting…",
+      "rendererInUse": "Backend in use: {{backend}}",
+      "rendererFallback": "{{requested}} is not available here: drawing with {{backend}}",
+      "trajectory": "Trajectory",
+      "time": "Time",
+      "seconds": "{{value}} s",
+      "lorenzAria": "Trajectory of the Lorenz attractor, colored by time",
+      "roll": "Swiss roll",
+      "position": "Position on the roll",
+      "views": {
+        "front": "Front",
+        "side": "Side",
+        "top": "Top",
+        "reset": "Reset"
+      },
+      "cameraState": "Azimuth {{azimuth}}°, elevation {{elevation}}°, zoom ×{{zoom}}",
+      "cameraHint": "Drag to rotate, Shift + drag to pan, Ctrl / ⌘ + wheel to zoom, double-click to reset.",
+      "rollAria": "Swiss roll point cloud colored by the position along the roll",
+      "topics": {
+        "sports": "Sports",
+        "politics": "Politics",
+        "technology": "Technology",
+        "health": "Health",
+        "finance": "Finance",
+        "travel": "Travel"
+      },
+      "docLabel": "{{topic}} article #{{n}}",
+      "neighbours": "Nearest neighbours",
+      "component": "Component {{n}} ({{variance}})",
+      "embeddingsAria": "News article embeddings on their first three principal components, by topic",
+      "neighboursOf": "Closest to {{doc}}: {{list}}.",
+      "neighbourItem": "{{doc}} ({{distance}})",
+      "embeddingsHint": "Click an article to find its nearest neighbours.",
+      "lidarReturns": "Lidar returns",
+      "lidarColor": "Color by",
+      "lidarModes": {
+        "height": "Height",
+        "intensity": "Intensity"
+      },
+      "darkTheme": "Dark theme",
+      "lidarAria": "Lidar point cloud of a street with buildings, trees and parked cars",
+      "lidarSummary": "{{points}} points. Hover the cloud to read a return.",
+      "lidarHover": "Height {{height}}, intensity {{intensity}}.",
+      "satName": "{{shell}} {{n}}",
+      "shells": {
+        "broadband": "Broadband (LEO)",
+        "imaging": "Earth imaging (polar)",
+        "navigation": "Navigation (MEO)",
+        "geostationary": "Geostationary"
+      },
+      "earth": "Earth",
+      "play": "Play",
+      "thousandKm": "Thousands of km",
+      "satellitesAria": "Satellites of four orbital shells moving around the Earth",
+      "satHover": "{{shell}}: altitude {{altitude}}, speed {{speed}}, one orbit every {{period}}.",
+      "satellitesHint": "Hover a satellite to read its orbit.",
+      "sectors": {
+        "technology": "Technology",
+        "healthcare": "Healthcare",
+        "energy": "Energy",
+        "financials": "Financials",
+        "consumer": "Consumer"
+      },
+      "stockLabel": "{{ticker}} · {{cap}}",
+      "orthographicView": "Orthographic view",
+      "annualVolatility": "Volatility",
+      "beta": "Beta",
+      "annualReturn": "Annual return",
+      "portfolioAria": "Stocks by volatility, beta and annual return, sized by market capitalization",
+      "stockReadout": "{{ticker}} ({{sector}}): return {{ret}}, volatility {{volatility}}, beta {{beta}}, Sharpe ratio {{sharpe}}, market cap {{cap}}.",
+      "portfolioHint": "Click a stock to pin its figures."
+    }
+  },
+  "components": [
+    {
+      "name": "Line3DChart",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/charts",
+          "exports": [
+            "Line3DChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "series",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "array",
+            "typeText": "readonly Line3DSeries[]",
+            "typeRef": "type:24fd01a47c6879a3eee6",
+            "required": true,
+            "description": "3D polylines (trajectories)"
+          },
+          {
+            "name": "height",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": 400,
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels"
+          },
+          {
+            "name": "width",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Chart3DAxisOptions | undefined",
+            "typeRef": "type:1c821e1ee1e77dc2c4fa",
+            "required": false,
+            "description": "X axis (width of the box)"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Chart3DAxisOptions | undefined",
+            "typeRef": "type:1c821e1ee1e77dc2c4fa",
+            "required": false,
+            "description": "Y axis (depth of the box)"
+          },
+          {
+            "name": "zAxis",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Chart3DAxisOptions | undefined",
+            "typeRef": "type:1c821e1ee1e77dc2c4fa",
+            "required": false,
+            "description": "Z axis (height of the box)"
+          },
+          {
+            "name": "camera",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Chart3DCameraOptions | undefined",
+            "typeRef": "type:167a8a19d9cc56b4b670",
+            "required": false,
+            "description": "Initial camera, also restored by a double click (changing it moves the camera)"
+          },
+          {
+            "name": "autoRotate",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "number | boolean | undefined",
+            "typeRef": "type:11d9d08024b0b84c460e",
+            "default": false,
+            "required": false,
+            "description": "Turns the camera around the box: `true` at 12°/s or a speed in degrees per second; pauses while hovered, off-screen and with reduced motion"
+          },
+          {
+            "name": "aspect",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "array",
+            "typeText": "readonly [number, number, number] | undefined",
+            "typeRef": "type:d7844941c1a0fb5f2288",
+            "required": false,
+            "description": "Proportions of the box (x, y, z)"
+          },
+          {
+            "name": "box",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Draws the axis box: back walls, grid lines, tick labels and axis titles"
+          },
+          {
+            "name": "colorScale",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "Chart3DColorScale | undefined",
+            "typeRef": "type:a7f2e842d4114e5e2bc9",
+            "default": "viridis",
+            "required": false,
+            "description": "Colors of `colorBy: \"z\"` / `\"value\"`: a built-in ramp or CSS colors"
+          },
+          {
+            "name": "valueRange",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "array",
+            "typeText": "readonly [number, number] | undefined",
+            "typeRef": "type:993918f52c7908c02d32",
+            "required": false,
+            "description": "Values mapped to the ends of the color scale; the data range by default"
+          },
+          {
+            "name": "colorBar",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "boolean | Chart3DColorBarOptions | undefined",
+            "typeRef": "type:9e94487b0cf0ad8a7ae5",
+            "required": false,
+            "description": "Color bar; shown by default when a visible series uses the color scale"
+          },
+          {
+            "name": "legend",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "boolean | Chart3DLegendOptions | undefined",
+            "typeRef": "type:1be2fbbf1e8c9fbb46a8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "boolean | Chart3DTooltipOptions | undefined",
+            "typeRef": "type:13329010a17ed76beece",
+            "required": false,
+            "description": "Tooltip; `false` disables it"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "boolean | Chart3DInteractionOptions | undefined",
+            "typeRef": "type:a71b98bca46cdf7837aa",
+            "default": true,
+            "required": false,
+            "description": "Drag rotates, right / Shift + drag pans, Ctrl / ⌘ + wheel and pinch zoom, double click resets, arrow keys rotate; `false` makes the chart static"
+          },
+          {
+            "name": "lighting",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Chart3DLightingOptions | undefined",
+            "typeRef": "type:4f031ae37c5b79a48dcc",
+            "required": false,
+            "description": "Lighting of the surfaces and bars"
+          },
+          {
+            "name": "exposure",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 1,
+            "required": false,
+            "description": "Brightness of the light of `blend: \"additive\"` series, tone mapped on WebGPU and WebGL2 (dense glowing regions saturate instead of turning white)"
+          },
+          {
+            "name": "renderer",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "enum",
+            "values": [
+              "auto",
+              "canvas2d",
+              "webgl",
+              "webgl2",
+              "webgpu"
+            ],
+            "typeText": "ChartRendererPreference | undefined",
+            "typeRef": "type:dc7d7e6f384ddec86e04",
+            "default": "auto",
+            "required": false,
+            "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software"
+          },
+          {
+            "name": "palette",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Language of the built-in texts (accessible summary, legend announcements, tooltip row names) and of the number formatting; built-in texts in English, Chinese, Japanese and French"
+          },
+          {
+            "name": "labels",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Partial<Chart3DLabels> | undefined",
+            "typeRef": "type:b9110f1352c8b648a88b",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "function",
+            "typeText": "((event: Chart3DHoverEvent | null) => void) | undefined",
+            "typeRef": "type:dfff2602865f409c9dcc",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "Chart3DHoverEvent | null",
+                "typeRef": "type:774323141f428bcd99e2"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the hovered point, cell or bar changes"
+          },
+          {
+            "name": "onPointClick",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "function",
+            "typeText": "((event: Chart3DHoverEvent) => void) | undefined",
+            "typeRef": "type:9703bea4561e32de9ced",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "Chart3DHoverEvent",
+                "typeRef": "type:fe5f94c04c80715011c0"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point, cell or bar is clicked"
+          },
+          {
+            "name": "onCameraChange",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "function",
+            "typeText": "((camera: Chart3DCameraState) => void) | undefined",
+            "typeRef": "type:30adbc1b463ace3a9336",
+            "parameters": [
+              {
+                "name": "camera",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "Chart3DCameraState",
+                "typeRef": "type:b3764b39d8f3ce70541d"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called after the user rotated, zoomed, panned or reset the camera"
+          },
+          {
+            "name": "onRendererChange",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "function",
+            "typeText": "((renderer: ChartRendererKind) => void) | undefined",
+            "typeRef": "type:fe458bf4d221b7288026",
+            "parameters": [
+              {
+                "name": "renderer",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartRendererKind",
+                "typeRef": "type:3439f360c8a2b0649d25"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the backend once it is ready (and after a fallback)"
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "camera",
+            "event": "onCameraChange",
+            "syntax": "camera={camera} onCameraChange={handler}"
+          },
+          {
+            "prop": "renderer",
+            "event": "onRendererChange",
+            "syntax": "renderer={renderer} onRendererChange={handler}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Scatter3DChart",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/charts",
+          "exports": [
+            "Scatter3DChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "series",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "array",
+            "typeText": "readonly Scatter3DSeries[]",
+            "typeRef": "type:fd4e095d127632147f49",
+            "required": true,
+            "description": "Point clouds (objects, `[x, y, z]` tuples or typed-array columns)"
+          },
+          {
+            "name": "height",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": 400,
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels"
+          },
+          {
+            "name": "width",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Chart3DAxisOptions | undefined",
+            "typeRef": "type:1c821e1ee1e77dc2c4fa",
+            "required": false,
+            "description": "X axis (width of the box)"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Chart3DAxisOptions | undefined",
+            "typeRef": "type:1c821e1ee1e77dc2c4fa",
+            "required": false,
+            "description": "Y axis (depth of the box)"
+          },
+          {
+            "name": "zAxis",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Chart3DAxisOptions | undefined",
+            "typeRef": "type:1c821e1ee1e77dc2c4fa",
+            "required": false,
+            "description": "Z axis (height of the box)"
+          },
+          {
+            "name": "camera",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Chart3DCameraOptions | undefined",
+            "typeRef": "type:167a8a19d9cc56b4b670",
+            "required": false,
+            "description": "Initial camera, also restored by a double click (changing it moves the camera)"
+          },
+          {
+            "name": "autoRotate",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "number | boolean | undefined",
+            "typeRef": "type:11d9d08024b0b84c460e",
+            "default": false,
+            "required": false,
+            "description": "Turns the camera around the box: `true` at 12°/s or a speed in degrees per second; pauses while hovered, off-screen and with reduced motion"
+          },
+          {
+            "name": "aspect",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "array",
+            "typeText": "readonly [number, number, number] | undefined",
+            "typeRef": "type:d7844941c1a0fb5f2288",
+            "required": false,
+            "description": "Proportions of the box (x, y, z)"
+          },
+          {
+            "name": "box",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Draws the axis box: back walls, grid lines, tick labels and axis titles"
+          },
+          {
+            "name": "colorScale",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "Chart3DColorScale | undefined",
+            "typeRef": "type:a7f2e842d4114e5e2bc9",
+            "default": "viridis",
+            "required": false,
+            "description": "Colors of `colorBy: \"z\"` / `\"value\"`: a built-in ramp or CSS colors"
+          },
+          {
+            "name": "valueRange",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "array",
+            "typeText": "readonly [number, number] | undefined",
+            "typeRef": "type:993918f52c7908c02d32",
+            "required": false,
+            "description": "Values mapped to the ends of the color scale; the data range by default"
+          },
+          {
+            "name": "colorBar",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "boolean | Chart3DColorBarOptions | undefined",
+            "typeRef": "type:9e94487b0cf0ad8a7ae5",
+            "required": false,
+            "description": "Color bar; shown by default when a visible series uses the color scale"
+          },
+          {
+            "name": "legend",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "boolean | Chart3DLegendOptions | undefined",
+            "typeRef": "type:1be2fbbf1e8c9fbb46a8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "boolean | Chart3DTooltipOptions | undefined",
+            "typeRef": "type:13329010a17ed76beece",
+            "required": false,
+            "description": "Tooltip; `false` disables it"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "boolean | Chart3DInteractionOptions | undefined",
+            "typeRef": "type:a71b98bca46cdf7837aa",
+            "default": true,
+            "required": false,
+            "description": "Drag rotates, right / Shift + drag pans, Ctrl / ⌘ + wheel and pinch zoom, double click resets, arrow keys rotate; `false` makes the chart static"
+          },
+          {
+            "name": "lighting",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Chart3DLightingOptions | undefined",
+            "typeRef": "type:4f031ae37c5b79a48dcc",
+            "required": false,
+            "description": "Lighting of the surfaces and bars"
+          },
+          {
+            "name": "exposure",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 1,
+            "required": false,
+            "description": "Brightness of the light of `blend: \"additive\"` series, tone mapped on WebGPU and WebGL2 (dense glowing regions saturate instead of turning white)"
+          },
+          {
+            "name": "renderer",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "enum",
+            "values": [
+              "auto",
+              "canvas2d",
+              "webgl",
+              "webgl2",
+              "webgpu"
+            ],
+            "typeText": "ChartRendererPreference | undefined",
+            "typeRef": "type:dc7d7e6f384ddec86e04",
+            "default": "auto",
+            "required": false,
+            "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software"
+          },
+          {
+            "name": "palette",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Language of the built-in texts (accessible summary, legend announcements, tooltip row names) and of the number formatting; built-in texts in English, Chinese, Japanese and French"
+          },
+          {
+            "name": "labels",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Partial<Chart3DLabels> | undefined",
+            "typeRef": "type:b9110f1352c8b648a88b",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "function",
+            "typeText": "((event: Chart3DHoverEvent | null) => void) | undefined",
+            "typeRef": "type:dfff2602865f409c9dcc",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "Chart3DHoverEvent | null",
+                "typeRef": "type:774323141f428bcd99e2"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the hovered point, cell or bar changes"
+          },
+          {
+            "name": "onPointClick",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "function",
+            "typeText": "((event: Chart3DHoverEvent) => void) | undefined",
+            "typeRef": "type:9703bea4561e32de9ced",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "Chart3DHoverEvent",
+                "typeRef": "type:fe5f94c04c80715011c0"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point, cell or bar is clicked"
+          },
+          {
+            "name": "onCameraChange",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "function",
+            "typeText": "((camera: Chart3DCameraState) => void) | undefined",
+            "typeRef": "type:30adbc1b463ace3a9336",
+            "parameters": [
+              {
+                "name": "camera",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "Chart3DCameraState",
+                "typeRef": "type:b3764b39d8f3ce70541d"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called after the user rotated, zoomed, panned or reset the camera"
+          },
+          {
+            "name": "onRendererChange",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "function",
+            "typeText": "((renderer: ChartRendererKind) => void) | undefined",
+            "typeRef": "type:fe458bf4d221b7288026",
+            "parameters": [
+              {
+                "name": "renderer",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartRendererKind",
+                "typeRef": "type:3439f360c8a2b0649d25"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the backend once it is ready (and after a fallback)"
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "camera",
+            "event": "onCameraChange",
+            "syntax": "camera={camera} onCameraChange={handler}"
+          },
+          {
+            "prop": "renderer",
+            "event": "onRendererChange",
+            "syntax": "renderer={renderer} onRendererChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "Scatter3DChartProps": {
+      "source": "charts/src/react/three-d.tsx",
+      "description": "Props of `Scatter3DChart`",
+      "kind": "interface",
+      "extends": [
+        "Chart3DCommonProps"
+      ],
+      "props": [
+        {
+          "name": "series",
+          "type": "readonly Scatter3DSeries[]",
+          "required": true,
+          "description": "Point clouds (objects, `[x, y, z]` tuples or typed-array columns)"
+        }
+      ]
+    },
+    "Line3DChartProps": {
+      "source": "charts/src/react/three-d.tsx",
+      "description": "Props of `Line3DChart`",
+      "kind": "interface",
+      "extends": [
+        "Chart3DCommonProps"
+      ],
+      "props": [
+        {
+          "name": "series",
+          "type": "readonly Line3DSeries[]",
+          "required": true,
+          "description": "3D polylines (trajectories)"
+        }
+      ]
+    },
+    "Chart3DCommonProps": {
+      "source": "charts/src/react/three-d.tsx",
+      "description": "Props shared by every 3D chart component",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "height",
+          "type": "number | string",
+          "required": false,
+          "default": "400",
+          "description": "Height of the chart (the legend included); numbers are pixels"
+        },
+        {
+          "name": "width",
+          "type": "number | string",
+          "required": false,
+          "default": "\"100%\"",
+          "description": "Width of the chart; numbers are pixels"
+        },
+        {
+          "name": "xAxis",
+          "type": "Chart3DAxisOptions",
+          "required": false,
+          "description": "X axis (width of the box)"
+        },
+        {
+          "name": "yAxis",
+          "type": "Chart3DAxisOptions",
+          "required": false,
+          "description": "Y axis (depth of the box)"
+        },
+        {
+          "name": "zAxis",
+          "type": "Chart3DAxisOptions",
+          "required": false,
+          "description": "Z axis (height of the box)"
+        },
+        {
+          "name": "camera",
+          "type": "Chart3DCameraOptions",
+          "required": false,
+          "description": "Initial camera, also restored by a double click (changing it moves the camera)"
+        },
+        {
+          "name": "autoRotate",
+          "type": "boolean | number",
+          "required": false,
+          "default": "false",
+          "description": "Turns the camera around the box: `true` at 12°/s or a speed in degrees per second; pauses while hovered, off-screen and with reduced motion"
+        },
+        {
+          "name": "aspect",
+          "type": "readonly [number, number, number]",
+          "required": false,
+          "default": "[1, 1, 0.7]",
+          "description": "Proportions of the box (x, y, z)"
+        },
+        {
+          "name": "box",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Draws the axis box: back walls, grid lines, tick labels and axis titles"
+        },
+        {
+          "name": "colorScale",
+          "type": "Chart3DColorScale",
+          "required": false,
+          "default": "\"viridis\"",
+          "description": "Colors of `colorBy: \"z\"` / `\"value\"`: a built-in ramp or CSS colors"
+        },
+        {
+          "name": "valueRange",
+          "type": "readonly [number, number]",
+          "required": false,
+          "description": "Values mapped to the ends of the color scale; the data range by default"
+        },
+        {
+          "name": "colorBar",
+          "type": "boolean | Chart3DColorBarOptions",
+          "required": false,
+          "description": "Color bar; shown by default when a visible series uses the color scale"
+        },
+        {
+          "name": "legend",
+          "type": "boolean | Chart3DLegendOptions",
+          "required": false,
+          "description": "Legend; shown by default when several series have a name"
+        },
+        {
+          "name": "tooltip",
+          "type": "boolean | Chart3DTooltipOptions",
+          "required": false,
+          "description": "Tooltip; `false` disables it"
+        },
+        {
+          "name": "interaction",
+          "type": "boolean | Chart3DInteractionOptions",
+          "required": false,
+          "default": "true",
+          "description": "Drag rotates, right / Shift + drag pans, Ctrl / ⌘ + wheel and pinch zoom, double click resets, arrow keys rotate; `false` makes the chart static"
+        },
+        {
+          "name": "lighting",
+          "type": "Chart3DLightingOptions",
+          "required": false,
+          "description": "Lighting of the surfaces and bars"
+        },
+        {
+          "name": "exposure",
+          "type": "number",
+          "required": false,
+          "default": "1",
+          "description": "Brightness of the light of `blend: \"additive\"` series, tone mapped on WebGPU and WebGL2 (dense glowing regions saturate instead of turning white)"
+        },
+        {
+          "name": "renderer",
+          "type": "ChartRendererPreference",
+          "required": false,
+          "default": "\"auto\"",
+          "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software"
+        },
+        {
+          "name": "palette",
+          "type": "readonly string[]",
+          "required": false,
+          "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "required": false,
+          "description": "Accessible name of the chart"
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "required": false,
+          "default": "the page language (`<html lang>`), then the browser language",
+          "description": "Language of the built-in texts (accessible summary, legend announcements, tooltip row names) and of the number formatting; built-in texts in English, Chinese, Japanese and French"
+        },
+        {
+          "name": "labels",
+          "type": "Partial<Chart3DLabels>",
+          "required": false,
+          "description": "Overrides of the built-in texts of the `locale`"
+        },
+        {
+          "name": "onHover",
+          "type": "(event: Chart3DHoverEvent | null) => void",
+          "required": false,
+          "description": "Called when the hovered point, cell or bar changes"
+        },
+        {
+          "name": "onPointClick",
+          "type": "(event: Chart3DHoverEvent) => void",
+          "required": false,
+          "description": "Called when a point, cell or bar is clicked"
+        },
+        {
+          "name": "onCameraChange",
+          "type": "(camera: Chart3DCameraState) => void",
+          "required": false,
+          "description": "Called after the user rotated, zoomed, panned or reset the camera"
+        },
+        {
+          "name": "onRendererChange",
+          "type": "(renderer: ChartRendererKind) => void",
+          "required": false,
+          "description": "Called with the backend once it is ready (and after a fallback)"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "description": "Class of the outer element"
+        },
+        {
+          "name": "style",
+          "type": "CSSProperties",
+          "required": false,
+          "description": "Style of the outer element"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<Chart3DHandle>",
+          "required": false,
+          "description": "Imperative handle"
+        }
+      ]
+    },
+    "Chart3DHandle": {
+      "source": "charts/src/react/three-d.tsx",
+      "description": "Imperative handle of the 3D chart components (`ref`)",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "resetCamera",
+          "type": "() => void",
+          "required": true,
+          "description": "Restores the camera of the `camera` prop"
+        },
+        {
+          "name": "getCamera",
+          "type": "() => Chart3DCameraState | null",
+          "required": true,
+          "description": "Current camera, `null` before mount"
+        },
+        {
+          "name": "setCamera",
+          "type": "(camera: Partial<Chart3DCameraState>) => void",
+          "required": true,
+          "description": "Moves the camera"
+        },
+        {
+          "name": "getRenderer",
+          "type": "() => ChartRendererKind | null",
+          "required": true,
+          "description": "Backend in use, `null` until ready"
+        },
+        {
+          "name": "getInstance",
+          "type": "() => Chart3DInstance | null",
+          "required": true,
+          "description": "The underlying engine instance (minerva-design/charts/core)"
+        }
+      ]
+    },
+    "Scatter3DSeries": {
+      "source": "charts/src/engine/three-d/types.ts",
+      "description": "A cloud of 3D points",
+      "kind": "interface",
+      "extends": [
+        "Chart3DSeriesBase"
+      ],
+      "props": [
+        {
+          "name": "type",
+          "type": "\"scatter\"",
+          "required": false,
+          "default": "\"scatter\"",
+          "description": "Set by the chart components; `createChart3D` treats series without a type as scatter series"
+        },
+        {
+          "name": "data",
+          "type": "Chart3DPointData",
+          "required": true,
+          "description": "The points"
+        },
+        {
+          "name": "pointSize",
+          "type": "number",
+          "required": false,
+          "default": "6",
+          "description": "Dot diameter in CSS pixels (per-point `size` wins)"
+        },
+        {
+          "name": "opacity",
+          "type": "number",
+          "required": false,
+          "default": "1",
+          "description": "Opacity of the dots, 0-1"
+        },
+        {
+          "name": "colorBy",
+          "type": "Chart3DColorBy",
+          "required": false,
+          "default": "\"value\" when the data has values, \"series\" otherwise",
+          "description": "Source of the dot colors"
+        },
+        {
+          "name": "perspectiveSize",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Scales the dots with their distance (perspective projection only)"
+        },
+        {
+          "name": "pointStyle",
+          "type": "Scatter3DPointStyle",
+          "required": false,
+          "default": "\"sphere\"",
+          "description": "Look of the dots: shaded spheres, flat discs or glowing discs"
+        },
+        {
+          "name": "blend",
+          "type": "Scatter3DBlend",
+          "required": false,
+          "default": "\"normal\"",
+          "description": "Blending of the dots: `\"additive\"` accumulates light (dark backgrounds)"
+        }
+      ]
+    },
+    "Line3DSeries": {
+      "source": "charts/src/engine/three-d/types.ts",
+      "description": "A 3D polyline (trajectory); `NaN` coordinates break the line",
+      "kind": "interface",
+      "extends": [
+        "Chart3DSeriesBase"
+      ],
+      "props": [
+        {
+          "name": "type",
+          "type": "\"line\"",
+          "required": false
+        },
+        {
+          "name": "data",
+          "type": "Chart3DPointData",
+          "required": true,
+          "description": "The vertices, in drawing order"
+        },
+        {
+          "name": "lineWidth",
+          "type": "number",
+          "required": false,
+          "default": "2",
+          "description": "Line width in CSS pixels"
+        },
+        {
+          "name": "opacity",
+          "type": "number",
+          "required": false,
+          "default": "1",
+          "description": "Opacity of the line, 0-1"
+        },
+        {
+          "name": "colorBy",
+          "type": "Chart3DColorBy",
+          "required": false,
+          "default": "\"value\" when the data has values, \"series\" otherwise",
+          "description": "Source of the line color (a gradient along the line for `z` / `value`)"
+        },
+        {
+          "name": "pointSize",
+          "type": "number",
+          "required": false,
+          "default": "0",
+          "description": "Diameter of a dot drawn at every vertex, in CSS pixels (0: no dots)"
+        }
+      ]
+    },
+    "Chart3DSeriesBase": {
+      "source": "charts/src/engine/three-d/types.ts",
+      "description": "Options shared by every 3D series",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "description": "Stable identifier (defaults to the index)"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "description": "Name shown in the legend and the tooltip"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": false,
+          "description": "Series color (any CSS color, `var(--x)` included); the palette when omitted"
+        },
+        {
+          "name": "hidden",
+          "type": "boolean",
+          "required": false,
+          "description": "Hides the series (it stays in the legend)"
+        },
+        {
+          "name": "format",
+          "type": "(value: number) => string",
+          "required": false,
+          "description": "Formats the `value` of the hovered item in the tooltip (its height when the data has no values); the axis formats by default"
+        }
+      ]
+    },
+    "Chart3DPoint": {
+      "source": "charts/src/engine/three-d/types.ts",
+      "description": "One 3D datum written as an object",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "x",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "y",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "z",
+          "type": "number",
+          "required": true,
+          "description": "Height (vertical axis)"
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "required": false,
+          "description": "Diameter of the dot in CSS pixels (scatter)"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": false,
+          "description": "Color of the dot (any CSS color); wins over the series color and the color scale"
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "required": false,
+          "description": "Value mapped to the color scale (`colorBy: \"value\"`)"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "description": "Text shown in the tooltip"
+        }
+      ]
+    },
+    "Chart3DColumnData": {
+      "source": "charts/src/engine/three-d/types.ts",
+      "description": "Column-oriented 3D data: the fastest form for large data sets (typed arrays are used as is, `NaN` skips a point)",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "x",
+          "type": "ArrayLike<number>",
+          "required": true
+        },
+        {
+          "name": "y",
+          "type": "ArrayLike<number>",
+          "required": true
+        },
+        {
+          "name": "z",
+          "type": "ArrayLike<number>",
+          "required": true,
+          "description": "Heights (vertical axis)"
+        },
+        {
+          "name": "size",
+          "type": "ArrayLike<number>",
+          "required": false,
+          "description": "Per-point diameters in CSS pixels (scatter)"
+        },
+        {
+          "name": "value",
+          "type": "ArrayLike<number>",
+          "required": false,
+          "description": "Per-point values mapped to the color scale (`colorBy: \"value\"`)"
+        },
+        {
+          "name": "color",
+          "type": "ArrayLike<number>",
+          "required": false,
+          "description": "Per-point colors as `0xRRGGBB` numbers (a `Uint32Array` for large clouds); win over the series color and the color scale"
+        },
+        {
+          "name": "label",
+          "type": "readonly string[]",
+          "required": false,
+          "description": "Per-point texts shown in the tooltip"
+        }
+      ]
+    },
+    "Chart3DAxisOptions": {
+      "source": "charts/src/engine/three-d/types.ts",
+      "description": "Options of a 3D axis",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "description": "Axis title"
+        },
+        {
+          "name": "min",
+          "type": "number",
+          "required": false,
+          "description": "Lower bound; computed from the data when omitted"
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "required": false,
+          "description": "Upper bound; computed from the data when omitted"
+        },
+        {
+          "name": "categories",
+          "type": "readonly string[]",
+          "required": false,
+          "description": "Category names (x / y axes of bar charts); collected from the data when omitted. Setting them makes the axis a category axis."
+        },
+        {
+          "name": "format",
+          "type": "(value: number) => string",
+          "required": false,
+          "description": "Formats a tick / tooltip value (category axes: the category index)"
+        },
+        {
+          "name": "tickCount",
+          "type": "number",
+          "required": false,
+          "default": "5",
+          "description": "Approximate number of ticks"
+        },
+        {
+          "name": "grid",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Draws grid lines at the ticks on the walls of the box"
+        },
+        {
+          "name": "visible",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Shows the tick labels and the title"
+        },
+        {
+          "name": "nice",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Rounds the automatic range to tick values"
+        }
+      ]
+    },
+    "Chart3DCameraOptions": {
+      "source": "charts/src/engine/three-d/types.ts",
+      "description": "Camera position around the center of the box",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "azimuth",
+          "type": "number",
+          "required": false,
+          "default": "35",
+          "description": "Horizontal angle in degrees, counterclockwise seen from above (0 looks along the y axis)"
+        },
+        {
+          "name": "elevation",
+          "type": "number",
+          "required": false,
+          "default": "24",
+          "description": "Height angle in degrees (-89 … 89; positive looks from above)"
+        },
+        {
+          "name": "zoom",
+          "type": "number",
+          "required": false,
+          "default": "1",
+          "description": "Zoom: 1 fits the box, 2 shows it twice as large"
+        },
+        {
+          "name": "projection",
+          "type": "Chart3DProjection",
+          "required": false,
+          "default": "\"perspective\"",
+          "description": "Perspective (vanishing lines) or orthographic (parallel lines)"
+        },
+        {
+          "name": "fov",
+          "type": "number",
+          "required": false,
+          "default": "32",
+          "description": "Vertical field of view in degrees (perspective)"
+        }
+      ]
+    },
+    "Chart3DCameraState": {
+      "source": "charts/src/engine/three-d/types.ts",
+      "description": "Current camera, reported by `camera` events and `getCamera()`",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "azimuth",
+          "type": "number",
+          "required": true,
+          "description": "Horizontal angle in degrees"
+        },
+        {
+          "name": "elevation",
+          "type": "number",
+          "required": true,
+          "description": "Height angle in degrees"
+        },
+        {
+          "name": "zoom",
+          "type": "number",
+          "required": true,
+          "description": "Zoom factor (1 fits the box)"
+        },
+        {
+          "name": "pan",
+          "type": "[number, number]",
+          "required": true,
+          "description": "Shift of the box center in screen space, as fractions of the plot height"
+        },
+        {
+          "name": "projection",
+          "type": "Chart3DProjection",
+          "required": true
+        }
+      ]
+    },
+    "Chart3DInteractionOptions": {
+      "source": "charts/src/engine/three-d/types.ts",
+      "description": "Rotation / zoom / pan options",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "rotate",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Drag (one finger) rotates the camera"
+        },
+        {
+          "name": "zoom",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Wheel and pinch zoom"
+        },
+        {
+          "name": "wheel",
+          "type": "\"modifier\" | \"always\"",
+          "required": false,
+          "default": "\"modifier\"",
+          "description": "Wheel zoom: only with Ctrl / ⌘ (and trackpad pinch) or always"
+        },
+        {
+          "name": "pan",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Right-drag, Shift + drag and two-finger drag pan the view"
+        },
+        {
+          "name": "keyboard",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Arrow keys rotate, +/- zoom, 0 resets, Esc clears the highlight"
+        }
+      ]
+    },
+    "Chart3DColorBarOptions": {
+      "source": "charts/src/engine/three-d/types.ts",
+      "description": "Color bar of the color scale",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "description": "Title above the bar"
+        },
+        {
+          "name": "format",
+          "type": "(value: number) => string",
+          "required": false,
+          "description": "Formats the values of the bar (the z axis format by default)"
+        }
+      ]
+    },
+    "Chart3DHoverEvent": {
+      "source": "charts/src/engine/three-d/types.ts",
+      "description": "The point, surface cell or bar under the pointer",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "seriesIndex",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "seriesId",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "seriesName",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "type",
+          "type": "Chart3DSeriesType",
+          "required": true,
+          "description": "Type of the series"
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "required": true,
+          "description": "Index of the point / bar in the series data; surfaces: `row * cols + col`"
+        },
+        {
+          "name": "row",
+          "type": "number",
+          "required": false,
+          "description": "Surfaces: row of the grid vertex"
+        },
+        {
+          "name": "col",
+          "type": "number",
+          "required": false,
+          "description": "Surfaces: column of the grid vertex"
+        },
+        {
+          "name": "x",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "y",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "z",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "required": false,
+          "description": "Color-scale value (`value` of the data)"
+        },
+        {
+          "name": "xCategory",
+          "type": "string",
+          "required": false,
+          "description": "Bars: category names"
+        },
+        {
+          "name": "yCategory",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": true,
+          "description": "Resolved color of the point / cell / bar"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "clientX",
+          "type": "number",
+          "required": true,
+          "description": "Position of the item in CSS pixels, relative to the chart's container"
+        },
+        {
+          "name": "clientY",
+          "type": "number",
+          "required": true
+        }
+      ]
+    },
+    "Chart3DLabels": {
+      "source": "charts/src/engine/three-d/types.ts",
+      "description": "Built-in texts of the 3D charts. Templates replace `{name}`-style placeholders.",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "chart",
+          "type": "string",
+          "required": true,
+          "default": "\"3D chart\"",
+          "description": "Role description and accessible name of an unnamed chart"
+        },
+        {
+          "name": "chartNamed",
+          "type": "string",
+          "required": true,
+          "default": "\"3D chart: {names}\"",
+          "description": "Accessible name when series are named; `{names}`"
+        },
+        {
+          "name": "series",
+          "type": "string",
+          "required": true,
+          "default": "\"Series {n}\"",
+          "description": "Name of an unnamed series; `{n}` is its 1-based position"
+        },
+        {
+          "name": "seriesCount",
+          "type": "string",
+          "required": true,
+          "default": "\"{count} series.\"",
+          "description": "Summary: number of series; `{count}`"
+        },
+        {
+          "name": "seriesSummary",
+          "type": "string",
+          "required": true,
+          "default": "\"{name} ({type}): {size}.\"",
+          "description": "Summary of a series; `{name}`, `{type}`, `{size}`"
+        },
+        {
+          "name": "seriesSummaryHidden",
+          "type": "string",
+          "required": true,
+          "default": "\"{name} ({type}): {size}, hidden.\"",
+          "description": "Summary of a hidden series; `{name}`, `{type}`, `{size}`"
+        },
+        {
+          "name": "scatter",
+          "type": "string",
+          "required": true,
+          "default": "\"scatter\"",
+          "description": "Type name of scatter series"
+        },
+        {
+          "name": "line",
+          "type": "string",
+          "required": true,
+          "default": "\"line\"",
+          "description": "Type name of line series"
+        },
+        {
+          "name": "surface",
+          "type": "string",
+          "required": true,
+          "default": "\"surface\"",
+          "description": "Type name of surface series"
+        },
+        {
+          "name": "bar",
+          "type": "string",
+          "required": true,
+          "default": "\"bar\"",
+          "description": "Type name of bar series"
+        },
+        {
+          "name": "points",
+          "type": "string",
+          "required": true,
+          "default": "\"{count} points\"",
+          "description": "Size of a scatter series; `{count}`"
+        },
+        {
+          "name": "vertices",
+          "type": "string",
+          "required": true,
+          "default": "\"{count} vertices\"",
+          "description": "Size of a line series; `{count}`"
+        },
+        {
+          "name": "grid",
+          "type": "string",
+          "required": true,
+          "default": "\"{rows} × {cols} grid\"",
+          "description": "Size of a surface series; `{rows}`, `{cols}`"
+        },
+        {
+          "name": "bars",
+          "type": "string",
+          "required": true,
+          "default": "\"{count} bars\"",
+          "description": "Size of a bar series; `{count}`"
+        },
+        {
+          "name": "axis",
+          "type": "string",
+          "required": true,
+          "default": "\"{axis} axis: {range}.\"",
+          "description": "Summary of an axis without title; `{axis}`, `{range}`"
+        },
+        {
+          "name": "axisTitled",
+          "type": "string",
+          "required": true,
+          "default": "\"{axis} axis ({title}): {range}.\"",
+          "description": "Summary of an axis with a title; `{axis}`, `{title}`, `{range}`"
+        },
+        {
+          "name": "range",
+          "type": "string",
+          "required": true,
+          "default": "\"{min} to {max}\"",
+          "description": "Range of a numeric axis; `{min}`, `{max}`"
+        },
+        {
+          "name": "listSeparator",
+          "type": "string",
+          "required": true,
+          "default": "\", \"",
+          "description": "Separator of the lists (series names, categories)"
+        },
+        {
+          "name": "shown",
+          "type": "string",
+          "required": true,
+          "default": "\"{name}: shown\"",
+          "description": "Announcement when the legend shows a series; `{name}`"
+        },
+        {
+          "name": "hidden",
+          "type": "string",
+          "required": true,
+          "default": "\"{name}: hidden\"",
+          "description": "Announcement when the legend hides a series; `{name}`"
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "required": true,
+          "default": "\"value\"",
+          "description": "Tooltip row of the `value` (when the color bar has no title)"
+        },
+        {
+          "name": "x",
+          "type": "string",
+          "required": true,
+          "default": "\"x\"",
+          "description": "Tooltip row of x when the axis has no title"
+        },
+        {
+          "name": "y",
+          "type": "string",
+          "required": true,
+          "default": "\"y\"",
+          "description": "Tooltip row of y when the axis has no title"
+        },
+        {
+          "name": "z",
+          "type": "string",
+          "required": true,
+          "default": "\"z\"",
+          "description": "Tooltip row of z when the axis has no title"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "auto-rotate",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-3d-chart/demos/auto-rotate.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-3d-chart/demos/auto-rotate.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Radio, RadioGroup, Switch } from \"minerva-design\";\nimport {\n  Scatter3DChart,\n  type Chart3DProjection,\n  type Scatter3DSeries,\n} from \"minerva-design/charts\";\n\n// A DNA double helix: two backbones and the base pairs between them\nconst TURNS = 4;\nconst STEPS = 10 * TURNS;\nconst strandA: [number, number, number][] = [];\nconst strandB: [number, number, number][] = [];\nconst pairs: [number, number, number][] = [];\nfor (let i = 0; i <= STEPS * 6; i++) {\n  const t = i / 6;\n  const angle = (t / 10) * Math.PI * 2;\n  const z = t * 0.34;\n  strandA.push([Math.cos(angle), Math.sin(angle), z]);\n  strandB.push([Math.cos(angle + 2.4), Math.sin(angle + 2.4), z]);\n  if (i % 6 === 0) {\n    for (let k = 1; k < 8; k++) {\n      const a = angle + (2.4 * k) / 8;\n      const r = 1 - 0.25 * Math.sin((Math.PI * k) / 8);\n      pairs.push([r * Math.cos(a), r * Math.sin(a), z]);\n    }\n  }\n}\n\nexport default function AutoRotateDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.scatter-3d-chart.data\",\n  });\n  const [rotate, setRotate] = useState(true);\n  const [projection, setProjection] =\n    useState<Chart3DProjection>(\"perspective\");\n\n  const series = useMemo(\n    (): Scatter3DSeries[] => [\n      { name: t(\"backbone1\"), data: strandA, pointSize: 9 },\n      { name: t(\"backbone2\"), data: strandB, pointSize: 9 },\n      {\n        name: t(\"basePairs\"),\n        data: pairs,\n        pointSize: 5,\n        color: \"var(--text-secondary-color, #94a3b8)\",\n      },\n    ],\n    [t],\n  );\n  const camera = useMemo(\n    () => ({ elevation: 12, zoom: 1.15, projection }),\n    [projection],\n  );\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <div style={{ display: \"flex\", flexWrap: \"wrap\", gap: 16 }}>\n        <Switch\n          size=\"small\"\n          checked={rotate}\n          label={t(\"autoRotate\")}\n          onChange={setRotate}\n        />\n        <RadioGroup\n          aria-label={t(\"projection\")}\n          direction=\"horizontal\"\n          size=\"small\"\n          value={projection}\n          onChange={(value) => setProjection(value as Chart3DProjection)}\n        >\n          <Radio value=\"perspective\" label={t(\"perspective\")} />\n          <Radio value=\"orthographic\" label={t(\"orthographic\")} />\n        </RadioGroup>\n      </div>\n      <Scatter3DChart\n        series={series}\n        autoRotate={rotate ? 24 : false}\n        aspect={[0.5, 0.5, 1]}\n        box={false}\n        camera={camera}\n        height={420}\n        ariaLabel={t(\"helixAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Auto rotate",
+      "description": "A DNA double helix turning at 24°/s with autoRotate. The rotation pauses while the pointer is over the chart, off-screen and with reduced motion; the projection switches between perspective and orthographic."
+    },
+    {
+      "id": "camera",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-3d-chart/demos/camera.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-3d-chart/demos/camera.tsx": "import { useMemo, useRef, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button } from \"minerva-design\";\nimport {\n  Scatter3DChart,\n  type Chart3DCameraState,\n  type Chart3DHandle,\n  type Scatter3DSeries,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\n// A \"Swiss roll\": a sheet rolled up in 3D, colored by its position along\n// the roll (the classic test set of manifold learning)\nconst COUNT = 4000;\nconst random = mulberry32(21);\nconst x = new Float64Array(COUNT);\nconst y = new Float64Array(COUNT);\nconst z = new Float64Array(COUNT);\nconst along = new Float64Array(COUNT);\nfor (let i = 0; i < COUNT; i++) {\n  const t = 1.5 * Math.PI * (1 + 2 * random());\n  x[i] = t * Math.cos(t);\n  y[i] = random() * 21;\n  z[i] = t * Math.sin(t);\n  along[i] = t;\n}\n\nconst VIEWS = {\n  front: { azimuth: 0, elevation: 0 },\n  side: { azimuth: 90, elevation: 0 },\n  top: { azimuth: 0, elevation: 89 },\n} as const;\n\nexport default function CameraDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.scatter-3d-chart.data\",\n  });\n  const chart = useRef<Chart3DHandle>(null);\n  const [camera, setCamera] = useState<Chart3DCameraState | null>(null);\n\n  const series = useMemo(\n    (): Scatter3DSeries[] => [\n      {\n        name: t(\"roll\"),\n        data: { x, y, z, value: along },\n        pointSize: 4,\n        format: (value) => value.toFixed(2),\n      },\n    ],\n    [t],\n  );\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <div style={{ display: \"flex\", flexWrap: \"wrap\", gap: 8 }}>\n        {(Object.keys(VIEWS) as (keyof typeof VIEWS)[]).map((view) => (\n          <Button\n            key={view}\n            size=\"small\"\n            color=\"neutral\"\n            variant=\"outline\"\n            onClick={() =>\n              chart.current?.setCamera({ ...VIEWS[view], zoom: 1, pan: [0, 0] })\n            }\n          >\n            {t(`views.${view}`)}\n          </Button>\n        ))}\n        <Button\n          size=\"small\"\n          color=\"neutral\"\n          variant=\"outline\"\n          onClick={() => chart.current?.resetCamera()}\n        >\n          {t(\"views.reset\")}\n        </Button>\n      </div>\n      <Scatter3DChart\n        ref={chart}\n        series={series}\n        colorScale=\"spectral\"\n        colorBar={{ title: t(\"position\") }}\n        aspect={[1, 1, 1]}\n        onCameraChange={setCamera}\n        height={420}\n        ariaLabel={t(\"rollAria\")}\n      />\n      <p\n        aria-live=\"polite\"\n        style={{ margin: 0, color: \"var(--text-secondary-color)\" }}\n      >\n        {camera\n          ? t(\"cameraState\", {\n              azimuth: Math.round(camera.azimuth),\n              elevation: Math.round(camera.elevation),\n              zoom: camera.zoom.toFixed(2),\n            })\n          : t(\"cameraHint\")}\n      </p>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Camera control",
+      "description": "The preset views call setCamera on the chart ref and Reset calls resetCamera; onCameraChange reports the angles after every rotation, zoom or pan."
+    },
+    {
+      "id": "clusters",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-3d-chart/demos/clusters.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-3d-chart/demos/clusters.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Scatter3DChart, type Scatter3DSeries } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\n// Three flower species measured on three features (an iris-like data set):\n// mean and spread of the sepal length, sepal width and petal length, in cm\nconst SPECIES = [\n  { key: \"setosa\", mean: [5.0, 3.4, 1.5], spread: [0.35, 0.38, 0.17] },\n  { key: \"versicolor\", mean: [5.9, 2.8, 4.3], spread: [0.52, 0.31, 0.47] },\n  { key: \"virginica\", mean: [6.6, 3.0, 5.6], spread: [0.64, 0.32, 0.55] },\n] as const;\n\nconst random = mulberry32(11);\n// Box-Muller transform: normally distributed samples\nconst normal = () =>\n  Math.sqrt(-2 * Math.log(1 - random())) * Math.cos(2 * Math.PI * random());\nconst round = (value: number) => Math.round(value * 10) / 10;\nconst flowers = SPECIES.map(({ mean, spread }) =>\n  Array.from(\n    { length: 60 },\n    () =>\n      [\n        round(mean[0] + normal() * spread[0]),\n        round(mean[1] + normal() * spread[1]),\n        round(mean[2] + normal() * spread[2]),\n      ] as const,\n  ),\n);\n\nexport default function ClustersDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.scatter-3d-chart.data\",\n  });\n\n  const series = useMemo(\n    (): Scatter3DSeries[] =>\n      SPECIES.map(({ key }, i) => ({\n        name: t(`species.${key}`),\n        data: flowers[i] ?? [],\n        pointSize: 8,\n      })),\n    [t],\n  );\n\n  return (\n    <Scatter3DChart\n      series={series}\n      xAxis={{ title: t(\"sepalLength\") }}\n      yAxis={{ title: t(\"sepalWidth\") }}\n      zAxis={{ title: t(\"petalLength\") }}\n      height={420}\n      ariaLabel={t(\"clustersAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Clusters",
+      "description": "Three species of an iris-like data set measured on three features: one series per class, and the legend toggles them. Drag to rotate, Shift + drag to pan, double-click to reset."
+    },
+    {
+      "id": "color-by-value",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-3d-chart/demos/color-by-value.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-3d-chart/demos/color-by-value.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Scatter3DChart, type Scatter3DSeries } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\n// 300 sensors in a 40 × 24 × 9 m warehouse: warmer under the roof and\n// around a heater; the dot size shows the relative humidity\nconst COUNT = 300;\nconst random = mulberry32(5);\nconst x = new Float64Array(COUNT);\nconst y = new Float64Array(COUNT);\nconst z = new Float64Array(COUNT);\nconst temperature = new Float64Array(COUNT);\nconst size = new Float64Array(COUNT);\nconst humidity: number[] = [];\nfor (let i = 0; i < COUNT; i++) {\n  x[i] = Math.round(random() * 400) / 10;\n  y[i] = Math.round(random() * 240) / 10;\n  z[i] = Math.round((0.5 + random() * 8.5) * 10) / 10;\n  const heater = Math.hypot(x[i]! - 30, y[i]! - 6, z[i]! - 1.5);\n  temperature[i] =\n    Math.round(\n      (14 + z[i]! * 0.9 + 9 * Math.exp(-(heater * heater) / 60) + random()) *\n        10,\n    ) / 10;\n  const rh = Math.round(70 - temperature[i]! * 1.2 + random() * 8);\n  humidity.push(rh);\n  size[i] = 4 + (rh - 35) / 4;\n}\n\nexport default function ColorByValueDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.scatter-3d-chart.data\",\n  });\n\n  const series = useMemo((): Scatter3DSeries[] => {\n    const label = humidity.map((rh, i) =>\n      t(\"sensorLabel\", { id: i + 1, humidity: rh }),\n    );\n    return [\n      {\n        name: t(\"sensors\"),\n        data: { x, y, z, value: temperature, size, label },\n        colorBy: \"value\",\n        format: (value) => t(\"celsius\", { value }),\n      },\n    ];\n  }, [t]);\n\n  return (\n    <Scatter3DChart\n      series={series}\n      aspect={[40, 24, 9]}\n      xAxis={{ title: t(\"lengthM\") }}\n      yAxis={{ title: t(\"widthM\") }}\n      zAxis={{ title: t(\"heightM\") }}\n      colorScale=\"coolwarm\"\n      colorBar={{\n        title: t(\"temperature\"),\n        format: (value) => t(\"celsius\", { value }),\n      }}\n      camera={{ azimuth: 25, elevation: 28 }}\n      height={420}\n      ariaLabel={t(\"sensorsAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Color by value",
+      "description": "Warehouse sensors: the color shows the temperature (value column, colorScale \"coolwarm\" and a color bar) and the size the humidity (size column). Hover a sensor to read it."
+    },
+    {
+      "id": "embeddings",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-3d-chart/demos/embeddings.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-3d-chart/demos/embeddings.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Scatter3DChart, type Scatter3DSeries } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst TOPICS = [\n  \"sports\",\n  \"politics\",\n  \"technology\",\n  \"health\",\n  \"finance\",\n  \"travel\",\n] as const;\ntype Topic = (typeof TOPICS)[number];\n\n// center of each topic in the space of the first three principal components\nconst CENTERS: Record<Topic, [number, number, number]> = {\n  sports: [-3.2, 1.6, 0.4],\n  politics: [2.6, 2.4, -0.8],\n  technology: [1.4, -2.6, 1.6],\n  health: [-1.8, -1.8, -1.4],\n  finance: [3.4, -0.4, 0.2],\n  travel: [-2.4, 2.8, -2.2],\n};\n// share of the variance explained by each component\nconst VARIANCE = [0.41, 0.23, 0.12];\nconst PER_TOPIC = 100;\n\ninterface Doc {\n  topic: Topic;\n  n: number;\n  x: number;\n  y: number;\n  z: number;\n}\n\n// 600 article embeddings projected on 3 components, 100 per topic\nconst DOCS: Doc[] = (() => {\n  const random = mulberry32(17);\n  const gauss = () =>\n    Math.sqrt(-2 * Math.log(1 - random())) * Math.cos(2 * Math.PI * random());\n  return TOPICS.flatMap((topic) =>\n    Array.from({ length: PER_TOPIC }, (_, n) => {\n      const [cx, cy, cz] = CENTERS[topic];\n      return {\n        topic,\n        n: n + 1,\n        x: cx + gauss() * 0.75,\n        y: cy + gauss() * 0.6,\n        z: cz + gauss() * 0.5,\n      };\n    }),\n  );\n})();\n\n/** The k documents closest to `doc` (Euclidean distance) */\nconst nearest = (doc: Doc, k: number) =>\n  DOCS.filter((other) => other !== doc)\n    .map((other) => ({\n      doc: other,\n      distance: Math.hypot(other.x - doc.x, other.y - doc.y, other.z - doc.z),\n    }))\n    .sort((a, b) => a.distance - b.distance)\n    .slice(0, k);\n\nexport default function EmbeddingsDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.scatter-3d-chart.data\",\n  });\n  const [picked, setPicked] = useState<Doc | null>(null);\n  const neighbours = useMemo(\n    () => (picked ? nearest(picked, 5) : []),\n    [picked],\n  );\n  const decimal = useMemo(\n    () =>\n      new Intl.NumberFormat(i18n.language, {\n        minimumFractionDigits: 2,\n        maximumFractionDigits: 2,\n      }),\n    [i18n.language],\n  );\n  const percent = useMemo(\n    () => new Intl.NumberFormat(i18n.language, { style: \"percent\" }),\n    [i18n.language],\n  );\n  const title = (doc: Doc) =>\n    t(\"docLabel\", { topic: t(`topics.${doc.topic}`), n: doc.n });\n\n  const topicData = useMemo(\n    () =>\n      TOPICS.map((topic) =>\n        DOCS.filter((doc) => doc.topic === topic).map((doc) => ({\n          x: doc.x,\n          y: doc.y,\n          z: doc.z,\n          label: t(\"docLabel\", { topic: t(`topics.${topic}`), n: doc.n }),\n        })),\n      ),\n    [t],\n  );\n\n  const series = useMemo((): Scatter3DSeries[] => {\n    const topics = TOPICS.map((topic, i): Scatter3DSeries => ({\n      id: topic,\n      name: t(`topics.${topic}`),\n      data: topicData[i]!,\n      pointSize: 5,\n      opacity: picked ? 0.35 : 0.9,\n    }));\n    if (!picked) return topics;\n    // the picked article and its neighbours, drawn on top in a larger size\n    return [\n      ...topics,\n      {\n        id: \"neighbours\",\n        name: t(\"neighbours\"),\n        color: \"var(--danger-color, #dc2626)\",\n        pointSize: 10,\n        data: [picked, ...neighbours.map((item) => item.doc)].map((doc) => ({\n          x: doc.x,\n          y: doc.y,\n          z: doc.z,\n          label: t(\"docLabel\", { topic: t(`topics.${doc.topic}`), n: doc.n }),\n        })),\n      },\n    ];\n  }, [t, topicData, picked, neighbours]);\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <Scatter3DChart\n        series={series}\n        xAxis={{\n          title: t(\"component\", {\n            n: 1,\n            variance: percent.format(VARIANCE[0]),\n          }),\n        }}\n        yAxis={{\n          title: t(\"component\", {\n            n: 2,\n            variance: percent.format(VARIANCE[1]),\n          }),\n        }}\n        zAxis={{\n          title: t(\"component\", {\n            n: 3,\n            variance: percent.format(VARIANCE[2]),\n          }),\n        }}\n        aspect={[1, 1, 0.7]}\n        camera={{ azimuth: 30, elevation: 22 }}\n        height={460}\n        ariaLabel={t(\"embeddingsAria\")}\n        onPointClick={(event) => {\n          if (event.seriesId === \"neighbours\") {\n            if (event.index === 0) return setPicked(null);\n            return setPicked(neighbours[event.index - 1]!.doc);\n          }\n          const topic = event.seriesId as Topic;\n          setPicked(DOCS[TOPICS.indexOf(topic) * PER_TOPIC + event.index]!);\n        }}\n      />\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {picked\n          ? t(\"neighboursOf\", {\n              doc: title(picked),\n              list: new Intl.ListFormat(i18n.language).format(\n                neighbours.map((item) =>\n                  t(\"neighbourItem\", {\n                    doc: title(item.doc),\n                    distance: decimal.format(item.distance),\n                  }),\n                ),\n              ),\n            })\n          : t(\"embeddingsHint\")}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Document embeddings",
+      "description": "600 news articles embedded and projected on their first three principal components, one series per topic, with the explained variance in the axis titles. Click an article: onPointClick finds its five nearest neighbours, drawn as an extra series on top of the faded clouds and listed below."
+    },
+    {
+      "id": "galaxy",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-3d-chart/demos/galaxy.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-3d-chart/demos/galaxy.tsx": "import { useMemo, useState, type CSSProperties } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Radio, RadioGroup } from \"minerva-design\";\nimport { Scatter3DChart, type Scatter3DSeries } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\n/** Color of a black body at `kelvin` (0-255 channels, Tanner Helland's fit) */\nfunction blackbody(kelvin: number): [number, number, number] {\n  const t = kelvin / 100;\n  const clamp = (v: number) => Math.max(0, Math.min(255, v));\n  const r = t <= 66 ? 255 : 329.698727446 * Math.pow(t - 60, -0.1332047592);\n  const g =\n    t <= 66\n      ? 99.4708025861 * Math.log(t) - 161.1195681661\n      : 288.1221695283 * Math.pow(t - 60, -0.0755148492);\n  const b =\n    t >= 66\n      ? 255\n      : t <= 19\n        ? 0\n        : 138.5177312231 * Math.log(t - 10) - 305.0447927307;\n  return [clamp(r), clamp(g), clamp(b)];\n}\n\n/** `0xRRGGBB` of a color scaled by a brightness (additive light) */\nfunction rgb([r, g, b]: [number, number, number], brightness: number) {\n  const k = Math.max(0, Math.min(1, brightness));\n  return (\n    (Math.round(r * k) << 16) | (Math.round(g * k) << 8) | Math.round(b * k)\n  );\n}\n\ninterface Population {\n  x: Float32Array;\n  y: Float32Array;\n  z: Float32Array;\n  size: Float32Array;\n  color: Uint32Array;\n}\n\nconst population = (count: number): Population => ({\n  x: new Float32Array(count),\n  y: new Float32Array(count),\n  z: new Float32Array(count),\n  size: new Float32Array(count),\n  color: new Uint32Array(count),\n});\n\n/** Two logarithmic arms (kpc): pitch angle and radius where they start */\nconst PITCH = (16 * Math.PI) / 180;\nconst WIND = 1 / Math.tan(PITCH);\nconst ARM_START = 2.2;\n/** Angle of arm `k` (0 or 1) at radius `r` */\nconst armAngle = (k: number, r: number) =>\n  k * Math.PI + Math.log(r / ARM_START) * WIND;\n/**\n * Signed distance (kpc) to the nearest arm across it; positive on the\n * inner (concave) side, where the dust lanes lie\n */\nconst armOffset = (r: number, angle: number) => {\n  let d = (angle - armAngle(0, r)) % Math.PI;\n  if (d > Math.PI / 2) d -= Math.PI;\n  if (d < -Math.PI / 2) d += Math.PI;\n  return d * r * Math.sin(PITCH);\n};\n\n/**\n * A barred spiral galaxy of 1,000,000 stars (deterministic): a warm bulge,\n * an old disk, young blue stars and pink HII regions along two logarithmic\n * arms, dust lanes on the inner edge of the arms, and a faint halo.\n */\nfunction galaxy() {\n  const random = mulberry32(7);\n  const normal = () =>\n    Math.sqrt(-2 * Math.log(1 - random())) * Math.cos(2 * Math.PI * random());\n  // two-sided exponential (thin disk heights)\n  const laplace = (h: number) =>\n    (random() < 0.5 ? -h : h) * Math.log(1 - random());\n  const between = (a: number, b: number) => a + (b - a) * random();\n  /** Draws until `accept` takes the value (rejection sampling) */\n  const sample = (draw: () => number, accept: (value: number) => boolean) => {\n    for (;;) {\n      const value = draw();\n      if (accept(value)) return value;\n    }\n  };\n  /** Dust absorption (0-1) at a radius, offset to the arm and height */\n  const dust = (r: number, offset: number, z: number) =>\n    r < 1.6\n      ? 0\n      : Math.exp(-(((offset - 0.2) / 0.14) ** 2)) *\n        Math.exp(-Math.abs(z) / 0.2) *\n        Math.min(1, (r - 1.6) / 1.5) *\n        0.95;\n  const place = (\n    p: Population,\n    i: number,\n    x: number,\n    y: number,\n    z: number,\n    size: number,\n    kelvin: number,\n    brightness: number,\n  ) => {\n    p.x[i] = x;\n    p.y[i] = y;\n    p.z[i] = z;\n    p.size[i] = size;\n    p.color[i] = rgb(blackbody(kelvin), brightness);\n  };\n  /** A disk star: dimmed and reddened inside a dust lane */\n  const diskStar = (\n    p: Population,\n    i: number,\n    r: number,\n    angle: number,\n    z: number,\n    size: number,\n    kelvin: number,\n    brightness: number,\n  ) => {\n    const a = dust(r, armOffset(r, angle), z);\n    place(\n      p,\n      i,\n      r * Math.cos(angle),\n      r * Math.sin(angle),\n      z,\n      size,\n      kelvin * (1 - 0.5 * a),\n      brightness * (1 - a),\n    );\n  };\n\n  // bulge and bar: old K / G stars\n  const bulge = population(160_000);\n  const bar = (25 * Math.PI) / 180;\n  for (let i = 0; i < 160_000; i++) {\n    const r = -0.42 * Math.log(random() * random());\n    const u = 2 * random() - 1;\n    const phi = 2 * Math.PI * random();\n    const s = Math.sqrt(1 - u * u);\n    let x = r * s * Math.cos(phi);\n    let y = r * s * Math.sin(phi);\n    if (i % 2 === 0) {\n      // the bar: stretched along its axis\n      x *= 2.1;\n      y *= 0.75;\n    }\n    place(\n      bulge,\n      i,\n      x * Math.cos(bar) - y * Math.sin(bar),\n      x * Math.sin(bar) + y * Math.cos(bar),\n      r * u * 0.55,\n      1.1,\n      between(3000, 4600),\n      between(0.4, 0.85),\n    );\n  }\n\n  // old disk: exponential, slightly crowded on the arms\n  const disk = population(480_000);\n  for (let i = 0; i < 480_000; i++) {\n    const r = sample(\n      () => -3 * Math.log(random() * random()),\n      (v) => v >= 0.6 && v <= 16,\n    );\n    const angle = sample(\n      () => 2 * Math.PI * random(),\n      (a) => random() <= 0.5 + 0.5 * Math.exp(-((armOffset(r, a) / 0.7) ** 2)),\n    );\n    const z = laplace(0.18 + r * 0.012);\n    const giant = random() < 0.01;\n    diskStar(\n      disk,\n      i,\n      r,\n      angle,\n      z,\n      giant ? 2 : 1,\n      giant ? between(3200, 4200) : between(3800, 6500),\n      giant ? 0.9 : between(0.3, 0.7),\n    );\n  }\n\n  // young stars along the arms: blue-white, a very thin disk, mostly in\n  // associations (knots) strung along the arms\n  const young = population(260_000);\n  let knot = { x: 0, y: 0, spread: 0, left: 0 };\n  for (let i = 0; i < 260_000; i++) {\n    let r = ARM_START + 0.8 + 12.5 * random() ** 0.8;\n    let angle: number;\n    if (i % 20 < 9) {\n      if (knot.left <= 0) {\n        const across = normal() * (0.3 + 0.025 * r);\n        const center =\n          armAngle(i % 2, r) + across / (r * Math.sin(PITCH)) + normal() * 0.04;\n        knot = {\n          x: r * Math.cos(center),\n          y: r * Math.sin(center),\n          spread: between(0.12, 0.45),\n          left: 20 + Math.floor(random() * 120),\n        };\n      }\n      knot.left--;\n      const kx = knot.x + normal() * knot.spread;\n      const ky = knot.y + normal() * knot.spread;\n      r = Math.hypot(kx, ky);\n      angle = Math.atan2(ky, kx);\n    } else {\n      const across = normal() * (0.4 + 0.03 * r);\n      angle =\n        armAngle(i % 2, r) + across / (r * Math.sin(PITCH)) + normal() * 0.03;\n    }\n    const bright = random() < 0.04;\n    diskStar(\n      young,\n      i,\n      r,\n      angle,\n      laplace(0.06),\n      bright ? 2.4 : 1.2,\n      9000 + 21000 * random() ** 1.5,\n      bright ? 1 : between(0.4, 0.8),\n    );\n  }\n\n  // HII regions: pink clumps just outside the dust lanes\n  const nebulae = population(40_000);\n  const pink: [number, number, number] = [255, 70, 150];\n  const rose: [number, number, number] = [255, 130, 190];\n  for (let c = 0; c < 500; c++) {\n    const r = 3.2 + 10.5 * random() ** 0.85;\n    const across = -0.1 + normal() * 0.35;\n    const center = armAngle(c % 2, r) + across / (r * Math.sin(PITCH));\n    const cx = r * Math.cos(center);\n    const cy = r * Math.sin(center);\n    const spread = between(0.04, 0.12);\n    for (let k = 0; k < 80; k++) {\n      const i = c * 80 + k;\n      const mix = random();\n      nebulae.x[i] = cx + normal() * spread;\n      nebulae.y[i] = cy + normal() * spread;\n      nebulae.z[i] = normal() * spread * 0.4;\n      nebulae.size[i] = 1.8;\n      nebulae.color[i] = rgb(\n        [\n          pink[0] + (rose[0] - pink[0]) * mix,\n          pink[1] + (rose[1] - pink[1]) * mix,\n          pink[2] + (rose[2] - pink[2]) * mix,\n        ],\n        between(0.5, 1),\n      );\n    }\n  }\n\n  // halo: a faint sphere of old stars\n  const halo = population(60_000);\n  for (let i = 0; i < 60_000; i++) {\n    const r = sample(\n      () => -4.5 * Math.log(random() * random()),\n      (v) => v <= 22,\n    );\n    const u = 2 * random() - 1;\n    const phi = 2 * Math.PI * random();\n    const s = Math.sqrt(1 - u * u);\n    place(\n      halo,\n      i,\n      r * s * Math.cos(phi),\n      r * s * Math.sin(phi),\n      r * u * 0.8,\n      1.1,\n      between(3800, 5600),\n      between(0.2, 0.45),\n    );\n  }\n\n  return { bulge, disk, young, nebulae, halo };\n}\n\n/** Night-sky colors of the chart (its theme reads these variables) */\nconst SPACE = {\n  background: \"radial-gradient(ellipse at 50% 45%, #0e1430 0%, #05070f 70%)\",\n  borderRadius: 12,\n  \"--surface-color\": \"#05070f\",\n  \"--surface-elevated-color\": \"#111729\",\n  \"--text-color\": \"#e6e9f2\",\n  \"--text-secondary-color\": \"#9aa3b8\",\n  \"--border-color\": \"#2a3247\",\n} as CSSProperties;\n\n/** Exposures offered (the light of the additive stars, tone mapped) */\nconst EXPOSURES = [0.5, 1, 2, 4] as const;\n\nexport default function GalaxyDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.scatter-3d-chart.data\",\n  });\n  const [exposure, setExposure] = useState(1);\n  // ~150 ms: generated once, when the demo mounts\n  const stars = useMemo(() => galaxy(), []);\n  const series = useMemo((): Scatter3DSeries[] => {\n    const common = {\n      pointStyle: \"glow\",\n      blend: \"additive\",\n    } as const;\n    return [\n      {\n        ...common,\n        name: t(\"galaxy.bulge\"),\n        color: \"#ffc477\",\n        data: stars.bulge,\n        opacity: 0.11,\n      },\n      {\n        ...common,\n        name: t(\"galaxy.disk\"),\n        color: \"#ffe2b8\",\n        data: stars.disk,\n        opacity: 0.08,\n      },\n      {\n        ...common,\n        name: t(\"galaxy.arms\"),\n        color: \"#9cc4ff\",\n        data: stars.young,\n        opacity: 0.1,\n      },\n      {\n        ...common,\n        name: t(\"galaxy.nebulae\"),\n        color: \"#ff6aa9\",\n        data: stars.nebulae,\n        opacity: 0.14,\n      },\n      {\n        ...common,\n        name: t(\"galaxy.halo\"),\n        color: \"#c9a77f\",\n        data: stars.halo,\n        opacity: 0.5,\n      },\n    ];\n  }, [t, stars]);\n\n  const kpc = (value: number) => t(\"kiloparsecs\", { value: value.toFixed(1) });\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <RadioGroup\n        aria-label={t(\"exposure\")}\n        direction=\"horizontal\"\n        size=\"small\"\n        value={String(exposure)}\n        onChange={(value) => setExposure(Number(value))}\n      >\n        {EXPOSURES.map((value) => (\n          <Radio\n            key={value}\n            value={String(value)}\n            label={t(\"exposureValue\", { value })}\n          />\n        ))}\n      </RadioGroup>\n      <Scatter3DChart\n        series={series}\n        box={false}\n        aspect={[1, 1, 0.35]}\n        xAxis={{ min: -16, max: 16, format: kpc }}\n        yAxis={{ min: -16, max: 16, format: kpc }}\n        zAxis={{ min: -5.6, max: 5.6, format: kpc }}\n        camera={{ azimuth: 20, elevation: 34, zoom: 1.75, fov: 28 }}\n        autoRotate={4}\n        exposure={exposure}\n        height={500}\n        style={SPACE}\n        ariaLabel={t(\"galaxyAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "1,000,000 stars",
+      "description": "A barred spiral galaxy of one million stars generated with a seeded random generator: a warm bulge, logarithmic arms of young blue stars and pink HII regions, dark dust lanes on their inner edge, a thin disk and a faint halo. Each star gets a black-body color through a 0xRRGGBB color column; pointStyle \"glow\" and blend \"additive\" make dense regions shine, and exposure scales that light, tone mapped so that the core saturates without turning white. The legend toggles the populations."
+    },
+    {
+      "id": "lidar",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-3d-chart/demos/lidar.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-3d-chart/demos/lidar.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  ConfigProvider,\n  HStack,\n  Radio,\n  RadioGroup,\n  Switch,\n} from \"minerva-design\";\nimport { Scatter3DChart, type Scatter3DSeries } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\ntype ColorMode = \"height\" | \"intensity\";\n\n// A 60 m street scanned by a lidar: road with lane markings, sidewalks,\n// facades with windows, trees, parked cars and lamp posts (~13k returns).\n// Intensity is the strength of the return: markings and metal reflect most.\nconst scan = () => {\n  const random = mulberry32(42);\n  const xs: number[] = [];\n  const ys: number[] = [];\n  const zs: number[] = [];\n  const intensity: number[] = [];\n  const add = (x: number, y: number, z: number, i: number) => {\n    xs.push(x);\n    ys.push(y);\n    zs.push(z + (random() - 0.5) * 0.04);\n    intensity.push(Math.min(1, Math.max(0, i + (random() - 0.5) * 0.1)));\n  };\n  // ground: road, lane markings and raised sidewalks\n  for (let n = 0; n < 5200; n++) {\n    const x = random() * 60;\n    const y = -7 + random() * 14;\n    const sidewalk = Math.abs(y) > 4;\n    const marking = Math.abs(y) < 0.12 && x % 6 < 3;\n    add(x, y, sidewalk ? 0.15 : 0, marking ? 0.9 : sidewalk ? 0.35 : 0.15);\n  }\n  // facades on both sides, glass windows return little light\n  for (let n = 0; n < 4200; n++) {\n    const x = random() * 60;\n    const z = random() * 12;\n    const side = n % 2 ? 1 : -1;\n    const window = x % 4 > 1 && x % 4 < 3 && z % 3.5 > 1 && z % 3.5 < 2.6;\n    add(x, side * (8 + random() * 0.08), z, window ? 0.08 : 0.45);\n  }\n  // trees: trunk and a round canopy\n  for (let tree = 0; tree < 6; tree++) {\n    const cx = 6 + (tree % 3) * 20 + (tree > 2 ? 10 : 0);\n    const cy = tree > 2 ? 5.5 : -5.5;\n    for (let n = 0; n < 60; n++) {\n      const a = random() * Math.PI * 2;\n      add(cx + Math.cos(a) * 0.2, cy + Math.sin(a) * 0.2, random() * 2.6, 0.4);\n    }\n    for (let n = 0; n < 320; n++) {\n      const a = random() * Math.PI * 2;\n      const b = Math.acos(2 * random() - 1);\n      const r = 1.6 + random() * 0.6;\n      add(\n        cx + r * Math.sin(b) * Math.cos(a),\n        cy + r * Math.sin(b) * Math.sin(a),\n        4 + r * 0.8 * Math.cos(b),\n        0.55,\n      );\n    }\n  }\n  // parked cars: the visible top and sides of a box\n  for (let car = 0; car < 5; car++) {\n    const cx = 4 + car * 12 + (car % 2) * 3;\n    const cy = car % 2 ? 3 : -3;\n    for (let n = 0; n < 300; n++) {\n      const u = random();\n      const v = random();\n      const face = n % 3;\n      const x = cx + (u - 0.5) * 4.4;\n      const y = face === 1 ? cy + (car % 2 ? -0.9 : 0.9) : cy + (v - 0.5) * 1.8;\n      const z = face === 0 ? 1.45 : 0.3 + v * 1.1;\n      add(x, y, z, 0.7);\n    }\n  }\n  // lamp posts\n  for (let post = 0; post < 4; post++) {\n    for (let n = 0; n < 80; n++) {\n      add(10 + post * 14, post % 2 ? 6.5 : -6.5, random() * 7, 0.8);\n    }\n  }\n  return {\n    x: Float32Array.from(xs),\n    y: Float32Array.from(ys),\n    z: Float32Array.from(zs),\n    intensity: Float32Array.from(intensity),\n  };\n};\nconst CLOUD = scan();\n\nexport default function LidarDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.scatter-3d-chart.data\",\n  });\n  const [dark, setDark] = useState(true);\n  const [mode, setMode] = useState<ColorMode>(\"height\");\n  const [hovered, setHovered] = useState<number | null>(null);\n  const formats = useMemo(\n    () => ({\n      meters: new Intl.NumberFormat(i18n.language, {\n        style: \"unit\",\n        unit: \"meter\",\n        maximumFractionDigits: 2,\n      }),\n      percent: new Intl.NumberFormat(i18n.language, { style: \"percent\" }),\n      integer: new Intl.NumberFormat(i18n.language),\n    }),\n    [i18n.language],\n  );\n\n  const series = useMemo(\n    (): Scatter3DSeries[] => [\n      {\n        name: t(\"lidarReturns\"),\n        data: {\n          x: CLOUD.x,\n          y: CLOUD.y,\n          z: CLOUD.z,\n          value: mode === \"height\" ? CLOUD.z : CLOUD.intensity,\n        },\n        colorBy: \"value\",\n        pointStyle: \"disc\",\n        pointSize: 2.5,\n      },\n    ],\n    [t, mode],\n  );\n\n  return (\n    <ConfigProvider theme={dark ? \"dark\" : \"light\"}>\n      <div\n        style={{\n          display: \"grid\",\n          gap: 12,\n          width: \"100%\",\n          padding: 12,\n          borderRadius: 8,\n          border: \"1px solid var(--border-color)\",\n          background: \"var(--background-color)\",\n          color: \"var(--text-color)\",\n        }}\n      >\n        <HStack gap={16} wrap align=\"center\">\n          <RadioGroup\n            aria-label={t(\"lidarColor\")}\n            direction=\"horizontal\"\n            value={mode}\n            onChange={(value) => setMode(value as ColorMode)}\n          >\n            <Radio value=\"height\" label={t(\"lidarModes.height\")} />\n            <Radio value=\"intensity\" label={t(\"lidarModes.intensity\")} />\n          </RadioGroup>\n          <Switch\n            size=\"small\"\n            checked={dark}\n            onChange={setDark}\n            label={t(\"darkTheme\")}\n          />\n        </HStack>\n        <Scatter3DChart\n          // the chart reads the theme of its scope when it is created\n          key={dark ? \"dark\" : \"light\"}\n          series={series}\n          aspect={[60, 16, 12]}\n          xAxis={{ title: t(\"lengthM\") }}\n          yAxis={{ title: t(\"widthM\") }}\n          zAxis={{ title: t(\"heightM\") }}\n          colorScale={mode === \"height\" ? \"turbo\" : \"inferno\"}\n          colorBar={{\n            title: t(`lidarModes.${mode}`),\n            format: (value) =>\n              mode === \"height\"\n                ? formats.meters.format(value)\n                : formats.percent.format(value),\n          }}\n          tooltip={false}\n          camera={{ azimuth: -30, elevation: 30, zoom: 1.1 }}\n          height={440}\n          ariaLabel={t(\"lidarAria\")}\n          onHover={(event) => setHovered(event ? event.index : null)}\n        />\n        <output\n          aria-live=\"polite\"\n          style={{ color: \"var(--text-secondary-color)\" }}\n        >\n          {hovered === null\n            ? t(\"lidarSummary\", {\n                points: formats.integer.format(CLOUD.x.length),\n              })\n            : t(\"lidarHover\", {\n                height: formats.meters.format(CLOUD.z[hovered]!),\n                intensity: formats.percent.format(CLOUD.intensity[hovered]!),\n              })}\n        </output>\n      </div>\n    </ConfigProvider>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Lidar street scan",
+      "description": "About 13,000 lidar returns of a street, passed as typed-array columns and drawn as flat discs (pointStyle: \"disc\"). The radio buttons map the value column to the height or to the return intensity with a different colorScale, the switch remounts the chart in a dark ConfigProvider, and onHover reads the point under the pointer."
+    },
+    {
+      "id": "portfolio-risk",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-3d-chart/demos/portfolio-risk.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-3d-chart/demos/portfolio-risk.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Switch } from \"minerva-design\";\nimport { Scatter3DChart, type Scatter3DSeries } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\ntype Sector =\n  \"technology\" | \"healthcare\" | \"energy\" | \"financials\" | \"consumer\";\n\n// fictional tickers, with the typical volatility, beta and return of the sector\nconst SECTORS: [Sector, string[], number, number, number][] = [\n  [\n    \"technology\",\n    [\"NOVA\", \"QBIT\", \"LUMN\", \"SYNK\", \"DATA\", \"CHIP\", \"CLDX\", \"ORBI\"],\n    0.34,\n    1.3,\n    0.16,\n  ],\n  [\n    \"healthcare\",\n    [\"GENE\", \"MEDX\", \"CURA\", \"VITL\", \"BIOM\", \"PULS\", \"THRX\", \"NEUR\"],\n    0.26,\n    0.8,\n    0.09,\n  ],\n  [\n    \"energy\",\n    [\"PETR\", \"SOLR\", \"WNDY\", \"GRID\", \"FUEL\", \"HYDR\", \"VOLT\", \"CRUD\"],\n    0.31,\n    1.0,\n    0.07,\n  ],\n  [\n    \"financials\",\n    [\"BANK\", \"LEND\", \"PAYX\", \"INSR\", \"FUND\", \"COIN\", \"TRST\", \"BRKR\"],\n    0.24,\n    1.1,\n    0.1,\n  ],\n  [\n    \"consumer\",\n    [\"SHOP\", \"MEAL\", \"WEAR\", \"HOME\", \"PETS\", \"TOYS\", \"BREW\", \"TRVL\"],\n    0.21,\n    0.9,\n    0.08,\n  ],\n];\nconst RISK_FREE = 0.035;\n\ninterface Stock {\n  ticker: string;\n  sector: Sector;\n  volatility: number;\n  beta: number;\n  ret: number;\n  cap: number; // market capitalization, USD\n}\n\nconst STOCKS: Stock[] = (() => {\n  const random = mulberry32(2024);\n  return SECTORS.flatMap(([sector, tickers, vol, beta, ret]) =>\n    tickers.map((ticker) => {\n      const volatility = vol * (0.7 + random() * 0.6);\n      return {\n        ticker,\n        sector,\n        volatility,\n        beta: Math.round(beta * (0.7 + random() * 0.6) * 100) / 100,\n        // riskier names of a sector earn a little more on average\n        ret: ret + (volatility - vol) * 0.4 + (random() - 0.5) * 0.08,\n        cap: 10 ** (9.5 + random() * 2.7),\n      };\n    }),\n  );\n})();\n\nexport default function PortfolioRiskDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.scatter-3d-chart.data\",\n  });\n  const [pinned, setPinned] = useState<string | null>(\"NOVA\");\n  const [orthographic, setOrthographic] = useState(false);\n  const formats = useMemo(\n    () => ({\n      percent: new Intl.NumberFormat(i18n.language, {\n        style: \"percent\",\n        maximumFractionDigits: 1,\n      }),\n      cap: new Intl.NumberFormat(i18n.language, {\n        style: \"currency\",\n        currency: \"USD\",\n        notation: \"compact\",\n        maximumFractionDigits: 1,\n      }),\n      decimal: new Intl.NumberFormat(i18n.language, {\n        minimumFractionDigits: 2,\n        maximumFractionDigits: 2,\n      }),\n    }),\n    [i18n.language],\n  );\n\n  const series = useMemo(\n    (): Scatter3DSeries[] =>\n      SECTORS.map(([sector]) => ({\n        id: sector,\n        name: t(`sectors.${sector}`),\n        data: STOCKS.filter((stock) => stock.sector === sector).map(\n          (stock) => ({\n            x: stock.volatility,\n            y: stock.beta,\n            z: stock.ret,\n            // dot size follows the market capitalization (log scale)\n            size:\n              (5 + Math.log10(stock.cap / 1e9) * 5) *\n              (stock.ticker === pinned ? 1.6 : 1),\n            label: t(\"stockLabel\", {\n              ticker: stock.ticker,\n              cap: formats.cap.format(stock.cap),\n            }),\n          }),\n        ),\n        opacity: 0.85,\n      })),\n    [t, formats, pinned],\n  );\n\n  const stock = STOCKS.find((item) => item.ticker === pinned);\n  const percentAxis = (title: string) => ({\n    title,\n    format: (value: number) => formats.percent.format(value),\n  });\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <Switch\n        size=\"small\"\n        checked={orthographic}\n        label={t(\"orthographicView\")}\n        onChange={setOrthographic}\n      />\n      <Scatter3DChart\n        series={series}\n        xAxis={percentAxis(t(\"annualVolatility\"))}\n        yAxis={{ title: t(\"beta\") }}\n        zAxis={percentAxis(t(\"annualReturn\"))}\n        camera={{\n          azimuth: 28,\n          elevation: 20,\n          projection: orthographic ? \"orthographic\" : \"perspective\",\n        }}\n        height={460}\n        ariaLabel={t(\"portfolioAria\")}\n        onPointClick={(event) => {\n          const sector = SECTORS.findIndex(([id]) => id === event.seriesId);\n          const ticker = SECTORS[sector]?.[1][event.index];\n          setPinned(ticker === pinned ? null : (ticker ?? null));\n        }}\n      />\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {stock\n          ? t(\"stockReadout\", {\n              ticker: stock.ticker,\n              sector: t(`sectors.${stock.sector}`),\n              ret: formats.percent.format(stock.ret),\n              volatility: formats.percent.format(stock.volatility),\n              beta: formats.decimal.format(stock.beta),\n              sharpe: formats.decimal.format(\n                (stock.ret - RISK_FREE) / stock.volatility,\n              ),\n              cap: formats.cap.format(stock.cap),\n            })\n          : t(\"portfolioHint\")}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Portfolio risk",
+      "description": "Forty stocks by volatility, beta and annual return, one series per sector, the dot size following the market capitalization. The axes format percentages with Intl.NumberFormat, a click pins a stock and its Sharpe ratio below, and the switch changes camera.projection to orthographic for undistorted comparisons."
+    },
+    {
+      "id": "renderer",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-3d-chart/demos/renderer.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-3d-chart/demos/renderer.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Radio, RadioGroup } from \"minerva-design\";\nimport {\n  Scatter3DChart,\n  type ChartRendererKind,\n  type ChartRendererPreference,\n  type Scatter3DSeries,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst PREFERENCES: ChartRendererPreference[] = [\n  \"auto\",\n  \"webgpu\",\n  \"webgl2\",\n  \"webgl\",\n  \"canvas2d\",\n];\n\n// 200,000 points scattered around a (3, 7) torus knot\nconst COUNT = 200_000;\nconst random = mulberry32(9);\nconst x = new Float32Array(COUNT);\nconst y = new Float32Array(COUNT);\nconst z = new Float32Array(COUNT);\nfor (let i = 0; i < COUNT; i++) {\n  const t = random() * Math.PI * 2;\n  const r = 2 + Math.cos(7 * t);\n  const spread = 0.18 * Math.sqrt(-2 * Math.log(1 - random()));\n  const a = random() * Math.PI * 2;\n  x[i] = r * Math.cos(3 * t) + spread * Math.cos(a);\n  y[i] = r * Math.sin(3 * t) + spread * Math.sin(a);\n  z[i] = Math.sin(7 * t) + spread * Math.cos(a + 1);\n}\n\nexport default function RendererDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.scatter-3d-chart.data\",\n  });\n  const [preference, setPreference] = useState<ChartRendererPreference>(\"auto\");\n  const [actual, setActual] = useState<ChartRendererKind | null>(null);\n\n  const series = useMemo(\n    (): Scatter3DSeries[] => [\n      { name: t(\"knot\"), data: { x, y, z }, colorBy: \"z\", pointSize: 2 },\n    ],\n    [t],\n  );\n\n  let status = t(\"starting\");\n  if (actual) {\n    const backend = t(`renderers.${actual}`);\n    status =\n      preference === \"auto\" || preference === actual\n        ? t(\"rendererInUse\", { backend })\n        : t(\"rendererFallback\", {\n            requested: t(`renderers.${preference}`),\n            backend,\n          });\n  }\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <RadioGroup\n        aria-label={t(\"renderer\")}\n        direction=\"horizontal\"\n        size=\"small\"\n        value={preference}\n        onChange={(value) => {\n          setPreference(value as ChartRendererPreference);\n          setActual(null);\n        }}\n      >\n        {PREFERENCES.map((kind) => (\n          <Radio key={kind} value={kind} label={t(`renderers.${kind}`)} />\n        ))}\n      </RadioGroup>\n      <Scatter3DChart\n        series={series}\n        renderer={preference}\n        onRendererChange={setActual}\n        colorScale=\"turbo\"\n        aspect={[1, 1, 0.45]}\n        height={400}\n        ariaLabel={t(\"knotAria\")}\n      />\n      <p\n        role=\"status\"\n        style={{ margin: 0, color: \"var(--text-secondary-color)\" }}\n      >\n        {status}\n      </p>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Renderer",
+      "description": "Pick the backend of the data layer: auto tries WebGPU, WebGL2, WebGL then Canvas2D (CPU projection, decimated) and skips GPUs running in software; onRendererChange reports the backend actually used."
+    },
+    {
+      "id": "satellites",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-3d-chart/demos/satellites.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-3d-chart/demos/satellites.tsx": "import { useEffect, useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { HStack, Switch } from \"minerva-design\";\nimport { Scatter3DChart, type Scatter3DSeries } from \"minerva-design/charts\";\n\nconst EARTH_RADIUS = 6371; // km\nconst MU = 398600; // km³/s², gravitational parameter of the Earth\nconst STEP_SECONDS = 60; // simulated time per tick\nconst EPOCH = Date.UTC(2026, 9, 31);\n\ninterface Shell {\n  id: \"broadband\" | \"imaging\" | \"navigation\" | \"geostationary\";\n  altitude: number; // km\n  inclination: number; // degrees\n  planes: number;\n  perPlane: number;\n}\n\nconst SHELLS: Shell[] = [\n  {\n    id: \"broadband\",\n    altitude: 550,\n    inclination: 53,\n    planes: 6,\n    perPlane: 12,\n  },\n  { id: \"imaging\", altitude: 700, inclination: 97.6, planes: 4, perPlane: 8 },\n  {\n    id: \"navigation\",\n    altitude: 20200,\n    inclination: 55,\n    planes: 6,\n    perPlane: 4,\n  },\n  {\n    id: \"geostationary\",\n    altitude: 35786,\n    inclination: 0,\n    planes: 1,\n    perPlane: 12,\n  },\n];\n\nconst radiusOf = (shell: Shell) => EARTH_RADIUS + shell.altitude;\nconst motionOf = (shell: Shell) => Math.sqrt(MU / radiusOf(shell) ** 3); // rad/s\n\n/** Positions (thousands of km) of the satellites of a shell at time `seconds` */\nconst positions = (shell: Shell, seconds: number) => {\n  const count = shell.planes * shell.perPlane;\n  const x = new Float32Array(count);\n  const y = new Float32Array(count);\n  const z = new Float32Array(count);\n  const r = radiusOf(shell) / 1000;\n  const inc = (shell.inclination * Math.PI) / 180;\n  for (let p = 0; p < shell.planes; p++) {\n    const node = (2 * Math.PI * p) / shell.planes; // right ascension of the plane\n    for (let s = 0; s < shell.perPlane; s++) {\n      // neighboring planes are phased so the satellites do not line up\n      const u =\n        (2 * Math.PI * (s + p / shell.planes)) / shell.perPlane +\n        motionOf(shell) * seconds;\n      const i = p * shell.perPlane + s;\n      x[i] =\n        r *\n        (Math.cos(node) * Math.cos(u) -\n          Math.sin(node) * Math.sin(u) * Math.cos(inc));\n      y[i] =\n        r *\n        (Math.sin(node) * Math.cos(u) +\n          Math.cos(node) * Math.sin(u) * Math.cos(inc));\n      z[i] = r * Math.sin(u) * Math.sin(inc);\n    }\n  }\n  return { x, y, z };\n};\n\n// the Earth: 500 points spread evenly on a sphere (Fibonacci lattice)\nconst EARTH = (() => {\n  const count = 500;\n  const r = EARTH_RADIUS / 1000;\n  const x = new Float32Array(count);\n  const y = new Float32Array(count);\n  const z = new Float32Array(count);\n  for (let i = 0; i < count; i++) {\n    const h = 1 - (2 * (i + 0.5)) / count;\n    const a = i * Math.PI * (3 - Math.sqrt(5));\n    const ring = Math.sqrt(1 - h * h);\n    x[i] = r * ring * Math.cos(a);\n    y[i] = r * ring * Math.sin(a);\n    z[i] = r * h;\n  }\n  return { x, y, z };\n})();\n\nconst LIMIT = 44; // thousands of km\n\nexport default function SatellitesDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.scatter-3d-chart.data\",\n  });\n  const [playing, setPlaying] = useState(true);\n  const [tick, setTick] = useState(0);\n  const [hovered, setHovered] = useState<Shell | null>(null);\n\n  useEffect(() => {\n    if (!playing) return;\n    const timer = window.setInterval(() => setTick((n) => n + 1), 100);\n    return () => window.clearInterval(timer);\n  }, [playing]);\n\n  const formats = useMemo(\n    () => ({\n      km: new Intl.NumberFormat(i18n.language, {\n        style: \"unit\",\n        unit: \"kilometer\",\n        maximumFractionDigits: 0,\n      }),\n      speed: new Intl.NumberFormat(i18n.language, {\n        style: \"unit\",\n        unit: \"kilometer-per-second\",\n        maximumFractionDigits: 1,\n      }),\n      hours: new Intl.NumberFormat(i18n.language, {\n        style: \"unit\",\n        unit: \"hour\",\n        maximumFractionDigits: 1,\n      }),\n      clock: new Intl.DateTimeFormat(i18n.language, {\n        hour: \"2-digit\",\n        minute: \"2-digit\",\n        timeZone: \"UTC\",\n        timeZoneName: \"short\",\n      }),\n    }),\n    [i18n.language],\n  );\n  const labels = useMemo(\n    () =>\n      SHELLS.map((shell) =>\n        Array.from({ length: shell.planes * shell.perPlane }, (_, i) =>\n          t(\"satName\", { shell: t(`shells.${shell.id}`), n: i + 1 }),\n        ),\n      ),\n    [t],\n  );\n\n  const series = useMemo((): Scatter3DSeries[] => {\n    const seconds = tick * STEP_SECONDS;\n    return [\n      {\n        id: \"earth\",\n        name: t(\"earth\"),\n        data: EARTH,\n        color: \"var(--info-color, #0ea5e9)\",\n        pointStyle: \"disc\",\n        pointSize: 3,\n        opacity: 0.45,\n      },\n      ...SHELLS.map((shell, i): Scatter3DSeries => ({\n        id: shell.id,\n        name: t(`shells.${shell.id}`),\n        data: { ...positions(shell, seconds), label: labels[i] },\n        pointSize: 6,\n      })),\n    ];\n  }, [t, tick, labels]);\n\n  const axis = (title: string) => ({ title, min: -LIMIT, max: LIMIT });\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <HStack gap={16} wrap align=\"center\">\n        <Switch\n          size=\"small\"\n          checked={playing}\n          label={t(\"play\")}\n          onChange={setPlaying}\n        />\n        <span style={{ color: \"var(--text-secondary-color)\" }}>\n          {formats.clock.format(EPOCH + tick * STEP_SECONDS * 1000)}\n        </span>\n      </HStack>\n      <Scatter3DChart\n        series={series}\n        aspect={[1, 1, 1]}\n        xAxis={axis(t(\"thousandKm\"))}\n        yAxis={axis(t(\"thousandKm\"))}\n        zAxis={axis(t(\"thousandKm\"))}\n        camera={{ azimuth: 35, elevation: 25 }}\n        height={460}\n        ariaLabel={t(\"satellitesAria\")}\n        onHover={(event) =>\n          setHovered(\n            SHELLS.find((shell) => shell.id === event?.seriesId) ?? null,\n          )\n        }\n      />\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {hovered\n          ? t(\"satHover\", {\n              shell: t(`shells.${hovered.id}`),\n              altitude: formats.km.format(hovered.altitude),\n              speed: formats.speed.format(Math.sqrt(MU / radiusOf(hovered))),\n              period: formats.hours.format(\n                (2 * Math.PI) / motionOf(hovered) / 3600,\n              ),\n            })\n          : t(\"satellitesHint\")}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Satellite constellations",
+      "description": "Four orbital shells around the Earth, from a low broadband constellation to the geostationary ring, moved every 100 ms by a setInterval cleaned up on unmount (one tick is one simulated minute). Each shell is a series with its own legend entry; hover a satellite to read the altitude, speed and period of its orbit."
+    },
+    {
+      "id": "trajectory",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-3d-chart/demos/trajectory.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-3d-chart/demos/trajectory.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Line3DChart, type Line3DSeries } from \"minerva-design/charts\";\n\n// The Lorenz attractor (σ = 10, ρ = 28, β = 8/3), integrated with RK4\nconst STEPS = 12_000;\nconst DT = 0.006;\nconst x = new Float64Array(STEPS);\nconst y = new Float64Array(STEPS);\nconst z = new Float64Array(STEPS);\nconst time = new Float64Array(STEPS);\nconst derivative = (p: readonly [number, number, number]) =>\n  [\n    10 * (p[1] - p[0]),\n    p[0] * (28 - p[2]) - p[1],\n    p[0] * p[1] - (8 / 3) * p[2],\n  ] as const;\nlet p: [number, number, number] = [1, 1, 1];\nfor (let i = 0; i < STEPS; i++) {\n  const k1 = derivative(p);\n  const k2 = derivative([\n    p[0] + (k1[0] * DT) / 2,\n    p[1] + (k1[1] * DT) / 2,\n    p[2] + (k1[2] * DT) / 2,\n  ]);\n  const k3 = derivative([\n    p[0] + (k2[0] * DT) / 2,\n    p[1] + (k2[1] * DT) / 2,\n    p[2] + (k2[2] * DT) / 2,\n  ]);\n  const k4 = derivative([\n    p[0] + k3[0] * DT,\n    p[1] + k3[1] * DT,\n    p[2] + k3[2] * DT,\n  ]);\n  p = [\n    p[0] + ((k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]) * DT) / 6,\n    p[1] + ((k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]) * DT) / 6,\n    p[2] + ((k1[2] + 2 * k2[2] + 2 * k3[2] + k4[2]) * DT) / 6,\n  ];\n  x[i] = p[0];\n  y[i] = p[1];\n  z[i] = p[2];\n  time[i] = i * DT;\n}\n\nexport default function TrajectoryDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.scatter-3d-chart.data\",\n  });\n\n  const series = useMemo(\n    (): Line3DSeries[] => [\n      {\n        name: t(\"trajectory\"),\n        data: { x, y, z, value: time },\n        lineWidth: 1.5,\n        format: (value) => t(\"seconds\", { value: value.toFixed(2) }),\n      },\n    ],\n    [t],\n  );\n\n  return (\n    <Line3DChart\n      series={series}\n      colorScale=\"plasma\"\n      colorBar={{\n        title: t(\"time\"),\n        format: (value) => t(\"seconds\", { value }),\n      }}\n      camera={{ azimuth: 20, elevation: 18 }}\n      height={440}\n      ariaLabel={t(\"lorenzAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "3D trajectory",
+      "description": "Line3DChart draws the Lorenz attractor (12,000 steps) colored by time with a value column and colorScale \"plasma\"."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "3D scatter chart",
+      "description": "Point clouds in a 3D box you can orbit: hundreds of thousands to millions of points on the GPU, colored per series, per point or through a color scale, with hover picking, legend and color bar. Line3DChart draws 3D trajectories.",
+      "demos": {
+        "clusters": {
+          "title": "Clusters",
+          "description": "Three species of an iris-like data set measured on three features: one series per class, and the legend toggles them. Drag to rotate, Shift + drag to pan, double-click to reset."
+        },
+        "galaxy": {
+          "title": "1,000,000 stars",
+          "description": "A barred spiral galaxy of one million stars generated with a seeded random generator: a warm bulge, logarithmic arms of young blue stars and pink HII regions, dark dust lanes on their inner edge, a thin disk and a faint halo. Each star gets a black-body color through a 0xRRGGBB color column; pointStyle \"glow\" and blend \"additive\" make dense regions shine, and exposure scales that light, tone mapped so that the core saturates without turning white. The legend toggles the populations."
+        },
+        "color-by-value": {
+          "title": "Color by value",
+          "description": "Warehouse sensors: the color shows the temperature (value column, colorScale \"coolwarm\" and a color bar) and the size the humidity (size column). Hover a sensor to read it."
+        },
+        "auto-rotate": {
+          "title": "Auto rotate",
+          "description": "A DNA double helix turning at 24°/s with autoRotate. The rotation pauses while the pointer is over the chart, off-screen and with reduced motion; the projection switches between perspective and orthographic."
+        },
+        "camera": {
+          "title": "Camera control",
+          "description": "The preset views call setCamera on the chart ref and Reset calls resetCamera; onCameraChange reports the angles after every rotation, zoom or pan."
+        },
+        "trajectory": {
+          "title": "3D trajectory",
+          "description": "Line3DChart draws the Lorenz attractor (12,000 steps) colored by time with a value column and colorScale \"plasma\"."
+        },
+        "renderer": {
+          "title": "Renderer",
+          "description": "Pick the backend of the data layer: auto tries WebGPU, WebGL2, WebGL then Canvas2D (CPU projection, decimated) and skips GPUs running in software; onRendererChange reports the backend actually used."
+        },
+        "embeddings": {
+          "title": "Document embeddings",
+          "description": "600 news articles embedded and projected on their first three principal components, one series per topic, with the explained variance in the axis titles. Click an article: onPointClick finds its five nearest neighbours, drawn as an extra series on top of the faded clouds and listed below."
+        },
+        "lidar": {
+          "title": "Lidar street scan",
+          "description": "About 13,000 lidar returns of a street, passed as typed-array columns and drawn as flat discs (pointStyle: \"disc\"). The radio buttons map the value column to the height or to the return intensity with a different colorScale, the switch remounts the chart in a dark ConfigProvider, and onHover reads the point under the pointer."
+        },
+        "satellites": {
+          "title": "Satellite constellations",
+          "description": "Four orbital shells around the Earth, from a low broadband constellation to the geostationary ring, moved every 100 ms by a setInterval cleaned up on unmount (one tick is one simulated minute). Each shell is a series with its own legend entry; hover a satellite to read the altitude, speed and period of its orbit."
+        },
+        "portfolio-risk": {
+          "title": "Portfolio risk",
+          "description": "Forty stocks by volatility, beta and annual return, one series per sector, the dot size following the market capitalization. The axes format percentages with Intl.NumberFormat, a click pins a stock and its Sharpe ratio below, and the switch changes camera.projection to orthographic for undistorted comparisons."
+        }
+      },
+      "data": {
+        "species": {
+          "setosa": "Setosa",
+          "versicolor": "Versicolor",
+          "virginica": "Virginica"
+        },
+        "sepalLength": "Sepal length (cm)",
+        "sepalWidth": "Sepal width (cm)",
+        "petalLength": "Petal length (cm)",
+        "clustersAria": "3D scatter chart of three flower species by sepal length, sepal width and petal length",
+        "galaxy": {
+          "bulge": "Bulge and bar",
+          "disk": "Old disk",
+          "arms": "Young stars",
+          "nebulae": "HII regions",
+          "halo": "Halo"
+        },
+        "kiloparsecs": "{{value}} kpc",
+        "galaxyAria": "A barred spiral galaxy of one million stars: bulge, spiral arms with young stars, HII regions and dust lanes, disk and halo",
+        "exposure": "Exposure",
+        "exposureValue": "Exposure ×{{value}}",
+        "sensors": "Sensors",
+        "sensorLabel": "Sensor {{id}} · humidity {{humidity}}%",
+        "celsius": "{{value}} °C",
+        "lengthM": "Length (m)",
+        "widthM": "Width (m)",
+        "heightM": "Height (m)",
+        "temperature": "Temperature",
+        "sensorsAria": "Temperature of 300 sensors in a warehouse, by position and height",
+        "backbone1": "Backbone 1",
+        "backbone2": "Backbone 2",
+        "basePairs": "Base pairs",
+        "autoRotate": "Auto rotate",
+        "projection": "Projection",
+        "perspective": "Perspective",
+        "orthographic": "Orthographic",
+        "helixAria": "Rotating DNA double helix",
+        "knot": "Torus knot",
+        "knotAria": "200,000 points around a torus knot, colored by height",
+        "renderer": "Backend",
+        "renderers": {
+          "auto": "Auto",
+          "webgpu": "WebGPU",
+          "webgl2": "WebGL2",
+          "webgl": "WebGL",
+          "canvas2d": "Canvas2D"
+        },
+        "starting": "Starting…",
+        "rendererInUse": "Backend in use: {{backend}}",
+        "rendererFallback": "{{requested}} is not available here: drawing with {{backend}}",
+        "trajectory": "Trajectory",
+        "time": "Time",
+        "seconds": "{{value}} s",
+        "lorenzAria": "Trajectory of the Lorenz attractor, colored by time",
+        "roll": "Swiss roll",
+        "position": "Position on the roll",
+        "views": {
+          "front": "Front",
+          "side": "Side",
+          "top": "Top",
+          "reset": "Reset"
+        },
+        "cameraState": "Azimuth {{azimuth}}°, elevation {{elevation}}°, zoom ×{{zoom}}",
+        "cameraHint": "Drag to rotate, Shift + drag to pan, Ctrl / ⌘ + wheel to zoom, double-click to reset.",
+        "rollAria": "Swiss roll point cloud colored by the position along the roll",
+        "topics": {
+          "sports": "Sports",
+          "politics": "Politics",
+          "technology": "Technology",
+          "health": "Health",
+          "finance": "Finance",
+          "travel": "Travel"
+        },
+        "docLabel": "{{topic}} article #{{n}}",
+        "neighbours": "Nearest neighbours",
+        "component": "Component {{n}} ({{variance}})",
+        "embeddingsAria": "News article embeddings on their first three principal components, by topic",
+        "neighboursOf": "Closest to {{doc}}: {{list}}.",
+        "neighbourItem": "{{doc}} ({{distance}})",
+        "embeddingsHint": "Click an article to find its nearest neighbours.",
+        "lidarReturns": "Lidar returns",
+        "lidarColor": "Color by",
+        "lidarModes": {
+          "height": "Height",
+          "intensity": "Intensity"
+        },
+        "darkTheme": "Dark theme",
+        "lidarAria": "Lidar point cloud of a street with buildings, trees and parked cars",
+        "lidarSummary": "{{points}} points. Hover the cloud to read a return.",
+        "lidarHover": "Height {{height}}, intensity {{intensity}}.",
+        "satName": "{{shell}} {{n}}",
+        "shells": {
+          "broadband": "Broadband (LEO)",
+          "imaging": "Earth imaging (polar)",
+          "navigation": "Navigation (MEO)",
+          "geostationary": "Geostationary"
+        },
+        "earth": "Earth",
+        "play": "Play",
+        "thousandKm": "Thousands of km",
+        "satellitesAria": "Satellites of four orbital shells moving around the Earth",
+        "satHover": "{{shell}}: altitude {{altitude}}, speed {{speed}}, one orbit every {{period}}.",
+        "satellitesHint": "Hover a satellite to read its orbit.",
+        "sectors": {
+          "technology": "Technology",
+          "healthcare": "Healthcare",
+          "energy": "Energy",
+          "financials": "Financials",
+          "consumer": "Consumer"
+        },
+        "stockLabel": "{{ticker}} · {{cap}}",
+        "orthographicView": "Orthographic view",
+        "annualVolatility": "Volatility",
+        "beta": "Beta",
+        "annualReturn": "Annual return",
+        "portfolioAria": "Stocks by volatility, beta and annual return, sized by market capitalization",
+        "stockReadout": "{{ticker}} ({{sector}}): return {{ret}}, volatility {{volatility}}, beta {{beta}}, Sharpe ratio {{sharpe}}, market cap {{cap}}.",
+        "portfolioHint": "Click a stock to pin its figures."
+      },
+      "api": {
+        "Scatter3DChartProps": {
+          "series": "Point clouds: objects, [x, y, z] tuples or typed-array columns"
+        },
+        "Line3DChartProps": {
+          "series": "3D polylines (trajectories); NaN coordinates break a line"
+        },
+        "Chart3DCommonProps": {
+          "height": "Height of the chart (the legend included); numbers are pixels",
+          "width": "Width of the chart; numbers are pixels",
+          "xAxis": "X axis (width of the box): title, range, ticks, format, categories",
+          "yAxis": "Y axis (depth of the box)",
+          "zAxis": "Z axis (height of the box)",
+          "camera": "Initial camera (azimuth, elevation, zoom, projection, field of view), also restored by a double click; changing it moves the camera",
+          "autoRotate": "Turns the camera around the box: true at 12°/s or a speed in degrees per second; pauses while hovered, off-screen and with reduced motion",
+          "aspect": "Proportions of the box (x, y, z)",
+          "box": "Draws the axis box: back walls, grid lines, tick labels and axis titles",
+          "colorScale": "Colors of colorBy \"z\" / \"value\": a built-in ramp (viridis, plasma, inferno, magma, cividis, turbo, spectral, coolwarm, terrain, blues) or CSS colors",
+          "valueRange": "Values mapped to the ends of the color scale; the data range by default",
+          "colorBar": "Color bar of the color scale (title, format); shown when a visible series uses the scale",
+          "legend": "Legend; shown when several series have a name, clicking an item toggles its series",
+          "tooltip": "Tooltip; false disables it, render replaces its content",
+          "interaction": "Drag rotates, right / Shift + drag pans, Ctrl / ⌘ + wheel and pinch zoom, double click resets, arrow keys rotate; false makes the chart static",
+          "lighting": "Ambient, diffuse and specular light of the surfaces and bars",
+          "exposure": "Brightness of the light of additive series (blend \"additive\"), tone mapped on WebGPU and WebGL2: dense glowing regions saturate gracefully instead of turning white",
+          "renderer": "Backend of the data layer: auto tries WebGPU, WebGL2, WebGL, then Canvas2D, skipping GPUs running in software",
+          "palette": "Series colors (defaults to the --chart-series-1..8 CSS variables, then the theme colors)",
+          "ariaLabel": "Accessible name of the chart",
+          "locale": "Language of the built-in texts (accessible summary, legend announcements, tooltip row names) and of the number formatting; built-in texts in English, Chinese, Japanese and French. Defaults to the page language (<html lang>), then the browser language",
+          "labels": "Overrides of the built-in texts of the locale (see Chart3DLabels)",
+          "onHover": "Called when the hovered point, cell or bar changes",
+          "onPointClick": "Called when a point, cell or bar is clicked",
+          "onCameraChange": "Called after the user rotated, zoomed, panned or reset the camera",
+          "onRendererChange": "Called with the backend once it is ready (and after a fallback)",
+          "className": "Class of the outer element",
+          "style": "Style of the outer element",
+          "ref": "Imperative handle: resetCamera, getCamera, setCamera, getRenderer, getInstance"
+        },
+        "Chart3DHandle": {
+          "resetCamera": "Restores the camera of the camera prop",
+          "getCamera": "Current camera (null before mount)",
+          "setCamera": "Moves the camera (any of azimuth, elevation, zoom, pan, projection)",
+          "getRenderer": "Backend in use, null until ready",
+          "getInstance": "The underlying engine instance (createChart3D of minerva-design/charts/core)"
+        },
+        "Scatter3DSeries": {
+          "type": "Set by the components; series without a type are scatter series",
+          "data": "The points: objects, [x, y, z] tuples or columns (typed arrays are used as is, NaN skips a point)",
+          "pointSize": "Dot diameter in CSS pixels (a per-point size wins)",
+          "opacity": "Opacity of the dots, 0-1",
+          "colorBy": "Source of the colors: \"series\", or \"z\" / \"value\" through the color scale",
+          "perspectiveSize": "Scales the dots with their distance (perspective projection only)",
+          "pointStyle": "Look of the dots: \"sphere\" (shaded balls), \"disc\" (flat anti-aliased discs) or \"glow\" (soft discs with a gaussian halo, for stars and dense clouds)",
+          "blend": "\"additive\" accumulates the light of the dots (dense regions get brighter, meant for dark backgrounds; no depth sorting needed) instead of \"normal\" alpha blending"
+        },
+        "Line3DSeries": {
+          "type": "Set by Line3DChart",
+          "data": "The vertices, in drawing order",
+          "lineWidth": "Line width in CSS pixels",
+          "opacity": "Opacity of the line, 0-1",
+          "colorBy": "Source of the color; \"z\" and \"value\" draw a gradient along the line",
+          "pointSize": "Diameter of a dot drawn at every vertex (0: no dots)"
+        },
+        "Chart3DSeriesBase": {
+          "id": "Stable identifier (defaults to the index)",
+          "name": "Name shown in the legend and the tooltip",
+          "color": "Series color (any CSS color, var(--x) included); the palette when omitted",
+          "hidden": "Hides the series (it stays in the legend)",
+          "format": "Formats the value (or the height) of the hovered item in the tooltip"
+        },
+        "Chart3DPoint": {
+          "x": "X coordinate",
+          "y": "Y coordinate",
+          "z": "Height (vertical axis)",
+          "size": "Diameter of the dot in CSS pixels",
+          "color": "Color of the dot; wins over the series color and the color scale",
+          "value": "Value mapped to the color scale (colorBy \"value\")",
+          "label": "Text shown in the tooltip"
+        },
+        "Chart3DColumnData": {
+          "x": "X coordinates",
+          "y": "Y coordinates",
+          "z": "Heights",
+          "size": "Per-point diameters in CSS pixels",
+          "value": "Per-point values mapped to the color scale",
+          "label": "Per-point texts shown in the tooltip",
+          "color": "Per-point colors as 0xRRGGBB numbers (a Uint32Array for large clouds); win over the series color and the color scale"
+        },
+        "Chart3DAxisOptions": {
+          "title": "Axis title",
+          "min": "Lower bound; computed from the data when omitted",
+          "max": "Upper bound; computed from the data when omitted",
+          "categories": "Category names (x / y axes of bar charts); collected from the data when omitted",
+          "format": "Formats a tick or tooltip value (category axes: the category index)",
+          "tickCount": "Approximate number of ticks",
+          "grid": "Draws grid lines at the ticks on the walls of the box",
+          "visible": "Shows the tick labels and the title",
+          "nice": "Rounds the automatic range to tick values"
+        },
+        "Chart3DCameraOptions": {
+          "azimuth": "Horizontal angle in degrees, counterclockwise seen from above (0 looks along the y axis)",
+          "elevation": "Height angle in degrees (-89 to 89; positive looks from above)",
+          "zoom": "Zoom: 1 fits the box, 2 shows it twice as large",
+          "projection": "\"perspective\" (vanishing lines) or \"orthographic\" (parallel lines)",
+          "fov": "Vertical field of view in degrees (perspective)"
+        },
+        "Chart3DCameraState": {
+          "azimuth": "Horizontal angle in degrees",
+          "elevation": "Height angle in degrees",
+          "zoom": "Zoom factor (1 fits the box)",
+          "pan": "Shift of the box center on screen, in fractions of the plot height",
+          "projection": "Projection of the camera"
+        },
+        "Chart3DInteractionOptions": {
+          "rotate": "Drag (one finger) rotates the camera",
+          "zoom": "Wheel and pinch zoom",
+          "wheel": "Wheel zoom: only with Ctrl / ⌘ and trackpad pinch (\"modifier\") or always",
+          "pan": "Right-drag, Shift + drag and two-finger drag pan the view",
+          "keyboard": "Arrow keys rotate, +/- zoom, 0 resets, Esc clears the highlight"
+        },
+        "Chart3DColorBarOptions": {
+          "title": "Title above the bar",
+          "format": "Formats the values of the bar (the z axis format by default)"
+        },
+        "Chart3DHoverEvent": {
+          "seriesIndex": "Index of the series",
+          "seriesId": "Identifier of the series",
+          "seriesName": "Name of the series",
+          "type": "Type of the series",
+          "index": "Index of the point / bar in the series data; surfaces: row × cols + col",
+          "row": "Surfaces: row of the grid vertex",
+          "col": "Surfaces: column of the grid vertex",
+          "x": "X value (bars: category index)",
+          "y": "Y value (bars: category index)",
+          "z": "Height",
+          "value": "Color-scale value of the data",
+          "xCategory": "Bars: x category name",
+          "yCategory": "Bars: y category name",
+          "color": "Resolved color of the item",
+          "label": "Label of the datum",
+          "clientX": "Horizontal position in CSS pixels, relative to the chart's container",
+          "clientY": "Vertical position in CSS pixels, relative to the chart's container"
+        },
+        "Chart3DLabels": {
+          "chart": "Role description and accessible name of an unnamed chart",
+          "chartNamed": "Accessible name when series are named; {names}",
+          "series": "Name of an unnamed series; {n} is its 1-based position",
+          "seriesCount": "Summary: number of series; {count}",
+          "seriesSummary": "Summary of a series; {name}, {type}, {size}",
+          "seriesSummaryHidden": "Summary of a hidden series; {name}, {type}, {size}",
+          "scatter": "Type name of scatter series",
+          "line": "Type name of line series",
+          "surface": "Type name of surface series",
+          "bar": "Type name of bar series",
+          "points": "Size of a scatter series; {count}",
+          "vertices": "Size of a line series; {count}",
+          "grid": "Size of a surface series; {rows}, {cols}",
+          "bars": "Size of a bar series; {count}",
+          "axis": "Summary of an axis without title; {axis}, {range}",
+          "axisTitled": "Summary of an axis with a title; {axis}, {title}, {range}",
+          "range": "Range of a numeric axis; {min}, {max}",
+          "listSeparator": "Separator of the lists (series names, categories)",
+          "shown": "Announcement when the legend shows a series; {name}",
+          "hidden": "Announcement when the legend hides a series; {name}",
+          "value": "Tooltip row of the value (when the color bar has no title)",
+          "x": "Tooltip row of x when the axis has no title",
+          "y": "Tooltip row of y when the axis has no title",
+          "z": "Tooltip row of z when the axis has no title"
+        }
+      },
+      "wc": {
+        "demos": {
+          "clusters": {
+            "title": "Customer segments in 3D",
+            "description": "Three point clouds (age, income, spending) as columns; drag to rotate, Ctrl / ⌘ + wheel to zoom."
+          },
+          "trajectory": {
+            "title": "A trajectory colored by height",
+            "description": "A 3D polyline colored along its altitude with a color bar; the camera turns slowly around it."
+          }
+        },
+        "minerva-scatter-3d-chart": {
+          "props": {
+            "options": "Other engine options (Chart3DOptions of minerva-design/charts/core: colors, texts, locale, labels…); property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+          },
+          "events": {
+            "minerva-hover": "The hovered point, cell or bar changed; detail: { seriesIndex, seriesName, type, index, x, y, z, value, color, label }, null when nothing is hovered",
+            "minerva-point-click": "A point, cell or bar was clicked; detail: { seriesIndex, seriesName, type, index, x, y, z, value, color, label }",
+            "minerva-camera-change": "The user rotated, zoomed, panned or reset the camera; detail: { azimuth, elevation, zoom, pan, projection }",
+            "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+          },
+          "methods": {
+            "resetCamera": "Restores the camera of the options",
+            "getCamera": "Current camera, null before the engine is created",
+            "setCamera": "Moves the camera",
+            "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
+          }
+        },
+        "minerva-line-3d-chart": {
+          "props": {
+            "options": "Other engine options (Chart3DOptions of minerva-design/charts/core: colors, texts, locale, labels…); property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+          },
+          "events": {
+            "minerva-hover": "The hovered point, cell or bar changed; detail: { seriesIndex, seriesName, type, index, x, y, z, value, color, label }, null when nothing is hovered",
+            "minerva-point-click": "A point, cell or bar was clicked; detail: { seriesIndex, seriesName, type, index, x, y, z, value, color, label }",
+            "minerva-camera-change": "The user rotated, zoomed, panned or reset the camera; detail: { azimuth, elevation, zoom, pan, projection }",
+            "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+          },
+          "methods": {
+            "resetCamera": "Restores the camera of the options",
+            "getCamera": "Current camera, null before the engine is created",
+            "setCamera": "Moves the camera",
+            "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,523 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.1",
+  "locale": "zh",
+  "renderer": "vue",
+  "page": "alert",
+  "title": "Alert 警告提示",
+  "description": "在页面中展示重要信息，例如系统通知或操作结果。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.1",
+    "sourceCommit": "3a9f5cdaae706f14fe6d8c65c5481eba719a66c4",
+    "sourceDigest": "sha256:c9ed2b706b61413d29e506a3f04f3d35c044a4b57ec0e284935054f9e1898c7e",
+    "referenceSourceDigest": "sha256:6c9ecba0079f25e53cd971e51f2be8604fc3d941c0ed1cfeec03c4a91913ad73"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Alert",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "Alert"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "title",
+            "type": "string",
+            "required": false,
+            "description": "Alert title (or the `title` slot)",
+            "typeText": "string"
+          },
+          {
+            "name": "color",
+            "type": "\"info\" | \"success\" | \"warning\" | \"danger\"",
+            "default": "\"info\"",
+            "required": false,
+            "description": "Semantic (status) color, which also sets the default icon and the role",
+            "typeText": "\"info\" | \"success\" | \"warning\" | \"danger\""
+          },
+          {
+            "name": "variant",
+            "type": "\"subtle\" | \"outline\" | \"solid\"",
+            "default": "\"subtle\"",
+            "required": false,
+            "description": "Visual style: `subtle` (tinted background), `outline` (transparent\nbackground with a colored border) or `solid` (filled with the color)",
+            "typeText": "\"subtle\" | \"outline\" | \"solid\""
+          },
+          {
+            "name": "size",
+            "type": "AlertSize",
+            "default": "\"medium\"",
+            "required": false,
+            "description": "Alert size",
+            "typeText": "AlertSize"
+          },
+          {
+            "name": "showIcon",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Shows the status icon of the color (or the `icon` slot)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "closable",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Shows a close button",
+            "typeText": "boolean"
+          },
+          {
+            "name": "animation",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Plays an entrance animation",
+            "typeText": "boolean"
+          },
+          {
+            "name": "animationName",
+            "type": "\"slideIn\" | \"fadeIn\" | \"bounce\" | \"zoom\"",
+            "default": "\"slideIn\"",
+            "required": false,
+            "description": "Entrance animation name",
+            "typeText": "\"slideIn\" | \"fadeIn\" | \"bounce\" | \"zoom\""
+          },
+          {
+            "name": "banner",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Banner mode, suited to page-level notices at the top of a page",
+            "typeText": "boolean"
+          },
+          {
+            "name": "elevation",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Adds a drop shadow",
+            "typeText": "boolean"
+          },
+          {
+            "name": "rounded",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Rounds the corners",
+            "typeText": "boolean"
+          },
+          {
+            "name": "borderRadius",
+            "type": "string | number",
+            "required": false,
+            "description": "Custom corner radius (a number is in px)",
+            "typeText": "string | number"
+          },
+          {
+            "name": "collapsible",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Lets the content be expanded and collapsed (requires a title)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "expanded",
+            "type": "boolean",
+            "required": false,
+            "description": "Whether the content is expanded (controlled, `v-model:expanded`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "defaultExpanded",
+            "type": "boolean",
+            "required": false,
+            "description": "Whether the content is initially expanded (uncontrolled)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "closeLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible label of the close button",
+            "typeText": "string"
+          },
+          {
+            "name": "expandLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible label of the toggle while the content is collapsed",
+            "typeText": "string"
+          },
+          {
+            "name": "collapseLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible label of the toggle while the content is expanded",
+            "typeText": "string"
+          },
+          {
+            "name": "iconLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible label of the status icon",
+            "typeText": "string"
+          },
+          {
+            "name": "returnFocus",
+            "type": "FocusTarget",
+            "required": false,
+            "description": "Element receiving focus after the alert is closed with its close button:\nan element, a ref or a getter. Without it focus moves to the next\nfocusable element after the alert (else the previous one, else its\ncontainer), never to <body>",
+            "typeText": "FocusTarget"
+          },
+          {
+            "name": "role",
+            "type": "string",
+            "required": false,
+            "description": "ARIA role of the alert. Danger and warning interrupt (\"alert\"), info\nand success are polite (\"status\")",
+            "typeText": "string"
+          }
+        ],
+        "events": [
+          {
+            "name": "close",
+            "type": "[event: MouseEvent]",
+            "typeText": "[event: MouseEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "MouseEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "expand",
+            "type": "[expanded: boolean]",
+            "typeText": "[expanded: boolean]",
+            "parameters": [
+              {
+                "name": "expanded",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "update:expanded",
+            "type": "[expanded: boolean]",
+            "typeText": "[expanded: boolean]",
+            "parameters": [
+              {
+                "name": "expanded",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "description": "Alert content",
+            "typeText": "any"
+          },
+          {
+            "name": "title",
+            "type": "any",
+            "description": "Alert title (the `title` prop)",
+            "typeText": "any"
+          },
+          {
+            "name": "icon",
+            "type": "any",
+            "description": "Custom icon, replacing the status icon",
+            "typeText": "any"
+          },
+          {
+            "name": "action",
+            "type": "any",
+            "description": "Action area rendered on the right, e.g. buttons",
+            "typeText": "any"
+          },
+          {
+            "name": "close-icon",
+            "type": "any",
+            "description": "Custom close icon",
+            "typeText": "any"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "expanded",
+            "event": "update:expanded",
+            "syntax": "v-model:expanded"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Alert": {
+      "kind": "cssVars",
+      "source": "react/src/components/Alert",
+      "vars": [
+        {
+          "name": "--alert-padding",
+          "description": "Padding (every size; defaults to the padding of the size)"
+        },
+        {
+          "name": "--alert-radius",
+          "description": "Corner radius (defaults to --radius-sm, --radius-lg when rounded)"
+        },
+        {
+          "name": "--alert-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--alert-icon-size",
+          "description": "Size of the status icon (every size)"
+        },
+        {
+          "name": "--alert-gap",
+          "description": "Space between the icon, the content and the actions"
+        },
+        {
+          "name": "--alert-shadow",
+          "description": "Shadow of the elevated alert (defaults to --shadow-sm)"
+        },
+        {
+          "name": "--alert-margin-bottom",
+          "description": "Space below the alert"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/alert/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/alert/vue/basic.vue": "<script setup lang=\"ts\">\nimport { Alert } from \"minerva-design/vue\";\n</script>\n<template>\n  <Alert title=\"Changes saved\" color=\"success\"\n    >Your settings are up to date.</Alert\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "closable",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/alert/vue/closable.vue",
+      "files": {
+        "apps/docs/src/docs/pages/alert/vue/closable.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Alert, Button, VStack } from \"minerva-design/vue\";\nconst visible = ref(true);\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><Alert\n      v-if=\"visible\"\n      closable\n      title=\"Scheduled maintenance\"\n      @close=\"visible = false\"\n      >Service will restart tonight.</Alert\n    ><Button v-else @click=\"visible = true\">Restore notice</Button></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "closable",
+      "description": ""
+    },
+    {
+      "id": "collapsible",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/alert/vue/collapsible.vue",
+      "files": {
+        "apps/docs/src/docs/pages/alert/vue/collapsible.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Alert, VStack } from \"minerva-design/vue\";\nconst expanded = ref(true);\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><Alert v-model:expanded=\"expanded\" collapsible title=\"Release details\"\n      >New components and accessibility improvements are available.</Alert\n    ><output>{{ expanded ? \"Expanded\" : \"Collapsed\" }}</output></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "collapsible",
+      "description": ""
+    },
+    {
+      "id": "variants-sizes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/alert/vue/variants-sizes.vue",
+      "files": {
+        "apps/docs/src/docs/pages/alert/vue/variants-sizes.vue": "<script setup lang=\"ts\">\nimport { Alert, VStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><Alert color=\"info\" variant=\"subtle\" size=\"small\" title=\"Tip\"\n      >Use keyboard shortcuts to move faster.</Alert\n    ><Alert color=\"warning\" variant=\"outline\" title=\"Storage almost full\"\n      >Archive unused files.</Alert\n    ><Alert color=\"danger\" variant=\"solid\" size=\"large\" title=\"Connection lost\"\n      >Reconnect to continue.</Alert\n    ></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "variants-sizes",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.1/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Alert 警告提示",
+      "description": "在页面中展示重要信息，例如系统通知或操作结果。",
+      "demos": {
+        "colors": {
+          "title": "颜色",
+          "description": "color 设置状态：info（默认）、success、warning 和 danger，同时决定图标与 role。"
+        },
+        "variants": {
+          "title": "变体",
+          "description": "variant 设置视觉样式：subtle（默认，浅色背景）、outline（彩色边框）或 solid（以颜色填充）。"
+        },
+        "with-title": {
+          "title": "带标题",
+          "description": "在内容上方添加标题。showIcon={false} 可隐藏图标。"
+        },
+        "sizes": {
+          "title": "尺寸",
+          "description": "小、中（默认）、大三种尺寸。"
+        },
+        "closable": {
+          "title": "可关闭",
+          "description": "closable 添加关闭按钮；closeIcon 替换其图标，关闭时调用 onClose。"
+        },
+        "with-action": {
+          "title": "带操作",
+          "description": "通过 action 在右侧渲染按钮或链接。"
+        },
+        "collapsible": {
+          "title": "可折叠",
+          "description": "在有标题时，collapsible 允许用户展开和收起内容。可以用 expanded + onExpand 受控，也可以只用 defaultExpanded 设置初始状态。"
+        },
+        "banner": {
+          "title": "横幅",
+          "description": "适用于页面顶部通知的横幅模式。"
+        },
+        "appearance": {
+          "title": "外观",
+          "description": "自定义图标、阴影、outline 与 solid 变体以及圆角等选项。"
+        },
+        "animations": {
+          "title": "动画",
+          "description": "选择入场动画或将其关闭。"
+        },
+        "return-focus": {
+          "title": "关闭后的焦点",
+          "description": "通过关闭按钮关闭警告提示后，焦点不会落到页面上：它会移到警告之后的下一个可聚焦元素（没有则移到前一个，再没有则移到其容器），或移到 returnFocus 指定的元素（元素、ref 或函数）。"
+        }
+      },
+      "api": {
+        "AlertProps": {
+          "title": "警告提示的标题",
+          "children": "警告提示的内容",
+          "color": "语义（状态）颜色，同时决定默认图标和 role",
+          "variant": "视觉样式：subtle（浅色背景）、outline（透明背景加彩色边框）或 solid（以颜色填充）",
+          "size": "警告提示的尺寸",
+          "showIcon": "显示该颜色对应的状态图标",
+          "icon": "自定义图标，替换状态图标",
+          "closable": "显示关闭按钮",
+          "closeIcon": "自定义关闭图标",
+          "onClose": "点击关闭按钮时调用",
+          "animation": "播放入场动画",
+          "animationName": "入场动画名称",
+          "className": "额外的类名",
+          "style": "内联样式",
+          "action": "渲染在右侧的操作区域，例如按钮",
+          "banner": "横幅模式，适合页面顶部的全局通知",
+          "elevation": "添加阴影",
+          "rounded": "使用圆角",
+          "borderRadius": "自定义圆角大小",
+          "collapsible": "允许展开和收起内容（需要标题）",
+          "expanded": "内容是否展开（受控）；需配合 onExpand 使用",
+          "defaultExpanded": "内容初始是否展开（非受控）",
+          "onExpand": "内容展开或收起时，以新的状态调用",
+          "ref": "根 <div> 元素的 ref",
+          "closeLabel": "关闭按钮的无障碍标签",
+          "expandLabel": "内容收起时展开按钮的无障碍标签",
+          "collapseLabel": "内容展开时收起按钮的无障碍标签",
+          "iconLabel": "状态图标的无障碍标签",
+          "role": "提示的 ARIA 角色。危险与警告会打断播报（\"alert\"），信息与成功为礼貌播报（\"status\"）",
+          "returnFocus": "通过关闭按钮关闭后接收焦点的元素：元素、ref 或函数。未设置时焦点移到警告之后的下一个可聚焦元素（没有则移到前一个，再没有则移到其容器），绝不会落到 <body>"
+        }
+      },
+      "cssVars": {
+        "--alert-padding": "内边距（所有尺寸；默认为对应尺寸的内边距）",
+        "--alert-radius": "圆角（默认 --radius-sm，rounded 时为 --radius-lg）",
+        "--alert-font-size": "字号（所有尺寸）",
+        "--alert-icon-size": "状态图标的大小（所有尺寸）",
+        "--alert-gap": "图标、内容与操作之间的间距",
+        "--alert-shadow": "带阴影提示的阴影（默认 --shadow-sm）",
+        "--alert-margin-bottom": "提示下方的间距"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "带标题的四种状态颜色。danger 和 warning 使用 role=\"alert\"，info 和 success 使用 role=\"status\"。"
+          },
+          "variants-sizes": {
+            "title": "变体、尺寸与外观",
+            "description": "三种变体和尺寸、hide-icon、elevation、直角、animation-name / no-animation、自定义 icon 插槽以及横幅模式。"
+          },
+          "closable": {
+            "title": "可关闭",
+            "description": "closable 触发可取消的 minerva-close：调用 preventDefault() 会保留提示，否则它会将焦点移出并隐藏自身。action 插槽用于放置按钮。"
+          },
+          "collapsible": {
+            "title": "可折叠",
+            "description": "collapsible（需有标题）添加切换按钮；collapsed 设置初始状态，minerva-expanded-change 报告每次变化。"
+          }
+        },
+        "minerva-alert": {
+          "props": {
+            "heading": "标题文字（或使用 heading 插槽）。",
+            "hideIcon": "隐藏状态图标。",
+            "noAnimation": "禁用入场动画。",
+            "square": "直角。",
+            "collapsed": "消息是否折叠。",
+            "alertRole": "ARIA 角色（默认：danger / warning 为 \"alert\"，其他为 \"status\"）。"
+          },
+          "events": {
+            "minerva-close": "关闭按钮被激活；可取消：preventDefault() 会让提示保持可见。",
+            "minerva-expanded-change": "用户展开 / 折叠了消息（detail: { expanded }）；可取消。"
+          },
+          "slots": {
+            "default": "消息。",
+            "heading": "标题（heading 属性的替代方式）。",
+            "icon": "替换状态图标的自定义图标。",
+            "action": "末尾的操作区域（例如按钮）。",
+            "close-icon": "自定义关闭图标。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        }
+      }
+    }
+  }
+}
