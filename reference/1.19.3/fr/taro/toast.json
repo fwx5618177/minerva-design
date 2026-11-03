@@ -1,0 +1,301 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.19.3",
+  "locale": "fr",
+  "renderer": "taro",
+  "page": "toast",
+  "title": "Toast",
+  "description": "Notifications temporaires avec un titre, une description et une couleur sémantique, affichées avec toast() depuis n’importe où (aucun contexte React requis) et rendues par un ToastProvider dans l’arbre de votre application, si bien qu’elles héritent de son contexte (thème, langue). Chargement, suivi de promesse, mise à jour sur place, actions et nombre maximal sont intégrés. Compatible avec le rendu serveur.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.19.3",
+    "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
+    "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
+    "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  },
+  "content": {
+    "usage": {
+      "title": "Lequel choisir : useToast() ou toast()",
+      "hook": "Dans un composant, appelez useToast() : ses toasts suivent la portée du ConfigProvider le plus proche. Sous un provider imbriqué, ils sont rendus dans son conteneur de portail, avec son thème, sa palette et ses tokens, et leurs libellés intégrés utilisent sa langue. Le ToastProvider propriétaire les affiche toujours, avec sa position, son max et ses libellés.",
+      "function": "Hors de React (bus d’événements, clients d’API, stores et autres modules non composants), importez directement toast() : aucun hook n’y est disponible, et ses toasts utilisent la portée du ToastProvider, en général le thème et la langue racines.",
+      "modal": "Tant qu'une boîte de dialogue modale est ouverte (Modal, Drawer, ConfirmDialog, Command, un Popover ou un Menu modal), son traitement hide-others couvre la zone des toasts comme le reste de la page : elle reçoit aria-hidden=\"true\" et les technologies d'assistance ne voient que la boîte de dialogue jusqu'à sa fermeture. <minerva-toast-region> se comporte de la même façon (désactivable sur une région avec data-minerva-keep-visible)."
+    }
+  },
+  "components": [
+    {
+      "name": "ToastProvider",
+      "support": {
+        "status": "beta",
+        "notes": "Scoped callable toast API, semantic helpers, id replacement/update, promises, duration, max overflow, actions and dismissal callbacks. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Requires a mounted provider; native hover pause and focus hotkeys do not apply. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Scoped callable toast API, semantic helpers, id replacement/update, promises, duration, max overflow, actions and dismissal callbacks. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Requires a mounted provider; native hover pause and focus hotkeys do not apply. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "ToastProvider"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "max",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false
+          },
+          {
+            "name": "position",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "closeLabel",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Toast": {
+      "kind": "cssVars",
+      "source": "react/src/components/Toast",
+      "vars": [
+        {
+          "name": "--toast-width",
+          "description": "Width of the toast stack (capped by the viewport)"
+        },
+        {
+          "name": "--toast-gap",
+          "description": "Space between stacked toasts"
+        },
+        {
+          "name": "--toast-offset",
+          "description": "Distance between the stack and the viewport edges"
+        },
+        {
+          "name": "--toast-padding",
+          "description": "Padding of a toast"
+        },
+        {
+          "name": "--toast-radius",
+          "description": "Corner radius of a toast (defaults to --radius-md)"
+        },
+        {
+          "name": "--toast-shadow",
+          "description": "Shadow of a toast (defaults to --shadow-lg)"
+        },
+        {
+          "name": "--toast-background",
+          "description": "Base background of a toast (under the color tint)"
+        },
+        {
+          "name": "--toast-z-index",
+          "description": "Stacking order of the stack (defaults to --z-toast)"
+        },
+        {
+          "name": "--toast-icon-background",
+          "description": "Background of the round chip behind the status icon (defaults to the color's accent at 14%)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "// Inside a component: follows the nearest ConfigProvider scope\nfunction SaveButton() {\n  const toast = useToast();\n  return <Button onClick={() => toast.success(\"Saved\")}>Save</Button>;\n}\n\n// Outside React (API client, event bus, store...): root scope\nimport { toast } from \"minerva-design\";\napiClient.onError((error) => toast.danger(error.message));",
+      "language": "tsx"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.19.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Toast",
+      "description": "Notifications temporaires avec un titre, une description et une couleur sémantique, affichées avec toast() depuis n’importe où (aucun contexte React requis) et rendues par un ToastProvider dans l’arbre de votre application, si bien qu’elles héritent de son contexte (thème, langue). Chargement, suivi de promesse, mise à jour sur place, actions et nombre maximal sont intégrés. Compatible avec le rendu serveur.",
+      "usage": {
+        "title": "Lequel choisir : useToast() ou toast()",
+        "hook": "Dans un composant, appelez useToast() : ses toasts suivent la portée du ConfigProvider le plus proche. Sous un provider imbriqué, ils sont rendus dans son conteneur de portail, avec son thème, sa palette et ses tokens, et leurs libellés intégrés utilisent sa langue. Le ToastProvider propriétaire les affiche toujours, avec sa position, son max et ses libellés.",
+        "function": "Hors de React (bus d’événements, clients d’API, stores et autres modules non composants), importez directement toast() : aucun hook n’y est disponible, et ses toasts utilisent la portée du ToastProvider, en général le thème et la langue racines.",
+        "modal": "Tant qu'une boîte de dialogue modale est ouverte (Modal, Drawer, ConfirmDialog, Command, un Popover ou un Menu modal), son traitement hide-others couvre la zone des toasts comme le reste de la page : elle reçoit aria-hidden=\"true\" et les technologies d'assistance ne voient que la boîte de dialogue jusqu'à sa fermeture. <minerva-toast-region> se comporte de la même façon (désactivable sur une région avec data-minerva-keep-visible)."
+      },
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Success affiche Saved, Danger Request failed, Warning Unsaved changes et Info New version. Trois notifications au maximum."
+        },
+        "colors": {
+          "title": "Couleurs",
+          "description": "color choisit la couleur sémantique : info (par défaut), success, warning ou danger. Elle définit l’accent, l’icône et le rôle : danger est annoncé comme une alerte, les autres comme un statut."
+        },
+        "options": {
+          "title": "Options",
+          "description": "toast({ color, title, description, duration }) pour un contrôle complet ; duration 0 garde le toast jusqu’à sa fermeture. toast.dismiss(id) ferme un toast, toast.dismiss() tous. Survoler ou focaliser un toast suspend son minuteur."
+        },
+        "loading": {
+          "title": "Chargement, mise à jour et promesse",
+          "description": "toast.loading (ou l’option loading: true, avec n’importe quelle couleur) affiche un spinner à la place de l’icône et reste ouvert ; toast.update(id, { loading: false, ... }) le transforme sur place en résultat. toast.promise(promise, { loading, success, error }) fait les deux pour une promesse."
+        },
+        "action": {
+          "title": "Action, icône et onClose",
+          "description": "action ajoute un bouton (par ex. Annuler) qui ferme aussi le toast ; icon remplace l’icône de la couleur ; closable: false masque le bouton de fermeture ; onClose est appelé une fois à la fermeture."
+        },
+        "dedupe": {
+          "title": "Le même id remplace",
+          "description": "Afficher un toast avec l’id d’un toast visible le remplace et relance son minuteur au lieu d’empiler des doublons (pratique pour les erreurs de polling)."
+        },
+        "scoped": {
+          "title": "Portée : useToast() ou toast()",
+          "description": "Les deux boutons sont dans un ConfigProvider imbriqué (thème sombre, palette tech, chinois). useToast() affiche son toast dans cette portée (tokens sombres, libellé de fermeture en chinois, sa propre zone à la même position) ; toast() l’affiche à la racine, avec le thème et la langue de la page."
+        },
+        "keyboard": {
+          "title": "Clavier",
+          "description": "F8 (la prop hotkey, aussi annoncée dans le libellé de la région « Notifications (F8) ») déplace le focus vers les toasts. Échap ferme le toast qui a le focus ; après une fermeture, le focus passe au bouton de fermeture du toast suivant, puis revient là où il était avant d'entrer dans les toasts."
+        }
+      },
+      "api": {
+        "ToastOptions": {
+          "id": "Identifiant du toast ; généré s’il est omis. Afficher un toast avec l’id d’un toast visible le remplace (et relance son minuteur) au lieu d’empiler un doublon",
+          "color": "Couleur sémantique du toast ; définit son accent, son icône et son rôle ARIA (danger est annoncé comme une alerte, les autres comme un statut)",
+          "loading": "Affiche un spinner à la place de l’icône et garde le toast ouvert (duration vaut 0 par défaut) jusqu’à sa mise à jour ou sa fermeture ; annoncé comme un statut",
+          "title": "Texte principal",
+          "description": "Texte secondaire sous le titre",
+          "duration": "Délai en millisecondes avant la fermeture automatique ; 0 le garde ouvert. 0 par défaut pour les toasts de chargement",
+          "icon": "Remplace l’icône de la couleur (ou le spinner de chargement) ; null la masque",
+          "closable": "Affiche le bouton de fermeture",
+          "action": "Bouton d’action affiché dans le toast (par ex. Annuler)",
+          "onClose": "Appelé une fois avec l’id du toast à sa fermeture, quelle qu’en soit la raison"
+        },
+        "ToastAction": {
+          "label": "Texte visible du bouton",
+          "onClick": "Appelé à l’activation du bouton, avant la fermeture du toast"
+        },
+        "ToastProviderProps": {
+          "position": "Emplacement de la pile de toasts",
+          "children": "Contenu de l’application ; la zone des toasts est rendue après lui",
+          "max": "Nombre maximal de toasts affichés à la fois ; au-delà, les plus anciens se ferment d’abord",
+          "pauseOnHover": "Suspend le minuteur de fermeture automatique pendant le survol ou le focus d’un toast",
+          "aria-label": "Libellé accessible de la région des toasts, utilisé tel quel (celui par défaut inclut le raccourci)",
+          "closeLabel": "Libellé accessible des boutons de fermeture",
+          "hotkey": "Touches pressées ensemble pour déplacer le focus vers la région des toasts (la première qui en contient) : codes de touche (F8, KeyT), touches ou modificateurs (altKey, ctrlKey, metaKey, shiftKey). Affichées dans le libellé par défaut de la région, p. ex. « Notifications (F8) » ; un tableau vide la désactive"
+        },
+        "ToastApi": {
+          "info": "Affiche un toast d’information avec le titre donné",
+          "success": "Affiche un toast de succès avec le titre donné",
+          "warning": "Affiche un toast d’avertissement avec le titre donné",
+          "danger": "Affiche un toast de danger avec le titre donné",
+          "loading": "Affiche un toast de chargement (spinner, sans fermeture automatique) avec le titre donné",
+          "promise": "Affiche un toast de chargement pendant la promesse, puis le transforme en toast de succès ou d’erreur ; renvoie la promesse donnée",
+          "update": "Modifie sur place un toast ouvert (en fusionnant les options) et relance son minuteur ; loading: false transforme un toast de chargement en toast normal (avec la durée par défaut sauf si une durée est donnée). Les id inconnus sont ignorés",
+          "dismiss": "Ferme le toast ayant l’id donné, ou tous les toasts s’il est omis"
+        },
+        "ToastPromiseMessages": {
+          "loading": "Titre pendant que la promesse est en attente",
+          "success": "Titre une fois la promesse résolue (un nœud, ou une fonction de la valeur)",
+          "error": "Titre une fois la promesse rejetée (un nœud, ou une fonction de l’erreur)"
+        }
+      },
+      "cssVars": {
+        "--toast-width": "Largeur de la pile de notifications (limitée par la fenêtre)",
+        "--toast-gap": "Espace entre les notifications empilées",
+        "--toast-offset": "Distance entre la pile et les bords de la fenêtre",
+        "--toast-padding": "Marge intérieure d'une notification",
+        "--toast-radius": "Rayon des coins d'une notification (par défaut --radius-md)",
+        "--toast-shadow": "Ombre d'une notification (par défaut --shadow-lg)",
+        "--toast-background": "Fond de base d'une notification (sous la teinte de couleur)",
+        "--toast-z-index": "Ordre d'empilement de la pile (par défaut --z-toast)",
+        "--toast-icon-background": "Fond de la pastille ronde derrière l'icône d'état (par défaut l'accent de la couleur à 14 %)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Un <minerva-toast-region> affiche les toasts ; region.toast est l'API toast() liée à cette région (info, success, warning, danger). position place la pile. Comme avec le ToastProvider de React, une boîte de dialogue modale ouverte masque la région aux technologies d'assistance (aria-hidden) jusqu'à sa fermeture."
+          },
+          "options": {
+            "title": "Options et action",
+            "description": "Un toast avec titre, description, durée plus longue et action Annuler. max ne garde que les plus récents ; minerva-close indique pourquoi chaque toast s'est fermé."
+          },
+          "loading": {
+            "title": "Chargement et promesses",
+            "description": "toast.promise() suit une promesse dans un seul toast ; loading() puis update() font de même à la main. Les toasts de chargement restent ouverts jusqu'à leur mise à jour ; dismiss() ferme tous les toasts."
+          }
+        },
+        "minerva-toast-region": {
+          "props": {
+            "noPauseOnHover": "Le compte à rebours continue quand un toast est survolé ou a le focus.",
+            "toast": "L'API toast liée à cette région : region.toast.success(\"Saved\") s'affiche dans cet élément (lecture seule)."
+          },
+          "events": {
+            "minerva-close": "Un toast de cette région commence à se fermer (detail : { id, reason } ; reason : timeout, close-button, action, escape, dismiss ou overflow).",
+            "minerva-after-close": "Un toast de cette région a été retiré après son animation de sortie (detail : { id })."
+          },
+          "methods": {
+            "focus": "Déplace le focus sur la région (comme le raccourci)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Success affiche Saved, Danger Request failed, Warning Unsaved changes et Info New version. Trois notifications au maximum."
+          }
+        },
+        "limitations": "Sur Native, les trois positions top-* utilisent la pile supérieure pleine largeur, et bottom-* la pile inférieure. Actions et limite sont communes, mais pas le placement horizontal."
+      }
+    }
+  }
+}

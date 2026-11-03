@@ -1,0 +1,632 @@
+# ツリーマップ
+
+値に比例した面積の入れ子の長方形で階層データを表し、どこが最も大きいかをひと目で示します（ディスク使用量、予算、ポートフォリオ）。ホバーまたは矢印キーでセルをハイライトすると、ツールチップにそのパスが表示されます。
+
+Package: minerva-design@1.19.3
+
+Renderer: native
+
+Locale: ja
+
+## Provenance
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "packageVersion": "1.19.3",
+  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
+  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
+  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+}
+```
+
+Type references resolve through the [type graph](/minerva-design/reference/1.19.3/types.json) or getType() from minerva-design/contracts.
+
+## Documentation
+
+メディア
+
+ビデオ
+
+写真
+
+ミュージック
+
+アプリケーション
+
+プロジェクト
+
+システム
+
+ライブラリ
+
+キャッシュ
+
+ログ
+
+ダウンロード
+
+インストーラー
+
+アーカイブ
+
+フォルダー別のディスク使用量
+
+{{path}}：{{size}}（ディスクの {{share}}）
+
+セルをクリックすると場所を表示します
+
+エンジニアリング
+
+営業
+
+マーケティング
+
+カスタマーサクセス
+
+オペレーション
+
+経理
+
+人事
+
+法務
+
+部門別の年間予算
+
+テクノロジー
+
+金融
+
+ヘルスケア
+
+エネルギー
+
+消費財
+
+時価総額：{{value}}
+
+セクター別・当日の騰落率で色分けした株式マーケットマップ
+
+バンドルの {{share}}
+
+モジュール別の JavaScript バンドルサイズ
+
+合計 {{size}}。100 KB を超える依存関係：{{modules}}。
+
+家電
+
+ホーム
+
+ファッション
+
+スポーツ
+
+スマートフォン
+
+ノート PC
+
+オーディオ
+
+キッチン
+
+家具
+
+インテリア雑貨
+
+レディース
+
+メンズ
+
+キッズ
+
+アウトドア
+
+フィットネス
+
+カタログのパス
+
+すべてのカテゴリ
+
+カテゴリ・サブカテゴリ・ブランド別の四半期売上
+
+サブカテゴリ・ブランド別の{{category}}の売上
+
+{{path}}：{{revenue}}（カテゴリの {{share}}）。
+
+カテゴリをクリックすると開きます。
+
+ブランドをクリックすると売上を表示します。
+
+コンピューティング
+
+データベース
+
+ストレージ
+
+ネットワーク
+
+オブザーバビリティ
+
+請求の {{share}}
+
+サービス・リソース別の月間クラウドコスト
+
+表示中：{{visible}}（請求額 {{total}} の {{share}}）。
+
+月間請求額：{{total}}。
+
+すべて表示
+
+ライブ更新
+
+{{used}} / {{limit}}（{{share}}）
+
+名前空間別のクラスタ Pod のメモリ使用量
+
+メモリ上限の {{threshold}} を超えた Pod：{{pods}}
+
+すべての Pod がメモリ上限の {{threshold}} 未満です。
+
+ヨーロッパ
+
+南北アメリカ
+
+アジア太平洋
+
+指標
+
+売上
+
+注文数
+
+利益
+
+合計の {{share}}（{{metric}}）
+
+地域・国別の年間販売：{{metric}}
+
+## TreemapChart
+
+Support: beta
+
+Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles).
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design/native",
+  "exports": [
+    "TreemapChart"
+  ],
+  "kind": "named"
+}
+```
+
+### props
+
+```json
+[
+  {
+    "name": "data",
+    "source": "packages/native/src/components/ShapeChart/types.ts",
+    "kind": "array",
+    "typeText": "readonly TreemapNode[]",
+    "typeRef": "type:ad1fbaa5b8e20896ca80",
+    "required": true,
+    "description": "Nodes: leaves carry a value, parents sum their children"
+  },
+  {
+    "name": "gap",
+    "source": "packages/native/src/components/ShapeChart/types.ts",
+    "kind": "number",
+    "typeText": "number | undefined",
+    "typeRef": "type:8fd4405af6b6a3932806",
+    "default": 2,
+    "required": false,
+    "description": "Gap between the cells, in pixels"
+  },
+  {
+    "name": "headers",
+    "source": "packages/native/src/components/ShapeChart/types.ts",
+    "kind": "boolean",
+    "typeText": "boolean | undefined",
+    "typeRef": "type:c54e4f1388c4caae77ff",
+    "default": true,
+    "required": false,
+    "description": "Draws the names of the parents above their children"
+  },
+  {
+    "name": "palette",
+    "source": "packages/native/src/components/ShapeChart/types.ts",
+    "kind": "array",
+    "typeText": "readonly string[] | undefined",
+    "typeRef": "type:3c1d4f0e2c96bafd8005",
+    "required": false,
+    "description": "Colors of the marks without `color` (defaults to the `chart-series-1..8` tokens, then the theme colors)"
+  },
+  {
+    "name": "legend",
+    "source": "packages/native/src/components/ShapeChart/types.ts",
+    "kind": "union",
+    "typeText": "boolean | ShapeLegendOptions | undefined",
+    "typeRef": "type:b3cd5c49d86fb91effb3",
+    "required": false,
+    "description": "Legend; tapping an item hides / shows its slice, stage, series, node, bar, row or level"
+  },
+  {
+    "name": "tooltip",
+    "source": "packages/native/src/components/ShapeChart/types.ts",
+    "kind": "union",
+    "typeText": "boolean | ShapeTooltipOptions | undefined",
+    "typeRef": "type:9441d8fe0edba7239796",
+    "default": true,
+    "required": false,
+    "description": "Tooltip shown while a mark is pressed; `false` disables it"
+  },
+  {
+    "name": "format",
+    "source": "packages/native/src/components/ShapeChart/types.ts",
+    "kind": "function",
+    "typeText": "((value: number) => string) | undefined",
+    "typeRef": "type:541b024ed1104992e34e",
+    "parameters": [
+      {
+        "name": "value",
+        "position": 0,
+        "required": true,
+        "rest": false,
+        "typeText": "number",
+        "typeRef": "type:7d1137535c313783dadd"
+      }
+    ],
+    "returnType": {
+      "typeText": "string",
+      "typeRef": "type:e15e314d298fc0d116fc"
+    },
+    "required": false,
+    "description": "Formats the values of the labels and the tooltip"
+  },
+  {
+    "name": "percentFormat",
+    "source": "packages/native/src/components/ShapeChart/types.ts",
+    "kind": "function",
+    "typeText": "((share: number) => string) | undefined",
+    "typeRef": "type:d92c3cd66b7afc0213bc",
+    "parameters": [
+      {
+        "name": "share",
+        "position": 0,
+        "required": true,
+        "rest": false,
+        "typeText": "number",
+        "typeRef": "type:7d1137535c313783dadd"
+      }
+    ],
+    "returnType": {
+      "typeText": "string",
+      "typeRef": "type:e15e314d298fc0d116fc"
+    },
+    "required": false,
+    "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1"
+  },
+  {
+    "name": "hidden",
+    "source": "packages/native/src/components/ShapeChart/types.ts",
+    "kind": "array",
+    "typeText": "readonly number[] | undefined",
+    "typeRef": "type:2efc21c063c671bd9177",
+    "required": false,
+    "description": "Hidden slices / stages / radar series / top-level treemap or sunburst nodes / sankey nodes / radial bars / bullet rows / calendar levels, by index. Makes the visibility controlled: legend taps then only call `onToggle`, whose `hiddenIndexes` should be stored and passed back."
+  },
+  {
+    "name": "animation",
+    "source": "packages/native/src/components/ShapeChart/types.ts",
+    "kind": "boolean",
+    "typeText": "boolean | undefined",
+    "typeRef": "type:c54e4f1388c4caae77ff",
+    "default": true,
+    "required": false,
+    "description": "Entry and update animations (skipped when the theme reduces motion)"
+  },
+  {
+    "name": "padding",
+    "source": "packages/native/src/components/ShapeChart/types.ts",
+    "kind": "object",
+    "typeText": "ChartPadding | undefined",
+    "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+    "required": false,
+    "description": "Space around the drawing, in pixels"
+  },
+  {
+    "name": "ariaLabel",
+    "source": "packages/native/src/components/ShapeChart/types.ts",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "required": false,
+    "description": "Accessible name of the chart"
+  },
+  {
+    "name": "locale",
+    "source": "packages/native/src/components/ShapeChart/types.ts",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "required": false,
+    "description": "BCP 47 locale of the built-in texts (tooltip rows, accessible names, \"No data\") and of the numbers"
+  },
+  {
+    "name": "texts",
+    "source": "packages/native/src/components/ShapeChart/types.ts",
+    "kind": "object",
+    "typeText": "Partial<ShapeChartLabels> | undefined",
+    "typeRef": "type:2ef787a978af6750b6c8",
+    "required": false,
+    "description": "Replaces built-in texts of the `locale`"
+  },
+  {
+    "name": "height",
+    "source": "packages/native/src/components/ShapeChart/types.ts",
+    "kind": "union",
+    "typeText": "DimensionValue | undefined",
+    "typeRef": "type:cd08f9fa3f57e56425b7",
+    "required": false,
+    "description": "Height of the chart (the legend included)"
+  },
+  {
+    "name": "width",
+    "source": "packages/native/src/components/ShapeChart/types.ts",
+    "kind": "union",
+    "typeText": "DimensionValue | undefined",
+    "typeRef": "type:cd08f9fa3f57e56425b7",
+    "default": "100%",
+    "required": false,
+    "description": "Width of the chart"
+  },
+  {
+    "name": "renderTooltip",
+    "source": "packages/native/src/components/ShapeChart/types.ts",
+    "kind": "node",
+    "typeText": "((event: ShapeHoverEvent) => ReactNode) | undefined",
+    "typeRef": "type:9333c89b3161f5ff3652",
+    "parameters": [
+      {
+        "name": "event",
+        "position": 0,
+        "required": true,
+        "rest": false,
+        "typeText": "ShapeHoverEvent",
+        "typeRef": "type:019a32700cb7aa817346"
+      }
+    ],
+    "returnType": {
+      "typeText": "ReactNode",
+      "typeRef": "type:d947e2db6b7ed3e4c192"
+    },
+    "required": false,
+    "description": "React content of the tooltip (replaces the default content)"
+  },
+  {
+    "name": "testID",
+    "source": "packages/native/src/components/ShapeChart/types.ts",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "required": false,
+    "description": "Test identifier of the root view"
+  }
+]
+```
+
+### events
+
+```json
+[
+  {
+    "name": "onHover",
+    "source": "packages/native/src/components/ShapeChart/types.ts",
+    "kind": "function",
+    "typeText": "((event: ShapeHoverEvent | null) => void) | undefined",
+    "typeRef": "type:fa632874a08b24956e5f",
+    "parameters": [
+      {
+        "name": "event",
+        "position": 0,
+        "required": true,
+        "rest": false,
+        "typeText": "ShapeHoverEvent | null",
+        "typeRef": "type:5ce60fcc1021d329ffba"
+      }
+    ],
+    "returnType": {
+      "typeText": "void",
+      "typeRef": "type:7ba5db05423263a0fe9d"
+    },
+    "required": false,
+    "description": "Called when the highlighted mark changes (press and drag over the chart)"
+  },
+  {
+    "name": "onClick",
+    "source": "packages/native/src/components/ShapeChart/types.ts",
+    "kind": "function",
+    "typeText": "((event: ShapeHoverEvent) => void) | undefined",
+    "typeRef": "type:8504b594a968c22eaac5",
+    "parameters": [
+      {
+        "name": "event",
+        "position": 0,
+        "required": true,
+        "rest": false,
+        "typeText": "ShapeHoverEvent",
+        "typeRef": "type:019a32700cb7aa817346"
+      }
+    ],
+    "returnType": {
+      "typeText": "void",
+      "typeRef": "type:7ba5db05423263a0fe9d"
+    },
+    "required": false,
+    "description": "Called when a mark is tapped"
+  },
+  {
+    "name": "onToggle",
+    "source": "packages/native/src/components/ShapeChart/types.ts",
+    "kind": "function",
+    "typeText": "((event: ShapeToggleEvent) => void) | undefined",
+    "typeRef": "type:d096120cd0ab66afae24",
+    "parameters": [
+      {
+        "name": "event",
+        "position": 0,
+        "required": true,
+        "rest": false,
+        "typeText": "ShapeToggleEvent",
+        "typeRef": "type:4b4244045a32e66c0a25"
+      }
+    ],
+    "returnType": {
+      "typeText": "void",
+      "typeRef": "type:7ba5db05423263a0fe9d"
+    },
+    "required": false,
+    "description": "Called when a legend item is tapped (or the instance's `toggle()` is called), with the toggled index and every hidden index after the toggle"
+  }
+]
+```
+
+## API
+
+```json
+{
+  "native:TreemapChartProps": {
+    "source": "native/src/components/ShapeChart/types.ts",
+    "description": "Props of TreemapChart",
+    "kind": "interface",
+    "extends": [
+      "ShapeChartCommonProps"
+    ],
+    "props": [
+      {
+        "name": "data",
+        "type": "readonly TreemapNode[]",
+        "required": true,
+        "description": "Nodes: leaves carry a value, parents sum their children"
+      },
+      {
+        "name": "gap",
+        "type": "number",
+        "required": false,
+        "default": "2",
+        "description": "Gap between the cells, in pixels"
+      },
+      {
+        "name": "headers",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "Draws the names of the parents above their children"
+      }
+    ]
+  }
+}
+```
+
+## Installation and initialization
+
+See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.
+
+## Example: 入れ子
+
+親は子の値を合計し、名前を見出しとして表示します。onClick はルートからクリックしたリーフまでのパスを受け取ります。
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react, react-i18next, react-native
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/treemap-chart/native/basic.tsx
+
+```tsx
+import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Text, View } from "react-native";
+import {
+  TreemapChart,
+  useTheme,
+  type ShapeHoverEvent,
+  type TreemapNode,
+} from "minerva-design/native";
+
+// Storage used on a phone, in megabytes
+const usage = [
+  {
+    key: "media",
+    children: [
+      { key: "photos", value: 38400 },
+      { key: "videos", value: 21800 },
+      { key: "music", value: 6200 },
+    ],
+  },
+  {
+    key: "apps",
+    children: [
+      { key: "games", value: 14600 },
+      { key: "social", value: 7900 },
+      { key: "maps", value: 3100 },
+    ],
+  },
+  { key: "system", value: 11800 },
+  { key: "messages", value: 4700 },
+];
+
+type Usage = { key: string; value?: number; children?: Usage[] };
+
+export default function Basic() {
+  const { t, i18n } = useTranslation("common", {
+    keyPrefix: "docs.treemap-chart.native.data",
+  });
+  const { colors } = useTheme();
+  const [selected, setSelected] = useState<ShapeHoverEvent | null>(null);
+  const locale = i18n.language;
+  const size = useMemo(
+    () =>
+      new Intl.NumberFormat(locale, {
+        style: "unit",
+        unit: "gigabyte",
+        maximumFractionDigits: 1,
+      }),
+    [locale],
+  );
+  const data = useMemo((): TreemapNode[] => {
+    const node = ({ key, value, children }: Usage): TreemapNode => ({
+      name: t(`items.${key}`),
+      value,
+      children: children?.map(node),
+    });
+    return usage.map(node);
+  }, [t]);
+  return (
+    <View style={{ width: "100%", gap: 8 }}>
+      <TreemapChart
+        data={data}
+        height={300}
+        format={(mb) => size.format(mb / 1024)}
+        onClick={setSelected}
+        ariaLabel={t("storageAria")}
+      />
+      <Text role="status" style={{ color: colors["text-secondary-color"] }}>
+        {selected
+          ? t("selectedItem", {
+              path: (selected.path ?? [selected.name]).join(" › "),
+              size: size.format(selected.value / 1024),
+            })
+          : t("tapCell")}
+      </Text>
+    </View>
+  );
+}
+
+```

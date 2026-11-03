@@ -1,0 +1,308 @@
+# NavTree
+
+Sidebar navigation with sections, expandable branches, an active item and a compact icon-only mode. Arrow keys move between items and open or close branches.
+
+Package: minerva-design@1.19.3
+
+Renderer: taro
+
+Locale: en
+
+## Provenance
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "packageVersion": "1.19.3",
+  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
+  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
+  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+}
+```
+
+Type references resolve through the [type graph](/minerva-design/reference/1.19.3/types.json) or getType() from minerva-design/contracts.
+
+## Documentation
+
+## NavTree
+
+Support: beta
+
+Page-tab onSelect/actions/close events, measured overflow arrows and active-item native scrollIntoView; step selection, active-path tree expansion with explicit collapse persistence and renderLink(item,content,state). Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Native horizontal scrolling and touch activation replace browser keyboard navigation. Native route links require the application renderer or onItemSelect to navigate. PageTabs uses native scroll measurement and explicit dir for RTL; React has no reorder API, and child order follows the caller. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design/taro",
+  "exports": [
+    "NavTree"
+  ],
+  "kind": "named"
+}
+```
+
+### props
+
+```json
+[
+  {
+    "name": "sections",
+    "source": "packages/taro/src/navigation.tsx",
+    "kind": "array",
+    "typeText": "NavTreeSection[]",
+    "typeRef": "type:2c43a5d4773429f373a7",
+    "required": true
+  },
+  {
+    "name": "activeId",
+    "source": "packages/taro/src/navigation.tsx",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "required": false
+  },
+  {
+    "name": "expandedIds",
+    "source": "packages/taro/src/navigation.tsx",
+    "kind": "array",
+    "typeText": "string[] | undefined",
+    "typeRef": "type:12e6366870d23ba44018",
+    "required": false
+  },
+  {
+    "name": "defaultExpandedIds",
+    "source": "packages/taro/src/navigation.tsx",
+    "kind": "array",
+    "typeText": "string[] | undefined",
+    "typeRef": "type:12e6366870d23ba44018",
+    "required": false
+  },
+  {
+    "name": "collapsed",
+    "source": "packages/taro/src/navigation.tsx",
+    "kind": "boolean",
+    "typeText": "boolean | undefined",
+    "typeRef": "type:c54e4f1388c4caae77ff",
+    "required": false
+  },
+  {
+    "name": "wrapLabels",
+    "source": "packages/taro/src/navigation.tsx",
+    "kind": "boolean",
+    "typeText": "boolean | undefined",
+    "typeRef": "type:c54e4f1388c4caae77ff",
+    "required": false
+  },
+  {
+    "name": "renderLink",
+    "source": "packages/taro/src/navigation.tsx",
+    "kind": "node",
+    "typeText": "((item: NavTreeItem, content: ReactNode, state: NavTreeItemState) => ReactNode) | undefined",
+    "typeRef": "type:8905fae6e8491b0bf44b",
+    "parameters": [
+      {
+        "name": "item",
+        "position": 0,
+        "required": true,
+        "rest": false,
+        "typeText": "NavTreeItem",
+        "typeRef": "type:e57e5551fdd4f629cf59"
+      },
+      {
+        "name": "content",
+        "position": 1,
+        "required": true,
+        "rest": false,
+        "typeText": "ReactNode",
+        "typeRef": "type:a991edaa7809b6d75ba2"
+      },
+      {
+        "name": "state",
+        "position": 2,
+        "required": true,
+        "rest": false,
+        "typeText": "NavTreeItemState",
+        "typeRef": "type:e7e7f4b0443372bc7f7c"
+      }
+    ],
+    "returnType": {
+      "typeText": "ReactNode",
+      "typeRef": "type:a991edaa7809b6d75ba2"
+    },
+    "required": false
+  },
+  {
+    "name": "id",
+    "source": "packages/taro/src/shared.tsx",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "required": false
+  },
+  {
+    "name": "aria-label",
+    "source": "packages/taro/src/shared.tsx",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "required": false
+  },
+  {
+    "name": "aria-labelledby",
+    "source": "packages/taro/src/shared.tsx",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "required": false
+  },
+  {
+    "name": "aria-describedby",
+    "source": "packages/taro/src/shared.tsx",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "required": false
+  }
+]
+```
+
+### events
+
+```json
+[
+  {
+    "name": "onSelect",
+    "source": "packages/taro/src/navigation.tsx",
+    "kind": "function",
+    "typeText": "((item: NavTreeItem) => void) | undefined",
+    "typeRef": "type:182759de6d29b8282a37",
+    "parameters": [
+      {
+        "name": "item",
+        "position": 0,
+        "required": true,
+        "rest": false,
+        "typeText": "NavTreeItem",
+        "typeRef": "type:e57e5551fdd4f629cf59"
+      }
+    ],
+    "returnType": {
+      "typeText": "void",
+      "typeRef": "type:7ba5db05423263a0fe9d"
+    },
+    "required": false
+  },
+  {
+    "name": "onItemSelect",
+    "source": "packages/taro/src/navigation.tsx",
+    "kind": "function",
+    "typeText": "((item: NavTreeItem) => void) | undefined",
+    "typeRef": "type:6d903afc9065a575f8bf",
+    "parameters": [
+      {
+        "name": "item",
+        "position": 0,
+        "required": true,
+        "rest": false,
+        "typeText": "NavTreeItem",
+        "typeRef": "type:e57e5551fdd4f629cf59"
+      }
+    ],
+    "returnType": {
+      "typeText": "void",
+      "typeRef": "type:7ba5db05423263a0fe9d"
+    },
+    "required": false
+  },
+  {
+    "name": "onExpandedChange",
+    "source": "packages/taro/src/navigation.tsx",
+    "kind": "function",
+    "typeText": "((ids: string[]) => void) | undefined",
+    "typeRef": "type:6246a24ca7455b61bc6a",
+    "parameters": [
+      {
+        "name": "ids",
+        "position": 0,
+        "required": true,
+        "rest": false,
+        "typeText": "string[]",
+        "typeRef": "type:876798c326dba0ca62bf"
+      }
+    ],
+    "returnType": {
+      "typeText": "void",
+      "typeRef": "type:7ba5db05423263a0fe9d"
+    },
+    "required": false
+  }
+]
+```
+
+### slots
+
+```json
+[
+  {
+    "name": "children"
+  }
+]
+```
+
+## CSS variables
+
+```json
+{
+  "css:NavTree": {
+    "kind": "cssVars",
+    "source": "react/src/components/NavTree",
+    "vars": [
+      {
+        "name": "--nav-tree-gap",
+        "description": "Space between the sections"
+      },
+      {
+        "name": "--nav-tree-item-height",
+        "description": "Minimum height of a top-level row (defaults to the density's control height)"
+      },
+      {
+        "name": "--nav-tree-item-padding-x",
+        "description": "Horizontal padding of a row (follows the density's row padding)"
+      },
+      {
+        "name": "--nav-tree-item-radius",
+        "description": "Corner radius of a row (defaults to --radius-md)"
+      },
+      {
+        "name": "--nav-tree-indent",
+        "description": "Indentation of nested rows"
+      },
+      {
+        "name": "--nav-tree-active-background",
+        "description": "Background of the active row"
+      },
+      {
+        "name": "--nav-tree-active-color",
+        "description": "Accent color of the active row's icon"
+      },
+      {
+        "name": "--nav-tree-hover-background",
+        "description": "Background of a hovered row (defaults to --hover-color)"
+      },
+      {
+        "name": "--nav-tree-guide-color",
+        "description": "Color of the indent guide of an expanded branch (defaults to --border-color)"
+      },
+      {
+        "name": "--nav-tree-guide-active-color",
+        "description": "Color of the indent guide of the branch holding the active row"
+      }
+    ]
+  }
+}
+```
+
+## Installation and initialization
+
+See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.

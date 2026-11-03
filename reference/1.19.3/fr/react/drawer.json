@@ -1,0 +1,1095 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.19.3",
+  "locale": "fr",
+  "renderer": "react",
+  "page": "drawer",
+  "title": "Drawer",
+  "description": "Un panneau qui glisse depuis un bord de la fenêtre pour des tâches secondaires comme les filtres ou les détails. Il se comporte comme une modale : focus piégé, Échap, clic sur le fond et retour du focus.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.19.3",
+    "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
+    "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
+    "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Drawer",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "Drawer"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "open",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Controlled open state; leave `undefined` for uncontrolled."
+          },
+          {
+            "name": "defaultOpen",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Initial open state while uncontrolled"
+          },
+          {
+            "name": "trigger",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Element that opens the drawer on click (rendered with `asChild`, so pass a single element)."
+          },
+          {
+            "name": "side",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "enum",
+            "values": [
+              "bottom",
+              "left",
+              "right",
+              "top"
+            ],
+            "typeText": "DrawerSide | undefined",
+            "typeRef": "type:6c57481b1b819469129b",
+            "default": "right",
+            "required": false,
+            "description": "Edge the panel slides in from"
+          },
+          {
+            "name": "size",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "enum",
+            "values": [
+              "full",
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "DrawerSize | undefined",
+            "typeRef": "type:b8c3c32265e1cf94c3a0",
+            "default": "medium",
+            "required": false,
+            "description": "Size preset"
+          },
+          {
+            "name": "title",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Title rendered as the drawer's accessible name."
+          },
+          {
+            "name": "description",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Description rendered below the title (accessible description)."
+          },
+          {
+            "name": "hideCloseButton",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Hides the close (×) button"
+          },
+          {
+            "name": "closeLabel",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the close button; defaults to the localized \"Close\"."
+          },
+          {
+            "name": "hiddenDescription",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Text of the visually hidden description rendered when `description` is not set; defaults to the localized \"Drawer content\"."
+          }
+        ],
+        "events": [
+          {
+            "name": "onOpenChange",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "function",
+            "typeText": "((open: boolean) => void) | undefined",
+            "typeRef": "type:a2f465209355a62c56d9",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the requested open state."
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "open",
+            "event": "onOpenChange",
+            "syntax": "open={open} onOpenChange={handler}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DrawerBody",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "DrawerBody"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DrawerClose",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "DrawerClose"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "asChild",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Merges the behaviour onto the single child element instead of rendering a `<button>`"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DrawerContent",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "DrawerContent"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "role",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "enum",
+            "values": [
+              "alertdialog",
+              "dialog"
+            ],
+            "typeText": "\"alertdialog\" | \"dialog\" | undefined",
+            "typeRef": "type:a906bc3abf78e63c22c7",
+            "default": "dialog",
+            "required": false,
+            "description": "ARIA role of the panel"
+          },
+          {
+            "name": "forceMount",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Keeps the panel mounted while closed (`data-state=\"closed\"`), e.g. for animation libraries"
+          },
+          {
+            "name": "side",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "enum",
+            "values": [
+              "bottom",
+              "left",
+              "right",
+              "top"
+            ],
+            "typeText": "DrawerSide | undefined",
+            "typeRef": "type:6c57481b1b819469129b",
+            "default": "right",
+            "required": false,
+            "description": "Edge the panel slides in from"
+          },
+          {
+            "name": "size",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "enum",
+            "values": [
+              "full",
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "DrawerSize | undefined",
+            "typeRef": "type:b8c3c32265e1cf94c3a0",
+            "default": "medium",
+            "required": false,
+            "description": "Size preset"
+          },
+          {
+            "name": "hideCloseButton",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Hides the close (×) button"
+          },
+          {
+            "name": "closeLabel",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the close button; defaults to the localized \"Close\"."
+          },
+          {
+            "name": "hiddenDescription",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Text of the visually hidden description rendered when `description` is not set; defaults to the localized \"Drawer content\"."
+          },
+          {
+            "name": "description",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Visible description below the title (accessible description). Without it a visually hidden generic description is rendered."
+          },
+          {
+            "name": "overlayClassName",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Class name of the overlay (backdrop)."
+          }
+        ],
+        "events": [
+          {
+            "name": "onOpenAutoFocus",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "function",
+            "typeText": "((event: Event) => void) | undefined",
+            "typeRef": "type:349a86de7a5bceed128c",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "Event",
+                "typeRef": "type:5914c0535b9eea3cd24b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called before focus moves into the panel on open; `event.preventDefault()` keeps focus where it is"
+          },
+          {
+            "name": "onCloseAutoFocus",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "function",
+            "typeText": "((event: Event) => void) | undefined",
+            "typeRef": "type:d7f0ad8c362713a49bd6",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "Event",
+                "typeRef": "type:5914c0535b9eea3cd24b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called before focus returns to the opener on close; `event.preventDefault()` skips it"
+          },
+          {
+            "name": "onEscapeKeyDown",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "function",
+            "typeText": "((event: KeyboardEvent) => void) | undefined",
+            "typeRef": "type:085b923e1b961fd20428",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "KeyboardEvent",
+                "typeRef": "type:cf927f12d625bb9a2516"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Escape pressed while it is the topmost layer; `event.preventDefault()` keeps it open."
+          },
+          {
+            "name": "onPointerDownOutside",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "function",
+            "typeText": "((event: PointerEvent) => void) | undefined",
+            "typeRef": "type:d040f442cdad99db1613",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "PointerEvent",
+                "typeRef": "type:9b8a3135b665541031a0"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Pointer pressed outside (e.g. on the overlay); `event.preventDefault()` keeps it open."
+          },
+          {
+            "name": "onInteractOutside",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "function",
+            "typeText": "((event: PointerEvent | FocusEvent) => void) | undefined",
+            "typeRef": "type:db2c11c51a6a149d7a9a",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "PointerEvent | FocusEvent",
+                "typeRef": "type:795729439f86fd72381f"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Pointer down or focus outside; `event.preventDefault()` keeps it open."
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DrawerFooter",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "DrawerFooter"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DrawerHeader",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "DrawerHeader"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DrawerRoot",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "DrawerRoot"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "open",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Controlled open state; leave `undefined` for uncontrolled."
+          },
+          {
+            "name": "defaultOpen",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Initial open state while uncontrolled"
+          },
+          {
+            "name": "modal",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Modal mode: renders the overlay, traps focus, locks page scrolling and blocks / hides the page behind. Non-modal drawers close on outside click / focus instead."
+          }
+        ],
+        "events": [
+          {
+            "name": "onOpenChange",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "function",
+            "typeText": "((open: boolean) => void) | undefined",
+            "typeRef": "type:42707c0593465b94a95f",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the requested open state (trigger, close button, Escape, overlay click)."
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "open",
+            "event": "onOpenChange",
+            "syntax": "open={open} onOpenChange={handler}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DrawerTrigger",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "DrawerTrigger"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "asChild",
+            "source": "packages/react/src/components/Drawer/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Merges the behaviour onto the single child element instead of rendering a `<button>`"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "DrawerProps": {
+      "source": "react/src/components/Drawer/types.ts",
+      "description": "Props of the all-in-one `Drawer`.",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "required": false,
+          "description": "Controlled open state; leave `undefined` for uncontrolled."
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Initial open state while uncontrolled"
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "required": false,
+          "description": "Called with the requested open state."
+        },
+        {
+          "name": "trigger",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Element that opens the drawer on click (rendered with `asChild`, so pass a single element)."
+        },
+        {
+          "name": "side",
+          "type": "DrawerSide",
+          "required": false,
+          "default": "\"right\"",
+          "description": "Edge the panel slides in from"
+        },
+        {
+          "name": "size",
+          "type": "DrawerSize",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Size preset"
+        },
+        {
+          "name": "title",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Title rendered as the drawer's accessible name."
+        },
+        {
+          "name": "description",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Description rendered below the title (accessible description)."
+        },
+        {
+          "name": "hideCloseButton",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Hides the close (×) button"
+        },
+        {
+          "name": "closeLabel",
+          "type": "string",
+          "required": false,
+          "description": "Accessible label of the close button; defaults to the localized \"Close\"."
+        },
+        {
+          "name": "hiddenDescription",
+          "type": "string",
+          "required": false,
+          "description": "Text of the visually hidden description rendered when `description` is not set; defaults to the localized \"Drawer content\"."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "description": "Additional class name of the panel."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "required": false,
+          "description": "Ref to the dialog element."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Content: usually `DrawerBody` + `DrawerFooter`."
+        }
+      ]
+    },
+    "DrawerRootProps": {
+      "source": "react/src/components/Drawer/types.ts",
+      "description": "Props of the compound `DrawerRoot` (owns the open state).",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "required": false,
+          "description": "Controlled open state; leave `undefined` for uncontrolled."
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Initial open state while uncontrolled"
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "required": false,
+          "description": "Called with the requested open state (trigger, close button, Escape, overlay click)."
+        },
+        {
+          "name": "modal",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Modal mode: renders the overlay, traps focus, locks page scrolling and blocks / hides the page behind. Non-modal drawers close on outside click / focus instead."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Trigger and content."
+        }
+      ]
+    },
+    "DrawerContentProps": {
+      "source": "react/src/components/Drawer/types.ts",
+      "description": "Props of `DrawerContent`: the portalled overlay + sliding panel.",
+      "kind": "interface",
+      "extends": [
+        "HTMLAttributes<HTMLDivElement>"
+      ],
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "required": false,
+          "description": "Ref to the dialog element."
+        },
+        {
+          "name": "role",
+          "type": "\"dialog\" | \"alertdialog\"",
+          "required": false,
+          "default": "\"dialog\"",
+          "description": "ARIA role of the panel"
+        },
+        {
+          "name": "forceMount",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Keeps the panel mounted while closed (`data-state=\"closed\"`), e.g. for animation libraries"
+        },
+        {
+          "name": "onOpenAutoFocus",
+          "type": "(event: Event) => void",
+          "required": false,
+          "description": "Called before focus moves into the panel on open; `event.preventDefault()` keeps focus where it is"
+        },
+        {
+          "name": "onCloseAutoFocus",
+          "type": "(event: Event) => void",
+          "required": false,
+          "description": "Called before focus returns to the opener on close; `event.preventDefault()` skips it"
+        },
+        {
+          "name": "onEscapeKeyDown",
+          "type": "(event: KeyboardEvent) => void",
+          "required": false,
+          "description": "Escape pressed while it is the topmost layer; `event.preventDefault()` keeps it open."
+        },
+        {
+          "name": "onPointerDownOutside",
+          "type": "(event: PointerEvent) => void",
+          "required": false,
+          "description": "Pointer pressed outside (e.g. on the overlay); `event.preventDefault()` keeps it open."
+        },
+        {
+          "name": "onInteractOutside",
+          "type": "(event: PointerEvent | FocusEvent) => void",
+          "required": false,
+          "description": "Pointer down or focus outside; `event.preventDefault()` keeps it open."
+        },
+        {
+          "name": "side",
+          "type": "DrawerSide",
+          "required": false,
+          "default": "\"right\"",
+          "description": "Edge the panel slides in from"
+        },
+        {
+          "name": "size",
+          "type": "DrawerSize",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Size preset"
+        },
+        {
+          "name": "hideCloseButton",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Hides the close (×) button"
+        },
+        {
+          "name": "closeLabel",
+          "type": "string",
+          "required": false,
+          "description": "Accessible label of the close button; defaults to the localized \"Close\"."
+        },
+        {
+          "name": "hiddenDescription",
+          "type": "string",
+          "required": false,
+          "description": "Text of the visually hidden description rendered when `description` is not set; defaults to the localized \"Drawer content\"."
+        },
+        {
+          "name": "description",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Visible description below the title (accessible description). Without it a visually hidden generic description is rendered."
+        },
+        {
+          "name": "overlayClassName",
+          "type": "string",
+          "required": false,
+          "description": "Class name of the overlay (backdrop)."
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Drawer": {
+      "kind": "cssVars",
+      "source": "react/src/components/Drawer",
+      "vars": [
+        {
+          "name": "--drawer-width",
+          "description": "Width of a left / right drawer (every size; defaults to the width of the size)"
+        },
+        {
+          "name": "--drawer-height",
+          "description": "Height of a top / bottom drawer (every size; defaults to the height of the size)"
+        },
+        {
+          "name": "--drawer-padding",
+          "description": "Horizontal padding of the header, description, body and footer"
+        },
+        {
+          "name": "--drawer-radius",
+          "description": "Corner radius of the inner edge (defaults to --radius-lg)"
+        },
+        {
+          "name": "--drawer-shadow",
+          "description": "Shadow of the panel (defaults to --shadow-xl)"
+        },
+        {
+          "name": "--drawer-background",
+          "description": "Background of the panel"
+        },
+        {
+          "name": "--drawer-z-index",
+          "description": "Stacking order of the panel (defaults to --z-modal)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/drawer/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/drawer/demos/basic.tsx": "import { useState } from \"react\";\nimport {\n  Button,\n  Checkbox,\n  Drawer,\n  DrawerBody,\n  DrawerFooter,\n} from \"minerva-design\";\n\nexport default function BasicDemo() {\n  const [open, setOpen] = useState(false);\n  return (\n    <>\n      <Button onClick={() => setOpen(true)}>Filters</Button>\n      <Drawer\n        open={open}\n        onOpenChange={setOpen}\n        title=\"Filters\"\n        description=\"Narrow the list of books.\"\n      >\n        <DrawerBody>\n          <Checkbox defaultChecked label=\"Completed only\" />\n        </DrawerBody>\n        <DrawerFooter>\n          <Button\n            color=\"neutral\"\n            variant=\"outline\"\n            onClick={() => setOpen(false)}\n          >\n            Reset\n          </Button>\n          <Button onClick={() => setOpen(false)}>Apply</Button>\n        </DrawerFooter>\n      </Drawer>\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "Utilisation de base",
+      "description": "Contrôlé avec open et onOpenChange, avec un corps et un pied d'actions."
+    },
+    {
+      "id": "compound",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/drawer/demos/compound.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/drawer/demos/compound.tsx": "import {\n  Button,\n  DrawerBody,\n  DrawerClose,\n  DrawerContent,\n  DrawerFooter,\n  DrawerHeader,\n  DrawerRoot,\n  DrawerTrigger,\n} from \"minerva-design\";\n\nexport default function CompoundDemo() {\n  return (\n    <DrawerRoot>\n      <DrawerTrigger asChild>\n        <Button color=\"neutral\" variant=\"outline\">\n          Open compound drawer\n        </Button>\n      </DrawerTrigger>\n      <DrawerContent side=\"left\" size=\"large\" hideCloseButton>\n        <DrawerHeader>Navigation</DrawerHeader>\n        <DrawerBody>Build the drawer from its parts.</DrawerBody>\n        <DrawerFooter>\n          <DrawerClose asChild>\n            <Button>Close</Button>\n          </DrawerClose>\n        </DrawerFooter>\n      </DrawerContent>\n    </DrawerRoot>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "API composée",
+      "description": "DrawerRoot, DrawerTrigger, DrawerContent, DrawerHeader, DrawerBody, DrawerFooter et DrawerClose."
+    },
+    {
+      "id": "sides",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/drawer/demos/sides.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/drawer/demos/sides.tsx": "import { Button, Drawer, DrawerBody, type DrawerSide } from \"minerva-design\";\n\nconst SIDES: DrawerSide[] = [\"left\", \"right\", \"top\", \"bottom\"];\n\nexport default function SidesDemo() {\n  return (\n    <div style={{ display: \"flex\", gap: 8, flexWrap: \"wrap\" }}>\n      {SIDES.map((side) => (\n        <Drawer\n          key={side}\n          side={side}\n          size=\"small\"\n          title={`From the ${side}`}\n          trigger={\n            <Button color=\"neutral\" variant=\"outline\">\n              {side}\n            </Button>\n          }\n        >\n          <DrawerBody>\n            Sizes: small, medium (default), large and full.\n          </DrawerBody>\n        </Drawer>\n      ))}\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Côtés et tailles",
+      "description": "side choisit le bord ; size règle la largeur (gauche / droite) ou la hauteur (haut / bas)."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.19.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Drawer",
+      "description": "Un panneau qui glisse depuis un bord de la fenêtre pour des tâches secondaires comme les filtres ou les détails. Il se comporte comme une modale : focus piégé, Échap, clic sur le fond et retour du focus.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Contrôlé avec open et onOpenChange, avec un corps et un pied d'actions."
+        },
+        "sides": {
+          "title": "Côtés et tailles",
+          "description": "side choisit le bord ; size règle la largeur (gauche / droite) ou la hauteur (haut / bas)."
+        },
+        "compound": {
+          "title": "API composée",
+          "description": "DrawerRoot, DrawerTrigger, DrawerContent, DrawerHeader, DrawerBody, DrawerFooter et DrawerClose."
+        }
+      },
+      "api": {
+        "DrawerProps": {
+          "open": "État d'ouverture contrôlé ; laissez undefined pour le mode non contrôlé",
+          "defaultOpen": "État d'ouverture initial en mode non contrôlé",
+          "onOpenChange": "Appelé avec l'état d'ouverture demandé (déclencheur, bouton de fermeture, Échap, clic sur le fond)",
+          "trigger": "Élément qui l'ouvre au clic (un seul élément, rendu avec asChild)",
+          "side": "Bord depuis lequel le panneau glisse",
+          "size": "Préréglage de taille : largeur pour gauche / droite, hauteur pour haut / bas",
+          "title": "Titre, utilisé comme nom accessible de la boîte de dialogue",
+          "description": "Description sous le titre, utilisée comme description accessible",
+          "hideCloseButton": "Masque le bouton de fermeture (×)",
+          "closeLabel": "Libellé accessible du bouton de fermeture ; par défaut « Fermer » localisé",
+          "hiddenDescription": "Texte de la description masquée utilisée sans description ; par défaut « Contenu du tiroir » localisé",
+          "className": "Classe supplémentaire du panneau",
+          "ref": "Ref vers l'élément de dialogue",
+          "children": "Contenu : en général DrawerBody + DrawerFooter"
+        },
+        "DrawerRootProps": {
+          "open": "État d'ouverture contrôlé ; laissez undefined pour le mode non contrôlé",
+          "defaultOpen": "État d'ouverture initial en mode non contrôlé",
+          "onOpenChange": "Appelé avec l'état d'ouverture demandé (déclencheur, bouton de fermeture, Échap, clic sur le fond)",
+          "modal": "Mode modal : affiche le fond, piège le focus, bloque le défilement de la page et les interactions extérieures, et masque la page aux technologies d'assistance",
+          "children": "Déclencheur et contenu"
+        },
+        "DrawerContentProps": {
+          "ref": "Ref vers l'élément de dialogue",
+          "side": "Bord depuis lequel le panneau glisse",
+          "size": "Préréglage de taille : largeur pour gauche / droite, hauteur pour haut / bas",
+          "hideCloseButton": "Masque le bouton de fermeture (×)",
+          "closeLabel": "Libellé accessible du bouton de fermeture ; par défaut « Fermer » localisé",
+          "hiddenDescription": "Texte de la description masquée utilisée sans description ; par défaut « Contenu du tiroir » localisé",
+          "description": "Description visible sous le titre ; sans elle une description générique masquée est rendue",
+          "overlayClassName": "Classe de la superposition (fond)",
+          "role": "Rôle ARIA du panneau ; utilisez \"alertdialog\" pour les confirmations qui interrompent l'utilisateur",
+          "forceMount": "Garde le panneau monté une fois fermé (data-state=\"closed\"), par exemple pour une bibliothèque d'animation",
+          "onOpenAutoFocus": "Appelé avant que le focus n'entre dans le panneau à l'ouverture ; event.preventDefault() laisse le focus en place",
+          "onCloseAutoFocus": "Appelé avant que le focus ne revienne à l'élément d'ouverture à la fermeture ; event.preventDefault() l'annule",
+          "onEscapeKeyDown": "Échap pressé alors qu'il est la couche supérieure ; event.preventDefault() le garde ouvert",
+          "onPointerDownOutside": "Pointeur pressé à l'extérieur ; event.preventDefault() le garde ouvert",
+          "onInteractOutside": "Pointeur pressé ou focus à l'extérieur ; event.preventDefault() le garde ouvert"
+        }
+      },
+      "cssVars": {
+        "--drawer-width": "Largeur d'un tiroir gauche / droit (toutes les tailles ; par défaut celle de la taille)",
+        "--drawer-height": "Hauteur d'un tiroir haut / bas (toutes les tailles ; par défaut celle de la taille)",
+        "--drawer-padding": "Marge intérieure horizontale de l'en-tête, de la description, du corps et du pied",
+        "--drawer-radius": "Rayon des coins du bord intérieur (par défaut --radius-lg)",
+        "--drawer-shadow": "Ombre du panneau (par défaut --shadow-xl)",
+        "--drawer-background": "Fond du panneau",
+        "--drawer-z-index": "Ordre d'empilement du panneau (par défaut --z-modal)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Un panneau latéral ouvert par son slot trigger. Tout élément du light DOM portant data-drawer-close (ici les boutons du pied) le ferme."
+          },
+          "sides": {
+            "title": "Côtés",
+            "description": "side choisit le bord d'où glisse le tiroir ; size est une largeur pour gauche / droite et une hauteur pour haut / bas."
+          },
+          "non-modal": {
+            "title": "Non modal",
+            "description": "Avec non-modal la page reste interactive : pas d'overlay ni de piège de focus, et un clic à l'extérieur ferme le tiroir. minerva-open-change indique la raison."
+          }
+        },
+        "minerva-drawer": {
+          "props": {
+            "label": "Texte du titre (ou le slot header) ; nomme la boîte de dialogue.",
+            "dialogRole": "Rôle ARIA du panneau.",
+            "nonModal": "Non modal : pas d'overlay, ni piège de focus, ni blocage du défilement ; se ferme sur un clic ou un focus à l'extérieur."
+          },
+          "events": {
+            "minerva-open-change": "L'utilisateur demande l'ouverture / la fermeture (detail : { open, reason }) ; annulable : preventDefault() conserve l'état actuel.",
+            "minerva-after-open": "Émis une fois le panneau ouvert et le focus déplacé à l'intérieur.",
+            "minerva-after-close": "Émis une fois le panneau fermé (après son animation de sortie)."
+          },
+          "slots": {
+            "default": "Contenu du corps.",
+            "header": "Titre (alternative à l'attribut label).",
+            "footer": "Rangée d'actions.",
+            "trigger": "Élément qui ouvre le panneau au clic."
+          },
+          "methods": {
+            "show": "Ouvre le tiroir.",
+            "hide": "Ferme le tiroir."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        },
+        "limitations": "Drawer et DrawerContent natifs s’ouvrent par défaut en bas. Utilisez side ou placement pour les panneaux latéraux ou supérieurs. Le contenu utilise View et Text natifs."
+      }
+    }
+  }
+}

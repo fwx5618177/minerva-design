@@ -1,0 +1,249 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.19.3",
+  "locale": "fr",
+  "renderer": "native",
+  "page": "text-link",
+  "title": "TextLink",
+  "description": "Une ancre native stylée pour les liens en ligne, la navigation discrète et les lignes de réglages ; asChild stylise un lien de routeur sans imbriquer d'ancres.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.19.3",
+    "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
+    "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
+    "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "TextLink",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "TextLink"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "href",
+            "source": "packages/native/src/components/Display/index.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "variant",
+            "source": "packages/native/src/components/Display/index.tsx",
+            "kind": "enum",
+            "values": [
+              "action",
+              "default",
+              "subtle"
+            ],
+            "typeText": "\"subtle\" | \"action\" | \"default\" | undefined",
+            "typeRef": "type:03c77f4c1ca73b94327c",
+            "default": "default",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "source": "packages/native/src/components/Display/index.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Specifies the disabled state of the text view for testing purposes."
+          }
+        ],
+        "events": [
+          {
+            "name": "onOpenError",
+            "source": "packages/native/src/components/Display/index.tsx",
+            "kind": "function",
+            "typeText": "((error: unknown) => void) | undefined",
+            "typeRef": "type:8c3beffd5a54236fd07f",
+            "parameters": [
+              {
+                "name": "error",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "unknown",
+                "typeRef": "type:dc96c0cac9f2d6c9a926"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:TextLinkProps": {
+      "source": "native/src/components/Display/index.tsx",
+      "kind": "interface",
+      "extends": [
+        "TextProps"
+      ],
+      "props": [
+        {
+          "name": "href",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "variant",
+          "type": "\"default\" | \"subtle\" | \"action\"",
+          "required": false,
+          "default": "\"default\""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false
+        },
+        {
+          "name": "onOpenError",
+          "type": "(error: unknown) => void",
+          "required": false
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:TextLink": {
+      "kind": "cssVars",
+      "source": "react/src/components/TextLink",
+      "vars": [
+        {
+          "name": "--text-link-color",
+          "description": "Color of the default variant (falls back to --link-color, then --primary-color)"
+        },
+        {
+          "name": "--text-link-font-weight",
+          "description": "Font weight"
+        },
+        {
+          "name": "--text-link-text-decoration",
+          "description": "Text decoration of the default variant (default: underline)"
+        },
+        {
+          "name": "--text-link-underline-offset",
+          "description": "Distance between the text and its underline"
+        },
+        {
+          "name": "--text-link-action-min-height",
+          "description": "Minimum height of the action variant"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/text-link/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/text-link/native/basic.tsx": "import { TextLink } from \"minerva-design/native\";\nexport default function Basic() {\n  return (\n    <TextLink href=\"https://reactnative.dev/\">\n      React Native documentation\n    </TextLink>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.19.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "TextLink",
+      "description": "Une ancre native stylée pour les liens en ligne, la navigation discrète et les lignes de réglages ; asChild stylise un lien de routeur sans imbriquer d'ancres.",
+      "demos": {
+        "variants": {
+          "title": "Variantes",
+          "description": "default est souligné, subtle ajoute un chevron comme indice non coloré, action est une ligne pleine largeur."
+        },
+        "as-child": {
+          "title": "Liens de routeur",
+          "description": "asChild fusionne le style sur son unique élément enfant."
+        }
+      },
+      "api": {
+        "TextLinkProps": {
+          "asChild": "Fusionne le style du lien sur son unique élément enfant",
+          "variant": "Style visuel : default, subtle ou action",
+          "ref": "Ref vers l'élément ancre"
+        }
+      },
+      "cssVars": {
+        "--text-link-color": "Couleur de la variante par défaut (repli sur --link-color, puis --primary-color)",
+        "--text-link-font-weight": "Graisse de la police",
+        "--text-link-text-decoration": "Décoration du texte de la variante par défaut (par défaut underline)",
+        "--text-link-underline-offset": "Distance entre le texte et son soulignement",
+        "--text-link-action-min-height": "Hauteur minimale de la variante action"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Un <a> natif dans une shadow root : href, target, rel, hreflang et download lui sont transmis."
+          },
+          "variants": {
+            "title": "Variantes et routage",
+            "description": "default est souligné, subtle ajoute un chevron, action forme une ligne de réglages. Les clics sont interceptés sur l'hôte, comme le ferait un routeur côté client."
+          },
+          "styling": {
+            "title": "Variables CSS",
+            "description": "La couleur, la graisse, le soulignement et son décalage se règlent par lien avec des variables CSS."
+          }
+        },
+        "minerva-text-link": {
+          "props": {
+            "href": "URL du lien.",
+            "target": "Contexte de navigation où s'ouvre le lien (_blank...).",
+            "rel": "Relation avec la ressource liée (noopener...).",
+            "download": "Télécharge la cible au lieu de naviguer (nom de fichier facultatif).",
+            "hreflang": "Langue de la ressource liée."
+          },
+          "slots": {
+            "default": "Texte du lien (et icônes)."
+          },
+          "methods": {
+            "focus": "Donne le focus au lien interne.",
+            "blur": "Retire le focus du lien interne.",
+            "click": "Clique sur le lien interne."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

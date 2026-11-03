@@ -1,0 +1,546 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.19.3",
+  "locale": "fr",
+  "renderer": "vue",
+  "page": "time-picker",
+  "title": "TimePicker",
+  "description": "Sélectionne une heure de la journée dans des colonnes heures / minutes / secondes, ou par saisie.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.19.3",
+    "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
+    "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
+    "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  },
+  "content": {
+    "keyboard": {
+      "title": "Clavier et accessibilité",
+      "open": "Flèche bas sur le champ ouvre le panneau ; un clic à l'extérieur le ferme.",
+      "navigate": "Chaque colonne (heures, minutes, secondes, AM/PM) est une listbox : Flèche haut / Flèche bas, Début et Fin s'y déplacent, Flèche gauche / Flèche droite changent de colonne.",
+      "select": "Entrée ou Espace choisit l'option qui a le focus.",
+      "close": "Échap ferme le panneau et rend le focus au champ. Tab après la dernière colonne le ferme et passe au champ suivant ; Maj+Tab avant la première colonne le ferme et revient au champ.",
+      "typing": "Le texte saisi n'est validé qu'une fois qu'il forme une heure complète et valide. À la perte du focus, une analyse plus souple est appliquée ; un texte vide efface la valeur et un texte illisible restaure la précédente."
+    }
+  },
+  "components": [
+    {
+      "name": "TimePicker",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "TimePicker"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "modelValue",
+            "type": "Date | null",
+            "required": false,
+            "description": "Selected time (controlled, `v-model`). `null` means \"no time\" while\nstaying controlled; `undefined` makes the picker uncontrolled.",
+            "typeText": "Date | null"
+          },
+          {
+            "name": "defaultValue",
+            "type": "Date",
+            "required": false,
+            "description": "Initially selected time (uncontrolled)",
+            "typeText": "Date"
+          },
+          {
+            "name": "format",
+            "type": "string",
+            "default": "\"HH:mm:ss\"",
+            "required": false,
+            "description": "Display format: \"HH:mm:ss\", \"HH:mm\", \"hh:mm:ss a\" or \"hh:mm a\"",
+            "typeText": "string"
+          },
+          {
+            "name": "use12Hours",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Uses a 12-hour clock with an AM/PM column",
+            "typeText": "boolean"
+          },
+          {
+            "name": "placeholder",
+            "type": "string",
+            "required": false,
+            "description": "Placeholder of the input",
+            "typeText": "string"
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "required": false,
+            "description": "Visible label of the input; without it the input is labelled \"Time\" (localized)",
+            "typeText": "string"
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible label of the input when no visible label is shown (`aria-label`)",
+            "typeText": "string"
+          },
+          {
+            "name": "ariaLabelledby",
+            "type": "string",
+            "required": false,
+            "description": "Id(s) of the element(s) labelling the input (`aria-labelledby`); inside\na FormControl it defaults to the FormLabel (unless `label` /\n`aria-label` is set)",
+            "typeText": "string"
+          },
+          {
+            "name": "ariaDescribedby",
+            "type": "string",
+            "required": false,
+            "description": "Id(s) of the element(s) describing the input (`aria-describedby`);\nmerged with the helper / error text of an enclosing FormControl",
+            "typeText": "string"
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "required": false,
+            "description": "Id of the input; defaults to the id of an enclosing FormControl",
+            "typeText": "string"
+          },
+          {
+            "name": "required",
+            "type": "boolean",
+            "required": false,
+            "description": "Marks the input as required; defaults to the enclosing FormControl's state",
+            "typeText": "boolean"
+          },
+          {
+            "name": "readOnly",
+            "type": "boolean",
+            "required": false,
+            "description": "Shows the value without allowing changes (typing, panel, clearing);\ndefaults to the enclosing FormControl's state",
+            "typeText": "boolean"
+          },
+          {
+            "name": "invalid",
+            "type": "boolean",
+            "required": false,
+            "description": "Marks the input as invalid (aria-invalid); defaults to the enclosing\nFormControl's state",
+            "typeText": "boolean"
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "default": "\"time-picker\"",
+            "required": false,
+            "description": "Name of the input",
+            "typeText": "string"
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "required": false,
+            "description": "Disables the picker; defaults to the enclosing FormControl's state",
+            "typeText": "boolean"
+          },
+          {
+            "name": "clearable",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Allows clearing the value with the suffix button",
+            "typeText": "boolean"
+          },
+          {
+            "name": "size",
+            "type": "\"medium\" | \"small\" | \"large\"",
+            "default": "\"medium\"",
+            "required": false,
+            "description": "Size of the input and panel",
+            "typeText": "\"medium\" | \"small\" | \"large\""
+          },
+          {
+            "name": "minTime",
+            "type": "Date",
+            "required": false,
+            "description": "Earliest selectable time; earlier options are disabled",
+            "typeText": "Date"
+          },
+          {
+            "name": "maxTime",
+            "type": "Date",
+            "required": false,
+            "description": "Latest selectable time; later options are disabled",
+            "typeText": "Date"
+          },
+          {
+            "name": "showSecond",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Shows seconds. `false` also removes the seconds token from `format`\n(\"HH:mm:ss\" -> \"HH:mm\"): the format in use is the single source of truth\nof the seconds column, the displayed text and parsing",
+            "typeText": "boolean"
+          },
+          {
+            "name": "hourStep",
+            "type": "number",
+            "default": "1",
+            "required": false,
+            "description": "Interval between hour options",
+            "typeText": "number"
+          },
+          {
+            "name": "minuteStep",
+            "type": "number",
+            "default": "1",
+            "required": false,
+            "description": "Interval between minute options",
+            "typeText": "number"
+          },
+          {
+            "name": "secondStep",
+            "type": "number",
+            "default": "1",
+            "required": false,
+            "description": "Interval between second options",
+            "typeText": "number"
+          }
+        ],
+        "events": [
+          {
+            "name": "update:modelValue",
+            "type": "[value: Date | null]",
+            "typeText": "[value: Date | null]",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "typeText": "Date | null",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "change",
+            "type": "[date: Date | undefined]",
+            "typeText": "[date: Date | undefined]",
+            "parameters": [
+              {
+                "name": "date",
+                "position": 0,
+                "typeText": "Date | undefined",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "openChange",
+            "type": "[open: boolean]",
+            "typeText": "[open: boolean]",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "modelValue",
+            "event": "update:modelValue",
+            "syntax": "v-model"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:TimePicker": {
+      "kind": "cssVars",
+      "source": "react/src/components/TimePicker",
+      "vars": [
+        {
+          "name": "--time-picker-width",
+          "description": "Width of the field"
+        },
+        {
+          "name": "--time-picker-panel-radius",
+          "description": "Corner radius of the panel (defaults to --radius-sm)"
+        },
+        {
+          "name": "--time-picker-panel-padding",
+          "description": "Inner padding of the panel"
+        },
+        {
+          "name": "--time-picker-column-width",
+          "description": "Width of an hours / minutes / seconds column"
+        },
+        {
+          "name": "--time-picker-column-height",
+          "description": "Height of the columns before they scroll"
+        },
+        {
+          "name": "--time-picker-cell-height",
+          "description": "Height of a time cell (defaults to the density's small control height)"
+        },
+        {
+          "name": "--time-picker-cell-padding-x",
+          "description": "Horizontal padding of a time cell (follows the density's row padding)"
+        },
+        {
+          "name": "--time-picker-selected-background",
+          "description": "Background of the selected time cell"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/time-picker/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/time-picker/vue/basic.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { TimePicker, VStack } from \"minerva-design/vue\";\nconst time = ref<Date | null>(null);\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><TimePicker v-model=\"time\" label=\"Meeting time\" clearable /><output>{{\n      time?.toLocaleTimeString() || \"No time selected\"\n    }}</output></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "form",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/time-picker/vue/form.vue",
+      "files": {
+        "apps/docs/src/docs/pages/time-picker/vue/form.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { TimePicker, FormField } from \"minerva-design/vue\";\nconst time = ref<Date | null>(null);\n</script>\n<template>\n  <FormField\n    label=\"Start time\"\n    required\n    :invalid=\"!time\"\n    error-message=\"Choose a start time\"\n    ><TimePicker v-model=\"time\" format=\"HH:mm\" :show-second=\"false\"\n  /></FormField>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "form",
+      "description": ""
+    },
+    {
+      "id": "formats",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/time-picker/vue/formats.vue",
+      "files": {
+        "apps/docs/src/docs/pages/time-picker/vue/formats.vue": "<script setup lang=\"ts\">\nimport { TimePicker, HStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <HStack :gap=\"3\" wrap\n    ><TimePicker\n      label=\"24-hour clock\"\n      format=\"HH:mm\"\n      :show-second=\"false\" /><TimePicker\n      label=\"12-hour clock\"\n      format=\"hh:mm a\"\n      use12-hours\n      :show-second=\"false\"\n  /></HStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "formats",
+      "description": ""
+    },
+    {
+      "id": "range-steps",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/time-picker/vue/range-steps.vue",
+      "files": {
+        "apps/docs/src/docs/pages/time-picker/vue/range-steps.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { TimePicker } from \"minerva-design/vue\";\nconst min = new Date(2026, 0, 1, 9);\nconst max = new Date(2026, 0, 1, 17);\nconst time = ref<Date | null>(new Date(2026, 0, 1, 10, 30));\n</script>\n<template>\n  <TimePicker\n    v-model=\"time\"\n    label=\"Office hours\"\n    :min-time=\"min\"\n    :max-time=\"max\"\n    :minute-step=\"15\"\n    :show-second=\"false\"\n    format=\"HH:mm\"\n  />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "range-steps",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.19.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "TimePicker",
+      "description": "Sélectionne une heure de la journée dans des colonnes heures / minutes / secondes, ou par saisie.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Cliquez sur le champ (ou appuyez sur Flèche bas) pour ouvrir le panneau. onChange reçoit une Date, ou undefined après effacement. Sans label, le champ est nommé \"Time\" (heure)."
+        },
+        "default-value": {
+          "title": "Valeur par défaut et effacement",
+          "description": "defaultValue définit l'heure initiale. Le bouton d'effacement est libellé \"Clear time\" (effacer l'heure) ; utilisez clearable={false} pour le masquer."
+        },
+        "formats": {
+          "title": "Formats",
+          "description": "Les formats pris en charge sont HH:mm:ss et HH:mm (et leurs variantes 12 h). Masquez la colonne des secondes avec showSecond={false}."
+        },
+        "twelve-hour": {
+          "title": "Format 12 heures",
+          "description": "use12Hours ajoute une colonne AM/PM ; associez-le au format hh:mm:ss a ou hh:mm a."
+        },
+        "steps": {
+          "title": "Pas",
+          "description": "hourStep, minuteStep et secondStep définissent l'intervalle entre les options."
+        },
+        "time-range": {
+          "title": "Plage horaire",
+          "description": "minTime et maxTime désactivent les options hors de la plage autorisée."
+        },
+        "sizes": {
+          "title": "Tailles",
+          "description": "Trois tailles : small, medium (par défaut) et large."
+        },
+        "disabled": {
+          "title": "Désactivé",
+          "description": "Un sélecteur désactivé ne peut être ni ouvert ni modifié."
+        },
+        "controlled": {
+          "title": "Contrôlé",
+          "description": "Passez value et mettez-la à jour dans onChange. null garde le sélecteur contrôlé mais vide, tandis qu'undefined le rend non contrôlé. label donne au champ une étiquette visible."
+        }
+      },
+      "api": {
+        "TimePickerProps": {
+          "value": "Heure sélectionnée (contrôlé ; à associer à onChange). null signifie « aucune heure » tout en restant contrôlé ; undefined rend le sélecteur non contrôlé. La partie date est ignorée",
+          "defaultValue": "Heure sélectionnée initialement (non contrôlé)",
+          "onChange": "Appelé avec la nouvelle heure, ou undefined quand la valeur est effacée",
+          "format": "Format d'affichage : \"HH:mm:ss\", \"HH:mm\", \"hh:mm:ss a\" ou \"hh:mm a\"",
+          "use12Hours": "Utilise le format 12 heures avec une colonne AM/PM",
+          "placeholder": "Texte indicatif du champ ; par défaut \"Select time\" traduit selon la langue",
+          "disabled": "Désactive le sélecteur",
+          "clearable": "Permet d'effacer la valeur avec le bouton de suffixe (libellé \"Clear time\", traduit)",
+          "size": "Taille du champ et du panneau",
+          "className": "Classe CSS supplémentaire",
+          "minTime": "Heure minimale sélectionnable ; les options antérieures sont désactivées",
+          "maxTime": "Heure maximale sélectionnable ; les options postérieures sont désactivées",
+          "showSecond": "Affiche les secondes. false les retire aussi de format (\"HH:mm:ss\" → \"HH:mm\") : le format utilisé décide de la colonne des secondes, du texte et de l’analyse.",
+          "hourStep": "Intervalle entre les options d'heure",
+          "minuteStep": "Intervalle entre les options de minute",
+          "secondStep": "Intervalle entre les options de seconde",
+          "ref": "Ref vers l'élément <input>",
+          "label": "Étiquette visible du champ ; sans elle, le champ est libellé \"Time\" (traduit)",
+          "aria-label": "Libellé accessible du champ quand aucune étiquette visible n'est affichée",
+          "name": "Nom du champ",
+          "onOpenChange": "Appelé quand le panneau s'ouvre ou se ferme",
+          "style": "Styles en ligne de l'élément racine",
+          "aria-labelledby": "Id(s) du ou des éléments qui libellent le champ ; dans un FormControl, pointe par défaut vers le FormLabel (sauf si label / aria-label est défini)",
+          "aria-describedby": "Id(s) du ou des éléments qui décrivent le champ ; fusionné avec le texte d'aide / d'erreur d'un FormControl englobant",
+          "id": "Id du champ ; par défaut, l'id du FormControl englobant",
+          "required": "Marque le champ comme obligatoire ; par défaut, l'état du FormControl englobant",
+          "readOnly": "Affiche la valeur sans permettre de la modifier (saisie, panneau, effacement) ; par défaut, l'état du FormControl englobant",
+          "invalid": "Marque le champ comme invalide (aria-invalid) ; par défaut, l'état du FormControl englobant"
+        }
+      },
+      "keyboard": {
+        "title": "Clavier et accessibilité",
+        "open": "Flèche bas sur le champ ouvre le panneau ; un clic à l'extérieur le ferme.",
+        "navigate": "Chaque colonne (heures, minutes, secondes, AM/PM) est une listbox : Flèche haut / Flèche bas, Début et Fin s'y déplacent, Flèche gauche / Flèche droite changent de colonne.",
+        "select": "Entrée ou Espace choisit l'option qui a le focus.",
+        "close": "Échap ferme le panneau et rend le focus au champ. Tab après la dernière colonne le ferme et passe au champ suivant ; Maj+Tab avant la première colonne le ferme et revient au champ.",
+        "typing": "Le texte saisi n'est validé qu'une fois qu'il forme une heure complète et valide. À la perte du focus, une analyse plus souple est appliquée ; un texte vide efface la valeur et un texte illisible restaure la précédente."
+      },
+      "cssVars": {
+        "--time-picker-width": "Largeur du champ",
+        "--time-picker-panel-radius": "Rayon des coins du panneau (par défaut --radius-sm)",
+        "--time-picker-panel-padding": "Marge intérieure du panneau",
+        "--time-picker-column-width": "Largeur d'une colonne heures / minutes / secondes",
+        "--time-picker-column-height": "Hauteur des colonnes avant défilement",
+        "--time-picker-cell-height": "Hauteur d'une cellule horaire (par défaut la hauteur de contrôle small de la densité)",
+        "--time-picker-cell-padding-x": "Marge intérieure horizontale d'une cellule horaire (suit la marge de ligne de la densité)",
+        "--time-picker-selected-background": "Fond de la cellule horaire sélectionnée"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Saisissez une heure ou choisissez-la dans le panneau. L'attribut value définit l'heure initiale ; minerva-change est émis quand une heure est validée et valueAsDate la renvoie sous forme de Date."
+          },
+          "formats": {
+            "title": "Formats, tailles et états",
+            "description": "format et use-12-hours règlent l'affichage (hide-second masque la colonne des secondes quand le format n'en a pas) ; trois tailles ; états lecture seule, désactivé et invalide."
+          },
+          "range-steps": {
+            "title": "Plage et pas",
+            "description": "min-time et max-time désactivent les options hors de la plage ; hour-step, minute-step et second-step espacent les options."
+          },
+          "form": {
+            "title": "Dans un formulaire",
+            "description": "L'élément est associé aux formulaires : il soumet une valeur sur 24 heures sous name, required empêche un champ vide et form.reset() rétablit l'attribut value."
+          }
+        },
+        "minerva-time-picker": {
+          "props": {
+            "open": "Indique si le panneau est ouvert.",
+            "readOnly": "Affiche la valeur sans permettre de la modifier (saisie, panneau, effacement).",
+            "hideClearButton": "Masque le bouton d'effacement (clearable={false} en React).",
+            "hideSecond": "Masque la colonne des secondes (showSecond={false} en React).",
+            "valueAsDate": "La valeur sous forme de Date (à la date du jour), null si vide ou invalide.",
+            "isDisabled": "Indique si le contrôle est désactivé (lui-même ou par un <fieldset> désactivé).",
+            "form": "Le formulaire auquel appartient l'élément (lecture seule).",
+            "labels": "Les éléments <label> associés à l'élément.",
+            "validity": "État de validité (identique à <input>.validity).",
+            "validationMessage": "Message décrivant l'erreur de validation actuelle (vide si la valeur est valide).",
+            "willValidate": "Indique si l'élément participe à la validation des contraintes."
+          },
+          "events": {
+            "change": "Identique à minerva-change (comme l'événement natif, il remonte).",
+            "minerva-change": "L'heure a été validée (choisie, saisie, normalisée à la perte du focus ou effacée), detail : { value } (\"\" si effacée).",
+            "minerva-input": "Le texte du champ a changé pendant la saisie, detail : { value } (le texte saisi).",
+            "minerva-open-change": "L'utilisateur a ouvert ou fermé le panneau, detail : { open } ; annulable : preventDefault() conserve l'état actuel.",
+            "minerva-clear": "Le bouton d'effacement a vidé le champ."
+          },
+          "cssVars": {
+            "--input-height": "Hauteur minimale du champ (par défaut, la hauteur de contrôle de la densité pour la taille).",
+            "--input-padding-x": "Marge intérieure horizontale du texte.",
+            "--input-radius": "Rayon des coins du champ (par défaut --radius-lg).",
+            "--input-font-size": "Taille de police du champ.",
+            "--input-background": "Couleur de fond du champ.",
+            "--input-border-color": "Couleur de bordure au repos.",
+            "--input-focus-color": "Couleur de bordure au survol ou au focus.",
+            "--icon-button-color": "Couleur de l'icône du bouton d'effacement.",
+            "--icon-button-hover-bg": "Fond du bouton d'effacement au survol.",
+            "--icon-button-pressed-color": "Couleur de l'icône du bouton d'effacement lorsqu'il est enfoncé.",
+            "--icon-button-pressed-bg": "Fond du bouton d'effacement lorsqu'il est enfoncé.",
+            "--icon-button-size": "Largeur et hauteur du bouton d'effacement (par défaut selon les hauteurs de contrôle de la densité).",
+            "--icon-button-icon-size": "Taille de l'icône du bouton d'effacement.",
+            "--icon-button-radius": "Rayon des coins du bouton d'effacement (par défaut --radius-lg)."
+          },
+          "methods": {
+            "focus": "Donne le focus au champ interne.",
+            "blur": "Retire le focus du champ interne.",
+            "show": "Ouvre le panneau (sans événement).",
+            "hide": "Ferme le panneau (sans événement).",
+            "checkValidity": "Vérifie la validité ; déclenche invalid si la valeur n'est pas valide.",
+            "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+            "setCustomValidity": "Définit une erreur de validation personnalisée (une chaîne vide l'efface).",
+            "formResetCallback": "Appelée par le navigateur lors de form.reset() : rétablit la valeur de l'attribut value.",
+            "formDisabledCallback": "Appelée par le navigateur quand un <fieldset> ancêtre est désactivé ou réactivé.",
+            "formStateRestoreCallback": "Appelée par le navigateur pour restaurer la valeur (cache de navigation, saisie automatique)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

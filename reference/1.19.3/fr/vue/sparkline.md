@@ -1,0 +1,458 @@
+# Sparkline
+
+Un graphique de la taille d’un mot, sans axes ni légende, qui montre l’allure d’une tendance à côté d’un chiffre : dans des cartes d’indicateurs, des cellules de tableau ou des listes. Survolez-le pour lire une valeur.
+
+Package: minerva-design@1.19.3
+
+Renderer: vue
+
+Locale: fr
+
+## Provenance
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "packageVersion": "1.19.3",
+  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
+  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
+  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+}
+```
+
+Type references resolve through the [type graph](/minerva-design/reference/1.19.3/types.json) or getType() from minerva-design/contracts.
+
+## Documentation
+
+Commandes
+
+Commandes hebdomadaires, {{variant}}
+
+Chiffre d'affaires
+
+Utilisateurs actifs
+
+Inscriptions
+
+Latence p95
+
+{{metric}}, 30 derniers jours
+
+Service
+
+Passerelle API
+
+Authentification
+
+Recherche
+
+Paiements
+
+Notifications
+
+Requêtes / min
+
+Latence p95, 30 jours
+
+Latence p95 de {{service}} sur 30 jours
+
+Aujourd'hui
+
+Variation
+
+Latence des services
+
+Symbole
+
+Acme Corporation
+
+Nova Biotech
+
+Orbit Aérospatiale
+
+Kite Robotique
+
+Luma Énergie
+
+Cours de {{symbol}} aujourd'hui
+
+Cours
+
+Liste de surveillance
+
+Visites des 14 derniers jours :
+
+Visites
+
+Visites des 14 derniers jours
+
+Les erreurs ont bondi après le déploiement du 7e jour, puis sont revenues à la normale :
+
+Erreurs
+
+Erreurs par jour sur les 14 derniers jours
+
+Température de l'après-midi ces deux semaines :
+
+Température
+
+Température de l'après-midi sur les 14 derniers jours
+
+Processeur
+
+Utilisation du processeur de {{server}}
+
+Alerte
+
+Normal
+
+Utilisateurs actifs par jour
+
+Dernier jour : {{date}}
+
+{{date}} · {{change}} depuis le 1er septembre
+
+Utilisateurs actifs par jour du 1er septembre au 31 octobre
+
+{{value}} pas
+
+{{value}} de l'objectif
+
+Objectif de {{goal}} pas atteint {{reached}} jours sur {{days}}
+
+Pas
+
+Pas par jour sur quatre semaines, avec l'objectif quotidien
+
+Reykjavik
+
+Montréal
+
+Tokyo
+
+Le Caire
+
+Singapour
+
+Sydney
+
+Max. {{max}} ({{maxMonth}}) · min. {{min}} ({{minMonth}})
+
+Moyenne des maximales quotidiennes de chaque mois à {{city}}
+
+Période
+
+7 jours
+
+30 jours
+
+90 jours
+
+seconde moitié par rapport à la première
+
+par rapport à la période précédente
+
+Chiffre d'affaires quotidien, période : {{period}}
+
+## Sparkline
+
+Support: beta
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design/vue",
+  "exports": [
+    "Sparkline"
+  ],
+  "kind": "named"
+}
+```
+
+### props
+
+```json
+[
+  {
+    "name": "deep",
+    "type": "boolean",
+    "default": "false",
+    "required": false,
+    "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)",
+    "typeText": "boolean"
+  },
+  {
+    "name": "tooltip",
+    "type": "boolean | ChartTooltipOptions",
+    "required": false,
+    "description": "Tooltip; `false` disables it",
+    "typeText": "boolean | ChartTooltipOptions"
+  },
+  {
+    "name": "color",
+    "type": "string",
+    "required": false,
+    "description": "Color (any CSS color); the first palette color by default",
+    "typeText": "string"
+  },
+  {
+    "name": "type",
+    "type": "\"line\" | \"bar\" | \"area\"",
+    "required": false,
+    "description": "How the values are drawn (default `line`)",
+    "typeText": "\"line\" | \"bar\" | \"area\""
+  },
+  {
+    "name": "labels",
+    "type": "Partial<ChartLabels>",
+    "required": false,
+    "description": "Overrides of the built-in texts of the `locale`",
+    "typeText": "Partial<ChartLabels>"
+  },
+  {
+    "name": "curve",
+    "type": "ChartCurve",
+    "required": false,
+    "description": "Shape of the line (default `smooth`)",
+    "typeText": "ChartCurve"
+  },
+  {
+    "name": "renderer",
+    "type": "ChartRendererPreference",
+    "required": false,
+    "description": "Backend of the data layer (default `auto`)",
+    "typeText": "ChartRendererPreference"
+  },
+  {
+    "name": "width",
+    "type": "string | number",
+    "required": false,
+    "description": "Width of the chart; numbers are pixels (default `100%`)",
+    "typeText": "string | number"
+  },
+  {
+    "name": "height",
+    "type": "string | number",
+    "required": false,
+    "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length",
+    "typeText": "string | number"
+  },
+  {
+    "name": "palette",
+    "type": "readonly string[]",
+    "required": false,
+    "description": "Colors (defaults to the `--chart-series-1..8` CSS variables)",
+    "typeText": "readonly string[]"
+  },
+  {
+    "name": "ariaLabel",
+    "type": "string",
+    "required": false,
+    "description": "Accessible name of the chart",
+    "typeText": "string"
+  },
+  {
+    "name": "locale",
+    "type": "string",
+    "required": false,
+    "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, accessible name); the page language by default",
+    "typeText": "string"
+  },
+  {
+    "name": "name",
+    "type": "string",
+    "required": false,
+    "description": "Name shown in the tooltip",
+    "typeText": "string"
+  },
+  {
+    "name": "data",
+    "type": "ChartSeriesData",
+    "required": true,
+    "description": "Values (or `[x, y]` pairs, typed arrays, ...)",
+    "typeText": "ChartSeriesData"
+  },
+  {
+    "name": "format",
+    "type": "((value: number) => string)",
+    "required": false,
+    "description": "Formats the value in the tooltip",
+    "typeText": "((value: number) => string)"
+  },
+  {
+    "name": "reference",
+    "type": "number",
+    "required": false,
+    "description": "Draws a reference line at this value (e.g. a target or the average)",
+    "typeText": "number"
+  }
+]
+```
+
+### events
+
+```json
+[
+  {
+    "name": "hover",
+    "type": "[event: ChartHoverEvent | null]",
+    "typeText": "[event: ChartHoverEvent | null]",
+    "parameters": [
+      {
+        "name": "event",
+        "position": 0,
+        "typeText": "ChartHoverEvent | null",
+        "required": true,
+        "rest": false
+      }
+    ]
+  }
+]
+```
+
+## Installation and initialization
+
+See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.
+
+## Example: kpi
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, vue
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/sparkline/vue/kpi.vue
+
+```vue
+<script setup lang="ts">
+// Word-sized trends (48px high by default) drawn as a line, an area or bars.
+import { computed } from "vue";
+import { useI18n } from "minerva-design/vue";
+import { Sparkline } from "minerva-design/vue/charts";
+
+const TEXT = {
+  en: { orders: "Orders", revenue: "Revenue", signups: "Sign-ups" },
+  zh: { orders: "订单", revenue: "收入", signups: "注册" },
+  ja: { orders: "注文", revenue: "売上", signups: "登録" },
+  fr: {
+    orders: "Commandes",
+    revenue: "Chiffre d'affaires",
+    signups: "Inscriptions",
+  },
+};
+
+const { language } = useI18n();
+const text = computed(() => TEXT[language.value] ?? TEXT.en);
+</script>
+
+<template>
+  <div
+    style="
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    "
+  >
+    <div style="display: grid; gap: 4px">
+      <span>{{ text.orders }}</span>
+      <strong>1,284</strong>
+      <Sparkline
+        :data="[32, 41, 38, 52, 49, 61, 58, 70, 66, 74]"
+        :name="text.orders"
+      />
+    </div>
+    <div style="display: grid; gap: 4px">
+      <span>{{ text.revenue }}</span>
+      <strong>€48.2k</strong>
+      <Sparkline
+        type="area"
+        :data="[3.1, 3.4, 3.2, 3.9, 4.4, 4.1, 4.6, 4.8, 4.5, 4.9]"
+        :name="text.revenue"
+      />
+    </div>
+    <div style="display: grid; gap: 4px">
+      <span>{{ text.signups }}</span>
+      <strong>312</strong>
+      <Sparkline
+        type="bar"
+        :data="[12, 18, 9, 22, 30, 25, 19, 28, 33, 31]"
+        :name="text.signups"
+      />
+    </div>
+  </div>
+</template>
+
+```
+
+## Example: reference
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, vue
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/sparkline/vue/reference.vue
+
+```vue
+<script setup lang="ts">
+// `reference` draws a dashed target line; @hover reports the value under the
+// pointer (null when it leaves).
+import { computed, ref } from "vue";
+import { useI18n } from "minerva-design/vue";
+import { Sparkline, type ChartHoverEvent } from "minerva-design/vue/charts";
+
+const TEXT = {
+  en: {
+    latency: "p95 latency",
+    target: "target 200 ms",
+    hint: "Hover the line",
+  },
+  zh: {
+    latency: "p95 延迟",
+    target: "目标 200 毫秒",
+    hint: "将指针悬停在折线上",
+  },
+  ja: {
+    latency: "p95 レイテンシ",
+    target: "目標 200 ms",
+    hint: "線にカーソルを合わせます",
+  },
+  fr: {
+    latency: "Latence p95",
+    target: "objectif 200 ms",
+    hint: "Survolez la courbe",
+  },
+};
+
+const data = [182, 175, 190, 214, 230, 205, 188, 176, 169, 181, 196, 172];
+const { language } = useI18n();
+const text = computed(() => TEXT[language.value] ?? TEXT.en);
+const hovered = ref<number | null>(null);
+const onHover = (event: ChartHoverEvent | null) => {
+  hovered.value = event?.items[0]?.y ?? null;
+};
+const format = (ms: number) => `${ms} ms`;
+</script>
+
+<template>
+  <div style="display: grid; gap: 8px">
+    <Sparkline
+      :data="data"
+      :reference="200"
+      :name="text.latency"
+      :format="format"
+      :height="64"
+      @hover="onHover"
+    />
+    <output aria-live="polite">{{
+      hovered === null
+        ? text.hint
+        : `${text.latency}: ${hovered} ms (${text.target})`
+    }}</output>
+  </div>
+</template>
+
+```

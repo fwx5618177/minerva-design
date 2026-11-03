@@ -1,0 +1,278 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.19.3",
+  "locale": "fr",
+  "renderer": "uni",
+  "page": "key-value-editor",
+  "title": "KeyValueEditor",
+  "description": "Édite une liste ordonnée de paires de chaînes (clés et valeurs multilignes) avec ajout et suppression ; les lignes sont suivies par un id stable.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.19.3",
+    "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
+    "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
+    "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "KeyValueEditor",
+      "support": {
+        "status": "beta",
+        "notes": "entries/defaultEntries and stable id-based edits/removal/errors; duplicate keys allowed and validation remains consumer-owned; multiline whitespace-preserving textareas, labels, unique addition ids, controlled rejection including native field rollback, model updates and inherited locking. Legacy value arrays remain accepted. Browser DOM refs and focus-to-remove-button behavior have no native equivalent; newly added rows focus their key textarea. Native textarea geometry and keyboard require device validation. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "entries/defaultEntries and stable id-based edits/removal/errors; duplicate keys allowed and validation remains consumer-owned; multiline whitespace-preserving textareas, labels, unique addition ids, controlled rejection including native field rollback, model updates and inherited locking. Legacy value arrays remain accepted. Browser DOM refs and focus-to-remove-button behavior have no native equivalent; newly added rows focus their key textarea. Native textarea geometry and keyboard require device validation. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "KeyValueEditor"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "entries",
+            "typeText": "Entry[] | undefined",
+            "required": false
+          },
+          {
+            "name": "defaultEntries",
+            "typeText": "Entry[] | undefined",
+            "required": false
+          },
+          {
+            "name": "value",
+            "typeText": "LegacyEntry[] | undefined",
+            "required": false
+          },
+          {
+            "name": "modelValue",
+            "typeText": "LegacyEntry[] | undefined",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "readOnly",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "keyLabel",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "valueLabel",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "addLabel",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "removeLabel",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "errors",
+            "typeText": "Record<string, { key?: string | undefined; value?: string | undefined; }> | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "change",
+            "typeText": "[entries: Entry[]]",
+            "parameters": [
+              {
+                "name": "entries",
+                "position": 0,
+                "typeText": "Entry[]",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "update:modelValue",
+            "typeText": "[entries: Entry[]]",
+            "parameters": [
+              {
+                "name": "entries",
+                "position": 0,
+                "typeText": "Entry[]",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "update:entries",
+            "typeText": "[entries: Entry[]]",
+            "parameters": [
+              {
+                "name": "entries",
+                "position": 0,
+                "typeText": "Entry[]",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "entries",
+            "event": "update:entries",
+            "syntax": "v-model:entries"
+          },
+          {
+            "prop": "modelValue",
+            "event": "update:modelValue",
+            "syntax": "v-model"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:KeyValueEditor": {
+      "kind": "cssVars",
+      "source": "react/src/components/KeyValueEditor",
+      "vars": [
+        {
+          "name": "--key-value-editor-gap",
+          "description": "Space between the rows and the add button"
+        },
+        {
+          "name": "--key-value-editor-column-gap",
+          "description": "Space between the key, the value and the remove button of a row"
+        },
+        {
+          "name": "--key-value-editor-control-height",
+          "description": "Size of the remove button and minimum height of the key field and of the add button (defaults to the density's small control height)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.19.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "KeyValueEditor",
+      "description": "Édite une liste ordonnée de paires de chaînes (clés et valeurs multilignes) avec ajout et suppression ; les lignes sont suivies par un id stable.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Entrées contrôlées avec libellés personnalisés ; retours à la ligne et clés en double sont conservés."
+        },
+        "errors": {
+          "title": "Erreurs de validation",
+          "description": "L’application valide et transmet les erreurs par id d’entrée ; elles restent associées après un réordonnancement."
+        }
+      },
+      "api": {
+        "KeyValueEditorProps": {
+          "entries": "Lignes (contrôlées) ; à omettre pour un éditeur non contrôlé",
+          "defaultEntries": "Lignes initiales d’un éditeur non contrôlé",
+          "onChange": "Appelé avec les nouvelles lignes après une modification, un ajout ou une suppression",
+          "disabled": "Désactive tous les champs et boutons",
+          "keyLabel": "Libellé des champs clé (suivi du numéro de ligne pour les lecteurs d’écran)",
+          "valueLabel": "Libellé des champs valeur",
+          "addLabel": "Texte du bouton d’ajout",
+          "removeLabel": "Libellé accessible des boutons de suppression (suivi du numéro de ligne)",
+          "errors": "Erreurs de champ par id d’entrée ; la validation incombe à l’application",
+          "ref": "Ref vers le <div> conteneur"
+        },
+        "KeyValueEntry": {
+          "id": "Id stable de la ligne (clé React, recherche d’erreurs) ; à conserver lors des modifications",
+          "key": "Texte de la clé (espaces et retours à la ligne conservés)",
+          "value": "Texte de la valeur (espaces et retours à la ligne conservés)"
+        },
+        "KeyValueEntryErrors": {
+          "key": "Message d’erreur du champ clé",
+          "value": "Message d’erreur du champ valeur"
+        }
+      },
+      "cssVars": {
+        "--key-value-editor-gap": "Espace entre les lignes et le bouton d'ajout",
+        "--key-value-editor-column-gap": "Espace entre la clé, la valeur et le bouton de suppression d'une ligne",
+        "--key-value-editor-control-height": "Taille du bouton de suppression et hauteur minimale du champ clé et du bouton d'ajout (par défaut la hauteur de contrôle small de la densité)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Lignes initiales depuis un objet JSON dans l’attribut value, libellés de colonnes personnalisés ; la propriété value (lignes avec id stables) est affichée après chaque minerva-change."
+          },
+          "errors": {
+            "title": "Validation et erreurs",
+            "description": "La validation revient à la page : errors (par id de ligne) affiche des messages sous les clés vides ou en double, et setCustomValidity() rend l’élément invalide dans les formulaires."
+          },
+          "form": {
+            "title": "Dans un formulaire",
+            "description": "Les lignes sont envoyées sous name en une seule chaîne JSON ; required bloque un éditeur sans ligne (supprimez la ligne pour essayer), et reset restaure les lignes de l’attribut value."
+          }
+        },
+        "minerva-key-value-editor": {
+          "props": {
+            "defaultValue": "Lignes initiales (l’attribut value, en JSON : un tableau de { key, value } ou un objet { \"key\": \"value\" }), restaurées par form.reset().",
+            "name": "Nom sous lequel les lignes sont envoyées, sous forme de tableau JSON de { key, value }.",
+            "required": "Un éditeur sans ligne est invalide (valueMissing).",
+            "isDisabled": "Indique si le contrôle est désactivé, par lui-même ou par un <fieldset> désactivé (lecture seule).",
+            "form": "Le formulaire auquel appartient l’élément (lecture seule).",
+            "labels": "Les éléments <label> associés à l’élément (lecture seule).",
+            "validity": "État de validité, comme <input>.validity (lecture seule).",
+            "validationMessage": "Message de l’erreur de validation courante ; vide si la valeur est valide (lecture seule).",
+            "willValidate": "Indique si l’élément participe à la validation des contraintes (lecture seule)."
+          },
+          "events": {
+            "change": "Une ligne a été validée (perte du focus d’un champ), ajoutée ou supprimée.",
+            "minerva-input": "Une clé ou une valeur est en cours de saisie ; detail : { value } (les entrées).",
+            "minerva-change": "Une ligne a été validée, ajoutée ou supprimée ; detail : { value } (les entrées)."
+          },
+          "cssVars": {
+            "--icon-button-color": "Couleur d’icône des boutons-icônes internes.",
+            "--icon-button-hover-bg": "Fond des boutons-icônes internes au survol.",
+            "--icon-button-pressed-color": "Couleur d’icône d’un bouton-icône interne enfoncé.",
+            "--icon-button-pressed-bg": "Fond d’un bouton-icône interne enfoncé.",
+            "--icon-button-size": "Largeur et hauteur des boutons-icônes internes (par défaut, hauteurs de contrôle de la densité).",
+            "--icon-button-icon-size": "Taille de police des icônes des boutons-icônes internes.",
+            "--icon-button-radius": "Rayon des coins des boutons-icônes internes (par défaut --radius-lg)."
+          },
+          "methods": {
+            "focus": "Donne le focus au premier champ de clé, sinon au bouton d’ajout.",
+            "checkValidity": "Vérifie la validité ; déclenche invalid si l’élément est invalide.",
+            "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+            "setCustomValidity": "Définit une erreur de validation personnalisée, ou l’efface avec une chaîne vide.",
+            "formResetCallback": "Rappel du cycle de vie du formulaire appelé par form.reset() : restaure la valeur initiale.",
+            "formDisabledCallback": "Rappel du cycle de vie du formulaire appelé quand un <fieldset> ancêtre est désactivé ou réactivé.",
+            "formStateRestoreCallback": "Rappel du cycle de vie du formulaire appelé quand le navigateur restaure l’état (navigation dans l’historique, remplissage automatique)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

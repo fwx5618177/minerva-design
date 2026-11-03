@@ -1,0 +1,348 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.19.3",
+  "locale": "fr",
+  "renderer": "wc",
+  "page": "steps",
+  "title": "Steps",
+  "description": "Affiche les étapes d’un processus et permet de passer de l’une à l’autre.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.19.3",
+    "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
+    "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
+    "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Steps",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/steps",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-steps",
+        "props": [
+          {
+            "name": "value",
+            "typeText": "string",
+            "attribute": "value",
+            "required": false
+          },
+          {
+            "name": "navigable",
+            "typeText": "boolean",
+            "attribute": "navigable",
+            "required": false
+          },
+          {
+            "name": "items",
+            "typeText": "StepsItem[]",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "minerva-change",
+            "typeText": "CustomEvent<{ value: string; }>",
+            "detailType": {
+              "typeText": "{ value: string; }",
+              "typeRef": "type:3619c35366dbb3b5a4b2"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": true,
+            "description": "The user navigated to a step (`detail: { value }`); cancelable: `preventDefault()` keeps the current step"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-steps": {
+      "kind": "element",
+      "source": "web-components/src/components/steps/steps.ts",
+      "className": "MinervaSteps",
+      "summary": "Workflow steps, read-only or navigable.",
+      "description": "The stages of a workflow as an ordered list (`<Steps>` of React). Earlier steps are marked complete and the current one with `aria-current=\"step\"`. By default the steps are a read-only progress indicator (no buttons, `aria-current` on the `<li>`); with `navigable` each step is a native button, and choosing one sets `value` and fires `minerva-change` (validation and workflow transitions belong to the caller: cancel the event to keep the current step).",
+      "properties": [
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Value of the current step (\"\" matches no step)"
+        },
+        {
+          "name": "navigable",
+          "attribute": "navigable",
+          "type": "boolean",
+          "default": "false",
+          "description": "Renders each step as a button the user can navigate with (default: read-only)"
+        },
+        {
+          "name": "items",
+          "type": "StepsItem[]",
+          "default": "[]",
+          "description": "Steps, in order"
+        }
+      ],
+      "methods": [],
+      "events": [
+        {
+          "name": "minerva-change",
+          "description": "The user navigated to a step (`detail: { value }`); cancelable: `preventDefault()` keeps the current step"
+        }
+      ],
+      "slots": [],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The `<ol>`"
+        },
+        {
+          "name": "item",
+          "description": "A step `<li>` (the current step has aria-current=step)"
+        },
+        {
+          "name": "item--current",
+          "description": "Item state of `item`: current"
+        },
+        {
+          "name": "item--disabled",
+          "description": "Item state of `item`: disabled"
+        },
+        {
+          "name": "item--status-complete",
+          "description": "Item state of `item`: status complete"
+        },
+        {
+          "name": "item--status-upcoming",
+          "description": "Item state of `item`: status upcoming"
+        },
+        {
+          "name": "button",
+          "description": "The `<button>` of a step (navigable) or its static wrapper (read-only)"
+        },
+        {
+          "name": "indicator",
+          "description": "The numbered indicator of a step"
+        },
+        {
+          "name": "label",
+          "description": "The label of a step"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--steps-gap",
+          "description": "Space between the steps (row and column gap)"
+        },
+        {
+          "name": "--steps-font-size",
+          "description": "Font size of the labels"
+        },
+        {
+          "name": "--steps-indicator-size",
+          "description": "Diameter of the numbered indicator"
+        },
+        {
+          "name": "--steps-accent-color",
+          "description": "Color of the current / completed indicators (defaults to --primary-color)"
+        },
+        {
+          "name": "--steps-current-background",
+          "description": "Background of the current step's indicator"
+        },
+        {
+          "name": "--steps-connector-color",
+          "description": "Color of the line joining the upcoming steps (defaults to --border-color)"
+        },
+        {
+          "name": "--steps-connector-complete-color",
+          "description": "Color of the line after a completed step (defaults to the accent color)"
+        },
+        {
+          "name": "--steps-connector-min-width",
+          "description": "Minimum length of the line joining two steps"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Steps": {
+      "kind": "cssVars",
+      "source": "react/src/components/Steps",
+      "vars": [
+        {
+          "name": "--steps-gap",
+          "description": "Space between the steps (row and column gap)"
+        },
+        {
+          "name": "--steps-font-size",
+          "description": "Font size of the labels"
+        },
+        {
+          "name": "--steps-indicator-size",
+          "description": "Diameter of the numbered indicator"
+        },
+        {
+          "name": "--steps-accent-color",
+          "description": "Color of the current / completed indicators (defaults to --primary-color)"
+        },
+        {
+          "name": "--steps-current-background",
+          "description": "Background of the current step's indicator"
+        },
+        {
+          "name": "--steps-connector-color",
+          "description": "Color of the line joining the upcoming steps (defaults to --border-color)"
+        },
+        {
+          "name": "--steps-connector-complete-color",
+          "description": "Color of the line after a completed step (defaults to the accent color)"
+        },
+        {
+          "name": "--steps-connector-min-width",
+          "description": "Minimum length of the line joining two steps"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/steps/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/steps/wc/basic.html": "<minerva-steps id=\"order\" value=\"shipped\"></minerva-steps>\n",
+        "apps/docs/src/docs/pages/steps/wc/basic.ts": "// Read-only progress: earlier steps are complete, the current one has\n// aria-current=\"step\". Steps are a JS property.\ntype Step = { value: string; label: string; disabled?: boolean };\n\nexport function setup(root: HTMLElement) {\n  root.querySelector<HTMLElement & { items: Step[] }>(\"#order\")!.items = [\n    { value: \"placed\", label: \"Order placed\" },\n    { value: \"paid\", label: \"Payment confirmed\" },\n    { value: \"shipped\", label: \"Shipped\" },\n    { value: \"delivered\", label: \"Delivered\" },\n  ];\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Progression en lecture seule",
+      "description": "Les étapes viennent de la propriété items ; les précédentes sont terminées et la courante porte aria-current=\"step\"."
+    },
+    {
+      "id": "navigable",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/steps/wc/navigable.html",
+      "files": {
+        "apps/docs/src/docs/pages/steps/wc/navigable.html": "<div style=\"display: grid; gap: 16px\">\n  <minerva-steps id=\"wizard\" value=\"account\" navigable></minerva-steps>\n  <label style=\"display: flex; gap: 8px; align-items: center\">\n    <input id=\"terms\" type=\"checkbox\" />\n    I accept the terms (required to leave the first step)\n  </label>\n  <div style=\"display: flex; gap: 8px\">\n    <minerva-button id=\"prev\" variant=\"outline\" color=\"neutral\"\n      >Previous</minerva-button\n    >\n    <minerva-button id=\"next\">Next</minerva-button>\n  </div>\n  <output id=\"status\"></output>\n</div>\n",
+        "apps/docs/src/docs/pages/steps/wc/navigable.ts": "// navigable renders each step as a button. minerva-change is cancelable:\n// the caller validates the transition (here: the terms checkbox).\ntype Step = { value: string; label: string; disabled?: boolean };\ntype Steps = HTMLElement & { items: Step[]; value: string };\n\nconst steps: Step[] = [\n  { value: \"account\", label: \"Account\" },\n  { value: \"team\", label: \"Team\" },\n  { value: \"billing\", label: \"Billing\" },\n  { value: \"done\", label: \"Done\", disabled: true },\n];\n\nexport function setup(root: HTMLElement) {\n  const wizard = root.querySelector<Steps>(\"#wizard\")!;\n  const terms = root.querySelector<HTMLInputElement>(\"#terms\")!;\n  const prev = root.querySelector<HTMLElement>(\"#prev\")!;\n  const next = root.querySelector<HTMLElement>(\"#next\")!;\n  const status = root.querySelector<HTMLOutputElement>(\"#status\")!;\n  wizard.items = steps;\n\n  const allowed = (from: string) => from !== \"account\" || terms.checked;\n  const onChange = (e: Event) => {\n    if (!allowed(wizard.value)) {\n      e.preventDefault();\n      status.value = \"Accept the terms first.\";\n      return;\n    }\n    status.value = `Moved to ${(e as CustomEvent<{ value: string }>).detail.value}`;\n  };\n  const move = (delta: number) => () => {\n    const index = steps.findIndex((s) => s.value === wizard.value) + delta;\n    const target = steps[index];\n    if (!target || target.disabled) return;\n    if (!allowed(wizard.value) && delta > 0) {\n      status.value = \"Accept the terms first.\";\n      return;\n    }\n    wizard.value = target.value;\n    status.value = `Moved to ${target.value}`;\n  };\n  const onPrev = move(-1);\n  const onNext = move(1);\n  wizard.addEventListener(\"minerva-change\", onChange);\n  prev.addEventListener(\"click\", onPrev);\n  next.addEventListener(\"click\", onNext);\n  return () => {\n    wizard.removeEventListener(\"minerva-change\", onChange);\n    prev.removeEventListener(\"click\", onPrev);\n    next.removeEventListener(\"click\", onNext);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Assistant navigable",
+      "description": "navigable transforme chaque étape en bouton. minerva-change est annulable : l'appelant valide la transition (acceptez les conditions pour quitter la première étape)."
+    },
+    {
+      "id": "styling",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/steps/wc/styling.html",
+      "files": {
+        "apps/docs/src/docs/pages/steps/wc/styling.html": "<style>\n  .brand-steps::part(label) {\n    font-weight: 600;\n  }\n</style>\n<minerva-steps\n  id=\"styled\"\n  class=\"brand-steps\"\n  value=\"review\"\n  style=\"\n    --steps-accent-color: var(--success-color);\n    --steps-indicator-size: 2rem;\n    --steps-gap: 24px;\n    --steps-connector-min-width: 3rem;\n  \"\n></minerva-steps>\n",
+        "apps/docs/src/docs/pages/steps/wc/styling.ts": "type Step = { value: string; label: string };\n\nexport function setup(root: HTMLElement) {\n  root.querySelector<HTMLElement & { items: Step[] }>(\"#styled\")!.items = [\n    { value: \"draft\", label: \"Draft\" },\n    { value: \"review\", label: \"Review\" },\n    { value: \"publish\", label: \"Publish\" },\n  ];\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Personnalisation",
+      "description": "Des variables CSS règlent la couleur d'accent, la taille de l'indicateur et l'espacement ; ::part(label) style les libellés."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.19.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Steps",
+      "description": "Affiche les étapes d’un processus et permet de passer de l’une à l’autre.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Review est sélectionné au départ. Draft permet de revenir en arrière ; Publish est désactivé."
+        },
+        "read-only": {
+          "title": "Progression en lecture seule",
+          "description": "Sans onChange, les étapes sont un indicateur de progression en lecture seule : une liste ordonnée simple (sans boutons) dont l’élément courant porte aria-current=\"step\"."
+        },
+        "styling": {
+          "title": "Style",
+          "description": "Les étapes terminées affichent une coche sur un disque plein, l'étape courante un halo doux, et les lignes de liaison se colorent au fil des étapes. --steps-accent-color les recolore, --steps-connector-min-width / --steps-connector-color règlent les lignes."
+        }
+      },
+      "api": {
+        "StepsProps": {
+          "items": "Étapes, dans l’ordre",
+          "value": "Valeur de l’étape courante (contrôlée ; avec onChange)",
+          "defaultValue": "Valeur de l’étape courante initiale (non contrôlée)",
+          "onChange": "Appelé avec la valeur de l’étape choisie. Signale seulement la navigation : validation et transitions appartiennent à l’appelant",
+          "readOnly": "Affiche les étapes comme un indicateur de progression en lecture seule : des éléments de liste sans boutons, l’élément courant marqué aria-current=\"step\"",
+          "aria-label": "Libellé accessible de la liste",
+          "className": "Classe CSS supplémentaire",
+          "ref": "Ref vers l’élément racine <ol>"
+        },
+        "StepsItem": {
+          "value": "Valeur unique de l’étape, comparée à la valeur de Steps",
+          "label": "Libellé visible de l’étape",
+          "disabled": "Empêche d’aller à cette étape (par ex. un état final pas encore atteint)"
+        }
+      },
+      "cssVars": {
+        "--steps-gap": "Espace entre les étapes (lignes et colonnes)",
+        "--steps-font-size": "Taille de police des libellés",
+        "--steps-indicator-size": "Diamètre de l'indicateur numéroté",
+        "--steps-accent-color": "Couleur des indicateurs courant / terminés (par défaut --primary-color)",
+        "--steps-current-background": "Fond de l'indicateur de l'étape courante",
+        "--steps-connector-color": "Couleur de la ligne reliant les étapes à venir (par défaut --border-color)",
+        "--steps-connector-complete-color": "Couleur de la ligne après une étape terminée (par défaut la couleur d'accent)",
+        "--steps-connector-min-width": "Longueur minimale de la ligne reliant deux étapes"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Progression en lecture seule",
+            "description": "Les étapes viennent de la propriété items ; les précédentes sont terminées et la courante porte aria-current=\"step\"."
+          },
+          "navigable": {
+            "title": "Assistant navigable",
+            "description": "navigable transforme chaque étape en bouton. minerva-change est annulable : l'appelant valide la transition (acceptez les conditions pour quitter la première étape)."
+          },
+          "styling": {
+            "title": "Personnalisation",
+            "description": "Des variables CSS règlent la couleur d'accent, la taille de l'indicateur et l'espacement ; ::part(label) style les libellés."
+          }
+        },
+        "minerva-steps": {
+          "props": {
+            "navigable": "Affiche chaque étape comme un bouton de navigation (par défaut : lecture seule)."
+          },
+          "events": {
+            "minerva-change": "L'utilisateur est allé à une étape (detail : { value }) ; annulable : preventDefault() conserve l'étape courante."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Review est sélectionné au départ. Draft permet de revenir en arrière ; Publish est désactivé."
+          },
+          "vertical": {
+            "title": "Disposition verticale",
+            "description": "Disposition verticale avec Steps ; l’aperçu suit le thème et la palette du site."
+          }
+        }
+      }
+    }
+  }
+}

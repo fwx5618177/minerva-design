@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.19.3",
+  "locale": "ja",
+  "renderer": "angular",
+  "page": "design-presets",
+  "title": "デザインプリセット",
+  "description": "いくつかのプロパティだけで、アプリ全体（またはその一部）の見た目を切り替えられます。プリセット（minerva、editorial、compact、touch）か、個別のデザイン軸（密度・角丸・影・文字サイズ）を指定します。SSR とネストしたスコープに対応しています。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.19.3",
+    "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
+    "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
+    "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  },
+  "content": {
+    "axes": {
+      "title": "デザイン軸",
+      "attribute": "属性",
+      "text": "デザイン軸はカラーモード（theme）やパレットとは独立しています。各軸は data 属性を通じてデザイントークンのブロックを選択し、コンポーネントはそのトークン（コントロールの高さ、余白、角丸、影、文字サイズ）を参照するため、ライブラリ全体が追従します。プリセットは 4 つの軸と既定のパレットを組み合わせた名前付きの設定で、明示した軸やパレットはプリセットより優先されます。",
+      "preset": "minerva：Minerva の既定の見た目。editorial：控えめで読みやすさ重視（editorial パレット、ゆったりした密度、小さな角丸、控えめな影、大きめの文字）。compact：情報量の多い画面向け（詰めた密度、小さな角丸、小さめの文字）。touch：一般向けモバイルアプリ（ゆったりした密度と最小 44px のタッチターゲット、大きな角丸）。",
+      "density": "コントロールの高さと左右の余白（--control-height-*、--control-padding-x-*）、およびメニュー項目・選択肢・表のセルなど行の余白（--row-padding-y / --row-padding-x）、およびタッチターゲットの最小サイズ（--touch-target-min：compact は 24px、standard は 32px、comfortable は 44px）。",
+      "radius": "角丸のスケール：--radius-sm、--radius-md、--radius-lg、--radius-xl、--radius-2xl。",
+      "shadow": "エレベーションの影 --shadow-sm から --shadow-xl。standard はテーマまたはパレットの影を維持します。",
+      "fontScale": "文字サイズのスケール：--font-size-* と基本／ゆったりした行の高さ。large は読み物向けです。"
+    },
+    "root": {
+      "title": "アプリ全体",
+      "text": "ルートの ConfigProvider にプロパティを設定します。標準以外の軸を data 属性として <html> に書き込み（プリセットのパレットは data-palette として）、アンマウント時に <html> を元に戻します。useConfig().design は解決済みの軸を返します。"
+    },
+    "ssr": {
+      "title": "サーバーレンダリング",
+      "text": "ルート provider はハイドレーション後に属性を適用します。最初の描画から正しい見た目にするには、サーバーセーフなエントリ minerva-design/theme-utils の designAttributes() で属性をサーバー HTML に出力するか、同じデザインを createThemeInitScript({ design }) に渡します（プリセットのパレットも既定のパレットとして使われます）。"
+    },
+    "nested": {
+      "title": "ネストしたスコープ",
+      "text": "ネストした ConfigProvider は親のデザインを継承し、上書きをそのサブツリーにだけ適用します。display: contents のラッパーとスコープのポータルコンテナがすべてのデザイン属性を持つため、サブツリーから表示されるモーダル、ポップオーバー、トーストも同じ見た目になります。ネストしたプリセットは、指定していない軸をすべてリセットします。"
+    },
+    "css": {
+      "title": "独自の CSS でトークンを使う",
+      "text": "デザイン軸はデザイントークンを変えるだけなので、独自のスタイルでも同じ変数を使えばコンポーネントと一貫性を保てます。コンポーネント単位の調整は各コンポーネントの CSS 変数で行えます（各コンポーネントページの「CSS 変数」セクションを参照）。"
+    }
+  },
+  "components": [],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "import { ConfigProvider } from \"minerva-design\";\nimport \"minerva-design/style.css\";\n\nexport default function App() {\n  // The whole app gets the editorial look: editorial palette, comfortable\n  // density, small radius, subtle shadows and a reading-oriented type scale.\n  return (\n    <ConfigProvider preset=\"editorial\" density=\"standard\">\n      {/* your app */}\n    </ConfigProvider>\n  );\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "// app/layout.tsx (React Server Component, e.g. Next.js App Router)\nimport {\n  createThemeInitScript,\n  designAttributes,\n} from \"minerva-design/theme-utils\";\nimport { Providers } from \"./providers\"; // \"use client\": <ConfigProvider preset=\"editorial\">\n\nconst design = { preset: \"editorial\" } as const;\nconst themeScript = createThemeInitScript({ design });\n\nexport default function RootLayout({ children }: { children: React.ReactNode }) {\n  return (\n    // data-density / data-radius / data-shadow / data-font-scale in the HTML:\n    // the first paint already has the right look\n    <html lang=\"en\" suppressHydrationWarning {...designAttributes(design)}>\n      <head>\n        <script dangerouslySetInnerHTML={{ __html: themeScript }} />\n      </head>\n      <body>\n        <Providers>{children}</Providers>\n      </body>\n    </html>\n  );\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "<ConfigProvider preset=\"compact\">\n  {/* dense admin screens */}\n  <ConfigProvider preset=\"editorial\">\n    {/* an article preview: editorial look, portals (Modal, Popover...) included */}\n  </ConfigProvider>\n  <ConfigProvider radius=\"none\">\n    {/* inherits compact, only the radius changes */}\n  </ConfigProvider>\n</ConfigProvider>",
+      "language": "tsx"
+    },
+    {
+      "source": "/* The axes only set design tokens, so your own CSS can use them too */\n.panel {\n  border-radius: var(--radius-lg);\n  box-shadow: var(--shadow-md);\n  padding: var(--row-padding-y) var(--row-padding-x);\n  font-size: var(--font-size-md);\n}\n\n/* ...or react to the active design */\n[data-density=\"compact\"] .panel {\n  gap: var(--space-1);\n}",
+      "language": "css"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.19.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "デザインプリセット",
+      "description": "いくつかのプロパティだけで、アプリ全体（またはその一部）の見た目を切り替えられます。プリセット（minerva、editorial、compact、touch）か、個別のデザイン軸（密度・角丸・影・文字サイズ）を指定します。SSR とネストしたスコープに対応しています。",
+      "axes": {
+        "title": "デザイン軸",
+        "attribute": "属性",
+        "text": "デザイン軸はカラーモード（theme）やパレットとは独立しています。各軸は data 属性を通じてデザイントークンのブロックを選択し、コンポーネントはそのトークン（コントロールの高さ、余白、角丸、影、文字サイズ）を参照するため、ライブラリ全体が追従します。プリセットは 4 つの軸と既定のパレットを組み合わせた名前付きの設定で、明示した軸やパレットはプリセットより優先されます。",
+        "preset": "minerva：Minerva の既定の見た目。editorial：控えめで読みやすさ重視（editorial パレット、ゆったりした密度、小さな角丸、控えめな影、大きめの文字）。compact：情報量の多い画面向け（詰めた密度、小さな角丸、小さめの文字）。touch：一般向けモバイルアプリ（ゆったりした密度と最小 44px のタッチターゲット、大きな角丸）。",
+        "density": "コントロールの高さと左右の余白（--control-height-*、--control-padding-x-*）、およびメニュー項目・選択肢・表のセルなど行の余白（--row-padding-y / --row-padding-x）、およびタッチターゲットの最小サイズ（--touch-target-min：compact は 24px、standard は 32px、comfortable は 44px）。",
+        "radius": "角丸のスケール：--radius-sm、--radius-md、--radius-lg、--radius-xl、--radius-2xl。",
+        "shadow": "エレベーションの影 --shadow-sm から --shadow-xl。standard はテーマまたはパレットの影を維持します。",
+        "fontScale": "文字サイズのスケール：--font-size-* と基本／ゆったりした行の高さ。large は読み物向けです。"
+      },
+      "root": {
+        "title": "アプリ全体",
+        "text": "ルートの ConfigProvider にプロパティを設定します。標準以外の軸を data 属性として <html> に書き込み（プリセットのパレットは data-palette として）、アンマウント時に <html> を元に戻します。useConfig().design は解決済みの軸を返します。"
+      },
+      "ssr": {
+        "title": "サーバーレンダリング",
+        "text": "ルート provider はハイドレーション後に属性を適用します。最初の描画から正しい見た目にするには、サーバーセーフなエントリ minerva-design/theme-utils の designAttributes() で属性をサーバー HTML に出力するか、同じデザインを createThemeInitScript({ design }) に渡します（プリセットのパレットも既定のパレットとして使われます）。"
+      },
+      "nested": {
+        "title": "ネストしたスコープ",
+        "text": "ネストした ConfigProvider は親のデザインを継承し、上書きをそのサブツリーにだけ適用します。display: contents のラッパーとスコープのポータルコンテナがすべてのデザイン属性を持つため、サブツリーから表示されるモーダル、ポップオーバー、トーストも同じ見た目になります。ネストしたプリセットは、指定していない軸をすべてリセットします。"
+      },
+      "css": {
+        "title": "独自の CSS でトークンを使う",
+        "text": "デザイン軸はデザイントークンを変えるだけなので、独自のスタイルでも同じ変数を使えばコンポーネントと一貫性を保てます。コンポーネント単位の調整は各コンポーネントの CSS 変数で行えます（各コンポーネントページの「CSS 変数」セクションを参照）。"
+      },
+      "demos": {
+        "presets": {
+          "title": "プリセット",
+          "description": "同じ画面を各プリセットで表示します。ネストした ConfigProvider がプリセットをデモ内に限定します。ルート provider に指定するとドキュメント全体に適用されます。"
+        },
+        "axes": {
+          "title": "個別の軸",
+          "description": "各軸は個別に設定でき、プリセットの値を上書きします。"
+        }
+      },
+      "api": {
+        "DesignOptions": {
+          "preset": "デザイン軸と既定のパレットを組み合わせた名前付きの設定。",
+          "density": "コントロールと行の余白の密度。",
+          "radius": "角丸のスケール。",
+          "shadow": "影のスケール。",
+          "fontScale": "文字サイズのスケール。"
+        }
+      }
+    }
+  }
+}

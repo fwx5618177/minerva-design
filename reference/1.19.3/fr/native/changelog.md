@@ -1,0 +1,53 @@
+# Journal des modifications
+
+Les changements de chaque version de minerva-design, du plus récent au plus ancien, y compris ceux fusionnés pour la prochaine version.
+
+Package: minerva-design@1.19.3
+
+Renderer: native
+
+Locale: fr
+
+## Provenance
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "packageVersion": "1.19.3",
+  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
+  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
+  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+}
+```
+
+Type references resolve through the [type graph](/minerva-design/reference/1.19.3/types.json) or getType() from minerva-design/contracts.
+
+## Documentation
+
+Les notes de version sont générées à partir des changesets ajoutés à chaque pull request et sont rédigées en anglais.
+
+### Prochaine version
+
+Changements fusionnés depuis la dernière version (changesets en attente). La prochaine publication les livrera en version {{version}}.
+
+Prochaine
+
+### Versions publiées
+
+Dernière
+
+npm
+
+Changements majeurs
+
+Changements mineurs
+
+Correctifs
+
+Commit {{hash}}
+
+minerva-design {{version}} sur npm
+
+## Installation and initialization
+
+See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.

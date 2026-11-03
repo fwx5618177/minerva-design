@@ -1,0 +1,652 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.19.3",
+  "locale": "en",
+  "renderer": "react",
+  "page": "toast",
+  "title": "Toast",
+  "description": "Temporary notifications with a title, a description and a semantic color, shown with toast() from anywhere (no React context needed) and rendered by a ToastProvider inside your app tree, so they inherit your app's context (theme, locale). Loading toasts, promise tracking, in-place updates, actions and a maximum count are built in. Server rendering is safe.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.19.3",
+    "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
+    "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
+    "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  },
+  "content": {
+    "usage": {
+      "title": "When to use which: useToast() or toast()",
+      "hook": "Inside components, call useToast(): the toasts it shows follow the nearest ConfigProvider scope. Under a nested provider they are rendered into its portal host, with its theme, palette and tokens, and their built-in labels use its language. The owning ToastProvider still renders them, with its position, max and labels.",
+      "function": "Outside React (event buses, API clients, stores and other non-component modules), import toast() directly: no hook is available there, and its toasts use the scope of the ToastProvider, usually the root theme and language.",
+      "modal": "While a modal dialog is open (Modal, Drawer, ConfirmDialog, Command, a modal Popover or Menu), its hide-others treatment covers the toast viewport like the rest of the page: the viewport gets aria-hidden=\"true\" and assistive technologies only see the dialog until it closes. <minerva-toast-region> behaves the same way (opt out on a region with data-minerva-keep-visible)."
+    }
+  },
+  "components": [
+    {
+      "name": "ToastProvider",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "ToastProvider"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "position",
+            "source": "packages/react/src/components/Toast/types.ts",
+            "kind": "enum",
+            "values": [
+              "bottom-center",
+              "bottom-left",
+              "bottom-right",
+              "top-center",
+              "top-left",
+              "top-right"
+            ],
+            "typeText": "ToastPosition | undefined",
+            "typeRef": "type:9e0fc0c4d2ae3c0412dc",
+            "default": "top-right",
+            "required": false,
+            "description": "Where the toasts are stacked"
+          },
+          {
+            "name": "max",
+            "source": "packages/react/src/components/Toast/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "Maximum number of toasts shown at once; when exceeded the oldest close first"
+          },
+          {
+            "name": "pauseOnHover",
+            "source": "packages/react/src/components/Toast/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Pauses the auto-close timer while a toast is hovered or focused"
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/react/src/components/Toast/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the toast region (used as is; the default one includes the hotkey)"
+          },
+          {
+            "name": "closeLabel",
+            "source": "packages/react/src/components/Toast/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the close buttons"
+          },
+          {
+            "name": "hotkey",
+            "source": "packages/react/src/components/Toast/types.ts",
+            "kind": "array",
+            "typeText": "string[] | undefined",
+            "typeRef": "type:12e6366870d23ba44018",
+            "required": false,
+            "description": "Keys pressed together to move focus to the toast region (the first one holding toasts): key codes (`\"F8\"`, `\"KeyT\"`), keys or modifiers (`\"altKey\"`, `\"ctrlKey\"`, `\"metaKey\"`, `\"shiftKey\"`). Shown in the default region label, e.g. \"Notifications (F8)\". An empty array disables it"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "ToastOptions": {
+      "source": "react/src/components/Toast/types.ts",
+      "description": "Options of a toast",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "id",
+          "type": "string | number",
+          "required": false,
+          "description": "Identifier of the toast; generated when omitted. Showing a toast with the id of a visible one replaces it (and restarts its timer) instead of stacking a duplicate"
+        },
+        {
+          "name": "color",
+          "type": "Extract<ColorScheme, \"info\" | \"success\" | \"warning\" | \"danger\">",
+          "required": false,
+          "default": "\"info\"",
+          "description": "Semantic color of the toast; sets its accent, icon and ARIA role (\"danger\" is announced as an alert, the others as a status)"
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows a spinner instead of the icon and keeps the toast open (duration defaults to 0) until it is updated or dismissed; announced as a status"
+        },
+        {
+          "name": "title",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Main text"
+        },
+        {
+          "name": "description",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Secondary text under the title"
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "required": false,
+          "default": "4000",
+          "description": "Time in milliseconds before the toast closes automatically; 0 keeps it open. Loading toasts default to 0"
+        },
+        {
+          "name": "icon",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Replaces the color icon (or the loading spinner); null hides it"
+        },
+        {
+          "name": "closable",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Shows the close button"
+        },
+        {
+          "name": "action",
+          "type": "ToastAction",
+          "required": false,
+          "description": "Action button rendered in the toast (e.g. \"Undo\")"
+        },
+        {
+          "name": "onClose",
+          "type": "(id: string | number) => void",
+          "required": false,
+          "description": "Called once with the toast id when it closes, whatever the reason (timer, close button, action, dismiss, overflow of ToastProvider max)"
+        }
+      ]
+    },
+    "ToastAction": {
+      "source": "react/src/components/Toast/types.ts",
+      "description": "Button rendered inside a toast; activating it also closes the toast",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "required": true,
+          "description": "Visible text of the button"
+        },
+        {
+          "name": "onClick",
+          "type": "() => void",
+          "required": true,
+          "description": "Called when the button is activated, before the toast closes"
+        }
+      ]
+    },
+    "ToastProviderProps": {
+      "source": "react/src/components/Toast/types.ts",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "position",
+          "type": "ToastPosition",
+          "required": false,
+          "default": "\"top-right\"",
+          "description": "Where the toasts are stacked"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Application content; the toast viewport is rendered after it"
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "required": false,
+          "default": "Infinity",
+          "description": "Maximum number of toasts shown at once; when exceeded the oldest close first"
+        },
+        {
+          "name": "pauseOnHover",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Pauses the auto-close timer while a toast is hovered or focused"
+        },
+        {
+          "name": "aria-label",
+          "type": "string",
+          "required": false,
+          "default": "\"Notifications (F8)\" (localized)",
+          "description": "Accessible label of the toast region (used as is; the default one includes the hotkey)"
+        },
+        {
+          "name": "closeLabel",
+          "type": "string",
+          "required": false,
+          "default": "\"Close\" (localized)",
+          "description": "Accessible label of the close buttons"
+        },
+        {
+          "name": "hotkey",
+          "type": "string[]",
+          "required": false,
+          "default": "[\"F8\"]",
+          "description": "Keys pressed together to move focus to the toast region (the first one holding toasts): key codes (`\"F8\"`, `\"KeyT\"`), keys or modifiers (`\"altKey\"`, `\"ctrlKey\"`, `\"metaKey\"`, `\"shiftKey\"`). Shown in the default region label, e.g. \"Notifications (F8)\". An empty array disables it"
+        }
+      ]
+    },
+    "ToastApi": {
+      "source": "react/src/components/Toast/types.ts",
+      "description": "The `toast` function, and the API returned by `useToast()` (bound to the caller's ConfigProvider scope)",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "info",
+          "type": "(title: ReactNode, options?: ToastOptions) => string | number",
+          "required": true,
+          "description": "Shows an info toast with the given title"
+        },
+        {
+          "name": "success",
+          "type": "(title: ReactNode, options?: ToastOptions) => string | number",
+          "required": true,
+          "description": "Shows a success toast with the given title"
+        },
+        {
+          "name": "warning",
+          "type": "(title: ReactNode, options?: ToastOptions) => string | number",
+          "required": true,
+          "description": "Shows a warning toast with the given title"
+        },
+        {
+          "name": "danger",
+          "type": "(title: ReactNode, options?: ToastOptions) => string | number",
+          "required": true,
+          "description": "Shows a danger toast with the given title"
+        },
+        {
+          "name": "loading",
+          "type": "(title: ReactNode, options?: ToastOptions) => string | number",
+          "required": true,
+          "description": "Shows a loading toast (spinner, no auto-close) with the given title"
+        },
+        {
+          "name": "promise",
+          "type": "<T>(promise: Promise<T>, messages: ToastPromiseMessages<T>, options?: Omit<ToastOptions, \"color\" | \"loading\" | \"title\">) => Promise<T>",
+          "required": true,
+          "description": "Shows a loading toast while the promise is pending, then turns the same toast into a success or danger toast. Returns the given promise"
+        },
+        {
+          "name": "update",
+          "type": "(id: string | number, options: Omit<ToastOptions, \"id\">) => void",
+          "required": true,
+          "description": "Changes an open toast in place (merging the options) and restarts its timer; `loading: false` turns a loading toast into a regular one (with the default duration unless one is given). Unknown ids are ignored"
+        },
+        {
+          "name": "dismiss",
+          "type": "(id?: string | number) => void",
+          "required": true,
+          "description": "Closes the toast with the given id, or every toast when omitted"
+        }
+      ]
+    },
+    "ToastPromiseMessages": {
+      "source": "react/src/components/Toast/types.ts",
+      "description": "Messages of `toast.promise`: a node, or a function of the settled value",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "loading",
+          "type": "ReactNode",
+          "required": true,
+          "description": "Title while the promise is pending"
+        },
+        {
+          "name": "success",
+          "type": "ReactNode | ((value: T) => ReactNode)",
+          "required": true,
+          "description": "Title once the promise resolves"
+        },
+        {
+          "name": "error",
+          "type": "ReactNode | ((error: unknown) => ReactNode)",
+          "required": true,
+          "description": "Title once the promise rejects"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Toast": {
+      "kind": "cssVars",
+      "source": "react/src/components/Toast",
+      "vars": [
+        {
+          "name": "--toast-width",
+          "description": "Width of the toast stack (capped by the viewport)"
+        },
+        {
+          "name": "--toast-gap",
+          "description": "Space between stacked toasts"
+        },
+        {
+          "name": "--toast-offset",
+          "description": "Distance between the stack and the viewport edges"
+        },
+        {
+          "name": "--toast-padding",
+          "description": "Padding of a toast"
+        },
+        {
+          "name": "--toast-radius",
+          "description": "Corner radius of a toast (defaults to --radius-md)"
+        },
+        {
+          "name": "--toast-shadow",
+          "description": "Shadow of a toast (defaults to --shadow-lg)"
+        },
+        {
+          "name": "--toast-background",
+          "description": "Base background of a toast (under the color tint)"
+        },
+        {
+          "name": "--toast-z-index",
+          "description": "Stacking order of the stack (defaults to --z-toast)"
+        },
+        {
+          "name": "--toast-icon-background",
+          "description": "Background of the round chip behind the status icon (defaults to the color's accent at 14%)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "action",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/toast/demos/action.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/toast/demos/action.tsx": "import { Button, HStack, toast } from \"minerva-design\";\nimport { FiBell } from \"react-icons/fi\";\n\nexport default function ActionDemo() {\n  return (\n    <HStack gap={2} wrap>\n      <Button\n        color=\"neutral\"\n        variant=\"outline\"\n        onClick={() =>\n          toast.info(\"Conversation archived\", {\n            duration: 8000,\n            action: {\n              label: \"Undo\",\n              onClick: () => toast.success(\"Conversation restored\"),\n            },\n          })\n        }\n      >\n        With action\n      </Button>\n      <Button\n        color=\"neutral\"\n        variant=\"outline\"\n        onClick={() =>\n          toast.info(\"Reminder set for 9:00\", {\n            icon: <FiBell />,\n            closable: false,\n          })\n        }\n      >\n        Custom icon, no close button\n      </Button>\n      <Button\n        color=\"neutral\"\n        variant=\"outline\"\n        onClick={() =>\n          toast.success(\"Exported\", {\n            onClose: () => toast.info(\"Export toast closed\"),\n          })\n        }\n      >\n        onClose\n      </Button>\n    </HStack>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Action, icon and onClose",
+      "description": "action adds a button (e.g. Undo) that also closes the toast; icon replaces the color icon; closable: false hides the close button; onClose runs once when the toast closes."
+    },
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/toast/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/toast/demos/basic.tsx": "import { useState } from \"react\";\nimport {\n  Button,\n  HStack,\n  ToastProvider,\n  VStack,\n  toast,\n  type ToastPosition,\n} from \"minerva-design\";\n\nconst positions: ToastPosition[] = [\n  \"top-left\",\n  \"top-center\",\n  \"top-right\",\n  \"bottom-left\",\n  \"bottom-center\",\n  \"bottom-right\",\n];\n\nexport default function BasicDemo() {\n  const [position, setPosition] = useState<ToastPosition>(\"top-right\");\n  return (\n    // Mount one ToastProvider near the root of the app; max={3} closes the\n    // oldest toast when a fourth one appears\n    <ToastProvider position={position} max={3}>\n      <VStack gap={4} align=\"start\">\n        <HStack gap={2} wrap>\n          <Button color=\"success\" onClick={() => toast.success(\"Saved\")}>\n            Success\n          </Button>\n          <Button color=\"danger\" onClick={() => toast.danger(\"Request failed\")}>\n            Danger\n          </Button>\n          <Button\n            color=\"warning\"\n            onClick={() => toast.warning(\"Unsaved changes\")}\n          >\n            Warning\n          </Button>\n          <Button\n            color=\"neutral\"\n            variant=\"outline\"\n            onClick={() => toast.info(\"New version\")}\n          >\n            Info\n          </Button>\n        </HStack>\n        <HStack attached wrap aria-label=\"Position\">\n          {positions.map((name) => (\n            <Button\n              key={name}\n              size=\"small\"\n              color={name === position ? \"primary\" : \"neutral\"}\n              variant={name === position ? \"solid\" : \"outline\"}\n              aria-pressed={name === position}\n              onClick={() => setPosition(name)}\n            >\n              {name}\n            </Button>\n          ))}\n        </HStack>\n      </VStack>\n    </ToastProvider>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "Basic usage",
+      "description": "Success shows Saved, Danger shows Request failed, Warning shows Unsaved changes and Info shows New version. Keep at most three notifications."
+    },
+    {
+      "id": "colors",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/toast/demos/colors.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/toast/demos/colors.tsx": "import { Button, HStack, toast } from \"minerva-design\";\n\nconst colors = [\"info\", \"success\", \"warning\", \"danger\"] as const;\n\nexport default function ColorsDemo() {\n  return (\n    <HStack gap={2} wrap>\n      {colors.map((color) => (\n        <Button\n          key={color}\n          color=\"neutral\"\n          variant=\"outline\"\n          onClick={() =>\n            toast({\n              color,\n              title: `A ${color} toast`,\n              description: \"color sets the accent, the icon and the role.\",\n            })\n          }\n        >\n          {color}\n        </Button>\n      ))}\n    </HStack>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Colors",
+      "description": "color picks the semantic color: info (default), success, warning or danger. It sets the accent, the icon and the role: danger is announced as an alert, the others as a status."
+    },
+    {
+      "id": "dedupe",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/toast/demos/dedupe.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/toast/demos/dedupe.tsx": "import { Button, useToast } from \"minerva-design\";\n\nexport default function DedupeDemo() {\n  const toast = useToast();\n  return (\n    <Button\n      color=\"neutral\"\n      variant=\"outline\"\n      onClick={() =>\n        // Same id: replaces the visible toast and restarts its timer\n        toast.danger(`Sync failed at ${new Date().toLocaleTimeString()}`, {\n          id: \"sync-error\",\n        })\n      }\n    >\n      Fail again\n    </Button>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Same id replaces",
+      "description": "Showing a toast with the id of a visible one replaces it and restarts its timer, instead of stacking duplicates (handy for polling errors)."
+    },
+    {
+      "id": "keyboard",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/toast/demos/keyboard.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/toast/demos/keyboard.tsx": "import { Button, HStack, toast } from \"minerva-design\";\n\n// The ToastProvider of the first demo uses the default hotkey (F8); set\n// `hotkey` (e.g. [\"altKey\", \"KeyT\"]) to change it. Show a\n// few toasts, press F8 to jump to them, Tab between them, then Escape (or a\n// close button): focus moves to the next toast, then back here.\nexport default function KeyboardDemo() {\n  return (\n    <HStack gap={2} wrap>\n      <Button\n        color=\"neutral\"\n        variant=\"outline\"\n        onClick={() => {\n          toast.info(\"Build started\", { duration: 0 });\n          toast.success(\"Tests passed\", { duration: 0 });\n          toast.warning(\"Coverage dropped by 2%\", {\n            duration: 0,\n            action: { label: \"Details\", onClick: () => {} },\n          });\n        }}\n      >\n        Show three toasts, then press F8\n      </Button>\n      <Button color=\"neutral\" variant=\"ghost\" onClick={() => toast.dismiss()}>\n        Dismiss all\n      </Button>\n    </HStack>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Keyboard",
+      "description": "F8 (the hotkey prop, also announced in the region label \"Notifications (F8)\") moves focus to the toasts. Escape dismisses the focused toast; after closing one, focus moves to the next toast's close button, then back to where it was before entering the toasts."
+    },
+    {
+      "id": "loading",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/toast/demos/loading.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/toast/demos/loading.tsx": "import { Button, HStack, toast } from \"minerva-design\";\n\nexport default function LoadingDemo() {\n  const save = () => {\n    // Loading toasts stay open until they are updated or dismissed\n    const id = toast.loading(\"Saving…\");\n    setTimeout(() => {\n      // loading: false swaps the spinner for the icon and starts the timer\n      toast.update(id, { color: \"success\", loading: false, title: \"Saved!\" });\n    }, 1500);\n  };\n\n  const remove = () => {\n    // Any color can be loading; it stays a polite status while pending\n    const id = toast({ color: \"danger\", loading: true, title: \"Deleting…\" });\n    setTimeout(() => {\n      toast.update(id, { loading: false, title: \"Project deleted\" });\n    }, 1500);\n  };\n\n  const upload = () =>\n    toast\n      .promise(\n        new Promise<number>((resolve, reject) =>\n          setTimeout(\n            () => (Math.random() > 0.3 ? resolve(3) : reject(new Error())),\n            1500,\n          ),\n        ),\n        {\n          loading: \"Uploading files…\",\n          success: (count) => `${count} files uploaded`,\n          error: \"Upload failed, try again\",\n        },\n      )\n      .catch(() => undefined);\n\n  return (\n    <HStack gap={2} wrap>\n      <Button onClick={save}>Save (update)</Button>\n      <Button color=\"neutral\" variant=\"outline\" onClick={upload}>\n        Upload (promise)\n      </Button>\n      <Button color=\"danger\" variant=\"outline\" onClick={remove}>\n        Delete (loading option)\n      </Button>\n    </HStack>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Loading, update and promise",
+      "description": "toast.loading (or the loading: true option, with any color) shows a spinner instead of the icon and stays open; toast.update(id, { loading: false, ... }) turns it into a result in place. toast.promise(promise, { loading, success, error }) does both for a promise."
+    },
+    {
+      "id": "options",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/toast/demos/options.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/toast/demos/options.tsx": "import { Button, toast } from \"minerva-design\";\n\nexport default function OptionsDemo() {\n  return (\n    <div style={{ display: \"flex\", gap: 8, flexWrap: \"wrap\" }}>\n      <Button\n        color=\"neutral\"\n        variant=\"outline\"\n        onClick={() =>\n          toast({\n            color: \"success\",\n            title: \"Book published\",\n            description: \"Readers can now find it in the catalog.\",\n            duration: 8000,\n          })\n        }\n      >\n        With description\n      </Button>\n      <Button\n        color=\"neutral\"\n        variant=\"outline\"\n        onClick={() => toast.warning(\"Stays until closed\", { duration: 0 })}\n      >\n        Persistent\n      </Button>\n      <Button color=\"neutral\" variant=\"outline\" onClick={() => toast.dismiss()}>\n        Dismiss all\n      </Button>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Options",
+      "description": "toast({ color, title, description, duration }) for full control; duration 0 keeps the toast until it is closed. toast.dismiss(id) closes one toast, toast.dismiss() all of them. Hovering or focusing a toast pauses its timer."
+    },
+    {
+      "id": "scoped",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/toast/demos/scoped.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/toast/demos/scoped.tsx": "import { Button, ConfigProvider, toast, useToast } from \"minerva-design\";\n\n// Code outside React (API client, event bus...): no hook available, so it\n// uses toast(), rendered with the root theme and language.\nconst notifySyncDone = () => toast.info(\"Synced (toast(): root scope)\");\n\nfunction Actions() {\n  // Inside a component: bound to the nearest ConfigProvider scope\n  const scopedToast = useToast();\n  return (\n    <div style={{ display: \"flex\", flexWrap: \"wrap\", gap: 8 }}>\n      <Button\n        onClick={() =>\n          scopedToast.success(\"Saved (useToast(): dark, tech, 中文)\")\n        }\n      >\n        useToast()\n      </Button>\n      <Button color=\"neutral\" variant=\"outline\" onClick={notifySyncDone}>\n        toast()\n      </Button>\n    </div>\n  );\n}\n\nexport default function ScopedDemo() {\n  return (\n    <ConfigProvider theme=\"dark\" palette=\"tech\" locale={{ language: \"zh\" }}>\n      <Actions />\n    </ConfigProvider>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Scoped: useToast() vs toast()",
+      "description": "Both buttons sit in a nested ConfigProvider (dark theme, tech palette, Chinese). useToast() renders its toast inside that scope (dark tokens, Chinese close label, its own viewport at the same position); toast() renders at the root, with the page theme and language."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "// Inside a component: follows the nearest ConfigProvider scope\nfunction SaveButton() {\n  const toast = useToast();\n  return <Button onClick={() => toast.success(\"Saved\")}>Save</Button>;\n}\n\n// Outside React (API client, event bus, store...): root scope\nimport { toast } from \"minerva-design\";\napiClient.onError((error) => toast.danger(error.message));",
+      "language": "tsx"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.19.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Toast",
+      "description": "Temporary notifications with a title, a description and a semantic color, shown with toast() from anywhere (no React context needed) and rendered by a ToastProvider inside your app tree, so they inherit your app's context (theme, locale). Loading toasts, promise tracking, in-place updates, actions and a maximum count are built in. Server rendering is safe.",
+      "usage": {
+        "title": "When to use which: useToast() or toast()",
+        "hook": "Inside components, call useToast(): the toasts it shows follow the nearest ConfigProvider scope. Under a nested provider they are rendered into its portal host, with its theme, palette and tokens, and their built-in labels use its language. The owning ToastProvider still renders them, with its position, max and labels.",
+        "function": "Outside React (event buses, API clients, stores and other non-component modules), import toast() directly: no hook is available there, and its toasts use the scope of the ToastProvider, usually the root theme and language.",
+        "modal": "While a modal dialog is open (Modal, Drawer, ConfirmDialog, Command, a modal Popover or Menu), its hide-others treatment covers the toast viewport like the rest of the page: the viewport gets aria-hidden=\"true\" and assistive technologies only see the dialog until it closes. <minerva-toast-region> behaves the same way (opt out on a region with data-minerva-keep-visible)."
+      },
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Success shows Saved, Danger shows Request failed, Warning shows Unsaved changes and Info shows New version. Keep at most three notifications."
+        },
+        "colors": {
+          "title": "Colors",
+          "description": "color picks the semantic color: info (default), success, warning or danger. It sets the accent, the icon and the role: danger is announced as an alert, the others as a status."
+        },
+        "options": {
+          "title": "Options",
+          "description": "toast({ color, title, description, duration }) for full control; duration 0 keeps the toast until it is closed. toast.dismiss(id) closes one toast, toast.dismiss() all of them. Hovering or focusing a toast pauses its timer."
+        },
+        "loading": {
+          "title": "Loading, update and promise",
+          "description": "toast.loading (or the loading: true option, with any color) shows a spinner instead of the icon and stays open; toast.update(id, { loading: false, ... }) turns it into a result in place. toast.promise(promise, { loading, success, error }) does both for a promise."
+        },
+        "action": {
+          "title": "Action, icon and onClose",
+          "description": "action adds a button (e.g. Undo) that also closes the toast; icon replaces the color icon; closable: false hides the close button; onClose runs once when the toast closes."
+        },
+        "dedupe": {
+          "title": "Same id replaces",
+          "description": "Showing a toast with the id of a visible one replaces it and restarts its timer, instead of stacking duplicates (handy for polling errors)."
+        },
+        "scoped": {
+          "title": "Scoped: useToast() vs toast()",
+          "description": "Both buttons sit in a nested ConfigProvider (dark theme, tech palette, Chinese). useToast() renders its toast inside that scope (dark tokens, Chinese close label, its own viewport at the same position); toast() renders at the root, with the page theme and language."
+        },
+        "keyboard": {
+          "title": "Keyboard",
+          "description": "F8 (the hotkey prop, also announced in the region label \"Notifications (F8)\") moves focus to the toasts. Escape dismisses the focused toast; after closing one, focus moves to the next toast's close button, then back to where it was before entering the toasts."
+        }
+      },
+      "api": {
+        "ToastOptions": {
+          "id": "Identifier of the toast; generated when omitted. Showing a toast with the id of a visible one replaces it (and restarts its timer) instead of stacking a duplicate",
+          "color": "Semantic color of the toast; sets its accent, icon and ARIA role (danger is announced as an alert, the others as a status)",
+          "loading": "Shows a spinner instead of the icon and keeps the toast open (duration defaults to 0) until it is updated or dismissed; announced as a status",
+          "title": "Main text",
+          "description": "Secondary text under the title",
+          "duration": "Time in milliseconds before the toast closes automatically; 0 keeps it open. Loading toasts default to 0",
+          "icon": "Replaces the color icon (or the loading spinner); null hides it",
+          "closable": "Shows the close button",
+          "action": "Action button rendered in the toast (e.g. Undo)",
+          "onClose": "Called once with the toast id when it closes, whatever the reason"
+        },
+        "ToastAction": {
+          "label": "Visible text of the button",
+          "onClick": "Called when the button is activated, before the toast closes"
+        },
+        "ToastProviderProps": {
+          "position": "Where the toasts are stacked",
+          "children": "Application content; the toast viewport is rendered after it",
+          "max": "Maximum number of toasts shown at once; when exceeded the oldest close first",
+          "pauseOnHover": "Pauses the auto-close timer while a toast is hovered or focused",
+          "aria-label": "Accessible label of the toast region, used as is (the default one includes the hotkey)",
+          "closeLabel": "Accessible label of the close buttons",
+          "hotkey": "Keys pressed together to move focus to the toast region (the first one holding toasts): key codes (F8, KeyT), keys or modifiers (altKey, ctrlKey, metaKey, shiftKey). Shown in the default region label, e.g. \"Notifications (F8)\"; an empty array disables it"
+        },
+        "ToastApi": {
+          "info": "Shows an info toast with the given title",
+          "success": "Shows a success toast with the given title",
+          "warning": "Shows a warning toast with the given title",
+          "danger": "Shows a danger toast with the given title",
+          "loading": "Shows a loading toast (spinner, no auto-close) with the given title",
+          "promise": "Shows a loading toast while the promise is pending, then turns it into a success or danger toast; returns the given promise",
+          "update": "Changes an open toast in place (merging the options) and restarts its timer; loading: false turns a loading toast into a regular one (with the default duration unless one is given). Unknown ids are ignored",
+          "dismiss": "Closes the toast with the given id, or every toast when omitted"
+        },
+        "ToastPromiseMessages": {
+          "loading": "Title while the promise is pending",
+          "success": "Title once the promise resolves (a node, or a function of the value)",
+          "error": "Title once the promise rejects (a node, or a function of the error)"
+        }
+      },
+      "cssVars": {
+        "--toast-width": "Width of the toast stack (capped by the viewport)",
+        "--toast-gap": "Space between stacked toasts",
+        "--toast-offset": "Distance between the stack and the viewport edges",
+        "--toast-padding": "Padding of a toast",
+        "--toast-radius": "Corner radius of a toast (defaults to --radius-md)",
+        "--toast-shadow": "Shadow of a toast (defaults to --shadow-lg)",
+        "--toast-background": "Base background of a toast (under the color tint)",
+        "--toast-z-index": "Stacking order of the stack (defaults to --z-toast)",
+        "--toast-icon-background": "Background of the round chip behind the status icon (defaults to the color's accent at 14%)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "A <minerva-toast-region> renders the toasts; region.toast is the toast() API bound to it (info, success, warning, danger). position places the stack. As with React's ToastProvider, an open modal dialog hides the region from assistive technologies (aria-hidden) until it closes."
+          },
+          "options": {
+            "title": "Options and action",
+            "description": "A toast with a title, a description, a longer duration and an Undo action. max keeps the newest toasts only; minerva-close tells why each toast closed."
+          },
+          "loading": {
+            "title": "Loading and promises",
+            "description": "toast.promise() follows a promise in one toast; loading() then update() do the same by hand. Loading toasts stay open until updated; dismiss() closes every toast."
+          }
+        },
+        "minerva-toast-region": {
+          "props": {
+            "noPauseOnHover": "Keeps the countdown running while a toast is hovered or focused.",
+            "toast": "The toast API bound to this region: region.toast.success(\"Saved\") renders in this element (read-only)."
+          },
+          "events": {
+            "minerva-close": "A toast of this region started closing (detail: { id, reason }; reason: timeout, close-button, action, escape, dismiss or overflow).",
+            "minerva-after-close": "A toast of this region was removed after its exit animation (detail: { id })."
+          },
+          "methods": {
+            "focus": "Moves focus to the region (as the hotkey does)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Success shows Saved, Danger shows Request failed, Warning shows Unsaved changes and Info shows New version. Keep at most three notifications."
+          }
+        },
+        "limitations": "On Native, top-left/top-center/top-right map to a full-width top stack; bottom-left/bottom-center/bottom-right map to a bottom stack. Message actions and the maximum count match the web example; horizontal corner placement does not."
+      }
+    }
+  }
+}

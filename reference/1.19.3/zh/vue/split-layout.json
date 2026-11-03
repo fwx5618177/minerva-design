@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.19.3",
+  "locale": "zh",
+  "renderer": "vue",
+  "page": "split-layout",
+  "title": "SplitLayout 分栏布局",
+  "description": "主内容加可选侧栏，布局自身宽度达到断点后并排显示。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.19.3",
+    "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
+    "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
+    "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "SplitLayout",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "SplitLayout"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "aside",
+            "type": "string | number | null",
+            "required": false,
+            "description": "Secondary text rendered after the main slot (or the `aside` slot).\nWithout both, the aside column is omitted (single full-width column);\n`0` is valid content.",
+            "typeText": "string | number | null"
+          },
+          {
+            "name": "asideWidth",
+            "type": "number",
+            "default": "320",
+            "required": false,
+            "description": "Requested aside width in pixels in split mode (the track is\n`min(asideWidth, 50%)`); must be finite and positive, otherwise a RangeError\nis thrown",
+            "typeText": "number"
+          },
+          {
+            "name": "collapseBelow",
+            "type": "SplitLayoutCollapseBelow",
+            "default": "\"md\"",
+            "required": false,
+            "description": "Splits at container widths of at least 768px (`md`) or 1200px (`lg`) and\nstacks below",
+            "typeText": "SplitLayoutCollapseBelow"
+          },
+          {
+            "name": "gap",
+            "type": "string | number",
+            "default": "6",
+            "required": false,
+            "description": "Gap between the slots: numbers and numeric strings select spacing tokens,\nother strings are CSS values",
+            "typeText": "string | number"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "description": "Main content",
+            "typeText": "any"
+          },
+          {
+            "name": "aside",
+            "type": "any",
+            "description": "Secondary content (the `aside` prop)",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:SplitLayout": {
+      "kind": "cssVars",
+      "source": "react/src/components/SplitLayout",
+      "vars": [
+        {
+          "name": "--split-layout-align-items",
+          "description": "Vertical alignment of the main and aside columns (default: start)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/split-layout/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/split-layout/vue/basic.vue": "<script setup lang=\"ts\">\nimport { SplitLayout, Box } from \"minerva-design/vue\";\n</script>\n<template>\n  <SplitLayout :aside-width=\"220\"\n    ><template #aside><Box :p=\"4\" bg=\"muted\">Sidebar navigation</Box></template\n    ><Box :p=\"4\"\n      >Main content grows to fill the available space.</Box\n    ></SplitLayout\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "options",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/split-layout/vue/options.vue",
+      "files": {
+        "apps/docs/src/docs/pages/split-layout/vue/options.vue": "<script setup lang=\"ts\">\nimport { SplitLayout, Box } from \"minerva-design/vue\";\n</script>\n<template>\n  <SplitLayout :aside-width=\"280\" collapse-below=\"lg\" :gap=\"6\"\n    ><template #aside\n      ><Box :p=\"4\" border=\"1px solid var(--color-border)\"\n        >Collapses below the large breakpoint</Box\n      ></template\n    ><Box :p=\"4\" bg=\"muted\"\n      >Resize the viewport to stack these columns.</Box\n    ></SplitLayout\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "options",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.19.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "SplitLayout 分栏布局",
+      "description": "主内容加可选侧栏，布局自身宽度达到断点后并排显示。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "320px 侧栏在容器宽度 768px 时并排、以下时堆叠；主内容始终在 DOM 顺序中靠前。"
+        },
+        "options": {
+          "title": "宽度、断点与间距",
+          "description": "通过 asideWidth、collapseBelow=\"lg\"（1200px）和 gap 自定义分栏。"
+        }
+      },
+      "api": {
+        "SplitLayoutProps": {
+          "ref": "指向外层 div 的 ref",
+          "aside": "主区域之后的次要内容；null、undefined 和 false 时省略（0 为有效内容）",
+          "asideWidth": "分栏模式下侧栏宽度（像素，轨道为 min(asideWidth, 50%)）；必须为有限正数",
+          "collapseBelow": "容器宽度至少 768px（md）或 1200px（lg）时分栏，以下时堆叠",
+          "gap": "两栏间距（间距 token 或 CSS 值）"
+        }
+      },
+      "cssVars": {
+        "--split-layout-align-items": "主栏与侧栏的垂直对齐（默认 start）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本用法",
+            "description": "主内容放在默认插槽，次要内容放在 aside 插槽。布局宽度至少 768px 时侧栏并排显示在主内容旁，否则堆叠在其后。"
+          },
+          "options": {
+            "title": "宽度、断点与间距",
+            "description": "aside-width 设置侧栏宽度（最多 50%），collapse-below=\"lg\" 要到 1200px 才分栏，gap 使用间距令牌。拖动滑块调整容器宽度。"
+          }
+        },
+        "minerva-split-layout": {
+          "slots": {
+            "default": "主内容。",
+            "aside": "次要内容，阅读顺序位于主内容之后。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        }
+      }
+    }
+  }
+}

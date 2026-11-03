@@ -1,0 +1,737 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.19.3",
+  "locale": "fr",
+  "renderer": "react",
+  "page": "button",
+  "title": "Button",
+  "description": "Déclenche une action ou un événement, comme envoyer un formulaire ou ouvrir une boîte de dialogue.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.19.3",
+    "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
+    "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
+    "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Button",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "Button"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "type",
+            "source": "packages/react/src/components/Button/types.ts",
+            "kind": "enum",
+            "values": [
+              "button",
+              "reset",
+              "submit"
+            ],
+            "typeText": "\"button\" | \"submit\" | \"reset\" | undefined",
+            "typeRef": "type:212fa332b39b336d0842",
+            "default": "button",
+            "required": false,
+            "description": "Native button type. Defaults to \"button\" (unlike the HTML default \"submit\"), so a Button in a form never submits it by accident: use `type=\"submit\"` for submit buttons and `\"reset\"` for reset buttons"
+          },
+          {
+            "name": "color",
+            "source": "packages/react/src/components/Button/types.ts",
+            "kind": "enum",
+            "values": [
+              "danger",
+              "info",
+              "neutral",
+              "primary",
+              "success",
+              "warning"
+            ],
+            "typeText": "ColorScheme | undefined",
+            "typeRef": "type:67f905b25ade366da2d8",
+            "default": "primary",
+            "required": false,
+            "description": "Semantic color of the button"
+          },
+          {
+            "name": "variant",
+            "source": "packages/react/src/components/Button/types.ts",
+            "kind": "enum",
+            "values": [
+              "ghost",
+              "link",
+              "outline",
+              "solid"
+            ],
+            "typeText": "\"solid\" | \"outline\" | \"link\" | \"ghost\" | undefined",
+            "typeRef": "type:94370cdec6c327cad42c",
+            "default": "solid",
+            "required": false,
+            "description": "Visual style: `solid` (filled), `outline` (border only), `ghost` (transparent until hovered) or `link` (text link look)"
+          },
+          {
+            "name": "size",
+            "source": "packages/react/src/components/Button/types.ts",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small",
+              "xlarge",
+              "xsmall"
+            ],
+            "typeText": "\"xsmall\" | \"small\" | \"medium\" | \"large\" | \"xlarge\" | undefined",
+            "typeRef": "type:39b57548678a1a395d43",
+            "default": "medium",
+            "required": false,
+            "description": "Button size"
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/react/src/components/Button/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label, required when the button only contains an icon"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/react/src/components/Button/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables the button"
+          },
+          {
+            "name": "loading",
+            "source": "packages/react/src/components/Button/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows a spinner and blocks activation (aria-busy / aria-disabled). The button stays focusable so keyboard focus is not lost"
+          },
+          {
+            "name": "loadingText",
+            "source": "packages/react/src/components/Button/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Text shown instead of the content (and icons) while loading"
+          },
+          {
+            "name": "startIcon",
+            "source": "packages/react/src/components/Button/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Icon rendered before the content (hidden from assistive technologies by the caller)"
+          },
+          {
+            "name": "endIcon",
+            "source": "packages/react/src/components/Button/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Icon rendered after the content"
+          },
+          {
+            "name": "fullWidth",
+            "source": "packages/react/src/components/Button/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Stretches the button to the full width of its container"
+          },
+          {
+            "name": "active",
+            "source": "packages/react/src/components/Button/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Renders the button in its pressed/active state"
+          },
+          {
+            "name": "shape",
+            "source": "packages/react/src/components/Button/types.ts",
+            "kind": "enum",
+            "values": [
+              "circle",
+              "rounded",
+              "square"
+            ],
+            "typeText": "\"circle\" | \"square\" | \"rounded\" | undefined",
+            "typeRef": "type:76849e9a145c5140e0b1",
+            "required": false,
+            "description": "Preset shape of the button"
+          },
+          {
+            "name": "borderRadius",
+            "source": "packages/react/src/components/Button/types.ts",
+            "kind": "union",
+            "typeText": "number | \"circle\" | \"square\" | \"small\" | \"medium\" | \"large\" | \"none\" | undefined",
+            "typeRef": "type:f5b966cc4d173931d815",
+            "required": false,
+            "description": "Corner radius: a preset or a number of pixels. The theme radius (`--radius-md`) is used when omitted"
+          }
+        ],
+        "events": [
+          {
+            "name": "onClick",
+            "source": "packages/react/src/components/Button/types.ts",
+            "kind": "function",
+            "typeText": "((event: MouseEvent<HTMLButtonElement, MouseEvent>) => void) | undefined",
+            "typeRef": "type:16ad5c8e1c8f1524da71",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "MouseEvent<HTMLButtonElement, MouseEvent>",
+                "typeRef": "type:fecbcb60a5c2a879de00"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the button is clicked (not called while disabled)"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "ButtonProps": {
+      "source": "react/src/components/Button/types.ts",
+      "kind": "interface",
+      "extends": [
+        "Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"children\" | \"color\">"
+      ],
+      "props": [
+        {
+          "name": "type",
+          "type": "\"button\" | \"submit\" | \"reset\"",
+          "required": false,
+          "default": "\"button\"",
+          "description": "Native button type. Defaults to \"button\" (unlike the HTML default \"submit\"), so a Button in a form never submits it by accident: use `type=\"submit\"` for submit buttons and `\"reset\"` for reset buttons"
+        },
+        {
+          "name": "onClick",
+          "type": "(event: React.MouseEvent<HTMLButtonElement>) => void",
+          "required": false,
+          "description": "Called when the button is clicked (not called while disabled)"
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": "Button content"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "description": "Additional class name"
+        },
+        {
+          "name": "color",
+          "type": "ColorScheme",
+          "required": false,
+          "default": "\"primary\"",
+          "description": "Semantic color of the button"
+        },
+        {
+          "name": "variant",
+          "type": "\"solid\" | \"outline\" | \"ghost\" | \"link\"",
+          "required": false,
+          "default": "\"solid\"",
+          "description": "Visual style: `solid` (filled), `outline` (border only), `ghost` (transparent until hovered) or `link` (text link look)"
+        },
+        {
+          "name": "size",
+          "type": "\"xsmall\" | \"small\" | \"medium\" | \"large\" | \"xlarge\"",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Button size"
+        },
+        {
+          "name": "aria-label",
+          "type": "string",
+          "required": false,
+          "description": "Accessible label, required when the button only contains an icon"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Disables the button"
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows a spinner and blocks activation (aria-busy / aria-disabled). The button stays focusable so keyboard focus is not lost"
+        },
+        {
+          "name": "loadingText",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": "Text shown instead of the content (and icons) while loading"
+        },
+        {
+          "name": "startIcon",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": "Icon rendered before the content (hidden from assistive technologies by the caller)"
+        },
+        {
+          "name": "endIcon",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": "Icon rendered after the content"
+        },
+        {
+          "name": "fullWidth",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Stretches the button to the full width of its container"
+        },
+        {
+          "name": "active",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Renders the button in its pressed/active state"
+        },
+        {
+          "name": "shape",
+          "type": "\"square\" | \"rounded\" | \"circle\"",
+          "required": false,
+          "description": "Preset shape of the button"
+        },
+        {
+          "name": "borderRadius",
+          "type": "\"none\" | \"small\" | \"medium\" | \"large\" | \"circle\" | \"square\" | number",
+          "required": false,
+          "description": "Corner radius: a preset or a number of pixels. The theme radius (`--radius-md`) is used when omitted"
+        },
+        {
+          "name": "style",
+          "type": "React.CSSProperties",
+          "required": false,
+          "description": "Inline styles"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "required": false,
+          "description": "Ref to the <button> element"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Button": {
+      "kind": "cssVars",
+      "source": "react/src/components/Button",
+      "vars": [
+        {
+          "name": "--button-height",
+          "description": "Minimum height (every size; defaults to the density's control height of the size)"
+        },
+        {
+          "name": "--button-padding-x",
+          "description": "Horizontal padding (every size)"
+        },
+        {
+          "name": "--button-radius",
+          "description": "Corner radius (defaults to --radius-md; the shape / borderRadius props win)"
+        },
+        {
+          "name": "--button-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--button-font-weight",
+          "description": "Font weight"
+        },
+        {
+          "name": "--button-gap",
+          "description": "Space between the icons and the label"
+        },
+        {
+          "name": "--button-label-white-space",
+          "description": "White-space of the label: nowrap (default, truncates) or normal (wraps)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/button/demos/basic.tsx": "import { useState } from \"react\";\nimport { Button, HStack } from \"minerva-design\";\n\nexport default function BasicDemo() {\n  const [count, setCount] = useState(0);\n  return (\n    <HStack gap={3} wrap>\n      <Button onClick={() => setCount((value) => value + 1)}>Click me</Button>\n      <output aria-live=\"polite\">Clicked {count} times</output>\n    </HStack>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "Utilisation de base",
+      "description": "Cliquez sur le bouton pour augmenter le compteur de un."
+    },
+    {
+      "id": "colors",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/demos/colors.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/button/demos/colors.tsx": "import { Button } from \"minerva-design\";\n\nexport default function ColorsDemo() {\n  return (\n    <>\n      <Button color=\"primary\">Primary</Button>\n      <Button color=\"neutral\">Neutral</Button>\n      <Button color=\"success\">Success</Button>\n      <Button color=\"warning\">Warning</Button>\n      <Button color=\"danger\">Danger</Button>\n      <Button color=\"info\">Info</Button>\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Couleurs",
+      "description": "color définit la couleur sémantique : primary (par défaut), neutral, success, warning, danger ou info."
+    },
+    {
+      "id": "form",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/demos/form.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/button/demos/form.tsx": "import { useState } from \"react\";\nimport { Button, Input } from \"minerva-design\";\n\nexport default function FormDemo() {\n  const [log, setLog] = useState(\"Nothing yet\");\n\n  return (\n    <form\n      onSubmit={(event) => {\n        event.preventDefault();\n        const title = new FormData(event.currentTarget).get(\"title\");\n        setLog(`Submitted \"${String(title)}\"`);\n      }}\n      onReset={() => setLog(\"Reset\")}\n      style={{\n        display: \"flex\",\n        flexWrap: \"wrap\",\n        gap: 8,\n        alignItems: \"center\",\n      }}\n    >\n      <Input name=\"title\" aria-label=\"Title\" defaultValue=\"Draft\" />\n      {/* No type: defaults to \"button\", so it never submits the form */}\n      <Button\n        color=\"neutral\"\n        variant=\"outline\"\n        onClick={() => setLog(\"Preview opened (form not submitted)\")}\n      >\n        Preview\n      </Button>\n      <Button type=\"reset\" color=\"neutral\" variant=\"ghost\">\n        Reset\n      </Button>\n      <Button type=\"submit\">Save</Button>\n      <output style={{ flexBasis: \"100%\" }}>{log}</output>\n    </form>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "Dans un formulaire : type",
+      "description": "Button vaut type=\"button\" par défaut : un Button placé dans un <form> (aperçu, ajout de ligne, ouverture d’une boîte de dialogue...) ne le soumet jamais par accident. Passez type=\"submit\" pour le bouton d’envoi et type=\"reset\" pour réinitialiser le formulaire."
+    },
+    {
+      "id": "icons-loading",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/demos/icons-loading.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/button/demos/icons-loading.tsx": "import { useState } from \"react\";\nimport { Button } from \"minerva-design\";\nimport { IoAdd, IoArrowForward } from \"react-icons/io5\";\n\nexport default function IconsLoadingDemo() {\n  const [saving, setSaving] = useState(false);\n  const save = () => {\n    setSaving(true);\n    setTimeout(() => setSaving(false), 1500);\n  };\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, maxWidth: 320 }}>\n      <Button startIcon={<IoAdd aria-hidden />}>Add item</Button>\n      <Button variant=\"outline\" endIcon={<IoArrowForward aria-hidden />}>\n        Continue\n      </Button>\n      <Button\n        color=\"success\"\n        fullWidth\n        loading={saving}\n        loadingText=\"Saving...\"\n        onClick={save}\n      >\n        Save\n      </Button>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Icônes, texte de chargement et pleine largeur",
+      "description": "startIcon / endIcon affichent des icônes autour du libellé, loadingText remplace le contenu pendant le chargement et fullWidth étire le bouton."
+    },
+    {
+      "id": "shapes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/demos/shapes.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/button/demos/shapes.tsx": "import { Button } from \"minerva-design\";\n\nexport default function ShapesDemo() {\n  return (\n    <>\n      <Button shape=\"square\">Square</Button>\n      <Button shape=\"rounded\">Rounded</Button>\n      <Button shape=\"circle\" aria-label=\"Add\">\n        +\n      </Button>\n      <Button borderRadius=\"none\">No radius</Button>\n      <Button borderRadius={12}>12px radius</Button>\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Formes et arrondis",
+      "description": "Formes prédéfinies, ou un borderRadius prédéfini / en pixels."
+    },
+    {
+      "id": "sizes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/demos/sizes.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/button/demos/sizes.tsx": "import { Button } from \"minerva-design\";\n\nexport default function SizesDemo() {\n  return (\n    <>\n      <Button size=\"xsmall\">XSmall</Button>\n      <Button size=\"small\">Small</Button>\n      <Button size=\"medium\">Medium</Button>\n      <Button size=\"large\">Large</Button>\n      <Button size=\"xlarge\">XLarge</Button>\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Tailles",
+      "description": "Cinq tailles : xsmall, small, medium (par défaut), large et xlarge."
+    },
+    {
+      "id": "states",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/demos/states.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/button/demos/states.tsx": "import { useState } from \"react\";\nimport { Button } from \"minerva-design\";\n\nexport default function StatesDemo() {\n  const [loading, setLoading] = useState(false);\n\n  const save = () => {\n    setLoading(true);\n    setTimeout(() => setLoading(false), 1500);\n  };\n\n  return (\n    <>\n      <Button loading={loading} onClick={save}>\n        {loading ? \"Saving…\" : \"Save\"}\n      </Button>\n      <Button disabled>Disabled</Button>\n      <Button active>Active</Button>\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "États",
+      "description": "États de chargement, désactivé et actif. Le chargement bloque les clics (et l'envoi du formulaire) pendant l'action, tout en gardant le focus clavier sur le bouton."
+    },
+    {
+      "id": "variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/demos/variants.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/button/demos/variants.tsx": "import { Button, HStack, VStack } from \"minerva-design\";\n\nconst variants = [\"solid\", \"outline\", \"ghost\", \"link\"] as const;\n\nexport default function VariantsDemo() {\n  return (\n    <VStack gap={3}>\n      {([\"primary\", \"neutral\", \"danger\"] as const).map((color) => (\n        <HStack key={color} gap={2} wrap>\n          {variants.map((variant) => (\n            <Button key={variant} color={color} variant={variant}>\n              {variant}\n            </Button>\n          ))}\n        </HStack>\n      ))}\n    </VStack>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Variantes",
+      "description": "variant définit le style visuel : solid (par défaut), outline, ghost ou link. Il se combine avec n'importe quelle couleur."
+    },
+    {
+      "id": "with-icon",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/button/demos/with-icon.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/button/demos/with-icon.tsx": "import { Button } from \"minerva-design\";\nimport { IoAdd, IoArrowBack, IoRefresh, IoTrash } from \"react-icons/io5\";\n\nexport default function WithIconDemo() {\n  return (\n    <>\n      <Button startIcon={<IoAdd aria-hidden />}>Add</Button>\n      <Button color=\"danger\" startIcon={<IoRefresh aria-hidden />}>\n        Retry\n      </Button>\n      <Button\n        color=\"neutral\"\n        variant=\"ghost\"\n        startIcon={<IoArrowBack aria-hidden />}\n      >\n        Back\n      </Button>\n      <Button color=\"danger\" variant=\"outline\" aria-label=\"Delete item\">\n        <IoTrash aria-hidden />\n      </Button>\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Avec icônes",
+      "description": "Combinez texte et icônes avec startIcon / endIcon, par exemple un bouton « réessayer » en danger ou un bouton « retour » neutral en ghost. Donnez un aria-label aux boutons composés uniquement d'une icône."
+    }
+  ],
+  "recipes": [
+    {
+      "id": "react-form",
+      "title": "React controlled project form",
+      "renderer": "react",
+      "pages": [
+        "input",
+        "switch",
+        "form-control",
+        "form-layout",
+        "button"
+      ],
+      "kind": "standalone-recipe",
+      "packageVersion": "1.19.3",
+      "files": {
+        "README.md": "# react-form\n\nStandalone React 19 recipe, using only public Minerva entries.\n\nRequires Node >=22.13 and pnpm 11. Copy the complete directory, then run:\n\n```sh\npnpm install\npnpm build\npnpm dev\n```\n\nThe package manifest pins the tested Minerva/framework/tool versions. The entry imports the global stylesheet once. App owns the provider and controlled state. No documentation translation setup or workspace aliases are required.\n",
+        "index.html": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n    <title>Minerva standalone recipe</title>\n  </head>\n  <body>\n    <div id=\"app\"></div>\n    <script type=\"module\" src=\"/src/main.tsx\"></script>\n  </body>\n</html>\n",
+        "package.json": "{\n  \"name\": \"minerva-recipe-react-form\",\n  \"private\": true,\n  \"version\": \"1.0.0\",\n  \"type\": \"module\",\n  \"packageManager\": \"pnpm@11.23.0\",\n  \"scripts\": {\n    \"dev\": \"vite --host 127.0.0.1\",\n    \"build\": \"tsc --noEmit && vite build\"\n  },\n  \"dependencies\": {\n    \"minerva-design\": \"1.19.3\",\n    \"react\": \"19.3.0\",\n    \"react-dom\": \"19.3.0\"\n  },\n  \"devDependencies\": {\n    \"typescript\": \"6.0.3\",\n    \"vite\": \"8.3.3\",\n    \"@types/react\": \"19.3.0\",\n    \"@types/react-dom\": \"19.3.0\"\n  }\n}\n",
+        "src/App.tsx": "import { useState } from \"react\";\nimport {\n  Button,\n  ConfigProvider,\n  FormField,\n  Input,\n  Switch,\n  ToastProvider,\n  VStack,\n  toast,\n} from \"minerva-design\";\n\nexport default function App() {\n  const [name, setName] = useState(\"\");\n  const [subscribed, setSubscribed] = useState(false);\n  const [saved, setSaved] = useState(\"\");\n  return (\n    <ConfigProvider theme=\"light\">\n      <ToastProvider>\n        <VStack gap={4} align=\"start\">\n          <FormField label=\"Project name\" required>\n            <Input\n              name=\"project\"\n              value={name}\n              onChange={(event) => setName(event.target.value)}\n              clearable\n            />\n          </FormField>\n          <Switch\n            label=\"Newsletter\"\n            checked={subscribed}\n            onChange={setSubscribed}\n          />\n          <Button\n            disabled={!name.trim()}\n            onClick={() => {\n              setSaved(`${name}${subscribed ? \" · subscribed\" : \"\"}`);\n              toast.success(\"Project saved\");\n            }}\n          >\n            Save project\n          </Button>\n          <output aria-live=\"polite\">{saved || \"No project saved\"}</output>\n        </VStack>\n      </ToastProvider>\n    </ConfigProvider>\n  );\n}\n",
+        "src/main.tsx": "import { createRoot } from \"react-dom/client\";\nimport App from \"./App\";\nimport \"minerva-design/style.css\";\ncreateRoot(document.getElementById(\"app\")!).render(<App />);\n",
+        "src/vite-env.d.ts": "/// <reference types=\"vite/client\" />\n",
+        "tsconfig.json": "{\n  \"compilerOptions\": {\n    \"target\": \"ES2022\",\n    \"module\": \"ESNext\",\n    \"moduleResolution\": \"Bundler\",\n    \"lib\": [\"ES2022\", \"DOM\", \"DOM.Iterable\"],\n    \"strict\": true,\n    \"skipLibCheck\": true,\n    \"jsx\": \"react-jsx\",\n    \"noEmit\": true,\n    \"esModuleInterop\": true\n  },\n  \"include\": [\"src\"]\n}\n"
+      },
+      "dependencies": {
+        "minerva-design": "1.19.3",
+        "react": "19.3.0",
+        "react-dom": "19.3.0",
+        "typescript": "6.0.3",
+        "vite": "8.3.3",
+        "@types/react": "19.3.0",
+        "@types/react-dom": "19.3.0"
+      },
+      "url": "/minerva-design/reference/1.19.3/recipes/react-form/README.md"
+    }
+  ],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.19.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Button",
+      "description": "Déclenche une action ou un événement, comme envoyer un formulaire ou ouvrir une boîte de dialogue.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Cliquez sur le bouton pour augmenter le compteur de un."
+        },
+        "colors": {
+          "title": "Couleurs",
+          "description": "color définit la couleur sémantique : primary (par défaut), neutral, success, warning, danger ou info."
+        },
+        "variants": {
+          "title": "Variantes",
+          "description": "variant définit le style visuel : solid (par défaut), outline, ghost ou link. Il se combine avec n'importe quelle couleur."
+        },
+        "sizes": {
+          "title": "Tailles",
+          "description": "Cinq tailles : xsmall, small, medium (par défaut), large et xlarge."
+        },
+        "shapes": {
+          "title": "Formes et arrondis",
+          "description": "Formes prédéfinies, ou un borderRadius prédéfini / en pixels."
+        },
+        "states": {
+          "title": "États",
+          "description": "États de chargement, désactivé et actif. Le chargement bloque les clics (et l'envoi du formulaire) pendant l'action, tout en gardant le focus clavier sur le bouton."
+        },
+        "with-icon": {
+          "title": "Avec icônes",
+          "description": "Combinez texte et icônes avec startIcon / endIcon, par exemple un bouton « réessayer » en danger ou un bouton « retour » neutral en ghost. Donnez un aria-label aux boutons composés uniquement d'une icône."
+        },
+        "icons-loading": {
+          "title": "Icônes, texte de chargement et pleine largeur",
+          "description": "startIcon / endIcon affichent des icônes autour du libellé, loadingText remplace le contenu pendant le chargement et fullWidth étire le bouton."
+        },
+        "form": {
+          "title": "Dans un formulaire : type",
+          "description": "Button vaut type=\"button\" par défaut : un Button placé dans un <form> (aperçu, ajout de ligne, ouverture d’une boîte de dialogue...) ne le soumet jamais par accident. Passez type=\"submit\" pour le bouton d’envoi et type=\"reset\" pour réinitialiser le formulaire."
+        }
+      },
+      "api": {
+        "ButtonProps": {
+          "type": "Type natif du bouton. Vaut \"button\" par défaut (contrairement au \"submit\" du HTML), si bien qu’un Button dans un formulaire ne le soumet jamais par accident : utilisez type=\"submit\" pour les boutons d’envoi et \"reset\" pour les boutons de réinitialisation",
+          "onClick": "Appelé au clic (jamais lorsque le bouton est désactivé)",
+          "children": "Contenu du bouton",
+          "className": "Classe CSS supplémentaire",
+          "color": "Couleur sémantique du bouton",
+          "variant": "Style visuel : solid (plein), outline (bordure seule), ghost (transparent jusqu'au survol) ou link (aspect de lien texte)",
+          "size": "Taille du bouton",
+          "aria-label": "Libellé accessible, obligatoire pour un bouton contenant uniquement une icône",
+          "disabled": "Désactive le bouton",
+          "loading": "Affiche un indicateur de chargement et bloque l'activation (aria-busy / aria-disabled). Le bouton reste focalisable pour ne pas perdre le focus clavier",
+          "active": "Affiche le bouton à l'état pressé/actif",
+          "shape": "Forme prédéfinie du bouton",
+          "borderRadius": "Arrondi : valeur prédéfinie ou nombre de pixels. Le rayon du thème (--radius-md) est utilisé par défaut",
+          "style": "Styles en ligne",
+          "ref": "Ref vers l'élément <button>",
+          "loadingText": "Texte affiché à la place du contenu (et des icônes) pendant le chargement",
+          "startIcon": "Icône affichée avant le contenu",
+          "endIcon": "Icône affichée après le contenu",
+          "fullWidth": "Étire le bouton sur toute la largeur de son conteneur"
+        }
+      },
+      "cssVars": {
+        "--button-height": "Hauteur minimale (toutes tailles ; par défaut la hauteur de contrôle de la taille selon la densité)",
+        "--button-padding-x": "Marge intérieure horizontale (toutes tailles)",
+        "--button-radius": "Rayon des coins (--radius-md par défaut ; les props shape / borderRadius l'emportent)",
+        "--button-font-size": "Taille de police (toutes tailles)",
+        "--button-font-weight": "Graisse de police",
+        "--button-gap": "Espace entre les icônes et le libellé",
+        "--button-label-white-space": "white-space du libellé : nowrap (défaut, tronque) ou normal (retour à la ligne)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Cliquez sur le bouton pour augmenter le compteur de un."
+          },
+          "colors-variants": {
+            "title": "Couleurs et variantes",
+            "description": "color définit la tonalité sémantique (ColorScheme partagé), variant le style visuel."
+          },
+          "sizes-shapes": {
+            "title": "Tailles et formes",
+            "description": "Cinq tailles et trois formes. Les boutons ronds à icône seule ont besoin d’un aria-label, transmis au bouton interne."
+          },
+          "states": {
+            "title": "États, icônes et chargement",
+            "description": "Les slots start / end accueillent des icônes, le slot loading remplace le libellé pendant le chargement. Cliquez sur Enregistrer pour voir l’état de chargement."
+          },
+          "form": {
+            "title": "Dans un formulaire",
+            "description": "L’élément est associé aux formulaires : type=\"submit\" valide puis soumet son formulaire, type=\"reset\" le réinitialise."
+          }
+        },
+        "minerva-button": {
+          "props": {
+            "form": "Le formulaire auquel appartient le bouton (lecture seule)."
+          },
+          "slots": {
+            "default": "Libellé.",
+            "start": "Icône avant le libellé.",
+            "end": "Icône après le libellé.",
+            "loading": "Texte affiché à la place du libellé pendant le chargement."
+          },
+          "methods": {
+            "focus": "Donne le focus au bouton interne.",
+            "blur": "Retire le focus du bouton interne.",
+            "click": "Clique sur le bouton interne (ignoré s’il est désactivé ou en chargement)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Cliquez sur le bouton pour augmenter le compteur de un."
+          },
+          "colors": {
+            "title": "Couleurs",
+            "description": "color définit la couleur sémantique : primary (par défaut), neutral, success, warning, danger ou info."
+          },
+          "variants": {
+            "title": "Variantes",
+            "description": "variant définit le style visuel : solid (par défaut), outline, ghost ou link. Il se combine avec n'importe quelle couleur."
+          },
+          "sizes": {
+            "title": "Tailles",
+            "description": "Cinq tailles : xsmall, small, medium (par défaut), large et xlarge."
+          },
+          "shapes": {
+            "title": "Formes et arrondis",
+            "description": "Formes prédéfinies, ou un borderRadius prédéfini / en pixels."
+          },
+          "states": {
+            "title": "États",
+            "description": "États de chargement, désactivé et actif. Le chargement bloque les clics (et l'envoi du formulaire) pendant l'action, tout en gardant le focus clavier sur le bouton."
+          },
+          "with-icon": {
+            "title": "Avec icônes",
+            "description": "Combinez texte et icônes avec startIcon / endIcon, par exemple un bouton « réessayer » en danger ou un bouton « retour » neutral en ghost. Donnez un aria-label aux boutons composés uniquement d'une icône."
+          },
+          "icons-loading": {
+            "title": "Icônes, texte de chargement et pleine largeur",
+            "description": "startIcon / endIcon affichent des icônes autour du libellé, loadingText remplace le contenu pendant le chargement et fullWidth étire le bouton."
+          },
+          "form": {
+            "title": "Dans un formulaire : type",
+            "description": "Prévisualiser, réinitialiser et enregistrer un brouillon. Les boutons natifs utilisent onPress au lieu de la soumission HTML."
+          }
+        }
+      },
+      "vue": {
+        "demos": {
+          "basic": {
+            "description": "Cliquez sur le bouton pour augmenter le compteur de un."
+          }
+        }
+      }
+    }
+  }
+}

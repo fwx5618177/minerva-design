@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.19.3",
+  "locale": "zh",
+  "renderer": "weapp",
+  "page": "virtual-list",
+  "title": "VirtualList 虚拟列表",
+  "description": "只挂载滚动容器中可见的行，从而高效渲染长列表。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.19.3",
+    "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
+    "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
+    "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "VirtualList",
+      "support": {
+        "status": "beta",
+        "notes": "Core fixed-row virtualization with native first-row measurement, explicit item height/padding, overscan, maxHeight, async loadMore lock/threshold/loading, scrollToIndex, itemclick, configured text renderer and native row-renderer generic. Rows have one shared measured or explicit height, matching the React fixed-row contract; DOM renderer/focus targets use native generic Components. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Core fixed-row virtualization with native first-row measurement, explicit item height/padding, overscan, maxHeight, async loadMore lock/threshold/loading, scrollToIndex, itemclick, configured text renderer and native row-renderer generic. Rows have one shared measured or explicit height, matching the React fixed-row contract; DOM renderer/focus targets use native generic Components. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/virtual-list/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "virtual-list",
+        "props": [
+          {
+            "name": "items",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "itemHeight",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "height",
+            "typeText": "number",
+            "required": false,
+            "default": 300
+          },
+          {
+            "name": "overscan",
+            "typeText": "number",
+            "required": false,
+            "default": 5
+          },
+          {
+            "name": "maxHeight",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "itemPadding",
+            "typeText": "number",
+            "required": false,
+            "default": 8
+          },
+          {
+            "name": "loadMoreThreshold",
+            "typeText": "number",
+            "required": false,
+            "default": 100
+          },
+          {
+            "name": "highPerformance",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "loading",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "customRowRenderer",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          }
+        ],
+        "events": [
+          {
+            "name": "scroll",
+            "typeText": "{ scrollTop: number }",
+            "description": "Native scroll offset."
+          },
+          {
+            "name": "itemclick",
+            "typeText": "{ item: Record<string, unknown>; index: number }",
+            "description": "Original row and absolute item index."
+          },
+          {
+            "name": "loadmore",
+            "typeText": "{}",
+            "description": "Near-bottom downward scrolling requested more rows; completeLoadMore releases event-only requests."
+          },
+          {
+            "name": "loaderror",
+            "typeText": "{ message: string }",
+            "description": "Configured asynchronous loader rejected; a later scroll may retry."
+          }
+        ],
+        "slots": [
+          {
+            "name": "footer"
+          }
+        ],
+        "registration": "\"usingComponents\": { \"mn-virtual-list\": \"minerva-design/dist/weapp/virtual-list/index\" }",
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:VirtualList": {
+      "kind": "cssVars",
+      "source": "react/src/components/VirtualList",
+      "vars": [
+        {
+          "name": "--virtual-list-radius",
+          "description": "Corner radius (defaults to --radius-sm)"
+        },
+        {
+          "name": "--virtual-list-shadow",
+          "description": "Shadow at rest (defaults to --shadow-sm)"
+        },
+        {
+          "name": "--virtual-list-hover-shadow",
+          "description": "Shadow while hovered (defaults to --shadow-md)"
+        },
+        {
+          "name": "--virtual-list-scrollbar-size",
+          "description": "Width of the scrollbar (WebKit / Blink)"
+        },
+        {
+          "name": "--virtual-list-loading-padding",
+          "description": "Padding of the loading indicator row"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.19.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "VirtualList 虚拟列表",
+      "description": "只挂载滚动容器中可见的行，从而高效渲染长列表。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "10,000 行数据，固定 itemHeight；DOM 中只存在可见行（以及 overscan 预渲染的行）。"
+        },
+        "auto-height": {
+          "title": "自动测量行高",
+          "description": "不传 itemHeight 时根据第一个渲染项测量行高；每行四周会加上 itemPadding。"
+        },
+        "infinite-scroll": {
+          "title": "无限滚动",
+          "description": "滚动到接近底部时调用 onLoadMore；加载期间显示加载指示器。"
+        },
+        "high-performance": {
+          "title": "高性能模式",
+          "description": "highPerformance 使用 requestAnimationFrame 和 requestIdleCallback 合并滚动更新，此示例包含 100,000 行。"
+        },
+        "clickable-rows": {
+          "title": "可点击行与原生属性",
+          "description": "onItemClick 让行可点击（指针光标、可聚焦、可用 Enter / Space 激活）；未设置时行保持默认光标。id、data-*、aria-* 等原生属性会传递到根元素。"
+        }
+      },
+      "api": {
+        "VirtualListProps": {
+          "items": "要渲染的列表项",
+          "itemHeight": "固定行高（像素）；不传时根据第一个列表项测量",
+          "itemPadding": "每行的内边距（像素）",
+          "overscan": "在可视区域上方和下方额外渲染的行数",
+          "maxHeight": "滚动容器的最大高度（像素）",
+          "renderItem": "渲染单行内容的函数",
+          "className": "额外的类名",
+          "style": "滚动容器的内联样式",
+          "onLoadMore": "滚动到接近底部时调用；返回一个在新数据加载完成后 resolve 的 Promise（在其完成前不会再次调用）",
+          "loadMoreThreshold": "距底部多少像素时触发 onLoadMore",
+          "highPerformance": "使用 requestAnimationFrame 和 requestIdleCallback 合并滚动更新",
+          "loading": "在列表底部显示加载指示器",
+          "aria-label": "列表的无障碍名称",
+          "ref": "根（滚动容器）<div> 元素的 ref",
+          "onItemClick": "点击行，或行本身聚焦时按 Enter / Space 时调用。使行可点击：可聚焦并显示指针光标"
+        },
+        "VirtualListItem": {
+          "id": "列表项的唯一键",
+          "metadata": "供 renderItem 使用的任意数据"
+        }
+      },
+      "cssVars": {
+        "--virtual-list-radius": "圆角（默认 --radius-sm）",
+        "--virtual-list-shadow": "静止时的阴影（默认 --shadow-sm）",
+        "--virtual-list-hover-shadow": "悬停时的阴影（默认 --shadow-md）",
+        "--virtual-list-scrollbar-size": "滚动条宽度（WebKit / Blink）",
+        "--virtual-list-loading-padding": "加载指示行的内边距"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "通过 JavaScript 设置 items 和 renderItem 属性：即使有 10,000 项，也只渲染可见的行。用 aria-label 为列表命名。"
+          },
+          "clickable-rows": {
+            "title": "可点击的行",
+            "description": "clickable 让行可获得焦点，并在点击、Enter 或空格时触发 minerva-item-click。scrollToIndex() 可编程滚动。"
+          },
+          "infinite-scroll": {
+            "title": "无限滚动",
+            "description": "滚动到接近底部（load-more-threshold）时触发 minerva-load-more；加载下一页期间设置 loading。"
+          }
+        },
+        "minerva-virtual-list": {
+          "props": {
+            "clickable": "使行可获得焦点和点击（指针光标、Enter / 空格），并触发 minerva-item-click。",
+            "scrollContainer": "滚动容器元素（只读），例如用于编程滚动。"
+          },
+          "events": {
+            "minerva-item-click": "可点击的行被点击或通过 Enter / 空格激活（detail: { item, index }）。",
+            "minerva-load-more": "列表滚动到距底部 load-more-threshold 像素以内。"
+          },
+          "cssVars": {
+            "--progress-width": "加载指示器的宽度。",
+            "--progress-bar-height": "加载指示条的粗细。",
+            "--progress-track-color": "加载指示器轨道的颜色。",
+            "--progress-radius": "加载指示器轨道的圆角半径。",
+            "--progress-size": "圆形加载指示器的尺寸。"
+          },
+          "methods": {
+            "scrollToIndex": "滚动使第 index 行位于列表顶部。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,238 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.19.3",
+  "locale": "zh",
+  "renderer": "angular",
+  "page": "description-list",
+  "title": "DescriptionList 描述列表",
+  "description": "以原生 dl 呈现的带标签元数据字段，窄屏下行会堆叠显示。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.19.3",
+    "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
+    "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
+    "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "DescriptionItem",
+      "support": {
+        "status": "n/a",
+        "notes": "Native Angular: MnDescriptionList.items entries { term, description } render semantic dt/dd pairs; there is no separate item element."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Native Angular: MnDescriptionList.items entries { term, description } render semantic dt/dd pairs; there is no separate item element.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnDescriptionList"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-description-list",
+        "props": [
+          {
+            "name": "items",
+            "typeText": "readonly DescriptionItem[]",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DescriptionList",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnDescriptionList. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnDescriptionList. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnDescriptionList"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-description-list",
+        "props": [
+          {
+            "name": "items",
+            "typeText": "readonly DescriptionItem[]",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:DescriptionList": {
+      "kind": "cssVars",
+      "source": "react/src/components/DescriptionList",
+      "vars": [
+        {
+          "name": "--description-list-row-padding-y",
+          "description": "Vertical padding of a row (follows the density's row padding)"
+        },
+        {
+          "name": "--description-list-gap",
+          "description": "Space between the term and the description"
+        },
+        {
+          "name": "--description-list-term-color",
+          "description": "Text color of the terms"
+        },
+        {
+          "name": "--description-list-border-color",
+          "description": "Color of the row separators"
+        },
+        {
+          "name": "--description-list-font-size",
+          "description": "Font size"
+        },
+        {
+          "name": "--description-list-radius",
+          "description": "Corner radius of a bordered list (defaults to --radius-lg)"
+        },
+        {
+          "name": "--description-list-background",
+          "description": "Background of a bordered list (defaults to --surface-color)"
+        },
+        {
+          "name": "--description-list-padding-x",
+          "description": "Horizontal padding of the rows of a bordered or striped list"
+        },
+        {
+          "name": "--description-list-stripe-background",
+          "description": "Background of every other row of a striped list (defaults to --surface-subtle-color)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "record-metadata",
+      "title": "Record metadata",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnDescriptionList } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnDescriptionList],\n  template: `\n<mn-description-list [items]=\"items\"/>\n  `,\n})\nexport class Example {\n  items = [\n  {\n    \"term\": \"Owner\",\n    \"description\": \"Ada Lovelace\"\n  },\n  {\n    \"term\": \"Status\",\n    \"description\": \"Active\"\n  },\n  {\n    \"term\": \"Created\",\n    \"description\": \"October 2026\"\n  }\n];\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "operational-details",
+      "title": "Operational details",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnDescriptionList } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnDescriptionList],\n  template: `\n<mn-description-list [items]=\"items\"/>\n  `,\n})\nexport class Example {\n  items = [\n  {\n    \"term\": \"Region\",\n    \"description\": \"Europe\"\n  },\n  {\n    \"term\": \"Environment\",\n    \"description\": \"Production\"\n  }\n];\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.19.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "DescriptionList 描述列表",
+      "description": "以原生 dl 呈现的带标签元数据字段，窄屏下行会堆叠显示。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "标签和值可以是任意 ReactNode，0 也会显示。"
+        },
+        "variants": {
+          "title": "带边框与条纹",
+          "description": "bordered 将字段包装为带内边距行的卡片；striped 隔行着色以替代分隔线。"
+        }
+      },
+      "api": {
+        "DescriptionListProps": {
+          "items": "按顺序渲染的行",
+          "ref": "<dl> 元素的 ref",
+          "bordered": "将列表包装为带内边距行的卡片",
+          "striped": "隔行着色（替代分隔线）"
+        },
+        "DescriptionListItem": {
+          "key": "行的稳定 React key",
+          "label": "术语，渲染在 <dt> 中",
+          "value": "描述，渲染在 <dd> 中"
+        }
+      },
+      "cssVars": {
+        "--description-list-row-padding-y": "行的垂直内边距（跟随密度的行内边距）",
+        "--description-list-gap": "术语与描述之间的间距",
+        "--description-list-term-color": "术语的文字颜色",
+        "--description-list-border-color": "行分隔线的颜色",
+        "--description-list-font-size": "字号",
+        "--description-list-radius": "带边框列表的圆角（默认为 --radius-lg）",
+        "--description-list-background": "带边框列表的背景（默认为 --surface-color）",
+        "--description-list-padding-x": "带边框或条纹列表中行的水平内边距",
+        "--description-list-stripe-background": "条纹列表中隔行的背景（默认为 --surface-subtle-color）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "声明式的 <minerva-description-item label> 行；内容（文本、徽章、链接）放入原生 <dl> 的 <dd> 中。"
+          },
+          "items": {
+            "title": "数据驱动的行",
+            "description": "items 属性根据 JS 数据渲染行，位于声明式子元素之前；0 也会作为值渲染。"
+          },
+          "styling": {
+            "title": "样式定制",
+            "description": "CSS 变量设置密度、间距和分隔线；::part(term) 和 ::part(row) 用于定制原生单元格样式。"
+          },
+          "variants": {
+            "title": "带边框与条纹",
+            "description": "bordered 与 striped 布尔属性：带内边距行的卡片框，或以隔行着色替代分隔线。"
+          }
+        },
+        "minerva-description-item": {
+          "slots": {
+            "default": "描述内容。"
+          }
+        },
+        "minerva-description-list": {
+          "slots": {
+            "default": "<minerva-description-item> 行。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        }
+      }
+    }
+  }
+}

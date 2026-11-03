@@ -1,0 +1,561 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.19.3",
+  "locale": "en",
+  "renderer": "wc",
+  "page": "popover",
+  "title": "Popover",
+  "description": "A click-triggered floating panel for interactive content such as filters or account menus, anchored to its trigger. Unlike Tooltip it holds focusable content and manages focus, Escape and outside clicks itself; inside a Modal it closes first.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.19.3",
+    "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
+    "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
+    "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Popover",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/popover",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-popover",
+        "props": [
+          {
+            "name": "open",
+            "typeText": "boolean",
+            "attribute": "open",
+            "required": false
+          },
+          {
+            "name": "modal",
+            "typeText": "boolean",
+            "attribute": "modal",
+            "required": false
+          },
+          {
+            "name": "side",
+            "typeText": "\"top\" | \"right\" | \"bottom\" | \"left\"",
+            "attribute": "side",
+            "required": false
+          },
+          {
+            "name": "align",
+            "typeText": "\"start\" | \"center\" | \"end\"",
+            "attribute": "align",
+            "required": false
+          },
+          {
+            "name": "sideOffset",
+            "typeText": "number",
+            "attribute": "side-offset",
+            "required": false
+          },
+          {
+            "name": "alignOffset",
+            "typeText": "number",
+            "attribute": "align-offset",
+            "required": false
+          },
+          {
+            "name": "collisionPadding",
+            "typeText": "number",
+            "attribute": "collision-padding",
+            "required": false
+          },
+          {
+            "name": "matchAnchorWidth",
+            "typeText": "false | \"min\" | \"exact\"",
+            "attribute": "match-anchor-width",
+            "required": false
+          },
+          {
+            "name": "arrow",
+            "typeText": "boolean",
+            "attribute": "arrow",
+            "required": false
+          },
+          {
+            "name": "label",
+            "typeText": "string",
+            "attribute": "label",
+            "required": false
+          },
+          {
+            "name": "anchor",
+            "typeText": "string",
+            "attribute": "anchor",
+            "required": false
+          },
+          {
+            "name": "anchorElement",
+            "typeText": "Element | null",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "minerva-open-change",
+            "typeText": "CustomEvent<{ open: boolean; reason: PopoverChangeReason; }>",
+            "detailType": {
+              "typeText": "{ open: boolean; reason: PopoverChangeReason; }",
+              "typeRef": "type:d2f63c456610958f492d"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": true,
+            "description": "The user asked to open / close (`detail: { open, reason }`); cancelable: `preventDefault()` keeps the current state"
+          },
+          {
+            "name": "minerva-after-open",
+            "typeText": "CustomEvent<undefined>",
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The popover is open"
+          },
+          {
+            "name": "minerva-after-close",
+            "typeText": "CustomEvent<undefined>",
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The popover finished closing (after its exit animation)"
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "description": "Panel content"
+          },
+          {
+            "name": "trigger",
+            "description": "Element that toggles the popover when clicked"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "PopoverAnchor",
+      "support": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      }
+    },
+    {
+      "name": "PopoverClose",
+      "support": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      }
+    },
+    {
+      "name": "PopoverContent",
+      "support": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      }
+    },
+    {
+      "name": "PopoverTrigger",
+      "support": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-popover": {
+      "kind": "element",
+      "source": "web-components/src/components/popover/popover.ts",
+      "className": "MinervaPopover",
+      "summary": "Anchored interactive panel with focus management and dismissal.",
+      "description": "Popover (`<Popover>` of React): a click-triggered, interactive panel (`role=\"dialog\"`) anchored to its trigger (or to the `anchor` element). Unlike a tooltip it holds focusable content and manages focus itself: - focus moves to its first tabbable (or the panel) on open and returns to the trigger on close; - Escape (topmost layer only), a pointer down outside or focus leaving it close it; overlays opened inside it are child layers, and a popover inside a modal is a child layer of the modal; - non-modal (default): Tab past its last tabbable (Shift+Tab before its first) closes it and moves focus to the tabbable after (before) the trigger; Tab never loops inside the panel; - `modal`: focus trap (Tab loops), scroll lock, the rest of the page hidden from assistive technologies, outside pointer events disabled. The panel is shown in the top layer (Popover API) but stays in the DOM where the element is, so it inherits the theme of its scope. The trigger gets `aria-haspopup=\"dialog\"`, `aria-expanded` and `data-state`. Light DOM elements with `data-popover-close` close the popover when clicked (the React library's `PopoverClose`).",
+      "properties": [
+        {
+          "name": "open",
+          "attribute": "open",
+          "type": "boolean",
+          "default": "false",
+          "description": "Whether the popover is open"
+        },
+        {
+          "name": "modal",
+          "attribute": "modal",
+          "type": "boolean",
+          "default": "false",
+          "description": "Modal popover: focus trap, scroll lock, page hidden and inert"
+        },
+        {
+          "name": "side",
+          "attribute": "side",
+          "type": "\"top\" | \"right\" | \"bottom\" | \"left\"",
+          "default": "\"bottom\"",
+          "description": "Preferred side; flips when there is not enough room"
+        },
+        {
+          "name": "align",
+          "attribute": "align",
+          "type": "\"start\" | \"center\" | \"end\"",
+          "default": "\"center\"",
+          "description": "Alignment against the anchor"
+        },
+        {
+          "name": "sideOffset",
+          "attribute": "side-offset",
+          "type": "number",
+          "default": "6",
+          "description": "Distance from the anchor (px)"
+        },
+        {
+          "name": "alignOffset",
+          "attribute": "align-offset",
+          "type": "number",
+          "default": "0",
+          "description": "Shift along the anchor (px)"
+        },
+        {
+          "name": "collisionPadding",
+          "attribute": "collision-padding",
+          "type": "number",
+          "default": "8",
+          "description": "Minimum distance kept from the viewport edges (px)"
+        },
+        {
+          "name": "matchAnchorWidth",
+          "attribute": "match-anchor-width",
+          "type": "false | \"min\" | \"exact\"",
+          "default": "false",
+          "description": "Sizes the panel after the anchor: at least (`min`) or exactly (`exact`) its width"
+        },
+        {
+          "name": "arrow",
+          "attribute": "arrow",
+          "type": "boolean",
+          "default": "false",
+          "description": "Renders an arrow pointing at the anchor"
+        },
+        {
+          "name": "label",
+          "attribute": "label",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Accessible name of the panel (or set `aria-label` on the element)"
+        },
+        {
+          "name": "anchor",
+          "attribute": "anchor",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Id of the element (same tree) to anchor to"
+        },
+        {
+          "name": "anchorElement",
+          "type": "Element | null",
+          "default": "null",
+          "description": "Element the panel is positioned against instead of the trigger (the React library's `PopoverAnchor`); the `anchor` attribute takes an id in the element's tree"
+        }
+      ],
+      "methods": [
+        {
+          "name": "show",
+          "signature": "() => void",
+          "description": "Opens the popover"
+        },
+        {
+          "name": "hide",
+          "signature": "() => void",
+          "description": "Closes the popover"
+        },
+        {
+          "name": "toggle",
+          "signature": "() => void",
+          "description": "Toggles the popover"
+        }
+      ],
+      "events": [
+        {
+          "name": "minerva-open-change",
+          "description": "The user asked to open / close (`detail: { open, reason }`); cancelable: `preventDefault()` keeps the current state"
+        },
+        {
+          "name": "minerva-after-open",
+          "description": "The popover is open"
+        },
+        {
+          "name": "minerva-after-close",
+          "description": "The popover finished closing (after its exit animation)"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "Panel content"
+        },
+        {
+          "name": "trigger",
+          "description": "Element that toggles the popover when clicked"
+        }
+      ],
+      "parts": [
+        {
+          "name": "content",
+          "description": "The positioned panel (`role=\"dialog\"`)"
+        },
+        {
+          "name": "arrow",
+          "description": "The arrow pointing at the anchor (with `arrow`)"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--popover-min-width",
+          "description": "Minimum width of the panel"
+        },
+        {
+          "name": "--popover-max-width",
+          "description": "Maximum width of the panel"
+        },
+        {
+          "name": "--popover-padding",
+          "description": "Inner padding of the panel"
+        },
+        {
+          "name": "--popover-radius",
+          "description": "Corner radius of the panel (defaults to --radius-lg)"
+        },
+        {
+          "name": "--popover-background",
+          "description": "Background of the panel and its arrow"
+        },
+        {
+          "name": "--popover-border-color",
+          "description": "Border color of the panel and its arrow"
+        },
+        {
+          "name": "--popover-shadow",
+          "description": "Shadow of the panel (defaults to --shadow-lg, --shadow-xl in dark themes)"
+        },
+        {
+          "name": "--popover-z-index",
+          "description": "Stacking order of the panel (defaults to --z-popover)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Popover": {
+      "kind": "cssVars",
+      "source": "react/src/components/Popover",
+      "vars": [
+        {
+          "name": "--popover-min-width",
+          "description": "Minimum width of the panel"
+        },
+        {
+          "name": "--popover-max-width",
+          "description": "Maximum width of the panel"
+        },
+        {
+          "name": "--popover-padding",
+          "description": "Inner padding of the panel"
+        },
+        {
+          "name": "--popover-radius",
+          "description": "Corner radius of the panel (defaults to --radius-lg)"
+        },
+        {
+          "name": "--popover-background",
+          "description": "Background of the panel and its arrow"
+        },
+        {
+          "name": "--popover-border-color",
+          "description": "Border color of the panel and its arrow"
+        },
+        {
+          "name": "--popover-shadow",
+          "description": "Shadow of the panel (defaults to --shadow-lg, --shadow-xl in dark themes)"
+        },
+        {
+          "name": "--popover-z-index",
+          "description": "Stacking order of the panel (defaults to --z-popover)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "anchor",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/popover/wc/anchor.html",
+      "files": {
+        "apps/docs/src/docs/pages/popover/wc/anchor.html": "<div style=\"display: flex; flex-wrap: wrap; gap: 12px; align-items: center\">\n  <span\n    id=\"avatar-anchor\"\n    style=\"\n      display: inline-grid;\n      place-items: center;\n      width: 40px;\n      height: 40px;\n      border-radius: 50%;\n      background: var(--color-primary-100, #dbeafe);\n    \"\n    >AL</span\n  >\n  <minerva-button id=\"edit-profile\" variant=\"outline\"\n    >Edit profile</minerva-button\n  >\n  <minerva-popover\n    id=\"profile\"\n    anchor=\"avatar-anchor\"\n    side=\"right\"\n    modal\n    label=\"Edit profile\"\n  >\n    <form id=\"profile-form\" style=\"display: grid; gap: 8px; width: 220px\">\n      <label style=\"display: grid; gap: 4px\"\n        >Display name <input name=\"name\" value=\"Ada Lovelace\" required\n      /></label>\n      <minerva-button type=\"submit\" size=\"small\">Save</minerva-button>\n    </form>\n  </minerva-popover>\n</div>\n<p id=\"profile-log\" style=\"margin: 8px 0 0\"></p>\n",
+        "apps/docs/src/docs/pages/popover/wc/anchor.ts": "// The panel is positioned against `anchor` (an element id) while an\n// external button opens it; `modal` traps focus until it closes.\ntype Popover = HTMLElement & { show(): void; hide(): void };\ntype OpenChange = CustomEvent<{ open: boolean; reason: string }>;\n\nexport function setup(root: HTMLElement) {\n  const button = root.querySelector<HTMLElement>(\"#edit-profile\")!;\n  const popover = root.querySelector<Popover>(\"#profile\")!;\n  const form = root.querySelector<HTMLFormElement>(\"#profile-form\")!;\n  const log = root.querySelector<HTMLElement>(\"#profile-log\")!;\n  const onClick = () => popover.show();\n  const onSubmit = (event: SubmitEvent) => {\n    event.preventDefault();\n    log.textContent = `Saved \"${new FormData(form).get(\"name\")}\"`;\n    popover.hide();\n  };\n  const onChange = (event: Event) => {\n    const { open, reason } = (event as OpenChange).detail;\n    if (!open) log.textContent = `Closed (reason: ${reason})`;\n  };\n  button.addEventListener(\"click\", onClick);\n  form.addEventListener(\"submit\", onSubmit);\n  popover.addEventListener(\"minerva-open-change\", onChange);\n  return () => {\n    button.removeEventListener(\"click\", onClick);\n    form.removeEventListener(\"submit\", onSubmit);\n    popover.removeEventListener(\"minerva-open-change\", onChange);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Anchor and modal",
+      "description": "anchor positions the panel against another element (by id) while any button opens it with show(); modal traps focus and blocks the rest of the page."
+    },
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/popover/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/popover/wc/basic.html": "<minerva-popover label=\"Share link\" arrow>\n  <minerva-button slot=\"trigger\" variant=\"outline\">Share</minerva-button>\n  <div style=\"display: grid; gap: 8px; width: 240px\">\n    <strong>Share this document</strong>\n    <input value=\"https://minerva.dev/d/42\" readonly aria-label=\"Link\" />\n    <div style=\"display: flex; justify-content: end; gap: 8px\">\n      <minerva-button data-popover-close size=\"small\" variant=\"ghost\"\n        >Done</minerva-button\n      >\n    </div>\n  </div>\n</minerva-popover>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Basic usage",
+      "description": "The trigger slot toggles an interactive panel; focus moves in and returns on close. Escape, an outside click or an element with data-popover-close closes it."
+    },
+    {
+      "id": "placement",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/popover/wc/placement.html",
+      "files": {
+        "apps/docs/src/docs/pages/popover/wc/placement.html": "<div style=\"display: grid; gap: 12px; justify-items: start\">\n  <div\n    id=\"placement-controls\"\n    style=\"display: flex; flex-wrap: wrap; gap: 12px\"\n  >\n    <label\n      >side\n      <select name=\"side\">\n        <option>top</option>\n        <option>right</option>\n        <option selected>bottom</option>\n        <option>left</option>\n      </select>\n    </label>\n    <label\n      >align\n      <select name=\"align\">\n        <option>start</option>\n        <option selected>center</option>\n        <option>end</option>\n      </select>\n    </label>\n  </div>\n  <minerva-popover\n    id=\"placed\"\n    side=\"bottom\"\n    align=\"center\"\n    side-offset=\"8\"\n    arrow\n    label=\"Placement\"\n  >\n    <minerva-button slot=\"trigger\">Toggle popover</minerva-button>\n    <p style=\"margin: 0; max-width: 220px\">\n      Flips and shifts to stay within the viewport (collision-padding).\n    </p>\n  </minerva-popover>\n</div>\n",
+        "apps/docs/src/docs/pages/popover/wc/placement.ts": "// side / align are reflected properties: changing them moves the open panel.\ntype Popover = HTMLElement & { side: string; align: string };\n\nexport function setup(root: HTMLElement) {\n  const controls = root.querySelector<HTMLElement>(\"#placement-controls\")!;\n  const popover = root.querySelector<Popover>(\"#placed\")!;\n  const onChange = (event: Event) => {\n    const select = event.target as HTMLSelectElement;\n    if (select.name === \"side\") popover.side = select.value;\n    if (select.name === \"align\") popover.align = select.value;\n  };\n  controls.addEventListener(\"change\", onChange);\n  return () => controls.removeEventListener(\"change\", onChange);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Placement",
+      "description": "side and align place the panel around the trigger, side-offset sets the gap and arrow points at it; it flips and shifts to stay in the viewport."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.19.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Popover",
+      "description": "A click-triggered floating panel for interactive content such as filters or account menus, anchored to its trigger. Unlike Tooltip it holds focusable content and manages focus, Escape and outside clicks itself; inside a Modal it closes first.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "PopoverTrigger toggles the panel; focus moves inside and returns to the trigger on close. PopoverClose closes it. In a non-modal popover, Tab past the last element (Shift+Tab before the first) closes it and moves focus to the element after (before) the trigger; focus never loops inside."
+        },
+        "placement": {
+          "title": "Placement",
+          "description": "side, align and sideOffset position the panel; it flips and shifts to stay in view. arrow points at the trigger."
+        },
+        "controlled": {
+          "title": "Controlled with an anchor",
+          "description": "open + onOpenChange control the state; PopoverAnchor positions the panel against another element."
+        }
+      },
+      "api": {
+        "PopoverProps": {
+          "open": "Controlled open state; leave undefined for uncontrolled",
+          "defaultOpen": "Initial open state while uncontrolled",
+          "onOpenChange": "Called with the requested open state (trigger, Escape, outside click, PopoverClose)",
+          "modal": "Modal mode: traps focus (Tab loops inside the panel), locks page scrolling, hides the rest of the page from assistive technology and blocks outside pointer interaction (an outside click still closes it)",
+          "children": "PopoverTrigger / PopoverAnchor and PopoverContent"
+        },
+        "PopoverContentProps": {
+          "ref": "Ref to the panel element",
+          "side": "Preferred side; flips when there is not enough room",
+          "align": "Alignment along the trigger",
+          "sideOffset": "Gap to the trigger in pixels",
+          "arrow": "Renders an arrow pointing at the trigger",
+          "portal": "Renders the panel into a portal (the theme-scoped container of a nested ConfigProvider, else document.body)",
+          "alignOffset": "Skid along the trigger in pixels (positive = towards the end)",
+          "collisionPadding": "Minimum distance to the viewport edges in pixels; currently fixed at 8px, other values are reserved",
+          "matchAnchorWidth": "Sizes the panel after the trigger / anchor width: \"min\" at least as wide, \"exact\" exactly as wide",
+          "forceMount": "Keeps the panel mounted while closed (data-state=\"closed\"), e.g. for animation libraries",
+          "onOpenAutoFocus": "Called before focus moves into the panel on open; event.preventDefault() keeps focus where it is",
+          "onCloseAutoFocus": "Called before focus returns to the opener on close; event.preventDefault() skips it",
+          "onEscapeKeyDown": "Escape pressed while it is the topmost layer; event.preventDefault() keeps it open",
+          "onPointerDownOutside": "Pointer pressed outside; event.preventDefault() keeps it open",
+          "onFocusOutside": "Focus moved outside; event.preventDefault() keeps it open",
+          "onInteractOutside": "Pointer down or focus outside; event.preventDefault() keeps it open"
+        },
+        "PopoverTriggerProps": {
+          "asChild": "Merges the behaviour onto the single child element instead of rendering its own element"
+        }
+      },
+      "cssVars": {
+        "--popover-min-width": "Minimum width of the panel",
+        "--popover-max-width": "Maximum width of the panel",
+        "--popover-padding": "Inner padding of the panel",
+        "--popover-radius": "Corner radius of the panel (defaults to --radius-lg)",
+        "--popover-background": "Background of the panel and its arrow",
+        "--popover-border-color": "Border color of the panel and its arrow",
+        "--popover-shadow": "Shadow of the panel (defaults to --shadow-lg, --shadow-xl in dark themes)",
+        "--popover-z-index": "Stacking order of the panel (defaults to --z-popover)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "The trigger slot toggles an interactive panel; focus moves in and returns on close. Escape, an outside click or an element with data-popover-close closes it."
+          },
+          "placement": {
+            "title": "Placement",
+            "description": "side and align place the panel around the trigger, side-offset sets the gap and arrow points at it; it flips and shifts to stay in the viewport."
+          },
+          "anchor": {
+            "title": "Anchor and modal",
+            "description": "anchor positions the panel against another element (by id) while any button opens it with show(); modal traps focus and blocks the rest of the page."
+          }
+        },
+        "minerva-popover": {
+          "props": {
+            "label": "Accessible name of the panel (or set aria-label on the element).",
+            "anchor": "Id of the element (same tree) to anchor to.",
+            "anchorElement": "Element the panel is positioned against instead of the trigger; takes precedence over anchor."
+          },
+          "events": {
+            "minerva-open-change": "The user asked to open / close (detail: { open, reason }); cancelable: preventDefault() keeps the current state.",
+            "minerva-after-open": "The popover is open.",
+            "minerva-after-close": "Fired once the panel has finished closing (after its exit animation)."
+          },
+          "slots": {
+            "default": "Panel content.",
+            "trigger": "Element that toggles the popover when clicked."
+          },
+          "methods": {
+            "show": "Opens the popover.",
+            "hide": "Closes the popover.",
+            "toggle": "Toggles the popover."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        },
+        "limitations": "On touch devices the content opens in a dismissible native dialog; DOM floating coordinates and hover positioning do not apply."
+      }
+    }
+  }
+}

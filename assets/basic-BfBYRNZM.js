@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-B0Z9INg1.js";import{r as t}from"./native-preview-BRFLbKzw.js";import{n}from"./native-preview-DR9OqD3J.js";import{O as r}from"./native-preview-DPJRcu2y.js";function i(){return(0,a.jsx)(r,{title:`No records`,description:`Create your first record to get started.`})}var a;function o(){return(o=e((()=>{n(),a=t()})))()}o();export{i as default};

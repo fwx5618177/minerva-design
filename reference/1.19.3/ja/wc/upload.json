@@ -1,0 +1,735 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.19.3",
+  "locale": "ja",
+  "renderer": "wc",
+  "page": "upload",
+  "title": "Upload アップロード",
+  "description": "ボタンまたはドラッグ＆ドロップでファイルを選択・検証し、転送状態とともに一覧表示します。転送処理自体はアプリ側で行います。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.19.3",
+    "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
+    "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
+    "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Upload",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/upload",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-upload",
+        "props": [
+          {
+            "name": "label",
+            "typeText": "string",
+            "attribute": "label",
+            "required": false
+          },
+          {
+            "name": "accept",
+            "typeText": "string",
+            "attribute": "accept",
+            "required": false
+          },
+          {
+            "name": "multiple",
+            "typeText": "boolean",
+            "attribute": "multiple",
+            "required": false
+          },
+          {
+            "name": "replace",
+            "typeText": "boolean",
+            "attribute": "replace",
+            "required": false
+          },
+          {
+            "name": "maxCount",
+            "typeText": "number | undefined",
+            "attribute": "max-count",
+            "required": false
+          },
+          {
+            "name": "maxSize",
+            "typeText": "number | undefined",
+            "attribute": "max-size",
+            "required": false
+          },
+          {
+            "name": "loading",
+            "typeText": "boolean",
+            "attribute": "loading",
+            "required": false
+          },
+          {
+            "name": "removable",
+            "typeText": "boolean",
+            "attribute": "removable",
+            "required": false
+          },
+          {
+            "name": "retryable",
+            "typeText": "boolean",
+            "attribute": "retryable",
+            "required": false
+          },
+          {
+            "name": "name",
+            "typeText": "string",
+            "attribute": "name",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "attribute": "disabled",
+            "required": false
+          },
+          {
+            "name": "required",
+            "typeText": "boolean",
+            "attribute": "required",
+            "required": false
+          },
+          {
+            "name": "items",
+            "typeText": "UploadItem[]",
+            "required": false
+          },
+          {
+            "name": "texts",
+            "typeText": "UploadLabels | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "change",
+            "typeText": "Event",
+            "description": "The listed files changed through the user"
+          },
+          {
+            "name": "minerva-files-selected",
+            "typeText": "CustomEvent<{ files: File[]; }>",
+            "detailType": {
+              "typeText": "{ files: File[]; }",
+              "typeRef": "type:fae8404d3eb2d6db5ece"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": true,
+            "description": "Valid files were picked or dropped; `detail: { files }`; cancelable (the files are then not listed)"
+          },
+          {
+            "name": "minerva-change",
+            "typeText": "CustomEvent<{ value: UploadItem[]; }>",
+            "detailType": {
+              "typeText": "{ value: UploadItem[]; }",
+              "typeRef": "type:cd2d239f01160eecce6f"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The listed files changed through the user; `detail: { value }` (the items)"
+          },
+          {
+            "name": "minerva-remove",
+            "typeText": "CustomEvent<{ item: UploadItem; }>",
+            "detailType": {
+              "typeText": "{ item: UploadItem; }",
+              "typeRef": "type:7f10b7ea119298f47c03"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": true,
+            "description": "The remove button of an item was activated; `detail: { item }`; cancelable (keeps the item)"
+          },
+          {
+            "name": "minerva-retry",
+            "typeText": "CustomEvent<{ item: UploadItem; }>",
+            "detailType": {
+              "typeText": "{ item: UploadItem; }",
+              "typeRef": "type:bf3db17f7d1046f5c316"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The retry button of a failed item was activated; `detail: { item }`"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-upload": {
+      "kind": "element",
+      "source": "web-components/src/components/upload/upload.ts",
+      "className": "MinervaUpload",
+      "summary": "File picker with drag and drop, validation and a file list.",
+      "description": "File selection with a button or drag and drop, validation (`accept`, `max-size`, `max-count`) and a list of files with their transfer state (`<Upload>` of React). Valid selections fire `minerva-files-selected` (cancelable): unless it is canceled, the files are added to `items` (status \"done\", with their `file`; replacing the listed file in single `replace` mode). Update `items` to show transfer progress / errors and persisted files. With `removable`, each item has a remove button (`minerva-remove`, cancelable; removes the item by default); with `retryable`, failed items have a retry button (`minerva-retry`). Form-associated: submits the `file` of every item under `name` (multipart `FormData`); `required` makes an upload without files invalid (`valueMissing`, localized \"Please select a file.\"); `form.reset()` empties the list; `<fieldset disabled>` and state restoration supported.",
+      "properties": [
+        {
+          "name": "label",
+          "attribute": "label",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Visible label of the field (also names the group and the file input)"
+        },
+        {
+          "name": "accept",
+          "attribute": "accept",
+          "type": "string",
+          "default": "\"*\"",
+          "description": "Accepted file types, as for `<input accept>` (\".pdf\", \"image/*\"...)"
+        },
+        {
+          "name": "multiple",
+          "attribute": "multiple",
+          "type": "boolean",
+          "default": "false",
+          "description": "Allows selecting several files"
+        },
+        {
+          "name": "replace",
+          "attribute": "replace",
+          "type": "boolean",
+          "default": "false",
+          "description": "Single-file mode: a new file replaces the listed one"
+        },
+        {
+          "name": "maxCount",
+          "attribute": "max-count",
+          "type": "number | undefined",
+          "description": "Maximum number of files, including the listed ones (default: 50 when multiple, else 1)"
+        },
+        {
+          "name": "maxSize",
+          "attribute": "max-size",
+          "type": "number | undefined",
+          "description": "Maximum size of a file, in bytes"
+        },
+        {
+          "name": "loading",
+          "attribute": "loading",
+          "type": "boolean",
+          "default": "false",
+          "description": "Busy state: blocks new selections and retries (removal stays possible)"
+        },
+        {
+          "name": "removable",
+          "attribute": "removable",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows a remove button on every item"
+        },
+        {
+          "name": "retryable",
+          "attribute": "retryable",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows a retry button on failed items"
+        },
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Name submitted with the form data"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false",
+          "description": "Disables the control (not focusable, not submitted, not validated)"
+        },
+        {
+          "name": "required",
+          "attribute": "required",
+          "type": "boolean",
+          "default": "false",
+          "description": "The control must have a value for the form to be submitted"
+        },
+        {
+          "name": "items",
+          "type": "UploadItem[]",
+          "default": "[]",
+          "description": "Listed files with their transfer state"
+        },
+        {
+          "name": "texts",
+          "type": "UploadLabels | undefined",
+          "description": "Custom texts (the React library's `labels` prop; renamed because `labels` is the form control's `<label>` list); each one overrides the localized default"
+        },
+        {
+          "name": "files",
+          "type": "File[]",
+          "readonly": true,
+          "description": "Files of the listed items (submitted with the form)"
+        },
+        {
+          "name": "isDisabled",
+          "type": "boolean",
+          "readonly": true,
+          "description": "Whether the control is disabled (itself or by a disabled fieldset)."
+        },
+        {
+          "name": "form",
+          "type": "HTMLFormElement | null",
+          "readonly": true,
+          "description": "The form owning the element"
+        },
+        {
+          "name": "labels",
+          "type": "NodeList | null",
+          "readonly": true,
+          "description": "`<label>` elements associated with the element"
+        },
+        {
+          "name": "validity",
+          "type": "ValidityState | undefined",
+          "readonly": true,
+          "description": "Validity state (same as `<input>.validity`)"
+        },
+        {
+          "name": "validationMessage",
+          "type": "string",
+          "readonly": true,
+          "description": "Message describing the current validation error (empty when valid)"
+        },
+        {
+          "name": "willValidate",
+          "type": "boolean",
+          "readonly": true,
+          "description": "Whether the element is a candidate for constraint validation"
+        }
+      ],
+      "methods": [
+        {
+          "name": "focus",
+          "signature": "(options?: FocusOptions) => void",
+          "description": "Focuses the select button"
+        },
+        {
+          "name": "showPicker",
+          "signature": "() => void",
+          "description": "Opens the file picker"
+        },
+        {
+          "name": "checkValidity",
+          "signature": "() => boolean",
+          "description": "Checks validity; fires `invalid` when invalid."
+        },
+        {
+          "name": "reportValidity",
+          "signature": "() => boolean",
+          "description": "Checks validity and shows the browser's validation message."
+        },
+        {
+          "name": "setCustomValidity",
+          "signature": "(message: string) => void",
+          "description": "Sets (or clears, with `\"\"`) a custom validation error."
+        },
+        {
+          "name": "formResetCallback",
+          "signature": "() => void"
+        },
+        {
+          "name": "formDisabledCallback",
+          "signature": "(disabled: boolean) => void"
+        },
+        {
+          "name": "formStateRestoreCallback",
+          "signature": "(state: string | File | FormData | null) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "change",
+          "description": "The listed files changed through the user"
+        },
+        {
+          "name": "minerva-files-selected",
+          "description": "Valid files were picked or dropped; `detail: { files }`; cancelable (the files are then not listed)"
+        },
+        {
+          "name": "minerva-change",
+          "description": "The listed files changed through the user; `detail: { value }` (the items)"
+        },
+        {
+          "name": "minerva-remove",
+          "description": "The remove button of an item was activated; `detail: { item }`; cancelable (keeps the item)"
+        },
+        {
+          "name": "minerva-retry",
+          "description": "The retry button of a failed item was activated; `detail: { item }`"
+        }
+      ],
+      "slots": [],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The container (`role=group`)"
+        },
+        {
+          "name": "label",
+          "description": "The visible label"
+        },
+        {
+          "name": "dropzone",
+          "description": "The drop target"
+        },
+        {
+          "name": "select-button",
+          "description": "The select button"
+        },
+        {
+          "name": "error",
+          "description": "The selection error"
+        },
+        {
+          "name": "list",
+          "description": "The file list"
+        },
+        {
+          "name": "item",
+          "description": "A file"
+        },
+        {
+          "name": "item--status-uploading",
+          "description": "Item state of `item`: status uploading"
+        },
+        {
+          "name": "item--status-done",
+          "description": "Item state of `item`: status done"
+        },
+        {
+          "name": "item--status-error",
+          "description": "Item state of `item`: status error"
+        },
+        {
+          "name": "remove-button",
+          "description": "The remove button of a file"
+        },
+        {
+          "name": "retry-button",
+          "description": "The retry button of a failed file"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--icon-button-color",
+          "description": "Icon color"
+        },
+        {
+          "name": "--icon-button-hover-bg",
+          "description": "Background on hover"
+        },
+        {
+          "name": "--icon-button-pressed-color",
+          "description": "Icon color of a pressed toggle"
+        },
+        {
+          "name": "--icon-button-pressed-bg",
+          "description": "Background of a pressed toggle"
+        },
+        {
+          "name": "--icon-button-size",
+          "description": "Width and height of the button (every size; defaults follow the density's control heights)"
+        },
+        {
+          "name": "--icon-button-icon-size",
+          "description": "Font size of the icon (every size)"
+        },
+        {
+          "name": "--icon-button-radius",
+          "description": "Corner radius of the square shape (defaults to --radius-lg)"
+        },
+        {
+          "name": "--upload-gap",
+          "description": "Space between the label, the dropzone, the error and the file list"
+        },
+        {
+          "name": "--upload-font-size",
+          "description": "Font size"
+        },
+        {
+          "name": "--upload-dropzone-padding",
+          "description": "Inner padding of the dropzone"
+        },
+        {
+          "name": "--upload-dropzone-radius",
+          "description": "Corner radius of the dropzone (defaults to --radius-md)"
+        },
+        {
+          "name": "--upload-dropzone-border-color",
+          "description": "Dashed border color of the dropzone at rest"
+        },
+        {
+          "name": "--upload-dropzone-background",
+          "description": "Background of the dropzone at rest"
+        },
+        {
+          "name": "--upload-preview-width",
+          "description": "Width of an image preview in the file list"
+        },
+        {
+          "name": "--upload-preview-height",
+          "description": "Height of an image preview in the file list"
+        },
+        {
+          "name": "--upload-dropzone-min-height",
+          "description": "Minimum height of the dropzone (its content is centered)"
+        },
+        {
+          "name": "--upload-item-background",
+          "description": "Background of a file row (defaults to --surface-color)"
+        },
+        {
+          "name": "--upload-dropzone-active-color",
+          "description": "Border and ring color of the dropzone while a file is dragged over it (defaults to --primary-color)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Upload": {
+      "kind": "cssVars",
+      "source": "react/src/components/Upload",
+      "vars": [
+        {
+          "name": "--upload-gap",
+          "description": "Space between the label, the dropzone, the error and the file list"
+        },
+        {
+          "name": "--upload-font-size",
+          "description": "Font size"
+        },
+        {
+          "name": "--upload-dropzone-padding",
+          "description": "Inner padding of the dropzone"
+        },
+        {
+          "name": "--upload-dropzone-radius",
+          "description": "Corner radius of the dropzone (defaults to --radius-md)"
+        },
+        {
+          "name": "--upload-dropzone-border-color",
+          "description": "Dashed border color of the dropzone at rest"
+        },
+        {
+          "name": "--upload-dropzone-background",
+          "description": "Background of the dropzone at rest"
+        },
+        {
+          "name": "--upload-preview-width",
+          "description": "Width of an image preview in the file list"
+        },
+        {
+          "name": "--upload-preview-height",
+          "description": "Height of an image preview in the file list"
+        },
+        {
+          "name": "--upload-dropzone-min-height",
+          "description": "Minimum height of the dropzone (its content is centered)"
+        },
+        {
+          "name": "--upload-item-background",
+          "description": "Background of a file row (defaults to --surface-color)"
+        },
+        {
+          "name": "--upload-dropzone-active-color",
+          "description": "Border and ring color of the dropzone while a file is dragged over it (defaults to --primary-color)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/upload/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/upload/wc/basic.html": "<div style=\"display: grid; gap: 16px; max-width: 480px\">\n  <minerva-upload\n    label=\"Avatar (image, 1 MB max)\"\n    accept=\"image/*\"\n    max-size=\"1048576\"\n    replace\n    removable\n  ></minerva-upload>\n  <minerva-upload\n    label=\"Attachments (up to 3 files)\"\n    multiple\n    max-count=\"3\"\n    removable\n  ></minerva-upload>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "基本的な使い方",
+      "description": "ファイルを選択またはドロップします。accept と max-size は不正なファイルをメッセージ付きで拒否し、replace は 1 つのファイルを置き換え、multiple + max-count で複数を許可し、removable で削除ボタンを追加します。"
+    },
+    {
+      "id": "form",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/upload/wc/form.html",
+      "files": {
+        "apps/docs/src/docs/pages/upload/wc/form.html": "<form id=\"up-form\" style=\"display: grid; gap: 12px; max-width: 480px\">\n  <minerva-upload\n    name=\"receipts\"\n    label=\"Receipts (PDF or image)\"\n    accept=\".pdf,image/*\"\n    multiple\n    required\n    removable\n  ></minerva-upload>\n  <div style=\"display: flex; gap: 8px\">\n    <minerva-button type=\"submit\">Submit expense</minerva-button>\n    <minerva-button type=\"reset\" variant=\"ghost\" color=\"neutral\"\n      >Reset</minerva-button\n    >\n  </div>\n  <output id=\"up-form-result\"></output>\n</form>\n",
+        "apps/docs/src/docs/pages/upload/wc/form.ts": "// Every listed file is submitted under `name` (multipart FormData);\n// `required` blocks submission without files and reset empties the list.\nexport function setup(root: HTMLElement) {\n  const form = root.querySelector<HTMLFormElement>(\"#up-form\")!;\n  const result = root.querySelector<HTMLOutputElement>(\"#up-form-result\")!;\n  const onSubmit = (event: SubmitEvent) => {\n    event.preventDefault();\n    const files = new FormData(form).getAll(\"receipts\") as File[];\n    result.value = `FormData: ${files.map((file) => `${file.name} (${file.size} B)`).join(\", \")}`;\n  };\n  const onReset = () => (result.value = \"\");\n  form.addEventListener(\"submit\", onSubmit);\n  form.addEventListener(\"reset\", onReset);\n  return () => {\n    form.removeEventListener(\"submit\", onSubmit);\n    form.removeEventListener(\"reset\", onReset);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "フォーム内での利用",
+      "description": "一覧のすべてのファイルが name で送信されます（multipart の FormData）。required はファイルがない場合に送信を止め、リセットで一覧が空になります。"
+    },
+    {
+      "id": "transfer",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/upload/wc/transfer.html",
+      "files": {
+        "apps/docs/src/docs/pages/upload/wc/transfer.html": "<minerva-upload\n  id=\"up-transfer\"\n  label=\"Documents\"\n  multiple\n  removable\n  retryable\n  style=\"max-width: 480px\"\n></minerva-upload>\n",
+        "apps/docs/src/docs/pages/upload/wc/transfer.ts": "// Canceling `minerva-files-selected` lets the page own `items`: each file is\n// listed as \"uploading\", then \"done\" (every second file fails once, to show\n// the retry button and `minerva-retry`).\ntype Item = {\n  id: string;\n  name: string;\n  status: \"uploading\" | \"done\" | \"error\";\n  error?: string;\n  file?: File;\n};\ntype Upload = HTMLElement & { items: Item[] };\n\nexport function setup(root: HTMLElement) {\n  const upload = root.querySelector<Upload>(\"#up-transfer\")!;\n  const timers = new Set<ReturnType<typeof setTimeout>>();\n  let count = 0;\n  const update = (id: string, patch: Partial<Item>) => {\n    upload.items = upload.items.map((item) =>\n      item.id === id ? { ...item, ...patch } : item,\n    );\n  };\n  const send = (id: string, fail: boolean) => {\n    update(id, { status: \"uploading\", error: undefined });\n    const timer = setTimeout(() => {\n      timers.delete(timer);\n      update(\n        id,\n        fail ? { status: \"error\", error: \"Network error\" } : { status: \"done\" },\n      );\n    }, 1500);\n    timers.add(timer);\n  };\n  const onSelected = (event: Event) => {\n    event.preventDefault();\n    const { files } = (event as CustomEvent<{ files: File[] }>).detail;\n    for (const file of files) {\n      const id = `doc-${++count}`;\n      upload.items = [\n        ...upload.items,\n        { id, name: file.name, status: \"uploading\", file },\n      ];\n      send(id, count % 2 === 0);\n    }\n  };\n  const onRetry = (event: Event) => {\n    send((event as CustomEvent<{ item: Item }>).detail.item.id, false);\n  };\n  upload.addEventListener(\"minerva-files-selected\", onSelected);\n  upload.addEventListener(\"minerva-retry\", onRetry);\n  return () => {\n    timers.forEach(clearTimeout);\n    upload.removeEventListener(\"minerva-files-selected\", onSelected);\n    upload.removeEventListener(\"minerva-retry\", onRetry);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "アップロードの進行と再試行",
+      "description": "minerva-files-selected をキャンセルするとページが items を管理します。ファイルはアップロード中として表示された後、完了または失敗になります（2 つ目ごとに 1 回失敗）。retryable で minerva-retry を発火する再試行ボタンを表示します。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.19.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Upload アップロード",
+      "description": "ボタンまたはドラッグ＆ドロップでファイルを選択・検証し、転送状態とともに一覧表示します。転送処理自体はアプリ側で行います。",
+      "demos": {
+        "basic": {
+          "title": "単一ファイル",
+          "description": "onFilesSelected は accept と maxSize を満たしたファイルを受け取ります。転送状態は value に反映します。replace で新しいファイルが現在のファイルを置き換えます。"
+        },
+        "multiple": {
+          "title": "複数ファイル",
+          "description": "multiple と maxCount の組み合わせ。失敗した項目はエラーを表示し、onRetry があれば再試行ボタンを表示します。"
+        }
+      },
+      "api": {
+        "UploadProps": {
+          "label": "アップロード欄の表示ラベル（ファイル入力の名前にもなります）",
+          "value": "一覧表示するファイルと転送状態（制御モード）",
+          "onFilesSelected": "選択（またはドロップ）されたファイルが accept・maxSize・maxCount を満たすと呼ばれます。転送・キャンセル・保存 URL は呼び出し側の責任です",
+          "onRemove": "ファイルを削除するときに呼ばれます。各項目に削除ボタンを表示します",
+          "onRetry": "失敗したファイルを再試行するときに呼ばれます。失敗した項目に再試行ボタンを表示します",
+          "accept": "受け付けるファイル形式（<input accept> と同じ）",
+          "multiple": "複数ファイルの選択を許可します",
+          "replace": "単一ファイルモード：新しいファイルで既存のものを置き換えられます（既存ファイルは maxCount に数えません）",
+          "maxCount": "ファイル数の上限（一覧のファイルを含む）",
+          "maxSize": "1 ファイルの最大サイズ（バイト）",
+          "loading": "処理中の状態：新規選択と再試行を止め（削除は可能）、aria-busy を設定します",
+          "disabled": "選択・再試行・削除を無効にします",
+          "labels": "カスタムテキスト。各項目がローカライズされた既定値を上書きします",
+          "className": "追加のクラス名",
+          "ref": "ルート要素への ref"
+        },
+        "UploadItem": {
+          "id": "ファイルの安定した識別子",
+          "name": "一覧に表示するファイル名",
+          "status": "ファイルの転送状態",
+          "error": "status が \"error\" のときに表示するエラーメッセージ",
+          "previewUrl": "画像プレビューの URL（オブジェクト URL など）"
+        },
+        "UploadLabels": {
+          "select": "選択ボタンのテキスト",
+          "uploading": "アップロード中ファイルの状態テキスト",
+          "done": "アップロード済みファイルの状態テキスト",
+          "failed": "独自のエラーメッセージがない失敗ファイルの状態テキスト",
+          "tooMany": "選択ファイルが多すぎる場合のエラー",
+          "invalidType": "ファイルが accept に一致しない場合のエラー",
+          "tooLarge": "ファイルが maxSize を超えた場合のエラー",
+          "retry": "ファイルの再試行ボタンのアクセシブルなラベル",
+          "remove": "ファイルの削除ボタンのアクセシブルなラベル"
+        }
+      },
+      "cssVars": {
+        "--upload-gap": "ラベル・ドロップゾーン・エラー・ファイル一覧の間隔",
+        "--upload-font-size": "フォントサイズ",
+        "--upload-dropzone-padding": "ドロップゾーンの内側の余白",
+        "--upload-dropzone-radius": "ドロップゾーンの角丸（既定は --radius-md）",
+        "--upload-dropzone-border-color": "通常時のドロップゾーンの破線枠の色",
+        "--upload-dropzone-background": "通常時のドロップゾーンの背景色",
+        "--upload-preview-width": "ファイル一覧の画像プレビューの幅",
+        "--upload-preview-height": "ファイル一覧の画像プレビューの高さ",
+        "--upload-dropzone-min-height": "ドロップゾーンの最小の高さ（内容は中央揃え）",
+        "--upload-dropzone-active-color": "ファイルをドラッグ中のドロップゾーンの枠線とリングの色（既定は --primary-color）",
+        "--upload-item-background": "ファイル行の背景（既定は --surface-color）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "ファイルを選択またはドロップします。accept と max-size は不正なファイルをメッセージ付きで拒否し、replace は 1 つのファイルを置き換え、multiple + max-count で複数を許可し、removable で削除ボタンを追加します。"
+          },
+          "transfer": {
+            "title": "アップロードの進行と再試行",
+            "description": "minerva-files-selected をキャンセルするとページが items を管理します。ファイルはアップロード中として表示された後、完了または失敗になります（2 つ目ごとに 1 回失敗）。retryable で minerva-retry を発火する再試行ボタンを表示します。"
+          },
+          "form": {
+            "title": "フォーム内での利用",
+            "description": "一覧のすべてのファイルが name で送信されます（multipart の FormData）。required はファイルがない場合に送信を止め、リセットで一覧が空になります。"
+          }
+        },
+        "minerva-upload": {
+          "props": {
+            "removable": "各項目に削除ボタンを表示します。",
+            "retryable": "失敗した項目に再試行ボタンを表示します。",
+            "required": "ファイルがない場合は無効になります（valueMissing）。",
+            "items": "一覧のファイルと転送状態：{ id, name, status, error?, previewUrl?, file? } の配列（プロパティ）。",
+            "texts": "カスタムテキスト（React 版の labels プロパティ。labels はフォームコントロールの <label> 一覧のため改名）。各項目がローカライズ済みの既定値を上書きします。",
+            "files": "一覧の項目のファイル。フォームと一緒に送信されます（読み取り専用）。",
+            "isDisabled": "コントロールが無効かどうか（自身または無効な <fieldset> による。読み取り専用）。",
+            "form": "要素が属するフォーム（読み取り専用）。",
+            "validity": "<input>.validity と同じ妥当性の状態（読み取り専用）。",
+            "validationMessage": "現在の検証エラーのメッセージ。有効な場合は空（読み取り専用）。",
+            "willValidate": "要素が制約検証の対象かどうか（読み取り専用）。"
+          },
+          "events": {
+            "change": "ユーザーが一覧のファイルを変更した。",
+            "minerva-files-selected": "有効なファイルが選択またはドロップされた。detail: { files }。キャンセル可能（キャンセルするとファイルは一覧に追加されません）。",
+            "minerva-change": "ユーザーが一覧のファイルを変更した。detail: { value }（項目）。",
+            "minerva-remove": "項目の削除ボタンが押された。detail: { item }。キャンセル可能（キャンセルすると項目は残ります）。",
+            "minerva-retry": "失敗した項目の再試行ボタンが押された。detail: { item }。"
+          },
+          "cssVars": {
+            "--icon-button-color": "内部のアイコンボタンのアイコン色。",
+            "--icon-button-hover-bg": "ホバー時の内部アイコンボタンの背景。",
+            "--icon-button-pressed-color": "押下状態の内部アイコンボタンのアイコン色。",
+            "--icon-button-pressed-bg": "押下状態の内部アイコンボタンの背景。",
+            "--icon-button-size": "内部アイコンボタンの幅と高さ（既定値は密度のコントロール高さに従う）。",
+            "--icon-button-icon-size": "内部アイコンボタンのアイコンのフォントサイズ。",
+            "--icon-button-radius": "内部アイコンボタンの角丸（既定値は --radius-lg）。"
+          },
+          "methods": {
+            "focus": "選択ボタンにフォーカスします。",
+            "showPicker": "ファイル選択ダイアログを開きます。",
+            "checkValidity": "妥当性を確認し、無効なら invalid イベントを発火します。",
+            "reportValidity": "妥当性を確認し、ブラウザーの検証メッセージを表示します。",
+            "setCustomValidity": "独自の検証エラーを設定します（空文字列で解除）。",
+            "formResetCallback": "form.reset() から呼ばれるフォームのライフサイクルコールバック。初期値に戻します。",
+            "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときに呼ばれるフォームのライフサイクルコールバック。",
+            "formStateRestoreCallback": "ブラウザーが状態を復元するとき（履歴移動・自動入力）に呼ばれるフォームのライフサイクルコールバック。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        },
+        "limitations": "このプレビューはブラウザーのファイル選択を使用し、Expo の例はネイティブのシステム選択を使用します。選択したファイルはローカルにあり、転送と進行状況はアプリが管理します。"
+      }
+    }
+  }
+}

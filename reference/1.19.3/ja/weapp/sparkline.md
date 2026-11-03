@@ -1,0 +1,335 @@
+# スパークライン
+
+軸も凡例もない、文字ほどの大きさの小さなチャート。KPI カードや表のセル、リストの中で数値の横に推移の形を示します。ホバーすると値を読み取れます。
+
+Package: minerva-design@1.19.3
+
+Renderer: weapp
+
+Locale: ja
+
+## Provenance
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "packageVersion": "1.19.3",
+  "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
+  "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
+  "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+}
+```
+
+Type references resolve through the [type graph](/minerva-design/reference/1.19.3/types.json) or getType() from minerva-design/contracts.
+
+## Documentation
+
+注文
+
+週ごとの注文、{{variant}}
+
+売上
+
+アクティブユーザー
+
+登録数
+
+p95 レイテンシ
+
+{{metric}}（過去 30 日）
+
+サービス
+
+API ゲートウェイ
+
+認証
+
+検索
+
+決済
+
+通知
+
+リクエスト / 分
+
+p95 レイテンシ（30 日）
+
+{{service}}の過去 30 日の p95 レイテンシ
+
+本日
+
+変化
+
+サービスのレイテンシ
+
+銘柄
+
+アクメ・コーポレーション
+
+ノヴァ・バイオテック
+
+オービット・エアロスペース
+
+カイト・ロボティクス
+
+ルーマ・エナジー
+
+{{symbol}} の本日の株価
+
+株価
+
+ウォッチリスト
+
+過去 14 日間の訪問数：
+
+訪問数
+
+過去 14 日間の訪問数
+
+7 日目のデプロイ後にエラーが急増し、その後元に戻りました：
+
+エラー
+
+過去 14 日間の日別エラー数
+
+この 2 週間の午後の気温：
+
+気温
+
+過去 14 日間の午後の気温
+
+CPU
+
+{{server}} の CPU 使用率
+
+アラート
+
+正常
+
+デイリーアクティブユーザー
+
+最新: {{date}}
+
+{{date}} · 9 月 1 日から {{change}}
+
+9 月 1 日から 10 月 31 日までのデイリーアクティブユーザー
+
+{{value}} 歩
+
+目標の {{value}}
+
+{{days}} 日中 {{reached}} 日で目標の {{goal}} 歩を達成
+
+歩数
+
+4 週間の 1 日あたりの歩数と 1 日の目標
+
+レイキャビク
+
+モントリオール
+
+東京
+
+カイロ
+
+シンガポール
+
+シドニー
+
+最高 {{max}}（{{maxMonth}}）· 最低 {{min}}（{{minMonth}}）
+
+{{city}} の月ごとの平均最高気温
+
+期間
+
+7 日
+
+30 日
+
+90 日
+
+後半と前半の比較
+
+前の期間との比較
+
+直近 {{period}} の 1 日あたりの売上
+
+## Sparkline
+
+Support: beta
+
+Word-sized line / area / bar without axes or legend (default height 48), reference line, tooltip; format() through configure(). Same as Chart. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design/dist/weapp/sparkline/index",
+  "exports": [],
+  "kind": "usingComponents"
+}
+```
+
+### props
+
+```json
+[
+  {
+    "name": "width",
+    "typeText": "unknown",
+    "required": false,
+    "default": "100%"
+  },
+  {
+    "name": "height",
+    "typeText": "unknown",
+    "required": false,
+    "default": 48
+  },
+  {
+    "name": "legend",
+    "typeText": "unknown",
+    "required": false,
+    "default": null
+  },
+  {
+    "name": "tooltip",
+    "typeText": "unknown",
+    "required": false,
+    "default": null
+  },
+  {
+    "name": "crosshair",
+    "typeText": "unknown",
+    "required": false,
+    "default": null
+  },
+  {
+    "name": "annotations",
+    "typeText": "array",
+    "required": false
+  },
+  {
+    "name": "interaction",
+    "typeText": "unknown",
+    "required": false,
+    "default": null
+  },
+  {
+    "name": "padding",
+    "typeText": "unknown",
+    "required": false,
+    "default": null
+  },
+  {
+    "name": "palette",
+    "typeText": "array",
+    "required": false
+  },
+  {
+    "name": "ariaLabel",
+    "typeText": "string",
+    "required": false,
+    "default": ""
+  },
+  {
+    "name": "locale",
+    "typeText": "string",
+    "required": false,
+    "default": ""
+  },
+  {
+    "name": "labels",
+    "typeText": "unknown",
+    "required": false,
+    "default": null
+  },
+  {
+    "name": "disableScroll",
+    "typeText": "boolean",
+    "required": false,
+    "default": false
+  },
+  {
+    "name": "data",
+    "typeText": "array",
+    "required": false
+  },
+  {
+    "name": "type",
+    "typeText": "string",
+    "required": false,
+    "default": ""
+  },
+  {
+    "name": "color",
+    "typeText": "string",
+    "required": false,
+    "default": ""
+  },
+  {
+    "name": "curve",
+    "typeText": "string",
+    "required": false,
+    "default": ""
+  },
+  {
+    "name": "name",
+    "typeText": "string",
+    "required": false,
+    "default": ""
+  },
+  {
+    "name": "reference",
+    "typeText": "unknown",
+    "required": false,
+    "default": null
+  }
+]
+```
+
+### events
+
+```json
+[
+  {
+    "name": "hover",
+    "typeText": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+    "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+  },
+  {
+    "name": "pointclick",
+    "typeText": "{ items: NativeChartHoverItem[]; x: number; xLabel: string }",
+    "description": "A point or bar was tapped."
+  },
+  {
+    "name": "plotclick",
+    "typeText": "{ x: number; y: number }",
+    "description": "The plot area was tapped where there is no point (data coordinates)."
+  },
+  {
+    "name": "zoom",
+    "typeText": "{ x: [number, number]; y: [number, number] }",
+    "description": "Visible range after a pinch, a pan or a double-tap reset."
+  },
+  {
+    "name": "layout",
+    "typeText": "{ x: number; y: number; width: number; height: number }",
+    "description": "The plot area moved or was resized (px of the chart)."
+  },
+  {
+    "name": "pointdrag",
+    "typeText": "{ item: NativeChartHoverItem; x: number; y: number }",
+    "description": "A scatter point is dragged (interaction.dragPoints); the data is not changed."
+  },
+  {
+    "name": "pointdrop",
+    "typeText": "{ item: NativeChartHoverItem; x: number; y: number }",
+    "description": "A dragged scatter point was released; update the series to move it."
+  }
+]
+```
+
+## Installation and initialization
+
+See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.

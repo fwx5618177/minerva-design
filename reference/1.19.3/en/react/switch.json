@@ -1,0 +1,955 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.19.3",
+  "locale": "en",
+  "renderer": "react",
+  "page": "switch",
+  "title": "Switch",
+  "description": "Toggles a single setting on or off, with immediate effect.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.19.3",
+    "sourceCommit": "1b65455cccbdd71bb609d7d859b1ef90f9e604c6",
+    "sourceDigest": "sha256:a8b34eea01e9133306bb1fde48e7966deaaaa35d87c2dfd2e181d891c65e01c1",
+    "referenceSourceDigest": "sha256:d3ed05a4228bc39ff766871c13b5ba292792f934f6ebc3d0d29af28589be129c"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Switch",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "Switch"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "checked",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Whether the switch is on (controlled)"
+          },
+          {
+            "name": "defaultChecked",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Initial state (uncontrolled)"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables the switch. Inherited from an enclosing FormControl when not set; an explicit `false` overrides the FormControl"
+          },
+          {
+            "name": "size",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "\"small\" | \"medium\" | \"large\" | undefined",
+            "typeRef": "type:8d5b6882dc615b54818b",
+            "default": "medium",
+            "required": false,
+            "description": "Switch size"
+          },
+          {
+            "name": "color",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "enum",
+            "values": [
+              "danger",
+              "info",
+              "primary",
+              "success",
+              "warning"
+            ],
+            "typeText": "\"primary\" | \"success\" | \"warning\" | \"danger\" | \"info\" | undefined",
+            "typeRef": "type:55b92b1f55ce64573a84",
+            "default": "primary",
+            "required": false,
+            "description": "Semantic color of the \"on\" state (checked thumb and track, active side label / segment)"
+          },
+          {
+            "name": "shape",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "enum",
+            "values": [
+              "round",
+              "square"
+            ],
+            "typeText": "\"square\" | \"round\" | undefined",
+            "typeRef": "type:20c454908c83baffbbc6",
+            "default": "round",
+            "required": false,
+            "description": "Shape of the track and thumb"
+          },
+          {
+            "name": "variant",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "enum",
+            "values": [
+              "segmented",
+              "slider"
+            ],
+            "typeText": "SwitchVariant | undefined",
+            "typeRef": "type:ec4ff5b331bde7ae3341",
+            "default": "slider",
+            "required": false,
+            "description": "\"slider\" is the classic track + thumb; \"segmented\" renders two pressable segments (requires offLabel and onLabel, otherwise falls back to slider)"
+          },
+          {
+            "name": "label",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Label displayed next to the switch"
+          },
+          {
+            "name": "offLabel",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Label of the \"off\" state. With onLabel, both labels are rendered as buttons on each side of the slider (they replace `label`) or as the segments of the segmented variant"
+          },
+          {
+            "name": "onLabel",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Label of the \"on\" state (see offLabel)"
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label, required when the switch has no visible label. Set on the switch input (on the segment group for the segmented variant)"
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "id(s) of the element(s) labelling the switch (on the segment group for the segmented variant). Defaults to the enclosing FormControl's label for the segmented variant"
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Extra id(s) of elements describing the switch, merged with the enclosing FormControl's helper / error text"
+          },
+          {
+            "name": "name",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Name of the input, used in forms"
+          },
+          {
+            "name": "id",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "id of the input (defaults to the enclosing FormControl's id)"
+          },
+          {
+            "name": "value",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Value submitted with the form when on"
+          },
+          {
+            "name": "labelPlacement",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "enum",
+            "values": [
+              "bottom",
+              "end",
+              "start",
+              "top"
+            ],
+            "typeText": "\"start\" | \"end\" | \"top\" | \"bottom\" | undefined",
+            "typeRef": "type:836915cb975032a1441f",
+            "default": "end",
+            "required": false,
+            "description": "Position of the label relative to the switch"
+          },
+          {
+            "name": "loading",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows a loading state and blocks interaction"
+          },
+          {
+            "name": "ripple",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Shows a ripple effect on click"
+          },
+          {
+            "name": "trackStyle",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "object",
+            "typeText": "CSSProperties | undefined",
+            "typeRef": "type:40d68ed00bb536ce8766",
+            "required": false,
+            "description": "Inline styles of the track"
+          },
+          {
+            "name": "thumbStyle",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "object",
+            "typeText": "CSSProperties | undefined",
+            "typeRef": "type:40d68ed00bb536ce8766",
+            "required": false,
+            "description": "Inline styles of the thumb"
+          },
+          {
+            "name": "icon",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Custom icon"
+          },
+          {
+            "name": "iconPlacement",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "enum",
+            "values": [
+              "end",
+              "start"
+            ],
+            "typeText": "\"start\" | \"end\" | undefined",
+            "typeRef": "type:1684fd9f7d4ddbea3eb8",
+            "default": "start",
+            "required": false,
+            "description": "Icon position: inside the thumb (\"start\") or after the switch (\"end\")"
+          }
+        ],
+        "events": [
+          {
+            "name": "onChange",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "function",
+            "typeText": "((checked: boolean, event: ChangeEvent<HTMLInputElement, Element>) => void) | undefined",
+            "typeRef": "type:b69e4fcf2e5a14f00d00",
+            "parameters": [
+              {
+                "name": "checked",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              },
+              {
+                "name": "event",
+                "position": 1,
+                "required": true,
+                "rest": false,
+                "typeText": "ChangeEvent<HTMLInputElement, Element>",
+                "typeRef": "type:2c785b2d98c38377d501"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the state changes"
+          },
+          {
+            "name": "onFocus",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "function",
+            "typeText": "((event: FocusEvent<HTMLInputElement, Element>) => void) | undefined",
+            "typeRef": "type:b4d98d120ed1bc6cf9c7",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "FocusEvent<HTMLInputElement, Element>",
+                "typeRef": "type:20a1b75c939d080fd107"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the switch receives focus"
+          },
+          {
+            "name": "onBlur",
+            "source": "packages/react/src/components/Switch/types.ts",
+            "kind": "function",
+            "typeText": "((event: FocusEvent<HTMLInputElement, Element>) => void) | undefined",
+            "typeRef": "type:f6fc3afd1ef6d3623d11",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "FocusEvent<HTMLInputElement, Element>",
+                "typeRef": "type:20a1b75c939d080fd107"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the switch loses focus"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "onChange",
+            "syntax": "value={value} onChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "SwitchProps": {
+      "source": "react/src/components/Switch/types.ts",
+      "description": "`data-*` attributes are forwarded to the root element.",
+      "kind": "interface",
+      "extends": [
+        "DataAttributes"
+      ],
+      "props": [
+        {
+          "name": "checked",
+          "type": "boolean",
+          "required": false,
+          "description": "Whether the switch is on (controlled)"
+        },
+        {
+          "name": "defaultChecked",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Initial state (uncontrolled)"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Disables the switch. Inherited from an enclosing FormControl when not set; an explicit `false` overrides the FormControl"
+        },
+        {
+          "name": "size",
+          "type": "\"small\" | \"medium\" | \"large\"",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Switch size"
+        },
+        {
+          "name": "color",
+          "type": "Extract<ColorScheme, \"primary\" | \"success\" | \"info\" | \"warning\" | \"danger\">",
+          "required": false,
+          "default": "\"primary\"",
+          "description": "Semantic color of the \"on\" state (checked thumb and track, active side label / segment)"
+        },
+        {
+          "name": "shape",
+          "type": "\"round\" | \"square\"",
+          "required": false,
+          "default": "\"round\"",
+          "description": "Shape of the track and thumb"
+        },
+        {
+          "name": "variant",
+          "type": "SwitchVariant",
+          "required": false,
+          "default": "\"slider\"",
+          "description": "\"slider\" is the classic track + thumb; \"segmented\" renders two pressable segments (requires offLabel and onLabel, otherwise falls back to slider)"
+        },
+        {
+          "name": "label",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": "Label displayed next to the switch"
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": "Label content (alternative to `label`; used when `label` is not set)"
+        },
+        {
+          "name": "offLabel",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": "Label of the \"off\" state. With onLabel, both labels are rendered as buttons on each side of the slider (they replace `label`) or as the segments of the segmented variant"
+        },
+        {
+          "name": "onLabel",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": "Label of the \"on\" state (see offLabel)"
+        },
+        {
+          "name": "aria-label",
+          "type": "string",
+          "required": false,
+          "description": "Accessible label, required when the switch has no visible label. Set on the switch input (on the segment group for the segmented variant)"
+        },
+        {
+          "name": "aria-labelledby",
+          "type": "string",
+          "required": false,
+          "description": "id(s) of the element(s) labelling the switch (on the segment group for the segmented variant). Defaults to the enclosing FormControl's label for the segmented variant"
+        },
+        {
+          "name": "aria-describedby",
+          "type": "string",
+          "required": false,
+          "description": "Extra id(s) of elements describing the switch, merged with the enclosing FormControl's helper / error text"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "description": "Name of the input, used in forms"
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "description": "id of the input (defaults to the enclosing FormControl's id)"
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "required": false,
+          "description": "Value submitted with the form when on"
+        },
+        {
+          "name": "labelPlacement",
+          "type": "\"start\" | \"end\" | \"top\" | \"bottom\"",
+          "required": false,
+          "default": "\"end\"",
+          "description": "Position of the label relative to the switch"
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows a loading state and blocks interaction"
+        },
+        {
+          "name": "ripple",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Shows a ripple effect on click"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "description": "Additional class name"
+        },
+        {
+          "name": "style",
+          "type": "React.CSSProperties",
+          "required": false,
+          "description": "Inline styles of the root element"
+        },
+        {
+          "name": "trackStyle",
+          "type": "React.CSSProperties",
+          "required": false,
+          "description": "Inline styles of the track"
+        },
+        {
+          "name": "thumbStyle",
+          "type": "React.CSSProperties",
+          "required": false,
+          "description": "Inline styles of the thumb"
+        },
+        {
+          "name": "onChange",
+          "type": "(checked: boolean, event: React.ChangeEvent<HTMLInputElement>) => void",
+          "required": false,
+          "description": "Called when the state changes"
+        },
+        {
+          "name": "onFocus",
+          "type": "(event: React.FocusEvent<HTMLInputElement>) => void",
+          "required": false,
+          "description": "Called when the switch receives focus"
+        },
+        {
+          "name": "onBlur",
+          "type": "(event: React.FocusEvent<HTMLInputElement>) => void",
+          "required": false,
+          "description": "Called when the switch loses focus"
+        },
+        {
+          "name": "icon",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": "Custom icon"
+        },
+        {
+          "name": "iconPlacement",
+          "type": "\"start\" | \"end\"",
+          "required": false,
+          "default": "\"start\"",
+          "description": "Icon position: inside the thumb (\"start\") or after the switch (\"end\")"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLInputElement>",
+          "required": false,
+          "description": "Ref to the underlying <input role=\"switch\"> element"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Switch": {
+      "kind": "cssVars",
+      "source": "react/src/components/Switch",
+      "vars": [
+        {
+          "name": "--switch-track-width",
+          "description": "Width of the track (every size)"
+        },
+        {
+          "name": "--switch-track-height",
+          "description": "Height of the track (every size)"
+        },
+        {
+          "name": "--switch-thumb-size",
+          "description": "Width and height of the thumb (every size)"
+        },
+        {
+          "name": "--switch-track-color",
+          "description": "Background of the unchecked track"
+        },
+        {
+          "name": "--switch-thumb-color",
+          "description": "Background of the unchecked thumb"
+        },
+        {
+          "name": "--switch-checked-color",
+          "description": "Accent of the checked thumb, track and active segment (defaults to the color prop's accent)"
+        },
+        {
+          "name": "--switch-label-gap",
+          "description": "Space between the switch and its label"
+        },
+        {
+          "name": "--switch-label-font-size",
+          "description": "Font size of the label (every size)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/switch/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/switch/demos/basic.tsx": "import { Switch } from \"minerva-design\";\n\nexport default function BasicDemo() {\n  return (\n    <>\n      <Switch label=\"Wi-Fi\" defaultChecked />\n      <Switch label=\"Bluetooth\" />\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Basic usage",
+      "description": "Uncontrolled switches with a label; defaultChecked sets the initial state."
+    },
+    {
+      "id": "bilateral-and-segmented",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/switch/demos/bilateral-and-segmented.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/switch/demos/bilateral-and-segmented.tsx": "import { useState } from \"react\";\nimport { Switch } from \"minerva-design\";\n\nexport default function BilateralAndSegmentedDemo() {\n  const [mock, setMock] = useState(false);\n\n  return (\n    <div style={{ display: \"flex\", flexDirection: \"column\", gap: 16 }}>\n      <Switch\n        aria-label=\"Data source\"\n        offLabel=\"Business BFF\"\n        onLabel=\"Mock response\"\n        checked={mock}\n        onChange={setMock}\n      />\n      <Switch\n        variant=\"segmented\"\n        aria-label=\"Data source\"\n        offLabel=\"Business BFF\"\n        onLabel=\"Mock response\"\n        checked={mock}\n        onChange={setMock}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "Side labels and segmented",
+      "description": "offLabel and onLabel render clickable labels on both sides of the slider; variant=\"segmented\" turns them into a two-segment control."
+    },
+    {
+      "id": "colors",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/switch/demos/colors.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/switch/demos/colors.tsx": "import { Switch } from \"minerva-design\";\n\nconst colors = [\"primary\", \"success\", \"info\", \"warning\", \"danger\"] as const;\n\nexport default function ColorsDemo() {\n  return (\n    <>\n      {colors.map((color) => (\n        <Switch key={color} color={color} label={color} defaultChecked />\n      ))}\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Colors",
+      "description": "color takes a semantic color for the checked state: primary (default), success, info, warning or danger."
+    },
+    {
+      "id": "controlled",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/switch/demos/controlled.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/switch/demos/controlled.tsx": "import { useState } from \"react\";\nimport { Switch } from \"minerva-design\";\n\nexport default function ControlledDemo() {\n  const [enabled, setEnabled] = useState(false);\n\n  return (\n    <>\n      <Switch\n        label=\"Email notifications\"\n        checked={enabled}\n        onChange={(checked) => setEnabled(checked)}\n      />\n      <span>Notifications are {enabled ? \"on\" : \"off\"}</span>\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "Controlled",
+      "description": "Use checked together with onChange to drive the switch from your state."
+    },
+    {
+      "id": "custom-style",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/switch/demos/custom-style.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/switch/demos/custom-style.tsx": "import { Switch } from \"minerva-design\";\n\nexport default function CustomStyleDemo() {\n  return (\n    <>\n      <Switch shape=\"square\" label=\"Square\" defaultChecked />\n      <Switch label=\"No ripple\" ripple={false} />\n      <Switch\n        label=\"Custom track & thumb\"\n        defaultChecked\n        trackStyle={{ background: \"linear-gradient(90deg, #06b6d4, #3b82f6)\" }}\n        thumbStyle={{ boxShadow: \"0 0 0 2px #3b82f6\" }}\n      />\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Shape and custom styles",
+      "description": "Square shape, no ripple, and custom trackStyle / thumbStyle."
+    },
+    {
+      "id": "icons",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/switch/demos/icons.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/switch/demos/icons.tsx": "import { Switch } from \"minerva-design\";\nimport { FaCheck, FaMoon } from \"react-icons/fa\";\n\nexport default function IconsDemo() {\n  return (\n    <>\n      <Switch label=\"Dark mode\" icon={<FaMoon size={10} />} defaultChecked />\n      <Switch label=\"Auto-save\" icon={<FaCheck size={10} />} />\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Icons",
+      "description": "Render a small icon inside the thumb with icon."
+    },
+    {
+      "id": "label-placement",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/switch/demos/label-placement.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/switch/demos/label-placement.tsx": "import { Switch } from \"minerva-design\";\n\nconst placements = [\"start\", \"end\", \"top\", \"bottom\"] as const;\n\nexport default function LabelPlacementDemo() {\n  return (\n    <>\n      {placements.map((placement) => (\n        <Switch\n          key={placement}\n          label={`Label at ${placement}`}\n          labelPlacement={placement}\n          defaultChecked\n        />\n      ))}\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Label placement",
+      "description": "Place the label before (\"start\"), after (\"end\", default), above (\"top\") or below (\"bottom\") the switch with labelPlacement."
+    },
+    {
+      "id": "sizes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/switch/demos/sizes.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/switch/demos/sizes.tsx": "import { Switch } from \"minerva-design\";\n\nexport default function SizesDemo() {\n  return (\n    <>\n      <Switch size=\"small\" label=\"Small\" defaultChecked />\n      <Switch size=\"medium\" label=\"Medium\" defaultChecked />\n      <Switch size=\"large\" label=\"Large\" defaultChecked />\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Sizes",
+      "description": "Three sizes: small, medium (default) and large."
+    },
+    {
+      "id": "states",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/switch/demos/states.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/switch/demos/states.tsx": "import { Switch } from \"minerva-design\";\n\nexport default function StatesDemo() {\n  return (\n    <>\n      <Switch label=\"Loading\" loading defaultChecked />\n      <Switch label=\"Disabled\" disabled />\n      <Switch label=\"Disabled (on)\" disabled defaultChecked />\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Loading and disabled",
+      "description": "loading shows a busy state and, like disabled, blocks interaction."
+    }
+  ],
+  "recipes": [
+    {
+      "id": "react-form",
+      "title": "React controlled project form",
+      "renderer": "react",
+      "pages": [
+        "input",
+        "switch",
+        "form-control",
+        "form-layout",
+        "button"
+      ],
+      "kind": "standalone-recipe",
+      "packageVersion": "1.19.3",
+      "files": {
+        "README.md": "# react-form\n\nStandalone React 19 recipe, using only public Minerva entries.\n\nRequires Node >=22.13 and pnpm 11. Copy the complete directory, then run:\n\n```sh\npnpm install\npnpm build\npnpm dev\n```\n\nThe package manifest pins the tested Minerva/framework/tool versions. The entry imports the global stylesheet once. App owns the provider and controlled state. No documentation translation setup or workspace aliases are required.\n",
+        "index.html": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n    <title>Minerva standalone recipe</title>\n  </head>\n  <body>\n    <div id=\"app\"></div>\n    <script type=\"module\" src=\"/src/main.tsx\"></script>\n  </body>\n</html>\n",
+        "package.json": "{\n  \"name\": \"minerva-recipe-react-form\",\n  \"private\": true,\n  \"version\": \"1.0.0\",\n  \"type\": \"module\",\n  \"packageManager\": \"pnpm@11.23.0\",\n  \"scripts\": {\n    \"dev\": \"vite --host 127.0.0.1\",\n    \"build\": \"tsc --noEmit && vite build\"\n  },\n  \"dependencies\": {\n    \"minerva-design\": \"1.19.3\",\n    \"react\": \"19.3.0\",\n    \"react-dom\": \"19.3.0\"\n  },\n  \"devDependencies\": {\n    \"typescript\": \"6.0.3\",\n    \"vite\": \"8.3.3\",\n    \"@types/react\": \"19.3.0\",\n    \"@types/react-dom\": \"19.3.0\"\n  }\n}\n",
+        "src/App.tsx": "import { useState } from \"react\";\nimport {\n  Button,\n  ConfigProvider,\n  FormField,\n  Input,\n  Switch,\n  ToastProvider,\n  VStack,\n  toast,\n} from \"minerva-design\";\n\nexport default function App() {\n  const [name, setName] = useState(\"\");\n  const [subscribed, setSubscribed] = useState(false);\n  const [saved, setSaved] = useState(\"\");\n  return (\n    <ConfigProvider theme=\"light\">\n      <ToastProvider>\n        <VStack gap={4} align=\"start\">\n          <FormField label=\"Project name\" required>\n            <Input\n              name=\"project\"\n              value={name}\n              onChange={(event) => setName(event.target.value)}\n              clearable\n            />\n          </FormField>\n          <Switch\n            label=\"Newsletter\"\n            checked={subscribed}\n            onChange={setSubscribed}\n          />\n          <Button\n            disabled={!name.trim()}\n            onClick={() => {\n              setSaved(`${name}${subscribed ? \" · subscribed\" : \"\"}`);\n              toast.success(\"Project saved\");\n            }}\n          >\n            Save project\n          </Button>\n          <output aria-live=\"polite\">{saved || \"No project saved\"}</output>\n        </VStack>\n      </ToastProvider>\n    </ConfigProvider>\n  );\n}\n",
+        "src/main.tsx": "import { createRoot } from \"react-dom/client\";\nimport App from \"./App\";\nimport \"minerva-design/style.css\";\ncreateRoot(document.getElementById(\"app\")!).render(<App />);\n",
+        "src/vite-env.d.ts": "/// <reference types=\"vite/client\" />\n",
+        "tsconfig.json": "{\n  \"compilerOptions\": {\n    \"target\": \"ES2022\",\n    \"module\": \"ESNext\",\n    \"moduleResolution\": \"Bundler\",\n    \"lib\": [\"ES2022\", \"DOM\", \"DOM.Iterable\"],\n    \"strict\": true,\n    \"skipLibCheck\": true,\n    \"jsx\": \"react-jsx\",\n    \"noEmit\": true,\n    \"esModuleInterop\": true\n  },\n  \"include\": [\"src\"]\n}\n"
+      },
+      "dependencies": {
+        "minerva-design": "1.19.3",
+        "react": "19.3.0",
+        "react-dom": "19.3.0",
+        "typescript": "6.0.3",
+        "vite": "8.3.3",
+        "@types/react": "19.3.0",
+        "@types/react-dom": "19.3.0"
+      },
+      "url": "/minerva-design/reference/1.19.3/recipes/react-form/README.md"
+    }
+  ],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.19.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Switch",
+      "description": "Toggles a single setting on or off, with immediate effect.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Uncontrolled switches with a label; defaultChecked sets the initial state."
+        },
+        "controlled": {
+          "title": "Controlled",
+          "description": "Use checked together with onChange to drive the switch from your state."
+        },
+        "sizes": {
+          "title": "Sizes",
+          "description": "Three sizes: small, medium (default) and large."
+        },
+        "colors": {
+          "title": "Colors",
+          "description": "color takes a semantic color for the checked state: primary (default), success, info, warning or danger."
+        },
+        "label-placement": {
+          "title": "Label placement",
+          "description": "Place the label before (\"start\"), after (\"end\", default), above (\"top\") or below (\"bottom\") the switch with labelPlacement."
+        },
+        "states": {
+          "title": "Loading and disabled",
+          "description": "loading shows a busy state and, like disabled, blocks interaction."
+        },
+        "icons": {
+          "title": "Icons",
+          "description": "Render a small icon inside the thumb with icon."
+        },
+        "custom-style": {
+          "title": "Shape and custom styles",
+          "description": "Square shape, no ripple, and custom trackStyle / thumbStyle."
+        },
+        "bilateral-and-segmented": {
+          "title": "Side labels and segmented",
+          "description": "offLabel and onLabel render clickable labels on both sides of the slider; variant=\"segmented\" turns them into a two-segment control."
+        }
+      },
+      "api": {
+        "SwitchProps": {
+          "checked": "Whether the switch is on (controlled)",
+          "defaultChecked": "Initial state (uncontrolled)",
+          "disabled": "Disables the switch",
+          "size": "Switch size",
+          "color": "Semantic color of the \"on\" state (checked thumb and track, active side label / segment)",
+          "shape": "Shape of the track and thumb",
+          "label": "Label displayed next to the switch",
+          "aria-label": "Accessible label, required when the switch has no visible label",
+          "name": "Name of the input, used in forms",
+          "labelPlacement": "Position of the label relative to the switch",
+          "loading": "Shows a loading state and blocks interaction",
+          "ripple": "Shows a ripple effect on click",
+          "className": "Additional class name",
+          "style": "Inline styles of the root element",
+          "trackStyle": "Inline styles of the track",
+          "thumbStyle": "Inline styles of the thumb",
+          "onChange": "Called when the state changes",
+          "onFocus": "Called when the switch receives focus",
+          "onBlur": "Called when the switch loses focus",
+          "icon": "Custom icon",
+          "iconPlacement": "Icon position: inside the thumb (\"start\") or after the switch (\"end\")",
+          "ref": "Ref to the underlying <input role=\"switch\"> element",
+          "variant": "\"slider\" is the classic track + thumb; \"segmented\" renders two pressable segments (requires offLabel and onLabel)",
+          "children": "Label content (alternative to label; used when label is not set)",
+          "offLabel": "Label of the \"off\" state; with onLabel, rendered as side buttons or as segments",
+          "onLabel": "Label of the \"on\" state (see offLabel)",
+          "id": "id of the input (defaults to the enclosing FormControl's id)",
+          "value": "Value submitted with the form when on",
+          "aria-labelledby": "id(s) of the element(s) labelling the switch (the segment group for the segmented variant)",
+          "aria-describedby": "Extra ids of elements describing the switch (the segment group for the segmented variant) (merged with the helper / error text)"
+        }
+      },
+      "cssVars": {
+        "--switch-track-width": "Width of the track (every size)",
+        "--switch-track-height": "Height of the track (every size)",
+        "--switch-thumb-size": "Width and height of the thumb (every size)",
+        "--switch-track-color": "Background of the unchecked track",
+        "--switch-thumb-color": "Background of the unchecked thumb",
+        "--switch-checked-color": "Accent of the checked thumb, track and active segment (defaults to the color prop's accent)",
+        "--switch-label-gap": "Space between the switch and its label",
+        "--switch-label-font-size": "Font size of the label (every size)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "A native checkbox with role=\"switch\": Space and Enter toggle it, and minerva-change reports the new state."
+          },
+          "styles-states": {
+            "title": "Styles and states",
+            "description": "Sizes, square shape, colors, label placement, an icon in the thumb, and the read-only, invalid and no-ripple variants. Toggling Sync shows the loading state."
+          },
+          "side-labels": {
+            "title": "Side labels and segments",
+            "description": "off-label and on-label add clickable labels on both sides of the slider; variant=\"segmented\" turns them into a two-segment control."
+          },
+          "form": {
+            "title": "In a form",
+            "description": "Like a checkbox: a switch that is on submits its value, required keeps the form invalid until it is on, and reset restores the checked attributes."
+          }
+        },
+        "minerva-switch": {
+          "props": {
+            "noRipple": "Disables the ripple effect on click.",
+            "readOnly": "Read-only: focusable and submitted, but the user cannot toggle it.",
+            "invalid": "Error state (sets aria-invalid).",
+            "required": "The switch must be on for the form to be submitted.",
+            "isDisabled": "Whether the control is disabled, by itself or by a disabled <fieldset> (read-only).",
+            "form": "The form owning the element (read-only).",
+            "labels": "The <label> elements associated with the element (read-only).",
+            "validity": "Validity state, like <input>.validity (read-only).",
+            "validationMessage": "Message of the current validation error; empty when valid (read-only).",
+            "willValidate": "Whether the element takes part in constraint validation (read-only)."
+          },
+          "events": {
+            "change": "The state changed (re-dispatched from the inner input).",
+            "minerva-change": "The user toggled the switch; detail: { checked, value }."
+          },
+          "slots": {
+            "default": "Label content (alternative to the label attribute).",
+            "icon": "Icon inside the thumb (icon-placement=\"start\") or after the switch (\"end\")."
+          },
+          "methods": {
+            "focus": "Focuses the inner control.",
+            "blur": "Removes focus from the inner control.",
+            "click": "Clicks the inner input (toggles the switch unless it is blocked).",
+            "checkValidity": "Checks validity; fires invalid when the element is invalid.",
+            "reportValidity": "Checks validity and shows the browser's validation message.",
+            "setCustomValidity": "Sets a custom validation error, or clears it with an empty string.",
+            "formResetCallback": "Form lifecycle callback called by form.reset(): restores the initial value.",
+            "formDisabledCallback": "Form lifecycle callback called when an ancestor <fieldset> is disabled or enabled.",
+            "formStateRestoreCallback": "Form lifecycle callback called when the browser restores the state (history navigation, autofill)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "states": {
+            "title": "Loading and disabled",
+            "description": "loading shows a busy state and, like disabled, blocks interaction."
+          },
+          "colors": {
+            "title": "Colors",
+            "description": "color takes a semantic color for the checked state: primary (default), success, info, warning or danger."
+          },
+          "controlled": {
+            "title": "Controlled",
+            "description": "Use checked together with onChange to drive the switch from your state."
+          },
+          "basic": {
+            "title": "Basic usage",
+            "description": "Uncontrolled switches with a label; defaultChecked sets the initial state."
+          },
+          "sizes": {
+            "title": "Sizes",
+            "description": "Three sizes: small, medium (default) and large."
+          },
+          "label-placement": {
+            "title": "Label placement",
+            "description": "Place the label before (\"start\"), after (\"end\", default), above (\"top\") or below (\"bottom\") the switch with labelPlacement."
+          }
+        }
+      }
+    }
+  }
+}
