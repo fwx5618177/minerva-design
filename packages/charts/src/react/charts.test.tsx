@@ -173,6 +173,7 @@ describe("chart components", () => {
           clientX: at.x,
           clientY: at.y,
           button: 0,
+          buttons: type === "pointerup" || type === "pointercancel" ? 0 : 1,
           pointerId: 1,
         }),
       );
@@ -720,6 +721,7 @@ describe("chart components", () => {
           clientX: at.x,
           clientY: at.y,
           button: 0,
+          buttons: type === "pointerup" || type === "pointercancel" ? 0 : 1,
           pointerId: 1,
         }),
       );
@@ -796,6 +798,7 @@ describe("chart components", () => {
           clientX: at.x,
           clientY: at.y,
           button: 0,
+          buttons: type === "pointerup" || type === "pointercancel" ? 0 : 1,
           pointerId: 1,
         }),
       );
@@ -844,6 +847,7 @@ describe("chart components", () => {
           clientX: p.x,
           clientY: p.y,
           button: 0,
+          buttons: type === "pointerup" || type === "pointercancel" ? 0 : 1,
           pointerId: 1,
         }),
       );

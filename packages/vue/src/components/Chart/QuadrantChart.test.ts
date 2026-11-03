@@ -56,7 +56,10 @@ const mountChart = async (
     wrapper.vm as unknown as ChartHandle
   ).getInstance() as ChartInstance | null;
   const stage = root.querySelector(".minerva-chart-stage")!;
+  let buttons = 0;
   const fire = (type: string, x: number, y: number) => {
+    if (type === "pointerdown") buttons = 1;
+    if (type === "pointerup" || type === "pointercancel") buttons = 0;
     const at = chart!.toPixel(x, y)!;
     stage.dispatchEvent(
       new PointerEvent(type, {
@@ -64,6 +67,7 @@ const mountChart = async (
         clientY: at.y,
         pointerId: 1,
         button: 0,
+        buttons,
       }),
     );
   };

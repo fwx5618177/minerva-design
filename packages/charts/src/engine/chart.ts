@@ -1344,6 +1344,18 @@ export const createChart = (
     emit("dragEnd", { item: d.item, cancelled: true });
   }
 
+  /** Retire a gesture before releasing capture (which can itself emit loss). */
+  function cancelInteraction(id?: number) {
+    if (pointDrag && (id === undefined || pointDrag.id === id)) cancelDrag();
+    if (drag && (id === undefined || drag.id === id)) {
+      const previous = drag;
+      drag = null;
+      releasePointer(previous.id);
+      dom.stage.style.cursor = zoomed && interaction()?.pan ? "grab" : "";
+      renderHover();
+    }
+  }
+
   // ---------------------------------------------------------- interaction
 
   const setViewInternal = (next: ChartView, notify: boolean) => {
@@ -1393,6 +1405,12 @@ export const createChart = (
   };
 
   const onPointerMove = (event: PointerEvent) => {
+    if (
+      (pointDrag?.id === event.pointerId || drag?.id === event.pointerId) &&
+      (event.buttons & 1) === 0
+    )
+      cancelInteraction(event.pointerId);
+    if (destroyed) return;
     const { x, y } = localPoint(event);
     if (pointDrag && pointDrag.id === event.pointerId) {
       const d = pointDrag;
@@ -1400,7 +1418,6 @@ export const createChart = (
       d.py = y;
       if (!d.moved && Math.hypot(x - d.x, y - d.y) > 3) {
         d.moved = true;
-        dom.stage.setPointerCapture?.(event.pointerId);
         dom.stage.style.cursor = "grabbing";
         win?.addEventListener("keydown", onDragKey, true);
         // a drop not yet applied: the new drag replaces it
@@ -1429,7 +1446,6 @@ export const createChart = (
         const it = interaction();
         if (zoomed && it?.pan) {
           drag.moved = true;
-          dom.stage.setPointerCapture?.(event.pointerId);
           dom.stage.style.cursor = "grabbing";
         }
       }
@@ -1460,6 +1476,9 @@ export const createChart = (
 
   const onPointerDown = (event: PointerEvent) => {
     if (event.button !== 0) return;
+    // A new press cannot silently replace an unfinished point or pan gesture.
+    cancelInteraction();
+    if (destroyed) return;
     const { x, y } = localPoint(event);
     if (!inPlot(x, y)) return;
     const draggable = draggableAt(x, y);
@@ -1473,19 +1492,23 @@ export const createChart = (
         py: y,
         moved: false,
       };
+      // Own the whole press, including moves straight onto an HTML overlay.
+      // Capture does not start a drag: the movement threshold still does.
+      dom.stage.setPointerCapture?.(event.pointerId);
       return;
     }
     drag = { id: event.pointerId, x, y, view: copyView(view), moved: false };
+    dom.stage.setPointerCapture?.(event.pointerId);
   };
 
   const onPointerUp = (event: PointerEvent) => {
+    if (event.type === "pointercancel") {
+      cancelInteraction(event.pointerId);
+      return;
+    }
     if (pointDrag && pointDrag.id === event.pointerId) {
       const d = pointDrag;
       const { x, y } = localPoint(event);
-      if (d.moved && event.type === "pointercancel") {
-        cancelDrag();
-        return;
-      }
       pointDrag = null;
       win?.removeEventListener("keydown", onDragKey, true);
       releasePointer(event.pointerId);
@@ -1543,6 +1566,17 @@ export const createChart = (
   const onPointerLeave = () => {
     if (!drag?.moved && !pointDrag?.moved) setHover(null);
   };
+
+  // Fall back when capture is unavailable or revoked. Listen in capture phase
+  // so releases on cards/headers (even if propagation is stopped) end gestures.
+  // Captured releases keep the normal stage drop behavior.
+  const onWindowPointerUp = (event: PointerEvent) => {
+    if (event.composedPath().includes(dom.stage)) onPointerUp(event);
+    else cancelInteraction(event.pointerId);
+  };
+  const onLostPointerCapture = (event: PointerEvent) =>
+    cancelInteraction(event.pointerId);
+  const onWindowBlur = () => cancelInteraction();
 
   const onWheel = (event: WheelEvent) => {
     const it = interaction();
@@ -1714,6 +1748,10 @@ export const createChart = (
   stage.addEventListener("pointerup", onPointerUp);
   stage.addEventListener("pointercancel", onPointerUp);
   stage.addEventListener("pointerleave", onPointerLeave);
+  stage.addEventListener("lostpointercapture", onLostPointerCapture);
+  win?.addEventListener("pointerup", onWindowPointerUp, true);
+  win?.addEventListener("pointercancel", onWindowPointerUp, true);
+  win?.addEventListener("blur", onWindowBlur);
   stage.addEventListener("wheel", onWheel, { passive: false });
   stage.addEventListener("dblclick", onDoubleClick);
   stage.addEventListener("keydown", onKeyDown);
@@ -1866,6 +1904,10 @@ export const createChart = (
     destroy() {
       if (destroyed) return;
       destroyed = true;
+      cancelInteraction();
+      win?.removeEventListener("pointerup", onWindowPointerUp, true);
+      win?.removeEventListener("pointercancel", onWindowPointerUp, true);
+      win?.removeEventListener("blur", onWindowBlur);
       win?.removeEventListener("keydown", onDragKey, true);
       if (settling) clearTimeout(settling.timer);
       if (frameId) {
@@ -1877,6 +1919,12 @@ export const createChart = (
       unwatchTheme();
       unwatchLocale();
       stage.removeEventListener("wheel", onWheel);
+      stage.removeEventListener("pointermove", onPointerMove);
+      stage.removeEventListener("pointerdown", onPointerDown);
+      stage.removeEventListener("pointerup", onPointerUp);
+      stage.removeEventListener("pointercancel", onPointerUp);
+      stage.removeEventListener("pointerleave", onPointerLeave);
+      stage.removeEventListener("lostpointercapture", onLostPointerCapture);
       renderer?.destroy();
       renderer = null;
       releaseTooltip(dom.tooltip);

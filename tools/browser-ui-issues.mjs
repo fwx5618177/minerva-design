@@ -5,6 +5,7 @@ import { mkdtemp, rm, writeFile, mkdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import assert from "node:assert/strict";
+import { checkQuadrantPointer } from "./browser-quadrant-checks.mjs";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const connect = async (url) => {
   const socket = new WebSocket(url);
@@ -157,7 +158,14 @@ try {
       if (await evaluate(`Boolean(${expression})`)) return;
       await sleep(100);
     }
-    throw Error("Not ready " + expression);
+    const pointerTrace = await evaluate(
+      `window.__quadrantTest?.events ?? null`,
+    );
+    throw Error(
+      "Not ready " +
+        expression +
+        (pointerTrace ? "\n" + JSON.stringify(pointerTrace) : ""),
+    );
   };
   const page = async (route, width = 1280) => {
     await call("Emulation.setDeviceMetricsOverride", {
@@ -268,6 +276,7 @@ try {
   assert.ok(switches.length);
   assert.ok(switches.every((s) => s.height >= 44));
   results.push({ check: "touch-switches", switches });
+  await checkQuadrantPointer({ call, evaluate, wait, page, results });
   await call("Page.navigate", {
     url: BASE + "#/empty?framework=vue",
   });

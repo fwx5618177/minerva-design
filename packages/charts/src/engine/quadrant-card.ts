@@ -137,6 +137,7 @@ export const createQuadrantPointCard = (
   let options = initial;
   let hovered: PointRef | null = null;
   let held: PointRef | null = null;
+  let pointerInside = false;
   let focused: PointRef | null = null;
   let dragging: number | null = null;
   let dragAt: QuadrantCardPosition | null = null;
@@ -149,6 +150,9 @@ export const createQuadrantPointCard = (
   let holdTimer: ReturnType<typeof setTimeout> | null = null;
   let focusTimer: ReturnType<typeof setTimeout> | null = null;
   let frame = 0;
+  let measuredWidth = 0;
+  let measuredHeight = 0;
+  const observesSize = typeof ResizeObserver === "function";
   const doc = host.ownerDocument;
   const win = doc.defaultView;
 
@@ -227,7 +231,7 @@ export const createQuadrantPointCard = (
   const withActions = (index: number) =>
     dragging === null && !!options.hasActions?.(index);
 
-  const place = () => {
+  const place = (refreshSize = true) => {
     const index = shown;
     const point = index === null ? undefined : points()[index];
     if (index === null || !point || !card.parentNode) return;
@@ -253,8 +257,15 @@ export const createQuadrantPointCard = (
     // the dot of the card lies on the point (the border is 1px); the lifted
     // dot of a drag is larger: the card keeps off it
     const reach = 1 + CARD_PAD_X + size / 2 + (live ? 8 : 0);
-    const width = card.offsetWidth;
-    const height = card.offsetHeight;
+    // Content changes, explicit placement and ResizeObserver refresh the
+    // measurement. Drag frames only change position, avoiding a forced layout
+    // after the previous frame's style writes. Older hosts keep live reads.
+    if (refreshSize || !observesSize) {
+      measuredWidth = card.offsetWidth;
+      measuredHeight = card.offsetHeight;
+    }
+    const width = measuredWidth;
+    const height = measuredHeight;
     // the text on the side with room (mirrored near the right edge); a side
     // that still fits is kept (no flipping back and forth in a drag)
     let mirrored = visualX > 0.6;
@@ -329,6 +340,7 @@ export const createQuadrantPointCard = (
     const changed = index !== shown;
     shown = index;
     if (index === null) {
+      pointerInside = false;
       if (card.parentNode) {
         card.remove();
         doc.removeEventListener("keydown", onKey);
@@ -378,14 +390,19 @@ export const createQuadrantPointCard = (
     }
     holdTimer = setTimeout(() => {
       holdTimer = null;
+      if (pointerInside || body.contains(doc.activeElement)) return;
       held = null;
       render();
     }, CARD_LINGER_MS);
   };
-  const onEnter = () => {
+  const onEnter = (event: Event) => {
+    if (event.type === "pointerenter") pointerInside = true;
     if (shown !== null && dragging === null) hold(shown);
   };
-  const onLeave = () => hold(null);
+  const onLeave = () => {
+    pointerInside = false;
+    hold(null);
+  };
   const onFocusOut = (event: FocusEvent) => {
     if (!body.contains(event.relatedTarget as Node | null)) hold(null);
   };
@@ -429,6 +446,18 @@ export const createQuadrantPointCard = (
       if (hoverTimer) clearTimeout(hoverTimer);
       hoverTimer = null;
       if (index !== null) {
+        // Linger bridges the gap to the card's actions. Once a different point
+        // is reached, that grace period must not mask the new hover.
+        if (
+          holdTimer &&
+          valid(held) !== index &&
+          !pointerInside &&
+          !body.contains(doc.activeElement)
+        ) {
+          clearTimeout(holdTimer);
+          holdTimer = null;
+          held = null;
+        }
         hovered = refTo(index);
         dismissed = false;
         return render();
@@ -470,11 +499,11 @@ export const createQuadrantPointCard = (
     },
     move(at) {
       dragAt = at;
-      if (!win?.requestAnimationFrame) return place();
+      if (!win?.requestAnimationFrame) return place(false);
       if (!frame)
         frame = win.requestAnimationFrame(() => {
           frame = 0;
-          place();
+          place(false);
         });
     },
     dismiss() {

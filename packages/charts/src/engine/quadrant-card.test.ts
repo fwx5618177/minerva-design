@@ -43,9 +43,104 @@ afterEach(() => {
   card = null;
   host.remove();
   vi.useRealTimers();
+  vi.restoreAllMocks();
+  vi.unstubAllGlobals();
 });
 
 describe("quadrant point card", () => {
+  it("refreshes cached drag dimensions when ResizeObserver reports a content resize", () => {
+    let resize = () => {};
+    vi.stubGlobal(
+      "ResizeObserver",
+      class {
+        constructor(callback: () => void) {
+          resize = callback;
+        }
+        observe() {}
+        disconnect() {}
+      },
+    );
+    mount();
+    vi.spyOn(card!.element, "offsetWidth", "get").mockReturnValue(160);
+    const height = vi
+      .spyOn(card!.element, "offsetHeight", "get")
+      .mockReturnValue(60);
+    card!.drag(0, { x: 2, y: 8 });
+    const before = card!.element.style.transform;
+    height.mockReturnValue(250);
+    resize();
+    expect(card!.element.style.transform).not.toBe(before);
+  });
+
+  it("keeps live dimension reads when ResizeObserver is unavailable", () => {
+    vi.stubGlobal("ResizeObserver", undefined);
+    mount();
+    const height = vi
+      .spyOn(card!.element, "offsetHeight", "get")
+      .mockReturnValue(60);
+    card!.drag(0, { x: 2, y: 8 });
+    const before = card!.element.style.transform;
+    height.mockReturnValue(250);
+    card!.move({ x: 2, y: 8 });
+    vi.advanceTimersByTime(20);
+    expect(card!.element.style.transform).not.toBe(before);
+  });
+
+  it("switches to another point immediately after leaving the card", () => {
+    mount();
+    card!.hover(0);
+    const body = host.querySelector<HTMLElement>("[data-card-content]")!;
+    body.dispatchEvent(new PointerEvent("pointerenter"));
+    card!.hover(null);
+    body.dispatchEvent(new PointerEvent("pointerleave"));
+    card!.hover(1);
+    expect(shown()).toBe("1");
+    vi.advanceTimersByTime(CARD_LINGER_MS + 1);
+    expect(shown()).toBe("1");
+  });
+
+  it("keeps the active card while its actions still own pointer or focus", () => {
+    mount();
+    card!.hover(0);
+    const body = host.querySelector<HTMLElement>("[data-card-content]")!;
+    body.dispatchEvent(new PointerEvent("pointerenter"));
+    card!.hover(1);
+    expect(shown()).toBe("0");
+    const button = document.createElement("button");
+    card!.actions.appendChild(button);
+    button.focus();
+    body.dispatchEvent(new PointerEvent("pointerleave"));
+    card!.hover(2);
+    expect(shown()).toBe("0");
+    vi.advanceTimersByTime(CARD_LINGER_MS + 1);
+    expect(shown()).toBe("0");
+    button.blur();
+    vi.advanceTimersByTime(CARD_LINGER_MS + 1);
+    expect(shown()).toBe("2");
+  });
+
+  it("reuses measured dimensions during drag frames and remeasures on explicit placement", () => {
+    mount();
+    const width = vi
+      .spyOn(card!.element, "offsetWidth", "get")
+      .mockReturnValue(160);
+    const height = vi
+      .spyOn(card!.element, "offsetHeight", "get")
+      .mockReturnValue(60);
+    card!.drag(0, { x: 2, y: 8 });
+    width.mockClear();
+    height.mockClear();
+    for (let i = 0; i < 5; i++) {
+      card!.move({ x: 3 + i, y: 7 });
+      vi.advanceTimersByTime(20);
+    }
+    expect(width).not.toHaveBeenCalled();
+    expect(height).not.toHaveBeenCalled();
+    card!.place();
+    expect(width).toHaveBeenCalledTimes(1);
+    expect(height).toHaveBeenCalledTimes(1);
+  });
+
   it("turns off the engine tooltip, label chip and drag pill", () => {
     const options = withQuadrantCard({
       series: [],
