@@ -1807,23 +1807,23 @@
     "slots": [],
     "methods": []
   },
-  "KanbanBoard": {
+  "DashboardColumns": {
     "entry": "minerva-design/uni",
     "props": [
       { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name of the board (default: translated \"Board\")" },
-      { "name": "canDrop", "type": "((move: KanbanCardMove) => boolean) | undefined", "required": false, "description": "Whether a card may be dropped at a position" },
+      { "name": "canDrop", "type": "((move: DashboardCardMove) => boolean) | undefined", "required": false, "description": "Whether a card may be dropped at a position" },
       { "name": "columnWidth", "type": "string | number | undefined", "required": false, "description": "Width of every column (a number is pixels; default 18rem / 288px)" },
-      { "name": "draggable", "type": "boolean | undefined", "required": false, "default": "false", "description": "Lets the KanbanCard children of keyed columns be dragged (long press)" },
+      { "name": "draggable", "type": "boolean | undefined", "required": false, "default": "false", "description": "Lets the DashboardCard children of keyed columns be dragged (long press)" },
       { "name": "fill", "type": "boolean | undefined", "required": false, "default": "false", "description": "Stretches the columns equally when they fit" },
       { "name": "gap", "type": "string | number | undefined", "required": false, "description": "Space between the columns (a number is pixels; default 12px)" },
       { "name": "height", "type": "string | number | undefined", "required": false, "description": "Height of the board: the column bodies scroll within it" },
       { "name": "maxHeight", "type": "string | number | undefined", "required": false, "description": "Maximum height of the board: the column bodies scroll within it" }
     ],
-    "events": [{ "name": "card-move", "type": "[move: KanbanCardMove]" }],
+    "events": [{ "name": "card-move", "type": "[move: DashboardCardMove]" }],
     "slots": [{ "name": "default", "type": "{}" }],
     "methods": []
   },
-  "KanbanCard": {
+  "DashboardCard": {
     "entry": "minerva-design/uni",
     "props": [
       { "name": "label", "type": "string | undefined", "required": false, "description": "Text of the floating copy while it is dragged (default: `value`)" },
@@ -1833,7 +1833,7 @@
     "slots": [{ "name": "default", "type": "{}" }],
     "methods": []
   },
-  "KanbanColumn": {
+  "DashboardColumn": {
     "entry": "minerva-design/uni",
     "props": [
       { "name": "ariaLabel", "type": "string | undefined", "required": false, "description": "Accessible name (default: the title with the count, translated)" },
@@ -1954,7 +1954,7 @@
         "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length (rpx included)"
       },
       { "name": "interaction", "type": "boolean | ChartInteractionOptions | undefined", "required": false, "description": "Pinch zoom, pan, double tap reset; `false` makes the chart static" },
-      { "name": "labels", "type": "Partial<QuadrantTaskLabels> | undefined", "required": false, "description": "Texts of the buttons and dialogs (localized by default)" },
+      { "name": "labels", "type": "Partial<QuadrantTaskLabels> | undefined", "required": false, "description": "Texts of the buttons and panels (localized by default)" },
       { "name": "legend", "type": "boolean | ChartLegendOptions | undefined", "required": false, "description": "Legend; shown by default when several series have a name" },
       {
         "name": "locale",

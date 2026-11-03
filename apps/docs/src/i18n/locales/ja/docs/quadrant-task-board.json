@@ -1,6 +1,6 @@
 {
   "title": "QuadrantTaskBoard 四象限タスクボード",
-  "description": "アイゼンハワー・マトリクスのような四象限マトリクス上のタスクボードです。象限ヘッダーの +（または象限の空白部分）でタスクを追加し、アクティブなタスクの上に出るツールバーで編集・削除します。ダイアログでタスク名と象限を指定し、削除の前には確認が入ります。タスクはドラッグ＆ドロップまたは Shift + 矢印キーで移動でき、ダブルクリックで編集できます。ボードは制御コンポーネントです。タスクを points に渡し、onPointsChange で受け取った新しいリストを戻してください。QuadrantChart のその他の props（軸、象限のタイトル・バッジ・色、目盛り、ラベル…）も使え、組み込みのボタンとダイアログはアプリの言語に従います。minerva-design/charts ではなく minerva-design からエクスポートされます。",
+  "description": "アイゼンハワー・マトリクスのような四象限マトリクス上のタスクボードです。象限ヘッダーの +（または象限の空白部分）でタスクを追加し、アクティブなタスクの上に出るツールバーで編集・削除します。+ ボタンやタスクのすぐ横に開くパネルでタスク名と象限を指定し、削除の前にはその場で確認が入ります。タスクはドラッグ＆ドロップまたは Shift + 矢印キーで移動でき、ダブルクリックで編集できます。ボードは制御コンポーネントです。タスクを points に渡し、onPointsChange で受け取った新しいリストを戻してください。QuadrantChart のその他の props（軸、象限のタイトル・バッジ・色、目盛り、ラベル…）も使え、組み込みのボタンとパネルはアプリの言語に従います。minerva-design/charts ではなく minerva-design からエクスポートされます。",
   "demos": {
     "basic": {
       "title": "アイゼンハワー・ボード",
@@ -52,17 +52,18 @@
   "api": {
     "QuadrantTaskBoardProps": {
       "onPointsChange": "タスクの追加・編集・削除・ドラッグ＆ドロップ・キーボードでの移動のあとに、新しいタスクのリストを受け取って呼ばれます（制御：points として戻します）",
-      "labels": "ボタンとダイアログのテキスト（QuadrantTaskLabels を参照）。指定しなかったものはロケールに従います"
+      "labels": "ボタンとパネルのテキスト（QuadrantTaskLabels を参照）。指定しなかったものはロケールに従います"
     },
     "QuadrantTaskLabels": {
-      "add": "各象限の追加ボタンと、追加ダイアログのタイトル",
-      "edit": "アクティブなタスクの編集ボタンと、編集ダイアログのタイトル",
+      "add": "各象限の追加ボタンと、追加パネルのタイトル",
+      "edit": "アクティブなタスクの編集ボタンと、編集パネルのタイトル",
       "delete": "アクティブなタスクの削除ボタンと、その確認のタイトル",
       "deleteConfirm": "削除確認の本文。{name} はタスク名に置き換えられます",
+      "confirmDelete": "削除確認の確定ボタン",
       "name": "名前フィールドのラベル",
       "quadrant": "象限フィールドのラベル",
-      "save": "ダイアログの保存ボタン",
-      "cancel": "ダイアログと確認のキャンセルボタン",
+      "save": "追加 / 編集パネルの保存ボタン",
+      "cancel": "各パネルのキャンセルボタン",
       "actions": "アクティブなタスクのツールバーのアクセシブルな名前"
     },
     "QuadrantConfig": {
@@ -87,7 +88,7 @@
     },
     "native_QuadrantTaskBoardProps": {
       "onPointsChange": "タスクの追加・編集・削除・ドラッグ＆ドロップ、または「移動先」のアクセシビリティ操作のあとに、新しいタスクのリストを受け取って呼ばれます（制御：points として戻します）",
-      "labels": "ボタンとダイアログのテキスト（add、edit、delete、deleteConfirm、name、quadrant、save、cancel、actions）。指定しなかったものはロケールに従います"
+      "labels": "ボタンとパネルのテキスト（add、edit、delete、deleteConfirm、confirmDelete、name、quadrant、save、cancel、actions）。指定しなかったものはロケールに従います"
     }
   },
   "cssVars": {
@@ -96,7 +97,11 @@
     "--quadrant-task-board-count-background": "タスク数チップの背景（既定は --surface-muted-color）",
     "--quadrant-task-board-count-color": "タスク数チップの文字色（既定は --text-secondary-color）",
     "--quadrant-task-board-actions-background": "アクティブなタスクのツールバーの背景（既定は --surface-elevated-color）",
-    "--quadrant-task-board-actions-radius": "アクティブなタスクのツールバーの角丸（既定は --radius-md）"
+    "--quadrant-task-board-actions-radius": "アクティブなタスクのツールバーの角丸（既定は --radius-md）",
+    "--quadrant-task-board-panel-background": "その場で開く追加 / 編集 / 削除パネルの背景（既定は半透明の浮き上がった面）",
+    "--quadrant-task-board-panel-border": "パネルの枠線の色（既定は半透明の --border-color）",
+    "--quadrant-task-board-panel-radius": "パネルの角丸（既定は --radius-lg）",
+    "--quadrant-task-board-panel-width": "パネルの幅（既定は 288px）"
   },
   "native": {
     "limitations": "React Native では、タスクはドラッグ＆ドロップまたはスクリーンリーダーの「移動先」操作で移動します。Shift + 矢印キーでの移動とダブルタップでの編集はありません（アクティブなタスクの編集ボタンを使います）。ボタンのアイコンは SVG に依存せず View で描画されます。",

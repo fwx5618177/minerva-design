@@ -276,6 +276,7 @@ export const createChart = (
       keyboard: o.keyboard ?? true,
       dragPoints: o.dragPoints ?? false,
       dropTargets: o.dropTargets ?? false,
+      dragLabel: o.dragLabel ?? true,
     });
   };
 
@@ -318,7 +319,12 @@ export const createChart = (
       itemsSignatureKey = signature;
       origin = { x: mid(base.x), y: mid(base.y) };
       itemsDirty = true;
-      if (hover && !hover.keyboard) hover = null;
+      if (hover && !hover.keyboard) {
+        hover = null;
+        // listeners tracking the hovered point (an info card shown while
+        // nothing is hovered) would otherwise keep the old one
+        emit("hover", null);
+      }
     }
     // new data after a drop: the dropped point is drawn where it landed
     if (settling) {
@@ -1198,7 +1204,7 @@ export const createChart = (
       background: p.color,
       boxShadow: dragDotShadow(p.color),
     });
-    if (p.label) {
+    if (p.label && interaction()?.dragLabel !== false) {
       pill.textContent = p.label;
       const sc = scales;
       // beside the dot, on the side with room

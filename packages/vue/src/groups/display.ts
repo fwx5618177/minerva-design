@@ -6,7 +6,7 @@ export * from "../components/ResponsiveGrid";
 export * from "../components/SplitLayout";
 export * from "../components/Page";
 export * from "../components/Card";
-export * from "../components/KanbanBoard";
+export * from "../components/DashboardColumns";
 export * from "../components/Flashcard";
 export * from "../components/MediaPlayer";
 export * from "../components/Badge";

@@ -68,9 +68,9 @@ const mountBoard = (props: Record<string, unknown> = {}) => {
         ...props,
       }),
   });
-  render(Host);
+  const { container } = render(Host);
   const engine = engines[engines.length - 1]!;
-  return { change, points, engine };
+  return { change, points, engine, container };
 };
 
 /** The engine laid out the plot: the slots of the chart render */
@@ -101,29 +101,54 @@ describe("QuadrantTaskBoard", () => {
     );
   });
 
-  it("adds a task: cancel leaves the data unchanged, save appends it", async () => {
+  it("adds a task in an inline panel: cancel and Escape leave the data unchanged", async () => {
+    const user = userEvent.setup();
+    const { change, points, engine, container } = mountBoard();
+    await layout(engine);
+
+    const add = screen.getAllByRole("button", { name: /^Add task · / })[0]!;
+    await user.click(add);
+    const dialog = await screen.findByRole("dialog", { name: "Add task" });
+    // inline in the board, not a modal in a portal
+    expect(container.contains(dialog)).toBe(true);
+    expect(dialog.dataset.quadrantTaskPanel).toBe("add");
+    expect(dialog.dataset.placement).toBe("bottom");
+    expect(container.querySelector("[data-panel]")).toHaveAttribute(
+      "data-panel",
+      "draft",
+    );
+    expect(add).toHaveAttribute("aria-expanded", "true");
+    const name = within(dialog).getByRole("textbox", { name: "Task name" });
+    expect(document.activeElement).toBe(name);
+    await user.type(name, "New task");
+    await user.click(within(dialog).getByRole("button", { name: "Cancel" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(container.querySelector("[data-panel]")).toBeNull();
+    expect(change).not.toHaveBeenCalled();
+    expect(points.value).toEqual(initial);
+
+    // Escape closes it and gives the focus back to the + button
+    await user.click(add);
+    await screen.findByRole("dialog", { name: "Add task" });
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(document.activeElement).toBe(add);
+    expect(change).not.toHaveBeenCalled();
+  });
+
+  it("adds a task on a click in a quadrant, in the quadrant picked", async () => {
     const user = userEvent.setup();
     const { change, points, engine } = mountBoard();
     await layout(engine);
 
-    await user.click(
-      screen.getAllByRole("button", { name: /^Add task · / })[0]!,
-    );
-    let dialog = await screen.findByRole("dialog", { name: "Add task" });
-    await user.type(
-      within(dialog).getByRole("textbox", { name: "Task name" }),
-      "New task",
-    );
-    await user.click(within(dialog).getByRole("button", { name: "Cancel" }));
-    expect(screen.queryByRole("dialog")).toBeNull();
-    expect(change).not.toHaveBeenCalled();
-    expect(points.value).toEqual(initial);
-
     // a click on the empty area of a quadrant adds a task there
     engine.fire("plotClick", { x: 8, y: 9 });
-    dialog = await screen.findByRole("dialog", { name: "Add task" });
+    let dialog = await screen.findByRole("dialog", { name: "Add task" });
     const save = within(dialog).getByRole("button", { name: "Save" });
     expect(save).toBeDisabled();
+    expect(
+      within(dialog).getByRole("radio", { name: "Top right quadrant" }),
+    ).toBeChecked();
     await user.type(
       within(dialog).getByRole("textbox", { name: "Task name" }),
       "  New task ",
@@ -138,6 +163,53 @@ describe("QuadrantTaskBoard", () => {
     expect(
       screen.getByRole("toolbar", { name: "Task actions" }).parentElement,
     ).toHaveAttribute("data-point-index", "1");
+
+    // the quadrant picker is a radio group laid out like the matrix
+    engine.fire("plotClick", { x: 8, y: 9 });
+    dialog = await screen.findByRole("dialog", { name: "Add task" });
+    const corners = within(dialog)
+      .getAllByRole("radio")
+      .map((radio) =>
+        radio.closest("[data-corner]")!.getAttribute("data-corner"),
+      );
+    expect(corners).toEqual([
+      "topLeft",
+      "topRight",
+      "bottomLeft",
+      "bottomRight",
+    ]);
+    await user.type(
+      within(dialog).getByRole("textbox", { name: "Task name" }),
+      "Later",
+    );
+    const bottomLeft = within(dialog).getByRole("radio", {
+      name: "Bottom left quadrant",
+    });
+    await user.click(bottomLeft);
+    expect(bottomLeft).toBeChecked();
+    await user.click(within(dialog).getByRole("button", { name: "Save" }));
+    const added = points.value[2]!;
+    expect(added.label).toBe("Later");
+    expect(added.x).toBeLessThan(5);
+    expect(added.y).toBeLessThan(5);
+  });
+
+  it("closes the panel on a press outside it", async () => {
+    const user = userEvent.setup();
+    const { change, engine } = mountBoard();
+    await layout(engine);
+    await user.click(
+      screen.getAllByRole("button", { name: /^Add task · / })[0]!,
+    );
+    const dialog = await screen.findByRole("dialog", { name: "Add task" });
+    // a press inside keeps it open
+    await user.click(
+      within(dialog).getByRole("radio", { name: "Bottom right quadrant" }),
+    );
+    expect(screen.getByRole("dialog")).toBe(dialog);
+    await user.click(document.body);
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(change).not.toHaveBeenCalled();
   });
 
   it("edits the active task and keeps its other fields", async () => {
@@ -153,17 +225,22 @@ describe("QuadrantTaskBoard", () => {
       within(toolbar).getByRole("button", { name: "Edit task" }),
     );
     const dialog = await screen.findByRole("dialog", { name: "Edit task" });
+    expect(dialog.dataset.quadrantTaskPanel).toBe("edit");
     const input = within(dialog).getByRole("textbox", { name: "Task name" });
     expect(input).toHaveValue("Report");
+    expect(
+      within(dialog).getByRole("radio", { name: "Top left quadrant" }),
+    ).toBeChecked();
     await user.clear(input);
     await user.type(input, "Updated");
     await user.click(within(dialog).getByRole("button", { name: "Save" }));
     expect(change).toHaveBeenLastCalledWith([
       { ...initial[0], label: "Updated" },
     ]);
+    expect(screen.queryByRole("dialog")).toBeNull();
   });
 
-  it("opens the edit dialog on a double click", async () => {
+  it("opens the edit panel on a double click", async () => {
     const { engine } = mountBoard();
     engine.fire("click", { items: [{ index: 0 }] });
     engine.fire("click", { items: [{ index: 0 }] });
@@ -172,19 +249,29 @@ describe("QuadrantTaskBoard", () => {
     ).toBeInTheDocument();
   });
 
-  it("deletes a task after a confirmation", async () => {
+  it("deletes a task after an inline confirmation", async () => {
     const user = userEvent.setup();
-    const { change, points, engine } = mountBoard();
+    const { change, points, engine, container } = mountBoard();
     await layout(engine);
     engine.fire("click", { items: [{ index: 0 }] });
     await nextTick();
 
     await user.click(screen.getByRole("button", { name: "Delete task" }));
-    let confirm = await screen.findByRole("alertdialog");
-    expect(confirm).toHaveTextContent(
+    let confirm = await screen.findByRole("alertdialog", {
+      name: "Delete task",
+    });
+    expect(container.contains(confirm)).toBe(true);
+    expect(confirm.dataset.quadrantTaskPanel).toBe("delete");
+    expect(container.querySelector("[data-panel]")).toHaveAttribute(
+      "data-panel",
+      "delete",
+    );
+    expect(confirm).toHaveAccessibleDescription(
       "“Report” will be removed from the board.",
     );
-    await user.click(within(confirm).getByRole("button", { name: "Cancel" }));
+    const cancel = within(confirm).getByRole("button", { name: "Cancel" });
+    expect(document.activeElement).toBe(cancel);
+    await user.click(cancel);
     expect(screen.queryByRole("alertdialog")).toBeNull();
     expect(change).not.toHaveBeenCalled();
 

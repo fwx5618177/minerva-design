@@ -30,6 +30,9 @@ declare module "vue" {
     MnConfirmDialog: typeof Minerva.ConfirmDialog;
     MnConfirmProvider: typeof Minerva.ConfirmProvider;
     MnContextMenu: typeof Minerva.ContextMenu;
+    MnDashboardCard: typeof Minerva.DashboardCard;
+    MnDashboardColumn: typeof Minerva.DashboardColumn;
+    MnDashboardColumns: typeof Minerva.DashboardColumns;
     MnDataTable: typeof Minerva.DataTable;
     MnDatePicker: typeof Minerva.DatePicker;
     MnDescriptionList: typeof Minerva.DescriptionList;

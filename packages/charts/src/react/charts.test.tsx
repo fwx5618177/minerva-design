@@ -456,12 +456,15 @@ describe("chart components", () => {
     const last = onPointDrag.mock.lastCall!;
     expect(last[0]).toBe(points[0]);
     expect(last[2].quadrant).toBe("bottomLeft");
-    // synchronously, before any frame: the dot and its label follow the pointer
+    // synchronously, before any frame: the dot follows the pointer; the info
+    // card names the point instead of the engine's label pill
     expect(mark("dot")!.style.display).toBe("block");
     expect(parseFloat(mark("dot")!.style.left)).toBeCloseTo(to.x, 0);
     expect(parseFloat(mark("dot")!.style.top)).toBeCloseTo(to.y, 0);
-    expect(mark("label")!.textContent).toBe("Write report");
-    expect(mark("label")!.style.display).toBe("block");
+    expect(mark("label")!.style.display).not.toBe("block");
+    expect(
+      container.querySelector("[data-point-preview]")!.textContent,
+    ).toContain("Write report");
     expect(mark("origin")!.style.display).toBe("block");
     expect(parseFloat(mark("origin")!.style.left)).toBeCloseTo(from.x, 0);
     expect(mark("target")!.style.display).toBe("block");
@@ -475,6 +478,66 @@ describe("chart components", () => {
     expect(mark("target")!.style.display).toBe("none");
     expect(mark("origin")!.style.display).toBe("none");
     expect(mark("dot")!.style.display).toBe("block");
+  });
+
+  it("moves the glass info card with a dragged point, without re-rendering", async () => {
+    const ref = createRef<ChartHandle>();
+    const points = [{ x: 2, y: 8, label: "Write report" }];
+    let renders = 0;
+    const Probe = () => {
+      renders++;
+      return (
+        <QuadrantChart
+          ref={ref}
+          points={points}
+          selectedIndex={0}
+          onPointDrop={() => {}}
+          quadrants={{
+            topLeft: { label: "Now" },
+            bottomRight: { label: "Drop" },
+          }}
+        />
+      );
+    };
+    const { container } = render(<Probe />);
+    await flush();
+    const card = () =>
+      container.querySelector<HTMLElement>("[data-point-preview]");
+    // the selected point shows its card: translucent, no accent edge
+    expect(card()!.textContent).toContain("Write report");
+    expect(card()!.textContent).toContain("Now");
+    expect(card()!.style.backgroundColor).toMatch(/^rgba\(/);
+    expect(card()!.style.borderLeftWidth || "").not.toBe("3px");
+    expect(card()!.style.borderInlineStart).toBe("");
+    const chart = ref.current!.getInstance()!;
+    const stage = container.querySelector(".minerva-chart-stage")!;
+    const fire = (type: string, at: { x: number; y: number }) =>
+      stage.dispatchEvent(
+        new PointerEvent(type, {
+          clientX: at.x,
+          clientY: at.y,
+          button: 0,
+          pointerId: 1,
+        }),
+      );
+    const from = chart.toPixel(2, 8)!;
+    const to = chart.toPixel(8, 2)!;
+    fire("pointerdown", from);
+    fire("pointermove", { x: from.x + 20, y: from.y + 20 });
+    await flush();
+    expect(card()!.dataset.dragging).toBe("");
+    const start = card()!.style.transform;
+    const before = renders;
+    fire("pointermove", { x: (from.x + to.x) / 2, y: (from.y + to.y) / 2 });
+    fire("pointermove", to);
+    await flush();
+    // pushed through the emitter: the card moved, nothing re-rendered
+    expect(renders).toBe(before);
+    expect(card()!.style.transform).not.toBe(start);
+    expect(card()!.textContent).toContain("Drop");
+    fire("pointerup", to);
+    await flush();
+    expect(card()!.dataset.dragging).toBeUndefined();
   });
 
   it("cancels a drag with Escape: no drop, the preview goes away", async () => {

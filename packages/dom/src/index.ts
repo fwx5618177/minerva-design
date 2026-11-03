@@ -20,7 +20,7 @@ export * from "./direction";
 export * from "./adjacent-tabbable";
 export * from "./editable-target";
 export * from "./interactive-target";
-export * from "./kanban-drag";
+export * from "./dashboard-drag";
 export * from "./media-captions";
 export * from "./code-selection";
 export * from "./theme/apply-theme";

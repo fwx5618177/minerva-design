@@ -2,7 +2,7 @@
 // adds a task, the buttons above the active task edit or delete it, and
 // tasks move by drag and drop or Shift + arrows. The board is controlled:
 // minerva-points-change gives the next list, set it back as `points`. The
-// built-in buttons and dialogs follow the page language.
+// built-in buttons and panels follow the page language.
 import type {
   MinervaQuadrantTaskBoard,
   QuadrantPoint,

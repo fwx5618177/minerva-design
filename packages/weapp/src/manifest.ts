@@ -270,42 +270,42 @@ export const weappComponentManifest = [
     deviceE2E: false,
   },
   {
-    name: "KanbanBoard",
+    name: "DashboardColumns",
     scope:
-      "Region around a scroll-view scroll-x of equal-width status columns: columnWidth, gap, height/maxHeight with vertically scrolling column bodies and a translated label. draggable boards move kanban-card components between keyed columns (value): board, columns and cards find each other through relations (linked / unlinked), a long press picks a card up, every column and card root is measured with its own createSelectorQuery boundingClientRect, the shared core functions hit-test the finger, a fixed copy showing the card label follows it, a drop line and the target column outline show the position, and the controlled board fires cardmove { cardKey, fromColumn, fromIndex, toColumn, toIndex } (toIndex counts the cards without the moved one; dropping in place fires nothing). KanbanColumn drop-disabled replaces the canDrop function, which WXML properties cannot carry.",
+      "Region around a scroll-view scroll-x of equal-width status columns: columnWidth, gap, height/maxHeight with vertically scrolling column bodies and a translated label. draggable boards move dashboard-card components between keyed columns (value): board, columns and cards find each other through relations (linked / unlinked), a long press picks a card up, every column and card root is measured with its own createSelectorQuery boundingClientRect, the shared core functions hit-test the finger, a fixed copy showing the card label follows it, a drop line and the target column outline show the position, and the controlled board fires cardmove { cardKey, fromColumn, fromIndex, toColumn, toIndex } (toIndex counts the cards without the moved one; dropping in place fires nothing). DashboardColumn drop-disabled replaces the canDrop function, which WXML properties cannot carry.",
     limitations: [
       "Beta: drag and drop needs device validation. Touch only (no keyboard dragging and no live-region announcements); the floating copy shows the label text, not the card's content; positions are measured once at pick-up (no auto-scroll while dragging, and the board or a column must not scroll during the drag); scrolling under the finger is stopped by a data-bound catchtouchmove on the picked-up card. No canDrop function: drop-disabled refuses a whole column. No scroll snapping, and fill does not stretch the columns (each column component host is the flex item); device geometry still requires validation.",
     ],
     tests: [
-      "src/kanban-board.test.ts: real native host rendering and long press / touchmove / touchend drag workflows",
+      "src/dashboard-columns.test.ts: real native host rendering and long press / touchmove / touchend drag workflows",
       "src/parity.test.ts: native host mount",
     ],
     status: "partial",
     deviceE2E: false,
   },
   {
-    name: "KanbanColumn",
+    name: "DashboardColumn",
     scope:
       "Status column: accent dot (theme or CSS color), title (property or title slot), count badge announced with the title, description, actions/footer slots, role=list body and translated or custom empty text; value keys it for dragging and drop-disabled refuses dropped cards (the drop target gets an outline).",
     limitations: [
-      "Slots cannot be inspected: the empty text shows when count is 0, and each card should carry role=listitem (kanban-card does). Empty actions/footer slots keep their (collapsed) wrappers.",
+      "Slots cannot be inspected: the empty text shows when count is 0, and each card should carry role=listitem (dashboard-card does). Empty actions/footer slots keep their (collapsed) wrappers.",
     ],
     tests: [
-      "src/kanban-board.test.ts: real native host rendering",
+      "src/dashboard-columns.test.ts: real native host rendering",
       "src/parity.test.ts: native host mount",
     ],
     status: "partial",
     deviceE2E: false,
   },
   {
-    name: "KanbanCard",
+    name: "DashboardCard",
     scope:
-      "kanban-card: a role=listitem wrapper keyed by value with a label for the dragged copy; in a draggable board a long press picks it up (bindlongpress), a capture-phase touchmove moves the copy and touchend drops it.",
+      "dashboard-card: a role=listitem wrapper keyed by value with a label for the dragged copy; in a draggable board a long press picks it up (bindlongpress), a capture-phase touchmove moves the copy and touchend drops it.",
     limitations: [
       "Beta: needs device validation. Touch only; the floating copy shows the label text, not the card's content; interactive slotted content inside a draggable card can also start a drag on long press.",
     ],
     tests: [
-      "src/kanban-board.test.ts: real native host drag workflows",
+      "src/dashboard-columns.test.ts: real native host drag workflows",
       "src/parity.test.ts: native host mount",
     ],
     status: "partial",
@@ -314,9 +314,9 @@ export const weappComponentManifest = [
   {
     name: "QuadrantTaskBoard",
     scope:
-      "quadrant-task-board: controlled task board composing the native quadrant-chart, modal, input, select, button, icon-button and confirm-dialog components (usingComponents in its JSON). points in, pointschange { points } out; every quadrant-chart property is forwarded except the chart's own labels (labels are the board texts, partial overrides of the localized defaults). A 2 x 2 grid of quadrant headers above the chart (badge, title, count unless showCounts is false, + add button), a toolbar for the selected task (name, Edit and Delete buttons; selection is internal or the controlled selectedIndex), a modal with a name input (the keyboard confirm key saves) and a quadrant select with Cancel / Save (Save disabled while the name is blank), a danger confirm-dialog before a delete, tapping an empty quadrant area adds a task there, and draggable dots (default true) or the chart's accessible Move to buttons move a task. Add/edit/move/delete/selection logic and texts come from the shared minerva-design/charts quadrant task helpers. Chart methods (configure, resize, resetZoom, getView, setView, getPlotRect, toPixel, fromPixel) are forwarded to the inner chart; pointclick, pointdrag, hover, zoom and layout are re-emitted.",
+      "quadrant-task-board: controlled task board composing the native quadrant-chart, button and icon-button components (usingComponents in its JSON). points in, pointschange { points } out; every quadrant-chart property is forwarded except the chart's own labels (labels are the board texts, partial overrides of the localized defaults). A 2 x 2 grid of quadrant headers above the chart (badge, title, count unless showCounts is false, plus-icon add button), a toolbar for the selected task (name, Edit and Delete buttons; selection is internal or the controlled selectedIndex), an inline panel opened under the headers or the actions toolbar (a caret points at its opener) with a name input (the keyboard confirm key saves) and a 2 x 2 quadrant radio grid with Cancel / Save (Save disabled while the name is blank), an inline danger confirmation before a delete, tapping an empty quadrant area adds a task there, and draggable dots (default true) or the chart's accessible Move to buttons move a task. Add/edit/move/delete/selection logic and texts come from the shared minerva-design/charts quadrant task helpers. Chart methods (configure, resize, resetZoom, getView, setView, getPlotRect, toPixel, fromPixel) are forwarded to the inner chart; pointclick, pointdrag, hover, zoom and layout are re-emitted.",
     limitations: [
-      "Beta: needs device validation. The canvas has no view overlays: the quadrant headers are a grid above the chart (the chart still draws its own quadrant titles) and the actions toolbar sits under the chart instead of floating on the selected dot. No double-tap to edit and no keyboard moves (Shift + arrow keys): mini-program views take no focus; use the Edit button and the Move to actions. Buttons use text glyphs (+, ✎, ✕) instead of the web SVG icons. Layout styles are inline (no dedicated stylesheet yet). The inner components are in the board's shadow tree: the config-provider / theme-provider relation across that boundary (theme tokens and messages of the dialogs) needs device validation; the board's locale is forwarded to the chart explicitly.",
+      "Beta: needs device validation. The canvas has no view overlays: the quadrant headers are a grid above the chart (the chart still draws its own quadrant titles) and the actions toolbar sits under the chart instead of floating on the selected dot. No double-tap to edit and no keyboard moves (Shift + arrow keys): mini-program views take no focus; use the Edit button and the Move to actions. The add buttons draw the plus icon as an SVG data URI image; Edit and Delete keep text glyphs (✎, ✕). Layout styles are inline (no dedicated stylesheet yet). The inner components are in the board's shadow tree: the config-provider / theme-provider relation across that boundary (theme tokens and messages of the inline panel) needs device validation; the board's locale is forwarded to the chart explicitly.",
     ],
     tests: [
       "src/quadrant-task-board.test.ts: real native host add / edit / delete / move workflows",

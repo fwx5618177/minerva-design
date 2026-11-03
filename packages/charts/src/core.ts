@@ -163,13 +163,18 @@ export {
   editQuadrantTaskDraft,
   moveQuadrantTask,
   newQuadrantTaskDraft,
+  placeQuadrantTaskPanel,
+  quadrantTaskColor,
+  quadrantTaskIconUri,
   quadrantTaskDeleteText,
   quadrantTaskLabels,
   removeQuadrantTask,
   selectionAfterRemove,
+  type QuadrantTaskBox,
   type QuadrantTaskDraft,
   type QuadrantTaskGeometry,
   type QuadrantTaskLabels,
+  type QuadrantTaskPanelPlacement,
 } from "./engine/quadrant-tasks";
 export type { ChartThemeInput } from "./engine/theme";
 export type {

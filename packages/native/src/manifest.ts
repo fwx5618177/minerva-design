@@ -155,14 +155,23 @@ export const NATIVE_COMPONENTS: readonly NativeComponent[] = [
     notes:
       "MediaControls: the themed control bar of MediaPlayer driven by props, to wrap expo-video / expo-audio (core React Native has no media element). Captions: tracks (WebVTT / SRT, fetched or data: URLs) parsed by minerva-design/core and the cue at currentTime drawn above the seek bar, CC choice, controlled or uncontrolled trackIndex and onTrackChange (no persisted preference)",
   },
-  { name: "KanbanBoard", contract: "KanbanBoard" },
-  { name: "KanbanColumn", contract: "KanbanColumn" },
-  { name: "KanbanCard", contract: "KanbanCard" },
+  // aliases: deprecated names (the component was called KanbanBoard)
+  {
+    name: "DashboardColumns",
+    contract: "DashboardColumns",
+    aliases: ["KanbanBoard"],
+  },
+  {
+    name: "DashboardColumn",
+    contract: "DashboardColumn",
+    aliases: ["KanbanColumn"],
+  },
+  { name: "DashboardCard", contract: "DashboardCard", aliases: ["KanbanCard"] },
   {
     name: "QuadrantTaskBoard",
     contract: "QuadrantTaskBoard",
     notes:
-      'On the native QuadrantChart (views, no SVG): add button in each quadrant header, edit / delete toolbar next to the selected (tapped) task, add / edit Dialog with a name field and a quadrant RadioGroup, ConfirmDialog before a delete; moves by dragging a dot or the screen-reader "Move to" actions. No double tap to edit (use the toolbar)',
+      'On the native QuadrantChart (views, no SVG): add button in each quadrant header, edit / delete toolbar next to the selected (tapped) task, an inline panel anchored in the board (at the + button or the task) with a name field and a 2 x 2 quadrant radio grid, and an inline confirmation before a delete (a press outside or Android back closes it); moves by dragging a dot or the screen-reader "Move to" actions. No double tap to edit (use the toolbar)',
   },
   { name: "Flashcard", contract: "Flashcard" },
   { name: "SegmentedControl", contract: "SegmentedControl" },

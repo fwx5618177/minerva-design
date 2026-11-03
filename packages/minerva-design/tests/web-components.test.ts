@@ -155,10 +155,10 @@ describe("per-element entries (tree-shaking)", () => {
     // determinate ProgressIndicator (+2.4 kB) and <minerva-config
     // primary-color> (+0.5 kB); raised from 560 kB keeping ~6 kB headroom
     // 1.13.0: 568,556 B -> 630,956 B for six new elements (slider,
-    // segmented-control, flashcard, kanban-board/column, answer-sheet,
+    // segmented-control, flashcard, dashboard-columns/column, answer-sheet,
     // media-player) and CodeBlock syntax highlighting (core tokenizer);
     // raised from 575 kB keeping ~9 kB headroom
-    // 1.15.0: 630,956 B -> 645,097 B for <minerva-kanban-card> and board
+    // 1.15.0: 630,956 B -> 645,097 B for <minerva-dashboard-card> and board
     // drag and drop (shared pointer / keyboard controller), media player
     // captions (WebVTT / SRT parser and cue overlay), code block marks and
     // language detection; raised from 640 kB keeping ~10 kB headroom
@@ -222,7 +222,7 @@ describe("CDN bundle", () => {
     // primary / accent only, not the full palette tables). 730 kB keeps
     // ~7.5 kB headroom. 1.13.0: 809,491 B with the six new elements and the
     // CodeBlock tokenizer; 820 kB keeps ~10 kB headroom. 1.15.0: 853,849 B
-    // with kanban drag and drop, captions, code marks, language detection
+    // with dashboard drag and drop, captions, code marks, language detection
     // and the quadrant chart keyboard layer; 865 kB keeps ~11 kB headroom.
     expect(Buffer.byteLength(js)).toBeLessThan(865_000);
     // (template whitespace of <pre> / <textarea> templates is content)

@@ -593,6 +593,9 @@ function readComponents({
   for (const [name, symbol] of exports) {
     if (!/^[A-Z]/.test(name) || NOT_COMPONENTS.has(name)) continue;
     if (!(symbol.flags & ts.SymbolFlags.Value)) continue;
+    // deprecated aliases of renamed components are not components of their own
+    if (symbol.getJsDocTags(checker).some((tag) => tag.name === "deprecated"))
+      continue;
     const propsSymbol = exports.get(propsOf[name] ?? `${name}Props`);
     let type;
     let parameterless = false;

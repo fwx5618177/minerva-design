@@ -1,6 +1,6 @@
 {
   "title": "QuadrantTaskBoard 四象限任务看板",
-  "description": "基于四象限矩阵（如艾森豪威尔矩阵）的任务看板：点击象限标题上的 +（或象限的空白区域）添加任务，活动任务上方的工具栏可编辑或删除任务，对话框用于填写任务名称并选择象限，删除前会先确认；任务可通过拖放或 Shift + 方向键移动（双击即可编辑）。看板是受控的：通过 points 传入任务，并把 onPointsChange 收到的新列表回传。它还接受 QuadrantChart 的其他属性（坐标轴、象限标题、徽标和颜色、刻度、标签……），内置按钮和对话框会跟随应用语言。由 minerva-design 导出，而非 minerva-design/charts。",
+  "description": "基于四象限矩阵（如艾森豪威尔矩阵）的任务看板：点击象限标题上的 +（或象限的空白区域）添加任务，活动任务上方的工具栏可编辑或删除任务，在 + 按钮或任务旁直接弹出的面板用于填写任务名称并选择象限，删除前会就地确认；任务可通过拖放或 Shift + 方向键移动（双击即可编辑）。看板是受控的：通过 points 传入任务，并把 onPointsChange 收到的新列表回传。它还接受 QuadrantChart 的其他属性（坐标轴、象限标题、徽标和颜色、刻度、标签……），内置按钮和面板会跟随应用语言。由 minerva-design 导出，而非 minerva-design/charts。",
   "demos": {
     "basic": {
       "title": "艾森豪威尔看板",
@@ -52,17 +52,18 @@
   "api": {
     "QuadrantTaskBoardProps": {
       "onPointsChange": "在添加、编辑、删除、拖放或键盘移动任务后调用，参数为新的任务列表（受控：将其作为 points 回传）",
-      "labels": "按钮和对话框的文案（见 QuadrantTaskLabels）；未提供的项跟随语言设置"
+      "labels": "按钮和面板的文案（见 QuadrantTaskLabels）；未提供的项跟随语言设置"
     },
     "QuadrantTaskLabels": {
-      "add": "每个象限的添加按钮，以及添加对话框的标题",
-      "edit": "活动任务的编辑按钮，以及编辑对话框的标题",
+      "add": "每个象限的添加按钮，以及添加面板的标题",
+      "edit": "活动任务的编辑按钮，以及编辑面板的标题",
       "delete": "活动任务的删除按钮，以及删除确认框的标题",
       "deleteConfirm": "删除确认的文案；{name} 会被替换为任务名称",
+      "confirmDelete": "删除确认的确认按钮",
       "name": "名称字段的标签",
       "quadrant": "象限字段的标签",
-      "save": "对话框的保存按钮",
-      "cancel": "对话框和确认框的取消按钮",
+      "save": "添加 / 编辑面板的保存按钮",
+      "cancel": "各面板的取消按钮",
       "actions": "活动任务工具栏的无障碍名称"
     },
     "QuadrantConfig": {
@@ -87,7 +88,7 @@
     },
     "native_QuadrantTaskBoardProps": {
       "onPointsChange": "在添加、编辑、删除、拖放任务或执行“移到”无障碍操作后调用，参数为新的任务列表（受控：将其作为 points 回传）",
-      "labels": "按钮和对话框的文案（add、edit、delete、deleteConfirm、name、quadrant、save、cancel、actions）；未提供的项跟随语言设置"
+      "labels": "按钮和面板的文案（add、edit、delete、deleteConfirm、confirmDelete、name、quadrant、save、cancel、actions）；未提供的项跟随语言设置"
     }
   },
   "cssVars": {
@@ -96,7 +97,11 @@
     "--quadrant-task-board-count-background": "任务计数标签的背景（默认为 --surface-muted-color）",
     "--quadrant-task-board-count-color": "任务计数标签的文字颜色（默认为 --text-secondary-color）",
     "--quadrant-task-board-actions-background": "活动任务工具栏的背景（默认为 --surface-elevated-color）",
-    "--quadrant-task-board-actions-radius": "活动任务工具栏的圆角（默认为 --radius-md）"
+    "--quadrant-task-board-actions-radius": "活动任务工具栏的圆角（默认为 --radius-md）",
+    "--quadrant-task-board-panel-background": "就地添加 / 编辑 / 删除面板的背景（默认为半透明的浮层表面）",
+    "--quadrant-task-board-panel-border": "面板的边框颜色（默认为半透明的 --border-color）",
+    "--quadrant-task-board-panel-radius": "面板的圆角（默认为 --radius-lg）",
+    "--quadrant-task-board-panel-width": "面板的宽度（默认为 288px）"
   },
   "native": {
     "limitations": "在 React Native 中，任务通过拖放或读屏软件的“移到”操作移动：不支持 Shift + 方向键移动，也不支持双击编辑（请使用活动任务的编辑按钮）。按钮图标由 View 绘制，无需依赖 SVG。",

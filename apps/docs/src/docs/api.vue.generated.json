@@ -1374,6 +1374,68 @@
     ],
     "slots": [{ "name": "default", "type": "any", "description": "The area opening the menu (its single child gets the listeners)" }]
   },
+  "DashboardCard": {
+    "file": "packages/vue/src/components/DashboardColumns/DashboardCard.vue",
+    "props": [
+      { "name": "value", "type": "string", "required": true, "description": "Key of the card, reported as `cardKey` by a draggable board" },
+      { "name": "label", "type": "string", "required": false, "description": "Name of the card in the drag announcements and, when draggable, its\naccessible name" }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "type": "any", "description": "Content of the card" }]
+  },
+  "DashboardColumn": {
+    "file": "packages/vue/src/components/DashboardColumns/DashboardColumn.vue",
+    "props": [
+      { "name": "title", "type": "string", "required": false, "description": "Title of the column (also its accessible name; or the `title` slot)" },
+      { "name": "value", "type": "string", "required": false, "description": "Key of the column, reported as `fromColumn` / `toColumn` by a draggable\nboard (columns without one take no cards)" },
+      { "name": "count", "type": "number", "required": false, "description": "Number of items shown as a badge next to the title (and announced with\nthe title); omit to hide the badge" },
+      { "name": "color", "type": "DashboardColumnColor", "required": false, "description": "Accent of the column (a dot before the title): a theme color or any CSS color" },
+      { "name": "description", "type": "string", "required": false, "description": "Supporting text under the header (or the `description` slot)" },
+      { "name": "empty", "type": "string", "required": false, "description": "Text shown when the column has no cards (or the `empty` slot)" },
+      { "name": "aria-label", "type": "string", "required": false, "description": "Accessible name of the column" }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "default", "type": "any", "description": "The cards: each is wrapped in a role=\"listitem\"" },
+      { "name": "title", "type": "any", "description": "Rich title (replaces the `title` text)" },
+      { "name": "actions", "type": "any", "description": "Header controls on the end side (e.g. an add button)" },
+      { "name": "description", "type": "any", "description": "Supporting text under the header" },
+      { "name": "empty", "type": "any", "description": "Content shown when there are no cards" },
+      { "name": "footer", "type": "any", "description": "Footer below the cards (e.g. an \"Add card\" button)" }
+    ]
+  },
+  "DashboardColumns": {
+    "file": "packages/vue/src/components/DashboardColumns/DashboardColumns.vue",
+    "props": [
+      {
+        "name": "columnWidth",
+        "type": "DashboardLength",
+        "required": false,
+        "description": "Width of every column (a number is pixels). With `fill` it is the\nminimum width: columns stretch equally when they fit"
+      },
+      { "name": "fill", "type": "boolean", "default": "false", "required": false, "description": "Stretches the columns equally to fill the board when they fit" },
+      { "name": "gap", "type": "DashboardLength", "required": false, "description": "Space between the columns (a number is pixels)" },
+      { "name": "height", "type": "DashboardLength", "required": false, "description": "Height of the board: the column bodies scroll vertically within it" },
+      { "name": "maxHeight", "type": "DashboardLength", "required": false, "description": "Maximum height of the board: the column bodies scroll vertically within it" },
+      {
+        "name": "draggable",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "description": "Lets the DashboardCard children of keyed columns (`value`) be dragged\nbetween and within columns (mouse, touch long press, keyboard); the\nboard emits `card-move` and the app moves the card in its data"
+      },
+      {
+        "name": "canDrop",
+        "type": "((move: DashboardCardMove) => boolean)",
+        "required": false,
+        "description": "Whether a card may be dropped at a position: refused positions show no\ndrop indicator and the keyboard skips them"
+      },
+      { "name": "aria-label", "type": "string", "required": false, "description": "Accessible name of the board region" },
+      { "name": "aria-labelledby", "type": "string", "required": false, "description": "Id of an element naming the board (instead of aria-label)" }
+    ],
+    "events": [{ "name": "card-move", "type": "[move: DashboardCardMove]" }],
+    "slots": [{ "name": "default", "type": "any", "description": "The columns (DashboardColumn)" }]
+  },
   "DataTable": {
     "file": "packages/vue/src/components/Table/DataTable.vue",
     "props": [
@@ -2676,68 +2738,6 @@
     ],
     "slots": []
   },
-  "KanbanBoard": {
-    "file": "packages/vue/src/components/KanbanBoard/KanbanBoard.vue",
-    "props": [
-      {
-        "name": "columnWidth",
-        "type": "KanbanLength",
-        "required": false,
-        "description": "Width of every column (a number is pixels). With `fill` it is the\nminimum width: columns stretch equally when they fit"
-      },
-      { "name": "fill", "type": "boolean", "default": "false", "required": false, "description": "Stretches the columns equally to fill the board when they fit" },
-      { "name": "gap", "type": "KanbanLength", "required": false, "description": "Space between the columns (a number is pixels)" },
-      { "name": "height", "type": "KanbanLength", "required": false, "description": "Height of the board: the column bodies scroll vertically within it" },
-      { "name": "maxHeight", "type": "KanbanLength", "required": false, "description": "Maximum height of the board: the column bodies scroll vertically within it" },
-      {
-        "name": "draggable",
-        "type": "boolean",
-        "default": "false",
-        "required": false,
-        "description": "Lets the KanbanCard children of keyed columns (`value`) be dragged\nbetween and within columns (mouse, touch long press, keyboard); the\nboard emits `card-move` and the app moves the card in its data"
-      },
-      {
-        "name": "canDrop",
-        "type": "((move: KanbanCardMove) => boolean)",
-        "required": false,
-        "description": "Whether a card may be dropped at a position: refused positions show no\ndrop indicator and the keyboard skips them"
-      },
-      { "name": "aria-label", "type": "string", "required": false, "description": "Accessible name of the board region" },
-      { "name": "aria-labelledby", "type": "string", "required": false, "description": "Id of an element naming the board (instead of aria-label)" }
-    ],
-    "events": [{ "name": "card-move", "type": "[move: KanbanCardMove]" }],
-    "slots": [{ "name": "default", "type": "any", "description": "The columns (KanbanColumn)" }]
-  },
-  "KanbanCard": {
-    "file": "packages/vue/src/components/KanbanBoard/KanbanCard.vue",
-    "props": [
-      { "name": "value", "type": "string", "required": true, "description": "Key of the card, reported as `cardKey` by a draggable board" },
-      { "name": "label", "type": "string", "required": false, "description": "Name of the card in the drag announcements and, when draggable, its\naccessible name" }
-    ],
-    "events": [],
-    "slots": [{ "name": "default", "type": "any", "description": "Content of the card" }]
-  },
-  "KanbanColumn": {
-    "file": "packages/vue/src/components/KanbanBoard/KanbanColumn.vue",
-    "props": [
-      { "name": "title", "type": "string", "required": false, "description": "Title of the column (also its accessible name; or the `title` slot)" },
-      { "name": "value", "type": "string", "required": false, "description": "Key of the column, reported as `fromColumn` / `toColumn` by a draggable\nboard (columns without one take no cards)" },
-      { "name": "count", "type": "number", "required": false, "description": "Number of items shown as a badge next to the title (and announced with\nthe title); omit to hide the badge" },
-      { "name": "color", "type": "KanbanColumnColor", "required": false, "description": "Accent of the column (a dot before the title): a theme color or any CSS color" },
-      { "name": "description", "type": "string", "required": false, "description": "Supporting text under the header (or the `description` slot)" },
-      { "name": "empty", "type": "string", "required": false, "description": "Text shown when the column has no cards (or the `empty` slot)" },
-      { "name": "aria-label", "type": "string", "required": false, "description": "Accessible name of the column" }
-    ],
-    "events": [],
-    "slots": [
-      { "name": "default", "type": "any", "description": "The cards: each is wrapped in a role=\"listitem\"" },
-      { "name": "title", "type": "any", "description": "Rich title (replaces the `title` text)" },
-      { "name": "actions", "type": "any", "description": "Header controls on the end side (e.g. an add button)" },
-      { "name": "description", "type": "any", "description": "Supporting text under the header" },
-      { "name": "empty", "type": "any", "description": "Content shown when there are no cards" },
-      { "name": "footer", "type": "any", "description": "Footer below the cards (e.g. an \"Add card\" button)" }
-    ]
-  },
   "KeyValueEditor": {
     "file": "packages/vue/src/components/KeyValueEditor/KeyValueEditor.vue",
     "props": [
@@ -3863,7 +3863,7 @@
         "required": false,
         "description": "Renders a visually hidden list of the points per quadrant: screen\nreaders can reach every point; arrows move between them, Enter clicks\nand Shift + arrows move the focused point to the neighbouring quadrant\n(`pointDrop`, with a `pointDrop` listener)"
       },
-      { "name": "labels", "type": "Partial<QuadrantTaskLabels>", "required": false, "description": "Texts of the buttons and dialogs (localized by default)" },
+      { "name": "labels", "type": "Partial<QuadrantTaskLabels>", "required": false, "description": "Texts of the buttons and panels (localized by default)" },
       {
         "name": "renderer",
         "type": "ChartRendererPreference",

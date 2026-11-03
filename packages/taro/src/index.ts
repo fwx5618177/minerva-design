@@ -8,7 +8,7 @@ export * from "./flashcard";
 export * from "./segmented-control";
 export * from "./slider";
 export * from "./answer-sheet";
-export * from "./kanban-board";
+export * from "./dashboard-columns";
 export * from "./media-player";
 export * from "./theme";
 export * from "./date-picker";

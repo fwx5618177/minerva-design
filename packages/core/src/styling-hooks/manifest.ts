@@ -37,9 +37,9 @@ import htmlPreviewHooks from "./components/html-preview";
 import iconButtonHooks from "./components/icon-button";
 import inputHooks from "./components/input";
 import jsonFieldHooks from "./components/json-field";
-import kanbanBoardHooks from "./components/kanban-board";
-import kanbanCardHooks from "./components/kanban-card";
-import kanbanColumnHooks from "./components/kanban-column";
+import dashboardColumnsHooks from "./components/dashboard-columns";
+import dashboardCardHooks from "./components/dashboard-card";
+import dashboardColumnHooks from "./components/dashboard-column";
 import keyValueEditorHooks from "./components/key-value-editor";
 import listHooks from "./components/list";
 import listItemHooks from "./components/list-item";
@@ -141,9 +141,9 @@ export const stylingHooks = {
   "icon-button": iconButtonHooks,
   input: inputHooks,
   "json-field": jsonFieldHooks,
-  "kanban-board": kanbanBoardHooks,
-  "kanban-card": kanbanCardHooks,
-  "kanban-column": kanbanColumnHooks,
+  "dashboard-columns": dashboardColumnsHooks,
+  "dashboard-card": dashboardCardHooks,
+  "dashboard-column": dashboardColumnHooks,
   "key-value-editor": keyValueEditorHooks,
   list: listHooks,
   "list-item": listItemHooks,

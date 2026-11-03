@@ -15884,6 +15884,578 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/components/dashboard-columns/dashboard-columns.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A horizontally scrolling board of status columns (`<DashboardColumns>` of\nReact): put `minerva-dashboard-column` elements in it. Columns share one\nwidth (`column-width`, 18rem by default); `fill` stretches them equally\nwhen they fit; `height` / `max-height` bound the board so that the column\nbodies scroll vertically. The board is a labelled `role=\"region\"` (name:\nthe host's `aria-label` / `aria-labelledby`, else localized \"Board\") and\na tab stop, so the keyboard can scroll it; on narrow screens the columns\nkeep their width and snap while scrolling.\n\n`draggable` lets the `minerva-dashboard-card` children of keyed columns\n(`value`) be dragged with the mouse, touch (long press) or the keyboard\n(Space / Enter picks a focused card up, the arrows move it, Space / Enter\ndrops it, Escape cancels). The board is controlled: it fires\n`minerva-card-move` and the app moves the card element (or re-renders).\nWhile dragging is on, the board holds a small layer (drop line, dragged\ncopy, live region) as its last light DOM child.",
+          "name": "MinervaDashboardColumns",
+          "cssParts": [
+            {
+              "description": "The scrolling `role=region` row of columns",
+              "name": "root"
+            }
+          ],
+          "slots": [
+            {
+              "description": "The columns (`minerva-dashboard-column`)",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "columnWidth",
+              "type": {
+                "text": "DashboardLength"
+              },
+              "default": "\"18rem\"",
+              "description": "Width of every column (a number is pixels); with `fill` the minimum width",
+              "attribute": "column-width"
+            },
+            {
+              "kind": "field",
+              "name": "fill",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Stretches the columns equally to fill the board when they fit",
+              "attribute": "fill",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "gap",
+              "type": {
+                "text": "DashboardLength"
+              },
+              "default": "\"0.75rem\"",
+              "description": "Space between the columns (a number is pixels)",
+              "attribute": "gap"
+            },
+            {
+              "kind": "field",
+              "name": "height",
+              "type": {
+                "text": "DashboardLength | undefined"
+              },
+              "description": "Height of the board: the column bodies scroll vertically within it (a number is pixels)",
+              "attribute": "height"
+            },
+            {
+              "kind": "field",
+              "name": "maxHeight",
+              "type": {
+                "text": "DashboardLength | undefined"
+              },
+              "description": "Maximum height of the board: the column bodies scroll vertically within it (a number is pixels)",
+              "attribute": "max-height"
+            },
+            {
+              "kind": "field",
+              "name": "draggable",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Lets the `minerva-dashboard-card` children of keyed columns be dragged\n(mouse, touch long press, keyboard); the board fires `minerva-card-move`.\nReplaces the native `draggable` (HTML drag and drop of the host): the\nattribute turns it on unless it is `\"false\"`.",
+              "attribute": "draggable"
+            },
+            {
+              "kind": "field",
+              "name": "canDrop",
+              "type": {
+                "text": "(move: DashboardCardMove) => boolean | undefined"
+              },
+              "description": "Whether a card may be dropped at a position (property only): refused\npositions show no drop indicator and the keyboard skips them"
+            },
+            {
+              "kind": "method",
+              "name": "focus",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "options",
+                  "optional": true,
+                  "type": {
+                    "text": "FocusOptions"
+                  }
+                }
+              ]
+            }
+          ],
+          "events": [
+            {
+              "description": "A card was dropped at a new position; `detail: { cardKey, fromColumn, fromIndex, toColumn, toIndex }` (`toIndex` counts the cards without the moved one)",
+              "name": "minerva-card-move"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "column-width",
+              "type": {
+                "text": "DashboardLength"
+              },
+              "default": "\"18rem\"",
+              "description": "Width of every column (a number is pixels); with `fill` the minimum width",
+              "fieldName": "columnWidth"
+            },
+            {
+              "name": "fill",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Stretches the columns equally to fill the board when they fit",
+              "fieldName": "fill"
+            },
+            {
+              "name": "gap",
+              "type": {
+                "text": "DashboardLength"
+              },
+              "default": "\"0.75rem\"",
+              "description": "Space between the columns (a number is pixels)",
+              "fieldName": "gap"
+            },
+            {
+              "name": "height",
+              "type": {
+                "text": "DashboardLength | undefined"
+              },
+              "description": "Height of the board: the column bodies scroll vertically within it (a number is pixels)",
+              "fieldName": "height"
+            },
+            {
+              "name": "max-height",
+              "type": {
+                "text": "DashboardLength | undefined"
+              },
+              "description": "Maximum height of the board: the column bodies scroll vertically within it (a number is pixels)",
+              "fieldName": "maxHeight"
+            },
+            {
+              "name": "draggable",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Lets the `minerva-dashboard-card` children of keyed columns be dragged\n(mouse, touch long press, keyboard); the board fires `minerva-card-move`.\nReplaces the native `draggable` (HTML drag and drop of the host): the\nattribute turns it on unless it is `\"false\"`.",
+              "fieldName": "draggable"
+            }
+          ],
+          "tagName": "minerva-dashboard-columns",
+          "customElement": true,
+          "summary": "Horizontally scrolling board of status columns.",
+          "cssProperties": [
+            {
+              "name": "--dashboard-column-width",
+              "description": "Width of the columns (defaults to 18rem; the columnWidth prop sets it; with fill it is the minimum width)"
+            },
+            {
+              "name": "--dashboard-gap",
+              "description": "Space between the columns (defaults to 0.75rem; the gap prop sets it)"
+            },
+            {
+              "name": "--dashboard-column-background",
+              "description": "Background of a column (defaults to --surface-muted-color)"
+            },
+            {
+              "name": "--dashboard-column-border-color",
+              "description": "Border color of a column (defaults to --border-color)"
+            },
+            {
+              "name": "--dashboard-column-radius",
+              "description": "Corner radius of a column (defaults to --radius-lg)"
+            },
+            {
+              "name": "--dashboard-column-color",
+              "description": "Accent of a column: the dot before the title (the color prop sets it for a custom CSS color)"
+            },
+            {
+              "name": "--dashboard-card-gap",
+              "description": "Space between the cards of a column (defaults to --space-2)"
+            },
+            {
+              "name": "--dashboard-count-background",
+              "description": "Background of the count badge (defaults to --surface-color)"
+            },
+            {
+              "name": "--dashboard-count-color",
+              "description": "Text color of the count badge (defaults to --text-secondary-color)"
+            },
+            {
+              "name": "--dashboard-drop-indicator-color",
+              "description": "Color of the drop line and of the column a dragged card would land in (defaults to --primary-color)"
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "description": "A status column of a `minerva-dashboard-columns` (`<DashboardColumn>` of React).\nThe header shows an optional accent dot (`color`: a theme color or any\nCSS color), the `heading`, a `count` badge and the `actions` slot; the\ncards (default slot) form a `role=\"list\"` that scrolls vertically within a\nbounded board (each slotted card without a role gets `role=\"listitem\"`;\nthere is no wrapper); `empty-text` / the `empty` slot (default: localized\n\"No items\") replaces the list when there are no cards, and the `footer`\nslot sits below. The column is a `role=\"group\"` named by its heading and\ncount (\"To do, 3 items\").",
+          "name": "MinervaDashboardColumn",
+          "cssParts": [
+            {
+              "description": "The `role=group` column (state `color-<name>` for a theme accent)",
+              "name": "root"
+            },
+            {
+              "description": "The header row (accent, title, count, actions)",
+              "name": "header"
+            },
+            {
+              "description": "The accent dot before the title (with `color`)",
+              "name": "indicator"
+            },
+            {
+              "description": "The title of the column",
+              "name": "title"
+            },
+            {
+              "description": "The count badge (with `count`)",
+              "name": "count"
+            },
+            {
+              "description": "The header actions (with the `actions` slot)",
+              "name": "actions"
+            },
+            {
+              "description": "The supporting text (with a description)",
+              "name": "description"
+            },
+            {
+              "description": "The `role=list` body holding the cards",
+              "name": "list"
+            },
+            {
+              "description": "The empty content shown instead of the list",
+              "name": "empty"
+            },
+            {
+              "description": "The footer (with the `footer` slot)",
+              "name": "footer"
+            }
+          ],
+          "slots": [
+            {
+              "description": "The cards (each gets `role=\"listitem\"` unless it has a role)",
+              "name": ""
+            },
+            {
+              "description": "Rich title (alternative to the `heading` attribute)",
+              "name": "heading"
+            },
+            {
+              "description": "Header controls on the end side (e.g. an add button)",
+              "name": "actions"
+            },
+            {
+              "description": "Supporting text (alternative to the `description` attribute)",
+              "name": "description"
+            },
+            {
+              "description": "Content shown when there are no cards (default: `empty-text`, else localized \"No items\")",
+              "name": "empty"
+            },
+            {
+              "description": "Footer below the cards (e.g. an \"Add card\" button)",
+              "name": "footer"
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "heading",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Title of the column (also its accessible name; or use the `heading` slot)",
+              "attribute": "heading"
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Key of the column, reported as `fromColumn` / `toColumn` by a draggable board (columns without one take no cards)",
+              "attribute": "value"
+            },
+            {
+              "kind": "field",
+              "name": "count",
+              "type": {
+                "text": "number | undefined"
+              },
+              "description": "Number of items shown as a badge (and announced with the title); unset hides it",
+              "attribute": "count"
+            },
+            {
+              "kind": "field",
+              "name": "color",
+              "type": {
+                "text": "DashboardColumnColor | undefined"
+              },
+              "description": "Accent: a theme color (primary, success, warning, danger, info, neutral) or any CSS color",
+              "attribute": "color",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "description",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Supporting text under the header (or use the `description` slot)",
+              "attribute": "description"
+            },
+            {
+              "kind": "field",
+              "name": "emptyText",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Text shown when there are no cards (default: localized \"No items\"; or use the `empty` slot)",
+              "attribute": "empty-text"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "heading",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Title of the column (also its accessible name; or use the `heading` slot)",
+              "fieldName": "heading"
+            },
+            {
+              "name": "value",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Key of the column, reported as `fromColumn` / `toColumn` by a draggable board (columns without one take no cards)",
+              "fieldName": "value"
+            },
+            {
+              "name": "count",
+              "type": {
+                "text": "number | undefined"
+              },
+              "description": "Number of items shown as a badge (and announced with the title); unset hides it",
+              "fieldName": "count"
+            },
+            {
+              "name": "color",
+              "type": {
+                "text": "DashboardColumnColor | undefined"
+              },
+              "description": "Accent: a theme color (primary, success, warning, danger, info, neutral) or any CSS color",
+              "fieldName": "color"
+            },
+            {
+              "name": "description",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Supporting text under the header (or use the `description` slot)",
+              "fieldName": "description"
+            },
+            {
+              "name": "empty-text",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Text shown when there are no cards (default: localized \"No items\"; or use the `empty` slot)",
+              "fieldName": "emptyText"
+            }
+          ],
+          "tagName": "minerva-dashboard-column",
+          "customElement": true,
+          "summary": "Status column of a DashboardColumns: header, count, cards and footer.",
+          "cssProperties": [
+            {
+              "name": "--dashboard-column-width",
+              "description": "Width of the columns (defaults to 18rem; the columnWidth prop sets it; with fill it is the minimum width)"
+            },
+            {
+              "name": "--dashboard-gap",
+              "description": "Space between the columns (defaults to 0.75rem; the gap prop sets it)"
+            },
+            {
+              "name": "--dashboard-column-background",
+              "description": "Background of a column (defaults to --surface-muted-color)"
+            },
+            {
+              "name": "--dashboard-column-border-color",
+              "description": "Border color of a column (defaults to --border-color)"
+            },
+            {
+              "name": "--dashboard-column-radius",
+              "description": "Corner radius of a column (defaults to --radius-lg)"
+            },
+            {
+              "name": "--dashboard-column-color",
+              "description": "Accent of a column: the dot before the title (the color prop sets it for a custom CSS color)"
+            },
+            {
+              "name": "--dashboard-card-gap",
+              "description": "Space between the cards of a column (defaults to --space-2)"
+            },
+            {
+              "name": "--dashboard-count-background",
+              "description": "Background of the count badge (defaults to --surface-color)"
+            },
+            {
+              "name": "--dashboard-count-color",
+              "description": "Text color of the count badge (defaults to --text-secondary-color)"
+            },
+            {
+              "name": "--dashboard-drop-indicator-color",
+              "description": "Color of the drop line and of the column a dragged card would land in (defaults to --primary-color)"
+            }
+          ]
+        },
+        {
+          "kind": "class",
+          "description": "A card of a `minerva-dashboard-column` (`<DashboardCard>` of React), keyed by\n`value`. In a draggable board its content sits in a focusable\n`role=\"button\"` (the `root` part) described by the drag instructions;\notherwise the part is a plain wrapper. The host is the list item of the\ncolumn. Controls inside a draggable card keep working (a drag never\nstarts on them), but keep them few: they sit inside the button.",
+          "name": "MinervaDashboardCard",
+          "cssParts": [
+            {
+              "description": "The card wrapper (a focusable `role=button` in a draggable board)",
+              "name": "root"
+            }
+          ],
+          "slots": [
+            {
+              "description": "The content of the card",
+              "name": ""
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Key of the card, reported as `cardKey` by a draggable board",
+              "attribute": "value"
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Name of the card in the drag announcements and, when draggable, its accessible name (default: its text)",
+              "attribute": "label"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "value",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Key of the card, reported as `cardKey` by a draggable board",
+              "fieldName": "value"
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "Name of the card in the drag announcements and, when draggable, its accessible name (default: its text)",
+              "fieldName": "label"
+            }
+          ],
+          "tagName": "minerva-dashboard-card",
+          "customElement": true,
+          "summary": "Card of a dashboard column that a draggable board can move.",
+          "cssProperties": [
+            {
+              "name": "--dashboard-column-width",
+              "description": "Width of the columns (defaults to 18rem; the columnWidth prop sets it; with fill it is the minimum width)"
+            },
+            {
+              "name": "--dashboard-gap",
+              "description": "Space between the columns (defaults to 0.75rem; the gap prop sets it)"
+            },
+            {
+              "name": "--dashboard-column-background",
+              "description": "Background of a column (defaults to --surface-muted-color)"
+            },
+            {
+              "name": "--dashboard-column-border-color",
+              "description": "Border color of a column (defaults to --border-color)"
+            },
+            {
+              "name": "--dashboard-column-radius",
+              "description": "Corner radius of a column (defaults to --radius-lg)"
+            },
+            {
+              "name": "--dashboard-column-color",
+              "description": "Accent of a column: the dot before the title (the color prop sets it for a custom CSS color)"
+            },
+            {
+              "name": "--dashboard-card-gap",
+              "description": "Space between the cards of a column (defaults to --space-2)"
+            },
+            {
+              "name": "--dashboard-count-background",
+              "description": "Background of the count badge (defaults to --surface-color)"
+            },
+            {
+              "name": "--dashboard-count-color",
+              "description": "Text color of the count badge (defaults to --text-secondary-color)"
+            },
+            {
+              "name": "--dashboard-drop-indicator-color",
+              "description": "Color of the drop line and of the column a dragged card would land in (defaults to --primary-color)"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "MinervaDashboardColumns",
+          "declaration": {
+            "name": "MinervaDashboardColumns",
+            "module": "src/components/dashboard-columns/dashboard-columns.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "MinervaDashboardColumn",
+          "declaration": {
+            "name": "MinervaDashboardColumn",
+            "module": "src/components/dashboard-columns/dashboard-columns.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "MinervaDashboardCard",
+          "declaration": {
+            "name": "MinervaDashboardCard",
+            "module": "src/components/dashboard-columns/dashboard-columns.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/components/data-table/data-table.ts",
       "declarations": [
         {
@@ -23278,578 +23850,6 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/components/kanban-board/kanban-board.ts",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "A horizontally scrolling board of status columns (`<KanbanBoard>` of\nReact): put `minerva-kanban-column` elements in it. Columns share one\nwidth (`column-width`, 18rem by default); `fill` stretches them equally\nwhen they fit; `height` / `max-height` bound the board so that the column\nbodies scroll vertically. The board is a labelled `role=\"region\"` (name:\nthe host's `aria-label` / `aria-labelledby`, else localized \"Board\") and\na tab stop, so the keyboard can scroll it; on narrow screens the columns\nkeep their width and snap while scrolling.\n\n`draggable` lets the `minerva-kanban-card` children of keyed columns\n(`value`) be dragged with the mouse, touch (long press) or the keyboard\n(Space / Enter picks a focused card up, the arrows move it, Space / Enter\ndrops it, Escape cancels). The board is controlled: it fires\n`minerva-card-move` and the app moves the card element (or re-renders).\nWhile dragging is on, the board holds a small layer (drop line, dragged\ncopy, live region) as its last light DOM child.",
-          "name": "MinervaKanbanBoard",
-          "cssParts": [
-            {
-              "description": "The scrolling `role=region` row of columns",
-              "name": "root"
-            }
-          ],
-          "slots": [
-            {
-              "description": "The columns (`minerva-kanban-column`)",
-              "name": ""
-            }
-          ],
-          "members": [
-            {
-              "kind": "field",
-              "name": "columnWidth",
-              "type": {
-                "text": "KanbanLength"
-              },
-              "default": "\"18rem\"",
-              "description": "Width of every column (a number is pixels); with `fill` the minimum width",
-              "attribute": "column-width"
-            },
-            {
-              "kind": "field",
-              "name": "fill",
-              "type": {
-                "text": "boolean"
-              },
-              "default": "false",
-              "description": "Stretches the columns equally to fill the board when they fit",
-              "attribute": "fill",
-              "reflects": true
-            },
-            {
-              "kind": "field",
-              "name": "gap",
-              "type": {
-                "text": "KanbanLength"
-              },
-              "default": "\"0.75rem\"",
-              "description": "Space between the columns (a number is pixels)",
-              "attribute": "gap"
-            },
-            {
-              "kind": "field",
-              "name": "height",
-              "type": {
-                "text": "KanbanLength | undefined"
-              },
-              "description": "Height of the board: the column bodies scroll vertically within it (a number is pixels)",
-              "attribute": "height"
-            },
-            {
-              "kind": "field",
-              "name": "maxHeight",
-              "type": {
-                "text": "KanbanLength | undefined"
-              },
-              "description": "Maximum height of the board: the column bodies scroll vertically within it (a number is pixels)",
-              "attribute": "max-height"
-            },
-            {
-              "kind": "field",
-              "name": "draggable",
-              "type": {
-                "text": "boolean"
-              },
-              "default": "false",
-              "description": "Lets the `minerva-kanban-card` children of keyed columns be dragged\n(mouse, touch long press, keyboard); the board fires `minerva-card-move`.\nReplaces the native `draggable` (HTML drag and drop of the host): the\nattribute turns it on unless it is `\"false\"`.",
-              "attribute": "draggable"
-            },
-            {
-              "kind": "field",
-              "name": "canDrop",
-              "type": {
-                "text": "(move: KanbanCardMove) => boolean | undefined"
-              },
-              "description": "Whether a card may be dropped at a position (property only): refused\npositions show no drop indicator and the keyboard skips them"
-            },
-            {
-              "kind": "method",
-              "name": "focus",
-              "return": {
-                "type": {
-                  "text": "void"
-                }
-              },
-              "parameters": [
-                {
-                  "name": "options",
-                  "optional": true,
-                  "type": {
-                    "text": "FocusOptions"
-                  }
-                }
-              ]
-            }
-          ],
-          "events": [
-            {
-              "description": "A card was dropped at a new position; `detail: { cardKey, fromColumn, fromIndex, toColumn, toIndex }` (`toIndex` counts the cards without the moved one)",
-              "name": "minerva-card-move"
-            }
-          ],
-          "attributes": [
-            {
-              "name": "column-width",
-              "type": {
-                "text": "KanbanLength"
-              },
-              "default": "\"18rem\"",
-              "description": "Width of every column (a number is pixels); with `fill` the minimum width",
-              "fieldName": "columnWidth"
-            },
-            {
-              "name": "fill",
-              "type": {
-                "text": "boolean"
-              },
-              "default": "false",
-              "description": "Stretches the columns equally to fill the board when they fit",
-              "fieldName": "fill"
-            },
-            {
-              "name": "gap",
-              "type": {
-                "text": "KanbanLength"
-              },
-              "default": "\"0.75rem\"",
-              "description": "Space between the columns (a number is pixels)",
-              "fieldName": "gap"
-            },
-            {
-              "name": "height",
-              "type": {
-                "text": "KanbanLength | undefined"
-              },
-              "description": "Height of the board: the column bodies scroll vertically within it (a number is pixels)",
-              "fieldName": "height"
-            },
-            {
-              "name": "max-height",
-              "type": {
-                "text": "KanbanLength | undefined"
-              },
-              "description": "Maximum height of the board: the column bodies scroll vertically within it (a number is pixels)",
-              "fieldName": "maxHeight"
-            },
-            {
-              "name": "draggable",
-              "type": {
-                "text": "boolean"
-              },
-              "default": "false",
-              "description": "Lets the `minerva-kanban-card` children of keyed columns be dragged\n(mouse, touch long press, keyboard); the board fires `minerva-card-move`.\nReplaces the native `draggable` (HTML drag and drop of the host): the\nattribute turns it on unless it is `\"false\"`.",
-              "fieldName": "draggable"
-            }
-          ],
-          "tagName": "minerva-kanban-board",
-          "customElement": true,
-          "summary": "Horizontally scrolling board of status columns.",
-          "cssProperties": [
-            {
-              "name": "--kanban-column-width",
-              "description": "Width of the columns (defaults to 18rem; the columnWidth prop sets it; with fill it is the minimum width)"
-            },
-            {
-              "name": "--kanban-gap",
-              "description": "Space between the columns (defaults to 0.75rem; the gap prop sets it)"
-            },
-            {
-              "name": "--kanban-column-background",
-              "description": "Background of a column (defaults to --surface-muted-color)"
-            },
-            {
-              "name": "--kanban-column-border-color",
-              "description": "Border color of a column (defaults to --border-color)"
-            },
-            {
-              "name": "--kanban-column-radius",
-              "description": "Corner radius of a column (defaults to --radius-lg)"
-            },
-            {
-              "name": "--kanban-column-color",
-              "description": "Accent of a column: the dot before the title (the color prop sets it for a custom CSS color)"
-            },
-            {
-              "name": "--kanban-card-gap",
-              "description": "Space between the cards of a column (defaults to --space-2)"
-            },
-            {
-              "name": "--kanban-count-background",
-              "description": "Background of the count badge (defaults to --surface-color)"
-            },
-            {
-              "name": "--kanban-count-color",
-              "description": "Text color of the count badge (defaults to --text-secondary-color)"
-            },
-            {
-              "name": "--kanban-drop-indicator-color",
-              "description": "Color of the drop line and of the column a dragged card would land in (defaults to --primary-color)"
-            }
-          ]
-        },
-        {
-          "kind": "class",
-          "description": "A status column of a `minerva-kanban-board` (`<KanbanColumn>` of React).\nThe header shows an optional accent dot (`color`: a theme color or any\nCSS color), the `heading`, a `count` badge and the `actions` slot; the\ncards (default slot) form a `role=\"list\"` that scrolls vertically within a\nbounded board (each slotted card without a role gets `role=\"listitem\"`;\nthere is no wrapper); `empty-text` / the `empty` slot (default: localized\n\"No items\") replaces the list when there are no cards, and the `footer`\nslot sits below. The column is a `role=\"group\"` named by its heading and\ncount (\"To do, 3 items\").",
-          "name": "MinervaKanbanColumn",
-          "cssParts": [
-            {
-              "description": "The `role=group` column (state `color-<name>` for a theme accent)",
-              "name": "root"
-            },
-            {
-              "description": "The header row (accent, title, count, actions)",
-              "name": "header"
-            },
-            {
-              "description": "The accent dot before the title (with `color`)",
-              "name": "indicator"
-            },
-            {
-              "description": "The title of the column",
-              "name": "title"
-            },
-            {
-              "description": "The count badge (with `count`)",
-              "name": "count"
-            },
-            {
-              "description": "The header actions (with the `actions` slot)",
-              "name": "actions"
-            },
-            {
-              "description": "The supporting text (with a description)",
-              "name": "description"
-            },
-            {
-              "description": "The `role=list` body holding the cards",
-              "name": "list"
-            },
-            {
-              "description": "The empty content shown instead of the list",
-              "name": "empty"
-            },
-            {
-              "description": "The footer (with the `footer` slot)",
-              "name": "footer"
-            }
-          ],
-          "slots": [
-            {
-              "description": "The cards (each gets `role=\"listitem\"` unless it has a role)",
-              "name": ""
-            },
-            {
-              "description": "Rich title (alternative to the `heading` attribute)",
-              "name": "heading"
-            },
-            {
-              "description": "Header controls on the end side (e.g. an add button)",
-              "name": "actions"
-            },
-            {
-              "description": "Supporting text (alternative to the `description` attribute)",
-              "name": "description"
-            },
-            {
-              "description": "Content shown when there are no cards (default: `empty-text`, else localized \"No items\")",
-              "name": "empty"
-            },
-            {
-              "description": "Footer below the cards (e.g. an \"Add card\" button)",
-              "name": "footer"
-            }
-          ],
-          "members": [
-            {
-              "kind": "field",
-              "name": "heading",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\"",
-              "description": "Title of the column (also its accessible name; or use the `heading` slot)",
-              "attribute": "heading"
-            },
-            {
-              "kind": "field",
-              "name": "value",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Key of the column, reported as `fromColumn` / `toColumn` by a draggable board (columns without one take no cards)",
-              "attribute": "value"
-            },
-            {
-              "kind": "field",
-              "name": "count",
-              "type": {
-                "text": "number | undefined"
-              },
-              "description": "Number of items shown as a badge (and announced with the title); unset hides it",
-              "attribute": "count"
-            },
-            {
-              "kind": "field",
-              "name": "color",
-              "type": {
-                "text": "KanbanColumnColor | undefined"
-              },
-              "description": "Accent: a theme color (primary, success, warning, danger, info, neutral) or any CSS color",
-              "attribute": "color",
-              "reflects": true
-            },
-            {
-              "kind": "field",
-              "name": "description",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\"",
-              "description": "Supporting text under the header (or use the `description` slot)",
-              "attribute": "description"
-            },
-            {
-              "kind": "field",
-              "name": "emptyText",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Text shown when there are no cards (default: localized \"No items\"; or use the `empty` slot)",
-              "attribute": "empty-text"
-            }
-          ],
-          "attributes": [
-            {
-              "name": "heading",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\"",
-              "description": "Title of the column (also its accessible name; or use the `heading` slot)",
-              "fieldName": "heading"
-            },
-            {
-              "name": "value",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Key of the column, reported as `fromColumn` / `toColumn` by a draggable board (columns without one take no cards)",
-              "fieldName": "value"
-            },
-            {
-              "name": "count",
-              "type": {
-                "text": "number | undefined"
-              },
-              "description": "Number of items shown as a badge (and announced with the title); unset hides it",
-              "fieldName": "count"
-            },
-            {
-              "name": "color",
-              "type": {
-                "text": "KanbanColumnColor | undefined"
-              },
-              "description": "Accent: a theme color (primary, success, warning, danger, info, neutral) or any CSS color",
-              "fieldName": "color"
-            },
-            {
-              "name": "description",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\"",
-              "description": "Supporting text under the header (or use the `description` slot)",
-              "fieldName": "description"
-            },
-            {
-              "name": "empty-text",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Text shown when there are no cards (default: localized \"No items\"; or use the `empty` slot)",
-              "fieldName": "emptyText"
-            }
-          ],
-          "tagName": "minerva-kanban-column",
-          "customElement": true,
-          "summary": "Status column of a kanban board: header, count, cards and footer.",
-          "cssProperties": [
-            {
-              "name": "--kanban-column-width",
-              "description": "Width of the columns (defaults to 18rem; the columnWidth prop sets it; with fill it is the minimum width)"
-            },
-            {
-              "name": "--kanban-gap",
-              "description": "Space between the columns (defaults to 0.75rem; the gap prop sets it)"
-            },
-            {
-              "name": "--kanban-column-background",
-              "description": "Background of a column (defaults to --surface-muted-color)"
-            },
-            {
-              "name": "--kanban-column-border-color",
-              "description": "Border color of a column (defaults to --border-color)"
-            },
-            {
-              "name": "--kanban-column-radius",
-              "description": "Corner radius of a column (defaults to --radius-lg)"
-            },
-            {
-              "name": "--kanban-column-color",
-              "description": "Accent of a column: the dot before the title (the color prop sets it for a custom CSS color)"
-            },
-            {
-              "name": "--kanban-card-gap",
-              "description": "Space between the cards of a column (defaults to --space-2)"
-            },
-            {
-              "name": "--kanban-count-background",
-              "description": "Background of the count badge (defaults to --surface-color)"
-            },
-            {
-              "name": "--kanban-count-color",
-              "description": "Text color of the count badge (defaults to --text-secondary-color)"
-            },
-            {
-              "name": "--kanban-drop-indicator-color",
-              "description": "Color of the drop line and of the column a dragged card would land in (defaults to --primary-color)"
-            }
-          ]
-        },
-        {
-          "kind": "class",
-          "description": "A card of a `minerva-kanban-column` (`<KanbanCard>` of React), keyed by\n`value`. In a draggable board its content sits in a focusable\n`role=\"button\"` (the `root` part) described by the drag instructions;\notherwise the part is a plain wrapper. The host is the list item of the\ncolumn. Controls inside a draggable card keep working (a drag never\nstarts on them), but keep them few: they sit inside the button.",
-          "name": "MinervaKanbanCard",
-          "cssParts": [
-            {
-              "description": "The card wrapper (a focusable `role=button` in a draggable board)",
-              "name": "root"
-            }
-          ],
-          "slots": [
-            {
-              "description": "The content of the card",
-              "name": ""
-            }
-          ],
-          "members": [
-            {
-              "kind": "field",
-              "name": "value",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\"",
-              "description": "Key of the card, reported as `cardKey` by a draggable board",
-              "attribute": "value"
-            },
-            {
-              "kind": "field",
-              "name": "label",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Name of the card in the drag announcements and, when draggable, its accessible name (default: its text)",
-              "attribute": "label"
-            }
-          ],
-          "attributes": [
-            {
-              "name": "value",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"\"",
-              "description": "Key of the card, reported as `cardKey` by a draggable board",
-              "fieldName": "value"
-            },
-            {
-              "name": "label",
-              "type": {
-                "text": "string | undefined"
-              },
-              "description": "Name of the card in the drag announcements and, when draggable, its accessible name (default: its text)",
-              "fieldName": "label"
-            }
-          ],
-          "tagName": "minerva-kanban-card",
-          "customElement": true,
-          "summary": "Card of a kanban column that a draggable board can move.",
-          "cssProperties": [
-            {
-              "name": "--kanban-column-width",
-              "description": "Width of the columns (defaults to 18rem; the columnWidth prop sets it; with fill it is the minimum width)"
-            },
-            {
-              "name": "--kanban-gap",
-              "description": "Space between the columns (defaults to 0.75rem; the gap prop sets it)"
-            },
-            {
-              "name": "--kanban-column-background",
-              "description": "Background of a column (defaults to --surface-muted-color)"
-            },
-            {
-              "name": "--kanban-column-border-color",
-              "description": "Border color of a column (defaults to --border-color)"
-            },
-            {
-              "name": "--kanban-column-radius",
-              "description": "Corner radius of a column (defaults to --radius-lg)"
-            },
-            {
-              "name": "--kanban-column-color",
-              "description": "Accent of a column: the dot before the title (the color prop sets it for a custom CSS color)"
-            },
-            {
-              "name": "--kanban-card-gap",
-              "description": "Space between the cards of a column (defaults to --space-2)"
-            },
-            {
-              "name": "--kanban-count-background",
-              "description": "Background of the count badge (defaults to --surface-color)"
-            },
-            {
-              "name": "--kanban-count-color",
-              "description": "Text color of the count badge (defaults to --text-secondary-color)"
-            },
-            {
-              "name": "--kanban-drop-indicator-color",
-              "description": "Color of the drop line and of the column a dragged card would land in (defaults to --primary-color)"
-            }
-          ]
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "MinervaKanbanBoard",
-          "declaration": {
-            "name": "MinervaKanbanBoard",
-            "module": "src/components/kanban-board/kanban-board.ts"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "MinervaKanbanColumn",
-          "declaration": {
-            "name": "MinervaKanbanColumn",
-            "module": "src/components/kanban-board/kanban-board.ts"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "MinervaKanbanCard",
-          "declaration": {
-            "name": "MinervaKanbanCard",
-            "module": "src/components/kanban-board/kanban-board.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
       "path": "src/components/key-value-editor/key-value-editor.ts",
       "declarations": [
         {
@@ -31186,16 +31186,20 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "Task board on a four-quadrant matrix (`<QuadrantTaskBoard>` of React),\nbuilt on `<minerva-quadrant-chart>`: each quadrant header shows its\ntitle, the number of tasks and an add button; the active task (hovered,\nkeyboard-focused or selected) shows edit and delete buttons; a dialog\nnames a task and picks its quadrant, a confirmation precedes a delete.\nTasks can be dragged to another quadrant, or moved with Shift + arrows\nonce focused; a double click edits a task, a click on an empty area adds\none there.\n\nControlled, like `<minerva-kanban-board>`: the board never changes its\nown `points`. It fires `minerva-points-change` with the next list after\nan add, an edit, a delete, a drag and drop or a keyboard move; set it\nback as `points` to apply it (or keep the old list to refuse it).\n\nTexts are localized (the `locale` attribute, else the library language)\nand can be overridden with `labels`. The host's `aria-label` names the\nchart.\n\nPublished as the optional entry\n`minerva-design/web-components/quadrant-task-board` (it loads the chart\nengine, minerva-design/charts/core).",
+          "description": "Task board on a four-quadrant matrix (`<QuadrantTaskBoard>` of React),\nbuilt on `<minerva-quadrant-chart>`: each quadrant header shows its\ntitle, the number of tasks and an add button; the active task (hovered,\nkeyboard-focused or selected) shows edit and delete buttons; an inline\npanel, anchored inside the board at the button or the task, names a task\nand picks its quadrant, or confirms a delete (Escape or a press outside\ncloses it). Tasks can be dragged to another quadrant, or moved with\nShift + arrows once focused; a double click edits a task, a click on an\nempty area adds one there.\n\nControlled, like `<minerva-dashboard-columns>`: the board never changes its\nown `points`. It fires `minerva-points-change` with the next list after\nan add, an edit, a delete, a drag and drop or a keyboard move; set it\nback as `points` to apply it (or keep the old list to refuse it).\n\nTexts are localized (the `locale` attribute, else the library language)\nand can be overridden with `labels`. The host's `aria-label` names the\nchart.\n\nPublished as the optional entry\n`minerva-design/web-components/quadrant-task-board` (it loads the chart\nengine, minerva-design/charts/core).",
           "name": "MinervaQuadrantTaskBoard",
           "cssParts": [
             {
-              "description": "The box around the chart and the dialogs",
+              "description": "The box around the chart and the inline panel",
               "name": "root"
             },
             {
               "description": "The inner `<minerva-quadrant-chart>`",
               "name": "chart"
+            },
+            {
+              "description": "The inline add / edit / delete panel, positioned next to its anchor",
+              "name": "panel"
             }
           ],
           "members": [
@@ -31213,7 +31217,7 @@
               "type": {
                 "text": "Partial<QuadrantTaskLabels> | undefined"
               },
-              "description": "Texts of the buttons and dialogs (`add`, `edit`, `delete`, `deleteConfirm`, `name`, `quadrant`, `save`, `cancel`, `actions`), localized by default; property only"
+              "description": "Texts of the buttons and panels (`add`, `edit`, `delete`, `deleteConfirm`, `confirmDelete`, `name`, `quadrant`, `save`, `cancel`, `actions`), localized by default; property only"
             },
             {
               "kind": "field",
@@ -31544,6 +31548,22 @@
             {
               "name": "--quadrant-task-board-actions-radius",
               "description": "Corner radius of the toolbar of the active task (defaults to --radius-md)"
+            },
+            {
+              "name": "--quadrant-task-board-panel-background",
+              "description": "Background of the inline add / edit / delete panel (defaults to a translucent elevated surface)"
+            },
+            {
+              "name": "--quadrant-task-board-panel-border",
+              "description": "Border color of the inline panel (defaults to a translucent --border-color)"
+            },
+            {
+              "name": "--quadrant-task-board-panel-radius",
+              "description": "Corner radius of the inline panel (defaults to --radius-lg)"
+            },
+            {
+              "name": "--quadrant-task-board-panel-width",
+              "description": "Width of the inline panel (defaults to 288px)"
             }
           ]
         }

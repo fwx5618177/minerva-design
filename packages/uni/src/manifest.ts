@@ -277,50 +277,50 @@ export const uniComponentManifest = [
     deviceE2E: false,
   },
   {
-    name: "KanbanBoard",
+    name: "DashboardColumns",
     scope:
-      "Board of status columns in a scroll-view scroll-x: equal-width columns (columnWidth), fill when they fit, gap, height/maxHeight with vertically scrolling column bodies and a translated region label. draggable boards move the KanbanCard children of keyed columns (value) with a long press and drag (cards and columns measure themselves when a card is picked up), with a drop line, a highlighted target column, canDrop and a card-move event.",
+      "Board of status columns in a scroll-view scroll-x: equal-width columns (columnWidth), fill when they fit, gap, height/maxHeight with vertically scrolling column bodies and a translated region label. draggable boards move the DashboardCard children of keyed columns (value) with a long press and drag (cards and columns measure themselves when a card is picked up), with a drop line, a highlighted target column, canDrop and a card-move event.",
     limitations: [
       "Drag and drop is touch only (no keyboard or screen-reader moves): offer your own move actions for accessibility. The floating copy shows the card's label (slots cannot be duplicated), there is no auto-scroll near the edges and the page may still scroll on hosts that cannot cancel touchmove. No scroll snapping; device geometry still requires validation.",
     ],
     tests: [
-      "src/kanban-board.test.ts: behavioral regression",
+      "src/dashboard-columns.test.ts: behavioral regression",
       "src/parity.test.ts: native host mount",
     ],
     status: "partial",
     deviceE2E: false,
   },
   {
-    name: "KanbanColumn",
+    name: "DashboardColumn",
     scope:
       "Status column: accent dot (theme or CSS color), title (prop or slot), count badge announced with the title, description, actions slot, role=list body, translated or custom empty content and a footer slot.",
     limitations: [
-      "Mini-program slots cannot be wrapped card by card: use KanbanCard or give each card role=listitem. The empty content shows without a default slot or with count 0.",
+      "Mini-program slots cannot be wrapped card by card: use DashboardCard or give each card role=listitem. The empty content shows without a default slot or with count 0.",
     ],
     tests: [
-      "src/kanban-board.test.ts: behavioral regression",
+      "src/dashboard-columns.test.ts: behavioral regression",
       "src/parity.test.ts: native host mount",
     ],
     status: "partial",
     deviceE2E: false,
   },
   {
-    name: "KanbanCard",
+    name: "DashboardCard",
     scope:
-      "Card of a KanbanColumn (role=listitem) keyed by value; in a draggable board a long press picks it up and a copy showing its label follows the finger.",
+      "Card of a DashboardColumn (role=listitem) keyed by value; in a draggable board a long press picks it up and a copy showing its label follows the finger.",
     limitations: [
       "Touch only; the floating copy shows the label text, not the card's content.",
     ],
-    tests: ["src/kanban-board.test.ts: behavioral regression"],
+    tests: ["src/dashboard-columns.test.ts: behavioral regression"],
     status: "partial",
     deviceE2E: false,
   },
   {
     name: "QuadrantTaskBoard",
     scope:
-      "Controlled task board on top of the uni QuadrantChart (points in; update:points for v-model:points and pointsChange out; every other QuadrantChart prop is forwarded, the chart labels excepted; hover, pointClick and zoom are re-emitted and the chart handle is exposed): a row of quadrant headers under the chart (badge, quadrant title, count unless showCounts is false, + add button), an actions toolbar for the selected task (task name, Edit and Delete text buttons; selection is internal or the controlled selectedIndex), a Modal with a required name Input (the keyboard confirm key saves) and a RadioGroup quadrant picker with Cancel / Save (Save disabled until the name is not blank), a danger ConfirmDialog before a delete, tapping an empty quadrant area to add a task there, drag and drop of the dots and the chart's accessible move-to actions. Add/edit/move/delete/selection logic and the localized texts (labels overrides) come from the shared minerva-design/charts quadrant task helpers.",
+      "Controlled task board on top of the uni QuadrantChart (points in; update:points for v-model:points and pointsChange out; every other QuadrantChart prop is forwarded, the chart labels excepted; hover, pointClick and zoom are re-emitted and the chart handle is exposed): a row of quadrant headers under the chart (badge, quadrant title, count unless showCounts is false, plus-icon add button), an actions toolbar for the selected task (task name, Edit and Delete text buttons; selection is internal or the controlled selectedIndex), an inline panel opened under the headers or the actions toolbar (a caret points at its opener) with a required name Input (the keyboard confirm key saves) and a 2 x 2 quadrant radio grid with Cancel / Save (Save disabled until the name is not blank), an inline danger confirmation before a delete, tapping an empty quadrant area to add a task there, drag and drop of the dots and the chart's accessible move-to actions. Add/edit/move/delete/selection logic and the localized texts (labels overrides) come from the shared minerva-design/charts quadrant task helpers.",
     limitations: [
-      "No keyboard moves (Shift + arrow keys) or double-tap to edit: mini-program views take no focus and the chart has no double tap; use the Edit button and the move-to actions. The actions toolbar sits under the chart instead of floating on the selected dot, and the quadrant headers are a row under the chart instead of over the quadrants. Buttons use text glyphs (+) and words instead of the web SVG icons (mini programs have no inline SVG). Screen readers get aria-role / aria-label where the host supports them; device behavior still requires validation.",
+      "No keyboard moves (Shift + arrow keys) or double-tap to edit: mini-program views take no focus and the chart has no double tap; use the Edit button and the move-to actions. The actions toolbar sits under the chart instead of floating on the selected dot, and the quadrant headers are a row under the chart instead of over the quadrants. The add buttons draw the plus icon as an SVG data URI image; Edit and Delete are text buttons. Screen readers get aria-role / aria-label where the host supports them; device behavior still requires validation.",
     ],
     tests: ["src/quadrant-task-board.test.ts: behavioral regression"],
     status: "partial",

@@ -35,17 +35,17 @@ import {
   mediaPlayerTemplate,
 } from "./media-player";
 import {
-  kanbanBoardExtra,
-  kanbanBoardProperties,
-  kanbanBoardTemplate,
-  kanbanCardExtra,
-  kanbanCardMethods,
-  kanbanCardProperties,
-  kanbanCardTemplate,
-  kanbanColumnExtra,
-  kanbanColumnProperties,
-  kanbanColumnTemplate,
-} from "./kanban-board";
+  dashboardColumnsExtra,
+  dashboardColumnsProperties,
+  dashboardColumnsTemplate,
+  dashboardCardExtra,
+  dashboardCardMethods,
+  dashboardCardProperties,
+  dashboardCardTemplate,
+  dashboardColumnExtra,
+  dashboardColumnProperties,
+  dashboardColumnTemplate,
+} from "./dashboard-columns";
 import {
   quadrantTaskBoardComponents,
   quadrantTaskBoardExtra,
@@ -1246,23 +1246,23 @@ export const mediaPlayer = native(
   mediaPlayerMethods,
   mediaPlayerExtra,
 );
-export const kanbanBoard = native(
-  kanbanBoardTemplate,
-  kanbanBoardProperties,
+export const dashboardColumns = native(
+  dashboardColumnsTemplate,
+  dashboardColumnsProperties,
   {},
-  kanbanBoardExtra,
+  dashboardColumnsExtra,
 );
-export const kanbanColumn = native(
-  kanbanColumnTemplate,
-  kanbanColumnProperties,
+export const dashboardColumn = native(
+  dashboardColumnTemplate,
+  dashboardColumnProperties,
   {},
-  kanbanColumnExtra,
+  dashboardColumnExtra,
 );
-export const kanbanCard = native(
-  kanbanCardTemplate,
-  kanbanCardProperties,
-  kanbanCardMethods,
-  kanbanCardExtra,
+export const dashboardCard = native(
+  dashboardCardTemplate,
+  dashboardCardProperties,
+  dashboardCardMethods,
+  dashboardCardExtra,
 );
 /** Task board on a quadrant chart; composes Minerva native components */
 export const quadrantTaskBoard = Object.assign(
@@ -3159,9 +3159,9 @@ annotateNativeApi({
   monthCalendar,
   weekStrip,
   mediaPlayer,
-  kanbanBoard,
-  kanbanColumn,
-  kanbanCard,
+  dashboardColumns,
+  dashboardColumn,
+  dashboardCard,
   quadrantTaskBoard,
   flashcard,
   segmentedControl,

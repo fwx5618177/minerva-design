@@ -1,6 +1,7 @@
-// <minerva-quadrant-task-board> against a fake chart engine: the dialogs,
-// the toolbar of the active task and the drops produce the next points
-// (`minerva-points-change`), the board never changing its own `points`.
+// <minerva-quadrant-task-board> against a fake chart engine: the inline
+// panel, the toolbar of the active task and the drops produce the next
+// points (`minerva-points-change`), the board never changing its own
+// `points`.
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   quadrantCenter,
@@ -9,10 +10,7 @@ import {
 } from "minerva-design/charts/core";
 import type { MinervaButton } from "../button/button";
 import type { MinervaQuadrantChart } from "../chart/charts";
-import type { MinervaConfirmDialog } from "../confirm/confirm";
 import type { MinervaInput } from "../input/input";
-import type { MinervaModal } from "../modal/modal";
-import type { MinervaSelect } from "../select/select";
 import type { MinervaQuadrantTaskBoard } from "./quadrant-task-board";
 
 type Listener = (event: unknown) => void;
@@ -61,6 +59,14 @@ afterEach(() => {
   document.body.innerHTML = "";
 });
 
+/** The focused element, looking into the shadow roots */
+const deepActive = () => {
+  let active = document.activeElement;
+  while (active?.shadowRoot?.activeElement)
+    active = active.shadowRoot.activeElement;
+  return active;
+};
+
 const setup = async (points: QuadrantPoint[] = TASKS) => {
   const board = await mount<MinervaQuadrantTaskBoard>(
     `<minerva-quadrant-task-board></minerva-quadrant-task-board>`,
@@ -77,24 +83,24 @@ const setup = async (points: QuadrantPoint[] = TASKS) => {
       (event as CustomEvent<{ points: QuadrantPoint[] }>).detail.points,
     ),
   );
+  const root = board.shadowRoot!;
   const find = <E extends Element = HTMLElement>(selector: string) =>
     $<E>(board, selector);
   const chart = find<MinervaQuadrantChart>("minerva-quadrant-chart");
-  const modal = find<MinervaModal>("minerva-modal");
-  const confirm = find<MinervaConfirmDialog>("minerva-confirm-dialog");
-  const nameInput = find<MinervaInput>("minerva-input");
+  /** The inline panel (`null`: closed) */
+  const panel = () => root.querySelector<HTMLElement>("[part=panel]");
+  const nameInput = () => root.querySelector<MinervaInput>("minerva-input")!;
   return {
     board,
     engine,
     changes,
     find,
     chart,
-    modal,
-    confirm,
+    panel,
     nameInput,
-    /** Types a task name in the dialog (through the native input) */
+    /** Types a task name in the panel (through the native input) */
     type: async (text: string) => {
-      const native = $<HTMLInputElement>(nameInput, "input");
+      const native = $<HTMLInputElement>(nameInput(), "input");
       native.value = text;
       native.dispatchEvent(
         new Event("input", { bubbles: true, composed: true }),
@@ -108,10 +114,15 @@ const setup = async (points: QuadrantPoint[] = TASKS) => {
     },
     footer: () =>
       Array.from(
-        board.shadowRoot!.querySelectorAll<MinervaButton>(
-          ".footer minerva-button",
+        root.querySelectorAll<MinervaButton>(
+          "[part=panel] .footer minerva-button",
         ),
       ),
+    /** Clicks the add button of a quadrant */
+    add: async (corner: string) => {
+      find(`.header[data-corner=${corner}] minerva-icon-button`).click();
+      await settle();
+    },
   };
 };
 
@@ -141,6 +152,7 @@ describe("minerva-quadrant-task-board", () => {
     ]);
     const add = headers[0].querySelector("minerva-icon-button")!;
     expect(add.getAttribute("label")).toBe("Add task · Top left quadrant");
+    expect(add.getAttribute("aria-expanded")).toBe("false");
     // slotted into the overlay of the chart
     expect(headers[0].slot).toBe("quadrant-header-top-left");
     expect(
@@ -153,19 +165,49 @@ describe("minerva-quadrant-task-board", () => {
     expect(chart.dragPoints).toBe(true);
   });
 
-  it("add: Cancel leaves the points; Save fires them with the new task appended", async () => {
-    const { board, find, modal, changes, type, press, footer } = await setup();
-    find("[data-corner=topRight] minerva-icon-button").click();
-    await settle();
-    expect(modal.open).toBe(true);
-    expect(modal.label).toBe("Add task");
+  it("add: an inline panel in the board; Cancel leaves the points, Save fires them with the new task", async () => {
+    const { board, find, panel, nameInput, changes, type, press, footer, add } =
+      await setup();
+    await add("topRight");
+    const dialog = panel()!;
+    // inline in the board's shadow root, not a modal
+    expect(dialog.parentElement).toBe(find("[part=root]"));
+    expect(find("[part=root]").dataset.panel).toBe("draft");
+    expect(dialog.getAttribute("role")).toBe("dialog");
+    expect(dialog.dataset.quadrantTaskPanel).toBe("add");
+    const title = board.shadowRoot!.getElementById(
+      dialog.getAttribute("aria-labelledby")!,
+    );
+    expect(title?.textContent?.trim()).toBe("Add task");
+    // placed next to its anchor
+    expect(dialog.style.left).toMatch(/px$/);
+    expect(dialog.style.top).toMatch(/px$/);
+    expect(dialog.dataset.placement).toMatch(/^(top|bottom)$/);
+    expect(
+      find(".header[data-corner=topRight] minerva-icon-button").getAttribute(
+        "aria-expanded",
+      ),
+    ).toBe("true");
+    // the name field takes the focus
+    expect(board.shadowRoot!.activeElement).toBe(nameInput());
+    expect(nameInput().size).toBe("small");
+    // the quadrant picker: a radio per quadrant, the add button's checked
+    const radios = Array.from(
+      dialog.querySelectorAll<HTMLInputElement>("input[type=radio]"),
+    );
+    expect(
+      radios.map((r) => r.closest<HTMLElement>(".quadrant")!.dataset.corner),
+    ).toEqual(["topLeft", "topRight", "bottomLeft", "bottomRight"]);
+    expect(radios.find((r) => r.checked)?.value).toBe("topRight");
+    expect(dialog.querySelector("legend")?.textContent).toBe("Quadrant");
+
     await type("Plan sprint");
     await press(footer()[0]);
-    expect(modal.open).toBe(false);
+    expect(panel()).toBeNull();
+    expect(find("[part=root]").hasAttribute("data-panel")).toBe(false);
     expect(changes).toEqual([]);
 
-    find("[data-corner=topRight] minerva-icon-button").click();
-    await settle();
+    await add("topRight");
     expect(footer()[1].disabled).toBe(true);
     await type("  Plan sprint ");
     expect(footer()[1].disabled).toBe(false);
@@ -174,18 +216,18 @@ describe("minerva-quadrant-task-board", () => {
     expect(changes).toEqual([
       [...TASKS, { x: center.x, y: center.y, label: "Plan sprint" }],
     ]);
-    expect(modal.open).toBe(false);
+    expect(panel()).toBeNull();
     // controlled: the board did not change its own points
     expect(board.points).toBe(TASKS);
   });
 
   it("a click on an empty area adds a task there; Enter in the name saves", async () => {
-    const { engine, modal, changes, type, nameInput } = await setup();
+    const { engine, panel, changes, type, nameInput } = await setup();
     engine.fire("plotClick", { x: 7, y: 9 });
     await settle();
-    expect(modal.open).toBe(true);
+    expect(panel()?.dataset.quadrantTaskPanel).toBe("add");
     await type("Ship it");
-    $<HTMLInputElement>(nameInput, "input").dispatchEvent(
+    $<HTMLInputElement>(nameInput(), "input").dispatchEvent(
       new KeyboardEvent("keydown", {
         key: "Enter",
         bubbles: true,
@@ -194,13 +236,55 @@ describe("minerva-quadrant-task-board", () => {
     );
     await settle();
     expect(changes).toEqual([[...TASKS, { x: 7, y: 9, label: "Ship it" }]]);
+    expect(panel()).toBeNull();
+  });
+
+  it("Escape closes the panel and gives the focus back", async () => {
+    const { find, panel, nameInput, changes, add } = await setup();
+    const button = $<HTMLButtonElement>(
+      find(".header[data-corner=topLeft] minerva-icon-button"),
+      "button",
+    );
+    button.focus();
+    expect(deepActive()).toBe(button);
+    await add("topLeft");
+    expect(panel()).not.toBeNull();
+    const escape = new KeyboardEvent("keydown", {
+      key: "Escape",
+      bubbles: true,
+      composed: true,
+      cancelable: true,
+    });
+    $<HTMLInputElement>(nameInput(), "input").dispatchEvent(escape);
+    await settle();
+    expect(panel()).toBeNull();
+    expect(escape.defaultPrevented).toBe(true);
+    expect(deepActive()).toBe(button);
+    expect(changes).toEqual([]);
+  });
+
+  it("a press outside the panel closes it; a press inside does not", async () => {
+    const { panel, add } = await setup();
+    await add("topLeft");
+    panel()!
+      .querySelector("input[type=radio]")!
+      .dispatchEvent(
+        new PointerEvent("pointerdown", { bubbles: true, composed: true }),
+      );
+    await settle();
+    expect(panel()).not.toBeNull();
+    document.body.dispatchEvent(
+      new PointerEvent("pointerdown", { bubbles: true, composed: true }),
+    );
+    await settle();
+    expect(panel()).toBeNull();
   });
 
   it("edit: renames the active task and keeps its other fields", async () => {
     const {
       engine,
       find,
-      modal,
+      panel,
       changes,
       type,
       press,
@@ -217,9 +301,11 @@ describe("minerva-quadrant-task-board", () => {
     expect(anchor?.dataset.pointIndex).toBe("0");
     find("[data-action=edit]").click();
     await settle();
-    expect(modal.open).toBe(true);
-    expect(modal.label).toBe("Edit task");
-    expect(nameInput.value).toBe("Fix login");
+    expect(panel()?.dataset.quadrantTaskPanel).toBe("edit");
+    expect(panel()?.querySelector(".panelTitle")?.textContent?.trim()).toBe(
+      "Edit task",
+    );
+    expect(nameInput().value).toBe("Fix login");
     await type("Fix login page");
     await press(footer()[1]);
     expect(changes).toEqual([
@@ -228,20 +314,18 @@ describe("minerva-quadrant-task-board", () => {
   });
 
   it("edit: picking another quadrant moves the task to its center", async () => {
-    const { engine, find, changes, press, footer } = await setup();
-    // a double click opens the edit dialog too
+    const { engine, panel, changes, press, footer } = await setup();
+    // a double click opens the edit panel too
     await clickPoint(engine, 0);
     await clickPoint(engine, 0);
-    const select = find<MinervaSelect>("minerva-select");
-    expect(select.value).toBe("topLeft");
-    select.dispatchEvent(
-      new CustomEvent("minerva-change", {
-        detail: { value: "bottomRight" },
-        bubbles: true,
-        composed: true,
-      }),
-    );
+    const radio = (corner: string) =>
+      panel()!.querySelector<HTMLInputElement>(
+        `.quadrant[data-corner=${corner}] input[type=radio]`,
+      )!;
+    expect(radio("topLeft").checked).toBe(true);
+    radio("bottomRight").click();
     await settle();
+    expect(radio("bottomRight").checked).toBe(true);
     await press(footer()[1]);
     const center = quadrantCenter({}, "bottomRight");
     expect(changes).toEqual([
@@ -249,25 +333,46 @@ describe("minerva-quadrant-task-board", () => {
     ]);
   });
 
-  it("delete: asks first; Cancel keeps the task, the confirm button removes it", async () => {
-    const { board, engine, find, confirm, changes, press } = await setup();
+  it("delete: asks inline first; Cancel keeps the task, Delete removes it", async () => {
+    const { board, engine, find, panel, changes, press } = await setup();
     await clickPoint(engine, 1);
     find("[data-action=delete]").click();
     await settle();
-    expect(confirm.open).toBe(true);
-    expect(confirm.label).toBe("Delete task");
-    expect(confirm.description).toBe(
-      "“Inbox zero” will be removed from the board.",
-    );
-    await press($<MinervaButton>(confirm, "[part=cancel-button]"));
-    expect(confirm.open).toBe(false);
+    const confirm = panel()!;
+    expect(confirm.getAttribute("role")).toBe("alertdialog");
+    expect(confirm.dataset.quadrantTaskPanel).toBe("delete");
+    expect(find("[part=root]").dataset.panel).toBe("delete");
+    const root = board.shadowRoot!;
+    expect(
+      root
+        .getElementById(confirm.getAttribute("aria-labelledby")!)
+        ?.textContent?.trim(),
+    ).toBe("Delete task");
+    expect(
+      root
+        .getElementById(confirm.getAttribute("aria-describedby")!)
+        ?.textContent?.trim(),
+    ).toBe("“Inbox zero” will be removed from the board.");
+    const buttons = () =>
+      Array.from(confirm.querySelectorAll<MinervaButton>("minerva-button"));
+    // Cancel takes the focus
+    expect(root.activeElement).toBe(buttons()[0]);
+    expect(buttons().map((b) => b.textContent?.trim())).toEqual([
+      "Cancel",
+      "Delete",
+    ]);
+    expect(buttons()[1].color).toBe("danger");
+    await press(buttons()[0]);
+    expect(panel()).toBeNull();
     expect(changes).toEqual([]);
 
     find("[data-action=delete]").click();
     await settle();
-    await press($<MinervaButton>(confirm, "[part=confirm-button]"));
+    await press(
+      Array.from(panel()!.querySelectorAll<MinervaButton>("minerva-button"))[1],
+    );
     expect(changes).toEqual([[TASKS[0]]]);
-    expect(confirm.open).toBe(false);
+    expect(panel()).toBeNull();
     expect(board.points).toBe(TASKS);
   });
 
@@ -285,16 +390,26 @@ describe("minerva-quadrant-task-board", () => {
   });
 
   it("localizes its texts and applies `labels` overrides", async () => {
-    const { board, find } = await setup();
+    const { board, engine, find, panel } = await setup();
     board.locale = "fr";
     board.labels = { add: "Nouvelle" };
     await settle();
     expect(
-      find("[data-corner=topLeft] minerva-icon-button").getAttribute("label"),
+      find(".header[data-corner=topLeft] minerva-icon-button").getAttribute(
+        "label",
+      ),
     ).toMatch(/^Nouvelle · /);
     expect(find(".actions").getAttribute("aria-label")).toBe(
       "Actions de la tâche",
     );
+    await clickPoint(engine, 0);
+    find("[data-action=delete]").click();
+    await settle();
+    expect(
+      Array.from(panel()!.querySelectorAll("minerva-button"), (b) =>
+        b.textContent?.trim(),
+      ),
+    ).toEqual(["Annuler", "Supprimer"]);
   });
 
   it("leaves its host attributes alone and redraws after a reconnection", async () => {

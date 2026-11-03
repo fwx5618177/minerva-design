@@ -1,11 +1,19 @@
+import { DOCUMENT } from "@angular/common";
 import {
+  afterNextRender,
+  afterRenderEffect,
   booleanAttribute,
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
+  effect,
+  ElementRef,
+  inject,
   input,
   output,
   signal,
+  untracked,
   viewChild,
 } from "@angular/core";
 import {
@@ -16,8 +24,10 @@ import {
   editQuadrantTaskDraft,
   moveQuadrantTask,
   newQuadrantTaskDraft,
+  placeQuadrantTaskPanel,
   quadrantCountText,
   quadrantLabels,
+  quadrantTaskColor,
   quadrantTaskDeleteText,
   quadrantTaskLabels,
   removeQuadrantTask,
@@ -35,17 +45,16 @@ import {
   type QuadrantCorner,
   type QuadrantPoint,
   type QuadrantRegions,
+  type QuadrantTaskBox,
   type QuadrantTaskDraft,
   type QuadrantTaskLabels,
 } from "minerva-design/charts/core";
 import { injectScope } from "../../config/scope";
+import { injectId } from "../../internal/ids";
 import { quadrantTaskBoardStyles as s } from "../../internal/styles";
 import { MnButton } from "../button";
 import { MnIconButton } from "../foundations";
 import { MnInput } from "../input";
-import { MnModal } from "../modal";
-import { MnConfirmDialog } from "../overlays";
-import { MnSelect, MnSelectItem } from "../select";
 import { MnQuadrantChart, type QuadrantPointDrop } from "./cartesian";
 import { optionalBoolean } from "./engine";
 
@@ -54,14 +63,26 @@ export type { QuadrantTaskLabels };
 type ShowCounts =
   boolean | ((count: number, points: readonly QuadrantPoint[]) => string);
 
+/** The inline panel: the add / edit form, or the delete confirmation */
+type Panel =
+  | { kind: "draft"; draft: QuadrantTaskDraft; anchor: QuadrantTaskBox }
+  | { kind: "delete"; index: number; anchor: QuadrantTaskBox };
+
+/** Half the size of the box around a task the panel keeps clear */
+const DOT = 10;
+
+const emptyBox = (): QuadrantTaskBox => ({ x: 0, y: 0, width: 0, height: 0 });
+
 const ICON_ATTRS = `width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"`;
 
 /**
  * Task board on a four-quadrant matrix (MnQuadrantChart): an add button per
- * quadrant, edit and delete buttons on the active task, a dialog to name a
- * task and pick its quadrant, a confirmation before a delete, drag and drop
- * and keyboard moves (Shift + arrows). Controlled: `points` in,
- * `pointsChange` out (`[(points)]`). The other inputs go to the chart.
+ * quadrant, edit and delete buttons on the active task, an inline panel
+ * anchored inside the board at the button or the task to name a task and
+ * pick its quadrant, an inline confirmation before a delete (Escape or a
+ * press outside closes the panel), drag and drop and keyboard moves
+ * (Shift + arrows). Controlled: `points` in, `pointsChange` out
+ * (`[(points)]`). The other inputs go to the chart.
  *
  * @example
  * <mn-quadrant-task-board [(points)]="tasks" [quadrants]="quadrants" reverseX />
@@ -69,19 +90,11 @@ const ICON_ATTRS = `width="16" height="16" viewBox="0 0 24 24" fill="none" strok
 @Component({
   selector: "mn-quadrant-task-board",
   exportAs: "mnQuadrantTaskBoard",
-  imports: [
-    MnQuadrantChart,
-    MnIconButton,
-    MnModal,
-    MnInput,
-    MnSelect,
-    MnSelectItem,
-    MnButton,
-    MnConfirmDialog,
-  ],
+  imports: [MnQuadrantChart, MnIconButton, MnInput, MnButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     "[class]": "s.board",
+    "[attr.data-panel]": "shown()?.kind ?? null",
     style: "display: block",
   },
   template: `
@@ -125,7 +138,7 @@ const ICON_ATTRS = `width="16" height="16" viewBox="0 0 24 24" fill="none" strok
       (pointDoubleClick)="edit($event.index)"
       (pointDrag)="pointDrag.emit($event)"
       (pointDrop)="onPointDrop($event)"
-      (quadrantClick)="add($event.quadrant, $event)"
+      (quadrantClick)="add($event.quadrant, pointerBox(), $event)"
     />
     <ng-template #header let-corner let-info="info">
       <div [class]="s.header" [attr.data-corner]="corner">
@@ -142,7 +155,8 @@ const ICON_ATTRS = `width="16" height="16" viewBox="0 0 24 24" fill="none" strok
           variant="ghost"
           [class]="s.add"
           [label]="texts().add + ' · ' + title(corner)"
-          (click)="add(corner)"
+          [attr.aria-expanded]="adding() === corner"
+          (click)="add(corner, boxOf($event.currentTarget))"
         >
           <svg ${ICON_ATTRS}><path [attr.d]="icons.add" /></svg>
         </button>
@@ -170,73 +184,111 @@ const ICON_ATTRS = `width="16" height="16" viewBox="0 0 24 24" fill="none" strok
           variant="ghost"
           color="danger"
           [label]="texts().delete"
-          (click)="deleting.set(index)"
+          (click)="confirmRemove(index)"
         >
           <svg ${ICON_ATTRS}><path [attr.d]="icons.delete" /></svg>
         </button>
       </div>
     </ng-template>
-    <mn-modal
-      [open]="editing()"
-      (openChange)="$event || draft.set(null)"
-      [title]="draft()?.index === null ? texts().add : texts().edit"
-      size="small"
-    >
-      <form [class]="s.form" (submit)="save($event)">
-        <label [class]="s.field">
-          <span>{{ texts().name }}</span>
-          <mn-input
-            required
-            [value]="draft()?.label ?? ''"
-            [aria-label]="texts().name"
-            (valueChange)="setLabel($event ?? '')"
-          />
-        </label>
-        <label [class]="s.field">
-          <span>{{ texts().quadrant }}</span>
-          <mn-select
-            [value]="draft()?.quadrant ?? 'topLeft'"
-            [aria-label]="texts().quadrant"
-            (valueChange)="setQuadrant($event)"
-          >
-            @for (corner of corners; track corner) {
-              <mn-select-item [value]="corner">{{
-                title(corner)
-              }}</mn-select-item>
-            }
-          </mn-select>
-        </label>
+    @if (draft(); as current) {
+      <div
+        #panel
+        role="dialog"
+        [attr.aria-labelledby]="ids.title"
+        [class]="s.panel"
+        [attr.data-quadrant-task-panel]="
+          current.index === null ? 'add' : 'edit'
+        "
+        (keydown)="onPanelKeydown($event)"
+      >
+        <form [class]="s.form" (submit)="save($event)">
+          <h3 [id]="ids.title" [class]="s.panelTitle">
+            {{ current.index === null ? texts().add : texts().edit }}
+          </h3>
+          <label [class]="s.field">
+            <span>{{ texts().name }}</span>
+            <mn-input
+              required
+              size="small"
+              [value]="current.label"
+              [aria-label]="texts().name"
+              (valueChange)="setLabel($event ?? '')"
+            />
+          </label>
+          <fieldset [class]="s.quadrants">
+            <legend>{{ texts().quadrant }}</legend>
+            <div [class]="s.quadrantGrid">
+              @for (corner of corners; track corner) {
+                <label [class]="s.quadrant" [attr.data-corner]="corner">
+                  <input
+                    type="radio"
+                    [name]="ids.quadrant"
+                    [value]="corner"
+                    [checked]="current.quadrant === corner"
+                    (change)="setQuadrant(corner)"
+                  />
+                  <span
+                    [class]="s.swatch"
+                    [style.background]="color(corner)"
+                    aria-hidden="true"
+                  ></span>
+                  <span [class]="s.quadrantName">{{ title(corner) }}</span>
+                </label>
+              }
+            </div>
+          </fieldset>
+          <div [class]="s.footer">
+            <button
+              mnButton
+              size="small"
+              color="neutral"
+              variant="ghost"
+              (click)="close()"
+            >
+              {{ texts().cancel }}
+            </button>
+            <button mnButton size="small" type="submit" [disabled]="!canSave()">
+              {{ texts().save }}
+            </button>
+          </div>
+        </form>
+      </div>
+    }
+    @if (deletingPoint()) {
+      <div
+        #panel
+        role="alertdialog"
+        [attr.aria-labelledby]="ids.title"
+        [attr.aria-describedby]="ids.text"
+        [class]="s.panel"
+        data-quadrant-task-panel="delete"
+        (keydown)="onPanelKeydown($event)"
+      >
+        <h3 [id]="ids.title" [class]="s.panelTitle">{{ texts().delete }}</h3>
+        <p [id]="ids.text" [class]="s.panelText">{{ deleteText() }}</p>
         <div [class]="s.footer">
           <button
+            #deleteCancel
             mnButton
+            size="small"
             color="neutral"
-            variant="outline"
-            (click)="draft.set(null)"
+            variant="ghost"
+            (click)="close()"
           >
             {{ texts().cancel }}
           </button>
-          <button mnButton type="submit" [disabled]="!canSave()">
-            {{ texts().save }}
+          <button mnButton size="small" color="danger" (click)="remove()">
+            {{ texts().confirmDelete }}
           </button>
         </div>
-      </form>
-    </mn-modal>
-    <mn-confirm-dialog
-      [open]="deletingPoint() !== undefined"
-      (openChange)="$event || deleting.set(null)"
-      [title]="texts().delete"
-      [description]="deleteText()"
-      [cancelLabel]="texts().cancel"
-      [confirmLabel]="scope.t('confirm.delete')"
-      color="danger"
-      (confirm)="remove()"
-    />
+      </div>
+    }
   `,
 })
 export class MnQuadrantTaskBoard {
   /** Tasks to place (controlled: `[(points)]`, or `[points]` + `(pointsChange)`) */
   readonly points = input.required<readonly QuadrantPoint[]>();
-  /** Texts of the buttons and dialogs (localized by default) */
+  /** Texts of the buttons and panels (localized by default) */
   readonly labels = input<Partial<QuadrantTaskLabels> | undefined>(undefined);
 
   /** Height of the chart; numbers are pixels, strings any CSS length (default 320) */
@@ -279,7 +331,7 @@ export class MnQuadrantTaskBoard {
   readonly xSplit = input<number | undefined>(undefined);
   /** Y value of the horizontal divider (the middle of `yDomain` by default) */
   readonly ySplit = input<number | undefined>(undefined);
-  /** Titles and colors of the quadrants (the titles name the quadrants in the headers and the dialog) */
+  /** Titles and colors of the quadrants (the titles name the quadrants in the headers and the panel) */
   readonly quadrants = input<QuadrantRegions | undefined>(undefined);
   /** Title of the horizontal axis */
   readonly xLabel = input<string | undefined>(undefined);
@@ -340,8 +392,25 @@ export class MnQuadrantTaskBoard {
   protected readonly s = s;
   protected readonly icons = QUADRANT_TASK_ICONS;
   protected readonly corners = QUADRANT_CORNERS;
-  protected readonly scope = injectScope();
+  private readonly scope = injectScope();
   private readonly chart = viewChild.required(MnQuadrantChart);
+  private readonly host =
+    inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
+  private readonly document = inject(DOCUMENT);
+  private readonly panelRef = viewChild<ElementRef<HTMLElement>>("panel");
+  private readonly nameInput = viewChild(MnInput);
+  private readonly deleteCancel = viewChild("deleteCancel", {
+    read: ElementRef<HTMLButtonElement>,
+  });
+  /** Ids of the panel title, delete text and quadrant radio group */
+  protected readonly ids = (() => {
+    const id = injectId("quadrant-task");
+    return {
+      title: `${id}-title`,
+      text: `${id}-text`,
+      quadrant: `${id}-quadrant`,
+    };
+  })();
 
   protected readonly language = computed(
     () => this.locale() ?? this.scope.language(),
@@ -351,32 +420,117 @@ export class MnQuadrantTaskBoard {
   );
   private readonly defaults = computed(() => quadrantLabels(this.language()));
 
-  /** Dialog content (`null`: closed) */
-  protected readonly draft = signal<QuadrantTaskDraft | null>(null);
-  /** Index of the task whose delete is being confirmed */
-  protected readonly deleting = signal<number | null>(null);
+  /** The inline panel (`null`: closed) */
+  private readonly panel = signal<Panel | null>(null);
+  /** Last pointer press in the board (anchor of a click on an empty area) */
+  private lastPointer: QuadrantTaskBox | null = null;
+  /** Focused element before the panel opened (focused again on Escape / Cancel) */
+  private returnFocus: HTMLElement | null = null;
   private readonly selection = signal<number | null>(null);
   protected readonly selected = computed(() => {
     const own = this.selectedIndex();
     return own !== undefined ? own : this.selection();
   });
 
-  protected readonly editing = computed(() => {
+  /** The open panel, unless the task it is about is gone */
+  protected readonly shown = computed(() => {
+    const panel = this.panel();
+    if (!panel) return null;
+    const points = this.points();
+    const shown =
+      panel.kind === "draft"
+        ? panel.draft.index === null || !!points[panel.draft.index]
+        : !!points[panel.index];
+    return shown ? panel : null;
+  });
+  /** Content of the add / edit panel */
+  protected readonly draft = computed(() => {
+    const panel = this.shown();
+    return panel?.kind === "draft" ? panel.draft : null;
+  });
+  /** Quadrant of the add panel (its add button is expanded) */
+  protected readonly adding = computed(() => {
     const draft = this.draft();
-    return (
-      draft !== null && (draft.index === null || !!this.points()[draft.index])
-    );
+    return draft?.index === null ? draft.quadrant : null;
   });
   protected readonly canSave = computed(() =>
     canSaveQuadrantTask(this.draft(), this.points()),
   );
+  /** The task whose delete is being confirmed */
   protected readonly deletingPoint = computed(() => {
-    const index = this.deleting();
-    return index === null ? undefined : this.points()[index];
+    const panel = this.shown();
+    return panel?.kind === "delete" ? this.points()[panel.index] : undefined;
   });
   protected readonly deleteText = computed(() =>
     quadrantTaskDeleteText(this.texts(), this.deletingPoint()),
   );
+  /** Anchor and kind of the shown panel: it is placed and focused when they change */
+  private readonly opened = computed(
+    () => {
+      const panel = this.shown();
+      return panel ? { anchor: panel.anchor, kind: panel.kind } : null;
+    },
+    {
+      equal: (a, b) => a?.anchor === b?.anchor && a?.kind === b?.kind,
+    },
+  );
+  private readonly isOpen = computed(() => this.shown() !== null);
+
+  constructor() {
+    const destroyRef = inject(DestroyRef);
+    // where the last press in the board was (before the chart or the
+    // toolbar of the active task handle it)
+    afterNextRender(() => {
+      const track = (event: PointerEvent) => {
+        const b = this.host.getBoundingClientRect();
+        this.lastPointer = {
+          x: event.clientX - b.left,
+          y: event.clientY - b.top,
+          width: 0,
+          height: 0,
+        };
+      };
+      this.host.addEventListener("pointerdown", track, true);
+      destroyRef.onDestroy(() =>
+        this.host.removeEventListener("pointerdown", track, true),
+      );
+    });
+    // next to its anchor, inside the board; the first field (or Cancel)
+    // takes the focus
+    afterRenderEffect(() => {
+      const opened = this.opened();
+      const el = this.panelRef()?.nativeElement;
+      if (!opened || !el) return;
+      untracked(() => {
+        const place = placeQuadrantTaskPanel(
+          opened.anchor,
+          { width: el.offsetWidth, height: el.offsetHeight },
+          { width: this.host.clientWidth, height: this.host.clientHeight },
+        );
+        el.style.left = `${place.x}px`;
+        el.style.top = `${place.y}px`;
+        el.style.transformOrigin = `${place.origin.x}px ${place.origin.y}px`;
+        el.dataset["placement"] = place.placement;
+        if (opened.kind === "draft")
+          this.nameInput()?.focus({ preventScroll: true });
+        else this.deleteCancel()?.nativeElement.focus({ preventScroll: true });
+      });
+    });
+    // a press outside the panel closes it, like a popover
+    effect((onCleanup) => {
+      if (!this.isOpen()) return;
+      const onDown = (event: PointerEvent) => {
+        const panel = this.panelRef()?.nativeElement;
+        if (panel && event.composedPath().includes(panel)) return;
+        this.returnFocus = null;
+        this.panel.set(null);
+      };
+      this.document.addEventListener("pointerdown", onDown, true);
+      onCleanup(() =>
+        this.document.removeEventListener("pointerdown", onDown, true),
+      );
+    });
+  }
 
   private geometry() {
     return {
@@ -393,6 +547,11 @@ export class MnQuadrantTaskBoard {
     return this.quadrants()?.[corner]?.label || this.defaults()[corner];
   }
 
+  /** Color of a quadrant (its swatch in the quadrant picker) */
+  protected color(corner: QuadrantCorner): string {
+    return quadrantTaskColor(this.quadrants(), corner);
+  }
+
   protected countText(points: readonly QuadrantPoint[]): string | undefined {
     return quadrantCountText(
       this.showCounts() ?? true,
@@ -401,25 +560,99 @@ export class MnQuadrantTaskBoard {
     );
   }
 
-  protected add(corner: QuadrantCorner, at?: { x: number; y: number }): void {
-    this.draft.set(newQuadrantTaskDraft(this.geometry(), corner, at));
+  /** Box of an element, relative to the board */
+  protected boxOf(el: EventTarget | null | undefined): QuadrantTaskBox {
+    if (!(el instanceof Element)) return emptyBox();
+    const b = this.host.getBoundingClientRect();
+    const r = el.getBoundingClientRect();
+    return {
+      x: r.left - b.left,
+      y: r.top - b.top,
+      width: r.width,
+      height: r.height,
+    };
+  }
+
+  /** The last press in the board, as a 0 x 0 box */
+  protected pointerBox(): QuadrantTaskBox {
+    return this.lastPointer ? { ...this.lastPointer } : emptyBox();
+  }
+
+  /** Box around a task (its anchor in the chart), else the last press */
+  private pointBox(index: number): QuadrantTaskBox {
+    const el = this.host.querySelector(
+      `.minerva-chart-quadrant-point[data-point-index="${index}"]`,
+    );
+    if (!el) return this.pointerBox();
+    const box = this.boxOf(el);
+    return {
+      x: box.x - DOT,
+      y: box.y - DOT,
+      width: 2 * DOT,
+      height: 2 * DOT,
+    };
+  }
+
+  private open(next: Panel): void {
+    if (!this.panel()) {
+      let active = this.document.activeElement;
+      while (active?.shadowRoot?.activeElement)
+        active = active.shadowRoot.activeElement;
+      this.returnFocus = active instanceof HTMLElement ? active : null;
+    }
+    this.panel.set(next);
+  }
+
+  protected close(): void {
+    this.panel.set(null);
+    const target = this.returnFocus;
+    this.returnFocus = null;
+    if (target?.isConnected) target.focus();
+  }
+
+  protected onPanelKeydown(event: KeyboardEvent): void {
+    if (event.key !== "Escape") return;
+    event.preventDefault();
+    event.stopPropagation();
+    this.close();
+  }
+
+  protected add(
+    corner: QuadrantCorner,
+    anchor: QuadrantTaskBox,
+    at?: { x: number; y: number },
+  ): void {
+    this.open({
+      kind: "draft",
+      draft: newQuadrantTaskDraft(this.geometry(), corner, at),
+      anchor,
+    });
   }
 
   protected edit(index: number): void {
-    this.draft.set(
-      editQuadrantTaskDraft(this.geometry(), this.points(), index),
+    const draft = editQuadrantTaskDraft(this.geometry(), this.points(), index);
+    if (draft)
+      this.open({ kind: "draft", draft, anchor: this.pointBox(index) });
+  }
+
+  protected confirmRemove(index: number): void {
+    this.open({ kind: "delete", index, anchor: this.pointBox(index) });
+  }
+
+  private setDraft(change: Partial<QuadrantTaskDraft>): void {
+    this.panel.update((panel) =>
+      panel?.kind === "draft"
+        ? { ...panel, draft: { ...panel.draft, ...change } }
+        : panel,
     );
   }
 
   protected setLabel(label: string): void {
-    this.draft.update((draft) => draft && { ...draft, label });
+    this.setDraft({ label });
   }
 
-  protected setQuadrant(quadrant: string | undefined): void {
-    if (!quadrant) return;
-    this.draft.update(
-      (draft) => draft && { ...draft, quadrant: quadrant as QuadrantCorner },
-    );
+  protected setQuadrant(quadrant: QuadrantCorner): void {
+    this.setDraft({ quadrant });
   }
 
   protected save(event: Event): void {
@@ -432,18 +665,19 @@ export class MnQuadrantTaskBoard {
     if (!saved) return;
     this.pointsChange.emit(saved.points);
     this.selection.set(saved.index);
-    this.draft.set(null);
+    this.close();
   }
 
   protected remove(): void {
-    const index = this.deleting();
-    if (index !== null && this.points()[index]) {
+    const panel = this.shown();
+    if (panel?.kind === "delete" && this.points()[panel.index]) {
+      const index = panel.index;
       this.pointsChange.emit(removeQuadrantTask(this.points(), index));
       this.selection.update((selected) =>
         selectionAfterRemove(selected, index),
       );
     }
-    this.deleting.set(null);
+    this.close();
   }
 
   protected onPointClick(event: { point: QuadrantPoint; index: number }): void {

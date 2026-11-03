@@ -27,27 +27,46 @@ function Host() {
   const [points, setPoints] = useState<QuadrantPoint[]>(initial);
   return <QuadrantTaskBoard points={points} onPointsChange={setPoints} />;
 }
-it("creates a task in a modal and leaves data unchanged on cancel", async () => {
+it("creates a task in an inline panel and leaves data unchanged on cancel", async () => {
   const user = userEvent.setup();
-  render(<Host />);
+  const { container } = render(<Host />);
   await user.click(screen.getByText("Create"));
   let dialog = screen.getByRole("dialog", { name: "Add task" });
-  await user.type(
-    within(dialog).getByRole("textbox", { name: "Task name" }),
-    "New task",
-  );
+  // inline in the board, not a modal in a portal
+  expect(container.contains(dialog)).toBe(true);
+  expect(dialog.dataset.quadrantTaskPanel).toBe("add");
+  const name = within(dialog).getByRole("textbox", { name: "Task name" });
+  expect(document.activeElement).toBe(name);
+  await user.type(name, "New task");
   await user.click(within(dialog).getByRole("button", { name: "Cancel" }));
   expect(screen.queryByText("New task")).toBeNull();
+  expect(screen.queryByRole("dialog")).toBeNull();
+  await user.click(screen.getByText("Create"));
+  expect(screen.getByRole("dialog", { name: "Add task" })).toBeTruthy();
+  await user.keyboard("{Escape}");
+  expect(screen.queryByRole("dialog")).toBeNull();
   await user.click(screen.getByText("Create"));
   dialog = screen.getByRole("dialog", { name: "Add task" });
   await user.type(
     within(dialog).getByRole("textbox", { name: "Task name" }),
     "New task",
   );
+  // the quadrant picker is a radio group laid out like the matrix
+  await user.click(
+    within(dialog).getByRole("radio", { name: "Bottom left quadrant" }),
+  );
   await user.click(within(dialog).getByRole("button", { name: "Save" }));
   expect(screen.getByText("New task")).toBeTruthy();
 });
-it("preserves point metadata on edit and confirms deletion", async () => {
+it("closes the panel on a press outside it", async () => {
+  const user = userEvent.setup();
+  render(<Host />);
+  await user.click(screen.getByText("Create"));
+  expect(screen.getByRole("dialog")).toBeTruthy();
+  await user.click(screen.getByText("Report"));
+  expect(screen.queryByRole("dialog")).toBeNull();
+});
+it("preserves point metadata on edit and confirms deletion inline", async () => {
   const user = userEvent.setup();
   const change = vi.fn();
   render(<QuadrantTaskBoard points={initial} onPointsChange={change} />);
@@ -61,7 +80,9 @@ it("preserves point metadata on edit and confirms deletion", async () => {
     { ...initial[0], label: "Updated" },
   ]);
   await user.click(screen.getByRole("button", { name: "Delete task" }));
-  const confirm = screen.getByRole("alertdialog");
+  const confirm = screen.getByRole("alertdialog", { name: "Delete task" });
+  expect(confirm.dataset.quadrantTaskPanel).toBe("delete");
+  expect(confirm.textContent).toContain("“Report” will be removed");
   await user.click(within(confirm).getByRole("button", { name: "Cancel" }));
   expect(change).toHaveBeenCalledTimes(1);
   await user.click(screen.getByRole("button", { name: "Delete task" }));

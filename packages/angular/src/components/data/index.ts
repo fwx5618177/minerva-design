@@ -766,5 +766,5 @@ function formatJsonText(value: string, indent: number): string {
 export * from "./week-strip";
 export * from "./answer-sheet";
 export * from "./flashcard";
-export * from "./kanban-board";
+export * from "./dashboard-columns";
 export * from "./media-player";

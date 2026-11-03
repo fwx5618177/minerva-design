@@ -3590,6 +3590,13 @@
         "required": false,
         "default": "false",
         "description": "While a point is dragged, the area annotation (`type: \"rect\"`) under the pointer is highlighted: where the point would land (the quadrants of a quadrant matrix)"
+      },
+      {
+        "name": "dragLabel",
+        "type": "boolean",
+        "required": false,
+        "default": "true",
+        "description": "The label of a dragged point follows it in a pill; `false` leaves it out (a host showing its own card next to the point)"
       }
     ]
   },
@@ -11072,6 +11079,34 @@
       }
     ]
   },
+  "QuadrantTaskBox": {
+    "source": "charts/src/engine/quadrant-tasks.ts",
+    "description": "A box in pixels, relative to the task board",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "x",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "y",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "required": true
+      }
+    ]
+  },
   "QuadrantTaskDraft": {
     "source": "charts/src/engine/quadrant-tasks.ts",
     "description": "Content of the add / edit dialog of a task board",
@@ -11146,6 +11181,12 @@
         "description": "Text of the delete confirmation: `{name}` is the task"
       },
       {
+        "name": "confirmDelete",
+        "type": "string",
+        "required": true,
+        "description": "Confirm button of the delete confirmation"
+      },
+      {
         "name": "name",
         "type": "string",
         "required": true,
@@ -11172,6 +11213,37 @@
         "type": "string",
         "required": true,
         "description": "Name of the actions toolbar of the active point"
+      }
+    ]
+  },
+  "QuadrantTaskPanelPlacement": {
+    "source": "charts/src/engine/quadrant-tasks.ts",
+    "description": "Where the inline panel of a task board goes",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "x",
+        "type": "number",
+        "required": true,
+        "description": "Top left corner of the panel, relative to the board"
+      },
+      {
+        "name": "y",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "placement",
+        "type": "\"bottom\" | \"top\"",
+        "required": true,
+        "description": "Side of the anchor the panel opens on"
+      },
+      {
+        "name": "origin",
+        "type": "{ x: number; y: number }",
+        "required": true,
+        "description": "The anchor seen from the panel (its transform origin)"
       }
     ]
   },

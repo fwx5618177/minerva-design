@@ -70,7 +70,7 @@ export * from "./MonthCalendar";
 export * from "./WeekStrip";
 export * from "./MediaPlayer";
 export * from "./Flashcard";
-export * from "./KanbanBoard";
+export * from "./DashboardColumns";
 export * from "./DatePicker";
 
 export * from "./QuadrantTaskBoard";

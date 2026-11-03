@@ -1,5 +1,5 @@
 import { useState, type CSSProperties } from "react";
-import { Text, View } from "@tarojs/components";
+import { Image, Text, View } from "@tarojs/components";
 import { cn } from "@minerva/core";
 import {
   QUADRANT_CORNERS,
@@ -11,6 +11,7 @@ import {
   quadrantCountText,
   quadrantGroups,
   quadrantLabels,
+  quadrantTaskColor,
   quadrantTaskDeleteText,
   quadrantTaskLabels,
   removeQuadrantTask,
@@ -19,13 +20,13 @@ import {
   type QuadrantPoint,
   type QuadrantTaskDraft,
   type QuadrantTaskLabels,
+  quadrantTaskIconUri,
 } from "@minerva/charts/canvas";
 import { Button, Input } from "./components";
-import { RadioGroup } from "./forms";
-import { ConfirmDialog, Modal, ModalFooter } from "./overlays";
+import { IconButton } from "./display";
 import { QuadrantChart, type QuadrantChartProps } from "./charts";
 import { a11yAttrs, systemLocale } from "./chart-a11y";
-import { useOptionalTheme } from "./theme";
+import { useOptionalTheme, useThemeTokens } from "./theme";
 
 export type { QuadrantTaskLabels };
 
@@ -39,9 +40,25 @@ export interface QuadrantTaskBoardProps extends Omit<
    * drag and drop or a "move to" action (controlled: pass them back as `points`)
    */
   onPointsChange: (points: QuadrantPoint[]) => void;
-  /** Texts of the buttons and dialogs (localized by default) */
+  /** Texts of the buttons and panels (localized by default) */
   labels?: Partial<QuadrantTaskLabels>;
 }
+
+/**
+ * What opened the inline panel: the quadrant headers (a + button or an empty
+ * quadrant of the chart: the caret points at the column of the quadrant) or
+ * the actions of the selected task (the caret points at Edit / Delete)
+ */
+type Anchor =
+  | { at: "headers"; caret: "start" | "end" }
+  | { at: "actions"; caret: "edit" | "delete" };
+
+/** The inline panel: the add / edit form, or the delete confirmation */
+type PanelContent = { anchor: Anchor } & (
+  | { kind: "draft"; draft: QuadrantTaskDraft }
+  | { kind: "delete"; index: number }
+);
+type Panel = PanelContent & { key: number };
 
 const ROW: CSSProperties = {
   display: "flex",
@@ -49,12 +66,16 @@ const ROW: CSSProperties = {
   gap: "8px",
 };
 
+/** Caret of the column of a quadrant (left: 25%, right: 75%) */
+const columnOf = (corner: QuadrantCorner): "start" | "end" =>
+  corner === "topLeft" || corner === "bottomLeft" ? "start" : "end";
+
 /**
  * Task board on a four-quadrant matrix: a header per quadrant (title, count,
  * add button) under the chart, edit and delete buttons for the selected
- * task, a dialog to name a task and pick its quadrant, a confirmation
- * before a delete, drag and drop and "move to" actions. Controlled:
- * `points` in, `onPointsChange` out.
+ * task, an inline panel (anchored under what opened it) to name a task and
+ * pick its quadrant or to confirm a delete, drag and drop and "move to"
+ * actions. Controlled: `points` in, `onPointsChange` out.
  */
 export function QuadrantTaskBoard({
   points,
@@ -65,9 +86,12 @@ export function QuadrantTaskBoard({
   ...props
 }: QuadrantTaskBoardProps) {
   const providerLocale = useOptionalTheme()?.locale;
+  // the + of the add buttons: an image (no inline SVG in mini programs)
+  // stroked with the text color of the theme; no icon set in this entry
+  const textColor = useThemeTokens().colors["text-color"];
+  const addIcon = quadrantTaskIconUri("add", textColor ?? "#111827");
   const locale = props.locale ?? providerLocale ?? systemLocale();
-  const [draft, setDraft] = useState<QuadrantTaskDraft | null>(null);
-  const [deleting, setDeleting] = useState<number | null>(null);
+  const [panel, setPanel] = useState<Panel | null>(null);
   const [selection, setSelection] = useState<number | null>(null);
   const texts = quadrantTaskLabels(locale, labels);
   const geometry = {
@@ -87,17 +111,169 @@ export function QuadrantTaskBoard({
     selected !== null && selected !== undefined && points[selected]
       ? selected
       : null;
-  const edit = (index: number) =>
-    setDraft(editQuadrantTaskDraft(geometry, points, index));
+
+  // opening a panel replaces the current one (a new key: a new focus)
+  const open = (next: PanelContent) =>
+    setPanel((old) => ({ ...next, key: (old?.key ?? 0) + 1 }));
+  const close = () => setPanel(null);
+  const addAt = (corner: QuadrantCorner, at?: { x: number; y: number }) =>
+    open({
+      kind: "draft",
+      draft: newQuadrantTaskDraft(geometry, corner, at),
+      anchor: { at: "headers", caret: columnOf(corner) },
+    });
+  const edit = (index: number) => {
+    const draft = editQuadrantTaskDraft(geometry, points, index);
+    if (draft)
+      open({ kind: "draft", draft, anchor: { at: "actions", caret: "edit" } });
+  };
+  const setDraft = (change: Partial<QuadrantTaskDraft>) =>
+    setPanel((old) =>
+      old?.kind === "draft"
+        ? { ...old, draft: { ...old.draft, ...change } }
+        : old,
+    );
+  const draft = panel?.kind === "draft" ? panel.draft : null;
+  const deleting = panel?.kind === "delete" ? panel.index : null;
+  const shown =
+    panel !== null &&
+    (draft
+      ? draft.index === null || !!points[draft.index]
+      : deleting !== null && !!points[deleting]);
   const save = () => {
     const saved = applyQuadrantTaskDraft(geometry, points, draft);
     if (!saved) return;
     onPointsChange(saved.points);
     setSelection(saved.index);
-    setDraft(null);
+    close();
   };
-  const open =
-    draft !== null && (draft.index === null || !!points[draft.index]);
+  const remove = () => {
+    if (deleting !== null && points[deleting]) {
+      onPointsChange(removeQuadrantTask(points, deleting));
+      setSelection(selectionAfterRemove(selection, deleting));
+    }
+    close();
+  };
+
+  const renderPanel = () => {
+    if (!shown) return null;
+    const kind = draft ? (draft.index === null ? "add" : "edit") : "delete";
+    const heading =
+      kind === "add" ? texts.add : kind === "edit" ? texts.edit : texts.delete;
+    return (
+      <View
+        key={panel.key}
+        className={cn(
+          "mn-quadrant-task-board__panel",
+          `mn-quadrant-task-board__panel--${kind}`,
+          `mn-quadrant-task-board__panel--caret-${panel.anchor.caret}`,
+        )}
+        data-quadrant-task-panel={kind}
+        {...a11yAttrs(kind === "delete" ? "alertdialog" : "dialog", heading)}
+      >
+        <View className="mn-quadrant-task-board__caret" aria-hidden>
+          <View className="mn-quadrant-task-board__caret-tip" />
+        </View>
+        <Text className="mn-quadrant-task-board__panel-title">{heading}</Text>
+        {draft ? (
+          <>
+            <View className="mn-quadrant-task-board__field">
+              <Text className="mn-quadrant-task-board__label">
+                {texts.name}
+              </Text>
+              <Input
+                required
+                focus
+                size="small"
+                className="mn-quadrant-task-board__name"
+                value={draft.label}
+                aria-label={texts.name}
+                onChange={(label) => setDraft({ label })}
+                onConfirm={save}
+              />
+            </View>
+            <View className="mn-quadrant-task-board__field">
+              <Text className="mn-quadrant-task-board__label">
+                {texts.quadrant}
+              </Text>
+              <View
+                className="mn-quadrant-task-board__quadrant-grid"
+                {...a11yAttrs("radiogroup", texts.quadrant)}
+              >
+                {QUADRANT_CORNERS.map((corner) => {
+                  const checked = draft.quadrant === corner;
+                  return (
+                    <View
+                      key={corner}
+                      className={cn(
+                        "mn-quadrant-task-board__chip",
+                        checked && "mn-quadrant-task-board__chip--checked",
+                      )}
+                      data-corner={corner}
+                      {...a11yAttrs("radio", title(corner))}
+                      aria-checked={checked}
+                      onClick={() => setDraft({ quadrant: corner })}
+                    >
+                      <View
+                        className="mn-quadrant-task-board__swatch"
+                        style={{
+                          background: quadrantTaskColor(
+                            props.quadrants,
+                            corner,
+                          ),
+                        }}
+                        aria-hidden
+                      />
+                      <Text className="mn-quadrant-task-board__chip-name">
+                        {title(corner)}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+          </>
+        ) : (
+          <Text className="mn-quadrant-task-board__panel-text">
+            {quadrantTaskDeleteText(
+              texts,
+              deleting === null ? undefined : points[deleting],
+            )}
+          </Text>
+        )}
+        <View className="mn-quadrant-task-board__footer">
+          <Button
+            size="small"
+            variant="ghost"
+            color="neutral"
+            className="mn-quadrant-task-board__cancel"
+            onClick={close}
+          >
+            {texts.cancel}
+          </Button>
+          {draft ? (
+            <Button
+              size="small"
+              className="mn-quadrant-task-board__save"
+              disabled={!canSaveQuadrantTask(draft, points)}
+              onClick={save}
+            >
+              {texts.save}
+            </Button>
+          ) : (
+            <Button
+              size="small"
+              color="danger"
+              className="mn-quadrant-task-board__confirm"
+              onClick={remove}
+            >
+              {texts.confirmDelete}
+            </Button>
+          )}
+        </View>
+      </View>
+    );
+  };
 
   return (
     <View
@@ -112,15 +288,16 @@ export function QuadrantTaskBoard({
         selectedIndex={selected}
         onPointClick={(point, index) => {
           setSelection(index);
+          // like a press outside a popover: the open panel closes
+          close();
           props.onPointClick?.(point, index);
         }}
         onPointDrop={(_point, index, at) => {
           onPointsChange(moveQuadrantTask(points, index, at));
           setSelection(index);
+          close();
         }}
-        onQuadrantClick={(corner, at) =>
-          setDraft(newQuadrantTaskDraft(geometry, corner, at))
-        }
+        onQuadrantClick={(corner, at) => addAt(corner, at)}
       />
       <View
         className="mn-quadrant-task-board__quadrants"
@@ -160,19 +337,29 @@ export function QuadrantTaskBoard({
                   )}
                 </Text>
               )}
-              <Button
+              <IconButton
                 size="xsmall"
-                variant="ghost"
+                showTooltip={false}
                 className="mn-quadrant-task-board__add"
-                aria-label={`${texts.add} · ${title(corner)}`}
-                onClick={() => setDraft(newQuadrantTaskDraft(geometry, corner))}
-              >
-                +
-              </Button>
+                label={`${texts.add} · ${title(corner)}`}
+                aria-expanded={
+                  shown && draft?.index === null && draft.quadrant === corner
+                }
+                icon={
+                  <Image
+                    src={addIcon}
+                    className="mn-quadrant-task-board__add-icon"
+                    style={{ width: "16px", height: "16px" }}
+                    aria-hidden
+                  />
+                }
+                onClick={() => addAt(corner)}
+              />
             </View>
           );
         })}
       </View>
+      {panel?.anchor.at === "headers" ? renderPanel() : null}
       {active !== null ? (
         <View
           className="mn-quadrant-task-board__actions"
@@ -185,93 +372,32 @@ export function QuadrantTaskBoard({
           >
             {points[active]!.label ?? ""}
           </Text>
-          <Button size="small" variant="ghost" onClick={() => edit(active)}>
+          <Button
+            size="small"
+            variant="ghost"
+            className="mn-quadrant-task-board__edit"
+            onClick={() => edit(active)}
+          >
             {texts.edit}
           </Button>
           <Button
             size="small"
             variant="ghost"
             color="danger"
-            onClick={() => setDeleting(active)}
+            className="mn-quadrant-task-board__delete"
+            onClick={() =>
+              open({
+                kind: "delete",
+                index: active,
+                anchor: { at: "actions", caret: "delete" },
+              })
+            }
           >
             {texts.delete}
           </Button>
         </View>
       ) : null}
-      <Modal
-        open={open}
-        onOpenChange={(next) => {
-          if (!next) setDraft(null);
-        }}
-        title={draft?.index === null ? texts.add : texts.edit}
-        size="small"
-      >
-        <View
-          className="mn-quadrant-task-board__form"
-          style={{ display: "flex", flexDirection: "column", gap: "12px" }}
-        >
-          <View className="mn-quadrant-task-board__field">
-            <Text>{texts.name}</Text>
-            <Input
-              required
-              focus={open}
-              value={draft?.label ?? ""}
-              aria-label={texts.name}
-              onChange={(label) => setDraft((old) => old && { ...old, label })}
-              onConfirm={save}
-            />
-          </View>
-          <View className="mn-quadrant-task-board__field">
-            <Text>{texts.quadrant}</Text>
-            <RadioGroup
-              aria-label={texts.quadrant}
-              value={draft?.quadrant ?? "topLeft"}
-              options={QUADRANT_CORNERS.map((corner) => ({
-                value: corner,
-                label: title(corner),
-              }))}
-              onChange={(corner) =>
-                setDraft(
-                  (old) =>
-                    old && { ...old, quadrant: corner as QuadrantCorner },
-                )
-              }
-            />
-          </View>
-        </View>
-        <ModalFooter>
-          <Button
-            color="neutral"
-            variant="outline"
-            onClick={() => setDraft(null)}
-          >
-            {texts.cancel}
-          </Button>
-          <Button disabled={!canSaveQuadrantTask(draft, points)} onClick={save}>
-            {texts.save}
-          </Button>
-        </ModalFooter>
-      </Modal>
-      <ConfirmDialog
-        open={deleting !== null && !!points[deleting]}
-        onOpenChange={(next) => {
-          if (!next) setDeleting(null);
-        }}
-        title={texts.delete}
-        description={quadrantTaskDeleteText(
-          texts,
-          deleting === null ? undefined : points[deleting],
-        )}
-        cancelLabel={texts.cancel}
-        color="danger"
-        onConfirm={() => {
-          if (deleting !== null && points[deleting]) {
-            onPointsChange(removeQuadrantTask(points, deleting));
-            setSelection(selectionAfterRemove(selection, deleting));
-          }
-          setDeleting(null);
-        }}
-      />
+      {panel?.anchor.at === "actions" ? renderPanel() : null}
     </View>
   );
 }

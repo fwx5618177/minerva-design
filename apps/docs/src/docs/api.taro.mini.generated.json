@@ -2508,7 +2508,7 @@
     "slots": [],
     "methods": []
   },
-  "KanbanBoard": {
+  "DashboardColumns": {
     "entry": "minerva-design/taro",
     "props": [
       { "name": "aria-describedby", "type": "string | undefined", "required": false },
@@ -2516,7 +2516,7 @@
       { "name": "aria-labelledby", "type": "string | undefined", "required": false },
       {
         "name": "canDrop",
-        "type": "((move: KanbanCardMove) => boolean) | undefined",
+        "type": "((move: DashboardCardMove) => boolean) | undefined",
         "required": false,
         "description": "Whether a card may be dropped at a position (refused positions show no drop line)"
       },
@@ -2524,7 +2524,7 @@
       { "name": "className", "type": "string | undefined", "required": false },
       {
         "name": "columnWidth",
-        "type": "KanbanLength | undefined",
+        "type": "DashboardLength | undefined",
         "required": false,
         "description": "Width of every column (a number is pixels; default 18rem / 288px); with `fill` the minimum width"
       },
@@ -2532,27 +2532,27 @@
         "name": "draggable",
         "type": "boolean | undefined",
         "required": false,
-        "description": "Lets the KanbanCard children of keyed columns (`value`) be dragged: a\nlong press picks a card up (the board stops scrolling), moving the\nfinger moves it, lifting the finger drops it (default false). The board\nis controlled: it reports the move (`onCardMove`)"
+        "description": "Lets the DashboardCard children of keyed columns (`value`) be dragged: a\nlong press picks a card up (the board stops scrolling), moving the\nfinger moves it, lifting the finger drops it (default false). The board\nis controlled: it reports the move (`onCardMove`)"
       },
       { "name": "fill", "type": "boolean | undefined", "required": false, "description": "Stretches the columns equally to fill the board when they fit (default false)" },
-      { "name": "gap", "type": "KanbanLength | undefined", "required": false, "description": "Space between the columns (a number is pixels; default 12px)" },
-      { "name": "height", "type": "KanbanLength | undefined", "required": false, "description": "Height of the board: the column bodies scroll vertically within it" },
+      { "name": "gap", "type": "DashboardLength | undefined", "required": false, "description": "Space between the columns (a number is pixels; default 12px)" },
+      { "name": "height", "type": "DashboardLength | undefined", "required": false, "description": "Height of the board: the column bodies scroll vertically within it" },
       { "name": "id", "type": "string | undefined", "required": false },
-      { "name": "maxHeight", "type": "KanbanLength | undefined", "required": false, "description": "Maximum height of the board: the column bodies scroll vertically within it" },
+      { "name": "maxHeight", "type": "DashboardLength | undefined", "required": false, "description": "Maximum height of the board: the column bodies scroll vertically within it" },
       { "name": "style", "type": "CSSProperties | undefined", "required": false }
     ],
     "events": [
       {
         "name": "onCardMove",
-        "type": "((move: KanbanCardMove) => void) | undefined",
+        "type": "((move: DashboardCardMove) => void) | undefined",
         "required": false,
-        "description": "Called when a card is dropped at a new position: move it in your data (`moveKanbanCard`)"
+        "description": "Called when a card is dropped at a new position: move it in your data (`moveDashboardCard`)"
       }
     ],
     "slots": [],
     "methods": []
   },
-  "KanbanColumn": {
+  "DashboardColumn": {
     "entry": "minerva-design/taro",
     "props": [
       { "name": "actions", "type": "ReactNode", "required": false, "description": "Header controls on the end side (e.g. an add button)" },
@@ -2575,7 +2575,7 @@
     "slots": [],
     "methods": []
   },
-  "KanbanCard": {
+  "DashboardCard": {
     "entry": "minerva-design/taro",
     "props": [
       { "name": "aria-describedby", "type": "string | undefined", "required": false },
@@ -2615,7 +2615,7 @@
         "required": false,
         "description": "Pinch zoom, pan (drag when zoomed) and double-tap reset; `false` makes the chart static"
       },
-      { "name": "labels", "type": "Partial<QuadrantTaskLabels> | undefined", "required": false, "description": "Texts of the buttons and dialogs (localized by default)" },
+      { "name": "labels", "type": "Partial<QuadrantTaskLabels> | undefined", "required": false, "description": "Texts of the buttons and panels (localized by default)" },
       { "name": "legend", "type": "boolean | ChartLegendOptions | undefined", "required": false, "description": "Legend; shown by default when several series have a name (tap toggles a series)" },
       {
         "name": "locale",

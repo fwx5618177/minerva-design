@@ -3478,6 +3478,382 @@
     "kind": "alias",
     "type": "MenuProps"
   },
+  "native:DashboardCardProps": {
+    "source": "native/src/components/DashboardColumns/DashboardColumns.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "description": "Key of the card, reported as `cardKey` by a draggable board"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "default": "its text when it is a string, else `value`",
+        "description": "Name of the card in the announcements and, when draggable, its accessible name"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Content of the card"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the card"
+      }
+    ]
+  },
+  "native:DashboardColumnColor": {
+    "source": "native/src/components/DashboardColumns/DashboardColumns.tsx",
+    "description": "Accent of a DashboardColumn: a theme color or any React Native color",
+    "kind": "alias",
+    "type": "ColorScheme | (string & {})"
+  },
+  "native:DashboardColumnProps": {
+    "source": "native/src/components/DashboardColumns/DashboardColumns.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": true,
+        "description": "Title of the column (also its accessible name)"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "Key of the column, reported as `fromColumn` / `toColumn` by a draggable board (columns without one take no cards)"
+      },
+      {
+        "name": "count",
+        "type": "number",
+        "required": false,
+        "description": "Number of items shown as a badge next to the title (and announced with the title); omit to hide the badge"
+      },
+      {
+        "name": "color",
+        "type": "DashboardColumnColor",
+        "required": false,
+        "description": "Accent of the column (a dot before the title): a theme color or any color"
+      },
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Supporting text under the header"
+      },
+      {
+        "name": "actions",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Header controls on the end side (e.g. an add button)"
+      },
+      {
+        "name": "empty",
+        "type": "ReactNode",
+        "required": false,
+        "default": "\"No items\" (translated)",
+        "description": "Content shown when the column has no cards"
+      },
+      {
+        "name": "footer",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Footer below the cards (e.g. an \"Add card\" button)"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "The cards: each child is wrapped in a role=\"listitem\" view"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the column"
+      }
+    ]
+  },
+  "native:DashboardColumnsProps": {
+    "source": "native/src/components/DashboardColumns/DashboardColumns.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<ViewProps, \"style\" | \"children\">"
+    ],
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "The columns (DashboardColumn)"
+      },
+      {
+        "name": "columnWidth",
+        "type": "number",
+        "required": false,
+        "default": "288",
+        "description": "Width of every column, in device-independent pixels. With `fill` it is the minimum width: columns stretch equally when they fit"
+      },
+      {
+        "name": "fill",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Stretches the columns equally to fill the board when they fit (they keep `columnWidth` as their minimum width and scroll otherwise)"
+      },
+      {
+        "name": "gap",
+        "type": "number",
+        "required": false,
+        "default": "12",
+        "description": "Space between the columns, in device-independent pixels"
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "required": false,
+        "description": "Height of the board: the column bodies scroll vertically within it"
+      },
+      {
+        "name": "maxHeight",
+        "type": "number",
+        "required": false,
+        "description": "Maximum height of the board: the column bodies scroll vertically within it"
+      },
+      {
+        "name": "draggable",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Lets the DashboardCard children of keyed columns (`value`) be dragged between and within columns: a long press picks a card up (the board stops scrolling), lifting the finger drops it; screen readers get \"Move up\" / \"Move down\" / \"Move to <column>\" actions on each card. The board is controlled: it reports the move (`onCardMove`) and the app moves the card in its data."
+      },
+      {
+        "name": "onCardMove",
+        "type": "(move: DashboardCardMove) => void",
+        "required": false,
+        "description": "Called when a card is dropped at a new position (not when it is put back where it was): move the card in your data (`moveDashboardCard` from `minerva-design/core` does it for plain lists)"
+      },
+      {
+        "name": "canDrop",
+        "type": "(move: DashboardCardMove) => boolean",
+        "required": false,
+        "description": "Whether a card may be dropped at a position: refused positions show no drop indicator and get no accessibility action"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the board (the horizontal ScrollView)"
+      }
+    ]
+  },
+  "native:DashboardDragApi": {
+    "source": "native/src/components/DashboardColumns/drag.ts",
+    "description": "The drag and drop API of a board, given to its columns and cards",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "enabled",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "state",
+        "type": "DashboardDragState | null",
+        "required": true
+      },
+      {
+        "name": "ghost",
+        "type": "Animated.ValueXY",
+        "required": true,
+        "description": "Position of the floating copy, relative to the drag layer"
+      },
+      {
+        "name": "registerLayer",
+        "type": "(view: View | null) => void",
+        "required": true
+      },
+      {
+        "name": "registerColumn",
+        "type": "(key: string, part: \"root\" | \"body\", view: View | null) => void",
+        "required": true
+      },
+      {
+        "name": "registerCard",
+        "type": "(key: string, view: View | null) => void",
+        "required": true
+      },
+      {
+        "name": "setContent",
+        "type": "(key: string, content: ReactNode | undefined) => void",
+        "required": true,
+        "description": "Records the content of a card (rendered by the floating copy)"
+      },
+      {
+        "name": "lift",
+        "type": "(card: string, pageX: number, pageY: number) => void",
+        "required": true
+      },
+      {
+        "name": "active",
+        "type": "(card: string) => boolean",
+        "required": true,
+        "description": "Whether `card` is picked up (by a touch: it owns the gesture)"
+      },
+      {
+        "name": "move",
+        "type": "(pageX: number, pageY: number) => void",
+        "required": true
+      },
+      {
+        "name": "drop",
+        "type": "() => void",
+        "required": true
+      },
+      {
+        "name": "cancel",
+        "type": "() => void",
+        "required": true
+      },
+      {
+        "name": "actions",
+        "type": "(card: string) => { name: string; label: string }[]",
+        "required": true
+      },
+      {
+        "name": "act",
+        "type": "(card: string, action: string) => void",
+        "required": true
+      }
+    ]
+  },
+  "native:DashboardDragOptions": {
+    "source": "native/src/components/DashboardColumns/drag.ts",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "enabled",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "columns",
+        "type": "readonly DashboardMeasuredColumn[]",
+        "required": true
+      },
+      {
+        "name": "cardLabels",
+        "type": "Readonly<Record<string, string>>",
+        "required": true,
+        "description": "Name of each card in the announcements"
+      },
+      {
+        "name": "onCardMove",
+        "type": "(move: DashboardCardMove) => void",
+        "required": false
+      },
+      {
+        "name": "canDrop",
+        "type": "(move: DashboardCardMove) => boolean",
+        "required": false
+      },
+      {
+        "name": "t",
+        "type": "(key: string, params?: Record<string, string | number>) => string",
+        "required": true
+      }
+    ]
+  },
+  "native:DashboardDragState": {
+    "source": "native/src/components/DashboardColumns/drag.ts",
+    "description": "What the board, columns and cards render while a card is picked up",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "card",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "target",
+        "type": "DashboardPosition | null",
+        "required": true
+      },
+      {
+        "name": "content",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Content of the floating copy (the card's children)"
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "required": false,
+        "description": "Size of the floating copy (once measured)"
+      },
+      {
+        "name": "line",
+        "type": "DashboardDropLine",
+        "required": false
+      }
+    ]
+  },
+  "native:DashboardDropLine": {
+    "source": "native/src/components/DashboardColumns/drag.ts",
+    "description": "The drop line, relative to the drag layer",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "left",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "top",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "required": true
+      }
+    ]
+  },
+  "native:DashboardMeasuredColumn": {
+    "source": "native/src/components/DashboardColumns/drag.ts",
+    "description": "A column of the board as read from its children",
+    "kind": "interface",
+    "extends": [
+      "DashboardLayoutColumn"
+    ],
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "description": "Name of the column in the announcements and action labels"
+      }
+    ]
+  },
   "native:DataTableProps": {
     "source": "native/src/components/Table/index.tsx",
     "kind": "interface",
@@ -6271,382 +6647,6 @@
         "name": "invalidLabel",
         "type": "string",
         "required": false
-      }
-    ]
-  },
-  "native:KanbanBoardColumn": {
-    "source": "native/src/components/KanbanBoard/drag.ts",
-    "description": "A column of the board as read from its children",
-    "kind": "interface",
-    "extends": [
-      "KanbanLayoutColumn"
-    ],
-    "props": [
-      {
-        "name": "label",
-        "type": "string",
-        "required": true,
-        "description": "Name of the column in the announcements and action labels"
-      }
-    ]
-  },
-  "native:KanbanBoardProps": {
-    "source": "native/src/components/KanbanBoard/KanbanBoard.tsx",
-    "kind": "interface",
-    "extends": [
-      "Omit<ViewProps, \"style\" | \"children\">"
-    ],
-    "props": [
-      {
-        "name": "children",
-        "type": "ReactNode",
-        "required": false,
-        "description": "The columns (KanbanColumn)"
-      },
-      {
-        "name": "columnWidth",
-        "type": "number",
-        "required": false,
-        "default": "288",
-        "description": "Width of every column, in device-independent pixels. With `fill` it is the minimum width: columns stretch equally when they fit"
-      },
-      {
-        "name": "fill",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Stretches the columns equally to fill the board when they fit (they keep `columnWidth` as their minimum width and scroll otherwise)"
-      },
-      {
-        "name": "gap",
-        "type": "number",
-        "required": false,
-        "default": "12",
-        "description": "Space between the columns, in device-independent pixels"
-      },
-      {
-        "name": "height",
-        "type": "number",
-        "required": false,
-        "description": "Height of the board: the column bodies scroll vertically within it"
-      },
-      {
-        "name": "maxHeight",
-        "type": "number",
-        "required": false,
-        "description": "Maximum height of the board: the column bodies scroll vertically within it"
-      },
-      {
-        "name": "draggable",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Lets the KanbanCard children of keyed columns (`value`) be dragged between and within columns: a long press picks a card up (the board stops scrolling), lifting the finger drops it; screen readers get \"Move up\" / \"Move down\" / \"Move to <column>\" actions on each card. The board is controlled: it reports the move (`onCardMove`) and the app moves the card in its data."
-      },
-      {
-        "name": "onCardMove",
-        "type": "(move: KanbanCardMove) => void",
-        "required": false,
-        "description": "Called when a card is dropped at a new position (not when it is put back where it was): move the card in your data (`moveKanbanCard` from `minerva-design/core` does it for plain lists)"
-      },
-      {
-        "name": "canDrop",
-        "type": "(move: KanbanCardMove) => boolean",
-        "required": false,
-        "description": "Whether a card may be dropped at a position: refused positions show no drop indicator and get no accessibility action"
-      },
-      {
-        "name": "style",
-        "type": "StyleProp<ViewStyle>",
-        "required": false,
-        "description": "Style of the board (the horizontal ScrollView)"
-      }
-    ]
-  },
-  "native:KanbanCardProps": {
-    "source": "native/src/components/KanbanBoard/KanbanBoard.tsx",
-    "kind": "interface",
-    "extends": [
-      "Omit<ViewProps, \"style\" | \"children\">"
-    ],
-    "props": [
-      {
-        "name": "value",
-        "type": "string",
-        "required": true,
-        "description": "Key of the card, reported as `cardKey` by a draggable board"
-      },
-      {
-        "name": "label",
-        "type": "string",
-        "required": false,
-        "default": "its text when it is a string, else `value`",
-        "description": "Name of the card in the announcements and, when draggable, its accessible name"
-      },
-      {
-        "name": "children",
-        "type": "ReactNode",
-        "required": false,
-        "description": "Content of the card"
-      },
-      {
-        "name": "style",
-        "type": "StyleProp<ViewStyle>",
-        "required": false,
-        "description": "Style of the card"
-      }
-    ]
-  },
-  "native:KanbanColumnColor": {
-    "source": "native/src/components/KanbanBoard/KanbanBoard.tsx",
-    "description": "Accent of a KanbanColumn: a theme color or any React Native color",
-    "kind": "alias",
-    "type": "ColorScheme | (string & {})"
-  },
-  "native:KanbanColumnProps": {
-    "source": "native/src/components/KanbanBoard/KanbanBoard.tsx",
-    "kind": "interface",
-    "extends": [
-      "Omit<ViewProps, \"style\" | \"children\">"
-    ],
-    "props": [
-      {
-        "name": "title",
-        "type": "ReactNode",
-        "required": true,
-        "description": "Title of the column (also its accessible name)"
-      },
-      {
-        "name": "value",
-        "type": "string",
-        "required": false,
-        "description": "Key of the column, reported as `fromColumn` / `toColumn` by a draggable board (columns without one take no cards)"
-      },
-      {
-        "name": "count",
-        "type": "number",
-        "required": false,
-        "description": "Number of items shown as a badge next to the title (and announced with the title); omit to hide the badge"
-      },
-      {
-        "name": "color",
-        "type": "KanbanColumnColor",
-        "required": false,
-        "description": "Accent of the column (a dot before the title): a theme color or any color"
-      },
-      {
-        "name": "description",
-        "type": "ReactNode",
-        "required": false,
-        "description": "Supporting text under the header"
-      },
-      {
-        "name": "actions",
-        "type": "ReactNode",
-        "required": false,
-        "description": "Header controls on the end side (e.g. an add button)"
-      },
-      {
-        "name": "empty",
-        "type": "ReactNode",
-        "required": false,
-        "default": "\"No items\" (translated)",
-        "description": "Content shown when the column has no cards"
-      },
-      {
-        "name": "footer",
-        "type": "ReactNode",
-        "required": false,
-        "description": "Footer below the cards (e.g. an \"Add card\" button)"
-      },
-      {
-        "name": "children",
-        "type": "ReactNode",
-        "required": false,
-        "description": "The cards: each child is wrapped in a role=\"listitem\" view"
-      },
-      {
-        "name": "style",
-        "type": "StyleProp<ViewStyle>",
-        "required": false,
-        "description": "Style of the column"
-      }
-    ]
-  },
-  "native:KanbanDragApi": {
-    "source": "native/src/components/KanbanBoard/drag.ts",
-    "description": "The drag and drop API of a board, given to its columns and cards",
-    "kind": "interface",
-    "extends": [],
-    "props": [
-      {
-        "name": "enabled",
-        "type": "boolean",
-        "required": true
-      },
-      {
-        "name": "state",
-        "type": "KanbanDragState | null",
-        "required": true
-      },
-      {
-        "name": "ghost",
-        "type": "Animated.ValueXY",
-        "required": true,
-        "description": "Position of the floating copy, relative to the drag layer"
-      },
-      {
-        "name": "registerLayer",
-        "type": "(view: View | null) => void",
-        "required": true
-      },
-      {
-        "name": "registerColumn",
-        "type": "(key: string, part: \"root\" | \"body\", view: View | null) => void",
-        "required": true
-      },
-      {
-        "name": "registerCard",
-        "type": "(key: string, view: View | null) => void",
-        "required": true
-      },
-      {
-        "name": "setContent",
-        "type": "(key: string, content: ReactNode | undefined) => void",
-        "required": true,
-        "description": "Records the content of a card (rendered by the floating copy)"
-      },
-      {
-        "name": "lift",
-        "type": "(card: string, pageX: number, pageY: number) => void",
-        "required": true
-      },
-      {
-        "name": "active",
-        "type": "(card: string) => boolean",
-        "required": true,
-        "description": "Whether `card` is picked up (by a touch: it owns the gesture)"
-      },
-      {
-        "name": "move",
-        "type": "(pageX: number, pageY: number) => void",
-        "required": true
-      },
-      {
-        "name": "drop",
-        "type": "() => void",
-        "required": true
-      },
-      {
-        "name": "cancel",
-        "type": "() => void",
-        "required": true
-      },
-      {
-        "name": "actions",
-        "type": "(card: string) => { name: string; label: string }[]",
-        "required": true
-      },
-      {
-        "name": "act",
-        "type": "(card: string, action: string) => void",
-        "required": true
-      }
-    ]
-  },
-  "native:KanbanDragOptions": {
-    "source": "native/src/components/KanbanBoard/drag.ts",
-    "kind": "interface",
-    "extends": [],
-    "props": [
-      {
-        "name": "enabled",
-        "type": "boolean",
-        "required": true
-      },
-      {
-        "name": "columns",
-        "type": "readonly KanbanBoardColumn[]",
-        "required": true
-      },
-      {
-        "name": "cardLabels",
-        "type": "Readonly<Record<string, string>>",
-        "required": true,
-        "description": "Name of each card in the announcements"
-      },
-      {
-        "name": "onCardMove",
-        "type": "(move: KanbanCardMove) => void",
-        "required": false
-      },
-      {
-        "name": "canDrop",
-        "type": "(move: KanbanCardMove) => boolean",
-        "required": false
-      },
-      {
-        "name": "t",
-        "type": "(key: string, params?: Record<string, string | number>) => string",
-        "required": true
-      }
-    ]
-  },
-  "native:KanbanDragState": {
-    "source": "native/src/components/KanbanBoard/drag.ts",
-    "description": "What the board, columns and cards render while a card is picked up",
-    "kind": "interface",
-    "extends": [],
-    "props": [
-      {
-        "name": "card",
-        "type": "string",
-        "required": true
-      },
-      {
-        "name": "target",
-        "type": "KanbanPosition | null",
-        "required": true
-      },
-      {
-        "name": "content",
-        "type": "ReactNode",
-        "required": false,
-        "description": "Content of the floating copy (the card's children)"
-      },
-      {
-        "name": "width",
-        "type": "number",
-        "required": false,
-        "description": "Size of the floating copy (once measured)"
-      },
-      {
-        "name": "line",
-        "type": "KanbanDropLine",
-        "required": false
-      }
-    ]
-  },
-  "native:KanbanDropLine": {
-    "source": "native/src/components/KanbanBoard/drag.ts",
-    "description": "The drop line, relative to the drag layer",
-    "kind": "interface",
-    "extends": [],
-    "props": [
-      {
-        "name": "left",
-        "type": "number",
-        "required": true
-      },
-      {
-        "name": "top",
-        "type": "number",
-        "required": true
-      },
-      {
-        "name": "width",
-        "type": "number",
-        "required": true
       }
     ]
   },
@@ -9597,7 +9597,7 @@
         "name": "labels",
         "type": "Partial<QuadrantTaskLabels>",
         "required": false,
-        "description": "Texts of the buttons and dialogs (localized by default)"
+        "description": "Texts of the buttons and panels (localized by default)"
       }
     ]
   },

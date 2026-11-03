@@ -2,7 +2,7 @@
 // Eisenhower task board: the + of a quadrant (or a click on its empty area)
 // adds a task, the buttons above the active task edit or delete it, and
 // tasks move by drag and drop or Shift + arrows. `v-model:points` keeps the
-// list; the built-in buttons and dialogs follow the page language.
+// list; the built-in buttons and panels follow the page language.
 import { computed, ref } from "vue";
 import { useI18n } from "minerva-design/vue";
 import {

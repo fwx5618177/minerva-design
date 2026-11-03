@@ -81,7 +81,7 @@ export default function GalleryDemo() {
   return (
     <div className={styles.stage}>
       {/* mount one ToastProvider near the root of an app */}
-      <ToastProvider position="bottom-right" />
+      <ToastProvider position="top-center" />
       <div className={styles.toolbar}>
         <Input
           type="search"

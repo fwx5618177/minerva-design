@@ -1,3 +1,7 @@
+import DeprecatedDashboardColumns from "./DashboardColumns.vue";
+import DeprecatedDashboardColumn from "./DashboardColumn.vue";
+import DeprecatedDashboardCard from "./DashboardCard.vue";
+
 export { default as Alert } from "./Alert.vue";
 export { default as AppShell } from "./AppShell.vue";
 export { default as AutoComplete } from "./AutoComplete.vue";
@@ -64,9 +68,9 @@ export { default as Tooltip } from "./Tooltip.vue";
 export { default as Upload } from "./Upload.vue";
 export { default as VirtualList } from "./VirtualList.vue";
 export { default as WeekStrip } from "./WeekStrip.vue";
-export { default as KanbanBoard } from "./KanbanBoard.vue";
-export { default as KanbanCard } from "./KanbanCard.vue";
-export { default as KanbanColumn } from "./KanbanColumn.vue";
+export { default as DashboardColumns } from "./DashboardColumns.vue";
+export { default as DashboardCard } from "./DashboardCard.vue";
+export { default as DashboardColumn } from "./DashboardColumn.vue";
 export { default as Flashcard } from "./Flashcard.vue";
 export { default as MediaPlayer } from "./MediaPlayer.vue";
 export { default as QuadrantTaskBoard } from "./QuadrantTaskBoard.vue";
@@ -216,3 +220,11 @@ export type {
   ShapeTooltipOptions,
   TreemapNode,
 } from "./shape-chart-types";
+
+// Deprecated aliases (the component was called KanbanBoard), not documented.
+/** @deprecated Use `DashboardColumns` */
+export const KanbanBoard = DeprecatedDashboardColumns;
+/** @deprecated Use `DashboardColumn` */
+export const KanbanColumn = DeprecatedDashboardColumn;
+/** @deprecated Use `DashboardCard` */
+export const KanbanCard = DeprecatedDashboardCard;

@@ -3,8 +3,9 @@
 // count and an add button) mirrors the matrix, the chart shows the tasks
 // (tap selects, quadrantclick adds at the tapped position, draggable dots
 // and the accessible "Move to …" buttons move them), a toolbar edits or
-// deletes the selected task, a modal (name input + quadrant select) adds /
-// edits and a danger confirm-dialog deletes.
+// deletes the selected task. Adding, editing and deleting happen in an
+// inline panel (popover style, with a caret) inserted right below what
+// opened it: the headers (+ or a tap on an empty quadrant) or the toolbar.
 //
 // It composes other Minerva native components (usingComponents, written to
 // its JSON by scripts/build.mjs). The canvas has no DOM overlays, so the
@@ -13,6 +14,7 @@
 // the board stays controlled: `points` in, `pointschange { points }` out.
 import {
   QUADRANT_CORNERS,
+  quadrantTaskIconUri,
   applyQuadrantTaskDraft,
   canSaveQuadrantTask,
   editQuadrantTaskDraft,
@@ -21,6 +23,7 @@ import {
   quadrantCountText,
   quadrantGroups,
   quadrantLabels,
+  quadrantTaskColor,
   quadrantTaskDeleteText,
   quadrantTaskLabels,
   removeQuadrantTask,
@@ -32,8 +35,7 @@ import {
   type QuadrantTaskGeometry,
   type QuadrantTaskLabels,
 } from "@minerva/charts/canvas";
-import { createTranslator, messages } from "@minerva/core";
-import { localeOf, quadrantChart } from "./charts";
+import { chartTheme, localeOf, quadrantChart } from "./charts";
 import type { NativeConfiguration } from "./configuration";
 
 type Instance = WechatMiniprogram.Component.TrivialInstance;
@@ -46,10 +48,6 @@ export const quadrantTaskBoardComponents = {
   "mn-quadrant-chart": "../quadrant-chart/index",
   "mn-icon-button": "../icon-button/index",
   "mn-button": "../button/index",
-  "mn-modal": "../modal/index",
-  "mn-input": "../input/index",
-  "mn-select": "../select/index",
-  "mn-confirm-dialog": "../confirm-dialog/index",
 };
 
 const optional = () => ({ type: null, value: null });
@@ -78,7 +76,7 @@ const chartAttributes = Object.keys(chartProperties)
 
 export const quadrantTaskBoardProperties = {
   ...chartProperties,
-  /** Overrides of the texts of the buttons and dialogs */
+  /** Overrides of the texts of the buttons and panels */
   labels: optional(),
   /** Dots can be dragged to move a task (the web board moves them too) */
   draggable: { type: Boolean, value: true },
@@ -95,18 +93,35 @@ const STATE_TEMPLATE =
   `<mn-button class="mn-quadrant-task-board__delete" size="small" variant="outline" color="danger" start-icon="✕" label="{{texts.delete}}" bind:click="onDelete"/>` +
   `</view>`;
 
-const DIALOGS_TEMPLATE =
-  `<mn-modal class="mn-quadrant-task-board__dialog" open="{{draftOpen}}" title="{{draftTitle}}" size="small" bind:openchange="onDraftOpenChange">` +
-  `<view class="mn-quadrant-task-board__form" style="display:flex;flex-direction:column;gap:12px">` +
-  `<view class="mn-quadrant-task-board__field" style="display:flex;flex-direction:column;gap:4px"><text>{{texts.name}}</text><mn-input class="mn-quadrant-task-board__name" value="{{draftLabel}}" placeholder="{{texts.name}}" required bind:change="onDraftLabel" bind:confirm="onDraftSave"/></view>` +
-  `<view class="mn-quadrant-task-board__field" style="display:flex;flex-direction:column;gap:4px"><text>{{texts.quadrant}}</text><mn-select class="mn-quadrant-task-board__quadrant" value="{{draftQuadrant}}" options="{{quadrantOptions}}" aria-label="{{texts.quadrant}}" bind:change="onDraftQuadrant"/></view>` +
+/**
+ * The inline add / edit / delete panel shown when `panel.at` is `at` (the
+ * markup is written twice: below the headers and below the toolbar). The
+ * caret is a rotated square clipped by its box, at the column of the
+ * quadrant or at the pressed button (`panel.caret`).
+ */
+const panelTemplate = (at: "headers" | "actions") =>
+  `<view wx:if="{{panel && panel.at === '${at}'}}" class="mn-quadrant-task-board__panel mn-quadrant-task-board__panel--{{panel.kind}} mn-quadrant-task-board__panel--caret-{{panel.caret}}" data-quadrant-task-panel="{{panel.kind}}" role="{{panel.kind === 'delete' ? 'alertdialog' : 'dialog'}}" aria-role="{{panel.kind === 'delete' ? 'alertdialog' : 'dialog'}}" aria-label="{{panel.title}}">` +
+  `<view class="mn-quadrant-task-board__caret" aria-hidden="true"><view class="mn-quadrant-task-board__caret-tip"/></view>` +
+  `<text class="mn-quadrant-task-board__panel-title">{{panel.title}}</text>` +
+  `<block wx:if="{{panel.kind !== 'delete'}}">` +
+  `<view class="mn-quadrant-task-board__field"><text class="mn-quadrant-task-board__label">{{texts.name}}</text>` +
+  `<input class="mn-input mn-quadrant-task-board__name" value="{{draftLabel}}" placeholder="{{texts.name}}" aria-label="{{texts.name}}" aria-required="true" focus="{{panelFocus}}" bindinput="onDraftLabel" bindconfirm="onDraftSave" bindblur="onDraftBlur"/></view>` +
+  `<view class="mn-quadrant-task-board__field"><text class="mn-quadrant-task-board__label">{{texts.quadrant}}</text>` +
+  `<view class="mn-quadrant-task-board__quadrant-grid" role="radiogroup" aria-role="radiogroup" aria-label="{{texts.quadrant}}">` +
+  `<view wx:for="{{chips}}" wx:key="corner" class="mn-quadrant-task-board__chip {{item.checked ? 'mn-quadrant-task-board__chip--checked' : ''}}" role="radio" aria-role="radio" aria-checked="{{item.checked}}" aria-label="{{item.title}}" data-corner="{{item.corner}}" bindtap="onDraftQuadrant">` +
+  `<view class="mn-quadrant-task-board__swatch" style="background:{{item.color}}" aria-hidden="true"/>` +
+  `<text class="mn-quadrant-task-board__chip-name">{{item.title}}</text>` +
   `</view>` +
-  `<view slot="footer" class="mn-dialog-footer mn-quadrant-task-board__footer" style="justify-content:flex-end">` +
-  `<mn-button class="mn-quadrant-task-board__cancel" variant="outline" color="neutral" label="{{texts.cancel}}" bind:click="onDraftCancel"/>` +
-  `<mn-button class="mn-quadrant-task-board__save" label="{{texts.save}}" disabled="{{!canSave}}" bind:click="onDraftSave"/>` +
   `</view>` +
-  `</mn-modal>` +
-  `<mn-confirm-dialog class="mn-quadrant-task-board__confirm" open="{{deleteOpen}}" title="{{texts.delete}}" description="{{deleteText}}" cancel-label="{{texts.cancel}}" confirm-label="{{confirmLabel}}" color="danger" bind:confirm="onDeleteConfirm" bind:openchange="onDeleteOpenChange"/>`;
+  `</view>` +
+  `</block>` +
+  `<text wx:else class="mn-quadrant-task-board__panel-text">{{deleteText}}</text>` +
+  `<view class="mn-quadrant-task-board__footer">` +
+  `<mn-button class="mn-quadrant-task-board__cancel" size="small" variant="ghost" color="neutral" label="{{texts.cancel}}" bind:click="onPanelCancel"/>` +
+  `<mn-button wx:if="{{panel.kind !== 'delete'}}" class="mn-quadrant-task-board__save" size="small" label="{{texts.save}}" disabled="{{!canSave}}" bind:click="onDraftSave"/>` +
+  `<mn-button wx:else class="mn-quadrant-task-board__confirm" size="small" color="danger" label="{{texts.confirmDelete}}" bind:click="onDeleteConfirm"/>` +
+  `</view>` +
+  `</view>`;
 
 export const quadrantTaskBoardTemplate =
   `<view class="mn-quadrant-task-board" style="display:flex;flex-direction:column;gap:8px">` +
@@ -115,12 +130,13 @@ export const quadrantTaskBoardTemplate =
   `<text wx:if="{{item.badge}}" class="mn-quadrant-task-board__badge mn-muted">{{item.badge}}</text>` +
   `<text class="mn-quadrant-task-board__title" style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600">{{item.title}}</text>` +
   `<text wx:if="{{item.count}}" class="mn-quadrant-task-board__count mn-muted">{{item.count}}</text>` +
-  `<mn-icon-button class="mn-quadrant-task-board__add" size="xsmall" variant="ghost" icon="+" label="{{item.addLabel}}" data-corner="{{item.corner}}" bind:click="onAdd"/>` +
+  `<mn-icon-button class="mn-quadrant-task-board__add" size="xsmall" variant="ghost" label="{{item.addLabel}}" data-corner="{{item.corner}}" bind:click="onAdd"><image class="mn-quadrant-task-board__add-icon" src="{{addIcon}}" mode="aspectFit" aria-hidden="true"/></mn-icon-button>` +
   `</view>` +
   `</view>` +
+  panelTemplate("headers") +
   `<mn-quadrant-chart id="chart" class="mn-quadrant-task-board__chart" ${chartAttributes} bind:pointclick="onPointClick" bind:quadrantclick="onQuadrantClick" bind:pointdrag="onPointDrag" bind:pointdrop="onPointDrop" bind:hover="onHover" bind:zoom="onZoom" bind:layout="onLayout"/>` +
   STATE_TEMPLATE +
-  DIALOGS_TEMPLATE +
+  panelTemplate("actions") +
   `</view>`;
 
 const pointsOf = (self: Instance): QuadrantPoint[] =>
@@ -142,14 +158,28 @@ const activeOf = (self: Instance): number | null =>
 
 const configOf = (self: Instance): NativeConfiguration | undefined =>
   typeof self.getConfig === "function" ? self.getConfig() : undefined;
-/** Localized text of the core messages in the board's locale */
-const translate = (self: Instance, locale: string | undefined, key: string) => {
-  const config = configOf(self);
-  return createTranslator({
-    messages: config?.messages ?? messages,
-    language: locale ?? config?.locale.language ?? "en",
-  })(key);
+
+/**
+ * The plus icon of the add buttons as an SVG data URI (an `<image>` does
+ * not inherit `currentColor`: it is stroked with the theme's text color)
+ */
+const addIconOf = (self: Instance) => {
+  const color = (
+    chartTheme(configOf(self)).variables?.["--text-color"] ?? "#111827"
+  ).replace(/["<>&]/g, "");
+  return quadrantTaskIconUri("add", color);
 };
+
+/** Where the inline panel is: below the headers or the toolbar, and its caret */
+interface PanelAnchor {
+  at: "headers" | "actions";
+  caret: "start" | "end" | "edit" | "delete";
+}
+/** Caret of a panel opened from the headers: the column of the quadrant */
+const headerAnchor = (corner: QuadrantCorner): PanelAnchor => ({
+  at: "headers",
+  caret: corner === "topLeft" || corner === "bottomLeft" ? "start" : "end",
+});
 
 /** Recomputes the template data from the properties and the board state */
 function sync(self: Instance, state: WechatMiniprogram.IAnyObject = {}) {
@@ -167,11 +197,21 @@ function sync(self: Instance, state: WechatMiniprogram.IAnyObject = {}) {
   const groups = quadrantGroups({ points, ...geometryOf(self) });
   const draft = d.draft as QuadrantTaskDraft | null;
   const deleting = indexOf(d.deleting);
+  const anchor = d.anchor as PanelAnchor | null;
   const active =
     indexOf(d.selectedIndex) ?? indexOf(d.selection) ?? (null as number | null);
+  const kind =
+    draft !== null && (draft.index === null || !!points[draft.index])
+      ? draft.index === null
+        ? "add"
+        : "edit"
+      : deleting !== null && points[deleting]
+        ? "delete"
+        : null;
   self.setData({
     ...state,
     texts,
+    addIcon: addIconOf(self),
     headers: QUADRANT_CORNERS.map((corner) => ({
       corner,
       title: title(corner),
@@ -182,10 +222,6 @@ function sync(self: Instance, state: WechatMiniprogram.IAnyObject = {}) {
           : (quadrantCountText(true, groups[corner].points, locale) ?? ""),
       addLabel: `${texts.add} · ${title(corner)}`,
     })),
-    quadrantOptions: QUADRANT_CORNERS.map((corner) => ({
-      value: corner,
-      label: title(corner),
-    })),
     chartLocale: locale ?? "",
     chartCounts: false,
     scrollLocked:
@@ -195,23 +231,35 @@ function sync(self: Instance, state: WechatMiniprogram.IAnyObject = {}) {
       active !== null && points[active]
         ? { index: active, label: points[active].label ?? "" }
         : null,
-    draftOpen:
-      draft !== null && (draft.index === null || !!points[draft.index]),
-    draftTitle: draft?.index === null ? texts.add : texts.edit,
+    panel:
+      kind && anchor
+        ? {
+            kind,
+            at: anchor.at,
+            caret: anchor.caret,
+            title: texts[kind],
+          }
+        : null,
+    chips: QUADRANT_CORNERS.map((corner) => ({
+      corner,
+      title: title(corner),
+      color: quadrantTaskColor(regions, corner),
+      checked: draft?.quadrant === corner,
+    })),
     draftLabel: draft?.label ?? "",
-    draftQuadrant: draft?.quadrant ?? "topLeft",
     canSave: canSaveQuadrantTask(draft, points),
-    deleteOpen: deleting !== null && !!points[deleting],
     deleteText: quadrantTaskDeleteText(
       texts,
       deleting === null ? undefined : points[deleting],
     ),
-    confirmLabel: translate(self, locale, "confirm.delete"),
   });
 }
 
 const emitPoints = (self: Instance, points: QuadrantPoint[]) =>
   self.triggerEvent("pointschange", { points });
+
+/** State of a closed panel */
+const CLOSED = { draft: null, deleting: null, anchor: null, panelFocus: false };
 
 const chartOf = (self: Instance) =>
   self.selectComponent("#chart") as unknown as ChartHandle | null;
@@ -244,7 +292,12 @@ export const quadrantTaskBoardMethods = {
   onAdd(this: Instance, event: TapEvent) {
     const corner = event.currentTarget?.dataset?.corner as QuadrantCorner;
     if (!QUADRANT_CORNERS.includes(corner)) return;
-    sync(this, { draft: newQuadrantTaskDraft(geometryOf(this), corner) });
+    sync(this, {
+      ...CLOSED,
+      draft: newQuadrantTaskDraft(geometryOf(this), corner),
+      anchor: headerAnchor(corner),
+      panelFocus: true,
+    });
   },
   onQuadrantClick(
     this: Instance,
@@ -252,14 +305,17 @@ export const quadrantTaskBoardMethods = {
   ) {
     const { quadrant, x, y } = event.detail;
     sync(this, {
+      ...CLOSED,
       draft: newQuadrantTaskDraft(geometryOf(this), quadrant, { x, y }),
+      anchor: headerAnchor(quadrant),
+      panelFocus: true,
     });
   },
   onPointClick(
     this: Instance,
     event: Detail<{ point: QuadrantPoint; index: number }>,
   ) {
-    sync(this, { selection: event.detail.index });
+    sync(this, { ...CLOSED, selection: event.detail.index });
     this.triggerEvent("pointclick", event.detail);
   },
   onPointDrop(
@@ -270,7 +326,7 @@ export const quadrantTaskBoardMethods = {
     const points = pointsOf(this);
     if (!points[index]) return;
     emitPoints(this, moveQuadrantTask(points, index, target));
-    sync(this, { selection: index });
+    sync(this, { ...CLOSED, selection: index });
   },
   onPointDrag(this: Instance, event: Detail<unknown>) {
     this.triggerEvent("pointdrag", event.detail);
@@ -292,29 +348,40 @@ export const quadrantTaskBoardMethods = {
       pointsOf(this),
       index,
     );
-    if (draft) sync(this, { draft });
+    if (draft)
+      sync(this, {
+        ...CLOSED,
+        draft,
+        anchor: { at: "actions", caret: "edit" },
+        panelFocus: true,
+      });
   },
   onDelete(this: Instance) {
     const index = activeOf(this);
     if (index !== null && pointsOf(this)[index])
-      sync(this, { deleting: index });
+      sync(this, {
+        ...CLOSED,
+        deleting: index,
+        anchor: { at: "actions", caret: "delete" },
+      });
   },
   onDraftLabel(this: Instance, event: Detail<{ value: string }>) {
     const draft = this.data.draft as QuadrantTaskDraft | null;
     if (draft)
       sync(this, { draft: { ...draft, label: String(event.detail.value) } });
   },
-  onDraftQuadrant(this: Instance, event: Detail<{ value: string }>) {
+  onDraftBlur(this: Instance) {
+    // lets the next open focus the field again
+    if (this.data.panelFocus) this.setData({ panelFocus: false });
+  },
+  onDraftQuadrant(this: Instance, event: TapEvent) {
     const draft = this.data.draft as QuadrantTaskDraft | null;
-    const quadrant = event.detail.value as QuadrantCorner;
+    const quadrant = event.currentTarget?.dataset?.corner as QuadrantCorner;
     if (draft && QUADRANT_CORNERS.includes(quadrant))
       sync(this, { draft: { ...draft, quadrant } });
   },
-  onDraftCancel(this: Instance) {
-    sync(this, { draft: null });
-  },
-  onDraftOpenChange(this: Instance, event: Detail<{ open: boolean }>) {
-    if (!event.detail.open) sync(this, { draft: null });
+  onPanelCancel(this: Instance) {
+    sync(this, CLOSED);
   },
   onDraftSave(this: Instance) {
     const saved = applyQuadrantTaskDraft(
@@ -324,7 +391,7 @@ export const quadrantTaskBoardMethods = {
     );
     if (!saved) return;
     emitPoints(this, saved.points);
-    sync(this, { selection: saved.index, draft: null });
+    sync(this, { ...CLOSED, selection: saved.index });
   },
   onDeleteConfirm(this: Instance) {
     const index = indexOf(this.data.deleting);
@@ -332,45 +399,43 @@ export const quadrantTaskBoardMethods = {
     if (index !== null && points[index]) {
       emitPoints(this, removeQuadrantTask(points, index));
       sync(this, {
+        ...CLOSED,
         selection: selectionAfterRemove(indexOf(this.data.selection), index),
-        deleting: null,
       });
       return;
     }
-    sync(this, { deleting: null });
-  },
-  onDeleteOpenChange(this: Instance, event: Detail<{ open: boolean }>) {
-    if (!event.detail.open) sync(this, { deleting: null });
+    sync(this, CLOSED);
   },
 };
 
 export const quadrantTaskBoardExtra = {
   data: {
-    /** Add / edit dialog content (`null`: closed) */
+    /** Add / edit panel content (`null`: closed) */
     draft: null,
     /** Index of the task whose deletion is being confirmed */
     deleting: null,
+    /** Where the open panel is (`{ at, caret }`) */
+    anchor: null,
     /** Task selected by a tap, a save or a move */
     selection: null,
     texts: quadrantTaskLabels("en"),
+    addIcon: "",
     headers: [],
-    quadrantOptions: [],
     chartLocale: "",
     chartCounts: false,
     scrollLocked: true,
     activeIndex: null,
     active: null,
-    draftOpen: false,
-    draftTitle: "",
+    /** The open inline panel (`{ kind, at, caret, title }`), else `null` */
+    panel: null,
+    panelFocus: false,
+    chips: [],
     draftLabel: "",
-    draftQuadrant: "topLeft",
     canSave: false,
-    deleteOpen: false,
     deleteText: "",
-    confirmLabel: "Delete",
   },
   observers: {
-    "points,labels,locale,localeLanguage,quadrants,xDomain,yDomain,xSplit,ySplit,reverseX,showCounts,selectedIndex,draggable,disableScroll":
+    "points,labels,locale,localeLanguage,quadrants,xDomain,yDomain,xSplit,ySplit,reverseX,showCounts,selectedIndex,draggable,disableScroll,inheritedTheme,inheritedMode,inheritedPalette":
       function (this: Instance) {
         sync(this);
       },

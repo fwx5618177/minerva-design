@@ -4,7 +4,7 @@ import { QuadrantTaskBoard } from "minerva-design";
 import type { QuadrantPoint } from "minerva-design/charts";
 
 // A product roadmap: effort on x, impact on y. `labels` renames the
-// buttons and dialogs; every change is counted. Sample features keep a
+// buttons and panels; every change is counted. Sample features keep a
 // translation key until they are renamed.
 type Feature = QuadrantPoint & { key?: string };
 const initial: Feature[] = [

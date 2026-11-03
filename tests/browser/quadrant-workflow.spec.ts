@@ -9,7 +9,7 @@ for (const theme of ["light", "dark"] as const) {
       }, theme);
     });
 
-    test("quadrant task board: live drag, add / edit / delete in dialogs", async ({
+    test("quadrant task board: live drag with a following card, add / edit / delete in inline panels", async ({
       page,
     }) => {
       await page.goto("#/quadrant-task-board");
@@ -35,7 +35,8 @@ for (const theme of ["light", "dark"] as const) {
       await page.mouse.move(from.x, from.y);
       await page.mouse.down();
       try {
-        // the engine moves the dot and its label with every pointer move
+        // the engine moves the dot with every pointer move; the info card
+        // follows it (no label pill: the card names the task)
         await page.mouse.move(to.x, to.y, { steps: 12 });
         const box = (await dot.boundingBox())!;
         expect(
@@ -44,12 +45,18 @@ for (const theme of ["light", "dark"] as const) {
             box.y + box.height / 2 - to.y,
           ),
         ).toBeLessThan(3);
-        await expect(demo.locator('[data-drag-mark="label"]')).toBeVisible();
+        await expect(demo.locator('[data-drag-mark="label"]')).toBeHidden();
+        const card = demo.locator("[data-point-preview][data-dragging]");
+        await expect(card).toBeVisible();
+        const before = (await card.boundingBox())!;
         await expect(demo.locator('[data-drag-mark="origin"]')).toBeVisible();
         await expect(demo.locator('[data-drag-mark="target"]')).toBeVisible();
         await page.mouse.move(to.x + 20, to.y - 10);
         const next = (await dot.boundingBox())!;
         expect(next.x - box.x).toBeCloseTo(20, 0);
+        await expect
+          .poll(async () => (await card.boundingBox())!.x - before.x)
+          .toBeCloseTo(20, 0);
         await page.screenshot({
           path: test.info().outputPath("quadrant-live-drag.png"),
         });
@@ -69,10 +76,12 @@ for (const theme of ["light", "dark"] as const) {
       await demo
         .getByRole("button", { name: "Edit task", exact: true })
         .click();
-      const dialog = page.getByRole("dialog", {
+      // inline in the board, next to the task: not a modal
+      const dialog = demo.getByRole("dialog", {
         name: "Edit task",
         exact: true,
       });
+      await expect(dialog).toHaveAttribute("data-quadrant-task-panel", "edit");
       await dialog
         .getByRole("textbox", { name: "Task name", exact: true })
         .fill("Revised task");
@@ -81,7 +90,7 @@ for (const theme of ["light", "dark"] as const) {
       await demo
         .getByRole("button", { name: "Delete task", exact: true })
         .click();
-      await page
+      await demo
         .getByRole("alertdialog")
         .getByRole("button", { name: "Cancel", exact: true })
         .click();
@@ -89,7 +98,7 @@ for (const theme of ["light", "dark"] as const) {
       await demo
         .getByRole("button", { name: "Delete task", exact: true })
         .click();
-      await page
+      await demo
         .getByRole("alertdialog")
         .getByRole("button", { name: "Delete", exact: true })
         .click();
@@ -98,7 +107,7 @@ for (const theme of ["light", "dark"] as const) {
         .getByRole("button", { name: /^Add task ·/ })
         .first()
         .click();
-      const create = page.getByRole("dialog", {
+      const create = demo.getByRole("dialog", {
         name: "Add task",
         exact: true,
       });
@@ -108,8 +117,69 @@ for (const theme of ["light", "dark"] as const) {
       await create
         .getByRole("textbox", { name: "Task name", exact: true })
         .fill("Another task");
+      await create.getByRole("radio").nth(3).check();
       await create.getByRole("button", { name: "Save", exact: true }).click();
       await expect(demo.locator('[data-label="Another task"]')).toBeAttached();
+    });
+
+    test("quadrant chart: glass info card on the selected task follows a drag", async ({
+      page,
+    }) => {
+      await page.goto("#/quadrant-chart");
+      const demo = page.locator("#demo-triage");
+      await demo.locator(".minerva-chart-stage").scrollIntoViewIfNeeded();
+      const anchor = demo.locator(
+        '.minerva-chart-quadrant-point[data-point-index="0"]',
+      );
+      await expect(anchor).toBeAttached();
+      const at = await anchor.evaluate((node) => {
+        const rect = node.getBoundingClientRect();
+        return { x: rect.x, y: rect.y };
+      });
+      await page.mouse.click(at.x, at.y);
+      await page.mouse.move(at.x + 160, at.y + 220);
+      const card = demo.locator("[data-point-preview]");
+      await expect(card).toBeVisible();
+      const look = await card.evaluate((node) => {
+        const style = getComputedStyle(node);
+        return {
+          background: style.backgroundColor,
+          left: style.borderLeftWidth,
+          right: style.borderRightWidth,
+        };
+      });
+      // translucent like the chart tooltips, the same border on every side
+      expect(look.background).toMatch(/^rgba\(.*, 0\.\d+\)$/);
+      expect(look.left).toBe(look.right);
+      const plot = (await demo
+        .locator(".minerva-chart-overlay")
+        .boundingBox())!;
+      await page.mouse.move(at.x, at.y);
+      await page.mouse.down();
+      try {
+        await page.mouse.move(
+          plot.x + plot.width * 0.3,
+          plot.y + plot.height * 0.75,
+          { steps: 8 },
+        );
+        const first = (await card.boundingBox())!;
+        await page.mouse.move(
+          plot.x + plot.width * 0.3 + 40,
+          plot.y + plot.height * 0.75 - 30,
+          { steps: 4 },
+        );
+        await expect
+          .poll(async () => {
+            const box = (await card.boundingBox())!;
+            return (
+              Math.abs(box.x - first.x - 40) <= 2 &&
+              Math.abs(box.y - first.y + 30) <= 2
+            );
+          })
+          .toBe(true);
+      } finally {
+        await page.mouse.up();
+      }
     });
 
     test("combo chart hover lifts the bar below the line", async ({ page }) => {

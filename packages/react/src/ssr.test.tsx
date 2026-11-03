@@ -8,6 +8,8 @@ import { componentSsrCases } from "./test-utils/componentSsrCases";
 import type { MonacoCodeEditorProps } from "./monaco";
 
 const cases = componentSsrCases;
+/** Deprecated aliases of renamed components (same component as the new name) */
+const DEPRECATED_ALIASES = ["KanbanBoard", "KanbanColumn", "KanbanCard"];
 const { ConfigProvider } = lib;
 
 describe("SSR", () => {
@@ -29,6 +31,7 @@ describe("SSR", () => {
       (name) =>
         /^[A-Z]/.test(name) &&
         !["ConfigContext", "ConfigProvider"].includes(name) &&
+        !DEPRECATED_ALIASES.includes(name) &&
         !/^Card.+/.test(name), // Card sub-components are rendered by "Card"
     );
     for (const name of components) {

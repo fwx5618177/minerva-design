@@ -32,7 +32,7 @@ export * from "./components/SwipeCell";
 export * from "./components/Calendar";
 export * from "./components/WeekStrip";
 export * from "./components/MediaControls";
-export * from "./components/KanbanBoard";
+export * from "./components/DashboardColumns";
 export * from "./components/Flashcard";
 export * from "./components/SegmentedControl";
 export * from "./components/Collapse";

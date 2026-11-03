@@ -209,6 +209,13 @@ const typesOf = (files) => {
         (m) => m.kind === ts.SyntaxKind.ExportKeyword,
       );
       if (!exported) continue;
+      // deprecated aliases (kept after a rename) are not documented
+      if (
+        ts
+          .getJSDocTags(statement)
+          .some((tag) => tag.tagName.text === "deprecated")
+      )
+        continue;
       let entry;
       if (ts.isInterfaceDeclaration(statement)) {
         entry = {

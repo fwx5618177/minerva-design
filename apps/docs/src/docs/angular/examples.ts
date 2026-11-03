@@ -1283,11 +1283,11 @@ export const angularExamples: Record<string, readonly AngularExample[]> = {
       "[tracks] takes WebVTT or SRT files (data: URLs here); the player draws the cues and adds a captions menu (C toggles them). The choice is remembered; (trackChange) reports it. Cross-origin files need crossOrigin and CORS headers.",
     ),
   ],
-  "kanban-board": [
+  "dashboard-columns": [
     example(
       "Board with cards",
-      ["MnKanbanBoard", "MnKanbanColumn", "MnCard", "MnButton"],
-      `<mn-kanban-board aria-label="Sprint 12">@for (column of columns; track column.title; let i = $index) {<mn-kanban-column [title]="column.title" [count]="column.tasks.length">@for (task of column.tasks; track task.id; let j = $index) {<mn-card padding="small">{{task.title}} @if (i < columns.length - 1) {<button mnButton size="small" variant="ghost" (click)="columns[i + 1].tasks.push(task); column.tasks.splice(j, 1)">Move to {{columns[i + 1].title}}</button>}</mn-card>}</mn-kanban-column>}</mn-kanban-board>`,
+      ["MnDashboardColumns", "MnDashboardColumn", "MnCard", "MnButton"],
+      `<mn-dashboard-columns aria-label="Sprint 12">@for (column of columns; track column.title; let i = $index) {<mn-dashboard-column [title]="column.title" [count]="column.tasks.length">@for (task of column.tasks; track task.id; let j = $index) {<mn-card padding="small">{{task.title}} @if (i < columns.length - 1) {<button mnButton size="small" variant="ghost" (click)="columns[i + 1].tasks.push(task); column.tasks.splice(j, 1)">Move to {{columns[i + 1].title}}</button>}</mn-card>}</mn-dashboard-column>}</mn-dashboard-columns>`,
       {
         columns: [
           {
@@ -1308,8 +1308,8 @@ export const angularExamples: Record<string, readonly AngularExample[]> = {
     ),
     example(
       "Drag and drop",
-      ["MnKanbanBoard", "MnKanbanColumn", "MnKanbanCard", "MnCard"],
-      `<mn-kanban-board aria-label="Sprint 12" draggable (cardMove)="$any(lists)[$event.toColumn].splice($event.toIndex, 0, $any(lists)[$event.fromColumn].splice($event.fromIndex, 1)[0])">@for (column of columns; track column.key) {<mn-kanban-column [title]="column.title" [value]="column.key" [count]="$any(lists)[column.key].length">@for (task of $any(lists)[column.key]; track task.id) {<mn-kanban-card [value]="task.id" [label]="task.title"><mn-card padding="small">{{task.title}}</mn-card></mn-kanban-card>}</mn-kanban-column>}</mn-kanban-board>`,
+      ["MnDashboardColumns", "MnDashboardColumn", "MnDashboardCard", "MnCard"],
+      `<mn-dashboard-columns aria-label="Sprint 12" draggable (cardMove)="$any(lists)[$event.toColumn].splice($event.toIndex, 0, $any(lists)[$event.fromColumn].splice($event.fromIndex, 1)[0])">@for (column of columns; track column.key) {<mn-dashboard-column [title]="column.title" [value]="column.key" [count]="$any(lists)[column.key].length">@for (task of $any(lists)[column.key]; track task.id) {<mn-dashboard-card [value]="task.id" [label]="task.title"><mn-card padding="small">{{task.title}}</mn-card></mn-dashboard-card>}</mn-dashboard-column>}</mn-dashboard-columns>`,
       {
         columns: [
           { key: "todo", title: "To do" },
@@ -1325,19 +1325,19 @@ export const angularExamples: Record<string, readonly AngularExample[]> = {
           done: [{ id: "errors", title: "Set up error tracking" }],
         },
       },
-      "draggable moves the mn-kanban-card children of keyed columns (value) with the mouse, a touch long press or the keyboard (Space / Enter picks up and drops, the arrows move, Escape cancels). The board is controlled: (cardMove) reports { cardKey, fromColumn, fromIndex, toColumn, toIndex } and the app moves the card (here: remove it, then insert it at toIndex).",
+      "draggable moves the mn-dashboard-card children of keyed columns (value) with the mouse, a touch long press or the keyboard (Space / Enter picks up and drops, the arrows move, Escape cancels). The board is controlled: (cardMove) reports { cardKey, fromColumn, fromIndex, toColumn, toIndex } and the app moves the card (here: remove it, then insert it at toIndex).",
     ),
     example(
       "Colors, counts and actions",
-      ["MnKanbanBoard", "MnKanbanColumn", "MnCard", "MnButton"],
-      `<mn-kanban-board aria-label="Roadmap" [columnWidth]="220" fill><mn-kanban-column title="Ready" color="info" [count]="1" description="Groomed and estimated"><button mnButton mnKanbanActions size="small" variant="ghost">Add</button><mn-card padding="small">Pricing page copy</mn-card></mn-kanban-column><mn-kanban-column title="Blocked" color="danger" [count]="1"><mn-card padding="small">SSO with Okta</mn-card></mn-kanban-column><mn-kanban-column title="Research" color="#7c3aed" [count]="0" empty="Nothing to research"/></mn-kanban-board>`,
+      ["MnDashboardColumns", "MnDashboardColumn", "MnCard", "MnButton"],
+      `<mn-dashboard-columns aria-label="Roadmap" [columnWidth]="220" fill><mn-dashboard-column title="Ready" color="info" [count]="1" description="Groomed and estimated"><button mnButton mnDashboardActions size="small" variant="ghost">Add</button><mn-card padding="small">Pricing page copy</mn-card></mn-dashboard-column><mn-dashboard-column title="Blocked" color="danger" [count]="1"><mn-card padding="small">SSO with Okta</mn-card></mn-dashboard-column><mn-dashboard-column title="Research" color="#7c3aed" [count]="0" empty="Nothing to research"/></mn-dashboard-columns>`,
       {},
-      "color takes a theme color or any CSS color (the dot before the title); [mnKanbanActions], [mnKanbanEmpty] and [mnKanbanFooter] project header actions, empty content and a footer.",
+      "color takes a theme color or any CSS color (the dot before the title); [mnDashboardActions], [mnDashboardEmpty] and [mnDashboardFooter] project header actions, empty content and a footer.",
     ),
     example(
       "Fixed height",
-      ["MnKanbanBoard", "MnKanbanColumn", "MnCard"],
-      `<mn-kanban-board aria-label="Support queue" [height]="280"><mn-kanban-column title="Inbox" color="info" [count]="tickets.length">@for (ticket of tickets; track ticket) {<mn-card padding="small">{{ticket}}</mn-card>}</mn-kanban-column><mn-kanban-column title="Fixed" color="success" [count]="0"/></mn-kanban-board>`,
+      ["MnDashboardColumns", "MnDashboardColumn", "MnCard"],
+      `<mn-dashboard-columns aria-label="Support queue" [height]="280"><mn-dashboard-column title="Inbox" color="info" [count]="tickets.length">@for (ticket of tickets; track ticket) {<mn-card padding="small">{{ticket}}</mn-card>}</mn-dashboard-column><mn-dashboard-column title="Fixed" color="success" [count]="0"/></mn-dashboard-columns>`,
       {
         tickets: Array.from(
           { length: 10 },

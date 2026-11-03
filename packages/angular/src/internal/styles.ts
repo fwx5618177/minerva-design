@@ -620,6 +620,51 @@ export const commandStyles: ClassMap<
   searchIcon: "searchIcon",
 };
 
+/** components/DashboardColumns/dashboardColumns.module.scss */
+export const dashboardColumnsStyles: ClassMap<
+  | "actions"
+  | "board"
+  | "card"
+  | "column"
+  | "count"
+  | "danger"
+  | "description"
+  | "empty"
+  | "fill"
+  | "footer"
+  | "header"
+  | "indicator"
+  | "info"
+  | "item"
+  | "list"
+  | "neutral"
+  | "primary"
+  | "success"
+  | "title"
+  | "warning"
+> = {
+  actions: "actions",
+  board: "board",
+  card: "card",
+  column: "column",
+  count: "count",
+  danger: "danger",
+  description: "description",
+  empty: "empty",
+  fill: "fill",
+  footer: "footer",
+  header: "header",
+  indicator: "indicator",
+  info: "info",
+  item: "item",
+  list: "list",
+  neutral: "neutral",
+  primary: "primary",
+  success: "success",
+  title: "title",
+  warning: "warning",
+};
+
 /** components/DatePicker/datePicker.module.scss */
 export const datePickerStyles: ClassMap<
   | "calendarIcon"
@@ -944,51 +989,6 @@ export const jsonFieldStyles: ClassMap<
   statusInvalid: "statusInvalid",
   textarea: "textarea",
   toolbar: "toolbar",
-};
-
-/** components/KanbanBoard/kanbanBoard.module.scss */
-export const kanbanBoardStyles: ClassMap<
-  | "actions"
-  | "board"
-  | "card"
-  | "column"
-  | "count"
-  | "danger"
-  | "description"
-  | "empty"
-  | "fill"
-  | "footer"
-  | "header"
-  | "indicator"
-  | "info"
-  | "item"
-  | "list"
-  | "neutral"
-  | "primary"
-  | "success"
-  | "title"
-  | "warning"
-> = {
-  actions: "actions",
-  board: "board",
-  card: "card",
-  column: "column",
-  count: "count",
-  danger: "danger",
-  description: "description",
-  empty: "empty",
-  fill: "fill",
-  footer: "footer",
-  header: "header",
-  indicator: "indicator",
-  info: "info",
-  item: "item",
-  list: "list",
-  neutral: "neutral",
-  primary: "primary",
-  success: "success",
-  title: "title",
-  warning: "warning",
 };
 
 /** components/KeyValueEditor/keyValueEditor.module.scss */
@@ -1543,6 +1543,15 @@ export const quadrantTaskBoardStyles: ClassMap<
   | "footer"
   | "form"
   | "header"
+  | "panel"
+  | "panel-in"
+  | "panelText"
+  | "panelTitle"
+  | "quadrant"
+  | "quadrantGrid"
+  | "quadrantName"
+  | "quadrants"
+  | "swatch"
   | "title"
 > = {
   actions: "actions",
@@ -1555,6 +1564,15 @@ export const quadrantTaskBoardStyles: ClassMap<
   footer: "footer",
   form: "form",
   header: "header",
+  panel: "panel",
+  "panel-in": "panel-in",
+  panelText: "panelText",
+  panelTitle: "panelTitle",
+  quadrant: "quadrant",
+  quadrantGrid: "quadrantGrid",
+  quadrantName: "quadrantName",
+  quadrants: "quadrants",
+  swatch: "swatch",
   title: "title",
 };
 

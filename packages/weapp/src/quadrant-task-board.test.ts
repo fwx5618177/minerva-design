@@ -1,15 +1,7 @@
 import simulate from "miniprogram-simulate";
 import { afterEach, expect, it } from "vitest";
-import {
-  button,
-  confirmDialog,
-  iconButton,
-  input,
-  modal,
-  quadrantChart,
-  quadrantTaskBoard,
-  select,
-} from "./index";
+import { button, iconButton, quadrantChart, quadrantTaskBoard } from "./index";
+import { quadrantTaskBoardComponents } from "./quadrant-task-board";
 import type { NativeQuadrantPoint } from "./public-types";
 
 type Wrapper = simulate.RootComponent<
@@ -38,10 +30,6 @@ function mountBoard(data: Record<string, unknown> = {}) {
       "mn-quadrant-chart": load(quadrantChart),
       "mn-icon-button": load(iconButton),
       "mn-button": load(button),
-      "mn-modal": load(modal),
-      "mn-input": load(input),
-      "mn-select": load(select),
-      "mn-confirm-dialog": load(confirmDialog),
     },
   });
   const changes: NativeQuadrantPoint[][] = [];
@@ -75,10 +63,14 @@ async function tap(component: Node, selector = ".mn-button") {
   await tick();
 }
 
-it("quadrant task board shows the headers with counts and adds a task after save only", async () => {
-  const { board, changes } = mountBoard();
+it("quadrant task board shows the headers with counts and a plus icon on the add buttons", async () => {
+  const { board } = mountBoard();
   await tick();
-  const headers = board().data.headers as { title: string; count: string }[];
+  const headers = board().data.headers as {
+    title: string;
+    count: string;
+    addLabel: string;
+  }[];
   expect(headers.map((h) => h.title)).toEqual([
     "Top left quadrant",
     "Top right quadrant",
@@ -87,35 +79,106 @@ it("quadrant task board shows the headers with counts and adds a task after save
   ]);
   expect(all(board(), ".mn-quadrant-task-board__header")).toHaveLength(4);
   expect(board().data.headers[0].count).toBe("1");
+  expect(headers[1].addLabel).toBe("Add task · Top right quadrant");
+
+  // the add buttons show a plus image (no "+" glyph) and keep their label
+  const add = all(board(), ".mn-quadrant-task-board__add")[1];
+  expect(add.dom!.textContent).not.toContain("+");
+  expect(add.data.label).toBe("Add task · Top right quadrant");
+  expect(add.data.icon).toBeFalsy();
+  const icon = add.dom!.querySelector(".mn-quadrant-task-board__add-icon");
+  expect(icon).toBeTruthy();
+  // the image sits inside the native button of the icon button
+  expect(icon!.closest("wx-button")).toBeTruthy();
+  expect(quadrantTaskBoard.template).toContain('src="{{addIcon}}"');
+  const src = board().data.addIcon as string;
+  expect(src).toMatch(/^data:image\/svg\+xml;base64,/);
+  const svg = atob(src.split(",")[1]);
+  expect(svg).toContain('d="M12 5v14M5 12h14"');
+  expect(svg).toMatch(/stroke="#[0-9a-f]{3,8}"/i);
+  // (the simulator drops the aria attributes: checked on the template)
+  expect(quadrantTaskBoard.template).toContain(
+    `role="{{panel.kind === 'delete' ? 'alertdialog' : 'dialog'}}"`,
+  );
+  expect(quadrantTaskBoard.template).toContain(
+    'aria-checked="{{item.checked}}"',
+  );
+  expect(quadrantTaskBoard.template).toContain('focus="{{panelFocus}}"');
+  expect(quadrantTaskBoard.template).not.toMatch(/mn-modal|mn-confirm-dialog/);
+  expect(Object.keys(quadrantTaskBoardComponents)).toEqual([
+    "mn-quadrant-chart",
+    "mn-icon-button",
+    "mn-button",
+  ]);
+});
+
+it("quadrant task board adds a task in an inline panel below the headers, after save only", async () => {
+  const { board, changes } = mountBoard();
+  await tick();
+  const panel = () => board().querySelector(".mn-quadrant-task-board__panel");
+  expect(panel()).toBeFalsy();
 
   // Cancel leaves the data alone
   const adds = all(board(), ".mn-quadrant-task-board__add");
   expect(adds).toHaveLength(4);
   await tap(adds[1]);
   expect(board().data).toMatchObject({
-    draftOpen: true,
-    draftTitle: "Add task",
-    draftQuadrant: "topRight",
+    panel: { kind: "add", at: "headers", caret: "end", title: "Add task" },
+    panelFocus: true,
     canSave: false,
   });
+  // inline, right below the headers: no modal
+  const opened = panel()!;
+  expect(opened.dom!.className).toContain(
+    "mn-quadrant-task-board__panel--caret-end",
+  );
+  expect(opened.dom!.getAttribute("data-quadrant-task-panel")).toBe("add");
+  expect(
+    board().querySelector(".mn-quadrant-task-board__headers")!.dom!
+      .nextElementSibling,
+  ).toBe(opened.dom);
+  expect(board().querySelector(".mn-modal")).toBeFalsy();
+  expect(
+    opened.dom!.querySelector(".mn-quadrant-task-board__name"),
+  ).toBeTruthy();
+  expect(
+    (board().data.chips as { checked: boolean }[]).map((c) => c.checked),
+  ).toEqual([false, true, false, false]);
+  expect(
+    opened
+      .dom!.querySelector(".mn-quadrant-task-board__chip--checked")!
+      .getAttribute("data-corner"),
+  ).toBe("topRight");
   board()
     .querySelector(".mn-quadrant-task-board__name")!
-    .querySelector(".mn-input")!
     .dispatchEvent("input", { detail: { value: "Plan sprint" } });
   await tick();
   expect(board().data.canSave).toBe(true);
   await tap(board().querySelector(".mn-quadrant-task-board__cancel")!);
-  expect(board().data.draftOpen).toBe(false);
+  expect(board().data.panel).toBe(null);
+  expect(panel()).toBeFalsy();
   expect(changes).toEqual([]);
 
-  // Save appends the task in the chosen quadrant and selects it
-  await tap(all(board(), ".mn-quadrant-task-board__add")[1]);
-  expect(board().data.draftLabel).toBe("");
+  // Save appends the task in the picked quadrant and selects it
+  await tap(all(board(), ".mn-quadrant-task-board__add")[0]);
+  expect(board().data).toMatchObject({
+    panel: { kind: "add", caret: "start" },
+    draftLabel: "",
+  });
   board()
     .querySelector(".mn-quadrant-task-board__name")!
-    .querySelector(".mn-input")!
     .dispatchEvent("input", { detail: { value: "  Plan sprint " } });
   await tick();
+  all(board(), ".mn-quadrant-task-board__chip")[1].dispatchEvent("tap");
+  await tick();
+  expect(
+    (board().data.chips as { corner: string; checked: boolean }[]).find(
+      (chip) => chip.checked,
+    )?.corner,
+  ).toBe("topRight");
+  expect(
+    all(board(), ".mn-quadrant-task-board__chip")[1].dom!.className,
+  ).toContain("mn-quadrant-task-board__chip--checked");
   await tap(board().querySelector(".mn-quadrant-task-board__save")!);
   expect(changes).toHaveLength(1);
   const [added] = changes[0].slice(2);
@@ -124,13 +187,13 @@ it("quadrant task board shows the headers with counts and adds a task after save
   expect(added.x).toBeGreaterThan(5);
   expect(added.y).toBeGreaterThan(5);
   expect(board().data).toMatchObject({
-    draftOpen: false,
+    panel: null,
     active: { index: 2, label: "Plan sprint" },
   });
   expect(board().data.headers[1].count).toBe("1");
 });
 
-it("quadrant task board edits the selected task and keeps its other fields", async () => {
+it("quadrant task board edits the selected task in a panel below its actions", async () => {
   const { board, changes } = mountBoard();
   await tick();
   expect(board().querySelector(".mn-quadrant-task-board__actions")).toBeFalsy();
@@ -145,14 +208,19 @@ it("quadrant task board edits the selected task and keeps its other fields", asy
 
   await tap(board().querySelector(".mn-quadrant-task-board__edit")!);
   expect(board().data).toMatchObject({
-    draftOpen: true,
-    draftTitle: "Edit task",
+    panel: { kind: "edit", at: "actions", caret: "edit", title: "Edit task" },
     draftLabel: "Write spec",
-    draftQuadrant: "topLeft",
   });
+  const panel = board().querySelector(".mn-quadrant-task-board__panel")!;
+  expect(
+    board().querySelector(".mn-quadrant-task-board__actions")!.dom!
+      .nextElementSibling,
+  ).toBe(panel.dom);
+  expect(panel.dom!.className).toContain(
+    "mn-quadrant-task-board__panel--caret-edit",
+  );
   board()
     .querySelector(".mn-quadrant-task-board__name")!
-    .querySelector(".mn-input")!
     .dispatchEvent("input", { detail: { value: "Write the spec" } });
   await tick();
   await tap(board().querySelector(".mn-quadrant-task-board__save")!);
@@ -162,11 +230,8 @@ it("quadrant task board edits the selected task and keeps its other fields", asy
 
   // Changing the quadrant moves the task into it
   await tap(board().querySelector(".mn-quadrant-task-board__edit")!);
-  const quadrant = board().querySelector(".mn-quadrant-task-board__quadrant")!;
-  await tap(quadrant, ".mn-select-trigger");
-  quadrant.querySelectorAll(".mn-option")[3].dispatchEvent("tap");
+  all(board(), ".mn-quadrant-task-board__chip")[3].dispatchEvent("tap");
   await tick();
-  expect(board().data.draftQuadrant).toBe("bottomRight");
   await tap(board().querySelector(".mn-quadrant-task-board__save")!);
   const moved = changes[1][0];
   expect(moved).toMatchObject({
@@ -178,7 +243,7 @@ it("quadrant task board edits the selected task and keeps its other fields", asy
   expect(moved.y).toBeLessThan(5);
 });
 
-it("quadrant task board deletes the selected task after the danger confirmation", async () => {
+it("quadrant task board deletes the selected task after an inline danger confirmation", async () => {
   const { board, changes } = mountBoard();
   await tick();
   const chart = board().querySelector("#chart")!;
@@ -186,23 +251,43 @@ it("quadrant task board deletes the selected task after the danger confirmation"
   await tick();
   await tap(board().querySelector(".mn-quadrant-task-board__delete")!);
   expect(board().data).toMatchObject({
-    deleteOpen: true,
+    panel: { kind: "delete", at: "actions", caret: "delete" },
     deleteText: "“Inbox zero” will be removed from the board.",
   });
-  const confirm = board().querySelector(".mn-quadrant-task-board__confirm")!;
+  const panel = board().querySelector(".mn-quadrant-task-board__panel")!;
+  expect(panel.dom!.getAttribute("data-quadrant-task-panel")).toBe("delete");
+  expect(panel.dom!.className).toContain(
+    "mn-quadrant-task-board__panel--caret-delete",
+  );
+  expect(panel.dom!.querySelector(".mn-quadrant-task-board__name")).toBeFalsy();
   // Cancel keeps the task
-  await tap(confirm, ".mn-confirm-cancel");
-  expect(board().data.deleteOpen).toBe(false);
+  await tap(board().querySelector(".mn-quadrant-task-board__cancel")!);
+  expect(board().data.panel).toBe(null);
   expect(changes).toEqual([]);
 
   await tap(board().querySelector(".mn-quadrant-task-board__delete")!);
-  await tap(
-    board().querySelector(".mn-quadrant-task-board__confirm")!,
-    ".mn-confirm-accept",
-  );
+  const confirm = board().querySelector(".mn-quadrant-task-board__confirm")!;
+  expect(confirm.dom!.textContent).toContain("Delete");
+  await tap(confirm);
   expect(changes).toEqual([[TASKS[0]]]);
-  expect(board().data).toMatchObject({ deleteOpen: false, active: null });
+  expect(board().data).toMatchObject({ panel: null, active: null });
   expect(board().querySelector(".mn-quadrant-task-board__actions")).toBeFalsy();
+});
+
+it("quadrant task board opens one panel at a time", async () => {
+  const { board } = mountBoard();
+  await tick();
+  await tap(all(board(), ".mn-quadrant-task-board__add")[2]);
+  expect(board().data.panel).toMatchObject({ kind: "add", caret: "start" });
+  // a tap on a task closes it, like a press outside a popover
+  const chart = board().querySelector("#chart")!;
+  chart.querySelectorAll(".mn-chart-quadrant-point")[1].dispatchEvent("tap");
+  await tick();
+  expect(board().data.panel).toBe(null);
+  await tap(board().querySelector(".mn-quadrant-task-board__edit")!);
+  await tap(board().querySelector(".mn-quadrant-task-board__delete")!);
+  expect(board().data.panel).toMatchObject({ kind: "delete" });
+  expect(all(board(), ".mn-quadrant-task-board__panel")).toHaveLength(1);
 });
 
 it("quadrant task board moves a task with the chart's move to actions", async () => {

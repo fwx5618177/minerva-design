@@ -1,6 +1,7 @@
 import {
   useEffect,
   useId,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -43,6 +44,7 @@ import {
   quadrantPointName,
 } from "../engine/quadrant-keyboard";
 import { resolveLocale } from "../engine/locale";
+import { styleTooltip, themeTooltip } from "../engine/tooltip";
 import type {
   ChartAnnotation,
   ChartDragEvent,
@@ -318,6 +320,29 @@ const VISUALLY_HIDDEN: CSSProperties = {
   whiteSpace: "nowrap",
 };
 
+/** Data position of a dragged point, pushed to its info card on every move */
+interface CardPosition {
+  x: number;
+  y: number;
+}
+
+/** Minimal event emitter: the card subscribes, the drag handler emits */
+const createPositionEmitter = () => {
+  const listeners = new Set<(position: CardPosition) => void>();
+  return {
+    on(listener: (position: CardPosition) => void) {
+      listeners.add(listener);
+      return () => void listeners.delete(listener);
+    },
+    emit(position: CardPosition) {
+      listeners.forEach((listener) => listener(position));
+    },
+  };
+};
+
+/** Gap between a point and its info card */
+const CARD_GAP = 14;
+
 /** Header slot in the outer corner of a quadrant */
 const headerStyle = (corner: QuadrantCorner): CSSProperties => {
   const top = corner.startsWith("top");
@@ -406,6 +431,15 @@ export function QuadrantChart(props: QuadrantChartProps) {
     points: readonly QuadrantPoint[];
   } | null>(null);
   const layerRef = useRef<HTMLDivElement>(null);
+  // info card of the active point: placed on the DOM (and fed the drag
+  // positions through an emitter), so a drag renders no React per move
+  const cardRef = useRef<HTMLDivElement>(null);
+  const cardQuadrantRef = useRef<HTMLSpanElement>(null);
+  const cardSwatchRef = useRef<HTMLSpanElement>(null);
+  const cardThemed = useRef<number | null>(null);
+  const dragAt = useRef<CardPosition | null>(null);
+  const placeCard = useRef<() => void>(() => {});
+  const positions = useMemo(() => createPositionEmitter(), []);
   const hintId = useId();
   const texts = quadrantLabels(locale);
   const movable = !!onPointDrop && draggable !== false;
@@ -485,6 +519,9 @@ export function QuadrantChart(props: QuadrantChartProps) {
     engineOptions({ ...props, series: [] }),
     { focusedIndex: accessiblePoints ? focusedIndex : null },
   );
+  // the info card follows a dragged point and names it: no label pill
+  if (typeof options.interaction === "object")
+    options.interaction = { ...options.interaction, dragLabel: false };
   if (renderQuadrantHeader)
     // the React headers replace the drawn titles (the first four areas)
     options.annotations = options.annotations?.map((a, i) =>
@@ -566,7 +603,74 @@ export function QuadrantChart(props: QuadrantChartProps) {
   // nothing is attached to a point while it is dragged
   const activeIndex =
     dragging !== null ? null : (hovered ?? focusedIndex ?? selected);
-  const activePoint = activeIndex == null ? null : points[activeIndex];
+  // the info card: the dragged point (following it), else the focused or
+  // selected one while no point is hovered (the tooltip shows that one)
+  const cardIndex =
+    dragging !== null
+      ? dragging
+      : hovered === null && activeIndex != null && points[activeIndex]
+        ? activeIndex
+        : null;
+  const cardPoint = cardIndex === null ? null : (points[cardIndex] ?? null);
+
+  // after every render (new points, plot size, active point)
+  useLayoutEffect(() => {
+    placeCard.current = () => {
+      const el = cardRef.current;
+      // the overlay holding the card covers the plot area
+      const plot = el?.parentElement;
+      if (!el || !plot || !cardPoint || cardIndex === null) return;
+      // the colors of the theme, read again when another point shows it
+      if (cardThemed.current !== cardIndex) {
+        cardThemed.current = cardIndex;
+        themeTooltip(el, el);
+      }
+      const live = dragging !== null ? dragAt.current : null;
+      const at = live ?? cardPoint;
+      const fx = fraction(at.x, x0, x1);
+      const visualX = reverseX ? 1 - fx : fx;
+      const left = visualX * (parseFloat(plot.style.width) || plot.clientWidth);
+      const top =
+        (1 - fraction(at.y, y0, y1)) *
+        (parseFloat(plot.style.height) || plot.clientHeight);
+      // beside the dot (the lifted dot of a drag is larger), on the side
+      // with room
+      const gap = live ? CARD_GAP + 4 : CARD_GAP;
+      const side = visualX > 0.6 ? `calc(-100% - ${gap}px)` : `${gap}px`;
+      el.style.transform = `translate(${left}px, ${top}px) translate(${side}, -50%)`;
+      const corner = quadrantOf(geometry, at.x, at.y);
+      const name = quadrantName(corner);
+      const label = cardQuadrantRef.current;
+      if (label && label.textContent !== name) label.textContent = name;
+      if (cardSwatchRef.current)
+        cardSwatchRef.current.style.background =
+          cardPoint.color ??
+          quadrants?.[corner]?.color ??
+          DEFAULT_QUADRANT_COLORS[corner];
+    };
+    if (cardIndex === null) cardThemed.current = null;
+    placeCard.current();
+  });
+
+  // drag positions move the card directly, once per frame
+  useEffect(() => {
+    const win = typeof window === "undefined" ? null : window;
+    let frame = 0;
+    const off = positions.on((position) => {
+      dragAt.current = position;
+      if (!win?.requestAnimationFrame) return placeCard.current();
+      if (!frame)
+        frame = win.requestAnimationFrame(() => {
+          frame = 0;
+          placeCard.current();
+        });
+    });
+    return () => {
+      off();
+      if (frame) win?.cancelAnimationFrame(frame);
+    };
+  }, [positions]);
+
   const overlay = (plot: ChartRect) => {
     const xs = xSplit ?? (x0 + x1) / 2;
     const ys = ySplit ?? (y0 + y1) / 2;
@@ -674,58 +778,66 @@ export function QuadrantChart(props: QuadrantChartProps) {
           </>
         ) : null}
       </div>,
-      activePoint && hovered === null
-        ? (() => {
-            const [x0, x1] = xDomain ?? [0, 10];
-            const [y0, y1] = yDomain ?? [0, 10];
-            const corner = quadrantOf(geometry, activePoint.x, activePoint.y);
-            const x = fraction(activePoint.x, x0, x1);
-            const visualX = reverseX ? 1 - x : x;
-            return (
-              <div
-                key="point-card"
-                aria-hidden="true"
-                data-point-preview={activeIndex}
-                style={{
-                  position: "absolute",
-                  left: visualX * plot.width,
-                  top: (1 - fraction(activePoint.y, y0, y1)) * plot.height,
-                  transform:
-                    visualX > 0.6
-                      ? "translate(calc(-100% - 14px), -50%)"
-                      : "translate(14px, -50%)",
-                  pointerEvents: "none",
-                  zIndex: 3,
-                  maxWidth: 200,
-                  padding: "8px 12px",
-                  borderRadius: 10,
-                  border: "1px solid var(--border-color, #374151)",
-                  borderInlineStart: `3px solid ${activePoint.color ?? quadrants?.[corner]?.color ?? DEFAULT_QUADRANT_COLORS[corner]}`,
-                  background:
-                    "var(--surface-elevated-color, var(--bg-color, #18181b))",
-                  color: "var(--text-color, #f4f4f5)",
-                  boxShadow: "0 8px 24px rgb(0 0 0 / 18%)",
-                  fontSize: 12,
-                  lineHeight: 1.5,
-                }}
-              >
-                <strong
-                  style={{
-                    display: "block",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {activePoint.label}
-                </strong>
-                <span style={{ color: "var(--text-secondary-color, #9ca3af)" }}>
-                  {quadrantName(corner)}
-                </span>
-              </div>
-            );
-          })()
-        : null,
+      cardPoint ? (
+        <div
+          key="point-card"
+          ref={(el) => {
+            if (el && !el.dataset.styled) {
+              el.dataset.styled = "";
+              styleTooltip(el, {
+                zIndex: "3",
+                boxSizing: "border-box",
+                maxWidth: "220px",
+                padding: "8px 12px",
+                borderRadius: "10px",
+                fontSize: "12px",
+                lineHeight: "18px",
+              });
+              // the colors of the theme around it
+              themeTooltip(el, el);
+            }
+            cardRef.current = el;
+            // the overlay re-renders alone when the plot moves or resizes
+            if (el) placeCard.current();
+          }}
+          aria-hidden="true"
+          className="minerva-chart-quadrant-card"
+          data-point-preview={cardIndex}
+          data-dragging={dragging !== null ? "" : undefined}
+        >
+          <strong
+            style={{
+              display: "block",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              fontWeight: 600,
+            }}
+          >
+            {cardPoint.label}
+          </strong>
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              color: "var(--text-secondary-color, #6b7280)",
+              whiteSpace: "nowrap",
+            }}
+          >
+            <span
+              ref={cardSwatchRef}
+              style={{
+                flex: "none",
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+              }}
+            />
+            <span ref={cardQuadrantRef} />
+          </span>
+        </div>
+      ) : null,
     ];
   };
 
@@ -759,10 +871,17 @@ export function QuadrantChart(props: QuadrantChartProps) {
         setHovered(event?.items[0]?.index ?? null);
         props.onHover?.(event);
       }}
-      onDragStart={(event) => setDragging(event.item.index)}
-      onDragEnd={() => setDragging(null)}
+      onDragStart={(event) => {
+        dragAt.current = { x: event.x, y: event.y };
+        setDragging(event.item.index);
+      }}
+      onDragEnd={() => {
+        dragAt.current = null;
+        setDragging(null);
+      }}
       onDrag={(event) => {
         const index = event.item.index;
+        positions.emit({ x: event.x, y: event.y });
         if (points[index] && onPointDrag)
           onPointDrag(points[index], index, dropAt(event));
       }}

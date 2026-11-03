@@ -223,17 +223,17 @@ export const componentSsrCases: Array<[string, ReactElement]> = [
     />,
   ],
   [
-    "KanbanBoard",
-    <lib.KanbanBoard aria-label="Sprint" fill maxHeight={320}>
-      <lib.KanbanColumn title="To do" count={1} color="info">
+    "DashboardColumns",
+    <lib.DashboardColumns aria-label="Sprint" fill maxHeight={320}>
+      <lib.DashboardColumn title="To do" count={1} color="info">
         <div>Card</div>
-      </lib.KanbanColumn>
-      <lib.KanbanColumn title="Done" count={0} />
-    </lib.KanbanBoard>,
+      </lib.DashboardColumn>
+      <lib.DashboardColumn title="Done" count={0} />
+    </lib.DashboardColumns>,
   ],
   [
-    "KanbanColumn",
-    <lib.KanbanColumn
+    "DashboardColumn",
+    <lib.DashboardColumn
       title="Doing"
       count={2}
       color="#7c3aed"
@@ -243,17 +243,17 @@ export const componentSsrCases: Array<[string, ReactElement]> = [
     >
       <div>A</div>
       <div>B</div>
-    </lib.KanbanColumn>,
+    </lib.DashboardColumn>,
   ],
   [
-    "KanbanCard",
-    <lib.KanbanBoard aria-label="Sprint" draggable>
-      <lib.KanbanColumn title="To do" value="todo">
-        <lib.KanbanCard value="a" label="Write docs">
+    "DashboardCard",
+    <lib.DashboardColumns aria-label="Sprint" draggable>
+      <lib.DashboardColumn title="To do" value="todo">
+        <lib.DashboardCard value="a" label="Write docs">
           Write docs
-        </lib.KanbanCard>
-      </lib.KanbanColumn>
-    </lib.KanbanBoard>,
+        </lib.DashboardCard>
+      </lib.DashboardColumn>
+    </lib.DashboardColumns>,
   ],
   [
     "Modal",

@@ -438,6 +438,12 @@ export interface ChartInteractionOptions {
    * @default false
    */
   dropTargets?: boolean;
+  /**
+   * The label of a dragged point follows it in a pill; `false` leaves it
+   * out (a host showing its own card next to the point)
+   * @default true
+   */
+  dragLabel?: boolean;
 }
 
 /** Tooltip options */

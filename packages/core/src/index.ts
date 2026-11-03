@@ -21,7 +21,7 @@ export * from "./answer-sheet";
 export * from "./calendar-date";
 export * from "./number-input";
 export * from "./spacing";
-export * from "./kanban";
+export * from "./dashboard-columns";
 export * from "./virtual-range";
 export * from "./file-accept";
 export * from "./tag-separators";

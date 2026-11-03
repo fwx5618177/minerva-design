@@ -80,14 +80,16 @@ export interface NativeMediaPlayerInstance {
   /** Shows the captions of `tracks[index]` (-1: off) */
   chooseTrack(index: number): void;
 }
-/** Detail of kanban-board `cardmove` (toIndex counts cards without the moved one) */
-export interface NativeKanbanCardMove {
+/** Detail of dashboard-columns `cardmove` (toIndex counts cards without the moved one) */
+export interface NativeDashboardCardMove {
   cardKey: string;
   fromColumn: string;
   fromIndex: number;
   toColumn: string;
   toIndex: number;
 }
+/** @deprecated Use `NativeDashboardCardMove` (kanban-board was renamed dashboard-columns) */
+export type NativeKanbanCardMove = NativeDashboardCardMove;
 export interface AnswerSheetConfig {
   getItemLabel?: (
     item: {

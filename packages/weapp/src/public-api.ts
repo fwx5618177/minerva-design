@@ -583,11 +583,11 @@ const events: Record<string, Event[]> = {
       "The user chose captions in the CC row (index -1 and track null: Off).",
     ),
   ],
-  kanbanBoard: [
+  dashboardColumns: [
     event(
       "cardmove",
       "{ cardKey: string; fromColumn: string; fromIndex: number; toColumn: string; toIndex: number }",
-      "A draggable board dropped a kanban-card (long press, then move); toIndex counts the target column's cards without the moved one. Dropping in place emits nothing; the board stays controlled.",
+      "A draggable board dropped a dashboard-card (long press, then move); toIndex counts the target column's cards without the moved one. Dropping in place emits nothing; the board stays controlled.",
     ),
   ],
   pagination: [

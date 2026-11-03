@@ -43,6 +43,17 @@ const dual = (base, types = base) => ({
   require: { types: `./dist/${types}.d.cts`, default: `./dist/${base}.cjs` },
 });
 
+/**
+ * Deprecated `./uni/<old>.vue` subpaths kept after a rename (old name ->
+ * current SFC); the old names are also exported by the uni entry.
+ */
+export const DEPRECATED_UNI_SFCS = {
+  // KanbanBoard was renamed DashboardColumns
+  KanbanBoard: "DashboardColumns",
+  KanbanCard: "DashboardCard",
+  KanbanColumn: "DashboardColumn",
+};
+
 /** Entries with a `typesVersions` mapping (node10 type resolution) */
 export const DUAL_SUBPATHS = {
   utils: ["react/utils-entry"],
@@ -141,6 +152,12 @@ export function expectedExports() {
     exports[`./uni/${name}.vue`] = {
       types: `./dist/uni/${name}.vue.d.ts`,
       default: `./dist/uni/${name}.vue`,
+    };
+  // Deprecated subpaths of renamed SFCs, pointing at the new files
+  for (const [name, target] of Object.entries(DEPRECATED_UNI_SFCS))
+    exports[`./uni/${name}.vue`] = {
+      types: `./dist/uni/${target}.vue.d.ts`,
+      default: `./dist/uni/${target}.vue`,
     };
   exports["./weapp/types"] = { types: "./dist/weapp/types.d.ts" };
   exports["./taro/style.css"] = "./dist/taro/style.css";

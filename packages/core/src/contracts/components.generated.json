@@ -3279,6 +3279,202 @@
     }
   },
   {
+    "name": "DashboardCard",
+    "tag": "minerva-dashboard-card",
+    "docs": "dashboard-columns",
+    "descriptionKey": "docs.dashboard-columns.description",
+    "description": "Card of a dashboard column that a draggable board can move.",
+    "tracks": ["toB", "toC"],
+    "props": [
+      { "name": "value", "kind": "string", "required": true, "description": "Key of the card, reported as `cardKey` by a draggable board", "attribute": "value" },
+      { "name": "label", "kind": "string", "required": false, "description": "Name of the card in the drag announcements and, when draggable, its accessible name", "attribute": "label" },
+      { "name": "id", "kind": "string", "required": false, "description": "Id of the card", "only": "react" }
+    ],
+    "events": [],
+    "slots": [{ "name": "default", "description": "The content of the card" }],
+    "children": true,
+    "platforms": {
+      "react": { "status": "stable" },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnDashboardCard. Native standalone component/directive; see platform tests for validated scope." },
+      "native": { "status": "beta" },
+      "taro": {
+        "status": "beta",
+        "notes": "Board of status columns in a horizontal ScrollView (scrollX): equal-width columns (columnWidth), fill when they fit, gap, height/maxHeight with vertically scrolling column bodies, translated region label; columns with an accent dot (theme color or CSS color), title, count badge announced with the title, description, actions, role=list cards wrapped in listitems, translated or custom empty content and a footer. draggable boards move DashboardCard children of keyed columns (value) with a long press and drag: columns and cards measured with createSelectorQuery (DOM rects on H5), drop line, highlighted target column, floating copy, canDrop, onCardMove. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Drag and drop is touch only (no keyboard or screen-reader moves): offer your own move actions (menus, buttons) for accessibility. No auto-scroll near the edges: the board stops scrolling while a card is picked up, and the page may still scroll on hosts that cannot cancel touchmove. Cards are measured once when picked up. No scroll snapping on native hosts. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "dashboard-card: a role=listitem wrapper keyed by value with a label for the dragged copy; in a draggable board a long press picks it up (bindlongpress), a capture-phase touchmove moves the copy and touchend drops it. Beta: needs device validation. Touch only; the floating copy shows the label text, not the card's content; interactive slotted content inside a draggable card can also start a drag on long press. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "Card of a DashboardColumn (role=listitem) keyed by value; in a draggable board a long press picks it up and a copy showing its label follows the finger. Touch only; the floating copy shows the label text, not the card's content. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      }
+    }
+  },
+  {
+    "name": "DashboardColumn",
+    "tag": "minerva-dashboard-column",
+    "docs": "dashboard-columns",
+    "descriptionKey": "docs.dashboard-columns.description",
+    "description": "Status column of a DashboardColumns: header, count, cards and footer.",
+    "tracks": ["toB", "toC"],
+    "props": [
+      { "name": "title", "kind": "node", "required": true, "description": "Title of the column (also its accessible name)", "only": "react" },
+      {
+        "name": "value",
+        "kind": "string",
+        "required": false,
+        "description": "Key of the column, reported as `fromColumn` / `toColumn` by a draggable board (columns without one take no cards)",
+        "attribute": "value"
+      },
+      {
+        "name": "count",
+        "kind": "number",
+        "required": false,
+        "description": "Number of items shown as a badge next to the title (and announced with the title); omit to hide the badge",
+        "attribute": "count"
+      },
+      { "name": "color", "kind": "union", "required": false, "description": "Accent of the column (a dot before the title): a theme color or any CSS color", "attribute": "color" },
+      { "name": "description", "kind": "node", "required": false, "description": "Supporting text under the header", "attribute": "description" },
+      { "name": "actions", "kind": "node", "required": false, "description": "Header controls on the end side (e.g. an add button)", "only": "react" },
+      { "name": "empty", "kind": "node", "required": false, "description": "Content shown when the column has no cards", "only": "react" },
+      { "name": "footer", "kind": "node", "required": false, "description": "Footer below the cards (e.g. an \"Add card\" button)", "only": "react" },
+      { "name": "aria-label", "kind": "string", "required": false, "description": "Accessible name of the column", "only": "react" },
+      { "name": "id", "kind": "string", "required": false, "description": "Id of the column", "only": "react" },
+      {
+        "name": "heading",
+        "kind": "string",
+        "default": "",
+        "required": false,
+        "description": "Title of the column (also its accessible name; or use the `heading` slot)",
+        "attribute": "heading",
+        "only": "wc"
+      },
+      {
+        "name": "emptyText",
+        "kind": "string",
+        "required": false,
+        "description": "Text shown when there are no cards (default: localized \"No items\"; or use the `empty` slot)",
+        "attribute": "empty-text",
+        "only": "wc"
+      }
+    ],
+    "events": [],
+    "slots": [
+      { "name": "default", "description": "The cards (each gets `role=\"listitem\"` unless it has a role)" },
+      { "name": "heading", "description": "Rich title (alternative to the `heading` attribute)" },
+      { "name": "actions", "description": "Header controls on the end side (e.g. an add button)" },
+      { "name": "description", "description": "Supporting text (alternative to the `description` attribute)" },
+      { "name": "empty", "description": "Content shown when there are no cards (default: `empty-text`, else localized \"No items\")" },
+      { "name": "footer", "description": "Footer below the cards (e.g. an \"Add card\" button)" }
+    ],
+    "children": true,
+    "platforms": {
+      "react": { "status": "stable" },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnDashboardColumn. Native standalone component/directive; see platform tests for validated scope." },
+      "native": { "status": "beta" },
+      "taro": {
+        "status": "beta",
+        "notes": "Board of status columns in a horizontal ScrollView (scrollX): equal-width columns (columnWidth), fill when they fit, gap, height/maxHeight with vertically scrolling column bodies, translated region label; columns with an accent dot (theme color or CSS color), title, count badge announced with the title, description, actions, role=list cards wrapped in listitems, translated or custom empty content and a footer. draggable boards move DashboardCard children of keyed columns (value) with a long press and drag: columns and cards measured with createSelectorQuery (DOM rects on H5), drop line, highlighted target column, floating copy, canDrop, onCardMove. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Drag and drop is touch only (no keyboard or screen-reader moves): offer your own move actions (menus, buttons) for accessibility. No auto-scroll near the edges: the board stops scrolling while a card is picked up, and the page may still scroll on hosts that cannot cancel touchmove. Cards are measured once when picked up. No scroll snapping on native hosts. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "Status column: accent dot (theme or CSS color), title (property or title slot), count badge announced with the title, description, actions/footer slots, role=list body and translated or custom empty text; value keys it for dragging and drop-disabled refuses dropped cards (the drop target gets an outline). Slots cannot be inspected: the empty text shows when count is 0, and each card should carry role=listitem (dashboard-card does). Empty actions/footer slots keep their (collapsed) wrappers. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "Status column: accent dot (theme or CSS color), title (prop or slot), count badge announced with the title, description, actions slot, role=list body, translated or custom empty content and a footer slot. Mini-program slots cannot be wrapped card by card: use DashboardCard or give each card role=listitem. The empty content shows without a default slot or with count 0. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      }
+    }
+  },
+  {
+    "name": "DashboardColumns",
+    "tag": "minerva-dashboard-columns",
+    "docs": "dashboard-columns",
+    "descriptionKey": "docs.dashboard-columns.description",
+    "description": "Horizontally scrolling board of status columns.",
+    "tracks": ["toB", "toC"],
+    "props": [
+      {
+        "name": "columnWidth",
+        "kind": "union",
+        "default": "18rem",
+        "required": false,
+        "description": "Width of every column (a number is pixels). With `fill` it is the minimum width: columns stretch equally when they fit",
+        "attribute": "column-width"
+      },
+      {
+        "name": "fill",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "Stretches the columns equally to fill the board when they fit (they keep `columnWidth` as their minimum width and scroll otherwise)",
+        "attribute": "fill"
+      },
+      { "name": "gap", "kind": "union", "default": "0.75rem", "required": false, "description": "Space between the columns (a number is pixels)", "attribute": "gap" },
+      { "name": "height", "kind": "union", "required": false, "description": "Height of the board: the column bodies scroll vertically within it (a number is pixels)", "attribute": "height" },
+      {
+        "name": "maxHeight",
+        "kind": "union",
+        "required": false,
+        "description": "Maximum height of the board: the column bodies scroll vertically within it (a number is pixels)",
+        "attribute": "max-height"
+      },
+      {
+        "name": "draggable",
+        "kind": "boolean",
+        "default": false,
+        "required": false,
+        "description": "Lets the DashboardCard children of keyed columns (`value`) be dragged between and within columns: with the mouse, a long press on touch screens, or the keyboard (Space / Enter picks a focused card up, the arrows move it, Space / Enter drops it, Escape cancels). The board is controlled: it reports the move (`onCardMove`) and the app moves the card in its data.",
+        "attribute": "draggable"
+      },
+      {
+        "name": "canDrop",
+        "kind": "function",
+        "required": false,
+        "description": "Whether a card may be dropped at a position: refused positions show no drop indicator and the keyboard skips them (its original position is always allowed)"
+      },
+      { "name": "aria-label", "kind": "string", "required": false, "description": "Accessible name of the board region", "only": "react" },
+      { "name": "aria-labelledby", "kind": "string", "required": false, "description": "Id of an element naming the board (instead of aria-label)", "only": "react" },
+      { "name": "id", "kind": "string", "required": false, "description": "Id of the board", "only": "react" }
+    ],
+    "events": [
+      {
+        "name": "minerva-card-move",
+        "wc": "minerva-card-move",
+        "detail": ["cardKey", "fromColumn", "fromIndex", "toColumn", "toIndex"],
+        "description": "A card was dropped at a new position; `detail: { cardKey, fromColumn, fromIndex, toColumn, toIndex }` (`toIndex` counts the cards without the moved one)",
+        "react": "onCardMove",
+        "native": "onCardMove"
+      }
+    ],
+    "slots": [{ "name": "default", "description": "The columns (`minerva-dashboard-column`)" }],
+    "children": true,
+    "platforms": {
+      "react": { "status": "stable" },
+      "wc": { "status": "stable" },
+      "vue": { "status": "beta" },
+      "angular": { "status": "beta", "notes": "Native Angular: MnDashboardColumns. Native standalone component/directive; see platform tests for validated scope." },
+      "native": { "status": "beta" },
+      "taro": {
+        "status": "beta",
+        "notes": "Board of status columns in a horizontal ScrollView (scrollX): equal-width columns (columnWidth), fill when they fit, gap, height/maxHeight with vertically scrolling column bodies, translated region label; columns with an accent dot (theme color or CSS color), title, count badge announced with the title, description, actions, role=list cards wrapped in listitems, translated or custom empty content and a footer. draggable boards move DashboardCard children of keyed columns (value) with a long press and drag: columns and cards measured with createSelectorQuery (DOM rects on H5), drop line, highlighted target column, floating copy, canDrop, onCardMove. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Drag and drop is touch only (no keyboard or screen-reader moves): offer your own move actions (menus, buttons) for accessibility. No auto-scroll near the edges: the board stops scrolling while a card is picked up, and the page may still scroll on hosts that cannot cancel touchmove. Cards are measured once when picked up. No scroll snapping on native hosts. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "weapp": {
+        "status": "beta",
+        "notes": "Region around a scroll-view scroll-x of equal-width status columns: columnWidth, gap, height/maxHeight with vertically scrolling column bodies and a translated label. draggable boards move dashboard-card components between keyed columns (value): board, columns and cards find each other through relations (linked / unlinked), a long press picks a card up, every column and card root is measured with its own createSelectorQuery boundingClientRect, the shared core functions hit-test the finger, a fixed copy showing the card label follows it, a drop line and the target column outline show the position, and the controlled board fires cardmove { cardKey, fromColumn, fromIndex, toColumn, toIndex } (toIndex counts the cards without the moved one; dropping in place fires nothing). DashboardColumn drop-disabled replaces the canDrop function, which WXML properties cannot carry. Beta: drag and drop needs device validation. Touch only (no keyboard dragging and no live-region announcements); the floating copy shows the label text, not the card's content; positions are measured once at pick-up (no auto-scroll while dragging, and the board or a column must not scroll during the drag); scrolling under the finger is stopped by a data-bound catchtouchmove on the picked-up card. No canDrop function: drop-disabled refuses a whole column. No scroll snapping, and fill does not stretch the columns (each column component host is the flex item); device geometry still requires validation. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "uni": {
+        "status": "beta",
+        "notes": "Board of status columns in a scroll-view scroll-x: equal-width columns (columnWidth), fill when they fit, gap, height/maxHeight with vertically scrolling column bodies and a translated region label. draggable boards move the DashboardCard children of keyed columns (value) with a long press and drag (cards and columns measure themselves when a card is picked up), with a drop line, a highlighted target column, canDrop and a card-move event. Drag and drop is touch only (no keyboard or screen-reader moves): offer your own move actions for accessibility. The floating copy shows the card's label (slots cannot be duplicated), there is no auto-scroll near the edges and the page may still scroll on hosts that cannot cancel touchmove. No scroll snapping; device geometry still requires validation. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      }
+    }
+  },
+  {
     "name": "DataTable",
     "tag": "minerva-data-table",
     "docs": "table",
@@ -6459,202 +6655,6 @@
       "uni": {
         "status": "beta",
         "notes": "Raw string controlled/default models including invalid drafts; localized blur validation, toolbar and format action, jsonc lexeme-preserving indentation/compact formatting, inherited field props, rows and textarea appearance. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
-      }
-    }
-  },
-  {
-    "name": "KanbanBoard",
-    "tag": "minerva-kanban-board",
-    "docs": "kanban-board",
-    "descriptionKey": "docs.kanban-board.description",
-    "description": "Horizontally scrolling board of status columns.",
-    "tracks": ["toB", "toC"],
-    "props": [
-      {
-        "name": "columnWidth",
-        "kind": "union",
-        "default": "18rem",
-        "required": false,
-        "description": "Width of every column (a number is pixels). With `fill` it is the minimum width: columns stretch equally when they fit",
-        "attribute": "column-width"
-      },
-      {
-        "name": "fill",
-        "kind": "boolean",
-        "default": false,
-        "required": false,
-        "description": "Stretches the columns equally to fill the board when they fit (they keep `columnWidth` as their minimum width and scroll otherwise)",
-        "attribute": "fill"
-      },
-      { "name": "gap", "kind": "union", "default": "0.75rem", "required": false, "description": "Space between the columns (a number is pixels)", "attribute": "gap" },
-      { "name": "height", "kind": "union", "required": false, "description": "Height of the board: the column bodies scroll vertically within it (a number is pixels)", "attribute": "height" },
-      {
-        "name": "maxHeight",
-        "kind": "union",
-        "required": false,
-        "description": "Maximum height of the board: the column bodies scroll vertically within it (a number is pixels)",
-        "attribute": "max-height"
-      },
-      {
-        "name": "draggable",
-        "kind": "boolean",
-        "default": false,
-        "required": false,
-        "description": "Lets the KanbanCard children of keyed columns (`value`) be dragged between and within columns: with the mouse, a long press on touch screens, or the keyboard (Space / Enter picks a focused card up, the arrows move it, Space / Enter drops it, Escape cancels). The board is controlled: it reports the move (`onCardMove`) and the app moves the card in its data.",
-        "attribute": "draggable"
-      },
-      {
-        "name": "canDrop",
-        "kind": "function",
-        "required": false,
-        "description": "Whether a card may be dropped at a position: refused positions show no drop indicator and the keyboard skips them (its original position is always allowed)"
-      },
-      { "name": "aria-label", "kind": "string", "required": false, "description": "Accessible name of the board region", "only": "react" },
-      { "name": "aria-labelledby", "kind": "string", "required": false, "description": "Id of an element naming the board (instead of aria-label)", "only": "react" },
-      { "name": "id", "kind": "string", "required": false, "description": "Id of the board", "only": "react" }
-    ],
-    "events": [
-      {
-        "name": "minerva-card-move",
-        "wc": "minerva-card-move",
-        "detail": ["cardKey", "fromColumn", "fromIndex", "toColumn", "toIndex"],
-        "description": "A card was dropped at a new position; `detail: { cardKey, fromColumn, fromIndex, toColumn, toIndex }` (`toIndex` counts the cards without the moved one)",
-        "react": "onCardMove",
-        "native": "onCardMove"
-      }
-    ],
-    "slots": [{ "name": "default", "description": "The columns (`minerva-kanban-column`)" }],
-    "children": true,
-    "platforms": {
-      "react": { "status": "stable" },
-      "wc": { "status": "stable" },
-      "vue": { "status": "beta" },
-      "angular": { "status": "beta", "notes": "Native Angular: MnKanbanBoard. Native standalone component/directive; see platform tests for validated scope." },
-      "native": { "status": "beta" },
-      "taro": {
-        "status": "beta",
-        "notes": "Board of status columns in a horizontal ScrollView (scrollX): equal-width columns (columnWidth), fill when they fit, gap, height/maxHeight with vertically scrolling column bodies, translated region label; columns with an accent dot (theme color or CSS color), title, count badge announced with the title, description, actions, role=list cards wrapped in listitems, translated or custom empty content and a footer. draggable boards move KanbanCard children of keyed columns (value) with a long press and drag: columns and cards measured with createSelectorQuery (DOM rects on H5), drop line, highlighted target column, floating copy, canDrop, onCardMove. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Drag and drop is touch only (no keyboard or screen-reader moves): offer your own move actions (menus, buttons) for accessibility. No auto-scroll near the edges: the board stops scrolling while a card is picked up, and the page may still scroll on hosts that cannot cancel touchmove. Cards are measured once when picked up. No scroll snapping on native hosts. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
-      },
-      "weapp": {
-        "status": "beta",
-        "notes": "Region around a scroll-view scroll-x of equal-width status columns: columnWidth, gap, height/maxHeight with vertically scrolling column bodies and a translated label. draggable boards move kanban-card components between keyed columns (value): board, columns and cards find each other through relations (linked / unlinked), a long press picks a card up, every column and card root is measured with its own createSelectorQuery boundingClientRect, the shared core functions hit-test the finger, a fixed copy showing the card label follows it, a drop line and the target column outline show the position, and the controlled board fires cardmove { cardKey, fromColumn, fromIndex, toColumn, toIndex } (toIndex counts the cards without the moved one; dropping in place fires nothing). KanbanColumn drop-disabled replaces the canDrop function, which WXML properties cannot carry. Beta: drag and drop needs device validation. Touch only (no keyboard dragging and no live-region announcements); the floating copy shows the label text, not the card's content; positions are measured once at pick-up (no auto-scroll while dragging, and the board or a column must not scroll during the drag); scrolling under the finger is stopped by a data-bound catchtouchmove on the picked-up card. No canDrop function: drop-disabled refuses a whole column. No scroll snapping, and fill does not stretch the columns (each column component host is the flex item); device geometry still requires validation. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
-      },
-      "uni": {
-        "status": "beta",
-        "notes": "Board of status columns in a scroll-view scroll-x: equal-width columns (columnWidth), fill when they fit, gap, height/maxHeight with vertically scrolling column bodies and a translated region label. draggable boards move the KanbanCard children of keyed columns (value) with a long press and drag (cards and columns measure themselves when a card is picked up), with a drop line, a highlighted target column, canDrop and a card-move event. Drag and drop is touch only (no keyboard or screen-reader moves): offer your own move actions for accessibility. The floating copy shows the card's label (slots cannot be duplicated), there is no auto-scroll near the edges and the page may still scroll on hosts that cannot cancel touchmove. No scroll snapping; device geometry still requires validation. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
-      }
-    }
-  },
-  {
-    "name": "KanbanCard",
-    "tag": "minerva-kanban-card",
-    "docs": "kanban-board",
-    "descriptionKey": "docs.kanban-board.description",
-    "description": "Card of a kanban column that a draggable board can move.",
-    "tracks": ["toB", "toC"],
-    "props": [
-      { "name": "value", "kind": "string", "required": true, "description": "Key of the card, reported as `cardKey` by a draggable board", "attribute": "value" },
-      { "name": "label", "kind": "string", "required": false, "description": "Name of the card in the drag announcements and, when draggable, its accessible name", "attribute": "label" },
-      { "name": "id", "kind": "string", "required": false, "description": "Id of the card", "only": "react" }
-    ],
-    "events": [],
-    "slots": [{ "name": "default", "description": "The content of the card" }],
-    "children": true,
-    "platforms": {
-      "react": { "status": "stable" },
-      "wc": { "status": "stable" },
-      "vue": { "status": "beta" },
-      "angular": { "status": "beta", "notes": "Native Angular: MnKanbanCard. Native standalone component/directive; see platform tests for validated scope." },
-      "native": { "status": "beta" },
-      "taro": {
-        "status": "beta",
-        "notes": "Board of status columns in a horizontal ScrollView (scrollX): equal-width columns (columnWidth), fill when they fit, gap, height/maxHeight with vertically scrolling column bodies, translated region label; columns with an accent dot (theme color or CSS color), title, count badge announced with the title, description, actions, role=list cards wrapped in listitems, translated or custom empty content and a footer. draggable boards move KanbanCard children of keyed columns (value) with a long press and drag: columns and cards measured with createSelectorQuery (DOM rects on H5), drop line, highlighted target column, floating copy, canDrop, onCardMove. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Drag and drop is touch only (no keyboard or screen-reader moves): offer your own move actions (menus, buttons) for accessibility. No auto-scroll near the edges: the board stops scrolling while a card is picked up, and the page may still scroll on hosts that cannot cancel touchmove. Cards are measured once when picked up. No scroll snapping on native hosts. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
-      },
-      "weapp": {
-        "status": "beta",
-        "notes": "kanban-card: a role=listitem wrapper keyed by value with a label for the dragged copy; in a draggable board a long press picks it up (bindlongpress), a capture-phase touchmove moves the copy and touchend drops it. Beta: needs device validation. Touch only; the floating copy shows the label text, not the card's content; interactive slotted content inside a draggable card can also start a drag on long press. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
-      },
-      "uni": {
-        "status": "beta",
-        "notes": "Card of a KanbanColumn (role=listitem) keyed by value; in a draggable board a long press picks it up and a copy showing its label follows the finger. Touch only; the floating copy shows the label text, not the card's content. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
-      }
-    }
-  },
-  {
-    "name": "KanbanColumn",
-    "tag": "minerva-kanban-column",
-    "docs": "kanban-board",
-    "descriptionKey": "docs.kanban-board.description",
-    "description": "Status column of a kanban board: header, count, cards and footer.",
-    "tracks": ["toB", "toC"],
-    "props": [
-      { "name": "title", "kind": "node", "required": true, "description": "Title of the column (also its accessible name)", "only": "react" },
-      {
-        "name": "value",
-        "kind": "string",
-        "required": false,
-        "description": "Key of the column, reported as `fromColumn` / `toColumn` by a draggable board (columns without one take no cards)",
-        "attribute": "value"
-      },
-      {
-        "name": "count",
-        "kind": "number",
-        "required": false,
-        "description": "Number of items shown as a badge next to the title (and announced with the title); omit to hide the badge",
-        "attribute": "count"
-      },
-      { "name": "color", "kind": "union", "required": false, "description": "Accent of the column (a dot before the title): a theme color or any CSS color", "attribute": "color" },
-      { "name": "description", "kind": "node", "required": false, "description": "Supporting text under the header", "attribute": "description" },
-      { "name": "actions", "kind": "node", "required": false, "description": "Header controls on the end side (e.g. an add button)", "only": "react" },
-      { "name": "empty", "kind": "node", "required": false, "description": "Content shown when the column has no cards", "only": "react" },
-      { "name": "footer", "kind": "node", "required": false, "description": "Footer below the cards (e.g. an \"Add card\" button)", "only": "react" },
-      { "name": "aria-label", "kind": "string", "required": false, "description": "Accessible name of the column", "only": "react" },
-      { "name": "id", "kind": "string", "required": false, "description": "Id of the column", "only": "react" },
-      {
-        "name": "heading",
-        "kind": "string",
-        "default": "",
-        "required": false,
-        "description": "Title of the column (also its accessible name; or use the `heading` slot)",
-        "attribute": "heading",
-        "only": "wc"
-      },
-      {
-        "name": "emptyText",
-        "kind": "string",
-        "required": false,
-        "description": "Text shown when there are no cards (default: localized \"No items\"; or use the `empty` slot)",
-        "attribute": "empty-text",
-        "only": "wc"
-      }
-    ],
-    "events": [],
-    "slots": [
-      { "name": "default", "description": "The cards (each gets `role=\"listitem\"` unless it has a role)" },
-      { "name": "heading", "description": "Rich title (alternative to the `heading` attribute)" },
-      { "name": "actions", "description": "Header controls on the end side (e.g. an add button)" },
-      { "name": "description", "description": "Supporting text (alternative to the `description` attribute)" },
-      { "name": "empty", "description": "Content shown when there are no cards (default: `empty-text`, else localized \"No items\")" },
-      { "name": "footer", "description": "Footer below the cards (e.g. an \"Add card\" button)" }
-    ],
-    "children": true,
-    "platforms": {
-      "react": { "status": "stable" },
-      "wc": { "status": "stable" },
-      "vue": { "status": "beta" },
-      "angular": { "status": "beta", "notes": "Native Angular: MnKanbanColumn. Native standalone component/directive; see platform tests for validated scope." },
-      "native": { "status": "beta" },
-      "taro": {
-        "status": "beta",
-        "notes": "Board of status columns in a horizontal ScrollView (scrollX): equal-width columns (columnWidth), fill when they fit, gap, height/maxHeight with vertically scrolling column bodies, translated region label; columns with an accent dot (theme color or CSS color), title, count badge announced with the title, description, actions, role=list cards wrapped in listitems, translated or custom empty content and a footer. draggable boards move KanbanCard children of keyed columns (value) with a long press and drag: columns and cards measured with createSelectorQuery (DOM rects on H5), drop line, highlighted target column, floating copy, canDrop, onCardMove. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Drag and drop is touch only (no keyboard or screen-reader moves): offer your own move actions (menus, buttons) for accessibility. No auto-scroll near the edges: the board stops scrolling while a card is picked up, and the page may still scroll on hosts that cannot cancel touchmove. Cards are measured once when picked up. No scroll snapping on native hosts. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
-      },
-      "weapp": {
-        "status": "beta",
-        "notes": "Status column: accent dot (theme or CSS color), title (property or title slot), count badge announced with the title, description, actions/footer slots, role=list body and translated or custom empty text; value keys it for dragging and drop-disabled refuses dropped cards (the drop target gets an outline). Slots cannot be inspected: the empty text shows when count is 0, and each card should carry role=listitem (kanban-card does). Empty actions/footer slots keep their (collapsed) wrappers. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
-      },
-      "uni": {
-        "status": "beta",
-        "notes": "Status column: accent dot (theme or CSS color), title (prop or slot), count badge announced with the title, description, actions slot, role=list body, translated or custom empty content and a footer slot. Mini-program slots cannot be wrapped card by card: use KanbanCard or give each card role=listitem. The empty content shows without a default slot or with count 0. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       }
     }
   },
@@ -10066,7 +10066,7 @@
     "description": "Four-quadrant task board: add, edit, delete and drag tasks between quadrants.",
     "tracks": ["toB", "toC"],
     "props": [
-      { "name": "labels", "kind": "object", "required": false, "description": "Texts of the buttons and dialogs (localized by default)" },
+      { "name": "labels", "kind": "object", "required": false, "description": "Texts of the buttons and panels (localized by default)" },
       { "name": "draggable", "kind": "boolean", "required": false, "description": "Lets the user drag the dots (`drag` / `drop` events)", "only": "react" },
       { "name": "tooltip", "kind": "union", "required": false, "description": "Tooltip; `false` disables it", "only": "react" },
       { "name": "name", "kind": "string", "required": false, "description": "Name of the points in the tooltip", "only": "react" },
@@ -10219,19 +10219,19 @@
       "angular": { "status": "beta", "notes": "Native Angular: MnQuadrantTaskBoard. Native standalone component/directive; see platform tests for validated scope." },
       "native": {
         "status": "beta",
-        "notes": "On the native QuadrantChart (views, no SVG): add button in each quadrant header, edit / delete toolbar next to the selected (tapped) task, add / edit Dialog with a name field and a quadrant RadioGroup, ConfirmDialog before a delete; moves by dragging a dot or the screen-reader \"Move to\" actions. No double tap to edit (use the toolbar)"
+        "notes": "On the native QuadrantChart (views, no SVG): add button in each quadrant header, edit / delete toolbar next to the selected (tapped) task, an inline panel anchored in the board (at the + button or the task) with a name field and a 2 x 2 quadrant radio grid, and an inline confirmation before a delete (a press outside or Android back closes it); moves by dragging a dot or the screen-reader \"Move to\" actions. No double tap to edit (use the toolbar)"
       },
       "taro": {
         "status": "beta",
-        "notes": "Controlled task board on top of the Taro QuadrantChart (points in, onPointsChange out; every other QuadrantChart prop is forwarded, its chart `labels` excepted): a row of quadrant headers under the chart (badge, quadrant title, count unless showCounts={false}, + add button), an actions toolbar for the selected task (task name, Edit and Delete text buttons; selection is internal or the controlled selectedIndex), a Modal with a required name Input (the keyboard confirm key saves) and a RadioGroup quadrant picker with Cancel / Save (Save disabled until the name is not blank), a danger ConfirmDialog before a delete, tapping an empty quadrant area to add a task there, drag and drop of the dots and the chart's accessible \"move to\" actions. Add/edit/move/delete/selection logic and the localized texts (labels overrides) come from the shared minerva-design/charts quadrant task helpers. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Beta: needs device validation. No keyboard moves (Shift + arrow keys) or double-tap to edit: mini-program views take no focus and the chart has no double tap; use the Edit button and the move to actions. The actions toolbar sits under the chart instead of floating on the selected dot, and the quadrant headers are a row under the chart instead of over the quadrants. Buttons use text glyphs (+) and words instead of the web SVG icons (mini programs have no inline SVG). Input aria-label and the accessible point list are read on H5; native hosts expose aria-role/aria-label only where the host supports them. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Controlled task board on top of the Taro QuadrantChart (points in, onPointsChange out; every other QuadrantChart prop is forwarded, its chart `labels` excepted): a row of quadrant headers under the chart (badge, quadrant title, count unless showCounts={false}, plus-icon add button), an actions toolbar for the selected task (task name, Edit and Delete text buttons; selection is internal or the controlled selectedIndex), an inline panel opened under the headers or the actions toolbar (a caret points at its opener) with a required name Input (the keyboard confirm key saves) and a 2 x 2 quadrant radio grid with Cancel / Save (Save disabled until the name is not blank), an inline danger confirmation before a delete, tapping an empty quadrant area to add a task there, drag and drop of the dots and the chart's accessible \"move to\" actions. Add/edit/move/delete/selection logic and the localized texts (labels overrides) come from the shared minerva-design/charts quadrant task helpers. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Beta: needs device validation. No keyboard moves (Shift + arrow keys) or double-tap to edit: mini-program views take no focus and the chart has no double tap; use the Edit button and the move to actions. The actions toolbar sits under the chart instead of floating on the selected dot, and the quadrant headers are a row under the chart instead of over the quadrants. The add buttons draw the plus icon as an SVG data URI image; Edit and Delete are text buttons. Input aria-label and the accessible point list are read on H5; native hosts expose aria-role/aria-label only where the host supports them. Component tests, H5 Chromium tests and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       },
       "weapp": {
         "status": "beta",
-        "notes": "quadrant-task-board: controlled task board composing the native quadrant-chart, modal, input, select, button, icon-button and confirm-dialog components (usingComponents in its JSON). points in, pointschange { points } out; every quadrant-chart property is forwarded except the chart's own labels (labels are the board texts, partial overrides of the localized defaults). A 2 x 2 grid of quadrant headers above the chart (badge, title, count unless showCounts is false, + add button), a toolbar for the selected task (name, Edit and Delete buttons; selection is internal or the controlled selectedIndex), a modal with a name input (the keyboard confirm key saves) and a quadrant select with Cancel / Save (Save disabled while the name is blank), a danger confirm-dialog before a delete, tapping an empty quadrant area adds a task there, and draggable dots (default true) or the chart's accessible Move to buttons move a task. Add/edit/move/delete/selection logic and texts come from the shared minerva-design/charts quadrant task helpers. Chart methods (configure, resize, resetZoom, getView, setView, getPlotRect, toPixel, fromPixel) are forwarded to the inner chart; pointclick, pointdrag, hover, zoom and layout are re-emitted. Beta: needs device validation. The canvas has no view overlays: the quadrant headers are a grid above the chart (the chart still draws its own quadrant titles) and the actions toolbar sits under the chart instead of floating on the selected dot. No double-tap to edit and no keyboard moves (Shift + arrow keys): mini-program views take no focus; use the Edit button and the Move to actions. Buttons use text glyphs (+, ✎, ✕) instead of the web SVG icons. Layout styles are inline (no dedicated stylesheet yet). The inner components are in the board's shadow tree: the config-provider / theme-provider relation across that boundary (theme tokens and messages of the dialogs) needs device validation; the board's locale is forwarded to the chart explicitly. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+        "notes": "quadrant-task-board: controlled task board composing the native quadrant-chart, button and icon-button components (usingComponents in its JSON). points in, pointschange { points } out; every quadrant-chart property is forwarded except the chart's own labels (labels are the board texts, partial overrides of the localized defaults). A 2 x 2 grid of quadrant headers above the chart (badge, title, count unless showCounts is false, plus-icon add button), a toolbar for the selected task (name, Edit and Delete buttons; selection is internal or the controlled selectedIndex), an inline panel opened under the headers or the actions toolbar (a caret points at its opener) with a name input (the keyboard confirm key saves) and a 2 x 2 quadrant radio grid with Cancel / Save (Save disabled while the name is blank), an inline danger confirmation before a delete, tapping an empty quadrant area adds a task there, and draggable dots (default true) or the chart's accessible Move to buttons move a task. Add/edit/move/delete/selection logic and texts come from the shared minerva-design/charts quadrant task helpers. Chart methods (configure, resize, resetZoom, getView, setView, getPlotRect, toPixel, fromPixel) are forwarded to the inner chart; pointclick, pointdrag, hover, zoom and layout are re-emitted. Beta: needs device validation. The canvas has no view overlays: the quadrant headers are a grid above the chart (the chart still draws its own quadrant titles) and the actions toolbar sits under the chart instead of floating on the selected dot. No double-tap to edit and no keyboard moves (Shift + arrow keys): mini-program views take no focus; use the Edit button and the Move to actions. The add buttons draw the plus icon as an SVG data URI image; Edit and Delete keep text glyphs (✎, ✕). Layout styles are inline (no dedicated stylesheet yet). The inner components are in the board's shadow tree: the config-provider / theme-provider relation across that boundary (theme tokens and messages of the inline panel) needs device validation; the board's locale is forwarded to the chart explicitly. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
       },
       "uni": {
         "status": "beta",
-        "notes": "Controlled task board on top of the uni QuadrantChart (points in; update:points for v-model:points and pointsChange out; every other QuadrantChart prop is forwarded, the chart labels excepted; hover, pointClick and zoom are re-emitted and the chart handle is exposed): a row of quadrant headers under the chart (badge, quadrant title, count unless showCounts is false, + add button), an actions toolbar for the selected task (task name, Edit and Delete text buttons; selection is internal or the controlled selectedIndex), a Modal with a required name Input (the keyboard confirm key saves) and a RadioGroup quadrant picker with Cancel / Save (Save disabled until the name is not blank), a danger ConfirmDialog before a delete, tapping an empty quadrant area to add a task there, drag and drop of the dots and the chart's accessible move-to actions. Add/edit/move/delete/selection logic and the localized texts (labels overrides) come from the shared minerva-design/charts quadrant task helpers. No keyboard moves (Shift + arrow keys) or double-tap to edit: mini-program views take no focus and the chart has no double tap; use the Edit button and the move-to actions. The actions toolbar sits under the chart instead of floating on the selected dot, and the quadrant headers are a row under the chart instead of over the quadrants. Buttons use text glyphs (+) and words instead of the web SVG icons (mini programs have no inline SVG). Screen readers get aria-role / aria-label where the host supports them; device behavior still requires validation. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+        "notes": "Controlled task board on top of the uni QuadrantChart (points in; update:points for v-model:points and pointsChange out; every other QuadrantChart prop is forwarded, the chart labels excepted; hover, pointClick and zoom are re-emitted and the chart handle is exposed): a row of quadrant headers under the chart (badge, quadrant title, count unless showCounts is false, plus-icon add button), an actions toolbar for the selected task (task name, Edit and Delete text buttons; selection is internal or the controlled selectedIndex), an inline panel opened under the headers or the actions toolbar (a caret points at its opener) with a required name Input (the keyboard confirm key saves) and a 2 x 2 quadrant radio grid with Cancel / Save (Save disabled until the name is not blank), an inline danger confirmation before a delete, tapping an empty quadrant area to add a task there, drag and drop of the dots and the chart's accessible move-to actions. Add/edit/move/delete/selection logic and the localized texts (labels overrides) come from the shared minerva-design/charts quadrant task helpers. No keyboard moves (Shift + arrow keys) or double-tap to edit: mini-program views take no focus and the chart has no double tap; use the Edit button and the move-to actions. The actions toolbar sits under the chart instead of floating on the selected dot, and the quadrant headers are a row under the chart instead of over the quadrants. The add buttons draw the plus icon as an SVG data URI image; Edit and Delete are text buttons. Screen readers get aria-role / aria-label where the host supports them; device behavior still requires validation. Component tests, H5 Chromium tests and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
       }
     }
   },

@@ -67,6 +67,8 @@ export * from "./elements/virtual-list";
 export * from "./elements/week-strip";
 export * from "./elements/media-player";
 export * from "./elements/flashcard";
+export * from "./elements/dashboard-columns";
+/** @deprecated `<minerva-kanban-*>` tags and `MinervaKanban*` names */
 export * from "./elements/kanban-board";
 
 export { defineElement, type DefinableElement } from "./internal/define";

@@ -3282,6 +3282,52 @@
       }
     ]
   },
+  "css:DashboardColumns": {
+    "kind": "cssVars",
+    "source": "react/src/components/DashboardColumns",
+    "vars": [
+      {
+        "name": "--dashboard-column-width",
+        "description": "Width of the columns (defaults to 18rem; the columnWidth prop sets it; with fill it is the minimum width)"
+      },
+      {
+        "name": "--dashboard-gap",
+        "description": "Space between the columns (defaults to 0.75rem; the gap prop sets it)"
+      },
+      {
+        "name": "--dashboard-column-background",
+        "description": "Background of a column (defaults to --surface-muted-color)"
+      },
+      {
+        "name": "--dashboard-column-border-color",
+        "description": "Border color of a column (defaults to --border-color)"
+      },
+      {
+        "name": "--dashboard-column-radius",
+        "description": "Corner radius of a column (defaults to --radius-lg)"
+      },
+      {
+        "name": "--dashboard-column-color",
+        "description": "Accent of a column: the dot before the title (the color prop sets it for a custom CSS color)"
+      },
+      {
+        "name": "--dashboard-card-gap",
+        "description": "Space between the cards of a column (defaults to --space-2)"
+      },
+      {
+        "name": "--dashboard-count-background",
+        "description": "Background of the count badge (defaults to --surface-color)"
+      },
+      {
+        "name": "--dashboard-count-color",
+        "description": "Text color of the count badge (defaults to --text-secondary-color)"
+      },
+      {
+        "name": "--dashboard-drop-indicator-color",
+        "description": "Color of the drop line and of the column a dragged card would land in (defaults to --primary-color)"
+      }
+    ]
+  },
   "css:DatePicker": {
     "kind": "cssVars",
     "source": "react/src/components/DatePicker",
@@ -3655,52 +3701,6 @@
       {
         "name": "--json-field-status-font-size",
         "description": "Font size of the validation status line"
-      }
-    ]
-  },
-  "css:KanbanBoard": {
-    "kind": "cssVars",
-    "source": "react/src/components/KanbanBoard",
-    "vars": [
-      {
-        "name": "--kanban-column-width",
-        "description": "Width of the columns (defaults to 18rem; the columnWidth prop sets it; with fill it is the minimum width)"
-      },
-      {
-        "name": "--kanban-gap",
-        "description": "Space between the columns (defaults to 0.75rem; the gap prop sets it)"
-      },
-      {
-        "name": "--kanban-column-background",
-        "description": "Background of a column (defaults to --surface-muted-color)"
-      },
-      {
-        "name": "--kanban-column-border-color",
-        "description": "Border color of a column (defaults to --border-color)"
-      },
-      {
-        "name": "--kanban-column-radius",
-        "description": "Corner radius of a column (defaults to --radius-lg)"
-      },
-      {
-        "name": "--kanban-column-color",
-        "description": "Accent of a column: the dot before the title (the color prop sets it for a custom CSS color)"
-      },
-      {
-        "name": "--kanban-card-gap",
-        "description": "Space between the cards of a column (defaults to --space-2)"
-      },
-      {
-        "name": "--kanban-count-background",
-        "description": "Background of the count badge (defaults to --surface-color)"
-      },
-      {
-        "name": "--kanban-count-color",
-        "description": "Text color of the count badge (defaults to --text-secondary-color)"
-      },
-      {
-        "name": "--kanban-drop-indicator-color",
-        "description": "Color of the drop line and of the column a dragged card would land in (defaults to --primary-color)"
       }
     ]
   },
@@ -4323,6 +4323,22 @@
       {
         "name": "--quadrant-task-board-actions-radius",
         "description": "Corner radius of the toolbar of the active task (defaults to --radius-md)"
+      },
+      {
+        "name": "--quadrant-task-board-panel-background",
+        "description": "Background of the inline add / edit / delete panel (defaults to a translucent elevated surface)"
+      },
+      {
+        "name": "--quadrant-task-board-panel-border",
+        "description": "Border color of the inline panel (defaults to a translucent --border-color)"
+      },
+      {
+        "name": "--quadrant-task-board-panel-radius",
+        "description": "Corner radius of the inline panel (defaults to --radius-lg)"
+      },
+      {
+        "name": "--quadrant-task-board-panel-width",
+        "description": "Width of the inline panel (defaults to 288px)"
       }
     ]
   },
@@ -5154,6 +5170,266 @@
     "source": "core/src/theme/types.ts",
     "kind": "alias",
     "type": "{ [key in DefaultTheme]: ComponentTheme; }"
+  },
+  "DashboardCardProps": {
+    "source": "react/src/components/DashboardColumns/types.ts",
+    "description": "Props of the DashboardCard component: a card of a DashboardColumn that a draggable board can move",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "description": "Key of the card, reported as `cardKey` by a draggable board"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "default": "its text content",
+        "description": "Name of the card in the drag announcements and, when draggable, its accessible name"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Content of the card"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name"
+      },
+      {
+        "name": "style",
+        "type": "CSSProperties",
+        "required": false,
+        "description": "Inline style of the card"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "Id of the card"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root <div>"
+      }
+    ]
+  },
+  "DashboardColumnColor": {
+    "source": "react/src/components/DashboardColumns/types.ts",
+    "description": "Accent of a DashboardColumn: a theme color or any CSS color (\"#7c3aed\", \"rgb(...)\", \"var(--my-color)\")",
+    "kind": "alias",
+    "type": "ColorScheme | (string & {})"
+  },
+  "DashboardColumnProps": {
+    "source": "react/src/components/DashboardColumns/types.ts",
+    "description": "Props of the DashboardColumn component: a status column of a DashboardColumns",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": true,
+        "description": "Title of the column (also its accessible name)"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "Key of the column, reported as `fromColumn` / `toColumn` by a draggable board (columns without one take no cards)"
+      },
+      {
+        "name": "count",
+        "type": "number",
+        "required": false,
+        "description": "Number of items shown as a badge next to the title (and announced with the title); omit to hide the badge"
+      },
+      {
+        "name": "color",
+        "type": "DashboardColumnColor",
+        "required": false,
+        "description": "Accent of the column (a dot before the title): a theme color or any CSS color"
+      },
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Supporting text under the header"
+      },
+      {
+        "name": "actions",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Header controls on the end side (e.g. an add button)"
+      },
+      {
+        "name": "empty",
+        "type": "ReactNode",
+        "required": false,
+        "default": "\"No items\" (translated)",
+        "description": "Content shown when the column has no cards"
+      },
+      {
+        "name": "footer",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Footer below the cards (e.g. an \"Add card\" button)"
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "The cards: each child is wrapped in a role=\"listitem\""
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "default": "the title with the count (\"To do, 3 items\", translated)",
+        "description": "Accessible name of the column"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name"
+      },
+      {
+        "name": "style",
+        "type": "CSSProperties",
+        "required": false,
+        "description": "Inline style of the column"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "Id of the column"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLElement>",
+        "required": false,
+        "description": "Ref to the root <section>"
+      }
+    ]
+  },
+  "DashboardColumnsProps": {
+    "source": "react/src/components/DashboardColumns/types.ts",
+    "description": "Props of the DashboardColumns component: a horizontally scrolling row of DashboardColumn",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "description": "The columns (DashboardColumn)"
+      },
+      {
+        "name": "columnWidth",
+        "type": "DashboardLength",
+        "required": false,
+        "default": "\"18rem\"",
+        "description": "Width of every column (a number is pixels). With `fill` it is the minimum width: columns stretch equally when they fit"
+      },
+      {
+        "name": "fill",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Stretches the columns equally to fill the board when they fit (they keep `columnWidth` as their minimum width and scroll otherwise)"
+      },
+      {
+        "name": "gap",
+        "type": "DashboardLength",
+        "required": false,
+        "default": "\"0.75rem\"",
+        "description": "Space between the columns (a number is pixels)"
+      },
+      {
+        "name": "height",
+        "type": "DashboardLength",
+        "required": false,
+        "description": "Height of the board: the column bodies scroll vertically within it (a number is pixels)"
+      },
+      {
+        "name": "maxHeight",
+        "type": "DashboardLength",
+        "required": false,
+        "description": "Maximum height of the board: the column bodies scroll vertically within it (a number is pixels)"
+      },
+      {
+        "name": "draggable",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Lets the DashboardCard children of keyed columns (`value`) be dragged between and within columns: with the mouse, a long press on touch screens, or the keyboard (Space / Enter picks a focused card up, the arrows move it, Space / Enter drops it, Escape cancels). The board is controlled: it reports the move (`onCardMove`) and the app moves the card in its data."
+      },
+      {
+        "name": "onCardMove",
+        "type": "(move: DashboardCardMove) => void",
+        "required": false,
+        "description": "Called when a card is dropped at a new position (not when it is put back where it was): move the card in your data (`moveDashboardCard` from `minerva-design/core` does it for plain lists)"
+      },
+      {
+        "name": "canDrop",
+        "type": "(move: DashboardCardMove) => boolean",
+        "required": false,
+        "description": "Whether a card may be dropped at a position: refused positions show no drop indicator and the keyboard skips them (its original position is always allowed)"
+      },
+      {
+        "name": "aria-label",
+        "type": "string",
+        "required": false,
+        "default": "\"Board\" (translated)",
+        "description": "Accessible name of the board region"
+      },
+      {
+        "name": "aria-labelledby",
+        "type": "string",
+        "required": false,
+        "description": "Id of an element naming the board (instead of aria-label)"
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "description": "Additional class name"
+      },
+      {
+        "name": "style",
+        "type": "CSSProperties",
+        "required": false,
+        "description": "Inline style of the board"
+      },
+      {
+        "name": "id",
+        "type": "string",
+        "required": false,
+        "description": "Id of the board"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root <div>"
+      }
+    ]
+  },
+  "DashboardLength": {
+    "source": "react/src/components/DashboardColumns/types.ts",
+    "description": "A length: a number of pixels or any CSS length (\"18rem\", \"40vh\")",
+    "kind": "alias",
+    "type": "number | string"
   },
   "DataTableProps": {
     "source": "react/src/components/Table/types.ts",
@@ -6756,266 +7032,6 @@
         "description": "Class name of the outer wrapper"
       }
     ]
-  },
-  "KanbanBoardProps": {
-    "source": "react/src/components/KanbanBoard/types.ts",
-    "description": "Props of the KanbanBoard component: a horizontally scrolling row of KanbanColumn",
-    "kind": "interface",
-    "extends": [],
-    "props": [
-      {
-        "name": "children",
-        "type": "ReactNode",
-        "required": false,
-        "description": "The columns (KanbanColumn)"
-      },
-      {
-        "name": "columnWidth",
-        "type": "KanbanLength",
-        "required": false,
-        "default": "\"18rem\"",
-        "description": "Width of every column (a number is pixels). With `fill` it is the minimum width: columns stretch equally when they fit"
-      },
-      {
-        "name": "fill",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Stretches the columns equally to fill the board when they fit (they keep `columnWidth` as their minimum width and scroll otherwise)"
-      },
-      {
-        "name": "gap",
-        "type": "KanbanLength",
-        "required": false,
-        "default": "\"0.75rem\"",
-        "description": "Space between the columns (a number is pixels)"
-      },
-      {
-        "name": "height",
-        "type": "KanbanLength",
-        "required": false,
-        "description": "Height of the board: the column bodies scroll vertically within it (a number is pixels)"
-      },
-      {
-        "name": "maxHeight",
-        "type": "KanbanLength",
-        "required": false,
-        "description": "Maximum height of the board: the column bodies scroll vertically within it (a number is pixels)"
-      },
-      {
-        "name": "draggable",
-        "type": "boolean",
-        "required": false,
-        "default": "false",
-        "description": "Lets the KanbanCard children of keyed columns (`value`) be dragged between and within columns: with the mouse, a long press on touch screens, or the keyboard (Space / Enter picks a focused card up, the arrows move it, Space / Enter drops it, Escape cancels). The board is controlled: it reports the move (`onCardMove`) and the app moves the card in its data."
-      },
-      {
-        "name": "onCardMove",
-        "type": "(move: KanbanCardMove) => void",
-        "required": false,
-        "description": "Called when a card is dropped at a new position (not when it is put back where it was): move the card in your data (`moveKanbanCard` from `minerva-design/core` does it for plain lists)"
-      },
-      {
-        "name": "canDrop",
-        "type": "(move: KanbanCardMove) => boolean",
-        "required": false,
-        "description": "Whether a card may be dropped at a position: refused positions show no drop indicator and the keyboard skips them (its original position is always allowed)"
-      },
-      {
-        "name": "aria-label",
-        "type": "string",
-        "required": false,
-        "default": "\"Board\" (translated)",
-        "description": "Accessible name of the board region"
-      },
-      {
-        "name": "aria-labelledby",
-        "type": "string",
-        "required": false,
-        "description": "Id of an element naming the board (instead of aria-label)"
-      },
-      {
-        "name": "className",
-        "type": "string",
-        "required": false,
-        "description": "Additional class name"
-      },
-      {
-        "name": "style",
-        "type": "CSSProperties",
-        "required": false,
-        "description": "Inline style of the board"
-      },
-      {
-        "name": "id",
-        "type": "string",
-        "required": false,
-        "description": "Id of the board"
-      },
-      {
-        "name": "ref",
-        "type": "Ref<HTMLDivElement>",
-        "required": false,
-        "description": "Ref to the root <div>"
-      }
-    ]
-  },
-  "KanbanCardProps": {
-    "source": "react/src/components/KanbanBoard/types.ts",
-    "description": "Props of the KanbanCard component: a card of a KanbanColumn that a draggable board can move",
-    "kind": "interface",
-    "extends": [],
-    "props": [
-      {
-        "name": "value",
-        "type": "string",
-        "required": true,
-        "description": "Key of the card, reported as `cardKey` by a draggable board"
-      },
-      {
-        "name": "label",
-        "type": "string",
-        "required": false,
-        "default": "its text content",
-        "description": "Name of the card in the drag announcements and, when draggable, its accessible name"
-      },
-      {
-        "name": "children",
-        "type": "ReactNode",
-        "required": false,
-        "description": "Content of the card"
-      },
-      {
-        "name": "className",
-        "type": "string",
-        "required": false,
-        "description": "Additional class name"
-      },
-      {
-        "name": "style",
-        "type": "CSSProperties",
-        "required": false,
-        "description": "Inline style of the card"
-      },
-      {
-        "name": "id",
-        "type": "string",
-        "required": false,
-        "description": "Id of the card"
-      },
-      {
-        "name": "ref",
-        "type": "Ref<HTMLDivElement>",
-        "required": false,
-        "description": "Ref to the root <div>"
-      }
-    ]
-  },
-  "KanbanColumnColor": {
-    "source": "react/src/components/KanbanBoard/types.ts",
-    "description": "Accent of a KanbanColumn: a theme color or any CSS color (\"#7c3aed\", \"rgb(...)\", \"var(--my-color)\")",
-    "kind": "alias",
-    "type": "ColorScheme | (string & {})"
-  },
-  "KanbanColumnProps": {
-    "source": "react/src/components/KanbanBoard/types.ts",
-    "description": "Props of the KanbanColumn component: a status column of a KanbanBoard",
-    "kind": "interface",
-    "extends": [],
-    "props": [
-      {
-        "name": "title",
-        "type": "ReactNode",
-        "required": true,
-        "description": "Title of the column (also its accessible name)"
-      },
-      {
-        "name": "value",
-        "type": "string",
-        "required": false,
-        "description": "Key of the column, reported as `fromColumn` / `toColumn` by a draggable board (columns without one take no cards)"
-      },
-      {
-        "name": "count",
-        "type": "number",
-        "required": false,
-        "description": "Number of items shown as a badge next to the title (and announced with the title); omit to hide the badge"
-      },
-      {
-        "name": "color",
-        "type": "KanbanColumnColor",
-        "required": false,
-        "description": "Accent of the column (a dot before the title): a theme color or any CSS color"
-      },
-      {
-        "name": "description",
-        "type": "ReactNode",
-        "required": false,
-        "description": "Supporting text under the header"
-      },
-      {
-        "name": "actions",
-        "type": "ReactNode",
-        "required": false,
-        "description": "Header controls on the end side (e.g. an add button)"
-      },
-      {
-        "name": "empty",
-        "type": "ReactNode",
-        "required": false,
-        "default": "\"No items\" (translated)",
-        "description": "Content shown when the column has no cards"
-      },
-      {
-        "name": "footer",
-        "type": "ReactNode",
-        "required": false,
-        "description": "Footer below the cards (e.g. an \"Add card\" button)"
-      },
-      {
-        "name": "children",
-        "type": "ReactNode",
-        "required": false,
-        "description": "The cards: each child is wrapped in a role=\"listitem\""
-      },
-      {
-        "name": "aria-label",
-        "type": "string",
-        "required": false,
-        "default": "the title with the count (\"To do, 3 items\", translated)",
-        "description": "Accessible name of the column"
-      },
-      {
-        "name": "className",
-        "type": "string",
-        "required": false,
-        "description": "Additional class name"
-      },
-      {
-        "name": "style",
-        "type": "CSSProperties",
-        "required": false,
-        "description": "Inline style of the column"
-      },
-      {
-        "name": "id",
-        "type": "string",
-        "required": false,
-        "description": "Id of the column"
-      },
-      {
-        "name": "ref",
-        "type": "Ref<HTMLElement>",
-        "required": false,
-        "description": "Ref to the root <section>"
-      }
-    ]
-  },
-  "KanbanLength": {
-    "source": "react/src/components/KanbanBoard/types.ts",
-    "description": "A length: a number of pixels or any CSS length (\"18rem\", \"40vh\")",
-    "kind": "alias",
-    "type": "number | string"
   },
   "KeyValueEditorProps": {
     "source": "react/src/components/KeyValueEditor/types.ts",
@@ -9915,7 +9931,7 @@
         "name": "labels",
         "type": "Partial<QuadrantTaskLabels>",
         "required": false,
-        "description": "Texts of the buttons and dialogs (localized by default)"
+        "description": "Texts of the buttons and panels (localized by default)"
       }
     ]
   },

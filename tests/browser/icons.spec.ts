@@ -217,6 +217,15 @@ test("icons: clicking a tile copies its component and says so in a toast", async
   const demo = page.locator("#demo-gallery");
   await demo.getByRole("button", { name: "check-check" }).click();
   await expect(page.getByText("Copied <CheckCheckIcon />")).toBeVisible();
+  // shown at the top center of the window
+  const box = (await page
+    .getByText("Copied <CheckCheckIcon />")
+    .boundingBox())!;
+  const viewport = page.viewportSize()!;
+  expect(box.y).toBeLessThan(viewport.height / 3);
+  expect(Math.abs(box.x + box.width / 2 - viewport.width / 2)).toBeLessThan(
+    viewport.width / 4,
+  );
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(
     "<CheckCheckIcon />",
   );

@@ -43,6 +43,8 @@ type Board = VueWrapper<InstanceType<typeof QuadrantTaskBoard>>;
 /** A controlled board: `update:points` is written back to `points` */
 const mountBoard = async (props: Record<string, unknown> = {}) => {
   const w: Board = mount(QuadrantTaskBoard, {
+    // in the document: the name field of a panel gets the focus
+    attachTo: document.body,
     props: {
       locale: "en",
       points: TASKS,
@@ -88,25 +90,50 @@ describe("uni QuadrantTaskBoard", () => {
       "bottomLeft",
       "bottomRight",
     ]);
-    expect(headers[0]!.text()).toBe("Q1Do first1+");
-    expect(headers[1]!.text()).toBe("Top right quadrant0+");
-    expect(headers[0]!.get("button").attributes("aria-label")).toBe(
-      "Add task · Do first",
-    );
+    expect(headers[0]!.text()).toBe("Q1Do first1");
+    expect(headers[1]!.text()).toBe("Top right quadrant0");
+    const add = headers[0]!.get("button");
+    expect(add.attributes("aria-label")).toBe("Add task · Do first");
+    // a plus icon image, not a "+" glyph
+    expect(add.text()).not.toContain("+");
+    const src = add
+      .get("img.mn-quadrant-task-board__add-icon")
+      .attributes("src")!;
+    expect(src).toMatch(/^data:image\/svg\+xml;base64,/);
+    const svg = atob(src.split(",")[1]!);
+    expect(svg).toContain("<svg");
+    expect(svg).toContain('d="M12 5v14M5 12h14"');
     expect(toolbar(w).exists()).toBe(false);
     await w.setProps({ showCounts: false });
     expect(w.find(".mn-quadrant-task-board__count").exists()).toBe(false);
     w.unmount();
   });
 
-  it("adds a task: cancel leaves the data, save appends it", async () => {
+  it("adds a task in an inline panel: cancel leaves the data, save appends it", async () => {
     const w = await mountBoard();
-    const add = () =>
-      w
-        .get('button[aria-label="Add task · Top right quadrant"]')
-        .trigger("click");
+    const add = (corner = "Top right quadrant") =>
+      w.get(`button[aria-label="Add task · ${corner}"]`).trigger("click");
     await add();
     expect(dialog(w).text()).toContain("Add task");
+    // inline in the board, right below the headers: no modal
+    const panel = dialog(w);
+    expect(panel.classes()).toEqual(
+      expect.arrayContaining([
+        "mn-quadrant-task-board__panel",
+        "mn-quadrant-task-board__panel--add",
+        "mn-quadrant-task-board__panel--caret-end",
+      ]),
+    );
+    expect(panel.attributes("data-quadrant-task-panel")).toBe("add");
+    expect(
+      w.get(".mn-quadrant-task-board__quadrants").element.nextElementSibling,
+    ).toBe(panel.element);
+    expect(document.querySelector(".mn-modal, .mn-overlay-mask")).toBeNull();
+    expect(w.find(".mn-modal").exists()).toBe(false);
+    await flushPromises();
+    expect(document.activeElement).toBe(
+      panel.get('input[aria-label="Task name"]').element,
+    );
     expect(
       dialog(w)
         .get('[role="radio"][aria-label="Top right quadrant"]')
@@ -130,12 +157,25 @@ describe("uni QuadrantTaskBoard", () => {
       { x: 7.5, y: 7.5, label: "Plan sprint" },
     ]);
     expect(dialog(w).exists()).toBe(false);
-    // the new task is selected
-    expect(pointButton(w, "Plan sprint").attributes("aria-selected")).toBe(
-      "true",
+
+    // the quadrant chips pick where the task goes
+    await add("Top left quadrant");
+    expect(dialog(w).classes()).toContain(
+      "mn-quadrant-task-board__panel--caret-start",
     );
+    await typeName(w, "Later");
+    const chip = () =>
+      dialog(w).get('[role="radio"][aria-label="Bottom right quadrant"]');
+    await chip().trigger("click");
+    expect(chip().attributes("aria-checked")).toBe("true");
+    expect(chip().classes()).toContain("mn-quadrant-task-board__chip--checked");
+    await save().trigger("click");
+    expect(lastPoints(w)?.at(-1)).toEqual({ x: 7.5, y: 2.5, label: "Later" });
+    expect(dialog(w).exists()).toBe(false);
+    // the new task is selected
+    expect(pointButton(w, "Later").attributes("aria-selected")).toBe("true");
     expect(toolbar(w).attributes("aria-label")).toBe("Task actions");
-    expect(toolbar(w).text()).toContain("Plan sprint");
+    expect(toolbar(w).text()).toContain("Later");
     w.unmount();
   });
 
@@ -145,6 +185,12 @@ describe("uni QuadrantTaskBoard", () => {
     expect(w.emitted("pointClick")).toEqual([[TASKS[0], 0]]);
     await toolbar(w).get('[data-action="edit"]').trigger("click");
     expect(dialog(w).text()).toContain("Edit task");
+    // inline, right below the actions, the caret at Edit
+    expect(dialog(w).attributes("data-quadrant-task-panel")).toBe("edit");
+    expect(dialog(w).classes()).toContain(
+      "mn-quadrant-task-board__panel--caret-edit",
+    );
+    expect(toolbar(w).element.nextElementSibling).toBe(dialog(w).element);
     expect(
       (
         dialog(w).get('input[aria-label="Task name"]')
@@ -179,6 +225,11 @@ describe("uni QuadrantTaskBoard", () => {
     await toolbar(w).get('[data-action="delete"]').trigger("click");
     let confirm = w.get('[role="alertdialog"]');
     expect(confirm.text()).toContain("Reply mail");
+    expect(confirm.attributes("data-quadrant-task-panel")).toBe("delete");
+    expect(confirm.classes()).toContain(
+      "mn-quadrant-task-board__panel--caret-delete",
+    );
+    expect(toolbar(w).element.nextElementSibling).toBe(confirm.element);
     await confirm.get('[data-action="cancel"]').trigger("click");
     expect(w.find('[role="alertdialog"]').exists()).toBe(false);
     expect(w.emitted("pointsChange")).toBeUndefined();
@@ -201,6 +252,23 @@ describe("uni QuadrantTaskBoard", () => {
     );
     expect(lastPoints(w)).toEqual([{ ...TASKS[0], x: 2.5, y: 2.5 }, TASKS[1]]);
     expect(toolbar(w).text()).toContain("Write report");
+    w.unmount();
+  });
+
+  it("opening another panel replaces the open one", async () => {
+    const w = await mountBoard();
+    await w
+      .get('button[aria-label="Add task · Top left quadrant"]')
+      .trigger("click");
+    expect(dialog(w).exists()).toBe(true);
+    // a tap on a task closes it, like a press outside a popover
+    await pointButton(w, "Reply mail,").trigger("click");
+    expect(dialog(w).exists()).toBe(false);
+    await toolbar(w).get('[data-action="edit"]').trigger("click");
+    await toolbar(w).get('[data-action="delete"]').trigger("click");
+    expect(dialog(w).exists()).toBe(false);
+    expect(w.find('[role="alertdialog"]').exists()).toBe(true);
+    expect(w.findAll(".mn-quadrant-task-board__panel")).toHaveLength(1);
     w.unmount();
   });
 

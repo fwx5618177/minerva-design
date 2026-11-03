@@ -1,6 +1,6 @@
 {
   "title": "QuadrantTaskBoard",
-  "description": "Un tableau de tâches sur une matrice à quatre quadrants, comme une matrice d’Eisenhower : le + de l’en-tête d’un quadrant (ou un clic dans sa zone vide) ajoute une tâche, la barre d’outils au-dessus de la tâche active la modifie ou la supprime, une boîte de dialogue nomme la tâche et choisit son quadrant, chaque suppression est confirmée, et les tâches se déplacent par glisser-déposer ou avec Maj + flèches (un double-clic les modifie). Le tableau est contrôlé : passez les tâches dans points et renvoyez la liste reçue par onPointsChange. Il accepte les autres props de QuadrantChart (axes, titres, pastilles et couleurs des quadrants, graduations, étiquettes…), et ses boutons et boîtes de dialogue suivent la langue de l’application. Exporté par minerva-design, et non par minerva-design/charts.",
+  "description": "Un tableau de tâches sur une matrice à quatre quadrants, comme une matrice d’Eisenhower : le + de l’en-tête d’un quadrant (ou un clic dans sa zone vide) ajoute une tâche, la barre d’outils au-dessus de la tâche active la modifie ou la supprime, un panneau ouvert à côté du bouton + ou de la tâche la nomme et choisit son quadrant, chaque suppression est confirmée sur place, et les tâches se déplacent par glisser-déposer ou avec Maj + flèches (un double-clic les modifie). Le tableau est contrôlé : passez les tâches dans points et renvoyez la liste reçue par onPointsChange. Il accepte les autres props de QuadrantChart (axes, titres, pastilles et couleurs des quadrants, graduations, étiquettes…), et ses boutons et panneaux suivent la langue de l’application. Exporté par minerva-design, et non par minerva-design/charts.",
   "demos": {
     "basic": {
       "title": "Tableau d’Eisenhower",
@@ -52,17 +52,18 @@
   "api": {
     "QuadrantTaskBoardProps": {
       "onPointsChange": "Appelée avec la nouvelle liste de tâches après un ajout, une modification, une suppression, un glisser-déposer ou un déplacement au clavier (contrôlé : renvoyez-la dans points)",
-      "labels": "Textes des boutons et des boîtes de dialogue (voir QuadrantTaskLabels) ; ceux qui manquent suivent la langue"
+      "labels": "Textes des boutons et des panneaux (voir QuadrantTaskLabels) ; ceux qui manquent suivent la langue"
     },
     "QuadrantTaskLabels": {
-      "add": "Bouton d’ajout de chaque quadrant, et titre de la boîte de dialogue d’ajout",
-      "edit": "Bouton de modification de la tâche active, et titre de la boîte de dialogue de modification",
+      "add": "Bouton d’ajout de chaque quadrant, et titre du panneau d’ajout",
+      "edit": "Bouton de modification de la tâche active, et titre du panneau de modification",
       "delete": "Bouton de suppression de la tâche active, et titre de sa confirmation",
       "deleteConfirm": "Texte de la confirmation de suppression ; {name} est remplacé par le nom de la tâche",
+      "confirmDelete": "Bouton de validation de la confirmation de suppression",
       "name": "Libellé du champ du nom",
       "quadrant": "Libellé du champ du quadrant",
-      "save": "Bouton d’enregistrement de la boîte de dialogue",
-      "cancel": "Bouton d’annulation de la boîte de dialogue et de la confirmation",
+      "save": "Bouton d’enregistrement du panneau d’ajout / de modification",
+      "cancel": "Bouton d’annulation des panneaux",
       "actions": "Nom accessible de la barre d’outils de la tâche active"
     },
     "QuadrantConfig": {
@@ -87,7 +88,7 @@
     },
     "native_QuadrantTaskBoardProps": {
       "onPointsChange": "Appelée avec la nouvelle liste de tâches après un ajout, une modification, une suppression, un glisser-déposer ou une action d’accessibilité « Déplacer vers » (contrôlé : renvoyez-la dans points)",
-      "labels": "Textes des boutons et des boîtes de dialogue (add, edit, delete, deleteConfirm, name, quadrant, save, cancel, actions) ; ceux qui manquent suivent la langue"
+      "labels": "Textes des boutons et des panneaux (add, edit, delete, deleteConfirm, confirmDelete, name, quadrant, save, cancel, actions) ; ceux qui manquent suivent la langue"
     }
   },
   "cssVars": {
@@ -96,7 +97,11 @@
     "--quadrant-task-board-count-background": "Fond des pastilles de comptage des tâches (--surface-muted-color par défaut)",
     "--quadrant-task-board-count-color": "Couleur du texte des pastilles de comptage des tâches (--text-secondary-color par défaut)",
     "--quadrant-task-board-actions-background": "Fond de la barre d’outils de la tâche active (--surface-elevated-color par défaut)",
-    "--quadrant-task-board-actions-radius": "Rayon des coins de la barre d’outils de la tâche active (--radius-md par défaut)"
+    "--quadrant-task-board-actions-radius": "Rayon des coins de la barre d’outils de la tâche active (--radius-md par défaut)",
+    "--quadrant-task-board-panel-background": "Fond du panneau d’ajout / de modification / de suppression (par défaut une surface surélevée translucide)",
+    "--quadrant-task-board-panel-border": "Couleur de bordure du panneau (par défaut --border-color translucide)",
+    "--quadrant-task-board-panel-radius": "Rayon des coins du panneau (par défaut --radius-lg)",
+    "--quadrant-task-board-panel-width": "Largeur du panneau (288px par défaut)"
   },
   "native": {
     "limitations": "Sous React Native, les tâches se déplacent par glisser-déposer ou avec les actions « Déplacer vers » des lecteurs d’écran : pas de déplacement avec Maj + flèches ni de double appui pour modifier (utilisez le bouton de modification de la tâche active). Les icônes des boutons sont dessinées avec des View, sans dépendance SVG.",

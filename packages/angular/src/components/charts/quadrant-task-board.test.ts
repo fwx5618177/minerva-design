@@ -1,8 +1,8 @@
 // MnQuadrantTaskBoard with a fake chart engine (the real one needs a GPU /
 // canvas browser): the headers and the actions of the active task are
 // templates of MnQuadrantChart placed over the plot area reported by the
-// engine (`layout`); the dialogs are the renderer's MnModal and
-// MnConfirmDialog.
+// engine (`layout`); add / edit / delete happen in an inline panel inside
+// the board (not a modal).
 import { Component, signal } from "@angular/core";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { QuadrantPoint } from "minerva-design/charts/core";
@@ -110,19 +110,41 @@ describe("MnQuadrantTaskBoard", () => {
     expect(JSON.stringify(engines[0]!.options)).toContain('"dragPoints":true');
   });
 
-  it("adds a task: Cancel leaves the data, Save emits the appended task", async () => {
+  it("adds a task in an inline panel: Cancel leaves the data, Save emits the appended task", async () => {
     const fixture = await renderBoard();
+    const host = fixture.nativeElement as HTMLElement;
     const u = user();
     const add = () =>
       screen.getByRole("button", { name: "Add task · Do first" });
 
+    expect(add().getAttribute("aria-expanded")).toBe("false");
     await u.click(add());
     await settle(fixture);
-    expect(within(dialog()!).getByText("Add task")).toBeTruthy();
-    await u.type(screen.getByRole("textbox", { name: "Task name" }), "Draft");
-    await u.click(screen.getByRole("button", { name: "Cancel" }));
+    const panel = screen.getByRole("dialog", { name: "Add task" });
+    // inline in the board, not a modal in a portal
+    const board = host.querySelector<HTMLElement>("mn-quadrant-task-board")!;
+    expect(panel.parentElement).toBe(board);
+    expect(board.dataset["panel"]).toBe("draft");
+    expect(panel.dataset["quadrantTaskPanel"]).toBe("add");
+    expect(panel.style.left).toMatch(/px$/);
+    expect(panel.dataset["placement"]).toMatch(/^(top|bottom)$/);
+    expect(add().getAttribute("aria-expanded")).toBe("true");
+    const name = within(panel).getByRole("textbox", { name: "Task name" });
+    expect(document.activeElement).toBe(name);
+    // the quadrant picker: a radio per quadrant, the add button's checked
+    expect(
+      within(panel)
+        .getAllByRole("radio")
+        .map((r) => r.closest("[data-corner]")!.getAttribute("data-corner")),
+    ).toEqual(["topLeft", "topRight", "bottomLeft", "bottomRight"]);
+    expect(
+      within(panel).getByRole("radio", { name: "Do first" }),
+    ).toBeChecked();
+    await u.type(name, "Draft");
+    await u.click(within(panel).getByRole("button", { name: "Cancel" }));
     await settle(fixture);
     expect(dialog()).toBeNull();
+    expect(board.hasAttribute("data-panel")).toBe(false);
     expect(fixture.componentInstance.changes).toEqual([]);
 
     await u.click(add());
@@ -151,6 +173,35 @@ describe("MnQuadrantTaskBoard", () => {
         '.minerva-chart-quadrant-point[data-point-index="2"]',
       ),
     ).not.toBeNull();
+  });
+
+  it("Escape closes the panel and gives the focus back (a press inside keeps it open)", async () => {
+    const fixture = await renderBoard();
+    const u = user();
+    const add = screen.getByRole("button", { name: "Add task · Do first" });
+    await u.click(add);
+    await settle(fixture);
+    expect(dialog()).not.toBeNull();
+    await u.click(screen.getByRole("radio", { name: "Top right quadrant" }));
+    await settle(fixture);
+    expect(dialog()).not.toBeNull();
+    await u.click(screen.getByRole("textbox", { name: "Task name" }));
+    await u.keyboard("{Escape}");
+    await settle(fixture);
+    expect(dialog()).toBeNull();
+    expect(document.activeElement).toBe(add);
+    expect(fixture.componentInstance.changes).toEqual([]);
+  });
+
+  it("closes the panel on a press outside it", async () => {
+    const fixture = await renderBoard();
+    const u = user();
+    await u.click(screen.getByRole("button", { name: "Add task · Do first" }));
+    await settle(fixture);
+    expect(dialog()).not.toBeNull();
+    await u.click(document.body);
+    await settle(fixture);
+    expect(dialog()).toBeNull();
   });
 
   it("a click on the empty area of a quadrant adds a task there", async () => {
@@ -202,9 +253,10 @@ describe("MnQuadrantTaskBoard", () => {
     engines[0]!.fire("click", { items: [{ index: 1 }] });
     await settle(fixture);
     expect(within(dialog()!).getByText("Edit task")).toBeTruthy();
-    await u.click(screen.getByRole("combobox", { name: "Quadrant" }));
-    await settle(fixture);
-    await u.click(screen.getByRole("option", { name: "Do first" }));
+    expect(
+      screen.getByRole("radio", { name: "Bottom left quadrant" }),
+    ).toBeChecked();
+    await u.click(screen.getByRole("radio", { name: "Do first" }));
     await settle(fixture);
     await u.click(screen.getByRole("button", { name: "Save" }));
     await settle(fixture);
@@ -215,16 +267,22 @@ describe("MnQuadrantTaskBoard", () => {
     });
   });
 
-  it("deletes a task after the confirmation", async () => {
+  it("deletes a task after an inline confirmation", async () => {
     const fixture = await renderBoard();
     const u = user();
     engines[0]!.fire("click", { items: [{ index: 0 }] });
     await settle(fixture);
     await u.click(screen.getByRole("button", { name: "Delete task" }));
     await settle(fixture);
-    const confirm = screen.getByRole("alertdialog");
-    expect(confirm.textContent).toContain(
+    const confirm = screen.getByRole("alertdialog", { name: "Delete task" });
+    expect(confirm.dataset["quadrantTaskPanel"]).toBe("delete");
+    expect((fixture.nativeElement as HTMLElement).contains(confirm)).toBe(true);
+    expect(confirm).toHaveAccessibleDescription(
       "“Ship” will be removed from the board.",
+    );
+    // Cancel takes the focus
+    expect(document.activeElement).toBe(
+      within(confirm).getByRole("button", { name: "Cancel" }),
     );
     await u.click(within(confirm).getByRole("button", { name: "Cancel" }));
     await settle(fixture);

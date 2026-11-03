@@ -1937,49 +1937,49 @@
   padding: 0 4px;
   font-size: var(--font-size-xs, 12px);
 }
-/* KanbanBoard / KanbanColumn (Taro, uni and WeChat): a region around a
+/* DashboardColumns / DashboardColumn (Taro, uni and WeChat): a region around a
    scroll-x view whose track lays the columns out in one row */
-.mn-kanban-board {
+.mn-dashboard-columns {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
 }
-.mn-kanban-board__scroll {
+.mn-dashboard-columns__scroll {
   width: 100%;
   white-space: normal;
 }
-.mn-kanban-board__track {
+.mn-dashboard-columns__track {
   display: flex;
   align-items: stretch;
-  gap: var(--kanban-gap, 12px);
+  gap: var(--dashboard-gap, 12px);
   box-sizing: border-box;
   width: max-content;
   min-width: 100%;
   height: 100%;
   padding-bottom: var(--space-2, 8px);
 }
-.mn-kanban-column {
+.mn-dashboard-column {
   display: flex;
-  flex: 0 0 var(--kanban-column-width, 288px);
+  flex: 0 0 var(--dashboard-column-width, 288px);
   flex-direction: column;
   box-sizing: border-box;
-  width: var(--kanban-column-width, 288px);
+  width: var(--dashboard-column-width, 288px);
   min-width: 0;
   max-height: 100%;
   border: 1px solid
-    var(--kanban-column-border-color, var(--border-color, #e5e7eb));
-  border-radius: var(--kanban-column-radius, var(--radius-lg, 12px));
+    var(--dashboard-column-border-color, var(--border-color, #e5e7eb));
+  border-radius: var(--dashboard-column-radius, var(--radius-lg, 12px));
   background: var(
-    --kanban-column-background,
+    --dashboard-column-background,
     var(--surface-muted-color, #f9fafb)
   );
   color: var(--text-color, #111827);
   overflow: hidden;
 }
-.mn-kanban-board.mn-fill .mn-kanban-column {
+.mn-dashboard-columns.mn-fill .mn-dashboard-column {
   flex-grow: 1;
 }
-.mn-kanban-column__header {
+.mn-dashboard-column__header {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1987,29 +1987,29 @@
   min-height: 32px;
   padding: 8px 12px;
 }
-.mn-kanban-column__indicator {
+.mn-dashboard-column__indicator {
   flex: none;
   width: 8px;
   height: 8px;
   border-radius: 9999px;
-  background: var(--kanban-column-color, var(--text-muted-color, #6b7280));
+  background: var(--dashboard-column-color, var(--text-muted-color, #6b7280));
 }
-.mn-kanban-column.mn-color-primary .mn-kanban-column__indicator {
+.mn-dashboard-column.mn-color-primary .mn-dashboard-column__indicator {
   background: var(--primary-color, #2563eb);
 }
-.mn-kanban-column.mn-color-success .mn-kanban-column__indicator {
+.mn-dashboard-column.mn-color-success .mn-dashboard-column__indicator {
   background: var(--success-color, #16a34a);
 }
-.mn-kanban-column.mn-color-warning .mn-kanban-column__indicator {
+.mn-dashboard-column.mn-color-warning .mn-dashboard-column__indicator {
   background: var(--warning-color, #d97706);
 }
-.mn-kanban-column.mn-color-danger .mn-kanban-column__indicator {
+.mn-dashboard-column.mn-color-danger .mn-dashboard-column__indicator {
   background: var(--danger-color, #dc2626);
 }
-.mn-kanban-column.mn-color-info .mn-kanban-column__indicator {
+.mn-dashboard-column.mn-color-info .mn-dashboard-column__indicator {
   background: var(--info-color, #0284c7);
 }
-.mn-kanban-column__title {
+.mn-dashboard-column__title {
   min-width: 0;
   overflow: hidden;
   font-size: var(--font-size-sm, 14px);
@@ -2018,7 +2018,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.mn-kanban-column__count {
+.mn-dashboard-column__count {
   display: flex;
   flex: none;
   align-items: center;
@@ -2028,39 +2028,39 @@
   height: 20px;
   padding: 0 6px;
   border-radius: 9999px;
-  background: var(--kanban-count-background, var(--surface-color, #fff));
-  color: var(--kanban-count-color, var(--text-secondary-color, #4b5563));
+  background: var(--dashboard-count-background, var(--surface-color, #fff));
+  color: var(--dashboard-count-color, var(--text-secondary-color, #4b5563));
   font-size: var(--font-size-xs, 12px);
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
-.mn-kanban-column__actions {
+.mn-dashboard-column__actions {
   display: flex;
   flex: none;
   align-items: center;
   gap: 4px;
   margin-left: auto;
 }
-.mn-kanban-column__description {
+.mn-dashboard-column__description {
   padding: 0 12px 8px;
   color: var(--text-muted-color, #6b7280);
   font-size: var(--font-size-xs, 12px);
   line-height: 18px;
 }
-.mn-kanban-column__list {
+.mn-dashboard-column__list {
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
-  gap: var(--kanban-card-gap, var(--space-2, 8px));
+  gap: var(--dashboard-card-gap, var(--space-2, 8px));
   min-height: 0;
   padding: 4px 8px 8px;
   overflow-y: auto;
 }
-.mn-kanban-column__item {
+.mn-dashboard-column__item {
   flex: none;
   min-width: 0;
 }
-.mn-kanban-column__empty {
+.mn-dashboard-column__empty {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2074,48 +2074,51 @@
   font-size: var(--font-size-sm, 14px);
   text-align: center;
 }
-.mn-kanban-column__footer {
+.mn-dashboard-column__footer {
   display: flex;
   flex: none;
   flex-direction: column;
   gap: 8px;
   padding: 0 8px 8px;
 }
-.mn-kanban-column__actions:empty,
-.mn-kanban-column__footer:empty {
+.mn-dashboard-column__actions:empty,
+.mn-dashboard-column__footer:empty {
   display: none;
 }
 /* Drag and drop of the cards (draggable boards): the picked-up card stays
    dimmed in place, a fixed copy follows the finger and a fixed line shows
    where it would land */
-.mn-kanban-card {
+.mn-dashboard-card {
   min-width: 0;
 }
-.mn-kanban-card.mn-draggable {
+.mn-dashboard-card.mn-draggable {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
 }
-.mn-kanban-card.mn-dragging {
+.mn-dashboard-card.mn-dragging {
   opacity: 0.4;
 }
-.mn-kanban-column.mn-drop-target {
+.mn-dashboard-column.mn-drop-target {
   border-color: var(
-    --kanban-drop-indicator-color,
+    --dashboard-drop-indicator-color,
     var(--primary-color, #2563eb)
   );
   box-shadow: 0 0 0 1px
-    var(--kanban-drop-indicator-color, var(--primary-color, #2563eb));
+    var(--dashboard-drop-indicator-color, var(--primary-color, #2563eb));
 }
-.mn-kanban-board__drop-line {
+.mn-dashboard-columns__drop-line {
   position: fixed;
   z-index: 1000;
   height: 2px;
   border-radius: 1px;
-  background: var(--kanban-drop-indicator-color, var(--primary-color, #2563eb));
+  background: var(
+    --dashboard-drop-indicator-color,
+    var(--primary-color, #2563eb)
+  );
   pointer-events: none;
 }
-.mn-kanban-board__ghost {
+.mn-dashboard-columns__ghost {
   position: fixed;
   z-index: 1001;
   box-sizing: border-box;
@@ -2125,7 +2128,7 @@
   pointer-events: none;
 }
 /* uni and WeChat: the copy shows the card's label (slots cannot be duplicated) */
-.mn-kanban-board__ghost--label {
+.mn-dashboard-columns__ghost--label {
   padding: 12px;
   border: 1px solid var(--border-color, #e5e7eb);
   border-radius: var(--radius-md, 8px);
@@ -2333,4 +2336,187 @@
 }
 .mn-slider.mn-vertical .mn-slider__value {
   text-align: center;
+}
+
+/* QuadrantTaskBoard (Taro, uni and WeChat): add / edit / delete happen in an
+   inline panel of the board, inserted right below what opened it (the
+   quadrant headers or the actions of the selected task) with a caret pointing
+   at it. A frosted surface like the chart tooltips: the translucent fill and
+   border are a ::before layer (no color-mix in WXSS). */
+.mn-quadrant-task-board__add-icon {
+  display: block;
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+.mn-quadrant-task-board__panel {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  margin-top: 6px;
+  padding: 12px 16px;
+  border-radius: var(
+    --quadrant-task-board-panel-radius,
+    var(--radius-lg, 12px)
+  );
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  backdrop-filter: blur(12px) saturate(160%);
+  color: var(--text-color, #111827);
+  box-shadow:
+    0 12px 32px -8px rgba(15, 23, 42, 0.2),
+    0 4px 10px -4px rgba(15, 23, 42, 0.1);
+  text-align: start;
+  animation: mn-quadrant-task-board-panel-in 140ms cubic-bezier(0.2, 0, 0, 1);
+}
+.mn-quadrant-task-board__panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  box-sizing: border-box;
+  border: 1px solid
+    var(--quadrant-task-board-panel-border, var(--border-color, #e5e7eb));
+  border-radius: inherit;
+  background: var(
+    --quadrant-task-board-panel-background,
+    var(--surface-elevated-color, #fff)
+  );
+  opacity: 0.88;
+}
+@keyframes mn-quadrant-task-board-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mn-quadrant-task-board__panel {
+    animation: none;
+  }
+}
+/* The caret: the upper half of a rotated square (full border), clipped by
+   its box above the panel. Columns of the headers at 25% / 75%, the Edit and
+   Delete buttons from the end of the actions row. */
+.mn-quadrant-task-board__caret {
+  position: absolute;
+  top: -8px;
+  left: 25%;
+  width: 16px;
+  height: 8px;
+  margin-left: -8px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.mn-quadrant-task-board__caret-tip {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  box-sizing: border-box;
+  width: 10px;
+  height: 10px;
+  border: 1px solid
+    var(--quadrant-task-board-panel-border, var(--border-color, #e5e7eb));
+  background: var(
+    --quadrant-task-board-panel-background,
+    var(--surface-elevated-color, #fff)
+  );
+  opacity: 0.88;
+  transform: rotate(45deg);
+}
+.mn-quadrant-task-board__panel--caret-end .mn-quadrant-task-board__caret {
+  left: 75%;
+}
+.mn-quadrant-task-board__panel--caret-edit .mn-quadrant-task-board__caret,
+.mn-quadrant-task-board__panel--caret-delete .mn-quadrant-task-board__caret {
+  right: 40px;
+  left: auto;
+  margin-left: 0;
+}
+.mn-quadrant-task-board__panel--caret-edit .mn-quadrant-task-board__caret {
+  right: 128px;
+}
+.mn-quadrant-task-board__panel-title {
+  display: block;
+  margin: 0;
+  font-size: var(--font-size-sm, 14px);
+  font-weight: 600;
+  line-height: 20px;
+}
+.mn-quadrant-task-board__panel-text {
+  display: block;
+  color: var(--text-secondary-color, #6b7280);
+  font-size: var(--font-size-sm, 14px);
+  line-height: 20px;
+  overflow-wrap: anywhere;
+}
+.mn-quadrant-task-board__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.mn-quadrant-task-board__label {
+  color: var(--text-secondary-color, #6b7280);
+  font-size: var(--font-size-xs, 12px);
+  font-weight: 500;
+  line-height: 16px;
+}
+.mn-quadrant-task-board__name {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 36px;
+  font-size: var(--font-size-sm, 14px);
+}
+/* The quadrant picker: four radio chips laid out like the matrix */
+.mn-quadrant-task-board__quadrant-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+.mn-quadrant-task-board__chip {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 5px 8px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: var(--radius-md, 8px);
+  background: transparent;
+  color: var(--text-color, #111827);
+  font-size: var(--font-size-xs, 12px);
+  line-height: 18px;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease-out,
+    border-color 120ms ease-out;
+}
+.mn-quadrant-task-board__chip--checked {
+  border-color: var(--primary-color, #2563eb);
+  background: var(--primary-color-subtle, rgba(37, 99, 235, 0.12));
+  font-weight: 600;
+}
+.mn-quadrant-task-board__swatch {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.mn-quadrant-task-board__chip-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mn-quadrant-task-board__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
 }

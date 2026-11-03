@@ -1,7 +1,7 @@
 // Eisenhower task board: the + of a quadrant (or a tap on its empty area)
 // adds a task, the buttons above the active task edit or delete it, and
 // tasks move by drag and drop or the "Move to" accessibility actions.
-// `onPointsChange` keeps the list; the built-in buttons and dialogs follow
+// `onPointsChange` keeps the list; the built-in buttons and panels follow
 // the language of the app.
 import { useState } from "react";
 import { useTranslation } from "react-i18next";

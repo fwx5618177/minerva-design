@@ -14,9 +14,9 @@ import { NATIVE_COMPONENTS } from "../../packages/native/src/manifest";
 const NATIVE_DIFFERENCES: Record<string, string> = {
   "CodeBlock.maxHeight":
     "384 device-independent pixels on native; the web 24rem default is the same height at its 16px root baseline. Native has no CSS rem unit.",
-  "KanbanBoard.columnWidth":
+  "DashboardColumns.columnWidth":
     "288 device-independent pixels on native; the web 18rem default is the same width at its 16px root baseline. Native has no CSS rem unit.",
-  "KanbanBoard.gap":
+  "DashboardColumns.gap":
     "12 device-independent pixels on native; the web 0.75rem default is the same space at its 16px root baseline. Native has no CSS rem unit.",
   "Flashcard.minHeight":
     "192 device-independent pixels on native; the web 12rem default is the same height at its 16px root baseline. Native has no CSS rem unit.",

@@ -310,6 +310,7 @@ export const createChartController = (
       pan: o.pan ?? true,
       dragPoints: o.dragPoints ?? false,
       dropTargets: o.dropTargets ?? false,
+      dragLabel: o.dragLabel ?? true,
     };
   };
 
@@ -592,6 +593,7 @@ export const createChartController = (
         gesture.y,
         !!interaction()?.dropTargets,
       );
+      if (interaction()?.dragLabel === false) next.dragging.label = null;
     }
     const rect = layout.plot;
     const key = `${rect.x},${rect.y},${rect.width},${rect.height}`;
