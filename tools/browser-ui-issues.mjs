@@ -269,7 +269,7 @@ try {
   assert.ok(switches.every((s) => s.height >= 44));
   results.push({ check: "touch-switches", switches });
   await call("Page.navigate", {
-    url: "http://127.0.0.1:5395/minerva-design/#/empty?framework=vue",
+    url: BASE + "#/empty?framework=vue",
   });
   await wait(
     `[...document.querySelectorAll('[data-demo-preview] button')].some(b=>b.textContent.includes('Create project'))`,
