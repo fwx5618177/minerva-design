@@ -1,1 +1,0 @@
-import{n as e}from"./rolldown-runtime-B0Z9INg1.js";import{r as t}from"./native-preview-BRFLbKzw.js";import{n}from"./native-preview-BQ0NDJWB.js";import{f as r}from"./native-preview-Fgib6I49.js";function i(){return(0,a.jsx)(r,{defaultEntries:[{id:`theme`,key:`theme`,value:`dark`}]})}var a;function o(){return(o=e((()=>{n(),a=t()})))()}o();export{i as default};
