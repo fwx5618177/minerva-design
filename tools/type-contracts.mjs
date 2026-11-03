@@ -48,6 +48,16 @@ function typeIdentity(checker, type) {
   cache.active.set(type, anchor);
   const identity = [anchor];
   const child = (value) => typeIdentity(checker, value);
+  const tuple = checker.isTupleType(type);
+  const array = checker.isArrayType(type);
+  // Tuple members contain TypeScript-synthesized iterator/unscopables symbols
+  // whose names include process-local counters. The container's semantic
+  // identity is its constructor, arguments and tuple flags, never inherited
+  // Array methods or their recursive signatures.
+  if (tuple) {
+    const target = type.target ?? type;
+    identity.push(["tuple", !!target.readonly, target.elementFlags]);
+  } else if (array) identity.push(["array"]);
   const args = checker.getTypeArguments(type);
   if (args.length) identity.push(["arguments", args.map(child)]);
   if (type.aliasTypeArguments?.length)
@@ -55,7 +65,10 @@ function typeIdentity(checker, type) {
   if (!type.aliasSymbol && (type.isUnion() || type.isIntersection()))
     identity.push(["members", type.types.map(child).sort()]);
   const anonymous =
-    !type.aliasSymbol && (!symbol || symbol.name.startsWith("__"));
+    !tuple &&
+    !array &&
+    !type.aliasSymbol &&
+    (!symbol || symbol.name.startsWith("__"));
   if (anonymous) {
     const signatures = type.getCallSignatures();
     if (signatures.length)

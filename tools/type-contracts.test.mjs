@@ -120,3 +120,65 @@ test("same printed names retain distinct local shapes through array, optional, g
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+test("tuple references are independent of member inspection and traversal order", () => {
+  const root = mkdtempSync(join(tmpdir(), "minerva-tuple-types-"));
+  try {
+    const file = join(root, "types.ts");
+    writeFileSync(
+      file,
+      `
+      interface CalendarDate { year: number; month: number; day: number }
+      export interface Props {
+        range: [number, number];
+        readonlyRange: readonly [number, number];
+        optionalElement: [number, number?];
+        restElement: [number, ...number[]];
+        array: number[];
+        readonlyArray: readonly number[];
+        dates: readonly [CalendarDate, CalendarDate];
+        optional?: [number, number];
+        callback: (total: number, range: [number, number]) => string;
+        showTotal?: boolean | ((total: number, range: [number, number]) => string);
+      }
+    `,
+    );
+    const collect = (reverse, inspectMembers) => {
+      const program = ts.createProgram([file], {
+        strict: true,
+        target: ts.ScriptTarget.ES2022,
+      });
+      const checker = program.getTypeChecker();
+      const symbol = checker.getExportsOfModule(
+        checker.getSymbolAtLocation(program.getSourceFile(file)),
+      )[0];
+      const members = checker.getPropertiesOfType(
+        checker.getDeclaredTypeOfSymbol(symbol),
+      );
+      if (inspectMembers)
+        for (const member of members) {
+          const type = checker.getTypeOfSymbol(member);
+          for (const property of checker.getPropertiesOfType(type)) {
+            const propertyType = checker.getTypeOfSymbol(property);
+            for (const signature of propertyType.getCallSignatures())
+              checker.getReturnTypeOfSignature(signature);
+          }
+        }
+      const result = {};
+      for (const member of reverse ? members.toReversed() : members)
+        result[member.name] = describeType(
+          checker,
+          checker.getTypeOfSymbol(member),
+        );
+      return result;
+    };
+    const forward = collect(false, false);
+    assert.deepEqual(forward, collect(true, true));
+    assert.notEqual(forward.range.typeRef, forward.readonlyRange.typeRef);
+    assert.notEqual(forward.range.typeRef, forward.optionalElement.typeRef);
+    assert.notEqual(forward.range.typeRef, forward.restElement.typeRef);
+    assert.notEqual(forward.array.typeRef, forward.readonlyArray.typeRef);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
