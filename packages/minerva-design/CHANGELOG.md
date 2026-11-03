@@ -1,5 +1,11 @@
 # minerva-design
 
+## 1.19.2
+
+### Patch Changes
+
+- ci: grant the issue-assign workflow write access to issues / PRs
+
 ## 1.19.1
 
 ### Patch Changes
