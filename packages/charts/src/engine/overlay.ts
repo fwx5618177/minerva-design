@@ -597,7 +597,8 @@ type Dot = Pick<PointLabel, "x" | "y" | "r">;
 /**
  * Box of a label kept inside a cell of the plot (`bounds`): beside the dot
  * on the side with more room in the cell (moved up or down into the cell
- * near its edges), else above or below it (moved sideways into the cell);
+ * near its edges), else above or below it (moved sideways into the cell),
+ * else beside it half a line up or down;
  * cut with an ellipsis to the room left when the whole text fits nowhere;
  * `null` when no free slot is left. A slot is free when it keeps a gap to
  * the other labels and its own dot is the nearest one (it covers no other
@@ -658,6 +659,15 @@ const cellBox = (
       height,
     },
   ];
+  // beside the dot, raised or lowered by half a line: a crowded cell gets
+  // more slots still next to their own dot
+  const corners = (side: "right" | "left", w: number): Rect[] =>
+    [label.y - height - 1, label.y + 1].map((y) => ({
+      x: side === "right" ? label.x + gap : label.x - gap - w,
+      y: Math.min(Math.max(y, y0), y1 - height),
+      width: w,
+      height,
+    }));
   const stacked = (w: number): Rect[] => {
     // slid sideways into the cell near its edges (still over the dot)
     const x = Math.min(Math.max(label.x - w / 2, x0), x1 - w);
@@ -671,14 +681,22 @@ const cellBox = (
     ...beside(sides[0]!, w),
     ...beside(sides[1]!, w),
     ...stacked(w),
+    ...corners(sides[0]!, w),
+    ...corners(sides[1]!, w),
   ];
   const box = whole.find(free);
   if (box) return { label, box };
   // the whole text fits nowhere: cut it to the room beside the dot or above
   // / below it, keeping the longest text (the roomiest side on ties)
   const cuts: [number, (w: number) => Rect[]][] = [
-    [room[sides[0]!], (cw) => beside(sides[0]!, cw)],
-    [room[sides[1]!], (cw) => beside(sides[1]!, cw)],
+    [
+      room[sides[0]!],
+      (cw) => [...beside(sides[0]!, cw), ...corners(sides[0]!, cw)],
+    ],
+    [
+      room[sides[1]!],
+      (cw) => [...beside(sides[1]!, cw), ...corners(sides[1]!, cw)],
+    ],
     [x1 - x0, stacked],
   ];
   let best: { label: PointLabel; box: Rect } | null = null;

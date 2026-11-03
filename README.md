@@ -418,28 +418,27 @@ pnpm dev
 
 ### Scripts
 
-| Command                             | Description                                                                                                                                                                   |
-| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm dev`                          | Build `minerva-design`, then start the docs/demo site                                                                                                                         |
-| `pnpm build`                        | Build every renderer into `minerva-design`, then the docs site                                                                                                                |
-| `pnpm test`                         | Run all Vitest tests: unit, docs checks and host user flows                                                                                                                   |
-| `pnpm test:unit` / `pnpm test:e2e`  | Run unit tests / host flows (happy-dom and React Native testing library)                                                                                                      |
-| `pnpm test:browser`                 | Test production docs, Taro H5 and the uni-app browser host in Chromium (after build and `pnpm exec playwright install chromium`); device runtimes require separate validation |
-| `pnpm test:contracts:mini`          | Run the shared Button/toggle/selection contracts against Taro and uni-app                                                                                                     |
-| `pnpm test:dist`                    | Test the built `minerva-design` package and its packed tarball (after build)                                                                                                  |
-| `pnpm test:coverage`                | Run all tests; coverage thresholds measure core / DOM / React / Web Components / Vue                                                                                          |
-| `pnpm lint`                         | Run ESLint (flat config)                                                                                                                                                      |
-| `pnpm typecheck`                    | Type-check all packages                                                                                                                                                       |
-| `pnpm format` / `pnpm format:check` | Format with Prettier / check formatting                                                                                                                                       |
-| `pnpm clean`                        | Remove build output                                                                                                                                                           |
-| `pnpm changeset`                    | Add a changeset describing your change                                                                                                                                        |
-| `pnpm version-packages`             | Apply pending changesets: bump versions and write changelogs                                                                                                                  |
-| `pnpm release`                      | Build `minerva-design` and publish it to npm                                                                                                                                  |
+| Command                             | Description                                                                          |
+| ----------------------------------- | ------------------------------------------------------------------------------------ |
+| `pnpm dev`                          | Build `minerva-design`, then start the docs/demo site                                |
+| `pnpm build`                        | Build every renderer into `minerva-design`, then the docs site                       |
+| `pnpm test`                         | Run all Vitest tests: unit, docs checks and host user flows                          |
+| `pnpm test:unit` / `pnpm test:e2e`  | Run unit tests / host flows (happy-dom and React Native testing library)             |
+| `pnpm test:contracts:mini`          | Run the shared Button/toggle/selection contracts against Taro and uni-app            |
+| `pnpm test:dist`                    | Test the built `minerva-design` package and its packed tarball (after build)         |
+| `pnpm test:coverage`                | Run all tests; coverage thresholds measure core / DOM / React / Web Components / Vue |
+| `pnpm lint`                         | Run ESLint (flat config)                                                             |
+| `pnpm typecheck`                    | Type-check all packages                                                              |
+| `pnpm format` / `pnpm format:check` | Format with Prettier / check formatting                                              |
+| `pnpm clean`                        | Remove build output                                                                  |
+| `pnpm changeset`                    | Add a changeset describing your change                                               |
+| `pnpm version-packages`             | Apply pending changesets: bump versions and write changelogs                         |
+| `pnpm release`                      | Build `minerva-design` and publish it to npm                                         |
 
 ### Tooling
 
 - Build: Vite 8
-- Testing: Vitest, Testing Library, happy-dom
+- Testing: Vitest, Testing Library, happy-dom. Unit and integration tests (components, docs demos, user flows) all run in Vitest; there is no browser test suite, so pixels, layout and GPU output are not checked automatically
 - Linting and formatting: ESLint 10 + typescript-eslint, Prettier
 - Git hooks: Husky, lint-staged, commitlint (Conventional Commits)
 - CI: `.github/workflows/ci.yml` runs lint, typecheck, format check, tests with coverage, build, built-package tests and package checks on Node 22 for every push to `main` and every pull request

@@ -1,6 +1,7 @@
 import { NgTemplateOutlet } from "@angular/common";
 import {
   afterNextRender,
+  afterRenderEffect,
   booleanAttribute,
   ChangeDetectionStrategy,
   Component,
@@ -16,17 +17,21 @@ import {
   signal,
   untracked,
   viewChild,
+  ViewContainerRef,
+  type EmbeddedViewRef,
   type TemplateRef,
 } from "@angular/core";
 import {
   QUADRANT_CORNERS,
   createChart,
+  createQuadrantPointCard,
   createQuadrantPointLayer,
   heatmapChartOptions,
   quadrantChartOptions,
   quadrantGroups,
   quadrantOf,
   sparklineOptions,
+  withQuadrantCard,
   type ChartAnnotation,
   type ChartAxisOptions,
   type ChartColorScheme,
@@ -51,6 +56,8 @@ import {
   type QuadrantAxisLabels,
   type QuadrantCorner,
   type QuadrantPoint,
+  type QuadrantPointCard,
+  type QuadrantPointCardOptions,
   type QuadrantPointLayer,
   type QuadrantPointLayerOptions,
   type QuadrantRegion,
@@ -534,9 +541,11 @@ const fraction = (v: number, a: number, b: number) => (v - a) / (b - a || 1);
  * focused dot to the neighbouring quadrant (`pointDrop`, announced in a live
  * region). The focused dot gets a focus ring and is reported by `hover`.
  *
- * `quadrantHeader` and `pointActions` take templates placed over the plot
- * (the headers of the quadrants, e.g. with an add button; actions next to
- * the active dot, e.g. edit / delete buttons).
+ * One point card (in place of the engine tooltip) names the hovered,
+ * keyboard-focused or dragged point and its quadrant; with `pointActions`
+ * it also holds the actions of the point (e.g. edit / delete buttons) and
+ * the `selectedIndex` point keeps it. `quadrantHeader` takes a template
+ * placed in the outer corner of each quadrant (e.g. with an add button).
  */
 @Component({
   selector: "mn-quadrant-chart",
@@ -563,21 +572,7 @@ const fraction = (v: number, a: number, b: number) => (v - a) / (b - a || 1);
             </div>
           }
         }
-        @if (pointActions(); as tpl) {
-          @for (active of activePoint(); track active.context.index) {
-            <div
-              class="minerva-chart-quadrant-point"
-              [attr.data-point-index]="active.context.index"
-              [attr.data-label]="active.context.point.label ?? null"
-              [style]="active.style"
-            >
-              <ng-container
-                [ngTemplateOutlet]="tpl"
-                [ngTemplateOutletContext]="active.context"
-              />
-            </div>
-          }
-        }
+        <div #cardHost [style]="cardHostStyle()"></div>
       </div>
     }
     <div #points style="display:contents"></div>`,
@@ -651,10 +646,11 @@ export class MnQuadrantChart extends MnCartesianChartBase {
     TemplateRef<QuadrantHeaderContext> | null | undefined
   >(undefined);
   /**
-   * Content shown next to the active point (hovered, keyboard-focused or
-   * `selectedIndex`), outside the canvas hit region (e.g. edit / delete
-   * buttons); it receives pointer events. Context: `let-point`,
-   * `let-index="index"`
+   * Actions of a point (e.g. edit / delete buttons), rendered in the first
+   * row of its point card (the card of the hovered, keyboard-focused or
+   * `selectedIndex` point; not while dragging); they receive pointer events
+   * and keep the card while the pointer or the focus is on them. Context:
+   * `let-point`, `let-index="index"`
    */
   readonly pointActions = input<
     TemplateRef<QuadrantPointActionsContext> | null | undefined
@@ -678,19 +674,32 @@ export class MnQuadrantChart extends MnCartesianChartBase {
   private lastClick: { index: number; time: number } | null = null;
   /** Keyboard-focused point of the accessible layer (drawn with a focus ring) */
   private readonly focusedIndex = signal<number | null>(null);
-  /** Point under the pointer (engine hover) */
-  private readonly hoveredIndex = signal<number | null>(null);
   /** Plot area reported by the engine (position of the templates) */
   private readonly plot = signal<ChartRect | null>(null);
   private readonly pointsHost =
     viewChild.required<ElementRef<HTMLElement>>("points");
+  private readonly cardHost = viewChild<ElementRef<HTMLElement>>("cardHost");
+  private readonly viewContainer = inject(ViewContainerRef);
+  /** The point card: DOM of its own, fed by the engine and the point layer */
+  private card: QuadrantPointCard | null = null;
+  /** The `pointActions` view of the point of the card, moved into the card */
+  private actionsView: {
+    tpl: TemplateRef<QuadrantPointActionsContext>;
+    ref: EmbeddedViewRef<QuadrantPointActionsContext>;
+  } | null = null;
   private destroyed = false;
 
-  /** Overlay of the templates over the plot area (`null`: nothing to show) */
+  /** Overlay over the plot area: the header templates and the point card */
   protected readonly overlayStyle = computed(() => {
     const rect = this.plot();
-    if (!rect || !(this.quadrantHeader() || this.pointActions())) return null;
+    if (!rect) return null;
     return `position:absolute;left:${rect.x}px;top:${rect.y}px;width:${rect.width}px;height:${rect.height}px;pointer-events:none`;
+  });
+
+  /** Box of the point card: the plot area, sized in pixels (read by the card) */
+  protected readonly cardHostStyle = computed(() => {
+    const rect = this.plot();
+    return `position:absolute;left:0;top:0;width:${rect?.width ?? 0}px;height:${rect?.height ?? 0}px;pointer-events:none`;
   });
 
   /** Position of a data point in the plot, in fractions of its size */
@@ -743,35 +752,6 @@ export class MnQuadrantChart extends MnCartesianChartBase {
     });
   });
 
-  /** The point showing `pointActions` (hovered, focused, then selected), as a list of 0 or 1 */
-  protected readonly activePoint = computed(() => {
-    const index =
-      this.hoveredIndex() ??
-      this.focusedIndex() ??
-      this.selectedIndex() ??
-      null;
-    const point = index === null ? undefined : this.points()[index];
-    if (
-      index === null ||
-      !point ||
-      !Number.isFinite(point.x) ||
-      !Number.isFinite(point.y)
-    )
-      return [];
-    const at = this.visual(point.x, point.y);
-    const context: QuadrantPointActionsContext = {
-      $implicit: point,
-      point,
-      index,
-    };
-    return [
-      {
-        context,
-        style: `position:absolute;left:${100 * at.x}%;top:${100 * at.y}%;width:0;height:0;pointer-events:none`,
-      },
-    ];
-  });
-
   constructor() {
     super();
     const injector = inject(Injector);
@@ -797,12 +777,105 @@ export class MnQuadrantChart extends MnCartesianChartBase {
         { injector },
       );
     });
+    // the card once its box (the plot is laid out) and the engine exist; new
+    // inputs, focus and plot sizes after every render (hover, focus and drag
+    // moves go to the card directly)
+    let cardHost: HTMLElement | null = null;
+    afterRenderEffect(() => {
+      const host = this.cardHost()?.nativeElement ?? null;
+      const options = this.cardOptions(this.instance());
+      const focused = this.accessiblePoints() ? this.focusedIndex() : null;
+      this.plot();
+      untracked(() => {
+        if (this.card && cardHost !== host) this.destroyCard();
+        if (!host || !options.chart) return;
+        if (this.card) this.card.update(options);
+        else {
+          cardHost = host;
+          this.card = createQuadrantPointCard(host, options);
+        }
+        // the focused point button, named again by the new points
+        this.card.focus(focused);
+        this.renderActions(this.card.index);
+      });
+    });
     inject(DestroyRef).onDestroy(() => {
       // the outputs are closed: the final focus loss is not reported
       this.destroyed = true;
       layer?.destroy();
       layer = null;
+      this.destroyCard();
     });
+  }
+
+  /** Settings of the point card (shared with the other renderers) */
+  private cardOptions(chart: ChartInstance | null): QuadrantPointCardOptions {
+    const actions = !!this.pointActions();
+    return {
+      config: {
+        ...this.geometry(),
+        points: this.points(),
+        quadrants: this.quadrants(),
+        xLabel: this.xLabel(),
+        yLabel: this.yLabel(),
+        name: this.name(),
+      },
+      locale: this.locale(),
+      pointSize: this.pointSize(),
+      // the hovered point shows its card unless the tooltip is off
+      hover: this.tooltip() !== false,
+      selectedIndex: this.selectedIndex(),
+      // a plain chart rings its selected point; with actions (boards) the
+      // selected point keeps its card: its actions stay at hand
+      showSelected: actions,
+      hasActions: () => actions,
+      chart,
+      onClick: (index) => this.clickPoint(index),
+      onChange: (index) => this.renderActions(index),
+    };
+  }
+
+  /** Renders the `pointActions` of the point of the card into the card */
+  private renderActions(index: number | null): void {
+    const card = this.card;
+    if (!card) return;
+    const tpl = untracked(this.pointActions);
+    const point = index === null ? undefined : untracked(this.points)[index];
+    const current = this.actionsView;
+    if (
+      current &&
+      (!point || current.tpl !== tpl || current.ref.context.index !== index)
+    ) {
+      if (!current.ref.destroyed) current.ref.destroy();
+      this.actionsView = null;
+    }
+    if (!tpl || !point || index === null) return;
+    let ref = this.actionsView?.ref;
+    if (ref) {
+      // the same point in new `points`
+      if (ref.context.point === point) return;
+      ref.context.$implicit = point;
+      ref.context.point = point;
+    } else {
+      ref = this.viewContainer.createEmbeddedView(tpl, {
+        $implicit: point,
+        point,
+        index,
+      });
+      card.actions.append(...(ref.rootNodes as Node[]));
+      this.actionsView = { tpl, ref };
+    }
+    ref.detectChanges();
+    // the size of the card follows its new content
+    card.place();
+  }
+
+  private destroyCard(): void {
+    const view = this.actionsView?.ref;
+    if (view && !view.destroyed) view.destroy();
+    this.actionsView = null;
+    this.card?.destroy();
+    this.card = null;
   }
 
   /** Settings of the accessible point layer (shared with the other DOM renderers) */
@@ -828,6 +901,7 @@ export class MnQuadrantChart extends MnCartesianChartBase {
       onFocusChange: (index, hover) => {
         if (this.destroyed) return;
         this.focusedIndex.set(index);
+        this.card?.focus(index);
         this.hover.emit(hover);
       },
       onClick: (index) => {
@@ -853,25 +927,29 @@ export class MnQuadrantChart extends MnCartesianChartBase {
 
   protected engineOptions(): ChartOptions {
     const headers = !!this.quadrantHeader();
-    const options = quadrantChartOptions(
-      {
-        ...this.geometry(),
-        points: this.points(),
-        quadrants: this.quadrants(),
-        xLabel: this.xLabel(),
-        yLabel: this.yLabel(),
-        axisLabels: this.axisLabels(),
-        showTicks: this.showTicks(),
-        showLabels: this.showLabels(),
-        pointSize: this.pointSize(),
-        name: this.name(),
-        draggable: this.draggable(),
-        showCounts: headers ? undefined : this.showCounts(),
-        selectedIndex: this.selectedIndex(),
-        selectedIndices: this.selectedIndices(),
-      },
-      this.commonOptions(),
-      { focusedIndex: this.accessiblePoints() ? this.focusedIndex() : null },
+    // the point card names the hovered, focused, selected or dragged point:
+    // no tooltip, no label chip and no drag pill of the engine beside it
+    const options = withQuadrantCard(
+      quadrantChartOptions(
+        {
+          ...this.geometry(),
+          points: this.points(),
+          quadrants: this.quadrants(),
+          xLabel: this.xLabel(),
+          yLabel: this.yLabel(),
+          axisLabels: this.axisLabels(),
+          showTicks: this.showTicks(),
+          showLabels: this.showLabels(),
+          pointSize: this.pointSize(),
+          name: this.name(),
+          draggable: this.draggable(),
+          showCounts: headers ? undefined : this.showCounts(),
+          selectedIndex: this.selectedIndex(),
+          selectedIndices: this.selectedIndices(),
+        },
+        this.commonOptions(),
+        { focusedIndex: this.accessiblePoints() ? this.focusedIndex() : null },
+      ),
     );
     if (headers)
       // the header templates replace the drawn titles (the first four areas)
@@ -893,16 +971,25 @@ export class MnQuadrantChart extends MnCartesianChartBase {
     return [
       ...super.bindEngine(chart),
       chart.on("hover", (event) =>
-        this.hoveredIndex.set(event?.items?.[0]?.index ?? null),
+        this.card?.hover(event?.items?.[0]?.index ?? null),
       ),
       chart.on("layout", (rect) => this.plot.set({ ...rect })),
+      chart.on("dragStart", (event) =>
+        this.card?.drag(event.item.index, { x: event.x, y: event.y }),
+      ),
+      chart.on("dragEnd", () => this.card?.drag(null)),
     ];
   }
 
   protected override clicked(event: ChartHoverEvent): void {
     const index = event.items[0]?.index;
-    const point = index === undefined ? undefined : this.points()[index];
-    if (!point || index === undefined) return;
+    if (index !== undefined) this.clickPoint(index);
+  }
+
+  /** A click on a dot or on its card; two quick ones in a row count as a double click */
+  private clickPoint(index: number): void {
+    const point = this.points()[index];
+    if (!point) return;
     const now = Date.now();
     const last = this.lastClick;
     const double = last?.index === index && now - last.time < DOUBLE_CLICK_MS;
@@ -933,6 +1020,7 @@ export class MnQuadrantChart extends MnCartesianChartBase {
   }
 
   protected override dragged(event: ChartDragEvent): void {
+    this.card?.move({ x: event.x, y: event.y });
     const target = this.dropAt(event);
     if (target) this.pointDrag.emit(target);
   }

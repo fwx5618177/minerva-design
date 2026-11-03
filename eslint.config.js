@@ -55,8 +55,6 @@ export default defineConfig(
     "apps/docs/src/docs/angular/.aot/",
     "apps/docs/src/docs/angular/.aot-source/",
     "packages/angular/build/",
-    "**/playwright-report/",
-    "**/test-results/",
   ]),
   js.configs.recommended,
   tseslint.configs.recommended,

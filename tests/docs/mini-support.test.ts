@@ -44,7 +44,7 @@ describe("mini platform support metadata", () => {
     (platform) => {
       const support = miniSupport(platform, "Button");
       expect(support.notes).toContain("SDK compilation fixture pass");
-      expect(support.notes).toContain("H5 Chromium");
+      expect(support.notes).toContain("H5 tests in happy-dom");
       expect(support.notes).toContain(
         "Physical-device E2E and other native targets are not verified",
       );

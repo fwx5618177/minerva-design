@@ -783,6 +783,31 @@ describe("placeLabels", () => {
     }
   });
 
+  it("tries beside the dot half a line up or down before skipping a label", () => {
+    // a title above, a footer below, a neighbour dot just under the slot
+    // beside the dot: the label goes beside it, raised
+    const title = { x: 0, y: 20, width: 200, height: 12 };
+    const footer = { x: 0, y: 60, width: 200, height: 20 };
+    const dots = [
+      { x: 20, y: 50, r: 4, text: "Alpha", bounds: cell },
+      { x: 50, y: 58, r: 4, text: "Beta", bounds: cell },
+    ];
+    const placed = placeLabels(dots, plot, measure, 12, [title, footer]);
+    const first = placed.find((p) => p.label.x === 20)!;
+    expect(first.label.text).toBe("Alpha");
+    expect(first.box.x).toBeGreaterThanOrEqual(28);
+    expect(first.box.y + first.box.height).toBeLessThanOrEqual(50);
+    within(first.box);
+    // still nearer to its own dot than to the other
+    const { box } = first;
+    const distance = (d: { x: number; y: number }) =>
+      Math.hypot(
+        Math.max(box.x - d.x, 0, d.x - (box.x + box.width)),
+        Math.max(box.y - d.y, 0, d.y - (box.y + box.height)),
+      );
+    expect(distance(dots[1]!)).toBeGreaterThan(distance(dots[0]!));
+  });
+
   it("keeps the place of a hidden label (not drawn by the foreground)", () => {
     const labels = [
       { x: 40, y: 50, r: 4, text: "Report", bounds: cell },

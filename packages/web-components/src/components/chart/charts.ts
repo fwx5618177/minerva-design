@@ -1,14 +1,15 @@
 import { css, html, nothing, type PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
-import { keyed } from "lit/directives/keyed.js";
 import { styleMap } from "lit/directives/style-map.js";
 import {
   QUADRANT_CORNERS,
+  createQuadrantPointCard,
   createQuadrantPointLayer,
   heatmapChartOptions,
   quadrantChartOptions,
   quadrantOf,
   sparklineOptions,
+  withQuadrantCard,
   type ChartDragEvent,
   type ChartHoverEvent,
   type ChartInstance,
@@ -21,6 +22,8 @@ import {
   type QuadrantConfig,
   type QuadrantCorner,
   type QuadrantPoint,
+  type QuadrantPointCard,
+  type QuadrantPointCardOptions,
   type QuadrantPointLayer,
   type QuadrantRegions,
 } from "minerva-design/charts/core";
@@ -398,11 +401,15 @@ const fraction = (v: number, a: number, b: number) => (v - a) / (b - a || 1);
  * in a live region). The focused dot is drawn with a focus ring and
  * reported by `minerva-hover`.
  *
+ * One glass point card names the hovered, keyboard-focused or dragged dot
+ * (its name and quadrant) in place of the engine tooltip; with slotted
+ * `point-actions`, the card also shows them and stays on the
+ * `selected-index` dot (read the dot they act on from `activeIndex`).
+ *
  * Slotted content is placed over the plot: a header per quadrant (in its
  * outer corner, replacing the drawn title, badge, description and count)
- * and actions next to the active dot (hovered, keyboard-focused, else
- * `selected-index`; read it from `activeIndex`). Both receive pointer
- * events; the rest of the plot stays interactive.
+ * and the actions in the point card. Both receive pointer events; the rest
+ * of the plot stays interactive.
  *
  * Published as the optional entry `minerva-design/web-components/chart`.
  *
@@ -412,12 +419,13 @@ const fraction = (v: number, a: number, b: number) => (v - a) / (b - a || 1);
  * @slot quadrant-header-top-right - Header of the top right quadrant
  * @slot quadrant-header-bottom-left - Header of the bottom left quadrant
  * @slot quadrant-header-bottom-right - Header of the bottom right quadrant
- * @slot point-actions - Content shown at the active dot (e.g. edit / delete buttons), positioned by the slotted element
+ * @slot point-actions - Actions shown in the point card of the active dot, beside its name (e.g. compact edit / delete buttons); the card then also stays on the selected dot
  * @csspart root - The sized box of the chart
  * @csspart surface - The element the engine renders into
- * @csspart overlay - The box over the plot holding the slotted headers and actions
+ * @csspart overlay - The box over the plot holding the slotted headers and the point card
  * @csspart quadrant-header - The box of a quadrant header slot (in the outer corner of its quadrant)
- * @csspart point-actions - The zero-size box at the active dot holding the `point-actions` slot
+ * @csspart point-card - The glass card of the hovered, focused, dragged (or, with actions, selected) dot
+ * @csspart point-actions - The actions box in the point card, holding the `point-actions` slot
  * @fires minerva-point-click - A dot was clicked; detail: { point, index }
  * @fires minerva-point-double-click - The same dot was clicked twice in quick succession; detail: { point, index }
  * @fires minerva-quadrant-click - The empty area of a quadrant was clicked; detail: { quadrant, x, y }
@@ -432,13 +440,13 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
     css`
       .overlay,
       .quadrant,
-      .point {
+      .card-host {
         position: absolute;
         pointer-events: none;
       }
-      .point {
-        width: 0;
-        height: 0;
+      .card-host {
+        left: 0;
+        top: 0;
       }
       .quadrant-header {
         position: absolute;
@@ -462,8 +470,7 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
         right: 0;
         justify-content: flex-end;
       }
-      .quadrant-header ::slotted(*),
-      .point ::slotted(*) {
+      .quadrant-header ::slotted(*) {
         pointer-events: auto;
       }
     `,
@@ -548,26 +555,25 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
   private lastClick: { index: number; time: number } | null = null;
   private pointLayer: QuadrantPointLayer | null = null;
   private focusedPoint: number | null = null;
-  /** Plot area (where the slots are placed), known once the engine drew */
+  /** Plot area (where the slots and the card are placed), known once the engine drew */
   private plot: ChartRect | null = null;
-  /** Dot under the pointer */
-  private hoveredPoint: number | null = null;
   private slotObserver: MutationObserver | null = null;
   /** Slots having content at the last check (header slots, point actions) */
   private slotted = "";
+  private card: QuadrantPointCard | null = null;
+  /** The box over the plot the card was mounted in */
+  private cardHost: HTMLElement | null = null;
+  /** The dot of the card, as last reported by it */
+  private cardIndex: number | null = null;
 
   /**
-   * Index of the active dot, the one showing the `point-actions` slot: the
-   * hovered dot, else the keyboard-focused one, else `selectedIndex`
-   * (`null`: none)
+   * Index of the active dot, the one whose point card shows the
+   * `point-actions` slot (hovered, keyboard-focused, else `selectedIndex`
+   * when actions are slotted); `null` while no card is shown or during a
+   * drag
    */
   get activeIndex(): number | null {
-    const index =
-      this.hoveredPoint ?? this.focusedPoint ?? this.selectedIndex ?? null;
-    const point = index === null ? undefined : this.points?.[index];
-    return point && Number.isFinite(point.x) && Number.isFinite(point.y)
-      ? index
-      : null;
+    return this.cardIndex;
   }
 
   /** Whether a quadrant header slot has content */
@@ -600,24 +606,28 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
   protected engineOptions(): ChartOptions | null {
     if (!this.points) return null;
     const headers = this.hasHeaders();
-    const options = quadrantChartOptions(
-      {
-        ...this.geometry(),
-        points: this.points,
-        quadrants: this.quadrants,
-        xLabel: this.xLabel,
-        yLabel: this.yLabel,
-        axisLabels: this.axisLabels,
-        showTicks: !this.hideTicks,
-        showLabels: !this.hideLabels,
-        pointSize: this.pointSize,
-        draggable: this.dragPoints,
-        showCounts: headers ? undefined : this.showCounts,
-        selectedIndex: this.selectedIndex,
-        selectedIndices: this.selectedIndices,
-      },
-      this.options,
-      { focusedIndex: this.noAccessiblePoints ? null : this.focusedPoint },
+    // the point card names the hovered, focused or dragged dot: no engine
+    // tooltip, label chip or drag pill beside it
+    const options = withQuadrantCard(
+      quadrantChartOptions(
+        {
+          ...this.geometry(),
+          points: this.points,
+          quadrants: this.quadrants,
+          xLabel: this.xLabel,
+          yLabel: this.yLabel,
+          axisLabels: this.axisLabels,
+          showTicks: !this.hideTicks,
+          showLabels: !this.hideLabels,
+          pointSize: this.pointSize,
+          draggable: this.dragPoints,
+          showCounts: headers ? undefined : this.showCounts,
+          selectedIndex: this.selectedIndex,
+          selectedIndices: this.selectedIndices,
+        },
+        this.options,
+        { focusedIndex: this.noAccessiblePoints ? null : this.focusedPoint },
+      ),
     );
     if (headers)
       // the slotted headers replace the drawn titles (the first four areas)
@@ -638,15 +648,12 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
   protected override bindEngine(chart: ChartInstance): Array<() => void> {
     return [
       ...super.bindEngine(chart),
-      chart.on("hover", (event) => {
-        const index = event?.items?.[0]?.index ?? null;
-        if (index === this.hoveredPoint) return;
-        this.hoveredPoint = index;
-        if (this.hasPointActions()) this.requestUpdate();
-      }),
+      chart.on("hover", (event) =>
+        this.card?.hover(event?.items?.[0]?.index ?? null),
+      ),
       chart.on("layout", (rect) => {
         this.plot = rect;
-        if (this.slotted) this.requestUpdate();
+        this.requestUpdate();
       }),
     ];
   }
@@ -674,11 +681,12 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
   }
 
   override disconnectedCallback(): void {
+    // before the engine goes: the card gives the drawn label back
+    this.destroyCard();
     super.disconnectedCallback();
     this.pointLayer?.destroy();
     this.pointLayer = null;
     this.focusedPoint = null;
-    this.hoveredPoint = null;
     this.plot = null;
     this.slotObserver?.disconnect();
     this.slotObserver = null;
@@ -688,12 +696,11 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
     return `${this.hasHeaders() ? "h" : ""}${this.hasPointActions() ? "a" : ""}`;
   }
 
-  /** The slots over the plot (only when they have content) */
+  /** The slotted headers and the box of the point card, over the plot */
   protected override renderOverlay() {
     const headers = this.hasHeaders();
-    const actions = this.hasPointActions();
     const plot = this.plot;
-    if ((!headers && !actions) || !plot) return nothing;
+    if (!plot) return nothing;
     const [x0, x1] = this.xDomain ?? [0, 10];
     const [y0, y1] = this.yDomain ?? [0, 10];
     const visual = (x: number, y: number) => {
@@ -729,9 +736,6 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
         </div>
       </div>`;
     };
-    const index = actions ? this.activeIndex : null;
-    const point = index === null ? undefined : this.points?.[index];
-    const at = point ? visual(point.x, point.y) : null;
     return html`<div
       part="overlay"
       class="overlay"
@@ -743,31 +747,75 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
       })}
     >
       ${headers ? QUADRANT_CORNERS.map(quadrant) : nothing}
-      ${
-        at && point
-          ? keyed(
-              index,
-              html`<div
-                part="point-actions"
-                class="point"
-                data-point-index=${index}
-                data-label=${point.label ?? nothing}
-                style=${styleMap({
-                  left: `${100 * at.x}%`,
-                  top: `${100 * at.y}%`,
-                })}
-              >
-                <slot name="point-actions"></slot>
-              </div>`,
-            )
-          : nothing
-      }
+      <div
+        class="card-host"
+        data-card-host
+        style=${styleMap({ width: px(plot.width), height: px(plot.height) })}
+      ></div>
     </div>`;
   }
 
   protected override updated(changed: PropertyValues): void {
     super.updated(changed);
     this.syncPointLayer();
+    this.syncCard();
+  }
+
+  private cardOptions(): QuadrantPointCardOptions {
+    const actions = this.hasPointActions();
+    return {
+      config: {
+        ...this.geometry(),
+        points: this.points ?? [],
+        quadrants: this.quadrants,
+        xLabel: this.xLabel,
+        yLabel: this.yLabel,
+      },
+      locale: this.options?.locale,
+      pointSize: this.pointSize,
+      // the hovered dot shows its card unless the tooltip is off
+      hover: this.options?.tooltip !== false,
+      selectedIndex: this.selectedIndex,
+      // with actions (a board), the selected dot keeps its card: its
+      // actions stay at hand; otherwise a selection is only a ring
+      showSelected: actions,
+      hasActions: () => actions,
+      chart: this.instance,
+      onClick: (index) => this.clickPoint(index),
+      onChange: (index) => {
+        this.cardIndex = index;
+      },
+    };
+  }
+
+  /** Mounts the point card once the engine and its box exist, else updates it */
+  private syncCard(): void {
+    const host = this.isConnected
+      ? this.renderRoot.querySelector<HTMLElement>("[data-card-host]")
+      : null;
+    const chart = this.instance;
+    if (this.card && (host !== this.cardHost || !chart)) this.destroyCard();
+    if (!host || !chart) return;
+    if (this.card) {
+      this.card.update(this.cardOptions());
+      return;
+    }
+    const card = createQuadrantPointCard(host, this.cardOptions());
+    this.card = card;
+    this.cardHost = host;
+    card.element.setAttribute("part", "point-card");
+    card.actions.setAttribute("part", "point-actions");
+    const slot = this.ownerDocument.createElement("slot");
+    slot.name = "point-actions";
+    card.actions.append(slot);
+    if (this.focusedPoint !== null) card.focus(this.focusedPoint);
+  }
+
+  private destroyCard(): void {
+    this.card?.destroy();
+    this.card = null;
+    this.cardHost = null;
+    this.cardIndex = null;
   }
 
   /** Mounts, updates or removes the accessible list of the dots */
@@ -815,18 +863,32 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
     else this.pointLayer = createQuadrantPointLayer(root, options);
   }
 
-  /** Draws (or removes) the focus ring of the keyboard-focused dot */
+  /** Draws (or removes) the focus ring of the keyboard-focused dot, shows its card */
   private focusPoint(index: number | null): void {
     this.focusedPoint = index;
     const options = this.engineOptions();
     if (options) this.instance?.setOptions(options);
-    if (this.hasPointActions()) this.requestUpdate();
+    if (index !== null) this.card?.focus(index);
+    // the focus may be on its way from the dot to the actions of its card:
+    // the card holds itself once they have it (their focusin comes next)
+    else
+      setTimeout(() => {
+        if (this.focusedPoint === null) this.card?.focus(null);
+      });
   }
 
   protected override pointClicked(event: ChartHoverEvent): void {
     const index = event.items[0]?.index;
-    const point = index === undefined ? undefined : this.points?.[index];
-    if (!point || index === undefined) return;
+    if (index !== undefined) this.clickPoint(index);
+  }
+
+  /**
+   * A click on a dot or on the name in its card; two quick ones on the same
+   * dot count as a double click
+   */
+  private clickPoint(index: number): void {
+    const point = this.points?.[index];
+    if (!point) return;
     const now = Date.now();
     const last = this.lastClick;
     const double = last?.index === index && now - last.time < DOUBLE_CLICK_MS;
@@ -856,7 +918,12 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
     };
   }
 
+  protected override pointDragStarted(event: ChartDragEvent): void {
+    this.card?.drag(event.item.index, { x: event.x, y: event.y });
+  }
+
   protected override pointDragged(event: ChartDragEvent): void {
+    this.card?.move({ x: event.x, y: event.y });
     const detail = this.dropDetail(event);
     if (detail) this.emit("minerva-point-drag", detail);
   }
@@ -864,6 +931,10 @@ export class MinervaQuadrantChart extends MinervaCartesianChartElement {
   protected override pointDropped(event: ChartDragEvent): void {
     const detail = this.dropDetail(event);
     if (detail) this.emit("minerva-point-drop", detail);
+  }
+
+  protected override pointDragEnded(): void {
+    this.card?.drag(null);
   }
 }
 

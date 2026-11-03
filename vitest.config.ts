@@ -12,9 +12,9 @@ export default defineConfig({
       "packages/core",
       "packages/dom",
       // GPU charts (minerva-design/charts); not in the coverage percentage:
-      // the GPU backends are verified in real browsers (tests/browser)
+      // happy-dom has no GPU, so the GPU backends themselves are not exercised
       "packages/charts",
-      // icon set (minerva-design/icons); GPU backends checked in real browsers
+      // icon set (minerva-design/icons); tested on the faked Canvas2D backend
       "packages/icons",
       "packages/react",
       "packages/web-components",

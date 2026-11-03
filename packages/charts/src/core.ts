@@ -157,6 +157,14 @@ export {
   type QuadrantPointMove,
 } from "./engine/quadrant-layer";
 export {
+  CARD_LINGER_MS as QUADRANT_CARD_LINGER_MS,
+  createQuadrantPointCard,
+  withQuadrantCard,
+  type QuadrantCardPosition,
+  type QuadrantPointCard,
+  type QuadrantPointCardOptions,
+} from "./engine/quadrant-card";
+export {
   QUADRANT_TASK_ICONS,
   applyQuadrantTaskDraft,
   canSaveQuadrantTask,

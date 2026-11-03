@@ -73,6 +73,8 @@ const ENGINE = [
   "quadrantAccessibleGroups",
   "quadrantKeyTarget",
   "createQuadrantPointLayer",
+  "createQuadrantPointCard",
+  "withQuadrantCard",
   // task boards (QuadrantTaskBoard on every renderer)
   "applyQuadrantTaskDraft",
   "canSaveQuadrantTask",
@@ -158,8 +160,12 @@ const ENGINE = [
   "arcLayout",
 ];
 
-/** Constants of the engine entry (quadrant corners, task board icons) */
-const ENGINE_CONSTANTS = ["QUADRANT_CORNERS", "QUADRANT_TASK_ICONS"];
+/** Constants of the engine entry (quadrant corners, task board icons, card linger) */
+const ENGINE_CONSTANTS = [
+  "QUADRANT_CORNERS",
+  "QUADRANT_TASK_ICONS",
+  "QUADRANT_CARD_LINGER_MS",
+];
 
 describe("minerva-design/charts", () => {
   it("is declared in the exports map with ESM, CJS and both declaration flavours", () => {
@@ -183,8 +189,8 @@ describe("minerva-design/charts", () => {
       expect(typeof cjs[name], name).toBe("function");
     }
     for (const name of ENGINE_CONSTANTS) {
-      expect(esm[name], name).toBeTypeOf("object");
-      expect(cjs[name], name).toBeTypeOf("object");
+      expect(esm[name], name).not.toBeUndefined();
+      expect(cjs[name], name).toEqual(esm[name]);
     }
   });
 

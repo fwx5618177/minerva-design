@@ -74,15 +74,15 @@ const DOT = 10;
 const emptyBox = (): QuadrantTaskBox => ({ x: 0, y: 0, width: 0, height: 0 });
 
 const ICON_ATTRS = `width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"`;
-/** The compact icons of the toolbar of the active task */
+/** The compact icons of the toolbar of the active task, in its point card */
 const ACTION_ICON_ATTRS = `width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"`;
 
 /**
  * Task board on a four-quadrant matrix (MnQuadrantChart): an add button per
- * quadrant, edit and delete buttons on the active task, an inline panel
- * anchored inside the board at the button or the task to name a task and
- * pick its quadrant, an inline confirmation before a delete (Escape or a
- * press outside closes the panel), drag and drop and keyboard moves
+ * quadrant, edit and delete buttons in the point card of the active task, an
+ * inline panel anchored inside the board at the button or the task to name a
+ * task and pick its quadrant, an inline confirmation before a delete (Escape
+ * or a press outside closes the panel), drag and drop and keyboard moves
  * (Shift + arrows). Controlled: `points` in, `pointsChange` out
  * (`[(points)]`). The other inputs go to the chart.
  *
@@ -168,7 +168,7 @@ const ACTION_ICON_ATTRS = `width="14" height="14" viewBox="0 0 24 24" fill="none
       <div
         role="toolbar"
         [attr.aria-label]="texts().actions"
-        [class]="s.actions"
+        [class]="s.cardActions"
         (pointerdown)="$event.stopPropagation()"
       >
         <button
@@ -396,6 +396,9 @@ export class MnQuadrantTaskBoard {
   protected readonly corners = QUADRANT_CORNERS;
   private readonly scope = injectScope();
   private readonly chart = viewChild.required(MnQuadrantChart);
+  private readonly chartElement = viewChild.required(MnQuadrantChart, {
+    read: ElementRef<HTMLElement>,
+  });
   private readonly host =
     inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
   private readonly document = inject(DOCUMENT);
@@ -580,16 +583,17 @@ export class MnQuadrantTaskBoard {
     return this.lastPointer ? { ...this.lastPointer } : emptyBox();
   }
 
-  /** Box around a task (its anchor in the chart), else the last press */
+  /** Box around a task (where the chart draws it), else the last press */
   private pointBox(index: number): QuadrantTaskBox {
-    const el = this.host.querySelector(
-      `.minerva-chart-quadrant-point[data-point-index="${index}"]`,
-    );
-    if (!el) return this.pointerBox();
-    const box = this.boxOf(el);
+    const point = this.points()[index];
+    const at = point
+      ? this.chart().instance()?.toPixel(point.x, point.y)
+      : null;
+    if (!at) return this.pointerBox();
+    const box = this.boxOf(this.chartElement().nativeElement);
     return {
-      x: box.x - DOT,
-      y: box.y - DOT,
+      x: box.x + at.x - DOT,
+      y: box.y + at.y - DOT,
       width: 2 * DOT,
       height: 2 * DOT,
     };

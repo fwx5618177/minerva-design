@@ -43,7 +43,7 @@ pnpm build
 
 ## 已执行的验证与范围
 
-独立副本使用实际 `pnpm pack` 产物安装库运行时依赖，前台和后台均通过 TypeScript 检查与生产构建；前台完成 RSC/SSR、7 个 SSG 页面及 SPA 构建。浏览器验证前台搜索、主题、登录导航，以及后台主题、登录表单与密码显隐。前台生产服务通过本地 HTTPS 验证，避免其生产 CSP 的 `upgrade-insecure-requests` 把 HTTP 预取升级到没有 TLS 的端口。
+独立副本使用实际 `pnpm pack` 产物安装库运行时依赖，前台和后台均通过 TypeScript 检查与生产构建；前台完成 RSC/SSR、7 个 SSG 页面及 SPA 构建。浏览器验证前台搜索、主题、登录导航，以及后台主题、登录表单与密码显隐（当时的一次性烟测，脚本已移除，仓库不再包含浏览器自动化）。前台生产服务通过本地 HTTPS 验证，避免其生产 CSP 的 `upgrade-insecure-requests` 把 HTTP 预取升级到没有 TLS 的端口。
 
 迁移后的原项目单元测试也已执行：前台 49 项、后台 42 项全部通过（Vitest 5.0.3）。后台测试中的 mock 模块路径及 toast 方法同步迁移，避免测试仍调用旧包。
 
@@ -54,5 +54,3 @@ pnpm build
 `node tools/migrate-novel-ui.mjs <consumer/src>` 默认只预览，追加 `--write` 才写入。它通过 TypeScript 符号识别导入和别名，避免改动同名局部变量。不能自动判定的业务颜色、选项结构或属性展开会给出需检查的位置。`tools/migrate-novel-styles.mjs` 提供显式的样式转换函数；补丁已经包含上述两个项目经过检查的样式变更。
 
 工具的回归测试：`pnpm test:migration`。迁移完成仍需执行消费者类型检查、构建及业务回归。
-
-启动两个迁移项目的生产服务后，可以复跑公共页面烟测：`node tools/migrations/verify-browser.mjs <前台HTTPS源地址> <后台源地址>`。它检查搜索、主题、登录导航、受控输入和密码显隐，不提交登录表单。仅本机回环地址允许使用开发自签名证书，远程地址仍验证 TLS。

@@ -4,24 +4,31 @@ import {
   getCurrentInstance,
   onBeforeUnmount,
   onMounted,
+  onUpdated,
   ref,
+  shallowRef,
   useSlots,
   watch,
   type CSSProperties,
 } from "vue";
 import {
   QUADRANT_CORNERS,
+  createQuadrantPointCard,
   createQuadrantPointLayer,
   quadrantChartOptions,
   quadrantGroups,
   quadrantOf,
+  withQuadrantCard,
   type ChartDragEvent,
   type ChartHoverEvent,
   type ChartRect,
   type ChartRendererKind,
   type ChartView,
+  type QuadrantAccessibleConfig,
   type QuadrantCorner,
   type QuadrantPoint,
+  type QuadrantPointCard,
+  type QuadrantPointCardOptions,
   type QuadrantPointLayer,
   type QuadrantPointLayerOptions,
 } from "minerva-design/charts/core";
@@ -57,9 +64,10 @@ const emit = defineEmits<{
 }>();
 defineSlots<{
   /**
-   * Content shown next to the active point (hovered, focused or
-   * `selectedIndex`), outside the canvas hit region (e.g. edit / delete
-   * buttons); it receives pointer events
+   * Actions of a point (e.g. compact edit / delete buttons), shown in the
+   * point card of the hovered or focused point, else of the `selectedIndex`
+   * point (with this slot, the selected point keeps its card); they receive
+   * pointer events
    */
   "point-actions"?: (props: { point: QuadrantPoint; index: number }) => unknown;
   /**
@@ -93,32 +101,46 @@ const dropAt = (event: ChartDragEvent): QuadrantDropTarget => ({
 // keyboard-focused point of the accessible layer (drawn with a focus ring)
 const focusedIndex = ref<number | null>(null);
 const root = ref<HTMLElement | null>(null);
-// plot area (overlay of the slots) and hovered point (active point actions)
+// plot area (overlay of the slots and of the point card)
 const plot = ref<ChartRect | null>(null);
-const hoveredIndex = ref<number | null>(null);
+// the point card is DOM of its own (shared with the other renderers): hover,
+// focus and drag moves render nothing here; only the `point-actions` slot is
+// rendered again (teleported into the card) when another point shows it
+const cardHost = ref<HTMLElement | null>(null);
+const card = shallowRef<QuadrantPointCard | null>(null);
+const cardIndex = ref<number | null>(null);
+// before the engine is destroyed: the card gives the drawn label back to it
+onBeforeUnmount(() => {
+  card.value?.destroy();
+  card.value = null;
+});
 const build = () => {
   const headers = !!slots["quadrant-header"];
-  const options = quadrantChartOptions(
-    {
-      ...geometry(),
-      points: raw(props.points).map(raw),
-      quadrants: raw(props.quadrants),
-      xLabel: props.xLabel,
-      yLabel: props.yLabel,
-      axisLabels: raw(props.axisLabels),
-      showTicks: props.showTicks,
-      showLabels: props.showLabels,
-      pointSize: props.pointSize,
-      name: props.name,
-      draggable:
-        props.draggable ??
-        !!(vnode?.props?.onPointDrop || vnode?.props?.onPointDrag),
-      showCounts: headers ? undefined : props.showCounts,
-      selectedIndex: props.selectedIndex,
-      selectedIndices: raw(props.selectedIndices),
-    },
-    (({ series: _series, ...rest }) => rest)(engineOptions(props, [])),
-    { focusedIndex: props.accessiblePoints ? focusedIndex.value : null },
+  // the point card names the hovered, focused, selected or dragged point: no
+  // tooltip, no label chip and no drag pill of the engine beside it
+  const options = withQuadrantCard(
+    quadrantChartOptions(
+      {
+        ...geometry(),
+        points: raw(props.points).map(raw),
+        quadrants: raw(props.quadrants),
+        xLabel: props.xLabel,
+        yLabel: props.yLabel,
+        axisLabels: raw(props.axisLabels),
+        showTicks: props.showTicks,
+        showLabels: props.showLabels,
+        pointSize: props.pointSize,
+        name: props.name,
+        draggable:
+          props.draggable ??
+          !!(vnode?.props?.onPointDrop || vnode?.props?.onPointDrag),
+        showCounts: headers ? undefined : props.showCounts,
+        selectedIndex: props.selectedIndex,
+        selectedIndices: raw(props.selectedIndices),
+      },
+      (({ series: _series, ...rest }) => rest)(engineOptions(props, [])),
+      { focusedIndex: props.accessiblePoints ? focusedIndex.value : null },
+    ),
   );
   if (headers)
     // the slot headers replace the drawn titles (the first four areas)
@@ -135,31 +157,40 @@ const build = () => {
     );
   return options;
 };
+// a click on a dot or on the name in its card; two quick ones in a row
+// count as a double click
+const clickPoint = (index: number) => {
+  const point = props.points[index];
+  if (!point) return;
+  const now = Date.now();
+  const double =
+    lastClick?.index === index && now - lastClick.time < DOUBLE_CLICK_MS;
+  lastClick = double ? null : { index, time: now };
+  emit("pointClick", point, index);
+  if (double) emit("pointDoubleClick", point, index);
+};
 const { setContainer, rootStyle, handle } = useCartesianChart(props, build, {
   hover: (event) => {
-    hoveredIndex.value = event?.items?.[0]?.index ?? null;
+    card.value?.hover(event?.items?.[0]?.index ?? null);
     emit("hover", event);
   },
   click: (event) => {
     const index = event.items[0]?.index;
-    const point = index === undefined ? undefined : props.points[index];
-    if (!point || index === undefined) return;
-    const now = Date.now();
-    const double =
-      lastClick?.index === index && now - lastClick.time < DOUBLE_CLICK_MS;
-    lastClick = double ? null : { index, time: now };
-    emit("pointClick", point, index);
-    if (double) emit("pointDoubleClick", point, index);
+    if (index !== undefined) clickPoint(index);
   },
   plotClick: (at) =>
     emit("quadrantClick", quadrantOf(geometry(), at.x, at.y), {
       x: at.x,
       y: at.y,
     }),
+  dragStart: (event) =>
+    card.value?.drag(event.item.index, { x: event.x, y: event.y }),
   drag: (event) => {
+    card.value?.move({ x: event.x, y: event.y });
     const point = props.points[event.item.index];
     if (point) emit("pointDrag", point, event.item.index, dropAt(event));
   },
+  dragEnd: () => card.value?.drag(null),
   drop: (event) => {
     const point = props.points[event.item.index];
     if (point) emit("pointDrop", point, event.item.index, dropAt(event));
@@ -171,10 +202,8 @@ const { setContainer, rootStyle, handle } = useCartesianChart(props, build, {
   },
 });
 
-// the slots, over the plot area (same DOM as the React renderer)
-const overlaid = computed(
-  () => !!(slots["point-actions"] || slots["quadrant-header"]),
-);
+// the slots and the point card, over the plot area (same DOM as the React
+// renderer)
 const px = (value: number) => `${value}px`;
 const fraction = (v: number, a: number, b: number) => (v - a) / (b - a || 1);
 const domains = () => ({
@@ -203,6 +232,15 @@ const overlayStyle = computed<CSSProperties>(() => {
       }
     : { display: "none" };
 });
+/** The box of the point card: the plot, in pixels (the card reads its size) */
+const cardHostStyle = computed<CSSProperties>(() => ({
+  position: "absolute",
+  left: 0,
+  top: 0,
+  width: px(plot.value?.width ?? 0),
+  height: px(plot.value?.height ?? 0),
+  pointerEvents: "none",
+}));
 const cornerStyle = (corner: QuadrantCorner): CSSProperties => {
   const rect = plot.value ?? { width: 0, height: 0 };
   const d = domains();
@@ -247,39 +285,67 @@ const headerInfo = (corner: QuadrantCorner): QuadrantHeaderInfo => ({
   indices: groups.value[corner].indices,
   region: props.quadrants?.[corner],
 });
-/** Point showing the `point-actions` slot */
-const active = computed(() => {
-  const index =
-    hoveredIndex.value ?? focusedIndex.value ?? props.selectedIndex ?? null;
+/** Point of the card whose actions the `point-actions` slot renders */
+const cardPoint = computed(() => {
+  const index = cardIndex.value;
   const point = index === null ? undefined : props.points[index];
-  if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.y))
-    return null;
-  const at = visual(point.x, point.y);
-  return {
-    index: index!,
-    point,
-    style: {
-      position: "absolute",
-      left: `${100 * at.x}%`,
-      top: `${100 * at.y}%`,
-      width: 0,
-      height: 0,
-      pointerEvents: "none",
-    } satisfies CSSProperties,
-  };
+  return point && index !== null ? { index, point } : null;
 });
+
+/** The points and the geometry, for the accessible layer and the card */
+const pointConfig = (): QuadrantAccessibleConfig => ({
+  ...geometry(),
+  points: raw(props.points).map(raw),
+  quadrants: raw(props.quadrants),
+  xLabel: props.xLabel,
+  yLabel: props.yLabel,
+  name: props.name,
+});
+
+const cardOptions = (): QuadrantPointCardOptions => ({
+  config: pointConfig(),
+  locale: props.locale,
+  pointSize: props.pointSize,
+  // the hovered point shows its card unless the tooltip is off
+  hover: props.tooltip !== false,
+  selectedIndex: props.selectedIndex,
+  // a plain chart rings its selected point; a board keeps its card (the
+  // actions of the point stay at hand)
+  showSelected: !!slots["point-actions"],
+  hasActions: () => !!slots["point-actions"],
+  chart: handle.getInstance(),
+  onClick: clickPoint,
+  onChange: (index) => {
+    cardIndex.value = index;
+  },
+});
+// the box of the card is rendered once the plot is laid out
+watch(
+  [cardHost, () => handle.getInstance()],
+  ([host, chart]) => {
+    card.value?.destroy();
+    card.value = null;
+    cardIndex.value = null;
+    if (host && chart)
+      card.value = createQuadrantPointCard(host, cardOptions());
+  },
+  { flush: "post" },
+);
+const syncCard = () => card.value?.update(cardOptions());
+// new slots (re-rendered by the parent), and the actions rendered in the
+// card: its size and place follow
+onUpdated(syncCard);
+// the focused point button, named again by the new points
+watch(
+  [card, focusedIndex, () => props.points, () => props.accessiblePoints],
+  () => card.value?.focus(props.accessiblePoints ? focusedIndex.value : null),
+  { flush: "post" },
+);
 
 // the accessible point layer (shared with the other DOM renderers)
 let layer: QuadrantPointLayer | null = null;
 const layerOptions = (): QuadrantPointLayerOptions => ({
-  config: {
-    ...geometry(),
-    points: raw(props.points).map(raw),
-    quadrants: raw(props.quadrants),
-    xLabel: props.xLabel,
-    yLabel: props.yLabel,
-    name: props.name,
-  },
+  config: pointConfig(),
   locale: props.locale,
   movable: !!vnode?.props?.onPointDrop && props.draggable !== false,
   selected: [
@@ -311,7 +377,14 @@ const syncLayer = () => {
     layer = createQuadrantPointLayer(root.value, layerOptions());
 };
 onMounted(syncLayer);
-watch(() => ({ ...props }), syncLayer, { flush: "post" });
+watch(
+  () => ({ ...props }),
+  () => {
+    syncLayer();
+    syncCard();
+  },
+  { flush: "post" },
+);
 // the focus ring is not a prop: redraw on its own
 watch(focusedIndex, () => handle.getInstance()?.setOptions(build()));
 onBeforeUnmount(() => {
@@ -329,8 +402,8 @@ defineExpose(handle);
     :style="rootStyle"
   >
     <div :ref="setContainer" style="position: absolute; inset: 0"></div>
-    <div v-if="overlaid" class="minerva-chart-overlay" :style="overlayStyle">
-      <template v-if="slots['quadrant-header'] && plot">
+    <div v-if="plot" class="minerva-chart-overlay" :style="overlayStyle">
+      <template v-if="slots['quadrant-header']">
         <div
           v-for="corner in QUADRANT_CORNERS"
           :key="corner"
@@ -348,20 +421,15 @@ defineExpose(handle);
           </div>
         </div>
       </template>
-      <div
-        v-if="slots['point-actions'] && plot && active"
-        :key="`point-${active.index}`"
-        class="minerva-chart-quadrant-point"
-        :data-point-index="active.index"
-        :data-label="active.point.label"
-        :style="active.style"
-      >
-        <slot
-          name="point-actions"
-          :point="active.point"
-          :index="active.index"
-        />
-      </div>
+      <!-- the box of the point card (DOM of its own, filled by the card) -->
+      <div ref="cardHost" :style="cardHostStyle"></div>
     </div>
+    <Teleport v-if="card && cardPoint" :to="card.actions">
+      <slot
+        name="point-actions"
+        :point="cardPoint.point"
+        :index="cardPoint.index"
+      />
+    </Teleport>
   </div>
 </template>

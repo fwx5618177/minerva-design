@@ -165,17 +165,17 @@ const boxOf = (el: Element | null | undefined): QuadrantTaskBox | null => {
     height: r.height,
   };
 };
-/** Box around a task (its anchor in the chart), else the last pointer */
+/** Box around a task (the dot of its point card), else the last pointer */
 const pointBox = (index: number): QuadrantTaskBox => {
   const box = boxOf(
     board.value?.querySelector(
-      `.minerva-chart-quadrant-point[data-point-index="${index}"]`,
+      `.minerva-chart-quadrant-card[data-point-preview="${index}"] [data-card-dot]`,
     ),
   );
   if (box)
     return {
-      x: box.x - DOT,
-      y: box.y - DOT,
+      x: box.x + box.width / 2 - DOT,
+      y: box.y + box.height / 2 - DOT,
       width: 2 * DOT,
       height: 2 * DOT,
     };
@@ -358,10 +358,11 @@ defineExpose(handle);
       @renderer-change="emit('rendererChange', $event)"
     >
       <template #point-actions="{ index }">
+        <!-- compact, in the card of the active task (beside its name) -->
         <div
           role="toolbar"
           :aria-label="texts.actions"
-          :class="styles.actions"
+          :class="styles.cardActions"
           @pointerdown.stop
         >
           <IconButton

@@ -35,7 +35,7 @@ export const uniComponentManifest = [
       "src/choice-parity.test.ts",
       "src/switch-native-state.test.ts",
       "src/base-contract-parity.test.ts",
-      "spike/browser/advanced.spec.ts: real Chromium interaction and geometry",
+      "spike/h5/advanced.test.ts: H5 fixture interaction and ARIA",
     ],
     status: "implemented",
     deviceE2E: false,
@@ -63,7 +63,7 @@ export const uniComponentManifest = [
     ],
     tests: [
       "src/choice-parity.test.ts",
-      "spike/browser/advanced.spec.ts: real Chromium interaction and geometry",
+      "spike/h5/advanced.test.ts: H5 fixture interaction and ARIA",
     ],
     status: "partial",
     deviceE2E: false,
@@ -77,7 +77,7 @@ export const uniComponentManifest = [
     ],
     tests: [
       "src/primitives-parity.test.ts: behavior and styling contracts",
-      "spike/browser/primitives.spec.ts: real Chromium geometry, theme and interaction",
+      "spike/h5/primitives.test.ts: H5 fixture theme and interaction",
     ],
     status: "partial",
     deviceE2E: false,
@@ -101,7 +101,7 @@ export const uniComponentManifest = [
     limitations: [
       "Native Image renders the exact theme-resolved React SVG path and clipped half fill; real-device SVG data-URI support remains unverified.",
     ],
-    tests: ["src/rating-parity.test.ts", "spike/browser/overlays.spec.ts"],
+    tests: ["src/rating-parity.test.ts", "spike/h5/overlays.test.ts"],
     status: "partial",
     deviceE2E: false,
   },
@@ -165,7 +165,7 @@ export const uniComponentManifest = [
     limitations: [],
     tests: [
       "src/json-field-parity.test.ts",
-      "spike/browser/advanced.spec.ts: real Chromium interaction and geometry",
+      "spike/h5/advanced.test.ts: H5 fixture interaction and ARIA",
     ],
     status: "implemented",
     deviceE2E: false,
@@ -189,7 +189,7 @@ export const uniComponentManifest = [
     scope:
       "YYYY-MM-DD controlled strings/null/empty, defaultValue, strict typing and lenient blur normalization, valid-date and minDate/maxDate checks, clearing, field locks, label and open/change events. Popup MonthCalendar with month navigation; update:modelValue supports v-model.",
     limitations: ["Native focus and popup placement need device validation."],
-    tests: ["src/date-picker.test.ts", "spike/browser/date-picker.spec.ts"],
+    tests: ["src/date-picker.test.ts", "spike/h5/date-picker.test.ts"],
     status: "partial",
     deviceE2E: false,
   },
@@ -201,7 +201,7 @@ export const uniComponentManifest = [
     tests: [
       "src/time-picker-parity.test.ts",
       "src/anchored-fields-parity.test.ts",
-      "spike/browser/styles.spec.ts",
+      "spike/h5/styles.test.ts",
     ],
     status: "implemented",
     deviceE2E: false,
@@ -376,7 +376,7 @@ export const uniComponentManifest = [
     limitations: [],
     tests: [
       "src/tabs-parity.test.ts",
-      "spike/browser/advanced.spec.ts: real Chromium interaction and geometry",
+      "spike/h5/advanced.test.ts: H5 fixture interaction and ARIA",
     ],
     status: "implemented",
     deviceE2E: false,
@@ -386,7 +386,7 @@ export const uniComponentManifest = [
     scope:
       "Controlled/uncontrolled selection, closable tabs, actions, dirty/icons/disabled, scrolling overflow arrows and active auto-scroll, onSelect callbacks and removal focus recovery.",
     limitations: [],
-    tests: ["src/page-tabs-parity.test.ts", "spike/browser/styles.spec.ts"],
+    tests: ["src/page-tabs-parity.test.ts", "spike/h5/styles.test.ts"],
     status: "implemented",
     deviceE2E: false,
   },
@@ -400,7 +400,7 @@ export const uniComponentManifest = [
     tests: [
       "src/navigation-data.test.ts",
       "src/anchored-fields-parity.test.ts",
-      "spike/browser/overlays.spec.ts",
+      "spike/h5/overlays.test.ts",
     ],
     status: "partial",
     deviceE2E: false,
@@ -438,7 +438,7 @@ export const uniComponentManifest = [
     limitations: [
       "Native hosts do not expose DOM inert, document-wide focus trapping or React asChild cloning.",
     ],
-    tests: ["src/modal-parity.test.ts", "spike/browser/overlays.spec.ts"],
+    tests: ["src/modal-parity.test.ts", "spike/h5/overlays.test.ts"],
     status: "partial",
     deviceE2E: false,
   },
@@ -451,7 +451,8 @@ export const uniComponentManifest = [
     ],
     tests: [
       "src/drawer-parity.test.ts",
-      "spike/browser/advanced.spec.ts: real Chromium interaction and geometry",
+      "spike/h5/advanced.test.ts: H5 fixture interaction and ARIA",
+      "spike/h5/h5.test.ts: H5 lifecycle modality",
     ],
     status: "partial",
     deviceE2E: false,
@@ -478,6 +479,7 @@ export const uniComponentManifest = [
     tests: [
       "src/parity.test.ts: native host mount",
       "src/popover-parity.test.ts: behavioral parity",
+      "spike/h5/h5.test.ts: H5 asChild close and lifecycle modality",
     ],
     status: "partial",
     deviceE2E: false,
@@ -491,7 +493,7 @@ export const uniComponentManifest = [
     ],
     tests: [
       "src/tooltip-icon-parity.test.ts",
-      "spike/browser/advanced.spec.ts: real Chromium interaction and geometry",
+      "spike/h5/advanced.test.ts: H5 fixture interaction and ARIA",
     ],
     status: "partial",
     deviceE2E: false,
@@ -514,7 +516,7 @@ export const uniComponentManifest = [
     ],
     tests: [
       "src/command-parity.test.ts",
-      "spike/browser/advanced.spec.ts: real Chromium interaction and geometry",
+      "spike/h5/advanced.test.ts: H5 fixture interaction and ARIA",
     ],
     status: "partial",
     deviceE2E: false,
@@ -556,7 +558,7 @@ export const uniComponentManifest = [
     ],
     tests: [
       "src/virtual-list-parity.test.ts",
-      "spike/browser/advanced.spec.ts: real Chromium interaction and geometry",
+      "spike/h5/advanced.test.ts: H5 fixture interaction and ARIA",
     ],
     status: "partial",
     deviceE2E: false,
@@ -645,7 +647,7 @@ export const uniComponentManifest = [
     ],
     tests: [
       "src/primitives-parity.test.ts: behavior and styling contracts",
-      "spike/browser/primitives.spec.ts: real Chromium geometry, theme and interaction",
+      "spike/h5/primitives.test.ts: H5 fixture theme and interaction",
     ],
     status: "partial",
     deviceE2E: false,
@@ -657,7 +659,7 @@ export const uniComponentManifest = [
     limitations: [],
     tests: [
       "src/primitives-parity.test.ts: behavior and styling contracts",
-      "spike/browser/primitives.spec.ts: real Chromium geometry, theme and interaction",
+      "spike/h5/primitives.test.ts: H5 fixture theme and interaction",
     ],
     status: "implemented",
     deviceE2E: false,
@@ -669,7 +671,7 @@ export const uniComponentManifest = [
     limitations: [],
     tests: [
       "src/alert-parity.test.ts",
-      "spike/browser/advanced.spec.ts: real Chromium interaction and geometry",
+      "spike/h5/advanced.test.ts: H5 fixture interaction and ARIA",
     ],
     status: "implemented",
     deviceE2E: false,
@@ -681,7 +683,7 @@ export const uniComponentManifest = [
     limitations: [],
     tests: [
       "src/primitives-parity.test.ts: behavior and styling contracts",
-      "spike/browser/primitives.spec.ts: real Chromium geometry, theme and interaction",
+      "spike/h5/primitives.test.ts: H5 fixture theme and interaction",
     ],
     status: "implemented",
     deviceE2E: false,
@@ -847,7 +849,7 @@ export const uniComponentManifest = [
     limitations: [],
     tests: [
       "src/primitives-parity.test.ts: behavior and styling contracts",
-      "spike/browser/primitives.spec.ts: real Chromium geometry, theme and interaction",
+      "spike/h5/primitives.test.ts: H5 fixture theme and interaction",
     ],
     status: "implemented",
     deviceE2E: false,
@@ -859,7 +861,7 @@ export const uniComponentManifest = [
     limitations: [],
     tests: [
       "src/primitives-parity.test.ts: behavior and styling contracts",
-      "spike/browser/primitives.spec.ts: real Chromium geometry, theme and interaction",
+      "spike/h5/primitives.test.ts: H5 fixture theme and interaction",
     ],
     status: "implemented",
     deviceE2E: false,
@@ -872,7 +874,7 @@ export const uniComponentManifest = [
     tests: [
       "src/primitives-parity.test.ts: behavior and styling contracts",
       "src/code-block.test.ts: highlighting, line numbers, language label and raw copy",
-      "spike/browser/primitives.spec.ts: real Chromium geometry, theme and interaction",
+      "spike/h5/primitives.test.ts: H5 fixture theme and interaction",
     ],
     status: "implemented",
     deviceE2E: false,
@@ -905,7 +907,7 @@ export const uniComponentManifest = [
     limitations: [],
     tests: [
       "src/tooltip-icon-parity.test.ts",
-      "spike/browser/advanced.spec.ts: real Chromium interaction and geometry",
+      "spike/h5/advanced.test.ts: H5 fixture interaction and ARIA",
     ],
     status: "implemented",
     deviceE2E: false,
@@ -1030,7 +1032,7 @@ export const uniComponentManifest = [
     ],
     tests: [
       "src/drawer-parity.test.ts",
-      "spike/browser/advanced.spec.ts: real Chromium interaction and geometry",
+      "spike/h5/advanced.test.ts: H5 fixture interaction and ARIA",
     ],
     status: "partial",
     deviceE2E: false,
@@ -1121,7 +1123,7 @@ export const uniComponentManifest = [
     limitations: [],
     tests: [
       "src/primitives-parity.test.ts: behavior and styling contracts",
-      "spike/browser/primitives.spec.ts: real Chromium geometry, theme and interaction",
+      "spike/h5/primitives.test.ts: H5 fixture theme and interaction",
     ],
     status: "implemented",
     deviceE2E: false,
@@ -1242,7 +1244,7 @@ export const uniComponentManifest = [
     ],
     tests: [
       "src/choice-parity.test.ts",
-      "spike/browser/advanced.spec.ts: real Chromium interaction and geometry",
+      "spike/h5/advanced.test.ts: H5 fixture interaction and ARIA",
     ],
     status: "partial",
     deviceE2E: false,
@@ -1313,7 +1315,7 @@ export const uniComponentManifest = [
     limitations: [],
     tests: [
       "src/tabs-parity.test.ts",
-      "spike/browser/advanced.spec.ts: real Chromium interaction and geometry",
+      "spike/h5/advanced.test.ts: H5 fixture interaction and ARIA",
     ],
     status: "implemented",
     deviceE2E: false,
@@ -1325,7 +1327,7 @@ export const uniComponentManifest = [
     limitations: [],
     tests: [
       "src/tabs-parity.test.ts",
-      "spike/browser/advanced.spec.ts: real Chromium interaction and geometry",
+      "spike/h5/advanced.test.ts: H5 fixture interaction and ARIA",
     ],
     status: "implemented",
     deviceE2E: false,
@@ -1337,7 +1339,7 @@ export const uniComponentManifest = [
     limitations: [],
     tests: [
       "src/tabs-parity.test.ts",
-      "spike/browser/advanced.spec.ts: real Chromium interaction and geometry",
+      "spike/h5/advanced.test.ts: H5 fixture interaction and ARIA",
     ],
     status: "implemented",
     deviceE2E: false,
@@ -1437,10 +1439,7 @@ export const uniComponentManifest = [
     scope:
       "Shared Modal alertdialog with small geometry/title/description/closeLabel, real Button actions, async pending repeat lock/error, controlled cancel requests and focus recovery.",
     limitations: [],
-    tests: [
-      "src/context-confirm-parity.test.ts",
-      "spike/browser/dialogs.spec.ts",
-    ],
+    tests: ["src/context-confirm-parity.test.ts", "spike/h5/dialogs.test.ts"],
     status: "implemented",
     deviceE2E: false,
   },
@@ -1473,10 +1472,7 @@ export const uniComponentManifest = [
     scope:
       "Pointer, Shift+F10/Menu-key and cancelable 700ms touch opening; size/loop/dir/labels, disabled preserves native menu, measured flip/shift, original menu items, focus return and keyboard Tab containment.",
     limitations: ["Native fixed positioning replaces DOM portals."],
-    tests: [
-      "src/context-confirm-parity.test.ts",
-      "spike/browser/dialogs.spec.ts",
-    ],
+    tests: ["src/context-confirm-parity.test.ts", "spike/h5/dialogs.test.ts"],
     status: "partial",
     deviceE2E: false,
   },
@@ -1508,7 +1504,7 @@ export const uniComponentManifest = [
     limitations: [],
     tests: [
       "src/primitives-parity.test.ts: behavior and styling contracts",
-      "spike/browser/primitives.spec.ts: real Chromium geometry, theme and interaction",
+      "spike/h5/primitives.test.ts: H5 fixture theme and interaction",
     ],
     status: "implemented",
     deviceE2E: false,
@@ -1581,7 +1577,6 @@ export const uniComponentManifest = [
     ],
     tests: [
       "src/monaco.test.ts",
-      "spike/browser/h5.spec.ts",
       "src/extended.test.ts: Monaco remains absent from native entry",
     ],
     status: "n/a",

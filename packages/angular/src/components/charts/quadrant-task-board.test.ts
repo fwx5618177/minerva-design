@@ -1,17 +1,19 @@
-// MnQuadrantTaskBoard with a fake chart engine (the real one needs a GPU /
-// canvas browser): the headers and the actions of the active task are
-// templates of MnQuadrantChart placed over the plot area reported by the
-// engine (`layout`); add / edit / delete happen in an inline panel inside
-// the board (not a modal).
+// MnQuadrantChart with a fake chart engine (the real one needs a GPU /
+// canvas browser): the headers are templates of MnQuadrantChart placed over
+// the plot area reported by the engine (`layout`), the actions of the active
+// task are rendered in its point card; add / edit / delete happen in an
+// inline panel inside the board (not a modal).
 import { Component, signal } from "@angular/core";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { QuadrantPoint } from "minerva-design/charts/core";
+import { QUADRANT_CARD_LINGER_MS } from "minerva-design/charts/core";
 import { render, screen, settle, user, within } from "../../testing";
 import { MnQuadrantChart, MnQuadrantTaskBoard } from ".";
 
 type Listener = (event: unknown) => void;
 interface FakeEngine {
   options: Record<string, unknown>;
+  hiddenLabel?: unknown;
   fire(type: string, event: unknown): void;
 }
 const engines: FakeEngine[] = [];
@@ -40,6 +42,14 @@ vi.mock("minerva-design/charts/core", async (importOriginal) => {
         resetZoom: vi.fn(),
         getView: () => null,
         getRenderer: () => "canvas2d",
+        setLabelHidden: (point: unknown) => {
+          engine.hiddenLabel = point;
+        },
+        // the plot of `layout` below: 400 x 300 at (40, 10), [0, 10] domains
+        toPixel: (x: number, y: number) => ({
+          x: 40 + 40 * x,
+          y: 10 + 30 * (10 - y),
+        }),
         on: (type: string, listener: Listener) => {
           if (!listeners.has(type)) listeners.set(type, new Set());
           listeners.get(type)!.add(listener);
@@ -168,11 +178,12 @@ describe("MnQuadrantTaskBoard", () => {
     // [(points)] took the new list; the new task is the active one
     expect(fixture.componentInstance.points()).toHaveLength(3);
     expect(dialog()).toBeNull();
+    // the new task is selected: its card shows
     expect(
-      (fixture.nativeElement as HTMLElement).querySelector(
-        '.minerva-chart-quadrant-point[data-point-index="2"]',
-      ),
-    ).not.toBeNull();
+      (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(
+        "[data-point-preview]",
+      )!.dataset["pointPreview"],
+    ).toBe("2");
   });
 
   it("Escape closes the panel and gives the focus back (a press inside keeps it open)", async () => {
@@ -226,9 +237,13 @@ describe("MnQuadrantTaskBoard", () => {
     engines[0]!.fire("click", { items: [{ index: 0 }] });
     await settle(fixture);
     const toolbar = screen.getByRole("toolbar", { name: "Task actions" });
-    expect(
-      toolbar.closest("[data-point-index]")!.getAttribute("data-label"),
-    ).toBe("Ship");
+    // compact, in the card of the selected task
+    const card = toolbar.closest<HTMLElement>("[data-point-preview]")!;
+    expect(card.dataset["pointPreview"]).toBe("0");
+    expect(card.textContent).toContain("Ship");
+    expect(toolbar.parentElement!.hasAttribute("data-card-actions")).toBe(true);
+    expect(toolbar.classList.contains("cardActions")).toBe(true);
+    expect(engines[0]!.hiddenLabel).toEqual({ seriesIndex: 0, index: 0 });
     await u.click(within(toolbar).getByRole("button", { name: "Edit task" }));
     await settle(fixture);
     expect(within(dialog()!).getByText("Edit task")).toBeTruthy();
@@ -318,8 +333,7 @@ describe("MnQuadrantTaskBoard", () => {
     expect(
       screen
         .getByRole("toolbar", { name: "Task actions" })
-        .closest("[data-point-index]")!
-        .getAttribute("data-point-index"),
+        .closest<HTMLElement>("[data-point-preview]")!.dataset["pointPreview"],
     ).toBe("1");
   });
 
@@ -383,28 +397,47 @@ describe("MnQuadrantChart templates", () => {
       "bottomLeft:1",
       "bottomRight:0",
     ]);
-    const point = host.querySelector<HTMLElement>(
-      ".minerva-chart-quadrant-point",
+    // with actions the selected point keeps its card, the actions in it
+    const card = () => host.querySelector<HTMLElement>("[data-point-preview]");
+    const actions = () =>
+      card()!.querySelector<HTMLElement>("[data-card-actions]")!;
+    expect(card()!.dataset["pointPreview"]).toBe("0");
+    expect(card()!.textContent).toContain("A");
+    expect(actions().textContent).toBe("A#0");
+    expect(actions().style.display).toBe("flex");
+    // the box of the card covers the plot
+    expect(card()!.parentElement!.style.width).toBe("100px");
+    expect(card()!.parentElement!.style.height).toBe("100px");
+    // reversed x: 2 of [0, 10] is at 80px from the left; the dot on the
+    // first row (24px high with actions) at 20px from the top
+    const [, left, top] = /translate\(([\d.-]+)px, ([\d.-]+)px\)/.exec(
+      card()!.style.transform,
     )!;
-    expect(point.textContent).toBe("A#0");
-    // reversed x: 2 of [0, 10] is at 80% from the left
-    expect(parseFloat(point.style.left)).toBeCloseTo(80);
-    expect(parseFloat(point.style.top)).toBeCloseTo(20);
-    // the hovered point takes the actions, leaving gives them back to the selection
+    expect(Number(left)).toBeCloseTo(80);
+    expect(Number(top)).toBeCloseTo(2);
+    // the hovered point takes the card, leaving gives it back to the selection
     engines[0]!.fire("hover", { items: [{ index: 1 }] });
     await settle(fixture);
-    expect(host.querySelector(".a")!.textContent).toBe("B#1");
+    expect(card()!.dataset["pointPreview"]).toBe("1");
+    expect(actions().textContent).toBe("B#1");
+    expect(host.querySelectorAll(".a")).toHaveLength(1);
     engines[0]!.fire("hover", { items: [] });
-    await settle(fixture);
-    expect(host.querySelector(".a")!.textContent).toBe("A#0");
+    await settle(fixture, QUADRANT_CARD_LINGER_MS + 50);
+    expect(card()!.dataset["pointPreview"]).toBe("0");
+    expect(actions().textContent).toBe("A#0");
+    expect(host.querySelectorAll(".a")).toHaveLength(1);
+    // destroyed with the chart
+    fixture.destroy();
+    expect(host.querySelector("[data-point-preview]")).toBeNull();
   });
 
-  it("without templates nothing is overlaid and the titles stay drawn", async () => {
+  it("without templates the titles stay drawn; the overlay only holds the card", async () => {
     @Component({
       imports: [MnQuadrantChart],
       template: `<mn-quadrant-chart
         [points]="[{ x: 2, y: 8 }]"
         [quadrants]="{ topLeft: { label: 'Do first' } }"
+        [selectedIndex]="0"
         showCounts
       />`,
     })
@@ -414,7 +447,10 @@ describe("MnQuadrantChart templates", () => {
     engines[0]!.fire("layout", { x: 0, y: 0, width: 100, height: 100 });
     await settle(fixture);
     const host = fixture.nativeElement as HTMLElement;
-    expect(host.querySelector(".minerva-chart-overlay")).toBeNull();
+    const overlay = host.querySelector(".minerva-chart-overlay")!;
+    expect(overlay.querySelector(".minerva-chart-quadrant-header")).toBeNull();
+    // no actions: the selection is a ring, not a card
+    expect(host.querySelector("[data-point-preview]")).toBeNull();
     const areas = engines[0]!.options.annotations as Array<{ label?: string }>;
     expect(areas[0]!.label).toBe("Do first");
   });

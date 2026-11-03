@@ -87,7 +87,7 @@ await import("../../elements/trading-chart");
 await import("../../elements/order-book");
 await import("../../elements/chart-3d");
 await import("../../elements/graph");
-const { mount, settle } = await import("../../../tests/utils");
+const { mount, settle, wait } = await import("../../../tests/utils");
 const { QUADRANT_HEADER_SLOTS } = await import("./charts");
 type MinervaQuadrantChart = import("./charts").MinervaQuadrantChart;
 
@@ -400,7 +400,7 @@ describe("cartesian elements", () => {
     ]);
   });
 
-  it("<minerva-quadrant-chart> places the header and point-actions slots over the plot", async () => {
+  it("<minerva-quadrant-chart> places the header slots and the point card over the plot", async () => {
     const points = [
       { x: 2, y: 8, label: "A" },
       { x: 8, y: 2, label: "B" },
@@ -411,48 +411,100 @@ describe("cartesian elements", () => {
       "show-counts",
     );
     const quadrant = el as unknown as MinervaQuadrantChart;
+    const root = el.shadowRoot!;
     const titles = () =>
       (engine.options.annotations as Array<{ label?: unknown }>)
         .slice(0, 4)
         .map((a) => a.label);
-    // without slotted content: drawn titles, no overlay
+    // the card replaces the engine tooltip, label chip and drag pill
+    expect(engine.options.tooltip).toBe(false);
+    expect(engine.options.interaction).toMatchObject({
+      hoverLabel: false,
+      dragLabel: false,
+    });
+    // without slotted content: drawn titles, the box of the card alone
     expect(titles()[0]).toBeTruthy();
+    expect(root.querySelector("[part=overlay]")).toBeNull();
     engine.fire("layout", { x: 10, y: 20, width: 200, height: 100 });
     await settle();
-    expect(el.shadowRoot!.querySelector("[part=overlay]")).toBeNull();
+    const overlay = root.querySelector<HTMLElement>("[part=overlay]")!;
+    expect(overlay.style.left).toBe("10px");
+    expect(overlay.style.width).toBe("200px");
+    expect(root.querySelector("[part=quadrant-header]")).toBeNull();
+    const host = root.querySelector<HTMLElement>("[data-card-host]")!;
+    expect(host.parentElement).toBe(overlay);
+    expect(host.style.width).toBe("200px");
+    expect(host.style.height).toBe("100px");
+    const card = () => root.querySelector<HTMLElement>("[part=point-card]");
+    expect(card()).toBeNull();
+
+    // a hovered dot shows its card, without actions
+    engine.fire("hover", { items: [{ index: 1 }] });
+    expect(card()!.dataset.pointPreview).toBe("1");
+    expect(card()!.parentElement).toBe(host);
+    expect(card()!.textContent).toContain("B");
+    expect(called(engine, "setLabelHidden").at(-1)).toEqual([
+      { seriesIndex: 0, index: 1 },
+    ]);
+    const actions = card()!.querySelector<HTMLElement>("[data-card-actions]")!;
+    expect(actions.getAttribute("part")).toBe("point-actions");
+    expect(actions.style.display).toBe("none");
+    expect(quadrant.activeIndex).toBe(1);
+    // a selection alone is a ring: no card
+    engine.fire("hover", null);
+    quadrant.selectedIndex = 0;
+    await wait(250);
+    expect(card()).toBeNull();
+    expect(quadrant.activeIndex).toBeNull();
 
     el.innerHTML = `<b slot="quadrant-header-top-left">Do</b><i slot="point-actions">edit</i>`;
     await settle();
     expect(titles()).toEqual([undefined, undefined, undefined, undefined]);
-    const overlay =
-      el.shadowRoot!.querySelector<HTMLElement>("[part=overlay]")!;
-    expect(overlay.style.left).toBe("10px");
-    expect(overlay.style.width).toBe("200px");
     expect(
-      Array.from(
-        el.shadowRoot!.querySelectorAll("[part=quadrant-header] slot"),
-      ).map((slot) => slot.getAttribute("name")),
+      Array.from(root.querySelectorAll("[part=quadrant-header] slot")).map(
+        (slot) => slot.getAttribute("name"),
+      ),
     ).toEqual(Object.values(QUADRANT_HEADER_SLOTS));
-    const anchor = () =>
-      el.shadowRoot!.querySelector<HTMLElement>("[part=point-actions]");
-    expect(anchor()).toBeNull();
-    expect(quadrant.activeIndex).toBeNull();
-
+    // with actions, the selected dot keeps its card: the actions in it
+    expect(card()!.dataset.pointPreview).toBe("0");
+    expect(quadrant.activeIndex).toBe(0);
+    const slot = card()!.querySelector<HTMLSlotElement>(
+      "[data-card-actions] slot",
+    )!;
+    expect(slot.name).toBe("point-actions");
+    expect(slot.assignedElements()).toEqual([el.querySelector("i")]);
+    expect(
+      card()!.querySelector<HTMLElement>("[data-card-actions]")!.style.display,
+    ).toBe("flex");
     // the hovered dot, else the selected one
     engine.fire("hover", { items: [{ index: 1 }] });
-    await settle();
     expect(quadrant.activeIndex).toBe(1);
-    expect(anchor()!.dataset.pointIndex).toBe("1");
-    expect(anchor()!.style.left).toBe("80%");
     engine.fire("hover", null);
-    quadrant.selectedIndex = 0;
-    await settle();
-    expect(anchor()!.dataset.pointIndex).toBe("0");
+    await wait(250);
+    expect(quadrant.activeIndex).toBe(0);
+
+    // a dragged dot: its card follows without actions
+    engine.fire("dragStart", { item: { index: 1 }, x: 8, y: 2 });
+    expect(card()!.dataset.pointPreview).toBe("1");
+    expect(card()!.hasAttribute("data-dragging")).toBe(true);
+    expect(quadrant.activeIndex).toBeNull();
+    engine.fire("drag", { item: { index: 1 }, x: 7, y: 9 });
+    engine.fire("dragEnd", { item: { index: 1 }, cancelled: true });
+    expect(card()!.dataset.pointPreview).toBe("0");
+    expect(quadrant.activeIndex).toBe(0);
 
     el.innerHTML = "";
     await settle();
     expect(titles()[0]).toBeTruthy();
-    expect(el.shadowRoot!.querySelector("[part=overlay]")).toBeNull();
+    expect(root.querySelector("[part=quadrant-header]")).toBeNull();
+    expect(card()).toBeNull();
+
+    // gone with the element
+    engine.fire("hover", { items: [{ index: 1 }] });
+    expect(card()).not.toBeNull();
+    el.remove();
+    expect(card()).toBeNull();
+    expect(quadrant.activeIndex).toBeNull();
   });
 });
 

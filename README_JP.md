@@ -359,7 +359,6 @@ pnpm dev
 | `pnpm build`                        | 全レンダラーを `minerva-design` にビルドし、次にドキュメントサイトをビルド |
 | `pnpm test`                         | 全 Vitest テスト：ユニット、ドキュメント検査、ホスト上のユーザーフロー     |
 | `pnpm test:unit` / `pnpm test:e2e`  | ユニット / ホストのフロー（happy-dom、React Native testing library）       |
-| `pnpm test:browser`                 | 実 Chromium で本番ドキュメントをテスト（ビルドと Chromium インストール後） |
 | `pnpm test:contracts:mini`          | Taro / uni-app 共通のボタン、選択、制御状態テスト                          |
 | `pnpm test:dist`                    | ビルドした `minerva-design` とその tarball のテスト（ビルド後に実行）      |
 | `pnpm test:coverage`                | カバレッジ付きで全テストを実行（しきい値あり）                             |
@@ -374,7 +373,7 @@ pnpm dev
 ### ツール
 
 - ビルド：Vite 8
-- テスト：Vitest、Testing Library、happy-dom
+- テスト：Vitest、Testing Library、happy-dom。ユニット・統合テスト（コンポーネント、ドキュメントのデモ、ユーザーフロー）はすべて Vitest で実行；ブラウザテストはなく、ピクセル・レイアウト・GPU 出力は自動検査しない
 - リント・フォーマット：ESLint 10 + typescript-eslint、Prettier
 - Git フック：Husky、lint-staged、commitlint（Conventional Commits）
 - CI：`.github/workflows/ci.yml` が `main` への push とすべての Pull Request で、Node 22 上で lint、型チェック、整形チェック、カバレッジ付きテスト、ビルド、ビルド成果物のテスト、パッケージチェックを実行

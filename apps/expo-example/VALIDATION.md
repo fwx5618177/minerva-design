@@ -1,6 +1,6 @@
 # Expo host validation
 
-Verified on 2026-10-09 using the workspace example and built `minerva-design/native` entry. These checks execute Expo Go and native platform adapters, in addition to the separate React Native Testing Library and browser suites.
+Verified on 2026-10-09 using the workspace example and built `minerva-design/native` entry. These checks execute Expo Go and native platform adapters, in addition to the separate React Native Testing Library suites (`tests/e2e-native`, which also render the Advanced components, Virtual list and Document preview screens).
 
 | Host             | Runtime                                                                                                           | Scope                                                                                                                                                                                                                                                         |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -27,12 +27,12 @@ Build the public package from the workspace root, then start the example:
 
 ```sh
 pnpm --filter minerva-design build
-pnpm --filter @minerva/expo-example start --lan --port 8420
+pnpm --filter ./apps/expo-example start --lan --port 8420
 adb -s emulator-5554 reverse tcp:8420 tcp:8420
 adb -s emulator-5554 shell am start -a android.intent.action.VIEW -d exp://127.0.0.1:8420 host.exp.exponent
 ```
 
-Use Advanced components, Document preview and Virtual list from the example home screen. Choose the target emulator explicitly when using ADB. The Android smoke test used the actual software keyboard, with Back to dismiss it before choosing suggestions that were underneath it. Browser-only flows can be repeated with `verify-browser.mjs` against the exported web example.
+Use Advanced components, Document preview and Virtual list from the example home screen. Choose the target emulator explicitly when using ADB. The Android smoke test used the actual software keyboard, with Back to dismiss it before choosing suggestions that were underneath it. The screen flows (table, autocomplete, cascader, JSON precision, menu, popover, command search, confirmation, file selection, HTML document update and external-navigation rejection, 10,000-row list) also run without a device or browser: `pnpm exec vitest run --project e2e-native`.
 
 ## Boundaries
 

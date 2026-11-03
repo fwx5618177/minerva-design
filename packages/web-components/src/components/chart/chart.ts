@@ -1,6 +1,7 @@
 import { property } from "lit/decorators.js";
 import {
   createChart,
+  type ChartDragEndEvent,
   type ChartDragEvent,
   type ChartHoverEvent,
   type ChartInstance,
@@ -45,8 +46,10 @@ export abstract class MinervaCartesianChartElement extends MinervaEngineElement<
       chart.on("renderer", (renderer) =>
         this.emit("minerva-renderer-change", { renderer }),
       ),
+      chart.on("dragStart", (event) => this.pointDragStarted?.(event)),
       chart.on("drag", (event) => this.pointDragged?.(event)),
       chart.on("drop", (event) => this.pointDropped?.(event)),
+      chart.on("dragEnd", (event) => this.pointDragEnded?.(event)),
     ];
   }
 
@@ -58,9 +61,14 @@ export abstract class MinervaCartesianChartElement extends MinervaEngineElement<
     this.emit("minerva-plot-click", event);
   }
 
+  protected pointDragStarted?(event: ChartDragEvent): void;
+
   protected pointDragged?(event: ChartDragEvent): void;
 
   protected pointDropped?(event: ChartDragEvent): void;
+
+  /** The drag is over (after the drop, or cancelled) */
+  protected pointDragEnded?(event: ChartDragEndEvent): void;
 
   /** Shows the whole data range */
   resetZoom(): void {

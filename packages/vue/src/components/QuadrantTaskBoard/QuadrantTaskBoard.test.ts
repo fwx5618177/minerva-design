@@ -1,7 +1,7 @@
 // QuadrantTaskBoard against a fake chart engine: the real QuadrantChart
-// renders its `quadrant-header` / `point-actions` slots once the engine
-// reports the plot area; engine events (click, plotClick, drop) drive the
-// board like a user on the canvas.
+// renders its `quadrant-header` slot once the engine reports the plot area,
+// and the `point-actions` slot in the point card of the active task; engine
+// events (click, plotClick, drop) drive the board like a user on the canvas.
 import { describe, expect, it, vi } from "vitest";
 import { defineComponent, h, nextTick, ref } from "vue";
 import { render, screen, within } from "@testing-library/vue";
@@ -42,6 +42,7 @@ vi.mock("minerva-design/charts/core", async (importOriginal) => {
         },
         destroy: () => {},
         getPlotRect: () => null,
+        setLabelHidden: () => {},
       };
     },
   };
@@ -159,10 +160,16 @@ describe("QuadrantTaskBoard", () => {
     expect(change).toHaveBeenLastCalledWith(expected);
     expect(points.value).toEqual(expected);
     expect(screen.queryByRole("dialog")).toBeNull();
-    // the new task is selected
-    expect(
-      screen.getByRole("toolbar", { name: "Task actions" }).parentElement,
-    ).toHaveAttribute("data-point-index", "1");
+    // the new task is selected: its card keeps the actions
+    const toolbar = screen.getByRole("toolbar", { name: "Task actions" });
+    expect(toolbar.parentElement).toHaveAttribute("data-card-actions");
+    expect(toolbar.closest("[data-point-preview]")).toHaveAttribute(
+      "data-point-preview",
+      "1",
+    );
+    expect(toolbar.closest("[data-point-preview]")).toHaveTextContent(
+      "New task",
+    );
 
     // the quadrant picker is a radio group laid out like the matrix
     engine.fire("plotClick", { x: 8, y: 9 });

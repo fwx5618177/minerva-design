@@ -16,7 +16,7 @@
     },
     "triage": {
       "title": "Pastilles, compteurs et déplacements au clavier",
-      "description": "Badges, descriptions et compteurs par quadrant. Le survol, le focus ou la sélection d’une tâche affichent une seule fiche translucide posée sur elle : son point, son nom et son quadrant, à la place de son étiquette ; pendant un glisser, la fiche la suit et nomme le quadrant d’arrivée. Tab parcourt les tâches, Entrée sélectionne et Maj + flèches déplace une tâche avec une annonce accessible."
+      "description": "Les quadrants affichent badges, descriptions et comptes. Survoler ou cibler une tâche affiche une seule carte translucide sur elle : son point, son nom et son quadrant, à la place de son libellé ; la carte s’en va quand le pointeur s’éloigne, avec Échap ou un clic à côté des tâches. Une tâche sélectionnée garde un anneau. Pendant un glissement, la carte suit la tâche et nomme le quadrant où elle tomberait. Tab entre dans la liste des tâches, Entrée sélectionne et Maj + flèches déplacent les tâches entre les quadrants avec des annonces en direct."
     },
     "quadrant-header": {
       "title": "En-têtes de quadrant personnalisés",
@@ -308,7 +308,7 @@
       "onPointDrag": "Appelé avec le point, son index et le quadrant sous le pointeur à chaque déplacement d’un point glissé, avant le relâchement (le point ne bouge pas avant onPointDrop)",
       "onQuadrantClick": "Appelé avec le quadrant et la position (données) quand la zone vide d’un quadrant est cliquée",
       "onPointDrop": "Appelé avec le point, son index et la cible quand un point glissé est relâché ; le définir rend les points déplaçables (mettez à jour points pour les déplacer)",
-      "renderPointActions": "Actions React (p. ex. boutons d’icône compacts modifier / supprimer) affichées dans la fiche du point actif (survolé, ayant le focus ou sélectionné), à côté de son nom ; reçoit le point et son index",
+      "renderPointActions": "Actions React (p. ex. boutons d’icône compacts modifier / supprimer) affichées dans la carte du point actif, à côté de son nom : le point survolé ou ciblé, sinon le point sélectionné (avec des actions, le point sélectionné garde sa carte) ; reçoit le point et son index",
       "renderTooltip": "Contenu React de la fiche du point actif, à la place de son nom et de son quadrant (l’infobulle du moteur n’est pas affichée)",
       "quadrantContent": "Contenu React placé sur chaque quadrant (p. ex. un bouton d’ajout) ; seul ce contenu reçoit les événements de pointeur",
       "renderQuadrantHeader": "En-tête React de chaque quadrant dans son coin extérieur (bord haut pour les quadrants du haut, bord bas pour ceux du bas) ; reçoit le quadrant et { count, points, indices, region } et remplace le titre, la pastille, la description et le compteur dessinés",
@@ -411,7 +411,7 @@
         "noAccessiblePoints": "Retire la liste visuellement masquée des points (flèches pour passer d’un point à l’autre, Entrée pour cliquer, Maj + flèches pour déplacer le point ciblé, anneau de focus)",
         "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
         "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
-        "activeIndex": "Index du point actif, celui qui affiche le slot point-actions : le point survolé, sinon celui qui a le focus clavier, sinon selectedIndex (null : aucun) ; lecture seule",
+        "activeIndex": "Index du point dont la carte montre l’emplacement point-actions : le point survolé, sinon celui ciblé au clavier, sinon selectedIndex (null : aucun, ou pendant un glissement) ; lecture seule",
         "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
       },
       "events": {
@@ -430,7 +430,7 @@
         "quadrant-header-top-right": "En-tête du quadrant supérieur droit",
         "quadrant-header-bottom-left": "En-tête du quadrant inférieur gauche",
         "quadrant-header-bottom-right": "En-tête du quadrant inférieur droit",
-        "point-actions": "Contenu affiché au point actif (par ex. des boutons modifier / supprimer), positionné par l’élément inséré ; il reçoit les événements du pointeur"
+        "point-actions": "Actions affichées dans la carte du point actif, à côté de son nom (p. ex. boutons compacts modifier / supprimer) ; avec des actions, le point sélectionné garde sa carte ; reçoit les événements du pointeur"
       },
       "methods": {
         "resetZoom": "Affiche toute la plage de données",

@@ -8,7 +8,6 @@ support), so they follow the API instead of hard-coding it.
 ```
 pnpm test:contracts            # React / Vue / Web Components / React Native
 pnpm test:contracts:mini       # shared Button / toggle / selection suites on Taro / uni-app
-pnpm test:browser              # production docs in Chromium (build docs first)
 ```
 
 | Path                           | What                                                                  |

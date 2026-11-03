@@ -16,7 +16,7 @@
     },
     "triage": {
       "title": "徽标、计数与键盘移动",
-      "description": "象限带徽标、说明和数量统计。悬停、聚焦或选中任务时，只在任务上显示一张半透明卡片：圆点、名称和象限合为一体，并替代原标签；拖动时卡片跟随任务移动，并显示将要落入的象限。Tab 进入任务列表，Enter 选中，Shift + 方向键移动到相邻象限，并通过 live region 播报。"
+      "description": "象限显示徽标、说明与计数。悬停或聚焦任务时，任务上会出现一张半透明卡片：圆点、名称与所在象限，代替它的标签；指针离开、按 Escape 或点击任务以外的区域时卡片消失。选中的任务保留选中环。拖动任务时卡片跟随，并显示将要落入的象限。Tab 进入任务列表，Enter 选中，Shift + 方向键在象限之间移动任务，并实时播报。"
     },
     "quadrant-header": {
       "title": "自定义象限标题",
@@ -308,7 +308,7 @@
       "onPointDrag": "拖动点的每次移动都会调用，参数为点、索引和指针下方的象限；松开前点不会移动（移动请在 onPointDrop 中处理）",
       "onQuadrantClick": "点击象限的空白区域时调用，参数为象限和数据位置",
       "onPointDrop": "拖动的点被释放时调用，参数为点、索引和放置目标；设置后点即可拖动（需更新 points 才会移动）",
-      "renderPointActions": "显示在活动点（悬停、聚焦或选中）卡片中、名称旁边的 React 操作（如紧凑的编辑 / 删除图标按钮）；参数为该点及其序号",
+      "renderPointActions": "在当前点卡片中、名称旁显示的 React 操作（如紧凑的编辑 / 删除图标按钮）：悬停或聚焦的点，否则为选中的点（有操作时，选中的点保留卡片）；接收该点及其索引",
       "renderTooltip": "活动点卡片的 React 内容，替代其名称和象限（不再显示引擎提示框）",
       "quadrantContent": "放在每个象限上方的 React 内容（如添加按钮）；只有这些内容接收指针事件",
       "renderQuadrantHeader": "每个象限外侧角的 React 标题（上方象限贴顶部，下方象限贴底部）；接收象限和 { count, points, indices, region }，替换绘制的标题、徽标、说明和计数",
@@ -411,7 +411,7 @@
         "noAccessiblePoints": "不渲染视觉隐藏的点列表（方向键在点之间切换、Enter 点击、Shift + 方向键移动聚焦的点、焦点环）",
         "height": "图表高度（包含图例）：像素值或任意 CSS 长度",
         "options": "其他引擎选项（坐标轴、图例、提示框、调色板、格式化……），与元素自身的属性合并；仅作为属性设置",
-        "activeIndex": "活动点的索引，即显示 point-actions 插槽的点：悬停的点，否则为键盘聚焦的点，否则为 selectedIndex（null：无）；只读",
+        "activeIndex": "卡片中显示 point-actions 插槽的点的索引：悬停的点，否则为键盘聚焦的点，否则为 selectedIndex（null：无，或正在拖动）；只读",
         "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null"
       },
       "events": {
@@ -430,7 +430,7 @@
         "quadrant-header-top-right": "右上象限的标题区",
         "quadrant-header-bottom-left": "左下象限的标题区",
         "quadrant-header-bottom-right": "右下象限的标题区",
-        "point-actions": "显示在活动点处的内容（如编辑 / 删除按钮），由插入的元素自行定位；可接收指针事件"
+        "point-actions": "在当前点的卡片中、名称旁显示的操作（如紧凑的编辑 / 删除按钮）；有操作时，选中的点保留卡片；可接收指针事件"
       },
       "methods": {
         "resetZoom": "显示完整的数据范围",

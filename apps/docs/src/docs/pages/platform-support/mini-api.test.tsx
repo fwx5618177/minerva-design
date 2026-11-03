@@ -54,4 +54,7 @@ it("switches real platform API tables through library controls", async () => {
   expect(
     await screen.findByText(/minerva-design\/input\/index/),
   ).toBeInTheDocument();
+  expect(
+    within(screen.getByRole("table", { name: "Events" })).getByText("change"),
+  ).toBeInTheDocument();
 });

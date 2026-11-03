@@ -4448,7 +4448,7 @@
   "MnQuadrantChart": {
     "name": "MnQuadrantChart",
     "source": "src/components/charts/cartesian.ts",
-    "description": "Four-quadrant matrix (priority matrix, Eisenhower, BCG, ...): tinted\nquadrants with titles, dividers, and labelled dots placed without\noverlapping labels. With `draggable`, dots can be dragged to another\nquadrant (`pointDrop`; update `points` to move them).\n\nA visually hidden list of the dots per quadrant (`accessiblePoints`) lets\nscreen readers and keyboards reach every dot: arrows move between them,\nEnter clicks (`pointClick`) and, with `draggable`, Shift + arrows move the\nfocused dot to the neighbouring quadrant (`pointDrop`, announced in a live\nregion). The focused dot gets a focus ring and is reported by `hover`.\n\n`quadrantHeader` and `pointActions` take templates placed over the plot\n(the headers of the quadrants, e.g. with an add button; actions next to\nthe active dot, e.g. edit / delete buttons).",
+    "description": "Four-quadrant matrix (priority matrix, Eisenhower, BCG, ...): tinted\nquadrants with titles, dividers, and labelled dots placed without\noverlapping labels. With `draggable`, dots can be dragged to another\nquadrant (`pointDrop`; update `points` to move them).\n\nA visually hidden list of the dots per quadrant (`accessiblePoints`) lets\nscreen readers and keyboards reach every dot: arrows move between them,\nEnter clicks (`pointClick`) and, with `draggable`, Shift + arrows move the\nfocused dot to the neighbouring quadrant (`pointDrop`, announced in a live\nregion). The focused dot gets a focus ring and is reported by `hover`.\n\nOne point card (in place of the engine tooltip) names the hovered,\nkeyboard-focused or dragged point and its quadrant; with `pointActions`\nit also holds the actions of the point (e.g. edit / delete buttons) and\nthe `selectedIndex` point keeps it. `quadrantHeader` takes a template\nplaced in the outer corner of each quadrant (e.g. with an add button).",
     "members": [
       {
         "name": "height",
@@ -4731,7 +4731,7 @@
         "kind": "input",
         "type": "TemplateRef<QuadrantPointActionsContext> | null | undefined",
         "required": false,
-        "description": "Content shown next to the active point (hovered, keyboard-focused or\n`selectedIndex`), outside the canvas hit region (e.g. edit / delete\nbuttons); it receives pointer events. Context: `let-point`,\n`let-index=\"index\"`"
+        "description": "Actions of a point (e.g. edit / delete buttons), rendered in the first\nrow of its point card (the card of the hovered, keyboard-focused or\n`selectedIndex` point; not while dragging); they receive pointer events\nand keep the card while the pointer or the focus is on them. Context:\n`let-point`, `let-index=\"index\"`"
       },
       {
         "name": "pointClick",
@@ -5847,7 +5847,7 @@
   "MnQuadrantTaskBoard": {
     "name": "MnQuadrantTaskBoard",
     "source": "src/components/charts/quadrant-task-board.ts",
-    "description": "Task board on a four-quadrant matrix (MnQuadrantChart): an add button per\nquadrant, edit and delete buttons on the active task, an inline panel\nanchored inside the board at the button or the task to name a task and\npick its quadrant, an inline confirmation before a delete (Escape or a\npress outside closes the panel), drag and drop and keyboard moves\n(Shift + arrows). Controlled: `points` in, `pointsChange` out\n(`[(points)]`). The other inputs go to the chart.",
+    "description": "Task board on a four-quadrant matrix (MnQuadrantChart): an add button per\nquadrant, edit and delete buttons in the point card of the active task, an\ninline panel anchored inside the board at the button or the task to name a\ntask and pick its quadrant, an inline confirmation before a delete (Escape\nor a press outside closes the panel), drag and drop and keyboard moves\n(Shift + arrows). Controlled: `points` in, `pointsChange` out\n(`[(points)]`). The other inputs go to the chart.",
     "members": [
       {
         "name": "points",

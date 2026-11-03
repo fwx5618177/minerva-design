@@ -52,6 +52,7 @@ vi.mock("minerva-design/charts/core", async (importOriginal) => {
         getView: () => ({ x: [0, 1], y: [0, 1] }),
         getRenderer: () => "webgl2",
         toggle: vi.fn(),
+        setLabelHidden: vi.fn(),
         on: (type: string, listener: Listener) => {
           if (!listeners.has(type)) listeners.set(type, new Set());
           listeners.get(type)!.add(listener);
@@ -173,6 +174,14 @@ describe("cartesian charts", () => {
     const fixture = await render(Host);
     await settle(fixture);
     expect(JSON.stringify(engines[0].options)).toContain('"dragPoints":true');
+    // the point card replaces the engine tooltip, label chip and drag pill
+    expect(engines[0].options.tooltip).toBe(false);
+    expect(engines[0].options.interaction).toMatchObject({
+      dragLabel: false,
+      hoverLabel: false,
+    });
+    engines[0].fire("layout", { x: 0, y: 0, width: 100, height: 100 });
+    await settle(fixture);
     engines[0].fire("click", { items: [{ index: 0 }] });
     engines[0].fire("plotClick", { x: 1, y: 9 });
     const point = fixture.componentInstance.points[0];
@@ -182,8 +191,21 @@ describe("cartesian charts", () => {
     ]);
     fixture.componentInstance.events = [];
     engines[0].fire("click", { items: [{ index: 0 }] });
+    // the dragged point shows its card (no actions), following the drag
+    const card = () =>
+      (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(
+        "[data-point-preview]",
+      );
+    engines[0].fire("dragStart", { item: { index: 0 }, x: 8, y: 9 });
+    expect(card()!.dataset["pointPreview"]).toBe("0");
+    expect(card()!.hasAttribute("data-dragging")).toBe(true);
+    const before = card()!.style.transform;
     engines[0].fire("drag", { item: { index: 0 }, x: 2, y: 2 });
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    expect(card()!.style.transform).not.toBe(before);
     engines[0].fire("drop", { item: { index: 0 }, x: 2, y: 2 });
+    engines[0].fire("dragEnd", { item: { index: 0 }, cancelled: false });
+    expect(card()).toBeNull();
     engines[0].fire("drop", { item: { index: 4 }, x: 2, y: 2 });
     expect(fixture.componentInstance.events).toEqual([
       { point, index: 0 },
@@ -239,6 +261,11 @@ describe("cartesian charts", () => {
     const ids = () =>
       (engines[0].options.series as Array<{ id?: string }>).map((s) => s.id);
     const { hovers, events } = fixture.componentInstance;
+    engines[0].fire("layout", { x: 0, y: 0, width: 100, height: 100 });
+    await settle(fixture);
+    const card = () => host.querySelector<HTMLElement>("[data-point-preview]");
+    // without actions the selected point shows a ring, not a card
+    expect(card()).toBeNull();
 
     button(0).focus();
     await settle(fixture);
@@ -247,6 +274,10 @@ describe("cartesian charts", () => {
       items: [{ index: 0, label: "Write report" }],
     });
     expect(ids()).toContain("quadrant:focus");
+    // the focused point shows its card
+    expect(card()!.dataset["pointPreview"]).toBe("0");
+    expect(card()!.textContent).toContain("Write report");
+    expect(card()!.textContent).toContain("Do first");
 
     button(0).dispatchEvent(
       new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }),

@@ -3,6 +3,7 @@ import {
   type ChartAnnotation,
   type ChartAxisOptions,
   type ChartCurve,
+  type ChartDragEndEvent,
   type ChartDragEvent,
   type ChartHoverEvent,
   type ChartInstance,
@@ -98,8 +99,12 @@ export interface CartesianHandlers {
   plotClick?: (event: ChartPlotClickEvent) => void;
   zoom?: (view: ChartView) => void;
   renderer?: (renderer: ChartRendererKind) => void;
+  /** A point starts moving with the pointer */
+  dragStart?: (event: ChartDragEvent) => void;
   drag?: (event: ChartDragEvent) => void;
   drop?: (event: ChartDragEvent) => void;
+  /** The drag is over (after `drop`, or cancelled) */
+  dragEnd?: (event: ChartDragEndEvent) => void;
   /** The plot area moved or was resized */
   layout?: (rect: ChartRect) => void;
 }
@@ -124,8 +129,10 @@ export function useCartesianChart(
     chart.on("plotClick", (event) => handlers.plotClick?.(event)),
     chart.on("zoom", (view) => handlers.zoom?.(view)),
     chart.on("renderer", (renderer) => handlers.renderer?.(renderer)),
+    chart.on("dragStart", (event) => handlers.dragStart?.(event)),
     chart.on("drag", (event) => handlers.drag?.(event)),
     chart.on("drop", (event) => handlers.drop?.(event)),
+    chart.on("dragEnd", (event) => handlers.dragEnd?.(event)),
     chart.on("layout", (rect) => handlers.layout?.(rect)),
   ]);
   const handle: ChartHandle = {

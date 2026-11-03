@@ -1,4 +1,4 @@
-# @minerva/taro (private workspace)
+# Taro renderer (private workspace)
 
 Taro renderer for the Minerva component families: forms, selection, navigation, overlays, layout, data display and editors. The component-by-component contract and host limits are recorded in `src/manifest.ts` and the [platform guide](https://fwx5618177.github.io/minerva-design/#/platform-support). This private package is assembled into `minerva-design/taro`; build output lives in `packages/minerva-design/dist/taro`.
 
@@ -6,22 +6,19 @@ H5 implements keyboard navigation, modal focus scopes and outside dismissal, bro
 
 Validation is separated by host:
 
-- Renderer unit/contract tests and real Chromium H5 tests cover the documented state, keyboard, focus, upload, preview and editor behavior.
+- Renderer unit/contract tests cover the documented state, keyboard, focus, upload, preview and editor behavior in happy-dom; `src/h5-parity.test.tsx` and `src/h5-completion.test.tsx` cover the H5 roles, ARIA, events and open/close flows. Real layout, computed CSS, scrolling and Monaco editing in a browser are not covered.
 - `spike/device` compiles the current main-entry source with official Taro 4.3 and its WeChat platform plugin. CI runs this independently on Node 22; this is SDK compilation, not an emulator or physical-device test.
 - The separate WeApp fixture records selected interactions in the WeChat DevTools simulator. Those results do not validate every Taro API, other target platforms or physical devices.
 
 ```sh
-pnpm --filter @minerva/taro typecheck
+pnpm --filter ./packages/taro typecheck
 pnpm exec vitest run --project taro
-pnpm run test:browser:mini
-pnpm --filter @minerva/taro build
+pnpm --filter ./packages/taro build
 npm ci --prefix packages/taro/spike/device
 npm run build --prefix packages/taro/spike/device
 ```
 
 Build shared core artifacts before the library build, or use the assembled package build. The independent SDK fixture copies current library/core/DOM source into its source root and owns its dependency lockfile. It does not require generated distribution files. No deployment, upload, device login or publication is part of the compilation job.
-
-Browser verification owns its fixture server and refuses to reuse an unrelated process on its port. Set `MINERVA_TARO_BROWSER_PORT` to an available port when needed (for example, `MINERVA_TARO_BROWSER_PORT=4293 pnpm run test:browser:mini`).
 
 ## Charts
 

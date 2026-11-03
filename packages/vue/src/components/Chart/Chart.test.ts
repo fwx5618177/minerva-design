@@ -45,6 +45,7 @@ vi.mock("minerva-design/charts/core", async (importOriginal) => {
         ...engine,
         getView: () => ({ x: [0, 1], y: [0, 1] }),
         getRenderer: () => "webgl2",
+        setLabelHidden: vi.fn(),
         on: (type: string, listener: Listener) => {
           if (!listeners.has(type)) listeners.set(type, new Set());
           listeners.get(type)!.add(listener);

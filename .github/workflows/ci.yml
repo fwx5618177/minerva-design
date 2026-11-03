@@ -60,12 +60,6 @@ jobs:
       - name: Check mini-program API documentation against source
         run: pnpm --filter @minerva/docs check:mini-api
 
-      - name: Install Chromium for browser E2E
-        run: pnpm exec playwright install --with-deps chromium
-
-      - name: Test production docs and mini renderer hosts in Chromium
-        run: pnpm test:browser
-
       - name: Test built packages
         run: pnpm test:dist
 

@@ -1,12 +1,16 @@
 import {
+  useCallback,
   useEffect,
   useId,
   useLayoutEffect,
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
   type CSSProperties,
+  type ReactNode,
 } from "react";
+import { createPortal } from "react-dom";
 import {
   areaSeries,
   barSeries,
@@ -18,7 +22,6 @@ import {
   heatmapChartOptions,
   histogramSeries,
   lineSeries,
-  DEFAULT_QUADRANT_COLORS,
   presetLabels,
   quadrantChartOptions,
   quadrantGroups,
@@ -44,7 +47,12 @@ import {
   quadrantPointName,
 } from "../engine/quadrant-keyboard";
 import { resolveLocale } from "../engine/locale";
-import { styleTooltip, themeTooltip } from "../engine/tooltip";
+import {
+  createQuadrantPointCard,
+  withQuadrantCard,
+  type QuadrantPointCard,
+  type QuadrantPointCardOptions,
+} from "../engine/quadrant-card";
 import type {
   ChartAnnotation,
   ChartDragEvent,
@@ -321,50 +329,61 @@ const VISUALLY_HIDDEN: CSSProperties = {
   whiteSpace: "nowrap",
 };
 
-/** Data position of a dragged point, pushed to its info card on every move */
-interface CardPosition {
-  x: number;
-  y: number;
-}
-
-/**
- * A point index valid for one `points` array: a stale index (the points
- * changed, e.g. a task was deleted) names no point
- */
-interface PointRef {
-  index: number;
-  points: readonly QuadrantPoint[];
-}
-
-/** Minimal event emitter: the card subscribes, the drag handler emits */
-const createPositionEmitter = () => {
-  const listeners = new Set<(position: CardPosition) => void>();
+/** Index of the point of the card, read by the portals of the card */
+const createIndexStore = () => {
+  let value: number | null = null;
+  const listeners = new Set<() => void>();
   return {
-    on(listener: (position: CardPosition) => void) {
+    get: () => value,
+    set(next: number | null) {
+      if (next === value) return;
+      value = next;
+      listeners.forEach((listener) => listener());
+    },
+    subscribe(listener: () => void) {
       listeners.add(listener);
       return () => void listeners.delete(listener);
-    },
-    emit(position: CardPosition) {
-      listeners.forEach((listener) => listener(position));
     },
   };
 };
 
-/** Room between the edge of the point card and its dot, CSS pixels */
-const CARD_PAD_X = 8;
-const CARD_PAD_Y = 5;
-/** Room between the dot of the card and its text */
-const CARD_DOT_GAP = 7;
-/** Height of the first row of the card: the name, or the name and actions */
-const CARD_ROW = 18;
-const CARD_ACTIONS_ROW = 24;
-/** How far the card may reach past the plot edges */
-const CARD_OVERHANG = 6;
+type IndexStore = ReturnType<typeof createIndexStore>;
+
 /**
- * The card stays this long after the pointer leaves its dot: time to reach
- * its actions
+ * The actions (and the custom content) of the point card: the only part of
+ * the matrix rendered again when another point shows the card
  */
-const CARD_LINGER_MS = 180;
+function PointCardSlots({
+  card,
+  store,
+  points,
+  renderActions,
+  renderContent,
+}: {
+  card: QuadrantPointCard;
+  store: IndexStore;
+  points: readonly QuadrantPoint[];
+  renderActions?: (point: QuadrantPoint, index: number) => ReactNode;
+  renderContent?: (point: QuadrantPoint, index: number) => ReactNode;
+}) {
+  const index = useSyncExternalStore(store.subscribe, store.get, store.get);
+  const point = index === null ? undefined : points[index];
+  // the size of the card follows its new content
+  useLayoutEffect(() => card.place());
+  if (index === null || !point) return null;
+  const actions = renderActions?.(point, index);
+  const content = renderContent?.(point, index);
+  return (
+    <>
+      {actions !== null && actions !== undefined && actions !== false
+        ? createPortal(actions, card.actions)
+        : null}
+      {content !== null && content !== undefined && content !== false
+        ? createPortal(content, card.content)
+        : null}
+    </>
+  );
+}
 
 /** Header slot in the outer corner of a quadrant */
 const headerStyle = (corner: QuadrantCorner): CSSProperties => {
@@ -438,16 +457,6 @@ export function QuadrantChart(props: QuadrantChartProps) {
     locale,
   } = props;
   const geometry = { xDomain, yDomain, xSplit, ySplit, reverseX };
-  // the engine draws the dragged dot and its label under the pointer: the
-  // options stay the same during a drag (no re-render on every move)
-  const [dragging, setDragging] = useState<number | null>(null);
-  const [hoveredRef, setHoveredRef] = useState<PointRef | null>(null);
-  // pointer (or focus) in the point card: its point stays active
-  const [heldRef, setHeldRef] = useState<PointRef | null>(null);
-  const hovered = hoveredRef?.points === points ? hoveredRef.index : null;
-  const held = heldRef?.points === points ? heldRef.index : null;
-  const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const holdTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const engineRef = useRef<ChartInstance | null>(null);
   const [selection, setSelection] = useState<number | null>(null);
   const selected = selectedIndex !== undefined ? selectedIndex : selection;
@@ -461,16 +470,11 @@ export function QuadrantChart(props: QuadrantChartProps) {
     points: readonly QuadrantPoint[];
   } | null>(null);
   const layerRef = useRef<HTMLDivElement>(null);
-  // info card of the active point: placed on the DOM (and fed the drag
-  // positions through an emitter), so a drag renders no React per move
-  const cardRef = useRef<HTMLDivElement>(null);
-  const cardQuadrantRef = useRef<HTMLSpanElement>(null);
-  const cardDotRef = useRef<HTMLSpanElement>(null);
-  const cardContentRef = useRef<HTMLDivElement>(null);
-  const cardThemed = useRef<number | null>(null);
-  const dragAt = useRef<CardPosition | null>(null);
-  const placeCard = useRef<() => void>(() => {});
-  const positions = useMemo(() => createPositionEmitter(), []);
+  // the point card is DOM of its own (shared with the other renderers):
+  // hover, focus and drag moves render nothing here; only its actions are
+  // rendered again (`PointCardSlots`) when another point shows it
+  const [card, setCard] = useState<QuadrantPointCard | null>(null);
+  const cardStore = useMemo(() => createIndexStore(), []);
   const hintId = useId();
   const texts = quadrantLabels(locale);
   const movable = !!onPointDrop && draggable !== false;
@@ -526,39 +530,34 @@ export function QuadrantChart(props: QuadrantChartProps) {
     quadrant: quadrantOf(geometry, event.x, event.y),
   });
 
-  const options = quadrantChartOptions(
-    {
-      points,
-      xDomain,
-      yDomain,
-      xSplit,
-      ySplit,
-      quadrants,
-      xLabel,
-      yLabel,
-      axisLabels,
-      showTicks,
-      reverseX,
-      showLabels,
-      pointSize,
-      name,
-      draggable: draggable ?? !!(onPointDrop || onPointDrag),
-      showCounts: renderQuadrantHeader ? undefined : showCounts,
-      selectedIndex: selected,
-      selectedIndices,
-    },
-    engineOptions({ ...props, series: [] }),
-    { focusedIndex: accessiblePoints ? focusedIndex : null },
-  );
   // the point card names the hovered, focused, selected or dragged point:
   // no tooltip, no label chip and no drag pill of the engine beside it
-  options.tooltip = false;
-  if (typeof options.interaction === "object")
-    options.interaction = {
-      ...options.interaction,
-      dragLabel: false,
-      hoverLabel: false,
-    };
+  const options = withQuadrantCard(
+    quadrantChartOptions(
+      {
+        points,
+        xDomain,
+        yDomain,
+        xSplit,
+        ySplit,
+        quadrants,
+        xLabel,
+        yLabel,
+        axisLabels,
+        showTicks,
+        reverseX,
+        showLabels,
+        pointSize,
+        name,
+        draggable: draggable ?? !!(onPointDrop || onPointDrag),
+        showCounts: renderQuadrantHeader ? undefined : showCounts,
+        selectedIndex: selected,
+        selectedIndices,
+      },
+      engineOptions({ ...props, series: [] }),
+      { focusedIndex: accessiblePoints ? focusedIndex : null },
+    ),
+  );
   if (renderQuadrantHeader)
     // the React headers replace the drawn titles (the first four areas)
     options.annotations = options.annotations?.map((a, i) =>
@@ -637,35 +636,6 @@ export function QuadrantChart(props: QuadrantChartProps) {
     );
   };
 
-  // nothing is attached to a point while it is dragged; the hovered point
-  // shows its card unless the tooltip is off
-  const hoverCard = props.tooltip !== false;
-  const activeIndex =
-    dragging !== null
-      ? null
-      : (held ?? (hoverCard ? hovered : null) ?? focusedIndex ?? selected);
-  // one card for the point: hovered, focused, selected or dragged (it
-  // follows the pointer then)
-  const cardIndex =
-    dragging !== null
-      ? dragging
-      : activeIndex != null && points[activeIndex]
-        ? activeIndex
-        : null;
-  const cardPoint = cardIndex === null ? null : (points[cardIndex] ?? null);
-  const cardActions =
-    cardPoint && cardIndex !== null && dragging === null
-      ? (props.renderPointActions?.(cardPoint, cardIndex) ?? null)
-      : null;
-  const hasActions =
-    cardActions !== null && cardActions !== undefined && cardActions !== false;
-  const cardCustom =
-    cardPoint && cardIndex !== null && dragging === null && renderTooltip
-      ? renderTooltip(cardPoint, cardIndex)
-      : null;
-  const cardRow = hasActions ? CARD_ACTIONS_ROW : CARD_ROW;
-  const cardDot = cardPoint?.size ?? pointSize ?? 12;
-
   // a click on a dot or on its card: selects it, two quick ones in a row
   // count as a double click
   const clickPoint = (index: number) => {
@@ -680,145 +650,70 @@ export function QuadrantChart(props: QuadrantChartProps) {
     if (double) onPointDoubleClick?.(point, index);
   };
 
-  const hold = (index: number | null) => {
-    if (holdTimer.current) clearTimeout(holdTimer.current);
-    holdTimer.current = null;
-    if (index !== null) return setHeldRef({ index, points });
-    holdTimer.current = setTimeout(() => setHeldRef(null), CARD_LINGER_MS);
+  // the dot anchors of the point of the card (`data-active`)
+  const markActive = (index: number | null) => {
+    layerRef.current
+      ?.querySelectorAll<HTMLElement>(".minerva-chart-quadrant-point")
+      .forEach((anchor) => {
+        if (anchor.dataset.pointIndex === String(index))
+          anchor.dataset.active = "";
+        else delete anchor.dataset.active;
+      });
   };
 
-  useEffect(
-    () => () => {
-      if (hoverTimer.current) clearTimeout(hoverTimer.current);
-      if (holdTimer.current) clearTimeout(holdTimer.current);
+  const latest = useRef(props);
+  const cardOptionsRef = useRef<() => QuadrantPointCardOptions>(() => ({
+    config: { points },
+  }));
+  const cardOptions = (): QuadrantPointCardOptions => ({
+    config: { points, ...geometry, quadrants, xLabel, yLabel, name },
+    locale,
+    pointSize,
+    // the hovered point shows its card unless the tooltip is off
+    hover: props.tooltip !== false,
+    selectedIndex: selected,
+    // a plain chart rings its selected point; a board keeps its card (the
+    // actions of the point stay at hand)
+    showSelected: !!props.renderPointActions,
+    hasActions: (index) => {
+      const { points: now, renderPointActions } = latest.current;
+      const point = now[index];
+      const node = point ? renderPointActions?.(point, index) : null;
+      return node !== null && node !== undefined && node !== false;
     },
-    [],
-  );
-
-  // the card names the point: its drawn label gives way (keeping its place)
-  useEffect(() => {
-    engineRef.current?.setLabelHidden(
-      cardIndex !== null && dragging === null
-        ? { seriesIndex: 0, index: cardIndex }
-        : null,
-    );
-  }, [cardIndex, dragging]);
-
-  // after every render (new points, plot size, active point)
-  useLayoutEffect(() => {
-    placeCard.current = () => {
-      const el = cardRef.current;
-      // the overlay holding the card covers the plot area
-      const plot = el?.parentElement;
-      if (!el || !plot || !cardPoint || cardIndex === null) return;
-      // the colors of the theme, read again when another point shows it
-      const fresh = cardThemed.current !== cardIndex;
-      if (fresh) {
-        cardThemed.current = cardIndex;
-        themeTooltip(el, el);
-      }
-      const live = dragging !== null ? dragAt.current : null;
-      const at = live ?? cardPoint;
-      const fx = fraction(at.x, x0, x1);
-      const visualX = reverseX ? 1 - fx : fx;
-      const plotWidth = parseFloat(plot.style.width) || plot.clientWidth;
-      const plotHeight = parseFloat(plot.style.height) || plot.clientHeight;
-      const left = visualX * plotWidth;
-      const top = (1 - fraction(at.y, y0, y1)) * plotHeight;
-      // the dot of the card lies on the point (the border is 1px); the
-      // lifted dot of a drag is larger: the card keeps off it
-      const reach = 1 + CARD_PAD_X + cardDot / 2 + (live ? 8 : 0);
-      const width = el.offsetWidth;
-      const height = el.offsetHeight;
-      // the text on the side with room (mirrored near the right edge); a
-      // side that still fits is kept (no flipping back and forth in a drag)
-      let mirrored = visualX > 0.6;
-      if (width) {
-        const overRight = left - reach + width - plotWidth;
-        const overLeft = width - reach - left;
-        const was = fresh ? undefined : el.dataset.side;
-        mirrored =
-          was === "start" && overRight <= CARD_OVERHANG
-            ? false
-            : was === "end" && overLeft <= CARD_OVERHANG
-              ? true
-              : overRight > 0 && overLeft < overRight;
-      }
-      // the dot on the first row, the card kept in the plot near its edges
-      let cardTop = top - (1 + CARD_PAD_Y + cardRow / 2);
-      if (height)
-        cardTop = Math.max(
-          -CARD_OVERHANG,
-          Math.min(cardTop, plotHeight + CARD_OVERHANG - height),
-        );
-      const side = mirrored ? "end" : "start";
-      const layout = `${side}|${hasActions}|${cardDot}`;
-      el.dataset.side = side;
-      if (el.dataset.layout !== layout) {
-        el.dataset.layout = layout;
-        const lead = `${CARD_PAD_X + cardDot + CARD_DOT_GAP}px`;
-        const trail = hasActions ? "4px" : "12px";
-        el.style.paddingLeft = mirrored ? trail : lead;
-        el.style.paddingRight = mirrored ? lead : trail;
-        el.style.textAlign = mirrored ? "right" : "left";
-        const content = cardContentRef.current;
-        if (content)
-          content.style.gridTemplateAreas = mirrored
-            ? '"actions label" ". meta"'
-            : '"label actions" "meta ."';
-        if (content)
-          content.style.gridTemplateColumns = mirrored
-            ? "auto minmax(0, 1fr)"
-            : "minmax(0, 1fr) auto";
-      }
-      el.style.transform = `translate(${left}px, ${cardTop}px) translate(${
-        mirrored ? `calc(-100% + ${reach}px)` : `${-reach}px`
-      }, 0)`;
-      const corner = quadrantOf(geometry, at.x, at.y);
-      const region = quadrants?.[corner];
-      const name = region?.badge
-        ? `${region.badge} · ${quadrantName(corner)}`
-        : quadrantName(corner);
-      const label = cardQuadrantRef.current;
-      if (label && label.textContent !== name) label.textContent = name;
-      const dot = cardDotRef.current;
-      if (dot) {
-        const color =
-          cardPoint.color ??
-          region?.color ??
-          DEFAULT_QUADRANT_COLORS[
-            quadrantOf(geometry, cardPoint.x, cardPoint.y)
-          ];
-        dot.style.display = live ? "none" : "block";
-        dot.style.left = mirrored ? "auto" : `${CARD_PAD_X}px`;
-        dot.style.right = mirrored ? `${CARD_PAD_X}px` : "auto";
-        dot.style.top = `${top - cardTop - 1 - cardDot / 2}px`;
-        dot.style.background = color;
-        dot.style.boxShadow = `0 0 0 2px var(--surface-color, var(--background-color, #fff)), 0 0 0 4px color-mix(in srgb, ${color} 45%, transparent)`;
-      }
-    };
-    if (cardIndex === null) cardThemed.current = null;
-    placeCard.current();
+    custom: !!renderTooltip,
+    chart: engineRef.current,
+    onClick: clickPoint,
+    onChange: (index) => {
+      cardStore.set(index);
+      markActive(index);
+    },
+    // Escape closes the card and drops a selection of the chart's own
+    onDismiss: () => setSelection(null),
   });
 
-  // drag positions move the card directly, once per frame
-  useEffect(() => {
-    const win = typeof window === "undefined" ? null : window;
-    let frame = 0;
-    const off = positions.on((position) => {
-      dragAt.current = position;
-      if (!win?.requestAnimationFrame) return placeCard.current();
-      if (!frame)
-        frame = win.requestAnimationFrame(() => {
-          frame = 0;
-          placeCard.current();
-        });
-    });
+  // after every render: new points, selection, texts (hover, focus and drag
+  // moves go to the card directly)
+  useLayoutEffect(() => {
+    latest.current = props;
+    cardOptionsRef.current = cardOptions;
+    card?.update(cardOptions());
+    markActive(cardStore.get());
+  });
+  // the box of the card is rendered once the plot is laid out
+  const cardHost = useCallback((host: HTMLDivElement | null) => {
+    if (!host) return;
+    const next = createQuadrantPointCard(host, cardOptionsRef.current());
+    setCard(next);
     return () => {
-      off();
-      if (frame) win?.cancelAnimationFrame(frame);
+      next.destroy();
+      setCard(null);
     };
-  }, [positions]);
+  }, []);
+  // the focused point button, named again by the new points
+  useLayoutEffect(() => {
+    card?.focus(accessiblePoints ? focusedIndex : null);
+  }, [card, focusedIndex, accessiblePoints, points]);
 
   const overlay = (plot: ChartRect) => {
     const xs = xSplit ?? (x0 + x1) / 2;
@@ -884,7 +779,6 @@ export function QuadrantChart(props: QuadrantChartProps) {
               className="minerva-chart-quadrant-point"
               data-point-index={index}
               data-label={point.label}
-              data-active={index === activeIndex ? "" : undefined}
               style={{
                 position: "absolute",
                 left: `${100 * (reverseX ? 1 - fx : fx)}%`,
@@ -924,182 +818,75 @@ export function QuadrantChart(props: QuadrantChartProps) {
           </>
         ) : null}
       </div>,
-      cardPoint && cardIndex !== null ? (
-        <div
-          key="point-card"
-          ref={(el) => {
-            if (el && !el.dataset.styled) {
-              el.dataset.styled = "";
-              styleTooltip(el, {
-                zIndex: "3",
-                boxSizing: "border-box",
-                maxWidth: "min(280px, calc(100% + 12px))",
-                paddingTop: `${CARD_PAD_Y}px`,
-                paddingBottom: `${CARD_PAD_Y}px`,
-                borderRadius: "12px",
-                fontSize: "12px",
-                lineHeight: "18px",
-              });
-              // the colors of the theme around it
-              themeTooltip(el, el);
-            }
-            cardRef.current = el;
-            // the overlay re-renders alone when the plot moves or resizes
-            if (el) placeCard.current();
-          }}
-          className="minerva-chart-quadrant-card"
-          data-point-preview={cardIndex}
-          data-dragging={dragging !== null ? "" : undefined}
-        >
-          <span
-            ref={cardDotRef}
-            aria-hidden="true"
-            data-card-dot=""
-            style={{
-              position: "absolute",
-              width: cardDot,
-              height: cardDot,
-              borderRadius: "50%",
-              pointerEvents: "none",
-            }}
-          />
-          {/* the dot lets the pointer through to the chart (hover, drag);
-              the text and the actions hold the card */}
-          <div
-            ref={cardContentRef}
-            data-card-content=""
-            onPointerEnter={() => hold(cardIndex)}
-            onPointerLeave={() => hold(null)}
-            onFocus={() => hold(cardIndex)}
-            onBlur={(event) => {
-              if (!event.currentTarget.contains(event.relatedTarget as Node))
-                hold(null);
-            }}
-            style={{
-              display: "grid",
-              columnGap: 6,
-              alignItems: "center",
-              minHeight: cardRow,
-              pointerEvents: dragging !== null ? "none" : "auto",
-            }}
-          >
-            {/* a click on the name acts like a click on the dot (a native
-                listener: the actions are the controls of the card) */}
-            <div
-              aria-hidden="true"
-              ref={(el) => {
-                if (el) el.onclick = () => clickPoint(cardIndex);
-              }}
-              style={{
-                gridArea: "label",
-                minWidth: 0,
-                cursor: "pointer",
-              }}
-            >
-              {cardCustom ?? (
-                <strong
-                  style={{
-                    display: "block",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    fontWeight: 600,
-                  }}
-                >
-                  {cardPoint.label}
-                </strong>
-              )}
-            </div>
-            {hasActions ? (
-              <div
-                data-card-actions=""
-                style={{
-                  gridArea: "actions",
-                  alignSelf: "start",
-                  display: "flex",
-                  alignItems: "center",
-                  height: CARD_ACTIONS_ROW,
-                }}
-              >
-                {cardActions}
-              </div>
-            ) : null}
-            <span
-              ref={cardQuadrantRef}
-              aria-hidden="true"
-              style={{
-                gridArea: "meta",
-                display: cardCustom ? "none" : "block",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-                color: "var(--text-secondary-color, #6b7280)",
-                fontSize: 11,
-                lineHeight: "16px",
-              }}
-            />
-          </div>
-        </div>
-      ) : null,
+      // the box of the point card (DOM of its own, filled by the card)
+      <div
+        key="point-card"
+        ref={cardHost}
+        style={{
+          position: "absolute",
+          left: 0,
+          top: 0,
+          width: plot.width,
+          height: plot.height,
+          pointerEvents: "none",
+        }}
+      />,
     ];
   };
 
   return (
-    <ChartBase
-      options={options}
-      {...frameProps({
-        ...props,
-        onPointClick: undefined,
-        renderTooltip: undefined,
-      })}
-      overlay={overlay}
-      onInstance={(chart) => {
-        engineRef.current = chart;
-      }}
-      onPointClick={(event) => {
-        const index = event.items[0]?.index;
-        if (index !== undefined) clickPoint(index);
-      }}
-      onPlotClick={
-        onQuadrantClick
-          ? (at) => onQuadrantClick(quadrantOf(geometry, at.x, at.y), at)
-          : undefined
-      }
-      onHover={(event) => {
-        const index = event?.items[0]?.index ?? null;
-        if (hoverTimer.current) clearTimeout(hoverTimer.current);
-        hoverTimer.current = null;
-        if (index !== null) setHoveredRef({ index, points });
-        // off the dot: the card stays a moment (the pointer may be on its
-        // way to the actions)
-        else
-          hoverTimer.current = setTimeout(
-            () => setHoveredRef(null),
-            CARD_LINGER_MS,
-          );
-        props.onHover?.(event);
-      }}
-      onDragStart={(event) => {
-        dragAt.current = { x: event.x, y: event.y };
-        setDragging(event.item.index);
-      }}
-      onDragEnd={() => {
-        dragAt.current = null;
-        setDragging(null);
-      }}
-      onDrag={(event) => {
-        const index = event.item.index;
-        positions.emit({ x: event.x, y: event.y });
-        if (points[index] && onPointDrag)
-          onPointDrag(points[index], index, dropAt(event));
-      }}
-      onDrop={(event) => {
-        pendingFocus.current = null;
-        const index = event.item.index;
-        if (points[index] && onPointDrop)
-          onPointDrop(points[index], index, dropAt(event));
-      }}
-    />
+    <>
+      <ChartBase
+        options={options}
+        {...frameProps({
+          ...props,
+          onPointClick: undefined,
+          renderTooltip: undefined,
+        })}
+        overlay={overlay}
+        onInstance={(chart) => {
+          engineRef.current = chart;
+        }}
+        onPointClick={(event) => {
+          const index = event.items[0]?.index;
+          if (index !== undefined) clickPoint(index);
+        }}
+        onPlotClick={(at) => {
+          // a click beside the points drops a selection of the chart's own
+          setSelection(null);
+          onQuadrantClick?.(quadrantOf(geometry, at.x, at.y), at);
+        }}
+        onHover={(event) => {
+          card?.hover(event?.items[0]?.index ?? null);
+          props.onHover?.(event);
+        }}
+        onDragStart={(event) =>
+          card?.drag(event.item.index, { x: event.x, y: event.y })
+        }
+        onDragEnd={() => card?.drag(null)}
+        onDrag={(event) => {
+          const index = event.item.index;
+          card?.move({ x: event.x, y: event.y });
+          if (points[index] && onPointDrag)
+            onPointDrag(points[index], index, dropAt(event));
+        }}
+        onDrop={(event) => {
+          pendingFocus.current = null;
+          const index = event.item.index;
+          if (points[index] && onPointDrop)
+            onPointDrop(points[index], index, dropAt(event));
+        }}
+      />
+      {card ? (
+        <PointCardSlots
+          card={card}
+          store={cardStore}
+          points={points}
+          renderActions={props.renderPointActions}
+          renderContent={renderTooltip}
+        />
+      ) : null}
+    </>
   );
 }
 

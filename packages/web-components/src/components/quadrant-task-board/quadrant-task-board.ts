@@ -108,13 +108,13 @@ const icon = (kind: keyof typeof QUADRANT_TASK_ICONS, size = 16) =>
 /**
  * Task board on a four-quadrant matrix (`<QuadrantTaskBoard>` of React),
  * built on `<minerva-quadrant-chart>`: each quadrant header shows its
- * title, the number of tasks and an add button; the active task (hovered,
- * keyboard-focused or selected) shows edit and delete buttons; an inline
- * panel, anchored inside the board at the button or the task, names a task
- * and picks its quadrant, or confirms a delete (Escape or a press outside
- * closes it). Tasks can be dragged to another quadrant, or moved with
- * Shift + arrows once focused; a double click edits a task, a click on an
- * empty area adds one there.
+ * title, the number of tasks and an add button; the point card of the
+ * active task (hovered, keyboard-focused or selected) shows edit and delete
+ * buttons beside its name; an inline panel, anchored inside the board at
+ * the button or the task, names a task and picks its quadrant, or confirms
+ * a delete (Escape or a press outside closes it). Tasks can be dragged to
+ * another quadrant, or moved with Shift + arrows once focused; a double
+ * click edits a task, a click on an empty area adds one there.
  *
  * Controlled, like `<minerva-dashboard-columns>`: the board never changes its
  * own `points`. It fires `minerva-points-change` with the next list after
@@ -157,6 +157,10 @@ export class MinervaQuadrantTaskBoard extends MinervaElement {
         /* fills flex rows too, like the chart elements */
         width: 100%;
         min-inline-size: 0;
+      }
+      /* the panel names the task: no point card of the chart beside it */
+      .board[data-panel] minerva-quadrant-chart::part(point-card) {
+        display: none;
       }
     `,
     sharedStyles(styles),
@@ -360,17 +364,18 @@ export class MinervaQuadrantTaskBoard extends MinervaElement {
     };
   }
 
-  /** Box around a task (the anchor of its actions in the chart), else the last pointer */
+  /** Box around a task (its dot in the chart), else the last pointer */
   private pointBox(index: number): QuadrantTaskBox {
-    const box = this.boxOf(
-      this.chart?.shadowRoot?.querySelector(
-        `[part=point-actions][data-point-index="${index}"]`,
-      ),
-    );
-    if (box)
+    const chart = this.chart;
+    const point = this.tasks[index];
+    const at = point ? chart?.instance?.toPixel(point.x, point.y) : null;
+    const surface = at
+      ? this.boxOf(chart?.shadowRoot?.querySelector("[part=surface]"))
+      : null;
+    if (at && surface)
       return {
-        x: box.x - DOT,
-        y: box.y - DOT,
+        x: surface.x + at.x - DOT,
+        y: surface.y + at.y - DOT,
         width: 2 * DOT,
         height: 2 * DOT,
       };
@@ -781,7 +786,7 @@ export class MinervaQuadrantTaskBoard extends MinervaElement {
         <div
           slot="point-actions"
           role="toolbar"
-          class="actions"
+          class="cardActions"
           aria-label=${texts.actions}
           @pointerdown=${stop}
         >

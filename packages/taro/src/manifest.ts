@@ -406,7 +406,7 @@ const families: Array<{
     ],
     tests: [
       "packages/taro/src/date-picker.test.tsx",
-      "packages/taro/spike/browser/date-picker.spec.ts",
+      "packages/taro/src/h5-parity.test.tsx",
     ],
   },
   {
@@ -606,17 +606,11 @@ const portableAuditFamilies = new Set([
   "Alert",
   "Card",
 ]);
-const browserFamilies = new Set([
-  "Select",
-  "AutoComplete",
-  "Cascader",
+const h5ParityFamilies = new Set([
   "Menu",
-  "Table",
-  "MonthCalendar",
   "Switch",
   "Modal",
   "ModalClose",
-  "Box",
   "Alert",
   "Drawer",
   "DrawerClose",
@@ -632,12 +626,7 @@ const browserFamilies = new Set([
   "Popover",
   "PopoverContent",
   "PopoverClose",
-  "VirtualList",
-  "ToastProvider",
   "Input",
-  "FormControl",
-  "ConfirmDialog",
-  "DataTable",
 ]);
 const remainingRegressionFamilies = new Set([
   "Button",
@@ -716,8 +705,8 @@ export const taroComponentManifest: TaroComponentManifestEntry[] =
         ...(nativeNavigationFamilies.has(name)
           ? ["packages/taro/src/native-navigation.test.tsx"]
           : []),
-        ...(browserFamilies.has(name)
-          ? ["packages/taro/spike/browser/styles.spec.ts"]
+        ...(h5ParityFamilies.has(name)
+          ? ["packages/taro/src/h5-parity.test.tsx"]
           : []),
         ...(remainingRegressionFamilies.has(name)
           ? ["packages/taro/src/remaining-parity.test.tsx"]

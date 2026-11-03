@@ -293,15 +293,29 @@ describe("minerva-quadrant-task-board", () => {
       chart,
     } = await setup();
     await clickPoint(engine, 0);
-    const toolbar = find(".actions");
+    const toolbar = find(".cardActions");
     expect(toolbar.getAttribute("role")).toBe("toolbar");
-    const anchor = chart.shadowRoot!.querySelector<HTMLElement>(
-      "[part=point-actions]",
-    );
-    expect(anchor?.dataset.pointIndex).toBe("0");
+    expect(toolbar.slot).toBe("point-actions");
+    // the selected task keeps its point card, the toolbar in it
+    const card =
+      chart.shadowRoot!.querySelector<HTMLElement>("[part=point-card]");
+    expect(card?.dataset.pointPreview).toBe("0");
+    expect(chart.activeIndex).toBe(0);
+    const slot = card!.querySelector<HTMLSlotElement>(
+      "[data-card-actions][part=point-actions] slot",
+    )!;
+    expect(slot.assignedElements()).toEqual([toolbar]);
+    expect(
+      Array.from(
+        toolbar.querySelectorAll<HTMLElement>("minerva-icon-button"),
+        (button) => button.getAttribute("size"),
+      ),
+    ).toEqual(["xsmall", "xsmall"]);
     find("[data-action=edit]").click();
     await settle();
     expect(panel()?.dataset.quadrantTaskPanel).toBe("edit");
+    // the panel names the task: the card gives way (`::part(point-card)`)
+    expect(find("[part=root]").dataset.panel).toBe("draft");
     expect(panel()?.querySelector(".panelTitle")?.textContent?.trim()).toBe(
       "Edit task",
     );
@@ -389,6 +403,21 @@ describe("minerva-quadrant-task-board", () => {
     expect(chart.selectedIndex).toBe(0);
   });
 
+  it("the toolbar acts on the task of the card: hovered, else the selected one", async () => {
+    const { engine, find, panel, chart } = await setup();
+    await clickPoint(engine, 0);
+    engine.fire("hover", { x: 0, xLabel: "", items: [{ index: 1 }] });
+    expect(chart.activeIndex).toBe(1);
+    expect(
+      chart.shadowRoot!.querySelector<HTMLElement>("[part=point-card]")?.dataset
+        .pointPreview,
+    ).toBe("1");
+    find("[data-action=delete]").click();
+    await settle();
+    expect(panel()?.dataset.quadrantTaskPanel).toBe("delete");
+    expect(panel()!.textContent).toContain("Inbox zero");
+  });
+
   it("localizes its texts and applies `labels` overrides", async () => {
     const { board, engine, find, panel } = await setup();
     board.locale = "fr";
@@ -399,7 +428,7 @@ describe("minerva-quadrant-task-board", () => {
         "label",
       ),
     ).toMatch(/^Nouvelle · /);
-    expect(find(".actions").getAttribute("aria-label")).toBe(
+    expect(find(".cardActions").getAttribute("aria-label")).toBe(
       "Actions de la tâche",
     );
     await clickPoint(engine, 0);

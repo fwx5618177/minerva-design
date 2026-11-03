@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // Fast browser smoke check of the docs: drives the installed Chrome through
-// the DevTools protocol (no Playwright runner, no docs build) and checks that
+// the DevTools protocol (no test runner, no docs build) and checks that
 // every requested page mounts its charts without console errors. Meant for
-// the edit loop; the Playwright suite stays the thorough E2E check.
+// the local edit loop; it is not part of CI.
 
 import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";

@@ -266,4 +266,65 @@ describe("createChart", () => {
     expect(container.querySelector(".minerva-chart")).toBeNull();
     chart = null;
   });
+
+  it("redraws only the foreground when a point label is hidden", async () => {
+    const c = await mount({
+      series: [
+        {
+          type: "scatter",
+          data: [
+            { x: 1, y: 1, label: "Alpha" },
+            { x: 2, y: 2, label: "Beta" },
+          ],
+        },
+      ],
+    });
+    const contexts = vi.spyOn(HTMLCanvasElement.prototype, "getContext");
+    const [background, foreground] = [...container.querySelectorAll("canvas")];
+    c.setLabelHidden({ seriesIndex: 0, index: 1 });
+    await nextFrame();
+    const drawn = () => contexts.mock.contexts as unknown[];
+    expect(drawn()).toContain(foreground);
+    expect(drawn()).not.toContain(background);
+    // new options draw everything again
+    contexts.mockClear();
+    c.setOptions({ series: [{ type: "scatter", data: [{ x: 1, y: 1 }] }] });
+    await nextFrame();
+    expect(drawn()).toContain(background);
+  });
+
+  it("keeps the hovered point through new data under a still pointer", async () => {
+    const data = [
+      { x: 1, y: 1 },
+      { x: 2, y: 2 },
+    ];
+    const options = (extra: number): ChartOptions => ({
+      series: [
+        { type: "scatter", data },
+        // e.g. a selection ring added by a click
+        ...Array.from({ length: extra }, () => ({
+          type: "scatter" as const,
+          data: [{ x: 2, y: 2 }],
+        })),
+      ],
+      xAxis: { min: 0, max: 3 },
+      yAxis: { min: 0, max: 3, nice: false },
+    });
+    const c = await mount(options(0));
+    const hovers: (ChartHoverEvent | null)[] = [];
+    c.on("hover", (event) => hovers.push(event));
+    const at = c.toPixel(2, 2)!;
+    pointer("pointermove", at.x, at.y);
+    expect(hovers[hovers.length - 1]?.items[0]?.index).toBe(1);
+    const count = hovers.length;
+    c.setOptions(options(1));
+    await nextFrame();
+    // the same point under the pointer: no `null` in between
+    expect(hovers.slice(count).every((event) => event !== null)).toBe(true);
+    // data moved away from the pointer: the hover goes
+    const moved = [data[0], { x: 0.5, y: 2.5 }];
+    c.setOptions({ ...options(1), series: [{ type: "scatter", data: moved }] });
+    await nextFrame();
+    expect(hovers[hovers.length - 1]).toBeNull();
+  });
 });

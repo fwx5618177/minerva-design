@@ -7635,7 +7635,7 @@
         },
         {
           "kind": "class",
-          "description": "Four-quadrant matrix (priority matrix, Eisenhower, BCG...) of\n`minerva-design/charts/core` (the `<QuadrantChart>` of React): tinted\nquadrants with titles, dividers and labelled dots placed without\noverlapping labels. With `drag-points`, dots can be dragged to another\nquadrant (`minerva-point-drop`; update `points` to move them).\n\nA visually hidden list of the dots per quadrant lets screen readers and\nkeyboards reach every dot: arrows move between them, Enter clicks\n(`minerva-point-click`) and, with `drag-points`, Shift + arrows move the\nfocused dot to the neighbouring quadrant (`minerva-point-drop`, announced\nin a live region). The focused dot is drawn with a focus ring and\nreported by `minerva-hover`.\n\nSlotted content is placed over the plot: a header per quadrant (in its\nouter corner, replacing the drawn title, badge, description and count)\nand actions next to the active dot (hovered, keyboard-focused, else\n`selected-index`; read it from `activeIndex`). Both receive pointer\nevents; the rest of the plot stays interactive.\n\nPublished as the optional entry `minerva-design/web-components/chart`.",
+          "description": "Four-quadrant matrix (priority matrix, Eisenhower, BCG...) of\n`minerva-design/charts/core` (the `<QuadrantChart>` of React): tinted\nquadrants with titles, dividers and labelled dots placed without\noverlapping labels. With `drag-points`, dots can be dragged to another\nquadrant (`minerva-point-drop`; update `points` to move them).\n\nA visually hidden list of the dots per quadrant lets screen readers and\nkeyboards reach every dot: arrows move between them, Enter clicks\n(`minerva-point-click`) and, with `drag-points`, Shift + arrows move the\nfocused dot to the neighbouring quadrant (`minerva-point-drop`, announced\nin a live region). The focused dot is drawn with a focus ring and\nreported by `minerva-hover`.\n\nOne glass point card names the hovered, keyboard-focused or dragged dot\n(its name and quadrant) in place of the engine tooltip; with slotted\n`point-actions`, the card also shows them and stays on the\n`selected-index` dot (read the dot they act on from `activeIndex`).\n\nSlotted content is placed over the plot: a header per quadrant (in its\nouter corner, replacing the drawn title, badge, description and count)\nand the actions in the point card. Both receive pointer events; the rest\nof the plot stays interactive.\n\nPublished as the optional entry `minerva-design/web-components/chart`.",
           "name": "MinervaQuadrantChart",
           "cssParts": [
             {
@@ -7647,7 +7647,7 @@
               "name": "surface"
             },
             {
-              "description": "The box over the plot holding the slotted headers and actions",
+              "description": "The box over the plot holding the slotted headers and the point card",
               "name": "overlay"
             },
             {
@@ -7655,7 +7655,11 @@
               "name": "quadrant-header"
             },
             {
-              "description": "The zero-size box at the active dot holding the `point-actions` slot",
+              "description": "The glass card of the hovered, focused, dragged (or, with actions, selected) dot",
+              "name": "point-card"
+            },
+            {
+              "description": "The actions box in the point card, holding the `point-actions` slot",
               "name": "point-actions"
             }
           ],
@@ -7677,7 +7681,7 @@
               "name": "quadrant-header-bottom-right"
             },
             {
-              "description": "Content shown at the active dot (e.g. edit / delete buttons), positioned by the slotted element",
+              "description": "Actions shown in the point card of the active dot, beside its name (e.g. compact edit / delete buttons); the card then also stays on the selected dot",
               "name": "point-actions"
             }
           ],
@@ -7859,7 +7863,7 @@
               "type": {
                 "text": "number | null"
               },
-              "description": "Index of the active dot, the one showing the `point-actions` slot: the\nhovered dot, else the keyboard-focused one, else `selectedIndex`\n(`null`: none)",
+              "description": "Index of the active dot, the one whose point card shows the\n`point-actions` slot (hovered, keyboard-focused, else `selectedIndex`\nwhen actions are slotted); `null` while no card is shown or during a\ndrag",
               "readonly": true
             },
             {
@@ -31186,7 +31190,7 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "Task board on a four-quadrant matrix (`<QuadrantTaskBoard>` of React),\nbuilt on `<minerva-quadrant-chart>`: each quadrant header shows its\ntitle, the number of tasks and an add button; the active task (hovered,\nkeyboard-focused or selected) shows edit and delete buttons; an inline\npanel, anchored inside the board at the button or the task, names a task\nand picks its quadrant, or confirms a delete (Escape or a press outside\ncloses it). Tasks can be dragged to another quadrant, or moved with\nShift + arrows once focused; a double click edits a task, a click on an\nempty area adds one there.\n\nControlled, like `<minerva-dashboard-columns>`: the board never changes its\nown `points`. It fires `minerva-points-change` with the next list after\nan add, an edit, a delete, a drag and drop or a keyboard move; set it\nback as `points` to apply it (or keep the old list to refuse it).\n\nTexts are localized (the `locale` attribute, else the library language)\nand can be overridden with `labels`. The host's `aria-label` names the\nchart.\n\nPublished as the optional entry\n`minerva-design/web-components/quadrant-task-board` (it loads the chart\nengine, minerva-design/charts/core).",
+          "description": "Task board on a four-quadrant matrix (`<QuadrantTaskBoard>` of React),\nbuilt on `<minerva-quadrant-chart>`: each quadrant header shows its\ntitle, the number of tasks and an add button; the point card of the\nactive task (hovered, keyboard-focused or selected) shows edit and delete\nbuttons beside its name; an inline panel, anchored inside the board at\nthe button or the task, names a task and picks its quadrant, or confirms\na delete (Escape or a press outside closes it). Tasks can be dragged to\nanother quadrant, or moved with Shift + arrows once focused; a double\nclick edits a task, a click on an empty area adds one there.\n\nControlled, like `<minerva-dashboard-columns>`: the board never changes its\nown `points`. It fires `minerva-points-change` with the next list after\nan add, an edit, a delete, a drag and drop or a keyboard move; set it\nback as `points` to apply it (or keep the old list to refuse it).\n\nTexts are localized (the `locale` attribute, else the library language)\nand can be overridden with `labels`. The host's `aria-label` names the\nchart.\n\nPublished as the optional entry\n`minerva-design/web-components/quadrant-task-board` (it loads the chart\nengine, minerva-design/charts/core).",
           "name": "MinervaQuadrantTaskBoard",
           "cssParts": [
             {

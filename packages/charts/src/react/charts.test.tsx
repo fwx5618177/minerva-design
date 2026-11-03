@@ -407,20 +407,163 @@ describe("chart components", () => {
     const content = card()!.querySelector<HTMLElement>("[data-card-content]")!;
     expect(content.style.pointerEvents).toBe("auto");
     act(() => {
-      content.dispatchEvent(
-        new PointerEvent("pointerover", { bubbles: true, pointerId: 1 }),
-      );
+      content.dispatchEvent(new PointerEvent("pointerenter", { pointerId: 1 }));
     });
     await act(() => new Promise((resolve) => setTimeout(resolve, 250)));
     expect(card()).not.toBeNull();
     // out of the card: it goes once the linger is over
     act(() => {
-      content.dispatchEvent(
-        new PointerEvent("pointerout", { bubbles: true, pointerId: 1 }),
-      );
+      content.dispatchEvent(new PointerEvent("pointerleave", { pointerId: 1 }));
     });
     await act(() => new Promise((resolve) => setTimeout(resolve, 250)));
     expect(card()).toBeNull();
+  });
+
+  it("lets the card go after a click: hovering other points still shows theirs", async () => {
+    const ref = createRef<ChartHandle>();
+    const getPointProps = vi.fn(() => ({}));
+    const points = [
+      { label: "Dark mode", x: 2, y: 7.5 },
+      { label: "SSO", x: 6.5, y: 9 },
+      { label: "Offline sync", x: 9, y: 8 },
+      { label: "Icons", x: 2.5, y: 2 },
+    ];
+    const { container, rerender } = render(
+      <QuadrantChart ref={ref} points={points} getPointProps={getPointProps} />,
+    );
+    await flush();
+    const chart = ref.current!.getInstance()!;
+    const stage = container.querySelector(".minerva-chart-stage")!;
+    const fire = (type: string, x: number, y: number) => {
+      const at = chart.toPixel(x, y)!;
+      stage.dispatchEvent(
+        new PointerEvent(type, {
+          clientX: at.x,
+          clientY: at.y,
+          pointerId: 1,
+          button: 0,
+        }),
+      );
+    };
+    const shown = () =>
+      container.querySelector<HTMLElement>("[data-point-preview]")?.dataset
+        .pointPreview ?? null;
+    const linger = () =>
+      act(() => new Promise((resolve) => setTimeout(resolve, 250)));
+
+    fire("pointermove", 9, 8);
+    await flush();
+    expect(shown()).toBe("2");
+    // hovering renders the card alone, not the chart
+    const renders = getPointProps.mock.calls.length;
+    fire("pointermove", 2, 7.5);
+    fire("pointermove", 9, 8);
+    await flush();
+    expect(getPointProps.mock.calls.length).toBe(renders);
+    expect(
+      container
+        .querySelector('.minerva-chart-quadrant-point[data-point-index="2"]')!
+        .hasAttribute("data-active"),
+    ).toBe(true);
+
+    // a click selects it (a ring): the card stays while the pointer is there
+    fire("pointerdown", 9, 8);
+    fire("pointerup", 9, 8);
+    await flush();
+    expect(shown()).toBe("2");
+    // and goes with it
+    fire("pointermove", 5, 5);
+    await linger();
+    expect(shown()).toBeNull();
+    // other points still show theirs
+    fire("pointermove", 2.5, 2);
+    await flush();
+    expect(shown()).toBe("3");
+    fire("pointermove", 5, 5);
+    await linger();
+    expect(shown()).toBeNull();
+
+    // new arrays of the same points keep the hovered one
+    fire("pointermove", 2, 7.5);
+    await flush();
+    rerender(
+      <QuadrantChart
+        ref={ref}
+        points={points.map((p) => ({ ...p }))}
+        getPointProps={getPointProps}
+      />,
+    );
+    await flush();
+    expect(shown()).toBe("0");
+    // Escape closes it
+    act(() => {
+      document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+    });
+    expect(shown()).toBeNull();
+  });
+
+  it("keeps the card of the selected point on a board, until Escape or a click beside", async () => {
+    const ref = createRef<ChartHandle>();
+    const points = [
+      { label: "Report", x: 2, y: 8 },
+      { label: "Archive", x: 8, y: 2 },
+    ];
+    const { container } = render(
+      <QuadrantChart
+        ref={ref}
+        points={points}
+        renderPointActions={() => <button type="button">Edit</button>}
+      />,
+    );
+    await flush();
+    const chart = ref.current!.getInstance()!;
+    const stage = container.querySelector(".minerva-chart-stage")!;
+    const fire = (type: string, x: number, y: number) => {
+      const at = chart.toPixel(x, y)!;
+      stage.dispatchEvent(
+        new PointerEvent(type, {
+          clientX: at.x,
+          clientY: at.y,
+          pointerId: 1,
+          button: 0,
+        }),
+      );
+    };
+    const shown = () =>
+      container.querySelector<HTMLElement>("[data-point-preview]")?.dataset
+        .pointPreview ?? null;
+    fire("pointermove", 2, 8);
+    fire("pointerdown", 2, 8);
+    fire("pointerup", 2, 8);
+    await flush();
+    fire("pointermove", 5, 5);
+    await act(() => new Promise((resolve) => setTimeout(resolve, 250)));
+    // the actions of the selected point stay at hand
+    expect(shown()).toBe("0");
+    expect(container.querySelector("[data-card-actions]")!.textContent).toBe(
+      "Edit",
+    );
+    // a hover shows another point; the selection comes back after it
+    fire("pointermove", 8, 2);
+    await flush();
+    expect(shown()).toBe("1");
+    fire("pointermove", 5, 5);
+    await act(() => new Promise((resolve) => setTimeout(resolve, 250)));
+    expect(shown()).toBe("0");
+    act(() => {
+      document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+    });
+    await flush();
+    expect(shown()).toBeNull();
+    // selected again, then a click beside the points drops the selection
+    fire("pointerdown", 2, 8);
+    fire("pointerup", 2, 8);
+    await flush();
+    expect(shown()).toBe("0");
+    fire("pointerdown", 4, 6);
+    fire("pointerup", 4, 6);
+    await flush();
+    expect(shown()).toBeNull();
   });
 
   it("moves between the quadrant point buttons with arrows and reports the focused point", async () => {
@@ -643,12 +786,8 @@ describe("chart components", () => {
     await flush();
     const card = () =>
       container.querySelector<HTMLElement>("[data-point-preview]");
-    // the selected point shows its card: translucent, no accent edge
-    expect(card()!.textContent).toContain("Write report");
-    expect(card()!.textContent).toContain("Now");
-    expect(card()!.style.backgroundColor).toMatch(/^rgba\(/);
-    expect(card()!.style.borderLeftWidth || "").not.toBe("3px");
-    expect(card()!.style.borderInlineStart).toBe("");
+    // a plain chart rings its selected point: no card until a hover or drag
+    expect(card()).toBeNull();
     const chart = ref.current!.getInstance()!;
     const stage = container.querySelector(".minerva-chart-stage")!;
     const fire = (type: string, at: { x: number; y: number }) =>
@@ -666,18 +805,24 @@ describe("chart components", () => {
     fire("pointermove", { x: from.x + 20, y: from.y + 20 });
     await flush();
     expect(card()!.dataset.dragging).toBe("");
+    // translucent, no accent edge
+    expect(card()!.textContent).toContain("Write report");
+    expect(card()!.textContent).toContain("Now");
+    expect(card()!.style.backgroundColor).toMatch(/^rgba\(/);
+    expect(card()!.style.borderLeftWidth || "").not.toBe("3px");
+    expect(card()!.style.borderInlineStart).toBe("");
     const start = card()!.style.transform;
     const before = renders;
     fire("pointermove", { x: (from.x + to.x) / 2, y: (from.y + to.y) / 2 });
     fire("pointermove", to);
     await flush();
-    // pushed through the emitter: the card moved, nothing re-rendered
+    // moved by the card itself: nothing re-rendered
     expect(renders).toBe(before);
     expect(card()!.style.transform).not.toBe(start);
     expect(card()!.textContent).toContain("Drop");
     fire("pointerup", to);
     await flush();
-    expect(card()!.dataset.dragging).toBeUndefined();
+    expect(card()?.dataset.dragging).toBeUndefined();
   });
 
   it("cancels a drag with Escape: no drop, the preview goes away", async () => {

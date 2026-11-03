@@ -16,7 +16,7 @@
     },
     "triage": {
       "title": "Badges, counts and keyboard moves",
-      "description": "Quadrants show badges, descriptions and counts. Hovering, focusing or selecting a task shows one translucent card on it: its dot, its name and its quadrant, in place of its label; while a task is dragged the card follows it and names the quadrant it would land in. Tab enters the task list, Enter selects, and Shift + arrows move tasks between quadrants with live announcements."
+      "description": "Quadrants show badges, descriptions and counts. Hovering or focusing a task shows one translucent card on it: its dot, its name and its quadrant, in place of its label; the card goes when the pointer leaves, with Escape or with a click beside the tasks. A selected task keeps a ring. While a task is dragged the card follows it and names the quadrant it would land in. Tab enters the task list, Enter selects, and Shift + arrows move tasks between quadrants with live announcements."
     },
     "quadrant-header": {
       "title": "Custom quadrant headers",
@@ -308,7 +308,7 @@
       "onPointDrag": "Called with the point, its index and the quadrant under the pointer on every move of a dragged dot, before the drop (the dot does not move until onPointDrop)",
       "onQuadrantClick": "Called with the quadrant and the data position when the empty area of a quadrant is clicked",
       "onPointDrop": "Called with the point, its index and the drop target when a dragged dot is released; setting it makes the dots draggable (update points to move them)",
-      "renderPointActions": "React actions (e.g. compact edit / delete icon buttons) shown in the card of the active point (hovered, focused or selected), beside its name; receives the point and its index",
+      "renderPointActions": "React actions (e.g. compact edit / delete icon buttons) shown in the card of the active point, beside its name: the hovered or focused point, else the selected one (with actions, the selected point keeps its card); receives the point and its index",
       "renderTooltip": "React content of the card of the active point, in place of its name and quadrant (the engine tooltip is not shown)",
       "quadrantContent": "React content placed over each quadrant (e.g. an add button); only that content receives pointer events",
       "renderQuadrantHeader": "React header of each quadrant in its outer corner (top edge for the top quadrants, bottom edge for the bottom ones); receives the corner and { count, points, indices, region } and replaces the drawn title, badge, description and count",
@@ -411,7 +411,7 @@
         "noAccessiblePoints": "Leaves out the visually hidden list of the dots (arrows between the dots, Enter to click, Shift + arrows to move the focused dot, focus ring)",
         "height": "Height of the chart, the legend included: pixels or any CSS length",
         "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
-        "activeIndex": "Index of the active dot, the one showing the point-actions slot: the hovered dot, else the keyboard-focused one, else selectedIndex (null: none); read only",
+        "activeIndex": "Index of the point whose card shows the point-actions slot: the hovered point, else the keyboard-focused one, else selectedIndex (null: none, or during a drag); read only",
         "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
       },
       "events": {
@@ -430,7 +430,7 @@
         "quadrant-header-top-right": "Header of the top-right quadrant",
         "quadrant-header-bottom-left": "Header of the bottom-left quadrant",
         "quadrant-header-bottom-right": "Header of the bottom-right quadrant",
-        "point-actions": "Content shown at the active dot (e.g. edit / delete buttons), positioned by the slotted element; it receives pointer events"
+        "point-actions": "Actions shown in the point card of the active point, beside its name (e.g. compact edit / delete buttons); with actions, the selected point keeps its card; it receives pointer events"
       },
       "methods": {
         "resetZoom": "Shows the whole data range",

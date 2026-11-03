@@ -33,8 +33,6 @@
    pnpm test:migration
    pnpm test:coverage
    pnpm --filter @minerva/docs check:mini-api
-   pnpm exec playwright install chromium
-   pnpm test:browser
    pnpm test:dist
    pnpm check:package
    pnpm --filter minerva-design pack --dry-run

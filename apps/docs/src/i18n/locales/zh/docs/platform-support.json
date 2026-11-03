@@ -28,7 +28,7 @@
     },
     "taro": {
       "name": "Taro",
-      "text": "面向小程序与 H5 的 Taro 组件。主入口已通过官方 Taro 4.3 微信目标编译 fixture；H5 键盘、焦点、上传和沙箱预览有真实 Chromium 覆盖。minerva-design/taro/monaco 是可选 H5 入口，由应用提供 Monaco 引擎；小程序原生宿主无法运行 Monaco。"
+      "text": "面向小程序与 H5 的 Taro 组件。主入口已通过官方 Taro 4.3 微信目标编译 fixture；H5 键盘、焦点、上传和沙箱预览由 happy-dom 测试覆盖（不运行真实浏览器）。minerva-design/taro/monaco 是可选 H5 入口，由应用提供 Monaco 引擎；小程序原生宿主无法运行 Monaco。"
     },
     "weapp": {
       "name": "微信",
@@ -68,7 +68,7 @@
   "tracks": "方向",
   "contractsTitle": "组件契约",
   "contractsText": "该矩阵由组件契约生成：契约是从 React 属性类型和 Custom Elements Manifest 中提取的元数据（属性及其类型、枚举值和默认值，事件及其 detail 字段，插槽，产品方向以及各平台的支持情况）。当属性、特性或事件发生变化而未重新生成契约，或 React 与自定义元素的枚举值或默认值不一致时，测试会失败。",
-  "testsText": "共享契约测试、渲染器单测和真实 Chromium 检查覆盖文档注明的交互、翻译与设计令牌。独立 CI fixture 使用官方微信目标 SDK 编译 Taro 主入口与 uni-app SFC。微信开发者工具 2.01.2510280 / 基础库 3.17.2 模拟器记录了按钮与重试、禁用选项、选择回写、模态框打开和局部主题交互。复核已验证原生键盘输入 hello 与受控回写 HELLO，旧系统信息 API 和组件 WXSS 选择器警告已修复并在重新编译后消失。游客账号下 automator RPC 超时，安全信息接口仍报错。实机、其他平台目标和全量平台 API 仍未验证；模拟器证据不代表视觉与 API 完全一致。",
+  "testsText": "共享契约测试与渲染器单元、集成测试（Vitest + happy-dom，不运行真实浏览器）覆盖文档注明的交互、翻译与设计令牌。独立 CI fixture 使用官方微信目标 SDK 编译 Taro 主入口与 uni-app SFC。微信开发者工具 2.01.2510280 / 基础库 3.17.2 模拟器记录了按钮与重试、禁用选项、选择回写、模态框打开和局部主题交互。复核已验证原生键盘输入 hello 与受控回写 HELLO，旧系统信息 API 和组件 WXSS 选择器警告已修复并在重新编译后消失。游客账号下 automator RPC 超时，安全信息接口仍报错。实机、其他平台目标和全量平台 API 仍未验证；模拟器证据不代表视觉与 API 完全一致。",
   "quickStartTitle": "原生框架和小程序接入",
   "quickStartText": "请导入目标平台入口，遵循 peerDependencies 和宿主适配器要求。uni-app 分发源码 SFC，由应用的平台编译器处理。可选 H5 Monaco 入口为 minerva-design/taro/monaco 和 minerva-design/uni/monaco，应用须提供本地安装的 Monaco 引擎并配置 worker；它们不是原生小程序编辑器。官方微信目标 SDK 编译、H5 浏览器测试和已记录的开发者工具模拟器交互分别验收，仍需实机验证。",
   "api": {

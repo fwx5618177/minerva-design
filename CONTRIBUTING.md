@@ -22,7 +22,7 @@ We use GitHub to host code, to track issues and feature requests, as well as acc
 6. If your change affects the published package `minerva-design` (changes to public APIs, styles or runtime behavior in any `packages/*` renderer or core package), add a changeset for `minerva-design` with `pnpm changeset`.
 7. Issue that pull request!
 
-`.github/workflows/ci.yml` runs the same checks on Node 22 for every pull request (`pnpm lint`, `pnpm typecheck`, `pnpm format:check`, `pnpm test:coverage`, `pnpm build`, `pnpm test:dist`, `pnpm check:package`); run them locally before pushing. Real Chromium docs E2E runs after the production build (`pnpm exec playwright install chromium`, then `pnpm test:browser`). The existing `pnpm test:e2e` runs component workflows in happy-dom/RNTL; it does not certify browser or native-device rendering. `deploy.yml` builds `minerva-design` and the docs site and deploys `apps/docs/dist` to GitHub Pages.
+`.github/workflows/ci.yml` runs the same checks on Node 22 for every pull request (`pnpm lint`, `pnpm typecheck`, `pnpm format:check`, `pnpm test:coverage`, `pnpm build`, `pnpm test:dist`, `pnpm check:package`); run them locally before pushing. All tests run in Vitest: unit and integration tests in happy-dom (components, docs demos and user flows; `pnpm test:e2e` for host workflows) and React Native Testing Library. There is no browser test suite, so the tests do not certify pixels, layout, GPU output or native-device rendering. `deploy.yml` builds `minerva-design` and the docs site and deploys `apps/docs/dist` to GitHub Pages.
 
 ## Development setup
 

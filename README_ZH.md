@@ -359,7 +359,6 @@ pnpm dev
 | `pnpm build`                        | 构建所有渲染器到 `minerva-design`，再构建文档站点              |
 | `pnpm test`                         | 运行全部 Vitest 测试：单元、文档校验及宿主用户流程             |
 | `pnpm test:unit` / `pnpm test:e2e`  | 单元测试 / 宿主流程（happy-dom、React Native 测试库）          |
-| `pnpm test:browser`                 | 在真实 Chromium 中测试生产文档站（先构建并安装 Chromium）      |
 | `pnpm test:contracts:mini`          | Taro / uni-app 共用的按钮、选择和受控状态契约                  |
 | `pnpm test:dist`                    | 测试构建好的 `minerva-design` 及其打包的 tarball（构建后运行） |
 | `pnpm test:coverage`                | 运行全部测试并生成覆盖率报告（带覆盖率阈值）                   |
@@ -374,7 +373,7 @@ pnpm dev
 ### 工具链
 
 - 构建：Vite 8
-- 测试：Vitest、Testing Library、happy-dom
+- 测试：Vitest、Testing Library、happy-dom。单元与集成测试（组件、文档示例、用户流程）全部在 Vitest 中运行；没有浏览器测试套件，像素、布局和 GPU 输出不做自动检查
 - 代码检查与格式化：ESLint 10 + typescript-eslint、Prettier
 - Git Hooks：Husky、lint-staged、commitlint（Conventional Commits）
 - CI：`.github/workflows/ci.yml` 在每次推送到 `main` 和每个 Pull Request 时，于 Node 22 下运行 lint、类型检查、格式检查、带覆盖率的测试、构建、构建产物测试和包检查

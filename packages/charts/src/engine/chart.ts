@@ -177,7 +177,13 @@ export const createChart = (
   let rendererToken = 0;
   let destroyed = false;
   let frameId = 0;
+  /** The next frame draws everything; otherwise only the labels changed */
+  let fullFrame = false;
+  /** Size of the last full frame (a labels-only frame keeps it) */
+  let frameSize = "";
   let hover: HoverState | null = null;
+  /** Pointer hover to test again once new data is laid out */
+  let rehover: { x: number; y: number; event: ChartHoverEvent } | null = null;
   let lastPlot = "";
   let pointDrag: {
     id: number;
@@ -290,11 +296,22 @@ export const createChart = (
         ? options.tooltip
         : {};
 
-  const invalidate = () => {
-    if (destroyed || frameId) return;
+  const scheduleFrame = () => {
     frameId = win?.requestAnimationFrame
       ? win.requestAnimationFrame(frame)
       : (setTimeout(frame, 16) as unknown as number);
+  };
+
+  const invalidate = () => {
+    if (destroyed) return;
+    fullFrame = true;
+    if (!frameId) scheduleFrame();
+  };
+
+  /** Only the drawn labels changed: the next frame redraws the foreground */
+  const invalidateLabels = () => {
+    if (destroyed || frameId) return;
+    scheduleFrame();
   };
 
   // ---------------------------------------------------------------- model
@@ -323,10 +340,15 @@ export const createChart = (
       origin = { x: mid(base.x), y: mid(base.y) };
       itemsDirty = true;
       if (hover && !hover.keyboard) {
+        // the pointer has not moved: the next frame hit-tests it again on the
+        // new data (a click adding a selection ring keeps its point hovered);
+        // listeners hear of it only when the point under it changed
+        rehover = {
+          x: hover.anchorX,
+          y: hover.anchorY,
+          event: rehover?.event ?? hover.event,
+        };
         hover = null;
-        // listeners tracking the hovered point (an info card shown while
-        // nothing is hovered) would otherwise keep the old one
-        emit("hover", null);
       }
     }
     // new data after a drop: the dropped point is drawn where it landed
@@ -516,17 +538,54 @@ export const createChart = (
     return reverse ? [-scale, -offset] : [scale, offset];
   };
 
+  /** The 2D layer over the data: annotations, point labels, connectors */
+  const drawFront = (width: number, height: number, dpr: number) => {
+    const fg = dom.foreground.getContext("2d");
+    if (!fg || !scales) return;
+    fg.setTransform(dpr, 0, 0, dpr, 0, 0);
+    placedLabels = drawForeground(fg, {
+      width,
+      height,
+      scales,
+      theme,
+      annotations,
+      pointLabels: collectPointLabels(
+        model,
+        view,
+        scales,
+        yTicks,
+        theme.background,
+        // the label of a dragged point follows it (in the drag pill)
+        pointDrag?.moved ? pointDrag.item : (settling?.item ?? null),
+        hiddenLabel,
+      ),
+      connectors: connectorSegments(model, scales),
+      arrows: dependencyArrows(model, scales, dependencies),
+    });
+  };
+
   function frame() {
     frameId = 0;
     if (destroyed) return;
+    const full = fullFrame;
+    fullFrame = false;
     const width = dom.stage.clientWidth;
     const height = dom.stage.clientHeight;
     if (width <= 0 || height <= 0) return;
     const dpr = win?.devicePixelRatio || 1;
+    const size = `${width}x${height}@${dpr}`;
+    // a label shown or hidden (the point card of a matrix): the background,
+    // the axes and the data layer stay as they are
+    if (!full && size === frameSize && scales) {
+      drawFront(width, height, dpr);
+      renderHover();
+      if (pointDrag?.moved) renderDrag();
+      return;
+    }
+    frameSize = size;
     sizeCanvas(dom.background, width, height, dpr);
     sizeCanvas(dom.foreground, width, height, dpr);
     const bg = dom.background.getContext("2d");
-    const fg = dom.foreground.getContext("2d");
 
     if (bg) {
       bg.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -574,28 +633,7 @@ export const createChart = (
         annotations,
       });
     }
-    if (fg) {
-      fg.setTransform(dpr, 0, 0, dpr, 0, 0);
-      placedLabels = drawForeground(fg, {
-        width,
-        height,
-        scales,
-        theme,
-        annotations,
-        pointLabels: collectPointLabels(
-          model,
-          view,
-          scales,
-          yTicks,
-          theme.background,
-          // the label of a dragged point follows it (in the drag pill)
-          pointDrag?.moved ? pointDrag.item : (settling?.item ?? null),
-          hiddenLabel,
-        ),
-        connectors: connectorSegments(model, scales),
-        arrows: dependencyArrows(model, scales, dependencies),
-      });
-    }
+    drawFront(width, height, dpr);
 
     if (renderer) {
       const canvas = renderer.canvas;
@@ -645,6 +683,7 @@ export const createChart = (
         dpr,
       });
     }
+    settleHover();
     renderHover();
     if (clearDragOnFrame) {
       clearDragOnFrame = false;
@@ -682,10 +721,31 @@ export const createChart = (
   // ---------------------------------------------------------------- hover
 
   const setHover = (next: HoverState | null) => {
-    const changed = !sameHover(hover?.event ?? null, next?.event ?? null);
+    const before = rehover ? rehover.event : (hover?.event ?? null);
+    rehover = null;
+    const changed = !sameHover(before, next?.event ?? null);
     hover = next;
     renderHover();
     if (changed) emit("hover", next ? next.event : null);
+  };
+
+  /** The hover dropped by new data, hit-tested again where the pointer is */
+  const settleHover = () => {
+    const pending = rehover;
+    if (!pending || !scales) return;
+    rehover = null;
+    const hit = hitAt(pending.x, pending.y);
+    hover = hit
+      ? { event: hit, anchorX: pending.x, anchorY: pending.y, keyboard: false }
+      : null;
+    const same =
+      sameHover(pending.event, hit) &&
+      pending.event.items.every(
+        (it, i) => it.x === hit!.items[i].x && it.y === hit!.items[i].y,
+      );
+    // listeners tracking the hovered point (an info card shown while
+    // nothing is hovered) would otherwise keep the old one
+    if (!same) emit("hover", hit);
   };
 
   const tooltipNode = (event: ChartHoverEvent): Node | string | null => {
@@ -1790,7 +1850,7 @@ export const createChart = (
       )
         return;
       hiddenLabel = next;
-      invalidate();
+      invalidateLabels();
     },
     on(type, listener) {
       let set = listeners[type] as Set<typeof listener> | undefined;
