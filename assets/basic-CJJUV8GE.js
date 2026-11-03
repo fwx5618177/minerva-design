@@ -1,0 +1,1 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";import{r as t}from"./native-preview-BRFLbKzw.js";import{n}from"./native-preview-BQ0NDJWB.js";import{D as r}from"./native-preview-C5N2lrnO.js";function i(){return(0,a.jsx)(r,{label:`Quantity`,defaultValue:2,min:0,max:10,step:1})}var a;function o(){return(o=e((()=>{n(),a=t()})))()}o();export{i as default};
