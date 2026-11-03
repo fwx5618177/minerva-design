@@ -1,0 +1,171 @@
+import{n as e}from"./rolldown-runtime-B0Z9INg1.js";var t;function n(){return(n=e((()=>{t={vue:`<!-- DashboardColumnsColors.vue -->
+
+<template>
+  <minerva-dashboard-columns
+    aria-label="Product roadmap"
+    column-width="220"
+    gap="8"
+  >
+    <minerva-dashboard-column heading="Backlog" count="1" color="neutral">
+      <minerva-card padding="small">Collect feedback</minerva-card>
+    </minerva-dashboard-column>
+    <minerva-dashboard-column heading="Ready" count="1" color="info">
+      <minerva-card padding="small">Pricing page copy</minerva-card>
+    </minerva-dashboard-column>
+    <minerva-dashboard-column heading="In progress" count="2" color="primary">
+      <minerva-card padding="small">Search API</minerva-card>
+      <minerva-card padding="small">Avatars</minerva-card>
+    </minerva-dashboard-column>
+    <minerva-dashboard-column heading="Review" count="1" color="warning">
+      <minerva-card padding="small">Dark mode</minerva-card>
+    </minerva-dashboard-column>
+    <minerva-dashboard-column heading="Blocked" count="1" color="danger">
+      <minerva-card padding="small">SSO with Okta</minerva-card>
+    </minerva-dashboard-column>
+    <minerva-dashboard-column heading="Done" count="1" color="success">
+      <minerva-card padding="small">Release 2.4</minerva-card>
+    </minerva-dashboard-column>
+    <minerva-dashboard-column heading="Research" count="1" color="#7c3aed">
+      <minerva-card padding="small">Interview users</minerva-card>
+    </minerva-dashboard-column>
+  </minerva-dashboard-columns>
+</template>
+`,angular:`// dashboard-columns-colors.component.ts
+
+import { CUSTOM_ELEMENTS_SCHEMA, Component } from "@angular/core";
+
+@Component({
+  selector: "app-dashboard-columns-colors",
+  standalone: true,
+  // <minerva-*> are custom elements: bind their properties and events
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  template: \`
+    <minerva-dashboard-columns
+      aria-label="Product roadmap"
+      column-width="220"
+      gap="8"
+    >
+      <minerva-dashboard-column heading="Backlog" count="1" color="neutral">
+        <minerva-card padding="small">Collect feedback</minerva-card>
+      </minerva-dashboard-column>
+      <minerva-dashboard-column heading="Ready" count="1" color="info">
+        <minerva-card padding="small">Pricing page copy</minerva-card>
+      </minerva-dashboard-column>
+      <minerva-dashboard-column heading="In progress" count="2" color="primary">
+        <minerva-card padding="small">Search API</minerva-card>
+        <minerva-card padding="small">Avatars</minerva-card>
+      </minerva-dashboard-column>
+      <minerva-dashboard-column heading="Review" count="1" color="warning">
+        <minerva-card padding="small">Dark mode</minerva-card>
+      </minerva-dashboard-column>
+      <minerva-dashboard-column heading="Blocked" count="1" color="danger">
+        <minerva-card padding="small">SSO with Okta</minerva-card>
+      </minerva-dashboard-column>
+      <minerva-dashboard-column heading="Done" count="1" color="success">
+        <minerva-card padding="small">Release 2.4</minerva-card>
+      </minerva-dashboard-column>
+      <minerva-dashboard-column heading="Research" count="1" color="#7c3aed">
+        <minerva-card padding="small">Interview users</minerva-card>
+      </minerva-dashboard-column>
+    </minerva-dashboard-columns>
+  \`,
+})
+export class DashboardColumnsColorsComponent {}
+`,svelte:`<!-- DashboardColumnsColors.svelte -->
+
+<minerva-dashboard-columns
+  aria-label="Product roadmap"
+  column-width="220"
+  gap="8"
+>
+  <minerva-dashboard-column heading="Backlog" count="1" color="neutral">
+    <minerva-card padding="small">Collect feedback</minerva-card>
+  </minerva-dashboard-column>
+  <minerva-dashboard-column heading="Ready" count="1" color="info">
+    <minerva-card padding="small">Pricing page copy</minerva-card>
+  </minerva-dashboard-column>
+  <minerva-dashboard-column heading="In progress" count="2" color="primary">
+    <minerva-card padding="small">Search API</minerva-card>
+    <minerva-card padding="small">Avatars</minerva-card>
+  </minerva-dashboard-column>
+  <minerva-dashboard-column heading="Review" count="1" color="warning">
+    <minerva-card padding="small">Dark mode</minerva-card>
+  </minerva-dashboard-column>
+  <minerva-dashboard-column heading="Blocked" count="1" color="danger">
+    <minerva-card padding="small">SSO with Okta</minerva-card>
+  </minerva-dashboard-column>
+  <minerva-dashboard-column heading="Done" count="1" color="success">
+    <minerva-card padding="small">Release 2.4</minerva-card>
+  </minerva-dashboard-column>
+  <minerva-dashboard-column heading="Research" count="1" color="#7c3aed">
+    <minerva-card padding="small">Interview users</minerva-card>
+  </minerva-dashboard-column>
+</minerva-dashboard-columns>
+`,solid:`// DashboardColumnsColors.tsx
+
+export default function DashboardColumnsColors() {
+  return (
+    <minerva-dashboard-columns
+      aria-label="Product roadmap"
+      column-width="220"
+      gap="8"
+    >
+      <minerva-dashboard-column heading="Backlog" count="1" color="neutral">
+        <minerva-card padding="small">Collect feedback</minerva-card>
+      </minerva-dashboard-column>
+      <minerva-dashboard-column heading="Ready" count="1" color="info">
+        <minerva-card padding="small">Pricing page copy</minerva-card>
+      </minerva-dashboard-column>
+      <minerva-dashboard-column heading="In progress" count="2" color="primary">
+        <minerva-card padding="small">Search API</minerva-card>
+        <minerva-card padding="small">Avatars</minerva-card>
+      </minerva-dashboard-column>
+      <minerva-dashboard-column heading="Review" count="1" color="warning">
+        <minerva-card padding="small">Dark mode</minerva-card>
+      </minerva-dashboard-column>
+      <minerva-dashboard-column heading="Blocked" count="1" color="danger">
+        <minerva-card padding="small">SSO with Okta</minerva-card>
+      </minerva-dashboard-column>
+      <minerva-dashboard-column heading="Done" count="1" color="success">
+        <minerva-card padding="small">Release 2.4</minerva-card>
+      </minerva-dashboard-column>
+      <minerva-dashboard-column heading="Research" count="1" color="#7c3aed">
+        <minerva-card padding="small">Interview users</minerva-card>
+      </minerva-dashboard-column>
+    </minerva-dashboard-columns>
+  );
+}
+`,html:`<minerva-dashboard-columns
+  aria-label="Product roadmap"
+  column-width="220"
+  gap="8"
+>
+  <minerva-dashboard-column heading="Backlog" count="1" color="neutral">
+    <minerva-card padding="small">Collect feedback</minerva-card>
+  </minerva-dashboard-column>
+  <minerva-dashboard-column heading="Ready" count="1" color="info">
+    <minerva-card padding="small">Pricing page copy</minerva-card>
+  </minerva-dashboard-column>
+  <minerva-dashboard-column heading="In progress" count="2" color="primary">
+    <minerva-card padding="small">Search API</minerva-card>
+    <minerva-card padding="small">Avatars</minerva-card>
+  </minerva-dashboard-column>
+  <minerva-dashboard-column heading="Review" count="1" color="warning">
+    <minerva-card padding="small">Dark mode</minerva-card>
+  </minerva-dashboard-column>
+  <minerva-dashboard-column heading="Blocked" count="1" color="danger">
+    <minerva-card padding="small">SSO with Okta</minerva-card>
+  </minerva-dashboard-column>
+  <minerva-dashboard-column heading="Done" count="1" color="success">
+    <minerva-card padding="small">Release 2.4</minerva-card>
+  </minerva-dashboard-column>
+  <minerva-dashboard-column heading="Research" count="1" color="#7c3aed">
+    <minerva-card padding="small">Interview users</minerva-card>
+  </minerva-dashboard-column>
+</minerva-dashboard-columns>
+
+<script type="module">
+  // registers every <minerva-*> element (or import one entry per element)
+  import "minerva-design/web-components";
+<\/script>
+`}})))()}n();export{t as default};
