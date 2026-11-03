@@ -53,8 +53,9 @@ export function Part({
       data-minerva={name}
       data-part={part}
       className={cn(
-        `mn-${name}`,
-        part !== "root" && `mn-${name}__${part}`,
+        // the root class (border, surface, shadow…) only on the root: a part
+        // gets its own `mn-<name>__<part>` class
+        part === "root" ? `mn-${name}` : `mn-${name}__${part}`,
         className,
       )}
     >

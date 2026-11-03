@@ -133,3 +133,17 @@ it("page header and section are their own blocks, not extra .mn-page roots", () 
   expect(section.className).toContain("mn-page__section");
   expect(section.getAttribute("data-part")).toBe("root");
 });
+it("card parts carry their own class, not the card surface of the root", () => {
+  const { container } = render(
+    <M.Card>
+      <M.CardHeader>
+        <M.CardTitle>Title</M.CardTitle>
+        <M.CardDescription>Description</M.CardDescription>
+      </M.CardHeader>
+      <M.CardContent>Body</M.CardContent>
+    </M.Card>,
+  );
+  expect(container.querySelectorAll(".mn-card")).toHaveLength(1);
+  for (const part of ["header", "title", "description", "content"])
+    expect(container.querySelector(`.mn-card__${part}`)).not.toBeNull();
+});
