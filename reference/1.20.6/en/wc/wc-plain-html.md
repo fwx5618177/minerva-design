@@ -14,9 +14,9 @@ Locale: en
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.20.6",
-  "sourceCommit": "63ce45656d8f3d1bfbee71026e84674640ae9abf",
-  "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
-  "referenceSourceDigest": "sha256:fa9a782f68a5d5b512762e2152b2ad065da3de6937bac96eef63709ddba3b95b"
+  "sourceCommit": "99b9ad1465abc6ea97d2a8c008f3026645edb983",
+  "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
+  "referenceSourceDigest": "sha256:d66e13eea732bfeb1a6aaa7461bf92ea0d54944072977e762c106b87e877d062"
 }
 ```
 
@@ -37,6 +37,12 @@ The controls are form-associated: name, required, the value / checked attributes
 minerva-* events bubble, so a single listener on the form (or on document) receives the changes of every control; event.target is the element and event.detail holds the new value.
 
 Setting a property from script (modal.open = true) never fires an event; the close button and Escape close the modal and fire minerva-open-change.
+
+### Charts and icons
+
+The chart and icon elements load an engine (the charts of minerva-design/charts/core, the icon set), so they are not part of minerva.js. Each of these optional entries has a self-contained file of its own in the same cdn folder: chart.js (cartesian and shape charts), trading-chart.js, order-book.js, chart-3d.js, graph.js, quadrant-task-board.js and icon.js. Load the ones a page uses next to minerva.js:
+
+Without a bundler or an import map, a module script cannot import "minerva-design/web-components/chart": the browser does not resolve bare specifiers and the chart stays undefined (0 × 0). Load the CDN file with a  instead. Elements that two files both contain are registered once, by the first file that loads.
 
 ### Per-element modules with an import map
 
@@ -128,6 +134,28 @@ Use exact versions in production, and make sure every module loads the same copy
     </script>
   </body>
 </html>
+```
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/minerva-design@1.20.6/dist/core/tokens.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/minerva-design@1.20.6/dist/web-components/cdn/minerva.js"></script>
+<!-- the chart elements and their engine (not part of minerva.js) -->
+<script type="module" src="https://cdn.jsdelivr.net/npm/minerva-design@1.20.6/dist/web-components/cdn/chart.js"></script>
+
+<minerva-config theme="system" root>
+  <minerva-chart id="sales" height="300"></minerva-chart>
+</minerva-config>
+
+<script type="module">
+  // the data is the options property (no attribute)
+  document.querySelector("#sales").options = {
+    series: [
+      { name: "Revenue", type: "bar", data: [42, 51, 48, 63, 72, 80] },
+      { name: "Target", type: "line", curve: "smooth", data: [45, 50, 55, 60, 65, 70] },
+    ],
+    xAxis: { type: "category", categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"] },
+  };
+</script>
 ```
 
 ```html

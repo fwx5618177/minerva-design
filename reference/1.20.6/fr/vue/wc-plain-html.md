@@ -14,9 +14,9 @@ Locale: fr
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.20.6",
-  "sourceCommit": "63ce45656d8f3d1bfbee71026e84674640ae9abf",
-  "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
-  "referenceSourceDigest": "sha256:fa9a782f68a5d5b512762e2152b2ad065da3de6937bac96eef63709ddba3b95b"
+  "sourceCommit": "99b9ad1465abc6ea97d2a8c008f3026645edb983",
+  "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
+  "referenceSourceDigest": "sha256:d66e13eea732bfeb1a6aaa7461bf92ea0d54944072977e762c106b87e877d062"
 }
 ```
 
@@ -37,6 +37,12 @@ Les contrôles sont associés aux formulaires : name, required, les attributs va
 Les événements minerva-* remontent : un seul écouteur sur le formulaire (ou sur document) reçoit donc les changements de tous les contrôles ; event.target est l'élément et event.detail contient la nouvelle valeur.
 
 Définir une propriété depuis un script (modal.open = true) ne déclenche jamais d'événement ; le bouton de fermeture et la touche Échap ferment la modale et déclenchent minerva-open-change.
+
+### Graphiques et icônes
+
+Les éléments de graphique et d'icône chargent un moteur (les graphiques de minerva-design/charts/core, le jeu d'icônes) : ils ne font donc pas partie de minerva.js. Chacune de ces entrées optionnelles a son propre fichier autonome dans le même dossier cdn : chart.js (graphiques cartésiens et de formes), trading-chart.js, order-book.js, chart-3d.js, graph.js, quadrant-task-board.js et icon.js. Chargez ceux qu'utilise la page en plus de minerva.js :
+
+Sans bundler ni import map, un script module ne peut pas importer "minerva-design/web-components/chart" : le navigateur ne résout pas les spécificateurs nus et le graphique reste non défini (0 × 0). Chargez plutôt le fichier CDN avec un . Les éléments présents dans deux fichiers ne sont enregistrés qu'une fois, par le premier fichier chargé.
 
 ### Modules par élément avec une import map
 
@@ -128,6 +134,28 @@ En production, utilisez des versions exactes et assurez-vous que chaque module c
     </script>
   </body>
 </html>
+```
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/minerva-design@1.20.6/dist/core/tokens.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/minerva-design@1.20.6/dist/web-components/cdn/minerva.js"></script>
+<!-- the chart elements and their engine (not part of minerva.js) -->
+<script type="module" src="https://cdn.jsdelivr.net/npm/minerva-design@1.20.6/dist/web-components/cdn/chart.js"></script>
+
+<minerva-config theme="system" root>
+  <minerva-chart id="sales" height="300"></minerva-chart>
+</minerva-config>
+
+<script type="module">
+  // the data is the options property (no attribute)
+  document.querySelector("#sales").options = {
+    series: [
+      { name: "Revenue", type: "bar", data: [42, 51, 48, 63, 72, 80] },
+      { name: "Target", type: "line", curve: "smooth", data: [45, 50, 55, 60, 65, 70] },
+    ],
+    xAxis: { type: "category", categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"] },
+  };
+</script>
 ```
 
 ```html

@@ -14,9 +14,9 @@ Locale: zh
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.20.6",
-  "sourceCommit": "63ce45656d8f3d1bfbee71026e84674640ae9abf",
-  "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
-  "referenceSourceDigest": "sha256:fa9a782f68a5d5b512762e2152b2ad065da3de6937bac96eef63709ddba3b95b"
+  "sourceCommit": "99b9ad1465abc6ea97d2a8c008f3026645edb983",
+  "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
+  "referenceSourceDigest": "sha256:d66e13eea732bfeb1a6aaa7461bf92ea0d54944072977e762c106b87e877d062"
 }
 ```
 
@@ -37,6 +37,12 @@ tokens.css 定义了设计令牌（颜色、间距、圆角、字体），元素
 minerva-* 事件会冒泡，因此在表单（或 document）上的单个监听器即可接收所有控件的变化；event.target 是对应元素，event.detail 包含新值。
 
 通过脚本设置 property（modal.open = true）永远不会触发事件；关闭按钮和 Escape 键会关闭模态框并触发 minerva-open-change。
+
+### 图表与图标
+
+图表与图标元素需要加载引擎（minerva-design/charts/core 的图表、图标集），因此不包含在 minerva.js 中。每个可选入口在同一个 cdn 目录下都有自己的自包含文件：chart.js（直角坐标与形状图表）、trading-chart.js、order-book.js、chart-3d.js、graph.js、quadrant-task-board.js 和 icon.js。在 minerva.js 之外按页面需要加载：
+
+没有打包工具或 import map 时，module 脚本无法 import "minerva-design/web-components/chart"：浏览器不解析裸模块名，图表元素不会被注册（尺寸为 0 × 0）。请改用  加载 CDN 文件。两个文件都包含的元素只注册一次，以先加载的文件为准。
 
 ### 通过 import map 按元素加载模块
 
@@ -128,6 +134,28 @@ CDN 模块包包含所有元素。若只想下载页面用到的元素，可以�
     </script>
   </body>
 </html>
+```
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/minerva-design@1.20.6/dist/core/tokens.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/minerva-design@1.20.6/dist/web-components/cdn/minerva.js"></script>
+<!-- the chart elements and their engine (not part of minerva.js) -->
+<script type="module" src="https://cdn.jsdelivr.net/npm/minerva-design@1.20.6/dist/web-components/cdn/chart.js"></script>
+
+<minerva-config theme="system" root>
+  <minerva-chart id="sales" height="300"></minerva-chart>
+</minerva-config>
+
+<script type="module">
+  // the data is the options property (no attribute)
+  document.querySelector("#sales").options = {
+    series: [
+      { name: "Revenue", type: "bar", data: [42, 51, 48, 63, 72, 80] },
+      { name: "Target", type: "line", curve: "smooth", data: [45, 50, 55, 60, 65, 70] },
+    ],
+    xAxis: { type: "category", categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"] },
+  };
+</script>
 ```
 
 ```html
