@@ -14,9 +14,9 @@ Locale: fr
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.20.4",
-  "sourceCommit": "5826c364a762ec5a1144b8eea89e5d7510e4099c",
-  "sourceDigest": "sha256:38cfefdcb173c9a307526b9364c7a77acc74f713924006e65d94c6f3c5e94c61",
-  "referenceSourceDigest": "sha256:8bb3a20ee069c63b8d85e6ccf29336af81fffa488ce873d14ee032291c18009f"
+  "sourceCommit": "c389776dc1aa3bf80277d9c47f2c62d8f235e947",
+  "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+  "referenceSourceDigest": "sha256:96f9f31e7015b805e8eece3c05731306a461013443150c08b7b7a91a3bfc1bb6"
 }
 ```
 
@@ -980,7 +980,7 @@ export class Example {
 
 ## Example: Pastilles, compteurs et déplacements au clavier
 
-Les quadrants affichent badges, descriptions et comptes. Survoler ou cibler une tâche affiche une seule carte translucide sur elle : son point, son nom et son quadrant, à la place de son libellé ; la carte s’en va quand le pointeur s’éloigne, avec Échap ou un clic à côté des tâches. Une tâche sélectionnée garde un anneau. Pendant un glissement, la carte suit la tâche et nomme le quadrant où elle tomberait. Tab entre dans la liste des tâches, Entrée sélectionne et Maj + flèches déplacent les tâches entre les quadrants avec des annonces en direct.
+Survoler ou cibler une tâche affiche une carte translucide distincte à côté de son point, avec son nom, son quadrant et ses actions. Le point conserve sa taille et sa position ; la carte reste à distance et change de côté si nécessaire. La carte s’en va quand le pointeur s’éloigne, avec Échap ou un clic à côté des tâches. Une tâche sélectionnée garde un anneau. Pendant un glissement, la carte suit la tâche et nomme le quadrant où elle tomberait. Tab entre dans la liste des tâches, Entrée sélectionne et Maj + flèches déplacent les tâches entre les quadrants avec des annonces en direct.
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 

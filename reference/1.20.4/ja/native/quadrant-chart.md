@@ -14,9 +14,9 @@ Locale: ja
 {
   "schemaVersion": "2.0.0",
   "packageVersion": "1.20.4",
-  "sourceCommit": "5826c364a762ec5a1144b8eea89e5d7510e4099c",
-  "sourceDigest": "sha256:38cfefdcb173c9a307526b9364c7a77acc74f713924006e65d94c6f3c5e94c61",
-  "referenceSourceDigest": "sha256:8bb3a20ee069c63b8d85e6ccf29336af81fffa488ce873d14ee032291c18009f"
+  "sourceCommit": "c389776dc1aa3bf80277d9c47f2c62d8f235e947",
+  "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+  "referenceSourceDigest": "sha256:96f9f31e7015b805e8eece3c05731306a461013443150c08b7b7a91a3bfc1bb6"
 }
 ```
 
@@ -1338,7 +1338,7 @@ export default function Draggable() {
 
 ## Example: バッジ・件数・キーボード移動
 
-象限にはバッジ、説明、件数が表示されます。タスクにホバーまたはフォーカスすると、ラベルの代わりに半透明のカードが 1 枚表示されます（点、名前、象限）。ポインターが離れたとき、Escape、またはタスク以外の場所のクリックでカードは消えます。選択したタスクにはリングが残ります。ドラッグ中はカードがタスクに付いて移動し、ドロップ先の象限を示します。Tab でタスク一覧に入り、Enter で選択、Shift + 矢印キーでタスクを象限間で移動し、ライブで読み上げます。
+タスクにホバーまたはフォーカスすると、点の横に名前・象限・操作を表示する独立した半透明カードが現れます。点の大きさと位置は変わらず、スペースが足りない場合はカードが自動的に移動します。ポインターが離れたとき、Escape、またはタスク以外の場所のクリックでカードは消えます。選択したタスクにはリングが残ります。ドラッグ中はカードがタスクに付いて移動し、ドロップ先の象限を示します。Tab でタスク一覧に入り、Enter で選択、Shift + 矢印キーでタスクを象限間で移動し、ライブで読み上げます。
 
 Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
 
