@@ -447,14 +447,11 @@ export const createQuadrantPointCard = (
       hoverTimer = null;
       if (index !== null) {
         // Linger bridges the gap to the card's actions. Once a different point
-        // is reached, that grace period must not mask the new hover.
-        if (
-          holdTimer &&
-          valid(held) !== index &&
-          !pointerInside &&
-          !body.contains(doc.activeElement)
-        ) {
-          clearTimeout(holdTimer);
+        // is reached outside the card, it takes over even if a clicked action
+        // retains focus. Keyboard focus still protects the card without a new
+        // pointer target, including after the linger timer has expired.
+        if (valid(held) !== index && !pointerInside) {
+          if (holdTimer) clearTimeout(holdTimer);
           holdTimer = null;
           held = null;
         }

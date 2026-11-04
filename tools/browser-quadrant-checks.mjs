@@ -162,6 +162,54 @@ export async function checkQuadrantPointer({
   );
   results.push({ check: "quadrant-card-handoff", hover: 3 });
 
+  // A trusted click leaves focus on a card action. A new point still wins,
+  // both during linger and after the focused card has outlived its timer.
+  for (const linger of [false, true]) {
+    await hover(0);
+    const action = await evaluate(`(()=>{
+      const body=window.__quadrantTest.preview.querySelector('[data-card-content]');
+      const button=document.createElement('button');
+      button.textContent='Card action';button.dataset.focusRegression='';
+      body.append(button);
+      const r=button.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2};
+    })()`);
+    await mouse("mouseMoved", action);
+    await mouse("mousePressed", action, 1);
+    await mouse("mouseReleased", action);
+    assert.equal(
+      await evaluate(
+        `document.activeElement?.hasAttribute('data-focus-regression')`,
+      ),
+      true,
+    );
+    if (linger) {
+      await mouse("mouseMoved", outside);
+      await evaluate(`new Promise(resolve=>setTimeout(resolve,220))`);
+      assert.equal(
+        await evaluate(
+          `window.__quadrantTest.preview.querySelector('[data-point-preview]')?.dataset.pointPreview`,
+        ),
+        "0",
+      );
+    }
+    await hover(3);
+    await evaluate(`new Promise(resolve=>setTimeout(resolve,220))`);
+    assert.equal(
+      await evaluate(
+        `window.__quadrantTest.preview.querySelector('[data-point-preview]')?.dataset.pointPreview`,
+      ),
+      "3",
+    );
+    await evaluate(
+      `window.__quadrantTest.preview.querySelector('[data-focus-regression]')?.remove()`,
+    );
+  }
+  results.push({
+    check: "quadrant-clicked-action-handoff",
+    hover: 3,
+    beforeAndAfterLinger: true,
+  });
+
   // Ordinary drop still updates the controlled demo and retires its preview.
   await hover(0);
   at = await point(0);
@@ -178,4 +226,19 @@ export async function checkQuadrantPointer({
   await hover(3);
   await idle();
   results.push({ check: "quadrant-normal-drop", hover: 3 });
+
+  // Diagnostic only: synchronous dispatch includes hit testing and hover DOM
+  // work. This small demo is not a dense-chart or hardware input benchmark.
+  const profile = await evaluate(`(()=>{
+    const stage=window.__quadrantTest.stage;
+    const r=stage.getBoundingClientRect();const samples=[];
+    for(let i=0;i<240;i++){
+      const start=performance.now();
+      stage.dispatchEvent(new PointerEvent('pointermove',{pointerId:1,pointerType:'mouse',buttons:0,clientX:r.x+r.width*(.1+.8*(i%60)/59),clientY:r.y+r.height*(.2+.6*Math.floor(i/60)/3)}));
+      samples.push(performance.now()-start);
+    }
+    samples.sort((a,b)=>a-b);
+    return {samples:samples.length,p50Ms:samples[120],p95Ms:samples[228],maxMs:samples[239]};
+  })()`);
+  results.push({ check: "quadrant-pointermove-profile", ...profile });
 }

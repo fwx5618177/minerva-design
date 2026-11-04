@@ -99,24 +99,45 @@ describe("quadrant point card", () => {
     expect(shown()).toBe("1");
   });
 
-  it("keeps the active card while its actions still own pointer or focus", () => {
+  it("lets a new hover replace a card whose action retains mouse focus", () => {
+    mount();
+    card!.hover(0);
+    const body = host.querySelector<HTMLElement>("[data-card-content]")!;
+    const button = document.createElement("button");
+    card!.actions.appendChild(button);
+    body.dispatchEvent(new PointerEvent("pointerenter"));
+    button.focus();
+    card!.hover(null);
+    body.dispatchEvent(new PointerEvent("pointerleave"));
+    vi.advanceTimersByTime(CARD_LINGER_MS + 1);
+    expect(shown()).toBe("0");
+    expect(document.activeElement).toBe(button);
+    card!.hover(1);
+    expect(shown()).toBe("1");
+    vi.advanceTimersByTime(CARD_LINGER_MS + 1);
+    expect(shown()).toBe("1");
+  });
+
+  it("lets a new hover replace a focused card before linger expires", () => {
+    mount();
+    card!.hover(0);
+    const body = host.querySelector<HTMLElement>("[data-card-content]")!;
+    const button = document.createElement("button");
+    card!.actions.appendChild(button);
+    body.dispatchEvent(new PointerEvent("pointerenter"));
+    button.focus();
+    body.dispatchEvent(new PointerEvent("pointerleave"));
+    card!.hover(1);
+    expect(shown()).toBe("1");
+  });
+
+  it("keeps the card while its body owns the pointer", () => {
     mount();
     card!.hover(0);
     const body = host.querySelector<HTMLElement>("[data-card-content]")!;
     body.dispatchEvent(new PointerEvent("pointerenter"));
     card!.hover(1);
     expect(shown()).toBe("0");
-    const button = document.createElement("button");
-    card!.actions.appendChild(button);
-    button.focus();
-    body.dispatchEvent(new PointerEvent("pointerleave"));
-    card!.hover(2);
-    expect(shown()).toBe("0");
-    vi.advanceTimersByTime(CARD_LINGER_MS + 1);
-    expect(shown()).toBe("0");
-    button.blur();
-    vi.advanceTimersByTime(CARD_LINGER_MS + 1);
-    expect(shown()).toBe("2");
   });
 
   it("reuses measured dimensions during drag frames and remeasures on explicit placement", () => {
