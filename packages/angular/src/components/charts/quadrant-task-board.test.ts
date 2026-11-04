@@ -408,13 +408,13 @@ describe("MnQuadrantChart templates", () => {
     // the box of the card covers the plot
     expect(card()!.parentElement!.style.width).toBe("100px");
     expect(card()!.parentElement!.style.height).toBe("100px");
-    // reversed x: 2 of [0, 10] is at 80px from the left; the dot on the
-    // first row (24px high with actions) at 20px from the top
+    // Reversed x: the detached surface must leave its dot at data (80,20).
     const [, left, top] = /translate\(([\d.-]+)px, ([\d.-]+)px\)/.exec(
       card()!.style.transform,
     )!;
-    expect(Number(left)).toBeCloseTo(80);
-    expect(Number(top)).toBeCloseTo(2);
+    const dot = card()!.querySelector<HTMLElement>("[data-card-dot]")!;
+    expect(Number(left) + 1 + parseFloat(dot.style.left) + 6).toBeCloseTo(80);
+    expect(Number(top) + 1 + parseFloat(dot.style.top) + 6).toBeCloseTo(20);
     // the hovered point takes the card, leaving gives it back to the selection
     engines[0]!.fire("hover", { items: [{ index: 1 }] });
     await settle(fixture);

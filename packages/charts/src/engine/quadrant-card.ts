@@ -1,7 +1,7 @@
 // The point card of the quadrant matrices, shared by every renderer: one
 // glass card for the hovered, focused, dragged (or, on boards, selected)
-// point. Its dot lies on the point, the name and the quadrant beside it, the
-// actions of the host (edit, delete...) in its first row. The card is DOM
+// point. Its dot stays at the data coordinates, outside the detached surface;
+// the name, quadrant and host actions share one layout on either side. The card is DOM
 // placed by hand: hover, focus and drag moves render no framework component;
 // the host only fills the actions box (and, in React, a custom content) when
 // the point of the card changes.
@@ -16,7 +16,7 @@ import {
   quadrantName,
   type QuadrantAccessibleConfig,
 } from "./quadrant-keyboard";
-import { styleTooltip, themeTooltip } from "./tooltip";
+import { placeTooltip, styleTooltip, themeTooltip } from "./tooltip";
 import type { ChartInstance, ChartOptions } from "./types";
 
 /** Settings of the point card of a quadrant matrix */
@@ -86,16 +86,16 @@ export interface QuadrantPointCard {
   destroy(): void;
 }
 
-/** Room between the edge of the point card and its dot, CSS pixels */
-export const CARD_PAD_X = 8;
-const CARD_PAD_Y = 5;
-/** Room between the dot of the card and its text */
-const CARD_DOT_GAP = 7;
-/** Height of the first row of the card: the name, or the name and actions */
-const CARD_ROW = 18;
+/** Horizontal padding of the detached card surface, CSS pixels */
+export const CARD_PAD_X = 10;
+const CARD_PAD_Y = 8;
+/** Clear space from the real point edge to its card surface */
+const CARD_GAP = 10;
+/** Height of the title row, with and without host actions */
+const CARD_ROW = 20;
 const CARD_ACTIONS_ROW = 24;
-/** How far the card may reach past the plot edges */
-const CARD_OVERHANG = 6;
+/** The surface stays inside the plot; the point itself keeps its position */
+const CARD_MARGIN = 6;
 /**
  * The card stays this long after the pointer leaves its dot: time to reach
  * its actions
@@ -165,22 +165,31 @@ export const createQuadrantPointCard = (
   styleTooltip(card, {
     zIndex: "3",
     boxSizing: "border-box",
-    maxWidth: "min(280px, calc(100% + 12px))",
+    maxWidth: "min(280px, calc(100% - 12px))",
+    paddingLeft: `${CARD_PAD_X}px`,
+    paddingRight: `${CARD_PAD_X}px`,
     paddingTop: `${CARD_PAD_Y}px`,
     paddingBottom: `${CARD_PAD_Y}px`,
-    borderRadius: "12px",
-    fontSize: "12px",
-    lineHeight: "18px",
+    borderRadius: "10px",
+    fontSize: "13px",
+    lineHeight: "20px",
+    textAlign: "left",
+    boxShadow:
+      "0 6px 18px -6px rgba(0, 0, 0, 0.22), 0 2px 6px -3px rgba(0, 0, 0, 0.12)",
   });
   const dot = doc.createElement("span");
   dot.setAttribute("aria-hidden", "true");
   dot.dataset.cardDot = "";
   dot.style.cssText = "position:absolute;border-radius:50%;pointer-events:none";
-  // the dot lets the pointer through to the chart (hover, drag); the text
-  // and the actions hold the card
+  // The dot is an outside decoration of the surface, still anchored at its
+  // data coordinates (also used by task-board action anchors). It lets the
+  // pointer through to the chart; only the surface content holds the card.
   const body = doc.createElement("div");
   body.dataset.cardContent = "";
-  body.style.cssText = "display:grid;column-gap:6px;align-items:center";
+  body.style.cssText =
+    "display:grid;column-gap:8px;row-gap:2px;align-items:center;" +
+    'grid-template-areas:"label actions" "meta meta";' +
+    "grid-template-columns:minmax(0,1fr) auto";
   // a click on the name acts like a click on the dot
   const label = doc.createElement("div");
   label.setAttribute("aria-hidden", "true");
@@ -192,7 +201,7 @@ export const createQuadrantPointCard = (
   label.append(name, content);
   const actions = doc.createElement("div");
   actions.dataset.cardActions = "";
-  actions.style.cssText = `grid-area:actions;align-self:start;display:flex;align-items:center;height:${CARD_ACTIONS_ROW}px`;
+  actions.style.cssText = `grid-area:actions;display:flex;gap:4px;align-items:center;height:${CARD_ACTIONS_ROW}px`;
   const meta = doc.createElement("span");
   meta.setAttribute("aria-hidden", "true");
   meta.style.cssText =
@@ -257,63 +266,40 @@ export const createQuadrantPointCard = (
     const top = (1 - fraction(at.y, y0, y1)) * plotHeight;
     const size = point.size ?? options.pointSize ?? 12;
     const hasActions = withActions(index);
-    const row = hasActions ? CARD_ACTIONS_ROW : CARD_ROW;
-    // the dot of the card lies on the point (the border is 1px); the lifted
-    // dot of a drag is larger: the card keeps off it
-    const reach = 1 + CARD_PAD_X + size / 2 + (live ? 8 : 0);
-    // Content changes, explicit placement and ResizeObserver refresh the
-    // measurement. Drag frames only change position, avoiding a forced layout
-    // after the previous frame's style writes. Older hosts keep live reads.
+    const nextLayout = `${hasActions}|${size}`;
+    if (layout !== nextLayout) {
+      layout = nextLayout;
+      body.style.minHeight = `${hasActions ? CARD_ACTIONS_ROW : CARD_ROW}px`;
+      dot.style.width = `${size}px`;
+      dot.style.height = `${size}px`;
+    }
+    // Content, explicit placement and ResizeObserver refresh the measurement.
+    // Drag frames reuse it, so moving the point does not force layout.
     if (refreshSize || !observesSize) {
       measuredWidth = card.offsetWidth;
       measuredHeight = card.offsetHeight;
     }
-    const width = measuredWidth;
-    const height = measuredHeight;
-    // the text on the side with room (mirrored near the right edge); a side
-    // that still fits is kept (no flipping back and forth in a drag)
-    let mirrored = visualX > 0.6;
-    if (width) {
-      const overRight = left - reach + width - plotWidth;
-      const overLeft = width - reach - left;
-      const was = card.dataset.side;
-      mirrored =
-        was === "start" && overRight <= CARD_OVERHANG
-          ? false
-          : was === "end" && overLeft <= CARD_OVERHANG
-            ? true
-            : overRight > 0 && overLeft < overRight;
-    }
-    // the dot on the first row, the card kept in the plot near its edges
-    let cardTop = top - (1 + CARD_PAD_Y + row / 2);
-    if (height)
-      cardTop = Math.max(
-        -CARD_OVERHANG,
-        Math.min(cardTop, plotHeight + CARD_OVERHANG - height),
-      );
-    const side = mirrored ? "end" : "start";
-    card.dataset.side = side;
-    const nextLayout = `${side}|${hasActions}|${size}`;
-    if (layout !== nextLayout) {
-      layout = nextLayout;
-      const lead = `${CARD_PAD_X + size + CARD_DOT_GAP}px`;
-      const trail = hasActions ? "4px" : "12px";
-      card.style.paddingLeft = mirrored ? trail : lead;
-      card.style.paddingRight = mirrored ? lead : trail;
-      card.style.textAlign = mirrored ? "right" : "left";
-      body.style.minHeight = `${row}px`;
-      body.style.gridTemplateAreas = mirrored
-        ? '"actions label" ". meta"'
-        : '"label actions" "meta ."';
-      body.style.gridTemplateColumns = mirrored
-        ? "auto minmax(0, 1fr)"
-        : "minmax(0, 1fr) auto";
-      dot.style.width = `${size}px`;
-      dot.style.height = `${size}px`;
-    }
-    card.style.transform = `translate(${left}px, ${cardTop}px) translate(${
-      mirrored ? `calc(-100% + ${reach}px)` : `${-reach}px`
-    }, 0)`;
+    const radius = size / 2;
+    const position = placeTooltip({
+      anchor: { x: left, y: top },
+      avoid: { x: left - radius, y: top - radius, width: size, height: size },
+      size: { width: measuredWidth, height: measuredHeight },
+      stage: { width: plotWidth, height: plotHeight },
+      // Retain a fitting side through a drag rather than flipping repeatedly.
+      prefer:
+        card.dataset.side === "end" || (!card.dataset.side && visualX > 0.6)
+          ? "left"
+          : "right",
+      gap: CARD_GAP + (live ? 8 : 0),
+      margin: CARD_MARGIN,
+    });
+    card.dataset.side = position.x >= left ? "start" : "end";
+    card.style.transform = `translate(${position.x}px, ${position.y}px)`;
+    // The retained dot sits outside the surface, never taking text space.
+    // Its local offset includes the surface's 1px border.
+    dot.style.left = `${left - position.x - 1 - radius}px`;
+    dot.style.right = "auto";
+    dot.style.top = `${top - position.y - 1 - radius}px`;
     // the quadrant under the point (live in a drag)
     const corner = quadrantOf(config, at.x, at.y);
     const region = config.quadrants?.[corner];
@@ -326,11 +312,8 @@ export const createQuadrantPointCard = (
       config.quadrants?.[own]?.color ??
       DEFAULT_QUADRANT_COLORS[own];
     dot.style.display = live ? "none" : "block";
-    dot.style.left = mirrored ? "auto" : `${CARD_PAD_X}px`;
-    dot.style.right = mirrored ? `${CARD_PAD_X}px` : "auto";
-    dot.style.top = `${top - cardTop - 1 - size / 2}px`;
     dot.style.background = color;
-    dot.style.boxShadow = `0 0 0 2px var(--surface-color, var(--background-color, #fff)), 0 0 0 4px color-mix(in srgb, ${color} 45%, transparent)`;
+    dot.style.boxShadow = `0 0 0 2px color-mix(in srgb, ${color} 24%, transparent)`;
   };
 
   const onKey = (event: KeyboardEvent) => {

@@ -6,6 +6,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import assert from "node:assert/strict";
 import { checkQuadrantPointer } from "./browser-quadrant-checks.mjs";
+import { checkQuadrantCard } from "./browser-quadrant-card-checks.mjs";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const connect = async (url) => {
   const socket = new WebSocket(url);
@@ -167,7 +168,7 @@ try {
         (pointerTrace ? "\n" + JSON.stringify(pointerTrace) : ""),
     );
   };
-  const page = async (route, width = 1280) => {
+  const page = async (route, width = 1280, framework = "react") => {
     await call("Emulation.setDeviceMetricsOverride", {
       width,
       height: 900,
@@ -175,7 +176,7 @@ try {
       mobile: false,
     });
     await call("Page.navigate", {
-      url: BASE + "#/" + route + "?framework=react",
+      url: BASE + "#/" + route + "?framework=" + framework,
     });
     await wait('document.querySelector("[data-demo-preview]")');
     await sleep(300);
@@ -276,6 +277,23 @@ try {
   assert.ok(switches.length);
   assert.ok(switches.every((s) => s.height >= 44));
   results.push({ check: "touch-switches", switches });
+  await checkQuadrantCard({
+    call,
+    evaluate,
+    wait,
+    page,
+    results,
+    capture: async (name) => {
+      await mkdir(ARTIFACTS, { recursive: true });
+      const { data } = await call("Page.captureScreenshot", { format: "png" });
+      await writeFile(
+        join(ARTIFACTS, `${name}.png`),
+        Buffer.from(data, "base64"),
+      );
+    },
+  });
+  // The paint probe needs a fresh chart mount, not the same active hash route.
+  await page("design-presets");
   await checkQuadrantPointer({ call, evaluate, wait, page, results });
   await call("Page.navigate", {
     url: BASE + "#/empty?framework=vue",

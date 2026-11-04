@@ -338,13 +338,12 @@ describe("chart components", () => {
     );
     expect(chip?.style.display ?? "none").toBe("none");
     expect(hide).toHaveBeenLastCalledWith({ seriesIndex: 0, index: 0 });
-    // the dot of the card lies on the point: the card starts its padding
-    // and border before it
+    // The dot remains at its real size outside the detached surface.
     const dot = () => card()!.querySelector<HTMLElement>("[data-card-dot]")!;
     expect(dot().style.width).toBe("12px");
-    expect(dot().style.left).toBe("8px");
+    expect(parseFloat(dot().style.left)).toBeLessThan(-12);
     expect(card()!.dataset.side).toBe("start");
-    expect(card()!.style.transform).toContain("translate(-15px, 0)");
+    expect(card()!.style.paddingLeft).toBe("10px");
     // the actions are in the card, compact, and reachable by assistive tech
     const actions = card()!.querySelector<HTMLElement>("[data-card-actions]")!;
     expect(actions.textContent).toBe("Edit Book travel");
@@ -361,13 +360,13 @@ describe("chart components", () => {
     );
     expect(onPointClick).toHaveBeenCalledWith(points[0], 0);
 
-    // a point near the right edge: mirrored, the dot on the right
+    // A point near the right edge moves the surface left; reading order stays.
     move(chart.toPixel(9, 2)!);
     await flush();
     expect(card()!.dataset.pointPreview).toBe("1");
     expect(card()!.dataset.side).toBe("end");
-    expect(dot().style.right).toBe("8px");
-    expect(card()!.style.transform).toContain("calc(-100% + 15px)");
+    expect(card()!.style.textAlign).toBe("left");
+    expect(card()!.style.paddingLeft).toBe("10px");
   });
 
   it("keeps the card while the pointer goes from the dot to its actions", async () => {

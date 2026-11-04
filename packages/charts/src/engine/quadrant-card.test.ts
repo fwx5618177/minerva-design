@@ -26,6 +26,13 @@ const mount = (extra: Partial<QuadrantPointCardOptions> = {}) => {
   card = createQuadrantPointCard(host, options);
   return { card, options };
 };
+const surfacePosition = () => {
+  const match = card!.element.style.transform.match(
+    /^translate\(([-\d.]+)px, ([-\d.]+)px\)$/,
+  );
+  expect(match).not.toBeNull();
+  return { x: Number(match![1]), y: Number(match![2]) };
+};
 const shown = () =>
   host.querySelector<HTMLElement>("[data-point-preview]")?.dataset
     .pointPreview ?? null;
@@ -48,6 +55,72 @@ afterEach(() => {
 });
 
 describe("quadrant point card", () => {
+  it("keeps small and large points outside a card of the same size", () => {
+    mount({
+      config: {
+        points: [
+          { x: 2, y: 8, label: "Small", size: 12 },
+          { x: 2, y: 8, label: "Bubble", size: 36 },
+        ],
+      },
+    });
+    vi.spyOn(card!.element, "offsetWidth", "get").mockReturnValue(160);
+    vi.spyOn(card!.element, "offsetHeight", "get").mockReturnValue(56);
+    card!.hover(0);
+    expect(surfacePosition().x).toBeCloseTo(96);
+    expect(surfacePosition().y).toBeCloseTo(12);
+    const padding = card!.element.style.paddingLeft;
+    const dot = card!.element.querySelector<HTMLElement>("[data-card-dot]")!;
+    expect(dot.style.width).toBe("12px");
+    expect(dot.style.left).toBe("-23px");
+    card!.hover(1);
+    expect(surfacePosition().x).toBeCloseTo(108);
+    expect(surfacePosition().y).toBeCloseTo(12);
+    expect(card!.element.style.paddingLeft).toBe(padding);
+    expect(dot.style.width).toBe("36px");
+    expect(dot.style.left).toBe("-47px");
+    // Surface x108 + border1 + dot offset -47 + radius18 = data x80.
+    expect(108 + 1 + parseFloat(dot.style.left) + 18).toBe(80);
+  });
+
+  it("places the surface to the left at the right edge without reversing its actions", () => {
+    mount({
+      config: { points: [{ x: 9, y: 8, label: "Right", size: 36 }] },
+      hasActions: () => true,
+    });
+    vi.spyOn(card!.element, "offsetWidth", "get").mockReturnValue(160);
+    vi.spyOn(card!.element, "offsetHeight", "get").mockReturnValue(56);
+    card!.hover(0);
+    expect(surfacePosition().x).toBeCloseTo(172);
+    expect(surfacePosition().y).toBeCloseTo(12);
+    const dot = card!.element.querySelector<HTMLElement>("[data-card-dot]")!;
+    expect(dot.style.left).toBe("169px");
+    // Card right332, dot left342: exactly 10px of clear space.
+    expect(card!.element.style.textAlign).toBe("left");
+    expect(
+      host.querySelector<HTMLElement>("[data-card-content]")!.style
+        .gridTemplateAreas,
+    ).toBe('"label actions" "meta meta"');
+  });
+
+  it("uses vertical space when a wide card cannot fit beside the bubble", () => {
+    mount({ config: { points: [{ x: 5, y: 5, label: "Wide", size: 36 }] } });
+    host.style.width = "220px";
+    host.style.height = "200px";
+    vi.spyOn(card!.element, "offsetWidth", "get").mockReturnValue(180);
+    vi.spyOn(card!.element, "offsetHeight", "get").mockReturnValue(56);
+    card!.hover(0);
+    const coords = card!.element.style.transform.match(
+      /^translate\(([-\d.]+)px, ([-\d.]+)px\)$/,
+    );
+    expect(coords).not.toBeNull();
+    const x = Number(coords![1]),
+      y = Number(coords![2]);
+    expect(x).toBeGreaterThanOrEqual(6);
+    expect(x + 180).toBeLessThanOrEqual(214);
+    expect(y + 56 <= 72 || y >= 128).toBe(true);
+  });
+
   it("refreshes cached drag dimensions when ResizeObserver reports a content resize", () => {
     let resize = () => {};
     vi.stubGlobal(
