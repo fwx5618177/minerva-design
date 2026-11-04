@@ -1,5 +1,11 @@
 # minerva-design
 
+## 1.20.3
+
+### Patch Changes
+
+- ea7fb3e: Let a new quadrant point hover take over after leaving a card whose clicked action retains focus, while preserving keyboard focus when no new point is hovered.
+
 ## 1.20.2
 
 ### Patch Changes
