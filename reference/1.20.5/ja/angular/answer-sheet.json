@@ -1,0 +1,344 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "ja",
+  "renderer": "angular",
+  "page": "answer-sheet",
+  "title": "AnswerSheet 解答用紙",
+  "description": "演習や試験のための問題ナビゲーター：セクションごとにまとめた番号付きピルで、各問題が未回答・回答済み・正解・不正解・スキップのいずれかを示し、見直し用のフラグと現在の問題を強調表示します。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "AnswerSheet",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnAnswerSheet. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnAnswerSheet. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnAnswerSheet"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-answer-sheet",
+        "props": [
+          {
+            "name": "items",
+            "typeText": "readonly AnswerSheetItem[]",
+            "required": false,
+            "source": "packages/angular/src/components/data/answer-sheet.ts"
+          },
+          {
+            "name": "groups",
+            "typeText": "readonly AnswerSheetGroup[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/data/answer-sheet.ts"
+          },
+          {
+            "name": "value",
+            "typeText": "string | null",
+            "required": false,
+            "source": "packages/angular/src/components/data/answer-sheet.ts"
+          },
+          {
+            "name": "size",
+            "typeText": "AnswerSheetSize",
+            "required": false,
+            "source": "packages/angular/src/components/data/answer-sheet.ts"
+          },
+          {
+            "name": "layout",
+            "typeText": "AnswerSheetLayout",
+            "required": false,
+            "source": "packages/angular/src/components/data/answer-sheet.ts"
+          },
+          {
+            "name": "columns",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/data/answer-sheet.ts"
+          },
+          {
+            "name": "showLegend",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/data/answer-sheet.ts"
+          },
+          {
+            "name": "showSummary",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/data/answer-sheet.ts"
+          },
+          {
+            "name": "getItemLabel",
+            "typeText": "((item: AnswerSheetItem, index: number) => string) | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/data/answer-sheet.ts"
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/data/answer-sheet.ts"
+          },
+          {
+            "name": "aria-label",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/data/answer-sheet.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "typeText": "string | null",
+            "required": false
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "valueChange",
+            "syntax": "[(value)]"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:AnswerSheet": {
+      "kind": "cssVars",
+      "source": "react/src/components/AnswerSheet",
+      "vars": [
+        {
+          "name": "--answer-sheet-gap",
+          "description": "Space between the pills (defaults to --space-2; --space-1-5 with size=\"small\")"
+        },
+        {
+          "name": "--answer-sheet-item-size",
+          "description": "Minimum width and height of a pill (defaults to 2rem; 1.75rem with size=\"small\")"
+        },
+        {
+          "name": "--answer-sheet-radius",
+          "description": "Corner radius of the pills (defaults to --radius-md)"
+        },
+        {
+          "name": "--answer-sheet-item-background",
+          "description": "Background of an unanswered pill"
+        },
+        {
+          "name": "--answer-sheet-answered-background",
+          "description": "Background of an answered pill (defaults to --primary-color-subtle)"
+        },
+        {
+          "name": "--answer-sheet-answered-color",
+          "description": "Text color of an answered pill"
+        },
+        {
+          "name": "--answer-sheet-correct-background",
+          "description": "Background of a correct pill (defaults to --success-color-subtle)"
+        },
+        {
+          "name": "--answer-sheet-correct-color",
+          "description": "Text color of a correct pill"
+        },
+        {
+          "name": "--answer-sheet-wrong-background",
+          "description": "Background of a wrong pill (defaults to --danger-color-subtle)"
+        },
+        {
+          "name": "--answer-sheet-wrong-color",
+          "description": "Text color of a wrong pill"
+        },
+        {
+          "name": "--answer-sheet-current-background",
+          "description": "Background of the current pill (defaults to --primary-color)"
+        },
+        {
+          "name": "--answer-sheet-current-color",
+          "description": "Text color of the current pill"
+        },
+        {
+          "name": "--answer-sheet-flag-color",
+          "description": "Color of the flag dot (defaults to --warning-color)"
+        },
+        {
+          "name": "--answer-sheet-title-color",
+          "description": "Text color of the group titles and the summary"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "jump-between-questions",
+      "title": "Jump between questions",
+      "description": "[(value)] holds the key of the current question (aria-current=step). One tab stop: arrows and Home / End move the focus, Enter / Space select.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnAnswerSheet } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnAnswerSheet],\n  template: `\n<mn-answer-sheet [items]=\"items\" [(value)]=\"value\"/><output>Current question: {{value}}</output>\n  `,\n})\nexport class Example {\n  value: string | null = \"q6\";\n  items: import('minerva-design/angular').AnswerSheetItem[] = [\n  {\n    \"key\": \"q1\",\n    \"status\": \"answered\"\n  },\n  {\n    \"key\": \"q2\",\n    \"status\": \"answered\"\n  },\n  {\n    \"key\": \"q3\",\n    \"status\": \"answered\"\n  },\n  {\n    \"key\": \"q4\",\n    \"status\": \"answered\"\n  },\n  {\n    \"key\": \"q5\",\n    \"status\": \"answered\"\n  },\n  {\n    \"key\": \"q6\",\n    \"status\": \"unanswered\"\n  },\n  {\n    \"key\": \"q7\",\n    \"status\": \"unanswered\"\n  },\n  {\n    \"key\": \"q8\",\n    \"status\": \"unanswered\"\n  },\n  {\n    \"key\": \"q9\",\n    \"status\": \"unanswered\"\n  },\n  {\n    \"key\": \"q10\",\n    \"status\": \"unanswered\"\n  },\n  {\n    \"key\": \"q11\",\n    \"status\": \"unanswered\"\n  },\n  {\n    \"key\": \"q12\",\n    \"status\": \"unanswered\"\n  }\n];\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "sections-statuses-and-legend",
+      "title": "Sections, statuses and legend",
+      "description": "groups titles the sections; showSummary counts the answered questions and showLegend explains the statuses present.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnAnswerSheet } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnAnswerSheet],\n  template: `\n<mn-answer-sheet [items]=\"items\" [groups]=\"groups\" [(value)]=\"value\" showSummary showLegend aria-label=\"Review questions\"/>\n  `,\n})\nexport class Example {\n  value: string | null = \"s3\";\n  groups: import('minerva-design/angular').AnswerSheetGroup[] = [\n  {\n    \"key\": \"single\",\n    \"title\": \"Single choice\"\n  },\n  {\n    \"key\": \"short\",\n    \"title\": \"Short answer\"\n  }\n];\n  items: import('minerva-design/angular').AnswerSheetItem[] = [\n  {\n    \"key\": \"s1\",\n    \"group\": \"single\",\n    \"status\": \"correct\"\n  },\n  {\n    \"key\": \"s2\",\n    \"group\": \"single\",\n    \"status\": \"correct\"\n  },\n  {\n    \"key\": \"s3\",\n    \"group\": \"single\",\n    \"status\": \"wrong\",\n    \"flagged\": true\n  },\n  {\n    \"key\": \"s4\",\n    \"group\": \"single\",\n    \"status\": \"skipped\"\n  },\n  {\n    \"key\": \"a1\",\n    \"group\": \"short\",\n    \"status\": \"answered\"\n  },\n  {\n    \"key\": \"a2\",\n    \"group\": \"short\"\n  },\n  {\n    \"key\": \"a3\",\n    \"group\": \"short\",\n    \"disabled\": true\n  }\n];\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "scroll-layout-sizes-and-columns",
+      "title": "Scroll layout, sizes and columns",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnAnswerSheet } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnAnswerSheet],\n  template: `\n<mn-answer-sheet [items]=\"items\" layout=\"scroll\" size=\"small\" aria-label=\"Scrolling sheet\"/><mn-answer-sheet [items]=\"items\" columns=\"5\" aria-label=\"Five columns\"/><mn-answer-sheet [items]=\"items\" disabled aria-label=\"Disabled sheet\"/>\n  `,\n})\nexport class Example {\n  items: import('minerva-design/angular').AnswerSheetItem[] = [\n  {\n    \"key\": \"q1\",\n    \"status\": \"answered\"\n  },\n  {\n    \"key\": \"q2\",\n    \"status\": \"answered\"\n  },\n  {\n    \"key\": \"q3\",\n    \"status\": \"answered\"\n  },\n  {\n    \"key\": \"q4\",\n    \"status\": \"answered\"\n  },\n  {\n    \"key\": \"q5\",\n    \"status\": \"unanswered\"\n  },\n  {\n    \"key\": \"q6\",\n    \"status\": \"unanswered\"\n  },\n  {\n    \"key\": \"q7\",\n    \"status\": \"unanswered\"\n  },\n  {\n    \"key\": \"q8\",\n    \"status\": \"unanswered\"\n  },\n  {\n    \"key\": \"q9\",\n    \"status\": \"unanswered\"\n  },\n  {\n    \"key\": \"q10\",\n    \"status\": \"unanswered\"\n  }\n];\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "AnswerSheet 解答用紙",
+      "description": "演習や試験のための問題ナビゲーター：セクションごとにまとめた番号付きピルで、各問題が未回答・回答済み・正解・不正解・スキップのいずれかを示し、見直し用のフラグと現在の問題を強調表示します。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "制御された現在の問題（value / onChange）。解答用紙はボタンからなる nav ランドマークで、現在のピルは aria-current=\"step\" を持ちます。タブストップは 1 つ：矢印キーと Home / End でフォーカスを移動し、Enter / Space で選択します。"
+        },
+        "groups": {
+          "title": "セクション・ステータス・凡例",
+          "description": "groups でセクションに見出しを付けます（問題は item.group と一致するキーのグループに入り、番号はセクションをまたいで連番）。ステータス：answered、correct、wrong、skipped。flagged は警告ドットを表示します。showSummary は回答済みの数を、showLegend は使われているステータスを説明します。"
+        },
+        "scroll": {
+          "title": "スクロール行",
+          "description": "layout=\"scroll\" は横にスクロールする 1 行を保ち、問題の上に置くコンパクトなナビゲーターに適しています。"
+        },
+        "sizes": {
+          "title": "サイズ・列数・無効化",
+          "description": "2 つのピルサイズ、columns による固定グリッド（ArrowUp / ArrowDown で行を移動。columns がない場合は上下の行で最も近いピルへ移動）、無効化された解答用紙。"
+        }
+      },
+      "api": {
+        "AnswerSheetProps": {
+          "items": "問題（順番どおり）",
+          "groups": "見出し付きのセクション（表示順）。問題は item.group と一致するキーのグループに表示されます",
+          "value": "現在の問題のキー（制御。onChange と組み合わせる）",
+          "defaultValue": "初期の現在の問題のキー（非制御）",
+          "onChange": "選択された問題のキーで呼ばれます",
+          "size": "ピルの密度",
+          "layout": "\"wrap\" は複数行に折り返し、\"scroll\" は横スクロールする 1 行を保ちます",
+          "columns": "固定の列数（グリッド。ArrowUp / ArrowDown で行を移動）。layout=\"scroll\" では無視されます。",
+          "showLegend": "使われているステータス（とフラグ）の凡例を表示します",
+          "showSummary": "回答済みの問題数を表示します（\"12 / 20 問回答済み\"）",
+          "getItemLabel": "ピルのアクセシブルな名前。問題とその表示インデックスを受け取ります",
+          "disabled": "解答用紙全体を無効にします",
+          "aria-label": "ナビゲーションランドマークのアクセシブルな名前",
+          "className": "ルート要素の追加クラス",
+          "ref": "ルートの <nav> 要素への ref"
+        },
+        "AnswerSheetItem": {
+          "key": "問題の一意なキー（解答用紙の値）",
+          "label": "ピルに表示するラベル（既定はグループをまたいだ番号）",
+          "status": "問題のステータス：unanswered、answered、correct、wrong、skipped",
+          "flagged": "見直し用にフラグを付けます（隅の警告ドット）",
+          "disabled": "この問題は選択できません",
+          "group": "所属グループのキー。既知のグループがない問題は先頭の見出しなしセクションに表示されます"
+        },
+        "AnswerSheetGroup": {
+          "key": "item.group と照合するキー",
+          "title": "セクションの表示見出し"
+        }
+      },
+      "cssVars": {
+        "--answer-sheet-gap": "ピル間の間隔（既定 --space-2、size=\"small\" では --space-1-5）",
+        "--answer-sheet-item-size": "ピルの最小幅と高さ（既定 2rem、size=\"small\" では 1.75rem）",
+        "--answer-sheet-radius": "ピルの角丸（既定 --radius-md）",
+        "--answer-sheet-item-background": "未回答ピルの背景",
+        "--answer-sheet-answered-background": "回答済みピルの背景（既定 --primary-color-subtle）",
+        "--answer-sheet-answered-color": "回答済みピルの文字色",
+        "--answer-sheet-correct-background": "正解ピルの背景（既定 --success-color-subtle）",
+        "--answer-sheet-correct-color": "正解ピルの文字色",
+        "--answer-sheet-wrong-background": "不正解ピルの背景（既定 --danger-color-subtle）",
+        "--answer-sheet-wrong-color": "不正解ピルの文字色",
+        "--answer-sheet-current-background": "現在のピルの背景（既定 --primary-color）",
+        "--answer-sheet-current-color": "現在のピルの文字色",
+        "--answer-sheet-flag-color": "フラグドットの色（既定 --warning-color）",
+        "--answer-sheet-title-color": "グループ見出しと集計の文字色"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "items はプロパティ、value（現在の問題のキー）は属性で、minerva-change が選択されたキーを通知します。タブストップは 1 つ：矢印キーと Home / End でフォーカスを移動し、Enter / Space で選択します。"
+          },
+          "groups": {
+            "title": "セクション・ステータス・凡例",
+            "description": "groups プロパティでセクションに見出しを付け、show-summary と show-legend で回答数と使われているステータスの凡例を表示します。ピルは ::part(item item--status-wrong)、item--flagged、item--current などを公開します。"
+          },
+          "scroll": {
+            "title": "スクロール行",
+            "description": "layout=\"scroll\" は横にスクロールする 1 行を保ちます（:state(layout-scroll) カスタム状態も）。"
+          },
+          "sizes": {
+            "title": "サイズ・列数・無効化",
+            "description": "size=\"small\"、columns=\"5\" の固定グリッド（ArrowUp / ArrowDown で行を移動）、無効化された解答用紙。"
+          }
+        },
+        "minerva-answer-sheet": {
+          "events": {
+            "minerva-change": "ユーザーが問題を選択しました（detail: { value }、そのキー）。"
+          },
+          "methods": {
+            "focus": "タブストップを持つピルにフォーカスします。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "このスマートフォンプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

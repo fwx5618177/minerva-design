@@ -1,0 +1,414 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "fr",
+  "renderer": "weapp",
+  "page": "media-player",
+  "title": "MediaPlayer",
+  "description": "Un lecteur audio ou vidéo aux commandes personnalisées et thématisées : lecture / pause, sauts, barre de progression avec la plage mise en mémoire tampon, durée, volume, vitesse de lecture et plein écran, utilisable au clavier.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "MediaControls",
+      "support": {
+        "status": "n/a",
+        "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component."
+      }
+    },
+    {
+      "name": "MediaPlayer",
+      "support": {
+        "status": "beta",
+        "notes": "Video through the host <video> (controls off, driven by wx.createVideoContext: play/pause/seek/playbackRate/requestFullScreen) and audio through wx.createInnerAudioContext, under a themed control bar: play/pause, skip back/forward (skipSeconds), touch seek bar with the buffered range and aria-valuetext, m:ss / h:mm:ss time, mute, audio volume bar, playback-rate cycle button, video fullscreen, loading spinner and translated error state; startTime (video initial-time, audio startTime), autoPlay, loop, muted/defaultMuted, title, poster, height/aspectRatio; timeupdate/ended/play/pause/loadedmetadata/error/ratechange/volumechange events and play()/pause()/seek(seconds) instance methods. controls=false shows the host video's own controls. Captions: tracks (WebVTT or SRT, data: URLs inline) fetched with wx.request, parsed by the shared minerva-design/core parser and drawn as an overlay synchronized with the time updates, a CC button with an Off / per-track choice row, the choice remembered in storage (default track otherwise), a trackchange event and chooseTrack(index). Beta: needs device validation. The host video has no volume API (mute only, no volume bar); no picture-in-picture and no keyboard shortcuts; icons are text glyphs (no inline SVG in WXML). Captions follow the host time updates (about 4 per second), are not shown in the host's native fullscreen, ignore cue positioning / styling, and remote caption files need the app's request domain allowlist. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Video through the host <video> (controls off, driven by wx.createVideoContext: play/pause/seek/playbackRate/requestFullScreen) and audio through wx.createInnerAudioContext, under a themed control bar: play/pause, skip back/forward (skipSeconds), touch seek bar with the buffered range and aria-valuetext, m:ss / h:mm:ss time, mute, audio volume bar, playback-rate cycle button, video fullscreen, loading spinner and translated error state; startTime (video initial-time, audio startTime), autoPlay, loop, muted/defaultMuted, title, poster, height/aspectRatio; timeupdate/ended/play/pause/loadedmetadata/error/ratechange/volumechange events and play()/pause()/seek(seconds) instance methods. controls=false shows the host video's own controls. Captions: tracks (WebVTT or SRT, data: URLs inline) fetched with wx.request, parsed by the shared minerva-design/core parser and drawn as an overlay synchronized with the time updates, a CC button with an Off / per-track choice row, the choice remembered in storage (default track otherwise), a trackchange event and chooseTrack(index). Beta: needs device validation. The host video has no volume API (mute only, no volume bar); no picture-in-picture and no keyboard shortcuts; icons are text glyphs (no inline SVG in WXML). Captions follow the host time updates (about 4 per second), are not shown in the host's native fullscreen, ignore cue positioning / styling, and remote caption files need the app's request domain allowlist. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/media-player/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "media-player",
+        "props": [
+          {
+            "name": "src",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "type",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "mimeType",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "poster",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "title",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "autoPlay",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "loop",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "muted",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "defaultMuted",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "startTime",
+            "typeText": "number",
+            "required": false,
+            "default": 0
+          },
+          {
+            "name": "playbackRates",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "skipSeconds",
+            "typeText": "number",
+            "required": false,
+            "default": 10
+          },
+          {
+            "name": "controls",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          },
+          {
+            "name": "height",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "aspectRatio",
+            "typeText": "string",
+            "required": false,
+            "default": "16 / 9"
+          },
+          {
+            "name": "tracks",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "events": [
+          {
+            "name": "play",
+            "typeText": "{}",
+            "description": "Playback started."
+          },
+          {
+            "name": "pause",
+            "typeText": "{}",
+            "description": "Playback paused."
+          },
+          {
+            "name": "ended",
+            "typeText": "{}",
+            "description": "Playback reached the end."
+          },
+          {
+            "name": "timeupdate",
+            "typeText": "{ currentTime: number; duration: number }",
+            "description": "Playhead position and duration, in seconds."
+          },
+          {
+            "name": "loadedmetadata",
+            "typeText": "{ duration: number }",
+            "description": "The duration is known (once per source)."
+          },
+          {
+            "name": "error",
+            "typeText": "{ error: unknown }",
+            "description": "The host media failed (host error detail)."
+          },
+          {
+            "name": "ratechange",
+            "typeText": "{ rate: number }",
+            "description": "The speed button changed the rate."
+          },
+          {
+            "name": "volumechange",
+            "typeText": "{ volume: number; muted: boolean }",
+            "description": "Mute button or audio volume bar (video volume stays 1)."
+          },
+          {
+            "name": "trackchange",
+            "typeText": "{ index: number; track: { src: string; srclang?: string; label: string; kind?: string; default?: boolean } | null }",
+            "description": "The user chose captions in the CC row (index -1 and track null: Off)."
+          }
+        ],
+        "slots": [],
+        "registration": "\"usingComponents\": { \"mn-media-player\": \"minerva-design/dist/weapp/media-player/index\" }",
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:MediaPlayer": {
+      "kind": "cssVars",
+      "source": "react/src/components/MediaPlayer",
+      "vars": [
+        {
+          "name": "--media-player-radius",
+          "description": "Corner radius of the player (defaults to --radius-lg)"
+        },
+        {
+          "name": "--media-player-accent",
+          "description": "Color of the played range and the slider thumbs (defaults to --primary-color)"
+        },
+        {
+          "name": "--media-player-video-background",
+          "description": "Letterbox color behind a video (defaults to black)"
+        },
+        {
+          "name": "--media-player-overlay-background",
+          "description": "Background of the video control bar (defaults to a gradient to --overlay-color)"
+        },
+        {
+          "name": "--media-player-overlay-color",
+          "description": "Text and icon color over a video (defaults to white)"
+        },
+        {
+          "name": "--media-player-bar-background",
+          "description": "Background of the audio bar (defaults to --surface-color)"
+        },
+        {
+          "name": "--media-player-bar-color",
+          "description": "Text and icon color of the audio bar (defaults to --text-color)"
+        },
+        {
+          "name": "--media-player-button-size",
+          "description": "Size of the control buttons (defaults to the density's small control height)"
+        },
+        {
+          "name": "--media-player-track-height",
+          "description": "Thickness of the seek and volume tracks (defaults to 4px)"
+        },
+        {
+          "name": "--media-player-captions-background",
+          "description": "Background of the caption text (defaults to rgb(0 0 0 / 75%) over a video, none for audio)"
+        },
+        {
+          "name": "--media-player-captions-color",
+          "description": "Color of the caption text (defaults to white over a video, the bar color for audio)"
+        },
+        {
+          "name": "--media-player-captions-font-size",
+          "description": "Font size of the caption text (defaults to --font-size-lg over a video, --font-size-md for audio)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "MediaPlayer",
+      "description": "Un lecteur audio ou vidéo aux commandes personnalisées et thématisées : lecture / pause, sauts, barre de progression avec la plage mise en mémoire tampon, durée, volume, vitesse de lecture et plein écran, utilisable au clavier.",
+      "demos": {
+        "video": {
+          "title": "Vidéo",
+          "description": "Une <video> avec une barre de commandes sombre et translucide qui s’efface pendant la lecture (elle reste visible sur écran tactile, au survol et au focus). Lecteur focalisé : Espace / K lecture-pause, ← / → saut de 5 s, ↑ / ↓ volume, M muet, F plein écran. pictureInPicture ajoute un bouton là où le navigateur le permet."
+        },
+        "audio": {
+          "title": "Audio",
+          "description": "Le type est déduit de mimeType ou de l’extension du fichier (vidéo sinon) ; l’audio affiche une barre de surface avec le titre. skipSeconds={0} masque les boutons de saut."
+        },
+        "resume": {
+          "title": "Reprise et progression",
+          "description": "startTime est appliqué une fois les métadonnées chargées (reprendre là où l’apprenant s’est arrêté). onTimeUpdate / onLoadedMetadata / onPause / onEnded signalent la progression ; la ref expose play(), pause(), seek(secondes) et l’élément média."
+        },
+        "rates-skip": {
+          "title": "Vitesses et pas de saut",
+          "description": "playbackRates liste les vitesses parcourues par le bouton de vitesse (onRateChange signale la nouvelle) ; skipSeconds fixe le pas des boutons reculer / avancer ; aspectRatio (ou height) dimensionne une vidéo."
+        },
+        "captions": {
+          "title": "Sous-titres",
+          "description": "tracks accepte des fichiers WebVTT ou SRT ({ src, srclang, label, kind, default } ; ici des URL data:). Ils sont rendus comme enfants <track>, mais le lecteur dessine lui-même la réplique active (sur la vidéo, sous le titre pour l’audio) : les sous-titres ont le même aspect dans tous les navigateurs. Le bouton CC ouvre un menu (Désactivés et une entrée par piste) ; C les active / désactive sur le lecteur focalisé. Le choix est mémorisé (localStorage) et une piste default s’affiche tant que l’utilisateur n’a pas choisi ; onTrackChange le signale. Les fichiers d’une autre origine demandent crossOrigin=\"anonymous\" (ou \"use-credentials\") sur le lecteur et des en-têtes CORS sur leur serveur."
+        }
+      },
+      "api": {
+        "MediaPlayerProps": {
+          "src": "URL du média",
+          "type": "Type de média ; déduit de mimeType, sinon de l’extension de src, sinon \"video\"",
+          "mimeType": "Type MIME du média (\"audio/mpeg\", \"video/mp4\"…), utilisé pour déduire type",
+          "poster": "Image affichée avant la lecture d’une vidéo",
+          "title": "Titre du média, affiché dans la barre audio / sur la vidéo",
+          "autoPlay": "Démarre la lecture dès que possible (les navigateurs n’autorisent la lecture automatique sans geste de l’utilisateur qu’en muet)",
+          "loop": "Recommence à la fin",
+          "muted": "Coupe le son ; appliqué à chaque changement (le bouton muet bascule toujours le son)",
+          "defaultMuted": "Muet au départ (non contrôlé)",
+          "preload": "Quantité de média chargée par le navigateur avant la lecture",
+          "crossOrigin": "Mode CORS de la requête du média (nécessaire aussi pour les fichiers de sous-titres d’une autre origine, avec des en-têtes CORS sur leur serveur)",
+          "startTime": "Position de reprise en secondes, appliquée une fois les métadonnées chargées (et à nouveau quand src change)",
+          "playbackRates": "Vitesses parcourues par le bouton de vitesse",
+          "skipSeconds": "Pas des boutons reculer / avancer, en secondes (0 les masque)",
+          "controls": "Affiche la barre de commandes personnalisée ; false affiche l’élément média seul (pilotez-le via la ref)",
+          "height": "Hauteur d’un lecteur vidéo (nombre : pixels) ; prioritaire sur aspectRatio",
+          "aspectRatio": "Rapport d’aspect d’un lecteur vidéo (CSS aspect-ratio)",
+          "pictureInPicture": "Affiche un bouton image dans l’image (vidéo, si le navigateur le permet)",
+          "tracks": "Sous-titres : fichiers WebVTT ou SRT ({ src, srclang, label, kind, default }) rendus comme enfants <track> et dessinés par le lecteur, avec un menu de sous-titres dans la barre ; le choix est mémorisé (localStorage)",
+          "onTimeUpdate": "Appelé pendant la lecture avec la position et la durée ({ currentTime, duration }, en secondes)",
+          "onEnded": "Appelé quand la lecture atteint la fin",
+          "onPlay": "Appelé au démarrage de la lecture",
+          "onPause": "Appelé à la mise en pause",
+          "onLoadedMetadata": "Appelé avec la durée une fois les métadonnées chargées ({ duration })",
+          "onError": "Appelé avec la MediaError quand le média ne peut pas être chargé ou lu",
+          "onRateChange": "Appelé avec la nouvelle vitesse de lecture",
+          "onVolumeChange": "Appelé quand le volume ou l’état muet change ({ volume, muted })",
+          "onTrackChange": "Appelé quand l’utilisateur choisit des sous-titres ({ index, track } ; index -1 et track null : désactivés)",
+          "aria-label": "Libellé accessible du lecteur (par défaut title, sinon « Lecteur multimédia »)",
+          "className": "Nom de classe supplémentaire",
+          "style": "Styles en ligne de l’élément racine",
+          "ref": "Poignée impérative : play(), pause(), seek(secondes), element"
+        },
+        "MediaPlayerHandle": {
+          "play": "Démarre la lecture (la promesse de HTMLMediaElement.play() ; les refus de lecture automatique sont ignorés)",
+          "pause": "Met la lecture en pause",
+          "seek": "Déplace la position de lecture à secondes (limitée à la durée)",
+          "element": "L’élément <audio> / <video> rendu (null avant le montage)"
+        },
+        "MediaPlayerTrack": {
+          "src": "URL du fichier WebVTT (.vtt) ou SubRip (.srt) ; les URL data: fonctionnent",
+          "srclang": "Langue de la piste (BCP 47 : \"en\", \"fr-CA\"), aussi utilisée pour retrouver le choix mémorisé",
+          "label": "Nom affiché dans le menu des sous-titres",
+          "kind": "Type de piste texte : \"subtitles\" (par défaut) ou \"captions\"",
+          "default": "Affichée tant que l’utilisateur n’a pas choisi de sous-titres"
+        }
+      },
+      "cssVars": {
+        "--media-player-radius": "Rayon des coins du lecteur (par défaut --radius-lg)",
+        "--media-player-accent": "Couleur de la plage lue et des curseurs (par défaut --primary-color)",
+        "--media-player-video-background": "Couleur des bandes derrière une vidéo (noir par défaut)",
+        "--media-player-overlay-background": "Fond de la barre de commandes vidéo (par défaut un dégradé vers --overlay-color)",
+        "--media-player-overlay-color": "Couleur du texte et des icônes sur une vidéo (blanc par défaut)",
+        "--media-player-bar-background": "Fond de la barre audio (par défaut --surface-color)",
+        "--media-player-bar-color": "Couleur du texte et des icônes de la barre audio (par défaut --text-color)",
+        "--media-player-button-size": "Taille des boutons de commande (par défaut la hauteur des petits contrôles de la densité)",
+        "--media-player-track-height": "Épaisseur des barres de progression et de volume (4px par défaut)",
+        "--media-player-captions-background": "Fond du texte des sous-titres (rgb(0 0 0 / 75%) par défaut sur une vidéo, aucun pour l’audio)",
+        "--media-player-captions-color": "Couleur du texte des sous-titres (blanc par défaut sur une vidéo, couleur de la barre pour l’audio)",
+        "--media-player-captions-font-size": "Taille du texte des sous-titres (--font-size-lg par défaut sur une vidéo, --font-size-md pour l’audio)"
+      },
+      "wc": {
+        "demos": {
+          "video": {
+            "title": "Vidéo",
+            "description": "Le slot heading est le titre affiché sur la vidéo ; picture-in-picture ajoute un bouton là où le navigateur le permet. Lecteur focalisé : Espace / K, flèches, M et F."
+          },
+          "audio": {
+            "title": "Audio",
+            "description": "Un src en .mp3 (ou mime-type=\"audio/…\") affiche la barre audio ; skip-seconds=\"0\" masque les boutons de saut."
+          },
+          "resume": {
+            "title": "Reprise et progression",
+            "description": "start-time reprend une fois les métadonnées chargées. Les événements média ne traversent pas la shadow root : écoutez minerva-loaded-metadata, minerva-time-update, minerva-pause et minerva-ended ; play() et seek() pilotent le lecteur."
+          },
+          "rates-skip": {
+            "title": "Vitesses et pas de saut",
+            "description": "playbackRates est une propriété (un tableau) ; minerva-rate-change signale la vitesse. skip-seconds fixe le pas de saut et aspect-ratio dimensionne la vidéo."
+          },
+          "captions": {
+            "title": "Sous-titres",
+            "description": "tracks est une propriété (un tableau de { src, srclang, label, kind, default }) ; sans elle, les enfants <track src srclang label default> de l’élément sont utilisés. Le lecteur dessine les répliques et ajoute un menu de sous-titres ; minerva-track-change signale le choix de l’utilisateur. Les fichiers d’une autre origine demandent crossorigin et des en-têtes CORS."
+          }
+        },
+        "minerva-media-player": {
+          "props": {
+            "noControls": "Masque la barre de commandes personnalisée : affiche l’élément média seul (pilotez-le par script)",
+            "element": "L’élément <audio> / <video> rendu (lecture seule ; null avant le premier rendu)",
+            "tracks": "Sous-titres (propriété uniquement) : fichiers WebVTT ou SRT ({ src, srclang, label, kind, default }) ; vide : les enfants <track> sont utilisés"
+          },
+          "events": {
+            "minerva-play": "La lecture a démarré.",
+            "minerva-pause": "La lecture est en pause.",
+            "minerva-ended": "La lecture a atteint la fin.",
+            "minerva-time-update": "La position de lecture a changé (detail : { currentTime, duration }, en secondes).",
+            "minerva-loaded-metadata": "Les métadonnées sont chargées (detail : { duration }).",
+            "minerva-error": "Le média ne peut pas être chargé ou lu (detail : { error }, la MediaError).",
+            "minerva-rate-change": "La vitesse de lecture a changé (detail : { rate }).",
+            "minerva-volume-change": "Le volume ou l’état muet a changé (detail : { volume, muted }).",
+            "minerva-track-change": "L’utilisateur a choisi des sous-titres (detail : { index, track } ; index -1 et track null : désactivés)."
+          },
+          "methods": {
+            "play": "Démarre la lecture (les refus de lecture automatique sont ignorés : le lecteur reste en pause).",
+            "pause": "Met la lecture en pause.",
+            "seek": "Déplace la position de lecture à secondes (limitée à la durée)."
+          },
+          "slots": {
+            "heading": "Titre du média, affiché dans la barre audio / sur la vidéo."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "MediaControls (React Native)",
+            "description": "React Native n’a pas d’élément média : MediaControls est la barre de commandes thématisée, pilotée par des props (playing, currentTime, duration, buffered, muted, playbackRate) et des callbacks (onPlayPause, onSeek, onMutedChange, onRateChange…). Branchez-la sur expo-video / expo-audio (voir le commentaire du code) ; cet aperçu simule le lecteur."
+          },
+          "captions": {
+            "title": "Sous-titres (React Native)",
+            "description": "Les lecteurs React Native n’ont pas de pistes texte : avec tracks, MediaControls récupère le fichier WebVTT / SRT (les URL data: fonctionnent), l’analyse et dessine la réplique de currentTime au-dessus de la barre de progression. Le bouton CC propose Désactivés / une piste ; trackIndex peut être contrôlé et onTrackChange signale le choix."
+          }
+        }
+      }
+    }
+  }
+}

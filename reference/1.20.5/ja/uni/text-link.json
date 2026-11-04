@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "ja",
+  "renderer": "uni",
+  "page": "text-link",
+  "title": "TextLink テキストリンク",
+  "description": "インラインリンク、控えめなナビゲーション、設定行のためのスタイル付きネイティブリンク。asChild でアンカーを入れ子にせずルーターリンクにスタイルを適用します。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "TextLink",
+      "support": {
+        "status": "beta",
+        "notes": "Native navigator with disabled fallback and click. Internal native routes only; browser external anchors require platform navigation configuration. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native navigator with disabled fallback and click. Internal native routes only; browser external anchors require platform navigation configuration. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "TextLink"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "href",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "label",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "openType",
+            "typeText": "string | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "click",
+            "typeText": "any[]"
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:TextLink": {
+      "kind": "cssVars",
+      "source": "react/src/components/TextLink",
+      "vars": [
+        {
+          "name": "--text-link-color",
+          "description": "Color of the default variant (falls back to --link-color, then --primary-color)"
+        },
+        {
+          "name": "--text-link-font-weight",
+          "description": "Font weight"
+        },
+        {
+          "name": "--text-link-text-decoration",
+          "description": "Text decoration of the default variant (default: underline)"
+        },
+        {
+          "name": "--text-link-underline-offset",
+          "description": "Distance between the text and its underline"
+        },
+        {
+          "name": "--text-link-action-min-height",
+          "description": "Minimum height of the action variant"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "TextLink テキストリンク",
+      "description": "インラインリンク、控えめなナビゲーション、設定行のためのスタイル付きネイティブリンク。asChild でアンカーを入れ子にせずルーターリンクにスタイルを適用します。",
+      "demos": {
+        "variants": {
+          "title": "バリアント",
+          "description": "default は下線付き、subtle は色以外の手がかりとして矢印を付け、action は全幅の行になります。"
+        },
+        "as-child": {
+          "title": "ルーターリンク",
+          "description": "asChild はスタイルを唯一の子要素にマージします。"
+        }
+      },
+      "api": {
+        "TextLinkProps": {
+          "asChild": "リンクのスタイルを唯一の子要素にマージします",
+          "variant": "スタイル：default、subtle、action",
+          "ref": "アンカー要素への ref"
+        }
+      },
+      "cssVars": {
+        "--text-link-color": "既定バリアントの色（--link-color、次に --primary-color にフォールバック）",
+        "--text-link-font-weight": "フォントの太さ",
+        "--text-link-text-decoration": "既定バリアントのテキスト装飾（既定値は underline）",
+        "--text-link-underline-offset": "テキストと下線の距離",
+        "--text-link-action-min-height": "action バリアントの最小高さ"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "シャドウルート内のネイティブ <a>。href、target、rel、hreflang、download がそのまま渡されます。"
+          },
+          "variants": {
+            "title": "バリアントとルーティング",
+            "description": "default は下線付き、subtle は山形アイコン付き、action は設定行です。クリックはクライアントサイドルーターのようにホスト要素で横取りされます。"
+          },
+          "styling": {
+            "title": "CSS 変数",
+            "description": "色、太さ、下線とそのオフセットを CSS 変数でリンクごとに調整できます。"
+          }
+        },
+        "minerva-text-link": {
+          "props": {
+            "href": "リンク先の URL。",
+            "target": "リンクを開くブラウジングコンテキスト（_blank など）。",
+            "rel": "リンク先リソースとの関係（noopener など）。",
+            "download": "遷移せずにリンク先をダウンロードします（ファイル名は任意）。",
+            "hreflang": "リンク先リソースの言語。"
+          },
+          "slots": {
+            "default": "リンクのテキスト（とアイコン）。"
+          },
+          "methods": {
+            "focus": "内部のリンクにフォーカスします。",
+            "blur": "内部のリンクからフォーカスを外します。",
+            "click": "内部のリンクをクリックします。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

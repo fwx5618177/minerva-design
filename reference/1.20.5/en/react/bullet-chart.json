@@ -1,0 +1,1067 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "en",
+  "renderer": "react",
+  "page": "bullet-chart",
+  "title": "Bullet chart",
+  "description": "Compact KPI bars (Stephen Few): each row shows a measure as a bar over qualitative ranges (shades of gray, the poorest darkest) with a marker at its target, on the row's own scale. Rows can mix units, so dashboards fit many KPIs in little space. Hover a row or use the arrow keys to read its value, target and range.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {
+    "data": {
+      "sales": {
+        "revenue": "Revenue",
+        "revenueUnit": "thousands of US$",
+        "profit": "Profit",
+        "profitUnit": "% of revenue",
+        "orderSize": "Avg. order size",
+        "orderSizeUnit": "US$",
+        "customers": "New customers",
+        "customersUnit": "count",
+        "satisfaction": "Satisfaction",
+        "satisfactionUnit": "out of 5"
+      },
+      "ranges": {
+        "poor": "Poor",
+        "fair": "Fair",
+        "good": "Good",
+        "breach": "Breach",
+        "atRisk": "At risk",
+        "healthy": "Healthy"
+      },
+      "salesAria": "Quarter-to-date sales KPIs against their targets",
+      "teams": {
+        "checkout": "Checkout",
+        "search": "Search",
+        "mobile": "Mobile",
+        "platform": "Platform",
+        "growth": "Growth",
+        "data": "Data"
+      },
+      "teamsAria": "Story points delivered by each team against its commitment",
+      "slo": {
+        "availability": "Availability",
+        "availabilityUnit": "% of requests",
+        "apdex": "Apdex",
+        "apdexUnit": "score, 0–1",
+        "throughput": "Throughput",
+        "throughputUnit": "requests / s",
+        "budget": "Error budget",
+        "budgetUnit": "% remaining"
+      },
+      "sloAria": "Service level objectives of the API this month",
+      "growth": {
+        "visitors": "Visitors",
+        "visitorsUnit": "thousands",
+        "signups": "Sign-ups",
+        "signupsUnit": "accounts",
+        "activation": "Activation",
+        "activationUnit": "% of sign-ups",
+        "mrr": "MRR",
+        "mrrUnit": "thousands of US$"
+      },
+      "monthLabel": "Month",
+      "growthAria": "Growth KPIs of the selected month against their targets",
+      "long": {
+        "onboarding": "Enterprise customer onboarding completed within the first 30 days",
+        "onboardingUnit": "% of new accounts",
+        "support": "Priority support tickets answered within one business hour",
+        "supportUnit": "% of tickets",
+        "deployments": "Production deployments rolled out without a customer-facing incident",
+        "deploymentsUnit": "% of deployments",
+        "renewals": "Net revenue retention of annual subscription contracts",
+        "renewalsUnit": "ratio"
+      },
+      "longAria": "Operational KPIs with long names against their targets",
+      "budget": {
+        "departments": {
+          "marketing": "Marketing",
+          "engineering": "Engineering",
+          "sales": "Sales",
+          "people": "People",
+          "facilities": "Facilities",
+          "travel": "Travel"
+        },
+        "yearly": "Yearly budget: {{budget}}",
+        "ranges": {
+          "comfortable": "Comfortable",
+          "tight": "Tight",
+          "over": "Over plan"
+        },
+        "hint": "{{over}} departments spend faster than planned. Click a row to see its variance.",
+        "overPlan": "{{department}} is over plan: {{variance}} by the end of Q3, {{share}} of the yearly budget spent, {{left}} left.",
+        "underPlan": "{{department}} is within plan: {{variance}} by the end of Q3, {{share}} of the yearly budget spent, {{left}} left.",
+        "aria": "Department spending at the end of Q3 against the budget planned by then"
+      },
+      "sensors": {
+        "names": {
+          "inlet": "Inlet temperature",
+          "humidity": "Humidity",
+          "power": "Power draw",
+          "fans": "Fan speed"
+        },
+        "units": {
+          "inlet": "°C",
+          "humidity": "% relative",
+          "power": "kW per rack",
+          "fans": "% of max speed"
+        },
+        "status": {
+          "ok": "Normal",
+          "warning": "Warning",
+          "critical": "Critical"
+        },
+        "live": "Live readings",
+        "aria": "Server room sensor readings against their setpoints and thresholds",
+        "alerts": "Needs attention: {{sensors}}",
+        "allOk": "All sensors are within their limits."
+      },
+      "training": {
+        "metrics": {
+          "distance": "Weekly distance",
+          "longRun": "Long run",
+          "elevation": "Elevation gain",
+          "sessions": "Sessions",
+          "sleep": "Sleep"
+        },
+        "plan": "plan: {{plan}}",
+        "ranges": {
+          "under": "Under plan",
+          "onPlan": "On plan",
+          "above": "Above plan"
+        },
+        "runner": "Runner",
+        "runners": {
+          "amara": "Amara",
+          "lucas": "Lucas",
+          "mei": "Mei"
+        },
+        "tooltip": "{{value}} for a plan of {{plan}} ({{share}})",
+        "aria": "Weekly training of {{runner}} against the plan",
+        "summary": "{{runner}} met {{met}} of {{metrics}} weekly targets."
+      },
+      "hiring": {
+        "teams": {
+          "engineering": "Engineering",
+          "sales": "Sales",
+          "support": "Support",
+          "marketing": "Marketing",
+          "product": "Product",
+          "finance": "Finance"
+        },
+        "planned": "{{plan}} planned this year",
+        "ranges": {
+          "behind": "Behind",
+          "catchingUp": "Catching up",
+          "onTrack": "On track"
+        },
+        "order": "Sort",
+        "orders": {
+          "plan": "Plan order",
+          "behind": "Most behind first",
+          "ahead": "Most ahead first"
+        },
+        "aria": "Hires of each team against the yearly headcount plan",
+        "summary": "{{hired}} of {{planned}} planned hires ({{share}}) across {{teams}} teams shown.",
+        "none": "No team shown."
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "BulletChart",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/charts",
+          "exports": [
+            "BulletChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "data",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "array",
+            "typeText": "readonly BulletDatum[]",
+            "typeRef": "type:fba4278e9d99ae80e03b",
+            "required": true,
+            "description": "Rows (columns when vertical): name, value, target, ranges and scale"
+          },
+          {
+            "name": "orientation",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "enum",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
+            "typeText": "\"horizontal\" | \"vertical\" | undefined",
+            "typeRef": "type:4e4ac2a46972f482e8a6",
+            "default": "horizontal",
+            "required": false,
+            "description": "Horizontal rows or vertical columns"
+          },
+          {
+            "name": "ranges",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "array",
+            "typeText": "readonly number[] | undefined",
+            "typeRef": "type:9b11f9b3b1a7e709603e",
+            "required": false,
+            "description": "Qualitative ranges of the rows without `ranges`: upper bounds, ascending"
+          },
+          {
+            "name": "rangeLabels",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Names of the qualitative ranges, lowest first (tooltip)"
+          },
+          {
+            "name": "rangeColors",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Colors of the qualitative ranges, lowest first; shades of gray by default"
+          },
+          {
+            "name": "barSize",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 0.4,
+            "required": false,
+            "description": "Thickness of the value bar as a fraction of the ranges' thickness"
+          },
+          {
+            "name": "targetColor",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Color of the target markers"
+          },
+          {
+            "name": "ticks",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Tick labels of the scales (when there is room)"
+          },
+          {
+            "name": "height",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels"
+          },
+          {
+            "name": "width",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels"
+          },
+          {
+            "name": "renderer",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "enum",
+            "values": [
+              "auto",
+              "canvas2d",
+              "webgl",
+              "webgl2",
+              "webgpu"
+            ],
+            "typeText": "ChartRendererPreference | undefined",
+            "typeRef": "type:dc7d7e6f384ddec86e04",
+            "required": false,
+            "description": "Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D, above the shapes"
+          },
+          {
+            "name": "palette",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+          },
+          {
+            "name": "legend",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "union",
+            "typeText": "boolean | ShapeLegendOptions | undefined",
+            "typeRef": "type:b3cd5c49d86fb91effb3",
+            "required": false,
+            "description": "Legend; clicking an item hides / shows its slice, stage, series, node, bar, row or level"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "union",
+            "typeText": "boolean | ShapeTooltipOptions | undefined",
+            "typeRef": "type:9441d8fe0edba7239796",
+            "default": true,
+            "required": false,
+            "description": "Tooltip; `false` disables it"
+          },
+          {
+            "name": "format",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((value: number) => string) | undefined",
+            "typeRef": "type:f12d9d0b7c053d4d65a6",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats the values of the labels and the tooltip"
+          },
+          {
+            "name": "percentFormat",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((share: number) => string) | undefined",
+            "typeRef": "type:5bfc1184b082171dcbfd",
+            "parameters": [
+              {
+                "name": "share",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1"
+          },
+          {
+            "name": "locale",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "BCP 47 locale of the texts and numbers the chart writes (tooltip rows, accessible names, number and percent formats, calendar dates); built-in texts in English, Chinese, Japanese and French (English otherwise)"
+          },
+          {
+            "name": "texts",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "object",
+            "typeText": "Partial<ShapeChartLabels> | undefined",
+            "typeRef": "type:2ef787a978af6750b6c8",
+            "required": false,
+            "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")"
+          },
+          {
+            "name": "hidden",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "array",
+            "typeText": "readonly number[] | undefined",
+            "typeRef": "type:9b11f9b3b1a7e709603e",
+            "required": false,
+            "description": "Hidden slices / stages / radar series / top-level treemap or sunburst nodes / sankey nodes / radial bars / bullet rows / calendar levels, by index. Makes the visibility controlled: legend clicks then only call `onToggle`, whose `hiddenIndexes` should be stored and passed back. Leave undefined to let the legend hide / show entries by itself."
+          },
+          {
+            "name": "animation",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Entry and update animations (skipped when the user prefers reduced motion)"
+          },
+          {
+            "name": "padding",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the drawing, in pixels"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "node",
+            "typeText": "((event: ShapeHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:599537a71f6aca3767b8",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent",
+                "typeRef": "type:019a32700cb7aa817346"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onToggle",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((event: ShapeToggleEvent) => void) | undefined",
+            "typeRef": "type:c5e11f23fbce8c1aa9a2",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeToggleEvent",
+                "typeRef": "type:4b4244045a32e66c0a25"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a legend item is clicked (or the instance's `toggle()` is called), with the toggled index and every hidden index after the toggle"
+          },
+          {
+            "name": "onHover",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((event: ShapeHoverEvent | null) => void) | undefined",
+            "typeRef": "type:4d7c0df4667f26938fe6",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent | null",
+                "typeRef": "type:5ce60fcc1021d329ffba"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the hovered (or keyboard-focused) mark changes"
+          },
+          {
+            "name": "onClick",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((event: ShapeHoverEvent) => void) | undefined",
+            "typeRef": "type:e40dbbb538ff7cd7dda5",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent",
+                "typeRef": "type:019a32700cb7aa817346"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a mark is clicked, tapped or activated with Enter"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "BulletChartProps": {
+      "source": "charts/src/react/shapes.tsx",
+      "description": "Props of BulletChart",
+      "kind": "interface",
+      "extends": [
+        "ShapeChartCommonProps"
+      ],
+      "props": [
+        {
+          "name": "data",
+          "type": "readonly BulletDatum[]",
+          "required": true,
+          "description": "Rows (columns when vertical): name, value, target, ranges and scale"
+        },
+        {
+          "name": "orientation",
+          "type": "\"horizontal\" | \"vertical\"",
+          "required": false,
+          "default": "\"horizontal\"",
+          "description": "Horizontal rows or vertical columns"
+        },
+        {
+          "name": "ranges",
+          "type": "readonly number[]",
+          "required": false,
+          "description": "Qualitative ranges of the rows without `ranges`: upper bounds, ascending"
+        },
+        {
+          "name": "rangeLabels",
+          "type": "readonly string[]",
+          "required": false,
+          "description": "Names of the qualitative ranges, lowest first (tooltip)"
+        },
+        {
+          "name": "rangeColors",
+          "type": "readonly string[]",
+          "required": false,
+          "description": "Colors of the qualitative ranges, lowest first; shades of gray by default"
+        },
+        {
+          "name": "barSize",
+          "type": "number",
+          "required": false,
+          "default": "0.4",
+          "description": "Thickness of the value bar as a fraction of the ranges' thickness"
+        },
+        {
+          "name": "targetColor",
+          "type": "string",
+          "required": false,
+          "default": "the text color",
+          "description": "Color of the target markers"
+        },
+        {
+          "name": "ticks",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Tick labels of the scales (when there is room)"
+        }
+      ]
+    },
+    "BulletDatum": {
+      "source": "charts/src/engine/shapes/types.ts",
+      "description": "A row of a bullet chart",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": "Name of the measure"
+        },
+        {
+          "name": "subtitle",
+          "type": "string",
+          "required": false,
+          "description": "Small text under the name (unit, period)"
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "required": true,
+          "description": "Current value, drawn as the bar"
+        },
+        {
+          "name": "target",
+          "type": "number",
+          "required": false,
+          "description": "Target, drawn as the marker"
+        },
+        {
+          "name": "ranges",
+          "type": "readonly number[]",
+          "required": false,
+          "description": "Upper bounds of the qualitative ranges, ascending (e.g. poor / fair / good); the chart's `ranges` when omitted"
+        },
+        {
+          "name": "min",
+          "type": "number",
+          "required": false,
+          "default": "0 (or the smallest value when negative)",
+          "description": "Start of the scale"
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "required": false,
+          "description": "End of the scale; the largest of the ranges, the value and the target when omitted"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": false,
+          "description": "Color of the bar; the palette when omitted"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "budget-tracker",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bullet-chart/demos/budget-tracker.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bullet-chart/demos/budget-tracker.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { BulletChart, type BulletDatum } from \"minerva-design/charts\";\n\n// Spending of each department at the end of Q3, against its yearly budget\n// (thousands of euros); the marker is the budget expected by now (75 %)\nconst DEPARTMENTS: [key: string, spent: number, budget: number][] = [\n  [\"marketing\", 1380, 1600],\n  [\"engineering\", 3920, 5400],\n  [\"sales\", 1010, 1500],\n  [\"people\", 560, 680],\n  [\"facilities\", 702, 900],\n  [\"travel\", 205, 320],\n];\nconst ELAPSED = 0.75;\n\nexport default function BudgetTrackerDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bullet-chart.data\",\n  });\n  const locale = i18n.language;\n  const [selected, setSelected] = useState<number | null>(null);\n\n  const money = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        style: \"currency\",\n        currency: \"EUR\",\n        notation: \"compact\",\n        maximumFractionDigits: 1,\n      }),\n    [locale],\n  );\n  const signed = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        style: \"currency\",\n        currency: \"EUR\",\n        notation: \"compact\",\n        maximumFractionDigits: 1,\n        signDisplay: \"exceptZero\",\n      }),\n    [locale],\n  );\n  const percent = useMemo(\n    () => new Intl.NumberFormat(locale, { style: \"percent\" }),\n    [locale],\n  );\n  const format = (value: number) => money.format(value * 1000);\n\n  // ranges: comfortable up to 90 % of the plan, then tight, then over plan;\n  // departments spending faster than planned get a red bar\n  const data = useMemo(\n    (): BulletDatum[] =>\n      DEPARTMENTS.map(([key, spent, budget]) => {\n        const plan = budget * ELAPSED;\n        return {\n          name: t(`budget.departments.${key}`),\n          subtitle: t(\"budget.yearly\", {\n            budget: money.format(budget * 1000),\n          }),\n          value: spent,\n          target: plan,\n          ranges: [plan * 0.9, plan, plan * 1.25],\n          color: spent > plan ? \"var(--danger-color)\" : \"var(--success-color)\",\n        };\n      }),\n    [money, t],\n  );\n  const rangeLabels = useMemo(\n    () => [\n      t(\"budget.ranges.comfortable\"),\n      t(\"budget.ranges.tight\"),\n      t(\"budget.ranges.over\"),\n    ],\n    [t],\n  );\n  const over = DEPARTMENTS.filter(\n    ([, spent, budget]) => spent > budget * ELAPSED,\n  ).length;\n\n  const detail = () => {\n    if (selected === null) return t(\"budget.hint\", { over });\n    const [, spent, budget] = DEPARTMENTS[selected];\n    const plan = budget * ELAPSED;\n    return t(spent > plan ? \"budget.overPlan\" : \"budget.underPlan\", {\n      department: data[selected].name,\n      variance: signed.format((spent - plan) * 1000),\n      share: percent.format(spent / budget),\n      left: money.format(Math.max(0, budget - spent) * 1000),\n    });\n  };\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <BulletChart\n        data={data}\n        rangeLabels={rangeLabels}\n        format={format}\n        onClick={(event) => setSelected(event.index)}\n        height={360}\n        ariaLabel={t(\"budget.aria\")}\n      />\n      <output aria-live=\"polite\">{detail()}</output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Department budget tracker",
+      "description": "Each row compares the spending to date with the budget expected by now (target), and per-row ranges mark the comfortable, tight and over-plan zones. Bars turn red through color when a department spends faster than planned; onClick shows its variance under the chart."
+    },
+    {
+      "id": "hiring-plan",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bullet-chart/demos/hiring-plan.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bullet-chart/demos/hiring-plan.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Select, SelectItem } from \"minerva-design\";\nimport { BulletChart, type BulletDatum } from \"minerva-design/charts\";\n\ntype Order = \"plan\" | \"behind\" | \"ahead\";\n\n// Hires made so far this year by each team, against the yearly headcount\n// plan; the marker is where the team should be by October (75 %)\nconst TEAMS: [key: string, hired: number, plan: number][] = [\n  [\"engineering\", 31, 48],\n  [\"sales\", 19, 22],\n  [\"support\", 14, 16],\n  [\"marketing\", 4, 9],\n  [\"product\", 7, 8],\n  [\"finance\", 2, 4],\n];\nconst ON_TRACK = 0.75;\nconst ORDERS: Order[] = [\"plan\", \"behind\", \"ahead\"];\nconst pace = ([, hired, plan]: (typeof TEAMS)[number]) =>\n  hired / (plan * ON_TRACK);\n\nexport default function HiringPlanDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bullet-chart.data\",\n  });\n  const locale = i18n.language;\n  const [order, setOrder] = useState<Order>(\"plan\");\n  // hidden teams are kept by key: the row indexes change with the order\n  const [hiddenKeys, setHiddenKeys] = useState<string[]>([]);\n\n  const rows = useMemo(() => {\n    if (order === \"plan\") return TEAMS;\n    const sign = order === \"behind\" ? 1 : -1;\n    return [...TEAMS].sort((a, b) => sign * (pace(a) - pace(b)));\n  }, [order]);\n  const number = useMemo(() => new Intl.NumberFormat(locale), [locale]);\n  const data = useMemo(\n    (): BulletDatum[] =>\n      rows.map(([key, hired, plan]) => ({\n        name: t(`hiring.teams.${key}`),\n        subtitle: t(\"hiring.planned\", { plan: number.format(plan) }),\n        value: hired,\n        target: plan * ON_TRACK,\n        ranges: [plan * 0.5, plan * ON_TRACK, plan],\n        max: plan,\n      })),\n    [number, rows, t],\n  );\n  const hidden = rows\n    .map(([key], index) => (hiddenKeys.includes(key) ? index : -1))\n    .filter((index) => index >= 0);\n  const rangeLabels = useMemo(\n    () => [\n      t(\"hiring.ranges.behind\"),\n      t(\"hiring.ranges.catchingUp\"),\n      t(\"hiring.ranges.onTrack\"),\n    ],\n    [t],\n  );\n  const percent = useMemo(\n    () => new Intl.NumberFormat(locale, { style: \"percent\" }),\n    [locale],\n  );\n\n  const visible = TEAMS.filter(([key]) => !hiddenKeys.includes(key));\n  const hired = visible.reduce((sum, [, value]) => sum + value, 0);\n  const planned = visible.reduce((sum, [, , value]) => sum + value, 0);\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <Select\n        size=\"small\"\n        style={{ width: 220 }}\n        aria-label={t(\"hiring.order\")}\n        value={order}\n        onChange={(value) => setOrder(value as Order)}\n      >\n        {ORDERS.map((key) => (\n          <SelectItem key={key} value={key}>\n            {t(`hiring.orders.${key}`)}\n          </SelectItem>\n        ))}\n      </Select>\n      <BulletChart\n        data={data}\n        legend\n        hidden={hidden}\n        onToggle={(event) =>\n          setHiddenKeys(event.hiddenIndexes.map((index) => rows[index][0]))\n        }\n        rangeLabels={rangeLabels}\n        format={(value) => number.format(value)}\n        height={380}\n        ariaLabel={t(\"hiring.aria\")}\n      />\n      <output aria-live=\"polite\">\n        {visible.length\n          ? t(\"hiring.summary\", {\n              hired: number.format(hired),\n              planned: number.format(planned),\n              share: percent.format(hired / planned),\n              teams: number.format(visible.length),\n            })\n          : t(\"hiring.none\")}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Hiring plan",
+      "description": "Hires per team against the yearly headcount plan, with a marker where the team should be by now. A Select sorts the rows by pace; legend with hidden and onToggle hides teams, kept by key so that they stay hidden when the order changes, and the summary totals the visible teams."
+    },
+    {
+      "id": "live-sensors",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bullet-chart/demos/live-sensors.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bullet-chart/demos/live-sensors.tsx": "import { useEffect, useMemo, useRef, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Switch } from \"minerva-design\";\nimport { BulletChart, type BulletDatum } from \"minerva-design/charts\";\n\n/** Small seeded random generator: the same readings on every visit */\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\n// Sensors of a server room: the setpoint (target), the warning and critical\n// thresholds, and how much a reading can move per tick\nconst SENSORS: {\n  key: string;\n  setpoint: number;\n  warning: number;\n  critical: number;\n  max: number;\n  step: number;\n}[] = [\n  { key: \"inlet\", setpoint: 22, warning: 27, critical: 32, max: 40, step: 1.6 },\n  {\n    key: \"humidity\",\n    setpoint: 45,\n    warning: 60,\n    critical: 70,\n    max: 100,\n    step: 4,\n  },\n  { key: \"power\", setpoint: 6, warning: 8, critical: 9.5, max: 12, step: 0.7 },\n  { key: \"fans\", setpoint: 50, warning: 80, critical: 95, max: 100, step: 7 },\n];\nconst SEED = 11;\nconst START = [24.5, 52, 7.1, 62];\nconst STATUS_COLORS = {\n  ok: \"var(--success-color)\",\n  warning: \"#f59e0b\",\n  critical: \"var(--danger-color)\",\n};\n\ntype Status = keyof typeof STATUS_COLORS;\nconst statusOf = (value: number, sensor: (typeof SENSORS)[number]): Status =>\n  value >= sensor.critical\n    ? \"critical\"\n    : value >= sensor.warning\n      ? \"warning\"\n      : \"ok\";\n\nexport default function LiveSensorsDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bullet-chart.data\",\n  });\n  const locale = i18n.language;\n  const [live, setLive] = useState(true);\n  const [readings, setReadings] = useState(START);\n  const random = useRef(mulberry32(SEED));\n\n  useEffect(() => {\n    if (!live) return;\n    const timer = window.setInterval(() => {\n      // a random walk with a slight upward drift, pulled back to the setpoint\n      const moves = SENSORS.map(\n        (sensor) => (random.current() - 0.42) * 2 * sensor.step,\n      );\n      setReadings((current) =>\n        current.map((value, i) => {\n          const sensor = SENSORS[i];\n          const next = value + moves[i] + (sensor.setpoint - value) * 0.08;\n          return Math.min(sensor.max, Math.max(0, next));\n        }),\n      );\n    }, 1000);\n    return () => window.clearInterval(timer);\n  }, [live]);\n\n  const number = useMemo(\n    () => new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }),\n    [locale],\n  );\n  const statuses = readings.map((value, i) => statusOf(value, SENSORS[i]));\n  const data = useMemo(\n    (): BulletDatum[] =>\n      SENSORS.map((sensor, i) => ({\n        name: t(`sensors.names.${sensor.key}`),\n        subtitle: t(`sensors.units.${sensor.key}`),\n        value: readings[i],\n        target: sensor.setpoint,\n        ranges: [sensor.warning, sensor.critical, sensor.max],\n        max: sensor.max,\n        color: STATUS_COLORS[statusOf(readings[i], sensor)],\n      })),\n    [readings, t],\n  );\n  const rangeLabels = useMemo(\n    () => [\n      t(\"sensors.status.ok\"),\n      t(\"sensors.status.warning\"),\n      t(\"sensors.status.critical\"),\n    ],\n    [t],\n  );\n  const alerts = SENSORS.filter((_, i) => statuses[i] !== \"ok\").map((sensor) =>\n    t(`sensors.names.${sensor.key}`),\n  );\n  const list = new Intl.ListFormat(locale, { type: \"conjunction\" });\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <Switch checked={live} onChange={setLive} label={t(\"sensors.live\")} />\n      <BulletChart\n        data={data}\n        rangeLabels={rangeLabels}\n        animation={false}\n        format={(value) => number.format(value)}\n        height={300}\n        ariaLabel={t(\"sensors.aria\")}\n      />\n      {/* only the set of sensors out of range is announced */}\n      <output aria-live=\"polite\">\n        {alerts.length\n          ? t(\"sensors.alerts\", { sensors: list.format(alerts) })\n          : t(\"sensors.allOk\")}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Live server room sensors",
+      "description": "Readings refresh every second (setInterval, cleared when the switch is off or on unmount); the target is the setpoint and the ranges the warning and critical thresholds. Each bar's color follows its status, and only the list of sensors out of range is announced."
+    },
+    {
+      "id": "long-names",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bullet-chart/demos/long-names.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bullet-chart/demos/long-names.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { BulletChart, type BulletDatum } from \"minerva-design/charts\";\n\n// Operational KPIs with long, descriptive names: the label column grows to\n// fit them (up to 40% of the width), then the names wrap to two lines with\n// an ellipsis; the tooltip shows the full name\nconst KPIS: {\n  key: string;\n  value: number;\n  target: number;\n  ranges: number[];\n}[] = [\n  { key: \"onboarding\", value: 78, target: 85, ranges: [60, 75, 100] },\n  { key: \"support\", value: 87, target: 90, ranges: [70, 85, 100] },\n  { key: \"deployments\", value: 96.4, target: 98, ranges: [90, 95, 100] },\n  { key: \"renewals\", value: 1.18, target: 1.1, ranges: [0.9, 1.05, 1.3] },\n];\n\nexport default function LongNamesDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bullet-chart.data\",\n  });\n\n  const data = useMemo(\n    (): BulletDatum[] =>\n      KPIS.map(({ key, ...kpi }) => ({\n        name: t(`long.${key}`),\n        subtitle: t(`long.${key}Unit`),\n        ...kpi,\n      })),\n    [t],\n  );\n  const rangeLabels = useMemo(\n    () => [t(\"ranges.poor\"), t(\"ranges.fair\"), t(\"ranges.good\")],\n    [t],\n  );\n\n  return (\n    <BulletChart\n      data={data}\n      rangeLabels={rangeLabels}\n      ariaLabel={t(\"longAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Long names",
+      "description": "The label column is measured: it grows to fit the longest name, up to 40% of the width; longer names wrap to two lines and end with an ellipsis. Hover a row (or focus it with the keyboard) to read the full name in the tooltip."
+    },
+    {
+      "id": "monthly",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bullet-chart/demos/monthly.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bullet-chart/demos/monthly.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Radio, RadioGroup } from \"minerva-design\";\nimport { BulletChart, type BulletDatum } from \"minerva-design/charts\";\n\ntype Metric = \"visitors\" | \"signups\" | \"activation\" | \"mrr\";\n\n// Growth KPIs of the first half of 2026 against their monthly targets\nconst METRICS: Metric[] = [\"visitors\", \"signups\", \"activation\", \"mrr\"];\nconst TARGETS: Record<Metric, number> = {\n  visitors: 120,\n  signups: 4800,\n  activation: 45,\n  mrr: 210,\n};\nconst RANGES: Record<Metric, number[]> = {\n  visitors: [80, 110, 150],\n  signups: [3000, 4500, 6000],\n  activation: [30, 40, 60],\n  mrr: [150, 200, 260],\n};\nconst MONTHS: Record<Metric, number>[] = [\n  { visitors: 86, signups: 3100, activation: 34, mrr: 162 },\n  { visitors: 94, signups: 3550, activation: 37, mrr: 171 },\n  { visitors: 108, signups: 4020, activation: 41, mrr: 184 },\n  { visitors: 117, signups: 4410, activation: 43, mrr: 196 },\n  { visitors: 129, signups: 4930, activation: 46, mrr: 207 },\n  { visitors: 141, signups: 5380, activation: 49, mrr: 223 },\n];\n\nexport default function MonthlyDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bullet-chart.data\",\n  });\n  const [month, setMonth] = useState(2);\n  const locale = i18n.language;\n\n  const monthNames = useMemo(() => {\n    const format = new Intl.DateTimeFormat(locale, {\n      month: \"short\",\n      timeZone: \"UTC\",\n    });\n    return MONTHS.map((_, i) => format.format(Date.UTC(2026, i, 1)));\n  }, [locale]);\n  const data = useMemo(\n    (): BulletDatum[] =>\n      METRICS.map((metric) => ({\n        name: t(`growth.${metric}`),\n        subtitle: t(`growth.${metric}Unit`),\n        value: MONTHS[month][metric],\n        target: TARGETS[metric],\n        ranges: RANGES[metric],\n      })),\n    [month, t],\n  );\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <RadioGroup\n        aria-label={t(\"monthLabel\")}\n        direction=\"horizontal\"\n        value={month}\n        onChange={(value) => setMonth(Number(value))}\n      >\n        {monthNames.map((name, i) => (\n          <Radio key={name} value={i} label={name} />\n        ))}\n      </RadioGroup>\n      <BulletChart data={data} legend ariaLabel={t(\"growthAria\")} />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Month by month",
+      "description": "Picking another month animates the bars toward the new values. With legend, clicking a KPI in the legend hides / shows its row."
+    },
+    {
+      "id": "sales",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bullet-chart/demos/sales.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bullet-chart/demos/sales.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { BulletChart, type BulletDatum } from \"minerva-design/charts\";\n\n// Quarter-to-date sales KPIs, each on its own scale: ranges are the\n// poor / fair / good bounds, the marker is the quarter's target\nconst KPIS: {\n  key: string;\n  value: number;\n  target: number;\n  ranges: number[];\n}[] = [\n  { key: \"revenue\", value: 270, target: 250, ranges: [150, 225, 300] },\n  { key: \"profit\", value: 22.5, target: 26, ranges: [20, 25, 30] },\n  { key: \"orderSize\", value: 320, target: 550, ranges: [350, 500, 600] },\n  { key: \"customers\", value: 1650, target: 2100, ranges: [1400, 2000, 2500] },\n  { key: \"satisfaction\", value: 4.6, target: 4.4, ranges: [3.5, 4.25, 5] },\n];\n\nexport default function SalesDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bullet-chart.data\",\n  });\n\n  const data = useMemo(\n    (): BulletDatum[] =>\n      KPIS.map(({ key, ...kpi }) => ({\n        name: t(`sales.${key}`),\n        subtitle: t(`sales.${key}Unit`),\n        ...kpi,\n      })),\n    [t],\n  );\n  const rangeLabels = useMemo(\n    () => [t(\"ranges.poor\"), t(\"ranges.fair\"), t(\"ranges.good\")],\n    [t],\n  );\n\n  return (\n    <BulletChart\n      data={data}\n      rangeLabels={rangeLabels}\n      ariaLabel={t(\"salesAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Sales KPI dashboard",
+      "description": "Five KPIs with their own units and scales. ranges gives the poor / fair / good bounds of each row, target the marker, subtitle the unit; rangeLabels names the ranges in the tooltip."
+    },
+    {
+      "id": "traffic-lights",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bullet-chart/demos/traffic-lights.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bullet-chart/demos/traffic-lights.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { BulletChart, type BulletDatum } from \"minerva-design/charts\";\n\n// Service level objectives of an API this month. Availability starts its\n// scale at 99% (min) so that the interesting part is visible.\nconst SLOS: BulletDatum[] = [\n  {\n    name: \"availability\",\n    value: 99.95,\n    target: 99.9,\n    ranges: [99.5, 99.9, 100],\n    min: 99,\n  },\n  { name: \"apdex\", value: 0.91, target: 0.94, ranges: [0.7, 0.85, 1] },\n  { name: \"throughput\", value: 1240, target: 1000, ranges: [800, 1200, 1600] },\n  { name: \"budget\", value: 38, target: 50, ranges: [25, 50, 100] },\n];\n\n// red / amber / green, translucent so that they suit both themes\nconst TRAFFIC_LIGHTS = [\n  \"rgba(239, 68, 68, 0.3)\",\n  \"rgba(245, 158, 11, 0.3)\",\n  \"rgba(34, 197, 94, 0.3)\",\n];\n\nconst format = (value: number) =>\n  value >= 100 ? String(Math.round(value)) : String(+value.toFixed(2));\n\nexport default function TrafficLightsDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bullet-chart.data\",\n  });\n\n  const data = useMemo(\n    (): BulletDatum[] =>\n      SLOS.map((slo) => ({\n        ...slo,\n        name: t(`slo.${slo.name}`),\n        subtitle: t(`slo.${slo.name}Unit`),\n        color: \"var(--text-color)\",\n      })),\n    [t],\n  );\n  const rangeLabels = useMemo(\n    () => [t(\"ranges.breach\"), t(\"ranges.atRisk\"), t(\"ranges.healthy\")],\n    [t],\n  );\n\n  return (\n    <BulletChart\n      data={data}\n      rangeColors={TRAFFIC_LIGHTS}\n      rangeLabels={rangeLabels}\n      targetColor=\"#2563eb\"\n      barSize={0.3}\n      format={format}\n      ariaLabel={t(\"sloAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Traffic-light ranges",
+      "description": "rangeColors replaces the grays with translucent red, amber and green, and targetColor colors the markers. min starts the availability scale at 99% so that the difference between 99.9% and 99.95% shows."
+    },
+    {
+      "id": "training",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bullet-chart/demos/training.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bullet-chart/demos/training.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Select, SelectItem } from \"minerva-design\";\nimport { BulletChart, type BulletDatum } from \"minerva-design/charts\";\n\ntype Runner = \"amara\" | \"lucas\" | \"mei\";\ntype Metric = \"distance\" | \"longRun\" | \"elevation\" | \"sessions\" | \"sleep\";\n\n// Weekly training of three marathon runners against their coach's plan\nconst METRICS: Metric[] = [\n  \"distance\",\n  \"longRun\",\n  \"elevation\",\n  \"sessions\",\n  \"sleep\",\n];\n// unit of each metric, formatted with Intl.NumberFormat (null: a plain count)\nconst UNITS: Record<Metric, string | null> = {\n  distance: \"kilometer\",\n  longRun: \"kilometer\",\n  elevation: \"meter\",\n  sessions: null,\n  sleep: \"hour\",\n};\nconst PLANS: Record<Runner, Record<Metric, number>> = {\n  amara: { distance: 85, longRun: 30, elevation: 900, sessions: 6, sleep: 56 },\n  lucas: { distance: 60, longRun: 24, elevation: 500, sessions: 5, sleep: 52 },\n  mei: { distance: 72, longRun: 28, elevation: 1200, sessions: 6, sleep: 56 },\n};\nconst WEEKS: Record<Runner, Record<Metric, number>> = {\n  amara: { distance: 88, longRun: 31, elevation: 760, sessions: 6, sleep: 49 },\n  lucas: { distance: 47, longRun: 18, elevation: 540, sessions: 4, sleep: 54 },\n  mei: { distance: 74, longRun: 26, elevation: 1310, sessions: 5, sleep: 58 },\n};\nconst RUNNERS = Object.keys(PLANS) as Runner[];\n\nexport default function TrainingDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bullet-chart.data\",\n  });\n  const locale = i18n.language;\n  const [runner, setRunner] = useState<Runner>(\"amara\");\n\n  const formats = useMemo(\n    () =>\n      Object.fromEntries(\n        METRICS.map((metric) => {\n          const unit = UNITS[metric];\n          return [\n            metric,\n            new Intl.NumberFormat(\n              locale,\n              unit ? { style: \"unit\", unit, unitDisplay: \"short\" } : {},\n            ),\n          ];\n        }),\n      ) as Record<Metric, Intl.NumberFormat>,\n    [locale],\n  );\n  const percent = useMemo(\n    () => new Intl.NumberFormat(locale, { style: \"percent\" }),\n    [locale],\n  );\n\n  // every row is scaled on its own plan: below 80 %, 80-100 %, above\n  const data = useMemo(\n    (): BulletDatum[] =>\n      METRICS.map((metric) => {\n        const plan = PLANS[runner][metric];\n        return {\n          name: t(`training.metrics.${metric}`),\n          subtitle: t(\"training.plan\", {\n            plan: formats[metric].format(plan),\n          }),\n          value: WEEKS[runner][metric],\n          target: plan,\n          ranges: [plan * 0.8, plan, plan * 1.25],\n        };\n      }),\n    [formats, runner, t],\n  );\n  const rangeLabels = useMemo(\n    () => [\n      t(\"training.ranges.under\"),\n      t(\"training.ranges.onPlan\"),\n      t(\"training.ranges.above\"),\n    ],\n    [t],\n  );\n  const met = METRICS.filter(\n    (metric) => WEEKS[runner][metric] >= PLANS[runner][metric],\n  ).length;\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <Select\n        size=\"small\"\n        style={{ width: 200 }}\n        aria-label={t(\"training.runner\")}\n        value={runner}\n        onChange={(value) => setRunner(value as Runner)}\n      >\n        {RUNNERS.map((key) => (\n          <SelectItem key={key} value={key}>\n            {t(`training.runners.${key}`)}\n          </SelectItem>\n        ))}\n      </Select>\n      <BulletChart\n        data={data}\n        rangeLabels={rangeLabels}\n        ticks={false}\n        renderTooltip={(row) => {\n          const metric = METRICS[row.index];\n          return (\n            <div style={{ display: \"grid\", gap: 2 }}>\n              <strong>{row.name}</strong>\n              <span>\n                {t(\"training.tooltip\", {\n                  value: formats[metric].format(row.value),\n                  plan: formats[metric].format(PLANS[runner][metric]),\n                  share: percent.format(row.percent),\n                })}\n              </span>\n            </div>\n          );\n        }}\n        height={320}\n        ariaLabel={t(\"training.aria\", {\n          runner: t(`training.runners.${runner}`),\n        })}\n      />\n      <output aria-live=\"polite\">\n        {t(\"training.summary\", {\n          runner: t(`training.runners.${runner}`),\n          met,\n          metrics: METRICS.length,\n        })}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Weekly training plan",
+      "description": "A Select switches runners and the bars animate to their week. Every row is scaled on its own plan, so ticks={false} hides the unitless tick labels; renderTooltip formats the value and the plan with Intl.NumberFormat units (km, m, h) and the share of the plan."
+    },
+    {
+      "id": "vertical",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bullet-chart/demos/vertical.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/bullet-chart/demos/vertical.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { BulletChart, type BulletDatum } from \"minerva-design/charts\";\n\n// Story points delivered by each team in the last sprint, against its\n// commitment; the qualitative ranges are shared by every team\nconst TEAMS: [key: string, delivered: number, committed: number][] = [\n  [\"checkout\", 42, 40],\n  [\"search\", 31, 38],\n  [\"mobile\", 46, 45],\n  [\"platform\", 24, 30],\n  [\"growth\", 37, 34],\n  [\"data\", 28, 32],\n];\n\nexport default function VerticalDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.bullet-chart.data\",\n  });\n\n  const data = useMemo(\n    (): BulletDatum[] =>\n      TEAMS.map(([key, value, target]) => ({\n        name: t(`teams.${key}`),\n        value,\n        target,\n      })),\n    [t],\n  );\n  const rangeLabels = useMemo(\n    () => [t(\"ranges.poor\"), t(\"ranges.fair\"), t(\"ranges.good\")],\n    [t],\n  );\n\n  return (\n    <BulletChart\n      data={data}\n      orientation=\"vertical\"\n      ranges={[25, 35, 50]}\n      rangeLabels={rangeLabels}\n      barSize={0.5}\n      height={320}\n      ariaLabel={t(\"teamsAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Vertical",
+      "description": "orientation=\"vertical\" turns the rows into columns, here the story points of each team against its commitment. The ranges are shared by every column through the chart's ranges prop; barSize makes the bars thicker."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Bullet chart",
+      "description": "Compact KPI bars (Stephen Few): each row shows a measure as a bar over qualitative ranges (shades of gray, the poorest darkest) with a marker at its target, on the row's own scale. Rows can mix units, so dashboards fit many KPIs in little space. Hover a row or use the arrow keys to read its value, target and range.",
+      "demos": {
+        "sales": {
+          "title": "Sales KPI dashboard",
+          "description": "Five KPIs with their own units and scales. ranges gives the poor / fair / good bounds of each row, target the marker, subtitle the unit; rangeLabels names the ranges in the tooltip."
+        },
+        "vertical": {
+          "title": "Vertical",
+          "description": "orientation=\"vertical\" turns the rows into columns, here the story points of each team against its commitment. The ranges are shared by every column through the chart's ranges prop; barSize makes the bars thicker."
+        },
+        "traffic-lights": {
+          "title": "Traffic-light ranges",
+          "description": "rangeColors replaces the grays with translucent red, amber and green, and targetColor colors the markers. min starts the availability scale at 99% so that the difference between 99.9% and 99.95% shows."
+        },
+        "monthly": {
+          "title": "Month by month",
+          "description": "Picking another month animates the bars toward the new values. With legend, clicking a KPI in the legend hides / shows its row."
+        },
+        "long-names": {
+          "title": "Long names",
+          "description": "The label column is measured: it grows to fit the longest name, up to 40% of the width; longer names wrap to two lines and end with an ellipsis. Hover a row (or focus it with the keyboard) to read the full name in the tooltip."
+        },
+        "budget-tracker": {
+          "title": "Department budget tracker",
+          "description": "Each row compares the spending to date with the budget expected by now (target), and per-row ranges mark the comfortable, tight and over-plan zones. Bars turn red through color when a department spends faster than planned; onClick shows its variance under the chart."
+        },
+        "live-sensors": {
+          "title": "Live server room sensors",
+          "description": "Readings refresh every second (setInterval, cleared when the switch is off or on unmount); the target is the setpoint and the ranges the warning and critical thresholds. Each bar's color follows its status, and only the list of sensors out of range is announced."
+        },
+        "training": {
+          "title": "Weekly training plan",
+          "description": "A Select switches runners and the bars animate to their week. Every row is scaled on its own plan, so ticks={false} hides the unitless tick labels; renderTooltip formats the value and the plan with Intl.NumberFormat units (km, m, h) and the share of the plan."
+        },
+        "hiring-plan": {
+          "title": "Hiring plan",
+          "description": "Hires per team against the yearly headcount plan, with a marker where the team should be by now. A Select sorts the rows by pace; legend with hidden and onToggle hides teams, kept by key so that they stay hidden when the order changes, and the summary totals the visible teams."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic",
+            "description": "Quarter-to-date sales KPIs, each on its own scale, against poor / fair / good ranges and the target marker; press a row for its tooltip."
+          }
+        }
+      },
+      "api": {
+        "BulletChartProps": {
+          "data": "Rows (columns when vertical): name, subtitle, value, target, ranges and scale of each",
+          "orientation": "Horizontal rows or vertical columns",
+          "ranges": "Qualitative ranges of the rows without ranges: upper bounds, ascending",
+          "rangeLabels": "Names of the qualitative ranges, lowest first (shown in the tooltip)",
+          "rangeColors": "Colors of the qualitative ranges, lowest first; shades of gray by default",
+          "barSize": "Thickness of the value bar as a fraction of the ranges' thickness",
+          "targetColor": "Color of the target markers (the text color by default)",
+          "ticks": "Shows the tick labels of the scales when there is room"
+        },
+        "BulletDatum": {
+          "name": "Name of the measure",
+          "subtitle": "Small text under the name (unit, period)",
+          "value": "Current value, drawn as the bar",
+          "target": "Target, drawn as the marker",
+          "ranges": "Upper bounds of the qualitative ranges, ascending (e.g. poor / fair / good); the chart's ranges when omitted",
+          "min": "Start of the scale (0, or the smallest value when negative, by default)",
+          "max": "End of the scale; the largest of the ranges, the value and the target when omitted",
+          "color": "Color of the bar; taken from the palette when omitted"
+        }
+      },
+      "data": {
+        "sales": {
+          "revenue": "Revenue",
+          "revenueUnit": "thousands of US$",
+          "profit": "Profit",
+          "profitUnit": "% of revenue",
+          "orderSize": "Avg. order size",
+          "orderSizeUnit": "US$",
+          "customers": "New customers",
+          "customersUnit": "count",
+          "satisfaction": "Satisfaction",
+          "satisfactionUnit": "out of 5"
+        },
+        "ranges": {
+          "poor": "Poor",
+          "fair": "Fair",
+          "good": "Good",
+          "breach": "Breach",
+          "atRisk": "At risk",
+          "healthy": "Healthy"
+        },
+        "salesAria": "Quarter-to-date sales KPIs against their targets",
+        "teams": {
+          "checkout": "Checkout",
+          "search": "Search",
+          "mobile": "Mobile",
+          "platform": "Platform",
+          "growth": "Growth",
+          "data": "Data"
+        },
+        "teamsAria": "Story points delivered by each team against its commitment",
+        "slo": {
+          "availability": "Availability",
+          "availabilityUnit": "% of requests",
+          "apdex": "Apdex",
+          "apdexUnit": "score, 0–1",
+          "throughput": "Throughput",
+          "throughputUnit": "requests / s",
+          "budget": "Error budget",
+          "budgetUnit": "% remaining"
+        },
+        "sloAria": "Service level objectives of the API this month",
+        "growth": {
+          "visitors": "Visitors",
+          "visitorsUnit": "thousands",
+          "signups": "Sign-ups",
+          "signupsUnit": "accounts",
+          "activation": "Activation",
+          "activationUnit": "% of sign-ups",
+          "mrr": "MRR",
+          "mrrUnit": "thousands of US$"
+        },
+        "monthLabel": "Month",
+        "growthAria": "Growth KPIs of the selected month against their targets",
+        "long": {
+          "onboarding": "Enterprise customer onboarding completed within the first 30 days",
+          "onboardingUnit": "% of new accounts",
+          "support": "Priority support tickets answered within one business hour",
+          "supportUnit": "% of tickets",
+          "deployments": "Production deployments rolled out without a customer-facing incident",
+          "deploymentsUnit": "% of deployments",
+          "renewals": "Net revenue retention of annual subscription contracts",
+          "renewalsUnit": "ratio"
+        },
+        "longAria": "Operational KPIs with long names against their targets",
+        "budget": {
+          "departments": {
+            "marketing": "Marketing",
+            "engineering": "Engineering",
+            "sales": "Sales",
+            "people": "People",
+            "facilities": "Facilities",
+            "travel": "Travel"
+          },
+          "yearly": "Yearly budget: {{budget}}",
+          "ranges": {
+            "comfortable": "Comfortable",
+            "tight": "Tight",
+            "over": "Over plan"
+          },
+          "hint": "{{over}} departments spend faster than planned. Click a row to see its variance.",
+          "overPlan": "{{department}} is over plan: {{variance}} by the end of Q3, {{share}} of the yearly budget spent, {{left}} left.",
+          "underPlan": "{{department}} is within plan: {{variance}} by the end of Q3, {{share}} of the yearly budget spent, {{left}} left.",
+          "aria": "Department spending at the end of Q3 against the budget planned by then"
+        },
+        "sensors": {
+          "names": {
+            "inlet": "Inlet temperature",
+            "humidity": "Humidity",
+            "power": "Power draw",
+            "fans": "Fan speed"
+          },
+          "units": {
+            "inlet": "°C",
+            "humidity": "% relative",
+            "power": "kW per rack",
+            "fans": "% of max speed"
+          },
+          "status": {
+            "ok": "Normal",
+            "warning": "Warning",
+            "critical": "Critical"
+          },
+          "live": "Live readings",
+          "aria": "Server room sensor readings against their setpoints and thresholds",
+          "alerts": "Needs attention: {{sensors}}",
+          "allOk": "All sensors are within their limits."
+        },
+        "training": {
+          "metrics": {
+            "distance": "Weekly distance",
+            "longRun": "Long run",
+            "elevation": "Elevation gain",
+            "sessions": "Sessions",
+            "sleep": "Sleep"
+          },
+          "plan": "plan: {{plan}}",
+          "ranges": {
+            "under": "Under plan",
+            "onPlan": "On plan",
+            "above": "Above plan"
+          },
+          "runner": "Runner",
+          "runners": {
+            "amara": "Amara",
+            "lucas": "Lucas",
+            "mei": "Mei"
+          },
+          "tooltip": "{{value}} for a plan of {{plan}} ({{share}})",
+          "aria": "Weekly training of {{runner}} against the plan",
+          "summary": "{{runner}} met {{met}} of {{metrics}} weekly targets."
+        },
+        "hiring": {
+          "teams": {
+            "engineering": "Engineering",
+            "sales": "Sales",
+            "support": "Support",
+            "marketing": "Marketing",
+            "product": "Product",
+            "finance": "Finance"
+          },
+          "planned": "{{plan}} planned this year",
+          "ranges": {
+            "behind": "Behind",
+            "catchingUp": "Catching up",
+            "onTrack": "On track"
+          },
+          "order": "Sort",
+          "orders": {
+            "plan": "Plan order",
+            "behind": "Most behind first",
+            "ahead": "Most ahead first"
+          },
+          "aria": "Hires of each team against the yearly headcount plan",
+          "summary": "{{hired}} of {{planned}} planned hires ({{share}}) across {{teams}} teams shown.",
+          "none": "No team shown."
+        }
+      },
+      "wc": {
+        "demos": {
+          "kpis": {
+            "title": "KPIs against targets",
+            "description": "One row per KPI with its value, its target marker and qualitative ranges named in the tooltip."
+          },
+          "vertical": {
+            "title": "Vertical columns",
+            "description": "Quarterly sales as columns sharing the same ranges, targets in the danger color."
+          }
+        },
+        "minerva-bullet-chart": {
+          "props": {
+            "height": "Height of the chart, the legend included: pixels or any CSS length",
+            "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+          },
+          "events": {
+            "minerva-hover": "The hovered (or keyboard-focused) mark changed; detail: { index, name, value, share }, null when nothing is hovered",
+            "minerva-click": "A mark was clicked, tapped or activated with Enter; detail: { index, name, value, share }",
+            "minerva-toggle": "A legend item was clicked (or toggle() called); detail: { index, hidden, hiddenIndexes }"
+          },
+          "methods": {
+            "toggle": "Hides / shows a slice, stage, radar series or top-level treemap node by index",
+            "getRenderer": "Backend drawing the shapes (webgpu, webgl2, webgl, canvas2d), null until ready; set it with the renderer engine option"
+          }
+        }
+      }
+    }
+  }
+}

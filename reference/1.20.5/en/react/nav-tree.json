@@ -1,0 +1,660 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "en",
+  "renderer": "react",
+  "page": "nav-tree",
+  "title": "NavTree",
+  "description": "Sidebar navigation with sections, expandable branches, an active item and a compact icon-only mode. Arrow keys move between items and open or close branches.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "NavTree",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "NavTree"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "sections",
+            "source": "packages/react/src/components/NavTree/types.ts",
+            "kind": "array",
+            "typeText": "NavTreeSection[]",
+            "typeRef": "type:a019625ccf9e285dcdd4",
+            "required": true,
+            "description": "Sections of items"
+          },
+          {
+            "name": "activeId",
+            "source": "packages/react/src/components/NavTree/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Id of the active (current page) item; its ancestors expand"
+          },
+          {
+            "name": "collapsed",
+            "source": "packages/react/src/components/NavTree/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Compact mode: icons only (titles, labels, trailing content and children are hidden)"
+          },
+          {
+            "name": "wrapLabels",
+            "source": "packages/react/src/components/NavTree/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Wraps long labels and descriptions instead of truncating them"
+          },
+          {
+            "name": "defaultExpandedIds",
+            "source": "packages/react/src/components/NavTree/types.ts",
+            "kind": "array",
+            "typeText": "string[] | undefined",
+            "typeRef": "type:2f7bd52d63b79232027d",
+            "required": false,
+            "description": "Initially expanded branch ids (uncontrolled)"
+          },
+          {
+            "name": "expandedIds",
+            "source": "packages/react/src/components/NavTree/types.ts",
+            "kind": "array",
+            "typeText": "string[] | undefined",
+            "typeRef": "type:2f7bd52d63b79232027d",
+            "required": false,
+            "description": "Expanded branch ids (controlled; pair with onExpandedChange)"
+          },
+          {
+            "name": "renderLink",
+            "source": "packages/react/src/components/NavTree/types.ts",
+            "kind": "node",
+            "typeText": "((item: NavTreeItem, content: ReactNode, state: NavTreeItemState) => ReactNode) | undefined",
+            "typeRef": "type:f9df3e5a65bcceaf97f2",
+            "parameters": [
+              {
+                "name": "item",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "NavTreeItem",
+                "typeRef": "type:e0a51856731d063c2c10"
+              },
+              {
+                "name": "content",
+                "position": 1,
+                "required": true,
+                "rest": false,
+                "typeText": "ReactNode",
+                "typeRef": "type:d947e2db6b7ed3e4c192"
+              },
+              {
+                "name": "state",
+                "position": 2,
+                "required": true,
+                "rest": false,
+                "typeText": "NavTreeItemState",
+                "typeRef": "type:d474e785dbae84a05b11"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "Custom rendering of leaf links (e.g. a router `<Link>`). Render `content` inside and put `state.className` on the link"
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/react/src/components/NavTree/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the `<nav>` landmark"
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/react/src/components/NavTree/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "id(s) of the element(s) naming the `<nav>` landmark (replaces the default label)"
+          },
+          {
+            "name": "id",
+            "source": "packages/react/src/components/NavTree/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "id of the `<nav>` element"
+          }
+        ],
+        "events": [
+          {
+            "name": "onExpandedChange",
+            "source": "packages/react/src/components/NavTree/types.ts",
+            "kind": "function",
+            "typeText": "((expandedIds: string[]) => void) | undefined",
+            "typeRef": "type:c1b5ab30727b40470966",
+            "parameters": [
+              {
+                "name": "expandedIds",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "string[]",
+                "typeRef": "type:19a96e1d6cef0c4dc643"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the expanded branch ids when a branch is toggled"
+          },
+          {
+            "name": "onItemSelect",
+            "source": "packages/react/src/components/NavTree/types.ts",
+            "kind": "function",
+            "typeText": "((item: NavTreeItem) => void) | undefined",
+            "typeRef": "type:37468b3d5bb97e8eee44",
+            "parameters": [
+              {
+                "name": "item",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "NavTreeItem",
+                "typeRef": "type:e0a51856731d063c2c10"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a leaf link or a branch is activated"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "NavTreeProps": {
+      "source": "react/src/components/NavTree/types.ts",
+      "description": "Props of `NavTree`, a sidebar navigation tree. `className`, `style`, `id`, `aria-*` and `data-*` attributes go to the `<nav>` element",
+      "kind": "interface",
+      "extends": [
+        "DataAttributes"
+      ],
+      "props": [
+        {
+          "name": "sections",
+          "type": "NavTreeSection[]",
+          "required": true,
+          "description": "Sections of items"
+        },
+        {
+          "name": "activeId",
+          "type": "string",
+          "required": false,
+          "description": "Id of the active (current page) item; its ancestors expand"
+        },
+        {
+          "name": "collapsed",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Compact mode: icons only (titles, labels, trailing content and children are hidden)"
+        },
+        {
+          "name": "wrapLabels",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Wraps long labels and descriptions instead of truncating them"
+        },
+        {
+          "name": "defaultExpandedIds",
+          "type": "string[]",
+          "required": false,
+          "description": "Initially expanded branch ids (uncontrolled)"
+        },
+        {
+          "name": "expandedIds",
+          "type": "string[]",
+          "required": false,
+          "description": "Expanded branch ids (controlled; pair with onExpandedChange)"
+        },
+        {
+          "name": "onExpandedChange",
+          "type": "(expandedIds: string[]) => void",
+          "required": false,
+          "description": "Called with the expanded branch ids when a branch is toggled"
+        },
+        {
+          "name": "onItemSelect",
+          "type": "(item: NavTreeItem) => void",
+          "required": false,
+          "description": "Called when a leaf link or a branch is activated"
+        },
+        {
+          "name": "renderLink",
+          "type": "(item: NavTreeItem, content: ReactNode, state: NavTreeItemState) => ReactNode",
+          "required": false,
+          "description": "Custom rendering of leaf links (e.g. a router `<Link>`). Render `content` inside and put `state.className` on the link"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "description": "Additional class name"
+        },
+        {
+          "name": "style",
+          "type": "CSSProperties",
+          "required": false,
+          "description": "Inline styles"
+        },
+        {
+          "name": "aria-label",
+          "type": "string",
+          "required": false,
+          "default": "\"Navigation\" (localized)",
+          "description": "Accessible name of the `<nav>` landmark"
+        },
+        {
+          "name": "aria-labelledby",
+          "type": "string",
+          "required": false,
+          "description": "id(s) of the element(s) naming the `<nav>` landmark (replaces the default label)"
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "description": "id of the `<nav>` element"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "required": false,
+          "description": "Ref to the `<nav>` element"
+        }
+      ]
+    },
+    "NavTreeSection": {
+      "source": "react/src/components/NavTree/types.ts",
+      "description": "A titled group of NavTree items",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Unique id of the section"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "description": "Optional section heading"
+        },
+        {
+          "name": "items",
+          "type": "NavTreeItem[]",
+          "required": true,
+          "description": "Items of the section"
+        }
+      ]
+    },
+    "NavTreeItem": {
+      "source": "react/src/components/NavTree/types.ts",
+      "description": "An entry of a NavTree: a link, or a branch when it has children",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Unique id (matched against `activeId` / expanded ids)"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": true,
+          "description": "Visible label"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "required": false,
+          "description": "Secondary line under the label (hidden for nested items)"
+        },
+        {
+          "name": "href",
+          "type": "string",
+          "required": false,
+          "description": "Link target of a leaf item"
+        },
+        {
+          "name": "icon",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Leading icon"
+        },
+        {
+          "name": "endContent",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Trailing content, e.g. a badge or a count"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Disables the item"
+        },
+        {
+          "name": "children",
+          "type": "NavTreeItem[]",
+          "required": false,
+          "description": "Child items; the item becomes an expandable branch"
+        }
+      ]
+    },
+    "NavTreeItemState": {
+      "source": "react/src/components/NavTree/types.ts",
+      "description": "State of an item, passed to `renderLink`",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "active",
+          "type": "boolean",
+          "required": true,
+          "description": "The item is the active one (`activeId`)"
+        },
+        {
+          "name": "ancestorActive",
+          "type": "boolean",
+          "required": true,
+          "description": "A descendant of the item is active"
+        },
+        {
+          "name": "expanded",
+          "type": "boolean",
+          "required": true,
+          "description": "The branch is expanded"
+        },
+        {
+          "name": "depth",
+          "type": "number",
+          "required": true,
+          "description": "Nesting depth (0 for top-level items)"
+        },
+        {
+          "name": "collapsed",
+          "type": "boolean",
+          "required": true,
+          "description": "The tree is in compact (icon-only) mode"
+        },
+        {
+          "name": "hasChildren",
+          "type": "boolean",
+          "required": true,
+          "description": "The item has children"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": true,
+          "description": "The item is disabled"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": true,
+          "description": "Class names to put on the rendered link (styles + stable hooks)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:NavTree": {
+      "kind": "cssVars",
+      "source": "react/src/components/NavTree",
+      "vars": [
+        {
+          "name": "--nav-tree-gap",
+          "description": "Space between the sections"
+        },
+        {
+          "name": "--nav-tree-item-height",
+          "description": "Minimum height of a top-level row (defaults to the density's control height)"
+        },
+        {
+          "name": "--nav-tree-item-padding-x",
+          "description": "Horizontal padding of a row (follows the density's row padding)"
+        },
+        {
+          "name": "--nav-tree-item-radius",
+          "description": "Corner radius of a row (defaults to --radius-md)"
+        },
+        {
+          "name": "--nav-tree-indent",
+          "description": "Indentation of nested rows"
+        },
+        {
+          "name": "--nav-tree-active-background",
+          "description": "Background of the active row"
+        },
+        {
+          "name": "--nav-tree-active-color",
+          "description": "Accent color of the active row's icon"
+        },
+        {
+          "name": "--nav-tree-hover-background",
+          "description": "Background of a hovered row (defaults to --hover-color)"
+        },
+        {
+          "name": "--nav-tree-guide-color",
+          "description": "Color of the indent guide of an expanded branch (defaults to --border-color)"
+        },
+        {
+          "name": "--nav-tree-guide-active-color",
+          "description": "Color of the indent guide of the branch holding the active row"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/nav-tree/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/nav-tree/demos/basic.tsx": "import { useState } from \"react\";\nimport { NavTree, type NavTreeSection } from \"minerva-design\";\nimport { LuChartBar, LuHouse, LuSettings, LuUsers } from \"react-icons/lu\";\n\nconst sections: NavTreeSection[] = [\n  {\n    id: \"main\",\n    items: [\n      { id: \"home\", label: \"Home\", href: \"#home\", icon: <LuHouse /> },\n      {\n        id: \"analytics\",\n        label: \"Analytics\",\n        description: \"Traffic and conversions\",\n        icon: <LuChartBar />,\n        children: [\n          { id: \"traffic\", label: \"Traffic\", href: \"#traffic\" },\n          { id: \"funnels\", label: \"Funnels\", href: \"#funnels\" },\n        ],\n      },\n    ],\n  },\n  {\n    id: \"admin\",\n    title: \"Administration\",\n    items: [\n      {\n        id: \"users\",\n        label: \"Users\",\n        href: \"#users\",\n        icon: <LuUsers />,\n        endContent: <small>12</small>,\n      },\n      {\n        id: \"settings\",\n        label: \"Settings\",\n        href: \"#settings\",\n        icon: <LuSettings />,\n        disabled: true,\n      },\n    ],\n  },\n];\n\nexport default function BasicDemo() {\n  const [active, setActive] = useState(\"traffic\");\n  return (\n    <div style={{ maxWidth: 260 }}>\n      <NavTree\n        aria-label=\"Main navigation\"\n        sections={sections}\n        activeId={active}\n        onItemSelect={(item) => {\n          if (!item.children) setActive(item.id);\n        }}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Basic usage",
+      "description": "Branches containing the active item open automatically; collapsing one is remembered. Items can have icons, descriptions and trailing content."
+    },
+    {
+      "id": "collapsed",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/nav-tree/demos/collapsed.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/nav-tree/demos/collapsed.tsx": "import { useState } from \"react\";\nimport { Button, NavTree, type NavTreeSection } from \"minerva-design\";\nimport { LuFileText, LuHouse, LuInbox } from \"react-icons/lu\";\n\nconst sections: NavTreeSection[] = [\n  {\n    id: \"main\",\n    items: [\n      { id: \"home\", label: \"Home\", href: \"#home\", icon: <LuHouse /> },\n      { id: \"inbox\", label: \"Inbox\", href: \"#inbox\", icon: <LuInbox /> },\n      {\n        id: \"docs\",\n        label: \"Documents with a rather long name\",\n        description: \"Shared with the whole team\",\n        href: \"#docs\",\n        icon: <LuFileText />,\n      },\n    ],\n  },\n];\n\nexport default function CollapsedDemo() {\n  const [collapsed, setCollapsed] = useState(false);\n  return (\n    <div style={{ display: \"grid\", gap: 12, justifyItems: \"start\" }}>\n      <Button\n        color=\"neutral\"\n        variant=\"outline\"\n        size=\"small\"\n        onClick={() => setCollapsed((c) => !c)}\n      >\n        {collapsed ? \"Expand sidebar\" : \"Collapse sidebar\"}\n      </Button>\n      <div style={{ width: collapsed ? 56 : 220 }}>\n        <NavTree\n          sections={sections}\n          activeId=\"inbox\"\n          collapsed={collapsed}\n          wrapLabels\n        />\n      </div>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Compact mode and wrapping",
+      "description": "collapsed shows icons only; wrapLabels wraps long labels instead of truncating them."
+    },
+    {
+      "id": "custom-link",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/nav-tree/demos/custom-link.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/nav-tree/demos/custom-link.tsx": "import { useState } from \"react\";\nimport { NavTree, type NavTreeSection } from \"minerva-design\";\n\nconst sections: NavTreeSection[] = [\n  {\n    id: \"docs\",\n    title: \"Guides\",\n    items: [\n      { id: \"intro\", label: \"Introduction\", href: \"/intro\" },\n      {\n        id: \"advanced\",\n        label: \"Advanced\",\n        children: [\n          { id: \"ssr\", label: \"Server rendering\", href: \"/ssr\" },\n          { id: \"theming\", label: \"Theming\", href: \"/theming\" },\n        ],\n      },\n    ],\n  },\n];\n\nexport default function CustomLinkDemo() {\n  const [path, setPath] = useState(\"/ssr\");\n  const [expanded, setExpanded] = useState<string[]>([\"advanced\"]);\n  return (\n    <div style={{ maxWidth: 260 }}>\n      <NavTree\n        sections={sections}\n        activeId={\n          sections[0].items\n            .flatMap((i) => [i, ...(i.children ?? [])])\n            .find((i) => i.href === path)?.id\n        }\n        expandedIds={expanded}\n        onExpandedChange={setExpanded}\n        // Render your router's link component; keep state.className on it.\n        renderLink={(item, content, state) => (\n          <a\n            key={item.id}\n            href={`#${item.href}`}\n            className={state.className}\n            aria-current={state.active ? \"page\" : undefined}\n            onClick={(event) => {\n              event.preventDefault();\n              setPath(item.href ?? \"/\");\n            }}\n          >\n            {content}\n          </a>\n        )}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "Router links",
+      "description": "renderLink renders leaf items with your router's link; keep state.className on it. Expanded branches can be controlled."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "NavTree",
+      "description": "Sidebar navigation with sections, expandable branches, an active item and a compact icon-only mode. Arrow keys move between items and open or close branches.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Branches containing the active item open automatically; collapsing one is remembered. Items can have icons, descriptions and trailing content."
+        },
+        "collapsed": {
+          "title": "Compact mode and wrapping",
+          "description": "collapsed shows icons only; wrapLabels wraps long labels instead of truncating them."
+        },
+        "custom-link": {
+          "title": "Router links",
+          "description": "renderLink renders leaf items with your router's link; keep state.className on it. Expanded branches can be controlled."
+        }
+      },
+      "api": {
+        "NavTreeProps": {
+          "sections": "Sections of items",
+          "activeId": "Id of the active (current page) item; its ancestors expand",
+          "collapsed": "Compact mode: icons only",
+          "wrapLabels": "Wraps long labels and descriptions instead of truncating them",
+          "defaultExpandedIds": "Initially expanded branch ids (uncontrolled)",
+          "expandedIds": "Expanded branch ids (controlled; pair with onExpandedChange)",
+          "onExpandedChange": "Called with the expanded branch ids when a branch is toggled",
+          "onItemSelect": "Called when a leaf link or a branch is activated",
+          "renderLink": "Custom rendering of leaf links (e.g. a router Link); put state.className on it",
+          "className": "Additional class name",
+          "style": "Inline styles",
+          "aria-label": "Accessible name of the <nav> landmark",
+          "ref": "Ref to the <nav> element",
+          "aria-labelledby": "id(s) of the element(s) labelling the <nav> landmark (replaces the default label)",
+          "id": "id of the <nav> element"
+        },
+        "NavTreeSection": {
+          "id": "Unique id of the section",
+          "title": "Optional section heading",
+          "items": "Items of the section"
+        },
+        "NavTreeItem": {
+          "id": "Unique id (matched against activeId / expanded ids)",
+          "label": "Visible label",
+          "description": "Secondary line under the label (hidden for nested items)",
+          "href": "Link target of a leaf item",
+          "icon": "Leading icon",
+          "endContent": "Trailing content, e.g. a badge or a count",
+          "disabled": "Disables the item",
+          "children": "Child items; the item becomes an expandable branch"
+        },
+        "NavTreeItemState": {
+          "active": "The item is the active one",
+          "ancestorActive": "A descendant of the item is active",
+          "expanded": "The branch is expanded",
+          "depth": "Nesting depth (0 for top-level items)",
+          "collapsed": "The tree is in compact mode",
+          "hasChildren": "The item has children",
+          "disabled": "The item is disabled",
+          "className": "Class names to put on the rendered link"
+        }
+      },
+      "cssVars": {
+        "--nav-tree-gap": "Space between the sections",
+        "--nav-tree-item-height": "Minimum height of a top-level row (defaults to the density's control height)",
+        "--nav-tree-item-padding-x": "Horizontal padding of a row (follows the density's row padding)",
+        "--nav-tree-item-radius": "Corner radius of a row (defaults to --radius-md)",
+        "--nav-tree-indent": "Indentation of nested rows",
+        "--nav-tree-active-background": "Background of the active row",
+        "--nav-tree-active-color": "Accent color of the active row's icon",
+        "--nav-tree-hover-background": "Background of a hovered row (defaults to --hover-color)",
+        "--nav-tree-guide-color": "Color of the indent guide of an expanded branch (defaults to --border-color)",
+        "--nav-tree-guide-active-color": "Color of the indent guide of the branch holding the active row"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Sections, icons, trailing counts and a branch from the sections property. minerva-select is canceled to route on the client and move active-id."
+          },
+          "collapsed": {
+            "title": "Compact mode",
+            "description": "collapsed keeps the icons only, for a narrow sidebar; the labels remain the accessible names."
+          },
+          "expansion": {
+            "title": "Controlled expansion",
+            "description": "expandedIds sets the open branches and minerva-expanded-change is cancelable (Getting started stays open); wrap-labels wraps long labels."
+          }
+        },
+        "minerva-nav-tree": {
+          "events": {
+            "minerva-select": "A leaf link / action or a branch was activated (detail: { value, item }); cancelable: preventDefault() also prevents the link navigation (client-side routing).",
+            "minerva-expanded-change": "A branch was expanded or collapsed by the user (detail: { expandedIds, item, expanded }); cancelable: preventDefault() keeps the current state."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

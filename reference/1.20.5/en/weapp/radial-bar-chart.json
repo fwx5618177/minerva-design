@@ -1,0 +1,523 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "en",
+  "renderer": "weapp",
+  "page": "radial-bar-chart",
+  "title": "Radial bar chart",
+  "description": "Progress as concentric rings: activity rings, OKR completion, sales against quota. Each bar fills its ring up to its value over its max, on a tinted background track, with rounded ends; labels sit in the open part of the circle and a center text can sum things up. Hover a ring or use the arrow keys to read its value, max and progress.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {
+    "data": {
+      "rings": {
+        "move": "Move",
+        "exercise": "Exercise",
+        "stand": "Stand"
+      },
+      "dayLabel": "Day of the week",
+      "closed": "rings closed",
+      "activityAria": "Activity rings of the selected day: move, exercise and stand against their goals",
+      "okr": {
+        "activation": "Activation rate",
+        "retention": "Week-4 retention",
+        "nps": "NPS above 50",
+        "latency": "p95 latency",
+        "churn": "Churn reduction"
+      },
+      "average": "average completion",
+      "okrAria": "Completion of the quarter's key results",
+      "regions": {
+        "north": "North",
+        "south": "South",
+        "east": "East",
+        "west": "West"
+      },
+      "ofQuota": "of quota",
+      "quotaAria": "Quarterly sales of each region against its quota",
+      "resources": {
+        "cpu": "CPU",
+        "memory": "Memory",
+        "disk": "Disk",
+        "network": "Network"
+      },
+      "shapeLabel": "Shape",
+      "shapes": {
+        "threeQuarter": "Three quarters",
+        "full": "Full circle",
+        "half": "Half circle"
+      },
+      "rounded": "Rounded ends",
+      "track": "Tracks",
+      "resourcesAria": "Server resource usage, in percent of capacity",
+      "savings": {
+        "goals": {
+          "emergency": "Emergency fund",
+          "holiday": "Summer holiday",
+          "laptop": "New laptop",
+          "deposit": "House deposit"
+        },
+        "hint": "Click a goal to see how long it will take.",
+        "detail": "{{goal}}: {{saved}} of {{target}} saved. {{remaining}} to go, about {{months}} months at {{monthly}} a month.",
+        "overall": "of all goals",
+        "aria": "Savings of each goal against its target"
+      },
+      "leaderboard": {
+        "players": {
+          "silva": "R. Silva",
+          "kowalski": "M. Kowalski",
+          "okafor": "C. Okafor",
+          "moreau": "L. Moreau",
+          "tanaka": "K. Tanaka",
+          "jensen": "E. Jensen"
+        },
+        "stats": {
+          "goals": "Goals",
+          "assists": "Assists"
+        },
+        "stat": "Ranking",
+        "rank": "#{{rank}} {{name}}",
+        "tally": "{{stat}}: {{value}} in {{games}} games",
+        "perGame": "{{ratio}} per game",
+        "aria": "League leaders of the season by {{stat}}",
+        "leader": "Leader: {{name}} ({{stat}}: {{value}})"
+      },
+      "uploads": {
+        "files": {
+          "video": "Launch video",
+          "photos": "Event photos",
+          "slides": "Slides",
+          "backup": "Database backup"
+        },
+        "uploaded": "uploaded",
+        "aria": "Upload progress of each file",
+        "restart": "Restart",
+        "finished": "All files uploaded ({{size}}).",
+        "progress": "{{done}} of {{files}} files uploaded"
+      },
+      "survey": {
+        "statements": {
+          "valued": "I feel valued",
+          "goals": "My goals are clear",
+          "growth": "I can grow here",
+          "balance": "Work-life balance",
+          "manager": "My manager supports me",
+          "recommend": "I'd recommend working here"
+        },
+        "order": "Order",
+        "orders": {
+          "survey": "Survey order",
+          "highest": "Highest agreement first",
+          "lowest": "Lowest agreement first"
+        },
+        "average": "average agreement",
+        "agree": "{{agree}} of {{answered}} respondents agree ({{share}})",
+        "aria": "Share of employees who agree with each survey statement"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "RadialBarChart",
+      "support": {
+        "status": "beta",
+        "notes": "Radial bar chart: concentric progress rings with tracks, rounded ends, labels and center texts. Same as PieChart. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Radial bar chart: concentric progress rings with tracks, rounded ends, labels and center texts. Same as PieChart. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/radial-bar-chart/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "radial-bar-chart",
+        "props": [
+          {
+            "name": "width",
+            "typeText": "unknown",
+            "required": false,
+            "default": "100%"
+          },
+          {
+            "name": "height",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "disableScroll",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "palette",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "legend",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "tooltip",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "hidden",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "animation",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "padding",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "locale",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "texts",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "data",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "max",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "innerRadius",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "startAngle",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "sweep",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "gap",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "track",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "rounded",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "labels",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "labelContent",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "centerValue",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "centerLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "events": [
+          {
+            "name": "hover",
+            "typeText": "NativeShapeHoverEvent",
+            "description": "Highlighted mark after a tap (index -1 when cleared)."
+          },
+          {
+            "name": "click",
+            "typeText": "NativeShapeHoverEvent",
+            "description": "A mark was tapped."
+          },
+          {
+            "name": "toggle",
+            "typeText": "{ index: number; hidden: boolean; hiddenIndexes: number[] }",
+            "description": "A legend item was tapped (or toggle() called); controlled charts must publish hiddenIndexes through hidden."
+          },
+          {
+            "name": "drill",
+            "typeText": "{ path: string[] }",
+            "description": "Sunburst: a parent or the center was tapped (or drill() called); controlled charts must publish path through drillPath."
+          }
+        ],
+        "slots": [],
+        "registration": "\"usingComponents\": { \"mn-radial-bar-chart\": \"minerva-design/dist/weapp/radial-bar-chart/index\" }",
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Radial bar chart",
+      "description": "Progress as concentric rings: activity rings, OKR completion, sales against quota. Each bar fills its ring up to its value over its max, on a tinted background track, with rounded ends; labels sit in the open part of the circle and a center text can sum things up. Hover a ring or use the arrow keys to read its value, max and progress.",
+      "demos": {
+        "activity": {
+          "title": "Activity rings",
+          "description": "Full rings (sweep={360}) for Move, Exercise and Stand, each against its own daily goal (max). Picking another day animates the rings; as there is no room for labels, the legend names the rings."
+        },
+        "okr": {
+          "title": "OKR completion",
+          "description": "Key results in percent of their target (max={100}), labelled with their name and percent before the start of each bar; the average completion is written in the center."
+        },
+        "quota": {
+          "title": "Sales against quota",
+          "description": "A half circle (sweep={180}, startAngle={-90}) takes half the height; each region has its own quota as max. labels={false} shows the legend instead, and the center gives the overall attainment."
+        },
+        "styles": {
+          "title": "Shapes and styles",
+          "description": "sweep and startAngle set the shape of the rings, rounded the ends of the bars and track the background tracks."
+        },
+        "savings-goals": {
+          "title": "Savings goals",
+          "description": "Each pot has its own goal as max, and labelContent shows the name and the percent saved. onClick picks a goal: the line below gives the amount left and how many months the monthly transfer needs to reach it."
+        },
+        "leaderboard": {
+          "title": "Season leaderboard",
+          "description": "A RadioGroup ranks the players by goals or assists; the leader takes the outermost ring and the scale, and the podium gets gold, silver and bronze through each datum's color. renderTooltip adds the rank, the games played and the average per game."
+        },
+        "uploads": {
+          "title": "File uploads",
+          "description": "Full rings (sweep={360}) track four uploads, two at a time, with a setInterval that stops once everything is sent or on unmount; animation={false} keeps the bars in step with the fast updates. labels={false} lets the legend name the files, and only completed files are announced."
+        },
+        "survey": {
+          "title": "Engagement survey",
+          "description": "Each statement's max is the number of people who answered it, so the bars show the share who agree. A Select reorders the rings by survey order or by score, percentFormat writes the percents, and renderTooltip gives the underlying counts."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Activity rings",
+            "description": "Move, exercise and stand against their daily goals; pick a day of the week to animate the rings to its values."
+          }
+        }
+      },
+      "api": {
+        "RadialBarChartProps": {
+          "data": "Bars, from the outermost ring inward: a name, a value, an optional max and color",
+          "max": "Value of a full bar for the data without max (the largest value by default)",
+          "innerRadius": "Radius of the innermost ring's inner edge, as a fraction of the outer radius",
+          "startAngle": "Angle where the bars start, in degrees clockwise from 12 o'clock",
+          "sweep": "Angle of a full bar, in degrees (360 draws full rings)",
+          "gap": "Gap between the rings, as a fraction of a ring's slot (0 to 0.9)",
+          "track": "Draws the background tracks behind the bars",
+          "rounded": "Rounds the ends of the bars",
+          "labels": "Labels before the start of the bars, in the open part of the circle (on by default when the sweep leaves room, up to 300°)",
+          "labelContent": "What a label shows: name, value and / or percent of the bar's max",
+          "centerValue": "Big text in the center (e.g. the overall completion)",
+          "centerLabel": "Small text under centerValue"
+        },
+        "RadialBarDatum": {
+          "name": "Name shown in the label, the legend and the tooltip",
+          "value": "Value of the bar (negative values count as 0)",
+          "color": "Color (any CSS color, var(--x) included); taken from the palette when omitted",
+          "max": "Value of a full bar (e.g. a goal); the chart's max when omitted"
+        }
+      },
+      "data": {
+        "rings": {
+          "move": "Move",
+          "exercise": "Exercise",
+          "stand": "Stand"
+        },
+        "dayLabel": "Day of the week",
+        "closed": "rings closed",
+        "activityAria": "Activity rings of the selected day: move, exercise and stand against their goals",
+        "okr": {
+          "activation": "Activation rate",
+          "retention": "Week-4 retention",
+          "nps": "NPS above 50",
+          "latency": "p95 latency",
+          "churn": "Churn reduction"
+        },
+        "average": "average completion",
+        "okrAria": "Completion of the quarter's key results",
+        "regions": {
+          "north": "North",
+          "south": "South",
+          "east": "East",
+          "west": "West"
+        },
+        "ofQuota": "of quota",
+        "quotaAria": "Quarterly sales of each region against its quota",
+        "resources": {
+          "cpu": "CPU",
+          "memory": "Memory",
+          "disk": "Disk",
+          "network": "Network"
+        },
+        "shapeLabel": "Shape",
+        "shapes": {
+          "threeQuarter": "Three quarters",
+          "full": "Full circle",
+          "half": "Half circle"
+        },
+        "rounded": "Rounded ends",
+        "track": "Tracks",
+        "resourcesAria": "Server resource usage, in percent of capacity",
+        "savings": {
+          "goals": {
+            "emergency": "Emergency fund",
+            "holiday": "Summer holiday",
+            "laptop": "New laptop",
+            "deposit": "House deposit"
+          },
+          "hint": "Click a goal to see how long it will take.",
+          "detail": "{{goal}}: {{saved}} of {{target}} saved. {{remaining}} to go, about {{months}} months at {{monthly}} a month.",
+          "overall": "of all goals",
+          "aria": "Savings of each goal against its target"
+        },
+        "leaderboard": {
+          "players": {
+            "silva": "R. Silva",
+            "kowalski": "M. Kowalski",
+            "okafor": "C. Okafor",
+            "moreau": "L. Moreau",
+            "tanaka": "K. Tanaka",
+            "jensen": "E. Jensen"
+          },
+          "stats": {
+            "goals": "Goals",
+            "assists": "Assists"
+          },
+          "stat": "Ranking",
+          "rank": "#{{rank}} {{name}}",
+          "tally": "{{stat}}: {{value}} in {{games}} games",
+          "perGame": "{{ratio}} per game",
+          "aria": "League leaders of the season by {{stat}}",
+          "leader": "Leader: {{name}} ({{stat}}: {{value}})"
+        },
+        "uploads": {
+          "files": {
+            "video": "Launch video",
+            "photos": "Event photos",
+            "slides": "Slides",
+            "backup": "Database backup"
+          },
+          "uploaded": "uploaded",
+          "aria": "Upload progress of each file",
+          "restart": "Restart",
+          "finished": "All files uploaded ({{size}}).",
+          "progress": "{{done}} of {{files}} files uploaded"
+        },
+        "survey": {
+          "statements": {
+            "valued": "I feel valued",
+            "goals": "My goals are clear",
+            "growth": "I can grow here",
+            "balance": "Work-life balance",
+            "manager": "My manager supports me",
+            "recommend": "I'd recommend working here"
+          },
+          "order": "Order",
+          "orders": {
+            "survey": "Survey order",
+            "highest": "Highest agreement first",
+            "lowest": "Lowest agreement first"
+          },
+          "average": "average agreement",
+          "agree": "{{agree}} of {{answered}} respondents agree ({{share}})",
+          "aria": "Share of employees who agree with each survey statement"
+        }
+      },
+      "wc": {
+        "demos": {
+          "activity": {
+            "title": "Activity rings",
+            "description": "Three full rings, each with its own goal (max); the center summarizes the day."
+          },
+          "okr": {
+            "title": "Key results completion",
+            "description": "Completion of five key results on one scale; the labels sit in the empty quarter of the 270° sweep."
+          }
+        },
+        "minerva-radial-bar-chart": {
+          "props": {
+            "height": "Height of the chart, the legend included: pixels or any CSS length",
+            "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+          },
+          "events": {
+            "minerva-hover": "The hovered (or keyboard-focused) mark changed; detail: { index, name, value, share }, null when nothing is hovered",
+            "minerva-click": "A mark was clicked, tapped or activated with Enter; detail: { index, name, value, share }",
+            "minerva-toggle": "A legend item was clicked (or toggle() called); detail: { index, hidden, hiddenIndexes }"
+          },
+          "methods": {
+            "toggle": "Hides / shows a slice, stage, radar series or top-level treemap node by index",
+            "getRenderer": "Backend drawing the shapes (webgpu, webgl2, webgl, canvas2d), null until ready; set it with the renderer engine option"
+          }
+        }
+      }
+    }
+  }
+}

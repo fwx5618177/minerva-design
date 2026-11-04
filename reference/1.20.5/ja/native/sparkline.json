@@ -1,0 +1,460 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "ja",
+  "renderer": "native",
+  "page": "sparkline",
+  "title": "スパークライン",
+  "description": "軸も凡例もない、文字ほどの大きさの小さなチャート。KPI カードや表のセル、リストの中で数値の横に推移の形を示します。ホバーすると値を読み取れます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {
+    "data": {
+      "orders": "注文",
+      "ordersAria": "週ごとの注文、{{variant}}",
+      "revenue": "売上",
+      "activeUsers": "アクティブユーザー",
+      "signups": "登録数",
+      "p95": "p95 レイテンシ",
+      "last30Aria": "{{metric}}（過去 30 日）",
+      "service": "サービス",
+      "services": {
+        "gateway": "API ゲートウェイ",
+        "auth": "認証",
+        "search": "検索",
+        "payments": "決済",
+        "notifications": "通知"
+      },
+      "requestsPerMin": "リクエスト / 分",
+      "latency30": "p95 レイテンシ（30 日）",
+      "latencyAria": "{{service}}の過去 30 日の p95 レイテンシ",
+      "today": "本日",
+      "change": "変化",
+      "serviceLatency": "サービスのレイテンシ",
+      "symbol": "銘柄",
+      "companies": {
+        "ACME": "アクメ・コーポレーション",
+        "NOVA": "ノヴァ・バイオテック",
+        "ORBT": "オービット・エアロスペース",
+        "KITE": "カイト・ロボティクス",
+        "LUMA": "ルーマ・エナジー"
+      },
+      "intradayAria": "{{symbol}} の本日の株価",
+      "price": "株価",
+      "watchlist": "ウォッチリスト",
+      "inlineVisits": "過去 14 日間の訪問数：",
+      "visits": "訪問数",
+      "visitsAria": "過去 14 日間の訪問数",
+      "inlineErrors": "7 日目のデプロイ後にエラーが急増し、その後元に戻りました：",
+      "errors": "エラー",
+      "errorsAria": "過去 14 日間の日別エラー数",
+      "inlineTemperature": "この 2 週間の午後の気温：",
+      "temperature": "気温",
+      "temperatureAria": "過去 14 日間の午後の気温",
+      "cpu": "CPU",
+      "cpuAria": "{{server}} の CPU 使用率",
+      "alert": "アラート",
+      "healthy": "正常",
+      "dailyActiveUsers": "デイリーアクティブユーザー",
+      "latestDay": "最新: {{date}}",
+      "hoveredDay": "{{date}} · 9 月 1 日から {{change}}",
+      "dauAria": "9 月 1 日から 10 月 31 日までのデイリーアクティブユーザー",
+      "stepsN": "{{value}} 歩",
+      "ofGoal": "目標の {{value}}",
+      "goalSummary": "{{days}} 日中 {{reached}} 日で目標の {{goal}} 歩を達成",
+      "steps": "歩数",
+      "stepsAria": "4 週間の 1 日あたりの歩数と 1 日の目標",
+      "cities": {
+        "reykjavik": "レイキャビク",
+        "montreal": "モントリオール",
+        "tokyo": "東京",
+        "cairo": "カイロ",
+        "singapore": "シンガポール",
+        "sydney": "シドニー"
+      },
+      "warmestColdest": "最高 {{max}}（{{maxMonth}}）· 最低 {{min}}（{{minMonth}}）",
+      "weatherAria": "{{city}} の月ごとの平均最高気温",
+      "period": "期間",
+      "periods": {
+        "week": "7 日",
+        "month": "30 日",
+        "quarter": "90 日"
+      },
+      "vsFirstHalf": "後半と前半の比較",
+      "vsPrevious": "前の期間との比較",
+      "periodAria": "直近 {{period}} の 1 日あたりの売上"
+    }
+  },
+  "components": [
+    {
+      "name": "Sparkline",
+      "support": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles)."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles).",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "Sparkline"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "height",
+            "source": "packages/native/src/components/Charts/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": 48,
+            "required": false,
+            "description": "Height of the sparkline"
+          },
+          {
+            "name": "testID",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Test identifier of the root view"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "typeRef": "type:c08795b3492e4547d570",
+            "required": false,
+            "description": "Tooltip shown on tap / while scrubbing; `false` disables it"
+          },
+          {
+            "name": "labels",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "Partial<ChartLabels> | undefined",
+            "typeRef": "type:14c31fd72a2c2ac7a7fd",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`"
+          },
+          {
+            "name": "width",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart"
+          },
+          {
+            "name": "palette",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `chart-series-1..8` tokens, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "node",
+            "typeText": "((event: ChartHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:66d650d38e6b7d308d32",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent | null) => void) | undefined",
+            "typeRef": "type:170f27b8f07028fffd08",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent | null",
+                "typeRef": "type:92ec77c4587c7e27430b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the highlighted points change"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:SparklineProps": {
+      "source": "native/src/components/Charts/types.ts",
+      "description": "Props of Sparkline",
+      "kind": "interface",
+      "extends": [
+        "Pick<ChartCommonProps, | \"width\" | \"tooltip\" | \"palette\" | \"ariaLabel\" | \"locale\" | \"labels\" | \"onHover\" | \"renderTooltip\" | \"style\" | \"testID\" | \"ref\">",
+        "SparklineConfig"
+      ],
+      "props": [
+        {
+          "name": "height",
+          "type": "DimensionValue",
+          "required": false,
+          "default": "48",
+          "description": "Height of the sparkline"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/sparkline/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/sparkline/native/basic.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Text, View } from \"react-native\";\nimport {\n  Sparkline,\n  useTheme,\n  type SparklineProps,\n} from \"minerva-design/native\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\n/** 30 daily values drifting from `from` to `to`, with some day-to-day wobble */\nconst trend = (seed: number, from: number, to: number, noise: number) => {\n  const random = mulberry32(seed);\n  const values: number[] = [];\n  let wobble = 0;\n  for (let i = 0; i < 30; i++) {\n    wobble = wobble * 0.6 + (random() - 0.5) * noise;\n    values.push(Math.round((from + ((to - from) * i) / 29) * (1 + wobble)));\n  }\n  return values;\n};\n\n// KPI rows of a dashboard: the value of today and the trend of 30 days\nexport default function Basic() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.sparkline.data\",\n  });\n  const { colors } = useTheme();\n  const locale = i18n.language;\n  const rows = useMemo(() => {\n    const number = new Intl.NumberFormat(locale);\n    const compact = new Intl.NumberFormat(locale, { notation: \"compact\" });\n    const ms = new Intl.NumberFormat(locale, {\n      style: \"unit\",\n      unit: \"millisecond\",\n    });\n    const kpis: {\n      label: string;\n      data: number[];\n      format: Intl.NumberFormat;\n      spark: Partial<SparklineProps>;\n    }[] = [\n      {\n        label: t(\"activeUsers\"),\n        data: trend(2, 9_800, 12_600, 0.1),\n        format: compact,\n        spark: { type: \"area\" },\n      },\n      {\n        label: t(\"signups\"),\n        data: trend(3, 180, 240, 0.4),\n        format: number,\n        spark: { type: \"bar\" },\n      },\n      {\n        label: t(\"p95\"),\n        data: trend(4, 240, 205, 0.15),\n        format: ms,\n        spark: { color: \"var(--success-color)\" },\n      },\n    ];\n    return kpis;\n  }, [t, locale]);\n  return (\n    <View style={{ width: \"100%\", gap: 16 }}>\n      {rows.map(({ label, data, format, spark }) => (\n        <View\n          key={label}\n          style={{ flexDirection: \"row\", alignItems: \"center\", gap: 12 }}\n        >\n          <View style={{ width: 120 }}>\n            <Text style={{ color: colors[\"text-secondary-color\"] }}>\n              {label}\n            </Text>\n            <Text\n              style={{\n                color: colors[\"text-color\"],\n                fontSize: 18,\n                fontWeight: \"600\",\n              }}\n            >\n              {format.format(data[data.length - 1] ?? 0)}\n            </Text>\n          </View>\n          <View style={{ flex: 1 }}>\n            <Sparkline\n              data={data}\n              name={label}\n              locale={locale}\n              format={(value) => format.format(value)}\n              height={44}\n              ariaLabel={t(\"last30Aria\", { metric: label })}\n              {...spark}\n            />\n          </View>\n        </View>\n      ))}\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "基本",
+      "description": "同じ値をなめらかな線、面、棒で表示。reference は平均や目標などの値に破線を引きます。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "スパークライン",
+      "description": "軸も凡例もない、文字ほどの大きさの小さなチャート。KPI カードや表のセル、リストの中で数値の横に推移の形を示します。ホバーすると値を読み取れます。",
+      "demos": {
+        "basic": {
+          "title": "基本",
+          "description": "同じ値をなめらかな線、面、棒で表示。reference は平均や目標などの値に破線を引きます。"
+        },
+        "kpi-cards": {
+          "title": "KPI カード",
+          "description": "Card 内で数値とその変化の下に置いたスパークライン。推移が数値に文脈を与えます。カードごとに指標に合った type と色を使っています。"
+        },
+        "table": {
+          "title": "表の中で",
+          "description": "Table の列に幅と高さを固定した Sparkline を行ごとに配置。色でレイテンシが上昇しているか低下しているかを示します。"
+        },
+        "watchlist": {
+          "title": "株式ウォッチリスト",
+          "description": "取引アプリのようなウォッチリスト。各行に当日の騰落で色を変えた日中の面スパークラインを置き、前日終値を破線で示します。価格は各銘柄の通貨で Intl.NumberFormat を使います。"
+        },
+        "inline": {
+          "title": "文中に配置",
+          "description": "幅と高さを固定し display: inline-block にした単語サイズのスパークラインを文章の中に置きます。スパークライン本来の使い方です。"
+        },
+        "servers": {
+          "title": "サーバーのライブ監視",
+          "description": "棒のスパークラインに毎秒新しい CPU サンプルを追加します。アラートのしきい値を超えると色とタグが赤になります。"
+        },
+        "hover-value": {
+          "title": "ホバーの読み取り",
+          "description": "onHover はホバー中の点を受け取ります（ポインタが離れると null）。そのインデックスで上の大きな数字と日付を更新し、ホバーがなければ最新の日に戻します。読み取り欄が代わりになるので tooltip={false} でツールチップを隠します。"
+        },
+        "step-goal": {
+          "title": "1 日の目標",
+          "description": "4 週間の歩数を棒で表し、目標を達成した日はデータ点の color で色を変えます。reference で目標を描き、renderTooltip で日付と目標に対する割合を表示します。"
+        },
+        "weather": {
+          "title": "スモールマルチプル",
+          "description": "Card のグリッドに都市ごとの Sparkline を置きます。それぞれ自身の範囲で拡大縮小されるので、最も暑い月と寒い月を上に書きます。renderTooltip でホバー中の月の名前を表示し、氷点下になる都市では reference で 0 °C を示します。"
+        },
+        "periods": {
+          "title": "期間の切り替え",
+          "description": "RadioGroup で直近 7 日、30 日、90 日を選びます。合計、前の期間からの変化、色は同じ値から計算し、reference でその期間の 1 日平均を示します。"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "KPI 行",
+            "description": "今日の値の横に並ぶ小さな面・棒・折れ線グラフ。スパークラインをタッチするとツールチップで各日の値が表示されます。"
+          }
+        }
+      },
+      "data": {
+        "orders": "注文",
+        "ordersAria": "週ごとの注文、{{variant}}",
+        "revenue": "売上",
+        "activeUsers": "アクティブユーザー",
+        "signups": "登録数",
+        "p95": "p95 レイテンシ",
+        "last30Aria": "{{metric}}（過去 30 日）",
+        "service": "サービス",
+        "services": {
+          "gateway": "API ゲートウェイ",
+          "auth": "認証",
+          "search": "検索",
+          "payments": "決済",
+          "notifications": "通知"
+        },
+        "requestsPerMin": "リクエスト / 分",
+        "latency30": "p95 レイテンシ（30 日）",
+        "latencyAria": "{{service}}の過去 30 日の p95 レイテンシ",
+        "today": "本日",
+        "change": "変化",
+        "serviceLatency": "サービスのレイテンシ",
+        "symbol": "銘柄",
+        "companies": {
+          "ACME": "アクメ・コーポレーション",
+          "NOVA": "ノヴァ・バイオテック",
+          "ORBT": "オービット・エアロスペース",
+          "KITE": "カイト・ロボティクス",
+          "LUMA": "ルーマ・エナジー"
+        },
+        "intradayAria": "{{symbol}} の本日の株価",
+        "price": "株価",
+        "watchlist": "ウォッチリスト",
+        "inlineVisits": "過去 14 日間の訪問数：",
+        "visits": "訪問数",
+        "visitsAria": "過去 14 日間の訪問数",
+        "inlineErrors": "7 日目のデプロイ後にエラーが急増し、その後元に戻りました：",
+        "errors": "エラー",
+        "errorsAria": "過去 14 日間の日別エラー数",
+        "inlineTemperature": "この 2 週間の午後の気温：",
+        "temperature": "気温",
+        "temperatureAria": "過去 14 日間の午後の気温",
+        "cpu": "CPU",
+        "cpuAria": "{{server}} の CPU 使用率",
+        "alert": "アラート",
+        "healthy": "正常",
+        "dailyActiveUsers": "デイリーアクティブユーザー",
+        "latestDay": "最新: {{date}}",
+        "hoveredDay": "{{date}} · 9 月 1 日から {{change}}",
+        "dauAria": "9 月 1 日から 10 月 31 日までのデイリーアクティブユーザー",
+        "stepsN": "{{value}} 歩",
+        "ofGoal": "目標の {{value}}",
+        "goalSummary": "{{days}} 日中 {{reached}} 日で目標の {{goal}} 歩を達成",
+        "steps": "歩数",
+        "stepsAria": "4 週間の 1 日あたりの歩数と 1 日の目標",
+        "cities": {
+          "reykjavik": "レイキャビク",
+          "montreal": "モントリオール",
+          "tokyo": "東京",
+          "cairo": "カイロ",
+          "singapore": "シンガポール",
+          "sydney": "シドニー"
+        },
+        "warmestColdest": "最高 {{max}}（{{maxMonth}}）· 最低 {{min}}（{{minMonth}}）",
+        "weatherAria": "{{city}} の月ごとの平均最高気温",
+        "period": "期間",
+        "periods": {
+          "week": "7 日",
+          "month": "30 日",
+          "quarter": "90 日"
+        },
+        "vsFirstHalf": "後半と前半の比較",
+        "vsPrevious": "前の期間との比較",
+        "periodAria": "直近 {{period}} の 1 日あたりの売上"
+      },
+      "api": {
+        "SparklineProps": {
+          "height": "スパークラインの高さ。数値はピクセル"
+        },
+        "SparklineConfig": {
+          "data": "値（[x, y] の組や型付き配列なども可）",
+          "type": "値の描き方：\"line\"、\"area\"、\"bar\"",
+          "color": "色（任意の CSS カラー）。既定はパレットの最初の色",
+          "curve": "線の形状",
+          "name": "ツールチップに表示する名前",
+          "reference": "この値に破線の基準線を引きます（目標や平均など）",
+          "format": "ツールチップに表示する値の書式"
+        }
+      },
+      "wc": {
+        "demos": {
+          "kpi": {
+            "title": "KPI カード",
+            "description": "主要な数値の下に置く小さなトレンド。折れ線・面・棒で描画します。"
+          },
+          "reference": {
+            "title": "目標線とホバー",
+            "description": "reference で破線の目標線を描きます。ホバーするとポインター位置の値を表示します。"
+          }
+        },
+        "minerva-sparkline": {
+          "props": {
+            "valueName": "ツールチップに表示する値の名前",
+            "options": "その他のエンジンのオプション（軸、凡例、ツールチップ、パレット、書式…）。要素自身のプロパティとマージされます。プロパティのみ",
+            "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+          },
+          "events": {
+            "minerva-hover": "ホバー（またはキーボードでフォーカス）しているポイントが変わりました。detail：{ x, xLabel, items }、何もない場合は null",
+            "minerva-point-click": "ポイントまたは棒がクリックされました。detail：{ x, xLabel, items }",
+            "minerva-plot-click": "ポイントのないプロット領域がクリックされました。detail：{ x, y }（データ座標）",
+            "minerva-zoom": "ユーザーがズームまたはパンしました。detail：{ x, y }（表示範囲）",
+            "minerva-renderer-change": "バックエンドの準備ができた、または GPU の喪失後にフォールバックしました。detail：{ renderer }"
+          },
+          "methods": {
+            "resetZoom": "データ範囲全体を表示します",
+            "getView": "表示範囲。エンジンが作成されるまでは null",
+            "setView": "表示範囲を設定します",
+            "getRenderer": "使用中のバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null"
+          }
+        }
+      }
+    }
+  }
+}

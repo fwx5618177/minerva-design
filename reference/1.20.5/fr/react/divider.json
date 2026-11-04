@@ -1,0 +1,451 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "fr",
+  "renderer": "react",
+  "page": "divider",
+  "title": "Divider",
+  "description": "Une fine ligne qui sépare du contenu, horizontalement ou verticalement, éventuellement avec du texte.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Divider",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "Divider"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "variant",
+            "source": "packages/react/src/components/Divider/types.ts",
+            "kind": "enum",
+            "values": [
+              "dashed",
+              "dotted",
+              "solid"
+            ],
+            "typeText": "DividerVariant | undefined",
+            "typeRef": "type:8fbf4858d9d96a607668",
+            "default": "solid",
+            "required": false,
+            "description": "Line style"
+          },
+          {
+            "name": "orientation",
+            "source": "packages/react/src/components/Divider/types.ts",
+            "kind": "enum",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
+            "typeText": "DividerOrientation | undefined",
+            "typeRef": "type:a43f1cfe4f5f39a5ea1b",
+            "default": "horizontal",
+            "required": false,
+            "description": "Divider direction"
+          },
+          {
+            "name": "thickness",
+            "source": "packages/react/src/components/Divider/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 1,
+            "required": false,
+            "description": "Line thickness in pixels"
+          },
+          {
+            "name": "length",
+            "source": "packages/react/src/components/Divider/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "required": false,
+            "description": "Length of the line (width when horizontal, height when vertical)"
+          },
+          {
+            "name": "spacing",
+            "source": "packages/react/src/components/Divider/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 16,
+            "required": false,
+            "description": "Margin around the divider in pixels (top/bottom when horizontal, left/right when vertical)"
+          },
+          {
+            "name": "textAlign",
+            "source": "packages/react/src/components/Divider/types.ts",
+            "kind": "enum",
+            "values": [
+              "center",
+              "left",
+              "right"
+            ],
+            "typeText": "DividerTextAlign | undefined",
+            "typeRef": "type:18ff15a8c48cf9f8688f",
+            "default": "center",
+            "required": false,
+            "description": "Position of the text"
+          },
+          {
+            "name": "elevation",
+            "source": "packages/react/src/components/Divider/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Adds a subtle shadow"
+          },
+          {
+            "name": "flexItem",
+            "source": "packages/react/src/components/Divider/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Vertical divider inside a flex container: stretches to the container height (align-self: stretch) instead of the 1em inline height"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "DividerProps": {
+      "source": "react/src/components/Divider/types.ts",
+      "description": "The line color comes from the `--divider-color` CSS custom property (default `var(--border-color)`); set it through `className` or `style`.",
+      "kind": "interface",
+      "extends": [
+        "Omit<HTMLAttributes<HTMLElement>, \"children\" | \"color\">"
+      ],
+      "props": [
+        {
+          "name": "variant",
+          "type": "DividerVariant",
+          "required": false,
+          "default": "\"solid\"",
+          "description": "Line style"
+        },
+        {
+          "name": "orientation",
+          "type": "DividerOrientation",
+          "required": false,
+          "default": "\"horizontal\"",
+          "description": "Divider direction"
+        },
+        {
+          "name": "thickness",
+          "type": "number",
+          "required": false,
+          "default": "1",
+          "description": "Line thickness in pixels"
+        },
+        {
+          "name": "length",
+          "type": "number | string",
+          "required": false,
+          "description": "Length of the line (width when horizontal, height when vertical)"
+        },
+        {
+          "name": "spacing",
+          "type": "number",
+          "required": false,
+          "default": "16",
+          "description": "Margin around the divider in pixels (top/bottom when horizontal, left/right when vertical)"
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": "Optional text rendered inside a horizontal divider (ignored when vertical). Without text the divider is a native <hr>"
+        },
+        {
+          "name": "textAlign",
+          "type": "DividerTextAlign",
+          "required": false,
+          "default": "\"center\"",
+          "description": "Position of the text"
+        },
+        {
+          "name": "elevation",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Adds a subtle shadow"
+        },
+        {
+          "name": "flexItem",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Vertical divider inside a flex container: stretches to the container height (align-self: stretch) instead of the 1em inline height"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "description": "Additional class name"
+        },
+        {
+          "name": "style",
+          "type": "React.CSSProperties",
+          "required": false,
+          "description": "Inline styles"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "required": false,
+          "description": "Ref to the root element (<hr>, or <div> when rendering text)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Divider": {
+      "kind": "cssVars",
+      "source": "react/src/components/Divider",
+      "vars": [
+        {
+          "name": "--divider-color",
+          "description": "Line color (defaults to --border-color)"
+        },
+        {
+          "name": "--divider-thickness",
+          "description": "Line thickness"
+        },
+        {
+          "name": "--divider-spacing",
+          "description": "Inline margin around a vertical divider"
+        },
+        {
+          "name": "--divider-text-gap",
+          "description": "Space between the text and the lines"
+        },
+        {
+          "name": "--divider-text-font-size",
+          "description": "Font size of the text"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/divider/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/divider/demos/basic.tsx": "import { Divider } from \"minerva-design\";\n\nexport default function BasicDemo() {\n  return (\n    <div style={{ width: \"100%\" }}>\n      <p>Content above the divider.</p>\n      <Divider />\n      <p>Content below the divider.</p>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Utilisation de base",
+      "description": "Un séparateur horizontal distingue les première et deuxième sections."
+    },
+    {
+      "id": "custom-style",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/divider/demos/custom-style.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/divider/demos/custom-style.tsx": "import type { CSSProperties } from \"react\";\nimport { Divider } from \"minerva-design\";\n\n// The line color comes from the --divider-color custom property; set it\n// inline, in a class or on an ancestor.\nconst violet = { \"--divider-color\": \"#7c3aed\" } as CSSProperties;\nconst green = { \"--divider-color\": \"#16a34a\" } as CSSProperties;\n\nexport default function CustomStyleDemo() {\n  return (\n    <div style={{ width: \"100%\" }}>\n      <Divider style={violet} thickness={2} />\n      <Divider style={green} thickness={3} variant=\"dashed\" length=\"50%\" />\n      <Divider style={violet}>Section</Divider>\n      <Divider spacing={32} elevation />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "Style personnalisé",
+      "description": "Définissez la couleur de la ligne avec la propriété personnalisée CSS --divider-color (style en ligne, classe ou ancêtre), et personnalisez l'épaisseur, la longueur, l'espacement et l'ombre elevation."
+    },
+    {
+      "id": "flex-item",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/divider/demos/flex-item.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/divider/demos/flex-item.tsx": "import { Divider } from \"minerva-design\";\n\nexport default function FlexItemDemo() {\n  return (\n    <div style={{ display: \"flex\", alignItems: \"center\", gap: 12, height: 48 }}>\n      <span>Edit</span>\n      <Divider orientation=\"vertical\" flexItem spacing={0} />\n      <span>Share</span>\n      <Divider orientation=\"vertical\" flexItem spacing={0} />\n      <span>Delete</span>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Dans un conteneur flex",
+      "description": "flexItem étire un séparateur vertical sur la hauteur de son conteneur flex."
+    },
+    {
+      "id": "variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/divider/demos/variants.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/divider/demos/variants.tsx": "import { Divider } from \"minerva-design\";\n\nexport default function VariantsDemo() {\n  return (\n    <div style={{ width: \"100%\" }}>\n      <Divider variant=\"solid\" />\n      <Divider variant=\"dashed\" />\n      <Divider variant=\"dotted\" />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Styles de ligne",
+      "description": "Pleine (par défaut), tirets ou pointillés."
+    },
+    {
+      "id": "vertical",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/divider/demos/vertical.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/divider/demos/vertical.tsx": "import { Divider } from \"minerva-design\";\n\nexport default function VerticalDemo() {\n  return (\n    <div style={{ display: \"flex\", alignItems: \"center\" }}>\n      <span>Home</span>\n      <Divider orientation=\"vertical\" length={16} spacing={12} />\n      <span>Products</span>\n      <Divider orientation=\"vertical\" length={16} spacing={12} />\n      <span>About</span>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Vertical",
+      "description": "Des séparateurs verticaux distinguent Home, Products et About."
+    },
+    {
+      "id": "with-text",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/divider/demos/with-text.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/divider/demos/with-text.tsx": "import { Divider } from \"minerva-design\";\n\nexport default function WithTextDemo() {\n  return (\n    <div style={{ width: \"100%\" }}>\n      <Divider textAlign=\"left\">Left</Divider>\n      <Divider>Center</Divider>\n      <Divider textAlign=\"right\" variant=\"dashed\" thickness={3}>\n        Right\n      </Divider>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Avec texte",
+      "description": "Comparer les libellés Left, Center et Right ; le séparateur aligné à droite est en pointillés."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Divider",
+      "description": "Une fine ligne qui sépare du contenu, horizontalement ou verticalement, éventuellement avec du texte.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Un séparateur horizontal distingue les première et deuxième sections."
+        },
+        "variants": {
+          "title": "Styles de ligne",
+          "description": "Pleine (par défaut), tirets ou pointillés."
+        },
+        "with-text": {
+          "title": "Avec texte",
+          "description": "Comparer les libellés Left, Center et Right ; le séparateur aligné à droite est en pointillés."
+        },
+        "vertical": {
+          "title": "Vertical",
+          "description": "Des séparateurs verticaux distinguent Home, Products et About."
+        },
+        "custom-style": {
+          "title": "Style personnalisé",
+          "description": "Définissez la couleur de la ligne avec la propriété personnalisée CSS --divider-color (style en ligne, classe ou ancêtre), et personnalisez l'épaisseur, la longueur, l'espacement et l'ombre elevation."
+        },
+        "flex-item": {
+          "title": "Dans un conteneur flex",
+          "description": "flexItem étire un séparateur vertical sur la hauteur de son conteneur flex."
+        }
+      },
+      "api": {
+        "DividerProps": {
+          "variant": "Style de ligne",
+          "orientation": "Direction du séparateur",
+          "thickness": "Épaisseur de la ligne en pixels",
+          "length": "Longueur de la ligne (largeur à l'horizontale, hauteur à la verticale)",
+          "spacing": "Marge autour du séparateur en pixels (haut/bas à l'horizontale, gauche/droite à la verticale)",
+          "children": "Texte optionnel affiché dans un séparateur horizontal",
+          "textAlign": "Position du texte",
+          "elevation": "Ajoute une ombre légère",
+          "className": "Nom de classe supplémentaire",
+          "style": "Styles en ligne",
+          "ref": "Ref vers l’élément racine <div>",
+          "flexItem": "Étire un séparateur vertical sur la hauteur de son conteneur flex"
+        }
+      },
+      "cssVars": {
+        "--divider-color": "Couleur du trait (par défaut --border-color)",
+        "--divider-thickness": "Épaisseur du trait",
+        "--divider-spacing": "Marge latérale autour d'un séparateur vertical",
+        "--divider-text-gap": "Espace entre le texte et les traits",
+        "--divider-text-font-size": "Taille de police du texte"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Un séparateur horizontal distingue les première et deuxième sections."
+          },
+          "variants": {
+            "title": "Styles de ligne",
+            "description": "Pleine (par défaut), tirets ou pointillés."
+          },
+          "with-text": {
+            "title": "Avec texte",
+            "description": "Comparer les libellés Left, Center et Right ; le séparateur aligné à droite est en pointillés."
+          },
+          "vertical": {
+            "title": "Vertical",
+            "description": "Des séparateurs verticaux distinguent Home, Products et About."
+          },
+          "custom-style": {
+            "title": "Style personnalisé",
+            "description": "Définissez la couleur de la ligne avec la propriété personnalisée CSS --divider-color (style en ligne, classe ou ancêtre), et personnalisez l'épaisseur, la longueur, l'espacement et l'ombre elevation."
+          },
+          "flex-item": {
+            "title": "Dans un conteneur flex",
+            "description": "flexItem étire un séparateur vertical sur la hauteur de son conteneur flex."
+          }
+        },
+        "minerva-divider": {
+          "slots": {
+            "default": "Texte facultatif d'un séparateur horizontal (ignoré en vertical)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Un séparateur horizontal distingue les première et deuxième sections."
+          },
+          "vertical": {
+            "title": "Vertical",
+            "description": "Des séparateurs verticaux distinguent Home, Products et About."
+          },
+          "with-text": {
+            "title": "Avec texte",
+            "description": "Comparer les libellés Left, Center et Right ; le séparateur aligné à droite est en pointillés."
+          }
+        }
+      }
+    }
+  }
+}

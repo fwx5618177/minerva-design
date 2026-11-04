@@ -1,0 +1,594 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "zh",
+  "renderer": "react",
+  "page": "command",
+  "title": "Command 命令面板",
+  "description": "模态框中的可搜索命令面板。输入即可按标题、描述、分组和关键字过滤，方向键移动，回车或点击选择。可选的全局快捷键可打开它。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "CommandDialog",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "CommandDialog"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "open",
+            "source": "packages/react/src/components/Command/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Controlled open state; leave `undefined` for uncontrolled."
+          },
+          {
+            "name": "defaultOpen",
+            "source": "packages/react/src/components/Command/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Initial open state while uncontrolled"
+          },
+          {
+            "name": "items",
+            "source": "packages/react/src/components/Command/types.ts",
+            "kind": "array",
+            "typeText": "CommandItem[]",
+            "typeRef": "type:5e8f80324382283a6925",
+            "required": true,
+            "description": "Commands to search. Disabled items are never shown."
+          },
+          {
+            "name": "title",
+            "source": "packages/react/src/components/Command/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Title of the dialog; defaults to the localized \"Command palette\"."
+          },
+          {
+            "name": "description",
+            "source": "packages/react/src/components/Command/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Accessible description of the palette; defaults to a localized hint."
+          },
+          {
+            "name": "placeholder",
+            "source": "packages/react/src/components/Command/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Placeholder of the search input; defaults to a localized hint."
+          },
+          {
+            "name": "emptyText",
+            "source": "packages/react/src/components/Command/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Shown when nothing matches; defaults to the localized \"No matching results\"."
+          },
+          {
+            "name": "shortcutLabel",
+            "source": "packages/react/src/components/Command/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Shortcut hint rendered as `<kbd>` next to the title, e.g. \"⌘K\"."
+          },
+          {
+            "name": "shortcut",
+            "source": "packages/react/src/components/Command/types.ts",
+            "kind": "union",
+            "typeText": "string | string[] | undefined",
+            "typeRef": "type:cdf445ffccc04acaf8cd",
+            "required": false,
+            "description": "Global keyboard shortcut(s) that open the palette, e.g. \"mod+k\" (Cmd+K on macOS, Ctrl+K elsewhere). Modifiers: mod, ctrl, meta/cmd, shift, alt/option."
+          },
+          {
+            "name": "maxResults",
+            "source": "packages/react/src/components/Command/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 12,
+            "required": false,
+            "description": "Maximum number of results shown"
+          },
+          {
+            "name": "filter",
+            "source": "packages/react/src/components/Command/types.ts",
+            "kind": "function",
+            "typeText": "((items: CommandItem[], query: string) => CommandItem[]) | undefined",
+            "typeRef": "type:1100a4f8c74c7a7e97ff",
+            "parameters": [
+              {
+                "name": "items",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "CommandItem[]",
+                "typeRef": "type:5e8f80324382283a6925"
+              },
+              {
+                "name": "query",
+                "position": 1,
+                "required": true,
+                "rest": false,
+                "typeText": "string",
+                "typeRef": "type:e15e314d298fc0d116fc"
+              }
+            ],
+            "returnType": {
+              "typeText": "CommandItem[]",
+              "typeRef": "type:5e8f80324382283a6925"
+            },
+            "required": false,
+            "description": "Custom search, e.g. to rank results by match quality. Receives the enabled items and the trimmed query (never empty) and returns the matching items in display order (then capped at `maxResults`). By default, items whose group, title, description or keywords contain the query (case-insensitive) are kept in `items` order."
+          },
+          {
+            "name": "resultsLabel",
+            "source": "packages/react/src/components/Command/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the results list; defaults to the localized \"Command results\"."
+          },
+          {
+            "name": "enterLabel",
+            "source": "packages/react/src/components/Command/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Key hint shown at the end of the search input; defaults to the localized \"Enter\"."
+          }
+        ],
+        "events": [
+          {
+            "name": "onOpenChange",
+            "source": "packages/react/src/components/Command/types.ts",
+            "kind": "function",
+            "typeText": "((open: boolean) => void) | undefined",
+            "typeRef": "type:b5d253184b7a0727bcf2",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the requested open state (shortcut, selection, Escape, overlay click)."
+          },
+          {
+            "name": "onSelect",
+            "source": "packages/react/src/components/Command/types.ts",
+            "kind": "function",
+            "typeText": "(item: CommandItem) => void",
+            "typeRef": "type:8ecb7c37142ffccb690d",
+            "parameters": [
+              {
+                "name": "item",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "CommandItem",
+                "typeRef": "type:971471cfd46a8de3190d"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": true,
+            "description": "Called with the chosen item (click or Enter); the dialog then closes."
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "open",
+            "event": "onOpenChange",
+            "syntax": "open={open} onOpenChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "CommandDialogProps": {
+      "source": "react/src/components/Command/types.ts",
+      "description": "Props of `CommandDialog`.",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "required": false,
+          "description": "Controlled open state; leave `undefined` for uncontrolled."
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Initial open state while uncontrolled"
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "required": false,
+          "description": "Called with the requested open state (shortcut, selection, Escape, overlay click)."
+        },
+        {
+          "name": "items",
+          "type": "CommandItem[]",
+          "required": true,
+          "description": "Commands to search. Disabled items are never shown."
+        },
+        {
+          "name": "onSelect",
+          "type": "(item: CommandItem) => void",
+          "required": true,
+          "description": "Called with the chosen item (click or Enter); the dialog then closes."
+        },
+        {
+          "name": "title",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Title of the dialog; defaults to the localized \"Command palette\"."
+        },
+        {
+          "name": "description",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Accessible description of the palette; defaults to a localized hint."
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "required": false,
+          "description": "Placeholder of the search input; defaults to a localized hint."
+        },
+        {
+          "name": "emptyText",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Shown when nothing matches; defaults to the localized \"No matching results\"."
+        },
+        {
+          "name": "shortcutLabel",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Shortcut hint rendered as `<kbd>` next to the title, e.g. \"⌘K\"."
+        },
+        {
+          "name": "shortcut",
+          "type": "string | string[]",
+          "required": false,
+          "description": "Global keyboard shortcut(s) that open the palette, e.g. \"mod+k\" (Cmd+K on macOS, Ctrl+K elsewhere). Modifiers: mod, ctrl, meta/cmd, shift, alt/option."
+        },
+        {
+          "name": "maxResults",
+          "type": "number",
+          "required": false,
+          "default": "12",
+          "description": "Maximum number of results shown"
+        },
+        {
+          "name": "filter",
+          "type": "(items: CommandItem[], query: string) => CommandItem[]",
+          "required": false,
+          "description": "Custom search, e.g. to rank results by match quality. Receives the enabled items and the trimmed query (never empty) and returns the matching items in display order (then capped at `maxResults`). By default, items whose group, title, description or keywords contain the query (case-insensitive) are kept in `items` order."
+        },
+        {
+          "name": "resultsLabel",
+          "type": "string",
+          "required": false,
+          "description": "Accessible label of the results list; defaults to the localized \"Command results\"."
+        },
+        {
+          "name": "enterLabel",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Key hint shown at the end of the search input; defaults to the localized \"Enter\"."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "description": "Additional class name of the dialog panel."
+        }
+      ]
+    },
+    "CommandItem": {
+      "source": "react/src/components/Command/types.ts",
+      "description": "One entry of the command palette.",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "description": "Unique id, passed back through `onSelect`."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": true,
+          "description": "Main label."
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "required": false,
+          "description": "Secondary line below the title."
+        },
+        {
+          "name": "group",
+          "type": "string",
+          "required": false,
+          "description": "Group name, shown as a badge and matched by the search."
+        },
+        {
+          "name": "keywords",
+          "type": "string",
+          "required": false,
+          "description": "Extra search terms (not displayed)."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Hides the item from the results"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Command": {
+      "kind": "cssVars",
+      "source": "react/src/components/Command",
+      "vars": [
+        {
+          "name": "--command-search-height",
+          "description": "Minimum height of the search field (defaults to --control-height-md)"
+        },
+        {
+          "name": "--command-results-max-height",
+          "description": "Maximum height of the scrolling result list"
+        },
+        {
+          "name": "--command-item-min-height",
+          "description": "Minimum height of a result row"
+        },
+        {
+          "name": "--command-item-padding-y",
+          "description": "Vertical padding of a result row (follows the density's row padding)"
+        },
+        {
+          "name": "--command-item-padding-x",
+          "description": "Horizontal padding of a result row (follows the density's row padding)"
+        },
+        {
+          "name": "--command-item-active-background",
+          "description": "Background of the hovered / active row (defaults to a 10% primary tint)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/command/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/command/demos/basic.tsx": "import { useState } from \"react\";\nimport { Button, CommandDialog, type CommandItem } from \"minerva-design\";\n\nconst ITEMS: CommandItem[] = [\n  { id: \"books\", title: \"Books\", description: \"/books\", group: \"Content\" },\n  {\n    id: \"reviews\",\n    title: \"Reviews\",\n    description: \"/reviews\",\n    group: \"Content\",\n  },\n  { id: \"users\", title: \"Users\", description: \"/users\", group: \"Admin\" },\n  {\n    id: \"seo\",\n    title: \"SEO settings\",\n    description: \"/seo\",\n    keywords: \"sitemap meta\",\n  },\n];\n\nexport default function BasicDemo() {\n  const [open, setOpen] = useState(false);\n  const [last, setLast] = useState(\"—\");\n  return (\n    <div style={{ display: \"flex\", gap: 12, alignItems: \"center\" }}>\n      <Button onClick={() => setOpen(true)}>Search…</Button>\n      <span>Selected: {last}</span>\n      <CommandDialog\n        open={open}\n        onOpenChange={setOpen}\n        items={ITEMS}\n        onSelect={(item) => setLast(item.title)}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "基础用法",
+      "description": "受控的命令面板；onSelect 收到选中的项目后面板关闭。"
+    },
+    {
+      "id": "custom-filter",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/command/demos/custom-filter.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/command/demos/custom-filter.tsx": "import { useState } from \"react\";\nimport { Button, CommandDialog, type CommandItem } from \"minerva-design\";\n\nconst ITEMS: CommandItem[] = [\n  { id: \"billing\", title: \"Billing history\", keywords: \"invoice\" },\n  { id: \"invoices\", title: \"Invoices\", group: \"Billing\" },\n  { id: \"new-invoice\", title: \"New invoice\", keywords: \"create\" },\n  { id: \"tax\", title: \"Tax settings\", description: \"Invoice numbering\" },\n];\n\n// Rank: title starts with the query > a title word does > anywhere else\nconst rank = (item: CommandItem, query: string) => {\n  const title = item.title.toLowerCase();\n  if (title.startsWith(query)) return 0;\n  if (title.split(\" \").some((word) => word.startsWith(query))) return 1;\n  return 2;\n};\n\nconst filter = (items: CommandItem[], raw: string) => {\n  const query = raw.toLowerCase();\n  return items\n    .filter((item) =>\n      [item.title, item.description, item.group, item.keywords]\n        .join(\" \")\n        .toLowerCase()\n        .includes(query),\n    )\n    .sort((a, b) => rank(a, query) - rank(b, query));\n};\n\nexport default function CustomFilterDemo() {\n  const [open, setOpen] = useState(false);\n  const [last, setLast] = useState(\"—\");\n  return (\n    <div style={{ display: \"flex\", gap: 12, alignItems: \"center\" }}>\n      <Button onClick={() => setOpen(true)}>Search “invoice”…</Button>\n      <span>Selected: {last}</span>\n      <CommandDialog\n        open={open}\n        onOpenChange={setOpen}\n        items={ITEMS}\n        filter={filter}\n        onSelect={(item) => setLast(item.title)}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "结果排序",
+      "description": "filter 替换默认的子串搜索：它接收启用的条目和去除首尾空白的查询，并按显示顺序返回结果。此例中标题以查询开头的条目排在最前。"
+    },
+    {
+      "id": "shortcut",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/command/demos/shortcut.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/command/demos/shortcut.tsx": "import { useState } from \"react\";\nimport { CommandDialog, type CommandItem } from \"minerva-design\";\n\nconst ITEMS: CommandItem[] = [\n  { id: \"new\", title: \"New document\" },\n  { id: \"open\", title: \"Open recent\", description: \"Last 10 documents\" },\n  { id: \"theme\", title: \"Toggle theme\", keywords: \"dark light\" },\n];\n\nexport default function ShortcutDemo() {\n  const [last, setLast] = useState<string | null>(null);\n  return (\n    <>\n      <p>\n        Press <kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>K</kbd> to open the palette.\n      </p>\n      <CommandDialog\n        items={ITEMS}\n        shortcut=\"mod+k\"\n        shortcutLabel=\"⌘K\"\n        title=\"Quick actions\"\n        onSelect={(item) => setLast(item.title)}\n      />\n      <p aria-live=\"polite\">\n        {last ? `Selected: ${last}` : \"Nothing selected yet\"}\n      </p>\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "全局快捷键",
+      "description": "shortcut=\"mod+k\" 在 macOS 上用 Cmd+K、其他系统用 Ctrl+K 打开面板；shortcutLabel 显示提示。"
+    },
+    {
+      "id": "site-search",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/command/demos/site-search.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/command/demos/site-search.tsx": "import { useState } from \"react\";\nimport { Button, CommandDialog, Stack, type CommandItem } from \"minerva-design\";\nimport { LuSearch } from \"react-icons/lu\";\n\nconst pages: CommandItem[] = [\n  {\n    id: \"button\",\n    title: \"Button\",\n    description: \"Actions, loading and variants\",\n    group: \"Components\",\n    keywords: \"click action submit\",\n  },\n  {\n    id: \"input\",\n    title: \"Input\",\n    description: \"Text fields and validation\",\n    group: \"Components\",\n    keywords: \"form text search\",\n  },\n  {\n    id: \"installation\",\n    title: \"Installation\",\n    description: \"Install and configure Minerva\",\n    group: \"Getting started\",\n    keywords: \"npm pnpm css\",\n  },\n];\n\nexport default function SiteSearchDemo() {\n  const [open, setOpen] = useState(false);\n  const [selected, setSelected] = useState(\"No page selected\");\n  return (\n    <Stack gap={3} style={{ width: \"100%\", maxWidth: 420 }}>\n      <Button\n        color=\"neutral\"\n        variant=\"outline\"\n        startIcon={<LuSearch />}\n        endIcon={<kbd>Ctrl ⇧ K</kbd>}\n        onClick={() => setOpen(true)}\n        aria-haspopup=\"dialog\"\n        aria-expanded={open}\n        style={{ justifyContent: \"space-between\" }}\n      >\n        Search documentation\n      </Button>\n      <output aria-live=\"polite\">{selected}</output>\n      <CommandDialog\n        open={open}\n        onOpenChange={setOpen}\n        title=\"Search documentation\"\n        description=\"Search titles, descriptions or keywords. Use the arrow keys and Enter to choose a page.\"\n        placeholder=\"Search components or guides…\"\n        emptyText=\"No matching page. Try another keyword.\"\n        items={pages}\n        maxResults={8}\n        shortcut=\"ctrl+shift+k\"\n        shortcutLabel=\"Ctrl ⇧ K\"\n        onSelect={(item) => setSelected(`Selected: ${item.title}`)}\n      />\n    </Stack>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "站点搜索",
+      "description": "文档站的搜索由 Button 和 CommandDialog 组合：输入筛选、分组、无结果反馈、键盘选择和关闭后焦点恢复。此示例使用 Ctrl+Shift+K，站点搜索使用 Cmd/Ctrl+K；在实际项目中用 onSelect 接入路由。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Command 命令面板",
+      "description": "模态框中的可搜索命令面板。输入即可按标题、描述、分组和关键字过滤，方向键移动，回车或点击选择。可选的全局快捷键可打开它。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "受控的命令面板；onSelect 收到选中的项目后面板关闭。"
+        },
+        "shortcut": {
+          "title": "全局快捷键",
+          "description": "shortcut=\"mod+k\" 在 macOS 上用 Cmd+K、其他系统用 Ctrl+K 打开面板；shortcutLabel 显示提示。"
+        },
+        "custom-filter": {
+          "title": "结果排序",
+          "description": "filter 替换默认的子串搜索：它接收启用的条目和去除首尾空白的查询，并按显示顺序返回结果。此例中标题以查询开头的条目排在最前。"
+        },
+        "site-search": {
+          "title": "站点搜索",
+          "description": "文档站的搜索由 Button 和 CommandDialog 组合：输入筛选、分组、无结果反馈、键盘选择和关闭后焦点恢复。此示例使用 Ctrl+Shift+K，站点搜索使用 Cmd/Ctrl+K；在实际项目中用 onSelect 接入路由。"
+        }
+      },
+      "api": {
+        "CommandDialogProps": {
+          "open": "受控的打开状态；不传（undefined）时为非受控",
+          "defaultOpen": "非受控时的初始打开状态",
+          "onOpenChange": "请求改变打开状态时调用（快捷键、选择、Escape、点击遮罩）",
+          "items": "要搜索的命令；禁用的项目不会显示",
+          "onSelect": "以选中的项目调用（点击或回车），随后面板关闭",
+          "title": "对话框标题；默认为本地化的“命令面板”",
+          "description": "面板的可访问描述；默认为本地化提示",
+          "placeholder": "搜索框占位文本；默认为本地化提示",
+          "emptyText": "没有匹配结果时显示的内容",
+          "shortcutLabel": "以 <kbd> 显示在标题旁的快捷键提示，例如“⌘K”",
+          "shortcut": "打开面板的全局快捷键，例如“mod+k”；修饰键：mod、ctrl、meta/cmd、shift、alt/option",
+          "maxResults": "最多显示的结果数",
+          "filter": "自定义搜索，例如按匹配质量排序：接收启用的条目和去除首尾空白的查询（不为空），按显示顺序返回匹配的条目（之后再受 maxResults 限制）；默认是不区分大小写的子串匹配，并保持 items 的顺序",
+          "resultsLabel": "结果列表的可访问标签",
+          "enterLabel": "显示在搜索框末尾的按键提示；默认为本地化的“Enter”",
+          "className": "对话框面板的额外类名"
+        },
+        "CommandItem": {
+          "id": "唯一 id，通过 onSelect 传回",
+          "title": "主标签",
+          "description": "标题下方的次要文字",
+          "group": "分组名，以徽标显示并参与搜索",
+          "keywords": "额外的搜索词（不显示）",
+          "disabled": "从结果中隐藏该项目"
+        }
+      },
+      "cssVars": {
+        "--command-search-height": "搜索框的最小高度（默认 --control-height-md）",
+        "--command-results-max-height": "可滚动结果列表的最大高度",
+        "--command-item-min-height": "结果行的最小高度",
+        "--command-item-padding-y": "结果行的垂直内边距（跟随密度的行内边距）",
+        "--command-item-padding-x": "结果行的水平内边距（跟随密度的行内边距）",
+        "--command-item-active-background": "悬停 / 激活行的背景（默认 10% 主色调）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "items 是一个 JS 属性（id、title、description、group、keywords、disabled）。输入即可筛选，方向键移动，Enter 或点击选择；minerva-select 返回所选 id。"
+          },
+          "shortcut": {
+            "title": "全局快捷键",
+            "description": "shortcut 接受逗号分隔的列表（\"mod+k, /\"；mod 即 Ctrl，macOS 上为 ⌘），可在页面任意位置打开面板，在输入框中输入时除外。max-results 限制结果数量。"
+          },
+          "custom-filter": {
+            "title": "结果排序",
+            "description": "filter 替换默认的子串搜索：它接收启用的条目和去除首尾空白的查询，并按显示顺序返回结果。此例中标题以查询开头的条目排在最前。"
+          }
+        },
+        "minerva-command-dialog": {
+          "props": {
+            "label": "对话框标题（默认：本地化的「命令面板」）。"
+          },
+          "events": {
+            "minerva-select": "选择了一个命令（detail: { value, item }，value 为该项的 id）；随后面板关闭。",
+            "minerva-open-change": "用户请求打开（快捷键）/ 关闭（detail: { open, reason }）；可取消：preventDefault() 保持当前状态。",
+            "minerva-after-open": "面板已打开，焦点已移至搜索框。",
+            "minerva-after-close": "面板完成关闭（退出动画结束）后触发。"
+          },
+          "cssVars": {
+            "--modal-width": "面板宽度（默认取决于尺寸，并受视口限制）。",
+            "--modal-max-height": "面板最大高度（超出时主体滚动）。",
+            "--modal-padding": "标题、描述、主体和底部的水平内边距。",
+            "--modal-radius": "面板圆角（默认 --radius-xl）。",
+            "--modal-shadow": "面板阴影（默认 --shadow-xl）。",
+            "--modal-background": "面板背景。",
+            "--modal-z-index": "面板层级（默认 --z-modal）。"
+          },
+          "methods": {
+            "show": "打开命令面板。",
+            "hide": "关闭命令面板。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        }
+      }
+    }
+  }
+}

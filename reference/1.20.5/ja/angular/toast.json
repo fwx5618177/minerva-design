@@ -1,0 +1,317 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "ja",
+  "renderer": "angular",
+  "page": "toast",
+  "title": "Toast トースト",
+  "description": "タイトル、説明、セマンティックカラーを持つ一時的な通知です。toast() でどこからでも表示でき（React コンテキスト不要）、アプリのツリー内の ToastProvider が描画するため、アプリのコンテキスト（テーマ、ロケール）を引き継ぎます。読み込み表示、Promise の追跡、その場での更新、アクション、最大表示数を備えています。サーバーレンダリングにも対応します。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {
+    "usage": {
+      "title": "使い分け：useToast() か toast() か",
+      "hook": "コンポーネント内では useToast() を呼びます。表示されるトーストは最も近い ConfigProvider のスコープに従います。ネストしたプロバイダーの下では、そのポータルホストにテーマ・パレット・トークン付きで描画され、組み込みラベルはその言語になります。描画するのは引き続きオーナーの ToastProvider で、position・max・ラベルもそのままです。",
+      "function": "React の外（イベントバス、API クライアント、ストアなどコンポーネント以外のモジュール）では toast() を直接インポートします。そこではフックが使えず、トーストは ToastProvider のスコープ（通常はルートのテーマと言語）を使います。",
+      "modal": "モーダルダイアログ（Modal、Drawer、ConfirmDialog、Command、モーダルな Popover や Menu）が開いている間、その hide-others 処理はページの他の部分と同様にトーストのビューポートにも適用されます。ビューポートには aria-hidden=\"true\" が付き、ダイアログが閉じるまで支援技術にはダイアログだけが見えます。<minerva-toast-region> も同じ動作です（data-minerva-keep-visible でリージョンごとに除外できます）。"
+    }
+  },
+  "components": [
+    {
+      "name": "ToastProvider",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: Inject MnToastService to show/dismiss/clear notifications and render MnToastRegion in the desired scope; Angular DI supplies the service instead of a wrapper provider."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: Inject MnToastService to show/dismiss/clear notifications and render MnToastRegion in the desired scope; Angular DI supplies the service instead of a wrapper provider.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnToastService",
+            "MnToastRegion"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-toast-region",
+        "props": [
+          {
+            "name": "messages",
+            "typeText": "readonly ToastMessage[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/application/index.ts"
+          },
+          {
+            "name": "max",
+            "typeText": "number",
+            "required": false,
+            "source": "packages/angular/src/components/application/index.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "closed",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/application/index.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "string",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "action",
+            "typeText": "ToastMessage",
+            "required": false,
+            "source": "packages/angular/src/components/application/index.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "ToastMessage",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Toast": {
+      "kind": "cssVars",
+      "source": "react/src/components/Toast",
+      "vars": [
+        {
+          "name": "--toast-width",
+          "description": "Width of the toast stack (capped by the viewport)"
+        },
+        {
+          "name": "--toast-gap",
+          "description": "Space between stacked toasts"
+        },
+        {
+          "name": "--toast-offset",
+          "description": "Distance between the stack and the viewport edges"
+        },
+        {
+          "name": "--toast-padding",
+          "description": "Padding of a toast"
+        },
+        {
+          "name": "--toast-radius",
+          "description": "Corner radius of a toast (defaults to --radius-md)"
+        },
+        {
+          "name": "--toast-shadow",
+          "description": "Shadow of a toast (defaults to --shadow-lg)"
+        },
+        {
+          "name": "--toast-background",
+          "description": "Base background of a toast (under the color tint)"
+        },
+        {
+          "name": "--toast-z-index",
+          "description": "Stacking order of the stack (defaults to --z-toast)"
+        },
+        {
+          "name": "--toast-icon-background",
+          "description": "Background of the round chip behind the status icon (defaults to the color's accent at 14%)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "show-and-dismiss-notifications",
+      "title": "Show and dismiss notifications",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnButton, MnToastRegion } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnButton, MnToastRegion],\n  template: `\n<button mnButton (click)=\"messages=[{id:'saved',title:'Changes saved',description:'Your workspace is up to date.',color:'success',action:'Undo'}]\">Save changes</button><mn-toast-region [messages]=\"messages\" (closed)=\"messages=[]\" (action)=\"messages=[];result='Changes restored'\"/><output>{{result}}</output>\n  `,\n})\nexport class Example {\n  messages: import('minerva-design/angular').ToastMessage[] = [];\n  result = \"\";\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "error-feedback",
+      "title": "Error feedback",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnButton, MnToastRegion } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnButton, MnToastRegion],\n  template: `\n<button mnButton variant=\"outline\" (click)=\"messages=[{id:'error',title:'Unable to sync',description:'Check your connection and try again.',color:'danger'}]\">Simulate error</button><mn-toast-region [messages]=\"messages\" (closed)=\"messages=[]\"/>\n  `,\n})\nexport class Example {\n  messages: import('minerva-design/angular').ToastMessage[] = [];\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "// Inside a component: follows the nearest ConfigProvider scope\nfunction SaveButton() {\n  const toast = useToast();\n  return <Button onClick={() => toast.success(\"Saved\")}>Save</Button>;\n}\n\n// Outside React (API client, event bus, store...): root scope\nimport { toast } from \"minerva-design\";\napiClient.onError((error) => toast.danger(error.message));",
+      "language": "tsx"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Toast トースト",
+      "description": "タイトル、説明、セマンティックカラーを持つ一時的な通知です。toast() でどこからでも表示でき（React コンテキスト不要）、アプリのツリー内の ToastProvider が描画するため、アプリのコンテキスト（テーマ、ロケール）を引き継ぎます。読み込み表示、Promise の追跡、その場での更新、アクション、最大表示数を備えています。サーバーレンダリングにも対応します。",
+      "usage": {
+        "title": "使い分け：useToast() か toast() か",
+        "hook": "コンポーネント内では useToast() を呼びます。表示されるトーストは最も近い ConfigProvider のスコープに従います。ネストしたプロバイダーの下では、そのポータルホストにテーマ・パレット・トークン付きで描画され、組み込みラベルはその言語になります。描画するのは引き続きオーナーの ToastProvider で、position・max・ラベルもそのままです。",
+        "function": "React の外（イベントバス、API クライアント、ストアなどコンポーネント以外のモジュール）では toast() を直接インポートします。そこではフックが使えず、トーストは ToastProvider のスコープ（通常はルートのテーマと言語）を使います。",
+        "modal": "モーダルダイアログ（Modal、Drawer、ConfirmDialog、Command、モーダルな Popover や Menu）が開いている間、その hide-others 処理はページの他の部分と同様にトーストのビューポートにも適用されます。ビューポートには aria-hidden=\"true\" が付き、ダイアログが閉じるまで支援技術にはダイアログだけが見えます。<minerva-toast-region> も同じ動作です（data-minerva-keep-visible でリージョンごとに除外できます）。"
+      },
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "Success は Saved、Danger は Request failed、Warning は Unsaved changes、Info は New version を表示します。通知は最大 3 件です。"
+        },
+        "colors": {
+          "title": "カラー",
+          "description": "color でセマンティックカラーを選びます：info（デフォルト）、success、warning、danger。アクセントカラー、アイコン、ロールが決まり、danger は alert、それ以外は status として読み上げられます。"
+        },
+        "options": {
+          "title": "オプション",
+          "description": "toast({ color, title, description, duration }) で細かく制御できます。duration が 0 の場合は閉じるまで表示されます。toast.dismiss(id) で 1 件、toast.dismiss() ですべて閉じます。ホバーまたはフォーカス中はタイマーが一時停止します。"
+        },
+        "loading": {
+          "title": "読み込み・更新・Promise",
+          "description": "toast.loading（または任意の色と loading: true オプション）はアイコンの代わりにスピナーを表示し、自動では閉じません。toast.update(id, { loading: false, ... }) でその場で結果に変えられます。toast.promise(promise, { loading, success, error }) は Promise に対してこれを自動で行います。"
+        },
+        "action": {
+          "title": "アクション・アイコン・onClose",
+          "description": "action はトーストも閉じるボタン（「元に戻す」など）を追加します。icon はカラーのアイコンを置き換え、closable: false は閉じるボタンを隠し、onClose はトーストが閉じたときに 1 回呼ばれます。"
+        },
+        "dedupe": {
+          "title": "同じ id は置き換え",
+          "description": "表示中のトーストと同じ id で表示すると、重複して積み重ねずに置き換えてタイマーを再開します（ポーリングのエラーに便利）。"
+        },
+        "scoped": {
+          "title": "スコープ：useToast() と toast()",
+          "description": "両方のボタンはネストした ConfigProvider（ダークテーマ、tech パレット、中国語）の中にあります。useToast() はそのスコープ内にトーストを描画し（ダークのトークン、中国語の閉じるラベル、同じ位置の専用ビューポート）、toast() はページのテーマと言語でルートに描画します。"
+        },
+        "keyboard": {
+          "title": "キーボード",
+          "description": "F8（hotkey プロパティ。領域ラベル「通知 (F8)」でも案内されます）でトーストにフォーカスを移動します。Escape でフォーカス中のトーストを閉じます。閉じた後は次のトーストの閉じるボタンへ、最後はトーストに入る前の位置へフォーカスが戻ります。"
+        }
+      },
+      "api": {
+        "ToastOptions": {
+          "id": "トーストの識別子。省略すると自動生成されます。表示中のトーストと同じ id で表示すると、重複せずに置き換わり（タイマーも再開）ます",
+          "color": "トーストのセマンティックカラー。アクセントカラー、アイコン、ARIA ロールを決めます（danger は alert、それ以外は status として読み上げ）",
+          "loading": "アイコンの代わりにスピナーを表示し、更新または閉じられるまでトーストを開いたままにします（duration の既定値は 0）。status として読み上げられます",
+          "title": "メインテキスト",
+          "description": "タイトルの下の補足テキスト",
+          "duration": "自動で閉じるまでのミリ秒。0 で開いたまま。読み込みトーストの既定値は 0",
+          "icon": "カラーのアイコン（または読み込みスピナー）を置き換えます。null で非表示",
+          "closable": "閉じるボタンを表示する",
+          "action": "トースト内のアクションボタン（「元に戻す」など）",
+          "onClose": "理由を問わずトーストが閉じたときに id を渡して 1 回呼ばれます"
+        },
+        "ToastAction": {
+          "label": "ボタンの表示テキスト",
+          "onClick": "ボタンが押されたとき、トーストが閉じる前に呼ばれます"
+        },
+        "ToastProviderProps": {
+          "position": "トーストを積み重ねる位置",
+          "children": "アプリの内容。トーストのビューポートはその後に描画されます",
+          "max": "同時に表示するトーストの最大数。超えると古いものから閉じます",
+          "pauseOnHover": "トーストのホバー中またはフォーカス中は自動クローズのタイマーを一時停止します",
+          "aria-label": "トースト領域のアクセシブルなラベル。そのまま使用されます（既定のラベルにはホットキーが含まれます）",
+          "closeLabel": "閉じるボタンのアクセシブルなラベル",
+          "hotkey": "同時に押すとトースト領域（トーストを含む最初の領域）にフォーカスを移すキー：キーコード（F8、KeyT）、キー、または修飾キー（altKey、ctrlKey、metaKey、shiftKey）。既定の領域ラベルに表示されます（例：「通知 (F8)」）。空配列で無効"
+        },
+        "ToastApi": {
+          "info": "指定したタイトルで情報トーストを表示します",
+          "success": "指定したタイトルで成功トーストを表示します",
+          "warning": "指定したタイトルで警告トーストを表示します",
+          "danger": "指定したタイトルで危険トーストを表示します",
+          "loading": "指定したタイトルで読み込みトースト（スピナー、自動で閉じない）を表示します",
+          "promise": "Promise の待機中は読み込みトーストを表示し、その後成功またはエラーのトーストに変えます。渡した Promise を返します",
+          "update": "開いているトーストをその場で変更（オプションをマージ）し、タイマーを再開します。loading: false で読み込みトーストを通常のトーストに戻します（duration を指定しなければ既定の表示時間）。未知の id は無視されます",
+          "dismiss": "指定した id のトーストを閉じます。省略するとすべて閉じます"
+        },
+        "ToastPromiseMessages": {
+          "loading": "Promise の待機中のタイトル",
+          "success": "Promise が解決したときのタイトル（ノード、または値を受け取る関数）",
+          "error": "Promise が拒否されたときのタイトル（ノード、またはエラーを受け取る関数）"
+        }
+      },
+      "cssVars": {
+        "--toast-width": "トーストのスタックの幅（ビューポートで制限）",
+        "--toast-gap": "重なったトースト間の間隔",
+        "--toast-offset": "スタックとビューポート端との距離",
+        "--toast-padding": "トーストの内側の余白",
+        "--toast-radius": "トーストの角丸（既定値は --radius-md）",
+        "--toast-shadow": "トーストの影（既定値は --shadow-lg）",
+        "--toast-background": "トーストの基本背景（色の色合いの下）",
+        "--toast-z-index": "スタックの重なり順（既定値は --z-toast）",
+        "--toast-icon-background": "ステータスアイコンの背後にある丸いチップの背景（既定はアクセントカラーの 14%）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "<minerva-toast-region> がトーストを描画します。region.toast はこの領域に紐づいた toast() API です（info、success、warning、danger）。position でスタックの位置を決めます。 React の ToastProvider と同様に、モーダルダイアログが開いている間はリージョンが支援技術から隠されます（aria-hidden）。"
+          },
+          "options": {
+            "title": "オプションとアクション",
+            "description": "タイトル、説明、長めの表示時間、元に戻すアクションを持つトーストです。max で新しいものだけを残し、minerva-close が各トーストが閉じた理由を伝えます。"
+          },
+          "loading": {
+            "title": "ローディングと Promise",
+            "description": "toast.promise() は 1 つのトーストで Promise を追跡します。loading() と update() で同じことを手動で行えます。ローディング中のトーストは更新されるまで開いたままで、dismiss() はすべてのトーストを閉じます。"
+          }
+        },
+        "minerva-toast-region": {
+          "props": {
+            "noPauseOnHover": "トーストにホバーやフォーカスがあってもカウントダウンを止めません。",
+            "toast": "この領域に紐づいた toast API：region.toast.success(\"Saved\") はこの要素に表示されます（読み取り専用）。"
+          },
+          "events": {
+            "minerva-close": "この領域のトーストが閉じ始めました（detail: { id, reason }。reason は timeout、close-button、action、escape、dismiss、overflow）。",
+            "minerva-after-close": "この領域のトーストが終了アニメーションの後に削除されました（detail: { id }）。"
+          },
+          "methods": {
+            "focus": "領域にフォーカスを移します（ホットキーと同じ動作）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "Success は Saved、Danger は Request failed、Warning は Unsaved changes、Info は New version を表示します。通知は最大 3 件です。"
+          }
+        },
+        "limitations": "Native の top-left/top-center/top-right は上部、bottom-left/bottom-center/bottom-right は下部に表示されます。メッセージと最大件数は共通ですが、左右の隅配置は Web と異なります。"
+      }
+    }
+  }
+}

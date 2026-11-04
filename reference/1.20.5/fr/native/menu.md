@@ -1,0 +1,541 @@
+# Menu
+
+Un menu d'actions ouvert depuis un bouton (Menu) ou par clic droit (ContextMenu) : icônes, raccourcis, séparateurs, groupes, éléments à cocher, groupes radio, sous-menus, recherche à la frappe et clavier complet (Entrée, Espace ou Flèche bas l'ouvrent sur le premier élément, Flèche haut sur le dernier ; les flèches bouclent et ignorent les éléments désactivés, Début / Fin, Tab le ferme, Échap rend le focus au déclencheur). Pour choisir une valeur dans une liste, utilisez Select.
+
+Package: minerva-design@1.20.5
+
+Renderer: native
+
+Locale: fr
+
+## Provenance
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "packageVersion": "1.20.5",
+  "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+  "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+  "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+}
+```
+
+Type references resolve through the [type graph](/minerva-design/reference/1.20.5/types.json) or getType() from minerva-design/contracts.
+
+## Documentation
+
+## ContextMenu
+
+Support: beta
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design/native",
+  "exports": [
+    "ContextMenu"
+  ],
+  "kind": "named"
+}
+```
+
+### props
+
+```json
+[
+  {
+    "name": "items",
+    "source": "packages/native/src/components/Menu/index.tsx",
+    "kind": "array",
+    "typeText": "MenuEntry[]",
+    "typeRef": "type:70ad1aeb0ed71bd0c9b2",
+    "required": true
+  },
+  {
+    "name": "closeOnSelect",
+    "source": "packages/native/src/components/Menu/index.tsx",
+    "kind": "boolean",
+    "typeText": "boolean | undefined",
+    "typeRef": "type:c54e4f1388c4caae77ff",
+    "default": true,
+    "required": false
+  },
+  {
+    "name": "open",
+    "source": "packages/native/src/components/Menu/index.tsx",
+    "kind": "boolean",
+    "typeText": "boolean | undefined",
+    "typeRef": "type:c54e4f1388c4caae77ff",
+    "required": false
+  },
+  {
+    "name": "defaultOpen",
+    "source": "packages/native/src/components/Menu/index.tsx",
+    "kind": "boolean",
+    "typeText": "boolean | undefined",
+    "typeRef": "type:c54e4f1388c4caae77ff",
+    "default": false,
+    "required": false
+  },
+  {
+    "name": "disabled",
+    "source": "packages/native/src/components/Menu/index.tsx",
+    "kind": "boolean",
+    "typeText": "boolean | undefined",
+    "typeRef": "type:c54e4f1388c4caae77ff",
+    "default": false,
+    "required": false
+  },
+  {
+    "name": "accessibilityLabel",
+    "source": "packages/native/src/components/Menu/index.tsx",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "required": false
+  }
+]
+```
+
+### events
+
+```json
+[
+  {
+    "name": "onSelect",
+    "source": "packages/native/src/components/Menu/index.tsx",
+    "kind": "function",
+    "typeText": "((item: MenuAction) => void) | undefined",
+    "typeRef": "type:3bb22ef2a9ad5e5f3e79",
+    "parameters": [
+      {
+        "name": "item",
+        "position": 0,
+        "required": true,
+        "rest": false,
+        "typeText": "MenuAction",
+        "typeRef": "type:cd5c7e33ef334ee8ab13"
+      }
+    ],
+    "returnType": {
+      "typeText": "void",
+      "typeRef": "type:7ba5db05423263a0fe9d"
+    },
+    "required": false
+  },
+  {
+    "name": "onOpenChange",
+    "source": "packages/native/src/components/Menu/index.tsx",
+    "kind": "function",
+    "typeText": "((open: boolean) => void) | undefined",
+    "typeRef": "type:f798768a2a0d056af0f0",
+    "parameters": [
+      {
+        "name": "open",
+        "position": 0,
+        "required": true,
+        "rest": false,
+        "typeText": "boolean",
+        "typeRef": "type:7087acd01ef7dd9f1d5c"
+      }
+    ],
+    "returnType": {
+      "typeText": "void",
+      "typeRef": "type:7ba5db05423263a0fe9d"
+    },
+    "required": false
+  }
+]
+```
+
+### slots
+
+```json
+[
+  {
+    "name": "children"
+  }
+]
+```
+
+### bindings
+
+```json
+[
+  {
+    "prop": "open",
+    "event": "onOpenChange",
+    "syntax": "open={open} onOpenChange={handler}"
+  }
+]
+```
+
+## Menu
+
+Support: beta
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design/native",
+  "exports": [
+    "Menu"
+  ],
+  "kind": "named"
+}
+```
+
+### props
+
+```json
+[
+  {
+    "name": "items",
+    "source": "packages/native/src/components/Menu/index.tsx",
+    "kind": "array",
+    "typeText": "MenuEntry[]",
+    "typeRef": "type:70ad1aeb0ed71bd0c9b2",
+    "required": true
+  },
+  {
+    "name": "closeOnSelect",
+    "source": "packages/native/src/components/Menu/index.tsx",
+    "kind": "boolean",
+    "typeText": "boolean | undefined",
+    "typeRef": "type:c54e4f1388c4caae77ff",
+    "default": true,
+    "required": false
+  },
+  {
+    "name": "open",
+    "source": "packages/native/src/components/Menu/index.tsx",
+    "kind": "boolean",
+    "typeText": "boolean | undefined",
+    "typeRef": "type:c54e4f1388c4caae77ff",
+    "required": false
+  },
+  {
+    "name": "defaultOpen",
+    "source": "packages/native/src/components/Menu/index.tsx",
+    "kind": "boolean",
+    "typeText": "boolean | undefined",
+    "typeRef": "type:c54e4f1388c4caae77ff",
+    "default": false,
+    "required": false
+  },
+  {
+    "name": "disabled",
+    "source": "packages/native/src/components/Menu/index.tsx",
+    "kind": "boolean",
+    "typeText": "boolean | undefined",
+    "typeRef": "type:c54e4f1388c4caae77ff",
+    "default": false,
+    "required": false
+  },
+  {
+    "name": "accessibilityLabel",
+    "source": "packages/native/src/components/Menu/index.tsx",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "required": false
+  }
+]
+```
+
+### events
+
+```json
+[
+  {
+    "name": "onSelect",
+    "source": "packages/native/src/components/Menu/index.tsx",
+    "kind": "function",
+    "typeText": "((item: MenuAction) => void) | undefined",
+    "typeRef": "type:3bb22ef2a9ad5e5f3e79",
+    "parameters": [
+      {
+        "name": "item",
+        "position": 0,
+        "required": true,
+        "rest": false,
+        "typeText": "MenuAction",
+        "typeRef": "type:cd5c7e33ef334ee8ab13"
+      }
+    ],
+    "returnType": {
+      "typeText": "void",
+      "typeRef": "type:7ba5db05423263a0fe9d"
+    },
+    "required": false
+  },
+  {
+    "name": "onOpenChange",
+    "source": "packages/native/src/components/Menu/index.tsx",
+    "kind": "function",
+    "typeText": "((open: boolean) => void) | undefined",
+    "typeRef": "type:f798768a2a0d056af0f0",
+    "parameters": [
+      {
+        "name": "open",
+        "position": 0,
+        "required": true,
+        "rest": false,
+        "typeText": "boolean",
+        "typeRef": "type:7087acd01ef7dd9f1d5c"
+      }
+    ],
+    "returnType": {
+      "typeText": "void",
+      "typeRef": "type:7ba5db05423263a0fe9d"
+    },
+    "required": false
+  }
+]
+```
+
+### slots
+
+```json
+[
+  {
+    "name": "children"
+  }
+]
+```
+
+### bindings
+
+```json
+[
+  {
+    "prop": "open",
+    "event": "onOpenChange",
+    "syntax": "open={open} onOpenChange={handler}"
+  }
+]
+```
+
+## MenuCheckboxItem
+
+Support: n/a
+
+No standalone native element: MenuCheckboxEntry (type: checkbox) renders an accessible checkbox with checked/defaultChecked, onCheckedChange and closeOnSelect behavior.
+
+## MenuGroup
+
+Support: n/a
+
+No standalone native element: MenuGroupEntry (type: group) supplies a heading label and recursively rendered items.
+
+## MenuItem
+
+Support: n/a
+
+No standalone native element: Menu and ContextMenu items accept MenuAction entries with label, disabled, children and onSelect behavior.
+
+## MenuLabel
+
+Support: n/a
+
+No standalone native element: the label of MenuGroupEntry or MenuRadioGroupEntry renders an accessible native heading.
+
+## MenuRadioItem
+
+Support: n/a
+
+No standalone native element: MenuRadioGroupEntry (type: radio-group) supplies items with value, label and disabled; the group owns value/defaultValue and onValueChange.
+
+## MenuSeparator
+
+Support: n/a
+
+No standalone native element: MenuSeparatorEntry (type: separator) renders the native Divider between menu entries.
+
+## API
+
+```json
+{
+  "native:MenuProps": {
+    "source": "native/src/components/Menu/index.tsx",
+    "kind": "interface",
+    "extends": [],
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactElement<ButtonProps>",
+        "required": true
+      },
+      {
+        "name": "items",
+        "type": "MenuEntry[]",
+        "required": true
+      },
+      {
+        "name": "onSelect",
+        "type": "(item: MenuAction) => void",
+        "required": false
+      },
+      {
+        "name": "closeOnSelect",
+        "type": "boolean",
+        "required": false,
+        "default": "true"
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false"
+      },
+      {
+        "name": "accessibilityLabel",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "native:ContextMenuProps": {
+    "source": "native/src/components/Menu/index.tsx",
+    "kind": "alias",
+    "type": "MenuProps"
+  }
+}
+```
+
+## CSS variables
+
+```json
+{
+  "css:Menu": {
+    "kind": "cssVars",
+    "source": "react/src/components/Menu",
+    "vars": [
+      {
+        "name": "--menu-min-width",
+        "description": "Minimum width of the menu panel"
+      },
+      {
+        "name": "--menu-max-width",
+        "description": "Maximum width of the menu panel"
+      },
+      {
+        "name": "--menu-max-height",
+        "description": "Maximum height of the menu panel (scrolls beyond)"
+      },
+      {
+        "name": "--menu-padding",
+        "description": "Inner padding of the menu panel"
+      },
+      {
+        "name": "--menu-radius",
+        "description": "Corner radius of the menu panel (defaults to --radius-lg)"
+      },
+      {
+        "name": "--menu-shadow",
+        "description": "Shadow of the menu panel (defaults to --shadow-md)"
+      },
+      {
+        "name": "--menu-item-height",
+        "description": "Minimum height of an item (every size; defaults to the density's control height)"
+      },
+      {
+        "name": "--menu-z-index",
+        "description": "Stacking order of the menu panel (defaults to --z-popover)"
+      }
+    ]
+  }
+}
+```
+
+## Installation and initialization
+
+See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.
+
+## Example: Utilisation de base
+
+Éléments avec icônes et raccourcis. onSelect reçoit l’objet d’origine, puis le menu se ferme et le focus revient au déclencheur.
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react, react-native
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/menu/native/basic.tsx
+
+```tsx
+import { useState } from "react";
+import { Text, View } from "react-native";
+import {
+  Menu,
+  ContextMenu,
+  Button,
+  type MenuEntry,
+} from "minerva-design/native";
+export default function Basic() {
+  const [selected, setSelected] = useState("");
+  const items: MenuEntry[] = [
+    { key: "save", label: "Save" },
+    {
+      key: "more",
+      label: "More",
+      children: [{ key: "archive", label: "Archive" }],
+    },
+    { type: "separator", key: "separator" },
+    {
+      type: "group",
+      key: "view",
+      label: "View",
+      items: [
+        {
+          type: "checkbox",
+          key: "grid",
+          label: "Show grid",
+          defaultChecked: true,
+        },
+        {
+          type: "radio-group",
+          key: "density",
+          label: "Density",
+          defaultValue: "comfortable",
+          items: [
+            { value: "compact", label: "Compact" },
+            { value: "comfortable", label: "Comfortable" },
+          ],
+        },
+      ],
+    },
+  ];
+  return (
+    <View style={{ gap: 12 }}>
+      <Menu items={items} onSelect={(item) => setSelected(item.key)}>
+        <Button>Actions</Button>
+      </Menu>
+      <ContextMenu items={items} onSelect={(item) => setSelected(item.key)}>
+        <Button variant="outline">Long press</Button>
+      </ContextMenu>
+      <Text>{selected}</Text>
+    </View>
+  );
+}
+
+```

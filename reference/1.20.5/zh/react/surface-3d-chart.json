@@ -1,0 +1,1349 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "zh",
+  "renderer": "react",
+  "page": "surface-3d-chart",
+  "title": "3D 曲面图",
+  "description": "规则网格上的曲面 z = f(x, y)：光照、内置色带（viridis、plasma、terrain…）、线框、投影到底面的等高线以及透明度。拖动旋转，Ctrl / ⌘ + 滚轮缩放。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {
+    "data": {
+      "functions": {
+        "sinc": "sinc",
+        "peaks": "Peaks",
+        "saddle": "马鞍面"
+      },
+      "function": "函数",
+      "functionsAria": "{{name}} 函数的 3D 曲面",
+      "x": "x",
+      "y": "y",
+      "z": "z",
+      "island": "岛屿",
+      "km": "{{value}} km",
+      "meters": "{{value}} 米",
+      "east": "东向",
+      "north": "北向",
+      "elevation": "海拔",
+      "terrainAria": "宽 20 公里的岛屿地形",
+      "impliedVol": "隐含波动率",
+      "percent": "{{value}}%",
+      "strike": "行权价（现价的 %）",
+      "expiry": "距到期天数",
+      "days": "{{value}} 天",
+      "volatilityAria": "按行权价和到期时间的隐含波动率曲面",
+      "fill": "面",
+      "wireframe": "线框",
+      "floorContours": "底面等高线",
+      "surfaceContours": "曲面等高线",
+      "contoursAria": "带线框和等高线的 peaks 曲面",
+      "bowl": "碗面",
+      "plane": "倾斜平面",
+      "transparencyAria": "透明碗面与透明倾斜平面相交",
+      "wave": "波",
+      "play": "播放动画",
+      "amplitude": "振幅",
+      "waveAria": "从中心扩散的动画涟漪",
+      "plate": "金属板",
+      "reset": "重置",
+      "cm": "厘米",
+      "temperature": "温度",
+      "heatAria": "被点热源加热的金属板温度",
+      "heatStatus": "热源：{{sources}} 个 · 最高温度 {{max}} · 平均温度 {{mean}}。点击金属板可添加或移除热源。",
+      "treasuryYield": "国债收益率",
+      "maturity": "期限",
+      "month": "月份",
+      "yield": "收益率",
+      "yieldAria": "24 个月内各期限国债收益率",
+      "yieldHover": "{{date}} {{maturity}}期收益率：{{yield}}。",
+      "yieldHint": "悬停在曲面上读取收益率。",
+      "spreadInverted": "{{date}}收益率曲线倒挂（10 年期 − 2 年期：{{spread}}）。",
+      "spreadNormal": "{{date}}收益率曲线向上倾斜（10 年期 − 2 年期：{{spread}}）。",
+      "loss": "损失",
+      "point": "({{x}}, {{y}})",
+      "colorMap": "色阶",
+      "colorMaps": {
+        "viridis": "Viridis",
+        "plasma": "Plasma",
+        "magma": "Magma",
+        "cividis": "Cividis",
+        "turbo": "Turbo"
+      },
+      "weight1": "权重 1",
+      "weight2": "权重 2",
+      "logLoss": "log₁₀(1 + 损失)",
+      "lossAria": "有四个极小值的 Himmelblau 函数损失曲面",
+      "descentResult": "从 {{start}}（损失 {{loss}}）出发，梯度下降经过 {{steps}} 步到达位于 {{minimum}} 的第 {{n}} 个极小值。",
+      "lossHint": "点击曲面，从该处开始梯度下降。",
+      "dbm": "{{value}} dBm",
+      "signal": "信号",
+      "accessPoints": "接入点",
+      "rooms": {
+        "lobby": "大堂",
+        "openSpace": "开放办公区",
+        "meetingRooms": "会议室",
+        "kitchen": "茶水间"
+      },
+      "perspectiveView": "3D 视图",
+      "topView": "俯视图",
+      "distanceM": "米",
+      "wifiAria": "办公楼层的 Wi-Fi 信号强度",
+      "wifiCoverage": "{{good}} 的区域信号不低于 {{goodLevel}}（可视频通话），{{usable}} 的区域不低于 {{usableLevel}}。",
+      "wifiNone": "所有接入点均已关闭：无覆盖。"
+    }
+  },
+  "components": [
+    {
+      "name": "Surface3DChart",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/charts",
+          "exports": [
+            "Surface3DChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "series",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "array",
+            "typeText": "readonly Surface3DSeries[]",
+            "typeRef": "type:be73027226bf153b6d9f",
+            "required": true,
+            "description": "Surfaces over regular grids"
+          },
+          {
+            "name": "wireframe",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "boolean | Surface3DWireframeOptions | undefined",
+            "typeRef": "type:c8e7e863bd08c3ed6e73",
+            "required": false,
+            "description": "Wireframe of the series that do not set one"
+          },
+          {
+            "name": "contours",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "boolean | Surface3DContourOptions | undefined",
+            "typeRef": "type:c6b37da1b40456cc0040",
+            "required": false,
+            "description": "Contour lines of the series that do not set them"
+          },
+          {
+            "name": "height",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": 400,
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels"
+          },
+          {
+            "name": "width",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Chart3DAxisOptions | undefined",
+            "typeRef": "type:1c821e1ee1e77dc2c4fa",
+            "required": false,
+            "description": "X axis (width of the box)"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Chart3DAxisOptions | undefined",
+            "typeRef": "type:1c821e1ee1e77dc2c4fa",
+            "required": false,
+            "description": "Y axis (depth of the box)"
+          },
+          {
+            "name": "zAxis",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Chart3DAxisOptions | undefined",
+            "typeRef": "type:1c821e1ee1e77dc2c4fa",
+            "required": false,
+            "description": "Z axis (height of the box)"
+          },
+          {
+            "name": "camera",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Chart3DCameraOptions | undefined",
+            "typeRef": "type:167a8a19d9cc56b4b670",
+            "required": false,
+            "description": "Initial camera, also restored by a double click (changing it moves the camera)"
+          },
+          {
+            "name": "autoRotate",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "number | boolean | undefined",
+            "typeRef": "type:11d9d08024b0b84c460e",
+            "default": false,
+            "required": false,
+            "description": "Turns the camera around the box: `true` at 12°/s or a speed in degrees per second; pauses while hovered, off-screen and with reduced motion"
+          },
+          {
+            "name": "aspect",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "array",
+            "typeText": "readonly [number, number, number] | undefined",
+            "typeRef": "type:d7844941c1a0fb5f2288",
+            "required": false,
+            "description": "Proportions of the box (x, y, z)"
+          },
+          {
+            "name": "box",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Draws the axis box: back walls, grid lines, tick labels and axis titles"
+          },
+          {
+            "name": "colorScale",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "Chart3DColorScale | undefined",
+            "typeRef": "type:a7f2e842d4114e5e2bc9",
+            "default": "viridis",
+            "required": false,
+            "description": "Colors of `colorBy: \"z\"` / `\"value\"`: a built-in ramp or CSS colors"
+          },
+          {
+            "name": "valueRange",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "array",
+            "typeText": "readonly [number, number] | undefined",
+            "typeRef": "type:993918f52c7908c02d32",
+            "required": false,
+            "description": "Values mapped to the ends of the color scale; the data range by default"
+          },
+          {
+            "name": "colorBar",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "boolean | Chart3DColorBarOptions | undefined",
+            "typeRef": "type:9e94487b0cf0ad8a7ae5",
+            "required": false,
+            "description": "Color bar; shown by default when a visible series uses the color scale"
+          },
+          {
+            "name": "legend",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "boolean | Chart3DLegendOptions | undefined",
+            "typeRef": "type:1be2fbbf1e8c9fbb46a8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "boolean | Chart3DTooltipOptions | undefined",
+            "typeRef": "type:13329010a17ed76beece",
+            "required": false,
+            "description": "Tooltip; `false` disables it"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "union",
+            "typeText": "boolean | Chart3DInteractionOptions | undefined",
+            "typeRef": "type:a71b98bca46cdf7837aa",
+            "default": true,
+            "required": false,
+            "description": "Drag rotates, right / Shift + drag pans, Ctrl / ⌘ + wheel and pinch zoom, double click resets, arrow keys rotate; `false` makes the chart static"
+          },
+          {
+            "name": "lighting",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Chart3DLightingOptions | undefined",
+            "typeRef": "type:4f031ae37c5b79a48dcc",
+            "required": false,
+            "description": "Lighting of the surfaces and bars"
+          },
+          {
+            "name": "exposure",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 1,
+            "required": false,
+            "description": "Brightness of the light of `blend: \"additive\"` series, tone mapped on WebGPU and WebGL2 (dense glowing regions saturate instead of turning white)"
+          },
+          {
+            "name": "renderer",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "enum",
+            "values": [
+              "auto",
+              "canvas2d",
+              "webgl",
+              "webgl2",
+              "webgpu"
+            ],
+            "typeText": "ChartRendererPreference | undefined",
+            "typeRef": "type:dc7d7e6f384ddec86e04",
+            "default": "auto",
+            "required": false,
+            "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software"
+          },
+          {
+            "name": "palette",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Language of the built-in texts (accessible summary, legend announcements, tooltip row names) and of the number formatting; built-in texts in English, Chinese, Japanese and French"
+          },
+          {
+            "name": "labels",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "object",
+            "typeText": "Partial<Chart3DLabels> | undefined",
+            "typeRef": "type:b9110f1352c8b648a88b",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "function",
+            "typeText": "((event: Chart3DHoverEvent | null) => void) | undefined",
+            "typeRef": "type:dfff2602865f409c9dcc",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "Chart3DHoverEvent | null",
+                "typeRef": "type:774323141f428bcd99e2"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the hovered point, cell or bar changes"
+          },
+          {
+            "name": "onPointClick",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "function",
+            "typeText": "((event: Chart3DHoverEvent) => void) | undefined",
+            "typeRef": "type:9703bea4561e32de9ced",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "Chart3DHoverEvent",
+                "typeRef": "type:fe5f94c04c80715011c0"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point, cell or bar is clicked"
+          },
+          {
+            "name": "onCameraChange",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "function",
+            "typeText": "((camera: Chart3DCameraState) => void) | undefined",
+            "typeRef": "type:30adbc1b463ace3a9336",
+            "parameters": [
+              {
+                "name": "camera",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "Chart3DCameraState",
+                "typeRef": "type:b3764b39d8f3ce70541d"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called after the user rotated, zoomed, panned or reset the camera"
+          },
+          {
+            "name": "onRendererChange",
+            "source": "packages/charts/src/react/three-d.tsx",
+            "kind": "function",
+            "typeText": "((renderer: ChartRendererKind) => void) | undefined",
+            "typeRef": "type:fe458bf4d221b7288026",
+            "parameters": [
+              {
+                "name": "renderer",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartRendererKind",
+                "typeRef": "type:3439f360c8a2b0649d25"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the backend once it is ready (and after a fallback)"
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "camera",
+            "event": "onCameraChange",
+            "syntax": "camera={camera} onCameraChange={handler}"
+          },
+          {
+            "prop": "renderer",
+            "event": "onRendererChange",
+            "syntax": "renderer={renderer} onRendererChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "Surface3DChartProps": {
+      "source": "charts/src/react/three-d.tsx",
+      "description": "Props of `Surface3DChart`",
+      "kind": "interface",
+      "extends": [
+        "Chart3DCommonProps"
+      ],
+      "props": [
+        {
+          "name": "series",
+          "type": "readonly Surface3DSeries[]",
+          "required": true,
+          "description": "Surfaces over regular grids"
+        },
+        {
+          "name": "wireframe",
+          "type": "boolean | Surface3DWireframeOptions",
+          "required": false,
+          "description": "Wireframe of the series that do not set one"
+        },
+        {
+          "name": "contours",
+          "type": "boolean | Surface3DContourOptions",
+          "required": false,
+          "description": "Contour lines of the series that do not set them"
+        }
+      ]
+    },
+    "Surface3DSeries": {
+      "source": "charts/src/engine/three-d/types.ts",
+      "description": "A surface over a regular grid",
+      "kind": "interface",
+      "extends": [
+        "Chart3DSeriesBase"
+      ],
+      "props": [
+        {
+          "name": "type",
+          "type": "\"surface\"",
+          "required": false
+        },
+        {
+          "name": "data",
+          "type": "Surface3DData",
+          "required": true,
+          "description": "Grid of heights"
+        },
+        {
+          "name": "colorBy",
+          "type": "Chart3DColorBy",
+          "required": false,
+          "default": "\"value\" when the data has values, \"z\" otherwise",
+          "description": "Source of the colors: the height (`z`), the `value` grid or the series color"
+        },
+        {
+          "name": "opacity",
+          "type": "number",
+          "required": false,
+          "default": "1",
+          "description": "Opacity of the surface, 0-1 (below 1 the surface does not hide what is behind it)"
+        },
+        {
+          "name": "wireframe",
+          "type": "boolean | Surface3DWireframeOptions",
+          "required": false,
+          "default": "false",
+          "description": "Grid lines over the surface"
+        },
+        {
+          "name": "contours",
+          "type": "boolean | Surface3DContourOptions",
+          "required": false,
+          "default": "false",
+          "description": "Contour lines (on the floor by default)"
+        },
+        {
+          "name": "fill",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Draws the faces; `false` keeps only the wireframe / contours"
+        }
+      ]
+    },
+    "Surface3DData": {
+      "source": "charts/src/engine/three-d/types.ts",
+      "description": "Heights of a regular grid, `z = f(x, y)`: `rows × cols` values stored row by row (row `r` is `y[r]`, column `c` is `x[c]`); `NaN` leaves a hole",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "rows",
+          "type": "number",
+          "required": true,
+          "description": "Number of rows (y samples), 2 or more"
+        },
+        {
+          "name": "cols",
+          "type": "number",
+          "required": true,
+          "description": "Number of columns (x samples), 2 or more"
+        },
+        {
+          "name": "z",
+          "type": "ArrayLike<number>",
+          "required": true,
+          "description": "`rows × cols` heights, row-major (`Float32Array` recommended)"
+        },
+        {
+          "name": "x",
+          "type": "ArrayLike<number>",
+          "required": false,
+          "description": "X coordinates of the columns (`cols` values); `0 … cols - 1` when omitted"
+        },
+        {
+          "name": "y",
+          "type": "ArrayLike<number>",
+          "required": false,
+          "description": "Y coordinates of the rows (`rows` values); `0 … rows - 1` when omitted"
+        },
+        {
+          "name": "value",
+          "type": "ArrayLike<number>",
+          "required": false,
+          "description": "`rows × cols` values mapped to the color scale instead of the heights (`colorBy: \"value\"`)"
+        }
+      ]
+    },
+    "Surface3DWireframeOptions": {
+      "source": "charts/src/engine/three-d/types.ts",
+      "description": "Wireframe drawn over a surface",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "color",
+          "type": "string",
+          "required": false,
+          "description": "Line color (any CSS color); a contrasting tint of the text color when omitted"
+        },
+        {
+          "name": "step",
+          "type": "number",
+          "required": false,
+          "default": "1 (a line every 64 rows / columns at most)",
+          "description": "Draws every n-th grid line"
+        },
+        {
+          "name": "width",
+          "type": "number",
+          "required": false,
+          "default": "1",
+          "description": "Line width in CSS pixels"
+        }
+      ]
+    },
+    "Surface3DContourOptions": {
+      "source": "charts/src/engine/three-d/types.ts",
+      "description": "Contour lines of a surface",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "count",
+          "type": "number",
+          "required": false,
+          "default": "10",
+          "description": "Number of levels, spread over the height range (ignored with `levels`)"
+        },
+        {
+          "name": "levels",
+          "type": "readonly number[]",
+          "required": false,
+          "description": "Heights of the lines"
+        },
+        {
+          "name": "floor",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Projects the lines on the floor of the axis box"
+        },
+        {
+          "name": "surface",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Draws the lines on the surface itself"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": false,
+          "description": "Line color (any CSS color); each level takes its color-scale color when omitted"
+        },
+        {
+          "name": "width",
+          "type": "number",
+          "required": false,
+          "default": "1",
+          "description": "Line width in CSS pixels"
+        }
+      ]
+    },
+    "Chart3DLightingOptions": {
+      "source": "charts/src/engine/three-d/types.ts",
+      "description": "Lighting of the surfaces and bars",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "ambient",
+          "type": "number",
+          "required": false,
+          "default": "0.5",
+          "description": "Light reaching every face, 0-1"
+        },
+        {
+          "name": "diffuse",
+          "type": "number",
+          "required": false,
+          "default": "0.6",
+          "description": "Strength of the directional light (Lambert), 0-1"
+        },
+        {
+          "name": "specular",
+          "type": "number",
+          "required": false,
+          "default": "0.25",
+          "description": "Strength of the highlights (Blinn-Phong), 0-1"
+        },
+        {
+          "name": "shininess",
+          "type": "number",
+          "required": false,
+          "default": "32",
+          "description": "Sharpness of the highlights"
+        }
+      ]
+    },
+    "Chart3DCommonProps": {
+      "source": "charts/src/react/three-d.tsx",
+      "description": "Props shared by every 3D chart component",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "height",
+          "type": "number | string",
+          "required": false,
+          "default": "400",
+          "description": "Height of the chart (the legend included); numbers are pixels"
+        },
+        {
+          "name": "width",
+          "type": "number | string",
+          "required": false,
+          "default": "\"100%\"",
+          "description": "Width of the chart; numbers are pixels"
+        },
+        {
+          "name": "xAxis",
+          "type": "Chart3DAxisOptions",
+          "required": false,
+          "description": "X axis (width of the box)"
+        },
+        {
+          "name": "yAxis",
+          "type": "Chart3DAxisOptions",
+          "required": false,
+          "description": "Y axis (depth of the box)"
+        },
+        {
+          "name": "zAxis",
+          "type": "Chart3DAxisOptions",
+          "required": false,
+          "description": "Z axis (height of the box)"
+        },
+        {
+          "name": "camera",
+          "type": "Chart3DCameraOptions",
+          "required": false,
+          "description": "Initial camera, also restored by a double click (changing it moves the camera)"
+        },
+        {
+          "name": "autoRotate",
+          "type": "boolean | number",
+          "required": false,
+          "default": "false",
+          "description": "Turns the camera around the box: `true` at 12°/s or a speed in degrees per second; pauses while hovered, off-screen and with reduced motion"
+        },
+        {
+          "name": "aspect",
+          "type": "readonly [number, number, number]",
+          "required": false,
+          "default": "[1, 1, 0.7]",
+          "description": "Proportions of the box (x, y, z)"
+        },
+        {
+          "name": "box",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Draws the axis box: back walls, grid lines, tick labels and axis titles"
+        },
+        {
+          "name": "colorScale",
+          "type": "Chart3DColorScale",
+          "required": false,
+          "default": "\"viridis\"",
+          "description": "Colors of `colorBy: \"z\"` / `\"value\"`: a built-in ramp or CSS colors"
+        },
+        {
+          "name": "valueRange",
+          "type": "readonly [number, number]",
+          "required": false,
+          "description": "Values mapped to the ends of the color scale; the data range by default"
+        },
+        {
+          "name": "colorBar",
+          "type": "boolean | Chart3DColorBarOptions",
+          "required": false,
+          "description": "Color bar; shown by default when a visible series uses the color scale"
+        },
+        {
+          "name": "legend",
+          "type": "boolean | Chart3DLegendOptions",
+          "required": false,
+          "description": "Legend; shown by default when several series have a name"
+        },
+        {
+          "name": "tooltip",
+          "type": "boolean | Chart3DTooltipOptions",
+          "required": false,
+          "description": "Tooltip; `false` disables it"
+        },
+        {
+          "name": "interaction",
+          "type": "boolean | Chart3DInteractionOptions",
+          "required": false,
+          "default": "true",
+          "description": "Drag rotates, right / Shift + drag pans, Ctrl / ⌘ + wheel and pinch zoom, double click resets, arrow keys rotate; `false` makes the chart static"
+        },
+        {
+          "name": "lighting",
+          "type": "Chart3DLightingOptions",
+          "required": false,
+          "description": "Lighting of the surfaces and bars"
+        },
+        {
+          "name": "exposure",
+          "type": "number",
+          "required": false,
+          "default": "1",
+          "description": "Brightness of the light of `blend: \"additive\"` series, tone mapped on WebGPU and WebGL2 (dense glowing regions saturate instead of turning white)"
+        },
+        {
+          "name": "renderer",
+          "type": "ChartRendererPreference",
+          "required": false,
+          "default": "\"auto\"",
+          "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software"
+        },
+        {
+          "name": "palette",
+          "type": "readonly string[]",
+          "required": false,
+          "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "required": false,
+          "description": "Accessible name of the chart"
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "required": false,
+          "default": "the page language (`<html lang>`), then the browser language",
+          "description": "Language of the built-in texts (accessible summary, legend announcements, tooltip row names) and of the number formatting; built-in texts in English, Chinese, Japanese and French"
+        },
+        {
+          "name": "labels",
+          "type": "Partial<Chart3DLabels>",
+          "required": false,
+          "description": "Overrides of the built-in texts of the `locale`"
+        },
+        {
+          "name": "onHover",
+          "type": "(event: Chart3DHoverEvent | null) => void",
+          "required": false,
+          "description": "Called when the hovered point, cell or bar changes"
+        },
+        {
+          "name": "onPointClick",
+          "type": "(event: Chart3DHoverEvent) => void",
+          "required": false,
+          "description": "Called when a point, cell or bar is clicked"
+        },
+        {
+          "name": "onCameraChange",
+          "type": "(camera: Chart3DCameraState) => void",
+          "required": false,
+          "description": "Called after the user rotated, zoomed, panned or reset the camera"
+        },
+        {
+          "name": "onRendererChange",
+          "type": "(renderer: ChartRendererKind) => void",
+          "required": false,
+          "description": "Called with the backend once it is ready (and after a fallback)"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "description": "Class of the outer element"
+        },
+        {
+          "name": "style",
+          "type": "CSSProperties",
+          "required": false,
+          "description": "Style of the outer element"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<Chart3DHandle>",
+          "required": false,
+          "description": "Imperative handle"
+        }
+      ]
+    },
+    "Chart3DSeriesBase": {
+      "source": "charts/src/engine/three-d/types.ts",
+      "description": "Options shared by every 3D series",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "description": "Stable identifier (defaults to the index)"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "description": "Name shown in the legend and the tooltip"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": false,
+          "description": "Series color (any CSS color, `var(--x)` included); the palette when omitted"
+        },
+        {
+          "name": "hidden",
+          "type": "boolean",
+          "required": false,
+          "description": "Hides the series (it stays in the legend)"
+        },
+        {
+          "name": "format",
+          "type": "(value: number) => string",
+          "required": false,
+          "description": "Formats the `value` of the hovered item in the tooltip (its height when the data has no values); the axis formats by default"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "functions",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/surface-3d-chart/demos/functions.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/surface-3d-chart/demos/functions.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Radio, RadioGroup } from \"minerva-design\";\nimport {\n  Surface3DChart,\n  type Surface3DData,\n  type Surface3DSeries,\n} from \"minerva-design/charts\";\n\n/** Samples z = f(x, y) on a size × size grid over [-extent, extent]² */\nfunction sample(\n  extent: number,\n  size: number,\n  f: (x: number, y: number) => number,\n): Surface3DData {\n  const axis = Float64Array.from(\n    { length: size },\n    (_, i) => -extent + (2 * extent * i) / (size - 1),\n  );\n  const z = new Float32Array(size * size);\n  for (let r = 0; r < size; r++) {\n    for (let c = 0; c < size; c++) z[r * size + c] = f(axis[c]!, axis[r]!);\n  }\n  return { rows: size, cols: size, x: axis, y: axis, z };\n}\n\nconst FUNCTIONS = {\n  // sin(r) / r: ripples fading away from a central peak\n  sinc: sample(10, 90, (x, y) => {\n    const r = Math.hypot(x, y);\n    return r === 0 ? 1 : Math.sin(r) / r;\n  }),\n  // MATLAB's peaks: three peaks and two pits\n  peaks: sample(\n    3,\n    90,\n    (x, y) =>\n      3 * (1 - x) ** 2 * Math.exp(-(x ** 2) - (y + 1) ** 2) -\n      10 * (x / 5 - x ** 3 - y ** 5) * Math.exp(-(x ** 2) - y ** 2) -\n      Math.exp(-((x + 1) ** 2) - y ** 2) / 3,\n  ),\n  // a hyperbolic paraboloid\n  saddle: sample(1, 60, (x, y) => x * x - y * y),\n};\ntype FunctionKey = keyof typeof FUNCTIONS;\n\nexport default function FunctionsDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.surface-3d-chart.data\",\n  });\n  const [key, setKey] = useState<FunctionKey>(\"sinc\");\n  const series = useMemo(\n    (): Surface3DSeries[] => [\n      { name: t(`functions.${key}`), data: FUNCTIONS[key] },\n    ],\n    [t, key],\n  );\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <RadioGroup\n        aria-label={t(\"function\")}\n        direction=\"horizontal\"\n        size=\"small\"\n        value={key}\n        onChange={(value) => setKey(value as FunctionKey)}\n      >\n        {(Object.keys(FUNCTIONS) as FunctionKey[]).map((name) => (\n          <Radio key={name} value={name} label={t(`functions.${name}`)} />\n        ))}\n      </RadioGroup>\n      <Surface3DChart\n        series={series}\n        xAxis={{ title: t(\"x\") }}\n        yAxis={{ title: t(\"y\") }}\n        zAxis={{ title: t(\"z\") }}\n        height={420}\n        ariaLabel={t(\"functionsAria\", { name: t(`functions.${key}`) })}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "数学函数",
+      "description": "在网格上采样的 sinc、MATLAB 的 peaks 和马鞍面，使用默认的 viridis 色带按高度着色。"
+    },
+    {
+      "id": "heat-diffusion",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/surface-3d-chart/demos/heat-diffusion.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/surface-3d-chart/demos/heat-diffusion.tsx": "import { useEffect, useMemo, useRef, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button, HStack, Switch } from \"minerva-design\";\nimport {\n  Surface3DChart,\n  type Surface3DData,\n  type Surface3DSeries,\n} from \"minerva-design/charts\";\n\n// A 40 × 40 cm metal plate whose edges are kept at room temperature;\n// heat sources hold their cell at 100 °C and the heat spreads by diffusion.\nconst SIZE = 41;\nconst AMBIENT = 20;\nconst SOURCE = 100;\nconst RATE = 0.2; // diffusion number of the explicit scheme (stable below 0.25)\nconst AXIS = Float64Array.from({ length: SIZE }, (_, i) => i);\nconst INITIAL_SOURCES = [[12, 14]];\n\nconst sourceKey = (row: number, col: number) => row * SIZE + col;\n\nconst ambient = () => new Float32Array(SIZE * SIZE).fill(AMBIENT);\n\n/** Runs `steps` explicit finite-difference steps of the heat equation */\nconst diffuse = (grid: Float32Array, sources: Set<number>, steps: number) => {\n  let current = grid;\n  for (let step = 0; step < steps; step++) {\n    const next = new Float32Array(current);\n    for (let r = 1; r < SIZE - 1; r++) {\n      for (let c = 1; c < SIZE - 1; c++) {\n        const i = r * SIZE + c;\n        next[i] =\n          current[i]! +\n          RATE *\n            (current[i - 1]! +\n              current[i + 1]! +\n              current[i - SIZE]! +\n              current[i + SIZE]! -\n              4 * current[i]!);\n      }\n    }\n    for (const i of sources) next[i] = SOURCE;\n    current = next;\n  }\n  return current;\n};\n\nconst toData = (z: Float32Array): Surface3DData => ({\n  rows: SIZE,\n  cols: SIZE,\n  x: AXIS,\n  y: AXIS,\n  z,\n});\n\nexport default function HeatDiffusionDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.surface-3d-chart.data\",\n  });\n  const [playing, setPlaying] = useState(true);\n  const [sourceCount, setSourceCount] = useState(INITIAL_SOURCES.length);\n  const [data, setData] = useState(() => toData(ambient()));\n  const sources = useRef(\n    new Set(INITIAL_SOURCES.map(([r, c]) => sourceKey(r!, c!))),\n  );\n\n  // 8 diffusion steps every 80 ms, only while playing\n  useEffect(() => {\n    if (!playing) return;\n    const timer = window.setInterval(() => {\n      setData((previous) =>\n        toData(diffuse(previous.z as Float32Array, sources.current, 8)),\n      );\n    }, 80);\n    return () => window.clearInterval(timer);\n  }, [playing]);\n\n  const series = useMemo(\n    (): Surface3DSeries[] => [{ name: t(\"plate\"), data }],\n    [t, data],\n  );\n  const stats = useMemo(() => {\n    let max = -Infinity;\n    let sum = 0;\n    for (let i = 0; i < data.z.length; i++) {\n      max = Math.max(max, data.z[i]!);\n      sum += data.z[i]!;\n    }\n    return { max, mean: sum / data.z.length };\n  }, [data]);\n  const celsius = useMemo(\n    () =>\n      new Intl.NumberFormat(i18n.language, {\n        style: \"unit\",\n        unit: \"celsius\",\n        maximumFractionDigits: 1,\n      }),\n    [i18n.language],\n  );\n\n  const reset = () => {\n    sources.current = new Set(\n      INITIAL_SOURCES.map(([r, c]) => sourceKey(r!, c!)),\n    );\n    setSourceCount(sources.current.size);\n    setData(toData(ambient()));\n  };\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <HStack gap={12} wrap align=\"center\">\n        <Switch\n          size=\"small\"\n          checked={playing}\n          label={t(\"play\")}\n          onChange={setPlaying}\n        />\n        <Button size=\"small\" variant=\"outline\" color=\"neutral\" onClick={reset}>\n          {t(\"reset\")}\n        </Button>\n      </HStack>\n      <Surface3DChart\n        series={series}\n        xAxis={{ title: t(\"cm\") }}\n        yAxis={{ title: t(\"cm\") }}\n        zAxis={{\n          min: AMBIENT,\n          max: SOURCE,\n          title: t(\"temperature\"),\n          format: (value) => celsius.format(value),\n        }}\n        valueRange={[AMBIENT, SOURCE]}\n        colorScale=\"inferno\"\n        colorBar={{\n          title: t(\"temperature\"),\n          format: (value) => celsius.format(value),\n        }}\n        aspect={[1, 1, 0.5]}\n        camera={{ azimuth: 30, elevation: 38 }}\n        height={440}\n        ariaLabel={t(\"heatAria\")}\n        onPointClick={(event) => {\n          if (event.row === undefined || event.col === undefined) return;\n          // clicking near a source removes it, clicking elsewhere adds one\n          const row = Math.min(SIZE - 2, Math.max(1, event.row));\n          const col = Math.min(SIZE - 2, Math.max(1, event.col));\n          const near = [...sources.current].find(\n            (key) =>\n              Math.abs(Math.floor(key / SIZE) - row) <= 2 &&\n              Math.abs((key % SIZE) - col) <= 2,\n          );\n          if (near === undefined) sources.current.add(sourceKey(row, col));\n          else sources.current.delete(near);\n          setSourceCount(sources.current.size);\n          setPlaying(true);\n        }}\n      />\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {t(\"heatStatus\", {\n          sources: sourceCount,\n          max: celsius.format(stats.max),\n          mean: celsius.format(stats.mean),\n        })}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "热扩散",
+      "description": "用热传导方程模拟一块金属板：setInterval（卸载时清理）执行若干有限差分步，并设置新的数据对象。onPointClick 提供被点击顶点的 row 和 col，用于添加或移除热源；zAxis 和 valueRange 固定，因此金属板升温时 inferno 色阶不会重新缩放。"
+    },
+    {
+      "id": "live-wave",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/surface-3d-chart/demos/live-wave.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/surface-3d-chart/demos/live-wave.tsx": "import { useEffect, useMemo, useRef, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Switch } from \"minerva-design\";\nimport {\n  Surface3DChart,\n  type Surface3DData,\n  type Surface3DSeries,\n} from \"minerva-design/charts\";\n\n// Ripples spreading from the center, recomputed ~30 times per second\nconst SIZE = 100;\nconst axis = Float64Array.from(\n  { length: SIZE },\n  (_, i) => -6 + (12 * i) / (SIZE - 1),\n);\nconst radius = new Float32Array(SIZE * SIZE);\nfor (let r = 0; r < SIZE; r++) {\n  for (let c = 0; c < SIZE; c++)\n    radius[r * SIZE + c] = Math.hypot(axis[c]!, axis[r]!);\n}\nconst wave = (time: number): Surface3DData => {\n  const z = new Float32Array(SIZE * SIZE);\n  for (let i = 0; i < z.length; i++) {\n    const d = radius[i]!;\n    z[i] = Math.sin(d * 2.2 - time * 3) * Math.exp(-d * 0.22);\n  }\n  // a new object every frame: the chart only re-processes changed data\n  return { rows: SIZE, cols: SIZE, x: axis, y: axis, z };\n};\n\nexport default function LiveWaveDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.surface-3d-chart.data\",\n  });\n  const [playing, setPlaying] = useState(true);\n  const [data, setData] = useState(() => wave(0));\n  const host = useRef<HTMLDivElement>(null);\n\n  // the animation runs only while playing, on-screen and in a visible tab\n  useEffect(() => {\n    const element = host.current;\n    if (!playing || !element) return;\n    let frame = 0;\n    let visible = false;\n    let last = 0;\n    let time = 0;\n    const tick = (now: number) => {\n      frame = 0;\n      if (!visible || document.hidden) return;\n      if (now - last >= 33) {\n        time += last ? Math.min(0.1, (now - last) / 1000) : 0;\n        last = now;\n        setData(wave(time));\n      }\n      frame = requestAnimationFrame(tick);\n    };\n    const start = () => {\n      if (!frame && visible && !document.hidden) {\n        last = 0;\n        frame = requestAnimationFrame(tick);\n      }\n    };\n    const observer = new IntersectionObserver(([entry]) => {\n      visible = !!entry?.isIntersecting;\n      start();\n    });\n    observer.observe(element);\n    document.addEventListener(\"visibilitychange\", start);\n    return () => {\n      observer.disconnect();\n      document.removeEventListener(\"visibilitychange\", start);\n      cancelAnimationFrame(frame);\n    };\n  }, [playing]);\n\n  const series = useMemo(\n    (): Surface3DSeries[] => [{ name: t(\"wave\"), data }],\n    [t, data],\n  );\n\n  return (\n    <div ref={host} style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <Switch\n        size=\"small\"\n        checked={playing}\n        label={t(\"play\")}\n        onChange={setPlaying}\n      />\n      <Surface3DChart\n        series={series}\n        zAxis={{ min: -1, max: 1, title: t(\"amplitude\") }}\n        valueRange={[-1, 1]}\n        colorScale=\"coolwarm\"\n        colorBar={false}\n        aspect={[1, 1, 0.45]}\n        camera={{ elevation: 32 }}\n        height={420}\n        ariaLabel={t(\"waveAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "实时波动",
+      "description": "每秒约重新计算 30 次的涟漪：每帧传入新的数据对象即可更新图表。示例离开屏幕或标签页隐藏时动画停止。"
+    },
+    {
+      "id": "loss-landscape",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/surface-3d-chart/demos/loss-landscape.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/surface-3d-chart/demos/loss-landscape.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { HStack, Select, SelectItem } from \"minerva-design\";\nimport {\n  Surface3DChart,\n  type Chart3DColorMap,\n  type Surface3DSeries,\n} from \"minerva-design/charts\";\n\n// Himmelblau's function: four global minima of equal depth, a classic\n// test landscape for optimizers. The surface shows log10(1 + loss).\nconst SIZE = 90;\nconst RANGE = 5;\nconst AXIS = Float64Array.from(\n  { length: SIZE },\n  (_, i) => -RANGE + (2 * RANGE * i) / (SIZE - 1),\n);\nconst loss = (x: number, y: number) =>\n  (x * x + y - 11) ** 2 + (x + y * y - 7) ** 2;\nconst gradient = (x: number, y: number): [number, number] => [\n  4 * x * (x * x + y - 11) + 2 * (x + y * y - 7),\n  2 * (x * x + y - 11) + 4 * y * (x + y * y - 7),\n];\n\nconst DATA = (() => {\n  const z = new Float32Array(SIZE * SIZE);\n  for (let r = 0; r < SIZE; r++) {\n    for (let c = 0; c < SIZE; c++) {\n      z[r * SIZE + c] = Math.log10(1 + loss(AXIS[c]!, AXIS[r]!));\n    }\n  }\n  return { rows: SIZE, cols: SIZE, x: AXIS, y: AXIS, z };\n})();\n\nconst MINIMA: [number, number][] = [\n  [3, 2],\n  [-2.805, 3.131],\n  [-3.779, -3.283],\n  [3.584, -1.848],\n];\n\n/** Plain gradient descent from (x, y): the minimum it ends in and the steps */\nconst descend = (x0: number, y0: number) => {\n  let [x, y] = [x0, y0];\n  let steps = 0;\n  for (; steps < 5000; steps++) {\n    const [gx, gy] = gradient(x, y);\n    if (Math.hypot(gx, gy) < 1e-4) break;\n    // a small step with clipping keeps the descent stable on the steep walls\n    const scale = Math.min(0.01, 0.5 / Math.hypot(gx, gy));\n    x -= scale * gx;\n    y -= scale * gy;\n  }\n  const minimum = MINIMA.reduce(\n    (best, m, i) =>\n      Math.hypot(m[0] - x, m[1] - y) <\n      Math.hypot(MINIMA[best]![0] - x, MINIMA[best]![1] - y)\n        ? i\n        : best,\n    0,\n  );\n  return { minimum, steps };\n};\n\nconst COLOR_MAPS: Chart3DColorMap[] = [\n  \"viridis\",\n  \"plasma\",\n  \"magma\",\n  \"cividis\",\n  \"turbo\",\n];\n\nexport default function LossLandscapeDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.surface-3d-chart.data\",\n  });\n  const [colorMap, setColorMap] = useState<Chart3DColorMap>(\"viridis\");\n  const [start, setStart] = useState<[number, number] | null>(null);\n  const formats = useMemo(\n    () => ({\n      coordinate: new Intl.NumberFormat(i18n.language, {\n        maximumFractionDigits: 2,\n      }),\n      loss: new Intl.NumberFormat(i18n.language, {\n        maximumSignificantDigits: 3,\n      }),\n      integer: new Intl.NumberFormat(i18n.language),\n    }),\n    [i18n.language],\n  );\n  const series = useMemo(\n    (): Surface3DSeries[] => [\n      {\n        name: t(\"loss\"),\n        data: DATA,\n        contours: { count: 14, floor: true },\n        format: (value) => formats.loss.format(10 ** value - 1),\n      },\n    ],\n    [t, formats],\n  );\n  const result = useMemo(() => (start ? descend(...start) : null), [start]);\n  const point = (x: number, y: number) =>\n    t(\"point\", {\n      x: formats.coordinate.format(x),\n      y: formats.coordinate.format(y),\n    });\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <HStack gap={8} align=\"center\">\n        <span>{t(\"colorMap\")}</span>\n        <Select\n          aria-label={t(\"colorMap\")}\n          size=\"small\"\n          value={colorMap}\n          onChange={(value) => setColorMap(value as Chart3DColorMap)}\n        >\n          {COLOR_MAPS.map((id) => (\n            <SelectItem key={id} value={id}>\n              {t(`colorMaps.${id}`)}\n            </SelectItem>\n          ))}\n        </Select>\n      </HStack>\n      <Surface3DChart\n        series={series}\n        xAxis={{ title: t(\"weight1\") }}\n        yAxis={{ title: t(\"weight2\") }}\n        zAxis={{ title: t(\"logLoss\") }}\n        colorScale={colorMap}\n        colorBar={{ title: t(\"logLoss\") }}\n        aspect={[1, 1, 0.55]}\n        camera={{ azimuth: 20, elevation: 40 }}\n        height={460}\n        ariaLabel={t(\"lossAria\")}\n        onPointClick={(event) => setStart([event.x, event.y])}\n      />\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {start && result\n          ? t(\"descentResult\", {\n              start: point(...start),\n              loss: formats.loss.format(loss(...start)),\n              steps: formats.integer.format(result.steps),\n              n: result.minimum + 1,\n              minimum: point(...MINIMA[result.minimum]!),\n            })\n          : t(\"lossHint\")}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "损失曲面",
+      "description": "Himmelblau 函数是一个有四个极小值的测试曲面，这里绘制 log10(1 + loss) 并在底面绘制等高线。下拉框在内置色阶之间切换 colorScale；点击一个点，从该处运行梯度下降，看它到达哪个极小值。"
+    },
+    {
+      "id": "terrain",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/surface-3d-chart/demos/terrain.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/surface-3d-chart/demos/terrain.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Surface3DChart, type Surface3DSeries } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\n// A 20 × 20 km island: fractal value noise (6 octaves) under a radial\n// falloff, the sea clamped at 0 m\nconst SIZE = 180;\nconst KM = 20;\nconst random = mulberry32(2026);\nconst LATTICE = 64;\nconst lattice = Float64Array.from({ length: LATTICE * LATTICE }, () =>\n  random(),\n);\nconst smooth = (t: number) => t * t * (3 - 2 * t);\nconst noise = (x: number, y: number) => {\n  const xi = Math.floor(x);\n  const yi = Math.floor(y);\n  const fx = smooth(x - xi);\n  const fy = smooth(y - yi);\n  const at = (i: number, j: number) =>\n    lattice[((j & (LATTICE - 1)) * LATTICE + (i & (LATTICE - 1))) | 0]!;\n  const top = at(xi, yi) + (at(xi + 1, yi) - at(xi, yi)) * fx;\n  const bottom = at(xi, yi + 1) + (at(xi + 1, yi + 1) - at(xi, yi + 1)) * fx;\n  return top + (bottom - top) * fy;\n};\nconst coords = Float64Array.from(\n  { length: SIZE },\n  (_, i) => Math.round(((i * KM) / (SIZE - 1)) * 100) / 100,\n);\nconst heights = new Float32Array(SIZE * SIZE);\nfor (let r = 0; r < SIZE; r++) {\n  for (let c = 0; c < SIZE; c++) {\n    let h = 0;\n    let amplitude = 1;\n    let frequency = 5 / SIZE;\n    for (let octave = 0; octave < 6; octave++) {\n      h += noise(c * frequency, r * frequency) * amplitude;\n      amplitude *= 0.5;\n      frequency *= 2;\n    }\n    const dx = c / (SIZE - 1) - 0.5;\n    const dy = r / (SIZE - 1) - 0.5;\n    const falloff = 1 - Math.min(1, Math.hypot(dx, dy) * 2.1);\n    heights[r * SIZE + c] = Math.max(0, (h * 0.9 - 1.0 + falloff * 1.3) * 1400);\n  }\n}\nconst island = { rows: SIZE, cols: SIZE, x: coords, y: coords, z: heights };\n\nexport default function TerrainDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.surface-3d-chart.data\",\n  });\n  const series = useMemo(\n    (): Surface3DSeries[] => [{ name: t(\"island\"), data: island }],\n    [t],\n  );\n  const km = (value: number) => t(\"km\", { value });\n  const meters = (value: number) => t(\"meters\", { value: Math.round(value) });\n\n  return (\n    <Surface3DChart\n      series={series}\n      aspect={[1, 1, 0.28]}\n      colorScale=\"terrain\"\n      xAxis={{ title: t(\"east\"), format: km }}\n      yAxis={{ title: t(\"north\"), format: km }}\n      zAxis={{ title: t(\"elevation\"), format: meters }}\n      colorBar={{ title: t(\"elevation\"), format: meters }}\n      lighting={{ ambient: 0.35, diffuse: 0.8, specular: 0.08 }}\n      camera={{ azimuth: 30, elevation: 38 }}\n      height={440}\n      ariaLabel={t(\"terrainAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "地形",
+      "description": "180 × 180 的分形岛屿高度图，使用 terrain 色带、压扁的坐标盒（aspect）和更强的方向光。"
+    },
+    {
+      "id": "transparency",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/surface-3d-chart/demos/transparency.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/surface-3d-chart/demos/transparency.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  Surface3DChart,\n  type Surface3DData,\n  type Surface3DSeries,\n} from \"minerva-design/charts\";\n\nconst SIZE = 60;\nconst axis = Float64Array.from(\n  { length: SIZE },\n  (_, i) => -2 + (4 * i) / (SIZE - 1),\n);\nconst grid = (f: (x: number, y: number) => number): Surface3DData => {\n  const z = new Float32Array(SIZE * SIZE);\n  for (let r = 0; r < SIZE; r++) {\n    for (let c = 0; c < SIZE; c++) z[r * SIZE + c] = f(axis[c]!, axis[r]!);\n  }\n  return { rows: SIZE, cols: SIZE, x: axis, y: axis, z };\n};\n// a bowl crossed by a tilted plane: transparency shows where they meet\nconst bowl = grid((x, y) => (x * x + y * y) / 2);\nconst plane = grid((x, y) => 1.4 + 0.6 * x - 0.3 * y);\n\nexport default function TransparencyDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.surface-3d-chart.data\",\n  });\n  const series = useMemo(\n    (): Surface3DSeries[] => [\n      { name: t(\"bowl\"), data: bowl, colorBy: \"series\", opacity: 0.7 },\n      {\n        name: t(\"plane\"),\n        data: plane,\n        colorBy: \"series\",\n        opacity: 0.55,\n        wireframe: { step: 6 },\n      },\n    ],\n    [t],\n  );\n\n  return (\n    <Surface3DChart\n      series={series}\n      xAxis={{ title: t(\"x\") }}\n      yAxis={{ title: t(\"y\") }}\n      zAxis={{ title: t(\"z\") }}\n      camera={{ azimuth: -30, elevation: 22 }}\n      height={420}\n      ariaLabel={t(\"transparencyAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "透明度",
+      "description": "两个不透明度小于 1 的曲面展示倾斜平面与碗状曲面的相交处；colorBy \"series\" 让各自使用图例颜色。在 WebGPU 和 WebGL2 上，透明的曲面、柱体和点以与顺序无关的方式混合（加权混合顺序无关透明），相交处保持平滑；WebGL 与 Canvas2D 则按从后到前的顺序排序绘制。"
+    },
+    {
+      "id": "volatility",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/surface-3d-chart/demos/volatility.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/surface-3d-chart/demos/volatility.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Surface3DChart, type Surface3DSeries } from \"minerva-design/charts\";\n\n// Implied volatility of index options by strike (moneyness, % of spot) and\n// time to expiry: a smile that is steepest for short expiries (skew towards\n// low strikes) and a term structure rising from 16% to 21%\nconst STRIKES = Array.from({ length: 33 }, (_, i) => 60 + i * 2.5);\nconst EXPIRIES = [7, 14, 30, 60, 90, 120, 180, 270, 365, 540, 730];\nconst vol = new Float32Array(STRIKES.length * EXPIRIES.length);\nEXPIRIES.forEach((days, r) => {\n  const years = days / 365;\n  const atm = 21 - 5 * Math.exp(-years * 1.4);\n  const skew = -12 / Math.sqrt(years + 0.25);\n  const smile = 25 / Math.sqrt(years + 0.25);\n  STRIKES.forEach((strike, c) => {\n    const k = Math.log(strike / 100);\n    vol[r * STRIKES.length + c] = atm + skew * k + smile * k * k;\n  });\n});\nconst surface = {\n  rows: EXPIRIES.length,\n  cols: STRIKES.length,\n  x: STRIKES,\n  y: EXPIRIES,\n  z: vol,\n};\n\nexport default function VolatilityDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.surface-3d-chart.data\",\n  });\n  const series = useMemo(\n    (): Surface3DSeries[] => [\n      {\n        name: t(\"impliedVol\"),\n        data: surface,\n        wireframe: { width: 0.75 },\n      },\n    ],\n    [t],\n  );\n  const percent = (value: number) => t(\"percent\", { value: value.toFixed(1) });\n\n  return (\n    <Surface3DChart\n      series={series}\n      colorScale=\"spectral\"\n      xAxis={{\n        title: t(\"strike\"),\n        format: (value) => t(\"percent\", { value: Math.round(value) }),\n      }}\n      yAxis={{\n        title: t(\"expiry\"),\n        format: (value) => t(\"days\", { value: Math.round(value) }),\n      }}\n      zAxis={{ title: t(\"impliedVol\"), format: percent }}\n      colorBar={{ format: (value) => t(\"percent\", { value }) }}\n      camera={{ azimuth: -28, elevation: 24 }}\n      height={440}\n      ariaLabel={t(\"volatilityAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "波动率曲面",
+      "description": "指数期权按行权价和到期时间的隐含波动率：短期合约的波动率微笑与偏斜，叠加细线框。"
+    },
+    {
+      "id": "wifi-signal",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/surface-3d-chart/demos/wifi-signal.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/surface-3d-chart/demos/wifi-signal.tsx": "import { useMemo, useRef, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button, HStack, Tag } from \"minerva-design\";\nimport {\n  Surface3DChart,\n  type Chart3DHandle,\n  type Surface3DSeries,\n} from \"minerva-design/charts\";\n\n// A 30 × 20 m office floor sampled every 0.5 m\nconst COLS = 61;\nconst ROWS = 41;\nconst STEP = 0.5;\nconst X = Float64Array.from({ length: COLS }, (_, i) => i * STEP);\nconst Y = Float64Array.from({ length: ROWS }, (_, i) => i * STEP);\nconst FLOOR = -95; // dBm, no usable signal\nconst GOOD = -67; // dBm, enough for video calls\nconst USABLE = -75;\n\ntype AccessPoint = \"lobby\" | \"openSpace\" | \"meetingRooms\" | \"kitchen\";\nconst ACCESS_POINTS: [AccessPoint, number, number][] = [\n  [\"lobby\", 4, 4],\n  [\"openSpace\", 16, 12],\n  [\"meetingRooms\", 26, 16],\n  [\"kitchen\", 25, 3],\n];\n\n// interior walls (x1, y1, x2, y2); each one crossed costs 6 dB\nconst WALLS: [number, number, number, number][] = [\n  [10, 0, 10, 8],\n  [20, 9, 30, 9],\n  [21, 9, 21, 20],\n  [0, 14, 10, 14],\n  [18, 0, 18, 6],\n];\n\nconst crosses = (\n  ax: number,\n  ay: number,\n  bx: number,\n  by: number,\n  [cx, cy, dx, dy]: [number, number, number, number],\n) => {\n  const side = (\n    px: number,\n    py: number,\n    qx: number,\n    qy: number,\n    rx: number,\n    ry: number,\n  ) => Math.sign((qx - px) * (ry - py) - (qy - py) * (rx - px));\n  return (\n    side(ax, ay, bx, by, cx, cy) !== side(ax, ay, bx, by, dx, dy) &&\n    side(cx, cy, dx, dy, ax, ay) !== side(cx, cy, dx, dy, bx, by)\n  );\n};\n\n/** Strongest signal over the floor, log-distance path loss plus wall losses */\nconst coverage = (enabled: ReadonlySet<AccessPoint>) => {\n  const z = new Float32Array(ROWS * COLS);\n  for (let r = 0; r < ROWS; r++) {\n    for (let c = 0; c < COLS; c++) {\n      let best = FLOOR;\n      for (const [id, ax, ay] of ACCESS_POINTS) {\n        if (!enabled.has(id)) continue;\n        const [x, y] = [X[c]!, Y[r]!];\n        const walls = WALLS.filter((wall) =>\n          crosses(ax, ay, x, y, wall),\n        ).length;\n        const distance = Math.max(1, Math.hypot(x - ax, y - ay));\n        best = Math.max(best, -32 - 30 * Math.log10(distance) - 6 * walls);\n      }\n      z[r * COLS + c] = best;\n    }\n  }\n  return { rows: ROWS, cols: COLS, x: X, y: Y, z };\n};\n\nexport default function WifiSignalDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.surface-3d-chart.data\",\n  });\n  const ref = useRef<Chart3DHandle>(null);\n  const [enabled, setEnabled] = useState<ReadonlySet<AccessPoint>>(\n    () => new Set<AccessPoint>([\"lobby\", \"openSpace\", \"meetingRooms\"]),\n  );\n  const [topView, setTopView] = useState(false);\n  const data = useMemo(() => coverage(enabled), [enabled]);\n  const percent = useMemo(\n    () => new Intl.NumberFormat(i18n.language, { style: \"percent\" }),\n    [i18n.language],\n  );\n  const dbm = useMemo(() => {\n    const number = new Intl.NumberFormat(i18n.language, {\n      maximumFractionDigits: 0,\n    });\n    return (value: number) => t(\"dbm\", { value: number.format(value) });\n  }, [t, i18n.language]);\n\n  const series = useMemo(\n    (): Surface3DSeries[] => [\n      {\n        name: t(\"signal\"),\n        data,\n        contours: {\n          levels: [USABLE, GOOD],\n          floor: true,\n          surface: true,\n          width: 1.5,\n        },\n        format: dbm,\n      },\n    ],\n    [t, data, dbm],\n  );\n  const share = (threshold: number) =>\n    data.z.filter((value) => value >= threshold).length / data.z.length;\n\n  const toggle = (id: AccessPoint) => {\n    const next = new Set(enabled);\n    if (!next.delete(id)) next.add(id);\n    setEnabled(next);\n  };\n  const switchView = () => {\n    if (topView) ref.current?.resetCamera();\n    else\n      ref.current?.setCamera({\n        azimuth: 0,\n        elevation: 89,\n        zoom: 1,\n        pan: [0, 0],\n        projection: \"orthographic\",\n      });\n    setTopView(!topView);\n  };\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <HStack gap={8} wrap align=\"center\">\n        <span>{t(\"accessPoints\")}</span>\n        {ACCESS_POINTS.map(([id]) => (\n          <Tag\n            key={id}\n            size=\"small\"\n            clickable\n            pressed={enabled.has(id)}\n            onClick={() => toggle(id)}\n          >\n            {t(`rooms.${id}`)}\n          </Tag>\n        ))}\n        <Button\n          size=\"small\"\n          variant=\"outline\"\n          color=\"neutral\"\n          onClick={switchView}\n        >\n          {topView ? t(\"perspectiveView\") : t(\"topView\")}\n        </Button>\n      </HStack>\n      <Surface3DChart\n        ref={ref}\n        series={series}\n        xAxis={{ title: t(\"distanceM\") }}\n        yAxis={{ title: t(\"distanceM\") }}\n        zAxis={{ min: FLOOR, max: -30, title: t(\"signal\"), format: dbm }}\n        valueRange={[FLOOR, -30]}\n        colorScale=\"spectral\"\n        colorBar={{ title: t(\"signal\"), format: dbm }}\n        aspect={[30, 20, 8]}\n        camera={{ azimuth: 25, elevation: 40 }}\n        height={440}\n        ariaLabel={t(\"wifiAria\")}\n        onCameraChange={(camera) =>\n          setTopView(\n            camera.projection === \"orthographic\" && camera.elevation > 80,\n          )\n        }\n      />\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {enabled.size\n          ? t(\"wifiCoverage\", {\n              good: percent.format(share(GOOD)),\n              goodLevel: dbm(GOOD),\n              usable: percent.format(share(USABLE)),\n              usableLevel: dbm(USABLE),\n            })\n          : t(\"wifiNone\")}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Wi-Fi 覆盖",
+      "description": "根据对数距离路径损耗和墙体损耗计算办公楼层的信号强度，用标签开关接入点时重新计算。等高线标出 −67 和 −75 dBm 两个阈值，按钮调用 ref 上的 setCamera() 切换为正交俯视图，或调用 resetCamera() 恢复。"
+    },
+    {
+      "id": "wireframe-contours",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/surface-3d-chart/demos/wireframe-contours.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/surface-3d-chart/demos/wireframe-contours.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Switch } from \"minerva-design\";\nimport { Surface3DChart, type Surface3DSeries } from \"minerva-design/charts\";\n\n// MATLAB's peaks function on a 120 × 120 grid\nconst SIZE = 120;\nconst axis = Float64Array.from(\n  { length: SIZE },\n  (_, i) => -3 + (6 * i) / (SIZE - 1),\n);\nconst z = new Float32Array(SIZE * SIZE);\nfor (let r = 0; r < SIZE; r++) {\n  for (let c = 0; c < SIZE; c++) {\n    const x = axis[c]!;\n    const y = axis[r]!;\n    z[r * SIZE + c] =\n      3 * (1 - x) ** 2 * Math.exp(-(x ** 2) - (y + 1) ** 2) -\n      10 * (x / 5 - x ** 3 - y ** 5) * Math.exp(-(x ** 2) - y ** 2) -\n      Math.exp(-((x + 1) ** 2) - y ** 2) / 3;\n  }\n}\nconst peaks = { rows: SIZE, cols: SIZE, x: axis, y: axis, z };\n\nexport default function WireframeContoursDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.surface-3d-chart.data\",\n  });\n  const [fill, setFill] = useState(true);\n  const [wireframe, setWireframe] = useState(true);\n  const [floor, setFloor] = useState(true);\n  const [onSurface, setOnSurface] = useState(false);\n\n  const series = useMemo(\n    (): Surface3DSeries[] => [\n      {\n        name: t(\"functions.peaks\"),\n        data: peaks,\n        fill,\n        opacity: 0.92,\n        wireframe: wireframe && { step: 4 },\n        contours: (floor || onSurface) && {\n          count: 14,\n          floor,\n          surface: onSurface,\n          width: 1.25,\n        },\n      },\n    ],\n    [t, fill, wireframe, floor, onSurface],\n  );\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <div style={{ display: \"flex\", flexWrap: \"wrap\", gap: 16 }}>\n        <Switch\n          size=\"small\"\n          checked={fill}\n          label={t(\"fill\")}\n          onChange={setFill}\n        />\n        <Switch\n          size=\"small\"\n          checked={wireframe}\n          label={t(\"wireframe\")}\n          onChange={setWireframe}\n        />\n        <Switch\n          size=\"small\"\n          checked={floor}\n          label={t(\"floorContours\")}\n          onChange={setFloor}\n        />\n        <Switch\n          size=\"small\"\n          checked={onSurface}\n          label={t(\"surfaceContours\")}\n          onChange={setOnSurface}\n        />\n      </div>\n      <Surface3DChart\n        series={series}\n        colorScale=\"viridis\"\n        camera={{ azimuth: -50, elevation: 30 }}\n        height={440}\n        ariaLabel={t(\"contoursAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "线框与等高线",
+      "description": "切换 peaks 函数的面、线框和等高线（投影到底面或绘制在曲面上）。"
+    },
+    {
+      "id": "yield-curve",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/surface-3d-chart/demos/yield-curve.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/surface-3d-chart/demos/yield-curve.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Surface3DChart, type Surface3DSeries } from \"minerva-design/charts\";\n\n// maturities of the curve in months, evenly spaced on the x axis\nconst MATURITIES = [1, 3, 6, 12, 24, 36, 60, 84, 120, 240, 360];\nconst MONTHS = 24;\nconst START = Date.UTC(2024, 10, 1); // November 2024\n\n/**\n * Nelson-Siegel yields: the curve starts inverted (short rates above long\n * rates) and normalizes as the central bank cuts its rate month after month\n */\nconst yieldAt = (month: number, maturity: number) => {\n  const progress = month / (MONTHS - 1);\n  const level = 4.3 + 0.25 * Math.sin(month / 3.5);\n  const slope = 0.9 - 1.9 * progress; // short end minus long end\n  const curvature = -0.6 + 0.4 * Math.sin(month / 5);\n  const tau = 2.2;\n  const years = maturity / 12;\n  const f = (1 - Math.exp(-years / tau)) / (years / tau);\n  return level + slope * f + curvature * (f - Math.exp(-years / tau));\n};\n\nconst DATA = (() => {\n  const z = new Float32Array(MONTHS * MATURITIES.length);\n  for (let r = 0; r < MONTHS; r++) {\n    MATURITIES.forEach((maturity, c) => {\n      z[r * MATURITIES.length + c] = yieldAt(r, maturity);\n    });\n  }\n  return { rows: MONTHS, cols: MATURITIES.length, z };\n})();\n\nconst dateOf = (month: number) => {\n  const date = new Date(START);\n  date.setUTCMonth(date.getUTCMonth() + month);\n  return date;\n};\n\nexport default function YieldCurveDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.surface-3d-chart.data\",\n  });\n  const [hovered, setHovered] = useState<{ row: number; col: number } | null>(\n    null,\n  );\n  const formats = useMemo(\n    () => ({\n      month: new Intl.DateTimeFormat(i18n.language, {\n        month: \"short\",\n        year: \"2-digit\",\n        timeZone: \"UTC\",\n      }),\n      longMonth: new Intl.DateTimeFormat(i18n.language, {\n        month: \"long\",\n        year: \"numeric\",\n        timeZone: \"UTC\",\n      }),\n      percent: new Intl.NumberFormat(i18n.language, {\n        style: \"percent\",\n        minimumFractionDigits: 2,\n        maximumFractionDigits: 2,\n      }),\n      months: new Intl.NumberFormat(i18n.language, {\n        style: \"unit\",\n        unit: \"month\",\n        unitDisplay: \"short\",\n      }),\n      years: new Intl.NumberFormat(i18n.language, {\n        style: \"unit\",\n        unit: \"year\",\n        unitDisplay: \"short\",\n      }),\n    }),\n    [i18n.language],\n  );\n  const maturity = (index: number) => {\n    const months = MATURITIES[Math.round(index)];\n    if (months === undefined) return \"\";\n    return months < 12\n      ? formats.months.format(months)\n      : formats.years.format(months / 12);\n  };\n\n  const series = useMemo(\n    (): Surface3DSeries[] => [\n      {\n        name: t(\"treasuryYield\"),\n        data: DATA,\n        contours: { count: 8, floor: true },\n        format: (value) => formats.percent.format(value / 100),\n      },\n    ],\n    [t, formats],\n  );\n\n  // spread between the 10-year and the 2-year yields of the hovered month\n  const row = hovered?.row ?? MONTHS - 1;\n  const spread =\n    DATA.z[row * MATURITIES.length + MATURITIES.indexOf(120)]! -\n    DATA.z[row * MATURITIES.length + MATURITIES.indexOf(24)]!;\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <Surface3DChart\n        series={series}\n        xAxis={{\n          title: t(\"maturity\"),\n          format: maturity,\n          tickCount: MATURITIES.length,\n          nice: false,\n        }}\n        yAxis={{\n          title: t(\"month\"),\n          format: (value) => formats.month.format(dateOf(Math.round(value))),\n          nice: false,\n        }}\n        zAxis={{\n          title: t(\"yield\"),\n          format: (value) => formats.percent.format(value / 100),\n        }}\n        colorScale=\"spectral\"\n        colorBar={false}\n        aspect={[1, 1.2, 0.55]}\n        camera={{ azimuth: -40, elevation: 28 }}\n        height={460}\n        ariaLabel={t(\"yieldAria\")}\n        onHover={(event) =>\n          setHovered(\n            event && event.row !== undefined && event.col !== undefined\n              ? { row: event.row, col: event.col }\n              : null,\n          )\n        }\n      />\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {hovered\n          ? t(\"yieldHover\", {\n              maturity: maturity(hovered.col),\n              date: formats.longMonth.format(dateOf(hovered.row)),\n              yield: formats.percent.format(\n                DATA.z[hovered.row * MATURITIES.length + hovered.col]! / 100,\n              ),\n            })\n          : t(\"yieldHint\")}{\" \"}\n        {t(spread < 0 ? \"spreadInverted\" : \"spreadNormal\", {\n          date: formats.longMonth.format(dateOf(row)),\n          spread: formats.percent.format(spread / 100),\n        })}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "收益率曲线的演变",
+      "description": "两年间从倒挂到正常的国债收益率曲线，以期限 × 月份曲面呈现，底面带等高线。坐标轴的 format 回调把网格索引转换为期限和 Intl.DateTimeFormat 格式的月份，onHover 读取悬停月份的收益率及 10 年期减 2 年期利差。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "3D 曲面图",
+      "description": "规则网格上的曲面 z = f(x, y)：光照、内置色带（viridis、plasma、terrain…）、线框、投影到底面的等高线以及透明度。拖动旋转，Ctrl / ⌘ + 滚轮缩放。",
+      "demos": {
+        "functions": {
+          "title": "数学函数",
+          "description": "在网格上采样的 sinc、MATLAB 的 peaks 和马鞍面，使用默认的 viridis 色带按高度着色。"
+        },
+        "terrain": {
+          "title": "地形",
+          "description": "180 × 180 的分形岛屿高度图，使用 terrain 色带、压扁的坐标盒（aspect）和更强的方向光。"
+        },
+        "volatility": {
+          "title": "波动率曲面",
+          "description": "指数期权按行权价和到期时间的隐含波动率：短期合约的波动率微笑与偏斜，叠加细线框。"
+        },
+        "wireframe-contours": {
+          "title": "线框与等高线",
+          "description": "切换 peaks 函数的面、线框和等高线（投影到底面或绘制在曲面上）。"
+        },
+        "transparency": {
+          "title": "透明度",
+          "description": "两个不透明度小于 1 的曲面展示倾斜平面与碗状曲面的相交处；colorBy \"series\" 让各自使用图例颜色。在 WebGPU 和 WebGL2 上，透明的曲面、柱体和点以与顺序无关的方式混合（加权混合顺序无关透明），相交处保持平滑；WebGL 与 Canvas2D 则按从后到前的顺序排序绘制。"
+        },
+        "live-wave": {
+          "title": "实时波动",
+          "description": "每秒约重新计算 30 次的涟漪：每帧传入新的数据对象即可更新图表。示例离开屏幕或标签页隐藏时动画停止。"
+        },
+        "heat-diffusion": {
+          "title": "热扩散",
+          "description": "用热传导方程模拟一块金属板：setInterval（卸载时清理）执行若干有限差分步，并设置新的数据对象。onPointClick 提供被点击顶点的 row 和 col，用于添加或移除热源；zAxis 和 valueRange 固定，因此金属板升温时 inferno 色阶不会重新缩放。"
+        },
+        "yield-curve": {
+          "title": "收益率曲线的演变",
+          "description": "两年间从倒挂到正常的国债收益率曲线，以期限 × 月份曲面呈现，底面带等高线。坐标轴的 format 回调把网格索引转换为期限和 Intl.DateTimeFormat 格式的月份，onHover 读取悬停月份的收益率及 10 年期减 2 年期利差。"
+        },
+        "loss-landscape": {
+          "title": "损失曲面",
+          "description": "Himmelblau 函数是一个有四个极小值的测试曲面，这里绘制 log10(1 + loss) 并在底面绘制等高线。下拉框在内置色阶之间切换 colorScale；点击一个点，从该处运行梯度下降，看它到达哪个极小值。"
+        },
+        "wifi-signal": {
+          "title": "Wi-Fi 覆盖",
+          "description": "根据对数距离路径损耗和墙体损耗计算办公楼层的信号强度，用标签开关接入点时重新计算。等高线标出 −67 和 −75 dBm 两个阈值，按钮调用 ref 上的 setCamera() 切换为正交俯视图，或调用 resetCamera() 恢复。"
+        }
+      },
+      "data": {
+        "functions": {
+          "sinc": "sinc",
+          "peaks": "Peaks",
+          "saddle": "马鞍面"
+        },
+        "function": "函数",
+        "functionsAria": "{{name}} 函数的 3D 曲面",
+        "x": "x",
+        "y": "y",
+        "z": "z",
+        "island": "岛屿",
+        "km": "{{value}} km",
+        "meters": "{{value}} 米",
+        "east": "东向",
+        "north": "北向",
+        "elevation": "海拔",
+        "terrainAria": "宽 20 公里的岛屿地形",
+        "impliedVol": "隐含波动率",
+        "percent": "{{value}}%",
+        "strike": "行权价（现价的 %）",
+        "expiry": "距到期天数",
+        "days": "{{value}} 天",
+        "volatilityAria": "按行权价和到期时间的隐含波动率曲面",
+        "fill": "面",
+        "wireframe": "线框",
+        "floorContours": "底面等高线",
+        "surfaceContours": "曲面等高线",
+        "contoursAria": "带线框和等高线的 peaks 曲面",
+        "bowl": "碗面",
+        "plane": "倾斜平面",
+        "transparencyAria": "透明碗面与透明倾斜平面相交",
+        "wave": "波",
+        "play": "播放动画",
+        "amplitude": "振幅",
+        "waveAria": "从中心扩散的动画涟漪",
+        "plate": "金属板",
+        "reset": "重置",
+        "cm": "厘米",
+        "temperature": "温度",
+        "heatAria": "被点热源加热的金属板温度",
+        "heatStatus": "热源：{{sources}} 个 · 最高温度 {{max}} · 平均温度 {{mean}}。点击金属板可添加或移除热源。",
+        "treasuryYield": "国债收益率",
+        "maturity": "期限",
+        "month": "月份",
+        "yield": "收益率",
+        "yieldAria": "24 个月内各期限国债收益率",
+        "yieldHover": "{{date}} {{maturity}}期收益率：{{yield}}。",
+        "yieldHint": "悬停在曲面上读取收益率。",
+        "spreadInverted": "{{date}}收益率曲线倒挂（10 年期 − 2 年期：{{spread}}）。",
+        "spreadNormal": "{{date}}收益率曲线向上倾斜（10 年期 − 2 年期：{{spread}}）。",
+        "loss": "损失",
+        "point": "({{x}}, {{y}})",
+        "colorMap": "色阶",
+        "colorMaps": {
+          "viridis": "Viridis",
+          "plasma": "Plasma",
+          "magma": "Magma",
+          "cividis": "Cividis",
+          "turbo": "Turbo"
+        },
+        "weight1": "权重 1",
+        "weight2": "权重 2",
+        "logLoss": "log₁₀(1 + 损失)",
+        "lossAria": "有四个极小值的 Himmelblau 函数损失曲面",
+        "descentResult": "从 {{start}}（损失 {{loss}}）出发，梯度下降经过 {{steps}} 步到达位于 {{minimum}} 的第 {{n}} 个极小值。",
+        "lossHint": "点击曲面，从该处开始梯度下降。",
+        "dbm": "{{value}} dBm",
+        "signal": "信号",
+        "accessPoints": "接入点",
+        "rooms": {
+          "lobby": "大堂",
+          "openSpace": "开放办公区",
+          "meetingRooms": "会议室",
+          "kitchen": "茶水间"
+        },
+        "perspectiveView": "3D 视图",
+        "topView": "俯视图",
+        "distanceM": "米",
+        "wifiAria": "办公楼层的 Wi-Fi 信号强度",
+        "wifiCoverage": "{{good}} 的区域信号不低于 {{goodLevel}}（可视频通话），{{usable}} 的区域不低于 {{usableLevel}}。",
+        "wifiNone": "所有接入点均已关闭：无覆盖。"
+      },
+      "api": {
+        "Surface3DChartProps": {
+          "series": "基于规则网格的曲面",
+          "wireframe": "未自行设置线框的系列使用的线框",
+          "contours": "未自行设置等高线的系列使用的等高线"
+        },
+        "Surface3DSeries": {
+          "type": "由 Surface3DChart 设置",
+          "data": "高度网格（rows × cols）",
+          "colorBy": "颜色来源：高度（\"z\"）、值网格（\"value\"）或系列颜色",
+          "opacity": "曲面不透明度，0-1",
+          "wireframe": "曲面上的网格线（true 或配置项）",
+          "contours": "等高线，默认投影在底面（true 或配置项）",
+          "fill": "绘制面；false 时只保留线框和等高线"
+        },
+        "Surface3DData": {
+          "rows": "行数（y 采样数），至少 2",
+          "cols": "列数（x 采样数），至少 2",
+          "z": "按行存储的 rows × cols 个高度（推荐 Float32Array）；NaN 留空",
+          "x": "各列的 X 坐标；省略时为 0 … cols − 1",
+          "y": "各行的 Y 坐标；省略时为 0 … rows − 1",
+          "value": "rows × cols 个映射到色阶的值，代替高度着色"
+        },
+        "Surface3DWireframeOptions": {
+          "color": "线条颜色；默认为文字颜色的淡色",
+          "step": "每隔 n 条网格线绘制一条（默认每个方向最多 64 条）",
+          "width": "线宽（CSS 像素）"
+        },
+        "Surface3DContourOptions": {
+          "count": "在高度范围内均匀分布的等高线数量",
+          "levels": "等高线的高度（代替 count）",
+          "floor": "将等高线投影到坐标盒底面",
+          "surface": "在曲面上绘制等高线",
+          "color": "线条颜色；默认每条等高线取其在色阶中的颜色",
+          "width": "线宽（CSS 像素）"
+        },
+        "Chart3DLightingOptions": {
+          "ambient": "照亮所有面的环境光，0-1",
+          "diffuse": "方向光（Lambert 漫反射）强度，0-1",
+          "specular": "高光（Blinn-Phong）强度，0-1",
+          "shininess": "高光的锐利程度"
+        },
+        "Chart3DCommonProps": {
+          "height": "图表高度（含图例）；数字表示像素",
+          "width": "图表宽度；数字表示像素",
+          "xAxis": "X 轴（坐标盒宽度）：标题、范围、刻度、格式、类别",
+          "yAxis": "Y 轴（坐标盒深度）",
+          "zAxis": "Z 轴（坐标盒高度）",
+          "camera": "初始相机（方位角、仰角、缩放、投影、视野），双击时恢复；修改后相机随之移动",
+          "autoRotate": "相机绕坐标盒旋转：true 为每秒 12°，或传入每秒角度；鼠标悬停、离开屏幕或开启“减少动态效果”时暂停",
+          "aspect": "坐标盒的比例（x、y、z）",
+          "box": "绘制坐标盒：背景墙、网格线、刻度标签和轴标题",
+          "colorScale": "colorBy 为 \"z\" / \"value\" 时的颜色：内置色带（viridis、plasma、inferno、magma、cividis、turbo、spectral、coolwarm、terrain、blues）或 CSS 颜色",
+          "valueRange": "映射到色阶两端的值；默认为数据范围",
+          "colorBar": "色阶的色条（标题、格式）；当可见系列使用色阶时显示",
+          "legend": "图例；多个系列有名称时显示，点击图例项切换对应系列",
+          "tooltip": "提示框；false 禁用，render 替换其内容",
+          "interaction": "拖动旋转，右键 / Shift + 拖动平移，Ctrl / ⌘ + 滚轮与双指捏合缩放，双击复位，方向键旋转；false 使图表静止",
+          "lighting": "曲面与柱体的环境光、漫反射和高光",
+          "exposure": "叠加混合（blend \"additive\"）系列的光亮度；在 WebGPU 和 WebGL2 上经过色调映射，密集的发光区域会平滑饱和而不会发白",
+          "renderer": "数据层后端：auto 依次尝试 WebGPU、WebGL2、WebGL、Canvas2D，并跳过软件模拟的 GPU",
+          "palette": "系列颜色（默认取 CSS 变量 --chart-series-1..8，其次为主题色）",
+          "ariaLabel": "图表的无障碍名称",
+          "locale": "内置文本（无障碍摘要、图例播报、提示框行名）及数字格式的语言；内置英文、中文、日文和法文。默认使用页面语言（<html lang>），其次为浏览器语言",
+          "labels": "覆盖当前语言的内置文本（见 Chart3DLabels）",
+          "onHover": "悬停的点、网格单元或柱体变化时调用",
+          "onPointClick": "点击点、网格单元或柱体时调用",
+          "onCameraChange": "用户旋转、缩放、平移或复位相机后调用",
+          "onRendererChange": "后端就绪（以及发生回退）时调用，参数为所用后端",
+          "className": "外层元素的类名",
+          "style": "外层元素的样式",
+          "ref": "命令式句柄：resetCamera、getCamera、setCamera、getRenderer、getInstance"
+        },
+        "Chart3DSeriesBase": {
+          "id": "稳定的标识符（默认为索引）",
+          "name": "在图例和提示框中显示的名称",
+          "color": "系列颜色（任意 CSS 颜色，含 var(--x)）；省略时使用调色板",
+          "hidden": "隐藏该系列（仍保留在图例中）",
+          "format": "在提示框中格式化悬停项的值（或高度）"
+        }
+      },
+      "wc": {
+        "demos": {
+          "ripple": {
+            "title": "带等高线的波纹",
+            "description": "60 × 60 网格上的 z = sin(r) / r，按高度着色，并在底面投影等高线。"
+          },
+          "terrain": {
+            "title": "带网格线的地形",
+            "description": "两座山丘和一个山谷，每隔一条绘制网格线，使用地形色阶；悬停可读取海拔。"
+          }
+        },
+        "minerva-surface-3d-chart": {
+          "props": {
+            "options": "其他引擎选项（minerva-design/charts/core 的 Chart3DOptions：颜色、文本、locale、labels……）；仅作为属性设置",
+            "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null"
+          },
+          "events": {
+            "minerva-hover": "悬停的点、单元格或柱子发生变化；detail：{ seriesIndex, seriesName, type, index, x, y, z, value, color, label }，无悬停时为 null",
+            "minerva-point-click": "点击了某个点、单元格或柱子；detail：{ seriesIndex, seriesName, type, index, x, y, z, value, color, label }",
+            "minerva-camera-change": "用户旋转、缩放、平移或重置了相机；detail：{ azimuth, elevation, zoom, pan, projection }",
+            "minerva-renderer-change": "渲染后端已就绪，或在 GPU 丢失后回退；detail：{ renderer }"
+          },
+          "methods": {
+            "resetCamera": "恢复选项中设定的相机",
+            "getCamera": "当前相机，引擎创建之前为 null",
+            "setCamera": "移动相机",
+            "getRenderer": "正在使用的渲染后端（webgpu、webgl2、webgl、canvas2d），就绪前为 null"
+          }
+        }
+      }
+    }
+  }
+}

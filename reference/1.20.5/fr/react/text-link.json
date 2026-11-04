@@ -1,0 +1,233 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "fr",
+  "renderer": "react",
+  "page": "text-link",
+  "title": "TextLink",
+  "description": "Une ancre native stylée pour les liens en ligne, la navigation discrète et les lignes de réglages ; asChild stylise un lien de routeur sans imbriquer d'ancres.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "TextLink",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "TextLink"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "asChild",
+            "source": "packages/react/src/components/TextLink/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Merges the link styling onto its single child element (e.g. a router `<Link>`) instead of rendering an extra `<a>`"
+          },
+          {
+            "name": "variant",
+            "source": "packages/react/src/components/TextLink/types.ts",
+            "kind": "enum",
+            "values": [
+              "action",
+              "default",
+              "subtle"
+            ],
+            "typeText": "TextLinkVariant | undefined",
+            "typeRef": "type:ab3160d6c0af67fa8e23",
+            "default": "default",
+            "required": false,
+            "description": "default: underlined inline link; subtle: quiet link with a trailing chevron; action: full-width row link with a bottom rule (settings lists, menus)"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "TextLinkProps": {
+      "source": "react/src/components/TextLink/types.ts",
+      "kind": "interface",
+      "extends": [
+        "AnchorHTMLAttributes<HTMLAnchorElement>"
+      ],
+      "props": [
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Merges the link styling onto its single child element (e.g. a router `<Link>`) instead of rendering an extra `<a>`"
+        },
+        {
+          "name": "variant",
+          "type": "TextLinkVariant",
+          "required": false,
+          "default": "\"default\"",
+          "description": "default: underlined inline link; subtle: quiet link with a trailing chevron; action: full-width row link with a bottom rule (settings lists, menus)"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLAnchorElement>",
+          "required": false,
+          "description": "Ref to the anchor element"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:TextLink": {
+      "kind": "cssVars",
+      "source": "react/src/components/TextLink",
+      "vars": [
+        {
+          "name": "--text-link-color",
+          "description": "Color of the default variant (falls back to --link-color, then --primary-color)"
+        },
+        {
+          "name": "--text-link-font-weight",
+          "description": "Font weight"
+        },
+        {
+          "name": "--text-link-text-decoration",
+          "description": "Text decoration of the default variant (default: underline)"
+        },
+        {
+          "name": "--text-link-underline-offset",
+          "description": "Distance between the text and its underline"
+        },
+        {
+          "name": "--text-link-action-min-height",
+          "description": "Minimum height of the action variant"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "as-child",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/text-link/demos/as-child.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/text-link/demos/as-child.tsx": "import { TextLink } from \"minerva-design\";\n\n// Stand-in for a router link component (e.g. react-router's <Link>)\nconst RouterLink = ({ children, ...props }: React.ComponentProps<\"a\">) => (\n  <a {...props}>{children}</a>\n);\n\nexport default function AsChildDemo() {\n  return (\n    <TextLink asChild variant=\"subtle\">\n      <RouterLink href=\"#articles\">Articles</RouterLink>\n    </TextLink>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Liens de routeur",
+      "description": "asChild fusionne le style sur son unique élément enfant."
+    },
+    {
+      "id": "variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/text-link/demos/variants.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/text-link/demos/variants.tsx": "import { TextLink } from \"minerva-design\";\n\nexport default function VariantsDemo() {\n  return (\n    <div style={{ display: \"grid\", gap: 16, width: 320 }}>\n      <p style={{ margin: 0 }}>\n        Read the <TextLink href=\"#guide\">community guide</TextLink> first.\n      </p>\n      <TextLink href=\"#all\" variant=\"subtle\">\n        View all reviews\n      </TextLink>\n      <div>\n        <TextLink href=\"#account\" variant=\"action\">\n          Account settings\n        </TextLink>\n        <TextLink href=\"#security\" variant=\"action\">\n          Security\n        </TextLink>\n      </div>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Variantes",
+      "description": "default est souligné, subtle ajoute un chevron comme indice non coloré, action est une ligne pleine largeur."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "TextLink",
+      "description": "Une ancre native stylée pour les liens en ligne, la navigation discrète et les lignes de réglages ; asChild stylise un lien de routeur sans imbriquer d'ancres.",
+      "demos": {
+        "variants": {
+          "title": "Variantes",
+          "description": "default est souligné, subtle ajoute un chevron comme indice non coloré, action est une ligne pleine largeur."
+        },
+        "as-child": {
+          "title": "Liens de routeur",
+          "description": "asChild fusionne le style sur son unique élément enfant."
+        }
+      },
+      "api": {
+        "TextLinkProps": {
+          "asChild": "Fusionne le style du lien sur son unique élément enfant",
+          "variant": "Style visuel : default, subtle ou action",
+          "ref": "Ref vers l'élément ancre"
+        }
+      },
+      "cssVars": {
+        "--text-link-color": "Couleur de la variante par défaut (repli sur --link-color, puis --primary-color)",
+        "--text-link-font-weight": "Graisse de la police",
+        "--text-link-text-decoration": "Décoration du texte de la variante par défaut (par défaut underline)",
+        "--text-link-underline-offset": "Distance entre le texte et son soulignement",
+        "--text-link-action-min-height": "Hauteur minimale de la variante action"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Un <a> natif dans une shadow root : href, target, rel, hreflang et download lui sont transmis."
+          },
+          "variants": {
+            "title": "Variantes et routage",
+            "description": "default est souligné, subtle ajoute un chevron, action forme une ligne de réglages. Les clics sont interceptés sur l'hôte, comme le ferait un routeur côté client."
+          },
+          "styling": {
+            "title": "Variables CSS",
+            "description": "La couleur, la graisse, le soulignement et son décalage se règlent par lien avec des variables CSS."
+          }
+        },
+        "minerva-text-link": {
+          "props": {
+            "href": "URL du lien.",
+            "target": "Contexte de navigation où s'ouvre le lien (_blank...).",
+            "rel": "Relation avec la ressource liée (noopener...).",
+            "download": "Télécharge la cible au lieu de naviguer (nom de fichier facultatif).",
+            "hreflang": "Langue de la ressource liée."
+          },
+          "slots": {
+            "default": "Texte du lien (et icônes)."
+          },
+          "methods": {
+            "focus": "Donne le focus au lien interne.",
+            "blur": "Retire le focus du lien interne.",
+            "click": "Clique sur le lien interne."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

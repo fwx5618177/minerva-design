@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "fr",
+  "renderer": "uni",
+  "page": "text-link",
+  "title": "TextLink",
+  "description": "Une ancre native stylée pour les liens en ligne, la navigation discrète et les lignes de réglages ; asChild stylise un lien de routeur sans imbriquer d'ancres.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "TextLink",
+      "support": {
+        "status": "beta",
+        "notes": "Native navigator with disabled fallback and click. Internal native routes only; browser external anchors require platform navigation configuration. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native navigator with disabled fallback and click. Internal native routes only; browser external anchors require platform navigation configuration. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "TextLink"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "href",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "label",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "openType",
+            "typeText": "string | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "click",
+            "typeText": "any[]"
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:TextLink": {
+      "kind": "cssVars",
+      "source": "react/src/components/TextLink",
+      "vars": [
+        {
+          "name": "--text-link-color",
+          "description": "Color of the default variant (falls back to --link-color, then --primary-color)"
+        },
+        {
+          "name": "--text-link-font-weight",
+          "description": "Font weight"
+        },
+        {
+          "name": "--text-link-text-decoration",
+          "description": "Text decoration of the default variant (default: underline)"
+        },
+        {
+          "name": "--text-link-underline-offset",
+          "description": "Distance between the text and its underline"
+        },
+        {
+          "name": "--text-link-action-min-height",
+          "description": "Minimum height of the action variant"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "TextLink",
+      "description": "Une ancre native stylée pour les liens en ligne, la navigation discrète et les lignes de réglages ; asChild stylise un lien de routeur sans imbriquer d'ancres.",
+      "demos": {
+        "variants": {
+          "title": "Variantes",
+          "description": "default est souligné, subtle ajoute un chevron comme indice non coloré, action est une ligne pleine largeur."
+        },
+        "as-child": {
+          "title": "Liens de routeur",
+          "description": "asChild fusionne le style sur son unique élément enfant."
+        }
+      },
+      "api": {
+        "TextLinkProps": {
+          "asChild": "Fusionne le style du lien sur son unique élément enfant",
+          "variant": "Style visuel : default, subtle ou action",
+          "ref": "Ref vers l'élément ancre"
+        }
+      },
+      "cssVars": {
+        "--text-link-color": "Couleur de la variante par défaut (repli sur --link-color, puis --primary-color)",
+        "--text-link-font-weight": "Graisse de la police",
+        "--text-link-text-decoration": "Décoration du texte de la variante par défaut (par défaut underline)",
+        "--text-link-underline-offset": "Distance entre le texte et son soulignement",
+        "--text-link-action-min-height": "Hauteur minimale de la variante action"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Un <a> natif dans une shadow root : href, target, rel, hreflang et download lui sont transmis."
+          },
+          "variants": {
+            "title": "Variantes et routage",
+            "description": "default est souligné, subtle ajoute un chevron, action forme une ligne de réglages. Les clics sont interceptés sur l'hôte, comme le ferait un routeur côté client."
+          },
+          "styling": {
+            "title": "Variables CSS",
+            "description": "La couleur, la graisse, le soulignement et son décalage se règlent par lien avec des variables CSS."
+          }
+        },
+        "minerva-text-link": {
+          "props": {
+            "href": "URL du lien.",
+            "target": "Contexte de navigation où s'ouvre le lien (_blank...).",
+            "rel": "Relation avec la ressource liée (noopener...).",
+            "download": "Télécharge la cible au lieu de naviguer (nom de fichier facultatif).",
+            "hreflang": "Langue de la ressource liée."
+          },
+          "slots": {
+            "default": "Texte du lien (et icônes)."
+          },
+          "methods": {
+            "focus": "Donne le focus au lien interne.",
+            "blur": "Retire le focus du lien interne.",
+            "click": "Clique sur le lien interne."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

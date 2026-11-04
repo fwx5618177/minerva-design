@@ -1,0 +1,1604 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "en",
+  "renderer": "native",
+  "page": "chart-performance",
+  "title": "Chart performance",
+  "description": "How the chart engine stays fast with millions of points, with live showcases: renderer selection and fallback, data formats, what scales with the visible range, decimation, hit testing, React and streaming tips, and the budgets of mini-programs and React Native.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {
+    "intro": {
+      "title": "Overview",
+      "text": "The engine does the expensive work once per data set and keeps every later step proportional to what is on screen. Data arrays are normalized into Float64Array columns, turned into GPU buffers, and reused as long as you pass the same references; hovering, zooming and panning then only touch the visible points or a transform. This page explains what is fast, what costs a full pass over the data, and how to keep your charts in the fast path.",
+      "pages": "The options are documented on <charts>Chart</charts> (React) and <engine>Chart engine</engine> (framework-free). The four backends are compared side by side, with live benchmarks and scores, on <renderers>Renderer comparison</renderers>."
+    },
+    "renderers": {
+      "title": "Renderers and fallback",
+      "text": "Cartesian charts (line, area, bar, scatter, candlestick, heatmap, sparkline, quadrant) draw their data with the GPU and their text (axes, labels, legend, tooltip) with the DOM. The renderer option chooses the backend.",
+      "auto": "auto (default) tries WebGPU, then WebGL2, then WebGL, then Canvas2D, and keeps the first one that starts. The ready promise resolves with the chosen kind, and onRendererChange / the renderer event reports it.",
+      "webgl": "WebGL (1) is the safety net for older GPUs and drivers and for browsers without WebGL2: the same marks, colors and antialiasing, drawn with GLSL ES 1.0 shaders and instanced through the ANGLE_instanced_arrays extension (available virtually everywhere). Without that extension the chart moves on to Canvas2D.",
+      "software": "With auto, software GPUs are skipped because they are slower than Canvas2D: WebGPU rejects fallback adapters, and WebGL2 and WebGL are created with failIfMajorPerformanceCaveat and rejected when the renderer name reveals a software rasterizer (SwiftShader, llvmpipe, softpipe, Microsoft Basic Render Driver…). Virtual machines and headless browsers therefore usually end up on Canvas2D.",
+      "forced": "renderer: \"webgpu\", \"webgl2\", \"webgl\" or \"canvas2d\" forces a backend, software GPUs included; if it cannot start, the next one in the chain is used. Canvas2D is a good choice for small charts and screenshots; GPUs win from tens of thousands of points.",
+      "lost": "When the GPU is lost (driver reset, too many contexts), the chart falls back to the next backend, redraws, and fires the renderer event again. Browsers limit live WebGL contexts (about 16): a dashboard with dozens of GPU charts should destroy the ones that leave the screen or use Canvas2D for the small ones."
+    },
+    "global": {
+      "title": "One renderer for every chart",
+      "text": "setDefaultChartRenderer() sets the backend of every chart whose renderer is unset or \"auto\", in every framework: the default lives on globalThis, so the React components, the Vue and Angular wrappers and the Web Components share it, even when a page bundles several copies of the engine. Charts already on screen follow a change live: they recreate their renderer in place, keeping their data, zoom and state. subscribeDefaultChartRenderer() tells you about changes, e.g. to keep a picker in sync.",
+      "rules": "A chart's own renderer option always wins. A backend forced through the default counts as forced: it may run on a software GPU, and falls back to the next backend when it cannot start. \"auto\" restores the automatic detection.",
+      "docs": "The renderer bar at the top of the chart pages of these docs does exactly that: pick Canvas2D or WebGL there and every chart of the page switches to it, with a badge under each demo showing the backend actually in use. Here, the Auto option of each showcase follows it."
+    },
+    "showcase": {
+      "title": "Live showcases",
+      "text": "The examples below draw up to a million marks in your browser. Their data is generated once, into typed arrays with a seeded random generator, when the example comes near the screen, and each animation stops while its example is off screen. Pick a backend to force it — the chart tells which one actually started — and let the camera tour zoom in and out, or take over with the mouse.",
+      "fps": "FPS and frame time: how often the page paints while the chart moves. Displays refresh 60 times per second or more; below 30 the motion feels sluggish.",
+      "work": "Main thread: the JavaScript, style, layout and paint time of each frame, the chart's draw calls included (the GPU itself works in parallel). The lower, the more room is left for the rest of the page.",
+      "startup": "First frame: from handing the data (or a new backend) to the chart to the first painted frame — normalizing the columns, building the GPU buffers and drawing."
+    },
+    "data": {
+      "renderer": "Renderer",
+      "renderers": {
+        "auto": "Auto",
+        "webgpu": "WebGPU",
+        "webgl2": "WebGL2",
+        "webgl": "WebGL",
+        "canvas2d": "Canvas2D",
+        "page": "Page ({{backend}})"
+      },
+      "tour": "Camera tour",
+      "stream": "Stream",
+      "stats": {
+        "renderer": "Renderer",
+        "fps": "FPS",
+        "frame": "Frame time",
+        "work": "Main thread",
+        "startup": "First frame",
+        "points": "Points",
+        "cells": "Cells",
+        "candles": "Candles",
+        "ingest": "Ingest"
+      },
+      "ms": "{{value}} ms",
+      "fps": "{{value}} fps",
+      "perSecond": "{{value}}/s",
+      "db": "{{value}} dB",
+      "loading": "Generating {{value}} data points…",
+      "status": {
+        "starting": "Starting the renderer…",
+        "auto": "Auto picked {{backend}}, the best backend available here.",
+        "autoCanvas": "Auto picked {{backend}}: no hardware-accelerated GPU is available here (software GPUs are skipped).",
+        "forced": "Drawn with {{backend}}, as requested.",
+        "fallback": "{{requested}} could not start here: fell back to {{backend}}.",
+        "slow": "Tour paused: a frame takes {{ms}} of main thread with this backend. Turn it back on or pick another backend.",
+        "page": "Drawn with {{backend}}, the renderer selected for the page.",
+        "pageSoftware": "{{requested}}, selected for the page, runs on a software GPU here: this demo uses {{backend}} so that the page stays responsive. Pick {{requested}} in this demo to force it."
+      },
+      "hintX": "Ctrl / ⌘ + wheel or pinch to zoom, drag to pan, double-click to reset. The y axis follows the visible range.",
+      "hintXY": "Ctrl / ⌘ + wheel or pinch to zoom both axes, drag to pan, double-click to reset.",
+      "hintStream": "The oldest samples leave the window as new ones arrive; hover to read a channel.",
+      "sensor": "Sensor {{index}}",
+      "temperature": "Temperature (°C)",
+      "lineAria": "Four sensors, 1,000,000 readings",
+      "cluster": "Cluster {{index}}",
+      "scatterAria": "Ten clusters, 1,000,000 points",
+      "market": "Index",
+      "price": "Price",
+      "candlesAria": "200,000 one-minute candlesticks",
+      "level": "Level",
+      "time": "Time (s)",
+      "frequency": "Frequency (Hz)",
+      "heatmapAria": "Spectrogram of 1,000 × 1,000 cells",
+      "channel": "Channel {{index}}",
+      "streamAria": "{{value}} channels streaming in real time",
+      "compareAria": "{{backend}}: the same data set",
+      "compare": {
+        "dataset": "Data set",
+        "line": "Line · 1M points",
+        "scatter": "Scatter · 1M points",
+        "run": "Run benchmark",
+        "fallback": "→ {{backend}} (fallback)",
+        "measuring": "Measuring…",
+        "results": "Main-thread time per frame (shorter is better) and frame rate",
+        "running": "Measuring {{backend}}…",
+        "done": "Done: the same zoom path on the same data, one backend at a time.",
+        "idle": "Run the benchmark to measure each backend on this device.",
+        "hint": "Each run mounts one chart with all the points for 3 s, then puts its preview back.",
+        "fellBack": "{{requested}} → {{backend}}",
+        "preview": "Preview: {{value}} points drawn with Canvas2D. Run the benchmark to draw the million.",
+        "previewAria": "{{backend}}: preview of the data set",
+        "live": "Live: {{value}} points drawn with {{backend}}",
+        "software": "Software GPU: skipped (would block the page)",
+        "runAnyway": "Run anyway",
+        "skipped": "Skipped",
+        "skippedNote": "Skipped (software GPU): {{backends}}."
+      }
+    },
+    "formats": {
+      "title": "Data formats, fastest first",
+      "text": "Every series is normalized into columns once. The cost of that pass depends on the format you give:",
+      "typed": "Typed-array columns ({ x: Float64Array, y: Float32Array }): copied with a single set() call, no per-point conversion. open / high / low / value columns given as Float64Array are used as they are. Best for 100k+ points.",
+      "columns": "Plain-array columns ({ x: number[], y: number[] }): one loop of numeric copies; categories and Date values are converted here.",
+      "tuples": "[x, y] tuples: one small array read per point.",
+      "objects": "{ x, y, … } objects: the most flexible (size, color, label, open/high/low, value) and the slowest, every field being read per point. Fine for a few thousand points.",
+      "identity": "Normalized data is cached by series id (or index) and array identity: passing the same array again costs nothing, while an array mutated in place is not read again. Give series an id when their order may change, and sort x ascending: sorted data unlocks the binary searches below."
+    },
+    "visible": {
+      "title": "What scales with the visible range",
+      "text": "After the first pass, the work of a frame depends on what is visible rather than on the size of the data set:",
+      "sorted": "Lines, areas and bars with sorted x: the visible range is found by binary search, so only those points are drawn and hit tested. Hover lookups are O(log n).",
+      "unsorted": "Scatter, candlestick and heatmap series are drawn entirely (on the GPU this is one instanced draw call); unsorted lines too.",
+      "decimation": "Canvas2D decimates lines and areas to the min / max of each pixel column (at most 4 points per column), so a million points draw as a few thousand segments with the same silhouette.",
+      "scatter": "Canvas2D rasterizes scatter series above 20,000 points straight into an ImageData buffer instead of drawing paths; canvases without a scratch canvas (mini-programs) draw one square per occupied cell.",
+      "hit": "Scatter hit testing uses a uniform grid index (about four points per cell, built lazily and cached per data array), so hovering 100k dots stays below a millisecond.",
+      "dom": "The DOM is updated only on change: the legend is rebuilt when its entries change, the tooltip and hover markers are reused while the pointer stays on the same points, and resolved theme colors are cached until the theme changes."
+    },
+    "zoom": {
+      "title": "Zoom and pan",
+      "gpu": "On WebGPU, WebGL2 and WebGL, zooming and panning only change a transform uniform: no buffer is rebuilt, whatever the number of points. Buffers store positions relative to an origin in float32; when you zoom in more than about 2000× far from that origin, the chart re-centers and rebuilds the buffers once to keep sub-pixel precision.",
+      "canvas": "On Canvas2D every frame redraws the visible range, decimated per pixel column: cost grows with the visible points, capped by the plot width for sorted lines and areas. Large scatter sets stay O(n) per frame there; prefer a GPU backend or fewer points for interactive scatter plots."
+    },
+    "scale": {
+      "title": "How far it goes",
+      "text": "Measured by the engine's benchmark suite (Node, CI-like machine; your hardware will differ):",
+      "line": "1,000,000-point line: building the model and the GPU items takes about 15 ms.",
+      "scatter": "100,000-point scatter: building it and running 1,000 hit tests takes about 13 ms.",
+      "update": "setOptions with identical options: about 0.03 ms, nothing rebuilt; moving the tooltip over the same points: about 0.03 ms.",
+      "guidance": "Guidance: lines and areas up to several million sorted points (typed arrays) stay interactive on a GPU; keep scatter plots around 100k–500k points on the GPU and 20k–50k on Canvas2D; bars and candlesticks are readable up to a few thousand visible marks, so aggregate (daily candles, monthly bars) before drawing more; heatmaps up to tens of thousands of cells."
+    },
+    "react": {
+      "title": "React tips",
+      "memo": "Keep data references stable: build series and their data with useMemo (or outside the component), keyed on the data they depend on. A new data array is a new data set and costs a full pass.",
+      "shallow": "Props are compared shallowly before calling setOptions: top-level options by identity or one level deep, and every series field by identity. Inline objects such as yAxis={{ min: 0 }} or series={[{ name, data }]} are fine as long as data itself is stable; an identical render then costs nothing.",
+      "typed": "Do not recreate typed arrays on every render (new Float64Array(…) in the render body): allocate them when the data arrives and keep them in state or a ref.",
+      "shapes": "Shape charts (pie, donut, radar, gauge, funnel, treemap) memoize their options too, but every change animates: keep data, padding and palette stable to avoid replaying the animation."
+    },
+    "streaming": {
+      "title": "Streaming updates",
+      "text": "To append points, pass a new array (or new typed arrays) and call setOptions: the changed series is normalized again in O(n), the others are reused. Keep a sliding window (e.g. the last 50,000 points) so the cost stays bounded.",
+      "batch": "Batch samples and update at most once per frame (requestAnimationFrame) or on a timer, rather than once per message. For very fast feeds with typed arrays, preallocate a larger buffer and pass subarray() views of the filled part: a new view is a new identity but the memory is reused."
+    },
+    "shapes": {
+      "title": "Shape charts or cartesian charts",
+      "text": "Pie, donut, rose, radar, gauge, funnel, treemap, Sankey, sunburst, chord and the other shape charts use the same GPU backends as the other charts (WebGPU → WebGL2 → WebGL → Canvas2D, chosen by the renderer option or setDefaultChartRenderer): their arcs, polygons and ribbons are tessellated into triangles and drawn with 4x MSAA, non-convex fills go through the stencil buffer (nonzero winding), and the text is drawn on a 2D canvas above the shapes. Canvas2D remains the fallback when no GPU backend starts, and the only backend in mini-programs (createCanvasShapeChart).",
+      "gpu": "Choose a cartesian chart (line, area, bar, scatter, candlestick, heatmap) for many points, zooming and panning, or live data.",
+      "canvas": "Choose a shape chart for parts of a whole, profiles, a single KPI or hierarchies — dozens to a few hundred marks. Beyond that, a treemap or a heatmap of aggregated data reads better than thousands of slices. Many small shape charts on one page stay cheap: on WebGPU they share one device; on WebGL each holds a context, and past the browser limit (about 16) the least recently drawn off-screen ones are suspended and restored when they scroll back. renderer=\"canvas2d\" uses no GPU context at all."
+    },
+    "platforms": {
+      "title": "Mini-programs and React Native",
+      "mini": "<mini>Mini-program charts</mini> use createCanvasChart (and createCanvasShapeChart for shape charts) on a canvas type=\"2d\": always Canvas2D, on slower JavaScript engines. Per-pixel decimation keeps lines fast, but aim for tens of thousands of points rather than millions, avoid passing large arrays through setData (it serializes them), and keep scatter plots to a few thousand dots.",
+      "native": "On <native>React Native</native> the charts are drawn with Views only, so the number of shapes is capped: about 1,200 line points in total, 800 dots per series (2,000 in total) and 600 bars per series (1,500 rects in total, candlesticks counting two each, heatmap cells one), 200 strips per area. Above these budgets dots are merged per cell and bars per pixel column — the picture stays right but details are lost, and the data is still processed in JavaScript, so aggregate first.",
+      "primitives": "For your own renderer, createChartController and scenePrimitives give the same budgets: scenePrimitives(scene, { maxDots, maxBars, columnWidth, dotCell }) returns decimated shapes (defaults: 4000 dots and 2000 bars per series, 1 px columns)."
+    }
+  },
+  "components": [
+    {
+      "name": "CandlestickChart",
+      "support": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles)."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles).",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "CandlestickChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "series",
+            "source": "packages/native/src/components/Charts/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartSeries[]",
+            "typeRef": "type:deda0bcb88251b63a5de",
+            "required": true,
+            "description": "Series drawn as candles unless they set a `type` (e.g. a moving average `line`); data points carry `open`, `high`, `low` and `y` (the close)"
+          },
+          {
+            "name": "height",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": 320,
+            "required": false,
+            "description": "Height of the chart (the legend included)"
+          },
+          {
+            "name": "width",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "X axis"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Y axis"
+          },
+          {
+            "name": "legend",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartLegendOptions | undefined",
+            "typeRef": "type:860fa553ee4deaac43f8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name (tap toggles a series)"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "typeRef": "type:c08795b3492e4547d570",
+            "required": false,
+            "description": "Tooltip shown on tap / while scrubbing; `false` disables it"
+          },
+          {
+            "name": "crosshair",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Vertical guide line following the finger"
+          },
+          {
+            "name": "annotations",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartAnnotation[] | undefined",
+            "typeRef": "type:f440eb8a958892b1b0c2",
+            "required": false,
+            "description": "Background areas, reference lines and texts"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartInteractionOptions | undefined",
+            "typeRef": "type:f4b160d7dd18649fd178",
+            "default": true,
+            "required": false,
+            "description": "Pinch to zoom, drag to pan when zoomed, double tap to reset; `false` makes the chart static"
+          },
+          {
+            "name": "padding",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the plot area, in pixels"
+          },
+          {
+            "name": "palette",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `chart-series-1..8` tokens, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)"
+          },
+          {
+            "name": "labels",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "Partial<ChartLabels> | undefined",
+            "typeRef": "type:14c31fd72a2c2ac7a7fd",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "node",
+            "typeText": "((event: ChartHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:66d650d38e6b7d308d32",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          },
+          {
+            "name": "testID",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Test identifier of the root view"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent | null) => void) | undefined",
+            "typeRef": "type:170f27b8f07028fffd08",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent | null",
+                "typeRef": "type:92ec77c4587c7e27430b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the highlighted points change"
+          },
+          {
+            "name": "onPointClick",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent) => void) | undefined",
+            "typeRef": "type:d586363317763d2fd3f3",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point (or bar) is tapped"
+          },
+          {
+            "name": "onPlotClick",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartPlotClickEvent) => void) | undefined",
+            "typeRef": "type:3ab7d8ab926fce010082",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartPlotClickEvent",
+                "typeRef": "type:db60e2cf00fabb558740"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the plot area is tapped where there is no point"
+          },
+          {
+            "name": "onZoom",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((view: ChartView) => void) | undefined",
+            "typeRef": "type:e6c98e88ed542ed60f34",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartView",
+                "typeRef": "type:f1de933b453f8db86ff3"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the user zooms or pans"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    },
+    {
+      "name": "Chart",
+      "support": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles)."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles).",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "Chart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "series",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartSeries[]",
+            "typeRef": "type:deda0bcb88251b63a5de",
+            "required": true,
+            "description": "Data series; each sets its own `type`"
+          },
+          {
+            "name": "yAxis2",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Right value axis of the series with `yAxis: \"right\"` (dual axis charts)"
+          },
+          {
+            "name": "orientation",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "enum",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
+            "typeText": "ChartOrientation | undefined",
+            "typeRef": "type:872af3679a2d7fcf3d26",
+            "default": "vertical",
+            "required": false,
+            "description": "`horizontal` puts the x axis (categories) down the left side"
+          },
+          {
+            "name": "dependencies",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartDependency[] | undefined",
+            "typeRef": "type:824f958ada315e58d00e",
+            "required": false,
+            "description": "Arrows between categories, e.g. the dependencies of a Gantt chart (`ganttSeries(...).dependencies`): elbows from the end of a bar to the start of another"
+          },
+          {
+            "name": "height",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": 320,
+            "required": false,
+            "description": "Height of the chart (the legend included)"
+          },
+          {
+            "name": "width",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "X axis"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Y axis"
+          },
+          {
+            "name": "legend",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartLegendOptions | undefined",
+            "typeRef": "type:860fa553ee4deaac43f8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name (tap toggles a series)"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "typeRef": "type:c08795b3492e4547d570",
+            "required": false,
+            "description": "Tooltip shown on tap / while scrubbing; `false` disables it"
+          },
+          {
+            "name": "crosshair",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Vertical guide line following the finger"
+          },
+          {
+            "name": "annotations",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartAnnotation[] | undefined",
+            "typeRef": "type:f440eb8a958892b1b0c2",
+            "required": false,
+            "description": "Background areas, reference lines and texts"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartInteractionOptions | undefined",
+            "typeRef": "type:f4b160d7dd18649fd178",
+            "default": true,
+            "required": false,
+            "description": "Pinch to zoom, drag to pan when zoomed, double tap to reset; `false` makes the chart static"
+          },
+          {
+            "name": "padding",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the plot area, in pixels"
+          },
+          {
+            "name": "palette",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `chart-series-1..8` tokens, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)"
+          },
+          {
+            "name": "labels",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "Partial<ChartLabels> | undefined",
+            "typeRef": "type:14c31fd72a2c2ac7a7fd",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "node",
+            "typeText": "((event: ChartHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:66d650d38e6b7d308d32",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          },
+          {
+            "name": "testID",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Test identifier of the root view"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent | null) => void) | undefined",
+            "typeRef": "type:170f27b8f07028fffd08",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent | null",
+                "typeRef": "type:92ec77c4587c7e27430b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the highlighted points change"
+          },
+          {
+            "name": "onPointClick",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent) => void) | undefined",
+            "typeRef": "type:d586363317763d2fd3f3",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point (or bar) is tapped"
+          },
+          {
+            "name": "onPlotClick",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartPlotClickEvent) => void) | undefined",
+            "typeRef": "type:3ab7d8ab926fce010082",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartPlotClickEvent",
+                "typeRef": "type:db60e2cf00fabb558740"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the plot area is tapped where there is no point"
+          },
+          {
+            "name": "onZoom",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((view: ChartView) => void) | undefined",
+            "typeRef": "type:e6c98e88ed542ed60f34",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartView",
+                "typeRef": "type:f1de933b453f8db86ff3"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the user zooms or pans"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    },
+    {
+      "name": "LineChart",
+      "support": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles)."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles).",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "LineChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "series",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartSeries[]",
+            "typeRef": "type:deda0bcb88251b63a5de",
+            "required": true,
+            "description": "Series drawn as lines (or areas with `area`) unless they set a `type`"
+          },
+          {
+            "name": "area",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Fills the area under the lines"
+          },
+          {
+            "name": "height",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": 320,
+            "required": false,
+            "description": "Height of the chart (the legend included)"
+          },
+          {
+            "name": "width",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "X axis"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Y axis"
+          },
+          {
+            "name": "legend",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartLegendOptions | undefined",
+            "typeRef": "type:860fa553ee4deaac43f8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name (tap toggles a series)"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "typeRef": "type:c08795b3492e4547d570",
+            "required": false,
+            "description": "Tooltip shown on tap / while scrubbing; `false` disables it"
+          },
+          {
+            "name": "crosshair",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Vertical guide line following the finger"
+          },
+          {
+            "name": "annotations",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartAnnotation[] | undefined",
+            "typeRef": "type:f440eb8a958892b1b0c2",
+            "required": false,
+            "description": "Background areas, reference lines and texts"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartInteractionOptions | undefined",
+            "typeRef": "type:f4b160d7dd18649fd178",
+            "default": true,
+            "required": false,
+            "description": "Pinch to zoom, drag to pan when zoomed, double tap to reset; `false` makes the chart static"
+          },
+          {
+            "name": "padding",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the plot area, in pixels"
+          },
+          {
+            "name": "palette",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `chart-series-1..8` tokens, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)"
+          },
+          {
+            "name": "labels",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "Partial<ChartLabels> | undefined",
+            "typeRef": "type:14c31fd72a2c2ac7a7fd",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "node",
+            "typeText": "((event: ChartHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:66d650d38e6b7d308d32",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          },
+          {
+            "name": "testID",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Test identifier of the root view"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent | null) => void) | undefined",
+            "typeRef": "type:170f27b8f07028fffd08",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent | null",
+                "typeRef": "type:92ec77c4587c7e27430b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the highlighted points change"
+          },
+          {
+            "name": "onPointClick",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent) => void) | undefined",
+            "typeRef": "type:d586363317763d2fd3f3",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point (or bar) is tapped"
+          },
+          {
+            "name": "onPlotClick",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartPlotClickEvent) => void) | undefined",
+            "typeRef": "type:3ab7d8ab926fce010082",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartPlotClickEvent",
+                "typeRef": "type:db60e2cf00fabb558740"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the plot area is tapped where there is no point"
+          },
+          {
+            "name": "onZoom",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((view: ChartView) => void) | undefined",
+            "typeRef": "type:e6c98e88ed542ed60f34",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartView",
+                "typeRef": "type:f1de933b453f8db86ff3"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the user zooms or pans"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    },
+    {
+      "name": "ScatterChart",
+      "support": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles)."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles).",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "ScatterChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "series",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartSeries[]",
+            "typeRef": "type:deda0bcb88251b63a5de",
+            "required": true,
+            "description": "Series drawn as dots unless they set a `type`"
+          },
+          {
+            "name": "height",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": 320,
+            "required": false,
+            "description": "Height of the chart (the legend included)"
+          },
+          {
+            "name": "width",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "X axis"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Y axis"
+          },
+          {
+            "name": "legend",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartLegendOptions | undefined",
+            "typeRef": "type:860fa553ee4deaac43f8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name (tap toggles a series)"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "typeRef": "type:c08795b3492e4547d570",
+            "required": false,
+            "description": "Tooltip shown on tap / while scrubbing; `false` disables it"
+          },
+          {
+            "name": "crosshair",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Vertical guide line following the finger"
+          },
+          {
+            "name": "annotations",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartAnnotation[] | undefined",
+            "typeRef": "type:f440eb8a958892b1b0c2",
+            "required": false,
+            "description": "Background areas, reference lines and texts"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartInteractionOptions | undefined",
+            "typeRef": "type:f4b160d7dd18649fd178",
+            "default": true,
+            "required": false,
+            "description": "Pinch to zoom, drag to pan when zoomed, double tap to reset; `false` makes the chart static"
+          },
+          {
+            "name": "padding",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the plot area, in pixels"
+          },
+          {
+            "name": "palette",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `chart-series-1..8` tokens, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)"
+          },
+          {
+            "name": "labels",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "Partial<ChartLabels> | undefined",
+            "typeRef": "type:14c31fd72a2c2ac7a7fd",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "node",
+            "typeText": "((event: ChartHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:66d650d38e6b7d308d32",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          },
+          {
+            "name": "testID",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Test identifier of the root view"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent | null) => void) | undefined",
+            "typeRef": "type:170f27b8f07028fffd08",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent | null",
+                "typeRef": "type:92ec77c4587c7e27430b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the highlighted points change"
+          },
+          {
+            "name": "onPointClick",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent) => void) | undefined",
+            "typeRef": "type:d586363317763d2fd3f3",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point (or bar) is tapped"
+          },
+          {
+            "name": "onPlotClick",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartPlotClickEvent) => void) | undefined",
+            "typeRef": "type:3ab7d8ab926fce010082",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartPlotClickEvent",
+                "typeRef": "type:db60e2cf00fabb558740"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the plot area is tapped where there is no point"
+          },
+          {
+            "name": "onZoom",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((view: ChartView) => void) | undefined",
+            "typeRef": "type:e6c98e88ed542ed60f34",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartView",
+                "typeRef": "type:f1de933b453f8db86ff3"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the user zooms or pans"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "import { createChart } from \"minerva-design/charts/core\";\n\n// \"auto\" (default): WebGPU, then WebGL2, then WebGL, then Canvas2D\nconst chart = createChart(container, { series, renderer: \"auto\" });\nchart.ready.then((kind) => showRenderer(kind)); // \"webgpu\" | \"webgl2\" | \"webgl\" | \"canvas2d\" | null\n// fired again when the GPU is lost and the chart falls back\nchart.on(\"renderer\", (kind) => showRenderer(kind));\n\n// force a backend (also accepted on every React chart: renderer=\"webgl\")\ncreateChart(other, { series, renderer: \"canvas2d\" });",
+      "language": "ts"
+    },
+    {
+      "source": "import {\n  createChart,\n  getDefaultChartRenderer,\n  setDefaultChartRenderer,\n  subscribeDefaultChartRenderer,\n} from \"minerva-design/charts/core\";\n\n// every chart with renderer unset or \"auto\" (React, Vue, Angular,\n// Web Components) switches to WebGL2, including the charts on screen\nsetDefaultChartRenderer(\"webgl2\");\ngetDefaultChartRenderer(); // \"webgl2\"\n\n// e.g. keep a renderer picker in sync\nconst unsubscribe = subscribeDefaultChartRenderer((preference) => {\n  picker.value = preference;\n});\n\n// a chart's own option still wins\ncreateChart(container, { series, renderer: \"canvas2d\" });\n\nsetDefaultChartRenderer(\"auto\"); // back to WebGPU -> WebGL2 -> WebGL -> Canvas2D",
+      "language": "ts"
+    },
+    {
+      "source": "const n = 1_000_000;\nconst x = new Float64Array(n); // timestamps or indexes, sorted\nconst y = new Float32Array(n);\n// ...fill x and y once\n\n// fastest: typed-array columns, copied in one go (no per-point conversion)\nconst fast = [{ id: \"signal\", name: \"Signal\", data: { x, y } }];\n\n// slower: plain arrays in columns, then [x, y] tuples,\n// then { x, y } objects (converted point by point)\nconst slow = [{ name: \"Signal\", data: points.map((p) => ({ x: p.t, y: p.v })) }];",
+      "language": "ts"
+    },
+    {
+      "source": "import { useMemo } from \"react\";\nimport { LineChart } from \"minerva-design/charts\";\n\nfunction Telemetry({ samples }: { samples: Samples }) {\n  // build the columns once per data set, not on every render\n  const series = useMemo(\n    () => [{ id: \"cpu\", name: \"CPU\", data: { x: samples.time, y: samples.cpu } }],\n    [samples],\n  );\n  // inline props are fine: they are compared shallowly and skip setOptions\n  return <LineChart series={series} yAxis={{ min: 0, max: 100 }} height={320} />;\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "let data: [number, number][] = [];\nlet queued: [number, number][] = [];\n\nsocket.onmessage = (event) => {\n  queued.push(JSON.parse(event.data));\n};\n\n// one update per frame, however many samples arrived\nfunction flush() {\n  if (queued.length) {\n    // a new array: arrays mutated in place are not read again\n    data = [...data, ...queued].slice(-50_000);\n    queued = [];\n    chart.setOptions({ ...base, series: [{ id: \"cpu\", name: \"CPU\", data }] });\n  }\n  requestAnimationFrame(flush);\n}\nrequestAnimationFrame(flush);",
+      "language": "ts"
+    },
+    {
+      "source": "import {\n  createChartController,\n  scenePrimitives,\n} from \"minerva-design/charts/core\";\n\nconst controller = createChartController({\n  options,\n  measureText: (text, font) => measure(text, font),\n  onInvalidate: () => draw(),\n});\ncontroller.setSize(360, 240);\n\nfunction draw() {\n  const scene = controller.getScene();\n  if (!scene) return;\n  // fewer, coarser shapes for a slow host (e.g. one native view per shape)\n  const shapes = scenePrimitives(scene, {\n    maxDots: 1500, // per series: then merged per cell\n    maxBars: 600, // per series: then merged per pixel column\n    columnWidth: 3, // lines: at most 4 points per 3 px column\n  });\n  paint(shapes);\n}",
+      "language": "ts"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Chart performance",
+      "description": "How the chart engine stays fast with millions of points, with live showcases: renderer selection and fallback, data formats, what scales with the visible range, decimation, hit testing, React and streaming tips, and the budgets of mini-programs and React Native.",
+      "intro": {
+        "title": "Overview",
+        "text": "The engine does the expensive work once per data set and keeps every later step proportional to what is on screen. Data arrays are normalized into Float64Array columns, turned into GPU buffers, and reused as long as you pass the same references; hovering, zooming and panning then only touch the visible points or a transform. This page explains what is fast, what costs a full pass over the data, and how to keep your charts in the fast path.",
+        "pages": "The options are documented on <charts>Chart</charts> (React) and <engine>Chart engine</engine> (framework-free). The four backends are compared side by side, with live benchmarks and scores, on <renderers>Renderer comparison</renderers>."
+      },
+      "renderers": {
+        "title": "Renderers and fallback",
+        "text": "Cartesian charts (line, area, bar, scatter, candlestick, heatmap, sparkline, quadrant) draw their data with the GPU and their text (axes, labels, legend, tooltip) with the DOM. The renderer option chooses the backend.",
+        "auto": "auto (default) tries WebGPU, then WebGL2, then WebGL, then Canvas2D, and keeps the first one that starts. The ready promise resolves with the chosen kind, and onRendererChange / the renderer event reports it.",
+        "webgl": "WebGL (1) is the safety net for older GPUs and drivers and for browsers without WebGL2: the same marks, colors and antialiasing, drawn with GLSL ES 1.0 shaders and instanced through the ANGLE_instanced_arrays extension (available virtually everywhere). Without that extension the chart moves on to Canvas2D.",
+        "software": "With auto, software GPUs are skipped because they are slower than Canvas2D: WebGPU rejects fallback adapters, and WebGL2 and WebGL are created with failIfMajorPerformanceCaveat and rejected when the renderer name reveals a software rasterizer (SwiftShader, llvmpipe, softpipe, Microsoft Basic Render Driver…). Virtual machines and headless browsers therefore usually end up on Canvas2D.",
+        "forced": "renderer: \"webgpu\", \"webgl2\", \"webgl\" or \"canvas2d\" forces a backend, software GPUs included; if it cannot start, the next one in the chain is used. Canvas2D is a good choice for small charts and screenshots; GPUs win from tens of thousands of points.",
+        "lost": "When the GPU is lost (driver reset, too many contexts), the chart falls back to the next backend, redraws, and fires the renderer event again. Browsers limit live WebGL contexts (about 16): a dashboard with dozens of GPU charts should destroy the ones that leave the screen or use Canvas2D for the small ones."
+      },
+      "global": {
+        "title": "One renderer for every chart",
+        "text": "setDefaultChartRenderer() sets the backend of every chart whose renderer is unset or \"auto\", in every framework: the default lives on globalThis, so the React components, the Vue and Angular wrappers and the Web Components share it, even when a page bundles several copies of the engine. Charts already on screen follow a change live: they recreate their renderer in place, keeping their data, zoom and state. subscribeDefaultChartRenderer() tells you about changes, e.g. to keep a picker in sync.",
+        "rules": "A chart's own renderer option always wins. A backend forced through the default counts as forced: it may run on a software GPU, and falls back to the next backend when it cannot start. \"auto\" restores the automatic detection.",
+        "docs": "The renderer bar at the top of the chart pages of these docs does exactly that: pick Canvas2D or WebGL there and every chart of the page switches to it, with a badge under each demo showing the backend actually in use. Here, the Auto option of each showcase follows it."
+      },
+      "showcase": {
+        "title": "Live showcases",
+        "text": "The examples below draw up to a million marks in your browser. Their data is generated once, into typed arrays with a seeded random generator, when the example comes near the screen, and each animation stops while its example is off screen. Pick a backend to force it — the chart tells which one actually started — and let the camera tour zoom in and out, or take over with the mouse.",
+        "fps": "FPS and frame time: how often the page paints while the chart moves. Displays refresh 60 times per second or more; below 30 the motion feels sluggish.",
+        "work": "Main thread: the JavaScript, style, layout and paint time of each frame, the chart's draw calls included (the GPU itself works in parallel). The lower, the more room is left for the rest of the page.",
+        "startup": "First frame: from handing the data (or a new backend) to the chart to the first painted frame — normalizing the columns, building the GPU buffers and drawing."
+      },
+      "demos": {
+        "line": {
+          "title": "1,000,000-point line",
+          "description": "Four sensors sampled every second for almost three days: 4 × 250,000 points in typed-array columns sharing one x column. The tour zooms from the whole data set down to a few minutes, and the y axis follows the visible range (onZoom + setView)."
+        },
+        "scatter": {
+          "title": "1,000,000-point scatter",
+          "description": "Ten clusters of 100,000 points (blobs, rings, spiral arms), one color each. Every dot is drawn on each frame — one instanced draw call per cluster on the GPU. Hover a dot to see the spatial index at work, click the legend to hide clusters."
+        },
+        "candles": {
+          "title": "200,000 candlesticks",
+          "description": "One-minute OHLC candles over about 140 days, as open / high / low / close columns. Zoom from the whole history down to single candles; wicks and bodies are two instanced bar draws."
+        },
+        "heatmap": {
+          "title": "1,000,000-cell heatmap",
+          "description": "A 1000 × 1000 spectrogram (time × frequency, level in dB): a chirp and its harmonics, a warbling tone and periodic clicks. Cells keep their gaps while they are large and merge seamlessly once they are smaller than a pixel."
+        },
+        "streaming": {
+          "title": "Real-time streaming",
+          "description": "Twelve channels receiving 2,000 samples per second each (24,000 points/s) in a 10-second sliding window: preallocated typed arrays, subarray() views and one setOptions per frame, with the framework-free createChart."
+        },
+        "compare": {
+          "title": "Renderer comparison",
+          "description": "The same million points on the four backends. Until you run the benchmark, each panel shows a light Canvas2D preview; the run then mounts the full data set on one backend at a time, follows the same zoom path for three seconds and compares the frame rates and the main-thread time per frame. A GPU backend that would run on a software GPU here is skipped (it would block the page), and a backend that cannot start shows the one it fell back to."
+        }
+      },
+      "data": {
+        "renderer": "Renderer",
+        "renderers": {
+          "auto": "Auto",
+          "webgpu": "WebGPU",
+          "webgl2": "WebGL2",
+          "webgl": "WebGL",
+          "canvas2d": "Canvas2D",
+          "page": "Page ({{backend}})"
+        },
+        "tour": "Camera tour",
+        "stream": "Stream",
+        "stats": {
+          "renderer": "Renderer",
+          "fps": "FPS",
+          "frame": "Frame time",
+          "work": "Main thread",
+          "startup": "First frame",
+          "points": "Points",
+          "cells": "Cells",
+          "candles": "Candles",
+          "ingest": "Ingest"
+        },
+        "ms": "{{value}} ms",
+        "fps": "{{value}} fps",
+        "perSecond": "{{value}}/s",
+        "db": "{{value}} dB",
+        "loading": "Generating {{value}} data points…",
+        "status": {
+          "starting": "Starting the renderer…",
+          "auto": "Auto picked {{backend}}, the best backend available here.",
+          "autoCanvas": "Auto picked {{backend}}: no hardware-accelerated GPU is available here (software GPUs are skipped).",
+          "forced": "Drawn with {{backend}}, as requested.",
+          "fallback": "{{requested}} could not start here: fell back to {{backend}}.",
+          "slow": "Tour paused: a frame takes {{ms}} of main thread with this backend. Turn it back on or pick another backend.",
+          "page": "Drawn with {{backend}}, the renderer selected for the page.",
+          "pageSoftware": "{{requested}}, selected for the page, runs on a software GPU here: this demo uses {{backend}} so that the page stays responsive. Pick {{requested}} in this demo to force it."
+        },
+        "hintX": "Ctrl / ⌘ + wheel or pinch to zoom, drag to pan, double-click to reset. The y axis follows the visible range.",
+        "hintXY": "Ctrl / ⌘ + wheel or pinch to zoom both axes, drag to pan, double-click to reset.",
+        "hintStream": "The oldest samples leave the window as new ones arrive; hover to read a channel.",
+        "sensor": "Sensor {{index}}",
+        "temperature": "Temperature (°C)",
+        "lineAria": "Four sensors, 1,000,000 readings",
+        "cluster": "Cluster {{index}}",
+        "scatterAria": "Ten clusters, 1,000,000 points",
+        "market": "Index",
+        "price": "Price",
+        "candlesAria": "200,000 one-minute candlesticks",
+        "level": "Level",
+        "time": "Time (s)",
+        "frequency": "Frequency (Hz)",
+        "heatmapAria": "Spectrogram of 1,000 × 1,000 cells",
+        "channel": "Channel {{index}}",
+        "streamAria": "{{value}} channels streaming in real time",
+        "compareAria": "{{backend}}: the same data set",
+        "compare": {
+          "dataset": "Data set",
+          "line": "Line · 1M points",
+          "scatter": "Scatter · 1M points",
+          "run": "Run benchmark",
+          "fallback": "→ {{backend}} (fallback)",
+          "measuring": "Measuring…",
+          "results": "Main-thread time per frame (shorter is better) and frame rate",
+          "running": "Measuring {{backend}}…",
+          "done": "Done: the same zoom path on the same data, one backend at a time.",
+          "idle": "Run the benchmark to measure each backend on this device.",
+          "hint": "Each run mounts one chart with all the points for 3 s, then puts its preview back.",
+          "fellBack": "{{requested}} → {{backend}}",
+          "preview": "Preview: {{value}} points drawn with Canvas2D. Run the benchmark to draw the million.",
+          "previewAria": "{{backend}}: preview of the data set",
+          "live": "Live: {{value}} points drawn with {{backend}}",
+          "software": "Software GPU: skipped (would block the page)",
+          "runAnyway": "Run anyway",
+          "skipped": "Skipped",
+          "skippedNote": "Skipped (software GPU): {{backends}}."
+        }
+      },
+      "formats": {
+        "title": "Data formats, fastest first",
+        "text": "Every series is normalized into columns once. The cost of that pass depends on the format you give:",
+        "typed": "Typed-array columns ({ x: Float64Array, y: Float32Array }): copied with a single set() call, no per-point conversion. open / high / low / value columns given as Float64Array are used as they are. Best for 100k+ points.",
+        "columns": "Plain-array columns ({ x: number[], y: number[] }): one loop of numeric copies; categories and Date values are converted here.",
+        "tuples": "[x, y] tuples: one small array read per point.",
+        "objects": "{ x, y, … } objects: the most flexible (size, color, label, open/high/low, value) and the slowest, every field being read per point. Fine for a few thousand points.",
+        "identity": "Normalized data is cached by series id (or index) and array identity: passing the same array again costs nothing, while an array mutated in place is not read again. Give series an id when their order may change, and sort x ascending: sorted data unlocks the binary searches below."
+      },
+      "visible": {
+        "title": "What scales with the visible range",
+        "text": "After the first pass, the work of a frame depends on what is visible rather than on the size of the data set:",
+        "sorted": "Lines, areas and bars with sorted x: the visible range is found by binary search, so only those points are drawn and hit tested. Hover lookups are O(log n).",
+        "unsorted": "Scatter, candlestick and heatmap series are drawn entirely (on the GPU this is one instanced draw call); unsorted lines too.",
+        "decimation": "Canvas2D decimates lines and areas to the min / max of each pixel column (at most 4 points per column), so a million points draw as a few thousand segments with the same silhouette.",
+        "scatter": "Canvas2D rasterizes scatter series above 20,000 points straight into an ImageData buffer instead of drawing paths; canvases without a scratch canvas (mini-programs) draw one square per occupied cell.",
+        "hit": "Scatter hit testing uses a uniform grid index (about four points per cell, built lazily and cached per data array), so hovering 100k dots stays below a millisecond.",
+        "dom": "The DOM is updated only on change: the legend is rebuilt when its entries change, the tooltip and hover markers are reused while the pointer stays on the same points, and resolved theme colors are cached until the theme changes."
+      },
+      "zoom": {
+        "title": "Zoom and pan",
+        "gpu": "On WebGPU, WebGL2 and WebGL, zooming and panning only change a transform uniform: no buffer is rebuilt, whatever the number of points. Buffers store positions relative to an origin in float32; when you zoom in more than about 2000× far from that origin, the chart re-centers and rebuilds the buffers once to keep sub-pixel precision.",
+        "canvas": "On Canvas2D every frame redraws the visible range, decimated per pixel column: cost grows with the visible points, capped by the plot width for sorted lines and areas. Large scatter sets stay O(n) per frame there; prefer a GPU backend or fewer points for interactive scatter plots."
+      },
+      "scale": {
+        "title": "How far it goes",
+        "text": "Measured by the engine's benchmark suite (Node, CI-like machine; your hardware will differ):",
+        "line": "1,000,000-point line: building the model and the GPU items takes about 15 ms.",
+        "scatter": "100,000-point scatter: building it and running 1,000 hit tests takes about 13 ms.",
+        "update": "setOptions with identical options: about 0.03 ms, nothing rebuilt; moving the tooltip over the same points: about 0.03 ms.",
+        "guidance": "Guidance: lines and areas up to several million sorted points (typed arrays) stay interactive on a GPU; keep scatter plots around 100k–500k points on the GPU and 20k–50k on Canvas2D; bars and candlesticks are readable up to a few thousand visible marks, so aggregate (daily candles, monthly bars) before drawing more; heatmaps up to tens of thousands of cells."
+      },
+      "react": {
+        "title": "React tips",
+        "memo": "Keep data references stable: build series and their data with useMemo (or outside the component), keyed on the data they depend on. A new data array is a new data set and costs a full pass.",
+        "shallow": "Props are compared shallowly before calling setOptions: top-level options by identity or one level deep, and every series field by identity. Inline objects such as yAxis={{ min: 0 }} or series={[{ name, data }]} are fine as long as data itself is stable; an identical render then costs nothing.",
+        "typed": "Do not recreate typed arrays on every render (new Float64Array(…) in the render body): allocate them when the data arrives and keep them in state or a ref.",
+        "shapes": "Shape charts (pie, donut, radar, gauge, funnel, treemap) memoize their options too, but every change animates: keep data, padding and palette stable to avoid replaying the animation."
+      },
+      "streaming": {
+        "title": "Streaming updates",
+        "text": "To append points, pass a new array (or new typed arrays) and call setOptions: the changed series is normalized again in O(n), the others are reused. Keep a sliding window (e.g. the last 50,000 points) so the cost stays bounded.",
+        "batch": "Batch samples and update at most once per frame (requestAnimationFrame) or on a timer, rather than once per message. For very fast feeds with typed arrays, preallocate a larger buffer and pass subarray() views of the filled part: a new view is a new identity but the memory is reused."
+      },
+      "shapes": {
+        "title": "Shape charts or cartesian charts",
+        "text": "Pie, donut, rose, radar, gauge, funnel, treemap, Sankey, sunburst, chord and the other shape charts use the same GPU backends as the other charts (WebGPU → WebGL2 → WebGL → Canvas2D, chosen by the renderer option or setDefaultChartRenderer): their arcs, polygons and ribbons are tessellated into triangles and drawn with 4x MSAA, non-convex fills go through the stencil buffer (nonzero winding), and the text is drawn on a 2D canvas above the shapes. Canvas2D remains the fallback when no GPU backend starts, and the only backend in mini-programs (createCanvasShapeChart).",
+        "gpu": "Choose a cartesian chart (line, area, bar, scatter, candlestick, heatmap) for many points, zooming and panning, or live data.",
+        "canvas": "Choose a shape chart for parts of a whole, profiles, a single KPI or hierarchies — dozens to a few hundred marks. Beyond that, a treemap or a heatmap of aggregated data reads better than thousands of slices. Many small shape charts on one page stay cheap: on WebGPU they share one device; on WebGL each holds a context, and past the browser limit (about 16) the least recently drawn off-screen ones are suspended and restored when they scroll back. renderer=\"canvas2d\" uses no GPU context at all."
+      },
+      "platforms": {
+        "title": "Mini-programs and React Native",
+        "mini": "<mini>Mini-program charts</mini> use createCanvasChart (and createCanvasShapeChart for shape charts) on a canvas type=\"2d\": always Canvas2D, on slower JavaScript engines. Per-pixel decimation keeps lines fast, but aim for tens of thousands of points rather than millions, avoid passing large arrays through setData (it serializes them), and keep scatter plots to a few thousand dots.",
+        "native": "On <native>React Native</native> the charts are drawn with Views only, so the number of shapes is capped: about 1,200 line points in total, 800 dots per series (2,000 in total) and 600 bars per series (1,500 rects in total, candlesticks counting two each, heatmap cells one), 200 strips per area. Above these budgets dots are merged per cell and bars per pixel column — the picture stays right but details are lost, and the data is still processed in JavaScript, so aggregate first.",
+        "primitives": "For your own renderer, createChartController and scenePrimitives give the same budgets: scenePrimitives(scene, { maxDots, maxBars, columnWidth, dotCell }) returns decimated shapes (defaults: 4000 dots and 2000 bars per series, 1 px columns)."
+      },
+      "wc": {
+        "demos": {
+          "million": {
+            "title": "A million points",
+            "description": "One million samples in a typed array, decimated on the GPU at every zoom level; zoom down to single samples."
+          },
+          "scatter": {
+            "title": "200,000 dots",
+            "description": "200,000 points from two typed arrays, drawn by the GPU and hovered through a spatial index; zoom on both axes."
+          }
+        }
+      }
+    }
+  }
+}

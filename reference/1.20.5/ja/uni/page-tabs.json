@@ -1,0 +1,374 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "ja",
+  "renderer": "uni",
+  "page": "page-tabs",
+  "title": "PageTabs ページタブ",
+  "description": "開いているアプリのページを並べたバー（ルートナビゲーションであり ARIA の tablist ではありません）。ルート、クローズ、未保存の変更のガードはアプリ側が担います。項目はフラットな角丸の面で、長いタイトルは省略されツールチップで全文が表示されます。現在のページは常に表示範囲内に保たれ、リストがはみ出すとスクロールボタンが現れます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "PageTab",
+      "support": {
+        "status": "beta",
+        "notes": "Route label/icon/action slots, onSelect, active current-page state; disabled label leaves independent action enabled. Truncated labels use a native title attribute; hover tooltip availability depends on host. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Route label/icon/action slots, onSelect, active current-page state; disabled label leaves independent action enabled. Truncated labels use a native title attribute; hover tooltip availability depends on host. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "PageTab"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "value",
+            "typeText": "string",
+            "required": true
+          },
+          {
+            "name": "label",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "active",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "closable",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "icon",
+            "typeText": "string | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "close",
+            "typeText": "[value: string]",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "typeText": "string",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "select",
+            "typeText": "[]",
+            "parameters": []
+          },
+          {
+            "name": "click",
+            "typeText": "[value: string]",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "typeText": "string",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "icon",
+            "typeText": "{}"
+          },
+          {
+            "name": "default",
+            "typeText": "{}"
+          },
+          {
+            "name": "action",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "PageTabs",
+      "support": {
+        "status": "beta",
+        "notes": "Controlled/uncontrolled selection, closable tabs, actions, dirty/icons/disabled, scrolling overflow arrows and active auto-scroll, onSelect callbacks and removal focus recovery. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Controlled/uncontrolled selection, closable tabs, actions, dirty/icons/disabled, scrolling overflow arrows and active auto-scroll, onSelect callbacks and removal focus recovery. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "PageTabs"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "activeValue",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "value",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "defaultValue",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "scrollLeftLabel",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "scrollRightLabel",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "items",
+            "typeText": "{ value: string; label: string; disabled?: boolean | undefined; closable?: boolean | undefined; content?: string | undefined; }[] | undefined",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "close",
+            "typeText": "any[]"
+          },
+          {
+            "name": "change",
+            "typeText": "any[]"
+          },
+          {
+            "name": "update:modelValue",
+            "typeText": "any[]"
+          }
+        ],
+        "slots": [
+          {
+            "name": "tabs",
+            "typeText": "{}"
+          },
+          {
+            "name": "default",
+            "typeText": "{}"
+          },
+          {
+            "name": "actions",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:PageTabs": {
+      "kind": "cssVars",
+      "source": "react/src/components/PageTabs",
+      "vars": [
+        {
+          "name": "--page-tabs-height",
+          "description": "Height of the tab bar"
+        },
+        {
+          "name": "--page-tabs-background",
+          "description": "Background of the tab bar"
+        },
+        {
+          "name": "--page-tabs-gap",
+          "description": "Space between the tabs"
+        },
+        {
+          "name": "--page-tabs-item-height",
+          "description": "Height of a tab"
+        },
+        {
+          "name": "--page-tabs-item-min-width",
+          "description": "Minimum width of a tab"
+        },
+        {
+          "name": "--page-tabs-item-max-width",
+          "description": "Maximum width of a tab (the label truncates)"
+        },
+        {
+          "name": "--page-tabs-item-radius",
+          "description": "Corner radius of a tab (defaults to --radius-lg)"
+        },
+        {
+          "name": "--page-tabs-selected-background",
+          "description": "Background of the active tab"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "PageTabs ページタブ",
+      "description": "開いているアプリのページを並べたバー（ルートナビゲーションであり ARIA の tablist ではありません）。ルート、クローズ、未保存の変更のガードはアプリ側が担います。項目はフラットな角丸の面で、長いタイトルは省略されツールチップで全文が表示されます。現在のページは常に表示範囲内に保たれ、リストがはみ出すとスクロールボタンが現れます。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "各 PageTab はラベルボタン（アクティブ時は aria-current=\"page\"）と、閉じるボタンなどの任意の独立したアクションを持ちます。フォーカス中の項目を閉じると、フォーカスは現在のページに移ります。"
+        },
+        "context-menu": {
+          "title": "コンテキストメニューとアクション",
+          "description": "項目を ContextMenu で包むとページごとのコマンドを提供できます。actions はスクロールするリストの外側にグローバルなコントロールを描画します。"
+        },
+        "overflow": {
+          "title": "はみ出しと無効化",
+          "description": "ページがはみ出すとスクロールボタンが表示され、アクティブなページが表示範囲にスクロールされます。無効なページは選択できず、ツールチップも表示されません。"
+        }
+      },
+      "api": {
+        "PageTabsProps": {
+          "aria-label": "ナビゲーションランドマークのアクセシブルなラベル（例: 「開いているページ」）",
+          "activeValue": "現在のルートに対応する項目の値。これ（または項目の集合）が変わると、アクティブな項目が表示範囲にスクロールされます",
+          "children": "PageTab の項目",
+          "actions": "スクロールするリストの後に表示するグローバルなアクション（例: ページメニュー）",
+          "scrollLeftLabel": "「左へスクロール」ボタンのアクセシブルなラベル",
+          "scrollRightLabel": "「右へスクロール」ボタンのアクセシブルなラベル"
+        },
+        "PageTabProps": {
+          "ref": "項目のラッパー要素への ref",
+          "value": "ページの識別子（data-value として公開）",
+          "label": "ページのタイトル。省略記号で切り詰められ、ツールチップで全文が表示されます",
+          "active": "項目を現在のページとしてマークします（aria-current=\"page\"）",
+          "disabled": "ラベルボタンを無効にします（独立したアクションは自身の状態を保ちます）",
+          "icon": "ラベルの前に表示するアイコン",
+          "action": "ラベルの横に描画する独立したコントロール（例: 閉じる IconButton）",
+          "onSelect": "ラベルボタンがアクティブ化されたときに呼び出されます"
+        }
+      },
+      "cssVars": {
+        "--page-tabs-height": "タブバーの高さ",
+        "--page-tabs-background": "タブバーの背景",
+        "--page-tabs-gap": "タブ間の間隔",
+        "--page-tabs-item-height": "タブの高さ",
+        "--page-tabs-item-min-width": "タブの最小幅",
+        "--page-tabs-item-max-width": "タブの最大幅（ラベルは省略表示）",
+        "--page-tabs-item-radius": "タブの角丸（既定値は --radius-lg）",
+        "--page-tabs-selected-background": "アクティブなタブの背景"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "active-value は現在のページを示し、minerva-select に追従します。closable は minerva-close を発火する閉じるボタンを追加します。ページを閉じるには要素を削除します。icon スロットはラベルの前にアイコンを表示します。"
+          },
+          "actions": {
+            "title": "アクション",
+            "description": "actions スロットはスクロールするリストの外にグローバルな操作を表示します（ここでは新しいページを開くボタン）。各項目の action スロットにはピン留めトグルなど独立した操作を置けます。"
+          },
+          "overflow": {
+            "title": "オーバーフローと無効化",
+            "description": "ページがあふれるとスクロールボタンが表示され（scroll-left-label / scroll-right-label で名前を付けます）、アクティブなページが表示範囲にスクロールされます。無効なページは選択できません。"
+          }
+        },
+        "minerva-page-tabs": {
+          "props": {
+            "items": "子要素の <minerva-page-tab>（読み取り専用）。"
+          },
+          "events": {
+            "minerva-select": "<minerva-page-tab> からバブリング：ページが選択されました（detail: { value }）。",
+            "minerva-close": "<minerva-page-tab> からバブリング：ページの閉じるボタンが押されました（detail: { value }）。"
+          },
+          "slots": {
+            "default": "<minerva-page-tab> 項目。",
+            "actions": "スクロールリストの後に置くグローバルな操作（ページメニューなど）。"
+          },
+          "cssVars": {
+            "--icon-button-color": "閉じる / スクロールボタンのアイコン色。",
+            "--icon-button-hover-bg": "閉じる / スクロールボタンのホバー時の背景。",
+            "--icon-button-pressed-color": "押下状態のトグルのアイコン色。",
+            "--icon-button-pressed-bg": "押下状態のトグルの背景。",
+            "--icon-button-size": "閉じる / スクロールボタンの幅と高さ。",
+            "--icon-button-icon-size": "ボタン内アイコンのフォントサイズ。",
+            "--icon-button-radius": "square 形状の角丸半径（既定は --radius-lg）。"
+          }
+        },
+        "minerva-page-tab": {
+          "props": {
+            "closable": "minerva-close を発火する組み込みの閉じるボタンを表示します。",
+            "closeLabel": "閉じるボタンのアクセシブルなラベル（既定はローカライズされた「<label> を閉じる」）。"
+          },
+          "events": {
+            "minerva-select": "ラベルボタンが押されました（detail: { value }）。キャンセル可能：preventDefault() でストリップの active-value を維持します。",
+            "minerva-close": "組み込みの閉じるボタンが押されました（detail: { value }）。ページを閉じるには要素を削除します。"
+          },
+          "slots": {
+            "icon": "ラベルの前に表示するアイコン。",
+            "action": "ラベルの横に置く独立した操作（閉じる・ピン留めボタンなど）。"
+          },
+          "cssVars": {
+            "--icon-button-color": "閉じる / スクロールボタンのアイコン色。",
+            "--icon-button-hover-bg": "閉じる / スクロールボタンのホバー時の背景。",
+            "--icon-button-pressed-color": "押下状態のトグルのアイコン色。",
+            "--icon-button-pressed-bg": "押下状態のトグルの背景。",
+            "--icon-button-size": "閉じる / スクロールボタンの幅と高さ。",
+            "--icon-button-icon-size": "ボタン内アイコンのフォントサイズ。",
+            "--icon-button-radius": "square 形状の角丸半径（既定は --radius-lg）。"
+          },
+          "methods": {
+            "focus": "ラベルボタンにフォーカスします。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

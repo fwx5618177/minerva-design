@@ -1,0 +1,367 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "fr",
+  "renderer": "taro",
+  "page": "code-block",
+  "title": "CodeBlock",
+  "description": "Un bloc de texte préformaté en lecture seule (journaux, charges utiles, configuration) dans une région défilante nommée et focalisable au clavier.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "CodeBlock",
+      "support": {
+        "status": "beta",
+        "notes": "Safe native navigation, description/list composition, text wrapping and syntax-highlighted code (nested Text, opt-in line numbers / language label, character-range marks with tap) with native clipboard copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Safe native navigation, description/list composition, text wrapping and syntax-highlighted code (nested Text, opt-in line numbers / language label, character-range marks with tap) with native clipboard copying. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Navigator routes must be valid host routes; browser external-link behavior and HTML prose selectors are not equivalent. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "CodeBlock"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "code",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "language",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Language of the code: highlights its syntax (nested Text with `mn-code-token-<type>` classes); without it the text is plain. `\"auto\"` detects it from the code (`detectCodeLanguage`, \"plain\" when unsure), shown by the label too"
+          },
+          {
+            "name": "copyable",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "wrap",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "maxHeight",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "required": false
+          },
+          {
+            "name": "highlight",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Highlights the syntax of `language` (false: plain text)"
+          },
+          {
+            "name": "showLineNumbers",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Numbers the lines (aria-hidden gutter; one Text per line)"
+          },
+          {
+            "name": "showLanguage",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows the `language` as a small label in the toolbar"
+          },
+          {
+            "name": "marks",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "array",
+            "typeText": "readonly CodeMark[] | undefined",
+            "typeRef": "type:e3bf662d746e3e0cae53",
+            "required": false,
+            "description": "Character ranges to mark (saved highlights, annotations): nested Text with the `mn-code-mark` class and the mark's background over the token colors (the copied text stays the raw code). `start` / `end` are UTF-16 offsets into `code`, clamped to it; empty ranges are ignored. Where marks overlap, the later one wins. `color`: a theme color name (a translucent tint) or any CSS color (default: translucent yellow)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onMarkClick",
+            "source": "packages/taro/src/display.tsx",
+            "kind": "function",
+            "typeText": "((mark: CodeMark) => void) | undefined",
+            "typeRef": "type:8ba12c70c3842b17f668",
+            "parameters": [
+              {
+                "name": "mark",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "CodeMark",
+                "typeRef": "type:b9f2b083b85896c2884a"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "A mark was tapped: the item of `marks` (the topmost where they overlap)"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:CodeBlock": {
+      "kind": "cssVars",
+      "source": "react/src/components/CodeBlock",
+      "vars": [
+        {
+          "name": "--code-block-padding",
+          "description": "Inner padding"
+        },
+        {
+          "name": "--code-block-radius",
+          "description": "Corner radius (defaults to --radius-md)"
+        },
+        {
+          "name": "--code-block-bg",
+          "description": "Background color"
+        },
+        {
+          "name": "--code-block-border-color",
+          "description": "Border color"
+        },
+        {
+          "name": "--code-block-font-size",
+          "description": "Font size of the code"
+        },
+        {
+          "name": "--code-block-max-height",
+          "description": "Maximum height before the block scrolls (default: none)"
+        },
+        {
+          "name": "--code-block-line-number-color",
+          "description": "Color of the line numbers"
+        },
+        {
+          "name": "--code-block-mark-bg",
+          "description": "Default background of the marks (default: a translucent yellow)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "CodeBlock",
+      "description": "Un bloc de texte préformaté en lecture seule (journaux, charges utiles, configuration) dans une région défilante nommée et focalisable au clavier.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Le texte est rendu tel quel et les longues lignes reviennent à la ligne par défaut ; language=\"json\" colore la syntaxe."
+        },
+        "languages": {
+          "title": "Langages",
+          "description": "language choisit la grammaire : JavaScript / TypeScript (JSX, TSX), JSON, CSS, HTML, Bash, Python, YAML, SQL, diff et Markdown (les alias courants comme ts, sh, py, yml, md fonctionnent). showLanguage ajoute une petite étiquette ; les autres langages sont rendus en texte brut."
+        },
+        "auto-language": {
+          "title": "Langage automatique",
+          "description": "Pour du code dont le langage est inconnu (par ex. un <pre> d'EPUB sans classe), language=\"auto\" le détecte à partir du texte par une heuristique rapide sur ses 4 premiers Ko, puis le colore et affiche le langage détecté dans l'étiquette ; en cas de doute il reste « plain ». Les marques fonctionnent toujours. detectCodeLanguage de minerva-design/core effectue la même détection seule."
+        },
+        "line-numbers": {
+          "title": "Numéros de ligne",
+          "description": "showLineNumbers numérote les lignes dans une marge masquée aux lecteurs d'écran ; les numéros ne sont ni sélectionnés ni copiés avec le code."
+        },
+        "no-wrap": {
+          "title": "Journaux défilants",
+          "description": "wrap={false} garde les lignes intactes avec défilement horizontal ; maxHeight limite la hauteur."
+        },
+        "copyable": {
+          "title": "Bouton de copie",
+          "description": "copyable ajoute un bouton de copie en haut à droite ; le résultat (« Copié » / « Échec de la copie ») s'affiche sur le bouton et est annoncé aux lecteurs d'écran. onCopied reçoit le texte copié après une copie réussie."
+        },
+        "marks": {
+          "title": "Marques (surlignages enregistrés)",
+          "description": "marks pose des plages de caractères sur la coloration syntaxique (positions dans le code ; en cas de chevauchement, la dernière marque l'emporte). getCodeSelectionRange de minerva-design/core convertit la sélection de l'utilisateur en positions à enregistrer ; onMarkClick signale la marque cliquée (ici : elle est supprimée). La copie copie toujours le code brut."
+        }
+      },
+      "api": {
+        "CodeBlockProps": {
+          "children": "Texte source, rendu tel quel",
+          "aria-label": "Nom accessible de la région de code",
+          "wrap": "Renvoie les longues lignes au lieu de défiler horizontalement",
+          "maxHeight": "Hauteur maximale avant défilement",
+          "tabIndex": "Ordre de tabulation de la région (focalisable par défaut)",
+          "copyable": "Affiche un bouton qui copie le texte dans le presse-papiers et annonce le résultat",
+          "onCopied": "Appelée avec le texte copié une fois que le bouton de copie l'a écrit dans le presse-papiers (pas en cas d'échec) ; le onCopy natif reste transmis à l'élément",
+          "language": "Langage du code : colore sa syntaxe (javascript, typescript, jsx, tsx, json, css, html, bash, python, yaml, sql, diff, markdown et leurs alias) ; \"auto\" le détecte à partir du code (detectCodeLanguage, « plain » en cas de doute), reflété par l'étiquette, la classe et data-language ; sans lui, le texte reste brut",
+          "highlight": "Colore la syntaxe de language (false : texte brut)",
+          "showLineNumbers": "Numérote les lignes dans une marge (masquée aux technologies d'assistance, non copiée)",
+          "showLanguage": "Affiche le langage dans une petite étiquette en haut à droite",
+          "marks": "Plages de caractères à marquer (surlignages enregistrés, annotations) : { start, end, color?, className?, id?, title? } avec des positions UTF-16 dans le code, rendues en <mark> sur la coloration syntaxique. Les plages sont bornées, les vides ignorées ; en cas de chevauchement, la dernière l'emporte. color est un nom de couleur du thème (teinte translucide) ou une couleur CSS",
+          "onMarkClick": "Appelée avec la marque (la plus haute en cas de chevauchement) et l'événement lors d'un clic sur une marque, pas à la fin d'une sélection à la souris",
+          "ref": "Ref vers l'élément <pre>"
+        }
+      },
+      "cssVars": {
+        "--code-block-padding": "Marge intérieure",
+        "--code-block-radius": "Rayon des coins (par défaut --radius-md)",
+        "--code-block-bg": "Couleur de fond",
+        "--code-block-border-color": "Couleur de la bordure",
+        "--code-block-font-size": "Taille de police du code",
+        "--code-block-max-height": "Hauteur maximale avant défilement (par défaut none)",
+        "--code-block-line-number-color": "Couleur des numéros de ligne",
+        "--code-block-mark-bg": "Fond par défaut des marques (un jaune translucide)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Le contenu texte est rendu tel quel (échappez < dans le balisage) ; language colore la syntaxe et show-language affiche une étiquette. Chaque bloc est une région nommée et focalisable."
+          },
+          "languages": {
+            "title": "Langages",
+            "description": "language choisit la grammaire (ts, css, html, bash, python, diff…) ; show-language ajoute une petite étiquette. La propriété code contient le texte, jamais interprété comme du HTML."
+          },
+          "auto-language": {
+            "title": "Langage automatique",
+            "description": "language=\"auto\" détecte le langage d'un code non étiqueté à partir de son texte (detectCodeLanguage de minerva-design/core ; « plain » en cas de doute) ; show-language, la classe et data-language affichent le langage détecté."
+          },
+          "line-numbers": {
+            "title": "Numéros de ligne",
+            "description": "show-line-numbers numérote les lignes dans une marge masquée aux lecteurs d'écran ; la copie copie toujours le texte brut."
+          },
+          "copy": {
+            "title": "Copier dans le presse-papiers",
+            "description": "La propriété code contient le texte ; copyable ajoute un bouton de copie, copy() copie depuis l'extérieur et minerva-copy signale le résultat."
+          },
+          "overflow": {
+            "title": "Lignes longues et hauteur",
+            "description": "no-wrap fait défiler les longues lignes horizontalement et max-height limite la hauteur ; la région défile aussi au clavier."
+          },
+          "marks": {
+            "title": "Marques (surlignages enregistrés)",
+            "description": "marks pose des plages de caractères sur la coloration syntaxique ; getSelectionRange() convertit la sélection en positions et minerva-mark-click signale la marque cliquée (ici : elle est supprimée)."
+          }
+        },
+        "minerva-code-block": {
+          "props": {
+            "code": "Texte source (par défaut : le contenu texte de l'élément).",
+            "language": "Langage du code : colore sa syntaxe et définit class=\"language-<x>\" / data-language sur le <code>. \"auto\" le détecte à partir du texte (detectCodeLanguage ; « plain » en cas de doute).",
+            "noHighlight": "Garde le code brut malgré language (highlight={false} de la bibliothèque React).",
+            "noWrap": "Fait défiler les longues lignes horizontalement au lieu de les replier (wrap={false} de la bibliothèque React).",
+            "showLineNumbers": "Numérote les lignes dans une marge (aria-hidden, hors du texte copié).",
+            "showLanguage": "Affiche le langage dans une petite étiquette en haut à droite (par ex. « JSON »).",
+            "marks": "Plages de caractères à marquer ({ start, end, color?, className?, id?, title? }, positions UTF-16 dans le texte) : la propriété ou un attribut tableau JSON. En cas de chevauchement, la dernière l'emporte.",
+            "clickableMarks": "Rend les marques visiblement cliquables (curseur pointeur, soulignement au survol) ; à activer avec un écouteur de minerva-mark-click.",
+            "text": "Le texte affiché et copié (lecture seule)."
+          },
+          "events": {
+            "minerva-copy": "Le bouton de copie ou copy() a été utilisé (detail : { text, success } ; text est le texte copié, que le onCopied de React reçoit en cas de succès).",
+            "minerva-mark-click": "Une marque a été cliquée, pas à la fin d'une sélection à la souris (detail : { mark, originalEvent } ; onMarkClick de React)."
+          },
+          "cssVars": {
+            "--icon-button-color": "Couleur de l'icône du bouton de copie.",
+            "--icon-button-hover-bg": "Fond du bouton de copie au survol.",
+            "--icon-button-pressed-color": "Couleur de l'icône du bouton de copie enfoncé.",
+            "--icon-button-pressed-bg": "Fond du bouton de copie enfoncé.",
+            "--icon-button-size": "Largeur et hauteur du bouton de copie.",
+            "--icon-button-icon-size": "Taille de police de l'icône de copie.",
+            "--icon-button-radius": "Rayon des coins du bouton de copie."
+          },
+          "methods": {
+            "copy": "Copie le texte dans le presse-papiers ; se résout avec la réussite ou non de l'opération.",
+            "getSelectionRange": "Positions dans text de la sélection de l'utilisateur dans le code ({ start, end, text }), ou null ; lit la sélection à travers la shadow root."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          },
+          "marks": {
+            "title": "Marques",
+            "description": "marks surligne des plages de caractères avec des fonds de Text imbriqués ; onMarkClick signale la marque touchée."
+          }
+        },
+        "limitations": "CodeBlock natif utilise une hauteur maximale de 384 pixels indépendants de la densité, équivalente à 24rem avec une racine de 16px sur le Web. Sur iOS et Android, connectez Expo Clipboard via copyText."
+      }
+    }
+  }
+}

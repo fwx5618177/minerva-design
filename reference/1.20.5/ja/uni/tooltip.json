@@ -1,0 +1,425 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "ja",
+  "renderer": "uni",
+  "page": "tooltip",
+  "title": "Tooltip ツールチップ",
+  "description": "要素にホバーまたはフォーカスしたときに表示される短いテキストラベルです。ビューポートの端では反転・シフトして表示を保ちます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Tooltip",
+      "support": {
+        "status": "beta",
+        "notes": "Controlled/default/imperative visibility, hover/focus/native tap, shared delay and skip context, interactive content, measured collision-aware positioning, cursor following, colors/variants/shapes/arrows/animations and labels. Native trigger is a wrapper rather than React child cloning. Pointer hover and keyboard behavior depend on host input capabilities. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Controlled/default/imperative visibility, hover/focus/native tap, shared delay and skip context, interactive content, measured collision-aware positioning, cursor following, colors/variants/shapes/arrows/animations and labels. Native trigger is a wrapper rather than React child cloning. Pointer hover and keyboard behavior depend on host input capabilities. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "Tooltip"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "open",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "defaultOpen",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "content",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "placement",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "enterDelay",
+            "typeText": "number | undefined",
+            "required": false
+          },
+          {
+            "name": "leaveDelay",
+            "typeText": "number | undefined",
+            "required": false
+          },
+          {
+            "name": "color",
+            "typeText": "\"info\" | \"success\" | \"warning\" | \"danger\" | \"neutral\" | undefined",
+            "required": false
+          },
+          {
+            "name": "variant",
+            "typeText": "\"subtle\" | \"solid\" | \"glass\" | undefined",
+            "required": false
+          },
+          {
+            "name": "shape",
+            "typeText": "\"rounded\" | \"default\" | \"square\" | \"thought\" | undefined",
+            "required": false
+          },
+          {
+            "name": "animation",
+            "typeText": "\"fade\" | \"scale\" | \"shift-away\" | \"shift-toward\" | \"perspective\" | undefined",
+            "required": false
+          },
+          {
+            "name": "offset",
+            "typeText": "[number, number] | undefined",
+            "required": false
+          },
+          {
+            "name": "followCursor",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "zIndex",
+            "typeText": "number | undefined",
+            "required": false
+          },
+          {
+            "name": "arrow",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "contentClassName",
+            "typeText": "string | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "close",
+            "typeText": "[]",
+            "parameters": []
+          },
+          {
+            "name": "openChange",
+            "typeText": "[open: boolean]",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "open",
+            "typeText": "[]",
+            "parameters": []
+          },
+          {
+            "name": "update:open",
+            "typeText": "[open: boolean]",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          },
+          {
+            "name": "content",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "open",
+            "event": "update:open",
+            "syntax": "v-model:open"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TooltipProvider",
+      "support": {
+        "status": "beta",
+        "notes": "Real shared enter/leave/skip-delay context consumed by Tooltip on H5; native taps open immediately. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Real shared enter/leave/skip-delay context consumed by Tooltip on H5; native taps open immediately. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "TooltipProvider"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "enterDelay",
+            "typeText": "number | undefined",
+            "required": false
+          },
+          {
+            "name": "leaveDelay",
+            "typeText": "number | undefined",
+            "required": false
+          },
+          {
+            "name": "skipDelay",
+            "typeText": "number | undefined",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Tooltip": {
+      "kind": "cssVars",
+      "source": "react/src/components/Tooltip",
+      "vars": [
+        {
+          "name": "--tooltip-max-width",
+          "description": "Maximum width (capped by the viewport)"
+        },
+        {
+          "name": "--tooltip-padding",
+          "description": "Padding (every shape)"
+        },
+        {
+          "name": "--tooltip-radius",
+          "description": "Corner radius (defaults to the radius of the shape)"
+        },
+        {
+          "name": "--tooltip-font-size",
+          "description": "Font size"
+        },
+        {
+          "name": "--tooltip-bg",
+          "description": "Background (gradients allowed; every variant)"
+        },
+        {
+          "name": "--tooltip-color",
+          "description": "Text color (every variant)"
+        },
+        {
+          "name": "--tooltip-shadow",
+          "description": "Shadow (defaults to --shadow-md, --shadow-lg for the glass variant)"
+        },
+        {
+          "name": "--tooltip-z-index",
+          "description": "Stacking order (defaults to --z-popover)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Tooltip ツールチップ",
+      "description": "要素にホバーまたはフォーカスしたときに表示される短いテキストラベルです。ビューポートの端では反転・シフトして表示を保ちます。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "フォーカス可能な要素をラップします。ツールチップはホバー時とキーボードフォーカス時に表示され、ホバーで開いた場合でも Escape で閉じます。"
+        },
+        "placements": {
+          "title": "配置",
+          "description": "トリガーの周囲 12 か所の配置。"
+        },
+        "colors": {
+          "title": "カラー",
+          "description": "color でセマンティックカラーを選びます：neutral（デフォルト）、info、success、warning、danger。"
+        },
+        "variants": {
+          "title": "バリアント",
+          "description": "variant で見た目のスタイルを選びます：solid（デフォルト。塗りつぶし。neutral はテーマと対照的な反転色の面）、subtle（枠線付きの淡い色合いの面）、glass（テーマに追従するすりガラス風の面。色は枠線にのみ付きます）。"
+        },
+        "shapes": {
+          "title": "形状",
+          "description": "デフォルト、角丸、四角形、吹き出しの形状。"
+        },
+        "animations": {
+          "title": "アニメーション",
+          "description": "ツールチップの表示・非表示のアニメーションを選択します。"
+        },
+        "custom-colors": {
+          "title": "カスタムカラー、矢印、オフセット",
+          "description": "contentClassName を使ってツールチップに --tooltip-bg（単色と CSS グラデーションに対応）と --tooltip-color のカスタムプロパティを設定します。arrow はトリガーを指す矢印を追加し、offset はトリガーとの間隔（既定 8px）を設定します。"
+        },
+        "delays": {
+          "title": "遅延と無効化",
+          "description": "enterDelay と leaveDelay でホバーのタイミングを制御し、disabled でツールチップを無効にします。"
+        },
+        "follow-cursor": {
+          "title": "カーソル追従",
+          "description": "followCursor を有効にすると、ツールチップがマウスポインターに追従します。"
+        },
+        "controlled": {
+          "title": "制御モードと命令的操作",
+          "description": "open と onOpenChange で表示を制御するか（ホバー・フォーカス・Escape は引き続き変更を要求します）、TooltipRef の open / close / toggle を呼び出します。"
+        },
+        "events": {
+          "title": "イベント",
+          "description": "onOpen と onClose はホバー、フォーカス、ブラー、Escape で発火します。"
+        },
+        "as-child": {
+          "title": "asChild",
+          "description": "asChild はラッパー要素を追加せず子要素自体にツールチップを付けるため、flex や grid のレイアウトが崩れません。contentClassName でツールチップにスタイルを当てられます。"
+        },
+        "provider": {
+          "title": "TooltipProvider",
+          "description": "TooltipProvider は内側のツールチップの既定の遅延を設定します。ツールチップ間を素早く移動すると次のものはすぐに開きます。"
+        }
+      },
+      "api": {
+        "TooltipProps": {
+          "content": "ツールチップ内に表示するコンテンツ",
+          "children": "ツールチップのトリガーとなる要素。フォーカス可能な要素を推奨します",
+          "open": "ツールチップを表示するかどうか（制御モード。onOpenChange と組み合わせて使用）",
+          "defaultOpen": "初期の表示状態（非制御モード）",
+          "placement": "トリガーに対する配置",
+          "color": "ツールチップのセマンティックカラー。glass バリアントでは色は枠線にのみ付きます（neutral は通常のすりガラス風の面のまま）",
+          "variant": "見た目のスタイル：solid（塗りつぶし。neutral は反転したコントラストの面）、subtle（枠線付きの淡い色合いの面）、glass（すりガラス風の浮き上がった面）",
+          "shape": "ツールチップの形状",
+          "animation": "表示・非表示のアニメーション",
+          "enterDelay": "ホバー後に表示するまでの遅延（ミリ秒）",
+          "leaveDelay": "マウスが離れてから非表示にするまでの遅延（ミリ秒）",
+          "offset": "[x, y] 形式のオフセット（ピクセル）。top/bottom 配置では y がトリガーとの間隔、x がそれに沿ったずれ。left/right 配置では x が間隔、y がずれです。未指定時はトリガーから 8px 離れます",
+          "followCursor": "ツールチップをマウスカーソルに追従させる",
+          "zIndex": "ツールチップの z-index",
+          "arrow": "トリガーを指す矢印を表示する",
+          "disabled": "ツールチップを無効にする",
+          "className": "トリガーのラッパーに追加するクラス名",
+          "onOpen": "ホバーまたはフォーカスでツールチップが開いたときに呼び出されます",
+          "onClose": "マウスアウト、ブラー、Escape でツールチップが閉じたときに呼び出されます",
+          "aria-label": "ツールチップ要素のアクセシブルなラベル",
+          "ref": "open / close / toggle を持つ命令的ハンドル",
+          "onOpenChange": "要求された開閉状態で呼ばれます（ホバー、フォーカス、Escape、ref メソッド）",
+          "asChild": "ホバー / フォーカスのハンドラー、ref、className を <div> で包む代わりに単一の子要素へ直接付けます（flex や grid のレイアウトを維持）。子要素は ref を受け取れる必要があります",
+          "contentClassName": "ツールチップ（フローティング）要素の追加クラス名。色を変更するには、この要素に --tooltip-bg（背景。グラデーション可）と --tooltip-color（文字）のカスタムプロパティを設定します",
+          "contentRef": "ツールチップ（フローティング）要素への ref。表示中に設定されます"
+        },
+        "TooltipRef": {
+          "open": "ツールチップを開く",
+          "close": "ツールチップを閉じる",
+          "toggle": "ツールチップの表示を切り替える"
+        },
+        "TooltipProviderProps": {
+          "enterDelay": "enterDelay を指定していない内側のツールチップが、ホバー後に表示されるまでの既定の遅延（ミリ秒）",
+          "leaveDelay": "leaveDelay を指定していない内側のツールチップが、マウスが離れてから非表示になるまでの既定の遅延（ミリ秒）",
+          "skipDelay": "同じプロバイダーの別のツールチップがこのミリ秒数以内に閉じた場合、次のツールチップは遅延を待たずに開きます",
+          "children": "プロバイダーの内容"
+        }
+      },
+      "cssVars": {
+        "--tooltip-max-width": "最大幅（ビューポートで制限）",
+        "--tooltip-padding": "内側の余白（全形状共通）",
+        "--tooltip-radius": "角丸（既定値は各形状の角丸）",
+        "--tooltip-font-size": "フォントサイズ",
+        "--tooltip-bg": "背景（グラデーション可。全バリアント共通）",
+        "--tooltip-color": "文字色（全バリアント共通）",
+        "--tooltip-shadow": "影（既定値は --shadow-md、glass バリアントは --shadow-lg）",
+        "--tooltip-z-index": "重なり順（既定値は --z-popover）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "フォーカス可能なトリガーを囲みます。ホバーやフォーカスで content 属性が表示されます。placement は 12 の位置を受け付け、arrow で矢印を付け、disabled でツールチップを無効にします。"
+          },
+          "styles": {
+            "title": "色・バリアント・形状・アニメーション",
+            "description": "color で意味的な色調を、variant で表面（solid、subtle、glass）を、shape で形を、animation で表示 / 非表示のトランジションを指定します。"
+          },
+          "provider": {
+            "title": "プロバイダーとリッチコンテンツ",
+            "description": "<minerva-tooltip-provider> は内部のツールチップに共通の遅延を与えます。skip-delay 以内に次のツールチップへ移るとすぐに開きます。content スロットにはマークアップを入れられます。"
+          },
+          "controlled": {
+            "title": "メソッド・イベント・カーソル追従",
+            "description": "show()、hide()、toggle() でツールチップを直接制御します（イベントは発火しません）。ホバーやフォーカスはキャンセル可能な minerva-open-change を発火します。follow-cursor はポインターに追従し、offset で間隔を指定します。"
+          }
+        },
+        "minerva-tooltip-provider": {
+          "slots": {
+            "default": "ツールチップを含むコンテンツ。"
+          }
+        },
+        "minerva-tooltip": {
+          "events": {
+            "minerva-open-change": "ホバー、フォーカス、ブラー、ポインターの離脱、Escape が開閉を要求しました（detail: { open }）。キャンセル可能：preventDefault() で現在の状態を維持します。"
+          },
+          "slots": {
+            "default": "トリガー。フォーカス可能な要素 1 つ（ボタン、リンクなど）を推奨します。",
+            "content": "リッチなツールチップの内容（content 属性の代わり）。"
+          },
+          "methods": {
+            "show": "ツールチップを表示します（minerva-open-change は発火しません）。",
+            "hide": "ツールチップを隠します（minerva-open-change は発火しません）。",
+            "toggle": "ツールチップを切り替えます（minerva-open-change は発火しません）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

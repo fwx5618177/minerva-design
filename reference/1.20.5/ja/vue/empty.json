@@ -1,0 +1,334 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "ja",
+  "renderer": "vue",
+  "page": "empty",
+  "title": "Empty 空の状態",
+  "description": "表示するデータがないときに表示されるプレースホルダーです。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Empty",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "Empty"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "icon",
+            "type": "false | null",
+            "required": false,
+            "description": "`null` or `false` render no icon at all (the `icon` slot replaces the\ndefault one)",
+            "typeText": "false | null"
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "required": false,
+            "description": "Heading of the empty state (or the `title` slot); also becomes its accessible name",
+            "typeText": "string"
+          },
+          {
+            "name": "description",
+            "type": "string | null",
+            "required": false,
+            "description": "Description text (or the `description` slot); `null` hides it",
+            "typeText": "string | null"
+          },
+          {
+            "name": "size",
+            "type": "EmptySize",
+            "required": false,
+            "description": "Switches to the unframed sized layout (transparent background, size-based\npadding, icon and font sizes). Omit it for the classic surface layout",
+            "typeText": "EmptySize"
+          },
+          {
+            "name": "useSvg",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Uses the built-in SVG illustration instead of the default icon",
+            "typeText": "boolean"
+          },
+          {
+            "name": "width",
+            "type": "string | number",
+            "required": false,
+            "description": "Width of the container (a number is in px)",
+            "typeText": "string | number"
+          },
+          {
+            "name": "height",
+            "type": "string | number",
+            "required": false,
+            "description": "Height of the container (a number is in px)",
+            "typeText": "string | number"
+          },
+          {
+            "name": "showShadow",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Adds a drop shadow",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "description": "Footer content, e.g. an action button",
+            "typeText": "any"
+          },
+          {
+            "name": "icon",
+            "type": "any",
+            "description": "Custom icon, replacing the default one",
+            "typeText": "any"
+          },
+          {
+            "name": "title",
+            "type": "any",
+            "description": "Heading (the `title` prop)",
+            "typeText": "any"
+          },
+          {
+            "name": "description",
+            "type": "any",
+            "description": "Description (the `description` prop)",
+            "typeText": "any"
+          },
+          {
+            "name": "action",
+            "type": "any",
+            "description": "Primary call to action (a Button, a link or a group of them)",
+            "typeText": "any"
+          },
+          {
+            "name": "secondary-action",
+            "type": "any",
+            "description": "Secondary action rendered after `action`",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Empty": {
+      "kind": "cssVars",
+      "source": "react/src/components/Empty",
+      "vars": [
+        {
+          "name": "--empty-padding",
+          "description": "Padding (every size; defaults to the padding of the size)"
+        },
+        {
+          "name": "--empty-gap",
+          "description": "Space between the icon, title, description and actions (sized layout)"
+        },
+        {
+          "name": "--empty-icon-size",
+          "description": "Size of the illustration icon (every size)"
+        },
+        {
+          "name": "--empty-color",
+          "description": "Text color of the description"
+        },
+        {
+          "name": "--empty-background",
+          "description": "Background of the framed (unsized) layout"
+        },
+        {
+          "name": "--empty-radius",
+          "description": "Corner radius of the framed (unsized) layout (defaults to --radius-sm)"
+        },
+        {
+          "name": "--empty-description-max-width",
+          "description": "Maximum width of the description (sized layout)"
+        },
+        {
+          "name": "--empty-icon-background",
+          "description": "Background of the icon tile (sized layout)"
+        },
+        {
+          "name": "--empty-icon-border-color",
+          "description": "Ring color of the icon tile (sized layout)"
+        },
+        {
+          "name": "--empty-icon-radius",
+          "description": "Corner radius of the icon tile (sized layout; defaults to --radius-lg)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "actions",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/empty/vue/actions.vue",
+      "files": {
+        "apps/docs/src/docs/pages/empty/vue/actions.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Empty, Button } from \"minerva-design/vue\";\nconst created = ref(false);\n</script>\n<template>\n  <Empty\n    v-if=\"!created\"\n    title=\"Create your first project\"\n    description=\"Start by creating a project to organize your work.\"\n    ><template #action\n      ><Button @click=\"created = true\">Create project</Button></template\n    ></Empty\n  ><output v-else>Project created</output>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "actions",
+      "description": ""
+    },
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/empty/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/empty/vue/basic.vue": "<script setup lang=\"ts\">\nimport { Empty } from \"minerva-design/vue\";\n</script>\n<template>\n  <Empty\n    title=\"No projects yet\"\n    description=\"Create a project to get started.\"\n  />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "sizes-styles",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/empty/vue/sizes-styles.vue",
+      "files": {
+        "apps/docs/src/docs/pages/empty/vue/sizes-styles.vue": "<script setup lang=\"ts\">\nimport { Empty, HStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <HStack :gap=\"3\" wrap\n    ><Empty size=\"small\" title=\"No matches\" :icon=\"false\" /><Empty\n      size=\"large\"\n      title=\"All caught up\"\n      description=\"Nothing requires your attention.\"\n      :show-shadow=\"false\"\n  /></HStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "sizes-styles",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Empty 空の状態",
+      "description": "表示するデータがないときに表示されるプレースホルダーです。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "デフォルトのアイコンと \"No Data\" の説明文。"
+        },
+        "svg": {
+          "title": "SVG イラスト",
+          "description": "useSvg で組み込みのイラストに切り替えます。"
+        },
+        "custom-icon": {
+          "title": "カスタムアイコンと説明文",
+          "description": "icon と description には任意の React ノードを指定できます。"
+        },
+        "with-action": {
+          "title": "アクション付き",
+          "description": "children はフッターに表示されます（例：行動を促すボタン）。"
+        },
+        "styled": {
+          "title": "カスタム外観",
+          "description": "サイズと影は専用のプロパティで指定し、背景色と文字色は style または className で指定します。"
+        },
+        "sizes": {
+          "title": "タイトル・アクション・サイズ",
+          "description": "size で枠なしレイアウトに切り替わります。title が状態の名前になり、action / secondaryAction に操作を置きます。"
+        }
+      },
+      "api": {
+        "EmptyProps": {
+          "icon": "既定のアイコンを置き換えるカスタムアイコン。null または false でアイコンを表示しません",
+          "description": "説明文",
+          "className": "追加のクラス名",
+          "style": "インラインスタイル",
+          "children": "フッターのコンテンツ（例：アクションボタン）",
+          "useSvg": "デフォルトのアイコンの代わりに組み込みの SVG イラストを使用する",
+          "width": "コンテナの幅",
+          "height": "コンテナの高さ",
+          "showShadow": "ドロップシャドウを追加する",
+          "ref": "ルートの <div> 要素への ref",
+          "title": "空状態の見出し。アクセシブルネームにもなります",
+          "action": "主要なアクション",
+          "secondaryAction": "action の後に表示する副次的なアクション",
+          "size": "枠なしのサイズ別レイアウトに切り替えます（small、medium、large）"
+        }
+      },
+      "cssVars": {
+        "--empty-padding": "内側の余白（全サイズ共通。既定値は各サイズの余白）",
+        "--empty-gap": "アイコン・タイトル・説明・アクション間の間隔（サイズ指定レイアウト）",
+        "--empty-icon-size": "イラストアイコンのサイズ（全サイズ共通）",
+        "--empty-color": "説明の文字色",
+        "--empty-background": "枠付き（サイズ指定なし）レイアウトの背景",
+        "--empty-radius": "枠付き（サイズ指定なし）レイアウトの角丸（既定値は --radius-sm）",
+        "--empty-description-max-width": "説明の最大幅（サイズ指定レイアウト）",
+        "--empty-icon-background": "アイコンタイルの背景（サイズ指定レイアウト）",
+        "--empty-icon-border-color": "アイコンタイルのリングの色（サイズ指定レイアウト）",
+        "--empty-icon-radius": "アイコンタイルの角丸（サイズ指定レイアウト、既定は --radius-lg）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "属性なしの場合：既定のアイコンとローカライズされた「データがありません」の説明を status 領域に表示します。"
+          },
+          "actions": {
+            "title": "見出し・アイコン・アクション",
+            "description": "heading と description でテキストを設定し、icon スロットでアイコンを置き換え、action / secondary-action にボタンを置きます。デフォルトスロットはフッターです。"
+          },
+          "sizes-styles": {
+            "title": "サイズとスタイル",
+            "description": "3 種類のサイズ、イラスト（use-svg）、影、カスタムの幅 / 高さ、リッチな heading と description スロット、hide-icon / hide-description。"
+          }
+        },
+        "minerva-empty": {
+          "props": {
+            "heading": "空状態の見出し。アクセシブルな名前にもなります。",
+            "hideDescription": "説明を非表示にします。",
+            "hideIcon": "アイコンをまったく表示しません。"
+          },
+          "slots": {
+            "default": "フッターのコンテンツ。",
+            "icon": "既定のアイコンを置き換えるカスタムアイコン。",
+            "heading": "見出し（heading 属性の代替）。",
+            "description": "説明（description 属性の代替）。",
+            "action": "主要なアクション。",
+            "secondary-action": "action の後に置く補助アクション。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

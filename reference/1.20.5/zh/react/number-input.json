@@ -1,0 +1,863 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "zh",
+  "renderer": "react",
+  "page": "number-input",
+  "title": "NumberInput 数字输入",
+  "description": "数字字段（spinbutton），支持方向键步进、可选步进按钮、min / max 限制和固定精度；值在失焦或按 Enter 时提交。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "NumberInput",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "NumberInput"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "value",
+            "source": "packages/react/src/components/NumberInput/types.ts",
+            "kind": "number",
+            "typeText": "number | null | undefined",
+            "typeRef": "type:63da203dcb31379a7982",
+            "required": false,
+            "description": "Current value (controlled); `null` is an empty field. Omit for an uncontrolled field"
+          },
+          {
+            "name": "defaultValue",
+            "source": "packages/react/src/components/NumberInput/types.ts",
+            "kind": "number",
+            "typeText": "number | null | undefined",
+            "typeRef": "type:63da203dcb31379a7982",
+            "default": null,
+            "required": false,
+            "description": "Initial value of an uncontrolled field"
+          },
+          {
+            "name": "min",
+            "source": "packages/react/src/components/NumberInput/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "Smallest allowed value; committed values are clamped to it"
+          },
+          {
+            "name": "max",
+            "source": "packages/react/src/components/NumberInput/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "Largest allowed value; committed values are clamped to it"
+          },
+          {
+            "name": "step",
+            "source": "packages/react/src/components/NumberInput/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 1,
+            "required": false,
+            "description": "Amount added / removed by ArrowUp / ArrowDown and the stepper"
+          },
+          {
+            "name": "precision",
+            "source": "packages/react/src/components/NumberInput/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "Decimal places of the value; inferred from step when omitted (step 0.01 -> 2)"
+          },
+          {
+            "name": "size",
+            "source": "packages/react/src/components/NumberInput/types.ts",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "NumberInputSize | undefined",
+            "typeRef": "type:b42d95dfa51dce99470c",
+            "default": "medium",
+            "required": false,
+            "description": "Field size"
+          },
+          {
+            "name": "invalid",
+            "source": "packages/react/src/components/NumberInput/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Error state (also set by an invalid FormControl or an out-of-range draft)"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/react/src/components/NumberInput/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables the field (also set by FormControl)"
+          },
+          {
+            "name": "readOnly",
+            "source": "packages/react/src/components/NumberInput/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Focusable and copyable, but typing and stepping do not change the value (also set by FormControl)"
+          },
+          {
+            "name": "showStepper",
+            "source": "packages/react/src/components/NumberInput/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows increment / decrement buttons; the arrow keys always work"
+          },
+          {
+            "name": "allowEmpty",
+            "source": "packages/react/src/components/NumberInput/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Clearing the field commits `null`; otherwise it falls back to min (or 0)"
+          },
+          {
+            "name": "incrementLabel",
+            "source": "packages/react/src/components/NumberInput/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the increment button"
+          },
+          {
+            "name": "decrementLabel",
+            "source": "packages/react/src/components/NumberInput/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the decrement button"
+          },
+          {
+            "name": "notANumberMessage",
+            "source": "packages/react/src/components/NumberInput/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Hint shown (as the wrapper title) while the draft is not a number"
+          },
+          {
+            "name": "belowMinMessage",
+            "source": "packages/react/src/components/NumberInput/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Hint shown while the draft is below min"
+          },
+          {
+            "name": "aboveMaxMessage",
+            "source": "packages/react/src/components/NumberInput/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Hint shown while the draft is above max"
+          },
+          {
+            "name": "defaultChecked",
+            "inherited": true,
+            "source": "react",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "autoFocus",
+            "inherited": true,
+            "source": "react",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "id",
+            "inherited": true,
+            "source": "react",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "inherited": true,
+            "source": "react",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Identifies the element (or elements) that describes the object."
+          },
+          {
+            "name": "aria-label",
+            "inherited": true,
+            "source": "react",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Defines a string value that labels the current element."
+          },
+          {
+            "name": "form",
+            "inherited": true,
+            "source": "react",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "name",
+            "inherited": true,
+            "source": "react",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "pattern",
+            "inherited": true,
+            "source": "react",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "accept",
+            "inherited": true,
+            "source": "react",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "autoComplete",
+            "inherited": true,
+            "source": "react",
+            "kind": "union",
+            "typeText": "HTMLInputAutoCompleteAttribute | undefined",
+            "typeRef": "type:097f18cefc39c00ec4f9",
+            "required": false
+          },
+          {
+            "name": "checked",
+            "inherited": true,
+            "source": "react",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "maxLength",
+            "inherited": true,
+            "source": "react",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false
+          },
+          {
+            "name": "minLength",
+            "inherited": true,
+            "source": "react",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false
+          },
+          {
+            "name": "multiple",
+            "inherited": true,
+            "source": "react",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "placeholder",
+            "inherited": true,
+            "source": "react",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "required",
+            "inherited": true,
+            "source": "react",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onChange",
+            "source": "packages/react/src/components/NumberInput/types.ts",
+            "kind": "function",
+            "typeText": "((value: number | null) => void) | undefined",
+            "typeRef": "type:0d3f11f23e66681463ea",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number | null",
+                "typeRef": "type:4ebff2838e5c7cb671be"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the committed value (on blur / Enter, stepping and stepper clicks), never while typing; `null` when the field is cleared"
+          },
+          {
+            "name": "onFocus",
+            "inherited": true,
+            "source": "react",
+            "kind": "function",
+            "typeText": "FocusEventHandler<HTMLInputElement> | undefined",
+            "typeRef": "type:6284782b01edc0ec9aeb",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "FocusEvent<HTMLInputElement, Element>",
+                "typeRef": "type:20a1b75c939d080fd107"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onBlur",
+            "inherited": true,
+            "source": "react",
+            "kind": "function",
+            "typeText": "FocusEventHandler<HTMLInputElement> | undefined",
+            "typeRef": "type:6284782b01edc0ec9aeb",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "FocusEvent<HTMLInputElement, Element>",
+                "typeRef": "type:20a1b75c939d080fd107"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onInput",
+            "inherited": true,
+            "source": "react",
+            "kind": "function",
+            "typeText": "InputEventHandler<HTMLInputElement> | undefined",
+            "typeRef": "type:c45b6e80d6c8f01c0ae2",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "InputEvent<HTMLInputElement>",
+                "typeRef": "type:c0b0762b46fe28f4edad"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onKeyDown",
+            "inherited": true,
+            "source": "react",
+            "kind": "function",
+            "typeText": "KeyboardEventHandler<HTMLInputElement> | undefined",
+            "typeRef": "type:a829ca15387965668126",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "KeyboardEvent<HTMLInputElement>",
+                "typeRef": "type:bb2eb244cd23c9a1b2fa"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onKeyUp",
+            "inherited": true,
+            "source": "react",
+            "kind": "function",
+            "typeText": "KeyboardEventHandler<HTMLInputElement> | undefined",
+            "typeRef": "type:a829ca15387965668126",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "KeyboardEvent<HTMLInputElement>",
+                "typeRef": "type:bb2eb244cd23c9a1b2fa"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onClick",
+            "inherited": true,
+            "source": "react",
+            "kind": "function",
+            "typeText": "MouseEventHandler<HTMLInputElement> | undefined",
+            "typeRef": "type:e951285332632d910fc7",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "MouseEvent<HTMLInputElement, MouseEvent>",
+                "typeRef": "type:69803e823cc5b5d06844"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "onChange",
+            "syntax": "value={value} onChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "NumberInputProps": {
+      "source": "react/src/components/NumberInput/types.ts",
+      "kind": "interface",
+      "extends": [
+        "Omit<InputHTMLAttributes<HTMLInputElement>, | \"value\" | \"defaultValue\" | \"onChange\" | \"size\" | \"type\" | \"min\" | \"max\" | \"step\">"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "type": "number | null",
+          "required": false,
+          "description": "Current value (controlled); `null` is an empty field. Omit for an uncontrolled field"
+        },
+        {
+          "name": "defaultValue",
+          "type": "number | null",
+          "required": false,
+          "default": "null",
+          "description": "Initial value of an uncontrolled field"
+        },
+        {
+          "name": "onChange",
+          "type": "(value: number | null) => void",
+          "required": false,
+          "description": "Called with the committed value (on blur / Enter, stepping and stepper clicks), never while typing; `null` when the field is cleared"
+        },
+        {
+          "name": "min",
+          "type": "number",
+          "required": false,
+          "description": "Smallest allowed value; committed values are clamped to it"
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "required": false,
+          "description": "Largest allowed value; committed values are clamped to it"
+        },
+        {
+          "name": "step",
+          "type": "number",
+          "required": false,
+          "default": "1",
+          "description": "Amount added / removed by ArrowUp / ArrowDown and the stepper"
+        },
+        {
+          "name": "precision",
+          "type": "number",
+          "required": false,
+          "description": "Decimal places of the value; inferred from step when omitted (step 0.01 -> 2)"
+        },
+        {
+          "name": "size",
+          "type": "NumberInputSize",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Field size"
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Error state (also set by an invalid FormControl or an out-of-range draft)"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Disables the field (also set by FormControl)"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Focusable and copyable, but typing and stepping do not change the value (also set by FormControl)"
+        },
+        {
+          "name": "showStepper",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows increment / decrement buttons; the arrow keys always work"
+        },
+        {
+          "name": "allowEmpty",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Clearing the field commits `null`; otherwise it falls back to min (or 0)"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "description": "Class name of the wrapper"
+        },
+        {
+          "name": "incrementLabel",
+          "type": "string",
+          "required": false,
+          "default": "\"Increase\" (localized)",
+          "description": "Accessible label of the increment button"
+        },
+        {
+          "name": "decrementLabel",
+          "type": "string",
+          "required": false,
+          "default": "\"Decrease\" (localized)",
+          "description": "Accessible label of the decrement button"
+        },
+        {
+          "name": "notANumberMessage",
+          "type": "string",
+          "required": false,
+          "default": "\"Enter a number\" (localized)",
+          "description": "Hint shown (as the wrapper title) while the draft is not a number"
+        },
+        {
+          "name": "belowMinMessage",
+          "type": "string",
+          "required": false,
+          "default": "\"Minimum {min}\" (localized)",
+          "description": "Hint shown while the draft is below min"
+        },
+        {
+          "name": "aboveMaxMessage",
+          "type": "string",
+          "required": false,
+          "default": "\"Maximum {max}\" (localized)",
+          "description": "Hint shown while the draft is above max"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLInputElement>",
+          "required": false,
+          "description": "Ref to the <input> element"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:NumberInput": {
+      "kind": "cssVars",
+      "source": "react/src/components/NumberInput",
+      "vars": [
+        {
+          "name": "--number-input-height",
+          "description": "Height (every size; defaults to the density's control height of the size)"
+        },
+        {
+          "name": "--number-input-padding-x",
+          "description": "Horizontal padding of the text (defaults to the density's small control padding)"
+        },
+        {
+          "name": "--number-input-radius",
+          "description": "Corner radius (defaults to --radius-md)"
+        },
+        {
+          "name": "--number-input-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--number-input-background",
+          "description": "Background color"
+        },
+        {
+          "name": "--number-input-border-color",
+          "description": "Border color at rest"
+        },
+        {
+          "name": "--number-input-stepper-width",
+          "description": "Width of the increment / decrement column"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/number-input/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/number-input/demos/basic.tsx": "import { NumberInput } from \"minerva-design\";\nimport { useState } from \"react\";\n\nexport default function BasicDemo() {\n  const [quantity, setQuantity] = useState<number | null>(1);\n  return (\n    <>\n      <NumberInput\n        aria-label=\"Quantity\"\n        min={0}\n        max={10}\n        value={quantity}\n        onChange={setQuantity}\n      />\n      <p>Value: {quantity === null ? \"empty\" : quantity}</p>\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "基础用法",
+      "description": "超出范围或非数字的草稿会被标记，提交时被限制或还原；清空得到 null。"
+    },
+    {
+      "id": "form-control",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/number-input/demos/form-control.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/number-input/demos/form-control.tsx": "import { FormField, NumberInput } from \"minerva-design\";\n\nexport default function FormControlDemo() {\n  return (\n    <>\n      <FormField label=\"HTTP status\" helperText=\"Between 100 and 599.\" required>\n        <NumberInput defaultValue={200} min={100} max={599} />\n      </FormField>\n      <FormField label=\"Retries\" readOnly>\n        <NumberInput defaultValue={3} />\n      </FormField>\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "配合 FormField",
+      "description": "字段提供标签、状态和描述；readOnly 会阻止输入和步进。"
+    },
+    {
+      "id": "stepper-precision",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/number-input/demos/stepper-precision.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/number-input/demos/stepper-precision.tsx": "import { NumberInput } from \"minerva-design\";\n\nexport default function StepperPrecisionDemo() {\n  return (\n    <>\n      <NumberInput\n        aria-label=\"Rate\"\n        defaultValue={0.5}\n        min={0}\n        max={1}\n        step={0.01}\n        showStepper\n      />\n      <NumberInput\n        aria-label=\"Price\"\n        defaultValue={9.9}\n        precision={2}\n        size=\"large\"\n      />\n      <NumberInput\n        aria-label=\"Latency\"\n        defaultValue={100}\n        step={50}\n        allowEmpty={false}\n        size=\"small\"\n      />\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "步进与精度",
+      "description": "showStepper 添加按钮；未设置时精度由 step 推导；allowEmpty={false} 时回退到 min。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "NumberInput 数字输入",
+      "description": "数字字段（spinbutton），支持方向键步进、可选步进按钮、min / max 限制和固定精度；值在失焦或按 Enter 时提交。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "超出范围或非数字的草稿会被标记，提交时被限制或还原；清空得到 null。"
+        },
+        "stepper-precision": {
+          "title": "步进与精度",
+          "description": "showStepper 添加按钮；未设置时精度由 step 推导；allowEmpty={false} 时回退到 min。"
+        },
+        "form-control": {
+          "title": "配合 FormField",
+          "description": "字段提供标签、状态和描述；readOnly 会阻止输入和步进。"
+        }
+      },
+      "api": {
+        "NumberInputProps": {
+          "value": "当前值（受控）；`null` 表示空。非受控时省略",
+          "defaultValue": "非受控字段的初始值",
+          "onChange": "以提交的值调用（失焦 / Enter、步进和步进按钮），输入过程中不调用；清空时为 `null`",
+          "min": "允许的最小值；提交的值会被限制到它",
+          "max": "允许的最大值；提交的值会被限制到它",
+          "step": "ArrowUp / ArrowDown 与步进按钮增减的量",
+          "precision": "值的小数位数；省略时由 step 推导（step 0.01 -> 2）",
+          "size": "字段尺寸",
+          "invalid": "错误状态（无效的 FormControl 或超出范围的草稿也会设置）",
+          "disabled": "禁用字段（FormControl 也可设置）",
+          "readOnly": "可聚焦、可复制，但输入和步进不会改变值（FormControl 也可设置）",
+          "showStepper": "显示增减按钮；方向键始终可用",
+          "allowEmpty": "清空字段时提交 `null`；否则回退到 min（或 0）",
+          "className": "外层容器的类名",
+          "incrementLabel": "增加按钮的无障碍标签",
+          "decrementLabel": "减少按钮的无障碍标签",
+          "notANumberMessage": "草稿不是数字时显示的提示（作为容器 title）",
+          "belowMinMessage": "草稿小于 min 时显示的提示",
+          "aboveMaxMessage": "草稿大于 max 时显示的提示",
+          "ref": "<input> 元素的 ref"
+        }
+      },
+      "cssVars": {
+        "--number-input-height": "高度（所有尺寸；默认取当前密度下对应尺寸的控件高度）",
+        "--number-input-padding-x": "文字的水平内边距（默认取当前密度的小号控件内边距）",
+        "--number-input-radius": "圆角（默认 --radius-md）",
+        "--number-input-font-size": "字号（所有尺寸）",
+        "--number-input-background": "背景色",
+        "--number-input-border-color": "静止时的边框颜色（也用于步进按钮的分隔线）",
+        "--number-input-stepper-width": "增减按钮列的宽度"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "带步进按钮的 min / max。上下方向键步进，PageUp / PageDown 一次 10 步，Home / End 跳到边界；minerva-change 报告每次提交的值。"
+          },
+          "precision": {
+            "title": "步长、精度与方法",
+            "description": "小数步长、固定两位小数和 no-empty；外部按钮调用 stepUp() / stepDown()。另含只读、禁用与尺寸示例。"
+          },
+          "form": {
+            "title": "在表单中",
+            "description": "required 和超出范围的值会以本地化或自定义信息（below-min-message、above-max-message）阻止提交；reset 恢复 value 属性。"
+          }
+        },
+        "minerva-number-input": {
+          "props": {
+            "readOnly": "可聚焦并会提交，但输入和步进都不会改变值。",
+            "noEmpty": "清空字段时回退到 min（或 0），而不是提交 null。",
+            "placeholder": "字段为空时显示的占位文本。",
+            "name": "随表单提交时使用的字段名。",
+            "required": "必须有值，表单才能提交。",
+            "isDisabled": "控件是否被禁用（自身或被禁用的 <fieldset>，只读）。",
+            "form": "元素所属的表单（只读）。",
+            "labels": "与元素关联的 <label> 元素（只读）。",
+            "validity": "有效性状态，同 <input>.validity（只读）。",
+            "validationMessage": "当前校验错误的提示信息；有效时为空（只读）。",
+            "willValidate": "元素是否参与约束校验（只读）。"
+          },
+          "events": {
+            "change": "已提交一个值（失焦、回车或步进）。",
+            "input": "草稿文本已改变（原生事件，可穿透 shadow DOM）。",
+            "minerva-input": "草稿文本已改变；detail: { value } 为解析后的草稿（非数字时为 null）。",
+            "minerva-change": "提交了新值；detail: { value }（清空时为 null）。"
+          },
+          "methods": {
+            "focus": "聚焦内部控件。",
+            "blur": "使内部控件失去焦点。",
+            "stepUp": "将值增加一个 step（不超过 max）；不触发事件。",
+            "stepDown": "将值减少一个 step（不低于 min）；不触发事件。",
+            "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+            "reportValidity": "检查有效性并显示浏览器的校验提示。",
+            "setCustomValidity": "设置自定义校验错误，传入空字符串则清除。",
+            "formResetCallback": "表单生命周期回调，由 form.reset() 调用：恢复初始值。",
+            "formDisabledCallback": "表单生命周期回调，在祖先 <fieldset> 被禁用或启用时调用。",
+            "formStateRestoreCallback": "表单生命周期回调，在浏览器恢复状态（历史导航、自动填充）时调用。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        }
+      }
+    }
+  }
+}

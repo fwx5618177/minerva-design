@@ -1,0 +1,773 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "ja",
+  "renderer": "vue",
+  "page": "drawer",
+  "title": "Drawer ドロワー",
+  "description": "ビューポートの端からスライドして現れるパネルで、フィルターや詳細などの補助的な作業に使います。モーダルと同様にフォーカスの閉じ込め、Escape、背景クリック、フォーカスの復帰に対応します。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Drawer",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "Drawer"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "open",
+            "type": "boolean",
+            "required": false,
+            "description": "Controlled open state (`v-model:open`); leave `undefined` for uncontrolled.",
+            "typeText": "boolean"
+          },
+          {
+            "name": "defaultOpen",
+            "type": "boolean",
+            "required": false,
+            "description": "Initial open state while uncontrolled",
+            "typeText": "boolean"
+          },
+          {
+            "name": "side",
+            "type": "DrawerSide",
+            "default": "\"right\"",
+            "required": false,
+            "description": "Edge the panel slides in from",
+            "typeText": "DrawerSide"
+          },
+          {
+            "name": "size",
+            "type": "DrawerSize",
+            "default": "\"medium\"",
+            "required": false,
+            "description": "Size preset",
+            "typeText": "DrawerSize"
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "required": false,
+            "description": "Title rendered as the drawer's accessible name (or the `title` slot).",
+            "typeText": "string"
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "required": false,
+            "description": "Description rendered below the title (or the `description` slot).",
+            "typeText": "string"
+          },
+          {
+            "name": "hideCloseButton",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Hides the close (×) button",
+            "typeText": "boolean"
+          },
+          {
+            "name": "closeLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible label of the close button; defaults to the localized \"Close\".",
+            "typeText": "string"
+          },
+          {
+            "name": "hiddenDescription",
+            "type": "string",
+            "required": false,
+            "description": "Text of the visually hidden description rendered when `description` is\nnot set; defaults to the localized \"Drawer content\".",
+            "typeText": "string"
+          }
+        ],
+        "events": [
+          {
+            "name": "update:open",
+            "type": "[open: boolean]",
+            "typeText": "[open: boolean]",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "openChange",
+            "type": "[open: boolean]",
+            "typeText": "[open: boolean]",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "description": "Content: usually `DrawerBody` + `DrawerFooter`",
+            "typeText": "any"
+          },
+          {
+            "name": "trigger",
+            "type": "any",
+            "description": "Element opening the drawer (its single child gets the trigger props)",
+            "typeText": "any"
+          },
+          {
+            "name": "title",
+            "type": "any",
+            "typeText": "any"
+          },
+          {
+            "name": "description",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "open",
+            "event": "update:open",
+            "syntax": "v-model:open"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DrawerBody",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "DrawerBody"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DrawerClose",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "DrawerClose"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "asChild",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Merges the behaviour onto the single child element instead of rendering a `<button>`",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DrawerContent",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "DrawerContent"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "role",
+            "type": "\"dialog\" | \"alertdialog\"",
+            "default": "\"dialog\"",
+            "required": false,
+            "description": "ARIA role of the panel",
+            "typeText": "\"dialog\" | \"alertdialog\""
+          },
+          {
+            "name": "forceMount",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Keeps the panel mounted while closed (`data-state=\"closed\"`), e.g. for\nanimation libraries",
+            "typeText": "boolean"
+          },
+          {
+            "name": "side",
+            "type": "DrawerSide",
+            "default": "\"right\"",
+            "required": false,
+            "description": "Edge the panel slides in from",
+            "typeText": "DrawerSide"
+          },
+          {
+            "name": "size",
+            "type": "DrawerSize",
+            "default": "\"medium\"",
+            "required": false,
+            "description": "Size preset",
+            "typeText": "DrawerSize"
+          },
+          {
+            "name": "hideCloseButton",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Hides the close (×) button",
+            "typeText": "boolean"
+          },
+          {
+            "name": "closeLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible label of the close button; defaults to the localized \"Close\".",
+            "typeText": "string"
+          },
+          {
+            "name": "hiddenDescription",
+            "type": "string",
+            "required": false,
+            "description": "Text of the visually hidden description rendered when `description` is\nnot set; defaults to the localized \"Drawer content\".",
+            "typeText": "string"
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "required": false,
+            "description": "Visible description below the title (or the `description` slot). Without\nit a visually hidden generic description is rendered.",
+            "typeText": "string"
+          },
+          {
+            "name": "overlayClass",
+            "type": "ClassValue",
+            "required": false,
+            "description": "Class of the overlay (backdrop).",
+            "typeText": "ClassValue"
+          }
+        ],
+        "events": [
+          {
+            "name": "openAutoFocus",
+            "type": "[event: Event]",
+            "typeText": "[event: Event]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "Event",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "closeAutoFocus",
+            "type": "[event: Event]",
+            "typeText": "[event: Event]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "Event",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "escapeKeyDown",
+            "type": "[event: KeyboardEvent]",
+            "typeText": "[event: KeyboardEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "KeyboardEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "pointerDownOutside",
+            "type": "[event: PointerEvent]",
+            "typeText": "[event: PointerEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "PointerEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "interactOutside",
+            "type": "[event: PointerEvent | FocusEvent]",
+            "typeText": "[event: PointerEvent | FocusEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "PointerEvent | FocusEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          },
+          {
+            "name": "description",
+            "type": "any",
+            "description": "Visible description (instead of the `description` prop)",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DrawerFooter",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "DrawerFooter"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DrawerHeader",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "DrawerHeader"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DrawerRoot",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "DrawerRoot"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "open",
+            "type": "boolean",
+            "required": false,
+            "description": "Controlled open state (`v-model:open`); leave `undefined` for uncontrolled.",
+            "typeText": "boolean"
+          },
+          {
+            "name": "defaultOpen",
+            "type": "boolean",
+            "required": false,
+            "description": "Initial open state while uncontrolled",
+            "typeText": "boolean"
+          },
+          {
+            "name": "modal",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Modal mode: renders the overlay, traps focus, locks page scrolling and\nblocks / hides the page behind. Non-modal drawers close on outside click /\nfocus instead.",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [
+          {
+            "name": "update:open",
+            "type": "[open: boolean]",
+            "typeText": "[open: boolean]",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "openChange",
+            "type": "[open: boolean]",
+            "typeText": "[open: boolean]",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "open",
+            "event": "update:open",
+            "syntax": "v-model:open"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DrawerTrigger",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "DrawerTrigger"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "asChild",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Merges the behaviour onto the single child element instead of rendering a `<button>`",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Drawer": {
+      "kind": "cssVars",
+      "source": "react/src/components/Drawer",
+      "vars": [
+        {
+          "name": "--drawer-width",
+          "description": "Width of a left / right drawer (every size; defaults to the width of the size)"
+        },
+        {
+          "name": "--drawer-height",
+          "description": "Height of a top / bottom drawer (every size; defaults to the height of the size)"
+        },
+        {
+          "name": "--drawer-padding",
+          "description": "Horizontal padding of the header, description, body and footer"
+        },
+        {
+          "name": "--drawer-radius",
+          "description": "Corner radius of the inner edge (defaults to --radius-lg)"
+        },
+        {
+          "name": "--drawer-shadow",
+          "description": "Shadow of the panel (defaults to --shadow-xl)"
+        },
+        {
+          "name": "--drawer-background",
+          "description": "Background of the panel"
+        },
+        {
+          "name": "--drawer-z-index",
+          "description": "Stacking order of the panel (defaults to --z-modal)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/drawer/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/drawer/vue/basic.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Drawer, DrawerBody, DrawerFooter, Button } from \"minerva-design/vue\";\nconst open = ref(false);\n</script>\n<template>\n  <Button @click=\"open = true\">Open drawer</Button\n  ><Drawer\n    v-model:open=\"open\"\n    title=\"Project details\"\n    description=\"Review your project settings\"\n    ><DrawerBody><p>Everything you need to manage this project.</p></DrawerBody\n    ><DrawerFooter\n      ><Button @click=\"open = false\">Done</Button></DrawerFooter\n    ></Drawer\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "non-modal",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/drawer/vue/non-modal.vue",
+      "files": {
+        "apps/docs/src/docs/pages/drawer/vue/non-modal.vue": "<script setup lang=\"ts\">\nimport {\n  DrawerRoot,\n  DrawerTrigger,\n  DrawerContent,\n  DrawerBody,\n  DrawerClose,\n  Button,\n} from \"minerva-design/vue\";\n</script>\n<template>\n  <DrawerRoot :modal=\"false\"\n    ><DrawerTrigger as-child\n      ><Button variant=\"outline\">Open non-modal panel</Button></DrawerTrigger\n    ><DrawerContent description=\"The rest of the page stays interactive\"\n      ><template #title>Quick reference</template\n      ><DrawerBody\n        ><p>Keep working while this reference stays open.</p>\n        <DrawerClose>Close panel</DrawerClose></DrawerBody\n      ></DrawerContent\n    ></DrawerRoot\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "non-modal",
+      "description": ""
+    },
+    {
+      "id": "sides",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/drawer/vue/sides.vue",
+      "files": {
+        "apps/docs/src/docs/pages/drawer/vue/sides.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Drawer, DrawerBody, Button, HStack } from \"minerva-design/vue\";\nimport type { DrawerSide } from \"minerva-design/vue\";\nconst sides: DrawerSide[] = [\"left\", \"right\", \"top\", \"bottom\"];\nconst side = ref<DrawerSide>(\"right\");\nconst open = ref(false);\n</script>\n<template>\n  <HStack :gap=\"3\" wrap\n    ><Button\n      v-for=\"edge in sides\"\n      :key=\"edge\"\n      variant=\"outline\"\n      @click=\"\n        side = edge;\n        open = true;\n      \"\n      >{{ edge }}</Button\n    ></HStack\n  ><Drawer\n    v-model:open=\"open\"\n    :side=\"side\"\n    size=\"small\"\n    :title=\"`${side} drawer`\"\n    ><DrawerBody\n      ><p>Choose the edge that fits your workflow.</p></DrawerBody\n    ></Drawer\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "sides",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Drawer ドロワー",
+      "description": "ビューポートの端からスライドして現れるパネルで、フィルターや詳細などの補助的な作業に使います。モーダルと同様にフォーカスの閉じ込め、Escape、背景クリック、フォーカスの復帰に対応します。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "open と onOpenChange で制御し、本文と操作用フッターを配置します。"
+        },
+        "sides": {
+          "title": "方向とサイズ",
+          "description": "side で端を選び、size で幅（左右）または高さ（上下）を設定します。"
+        },
+        "compound": {
+          "title": "コンポーネント API",
+          "description": "DrawerRoot、DrawerTrigger、DrawerContent、DrawerHeader、DrawerBody、DrawerFooter、DrawerClose。"
+        }
+      },
+      "api": {
+        "DrawerProps": {
+          "open": "制御された開閉状態。undefined のままにすると非制御になります",
+          "defaultOpen": "非制御時の初期の開閉状態",
+          "onOpenChange": "開閉状態の変更が要求されたときに呼ばれます（トリガー、閉じるボタン、Escape、背景クリック）",
+          "trigger": "クリックで開く要素（単一要素、asChild で描画）",
+          "side": "パネルがスライドしてくる端",
+          "size": "サイズのプリセット：左右は幅、上下は高さ",
+          "title": "タイトル。ダイアログのアクセシブルネームになります",
+          "description": "タイトルの下の説明。アクセシブルな説明になります",
+          "hideCloseButton": "閉じる（×）ボタンを非表示にします",
+          "closeLabel": "閉じるボタンのアクセシブルラベル。既定はローカライズされた「閉じる」",
+          "hiddenDescription": "description 未指定時に使う視覚的に非表示の説明文。既定はローカライズされた「ドロワーの内容」",
+          "className": "パネルの追加クラス名",
+          "ref": "ダイアログ要素への ref",
+          "children": "コンテンツ：通常は DrawerBody + DrawerFooter"
+        },
+        "DrawerRootProps": {
+          "open": "制御された開閉状態。undefined のままにすると非制御になります",
+          "defaultOpen": "非制御時の初期の開閉状態",
+          "onOpenChange": "開閉状態の変更が要求されたときに呼ばれます（トリガー、閉じるボタン、Escape、背景クリック）",
+          "modal": "モーダルモード：背景を表示し、フォーカスを閉じ込め、ページのスクロールをロックし、外側の操作を無効にし、ページを支援技術から隠します",
+          "children": "トリガーとコンテンツ"
+        },
+        "DrawerContentProps": {
+          "ref": "ダイアログ要素への ref",
+          "side": "パネルがスライドしてくる端",
+          "size": "サイズのプリセット：左右は幅、上下は高さ",
+          "hideCloseButton": "閉じる（×）ボタンを非表示にします",
+          "closeLabel": "閉じるボタンのアクセシブルラベル。既定はローカライズされた「閉じる」",
+          "hiddenDescription": "description 未指定時に使う視覚的に非表示の説明文。既定はローカライズされた「ドロワーの内容」",
+          "description": "タイトルの下に表示される説明。省略すると非表示の汎用的な説明が描画されます",
+          "overlayClassName": "オーバーレイ（背景）のクラス名",
+          "role": "パネルの ARIA ロール。ユーザーを中断する確認には \"alertdialog\" を使います",
+          "forceMount": "閉じている間もマウントしたままにします（data-state=\"closed\"）。アニメーションライブラリ向け",
+          "onOpenAutoFocus": "開くときフォーカスがパネルに移る前に呼ばれます。event.preventDefault() でフォーカスをそのままにします",
+          "onCloseAutoFocus": "閉じるときフォーカスが開いた要素に戻る前に呼ばれます。event.preventDefault() でスキップします",
+          "onEscapeKeyDown": "最前面のレイヤーで Escape が押されたとき。event.preventDefault() で開いたままにします",
+          "onPointerDownOutside": "外側でポインターが押されたとき。event.preventDefault() で開いたままにします",
+          "onInteractOutside": "外側でのポインター押下またはフォーカス移動。event.preventDefault() で開いたままにします"
+        }
+      },
+      "cssVars": {
+        "--drawer-width": "左右ドロワーの幅（全サイズ共通。既定値は各サイズの幅）",
+        "--drawer-height": "上下ドロワーの高さ（全サイズ共通。既定値は各サイズの高さ）",
+        "--drawer-padding": "ヘッダー・説明・本文・フッターの左右の余白",
+        "--drawer-radius": "内側の辺の角丸（既定値は --radius-lg）",
+        "--drawer-shadow": "パネルの影（既定値は --shadow-xl）",
+        "--drawer-background": "パネルの背景",
+        "--drawer-z-index": "パネルの重なり順（既定値は --z-modal）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "trigger スロットで開くサイドパネルです。data-drawer-close を持つ light DOM 要素（ここではフッターのボタン）で閉じます。"
+          },
+          "sides": {
+            "title": "表示位置",
+            "description": "side でドロワーがスライドインする端を選びます。size は左右のドロワーでは幅、上下では高さです。"
+          },
+          "non-modal": {
+            "title": "非モーダル",
+            "description": "non-modal ではページを操作できたままです。オーバーレイやフォーカストラップはなく、外側をクリックすると閉じます。minerva-open-change が理由を伝えます。"
+          }
+        },
+        "minerva-drawer": {
+          "props": {
+            "label": "タイトルテキスト（または header スロット）。ダイアログのアクセシブルな名前になります。",
+            "dialogRole": "パネルの ARIA ロール。",
+            "nonModal": "非モーダル：オーバーレイ、フォーカストラップ、スクロールロックなし。外側でのポインター操作やフォーカスで閉じます。"
+          },
+          "events": {
+            "minerva-open-change": "ユーザーが開閉を要求しました（detail: { open, reason }）。キャンセル可能：preventDefault() で現在の状態を維持します。",
+            "minerva-after-open": "パネルが開き、フォーカスが内部に移動した後に発火します。",
+            "minerva-after-close": "パネルが閉じ終わった後（終了アニメーションの後）に発火します。"
+          },
+          "slots": {
+            "default": "本文コンテンツ。",
+            "header": "タイトル（label 属性の代わり）。",
+            "footer": "アクションの行。",
+            "trigger": "クリックするとパネルを開く要素。"
+          },
+          "methods": {
+            "show": "ドロワーを開きます。",
+            "hide": "ドロワーを閉じます。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        },
+        "limitations": "ネイティブ Drawer と DrawerContent は標準で下から開きます。side または placement で左右や上を指定できます。内容にはネイティブの View と Text を使用します。"
+      }
+    }
+  }
+}

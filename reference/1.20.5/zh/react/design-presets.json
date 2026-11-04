@@ -1,0 +1,193 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "zh",
+  "renderer": "react",
+  "page": "design-presets",
+  "title": "设计预设",
+  "description": "只需几个属性即可切换整个应用（或其中一部分）的外观：使用预设（minerva、editorial、compact、touch），或单独设置设计维度：密度、圆角、阴影和字号比例。支持 SSR 与嵌套作用域。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {
+    "axes": {
+      "title": "设计维度",
+      "attribute": "属性",
+      "text": "设计维度与颜色模式（theme）和调色板相互独立。每个维度通过一个 data 属性选择一组设计令牌；组件读取这些令牌（控件高度、内边距、圆角、阴影、字号），因此整个组件库都会随之变化。预设是四个维度加一个默认调色板的命名组合；显式设置的维度和调色板优先于预设。",
+      "preset": "minerva：Minerva 默认外观。editorial：克制、以阅读为主（editorial 调色板、宽松密度、小圆角、柔和阴影、大号字体）。compact：信息密集的界面（紧凑密度、小圆角、小号字体）。touch：面向消费者的移动应用（宽松密度、最小 44px 的触控目标、大圆角）。",
+      "density": "控件高度与水平内边距（--control-height-*、--control-padding-x-*），以及菜单项、选项、表格单元格等行的内边距（--row-padding-y / --row-padding-x），以及触控目标的最小尺寸（--touch-target-min：compact 为 24px，standard 为 32px，comfortable 为 44px）。",
+      "radius": "圆角比例：--radius-sm、--radius-md、--radius-lg、--radius-xl 和 --radius-2xl。",
+      "shadow": "层级阴影 --shadow-sm 至 --shadow-xl。standard 保留主题或调色板的阴影。",
+      "fontScale": "字号比例：--font-size-* 以及基础 / 宽松行高。large 适合阅读。"
+    },
+    "root": {
+      "title": "整个应用",
+      "text": "在根 ConfigProvider 上设置这些属性：它会把非标准的维度作为 data 属性写到 <html> 上（预设的调色板写为 data-palette），并在卸载时恢复 <html>。useConfig().design 返回解析后的各维度。"
+    },
+    "ssr": {
+      "title": "服务端渲染",
+      "text": "根 provider 在水合之后才应用这些属性。若要首屏即呈现正确外观，可使用服务端安全入口 minerva-design/theme-utils 中的 designAttributes() 将属性渲染到服务端 HTML 中，并/或把同样的设计传给 createThemeInitScript({ design })，它还会把预设的调色板作为默认调色板。"
+    },
+    "nested": {
+      "title": "嵌套作用域",
+      "text": "嵌套的 ConfigProvider 继承父级的设计，并只把覆盖应用到其子树：一个 display: contents 包裹元素和该作用域的 portal 容器都带有全部设计属性，因此从子树中渲染的弹窗、气泡卡片和通知也会获得相同外观。嵌套的预设会重置它未设置的所有维度。"
+    },
+    "css": {
+      "title": "在自己的 CSS 中使用令牌",
+      "text": "设计维度只改变设计令牌，因此你自己的样式可以使用同样的变量，与组件保持一致。针对单个组件的微调可通过各组件的 CSS 变量完成（见每个组件页面的“CSS 变量”部分）。"
+    }
+  },
+  "components": [],
+  "api": {
+    "DesignOptions": {
+      "source": "core/src/theme/design.ts",
+      "description": "Design axes chosen by the app; unset axes come from the preset.",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "preset",
+          "type": "DesignPreset",
+          "required": false,
+          "default": "\"minerva\"",
+          "description": "Named combination of the axes below and a default palette: \"minerva\" (default look), \"editorial\" (restrained, reading-oriented), \"compact\" (dense, data-heavy screens) or \"touch\" (consumer mobile apps: comfortable density with 44px touch targets, large radius)"
+        },
+        {
+          "name": "density",
+          "type": "Density",
+          "required": false,
+          "description": "Spacing density of controls and rows"
+        },
+        {
+          "name": "radius",
+          "type": "RadiusScale",
+          "required": false,
+          "description": "Corner radius scale"
+        },
+        {
+          "name": "shadow",
+          "type": "ShadowScale",
+          "required": false,
+          "description": "Elevation shadow scale"
+        },
+        {
+          "name": "fontScale",
+          "type": "FontScale",
+          "required": false,
+          "description": "Type scale"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "axes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/design-presets/demos/axes.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/design-presets/demos/axes.tsx": "import { useState } from \"react\";\nimport { ConfigProvider, Radio, RadioGroup, VStack } from \"minerva-design\";\nimport type {\n  Density,\n  FontScale,\n  RadiusScale,\n  ShadowScale,\n} from \"minerva-design\";\nimport { Showcase } from \"../Showcase\";\n\nconst AXES = {\n  density: [\"compact\", \"standard\", \"comfortable\"],\n  radius: [\"none\", \"small\", \"medium\", \"large\"],\n  shadow: [\"none\", \"subtle\", \"standard\"],\n  fontScale: [\"small\", \"standard\", \"large\"],\n} as const;\n\ntype Design = {\n  density: Density;\n  radius: RadiusScale;\n  shadow: ShadowScale;\n  fontScale: FontScale;\n};\n\n// Each axis can be set on its own (and overrides the preset's value)\nexport default function AxesDemo() {\n  const [design, setDesign] = useState<Design>({\n    density: \"standard\",\n    radius: \"medium\",\n    shadow: \"standard\",\n    fontScale: \"standard\",\n  });\n  return (\n    <VStack gap={4} align=\"start\">\n      {(Object.keys(AXES) as Array<keyof Design>).map((axis) => (\n        <RadioGroup\n          key={axis}\n          label={axis}\n          direction=\"horizontal\"\n          value={design[axis]}\n          onChange={(value) =>\n            setDesign(\n              (current) => ({ ...current, [axis]: String(value) }) as Design,\n            )\n          }\n        >\n          {AXES[axis].map((value) => (\n            <Radio key={value} value={value} label={value} />\n          ))}\n        </RadioGroup>\n      ))}\n      <ConfigProvider {...design}>\n        <Showcase />\n      </ConfigProvider>\n    </VStack>\n  );\n}\n",
+        "apps/docs/src/docs/pages/design-presets/Showcase.tsx": "import {\n  Alert,\n  Button,\n  Card,\n  CardContent,\n  CardHeader,\n  CardTitle,\n  HStack,\n  Input,\n  Select,\n  SelectItem,\n  Switch,\n  Tag,\n  VStack,\n} from \"minerva-design\";\n\n/** The same screen, rendered under every design */\nexport function Showcase() {\n  return (\n    <Card style={{ maxWidth: 520, width: \"100%\" }}>\n      <CardHeader>\n        <CardTitle>Weekly digest</CardTitle>\n      </CardHeader>\n      <CardContent>\n        <VStack gap={3}>\n          <p style={{ margin: 0, lineHeight: \"var(--line-height-base)\" }}>\n            A restrained, reading-oriented look keeps long texts comfortable; a\n            compact one fits more data on dense screens.\n          </p>\n          <HStack gap={2} wrap>\n            <Tag color=\"primary\">Essay</Tag>\n            <Tag color=\"success\">Published</Tag>\n          </HStack>\n          <Input\n            name=\"design-title\"\n            aria-label=\"Title\"\n            defaultValue=\"On craft\"\n          />\n          <Select aria-label=\"Section\" defaultValue=\"essays\">\n            <SelectItem value=\"essays\">Essays</SelectItem>\n            <SelectItem value=\"notes\">Notes</SelectItem>\n          </Select>\n          <Switch label=\"Send as newsletter\" defaultChecked />\n          <Alert color=\"info\" title=\"Scheduled for Monday\" />\n          <HStack gap={2}>\n            <Button>Publish</Button>\n            <Button color=\"neutral\" variant=\"outline\">\n              Save draft\n            </Button>\n          </HStack>\n        </VStack>\n      </CardContent>\n    </Card>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "单独的维度",
+      "description": "每个维度都可以单独设置，并覆盖预设中的值。"
+    },
+    {
+      "id": "presets",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/design-presets/demos/presets.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/design-presets/demos/presets.tsx": "import { useState } from \"react\";\nimport { Button, ConfigProvider, HStack, VStack } from \"minerva-design\";\nimport type { DesignPreset } from \"minerva-design\";\nimport { Showcase } from \"../Showcase\";\n\nconst PRESETS: DesignPreset[] = [\"minerva\", \"editorial\", \"compact\", \"touch\"];\n\n// A nested ConfigProvider scopes the design to its subtree; at the root of\n// an app the same props switch the whole document (<html data-*>).\nexport default function PresetsDemo() {\n  const [preset, setPreset] = useState<DesignPreset>(\"editorial\");\n  return (\n    <VStack gap={4} align=\"start\">\n      <HStack gap={2} role=\"group\" aria-label=\"Design preset\">\n        {PRESETS.map((name) => (\n          <Button\n            key={name}\n            size=\"small\"\n            color={name === preset ? \"primary\" : \"neutral\"}\n            variant={name === preset ? \"solid\" : \"outline\"}\n            aria-pressed={name === preset}\n            onClick={() => setPreset(name)}\n          >\n            {name}\n          </Button>\n        ))}\n      </HStack>\n      <ConfigProvider preset={preset}>\n        <Showcase />\n      </ConfigProvider>\n    </VStack>\n  );\n}\n",
+        "apps/docs/src/docs/pages/design-presets/Showcase.tsx": "import {\n  Alert,\n  Button,\n  Card,\n  CardContent,\n  CardHeader,\n  CardTitle,\n  HStack,\n  Input,\n  Select,\n  SelectItem,\n  Switch,\n  Tag,\n  VStack,\n} from \"minerva-design\";\n\n/** The same screen, rendered under every design */\nexport function Showcase() {\n  return (\n    <Card style={{ maxWidth: 520, width: \"100%\" }}>\n      <CardHeader>\n        <CardTitle>Weekly digest</CardTitle>\n      </CardHeader>\n      <CardContent>\n        <VStack gap={3}>\n          <p style={{ margin: 0, lineHeight: \"var(--line-height-base)\" }}>\n            A restrained, reading-oriented look keeps long texts comfortable; a\n            compact one fits more data on dense screens.\n          </p>\n          <HStack gap={2} wrap>\n            <Tag color=\"primary\">Essay</Tag>\n            <Tag color=\"success\">Published</Tag>\n          </HStack>\n          <Input\n            name=\"design-title\"\n            aria-label=\"Title\"\n            defaultValue=\"On craft\"\n          />\n          <Select aria-label=\"Section\" defaultValue=\"essays\">\n            <SelectItem value=\"essays\">Essays</SelectItem>\n            <SelectItem value=\"notes\">Notes</SelectItem>\n          </Select>\n          <Switch label=\"Send as newsletter\" defaultChecked />\n          <Alert color=\"info\" title=\"Scheduled for Monday\" />\n          <HStack gap={2}>\n            <Button>Publish</Button>\n            <Button color=\"neutral\" variant=\"outline\">\n              Save draft\n            </Button>\n          </HStack>\n        </VStack>\n      </CardContent>\n    </Card>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "预设",
+      "description": "同一界面在各个预设下的效果。嵌套的 ConfigProvider 将预设限定在示例范围内；在根 provider 上则作用于整个文档。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "import { ConfigProvider } from \"minerva-design\";\nimport \"minerva-design/style.css\";\n\nexport default function App() {\n  // The whole app gets the editorial look: editorial palette, comfortable\n  // density, small radius, subtle shadows and a reading-oriented type scale.\n  return (\n    <ConfigProvider preset=\"editorial\" density=\"standard\">\n      {/* your app */}\n    </ConfigProvider>\n  );\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "// app/layout.tsx (React Server Component, e.g. Next.js App Router)\nimport {\n  createThemeInitScript,\n  designAttributes,\n} from \"minerva-design/theme-utils\";\nimport { Providers } from \"./providers\"; // \"use client\": <ConfigProvider preset=\"editorial\">\n\nconst design = { preset: \"editorial\" } as const;\nconst themeScript = createThemeInitScript({ design });\n\nexport default function RootLayout({ children }: { children: React.ReactNode }) {\n  return (\n    // data-density / data-radius / data-shadow / data-font-scale in the HTML:\n    // the first paint already has the right look\n    <html lang=\"en\" suppressHydrationWarning {...designAttributes(design)}>\n      <head>\n        <script dangerouslySetInnerHTML={{ __html: themeScript }} />\n      </head>\n      <body>\n        <Providers>{children}</Providers>\n      </body>\n    </html>\n  );\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "<ConfigProvider preset=\"compact\">\n  {/* dense admin screens */}\n  <ConfigProvider preset=\"editorial\">\n    {/* an article preview: editorial look, portals (Modal, Popover...) included */}\n  </ConfigProvider>\n  <ConfigProvider radius=\"none\">\n    {/* inherits compact, only the radius changes */}\n  </ConfigProvider>\n</ConfigProvider>",
+      "language": "tsx"
+    },
+    {
+      "source": "/* The axes only set design tokens, so your own CSS can use them too */\n.panel {\n  border-radius: var(--radius-lg);\n  box-shadow: var(--shadow-md);\n  padding: var(--row-padding-y) var(--row-padding-x);\n  font-size: var(--font-size-md);\n}\n\n/* ...or react to the active design */\n[data-density=\"compact\"] .panel {\n  gap: var(--space-1);\n}",
+      "language": "css"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "设计预设",
+      "description": "只需几个属性即可切换整个应用（或其中一部分）的外观：使用预设（minerva、editorial、compact、touch），或单独设置设计维度：密度、圆角、阴影和字号比例。支持 SSR 与嵌套作用域。",
+      "axes": {
+        "title": "设计维度",
+        "attribute": "属性",
+        "text": "设计维度与颜色模式（theme）和调色板相互独立。每个维度通过一个 data 属性选择一组设计令牌；组件读取这些令牌（控件高度、内边距、圆角、阴影、字号），因此整个组件库都会随之变化。预设是四个维度加一个默认调色板的命名组合；显式设置的维度和调色板优先于预设。",
+        "preset": "minerva：Minerva 默认外观。editorial：克制、以阅读为主（editorial 调色板、宽松密度、小圆角、柔和阴影、大号字体）。compact：信息密集的界面（紧凑密度、小圆角、小号字体）。touch：面向消费者的移动应用（宽松密度、最小 44px 的触控目标、大圆角）。",
+        "density": "控件高度与水平内边距（--control-height-*、--control-padding-x-*），以及菜单项、选项、表格单元格等行的内边距（--row-padding-y / --row-padding-x），以及触控目标的最小尺寸（--touch-target-min：compact 为 24px，standard 为 32px，comfortable 为 44px）。",
+        "radius": "圆角比例：--radius-sm、--radius-md、--radius-lg、--radius-xl 和 --radius-2xl。",
+        "shadow": "层级阴影 --shadow-sm 至 --shadow-xl。standard 保留主题或调色板的阴影。",
+        "fontScale": "字号比例：--font-size-* 以及基础 / 宽松行高。large 适合阅读。"
+      },
+      "root": {
+        "title": "整个应用",
+        "text": "在根 ConfigProvider 上设置这些属性：它会把非标准的维度作为 data 属性写到 <html> 上（预设的调色板写为 data-palette），并在卸载时恢复 <html>。useConfig().design 返回解析后的各维度。"
+      },
+      "ssr": {
+        "title": "服务端渲染",
+        "text": "根 provider 在水合之后才应用这些属性。若要首屏即呈现正确外观，可使用服务端安全入口 minerva-design/theme-utils 中的 designAttributes() 将属性渲染到服务端 HTML 中，并/或把同样的设计传给 createThemeInitScript({ design })，它还会把预设的调色板作为默认调色板。"
+      },
+      "nested": {
+        "title": "嵌套作用域",
+        "text": "嵌套的 ConfigProvider 继承父级的设计，并只把覆盖应用到其子树：一个 display: contents 包裹元素和该作用域的 portal 容器都带有全部设计属性，因此从子树中渲染的弹窗、气泡卡片和通知也会获得相同外观。嵌套的预设会重置它未设置的所有维度。"
+      },
+      "css": {
+        "title": "在自己的 CSS 中使用令牌",
+        "text": "设计维度只改变设计令牌，因此你自己的样式可以使用同样的变量，与组件保持一致。针对单个组件的微调可通过各组件的 CSS 变量完成（见每个组件页面的“CSS 变量”部分）。"
+      },
+      "demos": {
+        "presets": {
+          "title": "预设",
+          "description": "同一界面在各个预设下的效果。嵌套的 ConfigProvider 将预设限定在示例范围内；在根 provider 上则作用于整个文档。"
+        },
+        "axes": {
+          "title": "单独的维度",
+          "description": "每个维度都可以单独设置，并覆盖预设中的值。"
+        }
+      },
+      "api": {
+        "DesignOptions": {
+          "preset": "设计维度与默认调色板的命名组合。",
+          "density": "控件与行的间距密度。",
+          "radius": "圆角比例。",
+          "shadow": "层级阴影比例。",
+          "fontScale": "字号比例。"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,261 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "ja",
+  "renderer": "vue",
+  "page": "responsive-grid",
+  "title": "ResponsiveGrid レスポンシブグリッド",
+  "description": "列数がビューポートではなく自身の幅（コンテナクエリ）に従う等幅カラムのグリッド。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "GridItem",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "GridItem"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "fullWidth",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Spans the full row of the surrounding grid",
+            "typeText": "boolean"
+          },
+          {
+            "name": "asChild",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Merges the item attributes and classes into its single child instead of\nrendering a wrapper div",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "ResponsiveGrid",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "ResponsiveGrid"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "as",
+            "type": "string | Component",
+            "default": "\"div\"",
+            "required": false,
+            "description": "Element or component rendered as the outer container (div, section, nav...)",
+            "typeText": "string | Component"
+          },
+          {
+            "name": "columns",
+            "type": "ResponsiveGridColumns",
+            "default": "1",
+            "required": false,
+            "description": "Column counts, responding to the grid's own width (container queries):\na number, or `{ base, sm, md, lg }` (480 / 768 / 1200px). Integers 1-12;\nother values throw a RangeError.",
+            "typeText": "ResponsiveGridColumns"
+          },
+          {
+            "name": "gap",
+            "type": "string | number",
+            "default": "4",
+            "required": false,
+            "description": "Gap between rows and columns: numbers and numeric strings select spacing\ntokens, other strings are CSS values",
+            "typeText": "string | number"
+          },
+          {
+            "name": "rowGap",
+            "type": "string | number",
+            "required": false,
+            "description": "Gap between rows; defaults to `gap`",
+            "typeText": "string | number"
+          },
+          {
+            "name": "columnGap",
+            "type": "string | number",
+            "required": false,
+            "description": "Gap between columns; defaults to `gap`",
+            "typeText": "string | number"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:ResponsiveGrid": {
+      "kind": "cssVars",
+      "source": "react/src/components/ResponsiveGrid",
+      "vars": [
+        {
+          "name": "--responsive-grid-align-items",
+          "description": "Vertical alignment of the items in their row (default: stretch)"
+        },
+        {
+          "name": "--responsive-grid-justify-items",
+          "description": "Horizontal alignment of the items in their column (default: stretch)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/responsive-grid/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/responsive-grid/vue/basic.vue": "<script setup lang=\"ts\">\nimport { ResponsiveGrid, Box } from \"minerva-design/vue\";\n</script>\n<template>\n  <ResponsiveGrid :columns=\"{ base: 1, sm: 2, lg: 3 }\" :gap=\"3\"\n    ><Box\n      v-for=\"n in 6\"\n      :key=\"n\"\n      :p=\"4\"\n      bg=\"surface\"\n      border=\"1px solid var(--color-border)\"\n      >Card {{ n }}</Box\n    ></ResponsiveGrid\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "container",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/responsive-grid/vue/container.vue",
+      "files": {
+        "apps/docs/src/docs/pages/responsive-grid/vue/container.vue": "<script setup lang=\"ts\">\nimport { ResponsiveGrid, Box } from \"minerva-design/vue\";\n</script>\n<template>\n  <Box max-w=\"560px\" :p=\"3\" border=\"1px solid var(--color-border)\"\n    ><ResponsiveGrid :columns=\"{ base: 1, sm: 2 }\" :gap=\"3\"\n      ><Box v-for=\"n in 4\" :key=\"n\" :p=\"4\" bg=\"muted\"\n        >Responsive {{ n }}</Box\n      ></ResponsiveGrid\n    ></Box\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "container",
+      "description": ""
+    },
+    {
+      "id": "full-width",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/responsive-grid/vue/full-width.vue",
+      "files": {
+        "apps/docs/src/docs/pages/responsive-grid/vue/full-width.vue": "<script setup lang=\"ts\">\nimport { ResponsiveGrid, GridItem, Box } from \"minerva-design/vue\";\n</script>\n<template>\n  <ResponsiveGrid :columns=\"{ base: 1, sm: 3 }\" :gap=\"3\"\n    ><GridItem full-width\n      ><Box :p=\"4\" bg=\"muted\">Full-width heading</Box></GridItem\n    ><Box v-for=\"n in 3\" :key=\"n\" :p=\"4\" border=\"1px solid var(--color-border)\"\n      >Column {{ n }}</Box\n    ></ResponsiveGrid\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "full-width",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "ResponsiveGrid レスポンシブグリッド",
+      "description": "列数がビューポートではなく自身の幅（コンテナクエリ）に従う等幅カラムのグリッド。",
+      "demos": {
+        "basic": {
+          "title": "レスポンシブな列",
+          "description": "columns は利用可能幅 0・480・768・1200px に対応する base / sm / md / lg の列数を受け付けます。"
+        },
+        "full-width": {
+          "title": "全幅アイテム",
+          "description": "GridItem の fullWidth は行全体にまたがります。rowGap と columnGap は独立しています。"
+        }
+      },
+      "api": {
+        "ResponsiveGridProps": {
+          "ref": "外側（クエリコンテナ）要素への ref",
+          "as": "外側のコンテナとして描画する要素またはコンポーネント（div、section、nav など）",
+          "columns": "列数（1〜12 の整数）：数値、または 480 / 768 / 1200px に対応する { base, sm, md, lg }。それ以外は RangeError",
+          "gap": "行と列の間隔（スペーシングトークンまたは CSS 値）",
+          "rowGap": "行の間隔。既定は gap",
+          "columnGap": "列の間隔。既定は gap"
+        },
+        "GridItemProps": {
+          "ref": "アイテム要素（asChild 時は子要素）への ref",
+          "fullWidth": "親グリッドの行全体にまたがります",
+          "asChild": "ラッパー div を描画せず、props・クラス・ref を唯一の子要素にマージします"
+        }
+      },
+      "cssVars": {
+        "--responsive-grid-align-items": "行内でのアイテムの縦方向の配置（既定値は stretch）",
+        "--responsive-grid-justify-items": "列内でのアイテムの横方向の配置（既定値は stretch）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "columns=\"1 2 3 4\" は base、sm、md、lg のコンテナ幅ごとの列数を設定します。グリッドはビューポートではなく自身の幅に従います。"
+          },
+          "container": {
+            "title": "コンテナのブレークポイント",
+            "description": "columns は JSON（{\"base\": 1, \"sm\": 2, \"lg\": 4}、指定のないブレークポイントは前の値を継承）も受け付け、row-gap / column-gap で間隔を個別に指定できます。スライダーでコンテナの幅を変えてみてください。"
+          },
+          "full-width": {
+            "title": "全幅のアイテム",
+            "description": "子要素を <minerva-grid-item full-width> で囲むと行全体に広がります。"
+          }
+        },
+        "minerva-responsive-grid": {
+          "slots": {
+            "default": "グリッドのアイテム。"
+          }
+        },
+        "minerva-grid-item": {
+          "slots": {
+            "default": "セルのコンテンツ。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

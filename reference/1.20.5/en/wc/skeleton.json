@@ -1,0 +1,627 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "en",
+  "renderer": "wc",
+  "page": "skeleton",
+  "title": "Skeleton",
+  "description": "Placeholder shapes shown while content is loading.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Skeleton",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/skeleton",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-skeleton",
+        "props": [
+          {
+            "name": "variant",
+            "typeText": "\"text\" | \"circular\" | \"rectangular\" | \"rounded\" | \"button\" | \"image\" | \"card\"",
+            "attribute": "variant",
+            "required": false
+          },
+          {
+            "name": "animation",
+            "typeText": "\"pulse\" | \"wave\" | \"false\"",
+            "attribute": "animation",
+            "required": false
+          },
+          {
+            "name": "loaded",
+            "typeText": "boolean",
+            "attribute": "loaded",
+            "required": false
+          },
+          {
+            "name": "decorative",
+            "typeText": "boolean",
+            "attribute": "decorative",
+            "required": false
+          },
+          {
+            "name": "size",
+            "typeText": "string | undefined",
+            "attribute": "size",
+            "required": false
+          },
+          {
+            "name": "width",
+            "typeText": "string | undefined",
+            "attribute": "width",
+            "required": false
+          },
+          {
+            "name": "height",
+            "typeText": "string | undefined",
+            "attribute": "height",
+            "required": false
+          },
+          {
+            "name": "borderRadius",
+            "typeText": "string | undefined",
+            "attribute": "border-radius",
+            "required": false
+          },
+          {
+            "name": "lines",
+            "typeText": "number",
+            "attribute": "lines",
+            "required": false
+          },
+          {
+            "name": "avatar",
+            "typeText": "boolean",
+            "attribute": "avatar",
+            "required": false
+          },
+          {
+            "name": "avatarSize",
+            "typeText": "string",
+            "attribute": "avatar-size",
+            "required": false
+          },
+          {
+            "name": "avatarShape",
+            "typeText": "\"circle\" | \"square\"",
+            "attribute": "avatar-shape",
+            "required": false
+          },
+          {
+            "name": "active",
+            "typeText": "boolean",
+            "attribute": "active",
+            "required": false
+          },
+          {
+            "name": "paragraph",
+            "typeText": "boolean",
+            "attribute": "paragraph",
+            "required": false
+          },
+          {
+            "name": "heading",
+            "typeText": "boolean",
+            "attribute": "heading",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "description": "Real content, rendered once `loaded` is set"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "SkeletonText",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/skeleton-text",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-skeleton-text",
+        "props": [
+          {
+            "name": "lines",
+            "typeText": "number",
+            "attribute": "lines",
+            "required": false
+          },
+          {
+            "name": "lineHeight",
+            "typeText": "string",
+            "attribute": "line-height",
+            "required": false
+          },
+          {
+            "name": "gap",
+            "typeText": "string",
+            "attribute": "gap",
+            "required": false
+          },
+          {
+            "name": "noShrinkLast",
+            "typeText": "boolean",
+            "attribute": "no-shrink-last",
+            "required": false
+          },
+          {
+            "name": "animation",
+            "typeText": "\"pulse\" | \"wave\" | \"false\"",
+            "attribute": "animation",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-skeleton": {
+      "kind": "element",
+      "source": "web-components/src/components/skeleton/skeleton.ts",
+      "className": "MinervaSkeleton",
+      "summary": "Loading placeholder (lines, avatar, title, paragraph, card).",
+      "description": "Placeholder shapes shown while content loads (`<Skeleton>` of React). By default it is an announced busy region (`role=\"status\"`, `aria-busy`, named \"Loading\"); once `loaded` is set it renders its slotted content instead. `decorative` renders one bare `aria-hidden` block, to compose custom layouts inside a container that already announces the busy state.",
+      "properties": [
+        {
+          "name": "variant",
+          "attribute": "variant",
+          "type": "\"text\" | \"circular\" | \"rectangular\" | \"rounded\" | \"button\" | \"image\" | \"card\"",
+          "default": "\"text\"",
+          "description": "Shape of the placeholder"
+        },
+        {
+          "name": "animation",
+          "attribute": "animation",
+          "type": "\"pulse\" | \"wave\" | \"false\"",
+          "default": "\"pulse\"",
+          "description": "Loading animation (\"false\" disables it)"
+        },
+        {
+          "name": "loaded",
+          "attribute": "loaded",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows the slotted content instead of the placeholder (the React library's `loading={false}`)"
+        },
+        {
+          "name": "decorative",
+          "attribute": "decorative",
+          "type": "boolean",
+          "default": "false",
+          "description": "Renders one bare decorative block (`aria-hidden`) instead of the busy region"
+        },
+        {
+          "name": "size",
+          "attribute": "size",
+          "type": "string | undefined",
+          "description": "Edge length of a decorative circular block (numbers are pixels; default 32)"
+        },
+        {
+          "name": "width",
+          "attribute": "width",
+          "type": "string | undefined",
+          "description": "Width of each line (numbers are pixels)"
+        },
+        {
+          "name": "height",
+          "attribute": "height",
+          "type": "string | undefined",
+          "description": "Height of each line (numbers are pixels)"
+        },
+        {
+          "name": "borderRadius",
+          "attribute": "border-radius",
+          "type": "string | undefined",
+          "description": "Corner radius of each line (numbers are pixels)"
+        },
+        {
+          "name": "lines",
+          "attribute": "lines",
+          "type": "number",
+          "default": "1",
+          "description": "Number of lines"
+        },
+        {
+          "name": "avatar",
+          "attribute": "avatar",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows an avatar placeholder"
+        },
+        {
+          "name": "avatarSize",
+          "attribute": "avatar-size",
+          "type": "string",
+          "default": "\"40\"",
+          "description": "Avatar size (numbers are pixels)"
+        },
+        {
+          "name": "avatarShape",
+          "attribute": "avatar-shape",
+          "type": "\"circle\" | \"square\"",
+          "default": "\"circle\"",
+          "description": "Avatar shape"
+        },
+        {
+          "name": "active",
+          "attribute": "active",
+          "type": "boolean",
+          "default": "false",
+          "description": "Highlights the card variant as active"
+        },
+        {
+          "name": "paragraph",
+          "attribute": "paragraph",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows a paragraph placeholder (replaces the lines)"
+        },
+        {
+          "name": "heading",
+          "attribute": "heading",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows a title placeholder (replaces the lines; the React library's `title`)"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "Real content, rendered once `loaded` is set"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The busy region (role=status), or the single block of a decorative skeleton"
+        },
+        {
+          "name": "avatar",
+          "description": "The avatar placeholder"
+        },
+        {
+          "name": "title",
+          "description": "The title placeholder"
+        },
+        {
+          "name": "line",
+          "description": "Each line placeholder (also the paragraph lines)"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--skeleton-color",
+          "description": "Base color of the placeholder blocks"
+        },
+        {
+          "name": "--skeleton-highlight-color",
+          "description": "Color of the moving highlight (wave animation)"
+        },
+        {
+          "name": "--skeleton-radius",
+          "description": "Corner radius of the lines and blocks (circles stay round, rectangular blocks square)"
+        },
+        {
+          "name": "--skeleton-text-height",
+          "description": "Height of a text line"
+        },
+        {
+          "name": "--skeleton-gap",
+          "description": "Space between the lines of a paragraph and next to the avatar"
+        }
+      ]
+    },
+    "wc:minerva-skeleton-text": {
+      "kind": "element",
+      "source": "web-components/src/components/skeleton/skeleton.ts",
+      "className": "MinervaSkeletonText",
+      "summary": "Decorative block of text-line placeholders.",
+      "description": "A decorative block of text-line placeholders (`<SkeletonText>` of React); the last line is shortened to 70% unless `no-shrink-last` is set. Hidden from assistive technologies: expose the busy state on the surrounding container.",
+      "properties": [
+        {
+          "name": "lines",
+          "attribute": "lines",
+          "type": "number",
+          "default": "3",
+          "description": "Number of text lines"
+        },
+        {
+          "name": "lineHeight",
+          "attribute": "line-height",
+          "type": "string",
+          "default": "\"1em\"",
+          "description": "Height of each line (numbers are pixels)"
+        },
+        {
+          "name": "gap",
+          "attribute": "gap",
+          "type": "string",
+          "default": "\"2\"",
+          "description": "Space between lines: a spacing-scale step (\"2\" -> var(--space-2)) or a CSS length"
+        },
+        {
+          "name": "noShrinkLast",
+          "attribute": "no-shrink-last",
+          "type": "boolean",
+          "default": "false",
+          "description": "Keeps the last line at full width (the React library's `shrinkLast={false}`)"
+        },
+        {
+          "name": "animation",
+          "attribute": "animation",
+          "type": "\"pulse\" | \"wave\" | \"false\"",
+          "default": "\"pulse\"",
+          "description": "Loading animation (\"false\" disables it)"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The block of lines"
+        },
+        {
+          "name": "line",
+          "description": "Each line placeholder"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--skeleton-color",
+          "description": "Base color of the placeholder blocks"
+        },
+        {
+          "name": "--skeleton-highlight-color",
+          "description": "Color of the moving highlight (wave animation)"
+        },
+        {
+          "name": "--skeleton-radius",
+          "description": "Corner radius of the lines and blocks (circles stay round, rectangular blocks square)"
+        },
+        {
+          "name": "--skeleton-text-height",
+          "description": "Height of a text line"
+        },
+        {
+          "name": "--skeleton-gap",
+          "description": "Space between the lines of a paragraph and next to the avatar"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Skeleton": {
+      "kind": "cssVars",
+      "source": "react/src/components/Skeleton",
+      "vars": [
+        {
+          "name": "--skeleton-color",
+          "description": "Base color of the placeholder blocks"
+        },
+        {
+          "name": "--skeleton-highlight-color",
+          "description": "Color of the moving highlight (wave animation)"
+        },
+        {
+          "name": "--skeleton-radius",
+          "description": "Corner radius of the lines and blocks (circles stay round, rectangular blocks square)"
+        },
+        {
+          "name": "--skeleton-text-height",
+          "description": "Height of a text line"
+        },
+        {
+          "name": "--skeleton-gap",
+          "description": "Space between the lines of a paragraph and next to the avatar"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/skeleton/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/skeleton/wc/basic.html": "<div style=\"display: grid; gap: 24px\">\n  <minerva-skeleton lines=\"3\"></minerva-skeleton>\n  <minerva-skeleton avatar heading paragraph></minerva-skeleton>\n  <minerva-skeleton\n    avatar\n    avatar-shape=\"square\"\n    avatar-size=\"56\"\n    lines=\"2\"\n    animation=\"wave\"\n    aria-label=\"Loading profile\"\n  ></minerva-skeleton>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Basic usage",
+      "description": "Lines, or an avatar with a heading and a paragraph. The skeleton is a busy status region named \"Loading\" (or its aria-label)."
+    },
+    {
+      "id": "composition",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/skeleton/wc/composition.html",
+      "files": {
+        "apps/docs/src/docs/pages/skeleton/wc/composition.html": "<div\n  role=\"status\"\n  aria-busy=\"true\"\n  aria-label=\"Loading article\"\n  style=\"display: grid; gap: 16px; max-width: 480px\"\n>\n  <div style=\"display: flex; gap: 12px; align-items: center\">\n    <minerva-skeleton\n      decorative\n      variant=\"circular\"\n      size=\"40\"\n    ></minerva-skeleton>\n    <minerva-skeleton decorative width=\"160\" height=\"16\"></minerva-skeleton>\n  </div>\n  <minerva-skeleton\n    decorative\n    variant=\"rounded\"\n    width=\"100%\"\n    height=\"160\"\n  ></minerva-skeleton>\n  <minerva-skeleton-text lines=\"4\"></minerva-skeleton-text>\n  <minerva-skeleton-text\n    lines=\"2\"\n    line-height=\"12px\"\n    gap=\"1\"\n    no-shrink-last\n    animation=\"wave\"\n  ></minerva-skeleton-text>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Custom composition",
+      "description": "decorative skeletons and minerva-skeleton-text are hidden from assistive technologies: compose them in a container that announces the busy state."
+    },
+    {
+      "id": "loading",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/skeleton/wc/loading.html",
+      "files": {
+        "apps/docs/src/docs/pages/skeleton/wc/loading.html": "<div style=\"display: grid; gap: 12px; max-width: 420px\">\n  <div>\n    <minerva-button id=\"reload\" size=\"small\" variant=\"outline\"\n      >Reload</minerva-button\n    >\n  </div>\n  <minerva-skeleton id=\"post\" avatar heading paragraph>\n    <article style=\"display: flex; gap: 12px\">\n      <minerva-avatar name=\"Ada Lovelace\"></minerva-avatar>\n      <div>\n        <strong>Ada Lovelace</strong>\n        <p style=\"margin: 4px 0 0\">\n          The Analytical Engine weaves algebraic patterns just as the Jacquard\n          loom weaves flowers and leaves.\n        </p>\n      </div>\n    </article>\n  </minerva-skeleton>\n</div>\n",
+        "apps/docs/src/docs/pages/skeleton/wc/loading.ts": "// The skeleton is a busy region until `loaded` is set; then it renders its\n// slotted content instead.\nexport function setup(root: HTMLElement) {\n  const post = root.querySelector<HTMLElement & { loaded: boolean }>(\"#post\")!;\n  const reload = root.querySelector<HTMLElement>(\"#reload\")!;\n  let timer: ReturnType<typeof setTimeout> | undefined;\n  const load = () => {\n    post.loaded = false;\n    clearTimeout(timer);\n    timer = setTimeout(() => (post.loaded = true), 1500);\n  };\n  load();\n  reload.addEventListener(\"click\", load);\n  return () => {\n    clearTimeout(timer);\n    reload.removeEventListener(\"click\", load);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Loading content",
+      "description": "Set loaded once the data is there: the skeleton then renders its slotted content. Click Reload to replay."
+    },
+    {
+      "id": "variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/skeleton/wc/variants.html",
+      "files": {
+        "apps/docs/src/docs/pages/skeleton/wc/variants.html": "<div style=\"display: grid; gap: 16px\">\n  <div style=\"display: flex; flex-wrap: wrap; gap: 16px; align-items: center\">\n    <minerva-skeleton\n      variant=\"circular\"\n      width=\"48\"\n      height=\"48\"\n    ></minerva-skeleton>\n    <minerva-skeleton\n      variant=\"rectangular\"\n      width=\"120\"\n      height=\"48\"\n    ></minerva-skeleton>\n    <minerva-skeleton\n      variant=\"rounded\"\n      width=\"120\"\n      height=\"48\"\n    ></minerva-skeleton>\n    <minerva-skeleton variant=\"button\" width=\"96\"></minerva-skeleton>\n    <minerva-skeleton\n      variant=\"image\"\n      width=\"120\"\n      height=\"80\"\n    ></minerva-skeleton>\n  </div>\n  <div style=\"display: grid; gap: 8px\">\n    <minerva-skeleton animation=\"pulse\" width=\"80%\"></minerva-skeleton>\n    <minerva-skeleton animation=\"wave\" width=\"80%\"></minerva-skeleton>\n    <minerva-skeleton\n      animation=\"false\"\n      width=\"80%\"\n      border-radius=\"0\"\n    ></minerva-skeleton>\n  </div>\n  <minerva-skeleton\n    variant=\"card\"\n    avatar\n    heading\n    paragraph\n    active\n  ></minerva-skeleton>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Variants and animations",
+      "description": "Placeholder shapes (width / height accept pixels), pulse / wave / no animation, and the card variant."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Skeleton",
+      "description": "Placeholder shapes shown while content is loading.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Text lines; set how many with lines."
+        },
+        "variants": {
+          "title": "Variants",
+          "description": "Text, circular, rectangular, rounded, button and image shapes."
+        },
+        "animations": {
+          "title": "Animations",
+          "description": "Pulse (default), wave, or \"false\" for no animation."
+        },
+        "composition": {
+          "title": "Avatar, title and paragraph",
+          "description": "Combine an avatar with a title and paragraph, or with plain lines."
+        },
+        "card": {
+          "title": "Card",
+          "description": "The card variant lays out an avatar, title and paragraph; active highlights it."
+        },
+        "loading": {
+          "title": "Loading state",
+          "description": "Wrap the real content and render it once loading is false."
+        },
+        "decorative": {
+          "title": "Decorative blocks",
+          "description": "decorative renders one bare aria-hidden placeholder to compose your own layout inside a container that exposes the busy state."
+        },
+        "skeleton-text": {
+          "title": "SkeletonText",
+          "description": "A block of text lines whose last line is shortened to read like real text."
+        }
+      },
+      "api": {
+        "SkeletonProps": {
+          "variant": "Shape of the placeholder",
+          "animation": "Loading animation; \"false\" disables it",
+          "width": "Width of each line (numbers are pixels)",
+          "height": "Height of each line (numbers are pixels)",
+          "className": "Additional class name",
+          "children": "Real content, rendered once loading is false",
+          "loading": "Shows the placeholder; set to false to render children",
+          "borderRadius": "Custom corner radius of each line",
+          "style": "Inline styles applied to each line",
+          "lines": "Number of lines to render",
+          "avatar": "Shows an avatar placeholder",
+          "avatarSize": "Avatar size (numbers are pixels)",
+          "avatarShape": "Avatar shape",
+          "active": "Highlights the card variant as active",
+          "paragraph": "Shows a paragraph placeholder (replaces the lines)",
+          "title": "Shows a title placeholder (replaces the lines)",
+          "aria-label": "Accessible name of the loading placeholder (rendered as a busy status region)",
+          "ref": "Ref to the root <div> element; only attached while loading (children are rendered as-is otherwise)",
+          "decorative": "Renders one bare decorative placeholder (aria-hidden span) instead of the announced loading region",
+          "size": "Edge length of a decorative circular placeholder; wins over width and height"
+        },
+        "SkeletonTextProps": {
+          "lines": "Number of text lines",
+          "lineHeight": "Height of each line (numbers are pixels)",
+          "gap": "Space between lines: a spacing-scale step or any CSS length",
+          "shrinkLast": "Shrinks the last line to 70% width",
+          "animation": "Loading animation; \"false\" disables it",
+          "ref": "Ref to the root <div> element"
+        }
+      },
+      "cssVars": {
+        "--skeleton-color": "Base color of the placeholder blocks",
+        "--skeleton-highlight-color": "Color of the moving highlight (wave animation)",
+        "--skeleton-radius": "Corner radius of the lines and blocks (circles stay round, rectangular blocks square)",
+        "--skeleton-text-height": "Height of a text line",
+        "--skeleton-gap": "Space between the lines of a paragraph and next to the avatar"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Lines, or an avatar with a heading and a paragraph. The skeleton is a busy status region named \"Loading\" (or its aria-label)."
+          },
+          "variants": {
+            "title": "Variants and animations",
+            "description": "Placeholder shapes (width / height accept pixels), pulse / wave / no animation, and the card variant."
+          },
+          "loading": {
+            "title": "Loading content",
+            "description": "Set loaded once the data is there: the skeleton then renders its slotted content. Click Reload to replay."
+          },
+          "composition": {
+            "title": "Custom composition",
+            "description": "decorative skeletons and minerva-skeleton-text are hidden from assistive technologies: compose them in a container that announces the busy state."
+          }
+        },
+        "minerva-skeleton": {
+          "props": {
+            "loaded": "Shows the slotted content instead of the placeholder.",
+            "heading": "Shows a title placeholder (replaces the lines)."
+          },
+          "slots": {
+            "default": "Real content, rendered once loaded is set."
+          }
+        },
+        "minerva-skeleton-text": {
+          "props": {
+            "noShrinkLast": "Keeps the last line at full width."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

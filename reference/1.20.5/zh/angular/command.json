@@ -1,0 +1,271 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.5",
+  "locale": "zh",
+  "renderer": "angular",
+  "page": "command",
+  "title": "Command 命令面板",
+  "description": "模态框中的可搜索命令面板。输入即可按标题、描述、分组和关键字过滤，方向键移动，回车或点击选择。可选的全局快捷键可打开它。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.5",
+    "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "CommandDialog",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnCommandDialog. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnCommandDialog. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnCommandDialog"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-command-dialog",
+        "props": [
+          {
+            "name": "title",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/overlays/index.ts"
+          },
+          {
+            "name": "description",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/overlays/index.ts"
+          },
+          {
+            "name": "items",
+            "typeText": "readonly CommandItem[]",
+            "required": false,
+            "source": "packages/angular/src/components/overlays/index.ts"
+          },
+          {
+            "name": "query",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/overlays/index.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "selected",
+            "typeText": "CommandItem",
+            "required": false,
+            "source": "packages/angular/src/components/overlays/index.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "CommandItem",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "queryChange",
+            "typeText": "string",
+            "required": false
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "query",
+            "event": "queryChange",
+            "syntax": "[(query)]"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Command": {
+      "kind": "cssVars",
+      "source": "react/src/components/Command",
+      "vars": [
+        {
+          "name": "--command-search-height",
+          "description": "Minimum height of the search field (defaults to --control-height-md)"
+        },
+        {
+          "name": "--command-results-max-height",
+          "description": "Maximum height of the scrolling result list"
+        },
+        {
+          "name": "--command-item-min-height",
+          "description": "Minimum height of a result row"
+        },
+        {
+          "name": "--command-item-padding-y",
+          "description": "Vertical padding of a result row (follows the density's row padding)"
+        },
+        {
+          "name": "--command-item-padding-x",
+          "description": "Horizontal padding of a result row (follows the density's row padding)"
+        },
+        {
+          "name": "--command-item-active-background",
+          "description": "Background of the hovered / active row (defaults to a 10% primary tint)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "search-and-run-commands",
+      "title": "Search and run commands",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnButton, MnCommandDialog } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnButton, MnCommandDialog],\n  template: `\n<button mnButton (click)=\"open=true\">Open commands</button><mn-command-dialog [(open)]=\"open\" [items]=\"items\" (selected)=\"result=$event.label ?? ''\"/><output>{{result}}</output>\n  `,\n})\nexport class Example {\n  open = false;\n  result = \"\";\n  items = [\n  {\n    \"id\": \"new\",\n    \"label\": \"Create project\",\n    \"keywords\": \"add new\"\n  },\n  {\n    \"id\": \"search\",\n    \"label\": \"Search files\"\n  },\n  {\n    \"id\": \"settings\",\n    \"label\": \"Open settings\"\n  }\n];\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "unavailable-commands",
+      "title": "Unavailable commands",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnButton, MnCommandDialog } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnButton, MnCommandDialog],\n  template: `\n<button mnButton variant=\"outline\" (click)=\"open=true\">Workspace commands</button><mn-command-dialog title=\"Workspace\" [(open)]=\"open\" [items]=\"items\"/>\n  `,\n})\nexport class Example {\n  open = false;\n  items = [\n  {\n    \"id\": \"view\",\n    \"label\": \"View workspace\"\n  },\n  {\n    \"id\": \"delete\",\n    \"label\": \"Delete workspace\",\n    \"disabled\": true\n  }\n];\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.5/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Command 命令面板",
+      "description": "模态框中的可搜索命令面板。输入即可按标题、描述、分组和关键字过滤，方向键移动，回车或点击选择。可选的全局快捷键可打开它。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "受控的命令面板；onSelect 收到选中的项目后面板关闭。"
+        },
+        "shortcut": {
+          "title": "全局快捷键",
+          "description": "shortcut=\"mod+k\" 在 macOS 上用 Cmd+K、其他系统用 Ctrl+K 打开面板；shortcutLabel 显示提示。"
+        },
+        "custom-filter": {
+          "title": "结果排序",
+          "description": "filter 替换默认的子串搜索：它接收启用的条目和去除首尾空白的查询，并按显示顺序返回结果。此例中标题以查询开头的条目排在最前。"
+        },
+        "site-search": {
+          "title": "站点搜索",
+          "description": "文档站的搜索由 Button 和 CommandDialog 组合：输入筛选、分组、无结果反馈、键盘选择和关闭后焦点恢复。此示例使用 Ctrl+Shift+K，站点搜索使用 Cmd/Ctrl+K；在实际项目中用 onSelect 接入路由。"
+        }
+      },
+      "api": {
+        "CommandDialogProps": {
+          "open": "受控的打开状态；不传（undefined）时为非受控",
+          "defaultOpen": "非受控时的初始打开状态",
+          "onOpenChange": "请求改变打开状态时调用（快捷键、选择、Escape、点击遮罩）",
+          "items": "要搜索的命令；禁用的项目不会显示",
+          "onSelect": "以选中的项目调用（点击或回车），随后面板关闭",
+          "title": "对话框标题；默认为本地化的“命令面板”",
+          "description": "面板的可访问描述；默认为本地化提示",
+          "placeholder": "搜索框占位文本；默认为本地化提示",
+          "emptyText": "没有匹配结果时显示的内容",
+          "shortcutLabel": "以 <kbd> 显示在标题旁的快捷键提示，例如“⌘K”",
+          "shortcut": "打开面板的全局快捷键，例如“mod+k”；修饰键：mod、ctrl、meta/cmd、shift、alt/option",
+          "maxResults": "最多显示的结果数",
+          "filter": "自定义搜索，例如按匹配质量排序：接收启用的条目和去除首尾空白的查询（不为空），按显示顺序返回匹配的条目（之后再受 maxResults 限制）；默认是不区分大小写的子串匹配，并保持 items 的顺序",
+          "resultsLabel": "结果列表的可访问标签",
+          "enterLabel": "显示在搜索框末尾的按键提示；默认为本地化的“Enter”",
+          "className": "对话框面板的额外类名"
+        },
+        "CommandItem": {
+          "id": "唯一 id，通过 onSelect 传回",
+          "title": "主标签",
+          "description": "标题下方的次要文字",
+          "group": "分组名，以徽标显示并参与搜索",
+          "keywords": "额外的搜索词（不显示）",
+          "disabled": "从结果中隐藏该项目"
+        }
+      },
+      "cssVars": {
+        "--command-search-height": "搜索框的最小高度（默认 --control-height-md）",
+        "--command-results-max-height": "可滚动结果列表的最大高度",
+        "--command-item-min-height": "结果行的最小高度",
+        "--command-item-padding-y": "结果行的垂直内边距（跟随密度的行内边距）",
+        "--command-item-padding-x": "结果行的水平内边距（跟随密度的行内边距）",
+        "--command-item-active-background": "悬停 / 激活行的背景（默认 10% 主色调）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "items 是一个 JS 属性（id、title、description、group、keywords、disabled）。输入即可筛选，方向键移动，Enter 或点击选择；minerva-select 返回所选 id。"
+          },
+          "shortcut": {
+            "title": "全局快捷键",
+            "description": "shortcut 接受逗号分隔的列表（\"mod+k, /\"；mod 即 Ctrl，macOS 上为 ⌘），可在页面任意位置打开面板，在输入框中输入时除外。max-results 限制结果数量。"
+          },
+          "custom-filter": {
+            "title": "结果排序",
+            "description": "filter 替换默认的子串搜索：它接收启用的条目和去除首尾空白的查询，并按显示顺序返回结果。此例中标题以查询开头的条目排在最前。"
+          }
+        },
+        "minerva-command-dialog": {
+          "props": {
+            "label": "对话框标题（默认：本地化的「命令面板」）。"
+          },
+          "events": {
+            "minerva-select": "选择了一个命令（detail: { value, item }，value 为该项的 id）；随后面板关闭。",
+            "minerva-open-change": "用户请求打开（快捷键）/ 关闭（detail: { open, reason }）；可取消：preventDefault() 保持当前状态。",
+            "minerva-after-open": "面板已打开，焦点已移至搜索框。",
+            "minerva-after-close": "面板完成关闭（退出动画结束）后触发。"
+          },
+          "cssVars": {
+            "--modal-width": "面板宽度（默认取决于尺寸，并受视口限制）。",
+            "--modal-max-height": "面板最大高度（超出时主体滚动）。",
+            "--modal-padding": "标题、描述、主体和底部的水平内边距。",
+            "--modal-radius": "面板圆角（默认 --radius-xl）。",
+            "--modal-shadow": "面板阴影（默认 --shadow-xl）。",
+            "--modal-background": "面板背景。",
+            "--modal-z-index": "面板层级（默认 --z-modal）。"
+          },
+          "methods": {
+            "show": "打开命令面板。",
+            "hide": "关闭命令面板。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        }
+      }
+    }
+  }
+}
