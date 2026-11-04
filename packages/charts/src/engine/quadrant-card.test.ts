@@ -99,7 +99,64 @@ describe("quadrant point card", () => {
     expect(shown()).toBe("1");
   });
 
-  it("lets a new hover replace a card whose action retains mouse focus", () => {
+  it("lets the card go after the pointer leaves an action it clicked", () => {
+    mount();
+    card!.hover(0);
+    const body = host.querySelector<HTMLElement>("[data-card-content]")!;
+    const button = document.createElement("button");
+    card!.actions.appendChild(button);
+    body.dispatchEvent(new PointerEvent("pointerenter"));
+    // a mouse click: press, focus, release
+    button.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }));
+    button.focus();
+    button.dispatchEvent(new PointerEvent("pointerup", { bubbles: true }));
+    card!.hover(null);
+    body.dispatchEvent(new PointerEvent("pointerleave"));
+    expect(document.activeElement).toBe(button);
+    vi.advanceTimersByTime(CARD_LINGER_MS + 1);
+    expect(shown()).toBeNull();
+  });
+
+  it("keeps the card while keyboard focus is in its actions", () => {
+    mount();
+    card!.hover(0);
+    const body = host.querySelector<HTMLElement>("[data-card-content]")!;
+    const button = document.createElement("button");
+    card!.actions.appendChild(button);
+    body.dispatchEvent(new PointerEvent("pointerenter"));
+    button.focus();
+    card!.hover(null);
+    body.dispatchEvent(new PointerEvent("pointerleave"));
+    vi.advanceTimersByTime(CARD_LINGER_MS + 1);
+    expect(shown()).toBe("0");
+    button.blur();
+    vi.advanceTimersByTime(CARD_LINGER_MS + 1);
+    expect(shown()).toBeNull();
+  });
+
+  it("treats a clicked action as keyboard focus once a key is pressed on it", () => {
+    mount();
+    card!.hover(0);
+    const body = host.querySelector<HTMLElement>("[data-card-content]")!;
+    const button = document.createElement("button");
+    card!.actions.appendChild(button);
+    body.dispatchEvent(new PointerEvent("pointerenter"));
+    button.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }));
+    button.focus();
+    // released outside the card
+    document.body.dispatchEvent(
+      new PointerEvent("pointerup", { bubbles: true }),
+    );
+    button.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "Tab", bubbles: true }),
+    );
+    card!.hover(null);
+    body.dispatchEvent(new PointerEvent("pointerleave"));
+    vi.advanceTimersByTime(CARD_LINGER_MS + 1);
+    expect(shown()).toBe("0");
+  });
+
+  it("lets a new hover replace a card whose action retains focus", () => {
     mount();
     card!.hover(0);
     const body = host.querySelector<HTMLElement>("[data-card-content]")!;

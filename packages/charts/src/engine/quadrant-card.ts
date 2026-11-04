@@ -138,6 +138,10 @@ export const createQuadrantPointCard = (
   let hovered: PointRef | null = null;
   let held: PointRef | null = null;
   let pointerInside = false;
+  /** A pointer press in the card is in progress (focus it moves is not keyboard focus) */
+  let pressing = false;
+  /** Focus inside the card came from the keyboard: it keeps the card open */
+  let keyboardFocus = false;
   let focused: PointRef | null = null;
   let dragging: number | null = null;
   let dragAt: QuadrantCardPosition | null = null;
@@ -381,6 +385,9 @@ export const createQuadrantPointCard = (
     }
   };
 
+  const keyboardFocusInside = () =>
+    keyboardFocus && body.contains(doc.activeElement);
+
   const hold = (index: number | null) => {
     if (holdTimer) clearTimeout(holdTimer);
     holdTimer = null;
@@ -390,13 +397,16 @@ export const createQuadrantPointCard = (
     }
     holdTimer = setTimeout(() => {
       holdTimer = null;
-      if (pointerInside || body.contains(doc.activeElement)) return;
+      if (pointerInside || keyboardFocusInside()) return;
       held = null;
       render();
     }, CARD_LINGER_MS);
   };
   const onEnter = (event: Event) => {
     if (event.type === "pointerenter") pointerInside = true;
+    // focus moved in by a click on an action is not keyboard focus: once the
+    // pointer leaves, the card goes as after any hover
+    else keyboardFocus = !pressing;
     if (shown !== null && dragging === null) hold(shown);
   };
   const onLeave = () => {
@@ -404,13 +414,33 @@ export const createQuadrantPointCard = (
     hold(null);
   };
   const onFocusOut = (event: FocusEvent) => {
-    if (!body.contains(event.relatedTarget as Node | null)) hold(null);
+    if (body.contains(event.relatedTarget as Node | null)) return;
+    keyboardFocus = false;
+    hold(null);
+  };
+  const onPress = () => {
+    pressing = true;
+    keyboardFocus = false;
+    // released anywhere (also outside the card)
+    doc.addEventListener("pointerup", onRelease, true);
+    doc.addEventListener("pointercancel", onRelease, true);
+  };
+  function onRelease() {
+    pressing = false;
+    doc.removeEventListener("pointerup", onRelease, true);
+    doc.removeEventListener("pointercancel", onRelease, true);
+  }
+  // keys pressed on a clicked action make its focus keyboard focus
+  const onCardKey = () => {
+    if (body.contains(doc.activeElement)) keyboardFocus = true;
   };
   const onClick = () => {
     if (shown !== null && dragging === null) options.onClick?.(shown);
   };
   body.addEventListener("pointerenter", onEnter);
   body.addEventListener("pointerleave", onLeave);
+  body.addEventListener("pointerdown", onPress, true);
+  body.addEventListener("keydown", onCardKey, true);
   body.addEventListener("focusin", onEnter);
   body.addEventListener("focusout", onFocusOut);
   label.addEventListener("click", onClick);
@@ -522,6 +552,9 @@ export const createQuadrantPointCard = (
       doc.removeEventListener("keydown", onKey);
       body.removeEventListener("pointerenter", onEnter);
       body.removeEventListener("pointerleave", onLeave);
+      body.removeEventListener("pointerdown", onPress, true);
+      body.removeEventListener("keydown", onCardKey, true);
+      onRelease();
       body.removeEventListener("focusin", onEnter);
       body.removeEventListener("focusout", onFocusOut);
       label.removeEventListener("click", onClick);
