@@ -1,0 +1,466 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.4",
+  "locale": "fr",
+  "renderer": "native",
+  "page": "monaco-code-editor",
+  "title": "MonacoCodeEditor",
+  "description": "Éditeur Monaco étiqueté utilisant un moteur local (jamais de CDN) et suivant le thème de la page. Si le moteur ne se charge pas à temps, il se replie sur une zone de texte modifiable avec un bouton Réessayer. Importez-le depuis minerva-design/monaco ; @monaco-editor/react et monaco-editor sont des dépendances pairs optionnelles. Le Web Component <minerva-code-editor> est publié comme entrée optionnelle minerva-design/web-components/code-editor (hors de l'entrée tout-en-un et du bundle CDN), avec monaco-editor comme dépendance pair optionnelle.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.4",
+    "sourceCommit": "5826c364a762ec5a1144b8eea89e5d7510e4099c",
+    "sourceDigest": "sha256:38cfefdcb173c9a307526b9364c7a77acc74f713924006e65d94c6f3c5e94c61",
+    "referenceSourceDigest": "sha256:8bb3a20ee069c63b8d85e6ccf29336af81fffa488ce873d14ee032291c18009f"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "CodeEditor",
+      "support": {
+        "status": "beta",
+        "notes": "Native multiline source editor with caller formatter; Monaco remains a DOM engine."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native multiline source editor with caller formatter; Monaco remains a DOM engine.",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "CodeEditor"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "label",
+            "source": "packages/native/src/components/Editors/index.tsx",
+            "kind": "string",
+            "typeText": "string",
+            "typeRef": "type:e15e314d298fc0d116fc",
+            "required": true
+          },
+          {
+            "name": "language",
+            "source": "packages/native/src/components/Editors/index.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "format",
+            "source": "packages/native/src/components/Editors/index.tsx",
+            "kind": "function",
+            "typeText": "((source: string) => string | Promise<string>) | undefined",
+            "typeRef": "type:152f0b4a771ee5092b8d",
+            "parameters": [
+              {
+                "name": "source",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "string",
+                "typeRef": "type:e15e314d298fc0d116fc"
+              }
+            ],
+            "returnType": {
+              "typeText": "string | Promise<string>",
+              "typeRef": "type:f7ebaca209ff4fcc8445"
+            },
+            "required": false
+          },
+          {
+            "name": "formatLabel",
+            "source": "packages/native/src/components/Editors/index.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "source": "packages/native/src/components/Textarea/Textarea.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables the field"
+          },
+          {
+            "name": "value",
+            "source": "packages/native/src/components/Textarea/Textarea.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Text of the field (controlled)"
+          },
+          {
+            "name": "defaultValue",
+            "source": "packages/native/src/components/Textarea/Textarea.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "default": "",
+            "required": false,
+            "description": "Initial text (uncontrolled)"
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/components/Textarea/Textarea.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "NativeSize | undefined",
+            "typeRef": "type:3e1597e03bb6f7f3269e",
+            "default": "medium",
+            "required": false,
+            "description": "Font size and minimum height"
+          },
+          {
+            "name": "readOnly",
+            "source": "packages/native/src/components/Textarea/Textarea.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Focusable and selectable, but the text cannot be edited"
+          },
+          {
+            "name": "invalid",
+            "source": "packages/native/src/components/Textarea/Textarea.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Error state: danger border (`aria-invalid` on the web)"
+          },
+          {
+            "name": "inputStyle",
+            "source": "packages/native/src/components/Textarea/Textarea.tsx",
+            "kind": "union",
+            "typeText": "StyleProp<TextStyle>",
+            "typeRef": "type:175f7626ef7c69988283",
+            "required": false,
+            "description": "Style of the TextInput"
+          },
+          {
+            "name": "variant",
+            "source": "packages/native/src/components/Textarea/Textarea.tsx",
+            "kind": "enum",
+            "values": [
+              "filled",
+              "outline",
+              "unstyled"
+            ],
+            "typeText": "FieldVariant | undefined",
+            "typeRef": "type:65f0913f5320331d7c25",
+            "default": "outline",
+            "required": false,
+            "description": "Visual style: `outline` (bordered), `filled` (tinted background) or `unstyled` (no frame)"
+          },
+          {
+            "name": "showCharCount",
+            "source": "packages/native/src/components/Textarea/Textarea.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows the number of characters (and `maxLength`, when set) under the text"
+          },
+          {
+            "name": "wrapperStyle",
+            "source": "packages/native/src/components/Textarea/Textarea.tsx",
+            "kind": "union",
+            "typeText": "StyleProp<ViewStyle>",
+            "typeRef": "type:e697903ddc58ec54def0",
+            "required": false,
+            "description": "Style of the frame around the text"
+          },
+          {
+            "name": "rows",
+            "source": "packages/native/src/components/Textarea/Textarea.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 3,
+            "required": false,
+            "description": "Visible text rows (the height of the field)"
+          },
+          {
+            "name": "autoSize",
+            "source": "packages/native/src/components/Textarea/Textarea.tsx",
+            "kind": "union",
+            "typeText": "boolean | TextareaAutoSize | undefined",
+            "typeRef": "type:2102a802ba0c13e1f29a",
+            "default": false,
+            "required": false,
+            "description": "Grows with the text: `true` (from `rows`, unbounded) or row bounds"
+          }
+        ],
+        "events": [
+          {
+            "name": "onFormatError",
+            "source": "packages/native/src/components/Editors/index.tsx",
+            "kind": "function",
+            "typeText": "((error: unknown) => void) | undefined",
+            "typeRef": "type:45ee1fdd35b458af497d",
+            "parameters": [
+              {
+                "name": "error",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "unknown",
+                "typeRef": "type:dc96c0cac9f2d6c9a926"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onChange",
+            "source": "packages/native/src/components/Textarea/Textarea.tsx",
+            "kind": "function",
+            "typeText": "((value: string) => void) | undefined",
+            "typeRef": "type:a3edd2ec8651a9e57222",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "string",
+                "typeRef": "type:e15e314d298fc0d116fc"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the new text on every edit"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "onChange",
+            "syntax": "value={value} onChange={handler}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MonacoCodeEditor",
+      "support": {
+        "status": "n/a",
+        "notes": "Monaco requires a browser DOM and is not embedded on iOS or Android. Native CodeEditor provides an accessible multiline source editor with an optional formatter; it does not claim Monaco language-service or DOM-editor behavior."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Monaco requires a browser DOM and is not embedded on iOS or Android. Native CodeEditor provides an accessible multiline source editor with an optional formatter; it does not claim Monaco language-service or DOM-editor behavior."
+      }
+    }
+  ],
+  "api": {
+    "native:CodeEditorProps": {
+      "source": "native/src/components/Editors/index.tsx",
+      "kind": "interface",
+      "extends": [
+        "Omit<TextareaProps, \"label\">"
+      ],
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "language",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "format",
+          "type": "(source: string) => string | Promise<string>",
+          "required": false
+        },
+        {
+          "name": "formatLabel",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "onFormatError",
+          "type": "(error: unknown) => void",
+          "required": false
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:MonacoCodeEditor": {
+      "kind": "cssVars",
+      "source": "react/src/components/MonacoCodeEditor",
+      "vars": [
+        {
+          "name": "--monaco-code-editor-radius",
+          "description": "Corner radius of the editor surface (defaults to --radius-md)"
+        },
+        {
+          "name": "--monaco-code-editor-border-color",
+          "description": "Border color of the editor surface"
+        },
+        {
+          "name": "--monaco-code-editor-bg",
+          "description": "Background color of the editor surface"
+        },
+        {
+          "name": "--monaco-code-editor-label-gap",
+          "description": "Space between the label and the editor"
+        },
+        {
+          "name": "--monaco-code-editor-font-size",
+          "description": "Font size of the label, the messages and the plain-text fallback"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/monaco-code-editor/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/monaco-code-editor/native/basic.tsx": "import { CodeEditor } from \"minerva-design/native\";\nexport default function Basic() {\n  return (\n    <CodeEditor\n      label=\"Source code\"\n      defaultValue={'const name = \"Minerva\";'}\n      format={(source) => source.trim()}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Éditeur chargé à la demande",
+      "description": "L'éditeur et le moteur local (dont le worker est configuré par l'hôte) sont chargés à la demande. Sans moteur, la zone de texte de repli s'affiche."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.4/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "MonacoCodeEditor",
+      "description": "Éditeur Monaco étiqueté utilisant un moteur local (jamais de CDN) et suivant le thème de la page. Si le moteur ne se charge pas à temps, il se replie sur une zone de texte modifiable avec un bouton Réessayer. Importez-le depuis minerva-design/monaco ; @monaco-editor/react et monaco-editor sont des dépendances pairs optionnelles. Le Web Component <minerva-code-editor> est publié comme entrée optionnelle minerva-design/web-components/code-editor (hors de l'entrée tout-en-un et du bundle CDN), avec monaco-editor comme dépendance pair optionnelle.",
+      "demos": {
+        "basic": {
+          "title": "Éditeur chargé à la demande",
+          "description": "L'éditeur et le moteur local (dont le worker est configuré par l'hôte) sont chargés à la demande. Sans moteur, la zone de texte de repli s'affiche."
+        }
+      },
+      "api": {
+        "MonacoCodeEditorProps": {
+          "monaco": "Moteur Monaco local (import * as monaco from \"monaco-editor\") ; un par application",
+          "value": "Texte source (contrôlé)",
+          "onChange": "Appelée avec le nouveau texte source",
+          "language": "Id de langage Monaco",
+          "label": "Libellé visible, aussi nom accessible de l'éditeur",
+          "height": "Hauteur en pixels, bornée à [minHeight, maxHeight]",
+          "minHeight": "Hauteur minimale en pixels",
+          "maxHeight": "Hauteur maximale en pixels",
+          "disabled": "Rend l'éditeur (et son repli) en lecture seule",
+          "theme": "Thème de couleurs ; par défaut celui de la page (data-theme sur <html>, puis ConfigProvider)",
+          "loadTimeout": "Millisecondes d'attente du moteur avant le repli",
+          "unavailableText": "Message affiché au-dessus de la zone de texte de repli",
+          "retryText": "Texte du bouton Réessayer",
+          "retryLabel": "Libellé accessible du bouton Réessayer",
+          "loadingLabel": "Libellé accessible de l'indicateur de chargement",
+          "className": "Classe supplémentaire",
+          "style": "Styles en ligne de l’élément racine"
+        }
+      },
+      "cssVars": {
+        "--monaco-code-editor-radius": "Rayon des coins de la surface de l'éditeur (par défaut --radius-md)",
+        "--monaco-code-editor-border-color": "Couleur de bordure de la surface de l'éditeur",
+        "--monaco-code-editor-bg": "Couleur de fond de la surface de l'éditeur",
+        "--monaco-code-editor-label-gap": "Espace entre le libellé et l'éditeur",
+        "--monaco-code-editor-font-size": "Taille de police du libellé, des messages et de la zone de texte de repli"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Moteur local, thème et formulaire",
+            "description": "Chargez l'entrée optionnelle minerva-design/web-components/code-editor et le moteur Monaco de l'application, puis passez-le dans la propriété monaco. L'éditeur suit le thème de la page / du <minerva-config>, émet minerva-input à chaque modification (l'onChange de React) et soumet sa valeur avec le formulaire."
+          },
+          "fallback": {
+            "title": "Chargement, repli et moteur tardif",
+            "description": "Sans moteur, l'éditeur affiche son état de chargement, puis après load-timeout une zone de texte modifiable avec un bouton Réessayer (minerva-error est émis). Fournir le moteur ensuite charge l'éditeur avec la dernière valeur."
+          }
+        },
+        "minerva-code-editor": {
+          "props": {
+            "name": "Nom sous lequel la valeur est envoyée avec le formulaire.",
+            "required": "Le contrôle doit avoir une valeur pour que le formulaire soit envoyé.",
+            "isDisabled": "Indique si le contrôle est désactivé, par lui-même ou par un <fieldset> désactivé (lecture seule).",
+            "form": "Le formulaire auquel appartient l’élément (lecture seule).",
+            "labels": "Les éléments <label> associés à l’élément (lecture seule).",
+            "validity": "État de validité, comme <input>.validity (lecture seule).",
+            "validationMessage": "Message de l’erreur de validation courante ; vide si la valeur est valide (lecture seule).",
+            "willValidate": "Indique si l’élément participe à la validation des contraintes (lecture seule).",
+            "defaultValue": "Texte source initial (l'attribut value), restauré par form.reset(). Le modifier change aussi value tant que l'utilisateur n'a pas modifié le code.",
+            "resolvedTheme": "Thème réellement appliqué : theme, sinon le data-theme le plus proche (une portée <minerva-config>, puis <html>) (lecture seule).",
+            "monaco": "Moteur Monaco local (import * as monaco from \"monaco-editor\"), défini comme propriété ; un par application. Jamais chargé depuis un CDN.",
+            "value": "Texte source (propriété ; l'attribut value définit defaultValue). Mis à jour à chaque modification ; le définir applique le texte comme une modification annulable.",
+            "theme": "Thème de couleur (light ou dark) ; par défaut celui de la portée de l'élément (le data-theme le plus proche : un <minerva-config>, puis <html>), suivi en direct.",
+            "disabled": "Rend l'éditeur (et sa zone de repli) en lecture seule ; ni envoyé, ni validé.",
+            "loadTimeout": "Millisecondes d'attente du moteur et de l'éditeur avant d'afficher la zone de texte de repli (aussi tant qu'aucun moteur n'est défini)."
+          },
+          "events": {
+            "input": "La valeur a changé (à chaque modification ; composed).",
+            "change": "La valeur a été validée : l'éditeur a perdu le focus après une modification.",
+            "minerva-input": "Identique à input, avec detail : { value } (l'onChange de React).",
+            "minerva-change": "Identique à change, avec detail : { value }.",
+            "minerva-error": "L'éditeur est devenu indisponible (pas de moteur à temps, moteur invalide, ou exception) et la zone de texte de repli est affichée."
+          },
+          "slots": {
+            "editor": "Créé par l'élément : le <div> du light DOM dans lequel Monaco s'affiche, pour que les feuilles de style ajoutées au document par Monaco s'appliquent. Ne le remplissez pas vous-même."
+          },
+          "methods": {
+            "focus": "Donne le focus à l'éditeur (ou à sa zone de repli).",
+            "retry": "Réessaie de charger l'éditeur (comme le bouton Réessayer).",
+            "checkValidity": "Vérifie la validité ; déclenche invalid si l’élément est invalide.",
+            "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+            "setCustomValidity": "Définit une erreur de validation personnalisée, ou l’efface avec une chaîne vide.",
+            "formResetCallback": "Rappel du cycle de vie du formulaire appelé par form.reset() : restaure la valeur initiale.",
+            "formDisabledCallback": "Rappel du cycle de vie du formulaire appelé quand un <fieldset> ancêtre est désactivé ou réactivé.",
+            "formStateRestoreCallback": "Rappel du cycle de vie du formulaire appelé quand le navigateur restaure l’état (navigation dans l’historique, remplissage automatique)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        },
+        "limitations": "CodeEditor natif est un éditeur de texte multiligne accessible avec formateur optionnel. Monaco dépend du DOM et n’est pas intégré sur iOS ou Android."
+      }
+    }
+  }
+}

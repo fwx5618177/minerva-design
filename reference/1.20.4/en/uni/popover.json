@@ -1,0 +1,533 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.4",
+  "locale": "en",
+  "renderer": "uni",
+  "page": "popover",
+  "title": "Popover",
+  "description": "A click-triggered floating panel for interactive content such as filters or account menus, anchored to its trigger. Unlike Tooltip it holds focusable content and manages focus, Escape and outside clicks itself; inside a Modal it closes first.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.4",
+    "sourceCommit": "5826c364a762ec5a1144b8eea89e5d7510e4099c",
+    "sourceDigest": "sha256:38cfefdcb173c9a307526b9364c7a77acc74f713924006e65d94c6f3c5e94c61",
+    "referenceSourceDigest": "sha256:8bb3a20ee069c63b8d85e6ccf29336af81fffa488ce873d14ee032291c18009f"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Popover",
+      "support": {
+        "status": "beta",
+        "notes": "Controlled/default compound state; separate trigger/anchor native measurement; side/align/offset, viewport flip/shift/size, matchAnchorWidth, arrow, forceMount; cancelable dismiss/focus callbacks; resize/native polling cleanup. H5 supports body Teleport, composed asChild triggers/anchors/close actions, modal focus trap, inert background and scroll locking. Native panels use fixed host geometry; native views cannot reproduce browser child cloning or document focus semantics. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Controlled/default compound state; separate trigger/anchor native measurement; side/align/offset, viewport flip/shift/size, matchAnchorWidth, arrow, forceMount; cancelable dismiss/focus callbacks; resize/native polling cleanup. H5 supports body Teleport, composed asChild triggers/anchors/close actions, modal focus trap, inert background and scroll locking. Native panels use fixed host geometry; native views cannot reproduce browser child cloning or document focus semantics. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "Popover"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "modal",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "open",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "defaultOpen",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "content",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "placement",
+            "typeText": "string | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "openChange",
+            "typeText": "any[]"
+          },
+          {
+            "name": "update:open",
+            "typeText": "any[]"
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          },
+          {
+            "name": "trigger",
+            "typeText": "{}"
+          },
+          {
+            "name": "content",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "open",
+            "event": "update:open",
+            "syntax": "v-model:open"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PopoverAnchor",
+      "support": {
+        "status": "beta",
+        "notes": "Separate measurement anchor used by PopoverContent, registered and cleared with the compound lifecycle. Native wrapper replaces React asChild cloning. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Separate measurement anchor used by PopoverContent, registered and cleared with the compound lifecycle. Native wrapper replaces React asChild cloning. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "PopoverAnchor"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "id",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "asChild",
+            "typeText": "boolean | undefined",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "PopoverClose",
+      "support": {
+        "status": "beta",
+        "notes": "Close button updates shared Popover root state. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Close button updates shared Popover root state. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "PopoverClose"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "asChild",
+            "typeText": "boolean | undefined",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "PopoverContent",
+      "support": {
+        "status": "beta",
+        "notes": "Native measured collision-aware panel with side/align/offset/padding/width/arrow/forceMount and cancelable interaction callbacks. H5 supports body Teleport and modal focus trap/inert/scroll lock; native fixed coordinates require device validation. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native measured collision-aware panel with side/align/offset/padding/width/arrow/forceMount and cancelable interaction callbacks. H5 supports body Teleport and modal focus trap/inert/scroll lock; native fixed coordinates require device validation. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "PopoverContent"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "forceMount",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "id",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "role",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "dismissLayer",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "side",
+            "typeText": "Side | undefined",
+            "required": false
+          },
+          {
+            "name": "align",
+            "typeText": "\"start\" | \"end\" | \"center\" | undefined",
+            "required": false
+          },
+          {
+            "name": "sideOffset",
+            "typeText": "number | undefined",
+            "required": false
+          },
+          {
+            "name": "alignOffset",
+            "typeText": "number | undefined",
+            "required": false
+          },
+          {
+            "name": "collisionPadding",
+            "typeText": "number | undefined",
+            "required": false
+          },
+          {
+            "name": "matchAnchorWidth",
+            "typeText": "false | \"min\" | \"exact\" | undefined",
+            "required": false
+          },
+          {
+            "name": "arrow",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "portal",
+            "typeText": "boolean | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "openAutoFocus",
+            "typeText": "[event: Event]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "Event",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "closeAutoFocus",
+            "typeText": "[event: Event]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "Event",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "escapeKeyDown",
+            "typeText": "[event: KeyboardEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "KeyboardEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "pointerDownOutside",
+            "typeText": "[event: Event]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "Event",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "interactOutside",
+            "typeText": "[event: Event]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "Event",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "focusOutside",
+            "typeText": "[event: Event]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "Event",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "PopoverTrigger",
+      "support": {
+        "status": "beta",
+        "notes": "Native button toggles root state, registers its measurement/focus target and respects disabled. Native wrapper replaces React asChild cloning. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native button toggles root state, registers its measurement/focus target and respects disabled. Native wrapper replaces React asChild cloning. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "PopoverTrigger"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "asChild",
+            "typeText": "boolean | undefined",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Popover": {
+      "kind": "cssVars",
+      "source": "react/src/components/Popover",
+      "vars": [
+        {
+          "name": "--popover-min-width",
+          "description": "Minimum width of the panel"
+        },
+        {
+          "name": "--popover-max-width",
+          "description": "Maximum width of the panel"
+        },
+        {
+          "name": "--popover-padding",
+          "description": "Inner padding of the panel"
+        },
+        {
+          "name": "--popover-radius",
+          "description": "Corner radius of the panel (defaults to --radius-lg)"
+        },
+        {
+          "name": "--popover-background",
+          "description": "Background of the panel and its arrow"
+        },
+        {
+          "name": "--popover-border-color",
+          "description": "Border color of the panel and its arrow"
+        },
+        {
+          "name": "--popover-shadow",
+          "description": "Shadow of the panel (defaults to --shadow-lg, --shadow-xl in dark themes)"
+        },
+        {
+          "name": "--popover-z-index",
+          "description": "Stacking order of the panel (defaults to --z-popover)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.4/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Popover",
+      "description": "A click-triggered floating panel for interactive content such as filters or account menus, anchored to its trigger. Unlike Tooltip it holds focusable content and manages focus, Escape and outside clicks itself; inside a Modal it closes first.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "PopoverTrigger toggles the panel; focus moves inside and returns to the trigger on close. PopoverClose closes it. In a non-modal popover, Tab past the last element (Shift+Tab before the first) closes it and moves focus to the element after (before) the trigger; focus never loops inside."
+        },
+        "placement": {
+          "title": "Placement",
+          "description": "side, align and sideOffset position the panel; it flips and shifts to stay in view. arrow points at the trigger."
+        },
+        "controlled": {
+          "title": "Controlled with an anchor",
+          "description": "open + onOpenChange control the state; PopoverAnchor positions the panel against another element."
+        }
+      },
+      "api": {
+        "PopoverProps": {
+          "open": "Controlled open state; leave undefined for uncontrolled",
+          "defaultOpen": "Initial open state while uncontrolled",
+          "onOpenChange": "Called with the requested open state (trigger, Escape, outside click, PopoverClose)",
+          "modal": "Modal mode: traps focus (Tab loops inside the panel), locks page scrolling, hides the rest of the page from assistive technology and blocks outside pointer interaction (an outside click still closes it)",
+          "children": "PopoverTrigger / PopoverAnchor and PopoverContent"
+        },
+        "PopoverContentProps": {
+          "ref": "Ref to the panel element",
+          "side": "Preferred side; flips when there is not enough room",
+          "align": "Alignment along the trigger",
+          "sideOffset": "Gap to the trigger in pixels",
+          "arrow": "Renders an arrow pointing at the trigger",
+          "portal": "Renders the panel into a portal (the theme-scoped container of a nested ConfigProvider, else document.body)",
+          "alignOffset": "Skid along the trigger in pixels (positive = towards the end)",
+          "collisionPadding": "Minimum distance to the viewport edges in pixels; currently fixed at 8px, other values are reserved",
+          "matchAnchorWidth": "Sizes the panel after the trigger / anchor width: \"min\" at least as wide, \"exact\" exactly as wide",
+          "forceMount": "Keeps the panel mounted while closed (data-state=\"closed\"), e.g. for animation libraries",
+          "onOpenAutoFocus": "Called before focus moves into the panel on open; event.preventDefault() keeps focus where it is",
+          "onCloseAutoFocus": "Called before focus returns to the opener on close; event.preventDefault() skips it",
+          "onEscapeKeyDown": "Escape pressed while it is the topmost layer; event.preventDefault() keeps it open",
+          "onPointerDownOutside": "Pointer pressed outside; event.preventDefault() keeps it open",
+          "onFocusOutside": "Focus moved outside; event.preventDefault() keeps it open",
+          "onInteractOutside": "Pointer down or focus outside; event.preventDefault() keeps it open"
+        },
+        "PopoverTriggerProps": {
+          "asChild": "Merges the behaviour onto the single child element instead of rendering its own element"
+        }
+      },
+      "cssVars": {
+        "--popover-min-width": "Minimum width of the panel",
+        "--popover-max-width": "Maximum width of the panel",
+        "--popover-padding": "Inner padding of the panel",
+        "--popover-radius": "Corner radius of the panel (defaults to --radius-lg)",
+        "--popover-background": "Background of the panel and its arrow",
+        "--popover-border-color": "Border color of the panel and its arrow",
+        "--popover-shadow": "Shadow of the panel (defaults to --shadow-lg, --shadow-xl in dark themes)",
+        "--popover-z-index": "Stacking order of the panel (defaults to --z-popover)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "The trigger slot toggles an interactive panel; focus moves in and returns on close. Escape, an outside click or an element with data-popover-close closes it."
+          },
+          "placement": {
+            "title": "Placement",
+            "description": "side and align place the panel around the trigger, side-offset sets the gap and arrow points at it; it flips and shifts to stay in the viewport."
+          },
+          "anchor": {
+            "title": "Anchor and modal",
+            "description": "anchor positions the panel against another element (by id) while any button opens it with show(); modal traps focus and blocks the rest of the page."
+          }
+        },
+        "minerva-popover": {
+          "props": {
+            "label": "Accessible name of the panel (or set aria-label on the element).",
+            "anchor": "Id of the element (same tree) to anchor to.",
+            "anchorElement": "Element the panel is positioned against instead of the trigger; takes precedence over anchor."
+          },
+          "events": {
+            "minerva-open-change": "The user asked to open / close (detail: { open, reason }); cancelable: preventDefault() keeps the current state.",
+            "minerva-after-open": "The popover is open.",
+            "minerva-after-close": "Fired once the panel has finished closing (after its exit animation)."
+          },
+          "slots": {
+            "default": "Panel content.",
+            "trigger": "Element that toggles the popover when clicked."
+          },
+          "methods": {
+            "show": "Opens the popover.",
+            "hide": "Closes the popover.",
+            "toggle": "Toggles the popover."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        },
+        "limitations": "On touch devices the content opens in a dismissible native dialog; DOM floating coordinates and hover positioning do not apply."
+      }
+    }
+  }
+}

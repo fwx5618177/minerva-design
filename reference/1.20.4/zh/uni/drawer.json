@@ -1,0 +1,729 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.4",
+  "locale": "zh",
+  "renderer": "uni",
+  "page": "drawer",
+  "title": "Drawer 抽屉",
+  "description": "从视口边缘滑出的面板，用于筛选、详情等次要任务。行为与模态框一致：锁定焦点、Escape、点击遮罩关闭并归还焦点。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.4",
+    "sourceCommit": "5826c364a762ec5a1144b8eea89e5d7510e4099c",
+    "sourceDigest": "sha256:38cfefdcb173c9a307526b9364c7a77acc74f713924006e65d94c6f3c5e94c61",
+    "referenceSourceDigest": "sha256:8bb3a20ee069c63b8d85e6ccf29336af81fffa488ce873d14ee032291c18009f"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Drawer",
+      "support": {
+        "status": "beta",
+        "notes": "Controlled/uncontrolled open, trigger/content slots, all sides and sizes, forceMount, modal/nonmodal outside behavior, loading guards, cancelable outside/Escape/autofocus callbacks and opener focus restoration. Native hosts do not expose DOM inert, document-wide focus trapping or React asChild cloning. Native nonmodal outside interactions can call the exposed dismissOutside handle. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Controlled/uncontrolled open, trigger/content slots, all sides and sizes, forceMount, modal/nonmodal outside behavior, loading guards, cancelable outside/Escape/autofocus callbacks and opener focus restoration. Native hosts do not expose DOM inert, document-wide focus trapping or React asChild cloning. Native nonmodal outside interactions can call the exposed dismissOutside handle. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "Drawer"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "open",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "defaultOpen",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "title",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "description",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "hiddenDescription",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "closeOnOverlayClick",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "loading",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "confirmLabel",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "cancelLabel",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "placement",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "side",
+            "typeText": "\"bottom\" | \"top\" | \"left\" | \"right\" | undefined",
+            "required": false
+          },
+          {
+            "name": "size",
+            "typeText": "\"medium\" | \"small\" | \"large\" | \"full\" | undefined",
+            "required": false
+          },
+          {
+            "name": "hideCloseButton",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "closeLabel",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "forceMount",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "modal",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "role",
+            "typeText": "\"dialog\" | \"alertdialog\" | undefined",
+            "required": false
+          },
+          {
+            "name": "overlayClassName",
+            "typeText": "string | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "close",
+            "typeText": "any[]"
+          },
+          {
+            "name": "openChange",
+            "typeText": "any[]"
+          },
+          {
+            "name": "update:open",
+            "typeText": "any[]"
+          },
+          {
+            "name": "confirm",
+            "typeText": "any[]"
+          },
+          {
+            "name": "cancel",
+            "typeText": "any[]"
+          },
+          {
+            "name": "openAutoFocus",
+            "typeText": "any[]"
+          },
+          {
+            "name": "closeAutoFocus",
+            "typeText": "any[]"
+          },
+          {
+            "name": "escapeKeyDown",
+            "typeText": "any[]"
+          },
+          {
+            "name": "pointerDownOutside",
+            "typeText": "any[]"
+          },
+          {
+            "name": "interactOutside",
+            "typeText": "any[]"
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          },
+          {
+            "name": "trigger",
+            "typeText": "{}"
+          },
+          {
+            "name": "title",
+            "typeText": "{}"
+          },
+          {
+            "name": "description",
+            "typeText": "{}"
+          },
+          {
+            "name": "footer",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "open",
+            "event": "update:open",
+            "syntax": "v-model:open"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DrawerBody",
+      "support": {
+        "status": "beta",
+        "notes": "Drawer compound body with injected reactive root state and native slot content. React side/size/hideCloseButton/forceMount, cancelable dismissal/focus callbacks and nonmodal behavior are not fully mapped yet; browser portals and document focus trapping need platform-specific handling. React Drawer has no drag-resize API. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Drawer compound body with injected reactive root state and native slot content. React side/size/hideCloseButton/forceMount, cancelable dismissal/focus callbacks and nonmodal behavior are not fully mapped yet; browser portals and document focus trapping need platform-specific handling. React Drawer has no drag-resize API. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "DrawerBody"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DrawerClose",
+      "support": {
+        "status": "beta",
+        "notes": "Disabled-aware native close button; consumer click runs before close and can preventDefault. React asChild element cloning maps to native button content slots. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Disabled-aware native close button; consumer click runs before close and can preventDefault. React asChild element cloning maps to native button content slots. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "DrawerClose"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "click",
+            "typeText": "[event: Event]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "Event",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DrawerContent",
+      "support": {
+        "status": "beta",
+        "notes": "Controlled/uncontrolled open, trigger/content slots, all sides and sizes, forceMount, modal/nonmodal outside behavior, loading guards, cancelable outside/Escape/autofocus callbacks and opener focus restoration. Native hosts do not expose DOM inert, document-wide focus trapping or React asChild cloning. Native nonmodal outside interactions can call the exposed dismissOutside handle. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Controlled/uncontrolled open, trigger/content slots, all sides and sizes, forceMount, modal/nonmodal outside behavior, loading guards, cancelable outside/Escape/autofocus callbacks and opener focus restoration. Native hosts do not expose DOM inert, document-wide focus trapping or React asChild cloning. Native nonmodal outside interactions can call the exposed dismissOutside handle. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "DrawerContent"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "open",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "defaultOpen",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "title",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "description",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "hiddenDescription",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "closeOnOverlayClick",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "loading",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "confirmLabel",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "cancelLabel",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "placement",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "side",
+            "typeText": "\"bottom\" | \"top\" | \"left\" | \"right\" | undefined",
+            "required": false
+          },
+          {
+            "name": "size",
+            "typeText": "\"medium\" | \"small\" | \"large\" | \"full\" | undefined",
+            "required": false
+          },
+          {
+            "name": "hideCloseButton",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "closeLabel",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "forceMount",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "modal",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "role",
+            "typeText": "\"dialog\" | \"alertdialog\" | undefined",
+            "required": false
+          },
+          {
+            "name": "overlayClassName",
+            "typeText": "string | undefined",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          },
+          {
+            "name": "trigger",
+            "typeText": "{}"
+          },
+          {
+            "name": "title",
+            "typeText": "{}"
+          },
+          {
+            "name": "description",
+            "typeText": "{}"
+          },
+          {
+            "name": "footer",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DrawerFooter",
+      "support": {
+        "status": "beta",
+        "notes": "Drawer compound footer with injected reactive root state and native slot content. React side/size/hideCloseButton/forceMount, cancelable dismissal/focus callbacks and nonmodal behavior are not fully mapped yet; browser portals and document focus trapping need platform-specific handling. React Drawer has no drag-resize API. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Drawer compound footer with injected reactive root state and native slot content. React side/size/hideCloseButton/forceMount, cancelable dismissal/focus callbacks and nonmodal behavior are not fully mapped yet; browser portals and document focus trapping need platform-specific handling. React Drawer has no drag-resize API. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "DrawerFooter"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DrawerHeader",
+      "support": {
+        "status": "beta",
+        "notes": "Authored accessible heading registered as the enclosing shared surface dialog name. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Authored accessible heading registered as the enclosing shared surface dialog name. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "DrawerHeader"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "id",
+            "typeText": "string | undefined",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "DrawerRoot",
+      "support": {
+        "status": "beta",
+        "notes": "Shared controlled/uncontrolled open and modal context; native trigger registration for focus recovery. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Shared controlled/uncontrolled open and modal context; native trigger registration for focus recovery. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "DrawerRoot"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "open",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "defaultOpen",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "modal",
+            "typeText": "boolean | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "openChange",
+            "typeText": "any[]"
+          },
+          {
+            "name": "update:open",
+            "typeText": "any[]"
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{ open: boolean; }"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "open",
+            "event": "update:open",
+            "syntax": "v-model:open"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DrawerTrigger",
+      "support": {
+        "status": "beta",
+        "notes": "Shared controlled/uncontrolled open and modal context; native trigger registration for focus recovery. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Shared controlled/uncontrolled open and modal context; native trigger registration for focus recovery. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "DrawerTrigger"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Drawer": {
+      "kind": "cssVars",
+      "source": "react/src/components/Drawer",
+      "vars": [
+        {
+          "name": "--drawer-width",
+          "description": "Width of a left / right drawer (every size; defaults to the width of the size)"
+        },
+        {
+          "name": "--drawer-height",
+          "description": "Height of a top / bottom drawer (every size; defaults to the height of the size)"
+        },
+        {
+          "name": "--drawer-padding",
+          "description": "Horizontal padding of the header, description, body and footer"
+        },
+        {
+          "name": "--drawer-radius",
+          "description": "Corner radius of the inner edge (defaults to --radius-lg)"
+        },
+        {
+          "name": "--drawer-shadow",
+          "description": "Shadow of the panel (defaults to --shadow-xl)"
+        },
+        {
+          "name": "--drawer-background",
+          "description": "Background of the panel"
+        },
+        {
+          "name": "--drawer-z-index",
+          "description": "Stacking order of the panel (defaults to --z-modal)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.4/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Drawer 抽屉",
+      "description": "从视口边缘滑出的面板，用于筛选、详情等次要任务。行为与模态框一致：锁定焦点、Escape、点击遮罩关闭并归还焦点。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "通过 open 和 onOpenChange 受控，包含主体和操作底栏。"
+        },
+        "sides": {
+          "title": "方向与尺寸",
+          "description": "side 选择滑出的边缘；size 设置宽度（左 / 右）或高度（上 / 下）。"
+        },
+        "compound": {
+          "title": "组合式 API",
+          "description": "DrawerRoot、DrawerTrigger、DrawerContent、DrawerHeader、DrawerBody、DrawerFooter 和 DrawerClose。"
+        }
+      },
+      "api": {
+        "DrawerProps": {
+          "open": "受控的打开状态；不传（undefined）时为非受控",
+          "defaultOpen": "非受控时的初始打开状态",
+          "onOpenChange": "请求改变打开状态时调用（触发器、关闭按钮、Escape、点击遮罩）",
+          "trigger": "点击后打开的元素（单个元素，以 asChild 方式渲染）",
+          "side": "面板滑出的边缘",
+          "size": "尺寸预设：左右方向为宽度，上下方向为高度",
+          "title": "标题，作为对话框的可访问名称",
+          "description": "标题下方的描述，作为可访问描述",
+          "hideCloseButton": "隐藏关闭（×）按钮",
+          "closeLabel": "关闭按钮的可访问标签；默认为本地化的“关闭”",
+          "hiddenDescription": "未设置 description 时使用的视觉隐藏描述文字；默认为本地化的“抽屉内容”",
+          "className": "面板的额外类名",
+          "ref": "指向对话框元素的 ref",
+          "children": "内容：通常是 DrawerBody + DrawerFooter"
+        },
+        "DrawerRootProps": {
+          "open": "受控的打开状态；不传（undefined）时为非受控",
+          "defaultOpen": "非受控时的初始打开状态",
+          "onOpenChange": "请求改变打开状态时调用（触发器、关闭按钮、Escape、点击遮罩）",
+          "modal": "模态模式：渲染遮罩、锁定焦点、锁定页面滚动、阻止外部交互，并对辅助技术隐藏页面",
+          "children": "触发器与内容"
+        },
+        "DrawerContentProps": {
+          "ref": "指向对话框元素的 ref",
+          "side": "面板滑出的边缘",
+          "size": "尺寸预设：左右方向为宽度，上下方向为高度",
+          "hideCloseButton": "隐藏关闭（×）按钮",
+          "closeLabel": "关闭按钮的可访问标签；默认为本地化的“关闭”",
+          "hiddenDescription": "未设置 description 时使用的视觉隐藏描述文字；默认为本地化的“抽屉内容”",
+          "description": "标题下方的可见描述；不传时渲染一个隐藏的通用描述",
+          "overlayClassName": "遮罩层的类名",
+          "role": "面板的 ARIA 角色；打断用户的确认请使用 \"alertdialog\"",
+          "forceMount": "关闭时仍保持挂载（data-state=\"closed\"），例如配合动画库使用",
+          "onOpenAutoFocus": "打开时焦点移入面板之前调用；event.preventDefault() 可让焦点保持原位",
+          "onCloseAutoFocus": "关闭时焦点回到打开者之前调用；event.preventDefault() 可跳过",
+          "onEscapeKeyDown": "作为最上层时按下 Escape；event.preventDefault() 可保持打开",
+          "onPointerDownOutside": "在外部按下指针；event.preventDefault() 可保持打开",
+          "onInteractOutside": "外部的指针按下或焦点移动；event.preventDefault() 可保持打开"
+        }
+      },
+      "cssVars": {
+        "--drawer-width": "左 / 右抽屉的宽度（所有尺寸；默认为对应尺寸的宽度）",
+        "--drawer-height": "上 / 下抽屉的高度（所有尺寸；默认为对应尺寸的高度）",
+        "--drawer-padding": "标题、描述、主体与底部的水平内边距",
+        "--drawer-radius": "内侧边缘的圆角（默认 --radius-lg）",
+        "--drawer-shadow": "面板阴影（默认 --shadow-xl）",
+        "--drawer-background": "面板背景",
+        "--drawer-z-index": "面板的层级（默认 --z-modal）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "由 trigger 插槽打开的侧边面板。任何带有 data-drawer-close 的 light DOM 元素（这里是底部按钮）都会关闭它。"
+          },
+          "sides": {
+            "title": "方向",
+            "description": "side 决定抽屉滑入的边缘；size 对左 / 右抽屉表示宽度，对上 / 下抽屉表示高度。"
+          },
+          "non-modal": {
+            "title": "非模态",
+            "description": "设置 non-modal 后页面保持可交互：无遮罩、不锁定焦点，点击外部即可关闭抽屉。minerva-open-change 会给出原因。"
+          }
+        },
+        "minerva-drawer": {
+          "props": {
+            "label": "标题文本（或使用 header 插槽）；作为对话框的可访问名称。",
+            "dialogRole": "面板的 ARIA 角色。",
+            "nonModal": "非模态：无遮罩、不锁定焦点和滚动；在外部按下指针或聚焦时关闭。"
+          },
+          "events": {
+            "minerva-open-change": "用户请求打开 / 关闭（detail: { open, reason }）；可取消：preventDefault() 保持当前状态。",
+            "minerva-after-open": "面板已打开且焦点已移入后触发。",
+            "minerva-after-close": "面板完成关闭（退出动画结束）后触发。"
+          },
+          "slots": {
+            "default": "主体内容。",
+            "header": "标题（label 属性的替代方式）。",
+            "footer": "操作按钮行。",
+            "trigger": "点击时打开面板的元素。"
+          },
+          "methods": {
+            "show": "打开抽屉。",
+            "hide": "关闭抽屉。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        },
+        "limitations": "原生 Drawer 和 DrawerContent 默认从底部弹出，可通过 side 或 placement 指定左、右、顶部。内容使用原生 View 与 Text。"
+      }
+    }
+  }
+}

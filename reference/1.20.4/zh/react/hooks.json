@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.4",
+  "locale": "zh",
+  "renderer": "react",
+  "page": "hooks",
+  "title": "Hooks",
+  "description": "ConfigProvider 背后的底层 Hooks：自行管理主题、语言和 React 版的翻译。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.4",
+    "sourceCommit": "5826c364a762ec5a1144b8eea89e5d7510e4099c",
+    "sourceDigest": "sha256:38cfefdcb173c9a307526b9364c7a77acc74f713924006e65d94c6f3c5e94c61",
+    "referenceSourceDigest": "sha256:8bb3a20ee069c63b8d85e6ccf29336af81fffa488ce873d14ee032291c18009f"
+  },
+  "content": {
+    "reference": {
+      "title": "参考",
+      "text": "所有 Hooks 和工具函数都从 minerva-design 导出。",
+      "hook": "Hook",
+      "signature": "签名",
+      "useAutoTheme": "在状态中保存当前主题，并在 ConfigProvider 之外将其作为 CSS 变量写入 <html>。使用 \"auto\" 或 { light, dark } 组合时会订阅 prefers-color-scheme，并在卸载时取消订阅。返回配置的主题、其 setter 以及当前系统配色方案。在 ConfigProvider 内部它只管理状态：<html> 由根 Provider 负责。",
+      "useLocale": "在状态中保存 locale，并在 ConfigProvider 之外切换 React 版内置文案的语言（en、zh、ja 或 fr）。返回 locale 及其 setter。在 ConfigProvider 内部它只管理状态：全局语言由根 Provider 负责。",
+      "useI18n": "返回 { t, language }：t 使用 React 版内置的轻量翻译器翻译 React 版自带的文案（支持嵌套 key、占位符插值、基于 count 的复数形式和 defaultValue），language 为 t 所使用的语言。t 跟随最近一个设置了 locale 的嵌套 ConfigProvider，否则使用 React 版的全局语言。React 版不依赖任何 i18n 库，因此绝不会影响应用自身的 i18n 配置。",
+      "useDisclosure": "浮层（Modal、Drawer、Popover……）的打开 / 关闭状态，支持受控（isOpen + onChange）和非受控（defaultIsOpen）两种用法。返回 isOpen 以及稳定的 onOpen、onClose 和 onToggle 回调。",
+      "cn": "拼接类名并跳过假值（false、null、undefined、0、空字符串）。用于条件类名的极简、无依赖替代方案，可代替 classnames。",
+      "global": "只有在上方没有 ConfigProvider 时，useAutoTheme 和 useLocale 才会修改全局状态（<html> 上的 CSS 变量、React 版的语言）。本站在根部有一个 Provider，因此下方示例把 Hook 的状态传给嵌套的 ConfigProvider，只作用于预览区域。"
+    },
+    "standalone": {
+      "title": "不使用 ConfigProvider 时使用 Hooks",
+      "text": "如果不需要 useConfig()，可以直接调用 useAutoTheme 和 useLocale 来代替 Provider。在 Provider 内部它们只保存状态：把状态传给嵌套的 ConfigProvider 即可作用于某个子树。"
+    }
+  },
+  "components": [],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "use-auto-theme",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/hooks/demos/use-auto-theme.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/hooks/demos/use-auto-theme.tsx": "import {\n  Button,\n  ConfigProvider,\n  HStack,\n  Tag,\n  type Theme,\n  useAutoTheme,\n  useConfig,\n} from \"minerva-design\";\n\nconst OPTIONS: Theme[] = [\"auto\", \"light\", \"dark\", \"github-dark\"];\n\n// Inside a ConfigProvider (this site has one at the root) useAutoTheme only\n// manages the state: the root provider owns <html>. The chosen theme is\n// applied to the preview below with a nested, scoped ConfigProvider.\nexport default function UseAutoThemeDemo() {\n  const { theme: appTheme = \"auto\" } = useConfig();\n  const [theme, setTheme, systemTheme] = useAutoTheme(appTheme);\n\n  return (\n    <div style={{ display: \"grid\", gap: 12 }}>\n      <div\n        role=\"group\"\n        aria-label=\"Theme\"\n        style={{ display: \"flex\", flexWrap: \"wrap\", gap: 8 }}\n      >\n        {OPTIONS.map((option) => (\n          <Button\n            key={String(option)}\n            size=\"small\"\n            color={option === theme ? \"primary\" : \"neutral\"}\n            variant={option === theme ? \"solid\" : \"outline\"}\n            aria-pressed={option === theme}\n            onClick={() => setTheme(option)}\n          >\n            {String(option)}\n          </Button>\n        ))}\n        <Button\n          size=\"small\"\n          color=\"neutral\"\n          variant=\"ghost\"\n          onClick={() => setTheme(appTheme)}\n        >\n          Reset\n        </Button>\n      </div>\n      <div\n        style={{\n          display: \"flex\",\n          flexWrap: \"wrap\",\n          alignItems: \"center\",\n          gap: 8,\n        }}\n      >\n        theme:{\" \"}\n        <Tag color=\"primary\">\n          {typeof theme === \"string\" ? theme : \"custom\"}\n        </Tag>{\" \"}\n        systemTheme: <Tag color=\"info\">{systemTheme}</Tag>\n      </div>\n      <ConfigProvider theme={theme}>\n        <div\n          style={{\n            padding: 16,\n            borderRadius: 8,\n            border: \"1px solid var(--border-color)\",\n            background: \"var(--background-color)\",\n            color: \"var(--text-color)\",\n          }}\n        >\n          <HStack gap={4} wrap>\n            <Button color=\"primary\">Primary</Button>\n            <Button color=\"neutral\" variant=\"outline\">\n              Secondary\n            </Button>\n            <Tag color=\"success\">preview</Tag>\n          </HStack>\n        </div>\n      </ConfigProvider>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "useAutoTheme",
+      "description": "setTheme 修改预览区域的主题，由嵌套的 ConfigProvider 应用；systemTheme 始终反映操作系统的配色方案。页面其余部分保持站点主题。"
+    },
+    {
+      "id": "use-disclosure",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/hooks/demos/use-disclosure.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/hooks/demos/use-disclosure.tsx": "import {\n  Alert,\n  Button,\n  cn,\n  HStack,\n  Tag,\n  useDisclosure,\n  VStack,\n} from \"minerva-design\";\n\n// useDisclosure keeps an open / closed state (uncontrolled here; pass isOpen\n// and onChange to control it). cn joins class names and skips falsy values.\nexport default function UseDisclosureDemo() {\n  const panel = useDisclosure({ defaultIsOpen: true });\n\n  return (\n    <VStack gap={4}>\n      <HStack gap={4} wrap>\n        <Button size=\"small\" color=\"primary\" onClick={panel.onToggle}>\n          Toggle\n        </Button>\n        <Button\n          size=\"small\"\n          color=\"neutral\"\n          variant=\"outline\"\n          onClick={panel.onOpen}\n        >\n          Open\n        </Button>\n        <Button\n          size=\"small\"\n          color=\"neutral\"\n          variant=\"outline\"\n          onClick={panel.onClose}\n        >\n          Close\n        </Button>\n        isOpen:{\" \"}\n        <Tag color={panel.isOpen ? \"success\" : \"info\"}>\n          {String(panel.isOpen)}\n        </Tag>\n      </HStack>\n      {panel.isOpen && (\n        <Alert\n          color=\"info\"\n          title=\"Details\"\n          className={cn(\"disclosure-panel\", panel.isOpen && \"is-open\")}\n        >\n          className = &quot;{cn(\"disclosure-panel\", panel.isOpen && \"is-open\")}\n          &quot;\n        </Alert>\n      )}\n    </VStack>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "useDisclosure 与 cn",
+      "description": "useDisclosure 通过 onToggle、onOpen 和 onClose 控制一个面板；cn 根据条件拼接出它的类名。"
+    },
+    {
+      "id": "use-locale",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/hooks/demos/use-locale.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/hooks/demos/use-locale.tsx": "import {\n  Button,\n  ConfigProvider,\n  Empty,\n  Tag,\n  useI18n,\n  useLocale,\n  type SupportedLanguage,\n} from \"minerva-design\";\n\n// a key from the React library's built-in translations\nconst AVATAR_KEY = \"avatar.default\";\nconst LANGUAGES: SupportedLanguage[] = [\"en\", \"zh\", \"ja\", \"fr\"];\n\nfunction Preview() {\n  // t() translates the React library's own strings with its built-in translator,\n  // in the language of the closest ConfigProvider\n  const { t, language } = useI18n();\n  return (\n    <>\n      <div\n        style={{\n          display: \"flex\",\n          flexWrap: \"wrap\",\n          alignItems: \"center\",\n          gap: 8,\n        }}\n      >\n        useI18n().language: <Tag color=\"primary\">{language}</Tag> {AVATAR_KEY}:{\" \"}\n        <Tag color=\"info\">{t(AVATAR_KEY)}</Tag>\n      </div>\n      {/* built-in component labels follow the language too */}\n      <Empty size=\"small\" />\n    </>\n  );\n}\n\n// Inside a ConfigProvider (this site has one at the root) useLocale only\n// manages the state: the root provider owns the React library's global language. The\n// chosen locale is applied to the preview with a nested ConfigProvider.\nexport default function UseLocaleDemo() {\n  const [locale, setLocale] = useLocale({ language: \"en\" });\n\n  return (\n    <div style={{ display: \"grid\", gap: 12 }}>\n      <div\n        role=\"group\"\n        aria-label=\"Language\"\n        style={{ display: \"flex\", gap: 8 }}\n      >\n        {LANGUAGES.map((language) => (\n          <Button\n            key={language}\n            size=\"small\"\n            color={language === locale.language ? \"primary\" : \"neutral\"}\n            variant={language === locale.language ? \"solid\" : \"outline\"}\n            aria-pressed={language === locale.language}\n            onClick={() => setLocale({ language })}\n          >\n            {language}\n          </Button>\n        ))}\n      </div>\n      <ConfigProvider locale={locale}>\n        <Preview />\n      </ConfigProvider>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "useLocale 与 useI18n",
+      "description": "setLocale 修改传给嵌套 ConfigProvider 的 locale；useI18n 的 t() 以该语言返回 React 版的内置文案。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "import { Button, useAutoTheme, useLocale } from \"minerva-design\";\n\n// This is what ConfigProvider does internally. Use the hooks instead of\n// (not inside) a ConfigProvider: both write the same global state.\nexport function ThemeAndLanguage() {\n  const [theme, setTheme] = useAutoTheme(\"auto\");\n  const [locale, setLocale] = useLocale({ language: \"fr\" });\n\n  return (\n    <>\n      <Button onClick={() => setTheme(theme === \"dark\" ? \"light\" : \"dark\")}>\n        Toggle theme\n      </Button>\n      <Button onClick={() => setLocale({ language: \"en\" })}>\n        {locale.language}\n      </Button>\n    </>\n  );\n}",
+      "language": "tsx"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.20.4/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Hooks",
+      "description": "ConfigProvider 背后的底层 Hooks：自行管理主题、语言和 React 版的翻译。",
+      "reference": {
+        "title": "参考",
+        "text": "所有 Hooks 和工具函数都从 minerva-design 导出。",
+        "hook": "Hook",
+        "signature": "签名",
+        "useAutoTheme": "在状态中保存当前主题，并在 ConfigProvider 之外将其作为 CSS 变量写入 <html>。使用 \"auto\" 或 { light, dark } 组合时会订阅 prefers-color-scheme，并在卸载时取消订阅。返回配置的主题、其 setter 以及当前系统配色方案。在 ConfigProvider 内部它只管理状态：<html> 由根 Provider 负责。",
+        "useLocale": "在状态中保存 locale，并在 ConfigProvider 之外切换 React 版内置文案的语言（en、zh、ja 或 fr）。返回 locale 及其 setter。在 ConfigProvider 内部它只管理状态：全局语言由根 Provider 负责。",
+        "useI18n": "返回 { t, language }：t 使用 React 版内置的轻量翻译器翻译 React 版自带的文案（支持嵌套 key、占位符插值、基于 count 的复数形式和 defaultValue），language 为 t 所使用的语言。t 跟随最近一个设置了 locale 的嵌套 ConfigProvider，否则使用 React 版的全局语言。React 版不依赖任何 i18n 库，因此绝不会影响应用自身的 i18n 配置。",
+        "useDisclosure": "浮层（Modal、Drawer、Popover……）的打开 / 关闭状态，支持受控（isOpen + onChange）和非受控（defaultIsOpen）两种用法。返回 isOpen 以及稳定的 onOpen、onClose 和 onToggle 回调。",
+        "cn": "拼接类名并跳过假值（false、null、undefined、0、空字符串）。用于条件类名的极简、无依赖替代方案，可代替 classnames。",
+        "global": "只有在上方没有 ConfigProvider 时，useAutoTheme 和 useLocale 才会修改全局状态（<html> 上的 CSS 变量、React 版的语言）。本站在根部有一个 Provider，因此下方示例把 Hook 的状态传给嵌套的 ConfigProvider，只作用于预览区域。"
+      },
+      "standalone": {
+        "title": "不使用 ConfigProvider 时使用 Hooks",
+        "text": "如果不需要 useConfig()，可以直接调用 useAutoTheme 和 useLocale 来代替 Provider。在 Provider 内部它们只保存状态：把状态传给嵌套的 ConfigProvider 即可作用于某个子树。"
+      },
+      "demos": {
+        "use-auto-theme": {
+          "title": "useAutoTheme",
+          "description": "setTheme 修改预览区域的主题，由嵌套的 ConfigProvider 应用；systemTheme 始终反映操作系统的配色方案。页面其余部分保持站点主题。"
+        },
+        "use-locale": {
+          "title": "useLocale 与 useI18n",
+          "description": "setLocale 修改传给嵌套 ConfigProvider 的 locale；useI18n 的 t() 以该语言返回 React 版的内置文案。"
+        },
+        "use-disclosure": {
+          "title": "useDisclosure 与 cn",
+          "description": "useDisclosure 通过 onToggle、onOpen 和 onClose 控制一个面板；cn 根据条件拼接出它的类名。"
+        }
+      }
+    }
+  }
+}

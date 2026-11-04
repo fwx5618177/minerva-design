@@ -1,0 +1,297 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.4",
+  "locale": "en",
+  "renderer": "weapp",
+  "page": "json-field",
+  "title": "JsonField",
+  "description": "Strict-JSON textarea with a format button and accessible syntax feedback; formatting preserves numbers, escapes and key order.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.4",
+    "sourceCommit": "5826c364a762ec5a1144b8eea89e5d7510e4099c",
+    "sourceDigest": "sha256:38cfefdcb173c9a307526b9364c7a77acc74f713924006e65d94c6f3c5e94c61",
+    "referenceSourceDigest": "sha256:8bb3a20ee069c63b8d85e6ccf29336af81fffa488ce873d14ee032291c18009f"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "JsonField",
+      "support": {
+        "status": "beta",
+        "notes": "Controlled/default JSON text with every-edit change, syntax status/parser error, clamped indent formatting, toolbar/labels and Textarea visual props; legacy object mode retained. Native textarea keyboard and readonly differ from DOM textarea. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Controlled/default JSON text with every-edit change, syntax status/parser error, clamped indent formatting, toolbar/labels and Textarea visual props; legacy object mode retained. Native textarea keyboard and readonly differ from DOM textarea. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/json-field/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "json-field",
+        "props": [
+          {
+            "name": "disabled",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "readOnly",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "value",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "defaultValue",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "indent",
+            "typeText": "number",
+            "required": false,
+            "default": 2
+          },
+          {
+            "name": "hideToolbar",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "formatLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "validLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "invalidLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "rows",
+            "typeText": "number",
+            "required": false,
+            "default": 8
+          },
+          {
+            "name": "size",
+            "typeText": "string",
+            "required": false,
+            "default": "medium"
+          },
+          {
+            "name": "variant",
+            "typeText": "string",
+            "required": false,
+            "default": "outline"
+          },
+          {
+            "name": "invalid",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "placeholder",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "maxlength",
+            "typeText": "number",
+            "required": false,
+            "default": -1
+          },
+          {
+            "name": "required",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          }
+        ],
+        "events": [
+          {
+            "name": "change",
+            "typeText": "{ value: string | Record<string, unknown> }",
+            "description": "Every edit/format emits text; legacy object value mode emits parsed valid JSON only."
+          },
+          {
+            "name": "error",
+            "typeText": "{ message: string }",
+            "description": "JSON syntax feedback."
+          }
+        ],
+        "slots": [],
+        "registration": "\"usingComponents\": { \"mn-json-field\": \"minerva-design/dist/weapp/json-field/index\" }",
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:JsonField": {
+      "kind": "cssVars",
+      "source": "react/src/components/JsonField",
+      "vars": [
+        {
+          "name": "--json-field-gap",
+          "description": "Space between the toolbar, the editor and the status line"
+        },
+        {
+          "name": "--json-field-font-family",
+          "description": "Font family of the editor (defaults to the monospace stack)"
+        },
+        {
+          "name": "--json-field-font-size",
+          "description": "Font size of the editor"
+        },
+        {
+          "name": "--json-field-tab-size",
+          "description": "Rendered width of a tab character in the editor"
+        },
+        {
+          "name": "--json-field-status-font-size",
+          "description": "Font size of the validation status line"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.4/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "JsonField",
+      "description": "Strict-JSON textarea with a format button and accessible syntax feedback; formatting preserves numbers, escapes and key order.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Syntax feedback is withheld while typing and checked on blur; the button re-indents valid JSON."
+        },
+        "indent": {
+          "title": "Indentation and toolbar",
+          "description": "indent sets the spaces per level (0 compacts); hideToolbar removes the button but keeps the feedback."
+        },
+        "form-control": {
+          "title": "With FormField",
+          "description": "Disabled, read-only and required states are inherited from the field."
+        }
+      },
+      "api": {
+        "JsonFieldProps": {
+          "value": "JSON text (controlled); omit for an uncontrolled field",
+          "defaultValue": "Initial text of an uncontrolled field",
+          "onChange": "Called with the new text on every edit and after formatting",
+          "hideToolbar": "Hides the format button; syntax feedback stays visible and associated",
+          "indent": "Spaces per indentation level when formatting (0 to 10; 0 compacts the JSON)",
+          "formatLabel": "Accessible label of the format button",
+          "validLabel": "Status text for valid JSON",
+          "invalidLabel": "Status text prefix for invalid JSON (followed by the parser error)",
+          "rows": "Rows of the textarea",
+          "className": "Class name of the outer wrapper"
+        }
+      },
+      "cssVars": {
+        "--json-field-gap": "Space between the toolbar, the editor and the status line",
+        "--json-field-font-family": "Font family of the editor (defaults to the monospace stack)",
+        "--json-field-font-size": "Font size of the editor",
+        "--json-field-tab-size": "Rendered width of a tab character in the editor",
+        "--json-field-status-font-size": "Font size of the validation status line"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Initial JSON from the value attribute. The status line appears on blur; minerva-change fires on blur and after formatting, and validity reflects the syntax."
+          },
+          "options": {
+            "title": "Indent, toolbar and labels",
+            "description": "indent=\"4\" with formatValue() called from an external button, a read-only field without toolbar, and custom format / status labels."
+          },
+          "form": {
+            "title": "In a form",
+            "description": "Invalid JSON is badInput (also while focused), so the form cannot be submitted until the text parses; fix the payload to send it. Reset restores the value attribute."
+          }
+        },
+        "minerva-json-field": {
+          "props": {
+            "invalid": "Error state; also set by a syntax error after blur.",
+            "readOnly": "Read-only: focusable and submitted, neither editable nor formattable.",
+            "placeholder": "Placeholder text shown while the field is empty.",
+            "name": "Name under which the value is submitted with the form.",
+            "disabled": "Disables the control: not focusable, not submitted, not validated.",
+            "required": "The control must have a value for the form to be submitted.",
+            "isDisabled": "Whether the control is disabled, by itself or by a disabled <fieldset> (read-only).",
+            "form": "The form owning the element (read-only).",
+            "labels": "The <label> elements associated with the element (read-only).",
+            "validity": "Validity state, like <input>.validity (read-only).",
+            "validationMessage": "Message of the current validation error; empty when valid (read-only).",
+            "willValidate": "Whether the element takes part in constraint validation (read-only)."
+          },
+          "events": {
+            "change": "The text was committed (blur) or formatted.",
+            "input": "The text changed (native, composed).",
+            "minerva-input": "The text changed by typing or formatting; detail: { value }.",
+            "minerva-change": "The text was committed (blur) or formatted; detail: { value }."
+          },
+          "cssVars": {
+            "--icon-button-color": "Icon color of the inner icon buttons.",
+            "--icon-button-hover-bg": "Background of the inner icon buttons on hover.",
+            "--icon-button-pressed-color": "Icon color of a pressed inner icon button.",
+            "--icon-button-pressed-bg": "Background of a pressed inner icon button.",
+            "--icon-button-size": "Width and height of the inner icon buttons (defaults follow the density's control heights).",
+            "--icon-button-icon-size": "Font size of the icons of the inner icon buttons.",
+            "--icon-button-radius": "Corner radius of the inner icon buttons (defaults to --radius-lg).",
+            "--textarea-min-height": "Minimum height of the text area.",
+            "--textarea-padding-y": "Vertical padding of the text.",
+            "--textarea-padding-x": "Horizontal padding of the text (defaults to the density's small control padding).",
+            "--textarea-radius": "Corner radius of the text area (defaults to --radius-md).",
+            "--textarea-font-size": "Font size of the text.",
+            "--textarea-background": "Background color of the text area.",
+            "--textarea-border-color": "Border color of the text area at rest."
+          },
+          "methods": {
+            "focus": "Focuses the inner control.",
+            "blur": "Removes focus from the inner control.",
+            "formatValue": "Re-indents the text with indent spaces (no-op unless it is valid JSON); does not emit events.",
+            "checkValidity": "Checks validity; fires invalid when the element is invalid.",
+            "reportValidity": "Checks validity and shows the browser's validation message.",
+            "setCustomValidity": "Sets a custom validation error, or clears it with an empty string.",
+            "formResetCallback": "Form lifecycle callback called by form.reset(): restores the initial value.",
+            "formDisabledCallback": "Form lifecycle callback called when an ancestor <fieldset> is disabled or enabled.",
+            "formStateRestoreCallback": "Form lifecycle callback called when the browser restores the state (history navigation, autofill)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

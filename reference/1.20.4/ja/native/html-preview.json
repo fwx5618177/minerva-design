@@ -1,0 +1,263 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.4",
+  "locale": "ja",
+  "renderer": "native",
+  "page": "html-preview",
+  "title": "HtmlPreview HTML プレビュー",
+  "description": "メールテンプレートなどの信頼できない HTML を、完全にサンドボックス化された iframe でプレビューします。マークアップは DOMPurify で無害化され（失敗時は空）、スクリプトとネットワークを遮断する CSP の下で描画されます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.4",
+    "sourceCommit": "5826c364a762ec5a1144b8eea89e5d7510e4099c",
+    "sourceDigest": "sha256:38cfefdcb173c9a307526b9364c7a77acc74f713924006e65d94c6f3c5e94c61",
+    "referenceSourceDigest": "sha256:8bb3a20ee069c63b8d85e6ccf29336af81fffa488ce873d14ee032291c18009f"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "HtmlPreview",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "HtmlPreview"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "html",
+            "source": "packages/native/src/components/HtmlPreview/index.tsx",
+            "kind": "string",
+            "typeText": "string",
+            "typeRef": "type:e15e314d298fc0d116fc",
+            "required": true
+          },
+          {
+            "name": "title",
+            "source": "packages/native/src/components/HtmlPreview/index.tsx",
+            "kind": "string",
+            "typeText": "string",
+            "typeRef": "type:e15e314d298fc0d116fc",
+            "required": true
+          },
+          {
+            "name": "viewport",
+            "source": "packages/native/src/components/HtmlPreview/index.tsx",
+            "kind": "enum",
+            "values": [
+              "desktop",
+              "mobile"
+            ],
+            "typeText": "\"desktop\" | \"mobile\" | undefined",
+            "typeRef": "type:97ff2e6edc17a159e346",
+            "default": "desktop",
+            "required": false
+          },
+          {
+            "name": "mobileWidth",
+            "source": "packages/native/src/components/HtmlPreview/index.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 375,
+            "required": false
+          },
+          {
+            "name": "height",
+            "source": "packages/native/src/components/HtmlPreview/index.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 600,
+            "required": false
+          },
+          {
+            "name": "renderDocument",
+            "source": "packages/native/src/components/HtmlPreview/index.tsx",
+            "kind": "union",
+            "typeText": "ComponentType<HtmlPreviewDocumentProps>",
+            "typeRef": "type:5f9c3006722cfe3a17dd",
+            "parameters": [
+              {
+                "name": "props",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "HtmlPreviewDocumentProps",
+                "typeRef": "type:6531af4797f787f7c62f"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode | Promise<ReactNode>",
+              "typeRef": "type:5a2caedc46496617e609"
+            },
+            "required": true,
+            "description": "Platform host (react-native-webview on iOS/Android, sandboxed iframe on web)."
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:HtmlPreviewProps": {
+      "source": "native/src/components/HtmlPreview/index.tsx",
+      "kind": "interface",
+      "extends": [
+        "ViewProps"
+      ],
+      "props": [
+        {
+          "name": "html",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "viewport",
+          "type": "\"desktop\" | \"mobile\"",
+          "required": false,
+          "default": "\"desktop\""
+        },
+        {
+          "name": "mobileWidth",
+          "type": "number",
+          "required": false,
+          "default": "375"
+        },
+        {
+          "name": "height",
+          "type": "number",
+          "required": false,
+          "default": "600"
+        },
+        {
+          "name": "renderDocument",
+          "type": "ComponentType<HtmlPreviewDocumentProps>",
+          "required": true,
+          "description": "Platform host (react-native-webview on iOS/Android, sandboxed iframe on web)."
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:HtmlPreview": {
+      "kind": "cssVars",
+      "source": "react/src/components/HtmlPreview",
+      "vars": [
+        {
+          "name": "--html-preview-bg",
+          "description": "Background color around the frame"
+        },
+        {
+          "name": "--html-preview-frame-bg",
+          "description": "Background color of the frame"
+        },
+        {
+          "name": "--html-preview-frame-border-color",
+          "description": "Border color of the frame"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/html-preview/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/html-preview/native/basic.tsx": "import { useMemo, useSyncExternalStore } from \"react\";\nimport { previewDocument } from \"minerva-design/utils\";\nimport {\n  HtmlPreview,\n  type HtmlPreviewDocumentProps,\n} from \"minerva-design/native\";\nexport default function Basic() {\n  return (\n    <HtmlPreview\n      title=\"Document preview\"\n      height={200}\n      html=\"<h1>Preview</h1><p>Isolated HTML document.</p>\"\n      renderDocument={BrowserDocument}\n    />\n  );\n}\nconst subscribe = () => () => {};\nconst serverDocument = () => previewDocument();\n// Browser documentation host. For iOS/Android use the react-native-webview adapter in apps/expo-example.\nfunction BrowserDocument({ source, title, style }: HtmlPreviewDocumentProps) {\n  const sanitized = useMemo(() => previewDocument(source.html), [source.html]);\n  const document = useSyncExternalStore(\n    subscribe,\n    () => sanitized,\n    serverDocument,\n  );\n  return (\n    <iframe\n      key={document}\n      title={title}\n      srcDoc={document}\n      sandbox=\"\"\n      referrerPolicy=\"no-referrer\"\n      style={{ ...style, border: 0 }}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "基本的な使い方",
+      "description": "インラインスタイルと data: 画像は残り、スクリプト・フォーム・リンク・外部画像は削除されます。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.4/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "HtmlPreview HTML プレビュー",
+      "description": "メールテンプレートなどの信頼できない HTML を、完全にサンドボックス化された iframe でプレビューします。マークアップは DOMPurify で無害化され（失敗時は空）、スクリプトとネットワークを遮断する CSP の下で描画されます。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "インラインスタイルと data: 画像は残り、スクリプト・フォーム・リンク・外部画像は削除されます。"
+        },
+        "viewports": {
+          "title": "ビューポート",
+          "description": "viewport=\"mobile\" は固定幅（mobileWidth）で表示し、desktop はコンテナ幅いっぱいに表示します。"
+        }
+      },
+      "api": {
+        "HtmlPreviewProps": {
+          "html": "プレビューする信頼できない HTML（ブラウザで無害化）",
+          "title": "iframe のアクセシブルなタイトル",
+          "viewport": "全幅のデスクトップ表示または固定幅のモバイル表示",
+          "mobileWidth": "モバイル表示の幅（ピクセル）",
+          "height": "iframe の高さ（ピクセル）",
+          "className": "ルート要素の追加クラス名",
+          "style": "ルート要素のインラインスタイル",
+          "ref": "ルート <div> 要素への ref"
+        }
+      },
+      "cssVars": {
+        "--html-preview-bg": "フレーム周囲の背景色",
+        "--html-preview-frame-bg": "フレームの背景色",
+        "--html-preview-frame-border-color": "フレームの枠線の色"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "html 属性はサニタイズされ、サンドボックス化された iframe に描画されます。label はフレームのアクセシブルなタイトルになります。"
+          },
+          "viewport": {
+            "title": "デスクトップとモバイル",
+            "description": "viewport=\"mobile\" は mobile-width ピクセルの固定幅フレームを描画します。マークアップは html プロパティで設定します。"
+          },
+          "sanitized": {
+            "title": "信頼できない入力",
+            "description": "ソースを編集してみてください。スクリプトとイベントハンドラーは削除されて何も実行されず、インラインスタイルは残ります。"
+          }
+        },
+        "minerva-html-preview": {
+          "props": {
+            "label": "iframe のアクセシブルなタイトル（React 版の title に相当。未指定時は aria-label）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        },
+        "limitations": "ドキュメントはサンドボックス iframe を使用します。iOS と Android では Expo の例にある react-native-webview アダプターを使用し、スクリプトと外部遷移は無効です。"
+      }
+    }
+  }
+}

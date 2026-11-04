@@ -1,0 +1,211 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.4",
+  "locale": "en",
+  "renderer": "vue",
+  "page": "html-preview",
+  "title": "HtmlPreview",
+  "description": "Previews untrusted HTML such as email templates in a fully sandboxed iframe. The markup is sanitized with DOMPurify (fail-closed) and rendered behind a Content-Security-Policy that blocks scripts and network access.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.4",
+    "sourceCommit": "5826c364a762ec5a1144b8eea89e5d7510e4099c",
+    "sourceDigest": "sha256:38cfefdcb173c9a307526b9364c7a77acc74f713924006e65d94c6f3c5e94c61",
+    "referenceSourceDigest": "sha256:8bb3a20ee069c63b8d85e6ccf29336af81fffa488ce873d14ee032291c18009f"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "HtmlPreview",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "HtmlPreview"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "html",
+            "type": "string",
+            "required": true,
+            "description": "Untrusted HTML to preview (sanitized with DOMPurify in the browser)",
+            "typeText": "string"
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "required": true,
+            "description": "Accessible title of the iframe",
+            "typeText": "string"
+          },
+          {
+            "name": "viewport",
+            "type": "HtmlPreviewViewport",
+            "default": "\"desktop\"",
+            "required": false,
+            "description": "Full-width desktop preview or a fixed-width mobile preview",
+            "typeText": "HtmlPreviewViewport"
+          },
+          {
+            "name": "mobileWidth",
+            "type": "number",
+            "default": "375",
+            "required": false,
+            "description": "Width of the mobile preview in pixels (invalid values fall back to 375)",
+            "typeText": "number"
+          },
+          {
+            "name": "height",
+            "type": "number",
+            "default": "600",
+            "required": false,
+            "description": "Height of the iframe in pixels (invalid values fall back to 600)",
+            "typeText": "number"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:HtmlPreview": {
+      "kind": "cssVars",
+      "source": "react/src/components/HtmlPreview",
+      "vars": [
+        {
+          "name": "--html-preview-bg",
+          "description": "Background color around the frame"
+        },
+        {
+          "name": "--html-preview-frame-bg",
+          "description": "Background color of the frame"
+        },
+        {
+          "name": "--html-preview-frame-border-color",
+          "description": "Border color of the frame"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/html-preview/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/html-preview/vue/basic.vue": "<script setup lang=\"ts\">\nimport { HtmlPreview } from \"minerva-design/vue\";\n</script>\n<template>\n  <HtmlPreview\n    html=\"<h1>Hello Minerva</h1><p>A sandboxed document preview.</p>\"\n    title=\"Welcome document\"\n    :height=\"220\"\n  />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "sanitized",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/html-preview/vue/sanitized.vue",
+      "files": {
+        "apps/docs/src/docs/pages/html-preview/vue/sanitized.vue": "<script setup lang=\"ts\">\nimport { HtmlPreview, VStack } from \"minerva-design/vue\";\nconst html =\n  '<h2>Safe preview</h2><img src=\"x\" onerror=\"alert(1)\"><a href=\"javascript:alert(1)\">Unsafe link</a><p>Ordinary content remains visible.</p>';\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><HtmlPreview :html=\"html\" title=\"Sanitized document\" :height=\"220\" />\n    <p>\n      Unsafe scripts and event handlers are removed; the preview stays\n      sandboxed.\n    </p></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "sanitized",
+      "description": ""
+    },
+    {
+      "id": "viewport",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/html-preview/vue/viewport.vue",
+      "files": {
+        "apps/docs/src/docs/pages/html-preview/vue/viewport.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { HtmlPreview, Button, VStack } from \"minerva-design/vue\";\nconst mobile = ref(true);\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><Button @click=\"mobile = !mobile\">{{\n      mobile ? \"Switch to desktop\" : \"Switch to mobile\"\n    }}</Button\n    ><HtmlPreview\n      html=\"<h2>Responsive preview</h2><p>Inspect content at different viewport widths.</p>\"\n      title=\"Responsive document\"\n      :viewport=\"mobile ? 'mobile' : 'desktop'\"\n      :mobile-width=\"320\"\n      :height=\"220\"\n  /></VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "viewport",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.4/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "HtmlPreview",
+      "description": "Previews untrusted HTML such as email templates in a fully sandboxed iframe. The markup is sanitized with DOMPurify (fail-closed) and rendered behind a Content-Security-Policy that blocks scripts and network access.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Inline styles and data: images are kept; scripts, forms, links and remote images are removed."
+        },
+        "viewports": {
+          "title": "Viewports",
+          "description": "viewport=\"mobile\" renders a fixed-width preview (mobileWidth); desktop fills the container."
+        }
+      },
+      "api": {
+        "HtmlPreviewProps": {
+          "html": "Untrusted HTML to preview (sanitized in the browser)",
+          "title": "Accessible title of the iframe",
+          "viewport": "Full-width desktop preview or fixed-width mobile preview",
+          "mobileWidth": "Width of the mobile preview in pixels",
+          "height": "Height of the iframe in pixels",
+          "className": "Additional class name of the root element",
+          "style": "Inline styles of the root element",
+          "ref": "Ref to the root <div> element"
+        }
+      },
+      "cssVars": {
+        "--html-preview-bg": "Background color around the frame",
+        "--html-preview-frame-bg": "Background color of the frame",
+        "--html-preview-frame-border-color": "Border color of the frame"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "The html attribute is sanitized and rendered in a sandboxed iframe; label gives the frame its accessible title."
+          },
+          "viewport": {
+            "title": "Desktop and mobile",
+            "description": "viewport=\"mobile\" renders a fixed-width frame of mobile-width pixels; the markup is set through the html property."
+          },
+          "sanitized": {
+            "title": "Untrusted input",
+            "description": "Edit the source: scripts and event handlers are removed and nothing runs, inline styles are kept."
+          }
+        },
+        "minerva-html-preview": {
+          "props": {
+            "label": "Accessible title of the iframe (the React library's title; falls back to aria-label)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        },
+        "limitations": "This documentation uses a sandboxed iframe host. iOS and Android require the react-native-webview adapter shown in the Expo example; scripts and external navigation remain disabled."
+      }
+    }
+  }
+}

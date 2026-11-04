@@ -1,0 +1,273 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.4",
+  "locale": "fr",
+  "renderer": "react",
+  "page": "form-layout",
+  "title": "FormLayout",
+  "description": "Un formulaire natif dont les champs sont disposés sur une grille responsive ; envoi, réinitialisation et validation restent natifs.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.4",
+    "sourceCommit": "5826c364a762ec5a1144b8eea89e5d7510e4099c",
+    "sourceDigest": "sha256:38cfefdcb173c9a307526b9364c7a77acc74f713924006e65d94c6f3c5e94c61",
+    "referenceSourceDigest": "sha256:8bb3a20ee069c63b8d85e6ccf29336af81fffa488ce873d14ee032291c18009f"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "FormLayout",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "FormLayout"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "columns",
+            "source": "packages/react/src/components/FormLayout/types.ts",
+            "kind": "union",
+            "typeText": "ResponsiveGridColumns | undefined",
+            "typeRef": "type:6c395485ef74adec8007",
+            "default": 1,
+            "required": false,
+            "description": "Column counts of the inner ResponsiveGrid: a number, or `{ base, sm, md, lg }` (container widths 480 / 768 / 1200px). Integers 1-12"
+          },
+          {
+            "name": "gap",
+            "source": "packages/react/src/components/FormLayout/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": 4,
+            "required": false,
+            "description": "Gap between fields: numbers and numeric strings select spacing tokens, other strings are CSS values"
+          },
+          {
+            "name": "rowGap",
+            "source": "packages/react/src/components/FormLayout/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "required": false,
+            "description": "Gap between rows; defaults to `gap`"
+          },
+          {
+            "name": "columnGap",
+            "source": "packages/react/src/components/FormLayout/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "required": false,
+            "description": "Gap between columns; defaults to `gap`"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "FormLayoutProps": {
+      "source": "react/src/components/FormLayout/types.ts",
+      "kind": "interface",
+      "extends": [
+        "FormHTMLAttributes<HTMLFormElement>"
+      ],
+      "props": [
+        {
+          "name": "columns",
+          "type": "ResponsiveGridColumns",
+          "required": false,
+          "default": "1",
+          "description": "Column counts of the inner ResponsiveGrid: a number, or `{ base, sm, md, lg }` (container widths 480 / 768 / 1200px). Integers 1-12"
+        },
+        {
+          "name": "gap",
+          "type": "string | number",
+          "required": false,
+          "default": "4",
+          "description": "Gap between fields: numbers and numeric strings select spacing tokens, other strings are CSS values"
+        },
+        {
+          "name": "rowGap",
+          "type": "string | number",
+          "required": false,
+          "description": "Gap between rows; defaults to `gap`"
+        },
+        {
+          "name": "columnGap",
+          "type": "string | number",
+          "required": false,
+          "description": "Gap between columns; defaults to `gap`"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLFormElement>",
+          "required": false,
+          "description": "Ref to the <form> element"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:FormLayout": {
+      "kind": "cssVars",
+      "source": "react/src/components/FormLayout",
+      "vars": [
+        {
+          "name": "--form-layout-max-width",
+          "description": "Maximum width of the form (none by default)"
+        },
+        {
+          "name": "--form-layout-margin-inline",
+          "description": "Inline margin of the form (set auto with a max width to center it)"
+        },
+        {
+          "name": "--form-layout-padding",
+          "description": "Inner padding of the form"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/form-layout/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/form-layout/demos/basic.tsx": "import { useState } from \"react\";\nimport {\n  Alert,\n  Button,\n  FormField,\n  FormLayout,\n  GridItem,\n  Input,\n  Textarea,\n} from \"minerva-design\";\n\nexport default function BasicDemo() {\n  const [saved, setSaved] = useState<string | null>(null);\n  return (\n    <FormLayout\n      columns={{ base: 1, sm: 2 }}\n      onSubmit={(event) => {\n        event.preventDefault();\n        setSaved(\n          JSON.stringify(Object.fromEntries(new FormData(event.currentTarget))),\n        );\n      }}\n    >\n      <GridItem fullWidth asChild>\n        <FormField label=\"Title\">\n          <Input name=\"title\" defaultValue=\"Draft\" required />\n        </FormField>\n      </GridItem>\n      <FormField label=\"Language\">\n        <Input name=\"language\" />\n      </FormField>\n      <FormField label=\"Category\">\n        <Input name=\"category\" />\n      </FormField>\n      <GridItem fullWidth asChild>\n        <FormField label=\"Summary\">\n          <Textarea name=\"summary\" rows={3} />\n        </FormField>\n      </GridItem>\n      <GridItem fullWidth>\n        <Button type=\"submit\">Save</Button>\n      </GridItem>\n      {saved && (\n        <GridItem fullWidth>\n          <Alert color=\"success\" title=\"Saved\">\n            <code>{saved}</code>\n          </Alert>\n        </GridItem>\n      )}\n    </FormLayout>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "Utilisation de base",
+      "description": "columns suit la largeur du formulaire ; GridItem fullWidth asChild étend un FormField sur toute la ligne sans enveloppe."
+    },
+    {
+      "id": "gaps",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/form-layout/demos/gaps.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/form-layout/demos/gaps.tsx": "import { FormField, FormLayout, Input } from \"minerva-design\";\n\nexport default function GapsDemo() {\n  return (\n    <FormLayout columns={3} rowGap={2} columnGap=\"24px\">\n      <FormField label=\"First name\">\n        <Input name=\"first\" />\n      </FormField>\n      <FormField label=\"Last name\">\n        <Input name=\"last\" />\n      </FormField>\n      <FormField label=\"Nickname\">\n        <Input name=\"nickname\" />\n      </FormField>\n    </FormLayout>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Espacements",
+      "description": "gap, rowGap et columnGap acceptent des jetons d’espacement ou des valeurs CSS."
+    }
+  ],
+  "recipes": [
+    {
+      "id": "react-form",
+      "title": "React controlled project form",
+      "renderer": "react",
+      "pages": [
+        "input",
+        "switch",
+        "form-control",
+        "form-layout",
+        "button"
+      ],
+      "kind": "standalone-recipe",
+      "packageVersion": "1.20.4",
+      "files": {
+        "README.md": "# react-form\n\nStandalone React 19 recipe, using only public Minerva entries.\n\nRequires Node >=22.13 and pnpm 11. Copy the complete directory, then run:\n\n```sh\npnpm install\npnpm build\npnpm dev\n```\n\nThe package manifest pins the tested Minerva/framework/tool versions. The entry imports the global stylesheet once. App owns the provider and controlled state. No documentation translation setup or workspace aliases are required.\n",
+        "index.html": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n    <title>Minerva standalone recipe</title>\n  </head>\n  <body>\n    <div id=\"app\"></div>\n    <script type=\"module\" src=\"/src/main.tsx\"></script>\n  </body>\n</html>\n",
+        "package.json": "{\n  \"name\": \"minerva-recipe-react-form\",\n  \"private\": true,\n  \"version\": \"1.0.0\",\n  \"type\": \"module\",\n  \"packageManager\": \"pnpm@11.23.0\",\n  \"scripts\": {\n    \"dev\": \"vite --host 127.0.0.1\",\n    \"build\": \"tsc --noEmit && vite build\"\n  },\n  \"dependencies\": {\n    \"minerva-design\": \"1.20.4\",\n    \"react\": \"19.3.0\",\n    \"react-dom\": \"19.3.0\"\n  },\n  \"devDependencies\": {\n    \"typescript\": \"6.0.3\",\n    \"vite\": \"8.3.3\",\n    \"@types/react\": \"19.3.0\",\n    \"@types/react-dom\": \"19.3.0\"\n  }\n}\n",
+        "src/App.tsx": "import { useState } from \"react\";\nimport {\n  Button,\n  ConfigProvider,\n  FormField,\n  Input,\n  Switch,\n  ToastProvider,\n  VStack,\n  toast,\n} from \"minerva-design\";\n\nexport default function App() {\n  const [name, setName] = useState(\"\");\n  const [subscribed, setSubscribed] = useState(false);\n  const [saved, setSaved] = useState(\"\");\n  return (\n    <ConfigProvider theme=\"light\">\n      <ToastProvider>\n        <VStack gap={4} align=\"start\">\n          <FormField label=\"Project name\" required>\n            <Input\n              name=\"project\"\n              value={name}\n              onChange={(event) => setName(event.target.value)}\n              clearable\n            />\n          </FormField>\n          <Switch\n            label=\"Newsletter\"\n            checked={subscribed}\n            onChange={setSubscribed}\n          />\n          <Button\n            disabled={!name.trim()}\n            onClick={() => {\n              setSaved(`${name}${subscribed ? \" · subscribed\" : \"\"}`);\n              toast.success(\"Project saved\");\n            }}\n          >\n            Save project\n          </Button>\n          <output aria-live=\"polite\">{saved || \"No project saved\"}</output>\n        </VStack>\n      </ToastProvider>\n    </ConfigProvider>\n  );\n}\n",
+        "src/main.tsx": "import { createRoot } from \"react-dom/client\";\nimport App from \"./App\";\nimport \"minerva-design/style.css\";\ncreateRoot(document.getElementById(\"app\")!).render(<App />);\n",
+        "src/vite-env.d.ts": "/// <reference types=\"vite/client\" />\n",
+        "tsconfig.json": "{\n  \"compilerOptions\": {\n    \"target\": \"ES2022\",\n    \"module\": \"ESNext\",\n    \"moduleResolution\": \"Bundler\",\n    \"lib\": [\"ES2022\", \"DOM\", \"DOM.Iterable\"],\n    \"strict\": true,\n    \"skipLibCheck\": true,\n    \"jsx\": \"react-jsx\",\n    \"noEmit\": true,\n    \"esModuleInterop\": true\n  },\n  \"include\": [\"src\"]\n}\n"
+      },
+      "dependencies": {
+        "minerva-design": "1.20.4",
+        "react": "19.3.0",
+        "react-dom": "19.3.0",
+        "typescript": "6.0.3",
+        "vite": "8.3.3",
+        "@types/react": "19.3.0",
+        "@types/react-dom": "19.3.0"
+      },
+      "url": "/minerva-design/reference/1.20.4/recipes/react-form/README.md"
+    }
+  ],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.4/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "FormLayout",
+      "description": "Un formulaire natif dont les champs sont disposés sur une grille responsive ; envoi, réinitialisation et validation restent natifs.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "columns suit la largeur du formulaire ; GridItem fullWidth asChild étend un FormField sur toute la ligne sans enveloppe."
+        },
+        "gaps": {
+          "title": "Espacements",
+          "description": "gap, rowGap et columnGap acceptent des jetons d’espacement ou des valeurs CSS."
+        }
+      },
+      "api": {
+        "FormLayoutProps": {
+          "columns": "Nombre de colonnes de la ResponsiveGrid interne : un nombre ou `{ base, sm, md, lg }` (largeurs de conteneur 480 / 768 / 1200px). Entiers de 1 à 12",
+          "gap": "Espacement entre les champs : nombres et chaînes numériques = jetons d’espacement, autres chaînes = valeurs CSS",
+          "rowGap": "Espacement entre les lignes ; `gap` par défaut",
+          "columnGap": "Espacement entre les colonnes ; `gap` par défaut",
+          "ref": "Ref vers l’élément <form>"
+        }
+      },
+      "cssVars": {
+        "--form-layout-max-width": "Largeur maximale du formulaire (aucune par défaut)",
+        "--form-layout-margin-inline": "Marge en ligne du formulaire (auto avec une largeur maximale pour le centrer)",
+        "--form-layout-padding": "Marge intérieure du formulaire"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Placez la mise en page dans un <form> natif : envoi, réinitialisation et validation restent natifs. columns=\"1 2\" donne une colonne dans un conteneur étroit et deux à partir de 480px ; minerva-grid-item full-width occupe toute une ligne."
+          },
+          "gaps": {
+            "title": "Colonnes et espacements",
+            "description": "gap définit les deux espacements ; row-gap et column-gap les remplacent (nombres de l'échelle d'espacement ou longueurs CSS). Fonctionne aussi avec des champs natifs."
+          }
+        },
+        "minerva-form-layout": {
+          "slots": {
+            "default": "Champs."
+          },
+          "cssVars": {
+            "--responsive-grid-align-items": "Alignement vertical des champs dans leur ligne (par défaut : stretch).",
+            "--responsive-grid-justify-items": "Alignement horizontal des champs dans leur colonne (par défaut : stretch)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

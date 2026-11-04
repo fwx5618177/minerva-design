@@ -1,0 +1,376 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.4",
+  "locale": "ja",
+  "renderer": "native",
+  "page": "confirm",
+  "title": "Confirm 確認",
+  "description": "操作の確認をユーザーに求めます。テーマに合わせた window.confirm の代替です。宣言的な ConfirmDialog を使うか、どこからでも confirm() を await できます。ConfirmProvider があればダイアログはアプリのツリー内に描画され、なければ独立したホストを必要に応じてマウントし、サーバーでは confirm() は false を返します。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.4",
+    "sourceCommit": "5826c364a762ec5a1144b8eea89e5d7510e4099c",
+    "sourceDigest": "sha256:38cfefdcb173c9a307526b9364c7a77acc74f713924006e65d94c6f3c5e94c61",
+    "referenceSourceDigest": "sha256:8bb3a20ee069c63b8d85e6ccf29336af81fffa488ce873d14ee032291c18009f"
+  },
+  "content": {
+    "usage": {
+      "title": "使い分け：useConfirm() か confirm() か",
+      "hook": "コンポーネント内では useConfirm() を呼びます。ダイアログは最も近い ConfigProvider のスコープに従います。ネストしたプロバイダーの下では、モーダルがそのホストにテーマ・パレット・トークン付きでポータルされ、既定のボタンラベルはその言語になります。ConfirmProvider があれば引き続きそれが描画します。",
+      "function": "React の外（イベントバス、API クライアント、ルーターガードなどコンポーネント以外のモジュール）では confirm() を直接インポートします。そこではフックが使えず、ダイアログはルートのテーマと言語を使います。"
+    }
+  },
+  "components": [
+    {
+      "name": "ConfirmDialog",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "ConfirmDialog"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "open",
+            "source": "packages/native/src/components/Confirm/index.tsx",
+            "kind": "boolean",
+            "typeText": "boolean",
+            "typeRef": "type:7087acd01ef7dd9f1d5c",
+            "required": true
+          },
+          {
+            "name": "title",
+            "source": "packages/native/src/components/Confirm/index.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": true
+          },
+          {
+            "name": "description",
+            "source": "packages/native/src/components/Confirm/index.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false
+          },
+          {
+            "name": "confirmLabel",
+            "source": "packages/native/src/components/Confirm/index.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false
+          },
+          {
+            "name": "cancelLabel",
+            "source": "packages/native/src/components/Confirm/index.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false
+          },
+          {
+            "name": "closeLabel",
+            "source": "packages/native/src/components/Confirm/index.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "color",
+            "source": "packages/native/src/components/Confirm/index.tsx",
+            "kind": "enum",
+            "values": [
+              "danger",
+              "primary",
+              "warning"
+            ],
+            "typeText": "\"primary\" | \"warning\" | \"danger\" | undefined",
+            "typeRef": "type:ea01c2fe738cc1655d61",
+            "default": "primary",
+            "required": false
+          },
+          {
+            "name": "loading",
+            "source": "packages/native/src/components/Confirm/index.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false
+          },
+          {
+            "name": "confirmDisabled",
+            "source": "packages/native/src/components/Confirm/index.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onOpenChange",
+            "source": "packages/native/src/components/Confirm/index.tsx",
+            "kind": "function",
+            "typeText": "(open: boolean) => void",
+            "typeRef": "type:6c80eab391c83c832390",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": true
+          },
+          {
+            "name": "onConfirm",
+            "source": "packages/native/src/components/Confirm/index.tsx",
+            "kind": "function",
+            "typeText": "() => void | Promise<void>",
+            "typeRef": "type:7dc66a73e047680501c2",
+            "parameters": [],
+            "returnType": {
+              "typeText": "void | Promise<void>",
+              "typeRef": "type:3c4871f2062b3b734ba0"
+            },
+            "required": true
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "open",
+            "event": "onOpenChange",
+            "syntax": "open={open} onOpenChange={handler}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ConfirmProvider",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "ConfirmProvider"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:ConfirmDialogProps": {
+      "source": "native/src/components/Confirm/index.tsx",
+      "kind": "interface",
+      "extends": [
+        "ConfirmOptions"
+      ],
+      "props": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "required": true
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "required": true
+        },
+        {
+          "name": "onConfirm",
+          "type": "() => void | Promise<void>",
+          "required": true
+        }
+      ]
+    },
+    "native:ConfirmProviderProps": {
+      "source": "native/src/components/Confirm/index.tsx",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": false
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/confirm/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/confirm/native/basic.tsx": "import { useState } from \"react\";\nimport { Text, View } from \"react-native\";\nimport { ConfirmProvider, useConfirm, Button } from \"minerva-design/native\";\nexport default function Basic() {\n  return (\n    <ConfirmProvider>\n      <ConfirmExample />\n    </ConfirmProvider>\n  );\n}\nfunction ConfirmExample() {\n  const confirm = useConfirm();\n  const [result, setResult] = useState(\"\");\n  return (\n    <View>\n      <Button\n        onPress={async () =>\n          setResult(\n            (await confirm({\n              title: \"Archive record?\",\n              description: \"You can restore it later.\",\n            }))\n              ? \"Archived\"\n              : \"Cancelled\",\n          )\n        }\n      >\n        Archive\n      </Button>\n      <Text>{result}</Text>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "// Inside a component: follows the nearest ConfigProvider scope\nfunction DeleteButton() {\n  const confirm = useConfirm();\n  return (\n    <Button onClick={async () => (await confirm({ title: \"Delete?\" })) && remove()}>\n      Delete\n    </Button>\n  );\n}\n\n// Outside React (API client, event bus, router guard...): root scope\nimport { confirm } from \"minerva-design\";\nrouter.beforeLeave(() => confirm({ title: \"Discard changes?\" }));",
+      "language": "tsx"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.20.4/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Confirm 確認",
+      "description": "操作の確認をユーザーに求めます。テーマに合わせた window.confirm の代替です。宣言的な ConfirmDialog を使うか、どこからでも confirm() を await できます。ConfirmProvider があればダイアログはアプリのツリー内に描画され、なければ独立したホストを必要に応じてマウントし、サーバーでは confirm() は false を返します。",
+      "usage": {
+        "title": "使い分け：useConfirm() か confirm() か",
+        "hook": "コンポーネント内では useConfirm() を呼びます。ダイアログは最も近い ConfigProvider のスコープに従います。ネストしたプロバイダーの下では、モーダルがそのホストにテーマ・パレット・トークン付きでポータルされ、既定のボタンラベルはその言語になります。ConfirmProvider があれば引き続きそれが描画します。",
+        "function": "React の外（イベントバス、API クライアント、ルーターガードなどコンポーネント以外のモジュール）では confirm() を直接インポートします。そこではフックが使えず、ダイアログはルートのテーマと言語を使います。"
+      },
+      "demos": {
+        "imperative": {
+          "title": "命令的な confirm()",
+          "description": "await confirm({...}) は確認で true、キャンセル（ボタン、Escape、背景）で false を返します。プロバイダーは不要です。"
+        },
+        "colors": {
+          "title": "カラー",
+          "description": "color で確認ボタンのトーンを指定します：primary（デフォルト）、warning、または破壊的な操作向けの danger（ラベルの既定は「削除」）。キャンセルボタンは常に neutral のアウトラインボタンです。"
+        },
+        "provider": {
+          "title": "ConfirmProvider と併用",
+          "description": "useConfirm() はプロバイダーが（呼び出し元の ConfigProvider スコープ内に）描画する confirm を返すため、ダイアログはアプリのコンテキストを共有します。同時の要求は順番に一つずつ表示されます。"
+        },
+        "declarative": {
+          "title": "宣言的な ConfirmDialog",
+          "description": "制御されたダイアログ。loading は onConfirm の実行中にスピナーを表示し、キャンセルを無効にします。"
+        },
+        "scoped": {
+          "title": "スコープ：useConfirm() と confirm()",
+          "description": "両方のボタンはネストした ConfigProvider（ダークテーマ、tech パレット、中国語）の中にあります。useConfirm() はそのスコープ内でダイアログを開き（ダークのトークン、中国語のボタンラベル）、confirm() はページのテーマと言語でルートに開きます。"
+        }
+      },
+      "api": {
+        "ConfirmDialogProps": {
+          "open": "ダイアログが開いているかどうか（制御）",
+          "onOpenChange": "ユーザーがキャンセルしたとき false で呼ばれます（キャンセルボタン、閉じる、Escape、背景クリック）",
+          "onConfirm": "確認ボタンが押されたときに呼ばれます。ダイアログは自動では閉じません"
+        },
+        "ConfirmOptions": {
+          "title": "タイトル（ダイアログのアクセシブルネーム）",
+          "description": "タイトルの下の説明（アクセシブルな説明）",
+          "confirmLabel": "確認ボタンのラベル。既定は「確認」、color=\"danger\" では「削除」",
+          "cancelLabel": "キャンセルボタンのラベル。既定はローカライズされた「キャンセル」",
+          "closeLabel": "閉じる（×）ボタンのアクセシブルラベル。既定はローカライズされた「閉じる」",
+          "color": "確認ボタンのセマンティックカラー：primary、warning、danger（破壊的。ラベルの既定は「削除」）",
+          "loading": "確認ボタンにスピナーを表示し、キャンセルを無効にします",
+          "confirmDisabled": "確認ボタンをネイティブに無効化します（タブ順から外れます）。loading のみの場合はフォーカス可能なままですが、再度実行はできません"
+        },
+        "ConfirmProviderProps": {
+          "children": "アプリのサブツリー。useConfirm() / confirm() のダイアログはここに描画されます（useConfirm() のダイアログは呼び出し元の ConfigProvider スコープ内）"
+        }
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "宣言的な <minerva-confirm-dialog> を show() で開きます。color=\"danger\" は破壊的な操作を示し、minerva-confirm と minerva-cancel（理由付き）が結果を伝えます。"
+          },
+          "async": {
+            "title": "非同期の確認",
+            "description": "onConfirm は Promise を返せます。確定するまで確認ボタンはローディング状態になり、reject されるとダイアログは開いたままです。追加の内容はデフォルトスロットに入れます。"
+          },
+          "imperative": {
+            "title": "命令的な confirm()",
+            "description": "confirm({ title, ... }) はダイアログを追加し、true か false で解決して、閉じたら削除します。テーマ対応の window.confirm の代替です。同時呼び出しは順番に表示されます。 host も <minerva-confirm-provider> もない場合、ダイアログは document.body に追加されます（ルートのテーマと言語）。"
+          },
+          "scoped": {
+            "title": "スコープ付き確認とプロバイダー",
+            "description": "confirm({ host })（または confirmFor(host)）は useConfirm() に相当します。ダイアログは host の <minerva-config> スコープ内（ダーク、tech パレット、中国語ラベル）に描画され、最も近い <minerva-confirm-provider> がキューに入れます。host なしの confirm() はプロバイダー自身のスコープ（ここではルートのテーマと言語）に描画され、グローバルな confirm() と同じです。"
+          }
+        },
+        "minerva-confirm-dialog": {
+          "props": {
+            "label": "タイトル（または header スロット）。ダイアログの名前になります。"
+          },
+          "events": {
+            "minerva-confirm": "確認ボタンが押されました。キャンセル可能：preventDefault() でダイアログを開いたままにします（自分で閉じてください）。",
+            "minerva-cancel": "確認がキャンセルされ、ダイアログが閉じました（detail: { reason }）。",
+            "minerva-open-change": "ユーザーが閉じることを要求しました（detail: { open, reason }）。キャンセル可能：preventDefault() で開いたままにします。",
+            "minerva-after-open": "パネルが開き、フォーカスが内部に移動した後に発火します。",
+            "minerva-after-close": "パネルが閉じ終わった後（終了アニメーションの後）に発火します。"
+          },
+          "slots": {
+            "default": "説明の下に置く任意の追加コンテンツ。",
+            "header": "タイトル（label 属性の代わり）。"
+          },
+          "cssVars": {
+            "--modal-width": "パネルの幅（既定はサイズに応じた幅で、ビューポートで制限）。",
+            "--modal-max-height": "パネルの最大高さ（超えると本文がスクロール）。",
+            "--modal-padding": "ヘッダー・説明・本文・フッターの左右パディング。",
+            "--modal-radius": "パネルの角丸（既定は --radius-xl）。",
+            "--modal-shadow": "パネルの影（既定は --shadow-xl）。",
+            "--modal-background": "パネルの背景。",
+            "--modal-z-index": "パネルの重なり順（既定は --z-modal）。"
+          },
+          "methods": {
+            "show": "ダイアログを開きます。",
+            "hide": "ダイアログを閉じます（イベントなし）。"
+          }
+        },
+        "minerva-confirm-provider": {
+          "props": {
+            "confirm": "このプロバイダーが描画する確認を求めます（そのスコープ、または options.host のスコープ）。確認されると true で解決します（読み取り専用）。"
+          },
+          "slots": {
+            "default": "アプリのコンテンツ：内部からの confirm({ host }) / confirmFor(host) の呼び出しはここでキューに入ります。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

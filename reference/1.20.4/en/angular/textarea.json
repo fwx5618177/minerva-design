@@ -1,0 +1,288 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.4",
+  "locale": "en",
+  "renderer": "angular",
+  "page": "textarea",
+  "title": "Textarea",
+  "description": "Multi-line text input sharing Input's sizes and variants; manual resizing is disabled, set rows instead.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.4",
+    "sourceCommit": "5826c364a762ec5a1144b8eea89e5d7510e4099c",
+    "sourceDigest": "sha256:38cfefdcb173c9a307526b9364c7a77acc74f713924006e65d94c6f3c5e94c61",
+    "referenceSourceDigest": "sha256:8bb3a20ee069c63b8d85e6ccf29336af81fffa488ce873d14ee032291c18009f"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Textarea",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnTextarea. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnTextarea. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnTextarea"
+          ],
+          "kind": "named"
+        },
+        "selector": "textarea[mnTextarea]",
+        "props": [
+          {
+            "name": "value",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/textarea/textarea.ts"
+          },
+          {
+            "name": "defaultValue",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/src/components/textarea/textarea.ts"
+          },
+          {
+            "name": "variant",
+            "typeText": "TextareaVariant",
+            "required": false,
+            "source": "packages/angular/src/components/textarea/textarea.ts"
+          },
+          {
+            "name": "size",
+            "typeText": "TextareaSize",
+            "required": false,
+            "source": "packages/angular/src/components/textarea/textarea.ts"
+          },
+          {
+            "name": "invalid",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/textarea/textarea.ts"
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/textarea/textarea.ts"
+          },
+          {
+            "name": "readOnly",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/textarea/textarea.ts"
+          },
+          {
+            "name": "required",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/textarea/textarea.ts"
+          },
+          {
+            "name": "id",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/textarea/textarea.ts"
+          },
+          {
+            "name": "aria-describedby",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/textarea/textarea.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "typeText": "string | undefined",
+            "required": false
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "valueChange",
+            "syntax": "[(value)]"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Textarea": {
+      "kind": "cssVars",
+      "source": "react/src/components/Textarea",
+      "vars": [
+        {
+          "name": "--textarea-min-height",
+          "description": "Minimum height (every size)"
+        },
+        {
+          "name": "--textarea-padding-y",
+          "description": "Vertical padding of the text"
+        },
+        {
+          "name": "--textarea-padding-x",
+          "description": "Horizontal padding of the text (defaults to the density's small control padding)"
+        },
+        {
+          "name": "--textarea-radius",
+          "description": "Corner radius (defaults to --radius-md)"
+        },
+        {
+          "name": "--textarea-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--textarea-background",
+          "description": "Background color of the outline variant"
+        },
+        {
+          "name": "--textarea-border-color",
+          "description": "Border color at rest"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "message-input",
+      "title": "Message input",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnTextarea } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnTextarea],\n  template: `\n<textarea mnTextarea aria-label=\"Message\" [(value)]=\"value\" rows=\"4\" placeholder=\"Write a message\"></textarea><output>{{value.length}} characters</output>\n  `,\n})\nexport class Example {\n  value = \"\";\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "read-only-content",
+      "title": "Read-only content",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnTextarea } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnTextarea],\n  template: `\n<textarea mnTextarea aria-label=\"Terms\" value=\"Your published message appears here.\" readOnly rows=\"3\"></textarea>\n  `,\n})\nexport class Example {\n\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.4/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Textarea",
+      "description": "Multi-line text input sharing Input's sizes and variants; manual resizing is disabled, set rows instead.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "A controlled textarea; native attributes pass through."
+        },
+        "sizes-variants": {
+          "title": "Sizes and variants",
+          "description": "Sizes change the font size and minimum height."
+        },
+        "form-control": {
+          "title": "With FormField",
+          "description": "Label, help text, error and required state come from the field."
+        }
+      },
+      "api": {
+        "TextareaProps": {
+          "variant": "Visual style",
+          "size": "Font size and minimum height",
+          "invalid": "Error state (also set by an invalid FormControl); sets aria-invalid",
+          "ref": "Ref to the <textarea> element"
+        }
+      },
+      "cssVars": {
+        "--textarea-min-height": "Minimum height (every size)",
+        "--textarea-padding-y": "Vertical padding of the text",
+        "--textarea-padding-x": "Horizontal padding of the text (defaults to the density's small control padding)",
+        "--textarea-radius": "Corner radius (defaults to --radius-md)",
+        "--textarea-font-size": "Font size (every size)",
+        "--textarea-background": "Background color of the outline variant",
+        "--textarea-border-color": "Border color at rest"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "rows sets the visible height (manual resizing is disabled); minerva-input reports every change, here to count words."
+          },
+          "sizes-variants": {
+            "title": "Sizes, variants and states",
+            "description": "Sizes, the filled variant, and the read-only, disabled and invalid states."
+          },
+          "form": {
+            "title": "In a form",
+            "description": "required, minlength and maxlength are validated by the browser on submit; the value is submitted under name and reset restores the value attribute."
+          }
+        },
+        "minerva-textarea": {
+          "props": {
+            "defaultValue": "Initial value (the value attribute), restored by form.reset(). Like <textarea>, changing it also changes value until the user edits the field.",
+            "placeholder": "Placeholder text shown while the field is empty.",
+            "readOnly": "Read-only: focusable and submitted, but not editable.",
+            "rows": "Number of visible text lines.",
+            "minLength": "Minimum length of the value (validated by the browser).",
+            "maxLength": "Maximum length of the value.",
+            "autocomplete": "Autocomplete hint of the inner <textarea>.",
+            "wrap": "How the text is wrapped when submitted: soft, hard or off.",
+            "name": "Name under which the value is submitted with the form.",
+            "disabled": "Disables the control: not focusable, not submitted, not validated.",
+            "required": "The control must have a value for the form to be submitted.",
+            "value": "Current value (property; the value attribute sets defaultValue).",
+            "isDisabled": "Whether the control is disabled, by itself or by a disabled <fieldset> (read-only).",
+            "form": "The form owning the element (read-only).",
+            "labels": "The <label> elements associated with the element (read-only).",
+            "validity": "Validity state, like <input>.validity (read-only).",
+            "validationMessage": "Message of the current validation error; empty when valid (read-only).",
+            "willValidate": "Whether the element takes part in constraint validation (read-only)."
+          },
+          "events": {
+            "change": "The value was committed (blur), re-dispatched from the inner textarea.",
+            "input": "The value changed (each keystroke; native, composed).",
+            "minerva-input": "Same as input, with detail: { value }.",
+            "minerva-change": "Same as change, with detail: { value }."
+          },
+          "methods": {
+            "focus": "Focuses the inner control.",
+            "blur": "Removes focus from the inner control.",
+            "select": "Selects the whole text.",
+            "checkValidity": "Checks validity; fires invalid when the element is invalid.",
+            "reportValidity": "Checks validity and shows the browser's validation message.",
+            "setCustomValidity": "Sets a custom validation error, or clears it with an empty string.",
+            "formResetCallback": "Form lifecycle callback called by form.reset(): restores the initial value.",
+            "formDisabledCallback": "Form lifecycle callback called when an ancestor <fieldset> is disabled or enabled.",
+            "formStateRestoreCallback": "Form lifecycle callback called when the browser restores the state (history navigation, autofill)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

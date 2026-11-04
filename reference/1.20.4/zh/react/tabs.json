@@ -1,0 +1,721 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.4",
+  "locale": "zh",
+  "renderer": "react",
+  "page": "tabs",
+  "title": "Tabs 标签页",
+  "description": "将内容分为一次显示一个的面板。无障碍标签页，支持方向键导航、line / enclosed / soft / pills 变体、语义色与垂直方向。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.4",
+    "sourceCommit": "5826c364a762ec5a1144b8eea89e5d7510e4099c",
+    "sourceDigest": "sha256:38cfefdcb173c9a307526b9364c7a77acc74f713924006e65d94c6f3c5e94c61",
+    "referenceSourceDigest": "sha256:8bb3a20ee069c63b8d85e6ccf29336af81fffa488ce873d14ee032291c18009f"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Tab",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "Tab"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "value",
+            "source": "packages/react/src/components/Tabs/types.ts",
+            "kind": "string",
+            "typeText": "string",
+            "typeRef": "type:e15e314d298fc0d116fc",
+            "required": true,
+            "description": "Value identifying the tab and its panel (must not contain whitespace)"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/react/src/components/Tabs/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables the tab (skipped by arrow keys)"
+          },
+          {
+            "name": "color",
+            "source": "packages/react/src/components/Tabs/types.ts",
+            "kind": "enum",
+            "values": [
+              "danger",
+              "info",
+              "neutral",
+              "primary",
+              "success",
+              "warning"
+            ],
+            "typeText": "ColorScheme | undefined",
+            "typeRef": "type:67f905b25ade366da2d8",
+            "required": false,
+            "description": "Overrides the group color; an explicitly colored tab keeps a tinted background while inactive"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TabList",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "TabList"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "loop",
+            "source": "packages/react/src/components/Tabs/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Moves focus from the last tab to the first (and back) with the arrow keys"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "TabPanel",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "TabPanel"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "value",
+            "source": "packages/react/src/components/Tabs/types.ts",
+            "kind": "string",
+            "typeText": "string",
+            "typeRef": "type:e15e314d298fc0d116fc",
+            "required": true,
+            "description": "Value of the tab this panel belongs to"
+          },
+          {
+            "name": "forceMount",
+            "source": "packages/react/src/components/Tabs/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Keeps the panel mounted (hidden) while its tab is not selected"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "Tabs",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "Tabs"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "value",
+            "source": "packages/react/src/components/Tabs/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Value of the selected tab (controlled; pair with onChange)"
+          },
+          {
+            "name": "defaultValue",
+            "source": "packages/react/src/components/Tabs/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Value of the initially selected tab (uncontrolled)"
+          },
+          {
+            "name": "orientation",
+            "source": "packages/react/src/components/Tabs/types.ts",
+            "kind": "enum",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
+            "typeText": "TabsOrientation | undefined",
+            "typeRef": "type:bc68c474309a2b31af1b",
+            "default": "horizontal",
+            "required": false,
+            "description": "Layout and arrow-key direction"
+          },
+          {
+            "name": "activationMode",
+            "source": "packages/react/src/components/Tabs/types.ts",
+            "kind": "enum",
+            "values": [
+              "automatic",
+              "manual"
+            ],
+            "typeText": "\"manual\" | \"automatic\" | undefined",
+            "typeRef": "type:4d31f17be083237d6f28",
+            "default": "automatic",
+            "required": false,
+            "description": "`automatic` selects a tab when it receives focus; `manual` only on Enter / Space / click, so the parent can confirm before switching"
+          },
+          {
+            "name": "dir",
+            "source": "packages/react/src/components/Tabs/types.ts",
+            "kind": "enum",
+            "values": [
+              "ltr",
+              "rtl"
+            ],
+            "typeText": "\"ltr\" | \"rtl\" | undefined",
+            "typeRef": "type:4911c4ab558e2c50216a",
+            "required": false,
+            "description": "Reading direction (affects arrow keys)"
+          },
+          {
+            "name": "variant",
+            "source": "packages/react/src/components/Tabs/types.ts",
+            "kind": "enum",
+            "values": [
+              "enclosed",
+              "line",
+              "pills",
+              "soft"
+            ],
+            "typeText": "TabsVariant | undefined",
+            "typeRef": "type:7a9b9d9d419b761fafaf",
+            "default": "line",
+            "required": false,
+            "description": "Visual style"
+          },
+          {
+            "name": "color",
+            "source": "packages/react/src/components/Tabs/types.ts",
+            "kind": "enum",
+            "values": [
+              "danger",
+              "info",
+              "neutral",
+              "primary",
+              "success",
+              "warning"
+            ],
+            "typeText": "ColorScheme | undefined",
+            "typeRef": "type:67f905b25ade366da2d8",
+            "default": "primary",
+            "required": false,
+            "description": "Color of the selection"
+          }
+        ],
+        "events": [
+          {
+            "name": "onChange",
+            "source": "packages/react/src/components/Tabs/types.ts",
+            "kind": "function",
+            "typeText": "((value: string) => void) | undefined",
+            "typeRef": "type:3030f2f76a0f9946e48e",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "string",
+                "typeRef": "type:e15e314d298fc0d116fc"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the value of the newly selected tab"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "onChange",
+            "syntax": "value={value} onChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "TabsProps": {
+      "source": "react/src/components/Tabs/types.ts",
+      "description": "Props of `Tabs`, the root of a tabs group",
+      "kind": "interface",
+      "extends": [
+        "Omit<HTMLAttributes<HTMLDivElement>, \"onChange\" | \"defaultValue\" | \"dir\" | \"color\">"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "type": "string",
+          "required": false,
+          "description": "Value of the selected tab (controlled; pair with onChange)"
+        },
+        {
+          "name": "defaultValue",
+          "type": "string",
+          "required": false,
+          "description": "Value of the initially selected tab (uncontrolled)"
+        },
+        {
+          "name": "onChange",
+          "type": "(value: string) => void",
+          "required": false,
+          "description": "Called with the value of the newly selected tab"
+        },
+        {
+          "name": "orientation",
+          "type": "TabsOrientation",
+          "required": false,
+          "default": "\"horizontal\"",
+          "description": "Layout and arrow-key direction"
+        },
+        {
+          "name": "activationMode",
+          "type": "\"automatic\" | \"manual\"",
+          "required": false,
+          "default": "\"automatic\"",
+          "description": "`automatic` selects a tab when it receives focus; `manual` only on Enter / Space / click, so the parent can confirm before switching"
+        },
+        {
+          "name": "dir",
+          "type": "\"ltr\" | \"rtl\"",
+          "required": false,
+          "description": "Reading direction (affects arrow keys)"
+        },
+        {
+          "name": "variant",
+          "type": "TabsVariant",
+          "required": false,
+          "default": "\"line\"",
+          "description": "Visual style"
+        },
+        {
+          "name": "color",
+          "type": "ColorScheme",
+          "required": false,
+          "default": "\"primary\"",
+          "description": "Color of the selection"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": false,
+          "description": "`TabList` and `TabPanel` elements"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "required": false,
+          "description": "Ref to the root `<div>` element"
+        }
+      ]
+    },
+    "TabListProps": {
+      "source": "react/src/components/Tabs/types.ts",
+      "description": "Props of `TabList`, the `role=\"tablist\"` container of the tabs",
+      "kind": "interface",
+      "extends": [
+        "HTMLAttributes<HTMLDivElement>"
+      ],
+      "props": [
+        {
+          "name": "loop",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Moves focus from the last tab to the first (and back) with the arrow keys"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "required": false,
+          "description": "Ref to the tab list `<div>` element"
+        }
+      ]
+    },
+    "TabProps": {
+      "source": "react/src/components/Tabs/types.ts",
+      "description": "Props of `Tab`, a `role=\"tab\"` button",
+      "kind": "interface",
+      "extends": [
+        "Omit<ButtonHTMLAttributes<HTMLButtonElement>, \"value\" | \"color\">"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "type": "string",
+          "required": true,
+          "description": "Value identifying the tab and its panel (must not contain whitespace)"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": true,
+          "description": "Tab content"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Disables the tab (skipped by arrow keys)"
+        },
+        {
+          "name": "color",
+          "type": "ColorScheme",
+          "required": false,
+          "description": "Overrides the group color; an explicitly colored tab keeps a tinted background while inactive"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "required": false,
+          "description": "Ref to the `<button>` element"
+        }
+      ]
+    },
+    "TabPanelProps": {
+      "source": "react/src/components/Tabs/types.ts",
+      "description": "Props of `TabPanel`, the `role=\"tabpanel\"` content of a tab",
+      "kind": "interface",
+      "extends": [
+        "HTMLAttributes<HTMLDivElement>"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "type": "string",
+          "required": true,
+          "description": "Value of the tab this panel belongs to"
+        },
+        {
+          "name": "forceMount",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Keeps the panel mounted (hidden) while its tab is not selected"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "required": false,
+          "description": "Ref to the panel `<div>` element"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Tabs": {
+      "kind": "cssVars",
+      "source": "react/src/components/Tabs",
+      "vars": [
+        {
+          "name": "--tabs-gap",
+          "description": "Space between the tabs of the list"
+        },
+        {
+          "name": "--tabs-font-size",
+          "description": "Font size of the tabs"
+        },
+        {
+          "name": "--tabs-trigger-padding-x",
+          "description": "Horizontal padding of a tab (every variant)"
+        },
+        {
+          "name": "--tabs-trigger-padding-y",
+          "description": "Vertical padding of a tab (every variant)"
+        },
+        {
+          "name": "--tabs-trigger-min-height",
+          "description": "Minimum height of a tab (pills default to the density's control height minus 4px)"
+        },
+        {
+          "name": "--tabs-radius",
+          "description": "Corner radius of enclosed / soft / pill tabs (defaults to --radius-md)"
+        },
+        {
+          "name": "--tabs-indicator-width",
+          "description": "Thickness of the line indicator"
+        },
+        {
+          "name": "--tabs-panel-padding",
+          "description": "Padding of the panel"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tabs/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/tabs/demos/basic.tsx": "import { Tab, TabList, TabPanel, Tabs } from \"minerva-design\";\n\nexport default function BasicDemo() {\n  return (\n    <Tabs defaultValue=\"overview\">\n      <TabList aria-label=\"Book sections\">\n        <Tab value=\"overview\">Overview</Tab>\n        <Tab value=\"reviews\">Reviews</Tab>\n        <Tab value=\"similar\" disabled>\n          Similar books\n        </Tab>\n      </TabList>\n      <TabPanel value=\"overview\">\n        A desert planet, a noble family and a precious spice.\n      </TabPanel>\n      <TabPanel value=\"reviews\">“A masterpiece of world building.”</TabPanel>\n      <TabPanel value=\"similar\">Coming soon.</TabPanel>\n    </Tabs>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "基础用法",
+      "description": "初始显示 Overview；Reviews 展示评论，Similar books 保持禁用。"
+    },
+    {
+      "id": "colors",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tabs/demos/colors.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/tabs/demos/colors.tsx": "import { useState } from \"react\";\nimport { Tab, TabList, TabPanel, Tabs } from \"minerva-design\";\n\nexport default function ColorsDemo() {\n  const [language, setLanguage] = useState(\"en\");\n  return (\n    <Tabs\n      variant=\"pills\"\n      color=\"primary\"\n      value={language}\n      onChange={setLanguage}\n      activationMode=\"manual\"\n    >\n      <TabList aria-label=\"Languages\">\n        <Tab value=\"en\">English</Tab>\n        <Tab value=\"ja\" color=\"success\">\n          Japanese\n        </Tab>\n        <Tab value=\"fr\" color=\"warning\">\n          French\n        </Tab>\n        <Tab value=\"de\" color=\"danger\">\n          German\n        </Tab>\n      </TabList>\n      <TabPanel value={language}>\n        Editing the “{language}” translation.\n      </TabPanel>\n    </Tabs>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "颜色与手动激活",
+      "description": "color 设置整组颜色；Tab 的 color 使该标签在未选中时也保持着色。activationMode=\"manual\" 时聚焦不会选中，父组件可在 onChange 中确认切换。"
+    },
+    {
+      "id": "variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tabs/demos/variants.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/tabs/demos/variants.tsx": "import { Tab, TabList, Tabs, type TabsVariant } from \"minerva-design\";\n\nconst variants: TabsVariant[] = [\"line\", \"enclosed\", \"soft\", \"pills\"];\n\nexport default function VariantsDemo() {\n  return (\n    <div style={{ display: \"grid\", gap: 24 }}>\n      {variants.map((variant) => (\n        <Tabs key={variant} variant={variant} defaultValue=\"hot\">\n          <TabList aria-label={`${variant} tabs`}>\n            <Tab value=\"hot\">Hot</Tab>\n            <Tab value=\"new\">New</Tab>\n            <Tab value=\"completed\">Completed</Tab>\n          </TabList>\n        </Tabs>\n      ))}\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "变体",
+      "description": "同一组 Hot、New、Completed 标签展示 line、enclosed、soft、pills 四种外观，均默认选中 Hot。"
+    },
+    {
+      "id": "vertical",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tabs/demos/vertical.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/tabs/demos/vertical.tsx": "import { Tab, TabList, TabPanel, Tabs } from \"minerva-design\";\n\nexport default function VerticalDemo() {\n  return (\n    <Tabs defaultValue=\"profile\" orientation=\"vertical\">\n      <TabList aria-label=\"Settings\">\n        <Tab value=\"profile\">Profile</Tab>\n        <Tab value=\"notifications\">Notifications</Tab>\n        <Tab value=\"security\">Security</Tab>\n      </TabList>\n      <TabPanel value=\"profile\" style={{ paddingInline: 16 }}>\n        Your name, avatar and bio.\n      </TabPanel>\n      <TabPanel value=\"notifications\" style={{ paddingInline: 16 }}>\n        Email and push notifications.\n      </TabPanel>\n      <TabPanel value=\"security\" style={{ paddingInline: 16 }}>\n        Password and two-factor authentication.\n      </TabPanel>\n    </Tabs>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "垂直方向",
+      "description": "orientation=\"vertical\" 纵向排列标签，使用上下方向键切换。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.4/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Tabs 标签页",
+      "description": "将内容分为一次显示一个的面板。无障碍标签页，支持方向键导航、line / enclosed / soft / pills 变体、语义色与垂直方向。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "初始显示 Overview；Reviews 展示评论，Similar books 保持禁用。"
+        },
+        "variants": {
+          "title": "变体",
+          "description": "同一组 Hot、New、Completed 标签展示 line、enclosed、soft、pills 四种外观，均默认选中 Hot。"
+        },
+        "colors": {
+          "title": "颜色与手动激活",
+          "description": "color 设置整组颜色；Tab 的 color 使该标签在未选中时也保持着色。activationMode=\"manual\" 时聚焦不会选中，父组件可在 onChange 中确认切换。"
+        },
+        "vertical": {
+          "title": "垂直方向",
+          "description": "orientation=\"vertical\" 纵向排列标签，使用上下方向键切换。"
+        }
+      },
+      "api": {
+        "TabsProps": {
+          "value": "选中标签的值（受控，配合 onChange）",
+          "defaultValue": "初始选中标签的值（非受控）",
+          "onChange": "以新选中标签的值调用",
+          "orientation": "布局与方向键方向",
+          "activationMode": "automatic 聚焦即选中；manual 仅在回车 / 空格 / 点击时选中",
+          "dir": "阅读方向（影响方向键）",
+          "variant": "视觉样式",
+          "color": "选中状态的颜色",
+          "children": "TabList 与 TabPanel 元素",
+          "ref": "根 <div> 元素的 ref"
+        },
+        "TabListProps": {
+          "loop": "方向键在最后与第一个标签间循环",
+          "ref": "标签列表 <div> 元素的 ref"
+        },
+        "TabProps": {
+          "value": "标识标签及其面板的值（不可含空白）",
+          "children": "标签内容",
+          "disabled": "禁用标签（方向键跳过）",
+          "color": "覆盖整组颜色，未选中时也保持着色",
+          "ref": "<button> 元素的 ref"
+        },
+        "TabPanelProps": {
+          "value": "面板所属标签的值",
+          "forceMount": "在其标签页未选中时保持面板挂载（隐藏）。不设置时，非活动面板会被卸载。<minerva-tab-panel> 的普通子元素始终挂载（等同 forceMount），对 <template> 内容可用 force-mount 属性做同样选择",
+          "ref": "面板 <div> 元素的 ref"
+        }
+      },
+      "cssVars": {
+        "--tabs-gap": "标签列表中各标签之间的间距",
+        "--tabs-font-size": "标签的字号",
+        "--tabs-trigger-padding-x": "标签的水平内边距（所有变体）",
+        "--tabs-trigger-padding-y": "标签的垂直内边距（所有变体）",
+        "--tabs-trigger-min-height": "标签的最小高度（pills 默认为密度的控件高度减 4px）",
+        "--tabs-radius": "enclosed / soft / pills 标签的圆角（默认 --radius-md）",
+        "--tabs-indicator-width": "线条指示器的粗细",
+        "--tabs-panel-padding": "面板的内边距"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "<minerva-tab> 元素会自动放入标签列表；每个 <minerva-tab-panel> 与 value 相同的标签关联。label 为标签列表命名，方向键会跳过禁用的标签。"
+          },
+          "variants": {
+            "title": "变体与颜色",
+            "description": "variant 可选 line、enclosed、soft 或 pills；color 设置选中态的颜色，<minerva-tab> 上的 color 使该标签在未选中时也保持着色。"
+          },
+          "vertical": {
+            "title": "垂直方向与手动激活",
+            "description": "orientation=\"vertical\" 将标签纵向排列（ArrowUp / ArrowDown）。activation-mode=\"manual\" 时焦点移动不会选中标签，需按 Enter 或空格；no-loop 使方向键停在第一个 / 最后一个标签。"
+          },
+          "controlled": {
+            "title": "取消切换",
+            "description": "minerva-change 可取消：勾选复选框时，preventDefault() 会保留当前标签。取消勾选即可切换。"
+          },
+          "panels": {
+            "title": "非活动面板：是否挂载",
+            "description": "React 的 <TabPanel> 默认会卸载非活动面板，设置 forceMount 时才保留（隐藏）。light DOM 子元素属于页面，<minerva-tab-panel> 无法卸载它们：普通子元素的行为等同于 forceMount（隐藏、保留状态、表单字段仍会提交）。若要获得 React 的默认行为，把内容放进 <template>（激活时创建，离开后移除）；再加上 force-mount 则在隐藏时也保持挂载。"
+          }
+        },
+        "minerva-tabs": {
+          "props": {
+            "noLoop": "方向键在第一个 / 最后一个标签处停止，而不是循环。",
+            "label": "标签列表的无障碍名称（也可在元素上使用 aria-label / aria-labelledby）。",
+            "tabs": "本组的 <minerva-tab> 元素，不含嵌套组中的标签（只读）。",
+            "panels": "本组的 <minerva-tab-panel> 元素（只读）。"
+          },
+          "events": {
+            "minerva-change": "用户选择了一个标签（detail: { value }）。可取消：preventDefault() 会保留当前选中项。"
+          },
+          "slots": {
+            "default": "<minerva-tab-panel> 元素。",
+            "tab": "<minerva-tab> 元素（自动分配）。"
+          },
+          "methods": {
+            "select": "选中指定 value 的标签，并先触发 minerva-change（标签在点击、Enter / 空格或获得焦点时调用）。"
+          }
+        },
+        "minerva-tab": {
+          "props": {
+            "selected": "该标签是否被选中（由 <minerva-tabs> 设置）。"
+          },
+          "slots": {
+            "default": "标签文字。"
+          }
+        },
+        "minerva-tab-panel": {
+          "slots": {
+            "default": "面板内容。"
+          },
+          "props": {
+            "forceMount": "即使面板处于非活动状态（隐藏）也挂载 <template> 子元素的内容，等同于 React 的 forceMount。普通子元素始终处于挂载状态。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "初始显示 Overview；Reviews 展示评论，Similar books 保持禁用。"
+          },
+          "compound": {
+            "title": "组合用法",
+            "description": "Tabs 的组合用法示例；预览随站点主题和色板更新。"
+          },
+          "scrollable": {
+            "title": "可滚动标签",
+            "description": "Tabs 的可滚动标签示例；预览随站点主题和色板更新。"
+          },
+          "variants": {
+            "title": "变体",
+            "description": "同一组 Hot、New、Completed 标签展示 line、enclosed、soft、pills 四种外观，均默认选中 Hot。"
+          }
+        }
+      }
+    }
+  }
+}

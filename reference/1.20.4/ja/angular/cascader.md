@@ -1,0 +1,437 @@
+# Cascader カスケード選択
+
+階層化された選択肢から段階的に値を選択します（例：国 / 地域 / 都市）。
+
+Package: minerva-design@1.20.4
+
+Renderer: angular
+
+Locale: ja
+
+## Provenance
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "packageVersion": "1.20.4",
+  "sourceCommit": "5826c364a762ec5a1144b8eea89e5d7510e4099c",
+  "sourceDigest": "sha256:38cfefdcb173c9a307526b9364c7a77acc74f713924006e65d94c6f3c5e94c61",
+  "referenceSourceDigest": "sha256:8bb3a20ee069c63b8d85e6ccf29336af81fffa488ce873d14ee032291c18009f"
+}
+```
+
+Type references resolve through the [type graph](/minerva-design/reference/1.20.4/types.json) or getType() from minerva-design/contracts.
+
+## Documentation
+
+### キーボードとアクセシビリティ
+
+入力欄で Enter、Space、下矢印キーを押すとパネルが開き、フォーカスがパネル内へ移ります。入力欄にフォーカスするだけでは開きません。
+
+上下矢印キー、Home、End で列内を移動します。
+
+右矢印キーまたは Enter で次の列を展開し（遅延読み込み後も同様）、Enter で末端の選択肢を選びます。左矢印キーで前の列に戻ります。
+
+Escape でパネルを閉じてフォーカスを入力欄に戻します。Tab でも閉じます。
+
+入力欄は combobox ロールを持ちます。既定のプレースホルダーと "Clear selection"（選択をクリア）ボタンのラベルは React 版のロケールに従います。
+
+## Cascader
+
+Support: beta
+
+Native Angular: MnCascader. Native standalone component/directive; see platform tests for validated scope.
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design/angular",
+  "exports": [
+    "MnCascader"
+  ],
+  "kind": "named"
+}
+```
+
+### props
+
+```json
+[
+  {
+    "name": "label",
+    "typeText": "string",
+    "required": true,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "name",
+    "typeText": "string",
+    "required": true,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "options",
+    "typeText": "CascaderOption[]",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "value",
+    "typeText": "CascaderValue | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "defaultValue",
+    "typeText": "CascaderValue | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "open",
+    "typeText": "boolean",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "displayRender",
+    "typeText": "((labels: string[], selectedOptions: CascaderOption[]) => string) | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "disabled",
+    "typeText": "boolean | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "placeholder",
+    "typeText": "string | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "allowClear",
+    "typeText": "boolean",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "expandTrigger",
+    "typeText": "\"click\" | \"hover\"",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "aria-label",
+    "typeText": "string | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "aria-labelledby",
+    "typeText": "string | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "aria-describedby",
+    "typeText": "string | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "id",
+    "typeText": "string | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "required",
+    "typeText": "boolean | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "readOnly",
+    "typeText": "boolean | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "invalid",
+    "typeText": "boolean | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "showSearch",
+    "typeText": "boolean",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "filter",
+    "typeText": "((inputValue: string, path: CascaderOption[]) => boolean) | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "loadData",
+    "typeText": "((selectedOptions: CascaderOption[]) => void) | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "dropdownClassName",
+    "typeText": "string | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "optionRender",
+    "typeText": "TemplateRef<CascaderOptionContext> | null",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "width",
+    "typeText": "string | number",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "maxLevel",
+    "typeText": "number",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "dropdownStyle",
+    "typeText": "CascaderStyle | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  },
+  {
+    "name": "optionStyle",
+    "typeText": "CascaderStyle | undefined",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts"
+  }
+]
+```
+
+### events
+
+```json
+[
+  {
+    "name": "valueChange",
+    "typeText": "CascaderValue | undefined",
+    "required": false
+  },
+  {
+    "name": "openChange",
+    "typeText": "boolean",
+    "required": false
+  },
+  {
+    "name": "selectionChange",
+    "typeText": "CascaderSelectionChange",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts",
+    "parameters": [
+      {
+        "name": "$event",
+        "position": 0,
+        "typeText": "CascaderSelectionChange",
+        "required": true,
+        "rest": false
+      }
+    ]
+  },
+  {
+    "name": "clear",
+    "typeText": "void",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts",
+    "parameters": [
+      {
+        "name": "$event",
+        "position": 0,
+        "typeText": "void",
+        "required": true,
+        "rest": false
+      }
+    ]
+  },
+  {
+    "name": "search",
+    "typeText": "string",
+    "required": false,
+    "source": "packages/angular/src/components/cascader/cascader.ts",
+    "parameters": [
+      {
+        "name": "$event",
+        "position": 0,
+        "typeText": "string",
+        "required": true,
+        "rest": false
+      }
+    ]
+  }
+]
+```
+
+### bindings
+
+```json
+[
+  {
+    "prop": "value",
+    "event": "valueChange",
+    "syntax": "[(value)]"
+  },
+  {
+    "prop": "open",
+    "event": "openChange",
+    "syntax": "[(open)]"
+  }
+]
+```
+
+## CSS variables
+
+```json
+{
+  "css:Cascader": {
+    "kind": "cssVars",
+    "source": "react/src/components/Cascader",
+    "vars": [
+      {
+        "name": "--cascader-height",
+        "description": "Minimum height of the field (defaults to the density's small control height)"
+      },
+      {
+        "name": "--cascader-radius",
+        "description": "Corner radius of the field, the dropdown and the options (defaults to --radius-sm)"
+      },
+      {
+        "name": "--cascader-font-size",
+        "description": "Font size of the field and of the options"
+      },
+      {
+        "name": "--cascader-border-color",
+        "description": "Border color of the field at rest"
+      },
+      {
+        "name": "--cascader-column-min-width",
+        "description": "Minimum width of a column of options"
+      },
+      {
+        "name": "--cascader-dropdown-max-height",
+        "description": "Maximum height of the columns before they scroll"
+      },
+      {
+        "name": "--cascader-option-padding-y",
+        "description": "Vertical padding of an option (follows the density's row padding)"
+      },
+      {
+        "name": "--cascader-option-padding-x",
+        "description": "Horizontal padding of an option (follows the density's row padding)"
+      }
+    ]
+  }
+}
+```
+
+## Installation and initialization
+
+See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.
+
+## Example: Hierarchical selection
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: @angular/core, minerva-design
+
+Documentation context imports: none
+
+### example.ts
+
+```tsx
+import { Component } from '@angular/core';
+import { MnCascader } from 'minerva-design/angular';
+
+@Component({
+  selector: 'app-example',
+  imports: [MnCascader],
+  template: `
+<mn-cascader name="region" label="Region" [options]="options" [(value)]="value"/><output>{{value}}</output>
+  `,
+})
+export class Example {
+  options = [
+  {
+    "value": "europe",
+    "label": "Europe",
+    "children": [
+      {
+        "value": "france",
+        "label": "France"
+      },
+      {
+        "value": "spain",
+        "label": "Spain"
+      }
+    ]
+  },
+  {
+    "value": "asia",
+    "label": "Asia",
+    "children": [
+      {
+        "value": "japan",
+        "label": "Japan"
+      }
+    ]
+  }
+];
+  value: string[] = [];
+}
+
+```
+
+## Example: Disabled field
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: @angular/core, minerva-design
+
+Documentation context imports: none
+
+### example.ts
+
+```tsx
+import { Component } from '@angular/core';
+import { MnCascader } from 'minerva-design/angular';
+
+@Component({
+  selector: 'app-example',
+  imports: [MnCascader],
+  template: `
+<mn-cascader name="region" label="Locked region" [options]="options" disabled/>
+  `,
+})
+export class Example {
+  options = [
+  {
+    "value": "global",
+    "label": "Global"
+  }
+];
+}
+
+```

@@ -1,0 +1,510 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.4",
+  "locale": "fr",
+  "renderer": "react",
+  "page": "confirm",
+  "title": "Confirm",
+  "description": "Demande à l'utilisateur de confirmer une action : un remplaçant thématisé de window.confirm. Utilisez le ConfirmDialog déclaratif ou attendez confirm() depuis n'importe où ; avec un ConfirmProvider la boîte s'affiche dans l'arbre de l'application, sans lui un hôte autonome est monté à la demande, et côté serveur confirm() renvoie false.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.4",
+    "sourceCommit": "5826c364a762ec5a1144b8eea89e5d7510e4099c",
+    "sourceDigest": "sha256:38cfefdcb173c9a307526b9364c7a77acc74f713924006e65d94c6f3c5e94c61",
+    "referenceSourceDigest": "sha256:8bb3a20ee069c63b8d85e6ccf29336af81fffa488ce873d14ee032291c18009f"
+  },
+  "content": {
+    "usage": {
+      "title": "Lequel choisir : useConfirm() ou confirm()",
+      "hook": "Dans un composant, appelez useConfirm() : ses boîtes de dialogue suivent la portée du ConfigProvider le plus proche. Sous un provider imbriqué, la modale est rendue dans son conteneur de portail, avec son thème, sa palette et ses tokens, et les libellés par défaut des boutons utilisent sa langue. Un ConfirmProvider les affiche toujours s’il y en a un.",
+      "function": "Hors de React (bus d’événements, clients d’API, gardes de routeur et autres modules non composants), importez directement confirm() : aucun hook n’y est disponible, et ses boîtes utilisent le thème et la langue racines."
+    }
+  },
+  "components": [
+    {
+      "name": "ConfirmDialog",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "ConfirmDialog"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "open",
+            "source": "packages/react/src/components/Confirm/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean",
+            "typeRef": "type:7087acd01ef7dd9f1d5c",
+            "required": true,
+            "description": "Whether the dialog is open (controlled)."
+          },
+          {
+            "name": "title",
+            "source": "packages/react/src/components/Confirm/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": true,
+            "description": "Title (the dialog's accessible name)."
+          },
+          {
+            "name": "description",
+            "source": "packages/react/src/components/Confirm/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Explanation below the title (the dialog's accessible description)."
+          },
+          {
+            "name": "confirmLabel",
+            "source": "packages/react/src/components/Confirm/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Label of the confirm button; defaults to the localized \"Confirm\", or \"Delete\" for `color=\"danger\"`."
+          },
+          {
+            "name": "cancelLabel",
+            "source": "packages/react/src/components/Confirm/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Label of the cancel button; defaults to the localized \"Cancel\"."
+          },
+          {
+            "name": "closeLabel",
+            "source": "packages/react/src/components/Confirm/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the close (×) button; defaults to the localized \"Close\"."
+          },
+          {
+            "name": "color",
+            "source": "packages/react/src/components/Confirm/types.ts",
+            "kind": "enum",
+            "values": [
+              "danger",
+              "primary",
+              "warning"
+            ],
+            "typeText": "\"primary\" | \"warning\" | \"danger\" | undefined",
+            "typeRef": "type:ea01c2fe738cc1655d61",
+            "default": "primary",
+            "required": false,
+            "description": "Semantic color of the confirm button; `danger` marks a destructive action (and defaults its label to \"Delete\")"
+          },
+          {
+            "name": "loading",
+            "source": "packages/react/src/components/Confirm/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows a spinner on the confirm button and disables cancel (e.g. while an async `onConfirm` runs)"
+          },
+          {
+            "name": "confirmDisabled",
+            "source": "packages/react/src/components/Confirm/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Natively disables the confirm button (removes it from the tab order). While `loading` alone it stays focusable but cannot be activated again"
+          }
+        ],
+        "events": [
+          {
+            "name": "onOpenChange",
+            "source": "packages/react/src/components/Confirm/types.ts",
+            "kind": "function",
+            "typeText": "(open: boolean) => void",
+            "typeRef": "type:67c80af2081fe4d9df82",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": true,
+            "description": "Called with `false` when the user cancels (cancel button, close, Escape, overlay click)."
+          },
+          {
+            "name": "onConfirm",
+            "source": "packages/react/src/components/Confirm/types.ts",
+            "kind": "function",
+            "typeText": "() => void | Promise<void>",
+            "typeRef": "type:a9703415be5393478909",
+            "parameters": [],
+            "returnType": {
+              "typeText": "void | Promise<void>",
+              "typeRef": "type:3c4871f2062b3b734ba0"
+            },
+            "required": true,
+            "description": "Called when the confirm button is pressed. The dialog does not close by itself."
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "open",
+            "event": "onOpenChange",
+            "syntax": "open={open} onOpenChange={handler}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ConfirmProvider",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "ConfirmProvider"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "ConfirmDialogProps": {
+      "source": "react/src/components/Confirm/types.ts",
+      "description": "Props of the declarative `ConfirmDialog`.",
+      "kind": "interface",
+      "extends": [
+        "ConfirmOptions"
+      ],
+      "props": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "required": true,
+          "description": "Whether the dialog is open (controlled)."
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "required": true,
+          "description": "Called with `false` when the user cancels (cancel button, close, Escape, overlay click)."
+        },
+        {
+          "name": "onConfirm",
+          "type": "() => void | Promise<void>",
+          "required": true,
+          "description": "Called when the confirm button is pressed. The dialog does not close by itself."
+        }
+      ]
+    },
+    "ConfirmOptions": {
+      "source": "react/src/components/Confirm/types.ts",
+      "description": "Content of a confirmation, shared by `ConfirmDialog` and `confirm()`.",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "title",
+          "type": "ReactNode",
+          "required": true,
+          "description": "Title (the dialog's accessible name)."
+        },
+        {
+          "name": "description",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Explanation below the title (the dialog's accessible description)."
+        },
+        {
+          "name": "confirmLabel",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Label of the confirm button; defaults to the localized \"Confirm\", or \"Delete\" for `color=\"danger\"`."
+        },
+        {
+          "name": "cancelLabel",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Label of the cancel button; defaults to the localized \"Cancel\"."
+        },
+        {
+          "name": "closeLabel",
+          "type": "string",
+          "required": false,
+          "description": "Accessible label of the close (×) button; defaults to the localized \"Close\"."
+        },
+        {
+          "name": "color",
+          "type": "Extract<ColorScheme, \"primary\" | \"danger\" | \"warning\">",
+          "required": false,
+          "default": "\"primary\"",
+          "description": "Semantic color of the confirm button; `danger` marks a destructive action (and defaults its label to \"Delete\")"
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows a spinner on the confirm button and disables cancel (e.g. while an async `onConfirm` runs)"
+        },
+        {
+          "name": "confirmDisabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Natively disables the confirm button (removes it from the tab order). While `loading` alone it stays focusable but cannot be activated again"
+        }
+      ]
+    },
+    "ConfirmProviderProps": {
+      "source": "react/src/components/Confirm/types.ts",
+      "description": "Props of `ConfirmProvider`.",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Application subtree; `useConfirm()` / `confirm()` render their dialogs here (`useConfirm()` dialogs inside the caller's ConfigProvider scope)."
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "colors",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/confirm/demos/colors.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/confirm/demos/colors.tsx": "import { useState } from \"react\";\nimport { Button, confirm, type ConfirmOptions } from \"minerva-design\";\n\nconst examples: Array<{ label: string; options: ConfirmOptions }> = [\n  {\n    label: \"Publish\",\n    options: { title: \"Publish this chapter?\", color: \"primary\" },\n  },\n  {\n    label: \"Reset\",\n    options: {\n      title: \"Reset all settings?\",\n      description: \"Your preferences go back to their defaults.\",\n      color: \"warning\",\n      confirmLabel: \"Reset\",\n    },\n  },\n  {\n    // color=\"danger\" defaults the confirm label to \"Delete\"\n    label: \"Delete\",\n    options: { title: \"Delete this draft?\", color: \"danger\" },\n  },\n];\n\nexport default function ColorsDemo() {\n  const [result, setResult] = useState(\"—\");\n  return (\n    <div style={{ display: \"flex\", gap: 12, alignItems: \"center\" }}>\n      {examples.map(({ label, options }) => (\n        <Button\n          key={label}\n          color={options.color}\n          variant=\"outline\"\n          onClick={async () => {\n            const ok = await confirm(options);\n            setResult(`${label}: ${ok ? \"confirmed\" : \"cancelled\"}`);\n          }}\n        >\n          {label}\n        </Button>\n      ))}\n      <span>Result: {result}</span>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "Couleurs",
+      "description": "color définit la tonalité du bouton de confirmation : primary (par défaut), warning, ou danger pour les actions destructrices (son libellé est alors « Supprimer » par défaut). Le bouton d'annulation est toujours un bouton outline neutral."
+    },
+    {
+      "id": "declarative",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/confirm/demos/declarative.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/confirm/demos/declarative.tsx": "import { useState } from \"react\";\nimport { Button, ConfirmDialog } from \"minerva-design\";\n\nexport default function DeclarativeDemo() {\n  const [open, setOpen] = useState(false);\n  const [loading, setLoading] = useState(false);\n  const archive = async () => {\n    setLoading(true);\n    await new Promise((resolve) => setTimeout(resolve, 1200));\n    setLoading(false);\n    setOpen(false);\n  };\n  return (\n    <>\n      <Button color=\"warning\" onClick={() => setOpen(true)}>\n        Archive project\n      </Button>\n      <ConfirmDialog\n        open={open}\n        onOpenChange={setOpen}\n        onConfirm={archive}\n        loading={loading}\n        color=\"warning\"\n        title=\"Archive this project?\"\n        description=\"It becomes read-only for everyone.\"\n        confirmLabel=\"Archive\"\n      />\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "ConfirmDialog déclaratif",
+      "description": "Boîte contrôlée ; loading affiche un indicateur et bloque l'annulation pendant onConfirm."
+    },
+    {
+      "id": "imperative",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/confirm/demos/imperative.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/confirm/demos/imperative.tsx": "import { useState } from \"react\";\nimport { Button, confirm } from \"minerva-design\";\n\nexport default function ImperativeDemo() {\n  const [result, setResult] = useState(\"—\");\n  const remove = async () => {\n    const ok = await confirm({\n      title: \"Delete this book?\",\n      description: \"Reviews and ratings are deleted too.\",\n      color: \"danger\",\n    });\n    setResult(ok ? \"Deleted\" : \"Cancelled\");\n  };\n  return (\n    <div style={{ display: \"flex\", gap: 12, alignItems: \"center\" }}>\n      <Button color=\"danger\" onClick={remove}>\n        Delete book\n      </Button>\n      <span>Result: {result}</span>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "confirm() impératif",
+      "description": "await confirm({...}) renvoie true si l'action est confirmée et false si elle est annulée (bouton, Échap ou fond). Aucun provider requis."
+    },
+    {
+      "id": "provider",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/confirm/demos/provider.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/confirm/demos/provider.tsx": "import {\n  Button,\n  ConfirmProvider,\n  ToastProvider,\n  toast,\n  useConfirm,\n} from \"minerva-design\";\n\nfunction PublishButton() {\n  const ask = useConfirm();\n  return (\n    <Button\n      onClick={async () => {\n        if (await ask({ title: \"Publish chapter?\", confirmLabel: \"Publish\" })) {\n          toast.success(\"Published\");\n        }\n      }}\n    >\n      Publish\n    </Button>\n  );\n}\n\nexport default function ProviderDemo() {\n  return (\n    <ToastProvider>\n      <ConfirmProvider>\n        <PublishButton />\n      </ConfirmProvider>\n    </ToastProvider>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Avec ConfirmProvider",
+      "description": "useConfirm() renvoie un confirm affiché par le provider (dans la portée ConfigProvider de l’appelant) : les boîtes partagent le contexte de l'application. Les demandes simultanées s'affichent une par une."
+    },
+    {
+      "id": "scoped",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/confirm/demos/scoped.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/confirm/demos/scoped.tsx": "import { useState } from \"react\";\nimport { Button, ConfigProvider, confirm, useConfirm } from \"minerva-design\";\n\n// Code outside React (API client, event bus...): no hook available, so it\n// uses confirm(), rendered with the root theme and language.\nconst askToRetry = () =>\n  confirm({ title: \"Retry the upload? (confirm(): root scope)\" });\n\nfunction Actions() {\n  // Inside a component: bound to the nearest ConfigProvider scope\n  const ask = useConfirm();\n  const [answer, setAnswer] = useState<string>(\"—\");\n  return (\n    <div style={{ display: \"flex\", flexWrap: \"wrap\", gap: 8 }}>\n      <Button\n        color=\"danger\"\n        onClick={async () => {\n          const ok = await ask({\n            title: \"Delete this chapter? (useConfirm(): dark, tech, 中文)\",\n            color: \"danger\",\n          });\n          setAnswer(String(ok));\n        }}\n      >\n        useConfirm()\n      </Button>\n      <Button\n        color=\"neutral\"\n        variant=\"outline\"\n        onClick={async () => setAnswer(String(await askToRetry()))}\n      >\n        confirm()\n      </Button>\n      <output style={{ alignSelf: \"center\" }}>{answer}</output>\n    </div>\n  );\n}\n\nexport default function ScopedDemo() {\n  return (\n    <ConfigProvider theme=\"dark\" palette=\"tech\" locale={{ language: \"zh\" }}>\n      <Actions />\n    </ConfigProvider>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "Portée : useConfirm() ou confirm()",
+      "description": "Les deux boutons sont dans un ConfigProvider imbriqué (thème sombre, palette tech, chinois). useConfirm() ouvre sa boîte dans cette portée (tokens sombres, libellés de boutons en chinois) ; confirm() l’ouvre à la racine, avec le thème et la langue de la page."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "// Inside a component: follows the nearest ConfigProvider scope\nfunction DeleteButton() {\n  const confirm = useConfirm();\n  return (\n    <Button onClick={async () => (await confirm({ title: \"Delete?\" })) && remove()}>\n      Delete\n    </Button>\n  );\n}\n\n// Outside React (API client, event bus, router guard...): root scope\nimport { confirm } from \"minerva-design\";\nrouter.beforeLeave(() => confirm({ title: \"Discard changes?\" }));",
+      "language": "tsx"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.20.4/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Confirm",
+      "description": "Demande à l'utilisateur de confirmer une action : un remplaçant thématisé de window.confirm. Utilisez le ConfirmDialog déclaratif ou attendez confirm() depuis n'importe où ; avec un ConfirmProvider la boîte s'affiche dans l'arbre de l'application, sans lui un hôte autonome est monté à la demande, et côté serveur confirm() renvoie false.",
+      "usage": {
+        "title": "Lequel choisir : useConfirm() ou confirm()",
+        "hook": "Dans un composant, appelez useConfirm() : ses boîtes de dialogue suivent la portée du ConfigProvider le plus proche. Sous un provider imbriqué, la modale est rendue dans son conteneur de portail, avec son thème, sa palette et ses tokens, et les libellés par défaut des boutons utilisent sa langue. Un ConfirmProvider les affiche toujours s’il y en a un.",
+        "function": "Hors de React (bus d’événements, clients d’API, gardes de routeur et autres modules non composants), importez directement confirm() : aucun hook n’y est disponible, et ses boîtes utilisent le thème et la langue racines."
+      },
+      "demos": {
+        "imperative": {
+          "title": "confirm() impératif",
+          "description": "await confirm({...}) renvoie true si l'action est confirmée et false si elle est annulée (bouton, Échap ou fond). Aucun provider requis."
+        },
+        "colors": {
+          "title": "Couleurs",
+          "description": "color définit la tonalité du bouton de confirmation : primary (par défaut), warning, ou danger pour les actions destructrices (son libellé est alors « Supprimer » par défaut). Le bouton d'annulation est toujours un bouton outline neutral."
+        },
+        "provider": {
+          "title": "Avec ConfirmProvider",
+          "description": "useConfirm() renvoie un confirm affiché par le provider (dans la portée ConfigProvider de l’appelant) : les boîtes partagent le contexte de l'application. Les demandes simultanées s'affichent une par une."
+        },
+        "declarative": {
+          "title": "ConfirmDialog déclaratif",
+          "description": "Boîte contrôlée ; loading affiche un indicateur et bloque l'annulation pendant onConfirm."
+        },
+        "scoped": {
+          "title": "Portée : useConfirm() ou confirm()",
+          "description": "Les deux boutons sont dans un ConfigProvider imbriqué (thème sombre, palette tech, chinois). useConfirm() ouvre sa boîte dans cette portée (tokens sombres, libellés de boutons en chinois) ; confirm() l’ouvre à la racine, avec le thème et la langue de la page."
+        }
+      },
+      "api": {
+        "ConfirmDialogProps": {
+          "open": "Indique si la boîte est ouverte (contrôlé)",
+          "onOpenChange": "Appelé avec false quand l'utilisateur annule (bouton d'annulation, fermeture, Échap, clic sur le fond)",
+          "onConfirm": "Appelé lors de l'appui sur le bouton de confirmation ; la boîte ne se ferme pas d'elle-même"
+        },
+        "ConfirmOptions": {
+          "title": "Titre (nom accessible de la boîte)",
+          "description": "Explication sous le titre (description accessible)",
+          "confirmLabel": "Libellé du bouton de confirmation ; par défaut « Confirmer », ou « Supprimer » avec color=\"danger\"",
+          "cancelLabel": "Libellé du bouton d'annulation ; par défaut « Annuler » localisé",
+          "closeLabel": "Libellé accessible du bouton de fermeture (×) ; par défaut « Fermer » localisé",
+          "color": "Couleur sémantique du bouton de confirmation : primary, warning ou danger (destructif ; libellé « Supprimer » par défaut)",
+          "loading": "Affiche un indicateur sur le bouton de confirmation et désactive l'annulation",
+          "confirmDisabled": "Désactive nativement le bouton de confirmation (retiré de l'ordre de tabulation) ; avec loading seul il reste focalisable mais ne peut pas être réactivé"
+        },
+        "ConfirmProviderProps": {
+          "children": "Sous-arbre de l'application ; les boîtes de useConfirm() / confirm() s'y affichent (celles de useConfirm() dans la portée ConfigProvider de l’appelant)"
+        }
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Un <minerva-confirm-dialog> déclaratif ouvert avec show(). color=\"danger\" signale une action destructive ; minerva-confirm et minerva-cancel (avec sa raison) indiquent la réponse."
+          },
+          "async": {
+            "title": "Confirmation asynchrone",
+            "description": "onConfirm peut renvoyer une promesse : le bouton Confirmer affiche son état de chargement jusqu'à son règlement, et un rejet garde la boîte ouverte. Le contenu supplémentaire va dans le slot par défaut."
+          },
+          "imperative": {
+            "title": "confirm() impératif",
+            "description": "confirm({ title, ... }) ajoute une boîte de dialogue, se résout en true ou false et la retire une fois fermée : un remplaçant thémé de window.confirm. Les appels simultanés sont mis en file. Sans hôte ni <minerva-confirm-provider>, la boîte de dialogue est ajoutée à document.body (thème et langue racine)."
+          },
+          "scoped": {
+            "title": "Confirmation dans une portée et fournisseur",
+            "description": "confirm({ host }) (ou confirmFor(host)) est l'équivalent de useConfirm() : la boîte de dialogue s'affiche dans la portée <minerva-config> de l'hôte (thème sombre, palette tech, libellés en chinois) et est mise en file par le <minerva-confirm-provider> le plus proche. confirm() sans hôte s'affiche dans la portée du fournisseur (ici le thème et la langue racine), comme le confirm() global."
+          }
+        },
+        "minerva-confirm-dialog": {
+          "props": {
+            "label": "Titre (ou le slot header) ; nomme la boîte de dialogue."
+          },
+          "events": {
+            "minerva-confirm": "Le bouton Confirmer a été pressé ; annulable : preventDefault() garde la boîte ouverte (à fermer vous-même).",
+            "minerva-cancel": "La confirmation a été annulée et la boîte fermée (detail : { reason }).",
+            "minerva-open-change": "L'utilisateur demande la fermeture (detail : { open, reason }) ; annulable : preventDefault() la garde ouverte.",
+            "minerva-after-open": "Émis une fois le panneau ouvert et le focus déplacé à l'intérieur.",
+            "minerva-after-close": "Émis une fois le panneau fermé (après son animation de sortie)."
+          },
+          "slots": {
+            "default": "Contenu supplémentaire facultatif sous la description.",
+            "header": "Titre (alternative à l'attribut label)."
+          },
+          "cssVars": {
+            "--modal-width": "Largeur du panneau (par défaut celle de la taille, limitée par la fenêtre).",
+            "--modal-max-height": "Hauteur maximale du panneau (le corps défile au-delà).",
+            "--modal-padding": "Marge intérieure horizontale de l'en-tête, de la description, du corps et du pied.",
+            "--modal-radius": "Rayon des coins du panneau (par défaut --radius-xl).",
+            "--modal-shadow": "Ombre du panneau (par défaut --shadow-xl).",
+            "--modal-background": "Arrière-plan du panneau.",
+            "--modal-z-index": "Ordre d'empilement du panneau (par défaut --z-modal)."
+          },
+          "methods": {
+            "show": "Ouvre la boîte de dialogue.",
+            "hide": "Ferme la boîte de dialogue (sans événement)."
+          }
+        },
+        "minerva-confirm-provider": {
+          "props": {
+            "confirm": "Demande une confirmation affichée par ce fournisseur (dans sa portée, ou celle de options.host) ; se résout à true si elle est confirmée (lecture seule)."
+          },
+          "slots": {
+            "default": "Contenu de l'application : les appels confirm({ host }) / confirmFor(host) faits à l'intérieur sont mis en file ici."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

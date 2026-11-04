@@ -1,0 +1,952 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.4",
+  "locale": "fr",
+  "renderer": "react",
+  "page": "gauge-chart",
+  "title": "Jauge",
+  "description": "Une seule valeur sur un arc, par rapport à une plage et à des seuils colorés facultatifs : KPI, taux d’utilisation, scores. Quand value change, l’arc (et l’aiguille) s’animent depuis leur position actuelle.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.4",
+    "sourceCommit": "5826c364a762ec5a1144b8eea89e5d7510e4099c",
+    "sourceDigest": "sha256:38cfefdcb173c9a307526b9364c7a77acc74f713924006e65d94c6f3c5e94c61",
+    "referenceSourceDigest": "sha256:8bb3a20ee069c63b8d85e6ccf29336af81fffa488ce873d14ee032291c18009f"
+  },
+  "content": {
+    "data": {
+      "metrics": {
+        "cpu": "Processeur",
+        "memory": "Mémoire",
+        "disk": "Disque"
+      },
+      "usageAria": "Utilisation : {{metric}}",
+      "nps": "Net Promoter Score",
+      "requestsPerSecond": "Requêtes / s",
+      "liveAria": "Requêtes par seconde, mises à jour en direct",
+      "pause": "Mettre en pause",
+      "resume": "Reprendre",
+      "speed": "Vitesse",
+      "speedAria": "Compteur de vitesse : {{speed}}",
+      "brake": "Freiner",
+      "accelerate": "Accélérer",
+      "quotas": {
+        "storage": "Stockage",
+        "apiCalls": "Appels d'API",
+        "seats": "Postes",
+        "minutes": "Minutes de build"
+      },
+      "quotaUsed": "{{used}} sur {{limit}}",
+      "quotaAria": "{{quota}} : {{share}} du quota utilisé",
+      "availability": "Disponibilité, 30 jours",
+      "objective": "Objectif : {{value}}",
+      "availabilityAria": "Disponibilité sur 30 jours face à l'objectif",
+      "budgetLeft": "Budget d'erreur restant",
+      "budgetDetail": "{{used}} d'indisponibilité sur {{budget}} autorisées",
+      "budgetAria": "Budget d'erreur restant ce mois-ci",
+      "thermostat": {
+        "unit": "Unité de température",
+        "units": {
+          "celsius": "°C",
+          "fahrenheit": "°F"
+        },
+        "target": "consigne",
+        "room": "Pièce : {{value}}",
+        "aria": "Température de consigne du thermostat",
+        "lower": "Baisser la consigne",
+        "raise": "Augmenter la consigne",
+        "modes": {
+          "heating": "Chauffe jusqu’à {{target}} (pièce : {{room}})",
+          "cooling": "Refroidit jusqu’à {{target}} (pièce : {{room}})",
+          "holding": "Maintient {{target}} (pièce : {{room}})"
+        }
+      },
+      "credit": {
+        "applicant": "Demandeur",
+        "score": "score de crédit",
+        "ratings": {
+          "poor": "Faible",
+          "fair": "Passable",
+          "good": "Bon",
+          "veryGood": "Très bon",
+          "exceptional": "Exceptionnel"
+        },
+        "position": "À {{share}} de l’échelle",
+        "aria": "Score de crédit de {{name}}",
+        "result": "{{name}} : {{score}}. {{advice}}",
+        "advice": {
+          "poor": "La plupart des prêteurs refuseront la demande.",
+          "fair": "Un accord est possible, à un taux plus élevé.",
+          "good": "Éligible à la plupart des prêts aux taux standards.",
+          "veryGood": "Éligible à des taux meilleurs que la moyenne.",
+          "exceptional": "Éligible aux meilleurs taux proposés."
+        }
+      },
+      "battery": {
+        "label": "chargée",
+        "range": "Autonomie : {{range}}",
+        "aria": "Charge de la batterie de la voiture",
+        "plugged": "Branchée",
+        "reset": "Réinitialiser",
+        "phases": {
+          "full": "Charge complète",
+          "unplugged": "Débranchée",
+          "charging": "Charge rapide",
+          "topping": "Charge lente au-delà de 80 %"
+        },
+        "toEighty": "80 % dans {{minutes}}"
+      },
+      "turbine": {
+        "rpm": "{{value}} tr/min",
+        "mw": "{{value}} MW",
+        "dark": "Panneau sombre",
+        "rotor": "Vitesse du rotor",
+        "power": "Puissance produite",
+        "nacelle": "Température de la nacelle",
+        "aria": "{{reading}} de l’éolienne : {{value}}"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "GaugeChart",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/charts",
+          "exports": [
+            "GaugeChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "value",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "number",
+            "typeText": "number",
+            "typeRef": "type:7d1137535c313783dadd",
+            "required": true,
+            "description": "Value shown by the arc (clamped to `min` - `max` for the drawing)"
+          },
+          {
+            "name": "min",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 0,
+            "required": false,
+            "description": "Value at the start of the arc"
+          },
+          {
+            "name": "max",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 100,
+            "required": false,
+            "description": "Value at the end of the arc"
+          },
+          {
+            "name": "label",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Caption under the value"
+          },
+          {
+            "name": "sweep",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 240,
+            "required": false,
+            "description": "Total angle of the arc, degrees"
+          },
+          {
+            "name": "thickness",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 0.16,
+            "required": false,
+            "description": "Thickness of the arc as a fraction of the radius"
+          },
+          {
+            "name": "bands",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "array",
+            "typeText": "readonly GaugeBand[] | undefined",
+            "typeRef": "type:d2cd036beaf1add471a3",
+            "required": false,
+            "description": "Colored ranges of the track; the value arc takes the color of its band"
+          },
+          {
+            "name": "color",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Color of the value arc (when there are no bands)"
+          },
+          {
+            "name": "needle",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Draws a needle in addition to the value arc"
+          },
+          {
+            "name": "ticks",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Tick labels at the ends (and at the band bounds)"
+          },
+          {
+            "name": "height",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels"
+          },
+          {
+            "name": "width",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels"
+          },
+          {
+            "name": "renderer",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "enum",
+            "values": [
+              "auto",
+              "canvas2d",
+              "webgl",
+              "webgl2",
+              "webgpu"
+            ],
+            "typeText": "ChartRendererPreference | undefined",
+            "typeRef": "type:dc7d7e6f384ddec86e04",
+            "required": false,
+            "description": "Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D, above the shapes"
+          },
+          {
+            "name": "palette",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+          },
+          {
+            "name": "legend",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "union",
+            "typeText": "boolean | ShapeLegendOptions | undefined",
+            "typeRef": "type:b3cd5c49d86fb91effb3",
+            "required": false,
+            "description": "Legend; clicking an item hides / shows its slice, stage, series, node, bar, row or level"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "union",
+            "typeText": "boolean | ShapeTooltipOptions | undefined",
+            "typeRef": "type:9441d8fe0edba7239796",
+            "default": true,
+            "required": false,
+            "description": "Tooltip; `false` disables it"
+          },
+          {
+            "name": "format",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((value: number) => string) | undefined",
+            "typeRef": "type:f12d9d0b7c053d4d65a6",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats the values of the labels and the tooltip"
+          },
+          {
+            "name": "percentFormat",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((share: number) => string) | undefined",
+            "typeRef": "type:5bfc1184b082171dcbfd",
+            "parameters": [
+              {
+                "name": "share",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1"
+          },
+          {
+            "name": "locale",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "BCP 47 locale of the texts and numbers the chart writes (tooltip rows, accessible names, number and percent formats, calendar dates); built-in texts in English, Chinese, Japanese and French (English otherwise)"
+          },
+          {
+            "name": "texts",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "object",
+            "typeText": "Partial<ShapeChartLabels> | undefined",
+            "typeRef": "type:2ef787a978af6750b6c8",
+            "required": false,
+            "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")"
+          },
+          {
+            "name": "hidden",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "array",
+            "typeText": "readonly number[] | undefined",
+            "typeRef": "type:9b11f9b3b1a7e709603e",
+            "required": false,
+            "description": "Hidden slices / stages / radar series / top-level treemap or sunburst nodes / sankey nodes / radial bars / bullet rows / calendar levels, by index. Makes the visibility controlled: legend clicks then only call `onToggle`, whose `hiddenIndexes` should be stored and passed back. Leave undefined to let the legend hide / show entries by itself."
+          },
+          {
+            "name": "animation",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Entry and update animations (skipped when the user prefers reduced motion)"
+          },
+          {
+            "name": "padding",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the drawing, in pixels"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "node",
+            "typeText": "((event: ShapeHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:599537a71f6aca3767b8",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent",
+                "typeRef": "type:019a32700cb7aa817346"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onToggle",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((event: ShapeToggleEvent) => void) | undefined",
+            "typeRef": "type:c5e11f23fbce8c1aa9a2",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeToggleEvent",
+                "typeRef": "type:4b4244045a32e66c0a25"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a legend item is clicked (or the instance's `toggle()` is called), with the toggled index and every hidden index after the toggle"
+          },
+          {
+            "name": "onHover",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((event: ShapeHoverEvent | null) => void) | undefined",
+            "typeRef": "type:4d7c0df4667f26938fe6",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent | null",
+                "typeRef": "type:5ce60fcc1021d329ffba"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the hovered (or keyboard-focused) mark changes"
+          },
+          {
+            "name": "onClick",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((event: ShapeHoverEvent) => void) | undefined",
+            "typeRef": "type:e40dbbb538ff7cd7dda5",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent",
+                "typeRef": "type:019a32700cb7aa817346"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a mark is clicked, tapped or activated with Enter"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "GaugeChartProps": {
+      "source": "charts/src/react/shapes.tsx",
+      "description": "Props of GaugeChart",
+      "kind": "interface",
+      "extends": [
+        "ShapeChartCommonProps"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "type": "number",
+          "required": true,
+          "description": "Value shown by the arc (clamped to `min` - `max` for the drawing)"
+        },
+        {
+          "name": "min",
+          "type": "number",
+          "required": false,
+          "default": "0",
+          "description": "Value at the start of the arc"
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "required": false,
+          "default": "100",
+          "description": "Value at the end of the arc"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "description": "Caption under the value"
+        },
+        {
+          "name": "sweep",
+          "type": "number",
+          "required": false,
+          "default": "240",
+          "description": "Total angle of the arc, degrees"
+        },
+        {
+          "name": "thickness",
+          "type": "number",
+          "required": false,
+          "default": "0.16",
+          "description": "Thickness of the arc as a fraction of the radius"
+        },
+        {
+          "name": "bands",
+          "type": "readonly GaugeBand[]",
+          "required": false,
+          "description": "Colored ranges of the track; the value arc takes the color of its band"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": false,
+          "default": "the first palette color",
+          "description": "Color of the value arc (when there are no bands)"
+        },
+        {
+          "name": "needle",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Draws a needle in addition to the value arc"
+        },
+        {
+          "name": "ticks",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Tick labels at the ends (and at the band bounds)"
+        }
+      ]
+    },
+    "GaugeBand": {
+      "source": "charts/src/engine/shapes/types.ts",
+      "description": "A colored range of a gauge",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "to",
+          "type": "number",
+          "required": true,
+          "description": "Upper bound of the band (the previous band's bound, or `min`, is the lower one)"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": true
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "bands",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/gauge-chart/demos/bands.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/gauge-chart/demos/bands.tsx": "import { useTranslation } from \"react-i18next\";\nimport { GaugeChart, type GaugeBand } from \"minerva-design/charts\";\n\n// Net Promoter Score: -100 (everyone detracts) to +100 (everyone promotes)\nconst bands: GaugeBand[] = [\n  { to: 0, color: \"var(--danger-color)\" },\n  { to: 30, color: \"var(--warning-color)\" },\n  { to: 100, color: \"var(--success-color)\" },\n];\n\nexport default function BandsDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.gauge-chart.data\",\n  });\n  // \"+42\", \"−12\"...\n  const signed = new Intl.NumberFormat(i18n.language, {\n    maximumFractionDigits: 0,\n    signDisplay: \"exceptZero\",\n  });\n  const format = (value: number) => signed.format(value);\n\n  return (\n    <GaugeChart\n      value={42}\n      min={-100}\n      max={100}\n      bands={bands}\n      needle\n      label={t(\"nps\")}\n      format={format}\n      renderTooltip={(event) => (\n        <span>\n          {t(\"nps\")} · {format(event.value)}\n        </span>\n      )}\n      height={280}\n      ariaLabel={t(\"nps\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Plages et aiguille",
+      "description": "bands colore la piste par plage (rouge, orange, vert) et l’arc de valeur prend la couleur de sa plage ; needle pointe la valeur, min peut être négatif."
+    },
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/gauge-chart/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/gauge-chart/demos/basic.tsx": "import { useTranslation } from \"react-i18next\";\nimport { GaugeChart } from \"minerva-design/charts\";\n\n// Resource usage of a server, in percent\nconst metrics = [\n  { key: \"cpu\", value: 68, color: \"var(--primary-color)\" },\n  { key: \"memory\", value: 82, color: \"var(--warning-color)\" },\n  { key: \"disk\", value: 41, color: \"var(--success-color)\" },\n];\n\nexport default function BasicDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.gauge-chart.data\",\n  });\n  // \"68%\", \"68 %\"...: the values are percents, Intl expects ratios\n  const percent = new Intl.NumberFormat(i18n.language, { style: \"percent\" });\n  const format = (value: number) => percent.format(value / 100);\n\n  return (\n    <div\n      style={{\n        display: \"grid\",\n        gridTemplateColumns: \"repeat(auto-fit, minmax(180px, 1fr))\",\n        gap: 16,\n        width: \"100%\",\n      }}\n    >\n      {metrics.map((metric) => (\n        <GaugeChart\n          key={metric.key}\n          value={metric.value}\n          label={t(`metrics.${metric.key}`)}\n          color={metric.color}\n          format={format}\n          renderTooltip={(event) => (\n            <span>\n              {t(`metrics.${metric.key}`)} · {format(event.value)}\n            </span>\n          )}\n          height={200}\n          ariaLabel={t(\"usageAria\", { metric: t(`metrics.${metric.key}`) })}\n        />\n      ))}\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Base",
+      "description": "Trois petites jauges, chacune avec sa couleur, son libellé et son format."
+    },
+    {
+      "id": "battery",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/gauge-chart/demos/battery.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/gauge-chart/demos/battery.tsx": "import { useEffect, useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button, HStack, Switch } from \"minerva-design\";\nimport { GaugeChart, type GaugeBand } from \"minerva-design/charts\";\n\n// Electric car charging session: one tick is one simulated minute; the\n// charger slows down above 80% to protect the battery\nconst START = 18;\nconst FAST = 0.8; // % per minute below 80%\nconst SLOW = 0.3; // % per minute above 80%\nconst RANGE = 420; // km on a full battery\nconst bands: GaugeBand[] = [\n  { to: 20, color: \"var(--danger-color)\" },\n  { to: 50, color: \"var(--warning-color)\" },\n  { to: 100, color: \"var(--success-color)\" },\n];\n\nexport default function BatteryDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.gauge-chart.data\",\n  });\n  const locale = i18n.language;\n  const [charge, setCharge] = useState(START);\n  const [plugged, setPlugged] = useState(true);\n  const charging = plugged && charge < 100;\n\n  useEffect(() => {\n    if (!charging) return;\n    const timer = window.setInterval(() => {\n      setCharge((current) =>\n        Math.min(100, current + (current < 80 ? FAST : SLOW)),\n      );\n    }, 400);\n    return () => window.clearInterval(timer);\n  }, [charging]);\n\n  const formats = useMemo(() => {\n    const percent = new Intl.NumberFormat(locale, {\n      style: \"percent\",\n      maximumFractionDigits: 0,\n    });\n    const km = new Intl.NumberFormat(locale, {\n      style: \"unit\",\n      unit: \"kilometer\",\n      maximumFractionDigits: 0,\n    });\n    const minutes = new Intl.NumberFormat(locale, {\n      style: \"unit\",\n      unit: \"minute\",\n      unitDisplay: \"long\",\n      maximumFractionDigits: 0,\n    });\n    return {\n      percent: (value: number) => percent.format(value / 100),\n      km: (value: number) => km.format(value),\n      minutes: (value: number) => minutes.format(value),\n    };\n  }, [locale]);\n\n  const level = Math.floor(charge);\n  const phase =\n    level >= 100\n      ? \"full\"\n      : !plugged\n        ? \"unplugged\"\n        : level < 80\n          ? \"charging\"\n          : \"topping\";\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <GaugeChart\n        value={charge}\n        bands={bands}\n        sweep={180}\n        thickness={0.22}\n        label={t(\"battery.label\")}\n        format={formats.percent}\n        renderTooltip={() => (\n          <span>\n            {t(\"battery.range\", { range: formats.km((charge / 100) * RANGE) })}\n          </span>\n        )}\n        height={240}\n        ariaLabel={t(\"battery.aria\")}\n      />\n      <HStack gap={12} wrap align=\"center\" justify=\"center\">\n        <Switch\n          checked={plugged}\n          onChange={setPlugged}\n          label={t(\"battery.plugged\")}\n        />\n        <Button size=\"small\" variant=\"ghost\" onClick={() => setCharge(START)}>\n          {t(\"battery.reset\")}\n        </Button>\n      </HStack>\n      <p style={{ margin: 0, textAlign: \"center\" }}>\n        {/* only the phase is announced, not every simulated minute */}\n        <output aria-live=\"polite\">{t(`battery.phases.${phase}`)}</output>\n        {\" · \"}\n        {t(\"battery.range\", { range: formats.km((level / 100) * RANGE) })}\n        {phase === \"charging\" &&\n          ` · ${t(\"battery.toEighty\", {\n            minutes: formats.minutes(Math.ceil((80 - charge) / FAST)),\n          })}`}\n      </p>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Recharge d’une voiture électrique",
+      "description": "Une demi-jauge (sweep={180}) se remplit toutes les 400 ms quand la voiture est branchée, plus lentement au-delà de 80 % ; l’intervalle s’arrête une fois débranchée, pleine ou démontée. Seule la phase de charge est annoncée ; l’autonomie et le temps jusqu’à 80 % utilisent les unités d’Intl.NumberFormat."
+    },
+    {
+      "id": "credit-score",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/gauge-chart/demos/credit-score.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/gauge-chart/demos/credit-score.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { HStack, Select, SelectItem, Tag } from \"minerva-design\";\nimport { GaugeChart, type GaugeBand } from \"minerva-design/charts\";\n\ntype Rating = \"poor\" | \"fair\" | \"good\" | \"veryGood\" | \"exceptional\";\n\n// Credit scores range from 300 to 850; five rating bands\nconst MIN = 300;\nconst MAX = 850;\nconst RATINGS: {\n  key: Rating;\n  to: number;\n  color: string;\n  tag: \"danger\" | \"warning\" | \"info\" | \"success\" | \"primary\";\n}[] = [\n  { key: \"poor\", to: 580, color: \"var(--danger-color)\", tag: \"danger\" },\n  { key: \"fair\", to: 670, color: \"var(--warning-color)\", tag: \"warning\" },\n  { key: \"good\", to: 740, color: \"#84cc16\", tag: \"info\" },\n  { key: \"veryGood\", to: 800, color: \"var(--success-color)\", tag: \"success\" },\n  { key: \"exceptional\", to: MAX, color: \"#0d9488\", tag: \"primary\" },\n];\nconst BANDS: GaugeBand[] = RATINGS.map(({ to, color }) => ({ to, color }));\nconst APPLICANTS: [name: string, score: number][] = [\n  [\"Nora Lind\", 812],\n  [\"Theo Martin\", 724],\n  [\"Ada Okoye\", 651],\n  [\"Ravi Patel\", 548],\n];\n\nconst ratingOf = (score: number) =>\n  RATINGS.find((rating) => score < rating.to) ?? RATINGS[RATINGS.length - 1];\n\nexport default function CreditScoreDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.gauge-chart.data\",\n  });\n  const [applicant, setApplicant] = useState(0);\n  const format = useMemo(() => {\n    const number = new Intl.NumberFormat(i18n.language, { useGrouping: false });\n    return (value: number) => number.format(Math.round(value));\n  }, [i18n.language]);\n\n  const [name, score] = APPLICANTS[applicant];\n  const rating = ratingOf(score);\n  // event.percent: position of the score within the 300-850 range\n  const percent = new Intl.NumberFormat(i18n.language, { style: \"percent\" });\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <Select\n        size=\"small\"\n        style={{ width: 200 }}\n        aria-label={t(\"credit.applicant\")}\n        value={String(applicant)}\n        onChange={(value) => setApplicant(Number(value))}\n      >\n        {APPLICANTS.map(([applicantName], i) => (\n          <SelectItem key={applicantName} value={String(i)}>\n            {applicantName}\n          </SelectItem>\n        ))}\n      </Select>\n      <GaugeChart\n        value={score}\n        min={MIN}\n        max={MAX}\n        bands={BANDS}\n        needle\n        thickness={0.2}\n        label={t(\"credit.score\")}\n        format={format}\n        renderTooltip={(event) => (\n          <div style={{ display: \"grid\", gap: 2 }}>\n            <strong>{t(`credit.ratings.${ratingOf(event.value).key}`)}</strong>\n            <span>\n              {t(\"credit.position\", { share: percent.format(event.percent) })}\n            </span>\n          </div>\n        )}\n        height={260}\n        ariaLabel={t(\"credit.aria\", { name })}\n      />\n      <HStack gap={8} align=\"center\" justify=\"center\" wrap>\n        <Tag color={rating.tag} variant=\"subtle\">\n          {t(`credit.ratings.${rating.key}`)}\n        </Tag>\n        <output aria-live=\"polite\">\n          {t(\"credit.result\", {\n            name,\n            score: format(score),\n            advice: t(`credit.advice.${rating.key}`),\n          })}\n        </output>\n      </HStack>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Score de crédit",
+      "description": "Une aiguille sur cinq bandes de notation de 300 à 850, min et max reprenant l’échelle du score. Un Select change de demandeur et l’aiguille balaie jusqu’au nouveau score ; renderTooltip nomme la notation et event.percent donne la position sur l’échelle."
+    },
+    {
+      "id": "dark-panel",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/gauge-chart/demos/dark-panel.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/gauge-chart/demos/dark-panel.tsx": "import {\n  useEffect,\n  useMemo,\n  useRef,\n  useState,\n  type CSSProperties,\n} from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Switch } from \"minerva-design\";\nimport {\n  GaugeChart,\n  type GaugeBand,\n  type ShapeChartHandle,\n} from \"minerva-design/charts\";\n\n// a dark control-room theme, read by the charts from these variables\nconst DARK = {\n  \"--background-color\": \"#0b1020\",\n  \"--surface-color\": \"#0b1020\",\n  \"--text-color\": \"#e2e8f0\",\n  \"--text-secondary-color\": \"#8a94ad\",\n  \"--border-color\": \"#1f2a44\",\n  background: \"#0b1020\",\n  color: \"#e2e8f0\",\n} as CSSProperties;\nconst PANEL: CSSProperties = {\n  display: \"grid\",\n  gridTemplateColumns: \"repeat(auto-fit, minmax(170px, 1fr))\",\n  gap: 16,\n  padding: 12,\n  borderRadius: 12,\n  border: \"1px solid var(--border-color)\",\n  width: \"100%\",\n  boxSizing: \"border-box\",\n};\n\n// Live readings of a wind turbine\nconst GAUGES: {\n  key: \"rotor\" | \"power\" | \"nacelle\";\n  value: number;\n  max: number;\n  bands: GaugeBand[];\n}[] = [\n  {\n    key: \"rotor\",\n    value: 14.2,\n    max: 20,\n    bands: [\n      { to: 16, color: \"#22d3ee\" },\n      { to: 20, color: \"#f472b6\" },\n    ],\n  },\n  {\n    key: \"power\",\n    value: 3.1,\n    max: 4.2,\n    bands: [{ to: 4.2, color: \"#34d399\" }],\n  },\n  {\n    key: \"nacelle\",\n    value: 58,\n    max: 90,\n    bands: [\n      { to: 60, color: \"#34d399\" },\n      { to: 75, color: \"#facc15\" },\n      { to: 90, color: \"#fb7185\" },\n    ],\n  },\n];\n\nexport default function DarkPanelDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.gauge-chart.data\",\n  });\n  const locale = i18n.language;\n  const [dark, setDark] = useState(true);\n  const charts = useRef<(ShapeChartHandle | null)[]>([]);\n\n  // the charts watch <html> and <body> only: after restyling their\n  // container, ask them to read the CSS variables again\n  useEffect(() => {\n    charts.current.forEach((chart) => chart?.getInstance()?.refreshTheme());\n  }, [dark]);\n\n  const formats = useMemo(() => {\n    const decimal = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });\n    const celsius = new Intl.NumberFormat(locale, {\n      style: \"unit\",\n      unit: \"celsius\",\n      maximumFractionDigits: 0,\n    });\n    return {\n      rotor: (value: number) =>\n        t(\"turbine.rpm\", { value: decimal.format(value) }),\n      power: (value: number) =>\n        t(\"turbine.mw\", { value: decimal.format(value) }),\n      nacelle: (value: number) => celsius.format(value),\n    };\n  }, [locale, t]);\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <Switch checked={dark} onChange={setDark} label={t(\"turbine.dark\")} />\n      <div style={dark ? { ...PANEL, ...DARK } : PANEL}>\n        {GAUGES.map((gauge, i) => (\n          <GaugeChart\n            key={gauge.key}\n            ref={(handle) => {\n              charts.current[i] = handle;\n            }}\n            value={gauge.value}\n            max={gauge.max}\n            bands={gauge.bands}\n            thickness={0.1}\n            needle\n            label={t(`turbine.${gauge.key}`)}\n            format={formats[gauge.key]}\n            renderTooltip={(event) => (\n              <span>\n                {t(`turbine.${gauge.key}`)} · {formats[gauge.key](event.value)}\n              </span>\n            )}\n            height={200}\n            ariaLabel={t(\"turbine.aria\", {\n              reading: t(`turbine.${gauge.key}`),\n              value: formats[gauge.key](gauge.value),\n            })}\n          />\n        ))}\n      </div>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Tableau de bord sombre",
+      "description": "Trois jauges à aiguille sur un panneau dont les variables CSS passent à un thème sombre. Les graphiques n’observent que <html> et <body> : après avoir restylé le conteneur, la démo appelle refreshTheme() sur chaque graphique via sa ref."
+    },
+    {
+      "id": "live",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/gauge-chart/demos/live.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/gauge-chart/demos/live.tsx": "import { useEffect, useRef, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button } from \"minerva-design\";\nimport { GaugeChart, type GaugeBand } from \"minerva-design/charts\";\n\n/** Small seeded random generator: the same \"traffic\" on every visit */\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst MAX = 1200;\nconst bands: GaugeBand[] = [\n  { to: 800, color: \"var(--primary-color)\" },\n  { to: 1000, color: \"var(--warning-color)\" },\n  { to: MAX, color: \"var(--danger-color)\" },\n];\n\nexport default function LiveDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.gauge-chart.data\",\n  });\n  const [value, setValue] = useState(640);\n  const [running, setRunning] = useState(true);\n  const random = useRef(mulberry32(42));\n\n  useEffect(() => {\n    if (!running) return;\n    const timer = window.setInterval(() => {\n      // random walk that drifts back toward ~650 requests / s\n      setValue((current) => {\n        const step = (random.current() - 0.5) * 360 + (650 - current) * 0.2;\n        return Math.min(MAX, Math.max(0, current + step));\n      });\n    }, 1500);\n    return () => window.clearInterval(timer);\n  }, [running]);\n\n  const number = new Intl.NumberFormat(i18n.language, {\n    maximumFractionDigits: 0,\n  });\n  const rps = (requests: number) => number.format(requests);\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <GaugeChart\n        value={value}\n        max={MAX}\n        bands={bands}\n        sweep={180}\n        thickness={0.22}\n        needle\n        label={t(\"requestsPerSecond\")}\n        format={rps}\n        renderTooltip={(event) => (\n          <span>\n            {t(\"requestsPerSecond\")} · {rps(event.value)}\n          </span>\n        )}\n        height={260}\n        ariaLabel={t(\"liveAria\")}\n      />\n      <div style={{ display: \"flex\", justifyContent: \"center\" }}>\n        <Button\n          variant=\"outline\"\n          size=\"small\"\n          onClick={() => setRunning((r) => !r)}\n        >\n          {running ? t(\"pause\") : t(\"resume\")}\n        </Button>\n      </div>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Valeur en direct",
+      "description": "Un minuteur met à jour value toutes les 1,5 s et la jauge s’anime vers la nouvelle valeur ; sweep={180} trace un demi-cercle et thickness élargit l’arc. Le minuteur est arrêté en pause ou au démontage."
+    },
+    {
+      "id": "quota",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/gauge-chart/demos/quota.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/gauge-chart/demos/quota.tsx": "import { useTranslation } from \"react-i18next\";\nimport { GaugeChart, type GaugeBand } from \"minerva-design/charts\";\n\n// Usage of the plan's quotas this month\nconst quotas = [\n  { key: \"storage\", used: 412, limit: 500, unit: \"gigabyte\" },\n  { key: \"apiCalls\", used: 1_840_000, limit: 5_000_000 },\n  { key: \"seats\", used: 48, limit: 50 },\n  { key: \"minutes\", used: 2_310, limit: 3_000, unit: \"minute\" },\n];\n\n// the arc turns orange at 75% and red at 90% of the quota\nconst bandsFor = (limit: number): GaugeBand[] => [\n  { to: limit * 0.75, color: \"var(--success-color)\" },\n  { to: limit * 0.9, color: \"var(--warning-color)\" },\n  { to: limit, color: \"var(--danger-color)\" },\n];\n\nexport default function QuotaDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.gauge-chart.data\",\n  });\n  const locale = i18n.language;\n  const percent = new Intl.NumberFormat(locale, { style: \"percent\" });\n\n  return (\n    <div\n      style={{\n        display: \"grid\",\n        gridTemplateColumns: \"repeat(auto-fit, minmax(170px, 1fr))\",\n        gap: 16,\n        width: \"100%\",\n      }}\n    >\n      {quotas.map((quota) => {\n        // \"412 GB\", \"1.8M\", \"2.3K min\"...\n        const amount = quota.unit\n          ? new Intl.NumberFormat(locale, {\n              style: \"unit\",\n              unit: quota.unit,\n              notation: \"compact\",\n            })\n          : new Intl.NumberFormat(locale, { notation: \"compact\" });\n        const label = t(`quotas.${quota.key}`);\n        return (\n          <figure key={quota.key} style={{ margin: 0, textAlign: \"center\" }}>\n            <GaugeChart\n              value={quota.used}\n              max={quota.limit}\n              bands={bandsFor(quota.limit)}\n              label={label}\n              // the center shows the share of the quota\n              format={(value) => percent.format(value / quota.limit)}\n              ticks={false}\n              renderTooltip={() => (\n                <span>\n                  {t(\"quotaUsed\", {\n                    used: amount.format(quota.used),\n                    limit: amount.format(quota.limit),\n                  })}\n                </span>\n              )}\n              height={180}\n              ariaLabel={t(\"quotaAria\", {\n                quota: label,\n                share: percent.format(quota.used / quota.limit),\n              })}\n            />\n            <figcaption\n              style={{ fontSize: 12, color: \"var(--text-secondary-color)\" }}\n            >\n              {t(\"quotaUsed\", {\n                used: amount.format(quota.used),\n                limit: amount.format(quota.limit),\n              })}\n            </figcaption>\n          </figure>\n        );\n      })}\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Consommation des quotas",
+      "description": "Une jauge par quota de l'offre avec des bandes à 75 % et 90 % de chaque limite, ticks={false} et une légende avec les quantités utilisées et autorisées."
+    },
+    {
+      "id": "slo",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/gauge-chart/demos/slo.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/gauge-chart/demos/slo.tsx": "import { useTranslation } from \"react-i18next\";\nimport { GaugeChart, type GaugeBand } from \"minerva-design/charts\";\n\n// 30-day availability of a service against its 99.9% objective\nconst OBJECTIVE = 99.9;\nconst AVAILABILITY = 99.94;\nconst MINUTES = 30 * 24 * 60;\n// error budget: the downtime the objective allows over 30 days\nconst BUDGET = MINUTES * (1 - OBJECTIVE / 100);\nconst DOWNTIME = MINUTES * (1 - AVAILABILITY / 100);\n\n// a zoomed scale from 99.5% to 100%: red below the objective\nconst bands: GaugeBand[] = [\n  { to: OBJECTIVE, color: \"var(--danger-color)\" },\n  { to: 99.95, color: \"var(--warning-color)\" },\n  { to: 100, color: \"var(--success-color)\" },\n];\n\nexport default function SloDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.gauge-chart.data\",\n  });\n  const locale = i18n.language;\n  const availability = new Intl.NumberFormat(locale, {\n    style: \"percent\",\n    minimumFractionDigits: 2,\n  });\n  const minutes = new Intl.NumberFormat(locale, {\n    style: \"unit\",\n    unit: \"minute\",\n    maximumFractionDigits: 0,\n  });\n  const share = new Intl.NumberFormat(locale, { style: \"percent\" });\n  const left = 1 - DOWNTIME / BUDGET;\n\n  return (\n    <div\n      style={{\n        display: \"grid\",\n        gridTemplateColumns: \"repeat(auto-fit, minmax(220px, 1fr))\",\n        gap: 16,\n        width: \"100%\",\n      }}\n    >\n      <GaugeChart\n        value={AVAILABILITY}\n        min={99.5}\n        max={100}\n        bands={bands}\n        needle\n        // the band bounds would crowd the zoomed scale\n        ticks={false}\n        label={t(\"availability\")}\n        format={(value) => availability.format(value / 100)}\n        renderTooltip={() => (\n          <span>\n            {t(\"objective\", { value: availability.format(OBJECTIVE / 100) })}\n          </span>\n        )}\n        height={240}\n        ariaLabel={t(\"availabilityAria\")}\n      />\n      <GaugeChart\n        value={left * 100}\n        bands={[\n          { to: 25, color: \"var(--danger-color)\" },\n          { to: 50, color: \"var(--warning-color)\" },\n          { to: 100, color: \"var(--success-color)\" },\n        ]}\n        label={t(\"budgetLeft\")}\n        format={(value) => share.format(value / 100)}\n        renderTooltip={() => (\n          <span>\n            {t(\"budgetDetail\", {\n              used: minutes.format(DOWNTIME),\n              budget: minutes.format(BUDGET),\n            })}\n          </span>\n        )}\n        height={240}\n        ariaLabel={t(\"budgetAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Disponibilité et budget d'erreur",
+      "description": "Une jauge resserrée (min 99,5, max 100) montre la disponibilité face à son objectif, une seconde le budget d'erreur restant ; renderTooltip donne le détail."
+    },
+    {
+      "id": "speedometer",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/gauge-chart/demos/speedometer.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/gauge-chart/demos/speedometer.tsx": "import { useEffect, useState, type KeyboardEvent } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button } from \"minerva-design\";\nimport { GaugeChart, type GaugeBand } from \"minerva-design/charts\";\n\nconst MAX = 240; // km/h\nconst bands: GaugeBand[] = [\n  { to: 130, color: \"var(--primary-color)\" },\n  { to: 180, color: \"var(--warning-color)\" },\n  { to: MAX, color: \"var(--danger-color)\" },\n];\n\nexport default function SpeedometerDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.gauge-chart.data\",\n  });\n  const [speed, setSpeed] = useState(0);\n  const [pedal, setPedal] = useState<\"accelerate\" | \"brake\" | null>(null);\n\n  // while a pedal is held, the speed changes every 50 ms\n  useEffect(() => {\n    if (!pedal) return;\n    const timer = window.setInterval(() => {\n      setSpeed((current) =>\n        pedal === \"accelerate\"\n          ? Math.min(MAX, current + Math.max(1, (MAX - current) / 40))\n          : Math.max(0, current - 6),\n      );\n    }, 50);\n    return () => window.clearInterval(timer);\n  }, [pedal]);\n\n  // \"120 km/h\" with the reader's conventions\n  const kmh = new Intl.NumberFormat(i18n.language, {\n    style: \"unit\",\n    unit: \"kilometer-per-hour\",\n    maximumFractionDigits: 0,\n  });\n  // press and hold, with the pointer or with Space / Enter\n  const hold = (next: \"accelerate\" | \"brake\") => ({\n    onPointerDown: () => setPedal(next),\n    onPointerUp: () => setPedal(null),\n    onPointerLeave: () => setPedal(null),\n    onKeyDown: (event: KeyboardEvent) => {\n      if (event.key === \" \" || event.key === \"Enter\") setPedal(next);\n    },\n    onKeyUp: () => setPedal(null),\n  });\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <GaugeChart\n        value={speed}\n        max={MAX}\n        bands={bands}\n        thickness={0.1}\n        needle\n        label={t(\"speed\")}\n        format={(value) => kmh.format(value)}\n        // the needle follows the state: no entry animation on every change\n        animation={false}\n        tooltip={false}\n        height={300}\n        ariaLabel={t(\"speedAria\", { speed: kmh.format(speed) })}\n      />\n      <div style={{ display: \"flex\", gap: 8, justifyContent: \"center\" }}>\n        <Button variant=\"outline\" {...hold(\"brake\")}>\n          {t(\"brake\")}\n        </Button>\n        <Button {...hold(\"accelerate\")}>{t(\"accelerate\")}</Button>\n      </div>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Compteur de vitesse",
+      "description": "Un arc fin avec une aiguille ; maintenez les boutons (ou Espace / Entrée) pour accélérer ou freiner. animation={false} laisse l'aiguille suivre directement l'état, et l'unité vient d'Intl.NumberFormat."
+    },
+    {
+      "id": "thermostat",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/gauge-chart/demos/thermostat.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/gauge-chart/demos/thermostat.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button, HStack, Radio, RadioGroup } from \"minerva-design\";\nimport { GaugeChart, type GaugeBand } from \"minerva-design/charts\";\n\ntype Unit = \"celsius\" | \"fahrenheit\";\nconst UNITS: Unit[] = [\"celsius\", \"fahrenheit\"];\n\n// Smart thermostat: the settings are stored in °C and shown in either unit\nconst MIN = 10;\nconst MAX = 30;\nconst STEP = 0.5;\nconst ROOM = 19.5;\nconst BANDS_C = [\n  { to: 18, color: \"#3b82f6\" },\n  { to: 23, color: \"var(--success-color)\" },\n  { to: MAX, color: \"#f97316\" },\n];\n\nconst convert = (celsius: number, unit: Unit) =>\n  unit === \"celsius\" ? celsius : (celsius * 9) / 5 + 32;\n\nexport default function ThermostatDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.gauge-chart.data\",\n  });\n  const [target, setTarget] = useState(21);\n  const [unit, setUnit] = useState<Unit>(\"celsius\");\n\n  // \"21 °C\", \"69.8 °F\"... in the reader's conventions\n  const format = useMemo(() => {\n    const temperature = new Intl.NumberFormat(i18n.language, {\n      style: \"unit\",\n      unit,\n      maximumFractionDigits: 1,\n    });\n    return (value: number) => temperature.format(value);\n  }, [i18n.language, unit]);\n  const bands = useMemo(\n    (): GaugeBand[] =>\n      BANDS_C.map((band) => ({ ...band, to: convert(band.to, unit) })),\n    [unit],\n  );\n\n  const mode =\n    target > ROOM + 0.25\n      ? \"heating\"\n      : target < ROOM - 0.25\n        ? \"cooling\"\n        : \"holding\";\n  const change = (delta: number) =>\n    setTarget((current) => Math.min(MAX, Math.max(MIN, current + delta)));\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <RadioGroup\n        aria-label={t(\"thermostat.unit\")}\n        direction=\"horizontal\"\n        value={unit}\n        onChange={(value) => setUnit(value as Unit)}\n      >\n        {UNITS.map((u) => (\n          <Radio key={u} value={u} label={t(`thermostat.units.${u}`)} />\n        ))}\n      </RadioGroup>\n      <GaugeChart\n        value={convert(target, unit)}\n        min={convert(MIN, unit)}\n        max={convert(MAX, unit)}\n        bands={bands}\n        sweep={270}\n        thickness={0.12}\n        label={t(\"thermostat.target\")}\n        format={format}\n        renderTooltip={() => (\n          <span>\n            {t(\"thermostat.room\", { value: format(convert(ROOM, unit)) })}\n          </span>\n        )}\n        height={260}\n        ariaLabel={t(\"thermostat.aria\")}\n      />\n      <HStack gap={8} justify=\"center\" align=\"center\">\n        <Button\n          variant=\"outline\"\n          shape=\"circle\"\n          aria-label={t(\"thermostat.lower\")}\n          disabled={target <= MIN}\n          onClick={() => change(-STEP)}\n        >\n          −\n        </Button>\n        <output\n          aria-live=\"polite\"\n          style={{ minWidth: 220, textAlign: \"center\" }}\n        >\n          {t(`thermostat.modes.${mode}`, {\n            room: format(convert(ROOM, unit)),\n            target: format(convert(target, unit)),\n          })}\n        </output>\n        <Button\n          variant=\"outline\"\n          shape=\"circle\"\n          aria-label={t(\"thermostat.raise\")}\n          disabled={target >= MAX}\n          onClick={() => change(STEP)}\n        >\n          +\n        </Button>\n      </HStack>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Thermostat connecté",
+      "description": "Les boutons − et + déplacent la consigne d’un demi-degré ; le réglage est stocké en °C et converti à l’affichage, si bien que passer en °F change ensemble value, min, max et les bands. renderTooltip affiche la température de la pièce et la ligne en dessous indique si le système chauffe, refroidit ou maintient."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.4/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Jauge",
+      "description": "Une seule valeur sur un arc, par rapport à une plage et à des seuils colorés facultatifs : KPI, taux d’utilisation, scores. Quand value change, l’arc (et l’aiguille) s’animent depuis leur position actuelle.",
+      "demos": {
+        "basic": {
+          "title": "Base",
+          "description": "Trois petites jauges, chacune avec sa couleur, son libellé et son format."
+        },
+        "bands": {
+          "title": "Plages et aiguille",
+          "description": "bands colore la piste par plage (rouge, orange, vert) et l’arc de valeur prend la couleur de sa plage ; needle pointe la valeur, min peut être négatif."
+        },
+        "live": {
+          "title": "Valeur en direct",
+          "description": "Un minuteur met à jour value toutes les 1,5 s et la jauge s’anime vers la nouvelle valeur ; sweep={180} trace un demi-cercle et thickness élargit l’arc. Le minuteur est arrêté en pause ou au démontage."
+        },
+        "speedometer": {
+          "title": "Compteur de vitesse",
+          "description": "Un arc fin avec une aiguille ; maintenez les boutons (ou Espace / Entrée) pour accélérer ou freiner. animation={false} laisse l'aiguille suivre directement l'état, et l'unité vient d'Intl.NumberFormat."
+        },
+        "quota": {
+          "title": "Consommation des quotas",
+          "description": "Une jauge par quota de l'offre avec des bandes à 75 % et 90 % de chaque limite, ticks={false} et une légende avec les quantités utilisées et autorisées."
+        },
+        "slo": {
+          "title": "Disponibilité et budget d'erreur",
+          "description": "Une jauge resserrée (min 99,5, max 100) montre la disponibilité face à son objectif, une seconde le budget d'erreur restant ; renderTooltip donne le détail."
+        },
+        "thermostat": {
+          "title": "Thermostat connecté",
+          "description": "Les boutons − et + déplacent la consigne d’un demi-degré ; le réglage est stocké en °C et converti à l’affichage, si bien que passer en °F change ensemble value, min, max et les bands. renderTooltip affiche la température de la pièce et la ligne en dessous indique si le système chauffe, refroidit ou maintient."
+        },
+        "credit-score": {
+          "title": "Score de crédit",
+          "description": "Une aiguille sur cinq bandes de notation de 300 à 850, min et max reprenant l’échelle du score. Un Select change de demandeur et l’aiguille balaie jusqu’au nouveau score ; renderTooltip nomme la notation et event.percent donne la position sur l’échelle."
+        },
+        "battery": {
+          "title": "Recharge d’une voiture électrique",
+          "description": "Une demi-jauge (sweep={180}) se remplit toutes les 400 ms quand la voiture est branchée, plus lentement au-delà de 80 % ; l’intervalle s’arrête une fois débranchée, pleine ou démontée. Seule la phase de charge est annoncée ; l’autonomie et le temps jusqu’à 80 % utilisent les unités d’Intl.NumberFormat."
+        },
+        "dark-panel": {
+          "title": "Tableau de bord sombre",
+          "description": "Trois jauges à aiguille sur un panneau dont les variables CSS passent à un thème sombre. Les graphiques n’observent que <html> et <body> : après avoir restylé le conteneur, la démo appelle refreshTheme() sur chaque graphique via sa ref."
+        }
+      },
+      "data": {
+        "metrics": {
+          "cpu": "Processeur",
+          "memory": "Mémoire",
+          "disk": "Disque"
+        },
+        "usageAria": "Utilisation : {{metric}}",
+        "nps": "Net Promoter Score",
+        "requestsPerSecond": "Requêtes / s",
+        "liveAria": "Requêtes par seconde, mises à jour en direct",
+        "pause": "Mettre en pause",
+        "resume": "Reprendre",
+        "speed": "Vitesse",
+        "speedAria": "Compteur de vitesse : {{speed}}",
+        "brake": "Freiner",
+        "accelerate": "Accélérer",
+        "quotas": {
+          "storage": "Stockage",
+          "apiCalls": "Appels d'API",
+          "seats": "Postes",
+          "minutes": "Minutes de build"
+        },
+        "quotaUsed": "{{used}} sur {{limit}}",
+        "quotaAria": "{{quota}} : {{share}} du quota utilisé",
+        "availability": "Disponibilité, 30 jours",
+        "objective": "Objectif : {{value}}",
+        "availabilityAria": "Disponibilité sur 30 jours face à l'objectif",
+        "budgetLeft": "Budget d'erreur restant",
+        "budgetDetail": "{{used}} d'indisponibilité sur {{budget}} autorisées",
+        "budgetAria": "Budget d'erreur restant ce mois-ci",
+        "thermostat": {
+          "unit": "Unité de température",
+          "units": {
+            "celsius": "°C",
+            "fahrenheit": "°F"
+          },
+          "target": "consigne",
+          "room": "Pièce : {{value}}",
+          "aria": "Température de consigne du thermostat",
+          "lower": "Baisser la consigne",
+          "raise": "Augmenter la consigne",
+          "modes": {
+            "heating": "Chauffe jusqu’à {{target}} (pièce : {{room}})",
+            "cooling": "Refroidit jusqu’à {{target}} (pièce : {{room}})",
+            "holding": "Maintient {{target}} (pièce : {{room}})"
+          }
+        },
+        "credit": {
+          "applicant": "Demandeur",
+          "score": "score de crédit",
+          "ratings": {
+            "poor": "Faible",
+            "fair": "Passable",
+            "good": "Bon",
+            "veryGood": "Très bon",
+            "exceptional": "Exceptionnel"
+          },
+          "position": "À {{share}} de l’échelle",
+          "aria": "Score de crédit de {{name}}",
+          "result": "{{name}} : {{score}}. {{advice}}",
+          "advice": {
+            "poor": "La plupart des prêteurs refuseront la demande.",
+            "fair": "Un accord est possible, à un taux plus élevé.",
+            "good": "Éligible à la plupart des prêts aux taux standards.",
+            "veryGood": "Éligible à des taux meilleurs que la moyenne.",
+            "exceptional": "Éligible aux meilleurs taux proposés."
+          }
+        },
+        "battery": {
+          "label": "chargée",
+          "range": "Autonomie : {{range}}",
+          "aria": "Charge de la batterie de la voiture",
+          "plugged": "Branchée",
+          "reset": "Réinitialiser",
+          "phases": {
+            "full": "Charge complète",
+            "unplugged": "Débranchée",
+            "charging": "Charge rapide",
+            "topping": "Charge lente au-delà de 80 %"
+          },
+          "toEighty": "80 % dans {{minutes}}"
+        },
+        "turbine": {
+          "rpm": "{{value}} tr/min",
+          "mw": "{{value}} MW",
+          "dark": "Panneau sombre",
+          "rotor": "Vitesse du rotor",
+          "power": "Puissance produite",
+          "nacelle": "Température de la nacelle",
+          "aria": "{{reading}} de l’éolienne : {{value}}"
+        }
+      },
+      "api": {
+        "GaugeChartProps": {
+          "value": "Valeur affichée par l’arc (limitée à min - max pour le dessin)",
+          "min": "Valeur au début de l’arc",
+          "max": "Valeur à la fin de l’arc",
+          "label": "Légende sous la valeur",
+          "sweep": "Angle total de l’arc, en degrés",
+          "thickness": "Épaisseur de l’arc en fraction du rayon",
+          "bands": "Plages colorées de la piste ; l’arc de valeur prend la couleur de sa plage",
+          "color": "Couleur de l’arc de valeur en l’absence de bands",
+          "needle": "Dessine une aiguille en plus de l’arc de valeur",
+          "ticks": "Graduations aux extrémités (et aux bornes des plages)"
+        },
+        "GaugeBand": {
+          "to": "Borne supérieure de la plage (la borne inférieure est celle de la plage précédente, ou min)",
+          "color": "Couleur de la plage"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basique",
+            "description": "Une valeur sur un arc de 240° ; format l'écrit en pourcentage."
+          },
+          "bands": {
+            "title": "Plages et aiguille",
+            "description": "bands colore la piste et l'arc de la valeur ; les boutons changent value, l'arc et l'aiguille s'animent jusqu'à elle."
+          }
+        },
+        "data": {
+          "storage": "Stockage utilisé",
+          "storageAria": "Stockage utilisé du téléphone",
+          "nps": "Net Promoter Score",
+          "lower": "Baisser de 20",
+          "raise": "Monter de 20"
+        }
+      },
+      "wc": {
+        "demos": {
+          "bands": {
+            "title": "Plages colorées",
+            "description": "Trois plages découpent la piste ; l'arc de valeur prend la couleur de la plage où il se termine."
+          },
+          "needle": {
+            "title": "Aiguille et échelle personnalisée",
+            "description": "Une aiguille sur une échelle de 0 à 200, avec un balayage plus large et un arc plus fin."
+          }
+        },
+        "minerva-gauge-chart": {
+          "props": {
+            "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+            "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+            "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+          },
+          "events": {
+            "minerva-hover": "La marque survolée (ou ciblée au clavier) a changé ; detail : { index, name, value, share }, null quand rien n'est survolé",
+            "minerva-click": "Une marque a été cliquée, touchée ou activée avec Entrée ; detail : { index, name, value, share }",
+            "minerva-toggle": "Un élément de la légende a été cliqué (ou toggle() appelé) ; detail : { index, hidden, hiddenIndexes }"
+          },
+          "methods": {
+            "toggle": "Masque / affiche une part, une étape, une série radar ou un nœud de premier niveau du treemap par son index",
+            "getRenderer": "Moteur de rendu des formes (webgpu, webgl2, webgl, canvas2d), null tant qu’il n’est pas prêt ; à choisir avec l’option renderer du moteur"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,401 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.4",
+  "locale": "ja",
+  "renderer": "vue",
+  "page": "answer-sheet",
+  "title": "AnswerSheet 解答用紙",
+  "description": "演習や試験のための問題ナビゲーター：セクションごとにまとめた番号付きピルで、各問題が未回答・回答済み・正解・不正解・スキップのいずれかを示し、見直し用のフラグと現在の問題を強調表示します。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.4",
+    "sourceCommit": "5826c364a762ec5a1144b8eea89e5d7510e4099c",
+    "sourceDigest": "sha256:38cfefdcb173c9a307526b9364c7a77acc74f713924006e65d94c6f3c5e94c61",
+    "referenceSourceDigest": "sha256:8bb3a20ee069c63b8d85e6ccf29336af81fffa488ce873d14ee032291c18009f"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "AnswerSheet",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "AnswerSheet"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "items",
+            "type": "readonly AnswerSheetItem[]",
+            "required": true,
+            "description": "The questions, in order",
+            "typeText": "readonly AnswerSheetItem[]"
+          },
+          {
+            "name": "groups",
+            "type": "readonly AnswerSheetGroup[]",
+            "required": false,
+            "description": "Titled sections, in display order; items render under the group whose\nkey matches `item.group`",
+            "typeText": "readonly AnswerSheetGroup[]"
+          },
+          {
+            "name": "modelValue",
+            "type": "string",
+            "required": false,
+            "description": "Key of the current question (controlled, `v-model`)",
+            "typeText": "string"
+          },
+          {
+            "name": "defaultValue",
+            "type": "string",
+            "required": false,
+            "description": "Key of the initially current question (uncontrolled)",
+            "typeText": "string"
+          },
+          {
+            "name": "size",
+            "type": "AnswerSheetSize",
+            "default": "\"medium\"",
+            "required": false,
+            "description": "Density of the pills",
+            "typeText": "AnswerSheetSize"
+          },
+          {
+            "name": "layout",
+            "type": "AnswerSheetLayout",
+            "default": "\"wrap\"",
+            "required": false,
+            "description": "\"wrap\" wraps the pills on several rows; \"scroll\" keeps a single\nhorizontally scrolling row",
+            "typeText": "AnswerSheetLayout"
+          },
+          {
+            "name": "columns",
+            "type": "number",
+            "required": false,
+            "description": "Fixed number of columns (a grid; ArrowUp / ArrowDown move by a row).\nIgnored with layout=\"scroll\".",
+            "typeText": "number"
+          },
+          {
+            "name": "showLegend",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Shows a legend of the statuses present (and of the flag)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "showSummary",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Shows the number of answered questions (\"12 / 20 answered\")",
+            "typeText": "boolean"
+          },
+          {
+            "name": "getItemLabel",
+            "type": "((item: AnswerSheetItem, index: number) => string)",
+            "required": false,
+            "description": "Accessible name of a pill; receives the item and its display index",
+            "typeText": "((item: AnswerSheetItem, index: number) => string)"
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Disables the whole sheet",
+            "typeText": "boolean"
+          },
+          {
+            "name": "aria-label",
+            "type": "string",
+            "required": false,
+            "description": "Accessible name of the navigation landmark",
+            "typeText": "string"
+          }
+        ],
+        "events": [
+          {
+            "name": "update:modelValue",
+            "type": "[key: string]",
+            "typeText": "[key: string]",
+            "parameters": [
+              {
+                "name": "key",
+                "position": 0,
+                "typeText": "string",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "change",
+            "type": "[key: string]",
+            "typeText": "[key: string]",
+            "parameters": [
+              {
+                "name": "key",
+                "position": 0,
+                "typeText": "string",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "modelValue",
+            "event": "update:modelValue",
+            "syntax": "v-model"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:AnswerSheet": {
+      "kind": "cssVars",
+      "source": "react/src/components/AnswerSheet",
+      "vars": [
+        {
+          "name": "--answer-sheet-gap",
+          "description": "Space between the pills (defaults to --space-2; --space-1-5 with size=\"small\")"
+        },
+        {
+          "name": "--answer-sheet-item-size",
+          "description": "Minimum width and height of a pill (defaults to 2rem; 1.75rem with size=\"small\")"
+        },
+        {
+          "name": "--answer-sheet-radius",
+          "description": "Corner radius of the pills (defaults to --radius-md)"
+        },
+        {
+          "name": "--answer-sheet-item-background",
+          "description": "Background of an unanswered pill"
+        },
+        {
+          "name": "--answer-sheet-answered-background",
+          "description": "Background of an answered pill (defaults to --primary-color-subtle)"
+        },
+        {
+          "name": "--answer-sheet-answered-color",
+          "description": "Text color of an answered pill"
+        },
+        {
+          "name": "--answer-sheet-correct-background",
+          "description": "Background of a correct pill (defaults to --success-color-subtle)"
+        },
+        {
+          "name": "--answer-sheet-correct-color",
+          "description": "Text color of a correct pill"
+        },
+        {
+          "name": "--answer-sheet-wrong-background",
+          "description": "Background of a wrong pill (defaults to --danger-color-subtle)"
+        },
+        {
+          "name": "--answer-sheet-wrong-color",
+          "description": "Text color of a wrong pill"
+        },
+        {
+          "name": "--answer-sheet-current-background",
+          "description": "Background of the current pill (defaults to --primary-color)"
+        },
+        {
+          "name": "--answer-sheet-current-color",
+          "description": "Text color of the current pill"
+        },
+        {
+          "name": "--answer-sheet-flag-color",
+          "description": "Color of the flag dot (defaults to --warning-color)"
+        },
+        {
+          "name": "--answer-sheet-title-color",
+          "description": "Text color of the group titles and the summary"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/answer-sheet/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/answer-sheet/vue/basic.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { AnswerSheet, VStack } from \"minerva-design/vue\";\nconst items = Array.from({ length: 12 }, (_, i) => ({\n  key: `q${i + 1}`,\n  status: i < 5 ? (\"answered\" as const) : (\"unanswered\" as const),\n}));\nconst value = ref(\"q6\");\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\" style=\"max-width: 420px\"\n    ><AnswerSheet v-model=\"value\" :items=\"items\" /><output\n      >Current question: {{ value.slice(1) }}</output\n    ></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "groups",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/answer-sheet/vue/groups.vue",
+      "files": {
+        "apps/docs/src/docs/pages/answer-sheet/vue/groups.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport {\n  AnswerSheet,\n  VStack,\n  type AnswerSheetGroup,\n  type AnswerSheetItem,\n} from \"minerva-design/vue\";\nconst groups: AnswerSheetGroup[] = [\n  { key: \"single\", title: \"Single choice\" },\n  { key: \"multiple\", title: \"Multiple choice\" },\n  { key: \"short\", title: \"Short answer\" },\n];\nconst items: AnswerSheetItem[] = [\n  { key: \"s1\", group: \"single\", status: \"correct\" },\n  { key: \"s2\", group: \"single\", status: \"correct\" },\n  { key: \"s3\", group: \"single\", status: \"wrong\", flagged: true },\n  { key: \"s4\", group: \"single\", status: \"correct\" },\n  { key: \"s5\", group: \"single\", status: \"skipped\" },\n  { key: \"s6\", group: \"single\", status: \"correct\" },\n  { key: \"m1\", group: \"multiple\", status: \"wrong\" },\n  { key: \"m2\", group: \"multiple\", status: \"correct\" },\n  { key: \"m3\", group: \"multiple\", status: \"answered\", flagged: true },\n  { key: \"a1\", group: \"short\", status: \"answered\" },\n  { key: \"a2\", group: \"short\" },\n  { key: \"a3\", group: \"short\", disabled: true },\n];\nconst value = ref(\"s3\");\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\" style=\"max-width: 420px\"\n    ><AnswerSheet\n      v-model=\"value\"\n      :items=\"items\"\n      :groups=\"groups\"\n      show-summary\n      show-legend\n      aria-label=\"Review questions\"\n    /><output>Reviewing: {{ value }}</output></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "groups",
+      "description": ""
+    },
+    {
+      "id": "scroll",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/answer-sheet/vue/scroll.vue",
+      "files": {
+        "apps/docs/src/docs/pages/answer-sheet/vue/scroll.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { AnswerSheet, VStack, type AnswerSheetItem } from \"minerva-design/vue\";\nconst items: AnswerSheetItem[] = Array.from({ length: 40 }, (_, i) => ({\n  key: `q${i + 1}`,\n  status: i < 14 ? \"answered\" : i === 14 ? \"skipped\" : \"unanswered\",\n  flagged: i === 8,\n}));\nconst value = ref(\"q16\");\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\" style=\"width: 100%; max-width: 360px\"\n    ><AnswerSheet\n      v-model=\"value\"\n      :items=\"items\"\n      layout=\"scroll\"\n      size=\"small\"\n    /><output>Current question: {{ value.slice(1) }}</output></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "scroll",
+      "description": ""
+    },
+    {
+      "id": "sizes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/answer-sheet/vue/sizes.vue",
+      "files": {
+        "apps/docs/src/docs/pages/answer-sheet/vue/sizes.vue": "<script setup lang=\"ts\">\nimport { AnswerSheet, VStack, type AnswerSheetItem } from \"minerva-design/vue\";\nconst items: AnswerSheetItem[] = Array.from({ length: 10 }, (_, i) => ({\n  key: `q${i + 1}`,\n  status: i < 4 ? \"answered\" : \"unanswered\",\n}));\n</script>\n<template>\n  <VStack :gap=\"6\" align=\"stretch\" style=\"max-width: 420px\"\n    ><AnswerSheet\n      :items=\"items\"\n      size=\"small\"\n      default-value=\"q5\"\n      aria-label=\"Small sheet\" /><AnswerSheet\n      :items=\"items\"\n      :columns=\"5\"\n      default-value=\"q5\"\n      aria-label=\"Five columns\" /><AnswerSheet\n      :items=\"items\"\n      disabled\n      aria-label=\"Disabled sheet\"\n  /></VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "sizes",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.4/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "AnswerSheet 解答用紙",
+      "description": "演習や試験のための問題ナビゲーター：セクションごとにまとめた番号付きピルで、各問題が未回答・回答済み・正解・不正解・スキップのいずれかを示し、見直し用のフラグと現在の問題を強調表示します。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "制御された現在の問題（value / onChange）。解答用紙はボタンからなる nav ランドマークで、現在のピルは aria-current=\"step\" を持ちます。タブストップは 1 つ：矢印キーと Home / End でフォーカスを移動し、Enter / Space で選択します。"
+        },
+        "groups": {
+          "title": "セクション・ステータス・凡例",
+          "description": "groups でセクションに見出しを付けます（問題は item.group と一致するキーのグループに入り、番号はセクションをまたいで連番）。ステータス：answered、correct、wrong、skipped。flagged は警告ドットを表示します。showSummary は回答済みの数を、showLegend は使われているステータスを説明します。"
+        },
+        "scroll": {
+          "title": "スクロール行",
+          "description": "layout=\"scroll\" は横にスクロールする 1 行を保ち、問題の上に置くコンパクトなナビゲーターに適しています。"
+        },
+        "sizes": {
+          "title": "サイズ・列数・無効化",
+          "description": "2 つのピルサイズ、columns による固定グリッド（ArrowUp / ArrowDown で行を移動。columns がない場合は上下の行で最も近いピルへ移動）、無効化された解答用紙。"
+        }
+      },
+      "api": {
+        "AnswerSheetProps": {
+          "items": "問題（順番どおり）",
+          "groups": "見出し付きのセクション（表示順）。問題は item.group と一致するキーのグループに表示されます",
+          "value": "現在の問題のキー（制御。onChange と組み合わせる）",
+          "defaultValue": "初期の現在の問題のキー（非制御）",
+          "onChange": "選択された問題のキーで呼ばれます",
+          "size": "ピルの密度",
+          "layout": "\"wrap\" は複数行に折り返し、\"scroll\" は横スクロールする 1 行を保ちます",
+          "columns": "固定の列数（グリッド。ArrowUp / ArrowDown で行を移動）。layout=\"scroll\" では無視されます。",
+          "showLegend": "使われているステータス（とフラグ）の凡例を表示します",
+          "showSummary": "回答済みの問題数を表示します（\"12 / 20 問回答済み\"）",
+          "getItemLabel": "ピルのアクセシブルな名前。問題とその表示インデックスを受け取ります",
+          "disabled": "解答用紙全体を無効にします",
+          "aria-label": "ナビゲーションランドマークのアクセシブルな名前",
+          "className": "ルート要素の追加クラス",
+          "ref": "ルートの <nav> 要素への ref"
+        },
+        "AnswerSheetItem": {
+          "key": "問題の一意なキー（解答用紙の値）",
+          "label": "ピルに表示するラベル（既定はグループをまたいだ番号）",
+          "status": "問題のステータス：unanswered、answered、correct、wrong、skipped",
+          "flagged": "見直し用にフラグを付けます（隅の警告ドット）",
+          "disabled": "この問題は選択できません",
+          "group": "所属グループのキー。既知のグループがない問題は先頭の見出しなしセクションに表示されます"
+        },
+        "AnswerSheetGroup": {
+          "key": "item.group と照合するキー",
+          "title": "セクションの表示見出し"
+        }
+      },
+      "cssVars": {
+        "--answer-sheet-gap": "ピル間の間隔（既定 --space-2、size=\"small\" では --space-1-5）",
+        "--answer-sheet-item-size": "ピルの最小幅と高さ（既定 2rem、size=\"small\" では 1.75rem）",
+        "--answer-sheet-radius": "ピルの角丸（既定 --radius-md）",
+        "--answer-sheet-item-background": "未回答ピルの背景",
+        "--answer-sheet-answered-background": "回答済みピルの背景（既定 --primary-color-subtle）",
+        "--answer-sheet-answered-color": "回答済みピルの文字色",
+        "--answer-sheet-correct-background": "正解ピルの背景（既定 --success-color-subtle）",
+        "--answer-sheet-correct-color": "正解ピルの文字色",
+        "--answer-sheet-wrong-background": "不正解ピルの背景（既定 --danger-color-subtle）",
+        "--answer-sheet-wrong-color": "不正解ピルの文字色",
+        "--answer-sheet-current-background": "現在のピルの背景（既定 --primary-color）",
+        "--answer-sheet-current-color": "現在のピルの文字色",
+        "--answer-sheet-flag-color": "フラグドットの色（既定 --warning-color）",
+        "--answer-sheet-title-color": "グループ見出しと集計の文字色"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "items はプロパティ、value（現在の問題のキー）は属性で、minerva-change が選択されたキーを通知します。タブストップは 1 つ：矢印キーと Home / End でフォーカスを移動し、Enter / Space で選択します。"
+          },
+          "groups": {
+            "title": "セクション・ステータス・凡例",
+            "description": "groups プロパティでセクションに見出しを付け、show-summary と show-legend で回答数と使われているステータスの凡例を表示します。ピルは ::part(item item--status-wrong)、item--flagged、item--current などを公開します。"
+          },
+          "scroll": {
+            "title": "スクロール行",
+            "description": "layout=\"scroll\" は横にスクロールする 1 行を保ちます（:state(layout-scroll) カスタム状態も）。"
+          },
+          "sizes": {
+            "title": "サイズ・列数・無効化",
+            "description": "size=\"small\"、columns=\"5\" の固定グリッド（ArrowUp / ArrowDown で行を移動）、無効化された解答用紙。"
+          }
+        },
+        "minerva-answer-sheet": {
+          "events": {
+            "minerva-change": "ユーザーが問題を選択しました（detail: { value }、そのキー）。"
+          },
+          "methods": {
+            "focus": "タブストップを持つピルにフォーカスします。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "このスマートフォンプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

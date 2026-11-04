@@ -1,0 +1,597 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.4",
+  "locale": "zh",
+  "renderer": "wc",
+  "page": "code-block",
+  "title": "CodeBlock 代码块",
+  "description": "只读的预格式化文本块（日志、请求体、配置），位于有名称且可键盘聚焦的滚动区域中。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.4",
+    "sourceCommit": "5826c364a762ec5a1144b8eea89e5d7510e4099c",
+    "sourceDigest": "sha256:38cfefdcb173c9a307526b9364c7a77acc74f713924006e65d94c6f3c5e94c61",
+    "referenceSourceDigest": "sha256:8bb3a20ee069c63b8d85e6ccf29336af81fffa488ce873d14ee032291c18009f"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "CodeBlock",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/code-block",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-code-block",
+        "props": [
+          {
+            "name": "code",
+            "typeText": "string | undefined",
+            "attribute": "code",
+            "required": false
+          },
+          {
+            "name": "language",
+            "typeText": "string | undefined",
+            "attribute": "language",
+            "required": false
+          },
+          {
+            "name": "noHighlight",
+            "typeText": "boolean",
+            "attribute": "no-highlight",
+            "required": false
+          },
+          {
+            "name": "showLineNumbers",
+            "typeText": "boolean",
+            "attribute": "show-line-numbers",
+            "required": false
+          },
+          {
+            "name": "showLanguage",
+            "typeText": "boolean",
+            "attribute": "show-language",
+            "required": false
+          },
+          {
+            "name": "noWrap",
+            "typeText": "boolean",
+            "attribute": "no-wrap",
+            "required": false
+          },
+          {
+            "name": "maxHeight",
+            "typeText": "string",
+            "attribute": "max-height",
+            "required": false
+          },
+          {
+            "name": "copyable",
+            "typeText": "boolean",
+            "attribute": "copyable",
+            "required": false
+          },
+          {
+            "name": "marks",
+            "typeText": "readonly CodeMark[] | undefined",
+            "attribute": "marks",
+            "required": false
+          },
+          {
+            "name": "clickableMarks",
+            "typeText": "boolean",
+            "attribute": "clickable-marks",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "minerva-copy",
+            "typeText": "CustomEvent<{ text: string; success: boolean; }>",
+            "detailType": {
+              "typeText": "{ text: string; success: boolean; }",
+              "typeRef": "type:e8eb6fd95ae063912bd1"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The copy button (or `copy()`) was used: `detail: { text, success }` (`text` is the copied text; React's `onCopied` is called with it on success)."
+          },
+          {
+            "name": "minerva-mark-click",
+            "typeText": "CustomEvent<{ mark: CodeMark; originalEvent: MouseEvent; }>",
+            "detailType": {
+              "typeText": "{ mark: CodeMark; originalEvent: MouseEvent; }",
+              "typeRef": "type:4a16aaf74a840bafdb72"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "A mark was clicked (not at the end of a text selection drag): `detail: { mark, originalEvent }` (`mark` is the item of `marks`, the topmost where they overlap; React's `onMarkClick`)."
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-code-block": {
+      "kind": "element",
+      "source": "web-components/src/components/code-block/code-block.ts",
+      "className": "MinervaCodeBlock",
+      "summary": "Read-only, scrollable code region with syntax highlighting and an optional copy button.",
+      "description": "A read-only block of preformatted text: logs, payloads, configuration (`<CodeBlock>` of React). It is a named, keyboard-focusable region so its overflow can be scrolled without a mouse. The text is the `code` property, else the element's text content (rendered verbatim, never parsed as HTML; escape `<` in markup or set `code`). `language` highlights the syntax (colored spans, see `--code-token-<type>-color`; `no-highlight` keeps plain text) and sets `class=\"language-<x>\"` / `data-language` on the `<code>` (`language=\"auto\"` detects it from the text); `show-language` shows it as a small label, `show-line-numbers` numbers the lines. With `copyable`, a copy button writes the text to the clipboard; its label switches to \"Copied\" / \"Copy failed\" for two seconds and the result is announced through a polite live region. `marks` wraps character ranges in `<mark>`s over the highlighting; `getSelectionRange()` maps the user's selection to offsets to create them.",
+      "properties": [
+        {
+          "name": "code",
+          "attribute": "code",
+          "type": "string | undefined",
+          "description": "Source text (default: the element's text content)"
+        },
+        {
+          "name": "language",
+          "attribute": "language",
+          "type": "string | undefined",
+          "description": "Language of the code: highlights its syntax (javascript / js, typescript / ts, jsx, tsx, json, css / scss, html / xml / vue, bash / sh, python / py, yaml, sql, diff, markdown / md; other names render plain text) and sets `class=\"language-<x>\"` / `data-language` on the `<code>`. `auto` detects the language from the text (`detectCodeLanguage`, \"plain\" when unsure): the `<code>` and the label then show the detected name"
+        },
+        {
+          "name": "noHighlight",
+          "attribute": "no-highlight",
+          "type": "boolean",
+          "default": "false",
+          "description": "Keeps the code plain (no syntax highlighting) despite `language` (the React library's `highlight={false}`)"
+        },
+        {
+          "name": "showLineNumbers",
+          "attribute": "show-line-numbers",
+          "type": "boolean",
+          "default": "false",
+          "description": "Numbers the lines in a gutter (aria-hidden, not part of the copied text)"
+        },
+        {
+          "name": "showLanguage",
+          "attribute": "show-language",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows the `language` as a small label in the top-right corner (e.g. \"JSON\")"
+        },
+        {
+          "name": "noWrap",
+          "attribute": "no-wrap",
+          "type": "boolean",
+          "default": "false",
+          "description": "Scrolls long lines horizontally instead of wrapping them (the React library's `wrap={false}`)"
+        },
+        {
+          "name": "maxHeight",
+          "attribute": "max-height",
+          "type": "string",
+          "default": "\"24rem\"",
+          "description": "Maximum height before the block scrolls (CSS value, numbers are pixels)"
+        },
+        {
+          "name": "copyable",
+          "attribute": "copyable",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows a copy button writing the text to the clipboard"
+        },
+        {
+          "name": "marks",
+          "attribute": "marks",
+          "type": "readonly CodeMark[] | undefined",
+          "description": "Character ranges to mark (saved highlights, annotations, search hits), rendered as `<mark part=\"code-mark\">` over the syntax highlighting (the copied text stays the raw code). `start` / `end` are UTF-16 offsets into `text`, clamped to it; empty ranges are ignored. Marks may cross tokens and lines (with show-line-numbers a mark is cut at each line break). Where marks overlap, the later one in the array wins (its color, class, title and click). `color`: a theme color name (a translucent tint) or any CSS color (default: translucent yellow, `--code-block-mark-bg`). Set the property, or a JSON array in the `marks` attribute"
+        },
+        {
+          "name": "clickableMarks",
+          "attribute": "clickable-marks",
+          "type": "boolean",
+          "default": "false",
+          "description": "Gives the marks a click affordance (pointer cursor, hover underline): set it when listening to `minerva-mark-click`"
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "readonly": true,
+          "description": "The text shown (and copied)"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getSelectionRange",
+          "signature": "(selection?: Selection | AbstractRange | null) => CodeSelectionRange | null",
+          "description": "Offsets in `text` of the user's selection inside the code (to save it as a mark), `null` when nothing of the code is selected. Reads the selection through the shadow root (`getComposedRanges`, or the shadow root's own selection in Chromium); `selection` overrides it"
+        },
+        {
+          "name": "copy",
+          "signature": "() => Promise<boolean>",
+          "description": "Copies the text to the clipboard; resolves with whether it worked"
+        }
+      ],
+      "events": [
+        {
+          "name": "minerva-copy",
+          "description": "The copy button (or `copy()`) was used: `detail: { text, success }` (`text` is the copied text; React's `onCopied` is called with it on success)."
+        },
+        {
+          "name": "minerva-mark-click",
+          "description": "A mark was clicked (not at the end of a text selection drag): `detail: { mark, originalEvent }` (`mark` is the item of `marks`, the topmost where they overlap; React's `onMarkClick`)."
+        }
+      ],
+      "slots": [],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The positioned outer wrapper of the region and its actions (only when copyable, or with a language label)"
+        },
+        {
+          "name": "region",
+          "description": "The `<pre>` scroll region (role=region): the visible box of the code"
+        },
+        {
+          "name": "code",
+          "description": "The `<code>` element"
+        },
+        {
+          "name": "line-number",
+          "description": "The number of a line, in the gutter (with show-line-numbers; aria-hidden, generated content)"
+        },
+        {
+          "name": "code-mark",
+          "description": "A `<mark>` wrapping a marked character range (with marks; also has `data-mark-id`, `data-mark-color` and the mark's className)"
+        },
+        {
+          "name": "language",
+          "description": "The language label (with show-language)"
+        },
+        {
+          "name": "copy-button",
+          "description": "The copy button (while copyable)"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--code-block-padding",
+          "description": "Inner padding"
+        },
+        {
+          "name": "--code-block-radius",
+          "description": "Corner radius (defaults to --radius-md)"
+        },
+        {
+          "name": "--code-block-bg",
+          "description": "Background color"
+        },
+        {
+          "name": "--code-block-border-color",
+          "description": "Border color"
+        },
+        {
+          "name": "--code-block-font-size",
+          "description": "Font size of the code"
+        },
+        {
+          "name": "--code-block-max-height",
+          "description": "Maximum height before the block scrolls (default: none)"
+        },
+        {
+          "name": "--code-block-line-number-color",
+          "description": "Color of the line numbers"
+        },
+        {
+          "name": "--code-block-mark-bg",
+          "description": "Default background of the marks (default: a translucent yellow)"
+        },
+        {
+          "name": "--icon-button-color",
+          "description": "Icon color"
+        },
+        {
+          "name": "--icon-button-hover-bg",
+          "description": "Background on hover"
+        },
+        {
+          "name": "--icon-button-pressed-color",
+          "description": "Icon color of a pressed toggle"
+        },
+        {
+          "name": "--icon-button-pressed-bg",
+          "description": "Background of a pressed toggle"
+        },
+        {
+          "name": "--icon-button-size",
+          "description": "Width and height of the button (every size; defaults follow the density's control heights)"
+        },
+        {
+          "name": "--icon-button-icon-size",
+          "description": "Font size of the icon (every size)"
+        },
+        {
+          "name": "--icon-button-radius",
+          "description": "Corner radius of the square shape (defaults to --radius-lg)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:CodeBlock": {
+      "kind": "cssVars",
+      "source": "react/src/components/CodeBlock",
+      "vars": [
+        {
+          "name": "--code-block-padding",
+          "description": "Inner padding"
+        },
+        {
+          "name": "--code-block-radius",
+          "description": "Corner radius (defaults to --radius-md)"
+        },
+        {
+          "name": "--code-block-bg",
+          "description": "Background color"
+        },
+        {
+          "name": "--code-block-border-color",
+          "description": "Border color"
+        },
+        {
+          "name": "--code-block-font-size",
+          "description": "Font size of the code"
+        },
+        {
+          "name": "--code-block-max-height",
+          "description": "Maximum height before the block scrolls (default: none)"
+        },
+        {
+          "name": "--code-block-line-number-color",
+          "description": "Color of the line numbers"
+        },
+        {
+          "name": "--code-block-mark-bg",
+          "description": "Default background of the marks (default: a translucent yellow)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "auto-language",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/code-block/wc/auto-language.html",
+      "files": {
+        "apps/docs/src/docs/pages/code-block/wc/auto-language.html": "<div id=\"snippets\" style=\"display: grid; gap: 12px\"></div>\n",
+        "apps/docs/src/docs/pages/code-block/wc/auto-language.ts": "// Code without a known language (e.g. an EPUB <pre> without a class):\n// language=\"auto\" detects it from `code` (detectCodeLanguage of\n// minerva-design/core); `show-language` labels the detected language.\ntype CodeBlock = HTMLElement & { code?: string };\n\nconst snippets = [\n  `{\n  \"title\": \"The Little Prince\",\n  \"year\": 1943\n}`,\n  `def word_count(path):\n    with open(path) as f:\n        return len(f.read().split())`,\n  `SELECT title, COUNT(*) AS readers\nFROM books\nGROUP BY title\nORDER BY readers DESC;`,\n  `server:\n  port: 8080\n  hosts:\n    - reader.example.com`,\n  `It was a dark and stormy night;\nthe rain fell in torrents.`,\n];\n\nexport function setup(root: HTMLElement) {\n  const container = root.querySelector<HTMLElement>(\"#snippets\")!;\n  snippets.forEach((code, i) => {\n    const block = document.createElement(\"minerva-code-block\") as CodeBlock;\n    block.setAttribute(\"language\", \"auto\");\n    block.setAttribute(\"show-language\", \"\");\n    block.setAttribute(\"aria-label\", `Snippet ${i + 1}`);\n    block.code = code;\n    container.append(block);\n  });\n  return () => container.replaceChildren();\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "自动识别语言",
+      "description": "language=\"auto\" 根据文本识别未标注代码的语言（minerva-design/core 的 detectCodeLanguage；无法确定时为 \"plain\"）；show-language、class 与 data-language 显示识别结果。"
+    },
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/code-block/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/code-block/wc/basic.html": "<div style=\"display: grid; gap: 12px\">\n  <!-- prettier-ignore -->\n  <minerva-code-block language=\"json\" show-language aria-label=\"Response payload\">{\n  \"id\": 42,\n  \"title\": \"The Three-Body Problem\",\n  \"tags\": [\"sci-fi\", \"classic\"]\n}</minerva-code-block>\n  <!-- prettier-ignore -->\n  <minerva-code-block language=\"html\" show-language aria-label=\"Usage\">&lt;minerva-button&gt;Save&lt;/minerva-button&gt;\n&lt;script type=\"module\"&gt;\n  import \"minerva-design/web-components\";\n&lt;/script&gt;</minerva-code-block>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "基础用法",
+      "description": "文本内容按原样渲染（标记中需转义 <）；language 开启语法高亮，show-language 显示语言标签。每个代码块都是有名称、可聚焦的区域。"
+    },
+    {
+      "id": "copy",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/code-block/wc/copy.html",
+      "files": {
+        "apps/docs/src/docs/pages/code-block/wc/copy.html": "<minerva-code-block\n  id=\"payload\"\n  language=\"json\"\n  copyable\n  aria-label=\"Webhook payload\"\n></minerva-code-block>\n<p style=\"display: flex; gap: 8px; align-items: center\">\n  <minerva-button id=\"copy\" size=\"small\" variant=\"outline\" color=\"neutral\"\n    >Copy from outside</minerva-button\n  >\n  <output id=\"status\"></output>\n</p>\n",
+        "apps/docs/src/docs/pages/code-block/wc/copy.ts": "// `code` holds the text (never parsed as HTML); the copy button and copy()\n// write it to the clipboard. minerva-copy reports the result.\ntype CodeBlock = HTMLElement & { code?: string; copy(): Promise<boolean> };\n\nexport function setup(root: HTMLElement) {\n  const block = root.querySelector<CodeBlock>(\"#payload\")!;\n  const button = root.querySelector<HTMLElement>(\"#copy\")!;\n  const status = root.querySelector<HTMLOutputElement>(\"#status\")!;\n  block.code = JSON.stringify(\n    { event: \"invoice.paid\", id: \"evt_1042\", amount: 12900, currency: \"EUR\" },\n    null,\n    2,\n  );\n  const onCopy = (event: Event) => {\n    const { text, success } = (\n      event as CustomEvent<{ text: string; success: boolean }>\n    ).detail;\n    status.value = success ? `Copied ${text.length} characters` : \"Failed\";\n  };\n  const onClick = () => void block.copy();\n  block.addEventListener(\"minerva-copy\", onCopy);\n  button.addEventListener(\"click\", onClick);\n  return () => {\n    block.removeEventListener(\"minerva-copy\", onCopy);\n    button.removeEventListener(\"click\", onClick);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "复制到剪贴板",
+      "description": "code 属性保存文本；copyable 添加复制按钮，copy() 可从外部复制，minerva-copy 报告结果。"
+    },
+    {
+      "id": "languages",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/code-block/wc/languages.html",
+      "files": {
+        "apps/docs/src/docs/pages/code-block/wc/languages.html": "<div id=\"samples\" style=\"display: grid; gap: 12px\"></div>\n",
+        "apps/docs/src/docs/pages/code-block/wc/languages.ts": "// One highlighted block per language; `code` holds the text (never parsed\n// as HTML), `language` picks the grammar and `show-language` labels it.\ntype CodeBlock = HTMLElement & { code?: string };\n\nconst samples: Array<[language: string, code: string]> = [\n  [\n    \"ts\",\n    `export async function loadBook(id: number): Promise<Book> {\n  const response = await fetch(\\`/api/books/\\${id}\\`);\n  return response.json(); // typed by the caller\n}`,\n  ],\n  [\n    \"css\",\n    `.card:hover {\n  --card-shadow: 0 4px 12px rgb(0 0 0 / 0.12);\n  color: #1f2937 !important;\n}`,\n  ],\n  [\n    \"html\",\n    `<!-- Sign-up form -->\n<form action=\"/join\" method=\"post\">\n  <input name=\"email\" type=\"email\" required>\n</form>`,\n  ],\n  [\n    \"bash\",\n    `# Install and build\nexport NODE_ENV=production\npnpm add minerva-design && pnpm build --filter \"$APP\"`,\n  ],\n  [\n    \"python\",\n    `@dataclass\nclass Point:\n    def norm(self) -> float:\n        return abs(self.x)  # distance to 0`,\n  ],\n  [\n    \"diff\",\n    `@@ -1,3 +1,3 @@\n {\n-  \"theme\": \"light\"\n+  \"theme\": \"dark\"\n }`,\n  ],\n];\n\nexport function setup(root: HTMLElement) {\n  const container = root.querySelector<HTMLElement>(\"#samples\")!;\n  for (const [language, code] of samples) {\n    const block = document.createElement(\"minerva-code-block\") as CodeBlock;\n    block.setAttribute(\"language\", language);\n    block.setAttribute(\"show-language\", \"\");\n    block.setAttribute(\"aria-label\", `${language} example`);\n    block.code = code;\n    container.append(block);\n  }\n  return () => container.replaceChildren();\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "多种语言",
+      "description": "language 选择语法（ts、css、html、bash、python、diff…）；show-language 显示小标签。code 属性保存文本，永远不会被解析为 HTML。"
+    },
+    {
+      "id": "line-numbers",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/code-block/wc/line-numbers.html",
+      "files": {
+        "apps/docs/src/docs/pages/code-block/wc/line-numbers.html": "<!-- prettier-ignore -->\n<minerva-code-block language=\"python\" show-line-numbers show-language copyable aria-label=\"Fibonacci\">def fibonacci(n: int) -&gt; list[int]:\n    \"\"\"The first n Fibonacci numbers.\"\"\"\n    numbers = [0, 1]\n    while len(numbers) &lt; n:\n        numbers.append(numbers[-1] + numbers[-2])\n    return numbers[:n]\n\nprint(fibonacci(10))</minerva-code-block>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "行号",
+      "description": "show-line-numbers 在左侧显示行号（对屏幕阅读器隐藏）；复制时仍复制原始文本。"
+    },
+    {
+      "id": "marks",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/code-block/wc/marks.html",
+      "files": {
+        "apps/docs/src/docs/pages/code-block/wc/marks.html": "<minerva-code-block\n  id=\"annotated\"\n  language=\"ts\"\n  show-line-numbers\n  copyable\n  clickable-marks\n  aria-label=\"Annotated function\"\n></minerva-code-block>\n<p style=\"display: flex; gap: 8px; align-items: center\">\n  <minerva-button id=\"highlight\" size=\"small\" variant=\"outline\"\n    >Highlight selection</minerva-button\n  >\n  <minerva-button id=\"clear\" size=\"small\" variant=\"ghost\">Clear</minerva-button>\n  <output id=\"status\"></output>\n</p>\n",
+        "apps/docs/src/docs/pages/code-block/wc/marks.ts": "// `marks` lays saved highlights over the syntax colors (offsets into\n// `code`); getSelectionRange() maps the user's selection to such offsets and\n// minerva-mark-click reports the clicked mark (here: removes it).\ninterface CodeMark {\n  start: number;\n  end: number;\n  color?: string;\n  id?: string;\n  title?: string;\n}\ntype CodeBlock = HTMLElement & {\n  code?: string;\n  marks?: CodeMark[];\n  getSelectionRange(): { start: number; end: number; text: string } | null;\n};\n\nexport function setup(root: HTMLElement) {\n  const block = root.querySelector<CodeBlock>(\"#annotated\")!;\n  const highlight = root.querySelector<HTMLElement>(\"#highlight\")!;\n  const clear = root.querySelector<HTMLElement>(\"#clear\")!;\n  const status = root.querySelector<HTMLOutputElement>(\"#status\")!;\n  block.code = `export async function fetchUser(id: string) {\n  const response = await fetch(\\`/api/users/\\${id}\\`);\n  if (!response.ok) throw new Error(\"Request failed\");\n  return response.json();\n}`;\n  block.marks = [\n    { id: \"n1\", start: 71, end: 96, title: \"Template literal URL\" },\n    {\n      id: \"n2\",\n      start: 104,\n      end: 116,\n      color: \"danger\",\n      title: \"Check the status\",\n    },\n  ];\n  // keep the selection: do not move the focus on press\n  const keepSelection = (event: Event) => event.preventDefault();\n  const onHighlight = () => {\n    const range = block.getSelectionRange();\n    if (!range) {\n      status.value = \"Select some code first\";\n      return;\n    }\n    block.marks = [\n      ...(block.marks ?? []),\n      {\n        id: `n${Date.now()}`,\n        start: range.start,\n        end: range.end,\n        color: \"success\",\n      },\n    ];\n    status.value = `Highlighted “${range.text}” (${range.start}–${range.end})`;\n  };\n  const onClear = () => (block.marks = []);\n  const onMarkClick = (event: Event) => {\n    const { mark } = (event as CustomEvent<{ mark: CodeMark }>).detail;\n    block.marks = (block.marks ?? []).filter((m) => m.id !== mark.id);\n    status.value = `Removed ${mark.title ?? \"highlight\"}`;\n  };\n  highlight.addEventListener(\"mousedown\", keepSelection);\n  highlight.addEventListener(\"click\", onHighlight);\n  clear.addEventListener(\"click\", onClear);\n  block.addEventListener(\"minerva-mark-click\", onMarkClick);\n  return () => {\n    highlight.removeEventListener(\"mousedown\", keepSelection);\n    highlight.removeEventListener(\"click\", onHighlight);\n    clear.removeEventListener(\"click\", onClear);\n    block.removeEventListener(\"minerva-mark-click\", onMarkClick);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "标记（已保存的高亮）",
+      "description": "marks 在语法颜色之上叠加字符范围；getSelectionRange() 将用户的选区转换为偏移量，minerva-mark-click 报告被点击的标记（此处为删除）。"
+    },
+    {
+      "id": "overflow",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/code-block/wc/overflow.html",
+      "files": {
+        "apps/docs/src/docs/pages/code-block/wc/overflow.html": "<div style=\"display: grid; gap: 12px\">\n  <minerva-code-block\n    id=\"log\"\n    language=\"log\"\n    no-wrap\n    max-height=\"160\"\n    aria-label=\"Build log\"\n  ></minerva-code-block>\n  <minerva-code-block\n    id=\"wrapped\"\n    max-height=\"8rem\"\n    aria-label=\"Wrapped log\"\n    style=\"--code-block-bg: var(--primary-color-subtle)\"\n  ></minerva-code-block>\n</div>\n",
+        "apps/docs/src/docs/pages/code-block/wc/overflow.ts": "// Long lines scroll horizontally with no-wrap; max-height caps the block.\n// The region is focusable, so it scrolls with the keyboard too.\ntype CodeBlock = HTMLElement & { code?: string };\n\nexport function setup(root: HTMLElement) {\n  const lines = Array.from(\n    { length: 20 },\n    (_, i) =>\n      `[12:00:${String(i).padStart(2, \"0\")}] step ${i + 1}/20 ok ` +\n      \"-- compiled packages/web-components/src/components with no warnings\",\n  ).join(\"\\n\");\n  root.querySelector<CodeBlock>(\"#log\")!.code = lines;\n  root.querySelector<CodeBlock>(\"#wrapped\")!.code = lines;\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "长行与高度",
+      "description": "no-wrap 让长行水平滚动，max-height 限制高度；该区域也可通过键盘滚动。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.4/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "CodeBlock 代码块",
+      "description": "只读的预格式化文本块（日志、请求体、配置），位于有名称且可键盘聚焦的滚动区域中。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "文本按原样渲染，默认长行自动换行；language=\"json\" 开启语法高亮。"
+        },
+        "languages": {
+          "title": "多种语言",
+          "description": "language 选择语法：JavaScript / TypeScript（JSX、TSX）、JSON、CSS、HTML、Bash、Python、YAML、SQL、diff 与 Markdown（支持 ts、sh、py、yml、md 等常用别名）。showLanguage 显示小标签；其他语言按纯文本渲染。"
+        },
+        "auto-language": {
+          "title": "自动识别语言",
+          "description": "对语言未知的代码（例如没有 class 的 EPUB <pre>），language=\"auto\" 通过快速启发式（只读取前 4 KB）从文本识别语言，再高亮并在标签中显示识别结果；无法确定时为 \"plain\"。标记（marks）照常可用。minerva-design/core 的 detectCodeLanguage 可单独执行同样的识别。"
+        },
+        "line-numbers": {
+          "title": "行号",
+          "description": "showLineNumbers 在左侧显示行号，行号对屏幕阅读器隐藏，选择或复制代码时不会包含行号。"
+        },
+        "no-wrap": {
+          "title": "滚动日志",
+          "description": "wrap={false} 保持行完整并水平滚动；maxHeight 限制高度。"
+        },
+        "copyable": {
+          "title": "复制按钮",
+          "description": "copyable 在右上角添加复制按钮；结果（“已复制” / “复制失败”）显示在按钮上并播报给屏幕阅读器。复制成功后，onCopied 会收到被复制的文本。"
+        },
+        "marks": {
+          "title": "标记（已保存的高亮）",
+          "description": "marks 在语法高亮之上叠加字符范围（代码中的偏移量；重叠时数组中靠后的标记优先）。minerva-design/core 的 getCodeSelectionRange 将用户的选区转换为可保存的偏移量；onMarkClick 报告被点击的标记（此处为删除）。复制仍复制原始代码。"
+        }
+      },
+      "api": {
+        "CodeBlockProps": {
+          "children": "源文本，按原样渲染",
+          "aria-label": "代码区域的无障碍名称",
+          "wrap": "长行自动换行而不是水平滚动",
+          "maxHeight": "代码块开始滚动前的最大高度",
+          "tabIndex": "区域的 Tab 顺序（默认可聚焦）",
+          "copyable": "显示复制按钮，将文本写入剪贴板并播报结果",
+          "onCopied": "复制按钮成功将文本写入剪贴板后调用，参数为被复制的文本（失败时不调用）；原生 onCopy 仍作用于元素",
+          "language": "代码语言：开启语法高亮（javascript、typescript、jsx、tsx、json、css、html、bash、python、yaml、sql、diff、markdown 及其别名）；\"auto\" 根据代码自动识别（detectCodeLanguage，无法确定时为 \"plain\"），标签、class 与 data-language 显示识别结果；不设置时为纯文本",
+          "highlight": "是否高亮 language 的语法（false：纯文本）",
+          "showLineNumbers": "在左侧显示行号（对辅助技术隐藏，不会被复制）",
+          "showLanguage": "在右上角以小标签显示语言",
+          "marks": "要标记的字符范围（已保存的高亮、批注）：{ start, end, color?, className?, id?, title? }，偏移量为代码中的 UTF-16 偏移，在语法颜色之上渲染为 <mark>。范围会被限制在代码内，空范围被忽略；重叠时靠后的标记优先。color 为主题颜色名（半透明色调）或任意 CSS 颜色",
+          "onMarkClick": "点击标记时调用（拖动选择结束时除外），参数为标记（重叠时为最上层的标记）和事件",
+          "ref": "<pre> 元素的 ref"
+        }
+      },
+      "cssVars": {
+        "--code-block-padding": "内边距",
+        "--code-block-radius": "圆角（默认 --radius-md）",
+        "--code-block-bg": "背景色",
+        "--code-block-border-color": "边框颜色",
+        "--code-block-font-size": "代码字号",
+        "--code-block-max-height": "出现滚动前的最大高度（默认 none）",
+        "--code-block-line-number-color": "行号颜色",
+        "--code-block-mark-bg": "标记的默认背景（半透明黄色）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "文本内容按原样渲染（标记中需转义 <）；language 开启语法高亮，show-language 显示语言标签。每个代码块都是有名称、可聚焦的区域。"
+          },
+          "languages": {
+            "title": "多种语言",
+            "description": "language 选择语法（ts、css、html、bash、python、diff…）；show-language 显示小标签。code 属性保存文本，永远不会被解析为 HTML。"
+          },
+          "auto-language": {
+            "title": "自动识别语言",
+            "description": "language=\"auto\" 根据文本识别未标注代码的语言（minerva-design/core 的 detectCodeLanguage；无法确定时为 \"plain\"）；show-language、class 与 data-language 显示识别结果。"
+          },
+          "line-numbers": {
+            "title": "行号",
+            "description": "show-line-numbers 在左侧显示行号（对屏幕阅读器隐藏）；复制时仍复制原始文本。"
+          },
+          "copy": {
+            "title": "复制到剪贴板",
+            "description": "code 属性保存文本；copyable 添加复制按钮，copy() 可从外部复制，minerva-copy 报告结果。"
+          },
+          "overflow": {
+            "title": "长行与高度",
+            "description": "no-wrap 让长行水平滚动，max-height 限制高度；该区域也可通过键盘滚动。"
+          },
+          "marks": {
+            "title": "标记（已保存的高亮）",
+            "description": "marks 在语法颜色之上叠加字符范围；getSelectionRange() 将用户的选区转换为偏移量，minerva-mark-click 报告被点击的标记（此处为删除）。"
+          }
+        },
+        "minerva-code-block": {
+          "props": {
+            "code": "源文本（默认：元素的文本内容）。",
+            "language": "代码语言：开启语法高亮，并在 <code> 上设置 class=\"language-<x>\" / data-language。\"auto\" 根据文本自动识别（detectCodeLanguage；无法确定时为 \"plain\"）。",
+            "noHighlight": "即使设置了 language 也保持纯文本（相当于 React 库的 highlight={false}）。",
+            "noWrap": "长行水平滚动而不是换行（相当于 React 版的 wrap={false}）。",
+            "showLineNumbers": "在左侧显示行号（aria-hidden，不属于复制的文本）。",
+            "showLanguage": "在右上角以小标签显示语言（如 \"JSON\"）。",
+            "marks": "要标记的字符范围（{ start, end, color?, className?, id?, title? }，文本中的 UTF-16 偏移）：可设置属性或 JSON 数组特性。重叠时靠后的标记优先。",
+            "clickableMarks": "让标记呈现可点击样式（指针光标、悬停下划线）；监听 minerva-mark-click 时设置。",
+            "text": "显示和复制的文本（只读）。"
+          },
+          "events": {
+            "minerva-copy": "使用了复制按钮或 copy()（detail: { text, success }；text 为复制的文本，React 的 onCopied 在成功时收到它）。",
+            "minerva-mark-click": "点击了标记（拖动选择结束时除外；detail: { mark, originalEvent }；对应 React 的 onMarkClick）。"
+          },
+          "cssVars": {
+            "--icon-button-color": "复制按钮的图标颜色。",
+            "--icon-button-hover-bg": "复制按钮悬停时的背景。",
+            "--icon-button-pressed-color": "复制按钮按下时的图标颜色。",
+            "--icon-button-pressed-bg": "复制按钮按下时的背景。",
+            "--icon-button-size": "复制按钮的宽度和高度。",
+            "--icon-button-icon-size": "复制图标的字号。",
+            "--icon-button-radius": "复制按钮的圆角半径。"
+          },
+          "methods": {
+            "copy": "将文本复制到剪贴板；以是否成功作为结果。",
+            "getSelectionRange": "用户在代码中的选区在 text 中的偏移量（{ start, end, text }），无选区时为 null；通过 shadow root 读取选区。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          },
+          "marks": {
+            "title": "标记",
+            "description": "marks 使用嵌套 Text 的背景高亮字符范围；onMarkClick 报告被按下的标记。"
+          }
+        },
+        "limitations": "原生 CodeBlock 默认最大高度为384设备独立像素，对应根字号16px时Web的24rem。iOS与Android通过copyText连接Expo Clipboard。"
+      }
+    }
+  }
+}

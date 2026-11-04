@@ -1,0 +1,211 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.4",
+  "locale": "ja",
+  "renderer": "vue",
+  "page": "text-link",
+  "title": "TextLink テキストリンク",
+  "description": "インラインリンク、控えめなナビゲーション、設定行のためのスタイル付きネイティブリンク。asChild でアンカーを入れ子にせずルーターリンクにスタイルを適用します。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.4",
+    "sourceCommit": "5826c364a762ec5a1144b8eea89e5d7510e4099c",
+    "sourceDigest": "sha256:38cfefdcb173c9a307526b9364c7a77acc74f713924006e65d94c6f3c5e94c61",
+    "referenceSourceDigest": "sha256:8bb3a20ee069c63b8d85e6ccf29336af81fffa488ce873d14ee032291c18009f"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "TextLink",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "TextLink"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "asChild",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Merges the link styling onto its single child element (e.g. a\n`<RouterLink>`) instead of rendering an extra `<a>`",
+            "typeText": "boolean"
+          },
+          {
+            "name": "variant",
+            "type": "TextLinkVariant",
+            "default": "\"default\"",
+            "required": false,
+            "description": "default: underlined inline link; subtle: quiet link with a trailing chevron;\naction: full-width row link with a bottom rule (settings lists, menus)",
+            "typeText": "TextLinkVariant"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "description": "Link content (with `asChild`: the single link element)",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:TextLink": {
+      "kind": "cssVars",
+      "source": "react/src/components/TextLink",
+      "vars": [
+        {
+          "name": "--text-link-color",
+          "description": "Color of the default variant (falls back to --link-color, then --primary-color)"
+        },
+        {
+          "name": "--text-link-font-weight",
+          "description": "Font weight"
+        },
+        {
+          "name": "--text-link-text-decoration",
+          "description": "Text decoration of the default variant (default: underline)"
+        },
+        {
+          "name": "--text-link-underline-offset",
+          "description": "Distance between the text and its underline"
+        },
+        {
+          "name": "--text-link-action-min-height",
+          "description": "Minimum height of the action variant"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/text-link/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/text-link/vue/basic.vue": "<script setup lang=\"ts\">\nimport { TextLink } from \"minerva-design/vue\";\n</script>\n<template>\n  <TextLink href=\"https://example.com\">Visit example.com</TextLink>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "styling",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/text-link/vue/styling.vue",
+      "files": {
+        "apps/docs/src/docs/pages/text-link/vue/styling.vue": "<script setup lang=\"ts\">\nimport { TextLink, VStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><TextLink href=\"#accent\" style=\"font-weight: 700\">Emphasized link</TextLink\n    ><TextLink\n      href=\"https://example.com\"\n      target=\"_blank\"\n      rel=\"noopener noreferrer\"\n      >External page ↗</TextLink\n    ></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "styling",
+      "description": ""
+    },
+    {
+      "id": "variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/text-link/vue/variants.vue",
+      "files": {
+        "apps/docs/src/docs/pages/text-link/vue/variants.vue": "<script setup lang=\"ts\">\nimport { TextLink, HStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <HStack :gap=\"3\" wrap\n    ><TextLink href=\"#default\">Default link</TextLink\n    ><TextLink variant=\"subtle\" href=\"#subtle\">Subtle link</TextLink\n    ><TextLink variant=\"action\" href=\"#action\">View all →</TextLink></HStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "variants",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.4/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "TextLink テキストリンク",
+      "description": "インラインリンク、控えめなナビゲーション、設定行のためのスタイル付きネイティブリンク。asChild でアンカーを入れ子にせずルーターリンクにスタイルを適用します。",
+      "demos": {
+        "variants": {
+          "title": "バリアント",
+          "description": "default は下線付き、subtle は色以外の手がかりとして矢印を付け、action は全幅の行になります。"
+        },
+        "as-child": {
+          "title": "ルーターリンク",
+          "description": "asChild はスタイルを唯一の子要素にマージします。"
+        }
+      },
+      "api": {
+        "TextLinkProps": {
+          "asChild": "リンクのスタイルを唯一の子要素にマージします",
+          "variant": "スタイル：default、subtle、action",
+          "ref": "アンカー要素への ref"
+        }
+      },
+      "cssVars": {
+        "--text-link-color": "既定バリアントの色（--link-color、次に --primary-color にフォールバック）",
+        "--text-link-font-weight": "フォントの太さ",
+        "--text-link-text-decoration": "既定バリアントのテキスト装飾（既定値は underline）",
+        "--text-link-underline-offset": "テキストと下線の距離",
+        "--text-link-action-min-height": "action バリアントの最小高さ"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "シャドウルート内のネイティブ <a>。href、target、rel、hreflang、download がそのまま渡されます。"
+          },
+          "variants": {
+            "title": "バリアントとルーティング",
+            "description": "default は下線付き、subtle は山形アイコン付き、action は設定行です。クリックはクライアントサイドルーターのようにホスト要素で横取りされます。"
+          },
+          "styling": {
+            "title": "CSS 変数",
+            "description": "色、太さ、下線とそのオフセットを CSS 変数でリンクごとに調整できます。"
+          }
+        },
+        "minerva-text-link": {
+          "props": {
+            "href": "リンク先の URL。",
+            "target": "リンクを開くブラウジングコンテキスト（_blank など）。",
+            "rel": "リンク先リソースとの関係（noopener など）。",
+            "download": "遷移せずにリンク先をダウンロードします（ファイル名は任意）。",
+            "hreflang": "リンク先リソースの言語。"
+          },
+          "slots": {
+            "default": "リンクのテキスト（とアイコン）。"
+          },
+          "methods": {
+            "focus": "内部のリンクにフォーカスします。",
+            "blur": "内部のリンクからフォーカスを外します。",
+            "click": "内部のリンクをクリックします。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

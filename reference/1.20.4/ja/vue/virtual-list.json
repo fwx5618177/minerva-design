@@ -1,0 +1,367 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.4",
+  "locale": "ja",
+  "renderer": "vue",
+  "page": "virtual-list",
+  "title": "VirtualList 仮想リスト",
+  "description": "スクロールコンテナ内で表示されている行だけをマウントし、長いリストを効率よく描画します。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.4",
+    "sourceCommit": "5826c364a762ec5a1144b8eea89e5d7510e4099c",
+    "sourceDigest": "sha256:38cfefdcb173c9a307526b9364c7a77acc74f713924006e65d94c6f3c5e94c61",
+    "referenceSourceDigest": "sha256:8bb3a20ee069c63b8d85e6ccf29336af81fffa488ce873d14ee032291c18009f"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "VirtualList",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "VirtualList"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "items",
+            "type": "readonly T[]",
+            "required": true,
+            "description": "Items to render",
+            "typeText": "readonly T[]"
+          },
+          {
+            "name": "itemHeight",
+            "type": "number",
+            "required": false,
+            "description": "Fixed row height in pixels; measured from the first item when omitted",
+            "typeText": "number"
+          },
+          {
+            "name": "itemPadding",
+            "type": "number",
+            "default": "8",
+            "required": false,
+            "description": "Padding of each row in pixels",
+            "typeText": "number"
+          },
+          {
+            "name": "overscan",
+            "type": "number",
+            "default": "5",
+            "required": false,
+            "description": "Number of rows rendered above and below the visible area",
+            "typeText": "number"
+          },
+          {
+            "name": "maxHeight",
+            "type": "number",
+            "required": true,
+            "description": "Maximum height of the scroll container in pixels",
+            "typeText": "number"
+          },
+          {
+            "name": "renderItem",
+            "type": "((item: T, index: number) => VNodeChild)",
+            "required": false,
+            "description": "Renders the content of one row (the default scoped slot wins when both\nare given)",
+            "typeText": "((item: T, index: number) => VNodeChild)"
+          },
+          {
+            "name": "onLoadMore",
+            "type": "(() => void | Promise<void>)",
+            "required": false,
+            "description": "`@load-more` listener: called when scrolling near the bottom; return a\npromise that resolves once new items are loaded (no new call happens\nuntil it settles). A function prop (not an emit) so its promise is seen",
+            "typeText": "(() => void | Promise<void>)"
+          },
+          {
+            "name": "loadMoreThreshold",
+            "type": "number",
+            "default": "100",
+            "required": false,
+            "description": "Distance from the bottom (px) at which `load-more` is triggered",
+            "typeText": "number"
+          },
+          {
+            "name": "highPerformance",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Batches scroll updates with requestAnimationFrame and requestIdleCallback",
+            "typeText": "boolean"
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Shows a loading indicator at the bottom of the list",
+            "typeText": "boolean"
+          },
+          {
+            "name": "aria-label",
+            "type": "string",
+            "required": false,
+            "description": "Accessible name of the list",
+            "typeText": "string"
+          }
+        ],
+        "events": [
+          {
+            "name": "itemClick",
+            "type": "[item: T, index: number, event: MouseEvent | KeyboardEvent]",
+            "typeText": "[item: T, index: number, event: MouseEvent | KeyboardEvent]",
+            "parameters": [
+              {
+                "name": "item",
+                "position": 0,
+                "typeText": "T",
+                "required": true,
+                "rest": false
+              },
+              {
+                "name": "index",
+                "position": 1,
+                "typeText": "number",
+                "required": true,
+                "rest": false
+              },
+              {
+                "name": "event",
+                "position": 2,
+                "typeText": "MouseEvent | KeyboardEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "type": "{ item: T; index: number; }",
+            "description": "Content of one row (wins over `renderItem`)",
+            "typeText": "{ item: T; index: number; }"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:VirtualList": {
+      "kind": "cssVars",
+      "source": "react/src/components/VirtualList",
+      "vars": [
+        {
+          "name": "--virtual-list-radius",
+          "description": "Corner radius (defaults to --radius-sm)"
+        },
+        {
+          "name": "--virtual-list-shadow",
+          "description": "Shadow at rest (defaults to --shadow-sm)"
+        },
+        {
+          "name": "--virtual-list-hover-shadow",
+          "description": "Shadow while hovered (defaults to --shadow-md)"
+        },
+        {
+          "name": "--virtual-list-scrollbar-size",
+          "description": "Width of the scrollbar (WebKit / Blink)"
+        },
+        {
+          "name": "--virtual-list-loading-padding",
+          "description": "Padding of the loading indicator row"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "auto-height",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/virtual-list/vue/auto-height.vue",
+      "files": {
+        "apps/docs/src/docs/pages/virtual-list/vue/auto-height.vue": "<script setup lang=\"ts\">\nimport { VirtualList } from \"minerva-design/vue\";\nconst items = Array.from({ length: 1000 }, (_, i) => ({\n  id: i,\n  name: `User ${i + 1}`,\n  email: `user${i + 1}@example.com`,\n}));\n</script>\n<template>\n  <VirtualList\n    :items=\"items\"\n    :max-height=\"300\"\n    :item-padding=\"12\"\n    aria-label=\"Automatically measured users\"\n    ><template #default=\"{ item }\"\n      ><div>\n        <strong>{{ item.name }}</strong>\n        <div style=\"font-size: 12px; opacity: 0.7\">{{ item.email }}</div>\n      </div></template\n    ></VirtualList\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "auto-height",
+      "description": ""
+    },
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/virtual-list/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/virtual-list/vue/basic.vue": "<script setup lang=\"ts\">\nimport { VirtualList } from \"minerva-design/vue\";\nconst items = Array.from({ length: 1000 }, (_, index) => ({\n  id: index + 1,\n  label: `Record ${index + 1}`,\n}));\n</script>\n<template>\n  <VirtualList\n    :items=\"items\"\n    :item-height=\"40\"\n    :max-height=\"240\"\n    aria-label=\"Records\"\n    ><template #default=\"{ item, index }\"\n      >{{ index + 1 }}. {{ item.label }}</template\n    ></VirtualList\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "clickable-rows",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/virtual-list/vue/clickable-rows.vue",
+      "files": {
+        "apps/docs/src/docs/pages/virtual-list/vue/clickable-rows.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { VirtualList, Button, VStack } from \"minerva-design/vue\";\nconst items = Array.from({ length: 1000 }, (_, index) => ({\n  id: index + 1,\n  label: `Record ${index + 1}`,\n}));\nconst selected = ref(\"\");\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><VirtualList\n      :items=\"items\"\n      :item-height=\"48\"\n      :max-height=\"240\"\n      aria-label=\"Selectable records\"\n      ><template #default=\"{ item }\"\n        ><Button variant=\"ghost\" @click=\"selected = item.label\">{{\n          item.label\n        }}</Button></template\n      ></VirtualList\n    ><output>{{ selected || \"Select a record\" }}</output></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "clickable-rows",
+      "description": ""
+    },
+    {
+      "id": "high-performance",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/virtual-list/vue/high-performance.vue",
+      "files": {
+        "apps/docs/src/docs/pages/virtual-list/vue/high-performance.vue": "<script setup lang=\"ts\">\nimport { VirtualList } from \"minerva-design/vue\";\nconst items = Array.from({ length: 100000 }, (_, i) => ({\n  id: i,\n  title: `Item ${i + 1}`,\n  value: (i * 37) % 1000,\n}));\n</script>\n<template>\n  <div>\n    <p>100,000 records with a small rendered viewport.</p>\n    <VirtualList\n      :items=\"items\"\n      :item-height=\"36\"\n      :max-height=\"300\"\n      :overscan=\"10\"\n      high-performance\n      aria-label=\"High performance records\"\n      ><template #default=\"{ item, index }\"\n        ><div style=\"display: flex; justify-content: space-between\">\n          <span>#{{ index + 1 }} {{ item.title }}</span\n          ><code>{{ item.value }}</code>\n        </div></template\n      ></VirtualList\n    >\n  </div>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "high-performance",
+      "description": ""
+    },
+    {
+      "id": "infinite-scroll",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/virtual-list/vue/infinite-scroll.vue",
+      "files": {
+        "apps/docs/src/docs/pages/virtual-list/vue/infinite-scroll.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { VirtualList, VStack } from \"minerva-design/vue\";\nconst items = ref(\n  Array.from({ length: 30 }, (_, index) => ({\n    id: index + 1,\n    label: `Record ${index + 1}`,\n  })),\n);\nconst loading = ref(false);\nasync function load() {\n  if (loading.value || items.value.length >= 150) return;\n  loading.value = true;\n  await new Promise((resolve) => setTimeout(resolve, 500));\n  const start = items.value.length;\n  items.value.push(\n    ...Array.from({ length: 30 }, (_, index) => ({\n      id: start + index + 1,\n      label: `Record ${start + index + 1}`,\n    })),\n  );\n  loading.value = false;\n}\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><VirtualList\n      :items=\"items\"\n      :item-height=\"40\"\n      :max-height=\"240\"\n      :loading=\"loading\"\n      :on-load-more=\"load\"\n      aria-label=\"Infinite records\"\n      ><template #default=\"{ item }\">{{ item.label }}</template></VirtualList\n    ><output>{{ items.length }} records loaded</output></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "infinite-scroll",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.4/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "VirtualList 仮想リスト",
+      "description": "スクロールコンテナ内で表示されている行だけをマウントし、長いリストを効率よく描画します。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "固定の itemHeight で 10,000 行。DOM には表示中の行（と overscan 分）だけが存在します。"
+        },
+        "auto-height": {
+          "title": "行の高さの自動計測",
+          "description": "itemHeight を省略すると最初の項目から高さを計測します。各行の周囲に itemPadding が追加されます。"
+        },
+        "infinite-scroll": {
+          "title": "無限スクロール",
+          "description": "リストの末尾付近で onLoadMore が呼び出されます。読み込み中はローディング表示を出します。"
+        },
+        "high-performance": {
+          "title": "高パフォーマンスモード",
+          "description": "highPerformance は requestAnimationFrame と requestIdleCallback でスクロール更新をまとめます。この例は 100,000 行です。"
+        },
+        "clickable-rows": {
+          "title": "クリック可能な行とネイティブ属性",
+          "description": "onItemClick で行がクリック可能になります（ポインターカーソル、フォーカス可能、Enter / Space で実行）。指定しない場合は既定のカーソルのままです。id、data-*、aria-* などのネイティブ属性はルート要素に渡されます。"
+        }
+      },
+      "api": {
+        "VirtualListProps": {
+          "items": "描画する項目",
+          "itemHeight": "固定の行の高さ（ピクセル）。省略時は最初の項目から計測する",
+          "itemPadding": "各行のパディング（ピクセル）",
+          "overscan": "表示領域の上下に追加で描画する行数",
+          "maxHeight": "スクロールコンテナの最大の高さ（ピクセル）",
+          "renderItem": "1 行分の内容を描画する関数",
+          "className": "追加のクラス名",
+          "style": "スクロールコンテナのインラインスタイル",
+          "onLoadMore": "末尾付近までスクロールしたときに呼び出される。新しい項目の読み込み後に resolve する Promise を返す（完了するまで再度呼び出されない）",
+          "loadMoreThreshold": "onLoadMore を発火させる末尾からの距離（px）",
+          "highPerformance": "requestAnimationFrame と requestIdleCallback でスクロール更新をまとめる",
+          "loading": "リストの末尾にローディング表示を出す",
+          "aria-label": "リストのアクセシブルな名前",
+          "ref": "ルート（スクロールコンテナ）の <div> 要素への ref",
+          "onItemClick": "行がクリックされたとき、または行自体にフォーカスがある状態で Enter / Space が押されたときに呼ばれます。行をクリック可能（フォーカス可能でポインターカーソル）にします"
+        },
+        "VirtualListItem": {
+          "id": "項目の一意なキー",
+          "metadata": "renderItem で使う任意のデータ"
+        }
+      },
+      "cssVars": {
+        "--virtual-list-radius": "角丸（既定値は --radius-sm）",
+        "--virtual-list-shadow": "通常時の影（既定値は --shadow-sm）",
+        "--virtual-list-hover-shadow": "ホバー時の影（既定値は --shadow-md）",
+        "--virtual-list-scrollbar-size": "スクロールバーの幅（WebKit / Blink）",
+        "--virtual-list-loading-padding": "読み込みインジケーター行のパディング"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "JavaScript から items と renderItem プロパティを設定します。10,000 件あっても、表示中の行だけが描画されます。aria-label でリストに名前を付けてください。"
+          },
+          "clickable-rows": {
+            "title": "クリック可能な行",
+            "description": "clickable で行がフォーカス可能になり、クリック・Enter・Space で minerva-item-click を発火します。scrollToIndex() でプログラムからスクロールできます。"
+          },
+          "infinite-scroll": {
+            "title": "無限スクロール",
+            "description": "下端付近（load-more-threshold）で minerva-load-more が発火します。次のページを取得する間は loading を設定します。"
+          }
+        },
+        "minerva-virtual-list": {
+          "props": {
+            "clickable": "行をフォーカス・クリック可能にし（ポインターカーソル、Enter / Space）、minerva-item-click を発火します。",
+            "scrollContainer": "スクロールコンテナー要素（読み取り専用）。プログラムからのスクロールなどに使います。"
+          },
+          "events": {
+            "minerva-item-click": "クリック可能な行がクリック、または Enter / Space で実行されました（detail: { item, index }）。",
+            "minerva-load-more": "リストが下端から load-more-threshold ピクセル以内までスクロールされました。"
+          },
+          "cssVars": {
+            "--progress-width": "読み込みインジケーターの幅。",
+            "--progress-bar-height": "読み込みバーの太さ。",
+            "--progress-track-color": "読み込みインジケーターのトラックの色。",
+            "--progress-radius": "読み込みインジケーターのトラックの角丸半径。",
+            "--progress-size": "円形の読み込みインジケーターのサイズ。"
+          },
+          "methods": {
+            "scrollToIndex": "index の行がリストの先頭に来るようにスクロールします。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

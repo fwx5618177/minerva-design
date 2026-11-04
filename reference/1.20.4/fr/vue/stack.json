@@ -1,0 +1,451 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.4",
+  "locale": "fr",
+  "renderer": "vue",
+  "page": "stack",
+  "title": "Stack",
+  "description": "Primitives de mise en page flex (Stack, HStack, VStack) avec des espacements par jetons, des séparateurs et des groupes accolés. Les enfants ne sont pas enveloppés.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.4",
+    "sourceCommit": "5826c364a762ec5a1144b8eea89e5d7510e4099c",
+    "sourceDigest": "sha256:38cfefdcb173c9a307526b9364c7a77acc74f713924006e65d94c6f3c5e94c61",
+    "referenceSourceDigest": "sha256:8bb3a20ee069c63b8d85e6ccf29336af81fffa488ce873d14ee032291c18009f"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "HStack",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "HStack"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "wrap",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Wraps items onto multiple lines",
+            "typeText": "boolean"
+          },
+          {
+            "name": "as",
+            "type": "string | Component",
+            "default": "\"div\"",
+            "required": false,
+            "description": "Element or component to render",
+            "typeText": "string | Component"
+          },
+          {
+            "name": "gap",
+            "type": "string | number",
+            "required": false,
+            "description": "Gap between items: numbers and numeric strings select spacing tokens\n(`2` -> `var(--space-2)`), other strings are CSS values. No gap when omitted.",
+            "typeText": "string | number"
+          },
+          {
+            "name": "align",
+            "type": "StackAlign",
+            "required": false,
+            "description": "Cross-axis alignment (`align-items`); unset when omitted",
+            "typeText": "StackAlign"
+          },
+          {
+            "name": "justify",
+            "type": "StackJustify",
+            "required": false,
+            "description": "Main-axis distribution (`justify-content`); unset when omitted",
+            "typeText": "StackJustify"
+          },
+          {
+            "name": "separator",
+            "type": "string",
+            "required": false,
+            "description": "Rendered between every two items (not before the first or after the\nlast), e.g. `\"·\"`; the `separator` slot renders any content (a vertical\n`Divider`). Empty children (`v-if` comments) do not get a separator.",
+            "typeText": "string"
+          },
+          {
+            "name": "attached",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Joins the items into one attached group (e.g. a segmented row of buttons):\nno gap, shared borders and outer-only corner radii. The group gets\n`role=\"group\"` unless a role is given; label it with `aria-label`.",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "description": "Items",
+            "typeText": "any"
+          },
+          {
+            "name": "separator",
+            "type": "any",
+            "description": "Rendered between every two items (the `separator` prop as content)",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "Stack",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "Stack"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "as",
+            "type": "string | Component",
+            "default": "\"div\"",
+            "required": false,
+            "description": "Element or component to render",
+            "typeText": "string | Component"
+          },
+          {
+            "name": "direction",
+            "type": "StackDirection",
+            "default": "\"column\"",
+            "required": false,
+            "description": "Flex direction",
+            "typeText": "StackDirection"
+          },
+          {
+            "name": "gap",
+            "type": "string | number",
+            "required": false,
+            "description": "Gap between items: numbers and numeric strings select spacing tokens\n(`2` -> `var(--space-2)`), other strings are CSS values. No gap when omitted.",
+            "typeText": "string | number"
+          },
+          {
+            "name": "align",
+            "type": "StackAlign",
+            "required": false,
+            "description": "Cross-axis alignment (`align-items`); unset when omitted",
+            "typeText": "StackAlign"
+          },
+          {
+            "name": "justify",
+            "type": "StackJustify",
+            "required": false,
+            "description": "Main-axis distribution (`justify-content`); unset when omitted",
+            "typeText": "StackJustify"
+          },
+          {
+            "name": "wrap",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Wraps items onto multiple lines",
+            "typeText": "boolean"
+          },
+          {
+            "name": "separator",
+            "type": "string",
+            "required": false,
+            "description": "Rendered between every two items (not before the first or after the\nlast), e.g. `\"·\"`; the `separator` slot renders any content (a vertical\n`Divider`). Empty children (`v-if` comments) do not get a separator.",
+            "typeText": "string"
+          },
+          {
+            "name": "attached",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Joins the items into one attached group (e.g. a segmented row of buttons):\nno gap, shared borders and outer-only corner radii. The group gets\n`role=\"group\"` unless a role is given; label it with `aria-label`.",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "description": "Items",
+            "typeText": "any"
+          },
+          {
+            "name": "separator",
+            "type": "any",
+            "description": "Rendered between every two items (the `separator` prop as content)",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "VStack",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "VStack"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "wrap",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Wraps items onto multiple lines",
+            "typeText": "boolean"
+          },
+          {
+            "name": "as",
+            "type": "string | Component",
+            "default": "\"div\"",
+            "required": false,
+            "description": "Element or component to render",
+            "typeText": "string | Component"
+          },
+          {
+            "name": "gap",
+            "type": "string | number",
+            "required": false,
+            "description": "Gap between items: numbers and numeric strings select spacing tokens\n(`2` -> `var(--space-2)`), other strings are CSS values. No gap when omitted.",
+            "typeText": "string | number"
+          },
+          {
+            "name": "align",
+            "type": "StackAlign",
+            "required": false,
+            "description": "Cross-axis alignment (`align-items`); unset when omitted",
+            "typeText": "StackAlign"
+          },
+          {
+            "name": "justify",
+            "type": "StackJustify",
+            "required": false,
+            "description": "Main-axis distribution (`justify-content`); unset when omitted",
+            "typeText": "StackJustify"
+          },
+          {
+            "name": "separator",
+            "type": "string",
+            "required": false,
+            "description": "Rendered between every two items (not before the first or after the\nlast), e.g. `\"·\"`; the `separator` slot renders any content (a vertical\n`Divider`). Empty children (`v-if` comments) do not get a separator.",
+            "typeText": "string"
+          },
+          {
+            "name": "attached",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Joins the items into one attached group (e.g. a segmented row of buttons):\nno gap, shared borders and outer-only corner radii. The group gets\n`role=\"group\"` unless a role is given; label it with `aria-label`.",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "description": "Items",
+            "typeText": "any"
+          },
+          {
+            "name": "separator",
+            "type": "any",
+            "description": "Rendered between every two items (the `separator` prop as content)",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Stack": {
+      "kind": "cssVars",
+      "source": "react/src/components/Stack",
+      "vars": [
+        {
+          "name": "--stack-gap",
+          "description": "Space between the children when the gap prop is not set (default: 0)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "attached",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/stack/vue/attached.vue",
+      "files": {
+        "apps/docs/src/docs/pages/stack/vue/attached.vue": "<script setup lang=\"ts\">\nimport { HStack, Button } from \"minerva-design/vue\";\n</script>\n<template>\n  <HStack attached :gap=\"0\"\n    ><Button variant=\"outline\">Previous</Button\n    ><Button variant=\"outline\">Current</Button\n    ><Button variant=\"outline\">Next</Button></HStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "attached",
+      "description": ""
+    },
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/stack/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/stack/vue/basic.vue": "<script setup lang=\"ts\">\nimport { Stack, Button } from \"minerva-design/vue\";\n</script>\n<template>\n  <Stack direction=\"row\" :gap=\"3\"\n    ><Button>Save</Button><Button variant=\"outline\">Cancel</Button></Stack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "hstack-vstack",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/stack/vue/hstack-vstack.vue",
+      "files": {
+        "apps/docs/src/docs/pages/stack/vue/hstack-vstack.vue": "<script setup lang=\"ts\">\nimport { HStack, VStack, Button } from \"minerva-design/vue\";\n</script>\n<template>\n  <HStack :gap=\"6\" align=\"start\"\n    ><VStack :gap=\"2\"><Button>First</Button><Button>Second</Button></VStack\n    ><VStack :gap=\"2\"\n      ><Button variant=\"outline\">Third</Button\n      ><Button variant=\"outline\">Fourth</Button></VStack\n    ></HStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "hstack-vstack",
+      "description": ""
+    },
+    {
+      "id": "wrap-separator",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/stack/vue/wrap-separator.vue",
+      "files": {
+        "apps/docs/src/docs/pages/stack/vue/wrap-separator.vue": "<script setup lang=\"ts\">\nimport { Stack, Badge } from \"minerva-design/vue\";\n</script>\n<template>\n  <Stack direction=\"row\" wrap separator=\"/\" :gap=\"2\"\n    ><Badge v-for=\"n in 8\" :key=\"n\">Section {{ n }}</Badge></Stack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "wrap-separator",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.4/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Stack",
+      "description": "Primitives de mise en page flex (Stack, HStack, VStack) avec des espacements par jetons, des séparateurs et des groupes accolés. Les enfants ne sont pas enveloppés.",
+      "demos": {
+        "basic": {
+          "title": "Pile verticale",
+          "description": "VStack empile les enfants en colonne et les étire par défaut."
+        },
+        "horizontal": {
+          "title": "Pile horizontale",
+          "description": "HStack centre les éléments sur l'axe secondaire ; justify les répartit."
+        },
+        "gap": {
+          "title": "Espacement",
+          "description": "Les nombres sélectionnent des jetons d’espacement (2 = 8 px, 4 = 16 px, 6 = 24 px) ; les autres chaînes sont des longueurs CSS."
+        },
+        "wrap": {
+          "title": "Retour à la ligne et sémantique",
+          "description": "wrap permet le retour à la ligne ; as rend une liste."
+        },
+        "separator": {
+          "title": "Séparateur",
+          "description": "separator s’affiche entre les éléments, par exemple un Divider vertical ; les enfants vides n’en reçoivent pas."
+        },
+        "attached": {
+          "title": "Groupe accolé",
+          "description": "attached réunit les éléments en un seul groupe aux bordures partagées et aux seuls coins extérieurs arrondis, comme un contrôle segmenté."
+        }
+      },
+      "api": {
+        "StackProps": {
+          "ref": "Ref vers l'élément rendu",
+          "as": "Élément ou composant à rendre",
+          "direction": "Direction flex",
+          "gap": "Espace entre les éléments : nombres et chaînes numériques = jetons, autres chaînes = valeurs CSS. Aucun espace si omis.",
+          "align": "Alignement sur l'axe secondaire (align-items) ; non défini si omis",
+          "justify": "Répartition sur l'axe principal (justify-content) ; non défini si omis",
+          "wrap": "Fait passer les éléments sur plusieurs lignes",
+          "separator": "Affiché entre deux éléments (ni avant le premier ni après le dernier) ; les enfants vides n’en reçoivent pas",
+          "attached": "Réunit les éléments en un groupe accolé : sans espacement, bordures partagées, coins extérieurs arrondis et role=\"group\""
+        }
+      },
+      "cssVars": {
+        "--stack-gap": "Espace entre les enfants quand la prop gap n'est pas définie (par défaut 0)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Une colonne d'éléments avec un espacement issu des jetons (gap=\"3\" vaut var(--space-3)). Les enfants sont insérés tels quels, sans enveloppe."
+          },
+          "hstack-vstack": {
+            "title": "HStack, VStack et alignement",
+            "description": "<minerva-hstack> est une ligne centrée sur l'axe secondaire, <minerva-vstack> une colonne étirée ; align, justify et direction (y compris les sens inversés) les ajustent."
+          },
+          "wrap-separator": {
+            "title": "Séparateurs et retour à la ligne",
+            "description": "separator insère un texte entre les éléments ou, défini comme propriété JS, une fonction qui renvoie un contenu neuf à chaque intervalle (ici un séparateur vertical). wrap permet aux éléments de passer sur plusieurs lignes. Les séparateurs utilisent l'assignation manuelle des slots ; dans les navigateurs sans slot.assign() (Safari < 16.4), la pile se rabat sur des slots nommés (un attribut slot=\"minerva-stack-item-n\" sur chaque enfant élément tant qu'un séparateur est défini), si bien que les séparateurs apparaissent toujours entre les enfants éléments (enveloppez le texte nu dans un élément)."
+          },
+          "attached": {
+            "title": "Groupes accolés",
+            "description": "attached réunit les éléments en un seul groupe (sans espacement, bordures partagées) exposé en role=\"group\" ; nommez-le avec aria-label."
+          }
+        },
+        "minerva-stack": {
+          "slots": {
+            "default": "Éléments."
+          }
+        },
+        "minerva-hstack": {
+          "slots": {
+            "default": "Éléments, disposés en ligne."
+          }
+        },
+        "minerva-vstack": {
+          "slots": {
+            "default": "Éléments, disposés en colonne."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

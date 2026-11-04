@@ -1,0 +1,439 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.4",
+  "locale": "fr",
+  "renderer": "weapp",
+  "page": "modal",
+  "title": "Modal",
+  "description": "Une boîte de dialogue qui interrompt la page pour une tâche ciblée. Le focus reste à l'intérieur, Échap et un clic sur le fond la ferment, puis le focus revient à l'élément d'ouverture. Sur petit écran elle devient une feuille en bas de page.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.4",
+    "sourceCommit": "5826c364a762ec5a1144b8eea89e5d7510e4099c",
+    "sourceDigest": "sha256:38cfefdcb173c9a307526b9364c7a77acc74f713924006e65d94c6f3c5e94c61",
+    "referenceSourceDigest": "sha256:8bb3a20ee069c63b8d85e6ccf29336af81fffa488ce873d14ee032291c18009f"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Modal",
+      "support": {
+        "status": "beta",
+        "notes": "Controlled/default native modal with trigger, header/body/footer slots, five sizes, forceMount, modal/nonmodal backdrop, close labels and configured outside dismissal veto. DOM portals and document focus trapping do not apply to native views. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Controlled/default native modal with trigger, header/body/footer slots, five sizes, forceMount, modal/nonmodal backdrop, close labels and configured outside dismissal veto. DOM portals and document focus trapping do not apply to native views. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/modal/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "modal",
+        "props": [
+          {
+            "name": "open",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "title",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "description",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "closeOnOverlayClick",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          },
+          {
+            "name": "loading",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "placement",
+            "typeText": "string",
+            "required": false,
+            "default": "right"
+          },
+          {
+            "name": "defaultOpen",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "side",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "size",
+            "typeText": "string",
+            "required": false,
+            "default": "medium"
+          },
+          {
+            "name": "modal",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          },
+          {
+            "name": "forceMount",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "hideCloseButton",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "closeLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "hiddenDescription",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "role",
+            "typeText": "string",
+            "required": false,
+            "default": "dialog"
+          },
+          {
+            "name": "overlayClassName",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "events": [
+          {
+            "name": "openchange",
+            "typeText": "{ open: boolean }",
+            "description": "Requested visible state; controlled owners may reject it."
+          },
+          {
+            "name": "close",
+            "typeText": "{ reason: 'trigger' | 'close' | 'overlay' }",
+            "description": "Close reason."
+          },
+          {
+            "name": "interactoutside",
+            "typeText": "{}",
+            "description": "Native backdrop interaction before configured veto."
+          },
+          {
+            "name": "confirm"
+          },
+          {
+            "name": "cancel"
+          }
+        ],
+        "slots": [
+          {
+            "name": "trigger"
+          },
+          {
+            "name": "header"
+          },
+          {
+            "name": "default"
+          },
+          {
+            "name": "footer"
+          }
+        ],
+        "registration": "\"usingComponents\": { \"mn-modal\": \"minerva-design/dist/weapp/modal/index\" }",
+        "bindings": []
+      }
+    },
+    {
+      "name": "ModalBody",
+      "support": {
+        "status": "n/a",
+        "notes": "Native composition uses Modal: default content slot. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Modal props/slots for the native equivalent."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Native composition uses Modal: default content slot. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Modal props/slots for the native equivalent."
+      }
+    },
+    {
+      "name": "ModalClose",
+      "support": {
+        "status": "n/a",
+        "notes": "Native composition uses Modal: built-in close action emits openchange=false. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Modal props/slots for the native equivalent."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Native composition uses Modal: built-in close action emits openchange=false. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Modal props/slots for the native equivalent."
+      }
+    },
+    {
+      "name": "ModalContent",
+      "support": {
+        "status": "n/a",
+        "notes": "Native composition uses Modal: default slot. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Modal props/slots for the native equivalent."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Native composition uses Modal: default slot. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Modal props/slots for the native equivalent."
+      }
+    },
+    {
+      "name": "ModalFooter",
+      "support": {
+        "status": "n/a",
+        "notes": "Native composition uses Modal: footer slot. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Modal props/slots for the native equivalent."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Native composition uses Modal: footer slot. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Modal props/slots for the native equivalent."
+      }
+    },
+    {
+      "name": "ModalHeader",
+      "support": {
+        "status": "n/a",
+        "notes": "Native composition uses Modal: title/description. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Modal props/slots for the native equivalent."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Native composition uses Modal: title/description. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Modal props/slots for the native equivalent."
+      }
+    },
+    {
+      "name": "ModalRoot",
+      "support": {
+        "status": "n/a",
+        "notes": "Native composition uses Modal: controlled open and openchange. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Modal props/slots for the native equivalent."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Native composition uses Modal: controlled open and openchange. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Modal props/slots for the native equivalent."
+      }
+    },
+    {
+      "name": "ModalTrigger",
+      "support": {
+        "status": "n/a",
+        "notes": "Native composition uses Modal: parent button updates open. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Modal props/slots for the native equivalent."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Native composition uses Modal: parent button updates open. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Modal props/slots for the native equivalent."
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Modal": {
+      "kind": "cssVars",
+      "source": "react/src/components/Modal",
+      "vars": [
+        {
+          "name": "--modal-width",
+          "description": "Width of the panel (every size; defaults to the width of the size, capped by the viewport)"
+        },
+        {
+          "name": "--modal-max-height",
+          "description": "Maximum height of the panel (the body scrolls beyond)"
+        },
+        {
+          "name": "--modal-padding",
+          "description": "Horizontal padding of the header, description, body and footer"
+        },
+        {
+          "name": "--modal-radius",
+          "description": "Corner radius of the panel (defaults to --radius-xl)"
+        },
+        {
+          "name": "--modal-shadow",
+          "description": "Shadow of the panel (defaults to --shadow-xl)"
+        },
+        {
+          "name": "--modal-background",
+          "description": "Background of the panel"
+        },
+        {
+          "name": "--modal-z-index",
+          "description": "Stacking order of the panel (defaults to --z-modal)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.4/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Modal",
+      "description": "Une boîte de dialogue qui interrompt la page pour une tâche ciblée. Le focus reste à l'intérieur, Échap et un clic sur le fond la ferment, puis le focus revient à l'élément d'ouverture. Sur petit écran elle devient une feuille en bas de page.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Cancel ferme sans supprimer. Delete ferme le dialogue et affiche Record deleted."
+        },
+        "uncontrolled": {
+          "title": "Non contrôlée avec déclencheur",
+          "description": "Passez trigger pour laisser la modale gérer son propre état."
+        },
+        "sizes": {
+          "title": "Tailles",
+          "description": "small, medium (par défaut), large, xlarge et full."
+        },
+        "form": {
+          "title": "Formulaire",
+          "description": "Modifiez Name puis cliquez sur Save pour renommer Quarterly report. Le bouton affiche ensuite le nom enregistré."
+        },
+        "compound": {
+          "title": "API composée",
+          "description": "ModalRoot, ModalTrigger, ModalContent, ModalHeader, ModalBody, ModalFooter et ModalClose pour un contrôle total."
+        }
+      },
+      "api": {
+        "ModalProps": {
+          "open": "État d'ouverture contrôlé ; laissez undefined pour le mode non contrôlé",
+          "defaultOpen": "État d'ouverture initial en mode non contrôlé",
+          "onOpenChange": "Appelé avec l'état d'ouverture demandé (déclencheur, bouton de fermeture, Échap, clic sur le fond)",
+          "trigger": "Élément qui l'ouvre au clic (un seul élément, rendu avec asChild)",
+          "title": "Titre, utilisé comme nom accessible de la boîte de dialogue",
+          "description": "Description sous le titre, utilisée comme description accessible",
+          "size": "Préréglage de largeur",
+          "hideCloseButton": "Masque le bouton de fermeture (×)",
+          "closeLabel": "Libellé accessible du bouton de fermeture ; par défaut « Fermer » localisé",
+          "role": "Rôle ARIA du panneau de dialogue ; utilisez \"alertdialog\" pour les confirmations qui interrompent l’utilisateur",
+          "className": "Classe supplémentaire du panneau",
+          "ref": "Ref vers l'élément de dialogue",
+          "children": "Corps : en général ModalBody + ModalFooter, ou un <form> qui les englobe"
+        },
+        "ModalRootProps": {
+          "open": "État d'ouverture contrôlé ; laissez undefined pour le mode non contrôlé",
+          "defaultOpen": "État d'ouverture initial en mode non contrôlé",
+          "onOpenChange": "Appelé avec l'état d'ouverture demandé (déclencheur, bouton de fermeture, Échap, clic sur le fond)",
+          "modal": "Mode modal : affiche le fond, piège le focus, bloque le défilement de la page et les interactions extérieures, et masque la page aux technologies d'assistance",
+          "children": "Déclencheur et contenu"
+        },
+        "ModalTriggerProps": {
+          "asChild": "Fusionne le comportement sur l'unique élément enfant au lieu de rendre son propre élément"
+        },
+        "ModalContentProps": {
+          "ref": "Ref vers l'élément de dialogue",
+          "size": "Préréglage de largeur",
+          "hideCloseButton": "Masque le bouton de fermeture (×)",
+          "closeLabel": "Libellé accessible du bouton de fermeture ; par défaut « Fermer » localisé",
+          "description": "Description visible sous le titre, liée comme description accessible (sans description, aria-describedby est omis)",
+          "overlayClassName": "Classe de la superposition (fond)",
+          "role": "Rôle ARIA du panneau ; utilisez \"alertdialog\" pour les confirmations qui interrompent l'utilisateur",
+          "forceMount": "Garde le panneau monté une fois fermé (data-state=\"closed\"), par exemple pour une bibliothèque d'animation",
+          "onOpenAutoFocus": "Appelé avant que le focus n'entre dans le panneau à l'ouverture ; event.preventDefault() laisse le focus en place",
+          "onCloseAutoFocus": "Appelé avant que le focus ne revienne à l'élément d'ouverture à la fermeture ; event.preventDefault() l'annule",
+          "onEscapeKeyDown": "Échap pressé alors qu'il est la couche supérieure ; event.preventDefault() le garde ouvert",
+          "onPointerDownOutside": "Pointeur pressé à l'extérieur ; event.preventDefault() le garde ouvert",
+          "onInteractOutside": "Pointeur pressé ou focus à l'extérieur ; event.preventDefault() le garde ouvert"
+        }
+      },
+      "cssVars": {
+        "--modal-width": "Largeur du panneau (toutes les tailles ; par défaut celle de la taille, limitée par la fenêtre)",
+        "--modal-max-height": "Hauteur maximale du panneau (le corps défile au-delà)",
+        "--modal-padding": "Marge intérieure horizontale de l'en-tête, de la description, du corps et du pied",
+        "--modal-radius": "Rayon des coins du panneau (par défaut --radius-xl)",
+        "--modal-shadow": "Ombre du panneau (par défaut --shadow-xl)",
+        "--modal-background": "Fond du panneau",
+        "--modal-z-index": "Ordre d'empilement du panneau (par défaut --z-modal)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Le slot trigger ouvre la modale ; label et description la nomment et la décrivent. Le focus est piégé, Échap et un clic sur l'overlay la ferment, et le focus revient à l'élément d'origine."
+          },
+          "sizes": {
+            "title": "Tailles",
+            "description": "Cinq tailles prédéfinies, réglées avant d'appeler show(). Ici, le titre vient du slot header."
+          },
+          "form": {
+            "title": "Formulaire dans une modale",
+            "description": "Un bouton submit du pied cible le formulaire par son id ; le navigateur le valide, puis le gestionnaire submit enregistre et appelle hide()."
+          },
+          "events": {
+            "title": "Événements et fermeture bloquée",
+            "description": "minerva-open-change est annulable : tant que « Unsaved changes » est coché, preventDefault() garde la modale ouverte. Le journal affiche la raison et les événements after-open / after-close."
+          }
+        },
+        "minerva-modal": {
+          "props": {
+            "label": "Texte du titre (ou le slot header) ; nomme la boîte de dialogue.",
+            "dialogRole": "Rôle ARIA du panneau ; \"alertdialog\" pour les confirmations qui interrompent."
+          },
+          "events": {
+            "minerva-open-change": "L'utilisateur demande l'ouverture / la fermeture (detail : { open, reason }) ; annulable : preventDefault() conserve l'état actuel.",
+            "minerva-after-open": "Émis une fois le panneau ouvert et le focus déplacé à l'intérieur.",
+            "minerva-after-close": "Émis une fois le panneau fermé (après son animation de sortie)."
+          },
+          "slots": {
+            "default": "Contenu du corps.",
+            "header": "Titre (alternative à l'attribut label).",
+            "footer": "Rangée d'actions.",
+            "trigger": "Élément qui ouvre le panneau au clic."
+          },
+          "methods": {
+            "show": "Ouvre la modale.",
+            "hide": "Ferme la modale."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Cancel ferme sans supprimer. Delete ferme le dialogue et affiche Record deleted."
+          },
+          "confirm": {
+            "title": "Confirmation",
+            "description": "confirmLabel / onConfirm et onCancel affichent les boutons du pied ; onOpenChange indique la raison de la fermeture (confirm, cancel, mask, back)."
+          },
+          "custom-footer": {
+            "title": "Pied personnalisé",
+            "description": "footer remplace les boutons par n'importe quel contenu ; size règle la largeur."
+          },
+          "form": {
+            "title": "Formulaire",
+            "description": "Modifiez Name puis cliquez sur Save pour renommer Quarterly report. Le bouton affiche ensuite le nom enregistré."
+          }
+        },
+        "limitations": "Dialog natif enregistre via onPress, sans soumission HTML. Il ne propose ni API composée ModalRoot/ModalTrigger ni taille xlarge ; ces exemples ne sont pas simulés."
+      }
+    }
+  }
+}

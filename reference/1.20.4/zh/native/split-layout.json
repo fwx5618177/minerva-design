@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.4",
+  "locale": "zh",
+  "renderer": "native",
+  "page": "split-layout",
+  "title": "SplitLayout 分栏布局",
+  "description": "主内容加可选侧栏，布局自身宽度达到断点后并排显示。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.4",
+    "sourceCommit": "5826c364a762ec5a1144b8eea89e5d7510e4099c",
+    "sourceDigest": "sha256:38cfefdcb173c9a307526b9364c7a77acc74f713924006e65d94c6f3c5e94c61",
+    "referenceSourceDigest": "sha256:8bb3a20ee069c63b8d85e6ccf29336af81fffa488ce873d14ee032291c18009f"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "SplitLayout",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "SplitLayout"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "aside",
+            "source": "packages/native/src/components/Layout/index.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": true
+          },
+          {
+            "name": "asideWidth",
+            "source": "packages/native/src/components/Layout/index.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 320,
+            "required": false
+          },
+          {
+            "name": "collapseBelow",
+            "source": "packages/native/src/components/Layout/index.tsx",
+            "kind": "enum",
+            "values": [
+              "lg",
+              "md"
+            ],
+            "typeText": "\"md\" | \"lg\" | undefined",
+            "typeRef": "type:51c9861044412391667e",
+            "default": "md",
+            "required": false
+          },
+          {
+            "name": "gap",
+            "source": "packages/native/src/components/Layout/index.tsx",
+            "kind": "union",
+            "typeText": "BoxSpace | undefined",
+            "typeRef": "type:2d45f657fce9c0797c96",
+            "default": 6,
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:SplitLayoutProps": {
+      "source": "native/src/components/Layout/index.tsx",
+      "kind": "interface",
+      "extends": [
+        "ViewProps"
+      ],
+      "props": [
+        {
+          "name": "aside",
+          "type": "ReactNode",
+          "required": true
+        },
+        {
+          "name": "asideWidth",
+          "type": "number",
+          "required": false,
+          "default": "320"
+        },
+        {
+          "name": "collapseBelow",
+          "type": "\"md\" | \"lg\"",
+          "required": false,
+          "default": "\"md\""
+        },
+        {
+          "name": "gap",
+          "type": "BoxSpace",
+          "required": false,
+          "default": "6"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:SplitLayout": {
+      "kind": "cssVars",
+      "source": "react/src/components/SplitLayout",
+      "vars": [
+        {
+          "name": "--split-layout-align-items",
+          "description": "Vertical alignment of the main and aside columns (default: start)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/split-layout/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/split-layout/native/basic.tsx": "import { Text } from \"react-native\";\nimport { SplitLayout } from \"minerva-design/native\";\nexport default function Basic() {\n  return (\n    <SplitLayout aside={<Text>Related information</Text>} asideWidth={160}>\n      <Text>\n        Main content. The aside stacks beneath this content on narrow screens.\n      </Text>\n    </SplitLayout>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "基础用法",
+      "description": "320px 侧栏在容器宽度 768px 时并排、以下时堆叠；主内容始终在 DOM 顺序中靠前。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.4/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "SplitLayout 分栏布局",
+      "description": "主内容加可选侧栏，布局自身宽度达到断点后并排显示。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "320px 侧栏在容器宽度 768px 时并排、以下时堆叠；主内容始终在 DOM 顺序中靠前。"
+        },
+        "options": {
+          "title": "宽度、断点与间距",
+          "description": "通过 asideWidth、collapseBelow=\"lg\"（1200px）和 gap 自定义分栏。"
+        }
+      },
+      "api": {
+        "SplitLayoutProps": {
+          "ref": "指向外层 div 的 ref",
+          "aside": "主区域之后的次要内容；null、undefined 和 false 时省略（0 为有效内容）",
+          "asideWidth": "分栏模式下侧栏宽度（像素，轨道为 min(asideWidth, 50%)）；必须为有限正数",
+          "collapseBelow": "容器宽度至少 768px（md）或 1200px（lg）时分栏，以下时堆叠",
+          "gap": "两栏间距（间距 token 或 CSS 值）"
+        }
+      },
+      "cssVars": {
+        "--split-layout-align-items": "主栏与侧栏的垂直对齐（默认 start）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本用法",
+            "description": "主内容放在默认插槽，次要内容放在 aside 插槽。布局宽度至少 768px 时侧栏并排显示在主内容旁，否则堆叠在其后。"
+          },
+          "options": {
+            "title": "宽度、断点与间距",
+            "description": "aside-width 设置侧栏宽度（最多 50%），collapse-below=\"lg\" 要到 1200px 才分栏，gap 使用间距令牌。拖动滑块调整容器宽度。"
+          }
+        },
+        "minerva-split-layout": {
+          "slots": {
+            "default": "主内容。",
+            "aside": "次要内容，阅读顺序位于主内容之后。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        }
+      }
+    }
+  }
+}
