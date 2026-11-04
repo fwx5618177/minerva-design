@@ -162,8 +162,8 @@ export async function checkQuadrantPointer({
   );
   results.push({ check: "quadrant-card-handoff", hover: 3 });
 
-  // A trusted click leaves focus on a card action. A new point still wins,
-  // both during linger and after the focused card has outlived its timer.
+  // A trusted click leaves focus on a card action. That pointer focus does not
+  // keep the card once the pointer is gone, and a new point wins either way.
   for (const linger of [false, true]) {
     await hover(0);
     const action = await evaluate(`(()=>{
@@ -189,7 +189,7 @@ export async function checkQuadrantPointer({
         await evaluate(
           `window.__quadrantTest.preview.querySelector('[data-point-preview]')?.dataset.pointPreview`,
         ),
-        "0",
+        undefined,
       );
     }
     await hover(3);
@@ -209,6 +209,37 @@ export async function checkQuadrantPointer({
     hover: 3,
     beforeAndAfterLinger: true,
   });
+
+  // Keyboard focus in the card's actions keeps it after the pointer leaves;
+  // a new point still takes over.
+  await hover(0);
+  await evaluate(`(()=>{
+    const body=window.__quadrantTest.preview.querySelector('[data-card-content]');
+    const button=document.createElement('button');
+    button.textContent='Card action';button.dataset.focusRegression='';
+    body.append(button);
+    button.focus();
+  })()`);
+  await mouse("mouseMoved", outside);
+  await evaluate(`new Promise(resolve=>setTimeout(resolve,220))`);
+  assert.equal(
+    await evaluate(
+      `window.__quadrantTest.preview.querySelector('[data-point-preview]')?.dataset.pointPreview`,
+    ),
+    "0",
+  );
+  await hover(3);
+  await evaluate(`new Promise(resolve=>setTimeout(resolve,220))`);
+  assert.equal(
+    await evaluate(
+      `window.__quadrantTest.preview.querySelector('[data-point-preview]')?.dataset.pointPreview`,
+    ),
+    "3",
+  );
+  await evaluate(
+    `window.__quadrantTest.preview.querySelector('[data-focus-regression]')?.remove()`,
+  );
+  results.push({ check: "quadrant-keyboard-focused-action", kept: true });
 
   // Ordinary drop still updates the controlled demo and retires its preview.
   await hover(0);
