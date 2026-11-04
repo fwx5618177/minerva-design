@@ -1,5 +1,11 @@
 # minerva-design
 
+## 1.20.6
+
+### Patch Changes
+
+- 63ce456: Correct Web Components CDN examples to use the stable release line in package documentation. The docs site pins snippets to its published package version and exports the same resolved links in static references.
+
 ## 1.20.5
 
 ### Patch Changes
