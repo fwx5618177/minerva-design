@@ -1,5 +1,11 @@
 # minerva-design
 
+## 1.20.2
+
+### Patch Changes
+
+- 8d5d0df: Make visible scatter and quadrant point labels trigger the same hover and click payload as their dots. Match their actual placed text bounds and source point identity, including truncated or duplicate labels, in DOM and canvas hosts. Keep hidden text and blank quadrant space out of the hit region.
+
 ## 1.20.1
 
 ### Patch Changes
