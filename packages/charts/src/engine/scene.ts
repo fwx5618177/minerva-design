@@ -427,6 +427,7 @@ export const collectPointLabels = (
             bounds: labelCell(s, series.labelCells, p),
           }
         : { x: p.x, y: p.y, r: d / 2, text };
+      label.point = { seriesIndex: series.index, index: i };
       if (hide && hide.seriesIndex === series.index && hide.index === i)
         label.hidden = true;
       labels.push(label);
@@ -663,6 +664,59 @@ export const hoverItemOf = (s: SeriesModel, index: number): ChartHoverItem => {
     ...(label !== undefined ? { label } : {}),
     ...extra,
   };
+};
+
+/** Hit only the text actually placed on screen; marks take priority at the host. */
+export const hitPointLabel = (
+  model: ChartModel,
+  sc: Scales,
+  xTicks: AxisTicks | null,
+  labels: readonly { label: PointLabel; box: Rect }[],
+  px: number,
+  py: number,
+  slop = 2,
+): ChartHoverEvent | null => {
+  for (let i = labels.length - 1; i >= 0; i--) {
+    const { label, box } = labels[i];
+    const owner = label.point;
+    if (
+      label.hidden ||
+      !owner ||
+      !(box.width > 0 && box.height > 0) ||
+      px < box.x - slop ||
+      px > box.x + box.width + slop ||
+      py < box.y - slop ||
+      py > box.y + box.height + slop
+    )
+      continue;
+    const series = model.series[owner.seriesIndex];
+    if (
+      !series ||
+      series.hidden ||
+      !series.tooltip ||
+      !series.showLabels ||
+      series.type !== "scatter" ||
+      !Number.isInteger(owner.index) ||
+      owner.index < 0 ||
+      owner.index >= series.cols.count
+    )
+      continue;
+    const point = pointOf(series, owner.index, sc);
+    if (
+      !Number.isFinite(point.px) ||
+      !Number.isFinite(point.py) ||
+      Math.abs(point.px - label.x) > 0.5 ||
+      Math.abs(point.py - label.y) > 0.5
+    )
+      continue;
+    const item = hoverItemOf(series, owner.index);
+    return {
+      items: [item],
+      x: item.x,
+      xLabel: xTicks?.formatValue(item.x) ?? String(item.x),
+    };
+  }
+  return null;
 };
 
 const eventOf = (

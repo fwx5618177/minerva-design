@@ -68,6 +68,7 @@ import {
   crosshairAt,
   dependencyArrows,
   hitTest,
+  hitPointLabel,
   hoverItemOf,
   hoverMarks,
   layoutChart,
@@ -693,8 +694,17 @@ export const createChart = (
 
   // ------------------------------------------------------------ hit tests
 
-  const hitAt = (px: number, py: number): ChartHoverEvent | null =>
-    scales ? hitTest(model, scales, xTicks, px, py) : null;
+  const hitAt = (
+    px: number,
+    py: number,
+    labels = true,
+  ): ChartHoverEvent | null =>
+    scales
+      ? (hitTest(model, scales, xTicks, px, py) ??
+        (labels
+          ? hitPointLabel(model, scales, xTicks, placedLabels, px, py)
+          : null))
+      : null;
 
   /** Plot area relative to the container: x, y, width, height */
   const plotRect = (): [number, number, number, number] | null => {
@@ -711,7 +721,7 @@ export const createChart = (
   /** A draggable point under the pointer (`interaction.dragPoints`) */
   const draggableAt = (px: number, py: number) => {
     if (!interaction()?.dragPoints) return null;
-    const hit = hitAt(px, py);
+    const hit = hitAt(px, py, false);
     const item = hit?.items.find(
       (it) => model.series[it.seriesIndex].type === "scatter",
     );
@@ -1145,7 +1155,7 @@ export const createChart = (
             win,
           );
       }
-      renderLabelChip(sc);
+      renderLabelChip();
     } else if (labelChip) {
       labelChip.style.display = "none";
       labelChipBox = null;
@@ -1178,7 +1188,7 @@ export const createChart = (
   }
 
   /** The label of a hovered dot, highlighted in a chip tinted with its color */
-  function renderLabelChip(sc: Scales) {
+  function renderLabelChip() {
     const it = hover?.event.items[0];
     const s = it ? model.series[it.seriesIndex] : undefined;
     let found: { label: PointLabel; box: Rect } | undefined;
@@ -1189,13 +1199,11 @@ export const createChart = (
       !pointDrag?.moved &&
       interaction()?.hoverLabel !== false
     ) {
-      const p = pointOf(s, it.index, sc);
       found = placedLabels.find(
         ({ label }) =>
           !label.hidden &&
-          label.text === it.label &&
-          Math.abs(label.x - p.px) < 0.5 &&
-          Math.abs(label.y - p.py) < 0.5,
+          label.point?.seriesIndex === it.seriesIndex &&
+          label.point.index === it.index,
       );
     }
     labelChipBox = null;

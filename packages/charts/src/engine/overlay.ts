@@ -47,6 +47,8 @@ export interface ResolvedText {
 export type ResolvedAnnotation = ResolvedRect | ResolvedLine | ResolvedText;
 
 export interface PointLabel {
+  /** Source point identity, retained when placement truncates the text. */
+  point?: { seriesIndex: number; index: number };
   x: number;
   y: number;
   /** Radius of the dot */

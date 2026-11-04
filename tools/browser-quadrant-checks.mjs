@@ -9,6 +9,18 @@ export async function checkQuadrantPointer({
   page,
   results,
 }) {
+  // Record the real painted glyph bounds, including font, alignment and locale.
+  await evaluate(`(()=>{
+    const original=CanvasRenderingContext2D.prototype.fillText;
+    window.__quadrantLabelPaint=[];
+    window.__restoreQuadrantLabelPaint=()=>{CanvasRenderingContext2D.prototype.fillText=original;};
+    CanvasRenderingContext2D.prototype.fillText=function(text,x,y,...rest){
+      const result=original.call(this,text,x,y,...rest);
+      const m=this.measureText(String(text));
+      window.__quadrantLabelPaint.push({canvas:this.canvas,text:String(text),x:x-m.actualBoundingBoxLeft,y:y-m.actualBoundingBoxAscent,width:m.actualBoundingBoxLeft+m.actualBoundingBoxRight,height:m.actualBoundingBoxAscent+m.actualBoundingBoxDescent});
+      return result;
+    };
+  })()`);
   await page("quadrant-chart");
   const demo = '[id$="demo-draggable"] [data-demo-preview]';
   await wait(
@@ -58,6 +70,38 @@ export async function checkQuadrantPointer({
     assert.notEqual(state.cursor, "grabbing");
     assert.equal(state.marks, 0);
   };
+
+  await wait(
+    `window.__quadrantLabelPaint.some(r=>r.width>0&&r.height>0&&r.canvas.closest('.minerva-chart-stage')===window.__quadrantTest.stage&&r.text===window.__quadrantTest.preview.querySelector('.minerva-chart-quadrant-point[data-point-index="0"]').dataset.label)`,
+  );
+  const textTarget = await evaluate(`(()=>{
+    const {stage,preview}=window.__quadrantTest;
+    const label=preview.querySelector('.minerva-chart-quadrant-point[data-point-index="0"]').dataset.label;
+    const row=window.__quadrantLabelPaint.findLast(r=>r.text===label&&r.canvas.closest('.minerva-chart-stage')===stage);
+    if(!row) throw Error('No painted task label found');
+    const rect=row.canvas.getBoundingClientRect();
+    window.__restoreQuadrantLabelPaint();
+    return {x:rect.x+row.x+row.width*.8,y:rect.y+row.y+row.height/2};
+  })()`);
+  const dot = await point(0);
+  assert.ok(Math.hypot(textTarget.x - dot.x, textTarget.y - dot.y) > 20);
+  await mouse("mouseMoved", textTarget);
+  await wait(
+    `window.__quadrantTest.preview.querySelector('[data-point-preview="0"]')`,
+  );
+  await mouse("mouseMoved", { x: textTarget.x + 1, y: textTarget.y });
+  await evaluate(`new Promise(resolve=>setTimeout(resolve,220))`);
+  assert.equal(
+    await evaluate(
+      `window.__quadrantTest.preview.querySelector('[data-point-preview]')?.dataset.pointPreview`,
+    ),
+    "0",
+  );
+  results.push({
+    check: "quadrant-painted-label-hover",
+    point: 0,
+    stable: true,
+  });
 
   // Release outside the stage without a move crossing the 3px threshold.
   await hover(0);

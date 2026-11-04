@@ -50,6 +50,7 @@ import {
   dependencyArrows,
   dotSize,
   hitTest,
+  hitPointLabel,
   hoverMarks,
   layoutChart,
   legendShape,
@@ -625,10 +626,28 @@ export const createChartController = (
     if (changed) emit("hover", next ? next.event : null);
   };
 
-  const hitAt = (x: number, y: number, touch: boolean) => {
+  const hitAt = (x: number, y: number, touch: boolean, labels = true) => {
     const sc = scales();
     return sc
-      ? hitTest(model, sc, scene?.layout.xTicks ?? null, x, y, touch ? 8 : 0)
+      ? (hitTest(
+          model,
+          sc,
+          scene?.layout.xTicks ?? null,
+          x,
+          y,
+          touch ? 8 : 0,
+        ) ??
+          (labels
+            ? hitPointLabel(
+                model,
+                sc,
+                scene?.layout.xTicks ?? null,
+                scene?.pointLabels ?? [],
+                x,
+                y,
+                touch ? 8 : 2,
+              )
+            : null))
       : null;
   };
 
@@ -722,7 +741,7 @@ export const createChartController = (
       return;
     }
     if (it.dragPoints) {
-      const item = hitAt(x, y, touch)?.items.find(
+      const item = hitAt(x, y, touch, false)?.items.find(
         (i) => model.series[i.seriesIndex].type === "scatter",
       );
       if (item) {
