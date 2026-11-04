@@ -1,0 +1,820 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.3",
+  "locale": "en",
+  "renderer": "vue",
+  "page": "menu",
+  "title": "Menu",
+  "description": "An action menu opened from a button (Menu) or with a right click (ContextMenu): icons, shortcuts, separators, groups, checkbox items, radio groups, submenus, typeahead and full keyboard support (Enter, Space or ArrowDown open it on the first item, ArrowUp on the last; arrows wrap around and skip disabled items, Home / End, Tab closes it, Escape returns focus to the trigger). To pick a value from a list, use Select.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.3",
+    "sourceCommit": "ea7fb3e1f55d184b7d737316e9ae829f4f7ff223",
+    "sourceDigest": "sha256:c9540edc3908d226375a01cf5e6bfe8ca6a4e20440f736c0dd9b40ae9ff2e645",
+    "referenceSourceDigest": "sha256:4cf6057856184f16240d0d22153ec370842fc7a2dfaaa66364e189fed89e6ca3"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "ContextMenu",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "ContextMenu"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "items",
+            "type": "MenuEntry[]",
+            "required": true,
+            "description": "Entries of the menu",
+            "typeText": "MenuEntry[]"
+          },
+          {
+            "name": "closeOnSelect",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Whether selecting an action closes the menu (checkbox and radio items keep it open unless their entry sets closeOnSelect)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "size",
+            "type": "MenuSize",
+            "default": "\"medium\"",
+            "required": false,
+            "description": "Density of the items",
+            "typeText": "MenuSize"
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Disables the context menu (the native one shows instead)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "modal",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Modal menus block pointer interaction outside, trap focus, lock scrolling and hide the rest of the page from assistive technologies while open",
+            "typeText": "boolean"
+          },
+          {
+            "name": "loop",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Arrow keys wrap around from the last item to the first (and back)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "dir",
+            "type": "MenuDirection",
+            "required": false,
+            "description": "Reading direction: in \"rtl\" submenus open to the left and ArrowLeft / ArrowRight are swapped",
+            "typeText": "MenuDirection"
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible label of the menu panel (`aria-label`)",
+            "typeText": "string"
+          }
+        ],
+        "events": [
+          {
+            "name": "select",
+            "type": "[item: MenuAction]",
+            "typeText": "[item: MenuAction]",
+            "parameters": [
+              {
+                "name": "item",
+                "position": 0,
+                "typeText": "MenuAction",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "openChange",
+            "type": "[open: boolean]",
+            "typeText": "[open: boolean]",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "description": "The area opening the menu (its single child gets the listeners)",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "Menu",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "Menu"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "items",
+            "type": "MenuEntry[]",
+            "required": true,
+            "description": "Entries of the menu",
+            "typeText": "MenuEntry[]"
+          },
+          {
+            "name": "closeOnSelect",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Whether selecting an action closes the menu (checkbox and radio items keep it open unless their entry sets closeOnSelect)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "size",
+            "type": "MenuSize",
+            "default": "\"medium\"",
+            "required": false,
+            "description": "Density of the items",
+            "typeText": "MenuSize"
+          },
+          {
+            "name": "align",
+            "type": "MenuAlign",
+            "default": "\"end\"",
+            "required": false,
+            "description": "Alignment of the menu against the trigger",
+            "typeText": "MenuAlign"
+          },
+          {
+            "name": "side",
+            "type": "MenuSide",
+            "default": "\"bottom\"",
+            "required": false,
+            "description": "Preferred side; the menu flips when there is not enough room",
+            "typeText": "MenuSide"
+          },
+          {
+            "name": "open",
+            "type": "boolean",
+            "required": false,
+            "description": "Whether the menu is open (controlled, `v-model:open`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "defaultOpen",
+            "type": "boolean",
+            "required": false,
+            "description": "Initial open state (uncontrolled)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Disables the trigger",
+            "typeText": "boolean"
+          },
+          {
+            "name": "modal",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Modal menus block pointer interaction outside, trap focus, lock scrolling and hide the rest of the page from assistive technologies while open",
+            "typeText": "boolean"
+          },
+          {
+            "name": "loop",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Arrow keys wrap around from the last item to the first (and back)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "dir",
+            "type": "MenuDirection",
+            "required": false,
+            "description": "Reading direction: in \"rtl\" submenus open to the left and ArrowLeft / ArrowRight are swapped",
+            "typeText": "MenuDirection"
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible label of the menu panel (`aria-label`; defaults to the trigger's label)",
+            "typeText": "string"
+          }
+        ],
+        "events": [
+          {
+            "name": "select",
+            "type": "[item: MenuAction]",
+            "typeText": "[item: MenuAction]",
+            "parameters": [
+              {
+                "name": "item",
+                "position": 0,
+                "typeText": "MenuAction",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "update:open",
+            "type": "[open: boolean]",
+            "typeText": "[open: boolean]",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "openChange",
+            "type": "[open: boolean]",
+            "typeText": "[open: boolean]",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "trigger",
+            "type": "any",
+            "description": "The trigger element (its single child gets the trigger props)",
+            "typeText": "any"
+          },
+          {
+            "name": "default",
+            "type": "any",
+            "description": "Alternative to the `trigger` slot",
+            "typeText": "any"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "open",
+            "event": "update:open",
+            "syntax": "v-model:open"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MenuCheckboxItem",
+      "support": {
+        "status": "n/a",
+        "notes": "Data object in Vue (like React): an item of the parent component's items / entries prop."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Data object in Vue (like React): an item of the parent component's items / entries prop."
+      }
+    },
+    {
+      "name": "MenuGroup",
+      "support": {
+        "status": "n/a",
+        "notes": "Data object in Vue (like React): an item of the parent component's items / entries prop."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Data object in Vue (like React): an item of the parent component's items / entries prop."
+      }
+    },
+    {
+      "name": "MenuItem",
+      "support": {
+        "status": "n/a",
+        "notes": "Data object in Vue (like React): an item of the parent component's items / entries prop."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Data object in Vue (like React): an item of the parent component's items / entries prop."
+      }
+    },
+    {
+      "name": "MenuLabel",
+      "support": {
+        "status": "n/a",
+        "notes": "Data object in Vue (like React): an item of the parent component's items / entries prop."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Data object in Vue (like React): an item of the parent component's items / entries prop."
+      }
+    },
+    {
+      "name": "MenuRadioItem",
+      "support": {
+        "status": "n/a",
+        "notes": "Data object in Vue (like React): an item of the parent component's items / entries prop."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Data object in Vue (like React): an item of the parent component's items / entries prop."
+      }
+    },
+    {
+      "name": "MenuSeparator",
+      "support": {
+        "status": "n/a",
+        "notes": "Data object in Vue (like React): an item of the parent component's items / entries prop."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Data object in Vue (like React): an item of the parent component's items / entries prop."
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Menu": {
+      "kind": "cssVars",
+      "source": "react/src/components/Menu",
+      "vars": [
+        {
+          "name": "--menu-min-width",
+          "description": "Minimum width of the menu panel"
+        },
+        {
+          "name": "--menu-max-width",
+          "description": "Maximum width of the menu panel"
+        },
+        {
+          "name": "--menu-max-height",
+          "description": "Maximum height of the menu panel (scrolls beyond)"
+        },
+        {
+          "name": "--menu-padding",
+          "description": "Inner padding of the menu panel"
+        },
+        {
+          "name": "--menu-radius",
+          "description": "Corner radius of the menu panel (defaults to --radius-lg)"
+        },
+        {
+          "name": "--menu-shadow",
+          "description": "Shadow of the menu panel (defaults to --shadow-md)"
+        },
+        {
+          "name": "--menu-item-height",
+          "description": "Minimum height of an item (every size; defaults to the density's control height)"
+        },
+        {
+          "name": "--menu-z-index",
+          "description": "Stacking order of the menu panel (defaults to --z-popover)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/menu/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/menu/vue/basic.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Menu, Button, VStack } from \"minerva-design/vue\";\nconst result = ref(\"\");\nconst items = [\n  { key: \"edit\", label: \"Edit\", shortcut: \"⌘E\" },\n  { key: \"duplicate\", label: \"Duplicate\" },\n  { key: \"delete\", label: \"Delete\", disabled: true },\n];\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><Menu :items=\"items\" @select=\"(item) => (result = String(item.label))\"\n      ><Button>Project actions</Button></Menu\n    ><output>{{ result }}</output></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "checkbox-radio",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/menu/vue/checkbox-radio.vue",
+      "files": {
+        "apps/docs/src/docs/pages/menu/vue/checkbox-radio.vue": "<script setup lang=\"ts\">\nimport { ref, computed } from \"vue\";\nimport { Menu, Button, VStack } from \"minerva-design/vue\";\nimport type { MenuEntry } from \"minerva-design/vue\";\nconst grid = ref(true);\nconst density = ref(\"comfortable\");\nconst items = computed<MenuEntry[]>(() => [\n  {\n    type: \"checkbox\",\n    key: \"grid\",\n    label: \"Show grid\",\n    checked: grid.value,\n    onCheckedChange: (value) => (grid.value = value),\n  },\n  {\n    type: \"radio-group\",\n    key: \"density\",\n    label: \"Density\",\n    value: density.value,\n    onValueChange: (value) => (density.value = value),\n    items: [\n      { value: \"compact\", label: \"Compact\" },\n      { value: \"comfortable\", label: \"Comfortable\" },\n    ],\n  },\n]);\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><Menu :items=\"items\"><Button>View options</Button></Menu\n    ><output\n      >Grid: {{ grid ? \"on\" : \"off\" }} · Density: {{ density }}</output\n    ></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "checkbox-radio",
+      "description": ""
+    },
+    {
+      "id": "context-menu",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/menu/vue/context-menu.vue",
+      "files": {
+        "apps/docs/src/docs/pages/menu/vue/context-menu.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { ContextMenu, Box } from \"minerva-design/vue\";\nconst result = ref(\"\");\nconst items = [\n  { key: \"edit\", label: \"Edit\", shortcut: \"⌘E\" },\n  { key: \"duplicate\", label: \"Duplicate\" },\n  { key: \"delete\", label: \"Delete\", disabled: true },\n];\n</script>\n<template>\n  <ContextMenu :items=\"items\" @select=\"(item) => (result = String(item.label))\"\n    ><Box :p=\"6\" border=\"1px dashed var(--color-border)\" tabindex=\"0\"\n      >Right-click here or press Shift+F10</Box\n    ></ContextMenu\n  ><output>{{ result }}</output>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "context-menu",
+      "description": ""
+    },
+    {
+      "id": "controlled",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/menu/vue/controlled.vue",
+      "files": {
+        "apps/docs/src/docs/pages/menu/vue/controlled.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Menu, Button, type MenuEntry } from \"minerva-design/vue\";\nconst result = ref(\"\");\nconst items: MenuEntry[] = [\n  { key: \"edit\", label: \"Edit\", shortcut: \"⌘E\" },\n  { key: \"duplicate\", label: \"Duplicate\" },\n  { key: \"delete\", label: \"Delete\", disabled: true },\n];\nconst open = ref(false);\n</script>\n<template>\n  <div style=\"display: flex; gap: 12px; align-items: center\">\n    <Button variant=\"outline\" @click=\"open = !open\"\n      >{{ open ? \"Close\" : \"Open\" }} actions</Button\n    ><Menu\n      v-model:open=\"open\"\n      :items=\"items\"\n      :modal=\"false\"\n      @select=\"(item) => (result = String(item.label))\"\n      ><Button>Controlled menu</Button></Menu\n    ><output>{{ result }}</output>\n  </div>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "controlled",
+      "description": ""
+    },
+    {
+      "id": "disabled",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/menu/vue/disabled.vue",
+      "files": {
+        "apps/docs/src/docs/pages/menu/vue/disabled.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Menu, Button, type MenuEntry } from \"minerva-design/vue\";\nconst result = ref(\"\");\nconst items: MenuEntry[] = [\n  { key: \"edit\", label: \"Edit\", shortcut: \"⌘E\" },\n  { key: \"duplicate\", label: \"Duplicate\" },\n  { key: \"delete\", label: \"Delete\", disabled: true },\n];\n</script>\n<template>\n  <div style=\"display: flex; gap: 12px\">\n    <Menu :items=\"items\" disabled><Button>Disabled menu</Button></Menu\n    ><Menu :items=\"items\" @select=\"(item) => (result = String(item.label))\"\n      ><Button>Disabled Delete action</Button></Menu\n    ><output>{{ result }}</output>\n  </div>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "disabled",
+      "description": ""
+    },
+    {
+      "id": "groups",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/menu/vue/groups.vue",
+      "files": {
+        "apps/docs/src/docs/pages/menu/vue/groups.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Menu, Button, type MenuEntry } from \"minerva-design/vue\";\nconst result = ref(\"\");\nconst items: MenuEntry[] = [\n  {\n    type: \"group\",\n    key: \"workspace\",\n    label: \"Workspace\",\n    items: [\n      { key: \"new\", label: \"New project\" },\n      { key: \"open\", label: \"Open project\" },\n    ],\n  },\n  { type: \"separator\", key: \"separator\" },\n  {\n    type: \"group\",\n    key: \"account\",\n    label: \"Account\",\n    items: [\n      { key: \"profile\", label: \"Profile\" },\n      { key: \"sign-out\", label: \"Sign out\" },\n    ],\n  },\n];\n</script>\n<template>\n  <div>\n    <Menu :items=\"items\" @select=\"(item) => (result = String(item.label))\"\n      ><Button>Grouped actions</Button></Menu\n    ><output>{{ result }}</output>\n  </div>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "groups",
+      "description": ""
+    },
+    {
+      "id": "items",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/menu/vue/items.vue",
+      "files": {
+        "apps/docs/src/docs/pages/menu/vue/items.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Menu, Button } from \"minerva-design/vue\";\nimport type { MenuEntry } from \"minerva-design/vue\";\nconst result = ref(\"\");\nconst items: MenuEntry[] = [\n  {\n    type: \"group\",\n    key: \"project\",\n    label: \"Project\",\n    items: [\n      { key: \"new\", label: \"New project\" },\n      {\n        key: \"open\",\n        label: \"Open recent\",\n        children: [\n          { key: \"one\", label: \"Design system\" },\n          { key: \"two\", label: \"Website\" },\n        ],\n      },\n    ],\n  },\n  { type: \"separator\", key: \"divider\" },\n  { key: \"settings\", label: \"Settings\" },\n];\n</script>\n<template>\n  <Menu :items=\"items\" @select=\"(item) => (result = String(item.label))\"\n    ><Button>Grouped actions</Button></Menu\n  ><output>{{ result }}</output>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "items",
+      "description": ""
+    },
+    {
+      "id": "placement",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/menu/vue/placement.vue",
+      "files": {
+        "apps/docs/src/docs/pages/menu/vue/placement.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Menu, Button, type MenuEntry } from \"minerva-design/vue\";\nconst result = ref(\"\");\nconst items: MenuEntry[] = [\n  { key: \"edit\", label: \"Edit\", shortcut: \"⌘E\" },\n  { key: \"duplicate\", label: \"Duplicate\" },\n  { key: \"delete\", label: \"Delete\", disabled: true },\n];\nconst sides = [\"top\", \"right\", \"bottom\", \"left\"] as const;\n</script>\n<template>\n  <div style=\"display: flex; gap: 12px; flex-wrap: wrap; padding: 40px\">\n    <Menu\n      v-for=\"side in sides\"\n      :key=\"side\"\n      :items=\"items\"\n      :side=\"side\"\n      align=\"start\"\n      @select=\"(item) => (result = String(item.label))\"\n      ><Button variant=\"outline\">{{ side }}</Button></Menu\n    ><output>{{ result }}</output>\n  </div>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "placement",
+      "description": ""
+    },
+    {
+      "id": "submenus",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/menu/vue/submenus.vue",
+      "files": {
+        "apps/docs/src/docs/pages/menu/vue/submenus.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Menu, Button, type MenuEntry } from \"minerva-design/vue\";\nconst result = ref(\"\");\nconst items: MenuEntry[] = [\n  {\n    key: \"share\",\n    label: \"Share\",\n    children: [\n      { key: \"email\", label: \"Email\" },\n      {\n        key: \"team\",\n        label: \"Team\",\n        children: [\n          { key: \"design\", label: \"Design\" },\n          { key: \"engineering\", label: \"Engineering\" },\n        ],\n      },\n    ],\n  },\n  {\n    key: \"export\",\n    label: \"Export\",\n    children: [\n      { key: \"pdf\", label: \"PDF\" },\n      { key: \"csv\", label: \"CSV\", disabled: true },\n    ],\n  },\n];\n</script>\n<template>\n  <div>\n    <Menu :items=\"items\" @select=\"(item) => (result = String(item.label))\"\n      ><Button>Nested actions</Button></Menu\n    ><output>{{ result }}</output>\n  </div>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "submenus",
+      "description": ""
+    },
+    {
+      "id": "triggers",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/menu/vue/triggers.vue",
+      "files": {
+        "apps/docs/src/docs/pages/menu/vue/triggers.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Menu, Button, type MenuEntry } from \"minerva-design/vue\";\nconst result = ref(\"\");\nconst items: MenuEntry[] = [\n  { key: \"edit\", label: \"Edit\", shortcut: \"⌘E\" },\n  { key: \"duplicate\", label: \"Duplicate\" },\n  { key: \"delete\", label: \"Delete\", disabled: true },\n];\n</script>\n<template>\n  <div style=\"display: flex; gap: 12px; align-items: center\">\n    <Menu :items=\"items\" @select=\"(item) => (result = String(item.label))\"\n      ><Button size=\"small\" variant=\"ghost\" aria-label=\"More actions\"\n        >⋯</Button\n      ></Menu\n    ><Menu :items=\"items\" @select=\"(item) => (result = String(item.label))\"\n      ><button\n        type=\"button\"\n        style=\"\n          border: 1px solid currentColor;\n          border-radius: 20px;\n          padding: 8px 16px;\n          background: transparent;\n          color: inherit;\n        \"\n      >\n        Custom trigger\n      </button></Menu\n    ><output>{{ result }}</output>\n  </div>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "triggers",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Menu",
+      "description": "An action menu opened from a button (Menu) or with a right click (ContextMenu): icons, shortcuts, separators, groups, checkbox items, radio groups, submenus, typeahead and full keyboard support (Enter, Space or ArrowDown open it on the first item, ArrowUp on the last; arrows wrap around and skip disabled items, Home / End, Tab closes it, Escape returns focus to the trigger). To pick a value from a list, use Select.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Items with icons and shortcut hints. onSelect receives the original item object, then the menu closes and focus returns to the trigger."
+        },
+        "triggers": {
+          "title": "Triggers",
+          "description": "Any button can be the trigger, such as a Button or an IconButton; label icon-only triggers. Pass aria-label to name the menu panel."
+        },
+        "groups": {
+          "title": "Groups, submenus and size",
+          "description": "Group entries with a label, separate them, and nest submenus with children. size=\"small\" makes items denser; side and align position the panel."
+        },
+        "submenus": {
+          "title": "Submenus",
+          "description": "Nest entries with children. ArrowRight, Enter or Space open a submenu on its first item and ArrowLeft or Escape close it only; with the pointer, submenus open on hover and stay open while the pointer moves diagonally towards them. With dir=\"rtl\" they open to the left and the arrow keys are swapped."
+        },
+        "checkbox-radio": {
+          "title": "Checkbox and radio items",
+          "description": "type: \"checkbox\" entries toggle (checked / defaultChecked + onCheckedChange) and type: \"radio-group\" entries hold mutually exclusive options (value / defaultValue + onValueChange). They keep the menu open so several options can be changed; set closeOnSelect on the entry to close it."
+        },
+        "placement": {
+          "title": "Placement",
+          "description": "side is the preferred side of the trigger and align the alignment against it; near the viewport edges the menu flips and shifts to stay visible."
+        },
+        "disabled": {
+          "title": "Disabled",
+          "description": "Disable individual items (they are skipped by the arrow keys) or the whole menu."
+        },
+        "context-menu": {
+          "title": "Context menu",
+          "description": "ContextMenu opens the same entries at the pointer on right click or long press (a new right click moves it), and at the area with Shift+F10 or the ContextMenu key. Focus moves to the first item and returns to the area on close."
+        },
+        "controlled": {
+          "title": "Controlled",
+          "description": "Control the open state with open and onOpenChange; defaultOpen sets the initial state when it is uncontrolled."
+        }
+      },
+      "api": {
+        "MenuProps": {
+          "children": "Trigger element (button); click, Enter, Space and ArrowDown open the menu (ArrowUp focuses the last item)",
+          "items": "Entries of the menu",
+          "onSelect": "Called with the original item object when an action is selected",
+          "closeOnSelect": "Whether selecting an action closes the menu (checkbox and radio items keep it open unless their entry sets closeOnSelect)",
+          "size": "Density of the items",
+          "align": "Alignment of the menu against the trigger",
+          "side": "Preferred side; the menu flips when there is not enough room",
+          "open": "Whether the menu is open (controlled; pair with onOpenChange)",
+          "defaultOpen": "Initial open state (uncontrolled)",
+          "onOpenChange": "Called when the menu opens or closes",
+          "disabled": "Disables the trigger",
+          "modal": "Modal menus block pointer interaction outside, trap focus, lock scrolling and hide the rest of the page from assistive technologies while open",
+          "loop": "Arrow keys wrap around from the last item to the first (and back)",
+          "dir": "Reading direction: in \"rtl\" submenus open to the left and ArrowLeft / ArrowRight are swapped",
+          "className": "Additional class name of the menu panel",
+          "aria-label": "Accessible label of the menu panel (defaults to the trigger's label)"
+        },
+        "ContextMenuProps": {
+          "children": "Area that opens the menu on right click / long press / Shift+F10 / ContextMenu key",
+          "items": "Entries of the menu",
+          "onSelect": "Called with the original item object when an action is selected",
+          "closeOnSelect": "Whether selecting an action closes the menu (checkbox and radio items keep it open unless their entry sets closeOnSelect)",
+          "size": "Density of the items",
+          "onOpenChange": "Called when the menu opens or closes",
+          "disabled": "Disables the context menu (the native one shows instead)",
+          "modal": "Modal menus block pointer interaction outside, trap focus, lock scrolling and hide the rest of the page from assistive technologies while open",
+          "loop": "Arrow keys wrap around from the last item to the first (and back)",
+          "dir": "Reading direction: in \"rtl\" submenus open to the left and ArrowLeft / ArrowRight are swapped",
+          "className": "Additional class name of the menu panel",
+          "aria-label": "Accessible label of the menu panel"
+        },
+        "MenuAction": {
+          "key": "Unique key of the item",
+          "label": "Content of the item",
+          "textValue": "Text used for typeahead when label is not plain text",
+          "icon": "Icon displayed before the label",
+          "shortcut": "Keyboard shortcut hint displayed after the label (display only)",
+          "disabled": "Disables the item",
+          "closeOnSelect": "Whether selecting this item closes the menu (overrides the menu's closeOnSelect)",
+          "children": "Entries of a submenu opened by this item"
+        },
+        "MenuCheckboxEntry": {
+          "type": "Entry type",
+          "key": "Unique key of the item",
+          "label": "Content of the item",
+          "textValue": "Text used for typeahead when label is not plain text",
+          "shortcut": "Keyboard shortcut hint displayed after the label (display only)",
+          "disabled": "Disables the item",
+          "checked": "Whether the item is checked (controlled; pair with onCheckedChange)",
+          "defaultChecked": "Initial checked state (uncontrolled)",
+          "onCheckedChange": "Called with the next checked state when the item is toggled",
+          "closeOnSelect": "Whether toggling the item closes the menu"
+        },
+        "MenuRadioGroupEntry": {
+          "type": "Entry type",
+          "key": "Unique key of the group",
+          "label": "Label displayed above the group (also names the group)",
+          "items": "Options of the group",
+          "value": "Selected value (controlled; pair with onValueChange)",
+          "defaultValue": "Initially selected value (uncontrolled)",
+          "onValueChange": "Called with the value of the option that was chosen",
+          "closeOnSelect": "Whether choosing an option closes the menu"
+        },
+        "MenuRadioItem": {
+          "value": "Value of the option (unique within the group)",
+          "label": "Content of the option",
+          "textValue": "Text used for typeahead when label is not plain text",
+          "shortcut": "Keyboard shortcut hint displayed after the label (display only)",
+          "disabled": "Disables the option"
+        },
+        "MenuSeparatorEntry": {
+          "type": "Entry type",
+          "key": "Unique key of the separator"
+        },
+        "MenuGroupEntry": {
+          "type": "Entry type",
+          "key": "Unique key of the group",
+          "label": "Label displayed above the group",
+          "items": "Entries of the group"
+        }
+      },
+      "cssVars": {
+        "--menu-min-width": "Minimum width of the menu panel",
+        "--menu-max-width": "Maximum width of the menu panel",
+        "--menu-max-height": "Maximum height of the menu panel (scrolls beyond)",
+        "--menu-padding": "Inner padding of the menu panel",
+        "--menu-radius": "Corner radius of the menu panel (defaults to --radius-lg)",
+        "--menu-shadow": "Shadow of the menu panel (defaults to --shadow-md)",
+        "--menu-item-height": "Minimum height of an item (every size; defaults to the density's control height)",
+        "--menu-z-index": "Stacking order of the menu panel (defaults to --z-popover)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Child elements describe the entries: items with an icon slot and a shortcut hint, a nested submenu, a separator, a labelled group and a disabled item. minerva-select gives the chosen value. Like React's Menu, panels fade in and, once closed, stay rendered with data-state=\"closed\" until their exit animation ends (none with prefers-reduced-motion)."
+          },
+          "checkbox-radio": {
+            "title": "Checkbox and radio items",
+            "description": "Checkbox items toggle and radio items of a <minerva-menu-group> are mutually exclusive; both keep the menu open and fire minerva-change."
+          },
+          "items": {
+            "title": "Entries from data",
+            "description": "The items property takes the React library's MenuEntry objects (radio group, separator, checkbox, action) instead of child elements. side / align place the menu, no-loop stops the arrow keys at the ends."
+          },
+          "context-menu": {
+            "title": "Context menu",
+            "description": "<minerva-context-menu> opens its entries at the pointer on right click or long press, or at the area with Shift+F10. The area is its other content."
+          }
+        },
+        "minerva-context-menu": {
+          "props": {
+            "keepOpen": "Selecting an action keeps the menu open.",
+            "nonModal": "Non-modal menu: the page stays interactive, focus is not trapped, scroll is not locked.",
+            "noLoop": "Arrow keys stop at the first / last item instead of wrapping.",
+            "direction": "Reading direction captured when the menu opens (from the closest dir attribute).",
+            "isModal": "Whether the menu currently behaves as modal (read-only).",
+            "entries": "Effective entries: items when set, else the ones read from the child elements (read-only)."
+          },
+          "events": {
+            "minerva-open-change": "The menu opens / asks to close (detail: { open, reason }); cancelable: preventDefault() keeps the current state.",
+            "minerva-select": "An action item was chosen (detail: { value, item }); cancelable: preventDefault() keeps the menu open.",
+            "minerva-change": "A checkbox item was toggled (detail: { value, checked, item }) or a radio option chosen (detail: { value, group, item }); cancelable: preventDefault() keeps the previous state."
+          },
+          "slots": {
+            "default": "The area (and the declarative menu entries, which are not displayed)."
+          },
+          "methods": {
+            "rootPlacement": "Placement of the root panel (internal, used by the positioning).",
+            "rootOffset": "Offset of the root panel (internal, used by the positioning).",
+            "show": "Opens the menu.",
+            "hide": "Closes the menu (and its submenus).",
+            "rootLayerOptions": "Layer options of the root panel (internal).",
+            "subLayerOptions": "Layer options of the submenus (internal)."
+          }
+        },
+        "minerva-menu-item": {
+          "props": {
+            "keepOpen": "Selecting this item keeps the menu open."
+          },
+          "slots": {
+            "default": "Label, and nested menu elements forming a submenu.",
+            "icon": "Icon displayed before the label."
+          }
+        },
+        "minerva-menu-checkbox-item": {
+          "slots": {
+            "default": "Label."
+          }
+        },
+        "minerva-menu-radio-item": {
+          "slots": {
+            "default": "Label."
+          }
+        },
+        "minerva-menu-group": {
+          "slots": {
+            "default": "Entries of the group."
+          }
+        },
+        "minerva-menu-label": {
+          "slots": {
+            "default": "Label text."
+          }
+        },
+        "minerva-menu": {
+          "props": {
+            "keepOpen": "Selecting an action keeps the menu open.",
+            "nonModal": "Non-modal menu: the page stays interactive, focus is not trapped, scroll is not locked.",
+            "noLoop": "Arrow keys stop at the first / last item instead of wrapping.",
+            "direction": "Reading direction captured when the menu opens (from the closest dir attribute).",
+            "isModal": "Whether the menu currently behaves as modal (read-only).",
+            "entries": "Effective entries: items when set, else the ones read from the child elements (read-only)."
+          },
+          "events": {
+            "minerva-open-change": "The menu opens / asks to close (detail: { open, reason }); cancelable: preventDefault() keeps the current state.",
+            "minerva-select": "An action item was chosen (detail: { value, item }, value = the item key / value attribute); cancelable: preventDefault() keeps the menu open.",
+            "minerva-change": "A checkbox item was toggled (detail: { value, checked, item }) or a radio option chosen (detail: { value, group, item }); cancelable: preventDefault() keeps the previous state."
+          },
+          "slots": {
+            "trigger": "The button opening the menu (gets aria-haspopup=\"menu\", aria-expanded and data-state)."
+          },
+          "methods": {
+            "rootPlacement": "Placement of the root panel (internal, used by the positioning).",
+            "rootOffset": "Offset of the root panel (internal, used by the positioning).",
+            "show": "Opens the menu.",
+            "hide": "Closes the menu (and its submenus).",
+            "rootLayerOptions": "Layer options of the root panel (internal).",
+            "subLayerOptions": "Layer options of the submenus (internal)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

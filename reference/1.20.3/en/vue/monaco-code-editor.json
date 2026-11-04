@@ -1,0 +1,349 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.3",
+  "locale": "en",
+  "renderer": "vue",
+  "page": "monaco-code-editor",
+  "title": "MonacoCodeEditor",
+  "description": "A labelled Monaco editor running on a local engine (never a CDN) that follows the page theme. If the engine cannot load or mount in time, it degrades to an editable textarea with a retry button. Import it from minerva-design/monaco; @monaco-editor/react and monaco-editor are optional peer dependencies. The Web Component <minerva-code-editor> is published as the optional entry minerva-design/web-components/code-editor (outside the all-in-one entry and the CDN bundle), with monaco-editor as its optional peer dependency.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.3",
+    "sourceCommit": "ea7fb3e1f55d184b7d737316e9ae829f4f7ff223",
+    "sourceDigest": "sha256:c9540edc3908d226375a01cf5e6bfe8ca6a4e20440f736c0dd9b40ae9ff2e645",
+    "referenceSourceDigest": "sha256:4cf6057856184f16240d0d22153ec370842fc7a2dfaaa66364e189fed89e6ca3"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "CodeEditor",
+      "support": {
+        "status": "n/a",
+        "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component."
+      }
+    },
+    {
+      "name": "MonacoCodeEditor",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue/monaco",
+          "exports": [
+            "MonacoCodeEditor"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "monaco",
+            "type": "typeof import(\"monaco-editor\")",
+            "required": false,
+            "description": "Local Monaco engine. Configure its workers in the host; never fetched from a CDN.",
+            "typeText": "typeof import(\"monaco-editor\")"
+          },
+          {
+            "name": "modelValue",
+            "type": "string",
+            "required": true,
+            "description": "Controlled source text, used with v-model.",
+            "typeText": "string"
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "required": true,
+            "description": "Visible and accessible editor label.",
+            "typeText": "string"
+          },
+          {
+            "name": "language",
+            "type": "string",
+            "default": "\"plaintext\"",
+            "required": false,
+            "typeText": "string"
+          },
+          {
+            "name": "height",
+            "type": "number",
+            "default": "420",
+            "required": false,
+            "typeText": "number"
+          },
+          {
+            "name": "minHeight",
+            "type": "number",
+            "default": "160",
+            "required": false,
+            "typeText": "number"
+          },
+          {
+            "name": "maxHeight",
+            "type": "number",
+            "default": "800",
+            "required": false,
+            "typeText": "number"
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "typeText": "boolean"
+          },
+          {
+            "name": "theme",
+            "type": "\"light\" | \"dark\"",
+            "required": false,
+            "typeText": "\"light\" | \"dark\""
+          },
+          {
+            "name": "loadTimeout",
+            "type": "number",
+            "default": "10000",
+            "required": false,
+            "description": "Time allowed for a late engine injection before showing the editable fallback.",
+            "typeText": "number"
+          },
+          {
+            "name": "unavailableText",
+            "type": "string",
+            "required": false,
+            "typeText": "string"
+          },
+          {
+            "name": "retryText",
+            "type": "string",
+            "required": false,
+            "typeText": "string"
+          },
+          {
+            "name": "retryLabel",
+            "type": "string",
+            "required": false,
+            "typeText": "string"
+          },
+          {
+            "name": "loadingLabel",
+            "type": "string",
+            "required": false,
+            "typeText": "string"
+          }
+        ],
+        "events": [
+          {
+            "name": "update:modelValue",
+            "type": "[value: string]",
+            "typeText": "[value: string]",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "typeText": "string",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "change",
+            "type": "[value: string]",
+            "typeText": "[value: string]",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "typeText": "string",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "modelValue",
+            "event": "update:modelValue",
+            "syntax": "v-model"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:MonacoCodeEditor": {
+      "kind": "cssVars",
+      "source": "react/src/components/MonacoCodeEditor",
+      "vars": [
+        {
+          "name": "--monaco-code-editor-radius",
+          "description": "Corner radius of the editor surface (defaults to --radius-md)"
+        },
+        {
+          "name": "--monaco-code-editor-border-color",
+          "description": "Border color of the editor surface"
+        },
+        {
+          "name": "--monaco-code-editor-bg",
+          "description": "Background color of the editor surface"
+        },
+        {
+          "name": "--monaco-code-editor-label-gap",
+          "description": "Space between the label and the editor"
+        },
+        {
+          "name": "--monaco-code-editor-font-size",
+          "description": "Font size of the label, the messages and the plain-text fallback"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/monaco-code-editor/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/monaco-code-editor/vue/basic.vue": "<script setup lang=\"ts\">\nimport { onMounted, shallowRef, ref } from \"vue\";\nimport { MonacoCodeEditor } from \"minerva-design/vue/monaco\";\nimport { Alert, Switch, Stack } from \"minerva-design/vue\";\n\nconst code = ref(\"<h1>Hello, Minerva</h1>\");\nconst disabled = ref(false);\nconst engine = shallowRef<typeof import(\"monaco-editor\")>();\nconst loadError = ref(\"\");\n// The host configures MonacoEnvironment.getWorker. The docs use a bundled\n// local worker; neither the editor nor its worker is fetched from a CDN.\nonMounted(async () => {\n  try {\n    engine.value = (await import(\"../engine\")).monaco;\n  } catch (error) {\n    loadError.value =\n      error instanceof Error\n        ? error.message\n        : \"The local editor engine could not be loaded.\";\n  }\n});\n</script>\n\n<template>\n  <Stack :gap=\"3\" style=\"width: 100%\">\n    <Switch v-model=\"disabled\" label=\"Read-only editor\" />\n    <Alert v-if=\"loadError\" color=\"danger\" title=\"Editor engine unavailable\">{{\n      loadError\n    }}</Alert>\n    <MonacoCodeEditor\n      v-model=\"code\"\n      :monaco=\"engine\"\n      label=\"HTML source\"\n      language=\"html\"\n      :disabled=\"disabled\"\n      :height=\"280\"\n    />\n    <output aria-live=\"polite\">{{ code.length }} characters</output>\n  </Stack>\n</template>\n",
+        "apps/docs/src/docs/pages/monaco-code-editor/engine.ts": "// Local Monaco engine for the docs demo (never fetched from a CDN). Loaded\n// on demand by demos/basic.tsx, so it stays out of the docs page chunk.\nimport * as monaco from \"monaco-editor/esm/vs/editor/editor.api\";\nimport \"monaco-editor/esm/vs/basic-languages/html/html.contribution\";\nimport EditorWorker from \"monaco-editor/esm/vs/editor/editor.worker?worker\";\n\nself.MonacoEnvironment = { getWorker: () => new EditorWorker() };\n\nexport { monaco };\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "monaco-editor",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "fallback",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/monaco-code-editor/vue/fallback.vue",
+      "files": {
+        "apps/docs/src/docs/pages/monaco-code-editor/vue/fallback.vue": "<script setup lang=\"ts\">\nimport { ref, shallowRef } from \"vue\";\nimport { MonacoCodeEditor } from \"minerva-design/vue/monaco\";\nimport { Alert, Button, Stack } from \"minerva-design/vue\";\n\nconst code = ref(\"Text stays editable while the engine is unavailable.\");\nconst engine = shallowRef<typeof import(\"monaco-editor\")>();\nconst loading = ref(false);\nconst loadError = ref(\"\");\nasync function recover() {\n  loading.value = true;\n  loadError.value = \"\";\n  try {\n    engine.value = (await import(\"../engine\")).monaco;\n  } catch (error) {\n    loadError.value =\n      error instanceof Error\n        ? error.message\n        : \"The local editor engine could not be loaded. Retry when it is available.\";\n  } finally {\n    loading.value = false;\n  }\n}\n</script>\n\n<template>\n  <Stack :gap=\"3\" style=\"width: 100%\">\n    <MonacoCodeEditor\n      v-model=\"code\"\n      :monaco=\"engine\"\n      label=\"Recoverable editor\"\n      :load-timeout=\"1\"\n      :height=\"220\"\n    />\n    <Button :loading=\"loading\" @click=\"recover\"\n      >Load local editor engine</Button\n    >\n    <Alert v-if=\"loadError\" color=\"danger\" title=\"Editor engine unavailable\">{{\n      loadError\n    }}</Alert>\n    <output>{{ code }}</output>\n  </Stack>\n</template>\n",
+        "apps/docs/src/docs/pages/monaco-code-editor/engine.ts": "// Local Monaco engine for the docs demo (never fetched from a CDN). Loaded\n// on demand by demos/basic.tsx, so it stays out of the docs page chunk.\nimport * as monaco from \"monaco-editor/esm/vs/editor/editor.api\";\nimport \"monaco-editor/esm/vs/basic-languages/html/html.contribution\";\nimport EditorWorker from \"monaco-editor/esm/vs/editor/editor.worker?worker\";\n\nself.MonacoEnvironment = { getWorker: () => new EditorWorker() };\n\nexport { monaco };\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "monaco-editor",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "fallback",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "MonacoCodeEditor",
+      "description": "A labelled Monaco editor running on a local engine (never a CDN) that follows the page theme. If the engine cannot load or mount in time, it degrades to an editable textarea with a retry button. Import it from minerva-design/monaco; @monaco-editor/react and monaco-editor are optional peer dependencies. The Web Component <minerva-code-editor> is published as the optional entry minerva-design/web-components/code-editor (outside the all-in-one entry and the CDN bundle), with monaco-editor as its optional peer dependency.",
+      "demos": {
+        "basic": {
+          "title": "Lazy-loaded editor",
+          "description": "The editor and the local engine (with its worker configured by the host) are loaded on demand. Without the engine the textarea fallback is shown."
+        }
+      },
+      "api": {
+        "MonacoCodeEditorProps": {
+          "monaco": "Local Monaco engine (import * as monaco from \"monaco-editor\"); one per application",
+          "value": "Source text (controlled)",
+          "onChange": "Called with the new source text",
+          "language": "Monaco language id",
+          "label": "Visible label, also the accessible name of the editor",
+          "height": "Height in pixels, clamped to [minHeight, maxHeight]",
+          "minHeight": "Minimum height in pixels",
+          "maxHeight": "Maximum height in pixels",
+          "disabled": "Makes the editor (and its fallback) read-only",
+          "theme": "Color theme; defaults to the page theme (data-theme on <html>, then ConfigProvider)",
+          "loadTimeout": "Milliseconds to wait for the engine before showing the fallback",
+          "unavailableText": "Message shown above the fallback textarea",
+          "retryText": "Text of the retry button",
+          "retryLabel": "Accessible label of the retry button",
+          "loadingLabel": "Accessible label of the loading indicator",
+          "className": "Additional class name",
+          "style": "Inline styles of the root element"
+        }
+      },
+      "cssVars": {
+        "--monaco-code-editor-radius": "Corner radius of the editor surface (defaults to --radius-md)",
+        "--monaco-code-editor-border-color": "Border color of the editor surface",
+        "--monaco-code-editor-bg": "Background color of the editor surface",
+        "--monaco-code-editor-label-gap": "Space between the label and the editor",
+        "--monaco-code-editor-font-size": "Font size of the label, the messages and the plain-text fallback"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Local engine, theme and form",
+            "description": "Load the optional entry minerva-design/web-components/code-editor and the application's own Monaco engine, then set it as the monaco property. The editor follows the page / <minerva-config> theme, fires minerva-input on each edit (React's onChange) and submits its value with the form."
+          },
+          "fallback": {
+            "title": "Loading, fallback and late engine",
+            "description": "Without an engine the editor shows its loading state, then after load-timeout an editable textarea with a Retry button (minerva-error fires). Providing the engine later loads the editor with the latest value."
+          }
+        },
+        "minerva-code-editor": {
+          "props": {
+            "name": "Name under which the value is submitted with the form.",
+            "required": "The control must have a value for the form to be submitted.",
+            "isDisabled": "Whether the control is disabled, by itself or by a disabled <fieldset> (read-only).",
+            "form": "The form owning the element (read-only).",
+            "labels": "The <label> elements associated with the element (read-only).",
+            "validity": "Validity state, like <input>.validity (read-only).",
+            "validationMessage": "Message of the current validation error; empty when valid (read-only).",
+            "willValidate": "Whether the element takes part in constraint validation (read-only).",
+            "defaultValue": "Initial source text (the value attribute), restored by form.reset(). Changing it also changes value until the user edits the code.",
+            "resolvedTheme": "Theme actually applied: theme, else the closest data-theme (a <minerva-config> scope, then <html>) (read-only).",
+            "monaco": "Local Monaco engine (import * as monaco from \"monaco-editor\"), set as a property; one per application. Never loaded from a CDN.",
+            "value": "Source text (property; the value attribute sets defaultValue). Updated on each edit; setting it applies the text as an undoable edit.",
+            "theme": "Color theme (light or dark); defaults to the theme of the element's scope (closest data-theme: a <minerva-config>, then <html>), followed live.",
+            "disabled": "Makes the editor (and its fallback) read-only; not submitted, not validated.",
+            "loadTimeout": "Milliseconds to wait for the engine and the editor before showing the textarea fallback (also when no engine is set yet)."
+          },
+          "events": {
+            "input": "The value changed (each edit; composed).",
+            "change": "The value was committed: the editor lost focus after an edit.",
+            "minerva-input": "Same as input, with detail: { value } (React's onChange).",
+            "minerva-change": "Same as change, with detail: { value }.",
+            "minerva-error": "The editor became unavailable (no engine in time, invalid engine, or it threw) and the textarea fallback is shown."
+          },
+          "slots": {
+            "editor": "Created by the element: the light DOM <div> Monaco renders into, so the stylesheets Monaco adds to the document apply. Do not fill it yourself."
+          },
+          "methods": {
+            "focus": "Focuses the editor (or its fallback textarea).",
+            "retry": "Tries to load the editor again (what the Retry button does).",
+            "checkValidity": "Checks validity; fires invalid when the element is invalid.",
+            "reportValidity": "Checks validity and shows the browser's validation message.",
+            "setCustomValidity": "Sets a custom validation error, or clears it with an empty string.",
+            "formResetCallback": "Form lifecycle callback called by form.reset(): restores the initial value.",
+            "formDisabledCallback": "Form lifecycle callback called when an ancestor <fieldset> is disabled or enabled.",
+            "formStateRestoreCallback": "Form lifecycle callback called when the browser restores the state (history navigation, autofill)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        },
+        "limitations": "Native CodeEditor is an accessible multiline source editor with an optional formatter. Monaco requires the DOM and is not embedded on iOS or Android."
+      }
+    }
+  }
+}

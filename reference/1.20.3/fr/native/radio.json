@@ -1,0 +1,805 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.3",
+  "locale": "fr",
+  "renderer": "native",
+  "page": "radio",
+  "title": "Radio",
+  "description": "Permet de choisir une seule option parmi plusieurs. Utilisez RadioGroup pour gérer la sélection de plusieurs boutons radio.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.3",
+    "sourceCommit": "ea7fb3e1f55d184b7d737316e9ae829f4f7ff223",
+    "sourceDigest": "sha256:c9540edc3908d226375a01cf5e6bfe8ca6a4e20440f736c0dd9b40ae9ff2e645",
+    "referenceSourceDigest": "sha256:4cf6057856184f16240d0d22153ec370842fc7a2dfaaa66364e189fed89e6ca3"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Radio",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "Radio"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "checked",
+            "source": "packages/native/src/components/Radio/Radio.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Whether the radio is checked (controlled). Ignored inside a RadioGroup"
+          },
+          {
+            "name": "defaultChecked",
+            "source": "packages/native/src/components/Radio/Radio.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Initial checked state (uncontrolled). Ignored inside a RadioGroup"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/native/src/components/Radio/Radio.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables the radio (also set by a disabled group)"
+          },
+          {
+            "name": "value",
+            "source": "packages/native/src/components/Radio/Radio.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Value of the radio; identifies it within a RadioGroup"
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/components/Radio/Radio.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "NativeSize | undefined",
+            "typeRef": "type:3e1597e03bb6f7f3269e",
+            "default": "medium",
+            "required": false,
+            "description": "Radio size (the RadioGroup size overrides it)"
+          },
+          {
+            "name": "color",
+            "source": "packages/native/src/components/Radio/Radio.tsx",
+            "kind": "enum",
+            "values": [
+              "danger",
+              "primary",
+              "success",
+              "warning"
+            ],
+            "typeText": "RadioColor | undefined",
+            "typeRef": "type:3fa57b39653f0fba3631",
+            "default": "primary",
+            "required": false,
+            "description": "Semantic color of the checked radio (the RadioGroup color overrides it)"
+          },
+          {
+            "name": "label",
+            "source": "packages/native/src/components/Radio/Radio.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Label displayed next to the radio (a string also names it)"
+          },
+          {
+            "name": "error",
+            "source": "packages/native/src/components/Radio/Radio.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Error state: danger border (also set by an invalid group)"
+          },
+          {
+            "name": "labelPlacement",
+            "source": "packages/native/src/components/Radio/Radio.tsx",
+            "kind": "enum",
+            "values": [
+              "bottom",
+              "end",
+              "start",
+              "top"
+            ],
+            "typeText": "LabelPlacement | undefined",
+            "typeRef": "type:6686aa99dfdd3afb9058",
+            "default": "end",
+            "required": false,
+            "description": "Position of the label relative to the circle"
+          },
+          {
+            "name": "labelStyle",
+            "source": "packages/native/src/components/Radio/Radio.tsx",
+            "kind": "union",
+            "typeText": "StyleProp<TextStyle>",
+            "typeRef": "type:175f7626ef7c69988283",
+            "required": false,
+            "description": "Style of the label text"
+          }
+        ],
+        "events": [
+          {
+            "name": "onChange",
+            "source": "packages/native/src/components/Radio/Radio.tsx",
+            "kind": "function",
+            "typeText": "((checked: boolean, value?: string | undefined) => void) | undefined",
+            "typeRef": "type:a829f02b3762172d27cf",
+            "parameters": [
+              {
+                "name": "checked",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              },
+              {
+                "name": "value",
+                "position": 1,
+                "required": false,
+                "rest": false,
+                "typeText": "string | undefined",
+                "typeRef": "type:c59382f9551703242861"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a press checks the radio, with its `value`"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "onChange",
+            "syntax": "value={value} onChange={handler}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RadioGroup",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "RadioGroup"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "value",
+            "source": "packages/native/src/components/Radio/RadioGroup.tsx",
+            "kind": "string",
+            "typeText": "string | null | undefined",
+            "typeRef": "type:5d93807f845ffb9259f1",
+            "required": false,
+            "description": "Value of the selected radio (controlled; `null`: none selected)"
+          },
+          {
+            "name": "defaultValue",
+            "source": "packages/native/src/components/Radio/RadioGroup.tsx",
+            "kind": "string",
+            "typeText": "string | null | undefined",
+            "typeRef": "type:5d93807f845ffb9259f1",
+            "default": null,
+            "required": false,
+            "description": "Initially selected value (uncontrolled)"
+          },
+          {
+            "name": "direction",
+            "source": "packages/native/src/components/Radio/RadioGroup.tsx",
+            "kind": "enum",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
+            "typeText": "\"horizontal\" | \"vertical\" | undefined",
+            "typeRef": "type:4e4ac2a46972f482e8a6",
+            "default": "vertical",
+            "required": false,
+            "description": "Layout direction of the radios"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/native/src/components/Radio/RadioGroup.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables every radio in the group"
+          },
+          {
+            "name": "readOnly",
+            "source": "packages/native/src/components/Radio/RadioGroup.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Radios show the value but presses do not change it"
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/components/Radio/RadioGroup.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "NativeSize | undefined",
+            "typeRef": "type:3e1597e03bb6f7f3269e",
+            "required": false,
+            "description": "Size of every radio"
+          },
+          {
+            "name": "color",
+            "source": "packages/native/src/components/Radio/RadioGroup.tsx",
+            "kind": "enum",
+            "values": [
+              "danger",
+              "primary",
+              "success",
+              "warning"
+            ],
+            "typeText": "RadioColor | undefined",
+            "typeRef": "type:3fa57b39653f0fba3631",
+            "required": false,
+            "description": "Color of every checked radio"
+          },
+          {
+            "name": "label",
+            "source": "packages/native/src/components/Radio/RadioGroup.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Visible label of the group; a string is also its accessible name"
+          },
+          {
+            "name": "error",
+            "source": "packages/native/src/components/Radio/RadioGroup.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Error state of every radio"
+          },
+          {
+            "name": "options",
+            "source": "packages/native/src/components/Radio/RadioGroup.tsx",
+            "kind": "array",
+            "typeText": "readonly (string | RadioGroupOption)[] | undefined",
+            "typeRef": "type:adc89398022b050ddae8",
+            "required": false,
+            "description": "Radios built from data (else pass `<Radio value>` children)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onChange",
+            "source": "packages/native/src/components/Radio/RadioGroup.tsx",
+            "kind": "function",
+            "typeText": "((value: string) => void) | undefined",
+            "typeRef": "type:703d0c984ae2bf9ac25e",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "string",
+                "typeRef": "type:e15e314d298fc0d116fc"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the value of the radio the user selected"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "onChange",
+            "syntax": "value={value} onChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "native:RadioProps": {
+      "source": "native/src/components/Radio/Radio.tsx",
+      "kind": "interface",
+      "extends": [
+        "Omit<PressableProps, \"children\" | \"style\" | \"disabled\" | \"onPress\">"
+      ],
+      "props": [
+        {
+          "name": "checked",
+          "type": "boolean",
+          "required": false,
+          "description": "Whether the radio is checked (controlled). Ignored inside a RadioGroup"
+        },
+        {
+          "name": "defaultChecked",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Initial checked state (uncontrolled). Ignored inside a RadioGroup"
+        },
+        {
+          "name": "onChange",
+          "type": "(checked: boolean, value?: string) => void",
+          "required": false,
+          "description": "Called when a press checks the radio, with its `value`"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Disables the radio (also set by a disabled group)"
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "required": false,
+          "description": "Value of the radio; identifies it within a RadioGroup"
+        },
+        {
+          "name": "size",
+          "type": "RadioSize",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Radio size (the RadioGroup size overrides it)"
+        },
+        {
+          "name": "color",
+          "type": "RadioColor",
+          "required": false,
+          "default": "\"primary\"",
+          "description": "Semantic color of the checked radio (the RadioGroup color overrides it)"
+        },
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Label displayed next to the radio (a string also names it)"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Label content, when `label` is not set"
+        },
+        {
+          "name": "error",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Error state: danger border (also set by an invalid group)"
+        },
+        {
+          "name": "labelPlacement",
+          "type": "RadioLabelPlacement",
+          "required": false,
+          "default": "\"end\"",
+          "description": "Position of the label relative to the circle"
+        },
+        {
+          "name": "style",
+          "type": "StyleProp<ViewStyle>",
+          "required": false,
+          "description": "Style of the pressable root"
+        },
+        {
+          "name": "labelStyle",
+          "type": "StyleProp<TextStyle>",
+          "required": false,
+          "description": "Style of the label text"
+        }
+      ]
+    },
+    "native:RadioGroupProps": {
+      "source": "native/src/components/Radio/RadioGroup.tsx",
+      "kind": "interface",
+      "extends": [
+        "Omit<ViewProps, \"style\">"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "type": "string | null",
+          "required": false,
+          "description": "Value of the selected radio (controlled; `null`: none selected)"
+        },
+        {
+          "name": "defaultValue",
+          "type": "string | null",
+          "required": false,
+          "default": "null",
+          "description": "Initially selected value (uncontrolled)"
+        },
+        {
+          "name": "onChange",
+          "type": "(value: string) => void",
+          "required": false,
+          "description": "Called with the value of the radio the user selected"
+        },
+        {
+          "name": "direction",
+          "type": "\"vertical\" | \"horizontal\"",
+          "required": false,
+          "default": "\"vertical\"",
+          "description": "Layout direction of the radios"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Disables every radio in the group"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Radios show the value but presses do not change it"
+        },
+        {
+          "name": "size",
+          "type": "RadioSize",
+          "required": false,
+          "default": "each radio's own",
+          "description": "Size of every radio"
+        },
+        {
+          "name": "color",
+          "type": "RadioColor",
+          "required": false,
+          "default": "each radio's own",
+          "description": "Color of every checked radio"
+        },
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Visible label of the group; a string is also its accessible name"
+        },
+        {
+          "name": "error",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Error state of every radio"
+        },
+        {
+          "name": "options",
+          "type": "readonly (string | RadioGroupOption)[]",
+          "required": false,
+          "description": "Radios built from data (else pass `<Radio value>` children)"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": false,
+          "description": "`<Radio value>` children"
+        },
+        {
+          "name": "style",
+          "type": "StyleProp<ViewStyle>",
+          "required": false,
+          "description": "Style of the root view"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Radio": {
+      "kind": "cssVars",
+      "source": "react/src/components/Radio",
+      "vars": [
+        {
+          "name": "--radio-checked-color",
+          "description": "Color of the checked mark (defaults to the color prop's accent)"
+        },
+        {
+          "name": "--radio-dot-color",
+          "description": "Color of the inner dot of the checked mark"
+        },
+        {
+          "name": "--radio-border-color",
+          "description": "Border of the unchecked mark"
+        },
+        {
+          "name": "--radio-background",
+          "description": "Background of the unchecked mark"
+        },
+        {
+          "name": "--radio-size",
+          "description": "Width and height of the mark (every size)"
+        },
+        {
+          "name": "--radio-gap",
+          "description": "Space between the mark and the label"
+        },
+        {
+          "name": "--radio-label-font-size",
+          "description": "Font size of the label (every size)"
+        },
+        {
+          "name": "--radio-group-gap",
+          "description": "Space between the radios of a RadioGroup"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/radio/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/radio/native/basic.tsx": "import { Radio, RadioGroup } from \"minerva-design/native\";\nexport default function Basic() {\n  return (\n    <RadioGroup label=\"Favourite fruit\" defaultValue=\"apple\">\n      <Radio value=\"apple\" label=\"Apple\" />\n      <Radio value=\"banana\" label=\"Banana\" />\n      <Radio value=\"cherry\" label=\"Cherry\" />\n    </RadioGroup>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Utilisation de base",
+      "description": "Apple est sélectionnée au départ ; Banana ou Cherry remplace ce choix."
+    },
+    {
+      "id": "controlled",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/radio/native/controlled.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/radio/native/controlled.tsx": "import { useState } from \"react\";\nimport { Text, View } from \"react-native\";\nimport { Radio, RadioGroup, useTheme } from \"minerva-design/native\";\nexport default function Controlled() {\n  const [plan, setPlan] = useState(\"pro\");\n  const { colors } = useTheme();\n  return (\n    <View style={{ gap: 12, alignItems: \"flex-start\" }}>\n      <RadioGroup label=\"Plan\" value={plan} onChange={setPlan}>\n        <Radio value=\"free\" label=\"Free\" />\n        <Radio value=\"pro\" label=\"Pro\" />\n        <Radio value=\"team\" label=\"Team\" />\n      </RadioGroup>\n      <Text role=\"status\" style={{ color: colors[\"text-color\"] }}>\n        Selected plan: {plan}\n      </Text>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "Mode contrôlé",
+      "description": "Pro est sélectionné au départ. Un autre choix met à jour le résultat affiché."
+    },
+    {
+      "id": "disabled",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/radio/native/disabled.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/radio/native/disabled.tsx": "import { View } from \"react-native\";\nimport { Radio, RadioGroup } from \"minerva-design/native\";\n\nexport default function DisabledDemo() {\n  return (\n    <View style={{ gap: 12 }}>\n      <RadioGroup\n        label=\"Partly disabled\"\n        defaultValue=\"a\"\n        direction=\"horizontal\"\n      >\n        <Radio value=\"a\" label=\"Available\" />\n        <Radio value=\"b\" label=\"Sold out\" disabled />\n      </RadioGroup>\n      <RadioGroup\n        label=\"Disabled group\"\n        defaultValue=\"a\"\n        direction=\"horizontal\"\n        disabled\n      >\n        <Radio value=\"a\" label=\"Option A\" />\n        <Radio value=\"b\" label=\"Option B\" />\n      </RadioGroup>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "Désactivé",
+      "description": "Sold out est désactivé et Available reste sélectionné. Le groupe désactivé conserve Option A."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Radio",
+      "description": "Permet de choisir une seule option parmi plusieurs. Utilisez RadioGroup pour gérer la sélection de plusieurs boutons radio.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Apple est sélectionnée au départ ; Banana ou Cherry remplace ce choix."
+        },
+        "controlled": {
+          "title": "Mode contrôlé",
+          "description": "Pro est sélectionné au départ. Un autre choix met à jour le résultat affiché."
+        },
+        "horizontal": {
+          "title": "Disposition horizontale",
+          "description": "Les boutons sont empilés verticalement par défaut ; direction=\"horizontal\" les aligne sur une ligne."
+        },
+        "sizes": {
+          "title": "Tailles",
+          "description": "Trois tailles : small, medium (par défaut) et large. La taille du groupe s'applique à tous ses boutons."
+        },
+        "colors": {
+          "title": "Couleurs",
+          "description": "color définit la couleur sémantique d'un bouton radio : primary (par défaut), success, warning ou danger. La couleur d'un RadioGroup s'applique à tous ses boutons et remplace leur propre couleur."
+        },
+        "disabled": {
+          "title": "Désactivé",
+          "description": "Sold out est désactivé et Available reste sélectionné. Le groupe désactivé conserve Option A."
+        },
+        "validation": {
+          "title": "Validation et texte d'aide",
+          "description": "RadioGroup prend en charge required, error et helperText. Un Radio seul peut afficher errorMessage (avec errorIcon) ou helperText."
+        }
+      },
+      "api": {
+        "RadioProps": {
+          "checked": "Indique si le bouton est coché (contrôlé). Ignoré dans un RadioGroup",
+          "defaultChecked": "État coché initial (non contrôlé). Ignoré dans un RadioGroup",
+          "disabled": "Désactive le bouton radio",
+          "name": "Attribut name natif. Dans un RadioGroup, le name du groupe est utilisé",
+          "value": "Valeur du bouton ; l'identifie au sein d'un RadioGroup",
+          "onChange": "Appelé quand l'état coché change (bouton seul uniquement ; dans un groupe, utilisez le onChange de RadioGroup)",
+          "size": "Taille du bouton. Remplacée par la taille du RadioGroup",
+          "label": "Libellé affiché à côté du bouton",
+          "aria-label": "Libellé accessible, obligatoire en l'absence de libellé visible",
+          "className": "Classe CSS supplémentaire",
+          "color": "Couleur sémantique du bouton radio coché. Remplacée par la couleur du RadioGroup lorsque le groupe en définit une",
+          "required": "Rend le champ obligatoire",
+          "error": "Affiche l'état d'erreur (errorMessage remplace helperText)",
+          "errorIcon": "Icône affichée avant le message d'erreur",
+          "errorMessage": "Message affiché sous le bouton lorsque error vaut true (lié via aria-describedby)",
+          "helperText": "Texte d'aide affiché sous le bouton (lié via aria-describedby)",
+          "ref": "Ref vers l'élément natif <input type=\"radio\">",
+          "children": "Contenu du libellé (alternative à label ; utilisé si label est absent)",
+          "aria-labelledby": "id du ou des éléments qui étiquettent le bouton radio",
+          "aria-describedby": "Ids supplémentaires d’éléments décrivant le bouton radio (fusionnés avec le texte d’aide / d’erreur)",
+          "id": "id de le bouton radio",
+          "style": "Styles en ligne de l’enveloppe racine"
+        },
+        "RadioGroupProps": {
+          "value": "Valeur du bouton sélectionné (contrôlé)",
+          "defaultValue": "Valeur sélectionnée initialement (non contrôlé)",
+          "name": "Nom partagé par tous les boutons du groupe (un nom unique est généré s'il est omis, pour que la navigation aux flèches fonctionne toujours)",
+          "label": "Libellé visible du groupe ; c'est aussi son nom accessible",
+          "aria-label": "Libellé accessible du groupe en l'absence de libellé visible",
+          "onChange": "Appelé avec la nouvelle valeur sélectionnée",
+          "disabled": "Désactive tous les boutons du groupe",
+          "children": "Éléments Radio",
+          "className": "Classe CSS supplémentaire",
+          "direction": "Direction de disposition des boutons",
+          "size": "Taille appliquée à tous les boutons du groupe",
+          "error": "Affiche l'état d'erreur",
+          "helperText": "Texte d'aide affiché sous le groupe (lié via aria-describedby)",
+          "required": "Rend le groupe obligatoire (aria-required)",
+          "color": "Couleur sémantique appliquée à tous les boutons du groupe (remplace leur propre couleur) ; sans elle, chaque bouton utilise sa propre couleur",
+          "ref": "Ref vers l'élément conteneur racine",
+          "aria-labelledby": "id du ou des éléments qui étiquettent le groupe (prioritaire sur label)",
+          "aria-describedby": "Ids supplémentaires d’éléments décrivant le groupe (fusionnés avec le texte d’aide / d’erreur)",
+          "id": "id de l’élément role=\"radiogroup\"",
+          "style": "Styles en ligne de l’enveloppe racine"
+        }
+      },
+      "cssVars": {
+        "--radio-checked-color": "Couleur de la marque sélectionnée (par défaut l'accent de la prop color)",
+        "--radio-dot-color": "Couleur du point intérieur de la marque sélectionnée",
+        "--radio-border-color": "Bordure de la marque non sélectionnée",
+        "--radio-background": "Fond de la marque non sélectionnée",
+        "--radio-size": "Largeur et hauteur de la marque (toutes tailles)",
+        "--radio-gap": "Espace entre la marque et le libellé",
+        "--radio-label-font-size": "Taille de police du libellé (toutes tailles)",
+        "--radio-group-gap": "Espace entre les boutons radio d'un RadioGroup"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Un groupe libellé avec une valeur présélectionnée et une option désactivée. Le groupe est un seul arrêt de tabulation ; les flèches déplacent et sélectionnent. minerva-change signale la nouvelle valeur."
+          },
+          "styles-states": {
+            "title": "Styles et états",
+            "description": "Direction horizontale, tailles et couleurs du groupe, messages d’aide et d’erreur par option, et groupe désactivé."
+          },
+          "form": {
+            "title": "Dans un formulaire",
+            "description": "Le groupe est le contrôle de formulaire : il envoie la valeur sélectionnée sous name, required bloque l’envoi tant que rien n’est choisi, et reset restaure l’attribut value."
+          }
+        },
+        "minerva-radio": {
+          "props": {
+            "group": "Le <minerva-radio-group> auquel appartient le bouton radio (lecture seule).",
+            "isDisabled": "Indique si le bouton radio ne peut pas être coché, par lui-même ou via son groupe (lecture seule)."
+          },
+          "events": {
+            "minerva-change": "Un bouton radio isolé a été coché par l’utilisateur ; detail : { checked: true, value }. Dans un groupe, c’est le groupe qui l’émet."
+          },
+          "slots": {
+            "default": "Contenu du libellé (alternative à l’attribut label)."
+          }
+        },
+        "minerva-radio-group": {
+          "props": {
+            "radios": "Les enfants <minerva-radio> du groupe (lecture seule).",
+            "isDisabled": "Indique si le contrôle est désactivé, par lui-même ou par un <fieldset> désactivé (lecture seule).",
+            "form": "Le formulaire auquel appartient l’élément (lecture seule).",
+            "labels": "Les éléments <label> associés à l’élément (lecture seule).",
+            "validity": "État de validité, comme <input>.validity (lecture seule).",
+            "validationMessage": "Message de l’erreur de validation courante ; vide si la valeur est valide (lecture seule).",
+            "willValidate": "Indique si l’élément participe à la validation des contraintes (lecture seule)."
+          },
+          "events": {
+            "change": "L’utilisateur a sélectionné un autre bouton radio (comme les radios natifs).",
+            "minerva-change": "L’utilisateur a sélectionné un autre bouton radio ; detail : { value }."
+          },
+          "slots": {
+            "default": "Les options <minerva-radio>."
+          },
+          "methods": {
+            "focus": "Donne le focus au bouton radio coché, sinon au premier actif.",
+            "checkValidity": "Vérifie la validité ; déclenche invalid si l’élément est invalide.",
+            "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+            "setCustomValidity": "Définit une erreur de validation personnalisée, ou l’efface avec une chaîne vide.",
+            "formResetCallback": "Rappel du cycle de vie du formulaire appelé par form.reset() : restaure la valeur initiale.",
+            "formDisabledCallback": "Rappel du cycle de vie du formulaire appelé quand un <fieldset> ancêtre est désactivé ou réactivé.",
+            "formStateRestoreCallback": "Rappel du cycle de vie du formulaire appelé quand le navigateur restaure l’état (navigation dans l’historique, remplissage automatique)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Apple est sélectionnée au départ ; Banana ou Cherry remplace ce choix."
+          },
+          "controlled": {
+            "title": "Mode contrôlé",
+            "description": "Pro est sélectionné au départ. Un autre choix met à jour le résultat affiché."
+          },
+          "disabled": {
+            "title": "Désactivé",
+            "description": "Sold out est désactivé et Available reste sélectionné. Le groupe désactivé conserve Option A."
+          }
+        }
+      }
+    }
+  }
+}

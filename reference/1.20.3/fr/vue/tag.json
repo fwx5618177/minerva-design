@@ -1,0 +1,430 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.3",
+  "locale": "fr",
+  "renderer": "vue",
+  "page": "tag",
+  "title": "Tag",
+  "description": "Petites étiquettes pour marquer et catégoriser du contenu ; elles peuvent être fermables ou cliquables.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.3",
+    "sourceCommit": "ea7fb3e1f55d184b7d737316e9ae829f4f7ff223",
+    "sourceDigest": "sha256:c9540edc3908d226375a01cf5e6bfe8ca6a4e20440f736c0dd9b40ae9ff2e645",
+    "referenceSourceDigest": "sha256:4cf6057856184f16240d0d22153ec370842fc7a2dfaaa66364e189fed89e6ca3"
+  },
+  "content": {
+    "accessibility": {
+      "title": "Accessibilité",
+      "clickable": "Avec clickable, le tag reçoit role=\"button\" et tabIndex=0, et Entrée ou Espace déclenchent onClick comme un clic. Réservez-le aux actions ou bascules, pas à la navigation (utilisez un lien).",
+      "closable": "Le bouton de fermeture est un <button> natif avec son propre arrêt de tabulation. Son nom accessible est « Close » par défaut ; définissez closeLabel (ex. « Remove React ») pour indiquer quel tag il supprime.",
+      "disabled": "Un tag cliquable désactivé conserve role=\"button\" avec aria-disabled=\"true\" et est ignoré par Tab. Si l'état sélectionné compte, exprimez-le aussi par du texte ou des attributs aria, pas seulement par la couleur."
+    }
+  },
+  "components": [
+    {
+      "name": "Tag",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "Tag"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "color",
+            "type": "ColorScheme",
+            "default": "\"neutral\"",
+            "required": false,
+            "description": "Semantic color of the tag",
+            "typeText": "ColorScheme"
+          },
+          {
+            "name": "variant",
+            "type": "\"subtle\" | \"outline\" | \"solid\"",
+            "default": "\"subtle\"",
+            "required": false,
+            "description": "Visual style: `subtle` (tinted background), `outline` (tinted background\nwith a border) or `solid` (filled with the color, inverse text)",
+            "typeText": "\"subtle\" | \"outline\" | \"solid\""
+          },
+          {
+            "name": "size",
+            "type": "TagSize",
+            "default": "\"medium\"",
+            "required": false,
+            "description": "Tag size",
+            "typeText": "TagSize"
+          },
+          {
+            "name": "shape",
+            "type": "TagShape",
+            "default": "\"rounded\"",
+            "required": false,
+            "description": "Tag shape",
+            "typeText": "TagShape"
+          },
+          {
+            "name": "closable",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Shows a close button",
+            "typeText": "boolean"
+          },
+          {
+            "name": "clickable",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Renders the tag content as a native button (focusable, activated with\nEnter / Space). With closable, the close button is a sibling button",
+            "typeText": "boolean"
+          },
+          {
+            "name": "pressed",
+            "type": "boolean",
+            "required": false,
+            "description": "Pressed (selected) state of a toggle tag, e.g. a selectable filter\n(requires clickable); sets aria-pressed and the selected style",
+            "typeText": "boolean"
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Shows a spinner instead of the icon / avatar, marks the tag busy and\nblocks its action; the close button is hidden",
+            "typeText": "boolean"
+          },
+          {
+            "name": "elevation",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Shows a shadow",
+            "typeText": "boolean"
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Disables the tag and its close button",
+            "typeText": "boolean"
+          },
+          {
+            "name": "closeLabel",
+            "type": "string | ((label: string) => string)",
+            "required": false,
+            "description": "Accessible label of the close button: a string, or a function of the\ntag's text label (the text of its children)",
+            "typeText": "string | ((label: string) => string)"
+          },
+          {
+            "name": "ripple",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Shows a ripple effect when a clickable tag is activated",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [
+          {
+            "name": "close",
+            "type": "[event: MouseEvent]",
+            "typeText": "[event: MouseEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "MouseEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "click",
+            "type": "[event: MouseEvent]",
+            "typeText": "[event: MouseEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "MouseEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "description": "Content of the tag",
+            "typeText": "any"
+          },
+          {
+            "name": "icon",
+            "type": "any",
+            "description": "Icon displayed before the content",
+            "typeText": "any"
+          },
+          {
+            "name": "avatar",
+            "type": "any",
+            "description": "Avatar (e.g. a small Avatar or image) displayed before the content",
+            "typeText": "any"
+          },
+          {
+            "name": "close-icon",
+            "type": "any",
+            "description": "Custom close icon",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Tag": {
+      "kind": "cssVars",
+      "source": "react/src/components/Tag",
+      "vars": [
+        {
+          "name": "--tag-height",
+          "description": "Minimum height (every size; default: the content height)"
+        },
+        {
+          "name": "--tag-padding-x",
+          "description": "Horizontal padding (every size)"
+        },
+        {
+          "name": "--tag-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--tag-radius",
+          "description": "Corner radius of the rounded shape (defaults to --radius-sm)"
+        },
+        {
+          "name": "--tag-gap",
+          "description": "Space between the icon, the label and the close button"
+        },
+        {
+          "name": "--tag-ring-color",
+          "description": "Color of the hairline ring of the tinted (default) variant (defaults to the text color at 16%)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tag/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/tag/vue/basic.vue": "<script setup lang=\"ts\">\nimport { Tag, HStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <HStack :gap=\"3\" wrap\n    ><Tag>Design</Tag><Tag color=\"success\">Published</Tag\n    ><Tag color=\"warning\">Draft</Tag></HStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "closable",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tag/vue/closable.vue",
+      "files": {
+        "apps/docs/src/docs/pages/tag/vue/closable.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Tag, Button, HStack } from \"minerva-design/vue\";\nconst initialTags = [\"Tag 1\", \"Tag 2\", \"Tag 3\"];\nconst tags = ref([...initialTags]);\nconst opened = ref(\"\");\n</script>\n<template>\n  <HStack :gap=\"2\" wrap\n    ><Tag\n      v-for=\"(tag, index) in tags\"\n      :key=\"tag\"\n      closable\n      :close-label=\"(label) => `Remove ${label}`\"\n      :clickable=\"index === 0\"\n      @close=\"tags = tags.filter((t) => t !== tag)\"\n      @click=\"opened = tag\"\n      >{{ tag }}<template v-if=\"index === 2\" #close-icon>⊗</template></Tag\n    ><span v-if=\"opened\">Opened: {{ opened }}</span\n    ><Button v-if=\"!tags.length\" @click=\"tags = [...initialTags]\"\n      >Reset</Button\n    ></HStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "closable",
+      "description": ""
+    },
+    {
+      "id": "toggle",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tag/vue/toggle.vue",
+      "files": {
+        "apps/docs/src/docs/pages/tag/vue/toggle.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Tag, HStack } from \"minerva-design/vue\";\nconst tags = [\"All\", \"Design\", \"Engineering\"];\nconst selected = ref(\"All\");\n</script>\n<template>\n  <HStack :gap=\"3\" wrap\n    ><Tag\n      v-for=\"tag in tags\"\n      :key=\"tag\"\n      clickable\n      :pressed=\"selected === tag\"\n      @click=\"selected = tag\"\n      >{{ tag }}</Tag\n    ><output>Filter: {{ selected }}</output></HStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "toggle",
+      "description": ""
+    },
+    {
+      "id": "variants-sizes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/tag/vue/variants-sizes.vue",
+      "files": {
+        "apps/docs/src/docs/pages/tag/vue/variants-sizes.vue": "<script setup lang=\"ts\">\nimport { Tag, HStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <HStack :gap=\"3\" wrap\n    ><Tag size=\"small\" variant=\"outline\" shape=\"square\">Small</Tag\n    ><Tag color=\"primary\" variant=\"solid\">Solid</Tag\n    ><Tag size=\"large\" shape=\"circle\" color=\"info\">Large</Tag\n    ><Tag loading>Working</Tag></HStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "variants-sizes",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Tag",
+      "description": "Petites étiquettes pour marquer et catégoriser du contenu ; elles peuvent être fermables ou cliquables.",
+      "demos": {
+        "colors": {
+          "title": "Couleurs",
+          "description": "color transmet une signification : neutral (par défaut), primary, success, warning, danger et info."
+        },
+        "variants": {
+          "title": "Variantes",
+          "description": "variant définit le style visuel : subtle (par défaut, fond teinté), outline (ajoute une bordure) ou solid (rempli avec la couleur). elevation ajoute une ombre à n'importe quelle variante."
+        },
+        "sizes-shapes": {
+          "title": "Tailles et formes",
+          "description": "Trois tailles et trois formes : square, rounded (par défaut) et circle."
+        },
+        "with-icon": {
+          "title": "Avec icône",
+          "description": "icon s'affiche avant le contenu."
+        },
+        "closable": {
+          "title": "Fermable",
+          "description": "Supprimer Tag 1, Tag 2 et Tag 3. Une fois tous retirés, Reset les restaure."
+        },
+        "clickable": {
+          "title": "Cliquable (sélectionnable)",
+          "description": "clickable rend le contenu sous forme de bouton natif : focalisez-le avec Tab et activez-le par un clic, Entrée ou Espace. Ici les tags basculent une sélection, exposée aux technologies d'assistance via pressed."
+        },
+        "avatar-loading": {
+          "title": "Avatar et chargement",
+          "description": "avatar affiche un avatar avant le contenu. loading remplace l'icône / l'avatar par un indicateur de chargement, marque le tag comme occupé, bloque son action et masque le bouton de fermeture."
+        },
+        "custom-colors": {
+          "title": "Couleurs personnalisées",
+          "description": "Les propriétés personnalisées CSS --tag-<color>-bg et --tag-<color>-text remplacent les teintes d'une couleur (en ligne, dans une classe ou dans un thème) ; ripple={false} désactive l'effet d'onde."
+        },
+        "disabled": {
+          "title": "Désactivé",
+          "description": "Les tags désactivés ignorent les clics, sortent de l'ordre de tabulation et désactivent leur bouton de fermeture."
+        }
+      },
+      "accessibility": {
+        "title": "Accessibilité",
+        "clickable": "Avec clickable, le tag reçoit role=\"button\" et tabIndex=0, et Entrée ou Espace déclenchent onClick comme un clic. Réservez-le aux actions ou bascules, pas à la navigation (utilisez un lien).",
+        "closable": "Le bouton de fermeture est un <button> natif avec son propre arrêt de tabulation. Son nom accessible est « Close » par défaut ; définissez closeLabel (ex. « Remove React ») pour indiquer quel tag il supprime.",
+        "disabled": "Un tag cliquable désactivé conserve role=\"button\" avec aria-disabled=\"true\" et est ignoré par Tab. Si l'état sélectionné compte, exprimez-le aussi par du texte ou des attributs aria, pas seulement par la couleur."
+      },
+      "api": {
+        "TagProps": {
+          "children": "Contenu du tag",
+          "color": "Couleur sémantique du tag",
+          "variant": "Style visuel : subtle (fond teinté), outline (fond teinté avec bordure) ou solid (rempli avec la couleur, texte inversé)",
+          "size": "Taille du tag",
+          "shape": "Forme du tag",
+          "closable": "Affiche un bouton de fermeture",
+          "onClose": "Appelé au clic sur le bouton de fermeture",
+          "clickable": "Rend le contenu du tag sous forme de bouton natif (focalisable, activé par Entrée / Espace). Avec closable, le bouton de fermeture est un bouton frère",
+          "onClick": "Appelé quand le tag est activé (nécessite clickable)",
+          "pressed": "État enfoncé (sélectionné) d'un tag bascule, par ex. un filtre sélectionnable (nécessite clickable) ; définit aria-pressed et le style sélectionné",
+          "icon": "Icône affichée avant le contenu",
+          "avatar": "Avatar (par ex. un petit Avatar ou une image) affiché avant le contenu",
+          "loading": "Affiche un indicateur de chargement à la place de l'icône / de l'avatar, marque le tag comme occupé et bloque son action ; le bouton de fermeture est masqué",
+          "elevation": "Affiche une ombre",
+          "className": "Classe CSS supplémentaire",
+          "style": "Styles en ligne",
+          "disabled": "Désactive le tag et son bouton de fermeture",
+          "closeIcon": "Icône de fermeture personnalisée",
+          "closeLabel": "Libellé accessible du bouton de fermeture : une chaîne, ou une fonction du texte de l'étiquette. Par défaut « Supprimer {label} » (localisé), ou « Fermer » quand l'étiquette n'a pas de texte",
+          "ripple": "Affiche un effet d'onde au clic",
+          "ref": "Ref vers l'élément racine"
+        }
+      },
+      "cssVars": {
+        "--tag-height": "Hauteur minimale (toutes les tailles ; par défaut la hauteur du contenu)",
+        "--tag-padding-x": "Marge intérieure horizontale (toutes les tailles)",
+        "--tag-font-size": "Taille de police (toutes les tailles)",
+        "--tag-radius": "Rayon des coins de la forme rounded (par défaut --radius-sm)",
+        "--tag-gap": "Espace entre l'icône, le libellé et le bouton de fermeture",
+        "--tag-ring-color": "Couleur de l'anneau fin de la variante teintée (par défaut ; le texte à 16 %)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Une petite étiquette ; color définit sa tonalité sémantique."
+          },
+          "variants-sizes": {
+            "title": "Variantes, tailles et contenu",
+            "description": "Trois variantes, tailles et formes, elevation, les slots icon et avatar, loading et disabled."
+          },
+          "closable": {
+            "title": "Fermable",
+            "description": "closable ajoute un bouton de fermeture qui déclenche minerva-close : retirez l'étiquette dans l'écouteur et déplacez le focus vers une voisine. close-label et le slot close-icon le personnalisent."
+          },
+          "toggle": {
+            "title": "Filtres à bascule",
+            "description": "Les étiquettes clickable toggle sont des boutons à bascule (aria-pressed) : un clic inverse pressed et déclenche minerva-change. Une étiquette simplement cliquable déclenche click."
+          }
+        },
+        "minerva-tag": {
+          "props": {
+            "toggle": "Fait d'une étiquette cliquable une bascule : les clics inversent pressed et déclenchent minerva-change.",
+            "noRipple": "Désactive l'effet d'onde des étiquettes cliquables."
+          },
+          "events": {
+            "minerva-close": "Le bouton de fermeture a été activé.",
+            "minerva-change": "Une étiquette à bascule a été basculée (detail : { pressed })."
+          },
+          "slots": {
+            "default": "Libellé de l'étiquette.",
+            "icon": "Icône affichée avant le libellé.",
+            "avatar": "Avatar (petit <minerva-avatar> ou image) avant le libellé.",
+            "close-icon": "Icône de fermeture personnalisée."
+          },
+          "methods": {
+            "focus": "Donne le focus au bouton de l'étiquette (le bouton d'action d'une étiquette cliquable, sinon le bouton de fermeture)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "closable": {
+            "title": "Fermable",
+            "description": "Supprimer Tag 1, Tag 2 et Tag 3. Une fois tous retirés, Reset les restaure."
+          },
+          "colors-variants": {
+            "title": "Couleurs et variantes",
+            "description": "Couleurs et variantes avec Tag ; l’aperçu suit le thème et la palette du site."
+          },
+          "selectable": {
+            "title": "Étiquettes sélectionnables",
+            "description": "Étiquettes sélectionnables avec Tag ; l’aperçu suit le thème et la palette du site."
+          }
+        }
+      }
+    }
+  }
+}

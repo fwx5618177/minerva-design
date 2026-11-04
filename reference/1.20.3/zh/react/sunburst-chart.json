@@ -1,0 +1,1186 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.3",
+  "locale": "zh",
+  "renderer": "react",
+  "page": "sunburst-chart",
+  "title": "旭日图",
+  "description": "用同心圆环展示层级结构：每一圈是一个层级，每个扇区是其父节点的一部分。点击父节点（或在其上按 Enter）可下钻，点击中心（或按 Backspace）返回上一级，切换时角度和圆环会以动画过渡。悬停扇区会高亮其祖先和后代，标签会根据空间沿弧线或沿半径排布。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.3",
+    "sourceCommit": "ea7fb3e1f55d184b7d737316e9ae829f4f7ff223",
+    "sourceDigest": "sha256:c9540edc3908d226375a01cf5e6bfe8ca6a4e20440f736c0dd9b40ae9ff2e645",
+    "referenceSourceDigest": "sha256:4cf6057856184f16240d0d22153ec370842fc7a2dfaaa66364e189fed89e6ca3"
+  },
+  "content": {
+    "data": {
+      "disk": {
+        "root": "Macintosh HD",
+        "applications": "应用程序",
+        "documents": "文稿",
+        "projects": "项目",
+        "archive": "归档",
+        "pdfs": "PDF 文件",
+        "spreadsheets": "电子表格",
+        "photos": "照片",
+        "developer": "开发",
+        "caches": "包缓存",
+        "simulators": "模拟器",
+        "system": "系统",
+        "music": "音乐",
+        "other": "其他应用"
+      },
+      "gb": "{{value}} GB",
+      "diskAria": "按文件夹统计的磁盘占用，单位为 GB",
+      "diskPath": "当前显示 {{path}}。点击中心返回上一级。",
+      "diskHint": "点击文件夹即可下钻。",
+      "org": {
+        "engineering": "研发",
+        "platform": "平台",
+        "infrastructure": "基础设施",
+        "security": "安全",
+        "devtools": "开发者工具",
+        "product": "产品研发",
+        "web": "Web",
+        "mobile": "移动端",
+        "payments": "支付",
+        "data": "数据",
+        "analytics": "数据分析",
+        "ml": "机器学习",
+        "sales": "销售",
+        "emea": "欧洲、中东和非洲",
+        "americas": "美洲",
+        "apac": "亚太",
+        "success": "客户成功",
+        "support": "客服",
+        "onboarding": "客户上手",
+        "marketing": "市场",
+        "brand": "品牌",
+        "growth": "增长",
+        "content": "内容",
+        "operations": "运营",
+        "finance": "财务",
+        "people": "人力资源",
+        "legal": "法务",
+        "it": "IT"
+      },
+      "people": "{{value}} 人",
+      "orgAria": "按部门、小组和团队统计的人数",
+      "catalog": {
+        "all": "全部商品",
+        "electronics": "数码电子",
+        "phones": "手机",
+        "flagship": "旗舰机",
+        "midRange": "中端机",
+        "accessories": "配件",
+        "laptops": "笔记本电脑",
+        "audio": "音频",
+        "headphones": "耳机",
+        "speakers": "音箱",
+        "home": "家居",
+        "kitchen": "厨房",
+        "furniture": "家具",
+        "decor": "装饰",
+        "fashion": "服饰",
+        "men": "男装",
+        "women": "女装",
+        "kids": "童装",
+        "sports": "运动",
+        "outdoor": "户外",
+        "fitness": "健身"
+      },
+      "breadcrumb": "类目路径",
+      "catalogAria": "按商品类目统计的季度收入",
+      "world": {
+        "asia": "亚洲",
+        "africa": "非洲",
+        "europe": "欧洲",
+        "americas": "美洲",
+        "oceania": "大洋洲",
+        "other": "其他国家"
+      },
+      "millions": "{{value}} 百万",
+      "labelsLabel": "标签方式",
+      "labels": {
+        "auto": "自动",
+        "tangential": "沿弧线",
+        "radial": "沿半径",
+        "none": "不显示"
+      },
+      "worldAria": "按大洲和国家统计的世界人口，单位为百万",
+      "budget": {
+        "areas": {
+          "education": "教育",
+          "health": "医疗",
+          "transport": "交通",
+          "safety": "公共安全",
+          "environment": "环境",
+          "administration": "行政"
+        },
+        "programs": {
+          "schools": "中小学",
+          "universities": "大学",
+          "libraries": "图书馆",
+          "hospitals": "医院",
+          "prevention": "疾病预防",
+          "transit": "公共交通",
+          "roads": "道路",
+          "cycling": "自行车道",
+          "police": "警务",
+          "fire": "消防",
+          "parks": "公园",
+          "waste": "垃圾清运",
+          "water": "供水"
+        },
+        "programLine": "{{path}}：{{amount}}，占预算的 {{share}}，占{{area}}的 {{areaShare}}。",
+        "areaLine": "{{path}}：{{amount}}，占预算的 {{share}}。",
+        "aria": "按政策领域和项目划分的城市年度预算",
+        "hint": "年度预算：{{total}}。点击某个扇区查看其占比。"
+      },
+      "time": {
+        "clients": {
+          "bakery": "连锁面包店",
+          "clinic": "牙科诊所",
+          "school": "语言学校",
+          "internal": "内部"
+        },
+        "projects": {
+          "website": "网站",
+          "branding": "品牌设计",
+          "booking": "预约系统",
+          "app": "移动应用",
+          "admin": "行政事务",
+          "training": "培训"
+        },
+        "activities": {
+          "design": "设计",
+          "development": "开发",
+          "meetings": "会议",
+          "review": "评审",
+          "support": "支持",
+          "learning": "学习"
+        },
+        "period": "时间段",
+        "periods": {
+          "week": "本周",
+          "month": "本月"
+        },
+        "tooltip": "{{hours}} · 占记录工时的 {{share}}",
+        "aria": "按客户、项目和活动划分的工时（{{period}}）",
+        "summary": "可计费：{{billable}}，共 {{total}}（{{share}}）。"
+      },
+      "requests": {
+        "services": {
+          "checkout": "结账",
+          "search": "搜索",
+          "accounts": "账户",
+          "catalog": "商品目录"
+        },
+        "endpoints": {
+          "cart": "购物车",
+          "payment": "支付",
+          "shipping": "配送",
+          "query": "查询",
+          "suggest": "搜索建议",
+          "login": "登录",
+          "profile": "个人资料",
+          "product": "商品页",
+          "reviews": "评价"
+        },
+        "rpm": "{{value}} 次/分钟",
+        "aria": "按服务和端点划分的每分钟 API 请求数，实时更新",
+        "pause": "暂停",
+        "resume": "继续",
+        "total": "总计：{{value}}",
+        "busiest": "最繁忙的服务：{{service}}"
+      },
+      "energy": {
+        "sources": {
+          "renewables": "可再生能源",
+          "nuclear": "核能",
+          "fossil": "化石燃料"
+        },
+        "fuels": {
+          "wind": "风能",
+          "solar": "太阳能",
+          "hydro": "水电",
+          "biomass": "生物质能",
+          "gas": "天然气",
+          "coal": "煤炭",
+          "oil": "石油"
+        },
+        "twh": "{{value}} 太瓦时",
+        "hideFossil": "隐藏化石燃料",
+        "aria": "按能源和燃料划分的年度发电量",
+        "shownOnly": "已隐藏可再生能源：显示 {{total}}。",
+        "share": "可再生能源：占所显示 {{total}} 的 {{share}}。"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "SunburstChart",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/charts",
+          "exports": [
+            "SunburstChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "data",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "array",
+            "typeText": "readonly TreemapNode[]",
+            "typeRef": "type:eddc87b67d233941af29",
+            "required": true,
+            "description": "Nodes: leaves carry a value, parents sum their children"
+          },
+          {
+            "name": "innerRadius",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 0.26,
+            "required": false,
+            "description": "Radius of the center circle as a fraction of the outer radius"
+          },
+          {
+            "name": "levels",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "Rings shown at once below the focused node (fewer when they would be thinner than 18 px)"
+          },
+          {
+            "name": "startAngle",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 0,
+            "required": false,
+            "description": "Angle of the first node, degrees clockwise from 12 o'clock"
+          },
+          {
+            "name": "padAngle",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 1,
+            "required": false,
+            "description": "Gap between the sectors, in pixels"
+          },
+          {
+            "name": "cornerRadius",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 2,
+            "required": false,
+            "description": "Corner radius of the sectors, in pixels"
+          },
+          {
+            "name": "labels",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "enum",
+            "values": [
+              "auto",
+              "none",
+              "radial",
+              "tangential"
+            ],
+            "typeText": "\"none\" | \"auto\" | \"tangential\" | \"radial\" | undefined",
+            "typeRef": "type:450a54e2e59f3bb532d3",
+            "default": "auto",
+            "required": false,
+            "description": "Sector labels: `auto` writes each name along the arc or along the radius, whichever fits best; labels that do not fit are shortened or skipped"
+          },
+          {
+            "name": "drill",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Clicking (or Enter on) a parent zooms into it; clicking the center (or Backspace) goes back up"
+          },
+          {
+            "name": "drillPath",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Names from the root to the focused node (`[]` = the root). Makes the drill-down controlled: clicks then only call `onDrill`, whose `path` should be stored and passed back."
+          },
+          {
+            "name": "height",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels"
+          },
+          {
+            "name": "width",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels"
+          },
+          {
+            "name": "renderer",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "enum",
+            "values": [
+              "auto",
+              "canvas2d",
+              "webgl",
+              "webgl2",
+              "webgpu"
+            ],
+            "typeText": "ChartRendererPreference | undefined",
+            "typeRef": "type:dc7d7e6f384ddec86e04",
+            "required": false,
+            "description": "Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D, above the shapes"
+          },
+          {
+            "name": "palette",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+          },
+          {
+            "name": "legend",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "union",
+            "typeText": "boolean | ShapeLegendOptions | undefined",
+            "typeRef": "type:b3cd5c49d86fb91effb3",
+            "required": false,
+            "description": "Legend; clicking an item hides / shows its slice, stage, series, node, bar, row or level"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "union",
+            "typeText": "boolean | ShapeTooltipOptions | undefined",
+            "typeRef": "type:9441d8fe0edba7239796",
+            "default": true,
+            "required": false,
+            "description": "Tooltip; `false` disables it"
+          },
+          {
+            "name": "format",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((value: number) => string) | undefined",
+            "typeRef": "type:f12d9d0b7c053d4d65a6",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats the values of the labels and the tooltip"
+          },
+          {
+            "name": "percentFormat",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((share: number) => string) | undefined",
+            "typeRef": "type:5bfc1184b082171dcbfd",
+            "parameters": [
+              {
+                "name": "share",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "string",
+              "typeRef": "type:e15e314d298fc0d116fc"
+            },
+            "required": false,
+            "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1"
+          },
+          {
+            "name": "locale",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "BCP 47 locale of the texts and numbers the chart writes (tooltip rows, accessible names, number and percent formats, calendar dates); built-in texts in English, Chinese, Japanese and French (English otherwise)"
+          },
+          {
+            "name": "texts",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "object",
+            "typeText": "Partial<ShapeChartLabels> | undefined",
+            "typeRef": "type:2ef787a978af6750b6c8",
+            "required": false,
+            "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")"
+          },
+          {
+            "name": "hidden",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "array",
+            "typeText": "readonly number[] | undefined",
+            "typeRef": "type:9b11f9b3b1a7e709603e",
+            "required": false,
+            "description": "Hidden slices / stages / radar series / top-level treemap or sunburst nodes / sankey nodes / radial bars / bullet rows / calendar levels, by index. Makes the visibility controlled: legend clicks then only call `onToggle`, whose `hiddenIndexes` should be stored and passed back. Leave undefined to let the legend hide / show entries by itself."
+          },
+          {
+            "name": "animation",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Entry and update animations (skipped when the user prefers reduced motion)"
+          },
+          {
+            "name": "padding",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the drawing, in pixels"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "node",
+            "typeText": "((event: ShapeHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:599537a71f6aca3767b8",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent",
+                "typeRef": "type:019a32700cb7aa817346"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onDrill",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((event: ShapeDrillEvent) => void) | undefined",
+            "typeRef": "type:ff41f7645453487efae1",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeDrillEvent",
+                "typeRef": "type:2f6344534a4b788a1925"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a parent or the center is clicked (or the instance's `drill()` is called)"
+          },
+          {
+            "name": "onToggle",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((event: ShapeToggleEvent) => void) | undefined",
+            "typeRef": "type:c5e11f23fbce8c1aa9a2",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeToggleEvent",
+                "typeRef": "type:4b4244045a32e66c0a25"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a legend item is clicked (or the instance's `toggle()` is called), with the toggled index and every hidden index after the toggle"
+          },
+          {
+            "name": "onHover",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((event: ShapeHoverEvent | null) => void) | undefined",
+            "typeRef": "type:4d7c0df4667f26938fe6",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent | null",
+                "typeRef": "type:5ce60fcc1021d329ffba"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the hovered (or keyboard-focused) mark changes"
+          },
+          {
+            "name": "onClick",
+            "source": "packages/charts/src/react/shapes.tsx",
+            "kind": "function",
+            "typeText": "((event: ShapeHoverEvent) => void) | undefined",
+            "typeRef": "type:e40dbbb538ff7cd7dda5",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ShapeHoverEvent",
+                "typeRef": "type:019a32700cb7aa817346"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a mark is clicked, tapped or activated with Enter"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "SunburstChartProps": {
+      "source": "charts/src/react/shapes.tsx",
+      "description": "Props of SunburstChart",
+      "kind": "interface",
+      "extends": [
+        "ShapeChartCommonProps"
+      ],
+      "props": [
+        {
+          "name": "data",
+          "type": "readonly TreemapNode[]",
+          "required": true,
+          "description": "Nodes: leaves carry a value, parents sum their children"
+        },
+        {
+          "name": "innerRadius",
+          "type": "number",
+          "required": false,
+          "default": "0.26",
+          "description": "Radius of the center circle as a fraction of the outer radius"
+        },
+        {
+          "name": "levels",
+          "type": "number",
+          "required": false,
+          "default": "every level",
+          "description": "Rings shown at once below the focused node (fewer when they would be thinner than 18 px)"
+        },
+        {
+          "name": "startAngle",
+          "type": "number",
+          "required": false,
+          "default": "0",
+          "description": "Angle of the first node, degrees clockwise from 12 o'clock"
+        },
+        {
+          "name": "padAngle",
+          "type": "number",
+          "required": false,
+          "default": "1",
+          "description": "Gap between the sectors, in pixels"
+        },
+        {
+          "name": "cornerRadius",
+          "type": "number",
+          "required": false,
+          "default": "2",
+          "description": "Corner radius of the sectors, in pixels"
+        },
+        {
+          "name": "labels",
+          "type": "\"auto\" | \"tangential\" | \"radial\" | \"none\"",
+          "required": false,
+          "default": "\"auto\"",
+          "description": "Sector labels: `auto` writes each name along the arc or along the radius, whichever fits best; labels that do not fit are shortened or skipped"
+        },
+        {
+          "name": "drill",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Clicking (or Enter on) a parent zooms into it; clicking the center (or Backspace) goes back up"
+        },
+        {
+          "name": "drillPath",
+          "type": "readonly string[]",
+          "required": false,
+          "description": "Names from the root to the focused node (`[]` = the root). Makes the drill-down controlled: clicks then only call `onDrill`, whose `path` should be stored and passed back."
+        },
+        {
+          "name": "onDrill",
+          "type": "(event: ShapeDrillEvent) => void",
+          "required": false,
+          "description": "Called when a parent or the center is clicked (or the instance's `drill()` is called)"
+        }
+      ]
+    },
+    "TreemapNode": {
+      "source": "charts/src/engine/shapes/types.ts",
+      "description": "A node of a treemap or a sunburst: leaves carry a value, parents sum their children",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": "Name shown in the cell / sector, the header and the tooltip"
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "required": false,
+          "description": "Value of a leaf (parents sum their children)"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": false,
+          "description": "Color; top-level nodes take the palette when omitted, children get shades of their parent's"
+        },
+        {
+          "name": "children",
+          "type": "readonly TreemapNode[]",
+          "required": false,
+          "description": "Child nodes"
+        }
+      ]
+    },
+    "ShapeDrillEvent": {
+      "source": "charts/src/engine/shapes/types.ts",
+      "description": "The focused node of a sunburst changed (or, when controlled, would change)",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "path",
+          "type": "string[]",
+          "required": true,
+          "description": "Names from the root to the new focused node (`[]` = the root)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "city-budget",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/sunburst-chart/demos/city-budget.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/sunburst-chart/demos/city-budget.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  SunburstChart,\n  type ShapeHoverEvent,\n  type TreemapNode,\n} from \"minerva-design/charts\";\n\ntype Area = [key: string, programs: [string, number][] | number];\n\n// Yearly budget of a city, in million euros: policy areas and programs\nconst BUDGET: Area[] = [\n  [\n    \"education\",\n    [\n      [\"schools\", 412],\n      [\"universities\", 96],\n      [\"libraries\", 38],\n    ],\n  ],\n  [\n    \"health\",\n    [\n      [\"hospitals\", 288],\n      [\"prevention\", 64],\n    ],\n  ],\n  [\n    \"transport\",\n    [\n      [\"transit\", 236],\n      [\"roads\", 118],\n      [\"cycling\", 42],\n    ],\n  ],\n  [\n    \"safety\",\n    [\n      [\"police\", 154],\n      [\"fire\", 87],\n    ],\n  ],\n  [\n    \"environment\",\n    [\n      [\"parks\", 71],\n      [\"waste\", 109],\n      [\"water\", 83],\n    ],\n  ],\n  [\"administration\", 132],\n];\n\nconst TOTAL = BUDGET.reduce(\n  (sum, [, programs]) =>\n    sum +\n    (typeof programs === \"number\"\n      ? programs\n      : programs.reduce((s, [, value]) => s + value, 0)),\n  0,\n);\n\nexport default function CityBudgetDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.sunburst-chart.data\",\n  });\n  const locale = i18n.language;\n  const [selected, setSelected] = useState<ShapeHoverEvent | null>(null);\n\n  const { data, areaTotals } = useMemo(() => {\n    const areaTotals = new Map<string, number>();\n    const data: TreemapNode[] = BUDGET.map(([key, programs]) => {\n      const name = t(`budget.areas.${key}`);\n      if (typeof programs === \"number\") {\n        areaTotals.set(name, programs);\n        return { name, value: programs };\n      }\n      areaTotals.set(\n        name,\n        programs.reduce((sum, [, value]) => sum + value, 0),\n      );\n      return {\n        name,\n        children: programs.map(([program, value]) => ({\n          name: t(`budget.programs.${program}`),\n          value,\n        })),\n      };\n    });\n    return { data, areaTotals };\n  }, [t]);\n  const format = useMemo(() => {\n    const money = new Intl.NumberFormat(locale, {\n      style: \"currency\",\n      currency: \"EUR\",\n      notation: \"compact\",\n      maximumFractionDigits: 1,\n    });\n    return (value: number) => money.format(value * 1_000_000);\n  }, [locale]);\n  const percentFormat = useMemo(() => {\n    const percent = new Intl.NumberFormat(locale, {\n      style: \"percent\",\n      maximumFractionDigits: 1,\n    });\n    return (share: number) => percent.format(share);\n  }, [locale]);\n\n  // share of the city budget, and of the policy area for a program\n  const describe = (node: ShapeHoverEvent) => {\n    const path = node.path ?? [node.name];\n    const area = path.length > 1 ? path[0] : null;\n    return {\n      path: path.join(\" › \"),\n      amount: format(node.value),\n      share: percentFormat(node.value / TOTAL),\n      area,\n      areaShare: area\n        ? percentFormat(node.value / (areaTotals.get(area) ?? node.value))\n        : null,\n    };\n  };\n\n  const line = (node: ShapeHoverEvent) => {\n    const d = describe(node);\n    return d.area\n      ? t(\"budget.programLine\", d)\n      : t(\"budget.areaLine\", {\n          path: d.path,\n          amount: d.amount,\n          share: d.share,\n        });\n  };\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      {/* drill is off: a click selects a sector instead of zooming in */}\n      <SunburstChart\n        data={data}\n        drill={false}\n        innerRadius={0.32}\n        format={format}\n        percentFormat={percentFormat}\n\n        renderTooltip={(node) => <span>{line(node)}</span>}\n        onClick={setSelected}\n        height={400}\n        ariaLabel={t(\"budget.aria\")}\n      />\n      <p role=\"status\" style={{ margin: 0 }}>\n        {selected ? line(selected) : t(\"budget.hint\", { total: format(TOTAL) })}\n      </p>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "城市预算",
+      "description": "drill={false} 让点击变为选中而不是放大：onClick 填充图表下方的文字，给出某个项目占整个预算及其所属政策领域的比例。renderTooltip 显示相同的文字，没有项目的领域则是一个普通叶子节点。"
+    },
+    {
+      "id": "disk-usage",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/sunburst-chart/demos/disk-usage.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/sunburst-chart/demos/disk-usage.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { SunburstChart, type TreemapNode } from \"minerva-design/charts\";\n\n// Disk usage of a laptop, in GB. App and project names are proper nouns;\n// the folder names come from the translations.\ntype Folder =\n  | \"applications\"\n  | \"documents\"\n  | \"projects\"\n  | \"archive\"\n  | \"pdfs\"\n  | \"spreadsheets\"\n  | \"photos\"\n  | \"developer\"\n  | \"caches\"\n  | \"simulators\"\n  | \"system\"\n  | \"music\"\n  | \"other\";\n\ninterface Entry {\n  name?: string;\n  folder?: Folder;\n  size?: number;\n  children?: Entry[];\n}\n\nconst DISK: Entry[] = [\n  {\n    folder: \"applications\",\n    children: [\n      { name: \"Xcode\", size: 12.4 },\n      { name: \"Docker\", size: 9.8 },\n      { name: \"Figma\", size: 1.2 },\n      { name: \"Chrome\", size: 1.1 },\n      { name: \"Slack\", size: 0.6 },\n      { folder: \"other\", size: 3.4 },\n    ],\n  },\n  {\n    folder: \"photos\",\n    children: [\n      { name: \"2024\", size: 18.5 },\n      { name: \"2025\", size: 22.1 },\n      { name: \"2026\", size: 9.6 },\n    ],\n  },\n  {\n    folder: \"developer\",\n    children: [\n      { name: \"node_modules\", size: 14.2 },\n      {\n        folder: \"caches\",\n        children: [\n          { name: \"npm\", size: 3.1 },\n          { name: \"pnpm\", size: 6.4 },\n          { name: \"Gradle\", size: 2.2 },\n        ],\n      },\n      { folder: \"simulators\", size: 11.5 },\n    ],\n  },\n  {\n    folder: \"documents\",\n    children: [\n      {\n        folder: \"projects\",\n        children: [\n          { name: \"minerva\", size: 4.2 },\n          { name: \"client-site\", size: 2.7 },\n          { folder: \"archive\", size: 6.1 },\n        ],\n      },\n      { folder: \"pdfs\", size: 2.3 },\n      { folder: \"spreadsheets\", size: 0.8 },\n    ],\n  },\n  { folder: \"system\", size: 18 },\n  { folder: \"music\", size: 7.4 },\n];\n\nexport default function DiskUsageDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.sunburst-chart.data\",\n  });\n  const [path, setPath] = useState<string[]>([]);\n\n  const data = useMemo(() => {\n    const convert = (entries: Entry[]): TreemapNode[] =>\n      entries.map((entry) => ({\n        name: entry.folder ? t(`disk.${entry.folder}`) : (entry.name ?? \"\"),\n        value: entry.size,\n        ...(entry.children ? { children: convert(entry.children) } : {}),\n      }));\n    return convert(DISK);\n  }, [t]);\n  const format = useMemo(() => {\n    const number = new Intl.NumberFormat(i18n.language, {\n      maximumFractionDigits: 1,\n    });\n    return (value: number) => t(\"gb\", { value: number.format(value) });\n  }, [i18n.language, t]);\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <SunburstChart\n        data={data}\n        format={format}\n        onDrill={(event) => setPath(event.path)}\n        height={400}\n        ariaLabel={t(\"diskAria\")}\n      />\n      <p role=\"status\" style={{ margin: 0 }}>\n        {path.length\n          ? t(\"diskPath\", { path: [t(\"disk.root\"), ...path].join(\" / \") })\n          : t(\"diskHint\")}\n      </p>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "磁盘占用",
+      "description": "一台笔记本电脑中各文件夹和应用的占用空间（GB）。点击文件夹即可下钻，点击中心返回上一级；onDrill 返回当前聚焦的路径，显示在图表下方。"
+    },
+    {
+      "id": "drill-down",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/sunburst-chart/demos/drill-down.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/sunburst-chart/demos/drill-down.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button, HStack } from \"minerva-design\";\nimport { SunburstChart, type TreemapNode } from \"minerva-design/charts\";\n\ntype Category = [key: string, revenue: number | Category[]];\n\n// Online store revenue of a quarter, in thousands of dollars\nconst CATALOG: Category[] = [\n  [\n    \"electronics\",\n    [\n      [\n        \"phones\",\n        [\n          [\"flagship\", 420],\n          [\"midRange\", 310],\n          [\"accessories\", 140],\n        ],\n      ],\n      [\"laptops\", 520],\n      [\n        \"audio\",\n        [\n          [\"headphones\", 190],\n          [\"speakers\", 110],\n        ],\n      ],\n    ],\n  ],\n  [\n    \"home\",\n    [\n      [\"kitchen\", 260],\n      [\"furniture\", 340],\n      [\"decor\", 120],\n    ],\n  ],\n  [\n    \"fashion\",\n    [\n      [\"men\", 210],\n      [\"women\", 330],\n      [\"kids\", 150],\n    ],\n  ],\n  [\n    \"sports\",\n    [\n      [\"outdoor\", 180],\n      [\"fitness\", 160],\n    ],\n  ],\n];\n\nexport default function DrillDownDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.sunburst-chart.data\",\n  });\n  // controlled: the chart only proposes paths, the breadcrumb owns the state\n  const [path, setPath] = useState<string[]>([]);\n\n  const data = useMemo(() => {\n    const convert = (items: Category[]): TreemapNode[] =>\n      items.map(([key, revenue]) =>\n        typeof revenue === \"number\"\n          ? { name: t(`catalog.${key}`), value: revenue }\n          : { name: t(`catalog.${key}`), children: convert(revenue) },\n      );\n    return convert(CATALOG);\n  }, [t]);\n  const format = useMemo(() => {\n    const money = new Intl.NumberFormat(i18n.language, {\n      style: \"currency\",\n      currency: \"USD\",\n      notation: \"compact\",\n      maximumFractionDigits: 1,\n    });\n    return (value: number) => money.format(value * 1000);\n  }, [i18n.language]);\n\n  const crumbs = [t(\"catalog.all\"), ...path];\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <HStack gap={4} align=\"center\" wrap as=\"nav\" aria-label={t(\"breadcrumb\")}>\n        {crumbs.map((name, depth) => (\n          <HStack key={`${depth}-${name}`} gap={4} align=\"center\">\n            {depth > 0 && <span aria-hidden>/</span>}\n            <Button\n              size=\"small\"\n              variant={depth === path.length ? \"solid\" : \"ghost\"}\n              aria-current={depth === path.length ? \"location\" : undefined}\n              onClick={() => setPath(path.slice(0, depth))}\n            >\n              {name}\n            </Button>\n          </HStack>\n        ))}\n      </HStack>\n      <SunburstChart\n        data={data}\n        drillPath={path}\n        onDrill={(event) => setPath(event.path)}\n        format={format}\n        cornerRadius={4}\n        padAngle={2}\n        height={400}\n        ariaLabel={t(\"catalogAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "受控下钻与面包屑",
+      "description": "drillPath 让聚焦状态受控：点击只会触发 onDrill，路径由面包屑管理，因此其中的按钮可以跳转到任意层级。cornerRadius 和 padAngle 让扇区更圆润、间隔更清晰。"
+    },
+    {
+      "id": "energy-mix",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/sunburst-chart/demos/energy-mix.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/sunburst-chart/demos/energy-mix.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Switch } from \"minerva-design\";\nimport { SunburstChart, type TreemapNode } from \"minerva-design/charts\";\n\ntype Source = [key: string, color: string, value: number | [string, number][]];\n\n// Yearly electricity generation of a country, in TWh\nconst MIX: Source[] = [\n  [\n    \"renewables\",\n    \"#16a34a\",\n    [\n      [\"wind\", 136],\n      [\"solar\", 62],\n      [\"hydro\", 19],\n      [\"biomass\", 44],\n    ],\n  ],\n  [\"nuclear\", \"#7c3aed\", 34],\n  [\n    \"fossil\",\n    \"#78716c\",\n    [\n      [\"gas\", 79],\n      [\"coal\", 128],\n      [\"oil\", 4],\n    ],\n  ],\n];\nconst FOSSIL = MIX.findIndex(([key]) => key === \"fossil\");\nconst RENEWABLES = MIX.findIndex(([key]) => key === \"renewables\");\n\nconst sum = (value: Source[2]) =>\n  typeof value === \"number\"\n    ? value\n    : value.reduce((total, [, twh]) => total + twh, 0);\n\nexport default function EnergyMixDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.sunburst-chart.data\",\n  });\n  const locale = i18n.language;\n  // controlled: the legend and the switch edit the same hidden list\n  const [hidden, setHidden] = useState<number[]>([]);\n\n  const data = useMemo(\n    (): TreemapNode[] =>\n      MIX.map(([key, color, value]) =>\n        typeof value === \"number\"\n          ? { name: t(`energy.sources.${key}`), color, value }\n          : {\n              name: t(`energy.sources.${key}`),\n              color,\n              children: value.map(([fuel, twh]) => ({\n                name: t(`energy.fuels.${fuel}`),\n                value: twh,\n              })),\n            },\n      ),\n    [t],\n  );\n  const number = useMemo(\n    () => new Intl.NumberFormat(locale, { maximumFractionDigits: 0 }),\n    [locale],\n  );\n  const percent = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        style: \"percent\",\n        maximumFractionDigits: 1,\n      }),\n    [locale],\n  );\n  const format = (value: number) =>\n    t(\"energy.twh\", { value: number.format(value) });\n\n  const shown = MIX.reduce(\n    (total, [, , value], i) =>\n      hidden.includes(i) ? total : total + sum(value),\n    0,\n  );\n  const renewables = sum(MIX[RENEWABLES][2]);\n  const fossilHidden = hidden.includes(FOSSIL);\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <Switch\n        checked={fossilHidden}\n        onChange={(checked) =>\n          setHidden((current) =>\n            checked\n              ? [...current, FOSSIL]\n              : current.filter((index) => index !== FOSSIL),\n          )\n        }\n        label={t(\"energy.hideFossil\")}\n      />\n      <SunburstChart\n        data={data}\n        legend\n        hidden={hidden}\n        onToggle={(event) => setHidden(event.hiddenIndexes)}\n        innerRadius={0.3}\n        format={format}\n        height={420}\n        ariaLabel={t(\"energy.aria\")}\n      />\n      <output aria-live=\"polite\">\n        {hidden.includes(RENEWABLES)\n          ? t(\"energy.shownOnly\", { total: format(shown) })\n          : t(\"energy.share\", {\n              share: percent.format(shown ? renewables / shown : 0),\n              total: format(shown),\n            })}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "电力结构",
+      "description": "图例和 Switch 编辑同一个受控的 hidden 列表（onToggle），因此无论从哪里隐藏化石燃料都会保持同步。没有细分的能源（核能）是第一层上的叶子节点，各燃料继承其能源的颜色。"
+    },
+    {
+      "id": "labels",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/sunburst-chart/demos/labels.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/sunburst-chart/demos/labels.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Radio, RadioGroup } from \"minerva-design\";\nimport {\n  SunburstChart,\n  type SunburstChartProps,\n  type TreemapNode,\n} from \"minerva-design/charts\";\n\ntype Labels = NonNullable<SunburstChartProps[\"labels\"]>;\n\n// Population in millions (2023, rounded), by continent and country (ISO code)\nconst WORLD: [continent: string, countries: [string, number][]][] = [\n  [\n    \"asia\",\n    [\n      [\"IN\", 1429],\n      [\"CN\", 1410],\n      [\"ID\", 278],\n      [\"PK\", 240],\n      [\"BD\", 173],\n      [\"JP\", 124],\n      [\"PH\", 117],\n      [\"VN\", 99],\n      [\"other\", 856],\n    ],\n  ],\n  [\n    \"africa\",\n    [\n      [\"NG\", 224],\n      [\"ET\", 127],\n      [\"EG\", 113],\n      [\"CD\", 102],\n      [\"TZ\", 67],\n      [\"other\", 827],\n    ],\n  ],\n  [\n    \"europe\",\n    [\n      [\"RU\", 144],\n      [\"DE\", 84],\n      [\"GB\", 68],\n      [\"FR\", 68],\n      [\"IT\", 59],\n      [\"other\", 319],\n    ],\n  ],\n  [\n    \"americas\",\n    [\n      [\"US\", 335],\n      [\"BR\", 216],\n      [\"MX\", 128],\n      [\"CO\", 52],\n      [\"AR\", 46],\n      [\"other\", 263],\n    ],\n  ],\n  [\n    \"oceania\",\n    [\n      [\"AU\", 27],\n      [\"PG\", 10],\n      [\"NZ\", 5],\n      [\"other\", 3],\n    ],\n  ],\n];\n\nconst MODES: Labels[] = [\"auto\", \"tangential\", \"radial\", \"none\"];\n\nexport default function LabelsDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.sunburst-chart.data\",\n  });\n  const [labels, setLabels] = useState<Labels>(\"auto\");\n  const locale = i18n.language;\n\n  const data = useMemo((): TreemapNode[] => {\n    // country names in the reader's language\n    const regions = new Intl.DisplayNames([locale], { type: \"region\" });\n    return WORLD.map(([continent, countries]) => ({\n      name: t(`world.${continent}`),\n      children: countries.map(([code, value]) => ({\n        name: code === \"other\" ? t(\"world.other\") : (regions.of(code) ?? code),\n        value,\n      })),\n    }));\n  }, [locale, t]);\n  const format = useMemo(() => {\n    const number = new Intl.NumberFormat(locale);\n    return (value: number) => t(\"millions\", { value: number.format(value) });\n  }, [locale, t]);\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <RadioGroup\n        aria-label={t(\"labelsLabel\")}\n        direction=\"horizontal\"\n        value={labels}\n        onChange={(value) => setLabels(value as Labels)}\n      >\n        {MODES.map((mode) => (\n          <Radio key={mode} value={mode} label={t(`labels.${mode}`)} />\n        ))}\n      </RadioGroup>\n      <SunburstChart\n        data={data}\n        labels={labels}\n        format={format}\n        legend\n        startAngle={-30}\n        height={440}\n        ariaLabel={t(\"worldAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "标签",
+      "description": "按大洲和国家统计的人口。labels 决定名称的书写方式：auto 为每个扇区选择沿弧线或沿半径，放不下的名称会被截断或省略。图例可以隐藏 / 显示大洲；国家名称来自 Intl.DisplayNames。"
+    },
+    {
+      "id": "live-requests",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/sunburst-chart/demos/live-requests.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/sunburst-chart/demos/live-requests.tsx": "import { useEffect, useMemo, useRef, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button, HStack } from \"minerva-design\";\nimport { SunburstChart, type TreemapNode } from \"minerva-design/charts\";\n\n/** Small seeded random generator: the same traffic on every visit */\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\n// API requests per minute, by service and endpoint, around these baselines\nconst SERVICES: [service: string, endpoints: [string, number][]][] = [\n  [\n    \"checkout\",\n    [\n      [\"cart\", 820],\n      [\"payment\", 410],\n      [\"shipping\", 260],\n    ],\n  ],\n  [\n    \"search\",\n    [\n      [\"query\", 980],\n      [\"suggest\", 540],\n    ],\n  ],\n  [\n    \"accounts\",\n    [\n      [\"login\", 360],\n      [\"profile\", 220],\n    ],\n  ],\n  [\n    \"catalog\",\n    [\n      [\"product\", 690],\n      [\"reviews\", 240],\n    ],\n  ],\n];\nconst BASELINE = SERVICES.flatMap(([, endpoints]) =>\n  endpoints.map(([, rate]) => rate),\n);\nconst SEED = 21;\n\nexport default function LiveRequestsDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.sunburst-chart.data\",\n  });\n  const locale = i18n.language;\n  const [rates, setRates] = useState(BASELINE);\n  const [running, setRunning] = useState(true);\n  const random = useRef(mulberry32(SEED));\n\n  useEffect(() => {\n    if (!running) return;\n    const timer = window.setInterval(() => {\n      // each endpoint drifts by up to ±15 %, pulled back toward its baseline\n      const noise = BASELINE.map(() => random.current() * 0.3 - 0.15);\n      setRates((current) =>\n        current.map((rate, i) =>\n          Math.max(\n            20,\n            Math.round(rate * (1 + noise[i]) + (BASELINE[i] - rate) * 0.25),\n          ),\n        ),\n      );\n    }, 1500);\n    return () => window.clearInterval(timer);\n  }, [running]);\n\n  const { data, totals } = useMemo(() => {\n    // index of the first endpoint of each service in the flat rates\n    const offsets = SERVICES.map((_, s) =>\n      SERVICES.slice(0, s).reduce(\n        (n, [, endpoints]) => n + endpoints.length,\n        0,\n      ),\n    );\n    const data: TreemapNode[] = SERVICES.map(([service, endpoints], s) => ({\n      name: t(`requests.services.${service}`),\n      children: endpoints.map(([endpoint], e) => ({\n        name: t(`requests.endpoints.${endpoint}`),\n        value: rates[offsets[s] + e],\n      })),\n    }));\n    const totals = SERVICES.map(([, endpoints], s) =>\n      endpoints.reduce((sum, _, e) => sum + rates[offsets[s] + e], 0),\n    );\n    return { data, totals };\n  }, [rates, t]);\n  const number = useMemo(() => new Intl.NumberFormat(locale), [locale]);\n  const format = (value: number) =>\n    t(\"requests.rpm\", { value: number.format(value) });\n\n  const total = totals.reduce((sum, value) => sum + value, 0);\n  const busiest = totals.indexOf(Math.max(...totals));\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <SunburstChart\n        data={data}\n        innerRadius={0.4}\n        cornerRadius={3}\n        padAngle={1}\n        format={format}\n        height={380}\n        ariaLabel={t(\"requests.aria\")}\n      />\n      <HStack gap={8} wrap align=\"center\">\n        <Button\n          size=\"small\"\n          variant=\"outline\"\n          onClick={() => setRunning((current) => !current)}\n        >\n          {running ? t(\"requests.pause\") : t(\"requests.resume\")}\n        </Button>\n        <span style={{ color: \"var(--text-muted-color)\" }}>\n          {t(\"requests.total\", { value: format(total) })}\n        </span>\n      </HStack>\n      {/* only the busiest service is announced, not every refresh */}\n      <output aria-live=\"polite\">\n        {t(\"requests.busiest\", { service: data[busiest].name })}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "实时 API 流量",
+      "description": "按服务和端点划分的每分钟请求数，每 1.5 秒通过带种子的随机游走刷新一次（setInterval，在暂停和卸载时清除）。总数会显示但不播报，只有最繁忙的服务变化时才播报。"
+    },
+    {
+      "id": "org",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/sunburst-chart/demos/org.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/sunburst-chart/demos/org.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { SunburstChart, type TreemapNode } from \"minerva-design/charts\";\n\ntype Unit = [key: string, headcount: number | Unit[]];\n\n// Headcount of a 300-person company: departments, groups and teams\nconst ORG: Unit[] = [\n  [\n    \"engineering\",\n    [\n      [\n        \"platform\",\n        [\n          [\"infrastructure\", 18],\n          [\"security\", 9],\n          [\"devtools\", 11],\n        ],\n      ],\n      [\n        \"product\",\n        [\n          [\"web\", 24],\n          [\"mobile\", 16],\n          [\"payments\", 12],\n        ],\n      ],\n      [\n        \"data\",\n        [\n          [\"analytics\", 10],\n          [\"ml\", 8],\n        ],\n      ],\n    ],\n  ],\n  [\n    \"sales\",\n    [\n      [\"emea\", 22],\n      [\"americas\", 31],\n      [\"apac\", 14],\n    ],\n  ],\n  [\n    \"success\",\n    [\n      [\"support\", 26],\n      [\"onboarding\", 9],\n    ],\n  ],\n  [\n    \"marketing\",\n    [\n      [\"brand\", 7],\n      [\"growth\", 12],\n      [\"content\", 6],\n    ],\n  ],\n  [\n    \"operations\",\n    [\n      [\"finance\", 8],\n      [\"people\", 7],\n      [\"legal\", 4],\n      [\"it\", 6],\n    ],\n  ],\n];\n\nexport default function OrgDemo() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.sunburst-chart.data\",\n  });\n\n  const data = useMemo(() => {\n    const convert = (units: Unit[]): TreemapNode[] =>\n      units.map(([key, size]) =>\n        typeof size === \"number\"\n          ? { name: t(`org.${key}`), value: size }\n          : { name: t(`org.${key}`), children: convert(size) },\n      );\n    return convert(ORG);\n  }, [t]);\n  const format = useMemo(() => (value: number) => t(\"people\", { value }), [t]);\n\n  return (\n    <SunburstChart\n      data={data}\n      levels={2}\n      labels=\"radial\"\n      innerRadius={0.3}\n      format={format}\n      height={400}\n      ariaLabel={t(\"orgAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "组织结构",
+      "description": "按部门、小组和团队统计的人数。levels={2} 一次只显示两圈（下钻后可看到各团队），labels=\"radial\" 让名称沿半径方向书写。"
+    },
+    {
+      "id": "time-tracking",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/sunburst-chart/demos/time-tracking.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/sunburst-chart/demos/time-tracking.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Radio, RadioGroup } from \"minerva-design\";\nimport { SunburstChart, type TreemapNode } from \"minerva-design/charts\";\n\ntype Project = [key: string, activities: [string, number][]];\ntype Client = [key: string, projects: Project[]];\n\n// Hours logged by a freelance studio during one week:\n// client › project › activity\nconst WEEK: Client[] = [\n  [\n    \"bakery\",\n    [\n      [\n        \"website\",\n        [\n          [\"design\", 6],\n          [\"development\", 9],\n          [\"meetings\", 2],\n        ],\n      ],\n      [\n        \"branding\",\n        [\n          [\"design\", 5],\n          [\"meetings\", 1.5],\n        ],\n      ],\n    ],\n  ],\n  [\n    \"clinic\",\n    [\n      [\n        \"booking\",\n        [\n          [\"development\", 12],\n          [\"review\", 3],\n          [\"meetings\", 2],\n        ],\n      ],\n    ],\n  ],\n  [\n    \"school\",\n    [\n      [\n        \"app\",\n        [\n          [\"design\", 3],\n          [\"development\", 8],\n          [\"review\", 2],\n        ],\n      ],\n    ],\n  ],\n  [\n    \"internal\",\n    [\n      [\n        \"admin\",\n        [\n          [\"meetings\", 3],\n          [\"support\", 2],\n        ],\n      ],\n      [\"training\", [[\"learning\", 2.5]]],\n    ],\n  ],\n];\n\n// the month is not just 4 weeks: some clients had a busier month than others\nconst MONTH_FACTORS: Record<string, number> = {\n  bakery: 3.6,\n  clinic: 4.5,\n  school: 4.2,\n  internal: 3.8,\n};\n\nconst PERIODS = [\"week\", \"month\"] as const;\ntype Period = (typeof PERIODS)[number];\n\n/** Rounds to the nearest half hour */\nconst half = (hours: number) => Math.round(hours * 2) / 2;\n\nexport default function TimeTrackingDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.sunburst-chart.data\",\n  });\n  const locale = i18n.language;\n  const [period, setPeriod] = useState<Period>(\"week\");\n\n  const { data, total, billable } = useMemo(() => {\n    const hoursOf = (client: string, hours: number) =>\n      period === \"week\" ? hours : half(hours * MONTH_FACTORS[client]);\n    const data: TreemapNode[] = WEEK.map(([client, projects]) => ({\n      name: t(`time.clients.${client}`),\n      children: projects.map(([project, activities]) => ({\n        name: t(`time.projects.${project}`),\n        children: activities.map(([activity, hours]) => ({\n          name: t(`time.activities.${activity}`),\n          value: hoursOf(client, hours),\n        })),\n      })),\n    }));\n    const entries = WEEK.flatMap(([client, projects]) =>\n      projects.flatMap(([, activities]) =>\n        activities.map(\n          ([, hours]) => [client, hoursOf(client, hours)] as const,\n        ),\n      ),\n    );\n    const sum = (list: (typeof entries)[number][]) =>\n      list.reduce((acc, [, hours]) => acc + hours, 0);\n    return {\n      data,\n      total: sum(entries),\n      billable: sum(entries.filter(([client]) => client !== \"internal\")),\n    };\n  }, [period, t]);\n\n  const hours = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        style: \"unit\",\n        unit: \"hour\",\n        unitDisplay: \"short\",\n        maximumFractionDigits: 1,\n      }),\n    [locale],\n  );\n  const percent = useMemo(\n    () =>\n      new Intl.NumberFormat(locale, {\n        style: \"percent\",\n        maximumFractionDigits: 0,\n      }),\n    [locale],\n  );\n\n  return (\n    <div style={{ display: \"grid\", gap: 12, width: \"100%\" }}>\n      <RadioGroup\n        aria-label={t(\"time.period\")}\n        direction=\"horizontal\"\n        value={period}\n        onChange={(value) => setPeriod(value as Period)}\n      >\n        {PERIODS.map((key) => (\n          <Radio key={key} value={key} label={t(`time.periods.${key}`)} />\n        ))}\n      </RadioGroup>\n      <SunburstChart\n        data={data}\n        innerRadius={0.28}\n        padAngle={1}\n        format={(value) => hours.format(value)}\n        renderTooltip={(node) => (\n          <div style={{ display: \"grid\", gap: 2 }}>\n            <strong>{(node.path ?? [node.name]).join(\" › \")}</strong>\n            <span>\n              {t(\"time.tooltip\", {\n                hours: hours.format(node.value),\n                share: percent.format(node.value / total),\n              })}\n            </span>\n          </div>\n        )}\n        height={400}\n        ariaLabel={t(\"time.aria\", { period: t(`time.periods.${period}`) })}\n      />\n      <output aria-live=\"polite\">\n        {t(\"time.summary\", {\n          billable: hours.format(billable),\n          total: hours.format(total),\n          share: percent.format(billable / total),\n        })}\n      </output>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "工时记录",
+      "description": "按客户、项目和活动划分的工时，分为三层圆环。通过 RadioGroup 在本周和本月之间切换，扇区会以动画过渡；工时使用 Intl.NumberFormat 的小时单位格式化，摘要给出可计费工时的占比。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "旭日图",
+      "description": "用同心圆环展示层级结构：每一圈是一个层级，每个扇区是其父节点的一部分。点击父节点（或在其上按 Enter）可下钻，点击中心（或按 Backspace）返回上一级，切换时角度和圆环会以动画过渡。悬停扇区会高亮其祖先和后代，标签会根据空间沿弧线或沿半径排布。",
+      "demos": {
+        "disk-usage": {
+          "title": "磁盘占用",
+          "description": "一台笔记本电脑中各文件夹和应用的占用空间（GB）。点击文件夹即可下钻，点击中心返回上一级；onDrill 返回当前聚焦的路径，显示在图表下方。"
+        },
+        "drill-down": {
+          "title": "受控下钻与面包屑",
+          "description": "drillPath 让聚焦状态受控：点击只会触发 onDrill，路径由面包屑管理，因此其中的按钮可以跳转到任意层级。cornerRadius 和 padAngle 让扇区更圆润、间隔更清晰。"
+        },
+        "org": {
+          "title": "组织结构",
+          "description": "按部门、小组和团队统计的人数。levels={2} 一次只显示两圈（下钻后可看到各团队），labels=\"radial\" 让名称沿半径方向书写。"
+        },
+        "labels": {
+          "title": "标签",
+          "description": "按大洲和国家统计的人口。labels 决定名称的书写方式：auto 为每个扇区选择沿弧线或沿半径，放不下的名称会被截断或省略。图例可以隐藏 / 显示大洲；国家名称来自 Intl.DisplayNames。"
+        },
+        "city-budget": {
+          "title": "城市预算",
+          "description": "drill={false} 让点击变为选中而不是放大：onClick 填充图表下方的文字，给出某个项目占整个预算及其所属政策领域的比例。renderTooltip 显示相同的文字，没有项目的领域则是一个普通叶子节点。"
+        },
+        "time-tracking": {
+          "title": "工时记录",
+          "description": "按客户、项目和活动划分的工时，分为三层圆环。通过 RadioGroup 在本周和本月之间切换，扇区会以动画过渡；工时使用 Intl.NumberFormat 的小时单位格式化，摘要给出可计费工时的占比。"
+        },
+        "live-requests": {
+          "title": "实时 API 流量",
+          "description": "按服务和端点划分的每分钟请求数，每 1.5 秒通过带种子的随机游走刷新一次（setInterval，在暂停和卸载时清除）。总数会显示但不播报，只有最繁忙的服务变化时才播报。"
+        },
+        "energy-mix": {
+          "title": "电力结构",
+          "description": "图例和 Switch 编辑同一个受控的 hidden 列表（onToggle），因此无论从哪里隐藏化石燃料都会保持同步。没有细分的能源（核能）是第一层上的叶子节点，各燃料继承其能源的颜色。"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "下钻",
+            "description": "按文件夹统计的磁盘占用：点击文件夹放大，点击中心返回上一级；onDrill 报告当前路径。"
+          }
+        },
+        "data": {
+          "tapHint": "点击文件夹以放大。",
+          "path": "当前显示 {{path}}。点击中心返回上一级。"
+        }
+      },
+      "api": {
+        "SunburstChartProps": {
+          "data": "节点：叶子节点携带数值，父节点为其子节点之和",
+          "innerRadius": "中心圆半径占外半径的比例",
+          "levels": "聚焦节点之下同时显示的圈数（圆环窄于 18 像素时会减少）",
+          "startAngle": "第一个节点的起始角度，从 12 点钟方向顺时针计，单位为度",
+          "padAngle": "扇区之间的间隙，单位为像素",
+          "cornerRadius": "扇区的圆角半径，单位为像素",
+          "labels": "扇区标签：auto 为每个名称选择沿弧线或沿半径中更合适的方式；tangential、radial 或 none 强制使用某种方式",
+          "drill": "点击父节点（或在其上按 Enter）进入下钻；点击中心（或按 Backspace）返回上一级",
+          "drillPath": "从根到聚焦节点的名称列表（[] 表示根）；设置后下钻状态受控",
+          "onDrill": "点击父节点或中心（或调用 drill()）时触发，参数为新的路径"
+        },
+        "TreemapNode": {
+          "name": "显示在扇区、中心和提示框中的名称",
+          "value": "叶子节点的数值（父节点为其子节点之和）",
+          "color": "颜色；省略时顶层节点取自调色板，子节点使用父节点颜色的不同深浅",
+          "children": "子节点"
+        },
+        "ShapeDrillEvent": {
+          "path": "从根到新聚焦节点的名称列表（[] 表示根）"
+        }
+      },
+      "data": {
+        "disk": {
+          "root": "Macintosh HD",
+          "applications": "应用程序",
+          "documents": "文稿",
+          "projects": "项目",
+          "archive": "归档",
+          "pdfs": "PDF 文件",
+          "spreadsheets": "电子表格",
+          "photos": "照片",
+          "developer": "开发",
+          "caches": "包缓存",
+          "simulators": "模拟器",
+          "system": "系统",
+          "music": "音乐",
+          "other": "其他应用"
+        },
+        "gb": "{{value}} GB",
+        "diskAria": "按文件夹统计的磁盘占用，单位为 GB",
+        "diskPath": "当前显示 {{path}}。点击中心返回上一级。",
+        "diskHint": "点击文件夹即可下钻。",
+        "org": {
+          "engineering": "研发",
+          "platform": "平台",
+          "infrastructure": "基础设施",
+          "security": "安全",
+          "devtools": "开发者工具",
+          "product": "产品研发",
+          "web": "Web",
+          "mobile": "移动端",
+          "payments": "支付",
+          "data": "数据",
+          "analytics": "数据分析",
+          "ml": "机器学习",
+          "sales": "销售",
+          "emea": "欧洲、中东和非洲",
+          "americas": "美洲",
+          "apac": "亚太",
+          "success": "客户成功",
+          "support": "客服",
+          "onboarding": "客户上手",
+          "marketing": "市场",
+          "brand": "品牌",
+          "growth": "增长",
+          "content": "内容",
+          "operations": "运营",
+          "finance": "财务",
+          "people": "人力资源",
+          "legal": "法务",
+          "it": "IT"
+        },
+        "people": "{{value}} 人",
+        "orgAria": "按部门、小组和团队统计的人数",
+        "catalog": {
+          "all": "全部商品",
+          "electronics": "数码电子",
+          "phones": "手机",
+          "flagship": "旗舰机",
+          "midRange": "中端机",
+          "accessories": "配件",
+          "laptops": "笔记本电脑",
+          "audio": "音频",
+          "headphones": "耳机",
+          "speakers": "音箱",
+          "home": "家居",
+          "kitchen": "厨房",
+          "furniture": "家具",
+          "decor": "装饰",
+          "fashion": "服饰",
+          "men": "男装",
+          "women": "女装",
+          "kids": "童装",
+          "sports": "运动",
+          "outdoor": "户外",
+          "fitness": "健身"
+        },
+        "breadcrumb": "类目路径",
+        "catalogAria": "按商品类目统计的季度收入",
+        "world": {
+          "asia": "亚洲",
+          "africa": "非洲",
+          "europe": "欧洲",
+          "americas": "美洲",
+          "oceania": "大洋洲",
+          "other": "其他国家"
+        },
+        "millions": "{{value}} 百万",
+        "labelsLabel": "标签方式",
+        "labels": {
+          "auto": "自动",
+          "tangential": "沿弧线",
+          "radial": "沿半径",
+          "none": "不显示"
+        },
+        "worldAria": "按大洲和国家统计的世界人口，单位为百万",
+        "budget": {
+          "areas": {
+            "education": "教育",
+            "health": "医疗",
+            "transport": "交通",
+            "safety": "公共安全",
+            "environment": "环境",
+            "administration": "行政"
+          },
+          "programs": {
+            "schools": "中小学",
+            "universities": "大学",
+            "libraries": "图书馆",
+            "hospitals": "医院",
+            "prevention": "疾病预防",
+            "transit": "公共交通",
+            "roads": "道路",
+            "cycling": "自行车道",
+            "police": "警务",
+            "fire": "消防",
+            "parks": "公园",
+            "waste": "垃圾清运",
+            "water": "供水"
+          },
+          "programLine": "{{path}}：{{amount}}，占预算的 {{share}}，占{{area}}的 {{areaShare}}。",
+          "areaLine": "{{path}}：{{amount}}，占预算的 {{share}}。",
+          "aria": "按政策领域和项目划分的城市年度预算",
+          "hint": "年度预算：{{total}}。点击某个扇区查看其占比。"
+        },
+        "time": {
+          "clients": {
+            "bakery": "连锁面包店",
+            "clinic": "牙科诊所",
+            "school": "语言学校",
+            "internal": "内部"
+          },
+          "projects": {
+            "website": "网站",
+            "branding": "品牌设计",
+            "booking": "预约系统",
+            "app": "移动应用",
+            "admin": "行政事务",
+            "training": "培训"
+          },
+          "activities": {
+            "design": "设计",
+            "development": "开发",
+            "meetings": "会议",
+            "review": "评审",
+            "support": "支持",
+            "learning": "学习"
+          },
+          "period": "时间段",
+          "periods": {
+            "week": "本周",
+            "month": "本月"
+          },
+          "tooltip": "{{hours}} · 占记录工时的 {{share}}",
+          "aria": "按客户、项目和活动划分的工时（{{period}}）",
+          "summary": "可计费：{{billable}}，共 {{total}}（{{share}}）。"
+        },
+        "requests": {
+          "services": {
+            "checkout": "结账",
+            "search": "搜索",
+            "accounts": "账户",
+            "catalog": "商品目录"
+          },
+          "endpoints": {
+            "cart": "购物车",
+            "payment": "支付",
+            "shipping": "配送",
+            "query": "查询",
+            "suggest": "搜索建议",
+            "login": "登录",
+            "profile": "个人资料",
+            "product": "商品页",
+            "reviews": "评价"
+          },
+          "rpm": "{{value}} 次/分钟",
+          "aria": "按服务和端点划分的每分钟 API 请求数，实时更新",
+          "pause": "暂停",
+          "resume": "继续",
+          "total": "总计：{{value}}",
+          "busiest": "最繁忙的服务：{{service}}"
+        },
+        "energy": {
+          "sources": {
+            "renewables": "可再生能源",
+            "nuclear": "核能",
+            "fossil": "化石燃料"
+          },
+          "fuels": {
+            "wind": "风能",
+            "solar": "太阳能",
+            "hydro": "水电",
+            "biomass": "生物质能",
+            "gas": "天然气",
+            "coal": "煤炭",
+            "oil": "石油"
+          },
+          "twh": "{{value}} 太瓦时",
+          "hideFossil": "隐藏化石燃料",
+          "aria": "按能源和燃料划分的年度发电量",
+          "shownOnly": "已隐藏可再生能源：显示 {{total}}。",
+          "share": "可再生能源：占所显示 {{total}} 的 {{share}}。"
+        }
+      },
+      "wc": {
+        "demos": {
+          "disk-usage": {
+            "title": "磁盘占用",
+            "description": "内环为文件夹，外环为其内容；点击文件夹放大，点击中心返回。"
+          },
+          "drill-down": {
+            "title": "下钻路径",
+            "description": "drill 事件给出从根到当前节点的路径：在图表外显示面包屑导航。"
+          }
+        },
+        "minerva-sunburst-chart": {
+          "props": {
+            "noDrill": "禁用下钻（默认点击父节点会放大进入该节点）",
+            "height": "图表高度（包含图例）：像素值或任意 CSS 长度",
+            "options": "其他引擎选项（坐标轴、图例、提示框、调色板、格式化……），与元素自身的属性合并；仅作为属性设置",
+            "instance": "引擎实例（minerva-design/charts/core），在元素渲染并连接到文档之前为 null"
+          },
+          "events": {
+            "minerva-drill": "点击了父节点或中心（或调用了 drill()）；detail：{ path }",
+            "minerva-hover": "悬停（或键盘聚焦）的图形元素发生变化；detail：{ index, name, value, share }，无悬停时为 null",
+            "minerva-click": "点击、轻触或按 Enter 激活了一个图形元素；detail：{ index, name, value, share }",
+            "minerva-toggle": "点击了图例项（或调用了 toggle()）；detail：{ index, hidden, hiddenIndexes }"
+          },
+          "methods": {
+            "drill": "放大到指定路径的节点（从根开始的名称，[] 表示根）",
+            "toggle": "按索引隐藏或显示扇区、阶段、雷达系列或树图的顶层节点",
+            "getRenderer": "绘制图形所用的后端（webgpu、webgl2、webgl、canvas2d），就绪前为 null；可通过引擎选项 renderer 指定"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,556 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.3",
+  "locale": "ja",
+  "renderer": "native",
+  "page": "number-input",
+  "title": "NumberInput 数値入力",
+  "description": "矢印キーでのステップ、任意のステッパー、min / max の制限、固定精度を備えた数値フィールド（spinbutton）。値はフォーカス喪失または Enter で確定します。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.3",
+    "sourceCommit": "ea7fb3e1f55d184b7d737316e9ae829f4f7ff223",
+    "sourceDigest": "sha256:c9540edc3908d226375a01cf5e6bfe8ca6a4e20440f736c0dd9b40ae9ff2e645",
+    "referenceSourceDigest": "sha256:4cf6057856184f16240d0d22153ec370842fc7a2dfaaa66364e189fed89e6ca3"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "NumberInput",
+      "support": {
+        "status": "beta",
+        "notes": "Stepper: the mobile stepper look (− / + buttons)"
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Stepper: the mobile stepper look (− / + buttons)",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "NumberInput"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "value",
+            "source": "packages/native/src/components/NumberInput/NumberInput.tsx",
+            "kind": "number",
+            "typeText": "number | null | undefined",
+            "typeRef": "type:63da203dcb31379a7982",
+            "required": false,
+            "description": "Current value (controlled); `null` is an empty field"
+          },
+          {
+            "name": "defaultValue",
+            "source": "packages/native/src/components/NumberInput/NumberInput.tsx",
+            "kind": "number",
+            "typeText": "number | null | undefined",
+            "typeRef": "type:63da203dcb31379a7982",
+            "default": null,
+            "required": false,
+            "description": "Initial value (uncontrolled); `null` is an empty field"
+          },
+          {
+            "name": "min",
+            "source": "packages/native/src/components/NumberInput/NumberInput.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "Smallest allowed value; committed values are clamped to it"
+          },
+          {
+            "name": "max",
+            "source": "packages/native/src/components/NumberInput/NumberInput.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "Largest allowed value; committed values are clamped to it"
+          },
+          {
+            "name": "step",
+            "source": "packages/native/src/components/NumberInput/NumberInput.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 1,
+            "required": false,
+            "description": "Amount added / removed by the stepper buttons and the screen reader increment / decrement actions"
+          },
+          {
+            "name": "precision",
+            "source": "packages/native/src/components/NumberInput/NumberInput.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false,
+            "description": "Decimal places of the value"
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/components/NumberInput/NumberInput.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "NativeSize | undefined",
+            "typeRef": "type:3e1597e03bb6f7f3269e",
+            "default": "medium",
+            "required": false,
+            "description": "Field size (`--control-height-*`)"
+          },
+          {
+            "name": "invalid",
+            "source": "packages/native/src/components/NumberInput/NumberInput.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Error state (also shown while the draft is not a number or out of range)"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/native/src/components/NumberInput/NumberInput.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables the field"
+          },
+          {
+            "name": "readOnly",
+            "source": "packages/native/src/components/NumberInput/NumberInput.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Typing and stepping do not change the value"
+          },
+          {
+            "name": "showStepper",
+            "source": "packages/native/src/components/NumberInput/NumberInput.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows the decrement / increment buttons (`Stepper` always does)"
+          },
+          {
+            "name": "stepperLayout",
+            "source": "packages/native/src/components/NumberInput/NumberInput.tsx",
+            "kind": "enum",
+            "values": [
+              "compact",
+              "inline"
+            ],
+            "typeText": "NumberInputStepperLayout | undefined",
+            "typeRef": "type:2603e210bf9e3b4f17f5",
+            "default": "inline",
+            "required": false,
+            "description": "`inline`: the buttons sit inside the field frame; `compact`: separate tinted buttons around a narrow value (mobile stepper, `Stepper`)"
+          },
+          {
+            "name": "allowEmpty",
+            "source": "packages/native/src/components/NumberInput/NumberInput.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Clearing the field commits `null`; otherwise it falls back to min (or 0)"
+          },
+          {
+            "name": "incrementLabel",
+            "source": "packages/native/src/components/NumberInput/NumberInput.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the increment button"
+          },
+          {
+            "name": "decrementLabel",
+            "source": "packages/native/src/components/NumberInput/NumberInput.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the decrement button"
+          },
+          {
+            "name": "label",
+            "source": "packages/native/src/components/NumberInput/NumberInput.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Visible label above the field; a string label is also the field's accessible name (unless `accessibilityLabel` is set)"
+          },
+          {
+            "name": "inputStyle",
+            "source": "packages/native/src/components/NumberInput/NumberInput.tsx",
+            "kind": "union",
+            "typeText": "StyleProp<TextStyle>",
+            "typeRef": "type:175f7626ef7c69988283",
+            "required": false,
+            "description": "Style of the TextInput"
+          }
+        ],
+        "events": [
+          {
+            "name": "onChange",
+            "source": "packages/native/src/components/NumberInput/NumberInput.tsx",
+            "kind": "function",
+            "typeText": "((value: number | null) => void) | undefined",
+            "typeRef": "type:c04ca4f6b2cd96d69203",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "number | null",
+                "typeRef": "type:4ebff2838e5c7cb671be"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the committed value (`null`: emptied)"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "onChange",
+            "syntax": "value={value} onChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "native:NumberInputProps": {
+      "source": "native/src/components/NumberInput/NumberInput.tsx",
+      "kind": "interface",
+      "extends": [
+        "Omit<TextInputProps, | \"style\" | \"value\" | \"defaultValue\" | \"onChange\" | \"editable\" | \"readOnly\" | \"multiline\">"
+      ],
+      "props": [
+        {
+          "name": "value",
+          "type": "number | null",
+          "required": false,
+          "description": "Current value (controlled); `null` is an empty field"
+        },
+        {
+          "name": "defaultValue",
+          "type": "number | null",
+          "required": false,
+          "default": "null",
+          "description": "Initial value (uncontrolled); `null` is an empty field"
+        },
+        {
+          "name": "onChange",
+          "type": "(value: number | null) => void",
+          "required": false,
+          "description": "Called with the committed value (`null`: emptied)"
+        },
+        {
+          "name": "min",
+          "type": "number",
+          "required": false,
+          "description": "Smallest allowed value; committed values are clamped to it"
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "required": false,
+          "description": "Largest allowed value; committed values are clamped to it"
+        },
+        {
+          "name": "step",
+          "type": "number",
+          "required": false,
+          "default": "1",
+          "description": "Amount added / removed by the stepper buttons and the screen reader increment / decrement actions"
+        },
+        {
+          "name": "precision",
+          "type": "number",
+          "required": false,
+          "default": "inferred from step (0.01 -> 2)",
+          "description": "Decimal places of the value"
+        },
+        {
+          "name": "size",
+          "type": "NumberInputSize",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Field size (`--control-height-*`)"
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Error state (also shown while the draft is not a number or out of range)"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Disables the field"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Typing and stepping do not change the value"
+        },
+        {
+          "name": "showStepper",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows the decrement / increment buttons (`Stepper` always does)"
+        },
+        {
+          "name": "stepperLayout",
+          "type": "NumberInputStepperLayout",
+          "required": false,
+          "default": "\"inline\"",
+          "description": "`inline`: the buttons sit inside the field frame; `compact`: separate tinted buttons around a narrow value (mobile stepper, `Stepper`)"
+        },
+        {
+          "name": "allowEmpty",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Clearing the field commits `null`; otherwise it falls back to min (or 0)"
+        },
+        {
+          "name": "incrementLabel",
+          "type": "string",
+          "required": false,
+          "default": "i18n \"numberInput.increment\"",
+          "description": "Accessible label of the increment button"
+        },
+        {
+          "name": "decrementLabel",
+          "type": "string",
+          "required": false,
+          "default": "i18n \"numberInput.decrement\"",
+          "description": "Accessible label of the decrement button"
+        },
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Visible label above the field; a string label is also the field's accessible name (unless `accessibilityLabel` is set)"
+        },
+        {
+          "name": "style",
+          "type": "StyleProp<ViewStyle>",
+          "required": false,
+          "description": "Style of the root view"
+        },
+        {
+          "name": "inputStyle",
+          "type": "StyleProp<TextStyle>",
+          "required": false,
+          "description": "Style of the TextInput"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<TextInput>",
+          "required": false,
+          "description": "Ref of the TextInput"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:NumberInput": {
+      "kind": "cssVars",
+      "source": "react/src/components/NumberInput",
+      "vars": [
+        {
+          "name": "--number-input-height",
+          "description": "Height (every size; defaults to the density's control height of the size)"
+        },
+        {
+          "name": "--number-input-padding-x",
+          "description": "Horizontal padding of the text (defaults to the density's small control padding)"
+        },
+        {
+          "name": "--number-input-radius",
+          "description": "Corner radius (defaults to --radius-md)"
+        },
+        {
+          "name": "--number-input-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--number-input-background",
+          "description": "Background color"
+        },
+        {
+          "name": "--number-input-border-color",
+          "description": "Border color at rest"
+        },
+        {
+          "name": "--number-input-stepper-width",
+          "description": "Width of the increment / decrement column"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/number-input/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/number-input/native/basic.tsx": "import { NumberInput } from \"minerva-design/native\";\nexport default function Basic() {\n  return (\n    <NumberInput label=\"Quantity\" defaultValue={2} min={0} max={10} step={1} />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "基本",
+      "description": "範囲外や数値でない入力は警告され、確定時に制限または元に戻されます。クリアすると null。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "NumberInput 数値入力",
+      "description": "矢印キーでのステップ、任意のステッパー、min / max の制限、固定精度を備えた数値フィールド（spinbutton）。値はフォーカス喪失または Enter で確定します。",
+      "demos": {
+        "basic": {
+          "title": "基本",
+          "description": "範囲外や数値でない入力は警告され、確定時に制限または元に戻されます。クリアすると null。"
+        },
+        "stepper-precision": {
+          "title": "ステッパーと精度",
+          "description": "showStepper でボタンを追加。精度は指定がなければ step から推定。allowEmpty={false} では min に戻ります。"
+        },
+        "form-control": {
+          "title": "FormField と併用",
+          "description": "フィールドがラベル・状態・説明を提供し、readOnly は入力とステップを防ぎます。"
+        }
+      },
+      "api": {
+        "NumberInputProps": {
+          "value": "現在の値（制御）。`null` は空。非制御の場合は省略",
+          "defaultValue": "非制御フィールドの初期値",
+          "onChange": "確定した値で呼ばれます（フォーカス喪失 / Enter、ステップ、ステッパー）。入力中は呼ばれません。クリア時は `null`",
+          "min": "許容される最小値。確定値はこれに制限されます",
+          "max": "許容される最大値。確定値はこれに制限されます",
+          "step": "ArrowUp / ArrowDown とステッパーで増減する量",
+          "precision": "値の小数桁数。省略時は step から推定（step 0.01 -> 2）",
+          "size": "フィールドのサイズ",
+          "invalid": "エラー状態（無効な FormControl や範囲外の入力でも設定）",
+          "disabled": "フィールドを無効化（FormControl でも設定）",
+          "readOnly": "フォーカス・コピー可能だが、入力やステップで値は変わりません（FormControl でも設定）",
+          "showStepper": "増減ボタンを表示。矢印キーは常に有効",
+          "allowEmpty": "クリアすると `null` を確定。それ以外は min（または 0）に戻ります",
+          "className": "ラッパーのクラス名",
+          "incrementLabel": "増加ボタンのアクセシブルラベル",
+          "decrementLabel": "減少ボタンのアクセシブルラベル",
+          "notANumberMessage": "入力が数値でないときに表示されるヒント（ラッパーの title）",
+          "belowMinMessage": "入力が min 未満のときのヒント",
+          "aboveMaxMessage": "入力が max を超えるときのヒント",
+          "ref": "<input> 要素への ref"
+        }
+      },
+      "cssVars": {
+        "--number-input-height": "高さ（全サイズ。既定は密度に応じた各サイズのコントロール高さ）",
+        "--number-input-padding-x": "テキストの左右パディング（既定は密度に応じた small のコントロールパディング）",
+        "--number-input-radius": "角丸（既定は --radius-md）",
+        "--number-input-font-size": "フォントサイズ（全サイズ）",
+        "--number-input-background": "背景色",
+        "--number-input-border-color": "通常時の枠線色（ステッパーの区切り線にも使用）",
+        "--number-input-stepper-width": "増減ボタン列の幅"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "ステッパー付きの min / max。上下矢印キーでステップ、PageUp / PageDown で 10 ステップ、Home / End で上下限へ移動します。minerva-change が確定した値を通知します。"
+          },
+          "precision": {
+            "title": "ステップ・精度・メソッド",
+            "description": "小数のステップ、小数点以下 2 桁固定、no-empty。外部のボタンが stepUp() / stepDown() を呼びます。読み取り専用・無効・サイズの例も含みます。"
+          },
+          "form": {
+            "title": "フォーム内での利用",
+            "description": "required と範囲外の値は、ローカライズ済みまたは独自のメッセージ（below-min-message・above-max-message）で送信を止めます。リセットで value 属性の値に戻ります。"
+          }
+        },
+        "minerva-number-input": {
+          "props": {
+            "readOnly": "フォーカス可能で送信されますが、入力やステップ操作で値は変わりません。",
+            "noEmpty": "フィールドを空にすると null ではなく min（または 0）に戻ります。",
+            "placeholder": "フィールドが空のときに表示するプレースホルダー。",
+            "name": "フォーム送信時に値を送る名前。",
+            "required": "フォームを送信するには値が必要です。",
+            "isDisabled": "コントロールが無効かどうか（自身または無効な <fieldset> による。読み取り専用）。",
+            "form": "要素が属するフォーム（読み取り専用）。",
+            "labels": "要素に関連付けられた <label> 要素（読み取り専用）。",
+            "validity": "<input>.validity と同じ妥当性の状態（読み取り専用）。",
+            "validationMessage": "現在の検証エラーのメッセージ。有効な場合は空（読み取り専用）。",
+            "willValidate": "要素が制約検証の対象かどうか（読み取り専用）。"
+          },
+          "events": {
+            "change": "値が確定した（フォーカスアウト・Enter・ステップ操作）。",
+            "input": "入力中のテキストが変わった（ネイティブ・composed）。",
+            "minerva-input": "入力中のテキストが変わった。detail: { value } は解析した値（数値でなければ null）。",
+            "minerva-change": "新しい値が確定した。detail: { value }（空にした場合は null）。"
+          },
+          "methods": {
+            "focus": "内部のコントロールにフォーカスします。",
+            "blur": "内部のコントロールからフォーカスを外します。",
+            "stepUp": "値に step を加えます（max で制限）。イベントは発火しません。",
+            "stepDown": "値から step を引きます（min で制限）。イベントは発火しません。",
+            "checkValidity": "妥当性を確認し、無効なら invalid イベントを発火します。",
+            "reportValidity": "妥当性を確認し、ブラウザーの検証メッセージを表示します。",
+            "setCustomValidity": "独自の検証エラーを設定します（空文字列で解除）。",
+            "formResetCallback": "form.reset() から呼ばれるフォームのライフサイクルコールバック。初期値に戻します。",
+            "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときに呼ばれるフォームのライフサイクルコールバック。",
+            "formStateRestoreCallback": "ブラウザーが状態を復元するとき（履歴移動・自動入力）に呼ばれるフォームのライフサイクルコールバック。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,406 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.3",
+  "locale": "ja",
+  "renderer": "angular",
+  "page": "bubble-chart",
+  "title": "バブルチャート",
+  "description": "3 つ目の値を点の大きさで表す散布図：バブルの面積が値に比例します。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.3",
+    "sourceCommit": "ea7fb3e1f55d184b7d737316e9ae829f4f7ff223",
+    "sourceDigest": "sha256:c9540edc3908d226375a01cf5e6bfe8ca6a4e20440f736c0dd9b40ae9ff2e645",
+    "referenceSourceDigest": "sha256:4cf6057856184f16240d0d22153ec370842fc7a2dfaaa66364e189fed89e6ca3"
+  },
+  "content": {
+    "data": {
+      "continents": {
+        "asia": "アジア",
+        "europe": "ヨーロッパ",
+        "americas": "アメリカ大陸",
+        "africa": "アフリカ"
+      },
+      "population": "人口",
+      "gdp": "1 人あたり GDP",
+      "lifeExpectancy": "平均寿命（年）",
+      "countriesAria": "各国の 1 人あたり GDP、平均寿命、人口",
+      "products": "製品",
+      "revenue": "売上",
+      "portfolio": {
+        "cloudStorage": "クラウドストレージ",
+        "analytics": "分析",
+        "mobileSdk": "モバイル SDK",
+        "payments": "決済",
+        "desktop": "デスクトップアプリ",
+        "hardware": "ハードウェア",
+        "consulting": "コンサルティング"
+      },
+      "marketShare": "相対市場シェア",
+      "marketGrowth": "市場成長率",
+      "leader": "市場リーダー",
+      "highGrowth": "高成長",
+      "portfolioAria": "製品の市場シェア、成長率、売上",
+      "stages": {
+        "qualified": "見込み確定",
+        "proposal": "提案",
+        "negotiation": "交渉"
+      },
+      "amount": "金額",
+      "deal": "案件 #{{id}}",
+      "daysInPipeline": "パイプライン滞留日数",
+      "winProbability": "受注確率",
+      "dealStatus": "{{deal}}（{{stage}}）：{{amount}}",
+      "clickBubble": "バブルをクリックしてください",
+      "pipelineAria": "経過日数、受注確率、金額別の進行中案件",
+      "gdpLog": "1 人あたり GDP（対数スケール）",
+      "highIncome": "高所得",
+      "logAria": "対数スケールの 1 人あたり GDP と平均寿命、バブルの大きさは人口",
+      "visibleIncomes": "表示中の所得：{{from}} – {{to}}",
+      "zoomHint": "ズームすると表示範囲がドルで表示されます",
+      "teams": {
+        "infrastructure": "インフラ",
+        "security": "セキュリティ",
+        "people": "人員",
+        "budget": "予算"
+      },
+      "exposure": "エクスポージャー",
+      "risks": {
+        "powerOutage": "停電",
+        "hardwareDelay": "ハードウェアの納期遅延",
+        "networkCutover": "ネットワーク切り替え",
+        "dataLeak": "データ漏えい",
+        "accessReview": "アクセス権レビューの滞留",
+        "keyPerson": "キーパーソンの退職",
+        "vendorSkills": "ベンダーのスキル不足",
+        "trainingGap": "研修不足",
+        "licenseCost": "ライセンス費用の上昇",
+        "exchangeRate": "為替変動"
+      },
+      "zones": {
+        "low": "許容範囲",
+        "high": "重大"
+      },
+      "riskScore": "発生可能性 {{likelihood}} × 影響度 {{impact}} = {{score}}",
+      "exposureRow": "エクスポージャー: {{value}}",
+      "likelihood": "発生可能性",
+      "impact": "影響度",
+      "riskAria": "発生可能性、影響度、コストエクスポージャー別のプロジェクトリスク",
+      "channels": {
+        "search": "検索",
+        "social": "ソーシャル",
+        "video": "動画",
+        "email": "メール"
+      },
+      "budget": "予算",
+      "launchedOn": "{{date}} 開始",
+      "launch": "開始日",
+      "roas": "広告費用対効果",
+      "breakEven": "損益分岐点",
+      "campaignsAria": "開始日、広告費用対効果、予算別のマーケティングキャンペーン",
+      "regions": {
+        "north": "北部",
+        "south": "南部",
+        "east": "東部",
+        "west": "西部",
+        "center": "中部"
+      },
+      "sharedScale": "両方のチャートで同じサイズスケールを使う",
+      "sharedScaleOn": "両方のチャートで {{value}} を最大のバブルで描きます。",
+      "sharedScaleOff": "各チャートが自身の最大売上を最大のバブルで描きます。",
+      "salesPerMeter": "1 m² あたりの売上",
+      "margin": "利益率",
+      "sharedScaleAria": "{{year}} 年の店舗地域別の 1 m² あたり売上、利益率、売上高",
+      "play": "再生",
+      "pause": "一時停止",
+      "replay": "もう一度再生",
+      "restart": "最初から",
+      "yearStatus": "年: {{year}}",
+      "fertility": "出生率（女性 1 人あたりの子どもの数）",
+      "playbackAria": "1990 年から 2025 年までの国別の出生率、平均寿命、人口"
+    }
+  },
+  "components": [
+    {
+      "name": "BubbleChart",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnBubbleChart. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnBubbleChart. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnBubbleChart"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-bubble-chart",
+        "props": [
+          {
+            "name": "series",
+            "typeText": "readonly ChartSeries[]",
+            "required": true,
+            "source": "packages/angular/src/components/charts/cartesian-extended.ts"
+          },
+          {
+            "name": "minSize",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian-extended.ts"
+          },
+          {
+            "name": "maxSize",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian-extended.ts"
+          },
+          {
+            "name": "maxValue",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/cartesian-extended.ts"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "countries",
+      "title": "国の比較",
+      "description": "1 人あたり GDP と平均寿命。バブルの大きさは人口、色は大陸です。valueName と format でツールチップの値の名前と書式を指定します。",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnBubbleChart, injectMinerva } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnBubbleChart],\n  template: `\n@let t = labels[language()];\n<mn-bubble-chart\n  [series]=\"[{ name: t.life, showLabels: true, data: [\n    { x: 34, y: 84.5, value: 124, label: t.names[0] },\n    { x: 44, y: 82.5, value: 68, label: t.names[1] },\n    { x: 12.6, y: 78.6, value: 1410, label: t.names[2] },\n    { x: 9, y: 75.9, value: 216, label: t.names[3] },\n    { x: 2.5, y: 70.8, value: 1430, label: t.names[4] },\n    { x: 2.2, y: 53.6, value: 224, label: t.names[5] },\n    { x: 52, y: 81.2, value: 84, label: t.names[6] },\n    { x: 11.5, y: 75, value: 128, label: t.names[7] }\n  ] }]\"\n  [xAxis]=\"{ title: t.gdp }\"\n  [yAxis]=\"{ title: t.life, min: 50 }\"\n  [maxSize]=\"64\"\n  [height]=\"320\"\n/>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  labels = {\n  \"en\": {\n    \"gdp\": \"GDP per capita (k$)\",\n    \"life\": \"Life expectancy\",\n    \"names\": [\"Japan\", \"France\", \"China\", \"Brazil\", \"India\", \"Nigeria\", \"Germany\", \"Mexico\"]\n  },\n  \"zh\": {\n    \"gdp\": \"人均 GDP（千美元）\",\n    \"life\": \"预期寿命\",\n    \"names\": [\"日本\", \"法国\", \"中国\", \"巴西\", \"印度\", \"尼日利亚\", \"德国\", \"墨西哥\"]\n  },\n  \"ja\": {\n    \"gdp\": \"1 人あたり GDP（千ドル）\",\n    \"life\": \"平均寿命\",\n    \"names\": [\"日本\", \"フランス\", \"中国\", \"ブラジル\", \"インド\", \"ナイジェリア\", \"ドイツ\", \"メキシコ\"]\n  },\n  \"fr\": {\n    \"gdp\": \"PIB par habitant (k$)\",\n    \"life\": \"Espérance de vie\",\n    \"names\": [\"Japon\", \"France\", \"Chine\", \"Brésil\", \"Inde\", \"Nigeria\", \"Allemagne\", \"Mexique\"]\n  }\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "portfolio",
+      "title": "製品ポートフォリオ",
+      "description": "製品の市場シェア、市場成長率、売上を 2 本の参照線で 4 象限に分けます。showLabels でバブルの周りに名前を書きます。",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnBubbleChart, injectMinerva } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnBubbleChart],\n  template: `\n@let t = labels[language()];\n<mn-bubble-chart\n  [series]=\"[\n    { name: t.assets[0], data: [{ x: 4, y: 3, value: 30 }] },\n    { name: t.assets[1], data: [{ x: 15, y: 7, value: 25 }] },\n    { name: t.assets[2], data: [{ x: 12, y: 6, value: 20 }] },\n    { name: t.assets[3], data: [{ x: 28, y: 12, value: 15 }] },\n    { name: t.assets[4], data: [{ x: 16, y: 4, value: 5 }] },\n    { name: t.assets[5], data: [{ x: 45, y: 18, value: 5 }] }\n  ]\"\n  [xAxis]=\"{ title: t.risk }\"\n  [yAxis]=\"{ title: t.return }\"\n  [height]=\"300\"\n  (pointClick)=\"selected = $event.items[0] ? $event.items[0].seriesName + ': ' + $event.items[0].value + ' %' : selected\"\n/>\n<output aria-live=\"polite\">{{ selected || t.hint }}</output>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  selected = \"\";\n  labels = {\n  \"en\": {\n    \"risk\": \"Risk (volatility %)\",\n    \"return\": \"Expected return %\",\n    \"hint\": \"Click a bubble\",\n    \"assets\": [\"Bonds\", \"Index fund\", \"Real estate\", \"Tech stocks\", \"Gold\", \"Start-ups\"]\n  },\n  \"zh\": {\n    \"risk\": \"风险（波动率 %）\",\n    \"return\": \"预期收益 %\",\n    \"hint\": \"点击一个气泡\",\n    \"assets\": [\"债券\", \"指数基金\", \"房地产\", \"科技股\", \"黄金\", \"初创企业\"]\n  },\n  \"ja\": {\n    \"risk\": \"リスク（ボラティリティ %）\",\n    \"return\": \"期待リターン %\",\n    \"hint\": \"バブルをクリックします\",\n    \"assets\": [\"債券\", \"インデックスファンド\", \"不動産\", \"ハイテク株\", \"金\", \"スタートアップ\"]\n  },\n  \"fr\": {\n    \"risk\": \"Risque (volatilité %)\",\n    \"return\": \"Rendement attendu %\",\n    \"hint\": \"Cliquez sur une bulle\",\n    \"assets\": [\"Obligations\", \"Fonds indiciel\", \"Immobilier\", \"Actions tech\", \"Or\", \"Start-up\"]\n  }\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "バブルチャート",
+      "description": "3 つ目の値を点の大きさで表す散布図：バブルの面積が値に比例します。",
+      "demos": {
+        "countries": {
+          "title": "国の比較",
+          "description": "1 人あたり GDP と平均寿命。バブルの大きさは人口、色は大陸です。valueName と format でツールチップの値の名前と書式を指定します。"
+        },
+        "log-scale": {
+          "title": "対数スケール",
+          "description": "所得は 900 ドルから 14 万ドルまで：xAxis.type: \"log\" で均等に広がり（どこでも ×10 が同じ距離）、目盛りは各桁の 1・2・5 に置かれます。既定の範囲は桁全体ではなく、データを含む最も近い 1・2・5 × 10^k の境界（500 ドル〜20 万ドル）に揃えられ、xAxis.min / max で上書きできます。注釈とツールチップはドルの値を使い、onZoom も表示範囲を対数ではなくドルで返します（Ctrl / ⌘ + ホイールまたはピンチでズーム）。"
+        },
+        "portfolio": {
+          "title": "製品ポートフォリオ",
+          "description": "製品の市場シェア、市場成長率、売上を 2 本の参照線で 4 象限に分けます。showLabels でバブルの周りに名前を書きます。"
+        },
+        "pipeline": {
+          "title": "営業パイプライン",
+          "description": "パイプライン滞留日数と受注確率、大きさは金額。onPointClick でクリックしたバブルの値を受け取ります。"
+        },
+        "risk-matrix": {
+          "title": "リスクマトリクス",
+          "description": "プロジェクトのリスクを発生可能性と影響度で 5 × 5 のグリッドに配置し、コストエクスポージャーでバブルの大きさを決めます。境界を省略した rect 注釈で低リスク域と高リスク域を塗り分け、renderTooltip でリスクスコアを計算します。"
+        },
+        "campaigns": {
+          "title": "マーケティングキャンペーン",
+          "description": "キャンペーンを開始日（xAxis.type: \"time\"）と広告費用対効果で配置し、予算でバブルの大きさを決め、チャネルごとに 1 系列にします。line 注釈で損益分岐点を示し、凡例項目をクリックするとチャネルを切り替えられます。"
+        },
+        "shared-scale": {
+          "title": "サイズスケールの共有",
+          "description": "2 つのチャートで 2 年分の店舗地域を比較します。同じ maxValue を指定すると同じ売上は両方のチャートで同じ面積になり、指定しないと各チャートが自身の最大値からバブルの大きさを決めます。"
+        },
+        "playback": {
+          "title": "年ごとのアニメーション",
+          "description": "1990 年から 2025 年までの出生率と平均寿命を、setInterval で 1 年ずつ再生します（一時停止とアンマウント時に解除）。固定した軸の範囲と一定の maxValue でフレーム同士を比較でき、text 注釈で年を表示します。"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基本",
+            "description": "1 人当たり GDP、平均寿命、人口：バブルの面積は人口に比例し、ツールチップではロケールの短縮単位で表示されます。"
+          }
+        }
+      },
+      "data": {
+        "continents": {
+          "asia": "アジア",
+          "europe": "ヨーロッパ",
+          "americas": "アメリカ大陸",
+          "africa": "アフリカ"
+        },
+        "population": "人口",
+        "gdp": "1 人あたり GDP",
+        "lifeExpectancy": "平均寿命（年）",
+        "countriesAria": "各国の 1 人あたり GDP、平均寿命、人口",
+        "products": "製品",
+        "revenue": "売上",
+        "portfolio": {
+          "cloudStorage": "クラウドストレージ",
+          "analytics": "分析",
+          "mobileSdk": "モバイル SDK",
+          "payments": "決済",
+          "desktop": "デスクトップアプリ",
+          "hardware": "ハードウェア",
+          "consulting": "コンサルティング"
+        },
+        "marketShare": "相対市場シェア",
+        "marketGrowth": "市場成長率",
+        "leader": "市場リーダー",
+        "highGrowth": "高成長",
+        "portfolioAria": "製品の市場シェア、成長率、売上",
+        "stages": {
+          "qualified": "見込み確定",
+          "proposal": "提案",
+          "negotiation": "交渉"
+        },
+        "amount": "金額",
+        "deal": "案件 #{{id}}",
+        "daysInPipeline": "パイプライン滞留日数",
+        "winProbability": "受注確率",
+        "dealStatus": "{{deal}}（{{stage}}）：{{amount}}",
+        "clickBubble": "バブルをクリックしてください",
+        "pipelineAria": "経過日数、受注確率、金額別の進行中案件",
+        "gdpLog": "1 人あたり GDP（対数スケール）",
+        "highIncome": "高所得",
+        "logAria": "対数スケールの 1 人あたり GDP と平均寿命、バブルの大きさは人口",
+        "visibleIncomes": "表示中の所得：{{from}} – {{to}}",
+        "zoomHint": "ズームすると表示範囲がドルで表示されます",
+        "teams": {
+          "infrastructure": "インフラ",
+          "security": "セキュリティ",
+          "people": "人員",
+          "budget": "予算"
+        },
+        "exposure": "エクスポージャー",
+        "risks": {
+          "powerOutage": "停電",
+          "hardwareDelay": "ハードウェアの納期遅延",
+          "networkCutover": "ネットワーク切り替え",
+          "dataLeak": "データ漏えい",
+          "accessReview": "アクセス権レビューの滞留",
+          "keyPerson": "キーパーソンの退職",
+          "vendorSkills": "ベンダーのスキル不足",
+          "trainingGap": "研修不足",
+          "licenseCost": "ライセンス費用の上昇",
+          "exchangeRate": "為替変動"
+        },
+        "zones": {
+          "low": "許容範囲",
+          "high": "重大"
+        },
+        "riskScore": "発生可能性 {{likelihood}} × 影響度 {{impact}} = {{score}}",
+        "exposureRow": "エクスポージャー: {{value}}",
+        "likelihood": "発生可能性",
+        "impact": "影響度",
+        "riskAria": "発生可能性、影響度、コストエクスポージャー別のプロジェクトリスク",
+        "channels": {
+          "search": "検索",
+          "social": "ソーシャル",
+          "video": "動画",
+          "email": "メール"
+        },
+        "budget": "予算",
+        "launchedOn": "{{date}} 開始",
+        "launch": "開始日",
+        "roas": "広告費用対効果",
+        "breakEven": "損益分岐点",
+        "campaignsAria": "開始日、広告費用対効果、予算別のマーケティングキャンペーン",
+        "regions": {
+          "north": "北部",
+          "south": "南部",
+          "east": "東部",
+          "west": "西部",
+          "center": "中部"
+        },
+        "sharedScale": "両方のチャートで同じサイズスケールを使う",
+        "sharedScaleOn": "両方のチャートで {{value}} を最大のバブルで描きます。",
+        "sharedScaleOff": "各チャートが自身の最大売上を最大のバブルで描きます。",
+        "salesPerMeter": "1 m² あたりの売上",
+        "margin": "利益率",
+        "sharedScaleAria": "{{year}} 年の店舗地域別の 1 m² あたり売上、利益率、売上高",
+        "play": "再生",
+        "pause": "一時停止",
+        "replay": "もう一度再生",
+        "restart": "最初から",
+        "yearStatus": "年: {{year}}",
+        "fertility": "出生率（女性 1 人あたりの子どもの数）",
+        "playbackAria": "1990 年から 2025 年までの国別の出生率、平均寿命、人口"
+      },
+      "api": {
+        "BubbleChartProps": {
+          "series": "value を持つ点の系列。value がバブルの大きさを決める（面積が値に比例）"
+        },
+        "BubbleOptions": {
+          "minSize": "最小のバブルの直径（ピクセル）",
+          "maxSize": "最大値の直径（ピクセル）",
+          "maxValue": "maxSize で描く値。複数のグラフで尺度を共有する場合に指定。既定は最大値"
+        }
+      },
+      "wc": {
+        "demos": {
+          "countries": {
+            "title": "豊かさ・健康・人口",
+            "description": "1 人あたり GDP と平均寿命。バブルの大きさは人口を表します（面積が値に比例）。"
+          },
+          "portfolio": {
+            "title": "ポートフォリオのリスクとリターン",
+            "description": "資産ごとに 1 系列、大きさは構成比を表します。バブルをクリックすると資産を表示します。"
+          }
+        },
+        "minerva-bubble-chart": {
+          "props": {
+            "height": "チャートの高さ（凡例を含む）：ピクセルまたは任意の CSS の長さ",
+            "options": "その他のエンジンのオプション（軸、凡例、ツールチップ、パレット、書式…）。要素自身のプロパティとマージされます。プロパティのみ",
+            "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+          },
+          "events": {
+            "minerva-hover": "ホバー（またはキーボードでフォーカス）しているポイントが変わりました。detail：{ x, xLabel, items }、何もない場合は null",
+            "minerva-point-click": "ポイントまたは棒がクリックされました。detail：{ x, xLabel, items }",
+            "minerva-plot-click": "ポイントのないプロット領域がクリックされました。detail：{ x, y }（データ座標）",
+            "minerva-zoom": "ユーザーがズームまたはパンしました。detail：{ x, y }（表示範囲）",
+            "minerva-renderer-change": "バックエンドの準備ができた、または GPU の喪失後にフォールバックしました。detail：{ renderer }"
+          },
+          "methods": {
+            "resetZoom": "データ範囲全体を表示します",
+            "getView": "表示範囲。エンジンが作成されるまでは null",
+            "setView": "表示範囲を設定します",
+            "getRenderer": "使用中のバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null"
+          }
+        }
+      }
+    }
+  }
+}

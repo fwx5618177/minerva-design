@@ -1,0 +1,453 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.3",
+  "locale": "en",
+  "renderer": "wc",
+  "page": "virtual-list",
+  "title": "VirtualList",
+  "description": "Renders long lists efficiently by only mounting the rows that are visible in the scroll container.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.3",
+    "sourceCommit": "ea7fb3e1f55d184b7d737316e9ae829f4f7ff223",
+    "sourceDigest": "sha256:c9540edc3908d226375a01cf5e6bfe8ca6a4e20440f736c0dd9b40ae9ff2e645",
+    "referenceSourceDigest": "sha256:4cf6057856184f16240d0d22153ec370842fc7a2dfaaa66364e189fed89e6ca3"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "VirtualList",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/virtual-list",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-virtual-list",
+        "props": [
+          {
+            "name": "itemHeight",
+            "typeText": "number | undefined",
+            "attribute": "item-height",
+            "required": false
+          },
+          {
+            "name": "itemPadding",
+            "typeText": "number",
+            "attribute": "item-padding",
+            "required": false
+          },
+          {
+            "name": "overscan",
+            "typeText": "number",
+            "attribute": "overscan",
+            "required": false
+          },
+          {
+            "name": "maxHeight",
+            "typeText": "number | undefined",
+            "attribute": "max-height",
+            "required": false
+          },
+          {
+            "name": "loadMoreThreshold",
+            "typeText": "number",
+            "attribute": "load-more-threshold",
+            "required": false
+          },
+          {
+            "name": "highPerformance",
+            "typeText": "boolean",
+            "attribute": "high-performance",
+            "required": false
+          },
+          {
+            "name": "loading",
+            "typeText": "boolean",
+            "attribute": "loading",
+            "required": false
+          },
+          {
+            "name": "clickable",
+            "typeText": "boolean",
+            "attribute": "clickable",
+            "required": false
+          },
+          {
+            "name": "items",
+            "typeText": "VirtualListItem[]",
+            "required": false
+          },
+          {
+            "name": "renderItem",
+            "typeText": "VirtualListRenderItem | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "minerva-item-click",
+            "typeText": "CustomEvent<{ item: VirtualListItem; index: number; }>",
+            "detailType": {
+              "typeText": "{ item: VirtualListItem; index: number; }",
+              "typeRef": "type:5c7fefc2a49b2eddeb2a"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "A clickable row was clicked or activated with Enter / Space (`detail: { item, index }`)"
+          },
+          {
+            "name": "minerva-load-more",
+            "typeText": "CustomEvent<undefined>",
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The list was scrolled within `load-more-threshold` px of the bottom"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-virtual-list": {
+      "kind": "element",
+      "source": "web-components/src/components/virtual-list/virtual-list.ts",
+      "className": "MinervaVirtualList",
+      "summary": "Windowed list rendering only the visible rows.",
+      "description": "A windowed (virtualized) list: only the rows in view (plus `overscan` rows above and below) are in the DOM (`<VirtualList>` of React). Rows have a fixed height (`item-height`, or measured from the first item). - Data: set the `items` property (`{ id, metadata? }[]`) and a `renderItem(item, index)` function property returning text, a Node or a Lit template. Rows are rendered in the shadow root: style their content with inline styles / your own elements, or through `::part(item)`. - The scroll container is a focusable `region` (keyboard scrolling) named by `aria-label`; rows are `listitem`s exposing their real position (`aria-setsize` / `aria-posinset`). The row holding focus stays rendered when scrolled out of the window (focus is never dropped). - `clickable` (React: passing `onItemClick`) makes rows focusable and activatable with Enter / Space: `minerva-item-click`. - Scrolling near the bottom fires `minerva-load-more` (once until `items` or `loading` change).",
+      "properties": [
+        {
+          "name": "itemHeight",
+          "attribute": "item-height",
+          "type": "number | undefined",
+          "description": "Fixed row height in pixels; measured from the first item when omitted"
+        },
+        {
+          "name": "itemPadding",
+          "attribute": "item-padding",
+          "type": "number",
+          "default": "8",
+          "description": "Padding of each row in pixels"
+        },
+        {
+          "name": "overscan",
+          "attribute": "overscan",
+          "type": "number",
+          "default": "5",
+          "description": "Number of rows rendered above and below the visible area"
+        },
+        {
+          "name": "maxHeight",
+          "attribute": "max-height",
+          "type": "number | undefined",
+          "description": "Maximum height of the scroll container in pixels"
+        },
+        {
+          "name": "loadMoreThreshold",
+          "attribute": "load-more-threshold",
+          "type": "number",
+          "default": "100",
+          "description": "Distance from the bottom (px) at which `minerva-load-more` fires"
+        },
+        {
+          "name": "highPerformance",
+          "attribute": "high-performance",
+          "type": "boolean",
+          "default": "false",
+          "description": "Batches scroll updates with requestAnimationFrame and requestIdleCallback"
+        },
+        {
+          "name": "loading",
+          "attribute": "loading",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows a loading indicator at the bottom of the list (aria-busy)"
+        },
+        {
+          "name": "clickable",
+          "attribute": "clickable",
+          "type": "boolean",
+          "default": "false",
+          "description": "Rows are clickable: focusable, pointer cursor, `minerva-item-click`"
+        },
+        {
+          "name": "items",
+          "type": "VirtualListItem[]",
+          "default": "[]",
+          "description": "Items to render"
+        },
+        {
+          "name": "renderItem",
+          "type": "VirtualListRenderItem | undefined",
+          "description": "Renders the content of one row (text, Node or Lit template)"
+        },
+        {
+          "name": "scrollContainer",
+          "type": "HTMLElement | null",
+          "readonly": true,
+          "description": "The scroll container (e.g. to scroll programmatically)"
+        }
+      ],
+      "methods": [
+        {
+          "name": "scrollToIndex",
+          "signature": "(index: number) => void",
+          "description": "Scrolls so that the row at `index` is at the top of the list"
+        }
+      ],
+      "events": [
+        {
+          "name": "minerva-item-click",
+          "description": "A clickable row was clicked or activated with Enter / Space (`detail: { item, index }`)"
+        },
+        {
+          "name": "minerva-load-more",
+          "description": "The list was scrolled within `load-more-threshold` px of the bottom"
+        }
+      ],
+      "slots": [],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The scroll container (`role=\"region\"`)"
+        },
+        {
+          "name": "list",
+          "description": "The list (`role=\"list\"`) sized to all the rows"
+        },
+        {
+          "name": "item",
+          "description": "A rendered row (`role=\"listitem\"`)"
+        },
+        {
+          "name": "loading",
+          "description": "The loading indicator row (while loading)"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--virtual-list-radius",
+          "description": "Corner radius (defaults to --radius-sm)"
+        },
+        {
+          "name": "--virtual-list-shadow",
+          "description": "Shadow at rest (defaults to --shadow-sm)"
+        },
+        {
+          "name": "--virtual-list-hover-shadow",
+          "description": "Shadow while hovered (defaults to --shadow-md)"
+        },
+        {
+          "name": "--virtual-list-scrollbar-size",
+          "description": "Width of the scrollbar (WebKit / Blink)"
+        },
+        {
+          "name": "--virtual-list-loading-padding",
+          "description": "Padding of the loading indicator row"
+        },
+        {
+          "name": "--progress-width",
+          "description": "Width of a linear indicator with the default width"
+        },
+        {
+          "name": "--progress-bar-height",
+          "description": "Thickness of the bar (every size)"
+        },
+        {
+          "name": "--progress-track-color",
+          "description": "Color of the bar track (and of the determinate circle track)"
+        },
+        {
+          "name": "--progress-radius",
+          "description": "Corner radius of the bar track (defaults to --radius-sm)"
+        },
+        {
+          "name": "--progress-size",
+          "description": "Size of the round indicators (spinner / circle / wave; every size)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:VirtualList": {
+      "kind": "cssVars",
+      "source": "react/src/components/VirtualList",
+      "vars": [
+        {
+          "name": "--virtual-list-radius",
+          "description": "Corner radius (defaults to --radius-sm)"
+        },
+        {
+          "name": "--virtual-list-shadow",
+          "description": "Shadow at rest (defaults to --shadow-sm)"
+        },
+        {
+          "name": "--virtual-list-hover-shadow",
+          "description": "Shadow while hovered (defaults to --shadow-md)"
+        },
+        {
+          "name": "--virtual-list-scrollbar-size",
+          "description": "Width of the scrollbar (WebKit / Blink)"
+        },
+        {
+          "name": "--virtual-list-loading-padding",
+          "description": "Padding of the loading indicator row"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/virtual-list/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/virtual-list/wc/basic.html": "<minerva-virtual-list\n  id=\"list\"\n  aria-label=\"Contacts\"\n  item-height=\"40\"\n  max-height=\"280\"\n></minerva-virtual-list>\n",
+        "apps/docs/src/docs/pages/virtual-list/wc/basic.ts": "// `items` and `renderItem` are JS properties: only the rows in view are in the\n// DOM, even with 10,000 items.\ntype Item = { id: number; metadata?: Record<string, string | number> };\ntype VirtualList = HTMLElement & {\n  items: Item[];\n  renderItem: (item: Item, index: number) => string;\n};\n\nexport function setup(root: HTMLElement) {\n  const list = root.querySelector<VirtualList>(\"#list\")!;\n  list.items = Array.from({ length: 10000 }, (_, i) => ({\n    id: i,\n    metadata: { name: `Contact ${i + 1}` },\n  }));\n  list.renderItem = (item) => `${item.metadata?.name} · #${item.id}`;\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Basic usage",
+      "description": "Set the items and renderItem properties from JavaScript: only the rows in view are rendered, even with 10,000 items. Name the list with aria-label."
+    },
+    {
+      "id": "clickable-rows",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/virtual-list/wc/clickable-rows.html",
+      "files": {
+        "apps/docs/src/docs/pages/virtual-list/wc/clickable-rows.html": "<div style=\"display: grid; gap: 8px\">\n  <div style=\"display: flex; flex-wrap: wrap; gap: 8px; align-items: center\">\n    <minerva-button id=\"jump\" size=\"small\" variant=\"outline\"\n      >Scroll to row 500</minerva-button\n    >\n    <output id=\"picked\">Click a row or press Enter on it</output>\n  </div>\n  <minerva-virtual-list\n    id=\"list\"\n    aria-label=\"Tasks\"\n    clickable\n    item-height=\"44\"\n    max-height=\"264\"\n  ></minerva-virtual-list>\n</div>\n",
+        "apps/docs/src/docs/pages/virtual-list/wc/clickable-rows.ts": "// `clickable` makes rows focusable and fires `minerva-item-click` on click,\n// Enter or Space; scrollToIndex() scrolls programmatically.\ntype Item = { id: number };\ntype VirtualList = HTMLElement & {\n  items: Item[];\n  renderItem: (item: Item, index: number) => string;\n  scrollToIndex: (index: number) => void;\n};\n\nexport function setup(root: HTMLElement) {\n  const list = root.querySelector<VirtualList>(\"#list\")!;\n  const jump = root.querySelector<HTMLElement>(\"#jump\")!;\n  const picked = root.querySelector<HTMLOutputElement>(\"#picked\")!;\n  list.items = Array.from({ length: 1000 }, (_, i) => ({ id: i + 1 }));\n  list.renderItem = (item) => `Task ${item.id}`;\n  const onItemClick = (event: Event) => {\n    const { item, index } = (\n      event as CustomEvent<{ item: Item; index: number }>\n    ).detail;\n    picked.value = `Picked task ${item.id} (index ${index})`;\n  };\n  const onJump = () => list.scrollToIndex(499);\n  list.addEventListener(\"minerva-item-click\", onItemClick);\n  jump.addEventListener(\"click\", onJump);\n  return () => {\n    list.removeEventListener(\"minerva-item-click\", onItemClick);\n    jump.removeEventListener(\"click\", onJump);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Clickable rows",
+      "description": "clickable makes rows focusable and fires minerva-item-click on click, Enter or Space. scrollToIndex() scrolls programmatically."
+    },
+    {
+      "id": "infinite-scroll",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/virtual-list/wc/infinite-scroll.html",
+      "files": {
+        "apps/docs/src/docs/pages/virtual-list/wc/infinite-scroll.html": "<minerva-virtual-list\n  id=\"list\"\n  aria-label=\"Activity feed\"\n  item-height=\"40\"\n  max-height=\"240\"\n  load-more-threshold=\"80\"\n></minerva-virtual-list>\n",
+        "apps/docs/src/docs/pages/virtual-list/wc/infinite-scroll.ts": "// Scrolling near the bottom fires `minerva-load-more`; `loading` shows the\n// indicator row while the next page is fetched.\ntype Item = { id: number };\ntype VirtualList = HTMLElement & {\n  items: Item[];\n  loading: boolean;\n  renderItem: (item: Item, index: number) => string;\n};\n\nconst PAGE = 30;\nconst LAST = 150;\n\nexport function setup(root: HTMLElement) {\n  const list = root.querySelector<VirtualList>(\"#list\")!;\n  const page = (from: number) =>\n    Array.from({ length: PAGE }, (_, i) => ({ id: from + i + 1 }));\n  list.items = page(0);\n  list.renderItem = (item) => `Event ${item.id}`;\n  let timer: ReturnType<typeof setTimeout> | undefined;\n  const onLoadMore = () => {\n    if (list.items.length >= LAST) return;\n    list.loading = true;\n    timer = setTimeout(() => {\n      list.items = [...list.items, ...page(list.items.length)];\n      list.loading = false;\n    }, 800);\n  };\n  list.addEventListener(\"minerva-load-more\", onLoadMore);\n  return () => {\n    clearTimeout(timer);\n    list.removeEventListener(\"minerva-load-more\", onLoadMore);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Infinite scroll",
+      "description": "minerva-load-more fires near the bottom (load-more-threshold); set loading while the next page is fetched."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "VirtualList",
+      "description": "Renders long lists efficiently by only mounting the rows that are visible in the scroll container.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "10,000 rows with a fixed itemHeight; only the visible rows (plus overscan) are in the DOM."
+        },
+        "auto-height": {
+          "title": "Measured row height",
+          "description": "Omit itemHeight to measure it from the first rendered item; itemPadding is added around each row."
+        },
+        "infinite-scroll": {
+          "title": "Infinite scroll",
+          "description": "onLoadMore is called near the bottom of the list; show a loading indicator while it resolves."
+        },
+        "high-performance": {
+          "title": "High performance mode",
+          "description": "highPerformance batches scroll updates with requestAnimationFrame and requestIdleCallback, here with 100,000 rows."
+        },
+        "clickable-rows": {
+          "title": "Clickable rows and native attributes",
+          "description": "onItemClick makes the rows clickable (pointer cursor, focusable, activated with Enter / Space); without it rows keep the default cursor. Native attributes such as id, data-* and aria-* are forwarded to the root."
+        }
+      },
+      "api": {
+        "VirtualListProps": {
+          "items": "Items to render",
+          "itemHeight": "Fixed row height in pixels; measured from the first item when omitted",
+          "itemPadding": "Padding of each row in pixels",
+          "overscan": "Number of rows rendered above and below the visible area",
+          "maxHeight": "Maximum height of the scroll container in pixels",
+          "renderItem": "Renders the content of one row",
+          "className": "Additional class name",
+          "style": "Inline styles of the scroll container",
+          "onLoadMore": "Called when scrolling near the bottom; return a promise that resolves once new items are loaded (no new call happens until it settles)",
+          "loadMoreThreshold": "Distance from the bottom (px) at which onLoadMore is triggered",
+          "highPerformance": "Batches scroll updates with requestAnimationFrame and requestIdleCallback",
+          "loading": "Shows a loading indicator at the bottom of the list",
+          "aria-label": "Accessible name of the list",
+          "ref": "Ref to the root (scroll container) <div> element",
+          "onItemClick": "Called when a row is clicked, or activated with Enter / Space while the row itself has focus. Makes the rows clickable: focusable and shown with a pointer cursor"
+        },
+        "VirtualListItem": {
+          "id": "Unique key of the item",
+          "metadata": "Arbitrary data for renderItem"
+        }
+      },
+      "cssVars": {
+        "--virtual-list-radius": "Corner radius (defaults to --radius-sm)",
+        "--virtual-list-shadow": "Shadow at rest (defaults to --shadow-sm)",
+        "--virtual-list-hover-shadow": "Shadow while hovered (defaults to --shadow-md)",
+        "--virtual-list-scrollbar-size": "Width of the scrollbar (WebKit / Blink)",
+        "--virtual-list-loading-padding": "Padding of the loading indicator row"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Set the items and renderItem properties from JavaScript: only the rows in view are rendered, even with 10,000 items. Name the list with aria-label."
+          },
+          "clickable-rows": {
+            "title": "Clickable rows",
+            "description": "clickable makes rows focusable and fires minerva-item-click on click, Enter or Space. scrollToIndex() scrolls programmatically."
+          },
+          "infinite-scroll": {
+            "title": "Infinite scroll",
+            "description": "minerva-load-more fires near the bottom (load-more-threshold); set loading while the next page is fetched."
+          }
+        },
+        "minerva-virtual-list": {
+          "props": {
+            "clickable": "Makes rows focusable and clickable (pointer cursor, Enter / Space) and fires minerva-item-click.",
+            "scrollContainer": "The scroll container element (read-only), e.g. to scroll programmatically."
+          },
+          "events": {
+            "minerva-item-click": "A clickable row was clicked or activated with Enter / Space (detail: { item, index }).",
+            "minerva-load-more": "The list was scrolled within load-more-threshold pixels of the bottom."
+          },
+          "cssVars": {
+            "--progress-width": "Width of the loading indicator.",
+            "--progress-bar-height": "Thickness of the loading indicator bar.",
+            "--progress-track-color": "Track color of the loading indicator.",
+            "--progress-radius": "Corner radius of the loading indicator track.",
+            "--progress-size": "Size of the round loading indicator."
+          },
+          "methods": {
+            "scrollToIndex": "Scrolls so that the row at index is at the top of the list."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

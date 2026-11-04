@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.3",
+  "locale": "zh",
+  "renderer": "uni",
+  "page": "loading-state",
+  "title": "LoadingState 加载状态",
+  "description": "页面、路由与区块的加载展示：装饰性的 ProgressIndicator 旋转图标加可见文字，位于唯一的 polite 状态区域中。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.3",
+    "sourceCommit": "ea7fb3e1f55d184b7d737316e9ae829f4f7ff223",
+    "sourceDigest": "sha256:c9540edc3908d226375a01cf5e6bfe8ca6a4e20440f736c0dd9b40ae9ff2e645",
+    "referenceSourceDigest": "sha256:4cf6057856184f16240d0d22153ec370842fc7a2dfaaa66364e189fed89e6ca3"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "LoadingState",
+      "support": {
+        "status": "beta",
+        "notes": "Loading label/spinner, error/retry, loaded slot. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Loading label/spinner, error/retry, loaded slot. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "LoadingState"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "loading",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "label",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "error",
+            "typeText": "string | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "retry",
+            "typeText": "any[]"
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:LoadingState": {
+      "kind": "cssVars",
+      "source": "react/src/components/LoadingState",
+      "vars": [
+        {
+          "name": "--loading-state-gap",
+          "description": "Space between the spinner and the label"
+        },
+        {
+          "name": "--loading-state-padding",
+          "description": "Padding"
+        },
+        {
+          "name": "--loading-state-min-height",
+          "description": "Minimum height (every size; defaults to the height of the size)"
+        },
+        {
+          "name": "--loading-state-color",
+          "description": "Color of the label and the spinner"
+        },
+        {
+          "name": "--loading-state-font-size",
+          "description": "Font size of the label"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "LoadingState 加载状态",
+      "description": "页面、路由与区块的加载展示：装饰性的 ProgressIndicator 旋转图标加可见文字，位于唯一的 polite 状态区域中。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "默认文字已本地化，读屏播报的就是可见文字。"
+        },
+        "sizes": {
+          "title": "尺寸",
+          "description": "small、medium、large 分别对应 64、160、240 px 的最小高度。"
+        }
+      },
+      "api": {
+        "LoadingStateProps": {
+          "label": "可见文字，同时由状态区域播报",
+          "size": "最小高度档位",
+          "ref": "根 <div> 元素的 ref"
+        }
+      },
+      "cssVars": {
+        "--loading-state-gap": "加载图标与标签之间的间距",
+        "--loading-state-padding": "内边距",
+        "--loading-state-min-height": "最小高度（所有尺寸；默认为对应尺寸的高度）",
+        "--loading-state-color": "标签与加载图标的颜色",
+        "--loading-state-font-size": "标签的字号"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "在礼貌型 status 区域中，旋转指示器旁显示可见标签（默认为本地化的“加载中...”）。"
+          },
+          "sizes": {
+            "title": "尺寸",
+            "description": "small、medium 和 large 设置最小高度；默认插槽可放置富文本标签。"
+          },
+          "section": {
+            "title": "加载区块",
+            "description": "该元素不会设置 aria-busy：加载期间请将容器标记为忙碌，完成后用内容替换占位。"
+          }
+        },
+        "minerva-loading-state": {
+          "slots": {
+            "default": "标签（label 属性的替代方式）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        }
+      }
+    }
+  }
+}

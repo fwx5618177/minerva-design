@@ -1,0 +1,637 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.3",
+  "locale": "ja",
+  "renderer": "vue",
+  "page": "radar-chart",
+  "title": "レーダーチャート",
+  "description": "尺度の異なる複数の指標で、1 つまたは少数の対象を比較します（スキル評価、製品レビュー、風味のプロファイルなど）。多角形にホバーすると、その多角形と最も近い指標がハイライトされます。矢印キーで系列と指標の間を移動し、Esc で解除します。凡例の項目をクリックすると系列を非表示にできます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.3",
+    "sourceCommit": "ea7fb3e1f55d184b7d737316e9ae829f4f7ff223",
+    "sourceDigest": "sha256:c9540edc3908d226375a01cf5e6bfe8ca6a4e20440f736c0dd9b40ae9ff2e645",
+    "referenceSourceDigest": "sha256:4cf6057856184f16240d0d22153ec370842fc7a2dfaaa66364e189fed89e6ca3"
+  },
+  "content": {
+    "data": {
+      "skills": {
+        "problemSolving": "問題解決",
+        "coding": "コーディング",
+        "systemDesign": "システム設計",
+        "communication": "コミュニケーション",
+        "collaboration": "協調性",
+        "ownership": "当事者意識"
+      },
+      "candidate": "候補者",
+      "outOf": "{{value}} / {{max}}",
+      "scorecardAria": "候補者の面接評価シート",
+      "flavor": {
+        "aroma": "香り",
+        "acidity": "酸味",
+        "sweetness": "甘み",
+        "body": "コク",
+        "bitterness": "苦味",
+        "aftertaste": "余韻"
+      },
+      "coffees": {
+        "ethiopia": "エチオピア イルガチェフェ",
+        "sumatra": "スマトラ マンデリン"
+      },
+      "coffeeAria": "2 種類のコーヒーの風味",
+      "criteria": {
+        "performance": "性能",
+        "battery": "バッテリー",
+        "camera": "カメラ",
+        "display": "ディスプレイ",
+        "value": "コストパフォーマンス",
+        "build": "質感"
+      },
+      "phonesAria": "3 機種のスマートフォンのレビュースコア",
+      "hoverPolygon": "多角形にホバーするか矢印キーで機種を比較します",
+      "football": {
+        "pace": "スピード",
+        "shooting": "シュート",
+        "passing": "パス",
+        "dribbling": "ドリブル",
+        "defending": "守備",
+        "physical": "フィジカル"
+      },
+      "playersAria": "2 人のサッカー選手の能力値",
+      "capabilities": {
+        "security": "セキュリティ",
+        "integrations": "連携",
+        "reporting": "レポート",
+        "mobile": "モバイル",
+        "automation": "自動化",
+        "support": "サポート",
+        "pricing": "価格"
+      },
+      "products": {
+        "ours": "自社製品",
+        "competitor": "主要競合",
+        "market": "市場平均"
+      },
+      "compareWith": "比較する製品",
+      "capabilitiesAria": "自社製品、競合、市場平均の機能評価",
+      "nutrition": {
+        "nutrients": {
+          "protein": "たんぱく質",
+          "fiber": "食物繊維",
+          "sugar": "糖質",
+          "fat": "脂質",
+          "sodium": "ナトリウム",
+          "calcium": "カルシウム"
+        },
+        "meals": {
+          "oatmeal": "フルーツ入りオートミール",
+          "eggs": "卵のトースト",
+          "yogurt": "グラノーラ入りヨーグルト"
+        },
+        "dailyValue": "基準量の {{value}}",
+        "row": "{{meal}}：{{amount}}（{{share}}）",
+        "aria": "3 種類の朝食の栄養成分（1 日の基準量に対する割合）"
+      },
+      "monitor": {
+        "metrics": {
+          "cpu": "CPU",
+          "memory": "メモリ",
+          "diskIo": "ディスク I/O",
+          "network": "ネットワーク",
+          "latency": "レイテンシ",
+          "errors": "エラー"
+        },
+        "baseline": "直近 1 時間の平均",
+        "now": "現在",
+        "live": "ライブ更新",
+        "alert": "アラート：{{metric}} が容量の {{threshold}} を超えています。",
+        "peak": "最も負荷の高い指標：{{metric}}。",
+        "aria": "サービスの現在の負荷と直近 1 時間の平均"
+      },
+      "review": {
+        "competencies": {
+          "communication": "コミュニケーション",
+          "delivery": "成果の提供",
+          "expertise": "専門性",
+          "collaboration": "協働",
+          "mentoring": "育成",
+          "initiative": "主体性"
+        },
+        "team": "チーム平均",
+        "person": "対象者",
+        "aria": "{{name}} の 360 度評価とチーム平均",
+        "summary": "強み：{{strength}}（チーム比 {{strengthGap}}）。伸ばす点：{{growth}}（{{growthGap}}）。"
+      },
+      "sales": {
+        "kpis": {
+          "revenue": "売上",
+          "deals": "受注件数",
+          "winRate": "成約率",
+          "dealSize": "平均案件規模",
+          "calls": "通話数",
+          "nps": "NPS"
+        },
+        "target": "目標",
+        "actual": "実績",
+        "line": "{{kpi}}：{{actual}}（目標 {{target}}、達成率 {{attainment}}）。",
+        "aria": "営業担当者の四半期 KPI と目標",
+        "hint": "軸の近くをクリックすると KPI を表示します。"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "RadarChart",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "RadarChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "animation",
+            "type": "boolean",
+            "required": false,
+            "description": "Entry and update animations, skipped when the user prefers reduced motion (default `true`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "deep",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "legend",
+            "type": "boolean | ShapeLegendOptions",
+            "required": false,
+            "description": "Legend; clicking an item hides / shows its slice, stage or series (shown by default for pie, donut, funnel and multi-series radar charts)",
+            "typeText": "boolean | ShapeLegendOptions"
+          },
+          {
+            "name": "tooltip",
+            "type": "boolean | ShapeTooltipOptions",
+            "required": false,
+            "description": "Tooltip; `false` disables it (default `true`)",
+            "typeText": "boolean | ShapeTooltipOptions"
+          },
+          {
+            "name": "dots",
+            "type": "boolean",
+            "required": false,
+            "description": "Dots on the vertices (default `true`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "renderer",
+            "type": "ChartRendererPreference",
+            "required": false,
+            "description": "Backend of the shapes: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D, skipping GPUs running in software; text is always drawn with Canvas2D (default `auto`, see `setDefaultChartRenderer`)",
+            "typeText": "ChartRendererPreference"
+          },
+          {
+            "name": "width",
+            "type": "string | number",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels (default `100%`)",
+            "typeText": "string | number"
+          },
+          {
+            "name": "height",
+            "type": "string | number",
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length",
+            "typeText": "string | number"
+          },
+          {
+            "name": "series",
+            "type": "readonly RadarSeries[]",
+            "required": true,
+            "description": "Polygons `{ name, values }`: one value per indicator",
+            "typeText": "readonly RadarSeries[]"
+          },
+          {
+            "name": "padding",
+            "type": "ChartPadding",
+            "required": false,
+            "description": "Space around the drawing, in pixels (default 8 on every side)",
+            "typeText": "ChartPadding"
+          },
+          {
+            "name": "palette",
+            "type": "readonly string[]",
+            "required": false,
+            "description": "Colors of the marks without `color` (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)",
+            "typeText": "readonly string[]"
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible name of the chart (default: the chart type, e.g. \"Donut chart\")",
+            "typeText": "string"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip rows, accessible names, compact numbers); the page language by default",
+            "typeText": "string"
+          },
+          {
+            "name": "shape",
+            "type": "\"circle\" | \"polygon\"",
+            "required": false,
+            "description": "Grid shape (default `polygon`)",
+            "typeText": "\"circle\" | \"polygon\""
+          },
+          {
+            "name": "hidden",
+            "type": "readonly number[]",
+            "required": false,
+            "description": "Hidden slices / stages / radar series / top-level treemap nodes, by\nindex. Makes the visibility controlled: legend clicks then only emit\n`toggle`, whose `hiddenIndexes` should be stored and passed back.",
+            "typeText": "readonly number[]"
+          },
+          {
+            "name": "texts",
+            "type": "Partial<ShapeChartLabels>",
+            "required": false,
+            "description": "Replaces built-in texts of the `locale` (tooltip rows, accessible names, \"No data\")",
+            "typeText": "Partial<ShapeChartLabels>"
+          },
+          {
+            "name": "format",
+            "type": "((value: number) => string)",
+            "required": false,
+            "description": "Formats the values of the labels and the tooltip (default: compact numbers, 1.2k, 3.4M)",
+            "typeText": "((value: number) => string)"
+          },
+          {
+            "name": "percentFormat",
+            "type": "((share: number) => string)",
+            "required": false,
+            "description": "Formats the shares (labels, conversion rates, tooltip); `share` is 0-1 (default: one decimal, \"40.0%\")",
+            "typeText": "((share: number) => string)"
+          },
+          {
+            "name": "levels",
+            "type": "number",
+            "required": false,
+            "description": "Number of grid rings (default 4)",
+            "typeText": "number"
+          },
+          {
+            "name": "indicators",
+            "type": "readonly RadarIndicator[]",
+            "required": true,
+            "description": "Axes of the chart `{ name, max }`, clockwise from 12 o'clock",
+            "typeText": "readonly RadarIndicator[]"
+          }
+        ],
+        "events": [
+          {
+            "name": "hover",
+            "type": "[event: ShapeHoverEvent | null]",
+            "typeText": "[event: ShapeHoverEvent | null]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ShapeHoverEvent | null",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "click",
+            "type": "[event: ShapeHoverEvent]",
+            "typeText": "[event: ShapeHoverEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ShapeHoverEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "toggle",
+            "type": "[event: ShapeToggleEvent]",
+            "typeText": "[event: ShapeToggleEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ShapeToggleEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "circle",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/radar-chart/vue/circle.vue",
+      "files": {
+        "apps/docs/src/docs/pages/radar-chart/vue/circle.vue": "<script setup lang=\"ts\">\n// `shape=\"circle\"` draws round grid rings, `levels` sets how many.\nimport { computed } from \"vue\";\nimport { useI18n } from \"minerva-design/vue\";\nimport { RadarChart } from \"minerva-design/vue/charts\";\n\nconst TEXT = {\n  en: {\n    profile: \"Profile\",\n    skills: [\"Frontend\", \"Backend\", \"Design\", \"Testing\", \"DevOps\", \"Data\"],\n  },\n  zh: {\n    profile: \"能力画像\",\n    skills: [\"前端\", \"后端\", \"设计\", \"测试\", \"运维\", \"数据\"],\n  },\n  ja: {\n    profile: \"プロフィール\",\n    skills: [\n      \"フロントエンド\",\n      \"バックエンド\",\n      \"デザイン\",\n      \"テスト\",\n      \"DevOps\",\n      \"データ\",\n    ],\n  },\n  fr: {\n    profile: \"Profil\",\n    skills: [\"Front-end\", \"Back-end\", \"Design\", \"Tests\", \"DevOps\", \"Données\"],\n  },\n};\n\nconst { language } = useI18n();\nconst text = computed(() => TEXT[language.value] ?? TEXT.en);\nconst indicators = computed(() =>\n  text.value.skills.map((name) => ({ name, max: 10 })),\n);\nconst series = computed(() => [\n  { name: text.value.profile, values: [9, 6, 7, 8, 5, 6] },\n]);\n</script>\n\n<template>\n  <RadarChart\n    :indicators=\"indicators\"\n    :series=\"series\"\n    shape=\"circle\"\n    :levels=\"5\"\n    :height=\"320\"\n  />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "circle",
+      "description": ""
+    },
+    {
+      "id": "compare",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/radar-chart/vue/compare.vue",
+      "files": {
+        "apps/docs/src/docs/pages/radar-chart/vue/compare.vue": "<script setup lang=\"ts\">\n// One polygon per series, one value per indicator (axes clockwise from 12\n// o'clock); the legend hides / shows a series.\nimport { computed } from \"vue\";\nimport { useI18n } from \"minerva-design/vue\";\nimport { RadarChart } from \"minerva-design/vue/charts\";\n\nconst TEXT = {\n  en: {\n    current: \"Current model\",\n    next: \"Next model\",\n    axes: [\"Speed\", \"Reliability\", \"Comfort\", \"Safety\", \"Efficiency\"],\n  },\n  zh: {\n    current: \"当前型号\",\n    next: \"新型号\",\n    axes: [\"速度\", \"可靠性\", \"舒适性\", \"安全性\", \"能效\"],\n  },\n  ja: {\n    current: \"現行モデル\",\n    next: \"次期モデル\",\n    axes: [\"速度\", \"信頼性\", \"快適性\", \"安全性\", \"効率\"],\n  },\n  fr: {\n    current: \"Modèle actuel\",\n    next: \"Nouveau modèle\",\n    axes: [\"Vitesse\", \"Fiabilité\", \"Confort\", \"Sécurité\", \"Efficacité\"],\n  },\n};\n\nconst { language } = useI18n();\nconst text = computed(() => TEXT[language.value] ?? TEXT.en);\nconst indicators = computed(() =>\n  text.value.axes.map((name) => ({ name, max: 100 })),\n);\nconst series = computed(() => [\n  { name: text.value.current, values: [72, 85, 64, 90, 58] },\n  { name: text.value.next, values: [88, 80, 78, 92, 81] },\n]);\n</script>\n\n<template>\n  <RadarChart :indicators=\"indicators\" :series=\"series\" :height=\"320\" />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "compare",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "レーダーチャート",
+      "description": "尺度の異なる複数の指標で、1 つまたは少数の対象を比較します（スキル評価、製品レビュー、風味のプロファイルなど）。多角形にホバーすると、その多角形と最も近い指標がハイライトされます。矢印キーで系列と指標の間を移動し、Esc で解除します。凡例の項目をクリックすると系列を非表示にできます。",
+      "demos": {
+        "basic": {
+          "title": "基本",
+          "description": "6 つの指標（max: 10）に対する 1 系列。ツールチップはすべての値を一覧し、ポインター下の指標を太字にします。"
+        },
+        "compare": {
+          "title": "製品の比較",
+          "description": "3 系列あると凡例が自動で表示されます。onHover はポインターに最も近い系列と指標を受け取ります。"
+        },
+        "circle": {
+          "title": "円形グリッド",
+          "description": "shape=\"circle\" で円形のリングを描き、levels でその数を設定し、dots={false} で頂点を隠します。opacity で塗りを濃くしています。"
+        },
+        "players": {
+          "title": "選手の比較",
+          "description": "2 人のサッカー選手の 6 つの能力。指標の min と max で各軸を評価に差が出る 30〜99 の範囲に拡大し、系列ごとに色を指定しています。"
+        },
+        "capabilities": {
+          "title": "製品の機能比較",
+          "description": "自社製品、競合、市場平均に対するアナリスト評価。hidden で表示を制御し、チェックボックスと凡例（onToggle）が同じ状態を共有します。"
+        },
+        "nutrition": {
+          "title": "朝食の栄養成分",
+          "description": "3 種類の朝食を円形グリッド（shape=\"circle\"、levels={5}）に描き、各軸は 1 日の基準量に対する割合です。renderTooltip はイベントの indicator を使い、ホバーした栄養素の各朝食での量を一覧表示します。"
+        },
+        "live-monitor": {
+          "title": "サービスのライブ監視",
+          "description": "現在の負荷を毎秒（setInterval、スイッチをオフにしたときやアンマウント時に解除）直近 1 時間のベースラインに重ねて再描画し、アラートしきい値を超えると赤になります。通知するのは最も負荷の高い指標とアラート状態だけで、毎回の更新ではありません。"
+        },
+        "review-360": {
+          "title": "360 度評価",
+          "description": "Select でチーム平均と重ねて表示する人を選びます。その人を常に 2 番目の系列にすることで、多角形がその場でアニメーションします。下の文はチームと比べた最大の強みと差を示します。"
+        },
+        "sales-targets": {
+          "title": "単位の異なる営業目標",
+          "description": "各 indicator に独自の min と max があるため、売上・受注件数・成約率・NPS を 1 つのチャートにまとめられます。目標は塗りなしの輪郭です。onClick と renderTooltip はイベントの indicator を読み取り、KPI の実績・目標・達成率を表示します。"
+        }
+      },
+      "data": {
+        "skills": {
+          "problemSolving": "問題解決",
+          "coding": "コーディング",
+          "systemDesign": "システム設計",
+          "communication": "コミュニケーション",
+          "collaboration": "協調性",
+          "ownership": "当事者意識"
+        },
+        "candidate": "候補者",
+        "outOf": "{{value}} / {{max}}",
+        "scorecardAria": "候補者の面接評価シート",
+        "flavor": {
+          "aroma": "香り",
+          "acidity": "酸味",
+          "sweetness": "甘み",
+          "body": "コク",
+          "bitterness": "苦味",
+          "aftertaste": "余韻"
+        },
+        "coffees": {
+          "ethiopia": "エチオピア イルガチェフェ",
+          "sumatra": "スマトラ マンデリン"
+        },
+        "coffeeAria": "2 種類のコーヒーの風味",
+        "criteria": {
+          "performance": "性能",
+          "battery": "バッテリー",
+          "camera": "カメラ",
+          "display": "ディスプレイ",
+          "value": "コストパフォーマンス",
+          "build": "質感"
+        },
+        "phonesAria": "3 機種のスマートフォンのレビュースコア",
+        "hoverPolygon": "多角形にホバーするか矢印キーで機種を比較します",
+        "football": {
+          "pace": "スピード",
+          "shooting": "シュート",
+          "passing": "パス",
+          "dribbling": "ドリブル",
+          "defending": "守備",
+          "physical": "フィジカル"
+        },
+        "playersAria": "2 人のサッカー選手の能力値",
+        "capabilities": {
+          "security": "セキュリティ",
+          "integrations": "連携",
+          "reporting": "レポート",
+          "mobile": "モバイル",
+          "automation": "自動化",
+          "support": "サポート",
+          "pricing": "価格"
+        },
+        "products": {
+          "ours": "自社製品",
+          "competitor": "主要競合",
+          "market": "市場平均"
+        },
+        "compareWith": "比較する製品",
+        "capabilitiesAria": "自社製品、競合、市場平均の機能評価",
+        "nutrition": {
+          "nutrients": {
+            "protein": "たんぱく質",
+            "fiber": "食物繊維",
+            "sugar": "糖質",
+            "fat": "脂質",
+            "sodium": "ナトリウム",
+            "calcium": "カルシウム"
+          },
+          "meals": {
+            "oatmeal": "フルーツ入りオートミール",
+            "eggs": "卵のトースト",
+            "yogurt": "グラノーラ入りヨーグルト"
+          },
+          "dailyValue": "基準量の {{value}}",
+          "row": "{{meal}}：{{amount}}（{{share}}）",
+          "aria": "3 種類の朝食の栄養成分（1 日の基準量に対する割合）"
+        },
+        "monitor": {
+          "metrics": {
+            "cpu": "CPU",
+            "memory": "メモリ",
+            "diskIo": "ディスク I/O",
+            "network": "ネットワーク",
+            "latency": "レイテンシ",
+            "errors": "エラー"
+          },
+          "baseline": "直近 1 時間の平均",
+          "now": "現在",
+          "live": "ライブ更新",
+          "alert": "アラート：{{metric}} が容量の {{threshold}} を超えています。",
+          "peak": "最も負荷の高い指標：{{metric}}。",
+          "aria": "サービスの現在の負荷と直近 1 時間の平均"
+        },
+        "review": {
+          "competencies": {
+            "communication": "コミュニケーション",
+            "delivery": "成果の提供",
+            "expertise": "専門性",
+            "collaboration": "協働",
+            "mentoring": "育成",
+            "initiative": "主体性"
+          },
+          "team": "チーム平均",
+          "person": "対象者",
+          "aria": "{{name}} の 360 度評価とチーム平均",
+          "summary": "強み：{{strength}}（チーム比 {{strengthGap}}）。伸ばす点：{{growth}}（{{growthGap}}）。"
+        },
+        "sales": {
+          "kpis": {
+            "revenue": "売上",
+            "deals": "受注件数",
+            "winRate": "成約率",
+            "dealSize": "平均案件規模",
+            "calls": "通話数",
+            "nps": "NPS"
+          },
+          "target": "目標",
+          "actual": "実績",
+          "line": "{{kpi}}：{{actual}}（目標 {{target}}、達成率 {{attainment}}）。",
+          "aria": "営業担当者の四半期 KPI と目標",
+          "hint": "軸の近くをクリックすると KPI を表示します。"
+        }
+      },
+      "api": {
+        "RadarChartProps": {
+          "indicators": "チャートの軸（12 時の位置から時計回り）",
+          "series": "多角形：指標ごとに 1 つの値",
+          "shape": "グリッドの形：多角形または円",
+          "levels": "グリッドのリングの数",
+          "dots": "頂点に点を描く"
+        },
+        "RadarIndicator": {
+          "name": "軸の名前",
+          "max": "外周の値。省略時は系列の最大値",
+          "min": "中心の値"
+        },
+        "RadarSeries": {
+          "name": "凡例とツールチップに表示する名前",
+          "values": "指標ごとに 1 つの値",
+          "color": "多角形の色。省略時はパレットから取得",
+          "opacity": "塗りの不透明度（0〜1）"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基本",
+            "description": "頂点の近くを押すとスキルのスコアが表示されます。format でスコアを 10 点満点で表記します。"
+          },
+          "compare": {
+            "title": "比較",
+            "description": "円形グリッド上の 2 系列。hidden と onToggle で凡例の状態をアプリ側に保持します。"
+          }
+        },
+        "data": {
+          "skills": {
+            "problemSolving": "問題解決",
+            "coding": "コーディング",
+            "systemDesign": "システム設計",
+            "communication": "コミュニケーション",
+            "collaboration": "協働",
+            "ownership": "オーナーシップ"
+          },
+          "candidate": "候補者",
+          "outOf10": "{{value}} / 10",
+          "scorecardAria": "候補者の面接評価シート",
+          "criteria": {
+            "battery": "バッテリー",
+            "camera": "カメラ",
+            "display": "ディスプレイ",
+            "performance": "性能",
+            "price": "価格"
+          },
+          "phonesAria": "2 機種のスマートフォンのレビュー評価",
+          "comparing": "比較中：{{phones}}"
+        }
+      },
+      "wc": {
+        "demos": {
+          "compare": {
+            "title": "2 つの系列を比較",
+            "description": "5 つの指標で 2 つのモデルを比較します。凡例で系列を表示・非表示にします。"
+          },
+          "circle": {
+            "title": "円形グリッド",
+            "description": "shape を circle にすると円形のグリッドを描き、levels でその数を設定します。"
+          }
+        },
+        "minerva-radar-chart": {
+          "props": {
+            "height": "チャートの高さ（凡例を含む）：ピクセルまたは任意の CSS の長さ",
+            "options": "その他のエンジンのオプション（軸、凡例、ツールチップ、パレット、書式…）。要素自身のプロパティとマージされます。プロパティのみ",
+            "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+          },
+          "events": {
+            "minerva-hover": "ホバー（またはキーボードでフォーカス）している要素が変わりました。detail：{ index, name, value, share }、何もない場合は null",
+            "minerva-click": "要素がクリック、タップ、または Enter で選択されました。detail：{ index, name, value, share }",
+            "minerva-toggle": "凡例の項目がクリックされました（または toggle() が呼ばれました）。detail：{ index, hidden, hiddenIndexes }"
+          },
+          "methods": {
+            "toggle": "インデックスでスライス、段階、レーダーの系列、ツリーマップの最上位ノードを表示・非表示にします",
+            "getRenderer": "シェイプを描画しているバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null。エンジンオプション renderer で指定できます"
+          }
+        }
+      }
+    }
+  }
+}

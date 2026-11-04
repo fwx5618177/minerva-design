@@ -1,0 +1,231 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.3",
+  "locale": "en",
+  "renderer": "react",
+  "page": "split-layout",
+  "title": "SplitLayout",
+  "description": "Main content with an optional aside that splits beside it once the layout's own width reaches a breakpoint.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.3",
+    "sourceCommit": "ea7fb3e1f55d184b7d737316e9ae829f4f7ff223",
+    "sourceDigest": "sha256:c9540edc3908d226375a01cf5e6bfe8ca6a4e20440f736c0dd9b40ae9ff2e645",
+    "referenceSourceDigest": "sha256:4cf6057856184f16240d0d22153ec370842fc7a2dfaaa66364e189fed89e6ca3"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "SplitLayout",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "SplitLayout"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "aside",
+            "source": "packages/react/src/components/SplitLayout/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": true,
+            "description": "Secondary content rendered after the main slot. `null`, `undefined` and `false` omit the slot (single full-width column); `0` is valid content."
+          },
+          {
+            "name": "asideWidth",
+            "source": "packages/react/src/components/SplitLayout/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 320,
+            "required": false,
+            "description": "Requested aside width in pixels in split mode (the track is `min(asideWidth, 50%)`); must be finite and positive, otherwise a RangeError is thrown"
+          },
+          {
+            "name": "collapseBelow",
+            "source": "packages/react/src/components/SplitLayout/types.ts",
+            "kind": "enum",
+            "values": [
+              "lg",
+              "md"
+            ],
+            "typeText": "SplitLayoutCollapseBelow | undefined",
+            "typeRef": "type:704c2e6478f7f6a00876",
+            "default": "md",
+            "required": false,
+            "description": "Splits at container widths of at least 768px (`md`) or 1200px (`lg`) and stacks below"
+          },
+          {
+            "name": "gap",
+            "source": "packages/react/src/components/SplitLayout/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": 6,
+            "required": false,
+            "description": "Gap between the slots: numbers and numeric strings select spacing tokens, other strings are CSS values"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "SplitLayoutProps": {
+      "source": "react/src/components/SplitLayout/types.ts",
+      "kind": "interface",
+      "extends": [
+        "HTMLAttributes<HTMLDivElement>"
+      ],
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "required": false,
+          "description": "Ref to the outer div"
+        },
+        {
+          "name": "aside",
+          "type": "ReactNode",
+          "required": true,
+          "description": "Secondary content rendered after the main slot. `null`, `undefined` and `false` omit the slot (single full-width column); `0` is valid content."
+        },
+        {
+          "name": "asideWidth",
+          "type": "number",
+          "required": false,
+          "default": "320",
+          "description": "Requested aside width in pixels in split mode (the track is `min(asideWidth, 50%)`); must be finite and positive, otherwise a RangeError is thrown"
+        },
+        {
+          "name": "collapseBelow",
+          "type": "SplitLayoutCollapseBelow",
+          "required": false,
+          "default": "\"md\"",
+          "description": "Splits at container widths of at least 768px (`md`) or 1200px (`lg`) and stacks below"
+        },
+        {
+          "name": "gap",
+          "type": "string | number",
+          "required": false,
+          "default": "6",
+          "description": "Gap between the slots: numbers and numeric strings select spacing tokens, other strings are CSS values"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:SplitLayout": {
+      "kind": "cssVars",
+      "source": "react/src/components/SplitLayout",
+      "vars": [
+        {
+          "name": "--split-layout-align-items",
+          "description": "Vertical alignment of the main and aside columns (default: start)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/split-layout/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/split-layout/demos/basic.tsx": "import { Box, SplitLayout } from \"minerva-design\";\n\nexport default function BasicDemo() {\n  return (\n    <SplitLayout\n      aside={\n        <Box\n          as=\"section\"\n          aria-label=\"Properties\"\n          p={4}\n          bg=\"bg.muted\"\n          rounded=\"md\"\n        >\n          Properties\n        </Box>\n      }\n    >\n      <Box as=\"section\" aria-label=\"Content\" p={4} bg=\"bg.subtle\" rounded=\"md\">\n        Main content comes first in reading order.\n      </Box>\n    </SplitLayout>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Basic usage",
+      "description": "A 320px aside splits at 768px of container width and stacks below; main stays first in DOM order."
+    },
+    {
+      "id": "options",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/split-layout/demos/options.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/split-layout/demos/options.tsx": "import { Box, SplitLayout } from \"minerva-design\";\n\nexport default function OptionsDemo() {\n  return (\n    <SplitLayout\n      asideWidth={200}\n      collapseBelow=\"lg\"\n      gap={3}\n      aside={\n        <Box p={4} bg=\"bg.muted\" rounded=\"md\">\n          200px aside\n        </Box>\n      }\n    >\n      <Box p={4} bg=\"bg.subtle\" rounded=\"md\">\n        Splits only when the layout is at least 1200px wide.\n      </Box>\n    </SplitLayout>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Width, breakpoint and gap",
+      "description": "asideWidth, collapseBelow=\"lg\" (1200px) and gap customize the split."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "SplitLayout",
+      "description": "Main content with an optional aside that splits beside it once the layout's own width reaches a breakpoint.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "A 320px aside splits at 768px of container width and stacks below; main stays first in DOM order."
+        },
+        "options": {
+          "title": "Width, breakpoint and gap",
+          "description": "asideWidth, collapseBelow=\"lg\" (1200px) and gap customize the split."
+        }
+      },
+      "api": {
+        "SplitLayoutProps": {
+          "ref": "Ref to the outer div",
+          "aside": "Secondary content after the main slot; null, undefined and false omit it (0 is valid content)",
+          "asideWidth": "Aside width in pixels in split mode (track is min(asideWidth, 50%)); must be finite and positive",
+          "collapseBelow": "Splits at container widths of at least 768px (md) or 1200px (lg) and stacks below",
+          "gap": "Gap between the slots (spacing token or CSS value)"
+        }
+      },
+      "cssVars": {
+        "--split-layout-align-items": "Vertical alignment of the main and aside columns (default: start)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Main content in the default slot, secondary content in the aside slot. The aside splits beside main once the layout is at least 768px wide, and stacks after it below."
+          },
+          "options": {
+            "title": "Width, breakpoint and gap",
+            "description": "aside-width sets the aside column (capped at 50%), collapse-below=\"lg\" waits for 1200px before splitting, gap uses spacing tokens. Drag the slider to resize the container."
+          }
+        },
+        "minerva-split-layout": {
+          "slots": {
+            "default": "Main content.",
+            "aside": "Secondary content, after main in reading order."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

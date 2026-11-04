@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.3",
+  "locale": "ja",
+  "renderer": "wc",
+  "page": "wc-theming",
+  "title": "Web Components のテーマ",
+  "description": "<minerva-config> または通常の属性によるデザイントークン、テーマ、パレット、デザインプリセット。ネストしたスコープ、コンポーネントごとの CSS 変数、::part()、ロケール。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.3",
+    "sourceCommit": "ea7fb3e1f55d184b7d737316e9ae829f4f7ff223",
+    "sourceDigest": "sha256:c9540edc3908d226375a01cf5e6bfe8ca6a4e20440f736c0dd9b40ae9ff2e645",
+    "referenceSourceDigest": "sha256:4cf6057856184f16240d0d22153ec370842fc7a2dfaaa66364e189fed89e6ca3"
+  },
+  "content": {
+    "tokens": {
+      "title": "デザイントークン",
+      "text": "すべての要素はデザイントークン（色、余白、角丸、影、フォント、コントロールの高さ）を CSS カスタムプロパティとして読み取ります。これらは shadow root 内にも継承されます。tokens.css を一度だけ読み込んでください。このファイルは :root にライトテーマを定義し、下記の属性に応じてトークンを切り替えるルールを含みます。minerva-design/tokens.css と同じファイルで、minerva-design/style.css にも含まれているため、1 つのページ上の React と Web Components は同じテーマを共有します。"
+    },
+    "attributes": {
+      "title": "テーマ属性",
+      "text": "テーマは tokens.css が読み取る属性で指定します：data-theme（light または dark）、data-palette、data-density、data-radius、data-shadow、data-font-scale。<html> に指定する場合はスクリプトが一切不要なので、サーバーでの描画も簡単です：",
+      "nested": "<html> より下の要素に指定する場合は、属性を持つ要素に data-minerva-theme-scope も追加してください。派生トークン（ホバー、subtle、ボーダーの色調、フォーカスリング...）は基本色が宣言された場所で計算されるため、この属性によってそのスコープで再計算されます。<minerva-config> はこれを自動で行います。"
+    },
+    "config": {
+      "title": "<minerva-config>",
+      "text": "<minerva-config> は ConfigProvider に対応する Web Component です。display: contents として描画され、テーマ属性を自身（コンテンツのスコープ）に、または root を指定した場合は <html> に書き込みます。スコープはネストでき、最も近いものが優先されます：",
+      "attribute": "属性",
+      "values": "値",
+      "attrs": {
+        "theme": "ライト、ダーク、OS に追従、または github-dark テーマ。未指定の場合は外側のスコープから継承します。",
+        "palette": "カラーパレット。ライトとダークのバリアントがあります。",
+        "design": "デザインプリセット。密度、角丸、影、フォントスケールをまとめて設定します（palette が指定されていなければパレットも設定します）。",
+        "density": "余白とコントロールの高さ。プリセットを上書きします。",
+        "radius": "角丸のスケール。プリセットを上書きします。",
+        "shadow": "エレベーションの影。プリセットを上書きします。",
+        "font-scale": "文字サイズのスケール。プリセットを上書きします。",
+        "locale": "内側の要素の組み込みテキスト（閉じるボタン、空の状態、検証メッセージ...）の言語。",
+        "root": "要素のサブツリーではなく、<html>（lang を含むページ全体）にすべてを適用します。"
+      },
+      "event": "minerva-theme-change は、解決されたライト／ダークモードが変わったときに発火します（theme=\"system\" で OS の設定が切り替わったときも含みます）。resolvedMode は現在のモードを返します："
+    },
+    "dark": {
+      "title": "ダークモード",
+      "text": "theme=\"system\" は prefers-color-scheme に追従し、リアルタイムに更新されます。ユーザーに選ばせるには、独自のコントロールから theme を light、dark、system のいずれかに設定し、選択内容を保存します。<minerva-config> を使わない場合は、<html> の data-theme=\"dark\" を切り替えると既定のダークテーマに切り替わります。ライトテーマが一瞬表示されるのを避けるには、ページの描画前にサーバーまたはインラインスクリプトで属性を書き込んでください。"
+    },
+    "parts": {
+      "title": "::part() と :state() による内部のスタイル指定",
+      "text": "要素は主要な内部構造を CSS パーツ（root、label、content、overlay、list、item、input、control…）として、状態をカスタムステート（:state(open)、:state(disabled)、:state(size-small)…）として公開しています。名前は React コンポーネントの data-part や data-* フックと同じです。内部のクラス名と違い、これらは公開 API です。各コンポーネントページの「スタイリングフック」に一覧があり、語彙全体は「スタイルのカスタマイズ」を参照してください。"
+    },
+    "overlays": {
+      "title": "オーバーレイはスコープ内にとどまる",
+      "text": "ポップアップ（セレクトのリストボックス、ポップオーバー、ツールチップ、メニュー）とダイアログは、<body> の末尾に移動されるのではなく、要素自身の shadow root 内に描画され、Popover API によってトップレイヤーに表示されます。記述した場所の DOM ツリーにとどまるため、トークン、テーマスコープ、ロケール、独自の CSS 変数を継承し、祖先の overflow: hidden や z-index によって切り取られたり覆われたりすることはありません。Popover API に対応していないブラウザでは fixed による配置にフォールバックします。"
+    },
+    "i18n": {
+      "title": "言語",
+      "text": "組み込みテキストと検証メッセージは、最も近い <minerva-config locale> に従い、なければ最も近い lang 属性（shadow root を越えて探索）、それもなければ英語になります。英語、中国語、日本語、フランス語をサポートしており、地域付きのタグは言語に縮約されます（fr-CA はフランス語を使います）。lang や locale を変更すると要素は即座に更新されます。要素が属性から表示するテキスト（ラベル、プレースホルダー、close-label...）の翻訳は利用者側で行ってください。"
+    },
+    "next": {
+      "title": "次のステップ",
+      "theming": "内蔵テーマ、すべてのデザイントークン、独自テーマ。",
+      "presets": "パレットとデザインプリセットの詳細。"
+    }
+  },
+  "components": [],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "<link rel=\"stylesheet\" href=\"/node_modules/minerva-design/dist/core/tokens.css\" />\n<!-- or, with a bundler -->\n<script type=\"module\">\n  import \"minerva-design/tokens.css\";\n</script>",
+      "language": "html"
+    },
+    {
+      "source": "<!-- the attributes work on <html> (whole page) without any script -->\n<html lang=\"fr\" data-theme=\"dark\" data-palette=\"cool\" data-density=\"compact\" data-radius=\"large\">",
+      "language": "html"
+    },
+    {
+      "source": "<minerva-config theme=\"system\" palette=\"tech\" design=\"editorial\" locale=\"ja\" root>\n  <!-- root: the attributes go on <html>, for the whole page -->\n</minerva-config>\n\n<!-- nested scopes: the closest one wins -->\n<minerva-config theme=\"light\">\n  <minerva-button>Light</minerva-button>\n\n  <minerva-config theme=\"dark\" palette=\"graphite\" density=\"compact\">\n    <minerva-button>Dark, graphite, compact</minerva-button>\n  </minerva-config>\n</minerva-config>",
+      "language": "html"
+    },
+    {
+      "source": "const config = document.querySelector(\"minerva-config\");\nconst status = document.querySelector(\"#theme-status\");\nconfig.addEventListener(\"minerva-theme-change\", (event) => {\n  // \"light\" | \"dark\", e.g. when the OS switches\n  status.textContent = `${event.detail.mode} mode`;\n});\nconfig.resolvedMode; // the mode currently applied",
+      "language": "ts"
+    },
+    {
+      "source": "/* the same --<component>-* variables as the React components,\n   on the element, any ancestor or :root */\n.toolbar minerva-button {\n  --button-radius: 999px;\n  --button-padding-x: 20px;\n}\n\nminerva-input {\n  --input-radius: 6px;\n}\n\n/* theme tokens for one area: data-minerva-theme-scope recomputes the\n   derived tokens (hover, subtle, focus ring...) from the new base colors */\n.brand {\n  --primary-color: #7c3aed;\n}",
+      "language": "css"
+    },
+    {
+      "source": "<section class=\"brand\" data-minerva-theme-scope>\n  <minerva-button>Violet</minerva-button>\n</section>",
+      "language": "html"
+    },
+    {
+      "source": "/* ::part() reaches the parts an element exposes, :state() its states\n   (both listed in the \"Styling hooks\" section of each component page) */\nminerva-select::part(content) {\n  max-height: 240px;\n}\n\nminerva-modal:state(open)::part(overlay) {\n  backdrop-filter: blur(4px);\n}\n\nminerva-tabs:state(variant-pills)::part(list) {\n  gap: var(--space-1);\n}\n\nminerva-button:state(loading)::part(label) {\n  opacity: 0.6;\n}",
+      "language": "css"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.20.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Web Components のテーマ",
+      "description": "<minerva-config> または通常の属性によるデザイントークン、テーマ、パレット、デザインプリセット。ネストしたスコープ、コンポーネントごとの CSS 変数、::part()、ロケール。",
+      "tokens": {
+        "title": "デザイントークン",
+        "text": "すべての要素はデザイントークン（色、余白、角丸、影、フォント、コントロールの高さ）を CSS カスタムプロパティとして読み取ります。これらは shadow root 内にも継承されます。tokens.css を一度だけ読み込んでください。このファイルは :root にライトテーマを定義し、下記の属性に応じてトークンを切り替えるルールを含みます。minerva-design/tokens.css と同じファイルで、minerva-design/style.css にも含まれているため、1 つのページ上の React と Web Components は同じテーマを共有します。"
+      },
+      "attributes": {
+        "title": "テーマ属性",
+        "text": "テーマは tokens.css が読み取る属性で指定します：data-theme（light または dark）、data-palette、data-density、data-radius、data-shadow、data-font-scale。<html> に指定する場合はスクリプトが一切不要なので、サーバーでの描画も簡単です：",
+        "nested": "<html> より下の要素に指定する場合は、属性を持つ要素に data-minerva-theme-scope も追加してください。派生トークン（ホバー、subtle、ボーダーの色調、フォーカスリング...）は基本色が宣言された場所で計算されるため、この属性によってそのスコープで再計算されます。<minerva-config> はこれを自動で行います。"
+      },
+      "config": {
+        "title": "<minerva-config>",
+        "text": "<minerva-config> は ConfigProvider に対応する Web Component です。display: contents として描画され、テーマ属性を自身（コンテンツのスコープ）に、または root を指定した場合は <html> に書き込みます。スコープはネストでき、最も近いものが優先されます：",
+        "attribute": "属性",
+        "values": "値",
+        "attrs": {
+          "theme": "ライト、ダーク、OS に追従、または github-dark テーマ。未指定の場合は外側のスコープから継承します。",
+          "palette": "カラーパレット。ライトとダークのバリアントがあります。",
+          "design": "デザインプリセット。密度、角丸、影、フォントスケールをまとめて設定します（palette が指定されていなければパレットも設定します）。",
+          "density": "余白とコントロールの高さ。プリセットを上書きします。",
+          "radius": "角丸のスケール。プリセットを上書きします。",
+          "shadow": "エレベーションの影。プリセットを上書きします。",
+          "font-scale": "文字サイズのスケール。プリセットを上書きします。",
+          "locale": "内側の要素の組み込みテキスト（閉じるボタン、空の状態、検証メッセージ...）の言語。",
+          "root": "要素のサブツリーではなく、<html>（lang を含むページ全体）にすべてを適用します。"
+        },
+        "event": "minerva-theme-change は、解決されたライト／ダークモードが変わったときに発火します（theme=\"system\" で OS の設定が切り替わったときも含みます）。resolvedMode は現在のモードを返します："
+      },
+      "dark": {
+        "title": "ダークモード",
+        "text": "theme=\"system\" は prefers-color-scheme に追従し、リアルタイムに更新されます。ユーザーに選ばせるには、独自のコントロールから theme を light、dark、system のいずれかに設定し、選択内容を保存します。<minerva-config> を使わない場合は、<html> の data-theme=\"dark\" を切り替えると既定のダークテーマに切り替わります。ライトテーマが一瞬表示されるのを避けるには、ページの描画前にサーバーまたはインラインスクリプトで属性を書き込んでください。"
+      },
+      "cssVars": {
+        "title": "コンポーネントの CSS 変数",
+        "text": "要素は React コンポーネントと同じスタイルシートをコンパイルするため、同じ --<component>-* 変数（--button-radius、--input-height、--card-padding、--table-cell-padding-y...）を公開します。これらは各コンポーネントのページの CSS 変数の表に一覧されています。変数はフォールバック付きで読み取られ、要素自身が設定することはないため、要素自身、任意の祖先、または :root に指定した値が適用されます。テーマトークン（--primary-color...）も同じ方法で上書きできます："
+      },
+      "parts": {
+        "title": "::part() と :state() による内部のスタイル指定",
+        "text": "要素は主要な内部構造を CSS パーツ（root、label、content、overlay、list、item、input、control…）として、状態をカスタムステート（:state(open)、:state(disabled)、:state(size-small)…）として公開しています。名前は React コンポーネントの data-part や data-* フックと同じです。内部のクラス名と違い、これらは公開 API です。各コンポーネントページの「スタイリングフック」に一覧があり、語彙全体は「スタイルのカスタマイズ」を参照してください。"
+      },
+      "overlays": {
+        "title": "オーバーレイはスコープ内にとどまる",
+        "text": "ポップアップ（セレクトのリストボックス、ポップオーバー、ツールチップ、メニュー）とダイアログは、<body> の末尾に移動されるのではなく、要素自身の shadow root 内に描画され、Popover API によってトップレイヤーに表示されます。記述した場所の DOM ツリーにとどまるため、トークン、テーマスコープ、ロケール、独自の CSS 変数を継承し、祖先の overflow: hidden や z-index によって切り取られたり覆われたりすることはありません。Popover API に対応していないブラウザでは fixed による配置にフォールバックします。"
+      },
+      "i18n": {
+        "title": "言語",
+        "text": "組み込みテキストと検証メッセージは、最も近い <minerva-config locale> に従い、なければ最も近い lang 属性（shadow root を越えて探索）、それもなければ英語になります。英語、中国語、日本語、フランス語をサポートしており、地域付きのタグは言語に縮約されます（fr-CA はフランス語を使います）。lang や locale を変更すると要素は即座に更新されます。要素が属性から表示するテキスト（ラベル、プレースホルダー、close-label...）の翻訳は利用者側で行ってください。"
+      },
+      "next": {
+        "title": "次のステップ",
+        "theming": "内蔵テーマ、すべてのデザイントークン、独自テーマ。",
+        "presets": "パレットとデザインプリセットの詳細。"
+      }
+    }
+  }
+}

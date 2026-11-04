@@ -1,0 +1,1097 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.3",
+  "locale": "fr",
+  "renderer": "react",
+  "page": "boxplot-chart",
+  "title": "Boîte à moustaches",
+  "description": "Médianes, quartiles, moustaches et valeurs extrêmes pour comparer des distributions, à partir d'échantillons bruts ou de statistiques calculées. Les valeurs extrêmes sont des anneaux de la couleur de la série : survolez-en une pour lire sa valeur et son groupe.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.3",
+    "sourceCommit": "ea7fb3e1f55d184b7d737316e9ae829f4f7ff223",
+    "sourceDigest": "sha256:c9540edc3908d226375a01cf5e6bfe8ca6a4e20440f736c0dd9b40ae9ff2e645",
+    "referenceSourceDigest": "sha256:4cf6057856184f16240d0d22153ec370842fc7a2dfaaa66364e189fed89e6ca3"
+  },
+  "content": {
+    "data": {
+      "services": {
+        "gateway": "Passerelle",
+        "auth": "Authentification",
+        "search": "Recherche",
+        "checkout": "Paiement",
+        "recommendations": "Recommandations",
+        "images": "Images"
+      },
+      "responseTime": "Temps de réponse",
+      "stats": {
+        "max": "Max",
+        "q3": "Q3",
+        "median": "Médiane",
+        "q1": "Q1",
+        "min": "Min",
+        "outliers": "Valeurs extrêmes"
+      },
+      "servicesAria": "Distribution du temps de réponse de chaque service",
+      "salary": "Salaire annuel",
+      "roles": {
+        "junior": "Développeur junior",
+        "developer": "Développeur",
+        "senior": "Développeur senior",
+        "lead": "Responsable technique",
+        "manager": "Responsable d'équipe"
+      },
+      "salariesAria": "Distribution des salaires par poste",
+      "periods": {
+        "weekdays": "En semaine",
+        "weekends": "Le week-end"
+      },
+      "cities": {
+        "paris": "Paris",
+        "lyon": "Lyon",
+        "marseille": "Marseille",
+        "lille": "Lille"
+      },
+      "hours": "Délai de livraison (heures)",
+      "deliveryAria": "Délais de livraison par ville en semaine et le week-end",
+      "dailyHigh": "Maximale du jour",
+      "mean": "Moyenne",
+      "temperaturesAria": "Distribution des températures maximales quotidiennes par mois",
+      "pipelines": {
+        "lint": "Lint",
+        "unit": "Tests unitaires",
+        "integration": "Intégration",
+        "e2e": "Bout en bout",
+        "release": "Publication"
+      },
+      "whiskerRule": "Portée des moustaches",
+      "whiskers": {
+        "tukey": "1,5 × EIQ",
+        "wide": "3 × EIQ",
+        "minmax": "Min – max"
+      },
+      "outlierShape": "Forme des valeurs aberrantes",
+      "shapes": {
+        "hollow": "Creuses",
+        "filled": "Pleines"
+      },
+      "outlierRuns": "{{value}} exécutions dessinées comme valeurs aberrantes",
+      "buildTime": "Durée du build",
+      "buildsAria": "Distribution des durées de build de chaque pipeline CI",
+      "clickBox": "Cliquez sur une boîte ou une valeur aberrante.",
+      "outlierClicked": "{{day}} : un patient a attendu {{value}}.",
+      "boxClicked": "{{day}} : attente médiane {{median}}, la moitié des patients a attendu entre {{q1}} et {{q3}}, {{outliers}} valeurs aberrantes.",
+      "wait": "Attente",
+      "fourHours": "Objectif de quatre heures",
+      "waitsAria": "Distribution de l'attente aux urgences par jour de la semaine",
+      "assetTypes": {
+        "styles": "Feuilles de style",
+        "scripts": "Scripts",
+        "fonts": "Polices",
+        "images": "Images",
+        "videos": "Vidéos"
+      },
+      "logScale": "Échelle logarithmique",
+      "overBudget": "{{value}} fichiers dépassent le budget de {{budget}}.",
+      "fileSize": "Taille du fichier",
+      "budget": "Budget",
+      "assetsAria": "Distribution des tailles de fichiers d'un site web par type",
+      "regions": {
+        "usEast": "Est des États-Unis",
+        "usWest": "Ouest des États-Unis",
+        "euWest": "Europe de l'Ouest",
+        "apSouth": "Asie-Pacifique Sud",
+        "saEast": "Est de l'Amérique du Sud"
+      },
+      "pause": "Pause",
+      "resume": "Reprendre",
+      "slaBreached": "SLA menacé : {{regions}}",
+      "slaOk": "Toutes les régions respectent le SLA",
+      "latency": "Latence",
+      "sla": "SLA",
+      "regionsAria": "Distribution en direct de la latence des requêtes dans chaque région"
+    }
+  },
+  "components": [
+    {
+      "name": "BoxPlotChart",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/charts",
+          "exports": [
+            "BoxPlotChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "series",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartSeries[] | undefined",
+            "typeRef": "type:f8b682a7983af505585d",
+            "required": false,
+            "description": "Series of box plots: data points with `low`, `q1`, `y` (the median), `q3`, `high` and `outliers` (see `boxplotData` / `boxplotStats`)"
+          },
+          {
+            "name": "groups",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "array",
+            "typeText": "readonly BoxplotGroup[] | undefined",
+            "typeRef": "type:8c03c4dd37e605ff7493",
+            "required": false,
+            "description": "Raw samples, one box each (an alternative to `series`)"
+          },
+          {
+            "name": "name",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "default": "Values",
+            "required": false,
+            "description": "Name of the series built from `groups`"
+          },
+          {
+            "name": "orientation",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "enum",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
+            "typeText": "ChartOrientation | undefined",
+            "typeRef": "type:872af3679a2d7fcf3d26",
+            "default": "vertical",
+            "required": false,
+            "description": "`horizontal` lays the boxes out in rows"
+          },
+          {
+            "name": "outlierShape",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "enum",
+            "values": [
+              "filled",
+              "hollow"
+            ],
+            "typeText": "\"filled\" | \"hollow\" | undefined",
+            "typeRef": "type:de3eb4c626f217cc19bd",
+            "default": "hollow",
+            "required": false,
+            "description": "Outliers drawn as rings of the series color or as filled dots (series may set their own `outlierShape`)"
+          },
+          {
+            "name": "outlierSize",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 7,
+            "required": false,
+            "description": "Diameter of the outliers in CSS pixels"
+          },
+          {
+            "name": "height",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": 320,
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels"
+          },
+          {
+            "name": "width",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "X axis"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Y axis"
+          },
+          {
+            "name": "renderer",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "enum",
+            "values": [
+              "auto",
+              "canvas2d",
+              "webgl",
+              "webgl2",
+              "webgpu"
+            ],
+            "typeText": "ChartRendererPreference | undefined",
+            "typeRef": "type:dc7d7e6f384ddec86e04",
+            "default": "auto",
+            "required": false,
+            "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D"
+          },
+          {
+            "name": "legend",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartLegendOptions | undefined",
+            "typeRef": "type:860fa553ee4deaac43f8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "typeRef": "type:c08795b3492e4547d570",
+            "required": false,
+            "description": "Tooltip; `false` disables it"
+          },
+          {
+            "name": "crosshair",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Vertical guide line following the pointer"
+          },
+          {
+            "name": "annotations",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartAnnotation[] | undefined",
+            "typeRef": "type:f440eb8a958892b1b0c2",
+            "required": false,
+            "description": "Background areas and reference lines"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartInteractionOptions | undefined",
+            "typeRef": "type:f4b160d7dd18649fd178",
+            "default": true,
+            "required": false,
+            "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static"
+          },
+          {
+            "name": "padding",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the plot area, in pixels"
+          },
+          {
+            "name": "palette",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)"
+          },
+          {
+            "name": "labels",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "object",
+            "typeText": "Partial<ChartLabels> | undefined",
+            "typeRef": "type:14c31fd72a2c2ac7a7fd",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "node",
+            "typeText": "((event: ChartHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:018692c396245c230316",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          },
+          {
+            "name": "whisker",
+            "source": "packages/charts/src/engine/presets.ts",
+            "kind": "union",
+            "typeText": "number | \"minmax\" | undefined",
+            "typeRef": "type:85f720dbd65dfdb3ee25",
+            "default": 1.5,
+            "required": false,
+            "description": "Reach of the whiskers in interquartile ranges beyond the box (Tukey: 1.5); `\"minmax\"` extends them to the extremes (no outliers)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent | null) => void) | undefined",
+            "typeRef": "type:7f639ac6d9481ff0bde9",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent | null",
+                "typeRef": "type:92ec77c4587c7e27430b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the hovered (or keyboard-focused) points change"
+          },
+          {
+            "name": "onPointClick",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent) => void) | undefined",
+            "typeRef": "type:677083ee0328d7ee4253",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point (or bar) is clicked"
+          },
+          {
+            "name": "onPlotClick",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartPlotClickEvent) => void) | undefined",
+            "typeRef": "type:0256cf20d9a3f1b1c88a",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartPlotClickEvent",
+                "typeRef": "type:db60e2cf00fabb558740"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the plot area is clicked where there is no point"
+          },
+          {
+            "name": "onZoom",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((view: ChartView) => void) | undefined",
+            "typeRef": "type:ee073556f18eb3ee4cae",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartView",
+                "typeRef": "type:f1de933b453f8db86ff3"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the user zooms or pans"
+          },
+          {
+            "name": "onRendererChange",
+            "source": "packages/charts/src/react/types.ts",
+            "kind": "function",
+            "typeText": "((renderer: ChartRendererKind) => void) | undefined",
+            "typeRef": "type:167734f7bd5dd7f686a6",
+            "parameters": [
+              {
+                "name": "renderer",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartRendererKind",
+                "typeRef": "type:3439f360c8a2b0649d25"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the backend once it is ready (and when it falls back after a GPU loss)"
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "renderer",
+            "event": "onRendererChange",
+            "syntax": "renderer={renderer} onRendererChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "BoxPlotChartProps": {
+      "source": "charts/src/react/types.ts",
+      "description": "Props of BoxPlotChart",
+      "kind": "interface",
+      "extends": [
+        "ChartCommonProps",
+        "BoxplotStatsOptions"
+      ],
+      "props": [
+        {
+          "name": "series",
+          "type": "readonly ChartSeries[]",
+          "required": false,
+          "description": "Series of box plots: data points with `low`, `q1`, `y` (the median), `q3`, `high` and `outliers` (see `boxplotData` / `boxplotStats`)"
+        },
+        {
+          "name": "groups",
+          "type": "readonly BoxplotGroup[]",
+          "required": false,
+          "description": "Raw samples, one box each (an alternative to `series`)"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "default": "\"Values\"",
+          "description": "Name of the series built from `groups`"
+        },
+        {
+          "name": "orientation",
+          "type": "ChartOrientation",
+          "required": false,
+          "default": "\"vertical\"",
+          "description": "`horizontal` lays the boxes out in rows"
+        },
+        {
+          "name": "outlierShape",
+          "type": "\"hollow\" | \"filled\"",
+          "required": false,
+          "default": "\"hollow\"",
+          "description": "Outliers drawn as rings of the series color or as filled dots (series may set their own `outlierShape`)"
+        },
+        {
+          "name": "outlierSize",
+          "type": "number",
+          "required": false,
+          "default": "7",
+          "description": "Diameter of the outliers in CSS pixels"
+        }
+      ]
+    },
+    "BoxplotGroup": {
+      "source": "charts/src/engine/presets.ts",
+      "description": "A sample of a box plot",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "x",
+          "type": "ChartXValue",
+          "required": true,
+          "description": "Category (or position) of the box"
+        },
+        {
+          "name": "values",
+          "type": "ArrayLike<number>",
+          "required": true,
+          "description": "Raw values: their quartiles, whiskers and outliers are computed"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "required": false,
+          "description": "Color of the box (any CSS color)"
+        }
+      ]
+    },
+    "BoxplotStats": {
+      "source": "charts/src/engine/presets.ts",
+      "description": "Five-number summary of a sample, with the outliers",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "low",
+          "type": "number",
+          "required": true,
+          "description": "Lower whisker: the smallest value within reach"
+        },
+        {
+          "name": "q1",
+          "type": "number",
+          "required": true,
+          "description": "First quartile"
+        },
+        {
+          "name": "median",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "q3",
+          "type": "number",
+          "required": true,
+          "description": "Third quartile"
+        },
+        {
+          "name": "high",
+          "type": "number",
+          "required": true,
+          "description": "Upper whisker: the largest value within reach"
+        },
+        {
+          "name": "outliers",
+          "type": "number[]",
+          "required": true,
+          "description": "Values beyond the whiskers"
+        },
+        {
+          "name": "min",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "mean",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "count",
+          "type": "number",
+          "required": true,
+          "description": "Number of finite values"
+        }
+      ]
+    },
+    "BoxplotStatsOptions": {
+      "source": "charts/src/engine/presets.ts",
+      "description": "Options of `boxplotStats`",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "whisker",
+          "type": "number | \"minmax\"",
+          "required": false,
+          "default": "1.5",
+          "description": "Reach of the whiskers in interquartile ranges beyond the box (Tukey: 1.5); `\"minmax\"` extends them to the extremes (no outliers)"
+        }
+      ]
+    },
+    "ChartTooltipLabels": {
+      "source": "charts/src/engine/types.ts",
+      "description": "Row names of the default tooltip (candlesticks, box plots, ranges, bubbles)",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "open",
+          "type": "string",
+          "required": false,
+          "default": "\"Open\""
+        },
+        {
+          "name": "high",
+          "type": "string",
+          "required": false,
+          "default": "\"High\""
+        },
+        {
+          "name": "low",
+          "type": "string",
+          "required": false,
+          "default": "\"Low\""
+        },
+        {
+          "name": "close",
+          "type": "string",
+          "required": false,
+          "default": "\"Close\""
+        },
+        {
+          "name": "max",
+          "type": "string",
+          "required": false,
+          "default": "\"Max\"",
+          "description": "Box plot upper whisker"
+        },
+        {
+          "name": "q3",
+          "type": "string",
+          "required": false,
+          "default": "\"Q3\""
+        },
+        {
+          "name": "median",
+          "type": "string",
+          "required": false,
+          "default": "\"Median\""
+        },
+        {
+          "name": "q1",
+          "type": "string",
+          "required": false,
+          "default": "\"Q1\""
+        },
+        {
+          "name": "min",
+          "type": "string",
+          "required": false,
+          "default": "\"Min\"",
+          "description": "Box plot lower whisker"
+        },
+        {
+          "name": "outliers",
+          "type": "string",
+          "required": false,
+          "default": "\"Outliers\"",
+          "description": "Number of outliers"
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "required": false,
+          "default": "\"Value\"",
+          "description": "Scatter `value` (bubbles) when the series has no `valueName`"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "asset-sizes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/boxplot-chart/demos/asset-sizes.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/boxplot-chart/demos/asset-sizes.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Switch } from \"minerva-design\";\nimport { BoxPlotChart, type BoxplotGroup } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst BUDGET = 500; // kB per file\n\n// Size (kB) of the files a website serves, by type: from 1 kB icons to\n// 40 MB videos, log-normal in every type\nconst types = [\n  [\"styles\", 18, 0.9],\n  [\"scripts\", 45, 1.1],\n  [\"fonts\", 60, 0.5],\n  [\"images\", 140, 1.2],\n  [\"videos\", 6000, 0.9],\n] as const;\nconst sizes = types.map(([, median, spread], i) => {\n  const random = mulberry32(300 + i);\n  return Float64Array.from({ length: 250 }, () => {\n    const z =\n      Math.sqrt(-2 * Math.log(random() || 1e-12)) *\n      Math.cos(2 * Math.PI * random());\n    return median * Math.exp(spread * z);\n  });\n});\n\nexport default function AssetSizesDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.boxplot-chart.data\",\n  });\n  const locale = i18n.language;\n  const [log, setLog] = useState(true);\n\n  // kilobytes below 1,000 kB, megabytes above\n  const bytes = useMemo(() => {\n    const kb = new Intl.NumberFormat(locale, {\n      style: \"unit\",\n      unit: \"kilobyte\",\n      maximumSignificantDigits: 3,\n    });\n    const mb = new Intl.NumberFormat(locale, {\n      style: \"unit\",\n      unit: \"megabyte\",\n      maximumSignificantDigits: 3,\n    });\n    return (value: number) =>\n      value >= 1000 ? mb.format(value / 1000) : kb.format(value);\n  }, [locale]);\n  const groups = useMemo(\n    (): BoxplotGroup[] =>\n      types.map(([key], i) => ({\n        x: t(`assetTypes.${key}`),\n        values: sizes[i] ?? [],\n      })),\n    [t],\n  );\n  const overBudget = useMemo(\n    () =>\n      sizes.flatMap((values) => [...values]).filter((v) => v > BUDGET).length,\n    [],\n  );\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <div\n        style={{\n          display: \"flex\",\n          flexWrap: \"wrap\",\n          alignItems: \"center\",\n          gap: 12,\n        }}\n      >\n        <Switch checked={log} onChange={setLog} label={t(\"logScale\")} />\n        <output\n          aria-live=\"polite\"\n          style={{ color: \"var(--text-secondary-color)\" }}\n        >\n          {t(\"overBudget\", {\n            value: new Intl.NumberFormat(locale).format(overBudget),\n            budget: bytes(BUDGET),\n          })}\n        </output>\n      </div>\n      <BoxPlotChart\n        groups={groups}\n        name={t(\"fileSize\")}\n        // on a linear axis the small files are crushed against zero\n        yAxis={\n          log\n            ? { type: \"log\", min: 0.5, max: 100_000, format: bytes }\n            : { min: 0, format: bytes }\n        }\n        annotations={[\n          {\n            type: \"line\",\n            axis: \"y\",\n            value: BUDGET,\n            color: \"var(--warning-color)\",\n            dash: [4, 4],\n            label: t(\"budget\"),\n          },\n        ]}\n        height={340}\n        ariaLabel={t(\"assetsAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Échelle logarithmique",
+      "description": "Des tailles de fichiers de quelques kilo-octets à des dizaines de mégaoctets : yAxis.type: \"log\" garde chaque boîte lisible, alors que sur un axe linéaire les petits fichiers sont écrasés contre zéro. Le format passe des ko aux Mo et une ligne marque le budget de taille."
+    },
+    {
+      "id": "build-times",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/boxplot-chart/demos/build-times.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/boxplot-chart/demos/build-times.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Radio, RadioGroup } from \"minerva-design\";\nimport {\n  BoxPlotChart,\n  boxplotStats,\n  type BoxplotGroup,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\n// 300 CI runs (minutes) of every pipeline over a month: a typical duration,\n// a spread, and a share of runs that miss the cache and take much longer\nconst pipelines = [\n  [\"lint\", 2.1, 0.3, 0.02],\n  [\"unit\", 6.5, 0.9, 0.04],\n  [\"integration\", 14, 2.2, 0.06],\n  [\"e2e\", 22, 4, 0.08],\n  [\"release\", 11, 1.2, 0.12],\n] as const;\nconst runs = pipelines.map(([, typical, spread, misses], p) => {\n  const random = mulberry32(500 + p);\n  return Float64Array.from({ length: 300 }, () => {\n    const z =\n      Math.sqrt(-2 * Math.log(random() || 1e-12)) *\n      Math.cos(2 * Math.PI * random());\n    const miss = random() < misses ? typical * (0.8 + random()) : 0;\n    return Math.max(0.5, typical + spread * z + miss);\n  });\n});\n\nconst whiskers = { tukey: 1.5, wide: 3, minmax: \"minmax\" } as const;\ntype Whisker = keyof typeof whiskers;\n\nexport default function BuildTimesDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.boxplot-chart.data\",\n  });\n  const locale = i18n.language;\n  const [whisker, setWhisker] = useState<Whisker>(\"tukey\");\n  const [shape, setShape] = useState<\"hollow\" | \"filled\">(\"hollow\");\n\n  const minutes = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, {\n      style: \"unit\",\n      unit: \"minute\",\n      unitDisplay: \"short\",\n      maximumFractionDigits: 1,\n    });\n    return (value: number) => format.format(value);\n  }, [locale]);\n  const groups = useMemo(\n    (): BoxplotGroup[] =>\n      pipelines.map(([key], i) => ({\n        x: t(`pipelines.${key}`),\n        values: runs[i] ?? [],\n      })),\n    [t],\n  );\n  // the same rule as the chart, to count the runs drawn as outliers\n  const outliers = useMemo(\n    () =>\n      runs.reduce(\n        (n, values) =>\n          n +\n          boxplotStats(values, { whisker: whiskers[whisker] }).outliers.length,\n        0,\n      ),\n    [whisker],\n  );\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <RadioGroup\n        aria-label={t(\"whiskerRule\")}\n        direction=\"horizontal\"\n        value={whisker}\n        onChange={(value) => setWhisker(value as Whisker)}\n      >\n        <Radio value=\"tukey\" label={t(\"whiskers.tukey\")} />\n        <Radio value=\"wide\" label={t(\"whiskers.wide\")} />\n        <Radio value=\"minmax\" label={t(\"whiskers.minmax\")} />\n      </RadioGroup>\n      <RadioGroup\n        aria-label={t(\"outlierShape\")}\n        direction=\"horizontal\"\n        value={shape}\n        onChange={(value) => setShape(value as \"hollow\" | \"filled\")}\n      >\n        <Radio value=\"hollow\" label={t(\"shapes.hollow\")} />\n        <Radio value=\"filled\" label={t(\"shapes.filled\")} />\n      </RadioGroup>\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {t(\"outlierRuns\", {\n          value: new Intl.NumberFormat(locale).format(outliers),\n        })}\n      </output>\n      <BoxPlotChart\n        groups={groups}\n        name={t(\"buildTime\")}\n        whisker={whiskers[whisker]}\n        outlierShape={shape}\n        outlierSize={shape === \"filled\" ? 5 : 8}\n        yAxis={{ format: minutes, min: 0 }}\n        height={340}\n        ariaLabel={t(\"buildsAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Règles des moustaches",
+      "description": "Les durées de build CI de chaque pipeline. whisker fixe la portée des moustaches (1,5 ou 3 écarts interquartiles, ou \"minmax\" sans valeurs aberrantes), et outlierShape et outlierSize changent le dessin des exécutions lentes ; boxplotStats avec la même règle les compte."
+    },
+    {
+      "id": "grouped",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/boxplot-chart/demos/grouped.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/boxplot-chart/demos/grouped.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  BoxPlotChart,\n  boxplotData,\n  type ChartSeries,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\n// Delivery times (hours) per city, on weekdays and on weekends\nconst cities = [\"paris\", \"lyon\", \"marseille\", \"lille\"] as const;\nconst sample = (seed: number, mean: number) => {\n  const random = mulberry32(seed);\n  return Array.from(\n    { length: 400 },\n    () => mean * (0.5 + random() + random() ** 6 * 1.5),\n  );\n};\n\nexport default function GroupedDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.boxplot-chart.data\",\n  });\n  const locale = i18n.language;\n  const hours = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, {\n      style: \"unit\",\n      unit: \"hour\",\n      maximumFractionDigits: 1,\n    });\n    return (value: number) => format.format(value);\n  }, [locale]);\n\n  // boxplotData turns raw samples into box plot data: one series per period\n  const series = useMemo(\n    (): ChartSeries[] =>\n      ([\"weekdays\", \"weekends\"] as const).map((period, p) => ({\n        name: t(`periods.${period}`),\n        format: hours,\n        data: boxplotData(\n          cities.map((city, c) => ({\n            x: t(`cities.${city}`),\n            values: sample(c * 10 + p, p ? 31 : 22 + c * 3),\n          })),\n        ),\n      })),\n    [t, hours],\n  );\n\n  return (\n    <BoxPlotChart\n      series={series}\n      yAxis={{ title: t(\"hours\"), zero: true }}\n      height={320}\n      ariaLabel={t(\"deliveryAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Groupé",
+      "description": "boxplotData transforme des échantillons en données de boîtes : une série par période, les boîtes de chaque ville côte à côte."
+    },
+    {
+      "id": "horizontal",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/boxplot-chart/demos/horizontal.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/boxplot-chart/demos/horizontal.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { BoxPlotChart, type ChartSeries } from \"minerva-design/charts\";\n\n// Yearly salaries (k€) per role, from a public salary survey: the summary\n// statistics are already computed, one datum per box\nconst roles = [\n  [\"junior\", 38, 42, 46, 51, 58, [66, 71]],\n  [\"developer\", 45, 52, 58, 64, 76, [88]],\n  [\"senior\", 58, 66, 72, 80, 95, [110, 118]],\n  [\"lead\", 70, 78, 86, 95, 112, []],\n  [\"manager\", 72, 84, 92, 104, 128, [145]],\n] as const;\n\nexport default function HorizontalDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.boxplot-chart.data\",\n  });\n  const locale = i18n.language;\n  const euros = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, {\n      style: \"currency\",\n      currency: \"EUR\",\n      maximumFractionDigits: 0,\n    });\n    return (value: number) => format.format(value * 1000);\n  }, [locale]);\n\n  const series = useMemo(\n    (): ChartSeries[] => [\n      {\n        name: t(\"salary\"),\n        color: \"var(--chart-series-6, #8b5cf6)\",\n        format: euros,\n        data: roles.map(([key, low, q1, median, q3, high, outliers]) => ({\n          x: t(`roles.${key}`),\n          low,\n          q1,\n          y: median,\n          q3,\n          high,\n          outliers,\n        })),\n      },\n    ],\n    [t, euros],\n  );\n\n  // orientation=\"horizontal\": one row per role, the values along the bottom\n  return (\n    <BoxPlotChart\n      series={series}\n      orientation=\"horizontal\"\n      yAxis={{ format: euros }}\n      height={300}\n      ariaLabel={t(\"salariesAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Horizontal",
+      "description": "Des statistiques déjà calculées (une donnée avec low, q1, y pour la médiane, q3, high et outliers par boîte) en lignes avec orientation: \"horizontal\"."
+    },
+    {
+      "id": "live-regions",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/boxplot-chart/demos/live-regions.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/boxplot-chart/demos/live-regions.tsx": "import { useEffect, useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Button } from \"minerva-design\";\nimport {\n  BoxPlotChart,\n  boxplotStats,\n  type BoxplotGroup,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst WINDOW = 200; // requests kept per region\nconst PER_TICK = 20; // requests per region every second\nconst SLA = 300; // ms\n\nconst regions = [\n  [\"usEast\", 120],\n  [\"usWest\", 140],\n  [\"euWest\", 110],\n  [\"apSouth\", 190],\n  [\"saEast\", 170],\n] as const;\n\n/**\n * Latency (ms) of request `n` of region `r`, derived from both alone so the\n * stream is deterministic; every region has a slow period now and then\n */\nconst latencyOf = (r: number, n: number) => {\n  const random = mulberry32(r * 1_000_003 + n * 7919);\n  const z =\n    Math.sqrt(-2 * Math.log(random() || 1e-12)) *\n    Math.cos(2 * Math.PI * random());\n  const base = regions[r]?.[1] ?? 100;\n  const degraded = Math.sin(n / 90 + r * 1.7) > 0.8 ? 2.4 : 1;\n  return base * degraded * Math.exp(0.35 * z);\n};\n\nexport default function LiveRegionsDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.boxplot-chart.data\",\n  });\n  const locale = i18n.language;\n  const [tick, setTick] = useState(0);\n  const [running, setRunning] = useState(true);\n\n  useEffect(() => {\n    if (!running) return;\n    const timer = setInterval(() => setTick((value) => value + 1), 1000);\n    return () => clearInterval(timer);\n  }, [running]);\n\n  // the last WINDOW requests of every region\n  const samples = useMemo(() => {\n    const last = WINDOW + tick * PER_TICK;\n    return regions.map((_, r) =>\n      Float64Array.from({ length: WINDOW }, (_, i) =>\n        latencyOf(r, last - WINDOW + i),\n      ),\n    );\n  }, [tick]);\n  const breaching = useMemo(\n    () =>\n      samples.map((values) => {\n        const stats = boxplotStats(values);\n        return stats.q3 > SLA;\n      }),\n    [samples],\n  );\n  // a region turns red when a quarter of its requests exceed the SLA\n  const groups = useMemo(\n    (): BoxplotGroup[] =>\n      regions.map(([key], r) => ({\n        x: t(`regions.${key}`),\n        values: samples[r] ?? [],\n        color: breaching[r] ? \"var(--danger-color)\" : undefined,\n      })),\n    [t, samples, breaching],\n  );\n  const ms = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, {\n      style: \"unit\",\n      unit: \"millisecond\",\n      maximumFractionDigits: 0,\n    });\n    return (value: number) => format.format(value);\n  }, [locale]);\n  const names = regions\n    .filter((_, r) => breaching[r])\n    .map(([key]) => t(`regions.${key}`));\n  const list = new Intl.ListFormat(locale, { type: \"conjunction\" });\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <div\n        style={{\n          display: \"flex\",\n          flexWrap: \"wrap\",\n          alignItems: \"center\",\n          gap: 12,\n        }}\n      >\n        <Button\n          size=\"small\"\n          variant=\"outline\"\n          onClick={() => setRunning((value) => !value)}\n        >\n          {running ? t(\"pause\") : t(\"resume\")}\n        </Button>\n        <output\n          aria-live=\"polite\"\n          style={{\n            color: names.length\n              ? \"var(--danger-color)\"\n              : \"var(--text-secondary-color)\",\n          }}\n        >\n          {names.length\n            ? t(\"slaBreached\", { regions: list.format(names) })\n            : t(\"slaOk\")}\n        </output>\n      </div>\n      <BoxPlotChart\n        groups={groups}\n        name={t(\"latency\")}\n        // a fixed range keeps the boxes comparable from one second to the next\n        yAxis={{ format: ms, min: 0, max: 1200 }}\n        annotations={[\n          {\n            type: \"line\",\n            axis: \"y\",\n            value: SLA,\n            color: \"var(--danger-color)\",\n            dash: [4, 4],\n            label: t(\"sla\"),\n          },\n        ]}\n        height={340}\n        ariaLabel={t(\"regionsAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Latence par région en direct",
+      "description": "Chaque seconde, un setInterval (arrêté à la pause et au démontage) fait glisser une fenêtre sur les dernières requêtes de chaque région. Un groupe passe au rouge quand son troisième quartile dépasse la ligne du SLA, et la plage de l'axe y est fixe pour garder les boîtes comparables."
+    },
+    {
+      "id": "services",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/boxplot-chart/demos/services.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/boxplot-chart/demos/services.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { BoxPlotChart, type BoxplotGroup } from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\n// 2,000 response times (ms) of each service over the last hour\nconst services = [\n  [\"gateway\", 18, 0.35],\n  [\"auth\", 32, 0.3],\n  [\"search\", 95, 0.45],\n  [\"checkout\", 140, 0.38],\n  [\"recommendations\", 210, 0.5],\n  [\"images\", 60, 0.6],\n] as const;\nconst samples = services.map(([, median, spread], s) => {\n  const random = mulberry32(100 + s);\n  return Float64Array.from({ length: 2000 }, () => {\n    const z =\n      Math.sqrt(-2 * Math.log(random() || 1e-12)) *\n      Math.cos(2 * Math.PI * random());\n    return median * Math.exp(spread * z);\n  });\n});\n\nexport default function ServicesDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.boxplot-chart.data\",\n  });\n  const locale = i18n.language;\n  const ms = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, {\n      style: \"unit\",\n      unit: \"millisecond\",\n      maximumFractionDigits: 0,\n    });\n    return (value: number) => format.format(value);\n  }, [locale]);\n\n  // raw samples: the quartiles, whiskers (1.5 IQR) and outliers are computed\n  const groups = useMemo(\n    (): BoxplotGroup[] =>\n      services.map(([key], i) => ({\n        x: t(`services.${key}`),\n        values: samples[i] ?? [],\n      })),\n    [t],\n  );\n\n  return (\n    <BoxPlotChart\n      groups={groups}\n      name={t(\"responseTime\")}\n      yAxis={{ format: ms }}\n      tooltip={{\n        labels: {\n          max: t(\"stats.max\"),\n          q3: t(\"stats.q3\"),\n          median: t(\"stats.median\"),\n          q1: t(\"stats.q1\"),\n          min: t(\"stats.min\"),\n          outliers: t(\"stats.outliers\"),\n        },\n      }}\n      height={340}\n      ariaLabel={t(\"servicesAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Temps de réponse par service",
+      "description": "groups prend les échantillons bruts de chaque boîte : les quartiles, les moustaches (1,5 écart interquartile) et les valeurs extrêmes sont calculés ; tooltip.labels traduit les lignes de l'infobulle."
+    },
+    {
+      "id": "temperatures",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/boxplot-chart/demos/temperatures.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/boxplot-chart/demos/temperatures.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  BoxPlotChart,\n  boxplotStats,\n  type ChartSeries,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\n// 30 years of daily maximum temperatures (°C) per month\nconst months = Array.from({ length: 12 }, (_, m) => {\n  const random = mulberry32(m + 1);\n  const normal = 13 - 9 * Math.cos(((m + 0.5) / 12) * Math.PI * 2);\n  return Array.from(\n    { length: 900 },\n    () => normal + (random() + random() + random() - 1.5) * 6,\n  );\n});\n\nexport default function TemperaturesDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.boxplot-chart.data\",\n  });\n  const locale = i18n.language;\n  const celsius = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, {\n      style: \"unit\",\n      unit: \"celsius\",\n      maximumFractionDigits: 1,\n    });\n    return (value: number) => format.format(value);\n  }, [locale]);\n\n  // boxplotStats gives the five numbers and the mean: the whiskers reach the\n  // extremes (\"minmax\", no outliers) and a line joins the means\n  const series = useMemo((): ChartSeries[] => {\n    const names = Array.from({ length: 12 }, (_, m) =>\n      new Intl.DateTimeFormat(locale, { month: \"short\" }).format(\n        new Date(2026, m, 1),\n      ),\n    );\n    const stats = months.map((values) =>\n      boxplotStats(values, { whisker: \"minmax\" }),\n    );\n    return [\n      {\n        name: t(\"dailyHigh\"),\n        color: \"var(--chart-series-4, #ef4444)\",\n        format: celsius,\n        data: stats.map((s, m) => ({\n          x: names[m],\n          low: s.low,\n          q1: s.q1,\n          y: s.median,\n          q3: s.q3,\n          high: s.high,\n        })),\n      },\n      {\n        name: t(\"mean\"),\n        type: \"line\",\n        curve: \"smooth\",\n        color: \"var(--text-secondary-color, #6b7280)\",\n        lineWidth: 1.5,\n        format: celsius,\n        data: stats.map((s, m) => [names[m] ?? \"\", s.mean] as const),\n      },\n    ];\n  }, [t, locale, celsius]);\n\n  return (\n    <BoxPlotChart\n      series={series}\n      yAxis={{ format: celsius }}\n      height={320}\n      ariaLabel={t(\"temperaturesAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Avec une ligne",
+      "description": "boxplotStats donne les cinq nombres et la moyenne de chaque mois : whisker: \"minmax\" étend les moustaches aux extrêmes et une ligne relie les moyennes."
+    },
+    {
+      "id": "wait-times",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/boxplot-chart/demos/wait-times.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/boxplot-chart/demos/wait-times.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  BoxPlotChart,\n  type BoxplotGroup,\n  type ChartHoverEvent,\n} from \"minerva-design/charts\";\n\nfunction mulberry32(seed: number) {\n  let a = seed;\n  return () => {\n    a = (a + 0x6d2b79f5) | 0;\n    let t = Math.imul(a ^ (a >>> 15), 1 | a);\n    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;\n    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;\n  };\n}\n\nconst TARGET = 240; // minutes: the four-hour standard of the emergency room\n\n// Emergency room waits (minutes) over a quarter, Monday to Sunday: busier\n// on Mondays and weekend nights, with a few very long waits\nconst typical = [150, 120, 110, 115, 125, 140, 160];\nconst waits = typical.map((median, day) => {\n  const random = mulberry32(900 + day);\n  return Float64Array.from({ length: 400 }, () => {\n    const z =\n      Math.sqrt(-2 * Math.log(random() || 1e-12)) *\n      Math.cos(2 * Math.PI * random());\n    return Math.round(median * Math.exp(0.42 * z));\n  });\n});\n\nexport default function WaitTimesDemo() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.boxplot-chart.data\",\n  });\n  const locale = i18n.language;\n  const [clicked, setClicked] = useState<{\n    day: number;\n    outlier?: number;\n    median: number;\n    q1: number;\n    q3: number;\n    outliers: number;\n  } | null>(null);\n\n  const minutes = useMemo(() => {\n    const format = new Intl.NumberFormat(locale, {\n      style: \"unit\",\n      unit: \"minute\",\n      unitDisplay: \"short\",\n      maximumFractionDigits: 0,\n    });\n    return (value: number) => format.format(value);\n  }, [locale]);\n  const groups = useMemo((): BoxplotGroup[] => {\n    // 1 January 2024 is a Monday\n    const weekday = new Intl.DateTimeFormat(locale, {\n      weekday: \"long\",\n      timeZone: \"UTC\",\n    });\n    return waits.map((values, day) => ({\n      x: weekday.format(Date.UTC(2024, 0, 1 + day)),\n      values,\n    }));\n  }, [locale]);\n\n  // a click on a box gives its statistics, a click on an outlier its value;\n  // on the category axis, x is the index of the day\n  const click = (event: ChartHoverEvent) => {\n    const item = event.items[0];\n    if (!item) return;\n    setClicked({\n      day: Math.round(event.x),\n      outlier: item.outlier,\n      median: item.y,\n      q1: item.q1 ?? item.y,\n      q3: item.q3 ?? item.y,\n      outliers: item.outliers ?? 0,\n    });\n  };\n  const day = clicked ? String(groups[clicked.day]?.x ?? \"\") : \"\";\n  const status = !clicked\n    ? t(\"clickBox\")\n    : clicked.outlier !== undefined\n      ? t(\"outlierClicked\", { day, value: minutes(clicked.outlier) })\n      : t(\"boxClicked\", {\n          day,\n          median: minutes(clicked.median),\n          q1: minutes(clicked.q1),\n          q3: minutes(clicked.q3),\n          outliers: new Intl.NumberFormat(locale).format(clicked.outliers),\n        });\n\n  return (\n    <div style={{ display: \"grid\", gap: 8, width: \"100%\" }}>\n      <output\n        aria-live=\"polite\"\n        style={{ color: \"var(--text-secondary-color)\" }}\n      >\n        {status}\n      </output>\n      <BoxPlotChart\n        groups={groups}\n        name={t(\"wait\")}\n        outlierShape=\"filled\"\n        yAxis={{ format: minutes, min: 0, title: t(\"wait\") }}\n        annotations={[\n          {\n            type: \"rect\",\n            y0: TARGET,\n            color: \"var(--danger-color)\",\n            opacity: 0.06,\n          },\n          {\n            type: \"line\",\n            axis: \"y\",\n            value: TARGET,\n            color: \"var(--danger-color)\",\n            dash: [4, 4],\n            label: t(\"fourHours\"),\n          },\n        ]}\n        onPointClick={click}\n        onPlotClick={() => setClicked(null)}\n        height={340}\n        ariaLabel={t(\"waitsAria\")}\n      />\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "Clic sur une boîte ou une valeur aberrante",
+      "description": "L'attente aux urgences par jour de la semaine. onPointClick reçoit la médiane, q1, q3 et le nombre de valeurs aberrantes de la boîte cliquée, ou la valeur cliquée dans item.outlier ; sur l'axe de catégories, event.x est l'index du jour."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Boîte à moustaches",
+      "description": "Médianes, quartiles, moustaches et valeurs extrêmes pour comparer des distributions, à partir d'échantillons bruts ou de statistiques calculées. Les valeurs extrêmes sont des anneaux de la couleur de la série : survolez-en une pour lire sa valeur et son groupe.",
+      "demos": {
+        "services": {
+          "title": "Temps de réponse par service",
+          "description": "groups prend les échantillons bruts de chaque boîte : les quartiles, les moustaches (1,5 écart interquartile) et les valeurs extrêmes sont calculés ; tooltip.labels traduit les lignes de l'infobulle."
+        },
+        "horizontal": {
+          "title": "Horizontal",
+          "description": "Des statistiques déjà calculées (une donnée avec low, q1, y pour la médiane, q3, high et outliers par boîte) en lignes avec orientation: \"horizontal\"."
+        },
+        "grouped": {
+          "title": "Groupé",
+          "description": "boxplotData transforme des échantillons en données de boîtes : une série par période, les boîtes de chaque ville côte à côte."
+        },
+        "temperatures": {
+          "title": "Avec une ligne",
+          "description": "boxplotStats donne les cinq nombres et la moyenne de chaque mois : whisker: \"minmax\" étend les moustaches aux extrêmes et une ligne relie les moyennes."
+        },
+        "build-times": {
+          "title": "Règles des moustaches",
+          "description": "Les durées de build CI de chaque pipeline. whisker fixe la portée des moustaches (1,5 ou 3 écarts interquartiles, ou \"minmax\" sans valeurs aberrantes), et outlierShape et outlierSize changent le dessin des exécutions lentes ; boxplotStats avec la même règle les compte."
+        },
+        "wait-times": {
+          "title": "Clic sur une boîte ou une valeur aberrante",
+          "description": "L'attente aux urgences par jour de la semaine. onPointClick reçoit la médiane, q1, q3 et le nombre de valeurs aberrantes de la boîte cliquée, ou la valeur cliquée dans item.outlier ; sur l'axe de catégories, event.x est l'index du jour."
+        },
+        "asset-sizes": {
+          "title": "Échelle logarithmique",
+          "description": "Des tailles de fichiers de quelques kilo-octets à des dizaines de mégaoctets : yAxis.type: \"log\" garde chaque boîte lisible, alors que sur un axe linéaire les petits fichiers sont écrasés contre zéro. Le format passe des ko aux Mo et une ligne marque le budget de taille."
+        },
+        "live-regions": {
+          "title": "Latence par région en direct",
+          "description": "Chaque seconde, un setInterval (arrêté à la pause et au démontage) fait glisser une fenêtre sur les dernières requêtes de chaque région. Un groupe passe au rouge quand son troisième quartile dépasse la ligne du SLA, et la plage de l'axe y est fixe pour garder les boîtes comparables."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple de base",
+            "description": "Temps de réponse bruts par service : quartiles, moustaches et valeurs aberrantes sont calculés ; les lignes de l'infobulle sont dans la langue de locale."
+          }
+        }
+      },
+      "data": {
+        "services": {
+          "gateway": "Passerelle",
+          "auth": "Authentification",
+          "search": "Recherche",
+          "checkout": "Paiement",
+          "recommendations": "Recommandations",
+          "images": "Images"
+        },
+        "responseTime": "Temps de réponse",
+        "stats": {
+          "max": "Max",
+          "q3": "Q3",
+          "median": "Médiane",
+          "q1": "Q1",
+          "min": "Min",
+          "outliers": "Valeurs extrêmes"
+        },
+        "servicesAria": "Distribution du temps de réponse de chaque service",
+        "salary": "Salaire annuel",
+        "roles": {
+          "junior": "Développeur junior",
+          "developer": "Développeur",
+          "senior": "Développeur senior",
+          "lead": "Responsable technique",
+          "manager": "Responsable d'équipe"
+        },
+        "salariesAria": "Distribution des salaires par poste",
+        "periods": {
+          "weekdays": "En semaine",
+          "weekends": "Le week-end"
+        },
+        "cities": {
+          "paris": "Paris",
+          "lyon": "Lyon",
+          "marseille": "Marseille",
+          "lille": "Lille"
+        },
+        "hours": "Délai de livraison (heures)",
+        "deliveryAria": "Délais de livraison par ville en semaine et le week-end",
+        "dailyHigh": "Maximale du jour",
+        "mean": "Moyenne",
+        "temperaturesAria": "Distribution des températures maximales quotidiennes par mois",
+        "pipelines": {
+          "lint": "Lint",
+          "unit": "Tests unitaires",
+          "integration": "Intégration",
+          "e2e": "Bout en bout",
+          "release": "Publication"
+        },
+        "whiskerRule": "Portée des moustaches",
+        "whiskers": {
+          "tukey": "1,5 × EIQ",
+          "wide": "3 × EIQ",
+          "minmax": "Min – max"
+        },
+        "outlierShape": "Forme des valeurs aberrantes",
+        "shapes": {
+          "hollow": "Creuses",
+          "filled": "Pleines"
+        },
+        "outlierRuns": "{{value}} exécutions dessinées comme valeurs aberrantes",
+        "buildTime": "Durée du build",
+        "buildsAria": "Distribution des durées de build de chaque pipeline CI",
+        "clickBox": "Cliquez sur une boîte ou une valeur aberrante.",
+        "outlierClicked": "{{day}} : un patient a attendu {{value}}.",
+        "boxClicked": "{{day}} : attente médiane {{median}}, la moitié des patients a attendu entre {{q1}} et {{q3}}, {{outliers}} valeurs aberrantes.",
+        "wait": "Attente",
+        "fourHours": "Objectif de quatre heures",
+        "waitsAria": "Distribution de l'attente aux urgences par jour de la semaine",
+        "assetTypes": {
+          "styles": "Feuilles de style",
+          "scripts": "Scripts",
+          "fonts": "Polices",
+          "images": "Images",
+          "videos": "Vidéos"
+        },
+        "logScale": "Échelle logarithmique",
+        "overBudget": "{{value}} fichiers dépassent le budget de {{budget}}.",
+        "fileSize": "Taille du fichier",
+        "budget": "Budget",
+        "assetsAria": "Distribution des tailles de fichiers d'un site web par type",
+        "regions": {
+          "usEast": "Est des États-Unis",
+          "usWest": "Ouest des États-Unis",
+          "euWest": "Europe de l'Ouest",
+          "apSouth": "Asie-Pacifique Sud",
+          "saEast": "Est de l'Amérique du Sud"
+        },
+        "pause": "Pause",
+        "resume": "Reprendre",
+        "slaBreached": "SLA menacé : {{regions}}",
+        "slaOk": "Toutes les régions respectent le SLA",
+        "latency": "Latence",
+        "sla": "SLA",
+        "regionsAria": "Distribution en direct de la latence des requêtes dans chaque région"
+      },
+      "api": {
+        "BoxPlotChartProps": {
+          "series": "Séries de boîtes : points avec low, q1, y (la médiane), q3, high et outliers (voir boxplotData / boxplotStats)",
+          "groups": "Échantillons bruts, une boîte chacun (une alternative à series)",
+          "name": "Nom de la série construite à partir de groups",
+          "orientation": "\"horizontal\" dispose les boîtes en lignes",
+          "outlierShape": "Valeurs aberrantes en anneaux de la couleur de la série (hollow) ou en points pleins (filled) ; chaque série peut fixer son outlierShape",
+          "outlierSize": "Diamètre des valeurs aberrantes en pixels CSS"
+        },
+        "BoxplotGroup": {
+          "x": "Catégorie (ou position) de la boîte",
+          "values": "Valeurs brutes : leurs quartiles, moustaches et valeurs extrêmes sont calculés",
+          "color": "Couleur de la boîte (toute couleur CSS)"
+        },
+        "BoxplotStats": {
+          "low": "Moustache basse : la plus petite valeur à portée",
+          "q1": "Premier quartile",
+          "median": "Médiane",
+          "q3": "Troisième quartile",
+          "high": "Moustache haute : la plus grande valeur à portée",
+          "outliers": "Valeurs au-delà des moustaches",
+          "min": "Plus petite valeur",
+          "max": "Plus grande valeur",
+          "mean": "Moyenne",
+          "count": "Nombre de valeurs finies"
+        },
+        "BoxplotStatsOptions": {
+          "whisker": "Portée des moustaches au-delà de la boîte, en écarts interquartiles (Tukey : 1,5) ; \"minmax\" les étend aux extrêmes (sans valeurs extrêmes)"
+        },
+        "ChartTooltipLabels": {
+          "open": "Nom de la ligne du cours d'ouverture (chandeliers)",
+          "high": "Nom de la ligne du plus haut (chandeliers)",
+          "low": "Nom de la ligne du plus bas (chandeliers)",
+          "close": "Nom de la ligne de clôture (chandeliers)",
+          "max": "Nom de la ligne de la moustache haute (boîtes)",
+          "q3": "Nom de la ligne du troisième quartile",
+          "median": "Nom de la ligne de la médiane",
+          "q1": "Nom de la ligne du premier quartile",
+          "min": "Nom de la ligne de la moustache basse (boîtes)",
+          "outliers": "Nom du nombre de valeurs extrêmes",
+          "value": "Nom de la valeur des bulles quand la série n'a pas de valueName"
+        }
+      },
+      "wc": {
+        "demos": {
+          "services": {
+            "title": "Temps de réponse par service",
+            "description": "Échantillons bruts par service : quartiles, moustaches de Tukey et valeurs aberrantes calculés par le graphique."
+          },
+          "horizontal": {
+            "title": "Boîtes horizontales, moustaches min-max",
+            "description": "Boîtes disposées en lignes ; moustaches jusqu’au minimum et au maximum (pas de valeurs aberrantes)."
+          }
+        },
+        "minerva-box-plot-chart": {
+          "props": {
+            "valueName": "Nom de la valeur dans l'info-bulle",
+            "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+            "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+            "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+          },
+          "events": {
+            "minerva-hover": "Les points survolés (ou ciblés au clavier) ont changé ; detail : { x, xLabel, items }, null quand rien n'est survolé",
+            "minerva-point-click": "Un point ou une barre a été cliqué ; detail : { x, xLabel, items }",
+            "minerva-plot-click": "La zone de tracé a été cliquée hors des points ; detail : { x, y } en coordonnées de données",
+            "minerva-zoom": "L'utilisateur a zoomé ou s'est déplacé ; detail : { x, y } (les plages visibles)",
+            "minerva-renderer-change": "Le moteur de rendu est prêt, ou s'est replié après une perte du GPU ; detail : { renderer }"
+          },
+          "methods": {
+            "resetZoom": "Affiche toute la plage de données",
+            "getView": "Plage visible, null avant la création du moteur",
+            "setView": "Définit la plage visible",
+            "getRenderer": "Moteur de rendu utilisé (webgpu, webgl2, webgl, canvas2d), null tant qu'il n'est pas prêt"
+          }
+        }
+      }
+    }
+  }
+}

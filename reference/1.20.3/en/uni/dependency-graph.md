@@ -1,0 +1,297 @@
+# Dependency graph
+
+Directed acyclic graphs drawn in layers: package dependencies, build pipelines, data lineage, task plans. The Sugiyama layout breaks cycles, assigns layers, routes long edges through dummy nodes, reduces crossings and keeps long edges straight; edges are smooth splines or orthogonal connectors with arrowheads. Hover or select a node to highlight everything upstream and downstream, and show the critical path of a plan.
+
+Package: minerva-design@1.20.3
+
+Renderer: uni
+
+Locale: en
+
+## Provenance
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "packageVersion": "1.20.3",
+  "sourceCommit": "ea7fb3e1f55d184b7d737316e9ae829f4f7ff223",
+  "sourceDigest": "sha256:c9540edc3908d226375a01cf5e6bfe8ca6a4e20440f736c0dd9b40ae9ff2e645",
+  "referenceSourceDigest": "sha256:4cf6057856184f16240d0d22153ec370842fc7a2dfaaa66364e189fed89e6ca3"
+}
+```
+
+Type references resolve through the [type graph](/minerva-design/reference/1.20.3/types.json) or getType() from minerva-design/contracts.
+
+## Documentation
+
+#### How the layout works
+
+DependencyGraph is GraphChart with layout="dag": boxes sized to their labels, arrows on every edge and lineage highlighting. The same layout is available as the pure function dagLayout.
+
+Cycles are broken by reversing the back edges of a depth-first search, layers come from the longest path, then sources move next to their successors and nodes with balanced edges move to emptier layers.
+
+Edges spanning several layers get dummy nodes; barycenter and median sweeps then reorder every layer, keep the best order, and a transposition pass swaps neighbors while it removes crossings.
+
+Positions within a layer come from a weighted isotonic regression towards the neighbors, with long edges weighted heavily so they stay straight. TB, LR, BT and RL directions are supported.
+
+highlight="lineage" (the default here) highlights all ancestors and descendants of the hovered, focused or selected nodes; criticalPath highlights the chain with the largest total duration (node value).
+
+Applications
+
+Framework packages
+
+Libraries
+
+Tooling
+
+dev dependency
+
+circular dependency
+
+Dependencies between the packages of a monorepo
+
+Install
+
+Lint
+
+Type check
+
+Unit tests
+
+Security scan
+
+Build app
+
+Build docs
+
+E2E tests
+
+Visual tests
+
+Package
+
+Deploy staging
+
+Deploy production
+
+Passed
+
+Running
+
+Failed
+
+Pending
+
+{{status}} · {{minutes}} min
+
+web bundle
+
+type declarations
+
+retry
+
+Highlight the critical path
+
+CI/CD pipeline: jobs, their dependencies and their status
+
+Critical path: {{minutes}} min — {{path}}
+
+ → 
+
+Revenue dashboard
+
+Retention dashboard
+
+Growth dashboard
+
+Raw sources
+
+Staging
+
+Marts
+
+Dashboards
+
+Data lineage from the raw tables to the dashboards
+
+{{name}}: {{upstream}} upstream, {{downstream}} downstream
+
+Click a table or a dashboard to highlight its lineage.
+
+Done
+
+Running
+
+Queued
+
+{{percent}} done
+
+{{seconds}} s
+
+Workers
+
+{{n}} × worker
+
+Pause
+
+Run
+
+Reset
+
+Build tasks of a monorepo, colored by state as the scheduler runs them
+
+Build finished in {{seconds}} s on {{workers}} × worker.
+
+{{elapsed}} s of {{seconds}} s — running: {{running}}.
+
+nothing
+
+No schedule can beat the critical path: {{seconds}} s.
+
+Project brief
+
+User research
+
+Sitemap
+
+Wireframes
+
+Visual design
+
+Copywriting
+
+API and hosting
+
+CMS setup
+
+Front-end build
+
+Content entry
+
+QA and fixes
+
+SEO review
+
+Go live
+
+Discovery
+
+Design
+
+Build
+
+Launch
+
+Website launch plan: tasks, their dependencies and the critical path
+
+{{name}}: {{range}}, {{days}} workdays, can slip {{slack}} workdays without delaying the launch.
+
+{{name}}: {{range}}, {{days}} workdays, on the critical path — any delay moves the launch.
+
+{{days}} workdays, launch on {{date}}. Click a task to see its dates and slack.
+
+Succeeded
+
+Failed
+
+Upstream failed
+
+Failing task
+
+Nightly ETL tasks, with the failed task and the tasks it blocks
+
+{{task}} failed and blocks {{blocked}} of the {{total}} tasks: {{sinks}} will not be delivered.
+
+{{task}} failed, but no other task depends on it.
+
+Intro to programming
+
+Discrete mathematics
+
+Calculus
+
+Data structures
+
+Computer architecture
+
+Linear algebra
+
+Probability
+
+Algorithms
+
+Operating systems
+
+Databases
+
+Networks
+
+Machine learning
+
+Compilers
+
+Distributed systems
+
+Security
+
+Deep learning
+
+Capstone project
+
+Year {{n}}
+
+Flow direction
+
+Top to bottom
+
+Left to right
+
+Bottom to top
+
+Right to left
+
+Computer science courses and their prerequisites
+
+Prerequisites of {{course}} ({{total}}): {{list}}.
+
+{{course}} has no prerequisite.
+
+Unit price
+
+Quantity
+
+Discount (%)
+
+Tax rate
+
+Subtotal
+
+Discount
+
+Net
+
+Tax
+
+Shipping
+
+Total
+
+Cost per unit
+
+Inputs
+
+Formulas
+
+Cells of an order sheet and the cells their formulas reference
+
+{{cell}} changed: {{total}} cells recalculated ({{list}}). Total: {{value}}.
+
+## DependencyGraph
+
+Support: n/a
+
+DOM / GPU widget of minerva-design/charts (WebGPU or WebGL canvases with DOM overlays): not drawn by the native canvas chart engine; show the web version in a web view.
+
+## Installation and initialization
+
+See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.

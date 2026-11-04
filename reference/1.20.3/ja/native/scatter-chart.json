@@ -1,0 +1,663 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.3",
+  "locale": "ja",
+  "renderer": "native",
+  "page": "scatter-chart",
+  "title": "散布図",
+  "description": "2 つの値で配置する点。ポイントごとにサイズ、色、ラベルを指定でき、両軸でズームできます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.3",
+    "sourceCommit": "ea7fb3e1f55d184b7d737316e9ae829f4f7ff223",
+    "sourceDigest": "sha256:c9540edc3908d226375a01cf5e6bfe8ca6a4e20440f736c0dd9b40ae9ff2e645",
+    "referenceSourceDigest": "sha256:4cf6057856184f16240d0d22153ec370842fc7a2dfaaa66364e189fed89e6ca3"
+  },
+  "content": {
+    "data": {
+      "starter": "スターター",
+      "business": "ビジネス",
+      "seats": "シート数",
+      "monthlyBill": "月額料金",
+      "billAria": "プラン別のシート数と月額料金",
+      "countries": "国",
+      "gdp": "1 人あたり GDP",
+      "lifeExpectancy": "平均寿命",
+      "countriesAria": "1 人あたり GDP と平均寿命。点の大きさは人口",
+      "cluster": "クラスター {{name}}",
+      "clustersAria": "それぞれ 100,000 点からなる 2 つのクラスター",
+      "largeStatus": "{{points}} ポイント · {{renderer}} で描画",
+      "sessionAria": "セッション時間と閲覧ページ数",
+      "minutes": "分",
+      "pages": "ページ",
+      "free": "無料",
+      "pro": "プロ",
+      "sessionStatus": "{{plan}}：{{minutes}} 分、{{pages}} ページ",
+      "tapDot": "点をタップしてください",
+      "campaigns": "キャンペーン",
+      "trend": "傾向線",
+      "adSpend": "週間広告費",
+      "revenue": "週間売上",
+      "fit": "R² = {{r2}} · 広告費 1 ドルあたり売上 +{{slope}}",
+      "trendAria": "60 件のキャンペーンの広告費と売上、傾向線付き",
+      "penguins": {
+        "adelie": "アデリーペンギン",
+        "chinstrap": "ヒゲペンギン",
+        "gentoo": "ジェンツーペンギン"
+      },
+      "flipper": "フリッパー長",
+      "mass": "体重",
+      "penguinsAria": "3 種のペンギンのフリッパー長と体重",
+      "requests": "リクエスト",
+      "outlier": "外れ値",
+      "expected": "想定",
+      "payload": "ペイロードサイズ",
+      "responseTime": "応答時間",
+      "outliersAria": "ペイロードサイズと応答時間。外れ値は赤",
+      "outliersSummary": "{{total}} 件中 {{slow}} 件のリクエストが想定の 2 倍以上かかりました。",
+      "readings": "測定値",
+      "zoomPresets": {
+        "night": "涼しい夜間",
+        "comfort": "生育適温域",
+        "heat": "暑い午後"
+      },
+      "showAll": "すべて表示",
+      "temperature": "温度",
+      "humidity": "相対湿度",
+      "growingRange": "生育適温域",
+      "greenhouseAria": "温室センサーの温度と湿度の測定値",
+      "greenhouseView": "表示範囲：{{t0}} – {{t1}}、湿度 {{h0}} – {{h1}} · 表示中の測定値：{{points}}",
+      "greenhouseHint": "領域を選ぶか、Ctrl / ⌘ + ホイールでズームしてください",
+      "departments": {
+        "engineering": "エンジニアリング",
+        "sales": "営業",
+        "support": "サポート"
+      },
+      "tenure": "勤続年数",
+      "reviewScore": "評価スコア（1–5）",
+      "companyAverage": "全社平均",
+      "staffAria": "部署別の社員 90 名の勤続年数と評価スコア",
+      "employeeStatus": "{{id}} · {{department}} · {{tenure}} · スコア {{score}} · 年収 {{salary}}",
+      "employeeHint": "点をクリックすると社員を選択し、空いたプロット領域をクリックすると選択を解除します",
+      "players": "選手",
+      "leagueAverage": "リーグ平均",
+      "efficientScorers": "効率の良いスコアラー",
+      "volumeShooters": "試投数の多いシューター",
+      "pointsPerGame": "1 試合平均 {{value}} 得点",
+      "usageRow": "使用率：{{value}}",
+      "trueShootingRow": "TS%：{{value}}",
+      "usageRate": "使用率",
+      "trueShooting": "TS%（真のシュート成功率）",
+      "playersAria": "選手 16 人の使用率とシュート効率。点の大きさは 1 試合平均得点",
+      "normal": "正常",
+      "alarm": "アラーム",
+      "latest": "最新",
+      "mmPerSecond": "{{value}} mm/s",
+      "pause": "一時停止",
+      "resume": "再開",
+      "vibrationStatus": "最新サンプル：{{rpm}} rpm、{{value}} · 画面上のアラーム：{{alarms}}",
+      "speed": "回転数（rpm）",
+      "vibration": "振動",
+      "alarmLimit": "アラーム閾値",
+      "vibrationAria": "モーターの回転数に対する振動のライブデータ",
+      "mammals": "哺乳類",
+      "animals": {
+        "shrew": "トガリネズミ",
+        "mouse": "マウス",
+        "rat": "ラット",
+        "rabbit": "ウサギ",
+        "cat": "ネコ",
+        "dog": "イヌ",
+        "human": "ヒト",
+        "pig": "ブタ",
+        "horse": "ウマ",
+        "cow": "ウシ",
+        "giraffe": "キリン",
+        "elephant": "ゾウ"
+      },
+      "powerLaw": "べき乗則の近似",
+      "kg": "{{value}} kg",
+      "watts": "{{value}} W",
+      "bodyMass": "体重",
+      "metabolicRate": "基礎代謝率",
+      "kleiber": "代謝率 ∝ 体重^{{exponent}}（クライバーの法則）",
+      "kleiberAria": "哺乳類 12 種の基礎代謝率と体重（両対数軸）"
+    }
+  },
+  "components": [
+    {
+      "name": "ScatterChart",
+      "support": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles)."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles).",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "ScatterChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "series",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartSeries[]",
+            "typeRef": "type:deda0bcb88251b63a5de",
+            "required": true,
+            "description": "Series drawn as dots unless they set a `type`"
+          },
+          {
+            "name": "height",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": 320,
+            "required": false,
+            "description": "Height of the chart (the legend included)"
+          },
+          {
+            "name": "width",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "X axis"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Y axis"
+          },
+          {
+            "name": "legend",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartLegendOptions | undefined",
+            "typeRef": "type:860fa553ee4deaac43f8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name (tap toggles a series)"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "typeRef": "type:c08795b3492e4547d570",
+            "required": false,
+            "description": "Tooltip shown on tap / while scrubbing; `false` disables it"
+          },
+          {
+            "name": "crosshair",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Vertical guide line following the finger"
+          },
+          {
+            "name": "annotations",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartAnnotation[] | undefined",
+            "typeRef": "type:f440eb8a958892b1b0c2",
+            "required": false,
+            "description": "Background areas, reference lines and texts"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartInteractionOptions | undefined",
+            "typeRef": "type:f4b160d7dd18649fd178",
+            "default": true,
+            "required": false,
+            "description": "Pinch to zoom, drag to pan when zoomed, double tap to reset; `false` makes the chart static"
+          },
+          {
+            "name": "padding",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the plot area, in pixels"
+          },
+          {
+            "name": "palette",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `chart-series-1..8` tokens, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)"
+          },
+          {
+            "name": "labels",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "Partial<ChartLabels> | undefined",
+            "typeRef": "type:14c31fd72a2c2ac7a7fd",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "node",
+            "typeText": "((event: ChartHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:66d650d38e6b7d308d32",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          },
+          {
+            "name": "testID",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Test identifier of the root view"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent | null) => void) | undefined",
+            "typeRef": "type:170f27b8f07028fffd08",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent | null",
+                "typeRef": "type:92ec77c4587c7e27430b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the highlighted points change"
+          },
+          {
+            "name": "onPointClick",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent) => void) | undefined",
+            "typeRef": "type:d586363317763d2fd3f3",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point (or bar) is tapped"
+          },
+          {
+            "name": "onPlotClick",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartPlotClickEvent) => void) | undefined",
+            "typeRef": "type:3ab7d8ab926fce010082",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartPlotClickEvent",
+                "typeRef": "type:db60e2cf00fabb558740"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the plot area is tapped where there is no point"
+          },
+          {
+            "name": "onZoom",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((view: ChartView) => void) | undefined",
+            "typeRef": "type:e6c98e88ed542ed60f34",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartView",
+                "typeRef": "type:f1de933b453f8db86ff3"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the user zooms or pans"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:ScatterChartProps": {
+      "source": "native/src/components/Chart/types.ts",
+      "description": "Props of ScatterChart",
+      "kind": "interface",
+      "extends": [
+        "ChartCommonProps"
+      ],
+      "props": [
+        {
+          "name": "series",
+          "type": "readonly ChartSeries[]",
+          "required": true,
+          "description": "Series drawn as dots unless they set a `type`"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/scatter-chart/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/scatter-chart/native/basic.tsx": "import { useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { Text, View } from \"react-native\";\nimport { ScatterChart, useTheme } from \"minerva-design/native\";\n\n// Deterministic pseudo-random clusters\nconst cluster = (cx: number, cy: number, seed: number) =>\n  Array.from({ length: 40 }, (_, i) => {\n    const a = Math.sin(seed * 97 + i * 12.9898) * 43758.5453;\n    const b = Math.sin(seed * 31 + i * 78.233) * 12543.123;\n    return [\n      Math.round((cx + (a - Math.floor(a) - 0.5) * 20) * 10) / 10,\n      Math.round((cy + (b - Math.floor(b) - 0.5) * 20) * 10) / 10,\n    ] as const;\n  });\n\nexport default function Basic() {\n  const { t } = useTranslation(\"common\", {\n    keyPrefix: \"docs.scatter-chart.data\",\n  });\n  const { colors } = useTheme();\n  const [status, setStatus] = useState<string | null>(null);\n  return (\n    <View style={{ width: \"100%\", gap: 8 }}>\n      <ScatterChart\n        height={240}\n        ariaLabel={t(\"sessionAria\")}\n        xAxis={{ title: t(\"minutes\") }}\n        yAxis={{ title: t(\"pages\") }}\n        series={[\n          { name: t(\"free\"), data: cluster(20, 25, 1) },\n          { name: t(\"pro\"), data: cluster(45, 50, 2) },\n        ]}\n        onPointClick={(event) => {\n          const item = event.items[0];\n          if (item)\n            setStatus(\n              t(\"sessionStatus\", {\n                plan: item.seriesName,\n                minutes: event.xLabel,\n                pages: item.y,\n              }),\n            );\n        }}\n      />\n      <Text role=\"status\" style={{ color: colors[\"text-secondary-color\"] }}>\n        {status ?? t(\"tapDot\")}\n      </Text>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "基本",
+      "description": "軸タイトル付きの [x, y] タプルの 2 系列。ツールチップは最も近い点を表示します。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.3/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "散布図",
+      "description": "2 つの値で配置する点。ポイントごとにサイズ、色、ラベルを指定でき、両軸でズームできます。",
+      "demos": {
+        "basic": {
+          "title": "基本",
+          "description": "軸タイトル付きの [x, y] タプルの 2 系列。ツールチップは最も近い点を表示します。"
+        },
+        "labels": {
+          "title": "ラベルとサイズ",
+          "description": "ポイントオブジェクトに label と size を持たせます。showLabels は重なりを避けてラベルを描画します。"
+        },
+        "large-data": {
+          "title": "20 万ポイント",
+          "description": "型付き配列の列による 2 つのガウス分布クラスター。ヒットテストには空間インデックスを使います。"
+        },
+        "trend": {
+          "title": "相関と傾向線",
+          "description": "キャンペーンの点に最小二乗法の傾向線（デモ内で計算した折れ線系列）を重ね、テキスト注釈で R² と傾きを示します。"
+        },
+        "categories": {
+          "title": "カテゴリ",
+          "description": "カテゴリごとに 1 系列にすると、各グループが独自の色と切り替え可能な凡例を持ちます。ここでは 3 種のペンギンのフリッパー長と体重です。"
+        },
+        "outliers": {
+          "title": "外れ値",
+          "description": "点ごとの色・サイズ・ラベルで、ペイロードに対して想定よりずっと遅いリクエストを示します。想定時間は折れ線系列です。"
+        },
+        "zoom-controls": {
+          "title": "ズーム操作",
+          "description": "ボタンは ref を通じて領域にズームします。setView は表示範囲を設定し（onZoom は呼ばれないため、デモでは getView で表示範囲を読み戻します）、resetZoom で全体表示に戻ります。onZoom はホイールやドラッグによるズームを通知し、rect アノテーションで生育適温域を塗ります。"
+        },
+        "selection": {
+          "title": "クリックで選択",
+          "description": "onPointClick はクリックした点の系列とインデックスを返します。選択した社員の点は大きくなりラベルが付き、詳細が下に表示されます。空いたプロット領域をクリックすると onPlotClick が呼ばれ、選択を解除します。"
+        },
+        "players": {
+          "title": "カスタムツールチップと領域",
+          "description": "renderTooltip はデモのデータから作った React コンテンツでツールチップを置き換えます。リーグ平均は破線の参照線で、境界を一部省いた rect アノテーションが 2 つの隅をプロットの端まで塗ります。"
+        },
+        "live-stream": {
+          "title": "センサーのライブストリーム",
+          "description": "400 ms ごとに振動のサンプルを追加し（setInterval は一時停止とアンマウントで解除）、参照線を境に正常系列とアラーム系列に分けます。min と max を固定して、データが流れ込んでも軸が動かないようにしています。"
+        },
+        "log-log": {
+          "title": "両対数軸",
+          "description": "xAxis と yAxis に type: \"log\" を指定すると、代謝率のべき乗則（クライバーの法則）が 6 桁にわたって直線になります。近似線は tooltip: false を指定した 2 点の line 系列です。"
+        }
+      },
+      "data": {
+        "starter": "スターター",
+        "business": "ビジネス",
+        "seats": "シート数",
+        "monthlyBill": "月額料金",
+        "billAria": "プラン別のシート数と月額料金",
+        "countries": "国",
+        "gdp": "1 人あたり GDP",
+        "lifeExpectancy": "平均寿命",
+        "countriesAria": "1 人あたり GDP と平均寿命。点の大きさは人口",
+        "cluster": "クラスター {{name}}",
+        "clustersAria": "それぞれ 100,000 点からなる 2 つのクラスター",
+        "largeStatus": "{{points}} ポイント · {{renderer}} で描画",
+        "sessionAria": "セッション時間と閲覧ページ数",
+        "minutes": "分",
+        "pages": "ページ",
+        "free": "無料",
+        "pro": "プロ",
+        "sessionStatus": "{{plan}}：{{minutes}} 分、{{pages}} ページ",
+        "tapDot": "点をタップしてください",
+        "campaigns": "キャンペーン",
+        "trend": "傾向線",
+        "adSpend": "週間広告費",
+        "revenue": "週間売上",
+        "fit": "R² = {{r2}} · 広告費 1 ドルあたり売上 +{{slope}}",
+        "trendAria": "60 件のキャンペーンの広告費と売上、傾向線付き",
+        "penguins": {
+          "adelie": "アデリーペンギン",
+          "chinstrap": "ヒゲペンギン",
+          "gentoo": "ジェンツーペンギン"
+        },
+        "flipper": "フリッパー長",
+        "mass": "体重",
+        "penguinsAria": "3 種のペンギンのフリッパー長と体重",
+        "requests": "リクエスト",
+        "outlier": "外れ値",
+        "expected": "想定",
+        "payload": "ペイロードサイズ",
+        "responseTime": "応答時間",
+        "outliersAria": "ペイロードサイズと応答時間。外れ値は赤",
+        "outliersSummary": "{{total}} 件中 {{slow}} 件のリクエストが想定の 2 倍以上かかりました。",
+        "readings": "測定値",
+        "zoomPresets": {
+          "night": "涼しい夜間",
+          "comfort": "生育適温域",
+          "heat": "暑い午後"
+        },
+        "showAll": "すべて表示",
+        "temperature": "温度",
+        "humidity": "相対湿度",
+        "growingRange": "生育適温域",
+        "greenhouseAria": "温室センサーの温度と湿度の測定値",
+        "greenhouseView": "表示範囲：{{t0}} – {{t1}}、湿度 {{h0}} – {{h1}} · 表示中の測定値：{{points}}",
+        "greenhouseHint": "領域を選ぶか、Ctrl / ⌘ + ホイールでズームしてください",
+        "departments": {
+          "engineering": "エンジニアリング",
+          "sales": "営業",
+          "support": "サポート"
+        },
+        "tenure": "勤続年数",
+        "reviewScore": "評価スコア（1–5）",
+        "companyAverage": "全社平均",
+        "staffAria": "部署別の社員 90 名の勤続年数と評価スコア",
+        "employeeStatus": "{{id}} · {{department}} · {{tenure}} · スコア {{score}} · 年収 {{salary}}",
+        "employeeHint": "点をクリックすると社員を選択し、空いたプロット領域をクリックすると選択を解除します",
+        "players": "選手",
+        "leagueAverage": "リーグ平均",
+        "efficientScorers": "効率の良いスコアラー",
+        "volumeShooters": "試投数の多いシューター",
+        "pointsPerGame": "1 試合平均 {{value}} 得点",
+        "usageRow": "使用率：{{value}}",
+        "trueShootingRow": "TS%：{{value}}",
+        "usageRate": "使用率",
+        "trueShooting": "TS%（真のシュート成功率）",
+        "playersAria": "選手 16 人の使用率とシュート効率。点の大きさは 1 試合平均得点",
+        "normal": "正常",
+        "alarm": "アラーム",
+        "latest": "最新",
+        "mmPerSecond": "{{value}} mm/s",
+        "pause": "一時停止",
+        "resume": "再開",
+        "vibrationStatus": "最新サンプル：{{rpm}} rpm、{{value}} · 画面上のアラーム：{{alarms}}",
+        "speed": "回転数（rpm）",
+        "vibration": "振動",
+        "alarmLimit": "アラーム閾値",
+        "vibrationAria": "モーターの回転数に対する振動のライブデータ",
+        "mammals": "哺乳類",
+        "animals": {
+          "shrew": "トガリネズミ",
+          "mouse": "マウス",
+          "rat": "ラット",
+          "rabbit": "ウサギ",
+          "cat": "ネコ",
+          "dog": "イヌ",
+          "human": "ヒト",
+          "pig": "ブタ",
+          "horse": "ウマ",
+          "cow": "ウシ",
+          "giraffe": "キリン",
+          "elephant": "ゾウ"
+        },
+        "powerLaw": "べき乗則の近似",
+        "kg": "{{value}} kg",
+        "watts": "{{value}} W",
+        "bodyMass": "体重",
+        "metabolicRate": "基礎代謝率",
+        "kleiber": "代謝率 ∝ 体重^{{exponent}}（クライバーの法則）",
+        "kleiberAria": "哺乳類 12 種の基礎代謝率と体重（両対数軸）"
+      },
+      "api": {
+        "ScatterChartProps": {
+          "series": "type を指定しない限り点として描画する系列"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基本",
+            "description": "軸タイトル付きの 2 つの点の集まり。点をタップするとシリーズと値が表示されます。"
+          }
+        }
+      },
+      "wc": {
+        "demos": {
+          "clusters": {
+            "title": "2 つのクラスター",
+            "description": "2 つの系列の [x, y] の組と軸タイトル。Ctrl / ⌘ + ホイールで両方の軸をズームします。"
+          },
+          "point-click": {
+            "title": "クリックしたポイント",
+            "description": "ラベル付きのポイント。クリックするとラベルと値を表示します（ポイントのクリックイベント）。"
+          }
+        },
+        "minerva-scatter-chart": {
+          "props": {
+            "height": "チャートの高さ（凡例を含む）：ピクセルまたは任意の CSS の長さ",
+            "options": "その他のエンジンのオプション（軸、凡例、ツールチップ、パレット、書式…）。要素自身のプロパティとマージされます。プロパティのみ",
+            "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null"
+          },
+          "events": {
+            "minerva-hover": "ホバー（またはキーボードでフォーカス）しているポイントが変わりました。detail：{ x, xLabel, items }、何もない場合は null",
+            "minerva-point-click": "ポイントまたは棒がクリックされました。detail：{ x, xLabel, items }",
+            "minerva-plot-click": "ポイントのないプロット領域がクリックされました。detail：{ x, y }（データ座標）",
+            "minerva-zoom": "ユーザーがズームまたはパンしました。detail：{ x, y }（表示範囲）",
+            "minerva-renderer-change": "バックエンドの準備ができた、または GPU の喪失後にフォールバックしました。detail：{ renderer }"
+          },
+          "methods": {
+            "resetZoom": "データ範囲全体を表示します",
+            "getView": "表示範囲。エンジンが作成されるまでは null",
+            "setView": "表示範囲を設定します",
+            "getRenderer": "使用中のバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null"
+          }
+        }
+      }
+    }
+  }
+}
