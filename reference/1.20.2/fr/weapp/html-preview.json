@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.2",
+  "locale": "fr",
+  "renderer": "weapp",
+  "page": "html-preview",
+  "title": "HtmlPreview",
+  "description": "Prévisualise du HTML non fiable, comme des modèles d'e-mail, dans une iframe entièrement isolée. Le balisage est assaini avec DOMPurify (échec sûr) et rendu derrière une Content-Security-Policy qui bloque les scripts et le réseau.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.2",
+    "sourceCommit": "8d5d0df3644b1fa1c267b3dd6809b0e7eb1ce75b",
+    "sourceDigest": "sha256:2862a9e3a864c9423aed5d287db6fac7e8ddf58b9f5d144c61e7ff4a2630890e",
+    "referenceSourceDigest": "sha256:b329acf9d5eb6cf4b4b42169ce925c67b033f581b616664bf07fc6d664de45f0"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "HtmlPreview",
+      "support": {
+        "status": "beta",
+        "notes": "Native rich-text node/HTML rendering. No iframe sandbox, scripts, embedded application execution or arbitrary browser HTML/CSS engine. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native rich-text node/HTML rendering. No iframe sandbox, scripts, embedded application execution or arbitrary browser HTML/CSS engine. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/html-preview/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "html-preview",
+        "props": [
+          {
+            "name": "html",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "registration": "\"usingComponents\": { \"mn-html-preview\": \"minerva-design/dist/weapp/html-preview/index\" }",
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:HtmlPreview": {
+      "kind": "cssVars",
+      "source": "react/src/components/HtmlPreview",
+      "vars": [
+        {
+          "name": "--html-preview-bg",
+          "description": "Background color around the frame"
+        },
+        {
+          "name": "--html-preview-frame-bg",
+          "description": "Background color of the frame"
+        },
+        {
+          "name": "--html-preview-frame-border-color",
+          "description": "Border color of the frame"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "HtmlPreview",
+      "description": "Prévisualise du HTML non fiable, comme des modèles d'e-mail, dans une iframe entièrement isolée. Le balisage est assaini avec DOMPurify (échec sûr) et rendu derrière une Content-Security-Policy qui bloque les scripts et le réseau.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Les styles en ligne et les images data: sont conservés ; scripts, formulaires, liens et images distantes sont supprimés."
+        },
+        "viewports": {
+          "title": "Fenêtres d'affichage",
+          "description": "viewport=\"mobile\" affiche un aperçu à largeur fixe (mobileWidth) ; desktop remplit le conteneur."
+        }
+      },
+      "api": {
+        "HtmlPreviewProps": {
+          "html": "HTML non fiable à prévisualiser (assaini dans le navigateur)",
+          "title": "Titre accessible de l'iframe",
+          "viewport": "Aperçu bureau pleine largeur ou mobile à largeur fixe",
+          "mobileWidth": "Largeur de l'aperçu mobile en pixels",
+          "height": "Hauteur de l'iframe en pixels",
+          "className": "Classe supplémentaire de l'élément racine",
+          "style": "Styles en ligne de l'élément racine",
+          "ref": "Ref vers l'élément <div> racine"
+        }
+      },
+      "cssVars": {
+        "--html-preview-bg": "Couleur de fond autour du cadre",
+        "--html-preview-frame-bg": "Couleur de fond du cadre",
+        "--html-preview-frame-border-color": "Couleur de bordure du cadre"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "L'attribut html est nettoyé puis rendu dans une iframe isolée ; label donne son titre accessible au cadre."
+          },
+          "viewport": {
+            "title": "Bureau et mobile",
+            "description": "viewport=\"mobile\" affiche un cadre de mobile-width pixels de large ; le balisage passe par la propriété html."
+          },
+          "sanitized": {
+            "title": "Contenu non fiable",
+            "description": "Modifiez la source : scripts et gestionnaires d'événements sont retirés et rien ne s'exécute, les styles en ligne sont conservés."
+          }
+        },
+        "minerva-html-preview": {
+          "props": {
+            "label": "Titre accessible de l'iframe (title de la bibliothèque React ; à défaut aria-label)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        },
+        "limitations": "La documentation utilise une iframe isolée. Sur iOS et Android, utilisez l’adaptateur react-native-webview de l’exemple Expo ; les scripts et la navigation externe restent désactivés."
+      }
+    }
+  }
+}

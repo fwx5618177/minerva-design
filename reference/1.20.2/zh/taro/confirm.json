@@ -1,0 +1,526 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.2",
+  "locale": "zh",
+  "renderer": "taro",
+  "page": "confirm",
+  "title": "Confirm 确认框",
+  "description": "请用户确认某个操作，可替代 window.confirm 并跟随主题。可使用声明式的 ConfirmDialog，或在任意位置 await confirm()：挂载了 ConfirmProvider 时弹窗渲染在应用树内，没有时按需挂载独立宿主，服务端调用 confirm() 恒定返回 false。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.2",
+    "sourceCommit": "8d5d0df3644b1fa1c267b3dd6809b0e7eb1ce75b",
+    "sourceDigest": "sha256:2862a9e3a864c9423aed5d287db6fac7e8ddf58b9f5d144c61e7ff4a2630890e",
+    "referenceSourceDigest": "sha256:b329acf9d5eb6cf4b4b42169ce925c67b033f581b616664bf07fc6d664de45f0"
+  },
+  "content": {
+    "usage": {
+      "title": "如何选择：useConfirm() 还是 confirm()",
+      "hook": "在组件内调用 useConfirm()：它的对话框跟随最近的 ConfigProvider 作用域。在嵌套 Provider 下，模态框渲染到该作用域的 portal 容器中，使用其主题、配色方案和 token，默认按钮文案使用其语言。存在 ConfirmProvider 时仍由它渲染。",
+      "function": "在 React 之外（事件总线、API 客户端、路由守卫等非组件模块）直接导入 confirm()：那里无法使用 hook，其对话框使用根主题和根语言。"
+    }
+  },
+  "components": [
+    {
+      "name": "ConfirmDialog",
+      "support": {
+        "status": "beta",
+        "notes": "Declarative confirmation, semantic button colors and ReactNode labels, guarded loading/disabled submit, cancellation and scoped Promise confirmation. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Global confirm() uses the native host modal and requires string title/description/button labels; standalone calls use default-theme colors and host modal sizing. Use ConfirmProvider for composed content, theme/locale inheritance and custom layout. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Declarative confirmation, semantic button colors and ReactNode labels, guarded loading/disabled submit, cancellation and scoped Promise confirmation. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Global confirm() uses the native host modal and requires string title/description/button labels; standalone calls use default-theme colors and host modal sizing. Use ConfirmProvider for composed content, theme/locale inheritance and custom layout. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "ConfirmDialog"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "confirmLabel",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false
+          },
+          {
+            "name": "cancelLabel",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false
+          },
+          {
+            "name": "loading",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "confirmDisabled",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "color",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "size",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "role",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "enum",
+            "values": [
+              "alertdialog",
+              "dialog"
+            ],
+            "typeText": "\"dialog\" | \"alertdialog\" | undefined",
+            "typeRef": "type:2cc2e24324879bcc4737",
+            "required": false
+          },
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "open",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "defaultOpen",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "trigger",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false
+          },
+          {
+            "name": "title",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false
+          },
+          {
+            "name": "hiddenDescription",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "forceMount",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "hideCloseButton",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "closeLabel",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "description",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:a991edaa7809b6d75ba2",
+            "required": false
+          },
+          {
+            "name": "overlayClassName",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "side",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "enum",
+            "values": [
+              "bottom",
+              "left",
+              "right",
+              "top"
+            ],
+            "typeText": "\"top\" | \"bottom\" | \"left\" | \"right\" | undefined",
+            "typeRef": "type:6d53de26e109ca539540",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onConfirm",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "function",
+            "typeText": "(() => void) | undefined",
+            "typeRef": "type:d5d035f78a3d09d64b66",
+            "parameters": [],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onCancel",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "function",
+            "typeText": "(() => void) | undefined",
+            "typeRef": "type:62e953ff3b8679678d1e",
+            "parameters": [],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onOpenChange",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "function",
+            "typeText": "((open: boolean) => void) | undefined",
+            "typeRef": "type:804ddd37e56a55e58c37",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onPointerDownOutside",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "function",
+            "typeText": "((event: NativeOutsideEvent) => void) | undefined",
+            "typeRef": "type:ecda376097c0e609cf41",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "NativeOutsideEvent",
+                "typeRef": "type:8c1960b9229e669f840b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onInteractOutside",
+            "source": "packages/taro/src/overlays.tsx",
+            "kind": "function",
+            "typeText": "((event: NativeOutsideEvent) => void) | undefined",
+            "typeRef": "type:93e1e815666976fb4a85",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "NativeOutsideEvent",
+                "typeRef": "type:8c1960b9229e669f840b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "open",
+            "event": "onOpenChange",
+            "syntax": "open={open} onOpenChange={handler}"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ConfirmProvider",
+      "support": {
+        "status": "beta",
+        "notes": "Declarative confirmation, semantic button colors and ReactNode labels, guarded loading/disabled submit, cancellation and scoped Promise confirmation. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Global confirm() uses the native host modal and requires string title/description/button labels; standalone calls use default-theme colors and host modal sizing. Use ConfirmProvider for composed content, theme/locale inheritance and custom layout. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Declarative confirmation, semantic button colors and ReactNode labels, guarded loading/disabled submit, cancellation and scoped Promise confirmation. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. Global confirm() uses the native host modal and requires string title/description/button labels; standalone calls use default-theme colors and host modal sizing. Use ConfirmProvider for composed content, theme/locale inheritance and custom layout. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "ConfirmProvider"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "// Inside a component: follows the nearest ConfigProvider scope\nfunction DeleteButton() {\n  const confirm = useConfirm();\n  return (\n    <Button onClick={async () => (await confirm({ title: \"Delete?\" })) && remove()}>\n      Delete\n    </Button>\n  );\n}\n\n// Outside React (API client, event bus, router guard...): root scope\nimport { confirm } from \"minerva-design\";\nrouter.beforeLeave(() => confirm({ title: \"Discard changes?\" }));",
+      "language": "tsx"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.20.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Confirm 确认框",
+      "description": "请用户确认某个操作，可替代 window.confirm 并跟随主题。可使用声明式的 ConfirmDialog，或在任意位置 await confirm()：挂载了 ConfirmProvider 时弹窗渲染在应用树内，没有时按需挂载独立宿主，服务端调用 confirm() 恒定返回 false。",
+      "usage": {
+        "title": "如何选择：useConfirm() 还是 confirm()",
+        "hook": "在组件内调用 useConfirm()：它的对话框跟随最近的 ConfigProvider 作用域。在嵌套 Provider 下，模态框渲染到该作用域的 portal 容器中，使用其主题、配色方案和 token，默认按钮文案使用其语言。存在 ConfirmProvider 时仍由它渲染。",
+        "function": "在 React 之外（事件总线、API 客户端、路由守卫等非组件模块）直接导入 confirm()：那里无法使用 hook，其对话框使用根主题和根语言。"
+      },
+      "demos": {
+        "imperative": {
+          "title": "命令式 confirm()",
+          "description": "await confirm({...}) 确认时返回 true，取消（按钮、Escape 或遮罩）时返回 false。无需 Provider。"
+        },
+        "colors": {
+          "title": "颜色",
+          "description": "color 设置确认按钮的色调：primary（默认）、warning，或用于危险操作的 danger（此时默认文案为“删除”）。取消按钮始终为 neutral 描边按钮。"
+        },
+        "provider": {
+          "title": "配合 ConfirmProvider",
+          "description": "useConfirm() 返回由该 Provider 渲染的 confirm（位于调用方的 ConfigProvider 作用域中），弹窗共享应用的 context。并发请求按顺序逐个显示。"
+        },
+        "declarative": {
+          "title": "声明式 ConfirmDialog",
+          "description": "受控弹窗；loading 在 onConfirm 执行期间显示加载动画并禁用取消。"
+        },
+        "scoped": {
+          "title": "作用域：useConfirm() 与 confirm()",
+          "description": "两个按钮都位于嵌套的 ConfigProvider 中（暗色主题、tech 配色、中文）。useConfirm() 在该作用域中打开对话框（暗色 token、中文按钮文案）；confirm() 在根部打开，使用页面的主题和语言。"
+        }
+      },
+      "api": {
+        "ConfirmDialogProps": {
+          "open": "弹窗是否打开（受控）",
+          "onOpenChange": "用户取消时以 false 调用（取消按钮、关闭、Escape、点击遮罩）",
+          "onConfirm": "点击确认按钮时调用；弹窗不会自行关闭"
+        },
+        "ConfirmOptions": {
+          "title": "标题（对话框的可访问名称）",
+          "description": "标题下方的说明（可访问描述）",
+          "confirmLabel": "确认按钮文案；默认为“确定”，color=\"danger\" 时为“删除”",
+          "cancelLabel": "取消按钮文案；默认为本地化的“取消”",
+          "closeLabel": "关闭（×）按钮的可访问标签；默认为本地化的“关闭”",
+          "color": "确认按钮的语义颜色：primary、warning 或 danger（危险操作，默认文案为“删除”）",
+          "loading": "在确认按钮上显示加载动画并禁用取消",
+          "confirmDisabled": "以原生方式禁用确认按钮（移出 Tab 顺序）；仅设置 loading 时按钮仍可聚焦，但无法再次触发"
+        },
+        "ConfirmProviderProps": {
+          "children": "应用子树；useConfirm() / confirm() 的弹窗渲染在这里（useConfirm() 的弹窗位于调用方的 ConfigProvider 作用域中）"
+        }
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "声明式的 <minerva-confirm-dialog>，通过 show() 打开。color=\"danger\" 表示破坏性操作；minerva-confirm 与 minerva-cancel（附带原因）报告用户的选择。"
+          },
+          "async": {
+            "title": "异步确认",
+            "description": "onConfirm 可以返回 Promise：在其完成前确认按钮显示加载状态，若被拒绝则对话框保持打开。额外内容放在默认插槽中。"
+          },
+          "imperative": {
+            "title": "命令式 confirm()",
+            "description": "confirm({ title, ... }) 会追加一个对话框，解析为 true 或 false，并在关闭后移除它：带主题的 window.confirm 替代品。并发调用会排队依次显示。 没有 host 且没有 <minerva-confirm-provider> 时，对话框会追加到 document.body（根主题和语言）。"
+          },
+          "scoped": {
+            "title": "作用域确认与 Provider",
+            "description": "confirm({ host })（或 confirmFor(host)）等价于 useConfirm()：对话框渲染在 host 所在的 <minerva-config> 作用域内（深色、tech 调色板、中文标签），并由最近的 <minerva-confirm-provider> 排队。不带 host 的 confirm() 渲染在 provider 自身的作用域中（这里是根主题和语言），与全局 confirm() 相同。"
+          }
+        },
+        "minerva-confirm-dialog": {
+          "props": {
+            "label": "标题（或使用 header 插槽）；作为对话框的可访问名称。"
+          },
+          "events": {
+            "minerva-confirm": "按下了确认按钮；可取消：preventDefault() 会保持对话框打开（需自行关闭）。",
+            "minerva-cancel": "确认被取消且对话框已关闭（detail: { reason }）。",
+            "minerva-open-change": "用户请求关闭（detail: { open, reason }）；可取消：preventDefault() 保持打开。",
+            "minerva-after-open": "面板已打开且焦点已移入后触发。",
+            "minerva-after-close": "面板完成关闭（退出动画结束）后触发。"
+          },
+          "slots": {
+            "default": "描述下方的可选额外内容。",
+            "header": "标题（label 属性的替代方式）。"
+          },
+          "cssVars": {
+            "--modal-width": "面板宽度（默认取决于尺寸，并受视口限制）。",
+            "--modal-max-height": "面板最大高度（超出时主体滚动）。",
+            "--modal-padding": "标题、描述、主体和底部的水平内边距。",
+            "--modal-radius": "面板圆角（默认 --radius-xl）。",
+            "--modal-shadow": "面板阴影（默认 --shadow-xl）。",
+            "--modal-background": "面板背景。",
+            "--modal-z-index": "面板层级（默认 --z-modal）。"
+          },
+          "methods": {
+            "show": "打开对话框。",
+            "hide": "关闭对话框（不触发事件）。"
+          }
+        },
+        "minerva-confirm-provider": {
+          "props": {
+            "confirm": "请求一个由此 provider 渲染的确认（在其作用域中，或 options.host 的作用域中）；确认时 resolve 为 true（只读）。"
+          },
+          "slots": {
+            "default": "应用内容：其中发起的 confirm({ host }) / confirmFor(host) 调用会在此排队。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        }
+      }
+    }
+  }
+}

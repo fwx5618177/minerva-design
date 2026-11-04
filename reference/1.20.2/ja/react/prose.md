@@ -1,0 +1,202 @@
+# Prose 文章スタイル
+
+記事、レンダリング済み Markdown、リッチテキストエディターなどのセマンティックな HTML 向けの、枠なしでテーマに追従するタイポグラフィです。同じルールを Sass mixin として提供しています：@use "minerva-design/prose.scss" as typography; の後、独自のセレクターで @include typography.prose; を使います。
+
+Package: minerva-design@1.20.2
+
+Renderer: react
+
+Locale: ja
+
+## Provenance
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "packageVersion": "1.20.2",
+  "sourceCommit": "8d5d0df3644b1fa1c267b3dd6809b0e7eb1ce75b",
+  "sourceDigest": "sha256:2862a9e3a864c9423aed5d287db6fac7e8ddf58b9f5d144c61e7ff4a2630890e",
+  "referenceSourceDigest": "sha256:b329acf9d5eb6cf4b4b42169ce925c67b033f581b616664bf07fc6d664de45f0"
+}
+```
+
+Type references resolve through the [type graph](/minerva-design/reference/1.20.2/types.json) or getType() from minerva-design/contracts.
+
+## Documentation
+
+## Prose
+
+Support: stable
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design",
+  "exports": [
+    "Prose"
+  ],
+  "kind": "named"
+}
+```
+
+### props
+
+```json
+[
+  {
+    "name": "asChild",
+    "source": "packages/react/src/components/Prose/types.ts",
+    "kind": "boolean",
+    "typeText": "boolean | undefined",
+    "typeRef": "type:c54e4f1388c4caae77ff",
+    "default": false,
+    "required": false,
+    "description": "Merges the prose class onto its single child (e.g. an editor host) instead of rendering a wrapper <div>"
+  }
+]
+```
+
+### slots
+
+```json
+[
+  {
+    "name": "children"
+  }
+]
+```
+
+## API
+
+```json
+{
+  "ProseProps": {
+    "source": "react/src/components/Prose/types.ts",
+    "kind": "interface",
+    "extends": [
+      "HTMLAttributes<HTMLDivElement>"
+    ],
+    "props": [
+      {
+        "name": "asChild",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Merges the prose class onto its single child (e.g. an editor host) instead of rendering a wrapper <div>"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "description": "Ref to the root element"
+      }
+    ]
+  }
+}
+```
+
+## CSS variables
+
+```json
+{
+  "css:Prose": {
+    "kind": "cssVars",
+    "source": "react/src/components/Prose",
+    "vars": [
+      {
+        "name": "--prose-font-size",
+        "description": "Base font size of the body text"
+      },
+      {
+        "name": "--prose-border-color",
+        "description": "Color of the blockquote, table, code block and rule borders"
+      },
+      {
+        "name": "--prose-code-bg",
+        "description": "Background color of inline code and table headers"
+      },
+      {
+        "name": "--prose-pre-bg",
+        "description": "Background color of code blocks"
+      },
+      {
+        "name": "--prose-radius",
+        "description": "Corner radius of code blocks (defaults to --radius-sm)"
+      }
+    ]
+  }
+}
+```
+
+## Installation and initialization
+
+See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.
+
+## Example: 独自の要素にスタイルを適用
+
+asChild はラッパーなしで唯一の子要素（エディターのホストなど）にタイポグラフィを適用します。
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/prose/demos/as-child.tsx
+
+```tsx
+import { Prose } from "minerva-design";
+
+export default function AsChildDemo() {
+  return (
+    <Prose asChild>
+      <article aria-label="Release notes">
+        <h3>Release notes</h3>
+        <p>
+          With asChild the typography is applied to your own element (an article
+          or an editor host) without an extra wrapper.
+        </p>
+      </article>
+    </Prose>
+  );
+}
+
+```
+
+## Example: 基本的な使い方
+
+見出し、段落、リンク、リスト、引用、コードがテーマトークンを共有します。Prose は HTML をサニタイズしません。
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/prose/demos/basic.tsx
+
+```tsx
+import { Prose } from "minerva-design";
+
+export default function BasicDemo() {
+  return (
+    <Prose>
+      <h2>Chapter one</h2>
+      <p>
+        Prose styles <a href="#notes">links</a>, <code>inline code</code>,
+        lists, quotes and tables written as plain semantic HTML.
+      </p>
+      <blockquote>Sanitize untrusted HTML before rendering it.</blockquote>
+      <ul>
+        <li>No wrapper surface or padding</li>
+        <li>Author inline styles stay authoritative</li>
+      </ul>
+      <pre>
+        <code>{"const answer = 42;"}</code>
+      </pre>
+    </Prose>
+  );
+}
+
+```

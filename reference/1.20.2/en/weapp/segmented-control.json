@@ -1,0 +1,276 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.2",
+  "locale": "en",
+  "renderer": "weapp",
+  "page": "segmented-control",
+  "title": "SegmentedControl",
+  "description": "A single-choice segmented switch for modes and filters, with a thumb sliding under the selected segment. Use Tabs when each choice has its own content panel.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.2",
+    "sourceCommit": "8d5d0df3644b1fa1c267b3dd6809b0e7eb1ce75b",
+    "sourceDigest": "sha256:2862a9e3a864c9423aed5d287db6fac7e8ddf58b9f5d144c61e7ff4a2630890e",
+    "referenceSourceDigest": "sha256:b329acf9d5eb6cf4b4b42169ce925c67b033f581b616664bf07fc6d664de45f0"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "SegmentedControl",
+      "support": {
+        "status": "beta",
+        "notes": "Single-choice segmented switch from string/object options (text icon, label, disabled, aria-label) with controlled/default value and change { value }, three sizes, neutral/primary thumb, fullWidth, disabled/readOnly, radiogroup/radio semantics and an equal-width sliding thumb. Icons are text only and there is no form field integration. DOM roving keyboard focus is not a native mini-program interaction. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Single-choice segmented switch from string/object options (text icon, label, disabled, aria-label) with controlled/default value and change { value }, three sizes, neutral/primary thumb, fullWidth, disabled/readOnly, radiogroup/radio semantics and an equal-width sliding thumb. Icons are text only and there is no form field integration. DOM roving keyboard focus is not a native mini-program interaction. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/segmented-control/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "segmented-control",
+        "props": [
+          {
+            "name": "options",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "value",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "defaultValue",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "size",
+            "typeText": "string",
+            "required": false,
+            "default": "medium"
+          },
+          {
+            "name": "color",
+            "typeText": "string",
+            "required": false,
+            "default": "neutral"
+          },
+          {
+            "name": "fullWidth",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "readOnly",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "events": [
+          {
+            "name": "change",
+            "typeText": "{ value: unknown }",
+            "description": "Requested next value; a controlled owner must publish the accepted prop."
+          }
+        ],
+        "slots": [],
+        "registration": "\"usingComponents\": { \"mn-segmented-control\": \"minerva-design/dist/weapp/segmented-control/index\" }",
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:SegmentedControl": {
+      "kind": "cssVars",
+      "source": "react/src/components/SegmentedControl",
+      "vars": [
+        {
+          "name": "--segmented-control-height",
+          "description": "Height of the control (defaults to the density's control height)"
+        },
+        {
+          "name": "--segmented-control-padding",
+          "description": "Space between the track and the segments (defaults to 2px)"
+        },
+        {
+          "name": "--segmented-control-radius",
+          "description": "Corner radius of the track (defaults to --radius-md); the thumb follows it"
+        },
+        {
+          "name": "--segmented-control-background",
+          "description": "Background of the track (defaults to --surface-muted-color)"
+        },
+        {
+          "name": "--segmented-control-color",
+          "description": "Text color of the unselected segments"
+        },
+        {
+          "name": "--segmented-control-item-padding-x",
+          "description": "Inline padding of a segment"
+        },
+        {
+          "name": "--segmented-control-thumb-background",
+          "description": "Background of the thumb (defaults to --surface-elevated-color; --primary-color with color=\"primary\")"
+        },
+        {
+          "name": "--segmented-control-thumb-shadow",
+          "description": "Shadow of the thumb (defaults to --shadow-sm; none with color=\"primary\")"
+        },
+        {
+          "name": "--segmented-control-selected-color",
+          "description": "Text color of the selected segment"
+        },
+        {
+          "name": "--segmented-control-duration",
+          "description": "Duration of the thumb slide (defaults to --transition-base)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "SegmentedControl",
+      "description": "A single-choice segmented switch for modes and filters, with a thumb sliding under the selected segment. Use Tabs when each choice has its own content panel.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "A controlled value (value / onChange; the value type is generic). The control is a radiogroup of radio segments with one tab stop: the arrow keys move and select (skipping disabled segments, wrapping around), Home / End jump to the ends."
+        },
+        "icons": {
+          "title": "Icons",
+          "description": "Options can carry an icon next to their label, or an icon alone; icon-only segments need an aria-label."
+        },
+        "sizes": {
+          "title": "Sizes",
+          "description": "Three densities following the control heights. Plain strings are both the value and the label."
+        },
+        "full-width": {
+          "title": "Full width",
+          "description": "fullWidth stretches the control over its container; the segments always share the width equally. name adds a hidden input so the value is submitted with a form."
+        },
+        "colors": {
+          "title": "Colors and disabled",
+          "description": "neutral (default) shows a raised thumb on a muted track, primary a solid primary thumb. Disable single segments or the whole control."
+        }
+      },
+      "api": {
+        "SegmentedControlProps": {
+          "options": "The segments: strings or option objects",
+          "value": "Selected value (controlled; pair with onChange)",
+          "defaultValue": "Initially selected value (uncontrolled)",
+          "onChange": "Called with the selected value",
+          "size": "Segment density",
+          "color": "Thumb color",
+          "fullWidth": "Fills the width of the container (the segments always share the width equally)",
+          "disabled": "Blocks every segment",
+          "name": "Name of a hidden input carrying the value in a form",
+          "aria-label": "Accessible label of the group",
+          "aria-labelledby": "Id of the element labelling the group",
+          "id": "Root id",
+          "className": "Additional class name",
+          "ref": "Ref to the root <div> (role=\"radiogroup\")"
+        },
+        "SegmentedControlOptionObject": {
+          "value": "Value of the segment",
+          "label": "Visible label (defaults to the value, unless an icon is given)",
+          "icon": "Icon shown before the label (alone for an icon-only segment)",
+          "disabled": "Blocks this segment",
+          "aria-label": "Accessible name; required for an icon-only segment"
+        }
+      },
+      "cssVars": {
+        "--segmented-control-height": "Height of the control (defaults to the density's control height)",
+        "--segmented-control-padding": "Space between the track and the segments (defaults to 2px)",
+        "--segmented-control-radius": "Corner radius of the track (defaults to --radius-md); the thumb follows it",
+        "--segmented-control-background": "Background of the track (defaults to --surface-muted-color)",
+        "--segmented-control-color": "Text color of the unselected segments",
+        "--segmented-control-item-padding-x": "Inline padding of a segment",
+        "--segmented-control-thumb-background": "Background of the thumb (defaults to --surface-elevated-color; --primary-color with color=\"primary\")",
+        "--segmented-control-thumb-shadow": "Shadow of the thumb (defaults to --shadow-sm; none with color=\"primary\")",
+        "--segmented-control-selected-color": "Text color of the selected segment",
+        "--segmented-control-duration": "Duration of the thumb slide (defaults to --transition-base)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "options is a JSON array (or comma-separated values) attribute or a property; value sets the initial selection and minerva-change reports the selected value. One tab stop: the arrow keys move and select."
+          },
+          "icons": {
+            "title": "Icons",
+            "description": "Option objects take an icon (text, a Node or a lit template through the property) and an aria-label for icon-only segments."
+          },
+          "sizes": {
+            "title": "Sizes",
+            "description": "Three densities (also the :state(size-small) ... custom states)."
+          },
+          "full-width": {
+            "title": "Full width and forms",
+            "description": "full-width stretches the control; it is form-associated, so name submits the value, required validates it and form.reset() restores the value attribute."
+          },
+          "colors": {
+            "title": "Colors and disabled",
+            "description": "color=\"primary\" shows a solid primary thumb; disabled options and the disabled attribute block selection."
+          }
+        },
+        "minerva-segmented-control": {
+          "props": {
+            "required": "The control must have a selected value for the form to be submitted.",
+            "isDisabled": "Whether the control is disabled, by itself or by a disabled <fieldset> (read-only).",
+            "form": "The form owning the element (read-only).",
+            "labels": "The <label> elements associated with the element (read-only).",
+            "validity": "Validity state, like <input>.validity (read-only).",
+            "validationMessage": "Message of the current validation error; empty when valid (read-only).",
+            "willValidate": "Whether the element takes part in constraint validation (read-only)."
+          },
+          "events": {
+            "change": "The user selected another segment (like native radios).",
+            "minerva-change": "The user selected another segment (detail: { value })."
+          },
+          "methods": {
+            "focus": "Focuses the selected segment (else the first enabled one).",
+            "checkValidity": "Checks validity; fires invalid when the element is invalid.",
+            "reportValidity": "Checks validity and shows the browser's validation message.",
+            "setCustomValidity": "Sets a custom validation error, or clears it with an empty string.",
+            "formResetCallback": "Form lifecycle callback called by form.reset(): restores the initial value.",
+            "formDisabledCallback": "Form lifecycle callback called when an ancestor <fieldset> is disabled or enabled.",
+            "formStateRestoreCallback": "Form lifecycle callback called when the browser restores the state (history navigation, autofill)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

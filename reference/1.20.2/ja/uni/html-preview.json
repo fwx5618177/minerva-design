@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.2",
+  "locale": "ja",
+  "renderer": "uni",
+  "page": "html-preview",
+  "title": "HtmlPreview HTML プレビュー",
+  "description": "メールテンプレートなどの信頼できない HTML を、完全にサンドボックス化された iframe でプレビューします。マークアップは DOMPurify で無害化され（失敗時は空）、スクリプトとネットワークを遮断する CSP の下で描画されます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.2",
+    "sourceCommit": "8d5d0df3644b1fa1c267b3dd6809b0e7eb1ce75b",
+    "sourceDigest": "sha256:2862a9e3a864c9423aed5d287db6fac7e8ddf58b9f5d144c61e7ff4a2630890e",
+    "referenceSourceDigest": "sha256:b329acf9d5eb6cf4b4b42169ce925c67b033f581b616664bf07fc6d664de45f0"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "HtmlPreview",
+      "support": {
+        "status": "beta",
+        "notes": "H5 sanitized CSP-protected opaque iframe with viewport sizing; native rich-text node/HTML rendering. Native rich-text has no iframe sandbox or arbitrary browser HTML/CSS engine. H5 previews intentionally prohibit scripts, network access, forms and embedded application execution. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "H5 sanitized CSP-protected opaque iframe with viewport sizing; native rich-text node/HTML rendering. Native rich-text has no iframe sandbox or arbitrary browser HTML/CSS engine. H5 previews intentionally prohibit scripts, network access, forms and embedded application execution. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "HtmlPreview"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "html",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "nodes",
+            "typeText": "any[] | undefined",
+            "required": false
+          },
+          {
+            "name": "title",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "viewport",
+            "typeText": "\"desktop\" | \"mobile\" | undefined",
+            "required": false
+          },
+          {
+            "name": "height",
+            "typeText": "string | number | undefined",
+            "required": false
+          },
+          {
+            "name": "mobileWidth",
+            "typeText": "number | undefined",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:HtmlPreview": {
+      "kind": "cssVars",
+      "source": "react/src/components/HtmlPreview",
+      "vars": [
+        {
+          "name": "--html-preview-bg",
+          "description": "Background color around the frame"
+        },
+        {
+          "name": "--html-preview-frame-bg",
+          "description": "Background color of the frame"
+        },
+        {
+          "name": "--html-preview-frame-border-color",
+          "description": "Border color of the frame"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "HtmlPreview HTML プレビュー",
+      "description": "メールテンプレートなどの信頼できない HTML を、完全にサンドボックス化された iframe でプレビューします。マークアップは DOMPurify で無害化され（失敗時は空）、スクリプトとネットワークを遮断する CSP の下で描画されます。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "インラインスタイルと data: 画像は残り、スクリプト・フォーム・リンク・外部画像は削除されます。"
+        },
+        "viewports": {
+          "title": "ビューポート",
+          "description": "viewport=\"mobile\" は固定幅（mobileWidth）で表示し、desktop はコンテナ幅いっぱいに表示します。"
+        }
+      },
+      "api": {
+        "HtmlPreviewProps": {
+          "html": "プレビューする信頼できない HTML（ブラウザで無害化）",
+          "title": "iframe のアクセシブルなタイトル",
+          "viewport": "全幅のデスクトップ表示または固定幅のモバイル表示",
+          "mobileWidth": "モバイル表示の幅（ピクセル）",
+          "height": "iframe の高さ（ピクセル）",
+          "className": "ルート要素の追加クラス名",
+          "style": "ルート要素のインラインスタイル",
+          "ref": "ルート <div> 要素への ref"
+        }
+      },
+      "cssVars": {
+        "--html-preview-bg": "フレーム周囲の背景色",
+        "--html-preview-frame-bg": "フレームの背景色",
+        "--html-preview-frame-border-color": "フレームの枠線の色"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "html 属性はサニタイズされ、サンドボックス化された iframe に描画されます。label はフレームのアクセシブルなタイトルになります。"
+          },
+          "viewport": {
+            "title": "デスクトップとモバイル",
+            "description": "viewport=\"mobile\" は mobile-width ピクセルの固定幅フレームを描画します。マークアップは html プロパティで設定します。"
+          },
+          "sanitized": {
+            "title": "信頼できない入力",
+            "description": "ソースを編集してみてください。スクリプトとイベントハンドラーは削除されて何も実行されず、インラインスタイルは残ります。"
+          }
+        },
+        "minerva-html-preview": {
+          "props": {
+            "label": "iframe のアクセシブルなタイトル（React 版の title に相当。未指定時は aria-label）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        },
+        "limitations": "ドキュメントはサンドボックス iframe を使用します。iOS と Android では Expo の例にある react-native-webview アダプターを使用し、スクリプトと外部遷移は無効です。"
+      }
+    }
+  }
+}

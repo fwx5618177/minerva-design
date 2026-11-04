@@ -1,0 +1,416 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.2",
+  "locale": "en",
+  "renderer": "weapp",
+  "page": "drawer",
+  "title": "Drawer",
+  "description": "A panel that slides in from an edge of the viewport for secondary tasks such as filters or details. Behaves like a modal: focus trap, Escape, backdrop click and focus return.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.2",
+    "sourceCommit": "8d5d0df3644b1fa1c267b3dd6809b0e7eb1ce75b",
+    "sourceDigest": "sha256:2862a9e3a864c9423aed5d287db6fac7e8ddf58b9f5d144c61e7ff4a2630890e",
+    "referenceSourceDigest": "sha256:b329acf9d5eb6cf4b4b42169ce925c67b033f581b616664bf07fc6d664de45f0"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Drawer",
+      "support": {
+        "status": "beta",
+        "notes": "Controlled/default native drawer with trigger, close, header/body/footer slots, four sides and sizes, forceMount, modal/nonmodal backdrop, configured outside-dismissal veto and localized close/description. Native view layering replaces document portals, DOM focus trapping and outside focus/keyboard events. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Controlled/default native drawer with trigger, close, header/body/footer slots, four sides and sizes, forceMount, modal/nonmodal backdrop, configured outside-dismissal veto and localized close/description. Native view layering replaces document portals, DOM focus trapping and outside focus/keyboard events. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/drawer/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "drawer",
+        "props": [
+          {
+            "name": "open",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "title",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "description",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "closeOnOverlayClick",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          },
+          {
+            "name": "loading",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "placement",
+            "typeText": "string",
+            "required": false,
+            "default": "right"
+          },
+          {
+            "name": "defaultOpen",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "side",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "size",
+            "typeText": "string",
+            "required": false,
+            "default": "medium"
+          },
+          {
+            "name": "modal",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          },
+          {
+            "name": "forceMount",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "hideCloseButton",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "closeLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "hiddenDescription",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "role",
+            "typeText": "string",
+            "required": false,
+            "default": "dialog"
+          },
+          {
+            "name": "overlayClassName",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          }
+        ],
+        "events": [
+          {
+            "name": "openchange",
+            "typeText": "{ open: boolean }",
+            "description": "Requested visible state; controlled owners may reject it."
+          },
+          {
+            "name": "close",
+            "typeText": "{ reason: 'trigger' | 'close' | 'overlay' }",
+            "description": "Close reason."
+          },
+          {
+            "name": "interactoutside",
+            "typeText": "{}",
+            "description": "Native backdrop interaction before configured veto."
+          },
+          {
+            "name": "confirm"
+          },
+          {
+            "name": "cancel"
+          }
+        ],
+        "slots": [
+          {
+            "name": "trigger"
+          },
+          {
+            "name": "header"
+          },
+          {
+            "name": "default"
+          },
+          {
+            "name": "footer"
+          }
+        ],
+        "registration": "\"usingComponents\": { \"mn-drawer\": \"minerva-design/dist/weapp/drawer/index\" }",
+        "bindings": []
+      }
+    },
+    {
+      "name": "DrawerBody",
+      "support": {
+        "status": "n/a",
+        "notes": "Native composition uses Drawer: default content slot. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Drawer props/slots for the native equivalent."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Native composition uses Drawer: default content slot. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Drawer props/slots for the native equivalent."
+      }
+    },
+    {
+      "name": "DrawerClose",
+      "support": {
+        "status": "n/a",
+        "notes": "Native composition uses Drawer: built-in close action emits openchange=false. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Drawer props/slots for the native equivalent."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Native composition uses Drawer: built-in close action emits openchange=false. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Drawer props/slots for the native equivalent."
+      }
+    },
+    {
+      "name": "DrawerContent",
+      "support": {
+        "status": "n/a",
+        "notes": "Native composition uses Drawer: default slot. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Drawer props/slots for the native equivalent."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Native composition uses Drawer: default slot. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Drawer props/slots for the native equivalent."
+      }
+    },
+    {
+      "name": "DrawerFooter",
+      "support": {
+        "status": "n/a",
+        "notes": "Native composition uses Drawer: footer slot. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Drawer props/slots for the native equivalent."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Native composition uses Drawer: footer slot. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Drawer props/slots for the native equivalent."
+      }
+    },
+    {
+      "name": "DrawerHeader",
+      "support": {
+        "status": "n/a",
+        "notes": "Native composition uses Drawer: header slot and title/description. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Drawer props/slots for the native equivalent."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Native composition uses Drawer: header slot and title/description. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Drawer props/slots for the native equivalent."
+      }
+    },
+    {
+      "name": "DrawerRoot",
+      "support": {
+        "status": "n/a",
+        "notes": "Native composition uses Drawer: controlled open and openchange. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Drawer props/slots for the native equivalent."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Native composition uses Drawer: controlled open and openchange. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Drawer props/slots for the native equivalent."
+      }
+    },
+    {
+      "name": "DrawerTrigger",
+      "support": {
+        "status": "n/a",
+        "notes": "Native composition uses Drawer: trigger slot requests controlled or default open. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Drawer props/slots for the native equivalent."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Native composition uses Drawer: trigger slot requests controlled or default open. No standalone placeholder component is exported. Native serialized props, slots and parent-owned events replace DOM compound child context. Use Drawer props/slots for the native equivalent."
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Drawer": {
+      "kind": "cssVars",
+      "source": "react/src/components/Drawer",
+      "vars": [
+        {
+          "name": "--drawer-width",
+          "description": "Width of a left / right drawer (every size; defaults to the width of the size)"
+        },
+        {
+          "name": "--drawer-height",
+          "description": "Height of a top / bottom drawer (every size; defaults to the height of the size)"
+        },
+        {
+          "name": "--drawer-padding",
+          "description": "Horizontal padding of the header, description, body and footer"
+        },
+        {
+          "name": "--drawer-radius",
+          "description": "Corner radius of the inner edge (defaults to --radius-lg)"
+        },
+        {
+          "name": "--drawer-shadow",
+          "description": "Shadow of the panel (defaults to --shadow-xl)"
+        },
+        {
+          "name": "--drawer-background",
+          "description": "Background of the panel"
+        },
+        {
+          "name": "--drawer-z-index",
+          "description": "Stacking order of the panel (defaults to --z-modal)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Drawer",
+      "description": "A panel that slides in from an edge of the viewport for secondary tasks such as filters or details. Behaves like a modal: focus trap, Escape, backdrop click and focus return.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Controlled with open and onOpenChange, with a body and an action footer."
+        },
+        "sides": {
+          "title": "Sides and sizes",
+          "description": "side picks the edge; size sets the width (left / right) or the height (top / bottom)."
+        },
+        "compound": {
+          "title": "Compound API",
+          "description": "DrawerRoot, DrawerTrigger, DrawerContent, DrawerHeader, DrawerBody, DrawerFooter and DrawerClose."
+        }
+      },
+      "api": {
+        "DrawerProps": {
+          "open": "Controlled open state; leave undefined for uncontrolled",
+          "defaultOpen": "Initial open state while uncontrolled",
+          "onOpenChange": "Called with the requested open state (trigger, close button, Escape, backdrop click)",
+          "trigger": "Element that opens it on click (single element, rendered with asChild)",
+          "side": "Edge the panel slides in from",
+          "size": "Size preset: width for left / right, height for top / bottom",
+          "title": "Title, used as the dialog's accessible name",
+          "description": "Description below the title, used as the accessible description",
+          "hideCloseButton": "Hides the close (×) button",
+          "closeLabel": "Accessible label of the close button; defaults to the localized \"Close\"",
+          "hiddenDescription": "Text of the visually hidden description used when description is not set; defaults to the localized \"Drawer content\"",
+          "className": "Additional class name of the panel",
+          "ref": "Ref to the dialog element",
+          "children": "Content: usually DrawerBody + DrawerFooter"
+        },
+        "DrawerRootProps": {
+          "open": "Controlled open state; leave undefined for uncontrolled",
+          "defaultOpen": "Initial open state while uncontrolled",
+          "onOpenChange": "Called with the requested open state (trigger, close button, Escape, backdrop click)",
+          "modal": "Modal mode: renders the backdrop, traps focus, locks page scrolling, blocks outside interaction and hides the page from assistive technology",
+          "children": "Trigger and content"
+        },
+        "DrawerContentProps": {
+          "ref": "Ref to the dialog element",
+          "side": "Edge the panel slides in from",
+          "size": "Size preset: width for left / right, height for top / bottom",
+          "hideCloseButton": "Hides the close (×) button",
+          "closeLabel": "Accessible label of the close button; defaults to the localized \"Close\"",
+          "hiddenDescription": "Text of the visually hidden description used when description is not set; defaults to the localized \"Drawer content\"",
+          "description": "Visible description below the title; without it a hidden generic description is rendered",
+          "overlayClassName": "Class name of the overlay (backdrop)",
+          "role": "ARIA role of the panel; use \"alertdialog\" for confirmations that interrupt the user",
+          "forceMount": "Keeps the panel mounted while closed (data-state=\"closed\"), e.g. for animation libraries",
+          "onOpenAutoFocus": "Called before focus moves into the panel on open; event.preventDefault() keeps focus where it is",
+          "onCloseAutoFocus": "Called before focus returns to the opener on close; event.preventDefault() skips it",
+          "onEscapeKeyDown": "Escape pressed while it is the topmost layer; event.preventDefault() keeps it open",
+          "onPointerDownOutside": "Pointer pressed outside; event.preventDefault() keeps it open",
+          "onInteractOutside": "Pointer down or focus outside; event.preventDefault() keeps it open"
+        }
+      },
+      "cssVars": {
+        "--drawer-width": "Width of a left / right drawer (every size; defaults to the width of the size)",
+        "--drawer-height": "Height of a top / bottom drawer (every size; defaults to the height of the size)",
+        "--drawer-padding": "Horizontal padding of the header, description, body and footer",
+        "--drawer-radius": "Corner radius of the inner edge (defaults to --radius-lg)",
+        "--drawer-shadow": "Shadow of the panel (defaults to --shadow-xl)",
+        "--drawer-background": "Background of the panel",
+        "--drawer-z-index": "Stacking order of the panel (defaults to --z-modal)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "A side panel opened by its trigger slot. Any light DOM element with data-drawer-close (here the footer buttons) closes it."
+          },
+          "sides": {
+            "title": "Sides",
+            "description": "side picks the edge the drawer slides in from; size is a width for left / right drawers and a height for top / bottom ones."
+          },
+          "non-modal": {
+            "title": "Non-modal",
+            "description": "With non-modal the page stays interactive: no overlay, no focus trap, and an outside click closes the drawer. minerva-open-change reports the reason."
+          }
+        },
+        "minerva-drawer": {
+          "props": {
+            "label": "Title text (or use the header slot); names the dialog.",
+            "dialogRole": "ARIA role of the panel.",
+            "nonModal": "Non-modal: no overlay, no focus trap, no scroll lock; closes on outside pointer down / focus."
+          },
+          "events": {
+            "minerva-open-change": "The user asked to open / close (detail: { open, reason }); cancelable: preventDefault() keeps the current state.",
+            "minerva-after-open": "Fired once the panel is open and focus has moved in.",
+            "minerva-after-close": "Fired once the panel has finished closing (after its exit animation)."
+          },
+          "slots": {
+            "default": "Body content.",
+            "header": "Title (alternative to the label attribute).",
+            "footer": "Actions row.",
+            "trigger": "Element that opens the panel when clicked."
+          },
+          "methods": {
+            "show": "Opens the drawer.",
+            "hide": "Closes the drawer."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        },
+        "limitations": "Native Drawer and DrawerContent default to a bottom sheet. Set side or placement for left, right or top panels. Content uses native Views and Text."
+      }
+    }
+  }
+}

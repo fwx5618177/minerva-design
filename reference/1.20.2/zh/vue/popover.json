@@ -1,0 +1,588 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.2",
+  "locale": "zh",
+  "renderer": "vue",
+  "page": "popover",
+  "title": "Popover 气泡卡片",
+  "description": "点击触发、锚定在触发器上的浮层面板，用于筛选器、账户菜单等可交互内容。与 Tooltip 不同，它可以包含可聚焦内容，并自行管理焦点、Escape 和外部点击；在 Modal 中会先于 Modal 关闭。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.2",
+    "sourceCommit": "8d5d0df3644b1fa1c267b3dd6809b0e7eb1ce75b",
+    "sourceDigest": "sha256:2862a9e3a864c9423aed5d287db6fac7e8ddf58b9f5d144c61e7ff4a2630890e",
+    "referenceSourceDigest": "sha256:b329acf9d5eb6cf4b4b42169ce925c67b033f581b616664bf07fc6d664de45f0"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Popover",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "Popover"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "open",
+            "type": "boolean",
+            "required": false,
+            "description": "Controlled open state (`v-model:open`); leave `undefined` for uncontrolled.",
+            "typeText": "boolean"
+          },
+          {
+            "name": "defaultOpen",
+            "type": "boolean",
+            "required": false,
+            "description": "Initial open state while uncontrolled",
+            "typeText": "boolean"
+          },
+          {
+            "name": "modal",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Modal mode: traps focus inside the panel, locks page scrolling, hides the\nrest of the page from assistive technology and blocks outside pointer\ninteraction (an outside click still closes it)",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [
+          {
+            "name": "update:open",
+            "type": "[open: boolean]",
+            "typeText": "[open: boolean]",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "openChange",
+            "type": "[open: boolean]",
+            "typeText": "[open: boolean]",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "description": "`PopoverTrigger` / `PopoverAnchor` and `PopoverContent`",
+            "typeText": "any"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "open",
+            "event": "update:open",
+            "syntax": "v-model:open"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PopoverAnchor",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "PopoverAnchor"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "asChild",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Merges onto the single child element instead of rendering a `<div>`",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "PopoverClose",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "PopoverClose"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "asChild",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Merges the behaviour onto the single child element instead of rendering a `<button>`",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "PopoverContent",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "PopoverContent"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "side",
+            "type": "PopoverSide",
+            "default": "\"bottom\"",
+            "required": false,
+            "description": "Preferred side; flips when there is not enough room",
+            "typeText": "PopoverSide"
+          },
+          {
+            "name": "align",
+            "type": "PopoverAlign",
+            "default": "\"center\"",
+            "required": false,
+            "description": "Alignment along the trigger",
+            "typeText": "PopoverAlign"
+          },
+          {
+            "name": "sideOffset",
+            "type": "number",
+            "default": "6",
+            "required": false,
+            "description": "Gap to the trigger in pixels",
+            "typeText": "number"
+          },
+          {
+            "name": "alignOffset",
+            "type": "number",
+            "default": "0",
+            "required": false,
+            "description": "Skid along the trigger in pixels (positive = towards the end)",
+            "typeText": "number"
+          },
+          {
+            "name": "collisionPadding",
+            "type": "number",
+            "default": "8",
+            "required": false,
+            "description": "Minimum distance kept to the viewport edges in pixels when flipping,\nshifting and sizing the panel",
+            "typeText": "number"
+          },
+          {
+            "name": "matchAnchorWidth",
+            "type": "false | \"min\" | \"exact\"",
+            "default": "false",
+            "required": false,
+            "description": "Sizes the panel after the trigger / anchor width: `\"min\"` at least as\nwide, `\"exact\"` exactly as wide (also caps the width to the viewport)",
+            "typeText": "false | \"min\" | \"exact\""
+          },
+          {
+            "name": "arrow",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Renders an arrow pointing at the trigger",
+            "typeText": "boolean"
+          },
+          {
+            "name": "portal",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Renders the panel into a portal (the theme-scoped container of a nested\n`ConfigProvider`, else `document.body`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "forceMount",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Keeps the panel mounted while closed (`data-state=\"closed\"`), e.g. for\nanimation libraries",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [
+          {
+            "name": "openAutoFocus",
+            "type": "[event: Event]",
+            "typeText": "[event: Event]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "Event",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "closeAutoFocus",
+            "type": "[event: Event]",
+            "typeText": "[event: Event]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "Event",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "escapeKeyDown",
+            "type": "[event: KeyboardEvent]",
+            "typeText": "[event: KeyboardEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "KeyboardEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "pointerDownOutside",
+            "type": "[event: PointerEvent]",
+            "typeText": "[event: PointerEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "PointerEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "interactOutside",
+            "type": "[event: PointerEvent | FocusEvent]",
+            "typeText": "[event: PointerEvent | FocusEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "PointerEvent | FocusEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "focusOutside",
+            "type": "[event: FocusEvent]",
+            "typeText": "[event: FocusEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "FocusEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "PopoverTrigger",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "PopoverTrigger"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "asChild",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Merges the behaviour onto the single child element instead of rendering a `<button>`",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Popover": {
+      "kind": "cssVars",
+      "source": "react/src/components/Popover",
+      "vars": [
+        {
+          "name": "--popover-min-width",
+          "description": "Minimum width of the panel"
+        },
+        {
+          "name": "--popover-max-width",
+          "description": "Maximum width of the panel"
+        },
+        {
+          "name": "--popover-padding",
+          "description": "Inner padding of the panel"
+        },
+        {
+          "name": "--popover-radius",
+          "description": "Corner radius of the panel (defaults to --radius-lg)"
+        },
+        {
+          "name": "--popover-background",
+          "description": "Background of the panel and its arrow"
+        },
+        {
+          "name": "--popover-border-color",
+          "description": "Border color of the panel and its arrow"
+        },
+        {
+          "name": "--popover-shadow",
+          "description": "Shadow of the panel (defaults to --shadow-lg, --shadow-xl in dark themes)"
+        },
+        {
+          "name": "--popover-z-index",
+          "description": "Stacking order of the panel (defaults to --z-popover)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "anchor",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/popover/vue/anchor.vue",
+      "files": {
+        "apps/docs/src/docs/pages/popover/vue/anchor.vue": "<script setup lang=\"ts\">\nimport {\n  Popover,\n  PopoverAnchor,\n  PopoverTrigger,\n  PopoverContent,\n  Input,\n  Button,\n  VStack,\n} from \"minerva-design/vue\";\n</script>\n<template>\n  <Popover\n    ><VStack :gap=\"3\"\n      ><PopoverAnchor\n        ><Input\n          aria-label=\"Search query\"\n          placeholder=\"Search projects\" /></PopoverAnchor\n      ><PopoverTrigger as-child\n        ><Button>Show search help</Button></PopoverTrigger\n      ></VStack\n    ><PopoverContent match-anchor-width=\"exact\"\n      ><p>\n        The panel is positioned against the input, independently of its trigger.\n      </p></PopoverContent\n    ></Popover\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "anchor",
+      "description": ""
+    },
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/popover/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/popover/vue/basic.vue": "<script setup lang=\"ts\">\nimport {\n  Popover,\n  PopoverTrigger,\n  PopoverContent,\n  PopoverClose,\n  Button,\n} from \"minerva-design/vue\";\n</script>\n<template>\n  <Popover\n    ><PopoverTrigger as-child><Button>Open popover</Button></PopoverTrigger\n    ><PopoverContent\n      ><p>Review the changes before continuing.</p>\n      <PopoverClose as-child\n        ><Button>Got it</Button></PopoverClose\n      ></PopoverContent\n    ></Popover\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "placement",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/popover/vue/placement.vue",
+      "files": {
+        "apps/docs/src/docs/pages/popover/vue/placement.vue": "<script setup lang=\"ts\">\nimport {\n  Popover,\n  PopoverTrigger,\n  PopoverContent,\n  Button,\n  HStack,\n} from \"minerva-design/vue\";\nconst sides = [\"top\", \"right\", \"bottom\", \"left\"] as const;\n</script>\n<template>\n  <HStack :gap=\"3\" wrap\n    ><Popover v-for=\"side in sides\" :key=\"side\"\n      ><PopoverTrigger as-child\n        ><Button variant=\"outline\">{{ side }}</Button></PopoverTrigger\n      ><PopoverContent :side=\"side\" align=\"start\" arrow\n        >{{ side }} placement</PopoverContent\n      ></Popover\n    ></HStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "placement",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Popover 气泡卡片",
+      "description": "点击触发、锚定在触发器上的浮层面板，用于筛选器、账户菜单等可交互内容。与 Tooltip 不同，它可以包含可聚焦内容，并自行管理焦点、Escape 和外部点击；在 Modal 中会先于 Modal 关闭。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "PopoverTrigger 切换面板；焦点移入面板，关闭后回到触发器。PopoverClose 用于关闭。非模态时，在最后一个元素上按 Tab（在第一个元素上按 Shift+Tab）会关闭面板并把焦点移到触发器之后（之前）的元素；焦点不会在面板内循环。"
+        },
+        "placement": {
+          "title": "位置",
+          "description": "side、align 和 sideOffset 决定面板位置；空间不足时会翻转并平移以保持可见。arrow 显示指向触发器的箭头。"
+        },
+        "controlled": {
+          "title": "受控与锚点",
+          "description": "open + onOpenChange 控制状态；PopoverAnchor 让面板相对另一个元素定位。"
+        }
+      },
+      "api": {
+        "PopoverProps": {
+          "open": "受控的打开状态；不传（undefined）时为非受控",
+          "defaultOpen": "非受控时的初始打开状态",
+          "onOpenChange": "请求改变打开状态时调用（触发器、Escape、外部点击、PopoverClose）",
+          "modal": "模态模式：锁定焦点（Tab 在面板内循环）、锁定页面滚动、对辅助技术隐藏页面其余部分并阻止外部指针交互（点击外部仍会关闭）",
+          "children": "PopoverTrigger / PopoverAnchor 与 PopoverContent"
+        },
+        "PopoverContentProps": {
+          "ref": "指向面板元素的 ref",
+          "side": "首选方向；空间不足时翻转",
+          "align": "沿触发器的对齐方式",
+          "sideOffset": "与触发器的间距（像素）",
+          "arrow": "显示指向触发器的箭头",
+          "portal": "把面板渲染到 portal 中（嵌套 ConfigProvider 的主题作用域容器，否则为 document.body）",
+          "alignOffset": "沿触发器方向的偏移像素（正值朝向末端）",
+          "collisionPadding": "与视口边缘的最小距离（像素）；目前固定为 8px，其他取值为保留值",
+          "matchAnchorWidth": "按触发器 / 锚点宽度设置面板尺寸：\"min\" 至少同宽，\"exact\" 完全同宽",
+          "forceMount": "关闭时仍保持挂载（data-state=\"closed\"），例如配合动画库使用",
+          "onOpenAutoFocus": "打开时焦点移入面板之前调用；event.preventDefault() 可让焦点保持原位",
+          "onCloseAutoFocus": "关闭时焦点回到打开者之前调用；event.preventDefault() 可跳过",
+          "onEscapeKeyDown": "作为最上层时按下 Escape；event.preventDefault() 可保持打开",
+          "onPointerDownOutside": "在外部按下指针；event.preventDefault() 可保持打开",
+          "onFocusOutside": "焦点移到外部；event.preventDefault() 可保持打开",
+          "onInteractOutside": "外部的指针按下或焦点移动；event.preventDefault() 可保持打开"
+        },
+        "PopoverTriggerProps": {
+          "asChild": "把行为合并到唯一的子元素上，而不是渲染自己的元素"
+        }
+      },
+      "cssVars": {
+        "--popover-min-width": "面板的最小宽度",
+        "--popover-max-width": "面板的最大宽度",
+        "--popover-padding": "面板的内边距",
+        "--popover-radius": "面板圆角（默认 --radius-lg）",
+        "--popover-background": "面板及其箭头的背景",
+        "--popover-border-color": "面板及其箭头的边框颜色",
+        "--popover-shadow": "面板阴影（默认 --shadow-lg，深色主题为 --shadow-xl）",
+        "--popover-z-index": "面板的层级（默认 --z-popover）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "trigger 插槽切换一个可交互面板；打开时焦点移入，关闭后返回。Escape、点击外部或带 data-popover-close 的元素都会关闭它。"
+          },
+          "placement": {
+            "title": "位置",
+            "description": "side 和 align 决定面板相对触发器的位置，side-offset 设置间距，arrow 显示指向箭头；面板会翻转和平移以保持在视口内。"
+          },
+          "anchor": {
+            "title": "锚点与模态",
+            "description": "anchor 让面板相对另一个元素（通过 id）定位，任意按钮都可通过 show() 打开它；modal 会锁定焦点并阻止与页面其余部分交互。"
+          }
+        },
+        "minerva-popover": {
+          "props": {
+            "label": "面板的可访问名称（或在元素上设置 aria-label）。",
+            "anchor": "要锚定到的元素 id（同一 DOM 树内）。",
+            "anchorElement": "代替触发器作为面板定位基准的元素；优先于 anchor。"
+          },
+          "events": {
+            "minerva-open-change": "用户请求打开 / 关闭（detail: { open, reason }）；可取消：preventDefault() 保持当前状态。",
+            "minerva-after-open": "弹出层已打开。",
+            "minerva-after-close": "面板完成关闭（退出动画结束）后触发。"
+          },
+          "slots": {
+            "default": "面板内容。",
+            "trigger": "点击时切换弹出层的元素。"
+          },
+          "methods": {
+            "show": "打开弹出层。",
+            "hide": "关闭弹出层。",
+            "toggle": "切换弹出层。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        },
+        "limitations": "触屏设备使用可关闭的原生对话框展示内容；不使用 DOM 浮动坐标和悬停定位。"
+      }
+    }
+  }
+}

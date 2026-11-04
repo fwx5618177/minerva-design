@@ -1,0 +1,572 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.2",
+  "locale": "fr",
+  "renderer": "wc",
+  "page": "segmented-control",
+  "title": "SegmentedControl",
+  "description": "Un sélecteur segmenté à choix unique pour les modes et les filtres, avec un curseur qui glisse sous le segment sélectionné. Utilisez Tabs lorsque chaque choix a son propre panneau de contenu.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.2",
+    "sourceCommit": "8d5d0df3644b1fa1c267b3dd6809b0e7eb1ce75b",
+    "sourceDigest": "sha256:2862a9e3a864c9423aed5d287db6fac7e8ddf58b9f5d144c61e7ff4a2630890e",
+    "referenceSourceDigest": "sha256:b329acf9d5eb6cf4b4b42169ce925c67b033f581b616664bf07fc6d664de45f0"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "SegmentedControl",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/segmented-control",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-segmented-control",
+        "props": [
+          {
+            "name": "options",
+            "typeText": "SegmentedControlOption[]",
+            "attribute": "options",
+            "required": false
+          },
+          {
+            "name": "defaultValue",
+            "typeText": "string",
+            "attribute": "value",
+            "required": false
+          },
+          {
+            "name": "size",
+            "typeText": "\"small\" | \"medium\" | \"large\"",
+            "attribute": "size",
+            "required": false
+          },
+          {
+            "name": "color",
+            "typeText": "\"neutral\" | \"primary\"",
+            "attribute": "color",
+            "required": false
+          },
+          {
+            "name": "fullWidth",
+            "typeText": "boolean",
+            "attribute": "full-width",
+            "required": false
+          },
+          {
+            "name": "name",
+            "typeText": "string",
+            "attribute": "name",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "attribute": "disabled",
+            "required": false
+          },
+          {
+            "name": "required",
+            "typeText": "boolean",
+            "attribute": "required",
+            "required": false
+          },
+          {
+            "name": "value",
+            "typeText": "string",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "change",
+            "typeText": "Event",
+            "description": "The user selected another segment (like native radios)"
+          },
+          {
+            "name": "minerva-change",
+            "typeText": "CustomEvent<{ value: string; }>",
+            "detailType": {
+              "typeText": "{ value: string; }",
+              "typeRef": "type:82efde8fd8e2d65a6766"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The user selected another segment; `detail: { value }`"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-segmented-control": {
+      "kind": "element",
+      "source": "web-components/src/components/segmented-control/segmented-control.ts",
+      "className": "MinervaSegmentedControl",
+      "summary": "Single-choice segmented switch with a sliding thumb.",
+      "description": "A single-choice segmented switch for modes and filters (`<SegmentedControl>` of React): a `radiogroup` of `radio` segments sharing the width equally, with a thumb sliding under the selected segment. Use `<minerva-tabs>` when each choice has a content panel. Keyboard: one Tab stop (the selected segment, else the first enabled one); the arrow keys move and select, skipping disabled segments and wrapping (RTL-aware); Home / End select the first / last enabled segment. Form-associated: submits `value` under `name`, `required` makes it invalid while nothing is selected, and it supports `form.reset()` (restores the `value` attribute), `<fieldset disabled>` and state restoration. Name it with `aria-label`, `aria-labelledby` or `<label for>`.",
+      "properties": [
+        {
+          "name": "options",
+          "attribute": "options",
+          "type": "SegmentedControlOption[]",
+          "default": "[]",
+          "description": "The segments (property; the attribute takes a JSON array or comma-separated values)"
+        },
+        {
+          "name": "defaultValue",
+          "attribute": "value",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Initially selected value, restored by `form.reset()` (the `value` attribute)"
+        },
+        {
+          "name": "size",
+          "attribute": "size",
+          "type": "\"small\" | \"medium\" | \"large\"",
+          "default": "\"medium\"",
+          "description": "Segment density"
+        },
+        {
+          "name": "color",
+          "attribute": "color",
+          "type": "\"neutral\" | \"primary\"",
+          "default": "\"neutral\"",
+          "description": "Thumb color"
+        },
+        {
+          "name": "fullWidth",
+          "attribute": "full-width",
+          "type": "boolean",
+          "default": "false",
+          "description": "Fills the width of the container (the segments always share the width equally)"
+        },
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Name submitted with the form data"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false",
+          "description": "Disables the control (not focusable, not submitted, not validated)"
+        },
+        {
+          "name": "required",
+          "attribute": "required",
+          "type": "boolean",
+          "default": "false",
+          "description": "The control must have a value for the form to be submitted"
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Selected value (property; the `value` attribute sets `defaultValue`)"
+        },
+        {
+          "name": "isDisabled",
+          "type": "boolean",
+          "readonly": true,
+          "description": "Whether the control is disabled (itself or by a disabled fieldset)."
+        },
+        {
+          "name": "form",
+          "type": "HTMLFormElement | null",
+          "readonly": true,
+          "description": "The form owning the element"
+        },
+        {
+          "name": "labels",
+          "type": "NodeList | null",
+          "readonly": true,
+          "description": "`<label>` elements associated with the element"
+        },
+        {
+          "name": "validity",
+          "type": "ValidityState | undefined",
+          "readonly": true,
+          "description": "Validity state (same as `<input>.validity`)"
+        },
+        {
+          "name": "validationMessage",
+          "type": "string",
+          "readonly": true,
+          "description": "Message describing the current validation error (empty when valid)"
+        },
+        {
+          "name": "willValidate",
+          "type": "boolean",
+          "readonly": true,
+          "description": "Whether the element is a candidate for constraint validation"
+        }
+      ],
+      "methods": [
+        {
+          "name": "focus",
+          "signature": "(options?: FocusOptions) => void",
+          "description": "Focuses the selected segment (else the first enabled one)"
+        },
+        {
+          "name": "checkValidity",
+          "signature": "() => boolean",
+          "description": "Checks validity; fires `invalid` when invalid."
+        },
+        {
+          "name": "reportValidity",
+          "signature": "() => boolean",
+          "description": "Checks validity and shows the browser's validation message."
+        },
+        {
+          "name": "setCustomValidity",
+          "signature": "(message: string) => void",
+          "description": "Sets (or clears, with `\"\"`) a custom validation error."
+        },
+        {
+          "name": "formResetCallback",
+          "signature": "() => void"
+        },
+        {
+          "name": "formDisabledCallback",
+          "signature": "(disabled: boolean) => void"
+        },
+        {
+          "name": "formStateRestoreCallback",
+          "signature": "(state: string | File | FormData | null) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "change",
+          "description": "The user selected another segment (like native radios)"
+        },
+        {
+          "name": "minerva-change",
+          "description": "The user selected another segment; `detail: { value }`"
+        }
+      ],
+      "slots": [],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The element with role=\"radiogroup\" (the track)"
+        },
+        {
+          "name": "indicator",
+          "description": "The sliding thumb under the selected segment"
+        },
+        {
+          "name": "item",
+          "description": "A segment (`role=radio`)"
+        },
+        {
+          "name": "item--selected",
+          "description": "Item state of `item`: selected"
+        },
+        {
+          "name": "item--disabled",
+          "description": "Item state of `item`: disabled"
+        },
+        {
+          "name": "icon",
+          "description": "The icon of a segment"
+        },
+        {
+          "name": "label",
+          "description": "The text label of a segment"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--segmented-control-height",
+          "description": "Height of the control (defaults to the density's control height)"
+        },
+        {
+          "name": "--segmented-control-padding",
+          "description": "Space between the track and the segments (defaults to 2px)"
+        },
+        {
+          "name": "--segmented-control-radius",
+          "description": "Corner radius of the track (defaults to --radius-md); the thumb follows it"
+        },
+        {
+          "name": "--segmented-control-background",
+          "description": "Background of the track (defaults to --surface-muted-color)"
+        },
+        {
+          "name": "--segmented-control-color",
+          "description": "Text color of the unselected segments"
+        },
+        {
+          "name": "--segmented-control-item-padding-x",
+          "description": "Inline padding of a segment"
+        },
+        {
+          "name": "--segmented-control-thumb-background",
+          "description": "Background of the thumb (defaults to --surface-elevated-color; --primary-color with color=\"primary\")"
+        },
+        {
+          "name": "--segmented-control-thumb-shadow",
+          "description": "Shadow of the thumb (defaults to --shadow-sm; none with color=\"primary\")"
+        },
+        {
+          "name": "--segmented-control-selected-color",
+          "description": "Text color of the selected segment"
+        },
+        {
+          "name": "--segmented-control-duration",
+          "description": "Duration of the thumb slide (defaults to --transition-base)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:SegmentedControl": {
+      "kind": "cssVars",
+      "source": "react/src/components/SegmentedControl",
+      "vars": [
+        {
+          "name": "--segmented-control-height",
+          "description": "Height of the control (defaults to the density's control height)"
+        },
+        {
+          "name": "--segmented-control-padding",
+          "description": "Space between the track and the segments (defaults to 2px)"
+        },
+        {
+          "name": "--segmented-control-radius",
+          "description": "Corner radius of the track (defaults to --radius-md); the thumb follows it"
+        },
+        {
+          "name": "--segmented-control-background",
+          "description": "Background of the track (defaults to --surface-muted-color)"
+        },
+        {
+          "name": "--segmented-control-color",
+          "description": "Text color of the unselected segments"
+        },
+        {
+          "name": "--segmented-control-item-padding-x",
+          "description": "Inline padding of a segment"
+        },
+        {
+          "name": "--segmented-control-thumb-background",
+          "description": "Background of the thumb (defaults to --surface-elevated-color; --primary-color with color=\"primary\")"
+        },
+        {
+          "name": "--segmented-control-thumb-shadow",
+          "description": "Shadow of the thumb (defaults to --shadow-sm; none with color=\"primary\")"
+        },
+        {
+          "name": "--segmented-control-selected-color",
+          "description": "Text color of the selected segment"
+        },
+        {
+          "name": "--segmented-control-duration",
+          "description": "Duration of the thumb slide (defaults to --transition-base)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/segmented-control/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/segmented-control/wc/basic.html": "<div style=\"display: grid; gap: 12px; justify-items: start\">\n  <minerva-segmented-control\n    id=\"view\"\n    aria-label=\"Calendar view\"\n    options='[{\"value\":\"day\",\"label\":\"Day\"},{\"value\":\"week\",\"label\":\"Week\"},{\"value\":\"month\",\"label\":\"Month\"}]'\n    value=\"week\"\n  ></minerva-segmented-control>\n  <output id=\"selected\">Showing the week view</output>\n</div>\n",
+        "apps/docs/src/docs/pages/segmented-control/wc/basic.ts": "// options is a JSON (or comma-separated) attribute; minerva-change reports\n// the selected value. One tab stop: the arrow keys move and select.\nexport function setup(root: HTMLElement) {\n  const control = root.querySelector<HTMLElement>(\"#view\")!;\n  const output = root.querySelector<HTMLOutputElement>(\"#selected\")!;\n  const onChange = (e: Event) => {\n    const { value } = (e as CustomEvent<{ value: string }>).detail;\n    output.value = `Showing the ${value} view`;\n  };\n  control.addEventListener(\"minerva-change\", onChange);\n  return () => control.removeEventListener(\"minerva-change\", onChange);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Utilisation de base",
+      "description": "options est un attribut tableau JSON (ou valeurs séparées par des virgules) ou une propriété ; value fixe la sélection initiale et minerva-change signale la valeur sélectionnée. Un seul arrêt de tabulation : les flèches déplacent et sélectionnent."
+    },
+    {
+      "id": "colors",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/segmented-control/wc/colors.html",
+      "files": {
+        "apps/docs/src/docs/pages/segmented-control/wc/colors.html": "<div style=\"display: grid; gap: 16px; justify-items: start\">\n  <minerva-segmented-control\n    aria-label=\"Theme (neutral)\"\n    options='[{\"value\":\"light\",\"label\":\"Light\"},{\"value\":\"dark\",\"label\":\"Dark\"},{\"value\":\"system\",\"label\":\"System\",\"disabled\":true}]'\n    value=\"light\"\n  ></minerva-segmented-control>\n  <minerva-segmented-control\n    color=\"primary\"\n    aria-label=\"Theme (primary)\"\n    options='[{\"value\":\"light\",\"label\":\"Light\"},{\"value\":\"dark\",\"label\":\"Dark\"},{\"value\":\"system\",\"label\":\"System\",\"disabled\":true}]'\n    value=\"dark\"\n  ></minerva-segmented-control>\n  <minerva-segmented-control\n    disabled\n    aria-label=\"Theme (disabled)\"\n    options=\"light,dark,system\"\n    value=\"light\"\n  ></minerva-segmented-control>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Couleurs et désactivation",
+      "description": "color=\"primary\" affiche un curseur plein de la couleur primaire ; les options désactivées et l'attribut disabled bloquent la sélection."
+    },
+    {
+      "id": "full-width",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/segmented-control/wc/full-width.html",
+      "files": {
+        "apps/docs/src/docs/pages/segmented-control/wc/full-width.html": "<form id=\"billing-form\" style=\"display: grid; gap: 12px; max-width: 420px\">\n  <minerva-segmented-control\n    full-width\n    name=\"billing\"\n    aria-label=\"Billing period\"\n    options='[{\"value\":\"monthly\",\"label\":\"Monthly\"},{\"value\":\"yearly\",\"label\":\"Yearly (−20%)\"}]'\n    value=\"yearly\"\n  ></minerva-segmented-control>\n  <minerva-segmented-control\n    full-width\n    aria-label=\"Status filter\"\n    options=\"all,open,closed,archived\"\n    value=\"all\"\n  ></minerva-segmented-control>\n</form>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Pleine largeur et formulaires",
+      "description": "full-width étire le contrôle ; il est associé aux formulaires : name envoie la valeur, required la valide et form.reset() restaure l'attribut value."
+    },
+    {
+      "id": "icons",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/segmented-control/wc/icons.html",
+      "files": {
+        "apps/docs/src/docs/pages/segmented-control/wc/icons.html": "<div style=\"display: grid; gap: 16px; justify-items: start\">\n  <minerva-segmented-control\n    aria-label=\"Layout\"\n    options='[{\"value\":\"list\",\"label\":\"List\",\"icon\":\"☰\"},{\"value\":\"grid\",\"label\":\"Grid\",\"icon\":\"▦\"},{\"value\":\"map\",\"label\":\"Map\",\"icon\":\"⌖\"}]'\n    value=\"list\"\n  ></minerva-segmented-control>\n  <minerva-segmented-control\n    aria-label=\"Layout (compact)\"\n    options='[{\"value\":\"list\",\"icon\":\"☰\",\"aria-label\":\"List\"},{\"value\":\"grid\",\"icon\":\"▦\",\"aria-label\":\"Grid\"},{\"value\":\"map\",\"icon\":\"⌖\",\"aria-label\":\"Map\"}]'\n    value=\"grid\"\n  ></minerva-segmented-control>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Icônes",
+      "description": "Les objets option acceptent une icon (texte, ou un Node / template lit via la propriété) et un aria-label pour les segments à icône seule."
+    },
+    {
+      "id": "sizes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/segmented-control/wc/sizes.html",
+      "files": {
+        "apps/docs/src/docs/pages/segmented-control/wc/sizes.html": "<div style=\"display: grid; gap: 16px; justify-items: start\">\n  <minerva-segmented-control\n    size=\"small\"\n    aria-label=\"Small\"\n    options=\"Daily,Weekly,Monthly\"\n    value=\"Daily\"\n  ></minerva-segmented-control>\n  <minerva-segmented-control\n    aria-label=\"Medium\"\n    options=\"Daily,Weekly,Monthly\"\n    value=\"Weekly\"\n  ></minerva-segmented-control>\n  <minerva-segmented-control\n    size=\"large\"\n    aria-label=\"Large\"\n    options=\"Daily,Weekly,Monthly\"\n    value=\"Monthly\"\n  ></minerva-segmented-control>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Tailles",
+      "description": "Trois densités (ainsi que les états personnalisés :state(size-small) ...)."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "SegmentedControl",
+      "description": "Un sélecteur segmenté à choix unique pour les modes et les filtres, avec un curseur qui glisse sous le segment sélectionné. Utilisez Tabs lorsque chaque choix a son propre panneau de contenu.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Une valeur contrôlée (value / onChange ; le type de la valeur est générique). Le contrôle est un radiogroup de segments radio avec un seul arrêt de tabulation : les flèches déplacent et sélectionnent (en sautant les segments désactivés, en boucle), Home / End vont aux extrémités."
+        },
+        "icons": {
+          "title": "Icônes",
+          "description": "Les options peuvent afficher une icône à côté du libellé, ou une icône seule ; les segments avec icône seule nécessitent un aria-label."
+        },
+        "sizes": {
+          "title": "Tailles",
+          "description": "Trois densités qui suivent les hauteurs des contrôles. Une simple chaîne sert à la fois de valeur et de libellé."
+        },
+        "full-width": {
+          "title": "Pleine largeur",
+          "description": "fullWidth étire le contrôle sur son conteneur ; les segments se partagent toujours la largeur à parts égales. name ajoute un champ caché pour envoyer la valeur avec un formulaire."
+        },
+        "colors": {
+          "title": "Couleurs et désactivation",
+          "description": "neutral (par défaut) affiche un curseur en relief sur une piste atténuée, primary un curseur plein de la couleur primaire. Désactivez des segments isolés ou tout le contrôle."
+        }
+      },
+      "api": {
+        "SegmentedControlProps": {
+          "options": "Les segments : chaînes ou objets option",
+          "value": "Valeur sélectionnée (contrôlée ; à associer à onChange)",
+          "defaultValue": "Valeur sélectionnée initialement (non contrôlée)",
+          "onChange": "Appelé avec la valeur sélectionnée",
+          "size": "Densité des segments",
+          "color": "Couleur du curseur",
+          "fullWidth": "Occupe toute la largeur du conteneur (les segments se partagent toujours la largeur à parts égales)",
+          "disabled": "Bloque tous les segments",
+          "name": "Nom d'un champ caché portant la valeur dans un formulaire",
+          "aria-label": "Libellé accessible du groupe",
+          "aria-labelledby": "Id de l'élément qui libelle le groupe",
+          "id": "Id de la racine",
+          "className": "Nom de classe supplémentaire",
+          "ref": "Ref vers la <div> racine (role=\"radiogroup\")"
+        },
+        "SegmentedControlOptionObject": {
+          "value": "Valeur du segment",
+          "label": "Libellé visible (par défaut la valeur, sauf si une icône est fournie)",
+          "icon": "Icône affichée avant le libellé (seule pour un segment à icône seule)",
+          "disabled": "Bloque ce segment",
+          "aria-label": "Nom accessible ; obligatoire pour un segment à icône seule"
+        }
+      },
+      "cssVars": {
+        "--segmented-control-height": "Hauteur du contrôle (par défaut la hauteur de contrôle de la densité)",
+        "--segmented-control-padding": "Espace entre la piste et les segments (2px par défaut)",
+        "--segmented-control-radius": "Rayon des coins de la piste (--radius-md par défaut) ; le curseur le suit",
+        "--segmented-control-background": "Fond de la piste (--surface-muted-color par défaut)",
+        "--segmented-control-color": "Couleur du texte des segments non sélectionnés",
+        "--segmented-control-item-padding-x": "Marge intérieure horizontale d'un segment",
+        "--segmented-control-thumb-background": "Fond du curseur (--surface-elevated-color par défaut ; --primary-color avec color=\"primary\")",
+        "--segmented-control-thumb-shadow": "Ombre du curseur (--shadow-sm par défaut ; aucune avec color=\"primary\")",
+        "--segmented-control-selected-color": "Couleur du texte du segment sélectionné",
+        "--segmented-control-duration": "Durée du glissement du curseur (--transition-base par défaut)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "options est un attribut tableau JSON (ou valeurs séparées par des virgules) ou une propriété ; value fixe la sélection initiale et minerva-change signale la valeur sélectionnée. Un seul arrêt de tabulation : les flèches déplacent et sélectionnent."
+          },
+          "icons": {
+            "title": "Icônes",
+            "description": "Les objets option acceptent une icon (texte, ou un Node / template lit via la propriété) et un aria-label pour les segments à icône seule."
+          },
+          "sizes": {
+            "title": "Tailles",
+            "description": "Trois densités (ainsi que les états personnalisés :state(size-small) ...)."
+          },
+          "full-width": {
+            "title": "Pleine largeur et formulaires",
+            "description": "full-width étire le contrôle ; il est associé aux formulaires : name envoie la valeur, required la valide et form.reset() restaure l'attribut value."
+          },
+          "colors": {
+            "title": "Couleurs et désactivation",
+            "description": "color=\"primary\" affiche un curseur plein de la couleur primaire ; les options désactivées et l'attribut disabled bloquent la sélection."
+          }
+        },
+        "minerva-segmented-control": {
+          "props": {
+            "required": "Une valeur doit être sélectionnée pour que le formulaire puisse être envoyé.",
+            "isDisabled": "Indique si le contrôle est désactivé, par lui-même ou par un <fieldset> désactivé (lecture seule).",
+            "form": "Le formulaire auquel appartient l’élément (lecture seule).",
+            "labels": "Les éléments <label> associés à l’élément (lecture seule).",
+            "validity": "État de validité, comme <input>.validity (lecture seule).",
+            "validationMessage": "Message de l’erreur de validation courante ; vide si la valeur est valide (lecture seule).",
+            "willValidate": "Indique si l’élément participe à la validation des contraintes (lecture seule)."
+          },
+          "events": {
+            "change": "L'utilisateur a sélectionné un autre segment (comme les boutons radio natifs).",
+            "minerva-change": "L'utilisateur a sélectionné un autre segment (detail: { value })."
+          },
+          "methods": {
+            "focus": "Donne le focus au segment sélectionné (sinon au premier segment actif).",
+            "checkValidity": "Vérifie la validité ; déclenche invalid si l’élément est invalide.",
+            "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+            "setCustomValidity": "Définit une erreur de validation personnalisée, ou l’efface avec une chaîne vide.",
+            "formResetCallback": "Rappel du cycle de vie du formulaire appelé par form.reset() : restaure la valeur initiale.",
+            "formDisabledCallback": "Rappel du cycle de vie du formulaire appelé quand un <fieldset> ancêtre est désactivé ou réactivé.",
+            "formStateRestoreCallback": "Rappel du cycle de vie du formulaire appelé quand le navigateur restaure l’état (navigation dans l’historique, remplissage automatique)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Interagissez avec le composant natif dans cet aperçu de téléphone."
+          }
+        }
+      }
+    }
+  }
+}

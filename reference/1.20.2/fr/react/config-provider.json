@@ -1,0 +1,682 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.2",
+  "locale": "fr",
+  "renderer": "react",
+  "page": "config-provider",
+  "title": "ConfigProvider",
+  "description": "Fournit le thème et la langue de la bibliothèque React à votre application, et les expose via useConfig().",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.2",
+    "sourceCommit": "8d5d0df3644b1fa1c267b3dd6809b0e7eb1ce75b",
+    "sourceDigest": "sha256:2862a9e3a864c9423aed5d287db6fac7e8ddf58b9f5d144c61e7ff4a2630890e",
+    "referenceSourceDigest": "sha256:b329acf9d5eb6cf4b4b42169ce925c67b033f581b616664bf07fc6d664de45f0"
+  },
+  "content": {
+    "usage": {
+      "title": "Utilisation",
+      "text": "Affichez un seul ConfigProvider à la racine de votre application. Il applique le thème sous forme de variables CSS sur <html>, définit la langue des textes intégrés de la bibliothèque React et fournit les deux à useConfig().",
+      "dynamic": "Les deux props sont réactives : stockez-les dans un état pour permettre de changer de thème ou de langue à l'exécution.",
+      "global": "Seul le ConfigProvider le plus externe modifie l'état global : il écrit data-theme, data-palette et les variables du thème sur <html>, enregistre les cookies et définit la langue globale de la bibliothèque React. Un provider imbriqué ne le fait jamais ; il applique ses propres réglages à son sous-arbre uniquement (voir Providers imbriqués)."
+    },
+    "palette": {
+      "title": "Palette, persistance et callbacks",
+      "text": "palette ajoute une palette de couleurs (\"editorial\", \"tech\", \"graphite\" ou \"cool\") au thème light, dark ou system. persist enregistre les changements de thème et de palette dans les cookies theme et palette et les restaure après l'hydratation. onThemeChange et onPaletteChange sont appelés après que setTheme et setPalette ont changé la valeur.",
+      "setters": "useConfig() renvoie aussi mode, resolvedMode et palette, ainsi que les setters setTheme et setPalette : n'importe quel composant peut changer le thème sans remonter l'état. Le rendu serveur, les cookies et le script d'initialisation anti-flash sont décrits dans"
+    },
+    "brand": {
+      "title": "Couleur de marque",
+      "text": "primaryColor définit votre couleur de marque sans surcharger --primary-color à la main : passez une couleur CSS (\"#4f46e5\", rgb(), une couleur nommée) pour les deux modes, ou une paire { light, dark }. Le thème reste explicite : theme vaut toujours \"light\", \"dark\" ou \"system\", donc data-theme, useConfig().mode et ThemeToggle continuent de fonctionner.",
+      "derive": "Tokens dérivés : chaque token dérivé de primary-color (hover, active, subtle, border, text, anneau de focus, couleur de sélection et, sauf si la palette a la sienne, les tokens d'accent) est recalculé à partir de la couleur de marque avec les formules du thème par défaut. Une couleur seule reçoit une valeur de mode sombre mélangée vers le blanc en OKLab jusqu'à atteindre un contraste de 4.5:1 sur les surfaces sombres (#4f46e5 devient #7b85f2) ; les couleurs déjà conformes sont conservées.",
+      "precedence": "Priorité : primaryColor l'emporte sur la couleur primaire de la palette et du thème ; la palette garde ses autres tokens. Une couleur invalide est ignorée, avec un avertissement en développement.",
+      "nesting": "Imbrication : les providers imbriqués héritent de la couleur de marque, et un primaryColor imbriqué ne s'applique qu'à son sous-arbre (overlays compris) ; null rétablit la couleur primaire du thème.",
+      "ssr": "Rendu serveur : le provider racine rend les valeurs claire et sombre de la marque dans une <style> indexée sur data-theme, donc le balisage serveur a la couleur de marque avant l'hydratation (pas de flash avec le script d'initialisation du thème). React Native (MinervaProvider), les providers Taro, uni-app et mini-programme WeChat (ConfigProvider / ThemeProvider), Vue (ConfigProvider / ThemeProvider), Angular (<mn-config primaryColor>, provideMinerva({ primaryColor })) et <minerva-config primary-color> acceptent la même valeur, avec la même sémantique."
+    },
+    "context": {
+      "title": "ConfigContext",
+      "text": "useConfig() lève une erreur s'il n'y a pas de ConfigProvider au-dessus, ce qui révèle tôt les erreurs de configuration. Lisez ConfigContext directement lorsque le provider est facultatif : il renvoie undefined au lieu de lever une erreur."
+    },
+    "nesting": {
+      "title": "Providers imbriqués",
+      "text": "Un ConfigProvider placé dans un autre est un provider imbriqué. Utilisez-le pour donner à une zone de la page, un aperçu ou une démo un autre thème, une autre palette ou une autre langue sans affecter le reste de la page.",
+      "inherit": "Héritage : il hérite du thème, de la palette et de la locale du provider le plus proche au-dessus de lui. Seules les props que vous définissez sont remplacées, et useConfig() en dessous renvoie les valeurs fusionnées. Les réglages hérités suivent le parent lorsqu'il change.",
+      "scoped": "Thème local : un thème ou une palette redéfini ne s'applique qu'à son sous-arbre. Le provider rend un élément conteneur en display: contents (la mise en page ne change pas) qui porte data-theme, data-palette et les variables du thème. Sans thème ni palette redéfini, aucun conteneur n'est rendu.",
+      "locale": "Langue locale : une locale redéfinie ne change que les textes intégrés de son sous-arbre. Un provider qui ne définit que la locale ne touche jamais au thème.",
+      "portal": "Surcouches : le contenu rendu dans un portail depuis un sous-arbre local (Modal, Drawer, Popover, Select, Menu, Tooltip, Toast…) est placé dans un conteneur sur <body> qui porte la même portée, si bien que les surcouches reçoivent aussi le thème local. Les API impératives rendues hors de l'arbre React, comme un confirm() autonome, utilisent le thème racine.",
+      "document": "État global : un provider imbriqué n'écrit jamais sur <html>, ne lit ni n'écrit les cookies (persist est ignoré) et ne change jamais la langue globale de la bibliothèque React. Le démonter laisse la page exactement telle que le provider racine l'a définie, et démonter le provider racine rétablit ce qu'il avait modifié. setTheme et setPalette d'un provider imbriqué changent sa propre valeur redéfinie, ou la valeur du parent pour un réglage qu'il ne redéfinit pas."
+    }
+  },
+  "components": [
+    {
+      "name": "ConfigProvider",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "ConfigProvider"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "theme",
+            "source": "packages/react/src/contexts/types.ts",
+            "kind": "union",
+            "typeText": "ConfigProviderThemeProps | undefined",
+            "typeRef": "type:7e53e5511cbf3537893a",
+            "required": false,
+            "description": "Theme to apply: \"auto\" (follows `prefers-color-scheme`), a built-in theme name, a theme object, or a `{ light, dark }` pair. The root provider applies it to `<html>`; a nested provider inherits its parent's theme unless set, and applies an override to its own subtree only."
+          },
+          {
+            "name": "palette",
+            "source": "packages/react/src/contexts/types.ts",
+            "kind": "enum",
+            "values": [
+              "cool",
+              "editorial",
+              "graphite",
+              "tech"
+            ],
+            "typeText": "\"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null | undefined",
+            "typeRef": "type:b7f5e4f1c686e6b76ccf",
+            "required": false,
+            "description": "Palette applied with the light / dark / system themes (\"editorial\", \"tech\", \"graphite\", \"cool\"); `null` keeps Minerva's default look. The root provider sets `data-palette` on `<html>`; a nested provider inherits its parent's palette unless set, and scopes an override to its subtree. Palette tokens come from `style.css`."
+          },
+          {
+            "name": "primaryColor",
+            "source": "packages/react/src/contexts/types.ts",
+            "kind": "union",
+            "typeText": "PrimaryColor | null | undefined",
+            "typeRef": "type:f612ad4ccbeed997ce22",
+            "required": false,
+            "description": "Brand color: sets `--primary-color` and recomputes every token derived from it (hover, active, subtle, border and text roles, selected, focus ring, and the accent when the palette has no accent of its own) with the default theme's formulas, without changing the light / dark mode. A single color applies to light mode and gets a dark-mode value lightened for contrast on dark surfaces (WCAG 4.5:1); pass `{ light, dark }` to choose both. Wins over the primary color of the theme and of the palette. Accepts hex, `rgb()` / `rgba()` and the basic named colors; an invalid value is ignored (development warning). A nested provider inherits its parent's brand color unless set (`null` restores the theme's own), and scopes an override to its subtree."
+          },
+          {
+            "name": "persist",
+            "source": "packages/react/src/contexts/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Persist theme and palette changes in the `theme` / `palette` cookies and restore them after hydration (pair with `THEME_INIT_SCRIPT` for SSR). Root provider only: ignored by nested providers."
+          },
+          {
+            "name": "locale",
+            "source": "packages/react/src/contexts/types.ts",
+            "kind": "object",
+            "typeText": "Locale | undefined",
+            "typeRef": "type:faa2d1cac8abe6cb7ce4",
+            "required": false,
+            "description": "Language of the React library's built-in texts. The root provider sets it globally; a nested provider inherits its parent's language unless set, and applies an override to its subtree only."
+          },
+          {
+            "name": "preset",
+            "source": "packages/react/src/contexts/types.ts",
+            "kind": "enum",
+            "values": [
+              "compact",
+              "editorial",
+              "minerva",
+              "touch"
+            ],
+            "typeText": "\"editorial\" | \"compact\" | \"minerva\" | \"touch\" | undefined",
+            "typeRef": "type:57c71898ce4900e4be17",
+            "required": false,
+            "description": "Design preset: a named combination of the design axes below and a default palette. \"minerva\" (default look), \"editorial\" (restrained, reading-oriented: editorial palette, comfortable density, small radius, subtle shadows, large type), \"compact\" (dense, data-heavy screens) or \"touch\" (consumer mobile apps: comfortable density, 44px touch targets, large radius). Explicit axes and `palette` win over the preset. A nested provider inherits its parent's design unless set; a nested preset resets every axis it does not set."
+          },
+          {
+            "name": "density",
+            "source": "packages/react/src/contexts/types.ts",
+            "kind": "enum",
+            "values": [
+              "comfortable",
+              "compact",
+              "standard"
+            ],
+            "typeText": "\"compact\" | \"comfortable\" | \"standard\" | undefined",
+            "typeRef": "type:6c4c4181cf4b702c1892",
+            "required": false,
+            "description": "Spacing density of controls (heights, paddings) and rows (menus, lists, tables): `data-density`"
+          },
+          {
+            "name": "radius",
+            "source": "packages/react/src/contexts/types.ts",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "none",
+              "small"
+            ],
+            "typeText": "\"small\" | \"medium\" | \"large\" | \"none\" | undefined",
+            "typeRef": "type:81d0cef3201cfa049ee4",
+            "required": false,
+            "description": "Corner radius scale (`--radius-sm` ... `--radius-2xl`): `data-radius`"
+          },
+          {
+            "name": "shadow",
+            "source": "packages/react/src/contexts/types.ts",
+            "kind": "enum",
+            "values": [
+              "none",
+              "standard",
+              "subtle"
+            ],
+            "typeText": "\"subtle\" | \"none\" | \"standard\" | undefined",
+            "typeRef": "type:24a43819632837de5021",
+            "required": false,
+            "description": "Elevation shadows (`--shadow-sm` ... `--shadow-xl`): `data-shadow`. \"standard\" keeps the theme / palette shadows"
+          },
+          {
+            "name": "fontScale",
+            "source": "packages/react/src/contexts/types.ts",
+            "kind": "enum",
+            "values": [
+              "large",
+              "small",
+              "standard"
+            ],
+            "typeText": "\"small\" | \"large\" | \"standard\" | undefined",
+            "typeRef": "type:4fdefa306ab8f9ff4574",
+            "required": false,
+            "description": "Type scale (`--font-size-*`, line heights): `data-font-scale`. \"large\" is reading-oriented"
+          }
+        ],
+        "events": [
+          {
+            "name": "onThemeChange",
+            "source": "packages/react/src/contexts/types.ts",
+            "kind": "function",
+            "typeText": "((theme: ConfigProviderThemeProps) => void) | undefined",
+            "typeRef": "type:2f3ee82ad197e9845fea",
+            "parameters": [
+              {
+                "name": "theme",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ConfigProviderThemeProps",
+                "typeRef": "type:73ae73d9b67b72d0bab6"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called after `setTheme` changes the theme"
+          },
+          {
+            "name": "onPaletteChange",
+            "source": "packages/react/src/contexts/types.ts",
+            "kind": "function",
+            "typeText": "((palette: \"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null) => void) | undefined",
+            "typeRef": "type:413c6a7bb82a25e28be4",
+            "parameters": [
+              {
+                "name": "palette",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "\"editorial\" | \"tech\" | \"graphite\" | \"cool\" | null",
+                "typeRef": "type:918077d2a22b5f20e063"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called after `setPalette` changes the palette"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "theme",
+            "event": "onThemeChange",
+            "syntax": "theme={theme} onThemeChange={handler}"
+          },
+          {
+            "prop": "palette",
+            "event": "onPaletteChange",
+            "syntax": "palette={palette} onPaletteChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "ConfigContextProviderProps": {
+      "source": "react/src/contexts/types.ts",
+      "description": "Props of `ConfigProvider`",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "theme",
+          "type": "ConfigProviderThemeProps",
+          "required": false,
+          "default": "\"auto\" (nested: the parent's theme)",
+          "description": "Theme to apply: \"auto\" (follows `prefers-color-scheme`), a built-in theme name, a theme object, or a `{ light, dark }` pair. The root provider applies it to `<html>`; a nested provider inherits its parent's theme unless set, and applies an override to its own subtree only."
+        },
+        {
+          "name": "palette",
+          "type": "Palette | null",
+          "required": false,
+          "default": "null (nested: the parent's palette)",
+          "description": "Palette applied with the light / dark / system themes (\"editorial\", \"tech\", \"graphite\", \"cool\"); `null` keeps Minerva's default look. The root provider sets `data-palette` on `<html>`; a nested provider inherits its parent's palette unless set, and scopes an override to its subtree. Palette tokens come from `style.css`."
+        },
+        {
+          "name": "primaryColor",
+          "type": "PrimaryColor | null",
+          "required": false,
+          "default": "null (nested: the parent's brand color)",
+          "description": "Brand color: sets `--primary-color` and recomputes every token derived from it (hover, active, subtle, border and text roles, selected, focus ring, and the accent when the palette has no accent of its own) with the default theme's formulas, without changing the light / dark mode. A single color applies to light mode and gets a dark-mode value lightened for contrast on dark surfaces (WCAG 4.5:1); pass `{ light, dark }` to choose both. Wins over the primary color of the theme and of the palette. Accepts hex, `rgb()` / `rgba()` and the basic named colors; an invalid value is ignored (development warning). A nested provider inherits its parent's brand color unless set (`null` restores the theme's own), and scopes an override to its subtree."
+        },
+        {
+          "name": "persist",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Persist theme and palette changes in the `theme` / `palette` cookies and restore them after hydration (pair with `THEME_INIT_SCRIPT` for SSR). Root provider only: ignored by nested providers."
+        },
+        {
+          "name": "onThemeChange",
+          "type": "(theme: ConfigProviderThemeProps) => void",
+          "required": false,
+          "description": "Called after `setTheme` changes the theme"
+        },
+        {
+          "name": "onPaletteChange",
+          "type": "(palette: Palette | null) => void",
+          "required": false,
+          "description": "Called after `setPalette` changes the palette"
+        },
+        {
+          "name": "locale",
+          "type": "Locale",
+          "required": false,
+          "default": "{ language: \"en\" } (nested: the parent's locale)",
+          "description": "Language of the React library's built-in texts. The root provider sets it globally; a nested provider inherits its parent's language unless set, and applies an override to its subtree only."
+        },
+        {
+          "name": "preset",
+          "type": "DesignPreset",
+          "required": false,
+          "default": "\"minerva\" (nested: the parent's design)",
+          "description": "Design preset: a named combination of the design axes below and a default palette. \"minerva\" (default look), \"editorial\" (restrained, reading-oriented: editorial palette, comfortable density, small radius, subtle shadows, large type), \"compact\" (dense, data-heavy screens) or \"touch\" (consumer mobile apps: comfortable density, 44px touch targets, large radius). Explicit axes and `palette` win over the preset. A nested provider inherits its parent's design unless set; a nested preset resets every axis it does not set."
+        },
+        {
+          "name": "density",
+          "type": "Density",
+          "required": false,
+          "default": "\"standard\" (or the preset's)",
+          "description": "Spacing density of controls (heights, paddings) and rows (menus, lists, tables): `data-density`"
+        },
+        {
+          "name": "radius",
+          "type": "RadiusScale",
+          "required": false,
+          "default": "\"medium\" (or the preset's)",
+          "description": "Corner radius scale (`--radius-sm` ... `--radius-2xl`): `data-radius`"
+        },
+        {
+          "name": "shadow",
+          "type": "ShadowScale",
+          "required": false,
+          "default": "\"standard\" (or the preset's)",
+          "description": "Elevation shadows (`--shadow-sm` ... `--shadow-xl`): `data-shadow`. \"standard\" keeps the theme / palette shadows"
+        },
+        {
+          "name": "fontScale",
+          "type": "FontScale",
+          "required": false,
+          "default": "\"standard\" (or the preset's)",
+          "description": "Type scale (`--font-size-*`, line heights): `data-font-scale`. \"large\" is reading-oriented"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": true,
+          "description": "Application content"
+        }
+      ]
+    },
+    "ConfigContextProps": {
+      "source": "react/src/contexts/types.ts",
+      "description": "Value of `ConfigContext`, returned by `useConfig()`",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "theme",
+          "type": "ConfigProviderThemeProps",
+          "required": false,
+          "description": "Theme as configured (may be \"auto\" or a light/dark pair)"
+        },
+        {
+          "name": "resolvedTheme",
+          "type": "ThemeName | ComponentTheme",
+          "required": false,
+          "description": "Theme that is currently applied after resolving \"auto\" / light-dark pairs"
+        },
+        {
+          "name": "locale",
+          "type": "Locale",
+          "required": false,
+          "description": "Current locale of the React library's built-in texts"
+        },
+        {
+          "name": "mode",
+          "type": "ThemeMode",
+          "required": false,
+          "description": "Color mode of the theme: \"light\" / \"dark\" for those themes, \"system\" for \"auto\" / \"system\" / `{ light, dark }` pairs, `undefined` for other themes"
+        },
+        {
+          "name": "resolvedMode",
+          "type": "ResolvedThemeMode",
+          "required": false,
+          "description": "Applied color mode (`data-theme` on `<html>`, or on the scope element of a nested provider), when it can be determined"
+        },
+        {
+          "name": "palette",
+          "type": "Palette | null",
+          "required": false,
+          "description": "Active palette (`data-palette` on `<html>`, or on the scope element of a nested provider), `null` for Minerva's default look"
+        },
+        {
+          "name": "primaryColor",
+          "type": "PrimaryColorPair | null",
+          "required": false,
+          "description": "Brand color in effect (normalized light / dark pair, see `ConfigProvider`'s `primaryColor`), `null` when the theme / palette primary color applies"
+        },
+        {
+          "name": "design",
+          "type": "ResolvedDesign",
+          "required": false,
+          "description": "Applied design axes (`data-density` / `data-radius` / `data-shadow` / `data-font-scale`) and the preset they come from"
+        },
+        {
+          "name": "setTheme",
+          "type": "(theme: ConfigProviderThemeProps) => void",
+          "required": false,
+          "description": "Change the theme (persisted to the `theme` cookie when `persist` is on)"
+        },
+        {
+          "name": "setPalette",
+          "type": "(palette: Palette | null) => void",
+          "required": false,
+          "description": "Change the palette (persisted to the `palette` cookie when `persist` is on)"
+        }
+      ]
+    },
+    "Locale": {
+      "source": "react/src/contexts/types.ts",
+      "description": "Locale settings of the React library's built-in texts",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "language",
+          "type": "SupportedLanguage",
+          "required": false,
+          "default": "\"en\"",
+          "description": "Language of the React library's built-in texts"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "brand-color",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/config-provider/demos/brand-color.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/config-provider/demos/brand-color.tsx": "import { Button, ConfigProvider, Switch, useConfig } from \"minerva-design\";\n\n// A brand color without overriding --primary-color by hand: each card is a\n// nested <ConfigProvider primaryColor> in the site's current light / dark mode.\n// A single color gets a lighter dark-mode value (contrast on dark surfaces);\n// a { light, dark } pair sets both. Hover, active, subtle, border, text and\n// focus ring colors are all derived from it.\nconst brands = [\n  { label: 'primaryColor=\"#4f46e5\"', primaryColor: \"#4f46e5\" },\n  {\n    label: 'primaryColor={{ light: \"#4f46e5\", dark: \"#818cf8\" }}',\n    primaryColor: { light: \"#4f46e5\", dark: \"#818cf8\" },\n  },\n  { label: 'primaryColor=\"#0d9488\"', primaryColor: \"#0d9488\" },\n];\n\nfunction Swatch() {\n  const { resolvedMode = \"light\", primaryColor } = useConfig();\n  return (\n    <code style={{ color: \"var(--text-muted-color)\", fontSize: 12 }}>\n      {resolvedMode}: {primaryColor?.[resolvedMode]}\n    </code>\n  );\n}\n\nexport default function BrandColorDemo() {\n  const { resolvedMode = \"light\" } = useConfig();\n\n  return (\n    <div\n      style={{\n        display: \"grid\",\n        gridTemplateColumns: \"repeat(auto-fill, minmax(220px, 1fr))\",\n        gap: 12,\n      }}\n    >\n      {brands.map(({ label, primaryColor }) => (\n        <ConfigProvider\n          key={label}\n          theme={resolvedMode}\n          primaryColor={primaryColor}\n        >\n          <div\n            style={{\n              display: \"grid\",\n              gap: 10,\n              padding: 14,\n              borderRadius: 10,\n              border: \"1px solid var(--border-color)\",\n              background: \"var(--background-color)\",\n              color: \"var(--text-color)\",\n              fontFamily: \"var(--font-family-sans)\",\n            }}\n          >\n            <code style={{ fontSize: 12, overflowWrap: \"anywhere\" }}>\n              {label}\n            </code>\n            <div style={{ display: \"flex\", flexWrap: \"wrap\", gap: 8 }}>\n              <Button size=\"small\" color=\"primary\">\n                Primary\n              </Button>\n              <Button size=\"small\" color=\"primary\" variant=\"outline\">\n                Outline\n              </Button>\n              <Switch defaultChecked aria-label=\"Brand switch\" />\n            </div>\n            <Swatch />\n          </div>\n        </ConfigProvider>\n      ))}\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Couleur de marque",
+      "description": "Des ConfigProvider imbriqués avec primaryColor dans le mode actuel du site : l'indigo en couleur seule (valeur sombre dérivée), en paire { light, dark }, et un bleu-vert. Changez le thème du site pour comparer les valeurs sombres dérivées."
+    },
+    {
+      "id": "custom-theme",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/config-provider/demos/custom-theme.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/config-provider/demos/custom-theme.tsx": "import {\n  Button,\n  ConfigProvider,\n  HStack,\n  Select,\n  SelectItem,\n  Switch,\n  themes,\n  type ComponentTheme,\n  VStack,\n} from \"minerva-design\";\n\n// A custom theme: start from a built-in one and override tokens.\nconst sepia: ComponentTheme = {\n  ...themes.light,\n  \"primary-color\": \"#9a3412\",\n  \"primary-color-hover\": \"#7c2d12\",\n  \"primary-color-active\": \"#6c2710\",\n  \"background-color\": \"#fbf5e9\",\n  \"foreground-color\": \"#3b2f2a\",\n  \"border-color\": \"#e0d2b8\",\n  \"text-gray\": \"#6b5b4e\",\n  \"focus-ring-color\": \"rgba(154, 52, 18, 0.45)\",\n};\n\n// A nested ConfigProvider applies its theme to its own subtree only (the\n// site's root provider keeps <html>). Portalled content opened from inside,\n// like the Select menu below, gets the same theme.\nexport default function CustomThemeDemo() {\n  return (\n    <ConfigProvider theme={sepia}>\n      <div\n        style={{\n          padding: 16,\n          borderRadius: 8,\n          border: \"1px solid var(--border-color)\",\n          background: \"var(--surface-color)\",\n          color: \"var(--text-color)\",\n        }}\n      >\n        <VStack gap={4} align=\"start\">\n          <strong>Sepia theme</strong>\n          <span>Only this container uses the custom theme.</span>\n          <HStack gap={4} wrap>\n            <Button color=\"primary\">Primary</Button>\n            <Button color=\"primary\" disabled>\n              Disabled\n            </Button>\n            <Switch label=\"Reading mode\" defaultChecked />\n            <Select aria-label=\"Paper\" defaultValue=\"cream\">\n              <SelectItem value=\"cream\">Cream</SelectItem>\n              <SelectItem value=\"ivory\">Ivory</SelectItem>\n              <SelectItem value=\"kraft\">Kraft</SelectItem>\n            </Select>\n          </HStack>\n        </VStack>\n      </div>\n    </ConfigProvider>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Thème personnalisé",
+      "description": "Un thème personnalisé construit à partir de themes.light et passé à un ConfigProvider imbriqué : seul ce conteneur change de thème, y compris le menu du Select rendu dans un portail."
+    },
+    {
+      "id": "locale",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/config-provider/demos/locale.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/config-provider/demos/locale.tsx": "import { useState } from \"react\";\nimport {\n  Button,\n  ConfigProvider,\n  Pagination,\n  Tag,\n  useConfig,\n  useI18n,\n  type SupportedLanguage,\n} from \"minerva-design\";\n\n// a key from the React library's built-in translations\nconst AVATAR_KEY = \"avatar.default\";\nconst LANGUAGES: SupportedLanguage[] = [\"en\", \"zh\", \"ja\", \"fr\"];\n\nfunction Preview() {\n  const { locale, palette } = useConfig();\n  const { t } = useI18n();\n  return (\n    <div style={{ display: \"grid\", gap: 8 }}>\n      <div\n        style={{\n          display: \"flex\",\n          flexWrap: \"wrap\",\n          alignItems: \"center\",\n          gap: 8,\n        }}\n      >\n        locale: <Tag color=\"primary\">{locale?.language}</Tag> {AVATAR_KEY}:{\" \"}\n        <Tag color=\"info\">{t(AVATAR_KEY)}</Tag> palette:{\" \"}\n        <Tag color=\"success\">{palette ?? \"default\"}</Tag>\n      </div>\n      <Pagination total={50} defaultCurrent={2} showTotal />\n    </div>\n  );\n}\n\nexport default function LocaleDemo() {\n  const [language, setLanguage] = useState<SupportedLanguage>(\"en\");\n\n  // A nested provider that only sets `locale`: theme and palette are\n  // inherited from the site's provider, <html> is left alone, and the\n  // language only applies to this subtree.\n  return (\n    <div style={{ display: \"grid\", gap: 12 }}>\n      <div\n        role=\"group\"\n        aria-label=\"Language\"\n        style={{ display: \"flex\", gap: 8 }}\n      >\n        {LANGUAGES.map((lng) => (\n          <Button\n            key={lng}\n            size=\"small\"\n            color={lng === language ? \"primary\" : \"neutral\"}\n            variant={lng === language ? \"solid\" : \"outline\"}\n            aria-pressed={lng === language}\n            onClick={() => setLanguage(lng)}\n          >\n            {lng}\n          </Button>\n        ))}\n      </div>\n      <ConfigProvider locale={{ language }}>\n        <Preview />\n      </ConfigProvider>\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "Langue",
+      "description": "Un ConfigProvider imbriqué qui ne définit que la locale (en, zh, ja ou fr) : les textes intégrés de son sous-arbre changent, tandis que le thème et la palette sont hérités du site et que <html> reste intact."
+    },
+    {
+      "id": "palette",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/config-provider/demos/palette.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/config-provider/demos/palette.tsx": "import { Button, ConfigProvider, Tag, useConfig } from \"minerva-design\";\nimport { PALETTES } from \"minerva-design/theme-utils\";\n\n// The site's root provider sets data-palette on <html>. Each card below is a\n// nested <ConfigProvider palette={name}>: the palette (in the site's current\n// light / dark mode) only applies inside the card.\nexport default function PaletteDemo() {\n  const { resolvedMode = \"light\", palette } = useConfig();\n\n  return (\n    <div\n      style={{\n        display: \"grid\",\n        gridTemplateColumns: \"repeat(auto-fill, minmax(180px, 1fr))\",\n        gap: 12,\n      }}\n    >\n      {PALETTES.map((name) => (\n        <ConfigProvider key={name} theme={resolvedMode} palette={name}>\n          <div\n            style={{\n              display: \"grid\",\n              gap: 10,\n              padding: 14,\n              borderRadius: 10,\n              border: \"1px solid var(--border-color)\",\n              background: \"var(--background-color)\",\n              color: \"var(--text-color)\",\n              fontFamily: \"var(--font-family-sans)\",\n            }}\n          >\n            <strong>\n              palette=&quot;{name}&quot;{\" \"}\n              {palette === name && <Tag color=\"success\">active</Tag>}\n            </strong>\n            <Button size=\"small\" color=\"primary\">\n              Primary\n            </Button>\n            <span style={{ color: \"var(--text-muted-color)\", fontSize: 13 }}>\n              data-theme=&quot;{resolvedMode}&quot;\n            </span>\n          </div>\n        </ConfigProvider>\n      ))}\n    </div>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Palettes",
+      "description": "Chaque carte est un ConfigProvider imbriqué avec sa propre palette, dans le mode actuel du site. Le provider racine du site conserve data-palette sur <html>."
+    },
+    {
+      "id": "use-config",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/config-provider/demos/use-config.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/config-provider/demos/use-config.tsx": "import { Tag, useConfig } from \"minerva-design\";\n\n// useConfig() reads the nearest ConfigProvider. This site wraps every page in\n// one, so the values below change when you pick another theme, palette or\n// language in the header.\nexport default function UseConfigDemo() {\n  const { theme, resolvedTheme, palette, locale } = useConfig();\n\n  const describe = (value: unknown) =>\n    typeof value === \"string\" ? value : \"custom theme object\";\n\n  return (\n    <dl\n      style={{\n        display: \"grid\",\n        gridTemplateColumns: \"auto 1fr\",\n        gap: \"8px 16px\",\n        margin: 0,\n      }}\n    >\n      <dt>theme</dt>\n      <dd style={{ margin: 0 }}>\n        <Tag color=\"primary\">{describe(theme)}</Tag>\n      </dd>\n      <dt>resolvedTheme</dt>\n      <dd style={{ margin: 0 }}>\n        <Tag color=\"info\">{describe(resolvedTheme)}</Tag>\n      </dd>\n      <dt>palette</dt>\n      <dd style={{ margin: 0 }}>\n        <Tag color=\"warning\">{palette ?? \"null\"}</Tag>\n      </dd>\n      <dt>locale.language</dt>\n      <dd style={{ margin: 0 }}>\n        <Tag color=\"success\">{locale?.language ?? \"en\"}</Tag>\n      </dd>\n    </dl>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Lire la configuration",
+      "description": "useConfig() renvoie le thème configuré, le thème résolu, la palette et la locale du provider le plus proche. Changez le thème, la palette ou la langue du site dans l'en-tête pour voir les valeurs se mettre à jour."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "import { ConfigProvider } from \"minerva-design\";\nimport \"minerva-design/style.css\";\n\nexport default function Root() {\n  return (\n    <ConfigProvider theme=\"auto\" locale={{ language: \"en\" }}>\n      <App />\n    </ConfigProvider>\n  );\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "import { useState } from \"react\";\nimport { Button, ConfigProvider, type Theme } from \"minerva-design\";\n\nexport default function Root() {\n  const [theme, setTheme] = useState<Theme>(\"light\");\n  return (\n    <ConfigProvider theme={theme}>\n      <Button onClick={() => setTheme(theme === \"light\" ? \"dark\" : \"light\")}>\n        Toggle theme\n      </Button>\n    </ConfigProvider>\n  );\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "import { Button, ConfigProvider, useConfig } from \"minerva-design\";\n\nexport default function Root() {\n  return (\n    // \"system\" is an alias of \"auto\". palette applies with light / dark / system.\n    <ConfigProvider\n      theme=\"system\"\n      palette=\"editorial\"\n      persist // restore / save the \"theme\" and \"palette\" cookies\n      onThemeChange={(theme) => analytics.track(\"theme\", theme)}\n      onPaletteChange={(palette) => analytics.track(\"palette\", palette)}\n    >\n      <App />\n    </ConfigProvider>\n  );\n}\n\nfunction Settings() {\n  const { mode, resolvedMode, palette, setTheme, setPalette } = useConfig();\n  // mode: \"light\" | \"dark\" | \"system\"; resolvedMode: \"light\" | \"dark\"\n  return (\n    <>\n      <Button onClick={() => setTheme(resolvedMode === \"dark\" ? \"light\" : \"dark\")}>\n        {mode}\n      </Button>\n      <Button onClick={() => setPalette(palette === \"tech\" ? null : \"tech\")}>\n        {palette ?? \"default\"}\n      </Button>\n    </>\n  );\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "import { ConfigProvider, ThemeToggle } from \"minerva-design\";\n\n// Indigo brand: no --primary-color overrides, no !important.\n// theme stays \"light\" | \"dark\" | \"system\", so data-theme and ThemeToggle work.\nexport default function Root() {\n  return (\n    <ConfigProvider theme=\"system\" persist primaryColor=\"#4f46e5\">\n      {/* dark mode derives #7b85f2 from #4f46e5 */}\n      <ThemeToggle />\n      <App />\n    </ConfigProvider>\n  );\n}\n\n// Or pick both values:\n<ConfigProvider theme=\"light\" primaryColor={{ light: \"#4f46e5\", dark: \"#818cf8\" }} />\n\n// The palette keeps its surfaces and text colors, primaryColor wins:\n<ConfigProvider palette=\"tech\" primaryColor=\"#4f46e5\" />",
+      "language": "tsx"
+    },
+    {
+      "source": "import { ConfigProvider } from \"minerva-design\";\n\nexport default function Root() {\n  return (\n    // root provider: owns <html>, the cookies and the React library's global language\n    <ConfigProvider theme=\"system\" palette=\"editorial\" persist>\n      <App />\n\n      {/* inherits theme + palette, only this subtree is in Japanese */}\n      <ConfigProvider locale={{ language: \"ja\" }}>\n        <Sidebar />\n      </ConfigProvider>\n\n      {/* dark + inherited palette for this card and its overlays only */}\n      <ConfigProvider theme=\"dark\">\n        <PreviewCard />\n      </ConfigProvider>\n    </ConfigProvider>\n  );\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "import { useContext } from \"react\";\nimport { ConfigContext } from \"minerva-design\";\n\n// Unlike useConfig(), reading the context directly does not throw outside a\n// provider: it returns undefined, which is handy for optional integrations.\nfunction useOptionalConfig() {\n  return useContext(ConfigContext);\n}",
+      "language": "tsx"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.20.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "ConfigProvider",
+      "description": "Fournit le thème et la langue de la bibliothèque React à votre application, et les expose via useConfig().",
+      "usage": {
+        "title": "Utilisation",
+        "text": "Affichez un seul ConfigProvider à la racine de votre application. Il applique le thème sous forme de variables CSS sur <html>, définit la langue des textes intégrés de la bibliothèque React et fournit les deux à useConfig().",
+        "dynamic": "Les deux props sont réactives : stockez-les dans un état pour permettre de changer de thème ou de langue à l'exécution.",
+        "global": "Seul le ConfigProvider le plus externe modifie l'état global : il écrit data-theme, data-palette et les variables du thème sur <html>, enregistre les cookies et définit la langue globale de la bibliothèque React. Un provider imbriqué ne le fait jamais ; il applique ses propres réglages à son sous-arbre uniquement (voir Providers imbriqués)."
+      },
+      "palette": {
+        "title": "Palette, persistance et callbacks",
+        "text": "palette ajoute une palette de couleurs (\"editorial\", \"tech\", \"graphite\" ou \"cool\") au thème light, dark ou system. persist enregistre les changements de thème et de palette dans les cookies theme et palette et les restaure après l'hydratation. onThemeChange et onPaletteChange sont appelés après que setTheme et setPalette ont changé la valeur.",
+        "setters": "useConfig() renvoie aussi mode, resolvedMode et palette, ainsi que les setters setTheme et setPalette : n'importe quel composant peut changer le thème sans remonter l'état. Le rendu serveur, les cookies et le script d'initialisation anti-flash sont décrits dans"
+      },
+      "brand": {
+        "title": "Couleur de marque",
+        "text": "primaryColor définit votre couleur de marque sans surcharger --primary-color à la main : passez une couleur CSS (\"#4f46e5\", rgb(), une couleur nommée) pour les deux modes, ou une paire { light, dark }. Le thème reste explicite : theme vaut toujours \"light\", \"dark\" ou \"system\", donc data-theme, useConfig().mode et ThemeToggle continuent de fonctionner.",
+        "derive": "Tokens dérivés : chaque token dérivé de primary-color (hover, active, subtle, border, text, anneau de focus, couleur de sélection et, sauf si la palette a la sienne, les tokens d'accent) est recalculé à partir de la couleur de marque avec les formules du thème par défaut. Une couleur seule reçoit une valeur de mode sombre mélangée vers le blanc en OKLab jusqu'à atteindre un contraste de 4.5:1 sur les surfaces sombres (#4f46e5 devient #7b85f2) ; les couleurs déjà conformes sont conservées.",
+        "precedence": "Priorité : primaryColor l'emporte sur la couleur primaire de la palette et du thème ; la palette garde ses autres tokens. Une couleur invalide est ignorée, avec un avertissement en développement.",
+        "nesting": "Imbrication : les providers imbriqués héritent de la couleur de marque, et un primaryColor imbriqué ne s'applique qu'à son sous-arbre (overlays compris) ; null rétablit la couleur primaire du thème.",
+        "ssr": "Rendu serveur : le provider racine rend les valeurs claire et sombre de la marque dans une <style> indexée sur data-theme, donc le balisage serveur a la couleur de marque avant l'hydratation (pas de flash avec le script d'initialisation du thème). React Native (MinervaProvider), les providers Taro, uni-app et mini-programme WeChat (ConfigProvider / ThemeProvider), Vue (ConfigProvider / ThemeProvider), Angular (<mn-config primaryColor>, provideMinerva({ primaryColor })) et <minerva-config primary-color> acceptent la même valeur, avec la même sémantique."
+      },
+      "demos": {
+        "use-config": {
+          "title": "Lire la configuration",
+          "description": "useConfig() renvoie le thème configuré, le thème résolu, la palette et la locale du provider le plus proche. Changez le thème, la palette ou la langue du site dans l'en-tête pour voir les valeurs se mettre à jour."
+        },
+        "custom-theme": {
+          "title": "Thème personnalisé",
+          "description": "Un thème personnalisé construit à partir de themes.light et passé à un ConfigProvider imbriqué : seul ce conteneur change de thème, y compris le menu du Select rendu dans un portail."
+        },
+        "locale": {
+          "title": "Langue",
+          "description": "Un ConfigProvider imbriqué qui ne définit que la locale (en, zh, ja ou fr) : les textes intégrés de son sous-arbre changent, tandis que le thème et la palette sont hérités du site et que <html> reste intact."
+        },
+        "palette": {
+          "title": "Palettes",
+          "description": "Chaque carte est un ConfigProvider imbriqué avec sa propre palette, dans le mode actuel du site. Le provider racine du site conserve data-palette sur <html>."
+        },
+        "brand-color": {
+          "title": "Couleur de marque",
+          "description": "Des ConfigProvider imbriqués avec primaryColor dans le mode actuel du site : l'indigo en couleur seule (valeur sombre dérivée), en paire { light, dark }, et un bleu-vert. Changez le thème du site pour comparer les valeurs sombres dérivées."
+        }
+      },
+      "api": {
+        "ConfigContextProviderProps": {
+          "theme": "Thème à appliquer : \"auto\" ou son alias \"system\" (suit prefers-color-scheme), un nom de thème intégré, un objet de thème ou une paire { light, dark }. Le provider racine l'applique à <html> ; un provider imbriqué hérite du thème de son parent s'il n'est pas défini, et n'applique sa redéfinition qu'à son propre sous-arbre.",
+          "palette": "Palette appliquée avec les thèmes light, dark et system (\"editorial\", \"tech\", \"graphite\", \"cool\") ; null conserve l'apparence par défaut de Minerva. Le provider racine définit data-palette sur <html> ; un provider imbriqué hérite de la palette de son parent si elle n'est pas définie, et limite sa redéfinition à son sous-arbre. Les tokens de palette proviennent de style.css.",
+          "primaryColor": "Couleur de marque : une couleur CSS pour les deux modes (la valeur du mode sombre est dérivée pour le contraste sur les surfaces sombres) ou une paire { light, dark }. Recalcule chaque token dérivé de primary-color et l'emporte sur la couleur primaire de la palette, en conservant le mode clair / sombre explicite. Un provider imbriqué en hérite sauf s'il la définit, et limite alors la surcharge à son sous-arbre ; null rétablit celle du thème. Les couleurs invalides sont ignorées avec un avertissement en développement.",
+          "persist": "Enregistre les changements de thème et de palette dans les cookies theme et palette et les restaure après l'hydratation (à associer à THEME_INIT_SCRIPT en SSR). Provider racine uniquement : les providers imbriqués l'ignorent.",
+          "onThemeChange": "Appelé après que setTheme a changé le thème.",
+          "onPaletteChange": "Appelé après que setPalette a changé la palette.",
+          "locale": "Langue des textes intégrés de la bibliothèque React. Le provider racine la définit globalement ; un provider imbriqué hérite de la langue de son parent si elle n'est pas définie, et n'applique sa redéfinition qu'à son sous-arbre.",
+          "children": "Contenu de l'application.",
+          "preset": "Préréglage de design : combinaison nommée des axes de design et d'une palette par défaut (\"minerva\", \"editorial\" pour une apparence sobre orientée lecture, \"compact\" pour les écrans denses, \"touch\" pour les applications mobiles grand public). Les axes et la palette explicites l'emportent. Voir Préréglages de design.",
+          "density": "Densité d'espacement des contrôles et des lignes (data-density).",
+          "radius": "Échelle des rayons (data-radius).",
+          "shadow": "Échelle des ombres (data-shadow) ; \"standard\" conserve les ombres du thème / de la palette.",
+          "fontScale": "Échelle typographique (data-font-scale) ; \"large\" est orientée lecture."
+        },
+        "ConfigContextProps": {
+          "theme": "Thème tel que configuré (peut être \"auto\" ou une paire { light, dark }).",
+          "resolvedTheme": "Thème réellement appliqué après résolution de \"auto\" et des paires { light, dark } : un nom de thème intégré ou un objet de thème.",
+          "locale": "Locale actuelle des textes intégrés de la bibliothèque React.",
+          "mode": "Mode de couleur du thème : \"light\" ou \"dark\" pour ces thèmes, \"system\" pour \"auto\", \"system\" et les paires { light, dark }, undefined pour les autres thèmes.",
+          "resolvedMode": "Mode de couleur appliqué (data-theme sur <html>, ou sur l'élément de portée d'un provider imbriqué), lorsqu'il peut être déterminé.",
+          "palette": "Palette active (data-palette sur <html>, ou sur l'élément de portée d'un provider imbriqué), null pour l'apparence par défaut de Minerva.",
+          "primaryColor": "Couleur de marque appliquée au sous-arbre, sous forme de paire { light, dark } (valeur sombre dérivée quand une seule couleur a été donnée), null quand la couleur primaire du thème est utilisée.",
+          "setTheme": "Change le thème (enregistré dans le cookie theme quand persist est activé).",
+          "setPalette": "Change la palette (enregistrée dans le cookie palette quand persist est activé).",
+          "design": "Axes de design résolus (preset, density, radius, shadow, fontScale) appliqués à <html> ou à la portée d'un provider imbriqué."
+        },
+        "Locale": {
+          "language": "Langue des textes intégrés de la bibliothèque React : \"en\", \"zh\", \"ja\" ou \"fr\"."
+        }
+      },
+      "context": {
+        "title": "ConfigContext",
+        "text": "useConfig() lève une erreur s'il n'y a pas de ConfigProvider au-dessus, ce qui révèle tôt les erreurs de configuration. Lisez ConfigContext directement lorsque le provider est facultatif : il renvoie undefined au lieu de lever une erreur."
+      },
+      "nesting": {
+        "title": "Providers imbriqués",
+        "text": "Un ConfigProvider placé dans un autre est un provider imbriqué. Utilisez-le pour donner à une zone de la page, un aperçu ou une démo un autre thème, une autre palette ou une autre langue sans affecter le reste de la page.",
+        "inherit": "Héritage : il hérite du thème, de la palette et de la locale du provider le plus proche au-dessus de lui. Seules les props que vous définissez sont remplacées, et useConfig() en dessous renvoie les valeurs fusionnées. Les réglages hérités suivent le parent lorsqu'il change.",
+        "scoped": "Thème local : un thème ou une palette redéfini ne s'applique qu'à son sous-arbre. Le provider rend un élément conteneur en display: contents (la mise en page ne change pas) qui porte data-theme, data-palette et les variables du thème. Sans thème ni palette redéfini, aucun conteneur n'est rendu.",
+        "locale": "Langue locale : une locale redéfinie ne change que les textes intégrés de son sous-arbre. Un provider qui ne définit que la locale ne touche jamais au thème.",
+        "portal": "Surcouches : le contenu rendu dans un portail depuis un sous-arbre local (Modal, Drawer, Popover, Select, Menu, Tooltip, Toast…) est placé dans un conteneur sur <body> qui porte la même portée, si bien que les surcouches reçoivent aussi le thème local. Les API impératives rendues hors de l'arbre React, comme un confirm() autonome, utilisent le thème racine.",
+        "document": "État global : un provider imbriqué n'écrit jamais sur <html>, ne lit ni n'écrit les cookies (persist est ignoré) et ne change jamais la langue globale de la bibliothèque React. Le démonter laisse la page exactement telle que le provider racine l'a définie, et démonter le provider racine rétablit ce qu'il avait modifié. setTheme et setPalette d'un provider imbriqué changent sa propre valeur redéfinie, ou la valeur du parent pour un réglage qu'il ne redéfinit pas."
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "<minerva-config> s'affiche en display: contents et délimite le thème de tout son contenu : ici une portée claire et une portée sombre côte à côte."
+          },
+          "palette-design": {
+            "title": "Palette et design",
+            "description": "palette, design (préréglage) et les surcharges density / radius / shadow / font-scale ne s'appliquent qu'au sous-arbre."
+          },
+          "locale": {
+            "title": "Langue",
+            "description": "locale définit la langue des textes intégrés des éléments contenus (total de la pagination, état vide). Changez-la pour les voir se mettre à jour en direct."
+          },
+          "nested": {
+            "title": "Portées imbriquées et événements de thème",
+            "description": "Les portées s'imbriquent et la plus proche l'emporte : la portée interne reste claire tandis que l'externe suit les boutons. minerva-theme-change signale le mode résolu, y compris avec theme=\"system\"."
+          },
+          "brand-color": {
+            "title": "Couleur de marque",
+            "description": "Portées avec primary-color : indigo en une seule couleur (valeur sombre #7b85f2 dérivée), indigo dans une portée sombre, et sarcelle qui l’emporte sur le primaire de la palette editorial."
+          }
+        },
+        "minerva-config": {
+          "props": {
+            "root": "Écrit les attributs sur <html> (toute la page) au lieu de ce sous-arbre."
+          },
+          "events": {
+            "minerva-theme-change": "Le mode clair / sombre résolu a changé (detail: { mode }), par exemple la préférence système avec theme=\"system\"."
+          },
+          "slots": {
+            "default": "Contenu de la portée."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "switching": {
+            "title": "Changer de thème",
+            "description": "Changer de thème avec MinervaProvider ; l’aperçu suit le thème et la palette du site."
+          },
+          "use-theme": {
+            "title": "Utiliser les variables du thème",
+            "description": "Utiliser les variables du thème avec MinervaProvider ; l’aperçu suit le thème et la palette du site."
+          }
+        }
+      }
+    }
+  }
+}

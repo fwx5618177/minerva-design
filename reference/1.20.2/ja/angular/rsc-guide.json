@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.2",
+  "locale": "ja",
+  "renderer": "angular",
+  "page": "rsc-guide",
+  "title": "Server Components",
+  "description": "React Server Components で Minerva を使う：どのエントリがクライアント境界か、サーバーで何を実行できるか、CSS をどこでインポートするか。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.2",
+    "sourceCommit": "8d5d0df3644b1fa1c267b3dd6809b0e7eb1ce75b",
+    "sourceDigest": "sha256:2862a9e3a864c9423aed5d287db6fac7e8ddf58b9f5d144c61e7ff4a2630890e",
+    "referenceSourceDigest": "sha256:b329acf9d5eb6cf4b4b42169ce925c67b033f581b616664bf07fc6d664de45f0"
+  },
+  "content": {
+    "entries": {
+      "title": "エントリと \"use client\" 宣言",
+      "text": "minerva-design は複数のエントリとして公開されています。コンポーネントを含むエントリは \"use client\" ディレクティブで始まりますが、テーマヘルパーのエントリには付いていないため、Server Component 内で実行できます。",
+      "entry": "エントリ",
+      "banner": "\"use client\"",
+      "yes": "あり",
+      "no": "なし",
+      "main": "すべてのコンポーネント、プロバイダー、フック、ユーティリティ。",
+      "monaco": "Monaco ベースのコードエディター（任意のピア依存：@monaco-editor/react と monaco-editor）。",
+      "charts": "GPU チャート（WebGPU、WebGL2、WebGL、Canvas2D）：Chart、LineChart、BarChart、TradingChart、Scatter3DChart など 40 種類以上のチャート。",
+      "chartsCore": "フレームワーク非依存のチャートエンジン：createChart と formatCompact。サーバーで安全にインポートでき、チャートはブラウザーで作成されます。",
+      "icons": "アイコンセット：Icon、IconCanvas、DynamicIcon、createIcon と、アイコンごとのコンポーネント（SearchIcon…）。SVG アイコンはクライアントコンポーネント内でサーバーレンダリングされます。",
+      "iconsCore": "フレームワーク非依存のアイコンセット：アイコンデータ、toSvg、drawIcon、GPU アイコンキャンバス。サーバーで安全にインポートでき（toSvg はサーバーで動作）、キャンバスはブラウザーで作成されます。",
+      "themeUtils": "サーバーで安全に使えるテーマヘルパー：THEME_INIT_SCRIPT、Cookie の解析とシリアライズ、パレット名。",
+      "utils": "サーバーで安全に使えるユーティリティ：cn、themes、light、dark、githubDark、palettes、resolveTheme、generateCSSVariables、applyThemeStyles、getSystemTheme、isBilingualTheme、matchesShortcut、normalizeShortcuts、computeFixedColumnLayout。"
+    },
+    "why": {
+      "title": "一部のエントリがクライアント境界である理由",
+      "p1": "Minerva のすべてのコンポーネントは state、エフェクト、コンテキスト、ポータルのいずれかを使うため、ブラウザーで実行する必要があります。メインエントリには \"use client\" が付いているので、それをインポートした Server Component が受け取るのはコンポーネントのコードではなくクライアント参照、つまりバンドラーがクライアントバンドルに解決するプレースホルダーです。それでも SSR 中にコンポーネントはサーバーで HTML にレンダリングされ、ブラウザーでハイドレートされます。",
+      "p2": "クライアント参照はサーバー上で呼び出せる関数ではありません。レンダリングするだけのコンポーネントには問題ありませんが、クライアントエントリの通常の関数は Server Component では実行できないということです。そのため、テーマ Cookie の解析や初期化スクリプトの生成など、サーバーで必要な関数は宣言のない別のエントリ minerva-design/theme-utils にあります。"
+    },
+    "render": {
+      "title": "Server Component からコンポーネントをレンダリングする",
+      "text": "Server Component、レイアウト、ページで minerva-design からコンポーネントを直接インポートできます。エントリ自体がクライアント境界なので、ラッパーは不要です。",
+      "props": "Server Component からクライアントコンポーネントに渡す props はシリアライズ可能でなければなりません：文字列、数値、真偽値、プレーンオブジェクト、配列、JSX。関数はシリアライズできないので、onClick などのイベントハンドラー、render props、コールバックには独自の小さなクライアントコンポーネントが必要です："
+    },
+    "functions": {
+      "title": "サーバーで関数を呼び出す",
+      "text": "minerva-design/theme-utils と minerva-design/utils のヘルパーは、レイアウト、ルートハンドラー、ミドルウェア、エッジ関数など、サーバー上で自由に呼び出せます。メインエントリの関数（toast.success、Confirm、各フックなど）を Server Component で呼び出したり、そのデータ（themes、palettes など）を読んだりしないでください。そこではクライアント参照にすぎません。通常の関数とデータは minerva-design/utils からインポートしてください。",
+      "imperative": "命令的な API はクライアントコンポーネントの SSR 中でも安全です。document がない場合は何もせず、Confirm のような Promise ベースのダイアログはサーバーでは false に解決されます。ブラウザーでのみ実行されるイベントハンドラーやエフェクトから呼び出してください。"
+    },
+    "csp": {
+      "title": "コンテンツセキュリティポリシー（CSP）",
+      "text": "厳格な Content-Security-Policy（'unsafe-inline' なし）はインラインのテーマ初期化スクリプトをブロックします。<script> 要素にリクエストの nonce を付けるか、ハッシュで許可してください。THEME_INIT_SCRIPT_HASH は THEME_INIT_SCRIPT の 'sha256-…' ソースで、cspHash() は createThemeInitScript() で作ったスクリプトのハッシュを計算します。"
+    },
+    "css": {
+      "title": "CSS をインポートする場所",
+      "text": "minerva-design/style.css は一度だけインポートします。Next.js App Router では、グローバル CSS はルートレイアウトに置きます。ルートレイアウトは Server Component で、CSS をインポートできます。その他の構成では、クライアントのエントリファイルでインポートしてください。prose.scss は任意の追加スタイルで、独自の Sass から同じ方法で読み込みます。"
+    },
+    "next": {
+      "title": "次のステップ",
+      "themePalette": "テーマのちらつきのないサーバーレンダリング：THEME_INIT_SCRIPT とテーマ Cookie。",
+      "installation": "パッケージ、ピア依存、スタイルシート。"
+    }
+  },
+  "components": [],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "// dist/index.js and dist/monaco.js start with\n\"use client\";\n\n// dist/theme-utils.js and dist/utils-entry.js do not: they hold plain\n// functions and data, safe to run on the server",
+      "language": "tsx"
+    },
+    {
+      "source": "// app/page.tsx: a Server Component (no \"use client\")\nimport { Card, Tag } from \"minerva-design\";\nimport { SaveButton } from \"./save-button\";\n\nexport default async function Page() {\n  const posts = await getPosts(); // server-only data access\n\n  return posts.map((post) => (\n    // serializable props only: strings, numbers, booleans, JSX children...\n    <Card key={post.id} padding=\"medium\">\n      <Tag color=\"info\">{post.category}</Tag>\n      <h2>{post.title}</h2>\n      <SaveButton id={post.id} />\n    </Card>\n  ));\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "// app/save-button.tsx\n\"use client\";\n\nimport { Button, toast } from \"minerva-design\";\n\n// Event handlers and imperative APIs live in a client component\nexport function SaveButton({ id }: { id: string }) {\n  return (\n    <Button\n      color=\"primary\"\n      onClick={async () => {\n        await fetch(`/api/save/${id}`, { method: \"POST\" });\n        toast.success(\"Saved\"); // shown by the ToastProvider in your layout\n      }}\n    >\n      Save\n    </Button>\n  );\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "// app/layout.tsx: a Server Component\nimport { cookies } from \"next/headers\";\nimport {\n  THEME_COOKIE_NAME,\n  THEME_INIT_SCRIPT,\n  parseThemeCookie,\n} from \"minerva-design/theme-utils\"; // server-safe: runs here\nimport { ThemeProvider } from \"minerva-design\"; // rendered, not called\n\nexport default async function RootLayout({ children }: { children: React.ReactNode }) {\n  const theme = parseThemeCookie((await cookies()).get(THEME_COOKIE_NAME)?.value);\n  return (\n    <html lang=\"en\" suppressHydrationWarning>\n      <head>\n        <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />\n      </head>\n      <body>\n        <ThemeProvider defaultTheme={theme}>{children}</ThemeProvider>\n      </body>\n    </html>\n  );\n}\n\n// Plain functions and data (cn, themes, palettes, resolveTheme...):\n// import them from the server-safe utils entry, not from the main entry\nimport { cn, themes } from \"minerva-design/utils\";\n\n// Not on the server: main-entry functions are client references there\n// import { toast } from \"minerva-design\";\n// toast.success(\"Hi\"); // call it from a client component instead",
+      "language": "tsx"
+    },
+    {
+      "source": "// Strict CSP, option 1: a per-request nonce on the inline script\n<script\n  nonce={nonce}\n  suppressHydrationWarning\n  dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }}\n/>\n// Content-Security-Policy: script-src 'self' 'nonce-<nonce>'\n\n// Option 2: allow the script by its hash (static HTML, CDN caching)\nimport {\n  THEME_INIT_SCRIPT_HASH,\n  createThemeInitScript,\n  cspHash,\n} from \"minerva-design/theme-utils\";\n\nconst csp = `script-src 'self' ${THEME_INIT_SCRIPT_HASH}`;\n// a customised script has its own hash:\nconst script = createThemeInitScript({ defaultTheme: \"dark\" });\nconst customCsp = `script-src 'self' ${cspHash(script)}`;",
+      "language": "tsx"
+    },
+    {
+      "source": "// Next.js App Router: import global CSS once, in the root layout\n// app/layout.tsx\nimport \"minerva-design/style.css\";\n\n// Vite / other setups: import it in the client entry file (main.tsx)",
+      "language": "tsx"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.20.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Server Components",
+      "description": "React Server Components で Minerva を使う：どのエントリがクライアント境界か、サーバーで何を実行できるか、CSS をどこでインポートするか。",
+      "entries": {
+        "title": "エントリと \"use client\" 宣言",
+        "text": "minerva-design は複数のエントリとして公開されています。コンポーネントを含むエントリは \"use client\" ディレクティブで始まりますが、テーマヘルパーのエントリには付いていないため、Server Component 内で実行できます。",
+        "entry": "エントリ",
+        "banner": "\"use client\"",
+        "yes": "あり",
+        "no": "なし",
+        "main": "すべてのコンポーネント、プロバイダー、フック、ユーティリティ。",
+        "monaco": "Monaco ベースのコードエディター（任意のピア依存：@monaco-editor/react と monaco-editor）。",
+        "charts": "GPU チャート（WebGPU、WebGL2、WebGL、Canvas2D）：Chart、LineChart、BarChart、TradingChart、Scatter3DChart など 40 種類以上のチャート。",
+        "chartsCore": "フレームワーク非依存のチャートエンジン：createChart と formatCompact。サーバーで安全にインポートでき、チャートはブラウザーで作成されます。",
+        "icons": "アイコンセット：Icon、IconCanvas、DynamicIcon、createIcon と、アイコンごとのコンポーネント（SearchIcon…）。SVG アイコンはクライアントコンポーネント内でサーバーレンダリングされます。",
+        "iconsCore": "フレームワーク非依存のアイコンセット：アイコンデータ、toSvg、drawIcon、GPU アイコンキャンバス。サーバーで安全にインポートでき（toSvg はサーバーで動作）、キャンバスはブラウザーで作成されます。",
+        "themeUtils": "サーバーで安全に使えるテーマヘルパー：THEME_INIT_SCRIPT、Cookie の解析とシリアライズ、パレット名。",
+        "utils": "サーバーで安全に使えるユーティリティ：cn、themes、light、dark、githubDark、palettes、resolveTheme、generateCSSVariables、applyThemeStyles、getSystemTheme、isBilingualTheme、matchesShortcut、normalizeShortcuts、computeFixedColumnLayout。"
+      },
+      "why": {
+        "title": "一部のエントリがクライアント境界である理由",
+        "p1": "Minerva のすべてのコンポーネントは state、エフェクト、コンテキスト、ポータルのいずれかを使うため、ブラウザーで実行する必要があります。メインエントリには \"use client\" が付いているので、それをインポートした Server Component が受け取るのはコンポーネントのコードではなくクライアント参照、つまりバンドラーがクライアントバンドルに解決するプレースホルダーです。それでも SSR 中にコンポーネントはサーバーで HTML にレンダリングされ、ブラウザーでハイドレートされます。",
+        "p2": "クライアント参照はサーバー上で呼び出せる関数ではありません。レンダリングするだけのコンポーネントには問題ありませんが、クライアントエントリの通常の関数は Server Component では実行できないということです。そのため、テーマ Cookie の解析や初期化スクリプトの生成など、サーバーで必要な関数は宣言のない別のエントリ minerva-design/theme-utils にあります。"
+      },
+      "render": {
+        "title": "Server Component からコンポーネントをレンダリングする",
+        "text": "Server Component、レイアウト、ページで minerva-design からコンポーネントを直接インポートできます。エントリ自体がクライアント境界なので、ラッパーは不要です。",
+        "props": "Server Component からクライアントコンポーネントに渡す props はシリアライズ可能でなければなりません：文字列、数値、真偽値、プレーンオブジェクト、配列、JSX。関数はシリアライズできないので、onClick などのイベントハンドラー、render props、コールバックには独自の小さなクライアントコンポーネントが必要です："
+      },
+      "functions": {
+        "title": "サーバーで関数を呼び出す",
+        "text": "minerva-design/theme-utils と minerva-design/utils のヘルパーは、レイアウト、ルートハンドラー、ミドルウェア、エッジ関数など、サーバー上で自由に呼び出せます。メインエントリの関数（toast.success、Confirm、各フックなど）を Server Component で呼び出したり、そのデータ（themes、palettes など）を読んだりしないでください。そこではクライアント参照にすぎません。通常の関数とデータは minerva-design/utils からインポートしてください。",
+        "imperative": "命令的な API はクライアントコンポーネントの SSR 中でも安全です。document がない場合は何もせず、Confirm のような Promise ベースのダイアログはサーバーでは false に解決されます。ブラウザーでのみ実行されるイベントハンドラーやエフェクトから呼び出してください。"
+      },
+      "csp": {
+        "title": "コンテンツセキュリティポリシー（CSP）",
+        "text": "厳格な Content-Security-Policy（'unsafe-inline' なし）はインラインのテーマ初期化スクリプトをブロックします。<script> 要素にリクエストの nonce を付けるか、ハッシュで許可してください。THEME_INIT_SCRIPT_HASH は THEME_INIT_SCRIPT の 'sha256-…' ソースで、cspHash() は createThemeInitScript() で作ったスクリプトのハッシュを計算します。"
+      },
+      "css": {
+        "title": "CSS をインポートする場所",
+        "text": "minerva-design/style.css は一度だけインポートします。Next.js App Router では、グローバル CSS はルートレイアウトに置きます。ルートレイアウトは Server Component で、CSS をインポートできます。その他の構成では、クライアントのエントリファイルでインポートしてください。prose.scss は任意の追加スタイルで、独自の Sass から同じ方法で読み込みます。"
+      },
+      "next": {
+        "title": "次のステップ",
+        "themePalette": "テーマのちらつきのないサーバーレンダリング：THEME_INIT_SCRIPT とテーマ Cookie。",
+        "installation": "パッケージ、ピア依存、スタイルシート。"
+      }
+    }
+  }
+}

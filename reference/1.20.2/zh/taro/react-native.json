@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.2",
+  "locale": "zh",
+  "renderer": "taro",
+  "page": "react-native",
+  "title": "React Native",
+  "description": "共享令牌与交互逻辑的原生移动端组件。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.2",
+    "sourceCommit": "8d5d0df3644b1fa1c267b3dd6809b0e7eb1ce75b",
+    "sourceDigest": "sha256:2862a9e3a864c9423aed5d287db6fac7e8ddf58b9f5d144c61e7ff4a2630890e",
+    "referenceSourceDigest": "sha256:b329acf9d5eb6cf4b4b42169ce925c67b033f581b616664bf07fc6d664de45f0"
+  },
+  "content": {
+    "setup": "在 React Native 或 Expo 中导入 minerva-design/native，React 版本跟随 Expo SDK。无需加载 Web 样式表，MinervaProvider 将令牌解析为原生样式。仓库包含 apps/expo-example 示例应用。",
+    "validation": "组件交互已通过 React Native Testing Library 与 react-native-web 测试。Expo Go 57.0.9 已在 iPhone 17 Pro / iOS 26.1 模拟器和 Pixel 8 / Android 16 API 36 ARM64 模拟器验收，覆盖文字输入、表格排序与选择、联想输入、菜单、无损 JSON 格式化、文档预览和一万行虚拟列表；Android 还验证了系统文件选择与移除、剪贴板复制后粘贴。真机与独立发行安装包仍未验证。"
+  },
+  "components": [],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "pnpm add minerva-design\\nnpx expo install react-native-safe-area-context react-native-svg",
+      "language": "bash"
+    },
+    {
+      "source": "import { useState } from 'react';\nimport { Text } from 'react-native';\nimport { MinervaProvider, Button, Input, Switch } from 'minerva-design/native';\n\nfunction Form() {\n  const [name, setName] = useState('');\n  const [saved, setSaved] = useState('');\n  const [checked, setChecked] = useState(false);\n  return <>\n    <Input value={name} onChange={setName} placeholder=\"Name\" />\n    <Switch checked={checked} onChange={setChecked} />\n    <Button onPress={() => setSaved(name)}>Save</Button>\n    <Text>{saved}</Text>\n  </>;\n}\nexport default function App() {\n  return <MinervaProvider><Form /></MinervaProvider>;\n}",
+      "language": "tsx"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.20.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "React Native",
+      "description": "共享令牌与交互逻辑的原生移动端组件。",
+      "setup": "在 React Native 或 Expo 中导入 minerva-design/native，React 版本跟随 Expo SDK。无需加载 Web 样式表，MinervaProvider 将令牌解析为原生样式。仓库包含 apps/expo-example 示例应用。",
+      "validation": "组件交互已通过 React Native Testing Library 与 react-native-web 测试。Expo Go 57.0.9 已在 iPhone 17 Pro / iOS 26.1 模拟器和 Pixel 8 / Android 16 API 36 ARM64 模拟器验收，覆盖文字输入、表格排序与选择、联想输入、菜单、无损 JSON 格式化、文档预览和一万行虚拟列表；Android 还验证了系统文件选择与移除、剪贴板复制后粘贴。真机与独立发行安装包仍未验证。"
+    }
+  }
+}

@@ -1,0 +1,572 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.2",
+  "locale": "ja",
+  "renderer": "native",
+  "page": "icon-button",
+  "title": "IconButton アイコンボタン",
+  "description": "アイコンのみを表示するコンパクトなボタン。pressed / defaultPressed を指定するとトグルボタン（お気に入り、いいね、ミュートなど）になります。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.2",
+    "sourceCommit": "8d5d0df3644b1fa1c267b3dd6809b0e7eb1ce75b",
+    "sourceDigest": "sha256:2862a9e3a864c9423aed5d287db6fac7e8ddf58b9f5d144c61e7ff4a2630890e",
+    "referenceSourceDigest": "sha256:b329acf9d5eb6cf4b4b42169ce925c67b033f581b616664bf07fc6d664de45f0"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "IconButton",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "IconButton"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "icon",
+            "source": "packages/native/src/components/IconButton/IconButton.tsx",
+            "kind": "node",
+            "typeText": "ReactNode | IconRender",
+            "typeRef": "type:e18da7fade12da1a933c",
+            "parameters": [
+              {
+                "name": "color",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "string",
+                "typeRef": "type:e15e314d298fc0d116fc"
+              },
+              {
+                "name": "size",
+                "position": 1,
+                "required": true,
+                "rest": false,
+                "typeText": "number",
+                "typeRef": "type:7d1137535c313783dadd"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "Icon element to display (children are used when omitted), or a function of the foreground color and icon size returning it"
+          },
+          {
+            "name": "label",
+            "source": "packages/native/src/components/IconButton/IconButton.tsx",
+            "kind": "string",
+            "typeText": "string",
+            "typeRef": "type:e15e314d298fc0d116fc",
+            "required": true,
+            "description": "Accessible name of the button (required: the button only shows an icon)"
+          },
+          {
+            "name": "color",
+            "source": "packages/native/src/components/IconButton/IconButton.tsx",
+            "kind": "enum",
+            "values": [
+              "danger",
+              "info",
+              "neutral",
+              "primary",
+              "success",
+              "warning"
+            ],
+            "typeText": "NativeColor | undefined",
+            "typeRef": "type:c1c4fb1afcf9f8ec5869",
+            "default": "neutral",
+            "required": false,
+            "description": "Semantic color of the button"
+          },
+          {
+            "name": "variant",
+            "source": "packages/native/src/components/IconButton/IconButton.tsx",
+            "kind": "enum",
+            "values": [
+              "ghost",
+              "outline",
+              "solid"
+            ],
+            "typeText": "IconButtonVariant | undefined",
+            "typeRef": "type:2d54549943420fcf4cd2",
+            "default": "ghost",
+            "required": false,
+            "description": "Visual style: `ghost` (transparent, tinted while pressed), `solid` (filled with the color) or `outline` (bordered)"
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/components/IconButton/IconButton.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small",
+              "xsmall"
+            ],
+            "typeText": "IconButtonSize | undefined",
+            "typeRef": "type:133f17e3bad926d4b16e",
+            "default": "medium",
+            "required": false,
+            "description": "Button size (the `--control-height-*` tokens); the touch area always reaches 44pt"
+          },
+          {
+            "name": "shape",
+            "source": "packages/native/src/components/IconButton/IconButton.tsx",
+            "kind": "enum",
+            "values": [
+              "circle",
+              "square"
+            ],
+            "typeText": "IconButtonShape | undefined",
+            "typeRef": "type:cbe10cc41351f84db295",
+            "default": "circle",
+            "required": false,
+            "description": "Button shape"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/native/src/components/IconButton/IconButton.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables the button"
+          },
+          {
+            "name": "loading",
+            "source": "packages/native/src/components/IconButton/IconButton.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Replaces the icon with a spinner and ignores presses"
+          },
+          {
+            "name": "pressed",
+            "source": "packages/native/src/components/IconButton/IconButton.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Pressed state of a toggle button (controlled; pair with onPressedChange). Setting pressed, defaultPressed or onPressedChange makes the button a toggle (`accessibilityState.selected`)"
+          },
+          {
+            "name": "defaultPressed",
+            "source": "packages/native/src/components/IconButton/IconButton.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Initial pressed state of an uncontrolled toggle button"
+          }
+        ],
+        "events": [
+          {
+            "name": "onPressedChange",
+            "source": "packages/native/src/components/IconButton/IconButton.tsx",
+            "kind": "function",
+            "typeText": "((pressed: boolean) => void) | undefined",
+            "typeRef": "type:a4cf97700c1bfaf398c6",
+            "parameters": [
+              {
+                "name": "pressed",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the requested pressed state of a toggle button"
+          },
+          {
+            "name": "onPress",
+            "source": "packages/native/src/components/IconButton/IconButton.tsx",
+            "kind": "function",
+            "typeText": "((event: GestureResponderEvent) => void) | undefined",
+            "typeRef": "type:b7a94620b09b861d2cc0",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "GestureResponderEvent",
+                "typeRef": "type:2a25eb9466bc75075bdf"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called on press (not while disabled or loading)"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "pressed",
+            "event": "onPressedChange",
+            "syntax": "pressed={pressed} onPressedChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "native:IconButtonProps": {
+      "source": "native/src/components/IconButton/IconButton.tsx",
+      "kind": "interface",
+      "extends": [
+        "Omit<PressableProps, \"children\" | \"style\" | \"disabled\" | \"onPress\">"
+      ],
+      "props": [
+        {
+          "name": "icon",
+          "type": "ReactNode | IconRender",
+          "required": false,
+          "description": "Icon element to display (children are used when omitted), or a function of the foreground color and icon size returning it"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode | IconRender",
+          "required": false,
+          "description": "Icon element (when `icon` is not set)"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": true,
+          "description": "Accessible name of the button (required: the button only shows an icon)"
+        },
+        {
+          "name": "color",
+          "type": "NativeColor",
+          "required": false,
+          "default": "\"neutral\"",
+          "description": "Semantic color of the button"
+        },
+        {
+          "name": "variant",
+          "type": "IconButtonVariant",
+          "required": false,
+          "default": "\"ghost\"",
+          "description": "Visual style: `ghost` (transparent, tinted while pressed), `solid` (filled with the color) or `outline` (bordered)"
+        },
+        {
+          "name": "size",
+          "type": "IconButtonSize",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Button size (the `--control-height-*` tokens); the touch area always reaches 44pt"
+        },
+        {
+          "name": "shape",
+          "type": "IconButtonShape",
+          "required": false,
+          "default": "\"circle\"",
+          "description": "Button shape"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Disables the button"
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Replaces the icon with a spinner and ignores presses"
+        },
+        {
+          "name": "pressed",
+          "type": "boolean",
+          "required": false,
+          "description": "Pressed state of a toggle button (controlled; pair with onPressedChange). Setting pressed, defaultPressed or onPressedChange makes the button a toggle (`accessibilityState.selected`)"
+        },
+        {
+          "name": "defaultPressed",
+          "type": "boolean",
+          "required": false,
+          "description": "Initial pressed state of an uncontrolled toggle button"
+        },
+        {
+          "name": "onPressedChange",
+          "type": "(pressed: boolean) => void",
+          "required": false,
+          "description": "Called with the requested pressed state of a toggle button"
+        },
+        {
+          "name": "onPress",
+          "type": "(event: GestureResponderEvent) => void",
+          "required": false,
+          "description": "Called on press (not while disabled or loading)"
+        },
+        {
+          "name": "style",
+          "type": "StyleProp<ViewStyle>",
+          "required": false,
+          "description": "Style of the button"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:IconButton": {
+      "kind": "cssVars",
+      "source": "react/src/components/IconButton",
+      "vars": [
+        {
+          "name": "--icon-button-color",
+          "description": "Icon color"
+        },
+        {
+          "name": "--icon-button-hover-bg",
+          "description": "Background on hover"
+        },
+        {
+          "name": "--icon-button-pressed-color",
+          "description": "Icon color of a pressed toggle"
+        },
+        {
+          "name": "--icon-button-pressed-bg",
+          "description": "Background of a pressed toggle"
+        },
+        {
+          "name": "--icon-button-size",
+          "description": "Width and height of the button (every size; defaults follow the density's control heights)"
+        },
+        {
+          "name": "--icon-button-icon-size",
+          "description": "Font size of the icon (every size)"
+        },
+        {
+          "name": "--icon-button-radius",
+          "description": "Corner radius of the square shape (defaults to --radius-lg)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-button/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon-button/native/basic.tsx": "import { useState } from \"react\";\nimport { Text, View } from \"react-native\";\nimport { IconButton, useTheme } from \"minerva-design/native\";\nexport default function Basic() {\n  const [count, setCount] = useState(0);\n  const { colors } = useTheme();\n  return (\n    <View\n      style={{\n        flexDirection: \"row\",\n        alignItems: \"center\",\n        flexWrap: \"wrap\",\n        gap: 12,\n      }}\n    >\n      <IconButton\n        label=\"Add\"\n        onPress={() => setCount((n) => n + 1)}\n        icon={(color, size) => <Text style={{ color, fontSize: size }}>+</Text>}\n      />\n      <IconButton\n        label=\"Settings\"\n        icon={(color, size) => <Text style={{ color, fontSize: size }}>⚙</Text>}\n      />\n      <IconButton\n        label=\"Delete\"\n        icon={(color, size) => <Text style={{ color, fontSize: size }}>⌫</Text>}\n      />\n      <Text role=\"status\" style={{ color: colors[\"text-color\"] }}>\n        {count === 0 ? \"Nothing added yet\" : `Added ${count} item(s)`}\n      </Text>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "基本的な使い方",
+      "description": "Add は件数を増やします。Settings と Delete は読み上げ名を持つアイコン操作の例です。"
+    },
+    {
+      "id": "toggle",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-button/native/toggle.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon-button/native/toggle.tsx": "import { useState } from \"react\";\nimport { Text, View } from \"react-native\";\nimport { IconButton, useTheme } from \"minerva-design/native\";\nexport default function Toggle() {\n  const [liked, setLiked] = useState(false);\n  const { colors } = useTheme();\n  return (\n    <View\n      style={{\n        flexDirection: \"row\",\n        alignItems: \"center\",\n        flexWrap: \"wrap\",\n        gap: 12,\n      }}\n    >\n      <IconButton\n        label=\"Like\"\n        color=\"danger\"\n        pressed={liked}\n        onPressedChange={setLiked}\n        icon={(color, size) => <Text style={{ color, fontSize: size }}>♥</Text>}\n      />\n      <Text style={{ color: colors[\"text-color\"] }}>\n        {liked ? \"Liked\" : \"Not liked yet\"}\n      </Text>\n      <IconButton\n        label=\"Bookmark\"\n        defaultPressed\n        icon={(color, size) => <Text style={{ color, fontSize: size }}>◆</Text>}\n      />\n      <IconButton\n        label=\"Mute\"\n        shape=\"square\"\n        defaultPressed={false}\n        icon={(color, size) => <Text style={{ color, fontSize: size }}>♩</Text>}\n      />\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "トグルボタン",
+      "description": "Like はオフから開始し結果を表示します。Bookmark はオン、Mute はオフから開始します。"
+    },
+    {
+      "id": "variants-sizes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-button/native/variants-sizes.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon-button/native/variants-sizes.tsx": "import { Text, View } from \"react-native\";\nimport { IconButton } from \"minerva-design/native\";\n\nconst VARIANTS = [\"ghost\", \"outline\", \"solid\"] as const;\nconst SIZES = [\"xsmall\", \"small\", \"medium\", \"large\"] as const;\n\nconst star = (color: string, size: number) => (\n  <Text style={{ color, fontSize: size }}>★</Text>\n);\n\nexport default function VariantsSizes() {\n  return (\n    <View style={{ gap: 16 }}>\n      {VARIANTS.map((variant) => (\n        <View key={variant} style={{ flexDirection: \"row\", gap: 12 }}>\n          <IconButton label=\"Rate\" variant={variant} icon={star} />\n          <IconButton\n            label=\"Rate\"\n            variant={variant}\n            color=\"primary\"\n            icon={star}\n          />\n          <IconButton\n            label=\"Rate\"\n            variant={variant}\n            color=\"warning\"\n            shape=\"square\"\n            icon={star}\n          />\n        </View>\n      ))}\n      <View style={{ flexDirection: \"row\", alignItems: \"center\", gap: 12 }}>\n        {SIZES.map((size) => (\n          <IconButton\n            key={size}\n            label={`Favorite (${size})`}\n            size={size}\n            variant=\"solid\"\n            color=\"primary\"\n            icon={star}\n          />\n        ))}\n      </View>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "variants-sizes",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "IconButton アイコンボタン",
+      "description": "アイコンのみを表示するコンパクトなボタン。pressed / defaultPressed を指定するとトグルボタン（お気に入り、いいね、ミュートなど）になります。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "Add は件数を増やします。Settings と Delete は読み上げ名を持つアイコン操作の例です。"
+        },
+        "colors": {
+          "title": "カラー",
+          "description": "color でセマンティックカラーを指定します：neutral（デフォルト）、primary、success、warning、danger、info。"
+        },
+        "variants": {
+          "title": "バリアント",
+          "description": "variant で見た目のスタイルを指定します：ghost（デフォルト、ホバーまで透明）、solid（色で塗りつぶし）、outline（枠線）。"
+        },
+        "sizes-and-shapes": {
+          "title": "サイズと形状",
+          "description": "3 つのサイズ（small、medium、large）と 2 つの形状（circle、square）。"
+        },
+        "states": {
+          "title": "状態",
+          "description": "loading はアイコンをスピナーに置き換え、操作を無視しつつボタンをフォーカス可能なままにします（aria-busy + aria-disabled）。pressed はトグルがオンであることを示し、disabled はネイティブの disabled 属性を設定してボタンをタブ順序から外します。"
+        },
+        "toggle": {
+          "title": "トグルボタン",
+          "description": "Like はオフから開始し結果を表示します。Bookmark はオン、Mute はオフから開始します。"
+        },
+        "search": {
+          "title": "検索ボタン",
+          "description": "検索操作は検索アイコンとラベルを持つ IconButton です。type=\"submit\" でフォームを送信し、loading で検索中の再実行を防ぎます。表示テキストが必要な場合は Button を使います。"
+        },
+        "custom-colors": {
+          "title": "カスタムカラー",
+          "description": "CSS カスタムプロパティで色を上書きします：--icon-button-color（アイコン）、--icon-button-hover-bg（ホバー時の背景）、--icon-button-pressed-color と --icon-button-pressed-bg（トグルの押下状態）。インラインスタイル、クラス、祖先要素のいずれでも指定できます。"
+        },
+        "tooltip": {
+          "title": "ツールチップ",
+          "description": "showTooltip と tooltip を設定すると、ホバー時とキーボードフォーカス時に操作内容を表示します。"
+        },
+        "label": {
+          "title": "ラベルとツールチップ",
+          "description": "label はボタンのアクセシブルな名前になり、ツールチップとしても表示されます。アイコンは children で渡せます。variant で見た目のスタイル、color でセマンティックカラーを指定します。"
+        }
+      },
+      "api": {
+        "IconButtonProps": {
+          "icon": "表示するアイコン要素",
+          "color": "ボタンのセマンティックカラー",
+          "variant": "見た目のスタイル：ghost（ホバーまで透明）、solid（色で塗りつぶし）、outline（枠線）",
+          "size": "ボタンのサイズ",
+          "shape": "ボタンの形状",
+          "disabled": "ネイティブボタンを無効にし、タブ順序から外します",
+          "loading": "アイコンをスピナーに置き換え、フォーカス可能なまま操作（クリック、Enter、Space、フォーム送信）を無視します。ネイティブの disabled 属性ではなく aria-busy と aria-disabled で示されます",
+          "pressed": "トグルボタンの押下状態（制御。onPressedChange と併用）。aria-pressed で公開されます",
+          "defaultPressed": "非制御のトグルボタンの初期押下状態",
+          "onPressedChange": "トグルボタンが操作されたときに新しい押下状態で呼ばれます",
+          "className": "追加のクラス名",
+          "tooltip": "ツールチップの設定（content、color、variant、shape、arrow）。showTooltip が必要",
+          "showTooltip": "ホバー時とフォーカス時にツールチップを表示する",
+          "aria-label": "アクセシブルなラベル。ボタンはアイコンのみなので必ず指定する",
+          "ref": "<button> 要素への ref",
+          "children": "アイコン要素（icon プロパティの代わり）",
+          "label": "ボタンのアクセシブルな名前。ツールチップとしても表示されます（showTooltip が false の場合を除く）。aria-label より優先されます"
+        }
+      },
+      "cssVars": {
+        "--icon-button-color": "アイコンの色",
+        "--icon-button-hover-bg": "ホバー時の背景色",
+        "--icon-button-pressed-color": "押下状態のトグルのアイコン色",
+        "--icon-button-pressed-bg": "押下状態のトグルの背景色",
+        "--icon-button-size": "ボタンの幅と高さ（全サイズ。既定は密度に応じたコントロール高さに従う）",
+        "--icon-button-icon-size": "アイコンのフォントサイズ（全サイズ）",
+        "--icon-button-radius": "square 形状の角丸（既定は --radius-lg）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "label はアイコンのみのボタンに名前を付け、ホバーやフォーカス時にツールチップとして表示されます（Escape で閉じる）。既定は ghost・neutral です。"
+          },
+          "sizes-shapes": {
+            "title": "サイズ・形状・色",
+            "description": "4 つのサイズ、円形または四角形、共通のセマンティックカラーと solid / outline / ghost のバリアント。"
+          },
+          "toggle": {
+            "title": "トグルボタン",
+            "description": "toggle は aria-pressed を公開し、操作すると pressed を反転してキャンセル可能な minerva-pressed-change を発火します。ピンはオフにできません（preventDefault）。"
+          },
+          "states": {
+            "title": "読み込み・無効・ツールチップ",
+            "description": "更新をクリックすると読み込み状態になります（フォーカス可能なまま操作は無視）。tooltip はテキストを上書きし、tooltip-placement は位置を変え、no-tooltip は非表示にします。"
+          }
+        },
+        "minerva-icon-button": {
+          "props": {
+            "toggle": "トグルボタンにします（aria-pressed を公開）。",
+            "tooltipPlacement": "ツールチップの優先配置。",
+            "noTooltip": "ツールチップを表示しません（label は引き続きボタンの名前になります）。",
+            "type": "フォーム内での動作：なし（button）、送信、リセット。",
+            "form": "ボタンが属するフォーム（読み取り専用）。"
+          },
+          "events": {
+            "minerva-pressed-change": "トグルボタンが操作されました（detail: { pressed } は新しい状態）。キャンセル可能：preventDefault() で現在の状態を維持します。"
+          },
+          "slots": {
+            "default": "アイコン（支援技術からは隠されます）。"
+          },
+          "cssVars": {
+            "--tooltip-max-width": "ツールチップの最大幅（ビューポートで制限）。",
+            "--tooltip-padding": "ツールチップのパディング。",
+            "--tooltip-radius": "ツールチップの角丸の半径。",
+            "--tooltip-font-size": "ツールチップのフォントサイズ。",
+            "--tooltip-bg": "ツールチップの背景（グラデーション可）。",
+            "--tooltip-color": "ツールチップの文字色。",
+            "--tooltip-shadow": "ツールチップの影（既定値は --shadow-md）。",
+            "--tooltip-z-index": "ツールチップの重なり順（既定値は --z-popover）。"
+          },
+          "methods": {
+            "focus": "内部のボタンにフォーカスします。",
+            "blur": "内部のボタンからフォーカスを外します。",
+            "click": "内部のボタンをクリックします（無効または読み込み中は無視）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "Add は件数を増やします。Settings と Delete は読み上げ名を持つアイコン操作の例です。"
+          },
+          "toggle": {
+            "title": "トグルボタン",
+            "description": "Like はオフから開始し結果を表示します。Bookmark はオン、Mute はオフから開始します。"
+          },
+          "variants-sizes": {
+            "title": "バリエーションとサイズ",
+            "description": "IconButton の「バリエーションとサイズ」の例。プレビューはサイトのテーマとパレットに追従します。"
+          }
+        }
+      }
+    }
+  }
+}

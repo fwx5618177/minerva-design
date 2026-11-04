@@ -1,0 +1,331 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.2",
+  "locale": "fr",
+  "renderer": "vue",
+  "page": "progress",
+  "title": "ProgressIndicator",
+  "description": "Indique une progression : une progressbar indéterminée dessinée en spinner, cercle, vague, barre ou barre pointillée, ou — avec value — une barre ou un cercle déterminés.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.2",
+    "sourceCommit": "8d5d0df3644b1fa1c267b3dd6809b0e7eb1ce75b",
+    "sourceDigest": "sha256:2862a9e3a864c9423aed5d287db6fac7e8ddf58b9f5d144c61e7ff4a2630890e",
+    "referenceSourceDigest": "sha256:b329acf9d5eb6cf4b4b42169ce925c67b033f581b616664bf07fc6d664de45f0"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "ProgressIndicator",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "ProgressIndicator"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "variant",
+            "type": "ProgressIndicatorVariant",
+            "default": "\"spinner\"",
+            "required": false,
+            "description": "Indicator style",
+            "typeText": "ProgressIndicatorVariant"
+          },
+          {
+            "name": "size",
+            "type": "ProgressIndicatorSize",
+            "default": "\"medium\"",
+            "required": false,
+            "description": "Indicator size",
+            "typeText": "ProgressIndicatorSize"
+          },
+          {
+            "name": "color",
+            "type": "ProgressIndicatorColor",
+            "default": "\"primary\"",
+            "required": false,
+            "description": "Semantic color of the indicator: theme primary, neutral gray or a status\ncolor (success / warning / danger / info). \"current\" is a special value\nthat follows the surrounding text color (currentColor), e.g. inside\nbuttons or colored containers",
+            "typeText": "ProgressIndicatorColor"
+          },
+          {
+            "name": "value",
+            "type": "number",
+            "required": false,
+            "description": "Current progress. Setting it switches the bar and circle variants to\ndeterminate mode (a filled bar / arc and aria-valuenow); the value is\nclamped between 0 and max. Other variants ignore it and stay\nindeterminate.",
+            "typeText": "number"
+          },
+          {
+            "name": "max",
+            "type": "number",
+            "default": "100",
+            "required": false,
+            "description": "Value that represents completion (determinate mode only); non-positive\nvalues fall back to 100",
+            "typeText": "number"
+          },
+          {
+            "name": "showValue",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Shows the formatted value (a percentage by default) next to a\ndeterminate indicator",
+            "typeText": "boolean"
+          },
+          {
+            "name": "format",
+            "type": "((value: number, max: number) => string)",
+            "required": false,
+            "description": "Formats the value shown by showValue (or use the `value` slot); the\nresult is also used as aria-valuetext",
+            "typeText": "((value: number, max: number) => string)"
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "required": false,
+            "description": "Visible text shown next to the indicator (or the `label` slot); it also\nnames the progressbar unless aria-label is set",
+            "typeText": "string"
+          },
+          {
+            "name": "decorative",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Purely visual: drops the progressbar role and hides the indicator from\nassistive technologies. Use it when a surrounding element (a status\nregion, a busy button) already conveys the loading state.",
+            "typeText": "boolean"
+          },
+          {
+            "name": "width",
+            "type": "string",
+            "required": false,
+            "description": "Custom width (ignored when full is set). Bars default to 200px; round\nindicators size to their content.",
+            "typeText": "string"
+          },
+          {
+            "name": "full",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Stretches the indicator to the full width of its container",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "icon",
+            "type": "any",
+            "description": "Icon displayed before the indicator",
+            "typeText": "any"
+          },
+          {
+            "name": "label",
+            "type": "any",
+            "description": "Visible label (the `label` prop)",
+            "typeText": "any"
+          },
+          {
+            "name": "value",
+            "type": "{ value: number; max: number; }",
+            "description": "Custom rendering of the shown value (showValue)",
+            "typeText": "{ value: number; max: number; }"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:ProgressIndicator": {
+      "kind": "cssVars",
+      "source": "react/src/components/ProgressIndicator",
+      "vars": [
+        {
+          "name": "--progress-width",
+          "description": "Width of a linear indicator with the default width"
+        },
+        {
+          "name": "--progress-bar-height",
+          "description": "Thickness of the bar (every size)"
+        },
+        {
+          "name": "--progress-track-color",
+          "description": "Color of the bar track (and of the determinate circle track)"
+        },
+        {
+          "name": "--progress-radius",
+          "description": "Corner radius of the bar track (defaults to --radius-sm)"
+        },
+        {
+          "name": "--progress-size",
+          "description": "Size of the round indicators (spinner / circle / wave; every size)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/progress/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/progress/vue/basic.vue": "<script setup lang=\"ts\">\nimport { ProgressIndicator, HStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <HStack :gap=\"3\" wrap\n    ><ProgressIndicator variant=\"spinner\" label=\"Loading\" /><ProgressIndicator\n      variant=\"bar\"\n      label=\"Processing\" /><ProgressIndicator variant=\"wave\" label=\"Working\"\n  /></HStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "determinate",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/progress/vue/determinate.vue",
+      "files": {
+        "apps/docs/src/docs/pages/progress/vue/determinate.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Button, HStack, ProgressIndicator, VStack } from \"minerva-design/vue\";\n\nconst lessons = ref(2);\nconst format = (value: number, max: number) => `${value} / ${max}`;\n</script>\n<template>\n  <VStack :gap=\"4\" align=\"stretch\">\n    <ProgressIndicator\n      variant=\"bar\"\n      full\n      :value=\"lessons\"\n      :max=\"5\"\n      show-value\n      :format=\"format\"\n      label=\"Lessons completed\"\n    />\n    <HStack :gap=\"4\" wrap align=\"center\">\n      <ProgressIndicator\n        variant=\"circle\"\n        size=\"xlarge\"\n        :value=\"(lessons / 5) * 100\"\n        show-value\n        aria-label=\"Course progress\"\n      />\n      <ProgressIndicator\n        variant=\"bar\"\n        color=\"success\"\n        :value=\"100\"\n        show-value\n        aria-label=\"Done\"\n      />\n      <ProgressIndicator\n        variant=\"bar\"\n        color=\"danger\"\n        :value=\"15\"\n        show-value\n        aria-label=\"Overdue\"\n      />\n    </HStack>\n    <HStack :gap=\"2\">\n      <Button\n        size=\"small\"\n        variant=\"outline\"\n        :disabled=\"lessons === 0\"\n        @click=\"lessons = Math.max(0, lessons - 1)\"\n        >Undo lesson</Button\n      >\n      <Button\n        size=\"small\"\n        :disabled=\"lessons === 5\"\n        @click=\"lessons = Math.min(5, lessons + 1)\"\n        >Complete lesson</Button\n      >\n    </HStack>\n  </VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "determinate",
+      "description": ""
+    },
+    {
+      "id": "label-width",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/progress/vue/label-width.vue",
+      "files": {
+        "apps/docs/src/docs/pages/progress/vue/label-width.vue": "<script setup lang=\"ts\">\nimport { ProgressIndicator, VStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><ProgressIndicator\n      variant=\"bar\"\n      width=\"240px\"\n      label=\"Uploading files…\" /><ProgressIndicator\n      variant=\"bar\"\n      full\n      label=\"Synchronizing workspace…\"\n  /></VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "label-width",
+      "description": ""
+    },
+    {
+      "id": "sizes-colors",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/progress/vue/sizes-colors.vue",
+      "files": {
+        "apps/docs/src/docs/pages/progress/vue/sizes-colors.vue": "<script setup lang=\"ts\">\nimport { ProgressIndicator, HStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <HStack :gap=\"3\" wrap\n    ><ProgressIndicator\n      size=\"small\"\n      color=\"neutral\"\n      label=\"Small\" /><ProgressIndicator\n      size=\"medium\"\n      color=\"primary\"\n      label=\"Medium\" /><ProgressIndicator\n      size=\"large\"\n      color=\"current\"\n      label=\"Large\"\n  /></HStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "sizes-colors",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "ProgressIndicator",
+      "description": "Indique une progression : une progressbar indéterminée dessinée en spinner, cercle, vague, barre ou barre pointillée, ou — avec value — une barre ou un cercle déterminés.",
+      "demos": {
+        "variants": {
+          "title": "Variantes",
+          "description": "variant choisit le style : spinner (par défaut), cercle, vague, barre ou barre pointillée."
+        },
+        "sizes": {
+          "title": "Tailles",
+          "description": "Cinq tailles de xsmall à xlarge : le diamètre des indicateurs ronds ou l’épaisseur des barres."
+        },
+        "colors": {
+          "title": "Couleurs",
+          "description": "Couleur sémantique : primary (par défaut), neutral ou une couleur d’état (success, warning, danger, info) ; la valeur spéciale current suit la couleur du texte environnant (currentColor), par exemple dans un bouton."
+        },
+        "label": {
+          "title": "Libellé visible",
+          "description": "Un libellé visible s’affiche à côté de l’indicateur et nomme la progressbar."
+        },
+        "width": {
+          "title": "Largeur",
+          "description": "Définissez une largeur fixe, ou utilisez full pour remplir le conteneur."
+        },
+        "with-icon": {
+          "title": "Avec icône",
+          "description": "Affichez une icône avant l’indicateur. Décrivez toujours ce qui est en cours de chargement avec aria-label."
+        },
+        "determinate": {
+          "title": "Déterminé",
+          "description": "Définissez value (et éventuellement max) pour remplir la barre ou le cercle et exposer aria-valuenow ; showValue affiche un pourcentage, format le personnalise. Les couleurs d’état (success, warning, danger, info) traduisent l’état. Les autres variantes ignorent value."
+        }
+      },
+      "api": {
+        "ProgressIndicatorProps": {
+          "variant": "Style de l’indicateur",
+          "size": "Taille de l’indicateur",
+          "color": "Couleur sémantique de l’indicateur : primary du thème, gris neutral ou une couleur d’état (success, warning, danger, info). La valeur spéciale current suit la couleur du texte environnant (currentColor)",
+          "value": "Progression actuelle : passe les variantes bar et circle en mode déterminé (barre / arc rempli et aria-valuenow), bornée entre 0 et max. Les autres variantes l’ignorent",
+          "max": "Valeur qui représente l’achèvement (les valeurs non positives reviennent à 100)",
+          "showValue": "Affiche la valeur formatée (un pourcentage par défaut) à côté d’un indicateur déterminé",
+          "format": "Formate la valeur affichée par showValue ; un résultat chaîne ou nombre sert aussi d’aria-valuetext",
+          "icon": "Icône affichée avant l’indicateur",
+          "label": "Texte visible affiché à côté de l’indicateur ; il nomme aussi la progressbar sauf si aria-label est défini",
+          "aria-label": "Libellé accessible décrivant ce qui se charge (« Chargement » par défaut, « Progression » en mode déterminé)",
+          "decorative": "Purement visuel : retire le rôle progressbar et masque l’indicateur aux technologies d’assistance",
+          "className": "Classe CSS supplémentaire",
+          "width": "Largeur personnalisée (ignorée si full est défini) ; 200 px par défaut pour les barres",
+          "full": "Étire l’indicateur sur toute la largeur de son conteneur",
+          "ref": "Ref vers l’élément racine <div>"
+        }
+      },
+      "cssVars": {
+        "--progress-width": "Largeur d'un indicateur linéaire à largeur par défaut",
+        "--progress-bar-height": "Épaisseur de la barre (toutes les tailles)",
+        "--progress-track-color": "Couleur du rail de la barre (et du rail du cercle déterminé)",
+        "--progress-radius": "Rayon des coins du rail de la barre (par défaut --radius-sm)",
+        "--progress-size": "Taille des indicateurs ronds (spinner / circle / wave ; toutes les tailles)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Cinq indicateurs indéterminés. Chacun est une progressbar nommée par son label ou par « Chargement » localisé."
+          },
+          "sizes-colors": {
+            "title": "Tailles et couleurs",
+            "description": "Cinq tailles ; color=\"current\" suit la couleur du texte environnant."
+          },
+          "label-width": {
+            "title": "Libellé, icône et largeur",
+            "description": "Un libellé visible (attribut ou slot), un slot icon, une largeur personnalisée, la pleine largeur et un indicateur décoratif dans un bouton."
+          },
+          "determinate": {
+            "title": "Déterminé",
+            "description": "value, max et show-value transforment la barre et le cercle en indicateurs déterminés ; la propriété JS format personnalise le texte."
+          }
+        },
+        "minerva-progress": {
+          "slots": {
+            "icon": "Icône affichée avant l'indicateur.",
+            "label": "Libellé visible (alternative à l'attribut label)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

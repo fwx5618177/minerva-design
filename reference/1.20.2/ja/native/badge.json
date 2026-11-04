@@ -1,0 +1,514 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.2",
+  "locale": "ja",
+  "renderer": "native",
+  "page": "badge",
+  "title": "Badge バッジ",
+  "description": "他の要素の角に付ける、数値や状態を示す小さなインジケーターです。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.2",
+    "sourceCommit": "8d5d0df3644b1fa1c267b3dd6809b0e7eb1ce75b",
+    "sourceDigest": "sha256:2862a9e3a864c9423aed5d287db6fac7e8ddf58b9f5d144c61e7ff4a2630890e",
+    "referenceSourceDigest": "sha256:b329acf9d5eb6cf4b4b42169ce925c67b033f581b616664bf07fc6d664de45f0"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Badge",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "Badge"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "content",
+            "source": "packages/native/src/components/Badge/Badge.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Content of the badge: a count (capped at `max`) or a short text. When omitted, `children` is the badge content of a standalone badge"
+          },
+          {
+            "name": "max",
+            "source": "packages/native/src/components/Badge/Badge.tsx",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "default": 99,
+            "required": false,
+            "description": "Counts above it show as `{max}+`"
+          },
+          {
+            "name": "dot",
+            "source": "packages/native/src/components/Badge/Badge.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Renders a small dot instead of content"
+          },
+          {
+            "name": "showZero",
+            "source": "packages/native/src/components/Badge/Badge.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows the badge when the count is 0"
+          },
+          {
+            "name": "color",
+            "source": "packages/native/src/components/Badge/Badge.tsx",
+            "kind": "enum",
+            "values": [
+              "danger",
+              "info",
+              "neutral",
+              "primary",
+              "success",
+              "warning"
+            ],
+            "typeText": "NativeColor | undefined",
+            "typeRef": "type:c1c4fb1afcf9f8ec5869",
+            "default": "primary",
+            "required": false,
+            "description": "Semantic color of the badge"
+          },
+          {
+            "name": "variant",
+            "source": "packages/native/src/components/Badge/Badge.tsx",
+            "kind": "enum",
+            "values": [
+              "outline",
+              "solid",
+              "subtle"
+            ],
+            "typeText": "BadgeVariant | undefined",
+            "typeRef": "type:0ebc2435f8d4760a470f",
+            "default": "solid",
+            "required": false,
+            "description": "Visual style: `solid` (filled), `subtle` (tinted background) or `outline` (bordered)"
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/components/Badge/Badge.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "BadgeSize | undefined",
+            "typeRef": "type:9905df67d6d970facf96",
+            "default": "medium",
+            "required": false,
+            "description": "Badge size"
+          },
+          {
+            "name": "position",
+            "source": "packages/native/src/components/Badge/Badge.tsx",
+            "kind": "enum",
+            "values": [
+              "bottom-left",
+              "bottom-right",
+              "top-left",
+              "top-right"
+            ],
+            "typeText": "BadgePosition | undefined",
+            "typeRef": "type:034f7bff3a586c019d6a",
+            "default": "top-right",
+            "required": false,
+            "description": "Corner of the children the badge is placed on (ignored by standalone badges)"
+          },
+          {
+            "name": "offset",
+            "source": "packages/native/src/components/Badge/Badge.tsx",
+            "kind": "array",
+            "typeText": "[number, number] | undefined",
+            "typeRef": "type:e4bdfc457972809a67b5",
+            "required": false,
+            "description": "Extra offset `[x, y]` of an attached badge, in dp (x moves inwards)"
+          },
+          {
+            "name": "icon",
+            "source": "packages/native/src/components/Badge/Badge.tsx",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Icon displayed before the content"
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/native/src/components/Badge/Badge.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the badge, e.g. \"5 unread messages\""
+          },
+          {
+            "name": "badgeStyle",
+            "source": "packages/native/src/components/Badge/Badge.tsx",
+            "kind": "union",
+            "typeText": "StyleProp<ViewStyle>",
+            "typeRef": "type:e697903ddc58ec54def0",
+            "required": false,
+            "description": "Style of the badge itself"
+          },
+          {
+            "name": "textStyle",
+            "source": "packages/native/src/components/Badge/Badge.tsx",
+            "kind": "union",
+            "typeText": "StyleProp<TextStyle>",
+            "typeRef": "type:175f7626ef7c69988283",
+            "required": false,
+            "description": "Style of the content text"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:BadgeProps": {
+      "source": "native/src/components/Badge/Badge.tsx",
+      "kind": "interface",
+      "extends": [
+        "Omit<ViewProps, \"style\" | \"children\">"
+      ],
+      "props": [
+        {
+          "name": "content",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Content of the badge: a count (capped at `max`) or a short text. When omitted, `children` is the badge content of a standalone badge"
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "required": false,
+          "default": "99",
+          "description": "Counts above it show as `{max}+`"
+        },
+        {
+          "name": "dot",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Renders a small dot instead of content"
+        },
+        {
+          "name": "showZero",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows the badge when the count is 0"
+        },
+        {
+          "name": "color",
+          "type": "NativeColor",
+          "required": false,
+          "default": "\"primary\"",
+          "description": "Semantic color of the badge"
+        },
+        {
+          "name": "variant",
+          "type": "BadgeVariant",
+          "required": false,
+          "default": "\"solid\"",
+          "description": "Visual style: `solid` (filled), `subtle` (tinted background) or `outline` (bordered)"
+        },
+        {
+          "name": "size",
+          "type": "BadgeSize",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Badge size"
+        },
+        {
+          "name": "position",
+          "type": "BadgePosition",
+          "required": false,
+          "default": "\"top-right\"",
+          "description": "Corner of the children the badge is placed on (ignored by standalone badges)"
+        },
+        {
+          "name": "offset",
+          "type": "[number, number]",
+          "required": false,
+          "description": "Extra offset `[x, y]` of an attached badge, in dp (x moves inwards)"
+        },
+        {
+          "name": "icon",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Icon displayed before the content"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": false,
+          "description": "The element the badge is attached to. Without `content` / `dot`, a string child is the content of a standalone badge"
+        },
+        {
+          "name": "aria-label",
+          "type": "string",
+          "required": false,
+          "description": "Accessible label of the badge, e.g. \"5 unread messages\""
+        },
+        {
+          "name": "style",
+          "type": "StyleProp<ViewStyle>",
+          "required": false,
+          "description": "Style of the root view"
+        },
+        {
+          "name": "badgeStyle",
+          "type": "StyleProp<ViewStyle>",
+          "required": false,
+          "description": "Style of the badge itself"
+        },
+        {
+          "name": "textStyle",
+          "type": "StyleProp<TextStyle>",
+          "required": false,
+          "description": "Style of the content text"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Badge": {
+      "kind": "cssVars",
+      "source": "react/src/components/Badge",
+      "vars": [
+        {
+          "name": "--badge-bg",
+          "description": "Background color (overrides the color and variant)"
+        },
+        {
+          "name": "--badge-fg",
+          "description": "Text color (overrides the color and variant)"
+        },
+        {
+          "name": "--badge-border",
+          "description": "Border color of the subtle and outline variants"
+        },
+        {
+          "name": "--badge-radius",
+          "description": "Corner radius (defaults to --radius-sm)"
+        },
+        {
+          "name": "--badge-padding-y",
+          "description": "Vertical padding (every size)"
+        },
+        {
+          "name": "--badge-padding-x",
+          "description": "Horizontal padding (every size)"
+        },
+        {
+          "name": "--badge-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--badge-dot-size",
+          "description": "Diameter of the dot badge"
+        },
+        {
+          "name": "--badge-ring-color",
+          "description": "Color of the ring separating an attached (corner) badge from its content (defaults to --surface-color)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/badge/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/badge/native/basic.tsx": "import { Text, View } from \"react-native\";\nimport { Badge, useTheme } from \"minerva-design/native\";\nexport default function Basic() {\n  const { colors } = useTheme();\n  return (\n    <View\n      style={{\n        gap: 16,\n        flexDirection: \"row\",\n        alignItems: \"center\",\n        flexWrap: \"wrap\",\n      }}\n    >\n      <Badge content={5} aria-label=\"5 unread notifications\">\n        <Text aria-label=\"Notifications\" style={{ fontSize: 24 }}>\n          ♧\n        </Text>\n      </Badge>\n      <Badge content=\"99+\" aria-label=\"More than 99 messages\">\n        <Text aria-label=\"Messages\" style={{ fontSize: 24 }}>\n          ✉\n        </Text>\n      </Badge>\n      <View style={{ flexDirection: \"row\", alignItems: \"center\", gap: 4 }}>\n        <Text style={{ color: colors[\"text-color\"] }}>Inbox</Text>\n        <Badge content={12} color=\"info\" aria-label=\"12 unread\" />\n        <Text style={{ color: colors[\"text-color\"] }}>and changelog</Text>\n        <Badge color=\"success\">New</Badge>\n      </View>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "基本的な使い方",
+      "description": "通知とメッセージに 5 と 99+ を表示し、インラインで Inbox 12 と New の更新を示します。"
+    },
+    {
+      "id": "colors-variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/badge/native/colors-variants.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/badge/native/colors-variants.tsx": "import { View } from \"react-native\";\nimport { Badge } from \"minerva-design/native\";\n\nconst COLORS = [\n  \"primary\",\n  \"neutral\",\n  \"success\",\n  \"warning\",\n  \"danger\",\n  \"info\",\n] as const;\nconst VARIANTS = [\"solid\", \"subtle\", \"outline\"] as const;\n\nexport default function ColorsVariants() {\n  return (\n    <View style={{ gap: 12 }}>\n      {VARIANTS.map((variant) => (\n        <View\n          key={variant}\n          style={{ flexDirection: \"row\", flexWrap: \"wrap\", gap: 8 }}\n        >\n          {COLORS.map((color) => (\n            <Badge key={color} color={color} variant={variant}>\n              {color}\n            </Badge>\n          ))}\n        </View>\n      ))}\n      <View style={{ flexDirection: \"row\", gap: 8, alignItems: \"center\" }}>\n        <Badge size=\"small\">Small</Badge>\n        <Badge size=\"medium\">Medium</Badge>\n        <Badge size=\"large\" icon=\"⚡\" color=\"warning\">\n          Flash sale\n        </Badge>\n      </View>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "colors-variants",
+      "description": ""
+    },
+    {
+      "id": "dot-max",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/badge/native/dot-max.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/badge/native/dot-max.tsx": "import { Text, View } from \"react-native\";\nimport { Avatar, Badge, useTheme } from \"minerva-design/native\";\n\nexport default function DotMax() {\n  const { colors } = useTheme();\n  const bell = (\n    <Text style={{ fontSize: 28, color: colors[\"text-color\"] }}>🔔</Text>\n  );\n  return (\n    <View style={{ flexDirection: \"row\", gap: 28, alignItems: \"center\" }}>\n      <Badge dot color=\"danger\" aria-label=\"New notifications\">\n        {bell}\n      </Badge>\n      <Badge content={128}>{bell}</Badge>\n      <Badge content={1200} max={999} color=\"danger\">\n        {bell}\n      </Badge>\n      <Badge content={0} showZero color=\"neutral\">\n        {bell}\n      </Badge>\n      <Badge\n        dot\n        size=\"large\"\n        color=\"success\"\n        position=\"bottom-right\"\n        offset={[6, 6]}\n        aria-label=\"Online\"\n      >\n        <Avatar\n          name=\"Lena Park\"\n          src=\"https://randomuser.me/api/portraits/women/68.jpg\"\n        />\n      </Badge>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "dot-max",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Badge バッジ",
+      "description": "他の要素の角に付ける、数値や状態を示す小さなインジケーターです。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "通知とメッセージに 5 と 99+ を表示し、インラインで Inbox 12 と New の更新を示します。"
+        },
+        "colors": {
+          "title": "カラー",
+          "description": "color でセマンティックカラーを指定します：primary（既定）、neutral、success、warning、danger、info。"
+        },
+        "variants": {
+          "title": "バリアント",
+          "description": "variant で見た目のスタイルを指定します：solid（既定・塗りつぶし）、subtle（淡い背景）、outline（枠線）。どのバリアントもすべてのカラーと組み合わせられます。"
+        },
+        "positions": {
+          "title": "位置",
+          "description": "position でバッジを任意の角に配置します。"
+        },
+        "sizes": {
+          "title": "サイズ",
+          "description": "small、medium（既定）、large の 3 サイズ。"
+        },
+        "dot": {
+          "title": "ドット",
+          "description": "dot は内容の代わりに小さな点を表示し、「新着あり」の表示に使います。"
+        },
+        "with-icon": {
+          "title": "アイコン付き",
+          "description": "icon は内容の前に表示されます。"
+        },
+        "custom-style": {
+          "title": "カスタムスタイル",
+          "description": "borderRadius と borderWidth で形を調整します。色を変えるには CSS カスタムプロパティ --badge-bg・--badge-fg・--badge-border を（インライン、クラス、または親要素に）設定します。"
+        },
+        "status": {
+          "title": "ステータスドット",
+          "description": "単独のドットとテキストラベルで、項目の状態やユーザーのプレゼンスを表します。テキストが状態を示している場合はドットに role=\"presentation\" を、そうでなければ aria-label を指定します。"
+        }
+      },
+      "api": {
+        "BadgeProps": {
+          "children": "バッジを付ける要素。children がない場合（またはテキスト / 数値の children の場合は内容として使用）、バッジは角に配置されず通常のフロー内にインライン表示されます",
+          "className": "バッジの追加クラス名",
+          "color": "バッジのセマンティックカラー",
+          "variant": "見た目のスタイル：solid（塗りつぶし）、subtle（淡い背景）、outline（枠線）",
+          "size": "バッジのサイズ",
+          "content": "バッジ内に表示する内容（数・短いテキスト・アイコン＋テキストなど）。単独バッジのリッチな内容は children ではなくこちらを使います",
+          "position": "children のどの角にバッジを置くか（単独のバッジでは無視されます）",
+          "dot": "内容の代わりに小さな点を表示します",
+          "borderRadius": "カスタム角丸（CSS の値）",
+          "borderWidth": "カスタム枠線の太さ（CSS の値）",
+          "aria-label": "バッジのアクセシブルなラベル（例：「未読メッセージ 5 件」）",
+          "icon": "内容の前に表示するアイコン",
+          "ref": "ルート要素への ref。children に付ける場合はラッパー、それ以外はバッジ自体",
+          "role": "バッジ要素の ARIA ロール。ライブステータスとして読み上げたくない場合は \"presentation\" または \"none\" を指定"
+        }
+      },
+      "cssVars": {
+        "--badge-bg": "背景色（色とバリアントを上書き）",
+        "--badge-fg": "文字色（色とバリアントを上書き）",
+        "--badge-border": "subtle / outline バリアントの枠線の色",
+        "--badge-radius": "角丸（既定値は --radius-sm）",
+        "--badge-padding-y": "上下のパディング（全サイズ）",
+        "--badge-padding-x": "左右のパディング（全サイズ）",
+        "--badge-font-size": "フォントサイズ（全サイズ）",
+        "--badge-dot-size": "ドットバッジの直径",
+        "--badge-ring-color": "付属（コーナー）バッジをコンテンツから切り離すリングの色（既定は --surface-color）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "子要素がある場合、バッジはその角に付いて content を表示します。テキストだけの場合は単独のバッジになります。"
+          },
+          "colors-variants": {
+            "title": "色・バリアント・サイズ",
+            "description": "6 色、3 種類のバリアントと 3 種類のサイズ。border-radius と border-width で形を調整できます。"
+          },
+          "positions": {
+            "title": "位置とドット",
+            "description": "position で子要素のどの角に付けるかを選びます。ドットバッジにはテキストがないため aria-label を付けるか、読み上げ不要なら badge-role=\"presentation\" を設定します。"
+          },
+          "slots": {
+            "title": "アイコン・リッチコンテンツ・更新",
+            "description": "icon スロットでアイコン、content スロットでリッチコンテンツを追加します。content はプロパティです。ボタンをクリックすると数が更新されます。"
+          }
+        },
+        "minerva-badge": {
+          "props": {
+            "badgeRole": "バッジの ARIA ロール（既定値 \"status\"。\"presentation\" または \"none\" で読み上げを止めます）。"
+          },
+          "slots": {
+            "default": "バッジを付ける要素、または単独バッジのテキスト。",
+            "content": "バッジのリッチコンテンツ（content の代わり）。",
+            "icon": "内容の前に表示するアイコン。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "通知とメッセージに 5 と 99+ を表示し、インラインで Inbox 12 と New の更新を示します。"
+          },
+          "colors-variants": {
+            "title": "色とバリエーション",
+            "description": "Badge の「色とバリエーション」の例。プレビューはサイトのテーマとパレットに追従します。"
+          },
+          "dot-max": {
+            "title": "ドットと表示件数",
+            "description": "Badge の「ドットと表示件数」の例。プレビューはサイトのテーマとパレットに追従します。"
+          }
+        }
+      }
+    }
+  }
+}

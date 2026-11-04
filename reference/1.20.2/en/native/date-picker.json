@@ -1,0 +1,573 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.2",
+  "locale": "en",
+  "renderer": "native",
+  "page": "date-picker",
+  "title": "DatePicker",
+  "description": "Picks a calendar date from a popup Monday-first month grid, or by typing a YYYY-MM-DD date.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.2",
+    "sourceCommit": "8d5d0df3644b1fa1c267b3dd6809b0e7eb1ce75b",
+    "sourceDigest": "sha256:2862a9e3a864c9423aed5d287db6fac7e8ddf58b9f5d144c61e7ff4a2630890e",
+    "referenceSourceDigest": "sha256:b329acf9d5eb6cf4b4b42169ce925c67b033f581b616664bf07fc6d664de45f0"
+  },
+  "content": {
+    "keyboard": {
+      "title": "Keyboard and accessibility",
+      "open": "Arrow Down on the input opens the popup calendar and moves focus to the active day cell; clicking outside closes it.",
+      "navigate": "Arrow keys, Home / End and PageUp / PageDown (with Shift: a year) move focus across the calendar grid.",
+      "select": "Enter or Space picks the focused day and closes the popup.",
+      "close": "Escape closes the popup and returns focus to the input.",
+      "typing": "Typed text is committed immediately when it forms a complete YYYY-MM-DD date within range; on blur, flexible formats like YYYY/M/D are normalized."
+    }
+  },
+  "components": [
+    {
+      "name": "DatePicker",
+      "support": {
+        "status": "beta",
+        "notes": "Native touch field with calendar dialog: local YYYY-MM-DD values, immediate day selection, bounds and clearing; no text entry or DOM keyboard grid."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native touch field with calendar dialog: local YYYY-MM-DD values, immediate day selection, bounds and clearing; no text entry or DOM keyboard grid.",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "DatePicker"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "value",
+            "source": "packages/native/src/components/DatePicker/DatePicker.tsx",
+            "kind": "string",
+            "typeText": "string | null | undefined",
+            "typeRef": "type:5d93807f845ffb9259f1",
+            "required": false,
+            "description": "Selected local date, YYYY-MM-DD. null and \"\" remain controlled empty values."
+          },
+          {
+            "name": "defaultValue",
+            "source": "packages/native/src/components/DatePicker/DatePicker.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Initial local date while uncontrolled."
+          },
+          {
+            "name": "placeholder",
+            "source": "packages/native/src/components/DatePicker/DatePicker.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "label",
+            "source": "packages/native/src/components/DatePicker/DatePicker.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Visible label and accessible name."
+          },
+          {
+            "name": "accessibilityLabel",
+            "source": "packages/native/src/components/DatePicker/DatePicker.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "accessibilityHint",
+            "source": "packages/native/src/components/DatePicker/DatePicker.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "nativeID",
+            "source": "packages/native/src/components/DatePicker/DatePicker.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "source": "packages/native/src/components/DatePicker/DatePicker.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false
+          },
+          {
+            "name": "readOnly",
+            "source": "packages/native/src/components/DatePicker/DatePicker.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Prevents opening, selection and clearing."
+          },
+          {
+            "name": "invalid",
+            "source": "packages/native/src/components/DatePicker/DatePicker.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "clearable",
+            "source": "packages/native/src/components/DatePicker/DatePicker.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/components/DatePicker/DatePicker.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "\"small\" | \"medium\" | \"large\" | undefined",
+            "typeRef": "type:8d5b6882dc615b54818b",
+            "default": "medium",
+            "required": false
+          },
+          {
+            "name": "minDate",
+            "source": "packages/native/src/components/DatePicker/DatePicker.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Earliest selectable local day, YYYY-MM-DD, inclusive."
+          },
+          {
+            "name": "maxDate",
+            "source": "packages/native/src/components/DatePicker/DatePicker.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Latest selectable local day, YYYY-MM-DD, inclusive."
+          },
+          {
+            "name": "locale",
+            "source": "packages/native/src/components/DatePicker/DatePicker.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale for calendar month and date names; defaults to provider language."
+          },
+          {
+            "name": "testID",
+            "source": "packages/native/src/components/DatePicker/DatePicker.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onChange",
+            "source": "packages/native/src/components/DatePicker/DatePicker.tsx",
+            "kind": "function",
+            "typeText": "((value: string) => void) | undefined",
+            "typeRef": "type:c7af8cf7b3809b32005e",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "string",
+                "typeRef": "type:e15e314d298fc0d116fc"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Selected YYYY-MM-DD day, or \"\" when cleared."
+          },
+          {
+            "name": "onOpenChange",
+            "source": "packages/native/src/components/DatePicker/DatePicker.tsx",
+            "kind": "function",
+            "typeText": "((open: boolean) => void) | undefined",
+            "typeRef": "type:2ae3dcdc5c09f89e15f2",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the calendar opens or closes."
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "onChange",
+            "syntax": "value={value} onChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "native:DatePickerProps": {
+      "source": "native/src/components/DatePicker/DatePicker.tsx",
+      "kind": "interface",
+      "extends": [],
+      "props": [
+        {
+          "name": "value",
+          "type": "string | null",
+          "required": false,
+          "description": "Selected local date, YYYY-MM-DD. null and \"\" remain controlled empty values."
+        },
+        {
+          "name": "defaultValue",
+          "type": "string",
+          "required": false,
+          "description": "Initial local date while uncontrolled."
+        },
+        {
+          "name": "onChange",
+          "type": "(value: string) => void",
+          "required": false,
+          "description": "Selected YYYY-MM-DD day, or \"\" when cleared."
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "required": false,
+          "description": "Called when the calendar opens or closes."
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "description": "Visible label and accessible name."
+        },
+        {
+          "name": "accessibilityLabel",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "accessibilityHint",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "nativeID",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "required": false,
+          "description": "Prevents opening, selection and clearing."
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "required": false
+        },
+        {
+          "name": "clearable",
+          "type": "boolean",
+          "required": false,
+          "default": "true"
+        },
+        {
+          "name": "size",
+          "type": "\"small\" | \"medium\" | \"large\"",
+          "required": false,
+          "default": "\"medium\""
+        },
+        {
+          "name": "minDate",
+          "type": "string",
+          "required": false,
+          "description": "Earliest selectable local day, YYYY-MM-DD, inclusive."
+        },
+        {
+          "name": "maxDate",
+          "type": "string",
+          "required": false,
+          "description": "Latest selectable local day, YYYY-MM-DD, inclusive."
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "required": false,
+          "description": "Locale for calendar month and date names; defaults to provider language."
+        },
+        {
+          "name": "style",
+          "type": "StyleProp<ViewStyle>",
+          "required": false
+        },
+        {
+          "name": "testID",
+          "type": "string",
+          "required": false
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:DatePicker": {
+      "kind": "cssVars",
+      "source": "react/src/components/DatePicker",
+      "vars": [
+        {
+          "name": "--date-picker-width",
+          "description": "Width of the field"
+        },
+        {
+          "name": "--date-picker-panel-width",
+          "description": "Width of the popup calendar panel"
+        },
+        {
+          "name": "--date-picker-panel-radius",
+          "description": "Corner radius of the popup panel (defaults to --radius-lg)"
+        },
+        {
+          "name": "--date-picker-panel-padding",
+          "description": "Inner padding of the popup panel"
+        },
+        {
+          "name": "--date-picker-cell-size",
+          "description": "Width and height of a day cell in the popup grid"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/date-picker/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/date-picker/native/basic.tsx": "import { useState } from \"react\";\nimport { DatePicker } from \"minerva-design/native\";\n\nexport default function Basic() {\n  const [date, setDate] = useState<string | null>(\"2026-01-15\");\n  return (\n    <DatePicker\n      label=\"Departure\"\n      value={date}\n      onChange={setDate}\n      minDate=\"2026-01-10\"\n      maxDate=\"2026-02-20\"\n      clearable\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "Basic usage",
+      "description": "Click the input (or press Arrow Down) to open the popup calendar. onChange receives a \"YYYY-MM-DD\" string, or \"\" when cleared. Without label, the input is named \"Date\"."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "DatePicker",
+      "description": "Picks a calendar date from a popup Monday-first month grid, or by typing a YYYY-MM-DD date.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Click the input (or press Arrow Down) to open the popup calendar. onChange receives a \"YYYY-MM-DD\" string, or \"\" when cleared. Without label, the input is named \"Date\"."
+        },
+        "default-value": {
+          "title": "Default value and clearing",
+          "description": "defaultValue sets the initial date. The clear button is labelled \"Clear date\"; set clearable={false} to hide it."
+        },
+        "controlled": {
+          "title": "Controlled",
+          "description": "Pass value and update it in onChange. \"\" or null keeps the picker controlled but empty, while undefined makes it uncontrolled."
+        },
+        "min-max": {
+          "title": "Date range",
+          "description": "minDate and maxDate (\"YYYY-MM-DD\") disable dates outside the allowed range."
+        },
+        "sizes": {
+          "title": "Sizes",
+          "description": "Three sizes: small, medium (default) and large."
+        },
+        "disabled": {
+          "title": "Disabled and read-only",
+          "description": "A disabled or read-only picker cannot be opened or edited."
+        },
+        "form-control": {
+          "title": "With FormField",
+          "description": "Inside FormControl / FormField, DatePicker inherits the id, label, helper / error text, required, disabled, readOnly and invalid states."
+        }
+      },
+      "api": {
+        "DatePickerProps": {
+          "ref": "Ref to the <input> element",
+          "value": "Selected date as \"YYYY-MM-DD\" (controlled; pair with onChange). \"\" or null means \"no date\" while staying controlled; undefined makes the picker uncontrolled",
+          "defaultValue": "Initially selected date as \"YYYY-MM-DD\" (uncontrolled)",
+          "onChange": "Called with the selected date (\"YYYY-MM-DD\"), or \"\" when the value is cleared",
+          "placeholder": "Placeholder of the input; defaults to a localized \"Select date\"",
+          "label": "Visible label of the input; without it the input is labelled \"Date\" (localized)",
+          "aria-label": "Accessible label of the input when no visible label is shown",
+          "aria-labelledby": "Id(s) of the element(s) labelling the input; inside a FormControl it defaults to the FormLabel (unless label / aria-label is set)",
+          "aria-describedby": "Id(s) of the element(s) describing the input; merged with the helper / error text of an enclosing FormControl",
+          "id": "Id of the input; defaults to the id of an enclosing FormControl",
+          "required": "Marks the input as required; defaults to the enclosing FormControl's state",
+          "readOnly": "Shows the value without allowing changes (typing, panel, clearing); defaults to the enclosing FormControl's state",
+          "invalid": "Marks the input as invalid (aria-invalid); defaults to the enclosing FormControl's state",
+          "name": "Name of the input",
+          "onOpenChange": "Called when the popup calendar opens or closes",
+          "disabled": "Disables the picker; defaults to the enclosing FormControl's state",
+          "clearable": "Allows clearing the value with the suffix button",
+          "size": "Size of the input",
+          "minDate": "Earliest selectable date (\"YYYY-MM-DD\"); earlier days are disabled",
+          "maxDate": "Latest selectable date (\"YYYY-MM-DD\"); later days are disabled",
+          "locale": "Locale of the month heading (Intl.DateTimeFormat)",
+          "className": "Additional class name",
+          "style": "Inline styles of the root element"
+        }
+      },
+      "keyboard": {
+        "title": "Keyboard and accessibility",
+        "open": "Arrow Down on the input opens the popup calendar and moves focus to the active day cell; clicking outside closes it.",
+        "navigate": "Arrow keys, Home / End and PageUp / PageDown (with Shift: a year) move focus across the calendar grid.",
+        "select": "Enter or Space picks the focused day and closes the popup.",
+        "close": "Escape closes the popup and returns focus to the input.",
+        "typing": "Typed text is committed immediately when it forms a complete YYYY-MM-DD date within range; on blur, flexible formats like YYYY/M/D are normalized."
+      },
+      "cssVars": {
+        "--date-picker-width": "Width of the field",
+        "--date-picker-panel-width": "Width of the popup calendar panel",
+        "--date-picker-panel-radius": "Corner radius of the popup panel (defaults to --radius-lg)",
+        "--date-picker-panel-padding": "Inner padding of the popup panel",
+        "--date-picker-cell-size": "Width and height of a day cell in the popup grid"
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native calendar",
+            "description": "Tap the field to open the calendar. Selecting a day commits a local YYYY-MM-DD string immediately; clearing emits an empty string. minDate and maxDate bound selection. The native field uses touch day buttons instead of text entry or a DOM keyboard grid."
+          }
+        }
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Bounded date selection",
+            "description": "Type YYYY-MM-DD or choose a date between October 10 and 20. minerva-change emits { value }; clearing emits an empty string. The value attribute initializes the field; form reset restores it."
+          }
+        },
+        "minerva-date-picker": {
+          "props": {
+            "open": "Whether the panel is open.",
+            "readOnly": "Shows the value without allowing changes (typing, panel, clearing).",
+            "hideClearButton": "Hides the clear button (clearable={false} in React).",
+            "isDisabled": "Whether the control is disabled (itself or by a disabled <fieldset>).",
+            "form": "The form owning the element (read-only).",
+            "labels": "The <label> elements associated with the element.",
+            "validity": "Validity state (same as <input>.validity).",
+            "validationMessage": "Message describing the current validation error (empty when valid).",
+            "willValidate": "Whether the element takes part in constraint validation.",
+            "valueAsDate": "The selected date as a local Date, or null when empty or invalid."
+          },
+          "events": {
+            "change": "Same as minerva-change (native-like, bubbles).",
+            "minerva-change": "The date was committed, detail: { value } in YYYY-MM-DD format; an empty string when cleared.",
+            "minerva-input": "The draft input changed, detail: { value }.",
+            "minerva-open-change": "The user opened or closed the panel, detail: { open }; cancelable: preventDefault() keeps the current state.",
+            "minerva-clear": "The date was cleared."
+          },
+          "cssVars": {
+            "--input-height": "Minimum height of the field (defaults to the density's control height for the size).",
+            "--input-padding-x": "Horizontal padding of the text.",
+            "--input-radius": "Corner radius of the field (defaults to --radius-lg).",
+            "--input-font-size": "Font size of the field.",
+            "--input-background": "Background color of the field.",
+            "--input-border-color": "Border color at rest.",
+            "--input-focus-color": "Border color while hovered or focused.",
+            "--icon-button-color": "Color of the clear button icon.",
+            "--icon-button-hover-bg": "Background of the clear button on hover.",
+            "--icon-button-pressed-color": "Icon color of the clear button while pressed.",
+            "--icon-button-pressed-bg": "Background of the clear button while pressed.",
+            "--icon-button-size": "Width and height of the clear button (defaults follow the density's control heights).",
+            "--icon-button-icon-size": "Size of the clear button icon.",
+            "--icon-button-radius": "Corner radius of the clear button (defaults to --radius-lg)."
+          },
+          "methods": {
+            "focus": "Focuses the inner input.",
+            "blur": "Removes focus from the inner input.",
+            "checkValidity": "Checks validity; fires invalid when the value is invalid.",
+            "reportValidity": "Checks validity and shows the browser's validation message.",
+            "setCustomValidity": "Sets a custom validation error (an empty string clears it).",
+            "formResetCallback": "Called by the browser on form.reset(): restores the value attribute.",
+            "formDisabledCallback": "Called by the browser when an ancestor <fieldset> is disabled or enabled.",
+            "formStateRestoreCallback": "Called by the browser to restore the value (back/forward cache, autofill)."
+          }
+        }
+      },
+      "vue": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Bind v-model to a YYYY-MM-DD string or null. Choose a date, type it, or clear the field."
+          },
+          "range": {
+            "title": "Date range",
+            "description": "Only dates from October 10 through October 20 are selectable."
+          },
+          "form": {
+            "title": "Form field",
+            "description": "Inherits the label, required state and helper text from FormControl."
+          },
+          "states": {
+            "title": "Sizes and states",
+            "description": "Small, read-only, disabled, and non-clearable date fields."
+          }
+        }
+      }
+    }
+  }
+}

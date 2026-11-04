@@ -1,0 +1,351 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.2",
+  "locale": "ja",
+  "renderer": "angular",
+  "page": "week-strip",
+  "title": "WeekStrip 週ストリップ",
+  "description": "1 週間の 7 日を横一列に並べます。日付を選択し、今日をひと目で確認し、タスクのある日にマークを付け、週を切り替えられます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.2",
+    "sourceCommit": "8d5d0df3644b1fa1c267b3dd6809b0e7eb1ce75b",
+    "sourceDigest": "sha256:2862a9e3a864c9423aed5d287db6fac7e8ddf58b9f5d144c61e7ff4a2630890e",
+    "referenceSourceDigest": "sha256:b329acf9d5eb6cf4b4b42169ce925c67b033f581b616664bf07fc6d664de45f0"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "WeekStrip",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnWeekStrip. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnWeekStrip. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnWeekStrip"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-week-strip",
+        "props": [
+          {
+            "name": "value",
+            "typeText": "string | null",
+            "required": false,
+            "source": "packages/angular/src/components/data/week-strip.ts"
+          },
+          {
+            "name": "week",
+            "typeText": "Date | null",
+            "required": false,
+            "source": "packages/angular/src/components/data/week-strip.ts"
+          },
+          {
+            "name": "firstDayOfWeek",
+            "typeText": "number",
+            "required": false,
+            "source": "packages/angular/src/components/data/week-strip.ts"
+          },
+          {
+            "name": "today",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/data/week-strip.ts"
+          },
+          {
+            "name": "markers",
+            "typeText": "Readonly<Record<string, WeekStripMarker>> | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/data/week-strip.ts"
+          },
+          {
+            "name": "getDayLabel",
+            "typeText": "((day: string, marker: WeekStripMarker | undefined) => string) | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/data/week-strip.ts"
+          },
+          {
+            "name": "showNavigation",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/data/week-strip.ts"
+          },
+          {
+            "name": "previousWeekLabel",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/data/week-strip.ts"
+          },
+          {
+            "name": "nextWeekLabel",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/data/week-strip.ts"
+          },
+          {
+            "name": "weekdayLabels",
+            "typeText": "readonly string[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/data/week-strip.ts"
+          },
+          {
+            "name": "locale",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/data/week-strip.ts"
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/data/week-strip.ts"
+          },
+          {
+            "name": "size",
+            "typeText": "WeekStripSize",
+            "required": false,
+            "source": "packages/angular/src/components/data/week-strip.ts"
+          },
+          {
+            "name": "aria-label",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/data/week-strip.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "typeText": "string | null",
+            "required": false
+          },
+          {
+            "name": "weekChange",
+            "typeText": "Date | null",
+            "required": false
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "valueChange",
+            "syntax": "[(value)]"
+          },
+          {
+            "prop": "week",
+            "event": "weekChange",
+            "syntax": "[(week)]"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:WeekStrip": {
+      "kind": "cssVars",
+      "source": "react/src/components/WeekStrip",
+      "vars": [
+        {
+          "name": "--week-strip-gap",
+          "description": "Space between the day cells"
+        },
+        {
+          "name": "--week-strip-day-height",
+          "description": "Minimum height of a day cell (defaults to 3.5rem; 2.75rem with size=\"small\", 4.5rem with size=\"large\"); cells grow to fit a count badge"
+        },
+        {
+          "name": "--week-strip-radius",
+          "description": "Corner radius of the day cells and buttons (defaults to --radius-md)"
+        },
+        {
+          "name": "--week-strip-hover-background",
+          "description": "Background of a hovered day"
+        },
+        {
+          "name": "--week-strip-selected-background",
+          "description": "Background of the selected day (defaults to --primary-color)"
+        },
+        {
+          "name": "--week-strip-selected-color",
+          "description": "Text color of the selected day"
+        },
+        {
+          "name": "--week-strip-today-color",
+          "description": "Ring and number color marking today"
+        },
+        {
+          "name": "--week-strip-weekday-color",
+          "description": "Text color of the weekday names"
+        },
+        {
+          "name": "--week-strip-marker-background",
+          "description": "Background of the count badge"
+        },
+        {
+          "name": "--week-strip-marker-color",
+          "description": "Text color of the count badge (and color of the dot)"
+        },
+        {
+          "name": "--week-strip-nav-height",
+          "description": "Size of the previous / next week buttons (defaults to the density's small control height)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "pick-a-day-of-the-week",
+      "title": "Pick a day of the week",
+      "description": "value is the selected day (\"YYYY-MM-DD\"); markers show a count badge (a number) or a dot (true). Arrows, Home / End and PageUp / PageDown move through the days.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnWeekStrip } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnWeekStrip],\n  template: `\n<mn-week-strip [(value)]=\"value\" [markers]=\"markers\" today=\"2026-10-07\" aria-label=\"Study days\"/><output>Selected: {{value}}</output>\n  `,\n})\nexport class Example {\n  value: string | null = \"2026-10-07\";\n  markers = {\n  \"2026-10-06\": 2,\n  \"2026-10-07\": 3,\n  \"2026-10-08\": true\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "week-navigation",
+      "title": "Week navigation",
+      "description": "showNavigation adds previous / next week buttons; [(week)] holds the first day of the displayed week.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnWeekStrip } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnWeekStrip],\n  template: `\n<mn-week-strip showNavigation [(week)]=\"week\" [(value)]=\"value\" firstDayOfWeek=\"0\"/><output>Week of {{week?.toDateString()}}</output>\n  `,\n})\nexport class Example {\n  week: Date | null = new Date(2026, 9, 7);\n  value: string | null = null;\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "sizes-and-disabled",
+      "title": "Sizes and disabled",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnWeekStrip } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnWeekStrip],\n  template: `\n<mn-week-strip size=\"small\" today=\"2026-10-07\"/><mn-week-strip size=\"large\" today=\"2026-10-07\"/><mn-week-strip disabled value=\"2026-10-07\" today=\"2026-10-07\"/>\n  `,\n})\nexport class Example {\n\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "WeekStrip 週ストリップ",
+      "description": "1 週間の 7 日を横一列に並べます。日付を選択し、今日をひと目で確認し、タスクのある日にマークを付け、週を切り替えられます。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "制御された選択日（\"YYYY-MM-DD\"）。今日はリングで示され aria-current=\"date\" を持ちます。ストリップは横方向の listbox で、矢印キー、Home / End、PageUp / PageDown で操作できます。"
+        },
+        "markers": {
+          "title": "マーカー",
+          "description": "markers は日付を数値（件数バッジ、99 を超えると 99+）または true（ドット）に対応付けます。firstDayOfWeek で先頭の列を選び、getDayLabel でアクセシブルな名前を変更できます。"
+        },
+        "navigation": {
+          "title": "週の切り替え",
+          "description": "showNavigation で前の週 / 次の週ボタンと週の月を表示します。表示する週は week / onWeekChange で制御でき、矢印キーでも隣の週へ移動できます。"
+        },
+        "sizes": {
+          "title": "サイズと無効状態",
+          "description": "3 つの密度（small では件数がドットになります）と無効なストリップ。"
+        }
+      },
+      "api": {
+        "WeekStripProps": {
+          "value": "選択された日、\"YYYY-MM-DD\"（制御；onChange と併用）",
+          "defaultValue": "初期選択日、\"YYYY-MM-DD\"（非制御）",
+          "onChange": "選択された日（\"YYYY-MM-DD\"）で呼び出されます",
+          "week": "表示する週（制御；週の任意の日；onWeekChange と併用）",
+          "defaultWeek": "初期表示の週（非制御；週の任意の日）。非制御の週は選択日に追従します",
+          "onWeekChange": "要求された週の初日（ローカルの午前 0 時）で呼び出されます",
+          "firstDayOfWeek": "週の初日：0 = 日曜、1 = 月曜 … 6 = 土曜",
+          "today": "今日として示す日、\"YYYY-MM-DD\"（サーバーの日付やテストでの固定日など）",
+          "markers": "\"YYYY-MM-DD\" をキーとする日ごとのマーカー：数値は件数バッジ（99 を超えると 99+）、true はドットを表示します",
+          "getDayLabel": "日のアクセシブルラベル。日（\"YYYY-MM-DD\"）とそのマーカーを受け取ります",
+          "showNavigation": "週の月の両側に前の週 / 次の週ボタンを表示します",
+          "previousWeekLabel": "前の週ボタンのラベル",
+          "nextWeekLabel": "次の週ボタンのラベル",
+          "weekdayLabels": "曜日名、月曜始まり（7 個）。firstDayOfWeek に関係なく同じ順序です",
+          "locale": "日付のロケール（Intl.DateTimeFormat）",
+          "disabled": "選択と週の切り替えを無効にします",
+          "size": "セルの密度",
+          "aria-label": "日リストのアクセシブルラベル",
+          "className": "追加のクラス名",
+          "ref": "ルート <div> への ref"
+        }
+      },
+      "cssVars": {
+        "--week-strip-gap": "日セル間のスペース",
+        "--week-strip-day-height": "日セルの高さ（デフォルト 3.5rem；size=\"small\" で 2.75rem、size=\"large\" で 4.5rem）",
+        "--week-strip-radius": "日セルとボタンの角丸（デフォルトは --radius-md）",
+        "--week-strip-hover-background": "ホバー中の日の背景",
+        "--week-strip-selected-background": "選択された日の背景（デフォルトは --primary-color）",
+        "--week-strip-selected-color": "選択された日の文字色",
+        "--week-strip-today-color": "今日を示すリングと数字の色",
+        "--week-strip-weekday-color": "曜日名の文字色",
+        "--week-strip-marker-background": "件数バッジの背景",
+        "--week-strip-marker-color": "件数バッジの文字色（およびドットの色）",
+        "--week-strip-nav-height": "前の週 / 次の週ボタンのサイズ（デフォルトは密度の小さいコントロールの高さ）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "value（\"YYYY-MM-DD\"）は属性で、minerva-change が選択された日を通知します。タブストップは 1 つで、矢印キー、Home / End、PageUp / PageDown で日付を移動します。"
+          },
+          "markers": {
+            "title": "マーカー",
+            "description": "markers は日付を数値（件数バッジ、99 を超えると 99+）または true（ドット）に対応付けるプロパティです。first-day-of-week で最初の列を選び、getDayLabel プロパティでアクセシブルな名前をカスタマイズできます。"
+          },
+          "navigation": {
+            "title": "週の切り替え",
+            "description": "show-navigation で前週 / 翌週ボタンと週の月を表示します。minerva-week-change は表示中の週の初日を通知し、矢印キーで隣の週に移ったときも発火します。"
+          },
+          "sizes": {
+            "title": "サイズと無効状態",
+            "description": "3 種類の密度（size=\"small\" では件数がドットになります。:state(size-small) などのカスタムステートもあります）と無効なストリップ。"
+          }
+        },
+        "minerva-week-strip": {
+          "events": {
+            "minerva-change": "ユーザーが日を選択しました（detail: { value }、\"YYYY-MM-DD\"）。",
+            "minerva-week-change": "ユーザーが別の週を表示しました（detail: { week }、その週の初日のローカル午前 0 時）。"
+          },
+          "methods": {
+            "focus": "アクティブな日にフォーカスします。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

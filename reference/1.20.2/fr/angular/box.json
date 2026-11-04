@@ -1,0 +1,236 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.2",
+  "locale": "fr",
+  "renderer": "angular",
+  "page": "box",
+  "title": "Box",
+  "description": "Conteneur polymorphe avec des raccourcis d'espacement, de taille, de fond, de rayon et d'ombre.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.2",
+    "sourceCommit": "8d5d0df3644b1fa1c267b3dd6809b0e7eb1ce75b",
+    "sourceDigest": "sha256:2862a9e3a864c9423aed5d287db6fac7e8ddf58b9f5d144c61e7ff4a2630890e",
+    "referenceSourceDigest": "sha256:b329acf9d5eb6cf4b4b42169ce925c67b033f581b616664bf07fc6d664de45f0"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Box",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnBox. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnBox. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnBox"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-box, [mnBox]",
+        "props": [
+          {
+            "name": "p",
+            "typeText": "string | number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          },
+          {
+            "name": "px",
+            "typeText": "string | number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          },
+          {
+            "name": "py",
+            "typeText": "string | number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          },
+          {
+            "name": "m",
+            "typeText": "string | number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          },
+          {
+            "name": "w",
+            "typeText": "string | number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          },
+          {
+            "name": "h",
+            "typeText": "string | number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          },
+          {
+            "name": "minW",
+            "typeText": "string | number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          },
+          {
+            "name": "maxW",
+            "typeText": "string | number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          },
+          {
+            "name": "bg",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          },
+          {
+            "name": "rounded",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          },
+          {
+            "name": "boxShadow",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          },
+          {
+            "name": "border",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/foundations/index.ts"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "spacing-and-surfaces",
+      "title": "Spacing and surfaces",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnBox } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnBox],\n  template: `\n<section mnBox p=\"6\" bg=\"var(--surface-subtle-color)\" rounded=\"12px\">A padded section using theme tokens.</section>\n  `,\n})\nexport class Example {\n\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "bounded-content",
+      "title": "Bounded content",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnBox } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnBox],\n  template: `\n<div mnBox p=\"4\" maxW=\"320px\" border=\"1px solid var(--border-color)\">This container stays within a readable width.</div>\n  `,\n})\nexport class Example {\n\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.2/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Box",
+      "description": "Conteneur polymorphe avec des raccourcis d'espacement, de taille, de fond, de rayon et d'ombre.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Les espacements numériques sélectionnent des jetons (4 -> var(--space-4)) ; bg accepte les alias de surface."
+        },
+        "sizing": {
+          "title": "Taille et centrage",
+          "description": "Les props de taille acceptent des pixels ou des longueurs CSS ; mx=\"auto\" centre une boîte bornée."
+        },
+        "polymorphic": {
+          "title": "Élément polymorphe",
+          "description": "Utilisez as pour rendre des éléments sémantiques comme ul / li ou section."
+        }
+      },
+      "api": {
+        "BoxProps": {
+          "ref": "Ref vers l'élément rendu",
+          "as": "Élément ou composant à rendre",
+          "p": "Marge intérieure sur tous les côtés (jeton d'espacement ou valeur CSS)",
+          "px": "Marge intérieure horizontale (jeton d'espacement ou valeur CSS)",
+          "py": "Marge intérieure verticale (jeton d'espacement ou valeur CSS)",
+          "pt": "Marge intérieure en haut (jeton d'espacement ou valeur CSS)",
+          "pr": "Marge intérieure à droite (jeton d'espacement ou valeur CSS)",
+          "pb": "Marge intérieure en bas (jeton d'espacement ou valeur CSS)",
+          "pl": "Marge intérieure à gauche (jeton d'espacement ou valeur CSS)",
+          "m": "Marge extérieure sur tous les côtés (jeton d'espacement ou valeur CSS comme \"auto\")",
+          "mx": "Marge extérieure horizontale (jeton d'espacement ou valeur CSS comme \"auto\")",
+          "my": "Marge extérieure verticale (jeton d'espacement ou valeur CSS comme \"auto\")",
+          "mt": "Marge extérieure en haut (jeton d'espacement ou valeur CSS comme \"auto\")",
+          "mr": "Marge extérieure à droite (jeton d'espacement ou valeur CSS comme \"auto\")",
+          "mb": "Marge extérieure en bas (jeton d'espacement ou valeur CSS comme \"auto\")",
+          "ml": "Marge extérieure à gauche (jeton d'espacement ou valeur CSS comme \"auto\")",
+          "w": "Largeur : nombre en pixels, chaîne en longueur CSS",
+          "h": "Hauteur : nombre en pixels, chaîne en longueur CSS",
+          "minW": "Largeur minimale",
+          "minH": "Hauteur minimale",
+          "maxW": "Largeur maximale",
+          "maxH": "Hauteur maximale",
+          "bg": "Arrière-plan : alias de surface (bg, bg.subtle, bg.muted, bg.canvas, bg.elevated, bg.emphasis) ou tout fond CSS",
+          "rounded": "Rayon de bordure : jeton (none, sm, md, lg, xl, 2xl, full) ou toute valeur CSS",
+          "boxShadow": "Ombre : jeton (sm, md, lg, xl) ou toute valeur CSS",
+          "border": "Raccourci CSS border, utilisé tel quel"
+        }
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "L'élément est lui-même la boîte : p, bg, rounded, box-shadow et border s'appliquent à l'hôte."
+          },
+          "spacing-sizing": {
+            "title": "Espacement et dimensions",
+            "description": "Les nombres sélectionnent des jetons d'espacement (p=\"4\" vaut var(--space-4)), les autres chaînes sont des valeurs CSS ; les tailles (w, h, min-/max-) sont en pixels ou en longueurs CSS. Les attributs d'un côté l'emportent sur ceux d'un axe, qui l'emportent sur le raccourci global."
+          },
+          "surfaces": {
+            "title": "Surfaces, arrondis et ombres",
+            "description": "bg accepte les alias de surface (bg, bg.subtle, bg.muted, bg.canvas, bg.elevated) ou tout fond CSS ; rounded et box-shadow acceptent des jetons ou des valeurs CSS."
+          }
+        },
+        "minerva-box": {
+          "slots": {
+            "default": "Contenu."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}
