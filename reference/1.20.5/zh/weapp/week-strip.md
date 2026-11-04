@@ -16,7 +16,7 @@ Locale: zh
   "packageVersion": "1.20.5",
   "sourceCommit": "fe15b45f84b480cdd9cfec147df037927ba34a6b",
   "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
-  "referenceSourceDigest": "sha256:0dc58bd28a1a59067b94630bd49c5b94d839bdc57ee30a0eaa7de1d0a9681cfb"
+  "referenceSourceDigest": "sha256:49d7ff5e7a649e86d07ff0f6e5da47ae57bc234041d4b820a629aeca119fd0cb"
 }
 ```
 
