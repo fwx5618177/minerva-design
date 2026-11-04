@@ -1,0 +1,337 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.0",
+  "locale": "ja",
+  "renderer": "angular",
+  "page": "monaco-code-editor",
+  "title": "MonacoCodeEditor Monaco コードエディター",
+  "description": "ローカルエンジン（CDN は使いません）で動作し、ページのテーマに追従するラベル付き Monaco エディターです。エンジンが時間内に読み込めない場合は、再試行ボタン付きの編集可能なテキストエリアに切り替わります。minerva-design/monaco からインポートします。@monaco-editor/react と monaco-editor は任意の peer 依存です。 Web Component の <minerva-code-editor> はオプションのエントリ minerva-design/web-components/code-editor として公開され（オールインワンのエントリと CDN バンドルには含まれません）、monaco-editor がオプションの peer 依存関係です。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.0",
+    "sourceCommit": "cf7fb249651cd06c89d0951ac2c3a3aa74dc835a",
+    "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
+    "referenceSourceDigest": "sha256:563c9bec5d90807342a94c02317519b3da937907129bda2d25ea49762fa828fd"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "CodeEditor",
+      "support": {
+        "status": "n/a",
+        "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "React Native-specific extension, outside the shared web component API; use minerva-design/native for this component."
+      }
+    },
+    {
+      "name": "MonacoCodeEditor",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnMonacoCodeEditor. Optional entry minerva-design/angular/monaco; inject a locally configured Monaco engine/loader and configure workers in the host application."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnMonacoCodeEditor. Optional entry minerva-design/angular/monaco; inject a locally configured Monaco engine/loader and configure workers in the host application.",
+        "import": {
+          "specifier": "minerva-design/angular/monaco",
+          "exports": [
+            "MnMonacoCodeEditor"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-monaco-code-editor",
+        "props": [
+          {
+            "name": "monaco",
+            "typeText": "typeof import(\"monaco-editor\") | undefined",
+            "required": false,
+            "source": "packages/angular/monaco/index.ts"
+          },
+          {
+            "name": "theme",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/monaco/index.ts"
+          },
+          {
+            "name": "value",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/monaco/index.ts"
+          },
+          {
+            "name": "language",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/monaco/index.ts"
+          },
+          {
+            "name": "label",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/monaco/index.ts"
+          },
+          {
+            "name": "loadingLabel",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/monaco/index.ts"
+          },
+          {
+            "name": "retryLabel",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/monaco/index.ts"
+          },
+          {
+            "name": "height",
+            "typeText": "string",
+            "required": false,
+            "source": "packages/angular/monaco/index.ts"
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/monaco/index.ts"
+          },
+          {
+            "name": "readOnly",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/monaco/index.ts"
+          },
+          {
+            "name": "options",
+            "typeText": "IStandaloneEditorConstructionOptions",
+            "required": false,
+            "source": "packages/angular/monaco/index.ts"
+          },
+          {
+            "name": "loader",
+            "typeText": "MonacoLoader",
+            "required": false,
+            "source": "packages/angular/monaco/index.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "typeText": "string",
+            "required": false
+          },
+          {
+            "name": "editorReady",
+            "typeText": "IStandaloneCodeEditor",
+            "required": false,
+            "source": "packages/angular/monaco/index.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "IStandaloneCodeEditor",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "loadError",
+            "typeText": "unknown",
+            "required": false,
+            "source": "packages/angular/monaco/index.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "unknown",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "valueChange",
+            "syntax": "[(value)]"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:MonacoCodeEditor": {
+      "kind": "cssVars",
+      "source": "react/src/components/MonacoCodeEditor",
+      "vars": [
+        {
+          "name": "--monaco-code-editor-radius",
+          "description": "Corner radius of the editor surface (defaults to --radius-md)"
+        },
+        {
+          "name": "--monaco-code-editor-border-color",
+          "description": "Border color of the editor surface"
+        },
+        {
+          "name": "--monaco-code-editor-bg",
+          "description": "Background color of the editor surface"
+        },
+        {
+          "name": "--monaco-code-editor-label-gap",
+          "description": "Space between the label and the editor"
+        },
+        {
+          "name": "--monaco-code-editor-font-size",
+          "description": "Font size of the label, the messages and the plain-text fallback"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "edit-source",
+      "title": "Edit source",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnMonacoCodeEditor } from 'minerva-design/angular/monaco';\n// engine.ts configures MonacoEnvironment.getWorker with bundled workers.\nimport { monaco } from \"./engine\";\n\n@Component({\n  selector: 'app-example',\n  imports: [MnMonacoCodeEditor],\n  template: `\n<mn-monaco-code-editor label=\"HTML source\" language=\"html\" [(value)]=\"value\" [monaco]=\"monaco\" height=\"240px\"/><output>{{value.length}} characters</output>\n  `,\n})\nexport class Example {\n  value = \"<h1>Hello Minerva</h1>\\n<p>Edit this document.</p>\";\n  readonly monaco = monaco;\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": [
+        "./engine (Monaco worker setup in the documentation)"
+      ]
+    },
+    {
+      "id": "read-only-source",
+      "title": "Read-only source",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnMonacoCodeEditor } from 'minerva-design/angular/monaco';\n// engine.ts configures MonacoEnvironment.getWorker with bundled workers.\nimport { monaco } from \"./engine\";\n\n@Component({\n  selector: 'app-example',\n  imports: [MnMonacoCodeEditor],\n  template: `\n<mn-monaco-code-editor label=\"Published source\" language=\"typescript\" value=\"const version = 1;\" [monaco]=\"monaco\" [readOnly]=\"true\" height=\"180px\"/>\n  `,\n})\nexport class Example {\n\n  readonly monaco = monaco;\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": [
+        "./engine (Monaco worker setup in the documentation)"
+      ]
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "MonacoCodeEditor Monaco コードエディター",
+      "description": "ローカルエンジン（CDN は使いません）で動作し、ページのテーマに追従するラベル付き Monaco エディターです。エンジンが時間内に読み込めない場合は、再試行ボタン付きの編集可能なテキストエリアに切り替わります。minerva-design/monaco からインポートします。@monaco-editor/react と monaco-editor は任意の peer 依存です。 Web Component の <minerva-code-editor> はオプションのエントリ minerva-design/web-components/code-editor として公開され（オールインワンのエントリと CDN バンドルには含まれません）、monaco-editor がオプションの peer 依存関係です。",
+      "demos": {
+        "basic": {
+          "title": "遅延読み込みのエディター",
+          "description": "エディターとローカルエンジン（ワーカーはホスト側で設定）は必要時に読み込まれます。エンジンがない場合はテキストエリアにフォールバックします。"
+        }
+      },
+      "api": {
+        "MonacoCodeEditorProps": {
+          "monaco": "ローカルの Monaco エンジン（import * as monaco from \"monaco-editor\"）。アプリごとに 1 つ",
+          "value": "ソーステキスト（制御）",
+          "onChange": "新しいソーステキストで呼ばれます",
+          "language": "Monaco の言語 id",
+          "label": "表示ラベル。エディターのアクセシブルな名前にもなります",
+          "height": "高さ（ピクセル）。[minHeight, maxHeight] に制限",
+          "minHeight": "最小の高さ（ピクセル）",
+          "maxHeight": "最大の高さ（ピクセル）",
+          "disabled": "エディター（とフォールバック）を読み取り専用にします",
+          "theme": "配色テーマ。既定はページのテーマ（<html> の data-theme、次に ConfigProvider）",
+          "loadTimeout": "フォールバックを表示するまでエンジンを待つミリ秒",
+          "unavailableText": "フォールバックのテキストエリアの上に表示するメッセージ",
+          "retryText": "再試行ボタンのテキスト",
+          "retryLabel": "再試行ボタンのアクセシブルなラベル",
+          "loadingLabel": "読み込みインジケーターのアクセシブルなラベル",
+          "className": "追加のクラス名",
+          "style": "ルート要素のインラインスタイル"
+        }
+      },
+      "cssVars": {
+        "--monaco-code-editor-radius": "エディター枠の角丸（既定値は --radius-md）",
+        "--monaco-code-editor-border-color": "エディター枠の枠線の色",
+        "--monaco-code-editor-bg": "エディター枠の背景色",
+        "--monaco-code-editor-label-gap": "ラベルとエディターの間隔",
+        "--monaco-code-editor-font-size": "ラベル・メッセージ・プレーンテキスト代替のフォントサイズ"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "ローカルエンジン、テーマ、フォーム",
+            "description": "オプションのエントリ minerva-design/web-components/code-editor とアプリ自身の Monaco エンジンを読み込み、monaco プロパティに設定します。エディターはページ / <minerva-config> のテーマに従い、編集ごとに minerva-input（React の onChange）を発火し、フォームと一緒に値を送信します。"
+          },
+          "fallback": {
+            "title": "読み込み、フォールバック、後からのエンジン",
+            "description": "エンジンがない間は読み込み状態を表示し、load-timeout 後に編集可能な textarea と再試行ボタンを表示します（minerva-error が発火）。後からエンジンを渡すと最新の値でエディターが読み込まれます。"
+          }
+        },
+        "minerva-code-editor": {
+          "props": {
+            "name": "フォーム送信時に値を送る名前。",
+            "required": "フォームを送信するには値が必要です。",
+            "isDisabled": "コントロールが無効かどうか（自身または無効な <fieldset> による。読み取り専用）。",
+            "form": "要素が属するフォーム（読み取り専用）。",
+            "labels": "要素に関連付けられた <label> 要素（読み取り専用）。",
+            "validity": "<input>.validity と同じ妥当性の状態（読み取り専用）。",
+            "validationMessage": "現在の検証エラーのメッセージ。有効な場合は空（読み取り専用）。",
+            "willValidate": "要素が制約検証の対象かどうか（読み取り専用）。",
+            "defaultValue": "初期のソーステキスト（value 属性）。form.reset() で復元されます。ユーザーが編集するまでは変更すると value も変わります。",
+            "resolvedTheme": "実際に適用されるテーマ：theme、なければ最も近い data-theme（<minerva-config> スコープ、次に <html>）（読み取り専用）。",
+            "monaco": "ローカルの Monaco エンジン（import * as monaco from \"monaco-editor\"）。プロパティで設定し、アプリにつき 1 つ。CDN からは読み込みません。",
+            "value": "ソーステキスト（プロパティ。value 属性は defaultValue を設定）。編集ごとに更新され、設定すると元に戻せる編集として反映されます。",
+            "theme": "カラーテーマ（light または dark）。既定では要素のスコープのテーマ（最も近い data-theme：<minerva-config>、次に <html>）にライブで追従します。",
+            "disabled": "エディター（とフォールバック）を読み取り専用にします。送信・検証の対象外です。",
+            "loadTimeout": "textarea のフォールバックを表示するまでエンジンとエディターを待つミリ秒数（エンジンが未設定の場合も同じ）。"
+          },
+          "events": {
+            "input": "値が変わった（編集ごと。composed）。",
+            "change": "値が確定した：編集後にエディターからフォーカスが外れた。",
+            "minerva-input": "input と同じで、detail: { value } 付き（React の onChange）。",
+            "minerva-change": "change と同じで、detail: { value } 付き。",
+            "minerva-error": "エディターが利用できなくなり（期限内にエンジンがない、無効なエンジン、例外）、textarea のフォールバックが表示された。"
+          },
+          "slots": {
+            "editor": "要素が作成します：Monaco が描画する light DOM の <div>。Monaco がドキュメントに追加するスタイルシートが適用されます。自分で中身を入れないでください。"
+          },
+          "methods": {
+            "focus": "エディター（またはフォールバックの textarea）にフォーカスします。",
+            "retry": "エディターの読み込みを再試行します（再試行ボタンと同じ）。",
+            "checkValidity": "妥当性を確認し、無効なら invalid イベントを発火します。",
+            "reportValidity": "妥当性を確認し、ブラウザーの検証メッセージを表示します。",
+            "setCustomValidity": "独自の検証エラーを設定します（空文字列で解除）。",
+            "formResetCallback": "form.reset() から呼ばれるフォームのライフサイクルコールバック。初期値に戻します。",
+            "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときに呼ばれるフォームのライフサイクルコールバック。",
+            "formStateRestoreCallback": "ブラウザーが状態を復元するとき（履歴移動・自動入力）に呼ばれるフォームのライフサイクルコールバック。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        },
+        "limitations": "ネイティブ CodeEditor はフォーマッターを接続できる複数行ソースエディターです。Monaco は DOM を必要とするため iOS と Android には埋め込まれません。"
+      }
+    }
+  }
+}

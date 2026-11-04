@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.0",
+  "locale": "zh",
+  "renderer": "wc",
+  "page": "split-layout",
+  "title": "SplitLayout 分栏布局",
+  "description": "主内容加可选侧栏，布局自身宽度达到断点后并排显示。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.0",
+    "sourceCommit": "cf7fb249651cd06c89d0951ac2c3a3aa74dc835a",
+    "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
+    "referenceSourceDigest": "sha256:563c9bec5d90807342a94c02317519b3da937907129bda2d25ea49762fa828fd"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "SplitLayout",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/split-layout",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-split-layout",
+        "props": [
+          {
+            "name": "asideWidth",
+            "typeText": "number",
+            "attribute": "aside-width",
+            "required": false
+          },
+          {
+            "name": "collapseBelow",
+            "typeText": "\"md\" | \"lg\"",
+            "attribute": "collapse-below",
+            "required": false
+          },
+          {
+            "name": "gap",
+            "typeText": "string | number",
+            "attribute": "gap",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "description": "Main content"
+          },
+          {
+            "name": "aside",
+            "description": "Secondary content, after main"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-split-layout": {
+      "kind": "element",
+      "source": "web-components/src/components/split-layout/split-layout.ts",
+      "className": "MinervaSplitLayout",
+      "summary": "Main + aside layout splitting at a container breakpoint.",
+      "description": "Main content with an optional aside column that splits beside it once the layout's own width (container query) reaches a breakpoint (`<SplitLayout>` of React). Main always precedes the aside in reading order; without `aside` slot content the main column is full width.",
+      "properties": [
+        {
+          "name": "asideWidth",
+          "attribute": "aside-width",
+          "type": "number",
+          "default": "320",
+          "description": "Requested aside width in pixels in split mode (the track is `min(asideWidth, 50%)`); must be finite and positive"
+        },
+        {
+          "name": "collapseBelow",
+          "attribute": "collapse-below",
+          "type": "\"md\" | \"lg\"",
+          "default": "\"md\"",
+          "description": "Splits at container widths of at least 768px (`md`) or 1200px (`lg`) and stacks below"
+        },
+        {
+          "name": "gap",
+          "attribute": "gap",
+          "type": "string | number",
+          "default": "6",
+          "description": "Gap between the slots (spacing token number or CSS value)"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "Main content"
+        },
+        {
+          "name": "aside",
+          "description": "Secondary content, after main"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The query container"
+        },
+        {
+          "name": "main",
+          "description": "The main column"
+        },
+        {
+          "name": "aside",
+          "description": "The aside column (when there is aside content)"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--split-layout-align-items",
+          "description": "Vertical alignment of the main and aside columns (default: start)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:SplitLayout": {
+      "kind": "cssVars",
+      "source": "react/src/components/SplitLayout",
+      "vars": [
+        {
+          "name": "--split-layout-align-items",
+          "description": "Vertical alignment of the main and aside columns (default: start)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/split-layout/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/split-layout/wc/basic.html": "<minerva-split-layout>\n  <minerva-box p=\"4\" bg=\"bg.muted\" rounded=\"md\">\n    <strong>Main</strong>\n    <p>\n      Primary content comes first in reading order and takes the remaining\n      width.\n    </p>\n  </minerva-box>\n  <minerva-box\n    slot=\"aside\"\n    p=\"4\"\n    border=\"1px solid var(--border-color)\"\n    rounded=\"md\"\n  >\n    <strong>Aside</strong>\n    <p>Splits beside main once the layout is at least 768px wide.</p>\n  </minerva-box>\n</minerva-split-layout>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "基本用法",
+      "description": "主内容放在默认插槽，次要内容放在 aside 插槽。布局宽度至少 768px 时侧栏并排显示在主内容旁，否则堆叠在其后。"
+    },
+    {
+      "id": "options",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/split-layout/wc/options.html",
+      "files": {
+        "apps/docs/src/docs/pages/split-layout/wc/options.html": "<label style=\"display: flex; gap: 8px; align-items: center\">\n  Container width\n  <input id=\"width\" type=\"range\" min=\"400\" max=\"1300\" step=\"10\" value=\"1300\" />\n  <output id=\"value\">1300px</output>\n</label>\n<div\n  id=\"frame\"\n  style=\"\n    max-width: 100%;\n    width: 1300px;\n    margin-top: 12px;\n    padding: 8px;\n    border: 1px dashed var(--border-color);\n  \"\n>\n  <minerva-split-layout aside-width=\"240\" collapse-below=\"lg\" gap=\"3\">\n    <minerva-box p=\"4\" bg=\"bg.muted\" rounded=\"md\">\n      Main: splits only from 1200px (collapse-below=\"lg\").\n    </minerva-box>\n    <minerva-box slot=\"aside\" p=\"4\" bg=\"bg.subtle\" rounded=\"md\">\n      Aside: 240px wide, gap=\"3\".\n    </minerva-box>\n  </minerva-split-layout>\n</div>\n",
+        "apps/docs/src/docs/pages/split-layout/wc/options.ts": "// The split follows the layout's own width (container query).\nexport function setup(root: HTMLElement) {\n  const input = root.querySelector<HTMLInputElement>(\"#width\")!;\n  const value = root.querySelector<HTMLOutputElement>(\"#value\")!;\n  const frame = root.querySelector<HTMLElement>(\"#frame\")!;\n  const onInput = () => {\n    frame.style.width = `${input.value}px`;\n    value.value = `${input.value}px`;\n  };\n  input.addEventListener(\"input\", onInput);\n  return () => input.removeEventListener(\"input\", onInput);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "宽度、断点与间距",
+      "description": "aside-width 设置侧栏宽度（最多 50%），collapse-below=\"lg\" 要到 1200px 才分栏，gap 使用间距令牌。拖动滑块调整容器宽度。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "SplitLayout 分栏布局",
+      "description": "主内容加可选侧栏，布局自身宽度达到断点后并排显示。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "320px 侧栏在容器宽度 768px 时并排、以下时堆叠；主内容始终在 DOM 顺序中靠前。"
+        },
+        "options": {
+          "title": "宽度、断点与间距",
+          "description": "通过 asideWidth、collapseBelow=\"lg\"（1200px）和 gap 自定义分栏。"
+        }
+      },
+      "api": {
+        "SplitLayoutProps": {
+          "ref": "指向外层 div 的 ref",
+          "aside": "主区域之后的次要内容；null、undefined 和 false 时省略（0 为有效内容）",
+          "asideWidth": "分栏模式下侧栏宽度（像素，轨道为 min(asideWidth, 50%)）；必须为有限正数",
+          "collapseBelow": "容器宽度至少 768px（md）或 1200px（lg）时分栏，以下时堆叠",
+          "gap": "两栏间距（间距 token 或 CSS 值）"
+        }
+      },
+      "cssVars": {
+        "--split-layout-align-items": "主栏与侧栏的垂直对齐（默认 start）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本用法",
+            "description": "主内容放在默认插槽，次要内容放在 aside 插槽。布局宽度至少 768px 时侧栏并排显示在主内容旁，否则堆叠在其后。"
+          },
+          "options": {
+            "title": "宽度、断点与间距",
+            "description": "aside-width 设置侧栏宽度（最多 50%），collapse-below=\"lg\" 要到 1200px 才分栏，gap 使用间距令牌。拖动滑块调整容器宽度。"
+          }
+        },
+        "minerva-split-layout": {
+          "slots": {
+            "default": "主内容。",
+            "aside": "次要内容，阅读顺序位于主内容之后。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中操作原生组件。"
+          }
+        }
+      }
+    }
+  }
+}

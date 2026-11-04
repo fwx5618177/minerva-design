@@ -1,0 +1,191 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.0",
+  "locale": "ja",
+  "renderer": "react",
+  "page": "icons",
+  "title": "アイコン",
+  "description": "Minerva のアイコンセット。ライブラリのために 24×24 グリッド上で描き起こしたオリジナルのアイコンで、既定ではインライン SVG として描画され、Canvas2D、WebGL、WebGL2、WebGPU のキャンバスにも描画できます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.0",
+    "sourceCommit": "cf7fb249651cd06c89d0951ac2c3a3aa74dc835a",
+    "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
+    "referenceSourceDigest": "sha256:563c9bec5d90807342a94c02317519b3da937907129bda2d25ea49762fa828fd"
+  },
+  "content": {
+    "intro": {
+      "title": "概要",
+      "text": "minerva-design/icons は {{categories}} カテゴリ、{{count}} 個のアイコンを収録し、サードパーティのアイコンセットは使いません。すべてのアイコンはライブラリ独自の SVG パスデータで、どのレンダラー・どのフレームワークでも同じデータを使います。",
+      "design": "統一されたビジュアル言語。24×24 グリッド、約 2px の余白、丸い線端と結合部を持つ 2px のストローク、塗りなし。テキストと自然になじみ、12 から 96 ピクセルまで拡大縮小できます。一部のアイコンはストロークごとに色（colors）を持ち、それ以外は color プロパティに従います。",
+      "svg": "既定は SVG。どのサイズでも鮮明で、サーバーで描画でき、テキストの色（currentColor）で着色され、title を指定しない限り支援技術からは隠されます。",
+      "renderers": "同じジオメトリを GPU でも。Icon は renderer=\"auto\"、\"webgpu\"、\"webgl2\"、\"webgl\"、\"canvas2d\" でキャンバスに描画し、IconCanvas は数千個のアイコンを数回のインスタンス描画で描きます。フォールバックはチャートと同じ WebGPU -> WebGL2 -> WebGL -> Canvas2D です。",
+      "treeShaking": "使った分だけ。各アイコンは個別の定数（searchIcon）とコンポーネント（SearchIcon）で、キャンバスレンダラーは最初のキャンバスアイコンが現れたときに初めて読み込まれます。",
+      "frameworks": "フレームワーク非依存のコア。minerva-design/icons/core にはアイコンデータ、SVG 文字列、Canvas2D 描画、GPU キャンバスが含まれ、どのフレームワークでも使えます。React コンポーネントはこの上に構築されています。",
+      "pages": "コンポーネントは <icon>Icon</icon>、GPU での一括描画は <canvas>IconCanvas</canvas>、フレームワーク非依存の API は <core>アイコンコア</core> を参照してください。"
+    },
+    "data": {
+      "search": "アイコンを検索",
+      "searchPlaceholder": "名前またはタグで検索…",
+      "category": "カテゴリ",
+      "all": "すべてのカテゴリ",
+      "size": "サイズ",
+      "stroke": "線幅",
+      "render": "描画方式",
+      "svg": "SVG",
+      "canvas": "キャンバス",
+      "copy": "{{code}} をコピー",
+      "copied": "{{code}} をコピーしました",
+      "copyFailed": "{{code}} をコピーできません：クリップボードを利用できません",
+      "kind": "種類",
+      "kinds": {
+        "all": "すべての種類",
+        "monochrome": "単色",
+        "multicolor": "カラー"
+      },
+      "color": "色",
+      "tones": {
+        "text": "文字色",
+        "primary": "プライマリ",
+        "success": "成功",
+        "warning": "警告",
+        "danger": "危険"
+      },
+      "count": "{{n}} 個のアイコン",
+      "empty": "「{{query}}」に一致するアイコンはありません",
+      "categories": {
+        "arrows": "矢印",
+        "actions": "操作",
+        "interface": "インターフェース",
+        "media": "メディア",
+        "files": "ファイル",
+        "communication": "コミュニケーション",
+        "data": "データとチャート",
+        "finance": "金融",
+        "status": "ステータス",
+        "devices": "デバイス",
+        "weather": "天気",
+        "nature": "自然",
+        "food": "食べ物",
+        "people": "人物",
+        "places": "場所",
+        "shapes": "図形",
+        "text": "テキスト",
+        "education": "教育",
+        "health": "健康",
+        "shopping": "ショッピング",
+        "music": "音楽",
+        "tools": "ツール",
+        "sports": "スポーツ"
+      }
+    }
+  },
+  "components": [],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "gallery",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icons/demos/gallery.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icons/demos/gallery.tsx": "import { useMemo, useState } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport {\n  Empty,\n  Input,\n  Radio,\n  RadioGroup,\n  Select,\n  SelectItem,\n  ToastProvider,\n  toast,\n} from \"minerva-design\";\nimport { Icon, type IconDefinition } from \"minerva-design/icons\";\nimport { iconCategories, searchIcons } from \"minerva-design/icons/core\";\nimport styles from \"../icons.module.scss\";\n\nconst SIZES = [16, 20, 24, 32];\nconst STROKES = [1.5, 2, 2.5];\n// the drawing color: what the paths without a color of their own follow\nconst TONES = {\n  text: undefined,\n  primary: \"var(--primary-color)\",\n  success: \"var(--success-color)\",\n  warning: \"var(--warning-color)\",\n  danger: \"var(--danger-color)\",\n} as const;\ntype Tone = keyof typeof TONES;\n\n/** Icons whose paths carry colors of their own (`colors`) */\nconst isMulticolor = (icon: IconDefinition) =>\n  Boolean(icon.colors?.some(Boolean));\n\n/** `arrow-up` -> `<ArrowUpIcon />` */\nconst snippet = (icon: IconDefinition) =>\n  `<${icon.name.replace(/(^|-)([a-z0-9])/g, (_, __, c: string) =>\n    c.toUpperCase(),\n  )}Icon />`;\n\nexport default function GalleryDemo() {\n  const { t } = useTranslation(\"common\", { keyPrefix: \"docs.icons.data\" });\n  const [query, setQuery] = useState(\"\");\n  const [category, setCategory] = useState(\"all\");\n  const [size, setSize] = useState(24);\n  const [stroke, setStroke] = useState(2);\n  // \"canvas\": every tile drawn by the backend of the renderer bar\n  const [mode, setMode] = useState<\"svg\" | \"canvas\">(\"svg\");\n  // monochrome icons follow the color; multicolor ones keep their accents\n  const [kind, setKind] = useState(\"all\");\n  const [tone, setTone] = useState<Tone>(\"text\");\n\n  // the whole set, grouped by category: the page scrolls, nothing is clipped\n  const sections = useMemo(() => {\n    const matches = searchIcons(query).filter(\n      (icon) =>\n        (category === \"all\" || icon.category === category) &&\n        (kind === \"all\" || (kind === \"multicolor\") === isMulticolor(icon)),\n    );\n    return iconCategories\n      .map((key) => ({\n        key,\n        icons: matches.filter((icon) => icon.category === key),\n      }))\n      .filter((section) => section.icons.length > 0);\n  }, [query, category, kind]);\n\n  const total = sections.reduce((sum, { icons }) => sum + icons.length, 0);\n\n  const copy = async (icon: IconDefinition) => {\n    const code = snippet(icon);\n    try {\n      // no clipboard outside secure contexts: report it instead of nothing\n      if (!navigator.clipboard) throw new Error(\"clipboard unavailable\");\n      await navigator.clipboard.writeText(code);\n      // one id: a new copy replaces the toast instead of stacking them\n      toast.success(t(\"copied\", { code }), { id: \"icon-copy\" });\n    } catch {\n      toast.danger(t(\"copyFailed\", { code }), { id: \"icon-copy\" });\n    }\n  };\n\n  return (\n    <div className={styles.stage}>\n      {/* mount one ToastProvider near the root of an app */}\n      <ToastProvider position=\"top-center\" />\n      <div className={styles.toolbar}>\n        <Input\n          type=\"search\"\n          className={styles.search}\n          size=\"small\"\n          clearable\n          value={query}\n          onChange={(event) => setQuery(event.target.value)}\n          onClear={() => setQuery(\"\")}\n          placeholder={t(\"searchPlaceholder\")}\n          aria-label={t(\"search\")}\n        />\n        <Select\n          size=\"small\"\n          style={{ width: 170 }}\n          aria-label={t(\"category\")}\n          value={category}\n          onChange={setCategory}\n        >\n          <SelectItem value=\"all\">{t(\"all\")}</SelectItem>\n          {iconCategories.map((key) => (\n            <SelectItem key={key} value={key}>\n              {t(`categories.${key}`)}\n            </SelectItem>\n          ))}\n        </Select>\n        <Select\n          size=\"small\"\n          style={{ width: 130 }}\n          aria-label={t(\"kind\")}\n          value={kind}\n          onChange={setKind}\n        >\n          <SelectItem value=\"all\">{t(\"kinds.all\")}</SelectItem>\n          <SelectItem value=\"monochrome\">{t(\"kinds.monochrome\")}</SelectItem>\n          <SelectItem value=\"multicolor\">{t(\"kinds.multicolor\")}</SelectItem>\n        </Select>\n        <Select\n          size=\"small\"\n          style={{ width: 130 }}\n          aria-label={t(\"color\")}\n          value={tone}\n          onChange={(value) => setTone(value as Tone)}\n        >\n          {Object.keys(TONES).map((key) => (\n            <SelectItem key={key} value={key}>\n              {t(`tones.${key}`)}\n            </SelectItem>\n          ))}\n        </Select>\n        <RadioGroup\n          aria-label={t(\"size\")}\n          direction=\"horizontal\"\n          size=\"small\"\n          value={String(size)}\n          onChange={(value) => setSize(Number(value))}\n        >\n          {SIZES.map((value) => (\n            <Radio key={value} value={String(value)} label={`${value}px`} />\n          ))}\n        </RadioGroup>\n        <RadioGroup\n          aria-label={t(\"stroke\")}\n          direction=\"horizontal\"\n          size=\"small\"\n          value={String(stroke)}\n          onChange={(value) => setStroke(Number(value))}\n        >\n          {STROKES.map((value) => (\n            <Radio key={value} value={String(value)} label={String(value)} />\n          ))}\n        </RadioGroup>\n        <RadioGroup\n          aria-label={t(\"render\")}\n          direction=\"horizontal\"\n          size=\"small\"\n          value={mode}\n          onChange={(value) => setMode(value as \"svg\" | \"canvas\")}\n        >\n          <Radio value=\"svg\" label={t(\"svg\")} />\n          <Radio value=\"canvas\" label={t(\"canvas\")} />\n        </RadioGroup>\n      </div>\n      <div className={styles.body}>\n        {sections.length ? (\n          sections.map(({ key, icons }) => (\n            <section key={key} className={styles.categoryGroup}>\n              <h3 className={styles.categoryTitle}>\n                {t(`categories.${key}`)}\n                <span className={styles.categoryCount}>{icons.length}</span>\n              </h3>\n              <div className={styles.grid}>\n                {icons.map((icon) => (\n                  <button\n                    key={icon.name}\n                    type=\"button\"\n                    className={styles.tile}\n                    title={t(\"copy\", { code: snippet(icon) })}\n                    onClick={() => void copy(icon)}\n                  >\n                    <Icon\n                      icon={icon}\n                      size={size}\n                      color={TONES[tone]}\n                      strokeWidth={stroke}\n                      renderer={mode === \"svg\" ? \"svg\" : \"auto\"}\n                    />\n                    <span className={styles.tileName}>{icon.name}</span>\n                  </button>\n                ))}\n              </div>\n            </section>\n          ))\n        ) : (\n          <Empty description={t(\"empty\", { query })} />\n        )}\n      </div>\n      <div className={styles.footer}>\n        <p>{t(\"count\", { n: total })}</p>\n      </div>\n    </div>\n  );\n}\n",
+        "apps/docs/src/docs/pages/icons/icons.module.scss": "// Shared by the demos of the icon pages (icons, icon, icon-canvas, icons-core)\n\n.stage {\n  width: 100%;\n  min-width: 0;\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-lg);\n  background: var(--surface-color);\n  overflow: hidden;\n}\n\n.toolbar {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 8px 16px;\n  padding: 10px 14px;\n  background: var(--surface-subtle-color);\n}\n\n.search {\n  flex: 1 1 220px;\n  min-width: 180px;\n}\n\n.body {\n  padding: 12px 14px;\n}\n\n.grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));\n  gap: 6px;\n  padding: 2px;\n}\n\n.categoryGroup + .categoryGroup {\n  margin-top: 20px;\n}\n\n.categoryTitle {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n  margin: 0 0 8px;\n  font-size: 14px;\n  font-weight: 600;\n  color: var(--text-color);\n}\n\n.categoryCount {\n  padding: 0 6px;\n  border-radius: var(--radius-sm);\n  background: var(--surface-muted-color);\n  font-size: 12px;\n  font-weight: 500;\n  font-variant-numeric: tabular-nums;\n  color: var(--text-secondary-color);\n}\n\n.tile {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  min-height: 92px;\n  padding: 12px 6px 8px;\n  border: 1px solid transparent;\n  border-radius: var(--radius-md);\n  background: transparent;\n  color: var(--text-color);\n  font: inherit;\n  cursor: pointer;\n\n  &:hover {\n    border-color: var(--border-color);\n    background: var(--hover-color);\n  }\n\n  &:focus-visible {\n    outline: 2px solid var(--focus-ring-color);\n    outline-offset: 1px;\n  }\n}\n\n.tileName {\n  max-width: 100%;\n  overflow: hidden;\n  font-size: 11px;\n  line-height: 1.3;\n  color: var(--text-secondary-color);\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.footer {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: space-between;\n  gap: 4px 16px;\n  padding: 8px 14px 12px;\n  background: var(--surface-subtle-color);\n  font-size: 13px;\n  line-height: 1.5;\n  color: var(--text-secondary-color);\n\n  p {\n    margin: 0;\n  }\n}\n\n.row {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 16px 24px;\n}\n\n.cell {\n  display: inline-flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 6px;\n  min-width: 72px;\n  font-size: 12px;\n  color: var(--text-secondary-color);\n}\n\n.code {\n  margin: 0;\n  padding: 10px 12px;\n  border-radius: var(--radius-md);\n  background: var(--surface-muted-color);\n  font-family: var(--font-family-mono, monospace);\n  font-size: 12px;\n  line-height: 1.5;\n  white-space: pre-wrap;\n  word-break: break-all;\n}\n\n.canvasFrame {\n  border: 1px solid var(--border-color);\n  border-radius: var(--radius-md);\n  background: var(--canvas-color);\n}\n\n.kind {\n  font-variant-numeric: tabular-nums;\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "ギャラリー",
+      "description": "セットのすべてのアイコン。名前やタグで検索し、カテゴリや種類で絞り込み、サイズ・線幅・色を試し、SVG とキャンバスを切り替えられます。キャンバスモードでは、ページ上部のレンダラーバーで選んだバックエンドが各アイコンを描画します。単色アイコン（操作・矢印・ステータスなどのインターフェース用）はテキストと同じく文字色に従うため、ボタンや入力欄にそのまま使えます。カラーアイコンは固有のアクセントカラーを保ち、ニュートラルな線だけが色に従います。アイコンをクリックするとコンポーネントをコピーします。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "import { SearchIcon, SettingsIcon } from \"minerva-design/icons\";\n\n<SearchIcon />                                  // 24px, currentColor, 2px stroke\n<SettingsIcon size={16} title=\"Settings\" />     // labelled: role=\"img\"\n<SearchIcon renderer=\"webgl2\" />               // drawn by the GPU on a canvas",
+      "language": "tsx"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.21.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "アイコン",
+      "description": "Minerva のアイコンセット。ライブラリのために 24×24 グリッド上で描き起こしたオリジナルのアイコンで、既定ではインライン SVG として描画され、Canvas2D、WebGL、WebGL2、WebGPU のキャンバスにも描画できます。",
+      "intro": {
+        "title": "概要",
+        "text": "minerva-design/icons は {{categories}} カテゴリ、{{count}} 個のアイコンを収録し、サードパーティのアイコンセットは使いません。すべてのアイコンはライブラリ独自の SVG パスデータで、どのレンダラー・どのフレームワークでも同じデータを使います。",
+        "design": "統一されたビジュアル言語。24×24 グリッド、約 2px の余白、丸い線端と結合部を持つ 2px のストローク、塗りなし。テキストと自然になじみ、12 から 96 ピクセルまで拡大縮小できます。一部のアイコンはストロークごとに色（colors）を持ち、それ以外は color プロパティに従います。",
+        "svg": "既定は SVG。どのサイズでも鮮明で、サーバーで描画でき、テキストの色（currentColor）で着色され、title を指定しない限り支援技術からは隠されます。",
+        "renderers": "同じジオメトリを GPU でも。Icon は renderer=\"auto\"、\"webgpu\"、\"webgl2\"、\"webgl\"、\"canvas2d\" でキャンバスに描画し、IconCanvas は数千個のアイコンを数回のインスタンス描画で描きます。フォールバックはチャートと同じ WebGPU -> WebGL2 -> WebGL -> Canvas2D です。",
+        "treeShaking": "使った分だけ。各アイコンは個別の定数（searchIcon）とコンポーネント（SearchIcon）で、キャンバスレンダラーは最初のキャンバスアイコンが現れたときに初めて読み込まれます。",
+        "frameworks": "フレームワーク非依存のコア。minerva-design/icons/core にはアイコンデータ、SVG 文字列、Canvas2D 描画、GPU キャンバスが含まれ、どのフレームワークでも使えます。React コンポーネントはこの上に構築されています。",
+        "pages": "コンポーネントは <icon>Icon</icon>、GPU での一括描画は <canvas>IconCanvas</canvas>、フレームワーク非依存の API は <core>アイコンコア</core> を参照してください。"
+      },
+      "demos": {
+        "gallery": {
+          "title": "ギャラリー",
+          "description": "セットのすべてのアイコン。名前やタグで検索し、カテゴリや種類で絞り込み、サイズ・線幅・色を試し、SVG とキャンバスを切り替えられます。キャンバスモードでは、ページ上部のレンダラーバーで選んだバックエンドが各アイコンを描画します。単色アイコン（操作・矢印・ステータスなどのインターフェース用）はテキストと同じく文字色に従うため、ボタンや入力欄にそのまま使えます。カラーアイコンは固有のアクセントカラーを保ち、ニュートラルな線だけが色に従います。アイコンをクリックするとコンポーネントをコピーします。"
+        }
+      },
+      "data": {
+        "search": "アイコンを検索",
+        "searchPlaceholder": "名前またはタグで検索…",
+        "category": "カテゴリ",
+        "all": "すべてのカテゴリ",
+        "size": "サイズ",
+        "stroke": "線幅",
+        "render": "描画方式",
+        "svg": "SVG",
+        "canvas": "キャンバス",
+        "copy": "{{code}} をコピー",
+        "copied": "{{code}} をコピーしました",
+        "copyFailed": "{{code}} をコピーできません：クリップボードを利用できません",
+        "kind": "種類",
+        "kinds": {
+          "all": "すべての種類",
+          "monochrome": "単色",
+          "multicolor": "カラー"
+        },
+        "color": "色",
+        "tones": {
+          "text": "文字色",
+          "primary": "プライマリ",
+          "success": "成功",
+          "warning": "警告",
+          "danger": "危険"
+        },
+        "count": "{{n}} 個のアイコン",
+        "empty": "「{{query}}」に一致するアイコンはありません",
+        "categories": {
+          "arrows": "矢印",
+          "actions": "操作",
+          "interface": "インターフェース",
+          "media": "メディア",
+          "files": "ファイル",
+          "communication": "コミュニケーション",
+          "data": "データとチャート",
+          "finance": "金融",
+          "status": "ステータス",
+          "devices": "デバイス",
+          "weather": "天気",
+          "nature": "自然",
+          "food": "食べ物",
+          "people": "人物",
+          "places": "場所",
+          "shapes": "図形",
+          "text": "テキスト",
+          "education": "教育",
+          "health": "健康",
+          "shopping": "ショッピング",
+          "music": "音楽",
+          "tools": "ツール",
+          "sports": "スポーツ"
+        }
+      }
+    }
+  }
+}

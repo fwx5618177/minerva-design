@@ -1,0 +1,754 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.0",
+  "locale": "ja",
+  "renderer": "native",
+  "page": "waterfall-chart",
+  "title": "ウォーターフォールチャート",
+  "description": "一連の増減が値を始点から終点へ運ぶ様子を、小計と合計とともに示します：損益ブリッジ、キャッシュフロー、差異分析。細い破線が各棒を次の棒につなぎます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.0",
+    "sourceCommit": "cf7fb249651cd06c89d0951ac2c3a3aa74dc835a",
+    "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
+    "referenceSourceDigest": "sha256:563c9bec5d90807342a94c02317519b3da937907129bda2d25ea49762fa828fd"
+  },
+  "content": {
+    "data": {
+      "pnl": {
+        "revenue": "売上高",
+        "costOfSales": "売上原価",
+        "grossProfit": "売上総利益",
+        "research": "研究開発費",
+        "marketing": "マーケティング費",
+        "admin": "一般管理費",
+        "operatingIncome": "営業利益",
+        "interest": "受取利息",
+        "tax": "法人税等",
+        "netIncome": "純利益"
+      },
+      "amount": "金額",
+      "pnlAria": "売上高から純利益までの損益計算書",
+      "opening": "期首",
+      "closing": "期末",
+      "cashFlow": "純キャッシュフロー",
+      "cashAria": "期首残高から期末残高までの月ごとの純キャッシュフロー",
+      "budget": "予算",
+      "actual": "実績",
+      "drivers": {
+        "volume": "数量",
+        "price": "価格",
+        "mix": "製品構成",
+        "exchangeRates": "為替",
+        "rawMaterials": "原材料",
+        "savings": "コスト削減"
+      },
+      "variance": "差異",
+      "varianceAria": "予算と実績の利益の差異要因",
+      "startOfYear": "年初",
+      "endOfYear": "年末",
+      "movements": {
+        "hires": "採用",
+        "internalIn": "社内異動（受入）",
+        "resignations": "退職",
+        "internalOut": "社内異動（送出）",
+        "retirements": "定年退職"
+      },
+      "people": "人数",
+      "headcountAria": "1 年間の人員の増減",
+      "arr": {
+        "opening": "期首 ARR",
+        "newBusiness": "新規",
+        "expansion": "アップセル",
+        "contraction": "縮小",
+        "churn": "解約",
+        "closing": "期末 ARR",
+        "name": "ARR",
+        "quarterLabel": "四半期",
+        "quarter": "第{{n}}四半期",
+        "summary": "{{quarter}}：純新規 ARR {{net}} · 売上継続率 {{nrr}}",
+        "aria": "{{quarter}}の ARR ブリッジ"
+      },
+      "price": {
+        "listPrice": "定価",
+        "dealerDiscount": "販売店値引き",
+        "promotion": "販促",
+        "invoicePrice": "請求価格",
+        "paymentTerms": "支払条件",
+        "freight": "運賃",
+        "rebates": "数量リベート",
+        "pocketPrice": "実質手取り価格",
+        "name": "単価",
+        "hint": "バーをクリックすると定価と比較します",
+        "selected": "{{step}}：{{value}}、定価の {{share}}",
+        "aria": "定価から実質手取り価格までの価格ウォーターフォール"
+      },
+      "emissions": {
+        "baseline": "2019 年基準",
+        "growth": "事業成長",
+        "efficiency": "省エネ",
+        "renewables": "再生可能電力",
+        "fleet": "EV 車両",
+        "refrigerants": "冷媒",
+        "acquisition": "買収",
+        "current": "2025 年",
+        "target": "2030 年目標",
+        "kt": "{{value}} kt CO₂e",
+        "name": "排出量",
+        "change": "変化：{{value}}",
+        "range": "{{from}} から {{to}}",
+        "gap": "2030 年目標を {{value}} 上回る",
+        "aria": "2019 年基準から 2025 年までの排出量ブリッジ"
+      },
+      "lead": {
+        "orderEntry": "受注入力",
+        "creditCheck": "与信審査",
+        "picking": "ピッキング",
+        "quality": "品質検査",
+        "carrierWait": "運送業者待ち",
+        "transit": "輸送",
+        "customs": "通関",
+        "total": "リードタイム",
+        "name": "所要時間",
+        "work": "作業",
+        "wait": "待ち",
+        "summary": "作業は {{total}} のうち {{work}}（{{share}}）",
+        "aria": "工程別の注文リードタイム"
+      },
+      "live": {
+        "opening": "それ以前",
+        "now": "現在",
+        "name": "残高",
+        "kinds": {
+          "customer": "顧客からの入金",
+          "supplier": "仕入先への支払",
+          "payroll": "給与",
+          "card": "カード手数料",
+          "refund": "返金"
+        },
+        "last": "最新：{{time}} · {{kind}} {{amount}}",
+        "pause": "一時停止",
+        "resume": "再開",
+        "aria": "当日の資金ポジション（ライブ更新）"
+      },
+      "scope": {
+        "committed": "コミット",
+        "added": "追加",
+        "removed": "削除",
+        "reestimated": "再見積もり",
+        "carriedOver": "持ち越し",
+        "completed": "完了",
+        "name": "ストーリーポイント",
+        "orientation": "向き",
+        "vertical": "縦",
+        "horizontal": "横",
+        "labels": "ラベル",
+        "connector": "コネクタ",
+        "aria": "コミットから完了までのスプリントのストーリーポイント"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "WaterfallChart",
+      "support": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles)."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Chart component of minerva-design/native: the canvas chart engine drawn with views (touch scrub, pinch zoom, legend toggles).",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "WaterfallChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "steps",
+            "source": "packages/native/src/components/Charts/types.ts",
+            "kind": "array",
+            "typeText": "readonly WaterfallStep[]",
+            "typeRef": "type:3873f9105900201e8357",
+            "required": true,
+            "description": "Changes, subtotals and totals, in order"
+          },
+          {
+            "name": "labels",
+            "source": "packages/native/src/components/Charts/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": true,
+            "required": false,
+            "description": "Writes the change (or the total) at the end of every bar"
+          },
+          {
+            "name": "orientation",
+            "source": "packages/native/src/components/Charts/types.ts",
+            "kind": "enum",
+            "values": [
+              "horizontal",
+              "vertical"
+            ],
+            "typeText": "ChartOrientation | undefined",
+            "typeRef": "type:872af3679a2d7fcf3d26",
+            "default": "vertical",
+            "required": false,
+            "description": "`horizontal` lays the steps out in rows"
+          },
+          {
+            "name": "testID",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Test identifier of the root view"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "typeRef": "type:c08795b3492e4547d570",
+            "required": false,
+            "description": "Tooltip shown on tap / while scrubbing; `false` disables it"
+          },
+          {
+            "name": "height",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": 320,
+            "required": false,
+            "description": "Height of the chart (the legend included)"
+          },
+          {
+            "name": "width",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "DimensionValue | undefined",
+            "typeRef": "type:cd08f9fa3f57e56425b7",
+            "default": "100%",
+            "required": false,
+            "description": "Width of the chart"
+          },
+          {
+            "name": "xAxis",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "X axis"
+          },
+          {
+            "name": "yAxis",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartAxisOptions | undefined",
+            "typeRef": "type:6eb50d4f419370a826a4",
+            "required": false,
+            "description": "Y axis"
+          },
+          {
+            "name": "legend",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartLegendOptions | undefined",
+            "typeRef": "type:860fa553ee4deaac43f8",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name (tap toggles a series)"
+          },
+          {
+            "name": "annotations",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly ChartAnnotation[] | undefined",
+            "typeRef": "type:f440eb8a958892b1b0c2",
+            "required": false,
+            "description": "Background areas, reference lines and texts"
+          },
+          {
+            "name": "interaction",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "union",
+            "typeText": "boolean | ChartInteractionOptions | undefined",
+            "typeRef": "type:f4b160d7dd18649fd178",
+            "default": true,
+            "required": false,
+            "description": "Pinch to zoom, drag to pan when zoomed, double tap to reset; `false` makes the chart static"
+          },
+          {
+            "name": "padding",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "object",
+            "typeText": "ChartPadding | undefined",
+            "typeRef": "type:7c2c76b2d4d6c9fbf43a",
+            "required": false,
+            "description": "Space around the plot area, in pixels"
+          },
+          {
+            "name": "palette",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "array",
+            "typeText": "readonly string[] | undefined",
+            "typeRef": "type:88dcb55e82bb1c501478",
+            "required": false,
+            "description": "Series colors (defaults to the `chart-series-1..8` tokens, then the theme colors)"
+          },
+          {
+            "name": "ariaLabel",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the chart"
+          },
+          {
+            "name": "locale",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Locale of the texts and numbers the chart writes (tooltip rows, compact units `k` / `万`, separators, month and weekday names of time axes)"
+          },
+          {
+            "name": "renderTooltip",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "node",
+            "typeText": "((event: ChartHoverEvent) => ReactNode) | undefined",
+            "typeRef": "type:66d650d38e6b7d308d32",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "ReactNode",
+              "typeRef": "type:d947e2db6b7ed3e4c192"
+            },
+            "required": false,
+            "description": "React content of the tooltip (replaces the default content)"
+          }
+        ],
+        "events": [
+          {
+            "name": "onHover",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent | null) => void) | undefined",
+            "typeRef": "type:170f27b8f07028fffd08",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent | null",
+                "typeRef": "type:92ec77c4587c7e27430b"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the highlighted points change"
+          },
+          {
+            "name": "onPointClick",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartHoverEvent) => void) | undefined",
+            "typeRef": "type:d586363317763d2fd3f3",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartHoverEvent",
+                "typeRef": "type:9ad3ae3816f8ca4e3894"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when a point (or bar) is tapped"
+          },
+          {
+            "name": "onPlotClick",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((event: ChartPlotClickEvent) => void) | undefined",
+            "typeRef": "type:3ab7d8ab926fce010082",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartPlotClickEvent",
+                "typeRef": "type:db60e2cf00fabb558740"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the plot area is tapped where there is no point"
+          },
+          {
+            "name": "onZoom",
+            "source": "packages/native/src/components/Chart/types.ts",
+            "kind": "function",
+            "typeText": "((view: ChartView) => void) | undefined",
+            "typeRef": "type:e6c98e88ed542ed60f34",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChartView",
+                "typeRef": "type:f1de933b453f8db86ff3"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called when the user zooms or pans"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "native:WaterfallChartProps": {
+      "source": "native/src/components/Charts/types.ts",
+      "description": "Props of WaterfallChart",
+      "kind": "interface",
+      "extends": [
+        "Omit<ChartCommonProps, \"crosshair\" | \"labels\">",
+        "Omit<WaterfallOptions, \"labels\">"
+      ],
+      "props": [
+        {
+          "name": "steps",
+          "type": "readonly WaterfallStep[]",
+          "required": true,
+          "description": "Changes, subtotals and totals, in order"
+        },
+        {
+          "name": "labels",
+          "type": "boolean",
+          "required": false,
+          "default": "true",
+          "description": "Writes the change (or the total) at the end of every bar"
+        },
+        {
+          "name": "orientation",
+          "type": "ChartOrientation",
+          "required": false,
+          "default": "\"vertical\"",
+          "description": "`horizontal` lays the steps out in rows"
+        }
+      ]
+    }
+  },
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/waterfall-chart/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/waterfall-chart/native/basic.tsx": "import { useMemo } from \"react\";\nimport { useTranslation } from \"react-i18next\";\nimport { WaterfallChart, type WaterfallStep } from \"minerva-design/native\";\n\n// Income statement of the year (M$), from the revenue to the net income\nconst lines = [\n  [\"revenue\", \"subtotal\"],\n  [\"costOfSales\", -191],\n  [\"grossProfit\", \"subtotal\"],\n  [\"research\", -74],\n  [\"marketing\", -63],\n  [\"admin\", -38],\n  [\"operatingIncome\", \"subtotal\"],\n  [\"tax\", -27],\n  [\"netIncome\", \"total\"],\n] as const;\n\nexport default function Basic() {\n  const { t, i18n } = useTranslation(\"common\", {\n    keyPrefix: \"docs.waterfall-chart.data\",\n  });\n  const steps = useMemo(\n    (): WaterfallStep[] =>\n      lines.map(([key, value]) =>\n        typeof value === \"number\"\n          ? { label: t(`pnl.${key}`), value }\n          : { label: t(`pnl.${key}`), kind: value },\n      ),\n    [t],\n  );\n  return (\n    <WaterfallChart\n      height={300}\n      locale={i18n.language}\n      steps={steps}\n      start={482}\n      name={t(\"amount\")}\n      orientation=\"horizontal\"\n      ariaLabel={t(\"pnlAria\")}\n    />\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-i18next"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "ウォーターフォールチャート",
+      "description": "一連の増減が値を始点から終点へ運ぶ様子を、小計と合計とともに示します：損益ブリッジ、キャッシュフロー、差異分析。細い破線が各棒を次の棒につなぎます。",
+      "demos": {
+        "pnl": {
+          "title": "損益ブリッジ",
+          "description": "売上から純利益まで：各増減は前の棒の終点から始まり、小計と合計の棒はゼロからの累計を示します。ラベルには増減が表示されます。"
+        },
+        "cash-flow": {
+          "title": "キャッシュフロー",
+          "description": "start で期首残高を指定し、最初の小計がそれを示します。各月の純キャッシュフローを加え、期末残高で終わります。yAxis.min で増減部分を拡大します。"
+        },
+        "variance": {
+          "title": "予算差異",
+          "description": "orientation: \"horizontal\" で、予算と実績の利益の差を説明する要因を行に並べます。"
+        },
+        "headcount": {
+          "title": "人員の増減",
+          "description": "upColor、downColor、totalColor で既定の色を置き換えます。ここでは入社を青、退職を琥珀色にしています。"
+        },
+        "arr-bridge": {
+          "title": "四半期別 ARR ブリッジ",
+          "description": "四半期の期首から期末までの年間経常収益：新規、アップセル、縮小、解約。RadioGroup で四半期を切り替え、start は前四半期の期末 ARR を受け取り、yAxis.min で変化部分を拡大します。下の行では純新規 ARR と売上継続率を計算します。"
+        },
+        "price-bridge": {
+          "title": "価格ウォーターフォール",
+          "description": "1 個あたりの定価から実質手取り価格まで。請求価格は小計です。onPointClick はクリックされたバー（event.items[0].index）を受け取り、下の行でその金額が定価に占める割合を示します。"
+        },
+        "emissions": {
+          "title": "排出量ブリッジ",
+          "description": "2019 年の基準から 2025 年までの排出量：upColor と downColor を入れ替えて増加を赤、削減を緑にし、線のアノテーションで 2030 年目標を示します。renderTooltip は各変化とその始点・終点、目標との差を表示します。"
+        },
+        "lead-time": {
+          "title": "リードタイムの内訳",
+          "description": "注文の各工程が所要時間を積み上げ、合計バーがリードタイムを示します。各ステップは独自の色（作業か待ち）を持ち、format は Intl.NumberFormat の単位スタイルで日数を書き、connector は実線を描きます。"
+        },
+        "live-balance": {
+          "title": "ライブ資金ポジション",
+          "description": "1 日の資金残高：2 秒ごとに取引が届き（setInterval、一時停止とアンマウントで解除）、最も古い取引はウィンドウから外れて start に繰り込まれるため、最初のバーは常に表示中の取引より前の残高を示します。"
+        },
+        "options": {
+          "title": "オプション",
+          "description": "スプリントのスコープをコミットから完了までのストーリーポイントで表示：orientation、labels、connector を試せます。"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基本",
+            "description": "行に並べた損益計算書（orientation=\"horizontal\"）。スマートフォンでも項目名の幅を確保できます。"
+          }
+        }
+      },
+      "data": {
+        "pnl": {
+          "revenue": "売上高",
+          "costOfSales": "売上原価",
+          "grossProfit": "売上総利益",
+          "research": "研究開発費",
+          "marketing": "マーケティング費",
+          "admin": "一般管理費",
+          "operatingIncome": "営業利益",
+          "interest": "受取利息",
+          "tax": "法人税等",
+          "netIncome": "純利益"
+        },
+        "amount": "金額",
+        "pnlAria": "売上高から純利益までの損益計算書",
+        "opening": "期首",
+        "closing": "期末",
+        "cashFlow": "純キャッシュフロー",
+        "cashAria": "期首残高から期末残高までの月ごとの純キャッシュフロー",
+        "budget": "予算",
+        "actual": "実績",
+        "drivers": {
+          "volume": "数量",
+          "price": "価格",
+          "mix": "製品構成",
+          "exchangeRates": "為替",
+          "rawMaterials": "原材料",
+          "savings": "コスト削減"
+        },
+        "variance": "差異",
+        "varianceAria": "予算と実績の利益の差異要因",
+        "startOfYear": "年初",
+        "endOfYear": "年末",
+        "movements": {
+          "hires": "採用",
+          "internalIn": "社内異動（受入）",
+          "resignations": "退職",
+          "internalOut": "社内異動（送出）",
+          "retirements": "定年退職"
+        },
+        "people": "人数",
+        "headcountAria": "1 年間の人員の増減",
+        "arr": {
+          "opening": "期首 ARR",
+          "newBusiness": "新規",
+          "expansion": "アップセル",
+          "contraction": "縮小",
+          "churn": "解約",
+          "closing": "期末 ARR",
+          "name": "ARR",
+          "quarterLabel": "四半期",
+          "quarter": "第{{n}}四半期",
+          "summary": "{{quarter}}：純新規 ARR {{net}} · 売上継続率 {{nrr}}",
+          "aria": "{{quarter}}の ARR ブリッジ"
+        },
+        "price": {
+          "listPrice": "定価",
+          "dealerDiscount": "販売店値引き",
+          "promotion": "販促",
+          "invoicePrice": "請求価格",
+          "paymentTerms": "支払条件",
+          "freight": "運賃",
+          "rebates": "数量リベート",
+          "pocketPrice": "実質手取り価格",
+          "name": "単価",
+          "hint": "バーをクリックすると定価と比較します",
+          "selected": "{{step}}：{{value}}、定価の {{share}}",
+          "aria": "定価から実質手取り価格までの価格ウォーターフォール"
+        },
+        "emissions": {
+          "baseline": "2019 年基準",
+          "growth": "事業成長",
+          "efficiency": "省エネ",
+          "renewables": "再生可能電力",
+          "fleet": "EV 車両",
+          "refrigerants": "冷媒",
+          "acquisition": "買収",
+          "current": "2025 年",
+          "target": "2030 年目標",
+          "kt": "{{value}} kt CO₂e",
+          "name": "排出量",
+          "change": "変化：{{value}}",
+          "range": "{{from}} から {{to}}",
+          "gap": "2030 年目標を {{value}} 上回る",
+          "aria": "2019 年基準から 2025 年までの排出量ブリッジ"
+        },
+        "lead": {
+          "orderEntry": "受注入力",
+          "creditCheck": "与信審査",
+          "picking": "ピッキング",
+          "quality": "品質検査",
+          "carrierWait": "運送業者待ち",
+          "transit": "輸送",
+          "customs": "通関",
+          "total": "リードタイム",
+          "name": "所要時間",
+          "work": "作業",
+          "wait": "待ち",
+          "summary": "作業は {{total}} のうち {{work}}（{{share}}）",
+          "aria": "工程別の注文リードタイム"
+        },
+        "live": {
+          "opening": "それ以前",
+          "now": "現在",
+          "name": "残高",
+          "kinds": {
+            "customer": "顧客からの入金",
+            "supplier": "仕入先への支払",
+            "payroll": "給与",
+            "card": "カード手数料",
+            "refund": "返金"
+          },
+          "last": "最新：{{time}} · {{kind}} {{amount}}",
+          "pause": "一時停止",
+          "resume": "再開",
+          "aria": "当日の資金ポジション（ライブ更新）"
+        },
+        "scope": {
+          "committed": "コミット",
+          "added": "追加",
+          "removed": "削除",
+          "reestimated": "再見積もり",
+          "carriedOver": "持ち越し",
+          "completed": "完了",
+          "name": "ストーリーポイント",
+          "orientation": "向き",
+          "vertical": "縦",
+          "horizontal": "横",
+          "labels": "ラベル",
+          "connector": "コネクタ",
+          "aria": "コミットから完了までのスプリントのストーリーポイント"
+        }
+      },
+      "api": {
+        "WaterfallChartProps": {
+          "steps": "順に並べた増減、小計、合計",
+          "labels": "各棒の先端に増減（または合計）を表示",
+          "orientation": "\"horizontal\" でステップを行に並べる"
+        },
+        "WaterfallStep": {
+          "label": "棒のカテゴリ名",
+          "value": "増減（正または負）。合計では無視",
+          "kind": "\"subtotal\" と \"total\" の棒はゼロからの累計を表示",
+          "color": "この棒の色（任意の CSS カラー）"
+        },
+        "WaterfallOptions": {
+          "name": "系列名（ツールチップ）",
+          "upColor": "増加の色",
+          "downColor": "減少の色",
+          "totalColor": "合計と小計の色",
+          "start": "最初の増減の起点となる値",
+          "labels": "各棒の先端に増減（または合計）を表示",
+          "format": "値の書式（ラベル、ツールチップ）",
+          "locale": "既定の系列名のロケール。既定はページの言語",
+          "connector": "各棒の端から次の棒への細い線（補助テキスト色の破線）。false で非表示、オブジェクトで color・dash・width を指定"
+        },
+        "ChartConnectorOptions": {
+          "color": "線の色（任意の CSS カラー）。既定は補助テキスト色",
+          "dash": "破線のパターン（CSS ピクセル）。[] で実線（既定 [3, 3]）",
+          "width": "線の太さ（CSS ピクセル、既定 1）"
+        }
+      },
+      "wc": {
+        "demos": {
+          "pnl": {
+            "title": "損益ブリッジ",
+            "description": "増減は累計値から浮かび、売上総利益は小計、純利益は合計として表示されます。"
+          },
+          "cash-flow": {
+            "title": "期首残高からのキャッシュフロー",
+            "description": "月ごとの入出金を行方向に並べ、期首残高から期末合計まで表示します。値はツールチップに表示されます。"
+          }
+        },
+        "minerva-waterfall-chart": {
+          "props": {
+            "valueName": "ツールチップに表示する値の名前",
+            "hideLabels": "各バーの端に表示される増減（または合計）を非表示にします",
+            "height": "チャートの高さ（凡例を含む）：ピクセルまたは任意の CSS の長さ",
+            "options": "その他のエンジンのオプション（軸、凡例、ツールチップ、パレット、書式…）。要素自身のプロパティとマージされます。プロパティのみ",
+            "instance": "エンジンのインスタンス（minerva-design/charts/core）。要素が描画されて接続されるまでは null",
+            "hideConnectors": "各バーの端から次のバーへの細い線を非表示にします"
+          },
+          "events": {
+            "minerva-hover": "ホバー（またはキーボードでフォーカス）しているポイントが変わりました。detail：{ x, xLabel, items }、何もない場合は null",
+            "minerva-point-click": "ポイントまたは棒がクリックされました。detail：{ x, xLabel, items }",
+            "minerva-plot-click": "ポイントのないプロット領域がクリックされました。detail：{ x, y }（データ座標）",
+            "minerva-zoom": "ユーザーがズームまたはパンしました。detail：{ x, y }（表示範囲）",
+            "minerva-renderer-change": "バックエンドの準備ができた、または GPU の喪失後にフォールバックしました。detail：{ renderer }"
+          },
+          "methods": {
+            "resetZoom": "データ範囲全体を表示します",
+            "getView": "表示範囲。エンジンが作成されるまでは null",
+            "setView": "表示範囲を設定します",
+            "getRenderer": "使用中のバックエンド（webgpu、webgl2、webgl、canvas2d）。準備ができるまでは null"
+          }
+        }
+      }
+    }
+  }
+}

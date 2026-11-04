@@ -1,0 +1,536 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.0",
+  "locale": "en",
+  "renderer": "angular",
+  "page": "bullet-chart",
+  "title": "Bullet chart",
+  "description": "Compact KPI bars (Stephen Few): each row shows a measure as a bar over qualitative ranges (shades of gray, the poorest darkest) with a marker at its target, on the row's own scale. Rows can mix units, so dashboards fit many KPIs in little space. Hover a row or use the arrow keys to read its value, target and range.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.0",
+    "sourceCommit": "cf7fb249651cd06c89d0951ac2c3a3aa74dc835a",
+    "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
+    "referenceSourceDigest": "sha256:563c9bec5d90807342a94c02317519b3da937907129bda2d25ea49762fa828fd"
+  },
+  "content": {
+    "data": {
+      "sales": {
+        "revenue": "Revenue",
+        "revenueUnit": "thousands of US$",
+        "profit": "Profit",
+        "profitUnit": "% of revenue",
+        "orderSize": "Avg. order size",
+        "orderSizeUnit": "US$",
+        "customers": "New customers",
+        "customersUnit": "count",
+        "satisfaction": "Satisfaction",
+        "satisfactionUnit": "out of 5"
+      },
+      "ranges": {
+        "poor": "Poor",
+        "fair": "Fair",
+        "good": "Good",
+        "breach": "Breach",
+        "atRisk": "At risk",
+        "healthy": "Healthy"
+      },
+      "salesAria": "Quarter-to-date sales KPIs against their targets",
+      "teams": {
+        "checkout": "Checkout",
+        "search": "Search",
+        "mobile": "Mobile",
+        "platform": "Platform",
+        "growth": "Growth",
+        "data": "Data"
+      },
+      "teamsAria": "Story points delivered by each team against its commitment",
+      "slo": {
+        "availability": "Availability",
+        "availabilityUnit": "% of requests",
+        "apdex": "Apdex",
+        "apdexUnit": "score, 0–1",
+        "throughput": "Throughput",
+        "throughputUnit": "requests / s",
+        "budget": "Error budget",
+        "budgetUnit": "% remaining"
+      },
+      "sloAria": "Service level objectives of the API this month",
+      "growth": {
+        "visitors": "Visitors",
+        "visitorsUnit": "thousands",
+        "signups": "Sign-ups",
+        "signupsUnit": "accounts",
+        "activation": "Activation",
+        "activationUnit": "% of sign-ups",
+        "mrr": "MRR",
+        "mrrUnit": "thousands of US$"
+      },
+      "monthLabel": "Month",
+      "growthAria": "Growth KPIs of the selected month against their targets",
+      "long": {
+        "onboarding": "Enterprise customer onboarding completed within the first 30 days",
+        "onboardingUnit": "% of new accounts",
+        "support": "Priority support tickets answered within one business hour",
+        "supportUnit": "% of tickets",
+        "deployments": "Production deployments rolled out without a customer-facing incident",
+        "deploymentsUnit": "% of deployments",
+        "renewals": "Net revenue retention of annual subscription contracts",
+        "renewalsUnit": "ratio"
+      },
+      "longAria": "Operational KPIs with long names against their targets",
+      "budget": {
+        "departments": {
+          "marketing": "Marketing",
+          "engineering": "Engineering",
+          "sales": "Sales",
+          "people": "People",
+          "facilities": "Facilities",
+          "travel": "Travel"
+        },
+        "yearly": "Yearly budget: {{budget}}",
+        "ranges": {
+          "comfortable": "Comfortable",
+          "tight": "Tight",
+          "over": "Over plan"
+        },
+        "hint": "{{over}} departments spend faster than planned. Click a row to see its variance.",
+        "overPlan": "{{department}} is over plan: {{variance}} by the end of Q3, {{share}} of the yearly budget spent, {{left}} left.",
+        "underPlan": "{{department}} is within plan: {{variance}} by the end of Q3, {{share}} of the yearly budget spent, {{left}} left.",
+        "aria": "Department spending at the end of Q3 against the budget planned by then"
+      },
+      "sensors": {
+        "names": {
+          "inlet": "Inlet temperature",
+          "humidity": "Humidity",
+          "power": "Power draw",
+          "fans": "Fan speed"
+        },
+        "units": {
+          "inlet": "°C",
+          "humidity": "% relative",
+          "power": "kW per rack",
+          "fans": "% of max speed"
+        },
+        "status": {
+          "ok": "Normal",
+          "warning": "Warning",
+          "critical": "Critical"
+        },
+        "live": "Live readings",
+        "aria": "Server room sensor readings against their setpoints and thresholds",
+        "alerts": "Needs attention: {{sensors}}",
+        "allOk": "All sensors are within their limits."
+      },
+      "training": {
+        "metrics": {
+          "distance": "Weekly distance",
+          "longRun": "Long run",
+          "elevation": "Elevation gain",
+          "sessions": "Sessions",
+          "sleep": "Sleep"
+        },
+        "plan": "plan: {{plan}}",
+        "ranges": {
+          "under": "Under plan",
+          "onPlan": "On plan",
+          "above": "Above plan"
+        },
+        "runner": "Runner",
+        "runners": {
+          "amara": "Amara",
+          "lucas": "Lucas",
+          "mei": "Mei"
+        },
+        "tooltip": "{{value}} for a plan of {{plan}} ({{share}})",
+        "aria": "Weekly training of {{runner}} against the plan",
+        "summary": "{{runner}} met {{met}} of {{metrics}} weekly targets."
+      },
+      "hiring": {
+        "teams": {
+          "engineering": "Engineering",
+          "sales": "Sales",
+          "support": "Support",
+          "marketing": "Marketing",
+          "product": "Product",
+          "finance": "Finance"
+        },
+        "planned": "{{plan}} planned this year",
+        "ranges": {
+          "behind": "Behind",
+          "catchingUp": "Catching up",
+          "onTrack": "On track"
+        },
+        "order": "Sort",
+        "orders": {
+          "plan": "Plan order",
+          "behind": "Most behind first",
+          "ahead": "Most ahead first"
+        },
+        "aria": "Hires of each team against the yearly headcount plan",
+        "summary": "{{hired}} of {{planned}} planned hires ({{share}}) across {{teams}} teams shown.",
+        "none": "No team shown."
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "BulletChart",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnBulletChart. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnBulletChart. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnBulletChart"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-bullet-chart",
+        "props": [
+          {
+            "name": "data",
+            "typeText": "readonly BulletDatum[]",
+            "required": true,
+            "source": "packages/angular/src/components/charts/shape-extended.ts"
+          },
+          {
+            "name": "orientation",
+            "typeText": "\"horizontal\" | \"vertical\" | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape-extended.ts"
+          },
+          {
+            "name": "ranges",
+            "typeText": "readonly number[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape-extended.ts"
+          },
+          {
+            "name": "rangeLabels",
+            "typeText": "readonly string[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape-extended.ts"
+          },
+          {
+            "name": "rangeColors",
+            "typeText": "readonly string[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape-extended.ts"
+          },
+          {
+            "name": "targetColor",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/shape-extended.ts"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "kpis",
+      "title": "KPIs against targets",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnBulletChart, injectMinerva } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnBulletChart],\n  template: `\n@let t = labels[language()];\n<mn-bullet-chart\n  [data]=\"[\n    { name: t.kpis[0], value: 270, target: 250, ranges: [150, 225, 300] },\n    { name: t.kpis[1], value: 22.5, target: 26, ranges: [20, 25, 30] },\n    { name: t.kpis[2], value: 1650, target: 2100, ranges: [1000, 2000, 2500] },\n    { name: t.kpis[3], value: 4.4, target: 4.5, ranges: [3.5, 4.25, 5] }\n  ]\"\n  [rangeLabels]=\"t.ranges\"\n/>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  labels = {\n  \"en\": {\n    \"kpis\": [\"Revenue (k€)\", \"Profit (%)\", \"Orders\", \"Satisfaction\"],\n    \"ranges\": [\"Poor\", \"Fair\", \"Good\"]\n  },\n  \"zh\": {\n    \"kpis\": [\"营收（千欧元）\", \"利润率（%）\", \"订单数\", \"满意度\"],\n    \"ranges\": [\"差\", \"一般\", \"良好\"]\n  },\n  \"ja\": {\n    \"kpis\": [\"売上（千ユーロ）\", \"利益率（%）\", \"注文数\", \"満足度\"],\n    \"ranges\": [\"不良\", \"普通\", \"良好\"]\n  },\n  \"fr\": {\n    \"kpis\": [\"Chiffre d’affaires (k€)\", \"Marge (%)\", \"Commandes\", \"Satisfaction\"],\n    \"ranges\": [\"Faible\", \"Correct\", \"Bon\"]\n  }\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "vertical",
+      "title": "Vertical",
+      "description": "orientation=\"vertical\" turns the rows into columns, here the story points of each team against its commitment. The ranges are shared by every column through the chart's ranges prop; barSize makes the bars thicker.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnBulletChart, injectMinerva } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnBulletChart],\n  template: `\n@let q = quarters[language()];\n<mn-bullet-chart\n  [data]=\"[\n    { name: q[0], value: 82, target: 90 },\n    { name: q[1], value: 95, target: 90 },\n    { name: q[2], value: 71, target: 100 },\n    { name: q[3], value: 104, target: 100 }\n  ]\"\n  orientation=\"vertical\"\n  [ranges]=\"[60, 90, 120]\"\n  targetColor=\"var(--danger-color, #dc2626)\"\n/>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  quarters = {\n  \"en\": [\"Q1\", \"Q2\", \"Q3\", \"Q4\"],\n  \"zh\": [\"第一季度\", \"第二季度\", \"第三季度\", \"第四季度\"],\n  \"ja\": [\"第 1 四半期\", \"第 2 四半期\", \"第 3 四半期\", \"第 4 四半期\"],\n  \"fr\": [\"T1\", \"T2\", \"T3\", \"T4\"]\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Bullet chart",
+      "description": "Compact KPI bars (Stephen Few): each row shows a measure as a bar over qualitative ranges (shades of gray, the poorest darkest) with a marker at its target, on the row's own scale. Rows can mix units, so dashboards fit many KPIs in little space. Hover a row or use the arrow keys to read its value, target and range.",
+      "demos": {
+        "sales": {
+          "title": "Sales KPI dashboard",
+          "description": "Five KPIs with their own units and scales. ranges gives the poor / fair / good bounds of each row, target the marker, subtitle the unit; rangeLabels names the ranges in the tooltip."
+        },
+        "vertical": {
+          "title": "Vertical",
+          "description": "orientation=\"vertical\" turns the rows into columns, here the story points of each team against its commitment. The ranges are shared by every column through the chart's ranges prop; barSize makes the bars thicker."
+        },
+        "traffic-lights": {
+          "title": "Traffic-light ranges",
+          "description": "rangeColors replaces the grays with translucent red, amber and green, and targetColor colors the markers. min starts the availability scale at 99% so that the difference between 99.9% and 99.95% shows."
+        },
+        "monthly": {
+          "title": "Month by month",
+          "description": "Picking another month animates the bars toward the new values. With legend, clicking a KPI in the legend hides / shows its row."
+        },
+        "long-names": {
+          "title": "Long names",
+          "description": "The label column is measured: it grows to fit the longest name, up to 40% of the width; longer names wrap to two lines and end with an ellipsis. Hover a row (or focus it with the keyboard) to read the full name in the tooltip."
+        },
+        "budget-tracker": {
+          "title": "Department budget tracker",
+          "description": "Each row compares the spending to date with the budget expected by now (target), and per-row ranges mark the comfortable, tight and over-plan zones. Bars turn red through color when a department spends faster than planned; onClick shows its variance under the chart."
+        },
+        "live-sensors": {
+          "title": "Live server room sensors",
+          "description": "Readings refresh every second (setInterval, cleared when the switch is off or on unmount); the target is the setpoint and the ranges the warning and critical thresholds. Each bar's color follows its status, and only the list of sensors out of range is announced."
+        },
+        "training": {
+          "title": "Weekly training plan",
+          "description": "A Select switches runners and the bars animate to their week. Every row is scaled on its own plan, so ticks={false} hides the unitless tick labels; renderTooltip formats the value and the plan with Intl.NumberFormat units (km, m, h) and the share of the plan."
+        },
+        "hiring-plan": {
+          "title": "Hiring plan",
+          "description": "Hires per team against the yearly headcount plan, with a marker where the team should be by now. A Select sorts the rows by pace; legend with hidden and onToggle hides teams, kept by key so that they stay hidden when the order changes, and the summary totals the visible teams."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic",
+            "description": "Quarter-to-date sales KPIs, each on its own scale, against poor / fair / good ranges and the target marker; press a row for its tooltip."
+          }
+        }
+      },
+      "api": {
+        "BulletChartProps": {
+          "data": "Rows (columns when vertical): name, subtitle, value, target, ranges and scale of each",
+          "orientation": "Horizontal rows or vertical columns",
+          "ranges": "Qualitative ranges of the rows without ranges: upper bounds, ascending",
+          "rangeLabels": "Names of the qualitative ranges, lowest first (shown in the tooltip)",
+          "rangeColors": "Colors of the qualitative ranges, lowest first; shades of gray by default",
+          "barSize": "Thickness of the value bar as a fraction of the ranges' thickness",
+          "targetColor": "Color of the target markers (the text color by default)",
+          "ticks": "Shows the tick labels of the scales when there is room"
+        },
+        "BulletDatum": {
+          "name": "Name of the measure",
+          "subtitle": "Small text under the name (unit, period)",
+          "value": "Current value, drawn as the bar",
+          "target": "Target, drawn as the marker",
+          "ranges": "Upper bounds of the qualitative ranges, ascending (e.g. poor / fair / good); the chart's ranges when omitted",
+          "min": "Start of the scale (0, or the smallest value when negative, by default)",
+          "max": "End of the scale; the largest of the ranges, the value and the target when omitted",
+          "color": "Color of the bar; taken from the palette when omitted"
+        }
+      },
+      "data": {
+        "sales": {
+          "revenue": "Revenue",
+          "revenueUnit": "thousands of US$",
+          "profit": "Profit",
+          "profitUnit": "% of revenue",
+          "orderSize": "Avg. order size",
+          "orderSizeUnit": "US$",
+          "customers": "New customers",
+          "customersUnit": "count",
+          "satisfaction": "Satisfaction",
+          "satisfactionUnit": "out of 5"
+        },
+        "ranges": {
+          "poor": "Poor",
+          "fair": "Fair",
+          "good": "Good",
+          "breach": "Breach",
+          "atRisk": "At risk",
+          "healthy": "Healthy"
+        },
+        "salesAria": "Quarter-to-date sales KPIs against their targets",
+        "teams": {
+          "checkout": "Checkout",
+          "search": "Search",
+          "mobile": "Mobile",
+          "platform": "Platform",
+          "growth": "Growth",
+          "data": "Data"
+        },
+        "teamsAria": "Story points delivered by each team against its commitment",
+        "slo": {
+          "availability": "Availability",
+          "availabilityUnit": "% of requests",
+          "apdex": "Apdex",
+          "apdexUnit": "score, 0–1",
+          "throughput": "Throughput",
+          "throughputUnit": "requests / s",
+          "budget": "Error budget",
+          "budgetUnit": "% remaining"
+        },
+        "sloAria": "Service level objectives of the API this month",
+        "growth": {
+          "visitors": "Visitors",
+          "visitorsUnit": "thousands",
+          "signups": "Sign-ups",
+          "signupsUnit": "accounts",
+          "activation": "Activation",
+          "activationUnit": "% of sign-ups",
+          "mrr": "MRR",
+          "mrrUnit": "thousands of US$"
+        },
+        "monthLabel": "Month",
+        "growthAria": "Growth KPIs of the selected month against their targets",
+        "long": {
+          "onboarding": "Enterprise customer onboarding completed within the first 30 days",
+          "onboardingUnit": "% of new accounts",
+          "support": "Priority support tickets answered within one business hour",
+          "supportUnit": "% of tickets",
+          "deployments": "Production deployments rolled out without a customer-facing incident",
+          "deploymentsUnit": "% of deployments",
+          "renewals": "Net revenue retention of annual subscription contracts",
+          "renewalsUnit": "ratio"
+        },
+        "longAria": "Operational KPIs with long names against their targets",
+        "budget": {
+          "departments": {
+            "marketing": "Marketing",
+            "engineering": "Engineering",
+            "sales": "Sales",
+            "people": "People",
+            "facilities": "Facilities",
+            "travel": "Travel"
+          },
+          "yearly": "Yearly budget: {{budget}}",
+          "ranges": {
+            "comfortable": "Comfortable",
+            "tight": "Tight",
+            "over": "Over plan"
+          },
+          "hint": "{{over}} departments spend faster than planned. Click a row to see its variance.",
+          "overPlan": "{{department}} is over plan: {{variance}} by the end of Q3, {{share}} of the yearly budget spent, {{left}} left.",
+          "underPlan": "{{department}} is within plan: {{variance}} by the end of Q3, {{share}} of the yearly budget spent, {{left}} left.",
+          "aria": "Department spending at the end of Q3 against the budget planned by then"
+        },
+        "sensors": {
+          "names": {
+            "inlet": "Inlet temperature",
+            "humidity": "Humidity",
+            "power": "Power draw",
+            "fans": "Fan speed"
+          },
+          "units": {
+            "inlet": "°C",
+            "humidity": "% relative",
+            "power": "kW per rack",
+            "fans": "% of max speed"
+          },
+          "status": {
+            "ok": "Normal",
+            "warning": "Warning",
+            "critical": "Critical"
+          },
+          "live": "Live readings",
+          "aria": "Server room sensor readings against their setpoints and thresholds",
+          "alerts": "Needs attention: {{sensors}}",
+          "allOk": "All sensors are within their limits."
+        },
+        "training": {
+          "metrics": {
+            "distance": "Weekly distance",
+            "longRun": "Long run",
+            "elevation": "Elevation gain",
+            "sessions": "Sessions",
+            "sleep": "Sleep"
+          },
+          "plan": "plan: {{plan}}",
+          "ranges": {
+            "under": "Under plan",
+            "onPlan": "On plan",
+            "above": "Above plan"
+          },
+          "runner": "Runner",
+          "runners": {
+            "amara": "Amara",
+            "lucas": "Lucas",
+            "mei": "Mei"
+          },
+          "tooltip": "{{value}} for a plan of {{plan}} ({{share}})",
+          "aria": "Weekly training of {{runner}} against the plan",
+          "summary": "{{runner}} met {{met}} of {{metrics}} weekly targets."
+        },
+        "hiring": {
+          "teams": {
+            "engineering": "Engineering",
+            "sales": "Sales",
+            "support": "Support",
+            "marketing": "Marketing",
+            "product": "Product",
+            "finance": "Finance"
+          },
+          "planned": "{{plan}} planned this year",
+          "ranges": {
+            "behind": "Behind",
+            "catchingUp": "Catching up",
+            "onTrack": "On track"
+          },
+          "order": "Sort",
+          "orders": {
+            "plan": "Plan order",
+            "behind": "Most behind first",
+            "ahead": "Most ahead first"
+          },
+          "aria": "Hires of each team against the yearly headcount plan",
+          "summary": "{{hired}} of {{planned}} planned hires ({{share}}) across {{teams}} teams shown.",
+          "none": "No team shown."
+        }
+      },
+      "wc": {
+        "demos": {
+          "kpis": {
+            "title": "KPIs against targets",
+            "description": "One row per KPI with its value, its target marker and qualitative ranges named in the tooltip."
+          },
+          "vertical": {
+            "title": "Vertical columns",
+            "description": "Quarterly sales as columns sharing the same ranges, targets in the danger color."
+          }
+        },
+        "minerva-bullet-chart": {
+          "props": {
+            "height": "Height of the chart, the legend included: pixels or any CSS length",
+            "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+          },
+          "events": {
+            "minerva-hover": "The hovered (or keyboard-focused) mark changed; detail: { index, name, value, share }, null when nothing is hovered",
+            "minerva-click": "A mark was clicked, tapped or activated with Enter; detail: { index, name, value, share }",
+            "minerva-toggle": "A legend item was clicked (or toggle() called); detail: { index, hidden, hiddenIndexes }"
+          },
+          "methods": {
+            "toggle": "Hides / shows a slice, stage, radar series or top-level treemap node by index",
+            "getRenderer": "Backend drawing the shapes (webgpu, webgl2, webgl, canvas2d), null until ready; set it with the renderer engine option"
+          }
+        }
+      }
+    }
+  }
+}

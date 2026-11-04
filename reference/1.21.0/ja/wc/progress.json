@@ -1,0 +1,431 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.0",
+  "locale": "ja",
+  "renderer": "wc",
+  "page": "progress",
+  "title": "ProgressIndicator プログレスインジケーター",
+  "description": "進捗を示します。スピナー、サークル、ウェーブ、バー、ドットバーで描かれる不確定の progressbar、または value を指定した確定的なバー／サークルです。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.0",
+    "sourceCommit": "cf7fb249651cd06c89d0951ac2c3a3aa74dc835a",
+    "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
+    "referenceSourceDigest": "sha256:563c9bec5d90807342a94c02317519b3da937907129bda2d25ea49762fa828fd"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "ProgressIndicator",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/progress",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-progress",
+        "props": [
+          {
+            "name": "variant",
+            "typeText": "\"spinner\" | \"bar\" | \"wave\" | \"circle\" | \"dottedBar\"",
+            "attribute": "variant",
+            "required": false
+          },
+          {
+            "name": "size",
+            "typeText": "\"xsmall\" | \"small\" | \"medium\" | \"large\" | \"xlarge\"",
+            "attribute": "size",
+            "required": false
+          },
+          {
+            "name": "color",
+            "typeText": "\"primary\" | \"neutral\" | \"success\" | \"warning\" | \"danger\" | \"info\" | \"current\"",
+            "attribute": "color",
+            "required": false
+          },
+          {
+            "name": "value",
+            "typeText": "number | undefined",
+            "attribute": "value",
+            "required": false
+          },
+          {
+            "name": "max",
+            "typeText": "number",
+            "attribute": "max",
+            "required": false
+          },
+          {
+            "name": "showValue",
+            "typeText": "boolean",
+            "attribute": "show-value",
+            "required": false
+          },
+          {
+            "name": "label",
+            "typeText": "string",
+            "attribute": "label",
+            "required": false
+          },
+          {
+            "name": "decorative",
+            "typeText": "boolean",
+            "attribute": "decorative",
+            "required": false
+          },
+          {
+            "name": "width",
+            "typeText": "string | undefined",
+            "attribute": "width",
+            "required": false
+          },
+          {
+            "name": "full",
+            "typeText": "boolean",
+            "attribute": "full",
+            "required": false
+          },
+          {
+            "name": "format",
+            "typeText": "(value: number, max: number) => string | undefined",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "icon",
+            "description": "Icon displayed before the indicator"
+          },
+          {
+            "name": "label",
+            "description": "Visible label (alternative to the `label` attribute)"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-progress": {
+      "kind": "element",
+      "source": "web-components/src/components/progress/progress.ts",
+      "className": "MinervaProgress",
+      "summary": "Loading indicator (spinner, circle, wave, bars), determinate or not.",
+      "description": "Loading indicator: spinner, circle, wave, bar or dotted bar (`<ProgressIndicator>` of React). Without `value` it is a `progressbar` without a value, named by `aria-label`, its visible `label`, or the localized \"Loading\". With `value`, the bar and circle variants become determinate (filled bar / arc, aria-valuenow, optional `show-value`); the other variants ignore it. Never focusable, so it can sit inside buttons. Set `decorative` when a surrounding element already announces the loading state.",
+      "properties": [
+        {
+          "name": "variant",
+          "attribute": "variant",
+          "type": "\"spinner\" | \"bar\" | \"wave\" | \"circle\" | \"dottedBar\"",
+          "default": "\"spinner\"",
+          "description": "Indicator style"
+        },
+        {
+          "name": "size",
+          "attribute": "size",
+          "type": "\"xsmall\" | \"small\" | \"medium\" | \"large\" | \"xlarge\"",
+          "default": "\"medium\"",
+          "description": "Indicator size"
+        },
+        {
+          "name": "color",
+          "attribute": "color",
+          "type": "\"primary\" | \"neutral\" | \"success\" | \"warning\" | \"danger\" | \"info\" | \"current\"",
+          "default": "\"primary\"",
+          "description": "Indicator color (\"current\" follows the text color)"
+        },
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "number | undefined",
+          "description": "Current progress: switches the bar and circle variants to determinate mode (clamped between 0 and max); other variants ignore it"
+        },
+        {
+          "name": "max",
+          "attribute": "max",
+          "type": "number",
+          "default": "100",
+          "description": "Value that represents completion (non-positive values fall back to 100)"
+        },
+        {
+          "name": "showValue",
+          "attribute": "show-value",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows the formatted value (a percentage by default)"
+        },
+        {
+          "name": "label",
+          "attribute": "label",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Visible text next to the indicator; also names the progressbar"
+        },
+        {
+          "name": "decorative",
+          "attribute": "decorative",
+          "type": "boolean",
+          "default": "false",
+          "description": "Purely visual: no progressbar role, hidden from assistive technologies"
+        },
+        {
+          "name": "width",
+          "attribute": "width",
+          "type": "string | undefined",
+          "description": "Custom width (CSS value; ignored with `full`). Bars default to 200px"
+        },
+        {
+          "name": "full",
+          "attribute": "full",
+          "type": "boolean",
+          "default": "false",
+          "description": "Stretches the indicator to the full width of its container"
+        },
+        {
+          "name": "format",
+          "type": "(value: number, max: number) => string | undefined",
+          "description": "Formats the shown value (JS property); the result is also used as aria-valuetext"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "icon",
+          "description": "Icon displayed before the indicator"
+        },
+        {
+          "name": "label",
+          "description": "Visible label (alternative to the `label` attribute)"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The indicator (role=progressbar unless decorative); color current follows the text color"
+        },
+        {
+          "name": "icon",
+          "description": "The icon before the indicator"
+        },
+        {
+          "name": "indicator",
+          "description": "The indicator (ring, wave or bar; a filled bar or arc when determinate)"
+        },
+        {
+          "name": "value",
+          "description": "The formatted value of a determinate indicator"
+        },
+        {
+          "name": "label",
+          "description": "The visible label"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--progress-width",
+          "description": "Width of a linear indicator with the default width"
+        },
+        {
+          "name": "--progress-bar-height",
+          "description": "Thickness of the bar (every size)"
+        },
+        {
+          "name": "--progress-track-color",
+          "description": "Color of the bar track (and of the determinate circle track)"
+        },
+        {
+          "name": "--progress-radius",
+          "description": "Corner radius of the bar track (defaults to --radius-sm)"
+        },
+        {
+          "name": "--progress-size",
+          "description": "Size of the round indicators (spinner / circle / wave; every size)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:ProgressIndicator": {
+      "kind": "cssVars",
+      "source": "react/src/components/ProgressIndicator",
+      "vars": [
+        {
+          "name": "--progress-width",
+          "description": "Width of a linear indicator with the default width"
+        },
+        {
+          "name": "--progress-bar-height",
+          "description": "Thickness of the bar (every size)"
+        },
+        {
+          "name": "--progress-track-color",
+          "description": "Color of the bar track (and of the determinate circle track)"
+        },
+        {
+          "name": "--progress-radius",
+          "description": "Corner radius of the bar track (defaults to --radius-sm)"
+        },
+        {
+          "name": "--progress-size",
+          "description": "Size of the round indicators (spinner / circle / wave; every size)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/progress/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/progress/wc/basic.html": "<div style=\"display: flex; flex-wrap: wrap; gap: 32px; align-items: center\">\n  <minerva-progress></minerva-progress>\n  <minerva-progress variant=\"circle\"></minerva-progress>\n  <minerva-progress variant=\"wave\"></minerva-progress>\n  <minerva-progress variant=\"bar\"></minerva-progress>\n  <minerva-progress variant=\"dottedBar\"></minerva-progress>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "基本的な使い方",
+      "description": "5 種類の不確定インジケーター。それぞれ label またはローカライズされた「読み込み中」で名前が付いた progressbar です。"
+    },
+    {
+      "id": "determinate",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/progress/wc/determinate.html",
+      "files": {
+        "apps/docs/src/docs/pages/progress/wc/determinate.html": "<div style=\"display: grid; gap: 16px\">\n  <minerva-progress\n    variant=\"bar\"\n    full\n    value=\"2\"\n    max=\"5\"\n    show-value\n    label=\"Lessons completed\"\n  ></minerva-progress>\n  <div style=\"display: flex; flex-wrap: wrap; gap: 24px; align-items: center\">\n    <minerva-progress\n      variant=\"circle\"\n      size=\"xlarge\"\n      value=\"40\"\n      show-value\n      aria-label=\"Course progress\"\n    ></minerva-progress>\n    <minerva-progress\n      variant=\"bar\"\n      color=\"success\"\n      value=\"100\"\n      show-value\n      aria-label=\"Done\"\n    ></minerva-progress>\n    <minerva-progress\n      variant=\"bar\"\n      color=\"danger\"\n      value=\"15\"\n      show-value\n      aria-label=\"Overdue\"\n    ></minerva-progress>\n  </div>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "確定的な進捗",
+      "description": "value、max、show-value でバーとサークルが確定的なインジケーターになります。format JS プロパティで表示を変更できます。"
+    },
+    {
+      "id": "label-width",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/progress/wc/label-width.html",
+      "files": {
+        "apps/docs/src/docs/pages/progress/wc/label-width.html": "<div style=\"display: grid; gap: 16px\">\n  <minerva-progress label=\"Uploading files…\"></minerva-progress>\n  <minerva-progress variant=\"bar\" width=\"320px\">\n    <span slot=\"label\">Importing <strong>contacts.csv</strong></span>\n  </minerva-progress>\n  <minerva-progress variant=\"wave\" label=\"Syncing\">\n    <span slot=\"icon\" aria-hidden=\"true\">☁</span>\n  </minerva-progress>\n  <minerva-progress\n    variant=\"dottedBar\"\n    full\n    aria-label=\"Loading results\"\n  ></minerva-progress>\n  <minerva-button disabled>\n    <minerva-progress\n      slot=\"start\"\n      decorative\n      size=\"xsmall\"\n      color=\"current\"\n    ></minerva-progress>\n    Saving…\n  </minerva-button>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "ラベル・アイコン・幅",
+      "description": "表示ラベル（属性またはスロット）、icon スロット、カスタム幅、全幅、ボタン内の装飾用インジケーター。"
+    },
+    {
+      "id": "sizes-colors",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/progress/wc/sizes-colors.html",
+      "files": {
+        "apps/docs/src/docs/pages/progress/wc/sizes-colors.html": "<div style=\"display: grid; gap: 16px\">\n  <div style=\"display: flex; flex-wrap: wrap; gap: 24px; align-items: center\">\n    <minerva-progress size=\"xsmall\"></minerva-progress>\n    <minerva-progress size=\"small\"></minerva-progress>\n    <minerva-progress size=\"medium\"></minerva-progress>\n    <minerva-progress size=\"large\"></minerva-progress>\n    <minerva-progress size=\"xlarge\"></minerva-progress>\n  </div>\n  <div style=\"display: flex; flex-wrap: wrap; gap: 24px; align-items: center\">\n    <minerva-progress color=\"primary\" variant=\"circle\"></minerva-progress>\n    <minerva-progress color=\"neutral\" variant=\"circle\"></minerva-progress>\n    <span style=\"color: var(--danger-color)\">\n      <minerva-progress color=\"current\" variant=\"circle\"></minerva-progress>\n      current\n    </span>\n  </div>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "サイズと色",
+      "description": "5 種類のサイズ。color=\"current\" は周囲のテキスト色に従います。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "ProgressIndicator プログレスインジケーター",
+      "description": "進捗を示します。スピナー、サークル、ウェーブ、バー、ドットバーで描かれる不確定の progressbar、または value を指定した確定的なバー／サークルです。",
+      "demos": {
+        "variants": {
+          "title": "バリアント",
+          "description": "variant でスタイルを選びます：スピナー（デフォルト）、サークル、ウェーブ、バー、ドットバー。"
+        },
+        "sizes": {
+          "title": "サイズ",
+          "description": "xsmall から xlarge までの 5 段階。円形インジケーターの直径、またはバーの太さです。"
+        },
+        "colors": {
+          "title": "色",
+          "description": "セマンティックカラー：primary（デフォルト）、neutral、またはステータスカラー（success、warning、danger、info）。特別な値 current は周囲の文字色（currentColor）に従います（ボタン内など）。"
+        },
+        "label": {
+          "title": "表示ラベル",
+          "description": "インジケーターの横に表示ラベルを置き、progressbar のアクセシブルな名前にもなります。"
+        },
+        "width": {
+          "title": "幅",
+          "description": "固定幅を設定するか、full でコンテナ全体に広げます。"
+        },
+        "with-icon": {
+          "title": "アイコン付き",
+          "description": "インジケーターの前にアイコンを表示します。読み込み中の内容は必ず aria-label で説明してください。"
+        },
+        "determinate": {
+          "title": "確定的な進捗",
+          "description": "value（必要なら max も）を指定するとバーやサークルが塗りつぶされ、aria-valuenow が公開されます。showValue はパーセンテージを表示し、format で表示を変更できます。ステータスカラー（success、warning、danger、info）で状態を伝えます。他のバリアントは value を無視します。"
+        }
+      },
+      "api": {
+        "ProgressIndicatorProps": {
+          "variant": "インジケーターのスタイル",
+          "size": "インジケーターのサイズ",
+          "color": "インジケーターのセマンティックカラー：テーマのプライマリー、ニュートラルグレー、またはステータスカラー（success、warning、danger、info）。特別な値 current は周囲の文字色（currentColor）に従います",
+          "value": "現在の進捗：bar と circle バリアントを確定モード（塗りつぶしたバー／円弧と aria-valuenow）にします。値は 0 から max の範囲に収められます。他のバリアントは無視します",
+          "max": "完了を表す値（0 以下の場合は 100 になります）",
+          "showValue": "確定的なインジケーターの横に整形した値（デフォルトはパーセンテージ）を表示します",
+          "format": "showValue で表示する値を整形します。文字列または数値の結果は aria-valuetext にも使われます",
+          "icon": "インジケーターの前に表示するアイコン",
+          "label": "インジケーターの横に表示するテキスト。aria-label がない場合は progressbar の名前にもなります",
+          "aria-label": "読み込み中の内容を説明するアクセシブルラベル（デフォルトは「読み込み中」、確定モードでは「進捗」）",
+          "decorative": "視覚専用：progressbar ロールを外し、支援技術から隠します",
+          "className": "追加のクラス名",
+          "width": "カスタム幅（full が設定されている場合は無視）。バーの既定値は 200px",
+          "full": "インジケーターをコンテナの全幅に広げる",
+          "ref": "ルートの <div> 要素への ref"
+        }
+      },
+      "cssVars": {
+        "--progress-width": "既定幅の線形インジケーターの幅",
+        "--progress-bar-height": "バーの太さ（全サイズ共通）",
+        "--progress-track-color": "バーのトラックの色（確定的なサークルのトラックにも使用）",
+        "--progress-radius": "バーのトラックの角丸（既定値は --radius-sm）",
+        "--progress-size": "円形インジケーター（spinner / circle / wave）のサイズ（全サイズ共通）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "5 種類の不確定インジケーター。それぞれ label またはローカライズされた「読み込み中」で名前が付いた progressbar です。"
+          },
+          "sizes-colors": {
+            "title": "サイズと色",
+            "description": "5 種類のサイズ。color=\"current\" は周囲のテキスト色に従います。"
+          },
+          "label-width": {
+            "title": "ラベル・アイコン・幅",
+            "description": "表示ラベル（属性またはスロット）、icon スロット、カスタム幅、全幅、ボタン内の装飾用インジケーター。"
+          },
+          "determinate": {
+            "title": "確定的な進捗",
+            "description": "value、max、show-value でバーとサークルが確定的なインジケーターになります。format JS プロパティで表示を変更できます。"
+          }
+        },
+        "minerva-progress": {
+          "slots": {
+            "icon": "インジケーターの前に表示するアイコン。",
+            "label": "表示ラベル（label 属性の代替）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

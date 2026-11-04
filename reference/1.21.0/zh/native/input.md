@@ -1,0 +1,640 @@
+# Input 输入框
+
+单行文本输入框，支持尺寸、变体、前后缀内容、清除按钮、字数统计和密码显隐切换。放在 FormField 中即可获得标签、帮助文本和错误信息。
+
+Package: minerva-design@1.21.0
+
+Renderer: native
+
+Locale: zh
+
+## Provenance
+
+```json
+{
+  "schemaVersion": "2.0.0",
+  "packageVersion": "1.21.0",
+  "sourceCommit": "cf7fb249651cd06c89d0951ac2c3a3aa74dc835a",
+  "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
+  "referenceSourceDigest": "sha256:563c9bec5d90807342a94c02317519b3da937907129bda2d25ea49762fa828fd"
+}
+```
+
+Type references resolve through the [type graph](/minerva-design/reference/1.21.0/types.json) or getType() from minerva-design/contracts.
+
+## Documentation
+
+## Input
+
+Support: beta
+
+### Import
+
+```json
+{
+  "specifier": "minerva-design/native",
+  "exports": [
+    "Input"
+  ],
+  "kind": "named"
+}
+```
+
+### props
+
+```json
+[
+  {
+    "name": "value",
+    "source": "packages/native/src/components/Input/Input.tsx",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "required": false,
+    "description": "Text of the field (controlled)"
+  },
+  {
+    "name": "defaultValue",
+    "source": "packages/native/src/components/Input/Input.tsx",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "default": "",
+    "required": false,
+    "description": "Initial text (uncontrolled)"
+  },
+  {
+    "name": "variant",
+    "source": "packages/native/src/components/Input/Input.tsx",
+    "kind": "enum",
+    "values": [
+      "filled",
+      "outline",
+      "unstyled"
+    ],
+    "typeText": "FieldVariant | undefined",
+    "typeRef": "type:65f0913f5320331d7c25",
+    "default": "outline",
+    "required": false,
+    "description": "Visual style: `outline` (bordered), `filled` (tinted background) or `unstyled` (no frame)"
+  },
+  {
+    "name": "size",
+    "source": "packages/native/src/components/Input/Input.tsx",
+    "kind": "enum",
+    "values": [
+      "large",
+      "medium",
+      "small"
+    ],
+    "typeText": "NativeSize | undefined",
+    "typeRef": "type:3e1597e03bb6f7f3269e",
+    "default": "medium",
+    "required": false,
+    "description": "Height (`--control-height-*`) and font size"
+  },
+  {
+    "name": "invalid",
+    "source": "packages/native/src/components/Input/Input.tsx",
+    "kind": "boolean",
+    "typeText": "boolean | undefined",
+    "typeRef": "type:c54e4f1388c4caae77ff",
+    "default": false,
+    "required": false,
+    "description": "Error state: danger border (`aria-invalid` on the web)"
+  },
+  {
+    "name": "disabled",
+    "source": "packages/native/src/components/Input/Input.tsx",
+    "kind": "boolean",
+    "typeText": "boolean | undefined",
+    "typeRef": "type:c54e4f1388c4caae77ff",
+    "default": false,
+    "required": false,
+    "description": "Disables the field"
+  },
+  {
+    "name": "readOnly",
+    "source": "packages/native/src/components/Input/Input.tsx",
+    "kind": "boolean",
+    "typeText": "boolean | undefined",
+    "typeRef": "type:c54e4f1388c4caae77ff",
+    "default": false,
+    "required": false,
+    "description": "Focusable and selectable, but the text cannot be edited"
+  },
+  {
+    "name": "prefix",
+    "source": "packages/native/src/components/Input/Input.tsx",
+    "kind": "node",
+    "typeText": "ReactNode",
+    "typeRef": "type:d947e2db6b7ed3e4c192",
+    "required": false,
+    "description": "Content before the text, e.g. an icon or \"@\""
+  },
+  {
+    "name": "suffix",
+    "source": "packages/native/src/components/Input/Input.tsx",
+    "kind": "node",
+    "typeText": "ReactNode",
+    "typeRef": "type:d947e2db6b7ed3e4c192",
+    "required": false,
+    "description": "Content after the text, e.g. a unit or a button"
+  },
+  {
+    "name": "clearable",
+    "source": "packages/native/src/components/Input/Input.tsx",
+    "kind": "boolean",
+    "typeText": "boolean | undefined",
+    "typeRef": "type:c54e4f1388c4caae77ff",
+    "default": false,
+    "required": false,
+    "description": "Shows a clear button while the field has a value (not when disabled or read-only). Clearing calls `onChange(\"\")` and `onClear`"
+  },
+  {
+    "name": "clearLabel",
+    "source": "packages/native/src/components/Input/Input.tsx",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "required": false,
+    "description": "Accessible label of the clear button"
+  },
+  {
+    "name": "type",
+    "source": "packages/native/src/components/Input/Input.tsx",
+    "kind": "enum",
+    "values": [
+      "password",
+      "text"
+    ],
+    "typeText": "InputType | undefined",
+    "typeRef": "type:7d2a2d4b2a26bde5e83c",
+    "default": "text",
+    "required": false,
+    "description": "`password` hides the text and shows a visibility toggle"
+  },
+  {
+    "name": "showPasswordLabel",
+    "source": "packages/native/src/components/Input/Input.tsx",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "required": false,
+    "description": "Label of the visibility toggle while hidden"
+  },
+  {
+    "name": "hidePasswordLabel",
+    "source": "packages/native/src/components/Input/Input.tsx",
+    "kind": "string",
+    "typeText": "string | undefined",
+    "typeRef": "type:c59382f9551703242861",
+    "required": false,
+    "description": "Label of the visibility toggle while visible"
+  },
+  {
+    "name": "showCharCount",
+    "source": "packages/native/src/components/Input/Input.tsx",
+    "kind": "boolean",
+    "typeText": "boolean | undefined",
+    "typeRef": "type:c54e4f1388c4caae77ff",
+    "default": false,
+    "required": false,
+    "description": "Shows the number of characters (and `maxLength`, when set) after the text"
+  },
+  {
+    "name": "label",
+    "source": "packages/native/src/components/Input/Input.tsx",
+    "kind": "node",
+    "typeText": "ReactNode",
+    "typeRef": "type:d947e2db6b7ed3e4c192",
+    "required": false,
+    "description": "Visible label above the field; a string label is also the field's accessible name (unless `accessibilityLabel` is set)"
+  },
+  {
+    "name": "wrapperStyle",
+    "source": "packages/native/src/components/Input/Input.tsx",
+    "kind": "union",
+    "typeText": "StyleProp<ViewStyle>",
+    "typeRef": "type:e697903ddc58ec54def0",
+    "required": false,
+    "description": "Style of the frame around the text"
+  },
+  {
+    "name": "inputStyle",
+    "source": "packages/native/src/components/Input/Input.tsx",
+    "kind": "union",
+    "typeText": "StyleProp<TextStyle>",
+    "typeRef": "type:175f7626ef7c69988283",
+    "required": false,
+    "description": "Style of the TextInput"
+  }
+]
+```
+
+### events
+
+```json
+[
+  {
+    "name": "onChange",
+    "source": "packages/native/src/components/Input/Input.tsx",
+    "kind": "function",
+    "typeText": "((value: string) => void) | undefined",
+    "typeRef": "type:2dd86a3922a1e1859af1",
+    "parameters": [
+      {
+        "name": "value",
+        "position": 0,
+        "required": true,
+        "rest": false,
+        "typeText": "string",
+        "typeRef": "type:e15e314d298fc0d116fc"
+      }
+    ],
+    "returnType": {
+      "typeText": "void",
+      "typeRef": "type:7ba5db05423263a0fe9d"
+    },
+    "required": false,
+    "description": "Called with the new text on every edit and when the field is cleared"
+  },
+  {
+    "name": "onClear",
+    "source": "packages/native/src/components/Input/Input.tsx",
+    "kind": "function",
+    "typeText": "(() => void) | undefined",
+    "typeRef": "type:a23c10430194766639b6",
+    "parameters": [],
+    "returnType": {
+      "typeText": "void",
+      "typeRef": "type:7ba5db05423263a0fe9d"
+    },
+    "required": false,
+    "description": "Called after the clear button emptied the field"
+  }
+]
+```
+
+### slots
+
+```json
+[
+  {
+    "name": "children"
+  }
+]
+```
+
+### bindings
+
+```json
+[
+  {
+    "prop": "value",
+    "event": "onChange",
+    "syntax": "value={value} onChange={handler}"
+  }
+]
+```
+
+## API
+
+```json
+{
+  "native:InputProps": {
+    "source": "native/src/components/Input/Input.tsx",
+    "kind": "interface",
+    "extends": [
+      "Omit<TextInputProps, | \"style\" | \"value\" | \"defaultValue\" | \"onChange\" | \"editable\" | \"readOnly\" | \"secureTextEntry\" | \"multiline\">"
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "description": "Text of the field (controlled)"
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false,
+        "default": "\"\"",
+        "description": "Initial text (uncontrolled)"
+      },
+      {
+        "name": "onChange",
+        "type": "(value: string) => void",
+        "required": false,
+        "description": "Called with the new text on every edit and when the field is cleared"
+      },
+      {
+        "name": "variant",
+        "type": "InputVariant",
+        "required": false,
+        "default": "\"outline\"",
+        "description": "Visual style: `outline` (bordered), `filled` (tinted background) or `unstyled` (no frame)"
+      },
+      {
+        "name": "size",
+        "type": "InputSize",
+        "required": false,
+        "default": "\"medium\"",
+        "description": "Height (`--control-height-*`) and font size"
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Error state: danger border (`aria-invalid` on the web)"
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Disables the field"
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Focusable and selectable, but the text cannot be edited"
+      },
+      {
+        "name": "prefix",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Content before the text, e.g. an icon or \"@\""
+      },
+      {
+        "name": "suffix",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Content after the text, e.g. a unit or a button"
+      },
+      {
+        "name": "clearable",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows a clear button while the field has a value (not when disabled or read-only). Clearing calls `onChange(\"\")` and `onClear`"
+      },
+      {
+        "name": "clearLabel",
+        "type": "string",
+        "required": false,
+        "default": "i18n \"input.clear\"",
+        "description": "Accessible label of the clear button"
+      },
+      {
+        "name": "onClear",
+        "type": "() => void",
+        "required": false,
+        "description": "Called after the clear button emptied the field"
+      },
+      {
+        "name": "type",
+        "type": "InputType",
+        "required": false,
+        "default": "\"text\"",
+        "description": "`password` hides the text and shows a visibility toggle"
+      },
+      {
+        "name": "showPasswordLabel",
+        "type": "string",
+        "required": false,
+        "default": "i18n \"input.showPassword\"",
+        "description": "Label of the visibility toggle while hidden"
+      },
+      {
+        "name": "hidePasswordLabel",
+        "type": "string",
+        "required": false,
+        "default": "i18n \"input.hidePassword\"",
+        "description": "Label of the visibility toggle while visible"
+      },
+      {
+        "name": "showCharCount",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Shows the number of characters (and `maxLength`, when set) after the text"
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": false,
+        "description": "Visible label above the field; a string label is also the field's accessible name (unless `accessibilityLabel` is set)"
+      },
+      {
+        "name": "style",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the root view (label + frame)"
+      },
+      {
+        "name": "wrapperStyle",
+        "type": "StyleProp<ViewStyle>",
+        "required": false,
+        "description": "Style of the frame around the text"
+      },
+      {
+        "name": "inputStyle",
+        "type": "StyleProp<TextStyle>",
+        "required": false,
+        "description": "Style of the TextInput"
+      },
+      {
+        "name": "ref",
+        "type": "Ref<TextInput>",
+        "required": false,
+        "description": "Ref of the TextInput (focus(), blur(), clear())"
+      }
+    ]
+  }
+}
+```
+
+## CSS variables
+
+```json
+{
+  "css:Input": {
+    "kind": "cssVars",
+    "source": "react/src/components/Input",
+    "vars": [
+      {
+        "name": "--input-height",
+        "description": "Minimum height of the field (every size; defaults to the density's control height of the size)"
+      },
+      {
+        "name": "--input-padding-x",
+        "description": "Horizontal padding of the text (every size)"
+      },
+      {
+        "name": "--input-radius",
+        "description": "Corner radius (defaults to --radius-lg)"
+      },
+      {
+        "name": "--input-font-size",
+        "description": "Font size (every size)"
+      },
+      {
+        "name": "--input-background",
+        "description": "Background color of the outline variant"
+      },
+      {
+        "name": "--input-border-color",
+        "description": "Border color at rest"
+      },
+      {
+        "name": "--input-focus-color",
+        "description": "Border color while hovered / focused (focus: then --minerva-focus-border-color)"
+      }
+    ]
+  }
+}
+```
+
+## Installation and initialization
+
+See [installation](./setup.md). Styles and root providers belong in the application entry. Renderer support and host testing do not imply native-device certification.
+
+## Example: 基础用法
+
+原生 input 属性与事件直接透传；className 作用于外层容器，ref 指向 <input>。
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react, react-native
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/input/native/basic.tsx
+
+```tsx
+import { View } from "react-native";
+import { Input } from "minerva-design/native";
+import { useState } from "react";
+
+export default function BasicDemo() {
+  const [value, setValue] = useState("");
+  return (
+    <View style={{ gap: 12 }}>
+      <Input accessibilityLabel="Name" placeholder="Uncontrolled" />
+      <Input
+        accessibilityLabel="Controlled"
+        placeholder="Controlled"
+        value={value}
+        onChange={setValue}
+      />
+    </View>
+  );
+}
+
+```
+
+## Example: 清除按钮与字数统计
+
+clearable 会在有值时显示带标签的清除按钮；清除时以空值触发 onChange，并保持焦点在输入框中。showCharCount 显示字数（以及 maxLength），并与输入框关联。
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react-native
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/input/native/clearable-and-count.tsx
+
+```tsx
+import { View } from "react-native";
+import { Input } from "minerva-design/native";
+
+export default function ClearableAndCountDemo() {
+  return (
+    <View style={{ gap: 12 }}>
+      <Input accessibilityLabel="Search" placeholder="Search" clearable />
+      <Input
+        accessibilityLabel="Short bio"
+        defaultValue="Frontend developer"
+        clearable
+        showCharCount
+        maxLength={40}
+      />
+    </View>
+  );
+}
+
+```
+
+## Example: 尺寸与变体
+
+三种尺寸以及 outline、filled、unstyled 变体。
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react-native
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/input/native/sizes-variants.tsx
+
+```tsx
+import { View } from "react-native";
+import { Input } from "minerva-design/native";
+
+export default function SizesVariantsDemo() {
+  return (
+    <View style={{ gap: 12 }}>
+      <Input accessibilityLabel="Small" size="small" placeholder="small" />
+      <Input accessibilityLabel="Medium" placeholder="medium (outline)" />
+      <Input accessibilityLabel="Large" size="large" placeholder="large" />
+      <Input
+        accessibilityLabel="Filled"
+        variant="filled"
+        placeholder="filled"
+      />
+      <Input
+        accessibilityLabel="Unstyled"
+        variant="unstyled"
+        placeholder="unstyled"
+      />
+    </View>
+  );
+}
+
+```
+
+## Example: 状态
+
+invalid、disabled 和 readOnly；在 FormField 内会继承状态。 只读字段统一使用 --readonly-surface-color，保持正常文字对比度，并可聚焦、选择和复制内容；隐藏编辑入口，错误边界仍然保留。
+
+Kind: internal-demo. The files below preserve the documentation example and its local dependencies. Documentation translation/runtime context may still be required; use a standalone recipe for an isolated application.
+
+External dependencies: minerva-design, react-native
+
+Documentation context imports: none
+
+### apps/docs/src/docs/pages/input/native/states.tsx
+
+```tsx
+import { View } from "react-native";
+import { FormField, Input } from "minerva-design/native";
+
+export default function StatesDemo() {
+  return (
+    <View style={{ gap: 12 }}>
+      <Input accessibilityLabel="Invalid" invalid defaultValue="Invalid" />
+      <Input accessibilityLabel="Disabled" disabled defaultValue="Disabled" />
+      <Input accessibilityLabel="Read-only" readOnly defaultValue="Read-only" />
+      <FormField label="Inside a FormField" errorMessage="Inherits the error">
+        <Input />
+      </FormField>
+    </View>
+  );
+}
+
+```

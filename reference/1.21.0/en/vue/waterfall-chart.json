@@ -1,0 +1,713 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.0",
+  "locale": "en",
+  "renderer": "vue",
+  "page": "waterfall-chart",
+  "title": "Waterfall chart",
+  "description": "How a series of increases and decreases takes a value from a start to an end, with subtotals and totals: P&L bridges, cash flow, variances. Thin dashed connectors join every bar to the next one.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.0",
+    "sourceCommit": "cf7fb249651cd06c89d0951ac2c3a3aa74dc835a",
+    "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
+    "referenceSourceDigest": "sha256:563c9bec5d90807342a94c02317519b3da937907129bda2d25ea49762fa828fd"
+  },
+  "content": {
+    "data": {
+      "pnl": {
+        "revenue": "Revenue",
+        "costOfSales": "Cost of sales",
+        "grossProfit": "Gross profit",
+        "research": "R&D",
+        "marketing": "Marketing",
+        "admin": "G&A",
+        "operatingIncome": "Operating income",
+        "interest": "Interest",
+        "tax": "Tax",
+        "netIncome": "Net income"
+      },
+      "amount": "Amount",
+      "pnlAria": "Income statement from revenue to net income",
+      "opening": "Opening",
+      "closing": "Closing",
+      "cashFlow": "Net cash flow",
+      "cashAria": "Monthly net cash flows from the opening to the closing balance",
+      "budget": "Budget",
+      "actual": "Actual",
+      "drivers": {
+        "volume": "Volume",
+        "price": "Price",
+        "mix": "Product mix",
+        "exchangeRates": "Exchange rates",
+        "rawMaterials": "Raw materials",
+        "savings": "Savings"
+      },
+      "variance": "Variance",
+      "varianceAria": "Drivers of the variance between the budgeted and the actual margin",
+      "startOfYear": "Start of year",
+      "endOfYear": "End of year",
+      "movements": {
+        "hires": "Hires",
+        "internalIn": "Transfers in",
+        "resignations": "Resignations",
+        "internalOut": "Transfers out",
+        "retirements": "Retirements"
+      },
+      "people": "People",
+      "headcountAria": "Headcount changes over the year",
+      "arr": {
+        "opening": "Opening ARR",
+        "newBusiness": "New business",
+        "expansion": "Expansion",
+        "contraction": "Contraction",
+        "churn": "Churn",
+        "closing": "Closing ARR",
+        "name": "ARR",
+        "quarterLabel": "Quarter",
+        "quarter": "Q{{n}}",
+        "summary": "{{quarter}}: net new ARR {{net}} · net revenue retention {{nrr}}",
+        "aria": "ARR bridge of {{quarter}}"
+      },
+      "price": {
+        "listPrice": "List price",
+        "dealerDiscount": "Dealer discount",
+        "promotion": "Promotions",
+        "invoicePrice": "Invoice price",
+        "paymentTerms": "Payment terms",
+        "freight": "Freight",
+        "rebates": "Volume rebates",
+        "pocketPrice": "Pocket price",
+        "name": "Price per unit",
+        "hint": "Click a bar to compare it with the list price",
+        "selected": "{{step}}: {{value}}, {{share}} of the list price",
+        "aria": "Price waterfall from the list price to the pocket price"
+      },
+      "emissions": {
+        "baseline": "2019 baseline",
+        "growth": "Business growth",
+        "efficiency": "Energy efficiency",
+        "renewables": "Renewable power",
+        "fleet": "Electric fleet",
+        "refrigerants": "Refrigerants",
+        "acquisition": "Acquisition",
+        "current": "2025",
+        "target": "2030 target",
+        "kt": "{{value}} kt CO₂e",
+        "name": "Emissions",
+        "change": "Change: {{value}}",
+        "range": "From {{from}} to {{to}}",
+        "gap": "{{value}} above the 2030 target",
+        "aria": "Emissions bridge from the 2019 baseline to 2025"
+      },
+      "lead": {
+        "orderEntry": "Order entry",
+        "creditCheck": "Credit check",
+        "picking": "Picking",
+        "quality": "Quality check",
+        "carrierWait": "Waiting for carrier",
+        "transit": "Transit",
+        "customs": "Customs",
+        "total": "Lead time",
+        "name": "Duration",
+        "work": "Work",
+        "wait": "Waiting",
+        "summary": "work takes {{work}} of the {{total}} ({{share}})",
+        "aria": "Lead time of an order by stage"
+      },
+      "live": {
+        "opening": "Earlier",
+        "now": "Now",
+        "name": "Balance",
+        "kinds": {
+          "customer": "Customer payment",
+          "supplier": "Supplier invoice",
+          "payroll": "Payroll",
+          "card": "Card fees",
+          "refund": "Refund"
+        },
+        "last": "Latest: {{time}} · {{kind}} {{amount}}",
+        "pause": "Pause",
+        "resume": "Resume",
+        "aria": "Cash position of the day, updated live"
+      },
+      "scope": {
+        "committed": "Committed",
+        "added": "Added",
+        "removed": "Removed",
+        "reestimated": "Re-estimated",
+        "carriedOver": "Carried over",
+        "completed": "Completed",
+        "name": "Story points",
+        "orientation": "Orientation",
+        "vertical": "Vertical",
+        "horizontal": "Horizontal",
+        "labels": "Labels",
+        "connector": "Connectors",
+        "aria": "Sprint scope from committed to completed story points"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "WaterfallChart",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "WaterfallChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "labels",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Writes the change (or the total) at the end of every bar",
+            "typeText": "boolean"
+          },
+          {
+            "name": "deep",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "legend",
+            "type": "boolean | ChartLegendOptions",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name",
+            "typeText": "boolean | ChartLegendOptions"
+          },
+          {
+            "name": "tooltip",
+            "type": "boolean | ChartTooltipOptions",
+            "required": false,
+            "description": "Tooltip; `false` disables it",
+            "typeText": "boolean | ChartTooltipOptions"
+          },
+          {
+            "name": "crosshair",
+            "type": "boolean",
+            "required": false,
+            "description": "Vertical guide line following the pointer",
+            "typeText": "boolean"
+          },
+          {
+            "name": "interaction",
+            "type": "boolean | ChartInteractionOptions",
+            "required": false,
+            "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)",
+            "typeText": "boolean | ChartInteractionOptions"
+          },
+          {
+            "name": "connector",
+            "type": "boolean | ChartConnectorOptions",
+            "required": false,
+            "description": "Thin lines from the end of every bar to the next one; an object styles them (default `true`: dashed, secondary text color)",
+            "typeText": "boolean | ChartConnectorOptions"
+          },
+          {
+            "name": "renderer",
+            "type": "ChartRendererPreference",
+            "required": false,
+            "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)",
+            "typeText": "ChartRendererPreference"
+          },
+          {
+            "name": "width",
+            "type": "string | number",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels (default `100%`)",
+            "typeText": "string | number"
+          },
+          {
+            "name": "height",
+            "type": "string | number",
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length",
+            "typeText": "string | number"
+          },
+          {
+            "name": "xAxis",
+            "type": "ChartAxisOptions",
+            "required": false,
+            "description": "X axis",
+            "typeText": "ChartAxisOptions"
+          },
+          {
+            "name": "yAxis",
+            "type": "ChartAxisOptions",
+            "required": false,
+            "description": "Y axis",
+            "typeText": "ChartAxisOptions"
+          },
+          {
+            "name": "annotations",
+            "type": "readonly ChartAnnotation[]",
+            "required": false,
+            "description": "Background areas and reference lines",
+            "typeText": "readonly ChartAnnotation[]"
+          },
+          {
+            "name": "padding",
+            "type": "ChartPadding",
+            "required": false,
+            "description": "Space around the plot area, in pixels",
+            "typeText": "ChartPadding"
+          },
+          {
+            "name": "palette",
+            "type": "readonly string[]",
+            "required": false,
+            "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)",
+            "typeText": "readonly string[]"
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible name of the chart",
+            "typeText": "string"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes, accessible names); the page language by default",
+            "typeText": "string"
+          },
+          {
+            "name": "start",
+            "type": "number",
+            "required": false,
+            "description": "Value the first change starts from (default 0)",
+            "typeText": "number"
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "required": false,
+            "description": "Name of the series (tooltip; default \"Change\")",
+            "typeText": "string"
+          },
+          {
+            "name": "orientation",
+            "type": "ChartOrientation",
+            "required": false,
+            "description": "`horizontal` puts the x axis (categories) down the left side and the values along the bottom (default `vertical`)",
+            "typeText": "ChartOrientation"
+          },
+          {
+            "name": "format",
+            "type": "((value: number) => string)",
+            "required": false,
+            "description": "Formats the values (labels, tooltip)",
+            "typeText": "((value: number) => string)"
+          },
+          {
+            "name": "upColor",
+            "type": "string",
+            "required": false,
+            "description": "Color of the increases (the success color by default)",
+            "typeText": "string"
+          },
+          {
+            "name": "downColor",
+            "type": "string",
+            "required": false,
+            "description": "Color of the decreases (the danger color by default)",
+            "typeText": "string"
+          },
+          {
+            "name": "totalColor",
+            "type": "string",
+            "required": false,
+            "description": "Color of the totals and subtotals (the primary color by default)",
+            "typeText": "string"
+          },
+          {
+            "name": "steps",
+            "type": "readonly WaterfallStep[]",
+            "required": true,
+            "description": "Changes, subtotals and totals, in order",
+            "typeText": "readonly WaterfallStep[]"
+          }
+        ],
+        "events": [
+          {
+            "name": "zoom",
+            "type": "[view: ChartView]",
+            "typeText": "[view: ChartView]",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "typeText": "ChartView",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "hover",
+            "type": "[event: ChartHoverEvent | null]",
+            "typeText": "[event: ChartHoverEvent | null]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ChartHoverEvent | null",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "plotClick",
+            "type": "[event: ChartPlotClickEvent]",
+            "typeText": "[event: ChartPlotClickEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ChartPlotClickEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "pointClick",
+            "type": "[event: ChartHoverEvent]",
+            "typeText": "[event: ChartHoverEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ChartHoverEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "rendererChange",
+            "type": "[renderer: ChartRendererKind]",
+            "typeText": "[renderer: ChartRendererKind]",
+            "parameters": [
+              {
+                "name": "renderer",
+                "position": 0,
+                "typeText": "ChartRendererKind",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "cash-flow",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/waterfall-chart/vue/cash-flow.vue",
+      "files": {
+        "apps/docs/src/docs/pages/waterfall-chart/vue/cash-flow.vue": "<script setup lang=\"ts\">\n// Monthly cash flows from an opening balance: rows instead of\n// columns (`orientation=\"horizontal\"`), values in the tooltip only.\nimport { computed } from \"vue\";\nimport { useI18n } from \"minerva-design/vue\";\nimport { WaterfallChart } from \"minerva-design/vue/charts\";\n\nconst TEXT = {\n  en: { opening: \"Opening\", closing: \"Closing\" },\n  zh: { opening: \"期初\", closing: \"期末\" },\n  ja: { opening: \"期首\", closing: \"期末\" },\n  fr: { opening: \"Ouverture\", closing: \"Clôture\" },\n};\nconst MONTHS = {\n  en: [\"Jan\", \"Feb\", \"Mar\", \"Apr\", \"May\", \"Jun\"],\n  zh: [\"1月\", \"2月\", \"3月\", \"4月\", \"5月\", \"6月\"],\n  ja: [\"1月\", \"2月\", \"3月\", \"4月\", \"5月\", \"6月\"],\n  fr: [\"janv.\", \"févr.\", \"mars\", \"avr.\", \"mai\", \"juin\"],\n};\n\nconst FLOWS = [18, -12, 25, -30, 14, 9];\n\nconst { language } = useI18n();\nconst steps = computed(() => {\n  const text = TEXT[language.value] ?? TEXT.en;\n  const months = MONTHS[language.value] ?? MONTHS.en;\n  return [\n    { label: text.opening, value: 120 },\n    ...FLOWS.map((value, i) => ({ label: months[i], value })),\n    { label: text.closing, kind: \"total\" as const },\n  ];\n});\n</script>\n\n<template>\n  <WaterfallChart\n    :steps=\"steps\"\n    :labels=\"false\"\n    orientation=\"horizontal\"\n    :height=\"360\"\n  />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "cash-flow",
+      "description": ""
+    },
+    {
+      "id": "pnl",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/waterfall-chart/vue/pnl.vue",
+      "files": {
+        "apps/docs/src/docs/pages/waterfall-chart/vue/pnl.vue": "<script setup lang=\"ts\">\n// A profit and loss bridge: changes float from the running total,\n// `subtotal` / `total` steps start from zero; the values are written on the bars.\nimport { computed } from \"vue\";\nimport { useI18n } from \"minerva-design/vue\";\nimport { WaterfallChart } from \"minerva-design/vue/charts\";\n\nconst STEPS = {\n  en: [\n    \"Revenue\",\n    \"Cost of sales\",\n    \"Gross profit\",\n    \"Operating costs\",\n    \"Other income\",\n    \"Taxes\",\n    \"Net income\",\n  ],\n  zh: [\n    \"营业收入\",\n    \"销售成本\",\n    \"毛利润\",\n    \"运营费用\",\n    \"其他收入\",\n    \"税费\",\n    \"净利润\",\n  ],\n  ja: [\n    \"売上高\",\n    \"売上原価\",\n    \"売上総利益\",\n    \"営業費用\",\n    \"その他収益\",\n    \"税金\",\n    \"純利益\",\n  ],\n  fr: [\n    \"Chiffre d’affaires\",\n    \"Coût des ventes\",\n    \"Marge brute\",\n    \"Charges d’exploitation\",\n    \"Autres produits\",\n    \"Impôts\",\n    \"Résultat net\",\n  ],\n};\n\nconst { language } = useI18n();\nconst steps = computed(() => {\n  const label = STEPS[language.value] ?? STEPS.en;\n  return [\n    { label: label[0], value: 420 },\n    { label: label[1], value: -180 },\n    { label: label[2], kind: \"subtotal\" as const },\n    { label: label[3], value: -130 },\n    { label: label[4], value: 25 },\n    { label: label[5], value: -34 },\n    { label: label[6], kind: \"total\" as const },\n  ];\n});\nconst format = (value: number) => `${value} k€`;\n</script>\n\n<template>\n  <WaterfallChart :steps=\"steps\" :format=\"format\" :height=\"320\" />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "pnl",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Waterfall chart",
+      "description": "How a series of increases and decreases takes a value from a start to an end, with subtotals and totals: P&L bridges, cash flow, variances. Thin dashed connectors join every bar to the next one.",
+      "demos": {
+        "pnl": {
+          "title": "Profit and loss bridge",
+          "description": "From revenue to net income: each change starts where the previous bar ended, subtotal and total bars show the running total from zero; the labels show the changes."
+        },
+        "cash-flow": {
+          "title": "Cash flow",
+          "description": "start sets the opening balance shown by the first subtotal, the months add their net flows and the closing balance ends the chart; yAxis.min zooms on the changes."
+        },
+        "variance": {
+          "title": "Budget variance",
+          "description": "With orientation: \"horizontal\", the drivers explaining the gap between the budgeted and the actual margin are listed in rows."
+        },
+        "headcount": {
+          "title": "Headcount bridge",
+          "description": "upColor, downColor and totalColor replace the default colors, here arrivals in blue and departures in amber."
+        },
+        "arr-bridge": {
+          "title": "ARR bridge by quarter",
+          "description": "Annual recurring revenue from the opening to the closing ARR of a quarter: new business, expansion, contraction and churn. A RadioGroup switches the quarter, start takes the previous closing ARR and yAxis.min zooms on the changes; the line below computes the net new ARR and the net revenue retention."
+        },
+        "price-bridge": {
+          "title": "Price waterfall",
+          "description": "From the list price to the pocket price of one unit, with the invoice price as a subtotal. onPointClick receives the clicked bar (event.items[0].index): the line below gives its amount as a share of the list price."
+        },
+        "emissions": {
+          "title": "Emissions bridge",
+          "description": "Emissions from the 2019 baseline to 2025: upColor and downColor are swapped so that increases are red and reductions green, a line annotation marks the 2030 target, and renderTooltip shows each change, where it starts and ends, and the gap to the target."
+        },
+        "lead-time": {
+          "title": "Lead time breakdown",
+          "description": "Every stage of an order adds its duration and a total bar gives the lead time. Each step sets its own color (work or waiting), format writes days with the unit style of Intl.NumberFormat and connector draws solid lines."
+        },
+        "live-balance": {
+          "title": "Live cash position",
+          "description": "The treasury balance during the day: a transaction arrives every two seconds (setInterval, cleared on pause and unmount), the oldest one leaves the window and is folded into start, so the first bar always shows the balance before the visible transactions."
+        },
+        "options": {
+          "title": "Options",
+          "description": "Sprint scope from the committed to the completed story points: try orientation, labels and connector."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic",
+            "description": "An income statement laid out in rows (orientation=\"horizontal\"), which leaves room for the line names on a phone."
+          }
+        }
+      },
+      "data": {
+        "pnl": {
+          "revenue": "Revenue",
+          "costOfSales": "Cost of sales",
+          "grossProfit": "Gross profit",
+          "research": "R&D",
+          "marketing": "Marketing",
+          "admin": "G&A",
+          "operatingIncome": "Operating income",
+          "interest": "Interest",
+          "tax": "Tax",
+          "netIncome": "Net income"
+        },
+        "amount": "Amount",
+        "pnlAria": "Income statement from revenue to net income",
+        "opening": "Opening",
+        "closing": "Closing",
+        "cashFlow": "Net cash flow",
+        "cashAria": "Monthly net cash flows from the opening to the closing balance",
+        "budget": "Budget",
+        "actual": "Actual",
+        "drivers": {
+          "volume": "Volume",
+          "price": "Price",
+          "mix": "Product mix",
+          "exchangeRates": "Exchange rates",
+          "rawMaterials": "Raw materials",
+          "savings": "Savings"
+        },
+        "variance": "Variance",
+        "varianceAria": "Drivers of the variance between the budgeted and the actual margin",
+        "startOfYear": "Start of year",
+        "endOfYear": "End of year",
+        "movements": {
+          "hires": "Hires",
+          "internalIn": "Transfers in",
+          "resignations": "Resignations",
+          "internalOut": "Transfers out",
+          "retirements": "Retirements"
+        },
+        "people": "People",
+        "headcountAria": "Headcount changes over the year",
+        "arr": {
+          "opening": "Opening ARR",
+          "newBusiness": "New business",
+          "expansion": "Expansion",
+          "contraction": "Contraction",
+          "churn": "Churn",
+          "closing": "Closing ARR",
+          "name": "ARR",
+          "quarterLabel": "Quarter",
+          "quarter": "Q{{n}}",
+          "summary": "{{quarter}}: net new ARR {{net}} · net revenue retention {{nrr}}",
+          "aria": "ARR bridge of {{quarter}}"
+        },
+        "price": {
+          "listPrice": "List price",
+          "dealerDiscount": "Dealer discount",
+          "promotion": "Promotions",
+          "invoicePrice": "Invoice price",
+          "paymentTerms": "Payment terms",
+          "freight": "Freight",
+          "rebates": "Volume rebates",
+          "pocketPrice": "Pocket price",
+          "name": "Price per unit",
+          "hint": "Click a bar to compare it with the list price",
+          "selected": "{{step}}: {{value}}, {{share}} of the list price",
+          "aria": "Price waterfall from the list price to the pocket price"
+        },
+        "emissions": {
+          "baseline": "2019 baseline",
+          "growth": "Business growth",
+          "efficiency": "Energy efficiency",
+          "renewables": "Renewable power",
+          "fleet": "Electric fleet",
+          "refrigerants": "Refrigerants",
+          "acquisition": "Acquisition",
+          "current": "2025",
+          "target": "2030 target",
+          "kt": "{{value}} kt CO₂e",
+          "name": "Emissions",
+          "change": "Change: {{value}}",
+          "range": "From {{from}} to {{to}}",
+          "gap": "{{value}} above the 2030 target",
+          "aria": "Emissions bridge from the 2019 baseline to 2025"
+        },
+        "lead": {
+          "orderEntry": "Order entry",
+          "creditCheck": "Credit check",
+          "picking": "Picking",
+          "quality": "Quality check",
+          "carrierWait": "Waiting for carrier",
+          "transit": "Transit",
+          "customs": "Customs",
+          "total": "Lead time",
+          "name": "Duration",
+          "work": "Work",
+          "wait": "Waiting",
+          "summary": "work takes {{work}} of the {{total}} ({{share}})",
+          "aria": "Lead time of an order by stage"
+        },
+        "live": {
+          "opening": "Earlier",
+          "now": "Now",
+          "name": "Balance",
+          "kinds": {
+            "customer": "Customer payment",
+            "supplier": "Supplier invoice",
+            "payroll": "Payroll",
+            "card": "Card fees",
+            "refund": "Refund"
+          },
+          "last": "Latest: {{time}} · {{kind}} {{amount}}",
+          "pause": "Pause",
+          "resume": "Resume",
+          "aria": "Cash position of the day, updated live"
+        },
+        "scope": {
+          "committed": "Committed",
+          "added": "Added",
+          "removed": "Removed",
+          "reestimated": "Re-estimated",
+          "carriedOver": "Carried over",
+          "completed": "Completed",
+          "name": "Story points",
+          "orientation": "Orientation",
+          "vertical": "Vertical",
+          "horizontal": "Horizontal",
+          "labels": "Labels",
+          "connector": "Connectors",
+          "aria": "Sprint scope from committed to completed story points"
+        }
+      },
+      "api": {
+        "WaterfallChartProps": {
+          "steps": "Changes, subtotals and totals, in order",
+          "labels": "Writes the change (or the total) at the end of every bar",
+          "orientation": "\"horizontal\" lays the steps out in rows"
+        },
+        "WaterfallStep": {
+          "label": "Category name of the bar",
+          "value": "Change (positive or negative); ignored by totals",
+          "kind": "\"subtotal\" and \"total\" bars show the running total from zero",
+          "color": "Color of this bar (any CSS color)"
+        },
+        "WaterfallOptions": {
+          "name": "Name of the series (tooltip)",
+          "upColor": "Color of the increases",
+          "downColor": "Color of the decreases",
+          "totalColor": "Color of the totals and subtotals",
+          "start": "Value the first change starts from",
+          "labels": "Writes the change (or the total) at the end of every bar",
+          "format": "Formats the values (labels, tooltip)",
+          "locale": "Locale of the default series name; the page language by default",
+          "connector": "Thin lines from the end of every bar to the next one (dashed, secondary text color); false hides them, an object sets color, dash and width"
+        },
+        "ChartConnectorOptions": {
+          "color": "Line color (any CSS color); the secondary text color by default",
+          "dash": "Dash pattern in CSS pixels; [] draws solid lines (default [3, 3])",
+          "width": "Line width in CSS pixels (default 1)"
+        }
+      },
+      "wc": {
+        "demos": {
+          "pnl": {
+            "title": "Profit and loss bridge",
+            "description": "Changes float from the running total, the gross profit is a subtotal and the net income the total."
+          },
+          "cash-flow": {
+            "title": "Cash flow from an opening balance",
+            "description": "Monthly inflows and outflows in rows, from the opening balance to the closing total; values in the tooltip."
+          }
+        },
+        "minerva-waterfall-chart": {
+          "props": {
+            "valueName": "Name of the value in the tooltip",
+            "hideLabels": "Hides the change (or total) written at the end of every bar",
+            "height": "Height of the chart, the legend included: pixels or any CSS length",
+            "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected",
+            "hideConnectors": "Hides the thin lines from the end of every bar to the next one"
+          },
+          "events": {
+            "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
+            "minerva-point-click": "A point or a bar was clicked; detail: { x, xLabel, items }",
+            "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
+            "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",
+            "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+          },
+          "methods": {
+            "resetZoom": "Shows the whole data range",
+            "getView": "Visible range, null before the engine is created",
+            "setView": "Sets the visible range",
+            "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
+          }
+        }
+      }
+    }
+  }
+}

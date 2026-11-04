@@ -1,0 +1,421 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.0",
+  "locale": "ja",
+  "renderer": "native",
+  "page": "segmented-control",
+  "title": "SegmentedControl セグメントコントロール",
+  "description": "モードやフィルターを切り替える単一選択のセグメントスイッチで、選択中のセグメントの下をサムがスライドします。各選択肢に独自のコンテンツパネルがある場合は Tabs を使用してください。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.0",
+    "sourceCommit": "cf7fb249651cd06c89d0951ac2c3a3aa74dc835a",
+    "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
+    "referenceSourceDigest": "sha256:563c9bec5d90807342a94c02317519b3da937907129bda2d25ea49762fa828fd"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "SegmentedControl",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/native",
+          "exports": [
+            "SegmentedControl"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "options",
+            "source": "packages/native/src/components/SegmentedControl/SegmentedControl.tsx",
+            "kind": "array",
+            "typeText": "readonly SegmentedControlOption<NoInfer<T>>[]",
+            "typeRef": "type:d2cc62f4469460f4ed4c",
+            "required": true,
+            "description": "The segments: strings or option objects"
+          },
+          {
+            "name": "value",
+            "source": "packages/native/src/components/SegmentedControl/SegmentedControl.tsx",
+            "kind": "object",
+            "typeText": "NoInfer<T> | undefined",
+            "typeRef": "type:0a3cd3e425b13b6714df",
+            "required": false,
+            "description": "Selected value (controlled; pair with onChange)"
+          },
+          {
+            "name": "defaultValue",
+            "source": "packages/native/src/components/SegmentedControl/SegmentedControl.tsx",
+            "kind": "object",
+            "typeText": "NoInfer<T> | undefined",
+            "typeRef": "type:0a3cd3e425b13b6714df",
+            "required": false,
+            "description": "Initially selected value (uncontrolled)"
+          },
+          {
+            "name": "size",
+            "source": "packages/native/src/components/SegmentedControl/SegmentedControl.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "SegmentedControlSize | undefined",
+            "typeRef": "type:aba180377d3532dc0a95",
+            "default": "medium",
+            "required": false,
+            "description": "Segment density"
+          },
+          {
+            "name": "color",
+            "source": "packages/native/src/components/SegmentedControl/SegmentedControl.tsx",
+            "kind": "enum",
+            "values": [
+              "neutral",
+              "primary"
+            ],
+            "typeText": "SegmentedControlColor | undefined",
+            "typeRef": "type:ba97261bfc73d42d6181",
+            "default": "neutral",
+            "required": false,
+            "description": "Thumb color"
+          },
+          {
+            "name": "fullWidth",
+            "source": "packages/native/src/components/SegmentedControl/SegmentedControl.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Fills the width of the container with equal-width segments (otherwise each segment is as wide as its content)"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/native/src/components/SegmentedControl/SegmentedControl.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Blocks every segment"
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/native/src/components/SegmentedControl/SegmentedControl.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the group"
+          }
+        ],
+        "events": [
+          {
+            "name": "onChange",
+            "source": "packages/native/src/components/SegmentedControl/SegmentedControl.tsx",
+            "kind": "function",
+            "typeText": "((value: T) => void) | undefined",
+            "typeRef": "type:88a1d80bb61447eea98b",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "T",
+                "typeRef": "type:ed2cb2e2be913bf0bba5"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the selected value"
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "onChange",
+            "syntax": "value={value} onChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "native:SegmentedControlProps": {
+      "source": "native/src/components/SegmentedControl/SegmentedControl.tsx",
+      "kind": "interface",
+      "extends": [
+        "Omit<ViewProps, \"style\" | \"children\">"
+      ],
+      "props": [
+        {
+          "name": "options",
+          "type": "readonly SegmentedControlOption<NoInfer<T>>[]",
+          "required": true,
+          "description": "The segments: strings or option objects"
+        },
+        {
+          "name": "value",
+          "type": "NoInfer<T>",
+          "required": false,
+          "description": "Selected value (controlled; pair with onChange)"
+        },
+        {
+          "name": "defaultValue",
+          "type": "NoInfer<T>",
+          "required": false,
+          "description": "Initially selected value (uncontrolled)"
+        },
+        {
+          "name": "onChange",
+          "type": "(value: T) => void",
+          "required": false,
+          "description": "Called with the selected value"
+        },
+        {
+          "name": "size",
+          "type": "SegmentedControlSize",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Segment density"
+        },
+        {
+          "name": "color",
+          "type": "SegmentedControlColor",
+          "required": false,
+          "default": "\"neutral\"",
+          "description": "Thumb color"
+        },
+        {
+          "name": "fullWidth",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Fills the width of the container with equal-width segments (otherwise each segment is as wide as its content)"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Blocks every segment"
+        },
+        {
+          "name": "aria-label",
+          "type": "string",
+          "required": false,
+          "description": "Accessible label of the group"
+        },
+        {
+          "name": "style",
+          "type": "StyleProp<ViewStyle>",
+          "required": false,
+          "description": "Style of the track"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:SegmentedControl": {
+      "kind": "cssVars",
+      "source": "react/src/components/SegmentedControl",
+      "vars": [
+        {
+          "name": "--segmented-control-height",
+          "description": "Height of the control (defaults to the density's control height)"
+        },
+        {
+          "name": "--segmented-control-padding",
+          "description": "Space between the track and the segments (defaults to 2px)"
+        },
+        {
+          "name": "--segmented-control-radius",
+          "description": "Corner radius of the track (defaults to --radius-md); the thumb follows it"
+        },
+        {
+          "name": "--segmented-control-background",
+          "description": "Background of the track (defaults to --surface-muted-color)"
+        },
+        {
+          "name": "--segmented-control-color",
+          "description": "Text color of the unselected segments"
+        },
+        {
+          "name": "--segmented-control-item-padding-x",
+          "description": "Inline padding of a segment"
+        },
+        {
+          "name": "--segmented-control-thumb-background",
+          "description": "Background of the thumb (defaults to --surface-elevated-color; --primary-color with color=\"primary\")"
+        },
+        {
+          "name": "--segmented-control-thumb-shadow",
+          "description": "Shadow of the thumb (defaults to --shadow-sm; none with color=\"primary\")"
+        },
+        {
+          "name": "--segmented-control-selected-color",
+          "description": "Text color of the selected segment"
+        },
+        {
+          "name": "--segmented-control-duration",
+          "description": "Duration of the thumb slide (defaults to --transition-base)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/segmented-control/native/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/segmented-control/native/basic.tsx": "import { useState } from \"react\";\nimport { Text, View } from \"react-native\";\nimport { SegmentedControl } from \"minerva-design/native\";\n\ntype Mode = \"day\" | \"week\" | \"month\";\n\nexport default function Basic() {\n  const [view, setView] = useState<Mode>(\"week\");\n  return (\n    <View style={{ gap: 12 }}>\n      <SegmentedControl<Mode>\n        aria-label=\"Calendar view\"\n        options={[\n          { value: \"day\", label: \"Day\" },\n          { value: \"week\", label: \"Week\" },\n          { value: \"month\", label: \"Month\" },\n        ]}\n        value={view}\n        onChange={setView}\n      />\n      <SegmentedControl\n        fullWidth\n        color=\"primary\"\n        aria-label=\"Status filter\"\n        options={[\"All\", \"Open\", \"Closed\"]}\n        defaultValue=\"All\"\n      />\n      <Text>Showing the {view} view</Text>\n    </View>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-native"
+      ],
+      "contextImports": [],
+      "title": "基本的な使い方",
+      "description": "制御された値（value / onChange。値の型はジェネリック）。コントロールは radio セグメントからなる radiogroup で、タブストップは 1 つです。矢印キーで移動と選択（無効なセグメントはスキップし、端で折り返し）、Home / End で両端に移動します。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "SegmentedControl セグメントコントロール",
+      "description": "モードやフィルターを切り替える単一選択のセグメントスイッチで、選択中のセグメントの下をサムがスライドします。各選択肢に独自のコンテンツパネルがある場合は Tabs を使用してください。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "制御された値（value / onChange。値の型はジェネリック）。コントロールは radio セグメントからなる radiogroup で、タブストップは 1 つです。矢印キーで移動と選択（無効なセグメントはスキップし、端で折り返し）、Home / End で両端に移動します。"
+        },
+        "icons": {
+          "title": "アイコン",
+          "description": "オプションはラベルの横にアイコンを表示することも、アイコンのみにすることもできます。アイコンのみのセグメントには aria-label が必要です。"
+        },
+        "sizes": {
+          "title": "サイズ",
+          "description": "コントロールの高さに従う 3 つの密度。文字列のオプションは値とラベルを兼ねます。"
+        },
+        "full-width": {
+          "title": "全幅",
+          "description": "fullWidth はコントロールをコンテナいっぱいに広げます。セグメントは常に幅を均等に分け合います。name を指定すると隠し入力が追加され、値がフォームと一緒に送信されます。"
+        },
+        "colors": {
+          "title": "色と無効化",
+          "description": "neutral（既定）は控えめなトラック上に浮き上がったサムを、primary はプライマリカラーの塗りのサムを表示します。個々のセグメントまたはコントロール全体を無効化できます。"
+        }
+      },
+      "api": {
+        "SegmentedControlProps": {
+          "options": "セグメント：文字列またはオプションオブジェクト",
+          "value": "選択中の値（制御。onChange と組み合わせます）",
+          "defaultValue": "初期選択値（非制御）",
+          "onChange": "選択された値で呼び出されます",
+          "size": "セグメントの密度",
+          "color": "サムの色",
+          "fullWidth": "コンテナの幅いっぱいに広げます（セグメントは常に幅を均等に分け合います）",
+          "disabled": "すべてのセグメントを無効化します",
+          "name": "フォームで値を運ぶ隠し入力の名前",
+          "aria-label": "グループのアクセシブルなラベル",
+          "aria-labelledby": "グループのラベルとなる要素の id",
+          "id": "ルートの id",
+          "className": "追加のクラス名",
+          "ref": "ルート <div>（role=\"radiogroup\"）への ref"
+        },
+        "SegmentedControlOptionObject": {
+          "value": "セグメントの値",
+          "label": "表示ラベル（アイコンがない場合は既定で値）",
+          "icon": "ラベルの前に表示するアイコン（アイコンのみのセグメントでは単独で表示）",
+          "disabled": "このセグメントを無効化します",
+          "aria-label": "アクセシブルな名前。アイコンのみのセグメントでは必須"
+        }
+      },
+      "cssVars": {
+        "--segmented-control-height": "コントロールの高さ（既定は密度ごとのコントロールの高さ）",
+        "--segmented-control-padding": "トラックとセグメントの間隔（既定 2px）",
+        "--segmented-control-radius": "トラックの角丸（既定 --radius-md）。サムも追従します",
+        "--segmented-control-background": "トラックの背景（既定 --surface-muted-color）",
+        "--segmented-control-color": "未選択セグメントの文字色",
+        "--segmented-control-item-padding-x": "セグメントの左右のパディング",
+        "--segmented-control-thumb-background": "サムの背景（既定 --surface-elevated-color。color=\"primary\" では --primary-color）",
+        "--segmented-control-thumb-shadow": "サムの影（既定 --shadow-sm。color=\"primary\" では影なし）",
+        "--segmented-control-selected-color": "選択中のセグメントの文字色",
+        "--segmented-control-duration": "サムのスライド時間（既定 --transition-base）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "options は JSON 配列（またはカンマ区切りの値）の属性、またはプロパティです。value は初期選択を設定し、minerva-change が選択された値を通知します。タブストップは 1 つで、矢印キーで移動と選択を行います。"
+          },
+          "icons": {
+            "title": "アイコン",
+            "description": "オプションオブジェクトは icon（テキスト、またはプロパティ経由の Node / lit テンプレート）と、アイコンのみのセグメント用の aria-label を受け取ります。"
+          },
+          "sizes": {
+            "title": "サイズ",
+            "description": "3 つの密度（:state(size-small) などのカスタムステートも提供）。"
+          },
+          "full-width": {
+            "title": "全幅とフォーム",
+            "description": "full-width でコントロールを広げます。フォーム関連要素なので、name で値を送信し、required で検証し、form.reset() で value 属性に戻ります。"
+          },
+          "colors": {
+            "title": "色と無効化",
+            "description": "color=\"primary\" はプライマリカラーの塗りのサムを表示します。無効なオプションと disabled 属性は選択をブロックします。"
+          }
+        },
+        "minerva-segmented-control": {
+          "props": {
+            "required": "フォームを送信するには値の選択が必要です。",
+            "isDisabled": "コントロールが無効かどうか（自身または無効な <fieldset> による。読み取り専用）。",
+            "form": "要素が属するフォーム（読み取り専用）。",
+            "labels": "要素に関連付けられた <label> 要素（読み取り専用）。",
+            "validity": "<input>.validity と同じ妥当性の状態（読み取り専用）。",
+            "validationMessage": "現在の検証エラーのメッセージ。有効な場合は空（読み取り専用）。",
+            "willValidate": "要素が制約検証の対象かどうか（読み取り専用）。"
+          },
+          "events": {
+            "change": "ユーザーが別のセグメントを選択しました（ネイティブのラジオボタンと同様）。",
+            "minerva-change": "ユーザーが別のセグメントを選択しました（detail: { value }）。"
+          },
+          "methods": {
+            "focus": "選択中のセグメント（なければ最初の有効なセグメント）にフォーカスします。",
+            "checkValidity": "妥当性を確認し、無効なら invalid イベントを発火します。",
+            "reportValidity": "妥当性を確認し、ブラウザーの検証メッセージを表示します。",
+            "setCustomValidity": "独自の検証エラーを設定します（空文字列で解除）。",
+            "formResetCallback": "form.reset() から呼ばれるフォームのライフサイクルコールバック。初期値に戻します。",
+            "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときに呼ばれるフォームのライフサイクルコールバック。",
+            "formStateRestoreCallback": "ブラウザーが状態を復元するとき（履歴移動・自動入力）に呼ばれるフォームのライフサイクルコールバック。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

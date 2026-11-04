@@ -1,0 +1,686 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.0",
+  "locale": "en",
+  "renderer": "wc",
+  "page": "pagination",
+  "title": "Pagination",
+  "description": "Splits long lists of data into pages and lets users move between them.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.0",
+    "sourceCommit": "cf7fb249651cd06c89d0951ac2c3a3aa74dc835a",
+    "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
+    "referenceSourceDigest": "sha256:563c9bec5d90807342a94c02317519b3da937907129bda2d25ea49762fa828fd"
+  },
+  "content": {
+    "a11y": {
+      "title": "Keyboard support",
+      "body": "The pagination is a <nav> landmark made of native buttons; the current page is marked with aria-current=\"page\" and unavailable items are disabled. When an item has focus, ArrowLeft/ArrowRight go to the previous/next page and Home/End to the first/last page, and focus follows the current page. If the focused button becomes disabled, focus moves to the current page."
+    }
+  },
+  "components": [
+    {
+      "name": "Pagination",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/pagination",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-pagination",
+        "props": [
+          {
+            "name": "current",
+            "typeText": "number",
+            "attribute": "current",
+            "required": false
+          },
+          {
+            "name": "total",
+            "typeText": "number",
+            "attribute": "total",
+            "required": false
+          },
+          {
+            "name": "pageSize",
+            "typeText": "number",
+            "attribute": "page-size",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "attribute": "disabled",
+            "required": false
+          },
+          {
+            "name": "showQuickJumper",
+            "typeText": "boolean",
+            "attribute": "show-quick-jumper",
+            "required": false
+          },
+          {
+            "name": "showSizeChanger",
+            "typeText": "boolean",
+            "attribute": "show-size-changer",
+            "required": false
+          },
+          {
+            "name": "pageSizeOptions",
+            "typeText": "number[]",
+            "attribute": "page-size-options",
+            "required": false
+          },
+          {
+            "name": "showTotal",
+            "typeText": "boolean",
+            "attribute": "show-total",
+            "required": false
+          },
+          {
+            "name": "size",
+            "typeText": "\"small\" | \"medium\" | \"large\"",
+            "attribute": "size",
+            "required": false
+          },
+          {
+            "name": "shape",
+            "typeText": "\"circle\" | \"rounded\" | \"square\"",
+            "attribute": "shape",
+            "required": false
+          },
+          {
+            "name": "variant",
+            "typeText": "\"solid\" | \"outline\" | \"ghost\"",
+            "attribute": "variant",
+            "required": false
+          },
+          {
+            "name": "simple",
+            "typeText": "boolean",
+            "attribute": "simple",
+            "required": false
+          },
+          {
+            "name": "siblingCount",
+            "typeText": "number | undefined",
+            "attribute": "sibling-count",
+            "required": false
+          },
+          {
+            "name": "boundaryCount",
+            "typeText": "number | undefined",
+            "attribute": "boundary-count",
+            "required": false
+          },
+          {
+            "name": "hideEdges",
+            "typeText": "boolean",
+            "attribute": "hide-edges",
+            "required": false
+          },
+          {
+            "name": "hideNumbers",
+            "typeText": "boolean",
+            "attribute": "hide-numbers",
+            "required": false
+          },
+          {
+            "name": "responsive",
+            "typeText": "boolean",
+            "attribute": "responsive",
+            "required": false
+          },
+          {
+            "name": "totalRender",
+            "typeText": "(total: number, range: [number, number]) => PaginationRenderResult | undefined",
+            "required": false
+          },
+          {
+            "name": "itemRender",
+            "typeText": "(page: number, type: PaginationItemType) => PaginationRenderResult | undefined",
+            "required": false
+          },
+          {
+            "name": "labels",
+            "typeText": "PaginationLabels | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "minerva-page-change",
+            "typeText": "CustomEvent<PaginationChangeDetail>",
+            "detailType": {
+              "typeText": "PaginationChangeDetail",
+              "typeRef": "type:471a98f18e5c772ee6df"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": true,
+            "description": "The user changed the page or the page size (`detail: { page, pageSize }`); cancelable: `preventDefault()` keeps the current page and size (controlled pattern)"
+          }
+        ],
+        "slots": [
+          {
+            "name": "prev-icon",
+            "description": "Icon of the previous-page button"
+          },
+          {
+            "name": "next-icon",
+            "description": "Icon of the next-page button"
+          },
+          {
+            "name": "jump-prev-icon",
+            "description": "Icon of the jump-backward item"
+          },
+          {
+            "name": "jump-next-icon",
+            "description": "Icon of the jump-forward item"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-pagination": {
+      "kind": "element",
+      "source": "web-components/src/components/pagination/pagination.ts",
+      "className": "MinervaPagination",
+      "summary": "Page navigation with jumper, page size selector and total.",
+      "description": "Page navigation (`<Pagination>` of React): page buttons with jump items or a compact list with gaps, prev / next, a simple mode with a page input, a quick jumper, a native page-size select and a total. Arrow keys (swapped in RTL), Home and End on the page buttons change the page and move focus to it; focus never gets lost when the focused button is disabled or removed by a page change.",
+      "properties": [
+        {
+          "name": "current",
+          "attribute": "current",
+          "type": "number",
+          "default": "1",
+          "description": "Current page (1-based)"
+        },
+        {
+          "name": "total",
+          "attribute": "total",
+          "type": "number",
+          "default": "0",
+          "description": "Total number of items"
+        },
+        {
+          "name": "pageSize",
+          "attribute": "page-size",
+          "type": "number",
+          "default": "10",
+          "description": "Number of items per page"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false",
+          "description": "Disables the pagination"
+        },
+        {
+          "name": "showQuickJumper",
+          "attribute": "show-quick-jumper",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows an input to jump to a page"
+        },
+        {
+          "name": "showSizeChanger",
+          "attribute": "show-size-changer",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows a page size selector (native `<select>`)"
+        },
+        {
+          "name": "pageSizeOptions",
+          "attribute": "page-size-options",
+          "type": "number[]",
+          "default": "[10, 20, 50, 100]",
+          "description": "Options of the page size selector (attribute: `\"10,20,50\"`)"
+        },
+        {
+          "name": "showTotal",
+          "attribute": "show-total",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows the total number of items (customize it with `totalRender`)"
+        },
+        {
+          "name": "size",
+          "attribute": "size",
+          "type": "\"small\" | \"medium\" | \"large\"",
+          "default": "\"medium\"",
+          "description": "Pagination size"
+        },
+        {
+          "name": "shape",
+          "attribute": "shape",
+          "type": "\"circle\" | \"rounded\" | \"square\"",
+          "default": "\"rounded\"",
+          "description": "Shape of the page items"
+        },
+        {
+          "name": "variant",
+          "attribute": "variant",
+          "type": "\"solid\" | \"outline\" | \"ghost\"",
+          "default": "\"solid\"",
+          "description": "Visual style of the page items"
+        },
+        {
+          "name": "simple",
+          "attribute": "simple",
+          "type": "boolean",
+          "default": "false",
+          "description": "Simple mode: prev / next buttons with a page input"
+        },
+        {
+          "name": "siblingCount",
+          "attribute": "sibling-count",
+          "type": "number | undefined",
+          "description": "Pages on each side of the current one; switches to the compact list"
+        },
+        {
+          "name": "boundaryCount",
+          "attribute": "boundary-count",
+          "type": "number | undefined",
+          "description": "Pages always shown at both ends of the compact list"
+        },
+        {
+          "name": "hideEdges",
+          "attribute": "hide-edges",
+          "type": "boolean",
+          "default": "false",
+          "description": "Hides the prev / next buttons"
+        },
+        {
+          "name": "hideNumbers",
+          "attribute": "hide-numbers",
+          "type": "boolean",
+          "default": "false",
+          "description": "Replaces the page buttons with a \"current / total\" counter"
+        },
+        {
+          "name": "responsive",
+          "attribute": "responsive",
+          "type": "boolean",
+          "default": "false",
+          "description": "Adapts the layout to small screens"
+        },
+        {
+          "name": "totalRender",
+          "type": "(total: number, range: [number, number]) => PaginationRenderResult | undefined",
+          "description": "Custom rendering of the total; `range` is the [first, last] item of the page"
+        },
+        {
+          "name": "itemRender",
+          "type": "(page: number, type: PaginationItemType) => PaginationRenderResult | undefined",
+          "description": "Custom rendering of the page, prev / next and jump items"
+        },
+        {
+          "name": "labels",
+          "type": "PaginationLabels | undefined",
+          "description": "Custom texts and accessible labels (override the localized defaults)"
+        },
+        {
+          "name": "totalPages",
+          "type": "number",
+          "readonly": true,
+          "description": "Number of pages (at least 1)."
+        }
+      ],
+      "methods": [],
+      "events": [
+        {
+          "name": "minerva-page-change",
+          "description": "The user changed the page or the page size (`detail: { page, pageSize }`); cancelable: `preventDefault()` keeps the current page and size (controlled pattern)"
+        }
+      ],
+      "slots": [
+        {
+          "name": "prev-icon",
+          "description": "Icon of the previous-page button"
+        },
+        {
+          "name": "next-icon",
+          "description": "Icon of the next-page button"
+        },
+        {
+          "name": "jump-prev-icon",
+          "description": "Icon of the jump-backward item"
+        },
+        {
+          "name": "jump-next-icon",
+          "description": "Icon of the jump-forward item"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The `<nav>` landmark"
+        },
+        {
+          "name": "item",
+          "description": "A page / previous / next / jump button (the current page has aria-current=page)"
+        },
+        {
+          "name": "item--current",
+          "description": "Item state of `item`: current"
+        },
+        {
+          "name": "item--disabled",
+          "description": "Item state of `item`: disabled"
+        },
+        {
+          "name": "total",
+          "description": "The total text"
+        },
+        {
+          "name": "jumper",
+          "description": "The quick jumper label (wraps its input)"
+        },
+        {
+          "name": "size-changer",
+          "description": "The page size `<select>`"
+        },
+        {
+          "name": "simple-input",
+          "description": "The page input of the simple mode"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--pagination-item-size",
+          "description": "Height and minimum width of the page buttons (every size; defaults to the density's control height)"
+        },
+        {
+          "name": "--pagination-item-radius",
+          "description": "Corner radius of the page buttons (defaults to --radius-md; the shape prop wins)"
+        },
+        {
+          "name": "--pagination-gap",
+          "description": "Space between the items"
+        },
+        {
+          "name": "--pagination-font-size",
+          "description": "Font size"
+        },
+        {
+          "name": "--pagination-active-background",
+          "description": "Background of the current page (solid variant)"
+        },
+        {
+          "name": "--pagination-active-color",
+          "description": "Text color of the current page (solid variant)"
+        },
+        {
+          "name": "--pagination-hover-background",
+          "description": "Background of a hovered page button (defaults to --hover-color)"
+        },
+        {
+          "name": "--pagination-subtle-background",
+          "description": "Background of the current page of the ghost variant (defaults to --primary-color-subtle)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Pagination": {
+      "kind": "cssVars",
+      "source": "react/src/components/Pagination",
+      "vars": [
+        {
+          "name": "--pagination-item-size",
+          "description": "Height and minimum width of the page buttons (every size; defaults to the density's control height)"
+        },
+        {
+          "name": "--pagination-item-radius",
+          "description": "Corner radius of the page buttons (defaults to --radius-md; the shape prop wins)"
+        },
+        {
+          "name": "--pagination-gap",
+          "description": "Space between the items"
+        },
+        {
+          "name": "--pagination-font-size",
+          "description": "Font size"
+        },
+        {
+          "name": "--pagination-active-background",
+          "description": "Background of the current page (solid variant)"
+        },
+        {
+          "name": "--pagination-active-color",
+          "description": "Text color of the current page (solid variant)"
+        },
+        {
+          "name": "--pagination-hover-background",
+          "description": "Background of a hovered page button (defaults to --hover-color)"
+        },
+        {
+          "name": "--pagination-subtle-background",
+          "description": "Background of the current page of the ghost variant (defaults to --primary-color-subtle)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "appearance",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/pagination/wc/appearance.html",
+      "files": {
+        "apps/docs/src/docs/pages/pagination/wc/appearance.html": "<div style=\"display: grid; gap: 12px\">\n  <minerva-pagination total=\"200\" size=\"small\"></minerva-pagination>\n  <minerva-pagination\n    total=\"200\"\n    current=\"4\"\n    shape=\"circle\"\n    variant=\"outline\"\n  ></minerva-pagination>\n  <minerva-pagination\n    total=\"200\"\n    current=\"10\"\n    size=\"large\"\n    shape=\"square\"\n    variant=\"ghost\"\n    sibling-count=\"1\"\n    boundary-count=\"1\"\n  ></minerva-pagination>\n  <minerva-pagination total=\"200\" current=\"2\" disabled></minerva-pagination>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Sizes, shapes and variants",
+      "description": "size, shape and variant style the items; sibling-count / boundary-count switch to a compact page list; disabled blocks every interaction."
+    },
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/pagination/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/pagination/wc/basic.html": "<div style=\"display: grid; gap: 12px\">\n  <minerva-pagination id=\"pager\" total=\"50\"></minerva-pagination>\n  <output id=\"page\" aria-live=\"polite\">Page 1 of 5</output>\n</div>\n",
+        "apps/docs/src/docs/pages/pagination/wc/basic.ts": "// Without a listener cancelling it, the element updates `current` itself;\n// minerva-page-change reports the new page and page size.\nexport function setup(root: HTMLElement) {\n  const pager = root.querySelector<HTMLElement & { totalPages: number }>(\n    \"#pager\",\n  )!;\n  const output = root.querySelector<HTMLOutputElement>(\"#page\")!;\n  const onChange = (event: Event) => {\n    const { page } = (event as CustomEvent<{ page: number }>).detail;\n    output.value = `Page ${page} of ${pager.totalPages}`;\n  };\n  pager.addEventListener(\"minerva-page-change\", onChange);\n  return () => pager.removeEventListener(\"minerva-page-change\", onChange);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Basic usage",
+      "description": "total and page-size set the number of pages. The element updates current itself and fires minerva-page-change with the new page and page size; call preventDefault() to control it."
+    },
+    {
+      "id": "simple",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/pagination/wc/simple.html",
+      "files": {
+        "apps/docs/src/docs/pages/pagination/wc/simple.html": "<div style=\"display: grid; gap: 12px\">\n  <minerva-pagination total=\"120\" simple></minerva-pagination>\n  <minerva-pagination total=\"120\" current=\"3\" hide-numbers></minerva-pagination>\n  <minerva-pagination total=\"500\" current=\"25\" responsive>\n    <span slot=\"prev-icon\" aria-hidden=\"true\">←</span>\n    <span slot=\"next-icon\" aria-hidden=\"true\">→</span>\n    <span slot=\"jump-prev-icon\" aria-hidden=\"true\">«</span>\n    <span slot=\"jump-next-icon\" aria-hidden=\"true\">»</span>\n  </minerva-pagination>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Simple mode, counter and icons",
+      "description": "simple shows prev / next with a page input, hide-numbers a \"current / total\" counter. The prev-icon, next-icon, jump-prev-icon and jump-next-icon slots replace the icons; responsive adapts to small screens."
+    },
+    {
+      "id": "total-and-jumper",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/pagination/wc/total-and-jumper.html",
+      "files": {
+        "apps/docs/src/docs/pages/pagination/wc/total-and-jumper.html": "<minerva-pagination\n  id=\"results\"\n  total=\"485\"\n  page-size=\"20\"\n  page-size-options=\"10,20,50\"\n  show-total\n  show-size-changer\n  show-quick-jumper\n></minerva-pagination>\n",
+        "apps/docs/src/docs/pages/pagination/wc/total-and-jumper.ts": "// totalRender is a JS property: it receives the total and the\n// [first, last] items of the current page.\nexport function setup(root: HTMLElement) {\n  const pager = root.querySelector<\n    HTMLElement & {\n      totalRender?: (total: number, range: [number, number]) => string;\n    }\n  >(\"#results\")!;\n  pager.totalRender = (total, [first, last]) =>\n    `${first}–${last} of ${total} results`;\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Total, size changer and quick jumper",
+      "description": "show-total, show-size-changer (options from page-size-options=\"10,20,50\") and show-quick-jumper. totalRender, a JS property, customizes the total text."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Pagination",
+      "description": "Splits long lists of data into pages and lets users move between them.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Starts on page 1 of 5: 50 items with 10 items per page. Next page advances to page 2."
+        },
+        "many-pages": {
+          "title": "Many pages",
+          "description": "With many pages, the first and last pages stay visible and ellipsis items jump 5 pages at a time."
+        },
+        "total-and-jumper": {
+          "title": "Total and quick jumper",
+          "description": "showTotal displays the number of items (customizable with totalRender); showQuickJumper adds a \"Go to\" input."
+        },
+        "size-changer": {
+          "title": "Page size changer",
+          "description": "showSizeChanger adds a page size selector; onChange then receives page 1 and the new page size."
+        },
+        "sizes": {
+          "title": "Sizes",
+          "description": "Three sizes: small, medium (default) and large."
+        },
+        "shapes-and-variants": {
+          "title": "Shapes and variants",
+          "description": "Combine a shape (rounded, circle, square) with a variant (solid, outline, ghost)."
+        },
+        "simple": {
+          "title": "Simple mode",
+          "description": "Starts on page 1 of 12 with 120 items. Previous and Next change the controlled current page."
+        },
+        "custom-render": {
+          "title": "Custom rendering",
+          "description": "Replace the icons, or render every item yourself with itemRender."
+        },
+        "disabled": {
+          "title": "Disabled",
+          "description": "Disable all interaction."
+        },
+        "responsive": {
+          "title": "Responsive",
+          "description": "responsive adapts the layout on small screens."
+        },
+        "compact": {
+          "title": "Compact page list and counter",
+          "description": "siblingCount / boundaryCount switch to a compact list with non-interactive gaps; hideNumbers shows a \"current / total\" counter and hideEdges removes prev / next."
+        }
+      },
+      "api": {
+        "PaginationProps": {
+          "current": "Current page (1-based, controlled); update it in onChange",
+          "defaultCurrent": "Initial page when uncontrolled (current not set)",
+          "total": "Total number of items",
+          "pageSize": "Number of items per page (controlled); update it in onChange",
+          "defaultPageSize": "Initial number of items per page when uncontrolled (pageSize not set)",
+          "onChange": "Called with the new page and page size when the page or page size changes (changing the page size resets to page 1)",
+          "disabled": "Disables the pagination",
+          "showQuickJumper": "Shows an input to jump to a page",
+          "showSizeChanger": "Shows a page size selector",
+          "pageSizeOptions": "Options of the page size selector",
+          "itemRender": "Custom rendering of the page, prev/next and jump items",
+          "className": "Additional class name",
+          "style": "Inline styles",
+          "showTotal": "Shows the total number of items; a function renders it (same signature as totalRender)",
+          "totalRender": "Custom rendering of the total; range is the [first, last] item index of the current page",
+          "size": "Pagination size",
+          "shape": "Shape of the page items",
+          "variant": "Visual style of the page items: solid (current page filled with the primary color), outline (current page with a primary border and text) or ghost (borderless transparent items, current page in primary text, tinted on hover)",
+          "simple": "Simple mode: prev/next buttons with a page input",
+          "responsive": "Adapts the layout to small screens",
+          "icons": "Custom icons for the prev, next and jump items; omitted ones keep the default icon",
+          "ref": "Ref to the root <nav> element",
+          "labels": "Texts of the component (accessible labels of the buttons, quick jumper and size changer); omitted entries use the localized defaults",
+          "siblingCount": "Number of pages shown on each side of the current page. Setting it (or boundaryCount) switches to the compact layout with non-interactive \"…\" gaps",
+          "boundaryCount": "Number of pages always shown at the start and the end of the compact page list",
+          "hideEdges": "Hides the prev / next buttons",
+          "hideNumbers": "Replaces the page buttons with a read-only \"current / total\" counter (announced politely), keeping prev / next"
+        },
+        "PaginationLabels": {
+          "prev": "Accessible label of the previous-page button",
+          "next": "Accessible label of the next-page button",
+          "jumpPrev": "Label of the jump-backward item",
+          "jumpNext": "Label of the jump-forward item",
+          "page": "Returns the accessible label of a page button",
+          "jumpTo": "Visible text of the quick jumper",
+          "jumpToInput": "Accessible label of the quick jumper input",
+          "pageSize": "Accessible label of the page size select",
+          "pageSizeOption": "Returns the text of a page size option",
+          "currentPage": "Accessible label of the page input in simple mode",
+          "nav": "Accessible label of the navigation landmark",
+          "total": "Text of the total (when showTotal is true and there is no totalRender)"
+        }
+      },
+      "a11y": {
+        "title": "Keyboard support",
+        "body": "The pagination is a <nav> landmark made of native buttons; the current page is marked with aria-current=\"page\" and unavailable items are disabled. When an item has focus, ArrowLeft/ArrowRight go to the previous/next page and Home/End to the first/last page, and focus follows the current page. If the focused button becomes disabled, focus moves to the current page."
+      },
+      "cssVars": {
+        "--pagination-item-size": "Height and minimum width of the page buttons (every size; defaults to the density's control height)",
+        "--pagination-item-radius": "Corner radius of the page buttons (defaults to --radius-md; the shape prop wins)",
+        "--pagination-gap": "Space between the items",
+        "--pagination-font-size": "Font size",
+        "--pagination-active-background": "Background of the current page (solid variant)",
+        "--pagination-active-color": "Text color of the current page (solid variant)",
+        "--pagination-hover-background": "Background of a hovered page button (defaults to --hover-color)",
+        "--pagination-subtle-background": "Background of the current page of the ghost variant (defaults to --primary-color-subtle)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "total and page-size set the number of pages. The element updates current itself and fires minerva-page-change with the new page and page size; call preventDefault() to control it."
+          },
+          "total-and-jumper": {
+            "title": "Total, size changer and quick jumper",
+            "description": "show-total, show-size-changer (options from page-size-options=\"10,20,50\") and show-quick-jumper. totalRender, a JS property, customizes the total text."
+          },
+          "appearance": {
+            "title": "Sizes, shapes and variants",
+            "description": "size, shape and variant style the items; sibling-count / boundary-count switch to a compact page list; disabled blocks every interaction."
+          },
+          "simple": {
+            "title": "Simple mode, counter and icons",
+            "description": "simple shows prev / next with a page input, hide-numbers a \"current / total\" counter. The prev-icon, next-icon, jump-prev-icon and jump-next-icon slots replace the icons; responsive adapts to small screens."
+          }
+        },
+        "minerva-pagination": {
+          "props": {
+            "totalPages": "Number of pages, at least 1 (read-only)."
+          },
+          "events": {
+            "minerva-page-change": "The user changed the page or the page size (detail: { page, pageSize }). Cancelable: preventDefault() keeps the current page and size."
+          },
+          "slots": {
+            "prev-icon": "Icon of the previous-page button.",
+            "next-icon": "Icon of the next-page button.",
+            "jump-prev-icon": "Icon of the jump-backward item.",
+            "jump-next-icon": "Icon of the jump-forward item."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Starts on page 1 of 5: 50 items with 10 items per page. Next page advances to page 2."
+          },
+          "simple": {
+            "title": "Simple mode",
+            "description": "Starts on page 1 of 12 with 120 items. Previous and Next change the controlled current page."
+          }
+        }
+      }
+    }
+  }
+}

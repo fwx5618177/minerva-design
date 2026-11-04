@@ -1,0 +1,781 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.0",
+  "locale": "en",
+  "renderer": "vue",
+  "page": "modal",
+  "title": "Modal",
+  "description": "A dialog that interrupts the page for a focused task. Focus is trapped inside, Escape and a backdrop click close it, and focus returns to the opener. On narrow screens it becomes a bottom sheet.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.0",
+    "sourceCommit": "cf7fb249651cd06c89d0951ac2c3a3aa74dc835a",
+    "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
+    "referenceSourceDigest": "sha256:563c9bec5d90807342a94c02317519b3da937907129bda2d25ea49762fa828fd"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Modal",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "Modal"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "open",
+            "type": "boolean",
+            "required": false,
+            "description": "Controlled open state (`v-model:open`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "defaultOpen",
+            "type": "boolean",
+            "required": false,
+            "description": "Initial open state while uncontrolled.",
+            "typeText": "boolean"
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "required": false,
+            "description": "Title (or the `title` slot); the dialog's accessible name",
+            "typeText": "string"
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "required": false,
+            "description": "Description (or the `description` slot)",
+            "typeText": "string"
+          },
+          {
+            "name": "size",
+            "type": "ModalSize",
+            "default": "\"medium\"",
+            "required": false,
+            "typeText": "ModalSize"
+          },
+          {
+            "name": "hideCloseButton",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "typeText": "boolean"
+          },
+          {
+            "name": "closeLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible name of the close button (default: translated \"Close\")",
+            "typeText": "string"
+          },
+          {
+            "name": "role",
+            "type": "\"dialog\" | \"alertdialog\"",
+            "default": "\"dialog\"",
+            "required": false,
+            "typeText": "\"dialog\" | \"alertdialog\""
+          }
+        ],
+        "events": [
+          {
+            "name": "update:open",
+            "type": "[open: boolean]",
+            "typeText": "[open: boolean]",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "openChange",
+            "type": "[open: boolean]",
+            "typeText": "[open: boolean]",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "description": "Body",
+            "typeText": "any"
+          },
+          {
+            "name": "trigger",
+            "type": "any",
+            "description": "Element opening the modal (its single child gets the trigger props)",
+            "typeText": "any"
+          },
+          {
+            "name": "title",
+            "type": "any",
+            "typeText": "any"
+          },
+          {
+            "name": "description",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "open",
+            "event": "update:open",
+            "syntax": "v-model:open"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ModalBody",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "ModalBody"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "ModalClose",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "ModalClose"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "asChild",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "typeText": "boolean"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "ModalContent",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "ModalContent"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "size",
+            "type": "ModalSize",
+            "default": "\"medium\"",
+            "required": false,
+            "typeText": "ModalSize"
+          },
+          {
+            "name": "hideCloseButton",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "typeText": "boolean"
+          },
+          {
+            "name": "closeLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible name of the close button (default: translated \"Close\")",
+            "typeText": "string"
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "required": false,
+            "description": "Description under the title (or the `description` slot)",
+            "typeText": "string"
+          },
+          {
+            "name": "role",
+            "type": "\"dialog\" | \"alertdialog\"",
+            "default": "\"dialog\"",
+            "required": false,
+            "typeText": "\"dialog\" | \"alertdialog\""
+          },
+          {
+            "name": "forceMount",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Keep mounted while closed",
+            "typeText": "boolean"
+          },
+          {
+            "name": "overlayClass",
+            "type": "ClassValue",
+            "required": false,
+            "description": "Class of the overlay",
+            "typeText": "ClassValue"
+          }
+        ],
+        "events": [
+          {
+            "name": "openAutoFocus",
+            "type": "[event: Event]",
+            "typeText": "[event: Event]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "Event",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "closeAutoFocus",
+            "type": "[event: Event]",
+            "typeText": "[event: Event]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "Event",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "escapeKeyDown",
+            "type": "[event: KeyboardEvent]",
+            "typeText": "[event: KeyboardEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "KeyboardEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "pointerDownOutside",
+            "type": "[event: PointerEvent]",
+            "typeText": "[event: PointerEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "PointerEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "interactOutside",
+            "type": "[event: PointerEvent | FocusEvent]",
+            "typeText": "[event: PointerEvent | FocusEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "PointerEvent | FocusEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "description",
+            "type": "{}",
+            "typeText": "{}"
+          },
+          {
+            "name": "default",
+            "type": "{}",
+            "typeText": "{}"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "ModalFooter",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "ModalFooter"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "ModalHeader",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "ModalHeader"
+          ],
+          "kind": "named"
+        },
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "ModalRoot",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "ModalRoot"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "open",
+            "type": "boolean",
+            "required": false,
+            "description": "Controlled open state (`v-model:open`)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "defaultOpen",
+            "type": "boolean",
+            "required": false,
+            "description": "Initial open state while uncontrolled.",
+            "typeText": "boolean"
+          },
+          {
+            "name": "modal",
+            "type": "boolean",
+            "default": "true",
+            "required": false,
+            "description": "Focus trap, scroll lock, overlay, page hidden from AT.",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [
+          {
+            "name": "update:open",
+            "type": "[open: boolean]",
+            "typeText": "[open: boolean]",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "openChange",
+            "type": "[open: boolean]",
+            "typeText": "[open: boolean]",
+            "parameters": [
+              {
+                "name": "open",
+                "position": 0,
+                "typeText": "boolean",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "open",
+            "event": "update:open",
+            "syntax": "v-model:open"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ModalTrigger",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "ModalTrigger"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "asChild",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "typeText": "boolean"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "type": "any",
+            "typeText": "any"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Modal": {
+      "kind": "cssVars",
+      "source": "react/src/components/Modal",
+      "vars": [
+        {
+          "name": "--modal-width",
+          "description": "Width of the panel (every size; defaults to the width of the size, capped by the viewport)"
+        },
+        {
+          "name": "--modal-max-height",
+          "description": "Maximum height of the panel (the body scrolls beyond)"
+        },
+        {
+          "name": "--modal-padding",
+          "description": "Horizontal padding of the header, description, body and footer"
+        },
+        {
+          "name": "--modal-radius",
+          "description": "Corner radius of the panel (defaults to --radius-xl)"
+        },
+        {
+          "name": "--modal-shadow",
+          "description": "Shadow of the panel (defaults to --shadow-xl)"
+        },
+        {
+          "name": "--modal-background",
+          "description": "Background of the panel"
+        },
+        {
+          "name": "--modal-z-index",
+          "description": "Stacking order of the panel (defaults to --z-modal)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/modal/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/modal/vue/basic.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport {\n  Button,\n  Modal,\n  ModalBody,\n  ModalFooter,\n  VStack,\n} from \"minerva-design/vue\";\nconst open = ref(false);\nconst deleted = ref(false);\nfunction remove() {\n  deleted.value = true;\n  open.value = false;\n}\n</script>\n<template>\n  <VStack align=\"start\" :gap=\"3\"\n    ><Button @click=\"open = true\">Delete record</Button>\n    <p v-if=\"deleted\" role=\"status\">Record deleted</p>\n    <Modal\n      v-model:open=\"open\"\n      title=\"Delete this record?\"\n      description=\"The record and its history are removed permanently.\"\n      size=\"small\"\n      ><ModalBody>Other team members lose access immediately.</ModalBody\n      ><ModalFooter\n        ><Button color=\"neutral\" variant=\"outline\" @click=\"open = false\"\n          >Cancel</Button\n        ><Button color=\"danger\" @click=\"remove\">Delete</Button></ModalFooter\n      ></Modal\n    ></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "events",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/modal/vue/events.vue",
+      "files": {
+        "apps/docs/src/docs/pages/modal/vue/events.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Modal, ModalBody, Button } from \"minerva-design/vue\";\nconst open = ref(false);\nconst last = ref(\"\");\n</script>\n<template>\n  <Button @click=\"open = true\">Open tracked dialog</Button\n  ><Modal\n    v-model:open=\"open\"\n    title=\"Dialog events\"\n    @open-change=\"(value) => (last = value ? 'Opened' : 'Closed')\"\n    ><ModalBody\n      ><p>\n        Escape, the close button, or the backdrop closes this dialog.\n      </p></ModalBody\n    ></Modal\n  ><output>{{ last }}</output>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "events",
+      "description": ""
+    },
+    {
+      "id": "form",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/modal/vue/form.vue",
+      "files": {
+        "apps/docs/src/docs/pages/modal/vue/form.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport {\n  Button,\n  Input,\n  FormField,\n  Modal,\n  ModalBody,\n  ModalFooter,\n} from \"minerva-design/vue\";\nconst open = ref(false);\nconst name = ref(\"Quarterly report\");\nconst draft = ref(name.value);\nfunction edit() {\n  draft.value = name.value;\n  open.value = true;\n}\nfunction save() {\n  name.value = draft.value;\n  open.value = false;\n}\n</script>\n<template>\n  <Button @click=\"edit\">Rename “{{ name }}”</Button\n  ><Modal v-model:open=\"open\" title=\"Rename document\"\n    ><form @submit.prevent=\"save\">\n      <ModalBody\n        ><FormField label=\"Name\"\n          ><Input v-model=\"draft\" name=\"name\" /></FormField></ModalBody\n      ><ModalFooter><Button type=\"submit\">Save</Button></ModalFooter>\n    </form></Modal\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "form",
+      "description": ""
+    },
+    {
+      "id": "sizes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/modal/vue/sizes.vue",
+      "files": {
+        "apps/docs/src/docs/pages/modal/vue/sizes.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { Modal, ModalBody, Button, HStack } from \"minerva-design/vue\";\nconst sizes = [\"small\", \"medium\", \"large\", \"full\"] as const;\nconst size = ref<(typeof sizes)[number]>(\"medium\");\nconst open = ref(false);\n</script>\n<template>\n  <HStack :gap=\"3\" wrap\n    ><Button\n      v-for=\"item in sizes\"\n      :key=\"item\"\n      variant=\"outline\"\n      @click=\"\n        size = item;\n        open = true;\n      \"\n      >{{ item }}</Button\n    ></HStack\n  ><Modal v-model:open=\"open\" :size=\"size\" :title=\"`${size} dialog`\"\n    ><ModalBody\n      ><p>Choose a size appropriate for your content.</p></ModalBody\n    ></Modal\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "sizes",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Modal",
+      "description": "A dialog that interrupts the page for a focused task. Focus is trapped inside, Escape and a backdrop click close it, and focus returns to the opener. On narrow screens it becomes a bottom sheet.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Cancel closes without deleting. Delete closes the dialog and displays Record deleted."
+        },
+        "uncontrolled": {
+          "title": "Uncontrolled with a trigger",
+          "description": "Pass trigger to let the modal manage its own state."
+        },
+        "sizes": {
+          "title": "Sizes",
+          "description": "small, medium (default), large, xlarge and full."
+        },
+        "form": {
+          "title": "Form",
+          "description": "Rename Quarterly report by editing Name and pressing Save. The trigger then displays the saved name."
+        },
+        "compound": {
+          "title": "Compound API",
+          "description": "ModalRoot, ModalTrigger, ModalContent, ModalHeader, ModalBody, ModalFooter and ModalClose for full control."
+        }
+      },
+      "api": {
+        "ModalProps": {
+          "open": "Controlled open state; leave undefined for uncontrolled",
+          "defaultOpen": "Initial open state while uncontrolled",
+          "onOpenChange": "Called with the requested open state (trigger, close button, Escape, backdrop click)",
+          "trigger": "Element that opens it on click (single element, rendered with asChild)",
+          "title": "Title, used as the dialog's accessible name",
+          "description": "Description below the title, used as the accessible description",
+          "size": "Width preset",
+          "hideCloseButton": "Hides the close (×) button",
+          "closeLabel": "Accessible label of the close button; defaults to the localized \"Close\"",
+          "role": "ARIA role of the dialog panel; use \"alertdialog\" for confirmations that interrupt the user",
+          "className": "Additional class name of the panel",
+          "ref": "Ref to the dialog element",
+          "children": "Body: usually ModalBody + ModalFooter, or a <form> wrapping them"
+        },
+        "ModalRootProps": {
+          "open": "Controlled open state; leave undefined for uncontrolled",
+          "defaultOpen": "Initial open state while uncontrolled",
+          "onOpenChange": "Called with the requested open state (trigger, close button, Escape, backdrop click)",
+          "modal": "Modal mode: renders the backdrop, traps focus, locks page scrolling, blocks outside interaction and hides the page from assistive technology",
+          "children": "Trigger and content"
+        },
+        "ModalTriggerProps": {
+          "asChild": "Merges the behaviour onto the single child element instead of rendering its own element"
+        },
+        "ModalContentProps": {
+          "ref": "Ref to the dialog element",
+          "size": "Width preset",
+          "hideCloseButton": "Hides the close (×) button",
+          "closeLabel": "Accessible label of the close button; defaults to the localized \"Close\"",
+          "description": "Visible description below the title, linked as the accessible description (aria-describedby is omitted without one)",
+          "overlayClassName": "Class name of the overlay (backdrop)",
+          "role": "ARIA role of the panel; use \"alertdialog\" for confirmations that interrupt the user",
+          "forceMount": "Keeps the panel mounted while closed (data-state=\"closed\"), e.g. for animation libraries",
+          "onOpenAutoFocus": "Called before focus moves into the panel on open; event.preventDefault() keeps focus where it is",
+          "onCloseAutoFocus": "Called before focus returns to the opener on close; event.preventDefault() skips it",
+          "onEscapeKeyDown": "Escape pressed while it is the topmost layer; event.preventDefault() keeps it open",
+          "onPointerDownOutside": "Pointer pressed outside; event.preventDefault() keeps it open",
+          "onInteractOutside": "Pointer down or focus outside; event.preventDefault() keeps it open"
+        }
+      },
+      "cssVars": {
+        "--modal-width": "Width of the panel (every size; defaults to the width of the size, capped by the viewport)",
+        "--modal-max-height": "Maximum height of the panel (the body scrolls beyond)",
+        "--modal-padding": "Horizontal padding of the header, description, body and footer",
+        "--modal-radius": "Corner radius of the panel (defaults to --radius-xl)",
+        "--modal-shadow": "Shadow of the panel (defaults to --shadow-xl)",
+        "--modal-background": "Background of the panel",
+        "--modal-z-index": "Stacking order of the panel (defaults to --z-modal)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "The trigger slot opens the modal; label and description name and describe it. Focus is trapped, Escape and an overlay click close it, and focus returns to the opener."
+          },
+          "sizes": {
+            "title": "Sizes",
+            "description": "Five size presets, set before calling show(). The title comes from the header slot here."
+          },
+          "form": {
+            "title": "Form in a modal",
+            "description": "A footer submit button targets the form by id; the browser validates it, then the submit handler saves and calls hide()."
+          },
+          "events": {
+            "title": "Events and guarded close",
+            "description": "minerva-open-change is cancelable: while \"Unsaved changes\" is checked, preventDefault() keeps the modal open. The log shows the reason and the after-open / after-close events."
+          }
+        },
+        "minerva-modal": {
+          "props": {
+            "label": "Title text (or use the header slot); names the dialog.",
+            "dialogRole": "ARIA role of the panel; \"alertdialog\" for interrupting confirmations."
+          },
+          "events": {
+            "minerva-open-change": "The user asked to open / close (detail: { open, reason }); cancelable: preventDefault() keeps the current state.",
+            "minerva-after-open": "Fired once the panel is open and focus has moved in.",
+            "minerva-after-close": "Fired once the panel has finished closing (after its exit animation)."
+          },
+          "slots": {
+            "default": "Body content.",
+            "header": "Title (alternative to the label attribute).",
+            "footer": "Actions row.",
+            "trigger": "Element that opens the panel when clicked."
+          },
+          "methods": {
+            "show": "Opens the modal.",
+            "hide": "Closes the modal."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Cancel closes without deleting. Delete closes the dialog and displays Record deleted."
+          },
+          "confirm": {
+            "title": "Confirmation",
+            "description": "confirmLabel / onConfirm and onCancel render the footer buttons; onOpenChange reports the close reason (confirm, cancel, mask, back)."
+          },
+          "custom-footer": {
+            "title": "Custom footer",
+            "description": "footer replaces the buttons with any content; size sets the width."
+          },
+          "form": {
+            "title": "Form",
+            "description": "Rename Quarterly report by editing Name and pressing Save. The trigger then displays the saved name."
+          }
+        },
+        "limitations": "Native Dialog uses onPress actions rather than HTML form submission. It has no ModalRoot/ModalTrigger compound API or xlarge size; the web compound and xlarge examples are therefore not reproduced."
+      }
+    }
+  }
+}

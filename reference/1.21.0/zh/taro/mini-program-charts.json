@@ -1,0 +1,303 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.0",
+  "locale": "zh",
+  "renderer": "taro",
+  "page": "mini-program-charts",
+  "title": "小程序图表",
+  "description": "minerva-design/charts 中由画布引擎绘制的全部图表——Chart、LineChart、AreaChart、BarChart、HorizontalBarChart、ScatterChart、QuadrantChart、CandlestickChart、HeatmapChart、Sparkline、RangeAreaChart、MixedChart、BubbleChart、HistogramChart、BoxPlotChart、WaterfallChart、GanttChart，以及形状图表 PieChart、DonutChart、RadarChart、GaugeChart、FunnelChart、TreemapChart、SankeyChart、SunburstChart、RadialBarChart、CalendarHeatmap、BulletChart、ChordChart 和 ShapeChart——适用于 Taro、uni-app 与原生微信小程序，绘制在 canvas type=\"2d\" 上，选项与 Web 图表一致。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.0",
+    "sourceCommit": "cf7fb249651cd06c89d0951ac2c3a3aa74dc835a",
+    "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
+    "referenceSourceDigest": "sha256:563c9bec5d90807342a94c02317519b3da937907129bda2d25ea49762fa828fd"
+  },
+  "content": {
+    "intro": {
+      "title": "工作原理",
+      "text": "小程序图表使用 Minerva 图表引擎的画布渲染器，把整张图表（坐标轴、数据、图例、提示框、标注）绘制在一个 <canvas type=\"2d\"> 上。它们接受 minerva-design/charts 中 Web 图表的选项和预设，可用于微信、支付宝、抖音等小程序以及 H5。只打包引擎的 2D 画布部分，不含 WebGPU 或 WebGL 代码。",
+      "engine": "它们基于 createCanvasChart 与 createCanvasShapeChart 构建；在其他画布宿主中可直接从 minerva-design/charts/core 使用它们（参见<engine>图表引擎</engine>）。"
+    },
+    "taro": {
+      "title": "Taro（React）",
+      "text": "从 minerva-design/taro 引入图表。props 和回调与 Web 组件一致；图表默认占满父元素宽度（width 默认为 100%），height 默认为 320 px。",
+      "ref": "ref 提供 resetZoom()、getView()、setView(view)、getInstance()（画布图表实例）和 resize()。画布 id 自动生成，可通过 id 指定。"
+    },
+    "uni": {
+      "title": "uni-app（Vue）",
+      "text": "从 minerva-design/uni 引入单文件组件。props 与 Web 一致（模板中使用 kebab-case）；height 接受任意 CSS 长度，包括 rpx。更新图表时请替换 series / points（或某个系列的 data 数组）：原地修改的数组不会被重新读取。",
+      "events": "事件：hover、point-click、plot-click 和 zoom。QuadrantChart 改为触发 point-click(point, index)、quadrant-click(quadrant, { x, y }) 和 point-drop(point, index, { x, y, quadrant })（监听 point-drop 时点可拖动），并支持放在各象限上方的 topLeft / topRight / bottomLeft / bottomRight 插槽。模板 ref 提供 resetZoom()、getView()、setView(view)、getRenderer()、getInstance() 和 resize()。"
+    },
+    "weapp": {
+      "title": "原生微信小程序",
+      "text": "npm install 并在微信开发者工具中构建 npm 后，在 usingComponents 中注册组件（chart、line-chart、area-chart、bar-chart……即每个图表的 kebab-case 名称，见“全部图表组件”）。属性使用 kebab-case，通过 setData 传递；函数（坐标轴格式化、提示框文本）通过 selectComponent 返回实例的 configure() 传入。",
+      "events": "事件（event.detail）：所有图表都会触发 hover（{ items, x, xLabel }）、zoom（{ x, y } 可见范围）和 layout（绘图区矩形，px）。系列图表还会触发 pointclick、plotclick（{ x, y }）以及 pointdrag / pointdrop（{ item, x, y }，需 interaction.dragPoints）；quadrant-chart 触发 pointclick（{ point, index }）、quadrantclick（{ quadrant, x, y }）以及 pointdrag / pointdrop（{ point, index, target: { x, y, quadrant } }）。",
+      "methods": "实例方法：configure({ xAxis: { format }, yAxis: { format }, renderTooltip })（quadrant-chart 为 renderTooltip(point, index)），返回带 \\n 换行的文本，或返回 null 隐藏提示框；以及 resize()、resetZoom()、getView()、setView(view)、getPlotRect()、toPixel(x, y) 和 fromPixel(x, y)。类型位于 minerva-design/weapp/types（NativeChartInstance、NativeQuadrantChartEvents…）。"
+    },
+    "props": {
+      "title": "属性与事件",
+      "shared": "所有图表：height（默认 320，数字为 px）、width（默认 100%）、legend、tooltip、crosshair、annotations、interaction、padding、palette、ariaLabel 和 disableScroll。",
+      "series": "系列图表（Chart、LineChart、AreaChart、BarChart、HorizontalBarChart、ScatterChart、CandlestickChart、RangeAreaChart、MixedChart、BubbleChart）增加 series、xAxis 和 yAxis，以及对应 Web 组件的属性（area、curve、stacked、percent、labels、yAxis2、stackMode、orientation、minSize / maxSize……）。HeatmapChart、Sparkline、HistogramChart、BoxPlotChart、WaterfallChart 和 GanttChart 接受各自的数据属性（data、values、groups、steps、tasks……）。Chart 接受任意 type 的系列，包括 K 线和热力图。",
+      "quadrant": "QuadrantChart 接受四象限设置：points、xDomain、yDomain、xSplit、ySplit、quadrants、xLabel、yLabel、axisLabels、showTicks、reverseX、showLabels、pointSize、name 和 draggable。",
+      "events": "事件与 Web 回调对应：悬停、点击点、点击绘图区（点击空白处）和缩放；QuadrantChart 报告点击点（point, index）、点击象限（quadrant, { x, y }）和放下点（point, index, { x, y, quadrant }）。图表不会自行移动点：请更新 points。"
+    },
+    "locale": {
+      "title": "语言与区域",
+      "text": "在 Web 端，图表读取页面语言（<html lang>）。小程序没有 <html lang>：未传 locale 时，文本和数字跟随运行环境的 navigator.language（若存在），否则使用英文（Taro 与 uni-app 的 H5 构建与 Web 一样读取 <html lang>）。请为每个图表通过 locale 属性传入应用语言；微信返回的语言形如 zh_CN，把下划线替换为连字符（zh-CN）后数字和日期也会按该语言格式化。",
+      "labels": "labels 覆盖坐标系图表的内置文本（ChartLabels：K 线的开盘 / 收盘行、箱线图各行、甘特图各行、默认系列名称……），texts 覆盖形状图表的内置文本（ShapeChartLabels：noData、value、share……）。在 HorizontalBarChart 与 WaterfallChart 上，labels 仍是显示数值的布尔值，因此它们的文本只跟随 locale。",
+      "provider": "未传 locale 时，图表使用最近的 ConfigProvider（原生微信中为 config-provider）的 locale，因此一个 provider 即可本地化整个页面的图表；图表自身的 locale 仍然优先。无障碍名称（aria-label）同样会本地化：英文为 “Chart: Revenue, Costs”，中文为 “图表：营收、成本”，笛卡尔图表由系列名称组成；形状图表以其类型命名，例如 “Pie chart” / “饼图”、“Chord diagram” / “弦图”（仪表盘为 “仪表盘：CPU”）；ariaLabel 可替换它。",
+      "update": "修改 locale、labels 或 texts 会重绘图表：用户切换应用语言时重新设置即可（原生微信中使用 setData）。",
+      "sample": {
+        "comment": "应用的语言：小程序没有 <html lang>",
+        "ticks": "函数通过 configure() 传入：弦图刻度的标签",
+        "open": "开盘",
+        "close": "收盘",
+        "noData": "暂无流量",
+        "apps": "应用",
+        "web": "网页",
+        "store": "商店"
+      }
+    },
+    "gestures": {
+      "title": "手势",
+      "text": "点击显示提示框并报告该点，手指沿图表拖动可移动高亮，双指缩放，单指平移已缩放的图表，双击重置缩放，点击图例项可隐藏对应系列。可拖动的象限点会跟随手指。H5 和桌面端小程序也支持鼠标。"
+    },
+    "theming": {
+      "title": "主题",
+      "text": "颜色和字体来自外层 ConfigProvider / ThemeProvider（微信中为 config-provider / theme-provider）的 Minerva 令牌：亮色和暗色模式、调色板和自定义令牌主题都会生效，并在 provider 变化时更新；没有 provider 时使用亮色令牌。选项中的颜色可以是 var(--token, fallback) 字符串，--chart-series-1..8 令牌用于设置系列调色板。"
+    },
+    "limitations": {
+      "title": "限制",
+      "canvas": "需要 <canvas type=\"2d\">。无法选择渲染器：不支持 WebGPU 或 WebGL2。",
+      "content": "提示框和叠加内容都绘制在画布上：tooltip 的 render / renderTooltip 返回文本，而不是组件。带 React 内容的 renderTooltip 和 quadrantContent 仅在 Web 和 React Native 中可用。uni-app 可通过插槽在象限上方放置视图；微信中可使用 layout 事件和 toPixel() 定位自己的视图。",
+      "input": "不支持滚轮缩放（uni-app H5 的 Ctrl / ⌘ + 滚轮除外），也不支持键盘导航。",
+      "scroll": "当手指在图表上平移、缩放或拖动时页面不应滚动，请设置 disableScroll（微信中为 disable-scroll）；在 Taro 和 uni-app 中，可拖动的四象限图默认开启。",
+      "data": "微信的属性通过 setData 传递：数据必须是 JSON（时间轴使用时间戳而不是 Date，不支持类型化数组），且每次更新都会复制数据，因此超大数据集比 Web 慢。",
+      "draggable": "在微信中组件无法得知是否绑定了 pointdrop 处理函数：需要显式设置 draggable 才能拖动。",
+      "hidden": "挂载时处于隐藏状态的图表测得的尺寸为 0 px：显示后请调用 resize()（Taro 会重试约两秒）。",
+      "more": "各平台可用的组件列于<support>平台支持</support>；如需在移动端使用 React 富文本提示框，请使用 <native>React Native</native> 图表。"
+    },
+    "named": {
+      "title": "全部图表组件",
+      "text": "minerva-design/charts 中由画布引擎绘制的每个图表，在 Taro 与 uni-app 上都有同名组件，在原生微信小程序上有对应的 kebab-case 组件（AreaChart → area-chart）。它们的属性映射到与 Web 组件相同的引擎预设，因此图表在 Web 与小程序中的外观和行为一致。",
+      "group": "分组",
+      "taroUni": "Taro 与 uni-app",
+      "weappColumn": "微信（usingComponents）",
+      "cartesian": "坐标轴图表",
+      "shape": "形状图表",
+      "domOnly": "小程序不支持",
+      "props": "属性与 Web 组件一致：AreaChart 接受 curve、stacked 和 percent；HorizontalBarChart 接受 stacked、percent 和 labels；HistogramChart 接受 values 和 bins；BoxPlotChart 接受 groups 或 series；WaterfallChart 接受 steps；GanttChart 接受 tasks、today 和 todayLabel；HeatmapChart 接受 data 和分类；Sparkline 接受 data 和 type（默认高 48 px）。",
+      "weapp": "以文件夹名注册所用组件。Date 对象无法经过 setData：请传时间戳（甘特图任务、时间轴）。函数选项通过 configure() 传入：format（heatmap-chart、sparkline、waterfall-chart）、formatBin（histogram-chart）、formatProgress（gantt-chart）、坐标轴格式和 renderTooltip。",
+      "drill": "SunburstChart 轻触父节点即可放大，轻触中心返回上一级：Taro 使用 onDrill，uni-app 与微信使用 drill 事件（bind:drill），实例上有 drill(path) 与 getDrillPath()；设置 drillPath 可使下钻受控。",
+      "domOnlyText": "TradingChart、DepthChart、OrderBook、OrderBookHeatmap、TimeAndSales 以及 3D 图表（Scatter3DChart、Surface3DChart、Bar3DChart、Line3DChart）需要 DOM 与 WebGPU / WebGL，因此没有小程序组件。请改用 web-view 页面展示 Web 组件。",
+      "presets": "Web 组件的预设选项同样可用：WaterfallChart 的 connector（true、false 或 { color, dash, width }）、HeatmapChart 的 colorScale（\"sequential\"、\"diverging\" 或颜色数组）与 colorMidpoint、GanttChart 的 dependenciesName、dependencyArrows（从前置任务画出的折线箭头，默认开启）与 dependencyColor（配合任务的 dependencies）、BoxPlotChart 的 outlierShape 与 outlierSize。"
+    },
+    "newTypes": {
+      "title": "K 线、热力图、曲线与堆叠",
+      "text": "系列会原样传给引擎，因此新的系列功能在所有小程序图表上都可用：通过 Chart 使用 type \"candlestick\"（数据点为 { x, open, high, low, y }，y 为收盘价）和 type \"heatmap\"（单元格为 { x, y, value }），在折线和面积系列上设置 curve: \"smooth\" 或 \"step\" 以及 stack，用 showLabels 显示柱的数值，并为每根柱单独设置 color。",
+      "heatmap": "minerva-design/charts/core 中的 heatmapChartOptions({ data, xCategories, yCategories }) 会返回热力图的系列、类目坐标轴以及图例、提示框和交互设置：把它们传给 Chart 即可。",
+      "limits": "AreaChart、CandlestickChart、HeatmapChart、Sparkline 等具名组件现已在所有小程序平台提供（见“全部图表组件”）；需要混合多种类型时仍可使用带 type 系列的 Chart。在原生微信小程序中，系列通过 setData 传递，因此必须是纯 JSON（不能为单个系列传 format 函数：坐标轴格式、数值格式和提示框请用 configure()）。"
+    },
+    "shapes": {
+      "title": "形状图表",
+      "text": "PieChart、DonutChart、RadarChart、GaugeChart、FunnelChart、TreemapChart、SankeyChart、SunburstChart、RadialBarChart、CalendarHeatmap 和 BulletChart 接受 Web 形状图表的属性（data、innerRadius、centerValue、indicators、bands、sort、headers、links、drillPath、range、ranges……，以及 palette、legend、tooltip、format、percentFormat、hidden、animation、padding 和 ariaLabel），并通过 createCanvasShapeChart 在一个 <canvas type=\"2d\"> 上绘制标签、图例与提示框。ShapeChart 接受任意形状类型的引擎选项（带 type 的 options），因此引擎新增的类型无需新组件。轻触可高亮图形并显示提示框，轻触图例项可将其隐藏；默认高度与 Web 组件一致（GaugeChart 240 px，RadialBarChart 300 px，SankeyChart 与 SunburstChart 360 px，CalendarHeatmap 与 BulletChart 按数据计算，其余 320 px）。",
+      "taro": "从 minerva-design/taro 导入。回调为 onHover、onClick、onToggle（配合 hidden 实现受控图例），SunburstChart 与 ShapeChart 还有 onDrill；ref 提供 getInstance()（toggle、getHidden、clearHover、drill、getDrillPath……）和 resize()。提示框是画布文本：tooltip.render 可返回字符串，不支持 renderTooltip。",
+      "uni": "从 minerva-design/uni（或 minerva-design/uni/PieChart.vue……）导入。事件为 hover、click、toggle 和 drill（旭日图）；height 支持 rpx；模板 ref 提供 getInstance() 和 resize()。替换 data 数组即可更新图表。",
+      "weapp": "在 usingComponents 中注册 pie-chart、donut-chart、radar-chart、gauge-chart、funnel-chart、treemap-chart、sankey-chart、sunburst-chart、radial-bar-chart、calendar-heatmap、bullet-chart 或 shape-chart。属性使用 kebab-case 的 JSON 值；format、percentFormat 与提示框文本（renderTooltip）通过 configure() 传入。",
+      "events": "事件（event.detail）：hover（高亮的图形：index、name、value、percent、color、path；取消高亮时 index 为 -1）、click（被轻触的图形）、toggle（{ index, hidden, hiddenIndexes }）和 drill（{ path }，旭日图）。方法：configure(config)、resize()、toggle(index)、getHidden()、clearHover()、drill(path) 和 getDrillPath()。类型：minerva-design/weapp/types 中的 NativeShapeChartInstance、NativeShapeChartEvents 以及各 *ChartProperties 接口。",
+      "coreTitle": "在自己的画布上使用引擎",
+      "core": "在任意 2D 画布上用 createCanvasShapeChart（以及 createCanvasChart）绘图。原生微信项目在“构建 npm”后 require(\"minerva-design/charts/core\")：包的小程序目录以 charts/core.js 提供不依赖 DOM 的引擎，图表组件共用同一模块（不额外增加体积）。Taro 与 uni-app 中从 minerva-design/charts/core 导入。",
+      "touches": "转发触摸事件（小程序画布的触点带有相对画布的 x / y；H5 上用 clientX / clientY 减去画布位置），尺寸变化时调用 resize(width, height)，页面卸载时调用 destroy()。主题是普通值：在 theme.variables 中传入所需的 Minerva CSS 变量。",
+      "chord": "ChordChart 绘制弦图：分组（名称或 { name, color }）沿圆周排列，弦带来自矩阵或连接列表，支持有向箭头、排序、按来源 / 目标 / 渐变着色以及数值刻度——与 Web 组件的属性一致。默认高度 420 px；在原生微信中，tickFormat 通过 configure() 传入。"
+    }
+  },
+  "components": [],
+  "api": {},
+  "cssVariables": {},
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [
+    {
+      "source": "import { useState } from \"react\";\nimport { Text, View } from \"@tarojs/components\";\nimport {\n  LineChart,\n  QuadrantChart,\n  miniTokenClassNames,\n  type QuadrantPoint,\n} from \"minerva-design/taro\";\nimport \"minerva-design/tokens.mini.css\";\nimport \"minerva-design/taro/style.css\";\n\nexport default function Dashboard() {\n  const [picked, setPicked] = useState(\"\");\n  const [tasks, setTasks] = useState<QuadrantPoint[]>([\n    { x: 8, y: 9, label: \"Release\" },\n    { x: 3, y: 7, label: \"Planning\" },\n  ]);\n\n  return (\n    <View className={miniTokenClassNames()}>\n      <LineChart\n        height={240}\n        series={[{ name: \"Sales\", data: [12, 18, 9, 24] }]}\n        xAxis={{ title: \"Month\" }}\n        tooltip={{ render: (event) => `Sales: ${event.items[0]?.y}` }}\n        onPointClick={(event) => setPicked(event.xLabel)}\n      />\n      <Text>{picked}</Text>\n      <QuadrantChart\n        points={tasks}\n        reverseX\n        showTicks={false}\n        quadrants={{ topLeft: { label: \"Do first\" } }}\n        axisLabels={{ top: \"Important\", left: \"Urgent\" }}\n        onQuadrantClick={(quadrant, at) =>\n          setTasks((list) => [...list, { ...at, label: \"New task\" }])\n        }\n        onPointDrop={(task, index, target) =>\n          setTasks((list) =>\n            list.map((p, i) => (i === index ? { ...p, x: target.x, y: target.y } : p)),\n          )\n        }\n      />\n    </View>\n  );\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport {\n  LineChart,\n  QuadrantChart,\n  miniTokenClassNames,\n  type ChartHandle,\n  type ChartHoverEvent,\n  type QuadrantDropTarget,\n  type QuadrantPoint,\n} from \"minerva-design/uni\";\nimport \"minerva-design/tokens.mini.css\";\nimport \"minerva-design/uni/style.css\";\n\nconst series = ref([{ name: \"Sales\", data: [12, 18, 9, 24] }]);\nconst tasks = ref<QuadrantPoint[]>([{ x: 8, y: 9, label: \"Release\" }]);\nconst picked = ref(\"\");\nconst chart = ref<ChartHandle>(); // chart.value?.resize(), resetZoom()...\n\nconst show = (event: ChartHoverEvent) => (picked.value = event.xLabel);\nfunction move(point: QuadrantPoint, index: number, target: QuadrantDropTarget) {\n  // replace the array: arrays mutated in place are not read again\n  tasks.value = tasks.value.map((p, i) =>\n    i === index ? { ...p, x: target.x, y: target.y } : p,\n  );\n}\nfunction add() {\n  tasks.value = [...tasks.value, { x: 7.5, y: 7.5, label: \"New task\" }];\n}\n</script>\n\n<template>\n  <view :class=\"miniTokenClassNames()\">\n    <LineChart ref=\"chart\" :series=\"series\" height=\"480rpx\" area @point-click=\"show\" />\n    <text>{{ picked }}</text>\n    <QuadrantChart\n      :points=\"tasks\"\n      :quadrants=\"{ topRight: { label: 'Do first' } }\"\n      :axis-labels=\"{ top: 'Important' }\"\n      @point-drop=\"move\"\n    >\n      <template #topRight>\n        <button size=\"mini\" @click=\"add\">+</button>\n      </template>\n    </QuadrantChart>\n  </view>\n</template>",
+      "language": "html"
+    },
+    {
+      "source": "{\n  \"usingComponents\": {\n    \"mn-line-chart\": \"minerva-design/line-chart/index\",\n    \"mn-quadrant-chart\": \"minerva-design/quadrant-chart/index\"\n  }\n}",
+      "language": "json"
+    },
+    {
+      "source": "<mn-line-chart\n  id=\"visits\"\n  series=\"{{series}}\"\n  x-axis=\"{{xAxis}}\"\n  area\n  height=\"240\"\n  bind:pointclick=\"onPoint\"\n/>\n<mn-quadrant-chart\n  points=\"{{tasks}}\"\n  quadrants=\"{{regions}}\"\n  axis-labels=\"{{ends}}\"\n  draggable\n  disable-scroll\n  bind:pointdrop=\"onDrop\"\n  bind:quadrantclick=\"onQuadrant\"\n/>",
+      "language": "html"
+    },
+    {
+      "source": "Page({\n  data: {\n    series: [{ name: \"Visits\", data: [[\"Mon\", 3], [\"Tue\", 5], [\"Wed\", 4]] }],\n    xAxis: { type: \"category\" },\n    tasks: [{ x: 8, y: 9, label: \"Release\" }],\n    regions: { topRight: { label: \"Do first\" } },\n    ends: { top: \"Important\" },\n  },\n  onReady() {\n    // functions cannot go through setData: pass them with configure()\n    this.selectComponent(\"#visits\").configure({\n      yAxis: { format: (value) => `${value}k` },\n      renderTooltip: (event) => `${event.xLabel}\\n${event.items[0].y}k visits`,\n    });\n  },\n  onPoint(event) {\n    wx.showToast({ title: event.detail.xLabel, icon: \"none\" });\n  },\n  onDrop(event) {\n    const { index, target } = event.detail;\n    // the chart does not move points: update them\n    this.setData({\n      [`tasks[${index}].x`]: target.x,\n      [`tasks[${index}].y`]: target.y,\n    });\n  },\n  onQuadrant(event) {\n    const { x, y } = event.detail;\n    this.setData({ tasks: [...this.data.tasks, { x, y, label: \"New task\" }] });\n  },\n});",
+      "language": "js"
+    },
+    {
+      "source": "import { useState } from \"react\";\nimport { Text, View } from \"@tarojs/components\";\nimport {\n  AreaChart,\n  GanttChart,\n  Sparkline,\n  SunburstChart,\n} from \"minerva-design/taro\";\n\nconst day = 86_400_000;\nconst start = Date.UTC(2026, 2, 2);\n\nexport default function Overview() {\n  const [path, setPath] = useState<string[]>([]);\n  return (\n    <View>\n      <Sparkline data={[42, 47, 45, 52, 58, 61]} type=\"area\" />\n      <AreaChart\n        percent\n        series={[\n          { name: \"Web\", data: [[\"Q1\", 42], [\"Q2\", 48], [\"Q3\", 51]] },\n          { name: \"App\", data: [[\"Q1\", 58], [\"Q2\", 52], [\"Q3\", 49]] },\n        ]}\n      />\n      <GanttChart\n        today={start + 10 * day}\n        tasks={[\n          { name: \"Design\", start, end: start + 12 * day, progress: 1 },\n          { name: \"Build\", start: start + 9 * day, end: start + 30 * day, progress: 0.4 },\n          { name: \"Launch\", start: start + 32 * day, milestone: true },\n        ]}\n      />\n      <SunburstChart\n        data={[\n          { name: \"Photos\", children: [{ name: \"2025\", value: 22 }, { name: \"2026\", value: 10 }] },\n          { name: \"Apps\", value: 18 },\n        ]}\n        onDrill={(event) => setPath(event.path)}\n      />\n      <Text>{path.join(\" / \")}</Text>\n    </View>\n  );\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport {\n  HeatmapChart,\n  SankeyChart,\n  SunburstChart,\n  WaterfallChart,\n  type ShapeDrillEvent,\n} from \"minerva-design/uni\";\n\nconst cells = ref([\n  { x: \"Mon\", y: \"AM\", value: 12 },\n  { x: \"Mon\", y: \"PM\", value: 30 },\n  { x: \"Tue\", y: \"AM\", value: 18 },\n  { x: \"Tue\", y: \"PM\", value: 26 },\n]);\nconst steps = ref([\n  { label: \"Revenue\", value: 420 },\n  { label: \"Costs\", value: -260 },\n  { label: \"Profit\", kind: \"total\" as const },\n]);\nconst links = ref([\n  { source: \"Ads\", target: \"Site\", value: 60 },\n  { source: \"Search\", target: \"Site\", value: 40 },\n  { source: \"Site\", target: \"Sign-up\", value: 30 },\n]);\nconst folders = ref([\n  { name: \"Photos\", children: [{ name: \"2025\", value: 22 }, { name: \"2026\", value: 10 }] },\n  { name: \"Apps\", value: 18 },\n]);\nconst path = ref<string[]>([]);\nconst onDrill = (event: ShapeDrillEvent) => (path.value = event.path);\n</script>\n\n<template>\n  <HeatmapChart :data=\"cells\" height=\"400rpx\" />\n  <WaterfallChart :steps=\"steps\" orientation=\"horizontal\" />\n  <SankeyChart :links=\"links\" />\n  <SunburstChart :data=\"folders\" @drill=\"onDrill\" />\n  <text>{{ path.join(\" / \") }}</text>\n</template>",
+      "language": "html"
+    },
+    {
+      "source": "{\n  \"usingComponents\": {\n    \"mn-gantt-chart\": \"minerva-design/gantt-chart/index\",\n    \"mn-sunburst-chart\": \"minerva-design/sunburst-chart/index\",\n    \"mn-bullet-chart\": \"minerva-design/bullet-chart/index\"\n  }\n}",
+      "language": "json"
+    },
+    {
+      "source": "<mn-gantt-chart id=\"plan\" tasks=\"{{tasks}}\" today=\"{{today}}\" />\n<mn-sunburst-chart data=\"{{folders}}\" bind:drill=\"onDrill\" />\n<text>{{path}}</text>\n<mn-bullet-chart data=\"{{kpis}}\" ranges=\"{{ranges}}\" />",
+      "language": "html"
+    },
+    {
+      "source": "const day = 86400000;\nconst start = Date.UTC(2026, 2, 2);\n\nPage({\n  data: {\n    // timestamps: Date objects do not survive setData\n    tasks: [\n      { name: \"Design\", start, end: start + 12 * day, progress: 1 },\n      { name: \"Build\", start: start + 9 * day, end: start + 30 * day, progress: 0.4 },\n    ],\n    today: start + 10 * day,\n    folders: [\n      { name: \"Photos\", children: [{ name: \"2025\", value: 22 }, { name: \"2026\", value: 10 }] },\n      { name: \"Apps\", value: 18 },\n    ],\n    path: \"\",\n    kpis: [{ name: \"Revenue\", value: 270, target: 250 }],\n    ranges: [150, 225, 300],\n  },\n  onReady() {\n    this.selectComponent(\"#plan\").configure({\n      formatProgress: (share) => `${Math.round(share * 100)}%`,\n    });\n  },\n  onDrill(event) {\n    this.setData({ path: event.detail.path.join(\" / \") });\n  },\n});",
+      "language": "js"
+    },
+    {
+      "source": "import { BarChart, Chart, LineChart } from \"minerva-design/taro\";\nimport { heatmapChartOptions } from \"minerva-design/charts/core\";\n\nconst prices = [\n  {\n    name: \"ACME\",\n    type: \"candlestick\",\n    data: [\n      { x: 1, open: 102, high: 108, low: 99, y: 106 },\n      { x: 2, open: 106, high: 107, low: 97, y: 98 },\n      { x: 3, open: 98, high: 104, low: 96, y: 103 },\n    ],\n  },\n] as const;\n\nconst load = heatmapChartOptions({\n  data: [\n    { x: \"Mon\", y: \"AM\", value: 12 },\n    { x: \"Mon\", y: \"PM\", value: 30 },\n    { x: \"Tue\", y: \"AM\", value: 18 },\n    { x: \"Tue\", y: \"PM\", value: 26 },\n  ],\n});\n\nexport function Charts() {\n  return (\n    <>\n      <Chart series={prices} height={220} />\n      <Chart\n        series={load.series}\n        xAxis={load.xAxis}\n        yAxis={load.yAxis}\n        legend={load.legend}\n        tooltip={load.tooltip}\n        interaction={load.interaction}\n        height={200}\n      />\n      {/* curve and stack are set on each series */}\n      <LineChart\n        area\n        series={[\n          { name: \"Web\", data: [20, 24, 30], curve: \"smooth\", stack: \"users\" },\n          { name: \"App\", data: [12, 18, 17], curve: \"smooth\", stack: \"users\" },\n        ]}\n      />\n      <BarChart\n        series={[\n          {\n            name: \"Orders\",\n            showLabels: true,\n            data: [\n              { x: \"Q1\", y: 128 },\n              { x: \"Q2\", y: 212, color: \"#16a34a\" },\n            ],\n          },\n        ]}\n      />\n    </>\n  );\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "import { useState } from \"react\";\nimport { Text, View } from \"@tarojs/components\";\nimport {\n  DonutChart,\n  GaugeChart,\n  ShapeChart,\n  type ShapeHoverEvent,\n} from \"minerva-design/taro\";\n\nconst plans = [\n  { name: \"Free\", value: 5400 },\n  { name: \"Pro\", value: 2100 },\n  { name: \"Team\", value: 860 },\n];\n\nexport default function Plans() {\n  const [picked, setPicked] = useState<ShapeHoverEvent | null>(null);\n  const [hidden, setHidden] = useState<number[]>([]);\n  return (\n    <View>\n      <DonutChart\n        data={plans}\n        height={260}\n        centerValue=\"8.4k\"\n        centerLabel=\"users\"\n        percentFormat={(share) => `${Math.round(share * 100)}%`}\n        hidden={hidden}\n        onToggle={(event) => setHidden(event.hiddenIndexes)}\n        onClick={setPicked}\n      />\n      <Text>{picked ? `${picked.name}: ${picked.value}` : \"Tap a plan\"}</Text>\n      <GaugeChart value={72} label=\"Storage\" height={200} />\n      {/* any shape type of the engine, from its options */}\n      <ShapeChart\n        options={{\n          type: \"funnel\",\n          data: [\n            { name: \"Visit\", value: 1200 },\n            { name: \"Sign up\", value: 380 },\n            { name: \"Paid\", value: 95 },\n          ],\n        }}\n      />\n    </View>\n  );\n}",
+      "language": "tsx"
+    },
+    {
+      "source": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport {\n  PieChart,\n  RadarChart,\n  type ShapeChartHandle,\n  type ShapeHoverEvent,\n} from \"minerva-design/uni\";\n\nconst sources = ref([\n  { name: \"Search\", value: 48 },\n  { name: \"Direct\", value: 23 },\n  { name: \"Social\", value: 16 },\n]);\nconst picked = ref(\"\");\nconst radar = ref<ShapeChartHandle>(); // radar.value?.getInstance()?.toggle(0)\nconst pick = (slice: ShapeHoverEvent) => (picked.value = slice.name);\n</script>\n\n<template>\n  <PieChart :data=\"sources\" labels=\"inside\" height=\"520rpx\" @click=\"pick\" />\n  <text>{{ picked }}</text>\n  <RadarChart\n    ref=\"radar\"\n    :indicators=\"[{ name: 'Speed' }, { name: 'Power' }, { name: 'Range' }]\"\n    :series=\"[{ name: 'Model A', values: [3, 4, 2] }]\"\n    shape=\"circle\"\n  />\n</template>",
+      "language": "html"
+    },
+    {
+      "source": "{\n  \"usingComponents\": {\n    \"mn-pie-chart\": \"minerva-design/pie-chart/index\",\n    \"mn-gauge-chart\": \"minerva-design/gauge-chart/index\",\n    \"mn-shape-chart\": \"minerva-design/shape-chart/index\"\n  }\n}",
+      "language": "json"
+    },
+    {
+      "source": "<mn-pie-chart\n  id=\"sources\"\n  data=\"{{sources}}\"\n  inner-radius=\"{{0.6}}\"\n  center-value=\"87\"\n  bind:click=\"onSlice\"\n  bind:toggle=\"onToggle\"\n/>\n<mn-gauge-chart value=\"{{cpu}}\" label=\"CPU\" bands=\"{{bands}}\" needle />\n<mn-shape-chart options=\"{{treemap}}\" height=\"300\" />",
+      "language": "html"
+    },
+    {
+      "source": "Page({\n  data: {\n    sources: [\n      { name: \"Search\", value: 48 },\n      { name: \"Direct\", value: 23 },\n      { name: \"Social\", value: 16 },\n    ],\n    cpu: 64,\n    bands: [\n      { to: 70, color: \"var(--success-color)\" },\n      { to: 100, color: \"var(--danger-color)\" },\n    ],\n    // shape-chart: any shape type, options without functions\n    treemap: {\n      type: \"treemap\",\n      data: [\n        { name: \"Photos\", value: 38 },\n        { name: \"Apps\", children: [{ name: \"Games\", value: 14 }, { name: \"Maps\", value: 3 }] },\n      ],\n    },\n    hiddenCount: 0,\n  },\n  onReady() {\n    // functions cannot go through setData: pass them with configure()\n    this.selectComponent(\"#sources\").configure({\n      percentFormat: (share) => `${Math.round(share * 100)}%`,\n      renderTooltip: (slice) => `${slice.name}\\n${slice.value} visits`,\n    });\n  },\n  onSlice(event) {\n    wx.showToast({ title: event.detail.name, icon: \"none\" });\n  },\n  onToggle(event) {\n    this.setData({ hiddenCount: event.detail.hiddenIndexes.length });\n  },\n});",
+      "language": "js"
+    },
+    {
+      "source": "// pages/plans/index.js, with <canvas type=\"2d\" id=\"plans\" bindtouchstart=\"onTouchStart\" ...>\nconst { createCanvasShapeChart } = require(\"minerva-design/charts/core\");\n\nPage({\n  onReady() {\n    wx.createSelectorQuery()\n      .select(\"#plans\")\n      .fields({ node: true, size: true })\n      .exec(([res]) => {\n        this.chart = createCanvasShapeChart({\n          canvas: res.node,\n          width: res.width,\n          height: res.height,\n          pixelRatio: wx.getWindowInfo().pixelRatio,\n          options: {\n            type: \"pie\",\n            innerRadius: 0.62,\n            data: [\n              { name: \"Free\", value: 5400 },\n              { name: \"Pro\", value: 2100 },\n            ],\n          },\n          // plain values of the Minerva CSS variables\n          theme: { variables: { \"--primary-color\": \"#4f46e5\" } },\n        });\n        this.chart.on(\"click\", (slice) =>\n          wx.showToast({ title: slice.name, icon: \"none\" }),\n        );\n      });\n  },\n  // mini-program canvas touches carry x / y relative to the canvas\n  onTouchStart(e) { this.chart?.touchStart(e.changedTouches); },\n  onTouchMove(e) { this.chart?.touchMove(e.touches); },\n  onTouchEnd(e) { this.chart?.touchEnd(e.changedTouches); },\n  onTouchCancel(e) { this.chart?.touchCancel(e.changedTouches); },\n  onUnload() { this.chart?.destroy(); },\n});",
+      "language": "js"
+    },
+    {
+      "source": "{\n  \"usingComponents\": {\n    \"mn-candlestick-chart\": \"minerva-design/candlestick-chart/index\",\n    \"mn-chord-chart\": \"minerva-design/chord-chart/index\"\n  }\n}",
+      "language": "json"
+    },
+    {
+      "source": "<mn-candlestick-chart series=\"{{candles}}\" locale=\"{{locale}}\" labels=\"{{labels}}\" />\n<mn-chord-chart\n  id=\"flows\"\n  groups=\"{{groups}}\"\n  matrix=\"{{matrix}}\"\n  locale=\"{{locale}}\"\n  texts=\"{{texts}}\"\n/>",
+      "language": "html"
+    }
+  ],
+  "typeGraph": "/minerva-design/reference/1.21.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "小程序图表",
+      "description": "minerva-design/charts 中由画布引擎绘制的全部图表——Chart、LineChart、AreaChart、BarChart、HorizontalBarChart、ScatterChart、QuadrantChart、CandlestickChart、HeatmapChart、Sparkline、RangeAreaChart、MixedChart、BubbleChart、HistogramChart、BoxPlotChart、WaterfallChart、GanttChart，以及形状图表 PieChart、DonutChart、RadarChart、GaugeChart、FunnelChart、TreemapChart、SankeyChart、SunburstChart、RadialBarChart、CalendarHeatmap、BulletChart、ChordChart 和 ShapeChart——适用于 Taro、uni-app 与原生微信小程序，绘制在 canvas type=\"2d\" 上，选项与 Web 图表一致。",
+      "intro": {
+        "title": "工作原理",
+        "text": "小程序图表使用 Minerva 图表引擎的画布渲染器，把整张图表（坐标轴、数据、图例、提示框、标注）绘制在一个 <canvas type=\"2d\"> 上。它们接受 minerva-design/charts 中 Web 图表的选项和预设，可用于微信、支付宝、抖音等小程序以及 H5。只打包引擎的 2D 画布部分，不含 WebGPU 或 WebGL 代码。",
+        "engine": "它们基于 createCanvasChart 与 createCanvasShapeChart 构建；在其他画布宿主中可直接从 minerva-design/charts/core 使用它们（参见<engine>图表引擎</engine>）。"
+      },
+      "taro": {
+        "title": "Taro（React）",
+        "text": "从 minerva-design/taro 引入图表。props 和回调与 Web 组件一致；图表默认占满父元素宽度（width 默认为 100%），height 默认为 320 px。",
+        "ref": "ref 提供 resetZoom()、getView()、setView(view)、getInstance()（画布图表实例）和 resize()。画布 id 自动生成，可通过 id 指定。"
+      },
+      "uni": {
+        "title": "uni-app（Vue）",
+        "text": "从 minerva-design/uni 引入单文件组件。props 与 Web 一致（模板中使用 kebab-case）；height 接受任意 CSS 长度，包括 rpx。更新图表时请替换 series / points（或某个系列的 data 数组）：原地修改的数组不会被重新读取。",
+        "events": "事件：hover、point-click、plot-click 和 zoom。QuadrantChart 改为触发 point-click(point, index)、quadrant-click(quadrant, { x, y }) 和 point-drop(point, index, { x, y, quadrant })（监听 point-drop 时点可拖动），并支持放在各象限上方的 topLeft / topRight / bottomLeft / bottomRight 插槽。模板 ref 提供 resetZoom()、getView()、setView(view)、getRenderer()、getInstance() 和 resize()。"
+      },
+      "weapp": {
+        "title": "原生微信小程序",
+        "text": "npm install 并在微信开发者工具中构建 npm 后，在 usingComponents 中注册组件（chart、line-chart、area-chart、bar-chart……即每个图表的 kebab-case 名称，见“全部图表组件”）。属性使用 kebab-case，通过 setData 传递；函数（坐标轴格式化、提示框文本）通过 selectComponent 返回实例的 configure() 传入。",
+        "events": "事件（event.detail）：所有图表都会触发 hover（{ items, x, xLabel }）、zoom（{ x, y } 可见范围）和 layout（绘图区矩形，px）。系列图表还会触发 pointclick、plotclick（{ x, y }）以及 pointdrag / pointdrop（{ item, x, y }，需 interaction.dragPoints）；quadrant-chart 触发 pointclick（{ point, index }）、quadrantclick（{ quadrant, x, y }）以及 pointdrag / pointdrop（{ point, index, target: { x, y, quadrant } }）。",
+        "methods": "实例方法：configure({ xAxis: { format }, yAxis: { format }, renderTooltip })（quadrant-chart 为 renderTooltip(point, index)），返回带 \\n 换行的文本，或返回 null 隐藏提示框；以及 resize()、resetZoom()、getView()、setView(view)、getPlotRect()、toPixel(x, y) 和 fromPixel(x, y)。类型位于 minerva-design/weapp/types（NativeChartInstance、NativeQuadrantChartEvents…）。"
+      },
+      "props": {
+        "title": "属性与事件",
+        "shared": "所有图表：height（默认 320，数字为 px）、width（默认 100%）、legend、tooltip、crosshair、annotations、interaction、padding、palette、ariaLabel 和 disableScroll。",
+        "series": "系列图表（Chart、LineChart、AreaChart、BarChart、HorizontalBarChart、ScatterChart、CandlestickChart、RangeAreaChart、MixedChart、BubbleChart）增加 series、xAxis 和 yAxis，以及对应 Web 组件的属性（area、curve、stacked、percent、labels、yAxis2、stackMode、orientation、minSize / maxSize……）。HeatmapChart、Sparkline、HistogramChart、BoxPlotChart、WaterfallChart 和 GanttChart 接受各自的数据属性（data、values、groups、steps、tasks……）。Chart 接受任意 type 的系列，包括 K 线和热力图。",
+        "quadrant": "QuadrantChart 接受四象限设置：points、xDomain、yDomain、xSplit、ySplit、quadrants、xLabel、yLabel、axisLabels、showTicks、reverseX、showLabels、pointSize、name 和 draggable。",
+        "events": "事件与 Web 回调对应：悬停、点击点、点击绘图区（点击空白处）和缩放；QuadrantChart 报告点击点（point, index）、点击象限（quadrant, { x, y }）和放下点（point, index, { x, y, quadrant }）。图表不会自行移动点：请更新 points。"
+      },
+      "locale": {
+        "title": "语言与区域",
+        "text": "在 Web 端，图表读取页面语言（<html lang>）。小程序没有 <html lang>：未传 locale 时，文本和数字跟随运行环境的 navigator.language（若存在），否则使用英文（Taro 与 uni-app 的 H5 构建与 Web 一样读取 <html lang>）。请为每个图表通过 locale 属性传入应用语言；微信返回的语言形如 zh_CN，把下划线替换为连字符（zh-CN）后数字和日期也会按该语言格式化。",
+        "labels": "labels 覆盖坐标系图表的内置文本（ChartLabels：K 线的开盘 / 收盘行、箱线图各行、甘特图各行、默认系列名称……），texts 覆盖形状图表的内置文本（ShapeChartLabels：noData、value、share……）。在 HorizontalBarChart 与 WaterfallChart 上，labels 仍是显示数值的布尔值，因此它们的文本只跟随 locale。",
+        "provider": "未传 locale 时，图表使用最近的 ConfigProvider（原生微信中为 config-provider）的 locale，因此一个 provider 即可本地化整个页面的图表；图表自身的 locale 仍然优先。无障碍名称（aria-label）同样会本地化：英文为 “Chart: Revenue, Costs”，中文为 “图表：营收、成本”，笛卡尔图表由系列名称组成；形状图表以其类型命名，例如 “Pie chart” / “饼图”、“Chord diagram” / “弦图”（仪表盘为 “仪表盘：CPU”）；ariaLabel 可替换它。",
+        "update": "修改 locale、labels 或 texts 会重绘图表：用户切换应用语言时重新设置即可（原生微信中使用 setData）。",
+        "sample": {
+          "comment": "应用的语言：小程序没有 <html lang>",
+          "ticks": "函数通过 configure() 传入：弦图刻度的标签",
+          "open": "开盘",
+          "close": "收盘",
+          "noData": "暂无流量",
+          "apps": "应用",
+          "web": "网页",
+          "store": "商店"
+        }
+      },
+      "gestures": {
+        "title": "手势",
+        "text": "点击显示提示框并报告该点，手指沿图表拖动可移动高亮，双指缩放，单指平移已缩放的图表，双击重置缩放，点击图例项可隐藏对应系列。可拖动的象限点会跟随手指。H5 和桌面端小程序也支持鼠标。"
+      },
+      "theming": {
+        "title": "主题",
+        "text": "颜色和字体来自外层 ConfigProvider / ThemeProvider（微信中为 config-provider / theme-provider）的 Minerva 令牌：亮色和暗色模式、调色板和自定义令牌主题都会生效，并在 provider 变化时更新；没有 provider 时使用亮色令牌。选项中的颜色可以是 var(--token, fallback) 字符串，--chart-series-1..8 令牌用于设置系列调色板。"
+      },
+      "limitations": {
+        "title": "限制",
+        "canvas": "需要 <canvas type=\"2d\">。无法选择渲染器：不支持 WebGPU 或 WebGL2。",
+        "content": "提示框和叠加内容都绘制在画布上：tooltip 的 render / renderTooltip 返回文本，而不是组件。带 React 内容的 renderTooltip 和 quadrantContent 仅在 Web 和 React Native 中可用。uni-app 可通过插槽在象限上方放置视图；微信中可使用 layout 事件和 toPixel() 定位自己的视图。",
+        "input": "不支持滚轮缩放（uni-app H5 的 Ctrl / ⌘ + 滚轮除外），也不支持键盘导航。",
+        "scroll": "当手指在图表上平移、缩放或拖动时页面不应滚动，请设置 disableScroll（微信中为 disable-scroll）；在 Taro 和 uni-app 中，可拖动的四象限图默认开启。",
+        "data": "微信的属性通过 setData 传递：数据必须是 JSON（时间轴使用时间戳而不是 Date，不支持类型化数组），且每次更新都会复制数据，因此超大数据集比 Web 慢。",
+        "draggable": "在微信中组件无法得知是否绑定了 pointdrop 处理函数：需要显式设置 draggable 才能拖动。",
+        "hidden": "挂载时处于隐藏状态的图表测得的尺寸为 0 px：显示后请调用 resize()（Taro 会重试约两秒）。",
+        "more": "各平台可用的组件列于<support>平台支持</support>；如需在移动端使用 React 富文本提示框，请使用 <native>React Native</native> 图表。"
+      },
+      "named": {
+        "title": "全部图表组件",
+        "text": "minerva-design/charts 中由画布引擎绘制的每个图表，在 Taro 与 uni-app 上都有同名组件，在原生微信小程序上有对应的 kebab-case 组件（AreaChart → area-chart）。它们的属性映射到与 Web 组件相同的引擎预设，因此图表在 Web 与小程序中的外观和行为一致。",
+        "group": "分组",
+        "taroUni": "Taro 与 uni-app",
+        "weappColumn": "微信（usingComponents）",
+        "cartesian": "坐标轴图表",
+        "shape": "形状图表",
+        "domOnly": "小程序不支持",
+        "props": "属性与 Web 组件一致：AreaChart 接受 curve、stacked 和 percent；HorizontalBarChart 接受 stacked、percent 和 labels；HistogramChart 接受 values 和 bins；BoxPlotChart 接受 groups 或 series；WaterfallChart 接受 steps；GanttChart 接受 tasks、today 和 todayLabel；HeatmapChart 接受 data 和分类；Sparkline 接受 data 和 type（默认高 48 px）。",
+        "weapp": "以文件夹名注册所用组件。Date 对象无法经过 setData：请传时间戳（甘特图任务、时间轴）。函数选项通过 configure() 传入：format（heatmap-chart、sparkline、waterfall-chart）、formatBin（histogram-chart）、formatProgress（gantt-chart）、坐标轴格式和 renderTooltip。",
+        "drill": "SunburstChart 轻触父节点即可放大，轻触中心返回上一级：Taro 使用 onDrill，uni-app 与微信使用 drill 事件（bind:drill），实例上有 drill(path) 与 getDrillPath()；设置 drillPath 可使下钻受控。",
+        "domOnlyText": "TradingChart、DepthChart、OrderBook、OrderBookHeatmap、TimeAndSales 以及 3D 图表（Scatter3DChart、Surface3DChart、Bar3DChart、Line3DChart）需要 DOM 与 WebGPU / WebGL，因此没有小程序组件。请改用 web-view 页面展示 Web 组件。",
+        "presets": "Web 组件的预设选项同样可用：WaterfallChart 的 connector（true、false 或 { color, dash, width }）、HeatmapChart 的 colorScale（\"sequential\"、\"diverging\" 或颜色数组）与 colorMidpoint、GanttChart 的 dependenciesName、dependencyArrows（从前置任务画出的折线箭头，默认开启）与 dependencyColor（配合任务的 dependencies）、BoxPlotChart 的 outlierShape 与 outlierSize。"
+      },
+      "newTypes": {
+        "title": "K 线、热力图、曲线与堆叠",
+        "text": "系列会原样传给引擎，因此新的系列功能在所有小程序图表上都可用：通过 Chart 使用 type \"candlestick\"（数据点为 { x, open, high, low, y }，y 为收盘价）和 type \"heatmap\"（单元格为 { x, y, value }），在折线和面积系列上设置 curve: \"smooth\" 或 \"step\" 以及 stack，用 showLabels 显示柱的数值，并为每根柱单独设置 color。",
+        "heatmap": "minerva-design/charts/core 中的 heatmapChartOptions({ data, xCategories, yCategories }) 会返回热力图的系列、类目坐标轴以及图例、提示框和交互设置：把它们传给 Chart 即可。",
+        "limits": "AreaChart、CandlestickChart、HeatmapChart、Sparkline 等具名组件现已在所有小程序平台提供（见“全部图表组件”）；需要混合多种类型时仍可使用带 type 系列的 Chart。在原生微信小程序中，系列通过 setData 传递，因此必须是纯 JSON（不能为单个系列传 format 函数：坐标轴格式、数值格式和提示框请用 configure()）。"
+      },
+      "shapes": {
+        "title": "形状图表",
+        "text": "PieChart、DonutChart、RadarChart、GaugeChart、FunnelChart、TreemapChart、SankeyChart、SunburstChart、RadialBarChart、CalendarHeatmap 和 BulletChart 接受 Web 形状图表的属性（data、innerRadius、centerValue、indicators、bands、sort、headers、links、drillPath、range、ranges……，以及 palette、legend、tooltip、format、percentFormat、hidden、animation、padding 和 ariaLabel），并通过 createCanvasShapeChart 在一个 <canvas type=\"2d\"> 上绘制标签、图例与提示框。ShapeChart 接受任意形状类型的引擎选项（带 type 的 options），因此引擎新增的类型无需新组件。轻触可高亮图形并显示提示框，轻触图例项可将其隐藏；默认高度与 Web 组件一致（GaugeChart 240 px，RadialBarChart 300 px，SankeyChart 与 SunburstChart 360 px，CalendarHeatmap 与 BulletChart 按数据计算，其余 320 px）。",
+        "taro": "从 minerva-design/taro 导入。回调为 onHover、onClick、onToggle（配合 hidden 实现受控图例），SunburstChart 与 ShapeChart 还有 onDrill；ref 提供 getInstance()（toggle、getHidden、clearHover、drill、getDrillPath……）和 resize()。提示框是画布文本：tooltip.render 可返回字符串，不支持 renderTooltip。",
+        "uni": "从 minerva-design/uni（或 minerva-design/uni/PieChart.vue……）导入。事件为 hover、click、toggle 和 drill（旭日图）；height 支持 rpx；模板 ref 提供 getInstance() 和 resize()。替换 data 数组即可更新图表。",
+        "weapp": "在 usingComponents 中注册 pie-chart、donut-chart、radar-chart、gauge-chart、funnel-chart、treemap-chart、sankey-chart、sunburst-chart、radial-bar-chart、calendar-heatmap、bullet-chart 或 shape-chart。属性使用 kebab-case 的 JSON 值；format、percentFormat 与提示框文本（renderTooltip）通过 configure() 传入。",
+        "events": "事件（event.detail）：hover（高亮的图形：index、name、value、percent、color、path；取消高亮时 index 为 -1）、click（被轻触的图形）、toggle（{ index, hidden, hiddenIndexes }）和 drill（{ path }，旭日图）。方法：configure(config)、resize()、toggle(index)、getHidden()、clearHover()、drill(path) 和 getDrillPath()。类型：minerva-design/weapp/types 中的 NativeShapeChartInstance、NativeShapeChartEvents 以及各 *ChartProperties 接口。",
+        "coreTitle": "在自己的画布上使用引擎",
+        "core": "在任意 2D 画布上用 createCanvasShapeChart（以及 createCanvasChart）绘图。原生微信项目在“构建 npm”后 require(\"minerva-design/charts/core\")：包的小程序目录以 charts/core.js 提供不依赖 DOM 的引擎，图表组件共用同一模块（不额外增加体积）。Taro 与 uni-app 中从 minerva-design/charts/core 导入。",
+        "touches": "转发触摸事件（小程序画布的触点带有相对画布的 x / y；H5 上用 clientX / clientY 减去画布位置），尺寸变化时调用 resize(width, height)，页面卸载时调用 destroy()。主题是普通值：在 theme.variables 中传入所需的 Minerva CSS 变量。",
+        "chord": "ChordChart 绘制弦图：分组（名称或 { name, color }）沿圆周排列，弦带来自矩阵或连接列表，支持有向箭头、排序、按来源 / 目标 / 渐变着色以及数值刻度——与 Web 组件的属性一致。默认高度 420 px；在原生微信中，tickFormat 通过 configure() 传入。"
+      }
+    }
+  }
+}

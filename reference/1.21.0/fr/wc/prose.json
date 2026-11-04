@@ -1,0 +1,193 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.0",
+  "locale": "fr",
+  "renderer": "wc",
+  "page": "prose",
+  "title": "Prose",
+  "description": "Typographie sans cadre et adaptée au thème pour du HTML sémantique : articles, Markdown rendu, éditeurs de texte riche. Les mêmes règles sont publiées en mixin Sass : @use \"minerva-design/prose.scss\" as typography; puis @include typography.prose; sur votre propre sélecteur.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.0",
+    "sourceCommit": "cf7fb249651cd06c89d0951ac2c3a3aa74dc835a",
+    "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
+    "referenceSourceDigest": "sha256:563c9bec5d90807342a94c02317519b3da937907129bda2d25ea49762fa828fd"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Prose",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/prose",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-prose",
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "description": "Semantic HTML content (headings, paragraphs, lists, tables, code...)"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-prose": {
+      "kind": "element",
+      "source": "web-components/src/components/prose/prose.ts",
+      "className": "MinervaProse",
+      "summary": "Typography for long-form HTML content (articles, Markdown).",
+      "description": "Unframed, theme-aware typography for semantic HTML: articles, rendered Markdown, rich-text editor output (`<Prose>` of React). It does not parse or sanitize HTML. Why light DOM styling: the content is slotted, and shadow DOM styles can only reach slotted top-level elements (`::slotted(p)`), never their descendants (`li > code`, `table td`...). So the element injects the React library's compiled prose rules, scoped with a `minerva-prose` selector, into its root node (the document, or the shadow root it is rendered in) once per root, via `adoptedStyleSheets` (a `<style>` element where constructable stylesheets are unsupported). Injection happens on connect only, so importing the module is SSR / Node safe. The same rules are published as the React library's `prose` Sass mixin, and read the same CSS variables (`--prose-font-size`, `--prose-border-color`, ...).",
+      "properties": [],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "Semantic HTML content (headings, paragraphs, lists, tables, code...)"
+        }
+      ],
+      "parts": [],
+      "cssProperties": []
+    }
+  },
+  "cssVariables": {
+    "css:Prose": {
+      "kind": "cssVars",
+      "source": "react/src/components/Prose",
+      "vars": [
+        {
+          "name": "--prose-font-size",
+          "description": "Base font size of the body text"
+        },
+        {
+          "name": "--prose-border-color",
+          "description": "Color of the blockquote, table, code block and rule borders"
+        },
+        {
+          "name": "--prose-code-bg",
+          "description": "Background color of inline code and table headers"
+        },
+        {
+          "name": "--prose-pre-bg",
+          "description": "Background color of code blocks"
+        },
+        {
+          "name": "--prose-radius",
+          "description": "Corner radius of code blocks (defaults to --radius-sm)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/prose/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/prose/wc/basic.html": "<minerva-prose style=\"max-width: 640px\">\n  <h2>Release notes</h2>\n  <p>\n    Version 2.4 brings <strong>Web Components</strong> for every primitive,\n    sharing the <a href=\"https://example.com/tokens\">design tokens</a> of the\n    React library. Install it with <code>npm install</code>.\n  </p>\n  <h3>Highlights</h3>\n  <ul>\n    <li>\n      Form-associated inputs that work in a plain <code>&lt;form&gt;</code>\n    </li>\n    <li>\n      Theme scopes with <code>&lt;minerva-config&gt;</code>\n      <ul>\n        <li>Light, dark and system modes</li>\n        <li>Four palettes</li>\n      </ul>\n    </li>\n  </ul>\n  <blockquote>\n    <p>Nested descendants are styled too: the rules live in the light DOM.</p>\n  </blockquote>\n</minerva-prose>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Utilisation de base",
+      "description": "Du HTML sémantique dans <minerva-prose> : titres, paragraphes, listes imbriquées, code en ligne et citations sont stylés à toute profondeur."
+    },
+    {
+      "id": "rich-content",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/prose/wc/rich-content.html",
+      "files": {
+        "apps/docs/src/docs/pages/prose/wc/rich-content.html": "<minerva-prose id=\"article\" style=\"max-width: 640px\"></minerva-prose>\n",
+        "apps/docs/src/docs/pages/prose/wc/rich-content.ts": "// Typical use: HTML rendered from Markdown or a rich-text editor. Prose does\n// not sanitize: only insert trusted (or sanitized) HTML.\nconst rendered = `\n<h2>Migration guide</h2>\n<ol>\n  <li>Install the package.</li>\n  <li>Import <code>tokens.css</code> once.</li>\n  <li>Replace the components one page at a time.</li>\n</ol>\n<table>\n  <thead><tr><th>React</th><th>Web Component</th></tr></thead>\n  <tbody>\n    <tr><td><code>&lt;Button&gt;</code></td><td><code>&lt;minerva-button&gt;</code></td></tr>\n    <tr><td><code>&lt;Prose&gt;</code></td><td><code>&lt;minerva-prose&gt;</code></td></tr>\n  </tbody>\n</table>\n<pre><code>import \"minerva-design/web-components\";</code></pre>\n<hr />\n<p><small>Last updated in March 2026.</small></p>`;\n\nexport function setup(root: HTMLElement) {\n  root.querySelector<HTMLElement>(\"#article\")!.innerHTML = rendered;\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Markdown rendu",
+      "description": "HTML produit par un moteur Markdown ou un éditeur riche, avec tableaux et blocs de code. Prose ne nettoie rien : n'insérez que du HTML de confiance."
+    },
+    {
+      "id": "scopes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/prose/wc/scopes.html",
+      "files": {
+        "apps/docs/src/docs/pages/prose/wc/scopes.html": "<div\n  style=\"\n    display: grid;\n    gap: 16px;\n    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));\n  \"\n>\n  <minerva-prose style=\"--prose-font-size: 0.875rem\">\n    <h4>Small print</h4>\n    <p>\n      CSS variables such as <code>--prose-font-size</code> tune the rules per\n      instance.\n    </p>\n  </minerva-prose>\n  <div id=\"host\"></div>\n</div>\n",
+        "apps/docs/src/docs/pages/prose/wc/scopes.ts": "// Inside a shadow root, the element injects its rules into that root (once),\n// so it works in other components too.\nexport function setup(root: HTMLElement) {\n  const host = root.querySelector<HTMLElement>(\"#host\")!;\n  const shadow = host.shadowRoot ?? host.attachShadow({ mode: \"open\" });\n  shadow.innerHTML = `<minerva-prose>\n    <h4>In a shadow root</h4>\n    <ul><li>Lists, <code>code</code> and <a href=\"https://example.com\">links</a></li></ul>\n  </minerva-prose>`;\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "Variables et shadow roots",
+      "description": "Les variables --prose-* règlent une instance ; dans une shadow root, les règles y sont injectées une seule fois."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Prose",
+      "description": "Typographie sans cadre et adaptée au thème pour du HTML sémantique : articles, Markdown rendu, éditeurs de texte riche. Les mêmes règles sont publiées en mixin Sass : @use \"minerva-design/prose.scss\" as typography; puis @include typography.prose; sur votre propre sélecteur.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Titres, paragraphes, liens, listes, citations et code partagent les jetons du thème. Prose n'assainit pas le HTML."
+        },
+        "as-child": {
+          "title": "Styliser votre propre élément",
+          "description": "asChild applique la typographie à son unique enfant (p. ex. l'hôte d'un éditeur) sans conteneur supplémentaire."
+        }
+      },
+      "api": {
+        "ProseProps": {
+          "asChild": "Fusionne la classe prose sur son unique enfant au lieu de rendre un conteneur",
+          "ref": "Ref vers l'élément racine"
+        }
+      },
+      "cssVars": {
+        "--prose-font-size": "Taille de police de base du texte",
+        "--prose-border-color": "Couleur des bordures des citations, tableaux, blocs de code et filets",
+        "--prose-code-bg": "Couleur de fond du code en ligne et des en-têtes de tableau",
+        "--prose-pre-bg": "Couleur de fond des blocs de code",
+        "--prose-radius": "Rayon des coins des blocs de code (par défaut --radius-sm)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Du HTML sémantique dans <minerva-prose> : titres, paragraphes, listes imbriquées, code en ligne et citations sont stylés à toute profondeur."
+          },
+          "rich-content": {
+            "title": "Markdown rendu",
+            "description": "HTML produit par un moteur Markdown ou un éditeur riche, avec tableaux et blocs de code. Prose ne nettoie rien : n'insérez que du HTML de confiance."
+          },
+          "scopes": {
+            "title": "Variables et shadow roots",
+            "description": "Les variables --prose-* règlent une instance ; dans une shadow root, les règles y sont injectées une seule fois."
+          }
+        },
+        "minerva-prose": {
+          "slots": {
+            "default": "Contenu HTML sémantique (titres, paragraphes, listes, tableaux, code...)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

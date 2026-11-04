@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.0",
+  "locale": "ja",
+  "renderer": "vue",
+  "page": "loading-state",
+  "title": "LoadingState 読み込み状態",
+  "description": "ページ・ルート・セクションの読み込み表示。装飾用の ProgressIndicator スピナーと表示ラベルを 1 つの polite なステータス領域にまとめます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.0",
+    "sourceCommit": "cf7fb249651cd06c89d0951ac2c3a3aa74dc835a",
+    "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
+    "referenceSourceDigest": "sha256:563c9bec5d90807342a94c02317519b3da937907129bda2d25ea49762fa828fd"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "LoadingState",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "LoadingState"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "label",
+            "type": "string",
+            "required": false,
+            "description": "Visible text, which is also what the status region announces",
+            "typeText": "string"
+          },
+          {
+            "name": "size",
+            "type": "LoadingStateSize",
+            "default": "\"medium\"",
+            "required": false,
+            "description": "Minimum height: small for a section, medium for a page or route, large for\ntall content such as a calendar",
+            "typeText": "LoadingStateSize"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:LoadingState": {
+      "kind": "cssVars",
+      "source": "react/src/components/LoadingState",
+      "vars": [
+        {
+          "name": "--loading-state-gap",
+          "description": "Space between the spinner and the label"
+        },
+        {
+          "name": "--loading-state-padding",
+          "description": "Padding"
+        },
+        {
+          "name": "--loading-state-min-height",
+          "description": "Minimum height (every size; defaults to the height of the size)"
+        },
+        {
+          "name": "--loading-state-color",
+          "description": "Color of the label and the spinner"
+        },
+        {
+          "name": "--loading-state-font-size",
+          "description": "Font size of the label"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/loading-state/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/loading-state/vue/basic.vue": "<script setup lang=\"ts\">\nimport { LoadingState } from \"minerva-design/vue\";\n</script>\n<template>\n  <LoadingState label=\"Loading projects…\" />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "section",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/loading-state/vue/section.vue",
+      "files": {
+        "apps/docs/src/docs/pages/loading-state/vue/section.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { LoadingState, Card, CardContent, Button } from \"minerva-design/vue\";\nconst loading = ref(true);\n</script>\n<template>\n  <Card\n    ><CardContent\n      ><Button @click=\"loading = !loading\">{{\n        loading ? \"Finish loading\" : \"Reload\"\n      }}</Button\n      ><LoadingState v-if=\"loading\" size=\"small\" label=\"Fetching activity…\" />\n      <p v-else>All activity is up to date.</p></CardContent\n    ></Card\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "section",
+      "description": ""
+    },
+    {
+      "id": "sizes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/loading-state/vue/sizes.vue",
+      "files": {
+        "apps/docs/src/docs/pages/loading-state/vue/sizes.vue": "<script setup lang=\"ts\">\nimport { LoadingState, VStack } from \"minerva-design/vue\";\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><LoadingState size=\"small\" label=\"Loading section…\" /><LoadingState\n      size=\"large\"\n      label=\"Preparing calendar…\"\n  /></VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "sizes",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "LoadingState 読み込み状態",
+      "description": "ページ・ルート・セクションの読み込み表示。装飾用の ProgressIndicator スピナーと表示ラベルを 1 つの polite なステータス領域にまとめます。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "既定のラベルはローカライズされ、表示テキストがそのまま読み上げられます。"
+        },
+        "sizes": {
+          "title": "サイズ",
+          "description": "small・medium・large はそれぞれ最小高さ 64・160・240 px です。"
+        }
+      },
+      "api": {
+        "LoadingStateProps": {
+          "label": "表示テキスト。ステータス領域で読み上げられます",
+          "size": "最小高さのプリセット",
+          "ref": "ルートの <div> 要素への ref"
+        }
+      },
+      "cssVars": {
+        "--loading-state-gap": "スピナーとラベルの間隔",
+        "--loading-state-padding": "内側の余白",
+        "--loading-state-min-height": "最小の高さ（全サイズ共通。既定値は各サイズの高さ）",
+        "--loading-state-color": "ラベルとスピナーの色",
+        "--loading-state-font-size": "ラベルのフォントサイズ"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "控えめな status 領域の中で、スピナーの横に表示ラベル（既定はローカライズされた「読み込み中...」）を表示します。"
+          },
+          "sizes": {
+            "title": "サイズ",
+            "description": "small・medium・large で最小の高さを設定します。デフォルトスロットにリッチなラベルを置けます。"
+          },
+          "section": {
+            "title": "セクションの読み込み",
+            "description": "この要素は aria-busy を設定しません。読み込み中はコンテナーをビジーにし、完了したらプレースホルダーをコンテンツに置き換えてください。"
+          }
+        },
+        "minerva-loading-state": {
+          "slots": {
+            "default": "ラベル（label 属性の代替）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

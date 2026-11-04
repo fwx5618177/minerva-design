@@ -1,0 +1,684 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.0",
+  "locale": "en",
+  "renderer": "react",
+  "page": "icon-button",
+  "title": "IconButton",
+  "description": "A compact button that only shows an icon. With pressed / defaultPressed it becomes a toggle button (favorite, like, mute...).",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.0",
+    "sourceCommit": "cf7fb249651cd06c89d0951ac2c3a3aa74dc835a",
+    "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
+    "referenceSourceDigest": "sha256:563c9bec5d90807342a94c02317519b3da937907129bda2d25ea49762fa828fd"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "IconButton",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "IconButton"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "icon",
+            "source": "packages/react/src/components/IconButton/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Icon element to display (children are used when omitted)"
+          },
+          {
+            "name": "label",
+            "source": "packages/react/src/components/IconButton/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible name of the button, also shown as its tooltip (unless showTooltip is false). Takes precedence over aria-label"
+          },
+          {
+            "name": "color",
+            "source": "packages/react/src/components/IconButton/types.ts",
+            "kind": "enum",
+            "values": [
+              "danger",
+              "info",
+              "neutral",
+              "primary",
+              "success",
+              "warning"
+            ],
+            "typeText": "ColorScheme | undefined",
+            "typeRef": "type:67f905b25ade366da2d8",
+            "default": "neutral",
+            "required": false,
+            "description": "Semantic color of the button"
+          },
+          {
+            "name": "variant",
+            "source": "packages/react/src/components/IconButton/types.ts",
+            "kind": "enum",
+            "values": [
+              "ghost",
+              "outline",
+              "solid"
+            ],
+            "typeText": "\"solid\" | \"outline\" | \"ghost\" | undefined",
+            "typeRef": "type:da3cbf1bd0de7cd633f9",
+            "default": "ghost",
+            "required": false,
+            "description": "Visual style: `ghost` (transparent until hovered), `solid` (filled with the color) or `outline` (bordered)"
+          },
+          {
+            "name": "size",
+            "source": "packages/react/src/components/IconButton/types.ts",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small",
+              "xsmall"
+            ],
+            "typeText": "\"xsmall\" | \"small\" | \"medium\" | \"large\" | undefined",
+            "typeRef": "type:f0e395a4986e48b320c4",
+            "default": "medium",
+            "required": false,
+            "description": "Button size"
+          },
+          {
+            "name": "shape",
+            "source": "packages/react/src/components/IconButton/types.ts",
+            "kind": "enum",
+            "values": [
+              "circle",
+              "square"
+            ],
+            "typeText": "\"circle\" | \"square\" | undefined",
+            "typeRef": "type:53f830419be13b669ce8",
+            "default": "circle",
+            "required": false,
+            "description": "Button shape"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/react/src/components/IconButton/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Disables the button and removes it from the tab order"
+          },
+          {
+            "name": "loading",
+            "source": "packages/react/src/components/IconButton/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Replaces the icon with a spinner and ignores activation (click, Enter, Space, form submission) while staying focusable: exposed as aria-busy + aria-disabled instead of the native disabled attribute"
+          },
+          {
+            "name": "pressed",
+            "source": "packages/react/src/components/IconButton/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Pressed state of a toggle button (controlled; pair with onPressedChange). Setting pressed, defaultPressed or onPressedChange makes the button a toggle: clicking flips the state and it is exposed as aria-pressed"
+          },
+          {
+            "name": "defaultPressed",
+            "source": "packages/react/src/components/IconButton/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Initial pressed state of an uncontrolled toggle button"
+          },
+          {
+            "name": "tooltip",
+            "source": "packages/react/src/components/IconButton/types.ts",
+            "kind": "object",
+            "typeText": "IconButtonTooltip | undefined",
+            "typeRef": "type:9a52846262864f9be3a9",
+            "required": false,
+            "description": "Tooltip configuration (content, color, variant, shape, arrow); requires showTooltip"
+          },
+          {
+            "name": "showTooltip",
+            "source": "packages/react/src/components/IconButton/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Shows the tooltip on hover and focus (its content is tooltip.content, or the label)"
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/react/src/components/IconButton/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label; always set it, since the button only contains an icon"
+          }
+        ],
+        "events": [
+          {
+            "name": "onPressedChange",
+            "source": "packages/react/src/components/IconButton/types.ts",
+            "kind": "function",
+            "typeText": "((pressed: boolean) => void) | undefined",
+            "typeRef": "type:709b19c66c1362e8395c",
+            "parameters": [
+              {
+                "name": "pressed",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "boolean",
+                "typeRef": "type:7087acd01ef7dd9f1d5c"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the new pressed state when a toggle button is activated"
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "pressed",
+            "event": "onPressedChange",
+            "syntax": "pressed={pressed} onPressedChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "IconButtonProps": {
+      "source": "react/src/components/IconButton/types.ts",
+      "description": "Styling hooks (CSS custom properties, set them on the button or an ancestor): `--icon-button-color` (icon color), `--icon-button-hover-bg` (hover background), `--icon-button-pressed-color` and `--icon-button-pressed-bg` (pressed toggle state).",
+      "kind": "interface",
+      "extends": [
+        "Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"color\">"
+      ],
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "required": false,
+          "description": "Ref to the <button> element"
+        },
+        {
+          "name": "icon",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": "Icon element to display (children are used when omitted)"
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": "Icon element, alternative to the icon prop"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "description": "Accessible name of the button, also shown as its tooltip (unless showTooltip is false). Takes precedence over aria-label"
+        },
+        {
+          "name": "color",
+          "type": "ColorScheme",
+          "required": false,
+          "default": "\"neutral\"",
+          "description": "Semantic color of the button"
+        },
+        {
+          "name": "variant",
+          "type": "\"ghost\" | \"solid\" | \"outline\"",
+          "required": false,
+          "default": "\"ghost\"",
+          "description": "Visual style: `ghost` (transparent until hovered), `solid` (filled with the color) or `outline` (bordered)"
+        },
+        {
+          "name": "size",
+          "type": "\"xsmall\" | \"small\" | \"medium\" | \"large\"",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Button size"
+        },
+        {
+          "name": "shape",
+          "type": "\"circle\" | \"square\"",
+          "required": false,
+          "default": "\"circle\"",
+          "description": "Button shape"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Disables the button and removes it from the tab order"
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Replaces the icon with a spinner and ignores activation (click, Enter, Space, form submission) while staying focusable: exposed as aria-busy + aria-disabled instead of the native disabled attribute"
+        },
+        {
+          "name": "pressed",
+          "type": "boolean",
+          "required": false,
+          "description": "Pressed state of a toggle button (controlled; pair with onPressedChange). Setting pressed, defaultPressed or onPressedChange makes the button a toggle: clicking flips the state and it is exposed as aria-pressed"
+        },
+        {
+          "name": "defaultPressed",
+          "type": "boolean",
+          "required": false,
+          "description": "Initial pressed state of an uncontrolled toggle button"
+        },
+        {
+          "name": "onPressedChange",
+          "type": "(pressed: boolean) => void",
+          "required": false,
+          "description": "Called with the new pressed state when a toggle button is activated"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "default": "\"\"",
+          "description": "Additional class name"
+        },
+        {
+          "name": "tooltip",
+          "type": "IconButtonTooltip",
+          "required": false,
+          "description": "Tooltip configuration (content, color, variant, shape, arrow); requires showTooltip"
+        },
+        {
+          "name": "showTooltip",
+          "type": "boolean",
+          "required": false,
+          "default": "true when label is set, otherwise false",
+          "description": "Shows the tooltip on hover and focus (its content is tooltip.content, or the label)"
+        },
+        {
+          "name": "aria-label",
+          "type": "string",
+          "required": false,
+          "default": "\"icon button\" (localized)",
+          "description": "Accessible label; always set it, since the button only contains an icon"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:IconButton": {
+      "kind": "cssVars",
+      "source": "react/src/components/IconButton",
+      "vars": [
+        {
+          "name": "--icon-button-color",
+          "description": "Icon color"
+        },
+        {
+          "name": "--icon-button-hover-bg",
+          "description": "Background on hover"
+        },
+        {
+          "name": "--icon-button-pressed-color",
+          "description": "Icon color of a pressed toggle"
+        },
+        {
+          "name": "--icon-button-pressed-bg",
+          "description": "Background of a pressed toggle"
+        },
+        {
+          "name": "--icon-button-size",
+          "description": "Width and height of the button (every size; defaults follow the density's control heights)"
+        },
+        {
+          "name": "--icon-button-icon-size",
+          "description": "Font size of the icon (every size)"
+        },
+        {
+          "name": "--icon-button-radius",
+          "description": "Corner radius of the square shape (defaults to --radius-lg)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-button/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon-button/demos/basic.tsx": "import { useState } from \"react\";\nimport { HStack, IconButton } from \"minerva-design\";\nimport { IoAdd, IoSettingsOutline, IoTrashOutline } from \"react-icons/io5\";\n\nexport default function BasicDemo() {\n  const [count, setCount] = useState(0);\n  return (\n    <HStack gap={3} align=\"center\" wrap>\n      <IconButton\n        icon={<IoAdd />}\n        aria-label=\"Add\"\n        onClick={() => setCount((n) => n + 1)}\n      />\n      <IconButton icon={<IoSettingsOutline />} aria-label=\"Settings\" />\n      <IconButton icon={<IoTrashOutline />} aria-label=\"Delete\" />\n      <output aria-live=\"polite\">\n        {count === 0 ? \"Nothing added yet\" : `Added ${count} item(s)`}\n      </output>\n    </HStack>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Basic usage",
+      "description": "Add increases the item counter. Settings and Delete illustrate accessible icon action labels."
+    },
+    {
+      "id": "colors",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-button/demos/colors.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon-button/demos/colors.tsx": "import { IconButton } from \"minerva-design\";\nimport { IoHeart } from \"react-icons/io5\";\n\nconst colors = [\n  \"neutral\",\n  \"primary\",\n  \"success\",\n  \"warning\",\n  \"danger\",\n  \"info\",\n] as const;\n\nexport default function ColorsDemo() {\n  return (\n    <>\n      {colors.map((color) => (\n        <IconButton\n          key={color}\n          icon={<IoHeart />}\n          color={color}\n          label={color}\n        />\n      ))}\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Colors",
+      "description": "color applies a semantic color: neutral (default), primary, success, warning, danger or info."
+    },
+    {
+      "id": "custom-colors",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-button/demos/custom-colors.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon-button/demos/custom-colors.tsx": "import type { CSSProperties } from \"react\";\nimport { IconButton } from \"minerva-design\";\nimport { IoFlash, IoWater } from \"react-icons/io5\";\n\n// CSS custom properties override the resolved colors; set them inline, in a\n// class, or on an ancestor to restyle a whole toolbar.\nconst amber = {\n  \"--icon-button-color\": \"#b45309\",\n  \"--icon-button-hover-bg\": \"rgba(245, 158, 11, 0.16)\",\n} as CSSProperties;\n\nconst sky = {\n  \"--icon-button-color\": \"#0ea5e9\",\n  \"--icon-button-pressed-color\": \"#ffffff\",\n  \"--icon-button-pressed-bg\": \"#0369a1\",\n} as CSSProperties;\n\nexport default function CustomColorsDemo() {\n  return (\n    <>\n      <IconButton icon={<IoFlash />} style={amber} label=\"Energy\" />\n      <IconButton icon={<IoWater />} style={sky} defaultPressed label=\"Water\" />\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Custom colors",
+      "description": "Override the resolved colors with CSS custom properties: --icon-button-color (icon), --icon-button-hover-bg (hover background), --icon-button-pressed-color and --icon-button-pressed-bg (pressed toggle). Set them inline, in a class or on an ancestor."
+    },
+    {
+      "id": "label",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-button/demos/label.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon-button/demos/label.tsx": "import { IconButton } from \"minerva-design\";\nimport { LuPencil, LuRefreshCw, LuTrash2 } from \"react-icons/lu\";\n\nexport default function LabelDemo() {\n  return (\n    <>\n      <IconButton label=\"Refresh\" shape=\"square\">\n        <LuRefreshCw />\n      </IconButton>\n      <IconButton label=\"Edit\" variant=\"outline\" color=\"primary\">\n        <LuPencil />\n      </IconButton>\n      <IconButton label=\"Delete\" variant=\"solid\" color=\"danger\" size=\"small\">\n        <LuTrash2 />\n      </IconButton>\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Label and tooltip",
+      "description": "label names the button and is shown as its tooltip; the icon can be passed as children. variant sets the visual style and color the semantic color."
+    },
+    {
+      "id": "search",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-button/demos/search.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon-button/demos/search.tsx": "import { useState } from \"react\";\nimport { Button, IconButton, Input } from \"minerva-design\";\nimport { IoSearch } from \"react-icons/io5\";\n\nexport default function SearchDemo() {\n  const [loading, setLoading] = useState(false);\n\n  const search = (event: React.FormEvent) => {\n    event.preventDefault();\n    setLoading(true);\n    setTimeout(() => setLoading(false), 1500);\n  };\n\n  return (\n    <form\n      onSubmit={search}\n      style={{ display: \"flex\", gap: 8, alignItems: \"center\" }}\n    >\n      <Input aria-label=\"Query\" placeholder=\"Search books\" clearable />\n      <IconButton\n        type=\"submit\"\n        icon={<IoSearch />}\n        label=\"Search\"\n        color=\"primary\"\n        variant=\"solid\"\n        loading={loading}\n      />\n      <Button type=\"submit\" color=\"neutral\" variant=\"outline\" loading={loading}>\n        Search\n      </Button>\n    </form>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Search button",
+      "description": "A search action is an IconButton with a search icon and a label; with type=\"submit\" it submits its form, and loading blocks it while the search runs. Use a Button when the action needs visible text."
+    },
+    {
+      "id": "sizes-and-shapes",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-button/demos/sizes-and-shapes.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon-button/demos/sizes-and-shapes.tsx": "import { IconButton } from \"minerva-design\";\nimport { IoStar } from \"react-icons/io5\";\n\nexport default function SizesAndShapesDemo() {\n  return (\n    <>\n      <IconButton icon={<IoStar />} size=\"small\" aria-label=\"Small\" />\n      <IconButton icon={<IoStar />} size=\"medium\" aria-label=\"Medium\" />\n      <IconButton icon={<IoStar />} size=\"large\" aria-label=\"Large\" />\n      <IconButton\n        icon={<IoStar />}\n        shape=\"square\"\n        size=\"small\"\n        aria-label=\"Small square\"\n      />\n      <IconButton icon={<IoStar />} shape=\"square\" aria-label=\"Medium square\" />\n      <IconButton\n        icon={<IoStar />}\n        shape=\"square\"\n        size=\"large\"\n        aria-label=\"Large square\"\n      />\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Sizes and shapes",
+      "description": "Three sizes (small, medium, large) and two shapes (circle, square)."
+    },
+    {
+      "id": "states",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-button/demos/states.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon-button/demos/states.tsx": "import { useState } from \"react\";\nimport { IconButton } from \"minerva-design\";\nimport { IoCloudUploadOutline, IoMic, IoTrashOutline } from \"react-icons/io5\";\n\nexport default function StatesDemo() {\n  const [loading, setLoading] = useState(false);\n  const [muted, setMuted] = useState(false);\n\n  const upload = () => {\n    setLoading(true);\n    setTimeout(() => setLoading(false), 1500);\n  };\n\n  return (\n    <>\n      <IconButton\n        icon={<IoCloudUploadOutline />}\n        color=\"primary\"\n        loading={loading}\n        onClick={upload}\n        aria-label=\"Upload\"\n      />\n      <IconButton\n        icon={<IoMic />}\n        pressed={muted}\n        onPressedChange={setMuted}\n        aria-label=\"Mute microphone\"\n      />\n      <IconButton icon={<IoTrashOutline />} disabled aria-label=\"Delete\" />\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "States",
+      "description": "loading replaces the icon with a spinner and keeps the button focusable (aria-busy + aria-disabled) while ignoring activation, pressed marks a toggle as on and disabled sets the native disabled attribute, which removes the button from the tab order."
+    },
+    {
+      "id": "toggle",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-button/demos/toggle.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon-button/demos/toggle.tsx": "import { useState } from \"react\";\nimport { IconButton } from \"minerva-design\";\nimport { IoBookmark, IoHeart, IoMicOff } from \"react-icons/io5\";\n\nexport default function ToggleDemo() {\n  const [liked, setLiked] = useState(false);\n\n  return (\n    <>\n      {/* controlled: the button exposes aria-pressed={liked} */}\n      <IconButton\n        icon={<IoHeart />}\n        label=\"Like\"\n        color=\"danger\"\n        pressed={liked}\n        onPressedChange={setLiked}\n      />\n      <span>{liked ? \"Liked\" : \"Not liked yet\"}</span>\n      {/* uncontrolled */}\n      <IconButton icon={<IoBookmark />} label=\"Bookmark\" defaultPressed />\n      <IconButton\n        icon={<IoMicOff />}\n        label=\"Mute\"\n        shape=\"square\"\n        defaultPressed={false}\n      />\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Toggle button",
+      "description": "Like starts off and updates its feedback; Bookmark starts on and Mute starts off."
+    },
+    {
+      "id": "tooltip",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-button/demos/tooltip.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon-button/demos/tooltip.tsx": "import { IconButton } from \"minerva-design\";\nimport { IoCopyOutline, IoInformationCircleOutline } from \"react-icons/io5\";\n\nexport default function TooltipDemo() {\n  return (\n    <>\n      <IconButton\n        icon={<IoCopyOutline />}\n        aria-label=\"Copy\"\n        showTooltip\n        tooltip={{ content: \"Copy to clipboard\" }}\n      />\n      <IconButton\n        icon={<IoInformationCircleOutline />}\n        color=\"info\"\n        aria-label=\"More information\"\n        showTooltip\n        tooltip={{ content: \"Hover or focus to see me\", arrow: true }}\n      />\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Tooltip",
+      "description": "Set showTooltip and tooltip to describe the action on hover and keyboard focus."
+    },
+    {
+      "id": "variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/icon-button/demos/variants.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/icon-button/demos/variants.tsx": "import { HStack, IconButton, VStack } from \"minerva-design\";\nimport { IoHeart } from \"react-icons/io5\";\n\nconst variants = [\"ghost\", \"solid\", \"outline\"] as const;\n\nexport default function VariantsDemo() {\n  return (\n    <VStack gap={3}>\n      {([\"neutral\", \"primary\", \"danger\"] as const).map((color) => (\n        <HStack key={color} gap={2} wrap>\n          {variants.map((variant) => (\n            <IconButton\n              key={variant}\n              icon={<IoHeart />}\n              color={color}\n              variant={variant}\n              label={`${color} ${variant}`}\n            />\n          ))}\n        </HStack>\n      ))}\n    </VStack>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "Variants",
+      "description": "variant sets the visual style: ghost (default, transparent until hovered), solid (filled with the color) or outline (bordered)."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "IconButton",
+      "description": "A compact button that only shows an icon. With pressed / defaultPressed it becomes a toggle button (favorite, like, mute...).",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Add increases the item counter. Settings and Delete illustrate accessible icon action labels."
+        },
+        "colors": {
+          "title": "Colors",
+          "description": "color applies a semantic color: neutral (default), primary, success, warning, danger or info."
+        },
+        "variants": {
+          "title": "Variants",
+          "description": "variant sets the visual style: ghost (default, transparent until hovered), solid (filled with the color) or outline (bordered)."
+        },
+        "sizes-and-shapes": {
+          "title": "Sizes and shapes",
+          "description": "Three sizes (small, medium, large) and two shapes (circle, square)."
+        },
+        "states": {
+          "title": "States",
+          "description": "loading replaces the icon with a spinner and keeps the button focusable (aria-busy + aria-disabled) while ignoring activation, pressed marks a toggle as on and disabled sets the native disabled attribute, which removes the button from the tab order."
+        },
+        "toggle": {
+          "title": "Toggle button",
+          "description": "Like starts off and updates its feedback; Bookmark starts on and Mute starts off."
+        },
+        "search": {
+          "title": "Search button",
+          "description": "A search action is an IconButton with a search icon and a label; with type=\"submit\" it submits its form, and loading blocks it while the search runs. Use a Button when the action needs visible text."
+        },
+        "custom-colors": {
+          "title": "Custom colors",
+          "description": "Override the resolved colors with CSS custom properties: --icon-button-color (icon), --icon-button-hover-bg (hover background), --icon-button-pressed-color and --icon-button-pressed-bg (pressed toggle). Set them inline, in a class or on an ancestor."
+        },
+        "tooltip": {
+          "title": "Tooltip",
+          "description": "Set showTooltip and tooltip to describe the action on hover and keyboard focus."
+        },
+        "label": {
+          "title": "Label and tooltip",
+          "description": "label names the button and is shown as its tooltip; the icon can be passed as children. variant sets the visual style and color the semantic color."
+        }
+      },
+      "api": {
+        "IconButtonProps": {
+          "icon": "Icon element to display",
+          "color": "Semantic color of the button",
+          "variant": "Visual style: ghost (transparent until hovered), solid (filled with the color) or outline (bordered)",
+          "size": "Button size",
+          "shape": "Button shape",
+          "disabled": "Disables the native button and removes it from the tab order",
+          "loading": "Replaces the icon with a spinner and ignores activation (click, Enter, Space, form submission) while staying focusable: exposed as aria-busy + aria-disabled instead of the native disabled attribute",
+          "pressed": "Pressed state of a toggle button (controlled; pair with onPressedChange); exposed as aria-pressed",
+          "defaultPressed": "Initial pressed state of an uncontrolled toggle button",
+          "onPressedChange": "Called with the new pressed state when a toggle button is activated",
+          "className": "Additional class name",
+          "tooltip": "Tooltip configuration (content, color, variant, shape, arrow); requires showTooltip",
+          "showTooltip": "Shows the tooltip on hover and focus",
+          "aria-label": "Accessible label; always set it, since the button only contains an icon",
+          "ref": "Ref to the <button> element",
+          "children": "Icon element, alternative to the icon prop",
+          "label": "Accessible name of the button, also shown as its tooltip (unless showTooltip is false). Takes precedence over aria-label"
+        }
+      },
+      "cssVars": {
+        "--icon-button-color": "Icon color",
+        "--icon-button-hover-bg": "Background on hover",
+        "--icon-button-pressed-color": "Icon color of a pressed toggle",
+        "--icon-button-pressed-bg": "Background of a pressed toggle",
+        "--icon-button-size": "Width and height of the button (every size; defaults follow the density's control heights)",
+        "--icon-button-icon-size": "Font size of the icon (every size)",
+        "--icon-button-radius": "Corner radius of the square shape (defaults to --radius-lg)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "label names the icon-only button and is shown as its tooltip on hover and focus (Escape closes it). Ghost and neutral by default."
+          },
+          "sizes-shapes": {
+            "title": "Sizes, shapes and colors",
+            "description": "Four sizes, circle or square shapes, and the shared semantic colors with the solid / outline / ghost variants."
+          },
+          "toggle": {
+            "title": "Toggle buttons",
+            "description": "toggle exposes aria-pressed; activation flips pressed and fires a cancelable minerva-pressed-change. The pin cannot be turned off (preventDefault)."
+          },
+          "states": {
+            "title": "Loading, disabled and tooltips",
+            "description": "Click Refresh to see the loading state (still focusable, activation ignored). tooltip overrides the tooltip text, tooltip-placement moves it, no-tooltip removes it."
+          }
+        },
+        "minerva-icon-button": {
+          "props": {
+            "toggle": "Makes it a toggle button (exposes aria-pressed).",
+            "tooltipPlacement": "Preferred placement of the tooltip.",
+            "noTooltip": "Hides the tooltip (the label still names the button).",
+            "type": "What the button does in its form: nothing (button), submit or reset.",
+            "form": "The form owning the button (read-only)."
+          },
+          "events": {
+            "minerva-pressed-change": "A toggle button was activated (detail: { pressed }, the new state). Cancelable: preventDefault() keeps the current state."
+          },
+          "slots": {
+            "default": "The icon (hidden from assistive technologies)."
+          },
+          "cssVars": {
+            "--tooltip-max-width": "Maximum width of the tooltip (capped by the viewport).",
+            "--tooltip-padding": "Padding of the tooltip.",
+            "--tooltip-radius": "Corner radius of the tooltip.",
+            "--tooltip-font-size": "Font size of the tooltip.",
+            "--tooltip-bg": "Background of the tooltip (gradients allowed).",
+            "--tooltip-color": "Text color of the tooltip.",
+            "--tooltip-shadow": "Shadow of the tooltip (defaults to --shadow-md).",
+            "--tooltip-z-index": "Stacking order of the tooltip (defaults to --z-popover)."
+          },
+          "methods": {
+            "focus": "Focuses the inner button.",
+            "blur": "Removes focus from the inner button.",
+            "click": "Clicks the inner button (ignored while disabled or loading)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Add increases the item counter. Settings and Delete illustrate accessible icon action labels."
+          },
+          "toggle": {
+            "title": "Toggle button",
+            "description": "Like starts off and updates its feedback; Bookmark starts on and Mute starts off."
+          },
+          "variants-sizes": {
+            "title": "Variants and sizes",
+            "description": "Variants and sizes using IconButton; the preview follows the selected site theme and palette."
+          }
+        }
+      }
+    }
+  }
+}

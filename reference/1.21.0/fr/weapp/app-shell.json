@@ -1,0 +1,294 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.0",
+  "locale": "fr",
+  "renderer": "weapp",
+  "page": "app-shell",
+  "title": "AppShell",
+  "description": "Cadre d'application : barre latérale repliable ou flottante, en-tête collant et un unique repère main ; la navigation passe dans un tiroir à 768px et moins.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.0",
+    "sourceCommit": "cf7fb249651cd06c89d0951ac2c3a3aa74dc835a",
+    "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
+    "referenceSourceDigest": "sha256:563c9bec5d90807342a94c02317519b3da937907129bda2d25ea49762fa828fd"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "AppShell",
+      "support": {
+        "status": "beta",
+        "notes": "Controlled/default expanded/compact/floating modes, mobile drawer/backdrop, navigationKey close, explicit pin/expand controls, brand/header/page navigation/footer slots and navigationstate events. Floating rail expands by explicit tap instead of mouse hover; native accessibility replaces DOM skip-link focus. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Controlled/default expanded/compact/floating modes, mobile drawer/backdrop, navigationKey close, explicit pin/expand controls, brand/header/page navigation/footer slots and navigationstate events. Floating rail expands by explicit tap instead of mouse hover; native accessibility replaces DOM skip-link focus. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/app-shell/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "app-shell",
+        "props": [
+          {
+            "name": "sidebarWidth",
+            "typeText": "number",
+            "required": false,
+            "default": 240
+          },
+          {
+            "name": "brand",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "brandIcon",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "sidebarMode",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "defaultSidebarMode",
+            "typeText": "string",
+            "required": false,
+            "default": "expanded"
+          },
+          {
+            "name": "navigationLabel",
+            "typeText": "string",
+            "required": false,
+            "default": "Navigation"
+          },
+          {
+            "name": "navigationKey",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "labels",
+            "typeText": "unknown",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "sidebarmodechange",
+            "typeText": "{ mode: 'expanded' | 'compact' | 'floating' }",
+            "description": "Requested desktop sidebar mode."
+          },
+          {
+            "name": "navigationstate",
+            "typeText": "{ mode: string; collapsed: boolean; isMobile: boolean; open: boolean }",
+            "description": "Current native navigation state for the navigation slot owner."
+          }
+        ],
+        "slots": [
+          {
+            "name": "brandIcon"
+          },
+          {
+            "name": "brand"
+          },
+          {
+            "name": "navigation"
+          },
+          {
+            "name": "sidebar"
+          },
+          {
+            "name": "header"
+          },
+          {
+            "name": "headerActions"
+          },
+          {
+            "name": "pageNavigation"
+          },
+          {
+            "name": "default"
+          },
+          {
+            "name": "footer"
+          }
+        ],
+        "registration": "\"usingComponents\": { \"mn-app-shell\": \"minerva-design/dist/weapp/app-shell/index\" }",
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:AppShell": {
+      "kind": "cssVars",
+      "source": "react/src/components/AppShell",
+      "vars": [
+        {
+          "name": "--app-shell-sidebar-width",
+          "description": "Width of the expanded sidebar"
+        },
+        {
+          "name": "--app-shell-rail-width",
+          "description": "Width of the compact / floating rail"
+        },
+        {
+          "name": "--app-shell-header-height",
+          "description": "Minimum height of the header and the sidebar brand row"
+        },
+        {
+          "name": "--app-shell-background",
+          "description": "Background of the page area"
+        },
+        {
+          "name": "--app-shell-sidebar-background",
+          "description": "Background of the sidebar and the mobile navigation drawer"
+        },
+        {
+          "name": "--app-shell-header-background",
+          "description": "Background of the sticky header"
+        },
+        {
+          "name": "--app-shell-drawer-width",
+          "description": "Width of the mobile navigation drawer"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "AppShell",
+      "description": "Cadre d'application : barre latérale repliable ou flottante, en-tête collant et un unique repère main ; la navigation passe dans un tiroir à 768px et moins.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "navigation est une fonction de rendu recevant collapsed / isMobile / closeNavigation / expandNavigation."
+        },
+        "controlled": {
+          "title": "Mode de barre latérale contrôlé",
+          "description": "sidebarMode / onSidebarModeChange contrôlent les modes expanded, compact et floating ; floating s'ouvre au survol ou au focus clavier."
+        },
+        "skip-link": {
+          "title": "Lien d'évitement",
+          "description": "Un lien « Aller au contenu » est le premier élément focalisable : masqué jusqu'à ce qu'il reçoive le focus clavier, il déplace le focus vers main. skipLink accepte un texte personnalisé, ou false pour le retirer."
+        }
+      },
+      "api": {
+        "AppShellProps": {
+          "ref": "Ref vers le div racine",
+          "brand": "Marque en haut de la barre latérale (pas un titre de page)",
+          "brandIcon": "Icône de marque décorative, visible dans le rail compact",
+          "navigation": "Rend la navigation selon l'état ; affichée à un seul endroit (barre latérale sur bureau, tiroir sur mobile)",
+          "navigationLabel": "Nom accessible du repère latéral et titre du tiroir mobile",
+          "navigationKey": "Changez-la quand une route est validée pour fermer la navigation mobile",
+          "headerActions": "Contenu de la barre d'en-tête, hors de main",
+          "pageNavigation": "Rendu entre l'en-tête et main (ex. onglets de pages ouvertes)",
+          "children": "Contenu de la page, rendu dans l'unique repère main",
+          "sidebarMode": "Mode de la barre latérale (contrôlé)",
+          "defaultSidebarMode": "Mode initial de la barre latérale (non contrôlé)",
+          "onSidebarModeChange": "Appelée avec le nouveau mode quand l'utilisateur le change",
+          "labels": "Remplacements des noms de contrôles (valeurs localisées par défaut)",
+          "skipLink": "Lien « Aller au contenu » rendu comme premier élément focalisable (masqué visuellement jusqu'au focus) ; il déplace le focus vers main. Une chaîne remplace son texte, false le retire"
+        },
+        "AppShellNavigationState": {
+          "collapsed": "La barre latérale affiche actuellement le rail compact",
+          "isMobile": "La navigation est rendue dans le tiroir mobile (fenêtre <= 768px)",
+          "closeNavigation": "Ferme le tiroir de navigation mobile (à appeler lors d'une sélection)",
+          "expandNavigation": "Passe la barre latérale en expanded (ex. à l'ouverture d'un groupe compact)"
+        },
+        "AppShellLabels": {
+          "expand": "Nom du bouton qui déplie la barre latérale",
+          "collapse": "Nom du bouton qui replie la barre latérale",
+          "enableFloating": "Nom du bouton d'épingle quand le mode flottant est désactivé",
+          "disableFloating": "Nom du bouton d'épingle quand le mode flottant est activé",
+          "openNavigation": "Nom du bouton d'en-tête qui ouvre la navigation mobile",
+          "closeNavigation": "Nom du bouton de fermeture de la navigation mobile"
+        }
+      },
+      "cssVars": {
+        "--app-shell-sidebar-width": "Largeur de la barre latérale déployée",
+        "--app-shell-rail-width": "Largeur du rail compact / flottant",
+        "--app-shell-header-height": "Hauteur minimale de l'en-tête et de la ligne de marque de la barre latérale",
+        "--app-shell-background": "Fond de la zone de page",
+        "--app-shell-sidebar-background": "Fond de la barre latérale et du tiroir de navigation mobile",
+        "--app-shell-header-background": "Fond de l'en-tête collant",
+        "--app-shell-drawer-width": "Largeur du tiroir de navigation mobile"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Une barre latérale avec la marque et le slot navigation, un en-tête fixe (slot header-actions) et le repère main pour le slot par défaut. À 768px et moins, la navigation passe dans un tiroir modal ouvert depuis l'en-tête."
+          },
+          "sidebar-modes": {
+            "title": "Modes de la barre latérale et slots",
+            "description": "sidebar-mode=\"compact\" démarre avec le rail d'icônes ; les boutons de la barre latérale le déplient ou l'épinglent en rail flottant. L'attribut collapsed sert à styliser la navigation (libellés masqués ici) ; brand-icon reste visible dans le rail et page-navigation se place entre l'en-tête et main."
+          },
+          "controlled": {
+            "title": "Événements, méthodes et libellés",
+            "description": "minerva-sidebar-mode-change et minerva-open-change sont annulables (verrouillez le mode pour le voir). expandNavigation() et focusMain() pilotent le shell ; les attributs *-label et skip-link renomment les contrôles."
+          }
+        },
+        "minerva-app-shell": {
+          "props": {
+            "noSkipLink": "Supprime le lien « Aller au contenu ».",
+            "expandLabel": "Nom du bouton qui déplie la barre latérale.",
+            "collapseLabel": "Nom du bouton qui replie la barre latérale.",
+            "enableFloatingLabel": "Nom du bouton épingle quand le mode flottant est désactivé.",
+            "disableFloatingLabel": "Nom du bouton épingle quand le mode flottant est activé.",
+            "openNavigationLabel": "Nom du bouton de l'en-tête qui ouvre la navigation mobile.",
+            "closeNavigationLabel": "Nom du bouton de fermeture de la navigation mobile.",
+            "mobile": "Lecture seule : la mise en page mobile est active (fenêtre de 768px ou moins)."
+          },
+          "events": {
+            "minerva-sidebar-mode-change": "L'utilisateur a changé le mode de la barre latérale (detail: { mode }). Annulable : preventDefault() conserve le mode actuel.",
+            "minerva-open-change": "Le tiroir mobile s'est ouvert ou fermé (detail: { open }). Annulable quand l'utilisateur l'a demandé."
+          },
+          "slots": {
+            "default": "Contenu de la page, dans le repère main.",
+            "navigation": "Navigation (barre latérale sur ordinateur, tiroir sur mobile).",
+            "brand": "Marque (alternative à l'attribut brand).",
+            "brand-icon": "Icône décorative de la marque, toujours visible dans le rail compact.",
+            "header-actions": "Contenu de la barre d'en-tête (menu du compte, recherche...).",
+            "page-navigation": "Affiché entre l'en-tête et main (par exemple des onglets de page)."
+          },
+          "cssVars": {
+            "--icon-button-color": "Couleur d'icône des contrôles du shell (bascules de la barre latérale, bouton de menu).",
+            "--icon-button-hover-bg": "Fond des contrôles du shell au survol.",
+            "--icon-button-pressed-color": "Couleur d'icône du bouton épingle enfoncé.",
+            "--icon-button-pressed-bg": "Fond du bouton épingle enfoncé.",
+            "--icon-button-size": "Largeur et hauteur des contrôles du shell.",
+            "--icon-button-icon-size": "Taille d'icône des contrôles du shell.",
+            "--icon-button-radius": "Rayon des coins des contrôles du shell."
+          },
+          "methods": {
+            "openNavigation": "Ouvre le tiroir de navigation mobile (mise en page mobile uniquement).",
+            "closeNavigation": "Ferme le tiroir de navigation mobile (à appeler quand un élément est choisi).",
+            "expandNavigation": "Passe la barre latérale en mode déplié (par exemple quand un groupe est ouvert dans le rail compact).",
+            "focusMain": "Déplace le focus sur le repère main."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,222 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.0",
+  "locale": "fr",
+  "renderer": "weapp",
+  "page": "steps",
+  "title": "Steps",
+  "description": "Affiche les étapes d’un processus et permet de passer de l’une à l’autre.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.0",
+    "sourceCommit": "cf7fb249651cd06c89d0951ac2c3a3aa74dc835a",
+    "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
+    "referenceSourceDigest": "sha256:563c9bec5d90807342a94c02317519b3da937907129bda2d25ea49762fa828fd"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Steps",
+      "support": {
+        "status": "beta",
+        "notes": "React value/defaultValue and legacy current, readOnly/default display, guarded item selection, icon/error/completion states, native string labels and descriptions. ReactNode labels/icons use native strings or the shared content slot. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "React value/defaultValue and legacy current, readOnly/default display, guarded item selection, icon/error/completion states, native string labels and descriptions. ReactNode labels/icons use native strings or the shared content slot. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/steps/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "steps",
+        "props": [
+          {
+            "name": "items",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "current",
+            "typeText": "number",
+            "required": false,
+            "default": 0
+          },
+          {
+            "name": "direction",
+            "typeText": "string",
+            "required": false,
+            "default": "horizontal"
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "value",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "defaultValue",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "readOnly",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          }
+        ],
+        "events": [
+          {
+            "name": "change",
+            "typeText": "{ value: string; current: number }",
+            "description": "Requested step and its index; readOnly defaults true."
+          }
+        ],
+        "slots": [
+          {
+            "name": "default"
+          }
+        ],
+        "registration": "\"usingComponents\": { \"mn-steps\": \"minerva-design/dist/weapp/steps/index\" }",
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Steps": {
+      "kind": "cssVars",
+      "source": "react/src/components/Steps",
+      "vars": [
+        {
+          "name": "--steps-gap",
+          "description": "Space between the steps (row and column gap)"
+        },
+        {
+          "name": "--steps-font-size",
+          "description": "Font size of the labels"
+        },
+        {
+          "name": "--steps-indicator-size",
+          "description": "Diameter of the numbered indicator"
+        },
+        {
+          "name": "--steps-accent-color",
+          "description": "Color of the current / completed indicators (defaults to --primary-color)"
+        },
+        {
+          "name": "--steps-current-background",
+          "description": "Background of the current step's indicator"
+        },
+        {
+          "name": "--steps-connector-color",
+          "description": "Color of the line joining the upcoming steps (defaults to --border-color)"
+        },
+        {
+          "name": "--steps-connector-complete-color",
+          "description": "Color of the line after a completed step (defaults to the accent color)"
+        },
+        {
+          "name": "--steps-connector-min-width",
+          "description": "Minimum length of the line joining two steps"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Steps",
+      "description": "Affiche les étapes d’un processus et permet de passer de l’une à l’autre.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Review est sélectionné au départ. Draft permet de revenir en arrière ; Publish est désactivé."
+        },
+        "read-only": {
+          "title": "Progression en lecture seule",
+          "description": "Sans onChange, les étapes sont un indicateur de progression en lecture seule : une liste ordonnée simple (sans boutons) dont l’élément courant porte aria-current=\"step\"."
+        },
+        "styling": {
+          "title": "Style",
+          "description": "Les étapes terminées affichent une coche sur un disque plein, l'étape courante un halo doux, et les lignes de liaison se colorent au fil des étapes. --steps-accent-color les recolore, --steps-connector-min-width / --steps-connector-color règlent les lignes."
+        }
+      },
+      "api": {
+        "StepsProps": {
+          "items": "Étapes, dans l’ordre",
+          "value": "Valeur de l’étape courante (contrôlée ; avec onChange)",
+          "defaultValue": "Valeur de l’étape courante initiale (non contrôlée)",
+          "onChange": "Appelé avec la valeur de l’étape choisie. Signale seulement la navigation : validation et transitions appartiennent à l’appelant",
+          "readOnly": "Affiche les étapes comme un indicateur de progression en lecture seule : des éléments de liste sans boutons, l’élément courant marqué aria-current=\"step\"",
+          "aria-label": "Libellé accessible de la liste",
+          "className": "Classe CSS supplémentaire",
+          "ref": "Ref vers l’élément racine <ol>"
+        },
+        "StepsItem": {
+          "value": "Valeur unique de l’étape, comparée à la valeur de Steps",
+          "label": "Libellé visible de l’étape",
+          "disabled": "Empêche d’aller à cette étape (par ex. un état final pas encore atteint)"
+        }
+      },
+      "cssVars": {
+        "--steps-gap": "Espace entre les étapes (lignes et colonnes)",
+        "--steps-font-size": "Taille de police des libellés",
+        "--steps-indicator-size": "Diamètre de l'indicateur numéroté",
+        "--steps-accent-color": "Couleur des indicateurs courant / terminés (par défaut --primary-color)",
+        "--steps-current-background": "Fond de l'indicateur de l'étape courante",
+        "--steps-connector-color": "Couleur de la ligne reliant les étapes à venir (par défaut --border-color)",
+        "--steps-connector-complete-color": "Couleur de la ligne après une étape terminée (par défaut la couleur d'accent)",
+        "--steps-connector-min-width": "Longueur minimale de la ligne reliant deux étapes"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Progression en lecture seule",
+            "description": "Les étapes viennent de la propriété items ; les précédentes sont terminées et la courante porte aria-current=\"step\"."
+          },
+          "navigable": {
+            "title": "Assistant navigable",
+            "description": "navigable transforme chaque étape en bouton. minerva-change est annulable : l'appelant valide la transition (acceptez les conditions pour quitter la première étape)."
+          },
+          "styling": {
+            "title": "Personnalisation",
+            "description": "Des variables CSS règlent la couleur d'accent, la taille de l'indicateur et l'espacement ; ::part(label) style les libellés."
+          }
+        },
+        "minerva-steps": {
+          "props": {
+            "navigable": "Affiche chaque étape comme un bouton de navigation (par défaut : lecture seule)."
+          },
+          "events": {
+            "minerva-change": "L'utilisateur est allé à une étape (detail : { value }) ; annulable : preventDefault() conserve l'étape courante."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Review est sélectionné au départ. Draft permet de revenir en arrière ; Publish est désactivé."
+          },
+          "vertical": {
+            "title": "Disposition verticale",
+            "description": "Disposition verticale avec Steps ; l’aperçu suit le thème et la palette du site."
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,460 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.0",
+  "locale": "ja",
+  "renderer": "wc",
+  "page": "form-control",
+  "title": "FormControl フォームコントロール",
+  "description": "ラベル・コントロール・ヘルプテキスト・エラーメッセージを結び付け、無効 / 必須 / 無効化 / 読み取り専用の状態をコントロールと共有するフィールドコンテナ。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.0",
+    "sourceCommit": "cf7fb249651cd06c89d0951ac2c3a3aa74dc835a",
+    "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
+    "referenceSourceDigest": "sha256:563c9bec5d90807342a94c02317519b3da937907129bda2d25ea49762fa828fd"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "FormControl",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/form-control",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-form-control",
+        "props": [
+          {
+            "name": "label",
+            "typeText": "string",
+            "attribute": "label",
+            "required": false
+          },
+          {
+            "name": "helperText",
+            "typeText": "string",
+            "attribute": "helper-text",
+            "required": false
+          },
+          {
+            "name": "errorMessage",
+            "typeText": "string",
+            "attribute": "error-message",
+            "required": false
+          },
+          {
+            "name": "invalid",
+            "typeText": "boolean",
+            "attribute": "invalid",
+            "required": false
+          },
+          {
+            "name": "required",
+            "typeText": "boolean",
+            "attribute": "required",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "attribute": "disabled",
+            "required": false
+          },
+          {
+            "name": "readOnly",
+            "typeText": "boolean",
+            "attribute": "readonly",
+            "required": false
+          },
+          {
+            "name": "requiredIndicator",
+            "typeText": "string",
+            "attribute": "required-indicator",
+            "required": false
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default",
+            "description": "The control (one element)"
+          },
+          {
+            "name": "label",
+            "description": "Rich label content (alternative to the `label` attribute)"
+          },
+          {
+            "name": "helper-text",
+            "description": "Rich helper text (alternative to `helper-text`)"
+          },
+          {
+            "name": "error-message",
+            "description": "Rich error message (alternative to `error-message`)"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "FormErrorMessage",
+      "support": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      }
+    },
+    {
+      "name": "FormField",
+      "support": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      }
+    },
+    {
+      "name": "FormHelperText",
+      "support": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      }
+    },
+    {
+      "name": "FormLabel",
+      "support": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "React-only API (composition part or provider); the custom elements cover it with attributes or the parent element."
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-form-control": {
+      "kind": "element",
+      "source": "web-components/src/components/form-control/form-control.ts",
+      "className": "MinervaFormControl",
+      "summary": "Label, help text and error message around one form control.",
+      "description": "Field wrapper (`<FormControl>` + `<FormField>` of React): a label with a required indicator, ONE slotted control (a Minerva form control or a native `<input>` / `<select>` / `<textarea>`), a helper text, and an error message that replaces the helper text while `invalid`. Wiring (React shares it through context; ids cannot cross shadow roots, so the field writes it onto the slotted control instead): - name: `aria-label` = the label text (unless the control has its own `aria-label`); Minerva controls forward it to their inner element - description: `aria-description` = the helper text, or the error message while invalid (forwarded the same way) - `invalid` -> the control's `invalid` (or `error`) property when it has one, and `aria-invalid=\"true\"` - `required` / `disabled` / `readonly` -> the control's `required` / `disabled` / `readonly` (`readOnly` natively) properties when present, plus `aria-required` / `aria-readonly` Everything the field set is restored when the state is turned off or the control is removed. Clicking the label focuses the control (checkboxes and switches are toggled, like a native `<label>`).",
+      "properties": [
+        {
+          "name": "label",
+          "attribute": "label",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Label text (alternative to the `label` slot)"
+        },
+        {
+          "name": "helperText",
+          "attribute": "helper-text",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Help text below the control, hidden while invalid"
+        },
+        {
+          "name": "errorMessage",
+          "attribute": "error-message",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Error message, shown (and describing the control) while invalid"
+        },
+        {
+          "name": "invalid",
+          "attribute": "invalid",
+          "type": "boolean",
+          "default": "false",
+          "description": "Marks the field (and its control) as invalid"
+        },
+        {
+          "name": "required",
+          "attribute": "required",
+          "type": "boolean",
+          "default": "false",
+          "description": "Marks the field as required (indicator on the label, required control)"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false",
+          "description": "Disables the control"
+        },
+        {
+          "name": "readOnly",
+          "attribute": "readonly",
+          "type": "boolean",
+          "default": "false",
+          "description": "Makes the control read-only"
+        },
+        {
+          "name": "requiredIndicator",
+          "attribute": "required-indicator",
+          "type": "string",
+          "default": "\"*\"",
+          "description": "Indicator shown after the label when required (hidden from assistive technology)"
+        },
+        {
+          "name": "controlElement",
+          "type": "HTMLElement | null",
+          "readonly": true,
+          "description": "The slotted control"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "The control (one element)"
+        },
+        {
+          "name": "label",
+          "description": "Rich label content (alternative to the `label` attribute)"
+        },
+        {
+          "name": "helper-text",
+          "description": "Rich helper text (alternative to `helper-text`)"
+        },
+        {
+          "name": "error-message",
+          "description": "Rich error message (alternative to `error-message`)"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The field container"
+        },
+        {
+          "name": "label",
+          "description": "The <label>"
+        },
+        {
+          "name": "required-indicator",
+          "description": "The required marker of the label"
+        },
+        {
+          "name": "helper-text",
+          "description": "The helper text (hidden while invalid)"
+        },
+        {
+          "name": "error-message",
+          "description": "The error message (role=\"alert\", while invalid)"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--form-control-gap",
+          "description": "Space between the label, the field and the helper / error text"
+        },
+        {
+          "name": "--form-control-label-font-size",
+          "description": "Font size of the label"
+        },
+        {
+          "name": "--form-control-label-color",
+          "description": "Color of the label"
+        },
+        {
+          "name": "--form-control-helper-font-size",
+          "description": "Font size of the helper and error texts"
+        },
+        {
+          "name": "--form-control-required-color",
+          "description": "Color of the required marker"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:FormControl": {
+      "kind": "cssVars",
+      "source": "react/src/components/FormControl",
+      "vars": [
+        {
+          "name": "--form-control-gap",
+          "description": "Space between the label, the field and the helper / error text"
+        },
+        {
+          "name": "--form-control-label-font-size",
+          "description": "Font size of the label"
+        },
+        {
+          "name": "--form-control-label-color",
+          "description": "Color of the label"
+        },
+        {
+          "name": "--form-control-helper-font-size",
+          "description": "Font size of the helper and error texts"
+        },
+        {
+          "name": "--form-control-required-color",
+          "description": "Color of the required marker"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/form-control/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/form-control/wc/basic.html": "<div style=\"display: grid; gap: 16px; max-width: 360px\">\n  <minerva-form-control\n    label=\"Display name\"\n    helper-text=\"Shown on your public profile.\"\n  >\n    <minerva-input placeholder=\"Ada\"></minerva-input>\n  </minerva-form-control>\n  <minerva-form-control label=\"Country\" required>\n    <select>\n      <option>France</option>\n      <option>Japan</option>\n      <option>United States</option>\n    </select>\n  </minerva-form-control>\n  <minerva-form-control\n    label=\"Weekly digest\"\n    helper-text=\"Clicking the label toggles the switch.\"\n  >\n    <minerva-switch></minerva-switch>\n  </minerva-form-control>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "基本的な使い方",
+      "description": "Minerva またはネイティブのコントロールを 1 つ囲みます。ラベルが名前を、補助テキストが説明を与え、required で必須マークを付けます。ラベルをクリックするとコントロールにフォーカスするか、スイッチが切り替わります。"
+    },
+    {
+      "id": "form",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/form-control/wc/form.html",
+      "files": {
+        "apps/docs/src/docs/pages/form-control/wc/form.html": "<form\n  id=\"fc-form\"\n  novalidate\n  style=\"display: grid; gap: 16px; max-width: 360px\"\n>\n  <minerva-form-control\n    label=\"Email\"\n    required\n    error-message=\"Enter a valid email address.\"\n  >\n    <minerva-input name=\"email\" type=\"email\"></minerva-input>\n  </minerva-form-control>\n  <minerva-form-control\n    label=\"Seats\"\n    helper-text=\"Between 1 and 20.\"\n    error-message=\"Choose between 1 and 20 seats.\"\n  >\n    <minerva-number-input\n      name=\"seats\"\n      value=\"1\"\n      min=\"1\"\n      max=\"20\"\n      show-stepper\n    ></minerva-number-input>\n  </minerva-form-control>\n  <minerva-form-control\n    label=\"Terms\"\n    required\n    error-message=\"Accept the terms to continue.\"\n  >\n    <minerva-checkbox\n      name=\"terms\"\n      label=\"I accept the terms\"\n    ></minerva-checkbox>\n  </minerva-form-control>\n  <div style=\"display: flex; gap: 8px\">\n    <minerva-button type=\"submit\">Create account</minerva-button>\n    <minerva-button type=\"reset\" variant=\"ghost\" color=\"neutral\"\n      >Reset</minerva-button\n    >\n  </div>\n  <output id=\"fc-form-result\"></output>\n</form>\n",
+        "apps/docs/src/docs/pages/form-control/wc/form.ts": "// `novalidate` turns off the browser bubbles: on submit, each field shows\n// its own error message (`invalid`) when its control fails validation, and\n// clears it once the control is valid again. Reset clears everything.\ntype Control = HTMLElement & {\n  checkValidity(): boolean;\n  validity?: ValidityState;\n};\ntype Field = HTMLElement & { invalid: boolean; controlElement: Control | null };\n\nexport function setup(root: HTMLElement) {\n  const form = root.querySelector<HTMLFormElement>(\"#fc-form\")!;\n  const result = root.querySelector<HTMLOutputElement>(\"#fc-form-result\")!;\n  const fields = Array.from(\n    form.querySelectorAll<Field>(\"minerva-form-control\"),\n  );\n  const control = (field: Field) => field.controlElement!;\n  const onSubmit = (event: SubmitEvent) => {\n    event.preventDefault();\n    for (const field of fields) field.invalid = !control(field).checkValidity();\n    const firstInvalid = fields.find((field) => field.invalid);\n    if (firstInvalid) {\n      control(firstInvalid).focus();\n      result.value = \"\";\n      return;\n    }\n    const entries = [...new FormData(form)].map(\n      ([key, value]) => `${key}=${value}`,\n    );\n    result.value = `FormData: ${entries.join(\", \")}`;\n  };\n  const onEdit = (event: Event) => {\n    const field = (event.target as HTMLElement).closest<Field>(\n      \"minerva-form-control\",\n    );\n    if (field?.invalid && control(field).validity?.valid) field.invalid = false;\n  };\n  const onReset = () => {\n    result.value = \"\";\n    fields.forEach((field) => (field.invalid = false));\n  };\n  form.addEventListener(\"submit\", onSubmit);\n  form.addEventListener(\"change\", onEdit);\n  form.addEventListener(\"minerva-input\", onEdit);\n  form.addEventListener(\"reset\", onReset);\n  return () => {\n    form.removeEventListener(\"submit\", onSubmit);\n    form.removeEventListener(\"change\", onEdit);\n    form.removeEventListener(\"minerva-input\", onEdit);\n    form.removeEventListener(\"reset\", onReset);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "フォーム内での利用",
+      "description": "novalidate を指定し、送信ハンドラーで各コントロールの checkValidity() を確認して、ブラウザーの吹き出しの代わりにフィールド自身のエラーメッセージ（invalid）を表示します。編集すると消え、リセットですべてクリアされます。"
+    },
+    {
+      "id": "slots",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/form-control/wc/slots.html",
+      "files": {
+        "apps/docs/src/docs/pages/form-control/wc/slots.html": "<div style=\"display: grid; gap: 16px; max-width: 360px\">\n  <minerva-form-control>\n    <span slot=\"label\">Website <small>(optional)</small></span>\n    <minerva-input type=\"url\" placeholder=\"https://\"></minerva-input>\n    <span slot=\"helper-text\">Starts with <code>https://</code>.</span>\n  </minerva-form-control>\n  <minerva-form-control invalid>\n    <span slot=\"label\">Coupon</span>\n    <minerva-input value=\"SPRING\"></minerva-input>\n    <span slot=\"error-message\"\n      >This coupon expired on <strong>May 31</strong>.</span\n    >\n  </minerva-form-control>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "リッチコンテンツのスロット",
+      "description": "label・helper-text・error-message スロットには、テキスト属性の代わりにマークアップを入れられます。"
+    },
+    {
+      "id": "states",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/form-control/wc/states.html",
+      "files": {
+        "apps/docs/src/docs/pages/form-control/wc/states.html": "<div style=\"display: grid; gap: 16px; max-width: 360px\">\n  <minerva-form-control\n    id=\"fc-username\"\n    label=\"Username\"\n    helper-text=\"Letters and digits only.\"\n    error-message=\"This username is already taken.\"\n  >\n    <minerva-input value=\"ada\"></minerva-input>\n  </minerva-form-control>\n  <minerva-button\n    id=\"fc-toggle\"\n    variant=\"outline\"\n    color=\"neutral\"\n    style=\"justify-self: start\"\n    >Toggle invalid</minerva-button\n  >\n  <minerva-form-control\n    label=\"API key\"\n    readonly\n    helper-text=\"Read-only: focusable and submitted.\"\n  >\n    <minerva-input value=\"sk-live-1234\"></minerva-input>\n  </minerva-form-control>\n  <minerva-form-control label=\"Team\" disabled>\n    <minerva-number-input value=\"3\"></minerva-number-input>\n  </minerva-form-control>\n  <minerva-form-control label=\"Notes\" required required-indicator=\"(required)\">\n    <textarea rows=\"2\"></textarea>\n  </minerva-form-control>\n</div>\n",
+        "apps/docs/src/docs/pages/form-control/wc/states.ts": "// While `invalid`, the error message replaces the helper text and the\n// control gets `invalid` + aria-invalid; turning it off restores both.\nexport function setup(root: HTMLElement) {\n  const field = root.querySelector<HTMLElement & { invalid: boolean }>(\n    \"#fc-username\",\n  )!;\n  const toggle = root.querySelector<HTMLElement>(\"#fc-toggle\")!;\n  const onClick = () => (field.invalid = !field.invalid);\n  toggle.addEventListener(\"click\", onClick);\n  return () => toggle.removeEventListener(\"click\", onClick);\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "状態",
+      "description": "invalid は補助テキストをエラーメッセージに置き換えてコントロールに印を付けます。readonly・disabled・required はコントロールに引き継がれ、required-indicator でマークを変更できます。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "FormControl フォームコントロール",
+      "description": "ラベル・コントロール・ヘルプテキスト・エラーメッセージを結び付け、無効 / 必須 / 無効化 / 読み取り専用の状態をコントロールと共有するフィールドコンテナ。",
+      "demos": {
+        "basic": {
+          "title": "基本",
+          "description": "FormLabel がコントロールを指し、ヘルプテキストが説明し、無効時はエラーメッセージがヘルプを置き換えます。"
+        },
+        "form-field": {
+          "title": "FormField",
+          "description": "FormField は FormControl・FormLabel・ヘルプ・エラーをまとめます。errorMessage でフィールドが無効になります。"
+        },
+        "states": {
+          "title": "状態",
+          "description": "required は印と aria-required を追加し、disabled と readOnly はコントロールに伝わります。"
+        },
+        "custom-control": {
+          "title": "カスタムコントロール",
+          "description": "useFormControlProps は任意のコントロールに id・aria 属性・disabled・readOnly を接続し、useFormControlContext はフィールド状態を読み取ります。"
+        }
+      },
+      "api": {
+        "FormControlProps": {
+          "invalid": "フィールドを無効にします。コントロールに aria-invalid が付き、エラーメッセージがヘルプテキストを置き換えます",
+          "required": "フィールドを必須にします（コントロールに aria-required、ラベルに印）",
+          "disabled": "フィールド内のコントロールを無効化します",
+          "readOnly": "フィールド内のコントロールを読み取り専用にします",
+          "id": "コントロールの id。ラベル・ヘルプ・エラーの id はこれから派生します（`${id}-label`、`${id}-helper`、`${id}-error`）。省略時は自動生成",
+          "children": "フィールドの内容：FormLabel、コントロール、FormHelperText、FormErrorMessage",
+          "ref": "コンテナ <div> への ref"
+        },
+        "FormLabelProps": {
+          "requiredIndicator": "必須フィールドでテキストの後に表示される印（支援技術からは隠され、代わりに aria-required を使用）",
+          "ref": "<label> 要素への ref"
+        },
+        "FormFieldProps": {
+          "label": "フィールドのラベル",
+          "helperText": "コントロール下のヘルプテキスト（無効時は非表示）",
+          "errorMessage": "エラーメッセージ。`invalid` を明示しない限りフィールドを無効にします"
+        }
+      },
+      "cssVars": {
+        "--form-control-gap": "ラベル・フィールド・ヘルプ / エラーテキストの間隔",
+        "--form-control-label-font-size": "ラベルのフォントサイズ",
+        "--form-control-label-color": "ラベルの色",
+        "--form-control-helper-font-size": "ヘルプテキストとエラーテキストのフォントサイズ",
+        "--form-control-required-color": "必須マークの色"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "Minerva またはネイティブのコントロールを 1 つ囲みます。ラベルが名前を、補助テキストが説明を与え、required で必須マークを付けます。ラベルをクリックするとコントロールにフォーカスするか、スイッチが切り替わります。"
+          },
+          "states": {
+            "title": "状態",
+            "description": "invalid は補助テキストをエラーメッセージに置き換えてコントロールに印を付けます。readonly・disabled・required はコントロールに引き継がれ、required-indicator でマークを変更できます。"
+          },
+          "slots": {
+            "title": "リッチコンテンツのスロット",
+            "description": "label・helper-text・error-message スロットには、テキスト属性の代わりにマークアップを入れられます。"
+          },
+          "form": {
+            "title": "フォーム内での利用",
+            "description": "novalidate を指定し、送信ハンドラーで各コントロールの checkValidity() を確認して、ブラウザーの吹き出しの代わりにフィールド自身のエラーメッセージ（invalid）を表示します。編集すると消え、リセットですべてクリアされます。"
+          }
+        },
+        "minerva-form-control": {
+          "props": {
+            "readOnly": "スロットのコントロールを読み取り専用にします（readonly / readOnly と aria-readonly）。",
+            "controlElement": "スロットに入れたコントロール（読み取り専用）。"
+          },
+          "slots": {
+            "default": "コントロール：Minerva のフォームコントロール、またはネイティブの <input> / <select> / <textarea> を 1 つ。",
+            "label": "リッチなラベルの内容（label 属性の代わり）。",
+            "helper-text": "リッチな補助テキスト（helper-text の代わり）。",
+            "error-message": "リッチなエラーメッセージ（error-message の代わり）。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "ネイティブの例",
+            "description": "スマートフォンのプレビューでネイティブコンポーネントを操作できます。"
+          }
+        }
+      }
+    }
+  }
+}

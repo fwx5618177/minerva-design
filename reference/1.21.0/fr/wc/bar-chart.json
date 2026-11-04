@@ -1,0 +1,423 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.0",
+  "locale": "fr",
+  "renderer": "wc",
+  "page": "bar-chart",
+  "title": "Graphique à barres",
+  "description": "Barres groupées côte à côte ou empilées, avec des lignes superposées en option.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.0",
+    "sourceCommit": "cf7fb249651cd06c89d0951ac2c3a3aa74dc835a",
+    "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
+    "referenceSourceDigest": "sha256:563c9bec5d90807342a94c02317519b3da937907129bda2d25ea49762fa828fd"
+  },
+  "content": {
+    "data": {
+      "quarter": "T{{n}}",
+      "ticketsClosed": "Tickets résolus",
+      "ticketsAria": "Tickets de support résolus par trimestre",
+      "orders": "Commandes",
+      "average7": "Moyenne sur 7 jours",
+      "day": "Jour",
+      "ordersAria": "Commandes quotidiennes et leur moyenne sur 7 jours",
+      "revenueAria": "Chiffre d'affaires trimestriel, 2025 et 2026",
+      "nps": {
+        "promoters": "Promoteurs",
+        "passives": "Passifs",
+        "detractors": "Détracteurs"
+      },
+      "regions": {
+        "northAmerica": "Amérique du Nord",
+        "europe": "Europe",
+        "asiaPacific": "Asie-Pacifique",
+        "latinAmerica": "Amérique latine",
+        "middleEast": "Moyen-Orient"
+      },
+      "npsAria": "Part des promoteurs, passifs et détracteurs par région",
+      "channels": {
+        "web": "Web",
+        "mobile": "Application mobile",
+        "partners": "Partenaires"
+      },
+      "channelsAria": "Commandes mensuelles par canal, empilées",
+      "sales": "Ventes",
+      "salesAria": "Ventes par trimestre",
+      "unitsStatus": "{{quarter}} : {{units}} unités",
+      "tapBar": "Touchez une barre",
+      "stacked": "Empilées",
+      "grouped": "Groupées",
+      "ordersPerChannelAria": "Commandes par canal et par mois",
+      "cities": {
+        "london": "Londres",
+        "tokyo": "Tokyo",
+        "paris": "Paris"
+      },
+      "rainfallAria": "Précipitations mensuelles moyennes à Londres, Tokyo et Paris",
+      "netResult": "Résultat net",
+      "profitAria": "Résultat net mensuel, bénéfices au-dessus de zéro et pertes en dessous",
+      "unitsSold": "Unités vendues",
+      "rankingAria": "Ventes en ligne par pays, de la plus forte à la plus faible",
+      "newCustomers": "Nouveaux clients",
+      "week": "S{{n}}",
+      "weeklyTarget": "Objectif hebdomadaire",
+      "targetAria": "Nouveaux clients par semaine face à l'objectif hebdomadaire",
+      "targetSummary": "Objectif atteint {{reached}} semaines sur {{total}} ({{rate}}).",
+      "revenue": "Chiffre d'affaires",
+      "pickedMonth": "{{month}} : {{value}}",
+      "backToQuarters": "Retour aux trimestres",
+      "drillHint": "Cliquez sur un trimestre pour voir ses mois.",
+      "quarterDetail": "{{quarter}} : {{value}} au total. Cliquez sur un mois pour voir son chiffre d'affaires.",
+      "quartersAria": "Chiffre d'affaires par trimestre en 2026 ; cliquez sur un trimestre pour voir ses mois",
+      "monthsAria": "Chiffre d'affaires par mois au {{quarter}} 2026",
+      "hiringDepartments": {
+        "engineering": "Ingénierie",
+        "product": "Produit",
+        "design": "Design",
+        "sales": "Ventes",
+        "marketing": "Marketing",
+        "support": "Support"
+      },
+      "previousYear": "L'an dernier",
+      "currentYear": "Cette année",
+      "change": "Variation",
+      "compareLastYear": "Comparer avec l'an dernier",
+      "hiresAria": "Recrutements par service, cette année et l'an dernier",
+      "deploysOk": "Réussis",
+      "deploysFailed": "Annulés",
+      "changeFreeze": "Gel des changements",
+      "deploysAria": "Déploiements en production par jour sur huit semaines, réussis et annulés",
+      "deploysSummary": "{{perDay}} déploiements par jour ouvré, taux d'échec des changements de {{failure}}.",
+      "offPeak": "Heures creuses",
+      "standard": "Normal",
+      "peak": "Heures pleines",
+      "chargeHere": "Recharge",
+      "dailyAverage": "Moyenne du jour",
+      "chargingTime": "Durée de recharge",
+      "chargeFor": "{{energy}} kWh · {{duration}}",
+      "chargeAdvice": "Rechargez de {{start}} à {{end}} pour {{cost}}, soit {{saving}} de moins qu'en branchant à {{plugIn}}.",
+      "pricePerMwh": "Prix par MWh",
+      "pricesAria": "Prix de l'électricité du marché J-1 pour chaque heure de demain, avec les heures les moins chères pour recharger une voiture électrique mises en évidence"
+    }
+  },
+  "components": [
+    {
+      "name": "BarChart",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/bar-chart",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-bar-chart",
+        "props": [
+          {
+            "name": "stacked",
+            "typeText": "boolean",
+            "attribute": "stacked",
+            "required": false
+          },
+          {
+            "name": "percent",
+            "typeText": "boolean",
+            "attribute": "percent",
+            "required": false
+          },
+          {
+            "name": "labels",
+            "typeText": "boolean",
+            "attribute": "labels",
+            "required": false
+          },
+          {
+            "name": "height",
+            "typeText": "string | number | undefined",
+            "attribute": "height",
+            "required": false
+          },
+          {
+            "name": "series",
+            "typeText": "readonly ChartSeries[] | undefined",
+            "required": false
+          },
+          {
+            "name": "options",
+            "typeText": "ChartBaseOptions | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "minerva-hover",
+            "typeText": "CustomEvent",
+            "description": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, `null` when nothing is hovered"
+          },
+          {
+            "name": "minerva-point-click",
+            "typeText": "CustomEvent",
+            "description": "A point or a bar was clicked; detail: { x, xLabel, items }"
+          },
+          {
+            "name": "minerva-plot-click",
+            "typeText": "CustomEvent",
+            "description": "The plot area was clicked where there is no point; detail: { x, y }"
+          },
+          {
+            "name": "minerva-zoom",
+            "typeText": "CustomEvent",
+            "description": "The user zoomed or panned; detail: { x, y } (the visible ranges)"
+          },
+          {
+            "name": "minerva-renderer-change",
+            "typeText": "CustomEvent",
+            "description": "The backend is ready (or fell back after a GPU loss); detail: { renderer }"
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "grouped",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-chart/wc/grouped.html",
+      "files": {
+        "apps/docs/src/docs/pages/bar-chart/wc/grouped.html": "<minerva-bar-chart id=\"sales\" labels height=\"280\"></minerva-bar-chart>\n",
+        "apps/docs/src/docs/pages/bar-chart/wc/grouped.ts": "// Series are grouped side by side; `labels` writes the value of every bar.\nimport type { MinervaBarChart } from \"minerva-design/web-components/chart\";\n\nconst TEXT = {\n  en: {\n    lastYear: \"2024\",\n    thisYear: \"2025\",\n    regions: [\"North\", \"South\", \"East\", \"West\"],\n  },\n  zh: {\n    lastYear: \"2024 年\",\n    thisYear: \"2025 年\",\n    regions: [\"华北\", \"华南\", \"华东\", \"西部\"],\n  },\n  ja: {\n    lastYear: \"2024年\",\n    thisYear: \"2025年\",\n    regions: [\"北部\", \"南部\", \"東部\", \"西部\"],\n  },\n  fr: {\n    lastYear: \"2024\",\n    thisYear: \"2025\",\n    regions: [\"Nord\", \"Sud\", \"Est\", \"Ouest\"],\n  },\n};\n\nexport function setup(root: HTMLElement) {\n  const text =\n    TEXT[document.documentElement.lang as keyof typeof TEXT] ?? TEXT.en;\n  const chart = root.querySelector<MinervaBarChart>(\"#sales\")!;\n  chart.series = [\n    { name: text.lastYear, data: [38, 52, 61, 45] },\n    { name: text.thisYear, data: [44, 58, 72, 49] },\n  ];\n  chart.options = { xAxis: { type: \"category\", categories: text.regions } };\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Barres groupées avec étiquettes",
+      "description": "Deux années côte à côte par région ; labels écrit la valeur au-dessus de chaque barre."
+    },
+    {
+      "id": "stacked",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/bar-chart/wc/stacked.html",
+      "files": {
+        "apps/docs/src/docs/pages/bar-chart/wc/stacked.html": "<minerva-bar-chart id=\"devices\" stacked height=\"280\"></minerva-bar-chart>\n",
+        "apps/docs/src/docs/pages/bar-chart/wc/stacked.ts": "// `stacked` piles the bars of each category (a series can still set its\n// own `type`, e.g. a line).\nimport type { MinervaBarChart } from \"minerva-design/web-components/chart\";\n\nconst TEXT = {\n  en: {\n    desktop: \"Desktop\",\n    mobile: \"Mobile\",\n    tablet: \"Tablet\",\n    days: [\"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\", \"Sun\"],\n  },\n  zh: {\n    desktop: \"桌面端\",\n    mobile: \"移动端\",\n    tablet: \"平板\",\n    days: [\"周一\", \"周二\", \"周三\", \"周四\", \"周五\", \"周六\", \"周日\"],\n  },\n  ja: {\n    desktop: \"デスクトップ\",\n    mobile: \"モバイル\",\n    tablet: \"タブレット\",\n    days: [\"月\", \"火\", \"水\", \"木\", \"金\", \"土\", \"日\"],\n  },\n  fr: {\n    desktop: \"Ordinateur\",\n    mobile: \"Mobile\",\n    tablet: \"Tablette\",\n    days: [\"lun.\", \"mar.\", \"mer.\", \"jeu.\", \"ven.\", \"sam.\", \"dim.\"],\n  },\n};\n\nexport function setup(root: HTMLElement) {\n  const text =\n    TEXT[document.documentElement.lang as keyof typeof TEXT] ?? TEXT.en;\n  const chart = root.querySelector<MinervaBarChart>(\"#devices\")!;\n  chart.series = [\n    { name: text.desktop, data: [320, 302, 341, 374, 390, 210, 180] },\n    { name: text.mobile, data: [420, 432, 401, 454, 490, 630, 610] },\n    { name: text.tablet, data: [80, 72, 71, 84, 90, 130, 120] },\n  ];\n  chart.options = { xAxis: { type: \"category\", categories: text.days } };\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "Barres empilées",
+      "description": "Les sessions par appareil empilées pour chaque jour de la semaine."
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Graphique à barres",
+      "description": "Barres groupées côte à côte ou empilées, avec des lignes superposées en option.",
+      "demos": {
+        "basic": {
+          "title": "Base",
+          "description": "Une série de tuples [catégorie, valeur] ; l’axe y inclut toujours zéro."
+        },
+        "stacked": {
+          "title": "Empilées",
+          "description": "stacked empile les séries les unes sur les autres."
+        },
+        "labels": {
+          "title": "Étiquettes de valeur",
+          "description": "labels écrit la valeur au-dessus de chaque barre, avec le format de l’axe y, et réserve la place nécessaire au-dessus de la plus haute. Idéal avec peu de barres, quand les valeurs exactes comptent."
+        },
+        "percent": {
+          "title": "Empilées à 100 %",
+          "description": "percent ramène chaque pile à 100 % pour comparer la composition de groupes de tailles différentes ; l’infobulle affiche le nombre de réponses et leur part."
+        },
+        "combo": {
+          "title": "Barres et ligne",
+          "description": "Une série avec type: \"line\" est tracée par-dessus les barres, ici une moyenne sur 7 jours."
+        },
+        "grouped": {
+          "title": "Groupées",
+          "description": "Plusieurs séries sans stacked se placent côte à côte dans chaque catégorie, ici les précipitations mensuelles de trois villes ; Intl.NumberFormat écrit l'unité."
+        },
+        "profit-loss": {
+          "title": "Pertes et profits",
+          "description": "Les valeurs négatives partent de zéro vers le bas ; chaque donnée fixe sa couleur, verte pour un bénéfice et rouge pour une perte, et le format y affiche le signe."
+        },
+        "ranking": {
+          "title": "Classement",
+          "description": "Triez les données avant de les passer pour classer les catégories ; Intl.DisplayNames donne les noms de pays dans la langue du lecteur et showLabels écrit les valeurs."
+        },
+        "target": {
+          "title": "Par rapport à un objectif",
+          "description": "Une ligne y en pointillés marque l'objectif hebdomadaire et les barres qui l'atteignent sont mises en avant par la couleur de leur donnée."
+        },
+        "drilldown": {
+          "title": "Exploration descendante",
+          "description": "onPointClick sur un trimestre remplace la série par ses trois mois, et un Button ramène les trimestres ; cliquer sur un mois écrit son chiffre d'affaires dans une sortie aria-live."
+        },
+        "period-compare": {
+          "title": "Comparaison avec l'an dernier",
+          "description": "Un Switch règle hidden sur la série de l'an dernier pour afficher ou masquer la comparaison sans changer les couleurs, et renderTooltip liste les deux années avec la variation en pourcentage."
+        },
+        "deployments": {
+          "title": "Déploiements dans le temps",
+          "description": "Des barres empilées sur un axe temporel comptent les déploiements réussis et annulés de chaque jour ; des annotations rect grisent les week-ends et un gel des changements, et un résumé donne la fréquence de déploiement et le taux d'échec des changements."
+        },
+        "ev-charging": {
+          "title": "Heures de recharge les moins chères",
+          "description": "Les prix horaires de l'électricité de demain, répartis en trois séries empilées pour que chaque barre prenne la couleur de sa tranche de prix. Une annotation rect suit la plage d'heures la moins chère pour la durée de recharge choisie dans le Select, et la sortie compare son coût à une recharge dès l'arrivée."
+        }
+      },
+      "data": {
+        "quarter": "T{{n}}",
+        "ticketsClosed": "Tickets résolus",
+        "ticketsAria": "Tickets de support résolus par trimestre",
+        "orders": "Commandes",
+        "average7": "Moyenne sur 7 jours",
+        "day": "Jour",
+        "ordersAria": "Commandes quotidiennes et leur moyenne sur 7 jours",
+        "revenueAria": "Chiffre d'affaires trimestriel, 2025 et 2026",
+        "nps": {
+          "promoters": "Promoteurs",
+          "passives": "Passifs",
+          "detractors": "Détracteurs"
+        },
+        "regions": {
+          "northAmerica": "Amérique du Nord",
+          "europe": "Europe",
+          "asiaPacific": "Asie-Pacifique",
+          "latinAmerica": "Amérique latine",
+          "middleEast": "Moyen-Orient"
+        },
+        "npsAria": "Part des promoteurs, passifs et détracteurs par région",
+        "channels": {
+          "web": "Web",
+          "mobile": "Application mobile",
+          "partners": "Partenaires"
+        },
+        "channelsAria": "Commandes mensuelles par canal, empilées",
+        "sales": "Ventes",
+        "salesAria": "Ventes par trimestre",
+        "unitsStatus": "{{quarter}} : {{units}} unités",
+        "tapBar": "Touchez une barre",
+        "stacked": "Empilées",
+        "grouped": "Groupées",
+        "ordersPerChannelAria": "Commandes par canal et par mois",
+        "cities": {
+          "london": "Londres",
+          "tokyo": "Tokyo",
+          "paris": "Paris"
+        },
+        "rainfallAria": "Précipitations mensuelles moyennes à Londres, Tokyo et Paris",
+        "netResult": "Résultat net",
+        "profitAria": "Résultat net mensuel, bénéfices au-dessus de zéro et pertes en dessous",
+        "unitsSold": "Unités vendues",
+        "rankingAria": "Ventes en ligne par pays, de la plus forte à la plus faible",
+        "newCustomers": "Nouveaux clients",
+        "week": "S{{n}}",
+        "weeklyTarget": "Objectif hebdomadaire",
+        "targetAria": "Nouveaux clients par semaine face à l'objectif hebdomadaire",
+        "targetSummary": "Objectif atteint {{reached}} semaines sur {{total}} ({{rate}}).",
+        "revenue": "Chiffre d'affaires",
+        "pickedMonth": "{{month}} : {{value}}",
+        "backToQuarters": "Retour aux trimestres",
+        "drillHint": "Cliquez sur un trimestre pour voir ses mois.",
+        "quarterDetail": "{{quarter}} : {{value}} au total. Cliquez sur un mois pour voir son chiffre d'affaires.",
+        "quartersAria": "Chiffre d'affaires par trimestre en 2026 ; cliquez sur un trimestre pour voir ses mois",
+        "monthsAria": "Chiffre d'affaires par mois au {{quarter}} 2026",
+        "hiringDepartments": {
+          "engineering": "Ingénierie",
+          "product": "Produit",
+          "design": "Design",
+          "sales": "Ventes",
+          "marketing": "Marketing",
+          "support": "Support"
+        },
+        "previousYear": "L'an dernier",
+        "currentYear": "Cette année",
+        "change": "Variation",
+        "compareLastYear": "Comparer avec l'an dernier",
+        "hiresAria": "Recrutements par service, cette année et l'an dernier",
+        "deploysOk": "Réussis",
+        "deploysFailed": "Annulés",
+        "changeFreeze": "Gel des changements",
+        "deploysAria": "Déploiements en production par jour sur huit semaines, réussis et annulés",
+        "deploysSummary": "{{perDay}} déploiements par jour ouvré, taux d'échec des changements de {{failure}}.",
+        "offPeak": "Heures creuses",
+        "standard": "Normal",
+        "peak": "Heures pleines",
+        "chargeHere": "Recharge",
+        "dailyAverage": "Moyenne du jour",
+        "chargingTime": "Durée de recharge",
+        "chargeFor": "{{energy}} kWh · {{duration}}",
+        "chargeAdvice": "Rechargez de {{start}} à {{end}} pour {{cost}}, soit {{saving}} de moins qu'en branchant à {{plugIn}}.",
+        "pricePerMwh": "Prix par MWh",
+        "pricesAria": "Prix de l'électricité du marché J-1 pour chaque heure de demain, avec les heures les moins chères pour recharger une voiture électrique mises en évidence"
+      },
+      "api": {
+        "BarChartProps": {
+          "series": "Séries tracées en barres sauf si elles définissent un type (p. ex. une ligne superposée)",
+          "stacked": "Empile les barres de toutes les séries au lieu de les grouper",
+          "percent": "Ramène les piles à 100 % (implique stacked)",
+          "labels": "Écrit la valeur au-dessus de chaque barre",
+          "orientation": "\"horizontal\" fait partir les barres de la gauche, les catégories le long du bord gauche"
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Base",
+            "description": "Touchez une barre : onPointClick reçoit le trimestre et sa valeur."
+          },
+          "stacked": {
+            "title": "Empilées",
+            "description": "Le Switch bascule stacked entre barres empilées et groupées."
+          }
+        }
+      },
+      "wc": {
+        "demos": {
+          "grouped": {
+            "title": "Barres groupées avec étiquettes",
+            "description": "Deux années côte à côte par région ; labels écrit la valeur au-dessus de chaque barre."
+          },
+          "stacked": {
+            "title": "Barres empilées",
+            "description": "Les sessions par appareil empilées pour chaque jour de la semaine."
+          }
+        },
+        "minerva-bar-chart": {
+          "props": {
+            "height": "Hauteur du graphique, légende comprise : en pixels ou toute longueur CSS",
+            "options": "Autres options du moteur (axes, légende, info-bulle, palette, format…) fusionnées avec les propriétés de l'élément ; propriété uniquement",
+            "instance": "L'instance du moteur (minerva-design/charts/core), null tant que l'élément n'est pas rendu et connecté"
+          },
+          "events": {
+            "minerva-hover": "Les points survolés (ou ciblés au clavier) ont changé ; detail : { x, xLabel, items }, null quand rien n'est survolé",
+            "minerva-point-click": "Un point ou une barre a été cliqué ; detail : { x, xLabel, items }",
+            "minerva-plot-click": "La zone de tracé a été cliquée hors des points ; detail : { x, y } en coordonnées de données",
+            "minerva-zoom": "L'utilisateur a zoomé ou s'est déplacé ; detail : { x, y } (les plages visibles)",
+            "minerva-renderer-change": "Le moteur de rendu est prêt, ou s'est replié après une perte du GPU ; detail : { renderer }"
+          },
+          "methods": {
+            "resetZoom": "Affiche toute la plage de données",
+            "getView": "Plage visible, null avant la création du moteur",
+            "setView": "Définit la plage visible",
+            "getRenderer": "Moteur de rendu utilisé (webgpu, webgl2, webgl, canvas2d), null tant qu'il n'est pas prêt"
+          }
+        }
+      }
+    }
+  }
+}

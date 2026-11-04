@@ -1,0 +1,211 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.21.0",
+  "locale": "fr",
+  "renderer": "vue",
+  "page": "html-preview",
+  "title": "HtmlPreview",
+  "description": "Prévisualise du HTML non fiable, comme des modèles d'e-mail, dans une iframe entièrement isolée. Le balisage est assaini avec DOMPurify (échec sûr) et rendu derrière une Content-Security-Policy qui bloque les scripts et le réseau.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.21.0",
+    "sourceCommit": "cf7fb249651cd06c89d0951ac2c3a3aa74dc835a",
+    "sourceDigest": "sha256:e0f51a94cc5272baf2775327d83ba025ee09228cfc17f4d529188b1653c78892",
+    "referenceSourceDigest": "sha256:563c9bec5d90807342a94c02317519b3da937907129bda2d25ea49762fa828fd"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "HtmlPreview",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "HtmlPreview"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "html",
+            "type": "string",
+            "required": true,
+            "description": "Untrusted HTML to preview (sanitized with DOMPurify in the browser)",
+            "typeText": "string"
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "required": true,
+            "description": "Accessible title of the iframe",
+            "typeText": "string"
+          },
+          {
+            "name": "viewport",
+            "type": "HtmlPreviewViewport",
+            "default": "\"desktop\"",
+            "required": false,
+            "description": "Full-width desktop preview or a fixed-width mobile preview",
+            "typeText": "HtmlPreviewViewport"
+          },
+          {
+            "name": "mobileWidth",
+            "type": "number",
+            "default": "375",
+            "required": false,
+            "description": "Width of the mobile preview in pixels (invalid values fall back to 375)",
+            "typeText": "number"
+          },
+          {
+            "name": "height",
+            "type": "number",
+            "default": "600",
+            "required": false,
+            "description": "Height of the iframe in pixels (invalid values fall back to 600)",
+            "typeText": "number"
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:HtmlPreview": {
+      "kind": "cssVars",
+      "source": "react/src/components/HtmlPreview",
+      "vars": [
+        {
+          "name": "--html-preview-bg",
+          "description": "Background color around the frame"
+        },
+        {
+          "name": "--html-preview-frame-bg",
+          "description": "Background color of the frame"
+        },
+        {
+          "name": "--html-preview-frame-border-color",
+          "description": "Border color of the frame"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/html-preview/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/html-preview/vue/basic.vue": "<script setup lang=\"ts\">\nimport { HtmlPreview } from \"minerva-design/vue\";\n</script>\n<template>\n  <HtmlPreview\n    html=\"<h1>Hello Minerva</h1><p>A sandboxed document preview.</p>\"\n    title=\"Welcome document\"\n    :height=\"220\"\n  />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "sanitized",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/html-preview/vue/sanitized.vue",
+      "files": {
+        "apps/docs/src/docs/pages/html-preview/vue/sanitized.vue": "<script setup lang=\"ts\">\nimport { HtmlPreview, VStack } from \"minerva-design/vue\";\nconst html =\n  '<h2>Safe preview</h2><img src=\"x\" onerror=\"alert(1)\"><a href=\"javascript:alert(1)\">Unsafe link</a><p>Ordinary content remains visible.</p>';\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><HtmlPreview :html=\"html\" title=\"Sanitized document\" :height=\"220\" />\n    <p>\n      Unsafe scripts and event handlers are removed; the preview stays\n      sandboxed.\n    </p></VStack\n  >\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "sanitized",
+      "description": ""
+    },
+    {
+      "id": "viewport",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/html-preview/vue/viewport.vue",
+      "files": {
+        "apps/docs/src/docs/pages/html-preview/vue/viewport.vue": "<script setup lang=\"ts\">\nimport { ref } from \"vue\";\nimport { HtmlPreview, Button, VStack } from \"minerva-design/vue\";\nconst mobile = ref(true);\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><Button @click=\"mobile = !mobile\">{{\n      mobile ? \"Switch to desktop\" : \"Switch to mobile\"\n    }}</Button\n    ><HtmlPreview\n      html=\"<h2>Responsive preview</h2><p>Inspect content at different viewport widths.</p>\"\n      title=\"Responsive document\"\n      :viewport=\"mobile ? 'mobile' : 'desktop'\"\n      :mobile-width=\"320\"\n      :height=\"220\"\n  /></VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "viewport",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.21.0/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "HtmlPreview",
+      "description": "Prévisualise du HTML non fiable, comme des modèles d'e-mail, dans une iframe entièrement isolée. Le balisage est assaini avec DOMPurify (échec sûr) et rendu derrière une Content-Security-Policy qui bloque les scripts et le réseau.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Les styles en ligne et les images data: sont conservés ; scripts, formulaires, liens et images distantes sont supprimés."
+        },
+        "viewports": {
+          "title": "Fenêtres d'affichage",
+          "description": "viewport=\"mobile\" affiche un aperçu à largeur fixe (mobileWidth) ; desktop remplit le conteneur."
+        }
+      },
+      "api": {
+        "HtmlPreviewProps": {
+          "html": "HTML non fiable à prévisualiser (assaini dans le navigateur)",
+          "title": "Titre accessible de l'iframe",
+          "viewport": "Aperçu bureau pleine largeur ou mobile à largeur fixe",
+          "mobileWidth": "Largeur de l'aperçu mobile en pixels",
+          "height": "Hauteur de l'iframe en pixels",
+          "className": "Classe supplémentaire de l'élément racine",
+          "style": "Styles en ligne de l'élément racine",
+          "ref": "Ref vers l'élément <div> racine"
+        }
+      },
+      "cssVars": {
+        "--html-preview-bg": "Couleur de fond autour du cadre",
+        "--html-preview-frame-bg": "Couleur de fond du cadre",
+        "--html-preview-frame-border-color": "Couleur de bordure du cadre"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "L'attribut html est nettoyé puis rendu dans une iframe isolée ; label donne son titre accessible au cadre."
+          },
+          "viewport": {
+            "title": "Bureau et mobile",
+            "description": "viewport=\"mobile\" affiche un cadre de mobile-width pixels de large ; le balisage passe par la propriété html."
+          },
+          "sanitized": {
+            "title": "Contenu non fiable",
+            "description": "Modifiez la source : scripts et gestionnaires d'événements sont retirés et rien ne s'exécute, les styles en ligne sont conservés."
+          }
+        },
+        "minerva-html-preview": {
+          "props": {
+            "label": "Titre accessible de l'iframe (title de la bibliothèque React ; à défaut aria-label)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        },
+        "limitations": "La documentation utilise une iframe isolée. Sur iOS et Android, utilisez l’adaptateur react-native-webview de l’exemple Expo ; les scripts et la navigation externe restent désactivés."
+      }
+    }
+  }
+}
