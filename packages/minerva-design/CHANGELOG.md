@@ -1,5 +1,11 @@
 # minerva-design
 
+## 1.20.4
+
+### Patch Changes
+
+- 243ff97: Release a quadrant point card once the pointer leaves it when focus stayed on an action the pointer clicked; keyboard focus in the card's actions (or a key pressed on a clicked action) still keeps it open.
+
 ## 1.20.3
 
 ### Patch Changes
