@@ -1,0 +1,296 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.6",
+  "locale": "fr",
+  "renderer": "weapp",
+  "page": "tag-input",
+  "title": "TagInput",
+  "description": "Saisie libre d’étiquettes avec suggestions : Entrée, le bouton d’ajout ou la perte du focus ajoutent la saisie, les flèches choisissent une suggestion et la composition IME ne valide jamais.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.6",
+    "sourceCommit": "63ce45656d8f3d1bfbee71026e84674640ae9abf",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:fa9a782f68a5d5b512762e2152b2ad065da3de6937bac96eef63709ddba3b95b"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "TagInput",
+      "support": {
+        "status": "beta",
+        "notes": "Unique controlled/default tags, shared literal separator and newline parsing, native confirm/blur, filtered deduplicated suggestions, touch/blur selection arbitration, clear, max count and native instance paste(text,start,end). WeChat input does not expose a DOM clipboard event/selection API. Delimited incoming input is parsed; exact clipboard insertion ranges can be supplied to the instance paste() method. Arrow-key suggestion navigation and React render callbacks are not reproduced. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Unique controlled/default tags, shared literal separator and newline parsing, native confirm/blur, filtered deduplicated suggestions, touch/blur selection arbitration, clear, max count and native instance paste(text,start,end). WeChat input does not expose a DOM clipboard event/selection API. Delimited incoming input is parsed; exact clipboard insertion ranges can be supplied to the instance paste() method. Arrow-key suggestion navigation and React render callbacks are not reproduced. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/tag-input/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "tag-input",
+        "props": [
+          {
+            "name": "disabled",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "readOnly",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "value",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "defaultValue",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "placeholder",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "maxTags",
+            "typeText": "number",
+            "required": false,
+            "default": 9007199254740991
+          },
+          {
+            "name": "options",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "separators",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "commitOnBlur",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          },
+          {
+            "name": "addLabel",
+            "typeText": "string",
+            "required": false,
+            "default": "Add tag"
+          },
+          {
+            "name": "clearLabel",
+            "typeText": "string",
+            "required": false,
+            "default": "Clear tags"
+          },
+          {
+            "name": "emptyText",
+            "typeText": "string",
+            "required": false,
+            "default": "No matches"
+          },
+          {
+            "name": "required",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "invalid",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          }
+        ],
+        "events": [],
+        "slots": [],
+        "registration": "\"usingComponents\": { \"mn-tag-input\": \"minerva-design/dist/weapp/tag-input/index\" }",
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:TagInput": {
+      "kind": "cssVars",
+      "source": "react/src/components/TagInput",
+      "vars": [
+        {
+          "name": "--tag-input-gap",
+          "description": "Space between the tags and between the tags and the entry row"
+        },
+        {
+          "name": "--tag-input-tag-min-height",
+          "description": "Minimum height of a tag (defaults to the density's small control height)"
+        },
+        {
+          "name": "--tag-input-list-max-height",
+          "description": "Maximum height of the suggestion list before it scrolls"
+        },
+        {
+          "name": "--tag-input-list-radius",
+          "description": "Corner radius of the suggestion list (defaults to --radius-md)"
+        },
+        {
+          "name": "--tag-input-option-padding-y",
+          "description": "Vertical padding of a suggestion (follows the density's row padding)"
+        },
+        {
+          "name": "--tag-input-option-padding-x",
+          "description": "Horizontal padding of a suggestion (follows the density's row padding)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.6/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "TagInput",
+      "description": "Saisie libre d’étiquettes avec suggestions : Entrée, le bouton d’ajout ou la perte du focus ajoutent la saisie, les flèches choisissent une suggestion et la composition IME ne valide jamais.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Les étiquettes choisies sont masquées des suggestions ; Échap abandonne la saisie."
+        },
+        "form-control": {
+          "title": "Formulaires",
+          "description": "name soumet chaque étiquette via un champ caché ; FormField fournit le libellé et l’état lecture seule."
+        },
+        "separators": {
+          "title": "Séparateurs",
+          "description": "separators liste les chaînes qui découpent le texte saisi ou collé en étiquettes ; \"Enter\" valide avec la touche Entrée et découpe le texte collé par ligne."
+        }
+      },
+      "api": {
+        "TagInputProps": {
+          "value": "Étiquettes sélectionnées (contrôlées) ; à omettre pour un champ non contrôlé",
+          "defaultValue": "Étiquettes initiales d’un champ non contrôlé",
+          "onChange": "Appelé avec les nouvelles étiquettes après un ajout, une suppression ou un effacement",
+          "options": "Suggestions ; les étiquettes déjà choisies sont masquées et les doublons fusionnés",
+          "commitOnBlur": "Ajoute la saisie comme étiquette à la perte du focus",
+          "separators": "Touches qui valident la saisie : une chaîne littérale (par ex. \",\" ou \";\") découpe le texte saisi ou collé en étiquettes ; \"Enter\" valide avec la touche Entrée (et découpe aussi le texte collé aux sauts de ligne)",
+          "id": "Id du champ texte (id du FormControl par défaut)",
+          "name": "Soumet chaque étiquette sous ce nom (champs cachés) ; la saisie en cours n’est pas soumise",
+          "placeholder": "Texte indicatif du champ texte",
+          "aria-label": "Nom accessible du champ texte sans libellé de FormControl",
+          "aria-labelledby": "Ids des éléments qui étiquettent le champ texte (prioritaires sur le libellé du FormControl)",
+          "aria-describedby": "Id supplémentaires décrivant le champ texte",
+          "disabled": "Désactive le champ (aussi défini par FormControl)",
+          "readOnly": "Affiche les étiquettes sans commandes d’édition (aussi défini par FormControl)",
+          "invalid": "État d’erreur (aussi défini par un FormControl invalide)",
+          "size": "Taille du champ texte",
+          "emptyText": "Texte de la liste quand rien ne correspond",
+          "addLabel": "Libellé accessible du bouton d’ajout",
+          "clearLabel": "Libellé accessible du bouton d’effacement",
+          "removeLabel": "Libellé accessible du bouton de retrait d’une étiquette",
+          "createLabel": "Texte de la suggestion « créer cette étiquette »",
+          "className": "Classe du conteneur",
+          "style": "Style en ligne du conteneur",
+          "ref": "Ref vers l’<input> texte"
+        }
+      },
+      "cssVars": {
+        "--tag-input-gap": "Espace entre les étiquettes et entre les étiquettes et la ligne de saisie",
+        "--tag-input-tag-min-height": "Hauteur minimale d'une étiquette (par défaut la hauteur de contrôle small de la densité)",
+        "--tag-input-list-max-height": "Hauteur maximale de la liste de suggestions avant défilement",
+        "--tag-input-list-radius": "Rayon des coins de la liste de suggestions (par défaut --radius-md)",
+        "--tag-input-option-padding-y": "Marge intérieure verticale d'une suggestion (suit la marge de ligne de la densité)",
+        "--tag-input-option-padding-x": "Marge intérieure horizontale d'une suggestion (suit la marge de ligne de la densité)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "Saisissez un tag puis Entrée, ou choisissez une suggestion avec les flèches. value est une propriété ; minerva-change signale chaque nouvelle liste."
+          },
+          "separators": {
+            "title": "Séparateurs",
+            "description": "separators=\", ; Enter\" découpe le texte saisi ou collé en tags. Avec no-commit-on-blur, quitter le champ garde le brouillon sous forme de texte."
+          },
+          "states": {
+            "title": "Tailles et états",
+            "description": "Trois tailles, invalid, readonly (tags affichés sans contrôles d'édition, toujours envoyés) et disabled."
+          },
+          "form": {
+            "title": "Dans un formulaire",
+            "description": "L'élément est associé aux formulaires : chaque tag est envoyé comme une entrée distincte sous name, required refuse une liste vide et Réinitialiser rétablit l'attribut value."
+          }
+        },
+        "minerva-tag-input": {
+          "props": {
+            "noCommitOnBlur": "N'ajoute pas le brouillon saisi comme tag quand le champ perd le focus.",
+            "readOnly": "Affiche les tags sans contrôles d'édition ; ils sont toujours envoyés.",
+            "required": "Le contrôle doit avoir une valeur pour que le formulaire puisse être envoyé.",
+            "isDisabled": "Indique si le contrôle est désactivé, par lui-même ou par un <fieldset> désactivé (lecture seule).",
+            "form": "Le formulaire auquel appartient l'élément (lecture seule).",
+            "labels": "Les éléments <label> associés à l'élément (lecture seule).",
+            "validity": "État de validité, comme <input>.validity (lecture seule).",
+            "validationMessage": "Message décrivant l'erreur de validation actuelle ; vide si la valeur est valide (lecture seule).",
+            "willValidate": "Indique si l'élément participe à la validation des contraintes (lecture seule)."
+          },
+          "events": {
+            "minerva-change": "Les tags ont changé (ajout, suppression, effacement) ; detail: { value }.",
+            "minerva-input": "Le texte saisi (brouillon) a changé ; detail: { value } contient le brouillon.",
+            "minerva-open-change": "La liste de suggestions va s'ouvrir ou se fermer (detail: { open }) ; annulable : preventDefault() conserve l'état actuel.",
+            "minerva-clear": "Le bouton d'effacement a supprimé tous les tags."
+          },
+          "cssVars": {
+            "--icon-button-color": "Couleur de l'icône des boutons d'ajout et d'effacement.",
+            "--icon-button-hover-bg": "Fond des boutons d'ajout et d'effacement au survol.",
+            "--icon-button-pressed-color": "Couleur de l'icône d'un bouton-icône enfoncé.",
+            "--icon-button-pressed-bg": "Fond d'un bouton-icône enfoncé.",
+            "--icon-button-size": "Largeur et hauteur des boutons d'ajout et d'effacement (par défaut, les hauteurs de contrôle de la densité).",
+            "--icon-button-icon-size": "Taille de police des icônes des boutons.",
+            "--icon-button-radius": "Rayon des coins des boutons d'ajout et d'effacement (par défaut --radius-lg).",
+            "--input-height": "Hauteur minimale du champ de texte (par défaut, la hauteur de contrôle de la densité pour la taille).",
+            "--input-padding-x": "Marge intérieure horizontale du texte.",
+            "--input-radius": "Rayon des coins du champ de texte (par défaut --radius-lg).",
+            "--input-font-size": "Taille de police du champ de texte.",
+            "--input-background": "Couleur de fond du champ de texte.",
+            "--input-border-color": "Couleur de bordure du champ de texte au repos.",
+            "--input-focus-color": "Couleur de bordure du champ de texte au survol ou au focus.",
+            "--tag-height": "Hauteur minimale d'un tag (par défaut, la hauteur du contenu).",
+            "--tag-padding-x": "Marge intérieure horizontale d'un tag.",
+            "--tag-font-size": "Taille de police d'un tag.",
+            "--tag-radius": "Rayon des coins d'un tag (par défaut --radius-sm).",
+            "--tag-gap": "Espace entre le libellé d'un tag et son bouton de suppression.",
+            "--tag-ring-color": "Couleur de l'anneau fin des tags teintés (par défaut le texte à 16 %)."
+          },
+          "methods": {
+            "focus": "Donne le focus au contrôle interne.",
+            "blur": "Retire le focus du contrôle interne.",
+            "checkValidity": "Vérifie la validité ; déclenche invalid si la valeur est invalide.",
+            "reportValidity": "Vérifie la validité et affiche le message de validation du navigateur.",
+            "setCustomValidity": "Définit une erreur de validation personnalisée, ou l'efface avec \"\".",
+            "formResetCallback": "Rappel de formulaire appelé par form.reset() : rétablit la valeur par défaut.",
+            "formDisabledCallback": "Rappel de formulaire appelé quand un <fieldset> ancêtre est désactivé ou réactivé.",
+            "formStateRestoreCallback": "Rappel de formulaire appelé quand le navigateur restaure la valeur (retour arrière, saisie automatique)."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Exemple natif",
+            "description": "Essayez le composant natif dans cet aperçu mobile."
+          }
+        }
+      }
+    }
+  }
+}

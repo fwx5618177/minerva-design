@@ -1,0 +1,351 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.6",
+  "locale": "zh",
+  "renderer": "taro",
+  "page": "segmented-control",
+  "title": "SegmentedControl 分段控制器",
+  "description": "用于切换模式和筛选条件的单选分段开关，滑块会滑动到选中的分段下方。若每个选项都有各自的内容面板，请使用 Tabs。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.6",
+    "sourceCommit": "63ce45656d8f3d1bfbee71026e84674640ae9abf",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:fa9a782f68a5d5b512762e2152b2ad065da3de6937bac96eef63709ddba3b95b"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "SegmentedControl",
+      "support": {
+        "status": "beta",
+        "notes": "Single-choice segmented switch from string/object options (icon, label, disabled, aria-label), controlled/uncontrolled value, three sizes, neutral/primary thumb, fullWidth, disabled and an equal-width sliding thumb. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. H5 supports roving arrows (left-to-right only) and Home/End selection; native hosts use touch selection. Segments always share the width equally. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Single-choice segmented switch from string/object options (icon, label, disabled, aria-label), controlled/uncontrolled value, three sizes, neutral/primary thumb, fullWidth, disabled and an equal-width sliding thumb. Native touch/view semantics differ from browser DOM semantics. Native devices do not expose document focus, inert, browser portals or File input APIs; H5 capabilities are specified separately. Device-runtime validation is still required. H5 supports roving arrows (left-to-right only) and Home/End selection; native hosts use touch selection. Segments always share the width equally. Component tests, H5 tests in happy-dom and the official Taro WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/taro",
+          "exports": [
+            "SegmentedControl"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "options",
+            "source": "packages/taro/src/segmented-control.tsx",
+            "kind": "array",
+            "typeText": "readonly SegmentedControlOption<NoInfer<T>>[]",
+            "typeRef": "type:6fc9fecba63c58a9657e",
+            "required": true,
+            "description": "The segments: strings or option objects"
+          },
+          {
+            "name": "value",
+            "source": "packages/taro/src/segmented-control.tsx",
+            "kind": "object",
+            "typeText": "NoInfer<T> | undefined",
+            "typeRef": "type:0a3cd3e425b13b6714df",
+            "required": false,
+            "description": "Selected value (controlled)"
+          },
+          {
+            "name": "defaultValue",
+            "source": "packages/taro/src/segmented-control.tsx",
+            "kind": "object",
+            "typeText": "NoInfer<T> | undefined",
+            "typeRef": "type:0a3cd3e425b13b6714df",
+            "required": false,
+            "description": "Initially selected value (uncontrolled)"
+          },
+          {
+            "name": "size",
+            "source": "packages/taro/src/segmented-control.tsx",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "\"small\" | \"medium\" | \"large\" | undefined",
+            "typeRef": "type:8d5b6882dc615b54818b",
+            "required": false,
+            "description": "Segment density (default \"medium\")"
+          },
+          {
+            "name": "color",
+            "source": "packages/taro/src/segmented-control.tsx",
+            "kind": "enum",
+            "values": [
+              "neutral",
+              "primary"
+            ],
+            "typeText": "\"neutral\" | \"primary\" | undefined",
+            "typeRef": "type:955270a64c25290976a0",
+            "required": false,
+            "description": "Thumb color (default \"neutral\")"
+          },
+          {
+            "name": "fullWidth",
+            "source": "packages/taro/src/segmented-control.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Fills the width of the container (default false)"
+          },
+          {
+            "name": "disabled",
+            "source": "packages/taro/src/segmented-control.tsx",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false,
+            "description": "Blocks every segment (default false)"
+          },
+          {
+            "name": "id",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-label",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-labelledby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "source": "packages/taro/src/shared.tsx",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onChange",
+            "source": "packages/taro/src/segmented-control.tsx",
+            "kind": "function",
+            "typeText": "((value: T) => void) | undefined",
+            "typeRef": "type:43cbb9556e0acb62513d",
+            "parameters": [
+              {
+                "name": "value",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "T",
+                "typeRef": "type:5d582ce9628cfd6fd060"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called with the selected value"
+          }
+        ],
+        "slots": [],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "onChange",
+            "syntax": "value={value} onChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:SegmentedControl": {
+      "kind": "cssVars",
+      "source": "react/src/components/SegmentedControl",
+      "vars": [
+        {
+          "name": "--segmented-control-height",
+          "description": "Height of the control (defaults to the density's control height)"
+        },
+        {
+          "name": "--segmented-control-padding",
+          "description": "Space between the track and the segments (defaults to 2px)"
+        },
+        {
+          "name": "--segmented-control-radius",
+          "description": "Corner radius of the track (defaults to --radius-md); the thumb follows it"
+        },
+        {
+          "name": "--segmented-control-background",
+          "description": "Background of the track (defaults to --surface-muted-color)"
+        },
+        {
+          "name": "--segmented-control-color",
+          "description": "Text color of the unselected segments"
+        },
+        {
+          "name": "--segmented-control-item-padding-x",
+          "description": "Inline padding of a segment"
+        },
+        {
+          "name": "--segmented-control-thumb-background",
+          "description": "Background of the thumb (defaults to --surface-elevated-color; --primary-color with color=\"primary\")"
+        },
+        {
+          "name": "--segmented-control-thumb-shadow",
+          "description": "Shadow of the thumb (defaults to --shadow-sm; none with color=\"primary\")"
+        },
+        {
+          "name": "--segmented-control-selected-color",
+          "description": "Text color of the selected segment"
+        },
+        {
+          "name": "--segmented-control-duration",
+          "description": "Duration of the thumb slide (defaults to --transition-base)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.6/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "SegmentedControl 分段控制器",
+      "description": "用于切换模式和筛选条件的单选分段开关，滑块会滑动到选中的分段下方。若每个选项都有各自的内容面板，请使用 Tabs。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "受控值（value / onChange；值的类型是泛型）。控件是由 radio 分段组成的 radiogroup，只有一个 Tab 停靠点：方向键移动并选中（跳过禁用分段并循环），Home / End 跳到两端。"
+        },
+        "icons": {
+          "title": "图标",
+          "description": "选项可以在标签旁显示图标，也可以只显示图标；仅图标的分段需要提供 aria-label。"
+        },
+        "sizes": {
+          "title": "尺寸",
+          "description": "三种密度，跟随控件高度。纯字符串选项既是值也是标签。"
+        },
+        "full-width": {
+          "title": "撑满宽度",
+          "description": "fullWidth 让控件撑满容器；各分段始终等分宽度。name 会添加一个隐藏输入框，使值随表单一起提交。"
+        },
+        "colors": {
+          "title": "颜色与禁用",
+          "description": "neutral（默认）在浅色轨道上显示凸起的滑块，primary 显示主色实心滑块。可以禁用单个分段或整个控件。"
+        }
+      },
+      "api": {
+        "SegmentedControlProps": {
+          "options": "分段：字符串或选项对象",
+          "value": "选中的值（受控；与 onChange 搭配使用）",
+          "defaultValue": "初始选中的值（非受控）",
+          "onChange": "选中值变化时调用，参数为选中的值",
+          "size": "分段密度",
+          "color": "滑块颜色",
+          "fullWidth": "撑满容器宽度（各分段始终等分宽度）",
+          "disabled": "禁用所有分段",
+          "name": "在表单中携带值的隐藏输入框名称",
+          "aria-label": "分组的无障碍标签",
+          "aria-labelledby": "为分组提供标签的元素 id",
+          "id": "根元素 id",
+          "className": "附加的类名",
+          "ref": "根 <div>（role=\"radiogroup\"）的 ref"
+        },
+        "SegmentedControlOptionObject": {
+          "value": "分段的值",
+          "label": "可见标签（默认为值，除非提供了图标）",
+          "icon": "显示在标签前的图标（仅图标分段时单独显示）",
+          "disabled": "禁用该分段",
+          "aria-label": "无障碍名称；仅图标分段必须提供"
+        }
+      },
+      "cssVars": {
+        "--segmented-control-height": "控件高度（默认为当前密度的控件高度）",
+        "--segmented-control-padding": "轨道与分段之间的间距（默认 2px）",
+        "--segmented-control-radius": "轨道圆角（默认 --radius-md）；滑块随之变化",
+        "--segmented-control-background": "轨道背景（默认 --surface-muted-color）",
+        "--segmented-control-color": "未选中分段的文字颜色",
+        "--segmented-control-item-padding-x": "分段的水平内边距",
+        "--segmented-control-thumb-background": "滑块背景（默认 --surface-elevated-color；color=\"primary\" 时为 --primary-color）",
+        "--segmented-control-thumb-shadow": "滑块阴影（默认 --shadow-sm；color=\"primary\" 时无阴影）",
+        "--segmented-control-selected-color": "选中分段的文字颜色",
+        "--segmented-control-duration": "滑块滑动的时长（默认 --transition-base）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "options 可以是 JSON 数组（或逗号分隔值）属性，也可以是 property；value 设置初始选中项，minerva-change 报告选中的值。只有一个 Tab 停靠点：方向键移动并选中。"
+          },
+          "icons": {
+            "title": "图标",
+            "description": "选项对象可带 icon（文本，或通过 property 传入 Node / lit 模板），仅图标分段需提供 aria-label。"
+          },
+          "sizes": {
+            "title": "尺寸",
+            "description": "三种密度（同时提供 :state(size-small) 等自定义状态）。"
+          },
+          "full-width": {
+            "title": "撑满宽度与表单",
+            "description": "full-width 让控件撑满；它是表单关联元素，name 会提交值，required 会校验，form.reset() 恢复 value 属性。"
+          },
+          "colors": {
+            "title": "颜色与禁用",
+            "description": "color=\"primary\" 显示主色实心滑块；禁用的选项和 disabled 属性会阻止选择。"
+          }
+        },
+        "minerva-segmented-control": {
+          "props": {
+            "required": "表单提交前必须选中一个值。",
+            "isDisabled": "控件是否被禁用（自身或被禁用的 <fieldset>，只读）。",
+            "form": "元素所属的表单（只读）。",
+            "labels": "与元素关联的 <label> 元素（只读）。",
+            "validity": "有效性状态，同 <input>.validity（只读）。",
+            "validationMessage": "当前校验错误的提示信息；有效时为空（只读）。",
+            "willValidate": "元素是否参与约束校验（只读）。"
+          },
+          "events": {
+            "change": "用户选中了另一个分段（与原生单选框一致）。",
+            "minerva-change": "用户选中了另一个分段（detail: { value }）。"
+          },
+          "methods": {
+            "focus": "聚焦选中的分段（否则为第一个可用分段）。",
+            "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+            "reportValidity": "检查有效性并显示浏览器的校验提示。",
+            "setCustomValidity": "设置自定义校验错误，传入空字符串则清除。",
+            "formResetCallback": "表单生命周期回调，由 form.reset() 调用：恢复初始值。",
+            "formDisabledCallback": "表单生命周期回调，在祖先 <fieldset> 被禁用或启用时调用。",
+            "formStateRestoreCallback": "表单生命周期回调，在浏览器恢复状态（历史导航、自动填充）时调用。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "原生示例",
+            "description": "在手机预览中与原生组件交互。"
+          }
+        }
+      }
+    }
+  }
+}

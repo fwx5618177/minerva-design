@@ -1,0 +1,504 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.6",
+  "locale": "ja",
+  "renderer": "weapp",
+  "page": "quadrant-task-board",
+  "title": "QuadrantTaskBoard 四象限タスクボード",
+  "description": "アイゼンハワー・マトリクスのような四象限マトリクス上のタスクボードです。象限ヘッダーの +（または象限の空白部分）でタスクを追加し、アクティブなタスクのコンパクトな編集・削除ボタン（React ではカード内の名前の横）で編集・削除します。+ ボタンやタスクのすぐ横に開くパネルでタスク名と象限を指定し、削除の前にはその場で確認が入ります。タスクはドラッグ＆ドロップまたは Shift + 矢印キーで移動でき、ダブルクリックで編集できます。ボードは制御コンポーネントです。タスクを points に渡し、onPointsChange で受け取った新しいリストを戻してください。QuadrantChart のその他の props（軸、象限のタイトル・バッジ・色、目盛り、ラベル…）も使え、組み込みのボタンとパネルはアプリの言語に従います。minerva-design/charts ではなく minerva-design からエクスポートされます。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.6",
+    "sourceCommit": "63ce45656d8f3d1bfbee71026e84674640ae9abf",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:fa9a782f68a5d5b512762e2152b2ad065da3de6937bac96eef63709ddba3b95b"
+  },
+  "content": {
+    "data": {
+      "tasks": {
+        "loginOutage": "ログイン障害の修正",
+        "quarterlyPlanning": "四半期計画",
+        "bookTravel": "出張の予約",
+        "inboxZero": "受信トレイの整理"
+      },
+      "doFirst": "すぐやる",
+      "schedule": "計画する",
+      "delegate": "任せる",
+      "eliminate": "やめる",
+      "important": "重要",
+      "notImportant": "重要でない",
+      "urgent": "緊急",
+      "notUrgent": "緊急でない",
+      "boardAria": "タスクマトリクス：象限の間でタスクをドラッグ",
+      "roadmap": {
+        "features": {
+          "darkMode": "ダークモード",
+          "sso": "シングルサインオン",
+          "csvExport": "CSV エクスポート",
+          "rewriteBilling": "課金システムの再構築"
+        },
+        "quickWins": "クイックウィン",
+        "bigBets": "大きな賭け",
+        "fillIns": "すき間作業",
+        "moneyPits": "金食い虫",
+        "effort": "工数",
+        "impact": "効果",
+        "aria": "工数と効果で並べたロードマップ",
+        "add": "機能を追加",
+        "edit": "機能を編集",
+        "delete": "機能を削除",
+        "name": "機能名",
+        "deleteConfirm": "「{name}」をロードマップから削除します。",
+        "summary": "機能：{{features}} · 変更：{{changes}} 回"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "QuadrantTaskBoard",
+      "support": {
+        "status": "beta",
+        "notes": "quadrant-task-board: controlled task board composing the native quadrant-chart, button and icon-button components (usingComponents in its JSON). points in, pointschange { points } out; every quadrant-chart property is forwarded except the chart's own labels (labels are the board texts, partial overrides of the localized defaults). A 2 x 2 grid of quadrant headers above the chart (badge, title, count unless showCounts is false, plus-icon add button), a toolbar for the selected task (name, Edit and Delete buttons; selection is internal or the controlled selectedIndex), an inline panel opened under the headers or the actions toolbar (a caret points at its opener) with a name input (the keyboard confirm key saves) and a 2 x 2 quadrant radio grid with Cancel / Save (Save disabled while the name is blank), an inline danger confirmation before a delete, tapping an empty quadrant area adds a task there, and draggable dots (default true) or the chart's accessible Move to buttons move a task. Add/edit/move/delete/selection logic and texts come from the shared minerva-design/charts quadrant task helpers. Chart methods (configure, resize, resetZoom, getView, setView, getPlotRect, toPixel, fromPixel) are forwarded to the inner chart; pointclick, pointdrag, hover, zoom and layout are re-emitted. Beta: needs device validation. The canvas has no view overlays: the quadrant headers are a grid above the chart (the chart still draws its own quadrant titles) and the actions toolbar sits under the chart instead of floating on the selected dot. No double-tap to edit and no keyboard moves (Shift + arrow keys): mini-program views take no focus; use the Edit button and the Move to actions. The add buttons draw the plus icon as an SVG data URI image; Edit and Delete keep text glyphs (✎, ✕). Layout styles are inline (no dedicated stylesheet yet). The inner components are in the board's shadow tree: the config-provider / theme-provider relation across that boundary (theme tokens and messages of the inline panel) needs device validation; the board's locale is forwarded to the chart explicitly. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "quadrant-task-board: controlled task board composing the native quadrant-chart, button and icon-button components (usingComponents in its JSON). points in, pointschange { points } out; every quadrant-chart property is forwarded except the chart's own labels (labels are the board texts, partial overrides of the localized defaults). A 2 x 2 grid of quadrant headers above the chart (badge, title, count unless showCounts is false, plus-icon add button), a toolbar for the selected task (name, Edit and Delete buttons; selection is internal or the controlled selectedIndex), an inline panel opened under the headers or the actions toolbar (a caret points at its opener) with a name input (the keyboard confirm key saves) and a 2 x 2 quadrant radio grid with Cancel / Save (Save disabled while the name is blank), an inline danger confirmation before a delete, tapping an empty quadrant area adds a task there, and draggable dots (default true) or the chart's accessible Move to buttons move a task. Add/edit/move/delete/selection logic and texts come from the shared minerva-design/charts quadrant task helpers. Chart methods (configure, resize, resetZoom, getView, setView, getPlotRect, toPixel, fromPixel) are forwarded to the inner chart; pointclick, pointdrag, hover, zoom and layout are re-emitted. Beta: needs device validation. The canvas has no view overlays: the quadrant headers are a grid above the chart (the chart still draws its own quadrant titles) and the actions toolbar sits under the chart instead of floating on the selected dot. No double-tap to edit and no keyboard moves (Shift + arrow keys): mini-program views take no focus; use the Edit button and the Move to actions. The add buttons draw the plus icon as an SVG data URI image; Edit and Delete keep text glyphs (✎, ✕). Layout styles are inline (no dedicated stylesheet yet). The inner components are in the board's shadow tree: the config-provider / theme-provider relation across that boundary (theme tokens and messages of the inline panel) needs device validation; the board's locale is forwarded to the chart explicitly. Native component tests and package builds pass. Selected selection, disabled-switch, overlay and theme flows were checked in the WeChat Developer Tools simulator, not on a physical device; controlled input remains unverified and automator page RPC timed out. This is not all-API or device E2E validation.",
+        "import": {
+          "specifier": "minerva-design/dist/weapp/quadrant-task-board/index",
+          "exports": [],
+          "kind": "usingComponents"
+        },
+        "tag": "quadrant-task-board",
+        "props": [
+          {
+            "name": "width",
+            "typeText": "unknown",
+            "required": false,
+            "default": "100%"
+          },
+          {
+            "name": "height",
+            "typeText": "unknown",
+            "required": false,
+            "default": 320
+          },
+          {
+            "name": "legend",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "tooltip",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "crosshair",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "annotations",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "interaction",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "padding",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "palette",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "locale",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "disableScroll",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "points",
+            "typeText": "array",
+            "required": false
+          },
+          {
+            "name": "xDomain",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "yDomain",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "xSplit",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "ySplit",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "quadrants",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "xLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "yLabel",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "axisLabels",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "showTicks",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          },
+          {
+            "name": "reverseX",
+            "typeText": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "showLabels",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          },
+          {
+            "name": "pointSize",
+            "typeText": "number",
+            "required": false,
+            "default": 12
+          },
+          {
+            "name": "name",
+            "typeText": "string",
+            "required": false,
+            "default": ""
+          },
+          {
+            "name": "draggable",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          },
+          {
+            "name": "showCounts",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "selectedIndex",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "selectedIndices",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          },
+          {
+            "name": "accessiblePoints",
+            "typeText": "boolean",
+            "required": false,
+            "default": true
+          },
+          {
+            "name": "labels",
+            "typeText": "unknown",
+            "required": false,
+            "default": null
+          }
+        ],
+        "events": [
+          {
+            "name": "pointschange",
+            "typeText": "{ points: NativeQuadrantPoint[] }",
+            "description": "Tasks after an add, an edit, a delete or a move (controlled: update points)."
+          },
+          {
+            "name": "pointclick",
+            "typeText": "{ point: NativeQuadrantPoint; index: number }",
+            "description": "A task dot was tapped (it becomes the selected task)."
+          },
+          {
+            "name": "pointdrag",
+            "typeText": "{ point: NativeQuadrantPoint; index: number; target: NativeQuadrantDropTarget }",
+            "description": "A task dot is dragged (draggable)."
+          },
+          {
+            "name": "hover",
+            "typeText": "{ items: NativeChartHoverItem[]; x: number | null; xLabel: string }",
+            "description": "Highlighted points after a tap or a finger scrub; items is empty when cleared."
+          },
+          {
+            "name": "zoom",
+            "typeText": "{ x: [number, number]; y: [number, number] }",
+            "description": "Visible range after a pinch, a pan or a double-tap reset."
+          },
+          {
+            "name": "layout",
+            "typeText": "{ x: number; y: number; width: number; height: number }",
+            "description": "The plot area moved or was resized (px of the chart)."
+          }
+        ],
+        "slots": [],
+        "registration": "\"usingComponents\": { \"mn-quadrant-task-board\": \"minerva-design/dist/weapp/quadrant-task-board/index\" }",
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:QuadrantTaskBoard": {
+      "kind": "cssVars",
+      "source": "react/src/components/QuadrantTaskBoard",
+      "vars": [
+        {
+          "name": "--quadrant-task-board-header-color",
+          "description": "Text color of the quadrant titles (defaults to --text-color)"
+        },
+        {
+          "name": "--quadrant-task-board-header-background",
+          "description": "Background of the quadrant headers (defaults to a translucent surface)"
+        },
+        {
+          "name": "--quadrant-task-board-count-background",
+          "description": "Background of the task count chips (defaults to --surface-muted-color)"
+        },
+        {
+          "name": "--quadrant-task-board-count-color",
+          "description": "Text color of the task count chips (defaults to --text-secondary-color)"
+        },
+        {
+          "name": "--quadrant-task-board-actions-background",
+          "description": "Background of the toolbar of the active task (defaults to --surface-elevated-color)"
+        },
+        {
+          "name": "--quadrant-task-board-actions-radius",
+          "description": "Corner radius of the toolbar of the active task (defaults to --radius-md)"
+        },
+        {
+          "name": "--quadrant-task-board-panel-background",
+          "description": "Background of the inline add / edit / delete panel (defaults to a translucent elevated surface)"
+        },
+        {
+          "name": "--quadrant-task-board-panel-border",
+          "description": "Border color of the inline panel (defaults to a translucent --border-color)"
+        },
+        {
+          "name": "--quadrant-task-board-panel-radius",
+          "description": "Corner radius of the inline panel (defaults to --radius-lg)"
+        },
+        {
+          "name": "--quadrant-task-board-panel-width",
+          "description": "Width of the inline panel (defaults to 288px)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.6/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "QuadrantTaskBoard 四象限タスクボード",
+      "description": "アイゼンハワー・マトリクスのような四象限マトリクス上のタスクボードです。象限ヘッダーの +（または象限の空白部分）でタスクを追加し、アクティブなタスクのコンパクトな編集・削除ボタン（React ではカード内の名前の横）で編集・削除します。+ ボタンやタスクのすぐ横に開くパネルでタスク名と象限を指定し、削除の前にはその場で確認が入ります。タスクはドラッグ＆ドロップまたは Shift + 矢印キーで移動でき、ダブルクリックで編集できます。ボードは制御コンポーネントです。タスクを points に渡し、onPointsChange で受け取った新しいリストを戻してください。QuadrantChart のその他の props（軸、象限のタイトル・バッジ・色、目盛り、ラベル…）も使え、組み込みのボタンとパネルはアプリの言語に従います。minerva-design/charts ではなく minerva-design からエクスポートされます。",
+      "demos": {
+        "basic": {
+          "title": "アイゼンハワー・ボード",
+          "description": "緊急のタスクを左（reverseX）、重要なタスクを上に配置します。+ または象限の空白部分をクリックしてタスクを追加し、タスクを選択すると編集・削除でき、ドラッグ（または Shift + 矢印キー）で別の象限へ移動できます。サンプルのタスク名は、名前を変更するまでページの言語に従います。"
+        },
+        "custom-labels": {
+          "title": "テキストとバッジのカスタマイズ",
+          "description": "工数と効果で並べたプロダクトのロードマップです。labels でボタン、名前フィールド、削除確認の文言（{name} は項目名）を変更し、quadrants で各ヘッダーに番号バッジを付け、onPointsChange による変更を数えます。"
+        }
+      },
+      "data": {
+        "tasks": {
+          "loginOutage": "ログイン障害の修正",
+          "quarterlyPlanning": "四半期計画",
+          "bookTravel": "出張の予約",
+          "inboxZero": "受信トレイの整理"
+        },
+        "doFirst": "すぐやる",
+        "schedule": "計画する",
+        "delegate": "任せる",
+        "eliminate": "やめる",
+        "important": "重要",
+        "notImportant": "重要でない",
+        "urgent": "緊急",
+        "notUrgent": "緊急でない",
+        "boardAria": "タスクマトリクス：象限の間でタスクをドラッグ",
+        "roadmap": {
+          "features": {
+            "darkMode": "ダークモード",
+            "sso": "シングルサインオン",
+            "csvExport": "CSV エクスポート",
+            "rewriteBilling": "課金システムの再構築"
+          },
+          "quickWins": "クイックウィン",
+          "bigBets": "大きな賭け",
+          "fillIns": "すき間作業",
+          "moneyPits": "金食い虫",
+          "effort": "工数",
+          "impact": "効果",
+          "aria": "工数と効果で並べたロードマップ",
+          "add": "機能を追加",
+          "edit": "機能を編集",
+          "delete": "機能を削除",
+          "name": "機能名",
+          "deleteConfirm": "「{name}」をロードマップから削除します。",
+          "summary": "機能：{{features}} · 変更：{{changes}} 回"
+        }
+      },
+      "api": {
+        "QuadrantTaskBoardProps": {
+          "onPointsChange": "タスクの追加・編集・削除・ドラッグ＆ドロップ・キーボードでの移動のあとに、新しいタスクのリストを受け取って呼ばれます（制御：points として戻します）",
+          "labels": "ボタンとパネルのテキスト（QuadrantTaskLabels を参照）。指定しなかったものはロケールに従います"
+        },
+        "QuadrantTaskLabels": {
+          "add": "各象限の追加ボタンと、追加パネルのタイトル",
+          "edit": "アクティブなタスクの編集ボタンと、編集パネルのタイトル",
+          "delete": "アクティブなタスクの削除ボタンと、その確認のタイトル",
+          "deleteConfirm": "削除確認の本文。{name} はタスク名に置き換えられます",
+          "confirmDelete": "削除確認の確定ボタン",
+          "name": "名前フィールドのラベル",
+          "quadrant": "象限フィールドのラベル",
+          "save": "追加 / 編集パネルの保存ボタン",
+          "cancel": "各パネルのキャンセルボタン",
+          "actions": "アクティブなタスクのツールバーのアクセシブルな名前"
+        },
+        "QuadrantConfig": {
+          "points": "タスク { x, y, label, color, size }。onPointsChange で更新する制御されたリストです",
+          "xDomain": "横軸の範囲",
+          "yDomain": "縦軸の範囲",
+          "xSplit": "垂直の区切り線の X 値（既定は xDomain の中央）",
+          "ySplit": "水平の区切り線の Y 値（既定は yDomain の中央）",
+          "quadrants": "各象限のタイトル・バッジ・色。タイトルのない象限にはロケールに応じた既定のタイトルが表示されます",
+          "xLabel": "横軸のタイトル",
+          "yLabel": "縦軸のタイトル",
+          "axisLabels": "区切り線の両端に、プロット内に描画するテキスト（例：上端に「重要」）",
+          "showTicks": "軸の数値目盛りを表示します。false でマトリクスのみになります",
+          "reverseX": "横軸を反転します（例：緊急を左に）",
+          "showLabels": "重なりを避けて点の横にタスク名を描画します",
+          "pointSize": "点の直径（ピクセル）",
+          "name": "ツールチップに表示するタスクの名前",
+          "draggable": "タスクを別の象限へドラッグできるようにします（ボードでは既定で有効。false で無効）",
+          "showCounts": "各象限のタイトルの後にタスク数を表示します（ボードでは既定で有効。false で非表示、関数 (count, points) を渡すとその戻り値を表示）",
+          "selectedIndex": "選択中のタスクのインデックス。リングで囲みます（null：なし）。既定では、最後にクリック・移動・保存したタスクをボードが選択します",
+          "selectedIndices": "複数の選択中のタスクのインデックス。それぞれリングで囲みます"
+        },
+        "native_QuadrantTaskBoardProps": {
+          "onPointsChange": "タスクの追加・編集・削除・ドラッグ＆ドロップ、または「移動先」のアクセシビリティ操作のあとに、新しいタスクのリストを受け取って呼ばれます（制御：points として戻します）",
+          "labels": "ボタンとパネルのテキスト（add、edit、delete、deleteConfirm、confirmDelete、name、quadrant、save、cancel、actions）。指定しなかったものはロケールに従います"
+        }
+      },
+      "cssVars": {
+        "--quadrant-task-board-header-color": "象限タイトルの文字色（既定は --text-color）",
+        "--quadrant-task-board-header-background": "象限ヘッダーの背景（既定は半透明のサーフェス）",
+        "--quadrant-task-board-count-background": "タスク数チップの背景（既定は --surface-muted-color）",
+        "--quadrant-task-board-count-color": "タスク数チップの文字色（既定は --text-secondary-color）",
+        "--quadrant-task-board-actions-background": "アクティブなタスクのツールバーの背景（既定は --surface-elevated-color）",
+        "--quadrant-task-board-actions-radius": "アクティブなタスクのツールバーの角丸（既定は --radius-md）",
+        "--quadrant-task-board-panel-background": "その場で開く追加 / 編集 / 削除パネルの背景（既定は半透明の浮き上がった面）",
+        "--quadrant-task-board-panel-border": "パネルの枠線の色（既定は半透明の --border-color）",
+        "--quadrant-task-board-panel-radius": "パネルの角丸（既定は --radius-lg）",
+        "--quadrant-task-board-panel-width": "パネルの幅（既定は 288px）"
+      },
+      "native": {
+        "limitations": "React Native では、タスクはドラッグ＆ドロップまたはスクリーンリーダーの「移動先」操作で移動します。Shift + 矢印キーでの移動とダブルタップでの編集はありません（アクティブなタスクの編集ボタンを使います）。ボタンのアイコンは SVG に依存せず View で描画されます。",
+        "demos": {
+          "basic": {
+            "title": "アイゼンハワー・ボード",
+            "description": "+ または象限の空白部分をタップしてタスクを追加し、タスクをタップすると編集・削除ボタンが表示され、ドラッグで別の象限へ移動できます。サンプルのタスク名は、名前を変更するまでアプリの言語に従います。"
+          }
+        }
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "アイゼンハワー・ボード",
+            "description": "points・quadrants・axisLabels はプロパティで、reverse-x・hide-ticks・height は属性で設定します。minerva-points-change のリスナーが新しいリストを points に戻します。"
+          }
+        },
+        "minerva-quadrant-task-board": {
+          "props": {
+            "points": "タスク { x, y, label, color, size }。minerva-points-change の detail を戻すとボードが更新されます（制御）。プロパティのみ",
+            "quadrants": "各象限のタイトル・バッジ・色（topLeft、topRight、bottomLeft、bottomRight）。プロパティのみ",
+            "axisLabels": "区切り線の両端に、プロット内に描画するテキスト（top、bottom、left、right）。プロパティのみ",
+            "xDomain": "横軸の範囲（既定は [0, 10]）。プロパティのみ",
+            "yDomain": "縦軸の範囲（既定は [0, 10]）。プロパティのみ",
+            "hideTicks": "軸の数値目盛りを非表示にします（マトリクスのみ残ります）",
+            "hideLabels": "点の横のタスク名を非表示にします",
+            "hideCounts": "象限ヘッダーのタスク数を非表示にします",
+            "height": "チャートの高さ：ピクセルまたは任意の CSS の長さ（既定は 320）",
+            "locale": "組み込みテキスト、既定の象限タイトル、数値の言語（例：\"fr\"）。既定はライブラリの言語",
+            "noAccessiblePoints": "視覚的に非表示のタスク一覧（キーボードとスクリーンリーダーでの操作、Shift + 矢印キーでの移動）を省きます",
+            "options": "チャートのその他のエンジンオプション（凡例、ツールチップ、余白、パレット…）。プロパティのみ"
+          },
+          "events": {
+            "minerva-points-change": "タスクが変わりました（追加・編集・削除・ドラッグ＆ドロップ・キーボードでの移動）。detail：{ points }、points に戻す新しいリスト",
+            "minerva-point-click": "タスクがクリックされました（選択中のタスクになります）。detail：{ point, index }",
+            "minerva-point-drag": "タスクをドラッグ中です（移動するたびに発生）。detail：{ point, index, x, y, quadrant }",
+            "minerva-hover": "ホバー（またはキーボードでフォーカス）しているタスクが変わりました。detail：{ x, xLabel, items }、何もない場合は null",
+            "minerva-zoom": "ユーザーがチャートをズームまたはパンしました。detail：{ x, y }（表示範囲）",
+            "minerva-renderer-change": "チャートのバックエンドの準備ができた、または GPU の喪失後にフォールバックしました。detail：{ renderer }"
+          }
+        }
+      }
+    }
+  }
+}

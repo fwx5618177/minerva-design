@@ -1,0 +1,14 @@
+# native setup
+
+Package: minerva-design@1.20.6
+
+```sh
+pnpm add minerva-design@1.20.6
+```
+
+```ts
+// Import components and ConfigProvider from minerva-design/native.
+// Native uses provider-generated styles; do not import browser CSS.
+```
+
+Use the matching renderer API and its platform support limitations. See the versioned recipes for complete React and Vue project entry, configuration and dependency manifests. These documents use locale en; API identifiers remain unchanged.

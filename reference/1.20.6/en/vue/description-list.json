@@ -1,0 +1,272 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.6",
+  "locale": "en",
+  "renderer": "vue",
+  "page": "description-list",
+  "title": "DescriptionList",
+  "description": "Labeled metadata fields rendered as a native dl; rows stack on narrow screens.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.6",
+    "sourceCommit": "63ce45656d8f3d1bfbee71026e84674640ae9abf",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:fa9a782f68a5d5b512762e2152b2ad065da3de6937bac96eef63709ddba3b95b"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "DescriptionItem",
+      "support": {
+        "status": "n/a",
+        "notes": "Data object in Vue (like React): an item of the parent component's items / entries prop."
+      },
+      "api": {
+        "status": "n/a",
+        "notes": "Data object in Vue (like React): an item of the parent component's items / entries prop."
+      }
+    },
+    {
+      "name": "DescriptionList",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "DescriptionList"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "items",
+            "type": "DescriptionListItem[]",
+            "required": true,
+            "description": "Rows to render, in order",
+            "typeText": "DescriptionListItem[]"
+          },
+          {
+            "name": "bordered",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Frames the list as a card (full border, rounded corners, surface\nbackground, padded rows)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "striped",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Tints every other row (replaces the row separators)",
+            "typeText": "boolean"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "label",
+            "type": "{ item: DescriptionListItem; }",
+            "description": "Term of a row (default: `item.label`)",
+            "typeText": "{ item: DescriptionListItem; }"
+          },
+          {
+            "name": "value",
+            "type": "{ item: DescriptionListItem; }",
+            "description": "Description of a row (default: `item.value`)",
+            "typeText": "{ item: DescriptionListItem; }"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:DescriptionList": {
+      "kind": "cssVars",
+      "source": "react/src/components/DescriptionList",
+      "vars": [
+        {
+          "name": "--description-list-row-padding-y",
+          "description": "Vertical padding of a row (follows the density's row padding)"
+        },
+        {
+          "name": "--description-list-gap",
+          "description": "Space between the term and the description"
+        },
+        {
+          "name": "--description-list-term-color",
+          "description": "Text color of the terms"
+        },
+        {
+          "name": "--description-list-border-color",
+          "description": "Color of the row separators"
+        },
+        {
+          "name": "--description-list-font-size",
+          "description": "Font size"
+        },
+        {
+          "name": "--description-list-radius",
+          "description": "Corner radius of a bordered list (defaults to --radius-lg)"
+        },
+        {
+          "name": "--description-list-background",
+          "description": "Background of a bordered list (defaults to --surface-color)"
+        },
+        {
+          "name": "--description-list-padding-x",
+          "description": "Horizontal padding of the rows of a bordered or striped list"
+        },
+        {
+          "name": "--description-list-stripe-background",
+          "description": "Background of every other row of a striped list (defaults to --surface-subtle-color)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/description-list/vue/basic.vue",
+      "files": {
+        "apps/docs/src/docs/pages/description-list/vue/basic.vue": "<script setup lang=\"ts\">\nimport { DescriptionList } from \"minerva-design/vue\";\n</script>\n<template>\n  <DescriptionList\n    :items=\"[\n      { key: 'name', label: 'Name', value: 'Minerva' },\n      { key: 'status', label: 'Status', value: 'Active' },\n    ]\"\n  />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "basic",
+      "description": ""
+    },
+    {
+      "id": "items",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/description-list/vue/items.vue",
+      "files": {
+        "apps/docs/src/docs/pages/description-list/vue/items.vue": "<script setup lang=\"ts\">\nimport { DescriptionList } from \"minerva-design/vue\";\nconst items = [\n  { key: \"owner\", label: \"Owner\", value: \"Design team\" },\n  { key: \"members\", label: \"Members\", value: 12 },\n  { key: \"created\", label: \"Created\", value: \"2026-01-15\" },\n];\n</script>\n<template>\n  <DescriptionList :items=\"items\" />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "items",
+      "description": ""
+    },
+    {
+      "id": "styling",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/description-list/vue/styling.vue",
+      "files": {
+        "apps/docs/src/docs/pages/description-list/vue/styling.vue": "<script setup lang=\"ts\">\nimport { DescriptionList, Box } from \"minerva-design/vue\";\n</script>\n<template>\n  <Box :p=\"4\" rounded=\"lg\" border=\"1px solid var(--color-border)\"\n    ><DescriptionList\n      :items=\"[\n        { key: 'id', label: 'Project ID', value: 'minerva-001' },\n        { key: 'url', label: 'Repository', value: 'github.com/minerva/design' },\n      ]\"\n  /></Box>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "styling",
+      "description": ""
+    },
+    {
+      "id": "variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/description-list/vue/variants.vue",
+      "files": {
+        "apps/docs/src/docs/pages/description-list/vue/variants.vue": "<script setup lang=\"ts\">\nimport { DescriptionList, VStack } from \"minerva-design/vue\";\nconst items = [\n  { key: \"plan\", label: \"Plan\", value: \"Team\" },\n  { key: \"region\", label: \"Region\", value: \"Europe\" },\n];\n</script>\n<template>\n  <VStack :gap=\"3\" align=\"stretch\"\n    ><DescriptionList bordered :items=\"items\" /><DescriptionList\n      striped\n      :items=\"items\"\n  /></VStack>\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "variants",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.6/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "DescriptionList",
+      "description": "Labeled metadata fields rendered as a native dl; rows stack on narrow screens.",
+      "demos": {
+        "basic": {
+          "title": "Basic usage",
+          "description": "Labels and values accept any ReactNode, and 0 is rendered."
+        },
+        "variants": {
+          "title": "Bordered and striped",
+          "description": "bordered frames the fields as a card with padded rows; striped tints every other row instead of drawing separators."
+        }
+      },
+      "api": {
+        "DescriptionListProps": {
+          "items": "Rows to render, in order",
+          "ref": "Ref to the <dl> element",
+          "bordered": "Frames the list as a card with padded rows",
+          "striped": "Tints every other row (replaces the separators)"
+        },
+        "DescriptionListItem": {
+          "key": "Stable React key of the row",
+          "label": "Term, rendered in a <dt>",
+          "value": "Description, rendered in a <dd>"
+        }
+      },
+      "cssVars": {
+        "--description-list-row-padding-y": "Vertical padding of a row (follows the density's row padding)",
+        "--description-list-gap": "Space between the term and the description",
+        "--description-list-term-color": "Text color of the terms",
+        "--description-list-border-color": "Color of the row separators",
+        "--description-list-font-size": "Font size",
+        "--description-list-radius": "Corner radius of a bordered list (defaults to --radius-lg)",
+        "--description-list-background": "Background of a bordered list (defaults to --surface-color)",
+        "--description-list-padding-x": "Horizontal padding of the rows of a bordered or striped list",
+        "--description-list-stripe-background": "Background of every other row of a striped list (defaults to --surface-subtle-color)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Basic usage",
+            "description": "Declarative <minerva-description-item label> rows; the content (text, badges, links) goes into the <dd> of a native <dl>."
+          },
+          "items": {
+            "title": "Rows from data",
+            "description": "The items property renders rows from JS data, before the declarative children; 0 is rendered as a value."
+          },
+          "styling": {
+            "title": "Styling",
+            "description": "CSS variables set the density, gap and separators; ::part(term) and ::part(row) style the native cells."
+          },
+          "variants": {
+            "title": "Bordered and striped",
+            "description": "The bordered and striped boolean attributes: a card frame with padded rows, or tinted alternate rows instead of separators."
+          }
+        },
+        "minerva-description-item": {
+          "slots": {
+            "default": "The description."
+          }
+        },
+        "minerva-description-list": {
+          "slots": {
+            "default": "<minerva-description-item> rows."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Native example",
+            "description": "Interact with the native component in this phone preview."
+          }
+        }
+      }
+    }
+  }
+}

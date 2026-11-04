@@ -1,0 +1,599 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.6",
+  "locale": "fr",
+  "renderer": "angular",
+  "page": "quadrant-task-board",
+  "title": "QuadrantTaskBoard",
+  "description": "Un tableau de tâches sur une matrice à quatre quadrants, comme une matrice d’Eisenhower : le + de l’en-tête d’un quadrant (ou un clic dans sa zone vide) ajoute une tâche, les boutons compacts modifier et supprimer de la tâche active (dans sa fiche, à côté de son nom, avec React) la modifient ou la suppriment, un panneau ouvert à côté du bouton + ou de la tâche la nomme et choisit son quadrant, chaque suppression est confirmée sur place, et les tâches se déplacent par glisser-déposer ou avec Maj + flèches (un double-clic les modifie). Le tableau est contrôlé : passez les tâches dans points et renvoyez la liste reçue par onPointsChange. Il accepte les autres props de QuadrantChart (axes, titres, pastilles et couleurs des quadrants, graduations, étiquettes…), et ses boutons et panneaux suivent la langue de l’application. Exporté par minerva-design, et non par minerva-design/charts.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.6",
+    "sourceCommit": "63ce45656d8f3d1bfbee71026e84674640ae9abf",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:fa9a782f68a5d5b512762e2152b2ad065da3de6937bac96eef63709ddba3b95b"
+  },
+  "content": {
+    "data": {
+      "tasks": {
+        "loginOutage": "Réparer la connexion",
+        "quarterlyPlanning": "Planification trimestrielle",
+        "bookTravel": "Réserver le voyage",
+        "inboxZero": "Boîte de réception vide"
+      },
+      "doFirst": "À faire tout de suite",
+      "schedule": "À planifier",
+      "delegate": "À déléguer",
+      "eliminate": "À abandonner",
+      "important": "Important",
+      "notImportant": "Pas important",
+      "urgent": "Urgent",
+      "notUrgent": "Pas urgent",
+      "boardAria": "Matrice des tâches : faites glisser les tâches entre les quadrants",
+      "roadmap": {
+        "features": {
+          "darkMode": "Mode sombre",
+          "sso": "Authentification unique",
+          "csvExport": "Export CSV",
+          "rewriteBilling": "Refonte de la facturation"
+        },
+        "quickWins": "Gains rapides",
+        "bigBets": "Paris ambitieux",
+        "fillIns": "Bouche-trous",
+        "moneyPits": "Gouffres financiers",
+        "effort": "Effort",
+        "impact": "Impact",
+        "aria": "Feuille de route selon l’effort et l’impact",
+        "add": "Ajouter une fonctionnalité",
+        "edit": "Modifier la fonctionnalité",
+        "delete": "Retirer la fonctionnalité",
+        "name": "Fonctionnalité",
+        "deleteConfirm": "« {name} » sera retirée de la feuille de route.",
+        "summary": "Fonctionnalités : {{features}} · modifications : {{changes}}"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "QuadrantTaskBoard",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnQuadrantTaskBoard. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnQuadrantTaskBoard. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnQuadrantTaskBoard"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-quadrant-task-board",
+        "props": [
+          {
+            "name": "points",
+            "typeText": "readonly QuadrantPoint[]",
+            "required": true,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "labels",
+            "typeText": "Partial<QuadrantTaskLabels> | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "height",
+            "typeText": "string | number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "width",
+            "typeText": "string | number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "renderer",
+            "typeText": "ChartRendererPreference | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "legend",
+            "typeText": "boolean | ChartLegendOptions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "tooltip",
+            "typeText": "boolean | ChartTooltipOptions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "crosshair",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "annotations",
+            "typeText": "readonly ChartAnnotation[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "interaction",
+            "typeText": "boolean | ChartInteractionOptions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "padding",
+            "typeText": "ChartPadding | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "palette",
+            "typeText": "readonly string[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "ariaLabel",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "locale",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "xDomain",
+            "typeText": "[number, number] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "yDomain",
+            "typeText": "[number, number] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "xSplit",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "ySplit",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "quadrants",
+            "typeText": "QuadrantRegions | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "xLabel",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "yLabel",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "axisLabels",
+            "typeText": "QuadrantAxisLabels | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "showTicks",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "reverseX",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "showLabels",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "pointSize",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "name",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "draggable",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "showCounts",
+            "typeText": "ShowCounts | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "selectedIndex",
+            "typeText": "number | null | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "selectedIndices",
+            "typeText": "readonly number[] | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          },
+          {
+            "name": "accessiblePoints",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "pointsChange",
+            "typeText": "QuadrantPoint[]",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "QuadrantPoint[]",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "hover",
+            "typeText": "ChartHoverEvent | null",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "ChartHoverEvent | null",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "pointClick",
+            "typeText": "{ point: QuadrantPoint; index: number; }",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "{ point: QuadrantPoint; index: number; }",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "pointDrag",
+            "typeText": "QuadrantPointDrop",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "QuadrantPointDrop",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "zoom",
+            "typeText": "ChartView",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "ChartView",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "rendererChange",
+            "typeText": "ChartRendererKind",
+            "required": false,
+            "source": "packages/angular/src/components/charts/quadrant-task-board.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "ChartRendererKind",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:QuadrantTaskBoard": {
+      "kind": "cssVars",
+      "source": "react/src/components/QuadrantTaskBoard",
+      "vars": [
+        {
+          "name": "--quadrant-task-board-header-color",
+          "description": "Text color of the quadrant titles (defaults to --text-color)"
+        },
+        {
+          "name": "--quadrant-task-board-header-background",
+          "description": "Background of the quadrant headers (defaults to a translucent surface)"
+        },
+        {
+          "name": "--quadrant-task-board-count-background",
+          "description": "Background of the task count chips (defaults to --surface-muted-color)"
+        },
+        {
+          "name": "--quadrant-task-board-count-color",
+          "description": "Text color of the task count chips (defaults to --text-secondary-color)"
+        },
+        {
+          "name": "--quadrant-task-board-actions-background",
+          "description": "Background of the toolbar of the active task (defaults to --surface-elevated-color)"
+        },
+        {
+          "name": "--quadrant-task-board-actions-radius",
+          "description": "Corner radius of the toolbar of the active task (defaults to --radius-md)"
+        },
+        {
+          "name": "--quadrant-task-board-panel-background",
+          "description": "Background of the inline add / edit / delete panel (defaults to a translucent elevated surface)"
+        },
+        {
+          "name": "--quadrant-task-board-panel-border",
+          "description": "Border color of the inline panel (defaults to a translucent --border-color)"
+        },
+        {
+          "name": "--quadrant-task-board-panel-radius",
+          "description": "Corner radius of the inline panel (defaults to --radius-lg)"
+        },
+        {
+          "name": "--quadrant-task-board-panel-width",
+          "description": "Width of the inline panel (defaults to 288px)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "title": "Tableau d’Eisenhower",
+      "description": "Les tâches urgentes à gauche (reverseX) et les importantes en haut : cliquez sur + ou dans la zone vide d’un quadrant pour ajouter une tâche, sélectionnez une tâche pour la modifier ou la supprimer, et faites-la glisser (ou appuyez sur Maj + une flèche) pour la changer de quadrant. Les noms d’exemple suivent la langue de la page jusqu’à ce que vous les renommiez.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnQuadrantTaskBoard, injectMinerva } from 'minerva-design/angular';\nimport { QuadrantPoint } from 'minerva-design/charts/core';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnQuadrantTaskBoard],\n  template: `\n@let t = labels[language()];\n<!-- the + of a quadrant (or a click on its empty area) adds a task, the\n     buttons above the active task edit or delete it, tasks move by drag and\n     drop or Shift + arrows; the built-in texts follow the page language -->\n<mn-quadrant-task-board\n  [(points)]=\"tasks[language()]\"\n  [quadrants]=\"{\n    topLeft: { label: t.doFirst, color: 'var(--danger-color, #ef4444)' },\n    topRight: { label: t.schedule, color: 'var(--primary-color, #4f46e5)' },\n    bottomLeft: { label: t.delegate, color: 'var(--warning-color, #f59e0b)' },\n    bottomRight: { label: t.eliminate, color: 'var(--text-secondary-color, #64748b)' }\n  }\"\n  [axisLabels]=\"{\n    top: t.important,\n    bottom: t.notImportant,\n    left: t.urgent,\n    right: t.notUrgent\n  }\"\n  reverseX\n  [showTicks]=\"false\"\n  [height]=\"360\"\n  [ariaLabel]=\"t.boardAria\"\n/>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  tasks = {\n  en: [\n    { x: 9, y: 8, label: \"Fix login outage\" },\n    { x: 3, y: 8.5, label: \"Quarterly planning\" },\n    { x: 8, y: 3, label: \"Book travel\" },\n    { x: 2.5, y: 2, label: \"Inbox zero\" },\n  ],\n  zh: [\n    { x: 9, y: 8, label: \"修复登录故障\" },\n    { x: 3, y: 8.5, label: \"季度规划\" },\n    { x: 8, y: 3, label: \"预订差旅\" },\n    { x: 2.5, y: 2, label: \"清空收件箱\" },\n  ],\n  ja: [\n    { x: 9, y: 8, label: \"ログイン障害の修正\" },\n    { x: 3, y: 8.5, label: \"四半期計画\" },\n    { x: 8, y: 3, label: \"出張の予約\" },\n    { x: 2.5, y: 2, label: \"受信トレイの整理\" },\n  ],\n  fr: [\n    { x: 9, y: 8, label: \"Réparer la connexion\" },\n    { x: 3, y: 8.5, label: \"Planification trimestrielle\" },\n    { x: 8, y: 3, label: \"Réserver le voyage\" },\n    { x: 2.5, y: 2, label: \"Boîte de réception vide\" },\n  ],\n} as Record<\"en\" | \"zh\" | \"ja\" | \"fr\", QuadrantPoint[]>;\n  labels = {\n  \"en\": {\n    \"doFirst\": \"Do first\",\n    \"schedule\": \"Schedule\",\n    \"delegate\": \"Delegate\",\n    \"eliminate\": \"Eliminate\",\n    \"important\": \"Important\",\n    \"notImportant\": \"Not important\",\n    \"urgent\": \"Urgent\",\n    \"notUrgent\": \"Not urgent\",\n    \"boardAria\": \"Task matrix: drag tasks between quadrants\"\n  },\n  \"zh\": {\n    \"doFirst\": \"立即做\",\n    \"schedule\": \"计划做\",\n    \"delegate\": \"委派\",\n    \"eliminate\": \"删除\",\n    \"important\": \"重要\",\n    \"notImportant\": \"不重要\",\n    \"urgent\": \"紧急\",\n    \"notUrgent\": \"不紧急\",\n    \"boardAria\": \"任务矩阵：在象限之间拖动任务\"\n  },\n  \"ja\": {\n    \"doFirst\": \"すぐやる\",\n    \"schedule\": \"計画する\",\n    \"delegate\": \"任せる\",\n    \"eliminate\": \"やめる\",\n    \"important\": \"重要\",\n    \"notImportant\": \"重要でない\",\n    \"urgent\": \"緊急\",\n    \"notUrgent\": \"緊急でない\",\n    \"boardAria\": \"タスクマトリクス：象限の間でタスクをドラッグ\"\n  },\n  \"fr\": {\n    \"doFirst\": \"À faire tout de suite\",\n    \"schedule\": \"À planifier\",\n    \"delegate\": \"À déléguer\",\n    \"eliminate\": \"À abandonner\",\n    \"important\": \"Important\",\n    \"notImportant\": \"Pas important\",\n    \"urgent\": \"Urgent\",\n    \"notUrgent\": \"Pas urgent\",\n    \"boardAria\": \"Matrice des tâches : faites glisser les tâches entre les quadrants\"\n  }\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "custom-labels",
+      "title": "Textes et pastilles personnalisés",
+      "description": "Une feuille de route produit selon l’effort et l’impact : labels renomme les boutons, le champ du nom et la confirmation de suppression ({name} désigne l’élément), quadrants ajoute une pastille numérotée à chaque en-tête, et chaque modification reçue par onPointsChange est comptée.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnQuadrantTaskBoard, injectMinerva } from 'minerva-design/angular';\nimport { QuadrantPoint } from 'minerva-design/charts/core';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnQuadrantTaskBoard],\n  template: `\n@let t = labels[language()];\n<mn-quadrant-task-board\n  [points]=\"ideas\"\n  (pointsChange)=\"ideas = $event; changes = changes + 1\"\n  [labels]=\"t.board\"\n  [quadrants]=\"{\n    topLeft: { label: t.quickWins },\n    topRight: { label: t.bigBets },\n    bottomLeft: { label: t.fillIns },\n    bottomRight: { label: t.timeSinks }\n  }\"\n  [xLabel]=\"t.effort\"\n  [yLabel]=\"t.impact\"\n  [showCounts]=\"false\"\n  [height]=\"320\"\n/>\n<output aria-live=\"polite\">{{ t.changes }} {{ changes }} · {{ ideas.length }}</output>\n  `,\n})\nexport class Example {\n  readonly language = injectMinerva().language;\n  changes = 0;\n  ideas = [\n  { x: 2, y: 8, label: \"Dark mode\" },\n  { x: 8, y: 8.5, label: \"SSO\" },\n  { x: 3, y: 3, label: \"Export\" },\n] as QuadrantPoint[];\n  labels = {\n  \"en\": {\n    \"effort\": \"Effort\",\n    \"impact\": \"Impact\",\n    \"quickWins\": \"Quick wins\",\n    \"bigBets\": \"Big bets\",\n    \"fillIns\": \"Fill-ins\",\n    \"timeSinks\": \"Time sinks\",\n    \"changes\": \"Changes:\",\n    \"board\": {\n      \"add\": \"Add idea\",\n      \"edit\": \"Edit idea\",\n      \"delete\": \"Drop idea\",\n      \"name\": \"Idea\",\n      \"deleteConfirm\": \"“{name}” leaves the backlog.\"\n    }\n  },\n  \"zh\": {\n    \"effort\": \"投入\",\n    \"impact\": \"影响\",\n    \"quickWins\": \"速赢\",\n    \"bigBets\": \"重点投入\",\n    \"fillIns\": \"补充项\",\n    \"timeSinks\": \"低效项\",\n    \"changes\": \"修改次数：\",\n    \"board\": {\n      \"add\": \"添加想法\",\n      \"edit\": \"编辑想法\",\n      \"delete\": \"放弃想法\",\n      \"name\": \"想法\",\n      \"deleteConfirm\": \"“{name}”将移出待办池。\"\n    }\n  },\n  \"ja\": {\n    \"effort\": \"工数\",\n    \"impact\": \"効果\",\n    \"quickWins\": \"クイックウィン\",\n    \"bigBets\": \"大型施策\",\n    \"fillIns\": \"穴埋め\",\n    \"timeSinks\": \"時間の浪費\",\n    \"changes\": \"変更回数：\",\n    \"board\": {\n      \"add\": \"アイデアを追加\",\n      \"edit\": \"アイデアを編集\",\n      \"delete\": \"アイデアを外す\",\n      \"name\": \"アイデア\",\n      \"deleteConfirm\": \"「{name}」をバックログから外します。\"\n    }\n  },\n  \"fr\": {\n    \"effort\": \"Effort\",\n    \"impact\": \"Impact\",\n    \"quickWins\": \"Gains rapides\",\n    \"bigBets\": \"Paris majeurs\",\n    \"fillIns\": \"Bouche-trous\",\n    \"timeSinks\": \"Pertes de temps\",\n    \"changes\": \"Modifications :\",\n    \"board\": {\n      \"add\": \"Ajouter une idée\",\n      \"edit\": \"Modifier l’idée\",\n      \"delete\": \"Retirer l’idée\",\n      \"name\": \"Idée\",\n      \"deleteConfirm\": \"« {name} » quitte le backlog.\"\n    }\n  }\n};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.6/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "QuadrantTaskBoard",
+      "description": "Un tableau de tâches sur une matrice à quatre quadrants, comme une matrice d’Eisenhower : le + de l’en-tête d’un quadrant (ou un clic dans sa zone vide) ajoute une tâche, les boutons compacts modifier et supprimer de la tâche active (dans sa fiche, à côté de son nom, avec React) la modifient ou la suppriment, un panneau ouvert à côté du bouton + ou de la tâche la nomme et choisit son quadrant, chaque suppression est confirmée sur place, et les tâches se déplacent par glisser-déposer ou avec Maj + flèches (un double-clic les modifie). Le tableau est contrôlé : passez les tâches dans points et renvoyez la liste reçue par onPointsChange. Il accepte les autres props de QuadrantChart (axes, titres, pastilles et couleurs des quadrants, graduations, étiquettes…), et ses boutons et panneaux suivent la langue de l’application. Exporté par minerva-design, et non par minerva-design/charts.",
+      "demos": {
+        "basic": {
+          "title": "Tableau d’Eisenhower",
+          "description": "Les tâches urgentes à gauche (reverseX) et les importantes en haut : cliquez sur + ou dans la zone vide d’un quadrant pour ajouter une tâche, sélectionnez une tâche pour la modifier ou la supprimer, et faites-la glisser (ou appuyez sur Maj + une flèche) pour la changer de quadrant. Les noms d’exemple suivent la langue de la page jusqu’à ce que vous les renommiez."
+        },
+        "custom-labels": {
+          "title": "Textes et pastilles personnalisés",
+          "description": "Une feuille de route produit selon l’effort et l’impact : labels renomme les boutons, le champ du nom et la confirmation de suppression ({name} désigne l’élément), quadrants ajoute une pastille numérotée à chaque en-tête, et chaque modification reçue par onPointsChange est comptée."
+        }
+      },
+      "data": {
+        "tasks": {
+          "loginOutage": "Réparer la connexion",
+          "quarterlyPlanning": "Planification trimestrielle",
+          "bookTravel": "Réserver le voyage",
+          "inboxZero": "Boîte de réception vide"
+        },
+        "doFirst": "À faire tout de suite",
+        "schedule": "À planifier",
+        "delegate": "À déléguer",
+        "eliminate": "À abandonner",
+        "important": "Important",
+        "notImportant": "Pas important",
+        "urgent": "Urgent",
+        "notUrgent": "Pas urgent",
+        "boardAria": "Matrice des tâches : faites glisser les tâches entre les quadrants",
+        "roadmap": {
+          "features": {
+            "darkMode": "Mode sombre",
+            "sso": "Authentification unique",
+            "csvExport": "Export CSV",
+            "rewriteBilling": "Refonte de la facturation"
+          },
+          "quickWins": "Gains rapides",
+          "bigBets": "Paris ambitieux",
+          "fillIns": "Bouche-trous",
+          "moneyPits": "Gouffres financiers",
+          "effort": "Effort",
+          "impact": "Impact",
+          "aria": "Feuille de route selon l’effort et l’impact",
+          "add": "Ajouter une fonctionnalité",
+          "edit": "Modifier la fonctionnalité",
+          "delete": "Retirer la fonctionnalité",
+          "name": "Fonctionnalité",
+          "deleteConfirm": "« {name} » sera retirée de la feuille de route.",
+          "summary": "Fonctionnalités : {{features}} · modifications : {{changes}}"
+        }
+      },
+      "api": {
+        "QuadrantTaskBoardProps": {
+          "onPointsChange": "Appelée avec la nouvelle liste de tâches après un ajout, une modification, une suppression, un glisser-déposer ou un déplacement au clavier (contrôlé : renvoyez-la dans points)",
+          "labels": "Textes des boutons et des panneaux (voir QuadrantTaskLabels) ; ceux qui manquent suivent la langue"
+        },
+        "QuadrantTaskLabels": {
+          "add": "Bouton d’ajout de chaque quadrant, et titre du panneau d’ajout",
+          "edit": "Bouton de modification de la tâche active, et titre du panneau de modification",
+          "delete": "Bouton de suppression de la tâche active, et titre de sa confirmation",
+          "deleteConfirm": "Texte de la confirmation de suppression ; {name} est remplacé par le nom de la tâche",
+          "confirmDelete": "Bouton de validation de la confirmation de suppression",
+          "name": "Libellé du champ du nom",
+          "quadrant": "Libellé du champ du quadrant",
+          "save": "Bouton d’enregistrement du panneau d’ajout / de modification",
+          "cancel": "Bouton d’annulation des panneaux",
+          "actions": "Nom accessible de la barre d’outils de la tâche active"
+        },
+        "QuadrantConfig": {
+          "points": "Tâches { x, y, label, color, size } : la liste contrôlée, mise à jour via onPointsChange",
+          "xDomain": "Plage de l’axe horizontal",
+          "yDomain": "Plage de l’axe vertical",
+          "xSplit": "Valeur x du séparateur vertical (milieu de xDomain par défaut)",
+          "ySplit": "Valeur y du séparateur horizontal (milieu de yDomain par défaut)",
+          "quadrants": "Titres, pastilles et couleurs des quadrants ; un quadrant sans titre affiche un titre par défaut dans la langue courante",
+          "xLabel": "Titre de l’axe horizontal",
+          "yLabel": "Titre de l’axe vertical",
+          "axisLabels": "Textes aux extrémités des séparateurs, dessinés dans la zone de tracé (p. ex. « Important » en haut)",
+          "showTicks": "Affiche les graduations numériques des axes ; false ne garde que la matrice",
+          "reverseX": "Inverse l’axe horizontal (p. ex. urgent à gauche)",
+          "showLabels": "Dessine le nom des tâches à côté des points en évitant les chevauchements",
+          "pointSize": "Diamètre des points en pixels",
+          "name": "Nom des tâches dans l’infobulle",
+          "draggable": "Permet de faire glisser les tâches vers un autre quadrant (activé par défaut sur le tableau ; false le désactive)",
+          "showCounts": "Affiche le nombre de tâches après le titre de chaque quadrant (activé par défaut sur le tableau ; false le masque, une fonction (count, points) renvoie le texte à la place)",
+          "selectedIndex": "Index de la tâche sélectionnée, entourée d’un anneau (null : aucune) ; par défaut, le tableau sélectionne la dernière tâche cliquée, déplacée ou enregistrée",
+          "selectedIndices": "Index de plusieurs tâches sélectionnées, chacune entourée d’un anneau"
+        },
+        "native_QuadrantTaskBoardProps": {
+          "onPointsChange": "Appelée avec la nouvelle liste de tâches après un ajout, une modification, une suppression, un glisser-déposer ou une action d’accessibilité « Déplacer vers » (contrôlé : renvoyez-la dans points)",
+          "labels": "Textes des boutons et des panneaux (add, edit, delete, deleteConfirm, confirmDelete, name, quadrant, save, cancel, actions) ; ceux qui manquent suivent la langue"
+        }
+      },
+      "cssVars": {
+        "--quadrant-task-board-header-color": "Couleur du texte des titres de quadrant (--text-color par défaut)",
+        "--quadrant-task-board-header-background": "Fond des en-têtes de quadrant (une surface translucide par défaut)",
+        "--quadrant-task-board-count-background": "Fond des pastilles de comptage des tâches (--surface-muted-color par défaut)",
+        "--quadrant-task-board-count-color": "Couleur du texte des pastilles de comptage des tâches (--text-secondary-color par défaut)",
+        "--quadrant-task-board-actions-background": "Fond de la barre d’outils de la tâche active (--surface-elevated-color par défaut)",
+        "--quadrant-task-board-actions-radius": "Rayon des coins de la barre d’outils de la tâche active (--radius-md par défaut)",
+        "--quadrant-task-board-panel-background": "Fond du panneau d’ajout / de modification / de suppression (par défaut une surface surélevée translucide)",
+        "--quadrant-task-board-panel-border": "Couleur de bordure du panneau (par défaut --border-color translucide)",
+        "--quadrant-task-board-panel-radius": "Rayon des coins du panneau (par défaut --radius-lg)",
+        "--quadrant-task-board-panel-width": "Largeur du panneau (288px par défaut)"
+      },
+      "native": {
+        "limitations": "Sous React Native, les tâches se déplacent par glisser-déposer ou avec les actions « Déplacer vers » des lecteurs d’écran : pas de déplacement avec Maj + flèches ni de double appui pour modifier (utilisez le bouton de modification de la tâche active). Les icônes des boutons sont dessinées avec des View, sans dépendance SVG.",
+        "demos": {
+          "basic": {
+            "title": "Tableau d’Eisenhower",
+            "description": "Touchez + ou la zone vide d’un quadrant pour ajouter une tâche, touchez une tâche pour afficher ses boutons de modification et de suppression, et faites-la glisser vers un autre quadrant. Les noms d’exemple suivent la langue de l’application jusqu’à ce que vous les renommiez."
+          }
+        }
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Tableau d’Eisenhower",
+            "description": "points, quadrants et axisLabels sont définis comme propriétés, reverse-x, hide-ticks et height comme attributs ; l’écouteur de minerva-points-change renvoie la nouvelle liste dans points."
+          }
+        },
+        "minerva-quadrant-task-board": {
+          "props": {
+            "points": "Tâches { x, y, label, color, size } ; renvoyez le detail de minerva-points-change pour mettre le tableau à jour (contrôlé) ; propriété uniquement",
+            "quadrants": "Titres, pastilles et couleurs des quadrants (topLeft, topRight, bottomLeft, bottomRight) ; propriété uniquement",
+            "axisLabels": "Textes aux extrémités des séparateurs, dessinés dans la zone de tracé (top, bottom, left, right) ; propriété uniquement",
+            "xDomain": "Plage de l’axe horizontal ([0, 10] par défaut) ; propriété uniquement",
+            "yDomain": "Plage de l’axe vertical ([0, 10] par défaut) ; propriété uniquement",
+            "hideTicks": "Masque les graduations numériques des axes (seule la matrice reste)",
+            "hideLabels": "Masque le nom des tâches à côté des points",
+            "hideCounts": "Masque le nombre de tâches dans les en-têtes de quadrant",
+            "height": "Hauteur du graphique : en pixels ou toute longueur CSS (320 par défaut)",
+            "locale": "Langue des textes intégrés, des titres de quadrant par défaut et des nombres (p. ex. \"fr\") ; la langue de la bibliothèque par défaut",
+            "noAccessiblePoints": "Retire la liste visuellement masquée des tâches (accès au clavier et aux lecteurs d’écran, déplacements par Maj + flèches)",
+            "options": "Autres options du moteur du graphique (légende, infobulle, marges, palette…) ; propriété uniquement"
+          },
+          "events": {
+            "minerva-points-change": "Les tâches ont changé (ajout, modification, suppression, glisser-déposer, déplacement au clavier) ; detail : { points }, la nouvelle liste à renvoyer dans points",
+            "minerva-point-click": "Une tâche a été cliquée (elle devient la tâche sélectionnée) ; detail : { point, index }",
+            "minerva-point-drag": "Une tâche est en train d’être glissée (à chaque déplacement) ; detail : { point, index, x, y, quadrant }",
+            "minerva-hover": "La tâche survolée (ou ciblée au clavier) a changé ; detail : { x, xLabel, items }, null quand rien n’est survolé",
+            "minerva-zoom": "L’utilisateur a zoomé ou s’est déplacé dans le graphique ; detail : { x, y } (les plages visibles)",
+            "minerva-renderer-change": "Le moteur de rendu du graphique est prêt, ou s’est replié après une perte du GPU ; detail : { renderer }"
+          }
+        }
+      }
+    }
+  }
+}

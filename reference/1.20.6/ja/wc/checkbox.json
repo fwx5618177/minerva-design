@@ -1,0 +1,668 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.6",
+  "locale": "ja",
+  "renderer": "wc",
+  "page": "checkbox",
+  "title": "Checkbox チェックボックス",
+  "description": "1 つ以上の選択肢を選べるようにします。中間状態、エラー状態、カスタムスタイルに対応しています。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.6",
+    "sourceCommit": "63ce45656d8f3d1bfbee71026e84674640ae9abf",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:fa9a782f68a5d5b512762e2152b2ad065da3de6937bac96eef63709ddba3b95b"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Checkbox",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design/web-components/checkbox",
+          "exports": [],
+          "kind": "side-effect"
+        },
+        "tag": "minerva-checkbox",
+        "props": [
+          {
+            "name": "defaultChecked",
+            "typeText": "boolean",
+            "attribute": "checked",
+            "required": false
+          },
+          {
+            "name": "indeterminate",
+            "typeText": "boolean",
+            "attribute": "indeterminate",
+            "required": false
+          },
+          {
+            "name": "value",
+            "typeText": "string",
+            "attribute": "value",
+            "required": false
+          },
+          {
+            "name": "label",
+            "typeText": "string",
+            "attribute": "label",
+            "required": false
+          },
+          {
+            "name": "shape",
+            "typeText": "\"square\" | \"circle\" | \"rounded\"",
+            "attribute": "shape",
+            "required": false
+          },
+          {
+            "name": "size",
+            "typeText": "\"small\" | \"medium\" | \"large\"",
+            "attribute": "size",
+            "required": false
+          },
+          {
+            "name": "color",
+            "typeText": "CheckboxColor",
+            "attribute": "color",
+            "required": false
+          },
+          {
+            "name": "labelPlacement",
+            "typeText": "\"start\" | \"end\" | \"top\" | \"bottom\"",
+            "attribute": "label-placement",
+            "required": false
+          },
+          {
+            "name": "error",
+            "typeText": "boolean",
+            "attribute": "error",
+            "required": false
+          },
+          {
+            "name": "helperText",
+            "typeText": "string",
+            "attribute": "helper-text",
+            "required": false
+          },
+          {
+            "name": "readOnly",
+            "typeText": "boolean",
+            "attribute": "readonly",
+            "required": false
+          },
+          {
+            "name": "name",
+            "typeText": "string",
+            "attribute": "name",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "attribute": "disabled",
+            "required": false
+          },
+          {
+            "name": "required",
+            "typeText": "boolean",
+            "attribute": "required",
+            "required": false
+          },
+          {
+            "name": "checked",
+            "typeText": "boolean",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "change",
+            "typeText": "Event",
+            "description": "The checked state changed (re-dispatched from the inner input)"
+          },
+          {
+            "name": "minerva-change",
+            "typeText": "CustomEvent<{ checked: boolean; value: string; }>",
+            "detailType": {
+              "typeText": "{ checked: boolean; value: string; }",
+              "typeRef": "type:62b22a0eedf00e5f754b"
+            },
+            "bubbles": true,
+            "composed": true,
+            "cancelable": false,
+            "description": "The user toggled the box; `detail: { checked, value }`"
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "description": "Label content (alternative to the `label` attribute)"
+          },
+          {
+            "name": "icon",
+            "description": "Custom icon shown inside the box when checked"
+          }
+        ],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {
+    "wc:minerva-checkbox": {
+      "kind": "element",
+      "source": "web-components/src/components/checkbox/checkbox.ts",
+      "className": "MinervaCheckbox",
+      "summary": "Checkbox with label, helper text and indeterminate state.",
+      "description": "A checkbox with label, helper text and indeterminate state (`<Checkbox>` of React), rendering a native `<input type=\"checkbox\">` in its shadow root (Space toggles it; Enter does nothing, as natively). Form-associated: when checked, submits `value` (default `\"on\"`) under `name`; `required` makes it invalid until checked (`valueMissing`, with the localized \"check this box\" message); supports `form.reset()` (restores the `checked` attribute), `<fieldset disabled>` and state restoration. `indeterminate` stays applied until it is changed (as in React), also after the user toggles the box.",
+      "properties": [
+        {
+          "name": "defaultChecked",
+          "attribute": "checked",
+          "type": "boolean",
+          "default": "false",
+          "description": "Initial checked state, restored by `form.reset()` (the `checked` attribute). Changing it also changes `checked` until the user toggles"
+        },
+        {
+          "name": "indeterminate",
+          "attribute": "indeterminate",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows the indeterminate (partially checked) state (aria-checked=\"mixed\")"
+        },
+        {
+          "name": "value",
+          "attribute": "value",
+          "type": "string",
+          "default": "\"on\"",
+          "description": "Value submitted with the form when checked"
+        },
+        {
+          "name": "label",
+          "attribute": "label",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Label text (alternative to the default slot)"
+        },
+        {
+          "name": "shape",
+          "attribute": "shape",
+          "type": "\"square\" | \"circle\" | \"rounded\"",
+          "default": "\"square\"",
+          "description": "Box shape"
+        },
+        {
+          "name": "size",
+          "attribute": "size",
+          "type": "\"small\" | \"medium\" | \"large\"",
+          "default": "\"medium\"",
+          "description": "Checkbox size"
+        },
+        {
+          "name": "color",
+          "attribute": "color",
+          "type": "CheckboxColor",
+          "default": "\"primary\"",
+          "description": "Semantic color of the checked / indeterminate box"
+        },
+        {
+          "name": "labelPlacement",
+          "attribute": "label-placement",
+          "type": "\"start\" | \"end\" | \"top\" | \"bottom\"",
+          "default": "\"end\"",
+          "description": "Position of the label relative to the box"
+        },
+        {
+          "name": "error",
+          "attribute": "error",
+          "type": "boolean",
+          "default": "false",
+          "description": "Shows the error state (sets aria-invalid)"
+        },
+        {
+          "name": "helperText",
+          "attribute": "helper-text",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Helper or error text shown below the checkbox (describes it)"
+        },
+        {
+          "name": "readOnly",
+          "attribute": "readonly",
+          "type": "boolean",
+          "default": "false",
+          "description": "Read-only: focusable and submitted, but the user cannot toggle it"
+        },
+        {
+          "name": "name",
+          "attribute": "name",
+          "type": "string",
+          "default": "\"\"",
+          "description": "Name submitted with the form data"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "type": "boolean",
+          "default": "false",
+          "description": "Disables the control (not focusable, not submitted, not validated)"
+        },
+        {
+          "name": "required",
+          "attribute": "required",
+          "type": "boolean",
+          "default": "false",
+          "description": "The control must have a value for the form to be submitted"
+        },
+        {
+          "name": "checked",
+          "type": "boolean",
+          "default": "false",
+          "description": "Checked state (property; the `checked` attribute sets `defaultChecked`)"
+        },
+        {
+          "name": "isDisabled",
+          "type": "boolean",
+          "readonly": true,
+          "description": "Whether the control is disabled (itself or by a disabled fieldset)."
+        },
+        {
+          "name": "form",
+          "type": "HTMLFormElement | null",
+          "readonly": true,
+          "description": "The form owning the element"
+        },
+        {
+          "name": "labels",
+          "type": "NodeList | null",
+          "readonly": true,
+          "description": "`<label>` elements associated with the element"
+        },
+        {
+          "name": "validity",
+          "type": "ValidityState | undefined",
+          "readonly": true,
+          "description": "Validity state (same as `<input>.validity`)"
+        },
+        {
+          "name": "validationMessage",
+          "type": "string",
+          "readonly": true,
+          "description": "Message describing the current validation error (empty when valid)"
+        },
+        {
+          "name": "willValidate",
+          "type": "boolean",
+          "readonly": true,
+          "description": "Whether the element is a candidate for constraint validation"
+        }
+      ],
+      "methods": [
+        {
+          "name": "focus",
+          "signature": "(options?: FocusOptions) => void"
+        },
+        {
+          "name": "blur",
+          "signature": "() => void"
+        },
+        {
+          "name": "click",
+          "signature": "() => void"
+        },
+        {
+          "name": "checkValidity",
+          "signature": "() => boolean",
+          "description": "Checks validity; fires `invalid` when invalid."
+        },
+        {
+          "name": "reportValidity",
+          "signature": "() => boolean",
+          "description": "Checks validity and shows the browser's validation message."
+        },
+        {
+          "name": "setCustomValidity",
+          "signature": "(message: string) => void",
+          "description": "Sets (or clears, with `\"\"`) a custom validation error."
+        },
+        {
+          "name": "formResetCallback",
+          "signature": "() => void"
+        },
+        {
+          "name": "formDisabledCallback",
+          "signature": "(disabled: boolean) => void"
+        },
+        {
+          "name": "formStateRestoreCallback",
+          "signature": "(state: string | File | FormData | null) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "change",
+          "description": "The checked state changed (re-dispatched from the inner input)"
+        },
+        {
+          "name": "minerva-change",
+          "description": "The user toggled the box; `detail: { checked, value }`"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "Label content (alternative to the `label` attribute)"
+        },
+        {
+          "name": "icon",
+          "description": "Custom icon shown inside the box when checked"
+        }
+      ],
+      "parts": [
+        {
+          "name": "root",
+          "description": "The wrapper (the clickable row and the helper text)"
+        },
+        {
+          "name": "input",
+          "description": "The native `<input type=\"checkbox\">`"
+        },
+        {
+          "name": "control",
+          "description": "The visual box (draws the checkmark)"
+        },
+        {
+          "name": "label",
+          "description": "The label text"
+        },
+        {
+          "name": "helper-text",
+          "description": "The helper / error text"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--checkbox-checked-color",
+          "description": "Background / border of the checked or indeterminate box (defaults to the color prop's accent)"
+        },
+        {
+          "name": "--checkbox-checkmark-color",
+          "description": "Color of the checkmark / indeterminate dash"
+        },
+        {
+          "name": "--checkbox-box-color",
+          "description": "Background of the unchecked box"
+        },
+        {
+          "name": "--checkbox-border-color",
+          "description": "Border of the unchecked box"
+        },
+        {
+          "name": "--checkbox-size",
+          "description": "Width and height of the box (every size)"
+        },
+        {
+          "name": "--checkbox-radius",
+          "description": "Corner radius of the box for the square and rounded shapes"
+        },
+        {
+          "name": "--checkbox-gap",
+          "description": "Space between the box and the label"
+        },
+        {
+          "name": "--checkbox-label-font-size",
+          "description": "Font size of the label (every size)"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Checkbox": {
+      "kind": "cssVars",
+      "source": "react/src/components/Checkbox",
+      "vars": [
+        {
+          "name": "--checkbox-checked-color",
+          "description": "Background / border of the checked or indeterminate box (defaults to the color prop's accent)"
+        },
+        {
+          "name": "--checkbox-checkmark-color",
+          "description": "Color of the checkmark / indeterminate dash"
+        },
+        {
+          "name": "--checkbox-box-color",
+          "description": "Background of the unchecked box"
+        },
+        {
+          "name": "--checkbox-border-color",
+          "description": "Border of the unchecked box"
+        },
+        {
+          "name": "--checkbox-size",
+          "description": "Width and height of the box (every size)"
+        },
+        {
+          "name": "--checkbox-radius",
+          "description": "Corner radius of the box for the square and rounded shapes"
+        },
+        {
+          "name": "--checkbox-gap",
+          "description": "Space between the box and the label"
+        },
+        {
+          "name": "--checkbox-label-font-size",
+          "description": "Font size of the label (every size)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/checkbox/wc/basic.html",
+      "files": {
+        "apps/docs/src/docs/pages/checkbox/wc/basic.html": "<div style=\"display: flex; flex-wrap: wrap; gap: 16px\">\n  <minerva-checkbox label=\"Remember me\"></minerva-checkbox>\n  <minerva-checkbox checked label=\"Checked by default\"></minerva-checkbox>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "基本的な使い方",
+      "description": "Remember me は未選択、Checked by default は選択済みで開始し、それぞれ独立して切り替わります。"
+    },
+    {
+      "id": "form",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/checkbox/wc/form.html",
+      "files": {
+        "apps/docs/src/docs/pages/checkbox/wc/form.html": "<form id=\"cb-form\" style=\"display: grid; gap: 12px; justify-items: start\">\n  <minerva-checkbox\n    name=\"terms\"\n    required\n    label=\"I accept the terms\"\n  ></minerva-checkbox>\n  <minerva-checkbox\n    name=\"newsletter\"\n    value=\"weekly\"\n    checked\n    label=\"Weekly newsletter\"\n  ></minerva-checkbox>\n  <div style=\"display: flex; gap: 8px\">\n    <minerva-button type=\"submit\">Submit</minerva-button>\n    <minerva-button type=\"reset\" variant=\"ghost\" color=\"neutral\"\n      >Reset</minerva-button\n    >\n  </div>\n  <output id=\"cb-form-result\"></output>\n</form>\n",
+        "apps/docs/src/docs/pages/checkbox/wc/form.ts": "// Submitting validates first (the required box blocks it with the browser's\n// message); a checked box submits its `value`, an unchecked one nothing.\n// Reset restores the `checked` attributes.\nexport function setup(root: HTMLElement) {\n  const form = root.querySelector<HTMLFormElement>(\"#cb-form\")!;\n  const result = root.querySelector<HTMLOutputElement>(\"#cb-form-result\")!;\n  const onSubmit = (event: SubmitEvent) => {\n    event.preventDefault();\n    const entries = [...new FormData(form)].map(\n      ([key, value]) => `${key}=${value}`,\n    );\n    result.value = `FormData: ${entries.join(\", \") || \"(empty)\"}`;\n  };\n  const onReset = () => (result.value = \"\");\n  form.addEventListener(\"submit\", onSubmit);\n  form.addEventListener(\"reset\", onReset);\n  return () => {\n    form.removeEventListener(\"submit\", onSubmit);\n    form.removeEventListener(\"reset\", onReset);\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "フォーム内での利用",
+      "description": "フォーム関連付け要素：チェック時に name で value を送信し、required はチェックされるまで送信を止め、リセットで checked 属性の状態に戻ります。"
+    },
+    {
+      "id": "select-all",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/checkbox/wc/select-all.html",
+      "files": {
+        "apps/docs/src/docs/pages/checkbox/wc/select-all.html": "<div style=\"display: grid; gap: 8px\">\n  <minerva-checkbox id=\"cb-all\" label=\"All toppings\"></minerva-checkbox>\n  <div style=\"display: grid; gap: 8px; padding-inline-start: 24px\">\n    <minerva-checkbox\n      class=\"cb-item\"\n      value=\"cheese\"\n      checked\n      label=\"Cheese\"\n    ></minerva-checkbox>\n    <minerva-checkbox\n      class=\"cb-item\"\n      value=\"olives\"\n      label=\"Olives\"\n    ></minerva-checkbox>\n    <minerva-checkbox\n      class=\"cb-item\"\n      value=\"basil\"\n      label=\"Basil\"\n    ></minerva-checkbox>\n  </div>\n  <output id=\"cb-selection\"></output>\n</div>\n",
+        "apps/docs/src/docs/pages/checkbox/wc/select-all.ts": "// The parent box mirrors its children: checked when all are, indeterminate\n// (aria-checked=\"mixed\") when only some are. `minerva-change` only fires\n// for user toggles, so setting `checked` here does not loop.\ntype Checkbox = HTMLElement & {\n  checked: boolean;\n  indeterminate: boolean;\n  value: string;\n  updateComplete: Promise<boolean>;\n};\n\nexport function setup(root: HTMLElement) {\n  const all = root.querySelector<Checkbox>(\"#cb-all\")!;\n  const items = Array.from(root.querySelectorAll<Checkbox>(\".cb-item\"));\n  const output = root.querySelector<HTMLOutputElement>(\"#cb-selection\")!;\n  const sync = () => {\n    const checked = items.filter((item) => item.checked);\n    all.checked = checked.length === items.length;\n    all.indeterminate = checked.length > 0 && checked.length < items.length;\n    output.value = `Selected: ${checked.map((item) => item.value).join(\", \") || \"none\"}`;\n  };\n  const onAll = () => {\n    items.forEach((item) => (item.checked = all.checked));\n    sync();\n  };\n  all.addEventListener(\"minerva-change\", onAll);\n  items.forEach((item) => item.addEventListener(\"minerva-change\", sync));\n  // the `checked` attributes are applied on the first render\n  void Promise.all(items.map((item) => item.updateComplete)).then(sync);\n  return () => {\n    all.removeEventListener(\"minerva-change\", onAll);\n    items.forEach((item) => item.removeEventListener(\"minerva-change\", sync));\n  };\n}\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "すべて選択（中間状態）",
+      "description": "親のボックスは minerva-change で子に追従します。すべてチェック時はチェック、一部のみなら中間状態（aria-checked=\"mixed\"）になります。"
+    },
+    {
+      "id": "styles-states",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/checkbox/wc/styles-states.html",
+      "files": {
+        "apps/docs/src/docs/pages/checkbox/wc/styles-states.html": "<div style=\"display: grid; gap: 16px\">\n  <div style=\"display: flex; flex-wrap: wrap; gap: 16px; align-items: center\">\n    <minerva-checkbox size=\"small\" checked label=\"Small\"></minerva-checkbox>\n    <minerva-checkbox size=\"medium\" checked label=\"Medium\"></minerva-checkbox>\n    <minerva-checkbox size=\"large\" checked label=\"Large\"></minerva-checkbox>\n  </div>\n  <div style=\"display: flex; flex-wrap: wrap; gap: 16px; align-items: center\">\n    <minerva-checkbox\n      shape=\"rounded\"\n      color=\"success\"\n      checked\n      label=\"Rounded\"\n    ></minerva-checkbox>\n    <minerva-checkbox\n      shape=\"circle\"\n      color=\"danger\"\n      checked\n      label=\"Circle\"\n    ></minerva-checkbox>\n    <minerva-checkbox\n      color=\"warning\"\n      checked\n      label-placement=\"start\"\n      label=\"Label at start\"\n    ></minerva-checkbox>\n    <minerva-checkbox\n      color=\"info\"\n      checked\n      label-placement=\"top\"\n      label=\"Label on top\"\n    ></minerva-checkbox>\n    <minerva-checkbox checked label=\"Custom icon\"\n      ><span slot=\"icon\" aria-hidden=\"true\">★</span></minerva-checkbox\n    >\n  </div>\n  <div style=\"display: flex; flex-wrap: wrap; gap: 24px; align-items: start\">\n    <minerva-checkbox\n      readonly\n      checked\n      label=\"Read-only\"\n      helper-text=\"Managed by your administrator.\"\n    ></minerva-checkbox>\n    <minerva-checkbox\n      error\n      label=\"I accept the terms\"\n      helper-text=\"You must accept the terms to continue.\"\n    ></minerva-checkbox>\n  </div>\n</div>\n"
+      },
+      "dependencies": [],
+      "contextImports": [],
+      "title": "スタイルと状態",
+      "description": "サイズ、形、色、ラベルの位置、icon スロットのカスタムアイコン、補助テキスト付きの読み取り専用・エラー状態。"
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.6/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Checkbox チェックボックス",
+      "description": "1 つ以上の選択肢を選べるようにします。中間状態、エラー状態、カスタムスタイルに対応しています。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "Remember me は未選択、Checked by default は選択済みで開始し、それぞれ独立して切り替えられます。"
+        },
+        "controlled": {
+          "title": "制御コンポーネント",
+          "description": "ニュースレターは購読済みで開始し、切り替えると下の購読状態も更新されます。"
+        },
+        "indeterminate": {
+          "title": "中間状態",
+          "description": "最初は Apple のみ選択済みです。Select all で全件選択し、もう一度押すと解除します。"
+        },
+        "sizes-and-shapes": {
+          "title": "サイズと形状",
+          "description": "3 つのサイズと 3 つのボックス形状：square（デフォルト）、rounded、circle。"
+        },
+        "label-placement": {
+          "title": "ラベルの位置",
+          "description": "ラベルをボックスの前、後ろ（デフォルト）、上、下に配置します。"
+        },
+        "states": {
+          "title": "状態",
+          "description": "無効なチェックボックスと、ネイティブフォームで使う required。"
+        },
+        "custom-style": {
+          "title": "カスタムスタイル",
+          "description": "CSS カスタムプロパティ --checkbox-checked-color・--checkbox-checkmark-color・--checkbox-box-color・--checkbox-border-color（className または祖先要素に設定）でボックスの色を変えたり、チェック時にカスタムアイコンを表示したりできます。"
+        },
+        "error": {
+          "title": "エラー状態",
+          "description": "error と helperText で対応が必要なチェックボックスを強調します。"
+        },
+        "colors-and-form-control": {
+          "title": "カラーと FormControl",
+          "description": "color で選択時のセマンティックカラー（primary・success・info・warning・danger）を設定し、children をラベルとして使えます。FormControl 内では id・説明・無効・必須・無効化の状態を引き継ぎます。"
+        }
+      },
+      "api": {
+        "CheckboxProps": {
+          "checked": "チェック状態（制御）",
+          "defaultChecked": "初期のチェック状態（非制御）",
+          "disabled": "チェックボックスを無効にする",
+          "indeterminate": "不確定（一部選択）状態を表示します。制御されたプロパティで、ユーザーがクリックしてもこのプロパティが変わるまで維持されます",
+          "name": "フォームで使う input の name",
+          "onChange": "新しいチェック状態と change イベントで呼び出される",
+          "shape": "ボックスの形状",
+          "size": "チェックボックスのサイズ",
+          "label": "ラベルのテキスト",
+          "aria-label": "アクセシブルなラベル。表示ラベルがない場合は必須",
+          "className": "追加のクラス名",
+          "icon": "チェック時に表示するカスタムアイコン",
+          "required": "入力を必須にする",
+          "error": "エラー状態を表示する",
+          "errorIcon": "エラー状態で補足テキストの前に表示するアイコン",
+          "helperText": "チェックボックスの下に表示するヘルプまたはエラーテキスト（aria-describedby で関連付け）",
+          "labelPlacement": "ボックスに対するラベルの位置",
+          "ref": "内部の <input> 要素への ref",
+          "children": "ラベルの内容（label の代替。label 未指定時に使用）",
+          "color": "チェック / 不確定状態のボックスのセマンティックカラー。独自の見た目にするには、className または祖先要素に CSS カスタムプロパティ --checkbox-checked-color・--checkbox-checkmark-color・--checkbox-box-color・--checkbox-border-color を設定します",
+          "id": "input の id（既定は外側の FormControl の id）",
+          "value": "チェック時にフォームで送信される値",
+          "aria-describedby": "チェックボックスを説明する要素の追加 id（aria-describedby）",
+          "aria-labelledby": "チェックボックスのラベルとなる要素の id（複数可）",
+          "style": "label 要素のインラインスタイル"
+        }
+      },
+      "cssVars": {
+        "--checkbox-checked-color": "チェック / 中間状態のボックスの背景と枠線（既定は color プロパティのアクセント）",
+        "--checkbox-checkmark-color": "チェックマーク / 中間状態の線の色",
+        "--checkbox-box-color": "未チェックのボックスの背景色",
+        "--checkbox-border-color": "未チェックのボックスの枠線色",
+        "--checkbox-size": "ボックスの幅と高さ（全サイズ）",
+        "--checkbox-radius": "square / rounded 形状のボックスの角丸",
+        "--checkbox-gap": "ボックスとラベルの間隔",
+        "--checkbox-label-font-size": "ラベルのフォントサイズ（全サイズ）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "Remember me は未選択、Checked by default は選択済みで開始し、それぞれ独立して切り替わります。"
+          },
+          "select-all": {
+            "title": "すべて選択（中間状態）",
+            "description": "親のボックスは minerva-change で子に追従します。すべてチェック時はチェック、一部のみなら中間状態（aria-checked=\"mixed\"）になります。"
+          },
+          "styles-states": {
+            "title": "スタイルと状態",
+            "description": "サイズ、形、色、ラベルの位置、icon スロットのカスタムアイコン、補助テキスト付きの読み取り専用・エラー状態。"
+          },
+          "form": {
+            "title": "フォーム内での利用",
+            "description": "フォーム関連付け要素：チェック時に name で value を送信し、required はチェックされるまで送信を止め、リセットで checked 属性の状態に戻ります。"
+          }
+        },
+        "minerva-checkbox": {
+          "props": {
+            "readOnly": "読み取り専用：フォーカス可能で送信されますが、ユーザーは切り替えられません。",
+            "isDisabled": "コントロールが無効かどうか（自身または無効な <fieldset> による。読み取り専用）。",
+            "form": "要素が属するフォーム（読み取り専用）。",
+            "labels": "要素に関連付けられた <label> 要素（読み取り専用）。",
+            "validity": "<input>.validity と同じ妥当性の状態（読み取り専用）。",
+            "validationMessage": "現在の検証エラーのメッセージ。有効な場合は空（読み取り専用）。",
+            "willValidate": "要素が制約検証の対象かどうか（読み取り専用）。"
+          },
+          "events": {
+            "change": "チェック状態が変わった（内部の input から再送出）。",
+            "minerva-change": "ユーザーがボックスを切り替えた。detail: { checked, value }。"
+          },
+          "slots": {
+            "default": "ラベルの内容（label 属性の代わり）。",
+            "icon": "チェック時にボックス内に表示するカスタムアイコン。"
+          },
+          "methods": {
+            "focus": "内部のコントロールにフォーカスします。",
+            "blur": "内部のコントロールからフォーカスを外します。",
+            "click": "内部のコントロールをクリックします（無効・読み取り専用でなければ切り替わります）。",
+            "checkValidity": "妥当性を確認し、無効なら invalid イベントを発火します。",
+            "reportValidity": "妥当性を確認し、ブラウザーの検証メッセージを表示します。",
+            "setCustomValidity": "独自の検証エラーを設定します（空文字列で解除）。",
+            "formResetCallback": "form.reset() から呼ばれるフォームのライフサイクルコールバック。初期値に戻します。",
+            "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときに呼ばれるフォームのライフサイクルコールバック。",
+            "formStateRestoreCallback": "ブラウザーが状態を復元するとき（履歴移動・自動入力）に呼ばれるフォームのライフサイクルコールバック。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "Remember me は未選択、Checked by default は選択済みで開始し、それぞれ独立して切り替えられます。"
+          },
+          "controlled": {
+            "title": "制御コンポーネント",
+            "description": "ニュースレターは購読済みで開始し、切り替えると下の購読状態も更新されます。"
+          },
+          "indeterminate": {
+            "title": "中間状態",
+            "description": "最初は Apple のみ選択済みです。Select all で全件選択し、もう一度押すと解除します。"
+          }
+        }
+      }
+    }
+  }
+}

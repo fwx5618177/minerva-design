@@ -1,0 +1,543 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.6",
+  "locale": "ja",
+  "renderer": "angular",
+  "page": "select",
+  "title": "Select セレクト",
+  "description": "完全なキーボード操作・グループ・フォーム連携に対応した単一選択ドロップダウン。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.6",
+    "sourceCommit": "63ce45656d8f3d1bfbee71026e84674640ae9abf",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:fa9a782f68a5d5b512762e2152b2ad065da3de6937bac96eef63709ddba3b95b"
+  },
+  "content": {
+    "behavior": {
+      "title": "動作とアクセシビリティ",
+      "keyboard": "トリガーは combobox ロールを持つボタンです（aria-haspopup=\"listbox\"）。クリック、Enter、Space、↓ / ↑、Home、End でリストを開き、選択中の候補（なければ最初の有効な候補）にフォーカスします。矢印キーは端で折り返さず、無効な候補を飛ばします。Home / End と Page Up / Page Down でジャンプできます。Enter または Space で選択して閉じ、フォーカスはトリガーに戻ります。Escape は選択せずに閉じ、Tab は閉じて次のフィールドへ進みます。",
+      "typeahead": "閉じたトリガー上で文字を入力すると、ネイティブの select と同様に選択が直接変わります。開いているときはハイライトが移動します。内容がプレーンテキストでない候補には textValue を指定してください。",
+      "positioning": "リストはトリガーの下に配置され、幅はトリガー以上です。下に十分な余白がないときは上に反転し、候補がビューポートに収まらないときはスクロールします。ライブラリの他のオーバーレイと同じ popper 配置で、タッチ端末や小さな画面でも予測しやすく、トリガーを隠しません。選択中の候補をトリガーに重ねて揃える配置（\"item-aligned\"）は macOS 特有の慣習のため、意図的に採用していません。",
+      "forms": "非表示のネイティブ select が name・required・disabled を持ちます。値は FormData に含まれ、required はネイティブの制約検証に参加し、フォームのリセットで defaultValue に戻ります。値が undefined または空文字列のときはプレースホルダーを表示します。",
+      "layers": "リストは最も近い ConfigProvider のテーマコンテナへポータルされます。Modal や Drawer の中では、Escape はリストだけを閉じます。"
+    }
+  },
+  "components": [
+    {
+      "name": "Select",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnSelect. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnSelect. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnSelect"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-select",
+        "props": [
+          {
+            "name": "value",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/select/select.ts"
+          },
+          {
+            "name": "defaultValue",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/select/select.ts"
+          },
+          {
+            "name": "open",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/select/select.ts"
+          },
+          {
+            "name": "defaultOpen",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/select/select.ts"
+          },
+          {
+            "name": "placeholder",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/select/select.ts"
+          },
+          {
+            "name": "size",
+            "typeText": "SelectSize",
+            "required": false,
+            "source": "packages/angular/src/components/select/select.ts"
+          },
+          {
+            "name": "invalid",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/select/select.ts"
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/select/select.ts"
+          },
+          {
+            "name": "required",
+            "typeText": "boolean | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/select/select.ts"
+          },
+          {
+            "name": "name",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/select/select.ts"
+          },
+          {
+            "name": "id",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/select/select.ts"
+          },
+          {
+            "name": "aria-label",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/select/select.ts"
+          },
+          {
+            "name": "aria-labelledby",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/select/select.ts"
+          },
+          {
+            "name": "aria-describedby",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/select/select.ts"
+          },
+          {
+            "name": "className",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/select/select.ts"
+          },
+          {
+            "name": "contentClassName",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/select/select.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "valueChange",
+            "typeText": "string | undefined",
+            "required": false
+          },
+          {
+            "name": "openChange",
+            "typeText": "boolean | undefined",
+            "required": false
+          }
+        ],
+        "slots": [
+          {
+            "name": "default"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "valueChange",
+            "syntax": "[(value)]"
+          },
+          {
+            "prop": "open",
+            "event": "openChange",
+            "syntax": "[(open)]"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SelectGroup",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnSelectGroup. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnSelectGroup. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnSelectGroup"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-select-group",
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "default"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "SelectItem",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnSelectItem. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnSelectItem. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnSelectItem"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-select-item",
+        "props": [
+          {
+            "name": "value",
+            "typeText": "string",
+            "required": true,
+            "source": "packages/angular/src/components/select/select-item.ts"
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean",
+            "required": false,
+            "source": "packages/angular/src/components/select/select-item.ts"
+          },
+          {
+            "name": "textValue",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/select/select-item.ts"
+          }
+        ],
+        "events": [],
+        "slots": [
+          {
+            "name": "default"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "SelectLabel",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnSelectLabel. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnSelectLabel. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnSelectLabel"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-select-label",
+        "props": [],
+        "events": [],
+        "slots": [
+          {
+            "name": "default"
+          }
+        ],
+        "bindings": []
+      }
+    },
+    {
+      "name": "SelectSeparator",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnSelectSeparator. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnSelectSeparator. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnSelectSeparator"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-select-separator",
+        "props": [],
+        "events": [],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Select": {
+      "kind": "cssVars",
+      "source": "react/src/components/Select",
+      "vars": [
+        {
+          "name": "--select-height",
+          "description": "Height of the trigger (every size; defaults to the density's control height of the size)"
+        },
+        {
+          "name": "--select-padding-x",
+          "description": "Horizontal padding of the trigger (every size)"
+        },
+        {
+          "name": "--select-radius",
+          "description": "Corner radius of the trigger and of the listbox (defaults to --radius-lg)"
+        },
+        {
+          "name": "--select-font-size",
+          "description": "Font size of the trigger (every size)"
+        },
+        {
+          "name": "--select-border-color",
+          "description": "Border color of the trigger at rest"
+        },
+        {
+          "name": "--select-dropdown-max-height",
+          "description": "Maximum height of the listbox before it scrolls"
+        },
+        {
+          "name": "--select-option-padding-y",
+          "description": "Vertical padding of an option (follows the density's row padding)"
+        },
+        {
+          "name": "--select-option-padding-x",
+          "description": "Horizontal padding of an option and of a group label (follows the density's row padding)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "choose-a-role",
+      "title": "Choose a role",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnSelect, MnSelectItem } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnSelect, MnSelectItem],\n  template: `\n<mn-select aria-label=\"Role\" [(value)]=\"value\"><mn-select-item value=\"designer\">Designer</mn-select-item><mn-select-item value=\"engineer\">Engineer</mn-select-item><mn-select-item value=\"admin\" disabled>Administrator</mn-select-item></mn-select><output>Role: {{value}}</output>\n  `,\n})\nexport class Example {\n  value = \"designer\";\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "grouped-options",
+      "title": "Grouped options",
+      "description": "",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnSelect, MnSelectItem, MnSelectGroup, MnSelectLabel, MnSelectSeparator } from 'minerva-design/angular';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnSelect, MnSelectItem, MnSelectGroup, MnSelectLabel, MnSelectSeparator],\n  template: `\n<mn-select aria-label=\"Location\"><mn-select-group><mn-select-label>Europe</mn-select-label><mn-select-item value=\"london\">London</mn-select-item><mn-select-item value=\"paris\">Paris</mn-select-item></mn-select-group><mn-select-separator/><mn-select-item value=\"tokyo\">Tokyo</mn-select-item></mn-select>\n  `,\n})\nexport class Example {\n\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.6/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Select セレクト",
+      "description": "完全なキーボード操作・グループ・フォーム連携に対応した単一選択ドロップダウン。",
+      "demos": {
+        "basic": {
+          "title": "基本的な使い方",
+          "description": "最初は English が選択され、Chinese または French を選ぶと制御された値が更新されます。"
+        },
+        "groups": {
+          "title": "グループ",
+          "description": "SelectGroup・SelectLabel・SelectSeparator で候補を整理し、無効な候補は選択できません。"
+        },
+        "sizes-and-states": {
+          "title": "サイズ・状態・FormControl",
+          "description": "3 つのサイズと無効・無効化状態。FormControl 内ではトリガーがラベル・説明・必須状態を受け取ります。"
+        }
+      },
+      "behavior": {
+        "title": "動作とアクセシビリティ",
+        "keyboard": "トリガーは combobox ロールを持つボタンです（aria-haspopup=\"listbox\"）。クリック、Enter、Space、↓ / ↑、Home、End でリストを開き、選択中の候補（なければ最初の有効な候補）にフォーカスします。矢印キーは端で折り返さず、無効な候補を飛ばします。Home / End と Page Up / Page Down でジャンプできます。Enter または Space で選択して閉じ、フォーカスはトリガーに戻ります。Escape は選択せずに閉じ、Tab は閉じて次のフィールドへ進みます。",
+        "typeahead": "閉じたトリガー上で文字を入力すると、ネイティブの select と同様に選択が直接変わります。開いているときはハイライトが移動します。内容がプレーンテキストでない候補には textValue を指定してください。",
+        "positioning": "リストはトリガーの下に配置され、幅はトリガー以上です。下に十分な余白がないときは上に反転し、候補がビューポートに収まらないときはスクロールします。ライブラリの他のオーバーレイと同じ popper 配置で、タッチ端末や小さな画面でも予測しやすく、トリガーを隠しません。選択中の候補をトリガーに重ねて揃える配置（\"item-aligned\"）は macOS 特有の慣習のため、意図的に採用していません。",
+        "forms": "非表示のネイティブ select が name・required・disabled を持ちます。値は FormData に含まれ、required はネイティブの制約検証に参加し、フォームのリセットで defaultValue に戻ります。値が undefined または空文字列のときはプレースホルダーを表示します。",
+        "layers": "リストは最も近い ConfigProvider のテーマコンテナへポータルされます。Modal や Drawer の中では、Escape はリストだけを閉じます。"
+      },
+      "api": {
+        "SelectProps": {
+          "value": "選択値（制御モード。onChange と併用）",
+          "defaultValue": "初期選択値（非制御）",
+          "onChange": "新しく選択された項目の値で呼ばれます",
+          "open": "ポップアップが開いているか（制御）",
+          "defaultOpen": "ポップアップを最初に開くかどうか",
+          "onOpenChange": "ポップアップの開閉時に呼ばれます",
+          "placeholder": "未選択時にトリガーに表示するテキスト",
+          "size": "トリガーのサイズ",
+          "invalid": "エラー状態を表示（無効な FormControl でも設定）",
+          "disabled": "セレクトを無効化。未指定時は FormControl から継承",
+          "required": "必須としてマーク",
+          "name": "フォーム送信用の隠しネイティブ select の name",
+          "id": "トリガーの id（既定は FormControl の id）",
+          "aria-label": "表示ラベルがない場合のトリガーのアクセシブルラベル",
+          "aria-describedby": "トリガーを説明する要素の追加 id",
+          "className": "トリガーの追加クラス名",
+          "contentClassName": "ポップアップの追加クラス名",
+          "children": "SelectItem / SelectGroup / SelectLabel / SelectSeparator 要素",
+          "ref": "トリガー <button> への ref",
+          "aria-labelledby": "トリガー（リストボックスの名前にもなる）のラベルとなる要素の id（複数可）",
+          "style": "トリガーのインラインスタイル"
+        },
+        "SelectItemProps": {
+          "value": "候補の値（空文字列は不可）",
+          "disabled": "候補の選択を禁止",
+          "textValue": "内容がプレーンテキストでない場合の先行入力用テキスト",
+          "className": "追加のクラス名",
+          "children": "候補の内容",
+          "ref": "候補要素への ref"
+        },
+        "SelectGroupProps": {
+          "className": "追加のクラス名",
+          "children": "SelectLabel と SelectItem 要素",
+          "ref": "グループ要素への ref"
+        },
+        "SelectLabelProps": {
+          "className": "追加のクラス名",
+          "children": "ラベルの内容",
+          "ref": "ラベル要素への ref"
+        },
+        "SelectSeparatorProps": {
+          "className": "追加のクラス名",
+          "ref": "区切り要素への ref"
+        }
+      },
+      "cssVars": {
+        "--select-height": "トリガーの高さ（全サイズ。既定は密度に応じた各サイズのコントロール高さ）",
+        "--select-padding-x": "トリガーの左右パディング（全サイズ）",
+        "--select-radius": "トリガーとリストボックスの角丸（既定は --radius-lg）",
+        "--select-font-size": "トリガーのフォントサイズ（全サイズ）",
+        "--select-border-color": "通常時のトリガーの枠線色",
+        "--select-dropdown-max-height": "スクロールが始まる前のリストボックスの最大高さ",
+        "--select-option-padding-y": "選択肢の上下パディング（密度の行パディングに従う）",
+        "--select-option-padding-x": "選択肢とグループ見出しの左右パディング（密度の行パディングに従う）"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "子要素の <minerva-option> が選択肢です。外側の <label> または aria-label でセレクトに名前を付けます。size でトリガーのサイズを指定し、無効な選択肢は選べません。"
+          },
+          "groups": {
+            "title": "グループとリッチな選択肢",
+            "description": "<minerva-option-group> と見出しの <minerva-select-label> で選択肢をグループ化し、<minerva-select-separator> で区切ります。リッチな内容の選択肢では、label がトリガーに表示するテキストを、text-value が先行入力検索用のテキストを指定します。"
+          },
+          "options-property": {
+            "title": "データからの選択肢とイベント",
+            "description": "JS プロパティ options はフラットな選択肢とラベル付きグループを受け取ります。minerva-change は選ばれた値を通知し、minerva-open-change はキャンセル可能です。チェックボックスをオンにするとリストボックスは閉じたままになります。"
+          },
+          "form": {
+            "title": "フォーム内での使用",
+            "description": "この要素はフォーム関連要素です。name の名前で値を送信し、required では空のとき送信を阻止し、リセットで value 属性の値に戻り、無効な <fieldset> によって無効化されます。"
+          }
+        },
+        "minerva-option": {
+          "props": {
+            "label": "選択時にセレクトのトリガーに表示するテキスト（既定：テキスト内容）。",
+            "selected": "選択中の選択肢かどうか（セレクトが管理）。",
+            "highlighted": "選択肢がハイライトされているかどうか（セレクトが管理）。",
+            "text": "選択肢のテキスト：textValue、なければ label、なければテキスト内容（読み取り専用）。",
+            "displayLabel": "トリガーに表示するラベル：label、なければテキスト内容（読み取り専用）。"
+          },
+          "slots": {
+            "default": "選択肢の内容（テキスト、アイコンなど）。"
+          }
+        },
+        "minerva-option-group": {
+          "slots": {
+            "default": "<minerva-select-label> 1 つと <minerva-option> 要素。"
+          }
+        },
+        "minerva-select-label": {
+          "slots": {
+            "default": "ラベルのテキスト。"
+          }
+        },
+        "minerva-select-separator": {},
+        "minerva-select": {
+          "props": {
+            "options": "<minerva-option> 子要素より前に描画される選択肢（またはラベル付きグループ）。JS プロパティのみ。",
+            "isDisabled": "コントロールが無効かどうか（自身または無効な fieldset による、読み取り専用）。",
+            "form": "この要素が属するフォーム（読み取り専用）。",
+            "labels": "この要素に関連付けられた <label> 要素（読み取り専用）。",
+            "validity": "有効性の状態。<input>.validity と同じ（読み取り専用）。",
+            "validationMessage": "現在の検証エラーを説明するメッセージ。有効なときは空（読み取り専用）。",
+            "willValidate": "この要素が制約検証の対象かどうか（読み取り専用）。"
+          },
+          "events": {
+            "input": "値が変わった（ネイティブ同様、composed）。",
+            "change": "値が変わった（ネイティブ同様）。",
+            "minerva-change": "ユーザーが選択肢を選んだ（detail: { value }）。",
+            "minerva-open-change": "ユーザーがリストボックスを開閉した（detail: { open }）。キャンセル可能：preventDefault() で現在の状態を保ちます。"
+          },
+          "slots": {
+            "default": "<minerva-option>、<minerva-option-group>、<minerva-select-separator> 要素。"
+          },
+          "methods": {
+            "focus": "トリガーにフォーカスします。",
+            "blur": "トリガーからフォーカスを外します。",
+            "show": "リストボックスを開きます。",
+            "hide": "リストボックスを閉じます。",
+            "checkValidity": "有効性を確認し、無効なら invalid を発火します。",
+            "reportValidity": "有効性を確認し、ブラウザの検証メッセージを表示します。",
+            "setCustomValidity": "カスタム検証エラーを設定します（\"\" で解除）。",
+            "formResetCallback": "form.reset() 時にブラウザが呼ぶフォームのライフサイクルコールバック。value 属性の値に戻します。",
+            "formDisabledCallback": "祖先の <fieldset> が無効化・有効化されたときにブラウザが呼ぶフォームのライフサイクルコールバック。",
+            "formStateRestoreCallback": "値を復元するとき（バック/フォワードキャッシュ、自動入力）にブラウザが呼ぶフォームのライフサイクルコールバック。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "基本的な使い方",
+            "description": "最初は English が選択され、Chinese または French を選ぶと制御された値が更新されます。"
+          }
+        },
+        "limitations": "ネイティブ Select は options データからモバイルシートを開きます。SelectGroup、SelectLabel、SelectSeparator は未提供のため、Web のグループ例は表示しません。"
+      }
+    }
+  }
+}

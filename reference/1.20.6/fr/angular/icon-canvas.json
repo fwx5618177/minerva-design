@@ -1,0 +1,260 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.6",
+  "locale": "fr",
+  "renderer": "angular",
+  "page": "icon-canvas",
+  "title": "IconCanvas",
+  "description": "De nombreuses icônes sur un seul canvas, dessinées par WebGPU, WebGL2 ou WebGL en quelques dessins instanciés, ou par Canvas2D : images denses, cartes, particules et animations de milliers d’icônes.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.6",
+    "sourceCommit": "63ce45656d8f3d1bfbee71026e84674640ae9abf",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:fa9a782f68a5d5b512762e2152b2ad065da3de6937bac96eef63709ddba3b95b"
+  },
+  "content": {
+    "intro": {
+      "title": "Comment il dessine",
+      "text": "IconCanvas place les icônes par position, taille, rotation, couleur et opacité en pixels CSS, et les dessine toutes sur un seul canvas avec le meilleur backend disponible (WebGPU -> WebGL2 -> WebGL -> Canvas2D).",
+      "tessellate": "Géométrie : chaque icône est aplatie à un quart de pixel physique près et son trait converti en triangles (un quadrilatère par segment, des éventails arrondis pour les jointures et les extrémités), une fois par icône, épaisseur de trait et niveau de détail.",
+      "batch": "Regroupement : tous les maillages résident dans un seul tampon de sommets et chaque icône est une instance (position, taille, rotation, couleur) ; des icônes identiques consécutives forment un seul appel de dessin instancié.",
+      "depth": "Qualité : le MSAA 4× lisse les bords, et un test de profondeur par icône dessine chaque pixel d’une icône une seule fois, si bien que les icônes translucides se mélangent exactement comme le trait SVG.",
+      "fallback": "Robustesse : auto ignore les GPU logiciels, un contexte GPU perdu redémarre le backend (un backend perdu deux fois est ignoré), et la racine du canvas indique le backend dans data-renderer.",
+      "when": "Pour les icônes de l’interface, utilisez Icon : le SVG est plus léger, accessible et rendu côté serveur. Utilisez IconCanvas quand les icônes sont l’image."
+    },
+    "data": {
+      "count": "Nombre d’icônes",
+      "pause": "Pause",
+      "play": "Lecture",
+      "paused": "En pause",
+      "fps": "{{fps}} images par seconde",
+      "status": "Dessiné avec {{backend}}",
+      "starting": "Démarrage du rendu…",
+      "aria": "{{n}} icônes animées",
+      "panelAria": "40 icônes dessinées avec {{backend}}",
+      "drawnBy": "dessiné par {{backend}}",
+      "fellBack": "repli sur {{backend}}"
+    }
+  },
+  "components": [
+    {
+      "name": "IconCanvas",
+      "support": {
+        "status": "beta",
+        "notes": "Native Angular: MnIconCanvas. Native standalone component/directive; see platform tests for validated scope."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Native Angular: MnIconCanvas. Native standalone component/directive; see platform tests for validated scope.",
+        "import": {
+          "specifier": "minerva-design/angular",
+          "exports": [
+            "MnIconCanvas"
+          ],
+          "kind": "named"
+        },
+        "selector": "mn-icon-canvas",
+        "props": [
+          {
+            "name": "items",
+            "typeText": "readonly IconCanvasItem[]",
+            "required": true,
+            "source": "packages/angular/src/components/icons/icon-canvas.ts"
+          },
+          {
+            "name": "renderer",
+            "typeText": "IconRendererPreference",
+            "required": false,
+            "source": "packages/angular/src/components/icons/icon-canvas.ts"
+          },
+          {
+            "name": "width",
+            "typeText": "string | number",
+            "required": false,
+            "source": "packages/angular/src/components/icons/icon-canvas.ts"
+          },
+          {
+            "name": "height",
+            "typeText": "string | number",
+            "required": false,
+            "source": "packages/angular/src/components/icons/icon-canvas.ts"
+          },
+          {
+            "name": "pixelRatio",
+            "typeText": "number | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/icons/icon-canvas.ts"
+          },
+          {
+            "name": "title",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/icons/icon-canvas.ts"
+          },
+          {
+            "name": "aria-label",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/icons/icon-canvas.ts"
+          },
+          {
+            "name": "aria-labelledby",
+            "typeText": "string | undefined",
+            "required": false,
+            "source": "packages/angular/src/components/icons/icon-canvas.ts"
+          }
+        ],
+        "events": [
+          {
+            "name": "rendererChange",
+            "typeText": "IconRendererKind",
+            "required": false,
+            "source": "packages/angular/src/components/icons/icon-canvas.ts",
+            "parameters": [
+              {
+                "name": "$event",
+                "position": 0,
+                "typeText": "IconRendererKind",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "basic",
+      "title": "Utilisation de base",
+      "description": "Des icônes placées en pixels CSS avec leur propre taille, couleur (variables de thème comprises), rotation, épaisseur de trait et opacité.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnIconCanvas, MnStack } from 'minerva-design/angular';\nimport { homeIcon, searchIcon, mailIcon, bellIcon, userIcon, settingsIcon } from 'minerva-design/icons/core';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnIconCanvas, MnStack],\n  template: `\n<mn-stack gap=\"2\">\n  <mn-icon-canvas\n    [items]=\"items\"\n    [height]=\"160\"\n    title=\"Six icons, three ways\"\n    (rendererChange)=\"drawn = $event\"\n  />\n  <small role=\"status\">{{ drawn ? 'Drawn with ' + drawn : '…' }}</small>\n</mn-stack>\n  `,\n})\nexport class Example {\n  items = (() => {\n  const row = [homeIcon, searchIcon, mailIcon, bellIcon, userIcon, settingsIcon];\n  return [\n    ...row.map((icon, i) => ({ icon, x: 16 + i * 48, y: 16 })),\n    ...row.map((icon, i) => ({\n      icon,\n      x: 16 + i * 48,\n      y: 64,\n      size: 32,\n      color: 'var(--primary-color)',\n      rotation: i * 15,\n    })),\n    ...row.map((icon, i) => ({\n      icon,\n      x: 16 + i * 48,\n      y: 112,\n      strokeWidth: 1.5,\n      opacity: 0.35 + i * 0.13,\n    })),\n  ];\n})();\n  drawn = \"\";\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    },
+    {
+      "id": "every-backend",
+      "title": "Every backend",
+      "description": "A forced backend that cannot start falls back to the next one (WebGPU, WebGL2, WebGL, Canvas2D); rendererChange tells which one drew.",
+      "kind": "internal-demo",
+      "entry": "example.ts",
+      "files": {
+        "example.ts": "import { Component } from '@angular/core';\nimport { MnIconCanvas, MnStack } from 'minerva-design/angular';\nimport { icons } from 'minerva-design/icons/core';\n\n@Component({\n  selector: 'app-example',\n  imports: [MnIconCanvas, MnStack],\n  template: `\n<mn-stack direction=\"row\" wrap gap=\"4\">\n  @for (renderer of renderers; track renderer) {\n    <figure style=\"margin: 0\">\n      <mn-icon-canvas\n        [items]=\"items\"\n        [renderer]=\"renderer\"\n        [width]=\"256\"\n        [height]=\"160\"\n        [title]=\"'Icons drawn with ' + renderer\"\n        (rendererChange)=\"drawn[renderer] = $event\"\n      />\n      <figcaption>\n        <code>renderer=\"{{ renderer }}\"</code>\n        <small>{{\n          !drawn[renderer]\n            ? 'Starting…'\n            : drawn[renderer] === renderer\n              ? 'Drawn by ' + drawn[renderer]\n              : 'Fell back to ' + drawn[renderer]\n        }}</small>\n      </figcaption>\n    </figure>\n  }\n</mn-stack>\n  `,\n})\nexport class Example {\n  renderers: import('minerva-design/icons/core').IconRendererPreference[] = [\"webgpu\", \"webgl2\", \"webgl\", \"canvas2d\"];\n  items = icons.slice(0, 40).map((icon, i) => ({\n  icon,\n  x: 8 + (i % 8) * 30,\n  y: 8 + Math.floor(i / 8) * 30,\n  size: 24,\n}));\n  drawn: Partial<Record<string, string>> = {};\n}\n"
+      },
+      "dependencies": [
+        "@angular/core",
+        "minerva-design"
+      ],
+      "contextImports": []
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.6/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "IconCanvas",
+      "description": "De nombreuses icônes sur un seul canvas, dessinées par WebGPU, WebGL2 ou WebGL en quelques dessins instanciés, ou par Canvas2D : images denses, cartes, particules et animations de milliers d’icônes.",
+      "intro": {
+        "title": "Comment il dessine",
+        "text": "IconCanvas place les icônes par position, taille, rotation, couleur et opacité en pixels CSS, et les dessine toutes sur un seul canvas avec le meilleur backend disponible (WebGPU -> WebGL2 -> WebGL -> Canvas2D).",
+        "tessellate": "Géométrie : chaque icône est aplatie à un quart de pixel physique près et son trait converti en triangles (un quadrilatère par segment, des éventails arrondis pour les jointures et les extrémités), une fois par icône, épaisseur de trait et niveau de détail.",
+        "batch": "Regroupement : tous les maillages résident dans un seul tampon de sommets et chaque icône est une instance (position, taille, rotation, couleur) ; des icônes identiques consécutives forment un seul appel de dessin instancié.",
+        "depth": "Qualité : le MSAA 4× lisse les bords, et un test de profondeur par icône dessine chaque pixel d’une icône une seule fois, si bien que les icônes translucides se mélangent exactement comme le trait SVG.",
+        "fallback": "Robustesse : auto ignore les GPU logiciels, un contexte GPU perdu redémarre le backend (un backend perdu deux fois est ignoré), et la racine du canvas indique le backend dans data-renderer.",
+        "when": "Pour les icônes de l’interface, utilisez Icon : le SVG est plus léger, accessible et rendu côté serveur. Utilisez IconCanvas quand les icônes sont l’image."
+      },
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "Des icônes placées en pixels CSS avec leur propre taille, couleur (variables de thème comprises), rotation, épaisseur de trait et opacité."
+        },
+        "thousands": {
+          "title": "Des milliers d’icônes",
+          "description": "Jusqu’à 20 000 icônes animées reconstruites à chaque image et dessinées en quelques dizaines de dessins instanciés (un par type d’icône). Le backend suit la barre de rendu ; comparez la fréquence d’images entre backends."
+        },
+        "renderers": {
+          "title": "Tous les backends",
+          "description": "Les mêmes icônes imposées sur chaque backend ; sous chaque canvas, le backend qui l’a dessiné (un backend absent de ce navigateur passe au suivant)."
+        }
+      },
+      "data": {
+        "count": "Nombre d’icônes",
+        "pause": "Pause",
+        "play": "Lecture",
+        "paused": "En pause",
+        "fps": "{{fps}} images par seconde",
+        "status": "Dessiné avec {{backend}}",
+        "starting": "Démarrage du rendu…",
+        "aria": "{{n}} icônes animées",
+        "panelAria": "40 icônes dessinées avec {{backend}}",
+        "drawnBy": "dessiné par {{backend}}",
+        "fellBack": "repli sur {{backend}}"
+      },
+      "api": {
+        "IconCanvasProps": {
+          "items": "Icônes à dessiner, dans l’ordre de peinture (les suivantes par-dessus), positions en pixels CSS",
+          "renderer": "Backend préféré ; \"auto\" suit la valeur globale par défaut",
+          "width": "Largeur ; un nombre est en pixels",
+          "height": "Hauteur ; un nombre est en pixels",
+          "pixelRatio": "Ratio de pixels de l’appareil",
+          "title": "Nom accessible de toute l’image (role=\"img\") ; sans lui, le canvas est masqué aux technologies d’assistance",
+          "onRendererChange": "Appelé avec le backend une fois démarré, puis de nouveau après un repli",
+          "ref": "Poignée impérative"
+        },
+        "IconCanvasItem": {
+          "icon": "L’icône à dessiner",
+          "x": "Bord gauche en pixels CSS, depuis le coin supérieur gauche du canvas",
+          "y": "Bord supérieur en pixels CSS, depuis le coin supérieur gauche du canvas"
+        },
+        "IconStyle": {
+          "size": "Largeur et hauteur en pixels CSS",
+          "color": "Toute couleur CSS ; currentColor lit la couleur de l’élément hôte",
+          "strokeWidth": "Épaisseur du trait sur la grille 24×24 (suit la taille)",
+          "rotation": "Rotation horaire en degrés, autour du centre",
+          "opacity": "Opacité entre 0 et 1"
+        },
+        "IconCanvasHandle": {
+          "getRenderer": "Le backend qui dessine (null tant qu’il n’a pas démarré)",
+          "getCanvas": "L’élément <canvas> (null avant le montage)",
+          "ready": "Se résout une fois le backend démarré et les items actuels dessinés"
+        }
+      },
+      "wc": {
+        "minerva-icon-canvas": {
+          "props": {
+            "label": "Nom accessible de l'image entière (role=\"img\") ; sans lui, le canvas est masqué aux technologies d'assistance",
+            "canvas": "L'élément <canvas> qui dessine les icônes, null tant que l'élément n'est pas connecté"
+          },
+          "events": {
+            "minerva-renderer-change": "Le backend a démarré, ou a basculé après une perte du GPU ; detail : { renderer }"
+          },
+          "methods": {
+            "getRenderer": "Backend utilisé (webgpu, webgl2, webgl, canvas2d), null avant son démarrage",
+            "ready": "Se résout avec le backend une fois celui-ci démarré et les items actuels dessinés"
+          }
+        },
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "items est une propriété JavaScript : des icônes placées en pixels CSS avec leur propre taille, couleur, rotation, épaisseur de trait et opacité, dessinées sur un seul canvas. minerva-renderer-change indique le backend."
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,417 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.6",
+  "locale": "fr",
+  "renderer": "uni",
+  "page": "pagination",
+  "title": "Pagination",
+  "description": "Découpe de longues listes de données en pages et permet de naviguer entre elles.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.6",
+    "sourceCommit": "63ce45656d8f3d1bfbee71026e84674640ae9abf",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:fa9a782f68a5d5b512762e2152b2ad065da3de6937bac96eef63709ddba3b95b"
+  },
+  "content": {
+    "a11y": {
+      "title": "Prise en charge du clavier",
+      "body": "La pagination est un repère <nav> composé de boutons natifs ; la page courante est marquée avec aria-current=\"page\" et les éléments indisponibles sont désactivés. Lorsqu’un élément a le focus, ArrowLeft/ArrowRight passent à la page précédente/suivante et Home/End à la première/dernière page, et le focus suit la page courante. Si le bouton focalisé devient désactivé, le focus passe à la page courante."
+    }
+  },
+  "components": [
+    {
+      "name": "Pagination",
+      "support": {
+        "status": "beta",
+        "notes": "Shared core page lists and visible ranges; controlled/default page and page size, quick jumper, native size picker, numbered/compact/simple/read-only layouts, labels, item/total slots, semantic variants/shapes/sizes and H5 navigation keys. ReactNode rendering is expressed by item/total scoped slots. Native picker styling follows its host. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified."
+      },
+      "api": {
+        "status": "beta",
+        "notes": "Shared core page lists and visible ranges; controlled/default page and page size, quick jumper, native size picker, numbered/compact/simple/read-only layouts, labels, item/total slots, semantic variants/shapes/sizes and H5 navigation keys. ReactNode rendering is expressed by item/total scoped slots. Native picker styling follows its host. Component tests, H5 tests in happy-dom and the official uni-app WeChat SDK compilation fixture pass. Physical-device E2E and other native targets are not verified.",
+        "import": {
+          "specifier": "minerva-design/uni",
+          "exports": [
+            "Pagination"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "current",
+            "typeText": "number | undefined",
+            "required": false
+          },
+          {
+            "name": "defaultCurrent",
+            "typeText": "number | undefined",
+            "required": false
+          },
+          {
+            "name": "total",
+            "typeText": "number | undefined",
+            "required": false
+          },
+          {
+            "name": "pageSize",
+            "typeText": "number | undefined",
+            "required": false
+          },
+          {
+            "name": "defaultPageSize",
+            "typeText": "number | undefined",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "showTotal",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "showQuickJumper",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "showSizeChanger",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "pageSizeOptions",
+            "typeText": "number[] | undefined",
+            "required": false
+          },
+          {
+            "name": "size",
+            "typeText": "\"medium\" | \"small\" | \"large\" | undefined",
+            "required": false
+          },
+          {
+            "name": "shape",
+            "typeText": "\"rounded\" | \"circle\" | \"square\" | undefined",
+            "required": false
+          },
+          {
+            "name": "variant",
+            "typeText": "\"outline\" | \"solid\" | \"ghost\" | undefined",
+            "required": false
+          },
+          {
+            "name": "simple",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "siblingCount",
+            "typeText": "number | undefined",
+            "required": false
+          },
+          {
+            "name": "boundaryCount",
+            "typeText": "number | undefined",
+            "required": false
+          },
+          {
+            "name": "hideEdges",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "hideNumbers",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "responsive",
+            "typeText": "boolean | undefined",
+            "required": false
+          },
+          {
+            "name": "labels",
+            "typeText": "Labels | undefined",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "change",
+            "typeText": "[page: number, size: number]",
+            "parameters": [
+              {
+                "name": "page",
+                "position": 0,
+                "typeText": "number",
+                "required": true,
+                "rest": false
+              },
+              {
+                "name": "size",
+                "position": 1,
+                "typeText": "number",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "update:current",
+            "typeText": "[page: number]",
+            "parameters": [
+              {
+                "name": "page",
+                "position": 0,
+                "typeText": "number",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "update:pageSize",
+            "typeText": "[size: number]",
+            "parameters": [
+              {
+                "name": "size",
+                "position": 0,
+                "typeText": "number",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [
+          {
+            "name": "total",
+            "typeText": "{ total: number; range: [number, number]; }"
+          },
+          {
+            "name": "item",
+            "typeText": "{ page: number; type: string; }"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "current",
+            "event": "update:current",
+            "syntax": "v-model:current"
+          },
+          {
+            "prop": "pageSize",
+            "event": "update:pageSize",
+            "syntax": "v-model:pageSize"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {
+    "css:Pagination": {
+      "kind": "cssVars",
+      "source": "react/src/components/Pagination",
+      "vars": [
+        {
+          "name": "--pagination-item-size",
+          "description": "Height and minimum width of the page buttons (every size; defaults to the density's control height)"
+        },
+        {
+          "name": "--pagination-item-radius",
+          "description": "Corner radius of the page buttons (defaults to --radius-md; the shape prop wins)"
+        },
+        {
+          "name": "--pagination-gap",
+          "description": "Space between the items"
+        },
+        {
+          "name": "--pagination-font-size",
+          "description": "Font size"
+        },
+        {
+          "name": "--pagination-active-background",
+          "description": "Background of the current page (solid variant)"
+        },
+        {
+          "name": "--pagination-active-color",
+          "description": "Text color of the current page (solid variant)"
+        },
+        {
+          "name": "--pagination-hover-background",
+          "description": "Background of a hovered page button (defaults to --hover-color)"
+        },
+        {
+          "name": "--pagination-subtle-background",
+          "description": "Background of the current page of the ghost variant (defaults to --primary-color-subtle)"
+        }
+      ]
+    }
+  },
+  "examples": [],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.6/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Pagination",
+      "description": "Découpe de longues listes de données en pages et permet de naviguer entre elles.",
+      "demos": {
+        "basic": {
+          "title": "Utilisation de base",
+          "description": "50 éléments, 10 par page : départ à la page 1 sur 5, puis passage à la page 2."
+        },
+        "many-pages": {
+          "title": "Nombreuses pages",
+          "description": "Avec de nombreuses pages, la première et la dernière restent visibles et les points de suspension sautent 5 pages à la fois."
+        },
+        "total-and-jumper": {
+          "title": "Total et saut rapide",
+          "description": "showTotal affiche le nombre d'éléments (personnalisable avec totalRender) ; showQuickJumper ajoute un champ « Aller à »."
+        },
+        "size-changer": {
+          "title": "Taille de page",
+          "description": "showSizeChanger ajoute un sélecteur de taille de page ; onChange reçoit alors la page 1 et la nouvelle taille."
+        },
+        "sizes": {
+          "title": "Tailles",
+          "description": "Trois tailles : small, medium (par défaut) et large."
+        },
+        "shapes-and-variants": {
+          "title": "Formes et variantes",
+          "description": "Combinez une forme (rounded, circle, square) avec une variante (solid, outline, ghost)."
+        },
+        "simple": {
+          "title": "Mode simple",
+          "description": "120 éléments sur 12 pages. Précédent et Suivant mettent à jour la page contrôlée."
+        },
+        "custom-render": {
+          "title": "Rendu personnalisé",
+          "description": "Remplacez les icônes, ou affichez chaque élément vous-même avec itemRender."
+        },
+        "disabled": {
+          "title": "Désactivé",
+          "description": "Désactive toute interaction."
+        },
+        "responsive": {
+          "title": "Adaptatif",
+          "description": "responsive adapte la mise en page sur les petits écrans."
+        },
+        "compact": {
+          "title": "Liste compacte et compteur",
+          "description": "siblingCount / boundaryCount passent à une liste compacte avec des ellipses non interactives ; hideNumbers affiche un compteur « actuelle / total » et hideEdges masque précédent / suivant."
+        }
+      },
+      "api": {
+        "PaginationProps": {
+          "current": "Page courante (à partir de 1, contrôlée) ; mettez-la à jour dans onChange",
+          "defaultCurrent": "Page initiale en mode non contrôlé (current non défini)",
+          "total": "Nombre total d'éléments",
+          "pageSize": "Nombre d’éléments par page (contrôlé) ; mettez-le à jour dans onChange",
+          "defaultPageSize": "Nombre initial d’éléments par page en mode non contrôlé (pageSize non défini)",
+          "onChange": "Appelé avec la nouvelle page et la taille de page lorsque l’une ou l’autre change (changer la taille revient à la page 1)",
+          "disabled": "Désactive la pagination",
+          "showQuickJumper": "Affiche un champ pour aller à une page",
+          "showSizeChanger": "Affiche un sélecteur de taille de page",
+          "pageSizeOptions": "Options du sélecteur de taille de page",
+          "itemRender": "Rendu personnalisé des pages, des boutons précédent/suivant et des sauts",
+          "className": "Nom de classe supplémentaire",
+          "style": "Styles en ligne",
+          "showTotal": "Affiche le nombre total d’éléments ; une fonction le rend (même signature que totalRender)",
+          "totalRender": "Rendu personnalisé du total ; range correspond aux index [premier, dernier] des éléments de la page courante",
+          "size": "Taille de la pagination",
+          "shape": "Forme des éléments de page",
+          "variant": "Style visuel des éléments de page : solid (page courante remplie de la couleur primaire), outline (page courante avec bordure et texte primaires) ou ghost (éléments transparents sans bordure, page courante en texte primaire, teintée au survol)",
+          "simple": "Mode simple : boutons précédent/suivant avec un champ de page",
+          "responsive": "Adapte la mise en page aux petits écrans",
+          "icons": "Icônes personnalisées des boutons précédent, suivant et de saut ; celles omises gardent l’icône par défaut",
+          "ref": "Ref vers l’élément racine <nav>",
+          "labels": "Textes du composant (libellés accessibles des boutons, du saut rapide et du sélecteur de taille) ; les entrées omises utilisent les valeurs par défaut localisées",
+          "siblingCount": "Nombre de pages de chaque côté de la page courante. Le définir (ou boundaryCount) active la disposition compacte avec des « … » non interactifs",
+          "boundaryCount": "Nombre de pages toujours affichées au début et à la fin de la liste compacte",
+          "hideEdges": "Masque les boutons précédent / suivant",
+          "hideNumbers": "Remplace les boutons de page par un compteur « actuelle / total » en lecture seule (annoncé poliment), en gardant précédent / suivant"
+        },
+        "PaginationLabels": {
+          "prev": "Libellé accessible du bouton page précédente",
+          "next": "Libellé accessible du bouton page suivante",
+          "jumpPrev": "Libellé de l'élément de saut en arrière",
+          "jumpNext": "Libellé de l'élément de saut en avant",
+          "page": "Renvoie le libellé accessible d'un bouton de page",
+          "jumpTo": "Texte visible du saut rapide",
+          "jumpToInput": "Libellé accessible du champ de saut rapide",
+          "pageSize": "Libellé accessible du sélecteur de taille de page",
+          "pageSizeOption": "Renvoie le texte d'une option de taille de page",
+          "currentPage": "Libellé accessible du champ de page en mode simple",
+          "nav": "Libellé accessible du repère de navigation",
+          "total": "Texte du total (quand showTotal vaut true sans totalRender)"
+        }
+      },
+      "a11y": {
+        "title": "Prise en charge du clavier",
+        "body": "La pagination est un repère <nav> composé de boutons natifs ; la page courante est marquée avec aria-current=\"page\" et les éléments indisponibles sont désactivés. Lorsqu’un élément a le focus, ArrowLeft/ArrowRight passent à la page précédente/suivante et Home/End à la première/dernière page, et le focus suit la page courante. Si le bouton focalisé devient désactivé, le focus passe à la page courante."
+      },
+      "cssVars": {
+        "--pagination-item-size": "Hauteur et largeur minimale des boutons de page (toutes les tailles ; par défaut la hauteur de contrôle de la densité)",
+        "--pagination-item-radius": "Rayon des coins des boutons de page (par défaut --radius-md ; la prop shape l'emporte)",
+        "--pagination-gap": "Espace entre les éléments",
+        "--pagination-font-size": "Taille de police",
+        "--pagination-active-background": "Fond de la page courante (variante solid)",
+        "--pagination-active-color": "Couleur du texte de la page courante (variante solid)",
+        "--pagination-hover-background": "Fond d'un bouton de page survolé (par défaut --hover-color)",
+        "--pagination-subtle-background": "Fond de la page courante de la variante ghost (par défaut --primary-color-subtle)"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "total et page-size déterminent le nombre de pages. L’élément met à jour current lui-même et émet minerva-page-change avec la nouvelle page et la taille de page ; appelez preventDefault() pour le contrôler."
+          },
+          "total-and-jumper": {
+            "title": "Total, taille de page et saut rapide",
+            "description": "show-total, show-size-changer (options issues de page-size-options=\"10,20,50\") et show-quick-jumper. totalRender, une propriété JS, personnalise le texte du total."
+          },
+          "appearance": {
+            "title": "Tailles, formes et variantes",
+            "description": "size, shape et variant stylent les éléments ; sibling-count / boundary-count passent à une liste de pages compacte ; disabled bloque toute interaction."
+          },
+          "simple": {
+            "title": "Mode simple, compteur et icônes",
+            "description": "simple affiche précédent / suivant avec un champ de page, hide-numbers un compteur « page / total ». Les slots prev-icon, next-icon, jump-prev-icon et jump-next-icon remplacent les icônes ; responsive s’adapte aux petits écrans."
+          }
+        },
+        "minerva-pagination": {
+          "props": {
+            "totalPages": "Nombre de pages, au moins 1 (lecture seule)."
+          },
+          "events": {
+            "minerva-page-change": "L’utilisateur a changé de page ou de taille de page (detail: { page, pageSize }). Annulable : preventDefault() conserve la page et la taille courantes."
+          },
+          "slots": {
+            "prev-icon": "Icône du bouton page précédente.",
+            "next-icon": "Icône du bouton page suivante.",
+            "jump-prev-icon": "Icône de l’élément de saut en arrière.",
+            "jump-next-icon": "Icône de l’élément de saut en avant."
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Utilisation de base",
+            "description": "50 éléments, 10 par page : départ à la page 1 sur 5, puis passage à la page 2."
+          },
+          "simple": {
+            "title": "Mode simple",
+            "description": "120 éléments sur 12 pages. Précédent et Suivant mettent à jour la page contrôlée."
+          }
+        }
+      }
+    }
+  }
+}

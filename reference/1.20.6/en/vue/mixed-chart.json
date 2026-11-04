@@ -1,0 +1,569 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.6",
+  "locale": "en",
+  "renderer": "vue",
+  "page": "mixed-chart",
+  "title": "Combination chart",
+  "description": "Bars, lines and areas in one chart, on one or two value axes: revenue and growth, rainfall and temperature, Pareto charts.",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.6",
+    "sourceCommit": "63ce45656d8f3d1bfbee71026e84674640ae9abf",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:fa9a782f68a5d5b512762e2152b2ad065da3de6937bac96eef63709ddba3b95b"
+  },
+  "content": {
+    "data": {
+      "quarter": "Q{{n}} {{year}}",
+      "revenue": "Revenue",
+      "growth": "Growth (YoY)",
+      "revenueAria": "Quarterly revenue with its year-over-year growth",
+      "rainfall": "Rainfall",
+      "temperature": "Temperature",
+      "climateAria": "Monthly rainfall and temperature in Tokyo",
+      "sessions": "Sessions",
+      "conversionRate": "Conversion rate",
+      "campaign": "Campaign",
+      "conversionAria": "Daily sessions and conversion rate over two months",
+      "returns": "Returns",
+      "cumulative": "Cumulative share",
+      "causes": {
+        "wrongSize": "Wrong size",
+        "damaged": "Damaged",
+        "notAsDescribed": "Not as described",
+        "late": "Arrived late",
+        "changedMind": "Changed mind",
+        "wrongItem": "Wrong item",
+        "other": "Other"
+      },
+      "paretoAria": "Returns by cause with their cumulative share",
+      "pageViews": "Page views",
+      "locales": {
+        "chinese": "Chinese (zh-CN)",
+        "french": "French (fr-FR)"
+      },
+      "localeAria": "Daily page views and conversion rate, {{locale}}",
+      "yearlyRevenue": "Revenue",
+      "users": "Users",
+      "usersLog": "Users (log scale)",
+      "logAria": "Yearly revenue and users on a logarithmic axis, 2016 to 2025",
+      "kwh": "{{value}} kWh",
+      "solarProduction": "Solar production",
+      "consumption": "Consumption",
+      "batteryCharge": "Battery charge",
+      "night": "Night",
+      "withBattery": "{{value}} battery",
+      "selfSufficiency": "Self-sufficiency {{share}} over two days, {{imported}} bought from the grid.",
+      "energyPerHour": "Energy per hour",
+      "solarAria": "Hourly solar production and consumption of a house over two days, with the state of charge of its battery",
+      "stockLevel": "Stock level",
+      "deliveries": "Deliveries",
+      "promotion": "Promotion",
+      "safetyStock": "Safety stock",
+      "reorderPoint": "Reorder point",
+      "inventoryHint": "Click a day or a delivery.",
+      "deliveryDetails": "{{id}}: {{quantity}} units ordered on {{ordered}}, delivered on {{arrived}} after {{lead}}.",
+      "stockOn": "{{units}} units in stock on {{date}}.",
+      "stockLow": "Only {{units}} units in stock on {{date}}, under the safety stock.",
+      "unitsInStock": "Units",
+      "inventoryAria": "Daily stock level of an item over three months, with deliveries, the reorder point and the safety stock",
+      "requests": "Requests",
+      "errorRate": "Error rate",
+      "releases": "Releases",
+      "requestsPerHalfHour": "Requests per 30 min",
+      "opsAria": "Requests and error rate of a web API over a day, with its releases",
+      "incidentSummary": "The error rate peaked at {{peak}} at {{time}} after {{version}}, until the rollback to {{rollback}}.",
+      "points": "{{value}} pts",
+      "sprintStart": "Start",
+      "remainingWork": "Remaining work",
+      "completedPerDay": "Completed",
+      "idealBurn": "Ideal",
+      "scopeAdded": "+{{value}} added",
+      "idealLeft": "Ideal: {{value}} left",
+      "remainingLeft": "{{value}} left",
+      "doneThatDay": "{{value}} done that day",
+      "behindBy": "{{value}} behind the ideal",
+      "aheadBy": "{{value}} ahead of the ideal",
+      "storyPoints": "Story points",
+      "burndownAria": "Sprint burndown: remaining work, points completed each day and the ideal burn over ten working days",
+      "burndownLate": "{{left}} left at {{velocity}} a day: about {{forecast}} will not be done by the end of the sprint.",
+      "burndownOnTrack": "{{left}} left at {{velocity}} a day: the sprint is on track."
+    }
+  },
+  "components": [
+    {
+      "name": "MixedChart",
+      "support": {
+        "status": "beta"
+      },
+      "api": {
+        "status": "beta",
+        "import": {
+          "specifier": "minerva-design/vue",
+          "exports": [
+            "MixedChart"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "deep",
+            "type": "boolean",
+            "default": "false",
+            "required": false,
+            "description": "Also follows in-place mutations of nested data (`series[0].data.push()`);\nby default the chart updates when a prop is replaced (cheaper on large data)",
+            "typeText": "boolean"
+          },
+          {
+            "name": "legend",
+            "type": "boolean | ChartLegendOptions",
+            "required": false,
+            "description": "Legend; shown by default when several series have a name",
+            "typeText": "boolean | ChartLegendOptions"
+          },
+          {
+            "name": "tooltip",
+            "type": "boolean | ChartTooltipOptions",
+            "required": false,
+            "description": "Tooltip; `false` disables it",
+            "typeText": "boolean | ChartTooltipOptions"
+          },
+          {
+            "name": "crosshair",
+            "type": "boolean",
+            "required": false,
+            "description": "Vertical guide line following the pointer",
+            "typeText": "boolean"
+          },
+          {
+            "name": "interaction",
+            "type": "boolean | ChartInteractionOptions",
+            "required": false,
+            "description": "Zoom (Ctrl / ⌘ + wheel, pinch), pan (drag), double-click reset and keyboard navigation; `false` makes the chart static (default `true`)",
+            "typeText": "boolean | ChartInteractionOptions"
+          },
+          {
+            "name": "labels",
+            "type": "Partial<ChartLabels>",
+            "required": false,
+            "description": "Overrides of the built-in texts of the `locale`",
+            "typeText": "Partial<ChartLabels>"
+          },
+          {
+            "name": "renderer",
+            "type": "ChartRendererPreference",
+            "required": false,
+            "description": "Backend of the data layer: `auto` tries WebGPU, then WebGL2, then WebGL, then Canvas2D (default `auto`)",
+            "typeText": "ChartRendererPreference"
+          },
+          {
+            "name": "width",
+            "type": "string | number",
+            "required": false,
+            "description": "Width of the chart; numbers are pixels (default `100%`)",
+            "typeText": "string | number"
+          },
+          {
+            "name": "height",
+            "type": "string | number",
+            "required": false,
+            "description": "Height of the chart (the legend included); numbers are pixels, strings any CSS length",
+            "typeText": "string | number"
+          },
+          {
+            "name": "series",
+            "type": "readonly ChartSeries[]",
+            "required": true,
+            "description": "Data series (replace the array or a `data` array to update the chart)",
+            "typeText": "readonly ChartSeries[]"
+          },
+          {
+            "name": "xAxis",
+            "type": "ChartAxisOptions",
+            "required": false,
+            "description": "X axis",
+            "typeText": "ChartAxisOptions"
+          },
+          {
+            "name": "yAxis",
+            "type": "ChartAxisOptions",
+            "required": false,
+            "description": "Y axis",
+            "typeText": "ChartAxisOptions"
+          },
+          {
+            "name": "annotations",
+            "type": "readonly ChartAnnotation[]",
+            "required": false,
+            "description": "Background areas and reference lines",
+            "typeText": "readonly ChartAnnotation[]"
+          },
+          {
+            "name": "padding",
+            "type": "ChartPadding",
+            "required": false,
+            "description": "Space around the plot area, in pixels",
+            "typeText": "ChartPadding"
+          },
+          {
+            "name": "palette",
+            "type": "readonly string[]",
+            "required": false,
+            "description": "Series colors (defaults to the `--chart-series-1..8` CSS variables, then the theme colors)",
+            "typeText": "readonly string[]"
+          },
+          {
+            "name": "ariaLabel",
+            "type": "string",
+            "required": false,
+            "description": "Accessible name of the chart",
+            "typeText": "string"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "required": false,
+            "description": "BCP 47 locale of the texts and numbers the engine writes (tooltip, axes, accessible names); the page language by default",
+            "typeText": "string"
+          },
+          {
+            "name": "orientation",
+            "type": "ChartOrientation",
+            "required": false,
+            "description": "`horizontal` puts the x axis (categories) down the left side and the values along the bottom (default `vertical`)",
+            "typeText": "ChartOrientation"
+          },
+          {
+            "name": "stackMode",
+            "type": "\"percent\" | \"normal\"",
+            "required": false,
+            "description": "`percent` scales every stack to 100% at each x (default `normal`)",
+            "typeText": "\"percent\" | \"normal\""
+          },
+          {
+            "name": "yAxis2",
+            "type": "ChartAxisOptions",
+            "required": false,
+            "description": "Right value axis of the series with `yAxis: \"right\"`; its range is aligned on the left ticks (vertical charts)",
+            "typeText": "ChartAxisOptions"
+          }
+        ],
+        "events": [
+          {
+            "name": "zoom",
+            "type": "[view: ChartView]",
+            "typeText": "[view: ChartView]",
+            "parameters": [
+              {
+                "name": "view",
+                "position": 0,
+                "typeText": "ChartView",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "hover",
+            "type": "[event: ChartHoverEvent | null]",
+            "typeText": "[event: ChartHoverEvent | null]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ChartHoverEvent | null",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "plotClick",
+            "type": "[event: ChartPlotClickEvent]",
+            "typeText": "[event: ChartPlotClickEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ChartPlotClickEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "pointClick",
+            "type": "[event: ChartHoverEvent]",
+            "typeText": "[event: ChartHoverEvent]",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "typeText": "ChartHoverEvent",
+                "required": true,
+                "rest": false
+              }
+            ]
+          },
+          {
+            "name": "rendererChange",
+            "type": "[renderer: ChartRendererKind]",
+            "typeText": "[renderer: ChartRendererKind]",
+            "parameters": [
+              {
+                "name": "renderer",
+                "position": 0,
+                "typeText": "ChartRendererKind",
+                "required": true,
+                "rest": false
+              }
+            ]
+          }
+        ],
+        "slots": [],
+        "bindings": []
+      }
+    }
+  ],
+  "api": {},
+  "cssVariables": {},
+  "examples": [
+    {
+      "id": "climate",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/mixed-chart/vue/climate.vue",
+      "files": {
+        "apps/docs/src/docs/pages/mixed-chart/vue/climate.vue": "<script setup lang=\"ts\">\n// A climate chart: monthly precipitation as bars, the mean temperature as\n// a smooth line on the right axis; the crosshair reads both.\nimport { computed } from \"vue\";\nimport { useI18n } from \"minerva-design/vue\";\nimport { MixedChart } from \"minerva-design/vue/charts\";\n\nconst TEXT = {\n  en: { rain: \"Precipitation (mm)\", temperature: \"Temperature (°C)\" },\n  zh: { rain: \"降水量（毫米）\", temperature: \"气温（°C）\" },\n  ja: { rain: \"降水量（mm）\", temperature: \"気温（°C）\" },\n  fr: { rain: \"Précipitations (mm)\", temperature: \"Température (°C)\" },\n};\nconst MONTHS = {\n  en: [\n    \"Jan\",\n    \"Feb\",\n    \"Mar\",\n    \"Apr\",\n    \"May\",\n    \"Jun\",\n    \"Jul\",\n    \"Aug\",\n    \"Sep\",\n    \"Oct\",\n    \"Nov\",\n    \"Dec\",\n  ],\n  zh: [\n    \"1月\",\n    \"2月\",\n    \"3月\",\n    \"4月\",\n    \"5月\",\n    \"6月\",\n    \"7月\",\n    \"8月\",\n    \"9月\",\n    \"10月\",\n    \"11月\",\n    \"12月\",\n  ],\n  ja: [\n    \"1月\",\n    \"2月\",\n    \"3月\",\n    \"4月\",\n    \"5月\",\n    \"6月\",\n    \"7月\",\n    \"8月\",\n    \"9月\",\n    \"10月\",\n    \"11月\",\n    \"12月\",\n  ],\n  fr: [\n    \"janv.\",\n    \"févr.\",\n    \"mars\",\n    \"avr.\",\n    \"mai\",\n    \"juin\",\n    \"juil.\",\n    \"août\",\n    \"sept.\",\n    \"oct.\",\n    \"nov.\",\n    \"déc.\",\n  ],\n};\n\nconst RAIN = [52, 41, 48, 55, 68, 71, 64, 62, 55, 64, 63, 60];\nconst TEMPERATURE = [\n  3.5, 4.2, 7.6, 10.7, 14.5, 17.6, 19.8, 19.6, 16.4, 12.3, 7.6, 4.4,\n];\n\nconst { language } = useI18n();\nconst series = computed(() => {\n  const text = TEXT[language.value] ?? TEXT.en;\n  const months = MONTHS[language.value] ?? MONTHS.en;\n  return [\n    {\n      name: text.rain,\n      type: \"bar\" as const,\n      color: \"var(--chart-series-2, #0ea5e9)\",\n      data: RAIN.map((y, i) => ({ x: months[i], y })),\n    },\n    {\n      name: text.temperature,\n      type: \"line\" as const,\n      curve: \"smooth\" as const,\n      yAxis: \"right\" as const,\n      color: \"var(--chart-series-4, #ef4444)\",\n      data: TEMPERATURE.map((y, i) => ({ x: months[i], y })),\n    },\n  ];\n});\n</script>\n\n<template>\n  <MixedChart\n    :series=\"series\"\n    :x-axis=\"{ type: 'category' }\"\n    crosshair\n    :height=\"300\"\n  />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "climate",
+      "description": ""
+    },
+    {
+      "id": "revenue-growth",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/mixed-chart/vue/revenue-growth.vue",
+      "files": {
+        "apps/docs/src/docs/pages/mixed-chart/vue/revenue-growth.vue": "<script setup lang=\"ts\">\n// Bars and a line on two value axes: the series with `yAxis: \"right\"` use\n// `yAxis2` (its ticks are aligned on the left grid).\nimport { computed } from \"vue\";\nimport { useI18n } from \"minerva-design/vue\";\nimport { MixedChart } from \"minerva-design/vue/charts\";\n\nconst TEXT = {\n  en: { revenue: \"Revenue (k€)\", growth: \"Growth\" },\n  zh: { revenue: \"收入（千欧元）\", growth: \"增长率\" },\n  ja: { revenue: \"売上（千ユーロ）\", growth: \"成長率\" },\n  fr: { revenue: \"Chiffre d’affaires (k€)\", growth: \"Croissance\" },\n};\nconst MONTHS = {\n  en: [\"Jan\", \"Feb\", \"Mar\", \"Apr\", \"May\", \"Jun\"],\n  zh: [\"1月\", \"2月\", \"3月\", \"4月\", \"5月\", \"6月\"],\n  ja: [\"1月\", \"2月\", \"3月\", \"4月\", \"5月\", \"6月\"],\n  fr: [\"janv.\", \"févr.\", \"mars\", \"avr.\", \"mai\", \"juin\"],\n};\n\nconst REVENUE = [182, 196, 214, 205, 238, 261];\n// month-over-month growth, %\nconst GROWTH = REVENUE.map((y, i) =>\n  i ? Math.round((y / REVENUE[i - 1] - 1) * 1000) / 10 : 0,\n);\n\nconst { language } = useI18n();\nconst series = computed(() => {\n  const text = TEXT[language.value] ?? TEXT.en;\n  const months = MONTHS[language.value] ?? MONTHS.en;\n  return [\n    {\n      name: text.revenue,\n      type: \"bar\" as const,\n      data: REVENUE.map((y, i) => ({ x: months[i], y })),\n    },\n    {\n      name: text.growth,\n      type: \"line\" as const,\n      curve: \"smooth\" as const,\n      yAxis: \"right\" as const,\n      data: GROWTH.map((y, i) => ({ x: months[i], y })),\n    },\n  ];\n});\nconst yAxis2 = { format: (value: number) => `${value} %` };\n</script>\n\n<template>\n  <MixedChart\n    :series=\"series\"\n    :x-axis=\"{ type: 'category' }\"\n    :y-axis2=\"yAxis2\"\n    :height=\"300\"\n  />\n</template>\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "vue"
+      ],
+      "contextImports": [],
+      "title": "revenue-growth",
+      "description": ""
+    }
+  ],
+  "recipes": [],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.6/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Combination chart",
+      "description": "Bars, lines and areas in one chart, on one or two value axes: revenue and growth, rainfall and temperature, Pareto charts.",
+      "demos": {
+        "revenue-growth": {
+          "title": "Revenue and growth",
+          "description": "The growth line sets yAxis: \"right\" and is drawn against yAxis2 with its own format; the right range is aligned on the left ticks, so the grid fits both axes."
+        },
+        "climate": {
+          "title": "Climate chart",
+          "description": "Rainfall bars on the left axis and the temperature curve on the right axis; zero: true keeps zero in the right range."
+        },
+        "conversion": {
+          "title": "Traffic and conversion",
+          "description": "An area of daily sessions with the conversion rate on the right axis and a campaign highlighted by a rect annotation."
+        },
+        "pareto": {
+          "title": "Pareto chart",
+          "description": "Sorted causes with their cumulative share on a 0-100% right axis (min, max and nice: false); the causes behind 80% of the returns are highlighted."
+        },
+        "log-scale": {
+          "title": "Log scale",
+          "description": "Users grow 6,000-fold in ten years: yAxis2={{ type: \"log\" }} draws them on a logarithmic right axis with its own decades, next to the revenue bars on the linear left axis; tooltips keep the actual values."
+        },
+        "locale": {
+          "title": "Locales",
+          "description": "The same chart with locale=\"zh-CN\" and locale=\"fr-FR\": the engine writes the compact units (万 / k), the separators, the month names of the time axis and the tooltip dates of the locale. Without locale, charts follow the page language (<html lang>)."
+        },
+        "solar-battery": {
+          "title": "Solar and home battery",
+          "description": "Hourly solar production as bars and consumption as a line on the left axis, the battery's state of charge as an area on yAxis2 fixed to 0–100% with min, max and nice: false; rect annotations shade the nights. The Switch hides the battery and the output recomputes the self-sufficiency."
+        },
+        "inventory": {
+          "title": "Inventory and deliveries",
+          "description": "A stepped area of the stock level with delivery bars, a reorder point line and a safety stock rect. onPointClick marks the day with an x line and shows its purchase order or stock in an output; onPlotClick clears it."
+        },
+        "ops-overview": {
+          "title": "Operations overview",
+          "description": "Request bars on the left axis, the error rate on the right axis, and the releases as a type: \"scatter\" series whose showLabels writes each version. Checkboxes replace the legend and set hidden on each series."
+        },
+        "burndown": {
+          "title": "Sprint burndown",
+          "description": "The remaining work as an area, the points completed each day as bars and the ideal burn as a line on explicit xAxis categories; a text annotation flags a scope change. renderTooltip tells how far ahead or behind the ideal line each day is."
+        }
+      },
+      "native": {
+        "demos": {
+          "basic": {
+            "title": "Basic",
+            "description": "Rainfall bars on the left axis and the temperature line on the right axis (yAxis: \"right\" and yAxis2); tap to compare both."
+          }
+        }
+      },
+      "data": {
+        "quarter": "Q{{n}} {{year}}",
+        "revenue": "Revenue",
+        "growth": "Growth (YoY)",
+        "revenueAria": "Quarterly revenue with its year-over-year growth",
+        "rainfall": "Rainfall",
+        "temperature": "Temperature",
+        "climateAria": "Monthly rainfall and temperature in Tokyo",
+        "sessions": "Sessions",
+        "conversionRate": "Conversion rate",
+        "campaign": "Campaign",
+        "conversionAria": "Daily sessions and conversion rate over two months",
+        "returns": "Returns",
+        "cumulative": "Cumulative share",
+        "causes": {
+          "wrongSize": "Wrong size",
+          "damaged": "Damaged",
+          "notAsDescribed": "Not as described",
+          "late": "Arrived late",
+          "changedMind": "Changed mind",
+          "wrongItem": "Wrong item",
+          "other": "Other"
+        },
+        "paretoAria": "Returns by cause with their cumulative share",
+        "pageViews": "Page views",
+        "locales": {
+          "chinese": "Chinese (zh-CN)",
+          "french": "French (fr-FR)"
+        },
+        "localeAria": "Daily page views and conversion rate, {{locale}}",
+        "yearlyRevenue": "Revenue",
+        "users": "Users",
+        "usersLog": "Users (log scale)",
+        "logAria": "Yearly revenue and users on a logarithmic axis, 2016 to 2025",
+        "kwh": "{{value}} kWh",
+        "solarProduction": "Solar production",
+        "consumption": "Consumption",
+        "batteryCharge": "Battery charge",
+        "night": "Night",
+        "withBattery": "{{value}} battery",
+        "selfSufficiency": "Self-sufficiency {{share}} over two days, {{imported}} bought from the grid.",
+        "energyPerHour": "Energy per hour",
+        "solarAria": "Hourly solar production and consumption of a house over two days, with the state of charge of its battery",
+        "stockLevel": "Stock level",
+        "deliveries": "Deliveries",
+        "promotion": "Promotion",
+        "safetyStock": "Safety stock",
+        "reorderPoint": "Reorder point",
+        "inventoryHint": "Click a day or a delivery.",
+        "deliveryDetails": "{{id}}: {{quantity}} units ordered on {{ordered}}, delivered on {{arrived}} after {{lead}}.",
+        "stockOn": "{{units}} units in stock on {{date}}.",
+        "stockLow": "Only {{units}} units in stock on {{date}}, under the safety stock.",
+        "unitsInStock": "Units",
+        "inventoryAria": "Daily stock level of an item over three months, with deliveries, the reorder point and the safety stock",
+        "requests": "Requests",
+        "errorRate": "Error rate",
+        "releases": "Releases",
+        "requestsPerHalfHour": "Requests per 30 min",
+        "opsAria": "Requests and error rate of a web API over a day, with its releases",
+        "incidentSummary": "The error rate peaked at {{peak}} at {{time}} after {{version}}, until the rollback to {{rollback}}.",
+        "points": "{{value}} pts",
+        "sprintStart": "Start",
+        "remainingWork": "Remaining work",
+        "completedPerDay": "Completed",
+        "idealBurn": "Ideal",
+        "scopeAdded": "+{{value}} added",
+        "idealLeft": "Ideal: {{value}} left",
+        "remainingLeft": "{{value}} left",
+        "doneThatDay": "{{value}} done that day",
+        "behindBy": "{{value}} behind the ideal",
+        "aheadBy": "{{value}} ahead of the ideal",
+        "storyPoints": "Story points",
+        "burndownAria": "Sprint burndown: remaining work, points completed each day and the ideal burn over ten working days",
+        "burndownLate": "{{left}} left at {{velocity}} a day: about {{forecast}} will not be done by the end of the sprint.",
+        "burndownOnTrack": "{{left}} left at {{velocity}} a day: the sprint is on track."
+      },
+      "api": {
+        "MixedChartProps": {
+          "series": "Bars, lines, areas and dots, each with its type; yAxis: \"right\" plots a series against yAxis2",
+          "yAxis2": "Right value axis of the series with yAxis: \"right\"",
+          "stackMode": "\"percent\" scales every stack to 100%",
+          "orientation": "\"horizontal\" puts the categories down the left side"
+        },
+        "ChartProps": {
+          "series": "Data series; each sets its own type",
+          "stackMode": "\"percent\" scales every stack to 100% at each x",
+          "yAxis2": "Right value axis of the series with yAxis: \"right\"; its range is aligned on the left ticks",
+          "orientation": "\"horizontal\" puts the x axis (categories) down the left side and the values along the bottom"
+        },
+        "ChartLabels": {
+          "open": "Candlestick open row",
+          "high": "Candlestick high row",
+          "low": "Candlestick low row",
+          "close": "Candlestick close row",
+          "max": "Box plot upper whisker row",
+          "q3": "Box plot third quartile row",
+          "median": "Box plot median row",
+          "q1": "Box plot first quartile row",
+          "min": "Box plot lower whisker row",
+          "outliers": "Number of outliers of a box",
+          "value": "Scatter value (bubbles) when the series has no valueName",
+          "x": "Row of the x of a scatter point when the axis has no title",
+          "y": "Row of the y of a scatter point when the axis has no title",
+          "series": "Default series names (\"Series 1\", \"Series 2\"…)",
+          "chart": "Accessible name of a chart without series",
+          "chartOf": "Accessible name of a chart; {series} is the list of the series names",
+          "start": "Start of a range bar on a time axis (Gantt tasks)",
+          "end": "End of a range bar on a time axis",
+          "duration": "Length of a range bar on a time axis (4 weeks, 26 days)",
+          "progress": "Done share of a Gantt task",
+          "dependencies": "Tasks a Gantt task waits for",
+          "outlier": "A hovered box plot outlier"
+        }
+      },
+      "wc": {
+        "demos": {
+          "revenue-growth": {
+            "title": "Revenue and growth on two axes",
+            "description": "Revenue as bars on the left axis, the growth rate as a line on the right axis (yAxis: \"right\")."
+          },
+          "climate": {
+            "title": "Climate chart",
+            "description": "Monthly precipitation as bars and the mean temperature as a smooth line; the crosshair reads both."
+          }
+        },
+        "minerva-mixed-chart": {
+          "props": {
+            "height": "Height of the chart, the legend included: pixels or any CSS length",
+            "options": "Other engine options (axes, legend, tooltip, palette, format…) merged with the element's own properties; property only",
+            "instance": "The engine instance (minerva-design/charts/core), null until the element is rendered and connected"
+          },
+          "events": {
+            "minerva-hover": "The hovered (or keyboard-focused) points changed; detail: { x, xLabel, items }, null when nothing is hovered",
+            "minerva-point-click": "A point or a bar was clicked; detail: { x, xLabel, items }",
+            "minerva-plot-click": "The plot area was clicked where there is no point; detail: { x, y } in data coordinates",
+            "minerva-zoom": "The user zoomed or panned; detail: { x, y } (the visible ranges)",
+            "minerva-renderer-change": "The backend is ready, or fell back after a GPU loss; detail: { renderer }"
+          },
+          "methods": {
+            "resetZoom": "Shows the whole data range",
+            "getView": "Visible range, null before the engine is created",
+            "setView": "Sets the visible range",
+            "getRenderer": "Backend in use (webgpu, webgl2, webgl, canvas2d), null until ready"
+          }
+        }
+      }
+    }
+  }
+}

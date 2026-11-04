@@ -1,0 +1,974 @@
+{
+  "schemaVersion": 1,
+  "packageVersion": "1.20.6",
+  "locale": "zh",
+  "renderer": "react",
+  "page": "input",
+  "title": "Input 输入框",
+  "description": "单行文本输入框，支持尺寸、变体、前后缀内容、清除按钮、字数统计和密码显隐切换。放在 FormField 中即可获得标签、帮助文本和错误信息。",
+  "provenance": {
+    "schemaVersion": "2.0.0",
+    "packageVersion": "1.20.6",
+    "sourceCommit": "63ce45656d8f3d1bfbee71026e84674640ae9abf",
+    "sourceDigest": "sha256:350485a7623d02751b73929ca9c28a8b5c5b3a5e7da3d06f2e0538e1cd3c9843",
+    "referenceSourceDigest": "sha256:fa9a782f68a5d5b512762e2152b2ad065da3de6937bac96eef63709ddba3b95b"
+  },
+  "content": {},
+  "components": [
+    {
+      "name": "Input",
+      "support": {
+        "status": "stable"
+      },
+      "api": {
+        "status": "stable",
+        "import": {
+          "specifier": "minerva-design",
+          "exports": [
+            "Input"
+          ],
+          "kind": "named"
+        },
+        "props": [
+          {
+            "name": "variant",
+            "source": "packages/react/src/components/Input/types.ts",
+            "kind": "enum",
+            "values": [
+              "filled",
+              "outline",
+              "unstyled"
+            ],
+            "typeText": "InputVariant | undefined",
+            "typeRef": "type:96aed16188fe02a9be4b",
+            "default": "outline",
+            "required": false,
+            "description": "Visual style"
+          },
+          {
+            "name": "size",
+            "source": "packages/react/src/components/Input/types.ts",
+            "kind": "enum",
+            "values": [
+              "large",
+              "medium",
+              "small"
+            ],
+            "typeText": "InputSize | undefined",
+            "typeRef": "type:c0077139c9326e9e701f",
+            "default": "medium",
+            "required": false,
+            "description": "Height and font size"
+          },
+          {
+            "name": "invalid",
+            "source": "packages/react/src/components/Input/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Error state (also set by an invalid FormControl); sets aria-invalid"
+          },
+          {
+            "name": "prefix",
+            "source": "packages/react/src/components/Input/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Content before the text, e.g. an icon or \"@\""
+          },
+          {
+            "name": "suffix",
+            "source": "packages/react/src/components/Input/types.ts",
+            "kind": "node",
+            "typeText": "ReactNode",
+            "typeRef": "type:d947e2db6b7ed3e4c192",
+            "required": false,
+            "description": "Content after the text, e.g. a unit, an icon or a button"
+          },
+          {
+            "name": "clearable",
+            "source": "packages/react/src/components/Input/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows a clear button while the field has a value (not when disabled or read-only). Clearing fires onChange with an empty value and keeps focus in the field"
+          },
+          {
+            "name": "clearLabel",
+            "source": "packages/react/src/components/Input/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the clear button"
+          },
+          {
+            "name": "showCharCount",
+            "source": "packages/react/src/components/Input/types.ts",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "default": false,
+            "required": false,
+            "description": "Shows the number of characters (and maxLength, when set) after the text; the count is linked to the input with aria-describedby"
+          },
+          {
+            "name": "showPasswordLabel",
+            "source": "packages/react/src/components/Input/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the password visibility toggle (shown for type=\"password\") while the password is hidden"
+          },
+          {
+            "name": "hidePasswordLabel",
+            "source": "packages/react/src/components/Input/types.ts",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Accessible label of the password visibility toggle while the password is visible"
+          },
+          {
+            "name": "defaultValue",
+            "inherited": true,
+            "source": "react",
+            "kind": "union",
+            "typeText": "string | number | readonly string[] | undefined",
+            "typeRef": "type:9d6f4fff8ef3f096d001",
+            "required": false
+          },
+          {
+            "name": "defaultChecked",
+            "inherited": true,
+            "source": "react",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "autoFocus",
+            "inherited": true,
+            "source": "react",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "id",
+            "inherited": true,
+            "source": "react",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "aria-describedby",
+            "inherited": true,
+            "source": "react",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Identifies the element (or elements) that describes the object."
+          },
+          {
+            "name": "aria-label",
+            "inherited": true,
+            "source": "react",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false,
+            "description": "Defines a string value that labels the current element."
+          },
+          {
+            "name": "form",
+            "inherited": true,
+            "source": "react",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "disabled",
+            "inherited": true,
+            "source": "react",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "name",
+            "inherited": true,
+            "source": "react",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "type",
+            "inherited": true,
+            "source": "react",
+            "kind": "union",
+            "typeText": "HTMLInputTypeAttribute | undefined",
+            "typeRef": "type:bbb5e1f3decad2fa5436",
+            "required": false
+          },
+          {
+            "name": "value",
+            "inherited": true,
+            "source": "react",
+            "kind": "union",
+            "typeText": "string | number | readonly string[] | undefined",
+            "typeRef": "type:9d6f4fff8ef3f096d001",
+            "required": false
+          },
+          {
+            "name": "pattern",
+            "inherited": true,
+            "source": "react",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "accept",
+            "inherited": true,
+            "source": "react",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "autoComplete",
+            "inherited": true,
+            "source": "react",
+            "kind": "union",
+            "typeText": "HTMLInputAutoCompleteAttribute | undefined",
+            "typeRef": "type:097f18cefc39c00ec4f9",
+            "required": false
+          },
+          {
+            "name": "checked",
+            "inherited": true,
+            "source": "react",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "max",
+            "inherited": true,
+            "source": "react",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "required": false
+          },
+          {
+            "name": "maxLength",
+            "inherited": true,
+            "source": "react",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false
+          },
+          {
+            "name": "min",
+            "inherited": true,
+            "source": "react",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "required": false
+          },
+          {
+            "name": "minLength",
+            "inherited": true,
+            "source": "react",
+            "kind": "number",
+            "typeText": "number | undefined",
+            "typeRef": "type:8fd4405af6b6a3932806",
+            "required": false
+          },
+          {
+            "name": "multiple",
+            "inherited": true,
+            "source": "react",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "placeholder",
+            "inherited": true,
+            "source": "react",
+            "kind": "string",
+            "typeText": "string | undefined",
+            "typeRef": "type:c59382f9551703242861",
+            "required": false
+          },
+          {
+            "name": "readOnly",
+            "inherited": true,
+            "source": "react",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "required",
+            "inherited": true,
+            "source": "react",
+            "kind": "boolean",
+            "typeText": "boolean | undefined",
+            "typeRef": "type:c54e4f1388c4caae77ff",
+            "required": false
+          },
+          {
+            "name": "step",
+            "inherited": true,
+            "source": "react",
+            "kind": "union",
+            "typeText": "string | number | undefined",
+            "typeRef": "type:cce9a6f3bb64fbe6fa35",
+            "required": false
+          }
+        ],
+        "events": [
+          {
+            "name": "onClear",
+            "source": "packages/react/src/components/Input/types.ts",
+            "kind": "function",
+            "typeText": "(() => void) | undefined",
+            "typeRef": "type:01b20187ac55ab339d3b",
+            "parameters": [],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false,
+            "description": "Called after the clear button emptied the field"
+          },
+          {
+            "name": "onChange",
+            "inherited": true,
+            "source": "react",
+            "kind": "function",
+            "typeText": "ChangeEventHandler<HTMLInputElement, HTMLInputElement> | undefined",
+            "typeRef": "type:1552faf6d0bf90372711",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "ChangeEvent<HTMLInputElement, HTMLInputElement>",
+                "typeRef": "type:ec55ed1c03063de2a819"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onFocus",
+            "inherited": true,
+            "source": "react",
+            "kind": "function",
+            "typeText": "FocusEventHandler<HTMLInputElement> | undefined",
+            "typeRef": "type:6284782b01edc0ec9aeb",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "FocusEvent<HTMLInputElement, Element>",
+                "typeRef": "type:20a1b75c939d080fd107"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onBlur",
+            "inherited": true,
+            "source": "react",
+            "kind": "function",
+            "typeText": "FocusEventHandler<HTMLInputElement> | undefined",
+            "typeRef": "type:6284782b01edc0ec9aeb",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "FocusEvent<HTMLInputElement, Element>",
+                "typeRef": "type:20a1b75c939d080fd107"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onInput",
+            "inherited": true,
+            "source": "react",
+            "kind": "function",
+            "typeText": "InputEventHandler<HTMLInputElement> | undefined",
+            "typeRef": "type:c45b6e80d6c8f01c0ae2",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "InputEvent<HTMLInputElement>",
+                "typeRef": "type:c0b0762b46fe28f4edad"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onKeyDown",
+            "inherited": true,
+            "source": "react",
+            "kind": "function",
+            "typeText": "KeyboardEventHandler<HTMLInputElement> | undefined",
+            "typeRef": "type:a829ca15387965668126",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "KeyboardEvent<HTMLInputElement>",
+                "typeRef": "type:bb2eb244cd23c9a1b2fa"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onKeyUp",
+            "inherited": true,
+            "source": "react",
+            "kind": "function",
+            "typeText": "KeyboardEventHandler<HTMLInputElement> | undefined",
+            "typeRef": "type:a829ca15387965668126",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "KeyboardEvent<HTMLInputElement>",
+                "typeRef": "type:bb2eb244cd23c9a1b2fa"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          },
+          {
+            "name": "onClick",
+            "inherited": true,
+            "source": "react",
+            "kind": "function",
+            "typeText": "MouseEventHandler<HTMLInputElement> | undefined",
+            "typeRef": "type:e951285332632d910fc7",
+            "parameters": [
+              {
+                "name": "event",
+                "position": 0,
+                "required": true,
+                "rest": false,
+                "typeText": "MouseEvent<HTMLInputElement, MouseEvent>",
+                "typeRef": "type:69803e823cc5b5d06844"
+              }
+            ],
+            "returnType": {
+              "typeText": "void",
+              "typeRef": "type:7ba5db05423263a0fe9d"
+            },
+            "required": false
+          }
+        ],
+        "slots": [
+          {
+            "name": "children"
+          }
+        ],
+        "bindings": [
+          {
+            "prop": "value",
+            "event": "onChange",
+            "syntax": "value={value} onChange={handler}"
+          }
+        ]
+      }
+    }
+  ],
+  "api": {
+    "InputProps": {
+      "source": "react/src/components/Input/types.ts",
+      "kind": "interface",
+      "extends": [
+        "Omit<InputHTMLAttributes<HTMLInputElement>, \"size\" | \"prefix\">"
+      ],
+      "props": [
+        {
+          "name": "variant",
+          "type": "InputVariant",
+          "required": false,
+          "default": "\"outline\"",
+          "description": "Visual style"
+        },
+        {
+          "name": "size",
+          "type": "InputSize",
+          "required": false,
+          "default": "\"medium\"",
+          "description": "Height and font size"
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Error state (also set by an invalid FormControl); sets aria-invalid"
+        },
+        {
+          "name": "prefix",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Content before the text, e.g. an icon or \"@\""
+        },
+        {
+          "name": "suffix",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Content after the text, e.g. a unit, an icon or a button"
+        },
+        {
+          "name": "clearable",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows a clear button while the field has a value (not when disabled or read-only). Clearing fires onChange with an empty value and keeps focus in the field"
+        },
+        {
+          "name": "onClear",
+          "type": "() => void",
+          "required": false,
+          "description": "Called after the clear button emptied the field"
+        },
+        {
+          "name": "clearLabel",
+          "type": "string",
+          "required": false,
+          "default": "\"Clear\" (localized)",
+          "description": "Accessible label of the clear button"
+        },
+        {
+          "name": "showCharCount",
+          "type": "boolean",
+          "required": false,
+          "default": "false",
+          "description": "Shows the number of characters (and maxLength, when set) after the text; the count is linked to the input with aria-describedby"
+        },
+        {
+          "name": "showPasswordLabel",
+          "type": "string",
+          "required": false,
+          "default": "\"Show password\" (localized)",
+          "description": "Accessible label of the password visibility toggle (shown for type=\"password\") while the password is hidden"
+        },
+        {
+          "name": "hidePasswordLabel",
+          "type": "string",
+          "required": false,
+          "default": "\"Hide password\" (localized)",
+          "description": "Accessible label of the password visibility toggle while the password is visible"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "description": "Class name of the outer wrapper (not the <input>)"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLInputElement>",
+          "required": false,
+          "description": "Ref to the <input> element"
+        }
+      ]
+    }
+  },
+  "cssVariables": {
+    "css:Input": {
+      "kind": "cssVars",
+      "source": "react/src/components/Input",
+      "vars": [
+        {
+          "name": "--input-height",
+          "description": "Minimum height of the field (every size; defaults to the density's control height of the size)"
+        },
+        {
+          "name": "--input-padding-x",
+          "description": "Horizontal padding of the text (every size)"
+        },
+        {
+          "name": "--input-radius",
+          "description": "Corner radius (defaults to --radius-lg)"
+        },
+        {
+          "name": "--input-font-size",
+          "description": "Font size (every size)"
+        },
+        {
+          "name": "--input-background",
+          "description": "Background color of the outline variant"
+        },
+        {
+          "name": "--input-border-color",
+          "description": "Border color at rest"
+        },
+        {
+          "name": "--input-focus-color",
+          "description": "Border color while hovered / focused (focus: then --minerva-focus-border-color)"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "addons",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/input/demos/addons.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/input/demos/addons.tsx": "import { Input } from \"minerva-design\";\nimport { LuSearch } from \"react-icons/lu\";\n\nexport default function AddonsDemo() {\n  return (\n    <>\n      <Input aria-label=\"Search\" prefix={<LuSearch />} placeholder=\"Search\" />\n      <Input aria-label=\"Handle\" prefix=\"@\" defaultValue=\"minerva\" />\n      <Input aria-label=\"Price\" prefix=\"$\" suffix=\"USD\" inputMode=\"decimal\" />\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "前缀与后缀",
+      "description": "图标、符号或单位等装饰内容。"
+    },
+    {
+      "id": "basic",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/input/demos/basic.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/input/demos/basic.tsx": "import { Input } from \"minerva-design\";\nimport { useState } from \"react\";\n\nexport default function BasicDemo() {\n  const [value, setValue] = useState(\"\");\n  return (\n    <>\n      <Input aria-label=\"Name\" placeholder=\"Uncontrolled\" />\n      <Input\n        aria-label=\"Controlled\"\n        placeholder=\"Controlled\"\n        value={value}\n        onChange={(event) => setValue(event.target.value)}\n      />\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "基础用法",
+      "description": "原生 input 属性与事件直接透传；className 作用于外层容器，ref 指向 <input>。"
+    },
+    {
+      "id": "clearable-and-count",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/input/demos/clearable-and-count.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/input/demos/clearable-and-count.tsx": "import { Input } from \"minerva-design\";\n\nexport default function ClearableAndCountDemo() {\n  return (\n    <>\n      <Input aria-label=\"Search\" placeholder=\"Search\" clearable />\n      <Input\n        aria-label=\"Short bio\"\n        defaultValue=\"Frontend developer\"\n        clearable\n        showCharCount\n        maxLength={40}\n      />\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "清除按钮与字数统计",
+      "description": "clearable 会在有值时显示带标签的清除按钮；清除时以空值触发 onChange，并保持焦点在输入框中。showCharCount 显示字数（以及 maxLength），并与输入框关联。"
+    },
+    {
+      "id": "password",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/input/demos/password.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/input/demos/password.tsx": "import { FormField, Input } from \"minerva-design\";\nimport { LuLock } from \"react-icons/lu\";\n\nexport default function PasswordDemo() {\n  return (\n    <FormField label=\"Password\" helperText=\"At least 8 characters.\">\n      <Input\n        type=\"password\"\n        prefix={<LuLock />}\n        autoComplete=\"new-password\"\n        minLength={8}\n      />\n    </FormField>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react-icons"
+      ],
+      "contextImports": [],
+      "title": "密码",
+      "description": "type=\"password\" 会添加一个带本地化标签的显示 / 隐藏切换按钮。"
+    },
+    {
+      "id": "sizes-variants",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/input/demos/sizes-variants.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/input/demos/sizes-variants.tsx": "import { Input } from \"minerva-design\";\n\nexport default function SizesVariantsDemo() {\n  return (\n    <>\n      <Input aria-label=\"Small\" size=\"small\" placeholder=\"small\" />\n      <Input aria-label=\"Medium\" placeholder=\"medium (outline)\" />\n      <Input aria-label=\"Large\" size=\"large\" placeholder=\"large\" />\n      <Input aria-label=\"Filled\" variant=\"filled\" placeholder=\"filled\" />\n      <Input aria-label=\"Unstyled\" variant=\"unstyled\" placeholder=\"unstyled\" />\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "尺寸与变体",
+      "description": "三种尺寸以及 outline、filled、unstyled 变体。"
+    },
+    {
+      "id": "states",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/input/demos/states.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/input/demos/states.tsx": "import { FormField, Input } from \"minerva-design\";\n\nexport default function StatesDemo() {\n  return (\n    <>\n      <Input aria-label=\"Invalid\" invalid defaultValue=\"Invalid\" />\n      <Input aria-label=\"Disabled\" disabled defaultValue=\"Disabled\" />\n      <Input aria-label=\"Read-only\" readOnly defaultValue=\"Project Atlas\" />\n      <FormField label=\"Inside a FormField\" errorMessage=\"Inherits the error\">\n        <Input />\n      </FormField>\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design"
+      ],
+      "contextImports": [],
+      "title": "状态",
+      "description": "invalid、disabled 和 readOnly；在 FormField 内会继承状态。 只读字段统一使用 --readonly-surface-color，保持正常文字对比度，并可聚焦、选择和复制内容；隐藏编辑入口，错误边界仍然保留。"
+    },
+    {
+      "id": "validation",
+      "kind": "internal-demo",
+      "entry": "apps/docs/src/docs/pages/input/demos/validation.tsx",
+      "files": {
+        "apps/docs/src/docs/pages/input/demos/validation.tsx": "import { useState } from \"react\";\nimport { Button, FormField, Input } from \"minerva-design\";\n\nexport default function ValidationDemo() {\n  const [email, setEmail] = useState(\"\");\n  const [error, setError] = useState<string>();\n\n  const submit = () => {\n    setError(\n      /^\\S+@\\S+\\.\\S+$/.test(email)\n        ? undefined\n        : \"Please enter a valid email address\",\n    );\n  };\n\n  return (\n    <>\n      <FormField label=\"Email\" errorMessage={error} required>\n        <Input\n          type=\"email\"\n          value={email}\n          onChange={(event) => {\n            setEmail(event.target.value);\n            setError(undefined);\n          }}\n          onKeyDown={(event) => event.key === \"Enter\" && submit()}\n        />\n      </FormField>\n      <Button onClick={submit}>Submit</Button>\n    </>\n  );\n}\n"
+      },
+      "dependencies": [
+        "minerva-design",
+        "react"
+      ],
+      "contextImports": [],
+      "title": "校验",
+      "description": "提交时校验，并通过 FormField 的 errorMessage 显示错误信息：输入框进入无效状态，并由该信息描述。"
+    }
+  ],
+  "recipes": [
+    {
+      "id": "react-form",
+      "title": "React controlled project form",
+      "renderer": "react",
+      "pages": [
+        "input",
+        "switch",
+        "form-control",
+        "form-layout",
+        "button"
+      ],
+      "kind": "standalone-recipe",
+      "packageVersion": "1.20.6",
+      "files": {
+        "README.md": "# react-form\n\nStandalone React 19 recipe, using only public Minerva entries.\n\nRequires Node >=22.13 and pnpm 11. Copy the complete directory, then run:\n\n```sh\npnpm install\npnpm build\npnpm dev\n```\n\nThe package manifest pins the tested Minerva/framework/tool versions. The entry imports the global stylesheet once. App owns the provider and controlled state. No documentation translation setup or workspace aliases are required.\n",
+        "index.html": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n    <title>Minerva standalone recipe</title>\n  </head>\n  <body>\n    <div id=\"app\"></div>\n    <script type=\"module\" src=\"/src/main.tsx\"></script>\n  </body>\n</html>\n",
+        "package.json": "{\n  \"name\": \"minerva-recipe-react-form\",\n  \"private\": true,\n  \"version\": \"1.0.0\",\n  \"type\": \"module\",\n  \"packageManager\": \"pnpm@11.23.0\",\n  \"scripts\": {\n    \"dev\": \"vite --host 127.0.0.1\",\n    \"build\": \"tsc --noEmit && vite build\"\n  },\n  \"dependencies\": {\n    \"minerva-design\": \"1.20.6\",\n    \"react\": \"19.3.0\",\n    \"react-dom\": \"19.3.0\"\n  },\n  \"devDependencies\": {\n    \"typescript\": \"6.0.3\",\n    \"vite\": \"8.3.3\",\n    \"@types/react\": \"19.3.0\",\n    \"@types/react-dom\": \"19.3.0\"\n  }\n}\n",
+        "src/App.tsx": "import { useState } from \"react\";\nimport {\n  Button,\n  ConfigProvider,\n  FormField,\n  Input,\n  Switch,\n  ToastProvider,\n  VStack,\n  toast,\n} from \"minerva-design\";\n\nexport default function App() {\n  const [name, setName] = useState(\"\");\n  const [subscribed, setSubscribed] = useState(false);\n  const [saved, setSaved] = useState(\"\");\n  return (\n    <ConfigProvider theme=\"light\">\n      <ToastProvider>\n        <VStack gap={4} align=\"start\">\n          <FormField label=\"Project name\" required>\n            <Input\n              name=\"project\"\n              value={name}\n              onChange={(event) => setName(event.target.value)}\n              clearable\n            />\n          </FormField>\n          <Switch\n            label=\"Newsletter\"\n            checked={subscribed}\n            onChange={setSubscribed}\n          />\n          <Button\n            disabled={!name.trim()}\n            onClick={() => {\n              setSaved(`${name}${subscribed ? \" · subscribed\" : \"\"}`);\n              toast.success(\"Project saved\");\n            }}\n          >\n            Save project\n          </Button>\n          <output aria-live=\"polite\">{saved || \"No project saved\"}</output>\n        </VStack>\n      </ToastProvider>\n    </ConfigProvider>\n  );\n}\n",
+        "src/main.tsx": "import { createRoot } from \"react-dom/client\";\nimport App from \"./App\";\nimport \"minerva-design/style.css\";\ncreateRoot(document.getElementById(\"app\")!).render(<App />);\n",
+        "src/vite-env.d.ts": "/// <reference types=\"vite/client\" />\n",
+        "tsconfig.json": "{\n  \"compilerOptions\": {\n    \"target\": \"ES2022\",\n    \"module\": \"ESNext\",\n    \"moduleResolution\": \"Bundler\",\n    \"lib\": [\"ES2022\", \"DOM\", \"DOM.Iterable\"],\n    \"strict\": true,\n    \"skipLibCheck\": true,\n    \"jsx\": \"react-jsx\",\n    \"noEmit\": true,\n    \"esModuleInterop\": true\n  },\n  \"include\": [\"src\"]\n}\n"
+      },
+      "dependencies": {
+        "minerva-design": "1.20.6",
+        "react": "19.3.0",
+        "react-dom": "19.3.0",
+        "typescript": "6.0.3",
+        "vite": "8.3.3",
+        "@types/react": "19.3.0",
+        "@types/react-dom": "19.3.0"
+      },
+      "url": "/minerva-design/reference/1.20.6/recipes/react-form/README.md"
+    }
+  ],
+  "installation": "./setup.md",
+  "snippets": [],
+  "typeGraph": "/minerva-design/reference/1.20.6/types.json",
+  "documentationContext": {
+    "translationResources": {
+      "title": "Input 输入框",
+      "description": "单行文本输入框，支持尺寸、变体、前后缀内容、清除按钮、字数统计和密码显隐切换。放在 FormField 中即可获得标签、帮助文本和错误信息。",
+      "demos": {
+        "basic": {
+          "title": "基础用法",
+          "description": "原生 input 属性与事件直接透传；className 作用于外层容器，ref 指向 <input>。"
+        },
+        "sizes-variants": {
+          "title": "尺寸与变体",
+          "description": "三种尺寸以及 outline、filled、unstyled 变体。"
+        },
+        "addons": {
+          "title": "前缀与后缀",
+          "description": "图标、符号或单位等装饰内容。"
+        },
+        "clearable-and-count": {
+          "title": "清除按钮与字数统计",
+          "description": "clearable 会在有值时显示带标签的清除按钮；清除时以空值触发 onChange，并保持焦点在输入框中。showCharCount 显示字数（以及 maxLength），并与输入框关联。"
+        },
+        "password": {
+          "title": "密码",
+          "description": "type=\"password\" 会添加一个带本地化标签的显示 / 隐藏切换按钮。"
+        },
+        "states": {
+          "title": "状态",
+          "description": "invalid、disabled 和 readOnly；在 FormField 内会继承状态。 只读字段统一使用 --readonly-surface-color，保持正常文字对比度，并可聚焦、选择和复制内容；隐藏编辑入口，错误边界仍然保留。"
+        },
+        "validation": {
+          "title": "校验",
+          "description": "提交时校验，并通过 FormField 的 errorMessage 显示错误信息：输入框进入无效状态，并由该信息描述。"
+        }
+      },
+      "api": {
+        "InputProps": {
+          "variant": "视觉样式",
+          "size": "高度与字号",
+          "invalid": "错误状态（无效的 FormControl 也会设置）；设置 aria-invalid",
+          "prefix": "文本前的内容，例如图标或 \"@\"",
+          "suffix": "文本后的内容，例如单位、图标或按钮",
+          "className": "外层容器（而非 <input>）的类名",
+          "ref": "<input> 元素的 ref",
+          "clearable": "有值时显示清除按钮（禁用或只读时不显示）；清除时以空值触发 onChange",
+          "onClear": "清除按钮清空输入框后调用",
+          "clearLabel": "清除按钮的无障碍标签（默认为本地化的 \"清除\"）",
+          "showCharCount": "显示字符数（设置 maxLength 时一并显示），并通过 aria-describedby 与输入框关联",
+          "showPasswordLabel": "密码隐藏时切换按钮的无障碍标签",
+          "hidePasswordLabel": "密码可见时切换按钮的无障碍标签"
+        }
+      },
+      "cssVars": {
+        "--input-height": "字段最小高度（所有尺寸；默认取当前密度下对应尺寸的控件高度）",
+        "--input-padding-x": "文字的水平内边距（所有尺寸）",
+        "--input-radius": "圆角（默认 --radius-lg）",
+        "--input-font-size": "字号（所有尺寸）",
+        "--input-background": "outline 变体的背景色",
+        "--input-border-color": "静止时的边框颜色",
+        "--input-focus-color": "悬停 / 聚焦时的边框颜色"
+      },
+      "wc": {
+        "demos": {
+          "basic": {
+            "title": "基础用法",
+            "description": "两个输入框分别演示非受控输入与通过 minerva-input 事件同步 value 属性的输入；都可以编辑和清空。"
+          },
+          "sizes-variants": {
+            "title": "尺寸、变体与状态",
+            "description": "三种尺寸，outline、filled、unstyled 三种变体，以及只读、禁用和无效状态。"
+          },
+          "addons": {
+            "title": "附加内容、清除、计数与密码",
+            "description": "prefix 与 suffix 插槽、清除按钮（clearable）、与 maxlength 关联的字符计数，以及密码可见性切换。"
+          },
+          "form": {
+            "title": "在表单中",
+            "description": "required、type=\"email\"、minlength 与 pattern 在提交时使用浏览器校验；未通过的字段会被设为 invalid 直到修正，reset 将其恢复。"
+          }
+        },
+        "minerva-input": {
+          "props": {
+            "defaultValue": "初始值（value 属性），由 form.reset() 恢复。与 <input> 相同，在用户编辑之前修改它也会修改 value。",
+            "type": "内部 <input> 的类型（text、email、password、search、url、number、date 等）。",
+            "placeholder": "字段为空时显示的占位文本。",
+            "readOnly": "只读：可聚焦并会提交，但不可编辑。",
+            "minLength": "值的最小长度（由浏览器校验）。",
+            "maxLength": "值的最大长度；同时作为字符计数的上限。",
+            "pattern": "值必须匹配的正则表达式。",
+            "min": "最小值（number 与日期类型）。",
+            "max": "最大值（number 与日期类型）。",
+            "step": "步长（number 与日期类型）。",
+            "autocomplete": "内部 <input> 的自动填充提示。",
+            "inputmode": "虚拟键盘提示（numeric、email、tel 等）。",
+            "name": "随表单提交时使用的字段名。",
+            "disabled": "禁用控件：不可聚焦、不提交、不参与校验。",
+            "required": "必须有值，表单才能提交。",
+            "value": "当前值（属性；value 特性设置的是 defaultValue）。",
+            "isDisabled": "控件是否被禁用（自身或被禁用的 <fieldset>，只读）。",
+            "form": "元素所属的表单（只读）。",
+            "labels": "与元素关联的 <label> 元素（只读）。",
+            "validity": "有效性状态，同 <input>.validity（只读）。",
+            "validationMessage": "当前校验错误的提示信息；有效时为空（只读）。",
+            "willValidate": "元素是否参与约束校验（只读）。"
+          },
+          "events": {
+            "change": "值已提交（失焦或回车），由内部 input 重新派发。",
+            "input": "值已改变（每次按键；原生事件，可穿透 shadow DOM）。",
+            "minerva-input": "同 input，附带 detail: { value }。",
+            "minerva-change": "同 change，附带 detail: { value }。",
+            "minerva-clear": "清除按钮清空了字段。"
+          },
+          "slots": {
+            "prefix": "文本之前的内容（图标、“@”、协议等）。",
+            "suffix": "文本之后的内容（单位、图标、按钮）。"
+          },
+          "methods": {
+            "focus": "聚焦内部控件。",
+            "blur": "使内部控件失去焦点。",
+            "select": "选中全部文本。",
+            "checkValidity": "检查有效性；无效时触发 invalid 事件。",
+            "reportValidity": "检查有效性并显示浏览器的校验提示。",
+            "setCustomValidity": "设置自定义校验错误，传入空字符串则清除。",
+            "formResetCallback": "表单生命周期回调，由 form.reset() 调用：恢复初始值。",
+            "formDisabledCallback": "表单生命周期回调，在祖先 <fieldset> 被禁用或启用时调用。",
+            "formStateRestoreCallback": "表单生命周期回调，在浏览器恢复状态（历史导航、自动填充）时调用。"
+          }
+        }
+      },
+      "native": {
+        "demos": {
+          "states": {
+            "title": "状态",
+            "description": "invalid、disabled 和 readOnly；在 FormField 内会继承状态。"
+          },
+          "sizes-variants": {
+            "title": "尺寸与变体",
+            "description": "三种尺寸以及 outline、filled、unstyled 变体。"
+          },
+          "basic": {
+            "title": "基础用法",
+            "description": "分别演示非受控输入与受控 TextInput。onChange 直接接收新的字符串值；通过 accessibilityLabel 提供无障碍名称，通过原生样式属性调整外观。"
+          },
+          "clearable-and-count": {
+            "title": "清除按钮与字数统计",
+            "description": "clearable 会在有值时显示带标签的清除按钮；清除时以空值触发 onChange，并保持焦点在输入框中。showCharCount 显示字数（以及 maxLength），并与输入框关联。"
+          }
+        }
+      }
+    }
+  }
+}
