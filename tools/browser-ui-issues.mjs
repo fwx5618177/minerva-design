@@ -320,6 +320,31 @@ try {
     version: index.packageVersion,
     bytes: text.length,
   });
+  for (const [route, framework, minimum] of [
+    ["installation", "react", 2],
+    ["web-components", "react", 2],
+    ["wc-plain-html", "react", 3],
+    ["button", "html", 1],
+  ]) {
+    await page(route, 1280, framework);
+    await wait(`document.querySelector('article a[href$="/${route}.json"]')`);
+    await wait(
+      `[...document.querySelectorAll('pre')].some(el=>el.textContent.includes('https://cdn.jsdelivr.net/npm/minerva-design'))`,
+    );
+    const urls = await evaluate(
+      `[...document.querySelectorAll('pre')].flatMap(el=>el.textContent.split('"').filter(text=>text.startsWith('https://')&&text.includes('/minerva-design')))`,
+    );
+    assert.ok(urls.length >= minimum, JSON.stringify({ route, urls }));
+    for (const url of urls)
+      assert.ok(url.includes(`minerva-design@${index.packageVersion}/`), url);
+    results.push({
+      check: "cdn-docs-version",
+      route,
+      framework,
+      version: index.packageVersion,
+      urls,
+    });
+  }
   await mkdir(ARTIFACTS, { recursive: true });
   const { data } = await call("Page.captureScreenshot", { format: "png" });
   await writeFile(

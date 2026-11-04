@@ -1,3 +1,4 @@
+import { DOCS_PACKAGE_VERSION } from "../../packageVersion";
 import React from "react";
 import { Alert } from "minerva-design";
 import { useTranslation } from "react-i18next";
@@ -86,8 +87,8 @@ import "minerva-design/web-components/select";
 // design tokens, once (already included in minerva-design/style.css)
 import "minerva-design/tokens.css";`;
 
-const wcCdn = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/minerva-design@0/dist/core/tokens.css" />
-<script type="module" src="https://cdn.jsdelivr.net/npm/minerva-design@0/dist/web-components/cdn/minerva.js"></script>`;
+const wcCdn = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/minerva-design@${DOCS_PACKAGE_VERSION}/dist/core/tokens.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/minerva-design@${DOCS_PACKAGE_VERSION}/dist/web-components/cdn/minerva.js"></script>`;
 
 const wcTypes = `// React 19 JSX (global.d.ts)
 /// <reference types="minerva-design/web-components/react" />

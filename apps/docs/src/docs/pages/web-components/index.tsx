@@ -1,3 +1,4 @@
+import { DOCS_PACKAGE_VERSION } from "../../packageVersion";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
@@ -40,13 +41,13 @@ import "minerva-design/web-components/modal";`;
 const cdnCode = `<!-- no build step: a self-contained ES module (Lit and minerva-design/core included) -->
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/minerva-design@0/dist/core/tokens.css"
+  href="https://cdn.jsdelivr.net/npm/minerva-design@${DOCS_PACKAGE_VERSION}/dist/core/tokens.css"
 />
 <script
   type="module"
-  src="https://cdn.jsdelivr.net/npm/minerva-design@0/dist/web-components/cdn/minerva.js"
+  src="https://cdn.jsdelivr.net/npm/minerva-design@${DOCS_PACKAGE_VERSION}/dist/web-components/cdn/minerva.js"
 ></script>
-<!-- unpkg works too: https://unpkg.com/minerva-design@0/dist/web-components/cdn/minerva.js -->`;
+<!-- unpkg works too: https://unpkg.com/minerva-design@${DOCS_PACKAGE_VERSION}/dist/web-components/cdn/minerva.js -->`;
 
 const attrsCode = `<!-- attributes: strings, kebab-case; booleans are on when present -->
 <minerva-input name="email" type="email" placeholder="you@example.com" clearable required></minerva-input>

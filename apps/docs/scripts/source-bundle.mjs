@@ -96,7 +96,7 @@ export function collectSourceBundle(entry, root) {
 
 /** Statically read literal snippets actually passed to CodeBlock; never execute
  * a documentation page or assume every string variable is a code sample. */
-export function inlineSnippets(source) {
+export function inlineSnippets(source, bindings = {}) {
   const tree = ts.createSourceFile(
     "index.tsx",
     source,
@@ -104,20 +104,37 @@ export function inlineSnippets(source) {
     true,
     ts.ScriptKind.TSX,
   );
-  const literals = new Map(),
+  const declarations = new Map(),
     result = [];
-  const text = (node) =>
-    node &&
-    (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node))
-      ? node.text
-      : undefined;
+  // Resolve only text and templates. Never execute a page, a call, or a member
+  // access; unresolved expressions are omitted just like dynamic snippets.
+  function text(node, seen = new Set()) {
+    if (!node) return undefined;
+    if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node))
+      return node.text;
+    if (ts.isIdentifier(node)) {
+      const name = node.text;
+      if (seen.has(name)) return undefined;
+      if (declarations.has(name))
+        return text(declarations.get(name), new Set([...seen, name]));
+      return Object.hasOwn(bindings, name) && typeof bindings[name] === "string"
+        ? bindings[name]
+        : undefined;
+    }
+    if (ts.isTemplateExpression(node)) {
+      let value = node.head.text;
+      for (const span of node.templateSpans) {
+        const part = text(span.expression, seen);
+        if (part === undefined) return undefined;
+        value += part + span.literal.text;
+      }
+      return value;
+    }
+    return undefined;
+  }
   function variables(node) {
-    if (
-      ts.isVariableDeclaration(node) &&
-      ts.isIdentifier(node.name) &&
-      text(node.initializer) !== undefined
-    )
-      literals.set(node.name.text, text(node.initializer));
+    if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name))
+      declarations.set(node.name.text, node.initializer);
     ts.forEachChild(node, variables);
   }
   variables(tree);
@@ -134,10 +151,7 @@ export function inlineSnippets(source) {
         language = text(attr("language")) ?? "tsx";
       const expression =
         code && ts.isJsxExpression(code) ? code.expression : code;
-      const value =
-        expression && ts.isIdentifier(expression)
-          ? literals.get(expression.text)
-          : text(expression);
+      const value = text(expression);
       if (value !== undefined) result.push({ source: value, language });
     }
     ts.forEachChild(node, visit);

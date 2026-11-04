@@ -209,7 +209,9 @@ for (const page of docPages) {
       });
       const pageSource = join(DOCS, "src/docs/pages", page.id, "index.tsx");
       record.snippets = existsSync(pageSource)
-        ? inlineSnippets(readFileSync(pageSource, "utf8"))
+        ? inlineSnippets(readFileSync(pageSource, "utf8"), {
+            DOCS_PACKAGE_VERSION: version,
+          })
         : [];
       record.installation = "./setup.md";
       record.typeGraph = index.typeGraph;

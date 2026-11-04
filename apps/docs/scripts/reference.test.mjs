@@ -294,3 +294,16 @@ test("inline guide code is extracted from the same CodeBlock literals and variab
     { source: "pnpm add minerva-design", language: "sh" },
   ]);
 });
+
+test("guide templates resolve package-version bindings and local CDN constants without executing code", async () => {
+  const { inlineSnippets } = await import("./source-bundle.mjs");
+  const source =
+    'const CDN = `https://cdn.jsdelivr.net/npm/minerva-design@${DOCS_PACKAGE_VERSION}/dist`; const example = `<script src="${CDN}/web-components/cdn/minerva.js"></script>`; const dynamic = dangerous(); export default () => <><CodeBlock code={example} language="html"/><CodeBlock code={dynamic}/><CodeBlock code={`${unknown}`}/></>;';
+  assert.deepEqual(inlineSnippets(source, { DOCS_PACKAGE_VERSION: "9.8.7" }), [
+    {
+      source:
+        '<script src="https://cdn.jsdelivr.net/npm/minerva-design@9.8.7/dist/web-components/cdn/minerva.js"></script>',
+      language: "html",
+    },
+  ]);
+});

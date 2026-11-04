@@ -1,3 +1,4 @@
+import { DOCS_PACKAGE_VERSION } from "../../packageVersion";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
@@ -5,7 +6,7 @@ import CodeBlock from "@layout/CodeBlock";
 import DocPage from "@/docs/components/DocPage";
 import styles from "@/docs/components/docs.module.scss";
 
-const CDN = "https://cdn.jsdelivr.net/npm/minerva-design@0/dist";
+const CDN = `https://cdn.jsdelivr.net/npm/minerva-design@${DOCS_PACKAGE_VERSION}/dist`;
 
 const pageCode = `<!doctype html>
 <html lang="en">

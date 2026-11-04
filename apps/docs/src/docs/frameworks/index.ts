@@ -18,6 +18,7 @@
 // an existing one plus a source dialect (`WC_FRAMEWORKS` in ./transform.ts).
 // Angular has a native package; this selector currently demonstrates its
 // separate Web Components integration and links to the native guide.
+import { DOCS_PACKAGE_VERSION } from "../packageVersion";
 import type { DocPageMeta, WcMeta } from "../registry";
 import { CHART_ENTRIES } from "./chartEntries";
 
@@ -56,7 +57,7 @@ export interface FrameworkDef {
 
 const PKG = "minerva-design/web-components";
 /** Paths inside the published package (node_modules / CDN) */
-const CDN_FILE = "minerva-design/dist/web-components/cdn/minerva.js";
+const CDN_FILE = `minerva-design@${DOCS_PACKAGE_VERSION}/dist/web-components/cdn/minerva.js`;
 /**
  * Optional define entries: not part of the all-in-one entry nor of the CDN
  * bundle (they need an optional peer dependency, or load the chart engine)

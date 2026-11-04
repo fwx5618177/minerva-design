@@ -61,3 +61,22 @@ test("every index/page recipe and installation link resolves; Angular source and
     .api.props.find((p) => p.name === "value");
   assert.ok(typeGraph[prop.typeRef]);
 });
+
+test("emitted guide code uses the same exact CDN version as its reference snapshot", () => {
+  const index = read(join(publicDir, "reference/index.json"));
+  for (const id of ["installation", "web-components", "wc-plain-html"]) {
+    const page = index.pages.find(
+      (p) => p.page === id && p.locale === "en" && p.renderer === "react",
+    );
+    assert.ok(page, id);
+    const record = read(resolve(page.json));
+    const code = record.snippets.map((snippet) => snippet.source).join("\n");
+    const urls =
+      code.match(
+        /https:\/\/(?:cdn\.jsdelivr\.net\/npm|unpkg\.com)\/minerva-design(?:@[^/\s"'<>]+)?\/[^\s"'<>]+/g,
+      ) ?? [];
+    assert.ok(urls.length >= 2, `Missing resolved CDN snippets for ${id}`);
+    for (const url of urls)
+      assert.ok(url.includes(`minerva-design@${index.packageVersion}/`), url);
+  }
+});
