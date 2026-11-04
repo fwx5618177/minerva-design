@@ -40,14 +40,28 @@ it.each([
   },
 );
 
-it("pins the HTML framework CDN setup to the same version", () => {
+it.each([
+  ["button", "minerva"],
+  ["line-chart", "chart"],
+  ["icon", "icon"],
+])(
+  "pins the HTML framework CDN setup of %s to cdn/%s.js of the same version",
+  (page, file) => {
+    const setup = FRAMEWORKS.find((f) => f.id === "html")!.setup(
+      docPages.find((p) => p.id === page)!.wc!,
+    );
+    const snippet = setup.find((s) => s.step === "htmlCdn")!.code;
+    const template = document.createElement("template");
+    template.innerHTML = snippet;
+    expect(template.content.querySelector("script")!.src).toBe(
+      `https://cdn.jsdelivr.net/npm/minerva-design@${version}/dist/web-components/cdn/${file}.js`,
+    );
+  },
+);
+
+it("has no CDN step for the code editor (the host injects Monaco)", () => {
   const setup = FRAMEWORKS.find((f) => f.id === "html")!.setup(
-    docPages.find((page) => page.id === "button")!.wc!,
+    docPages.find((p) => p.wc?.entry === "code-editor")!.wc!,
   );
-  const snippet = setup.find((s) => s.step === "htmlCdn")!.code;
-  const template = document.createElement("template");
-  template.innerHTML = snippet;
-  expect(template.content.querySelector("script")!.src).toBe(
-    `https://cdn.jsdelivr.net/npm/minerva-design@${version}/dist/web-components/cdn/minerva.js`,
-  );
+  expect(setup.some((s) => s.step === "htmlCdn")).toBe(false);
 });

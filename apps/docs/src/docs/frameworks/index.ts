@@ -56,13 +56,21 @@ export interface FrameworkDef {
 }
 
 const PKG = "minerva-design/web-components";
+/** Folder of the self-contained CDN files inside the published package */
+const CDN_DIR = `minerva-design@${DOCS_PACKAGE_VERSION}/dist/web-components/cdn`;
 /** Paths inside the published package (node_modules / CDN) */
-const CDN_FILE = `minerva-design@${DOCS_PACKAGE_VERSION}/dist/web-components/cdn/minerva.js`;
+const CDN_FILE = `${CDN_DIR}/minerva.js`;
 /**
  * Optional define entries: not part of the all-in-one entry nor of the CDN
  * bundle (they need an optional peer dependency, or load the chart engine)
  */
 const OPTIONAL_ENTRIES = new Set<string>(["code-editor", ...CHART_ENTRIES]);
+/**
+ * Optional entries with a self-contained CDN file of their own
+ * (`cdn/<entry>.js`, packages/web-components/scripts/cdn-entries.mjs): the
+ * chart and icon entries. `code-editor` has none (the host injects Monaco).
+ */
+const CDN_ENTRIES = new Set<string>(CHART_ENTRIES);
 
 /** A page of minerva-design/charts (or its engine, minerva-design/charts/core) */
 export const isChartPage = (meta: DocPageMeta) =>
@@ -74,7 +82,7 @@ const register = (wc: WcMeta, file: string, extra = ""): SetupSnippet => ({
   language: "ts",
   code: `${extra}// registers ${wc.tags.map((tag) => `<${tag}>`).join(", ")} (and only them)
 import "${PKG}/${wc.entry}";
-${OPTIONAL_ENTRIES.has(wc.entry) ? `// optional entry: not part of "${PKG}" nor of the CDN bundle` : `// or every element at once: import "${PKG}";`}
+${OPTIONAL_ENTRIES.has(wc.entry) ? `// optional entry: not part of "${PKG}" nor of the all-in-one CDN bundle` : `// or every element at once: import "${PKG}";`}
 `,
 });
 
@@ -158,17 +166,28 @@ export const FRAMEWORKS: readonly FrameworkDef[] = [
   import "${PKG}/${wc.entry}";
 </script>`,
       },
-      ...(OPTIONAL_ENTRIES.has(wc.entry)
-        ? []
-        : [
+      ...(CDN_ENTRIES.has(wc.entry)
+        ? [
             {
               step: "htmlCdn",
               file: "index.html",
               language: "html",
-              code: `<!-- no build step: the self-contained bundle registers every element -->
-<script type="module" src="https://cdn.jsdelivr.net/npm/${CDN_FILE}"></script>`,
+              code: `<!-- no build step: the self-contained file registers the elements of this entry
+     (the other <minerva-*> elements: add the all-in-one minerva.js of the same folder) -->
+<script type="module" src="https://cdn.jsdelivr.net/npm/${CDN_DIR}/${wc.entry}.js"></script>`,
             },
-          ]),
+          ]
+        : OPTIONAL_ENTRIES.has(wc.entry)
+          ? []
+          : [
+              {
+                step: "htmlCdn",
+                file: "index.html",
+                language: "html",
+                code: `<!-- no build step: the self-contained bundle registers every element -->
+<script type="module" src="https://cdn.jsdelivr.net/npm/${CDN_FILE}"></script>`,
+              },
+            ]),
     ],
   },
 ];

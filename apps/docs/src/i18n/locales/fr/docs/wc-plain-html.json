@@ -10,6 +10,11 @@
     "events": "Les événements minerva-* remontent : un seul écouteur sur le formulaire (ou sur document) reçoit donc les changements de tous les contrôles ; event.target est l'élément et event.detail contient la nouvelle valeur.",
     "modal": "Définir une propriété depuis un script (modal.open = true) ne déclenche jamais d'événement ; le bouton de fermeture et la touche Échap ferment la modale et déclenchent minerva-open-change."
   },
+  "optional": {
+    "title": "Graphiques et icônes",
+    "text": "Les éléments de graphique et d'icône chargent un moteur (les graphiques de minerva-design/charts/core, le jeu d'icônes) : ils ne font donc pas partie de minerva.js. Chacune de ces entrées optionnelles a son propre fichier autonome dans le même dossier cdn : chart.js (graphiques cartésiens et de formes), trading-chart.js, order-book.js, chart-3d.js, graph.js, quadrant-task-board.js et icon.js. Chargez ceux qu'utilise la page en plus de minerva.js :",
+    "note": "Sans bundler ni import map, un script module ne peut pas importer \"minerva-design/web-components/chart\" : le navigateur ne résout pas les spécificateurs nus et le graphique reste non défini (0 × 0). Chargez plutôt le fichier CDN avec un <script src>. Les éléments présents dans deux fichiers ne sont enregistrés qu'une fois, par le premier fichier chargé."
+  },
   "importMaps": {
     "title": "Modules par élément avec une import map",
     "text": "Le bundle CDN contient tous les éléments. Pour ne télécharger que les éléments utilisés par une page, chargez plutôt les modules par élément du paquet (dist/elements/<name>.js). Ce sont les fichiers qu'utilisent les bundlers, avec des imports nus de leurs dépendances, qu'une import map résout dans le navigateur :",

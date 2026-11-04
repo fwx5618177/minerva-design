@@ -288,8 +288,17 @@ describe("global framework selector", () => {
       ).toBeInTheDocument();
       expect(panel).toHaveTextContent(entry);
       expect(screen.queryByTestId("chart-engine-fallback")).toBeNull();
-      // the chart entry is optional: no CDN bundle step
+      // the chart entry is optional: not in cdn/minerva.js
       expect(panel).not.toHaveTextContent("cdn/minerva.js");
+      if (id === "html") {
+        // without a build step: the self-contained file of the entry
+        expect(panel).toHaveTextContent("dist/web-components/cdn/chart.js");
+        expect(panel).toHaveTextContent(
+          "// no build step: load cdn/chart.js instead",
+        );
+      } else {
+        expect(panel).not.toHaveTextContent("cdn/chart.js");
+      }
     },
   );
 

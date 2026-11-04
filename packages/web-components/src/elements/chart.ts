@@ -1,10 +1,11 @@
 // Registers the chart elements (<minerva-chart>, <minerva-line-chart>...,
 // <minerva-shape-chart>, <minerva-pie-chart>, <minerva-sankey-chart>...).
-// Optional entry: not part of the all-in-one entry nor of the CDN bundle,
+// Optional entry: not part of the all-in-one entry nor of cdn/minerva.js,
 // since it loads the chart engine (minerva-design/charts/core, shared with
-// the other renderers). The trading, order book, 3D and graph elements have
-// entries of their own (trading-chart, order-book, chart-3d, graph): their
-// engines are only loaded by the pages that use them.
+// the other renderers); its CDN file is cdn/chart.js. The trading, order
+// book, 3D and graph elements have entries of their own (trading-chart,
+// order-book, chart-3d, graph): their engines are only loaded by the pages
+// that use them.
 import { MinervaChart } from "../components/chart/chart";
 import {
   MinervaAreaChart,

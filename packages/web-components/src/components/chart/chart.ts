@@ -101,8 +101,9 @@ export abstract class MinervaCartesianChartElement extends MinervaEngineElement<
  * variables of its scope.
  *
  * Published as the optional entry `minerva-design/web-components/chart`
- * (not part of the all-in-one entry nor the CDN bundle: it loads the chart
- * engine `minerva-design/charts/core`).
+ * (not part of the all-in-one entry nor of `cdn/minerva.js`: it loads the
+ * chart engine `minerva-design/charts/core`). Without a build step, load
+ * the self-contained `dist/web-components/cdn/chart.js` next to `minerva.js`.
  *
  * @summary GPU chart of any mix of series, configured by the engine options.
  * @tag minerva-chart

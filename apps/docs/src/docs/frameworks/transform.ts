@@ -1828,8 +1828,14 @@ function html(input: WcDemoInput, a: Analysis | null): string {
   const optional = chartEntries.every((entry) => entry === "icon")
     ? "// registers the icon elements (optional entry, loads the icon set)"
     : "// registers the chart elements (optional entries, load the chart engine)";
+  // bare specifiers need a bundler or an import map: name the CDN files
+  const noBuild = `// no build step: load ${chartEntries
+    .map((entry) => `cdn/${entry}.js`)
+    .join(
+      " + ",
+    )}${otherElements ? " + cdn/minerva.js" : ""} instead (see the setup)`;
   const registration = chartEntries.length
-    ? `${optional}\n${chartEntries
+    ? `${optional}\n${noBuild}\n${chartEntries
         .map((entry) => `import "minerva-design/web-components/${entry}";`)
         .join("\n")}${otherElements ? `\n${allInOne}` : ""}`
     : allInOne;

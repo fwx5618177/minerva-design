@@ -40,8 +40,9 @@ const positive = (value: number | undefined, fallback: number) =>
  * canvas mode the host gets `data-renderer` with the backend drawing.
  *
  * Published as the optional entry `minerva-design/web-components/icon`
- * (not part of the all-in-one entry nor the CDN bundle: it loads the icon
- * set `minerva-design/icons/core`).
+ * (not part of the all-in-one entry nor of `cdn/minerva.js`: it loads the
+ * icon set `minerva-design/icons/core`). Without a build step, load the
+ * self-contained `dist/web-components/cdn/icon.js` next to `minerva.js`.
  *
  * @summary Icon of the Minerva icon set, as inline SVG or on a GPU canvas.
  * @tag minerva-icon

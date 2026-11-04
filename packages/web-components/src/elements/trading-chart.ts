@@ -1,6 +1,7 @@
 // Registers <minerva-trading-chart>. Optional entry: not part of the
-// all-in-one entry nor of the CDN bundle, since it loads the trading engine
-// of minerva-design/charts/core (shared with the other renderers).
+// all-in-one entry nor of cdn/minerva.js, since it loads the trading engine
+// of minerva-design/charts/core (shared with the other renderers); its CDN
+// file is cdn/trading-chart.js.
 import { MinervaTradingChart } from "../components/trading-chart/trading-chart";
 import { defineElement } from "../internal/define";
 

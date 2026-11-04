@@ -7,6 +7,7 @@ import { join } from "node:path";
 import assert from "node:assert/strict";
 import { checkQuadrantPointer } from "./browser-quadrant-checks.mjs";
 import { checkQuadrantCard } from "./browser-quadrant-card-checks.mjs";
+import { checkCdnFiles } from "./browser-cdn-checks.mjs";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const connect = async (url) => {
   const socket = new WebSocket(url);
@@ -182,6 +183,7 @@ try {
     await sleep(300);
   };
   const results = [];
+  await checkCdnFiles({ call, evaluate, wait, results });
   for (const width of [320, 390, 1280]) {
     await page("table", width);
     const data = await evaluate(

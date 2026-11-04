@@ -10,6 +10,11 @@
     "events": "minerva-* events bubble, so a single listener on the form (or on document) receives the changes of every control; event.target is the element and event.detail holds the new value.",
     "modal": "Setting a property from script (modal.open = true) never fires an event; the close button and Escape close the modal and fire minerva-open-change."
   },
+  "optional": {
+    "title": "Charts and icons",
+    "text": "The chart and icon elements load an engine (the charts of minerva-design/charts/core, the icon set), so they are not part of minerva.js. Each of these optional entries has a self-contained file of its own in the same cdn folder: chart.js (cartesian and shape charts), trading-chart.js, order-book.js, chart-3d.js, graph.js, quadrant-task-board.js and icon.js. Load the ones a page uses next to minerva.js:",
+    "note": "Without a bundler or an import map, a module script cannot import \"minerva-design/web-components/chart\": the browser does not resolve bare specifiers and the chart stays undefined (0 × 0). Load the CDN file with a <script src> instead. Elements that two files both contain are registered once, by the first file that loads."
+  },
   "importMaps": {
     "title": "Per-element modules with an import map",
     "text": "The CDN bundle contains every element. To download only the elements a page uses, load the per-element modules of the package (dist/elements/<name>.js) instead. They are the files bundlers use, with bare imports of their dependencies, which an import map resolves in the browser:",

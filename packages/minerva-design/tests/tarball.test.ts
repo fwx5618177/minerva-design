@@ -144,6 +144,8 @@ describe("packed tarball installed in a consumer project", () => {
       "dist/dom/core-web.js",
       "dist/web-components/index.js",
       "dist/web-components/cdn/minerva.js",
+      "dist/web-components/cdn/chart.js",
+      "dist/web-components/cdn/icon.js",
       "dist/web-components/types/react.d.ts",
       "dist/angular/fesm2022/minerva-angular.mjs",
       "dist/angular/types/minerva-angular.d.ts",

@@ -1,8 +1,9 @@
 // Registers the order book elements (<minerva-depth-chart>,
 // <minerva-order-book>, <minerva-order-book-heatmap>,
 // <minerva-time-and-sales>). Optional entry: not part of the all-in-one
-// entry nor of the CDN bundle, since it loads the order book engines of
-// minerva-design/charts/core (shared with the other renderers).
+// entry nor of cdn/minerva.js, since it loads the order book engines of
+// minerva-design/charts/core (shared with the other renderers); its CDN
+// file is cdn/order-book.js.
 import {
   MinervaDepthChart,
   MinervaOrderBook,

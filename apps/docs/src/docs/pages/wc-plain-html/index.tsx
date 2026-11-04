@@ -108,6 +108,26 @@ const importMapCode = `<script type="importmap">
   import "minerva-design/web-components/input.js";
 </script>`;
 
+const optionalCode = `<link rel="stylesheet" href="${CDN}/core/tokens.css" />
+<script type="module" src="${CDN}/web-components/cdn/minerva.js"></script>
+<!-- the chart elements and their engine (not part of minerva.js) -->
+<script type="module" src="${CDN}/web-components/cdn/chart.js"></script>
+
+<minerva-config theme="system" root>
+  <minerva-chart id="sales" height="300"></minerva-chart>
+</minerva-config>
+
+<script type="module">
+  // the data is the options property (no attribute)
+  document.querySelector("#sales").options = {
+    series: [
+      { name: "Revenue", type: "bar", data: [42, 51, 48, 63, 72, 80] },
+      { name: "Target", type: "line", curve: "smooth", data: [45, 50, 55, 60, 65, 70] },
+    ],
+    xAxis: { type: "category", categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"] },
+  };
+</script>`;
+
 const WcPlainHtmlDoc: React.FC = () => {
   const { t } = useTranslation();
   const k = (key: string) => t(`docs.wc-plain-html.${key}`);
@@ -125,6 +145,13 @@ const WcPlainHtmlDoc: React.FC = () => {
           <li>{k("page.events")}</li>
           <li>{k("page.modal")}</li>
         </ul>
+      </section>
+
+      <section className={styles.section} aria-labelledby="charts-icons">
+        <h2 id="charts-icons">{k("optional.title")}</h2>
+        <p className={styles.prose}>{k("optional.text")}</p>
+        <CodeBlock code={optionalCode} language="html" />
+        <p className={styles.callout}>{k("optional.note")}</p>
       </section>
 
       <section className={styles.section} aria-labelledby="import-maps">

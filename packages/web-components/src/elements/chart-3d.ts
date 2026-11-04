@@ -1,8 +1,9 @@
 // Registers the 3D chart elements (<minerva-scatter-3d-chart>,
 // <minerva-line-3d-chart>, <minerva-surface-3d-chart>,
 // <minerva-bar-3d-chart>). Optional entry: not part of the all-in-one entry
-// nor of the CDN bundle, since it loads the 3D engine of
-// minerva-design/charts/core (shared with the other renderers).
+// nor of cdn/minerva.js, since it loads the 3D engine of
+// minerva-design/charts/core (shared with the other renderers); its CDN
+// file is cdn/chart-3d.js.
 import {
   MinervaBar3DChart,
   MinervaLine3DChart,

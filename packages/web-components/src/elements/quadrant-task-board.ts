@@ -1,9 +1,10 @@
 // Registers <minerva-quadrant-task-board> (and the elements it renders:
 // <minerva-quadrant-chart>, <minerva-modal>, <minerva-confirm-dialog>,
 // <minerva-icon-button>, <minerva-input>, <minerva-select>, <minerva-button>).
-// Optional entry: not part of the all-in-one entry nor of the CDN bundle,
+// Optional entry: not part of the all-in-one entry nor of cdn/minerva.js,
 // since it loads the chart engine (minerva-design/charts/core, shared with
-// the chart entry and the other renderers).
+// the chart entry and the other renderers); its CDN file is
+// cdn/quadrant-task-board.js.
 import { MinervaQuadrantTaskBoard } from "../components/quadrant-task-board/quadrant-task-board";
 import { defineElement } from "../internal/define";
 

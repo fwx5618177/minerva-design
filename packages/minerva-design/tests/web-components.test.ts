@@ -12,7 +12,12 @@ import { describe, expect, it } from "vitest";
 import {
   elementsOf,
   optionalEntryOf,
+  OPTIONAL_ENTRIES,
 } from "../../web-components/scripts/manifest.mjs";
+import {
+  CDN_FILES,
+  CDN_OPTIONAL_ENTRIES,
+} from "../../web-components/scripts/cdn-entries.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
@@ -229,6 +234,44 @@ describe("CDN bundle", () => {
     expect(js).not.toMatch(/\n\t/);
     expect(js).not.toContain("width is ignored when full is set");
   });
+
+  it("has a CDN file for every optional entry but code-editor", () => {
+    // code-editor: the host injects Monaco, there is nothing to bundle
+    expect([...CDN_OPTIONAL_ENTRIES].sort()).toEqual(
+      OPTIONAL_ENTRIES.filter((entry) => entry !== "code-editor").sort(),
+    );
+    expect(
+      readdirSync(join(root, "dist/web-components/cdn"))
+        .filter((f) => f.endsWith(".js"))
+        .sort(),
+    ).toEqual(CDN_FILES.map((name) => `${name}.js`).sort());
+  });
+
+  it.each(CDN_OPTIONAL_ENTRIES)(
+    "cdn/%s.js is self-contained, production-mode and registers its elements",
+    (entry) => {
+      const js = readFileSync(
+        join(root, `dist/web-components/cdn/${entry}.js`),
+        "utf8",
+      );
+      console.info(`CDN ${entry}.js: ${Buffer.byteLength(js)} B`);
+      // no import left for the browser to resolve (bare or relative)
+      expect(js).not.toMatch(/\bfrom\s*["']/);
+      expect(js).not.toMatch(/\bimport\s*["'(]/);
+      expect(js).not.toContain("process.env.NODE_ENV");
+      expect(js).not.toMatch(/\n\t/);
+      for (const element of elements.filter(
+        (e) => optionalEntryOf(e) === entry,
+      )) {
+        // the tag name string (the minifier may quote it with backticks)
+        expect(js, element.tagName).toMatch(
+          new RegExp(`["'\`]${element.tagName}["'\`]`),
+        );
+      }
+      // the largest (chart, quadrant-task-board) are ~355 kB
+      expect(Buffer.byteLength(js)).toBeLessThan(400_000);
+    },
+  );
 });
 
 describe("custom-elements.json and typings", () => {

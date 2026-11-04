@@ -1,6 +1,7 @@
 // Registers <minerva-icon> and <minerva-icon-canvas>. Optional entry: not
-// part of the all-in-one entry nor of the CDN bundle, since it loads the
-// icon set (minerva-design/icons/core, shared with the React icons).
+// part of the all-in-one entry nor of cdn/minerva.js, since it loads the
+// icon set (minerva-design/icons/core, shared with the React icons); its
+// CDN file is cdn/icon.js.
 import { MinervaIcon } from "../components/icon/icon";
 import { MinervaIconCanvas } from "../components/icon/icon-canvas";
 import { defineElement } from "../internal/define";

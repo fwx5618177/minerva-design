@@ -1,8 +1,8 @@
 // Registers the graph elements (<minerva-graph-chart>,
 // <minerva-dependency-graph>, <minerva-tree-chart>). Optional entry: not
-// part of the all-in-one entry nor of the CDN bundle, since it loads the
+// part of the all-in-one entry nor of cdn/minerva.js, since it loads the
 // graph engine of minerva-design/charts/core (shared with the other
-// renderers).
+// renderers); its CDN file is cdn/graph.js.
 import {
   MinervaDependencyGraph,
   MinervaGraphChart,

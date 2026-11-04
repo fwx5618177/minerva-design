@@ -10,6 +10,11 @@
     "events": "minerva-* イベントはバブリングするため、フォーム（または document）上の 1 つのリスナーですべてのコントロールの変更を受け取れます。event.target は要素で、event.detail に新しい値が入っています。",
     "modal": "スクリプトからプロパティを設定しても（modal.open = true）イベントは発火しません。閉じるボタンと Escape キーはモーダルを閉じて minerva-open-change を発火します。"
   },
+  "optional": {
+    "title": "チャートとアイコン",
+    "text": "チャートとアイコンの要素はエンジン（minerva-design/charts/core のチャート、アイコンセット）を読み込むため、minerva.js には含まれません。これらのオプションのエントリーは、同じ cdn フォルダーにそれぞれ自己完結型のファイルを持ちます：chart.js（直交座標とシェイプのチャート）、trading-chart.js、order-book.js、chart-3d.js、graph.js、quadrant-task-board.js、icon.js。ページで使うものを minerva.js と一緒に読み込みます：",
+    "note": "バンドラーやインポートマップがない場合、module スクリプトから \"minerva-design/web-components/chart\" はインポートできません。ブラウザーはベアスペシファイアを解決できず、チャートは未定義のまま（0 × 0）になります。代わりに <script src> で CDN ファイルを読み込んでください。両方のファイルに含まれる要素は一度だけ、先に読み込まれたファイルによって登録されます。"
+  },
   "importMaps": {
     "title": "インポートマップで要素ごとのモジュールを使う",
     "text": "CDN バンドルにはすべての要素が含まれています。ページで使う要素だけをダウンロードするには、代わりにパッケージの要素ごとのモジュール（dist/elements/<name>.js）を読み込みます。これらはバンドラーが使うファイルで、依存関係を bare import で参照しているため、ブラウザではインポートマップで解決します：",

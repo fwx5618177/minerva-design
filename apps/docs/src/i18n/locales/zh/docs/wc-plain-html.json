@@ -10,6 +10,11 @@
     "events": "minerva-* 事件会冒泡，因此在表单（或 document）上的单个监听器即可接收所有控件的变化；event.target 是对应元素，event.detail 包含新值。",
     "modal": "通过脚本设置 property（modal.open = true）永远不会触发事件；关闭按钮和 Escape 键会关闭模态框并触发 minerva-open-change。"
   },
+  "optional": {
+    "title": "图表与图标",
+    "text": "图表与图标元素需要加载引擎（minerva-design/charts/core 的图表、图标集），因此不包含在 minerva.js 中。每个可选入口在同一个 cdn 目录下都有自己的自包含文件：chart.js（直角坐标与形状图表）、trading-chart.js、order-book.js、chart-3d.js、graph.js、quadrant-task-board.js 和 icon.js。在 minerva.js 之外按页面需要加载：",
+    "note": "没有打包工具或 import map 时，module 脚本无法 import \"minerva-design/web-components/chart\"：浏览器不解析裸模块名，图表元素不会被注册（尺寸为 0 × 0）。请改用 <script src> 加载 CDN 文件。两个文件都包含的元素只注册一次，以先加载的文件为准。"
+  },
   "importMaps": {
     "title": "通过 import map 按元素加载模块",
     "text": "CDN 模块包包含所有元素。若只想下载页面用到的元素，可以改为加载包中按元素拆分的模块（dist/elements/<name>.js）。它们正是构建工具所使用的文件，以裸模块说明符导入依赖，由浏览器中的 import map 负责解析：",
