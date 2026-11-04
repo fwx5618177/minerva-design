@@ -1,5 +1,11 @@
 # minerva-design
 
+## 1.20.5
+
+### Patch Changes
+
+- fe15b45: Separate quadrant point cards from their true-size points with shared edge-aware placement, consistent text and action layout, and a quieter theme-aware surface across React, Vue, Angular and Web Components.
+
 ## 1.20.4
 
 ### Patch Changes
